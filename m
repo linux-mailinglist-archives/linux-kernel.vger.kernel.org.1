@@ -2,106 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C53256A79
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 23:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F005256A7B
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 23:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgH2VjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 17:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727878AbgH2VjN (ORCPT
+        id S1728075AbgH2VxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 17:53:10 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:43577 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727878AbgH2VxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 17:39:13 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3188AC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 14:39:13 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id p11so2469168pfn.11
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 14:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=1Xkw7SsTluwGLX1WFengI1q4lftidu3MJxTjNHik2H0=;
-        b=hMbO3tOle/Wmiud+C3raW+sqkQs9r44niz9Z7e4xn8V6HR5QhM+kqGaGqq0s82og7F
-         voJSh1miXiYFZD6eoMwd2LDU2k0wJJzOlo2zI/Z+5x/BUBgy3vxjrltkitJUqqyIic/J
-         BDoHDDGttgwoELTcH9Gf6VVlNDVSceNWy/VPZsEILA8VYdLnYhOuoJP9djFFXZszCi9Q
-         xNxP9GYg+d3iuUynUktGHqU0QpezdqeqRuc86NBG+mJbAEz2ashjEXRC2ZHq7dpS8NET
-         WMuR0hlYHmfQcfIOFaJ60xcIiHj78ntEVpgSbZYHpEDmOzDd1u/0TdKDWr8oSTjQW7FS
-         4cCw==
+        Sat, 29 Aug 2020 17:53:09 -0400
+Received: by mail-lf1-f67.google.com with SMTP id y2so153669lfy.10
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 14:53:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=1Xkw7SsTluwGLX1WFengI1q4lftidu3MJxTjNHik2H0=;
-        b=XDeLGaeEwZcG2BSvvAf2VvBtaGPUdNS6T+pyfoZLsIyGXdsfNoaJZQgScAFGR47i9a
-         NfCcV5GvSXhKKi0NW+pMRa8G2hnW5qZvwxdAMrS0b0WyJsTBYMsYbgAawujaDbIocPRd
-         61QDDx1gCs20sl0Vm4qIyhOxFJeEPpg9NloxwknYi9VBgg96ygShTImahdHc4Zn8vHim
-         RMCzR3R4hmKaUR5VRUW7pbIsIUaNsZaXzegrUoTZj6HIbVhJoiu/xX5gVL/ahcJw5VnE
-         VFqvu27TQ4aMrlJd1mxKs7R5vh0zOkfnCZh8K4YipI+ZS6SHQ6Ly9eBa9NOY5//oU3rO
-         6How==
-X-Gm-Message-State: AOAM533pTcex3i8yJ9f4uv46XJuwKa7SGpRgfVmEHnhjdNU73CHFwNmw
-        en5K08bVaIle1RaoFpdErVLP7Xn17AejRw==
-X-Google-Smtp-Source: ABdhPJw34xsOfawWVhCBneMxURpAKERGDRRVZ2alS63AyRaicgNl3k8EQvpe9DGDskaKVzz63aC0Pw==
-X-Received: by 2002:a63:fc18:: with SMTP id j24mr1398594pgi.452.1598737152275;
-        Sat, 29 Aug 2020 14:39:12 -0700 (PDT)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id z66sm3457517pfb.53.2020.08.29.14.39.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 29 Aug 2020 14:39:11 -0700 (PDT)
-Date:   Sat, 29 Aug 2020 14:39:11 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
-Subject: Re: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
-In-Reply-To: <20200829000126.2463-1-rdunlap@infradead.org>
-Message-ID: <alpine.DEB.2.23.453.2008291439020.3955211@chino.kir.corp.google.com>
-References: <20200829000126.2463-1-rdunlap@infradead.org>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=DISw3y4vhkjRfKCSV6I2/zSKUYJfozivzt8puhUVAas=;
+        b=kd7pei8nBuukqfoZroPmP2Gqh42Rhq1PPQ9tbOoB63GtYne0vI6pixGxz8MGEOrAvw
+         j5RBjRExpkGkxDcXgc5JDg7CKPRFWWnrmJwsjv05tsNP3bLsEMenss77GupIiVuzGU9J
+         8sB9rDCbFtbUB1UpYwAW65Dul/uCG2V+X5JTYgGMxRSB9P7+3TxjpoLD7kbiE2nh51mT
+         8FLIRuDR81nPHc/0I3b1YiDj1Uux55EDHzwssELlNGFvs203HLeaUthcVz/wmF9d6ZWz
+         qQ5VBBCKH0B+Tq/Gn9sMSJuoAG20VH2b9fs/TYJk8LrrxL4Hd43PlKlLMbLsnF+RbH9I
+         4zIw==
+X-Gm-Message-State: AOAM532c6TUL6rjXioL/z2yc1BVsGmNH4+2PUson1zM49AdBO2nykAYy
+        38hRrEJsAniJ8qeqQo0l0ZC0V4i1bdovCA==
+X-Google-Smtp-Source: ABdhPJwQFy26tOE1PCnlzA1VD3XTHSbMuOp9blgEpvx3JE8RHVk8031oPkEShZvXZf3A0dNpY8wUBQ==
+X-Received: by 2002:ac2:4e8a:: with SMTP id o10mr2323143lfr.47.1598737986777;
+        Sat, 29 Aug 2020 14:53:06 -0700 (PDT)
+Received: from [192.168.1.8] ([213.87.147.111])
+        by smtp.gmail.com with ESMTPSA id f12sm693830ljn.14.2020.08.29.14.53.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 29 Aug 2020 14:53:06 -0700 (PDT)
+To:     Joe Perches <joe@perches.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Alex Dewar <alex.dewar90@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <a96cdf07cd136d06c3cc1e10eb884caa7498ba72.1598654887.git.joe@perches.com>
+ <c77e83a0-7587-3e07-81cb-6b185d1ce6aa@linux.com>
+ <fe4de2e9f0a492e66b870cddbadb820e3459cc7a.camel@perches.com>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Subject: Re: [PATCH] sysfs: Add sysfs_emit to replace sprintf to PAGE_SIZE
+ buffers.
+Message-ID: <31462501-a1fc-7470-ce7c-70e7bd9c0d96@linux.com>
+Date:   Sun, 30 Aug 2020 00:53:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <fe4de2e9f0a492e66b870cddbadb820e3459cc7a.camel@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020, Randy Dunlap wrote:
 
-> Fix min_low_pfn/max_low_pfn build errors for arch/ia64/: (e.g.)
 > 
->  ERROR: "max_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
->  ERROR: "max_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
->  ERROR: "max_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
->  ERROR: "max_low_pfn" [drivers/md/dm-integrity.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/md/dm-integrity.ko] undefined!
->  ERROR: "max_low_pfn" [crypto/tcrypt.ko] undefined!
->  ERROR: "min_low_pfn" [crypto/tcrypt.ko] undefined!
->  ERROR: "min_low_pfn" [security/keys/encrypted-keys/encrypted-keys.ko] undefined!
->  ERROR: "max_low_pfn" [security/keys/encrypted-keys/encrypted-keys.ko] undefined!
->  ERROR: "min_low_pfn" [arch/ia64/kernel/mca_recovery.ko] undefined!
->  ERROR: "max_low_pfn" [arch/ia64/kernel/mca_recovery.ko] undefined!
+> Anyway, this will need updating, likely with better examples.
 > 
-> David suggested just exporting min_low_pfn & max_low_pfn in
-> mm/memblock.c:
-> https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2006291911220.1118534@chino.kir.corp.google.com/
+> diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystems/sysfs.rst
+> index ab0f7795792b..13c7a86fa6c8 100644
+> --- a/Documentation/filesystems/sysfs.rst
+> +++ b/Documentation/filesystems/sysfs.rst
+> @@ -242,12 +242,9 @@ Other notes:
+>    is 4096.
+>  
+>  - show() methods should return the number of bytes printed into the
+> -  buffer. This is the return value of scnprintf().
+> +  buffer. This is the return value of sysfs_emit().
+>  
+> -- show() must not use snprintf() when formatting the value to be
+> -  returned to user space. If you can guarantee that an overflow
+> -  will never happen you can use sprintf() otherwise you must use
+> -  scnprintf().
+> +- show() methods should only use sysfs_emit to format output.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: linux-mm@kvack.org
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: linux-ia64@vger.kernel.org
 
-Acked-by: David Rientjes <rientjes@google.com>
+I think it's good to reflect in docs that sysfs_emit_at/sysfs_emit_pos is
+only for "legacy" code and should not be used in new code (checkpatch.pl warning?)
+because of sysfs design principles.
+And something about newlines "General rule is to add newlines at the end of output."
 
-Thanks Randy!
+Thanks,
+Denis
