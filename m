@@ -2,132 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809C32568F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 18:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF242568FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 18:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728481AbgH2QBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 12:01:13 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:34087 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728463AbgH2P7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 11:59:50 -0400
-Received: (qmail 499484 invoked by uid 1000); 29 Aug 2020 11:59:49 -0400
-Date:   Sat, 29 Aug 2020 11:59:49 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Salvatore Bonaccorso <carnil@debian.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dirk Kostrewa <dirk.kostrewa@mailbox.org>
-Subject: Re: kworker/0:3+pm hogging CPU
-Message-ID: <20200829155949.GA499295@rowland.harvard.edu>
-References: <20200720151255.GE1228057@rowland.harvard.edu>
- <20200720163355.GA4061@dhcp22.suse.cz>
- <20200720173807.GJ1228057@rowland.harvard.edu>
- <20200720174530.GB4061@dhcp22.suse.cz>
- <20200720174812.GK1228057@rowland.harvard.edu>
- <20200720181605.GC4061@dhcp22.suse.cz>
- <20200720200243.GA1244989@rowland.harvard.edu>
- <20200721055917.GD4061@dhcp22.suse.cz>
- <20200721143325.GB1272082@rowland.harvard.edu>
- <20200829095003.GA2446485@eldamar.local>
+        id S1728387AbgH2QEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 12:04:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58678 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgH2QE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 12:04:29 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8825A206C0;
+        Sat, 29 Aug 2020 16:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598717068;
+        bh=wAtTGXzByuZkl4YxA/doRZdDexZLsFSOeIVcGObOrLo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Hqx+QuVmG0IN6gSS6z9ooKtLDMPA8IN8wLj+mFvAYlGm7PALOu7aXLv0JLqJOWAvl
+         DyUk8LWwJDujxotTbECimceMzm7fsbxpS5sGWFmiKrIULO9FicTCJsiVYDBArwpYLk
+         UvVMsvGIJ1YeGm3UPv39Q/ulK0P5qejRf3IX9osQ=
+Date:   Sat, 29 Aug 2020 17:04:23 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "William.Sung" <William.Sung@advantech.com.tw>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        "Hartmut Knaack" <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        AceLan Kao <acelan.kao@canonical.com>,
+        "Campion.Kang" <Campion.Kang@advantech.com.tw>,
+        "Shihlun.Lin" <Shihlun.Lin@advantech.com.tw>
+Subject: Re: [PATCH v2] iio: dac: ad5593r: Dynamically set AD5593R channel
+ modes
+Message-ID: <20200829170423.4c8e8a11@archlinux>
+In-Reply-To: <fede086b9dd54a37bd539ab864bd8c55@taipei09.ADVANTECH.CORP>
+References: <20200825101614.2462-1-william.sung@advantech.com.tw>
+        <CAHp75VceTBHJ1p3amCQ0PpDSEP8L5+Tf-Qro69+G1WZBrt2oDw@mail.gmail.com>
+        <fede086b9dd54a37bd539ab864bd8c55@taipei09.ADVANTECH.CORP>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200829095003.GA2446485@eldamar.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 11:50:03AM +0200, Salvatore Bonaccorso wrote:
-> Hi Alan,
-> 
-> I'm following up on this thread because a user in Debian (Dirk, Cc'ed)
-> as well encountered the same/similar issue:
-> 
-> On Tue, Jul 21, 2020 at 10:33:25AM -0400, Alan Stern wrote:
-> > On Tue, Jul 21, 2020 at 07:59:17AM +0200, Michal Hocko wrote:
-> > > > Sorry, my mistake.  The module name needs to be "xhci_hcd" with an '_' 
-> > > > character, not a '-' character -- the same as what shows up in the lsmod 
-> > > > output.
-> > > 
-> > > 
-> > > [14766.973734] xhci_hcd 0000:00:14.0: Get port status 2-1 read: 0xe000088, return 0x88
-> > > [14766.973738] xhci_hcd 0000:00:14.0: Get port status 2-2 read: 0xe000088, return 0x88
-> > > [14766.973742] xhci_hcd 0000:00:14.0: Get port status 2-3 read: 0xe0002a0, return 0x2a0
-> > > [14766.973746] xhci_hcd 0000:00:14.0: Get port status 2-4 read: 0xe0002a0, return 0x2a0
-> > > [14766.973750] xhci_hcd 0000:00:14.0: Get port status 2-5 read: 0xe0002a0, return 0x2a0
-> > > [14766.973754] xhci_hcd 0000:00:14.0: Get port status 2-6 read: 0xe0002a0, return 0x2a0
-> > > [14766.973759] xhci_hcd 0000:00:14.0: Get port status 2-1 read: 0xe000088, return 0x88
-> > > [14766.973763] xhci_hcd 0000:00:14.0: Get port status 2-2 read: 0xe000088, return 0x88
-> > 
-> > According to the xHCI specification, those 02a0 values are normal and 
-> > the 0088 values indicate the port is disabled and has an over-current 
-> > condition.  I don't know about the e000 bits in the upper part of the 
-> > word; according to my copy of the spec those bits should be 0.
-> > 
-> > If your machine has only two physical SuperSpeed (USB-3) ports then 
-> > perhaps the other four ports are internally wired in a way that creates 
-> > a permanent over-current indication.
-> > 
-> > > [14766.973771] xhci_hcd 0000:00:14.0: set port remote wake mask, actual port 0 status  = 0xe000088
-> > > [14766.973780] xhci_hcd 0000:00:14.0: set port remote wake mask, actual port 1 status  = 0xe000088
-> > > [14766.973789] xhci_hcd 0000:00:14.0: set port remote wake mask, actual port 2 status  = 0xe0002a0
-> > > [14766.973798] xhci_hcd 0000:00:14.0: set port remote wake mask, actual port 3 status  = 0xe0002a0
-> > > [14766.973807] xhci_hcd 0000:00:14.0: set port remote wake mask, actual port 4 status  = 0xe0002a0
-> > > [14766.973816] xhci_hcd 0000:00:14.0: set port remote wake mask, actual port 5 status  = 0xe0002a0
-> > > [14766.973830] xhci_hcd 0000:00:14.0: Bus suspend bailout, port over-current detected
-> > > 
-> > > Repeating again and again. The last message suggests a HW problem? But
-> > > why does the kernel try the same thing over and over?
-> > 
-> > Because over-current is supposed to be a transient condition that goes 
-> > away quickly.  It means there's a short circuit or something similar.
-> 
-> Dirk exprienced the same issue aand enabled dynamic debugging showed
-> similar pattern. His dmesg excerpt is attached.
-> 
-> The Debian report is at https://bugs.debian.org/966703
-> 
-> What could be tracked down is that the issue is uncovered since
-> e9fb08d617bf ("xhci: prevent bus suspend if a roothub port detected a
-> over-current condition") which was applied in 5.7-rc3 and backported
-> to several stable releases (v5.6.8, v5.4.36 and v4.19.119).
-> 
-> Dirk found additionally:
-> 
-> > I just found out, that if none of the two USB ports is connected, there
-> > are two kworker processes with permanently high CPU load, if one USB
-> > port is connected and the other not, there is one such kworker process,
-> > and if both USB ports are connected, there is no kworker process with
-> > high CPU load.
-> > I think, this supports your suspicion that these kworker processes are
-> > connected with the overcurrent condition for both USB ports that I also
-> > see in the dmesg output.
-> 
-> Reverting the above commit covers the problem again. But I'm not
-> exprienced enough here to claim if this is a HW issue or if the Kernel
-> should handle the situation otherwise. Is there anything else Dirk can
-> provide?
+On Thu, 27 Aug 2020 05:33:08 +0000
+William.Sung <William.Sung@advantech.com.tw> wrote:
 
-It is undoubtedly a hardware issue.  The dmesg extract shows that ports 
-1-10, 1-11, and 2-5 (which is probably the same port as one of the 
-others) have overcurrent conditions; I'm guessing that these are the 
-ports which have external connections.
+> Hi Andy,
+> 
+> Thanks for you to take your time reviewing this patch. Would you please let me explain your questions?
+> 
+> =========================================================================
+> > +/* Parameters for dynamic channel mode setting */ static u8 
+> > +update_channel_mode; static u8 new_channel_modes[AD559XR_CHANNEL_NR];  
+> 
+> Huh?! Global variables?!
+> 
+> ---
+> 
+> > +EXPORT_SYMBOL_GPL(ad5592r_update_default_channel_modes);  
+> 
+> What?!
+> 
+> ---
+> 
+> > +/* Parameters for dynamic channel mode setting */ static char 
+> > +*ch_mode = ""; module_param(ch_mode, charp, 0400);  
+> 
+> We have sysfs ABI, what's wrong with it?
+> 
+> ---
+> => William:  
+> 
+> The module ad5593r is dependent on the module ad5592r-base, there is also another module ad5592r dependent on it.
+> In the original progress of AD5593R probe up:
+> 1. ad5593r_probe(), and then it will call the expose function ad5592r_probe() in ad5592r-base.
+> 2. During ad5592r_probe() function, it will:
+>    * Create ad5593r/ad5592r state structure (including the channel mode settings buffer)
+>    * Read all 8 channel mode settings from acpi/dt and write to the state structure
+>    * According to the channel mode settings, write the appropriate value to the registers
+> 
+> Would you please think about a scenario: 
+> The channel modes descript in the acpi/dt are 4 GPIOs and 4 ADCs
+> If a user wants to change the usage of the channel to 2GPIOs, 4 ADCs, and 2 DACs, no interface can do this.
+> The only way that he can do it is by modifying the settings in either acpi or dt.
 
-What were the devices Dirk plugged in that got rid of the kworker 
-processes?  In particular, were they USB-2 or USB-3?  (The dmesg log for 
-when the devices were first attached can answer these questions.)
+Sorry, but no to doing this.  If a user actually wants to do this then they need to
+use something like a device tree overlay.  The only reason to make such a change
+is because the external hardware connected to those pins has changed.
+The person making that hardware change should be describing the hardware
+that is sitting on those DAC and GPIO lines.
 
-As far as I know, there is no way for the kernel to work around this 
-problem.  Preventing the controller from going into runtime suspend is 
-probably the best solution.
+It may seem overly restrictive and I appreciate that quick routes are handy for
+makers etc, but there are standard ways of supporting such hardware configurability.
+If those do not meet your requirements it is those standard ways that should be
+improved, not adding a custom hack for a specific driver.
 
-Perhaps Mathias (the xhci-hcd maintainer) will have more suggestions.
+Jonathan
 
-Alan Stern
+
+> 
+> To increase the flexibility, we use module parameters for the user specifying the desired setting without modifying the acpi/dt.
+> However, during ad5593r_probe() function, the state structure in ad5592r-base has not been created. 
+> Since the other module ad5592r is also dependent on ad5592r-base, we try to keep the compatibility for both ad5592r/ad5593r as 
+> possible. So we export a function ad5592r_update_default_channel_modes to catch the settings and store in the global variable 
+> as the buffer. And the it can keep the original process flow until the module intent to allocate the channel modes.
+> 
+> If the user manually probe the module without specifying the parameters the module will keep the original flow: Read from acpi/dt as
+> the channel mode setting.
+> 
+> ==============================================================================
+> > +       if (strlen(ch_mode) != AD559XR_CHANNEL_NR)  
+> 
+> This is interesting...
+> 
+> ---
+> 
+> => William:  
+> My thought is to prevent the typing error. If the length of the input parameter is not matching the number of channels, we can ignore it.
+> Is that a weird way to do it?
+> 
+> ==============================================================================
+> > +                       pr_err("%s: invalid(%c) in index(%d)\n",
+> > +                               __func__, new_mode[idx], idx);  
+> 
+> Oh...
+> 
+> ---
+> 
+> => William  
+> 
+> Maybe it is more appropriate not to show this message, doesn't it?
+> 
+> ==============================================================================
+> > +               if (kstrtou8(tmp, 10, &new_ch_modes[AD559XR_CHANNEL_NR 
+> > + - idx - 1])) {  
+> 
+> Shadowing errors?
+> 
+> ---
+> 
+> => William  
+> 
+> In the prototype of kstrtou8, it will return int to indicate this function is successful or not.
+> I just want to make sure all the translations from string to integer are correct.
+> 
+> ==============================================================================
+> 
+> For the others, I'll fix these.
+> 
+> Thanks again and please kindly give me your advice if any.
+> 
+> Best regards,
+> 
+> William Sung
+> Phone: +886-2-2792-7818 ext: 7644
+> Advantech Co., Ltd.
+> 
+o
+
