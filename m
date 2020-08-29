@@ -2,99 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C117F2565AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 09:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6017E2565BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 10:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgH2HsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 03:48:04 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54852 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgH2HsC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 03:48:02 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C36621C0B80; Sat, 29 Aug 2020 09:47:59 +0200 (CEST)
-Date:   Sat, 29 Aug 2020 09:47:58 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Raul E Rangel <rrangel@chromium.org>
-Cc:     linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        Shirish.S@amd.com, Andy Shevchenko <andy@infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        "Lee, Chun-Yi" <jlee@suse.com>, Rajat Jain <rajatja@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: Re: [PATCH 1/2] Input: i8042 - Prevent intermixing i8042 commands
-Message-ID: <20200829074758.GA16838@amd>
-References: <20200827135205.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+        id S1727875AbgH2IFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 04:05:36 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:28059 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727111AbgH2IFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 29 Aug 2020 04:05:32 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTPS id 07T84e5w028045
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 29 Aug 2020 16:04:40 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sat, 29 Aug 2020 16:04:43 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <njavali@marvell.com>, <GR-QLogic-Storage-Upstream@marvell.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] scsi: qla2xxx: Fix the return value
+Date:   Sat, 29 Aug 2020 15:57:46 +0800
+Message-ID: <20200829075746.19166-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="BXVAT5kNtrzKuDFl"
-Content-Disposition: inline
-In-Reply-To: <20200827135205.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 07T84e5w028045
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A negative error code should be returned.
 
---BXVAT5kNtrzKuDFl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ drivers/scsi/qla2xxx/qla_target.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu 2020-08-27 13:52:22, Raul E Rangel wrote:
-> The i8042_mutex must be held by writers of the AUX and KBD ports, as
-> well as users of i8042_command. There were a lot of users of
-> i8042_command that were not calling i8042_lock_chip/i8042_unlock_chip.
-> This resulted in i8042_commands being issues in between PS/2
-> transactions.
->=20
-> This change moves the mutex lock into i8042_command and removes the
-> burden of locking the mutex from the callers.
->=20
-> It is expected that the i8042_mutex is locked before calling
-> i8042_aux_write or i8042_kbd_write. This is currently done by the PS/2
-> layer via ps2_begin_command and ps2_end_command. Other modules
-> (serio_raw) do not currently lock the mutex, so there is still a
-> possibility for intermixed commands.
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index fbb80a043..612e001cc 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -3781,7 +3781,7 @@ int qlt_abort_cmd(struct qla_tgt_cmd *cmd)
+ 		    "multiple abort. %p transport_state %x, t_state %x, "
+ 		    "se_cmd_flags %x\n", cmd, cmd->se_cmd.transport_state,
+ 		    cmd->se_cmd.t_state, cmd->se_cmd.se_cmd_flags);
+-		return EIO;
++		return -EIO;
+ 	}
+ 	cmd->aborted = 1;
+ 	cmd->trc_flags |= TRC_ABORT;
+-- 
+2.17.1
 
-
-> @@ -343,10 +330,14 @@ int i8042_command(unsigned char *param, int command)
->  	unsigned long flags;
->  	int retval;
-> =20
-> +	mutex_lock(&i8042_mutex);
-> +
->  	spin_lock_irqsave(&i8042_lock, flags);
->  	retval =3D __i8042_command(param, command);
->  	spin_unlock_irqrestore(&i8042_lock, flags);
-> =20
-> +	 mutex_unlock(&i8042_mutex);
-> +
->  	return retval;
-
-There's something wrong with whitespace here. Checkpatch?
-									Pavel
-								=09
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---BXVAT5kNtrzKuDFl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9KCC4ACgkQMOfwapXb+vLRLQCZAVRSNB7AWmLMpShfbIqQb9g7
-e2kAn0k5vjeRzWluElrV5q2QcU+nhqJy
-=TVRR
------END PGP SIGNATURE-----
-
---BXVAT5kNtrzKuDFl--
