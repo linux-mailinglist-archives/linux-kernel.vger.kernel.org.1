@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579552566EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883862566F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 29 Aug 2020 12:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgH2Kyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 06:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727772AbgH2KvT (ORCPT
+        id S1728117AbgH2K4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 06:56:23 -0400
+Received: from forward105p.mail.yandex.net ([77.88.28.108]:43743 "EHLO
+        forward105p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728070AbgH2Kx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 06:51:19 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85ADCC061236
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 03:51:19 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u24so2975444oic.7
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 03:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KvyskJqqctuilg5K6B7ivW/tu8NbcRZlLPbLA094dgs=;
-        b=exJz/odPOJBlb6JQhv+k4ICurPyWcyz3F0V/Sb2ul/zBgA0ZD1DTZ4CWAcdYPw5uzL
-         p91OWciSWz3Nu5cWlF/xqa6UceXdu+U9UMEWkLz6ArPKEE4M/becW43L+4Br4qC7tXlI
-         kTmke8jBft8pfa0j0MEdY3rg34T71TCtFp7B9eQYCLjgYmJhqUaoZhXtzDh60OBMEI8A
-         MoXMA21G+pNuDykXvCgnIyiQCL1x83spp1SgqiuVXj9Fkm2s3IRmyEmiXT8qbfm6UvSj
-         NIFZCaG45/sZPqop9b5zIWM+U05zOL6Xp9ctek3d4KQDh3LW9/r9ZJxmBjq/UKv3PqyG
-         IdBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KvyskJqqctuilg5K6B7ivW/tu8NbcRZlLPbLA094dgs=;
-        b=sXYKSM6a06kOXuCnU2RIG9EpCj5x3HNW8R5H1d5HeL3Y+M1TvDyjXGGVUtnaB5GUPR
-         zMR7eRP6TbVXWskfQaqwHf4xdcUWp1/fzw649BFqn3WSCFo7kGZAaJmuvl+gb2yuiz0B
-         eiZdYAMQ/XTKVNn6/wX+aQMqnnK0lWyEtY6wbFcQLTA18/h4H632eUgFborilGE2dnK8
-         pNncpc6am00aFZMFfPKfELLx/UnAAKnzj/h628RH4WVK8IeU6nKtT3roYU+3ourh6fmH
-         7oWx7G+cDqJ1pW9W6y5AQKJQ2r/YuMYdKbSu0TkwWYzRlRIenZ1DtRu0l6jgYQuSs6td
-         w4AA==
-X-Gm-Message-State: AOAM531x1mDAMOd2mY3cQEL9weuPC/6hSv2p0zu6kFRME5SurCJ7IiC/
-        kbt45rxlxIsrOiDZ0rzxKeT8Y6Ysqpw=
-X-Google-Smtp-Source: ABdhPJyCLhFARiJbhB6bpXQ4eSLxJUJuxwU3Sn/yV2brgqBH1q0H6A1ngQdPzXRO+EwmIBTeUsQbSQ==
-X-Received: by 2002:aca:afc3:: with SMTP id y186mr1655045oie.94.1598698278470;
-        Sat, 29 Aug 2020 03:51:18 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g4sm490635otq.33.2020.08.29.03.51.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 29 Aug 2020 03:51:17 -0700 (PDT)
-Date:   Sat, 29 Aug 2020 03:51:16 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joerg.roedel@amd.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: Re: [PATCH] kernel.h: Silence sparse warning in lower_32_bits
-Message-ID: <20200829105116.GA246533@roeck-us.net>
-References: <20200828071125.GA18772@gondor.apana.org.au>
+        Sat, 29 Aug 2020 06:53:59 -0400
+X-Greylist: delayed 7360 seconds by postgrey-1.27 at vger.kernel.org; Sat, 29 Aug 2020 06:53:31 EDT
+Received: from forward101q.mail.yandex.net (forward101q.mail.yandex.net [IPv6:2a02:6b8:c0e:4b:0:640:4012:bb98])
+        by forward105p.mail.yandex.net (Yandex) with ESMTP id C036A4D41A1A;
+        Sat, 29 Aug 2020 13:52:44 +0300 (MSK)
+Received: from mxback7q.mail.yandex.net (mxback7q.mail.yandex.net [IPv6:2a02:6b8:c0e:41:0:640:cbbf:d618])
+        by forward101q.mail.yandex.net (Yandex) with ESMTP id BAC61CF40002;
+        Sat, 29 Aug 2020 13:52:44 +0300 (MSK)
+Received: from vla1-00787b9b359d.qloud-c.yandex.net (vla1-00787b9b359d.qloud-c.yandex.net [2a02:6b8:c0d:2915:0:640:78:7b9b])
+        by mxback7q.mail.yandex.net (mxback/Yandex) with ESMTP id gCYnzgL8Ka-qh8iouRw;
+        Sat, 29 Aug 2020 13:52:44 +0300
+Received: by vla1-00787b9b359d.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id 8pPW436arS-qelORpTN;
+        Sat, 29 Aug 2020 13:52:42 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Yaroslav Bolyukin <iam@lach.pw>
+To:     ja@ssi.bg
+Cc:     iam@lach.pw, Wensong Zhang <wensong@linux-vs.org>,
+        Simon Horman <horms@verge.net.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+Subject: [PATCHv4 net-next] Remove ipvs v6 dependency on iptables
+Date:   Sat, 29 Aug 2020 15:51:37 +0500
+Message-Id: <20200829105136.3533-1-iam@lach.pw>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <alpine.LFD.2.23.451.2008291233110.3043@ja.home.ssi.bg>
+References: <alpine.LFD.2.23.451.2008291233110.3043@ja.home.ssi.bg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828071125.GA18772@gondor.apana.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 05:11:25PM +1000, Herbert Xu wrote:
-> I keep getting sparse warnings in crypto such as:
-> 
+This dependency was added because ipv6_find_hdr was in iptables specific
+code but is no longer required
 
-This patch results in the following compile error when compiling 
-ppc:mpc85xx_defconfig.
-
-Error log:
-In file included from ./include/linux/list.h:9,
-                 from ./include/linux/module.h:12,
-                 from drivers/dma/fsldma.c:23:
-drivers/dma/fsldma.h: In function 'fsl_ioread64':
-./include/linux/kernel.h:189:37: error: invalid operands to binary & (have 'const u64 *' {aka 'const long long unsigned int *'} and 'unsigned int')
-  189 | #define lower_32_bits(n) ((u32)((n) & 0xffffffff))
-      |                                     ^
-drivers/dma/fsldma.h:208:17: note: in expansion of macro 'lower_32_bits'
-  208 |  u32 fsl_addr = lower_32_bits(addr);
-      |                 ^~~~~~~~~~~~~
-drivers/dma/fsldma.h: In function 'fsl_ioread64be':
-./include/linux/kernel.h:189:37: error: invalid operands to binary & (have 'const u64 *' {aka 'const long long unsigned int *'} and 'unsigned int')
-  189 | #define lower_32_bits(n) ((u32)((n) & 0xffffffff))
-      |                                     ^
-drivers/dma/fsldma.h:222:17: note: in expansion of macro 'lower_32_bits'
-  222 |  u32 fsl_addr = lower_32_bits(addr);
-      |                 ^~~~~~~~~~~~~
-make[2]: *** [drivers/dma/fsldma.o] Error 1
-
-Bisct log attached.
-
-Guenter
-
+Fixes: f8f626754ebe ("ipv6: Move ipv6_find_hdr() out of Netfilter code.")
+Fixes: 63dca2c0b0e7 ("ipvs: Fix faulty IPv6 extension header handling in IPVS").
+Signed-off-by: Yaroslav Bolyukin <iam@lach.pw>
 ---
-# bad: [4d41ead6ead97c3730bbd186a601a64828668f01] Merge tag 'block-5.9-2020-08-28' of git://git.kernel.dk/linux-block
-# good: [15bc20c6af4ceee97a1f90b43c0e386643c071b4] Merge tag 'tty-5.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
-git bisect start 'HEAD' '15bc20c6af4c'
-# good: [5ec06b5c0d259a8c7c4376b121b2f62dfbfe57ef] Merge tag 'drm-fixes-2020-08-28' of git://anongit.freedesktop.org/drm/drm
-git bisect good 5ec06b5c0d259a8c7c4376b121b2f62dfbfe57ef
-# bad: [326e311b849426a95cac0149406efb2bbd13fa65] Merge tag 'pm-5.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-git bisect bad 326e311b849426a95cac0149406efb2bbd13fa65
-# good: [e30942859030199dab5ad73f95faac226133c639] Merge tag 'writeback_for_v5.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/jack/linux-fs
-git bisect good e30942859030199dab5ad73f95faac226133c639
-# bad: [96d454cd2c1668010406ea4c28ab915bcbb747f4] Merge tag 'arm64-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
-git bisect bad 96d454cd2c1668010406ea4c28ab915bcbb747f4
-# good: [e9ee186bb735bfc17fa81dbc9aebf268aee5b41e] KVM: arm64: Add kvm_extable for vaxorcism code
-git bisect good e9ee186bb735bfc17fa81dbc9aebf268aee5b41e
-# good: [71a7f8cb1ca4ca7214a700b1243626759b6c11d4] KVM: arm64: Set HCR_EL2.PTW to prevent AT taking synchronous exception
-git bisect good 71a7f8cb1ca4ca7214a700b1243626759b6c11d4
-# bad: [ef91bb196b0db1013ef8705367bc2d7944ef696b] kernel.h: Silence sparse warning in lower_32_bits
-git bisect bad ef91bb196b0db1013ef8705367bc2d7944ef696b
-# first bad commit: [ef91bb196b0db1013ef8705367bc2d7944ef696b] kernel.h: Silence sparse warning in lower_32_bits
+ include/net/ip_vs.h        | 3 ---
+ net/netfilter/ipvs/Kconfig | 1 -
+ 2 files changed, 4 deletions(-)
+
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index 9a59a3378..d609e957a 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -25,9 +25,6 @@
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>			/* for struct ipv6hdr */
+ #include <net/ipv6.h>
+-#if IS_ENABLED(CONFIG_IP_VS_IPV6)
+-#include <linux/netfilter_ipv6/ip6_tables.h>
+-#endif
+ #if IS_ENABLED(CONFIG_NF_CONNTRACK)
+ #include <net/netfilter/nf_conntrack.h>
+ #endif
+diff --git a/net/netfilter/ipvs/Kconfig b/net/netfilter/ipvs/Kconfig
+index 2c1593089..eb0e329f9 100644
+--- a/net/netfilter/ipvs/Kconfig
++++ b/net/netfilter/ipvs/Kconfig
+@@ -29,7 +29,6 @@ if IP_VS
+ config	IP_VS_IPV6
+ 	bool "IPv6 support for IPVS"
+ 	depends on IPV6 = y || IP_VS = IPV6
+-	select IP6_NF_IPTABLES
+ 	select NF_DEFRAG_IPV6
+ 	help
+ 	  Add IPv6 support to IPVS.
+--
+2.28.0
+
