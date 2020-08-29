@@ -2,181 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2A1256ACE
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 01:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EA5256ACF
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 01:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgH2Xs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 19:48:28 -0400
-Received: from smtprelay0085.hostedemail.com ([216.40.44.85]:45620 "EHLO
+        id S1728585AbgH2Xt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 19:49:59 -0400
+Received: from smtprelay0010.hostedemail.com ([216.40.44.10]:56316 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728448AbgH2XsZ (ORCPT
+        by vger.kernel.org with ESMTP id S1728095AbgH2Xt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 19:48:25 -0400
+        Sat, 29 Aug 2020 19:49:59 -0400
 Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 051B818011173;
-        Sat, 29 Aug 2020 23:48:24 +0000 (UTC)
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 3E5A7837F24A;
+        Sat, 29 Aug 2020 23:49:58 +0000 (UTC)
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:973:988:989:1260:1311:1314:1345:1437:1515:1535:1544:1605:1711:1730:1747:1777:1792:1801:1981:2194:2199:2393:2559:2562:2693:2914:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:6261:7875:8603:8660:10004:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12438:12555:12895:12986:13148:13230:13894:14096:14181:14394:14721:21080:21451:21627:21795:21939:21990:30034:30051:30054:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:24,LUA_SUMMARY:none
-X-HE-Tag: meat18_150665a27082
-X-Filterd-Recvd-Size: 5110
-Received: from joe-laptop.perches.com (unknown [47.151.133.149])
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3622:3866:3867:3868:3870:3871:3872:3874:4321:5007:10004:10400:11026:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:21080:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: shock04_2e0f26127082
+X-Filterd-Recvd-Size: 1596
+Received: from XPS-9350.home (unknown [47.151.133.149])
         (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 29 Aug 2020 23:48:22 +0000 (UTC)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 29 Aug 2020 23:49:56 +0000 (UTC)
+Message-ID: <461dfa640ae8e98b92ad82b6a5fbef843351d129.camel@perches.com>
+Subject: Re: [PATCH] sysfs: Add sysfs_emit to replace sprintf to PAGE_SIZE
+ buffers.
 From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To:     Denis Efremov <efremov@linux.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
         "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
         Julia Lawall <julia.lawall@inria.fr>,
         Alex Dewar <alex.dewar90@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V2] sysfs: Add sysfs_emit and sysfs_emit_at to format sysfs output
-Date:   Sat, 29 Aug 2020 16:48:20 -0700
-Message-Id: <a9054fb521e65f2809671fa9c18e2453061e9d91.1598744610.git.joe@perches.com>
-X-Mailer: git-send-email 2.26.0
+Date:   Sat, 29 Aug 2020 16:49:55 -0700
+In-Reply-To: <31462501-a1fc-7470-ce7c-70e7bd9c0d96@linux.com>
+References: <a96cdf07cd136d06c3cc1e10eb884caa7498ba72.1598654887.git.joe@perches.com>
+         <c77e83a0-7587-3e07-81cb-6b185d1ce6aa@linux.com>
+         <fe4de2e9f0a492e66b870cddbadb820e3459cc7a.camel@perches.com>
+         <31462501-a1fc-7470-ce7c-70e7bd9c0d96@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Output defects can exist in sysfs content using sprintf and snprintf.
+On Sun, 2020-08-30 at 00:53 +0300, Denis Efremov wrote:
+> > Anyway, this will need updating, likely with better examples.
+[]
+> I think it's good to reflect in docs that sysfs_emit_at/sysfs_emit_pos is
+> only for "legacy" code and should not be used in new code (checkpatch.pl warning?)
+> because of sysfs design principles.
 
-sprintf does not know the PAGE_SIZE maximum of the temporary buffer
-used for outputting sysfs content and it's possible to overrun the
-PAGE_SIZE buffer length.
+sysfs_emit_at is also used for arrays.
 
-Add a generic sysfs_emit function that knows that the size of the
-temporary buffer and ensures that no overrun is done.
-
-Add a generic sysfs_emit_at function that can be used in multiple
-call situations that also ensures that no overrun is done.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
-
-V2: Simplify sysfs_emit and add sysfs_emit_at
-    Include Documentation change
-
- Documentation/filesystems/sysfs.rst |  8 ++---
- fs/sysfs/file.c                     | 49 +++++++++++++++++++++++++++++
- include/linux/sysfs.h               | 15 +++++++++
- 3 files changed, 67 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/filesystems/sysfs.rst b/Documentation/filesystems/sysfs.rst
-index ab0f7795792b..d44249050f4a 100644
---- a/Documentation/filesystems/sysfs.rst
-+++ b/Documentation/filesystems/sysfs.rst
-@@ -242,12 +242,10 @@ Other notes:
-   is 4096.
- 
- - show() methods should return the number of bytes printed into the
--  buffer. This is the return value of scnprintf().
-+  buffer.
- 
--- show() must not use snprintf() when formatting the value to be
--  returned to user space. If you can guarantee that an overflow
--  will never happen you can use sprintf() otherwise you must use
--  scnprintf().
-+- show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-+  the value to be returned to user space.
- 
- - store() should return the number of bytes used from the buffer. If the
-   entire buffer has been used, just return the count argument.
-diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-index eb6897ab78e7..e8c6d20bab8e 100644
---- a/fs/sysfs/file.c
-+++ b/fs/sysfs/file.c
-@@ -707,3 +707,52 @@ int sysfs_change_owner(struct kobject *kobj, kuid_t kuid, kgid_t kgid)
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(sysfs_change_owner);
-+
-+/**
-+ *	sysfs_emit - scnprintf equivalent, aware of PAGE_SIZE buffer.
-+ *	@buf:	start of PAGE_SIZE buffer.
-+ *	@fmt:	format
-+ *	@...:	optional arguments to @format
-+ *
-+ *
-+ * Returns number of characters written to @buf.
-+ */
-+int sysfs_emit(char *buf, const char *fmt, ...)
-+{
-+	va_list args;
-+	int len;
-+
-+	va_start(args, fmt);
-+	len = vscnprintf(buf, PAGE_SIZE, fmt, args);
-+	va_end(args);
-+
-+	return len;
-+}
-+EXPORT_SYMBOL_GPL(sysfs_emit);
-+
-+/**
-+ *	sysfs_emit_at - scnprintf equivalent, aware of PAGE_SIZE buffer.
-+ *	@buf:	start of PAGE_SIZE buffer.
-+ *	@at:	offset in @buf to start write in bytes
-+ *		@at must be >= 0 && < PAGE_SIZE
-+ *	@fmt:	format
-+ *	@...:	optional arguments to @fmt
-+ *
-+ *
-+ * Returns number of characters written starting at &@buf[@at].
-+ */
-+int sysfs_emit_at(char *buf, int at, const char *fmt, ...)
-+{
-+	va_list args;
-+	int len;
-+
-+	if (WARN(at < 0 || at >= PAGE_SIZE, "invalid sysfs_emit_at: %d\n", at))
-+		return 0;
-+
-+	va_start(args, fmt);
-+	len = vscnprintf(buf + at, PAGE_SIZE - at, fmt, args);
-+	va_end(args);
-+
-+	return len;
-+}
-+EXPORT_SYMBOL_GPL(sysfs_emit_at);
-diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
-index 34e84122f635..2caa34c1ca1a 100644
---- a/include/linux/sysfs.h
-+++ b/include/linux/sysfs.h
-@@ -329,6 +329,10 @@ int sysfs_groups_change_owner(struct kobject *kobj,
- int sysfs_group_change_owner(struct kobject *kobj,
- 			     const struct attribute_group *groups, kuid_t kuid,
- 			     kgid_t kgid);
-+__printf(2, 3)
-+int sysfs_emit(char *buf, const char *fmt, ...);
-+__printf(3, 4)
-+int sysfs_emit_at(char *buf, int at, const char *fmt, ...);
- 
- #else /* CONFIG_SYSFS */
- 
-@@ -576,6 +580,17 @@ static inline int sysfs_group_change_owner(struct kobject *kobj,
- 	return 0;
- }
- 
-+__printf(2, 3)
-+static inline int sysfs_emit(char *buf, const char *fmt, ...)
-+{
-+	return 0;
-+}
-+
-+__printf(3, 4)
-+static inline int sysfs_emit_at(char *buf, int at, const char *fmt, ...)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_SYSFS */
- 
- static inline int __must_check sysfs_create_file(struct kobject *kobj,
--- 
-2.26.0
 
