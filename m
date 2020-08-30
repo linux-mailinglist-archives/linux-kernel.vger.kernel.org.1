@@ -2,313 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9AEF256E4D
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C32256E57
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgH3OCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 10:02:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbgH3Nzo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 09:55:44 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC2C061573;
-        Sun, 30 Aug 2020 06:55:43 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id w14so3151749eds.0;
-        Sun, 30 Aug 2020 06:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=umfmLmNNJO0eXLZG8554MCglAf/keGt1So/6N/p4gkw=;
-        b=cbVBoZnmwM50n7/f20PgwmCmzNur94mcrKwOgrHBHUGEIZv4DY4BucoYRDICKTUCZk
-         VRKrCltTQ8ued8Rol8UNQVuenhDGt7FSkw8Qw6mWZA0WS8Zb6OFuGz/QdWdf9jVRi7pP
-         zi6ZItEDYR3mB7ISK7mg05lhhGmG+bFI16aJ9a5gksyMWgEOmXzfbxULaFbTkFP8rz3R
-         KtPbYc/U27Wq1QYZ7zx5GUAUb1ELheeoyRG3edksXajrHhnFH9HpaOc2n3cdWb4XHv1+
-         k3e2PITnKmSNdgcqVEe4pMVToXL6N8CxRrToJek+YOjEFAWW3Zn/MKusYVNxlyDzfJsJ
-         XhxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=umfmLmNNJO0eXLZG8554MCglAf/keGt1So/6N/p4gkw=;
-        b=ArRvW3Y95l+7lKOqsSvoVGOhFMMi3GGD4i/k7BhdmB6QCqmW0MaI4AS1qOvKtSAG7q
-         T7wAM8Q0hiylUnG+QLrV1sfzFY0C2rMp1lTz3gHh0bqm4gpK/j0fcl/x4itiIZ6XmykO
-         0uYpWWaPuU3HyGzJH62zQXml9G6Sh7o5jI7Kq0cL9Z8CmQaLb2lATQkJ4hGbU8DVemok
-         s5Gj8ybEV9YDTK/nD8XUC34N6Oc+HeMWt+mWWYd303xG+VTjqybwDh2jiRElH7mtxrDH
-         HIv73Pf+/UCsLpWh8vafgcPGNcokWHHumCin8IQrt3Sliq34eK6Z8RyBQufOJaD1tA+M
-         kOGg==
-X-Gm-Message-State: AOAM5325xiB7sddQhr7hJ+IKunZBKj/ZsCGKe0eWa1hljnMq3jMOKUgs
-        KoKMib5CTWtcMZlp4ZAN7ZlMpk0FrNKiCA==
-X-Google-Smtp-Source: ABdhPJwCuaIdHcjbII7/bHG6vEKshkdxw4H7/wmILrqEgrMpWQ6vTVTl/t/Dm2laa2Gt8XL9hmpGPA==
-X-Received: by 2002:a50:c909:: with SMTP id o9mr7317865edh.148.1598795732808;
-        Sun, 30 Aug 2020 06:55:32 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f23:5700:b849:b64c:7fd2:8e54? (p200300ea8f235700b849b64c7fd28e54.dip0.t-ipconnect.de. [2003:ea:8f23:5700:b849:b64c:7fd2:8e54])
-        by smtp.googlemail.com with ESMTPSA id oz4sm5171057ejb.106.2020.08.30.06.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Aug 2020 06:55:32 -0700 (PDT)
-Subject: Re: fsl_espi errors on v5.7.15
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "paulus@samba.org" <paulus@samba.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-References: <42107721-614b-96e8-68d9-4b888206562e@alliedtelesis.co.nz>
- <1020029e-4cb9-62ba-c6d6-e6b9bdf93aac@gmail.com>
- <1598510348.1g7wt0s02s.astroid@bobo.none>
- <0068446e-06f8-6648-2f40-56f324c1ee6e@alliedtelesis.co.nz>
- <1598788275.m90vz24p6x.astroid@bobo.none>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <d1a61e61-d101-e8ce-0fa1-ff4fb60ee654@gmail.com>
-Date:   Sun, 30 Aug 2020 15:55:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1598788275.m90vz24p6x.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726134AbgH3OGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 10:06:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgH3OBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 10:01:43 -0400
+Received: from localhost (unknown [70.37.104.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4332B206FA;
+        Sun, 30 Aug 2020 14:01:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598796103;
+        bh=GrKjwqbB36PFlv+VL52hfanxgYYv7g3LAQMJiKNqP/w=;
+        h=Date:From:To:To:To:Cc:Cc:Cc:Subject:In-Reply-To:References:From;
+        b=uOB3n3GKWoKVKWYRTVqqnjOp2qLuWQDzW5mmE0x7mph9frOBGx1euNBwGDZtShsQl
+         u4wTsiXJrj4eyWLPYYRbn+GmoWjX0PMXV1NbH3EpDrGLLIViAEzeiXL6jTZ2C8znuE
+         331VErKe0UhREDfYDnpJctj0/dfZ0C8qySQxkkPM=
+Date:   Sun, 30 Aug 2020 14:01:42 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     <stable@vger.kernel.org>
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] fat: Avoid oops when bdi->io_pages==0
+In-Reply-To: <87ft85osn6.fsf@mail.parknet.co.jp>
+References: <87ft85osn6.fsf@mail.parknet.co.jp>
+Message-Id: <20200830140143.4332B206FA@mail.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2020 14:30, Nicholas Piggin wrote:
-> Excerpts from Chris Packham's message of August 28, 2020 8:07 am:
->> On 27/08/20 7:12 pm, Nicholas Piggin wrote:
->>> Excerpts from Heiner Kallweit's message of August 26, 2020 4:38 pm:
->>>> On 26.08.2020 08:07, Chris Packham wrote:
->>>>> On 26/08/20 1:48 pm, Chris Packham wrote:
->>>>>> On 26/08/20 10:22 am, Chris Packham wrote:
->>>>>>> On 25/08/20 7:22 pm, Heiner Kallweit wrote:
->>>>>>>
->>>>>>> <snip>
->>>>>>>> I've been staring at spi-fsl-espi.c for while now and I think I've
->>>>>>>>> identified a couple of deficiencies that may or may not be related
->>>>>>>>> to my
->>>>>>>>> issue.
->>>>>>>>>
->>>>>>>>> First I think the 'Transfer done but SPIE_DON isn't set' message
->>>>>>>>> can be
->>>>>>>>> generated spuriously. In fsl_espi_irq() we read the ESPI_SPIE
->>>>>>>>> register.
->>>>>>>>> We also write back to it to clear the current events. We re-read it in
->>>>>>>>> fsl_espi_cpu_irq() and complain when SPIE_DON is not set. But we can
->>>>>>>>> naturally end up in that situation if we're doing a large read.
->>>>>>>>> Consider
->>>>>>>>> the messages for reading a block of data from a spi-nor chip
->>>>>>>>>
->>>>>>>>>     tx = READ_OP + ADDR
->>>>>>>>>     rx = data
->>>>>>>>>
->>>>>>>>> We setup the transfer and pump out the tx_buf. The first interrupt
->>>>>>>>> goes
->>>>>>>>> off and ESPI_SPIE has SPIM_DON and SPIM_RXT set. We empty the rx fifo,
->>>>>>>>> clear ESPI_SPIE and wait for the next interrupt. The next interrupt
->>>>>>>>> fires and this time we have ESPI_SPIE with just SPIM_RXT set. This
->>>>>>>>> continues until we've received all the data and we finish with
->>>>>>>>> ESPI_SPIE
->>>>>>>>> having only SPIM_RXT set. When we re-read it we complain that SPIE_DON
->>>>>>>>> isn't set.
->>>>>>>>>
->>>>>>>>> The other deficiency is that we only get an interrupt when the
->>>>>>>>> amount of
->>>>>>>>> data in the rx fifo is above FSL_ESPI_RXTHR. If there are fewer than
->>>>>>>>> FSL_ESPI_RXTHR left to be received we will never pull them out of
->>>>>>>>> the fifo.
->>>>>>>>>
->>>>>>>> SPIM_DON will trigger an interrupt once the last characters have been
->>>>>>>> transferred, and read the remaining characters from the FIFO.
->>>>>>> The T2080RM that I have says the following about the DON bit
->>>>>>>
->>>>>>> "Last character was transmitted. The last character was transmitted
->>>>>>> and a new command can be written for the next frame."
->>>>>>>
->>>>>>> That does at least seem to fit with my assertion that it's all about
->>>>>>> the TX direction. But the fact that it doesn't happen all the time
->>>>>>> throws some doubt on it.
->>>>>>>
->>>>>>>> I think the reason I'm seeing some variability is because of how fast
->>>>>>>>> (or slow) the interrupts get processed and how fast the spi-nor
->>>>>>>>> chip can
->>>>>>>>> fill the CPUs rx fifo.
->>>>>>>>>
->>>>>>>> To rule out timing issues at high bus frequencies I initially asked
->>>>>>>> for re-testing at lower frequencies. If you e.g. limit the bus to 1 MHz
->>>>>>>> or even less, then timing shouldn't be an issue.
->>>>>>> Yes I've currently got spi-max-frequency = <1000000>; in my dts. I
->>>>>>> would also expect a slower frequency would fit my "DON is for TX"
->>>>>>> narrative.
->>>>>>>> Last relevant functional changes have been done almost 4 years ago.
->>>>>>>> And yours is the first such report I see. So question is what could
->>>>>>>> be so
->>>>>>>> special with your setup that it seems you're the only one being
->>>>>>>> affected.
->>>>>>>> The scenarios you describe are standard, therefore much more people
->>>>>>>> should be affected in case of a driver bug.
->>>>>>> Agreed. But even on my hardware (which may have a latent issue
->>>>>>> despite being in the field for going on 5 years) the issue only
->>>>>>> triggers under some fairly specific circumstances.
->>>>>>>> You said that kernel config impacts how frequently the issue happens.
->>>>>>>> Therefore question is what's the diff in kernel config, and how could
->>>>>>>> the differences be related to SPI.
->>>>>>> It did seem to be somewhat random. Things like CONFIG_PREEMPT have an
->>>>>>> impact but every time I found something that seemed to be having an
->>>>>>> impact I've been able to disprove it. I actually think its about how
->>>>>>> busy the system is which may or may not affect when we get round to
->>>>>>> processing the interrupts.
->>>>>>>
->>>>>>> I have managed to get the 'Transfer done but SPIE_DON isn't set!' to
->>>>>>> occur on the T2080RDB.
->>>>>>>
->>>>>>> I've had to add the following to expose the environment as a mtd
->>>>>>> partition
->>>>>>>
->>>>>>> diff --git a/arch/powerpc/boot/dts/fsl/t208xrdb.dtsi
->>>>>>> b/arch/powerpc/boot/dts/fsl/t208xrdb.dtsi
->>>>>>> index ff87e67c70da..fbf95fc1fd68 100644
->>>>>>> --- a/arch/powerpc/boot/dts/fsl/t208xrdb.dtsi
->>>>>>> +++ b/arch/powerpc/boot/dts/fsl/t208xrdb.dtsi
->>>>>>> @@ -116,6 +116,15 @@ flash@0 {
->>>>>>>                                  compatible = "micron,n25q512ax3",
->>>>>>> "jedec,spi-nor";
->>>>>>>                                  reg = <0>;
->>>>>>>                                  spi-max-frequency = <10000000>; /*
->>>>>>> input clock */
->>>>>>> +
->>>>>>> +                               partition@u-boot {
->>>>>>> +                                        reg = <0x00000000 0x00100000>;
->>>>>>> +                                        label = "u-boot";
->>>>>>> +                                };
->>>>>>> +                                partition@u-boot-env {
->>>>>>> +                                        reg = <0x00100000 0x00010000>;
->>>>>>> +                                        label = "u-boot-env";
->>>>>>> +                                };
->>>>>>>                          };
->>>>>>>                  };
->>>>>>>
->>>>>>> And I'm using the following script to poke at the environment
->>>>>>> (warning if anyone does try this and the bug hits it can render your
->>>>>>> u-boot environment invalid).
->>>>>>>
->>>>>>> cat flash/fw_env_test.sh
->>>>>>> #!/bin/sh
->>>>>>>
->>>>>>> generate_fw_env_config()
->>>>>>> {
->>>>>>>    cat /proc/mtd | sed 's/[:"]//g' | while read dev size erasesize
->>>>>>> name ; do
->>>>>>>       echo "$dev $size $erasesize $name"
->>>>>>>       [ "$name" = "u-boot-env" ] && echo "/dev/$dev 0x0000 0x2000
->>>>>>> $erasesize" >/flash/fw_env.config
->>>>>>>    done
->>>>>>> }
->>>>>>>
->>>>>>> cycles=10
->>>>>>> [ $# -ge 1 ] && cycles=$1
->>>>>>>
->>>>>>> generate_fw_env_config
->>>>>>>
->>>>>>> fw_printenv -c /flash/fw_env.config
->>>>>>>
->>>>>>> dmesg -c >/dev/null
->>>>>>> x=0
->>>>>>> while [ $x -lt $cycles ]; do
->>>>>>>      fw_printenv -c /flash/fw_env.config >/dev/null || break
->>>>>>>      fw_setenv -c /flash/fw_env.config foo $RANDOM || break;
->>>>>>>      dmesg -c | grep -q fsl_espi && break;
->>>>>>>      let x=x+1
->>>>>>> done
->>>>>>>
->>>>>>> echo "Ran $x cycles"
->>>>>> I've also now seen the RX FIFO not empty error on the T2080RDB
->>>>>>
->>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
->>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
->>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
->>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
->>>>>> fsl_espi ffe110000.spi: Transfer done but rx/tx fifo's aren't empty!
->>>>>> fsl_espi ffe110000.spi: SPIE_RXCNT = 1, SPIE_TXCNT = 32
->>>>>>
->>>>>> With my current workaround of emptying the RX FIFO. It seems
->>>>>> survivable. Interestingly it only ever seems to be 1 extra byte in the
->>>>>> RX FIFO and it seems to be after either a READ_SR or a READ_FSR.
->>>>>>
->>>>>> fsl_espi ffe110000.spi: tx 70
->>>>>> fsl_espi ffe110000.spi: rx 03
->>>>>> fsl_espi ffe110000.spi: Extra RX 00
->>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
->>>>>> fsl_espi ffe110000.spi: Transfer done but rx/tx fifo's aren't empty!
->>>>>> fsl_espi ffe110000.spi: SPIE_RXCNT = 1, SPIE_TXCNT = 32
->>>>>> fsl_espi ffe110000.spi: tx 05
->>>>>> fsl_espi ffe110000.spi: rx 00
->>>>>> fsl_espi ffe110000.spi: Extra RX 03
->>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
->>>>>> fsl_espi ffe110000.spi: Transfer done but rx/tx fifo's aren't empty!
->>>>>> fsl_espi ffe110000.spi: SPIE_RXCNT = 1, SPIE_TXCNT = 32
->>>>>> fsl_espi ffe110000.spi: tx 05
->>>>>> fsl_espi ffe110000.spi: rx 00
->>>>>> fsl_espi ffe110000.spi: Extra RX 03
->>>>>>
->>>>>>  From all the Micron SPI-NOR datasheets I've got access to it is
->>>>>> possible to continually read the SR/FSR. But I've no idea why it
->>>>>> happens some times and not others.
->>>>> So I think I've got a reproduction and I think I've bisected the problem
->>>>> to commit 3282a3da25bd ("powerpc/64: Implement soft interrupt replay in
->>>>> C"). My day is just finishing now so I haven't applied too much scrutiny
->>>>> to this result. Given the various rabbit holes I've been down on this
->>>>> issue already I'd take this information with a good degree of skepticism.
->>>>>
->>>> OK, so an easy test should be to re-test with a 5.4 kernel.
->>>> It doesn't have yet the change you're referring to, and the fsl-espi driver
->>>> is basically the same as in 5.7 (just two small changes in 5.7).
->>> There's 6cc0c16d82f88 and maybe also other interrupt related patches
->>> around this time that could affect book E, so it's good if that exact
->>> patch is confirmed.
->>
->> My confirmation is basically that I can induce the issue in a 5.4 kernel 
->> by cherry-picking 3282a3da25bd. I'm also able to "fix" the issue in 
->> 5.9-rc2 by reverting that one commit.
->>
->> I both cases it's not exactly a clean cherry-pick/revert so I also 
->> confirmed the bisection result by building at 3282a3da25bd (which sees 
->> the issue) and the commit just before (which does not).
-> 
-> Thanks for testing, that confirms it well.
-> 
-> [snip patch]
-> 
->> I still saw the issue with this change applied. PPC_IRQ_SOFT_MASK_DEBUG 
->> didn't report anything (either with or without the change above).
-> 
-> Okay, it was a bit of a shot in the dark. I still can't see what
-> else has changed.
-> 
-> What would cause this, a lost interrupt? A spurious interrupt? Or
-> higher interrupt latency?
-> 
-> I don't think the patch should cause significantly worse latency,
-> (it's supposed to be a bit better if anything because it doesn't set
-> up the full interrupt frame). But it's possible.
-> 
-> Thanks,
-> Nick
-> 
+Hi
 
-As additional background:
-When I refactored and extended the fsl-espi driver my test device was
-a P1014-based WiFi router (running at 800MHz CPU clock). I still use it
-and operate the SPI NOR (s25fl128s) at 50MHz in dual read mode
-(with a 4.9 kernel). I never had a problem. 
-If the issue now occurs on a system with most likely faster CPU and at
-a much lower SPI bus frequency, then something must have a significant
-impact on interrupt performance. However I can't say exactly which kind
-of interrupt issue should cause the SPI issue we see.
+[This is an automated email]
 
-Heiner
+This commit has been processed because it contains a -stable tag.
+The stable tag indicates that it's relevant for the following trees: all
+
+The bot has tested the following trees: v5.8.5, v5.4.61, v4.19.142, v4.14.195, v4.9.234, v4.4.234.
+
+v5.8.5: Build OK!
+v5.4.61: Failed to apply! Possible dependencies:
+    898310032b96 ("fat: improve the readahead for FAT entries")
+    a090a5a7d73f ("fat: fix fat_ra_init() for data clusters == 0")
+
+v4.19.142: Failed to apply! Possible dependencies:
+    898310032b96 ("fat: improve the readahead for FAT entries")
+    a090a5a7d73f ("fat: fix fat_ra_init() for data clusters == 0")
+
+v4.14.195: Failed to apply! Possible dependencies:
+    898310032b96 ("fat: improve the readahead for FAT entries")
+    a090a5a7d73f ("fat: fix fat_ra_init() for data clusters == 0")
+    f663b5b38fff ("fat: add FITRIM ioctl for FAT file system")
+
+v4.9.234: Failed to apply! Possible dependencies:
+    898310032b96 ("fat: improve the readahead for FAT entries")
+    a090a5a7d73f ("fat: fix fat_ra_init() for data clusters == 0")
+    f663b5b38fff ("fat: add FITRIM ioctl for FAT file system")
+
+v4.4.234: Failed to apply! Possible dependencies:
+    898310032b96 ("fat: improve the readahead for FAT entries")
+    8992de4cec12 ("fat: constify fatent_operations structures")
+    a090a5a7d73f ("fat: fix fat_ra_init() for data clusters == 0")
+    f663b5b38fff ("fat: add FITRIM ioctl for FAT file system")
+
+
+NOTE: The patch will not be queued to stable trees until it is upstream.
+
+How should we proceed with this patch?
+
+-- 
+Thanks
+Sasha
