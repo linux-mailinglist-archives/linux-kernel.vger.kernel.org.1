@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038BF256F22
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 17:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E578256F24
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 17:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgH3PdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 11:33:22 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:42776 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726804AbgH3P2B (ORCPT
+        id S1727986AbgH3Pde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 11:33:34 -0400
+Received: from smtprelay0126.hostedemail.com ([216.40.44.126]:42808 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727957AbgH3PcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 11:28:01 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from moshe@mellanox.com)
-        with SMTP; 30 Aug 2020 18:27:57 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (dev-l-vrt-135.mtl.labs.mlnx [10.234.135.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 07UFRvwB029676;
-        Sun, 30 Aug 2020 18:27:57 +0300
-Received: from dev-l-vrt-135.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Debian-10) with ESMTP id 07UFRv3Q027855;
-        Sun, 30 Aug 2020 18:27:57 +0300
-Received: (from moshe@localhost)
-        by dev-l-vrt-135.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 07UFRvUp027854;
-        Sun, 30 Aug 2020 18:27:57 +0300
-From:   Moshe Shemesh <moshe@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>
-Subject: [PATCH net-next RFC v3 13/14] net/mlx5: Add support for devlink reload action fw activate no reset
-Date:   Sun, 30 Aug 2020 18:27:33 +0300
-Message-Id: <1598801254-27764-14-git-send-email-moshe@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
-References: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
+        Sun, 30 Aug 2020 11:32:21 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 8F66818009132;
+        Sun, 30 Aug 2020 15:32:05 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2525:2553:2566:2682:2685:2828:2859:2892:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3867:3868:3870:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4385:5007:6119:6742:7903:9012:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12679:12740:12760:12895:12903:13069:13072:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21324:21433:21451:21611:21627:21819:21990:30003:30012:30022:30025:30054:30055:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: vest59_190bab027088
+X-Filterd-Recvd-Size: 2726
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 30 Aug 2020 15:32:02 +0000 (UTC)
+Message-ID: <1d7c6ef2794bedca7e3164e5435f46864eacddfa.camel@perches.com>
+Subject: Re: [PATCH v6 2/3] MAINTAINERS: Add Purism Librem 5 section to the
+ list
+From:   Joe Perches <joe@perches.com>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     robh@kernel.org, kernel@puri.sm, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        mchehab@kernel.org, Anson.Huang@nxp.com, agx@sigxcpu.org,
+        angus@akkea.ca, broonie@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Sun, 30 Aug 2020 08:32:01 -0700
+In-Reply-To: <20200830131459.GL32096@dragon>
+References: <20200821121755.24599-1-martin.kepplinger@puri.sm>
+         <20200821121755.24599-2-martin.kepplinger@puri.sm>
+         <20200830131459.GL32096@dragon>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for devlink reload action fw_activation_no_reset which does
-firmware live patching, updating the firmware image without reset.
-The driver checks if the firmware is capable of handling the pending
-firmware changes as a live patch. If it is then it triggers firmware
-live patching flow.
+On Sun, 2020-08-30 at 21:15 +0800, Shawn Guo wrote:
+> On Fri, Aug 21, 2020 at 02:17:54PM +0200, Martin Kepplinger wrote:
+> > Add development information for the devicetree files for hardware
+> > by Purism SPC.
+> > 
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> 
+> I decided to drop this patch from my queue, as I took the suggestion
+> from Joe and sent a patch to have get_maintainer report email address
+> in the dts file.
 
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
----
-v2 -> v3:
-- Replace fw_live_patch action by fw_activate_no_reset
-v1 -> v2:
-- Have fw_live_patch action instead of level
----
- .../net/ethernet/mellanox/mlx5/core/devlink.c | 32 ++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+It's OK to find maintainers in files, but what about the
+B: bug reporting and T: source code repository location lines,
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-index ea759bb2a120..bfdd3499f428 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -115,6 +115,29 @@ static int mlx5_devlink_reload_fw_activate(struct devlink *devlink, struct netli
- 	return err;
- }
- 
-+static int mlx5_devlink_trigger_fw_live_patch(struct devlink *devlink,
-+					      struct netlink_ext_ack *extack)
-+{
-+	struct mlx5_core_dev *dev = devlink_priv(devlink);
-+	u8 reset_level;
-+	int err;
-+
-+	err = mlx5_reg_mfrl_query(dev, &reset_level, NULL);
-+	if (err)
-+		return err;
-+	if (!(reset_level & MLX5_MFRL_REG_RESET_LEVEL0)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "FW upgrade to the stored FW can't be done by FW live patching");
-+		return -EINVAL;
-+	}
-+
-+	err = mlx5_fw_set_live_patch(dev);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
- static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
- 				    enum devlink_reload_action action,
- 				    struct netlink_ext_ack *extack)
-@@ -127,6 +150,8 @@ static int mlx5_devlink_reload_down(struct devlink *devlink, bool netns_change,
- 		return 0;
- 	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
- 		return mlx5_devlink_reload_fw_activate(devlink, extack);
-+	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE_NO_RESET:
-+		return mlx5_devlink_trigger_fw_live_patch(devlink, extack);
- 	default:
- 		/* Unsupported action should not get to this function */
- 		WARN_ON(1);
-@@ -150,6 +175,10 @@ static int mlx5_devlink_reload_up(struct devlink *devlink, enum devlink_reload_a
- 		if (actions_done)
- 			*actions_done = BIT(action) | BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
- 		break;
-+	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE_NO_RESET:
-+		if (actions_done)
-+			*actions_done = BIT(action);
-+		break;
- 	default:
- 		/* Unsupported action should not get to this function */
- 		WARN_ON(1);
-@@ -173,7 +202,8 @@ static const struct devlink_ops mlx5_devlink_ops = {
- 	.flash_update = mlx5_devlink_flash_update,
- 	.info_get = mlx5_devlink_info_get,
- 	.supported_reload_actions = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
--				    BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE),
-+				    BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE) |
-+				    BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE_NO_RESET),
- 	.reload_down = mlx5_devlink_reload_down,
- 	.reload_up = mlx5_devlink_reload_up,
- };
--- 
-2.17.1
+Those seem useful.
+
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> > @@ -14061,6 +14061,13 @@ T:	git git://linuxtv.org/media_tree.git
+> >  F:	Documentation/admin-guide/media/pulse8-cec.rst
+> >  F:	drivers/media/cec/usb/pulse8/
+> >  
+> > +PURISM LIBREM 5
+> > +M:	Purism Kernel Team <kernel@puri.sm>
+
+People feel like their mails go into a void when no
+responses happen after sending to nameless addresses.
+
+It's better to have a named individual as a maintainer
+rather than an unspecified exploder address.
+
+It's OK to have both, but just the exploder doesn't
+really have that much value as it's faceless.
+
+> > +S:	Supported
+> > +B:	https://source.puri.sm/Librem5/linux-next/issues
+> > +T:	https://source.puri.sm/Librem5/linux-next
+
+This T: line should be something else.
+
+Perhaps
+W;	https://source.puri.sm/Librem5/linux-next
+T:	git https://source.puri.sm/Librem5/linux-next.git
+
+> > +F:	arch/arm64/boot/dts/freescale/imx8mq-librem5*
+
 
