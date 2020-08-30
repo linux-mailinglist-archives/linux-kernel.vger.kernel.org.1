@@ -2,104 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADC2257030
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 21:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A412F257037
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 21:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgH3TkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 15:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgH3TkP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 15:40:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF93BC061573;
-        Sun, 30 Aug 2020 12:40:14 -0700 (PDT)
-Date:   Sun, 30 Aug 2020 19:40:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598816412;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P+QkKGJqi66MJvVsgqogvBcjvDMtj7fL4LKp25gqKqU=;
-        b=z319s3C2oq2y18ZxGXttdkUKyXeRiIcbkJ/tcSCcBuymOWY2NgRLpAcR3ZkeTIKjYoMMp4
-        hw3Gnt+O8pcuJK8oRSsGRw/PKgwtSFv6h+5BLtq0Aa54+x3HNLmuU/bBderY0cFNb7zO4R
-        09yElgtOi3eH8b+Tna+AEziuwoZ3jiHjaHX7UXK9NWW787ZibPOtAGMwAbiU/MT39YhERd
-        qdAs8WWeVOBW+KyFBoRBIUNqjwnu5RYaj8xurxIljuwoNv50tUEATk8FRj5uPDCXF1A2Zb
-        ayfPAAJfXJTNU/NwaLBOC/J9D01yk4SSax6TcBdR3xVMS8ZFzjQ3PD9vJBCTYw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598816412;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P+QkKGJqi66MJvVsgqogvBcjvDMtj7fL4LKp25gqKqU=;
-        b=Tgq1aTVk4135cAgihD9ASk4JZuVsSjtUdxzEl+Pj22b14lQ+ebvai567WZkhZsSGTyn5zx
-        w2OxFf+UeFk/pvDA==
-From:   "tip-bot2 for Kyung Min Park" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cpu] x86/cpufeatures: Enumerate TSX suspend load address
- tracking instructions
-Cc:     Kyung Min Park <kyung.min.park@intel.com>,
-        Cathy Zhang <cathy.zhang@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1598316478-23337-2-git-send-email-cathy.zhang@intel.com>
-References: <1598316478-23337-2-git-send-email-cathy.zhang@intel.com>
+        id S1726485AbgH3Tmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 15:42:44 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:48000 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726155AbgH3Tmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 15:42:36 -0400
+Received: from p508fca7b.dip0.t-ipconnect.de ([80.143.202.123] helo=phil.fritz.box)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kCTDk-0002KX-MM; Sun, 30 Aug 2020 21:42:32 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Suniel Mahesh <sunil@amarulasolutions.com>,
+        devicetree@vger.kernel.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: rockchip: Fix power routing to support POE
+Date:   Sun, 30 Aug 2020 21:42:26 +0200
+Message-Id: <159881654154.22245.1792882618820762854.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200818184505.30064-1-jagan@amarulasolutions.com>
+References: <20200818184505.30064-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-Message-ID: <159881641150.20229.2207709091919187438.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cpu branch of tip:
+On Wed, 19 Aug 2020 00:15:05 +0530, Jagan Teki wrote:
+> When POE used, the current power routing is failing to power-up
+> the PMIC regulators which cause Linux boot hangs.
+> 
+> This patch is trying to update the power routing in order to
+> support Type C0 and POE powering methods.
+> 
+> As per the schematics, sys_12v is a common output power regulator
+> when type c and POE power being used. sys_12v is supplied by dc_12v
+> which is supplied from MP8859 in type c0 power routing and sys_12v
+> is supplied by MP8009 PoE PD in POE power supply routing.
 
-Commit-ID:     18ec63faefb3fd311822556cd9b949f66b1eecee
-Gitweb:        https://git.kernel.org/tip/18ec63faefb3fd311822556cd9b949f66b1eecee
-Author:        Kyung Min Park <kyung.min.park@intel.com>
-AuthorDate:    Tue, 25 Aug 2020 08:47:57 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sun, 30 Aug 2020 17:43:40 +02:00
+Applied, thanks!
 
-x86/cpufeatures: Enumerate TSX suspend load address tracking instructions
+[1/1] arm64: dts: rockchip: Fix power routing to support POE on rk3399-roc-pc
+      commit: bd77d0ad7a698f5e04edf02328d11e808a71d87c
 
-Intel TSX suspend load tracking instructions aim to give a way to choose
-which memory accesses do not need to be tracked in the TSX read set. Add
-TSX suspend load tracking CPUID feature flag TSXLDTRK for enumeration.
-
-A processor supports Intel TSX suspend load address tracking if
-CPUID.0x07.0x0:EDX[16] is present. Two instructions XSUSLDTRK, XRESLDTRK
-are available when this feature is present.
-
-The CPU feature flag is shown as "tsxldtrk" in /proc/cpuinfo.
-
-Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-Signed-off-by: Cathy Zhang <cathy.zhang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/1598316478-23337-2-git-send-email-cathy.zhang@intel.com
----
- arch/x86/include/asm/cpufeatures.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 2901d5d..83fc9d3 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -368,6 +368,7 @@
- #define X86_FEATURE_MD_CLEAR		(18*32+10) /* VERW clears CPU buffers */
- #define X86_FEATURE_TSX_FORCE_ABORT	(18*32+13) /* "" TSX_FORCE_ABORT */
- #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
-+#define X86_FEATURE_TSXLDTRK		(18*32+16) /* TSX Suspend Load Address Tracking */
- #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
- #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
- #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
