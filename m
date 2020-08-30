@@ -2,208 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AF8256FFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 21:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3149256FFE
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 21:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgH3TL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 15:11:57 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54128 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726178AbgH3TL5 (ORCPT
+        id S1726453AbgH3TOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 15:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbgH3TOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 15:11:57 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6A0CE258;
-        Sun, 30 Aug 2020 21:11:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598814713;
-        bh=fel0reShl8gyxHac+/RDk7fZq+macGvIPWGmYF2KvpI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nNDmHo8Njma2Cg5b6MZJDWkkayMD+7XR2NTBLh8vbW6FREhHNg44gWKvRWkwOCDx8
-         vwCNZg7U9sTxsRIbAbb/q21RWvS+0oJFMADArVTp2dd8EGL4b29Y8W6pXN7oXrvR5V
-         BHPfAl6SAy/bnHwTZkkDjW1sDO4mfG5IlaWufAyY=
-Date:   Sun, 30 Aug 2020 22:11:33 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     =?utf-8?B?5L2V5bCP6b6Z?= <Leon.He@unisoc.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Noralf Tronnes <noralf@tronnes.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, od@zcrc.me,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: =?utf-8?B?562U5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v2 6/6]
- drm/panel: Add Ilitek ILI9341 DBI panel driver
-Message-ID: <20200830191133.GB6043@pendragon.ideasonboard.com>
-References: <20200822163250.63664-1-paul@crapouillou.net>
- <20200822163250.63664-7-paul@crapouillou.net>
- <edf38d68214247f486db3cc1f81ec404@shmbx04.spreadtrum.com>
- <COYVFQ.2IA7KFB6BF4C3@crapouillou.net>
+        Sun, 30 Aug 2020 15:14:10 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7C5C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 12:14:08 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id y17so2315348lfa.8
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 12:14:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Er/ysSVLApe2TafEStK5jwZq09OdahrxrGqPS35wwr8=;
+        b=GHOBSZXpJijEPNTKQ8ip7rst1gs6ib2mzalcShPJ2zz+tyN8t6TLNogGTIHdkl2GlB
+         FyUAUtx6GX9Zyf4/Vb/UIIMvqKysRtZpkBcFMXtlkrAY9Q4I6/EaPC8aUta/VcIgBGsH
+         PZlmmf806jora7Nx+2D/M4ta6UGtD2aZOizdY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Er/ysSVLApe2TafEStK5jwZq09OdahrxrGqPS35wwr8=;
+        b=RD0wlELOt4k1HThtD8JQQWk+m1aYTo+XETkRt+PfYVK/eI+A7mTTP8IKJqMbeXocO2
+         YZ5EAbnDk4lV5+Af5FEhHd+pV5i1gw/2sBjYtnLaj7jHhBTK9VPcYaEN6nUaVhmso5ht
+         mjVnO3D83nYEQQEISUXVSh10Rn2fhZl4q9WBX+4ONNBmCOm4DIktLKc6jFApUqQBAq0W
+         o/Ks8pCANWl+gI/3M/9CqDBuzKS+2vdnZLTFHLVIMfXFPWIwo68TV8gW07zFfRwlyZSA
+         lBE7X+cC4ZLsWnsF6GmtIClQkAtNqf5HkXi6SPzZdXV4dlC11ayyeiOG/kxb4+vB0A0w
+         64Fw==
+X-Gm-Message-State: AOAM533PMLSWvCjveibATVK53ijFrhGe7CC1dkwXuwUQmWvH04Lhnih/
+        7GY2hwwcUyOM0GV03JHeCHs3Y0PctRt5GA==
+X-Google-Smtp-Source: ABdhPJz1mvZJd88D9R3pg6pssW8voKAo+FVypicPFdwN3SiErARS1mZEG57fJ9nEq06H1cyLJoD+9w==
+X-Received: by 2002:a19:5214:: with SMTP id m20mr3333725lfb.138.1598814846748;
+        Sun, 30 Aug 2020 12:14:06 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id g19sm1103100ljn.91.2020.08.30.12.14.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Aug 2020 12:14:06 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id r13so4328076ljm.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 12:14:05 -0700 (PDT)
+X-Received: by 2002:a05:651c:219:: with SMTP id y25mr2806066ljn.314.1598814845525;
+ Sun, 30 Aug 2020 12:14:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <COYVFQ.2IA7KFB6BF4C3@crapouillou.net>
+References: <159881061564.27993.11909051048930389391.tglx@nanos> <159881061925.27993.10669865438175129325.tglx@nanos>
+In-Reply-To: <159881061925.27993.10669865438175129325.tglx@nanos>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 30 Aug 2020 12:13:49 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj16dFx2Mx1oO2oxhJjAmsaPOqLcGvEGb86-z+v5iu5tw@mail.gmail.com>
+Message-ID: <CAHk-=wj16dFx2Mx1oO2oxhJjAmsaPOqLcGvEGb86-z+v5iu5tw@mail.gmail.com>
+Subject: Re: [GIT pull] x86/urgent for v5.9-rc2
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Sun, Aug 30, 2020 at 11:04 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>    The historical inconsistent for_each_cpu() behaviour of
+>    ignoring the cpumask and unconditionally claiming that CPU0 is in the
+>    mask struck again. Sigh.
 
-On Sun, Aug 30, 2020 at 06:48:12PM +0200, Paul Cercueil wrote:
-> Le dim. 30 août 2020 à 16:36, 何小龙 (Leon He) a écrit :
-> >>  +struct ili9341 {
-> >>  +       struct drm_panel panel;
-> >>  +       struct mipi_dsi_device *dsi;
-> >>  +       const struct ili9341_pdata *pdata;
-> >>  +
-> >>  +       struct gpio_desc        *reset_gpiod;
-> >>  +       u32 rotation;
-> >>  +};
-> >>  +
-> > 
-> > Hi Paul, you put the mipi_dsi_device inside the struct. I think it 
-> > maybe not
-> > a good idea. That means the panel has a MIPI-DSI interface but it 
-> > doesn't
-> > have actually.
-> > 
-> >>  +static int ili9341_probe(struct mipi_dsi_device *dsi)
-> >>  +{
-> >>  +       struct device *dev = &dsi->dev;
-> >>  +       struct ili9341 *priv;
-> >>  +       int ret;
-> >>  +
-> >>  +       /* See comment for mipi_dbi_spi_init() */
-> >>  +       if (!dev->coherent_dma_mask) {
-> >>  +               ret = dma_coerce_mask_and_coherent(dev, 
-> >> DMA_BIT_MASK(32));
-> >>  +               if (ret) {
-> >>  +                       dev_warn(dev, "Failed to set dma mask 
-> >> %d\n", ret);
-> >>  +                       return ret;
-> >>  +               }
-> >>  +       }
-> >>  +
-> >>  +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> >>  +       if (!priv)
-> >>  +               return -ENOMEM;
-> >>  +
-> >>  +       mipi_dsi_set_drvdata(dsi, priv);
-> >>  +       priv->dsi = dsi;
-> >>  +
-> >>  +       device_property_read_u32(dev, "rotation", &priv->rotation);
-> >>  +
-> >>  +       priv->pdata = device_get_match_data(dev);
-> >>  +       if (!priv->pdata)
-> >>  +               return -EINVAL;
-> >>  +
-> >>  +       drm_panel_init(&priv->panel, dev, &ili9341_funcs,
-> >>  +                      DRM_MODE_CONNECTOR_DPI);
-> >>  +
-> >>  +       priv->reset_gpiod = devm_gpiod_get(dev, "reset", 
-> >> GPIOD_OUT_HIGH);
-> >>  +       if (IS_ERR(priv->reset_gpiod)) {
-> >>  +               dev_err(dev, "Couldn't get our reset GPIO\n");
-> >>  +               return PTR_ERR(priv->reset_gpiod);
-> >>  +       }
-> >>  +
-> >>  +       ret = drm_panel_of_backlight(&priv->panel);
-> >>  +       if (ret < 0) {
-> >>  +               if (ret != -EPROBE_DEFER)
-> >>  +                       dev_err(dev, "Failed to get backlight 
-> >> handle\n");
-> >>  +               return ret;
-> >>  +       }
-> >>  +
-> >>  +       drm_panel_add(&priv->panel);
-> >>  +
-> >>  +       dsi->bus_type = priv->pdata->bus_type;
-> >>  +       dsi->lanes = priv->pdata->lanes;
-> >>  +       dsi->format = MIPI_DSI_FMT_RGB565;
-> >>  +
-> >>  +       ret = mipi_dsi_attach(dsi);
-> >>  +       if (ret) {
-> >>  +               dev_err(dev, "Failed to attach DSI panel\n");
-> >>  +               goto err_panel_remove;
-> >>  +       }
-> >>  +
-> >>  +       ret = mipi_dsi_maybe_register_tiny_driver(dsi);
-> >>  +       if (ret) {
-> >>  +               dev_err(dev, "Failed to init TinyDRM driver\n");
-> >>  +               goto err_mipi_dsi_detach;
-> >>  +       }
-> >>  +
-> >>  +       return 0;
-> >>  +
-> >>  +err_mipi_dsi_detach:
-> >>  +       mipi_dsi_detach(dsi);
-> >>  +err_panel_remove:
-> >>  +       drm_panel_remove(&priv->panel);
-> >>  +       return ret;
-> >>  +}
-> >>  +
-> >>  +static int ili9341_remove(struct mipi_dsi_device *dsi)
-> >>  +{
-> >>  +       struct ili9341 *priv = mipi_dsi_get_drvdata(dsi);
-> >>  +
-> >>  +       mipi_dsi_detach(dsi);
-> >>  +       drm_panel_remove(&priv->panel);
-> >>  +
-> >>  +       drm_panel_disable(&priv->panel);
-> >>  +       drm_panel_unprepare(&priv->panel);
-> >>  +
-> >>  +       return 0;
-> >>  +}
-> >>  +
-> >>  +static const struct ili9341_pdata yx240qv29_pdata = {
-> >>  +       .mode = { DRM_SIMPLE_MODE(240, 320, 37, 49) },
-> >>  +       .width_mm = 0, // TODO
-> >>  +       .height_mm = 0, // TODO
-> >>  +       .bus_type = MIPI_DCS_BUS_TYPE_DBI_SPI_C3,
-> >>  +       .lanes = 1,
-> >>  +};
-> >>  +
-> >>  +static const struct of_device_id ili9341_of_match[] = {
-> >>  +       { .compatible = "adafruit,yx240qv29", .data = 
-> >> &yx240qv29_pdata },
-> >>  +       { }
-> >>  +};
-> >>  +MODULE_DEVICE_TABLE(of, ili9341_of_match);
-> >>  +
-> >>  +static struct mipi_dsi_driver ili9341_dsi_driver = {
-> >>  +       .probe          = ili9341_probe,
-> >>  +       .remove         = ili9341_remove,
-> >>  +       .driver = {
-> >>  +               .name           = "ili9341-dsi",
-> >>  +               .of_match_table = ili9341_of_match,
-> >>  +       },
-> >>  +};
-> >>  +module_mipi_dsi_driver(ili9341_dsi_driver);
-> > 
-> > Again, you treat this driver as a mipi dsi driver but for a MIPI-DBI 
-> > (I8080/SPI)
-> > panel device. That will make developers confused.
-> > 
-> > Is it possible to just add a mipi_dbi_driver for I8080/SPI interface 
-> > panel?
-> > Thanks!
-> 
-> Please read the cover letter, it explains why it's done this way. The 
-> whole point of this patchset is to merge DSI and DBI frameworks in a 
-> way that can be maintained.
+I guess we could remove the UP optimizations these days. It's not like
+they matter like they used to.
 
-I think this proves the point that the proposed naming is confusing. At
-least a rename would be required.
+Or leave the optimizations in the sense that they wouldn't do the
+crazy bit searching, but they could look at bit 0 of the mask they're
+passed..
 
--- 
-Regards,
-
-Laurent Pinchart
+              Linus
