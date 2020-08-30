@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5257256CB0
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 09:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17781256CB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 09:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgH3HyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 03:54:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbgH3HyF (ORCPT
+        id S1728647AbgH3H6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 03:58:25 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:5992 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726201AbgH3H6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 03:54:05 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1378C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 00:54:04 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id h4so2910194ejj.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 00:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ohDVHll9uNXquWg/6LUDMQsitXnSxjQWS4MTv84+k88=;
-        b=QBuiYpmuSQYBHZAZ/Jw90PmwEpkYyjbmSDHyKKMSCvR+m5CDksZFiIlevVBV9sWL/4
-         MP+Zax0lFrV/IHMEUdh4dUAHlzjeDQLkUkR0u8Y6sXFQoIN0VHVZpdYdUheaDZJGlpjm
-         8sE0aB9CECoGkPE1b9MzbVkl73XJMvYbOt22NsLUUBjIH6kT/BMME1GgzWWMPT04oeiu
-         rhx2ANl/3qjBrRw4uNoq3y99SNpOpEC3qFSnEIqdb+Uagao8KnmQa0BqiJ9SQbRmi1Zf
-         JTNC+24bWm5BM2tzrhdSnVJCVbod5V5faiEJefafnudd/v0OvTrreWIBk/CcEc28UhQG
-         PXOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ohDVHll9uNXquWg/6LUDMQsitXnSxjQWS4MTv84+k88=;
-        b=lA6Wq55YlWJnC0PTS5fanYJHlzChrRglOXR65gfz4ksBzlGQiAiC/TN7/rK4J2hfS1
-         8IUhyrH64n/tIm2T4OuDiUz4c673xGTOhnoTW1Wy94yASgY90qPnSkjmKM1UuK1Lpb/L
-         qwWRVqMwP1uREpt9Mvllwfu7sW8CA9lvKAmyqnXRahtk5w8xEvOicDp5krFtj9Fu9Jqg
-         yVKpGFjLEN/wDf319k0DnVZ1buQzEQ7L7PqIYzO75HpV3oq/t+4ynRtbfP2jrezlc/Pq
-         FyEM2E9ebhDaiS47rHAUjN0fjYGHQ/Y1ERmRBCFhIg50p5jGBgB6UEbezyLlEHFm885I
-         8n6w==
-X-Gm-Message-State: AOAM533XUTC+WfdlaN5B2FNzwQnLrQ3Qd7qyuj9c2JC9z4T+7fa0ij9J
-        ImFQ35+R/IwzsU9VgZi8WGJjJrwEl8Z1o8UBuZClS3iX7EqbsA==
-X-Google-Smtp-Source: ABdhPJxJOKBGQIwl5zr92GkAxuJ/JNXh2osmS0VcZOhDmNUCHlcHZq1jn722dLnsh0dgRyK7pglsCsJpCWAKFf/1r+A=
-X-Received: by 2002:a17:906:bb06:: with SMTP id jz6mr6991256ejb.248.1598774042143;
- Sun, 30 Aug 2020 00:54:02 -0700 (PDT)
+        Sun, 30 Aug 2020 03:58:15 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07U7vS6c020180;
+        Sun, 30 Aug 2020 00:58:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pfpt0220;
+ bh=I3A0KA1wyS7iHQUoKaA7YtWH+cpiDkhdBB2gjle8NUE=;
+ b=lZL51OkAx9qHvRcGVFFD1caG/vcO5hE6g52FCcCdOjQIIQer/qDTCZ0lXJiJeY+VrCPj
+ FNXx8Q9nTZFwUiAVF06nDJEnLJJAJYns5SiwKnf4fxrXQHORaoa58tFXOorZd6syi6MU
+ BhKTC9tet0Ms+cbKacf8Ip2FO2CHeR/IoLxUlI7lzsSav9iTPutfNePpDfeQlqtiWgh4
+ Q7ZXawGFsnWEoZQ1GZMZQiLnnMbk9jJlgL0nkB8HrxCUf7SaGH5o6pQ6c9n2KyLRzVqf
+ Eh69H7DJY4SzM9zf5fUl4FbzOYwVFChGWwzOUPOxOvzbM9sNy3nPDyso0BKeLJd0c72y Dw== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0b-0016f401.pphosted.com with ESMTP id 337phpk5e4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 30 Aug 2020 00:58:08 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 30 Aug
+ 2020 00:58:07 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 30 Aug
+ 2020 00:58:05 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 30 Aug 2020 00:58:05 -0700
+Received: from [10.193.39.7] (NN-LT0019.marvell.com [10.193.39.7])
+        by maili.marvell.com (Postfix) with ESMTP id DF0693F704A;
+        Sun, 30 Aug 2020 00:58:02 -0700 (PDT)
+Subject: Re: [EXT] [PATCH] bnx2x: correct a mistake when show error code
+To:     Yi Li <yili@winhong.com>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <yilikernel@gmail.com>, <kuba@kernel.org>, <davem@davemloft.net>,
+        GR-everest-linux-l2 <GR-everest-linux-l2@marvell.com>,
+        "Sudarsana Reddy Kalluru" <skalluru@marvell.com>,
+        Ariel Elior <aelior@marvell.com>
+References: <20200829103637.1730050-1-yili@winhong.com>
+From:   Igor Russkikh <irusskikh@marvell.com>
+Message-ID: <3f42d243-dd35-f787-f123-9a2fcb5a9bc8@marvell.com>
+Date:   Sun, 30 Aug 2020 10:58:01 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101
+ Thunderbird/80.0
 MIME-Version: 1.0
-References: <cover.1598598459.git.zong.li@sifive.com> <3f1f693147f0b62f19f4a44b8e8ef3d5bde23352.1598598459.git.zong.li@sifive.com>
-In-Reply-To: <3f1f693147f0b62f19f4a44b8e8ef3d5bde23352.1598598459.git.zong.li@sifive.com>
-From:   Pekka Enberg <penberg@gmail.com>
-Date:   Sun, 30 Aug 2020 10:53:43 +0300
-Message-ID: <CAOJsxLHOvvt8WGQUynGkLxZCA4OQQ+KgxxJJD7s_iP8Pxf-Omg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] riscv: Set more data to cacheinfo
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        david.abdurachmanov@sifive.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200829103637.1730050-1-yili@winhong.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-29_15:2020-08-28,2020-08-29 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Fri, Aug 28, 2020 at 10:09 AM Zong Li <zong.li@sifive.com> wrote:
->
-> Set cacheinfo.{size,sets,line_size} for each cache node, then we can
-> get these information from userland through auxiliary vector.
->
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  arch/riscv/kernel/cacheinfo.c | 59 ++++++++++++++++++++++++++---------
->  1 file changed, 44 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/riscv/kernel/cacheinfo.c b/arch/riscv/kernel/cacheinfo.c
-> index bd0f122965c3..8b85abfbd77a 100644
-> --- a/arch/riscv/kernel/cacheinfo.c
-> +++ b/arch/riscv/kernel/cacheinfo.c
-> @@ -25,12 +25,46 @@ cache_get_priv_group(struct cacheinfo *this_leaf)
->         return NULL;
->  }
->
-> -static void ci_leaf_init(struct cacheinfo *this_leaf,
-> -                        struct device_node *node,
-> -                        enum cache_type type, unsigned int level)
-> +static void ci_leaf_init(struct cacheinfo *this_leaf, enum cache_type type,
-> +                        unsigned int level, unsigned int size,
-> +                        unsigned int sets, unsigned int line_size)
->  {
->         this_leaf->level = level;
->         this_leaf->type = type;
-> +       this_leaf->size = size;
-> +       this_leaf->number_of_sets = sets;
-> +       this_leaf->coherency_line_size = line_size;
-> +
-> +       /*
-> +        * If the cache is fully associative, there is no need to
-> +        * check the other properties.
-> +        */
-> +       if (!(sets == 1) && (sets > 0 && size > 0 && line_size > 0))
+>  drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c 
+> b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
+> index 1426c691c7c4..0346771396ce 100644
+> --- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
+> +++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c
+> @@ -13562,9 +13560,8 @@ static int bnx2x_ext_phy_common_init(struct bnx2x 
+> *bp, u32 shmem_base_path[],
+>  	}
+> 
+>  	if (rc)
+> -		netdev_err(bp->dev,  "Warning: PHY was not initialized,"
+> -				      " Port %d\n",
+> -			 0);
+> +		netdev_err(bp->dev, "Warning: PHY was not initialized, Port %d\n",
+> +			   rc);
+>  	return rc;
 
-Can you explain what this is attempting to do? AFAICT, the if
-expression can be reduced to "sets > 1 && size > 0 && size > 0", but
-what do you mean with the comment about fully associative caches?
+Hi Yi,
 
-> +               this_leaf->ways_of_associativity = (size / sets) / line_size;
-> +}
+Thanks, but if you want to report rc in this trace - then state "rc = %d"
+explicitly in the string. Because now its "Port %d" but you put error code in
+there...
+
+Thanks,
+   Igor
