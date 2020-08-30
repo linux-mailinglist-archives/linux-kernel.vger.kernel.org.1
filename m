@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E578256F24
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 17:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EE3256F2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 17:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgH3Pde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 11:33:34 -0400
-Received: from smtprelay0126.hostedemail.com ([216.40.44.126]:42808 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727957AbgH3PcV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 11:32:21 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 8F66818009132;
-        Sun, 30 Aug 2020 15:32:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2525:2553:2566:2682:2685:2828:2859:2892:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3865:3867:3868:3870:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4385:5007:6119:6742:7903:9012:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12679:12740:12760:12895:12903:13069:13072:13311:13357:13439:14096:14097:14181:14659:14721:14777:21080:21324:21433:21451:21611:21627:21819:21990:30003:30012:30022:30025:30054:30055:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: vest59_190bab027088
-X-Filterd-Recvd-Size: 2726
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 30 Aug 2020 15:32:02 +0000 (UTC)
-Message-ID: <1d7c6ef2794bedca7e3164e5435f46864eacddfa.camel@perches.com>
-Subject: Re: [PATCH v6 2/3] MAINTAINERS: Add Purism Librem 5 section to the
- list
-From:   Joe Perches <joe@perches.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, kernel@puri.sm, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        mchehab@kernel.org, Anson.Huang@nxp.com, agx@sigxcpu.org,
-        angus@akkea.ca, broonie@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Sun, 30 Aug 2020 08:32:01 -0700
-In-Reply-To: <20200830131459.GL32096@dragon>
-References: <20200821121755.24599-1-martin.kepplinger@puri.sm>
-         <20200821121755.24599-2-martin.kepplinger@puri.sm>
-         <20200830131459.GL32096@dragon>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1726508AbgH3Ph5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 11:37:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726023AbgH3Phw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 11:37:52 -0400
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D3A66208DB
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 15:37:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598801872;
+        bh=Ky8WZcvLA6RRhgL1u44QnF3iAcvOtIXT+Pxx/AL88xs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vbfkGqLLfy2DbjB/ExklgKrk5bLby4XxBr7haICm78qf4jr/56msMPDO+PDMkEZff
+         H3HgwGKuspVp0ACLXkVBjyMeIRixs5BxB7V65ro84b7L41Kpm9PCr2vDWmNZg7Y2XH
+         XQLGlWb+idXtRCV9x1ZZ2HCCMcNOAge/wStVHodg=
+Received: by mail-wr1-f54.google.com with SMTP id e16so3587995wrm.2
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 08:37:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531SKIVAVtMXQbWPqvKJb7sgbbrqlW35+moh5vuHusgl+cgUv48K
+        fC9LJzt6nTKdAC8jfiOZJwq7Wuq4VLLusRDnvgXDsg==
+X-Google-Smtp-Source: ABdhPJy1Cig6isTrNsU1CNS0leoIgn3n82Zq+tjXpbvFOUJMC2+LKOujy1Tw3sXuFDGsUypPl+Kmt+Q4EXdL9CY/A9M=
+X-Received: by 2002:a5d:6a47:: with SMTP id t7mr1252760wrw.75.1598801870331;
+ Sun, 30 Aug 2020 08:37:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <875z98jkof.fsf@nanos.tec.linutronix.de> <3babf003-6854-e50a-34ca-c87ce4169c77@citrix.com>
+ <20200825043959.GF15046@sjchrist-ice> <CALCETrUP1T2k3UzZMsXMfAD83xbYEG+nAv3a-LeBjNW+=ijJAg@mail.gmail.com>
+ <20200825171903.GA20660@sjchrist-ice> <CALCETrWy2x-RByfknjjKxRbE0LBPk2Ugj1d58xYHb91ogbfnvA@mail.gmail.com>
+ <20200826191644.GC21065@sjchrist-ice>
+In-Reply-To: <20200826191644.GC21065@sjchrist-ice>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 30 Aug 2020 08:37:39 -0700
+X-Gmail-Original-Message-ID: <CALCETrUwqka6M9wxkwFYvq-5Byi8JFiiPNRdYQRw3_2m1hXd0w@mail.gmail.com>
+Message-ID: <CALCETrUwqka6M9wxkwFYvq-5Byi8JFiiPNRdYQRw3_2m1hXd0w@mail.gmail.com>
+Subject: Re: TDX #VE in SYSCALL gap (was: [RFD] x86: Curing the exception and
+ syscall trainwreck in hardware)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pu Wen <puwen@hygon.cn>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sasha Levin <alexander.levin@microsoft.com>,
+        Dirk Hohndel <dirkhh@vmware.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+        "H. Peter Anvin" <hpa@linux.intel.com>,
+        Asit Mallick <asit.k.mallick@intel.com>,
+        Gordon Tetlow <gordon@tetlows.org>,
+        David Kaplan <David.Kaplan@amd.com>,
+        Tony Luck <tony.luck@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-08-30 at 21:15 +0800, Shawn Guo wrote:
-> On Fri, Aug 21, 2020 at 02:17:54PM +0200, Martin Kepplinger wrote:
-> > Add development information for the devicetree files for hardware
-> > by Purism SPC.
-> > 
-> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> 
-> I decided to drop this patch from my queue, as I took the suggestion
-> from Joe and sent a patch to have get_maintainer report email address
-> in the dts file.
+On Wed, Aug 26, 2020 at 12:16 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Tue, Aug 25, 2020 at 10:28:53AM -0700, Andy Lutomirski wrote:
+> > On Tue, Aug 25, 2020 at 10:19 AM Sean Christopherson
+> > <sean.j.christopherson@intel.com> wrote:
+> > > One thought would be to have the TDX module (thing that runs in SEAM and
+> > > sits between the VMM and the guest) provide a TDCALL (hypercall from guest
+> > > to TDX module) to the guest that would allow the guest to specify a very
+> > > limited number of GPAs that must never generate a #VE, e.g. go straight to
+> > > guest shutdown if a disallowed GPA would go pending.  That seems doable
+> > > from a TDX perspective without incurring noticeable overhead (assuming the
+> > > list of GPAs is very small) and should be easy to to support in the guest,
+> > > e.g. make a TDCALL/hypercall or two during boot to protect the SYSCALL
+> > > page and its scratch data.
+> >
+> > I guess you could do that, but this is getting gross.  The x86
+> > architecture has really gone off the rails here.
+>
+> Does it suck less than using an IST?  Honest question.
+>
+> I will add my voice to the "fix SYSCALL" train, but the odds of that getting
+> a proper fix in time to intercept TDX are not good.  On the other hand,
+> "fixing" the SYSCALL issue in the TDX module is much more feasible, but only
+> if we see real value in such an approach as opposed to just using an IST.  I
+> personally like the idea of a TDX module solution as I think it would be
+> simpler for the kernel to implement/support, and would mean we wouldn't need
+> to roll back IST usage for #VE if the heavens should part and bestow upon us
+> a sane SYSCALL.
 
-It's OK to find maintainers in files, but what about the
-B: bug reporting and T: source code repository location lines,
+There's no such thing as "just" using an IST.  Using IST opens a huge
+can of works due to its recursion issues.
 
-Those seem useful.
-
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-[]
-> > @@ -14061,6 +14061,13 @@ T:	git git://linuxtv.org/media_tree.git
-> >  F:	Documentation/admin-guide/media/pulse8-cec.rst
-> >  F:	drivers/media/cec/usb/pulse8/
-> >  
-> > +PURISM LIBREM 5
-> > +M:	Purism Kernel Team <kernel@puri.sm>
-
-People feel like their mails go into a void when no
-responses happen after sending to nameless addresses.
-
-It's better to have a named individual as a maintainer
-rather than an unspecified exploder address.
-
-It's OK to have both, but just the exploder doesn't
-really have that much value as it's faceless.
-
-> > +S:	Supported
-> > +B:	https://source.puri.sm/Librem5/linux-next/issues
-> > +T:	https://source.puri.sm/Librem5/linux-next
-
-This T: line should be something else.
-
-Perhaps
-W;	https://source.puri.sm/Librem5/linux-next
-T:	git https://source.puri.sm/Librem5/linux-next.git
-
-> > +F:	arch/arm64/boot/dts/freescale/imx8mq-librem5*
-
-
+The TDX module solution is utterly gross but may well suck less than
+using an IST.
