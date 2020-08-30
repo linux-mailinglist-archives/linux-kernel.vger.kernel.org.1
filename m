@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312C9256C8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 09:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DB5256C92
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 09:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgH3HYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 03:24:38 -0400
-Received: from zg8tmja5ljk3lje4mi4ymjia.icoremail.net ([209.97.182.222]:58880
-        "HELO zg8tmja5ljk3lje4mi4ymjia.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S1725934AbgH3HYh (ORCPT
+        id S1726490AbgH3H35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 03:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgH3H34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 03:24:37 -0400
-Received: from [166.111.139.123] (unknown [166.111.139.123])
-        by app-3 (Coremail) with SMTP id EQQGZQCHOSYnVEtfzRnPAA--.24490S2;
-        Sun, 30 Aug 2020 15:24:23 +0800 (CST)
-Subject: Re: [PATCH AUTOSEL 4.19 08/38] media: pci: ttpci: av7110: fix
- possible buffer overflow caused by bad DMA value in debiirq()
-To:     Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org
-References: <20200821161807.348600-1-sashal@kernel.org>
- <20200821161807.348600-8-sashal@kernel.org>
- <20200829121020.GA20944@duo.ucw.cz>
-From:   Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
-Message-ID: <a9c96d50-a4d1-29bf-3bb0-68c4f7cd4c10@tsinghua.edu.cn>
-Date:   Sun, 30 Aug 2020 15:24:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Sun, 30 Aug 2020 03:29:56 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9FEC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 00:29:55 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l17so1284291edq.12
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 00:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pvLwOF27u2HMyFoAOh2OBgXTpYXjzE8rGPa+77xJpBc=;
+        b=JL8LzWsJsirEeaoKaU30Dg0fcGAZgIGhHvcS0+J54+OtgE8m8Y55hpR0hxL2fIeIq3
+         ehREgGizEd7Hk1GhEwRw3gPQ3abRlIsn47Z75DQOugxwKThyLU2BPUgTF/S3AOFipPim
+         Ki1m+Lit/0NGdV2+LWFN44Bd8T6ym2tNGx6RcUWcViyJAml4CGrx6UOc60+rTVrBpeXB
+         p8Tn4FN7Oy+QP5jqSH0KtDVzKPhdZeOOWbO4fofybQjfhsrqmXEiXqp1aA/29cLO6pEV
+         PwQjXZ8Qcizs6QgpD34I05Cn3shWSNjjYFBm6TPlxqsDFgbrLygOCbNLHcYOvG0UFqfJ
+         XbpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pvLwOF27u2HMyFoAOh2OBgXTpYXjzE8rGPa+77xJpBc=;
+        b=GpIL0XANF9XtbylpvqR0MnvsOwFnFE4EaZb9OzKokQyfs1nmw8nEw/qKQFm0rE+6x8
+         bxri59Xa4tfP+Qfs+HBANd0pXB5wJLq5n5THKvNYLqIhzwMyXhOydT5udi2nsSR60xZp
+         QKjLwY0LC+b3uDFK4Fceee0TKgzjQ3nusUmYLkfBsJRWmB4HhDFYav64Yd5gcBeyQzDE
+         YJgFiEzJEqsoFRMZ5EHeTc76Nj4pv6CZZPy4nB1YQVSoW8mKvACLrysL8G+Vk/wo75Rc
+         UdBGWY3nVwgkYe9j+NMylf0RVoB1Z7BcWZJWawHm8EvtFxg34KFOvBXvXsZ8Xu8+u2c4
+         zjNA==
+X-Gm-Message-State: AOAM531rlwES2WiO7JaZ4ZITJgXMwg8A/JkNL1/nkYh4YHnPxIBafj75
+        MmL5jbeyBuwzVahtyjENjki6O9t7MDfACqhrv24=
+X-Google-Smtp-Source: ABdhPJzpjX/dvRAjzpvW+yv60CtJiWvJMVSrjPnUTdFXEodPoY1oZJcne4hW0niFp5o6pAXGQQ7YH9JxgEw82A8Lbqs=
+X-Received: by 2002:a05:6402:1210:: with SMTP id c16mr6354034edw.71.1598772593486;
+ Sun, 30 Aug 2020 00:29:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200829121020.GA20944@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: EQQGZQCHOSYnVEtfzRnPAA--.24490S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur4UWryrCFWkJr48tw1rCrg_yoW8Jw13pF
-        WIq3W0qFs5tF9IkrW2vrsFvaykAa4xJryDGwsrA34UArZ0gF1xCFWkJF4ru3ZYkF98ZayI
-        qF4Yq342gryqqaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvFb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
-        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-        xU7LvtDUUUU
-X-CM-SenderInfo: xedlyxhdmxq3pvlqwxlxdovvfxof0/
+References: <b91f2285-48b1-67bd-69b2-85fd9decafcf@infradead.org>
+In-Reply-To: <b91f2285-48b1-67bd-69b2-85fd9decafcf@infradead.org>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Sun, 30 Aug 2020 00:29:43 -0700
+Message-ID: <CAMo8BfLNFQ+kzK8JN=5mLAMFCMB722nWQ2qVbsei0oCrgT7=Fg@mail.gmail.com>
+Subject: Re: [PATCH trivial] xtensa: fix Kconfig typo
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>, Chris Zankel <chris@zankel.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/8/29 20:10, Pavel Machek wrote:
-> Hi!
+On Sat, Aug 29, 2020 at 10:57 PM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
->> The value av7110->debi_virt is stored in DMA memory, and it is assigned
->> to data, and thus data[0] can be modified at any time by malicious
->> hardware. In this case, "if (data[0] < 2)" can be passed, but then
->> data[0] can be changed into a large number, which may cause buffer
->> overflow when the code "av7110->ci_slot[data[0]]" is used.
->>
->> To fix this possible bug, data[0] is assigned to a local variable, which
->> replaces the use of data[0].
-> I'm pretty sure hardware capable of manipulating memory can work
-> around any such checks, but...
+> From: Randy Dunlap <rdunlap@infradead.org>
 >
->> +++ b/drivers/media/pci/ttpci/av7110.c
->> @@ -424,14 +424,15 @@ static void debiirq(unsigned long cookie)
->>   	case DATA_CI_GET:
->>   	{
->>   		u8 *data = av7110->debi_virt;
->> +		u8 data_0 = data[0];
->>   
->> -		if ((data[0] < 2) && data[2] == 0xff) {
->> +		if (data_0 < 2 && data[2] == 0xff) {
->>   			int flags = 0;
->>   			if (data[5] > 0)
->>   				flags |= CA_CI_MODULE_PRESENT;
->>   			if (data[5] > 5)
->>   				flags |= CA_CI_MODULE_READY;
->> -			av7110->ci_slot[data[0]].flags = flags;
->> +			av7110->ci_slot[data_0].flags = flags;
-> This does not even do what it says. Compiler is still free to access
-> data[0] multiple times. It needs READ_ONCE() to be effective.
+> Correct trivial typo (ful -> full).
 >
->
+> Fixes: 76743c0e0915 ("xtensa: move kernel memory layout to platform options")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: Jiri Kosina <trivial@kernel.org>
+> ---
+>  arch/xtensa/Kconfig |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for this advice, I will submit a v2 patch soon.
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
 
-
-Best wishes,
-Jia-Ju Bai
-
+-- 
+Thanks.
+-- Max
