@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4483A256B0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 03:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7BF256B0D
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 03:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728603AbgH3BXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 29 Aug 2020 21:23:19 -0400
-Received: from smtprelay0052.hostedemail.com ([216.40.44.52]:34334 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728246AbgH3BXR (ORCPT
+        id S1728384AbgH3BbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 29 Aug 2020 21:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728246AbgH3BbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 29 Aug 2020 21:23:17 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 327F61802926E;
-        Sun, 30 Aug 2020 01:23:16 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3870:3872:3873:4321:4605:5007:6120:6691:7875:7901:9040:10004:10400:10848:11026:11232:11658:11914:12296:12297:12679:12740:12760:12895:13069:13161:13229:13311:13357:13439:13869:14180:14659:14721:21060:21067:21080:21433:21627:21740:21990:30005:30054:30056:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: alley64_00118ba27083
-X-Filterd-Recvd-Size: 2815
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 30 Aug 2020 01:23:14 +0000 (UTC)
-Message-ID: <fbc74484451e2ef75fbb65665186035301550a1b.camel@perches.com>
-Subject: Re: [PATCH RFC 0/2] simple sysfs wrappers for single values
-From:   Joe Perches <joe@perches.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 29 Aug 2020 18:23:13 -0700
-In-Reply-To: <81c3499a5a09a82ddb4f3aa2bd9bfde1c0192b9e.camel@perches.com>
-References: <20200829233720.42640-1-alex.dewar90@gmail.com>
-         <81c3499a5a09a82ddb4f3aa2bd9bfde1c0192b9e.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Sat, 29 Aug 2020 21:31:22 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D370C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 18:31:22 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id e7so2419672qtj.11
+        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 18:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=oTXPJKxAg5XxTQVL81YppTbJbKKdp2qoMjgryaZThzc=;
+        b=snIHPNItiSzMiNbfMvHkwKcuLJe8cG++Oz2ae8qgnrH1ekSHdofCVjHTa1VxsLoeYQ
+         kY0fJQw17HrhhvbknPyQU/+X2QJodjqBIL7rjSl0u+38tvX6s4n2Wla57G/6YcU1Q4YG
+         yY4w0S5FAIv+SbABcIvu/T4WSScBA/64RzO6UC6leqD4skku42yNm9Tf5qF4sXguMP9D
+         dJtoK1aXxn5zgfJIREsXq9lAZ7QcP/JT+MFLzFUBdHDorjQyScUo8DvQuM/mAj2K6Sel
+         s4KotxmA3eplfUQ2FecY/AX3Pma+7DhPYL2MATUNCQDeCb4Ax5fxktpf6dLOQiHay9Yp
+         NJlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oTXPJKxAg5XxTQVL81YppTbJbKKdp2qoMjgryaZThzc=;
+        b=Qqb+qcdQv4MNhKxb6vynIDqV3K+GRACn/fC1AAhg6I/2jYSTMNNvOnqmEbmV+dzcur
+         TeckAXGQIoZ4beV6whzc7E1x09IU4F5hslx7LvmRM6GP/kKi31wwzyKSQmarhjw6LB1O
+         GJKIQb6pxlYBs4djo6e2mU/Ln8MgbK/ip1oeK8BObq4KPBj4MzxkruNZ22UCAvuB5FSz
+         CbKhp5tltBk+3Vrzr1+cWGQwza23F66HnFXYOqku/zrqAiDSqqTSmEJ48RWbVvVLWslA
+         gW3o33CMsl5ooef7AzdF1V9hAcW3OQ67d02uTlj650p4oCvAm48g8RrUpwujr2mPN+D5
+         neRQ==
+X-Gm-Message-State: AOAM531esQA77/w/Hasb4d8ie9ScCyHg/lijCAZ9yHuzSaE2sZ3vFTtU
+        +boicG+v3ffXCz0O7TXd7po0Ww==
+X-Google-Smtp-Source: ABdhPJzwUsBp/+777eFsa+X2LXOqWrmMmxFxP7fZxqjoql/YJZT6UN4uCbSqzHfAc+XBjx1QqoB52g==
+X-Received: by 2002:ac8:2baa:: with SMTP id m39mr7636519qtm.204.1598751080998;
+        Sat, 29 Aug 2020 18:31:20 -0700 (PDT)
+Received: from localhost.localdomain.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id e21sm4017553qkl.88.2020.08.29.18.31.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Aug 2020 18:31:20 -0700 (PDT)
+From:   Qian Cai <cai@lca.pw>
+To:     darrick.wong@oracle.com
+Cc:     hch@infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH] iomap: fix WARN_ON_ONCE() from unprivileged users
+Date:   Sat, 29 Aug 2020 21:30:57 -0400
+Message-Id: <20200830013057.14664-1-cai@lca.pw>
+X-Mailer: git-send-email 2.18.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-08-29 at 17:28 -0700, Joe Perches wrote:
-> On Sun, 2020-08-30 at 00:37 +0100, Alex Dewar wrote:
-> > Hi all,
-> > 
-> > I've noticed there seems to have been a fair amount of discussion around
-> > the subject of possible helper methods for use in the context of sysfs
-> > show methods (which I haven't had a chance to go through in detail yet
-> > -- sorry!), so I thought I'd send out a couple of patches I've been
-> > working on for this, in case it's of any interest to anyone.
-> 
-> If you really want to do this, I suggest you get use
-> wrappers like sysfs_emit_string, sysfs_emit_int, sysfs_emit_u64
-> though I don't see _that_ much value.
+It is trivial to trigger a WARN_ON_ONCE(1) in iomap_dio_actor() by
+unprivileged users which would taint the kernel, or worse - panic if
+panic_on_warn or panic_on_taint is set. Hence, just convert it to
+pr_warn_ratelimited() to let users know their workloads are racing.
+Thanks Dave Chinner for the initial analysis of the racing reproducers.
 
-Just fyi:
+Signed-off-by: Qian Cai <cai@lca.pw>
+---
+ fs/iomap/direct-io.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-the treewide converted sysfs_emit uses
-end up with these integer outputs:
-
-$ git grep -P -oh 'sysfs_emit\(buf, "%\d*[luixd]*\\n"' | \
-  sort | uniq -c | sort -rn
-   1482 sysfs_emit(buf, "%d\n"
-    549 sysfs_emit(buf, "%u\n"
-    118 sysfs_emit(buf, "%ld\n"
-    100 sysfs_emit(buf, "%lu\n"
-     78 sysfs_emit(buf, "%llu\n"
-     62 sysfs_emit(buf, "%i\n"
-     47 sysfs_emit(buf, "%x\n"
-     24 sysfs_emit(buf, "%lld\n"
-     12 sysfs_emit(buf, "%llx\n"
-     12 sysfs_emit(buf, "%08x\n"
-     12 sysfs_emit(buf, "%02x\n"
-     10 sysfs_emit(buf, "%016llx\n"
-      8 sysfs_emit(buf, "%04x\n"
-      6 sysfs_emit(buf, "%lx\n"
-      5 sysfs_emit(buf, "%02d\n"
-      4 sysfs_emit(buf, "%04d\n"
-      2 sysfs_emit(buf, "%08lx\n"
-      1 sysfs_emit(buf, "%li\n"
-      1 sysfs_emit(buf, "%4x\n"
-      1 sysfs_emit(buf, "%0x\n"
-      1 sysfs_emit(buf, "%06x\n"
-      1 sysfs_emit(buf, "%03x\n"
-      1 sysfs_emit(buf, "%01x\n"
-> 
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index c1aafb2ab990..6a6b4bc13269 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -389,7 +389,14 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+ 	case IOMAP_INLINE:
+ 		return iomap_dio_inline_actor(inode, pos, length, dio, iomap);
+ 	default:
+-		WARN_ON_ONCE(1);
++		/*
++		 * DIO is not serialised against mmap() access at all, and so
++		 * if the page_mkwrite occurs between the writeback and the
++		 * iomap_apply() call in the DIO path, then it will see the
++		 * DELALLOC block that the page-mkwrite allocated.
++		 */
++		pr_warn_ratelimited("page_mkwrite() is racing with DIO read (iomap->type = %u).\n",
++				    iomap->type);
+ 		return -EIO;
+ 	}
+ }
+-- 
+2.18.4
 
