@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986722570C0
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 23:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470712570B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 23:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgH3Vi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 17:38:26 -0400
-Received: from mga18.intel.com ([134.134.136.126]:48748 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgH3ViZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 17:38:25 -0400
-IronPort-SDR: YjPfvuUfB7jIEN9NHe3X0xF72EhOJom+zBiNDd+rT1wJKGi6cOkNrm4zKsoBBBpbmJiErqs427
- HM8GbVWLk4xw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="144563395"
-X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; 
-   d="scan'208";a="144563395"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 14:38:25 -0700
-IronPort-SDR: Fu1apSQaaOoTA69/VmOdkNAlEU5LNsLNOFe7iQ0OV2tyuvtLnJt6KBVVZmomCXSsINarmh4wEA
- 2Tj1M7R0L1Qw==
-X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; 
-   d="scan'208";a="445502270"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.153])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 14:38:24 -0700
-Message-ID: <58ec8ad4f6712fb8aa3db08e4a8d661d5531d7a0.camel@intel.com>
-Subject: Re: [PATCH v2] Documentation/x86: Add documentation for
- /proc/cpuinfo feature flags
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        tony.luck@intel.com, dave.hansen@intel.com, ricardo.neri@intel.com,
-        hpa@zytor.com, gregkh@linuxfoundation.org, ak@linux.intel.com,
-        ravi.v.shankar@intel.com,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Date:   Sun, 30 Aug 2020 14:21:03 -0700
-In-Reply-To: <20200830115024.GA4297@zn.tnic>
-References: <20200824180412.9440-1-kyung.min.park@intel.com>
-         <20200828184209.GC19342@zn.tnic>
-         <b171209faab7e141a9988ecf47fa55bf855cb664.camel@intel.com>
-         <20200830115024.GA4297@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726394AbgH3VcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 17:32:11 -0400
+Received: from 212.199.177.27.static.012.net.il ([212.199.177.27]:53800 "EHLO
+        herzl.nuvoton.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726178AbgH3VcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 17:32:09 -0400
+Received: from taln60.nuvoton.co.il (ntil-fw [212.199.177.25])
+        by herzl.nuvoton.co.il (8.13.8/8.13.8) with ESMTP id 07ULVNUJ011608;
+        Mon, 31 Aug 2020 00:31:23 +0300
+Received: by taln60.nuvoton.co.il (Postfix, from userid 20088)
+        id BA033639D3; Mon, 31 Aug 2020 00:31:23 +0300 (IDT)
+From:   Tali Perry <tali.perry1@gmail.com>
+To:     kunyi@google.com, xqiu@google.com, benjaminfair@google.com,
+        avifishman70@gmail.com, joel@jms.id.au, tmaimon77@gmail.com,
+        wsa@the-dreams.de
+Cc:     linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Tali Perry <tali.perry1@gmail.com>
+Subject: [PATCH v3] i2c: npcm7xx: Fix timeout calculation
+Date:   Mon, 31 Aug 2020 00:31:21 +0300
+Message-Id: <20200830213121.239533-1-tali.perry1@gmail.com>
+X-Mailer: git-send-email 2.22.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-08-30 at 13:50 +0200, Borislav Petkov wrote:
-> On Fri, Aug 28, 2020 at 03:30:32PM -0700, Kyung Min Park wrote:
-> > Should I mention the tool specifically although the tool is WIP?
-> 
-> Well, if you wanna look at it that way, the whole kernel is
-> constantly
-> and forever WIP. :-)
-> 
-> Also, if there's some functionality missing, pointing to it might
-> make
-> people send patches.
+timeout_usec value calculation was wrong, the calculated value
+was in msec instead of usec.
 
-That makes sense. :)
+Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+Reviewed-by: Avi Fishman <avifishman70@gmail.com>
+---
+ drivers/i2c/busses/i2c-npcm7xx.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-> > As you commented previously, should I use
-> > tools/arch/x86/tools/cpuid/cpuid as the future tool and its
-> > location?
-> 
-> Yeah, let's just drop the second "tools", i.e.,
-> 
-> tools/arch/x86/kcpuid/
-> 
-> or so should be good enough.
-> 
-> Thx.
+diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+index 75f07138a6fa..dfcf04e1967f 100644
+--- a/drivers/i2c/busses/i2c-npcm7xx.c
++++ b/drivers/i2c/busses/i2c-npcm7xx.c
+@@ -2093,8 +2093,12 @@ static int npcm_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+ 		}
+ 	}
+ 
+-	/* Adaptive TimeOut: astimated time in usec + 100% margin */
+-	timeout_usec = (2 * 10000 / bus->bus_freq) * (2 + nread + nwrite);
++	/*
++	 * Adaptive TimeOut: estimated time in usec + 100% margin:
++	 * 2: double the timeout for clock stretching case
++	 * 9: bits per transaction (including the ack/nack)
++	 */
++	timeout_usec = (2 * 9 * USEC_PER_SEC / bus->bus_freq) * (2 + nread + nwrite);
+ 	timeout = max(msecs_to_jiffies(35), usecs_to_jiffies(timeout_usec));
+ 	if (nwrite >= 32 * 1024 || nread >= 32 * 1024) {
+ 		dev_err(bus->dev, "i2c%d buffer too big\n", bus->num);
 
-Sure, I'll update in the next patch. Thank you for clarifying.
+base-commit: d012a7190fc1fd72ed48911e77ca97ba4521bccd
+-- 
+2.22.0
 
