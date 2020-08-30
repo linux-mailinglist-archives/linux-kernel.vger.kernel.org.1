@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F49F256E6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36549256E67
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgH3OJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 10:09:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56508 "EHLO mail.kernel.org"
+        id S1726446AbgH3OIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 10:08:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728955AbgH3NzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 09:55:13 -0400
+        id S1728963AbgH3NzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 09:55:17 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8DC12137B;
-        Sun, 30 Aug 2020 13:55:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5DDF214DB;
+        Sun, 30 Aug 2020 13:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598795713;
-        bh=lag4MfJv21Stf+8O4CxR6SYPZ0pwLkTauExbFs+gKQ0=;
+        s=default; t=1598795716;
+        bh=uQCj/HLwG7euETSyzEphZLcSpSGJVabxZwir3jTUtnI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JMacvtQjF2udKdk9edSTLdF54HGZKATHiF3jsgmY7QD7moM6f3Cu4IDAGQCuZadXI
-         VyPpThmcRTi2WDMtNLzuEwDwiMPSxIS1imL8l6MPdIb+MHgDt3AToVKD4H6L1tw9HD
-         EsMtWx0gqxAQ4r9EDZb/bk3rxsKRrVEdG+XuO9nc=
+        b=HtmWAuUK4aV7S2K2blvrDqm8waDpaYCS5g/MQPiPO4/JxnpYAkzqzMB+4kLHOUjp2
+         nYzmMRUNh7EYUDctZlPAuKP1ffm6/AUSM7xo3L5+6ma49p+4darkdLStWBy0bJsamU
+         ibuRDlzr3t80q8/Bpq7+Ejw/5RQAoQUBTWZvO2pE=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -33,9 +33,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 26/33] ARM: dts: exynos: Override thermal by label in Midas
-Date:   Sun, 30 Aug 2020 15:51:53 +0200
-Message-Id: <20200830135200.24304-26-krzk@kernel.org>
+Subject: [PATCH 27/33] ARM: dts: exynos: Override thermal by label in Exynos4412 Odroids
+Date:   Sun, 30 Aug 2020 15:51:54 +0200
+Message-Id: <20200830135200.24304-27-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200830135200.24304-1-krzk@kernel.org>
 References: <20200830135200.24304-1-krzk@kernel.org>
@@ -54,27 +54,28 @@ A mistyped label on the other hand, will cause a dtc compile error
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/exynos4412-midas.dtsi | 34 +++++++++++--------------
- 1 file changed, 15 insertions(+), 19 deletions(-)
+ .../boot/dts/exynos4412-odroid-common.dtsi    | 34 ++++++--------
+ arch/arm/boot/dts/exynos4412-odroidu3.dts     | 46 +++++++++----------
+ 2 files changed, 36 insertions(+), 44 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos4412-midas.dtsi b/arch/arm/boot/dts/exynos4412-midas.dtsi
-index 32d2e539b2dd..7e7c243ff196 100644
---- a/arch/arm/boot/dts/exynos4412-midas.dtsi
-+++ b/arch/arm/boot/dts/exynos4412-midas.dtsi
-@@ -319,25 +319,6 @@
- 		pulldown-ohm = <100000>; /* 100K */
- 		io-channels = <&adc 2>;  /* Battery temperature */
+diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+index 6d3576e21ffa..ca3c78e0966c 100644
+--- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
++++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+@@ -66,25 +66,6 @@
+ 			clock-frequency = <24000000>;
+ 		};
  	};
 -
 -	thermal-zones {
 -		cpu_thermal: cpu-thermal {
 -			cooling-maps {
--				map0 {
+-				cooling_map0: map0 {
 -				     /* Corresponds to 800MHz at freq_table */
 -				     cooling-device = <&cpu0 7 7>, <&cpu1 7 7>,
 -						      <&cpu2 7 7>, <&cpu3 7 7>;
 -				};
--				map1 {
+-				cooling_map1: map1 {
 -				     /* Corresponds to 200MHz at freq_table */
 -				     cooling-device = <&cpu0 13 13>,
 -						      <&cpu1 13 13>,
@@ -86,19 +87,19 @@ index 32d2e539b2dd..7e7c243ff196 100644
 -	};
  };
  
- &adc {
-@@ -406,6 +387,21 @@
- 	cpu0-supply = <&buck2_reg>;
+ &bus_dmc {
+@@ -172,6 +153,21 @@
+ 	};
  };
  
 +&cpu_thermal {
 +	cooling-maps {
-+		map0 {
++		cooling_map0: map0 {
 +			/* Corresponds to 800MHz at freq_table */
 +			cooling-device = <&cpu0 7 7>, <&cpu1 7 7>,
 +					 <&cpu2 7 7>, <&cpu3 7 7>;
 +		};
-+		map1 {
++		cooling_map1: map1 {
 +			/* Corresponds to 200MHz at freq_table */
 +			cooling-device = <&cpu0 13 13>, <&cpu1 13 13>,
 +					 <&cpu2 13 13>, <&cpu3 13 13>;
@@ -106,9 +107,73 @@ index 32d2e539b2dd..7e7c243ff196 100644
 +	};
 +};
 +
- &csis_0 {
- 	status = "okay";
- 	vddcore-supply = <&ldo8_reg>;
+ &pinctrl_1 {
+ 	gpio_power_key: power_key {
+ 		samsung,pins = "gpx1-3";
+diff --git a/arch/arm/boot/dts/exynos4412-odroidu3.dts b/arch/arm/boot/dts/exynos4412-odroidu3.dts
+index 8ff243ba4542..b8549d846f86 100644
+--- a/arch/arm/boot/dts/exynos4412-odroidu3.dts
++++ b/arch/arm/boot/dts/exynos4412-odroidu3.dts
+@@ -37,31 +37,6 @@
+ 		#cooling-cells = <2>;
+ 		cooling-levels = <0 102 170 230>;
+ 	};
+-
+-	thermal-zones {
+-		cpu_thermal: cpu-thermal {
+-			cooling-maps {
+-				map0 {
+-				     trip = <&cpu_alert1>;
+-				     cooling-device = <&cpu0 9 9>, <&cpu1 9 9>,
+-						      <&cpu2 9 9>, <&cpu3 9 9>,
+-						      <&fan0 1 2>;
+-				};
+-				map1 {
+-				     trip = <&cpu_alert2>;
+-				     cooling-device = <&cpu0 15 15>,
+-						      <&cpu1 15 15>,
+-						      <&cpu2 15 15>,
+-						      <&cpu3 15 15>,
+-						      <&fan0 2 3>;
+-				};
+-				map2 {
+-				     trip = <&cpu_alert0>;
+-				     cooling-device = <&fan0 0 1>;
+-				};
+-			};
+-		};
+-	};
+ };
+ 
+ &adc {
+@@ -76,6 +51,27 @@
+ 	regulator-max-microvolt = <3300000>;
+ };
+ 
++&cpu_thermal {
++	cooling-maps {
++		map0 {
++			trip = <&cpu_alert1>;
++			cooling-device = <&cpu0 9 9>, <&cpu1 9 9>,
++					 <&cpu2 9 9>, <&cpu3 9 9>,
++					 <&fan0 1 2>;
++		};
++		map1 {
++			trip = <&cpu_alert2>;
++			cooling-device = <&cpu0 15 15>, <&cpu1 15 15>,
++					 <&cpu2 15 15>, <&cpu3 15 15>,
++					 <&fan0 2 3>;
++		};
++		map2 {
++			trip = <&cpu_alert0>;
++			cooling-device = <&fan0 0 1>;
++		};
++	};
++};
++
+ &hdmicec {
+ 	needs-hpd;
+ };
 -- 
 2.17.1
 
