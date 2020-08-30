@@ -2,143 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E808256BE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 08:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F94C256C08
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 08:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbgH3GIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 02:08:23 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:56338 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgH3GIS (ORCPT
+        id S1725825AbgH3GZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 02:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726264AbgH3GZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 02:08:18 -0400
-Received: by mail-il1-f197.google.com with SMTP id w82so2643015ila.23
-        for <linux-kernel@vger.kernel.org>; Sat, 29 Aug 2020 23:08:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=i7Bg2N1ZspYy2m3x9/4pKOcVqidjssoxIgVRKOgx2us=;
-        b=GcmTCREtC9D790Aq22gtFnJNZBts717+lI050GAlKQhKAsRprYjexD8dH2jZIqbC3K
-         7/fmxCvt9jeJnmvwR5yS2ERH50hBSlqxkRGsne/fBUq1kfalzni/UhqUYj0swFPm1Upd
-         Q4q4wchBqTXV11f6aDQ04vj2dWLylg9br7ew6Z1gN5DNbjZ5eyfGp+K0n6XQ3VEW67Wv
-         Nu9QjnjtTXsUw9WNmgYuwdxPk6GMo/iKc/Y2lmdihCeU28M2edUxHN2ALyO+mGv/pGpu
-         h7qciWE8M812TZpm1m1KnK1/nyfql1lMGcHLW1LVIpMMJFlit5XvMfhKvfeZ7/snQg11
-         Iiag==
-X-Gm-Message-State: AOAM533BkW5/K1kRstIh4w9IVIlgpaZstObIneBqOSrU0Nw7O418rsvI
-        V/co//NZDI7BgvpJiGsgZUcwql9dBkI6R4XhEIYEMs1GPlYS
-X-Google-Smtp-Source: ABdhPJwKd51xEWLx8FVATB5A+8qUhdFzXqWkKgcFO/VwF86osgxt2EXGo7Tuoj6ngxoC0gZK/vYoBaeYBj2H8XibYnaYWU9fTWLc
+        Sun, 30 Aug 2020 02:25:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CAAC06123C;
+        Sat, 29 Aug 2020 23:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=M8NGywF+zE3/DWly96sK3ZsPyCZ2PLaa+20n24HbM5w=; b=pQ6BXHuhUiXptBbNhhajHLmx2j
+        rHMW1iV1DIOaQecBNTKGUFrEu0njZSCCsOOLXdQe2IRyq1eXKAXkzd8LkXVouP2Nlf8wDiW8G5c7r
+        NoOEVX+xXo25toy4lSfOxoPPe+dwyNzMf4QhYdJH+q+VK8r4hvFnu734Kr//3fGLwKySvgqkPVN8V
+        JcrBq/EAVSVhwDB4XT9Zao7yBIAIQMOKS0reHVbB6Cn2ldrASCi02oAxcpyAmqg5XKSNdaTtVWvVg
+        GKh4XLzxpj8zf7VEo7AP1Z7T1SDnAncTot6eFVrNZAbdHj9MZnOhTo3dzSpLbadcQ5dnok2Oo6TF1
+        6hs6GCDg==;
+Received: from [2001:4bb8:18c:45ba:9892:9e86:5202:32f0] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kCGlh-0002MA-Rm; Sun, 30 Aug 2020 06:24:46 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: simplify gendisk lookup and remove struct block_device aliases v2
+Date:   Sun, 30 Aug 2020 08:24:26 +0200
+Message-Id: <20200830062445.1199128-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8d04:: with SMTP id m4mr4385438ioj.107.1598767696846;
- Sat, 29 Aug 2020 23:08:16 -0700 (PDT)
-Date:   Sat, 29 Aug 2020 23:08:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a624ac05ae121c86@google.com>
-Subject: KMSAN: uninit-value in translate_table
-From:   syzbot <syzbot+1b3443758a99dc0f4ac6@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        glider@google.com, kadlec@netfilter.org, kuba@kernel.org,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi all,
 
-syzbot found the following issue on:
+this series removes the annoying struct block_device aliases, which can
+happen for a bunch of old floppy drivers (and z2ram).  In that case
+multiple struct block device instances for different dev_t's can point
+to the same gendisk, without being partitions.  The cause for that
+is the probe/get callback registered through blk_register_regions.
 
-HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=140f36b6900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
-dashboard link: https://syzkaller.appspot.com/bug?extid=1b3443758a99dc0f4ac6
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-userspace arch: i386
+This series removes blk_register_region entirely, splitting it it into
+a simple xarray lookup of registered gendisks, and a probe callback
+stored in the major_names array that can be used for modprobe overrides
+or creating devices on demands when no gendisk is found.  The old
+remapping is gone entirely, and instead the 4 remaining drivers just
+register a gendisk for each operating mode.  In case of the two drivers
+that have lots of aliases that is done on-demand using the new probe
+callback, while for the other two I simply register all at probe time
+to keep things simple.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Note that the m68k drivers are compile tested only.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1b3443758a99dc0f4ac6@syzkaller.appspotmail.com
+Changes since v1:
+ - add back a missing kobject_put in the cdev code
+ - improve the xarray delete loops
 
-=====================================================
-BUG: KMSAN: uninit-value in check_entry_size_and_hooks net/ipv4/netfilter/ip_tables.c:599 [inline]
-BUG: KMSAN: uninit-value in translate_table+0xde9/0x3c90 net/ipv4/netfilter/ip_tables.c:685
-CPU: 1 PID: 16172 Comm: syz-executor.2 Not tainted 5.8.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- check_entry_size_and_hooks net/ipv4/netfilter/ip_tables.c:599 [inline]
- translate_table+0xde9/0x3c90 net/ipv4/netfilter/ip_tables.c:685
- translate_compat_table net/ipv4/netfilter/ip_tables.c:1465 [inline]
- compat_do_replace net/ipv4/netfilter/ip_tables.c:1519 [inline]
- compat_do_ipt_set_ctl+0x34fc/0x4310 net/ipv4/netfilter/ip_tables.c:1548
- compat_nf_sockopt+0x904/0x980 net/netfilter/nf_sockopt.c:146
- compat_nf_setsockopt+0x122/0x160 net/netfilter/nf_sockopt.c:156
- compat_ip_setsockopt+0x46f/0x1940 net/ipv4/ip_sockglue.c:1449
- inet_csk_compat_setsockopt+0x161/0x240 net/ipv4/inet_connection_sock.c:1087
- compat_tcp_setsockopt+0x187/0x1a0 net/ipv4/tcp.c:3345
- compat_sock_common_setsockopt+0x1a3/0x1c0 net/core/sock.c:3275
- __compat_sys_setsockopt+0x4be/0x9c0 net/compat.c:402
- __do_compat_sys_setsockopt net/compat.c:415 [inline]
- __se_compat_sys_setsockopt+0xdd/0x100 net/compat.c:412
- __ia32_compat_sys_setsockopt+0x62/0x80 net/compat.c:412
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2af/0x480 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7f23549
-Code: Bad RIP value.
-RSP: 002b:00000000f551d0cc EFLAGS: 00000296 ORIG_RAX: 000000000000016e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000000
-RDX: 0000000000000040 RSI: 0000000020000000 RDI: 00000000000002a4
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:144 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:127
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2839 [inline]
- __kmalloc_node+0xe70/0x1280 mm/slub.c:3959
- kmalloc_node include/linux/slab.h:578 [inline]
- kvmalloc_node+0x205/0x490 mm/util.c:574
- kvmalloc include/linux/mm.h:753 [inline]
- xt_alloc_table_info+0xda/0x1b0 net/netfilter/x_tables.c:1176
- translate_compat_table net/ipv4/netfilter/ip_tables.c:1429 [inline]
- compat_do_replace net/ipv4/netfilter/ip_tables.c:1519 [inline]
- compat_do_ipt_set_ctl+0x1a64/0x4310 net/ipv4/netfilter/ip_tables.c:1548
- compat_nf_sockopt+0x904/0x980 net/netfilter/nf_sockopt.c:146
- compat_nf_setsockopt+0x122/0x160 net/netfilter/nf_sockopt.c:156
- compat_ip_setsockopt+0x46f/0x1940 net/ipv4/ip_sockglue.c:1449
- inet_csk_compat_setsockopt+0x161/0x240 net/ipv4/inet_connection_sock.c:1087
- compat_tcp_setsockopt+0x187/0x1a0 net/ipv4/tcp.c:3345
- compat_sock_common_setsockopt+0x1a3/0x1c0 net/core/sock.c:3275
- __compat_sys_setsockopt+0x4be/0x9c0 net/compat.c:402
- __do_compat_sys_setsockopt net/compat.c:415 [inline]
- __se_compat_sys_setsockopt+0xdd/0x100 net/compat.c:412
- __ia32_compat_sys_setsockopt+0x62/0x80 net/compat.c:412
- do_syscall_32_irqs_on arch/x86/entry/common.c:430 [inline]
- __do_fast_syscall_32+0x2af/0x480 arch/x86/entry/common.c:477
- do_fast_syscall_32+0x6b/0xd0 arch/x86/entry/common.c:505
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:554
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Diffstat:
+ b/block/genhd.c           |  183 +++++++--------
+ b/drivers/base/Makefile   |    2 
+ b/drivers/block/amiflop.c |   98 ++++----
+ b/drivers/block/ataflop.c |  135 +++++++----
+ b/drivers/block/brd.c     |   39 ---
+ b/drivers/block/floppy.c  |  154 ++++++++----
+ b/drivers/block/loop.c    |   30 --
+ b/drivers/block/swim.c    |   17 -
+ b/drivers/block/z2ram.c   |  547 ++++++++++++++++++++++------------------------
+ b/drivers/ide/ide-probe.c |   66 -----
+ b/drivers/ide/ide-tape.c  |    2 
+ b/drivers/md/md.c         |   21 -
+ b/drivers/scsi/sd.c       |   19 -
+ b/fs/char_dev.c           |   94 +++----
+ b/fs/dcache.c             |    1 
+ b/fs/internal.h           |    5 
+ b/include/linux/genhd.h   |   12 -
+ b/include/linux/ide.h     |    3 
+ drivers/base/map.c        |  154 ------------
+ include/linux/kobj_map.h  |   20 -
+ 20 files changed, 686 insertions(+), 916 deletions(-)
