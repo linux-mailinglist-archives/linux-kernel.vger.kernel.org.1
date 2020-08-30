@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB994256E83
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70F2256E7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgH3OLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 10:11:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55338 "EHLO mail.kernel.org"
+        id S1727046AbgH3OLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 10:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728903AbgH3Nyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 09:54:37 -0400
+        id S1728925AbgH3Nyk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 09:54:40 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA45B2087D;
-        Sun, 30 Aug 2020 13:54:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9A1F20757;
+        Sun, 30 Aug 2020 13:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598795677;
-        bh=NOBhlq6ryk8xSFNoYiENoIebYUcdXst8K3M7id276H4=;
+        s=default; t=1598795680;
+        bh=4viBEan7JfS5u7rHMOLLKJU0AwOPR9C3uj5SCmPphdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XZSUcDJtpyt5TRXcxkB8OxyRn+jBeocmi6PqHxDJ43cD+UBwJ60KbaszpeIQyhgpo
-         A6FrimnR5G6EOljn7JKq45IbjCoNhzGlbxFbsFZ4FPzVrQ2rM2HV+nJ4LjYiYS2W/p
-         EjjRrlu4ltU3IThMvt+iGBg37Tdf24BBC+r6PFS4=
+        b=m2TgCA7fJluiAieUrO9+xzlyA/MuIJujY0zb/gPtTYPaLVDZPHUluh2ZiARs1hm1d
+         4GhT3zR41IW3YFzjJ1HjA79mW/aWCL6PE9cJsFLBVieIn2QuIi62cNgZnUAbEPeWb6
+         aazh4WpLAapx1Oio6l3vQzQ06kX0Qa7ri7or3TdQ=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -33,9 +33,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [RFT 14/33] ARM: dts: exynos: Replace deprecated GPIO spi-gpio properties in Universal C210
-Date:   Sun, 30 Aug 2020 15:51:41 +0200
-Message-Id: <20200830135200.24304-14-krzk@kernel.org>
+Subject: [PATCH 15/33] ARM: dts: exynos: Align SPI GPIO node name with dtschema in Galaxy I9100
+Date:   Sun, 30 Aug 2020 15:51:42 +0200
+Message-Id: <20200830135200.24304-15-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200830135200.24304-1-krzk@kernel.org>
 References: <20200830135200.24304-1-krzk@kernel.org>
@@ -44,32 +44,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"gpio-sck" and "gpio-mosi" are deprecated so update the DTS to fix
-dtbs_checks warnings like:
+The device tree schema expects SPI controller to be named "spi",
+otherwise dtbs_check complain with a warning like:
 
-  arch/arm/boot/dts/exynos4210-universal_c210.dt.yaml: spi-lcd:
-    gpio-sck: False schema does not allow [[85, 1, 0]]
+  arch/arm/boot/dts/exynos4210-i9100.dt.yaml: spi-lcd:
+    $nodename:0: 'spi-lcd' does not match '^spi(@.*|-[0-9a-f])*$'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/exynos4210-universal_c210.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/exynos4210-i9100.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos4210-universal_c210.dts b/arch/arm/boot/dts/exynos4210-universal_c210.dts
-index 3509fdf8f245..279f0f8f86ed 100644
---- a/arch/arm/boot/dts/exynos4210-universal_c210.dts
-+++ b/arch/arm/boot/dts/exynos4210-universal_c210.dts
-@@ -124,8 +124,8 @@
+diff --git a/arch/arm/boot/dts/exynos4210-i9100.dts b/arch/arm/boot/dts/exynos4210-i9100.dts
+index 1d200a5e1b72..5623e17889a5 100644
+--- a/arch/arm/boot/dts/exynos4210-i9100.dts
++++ b/arch/arm/boot/dts/exynos4210-i9100.dts
+@@ -147,7 +147,7 @@
+ 		};
+ 	};
+ 
+-	spi-lcd {
++	spi-3 {
+ 		compatible = "spi-gpio";
  		#address-cells = <1>;
  		#size-cells = <0>;
- 
--		gpio-sck = <&gpy3 1 GPIO_ACTIVE_HIGH>;
--		gpio-mosi = <&gpy3 3 GPIO_ACTIVE_HIGH>;
-+		sck-gpios = <&gpy3 1 GPIO_ACTIVE_HIGH>;
-+		mosi-gpios = <&gpy3 3 GPIO_ACTIVE_HIGH>;
- 		num-chipselects = <1>;
- 		cs-gpios = <&gpy4 3 GPIO_ACTIVE_LOW>;
- 
 -- 
 2.17.1
 
