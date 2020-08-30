@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9D3256E45
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5786256E73
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgH3OAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 10:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55896 "EHLO mail.kernel.org"
+        id S1726820AbgH3OJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 10:09:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728957AbgH3NzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 09:55:08 -0400
+        id S1728944AbgH3NzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 09:55:09 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E01222087D;
-        Sun, 30 Aug 2020 13:55:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D39D020757;
+        Sun, 30 Aug 2020 13:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598795704;
-        bh=iO29siIj1A3pg94M9/E7qHOcb8dG0rcPAl2NI4lvh6s=;
+        s=default; t=1598795707;
+        bh=K6hP5em2cMBqAr9JCMCNwOg3Qlcira5hs32UsXYBhzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zeaPP37IN+ywOlmiuegUWc80CNzYLSOFgVt7+BSOduJcC+rO97Ze942JGwkdaRFvf
-         Z8gHrHD/UdeKBNwyrD+cdrRkcKqN+3d0bFe8TpN4IM0PbrVwbB7Y/uSgp3QmCzvmGU
-         jiJkuiDrmnt5SjrOSyvul2WZF8OGxDUxdHhL6IK0=
+        b=OCC9YjOkPtkDouaK/fBh7kQgqO7NjzrBubNhb6KsyLsRcGY4tmg/SWF/3I3csgdd8
+         S9zFYqnK02sWeT6H7zcmqEwQGJyJcHY/BquLbkNXF1NjpQqUunYXCYpUn9F1hgorlf
+         ScWw3XFQBqrL9Cngat6GRXNa/OmrrtrNd3VEBE0Q=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -33,9 +33,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 23/33] ARM: dts: exynos: Remove empty camera pinctrl configuration in Odroid X/U3
-Date:   Sun, 30 Aug 2020 15:51:50 +0200
-Message-Id: <20200830135200.24304-23-krzk@kernel.org>
+Subject: [PATCH 24/33] ARM: dts: exynos: Correct compatible of fixed clocks in Midas boards
+Date:   Sun, 30 Aug 2020 15:51:51 +0200
+Message-Id: <20200830135200.24304-24-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200830135200.24304-1-krzk@kernel.org>
 References: <20200830135200.24304-1-krzk@kernel.org>
@@ -44,29 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The camera's pinctrl configuration is simply empty and not effective.
-Remove it to fix dtbs_check warning:
+The fixed clocks implemented by Samsung clock drivers use only one
+compatible so drop the additional "fixed-clock" to fix dtbs_check
+warnings like:
 
-  arch/arm/boot/dts/exynos4412-odroidx.dt.yaml: camera: pinctrl-0: True is not of type 'array'
+  arch/arm/boot/dts/exynos4412-i9300.dt.yaml: xxti: compatible:0: 'fixed-clock' was expected
+    From schema: Documentation/devicetree/bindings/clock/fixed-clock.yaml
+  arch/arm/boot/dts/exynos4412-i9300.dt.yaml: xxti: compatible: ['samsung,clock-xxti', 'fixed-clock'] is too long
+  arch/arm/boot/dts/exynos4412-i9300.dt.yaml: xxti: compatible: Additional items are not allowed ('fixed-clock' was unexpected)
+  arch/arm/boot/dts/exynos4412-i9300.dt.yaml: xxti: '#clock-cells' is a required property
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm/boot/dts/exynos4412-midas.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
-index a5c1ce1e396c..6d3576e21ffa 100644
---- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
-+++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
-@@ -136,8 +136,6 @@
+diff --git a/arch/arm/boot/dts/exynos4412-midas.dtsi b/arch/arm/boot/dts/exynos4412-midas.dtsi
+index 8e7a03228d7b..32d2e539b2dd 100644
+--- a/arch/arm/boot/dts/exynos4412-midas.dtsi
++++ b/arch/arm/boot/dts/exynos4412-midas.dtsi
+@@ -37,12 +37,12 @@
  
- &camera {
- 	status = "okay";
--	pinctrl-names = "default";
--	pinctrl-0 = <>;
- };
+ 	fixed-rate-clocks {
+ 		xxti {
+-			compatible = "samsung,clock-xxti", "fixed-clock";
++			compatible = "samsung,clock-xxti";
+ 			clock-frequency = <0>;
+ 		};
  
- &clock {
+ 		xusbxti {
+-			compatible = "samsung,clock-xusbxti", "fixed-clock";
++			compatible = "samsung,clock-xusbxti";
+ 			clock-frequency = <24000000>;
+ 		};
+ 	};
 -- 
 2.17.1
 
