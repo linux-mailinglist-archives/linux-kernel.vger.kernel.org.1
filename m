@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EA4256E3C
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C184B256E8C
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 16:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgH3OAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 10:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55896 "EHLO mail.kernel.org"
+        id S1726977AbgH3OPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 10:15:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbgH3Nyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 09:54:50 -0400
+        id S1728893AbgH3NyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 09:54:10 -0400
 Received: from localhost.localdomain (unknown [194.230.155.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8D042137B;
-        Sun, 30 Aug 2020 13:54:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8C8F21473;
+        Sun, 30 Aug 2020 13:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598795689;
-        bh=TTjHKAyk9At+IUU5vNSawItxwFQVyBHFrL+xnjQf8yc=;
+        s=default; t=1598795649;
+        bh=Jio1n7xy/55mksRDkpxMkV+Rs3q50jAeR+ojtYFWIPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HE1fjI0+fT5mhm0IWRVSB7I06QSINTSR0V5aBMsNguT9M5iJZKkYsoSJvROOzdgk8
-         XSScjZst+pwzZQ+JktPxpCVIY1QNE3dNvYCzQ97dmOMjvkO2GSdGid5ONn7k5xHZ3J
-         UhWZEYTRw23KCqvC29pTvhHyvW85FwqI0SsVWTEI=
+        b=Cg1JMBi4IgNDPCKYrm59+JRwCEIZen0DoonB3nCEaV8A+PXgRStDGRUKWi6NRRNVg
+         L0F2C5Cko68GEwFql25ys0wLp4Eadhyzl/25QYwTNZ3X7QWWwZtDqHP5Oxvzo9Ue34
+         SmRh5eX6bqt68NkqF6VjHxxMxJHSrhTkduID4J54=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -33,9 +33,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
 Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 18/33] ARM: dts: exynos: Override thermal by label in Trats
-Date:   Sun, 30 Aug 2020 15:51:45 +0200
-Message-Id: <20200830135200.24304-18-krzk@kernel.org>
+Subject: [PATCH 05/33] ARM: dts: exynos: Correct S3C RTC bindings and enable it in Trats
+Date:   Sun, 30 Aug 2020 15:51:32 +0200
+Message-Id: <20200830135200.24304-5-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200830135200.24304-1-krzk@kernel.org>
 References: <20200830135200.24304-1-krzk@kernel.org>
@@ -44,66 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Using full paths to extend or override a device tree node is error prone
-since if there was a typo error, a new node will be created instead of
-extending the node as it was desired.  This will lead to run-time errors
-that could be hard to detect.
+The S3C RTC requires 32768 Hz clock as input which is provided by PMIC
+(Maxim MAX8997).  However there is no clock provided for the PMIC and
+the driver registers the clock as regulator.  This is an old driver
+which will not be updated so add a workaround:
+1. Enable the "clock" regulator in PMIC,
+2. Add a fixed-clock to fill missing clock phandle reference in S3C RTC.
 
-A mistyped label on the other hand, will cause a dtc compile error
-(during build time).
+This allows to enable the S3C RTC and fixes dtbs_check warnings:
+
+  arch/arm/boot/dts/exynos4210-trats.dt.yaml: rtc@10070000: clocks: [[5, 346]] is too short
+  arch/arm/boot/dts/exynos4210-trats.dt.yaml: rtc@10070000: clock-names: ['rtc'] is too short
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm/boot/dts/exynos4210-trats.dts | 29 ++++++++++++--------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+ arch/arm/boot/dts/exynos4210-trats.dts | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/arch/arm/boot/dts/exynos4210-trats.dts b/arch/arm/boot/dts/exynos4210-trats.dts
-index 33b40f619dea..75483e08b4b4 100644
+index 5cc96f04a4fa..634f009b622e 100644
 --- a/arch/arm/boot/dts/exynos4210-trats.dts
 +++ b/arch/arm/boot/dts/exynos4210-trats.dts
-@@ -140,22 +140,6 @@
- 			clock-frequency = <32768>;
+@@ -132,6 +132,13 @@
+ 			compatible = "samsung,clock-xusbxti";
+ 			clock-frequency = <24000000>;
+ 		};
++
++		pmic_ap_clk: pmic-ap-clk {
++			/* Workaround for missing clock on max8997 PMIC */
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <32768>;
++		};
+ 	};
+ 
+ 	thermal-zones {
+@@ -444,10 +451,21 @@
+ 			     regulator-name = "SAFEOUT2";
+ 			     regulator-boot-on;
+ 			};
++
++			EN32KHZ_AP {
++				regulator-name = "EN32KHZ_AP";
++				regulator-always-on;
++			};
  		};
  	};
--
--	thermal-zones {
--		cpu_thermal: cpu-thermal {
--			cooling-maps {
--				map0 {
--				     /* Corresponds to 800MHz at freq_table */
--				     cooling-device = <&cpu0 2 2>, <&cpu1 2 2>;
--				};
--				map1 {
--				     /* Corresponds to 200MHz at freq_table */
--				     cooling-device = <&cpu0 4 4>, <&cpu1 4 4>;
--			       };
--		       };
--		};
--	};
--
  };
  
- &camera {
-@@ -166,6 +150,19 @@
- 	cpu0-supply = <&varm_breg>;
- };
- 
-+&cpu_thermal {
-+	cooling-maps {
-+		map0 {
-+			/* Corresponds to 800MHz at freq_table */
-+			cooling-device = <&cpu0 2 2>, <&cpu1 2 2>;
-+		};
-+		map1 {
-+			/* Corresponds to 200MHz at freq_table */
-+			cooling-device = <&cpu0 4 4>, <&cpu1 4 4>;
-+		};
-+	};
++&rtc {
++	status = "okay";
++	clocks = <&clock CLK_RTC>, <&pmic_ap_clk>;
++	clock-names = "rtc", "rtc_src";
 +};
 +
- &dsi_0 {
- 	vddcore-supply = <&vusb_reg>;
- 	vddio-supply = <&vmipi_reg>;
+ &sdhci_0 {
+ 	bus-width = <8>;
+ 	non-removable;
 -- 
 2.17.1
 
