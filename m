@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E777256FDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 20:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEA7256FC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 20:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgH3Szs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 14:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        id S1726404AbgH3Sys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 14:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgH3SzL (ORCPT
+        with ESMTP id S1726201AbgH3Sym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 14:55:11 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D187C06123A;
-        Sun, 30 Aug 2020 11:55:10 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id r13so4297888ljm.0;
-        Sun, 30 Aug 2020 11:55:10 -0700 (PDT)
+        Sun, 30 Aug 2020 14:54:42 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C935C061236
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 11:54:41 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 12so2293633lfb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 11:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=35wLUHHiL0jcYl7dr+ydbL6W/M+IENF1DgF9AQYM8t8=;
-        b=uhimOhHNcVOop7DdL+0642zRtqUW3EjZYZ87OCM4VJnKnP2te6EhR+DxcP+EcdN34A
-         Lcz++9haTnvEtJqJzHCsDt3XFecw2X6iOen/xKTWsHySnYpSNJ0a9Km44cg9zb2S7oyo
-         QZcgxgYF4bEpZYp6xNwe+RjEq2p5iRN6eFxptoYVp4TEqXy/8BJx3Qr0RYp2YrJBNIgY
-         AqqsVwyk78Zhynvb3hsUsg0UpmHWdXHgp6Rjp+WGKAXK9YkYnkmYnkirGvTa15l3uYXO
-         bHswcbkZzCMoTIWDCE4PzeXv/Jfwt19sFvMB1tkoOSjyrEzxNkwtfUBb6P1fZFExaVjp
-         Gcqw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lcprhZbONDavwPjBHmv5QL5cg+ByZzLDxztuhPCGpmQ=;
+        b=D0fmpEbcNJU8sts2qtgUM1dWuhNp4JNYRUSby6X6ORV6bFNbp7GfGxF+Aq3L4FvnHC
+         elBEMqRwxJhhQbk+yzL/8H9LFCi6qwieeoZDjPTkVMjVAn99uYMkfDKiBOEX4aWMxgM8
+         cyLNpWLJZSDVe+iwdazLLdiLq/HLA2T571Eh0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=35wLUHHiL0jcYl7dr+ydbL6W/M+IENF1DgF9AQYM8t8=;
-        b=ddRhFAchFJxqSpkfAo+OaXoQopqQGKDQ2zXavacgz0kpAeZlarcPoxKvt6EeDvpDM7
-         DfjGs8Ai05AI/QnjCkaZi0RBKydd1VfTs2fxPF17XjLk5FqBgvbrJmX7WL6T4YGANBo2
-         OpjslSSu7mCJj1/HLgVRgfWi2eKee2ARFHSFW7+MGe63CQSCZo4OmQJpHNUvSUFM7jah
-         rGo7UAlzzGIpG58Ha2mUGU6YPMsdSaEuZh7Ou/qkC+UIuphFMgGNOF1zxW7rke0wIJQG
-         DUUqNqxNUOR8a6PIApEVmOV/IDfyiiMp6/b3IxctuIi/VELi1m4w1k5NOwrdvIpKSbrk
-         M6cQ==
-X-Gm-Message-State: AOAM533tWsOQSgpxFpQ0szujf5AiXaHsqH2LALdGRZwm0as58cE15lW5
-        CvZdNM3LOD6lsiwapVXGF0o=
-X-Google-Smtp-Source: ABdhPJw+xY56U8MvvQE71DOroKATcepLQ64qhNh+AUcrFIbij52qmH2rMpKZ3ooqNrrNB0swam8nRQ==
-X-Received: by 2002:a2e:8046:: with SMTP id p6mr2514730ljg.372.1598813708857;
-        Sun, 30 Aug 2020 11:55:08 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id n21sm21630ljc.89.2020.08.30.11.55.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Aug 2020 11:55:08 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] ARM: tegra: acer-a500: Add Embedded Controller
-Date:   Sun, 30 Aug 2020 21:53:56 +0300
-Message-Id: <20200830185356.5365-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200830185356.5365-1-digetx@gmail.com>
-References: <20200830185356.5365-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lcprhZbONDavwPjBHmv5QL5cg+ByZzLDxztuhPCGpmQ=;
+        b=JX7i9zQdLeBEtXoZtykmFOUBomqhh4SHuMKNowtmjxW79f04JhXohb4AeW10byOCGC
+         X5mRTB8xt9g4JnqB4V2HWGKKPRXeeMCFe6wlbhJ/gsj0+aETHVC9eRqgbU9z2UgIOVQ0
+         j6avtNG9mleVopGUmfdYRYf+qdcVT7R2cCegD3H+u1JLRyf6Djw8OMfY/TD8KMWRTmQ3
+         Yo3M3XnMN23k2V1hsUzp6q3vSyge/NFBtzn6ArO0YcvRrme+xWF/EFlZnXYuNBf/RuMj
+         8Vwnwt3HDMlZV99a/CZg1OVH4Wlo2k370oKoEAasciMy93HOxEMOE1SCwkhn+GyH+aPd
+         9oFw==
+X-Gm-Message-State: AOAM531Q8BP5iRnjD8LyTMpFVcd/sR2sASusfISHkOGgwf6dvesyKt0H
+        Q+u0UaK68/8qHXGFVhZlnRFHRTIy22J3uA==
+X-Google-Smtp-Source: ABdhPJxxxGSKPjlgwFm0t+nNUyDkvL7Dy1Nwg30Y+33a5xHES9hjumxYNQXFljM1i49Wy2rKt4rk7A==
+X-Received: by 2002:a05:6512:690:: with SMTP id t16mr3918249lfe.213.1598813677314;
+        Sun, 30 Aug 2020 11:54:37 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id q20sm1097213ljj.42.2020.08.30.11.54.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Aug 2020 11:54:36 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id 185so4246313ljj.7
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 11:54:36 -0700 (PDT)
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr3232461ljk.421.1598813675930;
+ Sun, 30 Aug 2020 11:54:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <159881061564.27993.11909051048930389391.tglx@nanos> <159881061804.27993.16119786735164087221.tglx@nanos>
+In-Reply-To: <159881061804.27993.16119786735164087221.tglx@nanos>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 30 Aug 2020 11:54:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi6ufj=O-PDu=HVYw0QXpK52GPWKJfBaU4Djr0h6OFpKg@mail.gmail.com>
+Message-ID: <CAHk-=wi6ufj=O-PDu=HVYw0QXpK52GPWKJfBaU4Djr0h6OFpKg@mail.gmail.com>
+Subject: Re: [GIT pull] sched/urgent for v5.9-rc2
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Marco Elver <elver@google.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device-tree node for the Embedded Controller which is
-found on the Picasso board. The Embedded Controller itself is ENE KB930,
-it provides functions like battery-gauge/LED/GPIO/etc and it uses firmware
-that is specifically customized for the Acer A500 device.
+On Sun, Aug 30, 2020 at 11:04 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>  - Make is_idle_task() __always_inline to prevent the compiler from putting
+>    it out of line into the wrong section because it's used inside noinstr
+>    sections.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+What completely broken compiler uninlined that single-instruction function?
 
-diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 2d683c9a1a5d..f92712e4bd34 100644
---- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-+++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -502,6 +502,16 @@ panel_ddc: i2c@1 {
- 			reg = <1>;
- 			#address-cells = <1>;
- 			#size-cells = <0>;
-+
-+			embedded-controller@58 {
-+				compatible = "acer,a500-iconia-ec", "ene,kb930";
-+				reg = <0x58>;
-+
-+				system-power-controller;
-+
-+				monitored-battery = <&bat1010>;
-+				power-supplies = <&mains>;
-+			};
- 		};
- 	};
- 
-@@ -780,6 +790,13 @@ backlight: backlight {
- 		default-brightness-level = <20>;
- 	};
- 
-+	bat1010: battery-2s1p {
-+		compatible = "simple-battery";
-+		charge-full-design-microamp-hours = <3260000>;
-+		energy-full-design-microwatt-hours = <24000000>;
-+		operating-range-celsius = <0 40>;
-+	};
-+
- 	/* PMIC has a built-in 32KHz oscillator which is used by PMC */
- 	clk32k_in: clock@0 {
- 		compatible = "fixed-clock";
--- 
-2.27.0
+I've obviously pulled this, but it sounds like there should be a
+compiler bug-report for this insane behavior.
 
+Or is Marco building the kernel without optimizations or something
+like that? That has not been a supported model, for various good
+reasons..
+
+                     Linus
