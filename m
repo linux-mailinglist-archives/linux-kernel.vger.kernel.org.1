@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E404D257177
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB1B257178
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgHaBVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 21:21:30 -0400
+        id S1726940AbgHaBVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 21:21:39 -0400
 Received: from mga02.intel.com ([134.134.136.20]:18361 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726618AbgHaBV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 21:21:26 -0400
-IronPort-SDR: U6TJDC6WfLZphU8uulIKxUR8tnbGtRa0ZCNdQiEJ77NBdp+/u9W5NMozUu2VlvAoNb8JbQer9E
- SWlusUn/roHQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="144639107"
+        id S1726878AbgHaBVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 21:21:30 -0400
+IronPort-SDR: WXrtpckWiZqOZTIMXaV3zm+gZql2Dc2TtlrkqZN4smPqwg94Q9R694o+LFOlejFCuNUMzfF9Mu
+ 2I/ZOlGxqygw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="144639109"
 X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; 
-   d="scan'208";a="144639107"
+   d="scan'208";a="144639109"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 18:21:26 -0700
-IronPort-SDR: geFNoiApp43dnDgzKUTSISJDdK+49HGeZhvMkDE7Q2iLoriMbnUuTRV4OSqO50qEGzA3/wIwgm
- z21n+lY+x9SA==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 18:21:30 -0700
+IronPort-SDR: wGI05vG5C9lDG/mW2tvGgOT2yS8ZReo29QIXeGO/HF3Nvns9luXLfHZ1PpHdhP1BF5hEaJuwEa
+ EXrg/DGzoXRw==
 X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; 
-   d="scan'208";a="476529179"
+   d="scan'208";a="476529203"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 18:21:22 -0700
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 18:21:26 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
@@ -34,53 +34,43 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
         ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v3 0/3] ASoC: soundwire: fix port_ready[] dynamic allocation
-Date:   Sun, 30 Aug 2020 21:27:39 +0800
-Message-Id: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH v3 1/3] soundwire: add definition for maximum number of ports
+Date:   Sun, 30 Aug 2020 21:27:40 +0800
+Message-Id: <20200830132742.20404-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
+References: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing code allocates memory for the total number of ports.
-This only works if the ports are contiguous, but will break if e.g. a
-Devices uses port0, 1, and 14. The port_ready[] array would contain 3
-elements, which would lead to an out-of-bounds access. Conversely in
-other cases, the wrong port index would be used leading to timeouts on
-prepare.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-This can be fixed by allocating for the worst-case of 15
-ports (DP0..DP14). In addition since the number is now fixed, we can
-use an array instead of a dynamic allocation.
+A Device may have at most 15 physical ports (DP0, DP1..DP14).
 
-Changes in v3:
-- Add ASoC tag in the cover letter title.
-- Edit the title and commit message of the third patch for better
-  understanding.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ include/linux/soundwire/sdw.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Changes in v2:
-- Split patches into sdw and asoc patches. Please note that "soundwire:
-  fix port_ready[] dynamic allocation in mipi_disco" and "ASoC: codecs:
-  fix port_ready[] dynamic allocation in ASoC codecs" should be merged
-  at the same time.
-
-Pierre-Louis Bossart (3):
-  soundwire: add definition for maximum number of ports
-  soundwire: fix port_ready[] dynamic allocation in mipi_disco
-  ASoC: codecs: soundwire: remove port_ready[] usage from codecs.
-
- drivers/soundwire/mipi_disco.c  | 18 +-----------------
- drivers/soundwire/slave.c       |  4 ++++
- include/linux/soundwire/sdw.h   |  5 +++--
- sound/soc/codecs/max98373-sdw.c | 15 +--------------
- sound/soc/codecs/rt1308-sdw.c   | 14 +-------------
- sound/soc/codecs/rt5682-sdw.c   | 15 +--------------
- sound/soc/codecs/rt700-sdw.c    | 15 +--------------
- sound/soc/codecs/rt711-sdw.c    | 15 +--------------
- sound/soc/codecs/rt715-sdw.c    | 33 +--------------------------------
- 9 files changed, 14 insertions(+), 120 deletions(-)
-
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 76052f12c9f7..0aa4c6af7554 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -38,7 +38,8 @@ struct sdw_slave;
+ #define SDW_FRAME_CTRL_BITS		48
+ #define SDW_MAX_DEVICES			11
+ 
+-#define SDW_VALID_PORT_RANGE(n)		((n) <= 14 && (n) >= 1)
++#define SDW_MAX_PORTS			15
++#define SDW_VALID_PORT_RANGE(n)		((n) < SDW_MAX_PORTS && (n) >= 1)
+ 
+ enum {
+ 	SDW_PORT_DIRN_SINK = 0,
 -- 
 2.17.1
 
