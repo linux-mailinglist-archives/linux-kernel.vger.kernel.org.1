@@ -2,179 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E378257059
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 22:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7FC25706B
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 22:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgH3UCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 16:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        id S1726388AbgH3UPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 16:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbgH3UCj (ORCPT
+        with ESMTP id S1726150AbgH3UPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 16:02:39 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAB7C061573;
-        Sun, 30 Aug 2020 13:02:39 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so1935527pfi.4;
-        Sun, 30 Aug 2020 13:02:39 -0700 (PDT)
+        Sun, 30 Aug 2020 16:15:50 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3319C061573;
+        Sun, 30 Aug 2020 13:15:50 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id h12so3135692pgm.7;
+        Sun, 30 Aug 2020 13:15:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Mo5cAIcbwLzF8PLyUfTTGUYPFzb31BV6RLnWmzyqoHg=;
-        b=JBx/cGx6MfiQz2OjroWGIBtpPeLHX8W0OWHVbciuPaSKbaYQdtiC2TUFNo88TOi6J+
-         lSSALZGDzrHCwIbDmyWsTHbX9bcTCfR+Xqm50BTu9vZCe4nulNMjmvdYx5jC5uWAdXi+
-         1qrEBX1U1s4f9Mu5oGyuTli3i93AY9CAst1dDMnXHmQN58tqz/BDnvVxx7hSF/I+0Vl1
-         zQT2J06qYYginzSgt4nlzNb0uVRf4y0GCEduivD07fZVxPSPGDMndEpV/T8BkIp1XQEw
-         nDvIHS5AKXUDe5ztq8WxzxKNAg/X/UaFvWqeeiCkKXPyzVxhgvl2ScM8IwY6HfEfaRcC
-         KkSw==
+        bh=uN5su8o3xsbvCOgWhY0UzbAHV++yuovb1ibI32bJbhI=;
+        b=OZ9vgJDoErBur4ViHs9sOePZI0qBL1x/3N3seJxZCGqlZ5QLwQEnSxLHF6YqDlqW8I
+         xBGjqJ5vgak4670DiMXxxSMs3fXMkJjj3e4AXuATL6IuYmV7stn2FnHMPnm7QDiYn2Ym
+         nB/6dMf5bxF+F8cbX1TnzCGQjXskNhK9Ix81MfyJ3+spsZGrIFyFa8RtfIRf2//H1H/S
+         8Dhj7Mqb3ENy013DktbfTp4Zx9Dvdfxk8SE8P4NDtQcs34YnSQT/sm1+7057Cgg15O4E
+         aq7CcSs0bI12REcNIxB4jHVw/J6vfKbsZQ1U7MKMCk3/pdm1sxRguZSdsBaw/ykCYqrb
+         O83g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Mo5cAIcbwLzF8PLyUfTTGUYPFzb31BV6RLnWmzyqoHg=;
-        b=n25tUgD+VEDdFi3bqcAaJN11X5YAY9mEY47CPMBe3DSdzxDpRaQLNMeWdWRdHrjWz9
-         fVogXdQ8F52QTVFAzScHga1RXfc/Ny0q6d/hjd16zpcBSGHV1mPwqrveDD3Te3KeVGJi
-         bL9UDwPOBMwYHlWMdDbcziXUCwFq5MBoNZqXAoLQYcdnKwgvAzm5/Aq14ByCr+YJLoUA
-         ZCqaCKtDQ1HxzSRARRMAFtu9VtWjO4IoU2c1StnCj7hFg172aH1sBT+EEFoL3rdomD4j
-         uks1W2yLafrno3qL6fwbamVU2bQhieT8m2ImHi6G+vDhCC6xSFfqWvB5++Mj6q0cRVHQ
-         jKrA==
-X-Gm-Message-State: AOAM5304zB4fUdLBDU5kUGkrGwgIWhdC2JD0+bwZJuEshIH/ysGlkzxw
-        zqMu7XwLTonzo4dBo81JcDBamJ6RcIX9uPONEN8=
-X-Google-Smtp-Source: ABdhPJxUffIbG/iCd16oJlINxEPYq4eIkGuYiKN/6PVKQddOAusN/dNB7UGQr/OGu9oykRFkFEiLYuXonN3E65r9lG0=
-X-Received: by 2002:a62:2587:: with SMTP id l129mr6826216pfl.47.1598817755781;
- Sun, 30 Aug 2020 13:02:35 -0700 (PDT)
+        bh=uN5su8o3xsbvCOgWhY0UzbAHV++yuovb1ibI32bJbhI=;
+        b=ZxvSaFoVO69gqMuKhmKaGUDKTk/X/27KmKpbVc5DCCTCVJLaGxaUAmHFmm5zLA/pNQ
+         uS6rYsVSVs4NvH0u8NKtIioRj04mno+6L+XxlSNdLK0J/iNyZd+fmNY3vd4be3NRTmge
+         ccozeS3+V0TiKuvFN011RI0hRzpS7dhSKyV3m07JhlKa1dZJ2a50Sc6BKbYtuFP62z+w
+         6yncxOmCDh+9SoeNan5Q7sj2txXyyfcakdt1Pzi4Fct+C/Rw2xqVglHJlpWFMxXMYUk5
+         zWIRlzY2TwK3twHLekbL2iuxg1NWcspjXPIJxmcFq1tra3Hq+o3kIFzcKYBUnG1NIowL
+         SQ9A==
+X-Gm-Message-State: AOAM532pQblrG8TjXoIE/yOusGSVSRv7j7Z3WYbfcMM9VDh6GMnOvw8U
+        /8ooHxzosnwAWRzCh38hlTI8KLmQAy3hugKhl0k=
+X-Google-Smtp-Source: ABdhPJynKyxo87BjNt2aLZoSW+tfeQGcmaaGm3ORU9EpaNo+zbAim0QhxmamgpjDqx+iuGg2e2oMSOBwfB8/OBNleg8=
+X-Received: by 2002:a63:c543:: with SMTP id g3mr6051803pgd.203.1598818548769;
+ Sun, 30 Aug 2020 13:15:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200830151459.4648-1-trix@redhat.com>
-In-Reply-To: <20200830151459.4648-1-trix@redhat.com>
+References: <20200828021939.2912798-1-andrew@lunn.ch> <20200828130034.GA2912863@lunn.ch>
+ <CAL_JsqK18GoqkNPePh1+jiEk0JoLH01yPr0dD0AkswXP1N+qzA@mail.gmail.com> <20200830152332.GE2966560@lunn.ch>
+In-Reply-To: <20200830152332.GE2966560@lunn.ch>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 30 Aug 2020 23:02:19 +0300
-Message-ID: <CAHp75VcdUoNMxzoQ4n2y4LrbYX5nTh3Y8rFh=5J9cv7iU-V=Hg@mail.gmail.com>
-Subject: Re: [PATCH] net: openvswitch: pass NULL for unused parameters
-To:     trix@redhat.com
-Cc:     pshelar@ovn.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev <netdev@vger.kernel.org>, dev@openvswitch.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sun, 30 Aug 2020 23:15:32 +0300
+Message-ID: <CAHp75Vd5WXdYPvrr=_CChCHGdWR1iJqxwnMVtgggHGJ6hnVd5Q@mail.gmail.com>
+Subject: Re: [PATCH] of: of_match_node: Make stub an inline function to avoid
+ W=1 warnings
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 6:17 PM <trix@redhat.com> wrote:
+On Sun, Aug 30, 2020 at 6:25 PM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> From: Tom Rix <trix@redhat.com>
+> On Fri, Aug 28, 2020 at 05:09:52PM -0600, Rob Herring wrote:
+> > On Fri, Aug 28, 2020 at 7:00 AM Andrew Lunn <andrew@lunn.ch> wrote:
+> > >
+> > > On Fri, Aug 28, 2020 at 04:19:39AM +0200, Andrew Lunn wrote:
+> > > > When building without CONFIG_OF and W=1, errors are given about unused
+> > > > arrays of match data, because of_match_node is stubbed as a macro. The
+> > > > compile does not see it takes parameters when not astub, so it
+> > > > generates warnings about unused variables. Replace the stub with an
+> > > > inline function to avoid these false warnings.
+> > >
+> > > Hi Rob
+> > >
+> > > So 0-day shows some people have worked around this with #ifdef
+> > > CONFIG_OF around the match table.
+> > >
+> > > I checked the object code for the file i'm interested in.  The
+> > > optimiser has correctly throw away the match table and all code around
+> > > it with the inline stub.
+> > >
+> > > Which do you prefer? This patch and i remove the #ifdef, or the old
+> > > stub and if add #ifdef around the driver i'm getting warnings from?
+> >
+> > Use of_device_get_match_data instead of of_match_node.
+> >
 >
-> clang static analysis flags these problems
+> Hi Rob
 >
-> flow_table.c:713:2: warning: The expression is an uninitialized
->   value. The computed value will also be garbage
->         (*n_mask_hit)++;
->         ^~~~~~~~~~~~~~~
-> flow_table.c:748:5: warning: The expression is an uninitialized
->   value. The computed value will also be garbage
->                                 (*n_cache_hit)++;
->                                 ^~~~~~~~~~~~~~~~
+> That does not work in the use case i'm interested in, which is giving
+> a W=1 warning. Take a look at the last example in
+> Documentation/devicetree/bindings/net/dsa/marvell.txt
 >
-> These are not problems because neither pararmeter is used
+> We have an Ethernet switch, using the compatible string
+> "marvell,mv88e6390". Embedded within the hardware, and within the same
+> driver, we have two MDIO busses. One is internal, for the PHYs
+> integrated into the switch, and one is external, of discrete PHY
+> connected to the switch. The external MDIO bus has its own compatible
+> string. However, there is no struct driver for it, the switch driver
+> is driving the MDIO bus. So of_device_get_match_data() will use the
+> wrong match table.
 
-parameter
-
-> by the calling function.
->
-> Looking at all of the calling functions, there are many
-> cases where the results are unused.  Passing unused
-> parameters is a waste.
->
-> To avoid passing unused parameters, rework the
-> masked_flow_lookup() and flow_lookup() routines to check
-> for NULL parameters and change the unused parameters to NULL.
->
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  net/openvswitch/flow_table.c | 16 +++++++---------
->  1 file changed, 7 insertions(+), 9 deletions(-)
->
-> diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
-> index e2235849a57e..18e7fa3aa67e 100644
-> --- a/net/openvswitch/flow_table.c
-> +++ b/net/openvswitch/flow_table.c
-> @@ -710,7 +710,8 @@ static struct sw_flow *masked_flow_lookup(struct table_instance *ti,
->         ovs_flow_mask_key(&masked_key, unmasked, false, mask);
->         hash = flow_hash(&masked_key, &mask->range);
->         head = find_bucket(ti, hash);
-> -       (*n_mask_hit)++;
-> +       if (n_mask_hit)
-> +               (*n_mask_hit)++;
->
->         hlist_for_each_entry_rcu(flow, head, flow_table.node[ti->node_ver],
->                                 lockdep_ovsl_is_held()) {
-> @@ -745,7 +746,8 @@ static struct sw_flow *flow_lookup(struct flow_table *tbl,
->                                 u64_stats_update_begin(&ma->syncp);
->                                 usage_counters[*index]++;
->                                 u64_stats_update_end(&ma->syncp);
-> -                               (*n_cache_hit)++;
-> +                               if (n_cache_hit)
-> +                                       (*n_cache_hit)++;
->                                 return flow;
->                         }
->                 }
-> @@ -798,9 +800,8 @@ struct sw_flow *ovs_flow_tbl_lookup_stats(struct flow_table *tbl,
->         *n_cache_hit = 0;
-
->         if (unlikely(!skb_hash || mc->cache_size == 0)) {
->                 u32 mask_index = 0;
-> -               u32 cache = 0;
->
-> -               return flow_lookup(tbl, ti, ma, key, n_mask_hit, &cache,
-> +               return flow_lookup(tbl, ti, ma, key, n_mask_hit, NULL,
->                                    &mask_index);
-
-Can it be done for mask_index as well?
-
->         }
->
-> @@ -849,11 +850,9 @@ struct sw_flow *ovs_flow_tbl_lookup(struct flow_table *tbl,
->  {
->         struct table_instance *ti = rcu_dereference_ovsl(tbl->ti);
->         struct mask_array *ma = rcu_dereference_ovsl(tbl->mask_array);
-> -       u32 __always_unused n_mask_hit;
-> -       u32 __always_unused n_cache_hit;
->         u32 index = 0;
->
-
-> -       return flow_lookup(tbl, ti, ma, key, &n_mask_hit, &n_cache_hit, &index);
-> +       return flow_lookup(tbl, ti, ma, key, NULL, NULL, &index);
-
-Ditto.
-
->  }
->
->  struct sw_flow *ovs_flow_tbl_lookup_exact(struct flow_table *tbl,
-> @@ -865,7 +864,6 @@ struct sw_flow *ovs_flow_tbl_lookup_exact(struct flow_table *tbl,
->         /* Always called under ovs-mutex. */
->         for (i = 0; i < ma->max; i++) {
->                 struct table_instance *ti = rcu_dereference_ovsl(tbl->ti);
-> -               u32 __always_unused n_mask_hit;
->                 struct sw_flow_mask *mask;
->                 struct sw_flow *flow;
->
-> @@ -873,7 +871,7 @@ struct sw_flow *ovs_flow_tbl_lookup_exact(struct flow_table *tbl,
->                 if (!mask)
->                         continue;
->
-> -               flow = masked_flow_lookup(ti, match->key, mask, &n_mask_hit);
-> +               flow = masked_flow_lookup(ti, match->key, mask, NULL);
->                 if (flow && ovs_identifier_is_key(&flow->id) &&
->                     ovs_flow_cmp_unmasked_key(flow, match)) {
->                         return flow;
-> --
-> 2.18.1
->
-
+Looks like in that code you may use of_device_is_compatible().
 
 -- 
 With Best Regards,
