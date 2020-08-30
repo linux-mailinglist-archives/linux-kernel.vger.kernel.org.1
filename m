@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5876425703B
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 21:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF09E25703A
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 21:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgH3Tmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 15:42:52 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:48002 "EHLO gloria.sntech.de"
+        id S1726454AbgH3Tmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 15:42:40 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:48008 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbgH3Tmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726201AbgH3Tmg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 30 Aug 2020 15:42:36 -0400
 Received: from p508fca7b.dip0.t-ipconnect.de ([80.143.202.123] helo=phil.fritz.box)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1kCTDl-0002KX-2E; Sun, 30 Aug 2020 21:42:33 +0200
+        id 1kCTDl-0002KX-AO; Sun, 30 Aug 2020 21:42:33 +0200
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Jagan Teki <jagan@amarulasolutions.com>
+To:     Johan Jonker <jbx6244@gmail.com>
 Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        devicetree@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] dt-bindings: arm: rockchip: Update ROCKPi 4 binding
-Date:   Sun, 30 Aug 2020 21:42:27 +0200
-Message-Id: <159881654154.22245.2247081403353499005.b4-ty@sntech.de>
+Subject: Re: [PATCH] arm64: dts: rockchip: fix cpu-supply for rk3328-evb
+Date:   Sun, 30 Aug 2020 21:42:28 +0200
+Message-Id: <159881654154.22245.13684137249237383351.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200807094826.12019-1-jagan@amarulasolutions.com>
-References: <20200807094826.12019-1-jagan@amarulasolutions.com>
+In-Reply-To: <20200813181711.15906-1-jbx6244@gmail.com>
+References: <20200813181711.15906-1-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -40,27 +35,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 Aug 2020 15:18:23 +0530, Jagan Teki wrote:
-> ROCKPi 4 has 3 variants of hardware platforms called
-> ROCKPi 4A, 4B, and 4C.
-> 
-> - ROCKPi 4A has no Wif/BT.
-> - ROCKPi 4B has AP6256 Wifi/BT, PoE.
-> - ROCKPi 4C has AP6256 Wifi/BT, PoE, miniDP, USB Host enabled
->   GPIO pin change compared to 4B, 4C
-> 
-> [...]
+On Thu, 13 Aug 2020 20:17:11 +0200, Johan Jonker wrote:
+> The property cpu-supply should be added to each cpu separately,
+> so fix that for rk3328-evb.
 
 Applied, thanks!
 
-[1/4] dt-bindings: arm: rockchip: Update ROCKPi 4 binding
-      commit: 75a0a65a301f557bf0306d7983f8cf31ac91de56
-[2/4] arm64: dts: rockchip: Mark rock-pi-4 as rock-pi-4a dts
-      commit: b5edb04673700125bfd1d13e6c14747b1ecba522
-[3/4] arm64: dts: rockchip: Add Radxa ROCK Pi 4B support
-      commit: c1075b7fcca81f58ebc5d723f07b23f84ae93daa
-[4/4] arm64: dts: rockchip: Add Radxa ROCK Pi 4C support
-      commit: 93e0e8ce5fdf549f1715dad00bfbb21b2f69ba8e
+[1/1] arm64: dts: rockchip: fix cpu-supply for rk3328-evb
+      commit: 4be8df7b3bcd46a75f7e297ef310234975a437d8
 
 Best regards,
 -- 
