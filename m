@@ -2,129 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B92256D40
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 12:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A24256D53
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 12:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgH3KOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 06:14:39 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:39051 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726264AbgH3KOi (ORCPT
+        id S1728806AbgH3KSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 06:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgH3KSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 06:14:38 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04392;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U7FapVA_1598782473;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7FapVA_1598782473)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 30 Aug 2020 18:14:34 +0800
-Subject: Re: [PATCH v2 1/2] mm/pageblock: mitigation cmpxchg false sharing in
- pageblock flags
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Sun, 30 Aug 2020 06:18:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F799C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 03:18:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/GAo2Idg5PG00N2nZbQoR5pf/FedffQ77BrAr0UiKvs=; b=Bbk5s4uxphj3K3Tda8l/eN8Bum
+        bblVL1iDpSHXsmgyPg0qacB6asEZ8I1i/SC2O7ZLjumo0DpEUUc+jHnnoL/oloRCmxiyZL8OVnHKS
+        g9FJvAWXSuvwikupzUwUdmjWZBC3NgX4xdCf4UOTIO64EwmIhUO512u7rQ8BQB9wijYnIMqagPT4k
+        BHhV82fQpssRTZOnsGC7kZuG1/n8HMgCorkvYJpqFo1E6eGbt6bjfO0GnaWyeF2ipdP9DdTcTumcT
+        na53+jQ/FN44RfRQ9d/92tduh3G+O8O9c4gYEuWjn3uvaDmVUEtlRI0BDvZqsNtjdT0Cc9dqJntAj
+        JTM8Y5Cw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kCKPn-0006ZT-9V; Sun, 30 Aug 2020 10:18:23 +0000
+Date:   Sun, 30 Aug 2020 11:18:23 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Hugh Dickins <hughd@google.com>,
         Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm/pageblock: mitigation cmpxchg false sharing in
+ pageblock flags
+Message-ID: <20200830101823.GY14765@casper.infradead.org>
 References: <1597816075-61091-1-git-send-email-alex.shi@linux.alibaba.com>
  <8ec2a4b0-9e51-abf9-fa7a-29989d3f1fac@arm.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <01c846d4-2fe4-eeef-6c79-e71fda1f9a39@linux.alibaba.com>
-Date:   Sun, 30 Aug 2020 18:14:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+ <01c846d4-2fe4-eeef-6c79-e71fda1f9a39@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <8ec2a4b0-9e51-abf9-fa7a-29989d3f1fac@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01c846d4-2fe4-eeef-6c79-e71fda1f9a39@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 30, 2020 at 06:14:33PM +0800, Alex Shi wrote:
+> +++ b/mm/page_alloc.c
+> @@ -532,9 +536,18 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
+>  	mask <<= bitidx;
+>  	flags <<= bitidx;
+>  
+> +#ifdef	CONFIG_CPU_V6
+> +	byte = (unsigned long)READ_ONCE(bitmap[byte_bitidx]);
+> +#else
+>  	byte = READ_ONCE(bitmap[byte_bitidx]);
+> +#endif
+>  	for (;;) {
+> +#ifdef	CONFIG_CPU_V6
+> +		/* arm v6 has no cmpxchgb function, so still false sharing long word */
+> +		old_byte = cmpxchg((unsigned long*)&bitmap[byte_bitidx], byte, (byte & ~mask) | flags);
+> +#else
+>  		old_byte = cmpxchg(&bitmap[byte_bitidx], byte, (byte & ~mask) | flags);
+> +#endif
 
-
-在 2020/8/19 下午3:55, Anshuman Khandual 写道:
-> 
-> 
-> On 08/19/2020 11:17 AM, Alex Shi wrote:
->> pageblock_flags is used as long, since every pageblock_flags is just 4
->> bits, 'long' size will include 8(32bit machine) or 16 pageblocks' flags,
->> that flag setting has to sync in cmpxchg with 7 or 15 other pageblock
->> flags. It would cause long waiting for sync.
->>
->> If we could change the pageblock_flags variable as char, we could use
->> char size cmpxchg, which just sync up with 2 pageblock flags. it could
->> relief much false sharing in cmpxchg.
-> 
-> Do you have numbers demonstrating claimed performance improvement
-> after this change ?
-> 
-
-the performance data show in another email.
-
-LKP reported the arm6 has a bug on this patchset, since it has no cmpxchgb
-solution, so maybe let's fallback to cmpxchg on it.
-
-From db3d97ba8cc5e206b440bd40a92ef6955ad86bc0 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Tue, 18 Aug 2020 15:51:18 +0800
-Subject: [PATCH v2 3/3] armv6: fix armv6 build issue
-
-Arm v6 can not simulate cmpxchg1 func, so we have to use cmpxchg4 on it.
-
-   arm-linux-gnueabi-ld: mm/page_alloc.o: in function `set_pfnblock_flags_mask':
-   (.text+0x32b4): undefined reference to `__bad_cmpxchg'
-   arm-linux-gnueabi-ld: (.text+0x32e0): undefined reference to `__bad_cmpxchg'
-   arm-linux-gnueabi-ld: drivers/net/ethernet/aquantia/atlantic/hw_atl/hw_atl_b0.o: in function `hw_atl_b0_get_mac_temp':
-   hw_atl_b0.c:(.text+0x30fc): undefined reference to `__bad_udelay'
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
----
- mm/page_alloc.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7da09d66233b..c09146a8946c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -517,7 +517,11 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
- {
- 	unsigned char *bitmap;
- 	unsigned long bitidx, byte_bitidx;
-+#ifdef	CONFIG_CPU_V6
-+	unsigned long old_byte, byte;
-+#else
- 	unsigned char old_byte, byte;
-+#endif
- 
- 	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != BITS_PER_BYTE);
- 	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
-@@ -532,9 +536,18 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
- 	mask <<= bitidx;
- 	flags <<= bitidx;
- 
-+#ifdef	CONFIG_CPU_V6
-+	byte = (unsigned long)READ_ONCE(bitmap[byte_bitidx]);
-+#else
- 	byte = READ_ONCE(bitmap[byte_bitidx]);
-+#endif
- 	for (;;) {
-+#ifdef	CONFIG_CPU_V6
-+		/* arm v6 has no cmpxchgb function, so still false sharing long word */
-+		old_byte = cmpxchg((unsigned long*)&bitmap[byte_bitidx], byte, (byte & ~mask) | flags);
-+#else
- 		old_byte = cmpxchg(&bitmap[byte_bitidx], byte, (byte & ~mask) | flags);
-+#endif
- 		if (byte == old_byte)
- 			break;
- 		byte = old_byte;
--- 
-1.8.3.1
+Good grief, no.  Either come up with an appropriate abstraction or
+abandon this patch.  We can't possibly put this kind of ifdef in the
+memory allocator!
 
