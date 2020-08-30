@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D011F2570EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 00:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF5A2570EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 00:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgH3WoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 18:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726452AbgH3WoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 18:44:07 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8B0C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 15:44:07 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id y4so3508808ljk.8
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 15:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FH5UUjbVRVLGG30ILlf1Mw1a+mIb68P/1duZpHI6CQg=;
-        b=fMbtLvEawP9iGaMPblCEBigt2ybNssfPrUFcG5og0z9igfwEUozl2DBwb+p+BQYEfF
-         bIJCksp2vjR2gdpOj42kOmPlNIyhSB08KjrMys+9VTlSkNCncQhvTnEh2el5n0YXToFF
-         AuFujF0az4hd6IIOqn4c1jLlsO+b9rjS8vr+a5SuctQuCShGlog0uRnLhnt5F9ltvnNg
-         KqozmVHhUHUqCST8KnWYrauDB78mIUOKENu01/9LNPXBdRHs13aX3sdkURQrieoxGSS1
-         LCK3aZ5i/C3ZAKEPcR6k+DNQZOvKx/ISAJ1BEe+VeornRd67YJmZlksL+f6rJbTvNuY3
-         X9WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FH5UUjbVRVLGG30ILlf1Mw1a+mIb68P/1duZpHI6CQg=;
-        b=nKkfuccXYjhU8eDaqWLn5RD/EjO73ZFrmruo6hlHqFmAaT2OGgunRFC3BqZzeBP5KF
-         6EB+jdcORllfyZ+Lc0yJIWFTtLhn8PgbpglxyFBYifzYtL9adq1UZsAXv3Ua4i8W5S84
-         qVX0cNIbmhAH/ZJnjHLotDwNJPId2nkwET3COI3BS4OnRpFLO7Pt1Imo00qWiv70NJxk
-         BYzligyXJLQEmPFtYsQ3aDSGq4W9ZsTv+aG2cea469fWa09gA6t1Ngrj6sxA1L+/AdQ1
-         4F07sKwhosES5vFFDvYYiIb+rqjKVPIxLH/oIWqy0tFXbKl9RN1X5kC3hyzLmhUe//Au
-         uaiA==
-X-Gm-Message-State: AOAM533hcOpo4dgroaS/rHTrZboyv1Vse8Ae5CbFrToXs31OpVnx8pCI
-        yzRP2agrft+G/ef8ASGHY9k=
-X-Google-Smtp-Source: ABdhPJz2m3VqwmCNYz3224c/S6uHbCY0/Pwmajjif0XaIWb8BojiMlNyAAaQuM69d4qpmQRLUKWJQw==
-X-Received: by 2002:a05:651c:555:: with SMTP id q21mr3721947ljp.6.1598827445638;
-        Sun, 30 Aug 2020 15:44:05 -0700 (PDT)
-Received: from localhost.localdomain (h-82-196-111-59.NA.cust.bahnhof.se. [82.196.111.59])
-        by smtp.gmail.com with ESMTPSA id h8sm1176717ljk.138.2020.08.30.15.44.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Aug 2020 15:44:05 -0700 (PDT)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH] const_structs.checkpatch: add pinctrl_ops and pinmux_ops
-Date:   Mon, 31 Aug 2020 00:43:52 +0200
-Message-Id: <20200830224352.37114-1-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1726434AbgH3W4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 18:56:01 -0400
+Received: from crapouillou.net ([89.234.176.41]:54556 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726179AbgH3Wz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 18:55:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1598828157; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ed/EF0gPQmZhJFSMnr0/oT1EzF7WA3QTt0WC2jzwuE=;
+        b=d1g8VLkvpKLDDxYfkUArJw9BAE9k2usXcMWxipgKQPolROWfUNZkjWBPRsWnVsrVkmt8Q8
+        g/s9Fjivv/XHOIb/BeFS4yTSilcrfnbjX3WU7QOd5YHpzoThGptK80uJHoIE7UJuJc670Y
+        WapRJk40NAJtnNwSD8j6WkEm8KyYHgE=
+Date:   Mon, 31 Aug 2020 00:55:46 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 1/2] drm/ingenic: Fix leak of device_node pointer
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        od@zcrc.me
+Message-Id: <YOFWFQ.M1IUN63RB1ZA1@crapouillou.net>
+In-Reply-To: <20200829210727.GE796939@ravnborg.org>
+References: <20200827114404.36748-1-paul@crapouillou.net>
+        <20200829210727.GE796939@ravnborg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All usages of include/linux of these are const pointers, and all
-instances in the kernel except one, that are not const can be made
-const (patches have been posted for those separately).
+Hi Sam,
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- scripts/const_structs.checkpatch | 2 ++
- 1 file changed, 2 insertions(+)
+Le sam. 29 ao=FBt 2020 =E0 23:07, Sam Ravnborg <sam@ravnborg.org> a=20
+=E9crit :
+> On Thu, Aug 27, 2020 at 01:44:03PM +0200, Paul Cercueil wrote:
+>>  of_graph_get_remote_node() requires of_node_put() to be called on=20
+>> the
+>>  device_node pointer when it's no more in use.
+>>=20
+>>  Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-diff --git a/scripts/const_structs.checkpatch b/scripts/const_structs.checkpatch
-index cd45cb3c2b04..1aae4f4fdacc 100644
---- a/scripts/const_structs.checkpatch
-+++ b/scripts/const_structs.checkpatch
-@@ -40,6 +40,8 @@ nvkm_device_chip
- of_device_id
- pci_raw_ops
- phy_ops
-+pinctrl_ops
-+pinmux_ops
- pipe_buf_operations
- platform_hibernation_ops
- platform_suspend_ops
--- 
-2.28.0
+Thanks. Both patches pushed to drm-misc-fixes.
+
+Cheers,
+-Paul
+
+>>  ---
+>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>=20
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  index ada990a7f911..c1bcb93aed2d 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  @@ -978,6 +978,7 @@ static int ingenic_drm_probe(struct=20
+>> platform_device *pdev)
+>>   	}
+>>=20
+>>   	drm_of_component_match_add(dev, &match, compare_of, np);
+>>  +	of_node_put(np);
+>>=20
+>>   	return component_master_add_with_match(dev, &ingenic_master_ops,=20
+>> match);
+>>   }
+>>  --
+>>  2.28.0
+
 
