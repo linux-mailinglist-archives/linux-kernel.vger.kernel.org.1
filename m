@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1C9256CAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 09:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC0F256CAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 09:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbgH3HsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 03:48:00 -0400
-Received: from out28-170.mail.aliyun.com ([115.124.28.170]:36433 "EHLO
-        out28-170.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgH3Hry (ORCPT
+        id S1726589AbgH3Hr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 03:47:56 -0400
+Received: from out28-52.mail.aliyun.com ([115.124.28.52]:33592 "EHLO
+        out28-52.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbgH3Hrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 03:47:54 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0126131-0.00618008-0.981207;FP=0|0|0|0|0|-1|-1|-1;HT=e01a16368;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.IQ3BIUl_1598773648;
+        Sun, 30 Aug 2020 03:47:53 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0126131-0.00618008-0.981207;FP=1908962570842754802|1|1|9|0|-1|-1|-1;HT=e02c03303;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.IQ3BIUl_1598773648;
 Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IQ3BIUl_1598773648)
           by smtp.aliyun-inc.com(10.147.42.198);
-          Sun, 30 Aug 2020 15:47:44 +0800
+          Sun, 30 Aug 2020 15:47:45 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     kishon@ti.com, vkoul@kernel.org, balbi@kernel.org,
@@ -26,9 +26,11 @@ Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
         sernia.zhou@foxmail.com, zhenwenjin@gmail.com
 Subject: [PATCH] USB: PHY: JZ4770: Use the generic PHY framework.
-Date:   Sun, 30 Aug 2020 15:46:47 +0800
-Message-Id: <20200830074648.116518-1-zhouyanjie@wanyeetech.com>
+Date:   Sun, 30 Aug 2020 15:46:48 +0800
+Message-Id: <20200830074648.116518-2-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200830074648.116518-1-zhouyanjie@wanyeetech.com>
+References: <20200830074648.116518-1-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -525,3 +527,4 @@ index b352bdbe8712..df1d99010079 100644
 -obj-$(CONFIG_JZ4770_PHY)		+= phy-jz4770.o
 -- 
 2.11.0
+
