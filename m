@@ -2,179 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2422570BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 23:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9F52570C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 30 Aug 2020 23:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgH3Vgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 17:36:47 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:57888 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbgH3Vgq (ORCPT
+        id S1726409AbgH3VlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 17:41:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726150AbgH3VlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 17:36:46 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0913D258;
-        Sun, 30 Aug 2020 23:36:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598823402;
-        bh=afb9NeFTelTB2r7vjqDOx2f+fySe7Y8p2317ney7DEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZsqR1+o61yyvGRlAkKUcfS85Kjqn6S7owyKVw7e31rt7po0awN6/KrnnndJigRbEu
-         up4uPDo3QJn0Y1BzYl53viU/6aagoar8TNRJk4TJ3YOXKYb8uCKf6yH0B7daGBASXv
-         g3njpj0tz0b4ujhmNEfAn60LOBjM9wt2AS69NPWM=
-Date:   Mon, 31 Aug 2020 00:36:21 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        linux-uvc-devel@lists.sourceforge.net, linux-usb@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] media: uvcvideo: Fix race conditions
-Message-ID: <20200830213621.GC6043@pendragon.ideasonboard.com>
-References: <20200830150443.167286-1-linux@roeck-us.net>
- <20200830155833.GA6043@pendragon.ideasonboard.com>
- <ac2080a1-3b00-ac9e-cd49-d1ee84c6ca25@roeck-us.net>
+        Sun, 30 Aug 2020 17:41:16 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E63C061573;
+        Sun, 30 Aug 2020 14:41:15 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ba12so3716643edb.2;
+        Sun, 30 Aug 2020 14:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=flkqAUAGSpmzpt/BTyP/u7Uv4MTDnK9nGy4kWyS0QGo=;
+        b=u71Dr6TY0sD/uSIJYQEuGVHJCQGYmaY0GU+G58XVwH8WR64ZTGNn1UEmJbohP5d92q
+         u1PBtJK0dC8tuCvqztGjmwS/zYAL+p3ekXU0PkvQltj/tmyZP176jAyHONR0hNqtV2kq
+         4SG0WjG6NLcxcggj6DPd9adsbtSkj6hxkYcBG1C5moP1LvPDQBRV773a8TZCdTBCAw+c
+         Gp2MVg5+4lvwPk9SCgCyju7FcgWi2zQLlTNz7ghIB9cg1ZSsy7nDejP6cEKCHRPRosug
+         QqJ9UVNrac+OBO4Cs1F/EqOoqqMPc7A8qLgzd4DR+TYh3UgdxkZeOmpKEG9Ttzlf0Py6
+         l/+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=flkqAUAGSpmzpt/BTyP/u7Uv4MTDnK9nGy4kWyS0QGo=;
+        b=sPnwHD0BgQ3uwS3xYi7TAIE0ipSEsfabfHgzjoW+SwQFc5oBgCM26I4ZdXwZu2qBsU
+         NnP42MDKOJX2f+Wne2e/VAP40igVpF7vyUfXLbGhs90346pDFxF3w9f1bQ55DDXWI+4/
+         eKOXJPBhCjWBlrkX3VF7JWOkKmVvz+4mRYn8KwW7AYi7hzdEAnyRkAKFmtorn2zJxXFR
+         xYGM9Oi39SqO+Rim/gXHH0mS/WmfiyUt7Y1BieW6SU5mJeESTbkUY2Alv5rg7dM0+Bae
+         W+uPzGNb7RKYB6dVIr0ka4eQjrvylpiTT0YCqwuJosTRDnNZkWACwUaGKn1GUZEXkDip
+         LoRA==
+X-Gm-Message-State: AOAM530sB3yVKkY/J9ibYO0Tk2Rx5wANCqPQKpgwNvcXUx/U4hSGkrJE
+        yZG7JRIA9rKtm3z6M94jNDzDj0peGQLr0A==
+X-Google-Smtp-Source: ABdhPJz3o5Zk2bTMguju6wk5PKk2UphvYY9jIjAZMA4V/FqbZruJ7mdUtaopyePbbsOAmnHOuioFCQ==
+X-Received: by 2002:a50:f197:: with SMTP id x23mr5560626edl.367.1598823674095;
+        Sun, 30 Aug 2020 14:41:14 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f23:5700:b849:b64c:7fd2:8e54? (p200300ea8f235700b849b64c7fd28e54.dip0.t-ipconnect.de. [2003:ea:8f23:5700:b849:b64c:7fd2:8e54])
+        by smtp.googlemail.com with ESMTPSA id n15sm5671590eja.26.2020.08.30.14.41.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Aug 2020 14:41:13 -0700 (PDT)
+Subject: Re: fsl_espi errors on v5.7.15
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "paulus@samba.org" <paulus@samba.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+References: <42107721-614b-96e8-68d9-4b888206562e@alliedtelesis.co.nz>
+ <1020029e-4cb9-62ba-c6d6-e6b9bdf93aac@gmail.com>
+ <1598510348.1g7wt0s02s.astroid@bobo.none>
+ <0068446e-06f8-6648-2f40-56f324c1ee6e@alliedtelesis.co.nz>
+ <1598788275.m90vz24p6x.astroid@bobo.none>
+ <524a0f50-f954-f5a7-eccb-66eece59c7c4@alliedtelesis.co.nz>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <5ca7ba48-ef9c-2b7c-67ff-88d0a2c9f380@gmail.com>
+Date:   Sun, 30 Aug 2020 23:41:08 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <524a0f50-f954-f5a7-eccb-66eece59c7c4@alliedtelesis.co.nz>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ac2080a1-3b00-ac9e-cd49-d1ee84c6ca25@roeck-us.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
-
-On Sun, Aug 30, 2020 at 01:48:24PM -0700, Guenter Roeck wrote:
-> On 8/30/20 8:58 AM, Laurent Pinchart wrote:
-> > On Sun, Aug 30, 2020 at 08:04:38AM -0700, Guenter Roeck wrote:
-> >> The uvcvideo code has no lock protection against USB disconnects
-> >> while video operations are ongoing. This has resulted in random
-> >> error reports, typically pointing to a crash in usb_ifnum_to_if(),
-> >> called from usb_hcd_alloc_bandwidth(). A typical traceback is as
-> >> follows.
-> >>
-> >> usb 1-4: USB disconnect, device number 3
-> >> BUG: unable to handle kernel NULL pointer dereference at 0000000000000000
-> >> PGD 0 P4D 0
-> >> Oops: 0000 [#1] PREEMPT SMP PTI
-> >> CPU: 0 PID: 5633 Comm: V4L2CaptureThre Not tainted 4.19.113-08536-g5d29ca36db06 #1
-> >> Hardware name: GOOGLE Edgar, BIOS Google_Edgar.7287.167.156 03/25/2019
-> >> RIP: 0010:usb_ifnum_to_if+0x29/0x40
-> >> Code: <...>
-> >> RSP: 0018:ffffa46f42a47a80 EFLAGS: 00010246
-> >> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff904a396c9000
-> >> RDX: ffff904a39641320 RSI: 0000000000000001 RDI: 0000000000000000
-> >> RBP: ffffa46f42a47a80 R08: 0000000000000002 R09: 0000000000000000
-> >> R10: 0000000000009975 R11: 0000000000000009 R12: 0000000000000000
-> >> R13: ffff904a396b3800 R14: ffff904a39e88000 R15: 0000000000000000
-> >> FS: 00007f396448e700(0000) GS:ffff904a3ba00000(0000) knlGS:0000000000000000
-> >> CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> CR2: 0000000000000000 CR3: 000000016cb46000 CR4: 00000000001006f0
-> >> Call Trace:
-> >>  usb_hcd_alloc_bandwidth+0x1ee/0x30f
-> >>  usb_set_interface+0x1a3/0x2b7
-> >>  uvc_video_start_transfer+0x29b/0x4b8 [uvcvideo]
-> >>  uvc_video_start_streaming+0x91/0xdd [uvcvideo]
-> >>  uvc_start_streaming+0x28/0x5d [uvcvideo]
-> >>  vb2_start_streaming+0x61/0x143 [videobuf2_common]
-> >>  vb2_core_streamon+0xf7/0x10f [videobuf2_common]
-> >>  uvc_queue_streamon+0x2e/0x41 [uvcvideo]
-> >>  uvc_ioctl_streamon+0x42/0x5c [uvcvideo]
-> >>  __video_do_ioctl+0x33d/0x42a
-> >>  video_usercopy+0x34e/0x5ff
-> >>  ? video_ioctl2+0x16/0x16
-> >>  v4l2_ioctl+0x46/0x53
-> >>  do_vfs_ioctl+0x50a/0x76f
-> >>  ksys_ioctl+0x58/0x83
-> >>  __x64_sys_ioctl+0x1a/0x1e
-> >>  do_syscall_64+0x54/0xde
-> >>
-> >> While this is problem rarely observed in the field, it is relatively easy
-> >> to reproduce by adding msleep() calls into the code.
-> >>
-> >> I don't presume to claim that I found every issue, but this patch series
-> >> should fix at least the major problems.
-> >>
-> >> The patch series was tested exensively on a Chromebook running chromeos-4.19
-> >> and on a Linux system running a v5.8.y based kernel.
-> > 
-> > I'll review each patch individually, but I think 2/5, 4/5 and 5/5 should
-> > be handled in the V4L2 core, not the uvcvideo driver. Otherwise we would
-> > have to replicate that logic in all drivers, while I think it can easily
-> > be implemented in a generic fashion as previously discussed.
-> > 
-> The problem is that the v4l2 core already does support locking. There is
-> a global lock, in struct video_device, a queue lock in struct v4l2_m2m_ctx,
-> and another queue lock in struct vb2_queue. However, all of those have
-> to be initialized from the driver. The uvcvideo driver uses its own locks and
-> does not set the lock pointers in the various generic structures. I was able
-> to figure out how to use the uvcvideo specific locks in the uvcvideo
-> driver, but all my attempts to initialize and use the generic locks failed.
+On 30.08.2020 23:00, Chris Packham wrote:
 > 
-> It may well be that the generic code isn't entirely clean - for example
-> I am not sure if the lock protection in v4l2_open() is complete since
-> it doesn't handle disconnects after checking if the video device is still
-> registered (and I don't really see the point of the second video_is_registered()
-> call in v4l2_open). However, that may just be a lack of understanding on my
-> side on how the code is supposed to work. Maybe the actual device open function
-> is expected to have its own protection against underlying hardware removal
-> and video device unregistration while opening the device.
+> On 31/08/20 12:30 am, Nicholas Piggin wrote:
+>> Excerpts from Chris Packham's message of August 28, 2020 8:07 am:
 > 
-> [ Regarding the second call to video_is_registered() in v4l2_open():
->   Add msleep(5000) between it and the call to the driver open function,
->   disconnect the device during the sleep, and it will happily call the device
->   open function on a non-registered video device. That is what patch 5/5 tries
->   to fix or the uvcvideo driver.
->   The same problem applies to other file operations in v4l2-dev.c: They all
->   check if the video device is registered before calling the device
->   specific code, but I don't really see the point of doing that because
->   there is no protection against unregistration after the check was made
->   and before/while the device specific code is running.
->   Patch 4/5 tries to fix this for the uvcvideo driver.
->   If that is a bug in the v4l2 code, I'll be happy to work on a fix,
->   but the only generic fix I could think of would be to utilize the lock in
->   struct video_device ... but that lock isn't initialized by the uvcvideo
->   driver.
-> ]
+> <snip>
 > 
-> Either case, I don't think my understanding of the interaction between
-> v4l2 and uvcvideo is good enough to make more invasive changes. I _think_
-> any generic improvement should start with refactoring the uvcvideo code to
-> use the v4l2 locking mechanism. However, from the exchange here, my
-> understanding is that this locking mechanism is not used on purpose. That
-> means we'll have a uvcvideo specific locking mechanism, period, and I don't
-> think it is even possible to solve the problem without utilizing this locking
-> mechanism.
+>>>>>>> I've also now seen the RX FIFO not empty error on the T2080RDB
+>>>>>>>
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but rx/tx fifo's aren't empty!
+>>>>>>> fsl_espi ffe110000.spi: SPIE_RXCNT = 1, SPIE_TXCNT = 32
+>>>>>>>
+>>>>>>> With my current workaround of emptying the RX FIFO. It seems
+>>>>>>> survivable. Interestingly it only ever seems to be 1 extra byte in the
+>>>>>>> RX FIFO and it seems to be after either a READ_SR or a READ_FSR.
+>>>>>>>
+>>>>>>> fsl_espi ffe110000.spi: tx 70
+>>>>>>> fsl_espi ffe110000.spi: rx 03
+>>>>>>> fsl_espi ffe110000.spi: Extra RX 00
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but rx/tx fifo's aren't empty!
+>>>>>>> fsl_espi ffe110000.spi: SPIE_RXCNT = 1, SPIE_TXCNT = 32
+>>>>>>> fsl_espi ffe110000.spi: tx 05
+>>>>>>> fsl_espi ffe110000.spi: rx 00
+>>>>>>> fsl_espi ffe110000.spi: Extra RX 03
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but SPIE_DON isn't set!
+>>>>>>> fsl_espi ffe110000.spi: Transfer done but rx/tx fifo's aren't empty!
+>>>>>>> fsl_espi ffe110000.spi: SPIE_RXCNT = 1, SPIE_TXCNT = 32
+>>>>>>> fsl_espi ffe110000.spi: tx 05
+>>>>>>> fsl_espi ffe110000.spi: rx 00
+>>>>>>> fsl_espi ffe110000.spi: Extra RX 03
+>>>>>>>
+>>>>>>>   From all the Micron SPI-NOR datasheets I've got access to it is
+>>>>>>> possible to continually read the SR/FSR. But I've no idea why it
+>>>>>>> happens some times and not others.
+>>>>>> So I think I've got a reproduction and I think I've bisected the problem
+>>>>>> to commit 3282a3da25bd ("powerpc/64: Implement soft interrupt replay in
+>>>>>> C"). My day is just finishing now so I haven't applied too much scrutiny
+>>>>>> to this result. Given the various rabbit holes I've been down on this
+>>>>>> issue already I'd take this information with a good degree of skepticism.
+>>>>>>
+>>>>> OK, so an easy test should be to re-test with a 5.4 kernel.
+>>>>> It doesn't have yet the change you're referring to, and the fsl-espi driver
+>>>>> is basically the same as in 5.7 (just two small changes in 5.7).
+>>>> There's 6cc0c16d82f88 and maybe also other interrupt related patches
+>>>> around this time that could affect book E, so it's good if that exact
+>>>> patch is confirmed.
+>>> My confirmation is basically that I can induce the issue in a 5.4 kernel
+>>> by cherry-picking 3282a3da25bd. I'm also able to "fix" the issue in
+>>> 5.9-rc2 by reverting that one commit.
+>>>
+>>> I both cases it's not exactly a clean cherry-pick/revert so I also
+>>> confirmed the bisection result by building at 3282a3da25bd (which sees
+>>> the issue) and the commit just before (which does not).
+>> Thanks for testing, that confirms it well.
+>>
+>> [snip patch]
+>>
+>>> I still saw the issue with this change applied. PPC_IRQ_SOFT_MASK_DEBUG
+>>> didn't report anything (either with or without the change above).
+>> Okay, it was a bit of a shot in the dark. I still can't see what
+>> else has changed.
+>>
+>> What would cause this, a lost interrupt? A spurious interrupt? Or
+>> higher interrupt latency?
+>>
+>> I don't think the patch should cause significantly worse latency,
+>> (it's supposed to be a bit better if anything because it doesn't set
+>> up the full interrupt frame). But it's possible.
 > 
-> Of course, it may as well be that I am completely off track and clueless.
-> After all, the first time I looked into this code was about two weeks ago.
-> So please bear with me if I talk nonsense.
+> My working theory is that the SPI_DON indication is all about the TX 
+> direction an now that the interrupts are faster we're hitting an error 
+> because there is still RX activity going on. Heiner disagrees with my 
+> interpretation of the SPI_DON indication and the fact that it doesn't 
+> happen every time does throw doubt on it.
+> 
+It's right that the eSPI spec can be interpreted that SPI_DON refers to
+TX only. However this wouldn't really make sense, because also for RX
+we program the frame length, and therefore want to be notified once the
+full frame was received. Also practical experience shows that SPI_DON
+is set also after RX-only transfers.
+Typical SPI NOR use case is that you write read command + start address,
+followed by a longer read. If the TX-only interpretation would be right,
+we'd always end up with SPI_DON not being set.
 
-It would be rather impolite to claim you're clueless, given that you
-managed to write this patch series only two weeks after first looking
-into the problem :-)
+> I can't really explain the extra RX byte in the fifo. We know how many 
+> bytes to expect and we pull that many from the fifo so it's not as if 
+> we're missing an interrupt causing us to skip the last byte. I've been 
+> looking for some kind of off-by-one calculation but again if it were 
+> something like that it'd happen all the time.
+> 
+Maybe it helps to know what value this extra byte in the FIFO has. Is it:
+- a duplicate of the last read byte
+- or the next byte (at <end address> + 1)
+- or a fixed value, e.g. always 0x00 or 0xff
 
-I'll try to prototype what I envision would be a good solution in the
-V4L2 core. If stars align, I may even try to push it one level up, to
-the chardev layer. Would you then be able to test it ?
 
-> >> ----------------------------------------------------------------
-> >> Guenter Roeck (5):
-> >>       media: uvcvideo: Cancel async worker earlier
-> >>       media: uvcvideo: Lock video streams and queues while unregistering
-> >>       media: uvcvideo: Release stream queue when unregistering video device
-> >>       media: uvcvideo: Protect uvc queue file operations against disconnect
-> >>       media: uvcvideo: In uvc_v4l2_open, check if video device is registered
-> >>
-> >>  drivers/media/usb/uvc/uvc_ctrl.c   | 11 ++++++----
-> >>  drivers/media/usb/uvc/uvc_driver.c | 12 ++++++++++
-> >>  drivers/media/usb/uvc/uvc_queue.c  | 32 +++++++++++++++++++++++++--
-> >>  drivers/media/usb/uvc/uvc_v4l2.c   | 45 ++++++++++++++++++++++++++++++++++++--
-> >>  drivers/media/usb/uvc/uvcvideo.h   |  1 +
-> >>  5 files changed, 93 insertions(+), 8 deletions(-)
-
--- 
-Regards,
-
-Laurent Pinchart
