@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EA2257B60
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDDD257B68
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgHaOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 10:38:05 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:25211 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726292AbgHaOiA (ORCPT
+        id S1728030AbgHaOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 10:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727930AbgHaOj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 10:38:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1598884676;
+        Mon, 31 Aug 2020 10:39:59 -0400
+Received: from mxout2.routing.net (mxout2.routing.net [IPv6:2a03:2900:1:a::b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6649FC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 07:39:57 -0700 (PDT)
+Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
+        by mxout2.routing.net (Postfix) with ESMTP id BDE1F5FC42;
+        Mon, 31 Aug 2020 14:39:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
+        s=20200217; t=1598884787;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=LwWG8yVSld32sVSBN53trOEXo7Kzcc46dqFc2N17+r4=;
-        b=NyH3ZzQdr54u++TlS79UX9U0Thmy3MdlgjpZxDhAEQgl9nqmVb3MjFVCxzg6GgAvgT3bQy
-        lf1Ecuz4qBq5LOMQKOZdwom6Fdj3jANoyNRfdGoYzN2vAkhE2IIU239+4xs++dozMhJhEp
-        8MFDVMKTyNjrso1iZm1yHtDVIT/nw/Y=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2106.outbound.protection.outlook.com [104.47.18.106])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-16-feHQX6wdP6-F8c6bQTnydw-1; Mon, 31 Aug 2020 16:37:28 +0200
-X-MC-Unique: feHQX6wdP6-F8c6bQTnydw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hJn99N+o/+mxEN3IVk+PHqYZPoX4eGr6r2eYCUtShuDtwIhusbwsu3xjcnNTM9H6yhxUPGVhKZ4S8cI1NJ3KgHED7siHuepHj4+eSgcGYWcAoAnR3osnddSgG27SvnfhxyxdYHDKbz4kEo4DT/xowY3LG1CpVdakUI/z0Hh0NhQ62c6YDaMdF/zODJzNZ3VzAgzIj+DAWAkiMURZb3k4MslJMk3lN4JMQa7Q88atw5iuqQDqsu2QgpAx3GJZ8AvTdc9uPnnVnEsa08VNtzQ1botk+DfYtFWTBBRXUpzl5V7V1qxCzeV3O7DYMGa51alz6tw0oR8ySjq5JCsCpV+3ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LwWG8yVSld32sVSBN53trOEXo7Kzcc46dqFc2N17+r4=;
- b=cEIxr/g1qqW+ewcOauroTf5ehmHnEXNjNxu4w/MRwMP1V4L0bPdTZblNRGJc2OJSVuaxrYvCzWSGSn/Yy51cKcVvr0Qy1jogd+CV5G1ArzceRDuBXbUSqjn34JwY+JRzT27JVz4Vn24iW91urI4TiDPByZ33tU6ftsWjoUVWewAn9YMmE+qUyZ4w14R63QA3D/DnVoEBEG/6tYTWY4t0vm7MCg9vxlO2CzXZF6MSnTYMsj2ydHzs0x2FVScV0dFD8UyfxjepYxDJ93GeYvpo2dFNBJGtXp3DqwySvvmGgAvezSGn1w7Zar7V1WWlnW9lLvkq7PVPxxox1XgYTnNTeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=suse.com;
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com (2603:10a6:10:20::21)
- by DB7PR04MB4139.eurprd04.prod.outlook.com (2603:10a6:5:26::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Mon, 31 Aug
- 2020 14:37:27 +0000
-Received: from DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::78ee:1d1e:bc6b:d970]) by DB7PR04MB5177.eurprd04.prod.outlook.com
- ([fe80::78ee:1d1e:bc6b:d970%7]) with mapi id 15.20.3326.025; Mon, 31 Aug 2020
- 14:37:27 +0000
-Date:   Mon, 31 Aug 2020 22:37:09 +0800
-From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: ethernet: mlx4: Fix memory allocation in
- mlx4_buddy_init()
-Message-ID: <20200831143709.GA12996@syu-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-ClientProxiedBy: HK2PR02CA0173.apcprd02.prod.outlook.com
- (2603:1096:201:1f::33) To DB7PR04MB5177.eurprd04.prod.outlook.com
- (2603:10a6:10:20::21)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RdOFWohILbsEDDDJFVfgHhbn+dw2QRxvLWyTIr2kZpU=;
+        b=QG9Bcy4D86OBecjJqWP/tcMdwIDTmE3hui2EQ3NEBrH3qBuuFq8y7TPOkYLJ74hzHCBfqO
+        GdVDgwMDOXnAwgRC2dO/ece+hky352oQocmZjea1+DndpMN5MpSeAQ3HrfuD3Oge125XMv
+        BA3xEHZYF/djXMSn2ohFAMZquyS9WN4=
+Received: from localhost.localdomain (fttx-pool-217.61.158.151.bambit.de [217.61.158.151])
+        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id EEE3C1005C3;
+        Mon, 31 Aug 2020 14:39:46 +0000 (UTC)
+From:   Frank Wunderlich <linux@fw-web.de>
+To:     linux-mediatek@lists.infradead.org
+Cc:     Alex Ryabchenko <d3adme4t@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        chunkuang.hu@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: [PATCH] arm: dts: mt7623: add lima related regulator
+Date:   Mon, 31 Aug 2020 16:39:37 +0200
+Message-Id: <20200831143937.28259-1-linux@fw-web.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from syu-laptop (27.242.32.233) by HK2PR02CA0173.apcprd02.prod.outlook.com (2603:1096:201:1f::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Mon, 31 Aug 2020 14:37:23 +0000
-X-Originating-IP: [27.242.32.233]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 96a6b613-c12b-4e86-aad1-08d84dbb61f9
-X-MS-TrafficTypeDiagnostic: DB7PR04MB4139:
-X-Microsoft-Antispam-PRVS: <DB7PR04MB4139E7C5B383AAA72ECD4D09BF510@DB7PR04MB4139.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:949;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lmGsbyXLvgcIlJiEvka8CLJQhdY4pIULkQm7ebwtXMl9jM8K73eMT8usla5iusRdcHzBvFErIq8F1gYaeKYiIv/Yx79oYvpaJdDZtXjlMnCqKhCdz2ZE2YCcGM0p94TSWtlmF8h+nJgJFOD/5UF8OXg1BGBQ9LyHTIkF9htTpkhmtx+WurJMWBGKjxkM8dFm+GN3vumJxC1WJlYQt0zL+M7CP2TaH4fLu3A59L2UPeCojj7QtZ5YAlh+6P7DsrXOBn1H8Rbmy5pvra/S/4GOIge+rMc/u4vTIOimjZojMeMCTXeI0CJewdJbSB4mboTiOcuFaMJXeGhJeYAh3d4XHg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5177.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(39860400002)(376002)(1076003)(9686003)(110136005)(6666004)(956004)(52116002)(55016002)(4326008)(5660300002)(6496006)(33656002)(186003)(66946007)(83380400001)(8676002)(478600001)(26005)(33716001)(16526019)(66556008)(66476007)(86362001)(8936002)(316002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: +wFj+oOtQQTSnkO6a1CI/QIzqu4pQ7UwW61wRio//jRFfSOZbJWSHwhUU1SaVidkSu47RX6FNJUb4RZSDEr+jLzUqlEXj3Rsj3QogMtYHho0X4XG+5a515jLVl1dTyPcoNeJ1bWTtggi0UxD4ruoDfWWAQcrJ7DflpbdPFB3IAc5lqC6YPIqcicSWGPpdI8ymtbSL4ML2Ir/YQDjEM7s2YepHIn0yjqU1BFDVB1zFr70ZQ09gOJ+IW6PfDpRErN2qjcQsWw9MAk7oXYVUKlDqecv5/dV8AcVK/Df5U5NuuqPxc3MBMSLp1627Q5na8ONzTHXvIGleeZLS3hRl+Rze2kwNAIPldikwaQA4nFfKBFsW+dB8EmqaAa2sVqmlK0s5a/F6/T6s8A2LI7nY3cPO+BmmZPn2tmkhXhO0OBYU4iiFOh287HB9/eSSFYcdYj1gGT2vrRvQt8v1iIVc4+sPox7mdkQMyjqPnoOwy4ab6hmYiDA2U4KKpega3mBTj1xRYL8aOAHhiApuDXZhPs/ZmKKGLOpbBt//6kLewzb/Y+6YqRNYPDhJWu1q0PuyuCcnsKKxqWWVX/NYFXur/VjO7/NYVljiJoPQsZJa4GVUVlrEvyoxWFgfRBk2lv6kzH3eaWDLEfCMecnlxIs6EAPUA==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96a6b613-c12b-4e86-aad1-08d84dbb61f9
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5177.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2020 14:37:27.2039
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aoa2OjiDj5HPVnrUeVDK0rfw8/3RD5H7j22bRCcKXLMOasgX9fwJE4vKxhf/FnOcIl2XOq8JXbxlwYM7yKPc3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4139
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On machines with much memory (> 2 TByte) and log_mtts_per_seg == 0, a
-max_order of 31 will be passed to mlx_buddy_init(), which results in
-s = BITS_TO_LONGS(1 << 31) becoming a negative value, leading to
-kvmalloc_array() failure when it is converted to size_t.
+From: Alex Ryabchenko <d3adme4t@gmail.com>
 
-  mlx4_core 0000:b1:00.0: Failed to initialize memory region table, aborting
-  mlx4_core: probe of 0000:b1:00.0 failed with error -12
+GPU needs additional regulator, add it to devicetree of bpi-r2
 
-Fix this issue by changing the left shifting operand from a signed literal to
-an unsigned one.
-
-Fixes: 225c7b1feef1 ("IB/mlx4: Add a driver Mellanox ConnectX InfiniBand adapters")
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Signed-off-by: Alex Ryabchenko <d3adme4t@gmail.com>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
 ---
- drivers/net/ethernet/mellanox/mlx4/mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/mr.c b/drivers/net/ethernet/mellanox/mlx4/mr.c
-index d2986f1f2db0..d7444782bfdd 100644
---- a/drivers/net/ethernet/mellanox/mlx4/mr.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/mr.c
-@@ -114,7 +114,7 @@ static int mlx4_buddy_init(struct mlx4_buddy *buddy, int max_order)
- 		goto err_out;
+diff --git a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+index f41f221e56ca..826912545ef1 100644
+--- a/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
++++ b/arch/arm/boot/dts/mt7623n-bananapi-bpi-r2.dts
+@@ -79,6 +79,13 @@ reg_5v: regulator-5v {
+ 		regulator-always-on;
+ 	};
  
- 	for (i = 0; i <= buddy->max_order; ++i) {
--		s = BITS_TO_LONGS(1 << (buddy->max_order - i));
-+		s = BITS_TO_LONGS(1UL << (buddy->max_order - i));
- 		buddy->bits[i] = kvmalloc_array(s, sizeof(long), GFP_KERNEL | __GFP_ZERO);
- 		if (!buddy->bits[i])
- 			goto err_out_free;
++	reg_vgpu: fixedregulator@0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vdd_fixed_vgpu";
++		regulator-min-microvolt = <1150000>;
++		regulator-max-microvolt = <1150000>;
++	};
++
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 		pinctrl-names = "default";
+@@ -283,6 +290,11 @@ &i2c1 {
+ 	status = "okay";
+ };
+ 
++&mali {
++	mali-supply = <&reg_vgpu>;
++	status = "okay";
++};
++
+ &mmc0 {
+ 	pinctrl-names = "default", "state_uhs";
+ 	pinctrl-0 = <&mmc0_pins_default>;
+@@ -402,4 +414,3 @@ &u3phy1 {
+ &u3phy2 {
+ 	status = "okay";
+ };
+-
 -- 
-2.28.0
+2.25.1
 
