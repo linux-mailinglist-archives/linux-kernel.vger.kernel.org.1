@@ -2,165 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E0825787F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE283257886
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726359AbgHaLbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:31:05 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45730 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727042AbgHaLaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:30:19 -0400
-Received: from zn.tnic (p200300ec2f085000329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5000:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4F12D1EC02C1;
-        Mon, 31 Aug 2020 13:30:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1598873406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Xc+Pd4QRnfNfg4+7CpZrHisRsqB1SyQ+tI27GhvzMCQ=;
-        b=SenbmO87jXBqpXwojhBpSHQnEP4BtnTmjZyLxOz7tyqmb6JwiuipB0Ll5jgUTJzOB5CVQI
-        gqH0XdsTxrHF2XN6Q8OMqK5PJ0qdVeME1fBmi9+KIvMkE1t9bJ3vKpQFj/q/RLBwVVakrk
-        U7cWe9EJ9E3Y7cK1nNtroJ067GRc6f8=
-Date:   Mon, 31 Aug 2020 13:30:02 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v6 48/76] x86/entry/64: Add entry code for #VC handler
-Message-ID: <20200831113002.GH27517@zn.tnic>
-References: <20200824085511.7553-1-joro@8bytes.org>
- <20200824085511.7553-49-joro@8bytes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200824085511.7553-49-joro@8bytes.org>
+        id S1726515AbgHaLgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:36:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11324 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726042AbgHaLgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 07:36:46 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07VBWZrb088746;
+        Mon, 31 Aug 2020 07:36:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=vh9EWyK0xQRTwfsNURMiEtf0ZDUu2AFY/wnYwOhd2DE=;
+ b=Zwywytlk5nm/hA7LHVCXLUa1niCuJXPuLn3ySZL959fTxLAfGUpJ8PNH1HOBMudi9QFB
+ 5SYoqnbYXQZGU8LM/NtdB8M6d2eCqPDZVqZgt5UDfSZt5EPm+IQmtyDBPSqNFBZPnbMl
+ jcmXaj0Y/wNtXK+Uyihft83sDqfUcq9S1Qpedwu9172imVg8CnM3Vy01JbdX/lYD6wi6
+ 6nJSLdwnlELdPAF2ArOVahWiKVY7TI0otGB7lsmfhaI62KcJ/gFkHeBhhwh+uAVvSFzE
+ deZf2o6q4z41YG9vqOCFcwnH3jkOz8Pt8FJ11lL4z/acDBfHC43p4JJlpUoAq5Eg2mp0 BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 338yrv122h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 07:36:42 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07VBWtY7090160;
+        Mon, 31 Aug 2020 07:36:41 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 338yrv121n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 07:36:41 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07VBX8mf030302;
+        Mon, 31 Aug 2020 11:36:39 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 337e9gt4ej-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 11:36:39 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07VBabtx60948928
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 11:36:37 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F08F9A4054;
+        Mon, 31 Aug 2020 11:36:36 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 790F7A4060;
+        Mon, 31 Aug 2020 11:36:33 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.2.129])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Aug 2020 11:36:33 +0000 (GMT)
+Message-ID: <e76bdb18c6045702156441470e50380445e6e218.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 2/6] IMA: change process_buffer_measurement return
+ type from void to int
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Mon, 31 Aug 2020 07:36:32 -0400
+In-Reply-To: <20200828015704.6629-3-tusharsu@linux.microsoft.com>
+References: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
+         <20200828015704.6629-3-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-31_04:2020-08-31,2020-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ bulkscore=0 mlxscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ clxscore=1015 impostorscore=0 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008310066
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:54:43AM +0200, Joerg Roedel wrote:
-> @@ -446,6 +448,82 @@ _ASM_NOKPROBE(\asmsym)
->  SYM_CODE_END(\asmsym)
->  .endm
+On Thu, 2020-08-27 at 18:57 -0700, Tushar Sugandhi wrote:
+> process_buffer_measurement() does not return the result of the operation.
+> Therefore, the consumers of this function cannot act on it, if needed.
+> 
+> Update return type of process_buffer_measurement() from void to int.
+
+Failure to measure may be audited, but should never fail.  This is one
+of the main differences between secure and trusted boot concepts. 
+Notice in process_measurement() that -EACCES is only returned for
+appraisal.
+
+Returning a failure from process_buffer_measurement() in itself isn't a
+problem, as long as the failure isn't returned to the LSM/IMA hook. 
+However,  just as the callers of  process_measurement() originally
+processed the result, that processing was moved into
+process_measurement() [1].
+
+Mimi
+
+[1] 750943a30714 ima: remove enforce checking duplication
+
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> ---
+>  security/integrity/ima/ima.h      |  6 +++---
+>  security/integrity/ima/ima_main.c | 14 +++++++-------
+>  2 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index 8875085db689..83ed57147e68 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -265,9 +265,9 @@ void ima_store_measurement(struct integrity_iint_cache *iint, struct file *file,
+>  			   struct evm_ima_xattr_data *xattr_value,
+>  			   int xattr_len, const struct modsig *modsig, int pcr,
+>  			   struct ima_template_desc *template_desc);
+> -void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+> -				const char *eventname, enum ima_hooks func,
+> -				int pcr, const char *func_data);
+> +int process_buffer_measurement(struct inode *inode, const void *buf, int size,
+> +			       const char *eventname, enum ima_hooks func,
+> +			       int pcr, const char *func_data);
+>  void ima_audit_measurement(struct integrity_iint_cache *iint,
+>  			   const unsigned char *filename);
+>  int ima_alloc_init_template(struct ima_event_data *event_data,
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index c870fd6d2f83..0979a62a9257 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -736,9 +736,9 @@ int ima_load_data(enum kernel_load_data_id id)
+>   *
+>   * Based on policy, the buffer is measured into the ima log.
+>   */
+> -void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+> -				const char *eventname, enum ima_hooks func,
+> -				int pcr, const char *func_data)
+> +int process_buffer_measurement(struct inode *inode, const void *buf, int size,
+> +			       const char *eventname, enum ima_hooks func,
+> +			       int pcr, const char *func_data)
+>  {
+>  	int ret = 0;
+>  	const char *audit_cause = "ENOMEM";
+> @@ -758,7 +758,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  	u32 secid;
 >  
-
-ifdeffery pls...
-
-> +/**
-> + * idtentry_vc - Macro to generate entry stub for #VC
-> + * @vector:		Vector number
-> + * @asmsym:		ASM symbol for the entry point
-> + * @cfunc:		C function to be called
-> + *
-> + * The macro emits code to set up the kernel context for #VC. The #VC handler
-> + * runs on an IST stack and needs to be able to cause nested #VC exceptions.
-> + *
-> + * To make this work the #VC entry code tries its best to pretend it doesn't use
-> + * an IST stack by switching to the task stack if coming from user-space (which
-> + * includes early SYSCALL entry path) or back to the stack in the IRET frame if
-> + * entered from kernel-mode.
-> + *
-> + * If entered from kernel-mode the return stack is validated first, and if it is
-> + * not safe to use (e.g. because it points to the entry stack) the #VC handler
-> + * will switch to a fall-back stack (VC2) and call a special handler function.
-> + *
-> + * The macro is only used for one vector, but it is planned to extend it in the
-								^^^^^^^^^^^
-
-"... to be extended..."
-
-...
-
-> @@ -674,6 +675,56 @@ asmlinkage __visible noinstr struct pt_regs *sync_regs(struct pt_regs *eregs)
->  	return regs;
+>  	if (!ima_policy_flag)
+> -		return;
+> +		return 0;
+>  
+>  	/*
+>  	 * Both LSM hooks and auxilary based buffer measurements are
+> @@ -772,7 +772,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  		action = ima_get_action(inode, current_cred(), secid, 0, func,
+>  					&pcr, &template, func_data);
+>  		if (!(action & IMA_MEASURE))
+> -			return;
+> +			return 0;
+>  	}
+>  
+>  	if (!pcr)
+> @@ -787,7 +787,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  			pr_err("template %s init failed, result: %d\n",
+>  			       (strlen(template->name) ?
+>  				template->name : template->fmt), ret);
+> -			return;
+> +			return ret;
+>  		}
+>  	}
+>  
+> @@ -819,7 +819,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
+>  					func_measure_str(func),
+>  					audit_cause, ret, 0, ret);
+>  
+> -	return;
+> +	return ret;
 >  }
 >  
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +asmlinkage __visible noinstr struct pt_regs *vc_switch_off_ist(struct pt_regs *eregs)
-> +{
-> +	unsigned long sp, *stack;
-> +	struct stack_info info;
-> +	struct pt_regs *regs;
+>  /**
 
-Let's call those "regs_ret" or so, so that the argument can be "regs" by
-convention and for better differentiation.
 
-> +	/*
-> +	 * In the SYSCALL entry path the RSP value comes from user-space - don't
-> +	 * trust it and switch to the current kernel stack
-> +	 */
-> +	if (eregs->ip >= (unsigned long)entry_SYSCALL_64 &&
-> +	    eregs->ip <  (unsigned long)entry_SYSCALL_64_safe_stack) {
-> +		sp = this_cpu_read(cpu_current_top_of_stack);
-> +		goto sync;
-> +	}
-> +
-> +	/*
-> +	 * From here on the the RSP value is trusted - more RSP sanity checks
-> +	 * need to happen above.
-> +	 *
-> +	 * Check whether entry happened from a safe stack.
-> +	 */
-> +	sp    = eregs->sp;
-> +	stack = (unsigned long *)sp;
-> +	get_stack_info_noinstr(stack, current, &info);
-> +
-> +	/*
-> +	 * Don't sync to entry stack or other unknown stacks - use the fall-back
-> +	 * stack instead.
-> +	 */
-> +	if (info.type == STACK_TYPE_UNKNOWN || info.type == STACK_TYPE_ENTRY ||
-
-AFAICT, that STACK_TYPE_UNKNOWN gets set only by the plain
-get_stack_info() function - not by the _noinstr() variant so you'd need
-to check the return value of latter...
-
-> +	    info.type >= STACK_TYPE_EXCEPTION_LAST)
-> +		sp = __this_cpu_ist_top_va(VC2);
-> +
-> +sync:
-> +	/*
-> +	 * Found a safe stack - switch to it as if the entry didn't happen via
-> +	 * IST stack. The code below only copies pt_regs, the real switch happens
-> +	 * in assembly code.
-> +	 */
-> +	sp = ALIGN_DOWN(sp, 8) - sizeof(*regs);
-> +
-> +	regs = (struct pt_regs *)sp;
-> +	*regs = *eregs;
-> +
-> +	return regs;
-> +}
-> +#endif
-> +
->  struct bad_iret_stack {
->  	void *error_entry_ret;
->  	struct pt_regs regs;
-> -- 
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
