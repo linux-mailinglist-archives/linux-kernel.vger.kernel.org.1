@@ -2,127 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EBC258109
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130052580CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbgHaSYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:24:10 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25912 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729581AbgHaSYJ (ORCPT
+        id S1729755AbgHaSTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729520AbgHaSSI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:24:09 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07VI1k9e192199;
-        Mon, 31 Aug 2020 14:24:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=P7mHsXAaOECT9cWfKNbj36oJwWhrX5fDV7JR8XC5aM0=;
- b=CPkddEgE29Ium4MTNJrwP5X6OWpYv1nYvTsni5xZl7PcCEzd6xQwDNtUedTBzrp0H+nc
- v8L6HJ8SjF0brR6Ddqom78bML3RSH4UcMCriDUxhgGpxKZMIASf/m8yH1kYcJFOZcxya
- dI8jRFK8XQzgBKIh7rX/aVO5FZ48TKHa+AQrtxnGL2vNF92pQwHcEFLAr1D6vGhKd/Pw
- GiSJcpOba6q7dB0mM0enqkzjcXtWx1vT2Ry5SZFn2GfoXXSdk+sn7O7s9O+ZqC7yGxj5
- XnlU8LNHayxVSNyAj9Mu53651BQcP2muK8fTEsltEuosFBcznOrST8jiMeXCJ3fA4Z9d GA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33953et7um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Aug 2020 14:24:04 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07VIK7lW043560;
-        Mon, 31 Aug 2020 14:24:04 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33953et7tr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Aug 2020 14:24:03 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07VICxG7004273;
-        Mon, 31 Aug 2020 18:24:02 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 337e9gtew2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Aug 2020 18:24:01 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07VINxPl31850954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 Aug 2020 18:23:59 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E2A1A4040;
-        Mon, 31 Aug 2020 18:23:59 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F86CA4053;
-        Mon, 31 Aug 2020 18:23:56 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.2.129])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 31 Aug 2020 18:23:55 +0000 (GMT)
-Message-ID: <6c80bdad49c72fa58b5a9fb7ce2d20c8cabe1324.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 5/6] IMA: add hook to measure critical data from
- kernel components
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Mon, 31 Aug 2020 14:23:55 -0400
-In-Reply-To: <20200828015704.6629-6-tusharsu@linux.microsoft.com>
-References: <20200828015704.6629-1-tusharsu@linux.microsoft.com>
-         <20200828015704.6629-6-tusharsu@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-31_08:2020-08-31,2020-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0
- malwarescore=0 adultscore=0 phishscore=0 clxscore=1015 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008310104
+        Mon, 31 Aug 2020 14:18:08 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B3AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:18:08 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id s2so234687pjr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=MpFriyvAVeQ141rIrcIndLwo0DUmN70bXB2sWFslHOk=;
+        b=CYbTNLLmCL49w91IM5M3uXNUfoSE6oHvpIAkNLlVESMhUK6NmISqV1D+AkqANbx7XK
+         tOBGuw0pBMvj1P7ufyt3JsggppG+gUW9bk1PEBUkl3mu/WNyHzZJX5Tkzi1GCiCm0BZo
+         0U7mPqPBe741/nE0YMT3Xpo7dhG1EzYx860aDt5e6HFSrvdaI8umZVJL3zI6bJYaBDx+
+         4UjPigd1KKIapNzv3snW2bGwrAa1KoUJPr2IZadaifIjXekg31xDWuL1Z33irviJZ52B
+         xEHWXbSBMvw84ul/PC1myxzJfrA4h500U02gF9hEJpFeQYY3YFsVW2Ay5dk5fLDGXgLz
+         37Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=MpFriyvAVeQ141rIrcIndLwo0DUmN70bXB2sWFslHOk=;
+        b=RjjCS4onBz7E4p6YDa8DULavLpaiuxuiocPojP5oPj8yr5Cl9XmTHYxRjrQ6wFQ/mR
+         2Ci80TWt6YGwd1VIJgrDnJ0nmkt2fsmqOLtfGHJqOR0bzgsyA+ZY472wYkyroMyAJMiq
+         SVYoUpb/YATMKjq3mVzcPEyJpdsBg1PYJtK36rec0zgwxZTXIJ/z/YpklFjpZ8aFF+Qp
+         v+NqFjqoc78v1XSOW0rvZ2rhUO1JvZQl5AOpUPM932gl6m7JTHbNzsWawK0hOs4VgM3g
+         9QzgXENeuenxPqLlhs2VOHwO/4QhEO6ffozYIok5T8UVzqy8V2zxGWIaDw0jghfXPD5F
+         80cg==
+X-Gm-Message-State: AOAM530eh9qGKvs+ty0XF9ZJrUNkckLA5sKhPtVvU1+Gpb/qXqAvd1gh
+        u6sMo8s5SCHQYv4FgkxPHJfu/m6P1G8=
+X-Google-Smtp-Source: ABdhPJwP7zltm3ArpzQIspT7vqdtpmsGr+eUheO6zFc7IftXzIUHuCABd0FmfCHiIODG0bQ3x9S6eg==
+X-Received: by 2002:a17:902:8bc1:: with SMTP id r1mr1960303plo.328.1598897888174;
+        Mon, 31 Aug 2020 11:18:08 -0700 (PDT)
+Received: from jacob-builder.jf.intel.com (jfdmzpr04-ext.jf.intel.com. [134.134.137.73])
+        by smtp.gmail.com with ESMTPSA id y128sm8672547pfy.74.2020.08.31.11.18.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 Aug 2020 11:18:07 -0700 (PDT)
+From:   Jacob Pan <jacob.pan.linux@gmail.com>
+X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v8 0/7] IOMMU user API enhancement
+Date:   Mon, 31 Aug 2020 11:24:53 -0700
+Message-Id: <1598898300-65475-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 52cbbc1f7ea2..a889bf40cb7e 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -869,6 +869,30 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
->  	fdput(f);
->  }
->  
-> +/**
-> + * ima_measure_critical_data - measure critical data
-> + * @event_name: name for the given data
-> + * @event_data_source: name of the event data source
-> + * @buf: pointer to buffer containing data to measure
-> + * @buf_len: length of buffer(in bytes)
-> + * @measure_buf_hash: if set to true - will measure hash of the buf,
-> + *                    instead of buf
-> + *
-> + * Buffers can only be measured, not appraised.
-> + */
-> +int ima_measure_critical_data(const char *event_name,
-> +			      const char *event_data_source,
-> +			      const void *buf, int buf_len,
-> +			      bool measure_buf_hash)
-> +{
-> +	if (!event_name || !event_data_source || !buf || !buf_len)
-> +		return -EINVAL;
-> +
-> +	return process_buffer_measurement(NULL, buf, buf_len, event_name,
-> +					  CRITICAL_DATA, 0, event_data_source,
-> +					  measure_buf_hash);
+IOMMU user API header was introduced to support nested DMA translation and
+related fault handling. The current UAPI data structures consist of three
+areas that cover the interactions between host kernel and guest:
+ - fault handling
+ - cache invalidation
+ - bind guest page tables, i.e. guest PASID
 
-This is exactly what I'm concerned about.  Failure to measure data may
-be audited, but should never fail.
+Future extensions are likely to support more architectures and vIOMMU features.
 
-Mimi
+In the previous discussion, using user-filled data size and feature flags is
+made a preferred approach over a unified version number.
+https://lkml.org/lkml/2020/1/29/45
 
-> +}
+In addition to introduce argsz field to data structures, this patchset is also
+trying to document the UAPI design, usage, and extension rules. VT-d driver
+changes to utilize the new argsz field is included, VFIO usage is to follow.
 
+This set is available at:
+https://github.com/jacobpan/linux.git vsva_v5.8_uapi_v8
+
+Thanks,
+
+Jacob
+
+
+Changelog:
+v8
+	- Rebased to v5.9-rc2
+	- Addressed review comments from Eric Auger
+	  1. added a check for the unused vendor flags
+	  2. commit message improvements
+v7
+	- Added PASID data format enum for range checking
+	- Tidy up based on reviews from Alex W.
+	- Removed doc section for vIOMMU fault handling
+v6
+	- Renamed all UAPI functions with iommu_uapi_ prefix
+	- Replaced argsz maxsz checking with flag specific size checks
+	- Documentation improvements based on suggestions by Eric Auger
+	  Replaced example code with a pointer to the actual code
+	- Added more checks for illegal flags combinations
+	- Added doc file to MAINTAINERS
+v5
+	- Addjusted paddings in UAPI data to be 8 byte aligned
+	- Do not clobber argsz in IOMMU core before passing on to vendor driver
+	- Removed pr_warn_ for invalid UAPI data check, just return -EINVAL
+	- Clarified VFIO responsibility in UAPI data handling
+	- Use iommu_uapi prefix to differentiate APIs has in-kernel caller
+	- Added comment for unchecked flags of invalidation granularity
+	- Added example in doc to show vendor data checking
+
+v4
+	- Added checks of UAPI data for reserved fields, version, and flags.
+	- Removed version check from vendor driver (vt-d)
+	- Relaxed argsz check to match the UAPI struct size instead of variable
+	  union size
+	- Updated documentation
+
+v3:
+	- Rewrote backward compatibility rule to support existing code
+	  re-compiled with newer kernel UAPI header that runs on older
+	  kernel. Based on review comment from Alex W.
+	  https://lore.kernel.org/linux-iommu/20200611094741.6d118fa8@w520.home/
+	- Take user pointer directly in UAPI functions. Perform argsz check
+	  and copy_from_user() in IOMMU driver. Eliminate the need for
+	  VFIO or other upper layer to parse IOMMU data.
+	- Create wrapper function for in-kernel users of UAPI functions
+v2:
+	- Removed unified API version and helper
+	- Introduced argsz for each UAPI data
+	- Introduced UAPI doc
+
+
+Jacob Pan (7):
+  docs: IOMMU user API
+  iommu/uapi: Add argsz for user filled data
+  iommu/uapi: Introduce enum type for PASID data format
+  iommu/uapi: Use named union for user data
+  iommu/uapi: Rename uapi functions
+  iommu/uapi: Handle data and argsz filled by users
+  iommu/vt-d: Check UAPI data processed by IOMMU core
+
+ Documentation/userspace-api/iommu.rst | 211 ++++++++++++++++++++++++++++++++++
+ MAINTAINERS                           |   1 +
+ drivers/iommu/intel/iommu.c           |  25 ++--
+ drivers/iommu/intel/svm.c             |  13 ++-
+ drivers/iommu/iommu.c                 | 205 +++++++++++++++++++++++++++++++--
+ include/linux/iommu.h                 |  35 ++++--
+ include/uapi/linux/iommu.h            |  25 ++--
+ 7 files changed, 470 insertions(+), 45 deletions(-)
+ create mode 100644 Documentation/userspace-api/iommu.rst
+
+-- 
+2.7.4
 
