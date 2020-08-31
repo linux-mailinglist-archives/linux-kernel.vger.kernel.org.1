@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F272580C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22B62580C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729722AbgHaSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:19:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51626 "EHLO mail.kernel.org"
+        id S1729726AbgHaST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:19:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729535AbgHaSSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729541AbgHaSSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:18:10 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15A0621527;
+        by mail.kernel.org (Postfix) with ESMTPSA id 415312176B;
         Mon, 31 Aug 2020 18:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598897889;
-        bh=hBoTCY3wufyykmsMzLAZBTAUqq6AkK7/XOgebGts+Z4=;
+        bh=+RXrssZAOzQNHzoPuMEErrLqNVzDGlCdVjn9K4tvDus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fn8Jyr95jYbB/aSvYoFkJhECOdjtkbUR67dWEJCAszFbK0qZlLKzT9LfNUc8EReF6
-         YFvYxhdkZls1FCZuEgh2G50j21JPhyl025W3jaKOdTKUwLwfYn4mUMNMfXtrhrLoVw
-         raPCgDFHA/FTiJ2s7zm8TP6FSPBPllieZFlEcD94=
+        b=DOo6nvQC6/b6mhXP4lieR1op8GcJcGtSa1jOcI578m3x8rHgWCnTpAm8OEmg/4Dah
+         z04zUp7KJnuJ2aLvy9ToAXwtUlAWHVxorOyEipP1OkDrcbSOpsfEuBgweGyMX1IMXH
+         JTqbt/VWXIQYlrDsQMhKbeuD+nIowNlIwtjgnDfs=
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Daniel Axtens <dja@axtens.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-arch@vger.kernel.org
-Subject: [PATCH kcsan 18/19] bitops, kcsan: Partially revert instrumentation for non-atomic bitops
-Date:   Mon, 31 Aug 2020 11:18:04 -0700
-Message-Id: <20200831181805.1833-18-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH kcsan 19/19] kcsan: Use tracing-safe version of prandom
+Date:   Mon, 31 Aug 2020 11:18:05 -0700
+Message-Id: <20200831181805.1833-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831181715.GA1530@paulmck-ThinkPad-P72>
 References: <20200831181715.GA1530@paulmck-ThinkPad-P72>
@@ -46,112 +42,116 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marco Elver <elver@google.com>
 
-Previous to the change to distinguish read-write accesses, when
-CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=y is set, KCSAN would consider
-the non-atomic bitops as atomic. We want to partially revert to this
-behaviour, but with one important distinction: report racing
-modifications, since lost bits due to non-atomicity are certainly
-possible.
+In the core runtime, we must minimize any calls to external library
+functions to avoid any kind of recursion. This can happen even though
+instrumentation is disabled for called functions, but tracing is
+enabled.
 
-Given the operations here only modify a single bit, assuming
-non-atomicity of the writer is sufficient may be reasonable for certain
-usage (and follows the permissible nature of the "assume plain writes
-atomic" rule). In other words:
+Most recently, prandom_u32() added a tracepoint, which can cause
+problems for KCSAN even if the rcuidle variant is used. For example:
+	kcsan -> prandom_u32() -> trace_prandom_u32_rcuidle ->
+	srcu_read_lock_notrace -> __srcu_read_lock -> kcsan ...
 
-	1. We want non-atomic read-modify-write races to be reported;
-	   this is accomplished by kcsan_check_read(), where any
-	   concurrent write (atomic or not) will generate a report.
+While we could disable KCSAN in kcsan_setup_watchpoint(), this does not
+solve other unexpected behaviour we may get due recursing into functions
+that may not be tolerant to such recursion:
+	__srcu_read_lock -> kcsan -> ... -> __srcu_read_lock
 
-	2. We do not want to report races with marked readers, but -do-
-	   want to report races with unmarked readers; this is
-	   accomplished by the instrument_write() ("assume atomic
-	   write" with Kconfig option set).
+Therefore, switch to using prandom_u32_state(), which is uninstrumented,
+and does not have a tracepoint.
 
-With the above rules, when KCSAN_ASSUME_PLAIN_WRITES_ATOMIC is selected,
-it is hoped that KCSAN's reporting behaviour is better aligned with
-current expected permissible usage for non-atomic bitops.
-
-Note that, a side-effect of not telling KCSAN that the accesses are
-read-writes, is that this information is not displayed in the access
-summary in the report. It is, however, visible in inline-expanded stack
-traces. For now, it does not make sense to introduce yet another special
-case to KCSAN's runtime, only to cater to the case here.
-
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Daniel Axtens <dja@axtens.net>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: <linux-arch@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200821063043.1949509-1-elver@google.com
+Link: https://lkml.kernel.org/r/20200820172046.GA177701@elver.google.com
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../asm-generic/bitops/instrumented-non-atomic.h   | 30 +++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+ kernel/kcsan/core.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
-diff --git a/include/asm-generic/bitops/instrumented-non-atomic.h b/include/asm-generic/bitops/instrumented-non-atomic.h
-index f86234c..37363d5 100644
---- a/include/asm-generic/bitops/instrumented-non-atomic.h
-+++ b/include/asm-generic/bitops/instrumented-non-atomic.h
-@@ -58,6 +58,30 @@ static inline void __change_bit(long nr, volatile unsigned long *addr)
- 	arch___change_bit(nr, addr);
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 8a1ff605..3994a21 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -100,6 +100,9 @@ static atomic_long_t watchpoints[CONFIG_KCSAN_NUM_WATCHPOINTS + NUM_SLOTS-1];
+  */
+ static DEFINE_PER_CPU(long, kcsan_skip);
+ 
++/* For kcsan_prandom_u32_max(). */
++static DEFINE_PER_CPU(struct rnd_state, kcsan_rand_state);
++
+ static __always_inline atomic_long_t *find_watchpoint(unsigned long addr,
+ 						      size_t size,
+ 						      bool expect_write,
+@@ -271,11 +274,28 @@ should_watch(const volatile void *ptr, size_t size, int type, struct kcsan_ctx *
+ 	return true;
  }
  
-+static inline void __instrument_read_write_bitop(long nr, volatile unsigned long *addr)
++/*
++ * Returns a pseudo-random number in interval [0, ep_ro). See prandom_u32_max()
++ * for more details.
++ *
++ * The open-coded version here is using only safe primitives for all contexts
++ * where we can have KCSAN instrumentation. In particular, we cannot use
++ * prandom_u32() directly, as its tracepoint could cause recursion.
++ */
++static u32 kcsan_prandom_u32_max(u32 ep_ro)
 +{
-+	if (IS_ENABLED(CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC)) {
-+		/*
-+		 * We treat non-atomic read-write bitops a little more special.
-+		 * Given the operations here only modify a single bit, assuming
-+		 * non-atomicity of the writer is sufficient may be reasonable
-+		 * for certain usage (and follows the permissible nature of the
-+		 * assume-plain-writes-atomic rule):
-+		 * 1. report read-modify-write races -> check read;
-+		 * 2. do not report races with marked readers, but do report
-+		 *    races with unmarked readers -> check "atomic" write.
-+		 */
-+		kcsan_check_read(addr + BIT_WORD(nr), sizeof(long));
-+		/*
-+		 * Use generic write instrumentation, in case other sanitizers
-+		 * or tools are enabled alongside KCSAN.
-+		 */
-+		instrument_write(addr + BIT_WORD(nr), sizeof(long));
-+	} else {
-+		instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
-+	}
++	struct rnd_state *state = &get_cpu_var(kcsan_rand_state);
++	const u32 res = prandom_u32_state(state);
++
++	put_cpu_var(kcsan_rand_state);
++	return (u32)(((u64) res * ep_ro) >> 32);
 +}
 +
- /**
-  * __test_and_set_bit - Set a bit and return its old value
-  * @nr: Bit to set
-@@ -68,7 +92,7 @@ static inline void __change_bit(long nr, volatile unsigned long *addr)
-  */
- static inline bool __test_and_set_bit(long nr, volatile unsigned long *addr)
+ static inline void reset_kcsan_skip(void)
  {
--	instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
-+	__instrument_read_write_bitop(nr, addr);
- 	return arch___test_and_set_bit(nr, addr);
+ 	long skip_count = kcsan_skip_watch -
+ 			  (IS_ENABLED(CONFIG_KCSAN_SKIP_WATCH_RANDOMIZE) ?
+-				   prandom_u32_max(kcsan_skip_watch) :
++				   kcsan_prandom_u32_max(kcsan_skip_watch) :
+ 				   0);
+ 	this_cpu_write(kcsan_skip, skip_count);
+ }
+@@ -285,16 +305,18 @@ static __always_inline bool kcsan_is_enabled(void)
+ 	return READ_ONCE(kcsan_enabled) && get_ctx()->disable_count == 0;
  }
  
-@@ -82,7 +106,7 @@ static inline bool __test_and_set_bit(long nr, volatile unsigned long *addr)
-  */
- static inline bool __test_and_clear_bit(long nr, volatile unsigned long *addr)
+-static inline unsigned int get_delay(int type)
++/* Introduce delay depending on context and configuration. */
++static void delay_access(int type)
  {
--	instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
-+	__instrument_read_write_bitop(nr, addr);
- 	return arch___test_and_clear_bit(nr, addr);
+ 	unsigned int delay = in_task() ? kcsan_udelay_task : kcsan_udelay_interrupt;
+ 	/* For certain access types, skew the random delay to be longer. */
+ 	unsigned int skew_delay_order =
+ 		(type & (KCSAN_ACCESS_COMPOUND | KCSAN_ACCESS_ASSERT)) ? 1 : 0;
+ 
+-	return delay - (IS_ENABLED(CONFIG_KCSAN_DELAY_RANDOMIZE) ?
+-				prandom_u32_max(delay >> skew_delay_order) :
+-				0);
++	delay -= IS_ENABLED(CONFIG_KCSAN_DELAY_RANDOMIZE) ?
++			       kcsan_prandom_u32_max(delay >> skew_delay_order) :
++			       0;
++	udelay(delay);
  }
  
-@@ -96,7 +120,7 @@ static inline bool __test_and_clear_bit(long nr, volatile unsigned long *addr)
-  */
- static inline bool __test_and_change_bit(long nr, volatile unsigned long *addr)
- {
--	instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
-+	__instrument_read_write_bitop(nr, addr);
- 	return arch___test_and_change_bit(nr, addr);
- }
+ void kcsan_save_irqtrace(struct task_struct *task)
+@@ -476,7 +498,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	 * Delay this thread, to increase probability of observing a racy
+ 	 * conflicting access.
+ 	 */
+-	udelay(get_delay(type));
++	delay_access(type);
  
+ 	/*
+ 	 * Re-read value, and check if it is as expected; if not, we infer a
+@@ -620,6 +642,7 @@ void __init kcsan_init(void)
+ 	BUG_ON(!in_task());
+ 
+ 	kcsan_debugfs_init();
++	prandom_seed_full_state(&kcsan_rand_state);
+ 
+ 	/*
+ 	 * We are in the init task, and no other tasks should be running;
 -- 
 2.9.5
 
