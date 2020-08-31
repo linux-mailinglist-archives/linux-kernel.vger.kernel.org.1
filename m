@@ -2,142 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78212577E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E7825786D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgHaLGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgHaLBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:01:19 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6F482072D;
-        Mon, 31 Aug 2020 11:00:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598871636;
-        bh=C+1fKhJBNw/Y3PJKxGvNWyUc7dhncI98yBJO4d14IJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WfQm7zL27aM+2aGqyAcsedQ8Dko+y1Kwvx25LUAl+6/suNTRdkCJhJbgYopap3ZIR
-         uScl0ijE0IlvZu3amNL60oaIxi7/6b1o5xnnK/lj5pIGpgjIGR+Bo76uf7Uw2xT3Hu
-         3jo3iO1ofbIm0W3j2MhexTl2pwXlZqHridtCUqQM=
-Date:   Mon, 31 Aug 2020 16:30:32 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Cc:     Rob Herring <robh@kernel.org>, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, chuanhua.lei@linux.intel.com,
-        malliamireddy009@gmail.com
-Subject: Re: [PATCH v5 1/2] dt-bindings: dma: Add bindings for intel LGM SOC
-Message-ID: <20200831110032.GN2639@vkoul-mobl>
-References: <cover.1597381889.git.mallikarjunax.reddy@linux.intel.com>
- <68c77fd2ffb477aa4a52a58f8a26bfb191d3c5d1.1597381889.git.mallikarjunax.reddy@linux.intel.com>
- <20200814203222.GA2674896@bogus>
- <7cdc0587-8b4f-4360-a303-1541c9ad57b2@linux.intel.com>
- <20200825112107.GN2639@vkoul-mobl>
- <ffa5ba4d-f1b2-6a30-f2f1-f4578a77bce2@linux.intel.com>
- <20200828104530.GT2639@vkoul-mobl>
- <09547b0e-1c2e-d916-d4c0-f66b0110e173@linux.intel.com>
+        id S1726942AbgHaL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:29:14 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:41680 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727875AbgHaL16 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 07:27:58 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200831110320euoutp029c8003ff0a6e53a077c05669a6f88c55~wVW6KHzk22829228292euoutp02W
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200831110320euoutp029c8003ff0a6e53a077c05669a6f88c55~wVW6KHzk22829228292euoutp02W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598871801;
+        bh=rdQyIH2KOZH3mhnhVLTP2HA6DF/GY37pGXwK8J6cMPY=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=EUBTbbxvVZD6jTsfgMGaX0o9FOLV+ncfjYKMgCPIemGxfmmLqbsDl58YCCv19GEq8
+         GXucueQNPiyRp49z4S91YuoDca+wPuKEXnsPkEiGTNRzy1jUijxW1Rx7OQxa6ITva9
+         KzEQJI6qESkukdVe3OxZv0m0UvQnisPUZ7Y7ALvI=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200831110320eucas1p2765da242473e9988f32f057578943200~wVW55A-OD0430004300eucas1p2t;
+        Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 04.83.06456.8F8DC4F5; Mon, 31
+        Aug 2020 12:03:20 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200831110320eucas1p218471e8d1a63955970f53645eac0d2f9~wVW5dXzvR2473124731eucas1p2E;
+        Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200831110320eusmtrp1db8dd80652955c7991139c8c05960840~wVW5ckhvL1245712457eusmtrp10;
+        Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-57-5f4cd8f87567
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id F7.A5.06017.8F8DC4F5; Mon, 31
+        Aug 2020 12:03:20 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200831110319eusmtip1f2c6861d2f1bddd76c9598166476d1be~wVW4m3u761056310563eusmtip1K;
+        Mon, 31 Aug 2020 11:03:19 +0000 (GMT)
+Subject: Re: [RFT 2/4] ARM: dts: exynos: Move fixed clocks under root node
+ in Exynos3250
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <1700b99a-4b57-2aa2-50f5-a2dcf32b037e@samsung.com>
+Date:   Mon, 31 Aug 2020 13:03:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <09547b0e-1c2e-d916-d4c0-f66b0110e173@linux.intel.com>
+In-Reply-To: <20200829172532.29358-2-krzk@kernel.org>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0iTYRjl3XfZt+HsdVo+WRQNCgrSJKsXi9mN+qIi//THSJ35YdY2ZUvL
+        qJTsout+QW1Jmo0UIS+rtDTTxDZqOEstxMrMC2RlK6emIlrzs/LfOec95znPAy9HKXuZAC5e
+        f0gw6DVaFSunK2yjzuUjbTuiVjzLVpELzhcSUp5TypDJiisUyWtwMqR1yMUSV6GJJZe6v1Kk
+        qalMSqzdbxnSUpXLkpympxJyuqZBSopGHyJytrePIqNVt+j1s/ia4Xyaf2z+IOWtxZksXznc
+        yfAfz9kl/H1LKm/JesPyFx8UI95tXRAui5CvixW08cmCIUgdLd8/ONLIJFrwkfEfQ9I0ZPcy
+        IRkHOARcZdmsCck5JS5C0NzezohkEIErq2+auBHcsX9m/0aum0unsBIXIkjL3CaaXAheWbP+
+        JDjOF0dAdkOoR/fDryko+dhIewIUFqC638Z4MIuDwdRvmhqkwGr4NvABeTCNF0NvX9cUno0j
+        wfayixY9PvDiRg/tmS/Dq+BJtUwcuRAq+3MpEftDe0+exNMLOJODi3Wj00tvhvKyd1IR+8IX
+        +4NpPB8c187TYiAdwSfnPalIziNoOZmDRNdaeO8cYz3NFF4KpVVBorwB8nPuSjwyYG9o6/cR
+        l/CGqxXZlCgrIOOMUnQvAbO95F/ts1fN1GWkMs+4zDzjHPOMc8z/e/MRXYz8hSSjLk4wBuuF
+        w4FGjc6YpI8L3Jegs6I/n88xYR94hIaaY+oR5pDKSzHyfHuUktEkG1N09Qg4SuWn2NjoiFQq
+        YjUpRwVDQpQhSSsY69E8jlb5K1YW9O1V4jjNIeGgICQKhr+vEk4WkIbUc0PDrjmCSPv7A9qr
+        N8ITe9SFIbmpJL1h0U/ZzjO24Qjt7T21zbEThtbvYd4dnQF1W21mR8av0pqU+IrxH9Z3ae6D
+        a0tUBf6Jk5Zj5ZZz+iyH/fPDU+HHi2tvajN2r4kp+ZK8y13gu3pTx824OS/ldVvGkqt1nHtp
+        VbT66HCK3wkVbdyvCV5GGYya34zPjj94AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsVy+t/xu7o/bvjEG3T+YbXoPXeSyWLjjPWs
+        Fv+3TWS2mH/kHKvFla/v2SzeL+9is+h//JrZ4vz5DewWmx5fY7W4vGsOm8WM8/uYLFr3HmG3
+        WPFzK6NF+9OXzBY/d81jceD32PttAYvHzll32T02repk89j+7QGrx/3u40wem5fUeyyZdpXN
+        o2/LKkaPz5vkAjij9GyK8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX07WxSUnMy
+        y1KL9O0S9DK+/DjLWrBEoOLPh6/sDYzHeboYOTkkBEwkpsxaz9bFyMUhJLCUUWLy7gWMEAkZ
+        iZPTGlghbGGJP9e6oIreMkrs2/AOrEhYIEri+swmZpCEiMBFZolN6+awgySYBVIlJjZNZYLo
+        2MwocftiKxtIgk3AUKLrbReYzStgJ/Hm012wSSwCqhJPXz4Cs0UF4iTO9LyAqhGUODnzCUsX
+        IwcHp4CpxJ7dnBDzzSTmbX7IDGHLS2x/OwfKFpe49WQ+0wRGoVlIumchaZmFpGUWkpYFjCyr
+        GEVSS4tz03OLjfSKE3OLS/PS9ZLzczcxAqN927GfW3Ywdr0LPsQowMGoxMP746h3vBBrYllx
+        Ze4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMZoC/TaRWUo0OR+YiPJK4g1NDc0tLA3N
+        jc2NzSyUxHk7BA7GCAmkJ5akZqemFqQWwfQxcXBKNTDK7847FXz+bE6RjY+kLOOyR26HA+7M
+        ePdvoe/HpG/KrHHuE3fcuDGVva5E70L1zW9bzFZcSzG7lXLtlJxp/6rv0nvEQhfaLVp187/r
+        uZ+hBnmaTMvOSbB+4Z144Ghi+tUbHyWN5pa1GV+ayiNVYnvsh6Xkuv5LRyS79+ae79f95voi
+        fRNbQoegEktxRqKhFnNRcSIAjNR2mgwDAAA=
+X-CMS-MailID: 20200831110320eucas1p218471e8d1a63955970f53645eac0d2f9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200829172549eucas1p15e565c0703d5c5abf5527dfe7b03a602
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200829172549eucas1p15e565c0703d5c5abf5527dfe7b03a602
+References: <20200829172532.29358-1-krzk@kernel.org>
+        <CGME20200829172549eucas1p15e565c0703d5c5abf5527dfe7b03a602@eucas1p1.samsung.com>
+        <20200829172532.29358-2-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-08-20, 16:06, Reddy, MallikarjunaX wrote:
-> Hi Vinod,
-> 
-> Thanks for the review. Please see my comment inline.
-> 
-> On 8/28/2020 6:45 PM, Vinod Koul wrote:
-> > On 27-08-20, 17:54, Reddy, MallikarjunaX wrote:
-> > > Hi Vinod,
-> > > Thanks for the review comments.
-> > > 
-> > > On 8/25/2020 7:21 PM, Vinod Koul wrote:
-> > > > On 18-08-20, 15:00, Reddy, MallikarjunaX wrote:
-> > > > 
-> > > > > > > +
-> > > > > > > +            intel,chans:
-> > > > > > > +              $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > > > > +              description:
-> > > > > > > +                 The channels included on this port. Format is channel start
-> > > > > > > +                 number and how many channels on this port.
-> > > > > > Why does this need to be in DT? This all seems like it can be in the dma
-> > > > > > cells for each client.
-> > > > > (*ABC)
-> > > > > Yes. We need this.
-> > > > > for dma0(lgm-cdma) old SOC supports 16 channels and the new SOC supports 22
-> > > > > channels. and the logical channel mapping for the peripherals also differ
-> > > > > b/w old and new SOCs.
-> > > > > 
-> > > > > Because of this hardware limitation we are trying to configure the total
-> > > > > channels and port-channel mapping dynamically from device tree.
-> > > > > 
-> > > > > based on port name we are trying to configure the default values for
-> > > > > different peripherals(ports).
-> > > > > Example: burst length is not same for all ports, so using port name to do
-> > > > > default configurations.
-> > > > Sorry that does not make sense to me, why not specify the values to be
-> > > > used here instead of defining your own name scheme!
-> > > OK. Agreed. I will remove port name from DT and only use intel,chans
-> > what is intel,chans, why not use dma-channels?
->  The intel,chans says about the channels included on the correspondng port.
+On 29.08.2020 19:25, Krzysztof Kozlowski wrote:
+> The fixed clocks are kept under dedicated node fixed-rate-clocks, thus a
+> fake "reg" was added.  This is not correct with dtschema as fixed-clock
+> binding does not have a "reg" property:
+>
+>    arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml: clock@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>   arch/arm/boot/dts/exynos3250.dtsi | 42 +++++++++++++------------------
+>   1 file changed, 17 insertions(+), 25 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/exynos3250.dtsi b/arch/arm/boot/dts/exynos3250.dtsi
+> index d3fb45a56527..c67c70e46794 100644
+> --- a/arch/arm/boot/dts/exynos3250.dtsi
+> +++ b/arch/arm/boot/dts/exynos3250.dtsi
+> @@ -97,33 +97,25 @@
+>   		};
+>   	};
+>   
+> -	fixed-rate-clocks {
+> -		#address-cells = <1>;
+> -		#size-cells = <0>;
+> -
+> -		xusbxti: clock@0 {
+> -			compatible = "fixed-clock";
+> -			reg = <0>;
+> -			clock-frequency = <0>;
+> -			#clock-cells = <0>;
+> -			clock-output-names = "xusbxti";
+> -		};
+> +	xusbxti: clock-0 {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <0>;
+> +		#clock-cells = <0>;
+> +		clock-output-names = "xusbxti";
+> +	};
+>   
+> -		xxti: clock@1 {
+> -			compatible = "fixed-clock";
+> -			reg = <1>;
+> -			clock-frequency = <0>;
+> -			#clock-cells = <0>;
+> -			clock-output-names = "xxti";
+> -		};
+> +	xxti: clock-1 {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <0>;
+> +		#clock-cells = <0>;
+> +		clock-output-names = "xxti";
+> +	};
+>   
+> -		xtcxo: clock@2 {
+> -			compatible = "fixed-clock";
+> -			reg = <2>;
+> -			clock-frequency = <0>;
+> -			#clock-cells = <0>;
+> -			clock-output-names = "xtcxo";
+> -		};
+> +	xtcxo: clock-2 {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <0>;
+> +		#clock-cells = <0>;
+> +		clock-output-names = "xtcxo";
+>   	};
+>   
+>   	pmu {
 
-What do you mean by a port here?
-
-> Format is channel start number and how many channels on this port.
-
-It is perfectly reasonable to have 16 channels but linux not use use all, lets
-say from 5th channel channel onwards
-
-So you need to use standard dma-channels also with dma-channel-mask to
-specify which channels linux can use
-
->  The reasong behind using this attribute instead of standrad dma-channels
-> is...
-> 
-> 
-> DMA_VER22 HW supports 22 channels. But there is a hole in HW, total it can
-> use only 16.
-> 
-> Old soc supports 4ports and 16 channels.
-> New soc supports 6ports and 22 channels.
-> (old and new soc carry the same version VER22)
-> 
-> port channel mapping for the old and new soc also not the same.
-> old soc: logical channels:(Rx, Tx)
-> 0, 1 - SPI0
-> 2, 3 - SPI1
-> 4, 5 - HSNAND
-> 12, 14, 13, 15 - Memcopy
-> 
-> New soc: Logical channels(Rx, Tx)
-> 0, 1 - SPI0
-> 2, 3 - SPI1
-> 4, 5 - SPI2
-> 6, 7 - SPI3
-> 8, 9 - HSNAND
-> 10 to 21 - Mcopy
-
-Mapping is different, client can set that channel required in dmas
-property and use a specific required channel.
-
-> Because of these reasons we are trying to use "intel,chans" attribute, and
-> reading then number of channels from the dt.
-> Advantaage:
-> 1. we can map the channels correspondign to port
-> 2. Dynamically configure the channels (due to hw limitation)
-> 
-> If this is not ok, please suggest us the better way to handle this.
-> > 
-
+Best regards
 -- 
-~Vinod
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
