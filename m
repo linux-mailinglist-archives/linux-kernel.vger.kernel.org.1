@@ -2,155 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5127825734B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 07:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0EF257340
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 07:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgHaF2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 01:28:02 -0400
-Received: from mo-csw-fb1516.securemx.jp ([210.130.202.172]:36154 "EHLO
-        mo-csw-fb.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgHaF2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 01:28:00 -0400
-X-Greylist: delayed 1319 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 Aug 2020 01:27:58 EDT
-Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1516) id 07V55xjM028905; Mon, 31 Aug 2020 14:06:00 +0900
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 07V55N5u031198; Mon, 31 Aug 2020 14:05:24 +0900
-X-Iguazu-Qid: 34tMd2lTgy70XwD4cl
-X-Iguazu-QSIG: v=2; s=0; t=1598850323; q=34tMd2lTgy70XwD4cl; m=Eo+lI7ZGnqBRi8KYw8EQ/Q4YFSXKrGQSVifG045e3U8=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1511) id 07V55LQQ032861;
-        Mon, 31 Aug 2020 14:05:21 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 07V55K93009887;
-        Mon, 31 Aug 2020 14:05:20 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 07V55Krc022628;
-        Mon, 31 Aug 2020 14:05:20 +0900
-From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-edac@vger.kernel.org>,
-        <linux-efi@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <devel@acpica.org>, Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v2 1/2] cper, apei, mce: Pass x86 CPER through the MCA handling chain
-References: <20200828203332.11129-1-Smita.KoralahalliChannabasappa@amd.com>
-        <20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com>
-Date:   Mon, 31 Aug 2020 14:05:18 +0900
-In-Reply-To: <20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com>
-        (Smita Koralahalli's message of "Fri, 28 Aug 2020 15:33:31 -0500")
-X-TSB-HOP: ON
-Message-ID: <878sdvv20h.fsf@kokedama.swc.toshiba.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1725954AbgHaFWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 01:22:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:34187 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgHaFWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 01:22:33 -0400
+IronPort-SDR: dRZeqwfcOb0Qo70aXMHgSEUgPHiVuFEK+997w1Z7dGThFIj4PZaHHwdZnUs1dLPuAxVIYbPMNk
+ KstQF1mnpEGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="144591596"
+X-IronPort-AV: E=Sophos;i="5.76,374,1592895600"; 
+   d="scan'208";a="144591596"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 22:22:32 -0700
+IronPort-SDR: DqJJNazgMvWV8NPvU67K9yqU5Kgsgd7/WSULvOmysrdscR6u+V86KAf4wTUqauJFkZlcWDRI02
+ Uc3cD1Hnue0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,374,1592895600"; 
+   d="scan'208";a="296809844"
+Received: from lkp-server02.sh.intel.com (HELO 301dc1beeb51) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 30 Aug 2020 22:22:30 -0700
+Received: from kbuild by 301dc1beeb51 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kCcH0-00016m-4b; Mon, 31 Aug 2020 05:22:30 +0000
+Date:   Mon, 31 Aug 2020 13:21:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 784a0830377d0761834e385975bc46861fea9fa0
+Message-ID: <5f4c88e9.Ts1hyP+MZV21bpru%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Smita,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 784a0830377d0761834e385975bc46861fea9fa0  genirq/matrix: Deal with the sillyness of for_each_cpu() on UP
 
-A couple of comments below -
+elapsed time: 722m
 
-Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> writes:
+configs tested: 89
+configs skipped: 1
 
-> Linux Kernel uses ACPI Boot Error Record Table (BERT) to report fatal
-> errors that occurred in a previous boot. The MCA errors in the BERT are
-> reported using the x86 Processor Error Common Platform Error Record (CPER)
-> format. Currently, the record prints out the raw MSR values and AMD relies
-> on the raw record to provide MCA information.
->
-> Extract the raw MSR values of MCA registers from the BERT and feed it into
-> the standard mce_log() function through the existing x86/MCA RAS
-> infrastructure. This will result in better decoding from the EDAC MCE
-> decoder or the default notifier.
->
-> The implementation is SMCA specific as the raw MCA register values are
-> given in the register offset order of the MCAX address space.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-[...]
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                ecovec24-romimage_defconfig
+mips                     cu1000-neo_defconfig
+arm                         axm55xx_defconfig
+m68k                        mvme16x_defconfig
+powerpc                      ppc64e_defconfig
+sh                           se7206_defconfig
+sh                                  defconfig
+c6x                        evmc6472_defconfig
+mips                        nlm_xlp_defconfig
+mips                      malta_kvm_defconfig
+i386                                defconfig
+h8300                            alldefconfig
+sh                        edosk7705_defconfig
+powerpc                      chrp32_defconfig
+sh                          kfr2r09_defconfig
+arm                            lart_defconfig
+sh                             espt_defconfig
+mips                        vocore2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20200830
+x86_64               randconfig-a005-20200830
+x86_64               randconfig-a001-20200830
+x86_64               randconfig-a006-20200830
+x86_64               randconfig-a004-20200830
+x86_64               randconfig-a003-20200830
+i386                 randconfig-a001-20200831
+i386                 randconfig-a002-20200831
+i386                 randconfig-a004-20200831
+i386                 randconfig-a006-20200831
+i386                 randconfig-a005-20200831
+i386                 randconfig-a003-20200831
+x86_64               randconfig-a012-20200831
+x86_64               randconfig-a015-20200831
+x86_64               randconfig-a014-20200831
+x86_64               randconfig-a011-20200831
+x86_64               randconfig-a016-20200831
+x86_64               randconfig-a013-20200831
+i386                 randconfig-a013-20200831
+i386                 randconfig-a011-20200831
+i386                 randconfig-a012-20200831
+i386                 randconfig-a015-20200831
+i386                 randconfig-a016-20200831
+i386                 randconfig-a014-20200831
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-
-> diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
-> index 2531de49f56c..374b8e18552a 100644
-> --- a/drivers/firmware/efi/cper-x86.c
-> +++ b/drivers/firmware/efi/cper-x86.c
-> @@ -1,7 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  // Copyright (C) 2018, Advanced Micro Devices, Inc.
->  
-> -#include <linux/cper.h>
-
-Why is the include dropped? AFAICT, the definitions from there are still
-being used after this patch.
-
-> +#include <acpi/apei.h>
->  
->  /*
->   * We don't need a "CPER_IA" prefix since these are all locally defined.
-> @@ -347,9 +347,11 @@ void cper_print_proc_ia(const char *pfx, const struct cper_sec_proc_ia *proc)
->  			       ctx_info->mm_reg_addr);
->  		}
->  
-> -		printk("%sRegister Array:\n", newpfx);
-> -		print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
-> -			       (ctx_info + 1), ctx_info->reg_arr_size, 0);
-> +		if (arch_apei_report_x86_error(ctx_info, proc->lapic_id)) {
-> +			printk("%sRegister Array:\n", newpfx);
-> +			print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
-> +				       (ctx_info + 1), ctx_info->reg_arr_size, 0);
-> +		}
->  
->  		ctx_info = (struct cper_ia_proc_ctx *)((long)ctx_info + size);
->  	}
-> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
-> index 680f80960c3d..44d4d08acce0 100644
-> --- a/include/acpi/apei.h
-> +++ b/include/acpi/apei.h
-> @@ -33,8 +33,15 @@ extern bool ghes_disable;
->  
->  #ifdef CONFIG_ACPI_APEI
->  void __init acpi_hest_init(void);
-> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-> +			       u64 lapic_id);
->  #else
->  static inline void acpi_hest_init(void) { return; }
-> +static inline int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-> +					     u64 lapic_id)
-> +{
-> +	return -EINVAL;
-> +}
->  #endif
-
-Adding the declaration to this include violates the separation of
-generic and architecture specific code.
-
-Can this be moved to the appropriate architecture specific header?
-Perhaps arch/x86/include/asm/apei.h.
-
->  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-> @@ -51,6 +58,8 @@ int erst_clear(u64 record_id);
->  
->  int arch_apei_enable_cmcff(struct acpi_hest_header *hest_hdr, void *data);
->  void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err);
-> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
-> +			       u64 lapic_id);
-
-
-Why is the additional declaration needed?
-
-Thanks,
-Punit
-
->  
->  #endif
->  #endif
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
