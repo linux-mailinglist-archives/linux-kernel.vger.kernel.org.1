@@ -2,139 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D8F2583B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 23:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2472583C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 23:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730326AbgHaVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 17:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgHaVly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 17:41:54 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CCEC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 14:41:54 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id p13so2517369ils.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 14:41:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cHr43YW5+iuDSdOUC12gPmWiPSezUttSApUwF+cX1IU=;
-        b=BPxJwCD7kcNv/87qq8Ed4NTQiQ8rH4eYBBTgEhfwAEywW/yl08Knnr7Dg43wiEKCTC
-         gOneUWSA0tkw21myD+rGkiVVk+avwQVJn31zchc/ZRu0K0X3DbygFrc3D3jbSsNfmGoB
-         zCMUEqzpG/MMq2jBpndcF0y8aO6/QEBGjRCi0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cHr43YW5+iuDSdOUC12gPmWiPSezUttSApUwF+cX1IU=;
-        b=MA0WXU/U5fdl/Gwbc+oaR+7/FjbBYwY1nF6nNaWJdIUwNzrYBl+1Aiwb3GzE3tx0ty
-         xFf4FyNlwLIzHxwvsqyX/EPo4uVOmbC57232JuyNpDaaZtm/gUML5q8GbEOXa5NZVA4K
-         Ux3yEuHD3ZaOX4M8VLoZCLzQdLj5JCBZm/gVIZipx4P9sDvDQ8ZNDapQxLryvXOaNS1I
-         N9/Q4WqNfO7RY+olK2U4735tbMGBGUuVpcDMTk1zlID5rzw3jnXDzCrDIA8b0t5QQ8ZF
-         aTs4/hDS/TAAwWMQQSX0IgVxfluTIBl4d20MfzXRt/8bjKsnVGuNNIwxXpuZGF/BHykg
-         +wqw==
-X-Gm-Message-State: AOAM530fgLowpohuvwvftt6lrfeich6xZsRl4cKucUphbGUXXrFIfpaE
-        TSQxxDeWtWWlTwmEYM+9OGABmw==
-X-Google-Smtp-Source: ABdhPJxm6kdMsYQeFuxNFnd52GSbvYpPf3wn08xmFREmWsPNSBi6H/ns5n2GuEAgF7WAxi9omLSJkA==
-X-Received: by 2002:a92:d186:: with SMTP id z6mr2876415ilz.149.1598910113451;
-        Mon, 31 Aug 2020 14:41:53 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id y19sm3139539ili.47.2020.08.31.14.41.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 14:41:52 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] kunit: tool: fix running kunit_tool from outside
- kernel tree
-To:     Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org,
-        davidgow@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, Tim.Bird@sony.com,
-        "skh >> Shuah Khan" <skhan@linuxfoundation.org>
-References: <20200811212756.3328740-1-brendanhiggins@google.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d073fd4d-93e6-4c43-a814-c13719ac2259@linuxfoundation.org>
-Date:   Mon, 31 Aug 2020 15:41:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725941AbgHaVrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 17:47:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730328AbgHaVrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 17:47:40 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 531DE2083E;
+        Mon, 31 Aug 2020 21:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598910458;
+        bh=LpFlnr5cPD2+2Z/0AU+nTqD+Jd//wQ602L7jls7aUgY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EEn57XzNc1nMqiIO/N0hOHNfUTpyzwaKcmLUJ3jW5rFWI0erkDfsKN16IcHy8Q7vx
+         UuCDzFICgmRXHwCxlljPdElRRiVHAgeVg4/zn/TOuavuDfT64dNgKgyx7OfnByMfFT
+         urq3lofInuyFwu5x3MGfpJtayc1rhXSHrAvdKXHg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 33DB435230F1; Mon, 31 Aug 2020 14:47:38 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 14:47:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH kcsan 9/9] tools/memory-model:  Document locking corner
+ cases
+Message-ID: <20200831214738.GE2855@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
+ <20200831182037.2034-9-paulmck@kernel.org>
+ <20200831201701.GB558270@rowland.harvard.edu>
 MIME-Version: 1.0
-In-Reply-To: <20200811212756.3328740-1-brendanhiggins@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831201701.GB558270@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/11/20 3:27 PM, Brendan Higgins wrote:
-> Currently kunit_tool does not work correctly when executed from a path
-> outside of the kernel tree, so make sure that the current working
-> directory is correct and the kunit_dir is properly initialized before
-> running.
+On Mon, Aug 31, 2020 at 04:17:01PM -0400, Alan Stern wrote:
+> On Mon, Aug 31, 2020 at 11:20:37AM -0700, paulmck@kernel.org wrote:
+> > +No Roach-Motel Locking!
+> > +-----------------------
+> > +
+> > +This example requires familiarity with the herd7 "filter" clause, so
+> > +please read up on that topic in litmus-tests.txt.
+> > +
+> > +It is tempting to allow memory-reference instructions to be pulled
+> > +into a critical section, but this cannot be allowed in the general case.
+> > +For example, consider a spin loop preceding a lock-based critical section.
+> > +Now, herd7 does not model spin loops, but we can emulate one with two
+> > +loads, with a "filter" clause to constrain the first to return the
+> > +initial value and the second to return the updated value, as shown below:
+> > +
+> > +	/* See Documentation/litmus-tests/locking/RM-fixed.litmus. */
+> > +	P0(int *x, int *y, int *lck)
+> > +	{
+> > +		int r2;
+> > +
+> > +		spin_lock(lck);
+> > +		r2 = atomic_inc_return(y);
+> > +		WRITE_ONCE(*x, 1);
+> > +		spin_unlock(lck);
+> > +	}
+> > +
+> > +	P1(int *x, int *y, int *lck)
+> > +	{
+> > +		int r0;
+> > +		int r1;
+> > +		int r2;
+> > +
+> > +		r0 = READ_ONCE(*x);
+> > +		r1 = READ_ONCE(*x);
+> > +		spin_lock(lck);
+> > +		r2 = atomic_inc_return(y);
+> > +		spin_unlock(lck);
+> > +	}
+> > +
+> > +	filter (y=2 /\ 1:r0=0 /\ 1:r1=1)
+> > +	exists (1:r2=1)
+> > +
+> > +The variable "x" is the control variable for the emulated spin loop.
+> > +P0() sets it to "1" while holding the lock, and P1() emulates the
+> > +spin loop by reading it twice, first into "1:r0" (which should get the
+> > +initial value "0") and then into "1:r1" (which should get the updated
+> > +value "1").
+> > +
+> > +The purpose of the variable "y" is to reject deadlocked executions.
+> > +Only those executions where the final value of "y" have avoided deadlock.
+> > +
+> > +The "filter" clause takes all this into account, constraining "y" to
+> > +equal "2", "1:r0" to equal "0", and "1:r1" to equal 1.
+> > +
+> > +Then the "exists" clause checks to see if P1() acquired its lock first,
+> > +which should not happen given the filter clause because P0() updates
+> > +"x" while holding the lock.  And herd7 confirms this.
+> > +
+> > +But suppose that the compiler was permitted to reorder the spin loop
+> > +into P1()'s critical section, like this:
+> > +
+> > +	/* See Documentation/litmus-tests/locking/RM-broken.litmus. */
+> > +	P0(int *x, int *y, int *lck)
+> > +	{
+> > +		int r2;
+> > +
+> > +		spin_lock(lck);
+> > +		r2 = atomic_inc_return(y);
+> > +		WRITE_ONCE(*x, 1);
+> > +		spin_unlock(lck);
+> > +	}
+> > +
+> > +	P1(int *x, int *y, int *lck)
+> > +	{
+> > +		int r0;
+> > +		int r1;
+> > +		int r2;
+> > +
+> > +		spin_lock(lck);
+> > +		r0 = READ_ONCE(*x);
+> > +		r1 = READ_ONCE(*x);
+> > +		r2 = atomic_inc_return(y);
+> > +		spin_unlock(lck);
+> > +	}
+> > +
+> > +	locations [x;lck;0:r2;1:r0;1:r1;1:r2]
+> > +	filter (y=2 /\ 1:r0=0 /\ 1:r1=1)
+> > +	exists (1:r2=1)
+> > +
+> > +If "1:r0" is equal to "0", "1:r1" can never equal "1" because P0()
+> > +cannot update "x" while P1() holds the lock.  And herd7 confirms this,
+> > +showing zero executions matching the "filter" criteria.
+> > +
+> > +And this is why Linux-kernel lock and unlock primitives must prevent
+> > +code from entering critical sections.  It is not sufficient to only
+> > +prevnt code from leaving them.
 > 
-> Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> ---
->   tools/testing/kunit/kunit.py | 13 +++++--------
->   1 file changed, 5 insertions(+), 8 deletions(-)
+> Is this discussion perhaps overkill?
 > 
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index 425ef40067e7e..e2caf4e24ecb2 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -237,9 +237,13 @@ def main(argv, linux=None):
->   
->   	cli_args = parser.parse_args(argv)
->   
-> +	if get_kernel_root_path():
-> +		os.chdir(get_kernel_root_path())
-> +
->   	if cli_args.subcommand == 'run':
->   		if not os.path.exists(cli_args.build_dir):
->   			os.mkdir(cli_args.build_dir)
-> +			create_default_kunitconfig()
->   
->   		if not linux:
->   			linux = kunit_kernel.LinuxSourceTree()
-> @@ -257,6 +261,7 @@ def main(argv, linux=None):
->   		if cli_args.build_dir:
->   			if not os.path.exists(cli_args.build_dir):
->   				os.mkdir(cli_args.build_dir)
-> +				create_default_kunitconfig()
->   
->   		if not linux:
->   			linux = kunit_kernel.LinuxSourceTree()
-> @@ -270,10 +275,6 @@ def main(argv, linux=None):
->   		if result.status != KunitStatus.SUCCESS:
->   			sys.exit(1)
->   	elif cli_args.subcommand == 'build':
-> -		if cli_args.build_dir:
-> -			if not os.path.exists(cli_args.build_dir):
-> -				os.mkdir(cli_args.build_dir)
-> -
->   		if not linux:
->   			linux = kunit_kernel.LinuxSourceTree()
->   
-> @@ -288,10 +289,6 @@ def main(argv, linux=None):
->   		if result.status != KunitStatus.SUCCESS:
->   			sys.exit(1)
->   	elif cli_args.subcommand == 'exec':
-> -		if cli_args.build_dir:
-> -			if not os.path.exists(cli_args.build_dir):
-> -				os.mkdir(cli_args.build_dir)
-> -
->   		if not linux:
->   			linux = kunit_kernel.LinuxSourceTree()
->   
+> Let's put it this way: Suppose we have the following code:
 > 
-> base-commit: 30185b69a2d533c4ba6ca926b8390ce7de495e29
+> 	P0(int *x, int *lck)
+> 	{
+> 		spin_lock(lck);
+> 		WRITE_ONCE(*x, 1);
+> 		do_something();
+> 		spin_unlock(lck);
+> 	}
 > 
+> 	P1(int *x, int *lck)
+> 	{
+> 		while (READ_ONCE(*x) == 0)
+> 			;
+> 		spin_lock(lck);
+> 		do_something_else();
+> 		spin_unlock(lck);
+> 	}
+> 
+> It's obvious that this test won't deadlock.  But if P1 is changed to:
+> 
+> 	P1(int *x, int *lck)
+> 	{
+> 		spin_lock(lck);
+> 		while (READ_ONCE(*x) == 0)
+> 			;
+> 		do_something_else();
+> 		spin_unlock(lck);
+> 	}
+> 
+> then it's equally obvious that the test can deadlock.  No need for
+> fancy memory models or litmus tests or anything else.
 
+For people like you and me, who have been thinking about memory ordering
+for longer than either of us care to admit, this level of exposition is
+most definitely -way- overkill!!!
 
-Applied the two patches in this seeries to linux-kselftest kunit-fixes
-for the next 5.9-rc fixes
+But I have had people be very happy and grateful that I explained this to
+them at this level of detail.  Yes, I started parallel programming before
+some of them were born, but they are definitely within our target audience
+for this particular document.  And it is not just Linux kernel hackers
+who need this level of detail.  A roughly similar transactional-memory
+scenario proved to be so non-obvious to any number of noted researchers
+that Blundell, Lewis, and Martin needed to feature it in this paper:
+https://ieeexplore.ieee.org/abstract/document/4069174
+(Alternative source: https://repository.upenn.edu/cgi/viewcontent.cgi?article=1344&context=cis_papers)
 
-thanks,
--- Shuah
+Please note that I am -not- advocating making (say) explanation.txt or
+recipes.txt more newbie-accessible than they already are.  After all,
+the point of the README file in that same directory is to direct people
+to the documentation files that are the best fit for them, and both
+explanation.txt and recipes.txt contain advanced material, and thus
+require similarly advanced prerequisites.
+
+Seem reasonable, or am I missing your point?
+
+							Thanx, Paul
