@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D792574DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745E22574D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgHaH7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 03:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
+        id S1728051AbgHaH6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 03:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728197AbgHaH6z (ORCPT
+        with ESMTP id S1725829AbgHaH6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 03:58:55 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17BCC061573;
-        Mon, 31 Aug 2020 00:58:53 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id g128so4902639iof.11;
-        Mon, 31 Aug 2020 00:58:53 -0700 (PDT)
+        Mon, 31 Aug 2020 03:58:17 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C41CC061573;
+        Mon, 31 Aug 2020 00:58:16 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l21so4519979eds.7;
+        Mon, 31 Aug 2020 00:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZGpi+5qwZTXlfGi+xb+oDjdA7kPA3G9h6znjI9BQew0=;
-        b=AOdCeQxT2jAza4/PKUwlGY32t9Nu7VJ5ktqVkH9a1b+k0F12J3MfmkECzbTg4jufCA
-         jCLvQ2XJtHbIS7gI8U9W7STv4m4hPisAQzGqLu7M/q/P0enBWtyOWHIHtgGAufrSB7dg
-         tBqkJuASBrVp+c5X0GQPi5qcvxUNK7P/wxe4Vkx+HCr6visW3UrptXnjGezadJCgGNwe
-         /W6hhR4r5K9nnR3Rvj9IhbSYddF5UfI0wyYgXi4vjl5iID0mdpVHCiB82Z9WXdLmZvhQ
-         eP8hGLezFV+mc0u9s8IQQdaMS43NOxx+B/DkjqKmXCoN3P2VLa1bEwwm+iD/z9qZ3DP+
-         d0Ww==
+        bh=huQdyM+q9reHAMotsMXMrR+uvxt0zB89ISm5NsTKcqY=;
+        b=cj+8D5tQCSmxfAdRNPAPmuTudMTpVoAPeOSrZRptzQ9EhDEPiOuSrmIXydsDMC+IeB
+         KiWnCQxbIr9VmNhmjBuWIJNcYSz0fR7DGnIqjOs89G7ZOSCNSd4uUdBC/+VoIYOCm2Ug
+         bag1Qks2Ap1zSsyUVQwE6/t2STKAtjsFe4VxvfYryowvEC6R/zSSoasSY0gBbLtpdOWI
+         V9V/LvGoRfx9PsVevepeL/OpGnrrSmB8c3+pKeIPMwAQBzJp9EGr45gCIG7Z8rB3mx7a
+         oaJm6l+/FCsoGio3O55Cy9zRlcqCOZ9rzgHzEcMtCww4c7Z8OoLasFoK7bMVvoJi4/0f
+         sRDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZGpi+5qwZTXlfGi+xb+oDjdA7kPA3G9h6znjI9BQew0=;
-        b=tsoctX4Z9NqCE3TYx8pMoknJpAwrcbDBHX2QajuwKxOMB+OhfkNhawsmi8RyQsgPjp
-         dYTCAwH1+of1cZnFTEtWEQsu64pJ1PKoiHCnWOvFWqEJJLh9FS/Y5K0SeBsz5Btb6He7
-         jbZw0XZeR5hCVQQLis0WljOBxuI6thvPaIcy3ePbkcjRh2WUUIvMyBM6HmxTm14/dLAd
-         C1oYPmcqzj95ftChu3koiwvyZiEtLa2bYESNRJTDmLx025OLlJoSFYrS8P7IkhOVmfZ+
-         S8P49pPUcKK4ruiLHLaBgE6Jc2aVCGuhg4fRwNI4MihBNCJrj26t/ygaEklBSnMv4LDU
-         KvJA==
-X-Gm-Message-State: AOAM530K5ffCsnWUyq6d7FEIadEEmFo6pKPAGAyv6xb9h0NONuBihbSe
-        /OzqUs60B3Yrr1dA3w3ACa51qJOU8hZGtYyol2fnV6nMcg==
-X-Google-Smtp-Source: ABdhPJyzPNmQVuqnQsiy0uTVTWNT0Qbgcw6B7+74VyKPKvBv+1lPzo8yJnHlFDeW92m9d2egkd4N7kv/NrWlfHp+aTI=
-X-Received: by 2002:a5d:954f:: with SMTP id a15mr361144ios.53.1598860733041;
- Mon, 31 Aug 2020 00:58:53 -0700 (PDT)
+        bh=huQdyM+q9reHAMotsMXMrR+uvxt0zB89ISm5NsTKcqY=;
+        b=cUERPBR8WsfrdQpqm04iC4r6PVteMRJojU2nVlbbadms8SRvRcLoVJtSUJwUYmL5OB
+         +XpN6fLWydUSK5vJgHuh1U4XB6e9PDZzkB4iIBu1foLR5TFN8j+lhZCKOk6QxgAYLYKB
+         Q8oEQ+PxH7N8JxmUG3bAS9nFnlwMGKBjiNjAxd6qFSm3H1GeLJLbvNr2Za56s2sLFeO0
+         foqbXMe4O7ofT9RJm64O5o870bYQJ84odtc++k+8Anvn6WeUz9TIgdJyjQiyijPshqBf
+         Df2XkUZ2/B4b3KRjsdcDAxLOpIzGIZS6G66QK4FPjqeANzW80ersPknljGjiENqft6QW
+         xadw==
+X-Gm-Message-State: AOAM5310vQSiTVb/repF31VCITzsAjeJC19+RyRd6jozIzXtVMqt5nSx
+        b2nvjhEPZ9KY/E0jBQMuIAaf3YESi1/EI7eH4NrEVIiA5EM=
+X-Google-Smtp-Source: ABdhPJyYEmEjgTlSTI3u2NEAheWGVf1siQ0TfcnMk8UQJ0LD/ssFBMKoiOcwk2Zx1mkLhm0A/hOUiN2gs3xnvJ0Zz2M=
+X-Received: by 2002:aa7:c4c8:: with SMTP id p8mr59745edr.231.1598860695181;
+ Mon, 31 Aug 2020 00:58:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200830122051.197892-1-tali.perry1@gmail.com> <CAHp75VeX7OUeF=K_NmtXU4LACS9MxN1=nbSn01rvy-1MXoBL3Q@mail.gmail.com>
-In-Reply-To: <CAHp75VeX7OUeF=K_NmtXU4LACS9MxN1=nbSn01rvy-1MXoBL3Q@mail.gmail.com>
-From:   Avi Fishman <avifishman70@gmail.com>
-Date:   Mon, 31 Aug 2020 10:57:31 +0300
-Message-ID: <CAKKbWA46wSmvRshtMcShg8ka6aR2rYaB9b70EEYdQAHzJ=700g@mail.gmail.com>
-Subject: Re: [PATCH v2] i2c: npcm7xx: bug fix timeout (usec instead of msec)
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tali Perry <tali.perry1@gmail.com>, kunyi@google.com,
-        xqiu@google.com, Benjamin Fair <benjaminfair@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1598851448-5493-1-git-send-email-amit.pundir@linaro.org> <CAMi1Hd3n2rfr+k09L8WO1S1Tn1s3xJencmr1q3a6e-FOgXr5Qg@mail.gmail.com>
+In-Reply-To: <CAMi1Hd3n2rfr+k09L8WO1S1Tn1s3xJencmr1q3a6e-FOgXr5Qg@mail.gmail.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Mon, 31 Aug 2020 09:57:39 +0200
+Message-ID: <CAMS8qEXcANkb-HoTk8zrXQEzkQO4cnFw4hj5tMp82UEVKd+eHQ@mail.gmail.com>
+Subject: Re: [PATCH v6] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 9:01 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+> Hi Konrad,
 >
-> On Sun, Aug 30, 2020 at 3:23 PM Tali Perry <tali.perry1@gmail.com> wrote:
->
-> >
-> > i2c: npcm7xx: bug fix timeout (usec instead of msec)
->
-> This commit message is awful. Please read [1] as a tutorial how to
-> write a commit messages.
->
+> I couldn't find answer to your question around missing
+> (regulatorname)-supply properties. Need help in figuring out that
+> part.
 
-Would this be better:
-i2c: npcm7xx: Fix microsecond timeout calculation
+When the phone boots up and RPM(H) kicks in, you should see regulators
+probing like "s1 supplied by foo". Without the *-supply stuff, you
+will likely get "supplied by regulator-dummy". This happens here [1]
+and to my knowledge it is the "eletrical wiring" for Linux, as in it
+makes Linux aware of which regulators are connected electrically to
+the same supply (so that kernel knows when the supply is on and what
+voltage it's at). For qcom platforms, this is common per-pmic (afaik,
+please check if you are able to!), so you can likely just copy-paste
+that part from msm8998-mtp.dtsi, which also uses pm(i)8998.
 
-Inside npcm_i2c_master_xfer() we calculate a timeout for the entire
-transaction in microseconds, the calculation was wrong so big i2c
-massages would timeout before they ended.
-This commit fix that.
-
-> [1]: https://chris.beams.io/posts/git-commit/
->
-> ...
->
-> > -       /* Adaptive TimeOut: astimated time in usec + 100% margin */
-> > -       timeout_usec = (2 * 10000 / bus->bus_freq) * (2 + nread + nwrite);
-> > +       /*
-> > +        * Adaptive TimeOut: estimated time in usec + 100% margin:
-> > +        * 2: double the timeout for clock stretching case
-> > +        * 9: bits per transaction (including the ack/nack)
->
-> > +        * 1000000: micro second in a second
->
-> No need. See below.
->
-> > +        */
->
-> > +       timeout_usec = (2 * 9 * 1000000 / bus->bus_freq) * (2 + nread + nwrite);
->
-> USEC_PER_SEC
-
-OK
-
->
-> >         timeout = max(msecs_to_jiffies(35), usecs_to_jiffies(timeout_usec));
-> >         if (nwrite >= 32 * 1024 || nread >= 32 * 1024) {
-> >                 dev_err(bus->dev, "i2c%d buffer too big\n", bus->num);
->
-> --
-> With Best Regards,
-> Andy Shevchenko
-
-
-
--- 
-Regards,
-Avi
+Konrad
