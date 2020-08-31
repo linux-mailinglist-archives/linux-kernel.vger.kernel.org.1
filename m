@@ -2,155 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2061C257962
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1ADE257944
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgHaMfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 08:35:48 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:45698 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727946AbgHaMeZ (ORCPT
+        id S1727957AbgHaMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:31:36 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:37673 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727780AbgHaMbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:34:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1598877264; x=1630413264;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=S4y4Vm8tut2wgHeLX6jE0JoYIjXp12q/wp9enCPTsY4=;
-  b=gCW8xyN3wdaapYoOwA3j4PkNsYlhnNIfrzpwpIVd1xR79GkIn3tJsStZ
-   VT60kedYxsx4f8ESk1oddsaLahHTvGrNbDwDou9ZE+w639reP9uoRIpyB
-   k1MM1+G0Jtf8P/rEcfSXF47ta+t5DdlcLT3dIdBstorQBG645raWugsXi
-   kJG3hJXcdKAV7flOT8BdKX0M1dzmkF4GvhYbWBF/inm5TZoVmt6UODRHr
-   HhyvDD4D/piz84T1Yf97HCEAXJAmFsEUcSzY/0zR/P+etgWbWhEkGn26J
-   uRwRKuLV53HIzx+9xyEyNakSRqBxZePBLIznT0mBbiqWUKqeFEdkzq8ni
-   Q==;
-IronPort-SDR: 3fvFAwSdJy18nOw4K5WyS8+shxvcRqcN60c0lKGXI0NIAeqXPbTz3663LYWbvX0wm3htMhhC0U
- jan9WmA+WnHgVl5G8HscCp+BkxmephQey3CUaJqGPGUr1tqtwGN0T/Hkx+okdYBYAQjsenguoY
- KMDMnL+O6tPYuSuvJEN9pKnJ1Dan99rfrccZY9EyWb+pzAZ4J0sTEo2XDbL2xNtP5YwWUGN17r
- JBLDh1inTuqdSMHa/e5XwPTK2qDB8ilK6bYf6jgg/8Klo8LtqVK6EuTQvSmbbw0NlPDEPzMl2J
- 7V0=
-X-IronPort-AV: E=Sophos;i="5.76,375,1592841600"; 
-   d="scan'208";a="255743429"
-Received: from mail-sn1nam02lp2055.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.36.55])
-  by ob1.hgst.iphmx.com with ESMTP; 31 Aug 2020 20:32:05 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UDhxE/a+wo3OySTib9Yh91MGwwlpv58xKimFhDgAIKtoMyCgrV4TxdL+c6F7VnsrlnExRSgM1XHIgxIstztg4m/23GgUI8Ivck6SFBnI67l8+uhKwDEIC/q+lfNtrEXemdRwAInB3rIRQk29GG3eyoSTsFdGx9yVLZodCYo6vaY+Cjedbs3WkjjUEpRKHGl4j7hbU/6/giM2CyjxVSXMdET26lMPp0T+dE//Z8KvSnqKZBiXTIKYw2ViWEt19bDrdfdKd3xjjPTgvv6BWMneUOH0cOYjlcrIFY1OWojPHEYM4Wh8eh9H4YkhWvuQ7EAJcSdKiogl7Ui1QQbfsG+xdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KTtYrBZP4gzZbQ1QIWCsEiIDvdU9FjH5vKDKdqsXGVk=;
- b=Ad/8wOvjUB12bRQ7lBfVoC1NVxBwt1/vhKxKVPIn0EJdN/6exIRrhqzmQfBxeKR9F/T2UY/0ZcttyBH8LN1gpOVxNG5XMqTYt6VZSNRF3HYXDBCgb6yeZ9DbuJOKbLZo7MczlEQxOBHdZjT4YmWAErXfRikLjAj5wTyJx7ILNpP1wsXQqt9xNbcubMm7ZajQcFkFOWls6VdyUUNrQpZ9+yLByJY1jPa1cCveLK7ll+bQHQ7sYVDCQw4N59ZMNRK6V2torrT9CGDc4ikS8OcxpEmyP2goqoSXH/D09BK6NMd4z889xHPkSrA/apSOolUUwzGX+T3NO/+Jh/mNN2pIhQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KTtYrBZP4gzZbQ1QIWCsEiIDvdU9FjH5vKDKdqsXGVk=;
- b=nSZ9X+9R3BM06DgAiBB/TdPTMqN15pWZZdKM5MBD2YwlwVzM/orkEBN7H8mZzrqVCVyNmu5gDwqQh2WP5e/r1y3xpqkGG+YXPQlAp6zeIhTChlvPh/6qfxzbKb2ukPwIUMQGC3y7gMWrfrW2A+qNKBO740AsGJpSU+WXaVByb1w=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
- by DM6PR04MB6092.namprd04.prod.outlook.com (2603:10b6:5:12b::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.23; Mon, 31 Aug
- 2020 12:32:05 +0000
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::607a:44ed:1477:83e]) by DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::607a:44ed:1477:83e%7]) with mapi id 15.20.3326.025; Mon, 31 Aug 2020
- 12:32:05 +0000
-From:   Anup Patel <anup.patel@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>
-Subject: [PATCH v14 17/17] RISC-V: KVM: Add MAINTAINERS entry
-Date:   Mon, 31 Aug 2020 18:00:15 +0530
-Message-Id: <20200831123015.336047-18-anup.patel@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200831123015.336047-1-anup.patel@wdc.com>
-References: <20200831123015.336047-1-anup.patel@wdc.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BM1PR0101CA0046.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:1a::32) To DM6PR04MB6201.namprd04.prod.outlook.com
- (2603:10b6:5:127::32)
+        Mon, 31 Aug 2020 08:31:00 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200831123056euoutp028a21f32a27b31211a7a67390ba063d8b~wWjYmpQcD2214022140euoutp02q
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 12:30:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200831123056euoutp028a21f32a27b31211a7a67390ba063d8b~wWjYmpQcD2214022140euoutp02q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598877056;
+        bh=aAdNm/dzVaND4IVjQoOGhc1gHHOhMrELO0GWHWLYSRw=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=YRWrwRgVptW1I2wULNLtJ/GQQ8lqLvb1HVvYZxXXTX9E7uJSzXrDNJKc/1IPAxPh9
+         rh5GyZutXUlgpadt0ea71octNj4Z2OI08pTYJFpCA4afar+Lgigl/AGF1KLecFJ3/b
+         o6IgTqasvjFqQ05l6b0g/gDFykGUjK7DrrHkDskU=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200831123055eucas1p266684932dbf9db192710f35b46fd643d~wWjX-AKXc1299512995eucas1p2s;
+        Mon, 31 Aug 2020 12:30:55 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id B1.DE.05997.F7DEC4F5; Mon, 31
+        Aug 2020 13:30:55 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200831123054eucas1p14913acf89e94842b48d8e005b5e01d7e~wWjXT2kzy1358313583eucas1p1i;
+        Mon, 31 Aug 2020 12:30:54 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200831123054eusmtrp161f6cfc6de50ed8de4d8c5ad763ba97d~wWjXS9rJy0520905209eusmtrp1d;
+        Mon, 31 Aug 2020 12:30:54 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-c3-5f4ced7f7ef1
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id CF.5E.06314.E7DEC4F5; Mon, 31
+        Aug 2020 13:30:54 +0100 (BST)
+Received: from [106.210.123.115] (unknown [106.210.123.115]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200831123053eusmtip266f3538f6634be0eee709dcabfb9b647~wWjVj4NFe0780707807eusmtip2X;
+        Mon, 31 Aug 2020 12:30:53 +0000 (GMT)
+Subject: Re: [PATCH 04/10] dt-bindings: mfd: syscon: Document Samsung Exynos
+ compatibles
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alsa-devel@alsa-project.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>
+From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
+Message-ID: <8b0a42a3-e014-c2ed-7403-021f9a476fc8@samsung.com>
+Date:   Mon, 31 Aug 2020 14:30:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by BM1PR0101CA0046.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:1a::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Mon, 31 Aug 2020 12:32:00 +0000
-X-Mailer: git-send-email 2.25.1
-X-Originating-IP: [103.15.57.192]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 63f2b7f9-f63d-4072-c9d2-08d84da9de1b
-X-MS-TrafficTypeDiagnostic: DM6PR04MB6092:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR04MB60923A765DCDAC4DD643EA008D510@DM6PR04MB6092.namprd04.prod.outlook.com>
-WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uF0dvvn57m69yLMB5wgxvLLL6oCcCgjU2iLnvTcoKMQQa/uxN2BX0RpgUZL/ONZah2JzaVV1rtdGb+dUFtTLi7d/4KZKHAVuSy3mhmwijRz8N4E81wyCGzr5gsg53sl22TGTZi428fIpMvkIXGSwbKBdfdEcAURFT35+B814NDCgY/VMa1yU5P1GC7hdgmrhauvfX6q5TCcTf/qTbMHy+DbHt5Ly9zm9lANN/FnMxJ9G8gDkyBJHBj0dQTjOiHGmy1awQrOs6HMDYGakBKp+ah9EB4l+kI/DC2uQA1l2KFmhA6/XwmFnQL6TFmLYdrjleowc/FA4f91S/rHKQZbDSA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(44832011)(6666004)(52116002)(8676002)(86362001)(36756003)(478600001)(6486002)(7416002)(110136005)(8936002)(54906003)(66946007)(1076003)(66556008)(2906002)(26005)(186003)(66476007)(956004)(316002)(16576012)(4326008)(5660300002)(2616005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 3CdA+Vwe4hnIMtwnCQHT/DIsebF9NPU9QtzCc1L4kPfIBGy5v0lay1A2KU5kjvFaf70SsI7zVRVSdv2rkofwAr3fH3chb+Sd4f5tkpCAIV+2+ZjavjlFaapL5eVpfG2G71E+IrnhEjWnBIavOGoowZFxj8MPAQAsqhOGAkJhLRsvddGJT695hS30u2V3Aca3M0IPV3JyRjsifFFKjs3cEubvY6uTaE+yORWeuv9Ldi1jpjiqVVj5Qyk5AxFwoLX/LazjvEIaEZiy7PQVFjyV82KT3jZhakORZI0xY10QnqddV3GPunGs0VfVq1qqlN2M2RLZxNdyfbKuOJBGYak99zNCGhxvXiwgyc9Cttw9OC1AVi5djX4auqp2vEIdO8URsO2NuY5suCJ+hE9L/pn3YWVa5G14Sv1SqZcx49jc9J7RbmR5jO6wVD1MQPWH7sQl+B1z64FqZS3zalrZm6OhuxFFZC8ugqnHguTL7mQjTA338CwEyGbDTrjVv9Y3BFVqe2IOdOrR4K1tRmbikAqQXBqLE8XN+wZJ4P45KjOcTcVLnzoc4B97gkWCr9Vbpvg17KtFDp7xAY2psjLqakS1JkRbAh9agA9wXcSKM0FGDlsvLCKUD4WHnw1StR6J+z17gYaArlRc46LdDYZpAtxEGw==
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63f2b7f9-f63d-4072-c9d2-08d84da9de1b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6201.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2020 12:32:04.9426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fiRno5ICaalwDzpVodDZxIU0Ms/Fd9cndjLxJQQUUVBzsWM/Dl7Q60FCMQfaZeUVbrlL+rLw2ecIHroFJH769w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6092
+In-Reply-To: <20200829142501.31478-4-krzk@kernel.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa1BMYRjHvee2p3KaY2l6JtdZucQoub4zjHH7cMQHfDLNVDYdLWprdiuX
+        D4oG0VWYsqKGsDYqW0Ikk7bVxK4uqkkXscPExKhtXSq0ezL69nv+z/O8z/8/87KkPJXxYfep
+        40SNWhmlYNypirqfliWJ/dvClt42+eJ0Sz2BWxprCHw3t4TGF3ptDG6zf6TxlcGZ+E/FWRLn
+        11po3DL0lcHZPVkUznz/mcRWa6kM9wyZEHa0pBDY+L6Vxs2VeQzOtT4h8J3aLhk+UVUrw416
+        O4HLjBfI9V5C6eBxRqhyFFDCQ12XTDAaTjNCZ+tjRvhisciE+463tNCTaiaEssJEIaPcgIRB
+        46ztHsHuayPEqH0JoiZg3W53VVPhcyp2lD3UnDdAJ6F02RnkxgK/Al4k1yMny3k9gtN1m84g
+        9zG2IzBnfqalYhCBtfMY+W8jLSeNkDZuIhgoWiwNfUNQXFztakzlgyGjv5l28jTeD9pGv7te
+        Ivl3NOgv2Rhng+EDId2UMXabZTl+HVy+oXLKFD8Pvlb0uSx58aFwz/za9SbHT4H6izbKyW78
+        SnC8yXdFIHlv6LDlExLPhvv9eeNGn7MwUg0Sb4ayH1ZC4qnwyVw+Hn8GNJxLo5zegE9GkPbo
+        jUwqshD0mAuQNLUGOi2/GKdRcixNSWWAJG+AwnPJpFMG3hPa+6dIHjwhuyJnXOYg5aRcmvaF
+        YUPOuAUfSLX9obKQQjchmW5CGt2ENLr/dwsQZUDeYrw2OlLULlOLB/21ymhtvDrSf09MtBGN
+        fdGG32b7A1Q5El6DeBYpJnM/TFvD5LQyQXs4ugYBSyqmcRtfNoTKuQjl4SOiJiZMEx8lamvQ
+        dJZSeHPLr/aFyPlIZZx4QBRjRc2/LsG6+SShLbPm3FH3vjqlSo8gd1WLXrnTkUfxjqa+gq41
+        Jj/CK3vZqbZhLnFk0fxczy8dKyM+6Nsd5TE7447Gpjy9FWQIHh5YeKRu9dyH4aGJVHv4eblf
+        iGqph/C4yrhXv2eIm9R9PKjbTiVcb9ufN6/o2WhjUFLYtYD42gU5Hvqdcf6OzFWTFZRWpQxc
+        RGq0yr94lNVNngMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHKsWRmVeSWpSXmKPExsVy+t/xe7p1b33iDbrvmFr0njvJZHHl4iEm
+        i40z1rNaTH34hM3i+pfnrBbzPsta/N82kdli/pFzrBZXvr5ns5h0fwKLRf/j18wW589vYLe4
+        //Uoo8W3Kx1MFpseX2O1uLxrDpvFjPP7mCzWHrnLbtG69wi7xcUVX5gsNm+ayuwg6rHhcxOb
+        x95vC1g8ds66y+6xaVUnm8eda3vYPN6dO8fusf3bA1aP+93HmTw2L6n36NuyitHj8ya5AO4o
+        PZui/NKSVIWM/OISW6VoQwsjPUNLCz0jE0s9Q2PzWCsjUyV9O5uU1JzMstQifbsEvYxLS06w
+        FPzlqLg85xNrA2MvexcjJ4eEgIlEz/Qepi5GLg4hgaWMEl/XzwZKcAAlpCTmtyhB1AhL/LnW
+        xQZR855R4sH8/YwgCWGBKIm+t5dZQWwRAU2J63+/g9nMAo9YJT7NqoJo2Mwo8XjZT7BtbAKG
+        Er1H+xhBFvAK2EnMXZYBEmYRUJV4v+0l2ExRgTiJx73/mUFsXgFBiZMzn7CA2JwCphLfbs9n
+        h5ivLvFn3iVmCFtc4taT+UwQtrzE9rdzmCcwCs1C0j4LScssJC2zkLQsYGRZxSiSWlqcm55b
+        bKhXnJhbXJqXrpecn7uJEZg2th37uXkH46WNwYcYBTgYlXh4fxz1jhdiTSwrrsw9xCjBwawk
+        wut09nScEG9KYmVValF+fFFpTmrxIUZToOcmMkuJJucDU1peSbyhqaG5haWhubG5sZmFkjhv
+        h8DBGCGB9MSS1OzU1ILUIpg+Jg5OqQbGdvej/55ybXj8s2mR123OyEKxS0H/v6eedpQ04F/V
+        IWwT6vbQ9m/BW+7uhvbbdttOHD25yTHN3pZ1QmTvweuqj201ut56Ss48etmwTH3S7rhlZsec
+        LD5tm1Gfbr3tTq+k8+7f727OXH/mQuDPwszmw/a/jrp4vXFsujv1uZTTDp8vAkLZp7zalViK
+        MxINtZiLihMBD3yhmDEDAAA=
+X-CMS-MailID: 20200831123054eucas1p14913acf89e94842b48d8e005b5e01d7e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200829142536eucas1p12c539f1cd45195adef96f8b752778fcf
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200829142536eucas1p12c539f1cd45195adef96f8b752778fcf
+References: <20200829142501.31478-1-krzk@kernel.org>
+        <CGME20200829142536eucas1p12c539f1cd45195adef96f8b752778fcf@eucas1p1.samsung.com>
+        <20200829142501.31478-4-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer for KVM RISC-V and Atish as designated reviewer.
+On 29.08.2020 16:24, Krzysztof Kozlowski wrote:
+> Samsung Exynos SoCs use syscon for system registers so document its
+> compatibles.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index 049ec2ffc7f9..0f21943dea28 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -40,6 +40,10 @@ properties:
+>                - allwinner,sun50i-a64-system-controller
+>                - microchip,sparx5-cpu-syscon
+>                - mstar,msc313-pmsleep
+> +              - samsung,exynos3-sysreg
+> +              - samsung,exynos4-sysreg
+> +              - samsung,exynos5-sysreg
+> +              - samsung,exynos5433-sysreg
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Alexander Graf <graf@amazon.com>
----
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e4647c84c987..abecd5bf990e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9564,6 +9564,17 @@ F:	arch/powerpc/include/uapi/asm/kvm*
- F:	arch/powerpc/kernel/kvm*
- F:	arch/powerpc/kvm/
- 
-+KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)
-+M:	Anup Patel <anup.patel@wdc.com>
-+R:	Atish Patra <atish.patra@wdc.com>
-+L:	kvm@vger.kernel.org
-+L:	kvm-riscv@lists.infradead.org
-+S:	Maintained
-+T:	git git://github.com/kvm-riscv/linux.git
-+F:	arch/riscv/include/asm/kvm*
-+F:	arch/riscv/include/uapi/asm/kvm*
-+F:	arch/riscv/kvm/
-+
- KERNEL VIRTUAL MACHINE for s390 (KVM/s390)
- M:	Christian Borntraeger <borntraeger@de.ibm.com>
- M:	Janosch Frank <frankja@linux.ibm.com>
+Do you also have a patch updating Documentation/devicetree/
+bindings/arm/samsung/sysreg.yaml with new compatibles?
+
 -- 
-2.25.1
-
+Regards,
+Sylwester
