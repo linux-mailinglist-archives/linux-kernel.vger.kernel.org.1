@@ -2,90 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC0925905F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450462590EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgIAO2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:28:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728417AbgIAO1F (ORCPT
+        id S1728354AbgIAOl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728305AbgIAOQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:27:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598970422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U9xIgE3+KmrSNJy7uQ6sZ0yRjjbYaG5BWRMCjkhvH7c=;
-        b=goEQnO2vz/0Xdqfh/v5izGVGGuktPm5XBYse3FGIvasZjB4ZK1SMGyPbeLROf8FoYm9yxi
-        XMlZTTM7+bPjV62fTeWw5pdByFyDeCVrFSNx4h3h1dETOeRBt0VF+RlbJqA8ZEolyaUltd
-        zfHjNDl39GhGl7rH83nSKzVmDGZb9HM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-U6hKbO9uMRqm7ZDuh0AcuA-1; Tue, 01 Sep 2020 10:27:00 -0400
-X-MC-Unique: U6hKbO9uMRqm7ZDuh0AcuA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AEDD10059A8;
-        Tue,  1 Sep 2020 14:26:57 +0000 (UTC)
-Received: from treble (ovpn-113-168.rdu2.redhat.com [10.10.113.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26EC860BE2;
-        Tue,  1 Sep 2020 14:26:52 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 09:26:51 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "'x86@kernel.org'" <x86@kernel.org>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>,
-        'Al Viro' <viro@zeniv.linux.org.uk>,
-        'Will Deacon' <will@kernel.org>,
-        'Dan Williams' <dan.j.williams@intel.com>,
-        'Andrea Arcangeli' <aarcange@redhat.com>,
-        'Waiman Long' <longman@redhat.com>,
-        'Peter Zijlstra' <peterz@infradead.org>,
-        'Thomas Gleixner' <tglx@linutronix.de>,
-        'Andrew Cooper' <andrew.cooper3@citrix.com>,
-        'Andy Lutomirski' <luto@kernel.org>,
-        'Christoph Hellwig' <hch@lst.de>
-Subject: Re: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <20200901142651.eir5nx4gpy63shlm@treble>
-References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
- <20200828192911.ezqspexfb2gtvrr7@treble>
- <f54657f1b5e74ec99cef62228db50dee@AcuMS.aculab.com>
- <56488b800d044a7e81efd8b40198a527@AcuMS.aculab.com>
- <20200831173112.fjfnnup5cfc5t226@treble>
- <93873def6ede46f89fa33b3fc78876f6@AcuMS.aculab.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <93873def6ede46f89fa33b3fc78876f6@AcuMS.aculab.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 1 Sep 2020 10:16:46 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31CEC061251
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:07:39 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id d20so1019187qka.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:07:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
+         :message-id:in-reply-to;
+        bh=+c7gUM4M1NG54PZN7hYz3O1VCdsfHKYvNA1RcLxjRT4=;
+        b=DtGglfrVkajnixQQs92D4Z0K2684L1xRNQx6ROkO6nL5ByavpK+z7lGv2Cj6qIVlli
+         tivZ9xsZnEX7sLIbciNgwJSu4trMy6XhwZXTI14WxS2mR6KrA6clkgacrsmnIBGHRvHp
+         Vdy+oFh2uQbBRobIDRo81RCTxaMMIE0B6EhjSeNt00LGQ95FAzJGP1Aa4IaR8HaTW1XS
+         /tq9s4WiENbGx7GoGSaRe1DX8WDy8jo8dOniiKviBzPhQVxo2pTpIDWQ34Huy8qRElfy
+         LQwPyJOTok+HG4mw0V6qHwOtJFfJVobOzD2X6sKH7Ia7ydvgiME1lIT/t2Bhahr2ioJ3
+         ZD1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
+         :subject:from:to:date:message-id:in-reply-to;
+        bh=+c7gUM4M1NG54PZN7hYz3O1VCdsfHKYvNA1RcLxjRT4=;
+        b=O+OddR6EataWoUEi0L5K2ZwhxMT8/82Cv+3ONCy9+6BPU838dVFHhu/9dWfXs4LhuS
+         5ZS2gKG7LwUIuh4FMVtu9erD+i+9HxpQjkD3eRSo8j8UpFCYI7QaPjb7DTFbSTwH+g0h
+         pnQZKXEmIBNTzSv9IWfJTvTy2VJz38BxmSSfv8N3GRYubB6l5lqsxeRk89RtwkUJFdUo
+         8TbmDKOl4T5d4OLo+pUT+CRr5n5Y70B1SVXM7uXvYp2ubGuRhqRtJwmqlUzj+aFf/pQn
+         SIZTjdhty8wM+cLPkyp0TcGNwX2K3jmiw6Eova/Vakacpg5Q+lore6v6A91Ew+f3EaIJ
+         3Ktw==
+X-Gm-Message-State: AOAM5321H3GYpa3i4aYZqKWdFV2I2cbSaWkefGWPRRdomX/QX/hHZPj4
+        qoTpyH2M2kbuqUUFNOQUEnsfdm3zReQ=
+X-Google-Smtp-Source: ABdhPJySP7qnv73ndy+4kJiIaZROYfwZkec0hTAOuXjwxulZXTMbdceuSrDBTJex1URL8ZO7Mwvv0Q==
+X-Received: by 2002:a37:8f04:: with SMTP id r4mr2015273qkd.495.1598969259038;
+        Tue, 01 Sep 2020 07:07:39 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id 192sm1429688qkm.110.2020.09.01.07.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 07:07:37 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     <geert@linux-m68k.org>, <kishon@ti.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/1] phy: tusb1210: use bitmasks to set
+ VENDOR_SPECIFIC2
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Vinod Koul" <vkoul@kernel.org>
+Date:   Mon, 31 Aug 2020 12:10:18 -0400
+Message-Id: <C5BBA21WKTPB.3H0L7E96UPHZ9@atris>
+In-Reply-To: <20200831110852.GO2639@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 08:32:20AM +0000, David Laight wrote:
-> > Yes, it would make sense to put the masking in access_ok() somehow.  But
-> > to do it properly, I think we'd first need to make access_ok() generic.
-> > Maybe that's do-able, but it would be a much bigger patch set.
-> > 
-> > First I'd prefer to just fix x86, like my patch does.  Then we could do
-> > an access_ok() rework.
-> 
-> If you do a modified access_ok() you get to (slowly) collect all
-> the important paths.
-> No point replicating the same test.
-> 
-> A lot of the access_ok() can be deleted - maybe remove some __
-> from the following functions.
-> Or change to the variants that enable user-space accesses.
+Hi Vinod,
 
-Well, yes, but that's a much bigger job which can be done later.
+On Mon Aug 31, 2020 at 7:08 AM EDT, Vinod Koul wrote:
+> Hi Liam,
+>
+> On 22-08-20, 16:53, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > Start by reading the content of the VENDOR_SPECIFIC2 register and updat=
+e
+> > each bit field based on device properties when defined.
+> >=20
+> > The use of bit masks prevents fields from overriding each other and
+> > enables users to clear bits which are set by default, like datapolarity
+> > in this instance.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> > Changes since v1:
+> > - use set_mask_bits
+> >=20
+> > Changes since v2:
+> > - fix missing bit shift dropped in v2
+> > - rebase on 5.9-rc1
+> >=20
+> > Changes since v3:
+> > - switch to u8p_replace_bits() since there's little reason to protect
+> >   against concurrent access
+> >=20
+> >  drivers/phy/ti/phy-tusb1210.c | 27 ++++++++++++++-------------
+> >  1 file changed, 14 insertions(+), 13 deletions(-)
+> >=20
+> > diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb121=
+0.c
+> > index d8d0cc11d187..a63213f5972a 100644
+> > --- a/drivers/phy/ti/phy-tusb1210.c
+> > +++ b/drivers/phy/ti/phy-tusb1210.c
+> > @@ -7,15 +7,16 @@
+> >   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >   */
+> >  #include <linux/module.h>
+> > +#include <linux/bitfield.h>
+> >  #include <linux/ulpi/driver.h>
+> >  #include <linux/ulpi/regs.h>
+> >  #include <linux/gpio/consumer.h>
+> >  #include <linux/phy/ulpi_phy.h>
+> > =20
+> >  #define TUSB1210_VENDOR_SPECIFIC2		0x80
+> > -#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT	0
+> > -#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT	4
+> > -#define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT	6
+> > +#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK	GENMASK(3, 0)
+> > +#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK	GENMASK(5, 4)
+> > +#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK	BIT(6)
+> > =20
+> >  struct tusb1210 {
+> >  	struct ulpi *ulpi;
+> > @@ -118,22 +119,22 @@ static int tusb1210_probe(struct ulpi *ulpi)
+> >  	 * diagram optimization and DP/DM swap.
+> >  	 */
+> > =20
+> > +	reg =3D ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
+> > +
+> >  	/* High speed output drive strength configuration */
+> > -	device_property_read_u8(&ulpi->dev, "ihstx", &val);
+> > -	reg =3D val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
+> > +	if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
+> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK=
+);
+>
+> Any reason for using u8p_replace_bits and not u8_replace_bits?
+>
 
--- 
-Josh
+u8p_replace_bits seems like a more concise notation.
 
+> Also please drop the u8 casts above, they seem unnecessary here
+>
+
+I added the casts to get rid of compilation warnings.
+
+> > =20
+> >  	/* High speed output impedance configuration */
+> > -	device_property_read_u8(&ulpi->dev, "zhsdrv", &val);
+> > -	reg |=3D val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT;
+> > +	if (!device_property_read_u8(&ulpi->dev, "zhsdrv", &val))
+> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MAS=
+K);
+> > =20
+> >  	/* DP/DM swap control */
+> > -	device_property_read_u8(&ulpi->dev, "datapolarity", &val);
+> > -	reg |=3D val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT;
+> > +	if (!device_property_read_u8(&ulpi->dev, "datapolarity", &val))
+> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_DP_MASK);
+> > =20
+> > -	if (reg) {
+> > -		ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+> > -		tusb->vendor_specific2 =3D reg;
+> > -	}
+> > +	ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+> > +	tusb->vendor_specific2 =3D reg;
+> > =20
+> >  	tusb->phy =3D ulpi_phy_create(ulpi, &phy_ops);
+> >  	if (IS_ERR(tusb->phy))
+> >=20
+> > base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+> > --=20
+> > 2.27.0
+>
+> --
+> ~Vinod
+
+Thanks,
+Liam
