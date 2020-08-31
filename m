@@ -2,80 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E25257332
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 06:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5127825734B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 07:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgHaExS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 00:53:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgHaExR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 00:53:17 -0400
-Received: from kernel.org (unknown [87.70.91.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23D7D20719;
-        Mon, 31 Aug 2020 04:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598849597;
-        bh=zZlZOKBvQCa9q1swSMh6UKazBpijMwGQCUZNTNlXztU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sysjg2+1Cv9h8cmqonDwElO0pcD0zLnWB9hmNm9fLcAECJaliJXg14ddaG0Imyyi6
-         RZ5HBq+aGuzlq61pmu8RpIbg3R4k2JEJsVmeKxWMSjz4FWrXJmMSBM0mMtNzE5xtZ1
-         g3QUWuaIxKJdBDbg/TVQ1yM0zCJ38fgOQ5O3hbkU=
-Date:   Mon, 31 Aug 2020 07:53:11 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2] Documentation: submit-checklist: add clean builds for
- new Documentation
-Message-ID: <20200831045311.GB432455@kernel.org>
-References: <cf5bbdf5-03ff-0606-a6d4-ca196d90aee9@infradead.org>
+        id S1726292AbgHaF2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 01:28:02 -0400
+Received: from mo-csw-fb1516.securemx.jp ([210.130.202.172]:36154 "EHLO
+        mo-csw-fb.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgHaF2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 01:28:00 -0400
+X-Greylist: delayed 1319 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 Aug 2020 01:27:58 EDT
+Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1516) id 07V55xjM028905; Mon, 31 Aug 2020 14:06:00 +0900
+Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 07V55N5u031198; Mon, 31 Aug 2020 14:05:24 +0900
+X-Iguazu-Qid: 34tMd2lTgy70XwD4cl
+X-Iguazu-QSIG: v=2; s=0; t=1598850323; q=34tMd2lTgy70XwD4cl; m=Eo+lI7ZGnqBRi8KYw8EQ/Q4YFSXKrGQSVifG045e3U8=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1511) id 07V55LQQ032861;
+        Mon, 31 Aug 2020 14:05:21 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 07V55K93009887;
+        Mon, 31 Aug 2020 14:05:20 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 07V55Krc022628;
+        Mon, 31 Aug 2020 14:05:20 +0900
+From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Cc:     <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-edac@vger.kernel.org>,
+        <linux-efi@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <devel@acpica.org>, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        "Ard Biesheuvel" <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v2 1/2] cper, apei, mce: Pass x86 CPER through the MCA handling chain
+References: <20200828203332.11129-1-Smita.KoralahalliChannabasappa@amd.com>
+        <20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com>
+Date:   Mon, 31 Aug 2020 14:05:18 +0900
+In-Reply-To: <20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com>
+        (Smita Koralahalli's message of "Fri, 28 Aug 2020 15:33:31 -0500")
+X-TSB-HOP: ON
+Message-ID: <878sdvv20h.fsf@kokedama.swc.toshiba.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cf5bbdf5-03ff-0606-a6d4-ca196d90aee9@infradead.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 05:43:54PM -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Add to Documentation/process/submit-checklist.rst that patch
-> submitters should run "make htmldocs" and verify that any
-> Documentation/ changes (patches) are clean (no new warnings/errors).
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Mike Rapoport <rppt@kernel.org>
+Hi Smita,
 
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+A couple of comments below -
 
+Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> writes:
+
+> Linux Kernel uses ACPI Boot Error Record Table (BERT) to report fatal
+> errors that occurred in a previous boot. The MCA errors in the BERT are
+> reported using the x86 Processor Error Common Platform Error Record (CPER)
+> format. Currently, the record prints out the raw MSR values and AMD relies
+> on the raw record to provide MCA information.
+>
+> Extract the raw MSR values of MCA registers from the BERT and feed it into
+> the standard mce_log() function through the existing x86/MCA RAS
+> infrastructure. This will result in better decoding from the EDAC MCE
+> decoder or the default notifier.
+>
+> The implementation is SMCA specific as the raw MCA register values are
+> given in the register offset order of the MCAX address space.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
 > ---
-> v2: insert "new" inside "without warnings/errors" (Mike)
-> 
->  Documentation/process/submit-checklist.rst |    4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> --- linux-next-20200821.orig/Documentation/process/submit-checklist.rst
-> +++ linux-next-20200821/Documentation/process/submit-checklist.rst
-> @@ -24,6 +24,10 @@ and elsewhere regarding submitting Linux
->  
->    c) Builds successfully when using ``O=builddir``
->  
-> +  d) Any Documentation/ changes build successfully without new warnings/errors.
-> +     Use ``make htmldocs`` or ``make pdfdocs`` to check the build and
-> +     fix any issues.
-> +
->  3) Builds on multiple CPU architectures by using local cross-compile tools
->     or some other build farm.
->  
-> 
 
--- 
-Sincerely yours,
-Mike.
+[...]
+
+
+> diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
+> index 2531de49f56c..374b8e18552a 100644
+> --- a/drivers/firmware/efi/cper-x86.c
+> +++ b/drivers/firmware/efi/cper-x86.c
+> @@ -1,7 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  // Copyright (C) 2018, Advanced Micro Devices, Inc.
+>  
+> -#include <linux/cper.h>
+
+Why is the include dropped? AFAICT, the definitions from there are still
+being used after this patch.
+
+> +#include <acpi/apei.h>
+>  
+>  /*
+>   * We don't need a "CPER_IA" prefix since these are all locally defined.
+> @@ -347,9 +347,11 @@ void cper_print_proc_ia(const char *pfx, const struct cper_sec_proc_ia *proc)
+>  			       ctx_info->mm_reg_addr);
+>  		}
+>  
+> -		printk("%sRegister Array:\n", newpfx);
+> -		print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
+> -			       (ctx_info + 1), ctx_info->reg_arr_size, 0);
+> +		if (arch_apei_report_x86_error(ctx_info, proc->lapic_id)) {
+> +			printk("%sRegister Array:\n", newpfx);
+> +			print_hex_dump(newpfx, "", DUMP_PREFIX_OFFSET, 16, groupsize,
+> +				       (ctx_info + 1), ctx_info->reg_arr_size, 0);
+> +		}
+>  
+>  		ctx_info = (struct cper_ia_proc_ctx *)((long)ctx_info + size);
+>  	}
+> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
+> index 680f80960c3d..44d4d08acce0 100644
+> --- a/include/acpi/apei.h
+> +++ b/include/acpi/apei.h
+> @@ -33,8 +33,15 @@ extern bool ghes_disable;
+>  
+>  #ifdef CONFIG_ACPI_APEI
+>  void __init acpi_hest_init(void);
+> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
+> +			       u64 lapic_id);
+>  #else
+>  static inline void acpi_hest_init(void) { return; }
+> +static inline int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
+> +					     u64 lapic_id)
+> +{
+> +	return -EINVAL;
+> +}
+>  #endif
+
+Adding the declaration to this include violates the separation of
+generic and architecture specific code.
+
+Can this be moved to the appropriate architecture specific header?
+Perhaps arch/x86/include/asm/apei.h.
+
+>  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
+> @@ -51,6 +58,8 @@ int erst_clear(u64 record_id);
+>  
+>  int arch_apei_enable_cmcff(struct acpi_hest_header *hest_hdr, void *data);
+>  void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err);
+> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
+> +			       u64 lapic_id);
+
+
+Why is the additional declaration needed?
+
+Thanks,
+Punit
+
+>  
+>  #endif
+>  #endif
