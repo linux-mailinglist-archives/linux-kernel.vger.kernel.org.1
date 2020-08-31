@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29EF25801E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADEF25800A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729249AbgHaSDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:03:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
+        id S1729056AbgHaSBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728829AbgHaSB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728772AbgHaSB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:01:26 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14BBD21582;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7780C21707;
         Mon, 31 Aug 2020 18:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598896886;
-        bh=NHb/uTlI4XHsRb/k0hOwL2ogF8mCSlrEuc3/2RLkKwc=;
+        bh=OV4rdtDJfndd8yIlNe+o4Ki+VpzlQTxASJjsVeMAmWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBPmO5/kGI8gApBVBahCdZgxKSWm5wQnN4i/V76N5DT9AdUokBFaTWrtKWjgmcwln
-         6pNXdmmrxbZh+8GUWBmvDAVGTtoEWjdjD3N/8jWn31bucAXC/0lpJtT2IhQJTSe0zx
-         CCFiBgRVQukHJrJTskeT6Nx+RpxcE+sHSv6PZvA4=
+        b=WBMhrXPqNrjbNozJLgrbF0I9Daiv9qPQCga4nI/foekBthdIzdIyliuhJM4c6nC74
+         k4EH+rrft/w1BsIlACxqq+Z2YsE4kZksM2aG40aLsYBh569NyPSLqL2KEkW7N7n1rb
+         bssE3AD2+5BPYW3P6rHkT2kjtbM2xUAmOUqzJDUU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 18/24] rcu: Move rcu_cpu_started per-CPU variable to rcu_data
-Date:   Mon, 31 Aug 2020 11:01:10 -0700
-Message-Id: <20200831180116.32690-18-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 19/24] rcu/nocb: Add a warning for non-GP kthread running GP code
+Date:   Mon, 31 Aug 2020 11:01:11 -0700
+Message-Id: <20200831180116.32690-19-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -45,69 +45,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-When the rcu_cpu_started per-CPU variable was added by commit
-f64c6013a202 ("rcu/x86: Provide early rcu_cpu_starting() callback"),
-there were multiple sets of per-CPU rcu_data structures.  Therefore, the
-rcu_cpu_started flag was added as a separate per-CPU variable.  But now
-there is only one set of per-CPU rcu_data structures, so this commit
-moves rcu_cpu_started to a new ->cpu_started field in that structure.
+This commit increases RCU's ability to defend itself by emitting a warning
+if one of the nocb CB kthreads invokes the GP kthread's wait function.
+This warning augments a similar check that is carried out at the end
+of rcutorture testing and when RCU CPU stall warnings are emitted.
+The problem with those checks is that the miscreants have long since
+departed and disposed of any and all evidence.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 11 ++++-------
- kernel/rcu/tree.h |  1 +
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ kernel/rcu/tree_plugin.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index da05afc..52108dd 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3967,8 +3967,6 @@ int rcutree_offline_cpu(unsigned int cpu)
- 	return 0;
- }
- 
--static DEFINE_PER_CPU(int, rcu_cpu_started);
--
- /*
-  * Mark the specified CPU as being online so that subsequent grace periods
-  * (both expedited and normal) will wait on it.  Note that this means that
-@@ -3988,12 +3986,11 @@ void rcu_cpu_starting(unsigned int cpu)
- 	struct rcu_node *rnp;
- 	bool newcpu;
- 
--	if (per_cpu(rcu_cpu_started, cpu))
-+	rdp = per_cpu_ptr(&rcu_data, cpu);
-+	if (rdp->cpu_started)
- 		return;
-+	rdp->cpu_started = true;
- 
--	per_cpu(rcu_cpu_started, cpu) = 1;
--
--	rdp = per_cpu_ptr(&rcu_data, cpu);
- 	rnp = rdp->mynode;
- 	mask = rdp->grpmask;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
-@@ -4053,7 +4050,7 @@ void rcu_report_dead(unsigned int cpu)
- 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	raw_spin_unlock(&rcu_state.ofl_lock);
- 
--	per_cpu(rcu_cpu_started, cpu) = 0;
-+	rdp->cpu_started = false;
- }
- 
- /*
-diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
-index c96ae35..309bc7f 100644
---- a/kernel/rcu/tree.h
-+++ b/kernel/rcu/tree.h
-@@ -156,6 +156,7 @@ struct rcu_data {
- 	bool		beenonline;	/* CPU online at least once. */
- 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
- 	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
-+	bool		cpu_started;	/* RCU watching this onlining CPU. */
- 	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
- 	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
- 	unsigned long	ticks_this_gp;	/* The number of scheduling-clock */
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 4d63ee3..cb1e8c8 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -1926,6 +1926,7 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	 * nearest grace period (if any) to wait for next.  The CB kthreads
+ 	 * and the global grace-period kthread are awakened if needed.
+ 	 */
++	WARN_ON_ONCE(my_rdp->nocb_gp_rdp != my_rdp);
+ 	for (rdp = my_rdp; rdp; rdp = rdp->nocb_next_cb_rdp) {
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+ 		rcu_nocb_lock_irqsave(rdp, flags);
 -- 
 2.9.5
 
