@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CF22571BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09502571C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 04:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHaB4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 21:56:39 -0400
-Received: from mail-eopbgr60111.outbound.protection.outlook.com ([40.107.6.111]:41218
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726525AbgHaB4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 21:56:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A14Ih+GBtu9yfpRafVKoWLGFh0R86ZXoALLqU+QUfkJ92FGAIf4p0/eOAdtK9/RYvPkjwXxOpAwTIgdCDOBn4QHampkss1DMpIXdiuegDMqkTgKPK0e55vkB2dhmQ8Yh/KMmu9Q4osdhKAkW0JAVQJSFHmTzGgRfPMqok6r0pthGoOUigXt6tLIWMqvo/oSoBg8EHzecyO81AFV1VVkVm0pZ/ghhvnF5jXmNjDa3ux9DQfGzfzpsbAs14rivwYr6mMrKvqTF8HuYxabOueohsdsn9Nz1bmYFvINM2nk4RdQt+O6iOLy7xlUcFcApAgknxgjdcDjpiaeKrKpAKB6w3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kj+4CzBQlEEC5JZw+s9n4i7z53k3L9dwXNwQNpYytbY=;
- b=TAEcaIlMAqDBG9Lt4Chud02qGGj4Bymf4YAl+8sJpzzg90YJE54OuPMVob1wKn8mqHRpRvFHXzuZXs0Z8URTrpZREvjqJL0ErufCxlLTvDQq/xVfW9XPheniKJJOTz68P4GF8fDGOjNqstqJhNzDmN9QpnHYPxAQlyfI/96bMVDx9VNKq8CjObkZwmWC+/I29IxtfaSPerCSbK3uFI7LN38q0Db7Ws0jCnFdJJZ+uQmX6hkEGZ6VlV3UwsPmZmn7xHyGumS0AXnvnFLemqw3plw0jJXH7GvoJ+dWtEyz7O3g2ggWGmz+SzDavLNydDHx51wG6U6ALY8YnRiFJ0tEKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kj+4CzBQlEEC5JZw+s9n4i7z53k3L9dwXNwQNpYytbY=;
- b=y4EMhONmoSY6L52+ilPY4vhrmhMPqlk6E8Zmbl4LzlU6viALjXG1CoKaCJnd+N8LiEWPh+EH6C/oVhZxW5sen805BPn/v1XK1MOktXraNsp4eVom9c6oASXgsu3s2YKksO7SER9B3Ft75QSbuCq9WXAeZVu82g6mm/2aaCfnE50=
-Authentication-Results: baylibre.com; dkim=none (message not signed)
- header.d=none;baylibre.com; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0364.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:62::25) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3326.23; Mon, 31 Aug 2020 01:56:08 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::b1a4:e5e3:a12b:1305]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::b1a4:e5e3:a12b:1305%6]) with mapi id 15.20.3326.025; Mon, 31 Aug 2020
- 01:56:08 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Maxime Ripard <maxime.ripard@free-electrons.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>
-Subject: [PATCH v3 3/3] misc: eeprom: at24: register nvmem only after eeprom is ready to use
-Date:   Mon, 31 Aug 2020 04:55:39 +0300
-Message-Id: <20200831015539.26811-4-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200831015539.26811-1-vadym.kochan@plvision.eu>
-References: <20200831015539.26811-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain
-X-ClientProxiedBy: AM5PR0201CA0022.eurprd02.prod.outlook.com
- (2603:10a6:203:3d::32) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S1726960AbgHaCQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 22:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726924AbgHaCQp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 22:16:45 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB9DC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 19:09:56 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so2026765pfg.13
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 19:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YZA4Jxp1/LovkIERwC8cRY8LKXjFkLRRUzr+YgrmuJM=;
+        b=R4cn6i0AMPdk0bD8kYRDnEkMkspxSvJEzFNyjc6q1ZprCAa8Q4k/n8KgM4niF+mlRh
+         r/8SfOLdZb0Gt8K55TjxH9nMYXsbVe4bt8e9FmZEVW4IgTBqhquqqR7D0Ux8mNcX1W+L
+         gX12loSHdxpLB3fasawc1h176DRu+RsW/juqMuX/8jxZJxLY3/wgxuOca7TdPyviNBe9
+         TxulGl/BF3W9GbmHxgVAaRiPWGC2vHI8GX4344pWk8fTQ7HaihQXkjVJakI6YDyWl78Q
+         DAzZAwP5M+F4dsPB0vHvQKKVLNaOkLL8NhsvGzMHXhpJ6AdipuKQ5qfXQRz9V2zJ2VNL
+         mxGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YZA4Jxp1/LovkIERwC8cRY8LKXjFkLRRUzr+YgrmuJM=;
+        b=kaZQwxtEqc3hIntNnc2fZDNEHRyO5L4rsDb1QJfremLbObN0tz5NIKox1IcGQu5KY5
+         d019Fy/MsxoRz8ewB/okVdTr9PldwlW3ZEwS3daXDTaD5ABJ4UrsvzH4U2Vy3UYlNVzD
+         Rxb96vCqRGpkVJ/WsCXH2WVTUs+VF2iikkWHC/tN1R/y+YDI69kxB7vs9EzZ2McaKp8H
+         mAhyBwb1zkGn1KxIiI0iBm+7u8qGaZWKeqCsnqiawi12S9yeSMKsLsMc1SBTs8V7Qrew
+         HfVgBCVOVxCt52RC5CMD9iVMEf+JlUN6UnZy9DqOjs5OJVM/YDR1Bh02/tRv5WT9uh3L
+         BSiA==
+X-Gm-Message-State: AOAM533UFNhcbF1eoSclJInxp2au5EV9v+Idgg3XtbPfYTMVlJ1OHj//
+        ACGxpOLgv0jrzuUlufnuMZjsHr9WH+w=
+X-Google-Smtp-Source: ABdhPJyph/vYXHaoDuzLw6oSx9KKY6yc0pI+qOzxSdYQiGFrnNK3kZitaLxd0YmuOPySIBuv8d5fIQ==
+X-Received: by 2002:a63:110c:: with SMTP id g12mr6364680pgl.91.1598839795696;
+        Sun, 30 Aug 2020 19:09:55 -0700 (PDT)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:1:a6ae:11ff:fe18:6ce2])
+        by smtp.gmail.com with ESMTPSA id m24sm5524916pgn.44.2020.08.30.19.09.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Aug 2020 19:09:55 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs: change compr_blocks of superblock info to 64bit
+Date:   Mon, 31 Aug 2020 11:09:49 +0900
+Message-Id: <20200831020949.3218854-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM5PR0201CA0022.eurprd02.prod.outlook.com (2603:10a6:203:3d::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.20 via Frontend Transport; Mon, 31 Aug 2020 01:56:07 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 91fb548b-d050-4e2d-50f3-08d84d510733
-X-MS-TrafficTypeDiagnostic: HE1P190MB0364:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB0364692D21EF8D7B8DD8F88F95510@HE1P190MB0364.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gdxeV35EGJ7F9hNqbae7txJ4sf/rdZRuSu4E2Bxglu01XQaSPnz94S2UaUb4hympQRbkaF+P3/fAXDtamoQzsGITjSK2mowxY0L+0PUvoDS6P/kOvtPeRFAX+aKEi88BYZfsfNA0rEnZqkcqmHitH+0FCVu4BXK0YxHg/I+ED5k9iHVA+y/BoE0QwSvy9XYHMZLYaheHzrIA6rmZ9D5IQWQ93A1TkaU/yVu3ExepZR6WYk6hcQZCWH7OLNgFFbrLdw8UKlceOzCpL56b9HDofe2Ao5kEEn9P7APADKUVTbmUlJb6ZhZrZDHbLcQENog/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(136003)(39830400003)(366004)(396003)(346002)(36756003)(478600001)(6486002)(5660300002)(316002)(2906002)(110136005)(8936002)(8676002)(6512007)(6666004)(66476007)(1076003)(66556008)(44832011)(66946007)(107886003)(2616005)(956004)(26005)(86362001)(4326008)(6506007)(83380400001)(16526019)(186003)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: bOYMSZBUAIt/qZPbOC8YfmOQYchkeobtJsZskKbtmNNrg5oixnS0wx0mXupy67AP6AcJUlQprqFEZbQAQnfgg3cCzK8C6/PG9DUhCGSrjk8iY9ca1CmMkHtDz+hlppW/J5NNzkq2pxF6RKrN+yz1ccfQYqzglRqCE77fWKlQqOd92bm9UmkiQjNsy0irSPZCFFJLvSkJGLcQ8i0sBs4NQ7GBXmB47wBL2fkbbVGjl0eRAs/6q1zIoS1W9PCNYs5yCsvaC5Y+g7vJoBxPp1iPs2hhF6doq6LKg3wE+GoucDXnfVt8HXdIu441S/Gd0eyv7sbQNzkFclV9OM6hBmL+4zbbW3nuvwm7o7kA3owxEJhB3SekO6LsRnirZZ2VCBIAlZaHBwPy5t/J6hZmKWbmfoIj9cU/Gesl+MH7admrQOVccIMPYVIYQrpNC/ehH+wdU7cgm07LK9LdZ5RKmOdqiAgyUEfUqn7p5oTtgb3sNFudSDEHy1XMZOp3PJUmEOwAPHNKFh9p89XIfSQiL3gpt/be9tVTHH2eG9lk7I7j6R687EVNamS2bGlw+L62ZHU8hwWp/GzoD2koaGdzwJBALLgxTsHQk/dfg4EhjJLZLv6NdwFHSwa5w0P5Vs4ph3NZeXgrl+9pae8TjckxL8srqA==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91fb548b-d050-4e2d-50f3-08d84d510733
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2020 01:56:08.4016
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aekus+6g10rRh+Xqwpx+cQzP+ER6ikDhlVUU0GQnalvBdal8i0fB8JsXZC8nc3+MPFD6OVcg4MGFd4tMdjVsBTcUtyNIjMfgLpeMEaT0JbE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0364
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During nvmem_register() the nvmem core sends notifications when:
+From: Daeho Jeong <daehojeong@google.com>
 
-    - cell added
-    - nvmem added
+Current compr_blocks of superblock info is not 64bit value. We are
+accumulating each i_compr_blocks count of inodes to this value and
+those are 64bit values. So, need to change this to 64bit value.
 
-and during these notifications some callback func may access the nvmem
-device, which will fail in case of at24 eeprom because regulator and pm
-are enabled after nvmem_register().
-
-Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
-v3:
-    1) at24 driver enables regulator and pm state machine after nvmem
-       registration which does not allow to use it on handing NVMEM_PRE_ADD event.
+ fs/f2fs/debug.c | 6 +++---
+ fs/f2fs/f2fs.h  | 9 +++++----
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
- drivers/misc/eeprom/at24.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index 2591c21b2b5d..26a23abc053d 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -692,10 +692,6 @@ static int at24_probe(struct i2c_client *client)
- 	nvmem_config.word_size = 1;
- 	nvmem_config.size = byte_len;
- 
--	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
--	if (IS_ERR(at24->nvmem))
--		return PTR_ERR(at24->nvmem);
--
- 	i2c_set_clientdata(client, at24);
- 
- 	err = regulator_enable(at24->vcc_reg);
-@@ -708,6 +704,13 @@ static int at24_probe(struct i2c_client *client)
- 	pm_runtime_set_active(dev);
- 	pm_runtime_enable(dev);
- 
-+	at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-+	if (IS_ERR(at24->nvmem)) {
-+		pm_runtime_disable(dev);
-+		regulator_disable(at24->vcc_reg);
-+		return PTR_ERR(at24->nvmem);
-+	}
-+
- 	/*
- 	 * Perform a one-byte test read to verify that the
- 	 * chip is functional.
+diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+index 4276c0f79beb..257e658b3a5e 100644
+--- a/fs/f2fs/debug.c
++++ b/fs/f2fs/debug.c
+@@ -131,7 +131,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+ 	si->inline_inode = atomic_read(&sbi->inline_inode);
+ 	si->inline_dir = atomic_read(&sbi->inline_dir);
+ 	si->compr_inode = atomic_read(&sbi->compr_inode);
+-	si->compr_blocks = atomic_read(&sbi->compr_blocks);
++	si->compr_blocks = atomic64_read(&sbi->compr_blocks);
+ 	si->append = sbi->im[APPEND_INO].ino_num;
+ 	si->update = sbi->im[UPDATE_INO].ino_num;
+ 	si->orphans = sbi->im[ORPHAN_INO].ino_num;
+@@ -342,7 +342,7 @@ static int stat_show(struct seq_file *s, void *v)
+ 			   si->inline_inode);
+ 		seq_printf(s, "  - Inline_dentry Inode: %u\n",
+ 			   si->inline_dir);
+-		seq_printf(s, "  - Compressed Inode: %u, Blocks: %u\n",
++		seq_printf(s, "  - Compressed Inode: %u, Blocks: %llu\n",
+ 			   si->compr_inode, si->compr_blocks);
+ 		seq_printf(s, "  - Orphan/Append/Update Inode: %u, %u, %u\n",
+ 			   si->orphans, si->append, si->update);
+@@ -542,7 +542,7 @@ int f2fs_build_stats(struct f2fs_sb_info *sbi)
+ 	atomic_set(&sbi->inline_inode, 0);
+ 	atomic_set(&sbi->inline_dir, 0);
+ 	atomic_set(&sbi->compr_inode, 0);
+-	atomic_set(&sbi->compr_blocks, 0);
++	atomic64_set(&sbi->compr_blocks, 0);
+ 	atomic_set(&sbi->inplace_count, 0);
+ 	for (i = META_CP; i < META_MAX; i++)
+ 		atomic_set(&sbi->meta_count[i], 0);
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 02811ce15059..f60414805e05 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -1552,7 +1552,7 @@ struct f2fs_sb_info {
+ 	atomic_t inline_inode;			/* # of inline_data inodes */
+ 	atomic_t inline_dir;			/* # of inline_dentry inodes */
+ 	atomic_t compr_inode;			/* # of compressed inodes */
+-	atomic_t compr_blocks;			/* # of compressed blocks */
++	atomic64_t compr_blocks;		/* # of compressed blocks */
+ 	atomic_t vw_cnt;			/* # of volatile writes */
+ 	atomic_t max_aw_cnt;			/* max # of atomic writes */
+ 	atomic_t max_vw_cnt;			/* max # of volatile writes */
+@@ -3533,7 +3533,8 @@ struct f2fs_stat_info {
+ 	int nr_discard_cmd;
+ 	unsigned int undiscard_blks;
+ 	int inline_xattr, inline_inode, inline_dir, append, update, orphans;
+-	int compr_inode, compr_blocks;
++	int compr_inode;
++	unsigned long long compr_blocks;
+ 	int aw_cnt, max_aw_cnt, vw_cnt, max_vw_cnt;
+ 	unsigned int valid_count, valid_node_count, valid_inode_count, discard_blks;
+ 	unsigned int bimodal, avg_vblocks;
+@@ -3618,9 +3619,9 @@ static inline struct f2fs_stat_info *F2FS_STAT(struct f2fs_sb_info *sbi)
+ 			(atomic_dec(&F2FS_I_SB(inode)->compr_inode));	\
+ 	} while (0)
+ #define stat_add_compr_blocks(inode, blocks)				\
+-		(atomic_add(blocks, &F2FS_I_SB(inode)->compr_blocks))
++		(atomic64_add(blocks, &F2FS_I_SB(inode)->compr_blocks))
+ #define stat_sub_compr_blocks(inode, blocks)				\
+-		(atomic_sub(blocks, &F2FS_I_SB(inode)->compr_blocks))
++		(atomic64_sub(blocks, &F2FS_I_SB(inode)->compr_blocks))
+ #define stat_inc_meta_count(sbi, blkaddr)				\
+ 	do {								\
+ 		if (blkaddr < SIT_I(sbi)->sit_base_addr)		\
 -- 
-2.17.1
+2.28.0.402.g5ffc5be6b7-goog
 
