@@ -2,112 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8982B257CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05697257D16
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbgHaPci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:32:38 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:48526 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729085AbgHaPcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:32:12 -0400
-Date:   Mon, 31 Aug 2020 11:32:08 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: [PATCH v2] vfs: add RWF_NOAPPEND flag for pwritev2
-Message-ID: <20200831153207.GO3265@brightrain.aerifal.cx>
+        id S1729206AbgHaPds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:33:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728421AbgHaPdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:33:38 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BCD47207EA;
+        Mon, 31 Aug 2020 15:33:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598888018;
+        bh=otuaNmTFeR1cZEWlvlrN8JZo+5WGyGy52K7YN8szaGA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t7ji3dYkdFx/lhVBpAlgWVNUumcb97mLLmaULWc2HZF1SCNV+0vn8gB6/EX3Jesa0
+         TYQo9Cyw2WEX/5MQHBMHAI1qxLB9wZhvSOyYytxc0kSFEyY4+z712lYwzwrugn2wO7
+         r7awxU3mYrzFJXQB8ajSViBM8MuzGSlq9+NdMu7k=
+Date:   Mon, 31 Aug 2020 17:33:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        devel@driverdev.osuosl.org
+Subject: Re: [PATCH AUTOSEL 5.8 07/42] speakup: Fix wait_for_xmitr for ttyio
+ case
+Message-ID: <20200831153345.GA2525965@kroah.com>
+References: <20200831152934.1023912-1-sashal@kernel.org>
+ <20200831152934.1023912-7-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200831152934.1023912-7-sashal@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pwrite function, originally defined by POSIX (thus the "p"), is
-defined to ignore O_APPEND and write at the offset passed as its
-argument. However, historically Linux honored O_APPEND if set and
-ignored the offset. This cannot be changed due to stability policy,
-but is documented in the man page as a bug.
+On Mon, Aug 31, 2020 at 11:28:59AM -0400, Sasha Levin wrote:
+> From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+> 
+> [ Upstream commit 2b86d9b8ec6efb86fc5ea44f2d49b1df17f699a1 ]
+> 
+> This was missed while introducing the tty-based serial access.
+> 
+> The only remaining use of wait_for_xmitr with tty-based access is in
+> spk_synth_is_alive_restart to check whether the synth can be restarted.
+> With tty-based this is up to the tty layer to cope with the buffering
+> etc. so we can just say yes.
+> 
+> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+> Link: https://lore.kernel.org/r/20200804160637.x3iycau5izywbgzl@function
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/staging/speakup/serialio.c  | 8 +++++---
+>  drivers/staging/speakup/spk_priv.h  | 1 -
+>  drivers/staging/speakup/spk_ttyio.c | 7 +++++++
+>  drivers/staging/speakup/spk_types.h | 1 +
+>  drivers/staging/speakup/synth.c     | 2 +-
+>  5 files changed, 14 insertions(+), 5 deletions(-)
 
-Now that there's a pwritev2 syscall providing a superset of the pwrite
-functionality that has a flags argument, the conforming behavior can
-be offered to userspace via a new flag. Since pwritev2 checks flag
-validity (in kiocb_set_rw_flags) and reports unknown ones with
-EOPNOTSUPP, callers will not get wrong behavior on old kernels that
-don't support the new flag; the error is reported and the caller can
-decide how to handle it.
+Not needed for 5.8 or older, sorry, this was a 5.9-rc1+ issue only.
 
-Signed-off-by: Rich Felker <dalias@libc.org>
----
+thanks,
 
-Changes in v2: I've added a check to ensure that RWF_NOAPPEND does not
-override O_APPEND for S_APPEND (chattr +a) inodes, and fixed conflicts
-with 1752f0adea98ef85, which optimized kiocb_set_rw_flags to work with
-a local copy of flags. Unfortunately the same optimization does not
-work for RWF_NOAPPEND since it needs to remove flags from the original
-set at function entry.
-
-If desired, I could further change this so that kiocb_flags is
-initialized to ki->ki_flags, with assignment-back in place of |= at
-the end of the function. This would allow the same local variable
-pattern in the RWF_NOAPPEND code path, which might be more elegant,
-but I'm not sure if the emitted code would improve or get worse.
-
-
- include/linux/fs.h      | 7 +++++++
- include/uapi/linux/fs.h | 5 ++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a08..924e17ac8e7e 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3321,6 +3321,8 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
- 		return 0;
- 	if (unlikely(flags & ~RWF_SUPPORTED))
- 		return -EOPNOTSUPP;
-+	if (unlikely((flags & RWF_APPEND) && (flags & RWF_NOAPPEND)))
-+		return -EINVAL;
- 
- 	if (flags & RWF_NOWAIT) {
- 		if (!(ki->ki_filp->f_mode & FMODE_NOWAIT))
-@@ -3335,6 +3337,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
- 		kiocb_flags |= (IOCB_DSYNC | IOCB_SYNC);
- 	if (flags & RWF_APPEND)
- 		kiocb_flags |= IOCB_APPEND;
-+	if ((flags & RWF_NOAPPEND) && (ki->ki_flags & IOCB_APPEND)) {
-+		if (IS_APPEND(file_inode(ki->ki_filp)))
-+			return -EPERM;
-+		ki->ki_flags &= ~IOCB_APPEND;
-+	}
- 
- 	ki->ki_flags |= kiocb_flags;
- 	return 0;
-diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-index f44eb0a04afd..d5e54e0742cf 100644
---- a/include/uapi/linux/fs.h
-+++ b/include/uapi/linux/fs.h
-@@ -300,8 +300,11 @@ typedef int __bitwise __kernel_rwf_t;
- /* per-IO O_APPEND */
- #define RWF_APPEND	((__force __kernel_rwf_t)0x00000010)
- 
-+/* per-IO negation of O_APPEND */
-+#define RWF_NOAPPEND	((__force __kernel_rwf_t)0x00000020)
-+
- /* mask of flags supported by the kernel */
- #define RWF_SUPPORTED	(RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
--			 RWF_APPEND)
-+			 RWF_APPEND | RWF_NOAPPEND)
- 
- #endif /* _UAPI_LINUX_FS_H */
--- 
-2.21.0
-
+greg k-h
