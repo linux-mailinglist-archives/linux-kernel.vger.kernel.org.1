@@ -2,168 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4F725779F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2CD2577A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgHaKsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 06:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgHaKsb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:48:31 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55476C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:48:30 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v4so4120996wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oko5+c/dibPeBB6wBwJp/K5eZaK7OHUWNL23/h49n1s=;
-        b=mbe2O9q7cQpGUCXxyyPedwG7vr9ZHbbh2URFehbp1STci1Q+vxWAiQm+3ZeTdRT1JI
-         BPrKM7510MtndMOtf7oUosMazslwYYlv05sFqzwy4pwAbCnY6KFwzX4iWiXhmA/MBvwC
-         3N+cbQbkWoBKaRFGVrXSyWJrmRve8+Y2Fv2XN6e9zJpkj+yOkqrSFuR1eH2EjOGvIdaz
-         iT4ZdhMyXpNuKY3GBqTgpnVGZN6oi2vXbbhwmFxCyHsD9zGtW3jt4XHaTSPUTtNP98Ax
-         t+a6Rb5HzOtZIS5wb47oBVUmLkSnR4WGUJTRfVqIRcGzhV/uWv4F6rx5ELcYwg0VuHx8
-         rt5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oko5+c/dibPeBB6wBwJp/K5eZaK7OHUWNL23/h49n1s=;
-        b=K+qv0A1AlJT83jcZNnH1tYV3QGEPUCnZ7tfLT3Ku+Kb1ZznaKojwG5LkClfUzPkGn4
-         r70Ubj+NGcQIt+fkSFEfdr9EKFFYmhrU7kZG3Z68CcAoaxSiO7W1+22vLkvLRLtdB5gM
-         6XWia4yITMdgIo0bxIUb8zKwsaNBv9aYkNR1my6wjpciLnUQ1g9Re0sko9gF4MwM4L77
-         us1ghhvvL48ncJ6faD/TAr4GxqlneCGJ19TKm7WAozc32C8OTm5yiAiBzvpqH9ldlF68
-         KgS5QJzieoMAisTIBvGpLdPM/vy/Wyu7b0HKjlct/tKNEROoGAbpz7L0wDGeFZXluCEP
-         DYAQ==
-X-Gm-Message-State: AOAM533ZEBboB8AugqNiWXlZFYnW/2yoNo2bh2o43hMjts25bVa03Wl3
-        u1kFKoCwmPnXyjBdaMH/7N/iwg==
-X-Google-Smtp-Source: ABdhPJwHrzumBs1OPAJmMwh0nKF53fSksqNTY9/EKUOAlxNMd0B/eay2kFUaQ8gbvUEZ5jsnIuLuiw==
-X-Received: by 2002:a7b:cf13:: with SMTP id l19mr763110wmg.115.1598870908729;
-        Mon, 31 Aug 2020 03:48:28 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id g9sm11837912wrw.63.2020.08.31.03.48.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 03:48:28 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 12:48:27 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v3 02/14] devlink: Add reload actions
- counters
-Message-ID: <20200831104827.GB3794@nanopsycho.orion>
-References: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
- <1598801254-27764-3-git-send-email-moshe@mellanox.com>
+        id S1726867AbgHaKtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 06:49:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9160 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726797AbgHaKsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:48:54 -0400
+IronPort-SDR: mjh+pU5l3w+xP4a0wwPq7B/AVikvNUlqhG2+jRQrWcH3/SdVdkE8IlXTUcommcqFnWzkxwZ/PP
+ tc4TMfHf8FAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="156947471"
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="156947471"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 03:48:53 -0700
+IronPort-SDR: QtbYslM8L6VMNNukXAtrEXwVAn0uOhONeiIlE9BvQ5B9t/RaF/9VInXkE7qJwK2FRDyEZ2mAhe
+ /erudIpq4vCw==
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="374774114"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 03:48:49 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id AB5D3204F9; Mon, 31 Aug 2020 13:48:47 +0300 (EEST)
+Date:   Mon, 31 Aug 2020 13:48:47 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>
+Cc:     linux-media@vger.kernel.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, mripard@kernel.org, wens@csie.org,
+        yong.deng@magewell.com, mchehab+samsung@kernel.org,
+        p.zabel@pengutronix.de, hans.verkuil@cisco.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        paul.kocialkowski@bootlin.com, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v2 2/4] media: sunxi: sun6i-csi: Move the sun6i_csi_dev
+ structure to the common header
+Message-ID: <20200831104847.GJ31019@paasikivi.fi.intel.com>
+References: <20200828131737.12483-1-kevin.lhopital@bootlin.com>
+ <20200828131737.12483-3-kevin.lhopital@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1598801254-27764-3-git-send-email-moshe@mellanox.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200828131737.12483-3-kevin.lhopital@bootlin.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sun, Aug 30, 2020 at 05:27:22PM CEST, moshe@mellanox.com wrote:
->Add reload actions counters to hold the history per reload action type.
->For example, the number of times fw_activate has been done on this
->device since the driver module was added or if the firmware activation
->was done with or without reset.
->The function devlink_reload_actions_cnts_update() is exported to enable
->also drivers update on reload actions done, for example in case firmware
->activation with reset finished successfully but was initiated by remote
->host.
->
->Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
->---
->v2 -> v3:
->- New patch
->---
-> include/net/devlink.h |  2 ++
-> net/core/devlink.c    | 24 +++++++++++++++++++++---
-> 2 files changed, 23 insertions(+), 3 deletions(-)
->
->diff --git a/include/net/devlink.h b/include/net/devlink.h
->index b8f0152a1fff..0547f0707d92 100644
->--- a/include/net/devlink.h
->+++ b/include/net/devlink.h
->@@ -38,6 +38,7 @@ struct devlink {
-> 	struct list_head trap_policer_list;
-> 	const struct devlink_ops *ops;
-> 	struct xarray snapshot_ids;
->+	u32 reload_actions_cnts[DEVLINK_RELOAD_ACTION_MAX];
-> 	struct device *dev;
-> 	possible_net_t _net;
-> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
->@@ -1372,6 +1373,7 @@ void
-> devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter);
-> 
-> bool devlink_is_reload_failed(const struct devlink *devlink);
->+void devlink_reload_actions_cnts_update(struct devlink *devlink, unsigned long actions_done);
-> 
-> void devlink_flash_update_begin_notify(struct devlink *devlink);
-> void devlink_flash_update_end_notify(struct devlink *devlink);
->diff --git a/net/core/devlink.c b/net/core/devlink.c
->index 8d4137ad40db..20a29c34ff71 100644
->--- a/net/core/devlink.c
->+++ b/net/core/devlink.c
->@@ -2969,10 +2969,23 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
-> }
-> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
-> 
->+void devlink_reload_actions_cnts_update(struct devlink *devlink, unsigned long actions_done)
->+{
->+	int action;
->+
->+	for (action = 0; action < DEVLINK_RELOAD_ACTION_MAX; action++) {
->+		if (!test_bit(action, &actions_done))
->+			continue;
->+		devlink->reload_actions_cnts[action]++;
->+	}
->+}
->+EXPORT_SYMBOL_GPL(devlink_reload_actions_cnts_update);
+Hi Kévin,
 
-I don't follow why this is an exported symbol if you only use it from
-this .c. Looks like a leftover...
-
-
->+
-> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
-> 			  enum devlink_reload_action action, struct netlink_ext_ack *extack,
->-			  unsigned long *actions_done)
->+			  unsigned long *actions_done_out)
-> {
->+	unsigned long actions_done;
-> 	int err;
+On Fri, Aug 28, 2020 at 03:17:34PM +0200, Kévin L'hôpital wrote:
+> Access to the sun6i_csi_dev structure is needed to add the
+> MIPI CSI2 support.
 > 
-> 	if (!devlink->reload_enabled)
->@@ -2985,9 +2998,14 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
-> 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
-> 		devlink_reload_netns_change(devlink, dest_net);
+> Signed-off-by: Kévin L'hôpital <kevin.lhopital@bootlin.com>
+> ---
+>  drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c | 12 ------------
+>  drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.h | 12 ++++++++++++
+>  2 files changed, 12 insertions(+), 12 deletions(-)
 > 
->-	err = devlink->ops->reload_up(devlink, action, extack, actions_done);
->+	err = devlink->ops->reload_up(devlink, action, extack, &actions_done);
-> 	devlink_reload_failed_set(devlink, !!err);
->-	return err;
->+	if (err)
->+		return err;
->+	devlink_reload_actions_cnts_update(devlink, actions_done);
->+	if (actions_done_out)
->+		*actions_done_out = actions_done;
+> diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c b/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
+> index 055eb0b8e396..680fa31f380a 100644
+> --- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
+> +++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
+> @@ -29,18 +29,6 @@
+>  
+>  #define MODULE_NAME	"sun6i-csi"
+>  
+> -struct sun6i_csi_dev {
+> -	struct sun6i_csi		csi;
+> -	struct device			*dev;
+> -
+> -	struct regmap			*regmap;
+> -	struct clk			*clk_mod;
+> -	struct clk			*clk_ram;
+> -	struct reset_control		*rstc_bus;
+> -
+> -	int				planar_offset[3];
+> -};
+> -
+>  static inline struct sun6i_csi_dev *sun6i_csi_to_dev(struct sun6i_csi *csi)
+>  {
+>  	return container_of(csi, struct sun6i_csi_dev, csi);
+> diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.h b/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.h
+> index 8b83d15de0d0..c4a87bdab8c3 100644
+> --- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.h
+> +++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.h
+> @@ -48,6 +48,18 @@ struct sun6i_csi {
+>  	struct sun6i_video		video;
+>  };
+>  
+> +struct sun6i_csi_dev {
+> +	struct sun6i_csi	csi;
+> +	struct device		*dev;
+> +	struct regmap		*regmap;
+> +	struct clk		*clk_mod;
+> +	struct clk		*clk_ram;
+> +	struct clk		*clk_mipi;
+> +	struct clk		*clk_misc;
 
-Why don't you just use the original actions_done directly without having
-extra local variable?
+This patch adds two more clocks, please add them when you need them. I
+think you could also squash the patch to another one that requires the
+struct in the header.
 
+> +	struct reset_control	*rstc_bus;
+> +	int			planar_offset[3];
+> +};
+> +
+>  /**
+>   * sun6i_csi_is_format_supported() - check if the format supported by csi
+>   * @csi:	pointer to the csi
 
->+	return 0;
-> }
-> 
-> static int
->-- 
->2.17.1
->
+-- 
+Sakari Ailus
