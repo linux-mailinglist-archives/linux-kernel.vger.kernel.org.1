@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A8A25760B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D86D257626
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgHaJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:08:41 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:45342 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728290AbgHaJIk (ORCPT
+        id S1728372AbgHaJL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:11:26 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43439 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728216AbgHaJLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:08:40 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07V98a5r063080;
-        Mon, 31 Aug 2020 04:08:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598864916;
-        bh=MjsvdfEMy6GjtTN6j2sOW8wOL0kqR2f7yz1NLZ13fG8=;
-        h=From:To:CC:Subject:Date;
-        b=uQItU2FeegecNeaODB/TbUPNavPcfSh+ygM/pNQ3BdiZux/mjn8VnkFJn/oLMfeGt
-         rkXIrEGe6JkLjZFJqlqiO0/ree4ktyxwAoTARfBrpYaJfonQwH7A6axe2plSWMVmo/
-         mwJAclWTkuMbCsoJ50XyziBArbyMMT1a7aKzT5eo=
-Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07V98awq052252;
-        Mon, 31 Aug 2020 04:08:36 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 31
- Aug 2020 04:08:36 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 31 Aug 2020 04:08:36 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07V98YWk026158;
-        Mon, 31 Aug 2020 04:08:34 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
-        <linux-kernel@vger.kernel.org>, <lokeshvutla@ti.com>, <nm@ti.com>
-Subject: [PATCH] dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3.0
-Date:   Mon, 31 Aug 2020 12:10:19 +0300
-Message-ID: <20200831091019.25273-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.28.0
+        Mon, 31 Aug 2020 05:11:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598865083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+JqshhNpPVNnhGHJKO6L4g90YtK9/JkTr418DUGXswM=;
+        b=PgZ+VlN1bkvSz1DRl3vbms8MNThwSMGgasiBkfYvA0dK/3IFFqorTOYRUZCUX+ftFUQkuR
+        GGCVN4DIG/FTA4eroGGeTN6ltJZQ8kNpdxKq9aIXIqeWJFiDSmSUvefutCtk5U1Iebw8a1
+        VmqFUPnH+XaAMzOPwfK5GzZ41fSvOso=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-529-jGeupWj7PIWkIUWKuBAZlA-1; Mon, 31 Aug 2020 05:11:18 -0400
+X-MC-Unique: jGeupWj7PIWkIUWKuBAZlA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D97341006701;
+        Mon, 31 Aug 2020 09:11:16 +0000 (UTC)
+Received: from krava (unknown [10.40.193.236])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C21707EB6D;
+        Mon, 31 Aug 2020 09:11:13 +0000 (UTC)
+Date:   Mon, 31 Aug 2020 11:11:13 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Raphael Gault <raphael.gault@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
+Subject: Re: [PATCH v2 9/9] perf: Remove x86 specific rdpmc test
+Message-ID: <20200831091113.GA406859@krava>
+References: <20200828205614.3391252-1-robh@kernel.org>
+ <20200828205614.3391252-10-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828205614.3391252-10-robh@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SYSFW ABI 3.0 has changed the rchan_oes_offset value for am654 to support
-SR2.
+On Fri, Aug 28, 2020 at 02:56:14PM -0600, Rob Herring wrote:
+> Now that we have a common libperf based userspace counter read test
+> with the same functionality as the x86 specific rdpmc test, let's remove
+> it.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> This one is optional. On the plus side, it eliminates a copy of the read
+> loop. The main downside I see is loosing the ability to test in 'perf test'.
+> 
+> 
+>  tools/perf/arch/x86/include/arch-tests.h |   1 -
+>  tools/perf/arch/x86/tests/Build          |   1 -
+>  tools/perf/arch/x86/tests/arch-tests.c   |   4 -
+>  tools/perf/arch/x86/tests/rdpmc.c        | 182 -----------------------
+>  4 files changed, 188 deletions(-)
+>  delete mode 100644 tools/perf/arch/x86/tests/rdpmc.c
+> 
+> diff --git a/tools/perf/arch/x86/include/arch-tests.h b/tools/perf/arch/x86/include/arch-tests.h
+> index c41c5affe4be..d9c32ba0cdac 100644
+> --- a/tools/perf/arch/x86/include/arch-tests.h
+> +++ b/tools/perf/arch/x86/include/arch-tests.h
+> @@ -6,7 +6,6 @@
+>  struct test;
+> 
+>  /* Tests */
+> -int test__rdpmc(struct test *test __maybe_unused, int subtest);
 
-Since the kernel now needs SYSFW API 3.0 to work because the merged irqchip
-update, we need to also update the am654 rchan_oes_offset.
+we don't currently run libperf tests as part of perf test suite,
+so before we do that, I rather not remove the tests..
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
-Hi Vinod,
+feel free to add the code that runs libperf tests within 'perf test'
+command ;-)
 
-A series from Lokesh to support sysfw ABI 3.0 and newer is now in mainline
-under v5.9-rc3 tag.
-With his series Linux can not really boot into a usable state with older sysfw
-and the ABI 3.0 have additional changes affecting UDMA on am654:
-the rchan_oes_offset number is changed to better align with j72xx and to be able
-to support both SR1 and SR2 of am654.
-
-Can you send this patch for -rc4 to fix the regression now in mainline?
-The regression is that one can not request TR mode channel to service a
-peripheral.
-
-We do not have users upstream depending on this, but I do have out of tree audio
-support and cutomers might pick up 5.9 from mainline when it is released.
-
-Thank you,
-Peter
-
- drivers/dma/ti/k3-udma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 989998b6e078..9a7048bcf0f1 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -3091,14 +3091,14 @@ static struct udma_match_data am654_main_data = {
- 	.psil_base = 0x1000,
- 	.enable_memcpy_support = true,
- 	.statictr_z_mask = GENMASK(11, 0),
--	.rchan_oes_offset = 0x2000,
-+	.rchan_oes_offset = 0x200,
- };
- 
- static struct udma_match_data am654_mcu_data = {
- 	.psil_base = 0x6000,
- 	.enable_memcpy_support = false,
- 	.statictr_z_mask = GENMASK(11, 0),
--	.rchan_oes_offset = 0x2000,
-+	.rchan_oes_offset = 0x200,
- };
- 
- static struct udma_match_data j721e_main_data = {
--- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+thanks,
+jirka
 
