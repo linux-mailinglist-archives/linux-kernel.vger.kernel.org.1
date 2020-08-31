@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC399258020
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ED325801B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729265AbgHaSDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:03:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
+        id S1729200AbgHaSC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:02:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgHaSB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728815AbgHaSB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:01:26 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 128C72166E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 7E4432168B;
         Mon, 31 Aug 2020 18:01:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598896885;
-        bh=jAVAU5YWnz0TRbKu8MV8HA7oYQnPc+WZMtj2L/g5Oio=;
+        bh=G1iH+/QCY280fAQFzIdvytLD1XQc88ODiVu9Ro09iw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjK1xf/Qc5qvbao1bo8YuRTV4dyIHy0gh8V8VkG/kNNXXXsstBH65ib/MbTZWYK3l
-         Sbb0QGLEbC2iyzuimpa9uVxdQ9ByMbeENC2hEKGCqy4rRsMX2XZUPr90hxnAXOvIB7
-         pJWGf/XAJz8zar88MROohVlX3+7/Mr48y4titA5U=
+        b=DU8uCbCylnrnZOH8dD87Y+JCYVHjfpJYEwY5+H/xHHdfEmrR+irf4GbMQZ6sHgjcV
+         78yp/HohQdx54beSNjuMFkBvuXtDaKBYL0tczVVeZ/F5YHyea6TlDDfdFornMLz9Bj
+         fUdXBLg3+3KEXU+EYH5ease/PcanM7FNGpu5ofJ8=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,10 +32,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 16/24] rculist: Introduce list/hlist_for_each_entry_srcu() macros
-Date:   Mon, 31 Aug 2020 11:01:08 -0700
-Message-Id: <20200831180116.32690-16-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>, kvm@vger.kernel.org
+Subject: [PATCH tip/core/rcu 17/24] kvm: mmu: page_track: Fix RCU list API usage
+Date:   Mon, 31 Aug 2020 11:01:09 -0700
+Message-Id: <20200831180116.32690-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -46,111 +46,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-list/hlist_for_each_entry_rcu() provides an optional cond argument
-to specify the lock held in the updater side.
-However for SRCU read side, not providing the cond argument results
-into false positive as whether srcu_read_lock is held or not is not
-checked implicitly. Therefore, on read side the lockdep expression
-srcu_read_lock_held(srcu struct) can solve this issue.
+Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
+as it also checkes if the right lock is held.
+Using hlist_for_each_entry_rcu() with a condition argument will not
+report the cases where a SRCU protected list is traversed using
+rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
 
-However, the function still fails to check the cases where srcu
-protected list is traversed with rcu_read_lock() instead of
-srcu_read_lock(). Therefore, to remove the false negative,
-this patch introduces two new list traversal primitives :
-list_for_each_entry_srcu() and hlist_for_each_entry_srcu().
-
-Both of the functions have non-optional cond argument
-as it is required for both read and update side, and simply checks
-if the cond is true. For regular read side the lockdep expression
-srcu_read_lock_head() can be passed as the cond argument to
-list/hlist_for_each_entry_srcu().
-
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Tested-by: Suraj Upadhyay <usuraj35@gmail.com>
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-[ paulmck: Add "true" per kbuild test robot feedback. ]
 Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Cc: <kvm@vger.kernel.org>
 ---
- include/linux/rculist.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ arch/x86/kvm/mmu/page_track.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-index 7a6fc99..f8633d3 100644
---- a/include/linux/rculist.h
-+++ b/include/linux/rculist.h
-@@ -63,9 +63,17 @@ static inline void INIT_LIST_HEAD_RCU(struct list_head *list)
- 	RCU_LOCKDEP_WARN(!(cond) && !rcu_read_lock_any_held(),		\
- 			 "RCU-list traversed in non-reader section!");	\
- 	})
-+
-+#define __list_check_srcu(cond)					 \
-+	({								 \
-+	RCU_LOCKDEP_WARN(!(cond),					 \
-+		"RCU-list traversed without holding the required lock!");\
-+	})
- #else
- #define __list_check_rcu(dummy, cond, extra...)				\
- 	({ check_arg_count_one(extra); })
-+
-+#define __list_check_srcu(cond) ({ })
- #endif
+diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+index a84a141..8443a67 100644
+--- a/arch/x86/kvm/mmu/page_track.c
++++ b/arch/x86/kvm/mmu/page_track.c
+@@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
+ 		return;
  
- /*
-@@ -386,6 +394,25 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
- 		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
+ 	idx = srcu_read_lock(&head->track_srcu);
+-	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
++	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
++				srcu_read_lock_held(&head->track_srcu))
+ 		if (n->track_write)
+ 			n->track_write(vcpu, gpa, new, bytes, n);
+ 	srcu_read_unlock(&head->track_srcu, idx);
+@@ -254,7 +255,8 @@ void kvm_page_track_flush_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 		return;
  
- /**
-+ * list_for_each_entry_srcu	-	iterate over rcu list of given type
-+ * @pos:	the type * to use as a loop cursor.
-+ * @head:	the head for your list.
-+ * @member:	the name of the list_head within the struct.
-+ * @cond:	lockdep expression for the lock required to traverse the list.
-+ *
-+ * This list-traversal primitive may safely run concurrently with
-+ * the _rcu list-mutation primitives such as list_add_rcu()
-+ * as long as the traversal is guarded by srcu_read_lock().
-+ * The lockdep expression srcu_read_lock_held() can be passed as the
-+ * cond argument from read side.
-+ */
-+#define list_for_each_entry_srcu(pos, head, member, cond)		\
-+	for (__list_check_srcu(cond),					\
-+	     pos = list_entry_rcu((head)->next, typeof(*pos), member);	\
-+		&pos->member != (head);					\
-+		pos = list_entry_rcu(pos->member.next, typeof(*pos), member))
-+
-+/**
-  * list_entry_lockless - get the struct for this entry
-  * @ptr:        the &struct list_head pointer.
-  * @type:       the type of the struct this is embedded in.
-@@ -684,6 +711,27 @@ static inline void hlist_add_behind_rcu(struct hlist_node *n,
- 			&(pos)->member)), typeof(*(pos)), member))
- 
- /**
-+ * hlist_for_each_entry_srcu - iterate over rcu list of given type
-+ * @pos:	the type * to use as a loop cursor.
-+ * @head:	the head for your list.
-+ * @member:	the name of the hlist_node within the struct.
-+ * @cond:	lockdep expression for the lock required to traverse the list.
-+ *
-+ * This list-traversal primitive may safely run concurrently with
-+ * the _rcu list-mutation primitives such as hlist_add_head_rcu()
-+ * as long as the traversal is guarded by srcu_read_lock().
-+ * The lockdep expression srcu_read_lock_held() can be passed as the
-+ * cond argument from read side.
-+ */
-+#define hlist_for_each_entry_srcu(pos, head, member, cond)		\
-+	for (__list_check_srcu(cond),					\
-+	     pos = hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),\
-+			typeof(*(pos)), member);			\
-+		pos;							\
-+		pos = hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(\
-+			&(pos)->member)), typeof(*(pos)), member))
-+
-+/**
-  * hlist_for_each_entry_rcu_notrace - iterate over rcu list of given type (for tracing)
-  * @pos:	the type * to use as a loop cursor.
-  * @head:	the head for your list.
+ 	idx = srcu_read_lock(&head->track_srcu);
+-	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
++	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
++				srcu_read_lock_held(&head->track_srcu))
+ 		if (n->track_flush_slot)
+ 			n->track_flush_slot(kvm, slot, n);
+ 	srcu_read_unlock(&head->track_srcu, idx);
 -- 
 2.9.5
 
