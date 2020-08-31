@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6283D257548
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355CC25753A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgHaIZH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Aug 2020 04:25:07 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:44058 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727910AbgHaIZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:25:00 -0400
-Received: from DGGEMM405-HUB.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id ADA9A5D06E1A34BB50C0;
-        Mon, 31 Aug 2020 16:24:57 +0800 (CST)
-Received: from dggema723-chm.china.huawei.com (10.3.20.87) by
- DGGEMM405-HUB.china.huawei.com (10.3.20.213) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 31 Aug 2020 16:23:54 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggema723-chm.china.huawei.com (10.3.20.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 31 Aug 2020 16:23:54 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Mon, 31 Aug 2020 16:23:55 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "ganapatrao.kulkarni@cavium.com" <ganapatrao.kulkarni@cavium.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        huangdaode <huangdaode@huawei.com>
-Subject: RE: [PATCH v6 0/2] make dma_alloc_coherent NUMA-aware by per-NUMA CMA
-Thread-Topic: [PATCH v6 0/2] make dma_alloc_coherent NUMA-aware by per-NUMA
- CMA
-Thread-Index: AQHWd2Lc8c1DGcwANEy/0S0zVDdod6lBkR4AgBBdgfA=
-Date:   Mon, 31 Aug 2020 08:23:55 +0000
-Message-ID: <05dad074e0624367a3fc0dfd0b96a352@hisilicon.com>
-References: <20200821022615.28596-1-song.bao.hua@hisilicon.com>
- <20200821061918.GA28559@lst.de>
-In-Reply-To: <20200821061918.GA28559@lst.de>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1728228AbgHaIYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:24:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:28016 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725829AbgHaIYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:24:01 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bg3Bf5clGz9v478;
+        Mon, 31 Aug 2020 10:23:54 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 7v1O8RfXhnSa; Mon, 31 Aug 2020 10:23:54 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bg3Bf4Mj5z9v475;
+        Mon, 31 Aug 2020 10:23:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C6748B7BC;
+        Mon, 31 Aug 2020 10:23:59 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id Gm8JKCzRAbJL; Mon, 31 Aug 2020 10:23:59 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6AD238B79B;
+        Mon, 31 Aug 2020 10:23:59 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1E1EE65D48; Mon, 31 Aug 2020 08:23:59 +0000 (UTC)
+Message-Id: <e27481224564a93d14106e750de31189deaa8bc8.1598861977.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] selftests/vm: Fix display of page size in map_hugetlb
+To:     Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org
+Date:   Mon, 31 Aug 2020 08:23:59 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The displayed size is in bytes while the text says it is in kB.
 
+Shift it by 10 to really display kBytes.
 
-> -----Original Message-----
-> From: linux-kernel-owner@vger.kernel.org
-> [mailto:linux-kernel-owner@vger.kernel.org] On Behalf Of Christoph Hellwig
-> Sent: Friday, August 21, 2020 6:19 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: hch@lst.de; m.szyprowski@samsung.com; robin.murphy@arm.com;
-> will@kernel.org; ganapatrao.kulkarni@cavium.com;
-> catalin.marinas@arm.com; iommu@lists.linux-foundation.org; Linuxarm
-> <linuxarm@huawei.com>; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org; huangdaode <huangdaode@huawei.com>
-> Subject: Re: [PATCH v6 0/2] make dma_alloc_coherent NUMA-aware by
-> per-NUMA CMA
-> 
-> FYI, as of the last one I'm fine now, bit I really need an ACK from
-> the arm64 maintainers.
+Fixes: fa7b9a805c79 ("tools/selftest/vm: allow choosing mem size and page size in map_hugetlb")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ tools/testing/selftests/vm/map_hugetlb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi Christoph,
-
-For the changes in arch/arm64, Will gave his ack here:
-https://lore.kernel.org/linux-iommu/20200821090116.GB20255@willie-the-truck/
-
-and the patchset has been refined to v8
-https://lore.kernel.org/linux-iommu/20200823230309.28980-1-song.bao.hua@hisilicon.com/
-with one additional patch to remove magic number:
-[PATCH v8 3/3] mm: cma: use CMA_MAX_NAME to define the length of cma name array
-https://lore.kernel.org/linux-iommu/20200823230309.28980-4-song.bao.hua@hisilicon.com/
-
-Hopefully, you didn't miss it:-)
-Does the new one need an Ack from Linux-mm maintainer?
-
-Thanks
-Barry
+diff --git a/tools/testing/selftests/vm/map_hugetlb.c b/tools/testing/selftests/vm/map_hugetlb.c
+index 6af951900aa3..312889edb84a 100644
+--- a/tools/testing/selftests/vm/map_hugetlb.c
++++ b/tools/testing/selftests/vm/map_hugetlb.c
+@@ -83,7 +83,7 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (shift)
+-		printf("%u kB hugepages\n", 1 << shift);
++		printf("%u kB hugepages\n", 1 << (shift - 10));
+ 	else
+ 		printf("Default size hugepages\n");
+ 	printf("Mapping %lu Mbytes\n", (unsigned long)length >> 20);
+-- 
+2.25.0
 
