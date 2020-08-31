@@ -2,213 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F717257B31
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD30257B3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgHaOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 10:21:47 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:51134 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgHaOVn (ORCPT
+        id S1727956AbgHaOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 10:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbgHaOYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 10:21:43 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07VELa7S114708;
-        Mon, 31 Aug 2020 09:21:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598883696;
-        bh=oPBWDKgwWKqovfHgw3zKlv+W3MpZD/0JXZDqN2wy3HY=;
-        h=From:To:CC:Subject:Date;
-        b=gFVd/6dmy1TNoVlJV+ftKzWMAMzzpoJ/3p1RcOT25WJZCQArxcFux6qHBWbb0jBeD
-         SQawhsGTqZl1AlbBNj1Kzd7Gl+FOwcaxhWfMBcZgi+qlN9k+hcRigQh9bRcUfxZnyv
-         ILInXmfIQ1RxS9TsLpRZ5rvkLQSjeciTGVeYm5rw=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 07VELa6Q042190
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Aug 2020 09:21:36 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 31
- Aug 2020 09:21:36 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 31 Aug 2020 09:21:36 -0500
-Received: from lta0400828a.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07VELX2G050529;
-        Mon, 31 Aug 2020 09:21:34 -0500
-From:   Roger Quadros <rogerq@ti.com>
-To:     <kishon@ti.com>, <vkoul@kernel.org>
-CC:     <nsekhar@ti.com>, <vigneshr@ti.com>, <jan.kiszka@siemens.com>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v5] dt-binding: phy: convert ti,omap-usb2 to YAML
-Date:   Mon, 31 Aug 2020 17:21:30 +0300
-Message-ID: <20200831142130.21836-1-rogerq@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 31 Aug 2020 10:24:48 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0E8C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 07:24:39 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id q13so5285748ejo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 07:24:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P+qhaUqcMvyQWC8w2lqB+uJCSfl87x/m6VAqtEEjpA4=;
+        b=Y5Av/eiJZ1lfjPOJvbN1l8iSYxHB9m9djaEEzQtgar8W/KFLz168mdNHb72hkmgW5q
+         3FvaURBMk9TKmVyGZbly1Z6ag9eNLTg3VnEmpIzpQuuWKwGL43wrG8MFPRqx0BxlMuxY
+         LaXrOJARzoPjVNT7XUPNc/8ryxZ9KiyktdkdKTjTYXCWYBBaQ1JOXD3xpLpnrQUBNBtK
+         wH+IhaieaFXEc2XZB1NPkUrrX5u1vRF7gKKWG1iLISscMrGwB4nRBGkWADqwzlXTxSV/
+         XSB5qYkjQSoKcFcbjkgsnqfRm/Y+3iBRwP1IteE8U8hDJLQhZ2/L5FgqYQAotB59gDQ8
+         ah8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P+qhaUqcMvyQWC8w2lqB+uJCSfl87x/m6VAqtEEjpA4=;
+        b=FrCaxIl1UAPzrF3Ub5juo7Ayluuc9ZB4uEgx0wBn8E8TZJlUnObPPxoWmNcVZJrZ0f
+         eV7xy5RIezznuSn9rkb2v7dUgak+XOGYPVm3EigXiT0TgBiwgphsCBluj9QtFsJSMagN
+         zDEotjkxnrRpnm2+0utCc9rwEi0kYe/uMvYLoHdGa7OTw3BY0O8XiEqfjw14tjIxo050
+         kQVtyzwGOJOiIpBmkEHdhPjS1pL/EM7uHZuhtlELRE040efT5Bog/0etKjF7NHF+8h2z
+         1gVsDsqLa9ukEc7HUVcyzbyHA202aaO52f3ESCmgz0GMw+exPNbDp6T1eFuYcx48p6rr
+         t5sw==
+X-Gm-Message-State: AOAM530WQzJo5zBSKY7Ot1AmlCWWzjEwsaHSNFrOhK1eqthzt9a8d3zz
+        F9nRjpm9/ZtjDcxTY3W8jHvm74DpmrEvH/nOt5li
+X-Google-Smtp-Source: ABdhPJwmaZdXJiQhOJ9shsFsM/bqB188NWYcxB0kV+xpOTQkVMqZRzl20A+Tpgp4ecio0jQLsGlshlGclkYbPYCRCMc=
+X-Received: by 2002:a17:906:c1d8:: with SMTP id bw24mr1365855ejb.91.1598883877872;
+ Mon, 31 Aug 2020 07:24:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
+ <20200824132252.31261-1-peter.enderborg@sony.com> <20200824132252.31261-2-peter.enderborg@sony.com>
+ <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com>
+ <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com> <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
+ <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com> <CAHC9VhRE94YVK5bTcqqbNYJu-EwjbcwjSFgqV8jkyLn9HD39Ag@mail.gmail.com>
+ <abaccc15-85a8-24d2-4481-8303e3a42362@sony.com> <CAHC9VhRi87H2GhsKQN9iMOQeSw3g5_qwok9jpx+pfFSouQ9d5w@mail.gmail.com>
+ <f0e287f6b7dd4764a5091b90cf31b02e@TECHMB.sfasu.nac>
+In-Reply-To: <f0e287f6b7dd4764a5091b90cf31b02e@TECHMB.sfasu.nac>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 31 Aug 2020 10:24:26 -0400
+Message-ID: <CAHC9VhTBA3b2ipN08O2yX1uQkaXyFqDXs5DKNmnDFLDtx9=3Ug@mail.gmail.com>
+Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
+To:     Robert Judy <rjudy@sfasu.edu>
+Cc:     peter enderborg <peter.enderborg@sony.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move ti,omap-usb2 to its own YAML schema.
+On Mon, Aug 31, 2020 at 10:19 AM Robert Judy <rjudy@sfasu.edu> wrote:
+>
+> I would like to unsubscribe from this group. I have sent "unsubscribe" requests to selinux-owner@vger.kernel.org as subject and in the body of the e-mail but that has not worked. Please advise me how to unsubscribe.
+>
+> Thank you and respectfully,
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changelog:
-v5
-- Added "ti,am437x-usb2" compatible.
+When you subscribed to the mailing list you were sent instructions on
+how to unsubscribe from the mailing list.
 
-v4
-- fix example to fix dt_binding_check warnings
-- '#phy-cells' -> "#phy-cells"
-- Add 'oneOf' to compatible logic to allow just "ti,omap-usb2" as valid
+The SELinux developer's mailing list is managed via
+majordomo@vger.kernel.org, in order to unsubscribe you need to send an
+email to that address with "unsubscribe selinux" in the body of the
+email.
 
-v3
-- Removed quotes from compatibles
-- changed property to "ti,disable-charger-det"
+> -----Original Message-----
+> From: selinux-owner@vger.kernel.org <selinux-owner@vger.kernel.org> On Behalf Of Paul Moore
+> Sent: Monday, August 31, 2020 9:16 AM
+> To: peter enderborg <peter.enderborg@sony.com>
+> Cc: linux-kernel@vger.kernel.org; SElinux list <selinux@vger.kernel.org>; Steven Rostedt <rostedt@goodmis.org>; Stephen Smalley <stephen.smalley.work@gmail.com>
+> Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
+>
+> On Thu, Aug 27, 2020 at 10:04 AM peter enderborg <peter.enderborg@sony.com> wrote:
+> >
+> > On 8/27/20 3:30 PM, Paul Moore wrote:
+> > > On Wed, Aug 26, 2020 at 11:06 AM peter enderborg
+> > > <peter.enderborg@sony.com> wrote:
+> > >> On 8/26/20 4:45 PM, Paul Moore wrote:
+> > >>> On Wed, Aug 26, 2020 at 10:34 AM peter enderborg
+> > >>> <peter.enderborg@sony.com> wrote:
+> > >>>> On 8/26/20 3:42 PM, Paul Moore wrote:
+> > >>>>> On Mon, Aug 24, 2020 at 9:23 AM Peter Enderborg
+> > >>>>> <peter.enderborg@sony.com> wrote:
+> > >>>>>> This adds tracing of all denies. They are grouped with
+> > >>>>>> trace_seq for each audit.
+> > >>>>>>
+> > >>>>>> A filter can be inserted with a write to it's filter section.
+> > >>>>>>
+> > >>>>>> echo "permission==\"entrypoint\"" >
+> > >>>>>> events/avc/selinux_denied/filter
+> > >>>>>>
+> > >>>>>> A output will be like:
+> > >>>>>>           runcon-1046  [002] .N..   156.351738: selinux_denied:
+> > >>>>>>           trace_seq=2 result=-13
+> > >>>>>>           scontext=system_u:system_r:cupsd_t:s0-s0:c0.
+> > >>>>>>           c1023 tcontext=system_u:object_r:bin_t:s0
+> > >>>>>>           tclass=file permission=entrypoint
+> > >>>>>>
+> > >>>>>> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+> > >>>>>> ---
+> > >>>>>>  include/trace/events/avc.h | 37 +++++++++++++++++++++++++++++++++++++
+> > >>>>>>  security/selinux/avc.c     | 27 +++++++++++++++++++++++++--
+> > >>>>>>  2 files changed, 62 insertions(+), 2 deletions(-)
+> > >>>>> My most significant comment is that I don't think we want, or
+> > >>>>> need, two trace points in the avc_audit_post_callback()
+> > >>>>> function.  Yes, I understand they are triggered slightly
+> > >>>>> differently, but from my perspective there isn't enough
+> > >>>>> difference between the two tracepoints to warrant including
+> > >>>>> both.  However, while the tracepoints may be
+> > >>>> We tried that but that was problematic too.
+> > >>> My apologies if I was on that thread, but can you remind me why it
+> > >>> was a problem?  Why can't we use a single tracepoint to capture
+> > >>> the AVC information?
+> > >> The problem is parsing the event.
+> > >>
+> > >> https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_
+> > >> 2020_8_18_842&d=DwIBaQ&c=fP4tf--1dS0biCFlB0saz0I0kjO5v7-GLPtvShAo4c
+> > >> c&r=oO5HuGEGxznA2F3djiiYxmxxWQonw0h6Sks-BEoB4ys&m=qmi2ROWsLC_0mLLhH
+> > >> kpb71j1YoicydLh-7l4cOsLYcY&s=iS3eZr3TFrN5I7BbnvPFYOKd6DfW1FHTFcwI7j
+> > >> oS_fk&e=
+> > >>
+> > >> https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_
+> > >> 2020_8_21_526&d=DwIBaQ&c=fP4tf--1dS0biCFlB0saz0I0kjO5v7-GLPtvShAo4c
+> > >> c&r=oO5HuGEGxznA2F3djiiYxmxxWQonw0h6Sks-BEoB4ys&m=qmi2ROWsLC_0mLLhH
+> > >> kpb71j1YoicydLh-7l4cOsLYcY&s=9OsLN0Y5mUWxEAAqUE6K4PS57Pn1XyZz7GXak6
+> > >> uc_Ls&e=
+> > >>
+> > >> and the "single list" version
+> > >>
+> > >> https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_
+> > >> 2020_8_17_1346&d=DwIBaQ&c=fP4tf--1dS0biCFlB0saz0I0kjO5v7-GLPtvShAo4
+> > >> cc&r=oO5HuGEGxznA2F3djiiYxmxxWQonw0h6Sks-BEoB4ys&m=qmi2ROWsLC_0mLLh
+> > >> Hkpb71j1YoicydLh-7l4cOsLYcY&s=tWSY2ry2IT6RcT5BIUwMuqBL_yPObDE1VljbL
+> > >> qI1zrA&e=
+> > >>
+> > >> With this patch we follow standard message format so no plugin should be needed.
+> > > I'm evidently missing something very fundamental (likely), and/or
+> > > I'm just not communicating very clearly (also likely), because the
+> > > above links don't appear to make any sense with respect to my question.
+> > >
+> > > Let me try a reset ... Why can't we basically take the
+> > > "selinux_denied" TRACE_EVENT implementation in your patch and use it
+> > > to replace the "selinux_audited" TRACE_EVENT in the selinux/next
+> > > tree (of course with the necessary changes to the AVC callback code)?
+> > >
+> > > If the "selinux_denied" implementation is valid from a tracing point
+> > > of view, why can we not do this?  Of course if the "selinux_denied"
+> > > implementation is not a valid TRACE_EVENT then I'm not sure why this
+> > > was suggested for SELinux :)
+> >
+> > Im happly fine with replacing the selinux_audited with selinux_denied.  However it is the case where there are more than one denial at the same time. Im not sure how and when it might happen.
+>
+> One thing I wondered about was why not build up a single string with all of the permissions instead of generating multiple trace events?
+> In the previous discussion it was implied that this was due to limitations in the tracing subsystem's filtering, and based on the discussion thus far I'm guessing there is little desire for this information if it can't be filtered on?
+>
+> If that's the case then I think we are stuck with the tracing code that currently lives in selinux/next, as I currently have little desire to add more than one tracepoint in the SELinux permission checking codepath.
+>
+> > When that happen we got more than one event. I have no problems with that, but im not sure if the debug tools and perf can make sense of that.
+> >
+> > A other feature with the selinux_audited event it might be inserted on other places in the code too.  A denial is sort of final.
+>
+> --
+> paul moore
+> www.paul-moore.com
 
-v2
-- Address Rob's comments on YAML schema.
 
- .../devicetree/bindings/phy/ti,omap-usb2.yaml | 74 +++++++++++++++++++
- .../devicetree/bindings/phy/ti-phy.txt        | 37 ----------
- 2 files changed, 74 insertions(+), 37 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
 
-diff --git a/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-new file mode 100644
-index 000000000000..15207ca9548f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/ti,omap-usb2.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OMAP USB2 PHY
-+
-+maintainers:
-+ - Kishon Vijay Abraham I <kishon@ti.com>
-+ - Roger Quadros <rogerq@ti.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+        - enum:
-+          - ti,dra7x-usb2
-+          - ti,dra7x-usb2-phy2
-+          - ti,am654-usb2
-+        - enum:
-+          - ti,omap-usb2
-+      - items:
-+        - const: ti,am437x-usb2
-+      - items:
-+        - const: ti,omap-usb2
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  clocks:
-+    minItems: 1
-+    items:
-+      - description: wakeup clock
-+      - description: reference clock
-+
-+  clock-names:
-+    minItems: 1
-+    items:
-+      - const: wkupclk
-+      - const: refclk
-+
-+  syscon-phy-power:
-+    $ref: /schemas/types.yaml#definitions/phandle-array
-+    description:
-+      phandle/offset pair. Phandle to the system control module and
-+      register offset to power on/off the PHY.
-+
-+  ctrl-module:
-+    $ref: /schemas/types.yaml#definitions/phandle
-+    description:
-+      (deprecated) phandle of the control module used by PHY driver
-+      to power on the PHY. Use syscon-phy-power instead.
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#phy-cells"
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    usb0_phy: phy@4100000 {
-+      compatible = "ti,am654-usb2", "ti,omap-usb2";
-+      reg = <0x4100000 0x54>;
-+      syscon-phy-power = <&scm_conf 0x4000>;
-+      clocks = <&k3_clks 151 0>, <&k3_clks 151 1>;
-+      clock-names = "wkupclk", "refclk";
-+      #phy-cells = <0>;
-+    };
-diff --git a/Documentation/devicetree/bindings/phy/ti-phy.txt b/Documentation/devicetree/bindings/phy/ti-phy.txt
-index 8f93c3b694a7..60c9d0ac75e6 100644
---- a/Documentation/devicetree/bindings/phy/ti-phy.txt
-+++ b/Documentation/devicetree/bindings/phy/ti-phy.txt
-@@ -27,43 +27,6 @@ omap_control_usb: omap-control-usb@4a002300 {
-         reg-names = "otghs_control";
- };
- 
--OMAP USB2 PHY
--
--Required properties:
-- - compatible: Should be "ti,omap-usb2"
--	       Should be "ti,dra7x-usb2" for the 1st instance of USB2 PHY on
--	       DRA7x
--	       Should be "ti,dra7x-usb2-phy2" for the 2nd instance of USB2 PHY
--	       in DRA7x
--	       Should be "ti,am654-usb2" for the USB2 PHYs on AM654.
-- - reg : Address and length of the register set for the device.
-- - #phy-cells: determine the number of cells that should be given in the
--   phandle while referencing this phy.
-- - clocks: a list of phandles and clock-specifier pairs, one for each entry in
--   clock-names.
-- - clock-names: should include:
--   * "wkupclk" - wakeup clock.
--   * "refclk" - reference clock (optional).
--
--Deprecated properties:
-- - ctrl-module : phandle of the control module used by PHY driver to power on
--   the PHY.
--
--Recommended properies:
--- syscon-phy-power : phandle/offset pair. Phandle to the system control
--  module and the register offset to power on/off the PHY.
--
--This is usually a subnode of ocp2scp to which it is connected.
--
--usb2phy@4a0ad080 {
--	compatible = "ti,omap-usb2";
--	reg = <0x4a0ad080 0x58>;
--	ctrl-module = <&omap_control_usb>;
--	#phy-cells = <0>;
--	clocks = <&usb_phy_cm_clk32k>, <&usb_otg_ss_refclk960m>;
--	clock-names = "wkupclk", "refclk";
--};
--
- TI PIPE3 PHY
- 
- Required properties:
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
-
+paul moore
+www.paul-moore.com
