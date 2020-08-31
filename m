@@ -2,74 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A426257DE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6420E257DE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgHaPr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:47:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54564 "EHLO mail.skyhub.de"
+        id S1728078AbgHaPtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:49:02 -0400
+Received: from sandeen.net ([63.231.237.45]:39658 "EHLO sandeen.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726927AbgHaPr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:47:26 -0400
-Received: from zn.tnic (p200300ec2f085000329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5000:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726204AbgHaPtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:49:01 -0400
+Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ABBFA1EC0428;
-        Mon, 31 Aug 2020 17:47:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1598888843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rWtRZ4hfzr7qKnP/HFeh64B+sglziA9JXIexmTro33Y=;
-        b=CAU0FQ0B1Tz+HDK12bpJUpmpyUbpMGCmGPg+UgsIIQtXUhRXxJ80MSIt0uMvMTdu9H3VSx
-        +udnSPwHwwiXAKFZJTnB6Ww89cVrHYMNIyAuy7YPSVJ8ssDKbroIBNch+C24/R4nh5vxmr
-        HI6S0W3EQ3P6uGg3Tsq8M6+CUEdi2Lk=
-Date:   Mon, 31 Aug 2020 17:47:19 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v6 52/76] x86/sev-es: Handle MMIO events
-Message-ID: <20200831154719.GI27517@zn.tnic>
-References: <20200824085511.7553-1-joro@8bytes.org>
- <20200824085511.7553-53-joro@8bytes.org>
+        by sandeen.net (Postfix) with ESMTPSA id 1117A3248;
+        Mon, 31 Aug 2020 10:48:41 -0500 (CDT)
+To:     Qian Cai <cai@lca.pw>, darrick.wong@oracle.com
+Cc:     hch@infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200831014511.17174-1-cai@lca.pw>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: [PATCH v2] iomap: Fix WARN_ON_ONCE() from unprivileged users
+Message-ID: <d34753a2-57bf-8013-015a-adeb3fe9447c@sandeen.net>
+Date:   Mon, 31 Aug 2020 10:48:59 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.0
 MIME-Version: 1.0
+In-Reply-To: <20200831014511.17174-1-cai@lca.pw>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200824085511.7553-53-joro@8bytes.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:54:47AM +0200, Joerg Roedel wrote:
-> +		if (bytes == 4)
-> +			*reg_data = 0;  /* Zero-extend for 32-bit operation */
+On 8/30/20 8:45 PM, Qian Cai wrote:
+> It is trivial to trigger a WARN_ON_ONCE(1) in iomap_dio_actor() by
+> unprivileged users which would taint the kernel, or worse - panic if
+> panic_on_warn or panic_on_taint is set. Hence, just convert it to
+> pr_warn_ratelimited() to let users know their workloads are racing.
+> Thanks Dave Chinner for the initial analysis of the racing reproducers.
+> 
+> Signed-off-by: Qian Cai <cai@lca.pw>
+> ---
+> 
+> v2: Record the path, pid and command as well.
+> 
+>  fs/iomap/direct-io.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index c1aafb2ab990..66a4502ef675 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -374,6 +374,7 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+>  		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iomap_dio *dio = data;
+> +	char pathname[128], *path;
+>  
+>  	switch (iomap->type) {
+>  	case IOMAP_HOLE:
+> @@ -389,7 +390,21 @@ iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+>  	case IOMAP_INLINE:
+>  		return iomap_dio_inline_actor(inode, pos, length, dio, iomap);
+>  	default:
+> -		WARN_ON_ONCE(1);
 
-Please put all side-comments over the respective line. There are a
-couple in this patch.
+It seems like we should explicitly catch IOMAP_DELALLOC for this case, and leave the
+default: as a WARN_ON that is not user-triggerable? i.e.
 
-Thx.
+case IOMAP_DELALLOC:
+	<all the fancy warnings>
+	return -EIO;
+default:
+	WARN_ON_ONCE(1);
+	return -EIO;
 
--- 
-Regards/Gruss,
-    Boris.
+> +		/*
+> +		 * DIO is not serialised against mmap() access at all, and so
+> +		 * if the page_mkwrite occurs between the writeback and the
+> +		 * iomap_apply() call in the DIO path, then it will see the
+> +		 * DELALLOC block that the page-mkwrite allocated.
+> +		 */
+> +		path = file_path(dio->iocb->ki_filp, pathname,
+> +				 sizeof(pathname));
+> +		if (IS_ERR(path))
+> +			path = "(unknown)";
+> +
+> +		pr_warn_ratelimited("page_mkwrite() is racing with DIO read (iomap->type = %u).\n"
+> +				    "File: %s PID: %d Comm: %.20s\n",
+> +				    iomap->type, path, current->pid,
+> +				    current->comm);
 
-https://people.kernel.org/tglx/notes-about-netiquette
+This is very specific ...
+
+Do we know that mmap/page_mkwrite is (and will always be) the only way to reach this
+point?
+
+It seems to me that this message won't be very useful for the admin; "pg_mkwrite" may
+mean something to us, but doubtful for the general public.  And "type = 1" won't mean
+much to the reader, either.
+
+Maybe something like:
+
+"DIO encountered delayed allocation block, racing buffered+direct? File: %s Comm: %.20s\n"
+
+It just seems that a user-facing warning should be something the admin has a chance of
+acting on without needing to file a bug for analysis by the developers.
+
+(though TBH "delayed allocation" probably doesn't mean much to the admin, either)
+
+-Eric
+
+>  		return -EIO;
+>  	}
+>  }
+> 
