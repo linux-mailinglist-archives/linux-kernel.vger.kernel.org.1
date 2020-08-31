@@ -2,116 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA38258130
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8748258160
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgHaShP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:37:15 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:45998 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728235AbgHaShM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:37:12 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VIYGEm051975;
-        Mon, 31 Aug 2020 18:37:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=CxUVVWf6SgJDaiWvwXz/nyOwKZNav8Y6h7elQ2lOS30=;
- b=Pih+LDx74nhyR2E34qgX3VR2rUN9GKVegKQcjeK8cZ19KOAgXXjp43+Z4/WUI5rS2SpL
- LmgPJpsrnUWj/uTxjHSU2hVxnhP3bGwLfSeGhGr7VLenXfHSKtVe4PeEMYhxGopDjdu0
- jYeQbOmCDca0lI6NWjgqLU4qJZfLI6sERQXWs+4gBhLZPbBbgcLgASMAyazqBEZ0Me9K
- BmTNNCq9LxAeE6LucdrOO+mGrvntlF1+VQ4jbENLldkfjzpAoRIVMmBPlDTvsCuTH0eK
- 3Siz7qDm4Q2aNjoW56gxSbBCS+bWUEBYpjpnai+prd6jSVUa5zj5E6hXa+ONB4xsV81s Bg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 337eykyujy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Aug 2020 18:37:01 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VIUppH153197;
-        Mon, 31 Aug 2020 18:35:01 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 3380x1046y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 Aug 2020 18:35:01 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07VIYuFD014971;
-        Mon, 31 Aug 2020 18:34:57 GMT
-Received: from [10.74.106.189] (/10.74.106.189)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 31 Aug 2020 11:34:56 -0700
-Subject: Re: [PATCH next v2 0/3] soc: ti: k3: ringacc: add am65x sr2.0 support
-To:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sekhar Nori <nsekhar@ti.com>
-References: <20200829184139.15547-1-grygorii.strashko@ti.com>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <b9310d10-46c5-2c63-a921-88be23363d44@oracle.com>
-Date:   Mon, 31 Aug 2020 11:34:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200829184139.15547-1-grygorii.strashko@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008310110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 clxscore=1011 spamscore=0 bulkscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008310110
+        id S1728193AbgHaSxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:53:19 -0400
+Received: from mga11.intel.com ([192.55.52.93]:15923 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727933AbgHaSxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:53:17 -0400
+IronPort-SDR: YQotMRrKgT5p7LoSSuV6CGAbdfQgPxO2MP+OTE14f/WsrpSW93fYmDhQOoCIMngeH3nNvw5g5F
+ spfBCCrFPl5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="154561046"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="154561046"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 11:53:00 -0700
+IronPort-SDR: v90XZ5/SzbgtOohqJ6kjawuQeetkr4CUnEAwmttARTCgAcULGomwZBCi+TCm9OLy4XjjHvSy+w
+ VbEVsOvztJ8A==
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="301148165"
+Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.153])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 11:53:00 -0700
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     kyung.min.park@intel.com, tglx@linutronix.de, bp@alien8.de,
+        tony.luck@intel.com, dave.hansen@intel.com, ricardo.neri@intel.com,
+        hpa@zytor.com, gregkh@linuxfoundation.org, ak@linux.intel.com,
+        ravi.v.shankar@intel.com,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: [PATCH v3] Documentation/x86: Add documentation for /proc/cpuinfo feature flags
+Date:   Mon, 31 Aug 2020 11:35:00 -0700
+Message-Id: <20200831183500.15481-1-kyung.min.park@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/20 11:41 AM, Grygorii Strashko wrote:
-> Hi Santosh,
-> 
-> I've rebased on top of  linux-next and identified merge conflict of patch 3
-> with commit 6da45875fa17 ("arm64: dts: k3-am65: Update the RM resource types")
-> in -next.
-> 
-> ---
-> This series adds support for the TI AM65x SR2.0 SoC Ringacc which has fixed
-> errata i2023 "RINGACC, UDMA: RINGACC and UDMA Ring State Interoperability
-> Issue after Channel Teardown". This errata also fixed for J271E SoC.
-> The SOC bus chipinfo data is used to identify the SoC and configure
-> i2023 errata W/A.
-> 
-> This changes made "ti,dma-ring-reset-quirk" DT property obsolete, so it's removed.
-> 
-> Changes in v2:
->   - no functional changes
->   - rebased on top of linux-next
->   - added ask from Rob Herring
-> 
-Thanks. Can you please followup DT acks for PRUSS series so that I can
-apply PRUSS + $subject series.
+/proc/cpuinfo shows features which the kernel supports. Some of these
+flags are derived from CPUID, and others are derived from other sources,
+including some that are entirely software-based. Currently, there is
+not any documentation in the kernel about how /proc/cpuinfo flags are
+generated and what it means when they are missing.
 
-> v1: https://urldefense.com/v3/__https://lore.kernel.org/patchwork/cover/1284233/__;!!GqivPVa7Brio!PCmZ-nZZ6YQak-0T43bPZYI0gHsYL9k6N7S2gZEFbIr8BRKtv2BK01VejQzlBPBBgcfvCQ$
->      
-> Grygorii Strashko (3):
->    soc: ti: k3: ringacc: add am65x sr2.0 support
->    bindings: soc: ti: soc: ringacc: remove ti,dma-ring-reset-quirk
->    arm64: dts: ti: k3-am65: ringacc: drop ti,dma-ring-reset-quirk
-> 
->   .../bindings/soc/ti/k3-ringacc.yaml           |  6 ----
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi      |  1 -
->   arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi       |  1 -
->   drivers/soc/ti/k3-ringacc.c                   | 33 +++++++++++++++++--
->   4 files changed, 30 insertions(+), 11 deletions(-)
-> 
+Add documentation for /proc/cpuinfo feature flags enumeration.
+Document how and when x86 feature flags are used. Also discuss what
+their presence or absence mean for the kernel and users.
+
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Co-developed-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+---
+ChangeLog:
+- Change from v2 to v3:
+  1. Changed the CPUID custom tool to the one that will be in the kernel
+     source as suggested by Borislav Petkov.
+  2. Some change of wording as suggested by Borislav petkov.
+- Change from v1 to v2:
+  1. Removed patches of adding feature flags (TSXLDTRK, SERIALIZE) from this
+     patchset.
+  2. Removed the cover letter.
+  3. Some change of wording in Documentation/x86/cpuinfo.rst as suggested by
+     Borislav Petkov.
+  4. Add the explanation of the feature flag usage for KVM as suggested by
+     Tony Luck.
+---
+ Documentation/x86/cpuinfo.rst | 155 ++++++++++++++++++++++++++++++++++
+ Documentation/x86/index.rst   |   1 +
+ 2 files changed, 156 insertions(+)
+ create mode 100644 Documentation/x86/cpuinfo.rst
+
+diff --git a/Documentation/x86/cpuinfo.rst b/Documentation/x86/cpuinfo.rst
+new file mode 100644
+index 000000000000..5d54c39a063f
+--- /dev/null
++++ b/Documentation/x86/cpuinfo.rst
+@@ -0,0 +1,155 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=================
++x86 Feature Flags
++=================
++
++Introduction
++============
++
++On x86, flags appearing in /proc/cpuinfo have an X86_FEATURE definition
++in arch/x86/include/asm/cpufeatures.h. If the kernel cares about a feature
++or KVM want to expose the feature to a KVM guest, it can and should have
++an X86_FEATURE_* defined. These flags represent hardware features as
++well as software features.
++
++If users want to know if a feature is available on a given system, they
++try to find the flag in /proc/cpuinfo. If a given flag is present, it
++means that the kernel supports it and is currently making it available.
++If such flag represents a hardware feature, it also means that the
++hardware supports it.
++
++If the expected flag does not appear in /proc/cpuinfo, things are murkier.
++Users need to find out the reason why the flag is missing and find the way
++how to enable it, which is not always easy. There are several factors that
++can explain missing flags: the expected feature failed to enable, the feature
++is missing in hardware, platform firmware did not enable it, the feature is
++disabled at build or run time, an old kernel is in use, or the kernel does
++not support the feature and thus has not enabled it. In general, /proc/cpuinfo
++shows features which the kernel supports. For a full list of CPUID flags
++which the CPU supports, use tools/arch/x86/kcpuid.
++
++How are feature flags created?
++==============================
++
++a: Feature flags can be derived from the contents of CPUID leaves.
++------------------------------------------------------------------
++These feature definitions are organized mirroring the layout of CPUID
++leaves and grouped in words with offsets as mapped in enum cpuid_leafs
++in cpufeatures.h (see arch/x86/include/asm/cpufeatures.h for details).
++If a feature is defined with a X86_FEATURE_<name> definition in
++cpufeatures.h, and if it is detected at run time, the flags will be
++displayed accordingly in /proc/cpuinfo. For example, the flag "avx2"
++comes from X86_FEATURE_AVX2 in cpufeatures.h.
++
++b: Flags can be from scattered CPUID-based features.
++----------------------------------------------------
++Hardware features enumerated in sparsely populated CPUID leaves get
++software-defined values. Still, CPUID needs to be queried to determine
++if a given feature is present. This is done in init_scattered_cpuid_features().
++For instance, X86_FEATURE_CQM_LLC is defined as 11*32 + 0 and its presence is
++checked at runtime in the respective CPUID leaf [EAX=f, ECX=0] bit EDX[1].
++
++The intent of scattering CPUID leaves is to not bloat struct
++cpuinfo_x86.x86_capability[] unnecessarily. For instance, the CPUID leaf
++[EAX=7, ECX=0] has 30 features and is dense, but the CPUID leaf [EAX=7, EAX=1]
++has only one feature and would waste 31 bits of space in the x86_capability[]
++array. Since there is a struct cpuinfo_x86 for each possible CPU, the wasted
++memory is not trivial.
++
++c: Flags can be created synthetically under certain conditions for hardware features.
++-------------------------------------------------------------------------------------
++Examples of conditions include whether certain features are present in
++MSR_IA32_CORE_CAPS or specific CPU models are identified. If the needed
++conditions are met, the features are enabled by the set_cpu_cap or
++setup_force_cpu_cap macros. For example, if bit 5 is set in MSR_IA32_CORE_CAPS,
++the feature X86_FEATURE_SPLIT_LOCK_DETECT will be enabled and
++"split_lock_detect" will be displayed. The flag "ring3mwait" will be
++displayed only when running on INTEL_FAM6_XEON_PHI_[KNL|KNM] processors.
++
++d: Flags can represent purely software features.
++------------------------------------------------
++These flags do not represent hardware features. Instead, they represent a
++software feature implemented in the kernel. For example, Kernel Page Table
++Isolation is purely software feature and its feature flag X86_FEATURE_PTI is
++also defined in cpufeatures.h.
++
++Naming of Flags
++===============
++
++The script arch/x86/kernel/cpu/mkcapflags.sh processes the
++#define X86_FEATURE_<name> from cpufeatures.h and generates the
++x86_cap/bug_flags[] arrays in kernel/cpu/capflags.c. The names in the
++resulting x86_cap/bug_flags[] are used to populate /proc/cpuinfo. The naming
++of flags in the x86_cap/bug_flags[] are as follows:
++
++a: The name of the flag is from the string in X86_FEATURE_<name> by default.
++----------------------------------------------------------------------------
++By default, the flag <name> in /proc/cpuinfo is extracted from the respective
++X86_FEATURE_<name> in cpufeatures.h. For example, the flag "avx2" is from
++X86_FEATURE_AVX2.
++
++b: The naming can be overridden.
++--------------------------------
++If the comment on the line for the #define X86_FEATURE_* starts with a
++double-quote character (""), the string inside the double-quote characters
++will be the name of the flags. For example, the flag "sse4_1" comes from
++the comment "sse4_1" following the X86_FEATURE_XMM4_1 definition.
++
++There are situations in which overriding the displayed name of the flag is
++needed. For instance, /proc/cpuinfo is a userspace interface and must remain
++constant. If, for some reason, the naming of X86_FEATURE_<name> changes, one
++shall override the new naming with the name already used in /proc/cpuinfo.
++
++c: The naming override can be "", which means it will not appear in /proc/cpuinfo.
++----------------------------------------------------------------------------------
++The feature shall be omitted from /proc/cpuinfo if it does not make sense for
++the feature to be exposed to userspace. For example, X86_FEATURE_ALWAYS is
++defined in cpufeatures.h but that flag is an internal kernel feature used
++in the alternative runtime patching functionality. So, its name is overridden
++with "". Its flag will not appear in /proc/cpuinfo.
++
++Flags are missing when one or more of these happen
++==================================================
++
++a: The hardware does not enumerate support for it.
++--------------------------------------------------
++For example, when a new kernel is running on old hardware or the feature is
++not enabled by boot firmware. Even if the hardware is new, there might be a
++problem enabling the feature at run time, the flag will not be displayed.
++
++b: The kernel does not know about the flag.
++-------------------------------------------
++For example, when an old kernel is running on new hardware.
++
++c: The kernel disabled support for it at compile-time.
++------------------------------------------------------
++For example, if 5-level-paging is not enabled when building (i.e.,
++CONFIG_X86_5LEVEL is not selected) the flag "la57" will not show up [#f1]_.
++Even though the feature will still be detected via CPUID, the kernel disables
++it by clearing via setup_clear_cpu_cap(X86_FEATURE_LA57).
++
++d: The feature is disabled at boot-time.
++----------------------------------------
++A feature can be disabled either using a command-line parameter or because
++it failed to be enabled. The command-line parameter clearcpuid= can be used
++to disable features using the feature number as defined in
++/arch/x86/include/asm/cpufeatures.h. For instance, User Mode Instruction
++Protection can be disabled using clearcpuid=514. The number 514 is calculated
++from #define X86_FEATURE_UMIP (16*32 + 2).
++
++In addition, there exists a variety of custom command-line parameters that
++disable specific features. The list of parameters includes, but is not limited
++to, nofsgsbase, nosmap, and nosmep. 5-level paging can also be disabled using
++"no5lvl". SMAP and SMEP are disabled with the aforementioned parameters,
++respectively.
++
++e: The feature was known to be non-functional.
++----------------------------------------------
++The feature was known to be non-functional because a dependency was
++missing at runtime. For example, AVX flags will not show up if XSAVE feature
++is disabled since they depend on XSAVE feature. Another example would be broken
++CPUs and them missing microcode patches. Due to that, the kernel decides not to
++enable a feature.
++
++.. [#f1] 5-level paging uses linear address of 57 bits.
+diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
+index 265d9e9a093b..d5adb0ab8668 100644
+--- a/Documentation/x86/index.rst
++++ b/Documentation/x86/index.rst
+@@ -9,6 +9,7 @@ x86-specific Documentation
+    :numbered:
+ 
+    boot
++   cpuinfo
+    topology
+    exception-tables
+    kernel-stacks
+-- 
+2.17.1
+
