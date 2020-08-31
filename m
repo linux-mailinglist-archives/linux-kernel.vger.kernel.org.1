@@ -2,20 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0058D257F4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA82257F50
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728875AbgHaRLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:11:50 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:56347 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgHaRLm (ORCPT
+        id S1728889AbgHaRL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:11:57 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:45145 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728336AbgHaRLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 13:11:42 -0400
+X-Originating-IP: 90.66.108.79
 Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id A517710000D;
-        Mon, 31 Aug 2020 17:11:38 +0000 (UTC)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A38CF60007;
+        Mon, 31 Aug 2020 17:11:39 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Rob Herring <robh+dt@kernel.org>
 Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -24,8 +25,8 @@ Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
         linux-arm-kernel@lists.infradead.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Subject: [PATCH 1/5] ARM: dts: at91: fix cpu node
-Date:   Mon, 31 Aug 2020 19:11:23 +0200
-Message-Id: <20200831171129.3886857-2-alexandre.belloni@bootlin.com>
+Date:   Mon, 31 Aug 2020 19:11:24 +0200
+Message-Id: <20200831171129.3886857-3-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200831171129.3886857-1-alexandre.belloni@bootlin.com>
 References: <20200831171129.3886857-1-alexandre.belloni@bootlin.com>
