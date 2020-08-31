@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF262582AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC552582B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgHaUhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 16:37:34 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19271 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHaUhd (ORCPT
+        id S1728958AbgHaUir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 16:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbgHaUio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:37:33 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4d5f7e0005>; Mon, 31 Aug 2020 13:37:18 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 31 Aug 2020 13:37:32 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 31 Aug 2020 13:37:32 -0700
-Received: from [10.2.173.243] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 31 Aug
- 2020 20:37:31 +0000
-Subject: Re: [PATCH v4 3/4] dt-bindings: media: imx274: Move clock and
- supplies to required properties
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <hverkuil@xs4all.nl>, <luca@lucaceresoli.net>,
-        <leonl@leopardimaging.com>, <robh+dt@kernel.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1598903558-9691-1-git-send-email-skomatineni@nvidia.com>
- <1598903558-9691-4-git-send-email-skomatineni@nvidia.com>
- <20200831201757.GC844@valkosipuli.retiisi.org.uk>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <5c341ed9-6077-e935-de50-ff9f5f17edcf@nvidia.com>
-Date:   Mon, 31 Aug 2020 13:37:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200831201757.GC844@valkosipuli.retiisi.org.uk>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598906238; bh=H1WH+m4HtI2EGHXBWwRjqqQ+z0hMsWiIPo2ajT3gcbE=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=WojcGWlL0gJPIaerKq14GWOlTI6hEKPE7hOSVI16rTPCBz853XZLSJwbodlvTOyAA
-         B4JUVKeLKd1elrlCvVGI1NpAtQoUOAAbdLzwLkf39tjSQHWhdhtDjTFsKOttS2tGeF
-         dTjKUyD9UCLCrSWZush3W6vcN/bncG+JMPYJQW0Z0/+ZRdavBw6LIdhEGARwpL0kap
-         R/Pd6M5ZOdIAnnu9gop7tDgiwwAKNPSserDMrrI0UNJntMIp+ZEtbhGOtBQC4DynWp
-         JPdP/Nf/NuhjI/4oXgLPrW0I1YQL8skv/3AkeU/cGdE3QecHfAYZ18HiRlSLZZJ51d
-         JkGZM8HDE25IA==
+        Mon, 31 Aug 2020 16:38:44 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF384C061573;
+        Mon, 31 Aug 2020 13:38:43 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id ds1so500207pjb.1;
+        Mon, 31 Aug 2020 13:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=IwVRkCMCyZnv4TAjRBRmsSZkvVEHDfWBL3BIyYi4zQo=;
+        b=ZkZqEI05NuuUmHp4uq5a9dsrbwy6wdRKCA6iPyNirvHNYsQVEQqt6/lvse4QXcTqv2
+         3mJ1pK85ab2S9FLesU7vnJPgRPLpltd14LU7nZlzQx3sQAZgkcVa+sBCkKawqacB1437
+         b+9+HKTj8Bhj2BcACUf2G8k8rjyMCHPBsFUayVjGCPKiSuU3VdSX/AK3nzAUmLgYekB+
+         0n7keCtBO+JccJGJanwqSwRo70x6sH2B+iEoaUSPCdeeSiSwkKtkyAex8kV0D0W0hY0s
+         LZUJCW89ct/rL13iuPmo0Qg+ugXIe6iwZCeXUVA5RHMFZrGt2KQUK7HO1RotW/sE7agp
+         6EFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IwVRkCMCyZnv4TAjRBRmsSZkvVEHDfWBL3BIyYi4zQo=;
+        b=A2DORATqmT4OyPzIwhRYYVJj7YG0xDLuSBcCUjxGqHE0HEJnpXVtV5+pH+/DcAO3oH
+         amfIRM9jhDhqupsP7oPs7j2ih4krRCr6tmhWcKftk/hIp7g6QzFd7lZ57ugDZ/7ESZYj
+         sR43K8GOxtvnf6bAZy2MlXZtKZSCtOuPo0HHa0CBn72XSBWUKcvECwMIMdyIvRWyLFxw
+         is0cT/z575YtAn9esjVCvKdXZqg5jg9yOHXxaHmIfMYkMQH2K4AWfCM05GxqC65jJCZM
+         hlY6Ij6fcC5Ig3Z/j5aqlD1B4UH05hIM2gIRraSIG1DpCTiwPuEWOVl43Tdgt81DB8HH
+         lucg==
+X-Gm-Message-State: AOAM533mEG6ygSoA8WmQlxE+TaKdKjtqJWk2GRwG7QIqgBiDbXw7A4ew
+        nnw1TaTsEMRpoj6gX2B3RUQ=
+X-Google-Smtp-Source: ABdhPJxZWUFmKJnOqKQskXfTYVdxoI7lzl+mkXQEUEnR18yGX2dCIBolzAzimegoss/mYS3BHiIAsg==
+X-Received: by 2002:a17:902:b18e:: with SMTP id s14mr2351578plr.160.1598906323230;
+        Mon, 31 Aug 2020 13:38:43 -0700 (PDT)
+Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id a26sm116850pfn.93.2020.08.31.13.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 13:38:42 -0700 (PDT)
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        tony.luck@intel.com, fenghua.yu@intel.com, schnelle@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, James.Bottomley@HansenPartnership.com, deller@gmx.de
+Cc:     sfr@canb.auug.org.au, hch@lst.de, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: [RESEND][PATCH 0/7] Avoid overflow at boundary_size
+Date:   Mon, 31 Aug 2020 13:38:04 -0700
+Message-Id: <20200831203811.8494-1-nicoleotsuka@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+==== For this resend ====
+The original series have not been acked at any patch. So I am
+resending them, being suggested by Niklas.
 
-On 8/31/20 1:17 PM, Sakari Ailus wrote:
-> Hi Sowjanya,
->
-> On Mon, Aug 31, 2020 at 12:52:37PM -0700, Sowjanya Komatineni wrote:
->> Clock and supplies are external to IMX274 sensor and are dependent
->> on camera module design.
->>
->> So, this patch moves them to required properties.
->>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->> ---
->>   Documentation/devicetree/bindings/media/i2c/imx274.txt | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/media/i2c/imx274.txt b/Documentation/devicetree/bindings/media/i2c/imx274.txt
->> index d0a5c899..b43bed6 100644
->> --- a/Documentation/devicetree/bindings/media/i2c/imx274.txt
->> +++ b/Documentation/devicetree/bindings/media/i2c/imx274.txt
->> @@ -10,15 +10,15 @@ at 1440 Mbps.
->>   Required Properties:
->>   - compatible: value should be "sony,imx274" for imx274 sensor
->>   - reg: I2C bus address of the device
->> -
->> -Optional Properties:
->> -- reset-gpios: Sensor reset GPIO
->>   - clocks: Reference to the input clock.
->>   - clock-names: Should be "inck".
->>   - vana-supply: Sensor 2.8v analog supply.
->>   - vdig-supply: Sensor 1.8v digital core supply.
->>   - vddl-supply: Sensor digital IO 1.2v supply.
-> If these have been optional in the past I don't think we can start
-> requiring them now.
->
-> The framework will just give the driver a dummy regulator if one isn't
-> found.
-These were added recently with my patches. So I hope should be ok to 
-make them required as they are external to sensor
->
->>   
->> +Optional Properties:
->> +- reset-gpios: Sensor reset GPIO
->> +
->>   The imx274 device node should contain one 'port' child node with
->>   an 'endpoint' subnode. For further reading on port node refer to
->>   Documentation/devicetree/bindings/media/video-interfaces.txt.
+==== Coverletter ====
+We are expending the default DMA segmentation boundary to its
+possible maximum value (ULONG_MAX) to indicate that a device
+doesn't specify a boundary limit. So all dma_get_seg_boundary
+callers should take a precaution with the return values since
+it would easily get overflowed.
+
+I scanned the entire kernel tree for all the existing callers
+and found that most of callers may get overflowed in two ways:
+either "+ 1" or passing it to ALIGN() that does "+ mask".
+
+According to kernel defines:
+    #define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
+    #define ALIGN(x, a)	ALIGN_MASK(x, (typeof(x))(a) - 1)
+
+We can simplify the logic here:
+  ALIGN(boundary + 1, 1 << shift) >> shift
+= ALIGN_MASK(b + 1, (1 << s) - 1) >> s
+= {[b + 1 + (1 << s) - 1] & ~[(1 << s) - 1]} >> s
+= [b + 1 + (1 << s) - 1] >> s
+= [b + (1 << s)] >> s
+= (b >> s) + 1
+
+So this series of patches fix the potential overflow with this
+overflow-free shortcut.
+
+As I don't have these platforms, testings/comments are welcome.
+
+Thanks
+Nic
+
+Nicolin Chen (7):
+  powerpc/iommu: Avoid overflow at boundary_size
+  alpha: Avoid overflow at boundary_size
+  ia64/sba_iommu: Avoid overflow at boundary_size
+  s390/pci_dma: Avoid overflow at boundary_size
+  sparc: Avoid overflow at boundary_size
+  x86/amd_gart: Avoid overflow at boundary_size
+  parisc: Avoid overflow at boundary_size
+
+ arch/alpha/kernel/pci_iommu.c    | 10 ++++------
+ arch/ia64/hp/common/sba_iommu.c  |  4 ++--
+ arch/powerpc/kernel/iommu.c      | 11 +++++------
+ arch/s390/pci/pci_dma.c          |  4 ++--
+ arch/sparc/kernel/iommu-common.c |  9 +++------
+ arch/sparc/kernel/iommu.c        |  4 ++--
+ arch/sparc/kernel/pci_sun4v.c    |  4 ++--
+ arch/x86/kernel/amd_gart_64.c    |  4 ++--
+ drivers/parisc/ccio-dma.c        |  4 ++--
+ drivers/parisc/sba_iommu.c       |  4 ++--
+ 10 files changed, 26 insertions(+), 32 deletions(-)
+
+-- 
+2.17.1
+
