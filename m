@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8E6258213
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 21:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EF8258219
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 21:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgHaTsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 15:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728273AbgHaTsj (ORCPT
+        id S1729815AbgHaTwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 15:52:50 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2968 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728671AbgHaTwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 15:48:39 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A3EC061573;
-        Mon, 31 Aug 2020 12:48:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lCbGSkGKUU8F1R9YT3KZ6FWEFaUZVzQp7ByD3Mg/eQQ=; b=bb8HY1CGR7xPK7g0ER8gDDtzKm
-        sKjn7irzf13v6WwDkgC7bZ9M13Lr7/uV57MqN7evtV3T8kIwluG+Nh6586EmE6u4Zl1oe/1g5YwkZ
-        G3BklKMwixfU1DZEB9kuG4WF9UfnokgdHuG1g7RN6dfTOYxdueQ0AA9nwxKZjF3iDZYb/nT1KpRPB
-        eV+DiNM7n6yCr3TzsGzNN9anwQQ2eucwFJM9A2cPRmBGR8v+W2lC49CLKjhYEAFsB5PMjRxyCxFaJ
-        i331AdMA94NOUHyFPg0J75g7EIPdNVzx1yoh/pS6FCNFPRsP4ctt3cCS+9czLdMsuBg+Guh1DK0I5
-        jS6KwdyA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kCpnB-0000ZU-5D; Mon, 31 Aug 2020 19:48:37 +0000
-Date:   Mon, 31 Aug 2020 20:48:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/11] block: Add bio_for_each_thp_segment_all
-Message-ID: <20200831194837.GJ14765@casper.infradead.org>
-References: <20200824151700.16097-1-willy@infradead.org>
- <20200824151700.16097-5-willy@infradead.org>
- <20200827084431.GA15909@infradead.org>
+        Mon, 31 Aug 2020 15:52:49 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4d54930000>; Mon, 31 Aug 2020 12:50:43 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 31 Aug 2020 12:52:49 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 31 Aug 2020 12:52:49 -0700
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 31 Aug
+ 2020 19:52:49 +0000
+Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 31 Aug 2020 19:52:49 +0000
+Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.173.243]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f4d55100006>; Mon, 31 Aug 2020 12:52:48 -0700
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <sakari.ailus@iki.fi>,
+        <hverkuil@xs4all.nl>, <luca@lucaceresoli.net>,
+        <leonl@leopardimaging.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/4] IMX274 fixes and power on and off implementation
+Date:   Mon, 31 Aug 2020 12:52:34 -0700
+Message-ID: <1598903558-9691-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200827084431.GA15909@infradead.org>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598903443; bh=ObH5yIt3OmMX+IKEdrYTYd8H5mBLzF2Tl1tY4rioIwM=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=oBX7S/ehfaOAhOMEVrpdth0Esw244gGLPDM9YzfajZiBSU3svu/ucE6yiaFt02QM+
+         KPmsVeBpxy0dHIOFNXW8//o2pgr7RzKiF22N7Oy40jM/kXVvlJm/JpALt2fXTPbMI8
+         DXek/OC2abKzdLfiOw8RO5FmgE/icYLIWsxp9LDYL+LejUvrjI79UPg6y8vvS528HP
+         5uFKfYc4AIfyp2QinWBrSyT7UCiiKes8dI/lFH0r51BOJEqx2DQjyMukeqnhnUsmbC
+         VSMf5raeLn0CAQkY6TCCDgr+JZ5Q+DUXo4hyQ3IwyFOwj3qgdjKBaJPBIPoOeuX2PI
+         1wH3guxdJ2hMw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:44:31AM +0100, Christoph Hellwig wrote:
-> On Mon, Aug 24, 2020 at 04:16:53PM +0100, Matthew Wilcox (Oracle) wrote:
-> > Iterate once for each THP instead of once for each base page.
-> 
-> FYI, I've always been wondering if bio_for_each_segment_all is the
-> right interface for the I/O completions, because we generally don't
-> need the fake bvecs for each page.  Only the first page can have an
-> offset, and only the last page can be end earlier than the end of
-> the page size.
-> 
-> It would seem way more efficient to just have a helper that extracts
-> the offset and end, and just use that in a loop that does the way
-> cheaper iteration over the physical addresses only.  This might (or
-> might) not be a good time to switch to that model for iomap.
+This patch series includes
+- Fix for proper Y_OUT_SIZE register configuration.
+- Power on/off sequence implementation through runtime PM.
+- dt-binding doc update to move input clock and supplies as required
+  properties.
 
-Something like this?
+Delta between patch versions:
+[v4]:	Includes below v4 feedback
+	- Implemented power on/off through Runtime PM.
+	- Use regulator bulk APIs.
+	- Use lower case for supply names.
 
-static void iomap_read_end_io(struct bio *bio)
-{
-        int i, error = blk_status_to_errno(bio->bi_status);
+[v3]:	Includes below v2 feedback
+	- Removed explicit clk_set_rate from driver as default external
+	  input clock rate can be configured through DT.
 
-        for (i = 0; i < bio->bi_vcnt; i++) {
-                struct bio_vec *bvec = &bio->bi_io_vec[i];
-                size_t offset = bvec->bv_offset;
-                size_t length = bvec->bv_len;
-                struct page *page = bvec->bv_page;
+[v2]:	Includes below changes based on v1 feedback
+	- External input clock name changed from xclk to inck.
+	- implementation change for get regulators to store all in array.
+	- To keep in reset low prior to regulators power on.
 
-                while (length > 0) { 
-                        size_t count = thp_size(page) - offset;
-                        
-                        if (count > length)
-                                count = length;
-                        iomap_read_page_end_io(page, offset, count, error);
-                        page += (offset + count) / PAGE_SIZE;
-                        length -= count;
-                        offset = 0;
-                }
-        }
+Sowjanya Komatineni (4):
+  media: i2c: imx274: Fix Y_OUT_SIZE register setting
+  dt-bindings: media: imx274: Use lower case for supply names
+  dt-bindings: media: imx274: Move clock and supplies to required
+    properties
+  media: i2c: imx274: Add IMX274 power on and off sequence
 
-        bio_put(bio);
-}
+ .../devicetree/bindings/media/i2c/imx274.txt       |  10 +-
+ drivers/media/i2c/imx274.c                         | 153 ++++++++++++++++++++-
+ 2 files changed, 154 insertions(+), 9 deletions(-)
 
-Maybe I'm missing something important here, but it's significantly
-simpler code -- iomap_read_end_io() goes down from 816 bytes to 560 bytes
-(256 bytes less!) iomap_read_page_end_io is inlined into it both before
-and after.
+-- 
+2.7.4
 
-There is some weirdness going on with regards to bv_offset that I don't
-quite understand.  In the original bvec_advance:
-
-                bv->bv_page = bvec->bv_page + (bvec->bv_offset >> PAGE_SHIFT);
-                bv->bv_offset = bvec->bv_offset & ~PAGE_MASK;
-
-which I cargo-culted into bvec_thp_advance as:
-
-                bv->bv_page = thp_head(bvec->bv_page +
-                                (bvec->bv_offset >> PAGE_SHIFT));
-                page_size = thp_size(bv->bv_page);
-                bv->bv_offset = bvec->bv_offset -
-                                (bv->bv_page - bvec->bv_page) * PAGE_SIZE;
-
-Is it possible to have a bvec with an offset that is larger than the
-size of bv_page?  That doesn't seem like a useful thing to do, but
-if that needs to be supported, then the code up top doesn't do that.
-We maybe gain a little bit by counting length down to 0 instead of
-counting it up to bv_len.  I dunno; reading the code over now, it
-doesn't seem like that much of a difference.
-
-Maybe you meant something different?
