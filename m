@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09CB257E27
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 18:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677B9257E2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 18:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgHaQEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 12:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgHaQEZ (ORCPT
+        id S1728445AbgHaQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 12:05:05 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50886 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728251AbgHaQFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 12:04:25 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF386C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 09:04:24 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a65so25940wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 09:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nCvBclcKzBH5k/oraboDk32nHcQNInznXVzQum4e88U=;
-        b=rulFknjgmouB6mHwBZM6x2B4xumtWEbtgZq5ADHlGW8eRg2k6lGmKUQSnydBvlK8HJ
-         u/x13n5Og0niJTLg4W5BFerL8Mgrndz6sA6Q1cDDqu5OR0l7fCFDomuD6H1h3wG3kFVg
-         MiY3ii6L0ojZ90XYO0lzr3UP7c+5S0W+5Uro5MFQgKCW4NajHQ06mgdnrO04OysTrFRL
-         TlLZzbL6eC4tx4uAaAdnTOe2vsgRyk2fwvOcXAWq0olpbnYKAnTUiVIXpn9G7Z0re9Mk
-         VcqBMsZP1ISRpXR9d58KfsEqRFQcu/hOEPd/W+e476D4eMtox3UmUOw9f8hhyWunhDsF
-         70DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nCvBclcKzBH5k/oraboDk32nHcQNInznXVzQum4e88U=;
-        b=gFBxVeGSso3bIjeuoAqIt277UtRRFwaA2ZyZmORvBWyAqW4+5U4M3/FthWIailGMaM
-         x9dIrWkGTVDwnTAfPa8gX7tuV4vJ4eBQtCgf8IhXixc4L1aG1zTa7Mlizoo2iPi4p0B7
-         VPoHdzPOE8TbUJMiZrA92bLYt+WP2OWiiDHT4T/0LNADg8OudNN0v3opkIoaWPsFwCuc
-         01RFUlCMv994LX5S79UJTSeWIeyFc2c2+KBtEEIMVXvPTnkiAAbQL+GS4YdRnFqt8MXl
-         3M1fqYNp/y1/uaQ1oUGLNnDv5IjBB8GWMsnAf1QY1MmCC7bULksFqT60/PCGNvoC6qfQ
-         Tt6Q==
-X-Gm-Message-State: AOAM533Y+z66Q9k6SZ9qPQ/n4pI6JHClGXKP1kT0cbHuNENOvq68KnZm
-        JITiXGr3E4jeDbMlurAqDOy5tg==
-X-Google-Smtp-Source: ABdhPJxTUsAVsYWhVS+5VSM2aslFfVrMSpKvMyie9ZUeq22oWbn9twvpHATZRscl6RMZiquXobLJSA==
-X-Received: by 2002:a7b:cc11:: with SMTP id f17mr75205wmh.21.1598889863347;
-        Mon, 31 Aug 2020 09:04:23 -0700 (PDT)
-Received: from trex (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id q12sm9883387wrs.48.2020.08.31.09.04.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 31 Aug 2020 09:04:22 -0700 (PDT)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Mon, 31 Aug 2020 18:04:20 +0200
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Jorge Ramirez-Ortiz <jorge@foundries.io>,
-        jens.wiklander@linaro.org, sumit.garg@linaro.org,
-        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
-        ricardo@foundries.io
-Subject: Re: [PATCH] drivers: optee: fix i2c build issue
-Message-ID: <20200831160420.GA13073@trex>
-References: <20200831152359.9122-1-jorge@foundries.io>
- <52448a13-f3fd-d9d1-8e1f-e029db91cf5e@infradead.org>
+        Mon, 31 Aug 2020 12:05:05 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VG3o5D037246;
+        Mon, 31 Aug 2020 16:04:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=OunsT9Nc2XfTQN0xbAJbz9ZbMi/lfCNrPIhCBDM+lVY=;
+ b=JynFyNi/mBLNZrA0hffOMGipjaGEFEwofpUXzNviTB6pQcpXfsd19Y43/Dr4FqQ8FOyb
+ xPHzDEZiVp7wpqUQACSDFB4vCfAh9B/8Vr3XHC3Xk9On5lBrgcIM4p7O81J+yvn8rwpA
+ wR0AKT9L8wlfojhiMiJMlCIsLgBeHTARw1ENWjPaOe9UO5abSuVXd9Ue4bicZVZyU6KE
+ N3Ah7CjZKZNzeaPz4UqkuIYmZoqMSdIiSM9jbaReVdXHte2ncJuZDuw/gz2adEwrYm01
+ RmUweoMw35KKTkeoC+qEujlMj9VBkS4N8nI3g8LAssZfOBgv3Mqh5f9hjyGKYwvBXsCU og== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 337qrhe5xg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Aug 2020 16:04:59 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VG19Go073969;
+        Mon, 31 Aug 2020 16:04:59 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 3380kku55j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 16:04:58 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07VG4woC014498;
+        Mon, 31 Aug 2020 16:04:58 GMT
+Received: from revolver.jebus.ca (/23.233.25.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 Aug 2020 09:04:56 -0700
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Liam.Howlett@Oracle.com
+Subject: [PATCH] mm/mmap: Fix Add inline munmap_vma_range() for code readability
+Date:   Mon, 31 Aug 2020 12:04:48 -0400
+Message-Id: <20200831160448.2626027-1-Liam.Howlett@Oracle.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52448a13-f3fd-d9d1-8e1f-e029db91cf5e@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310095
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 priorityscore=1501 spamscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008310095
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/08/20, Randy Dunlap wrote:
-> On 8/31/20 8:23 AM, Jorge Ramirez-Ortiz wrote:
-> > When the optee driver is compiled into the kernel while the i2c core
-> > is configured as a module, the i2c symbols are not available.
-> > 
-> > This commit addresses the situation by disabling the i2c support for
-> > this use case while allowing it in all other scenarios:
-> > 
-> >  i2c=y, optee=y
-> >  i2c=m, optee=m
-> >  i2c=y, optee=m
-> >  i2c=m, optee=y (not supported)
-> > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-> > ---
-> > 
-> >   This patch applies on top of
-> >   https://git.linaro.org/people/jens.wiklander/linux-tee.git/tag/?h=optee-i2c-for-v5.10
-> > 
-> >  drivers/tee/optee/rpc.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-> > index 64a206c56264..96e91d5f0a86 100644
-> > --- a/drivers/tee/optee/rpc.c
-> > +++ b/drivers/tee/optee/rpc.c
-> > @@ -51,6 +51,7 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
-> >  }
-> >  
-> >  #if IS_ENABLED(CONFIG_I2C)
-> > +#if !defined(CONFIG_I2C_MODULE) || defined(CONFIG_OPTEE_MODULE)
-> 
-> Looks like
-> #if IS_REACHABLE(CONFIG_I2C)
-> 
-> should work here.
+Add missing whitespace after the function, and fix comment arguments to
+match arguments.
 
-yep, much nicer. will do that instead.
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
+ mm/mmap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index b59b4e5889b5c..c64f4fc410312 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -584,8 +584,8 @@ static inline struct vm_area_struct *vma_next(struct mm_struct *mm,
+  * @start: The start of the range.
+  * @len: The length of the range.
+  * @pprev: pointer to the pointer that will be set to previous vm_area_struct
+- * @rb_link: the rb_node
+- * @rb_parent: the parent rb_node
++ * @link: the rb_node
++ * @parent: the parent rb_node
+  *
+  * Find all the vm_area_struct that overlap from @start to
+  * @end and munmap them.  Set @pprev to the previous vm_area_struct.
+@@ -604,6 +604,7 @@ munmap_vma_range(struct mm_struct *mm, unsigned long start, unsigned long len,
+ 
+ 	return 0;
+ }
++
+ static unsigned long count_vma_pages_range(struct mm_struct *mm,
+ 		unsigned long addr, unsigned long end)
+ {
+-- 
+2.28.0
 
-> 
-> >  static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> >  					     struct optee_msg_arg *arg)
-> >  {
-> > @@ -140,6 +141,7 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
-> >  	arg->ret = TEEC_ERROR_NOT_SUPPORTED;
-> >  }
-> >  #endif
-> > +#endif
-> >  
-> >  static struct wq_entry *wq_entry_get(struct optee_wait_queue *wq, u32 key)
-> >  {
-> > 
-> 	
-> 
-> -- 
-> ~Randy
-> 
