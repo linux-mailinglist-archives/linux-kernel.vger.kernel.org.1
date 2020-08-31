@@ -2,110 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8CC257822
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2615225782E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgHaLTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgHaLIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:08:10 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4209FC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:07:34 -0700 (PDT)
-Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kChei-0007tZ-1h; Mon, 31 Aug 2020 13:07:20 +0200
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        patchwork-lst@pengutronix.de
-Date:   Mon, 31 Aug 2020 13:07:19 +0200
-Message-Id: <20200831110719.2126930-1-l.stach@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
+        id S1726144AbgHaLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:21:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726726AbgHaLR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 07:17:58 -0400
+Received: from localhost (unknown [122.171.38.130])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0162D206F0;
+        Mon, 31 Aug 2020 11:08:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598872136;
+        bh=luuKNVi+KwBr1ekM6udfXcrivJveuP/tHqNrnFBYWzo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q9i5JjFRgd6CT0v9YoaM43xpHDTkyeMvqzq3Ssb0Bwy66dDENHm+T2c4kSr9F6e5F
+         yEMdfTYkuFjp5dQur7ohdLp0G40YvgqkgngONSvuR2XT1YwwpxfCQsGF1eAe8OHKhd
+         h9qDDRaJm9JIIW54F64ilO+Gwlnky3sIxbz/qE8Y=
+Date:   Mon, 31 Aug 2020 16:38:52 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     geert@linux-m68k.org, kishon@ti.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] phy: tusb1210: use bitmasks to set
+ VENDOR_SPECIFIC2
+Message-ID: <20200831110852.GO2639@vkoul-mobl>
+References: <20200822205320.9746-1-liambeguin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::39
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
-        metis.ext.pengutronix.de
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.4 required=4.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.2
-Subject: [PATCH] sched/deadline: Fix stale throttling on de-/boosted tasks
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200822205320.9746-1-liambeguin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a boosted task gets throttled, what normally happens is that it's
-immediately enqueued again with ENQUEUE_REPLENISH, which replenishes the
-runtime and clears the dl_throttled flag. There is a special case however:
-if the throttling happened on sched-out and the task has been deboosted in
-the meantime, the replenish is skipped as the task will return to its
-normal scheduling class. This leaves the task with the dl_throttled flag
-set.
+Hi Liam,
 
-Now if the task gets boosted up to the deadline scheduling class again
-while it is sleeping, it's still in the throttled state. The normal wakeup
-however will enqueue the task with ENQUEUE_REPLENISH not set, so we don't
-actually place it on the rq. Thus we end up with a task that is runnable,
-but not actually on the rq and neither a immediate replenishment happens,
-nor is the replenishment timer set up, so the task is stuck in
-forever-throttled limbo.
+On 22-08-20, 16:53, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> Start by reading the content of the VENDOR_SPECIFIC2 register and update
+> each bit field based on device properties when defined.
+> 
+> The use of bit masks prevents fields from overriding each other and
+> enables users to clear bits which are set by default, like datapolarity
+> in this instance.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+> Changes since v1:
+> - use set_mask_bits
+> 
+> Changes since v2:
+> - fix missing bit shift dropped in v2
+> - rebase on 5.9-rc1
+> 
+> Changes since v3:
+> - switch to u8p_replace_bits() since there's little reason to protect
+>   against concurrent access
+> 
+>  drivers/phy/ti/phy-tusb1210.c | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb1210.c
+> index d8d0cc11d187..a63213f5972a 100644
+> --- a/drivers/phy/ti/phy-tusb1210.c
+> +++ b/drivers/phy/ti/phy-tusb1210.c
+> @@ -7,15 +7,16 @@
+>   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>   */
+>  #include <linux/module.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/ulpi/driver.h>
+>  #include <linux/ulpi/regs.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/phy/ulpi_phy.h>
+>  
+>  #define TUSB1210_VENDOR_SPECIFIC2		0x80
+> -#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT	0
+> -#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT	4
+> -#define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT	6
+> +#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK	GENMASK(3, 0)
+> +#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK	GENMASK(5, 4)
+> +#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK	BIT(6)
+>  
+>  struct tusb1210 {
+>  	struct ulpi *ulpi;
+> @@ -118,22 +119,22 @@ static int tusb1210_probe(struct ulpi *ulpi)
+>  	 * diagram optimization and DP/DM swap.
+>  	 */
+>  
+> +	reg = ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
+> +
+>  	/* High speed output drive strength configuration */
+> -	device_property_read_u8(&ulpi->dev, "ihstx", &val);
+> -	reg = val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
+> +	if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
+> +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK);
 
-Clear the dl_throttled flag before dropping back to the normal scheduling
-class to fix this issue.
+Any reason for using u8p_replace_bits and not u8_replace_bits? 
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
----
-This is the root cause and fix of the issue described at [1]. After working
-on other stuff for the last few months, I finally was able to circle back
-to this issue and gather the required data to pinpoint the failure mode.
+Also please drop the u8 casts above, they seem unnecessary here
 
-[1] https://lkml.org/lkml/2020/3/20/765
----
- kernel/sched/deadline.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+>  
+>  	/* High speed output impedance configuration */
+> -	device_property_read_u8(&ulpi->dev, "zhsdrv", &val);
+> -	reg |= val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT;
+> +	if (!device_property_read_u8(&ulpi->dev, "zhsdrv", &val))
+> +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK);
+>  
+>  	/* DP/DM swap control */
+> -	device_property_read_u8(&ulpi->dev, "datapolarity", &val);
+> -	reg |= val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT;
+> +	if (!device_property_read_u8(&ulpi->dev, "datapolarity", &val))
+> +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_DP_MASK);
+>  
+> -	if (reg) {
+> -		ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+> -		tusb->vendor_specific2 = reg;
+> -	}
+> +	ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+> +	tusb->vendor_specific2 = reg;
+>  
+>  	tusb->phy = ulpi_phy_create(ulpi, &phy_ops);
+>  	if (IS_ERR(tusb->phy))
+> 
+> base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+> -- 
+> 2.27.0
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 3862a28cd05d..c19c1883d695 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1527,12 +1527,15 @@ static void enqueue_task_dl(struct rq *rq, struct task_struct *p, int flags)
- 		pi_se = &pi_task->dl;
- 	} else if (!dl_prio(p->normal_prio)) {
- 		/*
--		 * Special case in which we have a !SCHED_DEADLINE task
--		 * that is going to be deboosted, but exceeds its
--		 * runtime while doing so. No point in replenishing
--		 * it, as it's going to return back to its original
--		 * scheduling class after this.
-+		 * Special case in which we have a !SCHED_DEADLINE task that is going
-+		 * to be deboosted, but exceeds its runtime while doing so. No point in
-+		 * replenishing it, as it's going to return back to its original
-+		 * scheduling class after this. If it has been throttled, we need to
-+		 * clear the flag, otherwise the task may wake up as throttled after
-+		 * being boosted again with no means to replenish the runtime and clear
-+		 * the throttle.
- 		 */
-+		p->dl.dl_throttled = 0;
- 		BUG_ON(!p->dl.dl_boosted || flags != ENQUEUE_REPLENISH);
- 		return;
- 	}
 -- 
-2.20.1
-
+~Vinod
