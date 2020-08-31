@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968F72580CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F272580C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgHaSTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51898 "EHLO mail.kernel.org"
+        id S1729722AbgHaSTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:19:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729003AbgHaSSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729535AbgHaSSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:18:10 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0EDE21707;
-        Mon, 31 Aug 2020 18:18:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15A0621527;
+        Mon, 31 Aug 2020 18:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598897889;
-        bh=fQELpKvWSu8GuxhvTeoiLr/q0jaGeeTwDu9BtK/GSzg=;
+        bh=hBoTCY3wufyykmsMzLAZBTAUqq6AkK7/XOgebGts+Z4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNSS9nUVIswCsEdXJEUfDdS1QbQSCUWvdXfxT6GhIoG084RaCAi0WeXxeJuaWHfFd
-         IEgMScbIl4CKyxLC6EEouOhck+rqKcz1wK1bVf+sZhqkXQ5DBqbva4Dc0i5Tjtcfmn
-         J6uxNXKOeuCXRUtApOJCSKfbJ770fb3CZSFUIzEk=
+        b=fn8Jyr95jYbB/aSvYoFkJhECOdjtkbUR67dWEJCAszFbK0qZlLKzT9LfNUc8EReF6
+         YFvYxhdkZls1FCZuEgh2G50j21JPhyl025W3jaKOdTKUwLwfYn4mUMNMfXtrhrLoVw
+         raPCgDFHA/FTiJ2s7zm8TP6FSPBPllieZFlEcD94=
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH kcsan 17/19] kcsan: Optimize debugfs stats counters
-Date:   Mon, 31 Aug 2020 11:18:03 -0700
-Message-Id: <20200831181805.1833-17-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Daniel Axtens <dja@axtens.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH kcsan 18/19] bitops, kcsan: Partially revert instrumentation for non-atomic bitops
+Date:   Mon, 31 Aug 2020 11:18:04 -0700
+Message-Id: <20200831181805.1833-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831181715.GA1530@paulmck-ThinkPad-P72>
 References: <20200831181715.GA1530@paulmck-ThinkPad-P72>
@@ -42,193 +46,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marco Elver <elver@google.com>
 
-Remove kcsan_counter_inc/dec() functions, as they perform no other
-logic, and are no longer needed.
+Previous to the change to distinguish read-write accesses, when
+CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC=y is set, KCSAN would consider
+the non-atomic bitops as atomic. We want to partially revert to this
+behaviour, but with one important distinction: report racing
+modifications, since lost bits due to non-atomicity are certainly
+possible.
 
-This avoids several calls in kcsan_setup_watchpoint() and
-kcsan_found_watchpoint(), as well as lets the compiler warn us about
-potential out-of-bounds accesses as the array's size is known at all
-usage sites at compile-time.
+Given the operations here only modify a single bit, assuming
+non-atomicity of the writer is sufficient may be reasonable for certain
+usage (and follows the permissible nature of the "assume plain writes
+atomic" rule). In other words:
 
+	1. We want non-atomic read-modify-write races to be reported;
+	   this is accomplished by kcsan_check_read(), where any
+	   concurrent write (atomic or not) will generate a report.
+
+	2. We do not want to report races with marked readers, but -do-
+	   want to report races with unmarked readers; this is
+	   accomplished by the instrument_write() ("assume atomic
+	   write" with Kconfig option set).
+
+With the above rules, when KCSAN_ASSUME_PLAIN_WRITES_ATOMIC is selected,
+it is hoped that KCSAN's reporting behaviour is better aligned with
+current expected permissible usage for non-atomic bitops.
+
+Note that, a side-effect of not telling KCSAN that the accesses are
+read-writes, is that this information is not displayed in the access
+summary in the report. It is, however, visible in inline-expanded stack
+traces. For now, it does not make sense to introduce yet another special
+case to KCSAN's runtime, only to cater to the case here.
+
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Daniel Axtens <dja@axtens.net>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: <linux-arch@vger.kernel.org>
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/kcsan/core.c    | 22 +++++++++++-----------
- kernel/kcsan/debugfs.c | 21 +++++----------------
- kernel/kcsan/kcsan.h   | 12 ++++++------
- kernel/kcsan/report.c  |  2 +-
- 4 files changed, 23 insertions(+), 34 deletions(-)
+ .../asm-generic/bitops/instrumented-non-atomic.h   | 30 +++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index b176400..8a1ff605 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -367,13 +367,13 @@ static noinline void kcsan_found_watchpoint(const volatile void *ptr,
- 		 * already removed the watchpoint, or another thread consumed
- 		 * the watchpoint before this thread.
- 		 */
--		kcsan_counter_inc(KCSAN_COUNTER_REPORT_RACES);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_REPORT_RACES]);
- 	}
- 
- 	if ((type & KCSAN_ACCESS_ASSERT) != 0)
--		kcsan_counter_inc(KCSAN_COUNTER_ASSERT_FAILURES);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_ASSERT_FAILURES]);
- 	else
--		kcsan_counter_inc(KCSAN_COUNTER_DATA_RACES);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_DATA_RACES]);
- 
- 	user_access_restore(flags);
+diff --git a/include/asm-generic/bitops/instrumented-non-atomic.h b/include/asm-generic/bitops/instrumented-non-atomic.h
+index f86234c..37363d5 100644
+--- a/include/asm-generic/bitops/instrumented-non-atomic.h
++++ b/include/asm-generic/bitops/instrumented-non-atomic.h
+@@ -58,6 +58,30 @@ static inline void __change_bit(long nr, volatile unsigned long *addr)
+ 	arch___change_bit(nr, addr);
  }
-@@ -414,7 +414,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 		goto out;
  
- 	if (!check_encodable((unsigned long)ptr, size)) {
--		kcsan_counter_inc(KCSAN_COUNTER_UNENCODABLE_ACCESSES);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_UNENCODABLE_ACCESSES]);
- 		goto out;
- 	}
- 
-@@ -434,12 +434,12 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 		 * with which should_watch() returns true should be tweaked so
- 		 * that this case happens very rarely.
- 		 */
--		kcsan_counter_inc(KCSAN_COUNTER_NO_CAPACITY);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_NO_CAPACITY]);
- 		goto out_unlock;
- 	}
- 
--	kcsan_counter_inc(KCSAN_COUNTER_SETUP_WATCHPOINTS);
--	kcsan_counter_inc(KCSAN_COUNTER_USED_WATCHPOINTS);
-+	atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_SETUP_WATCHPOINTS]);
-+	atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_USED_WATCHPOINTS]);
- 
- 	/*
- 	 * Read the current value, to later check and infer a race if the data
-@@ -541,16 +541,16 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 		 * increment this counter.
- 		 */
- 		if (is_assert && value_change == KCSAN_VALUE_CHANGE_TRUE)
--			kcsan_counter_inc(KCSAN_COUNTER_ASSERT_FAILURES);
-+			atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_ASSERT_FAILURES]);
- 
- 		kcsan_report(ptr, size, type, value_change, KCSAN_REPORT_RACE_SIGNAL,
- 			     watchpoint - watchpoints);
- 	} else if (value_change == KCSAN_VALUE_CHANGE_TRUE) {
- 		/* Inferring a race, since the value should not have changed. */
- 
--		kcsan_counter_inc(KCSAN_COUNTER_RACES_UNKNOWN_ORIGIN);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_RACES_UNKNOWN_ORIGIN]);
- 		if (is_assert)
--			kcsan_counter_inc(KCSAN_COUNTER_ASSERT_FAILURES);
-+			atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_ASSERT_FAILURES]);
- 
- 		if (IS_ENABLED(CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN) || is_assert)
- 			kcsan_report(ptr, size, type, KCSAN_VALUE_CHANGE_TRUE,
-@@ -563,7 +563,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 	 * reused after this point.
- 	 */
- 	remove_watchpoint(watchpoint);
--	kcsan_counter_dec(KCSAN_COUNTER_USED_WATCHPOINTS);
-+	atomic_long_dec(&kcsan_counters[KCSAN_COUNTER_USED_WATCHPOINTS]);
- out_unlock:
- 	if (!kcsan_interrupt_watcher)
- 		local_irq_restore(irq_flags);
-diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
-index 6c4914f..3c8093a 100644
---- a/kernel/kcsan/debugfs.c
-+++ b/kernel/kcsan/debugfs.c
-@@ -17,10 +17,7 @@
- 
- #include "kcsan.h"
- 
--/*
-- * Statistics counters.
-- */
--static atomic_long_t counters[KCSAN_COUNTER_COUNT];
-+atomic_long_t kcsan_counters[KCSAN_COUNTER_COUNT];
- static const char *const counter_names[] = {
- 	[KCSAN_COUNTER_USED_WATCHPOINTS]		= "used_watchpoints",
- 	[KCSAN_COUNTER_SETUP_WATCHPOINTS]		= "setup_watchpoints",
-@@ -53,16 +50,6 @@ static struct {
- };
- static DEFINE_SPINLOCK(report_filterlist_lock);
- 
--void kcsan_counter_inc(enum kcsan_counter_id id)
--{
--	atomic_long_inc(&counters[id]);
--}
--
--void kcsan_counter_dec(enum kcsan_counter_id id)
--{
--	atomic_long_dec(&counters[id]);
--}
--
- /*
-  * The microbenchmark allows benchmarking KCSAN core runtime only. To run
-  * multiple threads, pipe 'microbench=<iters>' from multiple tasks into the
-@@ -206,8 +193,10 @@ static int show_info(struct seq_file *file, void *v)
- 
- 	/* show stats */
- 	seq_printf(file, "enabled: %i\n", READ_ONCE(kcsan_enabled));
--	for (i = 0; i < KCSAN_COUNTER_COUNT; ++i)
--		seq_printf(file, "%s: %ld\n", counter_names[i], atomic_long_read(&counters[i]));
-+	for (i = 0; i < KCSAN_COUNTER_COUNT; ++i) {
-+		seq_printf(file, "%s: %ld\n", counter_names[i],
-+			   atomic_long_read(&kcsan_counters[i]));
++static inline void __instrument_read_write_bitop(long nr, volatile unsigned long *addr)
++{
++	if (IS_ENABLED(CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC)) {
++		/*
++		 * We treat non-atomic read-write bitops a little more special.
++		 * Given the operations here only modify a single bit, assuming
++		 * non-atomicity of the writer is sufficient may be reasonable
++		 * for certain usage (and follows the permissible nature of the
++		 * assume-plain-writes-atomic rule):
++		 * 1. report read-modify-write races -> check read;
++		 * 2. do not report races with marked readers, but do report
++		 *    races with unmarked readers -> check "atomic" write.
++		 */
++		kcsan_check_read(addr + BIT_WORD(nr), sizeof(long));
++		/*
++		 * Use generic write instrumentation, in case other sanitizers
++		 * or tools are enabled alongside KCSAN.
++		 */
++		instrument_write(addr + BIT_WORD(nr), sizeof(long));
++	} else {
++		instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
 +	}
- 
- 	/* show filter functions, and filter type */
- 	spin_lock_irqsave(&report_filterlist_lock, flags);
-diff --git a/kernel/kcsan/kcsan.h b/kernel/kcsan/kcsan.h
-index 2948001..8d4bf34 100644
---- a/kernel/kcsan/kcsan.h
-+++ b/kernel/kcsan/kcsan.h
-@@ -8,6 +8,7 @@
- #ifndef _KERNEL_KCSAN_KCSAN_H
- #define _KERNEL_KCSAN_KCSAN_H
- 
-+#include <linux/atomic.h>
- #include <linux/kcsan.h>
- #include <linux/sched.h>
- 
-@@ -34,6 +35,10 @@ void kcsan_restore_irqtrace(struct task_struct *task);
++}
++
+ /**
+  * __test_and_set_bit - Set a bit and return its old value
+  * @nr: Bit to set
+@@ -68,7 +92,7 @@ static inline void __change_bit(long nr, volatile unsigned long *addr)
   */
- void kcsan_debugfs_init(void);
+ static inline bool __test_and_set_bit(long nr, volatile unsigned long *addr)
+ {
+-	instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
++	__instrument_read_write_bitop(nr, addr);
+ 	return arch___test_and_set_bit(nr, addr);
+ }
  
-+/*
-+ * Statistics counters displayed via debugfs; should only be modified in
-+ * slow-paths.
-+ */
- enum kcsan_counter_id {
- 	/*
- 	 * Number of watchpoints currently in use.
-@@ -86,12 +91,7 @@ enum kcsan_counter_id {
+@@ -82,7 +106,7 @@ static inline bool __test_and_set_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline bool __test_and_clear_bit(long nr, volatile unsigned long *addr)
+ {
+-	instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
++	__instrument_read_write_bitop(nr, addr);
+ 	return arch___test_and_clear_bit(nr, addr);
+ }
  
- 	KCSAN_COUNTER_COUNT, /* number of counters */
- };
--
--/*
-- * Increment/decrement counter with given id; avoid calling these in fast-path.
-- */
--extern void kcsan_counter_inc(enum kcsan_counter_id id);
--extern void kcsan_counter_dec(enum kcsan_counter_id id);
-+extern atomic_long_t kcsan_counters[KCSAN_COUNTER_COUNT];
- 
- /*
-  * Returns true if data races in the function symbol that maps to func_addr
-diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index bf1d594..d3bf87e 100644
---- a/kernel/kcsan/report.c
-+++ b/kernel/kcsan/report.c
-@@ -559,7 +559,7 @@ static bool prepare_report_consumer(unsigned long *flags,
- 		 * If the actual accesses to not match, this was a false
- 		 * positive due to watchpoint encoding.
- 		 */
--		kcsan_counter_inc(KCSAN_COUNTER_ENCODING_FALSE_POSITIVES);
-+		atomic_long_inc(&kcsan_counters[KCSAN_COUNTER_ENCODING_FALSE_POSITIVES]);
- 		goto discard;
- 	}
+@@ -96,7 +120,7 @@ static inline bool __test_and_clear_bit(long nr, volatile unsigned long *addr)
+  */
+ static inline bool __test_and_change_bit(long nr, volatile unsigned long *addr)
+ {
+-	instrument_read_write(addr + BIT_WORD(nr), sizeof(long));
++	__instrument_read_write_bitop(nr, addr);
+ 	return arch___test_and_change_bit(nr, addr);
+ }
  
 -- 
 2.9.5
