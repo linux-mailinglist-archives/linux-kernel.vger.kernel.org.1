@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2736D2580CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E562580D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729760AbgHaSTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:19:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51840 "EHLO mail.kernel.org"
+        id S1729562AbgHaST4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:19:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729503AbgHaSSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:18:09 -0400
+        id S1729508AbgHaSSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:18:08 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D1FC2166E;
+        by mail.kernel.org (Postfix) with ESMTPSA id 92A81216C4;
         Mon, 31 Aug 2020 18:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598897888;
-        bh=67qnnSgzEc/n95ikPaFZAfAOBG8sPrR44Ixh1WTkcJU=;
+        bh=/nk8YeCMjNJjnS7CPKyiXGuR1+ViXtq3As9PVWEq2iA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DpLApWVQO/skhvpq19A3b7rkWpsBWbaya3CcrV9odOs547a+52DjVe7/UlmmGf6td
-         BtkDQLX8fXxu90I5uOYEI/oe4qfbzX4tfL+x3YQ6r3167l+/buHtQwzZzqEYPQNb83
-         MvbKnBUJWKVqmP/ZYaHYJ1WFrGrxu+MzoLf12bko=
+        b=nJhWq4AE2njLfb8NxwnF6sJXDxwmbVo20kr1BMrtvAMY3yIM1cTRe4VECRo8rpOIj
+         7JxKammAUU7qA2pyK39nzLzMcMwDpfRBN+I48tmdr9/tfpU/HLjHBArBWwrwfYUgpv
+         D4Q92aEhyYStAAuZfi2Ve87TxQmSFsyCIv4e5Nis=
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH kcsan 14/19] kcsan: Remove debugfs test command
-Date:   Mon, 31 Aug 2020 11:18:00 -0700
-Message-Id: <20200831181805.1833-14-paulmck@kernel.org>
+Subject: [PATCH kcsan 15/19] kcsan: Show message if enabled early
+Date:   Mon, 31 Aug 2020 11:18:01 -0700
+Message-Id: <20200831181805.1833-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831181715.GA1530@paulmck-ThinkPad-P72>
 References: <20200831181715.GA1530@paulmck-ThinkPad-P72>
@@ -42,101 +42,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marco Elver <elver@google.com>
 
-Remove the debugfs test command, as it is no longer needed now that we
-have the KUnit+Torture based kcsan-test module. This is to avoid
-confusion around how KCSAN should be tested, as only the kcsan-test
-module is maintained.
+Show a message in the kernel log if KCSAN was enabled early.
 
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/kcsan/debugfs.c | 66 --------------------------------------------------
- 1 file changed, 66 deletions(-)
+ kernel/kcsan/core.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/kcsan/debugfs.c b/kernel/kcsan/debugfs.c
-index 116bdd8..de1da1b01 100644
---- a/kernel/kcsan/debugfs.c
-+++ b/kernel/kcsan/debugfs.c
-@@ -98,66 +98,6 @@ static noinline void microbenchmark(unsigned long iters)
- 	current->kcsan_ctx = ctx_save;
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 99e5044..b176400 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -1,5 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#define pr_fmt(fmt) "kcsan: " fmt
++
+ #include <linux/atomic.h>
+ #include <linux/bug.h>
+ #include <linux/delay.h>
+@@ -463,7 +465,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 
+ 	if (IS_ENABLED(CONFIG_KCSAN_DEBUG)) {
+ 		kcsan_disable_current();
+-		pr_err("KCSAN: watching %s, size: %zu, addr: %px [slot: %d, encoded: %lx]\n",
++		pr_err("watching %s, size: %zu, addr: %px [slot: %d, encoded: %lx]\n",
+ 		       is_write ? "write" : "read", size, ptr,
+ 		       watchpoint_slot((unsigned long)ptr),
+ 		       encode_watchpoint((unsigned long)ptr, size, is_write));
+@@ -623,8 +625,10 @@ void __init kcsan_init(void)
+ 	 * We are in the init task, and no other tasks should be running;
+ 	 * WRITE_ONCE without memory barrier is sufficient.
+ 	 */
+-	if (kcsan_early_enable)
++	if (kcsan_early_enable) {
++		pr_info("enabled early\n");
+ 		WRITE_ONCE(kcsan_enabled, true);
++	}
  }
  
--/*
-- * Simple test to create conflicting accesses. Write 'test=<iters>' to KCSAN's
-- * debugfs file from multiple tasks to generate real conflicts and show reports.
-- */
--static long test_dummy;
--static long test_flags;
--static long test_scoped;
--static noinline void test_thread(unsigned long iters)
--{
--	const long CHANGE_BITS = 0xff00ff00ff00ff00L;
--	const struct kcsan_ctx ctx_save = current->kcsan_ctx;
--	cycles_t cycles;
--
--	/* We may have been called from an atomic region; reset context. */
--	memset(&current->kcsan_ctx, 0, sizeof(current->kcsan_ctx));
--
--	pr_info("KCSAN: %s begin | iters: %lu\n", __func__, iters);
--	pr_info("test_dummy@%px, test_flags@%px, test_scoped@%px,\n",
--		&test_dummy, &test_flags, &test_scoped);
--
--	cycles = get_cycles();
--	while (iters--) {
--		/* These all should generate reports. */
--		__kcsan_check_read(&test_dummy, sizeof(test_dummy));
--		ASSERT_EXCLUSIVE_WRITER(test_dummy);
--		ASSERT_EXCLUSIVE_ACCESS(test_dummy);
--
--		ASSERT_EXCLUSIVE_BITS(test_flags, ~CHANGE_BITS); /* no report */
--		__kcsan_check_read(&test_flags, sizeof(test_flags)); /* no report */
--
--		ASSERT_EXCLUSIVE_BITS(test_flags, CHANGE_BITS); /* report */
--		__kcsan_check_read(&test_flags, sizeof(test_flags)); /* no report */
--
--		/* not actually instrumented */
--		WRITE_ONCE(test_dummy, iters);  /* to observe value-change */
--		__kcsan_check_write(&test_dummy, sizeof(test_dummy));
--
--		test_flags ^= CHANGE_BITS; /* generate value-change */
--		__kcsan_check_write(&test_flags, sizeof(test_flags));
--
--		BUG_ON(current->kcsan_ctx.scoped_accesses.prev);
--		{
--			/* Should generate reports anywhere in this block. */
--			ASSERT_EXCLUSIVE_WRITER_SCOPED(test_scoped);
--			ASSERT_EXCLUSIVE_ACCESS_SCOPED(test_scoped);
--			BUG_ON(!current->kcsan_ctx.scoped_accesses.prev);
--			/* Unrelated accesses. */
--			__kcsan_check_access(&cycles, sizeof(cycles), 0);
--			__kcsan_check_access(&cycles, sizeof(cycles), KCSAN_ACCESS_ATOMIC);
--		}
--		BUG_ON(current->kcsan_ctx.scoped_accesses.prev);
--	}
--	cycles = get_cycles() - cycles;
--
--	pr_info("KCSAN: %s end   | cycles: %llu\n", __func__, cycles);
--
--	/* restore context */
--	current->kcsan_ctx = ctx_save;
--}
--
- static int cmp_filterlist_addrs(const void *rhs, const void *lhs)
- {
- 	const unsigned long a = *(const unsigned long *)rhs;
-@@ -306,12 +246,6 @@ debugfs_write(struct file *file, const char __user *buf, size_t count, loff_t *o
- 		if (kstrtoul(&arg[strlen("microbench=")], 0, &iters))
- 			return -EINVAL;
- 		microbenchmark(iters);
--	} else if (str_has_prefix(arg, "test=")) {
--		unsigned long iters;
--
--		if (kstrtoul(&arg[strlen("test=")], 0, &iters))
--			return -EINVAL;
--		test_thread(iters);
- 	} else if (!strcmp(arg, "whitelist")) {
- 		set_report_filterlist_whitelist(true);
- 	} else if (!strcmp(arg, "blacklist")) {
+ /* === Exported interface =================================================== */
 -- 
 2.9.5
 
