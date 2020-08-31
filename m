@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F058257167
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5149525716A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgHaBLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 21:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726630AbgHaBLC (ORCPT
+        id S1727051AbgHaBLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 21:11:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57770 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgHaBLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 21:11:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598FEC061236
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 18:11:02 -0700 (PDT)
+        Sun, 30 Aug 2020 21:11:03 -0400
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598836260;
+        s=2020; t=1598836261;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ScDz0STeLinZrRP+O3Ca1k2Gl+P4+CxfAeZbgZtYfY=;
-        b=TAHteheXWI+JAl1TS2aiXTkZhT0G8XD8YYqhYmrLrl6jmnefdnrkjYDXnqnGFkeYwGNF+o
-        dIlLMQrmmQUtbrTjwh+1SSibays7ppL1mFL8ANMjmMjhiaX2EbBBg6e08oHg5qoPGw2zNZ
-        I7pbco2iyBX7WnxFTCEWVmnx+C2xoVdKG39hezShsaFRBem1jsfAJWPDaoxKKRk8K489Hw
-        A+lBMZnUnNUm8jGj5wxuQBGHs4LVjdsNOj7kjbXGCoU9JW9CC+51yeUv9IZR7uWOUgIg3L
-        OZ+z0XUh///WbGpQr8XNRG5Vo8RFs9xRmGPEeDE55sb5MREoqcPFFL1TCaJAfQ==
+        bh=0z0EV3OyzsvpcpcaBUSJGgPwnnJ4KzYgkOsTiLxoQMo=;
+        b=Ow6EptzTrKwqHrsYJrZA9o0HeMwJJ+XZerEzbOh7tCbZfoBcmPBJJ9hbMDfZ50AQPfWmla
+        FNqkQSKR7KM9uDhgDH3x/YEw4woRKrK+NWkeXWePUiwKEA2zdIUqfb2/589meCzB7lL3uX
+        WcSXfkwr24IjExM1SX1txiCzs1Th4pUJTqcL/XhY4IapqTWcZwni8Uh9xgb1nZRIfOhOHS
+        SM+/gewkLBE1q45wS8bD1qP+SkyvFs9yB4jvrKszd3jXne1jbmEFKiPUJ4JM6BRAjRSZk4
+        NMt0X+TYrl/wFVsnBk1oUxnF4v4lzIL4Qo7t32P6YTxqKxvtRP+yEJo3FWyHPw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598836260;
+        s=2020e; t=1598836261;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ScDz0STeLinZrRP+O3Ca1k2Gl+P4+CxfAeZbgZtYfY=;
-        b=ZDkNPBna4V5+YGXUUElIddPMKkUhO2WkpZSmyQAPp9Jw3Knh60ucPN3biDT5tEWHQII4oF
-        tZCZQQXyV8a5yTBA==
+        bh=0z0EV3OyzsvpcpcaBUSJGgPwnnJ4KzYgkOsTiLxoQMo=;
+        b=JUAmwanjx5WCMf2qz1mKgA+Tj0EeTNChRbtr8jPdh/retT57RnFMzeYZ+bbUyDLjEOBp7L
+        gEIayj82CWtPUfCQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
@@ -48,9 +45,9 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Andrea Parri <parri.andrea@gmail.com>,
         Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH next v3 2/8] printk: ringbuffer: change representation of reusable
-Date:   Mon, 31 Aug 2020 03:16:52 +0206
-Message-Id: <20200831011058.6286-3-john.ogness@linutronix.de>
+Subject: [PATCH next v3 3/8] printk: ringbuffer: relocate get_data()
+Date:   Mon, 31 Aug 2020 03:16:53 +0206
+Message-Id: <20200831011058.6286-4-john.ogness@linutronix.de>
 In-Reply-To: <20200831011058.6286-1-john.ogness@linutronix.de>
 References: <20200831011058.6286-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -60,59 +57,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reusable queried state is represented by the combined flags:
-
-    DESC_COMMIT_MASK | DESC_REUSE_MASK
-
-There is no reason for the DESC_COMMIT_MASK to be part of that
-representation. In particular, this will add confusion when more
-state flags are available.
-
-Change the representation of the reusable queried state to just
-the DESC_REUSE_MASK flag.
+Move the internal get_data() function as-is above prb_reserve() so
+that a later change can make use of the static function.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/printk_ringbuffer.c | 4 ++--
- kernel/printk/printk_ringbuffer.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ kernel/printk/printk_ringbuffer.c | 116 +++++++++++++++---------------
+ 1 file changed, 58 insertions(+), 58 deletions(-)
 
 diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index 76248c82d557..d339ff7647da 100644
+index d339ff7647da..86af38c2cf77 100644
 --- a/kernel/printk/printk_ringbuffer.c
 +++ b/kernel/printk/printk_ringbuffer.c
-@@ -463,7 +463,7 @@ static void desc_make_reusable(struct prb_desc_ring *desc_ring,
- 			       unsigned long id)
- {
- 	unsigned long val_committed = id | DESC_COMMIT_MASK;
--	unsigned long val_reusable = val_committed | DESC_REUSE_MASK;
-+	unsigned long val_reusable = id | DESC_REUSE_MASK;
- 	struct prb_desc *desc = to_desc(desc_ring, id);
- 	atomic_long_t *state_var = &desc->state_var;
+@@ -1038,6 +1038,64 @@ static unsigned int space_used(struct prb_data_ring *data_ring,
+ 		DATA_SIZE(data_ring) - DATA_INDEX(data_ring, blk_lpos->begin));
+ }
  
-@@ -899,7 +899,7 @@ static bool desc_reserve(struct printk_ringbuffer *rb, unsigned long *id_out)
- 	 */
- 	prev_state_val = atomic_long_read(&desc->state_var); /* LMM(desc_reserve:E) */
- 	if (prev_state_val &&
--	    prev_state_val != (id_prev_wrap | DESC_COMMIT_MASK | DESC_REUSE_MASK)) {
-+	    get_desc_state(id_prev_wrap, prev_state_val) != desc_reusable) {
- 		WARN_ON_ONCE(1);
- 		return false;
- 	}
-diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-index dcda5e9b4676..96ef997d7bd6 100644
---- a/kernel/printk/printk_ringbuffer.h
-+++ b/kernel/printk/printk_ringbuffer.h
-@@ -213,7 +213,7 @@ struct prb_reserved_entry {
-  */
- #define BLK0_LPOS(sz_bits)	(-(_DATA_SIZE(sz_bits)))
- #define DESC0_ID(ct_bits)	DESC_ID(-(_DESCS_COUNT(ct_bits) + 1))
--#define DESC0_SV(ct_bits)	(DESC_COMMIT_MASK | DESC_REUSE_MASK | DESC0_ID(ct_bits))
-+#define DESC0_SV(ct_bits)	(DESC_REUSE_MASK | DESC0_ID(ct_bits))
++/*
++ * Given @blk_lpos, return a pointer to the writer data from the data block
++ * and calculate the size of the data part. A NULL pointer is returned if
++ * @blk_lpos specifies values that could never be legal.
++ *
++ * This function (used by readers) performs strict validation on the lpos
++ * values to possibly detect bugs in the writer code. A WARN_ON_ONCE() is
++ * triggered if an internal error is detected.
++ */
++static const char *get_data(struct prb_data_ring *data_ring,
++			    struct prb_data_blk_lpos *blk_lpos,
++			    unsigned int *data_size)
++{
++	struct prb_data_block *db;
++
++	/* Data-less data block description. */
++	if (LPOS_DATALESS(blk_lpos->begin) && LPOS_DATALESS(blk_lpos->next)) {
++		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
++			*data_size = 0;
++			return "";
++		}
++		return NULL;
++	}
++
++	/* Regular data block: @begin less than @next and in same wrap. */
++	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next) &&
++	    blk_lpos->begin < blk_lpos->next) {
++		db = to_block(data_ring, blk_lpos->begin);
++		*data_size = blk_lpos->next - blk_lpos->begin;
++
++	/* Wrapping data block: @begin is one wrap behind @next. */
++	} else if (DATA_WRAPS(data_ring, blk_lpos->begin + DATA_SIZE(data_ring)) ==
++		   DATA_WRAPS(data_ring, blk_lpos->next)) {
++		db = to_block(data_ring, 0);
++		*data_size = DATA_INDEX(data_ring, blk_lpos->next);
++
++	/* Illegal block description. */
++	} else {
++		WARN_ON_ONCE(1);
++		return NULL;
++	}
++
++	/* A valid data block will always be aligned to the ID size. */
++	if (WARN_ON_ONCE(blk_lpos->begin != ALIGN(blk_lpos->begin, sizeof(db->id))) ||
++	    WARN_ON_ONCE(blk_lpos->next != ALIGN(blk_lpos->next, sizeof(db->id)))) {
++		return NULL;
++	}
++
++	/* A valid data block will always have at least an ID. */
++	if (WARN_ON_ONCE(*data_size < sizeof(db->id)))
++		return NULL;
++
++	/* Subtract block ID space from size to reflect data size. */
++	*data_size -= sizeof(db->id);
++
++	return &db->data[0];
++}
++
+ /**
+  * prb_reserve() - Reserve space in the ringbuffer.
+  *
+@@ -1192,64 +1250,6 @@ void prb_commit(struct prb_reserved_entry *e)
+ 	local_irq_restore(e->irqflags);
+ }
  
+-/*
+- * Given @blk_lpos, return a pointer to the writer data from the data block
+- * and calculate the size of the data part. A NULL pointer is returned if
+- * @blk_lpos specifies values that could never be legal.
+- *
+- * This function (used by readers) performs strict validation on the lpos
+- * values to possibly detect bugs in the writer code. A WARN_ON_ONCE() is
+- * triggered if an internal error is detected.
+- */
+-static const char *get_data(struct prb_data_ring *data_ring,
+-			    struct prb_data_blk_lpos *blk_lpos,
+-			    unsigned int *data_size)
+-{
+-	struct prb_data_block *db;
+-
+-	/* Data-less data block description. */
+-	if (LPOS_DATALESS(blk_lpos->begin) && LPOS_DATALESS(blk_lpos->next)) {
+-		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
+-			*data_size = 0;
+-			return "";
+-		}
+-		return NULL;
+-	}
+-
+-	/* Regular data block: @begin less than @next and in same wrap. */
+-	if (DATA_WRAPS(data_ring, blk_lpos->begin) == DATA_WRAPS(data_ring, blk_lpos->next) &&
+-	    blk_lpos->begin < blk_lpos->next) {
+-		db = to_block(data_ring, blk_lpos->begin);
+-		*data_size = blk_lpos->next - blk_lpos->begin;
+-
+-	/* Wrapping data block: @begin is one wrap behind @next. */
+-	} else if (DATA_WRAPS(data_ring, blk_lpos->begin + DATA_SIZE(data_ring)) ==
+-		   DATA_WRAPS(data_ring, blk_lpos->next)) {
+-		db = to_block(data_ring, 0);
+-		*data_size = DATA_INDEX(data_ring, blk_lpos->next);
+-
+-	/* Illegal block description. */
+-	} else {
+-		WARN_ON_ONCE(1);
+-		return NULL;
+-	}
+-
+-	/* A valid data block will always be aligned to the ID size. */
+-	if (WARN_ON_ONCE(blk_lpos->begin != ALIGN(blk_lpos->begin, sizeof(db->id))) ||
+-	    WARN_ON_ONCE(blk_lpos->next != ALIGN(blk_lpos->next, sizeof(db->id)))) {
+-		return NULL;
+-	}
+-
+-	/* A valid data block will always have at least an ID. */
+-	if (WARN_ON_ONCE(*data_size < sizeof(db->id)))
+-		return NULL;
+-
+-	/* Subtract block ID space from size to reflect data size. */
+-	*data_size -= sizeof(db->id);
+-
+-	return &db->data[0];
+-}
+-
  /*
-  * Define a ringbuffer with an external text data buffer. The same as
+  * Count the number of lines in provided text. All text has at least 1 line
+  * (even if @text_size is 0). Each '\n' processed is counted as an additional
 -- 
 2.20.1
 
