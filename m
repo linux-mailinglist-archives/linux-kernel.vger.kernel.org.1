@@ -2,212 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2041A258435
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 00:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB6A258440
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 00:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgHaWty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 18:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S1726928AbgHaW6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 18:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725814AbgHaWtv (ORCPT
+        with ESMTP id S1725993AbgHaW6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 18:49:51 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F07C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 15:49:50 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id b1so7129466qto.17
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 15:49:50 -0700 (PDT)
+        Mon, 31 Aug 2020 18:58:19 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD838C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 15:58:17 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id o21so1507133pgj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 15:58:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=lsejbdV/YJeNxRqBDrAM85EBWsJ6w6R31JBoDDcAVKw=;
-        b=LUekSZnLLaT2oDK9/2Rbz8Jd6nMzsh3bFAVy7rsATTCt3j5BD7m3SK8NzR4k8TzPg4
-         A4QruQNA71TYblk3RMNxQrbX1EyX0iEbH9KQ6Gjz1h6RvPKK3nJHba2XFy8DMSHnX3mV
-         66iLC9nQBKiCIQzJr0ctfzfUzagCWS0VQ2wASUhZnTvlZpL2hSaxUVgOl+gbFll99RBM
-         0zIqR2nkQn63dJKzdcf7WI97Ty1g33U5wrnSAaMy3T3W7vuayV6gDN1SiaoewGHzhJRA
-         I/7juz/2TsWGACUEqPTXFbh7u+AOaD41jpRBClIP3yJhvO5eknDeNS3lsrBwLXTXnaPD
-         FsFA==
+        bh=dsYKPfmGDuLgi4rLY9Txs6DfXKxKjZ0/Iy08qZwuqMQ=;
+        b=mX9UCOSWeC/m6bFIdhdaRP6lgUF09enGS63Jt0oOgcS/JXTnCJ7XI2ZO741GWoKf9/
+         nob3CIcfYoeJCjcwhE7WIX6BDVVESi9Wwl7wQ/oDLZgry++vfM2IAPmcECJbwfh08p0+
+         nQfC0YL/wlSKA0qCegNRYuu7DqR/FrdQFbA5S17LX6+TLiBbAU/r6WRo8JMIxIfNmCYl
+         nvRgUNF7Mauq1W1VVND7KQ0ILSaTMO+N81tY4PQLh6i/NqI/nMlqHAp8hccuUvZpN6KV
+         0Ld7fTtBeYOHcZxazELGUoUFNZVwokTqwjeWgDFSg9o+Sk1VBIH+sa05p+0hYyTxAmVi
+         QX6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
          :to:cc;
-        bh=lsejbdV/YJeNxRqBDrAM85EBWsJ6w6R31JBoDDcAVKw=;
-        b=aBqMgYjiG6Rht2vHWnQDxQhBaHmFpy2CzcB73eOe24VCXhFbjD/ywNGEH6DaG3q1Wb
-         a21FMSqSQBzkMBK2mGnjaI/9oe9Dy3r3Sm30nIEwv06O9VrJcx1AUGpnAmZn+GMd2tKV
-         Ht+roh1BCPcmSrYa3E1qcS8doy2S4/YJEWOlTOFHGfY0Ztwi5DaaAwNuPeYDXYWdTAEJ
-         8NNAD4Br70g3CXXBmOigJDLPoOxmIV6qSLbNZaux/jKET6QEDJui8RXtws7R75/iwyGz
-         EhYLArkMRYeoUF0UoYIW7uJRD5KpPeXE5V+Y6GAIHgFy3yoEX9Dv0/Sl0l0ECmGDoS2h
-         1FYg==
-X-Gm-Message-State: AOAM530bTqjZob82tzDNsYOoq8Qh+QjHXM6p7wuU1lHfCrP/to17Qsv3
-        W6q4p0x9lQG5YWWYxM/0TbFhm1q+
-X-Google-Smtp-Source: ABdhPJx2tAjaaQbp7takpRRLRqxo3GJGDbS49dWqYyIfWseIXB4WdFQfYMpIZlsnvs4m4RnCiQN/pefi
-X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:6:14:1ea0:b8ff:fe76:1e48])
- (user=brho job=sendgmr) by 2002:a0c:ea34:: with SMTP id t20mr3387381qvp.233.1598914189559;
- Mon, 31 Aug 2020 15:49:49 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 18:49:33 -0400
-Message-Id: <20200831224933.2129891-1-brho@google.com>
+        bh=dsYKPfmGDuLgi4rLY9Txs6DfXKxKjZ0/Iy08qZwuqMQ=;
+        b=t6m77CFXCCzEgyncWI17qdkaJwhL+bcRpZkNHce7H2aqA+0zwqofqYUxW8NZJquXZ0
+         bDwn/PyPHWZqJtj0pZd+ttXr9hw5x3HmJRiTnvWiM5Cpi3Nio/6F1MZZdvvXkdxn8REv
+         hrw5LjRXUVj1eIvG6j+HEEKMGbPddvMG1iBcIIxnNwrefbepCbgrmZ3la6fzUuF5qqjT
+         udauZfQKQ4yiCyy9YXIZWQhZHpAybIbrG3ZHM3JqdDVVko3Li/5iq0ZGxNlt/8k4Qe2B
+         cdzZ5Wdk1ssn94SZmEGn5QSMYf6YGcNS6Dd/mUBnr/T2bFQENPNtSFbLX2FFvSSnHXlq
+         9lAw==
+X-Gm-Message-State: AOAM532UFUS4O9xXq4lKiwMuc5HExj4J3R/AXip5FDcle4g10KjiWyUr
+        q+9XUe75Tv3Z1X2j9zN7jg7p8o/C
+X-Google-Smtp-Source: ABdhPJytFL5pYYtfkSFmqhMvvjT4ZHmveL3BJ/4vohDUIi0NMHvGUFMk/7jkPFb7d3DOGl5yRD9HJiP6
+X-Received: from posk.svl.corp.google.com ([2620:15c:2cd:202:7220:84ff:fe09:7598])
+ (user=posk job=sendgmr) by 2002:a17:90a:ca17:: with SMTP id
+ x23mr1360484pjt.96.1598914695502; Mon, 31 Aug 2020 15:58:15 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 15:58:09 -0700
+Message-Id: <20200831225810.2287294-1-posk@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [RFC PATCH] libbpf: Support setting map max_entries at runtime
-From:   Barret Rhoden <brho@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2 v6] rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+From:   Peter Oskolkov <posk@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Peter Oskolkov <posk@posk.io>, Peter Oskolkov <posk@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The max_entries for a BPF map may depend on runtime parameters.
-Currently, we need to know the maximum value at BPF compile time.  For
-instance, if you want an array map with NR_CPUS entries, you would hard
-code your architecture's largest value for CONFIG_NR_CPUS.  This wastes
-memory at runtime.
+This patchset is based on Google-internal RSEQ
+work done by Paul Turner and Andrew Hunter.
 
-For the NR_CPU case, one could use a PERCPU map type, but those maps are
-limited in functionality.  For instance, BPF programs can only access
-their own PERCPU part of the map, and the maps are not mmappable.
+When working with per-CPU RSEQ-based memory allocations,
+it is sometimes important to make sure that a global
+memory location is no longer accessed from RSEQ critical
+sections. For example, there can be two per-CPU lists,
+one is "active" and accessed per-CPU, while another one
+is inactive and worked on asynchronously "off CPU" (e.g.
+garbage collection is performed). Then at some point
+the two lists are swapped, and a fast RCU-like mechanism
+is required to make sure that the previously active
+list is no longer accessed.
 
-This commit allows the use of sentinel values in BPF map definitions,
-which libbpf patches at runtime.
+This patch introduces such a mechanism: in short,
+membarrier() syscall issues an IPI to a CPU, restarting
+a potentially active RSEQ critical section on the CPU.
 
-For starters, we support NUM_POSSIBLE_CPUS: e.g.
+v1->v2:
+  - removed the ability to IPI all CPUs in a single sycall;
+  - use task->mm rather than task->group_leader to identify
+    tasks belonging to the same process.
+v2->v3:
+  - re-added the ability to IPI all CPUs in a single syscall;
+  - integrated with membarrier_private_expedited() to
+    make sure only CPUs running tasks with the same mm as
+    the current task are interrupted;
+  - also added MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ;
+  - flags in membarrier_private_expedited are never actually
+    bit flags but always distinct values (i.e. never two flags
+    are combined), so I modified bit testing to full equation
+    comparison for simplicity (otherwise the code needs to
+    work when several bits are set, for example).
+v3->v4:
+  - added the third parameter to membarrier syscall: @cpu_id:
+    if @flags == MEMBARRIER_CMD_FLAG_CPU, then @cpu_id indicates
+    the cpu on which RSEQ CS should be restarted.
+v4->v5:
+  - added @cpu_id parameter to sys_membarrier in syscalls.h.
+v5->v6:
+  - made membarrier_private_expedited more efficient in a
+    single-cpu case;
+  - a couple of other minor refactorings.
 
-struct {
-        __uint(type, BPF_MAP_TYPE_ARRAY);
-        __uint(max_entries, NUM_POSSIBLE_CPUS);
-        __type(key, u32);
-        __type(value, struct cpu_data);
-} cpu_blobs SEC(".maps");
+The second patch in the patchset adds a selftest
+of this feature.
 
-This can be extended to other runtime dependent values, such as the
-maximum number of threads (/proc/sys/kernel/threads-max).
-
-Signed-off-by: Barret Rhoden <brho@google.com>
+Signed-off-by: Peter Oskolkov <posk@google.com>
 ---
- tools/lib/bpf/bpf_helpers.h |  4 ++++
- tools/lib/bpf/libbpf.c      | 40 ++++++++++++++++++++++++++++++-------
- tools/lib/bpf/libbpf.h      |  4 ++++
- 3 files changed, 41 insertions(+), 7 deletions(-)
+ include/linux/sched/mm.h        |   3 +
+ include/linux/syscalls.h        |   2 +-
+ include/uapi/linux/membarrier.h |  29 +++++++
+ kernel/sched/membarrier.c       | 140 +++++++++++++++++++++++++-------
+ 4 files changed, 143 insertions(+), 31 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index f67dce2af802..38b431d85ac6 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -74,6 +74,10 @@ enum libbpf_tristate {
- 	TRI_MODULE = 2,
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index f889e332912f..15bfb06f2884 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -348,10 +348,13 @@ enum {
+ 	MEMBARRIER_STATE_GLOBAL_EXPEDITED			= (1U << 3),
+ 	MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY	= (1U << 4),
+ 	MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE		= (1U << 5),
++	MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY		= (1U << 6),
++	MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ			= (1U << 7),
  };
  
-+enum libbpf_max_entries {
-+	NUM_POSSIBLE_CPUS = (unsigned int)-1,
+ enum {
+ 	MEMBARRIER_FLAG_SYNC_CORE	= (1U << 0),
++	MEMBARRIER_FLAG_RSEQ		= (1U << 1),
+ };
+ 
+ #ifdef CONFIG_ARCH_HAS_MEMBARRIER_CALLBACKS
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 75ac7f8ae93c..466c993e52bf 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -974,7 +974,7 @@ asmlinkage long sys_execveat(int dfd, const char __user *filename,
+ 			const char __user *const __user *argv,
+ 			const char __user *const __user *envp, int flags);
+ asmlinkage long sys_userfaultfd(int flags);
+-asmlinkage long sys_membarrier(int cmd, int flags);
++asmlinkage long sys_membarrier(int cmd, int flags, int cpu_id);
+ asmlinkage long sys_mlock2(unsigned long start, size_t len, int flags);
+ asmlinkage long sys_copy_file_range(int fd_in, loff_t __user *off_in,
+ 				    int fd_out, loff_t __user *off_out,
+diff --git a/include/uapi/linux/membarrier.h b/include/uapi/linux/membarrier.h
+index 5891d7614c8c..98c2b0e7c0d8 100644
+--- a/include/uapi/linux/membarrier.h
++++ b/include/uapi/linux/membarrier.h
+@@ -114,6 +114,29 @@
+  *                          If this command is not implemented by an
+  *                          architecture, -EINVAL is returned.
+  *                          Returns 0 on success.
++ * @MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
++ *                          In addition to provide memory ordering
++ *                          guarantees described in
++ *                          MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE,
++ *                          ensure the caller thread, upon return from
++ *                          system call, that all its running thread
++ *                          siblings have any currently running rseq
++ *                          critical sections restarted if @flags
++ *                          parameter is 0; if @flags parameter is
++ *                          MEMBARRIER_CMD_FLAG_CPU,
++ *                          then this operation is performed only
++ *                          on CPU indicated by @cpu_id. If this command is
++ *                          not implemented by an architecture, -EINVAL
++ *                          is returned. A process needs to register its
++ *                          intent to use the private expedited rseq
++ *                          command prior to using it, otherwise
++ *                          this command returns -EPERM.
++ * @MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
++ *                          Register the process intent to use
++ *                          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ.
++ *                          If this command is not implemented by an
++ *                          architecture, -EINVAL is returned.
++ *                          Returns 0 on success.
+  * @MEMBARRIER_CMD_SHARED:
+  *                          Alias to MEMBARRIER_CMD_GLOBAL. Provided for
+  *                          header backward compatibility.
+@@ -131,9 +154,15 @@ enum membarrier_cmd {
+ 	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED		= (1 << 4),
+ 	MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE		= (1 << 5),
+ 	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE	= (1 << 6),
++	MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ			= (1 << 7),
++	MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ		= (1 << 8),
+ 
+ 	/* Alias for header backward compatibility. */
+ 	MEMBARRIER_CMD_SHARED			= MEMBARRIER_CMD_GLOBAL,
+ };
+ 
++enum membarrier_cmd_flag {
++	MEMBARRIER_CMD_FLAG_CPU		= (1 << 0),
 +};
 +
- #define __kconfig __attribute__((section(".kconfig")))
- 
+ #endif /* _UAPI_LINUX_MEMBARRIER_H */
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index 168479a7d61b..e32e9476ccf3 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -18,6 +18,14 @@
+ #define MEMBARRIER_PRIVATE_EXPEDITED_SYNC_CORE_BITMASK	0
  #endif
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 11e4725b8b1c..7d0e9792e015 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1868,36 +1868,55 @@ resolve_func_ptr(const struct btf *btf, __u32 id, __u32 *res_id)
-  * encodes `type => BPF_MAP_TYPE_ARRAY` key/value pair completely using BTF
-  * type definition, while using only sizeof(void *) space in ELF data section.
-  */
--static bool get_map_field_int(const char *map_name, const struct btf *btf,
--			      const struct btf_member *m, __u32 *res)
-+static struct btf_array *get_map_field_arr_info(const char *map_name,
-+						const struct btf *btf,
-+						const struct btf_member *m)
- {
- 	const struct btf_type *t = skip_mods_and_typedefs(btf, m->type, NULL);
- 	const char *name = btf__name_by_offset(btf, m->name_off);
--	const struct btf_array *arr_info;
- 	const struct btf_type *arr_t;
  
- 	if (!btf_is_ptr(t)) {
- 		pr_warn("map '%s': attr '%s': expected PTR, got %u.\n",
- 			map_name, name, btf_kind(t));
--		return false;
-+		return NULL;
- 	}
- 
- 	arr_t = btf__type_by_id(btf, t->type);
- 	if (!arr_t) {
- 		pr_warn("map '%s': attr '%s': type [%u] not found.\n",
- 			map_name, name, t->type);
--		return false;
-+		return NULL;
- 	}
- 	if (!btf_is_array(arr_t)) {
- 		pr_warn("map '%s': attr '%s': expected ARRAY, got %u.\n",
- 			map_name, name, btf_kind(arr_t));
--		return false;
-+		return NULL;
- 	}
--	arr_info = btf_array(arr_t);
-+	return btf_array(arr_t);
-+}
++#ifdef CONFIG_RSEQ
++#define MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ_BITMASK		\
++	(MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ			\
++	| MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ_BITMASK)
++#else
++#define MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ_BITMASK	0
++#endif
 +
-+static bool get_map_field_int(const char *map_name, const struct btf *btf,
-+			      const struct btf_member *m, __u32 *res)
-+{
-+	const struct btf_array *arr_info;
-+
-+	arr_info = get_map_field_arr_info(map_name, btf, m);
-+	if (arr_info == NULL)
-+		return false;
- 	*res = arr_info->nelems;
- 	return true;
+ #define MEMBARRIER_CMD_BITMASK						\
+ 	(MEMBARRIER_CMD_GLOBAL | MEMBARRIER_CMD_GLOBAL_EXPEDITED	\
+ 	| MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED			\
+@@ -30,6 +38,13 @@ static void ipi_mb(void *info)
+ 	smp_mb();	/* IPIs should be serializing but paranoid. */
  }
  
-+static void set_map_field_int(const char *map_name, const struct btf *btf,
-+			      const struct btf_member *m, __u32 val)
++#ifdef CONFIG_RSEQ
++static void ipi_rseq(void *info)
 +{
-+	struct btf_array *arr_info;
-+
-+	arr_info = get_map_field_arr_info(map_name, btf, m);
-+	arr_info->nelems = val;
++	rseq_preempt(current);
 +}
++#endif
 +
- static int build_map_pin_path(struct bpf_map *map, const char *path)
+ static void ipi_sync_rq_state(void *info)
  {
- 	char buf[PATH_MAX];
-@@ -1951,6 +1970,13 @@ static int parse_btf_map_def(struct bpf_object *obj,
- 				return -EINVAL;
- 			pr_debug("map '%s': found max_entries = %u.\n",
- 				 map->name, map->def.max_entries);
-+			if (map->def.max_entries == NUM_POSSIBLE_CPUS) {
-+				map->def.max_entries = libbpf_num_possible_cpus();
-+				set_map_field_int(map->name, obj->btf, m,
-+						  map->def.max_entries);
-+				pr_debug("map '%s': adjusting max_entries = %u.\n",
-+					 map->name, map->def.max_entries);
-+			}
- 		} else if (strcmp(name, "map_flags") == 0) {
- 			if (!get_map_field_int(map->name, obj->btf, m,
- 					       &map->def.map_flags))
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 334437af3014..42cba5bb1b04 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -717,6 +717,10 @@ enum libbpf_tristate {
- 	TRI_MODULE = 2,
- };
+ 	struct mm_struct *mm = (struct mm_struct *) info;
+@@ -129,19 +144,29 @@ static int membarrier_global_expedited(void)
+ 	return 0;
+ }
  
-+enum libbpf_max_entries {
-+	NUM_POSSIBLE_CPUS = -1,
-+};
+-static int membarrier_private_expedited(int flags)
++static int membarrier_private_expedited(int flags, int cpu_id)
+ {
+-	int cpu;
+ 	cpumask_var_t tmpmask;
+ 	struct mm_struct *mm = current->mm;
++	smp_call_func_t ipi_func = ipi_mb;
+ 
+-	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
++	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+ 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+ 			return -EINVAL;
+ 		if (!(atomic_read(&mm->membarrier_state) &
+ 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+ 			return -EPERM;
++	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
++#ifdef CONFIG_RSEQ
++		if (!(atomic_read(&mm->membarrier_state) &
++		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY))
++			return -EPERM;
++		ipi_func = ipi_rseq;
++#else
++		return -EINVAL;
++#endif
+ 	} else {
++		BUG_ON(flags != 0);
+ 		if (!(atomic_read(&mm->membarrier_state) &
+ 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY))
+ 			return -EPERM;
+@@ -156,35 +181,59 @@ static int membarrier_private_expedited(int flags)
+ 	 */
+ 	smp_mb();	/* system call entry is not a mb. */
+ 
+-	if (!zalloc_cpumask_var(&tmpmask, GFP_KERNEL))
++	if (cpu_id < 0 && !zalloc_cpumask_var(&tmpmask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+ 	cpus_read_lock();
+-	rcu_read_lock();
+-	for_each_online_cpu(cpu) {
 +
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
++	if (cpu_id >= 0) {
+ 		struct task_struct *p;
+ 
+-		/*
+-		 * Skipping the current CPU is OK even through we can be
+-		 * migrated at any point. The current CPU, at the point
+-		 * where we read raw_smp_processor_id(), is ensured to
+-		 * be in program order with respect to the caller
+-		 * thread. Therefore, we can skip this CPU from the
+-		 * iteration.
+-		 */
+-		if (cpu == raw_smp_processor_id())
+-			continue;
+-		p = rcu_dereference(cpu_rq(cpu)->curr);
+-		if (p && p->mm == mm)
+-			__cpumask_set_cpu(cpu, tmpmask);
++		if (cpu_id >= nr_cpu_ids || !cpu_online(cpu_id))
++			goto out;
++		if (cpu_id == raw_smp_processor_id())
++			goto out;
++		rcu_read_lock();
++		p = rcu_dereference(cpu_rq(cpu_id)->curr);
++		if (!p || p->mm != mm) {
++			rcu_read_unlock();
++			goto out;
++		}
++		rcu_read_unlock();
++	} else {
++		int cpu;
++
++		rcu_read_lock();
++		for_each_online_cpu(cpu) {
++			struct task_struct *p;
++
++			/*
++			 * Skipping the current CPU is OK even through we can be
++			 * migrated at any point. The current CPU, at the point
++			 * where we read raw_smp_processor_id(), is ensured to
++			 * be in program order with respect to the caller
++			 * thread. Therefore, we can skip this CPU from the
++			 * iteration.
++			 */
++			if (cpu == raw_smp_processor_id())
++				continue;
++			p = rcu_dereference(cpu_rq(cpu)->curr);
++			if (p && p->mm == mm)
++				__cpumask_set_cpu(cpu, tmpmask);
++		}
++		rcu_read_unlock();
+ 	}
+-	rcu_read_unlock();
+ 
+ 	preempt_disable();
+-	smp_call_function_many(tmpmask, ipi_mb, NULL, 1);
++	if (cpu_id >= 0)
++		smp_call_function_single(cpu_id, ipi_func, NULL, 1);
++	else
++		smp_call_function_many(tmpmask, ipi_func, NULL, 1);
+ 	preempt_enable();
+ 
+-	free_cpumask_var(tmpmask);
++out:
++	if (cpu_id < 0)
++		free_cpumask_var(tmpmask);
+ 	cpus_read_unlock();
+ 
+ 	/*
+@@ -283,11 +332,18 @@ static int membarrier_register_private_expedited(int flags)
+ 	    set_state = MEMBARRIER_STATE_PRIVATE_EXPEDITED,
+ 	    ret;
+ 
+-	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
++	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+ 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+ 			return -EINVAL;
+ 		ready_state =
+ 			MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY;
++	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
++		if (!IS_ENABLED(CONFIG_RSEQ))
++			return -EINVAL;
++		ready_state =
++			MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY;
++	} else {
++		BUG_ON(flags != 0);
+ 	}
+ 
+ 	/*
+@@ -299,6 +355,8 @@ static int membarrier_register_private_expedited(int flags)
+ 		return 0;
+ 	if (flags & MEMBARRIER_FLAG_SYNC_CORE)
+ 		set_state |= MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE;
++	if (flags & MEMBARRIER_FLAG_RSEQ)
++		set_state |= MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ;
+ 	atomic_or(set_state, &mm->membarrier_state);
+ 	ret = sync_runqueues_membarrier_state(mm);
+ 	if (ret)
+@@ -310,8 +368,15 @@ static int membarrier_register_private_expedited(int flags)
+ 
+ /**
+  * sys_membarrier - issue memory barriers on a set of threads
+- * @cmd:   Takes command values defined in enum membarrier_cmd.
+- * @flags: Currently needs to be 0. For future extensions.
++ * @cmd:    Takes command values defined in enum membarrier_cmd.
++ * @flags:  Currently needs to be 0 for all commands other than
++ *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ: in the latter
++ *          case it can be MEMBARRIER_CMD_FLAG_CPU, indicating that @cpu_id
++ *          contains the CPU on which to interrupt (= restart)
++ *          the RSEQ critical section.
++ * @cpu_id: if @flags == MEMBARRIER_CMD_FLAG_CPU, indicates the cpu on which
++ *          RSEQ CS should be interrupted (@cmd must be
++ *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ).
+  *
+  * If this system call is not implemented, -ENOSYS is returned. If the
+  * command specified does not exist, not available on the running
+@@ -337,10 +402,21 @@ static int membarrier_register_private_expedited(int flags)
+  *        smp_mb()           X           O            O
+  *        sys_membarrier()   O           O            O
+  */
+-SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
++SYSCALL_DEFINE3(membarrier, int, cmd, int, flags, int, cpu_id)
+ {
+-	if (unlikely(flags))
+-		return -EINVAL;
++	switch (cmd) {
++	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
++		if (unlikely(flags && flags != MEMBARRIER_CMD_FLAG_CPU))
++			return -EINVAL;
++		break;
++	default:
++		if (unlikely(flags))
++			return -EINVAL;
++	}
++
++	if (!(flags & MEMBARRIER_CMD_FLAG_CPU))
++		cpu_id = -1;
++
+ 	switch (cmd) {
+ 	case MEMBARRIER_CMD_QUERY:
+ 	{
+@@ -362,13 +438,17 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+ 	case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
+ 		return membarrier_register_global_expedited();
+ 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
+-		return membarrier_private_expedited(0);
++		return membarrier_private_expedited(0, cpu_id);
+ 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
+ 		return membarrier_register_private_expedited(0);
+ 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
+-		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
++		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE, cpu_id);
+ 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+ 		return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
++	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
++		return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, cpu_id);
++	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
++		return membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ);
+ 	default:
+ 		return -EINVAL;
+ 	}
 -- 
 2.28.0.402.g5ffc5be6b7-goog
 
