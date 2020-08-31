@@ -2,152 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F71A258052
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76943258058
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729499AbgHaSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
+        id S1729310AbgHaSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729469AbgHaSIS (ORCPT
+        with ESMTP id S1729118AbgHaSIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:08:18 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150A5C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:08:18 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id w3so1975400ilh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:08:18 -0700 (PDT)
+        Mon, 31 Aug 2020 14:08:55 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D3DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:08:52 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a65so365743wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=J9kGADiWqBAf6LAoDwc5/F/Og5YLlJpYbgAjEOG8B8Y=;
-        b=iol8uoCdy/B0MF3nCdY3BgRUnC3oG2i+b9zc0OPTqn3tX6RXpVbPDQdLmhSxMCQZYU
-         rruvA5+UUWIwlMUm+/o6/GK8jGFSbcROx0B+IwVzR0f1Q6bz6R0utEKqcbRlOZbA2iGu
-         jNpvS3HpS7w7ZRsG1XYWGUyRfd8jfE4si/0HkG1ApQTSTSpCTZBvQp/DESVlUcneN+5L
-         4Waax7OYniJHk0ZTXcR39tZZkG9Q2SgDFONy5l/hAE/NEB8DRGDP0GXCmVlt0fSsVv0U
-         Mb88aKA4WNEyKc6NY5mgx+kkZkuLmnh346l1AavkzggBt7EWBu+IJVAXUbeV2xP/f+cB
-         B44g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PZdD3YkccjOVfF0atuAqD6nWNa6V5XxvIiUqs3VdtEk=;
+        b=DTYm1SPdGKG/SQtAldlYoFxpYjZpsl532qhv6HisDz50C8zjjFhEV6VYZYr/ZbT+YP
+         2dXuN0EArHJmyGH6Jkl1c2ql7cfM6UVizHL24w3vkUBubm2HJ1ct3QMJd4kMU+UAVlHj
+         rzaGTYp0oZXldmNTj8Xb7CpfnTFyYvOqXZwRhFpuLeLTYyTVHZ+rW4/+UFwZOpE7hyS+
+         31QOuY6UA00D7IURmMft9i+6WOx45GT/92Dl5UWgoNNppyhJ5XehPXy1wPMLE35Nh8wK
+         oiaMu8ZQSo01pCgeXrJAF+WAOxurJw9Tn+Vk7feQaXuBsocQYSjm60tLNh0K/bP3rKhW
+         MxOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=J9kGADiWqBAf6LAoDwc5/F/Og5YLlJpYbgAjEOG8B8Y=;
-        b=G5qhWbiqwASkMuJnx2iVGLx8houLRMKGJN80RuGPfYPaVsf3qcLnp7+ORbET5pBNQQ
-         QaMNosdW0oPS6SAQIT/DpMn2B1LAtiOxnbwqu6g8a63gbJhTBanhyPB2fiaANvBe+9E3
-         F+wyQO7N91eSSaBFAuStGJumPKwM51ZMxRY1N2AhIm7F3j8b1ypGqwl/UUjyjac+IZRi
-         9PUjrhrzBOrX8oxW/aj+LTMtJwgExX46+mQ+87kQjfxKMkjDMjOxcW06qo4r2p26+X08
-         WekI9r0qu5SrWg0rIDLAFssMWlKeV06vPaZEi/lq2ux+xwBKY0EgQtrgyk3ieIl1vdni
-         9ZhA==
-X-Gm-Message-State: AOAM5329UfAB17c90yLwQueNB0nGntoj/gr6V39uVTx+HnanKfjafgbc
-        A9lTL3WubFzpcudnv8iUNzPxnA==
-X-Google-Smtp-Source: ABdhPJyzXw7Ng/qSWMEJMkMJg5hC+14S4EqLGoKAFtOsLR0CPwYlQ/YqT3BVfJHjOPQbZQICCqCXbA==
-X-Received: by 2002:a92:194b:: with SMTP id e11mr2451830ilm.133.1598897296539;
-        Mon, 31 Aug 2020 11:08:16 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id r3sm4354710iov.22.2020.08.31.11.08.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 11:08:16 -0700 (PDT)
-To:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jann Horn <jannh@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] fs: align IOCB_* flags with RWF_* flags
-Message-ID: <95de7ce4-9254-39f1-304f-4455f66bf0f4@kernel.dk>
-Date:   Mon, 31 Aug 2020 12:08:10 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PZdD3YkccjOVfF0atuAqD6nWNa6V5XxvIiUqs3VdtEk=;
+        b=VrOrYD3Biqnj02R7SLcy3AgzdwiZ82AJGR21AHCZjhBDoYVsjO6jwKcqEtNgqCZPPy
+         M3MK8+6xxEL2d9SH7rUd+0SrixS7wlIxEPI0keOVMrqhHSNHYBLKYxPetxlpkTdxXIVi
+         m3qq1BPUe8rm80hSy24/is+kTZIkGvd7qXWzGfhEi1GmVwXyuXQfUtJWtAIycfhWx7aH
+         Ga+vVAXeOz9JlucxjyvvMsrq/yo+8n8rRbbChDvLxv/b4IjraRzE3btUnelB0/rV5D6J
+         DhNu6CsDOfVFaE/hRGp6P6s0bhoZiUwrHb0a/cU1cH5y08+Qo3lqZDHsFyBYbDU8FJbb
+         wSvQ==
+X-Gm-Message-State: AOAM5323PxhAme0hBf7MXJHYCnqYO4XVy3+uX8pYPQ20tzZdOoMr3WMk
+        FHGCV4wlZKcT5PQrbXBORE1B9w==
+X-Google-Smtp-Source: ABdhPJwSbeYkTbQaVd/c43rNwMacSmdUE9+ZmFXhzkNUOh+371xDIG9v6A+/BYEq63PSZ7ILqtj4Gw==
+X-Received: by 2002:a05:600c:22d6:: with SMTP id 22mr501445wmg.120.1598897331339;
+        Mon, 31 Aug 2020 11:08:51 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id e18sm12975638wrx.50.2020.08.31.11.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 11:08:50 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 20:08:44 +0200
+From:   Marco Elver <elver@google.com>
+To:     SeongJae Park <sjpark@amazon.com>
+Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
+        Jonathan.Cameron@Huawei.com, aarcange@redhat.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
+        brendanhiggins@google.com, cai@lca.pw, colin.king@canonical.com,
+        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
+        fan.du@intel.com, foersleo@amazon.de, gthelen@google.com,
+        irogers@google.com, jolsa@redhat.com, kirill@shutemov.name,
+        mark.rutland@arm.com, mgorman@suse.de, minchan@kernel.org,
+        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
+        rdunlap@infradead.org, riel@surriel.com, rientjes@google.com,
+        rostedt@goodmis.org, rppt@kernel.org, sblbir@amazon.com,
+        shakeelb@google.com, shuah@kernel.org, sj38.park@gmail.com,
+        snu@amazon.de, vbabka@suse.cz, vdavydov.dev@gmail.com,
+        yang.shi@linux.alibaba.com, ying.huang@intel.com,
+        zgf574564920@gmail.com, linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v8 01/10] mm/damon/debugfs: Allow users to set initial
+ monitoring target regions
+Message-ID: <20200831180844.GA3992970@elver.google.com>
+References: <20200831104730.28970-1-sjpark@amazon.com>
+ <20200831104730.28970-2-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831104730.28970-2-sjpark@amazon.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a set of flags that are shared between the two and inherired
-in kiocb_set_rw_flags(), but we check and set these individually.
-Reorder the IOCB flags so that the bottom part of the space is synced
-with the RWF flag space, and then we can do them all in one mask and
-set operation.
+On Mon, Aug 31, 2020 at 12:47PM +0200, SeongJae Park wrote:
+[...]
+> diff --git a/mm/damon.c b/mm/damon.c
+> index 7e3c8c82a010..9815d22fc4de 100644
+> --- a/mm/damon.c
+> +++ b/mm/damon.c
+> @@ -2001,6 +2001,147 @@ static ssize_t debugfs_record_write(struct file *file,
+>  	return ret;
+>  }
+>  
+> +static ssize_t sprint_init_regions(struct damon_ctx *c, char *buf, ssize_t len)
+> +{
+> +	struct damon_target *t;
+> +	struct damon_region *r;
+> +	int written = 0;
+> +	int rc;
+> +
+> +	damon_for_each_target(t, c) {
+> +		damon_for_each_region(r, t) {
+> +			rc = snprintf(&buf[written], len - written,
+> +					"%lu %lu %lu\n",
+> +					t->id, r->ar.start, r->ar.end);
 
-The only exception is RWF_SYNC, which needs to mark IOCB_SYNC and
-IOCB_DSYNC. Do that one separately.
+This most likely will not work as intended, because snprintf() returns
+"[...] the number of characters which would be generated for the given
+input, excluding the trailing null [...]". Would scnprintf() -- which
+returns "[...] the number of characters written into @buf not including
+the trailing '\0' [...]" -- do what you intended?
 
-This shaves 15 bytes of text from kiocb_set_rw_flags() for me.
-
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-
----
-
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7519ae003a08..c82360600ae4 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -310,17 +310,20 @@ enum rw_hint {
- 	WRITE_LIFE_EXTREME	= RWH_WRITE_LIFE_EXTREME,
- };
- 
--#define IOCB_EVENTFD		(1 << 0)
--#define IOCB_APPEND		(1 << 1)
--#define IOCB_DIRECT		(1 << 2)
--#define IOCB_HIPRI		(1 << 3)
--#define IOCB_DSYNC		(1 << 4)
--#define IOCB_SYNC		(1 << 5)
--#define IOCB_WRITE		(1 << 6)
--#define IOCB_NOWAIT		(1 << 7)
-+/* Match RWF_* bits to IOCB bits */
-+#define IOCB_HIPRI		(__force int) RWF_HIPRI
-+#define IOCB_DSYNC		(__force int) RWF_DSYNC
-+#define IOCB_SYNC		(__force int) RWF_SYNC
-+#define IOCB_NOWAIT		(__force int) RWF_NOWAIT
-+#define IOCB_APPEND		(__force int) RWF_APPEND
-+
-+/* non-RWF related bits - start at 16 */
-+#define IOCB_EVENTFD		(1 << 16)
-+#define IOCB_DIRECT		(1 << 17)
-+#define IOCB_WRITE		(1 << 18)
- /* iocb->ki_waitq is valid */
--#define IOCB_WAITQ		(1 << 8)
--#define IOCB_NOIO		(1 << 9)
-+#define IOCB_WAITQ		(1 << 19)
-+#define IOCB_NOIO		(1 << 20)
- 
- struct kiocb {
- 	struct file		*ki_filp;
-@@ -3317,6 +3320,9 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
- {
- 	int kiocb_flags = 0;
- 
-+	/* make sure there's no overlap between RWF and private IOCB flags */
-+	BUILD_BUG_ON((__force int) RWF_SUPPORTED & IOCB_EVENTFD);
-+
- 	if (!flags)
- 		return 0;
- 	if (unlikely(flags & ~RWF_SUPPORTED))
-@@ -3325,16 +3331,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
- 	if (flags & RWF_NOWAIT) {
- 		if (!(ki->ki_filp->f_mode & FMODE_NOWAIT))
- 			return -EOPNOTSUPP;
--		kiocb_flags |= IOCB_NOWAIT | IOCB_NOIO;
-+		kiocb_flags |= IOCB_NOIO;
- 	}
--	if (flags & RWF_HIPRI)
--		kiocb_flags |= IOCB_HIPRI;
--	if (flags & RWF_DSYNC)
--		kiocb_flags |= IOCB_DSYNC;
-+	kiocb_flags |= (__force int) (flags & RWF_SUPPORTED);
- 	if (flags & RWF_SYNC)
--		kiocb_flags |= (IOCB_DSYNC | IOCB_SYNC);
--	if (flags & RWF_APPEND)
--		kiocb_flags |= IOCB_APPEND;
-+		kiocb_flags |= IOCB_DSYNC;
- 
- 	ki->ki_flags |= kiocb_flags;
- 	return 0;
-
--- 
-Jens Axboe
-
+> +			if (!rc)
+> +				return -ENOMEM;
+> +			written += rc;
+> +		}
+> +	}
+> +	return written;
+> +}
+[...]
