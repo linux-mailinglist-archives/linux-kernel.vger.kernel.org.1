@@ -2,595 +2,1459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9FA25796A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA85257971
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgHaMgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 08:36:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57854 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgHaMgF (ORCPT
+        id S1727923AbgHaMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727889AbgHaMhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:36:05 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VCZXtS072844;
-        Mon, 31 Aug 2020 12:35:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=0z9sVNKvf2csbfRYMxVoWvP59q5JXCdaBG7G9r+U+XU=;
- b=tWuwd+nY4tEPbEyS6MyWKG9wT0QxUCSnOdaOOeE+01n19UgeKSqEM3zI+v7cf5YHq1+R
- NywEwPlDG5hOFs9BRJgI5r/7vzdypqSTbU4pZyMuvwW+qdDGj+ZiV7unwU6LaYGWjuiq
- XRx11aHz5Z+YdXc/McUxPzWhIdconctOi10A87U4eK2VILCEpZrbn5Pbbz+SVuyUNtHj
- 0ok3JlWY11cDbPHqMa26m5O0kqkeraJeYurUyOFpsyDHs0KUeF+6b+gLDiOJI+P7oDDY
- KT+fTQ5Rss+nUQzlwodkgxU+kawZpBxl95tVyKfeeNRC7NwJGji/XCyVlpxiHrNp2jTc UA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 337qrhd1nn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Aug 2020 12:35:51 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VCYvii027623;
-        Mon, 31 Aug 2020 12:35:51 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 3380spxp7u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 Aug 2020 12:35:50 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07VCZnYi032148;
-        Mon, 31 Aug 2020 12:35:49 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 31 Aug 2020 05:35:48 -0700
-Date:   Mon, 31 Aug 2020 15:35:42 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: drivers/net/dsa/sja1105/sja1105_main.c:2342
- sja1105_best_effort_vlan_filtering_set() error: uninitialized symbol 'rc'.
-Message-ID: <20200831123542.GM8299@kadam>
+        Mon, 31 Aug 2020 08:37:31 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BF8C061573;
+        Mon, 31 Aug 2020 05:37:30 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id i26so7918583ejb.12;
+        Mon, 31 Aug 2020 05:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wwPdaxAfGZWUxi7q/3UoFc9+szzj1dQ9I18r6PvIyyk=;
+        b=RZXXKcppEGkLozeoJgM2O2VqI22uLKThJYIm6B7tr1Z88BKgn1M0t4g7R+grG0pVou
+         f3hiO6PCbSUz/etdRghdhcnU7I08NlTVW34PUF/X6HxP3Y1xKzOeJL5XgJNqpsx5a2Nx
+         r+CJPNDaSBi0SZRbyz4bJjxeMIfTDjqMty0IRVnmNp/ClJKByHdE8/b1gxxvTovCAP+x
+         lhrEtikmIrHOXLu6qus/GW/xfeMwz1o3ZuvW0D58c9s0DUiuXJgmqWLs3SLx698lfpFF
+         9ospr7C8ACyBla82MsNPdNhwfIVz17qfql+31mxYKlhQELexdW+Lq/oTW3aqz2ktJWom
+         LKXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wwPdaxAfGZWUxi7q/3UoFc9+szzj1dQ9I18r6PvIyyk=;
+        b=WU56R7xO71vZ8vOfptG8LHxGetH5L0e3j7T14FqBEmrXlinraEJkON/MlEt5nyVRdU
+         5Iebsbx2mnhZIfhorKfa/BvWnawagSgRENHYze4Z2+9c/BvjvWaSrffBcXALo/60WyK4
+         f+5jdkTvcpautwiI75ObnFwewG9kSf35EDt2ZzGxnsvldeWoI6Ort+k9ki5hex8yvt9E
+         8RhLcTRXU3MIhUvPOvqQPjLlKkbZJ43a8fdjKGsXVW1NAEtU8d8G0Ich8H/U+9P/zCIb
+         FsRfoUjfFaUjBBmoWTj8NXi1DXTlNJ/qKTlALwUw8c5a5uZFJxyOoPFH5D98ZWNxZn3x
+         TNKg==
+X-Gm-Message-State: AOAM531X/Co7qH/85NiEP0vckPo1mgt25i6PY4ZSqbEdpXBS5twe55+l
+        BXUrchQljvfkEZfKJKs7pGQ=
+X-Google-Smtp-Source: ABdhPJzYVlMNmtFgoiT2VS3kUk9NIje15Ni3EA/VydpkqdEoIkWq65phcKloyU9pkueJYrFNxNrJhA==
+X-Received: by 2002:a17:906:c10c:: with SMTP id do12mr965083ejc.92.1598877449262;
+        Mon, 31 Aug 2020 05:37:29 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id q7sm7486509edw.96.2020.08.31.05.37.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 05:37:27 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 14:37:21 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
+        kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v2 08/12] phy: tegra: xusb: t210: support wake and
+ sleepwalk
+Message-ID: <20200831123721.GE1689119@ulmo>
+References: <20200831044043.1561074-1-jckuo@nvidia.com>
+ <20200831044043.1561074-9-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="hXth9cGL35Nvpk4x"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/2994txjAzEdQwm5"
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008310072
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- adultscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
- suspectscore=0 priorityscore=1501 spamscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2008310072
+In-Reply-To: <20200831044043.1561074-9-jckuo@nvidia.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---hXth9cGL35Nvpk4x
+--/2994txjAzEdQwm5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4d41ead6ead97c3730bbd186a601a64828668f01
-commit: 2cafa72e516f61b6d82c2416b4f5963fb48fd9ce net: dsa: sja1105: add a new best_effort_vlan_filtering devlink parameter
-config: arm-randconfig-m031-20200829 (attached as .config)
-compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+On Mon, Aug 31, 2020 at 12:40:39PM +0800, JC Kuo wrote:
+> This commit implements Tegra210 XUSB PADCTL wake and sleepwalk
+> routines. Sleepwalk logic is in PMC (always-on) hardware block.
+> PMC driver provides managed access to the sleepwalk registers
+> via regmap framework.
+>=20
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+>  drivers/phy/tegra/xusb-tegra210.c | 1094 ++++++++++++++++++++++++++++-
+>  1 file changed, 1079 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/drivers/phy/tegra/xusb-tegra210.c b/drivers/phy/tegra/xusb-t=
+egra210.c
+> index fe1ab440424d..1c03f4ec4b59 100644
+> --- a/drivers/phy/tegra/xusb-tegra210.c
+> +++ b/drivers/phy/tegra/xusb-tegra210.c
+> @@ -16,6 +16,8 @@
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>  #include <linux/slab.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of_platform.h>
+> =20
+>  #include <soc/tegra/fuse.h>
+> =20
+> @@ -52,6 +54,20 @@
+>  #define XUSB_PADCTL_SS_PORT_MAP_PORTX_MAP(x, v) (((v) & 0x7) << ((x) * 5=
+))
+>  #define XUSB_PADCTL_SS_PORT_MAP_PORT_DISABLED 0x7
+> =20
+> +#define XUSB_PADCTL_ELPG_PROGRAM_0 0x20
+> +#define   USB2_PORT_WAKE_INTERRUPT_ENABLE(x)      BIT((x))
+> +#define   USB2_PORT_WAKEUP_EVENT(x)               BIT((x) + 7)
+> +#define   SS_PORT_WAKE_INTERRUPT_ENABLE(x)        BIT((x) + 14)
+> +#define   SS_PORT_WAKEUP_EVENT(x)                 BIT((x) + 21)
+> +#define   USB2_HSIC_PORT_WAKE_INTERRUPT_ENABLE(x) BIT((x) + 28)
+> +#define   USB2_HSIC_PORT_WAKEUP_EVENT(x)          BIT((x) + 30)
+> +#define   ALL_WAKE_EVENTS ( \
+> +		USB2_PORT_WAKEUP_EVENT(0) | USB2_PORT_WAKEUP_EVENT(1) | \
+> +		USB2_PORT_WAKEUP_EVENT(2) | USB2_PORT_WAKEUP_EVENT(3) | \
+> +		SS_PORT_WAKEUP_EVENT(0) | SS_PORT_WAKEUP_EVENT(1) | \
+> +		SS_PORT_WAKEUP_EVENT(2) | SS_PORT_WAKEUP_EVENT(3) | \
+> +		USB2_HSIC_PORT_WAKEUP_EVENT(0))
+> +
+>  #define XUSB_PADCTL_ELPG_PROGRAM1 0x024
+>  #define XUSB_PADCTL_ELPG_PROGRAM1_AUX_MUX_LP0_VCORE_DOWN (1 << 31)
+>  #define XUSB_PADCTL_ELPG_PROGRAM1_AUX_MUX_LP0_CLAMP_EN_EARLY (1 << 30)
+> @@ -90,6 +106,8 @@
+>  #define XUSB_PADCTL_USB2_OTG_PAD_CTL1_PD_DR (1 << 2)
+>  #define XUSB_PADCTL_USB2_OTG_PAD_CTL1_PD_DISC_OVRD (1 << 1)
+>  #define XUSB_PADCTL_USB2_OTG_PAD_CTL1_PD_CHRP_OVRD (1 << 0)
+> +#define   RPD_CTRL(x)                      (((x) & 0x1f) << 26)
+> +#define   RPD_CTRL_VALUE(x)                (((x) >> 26) & 0x1f)
+> =20
+>  #define XUSB_PADCTL_USB2_BIAS_PAD_CTL0 0x284
+>  #define XUSB_PADCTL_USB2_BIAS_PAD_CTL0_PD (1 << 11)
+> @@ -108,6 +126,8 @@
+>  #define XUSB_PADCTL_USB2_BIAS_PAD_CTL1_TRK_START_TIMER_SHIFT 12
+>  #define XUSB_PADCTL_USB2_BIAS_PAD_CTL1_TRK_START_TIMER_MASK 0x7f
+>  #define XUSB_PADCTL_USB2_BIAS_PAD_CTL1_TRK_START_TIMER_VAL 0x1e
+> +#define   TCTRL_VALUE(x)                (((x) & 0x3f) >> 0)
+> +#define   PCTRL_VALUE(x)                (((x) >> 6) & 0x3f)
+> =20
+>  #define XUSB_PADCTL_HSIC_PADX_CTL0(x) (0x300 + (x) * 0x20)
+>  #define XUSB_PADCTL_HSIC_PAD_CTL0_RPU_STROBE (1 << 18)
+> @@ -251,16 +271,161 @@
+>  #define XUSB_PADCTL_USB2_VBUS_ID_OVERRIDE_FLOATING 8
+>  #define XUSB_PADCTL_USB2_VBUS_ID_OVERRIDE_GROUNDED 0
+> =20
+> +/* USB2 SLEEPWALK registers */
+> +#define UTMIP(_port, _offset1, _offset2) \
+> +		(((_port) <=3D 2) ? (_offset1) : (_offset2))
+> +
+> +#define PMC_UTMIP_UHSIC_SLEEP_CFG(x)	UTMIP(x, 0x1fc, 0x4d0)
+> +#define   UTMIP_MASTER_ENABLE(x)		UTMIP(x, BIT(8 * (x)), BIT(0))
+> +#define   UTMIP_FSLS_USE_PMC(x)			UTMIP(x, BIT(8 * (x) + 1), \
+> +							BIT(1))
+> +#define   UTMIP_PCTRL_USE_PMC(x)		UTMIP(x, BIT(8 * (x) + 2), \
+> +							BIT(2))
+> +#define   UTMIP_TCTRL_USE_PMC(x)		UTMIP(x, BIT(8 * (x) + 3), \
+> +							BIT(3))
+> +#define   UTMIP_WAKE_VAL(_port, _value)		(((_value) & 0xf) << \
+> +					(UTMIP(_port, 8 * (_port) + 4, 4)))
+> +#define   UTMIP_WAKE_VAL_NONE(_port)		UTMIP_WAKE_VAL(_port, 12)
+> +#define   UTMIP_WAKE_VAL_ANY(_port)		UTMIP_WAKE_VAL(_port, 15)
+> +
+> +#define PMC_UTMIP_UHSIC_SLEEP_CFG1	(0x4d0)
+> +#define   UTMIP_RPU_SWITC_LOW_USE_PMC_PX(x)	BIT((x) + 8)
+> +#define   UTMIP_RPD_CTRL_USE_PMC_PX(x)		BIT((x) + 16)
+> +
+> +#define PMC_UTMIP_MASTER_CONFIG		(0x274)
+> +#define   UTMIP_PWR(x)				UTMIP(x, BIT(x), BIT(4))
+> +#define   UHSIC_PWR(x)				BIT(3)
+> +
+> +#define PMC_USB_DEBOUNCE_DEL		(0xec)
+> +#define   DEBOUNCE_VAL(x)			(((x) & 0xffff) << 0)
+> +#define   UTMIP_LINE_DEB_CNT(x)			(((x) & 0xf) << 16)
+> +#define   UHSIC_LINE_DEB_CNT(x)			(((x) & 0xf) << 20)
+> +
+> +#define PMC_UTMIP_UHSIC_FAKE(x)		UTMIP(x, 0x218, 0x294)
+> +#define   UTMIP_FAKE_USBOP_VAL(x)		UTMIP(x, BIT(4 * (x)), BIT(8))
+> +#define   UTMIP_FAKE_USBON_VAL(x)		UTMIP(x, BIT(4 * (x) + 1), \
+> +							BIT(9))
+> +#define   UTMIP_FAKE_USBOP_EN(x)		UTMIP(x, BIT(4 * (x) + 2), \
+> +							BIT(10))
+> +#define   UTMIP_FAKE_USBON_EN(x)		UTMIP(x, BIT(4 * (x) + 3), \
+> +							BIT(11))
+> +
+> +#define PMC_UTMIP_UHSIC_SLEEPWALK_CFG(x)	UTMIP(x, 0x200, 0x288)
+> +#define   UTMIP_LINEVAL_WALK_EN(x)		UTMIP(x, BIT(8 * (x) + 7), \
+> +							BIT(15))
+> +
+> +#define PMC_USB_AO			(0xf0)
+> +#define   USBOP_VAL_PD(x)			UTMIP(x, BIT(4 * (x)), BIT(20))
+> +#define   USBON_VAL_PD(x)			UTMIP(x, BIT(4 * (x) + 1), \
+> +							BIT(21))
+> +#define   STROBE_VAL_PD(x)			BIT(12)
+> +#define   DATA0_VAL_PD(x)			BIT(13)
+> +#define   DATA1_VAL_PD				BIT(24)
+> +
+> +#define PMC_UTMIP_UHSIC_SAVED_STATE(x)	UTMIP(x, 0x1f0, 0x280)
+> +#define   SPEED(_port, _value)			(((_value) & 0x3) << \
+> +						(UTMIP(_port, 8 * (_port), 8)))
+> +#define   UTMI_HS(_port)			SPEED(_port, 0)
+> +#define   UTMI_FS(_port)			SPEED(_port, 1)
+> +#define   UTMI_LS(_port)			SPEED(_port, 2)
+> +#define   UTMI_RST(_port)			SPEED(_port, 3)
+> +
+> +#define PMC_UTMIP_UHSIC_TRIGGERS		(0x1ec)
+> +#define   UTMIP_CLR_WALK_PTR(x)			UTMIP(x, BIT(x), BIT(16))
+> +#define   UTMIP_CAP_CFG(x)			UTMIP(x, BIT((x) + 4), BIT(17))
+> +#define   UTMIP_CLR_WAKE_ALARM(x)		UTMIP(x, BIT((x) + 12), \
+> +							BIT(19))
+> +#define   UHSIC_CLR_WALK_PTR			BIT(3)
+> +#define   UHSIC_CLR_WAKE_ALARM			BIT(15)
+> +
+> +#define PMC_UTMIP_SLEEPWALK_PX(x)	UTMIP(x, 0x204 + (4 * (x)), \
+> +							0x4e0)
+> +/* phase A */
+> +#define   UTMIP_USBOP_RPD_A			BIT(0)
+> +#define   UTMIP_USBON_RPD_A			BIT(1)
+> +#define   UTMIP_AP_A				BIT(4)
+> +#define   UTMIP_AN_A				BIT(5)
+> +#define   UTMIP_HIGHZ_A				BIT(6)
+> +/* phase B */
+> +#define   UTMIP_USBOP_RPD_B			BIT(8)
+> +#define   UTMIP_USBON_RPD_B			BIT(9)
+> +#define   UTMIP_AP_B				BIT(12)
+> +#define   UTMIP_AN_B				BIT(13)
+> +#define   UTMIP_HIGHZ_B				BIT(14)
+> +/* phase C */
+> +#define   UTMIP_USBOP_RPD_C			BIT(16)
+> +#define   UTMIP_USBON_RPD_C			BIT(17)
+> +#define   UTMIP_AP_C				BIT(20)
+> +#define   UTMIP_AN_C				BIT(21)
+> +#define   UTMIP_HIGHZ_C				BIT(22)
+> +/* phase D */
+> +#define   UTMIP_USBOP_RPD_D			BIT(24)
+> +#define   UTMIP_USBON_RPD_D			BIT(25)
+> +#define   UTMIP_AP_D				BIT(28)
+> +#define   UTMIP_AN_D				BIT(29)
+> +#define   UTMIP_HIGHZ_D				BIT(30)
+> +
+> +#define PMC_UTMIP_UHSIC_LINE_WAKEUP	(0x26c)
+> +#define   UTMIP_LINE_WAKEUP_EN(x)		UTMIP(x, BIT(x), BIT(4))
+> +#define   UHSIC_LINE_WAKEUP_EN			BIT(3)
+> +
+> +#define PMC_UTMIP_TERM_PAD_CFG		(0x1f8)
+> +#define   PCTRL_VAL(x)				(((x) & 0x3f) << 1)
+> +#define   TCTRL_VAL(x)				(((x) & 0x3f) << 7)
+> +
+> +#define PMC_UTMIP_PAD_CFGX(x)		(0x4c0 + (4 * (x)))
+> +#define   RPD_CTRL_PX(x)			(((x) & 0x1f) << 22)
+> +
+> +#define PMC_UHSIC_SLEEP_CFG	PMC_UTMIP_UHSIC_SLEEP_CFG(0)
+> +#define   UHSIC_MASTER_ENABLE			BIT(24)
+> +#define   UHSIC_WAKE_VAL(_value)		(((_value) & 0xf) << 28)
+> +#define   UHSIC_WAKE_VAL_SD10			UHSIC_WAKE_VAL(2)
+> +#define   UHSIC_WAKE_VAL_NONE			UHSIC_WAKE_VAL(12)
+> +
+> +#define PMC_UHSIC_FAKE			PMC_UTMIP_UHSIC_FAKE(0)
+> +#define   UHSIC_FAKE_STROBE_VAL			BIT(12)
+> +#define   UHSIC_FAKE_DATA_VAL			BIT(13)
+> +#define   UHSIC_FAKE_STROBE_EN			BIT(14)
+> +#define   UHSIC_FAKE_DATA_EN			BIT(15)
+> +
+> +#define PMC_UHSIC_SAVED_STATE		PMC_UTMIP_UHSIC_SAVED_STATE(0)
+> +#define   UHSIC_MODE(_value)			(((_value) & 0x1) << 24)
+> +#define   UHSIC_HS				UHSIC_MODE(0)
+> +#define   UHSIC_RST				UHSIC_MODE(1)
+> +
+> +#define PMC_UHSIC_SLEEPWALK_CFG		PMC_UTMIP_UHSIC_SLEEPWALK_CFG(0)
+> +#define   UHSIC_WAKE_WALK_EN			BIT(30)
+> +#define   UHSIC_LINEVAL_WALK_EN			BIT(31)
+> +
+> +#define PMC_UHSIC_SLEEPWALK_P0		(0x210)
+> +#define   UHSIC_DATA0_RPD_A			BIT(1)
+> +#define   UHSIC_DATA0_RPU_B			BIT(11)
+> +#define   UHSIC_DATA0_RPU_C			BIT(19)
+> +#define   UHSIC_DATA0_RPU_D			BIT(27)
+> +#define   UHSIC_STROBE_RPU_A			BIT(2)
+> +#define   UHSIC_STROBE_RPD_B			BIT(8)
+> +#define   UHSIC_STROBE_RPD_C			BIT(16)
+> +#define   UHSIC_STROBE_RPD_D			BIT(24)
+> +
+>  struct tegra210_xusb_fuse_calibration {
+>  	u32 hs_curr_level[4];
+>  	u32 hs_term_range_adj;
+>  	u32 rpd_ctrl;
+>  };
+> =20
+> +struct tegra210_xusb_padctl_context {
+> +	u32 usb2_pad_mux;
+> +	u32 usb2_port_cap;
+> +	u32 ss_port_map;
+> +	u32 usb3_pad_mux;
+> +};
+> +
+>  struct tegra210_xusb_padctl {
+>  	struct tegra_xusb_padctl base;
+> =20
+>  	struct tegra210_xusb_fuse_calibration fuse;
+> +	struct tegra210_xusb_padctl_context context;
+> +	struct regmap *pmc_reg;
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+I'd move this more towards the top because it's a resource that we're
+requesting early on. Also, perhaps just name it "regmap" since "pmc_reg"
+could be mistaken for a "PMC register offset".
 
-New smatch warnings:
-drivers/net/dsa/sja1105/sja1105_main.c:2342 sja1105_best_effort_vlan_filtering_set() error: uninitialized symbol 'rc'.
+>  };
+> =20
+>  static inline struct tegra210_xusb_padctl *
+> @@ -886,6 +1051,671 @@ static int tegra210_hsic_set_idle(struct tegra_xus=
+b_padctl *padctl,
+>  	return 0;
+>  }
+> =20
+> +static int tegra210_usb3_enable_phy_sleepwalk(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	int port =3D tegra210_usb3_lane_map(lane);
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	if (port < 0) {
+> +		dev_err(dev, "invalid usb3 port number\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(dev, "phy enable sleepwalk usb3 %d\n", port);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM1);
+> +	value |=3D XUSB_PADCTL_ELPG_PROGRAM1_SSPX_ELPG_CLAMP_EN_EARLY(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM1);
+> +
+> +	usleep_range(100, 200);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM1);
+> +	value |=3D XUSB_PADCTL_ELPG_PROGRAM1_SSPX_ELPG_CLAMP_EN(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM1);
+> +
+> +	usleep_range(250, 350);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_usb3_disable_phy_sleepwalk(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	int port =3D tegra210_usb3_lane_map(lane);
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	if (port < 0) {
+> +		dev_err(dev, "invalid usb3 port number\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(dev, "phy disable sleepwalk usb3 %d\n", port);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM1);
+> +	value &=3D ~XUSB_PADCTL_ELPG_PROGRAM1_SSPX_ELPG_CLAMP_EN_EARLY(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM1);
+> +
+> +	usleep_range(100, 200);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM1);
+> +	value &=3D ~XUSB_PADCTL_ELPG_PROGRAM1_SSPX_ELPG_CLAMP_EN(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM1);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_usb3_enable_phy_wake(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	int port =3D tegra210_usb3_lane_map(lane);
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	if (port < 0) {
+> +		dev_err(dev, "invalid usb3 port number\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(dev, "phy enable wake usb3 %d\n", port);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D SS_PORT_WAKEUP_EVENT(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	usleep_range(10, 20);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D SS_PORT_WAKE_INTERRUPT_ENABLE(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_usb3_disable_phy_wake(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	int port =3D tegra210_usb3_lane_map(lane);
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	if (port < 0) {
+> +		dev_err(dev, "invalid usb3 port number\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(dev, "phy disable wake usb3 %d\n", port);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value &=3D ~SS_PORT_WAKE_INTERRUPT_ENABLE(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	usleep_range(10, 20);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D SS_PORT_WAKEUP_EVENT(port);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_utmi_enable_phy_wake(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	unsigned int index =3D lane->index;
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy enable wake on usb2 %d\n", index);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D USB2_PORT_WAKEUP_EVENT(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	usleep_range(10, 20);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D USB2_PORT_WAKE_INTERRUPT_ENABLE(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_utmi_disable_phy_wake(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	unsigned int index =3D lane->index;
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy disable wake on usb2 %d\n", index);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value &=3D ~USB2_PORT_WAKE_INTERRUPT_ENABLE(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	usleep_range(10, 20);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D USB2_PORT_WAKEUP_EVENT(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_hsic_enable_phy_wake(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	unsigned int index =3D lane->index;
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy enable wake on hsic %d\n", index);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D USB2_HSIC_PORT_WAKEUP_EVENT(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	usleep_range(10, 20);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D USB2_HSIC_PORT_WAKE_INTERRUPT_ENABLE(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_hsic_disable_phy_wake(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	unsigned int index =3D lane->index;
+> +	struct device *dev =3D padctl->dev;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy disable wake on hsic %d\n", index);
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value &=3D ~USB2_HSIC_PORT_WAKE_INTERRUPT_ENABLE(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	usleep_range(10, 20);
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	value &=3D ~ALL_WAKE_EVENTS;
+> +	value |=3D USB2_HSIC_PORT_WAKEUP_EVENT(index);
+> +	padctl_writel(padctl, value, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra210_usb3_phy_remote_wake_detected(
+> +			struct tegra_xusb_padctl *padctl, int port)
 
-# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2cafa72e516f61b6d82c2416b4f5963fb48fd9ce
-git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-git fetch --no-tags linus master
-git checkout 2cafa72e516f61b6d82c2416b4f5963fb48fd9ce
-vim +/rc +2342 drivers/net/dsa/sja1105/sja1105_main.c
+The 80 column limit no longer applies and you can now use up to 100
+columns. There's a couple of other places where you've unnecessarily
+wrapped too early.
 
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2316  static int sja1105_best_effort_vlan_filtering_set(struct sja1105_private *priv,
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2317  						  bool be_vlan)
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2318  {
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2319  	struct dsa_switch *ds = priv->ds;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2320  	bool vlan_filtering;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2321  	int port;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2322  	int rc;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2323  
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2324  	priv->best_effort_vlan_filtering = be_vlan;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2325  
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2326  	rtnl_lock();
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2327  	for (port = 0; port < ds->num_ports; port++) {
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2328  		struct dsa_port *dp;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2329  
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2330  		if (!dsa_is_user_port(ds, port))
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2331  			continue;
+> +{
+> +	u32 value;
+> +
+> +	if (port < 0) {
 
-What if ds->num_ports is zero or they're all user ports?
+Do we need this check here? Since this is a local helper, shouldn't all
+the callers already make sure that they're not passing in invalid
+values?
 
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2332  
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2333  		dp = dsa_to_port(ds, port);
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2334  		vlan_filtering = dsa_port_is_vlan_filtering(dp);
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2335  
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2336  		rc = sja1105_vlan_filtering(ds, port, vlan_filtering);
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2337  		if (rc)
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2338  			break;
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2339  	}
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2340  	rtnl_unlock();
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2341  
-2cafa72e516f61 Vladimir Oltean 2020-05-12 @2342  	return rc;
-                                                        ^^^^^^^^^
+> +		dev_err(padctl->dev, "invalid usb3 port number %d\n",
+> +					port);
+> +		return false;
 
-2cafa72e516f61 Vladimir Oltean 2020-05-12  2343  }
+If you want the function to return bool, just make the return type bool
+as well.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +	}
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	if ((value & SS_PORT_WAKE_INTERRUPT_ENABLE(port)) &&
+> +	    (value & SS_PORT_WAKEUP_EVENT(port)))
+> +		return true;
+> +	else
+> +		return false;
 
---hXth9cGL35Nvpk4x
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+The else is not needed here.
 
-H4sICKM3Sl8AAy5jb25maWcAjFxZk9u2sn7Pr1A5LzkPSWbzOL635gEEQQkRScAAqFleWPJY
-tqcyi680k8T//nYDXAAQnGNXUja7G3uj++sGoJ9/+nlBXp6fHrbPd7fb+/vviy+7x91++7z7
-tPh8d7/730UuFrUwC5Zz8xsIl3ePL//+vt0/LN7+9u63o1/3t2eL9W7/uLtf0KfHz3dfXqDw
-3dPjTz//BP/9DMSHb1DP/n8WUObXeyz965fHl932492vX25vF78sKf3P4v1vp78dgTwVdcGX
-LaUt1y1wLr73JPhoN0xpLuqL90enR0c9o8wH+snp2ZH9M9RTkno5sI+86ldEt0RX7VIYMTbi
-MXhd8ppNWJdE1W1FrjPWNjWvueGk5Dcs9wRFrY1qqBFKj1SuPrSXQq2BYqdlaWf5fnHYPb98
-GweeKbFmdSvqVlfSKw0NtazetETBgHnFzcXpCU5u32Qleclaw7RZ3B0Wj0/PWPEwQ4KSsp+E
-N29S5JY0/jxkDYdp1aQ0nvyKbFi7ZqpmZbu84V73fE55U5E05+pmroSYY5yNjLDhYeheq/7I
-Y/7VzWtc6MHr7LPErOasIE1p2pXQpiYVu3jzy+PT4+4/b8by+lpvuKSJwlJoftVWHxrWeDrm
-U7EwNaU/1kazkmeJ2kgDmzOaQ6LoyjGwIlKWIz+iWn0E/VwcXj4evh+edw+jPi5ZzRSnVn2l
-EpnXWZ+lV+JyntOWbMPKNJ/XfzJqUDG97qscWLrVl61imtV5uihd+TqIlFxUhNchTfPKr7rO
-YZ84OWSHsoVQlOWtWSlGcl4v0+3mLGuWhbYrs3v8tHj6HM3eMM+4BLBoYMmYMbxioig08xZK
-KsYqadpaWEszLHRP34iyqQ1R10nt7KRS2tWVpwKK9ytMZfO72R7+WjzfPewWW+j44Xn7fFhs
-b2+fXh6f7x6/jMtuOF23UKAl1Nbh5mJoGWcBx+OxE73IdI46Q5nWKOiNO+a0m9ORaYhea0OM
-Dkkw7SW5jiqyjKsEjYuZrkvNw8nsVvAHZsfOoqLNQk/3CTRz3QLPbwo+W3YlmUotkXbCfvGI
-hNMwVNn1Mmx9UN21+4enzOtBEwT1yStQbOb7pVKgtS9gn/LCXJwcjSrEa7MGF1CwSOb4NN4U
-mq5g11DwJ4N707dfd59ewO0vPu+2zy/73cGSu2EkuIP3XCrRSK+DkiyZU2SmRmrFKrqMPts1
-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
+> +}
+> +
+> +static int tegra210_utmi_phy_remote_wake_detected(
+> +			struct tegra_xusb_padctl *padctl, int port)
+> +{
+> +	u32 value;
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	if ((value & USB2_PORT_WAKE_INTERRUPT_ENABLE(port)) &&
+> +	    (value & USB2_PORT_WAKEUP_EVENT(port)))
+> +		return true;
+> +	else
+> +		return false;
+> +}
+> +
+> +static int tegra210_hsic_phy_remote_wake_detected(
+> +			struct tegra_xusb_padctl *padctl, int port)
+> +{
+> +	u32 value;
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_ELPG_PROGRAM_0);
+> +	if ((value & USB2_HSIC_PORT_WAKE_INTERRUPT_ENABLE(port)) &&
+> +	    (value & USB2_HSIC_PORT_WAKEUP_EVENT(port)))
+> +		return true;
+> +	else
+> +		return false;
+> +}
 
---hXth9cGL35Nvpk4x--
+Perhaps you want to sort these with the USB3, HSIC and UTMI functions
+above rather than sort them by type of function?
+
+> +
+> +#define padctl_pmc_readl(_priv, _offset)			\
+> +({								\
+> +	int rc;							\
+> +	u32 val;						\
+
+s/val/value/ here and below.
+
+> +	rc =3D regmap_read(_priv->pmc_reg, _offset, &val);	\
+> +	if (rc)							\
+> +		return rc;					\
+> +	val;							\
+> +})
+> +
+> +#define padctl_pmc_writel(_priv, _val, _offset)			\
+> +do {								\
+> +	int rc;							\
+> +	rc =3D regmap_write(_priv->pmc_reg, _offset, _val);	\
+> +	if (rc)							\
+> +		return rc;					\
+> +} while (0)
+> +
+> +/* T210 USB2 SLEEPWALK APIs */
+
+Tegra210, please. Although this really shouldn't be needed, since you
+can derive as much from the function names.
+
+> +int tegra_pmc_utmi_enable_phy_sleepwalk(struct phy *phy,
+> +					enum usb_device_speed speed)
+
+Perhaps use tegra210_ as the prefix for consistency?
+
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	struct tegra210_xusb_padctl *priv =3D to_tegra210_xusb_padctl(padctl);
+> +	struct device *dev =3D padctl->dev;
+> +	unsigned int port =3D lane->index;
+> +	u32 val, tctrl, pctrl, rpd_ctrl;
+
+s/val/value/ here and below.
+
+> +
+> +	if (speed > USB_SPEED_HIGH)
+> +		return -EINVAL;
+> +
+> +	dev_dbg(dev, "phy enable sleepwalk usb2 %d speed %d\n", port, speed);
+> +
+> +	val =3D padctl_readl(padctl, XUSB_PADCTL_USB2_BIAS_PAD_CTL1);
+> +	tctrl =3D TCTRL_VALUE(val);
+> +	pctrl =3D PCTRL_VALUE(val);
+> +
+> +	val =3D padctl_readl(padctl, XUSB_PADCTL_USB2_OTG_PADX_CTL1(port));
+> +	rpd_ctrl =3D RPD_CTRL_VALUE(val);
+> +
+> +	/* ensure sleepwalk logic is disabled */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	val &=3D ~UTMIP_MASTER_ENABLE(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	/* ensure sleepwalk logics are in low power mode */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_MASTER_CONFIG);
+> +	val |=3D UTMIP_PWR(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_MASTER_CONFIG);
+> +
+> +	/* set debounce time */
+> +	val =3D padctl_pmc_readl(priv, PMC_USB_DEBOUNCE_DEL);
+> +	val &=3D ~UTMIP_LINE_DEB_CNT(~0);
+> +	val |=3D UTMIP_LINE_DEB_CNT(0x1);
+> +	padctl_pmc_writel(priv, val, PMC_USB_DEBOUNCE_DEL);
+> +
+> +	/* ensure fake events of sleepwalk logic are desiabled */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_FAKE(port));
+> +	val &=3D ~(UTMIP_FAKE_USBOP_VAL(port) | UTMIP_FAKE_USBON_VAL(port) |
+> +			UTMIP_FAKE_USBOP_EN(port) | UTMIP_FAKE_USBON_EN(port));
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_FAKE(port));
+> +
+> +	/* ensure wake events of sleepwalk logic are not latched */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +	val &=3D ~UTMIP_LINE_WAKEUP_EN(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +
+> +	/* disable wake event triggers of sleepwalk logic */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	val &=3D ~UTMIP_WAKE_VAL(port, ~0);
+> +	val |=3D UTMIP_WAKE_VAL_NONE(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	/* power down the line state detectors of the pad */
+> +	val =3D padctl_pmc_readl(priv, PMC_USB_AO);
+> +	val |=3D (USBOP_VAL_PD(port) | USBON_VAL_PD(port));
+> +	padctl_pmc_writel(priv, val, PMC_USB_AO);
+> +
+> +	/* save state per speed */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SAVED_STATE(port));
+> +	val &=3D ~SPEED(port, ~0);
+> +	if (speed =3D=3D USB_SPEED_HIGH)
+> +		val |=3D UTMI_HS(port);
+> +	else if (speed =3D=3D USB_SPEED_FULL)
+> +		val |=3D UTMI_FS(port);
+> +	else if (speed =3D=3D USB_SPEED_LOW)
+> +		val |=3D UTMI_LS(port);
+> +	else
+> +		val |=3D UTMI_RST(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SAVED_STATE(port));
+> +
+> +	/* enable the trigger of the sleepwalk logic */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEPWALK_CFG(port));
+> +	val |=3D UTMIP_LINEVAL_WALK_EN(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEPWALK_CFG(port));
+> +
+> +	/* reset the walk pointer and clear the alarm of the sleepwalk logic,
+> +	 * as well as capture the configuration of the USB2.0 pad
+> +	 */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_TRIGGERS);
+> +	val |=3D (UTMIP_CLR_WALK_PTR(port) | UTMIP_CLR_WAKE_ALARM(port) |
+> +		UTMIP_CAP_CFG(port));
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_TRIGGERS);
+> +
+> +	/* program electrical parameters read from XUSB PADCTL */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_TERM_PAD_CFG);
+> +	val &=3D ~(TCTRL_VAL(~0) | PCTRL_VAL(~0));
+> +	val |=3D (TCTRL_VAL(tctrl) | PCTRL_VAL(pctrl));
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_TERM_PAD_CFG);
+> +
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_PAD_CFGX(port));
+> +	val &=3D ~RPD_CTRL_PX(~0);
+> +	val |=3D RPD_CTRL_PX(rpd_ctrl);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_PAD_CFGX(port));
+> +
+> +	/* setup the pull-ups and pull-downs of the signals during the four
+> +	 * stages of sleepwalk.
+> +	 * if device is connected, program sleepwalk logic to maintain a J and
+> +	 * keep driving K upon seeing remote wake.
+> +	 */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_SLEEPWALK_PX(port));
+> +	val =3D (UTMIP_USBOP_RPD_A | UTMIP_USBOP_RPD_B | UTMIP_USBOP_RPD_C |
+> +		UTMIP_USBOP_RPD_D);
+> +	val |=3D (UTMIP_USBON_RPD_A | UTMIP_USBON_RPD_B | UTMIP_USBON_RPD_C |
+> +		UTMIP_USBON_RPD_D);
+> +	if (speed =3D=3D USB_SPEED_UNKNOWN) {
+> +		val |=3D (UTMIP_HIGHZ_A | UTMIP_HIGHZ_B | UTMIP_HIGHZ_C |
+> +			UTMIP_HIGHZ_D);
+> +	} else if ((speed =3D=3D USB_SPEED_HIGH) || (speed =3D=3D USB_SPEED_FUL=
+L)) {
+> +		/* J state: D+/D- =3D high/low, K state: D+/D- =3D low/high */
+> +		val |=3D UTMIP_HIGHZ_A;
+> +		val |=3D UTMIP_AP_A;
+> +		val |=3D (UTMIP_AN_B | UTMIP_AN_C | UTMIP_AN_D);
+> +	} else if (speed =3D=3D USB_SPEED_LOW) {
+> +		/* J state: D+/D- =3D low/high, K state: D+/D- =3D high/low */
+> +		val |=3D UTMIP_HIGHZ_A;
+> +		val |=3D UTMIP_AN_A;
+> +		val |=3D (UTMIP_AP_B | UTMIP_AP_C | UTMIP_AP_D);
+> +	}
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_SLEEPWALK_PX(port));
+> +
+> +	/* power up the line state detectors of the pad */
+> +	val =3D padctl_pmc_readl(priv, PMC_USB_AO);
+> +	val &=3D ~(USBOP_VAL_PD(port) | USBON_VAL_PD(port));
+> +	padctl_pmc_writel(priv, val, PMC_USB_AO);
+> +
+> +	usleep_range(50, 100);
+> +
+> +	/* switch the electric control of the USB2.0 pad to PMC */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	val |=3D (UTMIP_FSLS_USE_PMC(port) | UTMIP_PCTRL_USE_PMC(port) |
+> +			UTMIP_TCTRL_USE_PMC(port));
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG1);
+> +	val |=3D (UTMIP_RPD_CTRL_USE_PMC_PX(port) |
+> +			UTMIP_RPU_SWITC_LOW_USE_PMC_PX(port));
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEP_CFG1);
+> +
+> +	/* set the wake signaling trigger events */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	val &=3D ~UTMIP_WAKE_VAL(port, ~0);
+> +	val |=3D UTMIP_WAKE_VAL_ANY(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	/* enable the wake detection */
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	val |=3D UTMIP_MASTER_ENABLE(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	val =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +	val |=3D UTMIP_LINE_WAKEUP_EN(port);
+> +	padctl_pmc_writel(priv, val, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +
+> +	return 0;
+> +}
+> +
+> +int tegra_pmc_utmi_disable_phy_sleepwalk(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	struct tegra210_xusb_padctl *priv =3D to_tegra210_xusb_padctl(padctl);
+> +	struct device *dev =3D padctl->dev;
+> +	unsigned int port =3D lane->index;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy disable sleepwalk usb2 %d\n", port);
+> +
+> +	/* disable the wake detection */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	value &=3D ~UTMIP_MASTER_ENABLE(port);
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +	value &=3D ~UTMIP_LINE_WAKEUP_EN(port);
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +
+> +	/* switch the electric control of the USB2.0 pad to XUSB or USB2 */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	value &=3D ~(UTMIP_FSLS_USE_PMC(port) | UTMIP_PCTRL_USE_PMC(port) |
+> +			UTMIP_TCTRL_USE_PMC(port));
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG1);
+> +	value &=3D ~(UTMIP_RPD_CTRL_USE_PMC_PX(port) |
+> +			UTMIP_RPU_SWITC_LOW_USE_PMC_PX(port));
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_SLEEP_CFG1);
+> +
+> +	/* disable wake event triggers of sleepwalk logic */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +	value &=3D ~UTMIP_WAKE_VAL(port, ~0);
+> +	value |=3D UTMIP_WAKE_VAL_NONE(port);
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_SLEEP_CFG(port));
+> +
+> +	/* power down the line state detectors of the port */
+> +	value =3D padctl_pmc_readl(priv, PMC_USB_AO);
+> +	value |=3D (USBOP_VAL_PD(port) | USBON_VAL_PD(port));
+> +	padctl_pmc_writel(priv, value, PMC_USB_AO);
+> +
+> +	/* clear alarm of the sleepwalk logic */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_TRIGGERS);
+> +	value |=3D UTMIP_CLR_WAKE_ALARM(port);
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_TRIGGERS);
+> +
+> +	return 0;
+> +}
+> +
+> +int tegra_pmc_hsic_enable_phy_sleepwalk(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	struct tegra210_xusb_padctl *priv =3D to_tegra210_xusb_padctl(padctl);
+> +	struct device *dev =3D padctl->dev;
+> +	unsigned int port =3D lane->index;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy enable sleepwalk hsic %d\n", port);
+> +
+> +	/* ensure sleepwalk logic is disabled */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEP_CFG);
+> +	value &=3D ~UHSIC_MASTER_ENABLE;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEP_CFG);
+> +
+> +	/* ensure sleepwalk logics are in low power mode */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_MASTER_CONFIG);
+> +	value |=3D UHSIC_PWR(port);
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_MASTER_CONFIG);
+> +
+> +	/* set debounce time */
+> +	value =3D padctl_pmc_readl(priv, PMC_USB_DEBOUNCE_DEL);
+> +	value &=3D ~UHSIC_LINE_DEB_CNT(~0);
+> +	value |=3D UHSIC_LINE_DEB_CNT(0x1);
+> +	padctl_pmc_writel(priv, value, PMC_USB_DEBOUNCE_DEL);
+> +
+> +	/* ensure fake events of sleepwalk logic are desiabled */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_FAKE);
+> +	value &=3D ~(UHSIC_FAKE_STROBE_VAL | UHSIC_FAKE_DATA_VAL |
+> +			UHSIC_FAKE_STROBE_EN | UHSIC_FAKE_DATA_EN);
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_FAKE);
+> +
+> +	/* ensure wake events of sleepwalk logic are not latched */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +	value &=3D ~UHSIC_LINE_WAKEUP_EN;
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +
+> +	/* disable wake event triggers of sleepwalk logic */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEP_CFG);
+> +	value &=3D ~UHSIC_WAKE_VAL(~0);
+> +	value |=3D UHSIC_WAKE_VAL_NONE;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEP_CFG);
+> +
+> +	/* power down the line state detectors of the port */
+> +	value =3D padctl_pmc_readl(priv, PMC_USB_AO);
+> +	value |=3D (STROBE_VAL_PD(port) | DATA0_VAL_PD(port) | DATA1_VAL_PD);
+> +	padctl_pmc_writel(priv, value, PMC_USB_AO);
+> +
+> +	/* save state, HSIC always comes up as HS */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SAVED_STATE);
+> +	value &=3D ~UHSIC_MODE(~0);
+> +	value |=3D UHSIC_HS;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SAVED_STATE);
+> +
+> +	/* enable the trigger of the sleepwalk logic */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEPWALK_CFG);
+> +	value |=3D (UHSIC_WAKE_WALK_EN | UHSIC_LINEVAL_WALK_EN);
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEPWALK_CFG);
+> +
+> +	/* reset the walk pointer and clear the alarm of the sleepwalk logic,
+> +	 * as well as capture the configuration of the USB2.0 port
+> +	 */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_TRIGGERS);
+> +	value |=3D (UHSIC_CLR_WALK_PTR | UHSIC_CLR_WAKE_ALARM);
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_TRIGGERS);
+> +
+> +	/* setup the pull-ups and pull-downs of the signals during the four
+> +	 * stages of sleepwalk.
+> +	 * maintain a HSIC IDLE and keep driving HSIC RESUME upon remote wake
+> +	 */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEPWALK_P0);
+> +	value =3D (UHSIC_DATA0_RPD_A | UHSIC_DATA0_RPU_B | UHSIC_DATA0_RPU_C |
+> +		UHSIC_DATA0_RPU_D);
+> +	value |=3D (UHSIC_STROBE_RPU_A | UHSIC_STROBE_RPD_B | UHSIC_STROBE_RPD_=
+C |
+> +		UHSIC_STROBE_RPD_D);
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEPWALK_P0);
+> +
+> +	/* power up the line state detectors of the port */
+> +	value =3D padctl_pmc_readl(priv, PMC_USB_AO);
+> +	value &=3D ~(STROBE_VAL_PD(port) | DATA0_VAL_PD(port) | DATA1_VAL_PD);
+> +	padctl_pmc_writel(priv, value, PMC_USB_AO);
+> +
+> +	usleep_range(50, 100);
+> +
+> +	/* set the wake signaling trigger events */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEP_CFG);
+> +	value &=3D ~UHSIC_WAKE_VAL(~0);
+> +	value |=3D UHSIC_WAKE_VAL_SD10;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEP_CFG);
+> +
+> +	/* enable the wake detection */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEP_CFG);
+> +	value |=3D UHSIC_MASTER_ENABLE;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEP_CFG);
+> +
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +	value |=3D UHSIC_LINE_WAKEUP_EN;
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +
+> +	return 0;
+> +}
+> +
+> +int tegra_pmc_hsic_disable_phy_sleepwalk(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	struct tegra210_xusb_padctl *priv =3D to_tegra210_xusb_padctl(padctl);
+> +	struct device *dev =3D padctl->dev;
+> +	unsigned int port =3D lane->index;
+> +	u32 value;
+> +
+> +	dev_dbg(dev, "phy disable sleepwalk hsic %d\n", port);
+> +
+> +	/* disable the wake detection */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEP_CFG);
+> +	value &=3D ~UHSIC_MASTER_ENABLE;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEP_CFG);
+> +
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +	value &=3D ~UHSIC_LINE_WAKEUP_EN;
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_LINE_WAKEUP);
+> +
+> +	/* disable wake event triggers of sleepwalk logic */
+> +	value =3D padctl_pmc_readl(priv, PMC_UHSIC_SLEEP_CFG);
+> +	value &=3D ~UHSIC_WAKE_VAL(~0);
+> +	value |=3D UHSIC_WAKE_VAL_NONE;
+> +	padctl_pmc_writel(priv, value, PMC_UHSIC_SLEEP_CFG);
+> +
+> +	/* power down the line state detectors of the port */
+> +	value =3D padctl_pmc_readl(priv, PMC_USB_AO);
+> +	value |=3D (STROBE_VAL_PD(port) | DATA0_VAL_PD(port) | DATA1_VAL_PD);
+> +	padctl_pmc_writel(priv, value, PMC_USB_AO);
+> +
+> +	/* clear alarm of the sleepwalk logic */
+> +	value =3D padctl_pmc_readl(priv, PMC_UTMIP_UHSIC_TRIGGERS);
+> +	value |=3D UHSIC_CLR_WAKE_ALARM;
+> +	padctl_pmc_writel(priv, value, PMC_UTMIP_UHSIC_TRIGGERS);
+> +
+> +	return 0;
+> +}
+> +
+>  static int tegra210_usb3_set_lfps_detect(struct tegra_xusb_padctl *padct=
+l,
+>  					 unsigned int index, bool enable)
+>  {
+> @@ -988,8 +1818,23 @@ static int tegra210_usb2_phy_init(struct phy *phy)
+>  {
+>  	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+>  	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	unsigned int index =3D lane->index;
+> +	struct tegra_xusb_usb2_port *port;
+> +	int err;
+>  	u32 value;
+> =20
+> +	port =3D tegra_xusb_find_usb2_port(padctl, index);
+> +	if (!port) {
+> +		dev_err(&phy->dev, "no port found for USB2 lane %u\n", index);
+> +		return -ENODEV;
+> +	}
+> +
+> +	err =3D regulator_enable(port->supply);
+> +	if (err)
+> +		return err;
+> +
+> +	mutex_lock(&padctl->lock);
+> +
+>  	value =3D padctl_readl(padctl, XUSB_PADCTL_USB2_PAD_MUX);
+>  	value &=3D ~(XUSB_PADCTL_USB2_PAD_MUX_USB2_BIAS_PAD_MASK <<
+>  		   XUSB_PADCTL_USB2_PAD_MUX_USB2_BIAS_PAD_SHIFT);
+> @@ -997,11 +1842,29 @@ static int tegra210_usb2_phy_init(struct phy *phy)
+>  		 XUSB_PADCTL_USB2_PAD_MUX_USB2_BIAS_PAD_SHIFT;
+>  	padctl_writel(padctl, value, XUSB_PADCTL_USB2_PAD_MUX);
+> =20
+> +	mutex_unlock(&padctl->lock);
+> +
+>  	return 0;
+>  }
+
+How is this related to sleepwalk? Should this perhaps be a separate
+patch? Looks like some hunks below are also not immediately related to
+this commit. Or perhaps I don't understand how they are related.
+
+> =20
+>  static int tegra210_usb2_phy_exit(struct phy *phy)
+>  {
+> +	struct tegra_xusb_lane *lane =3D phy_get_drvdata(phy);
+> +	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+> +	unsigned int index =3D lane->index;
+> +	struct tegra_xusb_usb2_port *port;
+> +	int err;
+> +
+> +	port =3D tegra_xusb_find_usb2_port(padctl, index);
+> +	if (!port) {
+> +		dev_err(&phy->dev, "no port found for USB2 lane %u\n", index);
+> +		return -ENODEV;
+> +	}
+> +
+> +	err =3D regulator_disable(port->supply);
+> +	if (err)
+> +		return err;
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -1122,6 +1985,8 @@ static int tegra210_usb2_phy_power_on(struct phy *p=
+hy)
+> =20
+>  	priv =3D to_tegra210_xusb_padctl(padctl);
+> =20
+> +	mutex_lock(&padctl->lock);
+> +
+>  	if (port->usb3_port_fake !=3D -1) {
+>  		value =3D padctl_readl(padctl, XUSB_PADCTL_SS_PORT_MAP);
+>  		value &=3D ~XUSB_PADCTL_SS_PORT_MAP_PORTX_MAP_MASK(
+> @@ -1215,14 +2080,6 @@ static int tegra210_usb2_phy_power_on(struct phy *=
+phy)
+>  	padctl_writel(padctl, value,
+>  		      XUSB_PADCTL_USB2_BATTERY_CHRG_OTGPADX_CTL1(index));
+> =20
+> -	if (port->supply && port->mode =3D=3D USB_DR_MODE_HOST) {
+> -		err =3D regulator_enable(port->supply);
+> -		if (err)
+> -			return err;
+> -	}
+> -
+> -	mutex_lock(&padctl->lock);
+> -
+>  	if (pad->enable > 0) {
+>  		pad->enable++;
+>  		mutex_unlock(&padctl->lock);
+> @@ -1231,7 +2088,7 @@ static int tegra210_usb2_phy_power_on(struct phy *p=
+hy)
+> =20
+>  	err =3D clk_prepare_enable(pad->clk);
+>  	if (err)
+> -		goto disable_regulator;
+> +		goto out;
+> =20
+>  	value =3D padctl_readl(padctl, XUSB_PADCTL_USB2_BIAS_PAD_CTL1);
+>  	value &=3D ~((XUSB_PADCTL_USB2_BIAS_PAD_CTL1_TRK_START_TIMER_MASK <<
+> @@ -1263,8 +2120,7 @@ static int tegra210_usb2_phy_power_on(struct phy *p=
+hy)
+> =20
+>  	return 0;
+> =20
+> -disable_regulator:
+> -	regulator_disable(port->supply);
+> +out:
+>  	mutex_unlock(&padctl->lock);
+>  	return err;
+>  }
+> @@ -1275,12 +2131,12 @@ static int tegra210_usb2_phy_power_off(struct phy=
+ *phy)
+>  	struct tegra_xusb_usb2_pad *pad =3D to_usb2_pad(lane->pad);
+>  	struct tegra_xusb_padctl *padctl =3D lane->pad->padctl;
+>  	struct tegra_xusb_usb2_port *port;
+> +	unsigned int index =3D lane->index;
+>  	u32 value;
+> =20
+> -	port =3D tegra_xusb_find_usb2_port(padctl, lane->index);
+> +	port =3D tegra_xusb_find_usb2_port(padctl, index);
+>  	if (!port) {
+> -		dev_err(&phy->dev, "no port found for USB2 lane %u\n",
+> -			lane->index);
+> +		dev_err(&phy->dev, "no port found for USB2 lane %u\n", index);
+>  		return -ENODEV;
+>  	}
+> =20
+> @@ -1318,12 +2174,19 @@ static int tegra210_usb2_phy_power_off(struct phy=
+ *phy)
+>  	if (--pad->enable > 0)
+>  		goto out;
+> =20
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_USB2_OTG_PADX_CTL0(index));
+> +	value |=3D XUSB_PADCTL_USB2_OTG_PAD_CTL0_PD;
+> +	padctl_writel(padctl, value, XUSB_PADCTL_USB2_OTG_PADX_CTL0(index));
+> +
+> +	value =3D padctl_readl(padctl, XUSB_PADCTL_USB2_OTG_PADX_CTL1(index));
+> +	value |=3D XUSB_PADCTL_USB2_OTG_PAD_CTL1_PD_DR;
+> +	padctl_writel(padctl, value, XUSB_PADCTL_USB2_OTG_PADX_CTL1(index));
+> +
+>  	value =3D padctl_readl(padctl, XUSB_PADCTL_USB2_BIAS_PAD_CTL0);
+>  	value |=3D XUSB_PADCTL_USB2_BIAS_PAD_CTL0_PD;
+>  	padctl_writel(padctl, value, XUSB_PADCTL_USB2_BIAS_PAD_CTL0);
+> =20
+>  out:
+> -	regulator_disable(port->supply);
+>  	mutex_unlock(&padctl->lock);
+>  	return 0;
+>  }
+> @@ -2120,6 +2983,120 @@ static const struct phy_ops tegra210_sata_phy_ops=
+ =3D {
+>  	.owner =3D THIS_MODULE,
+>  };
+> =20
+> +static inline bool is_usb3_phy(struct phy *phy)
+> +{
+> +	return (phy->ops =3D=3D &tegra210_pcie_phy_ops ||
+> +		phy->ops =3D=3D &tegra210_sata_phy_ops);
+> +}
+> +
+> +static inline bool is_hsic_phy(struct phy *phy)
+> +{
+> +	return phy->ops =3D=3D &tegra210_hsic_phy_ops;
+> +}
+> +
+> +static inline bool is_utmi_phy(struct phy *phy)
+> +{
+> +	return phy->ops =3D=3D &tegra210_usb2_phy_ops;
+> +}
+> +
+> +static int
+> +tegra210_xusb_padctl_enable_phy_wake(struct tegra_xusb_padctl *padctl,
+> +				     struct phy *phy)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +
+> +	if (is_usb3_phy(phy))
+> +		return tegra210_usb3_enable_phy_wake(phy);
+> +	else if (is_utmi_phy(phy))
+> +		return tegra210_utmi_enable_phy_wake(phy);
+> +	else if (is_hsic_phy(phy))
+> +		return tegra210_hsic_enable_phy_wake(phy);
+> +	else
+> +		return -EINVAL;
+> +}
+
+Since all of these branches return, you don't need the else and can
+write this more simply as:
+
+	if (is_usb3_phy(phy))
+		return ...;
+
+	if (is_utmi_phy(phy))
+		return ...;
+
+	if (is_hsic_phy(phy))
+		return ...;
+
+	return -EINVAL;
+
+I'd probably also leave out the check for !phy since that should never
+happen and it might be good to just let it crash in that case to make
+sure that bug is found as quickly as possible.
+
+> +
+> +static int
+> +tegra210_xusb_padctl_disable_phy_wake(struct tegra_xusb_padctl *padctl,
+> +				      struct phy *phy)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +
+> +	if (is_usb3_phy(phy))
+> +		return tegra210_usb3_disable_phy_wake(phy);
+> +	else if (is_utmi_phy(phy))
+> +		return tegra210_utmi_disable_phy_wake(phy);
+> +	else if (is_hsic_phy(phy))
+> +		return tegra210_hsic_disable_phy_wake(phy);
+> +	else
+> +		return -EINVAL;
+> +}
+> +
+> +int tegra210_xusb_padctl_remote_wake_detected(struct phy *phy)
+> +{
+> +	struct tegra_xusb_lane *lane;
+> +	struct tegra_xusb_padctl *padctl;
+> +
+> +	if (!phy)
+> +		return 0;
+> +
+> +	lane =3D phy_get_drvdata(phy);
+> +	padctl =3D lane->pad->padctl;
+> +
+> +	if (is_utmi_phy(phy))
+> +		return tegra210_utmi_phy_remote_wake_detected(padctl,
+> +					lane->index);
+> +	else if (is_hsic_phy(phy))
+> +		return tegra210_hsic_phy_remote_wake_detected(padctl,
+> +					lane->index);
+> +	else if (is_usb3_phy(phy))
+> +		return tegra210_usb3_phy_remote_wake_detected(padctl,
+> +					tegra210_usb3_lane_map(lane));
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int
+> +tegra210_xusb_padctl_enable_phy_sleepwalk(struct tegra_xusb_padctl *padc=
+tl,
+> +					  struct phy *phy,
+> +					  enum usb_device_speed speed)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +
+> +	if (is_usb3_phy(phy))
+> +		return tegra210_usb3_enable_phy_sleepwalk(phy);
+> +	else if (is_utmi_phy(phy))
+> +		return tegra_pmc_utmi_enable_phy_sleepwalk(phy, speed);
+> +	else if (is_hsic_phy(phy))
+> +		return tegra_pmc_hsic_enable_phy_sleepwalk(phy);
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int
+> +tegra210_xusb_padctl_disable_phy_sleepwalk(struct tegra_xusb_padctl *pad=
+ctl,
+> +					   struct phy *phy)
+> +{
+> +	if (!phy)
+> +		return 0;
+> +
+> +	if (is_usb3_phy(phy))
+> +		return tegra210_usb3_disable_phy_sleepwalk(phy);
+> +	else if (is_utmi_phy(phy))
+> +		return tegra_pmc_utmi_disable_phy_sleepwalk(phy);
+> +	else if (is_hsic_phy(phy))
+> +		return tegra_pmc_hsic_disable_phy_sleepwalk(phy);
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +
+>  static struct tegra_xusb_pad *
+>  tegra210_sata_pad_probe(struct tegra_xusb_padctl *padctl,
+>  			const struct tegra_xusb_pad_soc *soc,
+> @@ -2317,6 +3294,8 @@ tegra210_xusb_padctl_probe(struct device *dev,
+>  			   const struct tegra_xusb_padctl_soc *soc)
+>  {
+>  	struct tegra210_xusb_padctl *padctl;
+> +	struct device_node *node, *np =3D dev->of_node;
+> +	struct platform_device *pmc_dev;
+>  	int err;
+> =20
+>  	padctl =3D devm_kzalloc(dev, sizeof(*padctl), GFP_KERNEL);
+> @@ -2330,6 +3309,24 @@ tegra210_xusb_padctl_probe(struct device *dev,
+>  	if (err < 0)
+>  		return ERR_PTR(err);
+> =20
+> +	node =3D of_parse_phandle(np, "nvidia,pmc", 0);
+> +	if (!node) {
+> +		dev_err(dev, "nvidia,pmc property is missing\n");
+> +		return ERR_PTR(-ENODEV);
+> +	}
+> +
+> +	pmc_dev =3D of_find_device_by_node(node);
+> +	if (!pmc_dev) {
+> +		dev_err(dev, "pmc device is not available\n");
+> +		return ERR_PTR(-ENODEV);
+> +	}
+> +
+> +	padctl->pmc_reg =3D dev_get_regmap(&pmc_dev->dev, "usb_sleepwalk");
+> +	if (!padctl->pmc_reg) {
+> +		dev_err(dev, "pmc regmap is not available.\n");
+> +		return ERR_PTR(-ENODEV);
+> +	}
+
+We'll have to make this optional for backwards compatibility, which will
+also help make this easier to merge because it doesn't all have to go in
+at the same time.
+
+Thierry
+
+> +
+>  	return &padctl->base;
+>  }
+> =20
+> @@ -2337,13 +3334,80 @@ static void tegra210_xusb_padctl_remove(struct te=
+gra_xusb_padctl *padctl)
+>  {
+>  }
+> =20
+> +static void tegra210_xusb_padctl_save(struct tegra_xusb_padctl *padctl)
+> +{
+> +	struct tegra210_xusb_padctl *priv =3D to_tegra210_xusb_padctl(padctl);
+> +
+> +	priv->context.usb2_pad_mux =3D
+> +		padctl_readl(padctl, XUSB_PADCTL_USB2_PAD_MUX);
+> +	priv->context.usb2_port_cap =3D
+> +		padctl_readl(padctl, XUSB_PADCTL_USB2_PORT_CAP);
+> +	priv->context.ss_port_map =3D
+> +		padctl_readl(padctl, XUSB_PADCTL_SS_PORT_MAP);
+> +	priv->context.usb3_pad_mux =3D
+> +		padctl_readl(padctl, XUSB_PADCTL_USB3_PAD_MUX);
+> +}
+> +
+> +static void tegra210_xusb_padctl_restore(struct tegra_xusb_padctl *padct=
+l)
+> +{
+> +	struct tegra210_xusb_padctl *priv =3D to_tegra210_xusb_padctl(padctl);
+> +	int i;
+> +
+> +	padctl_writel(padctl, priv->context.usb2_pad_mux,
+> +		XUSB_PADCTL_USB2_PAD_MUX);
+> +	padctl_writel(padctl, priv->context.usb2_port_cap,
+> +		XUSB_PADCTL_USB2_PORT_CAP);
+> +	padctl_writel(padctl, priv->context.ss_port_map,
+> +		XUSB_PADCTL_SS_PORT_MAP);
+> +
+> +	for (i =3D 0; i <=3D 7; i ++)
+> +		tegra210_uphy_lane_iddq_enable(padctl, i);
+> +
+> +	padctl_writel(padctl, priv->context.usb3_pad_mux,
+> +		XUSB_PADCTL_USB3_PAD_MUX);
+> +
+> +	for (i =3D 0; i <=3D 7; i ++)
+> +		tegra210_uphy_lane_iddq_disable(padctl, i);
+> +}
+> +
+> +static int tegra210_xusb_padctl_suspend_noirq(struct tegra_xusb_padctl *=
+padctl)
+> +{
+> +	mutex_lock(&padctl->lock);
+> +
+> +	tegra210_uphy_deinit(padctl);
+> +
+> +	tegra210_xusb_padctl_save(padctl);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +	return 0;
+> +}
+> +
+> +static int tegra210_xusb_padctl_resume_noirq(struct tegra_xusb_padctl *p=
+adctl)
+> +{
+> +	mutex_lock(&padctl->lock);
+> +
+> +	tegra210_xusb_padctl_restore(padctl);
+> +
+> +	tegra210_uphy_init(padctl);
+> +
+> +	mutex_unlock(&padctl->lock);
+> +	return 0;
+> +}
+> +
+>  static const struct tegra_xusb_padctl_ops tegra210_xusb_padctl_ops =3D {
+>  	.probe =3D tegra210_xusb_padctl_probe,
+>  	.remove =3D tegra210_xusb_padctl_remove,
+> +	.suspend_noirq =3D tegra210_xusb_padctl_suspend_noirq,
+> +	.resume_noirq =3D tegra210_xusb_padctl_resume_noirq,
+>  	.usb3_set_lfps_detect =3D tegra210_usb3_set_lfps_detect,
+>  	.hsic_set_idle =3D tegra210_hsic_set_idle,
+>  	.vbus_override =3D tegra210_xusb_padctl_vbus_override,
+>  	.utmi_port_reset =3D tegra210_utmi_port_reset,
+> +	.enable_phy_sleepwalk =3D tegra210_xusb_padctl_enable_phy_sleepwalk,
+> +	.disable_phy_sleepwalk =3D tegra210_xusb_padctl_disable_phy_sleepwalk,
+> +	.enable_phy_wake =3D tegra210_xusb_padctl_enable_phy_wake,
+> +	.disable_phy_wake =3D tegra210_xusb_padctl_disable_phy_wake,
+> +	.remote_wake_detected =3D tegra210_xusb_padctl_remote_wake_detected,
+>  };
+> =20
+>  static const char * const tegra210_xusb_padctl_supply_names[] =3D {
+> --=20
+> 2.25.1
+>=20
+
+--/2994txjAzEdQwm5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9M7v8ACgkQ3SOs138+
+s6GPbBAAq4+aeena4vjFOGJ2bffo+aX1ZjuH9NsXl+gdzrRrknNhAz2Z35/xvaiu
+PywnQW/TGkaiyCH7w/MBaRYunoQgAMTYERcPuD+pSDB1/Hm0/R0xMC4HGDiSOFpE
+Bp6S+TYI5ewiu+KlX/QRUmU6WTFpBMcoKNQ8IMVkP3rnNbPaPk/oenGjbLO2Xzbt
+5OOrNyPOuR5aGIcyHIW9jGZTEAgn+YuXcvgcYrn8M+2aXQzjJ5m81HyYuAuoEskb
+8uK7lSnij8irsM36fSKru4jahlQeVjGA/UXr6mrWjQEQqaXUvVyNqt1ywmcGDh8Q
+18356LJJ52IRI6URmvE+ZAhwJWvgVfyFGfjHoz9QDKcwhfOsCDTdEgZyo4gqptFA
+SjvcuHMGg+PC8pK3GbPFB+fX4ETGJnlW5gjEvildt8KGhD3sfF/DXTDQNFo70wC4
+pHnwzBtaNOPM/yAxoEaepa1xSATqWMf5QxkR84Kab2NDQueS5RzhwbyXVO8zHJ3b
+tZMMKAe1fTQNoZHRsoM7DKeL37qzbKKqguGt75mVOlBtpPWqgB5qvti6FtbKRPDb
+iHGPC+29zX4LqlxBI/jK9ilFbWw/6ZntEQIekvTe31d1EpN0JEfFj8Aft46M53Sq
+2F2s/VCbD+1c5H48Alo+ASZLWJQ1TBlAXd+Rnc/FWJZ++xhzndo=
+=Zark
+-----END PGP SIGNATURE-----
+
+--/2994txjAzEdQwm5--
