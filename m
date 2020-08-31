@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD834257859
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0E625782F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgHaL1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgHaLYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:24:22 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A0AC06123A;
-        Mon, 31 Aug 2020 04:11:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f085000329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:5000:329c:23ff:fea6:a903])
+        id S1727814AbgHaLWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726714AbgHaLR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 07:17:58 -0400
+Received: from localhost (unknown [122.171.38.130])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 747751EC02C1;
-        Mon, 31 Aug 2020 13:11:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1598872282;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6DWUFpLyD0dihOF5P86+PovaOqwSm4uuphdxui7Xrvw=;
-        b=jDIns6L2Fow2zYngKM/z6o3+stBkjSGWtG75dZ7oqtqaPxtxigor349Wn+PgLw4keVwjjp
-        aGyvQWklsUrmaMPkcUNbJSsd80F8bQK6/LPR2n+OcCBSaZdvuOTAI5qxMjjzxfkNrMnbvY
-        xet6+Btlqkzw/ZLmYY6co4sAhcafvDM=
-Date:   Mon, 31 Aug 2020 13:11:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v6 47/76] x86/dumpstack/64: Add noinstr version of
- get_stack_info()
-Message-ID: <20200831111123.GG27517@zn.tnic>
-References: <20200824085511.7553-1-joro@8bytes.org>
- <20200824085511.7553-48-joro@8bytes.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4475E2072D;
+        Mon, 31 Aug 2020 11:11:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598872297;
+        bh=h1kMcG8he3kJobrVkF04CR2+ioy68IPllAuj7Q35pyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xoELkdYRm3whuwOE+7jGts+1CArRNLFlX1HvBNtbFsEs1b4R5WzDV3NzunMhvbPY0
+         pd+mwILwRXzKlcNqaBrSS7DwAWuKnhWxTC3ZWsoHpY/xsLadTBe0OeoXc75ZYg+nqN
+         HhVfrwX5RiknoLolgw3dDUfpYmqmslXD15NWlTL8=
+Date:   Mon, 31 Aug 2020 16:41:33 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Roger Quadros <rogerq@ti.com>
+Cc:     kishon@ti.com, Tony Lindgren <tony@atomide.com>,
+        robh+dt@kernel.org, nsekhar@ti.com, vigneshr@ti.com,
+        jan.kiszka@siemens.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4] dt-binding: phy: convert ti,omap-usb2 to YAML
+Message-ID: <20200831111133.GP2639@vkoul-mobl>
+References: <20200821081144.29288-1-rogerq@ti.com>
+ <a6a59fba-6a0c-c00f-29e7-e85c7dcc1319@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200824085511.7553-48-joro@8bytes.org>
+In-Reply-To: <a6a59fba-6a0c-c00f-29e7-e85c7dcc1319@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 24, 2020 at 10:54:42AM +0200, Joerg Roedel wrote:
-> diff --git a/arch/x86/kernel/dumpstack_64.c b/arch/x86/kernel/dumpstack_64.c
-> index c49cf594714b..5a85730eb0ca 100644
-> --- a/arch/x86/kernel/dumpstack_64.c
-> +++ b/arch/x86/kernel/dumpstack_64.c
-> @@ -85,7 +85,7 @@ struct estack_pages estack_pages[CEA_ESTACK_PAGES] ____cacheline_aligned = {
->  	EPAGERANGE(VC2),
->  };
->  
-> -static bool in_exception_stack(unsigned long *stack, struct stack_info *info)
-> +static bool __always_inline in_exception_stack(unsigned long *stack, struct stack_info *info)
+On 24-08-20, 10:47, Roger Quadros wrote:
+> Hi,
+> 
+> On 21/08/2020 11:11, Roger Quadros wrote:
+> > Move ti,omap-usb2 to its own YAML schema.
+> > 
+> > Signed-off-by: Roger Quadros <rogerq@ti.com>
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> > ---
+> > 
+> > v4
+> > - fix example to fix dt_binding_check warnings
+> > - '#phy-cells' -> "#phy-cells"
+> > - Add 'oneOf' to compatible logic to allow just "ti,omap-usb2" as valid
+> > 
+> > v3
+> > - Removed quotes from compatibles
+> > - changed property to "ti,disable-charger-det"
+> > 
+> > v2
+> > - Address Rob's comments on YAML schema.
+> > 
+> >   .../devicetree/bindings/phy/ti,omap-usb2.yaml | 72 +++++++++++++++++++
+> >   .../devicetree/bindings/phy/ti-phy.txt        | 37 ----------
+> >   2 files changed, 72 insertions(+), 37 deletions(-)
+> >   create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+> > new file mode 100644
+> > index 000000000000..a05110351814
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
+> > @@ -0,0 +1,72 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/phy/ti,omap-usb2.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: OMAP USB2 PHY
+> > +
+> > +maintainers:
+> > + - Kishon Vijay Abraham I <kishon@ti.com>
+> > + - Roger Quadros <rogerq@ti.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +        - enum:
+> > +          - ti,dra7x-usb2
+> > +          - ti,dra7x-usb2-phy2
+> > +          - ti,am654-usb2
+> 
+> I missed these two.
+> "ti,omap5-usb2"
+> "ti,am437x-usb2"
+> 
+> While "ti,am437x-usb2" is being used in the device tree files
+> I don't see "ti,omap5-usb2" being used anywhere.
+> 
+> omap5-l4.dtsi uses "ti,omap-usb2"
+> 
+> Should we get rid of "ti,omap5-usb2"?
 
-Yeah, checkpatch seems to complain correctly here:
-
-ERROR: inline keyword should sit between storage class and type
-#88: FILE: arch/x86/kernel/dumpstack_64.c:88:
-+static bool __always_inline in_exception_stack(unsigned long *stack, struct stack_info *info)
-
-ERROR: inline keyword should sit between storage class and type
-#97: FILE: arch/x86/kernel/dumpstack_64.c:129:
-+static bool __always_inline in_irq_stack(unsigned long *stack, struct stack_info *info)
-
-> +int get_stack_info(unsigned long *stack, struct task_struct *task,
-> +		   struct stack_info *info, unsigned long *visit_mask)
-> +{
-> +	task = task ? : current;
-> +
-> +	if (!stack)
-> +		goto unknown;
-> +
-> +	if (!get_stack_info_noinstr(stack, task, info))
-> +		goto unknown;
->  
-> -recursion_check:
->  	/*
->  	 * Make sure we don't iterate through any given stack more than once.
->  	 * If it comes up a second time then there's something wrong going on:
-> @@ -196,4 +202,5 @@ int get_stack_info(unsigned long *stack, struct task_struct *task,
->  unknown:
->  	info->type = STACK_TYPE_UNKNOWN;
->  	return -EINVAL;
-> +
-^ Superfluous newline.
+Sure drop them ;-) we can always add back when we have a user
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Vinod
