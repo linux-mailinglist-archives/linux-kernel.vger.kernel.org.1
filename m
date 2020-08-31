@@ -2,197 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F047257AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C0F257AB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727951AbgHaNsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 09:48:16 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43643 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgHaNr3 (ORCPT
+        id S1726913AbgHaNry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 09:47:54 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36698 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726249AbgHaNqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 09:47:29 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kCk90-00062w-W7; Mon, 31 Aug 2020 13:46:47 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: [PATCH 4/4] tests: add waitid() tests for non-blocking pidfds
-Date:   Mon, 31 Aug 2020 15:45:51 +0200
-Message-Id: <20200831134551.1599689-5-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
-References: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
+        Mon, 31 Aug 2020 09:46:18 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VDipvu082687;
+        Mon, 31 Aug 2020 13:46:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7XrKIEjokhT39cb4dngP7JBKkU6deHs5tXu4INGwQow=;
+ b=KCWN1aD6eukPdtoLctc1Q+Pj9jHE4tn5AxjXIZSjwNIri2p36JYknCZKOAZZX6X5eYSt
+ YO7hJNcpfmu0PPyoXxYLxLHduULiUT/3enzYamN2zuy4IUBGYybSc1j4sxRbtTKVoAnk
+ NHVqlg6PikYRGwaPcgxVEZ43WNLuuu+jHJZe+2f4oYbAuWqv2hOE7Rd4X8SrJjKfqT5E
+ 0SbB4/lcJf9F+tGHxhVPPUVbn5AtN0+PDLZdjBLXIaa1uuWOtp0gMwq7el4379tIATe6
+ asOJoFeEdPdkN28+QP8qbzxWZBrG8MtGhK2tu/FVhHunzK+e8Fophjj1ggIBYc5b0fr1 wg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 337eeqpb97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Aug 2020 13:46:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VDjA0q158834;
+        Mon, 31 Aug 2020 13:46:05 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 3380kknhsk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 13:46:05 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07VDk4i7003609;
+        Mon, 31 Aug 2020 13:46:04 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 Aug 2020 06:46:04 -0700
+Date:   Mon, 31 Aug 2020 16:45:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Cengiz Can <cengiz@kernel.wtf>
+Cc:     devel@driverdev.osuosl.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] staging: atomisp: Fix fallthrough keyword warning
+Message-ID: <20200831134557.GW8299@kadam>
+References: <20200831133011.91258-1-cengiz@kernel.wtf>
+ <20200831134021.GV8299@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831134021.GV8299@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310080
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9729 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310080
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verify that the PIDFD_NONBLOCK flag works with pidfd_open() and that
-waitid() with a non-blocking pidfd returns EAGAIN:
+Really I think this function is pretty buggy.  It shouldn't be falling
+through at all...  I reported it a couple days back so it's possible
+that someone is working on a fix already.
 
-	TAP version 13
-	1..3
-	# Starting 3 tests from 1 test cases.
-	#  RUN           global.wait_simple ...
-	#            OK  global.wait_simple
-	ok 1 global.wait_simple
-	#  RUN           global.wait_states ...
-	#            OK  global.wait_states
-	ok 2 global.wait_states
-	#  RUN           global.wait_nonblock ...
-	#            OK  global.wait_nonblock
-	ok 3 global.wait_nonblock
-	# PASSED: 3 / 3 tests passed.
-	# Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- tools/testing/selftests/pidfd/pidfd.h      |  4 ++
- tools/testing/selftests/pidfd/pidfd_wait.c | 83 +++++++++++++++++++++-
- 2 files changed, 86 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/pidfd/pidfd.h b/tools/testing/selftests/pidfd/pidfd.h
-index a2c80914e3dc..01f8d3c0cf2c 100644
---- a/tools/testing/selftests/pidfd/pidfd.h
-+++ b/tools/testing/selftests/pidfd/pidfd.h
-@@ -46,6 +46,10 @@
- #define __NR_pidfd_getfd -1
- #endif
- 
-+#ifndef PIDFD_NONBLOCK
-+#define PIDFD_NONBLOCK O_NONBLOCK
-+#endif
-+
- /*
-  * The kernel reserves 300 pids via RESERVED_PIDS in kernel/pid.c
-  * That means, when it wraps around any pid < 300 will be skipped.
-diff --git a/tools/testing/selftests/pidfd/pidfd_wait.c b/tools/testing/selftests/pidfd/pidfd_wait.c
-index 075c716f6fb8..cefce4d3d2f6 100644
---- a/tools/testing/selftests/pidfd/pidfd_wait.c
-+++ b/tools/testing/selftests/pidfd/pidfd_wait.c
-@@ -21,6 +21,11 @@
- 
- #define ptr_to_u64(ptr) ((__u64)((uintptr_t)(ptr)))
- 
-+/* Attempt to de-conflict with the selftests tree. */
-+#ifndef SKIP
-+#define SKIP(s, ...)	XFAIL(s, ##__VA_ARGS__)
-+#endif
-+
- static pid_t sys_clone3(struct clone_args *args)
- {
- 	return syscall(__NR_clone3, args, sizeof(struct clone_args));
-@@ -65,7 +70,7 @@ TEST(wait_simple)
- 	pidfd = -1;
- 
- 	pid = sys_clone3(&args);
--	ASSERT_GE(pid, 1);
-+	ASSERT_GE(pid, 0);
- 
- 	if (pid == 0)
- 		exit(EXIT_SUCCESS);
-@@ -133,4 +138,80 @@ TEST(wait_states)
- 	EXPECT_EQ(close(pidfd), 0);
- }
- 
-+TEST(wait_nonblock)
-+{
-+	int pidfd, status = 0;
-+	unsigned int flags = 0;
-+	pid_t parent_tid = -1;
-+	struct clone_args args = {
-+		.parent_tid = ptr_to_u64(&parent_tid),
-+		.flags = CLONE_PARENT_SETTID,
-+		.exit_signal = SIGCHLD,
-+	};
-+	int ret;
-+	pid_t pid;
-+	siginfo_t info = {
-+		.si_signo = 0,
-+	};
-+
-+	/*
-+	 * Callers need to see ECHILD with non-blocking pidfds when no child
-+	 * processes exists.
-+	 */
-+	pidfd = sys_pidfd_open(getpid(), PIDFD_NONBLOCK);
-+	EXPECT_GE(pidfd, 0) {
-+		/* pidfd_open() doesn't support PIDFD_NONBLOCK. */
-+		ASSERT_EQ(errno, EINVAL);
-+		SKIP(return, "Skipping PIDFD_NONBLOCK test");
-+	}
-+
-+	pid = sys_waitid(P_PIDFD, pidfd, &info, WEXITED, NULL);
-+	ASSERT_LT(pid, 0);
-+	ASSERT_EQ(errno, ECHILD);
-+	EXPECT_EQ(close(pidfd), 0);
-+
-+	pid = sys_clone3(&args);
-+	ASSERT_GE(pid, 0);
-+
-+	if (pid == 0) {
-+		kill(getpid(), SIGSTOP);
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	pidfd = sys_pidfd_open(pid, PIDFD_NONBLOCK);
-+	EXPECT_GE(pidfd, 0) {
-+		/* pidfd_open() doesn't support PIDFD_NONBLOCK. */
-+		ASSERT_EQ(errno, EINVAL);
-+		SKIP(return, "Skipping PIDFD_NONBLOCK test");
-+	}
-+
-+	flags = fcntl(pidfd, F_GETFL, 0);
-+	ASSERT_GT(flags, 0);
-+	ASSERT_GT((flags & O_NONBLOCK), 0);
-+
-+	/*
-+	 * Callers need to see EAGAIN/EWOULDBLOCK with non-blocking pidfd when
-+	 * child processes exist but none have exited.
-+	 */
-+	pid = sys_waitid(P_PIDFD, pidfd, &info, WEXITED, NULL);
-+	ASSERT_LT(pid, 0);
-+	ASSERT_EQ(errno, EAGAIN);
-+
-+	ASSERT_EQ(sys_waitid(P_PIDFD, pidfd, &info, WSTOPPED, NULL), 0);
-+	ASSERT_EQ(info.si_signo, SIGCHLD);
-+	ASSERT_EQ(info.si_code, CLD_STOPPED);
-+	ASSERT_EQ(info.si_pid, parent_tid);
-+
-+	ASSERT_EQ(sys_pidfd_send_signal(pidfd, SIGCONT, NULL, 0), 0);
-+
-+	ASSERT_EQ(fcntl(pidfd, F_SETFL, (flags & ~O_NONBLOCK)), 0);
-+
-+	ASSERT_EQ(sys_waitid(P_PIDFD, pidfd, &info, WEXITED, NULL), 0);
-+	ASSERT_EQ(info.si_signo, SIGCHLD);
-+	ASSERT_EQ(info.si_code, CLD_EXITED);
-+	ASSERT_EQ(info.si_pid, parent_tid);
-+
-+	EXPECT_EQ(close(pidfd), 0);
-+}
-+
- TEST_HARNESS_MAIN
--- 
-2.28.0
+regards,
+dan carpenter
 
