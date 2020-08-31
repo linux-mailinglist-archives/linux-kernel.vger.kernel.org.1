@@ -2,192 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503C325756A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B7F25756E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728157AbgHaIaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 04:30:52 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:14548 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728147AbgHaIas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:30:48 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bg3LS3VFFz9v478;
-        Mon, 31 Aug 2020 10:30:40 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id xUqf6y9tCXfm; Mon, 31 Aug 2020 10:30:40 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bg3LS2Y5bz9v470;
-        Mon, 31 Aug 2020 10:30:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E2628B799;
-        Mon, 31 Aug 2020 10:30:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id PouFLmaQOdgA; Mon, 31 Aug 2020 10:30:45 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 101108B7BB;
-        Mon, 31 Aug 2020 10:30:45 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 83FC065D48; Mon, 31 Aug 2020 08:30:44 +0000 (UTC)
-Message-Id: <a518abc29266a708dfbccc8fce9ae6694fe4c2c6.1598862623.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <f6ea2483c2c389567b007945948f704d18cfaeea.1598862623.git.christophe.leroy@csgroup.eu>
-References: <f6ea2483c2c389567b007945948f704d18cfaeea.1598862623.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc/8xx: Support 16k hugepages with 4k pages
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon, 31 Aug 2020 08:30:44 +0000 (UTC)
+        id S1728409AbgHaIbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:31:31 -0400
+Received: from mail-ej1-f67.google.com ([209.85.218.67]:43196 "EHLO
+        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725978AbgHaIb2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:31:28 -0400
+Received: by mail-ej1-f67.google.com with SMTP id m22so7302843eje.10;
+        Mon, 31 Aug 2020 01:31:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=I8c8PT+GX2bdj4Es9cku2hg+l1WawbuG/Qnvn+DarqU=;
+        b=srYh+chfqEqOFiiup/4HDw5LqErEERrIt+bYeGKL8QkkRmYEmSdVKuKHoypnBikqPZ
+         Oy+sn98nWOTDut33YDk+lJ830xxTnClmr/Td0215HqHAPuOdPHFYs2F1T115STV4fQWe
+         TQwiEyFXYeymYfsXGYsKu9wDT7QlzB7GaIM4JukDfcO/c1CbdkcOi76HsFJGdTPu7bMx
+         FvaYvPpbRC6Xp4/QJbK1mNDzy8AXt7zkXST2CHug66LGrzzniqYz9h1gbTSKZASdnac1
+         d61r4TJGjfJznlZOc6aA3lhz/UmM5tDXqyBsQI7m3ZMhwaGBc7CE9VCNu32kF/4YBuoY
+         5gow==
+X-Gm-Message-State: AOAM530WCZ7nJM/nQshvUXxHPZ+jkqrlO7mz0xvhqk5xgl+wHLFLIPVx
+        sWfNKul0DiRXbzgfRknKBXI=
+X-Google-Smtp-Source: ABdhPJz7Onk9KEruHrJQU0MEdyIWElLR9/8+aU3k59m6nJC8T34rrg/1FhfXtV9j8V8Vp+1IL4ozAQ==
+X-Received: by 2002:a17:906:b09a:: with SMTP id x26mr116036ejy.162.1598862685674;
+        Mon, 31 Aug 2020 01:31:25 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.216])
+        by smtp.googlemail.com with ESMTPSA id z18sm1172814ejw.94.2020.08.31.01.31.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 31 Aug 2020 01:31:25 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 10:31:22 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: Re: [RFT 3/4] ARM: dts: exynos: Move CMU assigned ISP clocks to
+ buses in Exynos3250
+Message-ID: <20200831083122.GA12874@kozik-lap>
+References: <20200829172532.29358-1-krzk@kernel.org>
+ <CGME20200829172553eucas1p1b62ad1cac6e0eea1dbb4669f09949419@eucas1p1.samsung.com>
+ <20200829172532.29358-3-krzk@kernel.org>
+ <6ed67a82-0f29-7384-203d-dcb2e58c5a8d@samsung.com>
+ <20200831081906.GA11513@kozik-lap>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200831081906.GA11513@kozik-lap>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 8xx has 4 page sizes: 4k, 16k, 512k and 8M
+On Mon, Aug 31, 2020 at 10:19:06AM +0200, Krzysztof Kozlowski wrote:
+> On Mon, Aug 31, 2020 at 10:11:02AM +0200, Marek Szyprowski wrote:
+> > Hi Krzysztof,
+> > 
+> > On 29.08.2020 19:25, Krzysztof Kozlowski wrote:
+> > > Commit 52005dece527 ("ARM: dts: Add assigned clock parents to CMU node
+> > > for exynos3250") added assigned clocks under Clock Management Unit to
+> > > fix hangs when accessing ISP registers.
+> > >
+> > > This is not the place for it as CMU does not have a required "clocks"
+> > > property:
+> > >
+> > >    arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml: clock-controller@10030000: 'clocks' is a dependency of 'assigned-clocks'
+> > >
+> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > >
+> > > ---
+> > >
+> > > Not tested and I wonder whether actually correct. For example, what will
+> > > happen if devfreq (exynos-bus) is not built in?
+> > >
+> > > Could someone verify it?
+> > 
+> > Sorry, but this patch is not correct. Those clocks has noting with 
+> > bus-freq. The assigned clocks property should stay where it is. Maybe 
+> > one need to fix the schemas for dts verification. Those clocks has to be 
+> > set (and so generic clock framework does) according to the assigned 
+> > clocks properties once the clock controller is instantiated.
+> > 
+> > The only alternative would be to add exynos-subcmu variant to properly 
+> > link CMU with the ISP power domain, but assuming that there is no Exynos 
+> > 3250 ISP driver in mainline (and probably never will be), it is safe to 
+> > keep those clocks sourced from 24MHz crystal.
+> 
+> Thanks for the clarification.  Another solution to silence the warning
+> could be to add a "clocks" property for FIN_PLL, although the driver
+> actually does not take it.
+> 
+> This is the only remaining dtschema check warning on Exynos3250 so it
+> would be nice to at least silence it. My goal is to have all them
+> schema-correct, or as close as possible (for Exynos4 the camera node is
+> a trouble).
 
-4k and 16k can be selected at build time as standard page sizes,
-and 512k and 8M are hugepages.
+BTW, if you have some time, it would be awesome if you could test all
+the series (on Exynos3250 obviously with this patch reverted):
+https://github.com/krzk/linux/tree/for-next/dts-exynos-schema-cleanups
 
-When 4k standard pages are selected, 16k pages are not available.
+The Exynos5 cleanup is ongoing, so there will be more patches. But
+Exynos3 and Exynos4 I finished.
 
-Allow 16k pages as hugepages when 4k pages are used.
-
-To allow that, implement arch_make_huge_pte() which receives
-the necessary arguments to allow setting the PTE in accordance
-with the page size:
-- 512 k pages must have _PAGE_HUGE and _PAGE_SPS. They are set
-by pte_mkhuge(). arch_make_huge_pte() does nothing.
-- 16 k pages must have only _PAGE_SPS. arch_make_huge_pte() clears
-_PAGE_HUGE.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h | 14 ++++++++++++++
- arch/powerpc/include/asm/nohash/32/pgtable.h     |  2 ++
- arch/powerpc/mm/hugetlbpage.c                    |  2 +-
- arch/powerpc/mm/nohash/tlb.c                     |  4 ----
- arch/powerpc/mm/ptdump/8xx.c                     |  5 +++++
- include/uapi/asm-generic/hugetlb_encode.h        |  1 +
- include/uapi/linux/mman.h                        |  1 +
- 7 files changed, 24 insertions(+), 5 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h b/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
-index e752a5807a59..39be9aea86db 100644
---- a/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
-+++ b/arch/powerpc/include/asm/nohash/32/hugetlb-8xx.h
-@@ -65,4 +65,18 @@ static inline void huge_ptep_set_wrprotect(struct mm_struct *mm,
- 	pte_update(mm, addr, ptep, clr, set, 1);
- }
- 
-+#ifdef CONFIG_PPC_4K_PAGES
-+static inline pte_t arch_make_huge_pte(pte_t entry, struct vm_area_struct *vma,
-+				       struct page *page, int writable)
-+{
-+	size_t size = huge_page_size(hstate_vma(vma));
-+
-+	if (size == SZ_16K)
-+		return __pte(pte_val(entry) & ~_PAGE_HUGE);
-+	else
-+		return entry;
-+}
-+#define arch_make_huge_pte arch_make_huge_pte
-+#endif
-+
- #endif /* _ASM_POWERPC_NOHASH_32_HUGETLB_8XX_H */
-diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
-index 80bbc21b87f0..ee2243ba96cf 100644
---- a/arch/powerpc/include/asm/nohash/32/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
-@@ -235,6 +235,8 @@ static int number_of_cells_per_pte(pmd_t *pmd, pte_basic_t val, int huge)
- 		return PAGE_SIZE / SZ_4K;
- 	else if (hugepd_ok(*((hugepd_t *)pmd)))
- 		return 1;
-+	else if (IS_ENABLED(CONFIG_PPC_4K_PAGES) && !(val & _PAGE_HUGE))
-+		return SZ_16K / SZ_4K;
- 	else
- 		return SZ_512K / SZ_4K;
- }
-diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
-index e7ae2a2c4545..36c3800769fb 100644
---- a/arch/powerpc/mm/hugetlbpage.c
-+++ b/arch/powerpc/mm/hugetlbpage.c
-@@ -180,7 +180,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, unsigned long addr, unsigned long sz
- 	if (!hpdp)
- 		return NULL;
- 
--	if (IS_ENABLED(CONFIG_PPC_8xx) && sz == SZ_512K)
-+	if (IS_ENABLED(CONFIG_PPC_8xx) && pshift < PMD_SHIFT)
- 		return pte_alloc_map(mm, (pmd_t *)hpdp, addr);
- 
- 	BUG_ON(!hugepd_none(*hpdp) && !hugepd_ok(*hpdp));
-diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
-index 14514585db98..5872f69141d5 100644
---- a/arch/powerpc/mm/nohash/tlb.c
-+++ b/arch/powerpc/mm/nohash/tlb.c
-@@ -83,16 +83,12 @@ struct mmu_psize_def mmu_psize_defs[MMU_PAGE_COUNT] = {
- };
- #elif defined(CONFIG_PPC_8xx)
- struct mmu_psize_def mmu_psize_defs[MMU_PAGE_COUNT] = {
--	/* we only manage 4k and 16k pages as normal pages */
--#ifdef CONFIG_PPC_4K_PAGES
- 	[MMU_PAGE_4K] = {
- 		.shift	= 12,
- 	},
--#else
- 	[MMU_PAGE_16K] = {
- 		.shift	= 14,
- 	},
--#endif
- 	[MMU_PAGE_512K] = {
- 		.shift	= 19,
- 	},
-diff --git a/arch/powerpc/mm/ptdump/8xx.c b/arch/powerpc/mm/ptdump/8xx.c
-index 8a797dcbf475..86da2a669680 100644
---- a/arch/powerpc/mm/ptdump/8xx.c
-+++ b/arch/powerpc/mm/ptdump/8xx.c
-@@ -11,8 +11,13 @@
- 
- static const struct flag_info flag_array[] = {
- 	{
-+#ifdef CONFIG_PPC_16K_PAGES
- 		.mask	= _PAGE_HUGE,
- 		.val	= _PAGE_HUGE,
-+#else
-+		.mask	= _PAGE_SPS,
-+		.val	= _PAGE_SPS,
-+#endif
- 		.set	= "huge",
- 		.clear	= "    ",
- 	}, {
-diff --git a/include/uapi/asm-generic/hugetlb_encode.h b/include/uapi/asm-generic/hugetlb_encode.h
-index b0f8e87235bd..4f3d5aaa11f5 100644
---- a/include/uapi/asm-generic/hugetlb_encode.h
-+++ b/include/uapi/asm-generic/hugetlb_encode.h
-@@ -20,6 +20,7 @@
- #define HUGETLB_FLAG_ENCODE_SHIFT	26
- #define HUGETLB_FLAG_ENCODE_MASK	0x3f
- 
-+#define HUGETLB_FLAG_ENCODE_16KB	(14 << HUGETLB_FLAG_ENCODE_SHIFT)
- #define HUGETLB_FLAG_ENCODE_64KB	(16 << HUGETLB_FLAG_ENCODE_SHIFT)
- #define HUGETLB_FLAG_ENCODE_512KB	(19 << HUGETLB_FLAG_ENCODE_SHIFT)
- #define HUGETLB_FLAG_ENCODE_1MB		(20 << HUGETLB_FLAG_ENCODE_SHIFT)
-diff --git a/include/uapi/linux/mman.h b/include/uapi/linux/mman.h
-index 923cc162609c..f55bc680b5b0 100644
---- a/include/uapi/linux/mman.h
-+++ b/include/uapi/linux/mman.h
-@@ -27,6 +27,7 @@
- #define MAP_HUGE_SHIFT	HUGETLB_FLAG_ENCODE_SHIFT
- #define MAP_HUGE_MASK	HUGETLB_FLAG_ENCODE_MASK
- 
-+#define MAP_HUGE_16KB	HUGETLB_FLAG_ENCODE_16KB
- #define MAP_HUGE_64KB	HUGETLB_FLAG_ENCODE_64KB
- #define MAP_HUGE_512KB	HUGETLB_FLAG_ENCODE_512KB
- #define MAP_HUGE_1MB	HUGETLB_FLAG_ENCODE_1MB
--- 
-2.25.0
+Best regards,
+Krzysztof
 
