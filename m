@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3E8257F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E412B257F53
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728969AbgHaRML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:12:11 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:35739 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728352AbgHaRLp (ORCPT
+        id S1728960AbgHaRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:12:04 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:40623 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727989AbgHaRLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:11:45 -0400
+        Mon, 31 Aug 2020 13:11:46 -0400
 X-Originating-IP: 90.66.108.79
 Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 35C1C60008;
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id C4D9FC000B;
         Mon, 31 Aug 2020 17:11:42 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Rob Herring <robh+dt@kernel.org>
@@ -24,9 +24,9 @@ Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 3/5] ARM: at91: dts: move mmc pinctrl-names property to board dts
-Date:   Mon, 31 Aug 2020 19:11:26 +0200
-Message-Id: <20200831171129.3886857-5-alexandre.belloni@bootlin.com>
+Subject: [PATCH 3/5] ARM: dts: at91: move mmc pinctrl-names property to board dts
+Date:   Mon, 31 Aug 2020 19:11:27 +0200
+Message-Id: <20200831171129.3886857-6-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200831171129.3886857-1-alexandre.belloni@bootlin.com>
 References: <20200831171129.3886857-1-alexandre.belloni@bootlin.com>
