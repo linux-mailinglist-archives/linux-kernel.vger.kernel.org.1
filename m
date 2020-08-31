@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C081A257F7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D944257F84
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728875AbgHaRTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
+        id S1728948AbgHaRVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726927AbgHaRTv (ORCPT
+        with ESMTP id S1728889AbgHaRVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:19:51 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2981FC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:19:51 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id h11so1823851ilj.11
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:19:51 -0700 (PDT)
+        Mon, 31 Aug 2020 13:21:52 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7918FC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:21:51 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l63so6167280edl.9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VFdt7etUeQh3jxuMBHIEMKMPh4ts8dvxCAT119Mpugg=;
-        b=Vo11h+a+ZfPnLz90Hd5qdtWJf5qj5Gs5Nn7Qk8AU09Nz03B4/3IvZR9TowM01rZgm8
-         UgS2O7aT2iXFkO0KpGd1Gb8ZZ+YOQs6GiV8gfS7Xl3uz4NsQj3zqpBGySrjkzG5PX9LL
-         f1GKb86gQK77dSHf2aqusA2iSI9zbxGuUTtINnRnKqvOG6z0O2g3lQ8DWAP9QKlof5+2
-         l0izvmIPBAqmgzE8xR2vzkpuLGExEjdCw3XPLfffBBguLs/BSra6Aw3e+XoTKJfPodQj
-         uRXaLG0zidNJsRrip8Q4GpE1YYfgGZYZIOWQDsefBUyPfU2sug3Yb+I/uOw8wZne539P
-         IxBQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nU/5oe5+A3cUKVWl9Yx/iTqCnlQo0CnopBUHSvATE9w=;
+        b=I9QG+YiLABt6ZlLm2Kf6dV+Z9Pz+ScDSNBEDf6zvxQnBmEMqsmG/vWcctjRlO9SDm8
+         4bPnrQMFFDImHaWitXR4KtXte7QA7C8R7a1C5I4df2o5en+8A4LXYEBDRwJB/ceFXIzg
+         +vAEman2dOd0j0r2O0PiLsSmpa2AJI3fN3mM7HK0rmBIIITTGe9OnUgU22JVy3J0EZLC
+         wzeJNhese/gVsAO0jtlpdbcoGcauWjrmBFVCqTqvbjpIII6S3ZFyPQTjeE9ERlCm8A8w
+         ZcKYHMPdZqle5o3RPDEwcWFztLNZxfDYdkGPGwPmJhtILqpRhN41+zTF14eEq080fzWH
+         PDRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VFdt7etUeQh3jxuMBHIEMKMPh4ts8dvxCAT119Mpugg=;
-        b=ESEc4VqWEcVE8PdG5T+pxJHx+QMy1PRrbXzGEOcIvnYrROqSy+e9iVCOC2JHeDwxhj
-         o2jpUykqwPMt2VYsvW6ZrkwEjTobfSDw9sOTzS7dvNvX17041R8CyEZTpIc1JM0SRhuE
-         xmw/1NqR8q3v1enL+3O8RR53Zbj4LuqKpvoX6byx22bB59JqdhjF1kmn31ZzuFfIqv+d
-         u4ltroSrKOGzbitlZ3SuTF21A9qGQUGlkLz6sqtqUEvbXAXOVplZnih6ietDEQOEK2Hj
-         8qe1HRWNqyW6z/c84JUOswmzoV55QtFCajAjirUTmZRMEg313iIoAD7PS5uULaGO2fqV
-         3T7A==
-X-Gm-Message-State: AOAM533pkYeIpfvmGyOnuD3h7YFFEEGX8nH/WIWDiDaxzwwNnwl4juln
-        yGVxxFZsPCbtkpz1piNmbq/Waw==
-X-Google-Smtp-Source: ABdhPJwFd4evUDpn/xryReIn3mh0v88tjP/Ib5bE0rsCoTyUZ7768JdIl8QQxa4QHw5UGsIo5PWuuQ==
-X-Received: by 2002:a92:8709:: with SMTP id m9mr2295649ild.242.1598894390456;
-        Mon, 31 Aug 2020 10:19:50 -0700 (PDT)
-Received: from [192.168.1.58] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id t4sm4288408iob.48.2020.08.31.10.19.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 10:19:49 -0700 (PDT)
-Subject: Re: [PATCH] fat: Avoid oops when bdi->io_pages==0
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        fsdevel <linux-fsdevel@vger.kernel.org>
-References: <87ft85osn6.fsf@mail.parknet.co.jp>
- <b4e1f741-989c-6c9d-b559-4c1ada88c499@kernel.dk>
- <87o8mq6aao.fsf@mail.parknet.co.jp>
- <4010690f-20ad-f7ba-b595-2e07b0fa2d94@kernel.dk>
- <87h7si68hn.fsf@mail.parknet.co.jp>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1f4d6aef-c75c-dd0f-02cb-a1246079c429@kernel.dk>
-Date:   Mon, 31 Aug 2020 11:19:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nU/5oe5+A3cUKVWl9Yx/iTqCnlQo0CnopBUHSvATE9w=;
+        b=kNMY7As/NIcJSbToqQmPADkdTpr3kuPzZswl2ef1+esynEYQJwT4raHtAxD0aMM3Fj
+         JgEcz0apC1MBoCqpeboowyVJ7iKAfQrv/MbQc6HjAzCb/TSIe7pXajdMXt26hAVwAfbi
+         5kDAvCaSPMOW+JPHOjrroIsxm4XGrddamgCsOtYxEpnAfavqcVOC+yQSymdhvCwuPfO0
+         WhlMlzQ9ryk6v55q3G1xtBLzCEaoZ9cJoko/veFv0BEEUZn0f61SRM0IF2eExiNfGYtn
+         0t0eV0NMWE5+4X6NdGZrTjNSZuS6HkmivjFNiE2gohlRqf4RdaWUKWUUkquQywYKqvNL
+         ycuA==
+X-Gm-Message-State: AOAM531Xu4dzYsdjdqZhfZ27/BAs9AZQOe4ujnmJko7prLMZf65ELxU0
+        TFfGHIzW13lWwcemvtL1ky9MmzSJEm+fCWN+kPKuBg==
+X-Google-Smtp-Source: ABdhPJyX9yFVGmSMpHH76zqQdkJMcCohiLE14tE/uN0FouPWzRdrlDf+mwZe03bax4NaYw/f0J/0DBYIHITNAazWlBQ=
+X-Received: by 2002:a05:6402:10d7:: with SMTP id p23mr2026227edu.388.1598894510043;
+ Mon, 31 Aug 2020 10:21:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87h7si68hn.fsf@mail.parknet.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200831015539.26811-1-vadym.kochan@plvision.eu> <20200831015539.26811-4-vadym.kochan@plvision.eu>
+In-Reply-To: <20200831015539.26811-4-vadym.kochan@plvision.eu>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 31 Aug 2020 19:21:39 +0200
+Message-ID: <CAMpxmJXzGPXwMYg6e+eCYck+nXnNqxSEBOwm5G-vmLYQA7cDpg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] misc: eeprom: at24: register nvmem only after
+ eeprom is ready to use
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Maxime Ripard <maxime.ripard@free-electrons.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/20 11:16 AM, OGAWA Hirofumi wrote:
-> Jens Axboe <axboe@kernel.dk> writes:
-> 
->> On 8/31/20 10:37 AM, OGAWA Hirofumi wrote:
->>> Jens Axboe <axboe@kernel.dk> writes:
->>>
->>>> I don't think we should work-around this here. What device is this on?
->>>> Something like the below may help.
->>>
->>> The reported bug is from nvme stack, and the below patch (I submitted
->>> same patch to you) fixed the reported case though. But I didn't verify
->>> all possible path, so I'd liked to use safer side.
->>>
->>> If block layer can guarantee io_pages!=0 instead, and can apply to
->>> stable branch (5.8+). It would work too.
->>
->> We really should ensure that ->io_pages is always set, imho, instead of
->> having to work-around it in other spots.
-> 
-> I think it is good too. However, the issue would be how to do it for
-> stable branch.
+On Mon, Aug 31, 2020 at 3:56 AM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+>
+> During nvmem_register() the nvmem core sends notifications when:
+>
+>     - cell added
+>     - nvmem added
+>
+> and during these notifications some callback func may access the nvmem
+> device, which will fail in case of at24 eeprom because regulator and pm
+> are enabled after nvmem_register().
+>
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> ---
+> v3:
+>     1) at24 driver enables regulator and pm state machine after nvmem
+>        registration which does not allow to use it on handing NVMEM_PRE_ADD event.
+>
+>  drivers/misc/eeprom/at24.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> index 2591c21b2b5d..26a23abc053d 100644
+> --- a/drivers/misc/eeprom/at24.c
+> +++ b/drivers/misc/eeprom/at24.c
+> @@ -692,10 +692,6 @@ static int at24_probe(struct i2c_client *client)
+>         nvmem_config.word_size = 1;
+>         nvmem_config.size = byte_len;
+>
+> -       at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+> -       if (IS_ERR(at24->nvmem))
+> -               return PTR_ERR(at24->nvmem);
+> -
+>         i2c_set_clientdata(client, at24);
+>
+>         err = regulator_enable(at24->vcc_reg);
+> @@ -708,6 +704,13 @@ static int at24_probe(struct i2c_client *client)
+>         pm_runtime_set_active(dev);
+>         pm_runtime_enable(dev);
+>
+> +       at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
+> +       if (IS_ERR(at24->nvmem)) {
+> +               pm_runtime_disable(dev);
+> +               regulator_disable(at24->vcc_reg);
+> +               return PTR_ERR(at24->nvmem);
+> +       }
+> +
+>         /*
+>          * Perform a one-byte test read to verify that the
+>          * chip is functional.
+> --
+> 2.17.1
+>
 
-Agree
+Good catch! Thanks for the patch. Can I queue it for fixes
+independently from the earlier patches in this series?
 
-> If you think that block layer patch is enough and submit to stable
-> (5.8+) branch instead, I'm fine without fatfs patch. (Or removing
-> workaround in fatfs with block layer patch later?)
-
-Well, it should catch any block based case as we then set it when
-allocating the queue. So should do the trick for all block based
-cases at least.
-
--- 
-Jens Axboe
-
+Bart
