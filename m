@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E98E257260
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A91E257266
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgHaDfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 23:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726067AbgHaDfw (ORCPT
+        id S1727820AbgHaDtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 23:49:05 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:47103 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726126AbgHaDs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 23:35:52 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9405AC061573;
-        Sun, 30 Aug 2020 20:35:51 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id ay8so4086690edb.8;
-        Sun, 30 Aug 2020 20:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Es49Pktfv7cyRBR2isn8kE0O0ZV8xR4yhOVye/VQUrk=;
-        b=Np8eJ16yZ5iMi3JnVsjqeMJX6+O7o5Ri0YyeWM6xIP2rHgwlMYXKwdrjJFPowbg/BA
-         Qnr2rsfVzQudIyB4cK4lD/oNRmPcWdr8Tm3bCZG9DNxyK38R0k0EkF38KUbtIzV7ScCs
-         44b/yRnPTi24WZi3x+sC4lM5sLHPLrC56iNp8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Es49Pktfv7cyRBR2isn8kE0O0ZV8xR4yhOVye/VQUrk=;
-        b=NGfsUVZa9FUQ6OxsUJy2KpKcR+J8+eRIi7nzCFkji9gCERmr/Gw1vGuY69pclKrlUJ
-         mt+KsfYM7I1hYEXnnJyxP4SzAOvF2XVWKtHvtbivkHVedW0hmOFjamiCfaMIoV87hDBh
-         kvoU/XrD1FUimroG2PZ3KBAZMnTDQk7WD/wqpsWcJMDdQ/N9lD+YH8lxsdfhbiGxH/jt
-         LUcBKdTvyhRW7pdGZbJpN6TNVWdh5pbPYkBz3oNGziO8b6hBQWaj06PCIJwrR1KbzLy8
-         x91f6sEtOkyTVp1vjL7GgWnTqoF/yiu7GxPw4NEReOxyO0oz4BqRT/02K4Dgpm3WRb9r
-         QOqQ==
-X-Gm-Message-State: AOAM531++k0FHyjGzDtRowb/NteYSFtA/uOuWvXf8Xl9c99OTuhPsr9D
-        iX1kUutSJRMNuFFamQO2A5udeTof0ZDtQfBloZs=
-X-Google-Smtp-Source: ABdhPJx7qh+mNkv4fszmTyhwOjH5PtQGv7TcGVXG2A3V0/1q8FyjFJn4lSFRahcWP+iQ09eNAAQjowrra3y2n+LSM3I=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr1902945edb.143.1598844949735;
- Sun, 30 Aug 2020 20:35:49 -0700 (PDT)
+        Sun, 30 Aug 2020 23:48:56 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D27C8580535;
+        Sun, 30 Aug 2020 23:48:55 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 30 Aug 2020 23:48:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=xeWOte1Ts6wwOUtqKOVkgDpqDp
+        6peOxWUO9K5MecHaM=; b=oOTWbThO0fOCflpcrx9HSCzTUPFxvgy6/2gTe5pIU4
+        ykYxXvQknqai+NKjOsRR8kI1Sj5xdmJjgUVe3jWo13WHntTzKOGe1K0SQvX8V33+
+        MuiidPXxlJaeFJOedBDRO8ZEOOljbsT7D8nmpC2tuH2uzhxTuwIPDN3maJrIek8i
+        w2o4gNxmPw43VzUcpBZA5OnoXKPe2sGlIqxNf4Cfp1SS5tvWfqpuMSWxrywPMEPW
+        0lzF/F+bpy4NwUd/HEwX9MlwelKgxGdzVnt3NCmoOD74rj7UY1lI4Po800yiEmJw
+        3yjfdJVpT/R2JmrcgBVqCiT9K2Q9Px7UPgI/uAS7D/EA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=xeWOte1Ts6wwOUtqK
+        OVkgDpqDp6peOxWUO9K5MecHaM=; b=D4ph+k6Axrxs0dvQ0ihVE94ahP0vbU1cc
+        7ubCnCtblTUPWE5u7j3HMMTiVuTL5x0XBVzqQZ3+ibCwsGTd1yX04AblXfLECD8U
+        iLiXdy0jNQ+TMrep12Pzyg/mWRx6wfv4bajw5+U5nStwLmsyPb5I7MSjNesnZwwR
+        q7/9ntUS6lSWqQhZM/rQIaGIfV7PVnYvENOysgtK4W/2cH8I1wYBVNlOpU3iqJAT
+        OeAPNfLaVMwqzm+TTTWts40niODeN4T0JI/2+j6U3Ol46V3RpcBWDRwakQNQ2mI7
+        hsnywgAaLJDaL7GUPLKe2Wf0SYw4YaxwzhrBsaETVr1XfvOfPDRcQ==
+X-ME-Sender: <xms:JnNMX62M67LkYfnWgbWpKBvgAiIKtPOcCgUrzLWbhsfO7i4WZjcBYg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefgedgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:JnNMX9FvIMztCn-Dmys24DRhrEQtLHKqLhDezJ94ZFJz1NsYyI41RA>
+    <xmx:JnNMXy66UVgmwH1B33qnjBEL0SRHpPjQgvdNGxNWcD1h9huBC1MBhQ>
+    <xmx:JnNMX70FXdMs6gFIz340nJyTrTN2OVyll9zBZ5oXJ-McMyBk7iqEwQ>
+    <xmx:J3NMX02QORIthQyCzObB74J1Nu_vNbNKcb1SMRWx3VqpfQu_usgxRQ>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E2C923280063;
+        Sun, 30 Aug 2020 23:48:53 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Ondrej Jirman <megous@megous.com>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 0/9] ASoC: sun8i-codec driver cleanup
+Date:   Sun, 30 Aug 2020 22:48:43 -0500
+Message-Id: <20200831034852.18841-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200830213121.239533-1-tali.perry1@gmail.com>
-In-Reply-To: <20200830213121.239533-1-tali.perry1@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 31 Aug 2020 03:35:36 +0000
-Message-ID: <CACPK8Xev4w4BxrxR1zQPk=wiHCK2fSGD9tEeAQwPe_uayGw_CA@mail.gmail.com>
-Subject: Re: [PATCH v3] i2c: npcm7xx: Fix timeout calculation
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     Kun Yi <kunyi@google.com>, xqiu@google.com,
-        Benjamin Fair <benjaminfair@google.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 Aug 2020 at 21:31, Tali Perry <tali.perry1@gmail.com> wrote:
->
-> timeout_usec value calculation was wrong, the calculated value
-> was in msec instead of usec.
->
-> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
-> Reviewed-by: Avi Fishman <avifishman70@gmail.com>
+Now that the fixes series is merged, here is a series of small cleanups
+to the sun8i-codec driver. These help shorten the patch stack for the
+next series, which will add support for the other two DAIs in this
+codec: AIF2 and AIF3.
 
-Fixes: 56a1485b102e ("i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver")
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Samuel Holland (9):
+  ASoC: sun8i-codec: Remove extraneous widgets
+  ASoC: sun8i-codec: Fix AIF1 MODCLK widget name
+  ASoC: sun8i-codec: Fix AIF1_ADCDAT_CTRL field names
+  ASoC: sun8i-codec: Fix AIF1_MXR_SRC field names
+  ASoC: sun8i-codec: Fix ADC_DIG_CTRL field name
+  ASoC: sun8i-codec: Fix field bit number indentation
+  ASoC: sun8i-codec: Sort masks in a consistent order
+  ASoC: sun8i-codec: Attach the bus clock to the regmap
+  ASoC: sun8i-codec: Manage module clock via DAPM
 
-Cheers,
+ sound/soc/sunxi/sun8i-codec.c | 104 ++++++++++++----------------------
+ 1 file changed, 37 insertions(+), 67 deletions(-)
 
-Joel
+-- 
+2.26.2
 
-> ---
->  drivers/i2c/busses/i2c-npcm7xx.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
-> index 75f07138a6fa..dfcf04e1967f 100644
-> --- a/drivers/i2c/busses/i2c-npcm7xx.c
-> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
-> @@ -2093,8 +2093,12 @@ static int npcm_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
->                 }
->         }
->
-> -       /* Adaptive TimeOut: astimated time in usec + 100% margin */
-> -       timeout_usec = (2 * 10000 / bus->bus_freq) * (2 + nread + nwrite);
-> +       /*
-> +        * Adaptive TimeOut: estimated time in usec + 100% margin:
-> +        * 2: double the timeout for clock stretching case
-> +        * 9: bits per transaction (including the ack/nack)
-> +        */
-> +       timeout_usec = (2 * 9 * USEC_PER_SEC / bus->bus_freq) * (2 + nread + nwrite);
->         timeout = max(msecs_to_jiffies(35), usecs_to_jiffies(timeout_usec));
->         if (nwrite >= 32 * 1024 || nread >= 32 * 1024) {
->                 dev_err(bus->dev, "i2c%d buffer too big\n", bus->num);
->
-> base-commit: d012a7190fc1fd72ed48911e77ca97ba4521bccd
-> --
-> 2.22.0
->
