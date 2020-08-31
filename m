@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4144A25741B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C84425742B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728019AbgHaHOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 03:14:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727806AbgHaHOn (ORCPT
+        id S1728083AbgHaHPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 03:15:21 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1358 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727881AbgHaHOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 03:14:43 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17ECBC061573;
-        Mon, 31 Aug 2020 00:14:42 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t11so2599505plr.5;
-        Mon, 31 Aug 2020 00:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=VHh2Btrj1RMrE2bBjPVgrNRFQFpYqnl0GvDbuvKxlhM=;
-        b=S3mcsSWyBk2K7x6lEYbi0LBE2ybIfLvfaX9B7iMhZQwnl4Co+b53YdSainIW4Nq7eq
-         LivAwlzS8y7uyOvy9CCdeS39UDVP+oP4l+8wWjSJc+nQypK3LYAQFluxrIWBGlBksYtS
-         lnXTp51xYpws1G1UsNjVrZ8Xl3YY1mVJOmrzQkE5WpW+8rh9nsxpCYHE8Bu28jml5gMR
-         QBKrDD3jShcfFvYCtsaYEflcF+g28LD3PTLTpleT9T1d/3Tx7v2FrzLtyEyEF6jBUPY+
-         Uenapoy8EECWpjHonyHEaLDA6uDbN0mH5rTy5At5d2oE7v4LT+VxYkvM5ytg0Tyd2UD3
-         kWxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=VHh2Btrj1RMrE2bBjPVgrNRFQFpYqnl0GvDbuvKxlhM=;
-        b=a9domBBeNMSyoF/CH/vw6m7QkVjM4/Si3dTX26V9v54EElCi5zY6jrGW8Bf6A3WZFL
-         GogKvQVVqf8BSfCRjBZGZq44HaIQ0aWRp0HSSjPzzoZzfGGlrUxW/o1k5GrK09pMzoZA
-         v64X8UeKfFPLsJMeyEadQ3qy+U82oR5pEhP0Hl91AkkL1hX4hunUXz92Cflm4IGO1i7H
-         BfK1CYdkdtBhIBztwEQhVnKmGytVDVTWajci5moAnLlHmnld0eJCQQ8YEjTJiP3Qr9Jb
-         NsFKTRRTPp3V0C3jH/iLwRa2C3LU7fJSapB8sS72E+H5gz5H34LP4YRYcCWOUYdQrjPi
-         YTFQ==
-X-Gm-Message-State: AOAM530Af1/09RGdvcSrZIBnigUzxmS3ni9wmEE1xdDG8eTHVfKi4Ytb
-        XyTlro/740yXD2Bdzurk+22NurtcAq1enA==
-X-Google-Smtp-Source: ABdhPJy49Sbbd5KsXqCjjYrUmQ0P4bLeuHD9xm+Xx7zfcvXsugr04Cs+z/TJMUSjCrP4mIiQhgxF7Q==
-X-Received: by 2002:a17:90b:374b:: with SMTP id ne11mr162280pjb.21.1598858081680;
-        Mon, 31 Aug 2020 00:14:41 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([103.206.191.6])
-        by smtp.gmail.com with ESMTPSA id s67sm7173587pfs.117.2020.08.31.00.14.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 31 Aug 2020 00:14:41 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     linus.walleij@linaro.org, lee.jones@linaro.org,
-        bgolaszewski@baylibre.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH: 2/2] gpio: tc35894: Disable Direct KBD interrupts to enable gpio irq
-Date:   Mon, 31 Aug 2020 15:14:33 +0800
-Message-Id: <1598858073-5285-3-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598858073-5285-1-git-send-email-dillon.minfei@gmail.com>
-References: <1598858073-5285-1-git-send-email-dillon.minfei@gmail.com>
+        Mon, 31 Aug 2020 03:14:49 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4ca3380001>; Mon, 31 Aug 2020 00:14:01 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 31 Aug 2020 00:14:46 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 31 Aug 2020 00:14:46 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 31 Aug
+ 2020 07:14:45 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 31 Aug 2020 07:14:45 +0000
+Received: from sandstorm.nvidia.com (Not Verified[10.2.61.194]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f4ca3640001>; Mon, 31 Aug 2020 00:14:45 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, <linux-xfs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v3 0/3] bio: Direct IO: convert to pin_user_pages_fast()
+Date:   Mon, 31 Aug 2020 00:14:36 -0700
+Message-ID: <20200831071439.1014766-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598858041; bh=lyrZ2gUylyRDxgfVzrsrWPEjnlS8I/rM0/dBNY/ekqg=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=AgIKKxMPpvPxMJX1X6WknDKq7jsksqwEJe5FEcBiW0igy4qyYjQ84yGeMTbtq+TWF
+         zTn6BBJbfbTKPXo+7YWdA+YA2fCiYofpXzPA9gyg3abtY4Py9wyzm65QkQvH5d0MgM
+         J35idY/iyfHlBPCGXm/0LYqqmhTzoehWr/2E9D9cnf4LcDr0rP9ocdqym538+ZwzhN
+         OA/mVZs5qZg+OwrNX+rebHjMGMVXa0lrHflwoEV3kbh6gRVMa0DEb7fuowvO2JeBJR
+         hxflPqdMFfa4mjGIpQMOdgm2ZwdC6ypG/z9nDW+l1P6WsXJaoNzBUNJGM8kf/6Uh3m
+         g7wtUVLD5D+6g==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+bio: convert get_user_pages_fast() --> pin_user_pages_fast()
 
-On tc35894, have to disable direct keypad interrupts to make
-it as general purpose interrupts functionality work.
-if not, after chip reset, IRQST(0x91) will always 0x20,
-IRQN always low level, can't be clear.
+Change generic block/bio Direct IO routines, to acquire FOLL_PIN user
+pages via the recently added routines:
 
-verified on tc35894, need more test on other tc3589x.
+    iov_iter_pin_pages()
+    iov_iter_pin_pages_alloc()
+    pin_page()
 
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
- drivers/gpio/gpio-tc3589x.c | 10 ++++++++++
- include/linux/mfd/tc3589x.h |  5 +++++
- 2 files changed, 15 insertions(+)
+This effectively converts several file systems (ext4, for example) that
+use the common Direct IO routines.
 
-diff --git a/drivers/gpio/gpio-tc3589x.c b/drivers/gpio/gpio-tc3589x.c
-index ea3f68a28fea..760e716468dc 100644
---- a/drivers/gpio/gpio-tc3589x.c
-+++ b/drivers/gpio/gpio-tc3589x.c
-@@ -334,6 +334,16 @@ static int tc3589x_gpio_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
-+	/* For tc35894, have to disable Direct KBD interrupts,
-+	 * else IRQST will always be 0x20, IRQN low level, can't
-+	 * clear the irq status.
-+	 * TODO: need more test on other tc3589x chip.
-+	 */
-+	ret = tc3589x_reg_write(tc3589x, TC3589x_DKBDMSK,
-+				TC3589x_DKBDMSK_ELINT | TC3589x_DKBDMSK_EINT);
-+	if (ret < 0)
-+		return ret;
-+
- 	ret = devm_request_threaded_irq(&pdev->dev,
- 					irq, NULL, tc3589x_gpio_irq,
- 					IRQF_ONESHOT, "tc3589x-gpio",
-diff --git a/include/linux/mfd/tc3589x.h b/include/linux/mfd/tc3589x.h
-index bb2b19599761..c18fc7c3c2d6 100644
---- a/include/linux/mfd/tc3589x.h
-+++ b/include/linux/mfd/tc3589x.h
-@@ -19,6 +19,9 @@ enum tx3589x_block {
- #define TC3589x_RSTCTRL_KBDRST	(1 << 1)
- #define TC3589x_RSTCTRL_GPIRST	(1 << 0)
- 
-+#define TC3589x_DKBDMSK_ELINT	(1 << 1)
-+#define TC3589x_DKBDMSK_EINT	(1 << 0)
-+
- /* Keyboard Configuration Registers */
- #define TC3589x_KBDSETTLE_REG   0x01
- #define TC3589x_KBDBOUNCE       0x02
-@@ -101,6 +104,8 @@ enum tx3589x_block {
- #define TC3589x_GPIOODM2	0xE4
- #define TC3589x_GPIOODE2	0xE5
- 
-+#define TC3589x_DKBDMSK		0xF3
-+
- #define TC3589x_INT_GPIIRQ	0
- #define TC3589x_INT_TI0IRQ	1
- #define TC3589x_INT_TI1IRQ	2
--- 
-2.7.4
+Change the corresponding page release calls from put_page() to
+unpin_user_page().
+
+Change bio_release_pages() to handle FOLL_PIN pages. In fact, after this
+patch, that is the *only* type of pages that bio_release_pages()
+handles.
+
+Design notes
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Quite a few approaches have been considered over the years. This one is
+inspired by Christoph Hellwig's July, 2019 observation that there are
+only 5 ITER_ types, and we can simplify handling of them for Direct IO
+[1]. Accordingly, this patch implements the following pseudocode:
+
+Direct IO behavior:
+
+    ITER_IOVEC:
+        pin_user_pages_fast();
+        break;
+
+    ITER_PIPE:
+        for each page:
+             pin_page();
+        break;
+
+    ITER_KVEC:    // already elevated page refcount, leave alone
+    ITER_BVEC:    // already elevated page refcount, leave alone
+    ITER_DISCARD: // discard
+        return -EFAULT or -ENVALID;
+
+...which works for callers that already have sorted out which case they
+are in. Such as, Direct IO in the block/bio layers.
+
+Note that this does leave ITER_KVEC and ITER_BVEC unconverted, for now.
+
+Page acquisition: The iov_iter_get_pages*() routines above are at just
+the right level in the call stack: the callers already know which system
+to use, and so it's a small change to just drop in the replacement
+routines. And it's a fan-in/fan-out point: block/bio call sites for
+Direct IO funnel their page acquisitions through the
+iov_iter_get_pages*() routines, and there are many other callers of
+those. And we can't convert all of the callers at once--too many
+subsystems are involved, and it would be a too large and too risky
+patch.
+
+Page release: there are already separate release routines: put_page()
+vs. unpin_user_page(), so it's already done there.
+
+[1] https://lore.kernel.org/kvm/20190724061750.GA19397@infradead.org/
+
+[2] "Explicit pinning of user-space pages":
+    https://lwn.net/Articles/807108/
+
+
+
+John Hubbard (3):
+  mm/gup: introduce pin_page()
+  iov_iter: introduce iov_iter_pin_pages*() routines
+  bio: convert get_user_pages_fast() --> pin_user_pages_fast()
+
+ block/bio.c          |  24 ++++-----
+ block/blk-map.c      |   6 +--
+ fs/direct-io.c       |  28 +++++------
+ fs/iomap/direct-io.c |   2 +-
+ include/linux/mm.h   |   2 +
+ include/linux/uio.h  |   5 ++
+ lib/iov_iter.c       | 113 ++++++++++++++++++++++++++++++++++++++++---
+ mm/gup.c             |  33 +++++++++++++
+ 8 files changed, 175 insertions(+), 38 deletions(-)
+
+--=20
+2.28.0
 
