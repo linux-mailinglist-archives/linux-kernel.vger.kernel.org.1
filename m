@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0E625782F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A5625785B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgHaLWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:22:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726714AbgHaLR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:17:58 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4475E2072D;
-        Mon, 31 Aug 2020 11:11:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598872297;
-        bh=h1kMcG8he3kJobrVkF04CR2+ioy68IPllAuj7Q35pyo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xoELkdYRm3whuwOE+7jGts+1CArRNLFlX1HvBNtbFsEs1b4R5WzDV3NzunMhvbPY0
-         pd+mwILwRXzKlcNqaBrSS7DwAWuKnhWxTC3ZWsoHpY/xsLadTBe0OeoXc75ZYg+nqN
-         HhVfrwX5RiknoLolgw3dDUfpYmqmslXD15NWlTL8=
-Date:   Mon, 31 Aug 2020 16:41:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>
-Cc:     kishon@ti.com, Tony Lindgren <tony@atomide.com>,
-        robh+dt@kernel.org, nsekhar@ti.com, vigneshr@ti.com,
-        jan.kiszka@siemens.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4] dt-binding: phy: convert ti,omap-usb2 to YAML
-Message-ID: <20200831111133.GP2639@vkoul-mobl>
-References: <20200821081144.29288-1-rogerq@ti.com>
- <a6a59fba-6a0c-c00f-29e7-e85c7dcc1319@ti.com>
+        id S1726468AbgHaL1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727861AbgHaLXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 07:23:34 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E60C0619C0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:11:45 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k25so3165070ljg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JeV1i5lWS5ilgVHVwdjZqOEdjNx7M/tcM6QuH1mqWxI=;
+        b=oeeE/PuRPNM0RLwf6s3xs1I8wmqzw/mMxpN5x0dgQOh1WJNugozsHSXKZy0ulJi9Tw
+         lTguqxtZHQPiAka5zspnfcNDRChLgkaHAEdAtE2xXRnA3kNC3ckWkomiR8ojp4KAOqQQ
+         Dw7DhLiw/CDMM3/V440PqlKDv/URSPrL75PfRbsvmT2eYSxzCufL4a58nNsEjKHDewgp
+         HLjjkCjIhXMzyVwDUdvhD2tWo1ppV5dGDuJ3dDFnM2GCjk4oBRaNOq4d6rT1YBopYPHG
+         A8hrsMsU0IbsJh6CxtVDpvXxnvPOi14aavTZ0Q1ZYS9mN8Bq0OT+Y1p3P7qktoCQPOTE
+         7DgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JeV1i5lWS5ilgVHVwdjZqOEdjNx7M/tcM6QuH1mqWxI=;
+        b=tyPz1Zrm8q/ClS3H+3gwV3mN96cKAuB2WedBIywHYkvoEgU//DbwOIm7ua+64R/nhx
+         baUgiXoFLD+X1g8ZanqayqHX7AtWJqzr/8S2FbcNQnnAffyeuKmrKNZaTJX5ojZydLmX
+         yC2Z/tMqL3nmqyqiCSswF35yNZcFWrFDvPwlCfYiOBWvwPCmXE+1zbkjaqZ4ahkfML7f
+         qng5ZBiOMiekEdh/QY93flnYitUaZn3yyogd7N/1G+Io1xljEHY8CaIMeEnqpsx7CcFW
+         OpQuM7io+mNs40FGyqapkl9jEQZj5l8/GIs1tfsoK5bNZiAJgILcIxFie16z0LKMj0LN
+         ERLg==
+X-Gm-Message-State: AOAM531zeD7lbvm9N0wxO/Kf0UGqY/+BoxJzN+2kSw0d0jhfWfdUozOy
+        LOv1SAsG0pbpxjNOqPQNx/nGHG/Rz2wlvdJ+
+X-Google-Smtp-Source: ABdhPJxLcxE20sCGKOJbR/9yyDZnWfHcBcCwucZsZbu1c9zAD3CLOcuo1I6y7bEJJQUzr0tzk87Egg==
+X-Received: by 2002:a2e:a49c:: with SMTP id h28mr447582lji.234.1598872303781;
+        Mon, 31 Aug 2020 04:11:43 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-180-79.NA.cust.bahnhof.se. [98.128.180.79])
+        by smtp.gmail.com with ESMTPSA id g63sm1891215lfd.28.2020.08.31.04.11.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 04:11:42 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [GIT PULL] MMC fixes for v5.9-rc4
+Date:   Mon, 31 Aug 2020 13:11:41 +0200
+Message-Id: <20200831111141.19238-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6a59fba-6a0c-c00f-29e7-e85c7dcc1319@ti.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-08-20, 10:47, Roger Quadros wrote:
-> Hi,
-> 
-> On 21/08/2020 11:11, Roger Quadros wrote:
-> > Move ti,omap-usb2 to its own YAML schema.
-> > 
-> > Signed-off-by: Roger Quadros <rogerq@ti.com>
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > ---
-> > 
-> > v4
-> > - fix example to fix dt_binding_check warnings
-> > - '#phy-cells' -> "#phy-cells"
-> > - Add 'oneOf' to compatible logic to allow just "ti,omap-usb2" as valid
-> > 
-> > v3
-> > - Removed quotes from compatibles
-> > - changed property to "ti,disable-charger-det"
-> > 
-> > v2
-> > - Address Rob's comments on YAML schema.
-> > 
-> >   .../devicetree/bindings/phy/ti,omap-usb2.yaml | 72 +++++++++++++++++++
-> >   .../devicetree/bindings/phy/ti-phy.txt        | 37 ----------
-> >   2 files changed, 72 insertions(+), 37 deletions(-)
-> >   create mode 100644 Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> > new file mode 100644
-> > index 000000000000..a05110351814
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/phy/ti,omap-usb2.yaml
-> > @@ -0,0 +1,72 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/phy/ti,omap-usb2.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: OMAP USB2 PHY
-> > +
-> > +maintainers:
-> > + - Kishon Vijay Abraham I <kishon@ti.com>
-> > + - Roger Quadros <rogerq@ti.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +        - enum:
-> > +          - ti,dra7x-usb2
-> > +          - ti,dra7x-usb2-phy2
-> > +          - ti,am654-usb2
-> 
-> I missed these two.
-> "ti,omap5-usb2"
-> "ti,am437x-usb2"
-> 
-> While "ti,am437x-usb2" is being used in the device tree files
-> I don't see "ti,omap5-usb2" being used anywhere.
-> 
-> omap5-l4.dtsi uses "ti,omap-usb2"
-> 
-> Should we get rid of "ti,omap5-usb2"?
+Hi Linus,
 
-Sure drop them ;-) we can always add back when we have a user
+Here's a PR with a couple of MMC fixes intended for v5.9-rc4. Details about the
+highlights are as usual found in the signed tag.
 
--- 
-~Vinod
+Please pull this in!
+
+Kind regards
+Ulf Hansson
+
+
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.9-rc1
+
+for you to fetch changes up to 8048822bac01936fda2c7b924a52131da81e6198:
+
+  sdhci: tegra: Add missing TMCLK for data timeout (2020-08-28 10:31:39 +0200)
+
+----------------------------------------------------------------
+MMC host:
+ - sdhci-acpi: Fix HS400 tuning for AMDI0040
+ - sdhci-pci: Fix reset of CQHCI for Intel GLK-based controllers
+ - sdhci-tegra: Use correct timeout clock for Tegra186/194/210
+ - mtk-sd: Fix eMMC mounting on mt7622/Bpi-64
+
+----------------------------------------------------------------
+Adrian Hunter (1):
+      mmc: sdhci-pci: Fix SDHCI_RESET_ALL for CQHCI for Intel GLK-based controllers
+
+Michal Simek (1):
+      dt-bindings: mmc: Add missing description for clk_in/out_sd1
+
+Raul E Rangel (1):
+      mmc: sdhci-acpi: Fix HS400 tuning for AMDI0040
+
+Sowjanya Komatineni (7):
+      sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+      sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+      dt-bindings: mmc: tegra: Add tmclk for Tegra210 and later
+      arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+      arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
+      arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
+      sdhci: tegra: Add missing TMCLK for data timeout
+
+Wenbin Mei (3):
+      mmc: dt-bindings: Add resets/reset-names for Mediatek MMC bindings
+      mmc: mediatek: add optional module reset property
+      arm64: dts: mt7622: add reset node for mmc device
+
+ .../devicetree/bindings/mmc/arasan,sdhci.yaml      | 10 +++-
+ Documentation/devicetree/bindings/mmc/mtk-sd.txt   |  2 +
+ .../bindings/mmc/nvidia,tegra20-sdhci.txt          | 32 ++++++++++-
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi           |  2 +
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           | 20 ++++---
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           | 15 +++--
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 20 ++++---
+ drivers/mmc/host/mtk-sd.c                          | 13 +++++
+ drivers/mmc/host/sdhci-acpi.c                      | 67 ++++++++++++++++++----
+ drivers/mmc/host/sdhci-pci-core.c                  | 10 +++-
+ drivers/mmc/host/sdhci-tegra.c                     | 55 ++++++++++++++++--
+ 11 files changed, 203 insertions(+), 43 deletions(-)
