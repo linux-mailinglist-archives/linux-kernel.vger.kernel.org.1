@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE38257A72
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8298B257A92
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbgHaNcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 09:32:24 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:55119 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727965AbgHaNbW (ORCPT
+        id S1726913AbgHaNek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 09:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgHaNei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 09:31:22 -0400
-X-Originating-IP: 84.44.14.226
-Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
-        (Authenticated sender: cengiz@kernel.wtf)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 37A4D20005;
-        Mon, 31 Aug 2020 13:31:09 +0000 (UTC)
-From:   Cengiz Can <cengiz@kernel.wtf>
-To:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Cengiz Can <cengiz@kernel.wtf>
-Subject: [PATCH] staging: atomisp: Fix fallthrough keyword warning
-Date:   Mon, 31 Aug 2020 16:30:12 +0300
-Message-Id: <20200831133011.91258-1-cengiz@kernel.wtf>
-X-Mailer: git-send-email 2.28.0
+        Mon, 31 Aug 2020 09:34:38 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1C7C061573;
+        Mon, 31 Aug 2020 06:34:37 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id d11so8455854ejt.13;
+        Mon, 31 Aug 2020 06:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=8GcnX02giYXdZ/RxHybOYa4+sVruRRxorMeqsk/TQCk=;
+        b=QGGOZ4O0RRDhLLBhcIWkF4selDYedgjgBwmFZefkhwkgFPW69QApZd6Xe9lEi3z3Wu
+         qlunSZr4e4pnvgwQyOzm18Gf83nQlTifrQUajZaREdHEgkpCB4NlyBAdtmxnwcnFi5ea
+         NJXv9bGN1DnpYoUqTx5Uaodao9fUNh03Pw6wOQBew+6hC6gfkRWkvJmBsL/e5yTMxvxn
+         wq2OVbv61Jp5NkmX6DRTksPy2GKxh4Vg6CJ3O5gCgalulhh3dkk45I0a9nCF+h+wSD1w
+         malhRijnmH8jh6ypRaBmucO9s6QjNbmfcN/k/+V2s2/EsBGF1/tbNhAittIflALlUDkO
+         nu/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=8GcnX02giYXdZ/RxHybOYa4+sVruRRxorMeqsk/TQCk=;
+        b=tXjEUK2eCTYWqGweCmIz704FBcxh0MWXP8K8KWsSHH4XdeJv2klrZWfuA39ZgFtmyl
+         vlsQygR5o8xtObfwuhJdaOfzIKOf57GmRjxyb4zsmK40fzBuZIK8RF/nRpgsj4AkAJRZ
+         fyrhhxfedoWrmo9XODeYzuOMOKZjKlq5QMEyyNbVLMwQn2zqo/k1SCIee7MZTJ0EruG0
+         zysRwIZ7a88UOX07kKNBN9kcgsn7hXWappDR6RjKGS7BOJMEqNdAABgQjfWV4w4VFJw5
+         qO31SPjgYGRYSHTD4O5swCbs8xRxauojZafXBsCITZNnZptMrPC3MDdm+ZOIpRg0nXzg
+         JuTA==
+X-Gm-Message-State: AOAM530VMylLstYX5veHv/cEab1MQc8A4Y8L7XmaJ5kJw8IOOy/I1NsR
+        8b0OeLD7oR991xGt7dP4VwXW9qcZY1tS24ia5iunDlqrX3SARg==
+X-Google-Smtp-Source: ABdhPJzGS7uMIR2j5ikMu1m2rX3E0IdVw7LkXrZ5SBIV6NJs9csiD8cvFJr3MYcyv27oEKFz6BkTrZYO3ReoslJUcvw=
+X-Received: by 2002:a17:907:205c:: with SMTP id pg28mr1163295ejb.22.1598880876175;
+ Mon, 31 Aug 2020 06:34:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Marc Dionne <marc.c.dionne@gmail.com>
+Date:   Mon, 31 Aug 2020 10:34:24 -0300
+Message-ID: <CAB9dFdtALXb_51QiY1t1Tbng34gA4wBHQGwk4w8Fttw-ko05Ng@mail.gmail.com>
+Subject: "scheduling while atomic" BUG in iscsid since commit 1b66d253610c7
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit df561f6688fe ("treewide: Use fallthrough pseudo-keyword") from
-Gustavo A. R. Silva replaced and standardized /* fallthrough */ comments
-with 'fallthrough' pseudo-keyword.
+The issue reported here:
+    https://lkml.org/lkml/2020/7/28/1085
+is still present as of 5.9-rc3; it was introduced in the 5.8 cycle.
 
-However, in one of the switch-case statements, Coverity Static Analyzer
-throws a warning that 'fallthrough' is unreachable due to the adjacent
-'return false' statement.
+When the problem occurs, iscsid crashes and iscsi volumes fail to come
+up, which makes the machine quite sad if the volumes are critical to
+its function.
 
-Since 'fallthrough' is actually an empty "do {} while(0)" this might be
-due to compiler optimizations. But that needs further investigation.
+Added CCs for iscsi related maintainers and lists suggested by get_maintainer.
 
-In order to fix the unreachable code warning, make adjacent 'return
-false' a part of the previous if statement's else clause.
-
-Reported-by: Coverity Static Analyzer CID 1466511
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
----
- drivers/staging/media/atomisp/pci/atomisp_compat_css20.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-index 1b2b2c68025b..aaa2d0e0851b 100644
---- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-+++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-@@ -709,8 +709,8 @@ static bool is_pipe_valid_to_current_run_mode(struct atomisp_sub_device *asd,
- 		if (pipe_id == IA_CSS_PIPE_ID_CAPTURE ||
- 		    pipe_id == IA_CSS_PIPE_ID_PREVIEW)
- 			return true;
--
--		return false;
-+		else
-+			return false;
- 		fallthrough;
- 	case ATOMISP_RUN_MODE_VIDEO:
- 		if (!asd->continuous_mode->val) {
--- 
-2.28.0
-
+Thanks,
+Marc
