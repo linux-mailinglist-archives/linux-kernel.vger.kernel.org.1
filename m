@@ -2,139 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B620257AEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D42257AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgHaNzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 09:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgHaNzt (ORCPT
+        id S1727889AbgHaN4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 09:56:23 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:53616 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726586AbgHaN4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 09:55:49 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EEBC061573;
-        Mon, 31 Aug 2020 06:55:48 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 852DE277;
-        Mon, 31 Aug 2020 15:55:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1598882142;
-        bh=YjANQfU2PJKUK7bbJGGRHgkqFKMb/cIwpm/y1CxpPFo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TgaNE0U6odJlc+9i7YVK1k2SQkBoNtxo4hGNQlMmNAzKd4fUS5IuO3uR+9h5oDh3w
-         MnDSjQLm9AOe+luMB6ZBC9OciWwGpHUoydsPN04ThTSr6u5leAnX1QYC5y0hQwA+1H
-         Yye2SAgS6kd3fLDVPFXwlQFhtyDCagxbFLC+19k4=
-Date:   Mon, 31 Aug 2020 16:55:21 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
-Cc:     Pavel Machek <pavel@ucw.cz>, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.19 08/38] media: pci: ttpci: av7110: fix
- possible buffer overflow caused by bad DMA value in debiirq()
-Message-ID: <20200831135521.GB16155@pendragon.ideasonboard.com>
-References: <20200821161807.348600-1-sashal@kernel.org>
- <20200821161807.348600-8-sashal@kernel.org>
- <20200829121020.GA20944@duo.ucw.cz>
- <20200829171600.GA7465@pendragon.ideasonboard.com>
- <9e797c3a-033b-3473-ac03-1566d40e90d2@tsinghua.edu.cn>
- <20200830222549.GD6043@pendragon.ideasonboard.com>
- <665f2e2d-b133-05be-17d5-49b860474ce5@tsinghua.edu.cn>
+        Mon, 31 Aug 2020 09:56:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598882174; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=l4ktEq8o7WvDy0rk/XyMBx2xUqUH9rI3Uw2PKVTyEv8=; b=uawDkVr2y6MipQeh/CfxlJZBjFwVcnceqayTjpvOtGH7a9kHZKGcwwVcF5P0nEo4whWHTW9F
+ y635lxZmbg9JEPHa3QgGX7CIiJLHe5lMmLHizkjdFhESHmGJtjqDtCZl4p8k/LGmCvPO++8E
+ ITwlw/X77nQ8/9ta9s9XuPZvYzU=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f4d017c73afa3417e6b8d0a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 Aug 2020 13:56:12
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 76E16C433CA; Mon, 31 Aug 2020 13:56:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B9EE8C433CA;
+        Mon, 31 Aug 2020 13:56:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B9EE8C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Christian Lamparter <chunkeey@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org,
+        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 08/30] net: wireless: ath: carl9170: Convert 'ar9170_qmap' to inline function
+References: <20200814113933.1903438-1-lee.jones@linaro.org>
+        <20200814113933.1903438-9-lee.jones@linaro.org>
+        <20200827093351.GA1627017@dell> <5498132.V4cn31ggaO@debian64>
+Date:   Mon, 31 Aug 2020 16:56:06 +0300
+In-Reply-To: <5498132.V4cn31ggaO@debian64> (Christian Lamparter's message of
+        "Fri, 28 Aug 2020 22:28:20 +0200")
+Message-ID: <877dte7wcp.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <665f2e2d-b133-05be-17d5-49b860474ce5@tsinghua.edu.cn>
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jia-Ju,
+Christian Lamparter <chunkeey@gmail.com> writes:
 
-On Mon, Aug 31, 2020 at 09:45:14PM +0800, Jia-Ju Bai wrote:
-> On 2020/8/31 6:25, Laurent Pinchart wrote:
-> > On Sun, Aug 30, 2020 at 03:33:11PM +0800, Jia-Ju Bai wrote:
-> >> On 2020/8/30 1:16, Laurent Pinchart wrote:
-> >>> On Sat, Aug 29, 2020 at 02:10:20PM +0200, Pavel Machek wrote:
-> >>>> Hi!
-> >>>>
-> >>>>> The value av7110->debi_virt is stored in DMA memory, and it is assigned
-> >>>>> to data, and thus data[0] can be modified at any time by malicious
-> >>>>> hardware. In this case, "if (data[0] < 2)" can be passed, but then
-> >>>>> data[0] can be changed into a large number, which may cause buffer
-> >>>>> overflow when the code "av7110->ci_slot[data[0]]" is used.
-> >>>>>
-> >>>>> To fix this possible bug, data[0] is assigned to a local variable, which
-> >>>>> replaces the use of data[0].
-> >>>>
-> >>>> I'm pretty sure hardware capable of manipulating memory can work
-> >>>> around any such checks, but...
-> >>>>
-> >>>>> +++ b/drivers/media/pci/ttpci/av7110.c
-> >>>>> @@ -424,14 +424,15 @@ static void debiirq(unsigned long cookie)
-> >>>>>    	case DATA_CI_GET:
-> >>>>>    	{
-> >>>>>    		u8 *data = av7110->debi_virt;
-> >>>>> +		u8 data_0 = data[0];
-> >>>>>    
-> >>>>> -		if ((data[0] < 2) && data[2] == 0xff) {
-> >>>>> +		if (data_0 < 2 && data[2] == 0xff) {
-> >>>>>    			int flags = 0;
-> >>>>>    			if (data[5] > 0)
-> >>>>>    				flags |= CA_CI_MODULE_PRESENT;
-> >>>>>    			if (data[5] > 5)
-> >>>>>    				flags |= CA_CI_MODULE_READY;
-> >>>>> -			av7110->ci_slot[data[0]].flags = flags;
-> >>>>> +			av7110->ci_slot[data_0].flags = flags;
-> >>>>
-> >>>> This does not even do what it says. Compiler is still free to access
-> >>>> data[0] multiple times. It needs READ_ONCE() to be effective.
-> >>>
-> >>> Yes, it seems quite dubious to me. If we *really* want to guard against
-> >>> rogue hardware here, the whole DMA buffer should be copied. I don't
-> >>> think it's worth it, a rogue PCI device can do much more harm.
-> >>
-> >>  From the original driver code, data[0] is considered to be bad and thus
-> >> it should be checked, because the content of the DMA buffer may be
-> >> problematic.
-> >>
-> >> Based on this consideration, data[0] can be also modified to bypass the
-> >> check, and thus its value should be copied to a local variable for the
-> >> check and use.
-> >
-> > What makes you think the hardware would do that ?
-> 
-> Several recent papers show that the bad values from malicious or 
-> problematic hardware can cause security problems:
-> [NDSS'19] PeriScope: An Effective Probing and Fuzzing Framework for the 
-> Hardware-OS Boundary
-> [NDSS'19] Thunderclap: Exploring Vulnerabilities in Operating System 
-> IOMMU Protection via DMA from Untrustworthy Peripherals
-> [USENIX Security'20] USBFuzz: A Framework for Fuzzing USB Drivers by 
-> Device Emulation
-> 
-> In this case, the values from DMA can be bad, and the driver should 
-> carefully check these values to avoid security problems.
-> IOMMU is an effective method to prevent the hardware from accessing 
-> arbitrary memory address via DMA, but it does not check whether the 
-> values from DMA are safe.
-> 
-> I find that some drivers (including the av7110 driver) check (or try to 
-> check) the values from DMA, and thus I think these drivers have 
-> considered such security problems.
-> However, some of these checks are not rigorous, so that they can be 
-> bypassed in some cases. The problem that I reported is such an example.
+> On Thursday, 27 August 2020 11:33:51 CEST Lee Jones wrote:
+>> 'ar9170_qmap' is used in some source files which include carl9170.h,
+>> but not all of them.  A 'defined but not used' warning is thrown when
+>> compiling the ones which do not use it.
+>>=20
+>> Fixes the following W=3D1 kernel build warning(s)
+>>=20
+>>  from drivers/net/wireless/ath/carl9170/carl9170.h:57,
+>>  In file included from drivers/net/wireless/ath/carl9170/carl9170.h:57,
+>>  drivers/net/wireless/ath/carl9170/carl9170.h:71:17: warning:
+>> =E2=80=98ar9170_qmap=E2=80=99 defined but not used [-Wunused-const-varia=
+ble=3D]
+>>=20
+>>  NB: Snipped - lots of these repeat
+>>=20
+>> Cc: Christian Lamparter <chunkeey@googlemail.com>
+>> Cc: Kalle Valo <kvalo@codeaurora.org>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Johannes Berg <johannes@sipsolutions.net>
+>> Cc: linux-wireless@vger.kernel.org
+>> Cc: netdev@vger.kernel.org
+>> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+>> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>> ---
+>
+> For what it's worth:
+> Acked-by: Christian Lamparter <chunkeey@gmail.com>
 
-The AV7110 is an old chip, I'm not even sure if it can be used with a
-modern system that supports IOMMUs for PCI devices. Without that, it's
-game over anyway. Before trying to address the issue of a malicious
-AV7110 playing with DMA and CPU races, I would ensure that it's worth
-it.
+BTW for me Acked-by tags from the maintainer are very useful. Patchwork
+even collects them automatically and shows the statistics so I can
+quickly see what patches are ready to be applied. So please do send them
+if you can :)
 
--- 
-Regards,
-
-Laurent Pinchart
+--=20
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
