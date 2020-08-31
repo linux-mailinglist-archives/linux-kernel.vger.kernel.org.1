@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D685258069
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2233725806E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgHaSLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
+        id S1728987AbgHaSLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:11:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgHaSLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:11:02 -0400
+        id S1728376AbgHaSLW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:11:22 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E21292068E;
-        Mon, 31 Aug 2020 18:11:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 066532068E;
+        Mon, 31 Aug 2020 18:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897461;
-        bh=uvz6DOzkrc6ir/K8vblcwThBOBUJencSAy9QHcrbWDM=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=hxVI56iLEFi2VXeGaE0DFz5n1O3kiZRPpFBMsC7PZUB4t9usCo524tBHEMy2dCn7f
-         TFQb3itNREW3kUv2Ow0GNzlqQw6GGmQpcGm5JFeDtbcGIaRxwWgN6D11tXUZiA0Xbk
-         BVkT4pcqmN8zqg0WhXH0P5AfgxkG1ueHUD0BneGg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C2C1A35230F1; Mon, 31 Aug 2020 11:11:01 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 11:11:01 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1598897482;
+        bh=Pc4xELlIewnQVLl8AuOOtULOmaWAGKvPWQaIu3f7uYI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kUJBlqaqa7SF2T5Mz421IkNJgJYx2HN3pOQjN+Fj2qNZj7lR4htrCskMtprVsI/EY
+         26AeOPLZoUAhpxNcD/SZTUcPvu+KGYDA1dvrzPOIgigC1BVyeFadpD2YSgiy6hNjpj
+         h34V7ZOcdExG0eTXDY8i5jFb80TEAFUsb3KAwXdg=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/13] Add strict grace periods for KASAN use for
- v5.10
-Message-ID: <20200831181101.GA950@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/13] rcu: Add Kconfig option for strict RCU grace periods
+Date:   Mon, 31 Aug 2020 11:11:08 -0700
+Message-Id: <20200831181120.1044-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200831181101.GA950@paulmck-ThinkPad-P72>
+References: <20200831181101.GA950@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series adds strict grace periods that are as short as is reasonably
-practical.  This feature is enabled using a new RCU_STRICT_GRACE_PERIOD
-Kconfig option, and severely degrades performance and scalability.
-It should therefore be avoided in production.
+People running automated tests have asked for a way to make RCU minimize
+grace-period duration in order to increase the probability of KASAN
+detecting a pointer being improperly leaked from an RCU read-side critical
+section, for example, like this:
 
-1.	Add Kconfig option for strict RCU grace periods.
+	rcu_read_lock();
+	p = rcu_dereference(gp);
+	do_something_with(p); // OK
+	rcu_read_unlock();
+	do_something_else_with(p); // BUG!!!
 
-2.	Reduce leaf fanout for strict RCU grace periods.
+The rcupdate.rcu_expedited boot parameter is a start in this direction,
+given that it makes calls to synchronize_rcu() instead invoke the faster
+(and more wasteful) synchronize_rcu_expedited().  However, this does
+nothing to shorten RCU grace periods that are instead initiated by
+call_rcu(), and RCU pointer-leak bugs can involve call_rcu() just as
+surely as they can synchronize_rcu().
 
-3.	Restrict default jiffies_till_first_fqs for strict RCU GPs.
+This commit therefore adds a RCU_STRICT_GRACE_PERIOD Kconfig option
+that will be used to shorten normal (non-expedited) RCU grace periods.
+This commit also dumps out a message when this option is in effect.
+Later commits will actually shorten grace periods.
 
-4.	Force DEFAULT_RCU_BLIMIT to 1000 for strict RCU GPs.
+Reported-by Jann Horn <jannh@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/Kconfig.debug | 15 +++++++++++++++
+ kernel/rcu/tree_plugin.h |  2 ++
+ 2 files changed, 17 insertions(+)
 
-5.	Always set .need_qs from __rcu_read_lock() for strict GPs.
+diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
+index 3cf6132..cab5a4b 100644
+--- a/kernel/rcu/Kconfig.debug
++++ b/kernel/rcu/Kconfig.debug
+@@ -114,4 +114,19 @@ config RCU_EQS_DEBUG
+ 	  Say N here if you need ultimate kernel/user switch latencies
+ 	  Say Y if you are unsure
+ 
++config RCU_STRICT_GRACE_PERIOD
++	bool "Provide debug RCU implementation with short grace periods"
++	depends on DEBUG_KERNEL && RCU_EXPERT
++	default n
++	select PREEMPT_COUNT if PREEMPT=n
++	help
++	  Select this option to build an RCU variant that is strict about
++	  grace periods, making them as short as it can.  This limits
++	  scalability, destroys real-time response, degrades battery
++	  lifetime and kills performance.  Don't try this on large
++	  machines, as in systems with more than about 10 or 20 CPUs.
++	  But in conjunction with tools like KASAN, it can be helpful
++	  when looking for certain types of RCU usage bugs, for example,
++	  too-short RCU read-side critical sections.
++
+ endmenu # "RCU Debugging"
+diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+index 982fc5b..44cf77d 100644
+--- a/kernel/rcu/tree_plugin.h
++++ b/kernel/rcu/tree_plugin.h
+@@ -36,6 +36,8 @@ static void __init rcu_bootup_announce_oddness(void)
+ 		pr_info("\tRCU dyntick-idle grace-period acceleration is enabled.\n");
+ 	if (IS_ENABLED(CONFIG_PROVE_RCU))
+ 		pr_info("\tRCU lockdep checking is enabled.\n");
++	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
++		pr_info("\tRCU strict (and thus non-scalable) grace periods enabled.\n");
+ 	if (RCU_NUM_LVLS >= 4)
+ 		pr_info("\tFour(or more)-level hierarchy is enabled.\n");
+ 	if (RCU_FANOUT_LEAF != 16)
+-- 
+2.9.5
 
-6.	Do full report for .need_qs for strict GPs.
-
-7.	Attempt QS when CPU discovers GP for strict GPs.
-
-8.	IPI all CPUs at GP start for strict GPs.
-
-9.	IPI all CPUs at GP end for strict GPs.
-
-10.	Provide optional RCU-reader exit delay for strict GPs.
-
-11.	Execute RCU reader shortly after rcu_core for strict GPs.
-
-12.	Report QS for outermost PREEMPT=n rcu_read_unlock() for strict GPs.
-
-13.	Remove unused "cpu" parameter from rcu_report_qs_rdp().
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt |    9 ++
- include/linux/rcupdate.h                        |    7 ++
- kernel/rcu/Kconfig                              |    8 +-
- kernel/rcu/Kconfig.debug                        |   15 ++++
- kernel/rcu/tree.c                               |   73 ++++++++++++++++++++----
- kernel/rcu/tree.h                               |    1 
- kernel/rcu/tree_plugin.h                        |   52 +++++++++++++----
- 7 files changed, 139 insertions(+), 26 deletions(-)
