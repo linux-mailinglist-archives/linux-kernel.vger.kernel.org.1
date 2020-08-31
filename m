@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75F82582AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F152582E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgHaUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 16:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbgHaUig (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:38:36 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1479DC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 13:38:36 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u128so1312567pfb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 13:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K/7PK6S5Q6HPaHq1eTEnKf0uxbke5x5RCxK0h2wg5MI=;
-        b=iD3qjy7K7rLQsbdLS08nvec3+rM9z7c+f4CUp0k4t39HnIujZ8vk0S8wvig/Z+Afhd
-         sjXJYjB/unW5U/y62CSJod/KXZxJRFkEnUC1VWxC+KIPPzPmNBKoP93r0k/7HLVSzk4g
-         QKUrimlJnMdc4cyZHkskrXezSxkUzb80x5/b5FzkLGNpGunkUWqOnV5/JZ6zTQl42Bjd
-         cHSUscDipKnvrcPDtsBKFWkOVYxr9tQgD0aJrCKfUXFQT85BZvQe2rB9b1jLLcykGKl7
-         GGbhN8LiBhSjcNbNmg5ZqLkaTJG3/W0PjQo6SJoBYmx44NG/8LgG6DOv+dtbAacwo4dj
-         bUIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K/7PK6S5Q6HPaHq1eTEnKf0uxbke5x5RCxK0h2wg5MI=;
-        b=M89TXZBCLDJ34zc8brDK0RDBky1sm3ODLyQ9pUY6ouWKOLKlZTNJq7eEeemfqi/eBk
-         PdfOs5hwXVQnaVTtOUdyB7t19tA6Xkdt9R+IqS8OgT6qpVAo+46Cm9zhD/v57aTOxFJx
-         2ah0aeaxBE56MGi+mPMEE937ThajRVQvs4mqKHeqXIyBp5SoOLmezG+LxZbAY4ioZvsy
-         mXDgmjciQOWIMUQUfM6FvxUR8lAYaVe+AbfLcLIomFSWoVezRkadTEB1Ga5aM7ch5eug
-         /HSlppguT9bvtI9L8rjGDqPgUKaT9XJvXytkvu5oK8+YgY1QRRblXmnp9TwX+TS/XMV6
-         2Vwg==
-X-Gm-Message-State: AOAM531bbkNHKaLEbUV1sTnzuRIqU/hA41YHv1eC3enOXcj2xAx4EuXz
-        hKAHdvvJ74zbyFvIthhLfL8Pqw==
-X-Google-Smtp-Source: ABdhPJwprAyCBcJ1XpRTFAQaEvCQLHh7Ax18vWRPUmgyeqkVYZHQhwVmBvUkgTn9jN1woKzPD/at+g==
-X-Received: by 2002:a65:4847:: with SMTP id i7mr2554665pgs.385.1598906315528;
-        Mon, 31 Aug 2020 13:38:35 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id l23sm8267869pgt.16.2020.08.31.13.38.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 13:38:34 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 14:38:32 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        AAl Grant <al.grant@arm.com>
-Subject: Re: [PATCH 2/2] perf intel-pt: Fix corrupt data after perf inject
- from
-Message-ID: <20200831203832.GA120995@xps15>
-References: <20200819084751.17686-1-leo.yan@linaro.org>
- <20200819084751.17686-2-leo.yan@linaro.org>
+        id S1730167AbgHaUjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 16:39:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728893AbgHaUja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 16:39:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B34AD2078B;
+        Mon, 31 Aug 2020 20:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598906369;
+        bh=l8jxjn/rMeXl1xTr/TAWKe9Rt5YZz1pcuYU7jXMBbv0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=1PeMevtCw8CwCifvJ+s/HCFOsVW6OEn1CN4vDyCxy7fJ09pcDHkwV1YalcP96rJbM
+         ZYR+njDjdonzAHaP5oueE7DhWIPojdgPv0Yxmuc12QeCYBfFeRaBVHOMhpfFI10dUk
+         MbhctG9Szz4x0xuPgoeEycNr3YSspt3ftfZkb5e8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kCqaN-0086VA-S6; Mon, 31 Aug 2020 21:39:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200819084751.17686-2-leo.yan@linaro.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 31 Aug 2020 21:39:27 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     syzbot <syzbot+e24baf53dc389927a7c3@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: general protection fault in sock_close
+In-Reply-To: <20200831200328.GX1236603@ZenIV.linux.org.uk>
+References: <000000000000dc862405ae31ae9b@google.com>
+ <20200831200328.GX1236603@ZenIV.linux.org.uk>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <82748fc422a64d70c706951954a2dcfa@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: viro@zeniv.linux.org.uk, syzbot+e24baf53dc389927a7c3@syzkaller.appspotmail.com, davem@davemloft.net, kuba@kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 04:47:51PM +0800, Leo Yan wrote:
-> From: Al Grant <al.grant@arm.com>
+On 2020-08-31 21:03, Al Viro wrote:
+> On Mon, Aug 31, 2020 at 12:48:13PM -0700, syzbot wrote:
+>> Hello,
+>> 
+>> syzbot found the following issue on:
+>> 
+>> HEAD commit:    15bc20c6 Merge tag 'tty-5.9-rc3' of 
+>> git://git.kernel.org/p..
+>> git tree:       upstream
+>> console output: 
+>> https://syzkaller.appspot.com/x/log.txt?x=16a85669900000
+>> kernel config:  
+>> https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
+>> dashboard link: 
+>> https://syzkaller.appspot.com/bug?extid=e24baf53dc389927a7c3
+>> compiler:       clang version 10.0.0 
+>> (https://github.com/llvm/llvm-project/ 
+>> c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+>> syz repro:      
+>> https://syzkaller.appspot.com/x/repro.syz?x=127d3c99900000
 > 
-> Commit 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
-> changed the format of branch stacks in perf samples. When samples use
-> this new format, a flag must be set in the corresponding event.
-> Synthesized branch stacks generated from Intel PT were using the new
-> format, but not setting the event attribute, leading to consumers
-> seeing corrupt data. This patch fixes the issue by setting the event
-> attribute to indicate use of the new format.
+>> The issue was bisected to:
+>> 
+>> commit a9ed4a6560b8562b7e2e2bed9527e88001f7b682
+>> Author: Marc Zyngier <maz@kernel.org>
+>> Date:   Wed Aug 19 16:12:17 2020 +0000
+>> 
+>>     epoll: Keep a reference on files added to the check list
 > 
-> Fixes: 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
-> Signed-off-by: Al Grant <al.grant@arm.com>
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> All of those are essentially duplicates.
+> 
+> The minimal fix is below; I'm not happy with it long-term, but I'm 
+> still
+> digging through the eventpoll locking, and there's a good chance that 
+> this
+> is the least intrusive variant for -stable.  Folks, could you check if 
+> the
+> following patch fixes those suckers?  Again, all reports bisected to 
+> that
+> commit are essentially the same.
+> 
+> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+> index e0decff22ae2..8107e06d7f6f 100644
+> --- a/fs/eventpoll.c
+> +++ b/fs/eventpoll.c
+> @@ -1995,9 +1995,9 @@ static int ep_loop_check_proc(void *priv, void
+> *cookie, int call_nests)
+>  			 * during ep_insert().
+>  			 */
+>  			if (list_empty(&epi->ffd.file->f_tfile_llink)) {
+> -				get_file(epi->ffd.file);
+> -				list_add(&epi->ffd.file->f_tfile_llink,
+> -					 &tfile_check_list);
+> +				if (get_file_rcu(epi->ffd.file))
+> +					list_add(&epi->ffd.file->f_tfile_llink,
+> +						 &tfile_check_list);
+>  			}
+>  		}
+>  	}
 
-Arnaldo, please consider.
+I've managed to reproduce the issue using [1] (throw a few in a VM,
+see things explode like clockwork).
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+With this patch on top of -rc3, the VM keep ticking away. FWIW:
 
-> ---
->  tools/perf/util/intel-pt.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-> index 2a8d245351e7..0af4e81c46e2 100644
-> --- a/tools/perf/util/intel-pt.c
-> +++ b/tools/perf/util/intel-pt.c
-> @@ -3017,8 +3017,15 @@ static int intel_pt_synth_events(struct intel_pt *pt,
->  
->  	if (pt->synth_opts.callchain)
->  		attr.sample_type |= PERF_SAMPLE_CALLCHAIN;
-> -	if (pt->synth_opts.last_branch)
-> +	if (pt->synth_opts.last_branch) {
->  		attr.sample_type |= PERF_SAMPLE_BRANCH_STACK;
-> +		/*
-> +		 * We don't use the hardware index, but the sample generation
-> +		 * code uses the new format branch_stack with this field,
-> +		 * so the event attributes must indicate that it's present.
-> +		 */
-> +		attr.branch_sample_type |= PERF_SAMPLE_BRANCH_HW_INDEX;
-> +	}
->  
->  	if (pt->synth_opts.instructions) {
->  		attr.config = PERF_COUNT_HW_INSTRUCTIONS;
-> -- 
-> 2.17.1
-> 
+Tested-by: Marc Zyngier <maz@kernel.org>
+Fixes: a9ed4a6560b8 ("epoll: Keep a reference on files added to the 
+check list")
+
+Thanks,
+
+         M.
+
+[1] https://syzkaller.appspot.com/x/repro.c?x=140a19a9900000
+-- 
+Jazz is not dead. It just smells funny...
