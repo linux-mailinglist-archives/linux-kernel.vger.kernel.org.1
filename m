@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B14525804B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D85258062
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729301AbgHaSH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:07:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55306 "EHLO mail.kernel.org"
+        id S1729550AbgHaSJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:09:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728400AbgHaSHw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:07:52 -0400
+        id S1728772AbgHaSHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:07:53 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F37F720EDD;
-        Mon, 31 Aug 2020 18:07:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35E7B214DB;
+        Mon, 31 Aug 2020 18:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598897272;
-        bh=V/5+zAPAGDsJaUfpmyYkRjpFiQYBfOLDuFgsWNBLRcw=;
+        bh=PO/ymn47zoTtl+4GWO5XGsTjjXluSYSZ26cp39dkN3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hafV8f0yx1s6B7gMHhP4zJ5PAWffnGj+5c4b/DJtfkE33xscwL9Tr57aUfroeEaC0
-         SMe2yhBrWRJjxtwD8hvYQ15q9/WqRq6v+ybM/GhKFQvI08vuqccRDdhRij/Rm0nYs+
-         JgMazBprxLNjATeUmMoH0j9Vz9EjsmIQBEacPMwM=
+        b=eJIJltOa+PNbxfHJJJM/A7YjIiOs4mpyXXEn3y4eu89Su7IGgWGzaWx2ewZ7XDfDE
+         f/CTKmpM7uKaSqgcEjgH0BXiUFznyHBeCifWuaW9nAMoTG4iE2NdJkAAHT1EVk5I3s
+         jxcIGPM++smv3z/EFTPizMFS0MmxmPn6aRCfeENQ=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/19] torture: Declare parse-console.sh independence from rcutorture
-Date:   Mon, 31 Aug 2020 11:07:32 -0700
-Message-Id: <20200831180749.843-2-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/19] torture: Add scftorture to the rcutorture scripting
+Date:   Mon, 31 Aug 2020 11:07:33 -0700
+Message-Id: <20200831180749.843-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180731.GA582@paulmck-ThinkPad-P72>
 References: <20200831180731.GA582@paulmck-ThinkPad-P72>
@@ -45,47 +45,174 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, parse-torture.sh looks at the fifth field of torture-test
-console output for the version number.  This works fine for rcutorture,
-but not for scftorture, which lacks the pointer field.  This commit
-therefore adjusts matching lines so that the parse-console.sh awk script
-always sees the version number as the first field in the lines passed
-to it.
+This commit updates the rcutorture scripting to include the new scftorture
+torture-test module.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/parse-console.sh | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ .../selftests/rcutorture/bin/kvm-recheck-scf.sh    | 38 ++++++++++++++++++++++
+ tools/testing/selftests/rcutorture/bin/kvm.sh      |  2 +-
+ .../selftests/rcutorture/configs/scf/CFLIST        |  2 ++
+ .../selftests/rcutorture/configs/scf/CFcommon      |  2 ++
+ .../selftests/rcutorture/configs/scf/NOPREEMPT     |  9 +++++
+ .../rcutorture/configs/scf/NOPREEMPT.boot          |  1 +
+ .../selftests/rcutorture/configs/scf/PREEMPT       |  9 +++++
+ .../rcutorture/configs/scf/ver_functions.sh        | 30 +++++++++++++++++
+ 8 files changed, 92 insertions(+), 1 deletion(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/CFLIST
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/CFcommon
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT.boot
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/PREEMPT
+ create mode 100644 tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh
 
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 71a9f43..4e081a2 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -67,6 +67,7 @@ then
- 	grep --binary-files=text 'torture:.*ver:' $file |
- 	egrep --binary-files=text -v '\(null\)|rtc: 000000000* ' |
- 	sed -e 's/^(initramfs)[^]]*] //' -e 's/^\[[^]]*] //' |
-+	sed -e 's/^.*ver: //' |
- 	awk '
- 	BEGIN	{
- 		ver = 0;
-@@ -74,13 +75,13 @@ then
- 		}
- 
- 		{
--		if (!badseq && ($5 + 0 != $5 || $5 <= ver)) {
-+		if (!badseq && ($1 + 0 != $1 || $1 <= ver)) {
- 			badseqno1 = ver;
--			badseqno2 = $5;
-+			badseqno2 = $1;
- 			badseqnr = NR;
- 			badseq = 1;
- 		}
--		ver = $5
-+		ver = $1
- 		}
- 
- 	END	{
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
+new file mode 100755
+index 0000000..671bfee
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-scf.sh
+@@ -0,0 +1,38 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Analyze a given results directory for rcutorture progress.
++#
++# Usage: kvm-recheck-rcu.sh resdir
++#
++# Copyright (C) Facebook, 2020
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++i="$1"
++if test -d "$i" -a -r "$i"
++then
++	:
++else
++	echo Unreadable results directory: $i
++	exit 1
++fi
++. functions.sh
++
++configfile=`echo $i | sed -e 's/^.*\///'`
++nscfs="`grep 'scf_invoked_count ver:' $i/console.log 2> /dev/null | tail -1 | sed -e 's/^.* scf_invoked_count ver: //' -e 's/ .*$//' | tr -d '\015'`"
++if test -z "$nscfs"
++then
++	echo "$configfile ------- "
++else
++	dur="`sed -e 's/^.* scftorture.shutdown_secs=//' -e 's/ .*$//' < $i/qemu-cmd 2> /dev/null`"
++	if test -z "$dur"
++	then
++		rate=""
++	else
++		nscfss=`awk -v nscfs=$nscfs -v dur=$dur '
++			BEGIN { print nscfs / dur }' < /dev/null`
++		rate=" ($nscfss/s)"
++	fi
++	echo "${configfile} ------- ${nscfs} SCF handler invocations$rate"
++fi
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
+index e655983..44dfdd9 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
+@@ -184,7 +184,7 @@ do
+ 		shift
+ 		;;
+ 	--torture)
+-		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuperf\|refscale\)$' '^--'
++		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuperf\|refscale\|scf\)$' '^--'
+ 		TORTURE_SUITE=$2
+ 		shift
+ 		if test "$TORTURE_SUITE" = rcuperf || test "$TORTURE_SUITE" = refscale
+diff --git a/tools/testing/selftests/rcutorture/configs/scf/CFLIST b/tools/testing/selftests/rcutorture/configs/scf/CFLIST
+new file mode 100644
+index 0000000..4d62eb4
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/scf/CFLIST
+@@ -0,0 +1,2 @@
++NOPREEMPT
++PREEMPT
+diff --git a/tools/testing/selftests/rcutorture/configs/scf/CFcommon b/tools/testing/selftests/rcutorture/configs/scf/CFcommon
+new file mode 100644
+index 0000000..c11ab91
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/scf/CFcommon
+@@ -0,0 +1,2 @@
++CONFIG_SCF_TORTURE_TEST=y
++CONFIG_PRINTK_TIME=y
+diff --git a/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT
+new file mode 100644
+index 0000000..b8429d6
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT
+@@ -0,0 +1,9 @@
++CONFIG_SMP=y
++CONFIG_PREEMPT_NONE=y
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=n
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=n
++CONFIG_NO_HZ_FULL=y
++CONFIG_DEBUG_LOCK_ALLOC=n
++CONFIG_PROVE_LOCKING=n
+diff --git a/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT.boot b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT.boot
+new file mode 100644
+index 0000000..d6a7fa0
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/scf/NOPREEMPT.boot
+@@ -0,0 +1 @@
++nohz_full=1
+diff --git a/tools/testing/selftests/rcutorture/configs/scf/PREEMPT b/tools/testing/selftests/rcutorture/configs/scf/PREEMPT
+new file mode 100644
+index 0000000..ae4992b
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/scf/PREEMPT
+@@ -0,0 +1,9 @@
++CONFIG_SMP=y
++CONFIG_PREEMPT_NONE=n
++CONFIG_PREEMPT_VOLUNTARY=n
++CONFIG_PREEMPT=y
++CONFIG_HZ_PERIODIC=n
++CONFIG_NO_HZ_IDLE=y
++CONFIG_NO_HZ_FULL=n
++CONFIG_DEBUG_LOCK_ALLOC=y
++CONFIG_PROVE_LOCKING=y
+diff --git a/tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh b/tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh
+new file mode 100644
+index 0000000..d3d9e35
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/configs/scf/ver_functions.sh
+@@ -0,0 +1,30 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Torture-suite-dependent shell functions for the rest of the scripts.
++#
++# Copyright (C) Facebook, 2020
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++# scftorture_param_onoff bootparam-string config-file
++#
++# Adds onoff scftorture module parameters to kernels having it.
++scftorture_param_onoff () {
++	if ! bootparam_hotplug_cpu "$1" && configfrag_hotplug_cpu "$2"
++	then
++		echo CPU-hotplug kernel, adding scftorture onoff. 1>&2
++		echo scftorture.onoff_interval=1000 scftorture.onoff_holdoff=30
++	fi
++}
++
++# per_version_boot_params bootparam-string config-file seconds
++#
++# Adds per-version torture-module parameters to kernels supporting them.
++per_version_boot_params () {
++	echo $1 `scftorture_param_onoff "$1" "$2"` \
++		scftorture.stat_interval=15 \
++		scftorture.shutdown_secs=$3 \
++		scftorture.verbose=1 \
++		scf
++}
 -- 
 2.9.5
 
