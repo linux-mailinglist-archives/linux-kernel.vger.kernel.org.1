@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC4225845D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 01:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FDA258464
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 01:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726224AbgHaXVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 19:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgHaXVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 19:21:31 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D42A2078B;
-        Mon, 31 Aug 2020 23:21:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598916091;
-        bh=K67KYwM93/LUPOUt+CVB+SxKRu4sFouQt0tEFmBotfY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZRvtcNDB4PT11KKs7GLKPPLkXGXlnTswB8GnQrOXRcozDIOLP05NFL9SombeodfCy
-         b9Y1wtkW7eMPObr+xRYXCbEAn5/A17/CVupF3DeTvCAQqaAsl/V+VOumyPEVBFXVtk
-         2dMxCxCXrtf57T6gEczXeMD0jZI3J9IeCnjXQKJ4=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DC4B735230F1; Mon, 31 Aug 2020 16:21:30 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 16:21:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Question on task_blocks_on_rt_mutex()
-Message-ID: <20200831232130.GA28456@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200831224911.GA13114@paulmck-ThinkPad-P72>
+        id S1726085AbgHaXZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 19:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbgHaXZi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 19:25:38 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279F8C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 16:25:38 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id m8so1580311pfh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 16:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ryNxh31n4GLtr4wiLiu+HxZgOdeShQwzv0bbbDwyQqU=;
+        b=WLmlKkEzXowd/E5iK8eqKrx/dsSzW1FdD3sz3nvMzEwWFyIYOl+Z3WEHAy8pOJUZDT
+         BV+BFsZ63xjAX+7omPTfFQk+eN1bn8P+S+ZHad1snvOZUOxQ/SpVPcgvldI3hi+CpFgu
+         FAbWUGEEYtqRX1NKbEa3rGa57dEwXGTBla5/c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ryNxh31n4GLtr4wiLiu+HxZgOdeShQwzv0bbbDwyQqU=;
+        b=aKqKHK46zevad6Tv5J3bODiQtKapMEqaJo7+zVZYXOtr+9BUBCLpWXAxafaFESct13
+         z3M0ULXMbVBbpt389BzcAUCZyFRMreIrBlS8USQFdrohr/8Hnrn3BFXf70Cy/YOdJ+7C
+         k4muYQBicUjA9QEHOqhQtjEA4CqmgNRwV9yPEt01YbiG/qiAk7QZ4cCq7nugXHeEST/h
+         6CusWO22XlYrfZfz0sGccRdzhtCRCDkdpGGCI1aQ9KUIwdZsk4FI6TjVlKF0cs9u7Cvj
+         feDLdYVk1s16/8HLNVc94e6Mx5SZ/sapZ+TI6+w8JOpllea99dmXjmxAbJKweUJoU4DD
+         huiQ==
+X-Gm-Message-State: AOAM530Wdh0xJVCuvySUsLsF+CuTJSOC/hYkryhPsAA91o1pW8jP7ibg
+        v1gk3ywetJmZ9WJbTaKF0LkegQ==
+X-Google-Smtp-Source: ABdhPJxntmuzYlZmik+s//Jh+Y4ebRFhEs/9XwXQOMZCaG4JBbiXbJRRn+u11CA5ZaTbtYnnJSv17g==
+X-Received: by 2002:aa7:924b:: with SMTP id 11mr3189196pfp.185.1598916337542;
+        Mon, 31 Aug 2020 16:25:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v11sm8477459pgs.22.2020.08.31.16.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 16:25:36 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 16:25:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Tycho Andersen <tycho@tycho.ws>,
+        Christian Brauner <christian@brauner.io>
+Cc:     linux-kernel@vger.kernel.org, luto@amacapital.net,
+        syzbot <syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com, wad@chromium.org
+Subject: Re: memory leak in do_seccomp
+Message-ID: <202008311620.AC4A7047D@keescook>
+References: <000000000000e5ea9e05ac9d16c1@google.com>
+ <000000000000df80ae05ae244c2b@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200831224911.GA13114@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <000000000000df80ae05ae244c2b@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 03:49:11PM -0700, Paul E. McKenney wrote:
-> Hello!
+On Sun, Aug 30, 2020 at 08:50:15PM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> The task_blocks_on_rt_mutex() function uses rt_mutex_owner() to
-> take a snapshot of the lock owner right up front.  At this point,
-> the ->wait_lock is held, which at first glance prevents the owner
-> from leaving.  Except that if there are not yet any waiters (that is,
-> the low-order bit of ->owner is zero), rt_mutex_fastunlock() might
-> locklessly clear the ->owner field.  And in that case, it looks like
-> task_blocks_on_rt_mutex() will blithely continue using the ex-owner's
-> task_struct structure, without anything that I can see that prevents
-> the ex-owner from exiting.
+> HEAD commit:    dcc5c6f0 Merge tag 'x86-urgent-2020-08-30' of git://git.ke..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10b297d5900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=903b9fecc3c6d231
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3ad9614a12f80994c32e
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14649561900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118aacc1900000
 > 
-> What am I missing here?
-
-One thing I missed is that the low-order bit of ->owner would already
-be set by this point.
-
-> The reason that I am looking into this is that locktorture scenario LOCK05
-> hangs, and does so leaving the torture_rtmutex.waiters field equal to 0x1.
-> This is of course a legal transitional state, but I would not expect it
-> to persist for more than three minutes.  Yet it often does.
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
 > 
-> This leads me to believe that there is a way for an unlock to fail to wake
-> up a task concurrently acquiring the lock.  This seems to be repaired
-> by later lock acquisitions, and in fact setting the locktorture.stutter
-> module parameter to zero avoids the hang.  Except that I first found the
-> above apparently unprotected access to what was recently the owner task.
-> 
-> Thoughts?
+> executing program
+> executing program
+> executing program
+> executing program
+> executing program
+> BUG: memory leak
+> unreferenced object 0xffff88811ba93600 (size 64):
+>   comm "syz-executor680", pid 6503, jiffies 4294951104 (age 21.940s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 08 36 a9 1b 81 88 ff ff  .........6......
+>     08 36 a9 1b 81 88 ff ff 11 ce 98 89 3a d5 b4 8f  .6..........:...
+>   backtrace:
+>     [<00000000896418b0>] kmalloc include/linux/slab.h:554 [inline]
+>     [<00000000896418b0>] kzalloc include/linux/slab.h:666 [inline]
+>     [<00000000896418b0>] init_listener kernel/seccomp.c:1473 [inline]
+>     [<00000000896418b0>] seccomp_set_mode_filter kernel/seccomp.c:1546 [inline]
+>     [<00000000896418b0>] do_seccomp+0x8ce/0xd40 kernel/seccomp.c:1649
+>     [<000000002b04976c>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>     [<00000000322b4126>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Some breakage elsewhere, presumably...
+I haven't narrowed this down yet (and it *might* be a false positive),
+but it looks like this is filter->notif. The only way that's possible is
+if seccomp_notify_release() was never called *and* seccomp_filter_free()
+got called... which would imply a reference counting problem. The way
+there doesn't jump out at me yet, but I haven't yet decoded the C
+reproducer into the actual seccomp arguments, etc.
 
-							Thanx, Paul
+-- 
+Kees Cook
