@@ -2,54 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EEC2575EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8972E2575F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgHaJBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725829AbgHaJBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:01:47 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BC29208CA;
-        Mon, 31 Aug 2020 09:01:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598864507;
-        bh=V1Kdqp3MpKk7bBynwA3RtEMJuXa5+xTQus1ipqhPoSA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OaIMR658zsshmyKulJQyWNx9Mh0wDURnx4zzh7O387ZirDRF4I9i1LWdmgk0VdPWj
-         urCCWeXhhPn98Hfyi+edpmF2PTQqcKvnYtSDwXP9Jb1zr/mTWTnjGVXwhcpM4wozbQ
-         ierAPM9gnDejouvYdvBOO3f+fKUbc5a+o7OcaYLE=
-Date:   Mon, 31 Aug 2020 14:31:42 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Roger Quadros <rogerq@ti.com>
-Cc:     kishon@ti.com, nsekhar@ti.com, vigneshr@ti.com,
-        jan.kiszka@siemens.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] phy: omap-usb2-phy: Errata and coding style fix
-Message-ID: <20200831090142.GI2639@vkoul-mobl>
-References: <20200824075127.14902-1-rogerq@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824075127.14902-1-rogerq@ti.com>
+        id S1728223AbgHaJG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:06:59 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:27918 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725829AbgHaJG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 05:06:57 -0400
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgBHYt6kvUxfhYZ9Aw--.31096S4;
+        Mon, 31 Aug 2020 17:06:47 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] HID: elan: Fix memleak in elan_input_configured
+Date:   Mon, 31 Aug 2020 17:06:43 +0800
+Message-Id: <20200831090643.32489-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgBHYt6kvUxfhYZ9Aw--.31096S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7XryxXr1rZFWUuFyfWrW8tFb_yoWktFg_W3
+        409wnrWF1DtFsYkrnrKrWfZryDZr4vvFyfXF1vqF1fJry7X3yDu3y3ZFn7Ga4Ygw47u3W0
+        9a4DWr4IyrsIkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
+        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
+        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
+        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+        1lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
+        Y20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUJBlZdtPuUJQAAs9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-08-20, 10:51, Roger Quadros wrote:
-> Hi,
-> 
-> This series addresses silicon errata
-> i2075 - "USB2PHY: USB2PHY Charger Detect is Enabled by Default
-> Without VBUS Presence"
-> 
-> It also fixes coding style issues.
+When input_mt_init_slots() fails, input should be freed
+to prevent memleak. When input_register_device() fails,
+we should call input_mt_destroy_slots() to free memory
+allocated by input_mt_init_slots().
 
-Applied, thanks
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
+Changelog:
+
+v2: - Add input_mt_destroy_slots() on failure of
+      input_register_device().
+---
+ drivers/hid/hid-elan.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/hid/hid-elan.c b/drivers/hid/hid-elan.c
+index 45c4f888b7c4..dae193749d44 100644
+--- a/drivers/hid/hid-elan.c
++++ b/drivers/hid/hid-elan.c
+@@ -188,6 +188,7 @@ static int elan_input_configured(struct hid_device *hdev, struct hid_input *hi)
+ 	ret = input_mt_init_slots(input, ELAN_MAX_FINGERS, INPUT_MT_POINTER);
+ 	if (ret) {
+ 		hid_err(hdev, "Failed to init elan MT slots: %d\n", ret);
++		input_free_device(input);
+ 		return ret;
+ 	}
+ 
+@@ -198,6 +199,7 @@ static int elan_input_configured(struct hid_device *hdev, struct hid_input *hi)
+ 	if (ret) {
+ 		hid_err(hdev, "Failed to register elan input device: %d\n",
+ 			ret);
++		input_mt_destroy_slots(input);
+ 		input_free_device(input);
+ 		return ret;
+ 	}
 -- 
-~Vinod
+2.17.1
+
