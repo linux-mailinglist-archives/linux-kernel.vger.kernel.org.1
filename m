@@ -2,186 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD64F257C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A807C257DC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728514AbgHaP36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728419AbgHaP3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:29:47 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2A5120866;
-        Mon, 31 Aug 2020 15:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598887786;
-        bh=zZZ10f8uPvc1QHqSP9kMTaXdSgL84DFd9nNUxAUyLMc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=imdniHmsqPM7doJvjVKZ2t0TnJ1xEwpeIqSrA4idF4oo7PVn9djVHh9sPSeiY+tnl
-         Pq0aOByLjAk2RT1avtchU5GGbwUDiBgyyLACDnNkBD+jSuZMHBmROfx1VC4FZ80eNo
-         SnyWb9OPtKJV+xMABCM1n9x7Z3PwUl+YEjhaRhlU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 5.8 07/42] speakup: Fix wait_for_xmitr for ttyio case
-Date:   Mon, 31 Aug 2020 11:28:59 -0400
-Message-Id: <20200831152934.1023912-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200831152934.1023912-1-sashal@kernel.org>
-References: <20200831152934.1023912-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1728215AbgHaPk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:40:57 -0400
+Received: from vms1-real.sfasu.edu ([144.96.128.33]:19075 "EHLO
+        vms1-real.sfasu.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728956AbgHaPkv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:40:51 -0400
+Received: from CONVERSION-DAEMON.SFAVMS.SFASU.EDU by SFAVMS.SFASU.EDU
+ (PMDF V6.7-x04 #1799) id <01RP342BG5U88X2C4R@SFAVMS.SFASU.EDU>; Mon,
+ 31 Aug 2020 09:19:15 -0500 (CDT)
+Received: from exchgrouting.sfasu.edu ([144.96.206.206])
+ by SFAVMS.SFASU.EDU (PMDF V6.7-x04 #1799)
+ with ESMTPS id <01RP342BAQ228XEVLE@SFAVMS.SFASU.EDU>; Mon,
+ 31 Aug 2020 09:19:15 -0500 (CDT)
+Received: from TECHMB.sfasu.nac (2002:9060:cece::9060:cece)
+ by TECHMB.sfasu.nac (2002:9060:cece::9060:cece) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 31 Aug 2020 09:19:15 -0500
+Received: from TECHMB.sfasu.nac ([fe80::982c:d7b7:9491:6094])
+ by TECHMB.sfasu.nac ([fe80::982c:d7b7:9491:6094%15])
+ with mapi id 15.00.1497.006; Mon, 31 Aug 2020 09:19:15 -0500
+Date:   Mon, 31 Aug 2020 14:19:15 +0000
+From:   Robert Judy <rjudy@sfasu.edu>
+Subject: RE: [RFC PATCH] selinux: Add denied trace with permssion filter
+In-reply-to: <CAHC9VhRi87H2GhsKQN9iMOQeSw3g5_qwok9jpx+pfFSouQ9d5w@mail.gmail.com>
+X-Originating-IP: [144.96.210.77]
+To:     Paul Moore <paul@paul-moore.com>,
+        peter enderborg <peter.enderborg@sony.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>
+Message-id: <f0e287f6b7dd4764a5091b90cf31b02e@TECHMB.sfasu.nac>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-language: en-US
+Content-transfer-encoding: base64
+Thread-Topic: [RFC PATCH] selinux: Add denied trace with permssion filter
+Thread-Index: AQHWehnLeH0ZXs0eIUe8rW1dyDj2J6lHkvQAgAMqQwCAAA5OAIAAAz+AgAAFuICAAXd7gIAACZYAgAZMrAD//6x+MA==
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
+ <20200824132252.31261-1-peter.enderborg@sony.com>
+ <20200824132252.31261-2-peter.enderborg@sony.com>
+ <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com>
+ <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com>
+ <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
+ <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com>
+ <CAHC9VhRE94YVK5bTcqqbNYJu-EwjbcwjSFgqV8jkyLn9HD39Ag@mail.gmail.com>
+ <abaccc15-85a8-24d2-4481-8303e3a42362@sony.com>
+ <CAHC9VhRi87H2GhsKQN9iMOQeSw3g5_qwok9jpx+pfFSouQ9d5w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Thibault <samuel.thibault@ens-lyon.org>
-
-[ Upstream commit 2b86d9b8ec6efb86fc5ea44f2d49b1df17f699a1 ]
-
-This was missed while introducing the tty-based serial access.
-
-The only remaining use of wait_for_xmitr with tty-based access is in
-spk_synth_is_alive_restart to check whether the synth can be restarted.
-With tty-based this is up to the tty layer to cope with the buffering
-etc. so we can just say yes.
-
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Link: https://lore.kernel.org/r/20200804160637.x3iycau5izywbgzl@function
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/staging/speakup/serialio.c  | 8 +++++---
- drivers/staging/speakup/spk_priv.h  | 1 -
- drivers/staging/speakup/spk_ttyio.c | 7 +++++++
- drivers/staging/speakup/spk_types.h | 1 +
- drivers/staging/speakup/synth.c     | 2 +-
- 5 files changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/speakup/serialio.c b/drivers/staging/speakup/serialio.c
-index 177a2988641c1..403b01d66367e 100644
---- a/drivers/staging/speakup/serialio.c
-+++ b/drivers/staging/speakup/serialio.c
-@@ -32,6 +32,7 @@ static void spk_serial_tiocmset(unsigned int set, unsigned int clear);
- static unsigned char spk_serial_in(void);
- static unsigned char spk_serial_in_nowait(void);
- static void spk_serial_flush_buffer(void);
-+static int spk_serial_wait_for_xmitr(struct spk_synth *in_synth);
- 
- struct spk_io_ops spk_serial_io_ops = {
- 	.synth_out = spk_serial_out,
-@@ -40,6 +41,7 @@ struct spk_io_ops spk_serial_io_ops = {
- 	.synth_in = spk_serial_in,
- 	.synth_in_nowait = spk_serial_in_nowait,
- 	.flush_buffer = spk_serial_flush_buffer,
-+	.wait_for_xmitr = spk_serial_wait_for_xmitr,
- };
- EXPORT_SYMBOL_GPL(spk_serial_io_ops);
- 
-@@ -211,7 +213,7 @@ void spk_stop_serial_interrupt(void)
- }
- EXPORT_SYMBOL_GPL(spk_stop_serial_interrupt);
- 
--int spk_wait_for_xmitr(struct spk_synth *in_synth)
-+static int spk_serial_wait_for_xmitr(struct spk_synth *in_synth)
- {
- 	int tmout = SPK_XMITR_TIMEOUT;
- 
-@@ -280,7 +282,7 @@ static void spk_serial_flush_buffer(void)
- 
- static int spk_serial_out(struct spk_synth *in_synth, const char ch)
- {
--	if (in_synth->alive && spk_wait_for_xmitr(in_synth)) {
-+	if (in_synth->alive && spk_serial_wait_for_xmitr(in_synth)) {
- 		outb_p(ch, speakup_info.port_tts);
- 		return 1;
- 	}
-@@ -295,7 +297,7 @@ const char *spk_serial_synth_immediate(struct spk_synth *synth,
- 	while ((ch = *buff)) {
- 		if (ch == '\n')
- 			ch = synth->procspeech;
--		if (spk_wait_for_xmitr(synth))
-+		if (spk_serial_wait_for_xmitr(synth))
- 			outb(ch, speakup_info.port_tts);
- 		else
- 			return buff;
-diff --git a/drivers/staging/speakup/spk_priv.h b/drivers/staging/speakup/spk_priv.h
-index c75b408387947..0f4bcbe5ddb93 100644
---- a/drivers/staging/speakup/spk_priv.h
-+++ b/drivers/staging/speakup/spk_priv.h
-@@ -34,7 +34,6 @@
- 
- const struct old_serial_port *spk_serial_init(int index);
- void spk_stop_serial_interrupt(void);
--int spk_wait_for_xmitr(struct spk_synth *in_synth);
- void spk_serial_release(void);
- void spk_ttyio_release(void);
- void spk_ttyio_register_ldisc(void);
-diff --git a/drivers/staging/speakup/spk_ttyio.c b/drivers/staging/speakup/spk_ttyio.c
-index 9b95f77f92657..a831ff64f8ba5 100644
---- a/drivers/staging/speakup/spk_ttyio.c
-+++ b/drivers/staging/speakup/spk_ttyio.c
-@@ -116,6 +116,7 @@ static void spk_ttyio_tiocmset(unsigned int set, unsigned int clear);
- static unsigned char spk_ttyio_in(void);
- static unsigned char spk_ttyio_in_nowait(void);
- static void spk_ttyio_flush_buffer(void);
-+static int spk_ttyio_wait_for_xmitr(struct spk_synth *in_synth);
- 
- struct spk_io_ops spk_ttyio_ops = {
- 	.synth_out = spk_ttyio_out,
-@@ -125,6 +126,7 @@ struct spk_io_ops spk_ttyio_ops = {
- 	.synth_in = spk_ttyio_in,
- 	.synth_in_nowait = spk_ttyio_in_nowait,
- 	.flush_buffer = spk_ttyio_flush_buffer,
-+	.wait_for_xmitr = spk_ttyio_wait_for_xmitr,
- };
- EXPORT_SYMBOL_GPL(spk_ttyio_ops);
- 
-@@ -286,6 +288,11 @@ static void spk_ttyio_tiocmset(unsigned int set, unsigned int clear)
- 	mutex_unlock(&speakup_tty_mutex);
- }
- 
-+static int spk_ttyio_wait_for_xmitr(struct spk_synth *in_synth)
-+{
-+	return 1;
-+}
-+
- static unsigned char ttyio_in(int timeout)
- {
- 	struct spk_ldisc_data *ldisc_data = speakup_tty->disc_data;
-diff --git a/drivers/staging/speakup/spk_types.h b/drivers/staging/speakup/spk_types.h
-index d3272c6d199aa..7398f1196e103 100644
---- a/drivers/staging/speakup/spk_types.h
-+++ b/drivers/staging/speakup/spk_types.h
-@@ -158,6 +158,7 @@ struct spk_io_ops {
- 	unsigned char (*synth_in)(void);
- 	unsigned char (*synth_in_nowait)(void);
- 	void (*flush_buffer)(void);
-+	int (*wait_for_xmitr)(struct spk_synth *synth);
- };
- 
- struct spk_synth {
-diff --git a/drivers/staging/speakup/synth.c b/drivers/staging/speakup/synth.c
-index 3568bfb89912c..ac47dbac72075 100644
---- a/drivers/staging/speakup/synth.c
-+++ b/drivers/staging/speakup/synth.c
-@@ -159,7 +159,7 @@ int spk_synth_is_alive_restart(struct spk_synth *synth)
- {
- 	if (synth->alive)
- 		return 1;
--	if (spk_wait_for_xmitr(synth) > 0) {
-+	if (synth->io_ops->wait_for_xmitr(synth) > 0) {
- 		/* restart */
- 		synth->alive = 1;
- 		synth_printf("%s", synth->init);
--- 
-2.25.1
-
+SSB3b3VsZCBsaWtlIHRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBncm91cC4gSSBoYXZlIHNlbnQg
+InVuc3Vic2NyaWJlIiByZXF1ZXN0cyB0byBzZWxpbnV4LW93bmVyQHZnZXIua2VybmVsLm9yZyBh
+cyBzdWJqZWN0IGFuZCBpbiB0aGUgYm9keSBvZiB0aGUgZS1tYWlsIGJ1dCB0aGF0IGhhcyBub3Qg
+d29ya2VkLiBQbGVhc2UgYWR2aXNlIG1lIGhvdyB0byB1bnN1YnNjcmliZS4NCg0KVGhhbmsgeW91
+IGFuZCByZXNwZWN0ZnVsbHksDQoNCnJtag0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
+RnJvbTogc2VsaW51eC1vd25lckB2Z2VyLmtlcm5lbC5vcmcgPHNlbGludXgtb3duZXJAdmdlci5r
+ZXJuZWwub3JnPiBPbiBCZWhhbGYgT2YgUGF1bCBNb29yZQ0KU2VudDogTW9uZGF5LCBBdWd1c3Qg
+MzEsIDIwMjAgOToxNiBBTQ0KVG86IHBldGVyIGVuZGVyYm9yZyA8cGV0ZXIuZW5kZXJib3JnQHNv
+bnkuY29tPg0KQ2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFNFbGludXggbGlzdCA8
+c2VsaW51eEB2Z2VyLmtlcm5lbC5vcmc+OyBTdGV2ZW4gUm9zdGVkdCA8cm9zdGVkdEBnb29kbWlz
+Lm9yZz47IFN0ZXBoZW4gU21hbGxleSA8c3RlcGhlbi5zbWFsbGV5LndvcmtAZ21haWwuY29tPg0K
+U3ViamVjdDogUmU6IFtSRkMgUEFUQ0hdIHNlbGludXg6IEFkZCBkZW5pZWQgdHJhY2Ugd2l0aCBw
+ZXJtc3Npb24gZmlsdGVyDQoNCk9uIFRodSwgQXVnIDI3LCAyMDIwIGF0IDEwOjA0IEFNIHBldGVy
+IGVuZGVyYm9yZyA8cGV0ZXIuZW5kZXJib3JnQHNvbnkuY29tPiB3cm90ZToNCj4NCj4gT24gOC8y
+Ny8yMCAzOjMwIFBNLCBQYXVsIE1vb3JlIHdyb3RlOg0KPiA+IE9uIFdlZCwgQXVnIDI2LCAyMDIw
+IGF0IDExOjA2IEFNIHBldGVyIGVuZGVyYm9yZyANCj4gPiA8cGV0ZXIuZW5kZXJib3JnQHNvbnku
+Y29tPiB3cm90ZToNCj4gPj4gT24gOC8yNi8yMCA0OjQ1IFBNLCBQYXVsIE1vb3JlIHdyb3RlOg0K
+PiA+Pj4gT24gV2VkLCBBdWcgMjYsIDIwMjAgYXQgMTA6MzQgQU0gcGV0ZXIgZW5kZXJib3JnIA0K
+PiA+Pj4gPHBldGVyLmVuZGVyYm9yZ0Bzb255LmNvbT4gd3JvdGU6DQo+ID4+Pj4gT24gOC8yNi8y
+MCAzOjQyIFBNLCBQYXVsIE1vb3JlIHdyb3RlOg0KPiA+Pj4+PiBPbiBNb24sIEF1ZyAyNCwgMjAy
+MCBhdCA5OjIzIEFNIFBldGVyIEVuZGVyYm9yZyANCj4gPj4+Pj4gPHBldGVyLmVuZGVyYm9yZ0Bz
+b255LmNvbT4gd3JvdGU6DQo+ID4+Pj4+PiBUaGlzIGFkZHMgdHJhY2luZyBvZiBhbGwgZGVuaWVz
+LiBUaGV5IGFyZSBncm91cGVkIHdpdGggDQo+ID4+Pj4+PiB0cmFjZV9zZXEgZm9yIGVhY2ggYXVk
+aXQuDQo+ID4+Pj4+Pg0KPiA+Pj4+Pj4gQSBmaWx0ZXIgY2FuIGJlIGluc2VydGVkIHdpdGggYSB3
+cml0ZSB0byBpdCdzIGZpbHRlciBzZWN0aW9uLg0KPiA+Pj4+Pj4NCj4gPj4+Pj4+IGVjaG8gInBl
+cm1pc3Npb249PVwiZW50cnlwb2ludFwiIiA+IA0KPiA+Pj4+Pj4gZXZlbnRzL2F2Yy9zZWxpbnV4
+X2RlbmllZC9maWx0ZXINCj4gPj4+Pj4+DQo+ID4+Pj4+PiBBIG91dHB1dCB3aWxsIGJlIGxpa2U6
+DQo+ID4+Pj4+PiAgICAgICAgICAgcnVuY29uLTEwNDYgIFswMDJdIC5OLi4gICAxNTYuMzUxNzM4
+OiBzZWxpbnV4X2RlbmllZDoNCj4gPj4+Pj4+ICAgICAgICAgICB0cmFjZV9zZXE9MiByZXN1bHQ9
+LTEzDQo+ID4+Pj4+PiAgICAgICAgICAgc2NvbnRleHQ9c3lzdGVtX3U6c3lzdGVtX3I6Y3Vwc2Rf
+dDpzMC1zMDpjMC4NCj4gPj4+Pj4+ICAgICAgICAgICBjMTAyMyB0Y29udGV4dD1zeXN0ZW1fdTpv
+YmplY3RfcjpiaW5fdDpzMA0KPiA+Pj4+Pj4gICAgICAgICAgIHRjbGFzcz1maWxlIHBlcm1pc3Np
+b249ZW50cnlwb2ludA0KPiA+Pj4+Pj4NCj4gPj4+Pj4+IFNpZ25lZC1vZmYtYnk6IFBldGVyIEVu
+ZGVyYm9yZyA8cGV0ZXIuZW5kZXJib3JnQHNvbnkuY29tPg0KPiA+Pj4+Pj4gLS0tDQo+ID4+Pj4+
+PiAgaW5jbHVkZS90cmFjZS9ldmVudHMvYXZjLmggfCAzNyArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrDQo+ID4+Pj4+PiAgc2VjdXJpdHkvc2VsaW51eC9hdmMuYyAgICAgfCAy
+NyArKysrKysrKysrKysrKysrKysrKysrKysrLS0NCj4gPj4+Pj4+ICAyIGZpbGVzIGNoYW5nZWQs
+IDYyIGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+ID4+Pj4+IE15IG1vc3Qgc2lnbmlm
+aWNhbnQgY29tbWVudCBpcyB0aGF0IEkgZG9uJ3QgdGhpbmsgd2Ugd2FudCwgb3IgDQo+ID4+Pj4+
+IG5lZWQsIHR3byB0cmFjZSBwb2ludHMgaW4gdGhlIGF2Y19hdWRpdF9wb3N0X2NhbGxiYWNrKCkg
+DQo+ID4+Pj4+IGZ1bmN0aW9uLiAgWWVzLCBJIHVuZGVyc3RhbmQgdGhleSBhcmUgdHJpZ2dlcmVk
+IHNsaWdodGx5IA0KPiA+Pj4+PiBkaWZmZXJlbnRseSwgYnV0IGZyb20gbXkgcGVyc3BlY3RpdmUg
+dGhlcmUgaXNuJ3QgZW5vdWdoIA0KPiA+Pj4+PiBkaWZmZXJlbmNlIGJldHdlZW4gdGhlIHR3byB0
+cmFjZXBvaW50cyB0byB3YXJyYW50IGluY2x1ZGluZyANCj4gPj4+Pj4gYm90aC4gIEhvd2V2ZXIs
+IHdoaWxlIHRoZSB0cmFjZXBvaW50cyBtYXkgYmUNCj4gPj4+PiBXZSB0cmllZCB0aGF0IGJ1dCB0
+aGF0IHdhcyBwcm9ibGVtYXRpYyB0b28uDQo+ID4+PiBNeSBhcG9sb2dpZXMgaWYgSSB3YXMgb24g
+dGhhdCB0aHJlYWQsIGJ1dCBjYW4geW91IHJlbWluZCBtZSB3aHkgaXQgDQo+ID4+PiB3YXMgYSBw
+cm9ibGVtPyAgV2h5IGNhbid0IHdlIHVzZSBhIHNpbmdsZSB0cmFjZXBvaW50IHRvIGNhcHR1cmUg
+DQo+ID4+PiB0aGUgQVZDIGluZm9ybWF0aW9uPw0KPiA+PiBUaGUgcHJvYmxlbSBpcyBwYXJzaW5n
+IHRoZSBldmVudC4NCj4gPj4NCj4gPj4gaHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29t
+L3YyL3VybD91PWh0dHBzLTNBX19sa21sLm9yZ19sa21sXw0KPiA+PiAyMDIwXzhfMThfODQyJmQ9
+RHdJQmFRJmM9ZlA0dGYtLTFkUzBiaUNGbEIwc2F6MEkwa2pPNXY3LUdMUHR2U2hBbzRjDQo+ID4+
+IGMmcj1vTzVIdUdFR3h6bkEyRjNkamlpWXhteHhXUW9udzBoNlNrcy1CRW9CNHlzJm09cW1pMlJP
+V3NMQ18wbUxMaEgNCj4gPj4ga3BiNzFqMVlvaWN5ZExoLTdsNGNPc0xZY1kmcz1pUzNlWnIzVEZy
+TjVJN0JibnZQRllPS2Q2RGZXMUZIVEZjd0k3ag0KPiA+PiBvU19mayZlPQ0KPiA+Pg0KPiA+PiBo
+dHRwczovL3VybGRlZmVuc2UucHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9aHR0cHMtM0FfX2xrbWwu
+b3JnX2xrbWxfDQo+ID4+IDIwMjBfOF8yMV81MjYmZD1Ed0lCYVEmYz1mUDR0Zi0tMWRTMGJpQ0Zs
+QjBzYXowSTBrak81djctR0xQdHZTaEFvNGMNCj4gPj4gYyZyPW9PNUh1R0VHeHpuQTJGM2RqaWlZ
+eG14eFdRb253MGg2U2tzLUJFb0I0eXMmbT1xbWkyUk9Xc0xDXzBtTExoSA0KPiA+PiBrcGI3MWox
+WW9pY3lkTGgtN2w0Y09zTFljWSZzPTlPc0xOMFk1bVVXeEVBQXFVRTZLNFBTNTdQbjFYeVp6N0dY
+YWs2DQo+ID4+IHVjX0xzJmU9DQo+ID4+DQo+ID4+IGFuZCB0aGUgInNpbmdsZSBsaXN0IiB2ZXJz
+aW9uDQo+ID4+DQo+ID4+IGh0dHBzOi8vdXJsZGVmZW5zZS5wcm9vZnBvaW50LmNvbS92Mi91cmw/
+dT1odHRwcy0zQV9fbGttbC5vcmdfbGttbF8NCj4gPj4gMjAyMF84XzE3XzEzNDYmZD1Ed0lCYVEm
+Yz1mUDR0Zi0tMWRTMGJpQ0ZsQjBzYXowSTBrak81djctR0xQdHZTaEFvNA0KPiA+PiBjYyZyPW9P
+NUh1R0VHeHpuQTJGM2RqaWlZeG14eFdRb253MGg2U2tzLUJFb0I0eXMmbT1xbWkyUk9Xc0xDXzBt
+TExoDQo+ID4+IEhrcGI3MWoxWW9pY3lkTGgtN2w0Y09zTFljWSZzPXRXU1kycnkySVQ2UmNUNUJJ
+VXdNdXFCTF95UE9iREUxVmxqYkwNCj4gPj4gcUkxenJBJmU9DQo+ID4+DQo+ID4+IFdpdGggdGhp
+cyBwYXRjaCB3ZSBmb2xsb3cgc3RhbmRhcmQgbWVzc2FnZSBmb3JtYXQgc28gbm8gcGx1Z2luIHNo
+b3VsZCBiZSBuZWVkZWQuDQo+ID4gSSdtIGV2aWRlbnRseSBtaXNzaW5nIHNvbWV0aGluZyB2ZXJ5
+IGZ1bmRhbWVudGFsIChsaWtlbHkpLCBhbmQvb3IgDQo+ID4gSSdtIGp1c3Qgbm90IGNvbW11bmlj
+YXRpbmcgdmVyeSBjbGVhcmx5IChhbHNvIGxpa2VseSksIGJlY2F1c2UgdGhlIA0KPiA+IGFib3Zl
+IGxpbmtzIGRvbid0IGFwcGVhciB0byBtYWtlIGFueSBzZW5zZSB3aXRoIHJlc3BlY3QgdG8gbXkg
+cXVlc3Rpb24uDQo+ID4NCj4gPiBMZXQgbWUgdHJ5IGEgcmVzZXQgLi4uIFdoeSBjYW4ndCB3ZSBi
+YXNpY2FsbHkgdGFrZSB0aGUgDQo+ID4gInNlbGludXhfZGVuaWVkIiBUUkFDRV9FVkVOVCBpbXBs
+ZW1lbnRhdGlvbiBpbiB5b3VyIHBhdGNoIGFuZCB1c2UgaXQgDQo+ID4gdG8gcmVwbGFjZSB0aGUg
+InNlbGludXhfYXVkaXRlZCIgVFJBQ0VfRVZFTlQgaW4gdGhlIHNlbGludXgvbmV4dCANCj4gPiB0
+cmVlIChvZiBjb3Vyc2Ugd2l0aCB0aGUgbmVjZXNzYXJ5IGNoYW5nZXMgdG8gdGhlIEFWQyBjYWxs
+YmFjayBjb2RlKT8NCj4gPg0KPiA+IElmIHRoZSAic2VsaW51eF9kZW5pZWQiIGltcGxlbWVudGF0
+aW9uIGlzIHZhbGlkIGZyb20gYSB0cmFjaW5nIHBvaW50IA0KPiA+IG9mIHZpZXcsIHdoeSBjYW4g
+d2Ugbm90IGRvIHRoaXM/ICBPZiBjb3Vyc2UgaWYgdGhlICJzZWxpbnV4X2RlbmllZCINCj4gPiBp
+bXBsZW1lbnRhdGlvbiBpcyBub3QgYSB2YWxpZCBUUkFDRV9FVkVOVCB0aGVuIEknbSBub3Qgc3Vy
+ZSB3aHkgdGhpcyANCj4gPiB3YXMgc3VnZ2VzdGVkIGZvciBTRUxpbnV4IDopDQo+DQo+IEltIGhh
+cHBseSBmaW5lIHdpdGggcmVwbGFjaW5nIHRoZSBzZWxpbnV4X2F1ZGl0ZWQgd2l0aCBzZWxpbnV4
+X2RlbmllZC4gIEhvd2V2ZXIgaXQgaXMgdGhlIGNhc2Ugd2hlcmUgdGhlcmUgYXJlIG1vcmUgdGhh
+biBvbmUgZGVuaWFsIGF0IHRoZSBzYW1lIHRpbWUuIEltIG5vdCBzdXJlIGhvdyBhbmQgd2hlbiBp
+dCBtaWdodCBoYXBwZW4uDQoNCk9uZSB0aGluZyBJIHdvbmRlcmVkIGFib3V0IHdhcyB3aHkgbm90
+IGJ1aWxkIHVwIGEgc2luZ2xlIHN0cmluZyB3aXRoIGFsbCBvZiB0aGUgcGVybWlzc2lvbnMgaW5z
+dGVhZCBvZiBnZW5lcmF0aW5nIG11bHRpcGxlIHRyYWNlIGV2ZW50cz8NCkluIHRoZSBwcmV2aW91
+cyBkaXNjdXNzaW9uIGl0IHdhcyBpbXBsaWVkIHRoYXQgdGhpcyB3YXMgZHVlIHRvIGxpbWl0YXRp
+b25zIGluIHRoZSB0cmFjaW5nIHN1YnN5c3RlbSdzIGZpbHRlcmluZywgYW5kIGJhc2VkIG9uIHRo
+ZSBkaXNjdXNzaW9uIHRodXMgZmFyIEknbSBndWVzc2luZyB0aGVyZSBpcyBsaXR0bGUgZGVzaXJl
+IGZvciB0aGlzIGluZm9ybWF0aW9uIGlmIGl0IGNhbid0IGJlIGZpbHRlcmVkIG9uPw0KDQpJZiB0
+aGF0J3MgdGhlIGNhc2UgdGhlbiBJIHRoaW5rIHdlIGFyZSBzdHVjayB3aXRoIHRoZSB0cmFjaW5n
+IGNvZGUgdGhhdCBjdXJyZW50bHkgbGl2ZXMgaW4gc2VsaW51eC9uZXh0LCBhcyBJIGN1cnJlbnRs
+eSBoYXZlIGxpdHRsZSBkZXNpcmUgdG8gYWRkIG1vcmUgdGhhbiBvbmUgdHJhY2Vwb2ludCBpbiB0
+aGUgU0VMaW51eCBwZXJtaXNzaW9uIGNoZWNraW5nIGNvZGVwYXRoLg0KDQo+IFdoZW4gdGhhdCBo
+YXBwZW4gd2UgZ290IG1vcmUgdGhhbiBvbmUgZXZlbnQuIEkgaGF2ZSBubyBwcm9ibGVtcyB3aXRo
+IHRoYXQsIGJ1dCBpbSBub3Qgc3VyZSBpZiB0aGUgZGVidWcgdG9vbHMgYW5kIHBlcmYgY2FuIG1h
+a2Ugc2Vuc2Ugb2YgdGhhdC4NCj4NCj4gQSBvdGhlciBmZWF0dXJlIHdpdGggdGhlIHNlbGludXhf
+YXVkaXRlZCBldmVudCBpdCBtaWdodCBiZSBpbnNlcnRlZCBvbiBvdGhlciBwbGFjZXMgaW4gdGhl
+IGNvZGUgdG9vLiAgQSBkZW5pYWwgaXMgc29ydCBvZiBmaW5hbC4NCg0KLS0NCnBhdWwgbW9vcmUN
+Cnd3dy5wYXVsLW1vb3JlLmNvbQ0K
