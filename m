@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65525257D3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD2D257CC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbgHaPfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:35:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728806AbgHaPbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:31:09 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 957C9207EA;
-        Mon, 31 Aug 2020 15:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598887868;
-        bh=5cTymgNOd6yMe07rM04lmyuuYPSuueVZ4FEQI/Htjg8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=smdiVUxvy2D2OsQb1dejShNpoqJ56v6XUj16HrEt+0RIcS2P3wq5xmYEXLefp3DOO
-         uI7KUcRwGBpGlYdHQgmkIRNn8Jt1MsQ5J5N7rhwNilg6yLEUzaNIIx+1G2EB4t8ump
-         goc0xwhQdN+ZtTyJg2LyaG5Ns4qKwmn2oeXt0e94=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.4 18/23] drm/amd/display: Reject overlay plane configurations in multi-display scenarios
-Date:   Mon, 31 Aug 2020 11:30:34 -0400
-Message-Id: <20200831153039.1024302-18-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200831153039.1024302-1-sashal@kernel.org>
-References: <20200831153039.1024302-1-sashal@kernel.org>
+        id S1728917AbgHaPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:31:33 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:58911 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728826AbgHaPbR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:31:17 -0400
+Received: from nexussix.ar.arcelik (unknown [84.44.14.226])
+        (Authenticated sender: cengiz@kernel.wtf)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 506AB24000C;
+        Mon, 31 Aug 2020 15:31:13 +0000 (UTC)
+From:   Cengiz Can <cengiz@kernel.wtf>
+To:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cengiz Can <cengiz@kernel.wtf>
+Subject: [PATCH] infiniband: remove unnecessary fallthrough usage
+Date:   Mon, 31 Aug 2020 18:30:34 +0300
+Message-Id: <20200831153033.113952-1-cengiz@kernel.wtf>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Since /* fallthrough */ comments are deprecated[1], they are being replaced
+by new 'fallthrough' pseudo-keyword.
 
-[ Upstream commit 168f09cdadbd547c2b202246ef9a8183da725f13 ]
+[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?\
+        highlight=fallthrough#implicit-switch-case-fall-through
 
-[Why]
-These aren't stable on some platform configurations when driving
-multiple displays, especially on higher resolution.
+This sometimes leads to unreachable code warnings by static analyzers,
+particularly in this case, Coverity Scanner. (CID 1466512)
 
-In particular the delay in asserting p-state and validating from
-x86 outweights any power or performance benefit from the hardware
-composition.
+Remove unnecessary 'fallthrough' keywords to prevent dead code
+warnings.
 
-Under some configurations this will manifest itself as extreme stutter
-or unresponsiveness especially when combined with cursor movement.
-
-[How]
-Disable these for now. Exposing overlays to userspace doesn't guarantee
-that they'll be able to use them in any and all configurations and it's
-part of the DRM contract to have userspace gracefully handle validation
-failures when they occur.
-
-Valdiation occurs as part of DC and this in particular affects RV, so
-disable this in dcn10_global_validation.
-
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
 ---
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/infiniband/hw/qib/qib_mad.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-index 1599bb9711111..e860ae05feda1 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_resource.c
-@@ -1151,6 +1151,7 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
- 	bool video_large = false;
- 	bool desktop_large = false;
- 	bool dcc_disabled = false;
-+	bool mpo_enabled = false;
+diff --git a/drivers/infiniband/hw/qib/qib_mad.c b/drivers/infiniband/hw/qib/qib_mad.c
+index e7789e724f56..f972e559a8a7 100644
+--- a/drivers/infiniband/hw/qib/qib_mad.c
++++ b/drivers/infiniband/hw/qib/qib_mad.c
+@@ -2322,7 +2322,6 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
+ 			ret = cc_get_congestion_control_table(ccp, ibdev, port);
+ 			goto bail;
  
- 	for (i = 0; i < context->stream_count; i++) {
- 		if (context->stream_status[i].plane_count == 0)
-@@ -1159,6 +1160,9 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
- 		if (context->stream_status[i].plane_count > 2)
- 			return DC_FAIL_UNSUPPORTED_1;
+-			fallthrough;
+ 		default:
+ 			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 			ret = reply((struct ib_smp *) ccp);
+@@ -2339,7 +2338,6 @@ static int process_cc(struct ib_device *ibdev, int mad_flags,
+ 			ret = cc_set_congestion_control_table(ccp, ibdev, port);
+ 			goto bail;
  
-+		if (context->stream_status[i].plane_count > 1)
-+			mpo_enabled = true;
-+
- 		for (j = 0; j < context->stream_status[i].plane_count; j++) {
- 			struct dc_plane_state *plane =
- 				context->stream_status[i].plane_states[j];
-@@ -1182,6 +1186,10 @@ static enum dc_status dcn10_validate_global(struct dc *dc, struct dc_state *cont
- 		}
- 	}
- 
-+	/* Disable MPO in multi-display configurations. */
-+	if (context->stream_count > 1 && mpo_enabled)
-+		return DC_FAIL_UNSUPPORTED_1;
-+
- 	/*
- 	 * Workaround: On DCN10 there is UMC issue that causes underflow when
- 	 * playing 4k video on 4k desktop with video downscaled and single channel
+-			fallthrough;
+ 		default:
+ 			ccp->status |= IB_SMP_UNSUP_METH_ATTR;
+ 			ret = reply((struct ib_smp *) ccp);
 -- 
-2.25.1
+2.28.0
 
