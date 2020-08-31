@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A22E2582D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75F82582AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbgHaUjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 16:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        id S1728777AbgHaUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 16:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729028AbgHaUiy (ORCPT
+        with ESMTP id S1726023AbgHaUig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:38:54 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93804C06123A;
-        Mon, 31 Aug 2020 13:38:53 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so491705pjb.4;
-        Mon, 31 Aug 2020 13:38:53 -0700 (PDT)
+        Mon, 31 Aug 2020 16:38:36 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1479DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 13:38:36 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u128so1312567pfb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 13:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/pybmE7a8FIpjQvJ6DGP3d+JulP7r92A2J59iMGiCLM=;
-        b=oHRLDva7bE8NCj84o3Pw6XZLnP1yvvF0hDph2uVI7flXevbbdOYILUTOYyZCQ8otre
-         cCxr652BWFhSBLsdzy27Cb7Mddqacgb0iPwA8elKbwwEAVUBN15xECe0ThRuaHCOMdkR
-         dc3HEMkslEYv9RGiOcoN0hJsz9vazpaaDe3s/dlsGh7DjUCEhA4GdnYvIBBSn8VtTHcx
-         lvbLByvCgW0dL5AoLO91GPQcrbxAg2llOaYkOG9iH1BZqv6X0lnc9Cwlvy6dFLfDqm2M
-         w4tgaSsKeklGE8LZkIFRnECIGasMSWsPpNmoSLShXelmGeMJiFCs2p43c9vhVvKrOpPS
-         4Bvw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=K/7PK6S5Q6HPaHq1eTEnKf0uxbke5x5RCxK0h2wg5MI=;
+        b=iD3qjy7K7rLQsbdLS08nvec3+rM9z7c+f4CUp0k4t39HnIujZ8vk0S8wvig/Z+Afhd
+         sjXJYjB/unW5U/y62CSJod/KXZxJRFkEnUC1VWxC+KIPPzPmNBKoP93r0k/7HLVSzk4g
+         QKUrimlJnMdc4cyZHkskrXezSxkUzb80x5/b5FzkLGNpGunkUWqOnV5/JZ6zTQl42Bjd
+         cHSUscDipKnvrcPDtsBKFWkOVYxr9tQgD0aJrCKfUXFQT85BZvQe2rB9b1jLLcykGKl7
+         GGbhN8LiBhSjcNbNmg5ZqLkaTJG3/W0PjQo6SJoBYmx44NG/8LgG6DOv+dtbAacwo4dj
+         bUIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=/pybmE7a8FIpjQvJ6DGP3d+JulP7r92A2J59iMGiCLM=;
-        b=UnSbHLKTXEq1A8r6vt0UX7AC46YWjUgPNwUSQmcDyh49u8duuD56N1q9VtIK8vZB33
-         11c3dUM/7aPVdAn/V2NZJkNee7mBF38lvS2CQl1Za7dNdGPkkwvKJGPRlVncKjJWqXfn
-         y3hO1EOkqq/pOiGvO8Obr4418D1uoqzS+dCQtFApcgtBH7mgzmxHBdcD/jP9aJJAlEyP
-         jhcD+knCtmv8dLwFQBuxvM7mF/xVkuuHh8d6RGA0ITa1qJk1PhMzfPg3RAwCQy1jooM1
-         7+pBr0CIMvxpywuLeib5AdtmsLJBcXQzRSsf+lnD5rd4cr9Dy1KZAEZz7aMJ5K1bg5j+
-         3dwA==
-X-Gm-Message-State: AOAM5319ivjbF5lsnhOXqIx1O0V3y2VLArZgw2lkuUOFbbVH6UdwGB6x
-        JfOyZ9QVZyrGeBRReaSXaUM=
-X-Google-Smtp-Source: ABdhPJzxmla8Fw1rXgmVa/RE16rISQFkMFWRT5MPsRMrCIi9V2DCsAyGzGk3H5CzIrYzvPZULqAD2A==
-X-Received: by 2002:a17:902:a412:: with SMTP id p18mr2318693plq.283.1598906333078;
-        Mon, 31 Aug 2020 13:38:53 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id a26sm116850pfn.93.2020.08.31.13.38.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=K/7PK6S5Q6HPaHq1eTEnKf0uxbke5x5RCxK0h2wg5MI=;
+        b=M89TXZBCLDJ34zc8brDK0RDBky1sm3ODLyQ9pUY6ouWKOLKlZTNJq7eEeemfqi/eBk
+         PdfOs5hwXVQnaVTtOUdyB7t19tA6Xkdt9R+IqS8OgT6qpVAo+46Cm9zhD/v57aTOxFJx
+         2ah0aeaxBE56MGi+mPMEE937ThajRVQvs4mqKHeqXIyBp5SoOLmezG+LxZbAY4ioZvsy
+         mXDgmjciQOWIMUQUfM6FvxUR8lAYaVe+AbfLcLIomFSWoVezRkadTEB1Ga5aM7ch5eug
+         /HSlppguT9bvtI9L8rjGDqPgUKaT9XJvXytkvu5oK8+YgY1QRRblXmnp9TwX+TS/XMV6
+         2Vwg==
+X-Gm-Message-State: AOAM531bbkNHKaLEbUV1sTnzuRIqU/hA41YHv1eC3enOXcj2xAx4EuXz
+        hKAHdvvJ74zbyFvIthhLfL8Pqw==
+X-Google-Smtp-Source: ABdhPJwprAyCBcJ1XpRTFAQaEvCQLHh7Ax18vWRPUmgyeqkVYZHQhwVmBvUkgTn9jN1woKzPD/at+g==
+X-Received: by 2002:a65:4847:: with SMTP id i7mr2554665pgs.385.1598906315528;
+        Mon, 31 Aug 2020 13:38:35 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id l23sm8267869pgt.16.2020.08.31.13.38.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 13:38:52 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        tony.luck@intel.com, fenghua.yu@intel.com, schnelle@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, James.Bottomley@HansenPartnership.com, deller@gmx.de
-Cc:     sfr@canb.auug.org.au, hch@lst.de, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: [RESEND][PATCH 7/7] parisc: Avoid overflow at boundary_size
-Date:   Mon, 31 Aug 2020 13:38:11 -0700
-Message-Id: <20200831203811.8494-8-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200831203811.8494-1-nicoleotsuka@gmail.com>
-References: <20200831203811.8494-1-nicoleotsuka@gmail.com>
+        Mon, 31 Aug 2020 13:38:34 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 14:38:32 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        AAl Grant <al.grant@arm.com>
+Subject: Re: [PATCH 2/2] perf intel-pt: Fix corrupt data after perf inject
+ from
+Message-ID: <20200831203832.GA120995@xps15>
+References: <20200819084751.17686-1-leo.yan@linaro.org>
+ <20200819084751.17686-2-leo.yan@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819084751.17686-2-leo.yan@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The boundary_size might be as large as ULONG_MAX, which means
-that a device has no specific boundary limit. So either "+ 1"
-or passing it to ALIGN() would potentially overflow.
+On Wed, Aug 19, 2020 at 04:47:51PM +0800, Leo Yan wrote:
+> From: Al Grant <al.grant@arm.com>
+> 
+> Commit 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
+> changed the format of branch stacks in perf samples. When samples use
+> this new format, a flag must be set in the corresponding event.
+> Synthesized branch stacks generated from Intel PT were using the new
+> format, but not setting the event attribute, leading to consumers
+> seeing corrupt data. This patch fixes the issue by setting the event
+> attribute to indicate use of the new format.
+> 
+> Fixes: 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
+> Signed-off-by: Al Grant <al.grant@arm.com>
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-According to kernel defines:
-    #define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
-    #define ALIGN(x, a)	ALIGN_MASK(x, (typeof(x))(a) - 1)
+Arnaldo, please consider.
 
-We can simplify the logic here:
-  ALIGN(boundary + 1, 1 << shift) >> shift
-= ALIGN_MASK(b + 1, (1 << s) - 1) >> s
-= {[b + 1 + (1 << s) - 1] & ~[(1 << s) - 1]} >> s
-= [b + 1 + (1 << s) - 1] >> s
-= [b + (1 << s)] >> s
-= (b >> s) + 1
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-So fixing a potential overflow with the safer shortcut.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Cc: Christoph Hellwig <hch@lst.de>
----
- drivers/parisc/ccio-dma.c  | 4 ++--
- drivers/parisc/sba_iommu.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/parisc/ccio-dma.c b/drivers/parisc/ccio-dma.c
-index a5507f75b524..c667d6aba764 100644
---- a/drivers/parisc/ccio-dma.c
-+++ b/drivers/parisc/ccio-dma.c
-@@ -356,8 +356,8 @@ ccio_alloc_range(struct ioc *ioc, struct device *dev, size_t size)
- 	** ggg sacrifices another 710 to the computer gods.
- 	*/
- 
--	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
--			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
-+	/* Overflow-free shortcut for: ALIGN(b + 1, 1 << s) >> s */
-+	boundary_size = (dma_get_seg_boundary(dev) >> IOVP_SHIFT) + 1;
- 
- 	if (pages_needed <= 8) {
- 		/*
-diff --git a/drivers/parisc/sba_iommu.c b/drivers/parisc/sba_iommu.c
-index d4314fba0269..96bc2c617cbd 100644
---- a/drivers/parisc/sba_iommu.c
-+++ b/drivers/parisc/sba_iommu.c
-@@ -342,8 +342,8 @@ sba_search_bitmap(struct ioc *ioc, struct device *dev,
- 	unsigned long shift;
- 	int ret;
- 
--	boundary_size = ALIGN((unsigned long long)dma_get_seg_boundary(dev) + 1,
--			      1ULL << IOVP_SHIFT) >> IOVP_SHIFT;
-+	/* Overflow-free shortcut for: ALIGN(b + 1, 1 << s) >> s */
-+	boundary_size = (dma_get_seg_boundary(dev) >> IOVP_SHIFT) + 1;
- 
- #if defined(ZX1_SUPPORT)
- 	BUG_ON(ioc->ibase & ~IOVP_MASK);
--- 
-2.17.1
-
+> ---
+>  tools/perf/util/intel-pt.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+> index 2a8d245351e7..0af4e81c46e2 100644
+> --- a/tools/perf/util/intel-pt.c
+> +++ b/tools/perf/util/intel-pt.c
+> @@ -3017,8 +3017,15 @@ static int intel_pt_synth_events(struct intel_pt *pt,
+>  
+>  	if (pt->synth_opts.callchain)
+>  		attr.sample_type |= PERF_SAMPLE_CALLCHAIN;
+> -	if (pt->synth_opts.last_branch)
+> +	if (pt->synth_opts.last_branch) {
+>  		attr.sample_type |= PERF_SAMPLE_BRANCH_STACK;
+> +		/*
+> +		 * We don't use the hardware index, but the sample generation
+> +		 * code uses the new format branch_stack with this field,
+> +		 * so the event attributes must indicate that it's present.
+> +		 */
+> +		attr.branch_sample_type |= PERF_SAMPLE_BRANCH_HW_INDEX;
+> +	}
+>  
+>  	if (pt->synth_opts.instructions) {
+>  		attr.config = PERF_COUNT_HW_INSTRUCTIONS;
+> -- 
+> 2.17.1
+> 
