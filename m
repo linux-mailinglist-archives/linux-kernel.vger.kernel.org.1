@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA42C257E4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 18:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DFF257E54
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 18:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgHaQLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 12:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726249AbgHaQLI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 12:11:08 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67A0C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 09:11:07 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c15so6483483wrs.11
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 09:11:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries-io.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=G+oTI16jpIyMqmxVK05lUQK2/4ddickm1Vhjew7XNmE=;
-        b=NBNc97xkrKU+b8CPNgbvpPqZh+x7oF5iFQV3U76RydQUejst1n4IyDabwPR9IYr8lw
-         uDluRmW98hCyyAdCbr6nLi0v5ZbBWR8Qi8GN94UZA8rZkPwAzDaoqPvTTHTWkLoWyFEb
-         2FzQXLx9JsFFCOQ+nT4zWRPTVHAuxjTaPpClnx6frAzs2ZRH0lpCfu3h9DnNVPBa51uf
-         nYqabF4y49N19aP/80lxBMrwlvaI++d9zMhMUiuWNe8Ufglu6rQnLAoghr/rsbeWaoS0
-         vA3D2JYufPuUKOB9r43lREtfulqjBtFGs2r1np/2s2rQVx/s/oNgKTyM8HxBrFxNe93L
-         QZTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=G+oTI16jpIyMqmxVK05lUQK2/4ddickm1Vhjew7XNmE=;
-        b=bFvLtEla/lv5MYHm1nDi+SnHJ3BsqQ6sSrCR0O7tx2Leo8Eh+KlRpiidHTxhdB+MXM
-         9LDe8I4ULrdxTB08TtCvf9r1CKI+smDXixzhjOEQ36lAqma3BleEd5RfwPhnM6tiEU0Q
-         PudhX/SykrYzLgreVoLpUpFhcWCYWCIeH2AgsOPiMqvLbG4XnXL0+nFwiMlUmFX5/kxS
-         Pj4AIN0xCV8T5rThLxmhsjSUvdG8pxaPSL9yuS7QAE+p+YPLDGw0kbwmEvOxb2ewzsq5
-         rwj4Jdej8X+RX+hDWhhIAOrsCWQ2yQ1JNgg+IEuB6/foxRDiyhD/hHRH5RoKmjQ/DXr5
-         /uSw==
-X-Gm-Message-State: AOAM530luQ/3x0/NLP7bZrjVZ0+u3/TGR+xdSU1EiP445Fm+9M1nxdS7
-        L/o6O1CuY5m0vNTG9TZdg33IIw==
-X-Google-Smtp-Source: ABdhPJxABgjSWNLfVp8y3qD9VxUJvb/F5tvNop2o9oL+iVE3OgPSXU7VwWFEVy5UmkBg/xudep0UBA==
-X-Received: by 2002:adf:9ec1:: with SMTP id b1mr2267933wrf.171.1598890266467;
-        Mon, 31 Aug 2020 09:11:06 -0700 (PDT)
-Received: from localhost.localdomain (239.red-83-34-184.dynamicip.rima-tde.net. [83.34.184.239])
-        by smtp.gmail.com with ESMTPSA id a82sm35008wmc.45.2020.08.31.09.11.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 09:11:05 -0700 (PDT)
-From:   Jorge Ramirez-Ortiz <jorge@foundries.io>
-To:     jorge@foundries.io, jens.wiklander@linaro.org,
-        rdunlap@infradead.org
-Cc:     sumit.garg@linaro.org, tee-dev@lists.linaro.org,
-        linux-kernel@vger.kernel.org, ricardo@foundries.io
-Subject: [PATCHv2] drivers: optee: fix i2c build issue
-Date:   Mon, 31 Aug 2020 18:11:02 +0200
-Message-Id: <20200831161102.14735-1-jorge@foundries.io>
+        id S1728586AbgHaQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 12:11:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726249AbgHaQLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 12:11:55 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E0C8206CD;
+        Mon, 31 Aug 2020 16:11:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598890315;
+        bh=X3xRWSr6QaWkcJ/HP05VEo8bTsvsoAiagYc94uHMyDA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kb3W+RdMfxd2RwzibXzpiVaPgiueCYfXdb7pAp0jp4y6SuVk6f0phl9MyLRDDt+1X
+         qzKnwIK7iUgKwURpmUfDzLRr/MgqHGdsyf+lJjqSZI22ZFcbtfcDUvRTTk0Ye5wrpm
+         Sf+ka+hm7WJh1Yc2ZBvvJ8rkCHb4zo5Mjb6ks+aM=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: mfd: google,cros-ec: Use unevaluatedProperties
+Date:   Mon, 31 Aug 2020 18:11:46 +0200
+Message-Id: <20200831161147.13515-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the optee driver is compiled into the kernel while the i2c core
-is configured as a module, the i2c symbols are not available.
+Additional properties or nodes actually might appear (e.g. wakeup) so
+use unevaluatedProperties to fix dtbs_check warnings like:
 
-This commit addresses the situation by disabling the i2c support for
-this use case while allowing it in all other scenarios:
+  arch/arm/boot/dts/exynos5250-snow.dt.yaml: embedded-controller@1e:
+    'keyboard-controller', 'wakeup-source' do not match any of the regexes: 'pinctrl-[0-9]+'
 
- i2c=y, optee=y
- i2c=m, optee=m
- i2c=y, optee=m
- i2c=m, optee=y (not supported)
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
-  v2: uses IS_REACHABLE instead of macro combination
-
-  This patch applies on top of
-  https://git.linaro.org/people/jens.wiklander/linux-tee.git/tag/?h=optee-i2c-for-v5.10 
-
- drivers/tee/optee/rpc.c | 2 +-
+ Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-index 64a206c56264..1e3614e4798f 100644
---- a/drivers/tee/optee/rpc.c
-+++ b/drivers/tee/optee/rpc.c
-@@ -50,7 +50,7 @@ static void handle_rpc_func_cmd_get_time(struct optee_msg_arg *arg)
- 	arg->ret = TEEC_ERROR_BAD_PARAMETERS;
- }
+diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+index 6a7279a85ec1..0586c5791cf6 100644
+--- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
++++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+@@ -79,7 +79,7 @@ then:
+     google,cros-ec-spi-msg-delay: false
+     spi-max-frequency: false
  
--#if IS_ENABLED(CONFIG_I2C)
-+#if IS_REACHABLE(CONFIG_I2C)
- static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
- 					     struct optee_msg_arg *arg)
- {
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ examples:
+   # Example for I2C
 -- 
 2.17.1
 
