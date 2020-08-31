@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20697257164
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B9825716E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbgHaBLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 21:11:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57844 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726695AbgHaBLF (ORCPT
+        id S1726775AbgHaBPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 21:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgHaBPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 21:11:05 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598836263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=neNIyeqixbmc4iI91QgdbnxFUzdVIo+Wg/5VPzEIeg8=;
-        b=kYK6WQus7uHm57T37PVN4qJIJUJxXPMOVh2u/9uzhAEw+3JCsOf+GvaSFDiT7UCsqpID+T
-        Ml9gVr4LpTlxwpKZqj2rfZLd2HP3wyVNxJQScX5UtSgM/5gCt6LWyB/0AdNU/L5o+oC4Rh
-        zOx1SgmDV6pcL0x6uIkpcgSl1qo9UzuR1tC28AVokLQSx1RsDk8+a8B/hcV9sT05t8g00u
-        FUwfDpXqMsjnaxUZ+/jKngELzSv+5kmr0AjtlktQNw39J5GDe1gtNUdOQZqDXjtYpo0d40
-        KgDtFXdT3Q9bOEZ1htLkuA+9gggx9UP6ibIGFaiSJjN4EUCnKQ2OLiQLZtxElg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598836263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=neNIyeqixbmc4iI91QgdbnxFUzdVIo+Wg/5VPzEIeg8=;
-        b=jLKj6mdU1rDQMbXwaTcxOxgj9MOHyqHnVRE5fC/arnvV6W+0XfmC3ZUGK/ZPYEYwq5ImbF
-        duE//Ly0SKvl3OBg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH next v3 8/8] scripts/gdb: support printk finalized records
-Date:   Mon, 31 Aug 2020 03:16:58 +0206
-Message-Id: <20200831011058.6286-9-john.ogness@linutronix.de>
-In-Reply-To: <20200831011058.6286-1-john.ogness@linutronix.de>
-References: <20200831011058.6286-1-john.ogness@linutronix.de>
+        Sun, 30 Aug 2020 21:15:34 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC37DC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 18:15:33 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id v12so4766677ljc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 18:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yqUWQbTaTXuhonfPRcWx/5CuPzZ/iSXPPKYi6cmnxaA=;
+        b=uTtwIMq+zW+o4aunGvghOfJaFbl+9Nfl8a6X133j24hZCsYvegdEvYEDZ1cn6YiXL2
+         oc0Z1pG8TgwaNp67lsAaDhKMWF8KX5u4VRWuwQOfcQyAnXOmB2GQuP6H7vnNDAF/n3fO
+         RB3zKm7wy70tJHVT7bFJM1uufiTgK/XZ10tbz6uNhmpSt3Xv+519kh34Dqa0HyihLwmy
+         wZ+pKEINVkQzqtc6q/kevGuDtfG6m4jit8IRlQhQfPw+W/fw8Fnbcs+Blu/X/lQN8n+d
+         qO2dnfbKL2xqGMw2yuF/vWkz4qDVy0OXAHJQOxp6b36uHo99WHRyooVIEzQRxw9jxxq9
+         gowQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yqUWQbTaTXuhonfPRcWx/5CuPzZ/iSXPPKYi6cmnxaA=;
+        b=HCMPxUykUr6cU7BWc42N6pUPCVGm8lDtX8k43FXjoOZVkbHBg/TffWJlpOn4dpQw8m
+         /ctuULbNzMf9R7nmErlCYY+1xKVi8+4QhVeiS+i5CwWUK1MSt9khvm2BFzbxpAqAHBy1
+         LlvFTyBVMgNsrD4h/e+qK3HcHksVywaI2VAxygaXsWl/wwzuhiFbA6Js0JYHs6hSDfm8
+         VPSS/7Vn7EQFfgMQwobjqh9XYgQLrA2ZZjMLpSL2HdzdW7EfiIrLGYojY4pMwBLVaMF7
+         jmQqDURF0K9hhl8+s2uW7G32puV+a7LJCzomQqRoGGTRZia/gTw3fPOJAEAFldG/JJHC
+         4xvw==
+X-Gm-Message-State: AOAM533VV417+oKE9eY/KLCmj/Oum4VXz4DpLWiKy3XVKzdQiG/HoOiW
+        OcHpEnrd7WjZm92J1GW/pf379uSHHA6IC/Gur65Uvw==
+X-Google-Smtp-Source: ABdhPJyrdu517siGjMDH4/Hzxq0grj9bjXKHwadgRENiyu81gHSD9vEvdAEiN4XvZknaPnf8wkHI2CH6MRE+WZGG6iU=
+X-Received: by 2002:a2e:92cd:: with SMTP id k13mr2330316ljh.138.1598836531623;
+ Sun, 30 Aug 2020 18:15:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200829020002.GC3265@brightrain.aerifal.cx> <CAG48ez1BExw7DdCEeRD1hG5ZpRObpGDodnizW2xD5tC0saTDqg@mail.gmail.com>
+ <20200830163657.GD3265@brightrain.aerifal.cx> <CAG48ez00caDqMomv+PF4dntJkWx7rNYf3E+8gufswis6UFSszw@mail.gmail.com>
+ <20200830184334.GE3265@brightrain.aerifal.cx> <CAG48ez3LvbWLBsJ+Edc9qCjXDYV0TRjVRrANhiR2im1aRUQ6gQ@mail.gmail.com>
+ <20200830200029.GF3265@brightrain.aerifal.cx>
+In-Reply-To: <20200830200029.GF3265@brightrain.aerifal.cx>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 31 Aug 2020 03:15:04 +0200
+Message-ID: <CAG48ez2tOBAKLaX-siRZPCLiiy-s65w2mFGDGr4q2S7WFxpK1A@mail.gmail.com>
+Subject: Re: [RESEND PATCH] vfs: add RWF_NOAPPEND flag for pwritev2
+To:     Rich Felker <dalias@libc.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit ("printk: ringbuffer: add finalization/extension support")
-a new state bit for finalized records was added. This not only changed
-the bit representation of committed records, but also reduced the size
-for record IDs.
+On Sun, Aug 30, 2020 at 10:00 PM Rich Felker <dalias@libc.org> wrote:
+> On Sun, Aug 30, 2020 at 09:02:31PM +0200, Jann Horn wrote:
+> > On Sun, Aug 30, 2020 at 8:43 PM Rich Felker <dalias@libc.org> wrote:
+> > > On Sun, Aug 30, 2020 at 08:31:36PM +0200, Jann Horn wrote:
+> > > > On Sun, Aug 30, 2020 at 6:36 PM Rich Felker <dalias@libc.org> wrote:
+> > > > > So just checking IS_APPEND in the code paths used by
+> > > > > pwritev2 (and erroring out rather than silently writing output at the
+> > > > > wrong place) should suffice to preserve all existing security
+> > > > > invariants.
+> > > >
+> > > > Makes sense.
+> > >
+> > > There are 3 places where kiocb_set_rw_flags is called with flags that
+> > > seem to be controlled by userspace: aio.c, io_uring.c, and
+> > > read_write.c. Presumably each needs to EPERM out on RWF_NOAPPEND if
+> > > the underlying inode is S_APPEND. To avoid repeating the same logic in
+> > > an error-prone way, should kiocb_set_rw_flags's signature be updated
+> > > to take the filp so that it can obtain the inode and check IS_APPEND
+> > > before accepting RWF_NOAPPEND? It's inline so this should avoid
+> > > actually loading anything except in the codepath where
+> > > flags&RWF_NOAPPEND is nonzero.
+> >
+> > You can get the file pointer from ki->ki_filp. See the RWF_NOWAIT
+> > branch of kiocb_set_rw_flags().
+>
+> Thanks. I should have looked for that. OK, so a fixup like this on top
+> of the existing patch?
+>
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 473289bff4c6..674131e8d139 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3457,8 +3457,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
+>                 ki->ki_flags |= (IOCB_DSYNC | IOCB_SYNC);
+>         if (flags & RWF_APPEND)
+>                 ki->ki_flags |= IOCB_APPEND;
+> -       if (flags & RWF_NOAPPEND)
+> +       if (flags & RWF_NOAPPEND) {
+> +               if (IS_APPEND(file_inode(ki->ki_filp)))
+> +                       return -EPERM;
+>                 ki->ki_flags &= ~IOCB_APPEND;
+> +       }
+>         return 0;
+>  }
+>
+> If this is good I'll submit a v2 as the above squashed with the
+> original patch.
 
-Update the gdb scripts to correctly interpret the state variable.
-
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
- Documentation/admin-guide/kdump/gdbmacros.txt | 10 +++++++---
- scripts/gdb/linux/dmesg.py                    | 10 ++++++----
- 2 files changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/admin-guide/kdump/gdbmacros.txt b/Documentation/admin-guide/kdump/gdbmacros.txt
-index 7adece30237e..bcb78368b381 100644
---- a/Documentation/admin-guide/kdump/gdbmacros.txt
-+++ b/Documentation/admin-guide/kdump/gdbmacros.txt
-@@ -295,8 +295,11 @@ document dump_record
- end
- 
- define dmesg
--	set var $desc_committed = 1UL << ((sizeof(long) * 8) - 1)
--	set var $flags_mask = 3UL << ((sizeof(long) * 8) - 2)
-+	# definitions from kernel/printk/printk_ringbuffer.h
-+	set var $desc_commit = 1UL << ((sizeof(long) * 8) - 1)
-+	set var $desc_final = 1UL << ((sizeof(long) * 8) - 2)
-+	set var $desc_reuse = 1UL << ((sizeof(long) * 8) - 3)
-+	set var $flags_mask = $desc_commit | $desc_final | $desc_reuse
- 	set var $id_mask = ~$flags_mask
- 
- 	set var $desc_count = 1U << prb->desc_ring.count_bits
-@@ -309,7 +312,8 @@ define dmesg
- 		set var $desc = &prb->desc_ring.descs[$id % $desc_count]
- 
- 		# skip non-committed record
--		if (($desc->state_var.counter & $flags_mask) == $desc_committed)
-+		# (note that commit+!final records will be displayed)
-+		if (($desc->state_var.counter & $desc_commit) == $desc_commit)
- 			dump_record $desc $prev_flags
- 			set var $prev_flags = $desc->info.flags
- 		end
-diff --git a/scripts/gdb/linux/dmesg.py b/scripts/gdb/linux/dmesg.py
-index 6c6022012ea8..367523c5c270 100644
---- a/scripts/gdb/linux/dmesg.py
-+++ b/scripts/gdb/linux/dmesg.py
-@@ -79,9 +79,10 @@ class LxDmesg(gdb.Command):
- 
-         # definitions from kernel/printk/printk_ringbuffer.h
-         desc_sv_bits = utils.get_long_type().sizeof * 8
--        desc_committed_mask = 1 << (desc_sv_bits - 1)
--        desc_reuse_mask = 1 << (desc_sv_bits - 2)
--        desc_flags_mask = desc_committed_mask | desc_reuse_mask
-+        desc_commit_mask = 1 << (desc_sv_bits - 1)
-+        desc_final_mask = 1 << (desc_sv_bits - 2)
-+        desc_reuse_mask = 1 << (desc_sv_bits - 3)
-+        desc_flags_mask = desc_commit_mask | desc_final_mask | desc_reuse_mask
-         desc_id_mask = ~desc_flags_mask
- 
-         # read in tail and head descriptor ids
-@@ -96,8 +97,9 @@ class LxDmesg(gdb.Command):
-             desc_off = desc_sz * ind
- 
-             # skip non-committed record
-+            # (note that commit+!final records will be displayed)
-             state = utils.read_u64(descs, desc_off + sv_off + counter_off) & desc_flags_mask
--            if state != desc_committed_mask:
-+            if state & desc_commit_mask != desc_commit_mask:
-                 if did == head_id:
-                     break
-                 did = (did + 1) & desc_id_mask
--- 
-2.20.1
-
+Looks good to me.
