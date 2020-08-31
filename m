@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2574E257651
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC08E257659
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728268AbgHaJQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:16:16 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:47114 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727833AbgHaJQN (ORCPT
+        id S1727833AbgHaJR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726800AbgHaJRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:16:13 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200831091611euoutp0156a984a7270c0e8035324cf59a73446d~wT5WASiCo2486924869euoutp01l
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 09:16:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200831091611euoutp0156a984a7270c0e8035324cf59a73446d~wT5WASiCo2486924869euoutp01l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598865371;
-        bh=uEv4mRNARVrH1pGeF1D9VS4PlE2P5tcROsx7w9b3Gqc=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=eAH2o6eWT7DKWOirYFX7ZCd9jABljAafHHO/rcnl+FPBv6oHIne15jBiyIquJCDcc
-         n2YSWq4hQYnMYkFO5IlJMQnVUvYrzo3RVKD9PJlkyCwz+0v6dMci7CBKdjmRPKXA51
-         cC9cWCxIuSBwX3CKFObWv9lB/UbZw4FqRvE1oTUA=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200831091610eucas1p1650cbe1f0f0cecd0d88a505da6826134~wT5VqhPTN0532005320eucas1p1B;
-        Mon, 31 Aug 2020 09:16:10 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 86.20.05997.ADFBC4F5; Mon, 31
-        Aug 2020 10:16:10 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200831091610eucas1p2b5b8c3d7229f1f38609deebb5a0dc28c~wT5VENLkN0155001550eucas1p2D;
-        Mon, 31 Aug 2020 09:16:10 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200831091610eusmtrp238db72ac8b0b6fa2813b6d9428ec6c10~wT5VDhcAn1178611786eusmtrp2j;
-        Mon, 31 Aug 2020 09:16:10 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-3b-5f4cbfdaebf6
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id D1.03.06314.ADFBC4F5; Mon, 31
-        Aug 2020 10:16:10 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200831091609eusmtip18267f5839469d0502083de4160185b6d~wT5Ueffj90646006460eusmtip1C;
-        Mon, 31 Aug 2020 09:16:09 +0000 (GMT)
-Subject: Re: [PATCH 09/33] ARM: dts: exynos: Add and enable 32 kHz modem
- clock in Origen
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Denis GNUtoo Carikli <GNUtoo@cyberdimension.org>,
-        Simon Shields <simon@lineageos.org>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <0f898c36-714c-43ef-2afc-7843d444b41b@samsung.com>
-Date:   Mon, 31 Aug 2020 11:16:09 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Mon, 31 Aug 2020 05:17:19 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02227C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 02:17:19 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id o2so1136133vke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 02:17:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xPGNmRsw3clREJxbIhujJ9BVleZMZH++KW5cFLsU7tw=;
+        b=tlDQNkLZggK8U/Lk6uMqpZ+lGjfqbCJSCUZb57Ym4MFnvUK/CBUKF7Yzan7RV9BUpc
+         EsrsLsKnikuoGLXzZp42UGJBfBCoSSP3uIQVOZXVUsxVuukagyoL7alSoxX/5MxoWOv2
+         FmcSbibxh9YvDoggCu3yQIEN6SN8Z/y9YnB4gSyt7VT7X7TAv3omICQpIrXxZ84m4fBp
+         MJfGoSV5OjZk5Yx94DT2bGUoRR1yVCvvBUGfoN30eTkq9mgHfxmOqKzJeemfncdMkqrs
+         /SUqInD/1dB7B1DfN/RJiWdEjpKMlgIPlUot1sCZ2bJ3kdOxhn1lSX8r4iAQm6okgw/s
+         nVWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xPGNmRsw3clREJxbIhujJ9BVleZMZH++KW5cFLsU7tw=;
+        b=TG5pnQ4z1U0B0CsAVse+7EJ56fBK0feu49CGIY0CDaG76VvEdQdNZ+Vcst422Esd8S
+         rb+yk1ivRw1gFhvvKrDia56W/m1y76lSMJUION4U8Cg05EsIXx9Pu5QA+ncbvSz9RPx2
+         Bu/8uxE+QD92bbwqVE/Wzulmyi7ShMgPIesbUke2IuB5y1GoMy0SahQ+m4JO4aVwUzN9
+         hLWeeAjeH6KAW3ZUKKipN5D/0OIMfNzViwVUCFUaZePxXARXFG9sq65Z7fiPElRWk7Zq
+         bEmQwz6eM6MwbNbd7fxe9KcZKdRgyLlWNJ4qxLelE6ZjdX95pxO1VhsF1kt7BOatq0tA
+         dHlw==
+X-Gm-Message-State: AOAM531J63lVmF1JBbgyV44ZV7cd3RMSPyvG08tswBXhtD2lvPG/prgf
+        G4ZPK1XPgrh3WCkk4xAoQPMg3OWZVvonZk9Bdtrw4Q==
+X-Google-Smtp-Source: ABdhPJzS4H9cHKY3ezPrXkM8N+l+LltSj93sbk0pC64SOfwKVa7oGmMl3imZuK0I39yExSwEfnQ+mytHRmSIzO5o9X8=
+X-Received: by 2002:a1f:c151:: with SMTP id r78mr238648vkf.44.1598865437983;
+ Mon, 31 Aug 2020 02:17:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200830135200.24304-9-krzk@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMKsWRmVeSWpSXmKPExsWy7djPc7q39vvEG9xdYWSxccZ6Vov5R86x
-        WrRef8xu0f/4NbPF+fMb2C02Pb7GanF51xw2ixnn9zFZtO49wm6x5cxtNov2py+ZHbg9jh5o
-        ZPbYtKqTzaNl/SY2j81L6j36tqxi9Pi8SS6ALYrLJiU1J7MstUjfLoEr49WWRuaCBo6KFx+b
-        WRoYF7J1MXJySAiYSDxsWMjexcjFISSwglFi9pupTBDOF0aJS0efMIJUCQl8ZpRoWBcH0zFx
-        yio2iKLljBJ333WxQDjvGSUOTu9gBqkSFoiSuHxtC1iViMAZJom/366AJZgFUiV2vz3GCmKz
-        CRhKdL3tAjuEV8BOYu7KvWA1LAKqEnfO/2cBsUUF4iSOnXrEAlEjKHFy5hMwm1PAVOL/zQNs
-        EDPlJba/nQM1X1zi1pP5YD9ICFxil9h6+j9QggPIcZF4e9Eb4gVhiVfHt7BD2DIS/3fC1Dcz
-        Sjw8t5YdwulhlLjcNIMRospa4s65X2wgg5gFNCXW79KHCDtKvF7Wwgoxn0/ixltBiBv4JCZt
-        mw61lleio00IolpNYtbxdXBrD164xDyBUWkWks9mIflmFpJvZiHsXcDIsopRPLW0ODc9tdgo
-        L7Vcrzgxt7g0L10vOT93EyMwaZ3+d/zLDsZdf5IOMQpwMCrx8P446h0vxJpYVlyZe4hRgoNZ
-        SYTX6ezpOCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8xotexgoJpCeWpGanphakFsFkmTg4pRoY
-        CyRmb/wRdNHLWfTr+ubVN6/vCZ+wwOqQzI3uUAt9j1pZZqPKi0J+Lx9VSPs9c577UuhFydP9
-        3B8f5Zac3RMfERA09X3QjBVZW5RqrdLyj38PVPbhXN7b/dhSrPT+xaMfNTx6JqUt+b9E3XH2
-        /fsrKz0VvrvtWGkXsX+qud7BBd+PuViHTu9arcRSnJFoqMVcVJwIAPyHHCdWAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGIsWRmVeSWpSXmKPExsVy+t/xu7q39vvEG5yaxW2xccZ6Vov5R86x
-        WrRef8xu0f/4NbPF+fMb2C02Pb7GanF51xw2ixnn9zFZtO49wm6x5cxtNov2py+ZHbg9jh5o
-        ZPbYtKqTzaNl/SY2j81L6j36tqxi9Pi8SS6ALUrPpii/tCRVISO/uMRWKdrQwkjP0NJCz8jE
-        Us/Q2DzWyshUSd/OJiU1J7MstUjfLkEv49WWRuaCBo6KFx+bWRoYF7J1MXJySAiYSEycsgrI
-        5uIQEljKKLHhwXZ2iISMxMlpDawQtrDEn2tdUEVvGSW+THvN0sXIwSEsECXx9aofSFxE4ByT
-        xMyF/WDNzAKpEhObpjJBNGxmlJh07zIzSIJNwFCi620X2GpeATuJuSv3gsVZBFQl7pz/zwJi
-        iwrESZzpeQFVIyhxcuYTsDingKnE/5sH2CAWmEnM2/yQGcKWl9j+dg6ULS5x68l8pgmMQrOQ
-        tM9C0jILScssJC0LGFlWMYqklhbnpucWG+oVJ+YWl+al6yXn525iBMbptmM/N+9gvLQx+BCj
-        AAejEg/vj6Pe8UKsiWXFlbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgK9NxEZinR
-        5HxgCskriTc0NTS3sDQ0NzY3NrNQEuftEDgYIySQnliSmp2aWpBaBNPHxMEp1cAoOzNIe3vb
-        LQk3t/N9E9tPLa+IKF4ovo1be90Uqd9inHZlYY3aIcV9nJHHZrWpqbq88gnT/zArOOOXUnFw
-        6s6+830B2ksjWR6HyAfzS2z/Yx4nacK1QPvI8pXNWsn7vhz/GL9MZK3xqnkCBYxBZx/qisVe
-        2rC14velWKsZ4RUfN7y9JCpvraTEUpyRaKjFXFScCADzEa0M6QIAAA==
-X-CMS-MailID: 20200831091610eucas1p2b5b8c3d7229f1f38609deebb5a0dc28c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200830135426eucas1p19a79abc3fcc3580f466782a856eb0c78
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200830135426eucas1p19a79abc3fcc3580f466782a856eb0c78
-References: <20200830135200.24304-1-krzk@kernel.org>
-        <CGME20200830135426eucas1p19a79abc3fcc3580f466782a856eb0c78@eucas1p1.samsung.com>
-        <20200830135200.24304-9-krzk@kernel.org>
+References: <20200825134441.17537-1-matthias.schiffer@ew.tq-group.com>
+ <20200828222440.GA3507259@bogus> <4e1182d756a81e10b32b465bb36938cb62a98cdd.camel@ew.tq-group.com>
+In-Reply-To: <4e1182d756a81e10b32b465bb36938cb62a98cdd.camel@ew.tq-group.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 31 Aug 2020 11:16:41 +0200
+Message-ID: <CAPDyKFqH43VDvezTN_UPZvGNhfO=k69axF0nD4juFgdbAMNmpA@mail.gmail.com>
+Subject: Re: [PATCH mmc-next v3 1/2] dt-bindings: mmc: add alias example
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
-
-On 30.08.2020 15:51, Krzysztof Kozlowski wrote:
-> The PMIC has a 32768 Hz clock used by the modem which is implemented by
-> driver as a regulator.  Add and enable it to be sure modem get's its
-> signal.
+On Mon, 31 Aug 2020 at 09:58, Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
 >
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Origen board doesn't have any modem/cp, so I see no point in enabling 
-this clock.
-
-> ---
->   arch/arm/boot/dts/exynos4210-origen.dts | 5 +++++
->   1 file changed, 5 insertions(+)
+> On Fri, 2020-08-28 at 16:24 -0600, Rob Herring wrote:
+> > On Tue, Aug 25, 2020 at 03:44:40PM +0200, Matthias Schiffer wrote:
+> > > As for I2C and SPI, it now is possible to reserve a fixed index for
+> > > mmc/mmcblk devices.
+> > >
+> > > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com
+> > > >
+> > > ---
+> > >
+> > > v3: new patch
+> > >
+> > >  Documentation/devicetree/bindings/mmc/mmc-controller.yaml | 8
+> > > ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/mmc/mmc-
+> > > controller.yaml b/Documentation/devicetree/bindings/mmc/mmc-
+> > > controller.yaml
+> > > index b96da0c7f819..22ed4a36c65d 100644
+> > > --- a/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> > > +++ b/Documentation/devicetree/bindings/mmc/mmc-controller.yaml
+> > > @@ -367,6 +367,14 @@ examples:
+> > >      };
+> > >
+> > >    - |
+> > > +    /*
+> > > +     * Optionally define an alias to reserve a fixed index for the
+> > > +     * mmc and mmcblk devices
+> > > +     */
+> > > +    aliases {
+> > > +        mmc0 = &mmc3;
+> > > +    };
+> >
+> > This will break if we improve schemas because this node is actually
+> > /example-1/aliases.
+> >
+> > So please drop. If you want, I'd really like to have a defined set
+> > (i.e.
+> > a schema) of alias names. This would require deleting a bunch on
+> > some
+> > platforms that just made up a bunch of them.
 >
-> diff --git a/arch/arm/boot/dts/exynos4210-origen.dts b/arch/arm/boot/dts/exynos4210-origen.dts
-> index 747221bbb856..fcf45619a3e4 100644
-> --- a/arch/arm/boot/dts/exynos4210-origen.dts
-> +++ b/arch/arm/boot/dts/exynos4210-origen.dts
-> @@ -298,6 +298,11 @@
->   				regulator-name = "EN32KHZ_AP";
->   				regulator-always-on;
->   			};
-> +
-> +			EN32KHZ_CP {
-> +				regulator-name = "EN32KHZ_CP";
-> +				regulator-always-on;
-> +			};
->   		};
->   	};
->   };
+> Ulf suggested that I add some kind of documentation about the new mmc
+> alias support to the binding docs.
+>
+> As long as we don't have a proper schema for aliases, should I just add
+> an explanation to the toplevel description of
+> Documentation/devicetree/bindings/mmc/mmc-controller.yaml, or maybe a
+> comment?
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+I would prefer to add an explanation in the toplevel description,
+although I have no strong opinion.
 
+This is similar to what we already do for serial devices, see
+Documentation/devicetree/bindings/serial/serial.yaml.
+
+>
+>
+> >
+> > > +
+> > >      mmc3: mmc@1c12000 {
+> > >          #address-cells = <1>;
+> > >          #size-cells = <0>;
+> > > --
+> > > 2.17.1
+> > >
+>
+
+Kind regards
+Uffe
