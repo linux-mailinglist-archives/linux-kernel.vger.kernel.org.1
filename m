@@ -2,145 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D414257FF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9DE257FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgHaRu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgHaRux (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:50:53 -0400
-Received: from mail-io1-xd49.google.com (mail-io1-xd49.google.com [IPv6:2607:f8b0:4864:20::d49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6B4C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:50:53 -0700 (PDT)
-Received: by mail-io1-xd49.google.com with SMTP id h8so4612207ioa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:50:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=WJ86J1Rh/9a+OExkI0rJlOFHOUeu/5tIWacuz+P7JAc=;
-        b=HW8I1YgZCnmOLwNMaMPR8Sc9pNUApCmj+dz2XsrVb+X/SNyph/zuGantqb4pgta39U
-         KQGbOfOjQGNePPnYLR/r429Li0FzwweyZvT5M1Sa1B+9AbEtJB5h5ZgK2Rxw+tDUs811
-         LRSEOdNQyFkBN0CFGhpsfHaFZvif/OtBteR3Zn8ydBzMdEWLEZMvMk/Mm9bu9Om3s6LC
-         k08kYtCBseeOND4PalCgqnwuU3h36DkgbnC6GK7p7jLKda1YL1EkO3iWVnQoUoA4Fl2r
-         PNzBxiLUIfpFOyLhfFyDZQFX17fBelHRHsTiPW0TBMxp3Ge3zXPAbNLMiA2rNLA8Nylv
-         UWxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WJ86J1Rh/9a+OExkI0rJlOFHOUeu/5tIWacuz+P7JAc=;
-        b=JieDZIHDmlfzfUvuuACE3zi0BXqh4nfVtlDVs2ptu9ZFvmHZPdMwS8nXRm3121W3X5
-         ubLvg6lK4ZqOUIpWyxeekpLXKTZEURuji4r87K59TAW2k5qiMtG5rFyUnO8tfc0bjBv6
-         A+fvehJD1Uz7IPakqClYDXK8rwjQOCNvzlUf621P8I1Sdkhg4bE/N7k2rext3kr5PSwf
-         duhfX1UWdUipO68PX1HgxEr/wBvSHEICZ5nzu1RP37ZLonkWr9R/BrssPbf0GZlUYoMk
-         PzT2T5n6j+jdn6Y95wg6PHImDaRJ24WUU37h0SNV6jb7IYgein11xYaRst350bob6CMP
-         t9Nw==
-X-Gm-Message-State: AOAM5323hiixKIwBRtlxVQLDWJEpB2+XJYY38q0hfU4tPgKRE3AcZU8E
-        kiK45DK3w7Cb2BB2b8mty8349hO+VY0=
-X-Google-Smtp-Source: ABdhPJyEmB54MPwn+rzZUmhXVP5xIYQCPFUTfjuW/TXcdPEGT6mWsUn1s2ENBY0cwGSp4EbLtkPuNTkDlXQ=
-X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a92:7a0a:: with SMTP id v10mr2027625ilc.99.1598896251830;
- Mon, 31 Aug 2020 10:50:51 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 11:50:42 -0600
-In-Reply-To: <20200831175042.3527153-1-yuzhao@google.com>
-Message-Id: <20200831175042.3527153-2-yuzhao@google.com>
-Mime-Version: 1.0
-References: <20200831175042.3527153-1-yuzhao@google.com>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH v2 2/2] mm: use self-explanatory macros rather than "2"
-From:   Yu Zhao <yuzhao@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728012AbgHaRpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:45:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:37338 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726446AbgHaRpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 13:45:19 -0400
+IronPort-SDR: 4+pOY6XgtJz5GIYqWemHHJG51ckVZTx8t55r7HcHahSnMeJlCPUMSgSnB8p0BbqbCr4XCcpe22
+ ytNZ8pEMs2BA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="175075718"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="175075718"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 10:45:18 -0700
+IronPort-SDR: 4V0HKjPMEFKjJ0dIOMZTyD7eACTRqRvtsa0jzkyZrLLFrCUNsnqyHPIMd+XP7P1heylDfFA6Ly
+ bRfswT/CRLSw==
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="340728810"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 10:45:17 -0700
+Date:   Mon, 31 Aug 2020 10:52:24 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v7 7/7] iommu/vt-d: Check UAPI data processed by IOMMU
+ core
+Message-ID: <20200831105224.7a90ba34@jacob-builder>
+In-Reply-To: <1b131401-a9a3-3641-99cc-430d9b51efa5@redhat.com>
+References: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1596068467-49322-8-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1b131401-a9a3-3641-99cc-430d9b51efa5@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a trivial clean-up patch. Take it or leave it.
+On Thu, 13 Aug 2020 11:19:46 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
 
-Signed-off-by: Yu Zhao <yuzhao@google.com>
----
- include/linux/mmzone.h | 12 ++++++++----
- include/linux/vmstat.h |  2 +-
- mm/vmscan.c            |  2 +-
- 3 files changed, 10 insertions(+), 6 deletions(-)
+> Hi Jacob,
+> 
+> On 7/30/20 2:21 AM, Jacob Pan wrote:
+> > IOMMU generic layer already does sanity checks UAPI data for version
+> > match and argsz range under generic information.
+> > Remove the redundant version check from VT-d driver and check for
+> > vendor specific data size.
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>  
+> 
+> > ---
+> >  drivers/iommu/intel/iommu.c | 3 +--
+> >  drivers/iommu/intel/svm.c   | 7 +++++--
+> >  2 files changed, 6 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/intel/iommu.c
+> > b/drivers/iommu/intel/iommu.c index 021f62078f52..7e03cca31a0e
+> > 100644 --- a/drivers/iommu/intel/iommu.c
+> > +++ b/drivers/iommu/intel/iommu.c
+> > @@ -5391,8 +5391,7 @@ intel_iommu_sva_invalidate(struct
+> > iommu_domain *domain, struct device *dev, int ret = 0;
+> >  	u64 size = 0;
+> >  
+> > -	if (!inv_info || !dmar_domain ||
+> > -	    inv_info->version !=
+> > IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
+> > +	if (!inv_info || !dmar_domain)
+> >  		return -EINVAL;
+> >  
+> >  	if (!dev || !dev_is_pci(dev))
+> > diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> > index 713b3a218483..55ea11e9c0f5 100644
+> > --- a/drivers/iommu/intel/svm.c
+> > +++ b/drivers/iommu/intel/svm.c
+> > @@ -240,8 +240,11 @@ int intel_svm_bind_gpasid(struct iommu_domain
+> > *domain, struct device *dev, if (WARN_ON(!iommu) || !data)
+> >  		return -EINVAL;
+> >  
+> > -	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
+> > -	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
+> > +	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
+> > +		return -EINVAL;
+> > +
+> > +	/* IOMMU core ensures argsz is more than the start of the
+> > union */
+> > +	if (data->argsz < offsetofend(struct
+> > iommu_gpasid_bind_data, vendor.vtd)) return -EINVAL;  
+> Shouldn't you test the vendor flags here?
+> intel_pasid_setup_bind_data() only checks valid ones but not ~mask.
+> 
+Yes, vendor flags should be tested to make sure there is no undefined
+flags being used.
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 8379432f4f2f..be1cdbf8317f 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -266,6 +266,8 @@ static inline bool is_active_lru(enum lru_list lru)
- 	return (lru == LRU_ACTIVE_ANON || lru == LRU_ACTIVE_FILE);
- }
- 
-+#define ANON_AND_FILE 2
-+
- enum lruvec_flags {
- 	LRUVEC_CONGESTED,		/* lruvec has many dirty pages
- 					 * backed by a congested BDI
-@@ -283,8 +285,8 @@ struct lruvec {
- 	unsigned long			file_cost;
- 	/* Non-resident age, driven by LRU movement */
- 	atomic_long_t			nonresident_age;
--	/* Refaults at the time of last reclaim cycle, anon=0, file=1 */
--	unsigned long			refaults[2];
-+	/* Refaults at the time of last reclaim cycle */
-+	unsigned long			refaults[ANON_AND_FILE];
- 	/* Various lruvec state flags (enum lruvec_flags) */
- 	unsigned long			flags;
- #ifdef CONFIG_MEMCG
-@@ -406,6 +408,8 @@ enum zone_type {
- 
- #ifndef __GENERATING_BOUNDS_H
- 
-+#define ASYNC_AND_SYNC 2
-+
- struct zone {
- 	/* Read-mostly fields */
- 
-@@ -525,8 +529,8 @@ struct zone {
- #if defined CONFIG_COMPACTION || defined CONFIG_CMA
- 	/* pfn where compaction free scanner should start */
- 	unsigned long		compact_cached_free_pfn;
--	/* pfn where async and sync compaction migration scanner should start */
--	unsigned long		compact_cached_migrate_pfn[2];
-+	/* pfn where compaction migration scanner should start */
-+	unsigned long		compact_cached_migrate_pfn[ASYNC_AND_SYNC];
- 	unsigned long		compact_init_migrate_pfn;
- 	unsigned long		compact_init_free_pfn;
- #endif
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 91220ace31da..d5431c1bf6e5 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -28,7 +28,7 @@ struct reclaim_stat {
- 	unsigned nr_writeback;
- 	unsigned nr_immediate;
- 	unsigned nr_pageout;
--	unsigned nr_activate[2];
-+	unsigned nr_activate[ANON_AND_FILE];
- 	unsigned nr_ref_keep;
- 	unsigned nr_unmap_fail;
- 	unsigned nr_lazyfree_fail;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 1b871c3987e7..b454cc17e5a3 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2232,7 +2232,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	unsigned long anon_cost, file_cost, total_cost;
- 	int swappiness = mem_cgroup_swappiness(memcg);
--	u64 fraction[2];
-+	u64 fraction[ANON_AND_FILE];
- 	u64 denominator = 0;	/* gcc */
- 	enum scan_balance scan_balance;
- 	unsigned long ap, fp;
--- 
-2.28.0.402.g5ffc5be6b7-goog
+Thanks!
 
+> Thanks
+> 
+> Eric
+> >  
+> >  	if (!dev_is_pci(dev))
+> >   
+> 
+
+[Jacob Pan]
