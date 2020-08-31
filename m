@@ -2,107 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBD0258098
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1402580B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgHaSRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49782 "EHLO mail.kernel.org"
+        id S1729180AbgHaSST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:18:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727058AbgHaSRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:17:16 -0400
+        id S1729007AbgHaSSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:18:07 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AEA22071B;
-        Mon, 31 Aug 2020 18:17:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52F822071B;
+        Mon, 31 Aug 2020 18:18:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897835;
-        bh=nBLCefDFpPRBI7iy+jr3QX4FEPCl6D6hh4uvD48LT1U=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=j1qdUDQmZTatcZAwhBAZpNnAfj2RGdWw+8S8F6wtonS3Avt+OHwaJvj4dXNn1yjb7
-         LcYV4UZI4RDKnYIUObS3uTz8BI9ETOD7b6IHIPHH+m4yltVBLzMC1FJ4wU+O+Oxdre
-         GU1RscjWvKobMkc/k5ho3SP5T/v1yueHr3BnR+aA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0902835230F1; Mon, 31 Aug 2020 11:17:15 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 11:17:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1598897886;
+        bh=Ab8QYwI6/ALUDbI9X3koay2u1a9suSWcIabBhFDEc5s=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=b8pU6DyKJt35KSHktLYvDCbMNKs3PZlOuhYSkKZ4ToxuxZKayB2+clIefr463Eb+r
+         +t8X4rq5efjt6OH0nWehSeO+uDlTnfGzhckp5+3s8qKxMJz7yKmt3MF+40DLg/uTXI
+         9X1kVETm9gyqOEAkoimfTTiUO3CSlszVyy4yY8/k=
+From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
-        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com
-Subject: [PATCH kcsan 0/19] KCSAN updates for v5.10
-Message-ID: <20200831181715.GA1530@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH kcsan 01/19] kcsan: Add support for atomic builtins
+Date:   Mon, 31 Aug 2020 11:17:47 -0700
+Message-Id: <20200831181805.1833-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200831181715.GA1530@paulmck-ThinkPad-P72>
+References: <20200831181715.GA1530@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: Marco Elver <elver@google.com>
 
-This series provides KCSAN updates:
+Some architectures (currently e.g. s390 partially) implement atomics
+using the compiler's atomic builtins (__atomic_*, __sync_*). To support
+enabling KCSAN on such architectures in future, or support experimental
+use of these builtins, implement support for them.
 
-1.	Add support for atomic builtins.
+We should also avoid breaking KCSAN kernels due to use (accidental or
+otherwise) of atomic builtins in drivers, as has happened in the past:
+https://lkml.kernel.org/r/5231d2c0-41d9-6721-e15f-a7eedf3ce69e@infradead.org
 
-2.	Add atomic builtin TSAN instrumentation to uaccess whitelist.
+The instrumentation is subtly different from regular reads/writes: TSAN
+instrumentation replaces the use of atomic builtins with a call into the
+runtime, and the runtime's job is to also execute the desired atomic
+operation. We rely on the __atomic_* compiler builtins, available with
+all KCSAN-supported compilers, to implement each TSAN atomic
+instrumentation function.
 
-3.	Add atomic builtin test case.
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/kcsan/core.c | 110 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
-4.	Support compounded read-write instrumentation.
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 9147ff6..682d9fd 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -879,3 +879,113 @@ void __tsan_init(void)
+ {
+ }
+ EXPORT_SYMBOL(__tsan_init);
++
++/*
++ * Instrumentation for atomic builtins (__atomic_*, __sync_*).
++ *
++ * Normal kernel code _should not_ be using them directly, but some
++ * architectures may implement some or all atomics using the compilers'
++ * builtins.
++ *
++ * Note: If an architecture decides to fully implement atomics using the
++ * builtins, because they are implicitly instrumented by KCSAN (and KASAN,
++ * etc.), implementing the ARCH_ATOMIC interface (to get instrumentation via
++ * atomic-instrumented) is no longer necessary.
++ *
++ * TSAN instrumentation replaces atomic accesses with calls to any of the below
++ * functions, whose job is to also execute the operation itself.
++ */
++
++#define DEFINE_TSAN_ATOMIC_LOAD_STORE(bits)                                                        \
++	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder);                      \
++	u##bits __tsan_atomic##bits##_load(const u##bits *ptr, int memorder)                       \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_ATOMIC);                      \
++		return __atomic_load_n(ptr, memorder);                                             \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_load);                                                 \
++	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder);                   \
++	void __tsan_atomic##bits##_store(u##bits *ptr, u##bits v, int memorder)                    \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		__atomic_store_n(ptr, v, memorder);                                                \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_store)
++
++#define DEFINE_TSAN_ATOMIC_RMW(op, bits, suffix)                                                   \
++	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder);                 \
++	u##bits __tsan_atomic##bits##_##op(u##bits *ptr, u##bits v, int memorder)                  \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		return __atomic_##op##suffix(ptr, v, memorder);                                    \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_##op)
++
++/*
++ * Note: CAS operations are always classified as write, even in case they
++ * fail. We cannot perform check_access() after a write, as it might lead to
++ * false positives, in cases such as:
++ *
++ *	T0: __atomic_compare_exchange_n(&p->flag, &old, 1, ...)
++ *
++ *	T1: if (__atomic_load_n(&p->flag, ...)) {
++ *		modify *p;
++ *		p->flag = 0;
++ *	    }
++ *
++ * The only downside is that, if there are 3 threads, with one CAS that
++ * succeeds, another CAS that fails, and an unmarked racing operation, we may
++ * point at the wrong CAS as the source of the race. However, if we assume that
++ * all CAS can succeed in some other execution, the data race is still valid.
++ */
++#define DEFINE_TSAN_ATOMIC_CMPXCHG(bits, strength, weak)                                           \
++	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
++							      u##bits val, int mo, int fail_mo);   \
++	int __tsan_atomic##bits##_compare_exchange_##strength(u##bits *ptr, u##bits *exp,          \
++							      u##bits val, int mo, int fail_mo)    \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		return __atomic_compare_exchange_n(ptr, exp, val, weak, mo, fail_mo);              \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_##strength)
++
++#define DEFINE_TSAN_ATOMIC_CMPXCHG_VAL(bits)                                                       \
++	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
++							   int mo, int fail_mo);                   \
++	u##bits __tsan_atomic##bits##_compare_exchange_val(u##bits *ptr, u##bits exp, u##bits val, \
++							   int mo, int fail_mo)                    \
++	{                                                                                          \
++		check_access(ptr, bits / BITS_PER_BYTE, KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC); \
++		__atomic_compare_exchange_n(ptr, &exp, val, 0, mo, fail_mo);                       \
++		return exp;                                                                        \
++	}                                                                                          \
++	EXPORT_SYMBOL(__tsan_atomic##bits##_compare_exchange_val)
++
++#define DEFINE_TSAN_ATOMIC_OPS(bits)                                                               \
++	DEFINE_TSAN_ATOMIC_LOAD_STORE(bits);                                                       \
++	DEFINE_TSAN_ATOMIC_RMW(exchange, bits, _n);                                                \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_add, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_sub, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_and, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_or, bits, );                                                  \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_xor, bits, );                                                 \
++	DEFINE_TSAN_ATOMIC_RMW(fetch_nand, bits, );                                                \
++	DEFINE_TSAN_ATOMIC_CMPXCHG(bits, strong, 0);                                               \
++	DEFINE_TSAN_ATOMIC_CMPXCHG(bits, weak, 1);                                                 \
++	DEFINE_TSAN_ATOMIC_CMPXCHG_VAL(bits)
++
++DEFINE_TSAN_ATOMIC_OPS(8);
++DEFINE_TSAN_ATOMIC_OPS(16);
++DEFINE_TSAN_ATOMIC_OPS(32);
++DEFINE_TSAN_ATOMIC_OPS(64);
++
++void __tsan_atomic_thread_fence(int memorder);
++void __tsan_atomic_thread_fence(int memorder)
++{
++	__atomic_thread_fence(memorder);
++}
++EXPORT_SYMBOL(__tsan_atomic_thread_fence);
++
++void __tsan_atomic_signal_fence(int memorder);
++void __tsan_atomic_signal_fence(int memorder) { }
++EXPORT_SYMBOL(__tsan_atomic_signal_fence);
+-- 
+2.9.5
 
-5.	objtool, kcsan: Add __tsan_read_write to uaccess whitelist.
-
-6.	Skew delay to be longer for certain access types.
-
-7.	Add missing CONFIG_KCSAN_IGNORE_ATOMICS checks.
-
-8.	Test support for compound instrumentation.
-
-9.	instrumented.h: Introduce read-write instrumentation hooks.
-
-10.	asm-generic/bitops: Use instrument_read_write() where appropriate.
-
-11.	locking/atomics: Use read-write instrumentation for atomic RMWs.
-
-12.	Simplify debugfs counter to name mapping.
-
-13.	Simplify constant string handling.
-
-14.	Remove debugfs test command.
-
-15.	Show message if enabled early.
-
-16.	Use pr_fmt for consistency.
-
-17.	Optimize debugfs stats counters.
-
-18.	bitops, kcsan: Partially revert instrumentation for non-atomic bitops.
-
-19.	Use tracing-safe version of prandom.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- include/asm-generic/atomic-instrumented.h            |  330 +++++++++----------
- include/asm-generic/bitops/instrumented-atomic.h     |    6 
- include/asm-generic/bitops/instrumented-lock.h       |    2 
- include/asm-generic/bitops/instrumented-non-atomic.h |   36 +-
- include/linux/instrumented.h                         |   30 +
- include/linux/kcsan-checks.h                         |   45 +-
- kernel/kcsan/core.c                                  |  238 +++++++++++--
- kernel/kcsan/debugfs.c                               |  136 +------
- kernel/kcsan/kcsan-test.c                            |  128 ++++++-
- kernel/kcsan/kcsan.h                                 |   12 
- kernel/kcsan/report.c                                |   10 
- kernel/kcsan/selftest.c                              |    8 
- lib/Kconfig.kcsan                                    |    5 
- scripts/Makefile.kcsan                               |    2 
- scripts/atomic/gen-atomic-instrumented.sh            |   21 -
- tools/objtool/check.c                                |   55 +++
- 16 files changed, 697 insertions(+), 367 deletions(-)
