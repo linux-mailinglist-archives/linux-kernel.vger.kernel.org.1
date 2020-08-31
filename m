@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA82257F50
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E479257F55
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbgHaRL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:11:57 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:45145 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728336AbgHaRLm (ORCPT
+        id S1728982AbgHaRMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:12:14 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:47735 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgHaRLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:11:42 -0400
+        Mon, 31 Aug 2020 13:11:45 -0400
 X-Originating-IP: 90.66.108.79
 Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
         (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id A38CF60007;
-        Mon, 31 Aug 2020 17:11:39 +0000 (UTC)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 6FF12C0005;
+        Mon, 31 Aug 2020 17:11:40 +0000 (UTC)
 From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
 To:     Rob Herring <robh+dt@kernel.org>
 Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
@@ -24,9 +24,9 @@ Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 1/5] ARM: dts: at91: fix cpu node
-Date:   Mon, 31 Aug 2020 19:11:24 +0200
-Message-Id: <20200831171129.3886857-3-alexandre.belloni@bootlin.com>
+Subject: [PATCH 2/5] ARM: dts: at91: fix sram nodes
+Date:   Mon, 31 Aug 2020 19:11:25 +0200
+Message-Id: <20200831171129.3886857-4-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200831171129.3886857-1-alexandre.belloni@bootlin.com>
 References: <20200831171129.3886857-1-alexandre.belloni@bootlin.com>
@@ -37,202 +37,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reg property is mandatory for cpu nodes, also fix the #address-cells of
-the cpus node that has to be at least 1.
+The ranges, #address-cells and #size-cells properties are mandatory, add
+them to the sram nodes.
 
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- arch/arm/boot/dts/at91rm9200.dtsi  | 5 +++--
- arch/arm/boot/dts/at91sam9260.dtsi | 5 +++--
- arch/arm/boot/dts/at91sam9261.dtsi | 5 +++--
- arch/arm/boot/dts/at91sam9263.dtsi | 5 +++--
- arch/arm/boot/dts/at91sam9g45.dtsi | 5 +++--
- arch/arm/boot/dts/at91sam9n12.dtsi | 5 +++--
- arch/arm/boot/dts/at91sam9rl.dtsi  | 5 +++--
- arch/arm/boot/dts/at91sam9x5.dtsi  | 5 +++--
- arch/arm/boot/dts/sam9x60.dtsi     | 5 +++--
- 9 files changed, 27 insertions(+), 18 deletions(-)
+ arch/arm/boot/dts/at91rm9200.dtsi  | 3 +++
+ arch/arm/boot/dts/at91sam9260.dtsi | 3 +++
+ arch/arm/boot/dts/at91sam9261.dtsi | 3 +++
+ arch/arm/boot/dts/at91sam9263.dtsi | 6 ++++++
+ arch/arm/boot/dts/at91sam9g20.dtsi | 3 +++
+ arch/arm/boot/dts/at91sam9g45.dtsi | 3 +++
+ arch/arm/boot/dts/at91sam9n12.dtsi | 3 +++
+ arch/arm/boot/dts/at91sam9rl.dtsi  | 3 +++
+ arch/arm/boot/dts/at91sam9x5.dtsi  | 3 +++
+ arch/arm/boot/dts/at91sam9xe.dtsi  | 3 +++
+ arch/arm/boot/dts/sam9x60.dtsi     | 3 +++
+ arch/arm/boot/dts/sama5d2.dtsi     | 7 +++++++
+ arch/arm/boot/dts/sama5d3.dtsi     | 6 ++++++
+ arch/arm/boot/dts/sama5d4.dtsi     | 6 ++++++
+ 14 files changed, 55 insertions(+)
 
 diff --git a/arch/arm/boot/dts/at91rm9200.dtsi b/arch/arm/boot/dts/at91rm9200.dtsi
-index a5040f5ea641..231313e4c926 100644
+index 231313e4c926..1724e14d9994 100644
 --- a/arch/arm/boot/dts/at91rm9200.dtsi
 +++ b/arch/arm/boot/dts/at91rm9200.dtsi
-@@ -39,12 +39,13 @@ aliases {
- 		ssc2 = &ssc2;
- 	};
- 	cpus {
--		#address-cells = <0>;
+@@ -71,6 +71,9 @@ main_xtal: main_xtal {
+ 	sram: sram@200000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00200000 0x4000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm920t";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00200000 0x4000>;
  	};
  
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9260.dtsi b/arch/arm/boot/dts/at91sam9260.dtsi
-index 6afbb48e7ff0..85041ad5e29a 100644
+index 85041ad5e29a..f6ac5346f910 100644
 --- a/arch/arm/boot/dts/at91sam9260.dtsi
 +++ b/arch/arm/boot/dts/at91sam9260.dtsi
-@@ -36,12 +36,13 @@ aliases {
- 		ssc0 = &ssc0;
- 	};
- 	cpus {
--		#address-cells = <0>;
+@@ -74,6 +74,9 @@ adc_op_clk: adc_op_clk{
+ 	sram0: sram@2ff000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x002ff000 0x2000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x002ff000 0x2000>;
  	};
  
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9261.dtsi b/arch/arm/boot/dts/at91sam9261.dtsi
-index 5ed3d745ac86..bb6480afc6f6 100644
+index bb6480afc6f6..980cc308fec5 100644
 --- a/arch/arm/boot/dts/at91sam9261.dtsi
 +++ b/arch/arm/boot/dts/at91sam9261.dtsi
-@@ -33,12 +33,13 @@ aliases {
- 	};
- 
- 	cpus {
--		#address-cells = <0>;
+@@ -65,6 +65,9 @@ slow_xtal: slow_xtal {
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x28000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x28000>;
  	};
  
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9263.dtsi b/arch/arm/boot/dts/at91sam9263.dtsi
-index 5c990cfae254..a94fa2ae482c 100644
+index a94fa2ae482c..a321c68be64f 100644
 --- a/arch/arm/boot/dts/at91sam9263.dtsi
 +++ b/arch/arm/boot/dts/at91sam9263.dtsi
-@@ -35,12 +35,13 @@ aliases {
- 	};
- 
- 	cpus {
--		#address-cells = <0>;
+@@ -67,11 +67,17 @@ slow_xtal: slow_xtal {
+ 	sram0: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x14000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x14000>;
  	};
  
+ 	sram1: sram@500000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00500000 0x4000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x00500000 0x4000>;
+ 	};
+ 
+ 	ahb {
+diff --git a/arch/arm/boot/dts/at91sam9g20.dtsi b/arch/arm/boot/dts/at91sam9g20.dtsi
+index 4117cf880508..86b4e943089a 100644
+--- a/arch/arm/boot/dts/at91sam9g20.dtsi
++++ b/arch/arm/boot/dts/at91sam9g20.dtsi
+@@ -22,6 +22,9 @@ sram0: sram@2ff000 {
+ 	sram1: sram@2fc000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x002fc000 0x8000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x002fc000 0x8000>;
+ 	};
+ 
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9g45.dtsi b/arch/arm/boot/dts/at91sam9g45.dtsi
-index 1fbee2a7785f..8fe2dbd39040 100644
+index 8fe2dbd39040..984b5292a129 100644
 --- a/arch/arm/boot/dts/at91sam9g45.dtsi
 +++ b/arch/arm/boot/dts/at91sam9g45.dtsi
-@@ -41,12 +41,13 @@ aliases {
- 		pwm0 = &pwm0;
- 	};
- 	cpus {
--		#address-cells = <0>;
+@@ -79,6 +79,9 @@ adc_op_clk: adc_op_clk{
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x10000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x10000>;
  	};
  
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9n12.dtsi b/arch/arm/boot/dts/at91sam9n12.dtsi
-index a994d076dc7e..9e1dc0070193 100644
+index 9e1dc0070193..5c27ead05284 100644
 --- a/arch/arm/boot/dts/at91sam9n12.dtsi
 +++ b/arch/arm/boot/dts/at91sam9n12.dtsi
-@@ -37,12 +37,13 @@ aliases {
- 		pwm0 = &pwm0;
- 	};
- 	cpus {
--		#address-cells = <0>;
+@@ -69,6 +69,9 @@ main_xtal: main_xtal {
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x8000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x8000>;
  	};
  
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9rl.dtsi b/arch/arm/boot/dts/at91sam9rl.dtsi
-index 4d70194fd808..b737f21f1b4c 100644
+index b737f21f1b4c..eb5bea473bc8 100644
 --- a/arch/arm/boot/dts/at91sam9rl.dtsi
 +++ b/arch/arm/boot/dts/at91sam9rl.dtsi
-@@ -38,12 +38,13 @@ aliases {
- 	};
- 
- 	cpus {
--		#address-cells = <0>;
+@@ -76,6 +76,9 @@ adc_op_clk: adc_op_clk{
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x10000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x10000>;
  	};
  
+ 	ahb {
 diff --git a/arch/arm/boot/dts/at91sam9x5.dtsi b/arch/arm/boot/dts/at91sam9x5.dtsi
-index 948fe99ab6c3..442d3b8cda69 100644
+index 442d3b8cda69..a5a1838c2524 100644
 --- a/arch/arm/boot/dts/at91sam9x5.dtsi
 +++ b/arch/arm/boot/dts/at91sam9x5.dtsi
-@@ -39,12 +39,13 @@ aliases {
- 		pwm0 = &pwm0;
- 	};
- 	cpus {
--		#address-cells = <0>;
+@@ -77,6 +77,9 @@ adc_op_clk: adc_op_clk{
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x8000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x8000>;
  	};
  
+ 	ahb {
+diff --git a/arch/arm/boot/dts/at91sam9xe.dtsi b/arch/arm/boot/dts/at91sam9xe.dtsi
+index 3f9d8caf8b0a..f571f77779c3 100644
+--- a/arch/arm/boot/dts/at91sam9xe.dtsi
++++ b/arch/arm/boot/dts/at91sam9xe.dtsi
+@@ -19,5 +19,8 @@ sram0: sram@2ff000 {
+ 	sram1: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x4000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x4000>;
+ 	};
+ };
 diff --git a/arch/arm/boot/dts/sam9x60.dtsi b/arch/arm/boot/dts/sam9x60.dtsi
-index d10843da4a85..3a9fa40b2b1c 100644
+index 3a9fa40b2b1c..3e85c2a0d198 100644
 --- a/arch/arm/boot/dts/sam9x60.dtsi
 +++ b/arch/arm/boot/dts/sam9x60.dtsi
-@@ -32,12 +32,13 @@ aliases {
- 	};
- 
- 	cpus {
--		#address-cells = <0>;
+@@ -62,6 +62,9 @@ main_xtal: main_xtal {
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x100000>;
 +		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		cpu {
-+		cpu@0 {
- 			compatible = "arm,arm926ej-s";
- 			device_type = "cpu";
-+			reg = <0>;
- 		};
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x100000>;
  	};
  
+ 	ahb {
+diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+index d7f25706892d..ddd7f9b05aa2 100644
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -94,6 +94,9 @@ main_xtal: main_xtal {
+ 	ns_sram: sram@200000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00200000 0x20000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x00200000 0x20000>;
+ 	};
+ 
+ 	ahb {
+@@ -106,6 +109,10 @@ nfc_sram: sram@100000 {
+ 			compatible = "mmio-sram";
+ 			no-memory-wc;
+ 			reg = <0x00100000 0x2400>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x00100000 0x2400>;
++
+ 		};
+ 
+ 		usb0: gadget@300000 {
+diff --git a/arch/arm/boot/dts/sama5d3.dtsi b/arch/arm/boot/dts/sama5d3.dtsi
+index 0bb5b6fa0748..4f9001188511 100644
+--- a/arch/arm/boot/dts/sama5d3.dtsi
++++ b/arch/arm/boot/dts/sama5d3.dtsi
+@@ -83,6 +83,9 @@ adc_op_clk: adc_op_clk{
+ 	sram: sram@300000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00300000 0x20000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x00300000 0x20000>;
+ 	};
+ 
+ 	ahb {
+@@ -1073,6 +1076,9 @@ nfc_sram: sram@200000 {
+ 			compatible = "mmio-sram";
+ 			no-memory-wc;
+ 			reg = <0x200000 0x2400>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x200000 0x2400>;
+ 		};
+ 
+ 		usb0: gadget@500000 {
+diff --git a/arch/arm/boot/dts/sama5d4.dtsi b/arch/arm/boot/dts/sama5d4.dtsi
+index 2d9f853ab15f..1aca4b462f52 100644
+--- a/arch/arm/boot/dts/sama5d4.dtsi
++++ b/arch/arm/boot/dts/sama5d4.dtsi
+@@ -81,6 +81,9 @@ adc_op_clk: adc_op_clk{
+ 	ns_sram: sram@210000 {
+ 		compatible = "mmio-sram";
+ 		reg = <0x00210000 0x10000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0x00210000 0x10000>;
+ 	};
+ 
+ 	ahb {
+@@ -93,6 +96,9 @@ nfc_sram: sram@100000 {
+ 			compatible = "mmio-sram";
+ 			no-memory-wc;
+ 			reg = <0x100000 0x2400>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x100000 0x2400>;
+ 		};
+ 
+ 		usb0: gadget@400000 {
 -- 
 2.26.2
 
