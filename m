@@ -2,136 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE5C258452
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 01:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06275258462
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 01:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbgHaXMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 19:12:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55268 "EHLO mail.kernel.org"
+        id S1726312AbgHaXWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 19:22:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53738 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725814AbgHaXMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 19:12:41 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97CD82064B;
-        Mon, 31 Aug 2020 23:12:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598915560;
-        bh=OYx4gWy0INzeUxyzwos2MBa9BzopDIOMq38s9ZL0LxE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Pmj09cjbzIDHktRbdLtunZYruAU7xs8CUARjslGhZo0wPCacthFKZtoc2Ip8GAAXI
-         DAOr9tTrFgwlg0sz+fdqz5WGw1x8KKOPj+3cqQ+7AO+ZzFLu7ucbNaq17OnVUtfzM1
-         fhpWjrmCnqtd6P5l/d2Jnx3KblMFrBFFAOhrbWPU=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6F7ED35230F1; Mon, 31 Aug 2020 16:12:40 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 16:12:40 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr
-Subject: Re: [PATCH kcsan 8/9] tools/memory-model: Document categories of
- ordering primitives
-Message-ID: <20200831231240.GG2855@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
- <20200831182037.2034-8-paulmck@kernel.org>
- <48f1fcd2-de89-b21e-f5a6-96c8e8861706@gmail.com>
+        id S1725886AbgHaXWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 19:22:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7F6F7ABF4;
+        Mon, 31 Aug 2020 23:22:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3E14FDA7CF; Tue,  1 Sep 2020 01:20:50 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.9-rc4
+Date:   Tue,  1 Sep 2020 01:20:49 +0200
+Message-Id: <cover.1598905089.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <48f1fcd2-de89-b21e-f5a6-96c8e8861706@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 07:34:20AM +0900, Akira Yokosawa wrote:
-> On Mon, 31 Aug 2020 11:20:36 -0700, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > The Linux kernel has a number of categories of ordering primitives, which
-> > are recorded in the LKMM implementation and hinted at by cheatsheet.txt.
-> > But there is no overview of these categories, and such an overview
-> > is needed in order to understand multithreaded LKMM litmus tests.
-> > This commit therefore adds an ordering.txt as well as extracting a
-> > control-dependencies.txt from memory-barriers.txt.  It also updates the
-> > README file.
-> > 
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  tools/memory-model/Documentation/README       |  24 +-
-> >  tools/memory-model/Documentation/ordering.txt | 462 ++++++++++++++++++++++++++
-> >  tools/memory-model/control-dependencies.txt   | 256 ++++++++++++++
-> >  3 files changed, 740 insertions(+), 2 deletions(-)
-> >  create mode 100644 tools/memory-model/Documentation/ordering.txt
-> >  create mode 100644 tools/memory-model/control-dependencies.txt
-> 
-> Hi Paul,
-> 
-> Didn't you mean to put control-dependencies.txt under tools/memory-model/Documentation/ ?
+Hi,
 
-Indeed I did, good catch, thank you!
+two small fixes and a bunch of lockdep fixes for warnings that show up
+with an upcoming tree locking update but are valid with current locks as
+well.  Please pull, thanks.
 
-							Thanx, Paul
+* fix bug in free space bitmap/extent switch logic
 
->         Thanks, Akira
-> 
-> > 
-> > diff --git a/tools/memory-model/Documentation/README b/tools/memory-model/Documentation/README
-> > index 4326603..16177aa 100644
-> > --- a/tools/memory-model/Documentation/README
-> > +++ b/tools/memory-model/Documentation/README
-> > @@ -8,10 +8,19 @@ number of places.
-> >  
-> >  This document therefore describes a number of places to start reading
-> >  the documentation in this directory, depending on what you know and what
-> > -you would like to learn:
-> > +you would like to learn.  These are cumulative, that is, understanding
-> > +of the documents earlier in this list is required by the documents later
-> > +in this list.
-> >  
-> >  o	You are new to Linux-kernel concurrency: simple.txt
-> >  
-> > +o	You have some background in Linux-kernel concurrency, and would
-> > +	like an overview of the types of low-level concurrency primitives
-> > +	that are provided:  ordering.txt
-> > +
-> > +	Here, "low level" means atomic operations to single locations in
-> > +	memory.
-> > +
-> >  o	You are familiar with the concurrency facilities that you
-> >  	need, and just want to get started with LKMM litmus tests:
-> >  	litmus-tests.txt
-> > @@ -20,6 +29,9 @@ o	You are familiar with Linux-kernel concurrency, and would
-> >  	like a detailed intuitive understanding of LKMM, including
-> >  	situations involving more than two threads: recipes.txt
-> >  
-> > +o	You would like a detailed understanding of what your compiler can
-> > +	and cannot do to control dependencies: control-dependencies.txt
-> > +
-> >  o	You are familiar with Linux-kernel concurrency and the
-> >  	use of LKMM, and would like a cheat sheet to remind you
-> >  	of LKMM's guarantees: cheatsheet.txt
-> > @@ -37,12 +49,16 @@ o	You are interested in the publications related to LKMM, including
-> >  DESCRIPTION OF FILES
-> >  ====================
-> >  
-> > -Documentation/README
-> > +README
-> >  	This file.
-> >  
-> >  Documentation/cheatsheet.txt
-> >  	Quick-reference guide to the Linux-kernel memory model.
-> >  
-> > +Documentation/control-dependencies.txt
-> > +	A guide to preventing compiler optimizations from destroying
-> > +	your control dependencies.
-> > +
-> >  Documentation/explanation.txt
-> >  	Describes the memory model in detail.
-> [...]
+* several lockdep warning fixes
+
+* clarify tree-checker error message
+
+----------------------------------------------------------------
+The following changes since commit a84d5d429f9eb56f81b388609841ed993f0ddfca:
+
+  btrfs: detect nocow for swap after snapshot delete (2020-08-21 12:21:23 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.9-rc3-tag
+
+for you to fetch changes up to f96d6960abbc52e26ad124e69e6815283d3e1674:
+
+  btrfs: tree-checker: fix the error message for transid error (2020-08-27 14:16:05 +0200)
+
+----------------------------------------------------------------
+Josef Bacik (5):
+      btrfs: drop path before adding new uuid tree entry
+      btrfs: fix potential deadlock in the search ioctl
+      btrfs: allocate scrub workqueues outside of locks
+      btrfs: set the correct lockdep class for new nodes
+      btrfs: set the lockdep class for log tree extent buffers
+
+Marcos Paulo de Souza (1):
+      btrfs: block-group: fix free-space bitmap threshold
+
+Qu Wenruo (1):
+      btrfs: tree-checker: fix the error message for transid error
+
+ fs/btrfs/block-group.c     |   4 +-
+ fs/btrfs/ctree.c           |   6 ++-
+ fs/btrfs/extent-tree.c     |   2 +-
+ fs/btrfs/extent_io.c       |   8 +--
+ fs/btrfs/extent_io.h       |   6 +--
+ fs/btrfs/free-space-tree.c |   4 ++
+ fs/btrfs/ioctl.c           |  27 +++++++---
+ fs/btrfs/scrub.c           | 122 ++++++++++++++++++++++++++-------------------
+ fs/btrfs/tree-checker.c    |   2 +-
+ fs/btrfs/volumes.c         |   3 +-
+ 10 files changed, 113 insertions(+), 71 deletions(-)
