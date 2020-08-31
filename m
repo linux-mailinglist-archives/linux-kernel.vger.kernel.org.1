@@ -2,73 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6CA257A98
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FE3257A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726249AbgHaNjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 09:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S1727815AbgHaNkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 09:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726984AbgHaNjB (ORCPT
+        with ESMTP id S1726446AbgHaNkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 09:39:01 -0400
-Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9664FC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:39:00 -0700 (PDT)
-Received: by mail-vk1-xa43.google.com with SMTP id q124so1303761vkb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:38:59 -0700 (PDT)
+        Mon, 31 Aug 2020 09:40:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C45C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:40:01 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id bo3so8518528ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:40:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=irdDnokaDywTt2InWnljAF02dqB01HJnGa3DXMcPh7g=;
-        b=tEai0AbRD58I41Ff4clYj81+Jzn7DqwdLL2dTb7an5dSSEBDUbG2KF5QtT7p7+n+rq
-         NV/ak1TcMKNNm4WdP4C3Vn/ljkE/HOfwjxyK0pydGFHSPW9yO3390l2cjKHDyczX5pgq
-         gIdmfPPvvayhB8KnbwjHuYrlo5g+gwWd/D7hl/hnP50ANE4K8n7Pd1HQ530noPCXRWdm
-         0WTQ+HHAsnr27xI/zrHZyNBa076m2mzimNGNY7m0qaa8bImu/14pYkDj6GAlO6fKSzZa
-         Rlxg+ZNDRa8abpd1qibvlbUyqV72IhXOOH4TBbfrwtlU7KPrqFp+OjetL+XuoIaclb8h
-         OLcw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lddw3bdok3hAy1F/tQ2gv6hGO+6x8VFGDH1TfahaMjg=;
+        b=gBplDfQqLrkZ52/3bG7dQRrqKdekFZEh45gXZ5MsUHY486B3HK7oI65JYt4l0R3ldF
+         GNHW/tXR1MVsKES6Wqf1COb7UnAT3ZaQw63tIRNa5/T4qs0h8OMmXCsfgazVyJK79l8t
+         jn385EO8CLCYrRbQ23bb6Sth0ZtPsuO6k4k7A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=irdDnokaDywTt2InWnljAF02dqB01HJnGa3DXMcPh7g=;
-        b=qyVrzqLbsXXn2WYUBciIzoF8p6C6H5r0u6GVa4TblyGLfdej3XFqBsiT+eL8+WIovX
-         kPpU2DJQ8Y1tJHliaSg/KyzjT/Sh+OrefwuRMM6Rh9eS5gtTUtvP1zhzx9cmJHxfxZee
-         jRFsApgWMEKC8odg4EuDC33e8FxOVtSluJYTLwy5ygzsHEQdx25qwe4IZrrHmKl4NVK9
-         +KeVgnbw04C0jEydV9uPaUApXvEXk2VoXM0TBFTfI+fNBFiuyAFO0oDKncMvQNET6xXn
-         ukRzfY7gKUCRS/BBL6Yr00Ql+WcI/x2iwgSrrFBcX3+Zwwlp1RRLJlqsZ0OI3bINHVbE
-         8FFA==
-X-Gm-Message-State: AOAM5339Y8+U84BUsEtl2ii5abMRQ0ZM3+ToCKOb0PQ8j7Cey/ERjhxn
-        brySoRFkkP9l0VMSa1rzJdnuooV895MOeLX1cr0=
-X-Google-Smtp-Source: ABdhPJy+5/8toWPqc7InE924tWqaxX+cHentoa6eVfdnClHyzUvxEt1meQSjuZbG7/OzNflcQt288Aw1mXQgzPkUXS4=
-X-Received: by 2002:a1f:e641:: with SMTP id d62mr928388vkh.30.1598881138994;
- Mon, 31 Aug 2020 06:38:58 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lddw3bdok3hAy1F/tQ2gv6hGO+6x8VFGDH1TfahaMjg=;
+        b=IZ0FTHpT2mjj+jPTFRqMwlCH8XQ+ml1iaIIWZz+PWUXmKAcGHfL3+84SgaqIsjIqT0
+         VjA4JtbB8oHdud3WmfM9UP2CvqC6BXm+pSOSSvsGjc9MF1PnYOatukm6y4NVr3RvrxV4
+         KAQiCHBO2K1YOSDbebTJ03R7aZ/bRFQUpkMHKN2+vN3oLlk7e3G6bZ24jY1J29sqIS5z
+         /EhwXApB4LfqxnVTiSJBZFOx0/Tu7Nn//G3WfGDYQN11qUA1Cecrav3eTFOhQP3P5k+P
+         Av1SaAWAoAsqHNIFg3ZJSYEzEtJGSsYYL+pZK9f5UEr012x7qCc8H/dOUBTEG2mYbwJC
+         rQhg==
+X-Gm-Message-State: AOAM532yTiZJ/9g/PSFTkDO1ylBfSP2hswNaEtIORZ1H1vyHEXQxdlhC
+        gNIYAcYZWDW5C4GEsr3ZYsURMX/8xZrpYA==
+X-Google-Smtp-Source: ABdhPJyUvFBVaojqCaFsQ/GEitC1y4QjQw5MxzDLGte0xZtgCg2sTwV/iQXOxbr/0iSE7fbgxbsnVw==
+X-Received: by 2002:a17:906:cf82:: with SMTP id um2mr1212257ejb.49.1598881199372;
+        Mon, 31 Aug 2020 06:39:59 -0700 (PDT)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com. [209.85.218.49])
+        by smtp.gmail.com with ESMTPSA id p25sm4974464edm.60.2020.08.31.06.39.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Aug 2020 06:39:58 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id d11so8480120ejt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:39:56 -0700 (PDT)
+X-Received: by 2002:a17:907:7292:: with SMTP id dt18mr1291762ejc.512.1598881195924;
+ Mon, 31 Aug 2020 06:39:55 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a9f:2641:0:0:0:0:0 with HTTP; Mon, 31 Aug 2020 06:38:58
- -0700 (PDT)
-Reply-To: davidson.wilson09@gmail.com
-From:   Wilson Davidson <davidson.wilson027@gmail.com>
-Date:   Mon, 31 Aug 2020 13:38:58 +0000
-Message-ID: <CA+C+qm0RJYt-U2Yt_UsxbYP3zo+R7Ydc--sJC9Wjw_X62_31VQ@mail.gmail.com>
-Subject: Hallo
-To:     undisclosed-recipients:;
+References: <20200827135205.1.I6981f9a9f0c12e60f8038f3b574184f8ffc1b9b5@changeid>
+ <20200829074758.GA16838@amd>
+In-Reply-To: <20200829074758.GA16838@amd>
+From:   Raul Rangel <rrangel@chromium.org>
+Date:   Mon, 31 Aug 2020 07:39:44 -0600
+X-Gmail-Original-Message-ID: <CAHQZ30CuWSzaMNYSfh6Zr12Q1=GA_Yqpg0jaePDkFQjgsDDBPg@mail.gmail.com>
+Message-ID: <CAHQZ30CuWSzaMNYSfh6Zr12Q1=GA_Yqpg0jaePDkFQjgsDDBPg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Input: i8042 - Prevent intermixing i8042 commands
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     linux-input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "S, Shirish" <Shirish.S@amd.com>,
+        Andy Shevchenko <andy@infradead.org>,
+        Dan Murphy <dmurphy@ti.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Rajat Jain <rajatja@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo, bitte beachten Sie, dass diese E-Mail, die an Ihre Mailbox
-gesendet wurde, kein Fehler ist, sondern speziell an Sie gerichtet
-wurde. Ich habe einen Vorschlag von ($7.500.000,00 USD) von meinem
-verstorbenen Kundeningenieur Carlos, der mit Ihnen den gleichen
-Nachnamen tr=C3=A4gt und fr=C3=BCher hier in Lom=C3=A9 Togo gearbeitet und =
-gelebt
-hat. Mein verstorbener Klient und meine Familie waren in einen
-Autounfall verwickelt, bei dem sie ums Leben kamen. Ich kontaktiere
-Sie als Angeh=C3=B6rige des Verstorbenen, damit Sie das Geld bei
-Schadensf=C3=A4llen erhalten k=C3=B6nnen. Ich werde Ihnen nach Ihrer Antwor=
-t
-weitere Einzelheiten mitteilen
+On Sat, Aug 29, 2020 at 1:48 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> On Thu 2020-08-27 13:52:22, Raul E Rangel wrote:
+> > The i8042_mutex must be held by writers of the AUX and KBD ports, as
+> > well as users of i8042_command. There were a lot of users of
+> > i8042_command that were not calling i8042_lock_chip/i8042_unlock_chip.
+> > This resulted in i8042_commands being issues in between PS/2
+> > transactions.
+> >
+> > This change moves the mutex lock into i8042_command and removes the
+> > burden of locking the mutex from the callers.
+> >
+> > It is expected that the i8042_mutex is locked before calling
+> > i8042_aux_write or i8042_kbd_write. This is currently done by the PS/2
+> > layer via ps2_begin_command and ps2_end_command. Other modules
+> > (serio_raw) do not currently lock the mutex, so there is still a
+> > possibility for intermixed commands.
+>
+>
+> > @@ -343,10 +330,14 @@ int i8042_command(unsigned char *param, int command)
+> >       unsigned long flags;
+> >       int retval;
+> >
+> > +     mutex_lock(&i8042_mutex);
+> > +
+> >       spin_lock_irqsave(&i8042_lock, flags);
+> >       retval = __i8042_command(param, command);
+> >       spin_unlock_irqrestore(&i8042_lock, flags);
+> >
+> > +      mutex_unlock(&i8042_mutex);
+> > +
+> >       return retval;
+>
+> There's something wrong with whitespace here. Checkpatch?
+>                                                                         Pavel
+It's fixed in the v2 patch: https://patchwork.kernel.org/patch/11741855/
+
+Thanks
