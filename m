@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ED325801B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29EF25801E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgHaSC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36290 "EHLO mail.kernel.org"
+        id S1729249AbgHaSDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728815AbgHaSB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728829AbgHaSB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:01:26 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E4432168B;
-        Mon, 31 Aug 2020 18:01:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14BBD21582;
+        Mon, 31 Aug 2020 18:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896885;
-        bh=G1iH+/QCY280fAQFzIdvytLD1XQc88ODiVu9Ro09iw0=;
+        s=default; t=1598896886;
+        bh=NHb/uTlI4XHsRb/k0hOwL2ogF8mCSlrEuc3/2RLkKwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DU8uCbCylnrnZOH8dD87Y+JCYVHjfpJYEwY5+H/xHHdfEmrR+irf4GbMQZ6sHgjcV
-         78yp/HohQdx54beSNjuMFkBvuXtDaKBYL0tczVVeZ/F5YHyea6TlDDfdFornMLz9Bj
-         fUdXBLg3+3KEXU+EYH5ease/PcanM7FNGpu5ofJ8=
+        b=kBPmO5/kGI8gApBVBahCdZgxKSWm5wQnN4i/V76N5DT9AdUokBFaTWrtKWjgmcwln
+         6pNXdmmrxbZh+8GUWBmvDAVGTtoEWjdjD3N/8jWn31bucAXC/0lpJtT2IhQJTSe0zx
+         CCFiBgRVQukHJrJTskeT6Nx+RpxcE+sHSv6PZvA4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,11 +31,10 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kvm@vger.kernel.org
-Subject: [PATCH tip/core/rcu 17/24] kvm: mmu: page_track: Fix RCU list API usage
-Date:   Mon, 31 Aug 2020 11:01:09 -0700
-Message-Id: <20200831180116.32690-17-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 18/24] rcu: Move rcu_cpu_started per-CPU variable to rcu_data
+Date:   Mon, 31 Aug 2020 11:01:10 -0700
+Message-Id: <20200831180116.32690-18-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -44,46 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Use hlist_for_each_entry_srcu() instead of hlist_for_each_entry_rcu()
-as it also checkes if the right lock is held.
-Using hlist_for_each_entry_rcu() with a condition argument will not
-report the cases where a SRCU protected list is traversed using
-rcu_read_lock(). Hence, use hlist_for_each_entry_srcu().
+When the rcu_cpu_started per-CPU variable was added by commit
+f64c6013a202 ("rcu/x86: Provide early rcu_cpu_starting() callback"),
+there were multiple sets of per-CPU rcu_data structures.  Therefore, the
+rcu_cpu_started flag was added as a separate per-CPU variable.  But now
+there is only one set of per-CPU rcu_data structures, so this commit
+moves rcu_cpu_started to a new ->cpu_started field in that structure.
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: <kvm@vger.kernel.org>
 ---
- arch/x86/kvm/mmu/page_track.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 11 ++++-------
+ kernel/rcu/tree.h |  1 +
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-index a84a141..8443a67 100644
---- a/arch/x86/kvm/mmu/page_track.c
-+++ b/arch/x86/kvm/mmu/page_track.c
-@@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
- 		return;
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index da05afc..52108dd 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3967,8 +3967,6 @@ int rcutree_offline_cpu(unsigned int cpu)
+ 	return 0;
+ }
  
- 	idx = srcu_read_lock(&head->track_srcu);
--	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-+	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-+				srcu_read_lock_held(&head->track_srcu))
- 		if (n->track_write)
- 			n->track_write(vcpu, gpa, new, bytes, n);
- 	srcu_read_unlock(&head->track_srcu, idx);
-@@ -254,7 +255,8 @@ void kvm_page_track_flush_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
- 		return;
+-static DEFINE_PER_CPU(int, rcu_cpu_started);
+-
+ /*
+  * Mark the specified CPU as being online so that subsequent grace periods
+  * (both expedited and normal) will wait on it.  Note that this means that
+@@ -3988,12 +3986,11 @@ void rcu_cpu_starting(unsigned int cpu)
+ 	struct rcu_node *rnp;
+ 	bool newcpu;
  
- 	idx = srcu_read_lock(&head->track_srcu);
--	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-+	hlist_for_each_entry_srcu(n, &head->track_notifier_list, node,
-+				srcu_read_lock_held(&head->track_srcu))
- 		if (n->track_flush_slot)
- 			n->track_flush_slot(kvm, slot, n);
- 	srcu_read_unlock(&head->track_srcu, idx);
+-	if (per_cpu(rcu_cpu_started, cpu))
++	rdp = per_cpu_ptr(&rcu_data, cpu);
++	if (rdp->cpu_started)
+ 		return;
++	rdp->cpu_started = true;
+ 
+-	per_cpu(rcu_cpu_started, cpu) = 1;
+-
+-	rdp = per_cpu_ptr(&rcu_data, cpu);
+ 	rnp = rdp->mynode;
+ 	mask = rdp->grpmask;
+ 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
+@@ -4053,7 +4050,7 @@ void rcu_report_dead(unsigned int cpu)
+ 	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+ 	raw_spin_unlock(&rcu_state.ofl_lock);
+ 
+-	per_cpu(rcu_cpu_started, cpu) = 0;
++	rdp->cpu_started = false;
+ }
+ 
+ /*
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index c96ae35..309bc7f 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -156,6 +156,7 @@ struct rcu_data {
+ 	bool		beenonline;	/* CPU online at least once. */
+ 	bool		gpwrap;		/* Possible ->gp_seq wrap. */
+ 	bool		exp_deferred_qs; /* This CPU awaiting a deferred QS? */
++	bool		cpu_started;	/* RCU watching this onlining CPU. */
+ 	struct rcu_node *mynode;	/* This CPU's leaf of hierarchy */
+ 	unsigned long grpmask;		/* Mask to apply to leaf qsmask. */
+ 	unsigned long	ticks_this_gp;	/* The number of scheduling-clock */
 -- 
 2.9.5
 
