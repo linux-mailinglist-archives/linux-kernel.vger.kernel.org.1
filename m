@@ -2,64 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7538257FD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24564257FE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbgHaRm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S1727984AbgHaRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgHaRmX (ORCPT
+        with ESMTP id S1726226AbgHaRry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:42:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F10BC061573;
-        Mon, 31 Aug 2020 10:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YnNEV33wLo5xHrYQ9gYU5hq0dtzL01pLvIAQRW2TrBg=; b=Hmgou9hFQSS+bBnXVrEcA6rVbb
-        zsM3VwfTM1FBio0Dy9gCBypsdS1dM//Qw1u2o7q6GYqsLfD6airLGo6K0fFifuuKW/XTWi7T0xVhg
-        bu/GWNTpKjvAuJiiqq9bZL9kzeBk1r3MBoYDZoSJMp0VirV/rFyT9Oqa+0W2ihS+bB2zXI1ec6Fgs
-        X9kIAShxn7bcewohlgU9BW47Sw4f3yreIFsncCNPq8X2BNFhDDeQlvKDcUPieEFgGg1uFaqUZEJhw
-        SGwRD3O/VEj0gHytSTVztVbstsT7s4h3yd75Nh4A0lTbRpwJu0S9SfvCJ45cYaMrM064IPJnHKHiA
-        5DaUMZLw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kCnox-0000HL-II; Mon, 31 Aug 2020 17:42:19 +0000
-Date:   Mon, 31 Aug 2020 18:42:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     darrick.wong@oracle.com, hch@infradead.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] iomap: Fix WARN_ON_ONCE() from unprivileged users
-Message-ID: <20200831174219.GI14765@casper.infradead.org>
-References: <20200831172534.12464-1-cai@lca.pw>
+        Mon, 31 Aug 2020 13:47:54 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB090C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:47:53 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id bh1so3399338plb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 10:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P829i5Iw79pY5XzrVknioognLQa7eeRlaAv36ZVo67A=;
+        b=ldoEDMh1VddXNaWZRPrfsEXG5+Zl0OBnn1+eLfeuSKwavLg0dcI+H0wVlxcuStFM8O
+         nRHK8Cg+TDh/AwwKhubsCBz14AnQgdxOxRajQKX50RNKzX1u/i/doBKS4IlqsjcsMUj5
+         YqmwcaTOtetuZSPQlJMpKCa3AX8CEJX8xiiv210o0vz2NnN6XBeo5kElEBVzVoypdZQM
+         mpvPsW/RrHTTyJrqDIAkkr6sh/sZtBltwONXf5HrfPjnYaQzXlIdS8y8V1uWdzbGX2sU
+         jkHAyMkrV7npXAEMbiD93gBqwIjSDhfD9iVSTEG8EILtSp2yWqV2jsh/zfLVgjxCuDSA
+         +9nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P829i5Iw79pY5XzrVknioognLQa7eeRlaAv36ZVo67A=;
+        b=XS8IB+15xpwZUESTxX9K9tomu/9GEdFMpnUCOJ+XyVy4VefhrVQmThXFBRbq9kBpK7
+         U14lhakgC6xmo7Xl16QbZnBD5J2wqiLG+eEndMx9T+1TFZO08JQBkeinm2chVbPmcug4
+         Fh7v4N7JYFe441SqfBiCpG3qdsIbadxWqsZ6Gq3QMo9a3WPIkaexlaVNkewBx2hk0OZ1
+         0wZiU0iV5dBSxtd1ERm5o50VQB9aKK091O3pWQl/b9S1dMYY+nAJia3SRGnhiH30Uij9
+         WPIvLqYTaHit2N0DcrUadFczgO6AeQvbIDJJUGvk5Prx0WUn9bGsE/wxHz2KivomA5ZG
+         7Puw==
+X-Gm-Message-State: AOAM532UG7OOTEd+ItqZcTlyYvsueKf+6qEe15Cig98/9hdSu5Ix6mrM
+        vRuEpVMMWyaPLyQc/gERyg870O7SS8smbMexnIaiVQ==
+X-Google-Smtp-Source: ABdhPJzvRJ7aNmtvcSGmX2ruQahuZVdBW/pE0eXak3IkWeu4IDPVyPGWeVx87YTz/fWB/bjdL5+DRNg0P9DH9AxZguE=
+X-Received: by 2002:a17:902:9f8a:: with SMTP id g10mr1879533plq.158.1598896073003;
+ Mon, 31 Aug 2020 10:47:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831172534.12464-1-cai@lca.pw>
+References: <20200829153515.3840-1-trix@redhat.com>
+In-Reply-To: <20200829153515.3840-1-trix@redhat.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 31 Aug 2020 10:47:42 -0700
+Message-ID: <CAKwvOd=+X2AakX3kTYCvyug-MK_Y+atDbkDSRxA0pUfOatQ3mA@mail.gmail.com>
+Subject: Re: [PATCH] soundwire: fix error handling
+To:     trix@redhat.com
+Cc:     Vinod Koul <vkoul@kernel.org>, yung-chuan.liao@linux.intel.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        shreyas.nc@intel.com, alsa-devel@alsa-project.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 01:25:34PM -0400, Qian Cai wrote:
-> +	case IOMAP_DELALLOC:
-> +		/*
-> +		 * DIO is not serialised against mmap() access at all, and so
-> +		 * if the page_mkwrite occurs between the writeback and the
-> +		 * iomap_apply() call in the DIO path, then it will see the
-> +		 * DELALLOC block that the page-mkwrite allocated.
-> +		 */
-> +		path = file_path(dio->iocb->ki_filp, pathname,
-> +				 sizeof(pathname));
-> +		if (IS_ERR(path))
-> +			path = "(unknown)";
-> +
-> +		pr_warn_ratelimited("Direct I/O collision with buffered writes! File: %s Comm: %.20s\n",
-> +				    path, current->comm);
+On Sat, Aug 29, 2020 at 8:35 AM <trix@redhat.com> wrote:
+>
+> From: Tom Rix <trix@redhat.com>
+>
+> clang static analysis flags this problem
+>
+> stream.c:844:9: warning: Use of memory after
+>   it is freed
+>         kfree(bus->defer_msg.msg->buf);
+>               ^~~~~~~~~~~~~~~~~~~~~~~
+>
+> This happens in an error handler cleaning up memory
+> allocated for elements in a list.
+>
+>         list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+>                 bus = m_rt->bus;
+>
+>                 kfree(bus->defer_msg.msg->buf);
+>                 kfree(bus->defer_msg.msg);
+>         }
+>
+> And is triggered when the call to sdw_bank_switch() fails.
+> There are a two problems.
+>
+> First, when sdw_bank_switch() fails, though it frees memory it
+> does not clear bus's reference 'defer_msg.msg' to that memory.
+>
+> The second problem is the freeing msg->buf. In some cases
+> msg will be NULL so this will dereference a null pointer.
+> Need to check before freeing.
+>
+> Fixes: 99b8a5d608a6 ("soundwire: Add bank switch routine")
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>  drivers/soundwire/stream.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index 37290a799023..6e36deb505b1 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -717,6 +717,7 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
+>         kfree(wbuf);
+>  error_1:
+>         kfree(wr_msg);
+> +       bus->defer_msg.msg = NULL;
 
-"File: %pD4"?
+This fix looks correct to me because L668 sets `bus->defer_msg.msg =
+wr_msg;`, but on error L719 frees `wr_msg`, so now
+`bus->defer_msg.msg` is a dangling pointer.
 
+>         return ret;
+>  }
+>
+> @@ -840,9 +841,10 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+>  error:
+>         list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+>                 bus = m_rt->bus;
+> -
+> -               kfree(bus->defer_msg.msg->buf);
+> -               kfree(bus->defer_msg.msg);
+> +               if (bus->defer_msg.msg) {
+> +                       kfree(bus->defer_msg.msg->buf);
+> +                       kfree(bus->defer_msg.msg);
+> +               }
+
+I'd prefer a conditional check for each, but sdw_ml_sync_bank_switch()
+has this same pattern, so it looks like the lifetime of these two
+match.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Thanks for the patch!
+
+>         }
+>
+>  msg_unlock:
+> --
+> 2.18.1
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
