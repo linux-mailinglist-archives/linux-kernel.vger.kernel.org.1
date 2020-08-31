@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0C62573A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA731257379
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgHaGVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 02:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54276 "EHLO
+        id S1726144AbgHaGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 02:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgHaGVd (ORCPT
+        with ESMTP id S1725835AbgHaGCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 02:21:33 -0400
-X-Greylist: delayed 2554 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Aug 2020 23:21:33 PDT
-Received: from hz.preining.info (hz.preining.info [IPv6:2a01:4f9:2a:1a08::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09307C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=preining.info; s=201909; h=Content-Type:MIME-Version:Message-ID:Subject:To:
-        From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/i95vzyfWpS6eCxBQWhb4V8bmrV6UbLhK0Eq9Uxe4OM=; b=CUjtkTjr56lAd3Jnu11rV053IH
-        rstccilescML/nx6Sif9taajQcv4lCmPxMK2j+9IhiKGofm2XjLN3qIlbY1EJYFoSJL+Q1CNpxCEe
-        pnRKdnPPmfr4Kbqs4sP5QRDUhJMSllZrQcaRJIoodlP5tqoDcJ0HD5j1UHRmygn12WubVYWGiMFn8
-        ZQpA4MSflVaOkqSZN71ujsoi4hK/tYlH2F2oAwEl+Txy9yqr6z0hHbvgHFErCEyqtqO9GfiQ0sSZN
-        rQfwVRiX85ZnD5g8YuvcO4myXljy5jhYTWBMRGzogGna+FZ1NiH1fLtNWlUayn2Ih24NVmYKhsiFR
-        C/PZjYKg==;
-Received: from tvk213002.tvk.ne.jp ([180.94.213.2] helo=bulldog.preining.info)
-        by hz.preining.info with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <norbert@preining.info>)
-        id 1kCcWp-0000v7-Sx
-        for linux-kernel@vger.kernel.org; Mon, 31 Aug 2020 05:38:52 +0000
-Received: by bulldog.preining.info (Postfix, from userid 1000)
-        id C9797C3229A0; Mon, 31 Aug 2020 14:38:47 +0900 (JST)
-Date:   Mon, 31 Aug 2020 14:38:47 +0900
-From:   Norbert Preining <norbert@preining.info>
-To:     linux-kernel@vger.kernel.org
-Subject: kernel hard lockups wit 5.9-rc{2,3}
-Message-ID: <20200831053847.GA5022@bulldog.preining.info>
+        Mon, 31 Aug 2020 02:02:07 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9AAC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:02:06 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id z15so2517708plo.7
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:02:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=T0ddowV1YvN/aU8XxhlLoq1wELp6Tq70TmTHW0qRDVI=;
+        b=oyZKTm6Tk8Vfn+6jwN/7gGN7iSX68l/t/xvDbQcC2eXx4gwvTmqL2o1sL3NWAqGw9e
+         HlOdy/6xd2zXu5VIdMqgzyfvmP5PVD4c+iHDjw6shV3Yy16kPvWyIGSgpVDZyMla3KME
+         UnW071eobQ0jbulqrWPqjlMGi09kcOsSxM5E0FUoe9tmTWINaYbWM6Bt4FyWPho2hktn
+         6Hbf/Vua+a7ZbggXlT0Qo9cxJHzUVQMEz/UaTzitb2+IobwMNM5ZFpGNeZkpT+j3CeJZ
+         OlnsmqPbKN3DgHr0aDVbsL1FzQcgdA9z7O5zOw0hBdbaro50Sg+uldE9v18Bmjkbb14v
+         KXxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=T0ddowV1YvN/aU8XxhlLoq1wELp6Tq70TmTHW0qRDVI=;
+        b=QxonZahoCH7M3GkTYLyM4/ppzejsYT5tIqEQAI5uLK/S5cFtgctjBJvtuzrmndJonJ
+         WlVD8DDliKXsqN6TRRAeeAXR1ZVDuNVBUacAKxWEHmcjefI491eVB0iloa4o71Kp8kBe
+         EVGupVL1TkqiNo/PsIGSjHYp+lT80Dw7qjLE8DavfBo7hY7OI3cAZjwgpjO3DnYqYamO
+         w3vtTaMbagfaf/aw0FgXEEfLRpvjsTbLBGfyoBtmnNN4ZJFpYNG9NoGA6ZXjbxRAg4yS
+         x3mbICTeNkxxHoDgw3AAjI3uj6iU0ZHk3J6ExPmA81msDPj37ldJAUvN6IERA5BJmiG8
+         SmUg==
+X-Gm-Message-State: AOAM533iklsys8RpKaF9NsY8yr2MizqYCwwgM7h+qP8I8rCCmn8dESyW
+        c5VRKKoyM/17hVn4AC3S5mTl6A==
+X-Google-Smtp-Source: ABdhPJykLmYFCGwOE6bqP4q4MynlYfHpxLNeOGfCqaMjdqKJQBPGSdKEXOfXuxq0dm9PoHZkmhlxgg==
+X-Received: by 2002:a17:90a:4401:: with SMTP id s1mr171676pjg.79.1598853726264;
+        Sun, 30 Aug 2020 23:02:06 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id s20sm5932548pga.7.2020.08.30.23.02.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 30 Aug 2020 23:02:05 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 11:32:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, sbhanu@codeaurora.org,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>, nm@ti.com
+Subject: Re: WARNING: at drivers/opp/core.c:678
+ dev_pm_opp_set_rate+0x4cc/0x5d4 - on arm x15
+Message-ID: <20200831060203.7guhirtxb72odow2@vireshk-i7>
+References: <CA+G9fYvK5UkERLuBSRH5t2=j5==dbtw45GTMta9MafyJDqFsFA@mail.gmail.com>
+ <20200827094651.3grvs6ungv3dh7y3@vireshk-i7>
+ <20200827211832.3ebeda8a@canb.auug.org.au>
+ <20200828045128.y7ybkd7dnvn4h6dt@vireshk-i7>
+ <CA+G9fYsn1S-SieuP85-Z4qKO+aNyqJarrBR0xx0X-YbtF9eo0g@mail.gmail.com>
+ <20200831044132.jb7aflr2sfbart2z@vireshk-i7>
+ <CA+G9fYsLd77Wuz6Fdwr0w4eFvs=rX5ooewrztFtSe7MeyRJeGQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CA+G9fYsLd77Wuz6Fdwr0w4eFvs=rX5ooewrztFtSe7MeyRJeGQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear all,
+On 31-08-20, 11:30, Naresh Kamboju wrote:
+> On Mon, 31 Aug 2020 at 10:11, Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 28-08-20, 15:42, Naresh Kamboju wrote:
+> > > Viresh,
+> > > I have applied the v2 patch series on top of linux next-20200824.
+> > > and tested again the reported kernel warning is fixed [1]
+> > >
+> > > [1] https://lkft.validation.linaro.org/scheduler/job/1717615#L1881
+> >
+> > Hi Naresh,
+> >
+> > You meant this one ?
+> >
+> > [PATCH V2 4/8] mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
+> 
+> I have not tested individual patches instead applied all v2 of 8 patches
+> and tested.
 
-(please Cc)
+Ah okay, Thanks. That's the same.
 
-I am seeing hard lockups with 5.9-rc2 and -rc3, while 5.8.N (1,2,3,4,5)
-work without any problems.
+To be honest, I wasn't targeting fixing this bug with that version,
+but it went well after all :)
 
-THe lockups are hard to debug, since not even Sysrq works anymore. The
-screen freezes completely, no reaction. Ports are also dead, ssh into
-the machine is not possible.
-
-Hangs are repeatable, but not triggerable (at least I didn't find a
-way). Last time I left the screen locked and went shopping to find it
-locked up coming back. In total I got about 10 lock ups.
-
-This is an Intel CPU with AMD 5700xt GPU, running Debian/unstable.
-
-My feeling is somehow GPU related, but that might be a wide grasp.
-
-Any suggestions how to debug this? The kernel logs after reboot are
-empty.
-
-Best
-
-Norbert
-
---
-PREINING Norbert                              https://www.preining.info
-Accelia Inc. + IFMGA ProGuide + TU Wien + JAIST + TeX Live + Debian Dev
-GPG: 0x860CDC13   fp: F7D8 A928 26E3 16A1 9FA0 ACF0 6CAC A448 860C DC13
+-- 
+viresh
