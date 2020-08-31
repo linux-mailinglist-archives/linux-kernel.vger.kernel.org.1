@@ -2,244 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253182577BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4F725779F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727780AbgHaKvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 06:51:44 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:17990 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726629AbgHaKvQ (ORCPT
+        id S1726692AbgHaKsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 06:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726503AbgHaKsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:51:16 -0400
+        Mon, 31 Aug 2020 06:48:31 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55476C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:48:30 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id v4so4120996wmj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:48:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1598871076; x=1630407076;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=qGKT1F1qVkIMFajZCvJm8BTClvxWeUPf3j13t8snc08=;
-  b=eH1DrX6ecrvF3dEH1mcN4nPB/NyhD8cyXaWPGal7LRbpAZ3/s23ls7YR
-   5yrPy/Rztq/cNtCABb+0VAHDq3+YDfuJD946lIwqSbCqL++5wTDW96iqZ
-   PkHKxQNzRYU7mMXWkcgppeHWtOU+GTRsvaXDoPcw6SYGzCtICVY6/lvas
-   A=;
-X-IronPort-AV: E=Sophos;i="5.76,375,1592870400"; 
-   d="scan'208";a="51088567"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-e7be2041.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 31 Aug 2020 10:51:11 +0000
-Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-e7be2041.us-west-2.amazon.com (Postfix) with ESMTPS id 449F6A1C5F;
-        Mon, 31 Aug 2020 10:50:58 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.100) by
- EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 31 Aug 2020 10:50:41 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <fan.du@intel.com>, <foersleo@amazon.de>,
-        <gthelen@google.com>, <irogers@google.com>, <jolsa@redhat.com>,
-        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
-        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
-        <peterz@infradead.org>, <rdunlap@infradead.org>,
-        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-        <rppt@kernel.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC v8 10/10] Docs/DAMON: Document physical memory monitoring support
-Date:   Mon, 31 Aug 2020 12:47:30 +0200
-Message-ID: <20200831104730.28970-11-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200831104730.28970-1-sjpark@amazon.com>
-References: <20200831104730.28970-1-sjpark@amazon.com>
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oko5+c/dibPeBB6wBwJp/K5eZaK7OHUWNL23/h49n1s=;
+        b=mbe2O9q7cQpGUCXxyyPedwG7vr9ZHbbh2URFehbp1STci1Q+vxWAiQm+3ZeTdRT1JI
+         BPrKM7510MtndMOtf7oUosMazslwYYlv05sFqzwy4pwAbCnY6KFwzX4iWiXhmA/MBvwC
+         3N+cbQbkWoBKaRFGVrXSyWJrmRve8+Y2Fv2XN6e9zJpkj+yOkqrSFuR1eH2EjOGvIdaz
+         iT4ZdhMyXpNuKY3GBqTgpnVGZN6oi2vXbbhwmFxCyHsD9zGtW3jt4XHaTSPUTtNP98Ax
+         t+a6Rb5HzOtZIS5wb47oBVUmLkSnR4WGUJTRfVqIRcGzhV/uWv4F6rx5ELcYwg0VuHx8
+         rt5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oko5+c/dibPeBB6wBwJp/K5eZaK7OHUWNL23/h49n1s=;
+        b=K+qv0A1AlJT83jcZNnH1tYV3QGEPUCnZ7tfLT3Ku+Kb1ZznaKojwG5LkClfUzPkGn4
+         r70Ubj+NGcQIt+fkSFEfdr9EKFFYmhrU7kZG3Z68CcAoaxSiO7W1+22vLkvLRLtdB5gM
+         6XWia4yITMdgIo0bxIUb8zKwsaNBv9aYkNR1my6wjpciLnUQ1g9Re0sko9gF4MwM4L77
+         us1ghhvvL48ncJ6faD/TAr4GxqlneCGJ19TKm7WAozc32C8OTm5yiAiBzvpqH9ldlF68
+         KgS5QJzieoMAisTIBvGpLdPM/vy/Wyu7b0HKjlct/tKNEROoGAbpz7L0wDGeFZXluCEP
+         DYAQ==
+X-Gm-Message-State: AOAM533ZEBboB8AugqNiWXlZFYnW/2yoNo2bh2o43hMjts25bVa03Wl3
+        u1kFKoCwmPnXyjBdaMH/7N/iwg==
+X-Google-Smtp-Source: ABdhPJwHrzumBs1OPAJmMwh0nKF53fSksqNTY9/EKUOAlxNMd0B/eay2kFUaQ8gbvUEZ5jsnIuLuiw==
+X-Received: by 2002:a7b:cf13:: with SMTP id l19mr763110wmg.115.1598870908729;
+        Mon, 31 Aug 2020 03:48:28 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id g9sm11837912wrw.63.2020.08.31.03.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 03:48:28 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 12:48:27 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v3 02/14] devlink: Add reload actions
+ counters
+Message-ID: <20200831104827.GB3794@nanopsycho.orion>
+References: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
+ <1598801254-27764-3-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.43.160.100]
-X-ClientProxiedBy: EX13D49UWB002.ant.amazon.com (10.43.163.68) To
- EX13D31EUB001.ant.amazon.com (10.43.166.210)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598801254-27764-3-git-send-email-moshe@mellanox.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Sun, Aug 30, 2020 at 05:27:22PM CEST, moshe@mellanox.com wrote:
+>Add reload actions counters to hold the history per reload action type.
+>For example, the number of times fw_activate has been done on this
+>device since the driver module was added or if the firmware activation
+>was done with or without reset.
+>The function devlink_reload_actions_cnts_update() is exported to enable
+>also drivers update on reload actions done, for example in case firmware
+>activation with reset finished successfully but was initiated by remote
+>host.
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>---
+>v2 -> v3:
+>- New patch
+>---
+> include/net/devlink.h |  2 ++
+> net/core/devlink.c    | 24 +++++++++++++++++++++---
+> 2 files changed, 23 insertions(+), 3 deletions(-)
+>
+>diff --git a/include/net/devlink.h b/include/net/devlink.h
+>index b8f0152a1fff..0547f0707d92 100644
+>--- a/include/net/devlink.h
+>+++ b/include/net/devlink.h
+>@@ -38,6 +38,7 @@ struct devlink {
+> 	struct list_head trap_policer_list;
+> 	const struct devlink_ops *ops;
+> 	struct xarray snapshot_ids;
+>+	u32 reload_actions_cnts[DEVLINK_RELOAD_ACTION_MAX];
+> 	struct device *dev;
+> 	possible_net_t _net;
+> 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
+>@@ -1372,6 +1373,7 @@ void
+> devlink_health_reporter_recovery_done(struct devlink_health_reporter *reporter);
+> 
+> bool devlink_is_reload_failed(const struct devlink *devlink);
+>+void devlink_reload_actions_cnts_update(struct devlink *devlink, unsigned long actions_done);
+> 
+> void devlink_flash_update_begin_notify(struct devlink *devlink);
+> void devlink_flash_update_end_notify(struct devlink *devlink);
+>diff --git a/net/core/devlink.c b/net/core/devlink.c
+>index 8d4137ad40db..20a29c34ff71 100644
+>--- a/net/core/devlink.c
+>+++ b/net/core/devlink.c
+>@@ -2969,10 +2969,23 @@ bool devlink_is_reload_failed(const struct devlink *devlink)
+> }
+> EXPORT_SYMBOL_GPL(devlink_is_reload_failed);
+> 
+>+void devlink_reload_actions_cnts_update(struct devlink *devlink, unsigned long actions_done)
+>+{
+>+	int action;
+>+
+>+	for (action = 0; action < DEVLINK_RELOAD_ACTION_MAX; action++) {
+>+		if (!test_bit(action, &actions_done))
+>+			continue;
+>+		devlink->reload_actions_cnts[action]++;
+>+	}
+>+}
+>+EXPORT_SYMBOL_GPL(devlink_reload_actions_cnts_update);
 
-This commit updates the DAMON documents for the physical memory
-monitoring support.
+I don't follow why this is an exported symbol if you only use it from
+this .c. Looks like a leftover...
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- Documentation/admin-guide/mm/damon/usage.rst | 42 ++++++++++++++++----
- Documentation/vm/damon/design.rst            | 29 +++++++++-----
- Documentation/vm/damon/faq.rst               |  5 +--
- 3 files changed, 54 insertions(+), 22 deletions(-)
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index cf0d44ce0ac9..3e2f1519c96a 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -10,15 +10,16 @@ DAMON provides below three interfaces for different users.
-   This is for privileged people such as system administrators who want a
-   just-working human-friendly interface.  Using this, users can use the DAMON’s
-   major features in a human-friendly way.  It may not be highly tuned for
--  special cases, though.  It supports only virtual address spaces monitoring.
-+  special cases, though.  It supports both virtual and physical address spaces
-+  monitoring.
- - *debugfs interface.*
-   This is for privileged user space programmers who want more optimized use of
-   DAMON.  Using this, users can use DAMON’s major features by reading
-   from and writing to special debugfs files.  Therefore, you can write and use
-   your personalized DAMON debugfs wrapper programs that reads/writes the
-   debugfs files instead of you.  The DAMON user space tool is also a reference
--  implementation of such programs.  It supports only virtual address spaces
--  monitoring.
-+  implementation of such programs.  It supports both virtual and physical
-+  address spaces monitoring.
- - *Kernel Space Programming Interface.*
-   This is for kernel space programmers.  Using this, users can utilize every
-   feature of DAMON most flexibly and efficiently by writing kernel space
-@@ -49,8 +50,10 @@ Recording Data Access Pattern
- 
- The ``record`` subcommand records the data access pattern of target workloads
- in a file (``./damon.data`` by default).  You can specify the target with 1)
--the command for execution of the monitoring target process, or 2) pid of
--running target process.  Below example shows a command target usage::
-+the command for execution of the monitoring target process, 2) pid of running
-+target process, or 3) the special keyword, 'paddr', if you want to monitor the
-+system's physical memory address space.  Below example shows a command target
-+usage::
- 
-     # cd <kernel>/tools/damon/
-     # damo record "sleep 5"
-@@ -61,6 +64,15 @@ of the process.  Below example shows a pid target usage::
-     # sleep 5 &
-     # damo record `pidof sleep`
- 
-+Finally, below example shows the use of the special keyword, 'paddr'::
-+
-+    # damo record paddr
-+
-+In this case, the monitoring target regions defaults to the largetst 'System
-+RAM' region specified in '/proc/iomem' file.  Note that the initial monitoring
-+target region is maintained rather than dynamically updated like the virtual
-+memory address spaces monitoring case.
-+
- The location of the recorded file can be explicitly set using ``-o`` option.
- You can further tune this by setting the monitoring attributes.  To know about
- the monitoring attributes in detail, please refer to the
-@@ -319,20 +331,34 @@ check it again::
-     # cat target_ids
-     42 4242
- 
-+Users can also monitor the physical memory address space of the system by
-+writing a special keyword, "``paddr\n``" to the file.  Because physical address
-+space monitoring doesn't support multiple targets, reading the file will show a
-+fake value, ``42``, as below::
-+
-+    # cd <debugfs>/damon
-+    # echo paddr > target_ids
-+    # cat target_ids
-+    42
-+
- Note that setting the target ids doesn't start the monitoring.
- 
- 
- Initial Monitoring Target Regions
- ---------------------------------
- 
--In case of the debugfs based monitoring, DAMON automatically sets and updates
--the monitoring target regions so that entire memory mappings of target
--processes can be covered. However, users might want to limit the monitoring
-+In case of the virtual address space monitoring, DAMON automatically sets and
-+updates the monitoring target regions so that entire memory mappings of target
-+processes can be covered.  However, users might want to limit the monitoring
- region to specific address ranges, such as the heap, the stack, or specific
- file-mapped area.  Or, some users might know the initial access pattern of
- their workloads and therefore want to set optimal initial regions for the
- 'adaptive regions adjustment'.
- 
-+In contrast, DAMON do not automatically sets and updates the monitoring target
-+regions in case of physical memory monitoring.  Therefore, users should set the
-+monitoring target regions by themselves.
-+
- In such cases, users can explicitly set the initial monitoring target regions
- as they want, by writing proper values to the ``init_regions`` file.  Each line
- of the input should represent one region in below form.::
-diff --git a/Documentation/vm/damon/design.rst b/Documentation/vm/damon/design.rst
-index 727d72093f8f..0666e19018fd 100644
---- a/Documentation/vm/damon/design.rst
-+++ b/Documentation/vm/damon/design.rst
-@@ -35,27 +35,34 @@ two parts:
- 1. Identification of the monitoring target address range for the address space.
- 2. Access check of specific address range in the target space.
- 
--DAMON currently provides the implementation of the primitives for only the
--virtual address spaces. Below two subsections describe how it works.
-+DAMON currently provides the implementations of the primitives for the physical
-+and virtual address spaces. Below two subsections describe how those work.
- 
- 
- PTE Accessed-bit Based Access Check
- -----------------------------------
- 
--The implementation for the virtual address space uses PTE Accessed-bit for
--basic access checks.  It finds the relevant PTE Accessed bit from the address
--by walking the page table for the target task of the address.  In this way, the
--implementation finds and clears the bit for next sampling target address and
--checks whether the bit set again after one sampling period.  This could disturb
--other kernel subsystems using the Accessed bits, namely Idle page tracking and
--the reclaim logic.  To avoid such disturbances, DAMON makes it mutually
--exclusive with Idle page tracking and uses ``PG_idle`` and ``PG_young`` page
--flags to solve the conflict with the reclaim logic, as Idle page tracking does.
-+Both of the implementations for physical and virtual address spaces use PTE
-+Accessed-bit for basic access checks.  Only one difference is the way of
-+finding the relevant PTE Accessed bit(s) from the address.  While the
-+implementation for the virtual address walks the page table for the target task
-+of the address, the implementation for the physical address walks every page
-+table having a mapping to the address.  In this way, the implementations find
-+and clear the bit(s) for next sampling target address and checks whether the
-+bit(s) set again after one sampling period.  This could disturb other kernel
-+subsystems using the Accessed bits, namely Idle page tracking and the reclaim
-+logic.  To avoid such disturbances, DAMON makes it mutually exclusive with Idle
-+page tracking and uses ``PG_idle`` and ``PG_young`` page flags to solve the
-+conflict with the reclaim logic, as Idle page tracking does.
- 
- 
- VMA-based Target Address Range Construction
- -------------------------------------------
- 
-+This is only for the virtual address space primitives implementation.  That for
-+the physical address space simply asks users to manually set the monitoring
-+target address ranges.
-+
- Only small parts in the super-huge virtual address space of the processes are
- mapped to the physical memory and accessed.  Thus, tracking the unmapped
- address regions is just wasteful.  However, because DAMON can deal with some
-diff --git a/Documentation/vm/damon/faq.rst b/Documentation/vm/damon/faq.rst
-index 088128bbf22b..6469d54c480f 100644
---- a/Documentation/vm/damon/faq.rst
-+++ b/Documentation/vm/damon/faq.rst
-@@ -43,10 +43,9 @@ constructions and actual access checks can be implemented and configured on the
- DAMON core by the users.  In this way, DAMON users can monitor any address
- space with any access check technique.
- 
--Nonetheless, DAMON provides vma tracking and PTE Accessed bit check based
-+Nonetheless, DAMON provides vma/rmap tracking and PTE Accessed bit check based
- implementations of the address space dependent functions for the virtual memory
--by default, for a reference and convenient use.  In near future, we will
--provide those for physical memory address space.
-+and the physical memory by default, for a reference and convenient use.
- 
- 
- Can I simply monitor page granularity?
--- 
-2.17.1
+>+
+> static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 			  enum devlink_reload_action action, struct netlink_ext_ack *extack,
+>-			  unsigned long *actions_done)
+>+			  unsigned long *actions_done_out)
+> {
+>+	unsigned long actions_done;
+> 	int err;
+> 
+> 	if (!devlink->reload_enabled)
+>@@ -2985,9 +2998,14 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
+> 	if (dest_net && !net_eq(dest_net, devlink_net(devlink)))
+> 		devlink_reload_netns_change(devlink, dest_net);
+> 
+>-	err = devlink->ops->reload_up(devlink, action, extack, actions_done);
+>+	err = devlink->ops->reload_up(devlink, action, extack, &actions_done);
+> 	devlink_reload_failed_set(devlink, !!err);
+>-	return err;
+>+	if (err)
+>+		return err;
+>+	devlink_reload_actions_cnts_update(devlink, actions_done);
+>+	if (actions_done_out)
+>+		*actions_done_out = actions_done;
 
+Why don't you just use the original actions_done directly without having
+extra local variable?
+
+
+>+	return 0;
+> }
+> 
+> static int
+>-- 
+>2.17.1
+>
