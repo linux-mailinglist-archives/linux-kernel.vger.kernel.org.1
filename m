@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFDE25761A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A8A25760B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgHaJKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:10:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728266AbgHaJKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:10:17 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DA14208CA;
-        Mon, 31 Aug 2020 09:10:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598865017;
-        bh=xkIiQZIfoQl2bQbnJEPjzxwz9aN+LEVkxm/utYNgnO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OO/lrWcWLd2jJyJXwQhbOQl9l2X8jz9y4rIm4eVp/ibKO4xYZPe0SUIBukIwQgNO7
-         V8uf29qIyIg6XUydrpIvFZ0b5Ss9P2kwZeOjlJNIoqdEaVkUIoY8AFNJ+0KVQ+VQP6
-         OOGUjYaTwASCtJmrcYq3TNk4kP2kK4fy1y87q+kQ=
-Date:   Mon, 31 Aug 2020 14:40:13 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-Cc:     kishon@ti.com, robh+dt@kernel.org, andriy.shevchenko@intel.com,
-        eswara.kota@linux.intel.com,
-        vadivel.muruganx.ramuthevar@linux.intel.com,
-        lakshmi.bai.raja.subramanian@intel.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 2/3] dt-bindings: phy: intel: Add Keem Bay eMMC PHY
- bindings
-Message-ID: <20200831091013.GL2639@vkoul-mobl>
-References: <20200821113747.2912-1-wan.ahmad.zainie.wan.mohamad@intel.com>
- <20200821113747.2912-3-wan.ahmad.zainie.wan.mohamad@intel.com>
+        id S1728354AbgHaJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:08:41 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:45342 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728290AbgHaJIk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 05:08:40 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 07V98a5r063080;
+        Mon, 31 Aug 2020 04:08:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598864916;
+        bh=MjsvdfEMy6GjtTN6j2sOW8wOL0kqR2f7yz1NLZ13fG8=;
+        h=From:To:CC:Subject:Date;
+        b=uQItU2FeegecNeaODB/TbUPNavPcfSh+ygM/pNQ3BdiZux/mjn8VnkFJn/oLMfeGt
+         rkXIrEGe6JkLjZFJqlqiO0/ree4ktyxwAoTARfBrpYaJfonQwH7A6axe2plSWMVmo/
+         mwJAclWTkuMbCsoJ50XyziBArbyMMT1a7aKzT5eo=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07V98awq052252;
+        Mon, 31 Aug 2020 04:08:36 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 31
+ Aug 2020 04:08:36 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 31 Aug 2020 04:08:36 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 07V98YWk026158;
+        Mon, 31 Aug 2020 04:08:34 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <dan.j.williams@intel.com>,
+        <linux-kernel@vger.kernel.org>, <lokeshvutla@ti.com>, <nm@ti.com>
+Subject: [PATCH] dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3.0
+Date:   Mon, 31 Aug 2020 12:10:19 +0300
+Message-ID: <20200831091019.25273-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200821113747.2912-3-wan.ahmad.zainie.wan.mohamad@intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-08-20, 19:37, Wan Ahmad Zainie wrote:
-> Binding description for Intel Keem Bay eMMC PHY.
-> 
-> Signed-off-by: Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
->  .../bindings/phy/intel,keembay-emmc-phy.yaml  | 44 +++++++++++++++++++
->  1 file changed, 44 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml b/Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
-> new file mode 100644
-> index 000000000000..4cbbd3887c13
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
-> @@ -0,0 +1,44 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/phy/intel,keembay-emmc-phy.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Intel Keem Bay eMMC PHY bindings
+SYSFW ABI 3.0 has changed the rchan_oes_offset value for am654 to support
+SR2.
 
-This seems same as
-Documentation/devicetree/bindings/phy/intel,lgm-emmc-phy.yaml, why not
-add a new compatible in lgm binding, or did I miss a difference?
+Since the kernel now needs SYSFW API 3.0 to work because the merged irqchip
+update, we need to also update the am654 rchan_oes_offset.
 
-> +
-> +maintainers:
-> +  - Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,keembay-emmc-phy
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    items:
-> +      - const: emmcclk
-> +
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#phy-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    phy@20290000 {
-> +          compatible = "intel,keembay-emmc-phy";
-> +          reg = <0x20290000 0x54>;
-> +          clocks = <&emmc>;
-> +          clock-names = "emmcclk";
-> +          #phy-cells = <0>;
-> +    };
-> -- 
-> 2.17.1
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Hi Vinod,
 
+A series from Lokesh to support sysfw ABI 3.0 and newer is now in mainline
+under v5.9-rc3 tag.
+With his series Linux can not really boot into a usable state with older sysfw
+and the ABI 3.0 have additional changes affecting UDMA on am654:
+the rchan_oes_offset number is changed to better align with j72xx and to be able
+to support both SR1 and SR2 of am654.
+
+Can you send this patch for -rc4 to fix the regression now in mainline?
+The regression is that one can not request TR mode channel to service a
+peripheral.
+
+We do not have users upstream depending on this, but I do have out of tree audio
+support and cutomers might pick up 5.9 from mainline when it is released.
+
+Thank you,
+Peter
+
+ drivers/dma/ti/k3-udma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 989998b6e078..9a7048bcf0f1 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -3091,14 +3091,14 @@ static struct udma_match_data am654_main_data = {
+ 	.psil_base = 0x1000,
+ 	.enable_memcpy_support = true,
+ 	.statictr_z_mask = GENMASK(11, 0),
+-	.rchan_oes_offset = 0x2000,
++	.rchan_oes_offset = 0x200,
+ };
+ 
+ static struct udma_match_data am654_mcu_data = {
+ 	.psil_base = 0x6000,
+ 	.enable_memcpy_support = false,
+ 	.statictr_z_mask = GENMASK(11, 0),
+-	.rchan_oes_offset = 0x2000,
++	.rchan_oes_offset = 0x200,
+ };
+ 
+ static struct udma_match_data j721e_main_data = {
 -- 
-~Vinod
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
