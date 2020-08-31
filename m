@@ -2,109 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9821525766C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E55257683
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgHaJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:22:46 -0400
-Received: from mail-eopbgr20076.outbound.protection.outlook.com ([40.107.2.76]:48899
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727810AbgHaJWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:22:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YVKT+XcDmufnXy+9suW4BDLfqI58oqfVxrru9sfJJ55piR2H0BxHl6ubCAmwk9tz72Ioc9ZT+gGPYvx+hRrU6SuQ3i+moFRLiSYeZSHoBgMQXrVOevTVtpBBm/rSbCydWm5L5orqon5yUy0FeaY6Y6NKsLG92Wqy3PF9vZcB69iBONxSYO8S/HYdsGk0rqZwIwFC3E9148aT5Gl7X1pKC7uMroZG4ipNl1NJJ5ZMKZP+ltT325HU8GgE6Xo/mavS+FBQE+dWae64khpPg7Zm4FA5LelWJNUINM05jp4x5duF/nMJBy14OkeXFH6Yqsguj3c1/y5j+DBCQ2+ab0KKPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dAwAaiiwn28UJE5V3/saYfJk0q1YVYoYUqHCQsu5k6Y=;
- b=TOZ5YdM5m0ntRq4eParWE0v8KpsTBlawkLaImX89N6dn4DyfOf19FYBtLgMFUlRmVesdGa6I+v1+WhcCCSZgnx0pndz4o2b/Ngs9EF5kGqPMC55bPxmBQnz+AyccAiveobDQYe+VyuFwWVV+gi1ZnWHiitUzGI9UzVMxm2OvD+puilLPZiyUYo+nFobBvQa81e6tVCxSnS/ClsKaE/aMBolo0Av0iyQR1oKk47Ib5ku6ejtrYYypI4nPX+YJ06gPiZCya0B9ZNvrh5lzDwa7f8wSQcdoSavp/ygDpCt326vVkAo1h9bYnWx3SNKqYA/Ii0JfujNRdTc+G3DWIELxDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dAwAaiiwn28UJE5V3/saYfJk0q1YVYoYUqHCQsu5k6Y=;
- b=A6oW0X4kcBbtZemAlZH9lZyl5OVTg/q68FFhqiCa8ITjX0LQseBK9OxhPrXnGLcuKu6+J+i/wIz8idsfQ/GSLnY7NVI5APLvWYy+i8hOe+rt2CaA72FA21hj6cvzKJC/xZZ0HU1lUkgkbQQVFECWJdMPr7Wd4/OGDKokcu6xnbE=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Mon, 31 Aug
- 2020 09:22:39 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950%3]) with mapi id 15.20.3326.025; Mon, 31 Aug 2020
- 09:22:39 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, Anson.Huang@nxp.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] ARM64: dts: imx8mp: correct sdma1 clk setting
-Date:   Tue,  1 Sep 2020 01:36:27 +0800
-Message-Id: <1598895387-22313-1-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR04CA0152.apcprd04.prod.outlook.com (2603:1096:4::14)
- To VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
+        id S1726126AbgHaJai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725960AbgHaJah (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 05:30:37 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA76BC061573;
+        Mon, 31 Aug 2020 02:30:36 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id g6so5807930ljn.11;
+        Mon, 31 Aug 2020 02:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=3L07aghnJbyRPZJOaFH3eUdaOzbfg9qRZ9biyh0gbQw=;
+        b=k5Ws0UL8DCYFpZ3p/74f3BUt0hgRrU3trw42TZauoyKkjpfSFJFyYr1RO/SRfBMOhi
+         BXz4zu1Y/AXYTZvnUIhAYZDjF+uurBQ2YeDIRQRwHIxRaPEQI8qTJ9y37WP5zkbPr2yh
+         xr/K9FGTtSwcHebyK5L5C4ePQ/2hud3fJYR3KNZRpUKXUqcawO8d+85asH9Ef0vk1hKV
+         mtv6t7ZTms1obcNAhLsK54eUaIRoymgFK6cTCXAfndNpmXvmTuBW/atDSbcO/L1Wd7UP
+         uxIRCTOVlYtwXkfItQA4ecN9H6CdgxFAAGd/qOyVDb0i2qAx9TGJCvMWkCFuIS5y9hcW
+         mhNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=3L07aghnJbyRPZJOaFH3eUdaOzbfg9qRZ9biyh0gbQw=;
+        b=NwVnnbaNGqnMKZfkvg7UFsfLtj23lUuFLn0ozVIk2uNcIzIbfNhQx0UTXQXyYIU1X2
+         zn2XQw757YVMjqBWL69yKCQo19NskIXcXI0FCmq+lKiqi0t5n95mCP+infTR9EDkWb56
+         20m20FHPoNBOZ4uuPvCHPrUlXes+B+aA0RFKDAUhVJi83Q75WW457880uJqZK0xYi4Uf
+         S+WgDCKRH7/G6bIHYNc6vUSfmjvz+aMx9WAQvbcYiHA39T0iRAjJNosHsSiNlg+eObWL
+         T/MyGKR2NMsTB4LXg/SLJvhTXv4U6AfZLL07QxKXPKcrXYhesX81djFbTE0r0xRIV89Y
+         wKZg==
+X-Gm-Message-State: AOAM5318/UM9FQAq/ALQ8crJ0zQIF0yL9tzK26HDGThavmtU4ZY4bUV2
+        U9ySbT0t9+Bdr9obMOI/aso=
+X-Google-Smtp-Source: ABdhPJy/+kx5MJI2fzaOyi9EMdUy8l+fHTOJqKj64glaOAM7OKtQJlgcl/3oWiPfU09NDpt3LhzIyA==
+X-Received: by 2002:a05:651c:208:: with SMTP id y8mr250939ljn.233.1598866235282;
+        Mon, 31 Aug 2020 02:30:35 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id i187sm794599lfd.65.2020.08.31.02.30.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 02:30:34 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 31 Aug 2020 11:30:32 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        rcu <rcu@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSN?= =?utf-8?Q?=3A?= [PATCH] rcu: shrink each
+ possible cpu krcp
+Message-ID: <20200831093032.GA19139@pc636>
+References: <20200818210355.GM27891@paulmck-ThinkPad-P72>
+ <20200818215511.GA2538@pc636>
+ <20200818220245.GO27891@paulmck-ThinkPad-P72>
+ <CAEXW_YRZ6RM90+aYA0JQ1war0n-D0M4peXJZE2_Uqf07xvF+5g@mail.gmail.com>
+ <BYAPR11MB26323E6D956BA22DFE610A13FF5D0@BYAPR11MB2632.namprd11.prod.outlook.com>
+ <20200819135654.GB3875610@google.com>
+ <20200819152159.GX27891@paulmck-ThinkPad-P72>
+ <20200819155808.GA8817@pc636>
+ <20200820223957.GB120898@google.com>
+ <20200821153328.GH2855@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.67) by SG2PR04CA0152.apcprd04.prod.outlook.com (2603:1096:4::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3326.19 via Frontend Transport; Mon, 31 Aug 2020 09:22:31 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: d7ae3770-4260-48e1-b34c-08d84d8f6806
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5696:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB569645AB519965B406D7B98689510@VI1PR04MB5696.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:378;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6s52sPWhoS5Zm35GCdlNr7fiKSObyprhZnHDhMkRVNoFNaN5D5EDkO9gTnb8uVB7gd2ZlfzQ9wAM96MU6ffoBPj3gjsAC+W1oETmenWiT32FDsX+qW27OqyfP443VtHLoxwXn4JZ20eLLqtL0Bzt2TUOCdsVD2rQ7pxXsXU2wNXbvD4wqL9VU7WGHU6DwKgWB54KFBpqVqHFDS6V8GjJ7dk6lOjKoGSSaZ/Uuhq246HpfPmOIgyr22Xr3bBVSiIHhcJfaB/JMg28weqhPLrrHS963GrR1qfwOV+PDdsLmEX1t8b57WQarmRdBF+ySrFn3nyJBiALJC3oHnEii4szEiAS6sNSPmCyrMgimkpDZYetd8s1b6f2DNj9wJSluOOi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(6636002)(4744005)(6666004)(52116002)(956004)(2616005)(4326008)(6512007)(5660300002)(83380400001)(66946007)(8676002)(36756003)(478600001)(26005)(66476007)(66556008)(186003)(16526019)(6486002)(86362001)(8936002)(6506007)(316002)(2906002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Us5PLhp9WuklyX3kvLiSXjtFO1xpha4JnCCJVFenBKXrOfQXxrtPRwUh3KtNqG7C34Uaw1RRN3jJbcD/sm0w37GpZxgxasNwdU+RKGzd4iTFYHxJbmLsZ3GES0YuF1uKhgd9AwnSBF4UXvouJaakGXGOOpslUH9yEL2UxVFhJ34Sk2PQvOvVKJJ79csEpAT5SjWvML/dfDQcrGyZzGLU8hPSP5II4q1Ed+5j1/2OI5du5nEgegGYk6jbvyVb7wmM38fQv6naTefyOaIOqt1sv5LBvhYmS6r3cqSD4iMzudSzYTvRJ3DUB5lhQYhX8dnQuUAB9+AP6zsHGQSTLZcwR8PxRKw1gy1gXazMw+KCN923nLZiGit5CedZo5Wrrf687P6RXdNS9wHlhWsCRaaO563/nTs9sdVeyBTeS0XO+OwIqPIwdtlpFcWv5u2keRCVyTZUC5zHTAZ68dYoc/SSkESAOgLuU1r9sUT8NATthD8e08lXMA3klGK2dir/WUZZ3aygV5xEIg9ttzWVeK9pGt8b/ZN6isjIbok8H1oy5zgyXt55q5RQx1wkW3N/0M+Q4rslpwZfwqL8eO6pz6rynz+jWy0ze48rx9V4s6D9UQVnYvqy/tF12B9UdknmZLiBo6L1y1rK36ucIqj75Ghp/w==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7ae3770-4260-48e1-b34c-08d84d8f6806
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2020 09:22:39.8304
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cbToilVEGiG4plTzvOOUxCRzUI4WCblw/LEsBYG4zBZG7ElXuG6OvRVg5a6dGc/jkCPwZExUZmX5VhCISV9l7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5696
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200821153328.GH2855@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct sdma1 ahb clk, otherwise wrong 1:1 clk ratio will be chosed so
-that sdma1 function broken. sdma1 should use 1:2 clk, while sdma2/3 use
-1:1.
+On Fri, Aug 21, 2020 at 08:33:28AM -0700, Paul E. McKenney wrote:
+> On Thu, Aug 20, 2020 at 06:39:57PM -0400, Joel Fernandes wrote:
+> > On Wed, Aug 19, 2020 at 05:58:08PM +0200, Uladzislau Rezki wrote:
+> > > On Wed, Aug 19, 2020 at 08:21:59AM -0700, Paul E. McKenney wrote:
+> > > > On Wed, Aug 19, 2020 at 09:56:54AM -0400, Joel Fernandes wrote:
+> > > > > On Wed, Aug 19, 2020 at 03:00:55AM +0000, Zhang, Qiang wrote:
+> > > > > > 
+> > > > > > 
+> > > > > > ________________________________________
+> > > > > > 发件人: linux-kernel-owner@vger.kernel.org <linux-kernel-owner@vger.kernel.org> 代表 Joel Fernandes <joel@joelfernandes.org>
+> > > > > > 发送时间: 2020年8月19日 8:04
+> > > > > > 收件人: Paul E. McKenney
+> > > > > > 抄送: Uladzislau Rezki; Zhang, Qiang; Josh Triplett; Steven Rostedt; Mathieu Desnoyers; Lai Jiangshan; rcu; LKML
+> > > > > > 主题: Re: [PATCH] rcu: shrink each possible cpu krcp
+> > > > > > 
+> > > > > > On Tue, Aug 18, 2020 at 6:02 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > > > > 
+> > > > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > > > index b8ccd7b5af82..6decb9ad2421 100644
+> > > > > > > > --- a/kernel/rcu/tree.c
+> > > > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > > > @@ -2336,10 +2336,15 @@ int rcutree_dead_cpu(unsigned int cpu)
+> > > > > > > >  {
+> > > > > > > >         struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> > > > > > > >         struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+> > > > > > > > +       struct kfree_rcu_cpu *krcp;
+> > > > > > > >
+> > > > > > > >         if (!IS_ENABLED(CONFIG_HOTPLUG_CPU))
+> > > > > > > >                 return 0;
+> > > > > > > >
+> > > > > > > > +       /* Drain the kcrp of this CPU. IRQs should be disabled? */
+> > > > > > > > +       krcp = this_cpu_ptr(&krc)
+> > > > > > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
+> > > > > > > > +
+> > > > > > > >
+> > > > > > > > A cpu can be offlined and its krp will be stuck until a shrinker is involved.
+> > > > > > > > Maybe be never.
+> > > > > > >
+> > > > > > > Does the same apply to its kmalloc() per-CPU caches?  If so, I have a
+> > > > > > > hard time getting too worried about it.  ;-)
+> > > > > > 
+> > > > > > >Looking at slab_offline_cpu() , that calls cancel_delayed_work_sync()
+> > > > > > >on the cache reaper who's job is to flush the per-cpu caches. So I
+> > > > > > >believe during CPU offlining, the per-cpu slab caches are flushed.
+> > > > > > >
+> > > > > > >thanks,
+> > > > > > >
+> > > > > >  >- Joel
+> > > > > > 
+> > > > > > When cpu going offline, the slub or slab only flush free objects in offline
+> > > > > > cpu cache,  put these free objects in node list  or return buddy system,
+> > > > > > for those who are still in use, they still stay offline cpu cache.
+> > > > > > 
+> > > > > > If we want clean per-cpu "krcp" objects when cpu going offline.  we should
+> > > > > > free "krcp" cache objects in "rcutree_offline_cpu", this func be called
+> > > > > > before other rcu cpu offline func. and then "rcutree_offline_cpu" will be
+> > > > > > called in "cpuhp/%u" per-cpu thread.
+> > > > > > 
+> > > > > 
+> > > > > Could you please wrap text properly when you post to mailing list, thanks. I
+> > > > > fixed it for you above.
+> > > > > 
+> > > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > > > > index 8ce77d9ac716..1812d4a1ac1b 100644
+> > > > > > --- a/kernel/rcu/tree.c
+> > > > > > +++ b/kernel/rcu/tree.c
+> > > > > > @@ -3959,6 +3959,7 @@ int rcutree_offline_cpu(unsigned int cpu)
+> > > > > >         unsigned long flags;
+> > > > > >         struct rcu_data *rdp;
+> > > > > >         struct rcu_node *rnp;
+> > > > > > +       struct kfree_rcu_cpu *krcp;
+> > > > > >  
+> > > > > >         rdp = per_cpu_ptr(&rcu_data, cpu);
+> > > > > >         rnp = rdp->mynode;
+> > > > > > @@ -3970,6 +3971,11 @@ int rcutree_offline_cpu(unsigned int cpu)
+> > > > > >  
+> > > > > >         // nohz_full CPUs need the tick for stop-machine to work quickly
+> > > > > >         tick_dep_set(TICK_DEP_BIT_RCU);
+> > > > > > +
+> > > > > > +       krcp = per_cpu_ptr(&krc, cpu);
+> > > > > > +       raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > > > > +       schedule_delayed_work(&krcp->monitor_work, 0);
+> > > > > > +       raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > > > >         return 0;
+> > > > > 
+> > > > > I realized the above is not good enough for what this is trying to do. Unlike
+> > > > > the slab, the new kfree_rcu objects cannot always be drained / submitted to
+> > > > > RCU because the previous batch may still be waiting for a grace period. So
+> > > > > the above code could very well return with the yet-to-be-submitted kfree_rcu
+> > > > > objects still in the cache.
+> > > > > 
+> > > > > One option is to spin-wait here for monitor_todo to be false and keep calling
+> > > > > kfree_rcu_drain_unlock() till then.
+> > > > > 
+> > > > > But then that's not good enough either, because if new objects are queued
+> > > > > when interrupts are enabled in the CPU offline path, then the cache will get
+> > > > > new objects after the previous set was drained. Further, spin waiting may
+> > > > > introduce deadlocks.
+> > > > > 
+> > > > > Another option is to switch the kfree_rcu() path to non-batching (so new
+> > > > > objects cannot be cached in the offline path and are submitted directly to
+> > > > > RCU), wait for a GP and then submit the work. But then not sure if 1-argument
+> > > > > kfree_rcu() will like that.
+> > > > 
+> > > > Or spawn a workqueue that does something like this:
+> > > > 
+> > > > 1.	Get any pending kvfree_rcu() requests sent off to RCU.
+> > > > 
+> > > > 2.	Do an rcu_barrier().
+> > > > 
+> > > > 3.	Do the cleanup actions.
+> > > > 
+> > > > > Probably Qian's original fix for for_each_possible_cpus() is good enough for
+> > > > > the shrinker case, and then we can tackle the hotplug one.
+> > > > 
+> > > > It might take some experimentation to find the best solution.
+> > > > 
+> > > 
+> > > <snip>
+> > > static void do_idle(void)
+> > > {
+> > > ...
+> > >  while (!need_resched()) {
+> > >   rmb();
+> > > 
+> > >   local_irq_disable();
+> > > 
+> > >   if (cpu_is_offline(cpu)) {
+> > >    tick_nohz_idle_stop_tick();
+> > >    cpuhp_report_idle_dead();
+> > >        -> cpuhp_report_idle_dead(void)
+> > >               -> rcu_report_dead(smp_processor_id());
+> > >    arch_cpu_idle_dead();
+> > >   }
+> > > ...
+> > > <snip>
+> > > 
+> > > We have the rcu_report_dead() callback. When it gets called IRQs are off
+> > > and CPU that is in question is offline.
+> > > 
+> > >     krcp = per_cpu_ptr(&krc, cpu);
+> > >     raw_spin_lock_irqsave(&krcp->lock, flags);
+> > >     krcp->monotro_todo = true;
+> > >     schedule_delayed_work(&krcp->monitor_work, 0);
+> > >     raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > 
+> > > If there is a batch that is in progress, the job will rearm itself.
+> > > But i agree, it requires more experiments.
+> > 
+> > I chatted with Ulad and we believe the timer and/or (delayed) workqueue will
+> > get migrated during the CPU offline path, so it is not an issue.
+> > 
+> > In this case, Qiang's initial patch suffices to fix the shrinker issue.
+> 
+> As in the patch that is currented in -rcu, correct?
+> 
+The "[PATCH] rcu: shrink each possible cpu krcp" will fix the
+shrinker "issue" when CPU goes offline. So that was valid concern.
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As for "main track", our drain work or a timer that triggers it
+will be migrated anyway. Just to repeat what Joel wrote earlier,
+we do not have any issues with this part.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index cad2dd7..6038f66 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -702,7 +702,7 @@
- 				reg = <0x30bd0000 0x10000>;
- 				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX8MP_CLK_SDMA1_ROOT>,
--					 <&clk IMX8MP_CLK_SDMA1_ROOT>;
-+					 <&clk IMX8MP_CLK_AHB>;
- 				clock-names = "ipg", "ahb";
- 				#dma-cells = <3>;
- 				fsl,sdma-ram-script-name = "imx/sdma/sdma-imx7d.bin";
--- 
-2.7.4
-
+--
+Vlad Rezki
