@@ -2,213 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D56C257F76
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06982257F7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729007AbgHaRRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728979AbgHaRRr (ORCPT
+        id S1728959AbgHaRTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:19:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13612 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727952AbgHaRS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:17:47 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB152C061755;
-        Mon, 31 Aug 2020 10:17:45 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id c19so431598wmd.1;
-        Mon, 31 Aug 2020 10:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+nbsjObGEQTbldxK9r/J/0l54hz3WdGBb4kWLFeHtdc=;
-        b=Dx+2ufm2r6fK25HiX1RMSlUidv/QGw4uPXaRL6i7mexd7xL0hFBtLS4EzMQG/CdwnX
-         x5s36sbIxBMaW8rvJpgD6ehhu4M0Ybr/5/AaXA0kF5cg4HM7/WlpKO1JH0ev9HC/LADp
-         0F3SOaec49UEeOhrG6gEgcVi9/AwZQYvjekESTbiyFRE4o8MovAfgBIq+8QeDrt5N83h
-         f0YFqIgUCtneqXL3gFoZZMw7mGFctnnF/VkA5hcKx0vKM5cLmFcqGdtyA/geyvNIeuDo
-         HxRMdyh9i3Pzz6MhpAgG/Djl40XS3SI6hyO0C9aoRubn1AckHFClT2LKA88X7GUR2Oes
-         gFiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+nbsjObGEQTbldxK9r/J/0l54hz3WdGBb4kWLFeHtdc=;
-        b=CoulpLwwyOBdEhijhMKLmP1QAEi988NWvhD0GCFeJy2bmUEdyVJeIpjW5v/8ZUXaKI
-         /rLmTVja5CpxsidKO0oDqGMv61ELctn/4NRqve5Fp6ql9FEKfgbXu446v1qD0TPo/py6
-         cJCbGOHLXRgamJvqFRfPQUwFdOvgD3niaI5G2m9zlup96Ux+vMMozur1MBw36zCptGhH
-         R6SY3EhgK8XNPwW0VzHH27wC5tCSWqAyf+eZ8aX2yCahrEtBwqgS00yL9phLolKfo3i+
-         spPYtZcXnO7ujBMrtZvU5ms5FsYnhdsS6VCHVnHnW3+t3QKZBD4EIcmpDJ2IFpSRe1yk
-         59ZA==
-X-Gm-Message-State: AOAM532y6mw9mzJs8zkhUdEPeo3fDVRfsp3l7U0iAhGms/8jwsZJuy5P
-        F6DIxdYp+qzeL8bqaKi3OKY=
-X-Google-Smtp-Source: ABdhPJwKFzt8ldI9tB15Yc56sc4C4H6P4uAMd8lRcJSd25uy/2Qxgs23epbBzGXYfbc0jBfBs1/gEQ==
-X-Received: by 2002:a1c:415:: with SMTP id 21mr285439wme.183.1598894264450;
-        Mon, 31 Aug 2020 10:17:44 -0700 (PDT)
-Received: from alinde.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id w15sm840978wro.46.2020.08.31.10.17.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 10:17:43 -0700 (PDT)
-From:   albert.linde@gmail.com
-X-Google-Original-From: alinde@google.com
-To:     akpm@linux-foundation.org, bp@alien8.de, mingo@redhat.com,
-        corbet@lwn.net, tglx@linutronix.de, arnd@arndb.de,
-        peterz@infradead.org
-Cc:     akinobu.mita@gmail.com, hpa@zytor.com, viro@zeniv.linux.org.uk,
-        glider@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        x86@kernel.org, albert.linde@gmail.com,
-        Albert van der Linde <alinde@google.com>
-Subject: [PATCH v3 3/3] x86: add failure injection to get/put/clear_user
-Date:   Mon, 31 Aug 2020 17:17:33 +0000
-Message-Id: <20200831171733.955393-4-alinde@google.com>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-In-Reply-To: <20200831171733.955393-1-alinde@google.com>
-References: <20200831171733.955393-1-alinde@google.com>
+        Mon, 31 Aug 2020 13:18:59 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07VHA941062814;
+        Mon, 31 Aug 2020 13:18:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=/6LxVpGXmEiswOQu2YnKhevcXSNxsHH3pExsRb7kpGQ=;
+ b=S9JWYySmXGjDjE7lINZmEFCidpz5SR+WvN9ihbB+y4K/1NfoDao9wBwt6c9j5+KmbTsP
+ 09kBieMreUPZ8cVHv8w43kskn+TV1IHKyciMDEsvyHooDEg/6rWRmqKY3PUhVnCpK2+h
+ v/O0HeZ2A1fi7r/oibcS5RsA+94xioZ/5009h1sasz+5SxbjEdcRrzNcPNFVDAoZQX2G
+ qYkQ8Dg0VSChaoT8jnyJUbZuR8UmJCrCPNaMxrAnafUIdyZeP1rd6GAdF9BFZWjncgnU
+ 5Bjf5cWNKBNTqySlDbxiQ3kQkICPDPcVe4LvusTP4fl0LE1UsrOR32QNubRabUvFjB/a vg== 
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3395cb05hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 13:18:49 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07VGwkoc001453;
+        Mon, 31 Aug 2020 17:18:47 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02wdc.us.ibm.com with ESMTP id 337en99m7d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 17:18:47 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07VHIlwM13828892
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 17:18:47 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 21E9128067;
+        Mon, 31 Aug 2020 17:18:47 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A4B2D28058;
+        Mon, 31 Aug 2020 17:18:46 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.40.195.188])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Aug 2020 17:18:46 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH] scsi: ibmvfc: interface updates for future FPIN and MQ support
+Date:   Mon, 31 Aug 2020 12:18:44 -0500
+Message-Id: <20200831171844.635729-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-31_08:2020-08-31,2020-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=855 clxscore=1011
+ mlxscore=0 adultscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 impostorscore=0 suspectscore=1
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008310099
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Albert van der Linde <alinde@google.com>
+VIOS partitions with SLI-4 enabled Emulex adapters will be capable of
+driving IO in parallel through mulitple work queues or channels, and
+with new hyperviosr firmware that supports multiple interrupt sources
+an ibmvfc NPIV single initiator can be modified to exploit end to end
+channelization in a PowerVM environment.
 
-To test fault-tolerance of user memory acceses in x86, add support for
-fault injection.
+VIOS hosts will also be able to expose fabric perfromance impact
+notifications (FPIN) via a new asynchronous event to ibmvfc clients that
+advertise support via IBMVFC_CAN_HANDLE_FPIN in their capabilities flag
+during NPIV_LOGIN.
 
-Make both put_user() and get_user() fail with -EFAULT, and clear_user()
-fail by not clearing any bytes.
+This patch introduces three new Managment Datagrams (MADs) for
+channelization support negotiation as well as the FPIN asynchronous
+event and FPIN status flags. Follow up work is required to plumb the
+ibmvfc client driver to use these new interfaces.
 
-Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Albert van der Linde <alinde@google.com>
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
 ---
-v2:
- - no significant changes
+ drivers/scsi/ibmvscsi/ibmvfc.h | 66 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 65 insertions(+), 1 deletion(-)
 
-v3:
- - no changes
----
- arch/x86/include/asm/uaccess.h | 68 +++++++++++++++++++---------------
- arch/x86/lib/usercopy_64.c     |  3 ++
- 2 files changed, 42 insertions(+), 29 deletions(-)
-
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index ecefaffd15d4..004eeee2199a 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -5,6 +5,7 @@
-  * User space memory access functions
-  */
- #include <linux/compiler.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/kasan-checks.h>
- #include <linux/string.h>
- #include <asm/asm.h>
-@@ -175,11 +176,16 @@ extern int __get_user_bad(void);
- 	register __inttype(*(ptr)) __val_gu asm("%"_ASM_DX);		\
- 	__chk_user_ptr(ptr);						\
- 	might_fault();							\
--	asm volatile("call __get_user_%P4"				\
--		     : "=a" (__ret_gu), "=r" (__val_gu),		\
-+	if (should_fail_usercopy()) {					\
-+		(x) = 0;						\
-+		__ret_gu = -EFAULT;					\
-+	} else {							\
-+		asm volatile("call __get_user_%P4"			\
-+			: "=a" (__ret_gu), "=r" (__val_gu),		\
- 			ASM_CALL_CONSTRAINT				\
--		     : "0" (ptr), "i" (sizeof(*(ptr))));		\
--	(x) = (__force __typeof__(*(ptr))) __val_gu;			\
-+			: "0" (ptr), "i" (sizeof(*(ptr))));		\
-+		(x) = (__force __typeof__(*(ptr))) __val_gu;		\
-+	}								\
- 	__builtin_expect(__ret_gu, 0);					\
- })
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
+index 907889f1fa9d..801681b63daa 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.h
++++ b/drivers/scsi/ibmvscsi/ibmvfc.h
+@@ -124,6 +124,9 @@ enum ibmvfc_mad_types {
+ 	IBMVFC_PASSTHRU		= 0x0200,
+ 	IBMVFC_TMF_MAD		= 0x0100,
+ 	IBMVFC_NPIV_LOGOUT	= 0x0800,
++	IBMVFC_CHANNEL_ENQUIRY	= 0x1000,
++	IBMVFC_CHANNEL_SETUP	= 0x2000,
++	IBMVFC_CONNECTION_INFO	= 0x4000,
+ };
  
-@@ -236,31 +242,35 @@ extern void __put_user_8(void);
-  *
-  * Return: zero on success, or -EFAULT on error.
-  */
--#define put_user(x, ptr)					\
--({								\
--	int __ret_pu;						\
--	__typeof__(*(ptr)) __pu_val;				\
--	__chk_user_ptr(ptr);					\
--	might_fault();						\
--	__pu_val = x;						\
--	switch (sizeof(*(ptr))) {				\
--	case 1:							\
--		__put_user_x(1, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	case 2:							\
--		__put_user_x(2, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	case 4:							\
--		__put_user_x(4, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	case 8:							\
--		__put_user_x8(__pu_val, ptr, __ret_pu);		\
--		break;						\
--	default:						\
--		__put_user_x(X, __pu_val, ptr, __ret_pu);	\
--		break;						\
--	}							\
--	__builtin_expect(__ret_pu, 0);				\
-+#define put_user(x, ptr)						\
-+({									\
-+	int __ret_pu;							\
-+	__typeof__(*(ptr)) __pu_val;					\
-+	__chk_user_ptr(ptr);						\
-+	might_fault();							\
-+	__pu_val = x;							\
-+	if (should_fail_usercopy()) {					\
-+		__ret_pu = -EFAULT;					\
-+	} else {							\
-+		switch (sizeof(*(ptr))) {				\
-+		case 1:							\
-+			__put_user_x(1, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		case 2:							\
-+			__put_user_x(2, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		case 4:							\
-+			__put_user_x(4, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		case 8:							\
-+			__put_user_x8(__pu_val, ptr, __ret_pu);		\
-+			break;						\
-+		default:						\
-+			__put_user_x(X, __pu_val, ptr, __ret_pu);	\
-+			break;						\
-+		}							\
-+	}								\
-+	__builtin_expect(__ret_pu, 0);					\
- })
+ struct ibmvfc_mad_common {
+@@ -162,6 +165,8 @@ struct ibmvfc_npiv_login {
+ 	__be32 max_cmds;
+ 	__be64 capabilities;
+ #define IBMVFC_CAN_MIGRATE		0x01
++#define IBMVFC_CAN_USE_CHANNELS		0x02
++#define IBMVFC_CAN_HANDLE_FPIN		0x04
+ 	__be64 node_name;
+ 	struct srp_direct_buf async;
+ 	u8 partition_name[IBMVFC_MAX_NAME];
+@@ -204,6 +209,7 @@ struct ibmvfc_npiv_login_resp {
+ 	__be64 capabilities;
+ #define IBMVFC_CAN_FLUSH_ON_HALT	0x08
+ #define IBMVFC_CAN_SUPPRESS_ABTS	0x10
++#define IBMVFC_CAN_SUPPORT_CHANNELS	0x20
+ 	__be32 max_cmds;
+ 	__be32 scsi_id_sz;
+ 	__be64 max_dma_len;
+@@ -482,6 +488,52 @@ struct ibmvfc_passthru_mad {
+ 	struct ibmvfc_passthru_fc_iu fc_iu;
+ }__attribute__((packed, aligned (8)));
  
- #define __put_user_size(x, ptr, size, label)				\
-diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-index b0dfac3d3df7..7747cda5780d 100644
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -7,6 +7,7 @@
-  * Copyright 2002 Andi Kleen <ak@suse.de>
-  */
- #include <linux/export.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/uaccess.h>
- #include <linux/highmem.h>
++struct ibmvfc_channel_enquiry {
++	struct ibmvfc_mad_common common;
++	__be32 flags;
++#define IBMVFC_NO_CHANNELS_TO_CRQ_SUPPORT	0x01
++#define IBMVFC_SUPPORT_VARIABLE_SUBQ_MSG	0x02
++#define IBMVFC_NO_N_TO_M_CHANNELS_SUPPORT	0x04
++	__be32 num_scsi_subq_channels;
++	__be32 num_nvmeof_subq_channels;
++	__be32 num_scsi_vas_channels;
++	__be32 num nvmeof_vas_channels;
++}__attribute__((packed, aligned (8)));
++
++struct ibmvfc_channel_setup_mad {
++	struct ibmvfc_mad_common common;
++	struct srp_direct_buf buffer;
++}__attrribute__((packed, aligned (8)));
++
++#define IBMVFC_MAX_CHANNELS	502
++
++struct ibmvfc_channel_setup {
++	__be32 flags;
++#define IBMVFC_CANCEL_CHANNELS		0x01
++#define IBMVFC_USE_BUFFER		0x02
++#define IBMVFC_CHANNELS_CANCELED	0x04
++	__be32 reserved;
++	__be32 num_scsi_subq_channels;
++	__be32 num_nvmeof_subq_channels;
++	__be32 num_scsi_vas_channels;
++	__be32 num_nvmeof_vas_channels;
++	struct srp_direct_buf buffer;
++	__be64 reserved2[5];
++	__be64 channel_handles[IBMVFC_MAX_CHANNELS];
++}__attribute__((packed, aligned (8)));
++
++struct ibmvfc_connection_info {
++	struct ibmvfc_madd_common common;
++	__be64 information_bits;
++#define IBMVFC_NO_FC_IO_CHANNEL		0x01
++#define IBMVFC_NO_PHYP_VAS		0x02
++#define IBMVFC_NO_PHYP_SUBQ		0x04
++#define IBMVFC_PHYP_DEPRECATED_SUBQ	0x08
++#define IBMVFC_PHYP_PRESERVED_SUBQ	0x10
++#define IBMVFC_PHYP_FULL_SUBQ		0x20
++	__be64 reserved[16];
++}__attribute__((packed, aligned (8)));
++
+ struct ibmvfc_trace_start_entry {
+ 	u32 xfer_len;
+ }__attribute__((packed));
+@@ -532,6 +584,7 @@ enum ibmvfc_async_event {
+ 	IBMVFC_AE_HALT			= 0x0400,
+ 	IBMVFC_AE_RESUME			= 0x0800,
+ 	IBMVFC_AE_ADAPTER_FAILED	= 0x1000,
++	IBMVFC_AE_FPIN			= 0x2000,
+ };
  
-@@ -50,6 +51,8 @@ EXPORT_SYMBOL(__clear_user);
+ struct ibmvfc_async_desc {
+@@ -560,10 +613,18 @@ enum ibmvfc_ae_link_state {
+ 	IBMVFC_AE_LS_LINK_DEAD		= 0x08,
+ };
  
- unsigned long clear_user(void __user *to, unsigned long n)
- {
-+	if (should_fail_usercopy())
-+		return n;
- 	if (access_ok(to, n))
- 		return __clear_user(to, n);
- 	return n;
++enum ibmvfc_ae_fpin_status {
++	IBMVFC_AE_FPIN_LINK_CONGESTED	= 0x1,
++	IBMVFC_AE_FPIN_PORT_CONGESTED	= 0x2,
++	IBMVFC_AE_FPIN_PORT_CLEARED	= 0x3,
++	IBMVFC_AE_FPIN_PORT_DEGRADED	= 0x4,
++};
++
+ struct ibmvfc_async_crq {
+ 	volatile u8 valid;
+ 	u8 link_state;
+-	u8 pad[2];
++	u8 fpin_status
++	u8 pad;
+ 	__be32 pad2;
+ 	volatile __be64 event;
+ 	volatile __be64 scsi_id;
+@@ -590,6 +651,9 @@ union ibmvfc_iu {
+ 	struct ibmvfc_tmf tmf;
+ 	struct ibmvfc_cmd cmd;
+ 	struct ibmvfc_passthru_mad passthru;
++	struct ibmvfc_channel_enquiry channel_enquiry;
++	struct ibmvfc_channel_setup_mad channel_setup;
++	struct ibmvfc_connection_info connection_info;
+ }__attribute__((packed, aligned (8)));
+ 
+ enum ibmvfc_target_action {
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.27.0
 
