@@ -2,243 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF163257530
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6085257533
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgHaIUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 04:20:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:55036 "EHLO foss.arm.com"
+        id S1728102AbgHaIXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:23:16 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26543 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728147AbgHaIUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:20:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76AB831B;
-        Mon, 31 Aug 2020 01:20:22 -0700 (PDT)
-Received: from [10.57.6.112] (unknown [10.57.6.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D51DA3F68F;
-        Mon, 31 Aug 2020 01:20:19 -0700 (PDT)
-Subject: Re: [PATCH 4/4] kselftests/arm64: add PAuth tests for single threaded
- consistency and key uniqueness
-To:     Boyan Karatotev <boyan.karatotev@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     vincenzo.frascino@arm.com, boian4o1@gmail.com,
-        Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <20200828131606.7946-1-boyan.karatotev@arm.com>
- <20200828131606.7946-5-boyan.karatotev@arm.com>
-From:   Amit Kachhap <amit.kachhap@arm.com>
-Message-ID: <6ea1f31f-dda3-5e7d-126e-88590614b86f@arm.com>
-Date:   Mon, 31 Aug 2020 13:50:17 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1725829AbgHaIXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:23:13 -0400
+IronPort-SDR: VLriy6BcbVV1PLh9RbX6TR6XH5EIKHPczhihMmSSPBuRQyVF2fxu36SXMMBHmoQn2FP/oEVBBr
+ smvnfNryFYrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="218477923"
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="218477923"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 01:23:10 -0700
+IronPort-SDR: gLSHJrMEHOmN4CLQPUk1eUjfLzPJGAErURr6c0Qmd8Xpr1eB/Xud6G4u/50HaigYE43wSKZ5Yy
+ dS4dNfDTBMlA==
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="338159064"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 01:23:07 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 4BD6F2071B; Mon, 31 Aug 2020 11:23:05 +0300 (EEST)
+Date:   Mon, 31 Aug 2020 11:23:05 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
+        linux-media@vger.kernel.org,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        "Qiu, Tian Shu" <tian.shu.qiu@intel.com>
+Subject: Re: [PATCH v6 1/6] i2c: Allow an ACPI driver to manage the device's
+ power state during probe
+Message-ID: <20200831082305.GD31019@paasikivi.fi.intel.com>
+References: <20200826115432.6103-1-sakari.ailus@linux.intel.com>
+ <20200826115432.6103-2-sakari.ailus@linux.intel.com>
+ <20200828083832.GE1343@ninjato>
 MIME-Version: 1.0
-In-Reply-To: <20200828131606.7946-5-boyan.karatotev@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200828083832.GE1343@ninjato>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Wolfram,
 
-On 8/28/20 6:46 PM, Boyan Karatotev wrote:
-> PAuth adds 5 different keys that can be used to sign addresses.
+Thank you for the review.
+
+On Fri, Aug 28, 2020 at 10:38:32AM +0200, Wolfram Sang wrote:
+> Hi Sakari,
 > 
-> Add a test that verifies that the kernel initializes them uniquely and
-> preserves them across context switches.
+> On Wed, Aug 26, 2020 at 02:54:27PM +0300, Sakari Ailus wrote:
+> > Enable drivers to tell ACPI that there's no need to power on a device for
+> > probe. Drivers should still perform this by themselves if there's a need
+> > to. In some cases powering on the device during probe is undesirable, and
+> > this change enables a driver to choose what fits best for it.
+> > 
+> > Add a field called "flags" into struct i2c_driver for driver flags, and a
+> > flag I2C_DRV_FL_ALLOW_LOW_POWER_PROBE to tell a driver supports probe in
+> > low power state.
+> > 
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  drivers/i2c/i2c-core-base.c | 18 +++++++++++++++---
+> >  include/linux/i2c.h         | 14 ++++++++++++++
+> >  2 files changed, 29 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> > index 34a9609f256da..f2683790eb0d2 100644
+> > --- a/drivers/i2c/i2c-core-base.c
+> > +++ b/drivers/i2c/i2c-core-base.c
+> > @@ -436,6 +436,15 @@ static int i2c_smbus_host_notify_to_irq(const struct i2c_client *client)
+> >  	return irq > 0 ? irq : -ENXIO;
+> >  }
+> >  
+> > +static bool allow_low_power_probe(struct device *dev)
+> > +{
+> > +	struct i2c_driver *driver = to_i2c_driver(dev->driver);
+> > +
+> > +	return driver->flags & I2C_DRV_FL_ALLOW_LOW_POWER_PROBE &&
+> > +		is_acpi_node(dev_fwnode(dev)) &&
+> > +		device_property_present(dev, "allow-low-power-probe");
 > 
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+> So, I wondered about potential DT usage and I read the discussion about
+> that in v5 which concluded that for the DT case, the drivers can make
+> use of the binding individually. I can agree to that, but then the name
+> of the binding is probably problematic. 'allow-*' sounds like
+> configuration but DT is for describing HW. So, I think something in the
+> range of 'keep-low-power' or so might be better suited. Grepping shows
+> there already is a generic binding "low-power-enable". Not sure, if it
+> really fits, because here it is more about 'keeping' rather than
+> enabling. Or?
 
+The low-power-enable appears to be telling pinctrl drivers the pin can
+be configured for low power operation.
 
-> ---
->   tools/testing/selftests/arm64/pauth/pac.c | 116 ++++++++++++++++++++++
->   1 file changed, 116 insertions(+)
+This patchset is really about changing the default of ACPI powering up I²C
+devices. On OF the drivers are indeed responsible for that.
+
+Another approach in naming the property could related to the consequence
+that device accesses must be omitted during driver probe time, but the
+first device access takes place when the user actually needs it, e.g.
+"skip-device-probe". Due to that the device does not need to be powered on
+for probe, so powering it on can be omitted. I'd still keep the naming in
+the kernel as-is in that case.
+
 > 
-> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
-> index 16dea47b11c7..718f49adc275 100644
-> --- a/tools/testing/selftests/arm64/pauth/pac.c
-> +++ b/tools/testing/selftests/arm64/pauth/pac.c
-> @@ -1,10 +1,13 @@
->   // SPDX-License-Identifier: GPL-2.0
->   // Copyright (C) 2020 ARM Limited
->   
-> +#define _GNU_SOURCE
-> +
->   #include <sys/auxv.h>
->   #include <sys/types.h>
->   #include <sys/wait.h>
->   #include <signal.h>
-> +#include <sched.h>
->   
->   #include "../../kselftest_harness.h"
->   #include "helper.h"
-> @@ -21,6 +24,7 @@
->    * The VA space size is 48 bits. Bigger is opt-in.
->    */
->   #define PAC_MASK (~0xff80ffffffffffff)
-> +#define ARBITRARY_VALUE (0x1234)
->   #define ASSERT_PAUTH_ENABLED() \
->   do { \
->   	unsigned long hwcaps = getauxval(AT_HWCAP); \
-> @@ -66,13 +70,36 @@ int are_same(struct signatures *old, struct signatures *new, int nkeys)
->   	return res;
->   }
->   
-> +int are_unique(struct signatures *sign, int nkeys)
-> +{
-> +	size_t vals[nkeys];
-> +
-> +	vals[0] = sign->keyia & PAC_MASK;
-> +	vals[1] = sign->keyib & PAC_MASK;
-> +	vals[2] = sign->keyda & PAC_MASK;
-> +	vals[3] = sign->keydb & PAC_MASK;
-> +
-> +	if (nkeys >= 4)
-> +		vals[4] = sign->keyg & PAC_MASK;
-> +
-> +	for (int i = 0; i < nkeys - 1; i++) {
-> +		for (int j = i + 1; j < nkeys; j++) {
-> +			if (vals[i] == vals[j])
-> +				return 0;
-> +		}
-> +	}
-> +	return 1;
-> +}
-> +
->   int exec_sign_all(struct signatures *signed_vals, size_t val)
->   {
->   	int new_stdin[2];
->   	int new_stdout[2];
->   	int status;
-> +	int i;
->   	ssize_t ret;
->   	pid_t pid;
-> +	cpu_set_t mask;
->   
->   	ret = pipe(new_stdin);
->   	if (ret == -1) {
-> @@ -86,6 +113,20 @@ int exec_sign_all(struct signatures *signed_vals, size_t val)
->   		return -1;
->   	}
->   
-> +	/*
-> +	 * pin this process and all its children to a single CPU, so it can also
-> +	 * guarantee a context switch with its child
-> +	 */
-> +	sched_getaffinity(0, sizeof(mask), &mask);
-> +
-> +	for (i = 0; i < sizeof(cpu_set_t); i++)
-> +		if (CPU_ISSET(i, &mask))
-> +			break;
-> +
-> +	CPU_ZERO(&mask);
-> +	CPU_SET(i, &mask);
-> +	sched_setaffinity(0, sizeof(mask), &mask);
-> +
->   	pid = fork();
->   	// child
->   	if (pid == 0) {
-> @@ -192,6 +233,38 @@ TEST(pac_instructions_not_nop_generic)
->   	ASSERT_NE(0, keyg)  TH_LOG("keyg instructions did nothing");
->   }
->   
-> +TEST(single_thread_unique_keys)
-> +{
-> +	int unique = 0;
-> +	int nkeys = NKEYS;
-> +	struct signatures signed_vals;
-> +	unsigned long hwcaps = getauxval(AT_HWCAP);
-> +
-> +	/* generic and data key instructions are not in NOP space. This prevents a SIGILL */
-> +	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled");
-> +	if (!(hwcaps & HWCAP_PACG)) {
-> +		TH_LOG("WARNING: Generic PAUTH not enabled. Skipping generic key checks");
-> +		nkeys = NKEYS - 1;
-> +	}
-> +
-> +	/*
-> +	 * The PAC field is up to 7 bits. Even with unique keys there is about
-> +	 * 5% chance for a collision.  This chance rapidly increases the fewer
-> +	 * bits there are, a comparison of the keys directly will be more
-
-Can you please reframe the above sentence as it is not clear.
-The other changes look fine to me so please free to add,
-Reviewed-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
-
-//Amit
-
-
-> +	 * reliable All signed values need to be unique at least once out of n
-> +	 * attempts to be certain that the keys are unique
-> +	 */
-> +	for (int i = 0; i < PAC_COLLISION_ATTEMPTS; i++) {
-> +		if (nkeys == NKEYS)
-> +			sign_all(&signed_vals, i);
-> +		else
-> +			sign_specific(&signed_vals, i);
-> +		unique |= are_unique(&signed_vals, nkeys);
-> +	}
-> +
-> +	ASSERT_EQ(1, unique) TH_LOG("keys clashed every time");
-> +}
-> +
->   /*
->    * fork() does not change keys. Only exec() does so call a worker program.
->    * Its only job is to sign a value and report back the resutls
-> @@ -227,5 +300,48 @@ TEST(exec_unique_keys)
->   	ASSERT_EQ(1, different) TH_LOG("exec() did not change keys");
->   }
->   
-> +TEST(context_switch_keep_keys)
-> +{
-> +	int ret;
-> +	struct signatures trash;
-> +	struct signatures before;
-> +	struct signatures after;
-> +
-> +	ASSERT_PAUTH_ENABLED();
-> +
-> +	sign_specific(&before, ARBITRARY_VALUE);
-> +
-> +	/* will context switch with a process with different keys at least once */
-> +	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
-> +	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-> +
-> +	sign_specific(&after, ARBITRARY_VALUE);
-> +
-> +	ASSERT_EQ(before.keyia, after.keyia) TH_LOG("keyia changed after context switching");
-> +	ASSERT_EQ(before.keyib, after.keyib) TH_LOG("keyib changed after context switching");
-> +	ASSERT_EQ(before.keyda, after.keyda) TH_LOG("keyda changed after context switching");
-> +	ASSERT_EQ(before.keydb, after.keydb) TH_LOG("keydb changed after context switching");
-> +}
-> +
-> +TEST(context_switch_keep_keys_generic)
-> +{
-> +	int ret;
-> +	struct signatures trash;
-> +	size_t before;
-> +	size_t after;
-> +
-> +	ASSERT_GENERIC_PAUTH_ENABLED();
-> +
-> +	before = keyg_sign(ARBITRARY_VALUE);
-> +
-> +	/* will context switch with a process with different keys at least once */
-> +	ret = exec_sign_all(&trash, ARBITRARY_VALUE);
-> +	ASSERT_EQ(0, ret) TH_LOG("failed to run worker");
-> +
-> +	after = keyg_sign(ARBITRARY_VALUE);
-> +
-> +	ASSERT_EQ(before, after) TH_LOG("keyg changed after context switching");
-> +}
-> +
->   TEST_HARNESS_MAIN
->   
+> > +/**
+> > + * enum i2c_driver_flags - Flags for an I2C device driver
+> > + *
+> > + * @I2C_DRV_FL_ALLOW_LOW_POWER_PROBE: Let the ACPI driver manage the device's
+> > + *				      power state during probe and remove
+> > + */
+> > +enum i2c_driver_flags {
+> > +	I2C_DRV_FL_ALLOW_LOW_POWER_PROBE = BIT(0),
+> > +};
+> > +
+> >  /**
+> >   * struct i2c_driver - represent an I2C device driver
+> >   * @class: What kind of i2c device we instantiate (for detect)
+> > @@ -231,6 +242,7 @@ enum i2c_alert_protocol {
+> >   * @detect: Callback for device detection
+> >   * @address_list: The I2C addresses to probe (for detect)
+> >   * @clients: List of detected clients we created (for i2c-core use only)
+> > + * @flags: A bitmask of flags defined in &enum i2c_driver_flags
+> >   *
+> >   * The driver.owner field should be set to the module owner of this driver.
+> >   * The driver.name field should be set to the name of this driver.
+> > @@ -289,6 +301,8 @@ struct i2c_driver {
+> >  	int (*detect)(struct i2c_client *client, struct i2c_board_info *info);
+> >  	const unsigned short *address_list;
+> >  	struct list_head clients;
+> > +
+> > +	unsigned int flags;
 > 
+> Here I wonder if all this is really I2C specific? I could imagine this
+> being useful for other busses as well, so maybe 'struct device_driver'
+> is a better place?
+
+The default power state appears to depend on the bus type on ACPI. I'd
+think it's unlikely this feature would be needed elsewhere, with the
+possible exception of I3C, if hardware design does not improve from the
+current I²C connected cameras.
+
+My original series had a field in struct device_driver for this purpose but
+Greg K-H suggested moving it to I²C instead:
+
+<URL:https://lore.kernel.org/linux-acpi/20190826084343.GA1095@kroah.com/>
+
+-- 
+Kind regards,
+
+Sakari Ailus
