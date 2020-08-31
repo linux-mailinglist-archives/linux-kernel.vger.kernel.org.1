@@ -2,242 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFFA25776C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2957257756
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbgHaKhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 06:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbgHaKhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:37:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC69FC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:37:15 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1kChBR-0002wP-VC; Mon, 31 Aug 2020 12:37:06 +0200
-Message-ID: <e882838158cb9e81440c8cdeb25d80bf3310e8a8.camel@pengutronix.de>
-Subject: Re: [PATCH v9 0/5] Add support for iMX8MQ Display Controller
- Subsystem
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     lukas@mntmn.com, agx@sigxcpu.org
-Date:   Mon, 31 Aug 2020 12:37:23 +0200
-In-Reply-To: <20200828083620.6m5yhcv7rg5tckzh@fsr-ub1864-141>
-References: <20200731081836.3048-1-laurentiu.palcu@oss.nxp.com>
-         <20200828083620.6m5yhcv7rg5tckzh@fsr-ub1864-141>
+        id S1726312AbgHaKfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 06:35:13 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:34312 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725964AbgHaKfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:35:10 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 4AB3B535F4;
+        Mon, 31 Aug 2020 10:35:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1598870107; x=1600684508; bh=0VeHPiaZvmXhvT8L0B+62aDY+
+        CfD9GT+ShogVgL+t5U=; b=el4jZtFPa2eA0Frb34kzBlWeZJFpu6vmRd2cjaBhR
+        Z75GF1kTCnzfpBkaqalOd+Oroc5ZNdG1Rl3AZGlYtTO373d9mzq30UyAitYJk/03
+        8G1FjxYGFbNeSAeHijFCSI57QRqXKvk0//0AkpHa/nDGEM7mY8g8Hng240YR6UOJ
+        iE=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id a0OIJ2ihJJKe; Mon, 31 Aug 2020 13:35:07 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id D9E275718C;
+        Mon, 31 Aug 2020 13:35:06 +0300 (MSK)
+Received: from localhost.localdomain (10.199.3.42) by T-EXCH-02.corp.yadro.com
+ (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Mon, 31
+ Aug 2020 13:35:06 +0300
+Message-ID: <6a9ce70135805862b93fdfea07418b0b248445d4.camel@yadro.com>
+Subject: Re: [PATCH 0/2] enable lock interface for macronix chips
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date:   Mon, 31 Aug 2020 13:38:21 +0300
+In-Reply-To: <20200812151818.16699-1-i.mikhaylov@yadro.com>
+References: <20200812151818.16699-1-i.mikhaylov@yadro.com>
+Organization: YADRO
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Originating-IP: [10.199.3.42]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurentiu,
-
-On Fr, 2020-08-28 at 11:36 +0300, Laurentiu Palcu wrote:
-> Hi Lucas,
+On Wed, 2020-08-12 at 18:18 +0300, Ivan Mikhaylov wrote:
+> TB(Top/Bottome protection bit) is not present in the status register for
+> macronix chips, do not touch TB bit in status register in this case.
+> Enable lock interface for most of macronix chips which are suitable for it.
 > 
-> I was wondering about the plans to merge this series. Since not many
-> people can test it properly due to lack of DCSS support in the upstream
-> NWL driver (which I heard it's coming soon) and a completely nonexistent
-> HDP driver, are we going to take a leap of faith and merge it as is? Or
-> should we wait?
-
-I think even if the bridges aren't ready yet, the driver is in a good
-enough shape to merge it. There's no point in letting it accumulate
-bitrot while waiting for the bridges to land. Also I guess it will make
-bridge driver development a lot easier when the DCSS driver is in-tree.
-
-> As to who is going to do the actual merge, I know we had a brief
-> discussion about it some time ago and I was supposed to apply for
-> drm-misc rights, however it feels a little awkward to merge my own
-> code... :) Though, I might not even qualify for drm-misc rights anyway,
-> considering I haven't been very active in this area... :/
-
-Please consider applying for drm-misc merge rights. Even if you don't
-do the initial merge I think it will come in handy in the long run.
-
-> On that note, I will probably need help with the merging, provided it's
-> still happenning. Will you be able to help me out with this?
-
-Sure, I'm having some time available this week. I'll give this v9
-another spin on my boards and will do the merge after that.
-
-Regards,
-Lucas
-
-> Thanks,
-> laurentiu
+> Tested only mx25l51245g (BP0-3).
 > 
-> On Fri, Jul 31, 2020 at 11:18:28AM +0300, Laurentiu Palcu wrote:
-> > From: Laurentiu Palcu <laurentiu.palcu@nxp.com>
-> > 
-> > Hi,
-> > 
-> > This patchset adds initial DCSS support for iMX8MQ chip. Initial support
-> > includes only graphics plane support (no video planes), no HDR10 capabilities,
-> > no graphics decompression (only linear, tiled and super-tiled buffers allowed).
-> > 
-> > Support for the rest of the features will be added incrementally, in subsequent
-> > patches.
-> > 
-> > The patchset was tested with both HDP driver (in the downstream tree) and the upstream
-> > MIPI-DSI driver (with a couple of patches on top, to make it work correctly with DCSS).
-> > 
-> > Thanks,
-> > Laurentiu
-> > 
-> > Changes in v9:
-> >  * Fixed a compilation issue found by Guido in his setup: 'select
-> >    VIDEOMODE_HELPERS' was missing from Kconfig;
-> >  * Use imx8mq-clock.h in the bindings file so one can understand what
-> >    those clock values mean;
-> >  * no other changes done. Couldn't address the hang Guido reported as
-> >    it's not happening in my setup. However, in my tree, there are some
-> >    extra NWL and ADV patches applied on top of upstream ones... Also,
-> >    removing them and testing only with upstream, even if there's no
-> >    image out, does not produce a hang... :/
-> > 
-> > Changes in v8:
-> >  * Removed 'select RESET_CONTROLLER" from Kconfig as Philipp pointed
-> >    out. SRC is not used in DCSS driver;
-> >  * Nothing else changed;
-> > 
-> > Changes in v7:
-> >  * Added a patch to initialize the connector using the drm_bridge_connector
-> >    API as Sam suggested. Tested it using NWL_DSI and ADV7535 with
-> >    Guido's patch [1] applied and one fix for ADV [2]. Also, some extra
-> >    patches for ADV and NWL were needed, from our downstream tree, which
-> >    will be upstreamed soon by their author;
-> >  * Rest of the patches are untouched;
-> > 
-> > [1] https://lists.freedesktop.org/archives/dri-devel/2020-July/273025.html
-> > [2] https://lists.freedesktop.org/archives/dri-devel/2020-July/273132.html
-> > 
-> > Changes in v6:
-> >  * Addressed Rob's comment and added "additionalProperties: false" at
-> >    the end of the bindings' properties. However, this change surfaced
-> >    an issue with the assigned-clock* properties not being documented in
-> >    the properties section. Added the descriptions and the bindings patch
-> >    will need another review;
-> >  * Added an entry for DCSS driver in the MAINTAINERS file;
-> >  * Removed the component framework patch altogether;
-> > 
-> > Changes in v5:
-> >  * Rebased to latest;
-> >  * Took out component framework support and made it a separate patch so
-> >    that people can still test with HDP driver, which makes use of it.
-> >    But the idea is to get rid of it once HDP driver's next versions
-> >    will remove component framework as well;
-> >  * Slight improvement to modesetting: avoid cutting off the pixel clock
-> >    if the new mode and the old one are equal. Also, in this case, is
-> >    not necessary to wait for DTG to shut off. This would allow to switch
-> >    from 8b RGB to 12b YUV422, for example, with no interruptions (at least
-> >    from DCSS point of view);
-> >  * Do not fire off CTXLD when going to suspend, unless it still has
-> >    entries that need to be committed to DCSS;
-> >  * Addressed Rob's comments on bindings;
-> > 
-> > Changes in v4:
-> >  * Addressed Lucas and Philipp's comments:
-> >    * Added DRM_KMS_CMA_HELPER dependency in Kconfig;
-> >    * Removed usage of devm_ functions since I'm already doing all the
-> >      clean-up in the submodules_deinit();
-> >    * Moved the drm_crtc_arm_vblank_event() in dcss_crtc_atomic_flush();
-> >    * Removed en_completion variable from dcss_crtc since this was
-> >      introduced mainly to avoid vblank timeout warnings which were fixed
-> >      by arming the vblank event in flush() instead of begin();
-> >    * Removed clks_on and irq_enabled flags since all the calls to
-> >      enabling/disabling clocks and interrupts were balanced;
-> >    * Removed the custom atomic_commit callback and used the DRM core
-> >      helper and, in the process, got rid of a workqueue that wasn't
-> >      necessary anymore;
-> >    * Fixed some minor DT binding issues flagged by Philipp;
-> >    * Some other minor changes suggested by Lucas;
-> >  * Removed YUV formats from the supported formats as these cannot work
-> >    without the HDR10 module CSCs and LUTs. Will add them back when I
-> >    will add support for video planes;
-> > 
-> > Changes in v3:
-> >  * rebased to latest linux-next and made it compile as drmP.h was
-> >    removed;
-> >  * removed the patch adding the VIDEO2_PLL clock. It's already applied;
-> >  * removed an unnecessary 50ms sleep in the dcss_dtg_sync_set();
-> >  * fixed a a spurious hang reported by Lukas Hartmann and encountered
-> >    by me several times;
-> >  * mask DPR and DTG interrupts by default, as they may come enabled from
-> >    U-boot;
-> > 
-> > Changes in v2:
-> >  * Removed '0x' in node's unit-address both in DT and yaml;
-> >  * Made the address region size lowercase, to be consistent;
-> >  * Removed some left-over references to P010;
-> >  * Added a Kconfig dependency of DRM && ARCH_MXC. This will also silence compilation
-> >    issues reported by kbuild for other architectures;
-> > 
-> > 
-> > Laurentiu Palcu (5):
-> >   drm/imx: compile imx directory by default
-> >   drm/imx: Add initial support for DCSS on iMX8MQ
-> >   drm/imx/dcss: use drm_bridge_connector API
-> >   MAINTAINERS: Add entry for i.MX 8MQ DCSS driver
-> >   dt-bindings: display: imx: add bindings for DCSS
-> > 
-> >  .../bindings/display/imx/nxp,imx8mq-dcss.yaml | 108 +++
-> >  MAINTAINERS                                   |   8 +
-> >  drivers/gpu/drm/Makefile                      |   2 +-
-> >  drivers/gpu/drm/imx/Kconfig                   |   2 +
-> >  drivers/gpu/drm/imx/Makefile                  |   1 +
-> >  drivers/gpu/drm/imx/dcss/Kconfig              |   9 +
-> >  drivers/gpu/drm/imx/dcss/Makefile             |   6 +
-> >  drivers/gpu/drm/imx/dcss/dcss-blkctl.c        |  70 ++
-> >  drivers/gpu/drm/imx/dcss/dcss-crtc.c          | 219 +++++
-> >  drivers/gpu/drm/imx/dcss/dcss-ctxld.c         | 424 +++++++++
-> >  drivers/gpu/drm/imx/dcss/dcss-dev.c           | 325 +++++++
-> >  drivers/gpu/drm/imx/dcss/dcss-dev.h           | 177 ++++
-> >  drivers/gpu/drm/imx/dcss/dcss-dpr.c           | 562 ++++++++++++
-> >  drivers/gpu/drm/imx/dcss/dcss-drv.c           | 138 +++
-> >  drivers/gpu/drm/imx/dcss/dcss-dtg.c           | 409 +++++++++
-> >  drivers/gpu/drm/imx/dcss/dcss-kms.c           | 198 +++++
-> >  drivers/gpu/drm/imx/dcss/dcss-kms.h           |  44 +
-> >  drivers/gpu/drm/imx/dcss/dcss-plane.c         | 405 +++++++++
-> >  drivers/gpu/drm/imx/dcss/dcss-scaler.c        | 826 ++++++++++++++++++
-> >  drivers/gpu/drm/imx/dcss/dcss-ss.c            | 180 ++++
-> >  20 files changed, 4112 insertions(+), 1 deletion(-)
-> >  create mode 100644 Documentation/devicetree/bindings/display/imx/nxp,imx8mq-dcss.yaml
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/Kconfig
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/Makefile
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-blkctl.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-crtc.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-ctxld.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dev.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dev.h
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dpr.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-drv.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-dtg.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-kms.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-kms.h
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-plane.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-scaler.c
-> >  create mode 100644 drivers/gpu/drm/imx/dcss/dcss-ss.c
-> > 
-> > -- 
-> > 2.23.0
-> > 
+> Ivan Mikhaylov (2):
+>   mtd: spi-nor: do not touch TB bit without SPI_NOR_HAS_TB
+>   mtd: spi-nor: enable lock interface for macronix chips
+> 
+>  drivers/mtd/spi-nor/core.c     | 22 +++++++---
+>  drivers/mtd/spi-nor/macronix.c | 75 ++++++++++++++++++++++------------
+>  2 files changed, 66 insertions(+), 31 deletions(-)
+> 
+
+ping
 
