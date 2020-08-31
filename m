@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B743257838
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6457C257826
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgHaLXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgHaLEl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:04:41 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7C1C06123C
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:04:14 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 5so412611pgl.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SQHLmew/+Uw02hOPwl2KHpbtxwjKEHifcexkv1FCU6c=;
-        b=qu9xuHsiVO1/lhFmOB3Y3peMVj53ZshahjOB6elhp66R5CgK9whhOLPoUy9hJDwOml
-         Xx52NED74g9DEWtob9uJW3arR10F4ZGioAyQqYEs5SvJ1RjzcZA2QrePfX+NC69hXOpx
-         T2ZqORq8P48EJWSjC8u3HyAakTJWOPBND8tw/CDs4nTIDPYu0fE46kWrXoL+o5XVsLiq
-         ztj4QCcWejcIcr3s62PLOOcoR4zkUTdUUajQzYFsgdxoSYCfFfbcUWznqhF0ABqFnXPE
-         OHlJ3s1cAKonQKGi4+iTZ+TeuRQIbX3NmSxTqk9xxswBLaw7kbqZlhRogYMkOY2qzObd
-         Qt+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SQHLmew/+Uw02hOPwl2KHpbtxwjKEHifcexkv1FCU6c=;
-        b=pEzzDvDHdRY6wgFgPJ8BG5Rylbe6Tas1ilIXFsYbMX4RlLvLrr+bu/JOBw9RiQMila
-         JFtpVranP7KYFVkfWzIH+ApIf7ofPqE+UTR1xkqBs7v539CzRss77euu/hRE79sKN3vd
-         HkKQWt2A2cL5pZJXr9R4Unbg6vHXQcR+OkUrsEUtG9LGiKulsY/F0yuD4oCMjovJz1jz
-         sZjqbu3+0K6zxz0UEw9T9zWlZWNMazt4eF/O4o6MgtT4/zw+I9jz7VTxuMyx578z0Trn
-         JffsPJ/v0u1ZbhlBxmhgvQDbCwa+3UTPLwGsRjMd/R18l5ZJGzo9l+8gQGLhDndbwFay
-         03LQ==
-X-Gm-Message-State: AOAM533jpnvSQnD74il+d4Gy9GooeMw+Sgo7FS1nAAgAZpYcRIYbKnZB
-        FqV//lQm5VGKfg5pryOvCKSARhJPbRQUKA==
-X-Google-Smtp-Source: ABdhPJxeSefAgzvdXk9S266/E7KO0kwk+YEMEr+ulK04bFCe5SCH5jaiI2wePURUQh3DPfX154nn+A==
-X-Received: by 2002:a05:6a00:14d0:: with SMTP id w16mr833159pfu.39.1598871854010;
-        Mon, 31 Aug 2020 04:04:14 -0700 (PDT)
-Received: from localhost ([122.167.135.199])
-        by smtp.gmail.com with ESMTPSA id w16sm7665688pfq.13.2020.08.31.04.04.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 31 Aug 2020 04:04:13 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 16:34:08 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] ARM: tegra: Pass multiple versions in
- opp-supported-hw property
-Message-ID: <20200831110408.a6lwivim4w4jtkdc@vireshk-i7>
-References: <cover.1598442485.git.viresh.kumar@linaro.org>
- <b13f1b112532fe0189d1f7bbb50903d9e1defb07.1598442485.git.viresh.kumar@linaro.org>
- <b0763074-859f-fccb-dde4-03d1a50ea021@gmail.com>
- <20200831043908.mtw4dglybcmcabjb@vireshk-i7>
- <0da380c2-9161-d450-afd2-4b159c8cfb7d@gmail.com>
- <20200831084111.6udzvrdonxgzju4l@vireshk-i7>
- <cbfa012b-8f50-e460-972c-c51fa52bb858@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbfa012b-8f50-e460-972c-c51fa52bb858@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        id S1726984AbgHaLVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:21:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:56592 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726472AbgHaLFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 07:05:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AAEE61FB;
+        Mon, 31 Aug 2020 04:05:17 -0700 (PDT)
+Received: from e124572.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 502E93F71F;
+        Mon, 31 Aug 2020 04:05:15 -0700 (PDT)
+From:   Boyan Karatotev <boyan.karatotev@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     vincenzo.frascino@arm.com, amit.kachhap@arm.com,
+        boian4o1@gmail.com, Boyan Karatotev <boyan.karatotev@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v2 0/4] kselftests/arm64: add PAuth tests
+Date:   Mon, 31 Aug 2020 12:04:46 +0100
+Message-Id: <20200831110450.30188-1-boyan.karatotev@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-08-20, 12:54, Dmitry Osipenko wrote:
-> It's not clear to me how it could be applicable to the Tegra CPU OPP
-> because Tegra depends on a combination of SPEEDO + PROCESS versions.
-> 
-> It's not like all voltages are the same for all OPPs that have the same
-> PROCESS ID, otherwise it indeed would be nice to have
-> "opp-microvolt-process0", but unfortunately this variant is not suitable
-> for Tegra because some freqs have different voltages using the same
-> PROCESS ID and the same applies to the SPEEDO ID.
+Pointer Authentication (PAuth) is a security feature introduced in ARMv8.3.
+It introduces instructions to sign addresses and later check for potential
+corruption using a second modifier value and one of a set of keys. The
+signature, in the form of the Pointer Authentication Code (PAC), is stored
+in some of the top unused bits of the virtual address (e.g. [54: 49] if
+TBID0 is enabled and TnSZ is set to use a 48 bit VA space). A set of
+controls are present to enable/disable groups of instructions (which use
+certain keys) for compatibility with libraries that do not utilize the
+feature. PAuth is used to verify the integrity of return addresses on the
+stack with less memory than the stack canary.
 
-How exactly do you know what voltage belongs to a particular OPP ?
+This patchset adds kselftests to verify the kernel's configuration of the
+feature and its runtime behaviour. There are 7 tests which verify that:
+	* an authentication failure leads to a SIGSEGV
+	* the data/instruction instruction groups are enabled
+	* the generic instructions are enabled
+	* all 5 keys are unique for a single thread
+	* exec() changes all keys to new unique ones
+	* context switching preserves the 4 data/instruction keys
+	* context switching preserves the generic keys
 
-		opp@216000000 {
-			clock-latency-ns = <400000>;
-			opp-supported-hw = <0x0F 0x0003>;
-			opp-hz = /bits/ 64 <216000000>;
-			opp-microvolt-fast-process0 = <750000 750000 1125000>;
-			opp-microvolt-slow-process0 = <750000 850000 1125000>;
+The tests have been verified to work on qemu without a working PAUTH
+Implementation and on ARM's FVP with a full or partial PAuth
+implementation.
 
-		};
+Changes in v2:
+* remove extra lines at end of files
+* Patch 1: "kselftests: add a basic arm64 Pointer Authentication test"
+	* add checks for a compatible compiler in Makefile
+* Patch 4: "kselftests: add PAuth tests for single threaded consistency and
+key uniqueness"
+	* rephrase comment for clarity in pac.c
 
-		opp@312000000 {
-			clock-latency-ns = <400000>;
-			opp-supported-hw = <0x0F 0x0003>;
-			opp-hz = /bits/ 64 <312000000>;
-			opp-microvolt-fast-process0 = <750000 750000 1125000>;
-			opp-microvolt-slow-process0 = <750000 850000 1125000>;
-		};
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Reviewed-by: Vincenzo Frascino <Vincenzo.Frascino@arm.com>
+Reviewed-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
 
-You can make any combinations of such names that come from speedo,
-process, or something else. If you can get this done as a fixed
-formula then it is workable.
+Boyan Karatotev (4):
+  kselftests/arm64: add a basic Pointer Authentication test
+  kselftests/arm64: add nop checks for PAuth tests
+  kselftests/arm64: add PAuth test for whether exec() changes keys
+  kselftests/arm64: add PAuth tests for single threaded consistency and
+    key uniqueness
 
--- 
-viresh
+ tools/testing/selftests/arm64/Makefile        |   2 +-
+ .../testing/selftests/arm64/pauth/.gitignore  |   2 +
+ tools/testing/selftests/arm64/pauth/Makefile  |  39 ++
+ .../selftests/arm64/pauth/exec_target.c       |  35 ++
+ tools/testing/selftests/arm64/pauth/helper.c  |  40 ++
+ tools/testing/selftests/arm64/pauth/helper.h  |  29 ++
+ tools/testing/selftests/arm64/pauth/pac.c     | 348 ++++++++++++++++++
+ .../selftests/arm64/pauth/pac_corruptor.S     |  35 ++
+ 8 files changed, 529 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/arm64/pauth/.gitignore
+ create mode 100644 tools/testing/selftests/arm64/pauth/Makefile
+ create mode 100644 tools/testing/selftests/arm64/pauth/exec_target.c
+ create mode 100644 tools/testing/selftests/arm64/pauth/helper.c
+ create mode 100644 tools/testing/selftests/arm64/pauth/helper.h
+ create mode 100644 tools/testing/selftests/arm64/pauth/pac.c
+ create mode 100644 tools/testing/selftests/arm64/pauth/pac_corruptor.S
+
+--
+2.17.1
+
