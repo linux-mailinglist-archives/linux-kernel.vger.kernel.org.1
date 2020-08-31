@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628F125754E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE30257555
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727910AbgHaI1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 04:27:41 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:48555 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726198AbgHaI1j (ORCPT
+        id S1728143AbgHaI3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727833AbgHaI3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:27:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598862459; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=BsJW+6b+ChjHM1tuO2UVuZumO9q0AK+u8r67VrfoMpM=; b=ByycTz/YIDwtEydcPg7yk6JAq/Z4cm4QuGgiw7ptg9lMAww3Q12NPCWwEXRbx1a2enRREDNp
- cSaHIYi0vKShQdunasabF04IFXB4Skq03mxURXo8xw66edobSe9nyCXbQjfCc5Z5FUy9tPVb
- 2GzFGAl8bmIZnH0+5ROiWCKxBuM=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f4cb469d3d3df8c3975e08c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 Aug 2020 08:27:21
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 23F3FC433CA; Mon, 31 Aug 2020 08:27:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 904A6C433C6;
-        Mon, 31 Aug 2020 08:27:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 904A6C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kathirav@codeaurora.org
-Subject: [PATCH] arm64: dts: ipq8074: enable watchdog support
-Date:   Mon, 31 Aug 2020 13:57:08 +0530
-Message-Id: <1598862428-13996-1-git-send-email-kathirav@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 31 Aug 2020 04:29:31 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC2AC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 01:29:30 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ls14so2590231pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 01:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t6A3T3U5sg4xL1HitgiJe+Mzl2G7Jnk/XQSObf5ZPYs=;
+        b=NcnQx+gcvea+q7x2gF4i9HH52VjX5QYP3dhOG6QAqqnGluW5VrDzjPn3+Y3NrEnsGM
+         OJvBk6gd2stHL6vuDbxWOj+0l9LX6UaDNfgBN4CCrhQmeoNnCWNSyBIQkX6PGsvL2yfy
+         FSsCEA3fd0TGQLCUnCgyj8TRD0h/x12kaCaow=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t6A3T3U5sg4xL1HitgiJe+Mzl2G7Jnk/XQSObf5ZPYs=;
+        b=l9C7Nia6bX2MkebP5NjlLXUJtjZ4DgSMCa0h2Fr4fdM8SGcRwxG7Y6ay4hKy81n5mO
+         gBb0lBpf3SPGk+W4ATS7+zXK9R42He7MFIVWJe0DSOqolg1IetQVVVGJzRn0SATajYxX
+         uRxY0XwVcmXOkBk114ZX7CLQ4OdwvO8gWJuLrgwm61UH25cwO9IId+wZJdohB6blOlry
+         w31U+LyA0Y3JHTbL2YvGEosO+Fs6sRA8nbRpbzSNQtVucKNxj06GbpAi5fmfHSFTz9mb
+         AGe4TB9KoQloSe5mpy4YtOzroOBxmbAicGnsfzNW7+3Na4UY3XeBzePP5gwkoB7WwIEm
+         wShA==
+X-Gm-Message-State: AOAM532kM+VRoHgPJE/x1bwawGlVfGf8tSKXMJP11aCQrDv+ihJkEeJ0
+        08chLGAfnq5iBhBrjcBtBNME3Q==
+X-Google-Smtp-Source: ABdhPJzgmKs58w58u0Z3ZJSaXlgQqY+sNHsP4FQFmMe51tjTSRqPyk5BEGr1hbZE83+xRZkAU5bwYA==
+X-Received: by 2002:a17:902:24c:: with SMTP id 70mr283058plc.284.1598862570169;
+        Mon, 31 Aug 2020 01:29:30 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c809:c7d5:d50:45fe:aaf3:66ee])
+        by smtp.gmail.com with ESMTPSA id b5sm6411335pgi.83.2020.08.31.01.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 01:29:29 -0700 (PDT)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 0/7] arm64: dts: rockchip: Add Engicam PX30.Core
+Date:   Mon, 31 Aug 2020 13:59:10 +0530
+Message-Id: <20200831082917.17117-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable watchdog support for the IPQ8074 SoCs.
+PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
 
-Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+PX30.Core needs to mount on top of Engicam baseboards for creating
+complete platform boards.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 96a5ec89b5f0..74a474300314 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -498,6 +498,14 @@ timer {
- 				     <GIC_PPI 1 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
- 		};
- 
-+		watchdog: watchdog@b017000 {
-+			compatible = "qcom,kpss-wdt";
-+			reg = <0xb017000 0x1000>;
-+			interrupts = <GIC_SPI 3 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&sleep_clk>;
-+			timeout-sec = <30>;
-+		};
-+
- 		timer@b120000 {
- 			#address-cells = <1>;
- 			#size-cells = <1>;
+Possible baseboards are,
+- EDIMM2.2 Starter Kit
+- C.TOUCH 2.0 Carrier Board
 
-base-commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
+Changes for v3:
+- resolved Johan comments about sorting node properties
+- add copyright to Amarula Solutions
+- update px30 dtsi author
+Changes for v2:
+- collect Rob A-b
+- include C.TOUCH 2.0 carrier board
+- skip 10" OF LCD as it requires separate dts with panel support.
+
+Note: These baseboards can be used for i.MX8 SOM's as well. So having
+baseboard on respective SoC seems to be easy rather than making it
+common across all.
+
+Any inputs?
+Jagan.
+
+Jagan Teki (6):
+  dt-bindings: arm: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+  arm64: dts: rockchip: px30: Add Engicam EDIMM2.2 Starter Kit
+  arm64: dts: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+  dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+  arm64: dts: rockchip: px30: Add Engicam C.TOUCH 2.0
+  arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+
+Michael Trimarchi (1):
+  arm64: dts: rockchip: Add Engicam PX30.Core SOM
+
+ .../devicetree/bindings/arm/rockchip.yaml     |  12 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   2 +
+ .../dts/rockchip/px30-engicam-common.dtsi     |  39 +++
+ .../dts/rockchip/px30-engicam-ctouch2.dtsi    |   8 +
+ .../dts/rockchip/px30-engicam-edimm2.2.dtsi   |   7 +
+ .../dts/rockchip/px30-px30-core-ctouch2.dts   |  22 ++
+ .../dts/rockchip/px30-px30-core-edimm2.2.dts  |  21 ++
+ .../boot/dts/rockchip/px30-px30-core.dtsi     | 232 ++++++++++++++++++
+ 8 files changed, 343 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-common.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-ctouch2.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-edimm2.2.dtsi
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-edimm2.2.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
 
