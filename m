@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E278725799D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337062579A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgHaMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 08:45:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46802 "EHLO mail.kernel.org"
+        id S1727929AbgHaMqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgHaMp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:45:56 -0400
+        id S1726144AbgHaMqF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 08:46:05 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B14342073A;
-        Mon, 31 Aug 2020 12:45:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCC7F20936;
+        Mon, 31 Aug 2020 12:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598877956;
-        bh=8rOIdZ6wqgc1jq2tHq0/nusm6CFDfSurOY8zud5UQN8=;
+        s=default; t=1598877965;
+        bh=xpciEiK1NwSQDebvBUt8PqEJ0Povb15SzOC+Y7MqoZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSvjY00nngC1TPHjSpUATD6l8D/Sl2/MzPfM50BAfgXg+ZlHq6JZ3nihC/s9Rw56b
-         YDEGy92KSAzXPL8RG2kur8aqSw+5HbXZdz6lBgXIxbOcllF9r4BTQpoiaNhLBLJ3Z1
-         b6GFmfGPWZx4/HqYvExo86YzuVRcRnWSKhbCo4Ko=
+        b=tm0X0Bnskgtx626aIhezv8tq7tulaFU3a02p5jY8yCe97ApiLEIeMVX4lpuYoRS9S
+         aIo2O9kvct12CyFJvs6hK2BD66CXX8xM57Zb8O8hqh1FvH0+zp2K68OTBsN6T/t1Sg
+         nwbU9+gYaddTY/+CoLhEyShzLNIQJpwhyBL4b9XA=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org
-Subject: [PATCH 3/6] Documentation: tracing: Add tracing_on option to boot-time tracer
-Date:   Mon, 31 Aug 2020 21:45:52 +0900
-Message-Id: <159887795239.1330989.17724824075048692028.stgit@devnote2>
+Subject: [PATCH 4/6] tracing/kprobes: Support perf-style return probe
+Date:   Mon, 31 Aug 2020 21:46:01 +0900
+Message-Id: <159887796151.1330989.2690618021941671783.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <159887792384.1330989.5993224243767476896.stgit@devnote2>
 References: <159887792384.1330989.5993224243767476896.stgit@devnote2>
@@ -43,26 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tracing_on option description to the boot-time tracer.
+Support perf-style return probe ("SYMBOL%return") in kprobe events.
+This will allow boot-time tracing user to define a return probe event.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- Documentation/trace/boottime-trace.rst |    4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/trace/trace_kprobe.c |   21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/trace/boottime-trace.rst b/Documentation/trace/boottime-trace.rst
-index dcb390075ca1..1341b449acaa 100644
---- a/Documentation/trace/boottime-trace.rst
-+++ b/Documentation/trace/boottime-trace.rst
-@@ -61,6 +61,10 @@ These options can be used for each instance including global ftrace node.
- ftrace.[instance.INSTANCE.]options = OPT1[, OPT2[...]]
-    Enable given ftrace options.
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index aefb6065b508..391361b67c8f 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -709,6 +709,18 @@ static inline void sanitize_event_name(char *name)
+ 			*name = '_';
+ }
  
-+ftrace.[instance.INSTANCE.]tracing_on = 0|1
-+   Enable/Disable tracing on this instance when boot.
-+   (you can enable it by the "traceon" event trigger action)
++static inline bool split_return_suffix(char *symbol)
++{
++	char *p = strchr(symbol, '%');
 +
- ftrace.[instance.INSTANCE.]trace_clock = CLOCK
-    Set given CLOCK to ftrace's trace_clock.
- 
++	if (p && !strcmp(p, "%return")) {
++		*p = '\0';
++		return true;
++	}
++
++	return false;
++}
++
+ static int trace_kprobe_create(int argc, const char *argv[])
+ {
+ 	/*
+@@ -717,6 +729,9 @@ static int trace_kprobe_create(int argc, const char *argv[])
+ 	 *      p[:[GRP/]EVENT] [MOD:]KSYM[+OFFS]|KADDR [FETCHARGS]
+ 	 *  - Add kretprobe:
+ 	 *      r[MAXACTIVE][:[GRP/]EVENT] [MOD:]KSYM[+0] [FETCHARGS]
++	 *    Or
++	 *      p:[GRP/]EVENT] [MOD:]KSYM[+0]%return [FETCHARGS]
++	 *
+ 	 * Fetch args:
+ 	 *  $retval	: fetch return value
+ 	 *  $stack	: fetch stack address
+@@ -746,7 +761,6 @@ static int trace_kprobe_create(int argc, const char *argv[])
+ 	switch (argv[0][0]) {
+ 	case 'r':
+ 		is_return = true;
+-		flags |= TPARG_FL_RETURN;
+ 		break;
+ 	case 'p':
+ 		break;
+@@ -804,12 +818,17 @@ static int trace_kprobe_create(int argc, const char *argv[])
+ 		symbol = kstrdup(argv[1], GFP_KERNEL);
+ 		if (!symbol)
+ 			return -ENOMEM;
++
++		is_return = split_return_suffix(symbol) || is_return;
++
+ 		/* TODO: support .init module functions */
+ 		ret = traceprobe_split_symbol_offset(symbol, &offset);
+ 		if (ret || offset < 0 || offset > UINT_MAX) {
+ 			trace_probe_log_err(0, BAD_PROBE_ADDR);
+ 			goto parse_error;
+ 		}
++		if (is_return)
++			flags |= TPARG_FL_RETURN;
+ 		if (kprobe_on_func_entry(NULL, symbol, offset))
+ 			flags |= TPARG_FL_FENTRY;
+ 		if (offset && is_return && !(flags & TPARG_FL_FENTRY)) {
 
