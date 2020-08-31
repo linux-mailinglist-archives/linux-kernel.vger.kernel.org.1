@@ -2,269 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85246257538
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDD7257562
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbgHaIXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 04:23:40 -0400
-Received: from mail-eopbgr70085.outbound.protection.outlook.com ([40.107.7.85]:42075
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725829AbgHaIXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:23:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HscEUib7jkkIZ8Tl6zRbNXdq2QN9cIeVfumqvdZmIwB1JfKr695s7QeIQ91z0Ku2KgA0/3KnVKhhaeqYNd6CjlRP+VBZTe4fIbj1/fMXSn9wrVVK0K+Z7MfEB9a87WAXgD6AIV6VwwhzHZHVN44ccXJJcN7gbx+ZHkAQTjX72xUyYZ6+fyOge0UcgfXRNyKcLF3T0IPujj/0naGdDgeaYgQz0ePwWnGikLppd3tm/ixQ4FKRz6JUh34CwCDMM5BGC0mUcDr/ECIEw3MLBuI+4M0tECf6wzlhRT1GaknZaNykM4tC0dXqofTWhQZAEi/d1apuZUhTw7A/68vqkLdSJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZUN7FRLAHXpEYFyzg8DmiQ81myUDS2c80I62x5jiLrc=;
- b=AFaO62KMZugXrGLzd9l7JOX8ghpmG1hTZOf6SONw2p33H5ezE+Ma8g2wc2mT9WR9c/yQc4uLmvdpMYeLSxS6PRJvcHRa7yE3Wy3xLkUZNcQ6vEzIywxcnZRiOOEv7x8AberLFRogxzduHB1YmZjF8Ws8nJxQUZctn2ACqDaQp4KbldA4FQDsKBtmhJEAUkyFueqOZHUjRmvJgGfe510RAy2iYVqWgNWP6oHgIjYs9k8lHg2OoLnmny7USIeVETABNq9TOl4gDN+31+awV+cgKjA6vxj8E2u53OH9o9zhQvWfSldQt/tLVrst7UEmPhJ0XC/BH8Jy7Uxa2r9TQW9tCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZUN7FRLAHXpEYFyzg8DmiQ81myUDS2c80I62x5jiLrc=;
- b=gdCAl7J5v3RJO2gyrTBABvx7FmOY0huh6W7QmDuOclEBmpsyDxh5JGeGkIx5tvSMqKWmf9RleDGgiQy6Nu9fRDh2c7yKiyd6C2Hxky1XNGH38TW1LrNtDmuXhZzt0cSw/Hro86EoWw/0mkg4zAIB2dK6zXSPiRa3RfxBKf07q1k=
-Authentication-Results: rjwysocki.net; dkim=none (message not signed)
- header.d=none;rjwysocki.net; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB5803.eurprd04.prod.outlook.com (2603:10a6:10:a9::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.23; Mon, 31 Aug
- 2020 08:23:31 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232%12]) with mapi id 15.20.3326.025; Mon, 31 Aug
- 2020 08:23:31 +0000
-From:   peng.fan@nxp.com
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH] cpufreq: dt: delay the clk/regulator check
-Date:   Mon, 31 Aug 2020 16:48:58 +0800
-Message-Id: <20200831084858.2398-1-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.28.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0027.apcprd02.prod.outlook.com
- (2603:1096:3:18::15) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
+        id S1728276AbgHaIaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728223AbgHaI3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:29:43 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F380DC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 01:29:42 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x18so1458632pll.6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 01:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5bmGVS/nnClmGdGVSnVd+7lBlOmwv+P4+nNohCNZM64=;
+        b=XaWu+lGXMesNK+tMqt7/wHdqonvaLQ7OeAtp4gK7w7ulHBpkWXmaKwuDFlll+HkN+k
+         j5vdTWK81PJaMOFhetTQMCcgPm305T01fa8JKdqnslKLxuqf9JLWCb5EbncZspVYagTs
+         UfCUb3RFxdHaVvOXlJ1isKXkjPI4ZhkY3N4wQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5bmGVS/nnClmGdGVSnVd+7lBlOmwv+P4+nNohCNZM64=;
+        b=jdrXvQ34PAjSUyQByeKF6kQ4MKBY0rhgxlAyx7DCLjG5NTb/Hwhak08G6NQ4DDuo2i
+         NBnslWv4yYcCUnY2ODcPFhJF0AqwrYT96wKw+vyOnIZOr8JwxyNY+44w4faK2dO2+MQC
+         ggpPF9hs+fzyRErPBscQB6BdQJsGPlyL+EANqXpKLO/YhulO3ZcQ9XuA+pNd28WhhRyf
+         03JNyH8tt+f+4DHZjbkDeKxs8vahGzP6rPR/I106/KoHw8w6dbPUlJfb16kM45Hsf4uq
+         wXCFag+qS/p1FweR+jVRVC5KHkf3Nb4XQVrClUcQMGY2b8S4IM/ov90YDkgDO5ojjbKF
+         YQxQ==
+X-Gm-Message-State: AOAM532xtRDjt8mZyr21+zv2hTx5NYfZwYUwO5LisJ4QK4i9o73PxgfH
+        PDWs1bQFNeF4tMD7uMGd+zcYuA==
+X-Google-Smtp-Source: ABdhPJz4tueuWwfQoq7GXOlWou/UQPDZ/NQE324zaX5kFU8hbnTFTOaKhkUbt/4asvp7TttV3ElqDQ==
+X-Received: by 2002:a17:90a:4382:: with SMTP id r2mr387193pjg.144.1598862582124;
+        Mon, 31 Aug 2020 01:29:42 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c809:c7d5:d50:45fe:aaf3:66ee])
+        by smtp.gmail.com with ESMTPSA id b5sm6411335pgi.83.2020.08.31.01.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 01:29:41 -0700 (PDT)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 3/7] arm64: dts: rockchip: Add Engicam PX30.Core SOM
+Date:   Mon, 31 Aug 2020 13:59:13 +0530
+Message-Id: <20200831082917.17117-4-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200831082917.17117-1-jagan@amarulasolutions.com>
+References: <20200831082917.17117-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR02CA0027.apcprd02.prod.outlook.com (2603:1096:3:18::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Mon, 31 Aug 2020 08:23:24 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [119.31.174.71]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 87777422-0be9-4a24-53e0-08d84d8722e2
-X-MS-TrafficTypeDiagnostic: DB8PR04MB5803:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB58034B27BBC20E826D792A7D88510@DB8PR04MB5803.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:800;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CG3/hV+l3RlBzY1dlPhJLA7BK5/a0K8nsRU/y8O9BAIdyahDmFMJiJSJX0/8Y4LQ8wKloTiopa1Rp3pcUaSODOxwbQoYUAsT+KVQWEZ0gK1ZF/4CFNyrwuEnIaxLw/NlLfWsv5to7joTbKGLW602woMZEjaewnPbimi4TY7j/KFnylTK7LQSoSoR4S92OKggiI/sjZuKfPObG+zF7hgtUQAEFuKlAT33oYWgjfF9FAGZGtXx/qS0CKP6yxXV7E2yp3DebR21G9Bg3xLAZaEGocn4QNBHfl1ScJz8Cf+iUDdp4sJow4rkrav024UTKjTiajjjBctotAh8X7E+Yx9OZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(346002)(376002)(396003)(1076003)(6486002)(86362001)(6666004)(478600001)(6512007)(16526019)(26005)(5660300002)(9686003)(186003)(2906002)(4326008)(83380400001)(316002)(66476007)(66556008)(52116002)(8936002)(956004)(36756003)(2616005)(66946007)(6506007)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: LJhS28vz7VglIPV6D7DhquDqpAlrZlRh1sEzzO53R6fbsLRVbboe77ahxdfKZeQ9lTKZ4aRxCDClL5pKZkq7J1epLkS86KQUXWAHJiLmyoK21oej+iygwMHtkDhZSbpDpmsWpG45scd8US5/z+YwDr5QIpytI6t0Wit5va0878velKYPuTBRVZUllEL3dY6aSLT5OhNqVnMakIRGuLH5u/6FsKHftMdpKAt0pJrMGz6hh2P0tHPKb1NAU7a2MmvFLE+jPZxwkSRDfl6Dm+xU8vKKMdJGJQnhdZiKeMzzoa1v7URZrCn9DggiUgJpFdNfsuMv9R3lKst7ngrkVQvJlphvm2jODhTf0Ww9I0XGZzGwJMat2HXXcOpSgrTdg+/p4NJtB8wkHSKjiuZfVlY3fJIzCmdgtoxh2ISJPfWUAP79L4c/j0y8fHH+BDRRmmJugdd/YjudBtUjtWHAhKigcn0k9bUJbwd/JGd2bYL/1bpOvkwSYJ/WMffYZOUfHtUSdAENDPw+q5uri9woWSx6Um/j/yW2A3NQgnMwvzIwMgyfQtaEKYE0n4xCDNXQo+4g39c40/PdHUBUysqus8tqm5ENzi48JL2P8tru0t0QgfFoSZE/bHeKLGR6kiu0Ok2LbT3q7Rj5nYWqwRRwMqEiBQ==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87777422-0be9-4a24-53e0-08d84d8722e2
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2020 08:23:27.7775
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dyS/LIa0JZ0O5EyoPT10dIOVyauXnvWh+6/Y0s5+Uds8Q/nja8znrdk75eH+z4QFdsYtlTV+Tg1CIhRmWA9IZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5803
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+From: Michael Trimarchi <michael@amarulasolutions.com>
 
-cpufreq_init could be used to do check clk/regulator check,
-there is no need to duplicate the work in resources_available.
+PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
+General features:
+- Rockchip PX30
+- Up to 2GB DDR4
+- eMMC 4 GB expandible
+- rest of PX30 features
+
+PX30.Core needs to mount on top of Engicam baseboards for creating
+complete platform boards.
+
+Possible baseboards are,
+- EDIMM2.2
+- C.TOUCH 2.0
+
+Add support for it.
+
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
+Changes for v3:
+- sort regulator nodes properties
+- add Amarula Solutions copyright
+- update the patch author
+Changes for v2:
+- none
 
-V1:
- Actually we met an issue as below. Per my analysis,
- it is regulator_put called in resources_available not remove the devlink
- before dev_pm_opp_set_regulators->_regulator_get.
+ .../boot/dts/rockchip/px30-px30-core.dtsi     | 232 ++++++++++++++++++
+ 1 file changed, 232 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
 
- I tried to add a check patch:
- diff --git a/drivers/base/core.c b/drivers/base/core.c
- index 0971fedeec7d..4f8c7c13bde7 100644
- --- a/drivers/base/core.c
- +++ b/drivers/base/core.c
- @@ -760,6 +760,7 @@ static void __device_link_del(struct kref *kref)
-         list_del_rcu(&link->s_node);
-         list_del_rcu(&link->c_node);
-         call_srcu(&device_links_srcu, &link->rcu_head, __device_link_free_srcu);
- +       synchronize_srcu(&device_links_srcu);
-  }
-
- It could also fix the warning dump, I not find a good solution about srcu part.
- But since we could optimize code to delay the clk/regulator check, I worked out
- this patch.
-
- [    6.799650] sysfs: cannot create duplicate filename '/devices/virtual/devlink/regulator.1--cpu0'
-[    6.808725] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W         5.8.0-next-20200807-dirty #272
-[    6.817868] Hardware name: Freescale i.MX7ULP (Device Tree)
-[    6.823486] [<c01127c0>] (unwind_backtrace) from [<c010c598>] (show_stack+0x10/0x14)
-[    6.831252] [<c010c598>] (show_stack) from [<c05bc410>] (dump_stack+0xd8/0x10c)
-[    6.838585] [<c05bc410>] (dump_stack) from [<c036d5b8>] (sysfs_warn_dup+0x50/0x64)
-[    6.846181] [<c036d5b8>] (sysfs_warn_dup) from [<c036d6e4>] (sysfs_create_dir_ns+0xd4/0xf4)
-[    6.854554] [<c036d6e4>] (sysfs_create_dir_ns) from [<c05c2734>] (kobject_add_internal+0xa0/0x2ec)
-[    6.863531] [<c05c2734>] (kobject_add_internal) from [<c05c29d8>] (kobject_add+0x58/0xc0)
-[    6.871732] [<c05c29d8>] (kobject_add) from [<c07939d4>] (device_add+0xec/0x7c8)
-[    6.879150] [<c07939d4>] (device_add) from [<c0795600>] (device_link_add+0x3cc/0x534)
-[    6.887005] [<c0795600>] (device_link_add) from [<c0694244>] (_regulator_get+0xe8/0x274)
-[    6.895116] [<c0694244>] (_regulator_get) from [<c09f6568>] (dev_pm_opp_set_regulators+0x9c/0x1e8)
-[    6.904092] [<c09f6568>] (dev_pm_opp_set_regulators) from [<c09ffa4c>] (cpufreq_init+0xb4/0x2cc)
-[    6.912897] [<c09ffa4c>] (cpufreq_init) from [<c09fc484>] (cpufreq_online+0x268/0x92c)
-[    6.920837] [<c09fc484>] (cpufreq_online) from [<c09fcbb8>] (cpufreq_add_dev+0x60/0x78)
-[    6.928863] [<c09fcbb8>] (cpufreq_add_dev) from [<c0796f38>] (subsys_interface_register+0xa0/0xf0)
-[    6.937843] [<c0796f38>] (subsys_interface_register) from [<c09fa304>] (cpufreq_register_driver+0x14c/0x228)
-[    6.947684] [<c09fa304>] (cpufreq_register_driver) from [<c09ffd28>] (dt_cpufreq_probe+0xc4/0x140)
-[    6.956663] [<c09ffd28>] (dt_cpufreq_probe) from [<c079adcc>] (platform_drv_probe+0x48/0x98)
-[    6.965120] [<c079adcc>] (platform_drv_probe) from [<c07988cc>] (really_probe+0x214/0x3b4)
-[    6.973405] [<c07988cc>] (really_probe) from [<c0798bd4>] (driver_probe_device+0x58/0xb4)
-[    6.981604] [<c0798bd4>] (driver_probe_device) from [<c0796c08>] (bus_for_each_drv+0x54/0xb8)
-[    6.990150] [<c0796c08>] (bus_for_each_drv) from [<c079863c>] (__device_attach+0xdc/0x150)
-[    6.998435] [<c079863c>] (__device_attach) from [<c07978f8>] (bus_probe_device+0x88/0x90)
-[    7.006635] [<c07978f8>] (bus_probe_device) from [<c0793da0>] (device_add+0x4b8/0x7c8)
-[    7.014572] [<c0793da0>] (device_add) from [<c079aba0>] (platform_device_add+0x100/0x208)
-[    7.022772] [<c079aba0>] (platform_device_add) from [<c079b65c>] (platform_device_register_full+0x104/0x114)
-[    7.032617] [<c079b65c>] (platform_device_register_full) from [<c0a01028>] (imx_cpufreq_dt_probe+0xdc/0x2c0)
-[    7.042461] [<c0a01028>] (imx_cpufreq_dt_probe) from [<c079adcc>] (platform_drv_probe+0x48/0x98)
-[    7.051265] [<c079adcc>] (platform_drv_probe) from [<c07988cc>] (really_probe+0x214/0x3b4)
-[    7.059550] [<c07988cc>] (really_probe) from [<c0798bd4>] (driver_probe_device+0x58/0xb4)
-[    7.067742] [<c0798bd4>] (driver_probe_device) from [<c0796c08>] (bus_for_each_drv+0x54/0xb8)
-[    7.076288] [<c0796c08>] (bus_for_each_drv) from [<c079863c>] (__device_attach+0xdc/0x150)
-[    7.084572] [<c079863c>] (__device_attach) from [<c07978f8>] (bus_probe_device+0x88/0x90)
-[    7.092773] [<c07978f8>] (bus_probe_device) from [<c0793da0>] (device_add+0x4b8/0x7c8)
-[    7.100710] [<c0793da0>] (device_add) from [<c079aba0>] (platform_device_add+0x100/0x208)
-[    7.108909] [<c079aba0>] (platform_device_add) from [<c079b65c>] (platform_device_register_full+0x104/0x114)
-[    7.118760] [<c079b65c>] (platform_device_register_full) from [<c150f7f4>] (imx7ulp_init_late+0x44/0x70)
-[    7.128260] [<c150f7f4>] (imx7ulp_init_late) from [<c15036b4>] (init_machine_late+0x1c/0x8c)
-[    7.136726] [<c15036b4>] (init_machine_late) from [<c010247c>] (do_one_initcall+0x80/0x424)
-[    7.145095] [<c010247c>] (do_one_initcall) from [<c1501018>] (kernel_init_freeable+0x170/0x1f0)
-[    7.153818] [<c1501018>] (kernel_init_freeable) from [<c0e7b938>] (kernel_init+0x8/0x120)
-[    7.162020] [<c0e7b938>] (kernel_init) from [<c0100134>] (ret_from_fork+0x14/0x20)
-[    7.169599] Exception stack(0xec0c5fb0 to 0xec0c5ff8)
-[    7.174665] 5fa0:                                     00000000 00000000 00000000 00000000
-[    7.182858] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    7.191045] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    7.198202] kobject_add_internal failed for regulator.1--cpu0 with -EEXIST, don't try to register things with the same name in the same directory.
-
-
- drivers/cpufreq/cpufreq-dt.c | 58 +++++++++++-------------------------
- 1 file changed, 17 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
-index 944d7b45afe9..13b291757796 100644
---- a/drivers/cpufreq/cpufreq-dt.c
-+++ b/drivers/cpufreq/cpufreq-dt.c
-@@ -93,10 +93,8 @@ static const char *find_supply_name(struct device *dev)
- static int resources_available(void)
- {
- 	struct device *cpu_dev;
--	struct regulator *cpu_reg;
--	struct clk *cpu_clk;
--	int ret = 0;
- 	const char *name;
-+	int ret;
- 
- 	cpu_dev = get_cpu_device(0);
- 	if (!cpu_dev) {
-@@ -104,23 +102,6 @@ static int resources_available(void)
- 		return -ENODEV;
- 	}
- 
--	cpu_clk = clk_get(cpu_dev, NULL);
--	ret = PTR_ERR_OR_ZERO(cpu_clk);
--	if (ret) {
--		/*
--		 * If cpu's clk node is present, but clock is not yet
--		 * registered, we should try defering probe.
--		 */
--		if (ret == -EPROBE_DEFER)
--			dev_dbg(cpu_dev, "clock not ready, retry\n");
--		else
--			dev_err(cpu_dev, "failed to get clock: %d\n", ret);
--
--		return ret;
--	}
--
--	clk_put(cpu_clk);
--
- 	ret = dev_pm_opp_of_find_icc_paths(cpu_dev, NULL);
- 	if (ret)
- 		return ret;
-@@ -130,22 +111,6 @@ static int resources_available(void)
- 	if (!name)
- 		return 0;
- 
--	cpu_reg = regulator_get_optional(cpu_dev, name);
--	ret = PTR_ERR_OR_ZERO(cpu_reg);
--	if (ret) {
--		/*
--		 * If cpu's regulator supply node is present, but regulator is
--		 * not yet registered, we should try defering probe.
--		 */
--		if (ret == -EPROBE_DEFER)
--			dev_dbg(cpu_dev, "cpu0 regulator not ready, retry\n");
--		else
--			dev_dbg(cpu_dev, "no regulator for cpu0: %d\n", ret);
--
--		return ret;
--	}
--
--	regulator_put(cpu_reg);
- 	return 0;
- }
- 
-@@ -168,9 +133,17 @@ static int cpufreq_init(struct cpufreq_policy *policy)
- 	}
- 
- 	cpu_clk = clk_get(cpu_dev, NULL);
--	if (IS_ERR(cpu_clk)) {
--		ret = PTR_ERR(cpu_clk);
--		dev_err(cpu_dev, "%s: failed to get clk: %d\n", __func__, ret);
-+	ret = PTR_ERR_OR_ZERO(cpu_clk);
-+	if (ret) {
-+		/*
-+		 * If cpu's clk node is present, but clock is not yet
-+		 * registered, we should try defering probe.
-+		 */
-+		if (ret == -EPROBE_DEFER)
-+			dev_dbg(cpu_dev, "clock not ready, retry\n");
-+		else
-+			dev_err(cpu_dev, "%s: failed to get clk: %d\n", __func__, ret);
+diff --git a/arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi b/arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
+new file mode 100644
+index 000000000000..16e6cf28a440
+--- /dev/null
++++ b/arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
+@@ -0,0 +1,232 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2020 Fuzhou Rockchip Electronics Co., Ltd
++ * Copyright (c) 2020 Engicam srl
++ * Copyright (c) 2020 Amarula Solutons
++ * Copyright (c) 2020 Amarula Solutons(India)
++ */
 +
- 		return ret;
- 	}
- 
-@@ -198,8 +171,11 @@ static int cpufreq_init(struct cpufreq_policy *policy)
- 		opp_table = dev_pm_opp_set_regulators(cpu_dev, &name, 1);
- 		if (IS_ERR(opp_table)) {
- 			ret = PTR_ERR(opp_table);
--			dev_err(cpu_dev, "Failed to set regulator for cpu%d: %d\n",
--				policy->cpu, ret);
-+			if (ret == -EPROBE_DEFER)
-+				dev_dbg(cpu_dev, "cpu0 regulator not ready, retry\n");
-+			else
-+				dev_err(cpu_dev, "Failed to set regulator for cpu%d: %d\n",
-+					policy->cpu, ret);
- 			goto out_put_clk;
- 		}
- 	}
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/pinctrl/rockchip.h>
++
++/ {
++	compatible = "engicam,px30-px30-core", "rockchip,px30";
++};
++
++&cpu0 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&cpu1 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&cpu2 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&cpu3 {
++	cpu-supply = <&vdd_arm>;
++};
++
++&emmc {
++	cap-mmc-highspeed;
++	mmc-hs200-1_8v;
++	non-removable;
++	status = "okay";
++};
++
++&i2c0 {
++	status = "okay";
++
++	rk809: pmic@20 {
++		compatible = "rockchip,rk809";
++		reg = <0x20>;
++		interrupt-parent = <&gpio0>;
++		interrupts = <RK_PA7 IRQ_TYPE_LEVEL_LOW>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pmic_int>;
++		rockchip,system-power-controller;
++		wakeup-source;
++		#clock-cells = <1>;
++		clock-output-names = "rk808-clkout1", "rk808-clkout2";
++
++		vcc1-supply = <&vcc5v0_sys>;
++		vcc2-supply = <&vcc5v0_sys>;
++		vcc3-supply = <&vcc5v0_sys>;
++		vcc4-supply = <&vcc5v0_sys>;
++		vcc5-supply = <&vcc3v3_sys>;
++		vcc6-supply = <&vcc3v3_sys>;
++		vcc7-supply = <&vcc3v3_sys>;
++		vcc8-supply = <&vcc3v3_sys>;
++		vcc9-supply = <&vcc5v0_sys>;
++
++		regulators {
++			vdd_log: DCDC_REG1 {
++				regulator-name = "vdd_log";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <950000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <6001>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <950000>;
++				};
++			};
++
++			vdd_arm: DCDC_REG2 {
++				regulator-name = "vdd_arm";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <950000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <6001>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <950000>;
++				};
++			};
++
++			vcc_ddr: DCDC_REG3 {
++				regulator-name = "vcc_ddr";
++				regulator-always-on;
++				regulator-boot-on;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc_3v3: DCDC_REG4 {
++				regulator-name = "vcc_3v3";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vcc3v3_sys: DCDC_REG5 {
++				regulator-name = "vcc3v3_sys";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vcc_1v0: LDO_REG1 {
++				regulator-name = "vcc_1v0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1000000>;
++				regulator-max-microvolt = <1000000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1000000>;
++				};
++			};
++
++			vcc_1v8: LDO_REG2 {
++				regulator-name = "vcc_1v8";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vdd_1v0: LDO_REG3 {
++				regulator-name = "vdd_1v0";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1000000>;
++				regulator-max-microvolt = <1000000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1000000>;
++				};
++			};
++
++			vcc3v0_pmu: LDO_REG4 {
++				regulator-name = "vcc3v0_pmu";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++
++				};
++			};
++
++			vccio_sd: LDO_REG5 {
++				regulator-name = "vccio_sd";
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vcc5v0_host: SWITCH_REG2 {
++				regulator-name = "vcc5v0_host";
++				regulator-always-on;
++				regulator-boot-on;
++			};
++		};
++	};
++};
++
++&io_domains {
++	vccio1-supply = <&vcc_3v3>;
++	vccio2-supply = <&vcc_3v3>;
++	vccio3-supply = <&vcc_3v3>;
++	vccio4-supply = <&vcc_3v3>;
++	vccio5-supply = <&vcc_3v3>;
++	vccio6-supply = <&vcc_1v8>;
++	status = "okay";
++};
++
++&pinctrl {
++	pmic {
++		pmic_int: pmic_int {
++			rockchip,pins = <0 RK_PA7 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++};
++
++&pmu_io_domains {
++	pmuio1-supply = <&vcc_3v3>;
++	pmuio2-supply = <&vcc_3v3>;
++	status = "okay";
++};
++
++&tsadc {
++	rockchip,hw-tshut-mode = <1>;
++	rockchip,hw-tshut-polarity = <1>;
++	status = "okay";
++};
 -- 
-2.28.0
+2.25.1
 
