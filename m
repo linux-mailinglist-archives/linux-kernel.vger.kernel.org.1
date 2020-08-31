@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA35A257B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E61A257B34
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgHaO0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 10:26:50 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58839 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726489AbgHaO0t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 10:26:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598884007;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QvIU0poyjmCP79MUOcMNbyzo4r99Invwa1wgDE4TIrs=;
-        b=bE/Yu3vp8vRdtHE2A6gT4zHro6LcXTIfg20oAlrbTOeX3CdY9LztNIxSVqQQnZxK3Fj0Cp
-        a/x5u3jgLyt3x3MweKq+B6PEJt9sOSCupTe0KH0YDHOfqeN/p+zUGIYbpZcZx/li/zx7hl
-        Kier6HQa8KskjssOiyt2anbRk6D0+6k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-146-3fuUZUSdNBOe_dSmcoF2zg-1; Mon, 31 Aug 2020 10:26:31 -0400
-X-MC-Unique: 3fuUZUSdNBOe_dSmcoF2zg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727933AbgHaOWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 10:22:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726489AbgHaOWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 10:22:42 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6733E8015FD;
-        Mon, 31 Aug 2020 14:26:29 +0000 (UTC)
-Received: from starship (unknown [10.35.206.190])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8193D5D9D3;
-        Mon, 31 Aug 2020 14:26:18 +0000 (UTC)
-Message-ID: <9225b703c341f935a4ea529f3428345f6820f931.camel@redhat.com>
-Subject: Re: [PATCH 3/3] KVM: nSVM: more strict SMM checks when returning to
- nested guest
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Date:   Mon, 31 Aug 2020 17:26:12 +0300
-In-Reply-To: <20200831120112.GH8299@kadam>
-References: <20200831120112.GH8299@kadam>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
+        by mail.kernel.org (Postfix) with ESMTPSA id 42D1120866;
+        Mon, 31 Aug 2020 14:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598883762;
+        bh=pgacFH3zLkMQq+pq3zSvPUadQeunRUThFZbP0DHzo0I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C50VzbBFvYX9zLgqtMrJboj+FzxN+wRm/j/9qEmp6tPYLGegR2M0ekWTyB2Bxfped
+         ijlESGqku/xQtZ2FYT9CIyKVKqCNc/ICSPEzBUd31e6OPCvDCn4liqmky7l7aXNvWB
+         FhXQkfRXX4VVvy2TbFTLnQT5MormLqRakds4ZEK4=
+Date:   Mon, 31 Aug 2020 09:28:48 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Cengiz Can <cengiz@kernel.wtf>
+Cc:     dan.carpenter@oracle.com, andriy.shevchenko@linux.intel.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com
+Subject: Re: [PATCH v2] staging: atomisp: Remove unnecessary 'fallthrough'
+Message-ID: <20200831142848.GF2671@embeddedor>
+References: <20200831134021.GV8299@kadam>
+ <20200831135103.93399-1-cengiz@kernel.wtf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831135103.93399-1-cengiz@kernel.wtf>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-31 at 15:01 +0300, Dan Carpenter wrote:
-> Hi Maxim,
+On Mon, Aug 31, 2020 at 04:51:04PM +0300, Cengiz Can wrote:
+> commit df561f6688fe ("treewide: Use fallthrough pseudo-keyword") from
+> Gustavo A. R. Silva replaced and standardized /* fallthrough */ comments
+> with 'fallthrough' pseudo-keyword.
 > 
-> url:    https://github.com/0day-ci/linux/commits/Maxim-Levitsky/Few-nSVM-bugfixes/20200828-003025
-> base:   https://git.kernel.org/pub/scm/virt/kvm/kvm.git linux-next
-> config: x86_64-randconfig-m001-20200827 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> However, in one of the switch-case statements, Coverity Static Analyzer
+> throws a warning that 'fallthrough' is unreachable due to the adjacent
+> 'return false' statement. (Coverity ID CID 1466511)
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> In order to fix the unreachable code warning, remove unnecessary
+> fallthrough keyword.
 > 
-> smatch warnings:
-> arch/x86/kvm/svm/svm.c:3915 svm_pre_leave_smm() warn: should this be a bitwise op?
-> 
-> # https://github.com/0day-ci/linux/commit/e2317f8eb1f0e9f731ddbe66ab175be19f3bdaf1
-> git remote add linux-review https://github.com/0day-ci/linux
-> git fetch --no-tags linux-review Maxim-Levitsky/Few-nSVM-bugfixes/20200828-003025
-> git checkout e2317f8eb1f0e9f731ddbe66ab175be19f3bdaf1
-> vim +3915 arch/x86/kvm/svm/svm.c
-> 
-> ed19321fb657121 arch/x86/kvm/svm.c     Sean Christopherson 2019-04-02  3900  static int svm_pre_leave_smm(struct kvm_vcpu *vcpu, const char *smstate)
-> 0234bf885236a41 arch/x86/kvm/svm.c     Ladi Prosek         2017-10-11  3901  {
-> 05cade71cf3b925 arch/x86/kvm/svm.c     Ladi Prosek         2017-10-11  3902  	struct vcpu_svm *svm = to_svm(vcpu);
-> 8c5fbf1a7231078 arch/x86/kvm/svm.c     KarimAllah Ahmed    2019-01-31  3903  	struct kvm_host_map map;
-> 59cd9bc5b03f0ba arch/x86/kvm/svm/svm.c Vitaly Kuznetsov    2020-07-10  3904  	int ret = 0;
-> 05cade71cf3b925 arch/x86/kvm/svm.c     Ladi Prosek         2017-10-11  3905  
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3906  	if (guest_cpuid_has(vcpu, X86_FEATURE_LM)) {
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3907  		u64 saved_efer = GET_SMSTATE(u64, smstate, 0x7ed0);
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3908  		u64 guest = GET_SMSTATE(u64, smstate, 0x7ed8);
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3909  		u64 vmcb = GET_SMSTATE(u64, smstate, 0x7ee0);
-> 05cade71cf3b925 arch/x86/kvm/svm.c     Ladi Prosek         2017-10-11  3910  
-> ed19321fb657121 arch/x86/kvm/svm.c     Sean Christopherson 2019-04-02  3911  		if (guest) {
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3912  			if (!guest_cpuid_has(vcpu, X86_FEATURE_SVM))
-> 9ec19493fb86d6d arch/x86/kvm/svm.c     Sean Christopherson 2019-04-02  3913  				return 1;
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3914  
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27 @3915  			if (!(saved_efer && EFER_SVME))
->                                                                                                                  ^^
-> It looks like bitwise AND was intended.
+> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
 
-Oops. Thanks!
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Best regards,
-	Maxim Levitskky
-> 
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3916  				return 1;
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3917  
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3918  			if (kvm_vcpu_map(&svm->vcpu,
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3919  					 gpa_to_gfn(vmcb), &map) == -EINVAL)
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3920  				return 1;
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3921  
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3922  			ret = enter_svm_guest_mode(svm, vmcb, map.hva);
-> 69c9dfa24bb7bac arch/x86/kvm/svm/svm.c Paolo Bonzini       2020-05-13  3923  			kvm_vcpu_unmap(&svm->vcpu, &map, true);
-> 05cade71cf3b925 arch/x86/kvm/svm.c     Ladi Prosek         2017-10-11  3924  		}
-> e2317f8eb1f0e9f arch/x86/kvm/svm/svm.c Maxim Levitsky      2020-08-27  3925  	}
-> 59cd9bc5b03f0ba arch/x86/kvm/svm/svm.c Vitaly Kuznetsov    2020-07-10  3926  
-> 59cd9bc5b03f0ba arch/x86/kvm/svm/svm.c Vitaly Kuznetsov    2020-07-10  3927  	return ret;
-> 0234bf885236a41 arch/x86/kvm/svm.c     Ladi Prosek         2017-10-11  3928  }
-> 
+Thanks
+--
+Gustavo
+
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
-
+>  drivers/staging/media/atomisp/pci/atomisp_compat_css20.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> index 1b2b2c68025b..feb26c221e96 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
+> @@ -711,7 +711,6 @@ static bool is_pipe_valid_to_current_run_mode(struct atomisp_sub_device *asd,
+>  			return true;
+>  
+>  		return false;
+> -		fallthrough;
+>  	case ATOMISP_RUN_MODE_VIDEO:
+>  		if (!asd->continuous_mode->val) {
+>  			if (pipe_id == IA_CSS_PIPE_ID_VIDEO ||
+> -- 
+> 2.28.0
+> 
