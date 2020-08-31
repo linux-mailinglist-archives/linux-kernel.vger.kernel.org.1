@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6702580DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579642580E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729842AbgHaSUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729812AbgHaSUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729817AbgHaSUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 31 Aug 2020 14:20:40 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E51F720E65;
-        Mon, 31 Aug 2020 18:20:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598898040;
-        bh=SNSttJdpfWdR+2Zv+5g7ieu37LT228fIydquiaTZ/J0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LfzYkun2rT/QlYb0e3d7Ta1/lcsK/EqOjrfeCCLPR/5mz9mtG3e76E8an/K0zBFTk
-         AeQBMhI/iAKiYCWEHUwkt1+BCCXSLjb1D8ZDIAMD3kZki6uRPOxY7QI00W9CLZgDhE
-         ERJxZAK+KdWgzuBq0zeG4GONHgc9i8+UQcm6fRO4=
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH kcsan 2/9] Replace HTTP links with HTTPS ones: LKMM
-Date:   Mon, 31 Aug 2020 11:20:30 -0700
-Message-Id: <20200831182037.2034-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200831182012.GA1965@paulmck-ThinkPad-P72>
-References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51265 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729544AbgHaSUi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:20:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598898037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vTgWVCfmD2ZFmUsGbcmjOpx9gO63OLfuS/6GjWgQa9A=;
+        b=Z/51J3vl7Xk42MplChspxcGBOUNVgLuTcadec6nuomihB7sKmLjAQHRLXMUdNdA2gLe1c5
+        UybS+h0WosrAiUztFjUsPcbEYXIB1Fj9GIhcG46ol+U3nOYnZggGr3SMb0OVPVlNX3mr3B
+        eFCsIB46KG7B4gpSH22HzaWEgu4GqW8=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-rKPRpvjIN3OYANQEvp9WTA-1; Mon, 31 Aug 2020 14:20:35 -0400
+X-MC-Unique: rKPRpvjIN3OYANQEvp9WTA-1
+Received: by mail-io1-f70.google.com with SMTP id n16so4658470iop.19
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:20:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=vTgWVCfmD2ZFmUsGbcmjOpx9gO63OLfuS/6GjWgQa9A=;
+        b=Ry3UfmvIhE0Oglyy+dV+zkkGClx21nkpHYRi7/3N9iEFqTeR6kTwsB/fNrXZVz3u/O
+         bTt8QBLcK+bCUwfHGkc3soCTDXxYlEFG4LGuRDhy7LT7YvNM0s9IVkFtr5xfOikyYpqt
+         M4Oi6B2mJH3S7y+Vts1Mz0+Z8XmTNBKHszjfo6Qw02tN5YcZcINMXzL13cMS5bsCsxwy
+         qg/0zwcLmrrjhktedziLpK0+/oQejquzlEaqLUnhHToJLvCsAoq7wS2g/RXDKw3k7VYA
+         GoSlpU6+DC3gnMVr3pqznLlDs1BXv2XIBAnGTcO8YeR3fVOrq22qi7ZIQtXWS1qsbr+g
+         TCsw==
+X-Gm-Message-State: AOAM530CTmREVJq/VJxohpP9E7cHRLZY1EAJPzKCYgls/Wyyv8AEi2n2
+        FJ9tLLO/+c+Ubopc5j2rHWQJyCWlPx8JVl8SlcQblYuuyvFJDxrAhed7R/i6ROCND4hscrf7gs/
+        coCNc95U6DmJAmLK8j4POwqkt
+X-Received: by 2002:a5e:c305:: with SMTP id a5mr2368699iok.142.1598898034116;
+        Mon, 31 Aug 2020 11:20:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLriSxML/IerKOXIK8xnZB+A7cvbKwq6xgY3i4W7WSOXvQE3qytcTFpIpivB6aS71HlTgt6Q==
+X-Received: by 2002:a5e:c305:: with SMTP id a5mr2368679iok.142.1598898033818;
+        Mon, 31 Aug 2020 11:20:33 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i14sm4939106ilb.28.2020.08.31.11.20.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Aug 2020 11:20:33 -0700 (PDT)
+Subject: Re: [PATCH] soundwire: fix error handling
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, yung-chuan.liao@linux.intel.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        shreyas.nc@intel.com, alsa-devel@alsa-project.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20200829153515.3840-1-trix@redhat.com>
+ <CAKwvOd=+X2AakX3kTYCvyug-MK_Y+atDbkDSRxA0pUfOatQ3mA@mail.gmail.com>
+ <CAKwvOdnn6eMqJsL=aJ8n5dWWoHjXUL0LBSyVwZPGCKpkBSLHXA@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <5f9c8819-cd0f-6fb9-1b0f-b34f390ae65e@redhat.com>
+Date:   Mon, 31 Aug 2020 11:20:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAKwvOdnn6eMqJsL=aJ8n5dWWoHjXUL0LBSyVwZPGCKpkBSLHXA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Alexander A. Klimov" <grandmaster@al2klimov.de>
 
-Rationale:
-Reduces attack surface on kernel devs opening the links for MITM
-as HTTPS traffic is much harder to manipulate.
+On 8/31/20 10:48 AM, Nick Desaulniers wrote:
+> On Mon, Aug 31, 2020 at 10:47 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+>> On Sat, Aug 29, 2020 at 8:35 AM <trix@redhat.com> wrote:
+>>> From: Tom Rix <trix@redhat.com>
+>>>
+>>> clang static analysis flags this problem
+> Also, Tom, please use ./scripts/get_maintainer.pl on your patches to
+> CC our mailing list; clang-built-linux@googlegroups.com.
 
-Deterministic algorithm:
-For each file:
-  If not .svg:
-    For each line:
-      If doesn't contain `\bxmlns\b`:
-        For each link, `\bhttp://[^# \t\r\n]*(?:\w|/)`:
-          If both the HTTP and HTTPS versions
-          return 200 OK and serve the same content:
-            Replace HTTP with HTTPS.
+gcc is still doing the building, so it this appropriate ?
 
-Signed-off-by: Alexander A. Klimov <grandmaster@al2klimov.de>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/memory-model/Documentation/references.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Asking because i have been sed-ing clang-build-linux out.
 
-diff --git a/tools/memory-model/Documentation/references.txt b/tools/memory-model/Documentation/references.txt
-index ecbbaa5..c5fdfd1 100644
---- a/tools/memory-model/Documentation/references.txt
-+++ b/tools/memory-model/Documentation/references.txt
-@@ -120,7 +120,7 @@ o	Jade Alglave, Luc Maranget, and Michael Tautschnig. 2014. "Herding
- 
- o	Jade Alglave, Patrick Cousot, and Luc Maranget. 2016. "Syntax and
- 	semantics of the weak consistency model specification language
--	cat". CoRR abs/1608.07531 (2016). http://arxiv.org/abs/1608.07531
-+	cat". CoRR abs/1608.07531 (2016). https://arxiv.org/abs/1608.07531
- 
- 
- Memory-model comparisons
--- 
-2.9.5
+Tom
 
