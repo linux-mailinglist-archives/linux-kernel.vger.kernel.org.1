@@ -2,118 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDF2258215
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 21:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D082581DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 21:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729798AbgHaTuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 15:50:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56222 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgHaTuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 15:50:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8E676B7F1;
-        Mon, 31 Aug 2020 19:50:06 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org
-Cc:     oleg@redhat.com, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, dave@stgolabs.net,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH -next] kdb: Use newer api for tasklist scanning
-Date:   Mon, 31 Aug 2020 12:34:35 -0700
-Message-Id: <20200831193435.22141-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
+        id S1729112AbgHaThC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 15:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726764AbgHaThB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 15:37:01 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7CEC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 12:37:01 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id c142so1195579pfb.7
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 12:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IrMVw0/hWrYQkSqX7bF/wAZoQHkcVpfBV/h523demuE=;
+        b=Dd2rfV7eOeVCHvqctE69BdDXH1DJjH5CfajuP4KaIojA00gdQo9eyGGqDtVdlE2Fp4
+         1rZeCOtXZKPjzudrD3BXQGLaSnlCcRhsn5Xmv1XZxDDv7mGFIe34e/d+QxuhFBphNbM9
+         nJeiQuqCFMG0BbIgQ4CJgD3kqmxhAgDkyd+5g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IrMVw0/hWrYQkSqX7bF/wAZoQHkcVpfBV/h523demuE=;
+        b=OOQoFqHd+0GO7t8CamYvGCtfl9xz4u1626HcyxTx8ncPkmsAnMV9dlLvHlv2YDBH5Q
+         pf9mVq2gahjm2E8x8fIabhKJjtWP/+ArBvX3INSvArhHmYsY303H/z6JVGVi/Gv7VSm6
+         B6CBZkL6cwTg7fWK941mEa4+UXvyujEQZWkWaLA22E2Sn/c8CKm7PHhi39iu8jbUaEVg
+         GiuawbrORdS7oMzJDYr8jayehuNapSI3ssHtMZnjyJwr4tP5iuMja8TzDfZoeIv0IIcq
+         0QYa/PP8H05DytNnMQ94llzJVke14JpjiWlw2nWUvJ9n+nnjskccRBRU6wMjQmhsIT0b
+         mAJg==
+X-Gm-Message-State: AOAM530QO+wgxeTnYUieFNfxunOT/SFwxQklGT1WscpRlq4xzhnIWw//
+        zgQD+PFU7vUcbgsgYMvpeO7J/g==
+X-Google-Smtp-Source: ABdhPJzvVleKFM91luZazh30N3OwQmEZJzYLLBGrnl0MdDjuyst4dW9M8SOvFiv1kyAp4+HU7bO+zw==
+X-Received: by 2002:aa7:9a44:: with SMTP id x4mr2447134pfj.199.1598902620490;
+        Mon, 31 Aug 2020 12:37:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id w16sm8923087pfq.13.2020.08.31.12.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 12:36:59 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 12:36:58 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Rich Felker <dalias@libc.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Kyle Huey <me@kylehuey.com>,
+        Robert O'Callahan <robert@ocallahan.org>
+Subject: Re: [PATCH] seccomp: kill process instead of thread for unknown
+ actions
+Message-ID: <202008311228.A0E7430BC@keescook>
+References: <20200829015609.GA32566@brightrain.aerifal.cx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829015609.GA32566@brightrain.aerifal.cx>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This kills the custom kdb_do_each_thread/kdb_while_each_thread
-calls used in kdb to iterate through all tasks. It is obsolete
-and racy to use tsk->thread_group, although in this particular
-case there is no concurrency so it doesn't matter. Still, lets
-trivially replace it for the newer one, maintaining semantics,
-of course.
+On Fri, Aug 28, 2020 at 09:56:13PM -0400, Rich Felker wrote:
+> Asynchronous termination of a thread outside of the userspace thread
+> library's knowledge is an unsafe operation that leaves the process in
+> an inconsistent, corrupt, and possibly unrecoverable state. In order
+> to make new actions that may be added in the future safe on kernels
+> not aware of them, change the default action from
+> SECCOMP_RET_KILL_THREAD to SECCOMP_RET_KILL_PROCESS.
+> 
+> Signed-off-by: Rich Felker <dalias@libc.org>
+> ---
+> 
+> This fundamental problem with SECCOMP_RET_KILL_THREAD, and that it
+> should be considered unsafe and deprecated, was recently noted/fixed
+> seccomp in the man page and its example. Here I've only changed the
+> default action for new/unknown action codes. Ideally the behavior for
+> strict seccomp mode would be changed too but I think that breaks
+> stability policy; in any case it's less likely to be an issue since
+> strict mode is hard or impossible to use reasonably in a multithreaded
+> process.
+> 
+> Unfortunately changing this now won't help older kernels where unknown
+> new actions would still be handled unsafely, but at least it makes it
+> so the problem will fade away over time.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- kernel/debug/kdb/kdb_bt.c      | 4 ++--
- kernel/debug/kdb/kdb_main.c    | 8 ++++----
- kernel/debug/kdb/kdb_private.h | 4 ----
- 3 files changed, 6 insertions(+), 10 deletions(-)
+I think this is probably fine to change now. I'd always wanted to
+"upgrade" the default to KILL_PROCESS, but wanted to wait for
+KILL_PROCESS to exist at all for a while first. :)
 
-diff --git a/kernel/debug/kdb/kdb_bt.c b/kernel/debug/kdb/kdb_bt.c
-index 18e03aba2cfc..1f9f0e47aeda 100644
---- a/kernel/debug/kdb/kdb_bt.c
-+++ b/kernel/debug/kdb/kdb_bt.c
-@@ -149,14 +149,14 @@ kdb_bt(int argc, const char **argv)
- 				return 0;
- 		}
- 		/* Now the inactive tasks */
--		kdb_do_each_thread(g, p) {
-+		for_each_process_thread(g, p) {
- 			if (KDB_FLAG(CMD_INTERRUPT))
- 				return 0;
- 			if (task_curr(p))
- 				continue;
- 			if (kdb_bt1(p, mask, btaprompt))
- 				return 0;
--		} kdb_while_each_thread(g, p);
-+		}
- 	} else if (strcmp(argv[0], "btp") == 0) {
- 		struct task_struct *p;
- 		unsigned long pid;
-diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 5c7949061671..930ac1b25ec7 100644
---- a/kernel/debug/kdb/kdb_main.c
-+++ b/kernel/debug/kdb/kdb_main.c
-@@ -2299,10 +2299,10 @@ void kdb_ps_suppressed(void)
- 		if (kdb_task_state(p, mask_I))
- 			++idle;
- 	}
--	kdb_do_each_thread(g, p) {
-+	for_each_process_thread(g, p) {
- 		if (kdb_task_state(p, mask_M))
- 			++daemon;
--	} kdb_while_each_thread(g, p);
-+	}
- 	if (idle || daemon) {
- 		if (idle)
- 			kdb_printf("%d idle process%s (state I)%s\n",
-@@ -2370,12 +2370,12 @@ static int kdb_ps(int argc, const char **argv)
- 	}
- 	kdb_printf("\n");
- 	/* Now the real tasks */
--	kdb_do_each_thread(g, p) {
-+	for_each_process_thread(g, p) {
- 		if (KDB_FLAG(CMD_INTERRUPT))
- 			return 0;
- 		if (kdb_task_state(p, mask))
- 			kdb_ps1(p);
--	} kdb_while_each_thread(g, p);
-+	}
- 
- 	return 0;
- }
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index 2e296e4a234c..a4281fb99299 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -230,10 +230,6 @@ extern struct task_struct *kdb_curr_task(int);
- 
- #define kdb_task_has_cpu(p) (task_curr(p))
- 
--/* Simplify coexistence with NPTL */
--#define	kdb_do_each_thread(g, p) do_each_thread(g, p)
--#define	kdb_while_each_thread(g, p) while_each_thread(g, p)
--
- #define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
- 
- extern void *debug_kmalloc(size_t size, gfp_t flags);
+I'm not aware of any filter generators (e.g. libseccomp, Chrome) that
+depend on unknown filter return values to cause a KILL_THREAD, and
+everything I've seen indicates that they aren't _accidentally_ depending
+on it either (i.e. they both produce "valid" filters). It's possible
+that something out there doesn't, and in that case, we likely need to
+make a special case for whatever bad filter value it chose, but we can
+cross that bridge when we come to it.
+
+I've added Kyle and Robert to CC as well, as they have noticed subtle
+changes to seccomp behavior in the past. I *think* this change should be
+fine, but perhaps they will see something I don't. :)
+
+
+> 
+>  kernel/seccomp.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index d653d8426de9..ce1875fa6b39 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -910,10 +910,10 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+>  			seccomp_init_siginfo(&info, this_syscall, data);
+>  			do_coredump(&info);
+>  		}
+> -		if (action == SECCOMP_RET_KILL_PROCESS)
+> -			do_group_exit(SIGSYS);
+> -		else
+> +		if (action == SECCOMP_RET_KILL_THREAD)
+>  			do_exit(SIGSYS);
+> +		else
+> +			do_group_exit(SIGSYS);
+
+I need to think a little more, but I suspect we should change the coredump
+logic (above the quoted code) too... (i.e. "action == SECCOMP_RET_KILL_PROCESS"
+-> "action != SECCOMP_RET_KILL_THREAD")
+
+>  	}
+>  
+>  	unreachable();
+> -- 
+> 2.21.0
+> 
+
+Thanks!
+
+-Kees
+
 -- 
-2.26.2
-
+Kees Cook
