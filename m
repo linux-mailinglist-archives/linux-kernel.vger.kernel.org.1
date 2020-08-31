@@ -2,127 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53368257543
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 628F125754E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgHaIYg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Aug 2020 04:24:36 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2709 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728240AbgHaIYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:24:14 -0400
-Received: from lhreml717-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id F1F1CF6FF3E8EA4DA731;
-        Mon, 31 Aug 2020 09:24:09 +0100 (IST)
-Received: from fraeml704-chm.china.huawei.com (10.206.15.53) by
- lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Mon, 31 Aug 2020 09:24:09 +0100
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Mon, 31 Aug 2020 10:24:08 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
- Mon, 31 Aug 2020 10:24:08 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>
-Subject: RE: [PATCH 03/11] evm: Refuse EVM_ALLOW_METADATA_WRITES only if the
- HMAC key is loaded
-Thread-Topic: [PATCH 03/11] evm: Refuse EVM_ALLOW_METADATA_WRITES only if the
- HMAC key is loaded
-Thread-Index: AQHWRYof9RvD1u4yLUW/etQ+7VmgjKlDQsYAgA8N9fA=
-Date:   Mon, 31 Aug 2020 08:24:08 +0000
-Message-ID: <0c1c8fb398c340d89531360be7e3418b@huawei.com>
-References: <20200618160133.937-1-roberto.sassu@huawei.com>
-         <20200618160133.937-3-roberto.sassu@huawei.com>
- <caedd49bc2080a2fb8b16b9ecacab67d11e68fd7.camel@linux.ibm.com>
-In-Reply-To: <caedd49bc2080a2fb8b16b9ecacab67d11e68fd7.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.48.205.186]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1727910AbgHaI1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:27:41 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:48555 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726198AbgHaI1j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:27:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598862459; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BsJW+6b+ChjHM1tuO2UVuZumO9q0AK+u8r67VrfoMpM=; b=ByycTz/YIDwtEydcPg7yk6JAq/Z4cm4QuGgiw7ptg9lMAww3Q12NPCWwEXRbx1a2enRREDNp
+ cSaHIYi0vKShQdunasabF04IFXB4Skq03mxURXo8xw66edobSe9nyCXbQjfCc5Z5FUy9tPVb
+ 2GzFGAl8bmIZnH0+5ROiWCKxBuM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f4cb469d3d3df8c3975e08c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 31 Aug 2020 08:27:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 23F3FC433CA; Mon, 31 Aug 2020 08:27:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 904A6C433C6;
+        Mon, 31 Aug 2020 08:27:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 904A6C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kathirav@codeaurora.org
+Subject: [PATCH] arm64: dts: ipq8074: enable watchdog support
+Date:   Mon, 31 Aug 2020 13:57:08 +0530
+Message-Id: <1598862428-13996-1-git-send-email-kathirav@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Friday, August 21, 2020 10:15 PM
-> Hi Roberto,
-> 
-> On Thu, 2020-06-18 at 18:01 +0200, Roberto Sassu wrote:
-> > Granting metadata write is safe if the HMAC key is not loaded, as it won't
-> > let an attacker obtain a valid HMAC from corrupted xattrs.
-> evm_write_key()
-> > however does not allow it if any key is loaded, including a public key,
-> > which should not be a problem.
-> >
-> 
-> Why is the existing hebavior a problem?  What is the problem being
-> solved?
+Enable watchdog support for the IPQ8074 SoCs.
 
-Hi Mimi
+Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
+---
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-currently it is not possible to set EVM_ALLOW_METADATA_WRITES when
-only a public key is loaded and the HMAC key is not. The patch removes
-this limitation.
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index 96a5ec89b5f0..74a474300314 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -498,6 +498,14 @@ timer {
+ 				     <GIC_PPI 1 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
+ 		};
+ 
++		watchdog: watchdog@b017000 {
++			compatible = "qcom,kpss-wdt";
++			reg = <0xb017000 0x1000>;
++			interrupts = <GIC_SPI 3 IRQ_TYPE_EDGE_RISING>;
++			clocks = <&sleep_clk>;
++			timeout-sec = <30>;
++		};
++
+ 		timer@b120000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
 
-> > This patch allows setting EVM_ALLOW_METADATA_WRITES if the
-> EVM_INIT_HMAC
-> > flag is not set.
-> >
-> > Cc: stable@vger.kernel.org # 4.16.x
-> > Fixes: ae1ba1676b88e ("EVM: Allow userland to permit modification of
-> EVM-protected metadata")
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > ---
-> >  security/integrity/evm/evm_secfs.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/security/integrity/evm/evm_secfs.c
-> b/security/integrity/evm/evm_secfs.c
-> > index cfc3075769bb..92fe26ace797 100644
-> > --- a/security/integrity/evm/evm_secfs.c
-> > +++ b/security/integrity/evm/evm_secfs.c
-> > @@ -84,7 +84,7 @@ static ssize_t evm_write_key(struct file *file, const
-> char __user *buf,
-> >  	 * keys are loaded.
-> >  	 */
-> >  	if ((i & EVM_ALLOW_METADATA_WRITES) &&
-> > -	    ((evm_initialized & EVM_KEY_MASK) != 0) &&
-> > +	    ((evm_initialized & EVM_INIT_HMAC) != 0) &&
-> >  	    !(evm_initialized & EVM_ALLOW_METADATA_WRITES))
-> >  		return -EPERM;
-> 
-> >
-> 
-> Documentation/ABI/testing/evm needs to be updated as well.
-
-Ok.
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
-
-> thanks,
-> 
-> Mimi
-> 
-> 
+base-commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
