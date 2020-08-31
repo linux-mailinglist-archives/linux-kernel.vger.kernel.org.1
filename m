@@ -2,94 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75E3257392
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C833C257397
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgHaGLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 02:11:35 -0400
-Received: from mga11.intel.com ([192.55.52.93]:18469 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726518AbgHaGLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 02:11:30 -0400
-IronPort-SDR: KGSkUn6xepPMcrcfzIkjje311Fu8GK8RhvdVeb4GOuyecSUcX67kYINK82bphgPnr3yN46PUWS
- XS4Q970AiCcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="154446254"
-X-IronPort-AV: E=Sophos;i="5.76,374,1592895600"; 
-   d="scan'208";a="154446254"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 23:11:30 -0700
-IronPort-SDR: nmN4WCP/Ni6BtZXit//VztUZ2aav8be9TF0gsCtI61qi8V5mrSv1PJ9BFUVTDLYH1hELypNi1o
- Qcmw2KdMJIxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,374,1592895600"; 
-   d="scan'208";a="501743030"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Aug 2020 23:11:26 -0700
-Date:   Mon, 31 Aug 2020 14:11:26 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        John Donnelly <John.p.donnelly@oracle.com>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, zhengjun.xing@intel.com
-Subject: Re: [drm/mgag200] 913ec479bb: vm-scalability.throughput 26.2%
- improvement
-Message-ID: <20200831061126.GC65971@shbuild999.sh.intel.com>
-References: <20200826085847.GL4299@shao2-debian>
- <76926ade-15fb-75a3-17aa-a2b5a68471c8@suse.de>
- <99c7683c-f428-378d-2b19-ef51270a5d8e@oracle.com>
- <f9664139-e28c-ba8e-b4e4-d505baf9069a@suse.de>
+        id S1726334AbgHaGQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 02:16:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbgHaGPs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 02:15:48 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77334C061575
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:15:45 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id ay8so4303936edb.8
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:15:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2zH8iXPe2IpmEV6MvtsCYE816RJ3JkF73TlP+EUZxU8=;
+        b=cud8CCRws7crvn6VNCQlihlBZrASGjsxipOuX2EZPQe2lqqTP3ZaYY+TCozh7kMKRe
+         NswN0/oHpQmbCq6/i8vjhxRxfV3xgS22ExhW1T2MLvsw4SOYCR42bDuWq6GebUsWRBek
+         1w3TNXolXWEN4S8kg0SPd2KjJK720dmrP5sIPLNcY5y5dRKye/ABpO5iikVEDrV1ws2z
+         H9L9Wz3EvBclfkoozNkRMztXhm3AnLJa/5ZiLWUNBbn7iY9tlXLuEmbKg2l0neRfEII5
+         A+dYPO2eu8RGTArKJ2RsWBL/0IHdb+8npfyfethI7d9/0aD/7/eCSO9HtZkrJq26K30J
+         yJlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2zH8iXPe2IpmEV6MvtsCYE816RJ3JkF73TlP+EUZxU8=;
+        b=BCF8kooJl8tUzmzQzr1YwzaVm57vPmWI9rb82uD22+IvtznxAGMNeyLw7dkAxJjrYf
+         dbq+PBXQbFsOdt3bNrslQ+dfTQgKciOEIIaPHUd33CB19r7yjZJnVLOoeRy03UAp12pG
+         n34EgCxfbOLo9CfAOIfuwajrjRTnF+JSMQpfjl4GUtm9sqFftaGzN8corU863//eKLk+
+         K5xrXiLARvjU5cHPn4ZhdLvMUvlvM7/gCSq1VSPJAYaOwddLJb1tRg61b0j1fkiDT4a+
+         XV7I7OTljSw7o41bz1IZRwvMNrZwVzCmOcwN9QmGVgw26dH42ctrMKzVZoOwfpQLC1qI
+         +kbg==
+X-Gm-Message-State: AOAM532eA7MzAANEJt8fqVrYFbhYowu0LGNrZ/NhF7sSNoqrZ0l0EFPm
+        ZqqkGlImtKXhw76o+ug2cTMF5jbuZ95lK/lCRiqf2A==
+X-Google-Smtp-Source: ABdhPJxBslz91+328C6zIUiWxOSEPHyGxAs+7xWQfb9ymOLlxQ0nFrVmy3K7FpSmk7Ot/k0dcrAMkVebEQwkB6CXnoY=
+X-Received: by 2002:aa7:cdc4:: with SMTP id h4mr9802697edw.252.1598854544166;
+ Sun, 30 Aug 2020 23:15:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9664139-e28c-ba8e-b4e4-d505baf9069a@suse.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200823091453.4782-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20200823091453.4782-1-dinghao.liu@zju.edu.cn>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 31 Aug 2020 08:15:31 +0200
+Message-ID: <CAMGffE=RQiPxjA+vxVfj_zCBfJy6PiOdJpkTWC+DRDzDW_nDZg@mail.gmail.com>
+Subject: Re: [PATCH] scsi: pm8001: Fix memleak in pm8001_exec_internal_task_abort
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 08:06:04PM +0200, Thomas Zimmermann wrote:
-> > Hello Thomas,
-> > 
-> > Did drm changes really impact anon-cow-seq-hugetlb performance?
-> >
-> > My change c0d0381ade79 ("hugetlbfs: use i_mmap_rwsem for more pmd sharing
-> > synchronization") caused a -33.4% regression of anon-cow-seq-hugetlb.  A
-> > recent change 34ae204f185 (hugetlbfs: remove call to huge_pte_alloc without
-> > i_mmap_rwsem) was tested by Zhengjun Xing and improved performance by 20
-> > something percent.  That seems in line with this report/improvement.
-> 
-> Some of DRM's memory management might be affected by hugetable changes.
-> While I cannot really point to a specific location, it's not impossible
-> that there's a connection.
-> 
-> > 
-> > Perhaps the tooling is not always accurate in determining the commit which
-> > causes the performance changes?
-> > Perhaps I am misreading information in the reports?
-> > 
-> 
-> From what I remember, some of these tests print to the console, which
-> has always been slow, and has generally been a bad idea for performance
-> tests. I guess these tests are not very accurate.
-
-Yes, I also think that's the reason for this improvement. The test box is
-using mgag200 driver, while the vm-scalability test case itself will print
-many messages to the gfx console. If commit 913ec479bb "drm/mgag200: Replace
-VRAM helpers with SHMEM helpers" improves the console handling, then it
-will impact the final score of the test case.
-
-Last time we met similar case that a console write slowdown triggers a
-regression is discussed here:  
-https://lore.kernel.org/lkml/20190729095155.GP22106@shao2-debian/
-
-Thanks,
-Feng
-
-> Best regards
-> Thomas
+On Sun, Aug 23, 2020 at 11:15 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+>
+> When pm8001_tag_alloc() fails, task should be freed just
+> like what we've done in the subsequent error paths.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Thanks!
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+> ---
+>  drivers/scsi/pm8001/pm8001_sas.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+> index 337e79d6837f..9889bab7d31c 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.c
+> +++ b/drivers/scsi/pm8001/pm8001_sas.c
+> @@ -818,7 +818,7 @@ pm8001_exec_internal_task_abort(struct pm8001_hba_info *pm8001_ha,
+>
+>                 res = pm8001_tag_alloc(pm8001_ha, &ccb_tag);
+>                 if (res)
+> -                       return res;
+> +                       goto ex_err;
+>                 ccb = &pm8001_ha->ccb_info[ccb_tag];
+>                 ccb->device = pm8001_dev;
+>                 ccb->ccb_tag = ccb_tag;
+> --
+> 2.17.1
+>
