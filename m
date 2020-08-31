@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E48C257215
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EC4257228
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgHaDVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 23:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726838AbgHaDVd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 23:21:33 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16326C061573;
-        Sun, 30 Aug 2020 20:21:32 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kCaNr-007qZv-1n; Mon, 31 Aug 2020 03:21:27 +0000
-Date:   Mon, 31 Aug 2020 04:21:27 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuqi Jin <jinyuqi@huawei.com>,
-        kernel test robot <rong.a.chen@intel.com>,
-        Will Deacon <will@kernel.org>,
+        id S1727995AbgHaDWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 23:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726687AbgHaDWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 23:22:31 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0F62206A5;
+        Mon, 31 Aug 2020 03:22:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598844150;
+        bh=41IsEe2nqK+mBIBJZKAilYQUgzH6n8IzJt8WNyWroZM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mYyIc44uwfLmY/eyFTuvLvDK+TATNyuPbhEpAq4DgcS7R6NqZ2HdflWx7EtL1FEGr
+         MADFZF6/yPWRvqeLE0b71ap1LBcI9DHZsjFmY5m/vIL5Tb2AAJ/9twrbWoPtAkZ+J5
+         Ucv05I7a8+/mpLMAbFIkE6DQ7o77w466IRECylx4=
+Date:   Mon, 31 Aug 2020 11:22:22 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [NAK] Re: [PATCH] fs: Optimized fget to improve performance
-Message-ID: <20200831032127.GW1236603@ZenIV.linux.org.uk>
-References: <1598523584-25601-1-git-send-email-zhangshaokun@hisilicon.com>
- <20200827142848.GZ1236603@ZenIV.linux.org.uk>
- <dfa0ec1a-87fc-b17b-4d4a-c2d5c44e6dde@hisilicon.com>
+        Thierry Reding <thierry.reding@gmail.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Han Xu <han.xu@nxp.com>,
+        Frank Li <frank.li@nxp.com>, Fugang Duan <fugang.duan@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH v3 14/19] dt-bindings: arm: fsl: Fix Toradex Colibri i.MX
+ 8 binding
+Message-ID: <20200831032221.GF4488@dragon>
+References: <20200825193536.7332-1-krzk@kernel.org>
+ <20200825193536.7332-15-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dfa0ec1a-87fc-b17b-4d4a-c2d5c44e6dde@hisilicon.com>
+In-Reply-To: <20200825193536.7332-15-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 09:43:31AM +0800, Shaokun Zhang wrote:
+On Tue, Aug 25, 2020 at 09:35:31PM +0200, Krzysztof Kozlowski wrote:
+> The Toradex Colibri i.MX 8 Evaluation board has two Toradex compatibles
+> so it needs separate entry.  This fixes dtbs_check warning:
+> 
+>   arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml: /:
+>     compatible: ['toradex,colibri-imx8x-eval-v3', 'toradex,colibri-imx8x', 'fsl,imx8qxp'] is not valid under any of the given schemas (Possible causes of the failure):
+>     arch/arm64/boot/dts/freescale/imx8qxp-colibri-eval-v3.dt.yaml: /: compatible: ['toradex,colibri-imx8x-eval-v3', 'toradex,colibri-imx8x', 'fsl,imx8qxp'] is too long
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-> How about this? We try to replace atomic_cmpxchg with atomic_add to improve
-> performance. The atomic_add does not check the current f_count value.
-> Therefore, the number of online CPUs is reserved to prevent multi-core
-> competition.
-
-No.  Really, really - no.  Not unless you can guarantee that process on another
-CPU won't lose its timeslice, ending up with more than one increment happening on
-the same CPU - done by different processes scheduled there, one after another.
-
-If you have some change of atomic_long_add_unless(), do it there.  And get it
-past the arm64 folks.  get_file_rcu() is nothing special in that respect *AND*
-it has to cope with any architecture out there.
-
-BTW, keep in mind that there's such thing as a KVM - race windows are much
-wider there, since a thread representing a guest CPU might lose its timeslice
-whenever the host feels like that.  At which point you get a single instruction
-on a guest CPU taking longer than many thousands of instructions on another
-CPU of the same guest.
-
-AFAIK, arm64 does support KVM with SMP guests.
+Applied, thanks.
