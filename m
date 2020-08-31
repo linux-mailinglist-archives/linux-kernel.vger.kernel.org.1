@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846E72571F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4026A257200
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgHaDAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 23:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
+        id S1727056AbgHaDKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 23:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgHaC76 (ORCPT
+        with ESMTP id S1726824AbgHaDJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 22:59:58 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A44CC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 19:59:56 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 31so3510212pgy.13
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 19:59:56 -0700 (PDT)
+        Sun, 30 Aug 2020 23:09:58 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9D5C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 20:09:58 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id x18so1137461pll.6
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 20:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VVV4zDgX4bh1ITzZ3P/D8BPBhYzTijWax2Ubo35ykQQ=;
-        b=vWkTAnIaI6Tg+5lq3G2zIENEtavt3ptFvX0QsKiZyTAZYTw7cqHJpzgUTsYmiuFTAb
-         jodO6/WSjmVfe31B8zbrIHOOewzYS9z4Y7iJZKG4z8ptsq+FBr0OJ+0N8FIbqyTqAoiK
-         VEa/jmQEjiDhrK3kTnRT2fvPt8YT1mAcsswlW4SsGO6mL3syWPlngNslF8KMxJXtcsR6
-         Thjl9YUslKaYct43GD8MZ834IvroDjCMUTkq+jCg8qQdSIqduVWJtg/8H4aEZW4BYxh8
-         pLr+Sz4OdA7lAVARgkkMiDs7MDpGJ7OxBlEyXOQofmM4+eqvhOfQkm/9SCieRAH6SRPI
-         Qttw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=Ek7hruLtxB76iRKdwJF2urxOIR4x74OETrgZK41siV0=;
+        b=ijZeLYTpvyBjf2S5CRg+g5IG7hSvOGPlMk3Ghz99t3ylauvRrSGiQ5ze0fdCWAzzh9
+         Tz+tsAGWuMfcWi8rWztpw4LVsGSBjpqWV1uj/6KMgG8yyeeMhfPGjoURt2Y59O53bOe1
+         zJY+5CRp5TtjddVH6xKs0PBovj+baOCQEzwnxZqHtDV1VQBsGScvFkg90BKpqk+n27ga
+         buaCAPUHtQCslmUTzTaOGTjYdIqQ5FTP56m5ZFAwkvaADs69//2JqjDh1apTqlf3OiGV
+         oiwTTUXc9YGIpKKsc7gqQySfo63lNaPrud4QDjbPBezgBme1Vtku7cZwK1X2j1Wd/yRc
+         TDJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VVV4zDgX4bh1ITzZ3P/D8BPBhYzTijWax2Ubo35ykQQ=;
-        b=NhLJ53+apgmyfiiCmwX/rwCW1dXIekuZFg28he99IUZSIo4VGw7VxFSIxzwbplqF4N
-         YQ6fFjbTnYkVxHlUweputBTeOTxsZ6e2x2nlZUZ+I0jjRIlTQfAiUiuKpGIEDfqFUXbJ
-         1RxvfMytQtj3a/nFMtKnpzrlTrR0Rxma0ETJ+5Fpqk2Yykh7FGRa/slaHP6GvsmDtHym
-         zXcQaoAMTQ7M/PKNqG8uy8xSDVYAdld4pTJB4PtZ5j222qfbBxs5w9pzlKjH4sos5XoN
-         j480UqwD3J3Pwdhe3k/UHQLSZlZv058uku1H8G4ywCalw/Eel/d8adHPY9NGyYAE5h7J
-         ciKg==
-X-Gm-Message-State: AOAM531D4tR6KOPXLXK+5/fFjK4nt1dYcicslk55KJRmSIW2Nw8rMkPc
-        isIoU3l7gnMGa/iQWV3MAHN0HVWIeehjkHjNIvRQ0sWIXz+6Pw==
-X-Google-Smtp-Source: ABdhPJzn3r7DcbmTpR91vBNocSxb2riE/BRXhqMjxn5NApnI0uyZfvJNdQG0kA5iI/3hAtN2Q4B7UWDWo35zg5b6g8k=
-X-Received: by 2002:a62:64d5:: with SMTP id y204mr733541pfb.97.1598842795785;
- Sun, 30 Aug 2020 19:59:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Ek7hruLtxB76iRKdwJF2urxOIR4x74OETrgZK41siV0=;
+        b=PMFpHVtS+qWpDoJyIgj9jrHQLe71fcDLrnuMltqPPHjISS7dRviMT2H9O+ybdJyDTC
+         ebhNP9bzcxyvNoNSwqHVIED6lHh2tOZ8EIfuDK0oh2kw/OBNwjqyipYPbeRNOv9n3KuC
+         cv6SVyLPp6PE+vYTAsgXNhG2XME5G383Fz1hqHZW323dSTG4gzVjnLinerG3eS9TlT6R
+         N5qj020N97iK6u7SF3iC45Jlixy5WzO4NkZ0Nwd4GDM9TtSC1QYgjrl9naOREHhg8Zj2
+         37hRki1AflPCGiwoA9wNJKG8jNCive6lhhWzI6e93+SCoaox42xHn1BXZiiT/yDUGGHr
+         pmrw==
+X-Gm-Message-State: AOAM5303x6hvHhJX9feGQ1e0oJyZLz8FJxtGi4/dopoHG4g2PJN+2Eyh
+        fnjPBc1P+jRV5i+cUHrkX6FThQDWDvg=
+X-Google-Smtp-Source: ABdhPJyuMrjNmRQ5yBv0rbAhfuM9sY6mLqHJNc3te6ViSs4syd/Fu3lJZl103u2a+CUtEI7qSNSzPw==
+X-Received: by 2002:a17:902:8a93:: with SMTP id p19mr7257895plo.101.1598843397300;
+        Sun, 30 Aug 2020 20:09:57 -0700 (PDT)
+Received: from Kaladin ([49.207.213.50])
+        by smtp.gmail.com with ESMTPSA id d23sm6546292pfq.36.2020.08.30.20.09.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 30 Aug 2020 20:09:56 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 08:39:53 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH] bus: arm: Add of_node_put() before break statement
+Message-ID: <20200831030953.GA8285@Kaladin>
 MIME-Version: 1.0
-References: <20200822030055.32383-1-songmuchun@bytedance.com>
-In-Reply-To: <20200822030055.32383-1-songmuchun@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 31 Aug 2020 10:59:19 +0800
-Message-ID: <CAMZfGtVTTZ1XZ2sLERpjevGmSO+8ex4PdfPaWLFh7Ro2r5oYYA@mail.gmail.com>
-Subject: Re: [PATCH v2] kprobes: Fix kill kprobe which has been marked as gone
-To:     naveen.n.rao@linux.ibm.com, anil.s.keshavamurthy@intel.com,
-        davem@davemloft.net, Masami Hiramatsu <mhiramat@kernel.org>,
-        songliubraving@fb.com
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chengming Zhou <zhouchengming@bytedance.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc Andrew and Steven.
+Every iteration of for_each_available_child_of_node() decrements the
+reference count of the previous node, however when control is
+transferred from the middle of the loop, as in the case of a
+return or break or goto, there is no decrement thus ultimately
+resulting in a memory leak.
 
-Any other comments or someone can add this to the queue for the
-merge window? It's worth fixing it.
+Fix a potential memory leak in arm-cci.c by inserting
+of_node_put() before a break statement.
 
-On Sat, Aug 22, 2020 at 11:01 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> If a kprobe is marked as gone, we should not kill it again. Otherwise,
-> we can disarm the kprobe more than once. In that case, the statistics
-> of kprobe_ftrace_enabled can unbalance which can lead to that kprobe
-> do not work.
->
-> Fixes: e8386a0cb22f ("kprobes: support probing module __exit function")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
-> changelogs in v2:
->  1. Add a WARN_ON_ONCE in the kill_kprobe() to catch incorrect use of it.
->  2. Update 'Fixes' tag in the commmit log.
->
->  kernel/kprobes.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index d36e2b017588..9348b0c36ae0 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2143,6 +2143,9 @@ static void kill_kprobe(struct kprobe *p)
->
->         lockdep_assert_held(&kprobe_mutex);
->
-> +       if (WARN_ON_ONCE(kprobe_gone(p)))
-> +               return;
-> +
->         p->flags |= KPROBE_FLAG_GONE;
->         if (kprobe_aggrprobe(p)) {
->                 /*
-> @@ -2422,7 +2425,10 @@ static int kprobes_module_callback(struct notifier_block *nb,
->         mutex_lock(&kprobe_mutex);
->         for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
->                 head = &kprobe_table[i];
-> -               hlist_for_each_entry(p, head, hlist)
-> +               hlist_for_each_entry(p, head, hlist) {
-> +                       if (kprobe_gone(p))
-> +                               continue;
-> +
->                         if (within_module_init((unsigned long)p->addr, mod) ||
->                             (checkcore &&
->                              within_module_core((unsigned long)p->addr, mod))) {
-> @@ -2439,6 +2445,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
->                                  */
->                                 kill_kprobe(p);
->                         }
-> +               }
->         }
->         if (val == MODULE_STATE_GOING)
->                 remove_module_kprobe_blacklist(mod);
-> --
-> 2.11.0
->
+Issue found with Coccinelle.
 
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+---
+ drivers/bus/arm-cci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---
-Yours,
-Muchun
+diff --git a/drivers/bus/arm-cci.c b/drivers/bus/arm-cci.c
+index b8184a903583..1f84a5528073 100644
+--- a/drivers/bus/arm-cci.c
++++ b/drivers/bus/arm-cci.c
+@@ -461,8 +461,10 @@ static int cci_probe_ports(struct device_node *np)
+ 
+ 		i = nb_ace + nb_ace_lite;
+ 
+-		if (i >= nb_cci_ports)
++		if (i >= nb_cci_ports) {
++			of_node_put(cp);
+ 			break;
++		}
+ 
+ 		if (of_property_read_string(cp, "interface-type",
+ 					&match_str)) {
+-- 
+2.17.1
+
