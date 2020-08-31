@@ -2,109 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CFF25AB22
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F0A25AB74
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgIBM3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:29:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgIBM3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:29:03 -0400
-Received: from localhost (47.sub-72-107-117.myvzw.com [72.107.117.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A87F62083B;
-        Wed,  2 Sep 2020 12:29:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599049743;
-        bh=/5zITwQgLMel5YXHYupTFIKYxnlLuiBxHFfhEAM0zfA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=BbTPZSuwNhYPSzyKeYXdR2ks3rMVlCPg6Y1GA8H9h86rRYg1Vih7Csu9U/nxJ/lYC
-         TENC8nhd0UiDYOX5RrIeDcOjt57ddMQ+FYTxqkf2fUW99aQdEFMgwbJVe0J9blyW14
-         V7HlRBi6yEcXCoiDy/37tUpos8rsamYLRKdgQMyQ=
-Date:   Wed, 2 Sep 2020 07:29:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     =?utf-8?B?5ZCz5piK5r6E?= Ricky <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "rui_feng@realsil.com.cn" <rui_feng@realsil.com.cn>,
-        "vailbhavgupta40@gamail.com" <vailbhavgupta40@gamail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "puranjay12@gmail.com" <puranjay12@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] misc: rtsx: add power saving function and bios guide
- options
-Message-ID: <20200902122901.GA241240@bjorn-Precision-5520>
+        id S1727048AbgIBMwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 08:52:11 -0400
+Received: from 94637-75753.cloudwaysapps.com ([138.197.78.220]:60894 "EHLO
+        94637-75753.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727004AbgIBMvu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 08:51:50 -0400
+Received: from Shop01 (94637-75753.cloudwaysapps.com [127.0.0.1])
+        by 94637-75753.cloudwaysapps.com (Postfix) with SMTP id 81366238C4;
+        Mon, 31 Aug 2020 23:06:01 +0000 (UTC)
+Received: from [233.154.209.39] by Shop01 with ESMTP id C23AB6BF700; Mon, 31 Aug 2020 21:04:02 -0300
+Message-ID: <1l9-y9v-ngiiw8sp$$1$j$dg@viq6vxdad1i>
+From:   "Nassir Uddin" <fkinneyofd@tampabay.rr.com>
+Reply-To: "Nassir Uddin" <fkinneyofd@tampabay.rr.com>
+To:     linux-info@linux.cz
+Subject: Dear Sir/Madam
+Date:   Mon, 31 Aug 20 21:04:02 GMT
+X-Mailer: Internet Mail Service (5.5.2650.21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c64d07b5269a4830932d639baec6eab4@realtek.com>
+Content-Type: multipart/alternative;
+        boundary="52DA9_D0BE_.3_.5B.."
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > From: Ricky Wu <ricky_wu@realtek.com>
-> > >
-> > > Added rts5227 rts5249 rts5260 rts5228 power saving functions,
-> > > added BIOS guide MMC funciton and U_d3_en register support and
-> > > fixed rts5260 driving parameter
-> > 
-> > This should be split into small logical pieces.  I can't really tell
-> > what those would be, but just based on the commit message, it could
-> > be:
-> > 
-> >   1) Add rts5227 rts5249 rts5260 rts5228 power saving functions
-> > 
-> >   2) Add BIOS guide MMC function and U_d3_en register support
-> > 
-> >   3) Fix rts5260 driving parameter
-> > 
-> > s/funciton/function/
-> > 
-> > It looks like 1) *might* be just this:
-> > 
-> >   rts*_force_power_down()
-> >   {
-> >     ...
-> >     rtsx_pci_write_register(pcr, pcr->reg_pm_ctrl3, D3_DELINK_MODE_EN,
-> > 			    D3_DELINK_MODE_EN);
-> > 
-> > That should be a single patch by itself so it's obvious that it's
-> > doing the same thing to several drivers.
-> 
-> Ok, I will have a extra patch for all xx_force_power_down()
 
-Great, thanks!
+--52DA9_D0BE_.3_.5B..
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-> > Explain what "BIOS guide MMC function" means.  Mention the name of the
-> > function this adds so we can connect the patch with the commit log.
-> > 
-> 
-> "BIOS guide MMC function" means, via BIOS setting to know MMC card
-> support or not 
+Dear Sir/Madam,
 
-It will be helpful if this is in a patch by itself.
+We are an Investment/Project Service Company.
+We are looking for Partners that will part with us in a project that is ec=
+onomically viable and financially profitable with zero risk.
 
-As far as I know, there's no actual BIOS *call* here, so you must be
-looking at some setting in the *device* itself, on the assumption that
-it was done by the BIOS?
+Kindly express your interest to partner with us.
 
-That sounds like it could become a problem if the device is ever reset
-or put in a low-power state.  For resets, and possibly even a
-low-power state, BIOS won't be involved, so the setting will be lost,
-and the device may work differently after the reset than it did
-before.  That sounds undesirable.
+Regards.
+Nassir Uddin
 
-> > Explain what "U_d3_en" is; that doesn't even appear in the patch.
-> 
-> I am going to remove U_d3_en from patch description, this mean
-> D3_DELINK_MODE_EN register 
+--52DA9_D0BE_.3_.5B..--
 
-OK.  Given the size of the patch, I think the commit log is too short
-to describe what's going on.  More details would be helpful.
-
-Bjorn
