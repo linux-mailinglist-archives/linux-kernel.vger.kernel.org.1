@@ -2,62 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C592580F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 951AB258110
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgHaSXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729767AbgHaSXF (ORCPT
+        id S1729849AbgHaSZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:25:09 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:32850 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729232AbgHaSZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:23:05 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F6AC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:23:05 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id d190so6106175iof.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xv8rGjKL3AwaVAY3DveNACmKtTJqRUUuSopt9eMG6Sg=;
-        b=joFCO9aPkwFdN3+LMX0pw3+AcTzaOnmd3vAoxDSr0miya+xkD5Q3Ww2WoPKJ8zmINc
-         8cTGbp4nwt2bPZEj55JmmAkwFKvMRTlGKZ2wi9THLyOAaRucncX4QUmxsJq6CHoavYCr
-         ughYYusRskGtr1JJVKa7xJ9rxdQs5X1H2HrmY96C0kogl8G1QyVG3PUxSuJ0C3D1Lxv9
-         KcvWSk75PWEPhekhVjcLIc+Xc1bK3OSGLmZuRKq26v0Gbz778mRaz+H37ti700WzGl2p
-         YSaMg/3FQP82QGXLiE3Gj4f/QsKJchu+0HJU9NNvgtImqPDI2djCMzHjOUK8vVO7YZGZ
-         9UCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xv8rGjKL3AwaVAY3DveNACmKtTJqRUUuSopt9eMG6Sg=;
-        b=kNU0Vb5ZAeKizByTwX0nnp7O31IDHvDv8YLbiHv2loykisUksm+sXWZ3gNUZ0QxhZa
-         Frwd2ttXBGrKfal+IxarZexYTDEenOm0mwepvOdYMCPiRroWhwoW7hLkfBnQhU1Oq42J
-         KTHfJR0QxhS6NKTt5N7gRqiWInSdQA9MbqHHUceqeZ5vOQzGPO0wQ2cjJm9fG6HUF/eh
-         j9Wd1Cf4k2UzqLxjru3Fo3JZVCYmaRsfRybXBZNS5hTnLjCYzfxONPLeesY0xxV10gq8
-         ORaIl1B4tRVCFyb9cfBXFZCCHNTL0C56l8Ih+papEmuWyc5/7eR2kbu5NLrADqNr9eP8
-         Xtzw==
-X-Gm-Message-State: AOAM530Hh1lFeIWygr+JYTjRTr3NjiSf66POvBpCE+ZtdJ1sZB5cXjqI
-        +tw+dBKsO2IVfNo5aZ62FME=
-X-Google-Smtp-Source: ABdhPJzBxffsjRS306lzQbjmhFGK2u2q6uduTo/rEalzCIBbICArYTe2nwuVweajJC+vNlOTk08vjg==
-X-Received: by 2002:a5e:9e0a:: with SMTP id i10mr2287381ioq.41.1598898184551;
-        Mon, 31 Aug 2020 11:23:04 -0700 (PDT)
-Received: from frodo.hsd1.co.comcast.net ([2601:284:8203:5970::dc2e])
-        by smtp.googlemail.com with ESMTPSA id p18sm4129017iog.1.2020.08.31.11.23.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 11:23:04 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v3 3/3] dyndbg: fix problem parsing format="foo bar"
-Date:   Mon, 31 Aug 2020 12:22:10 -0600
-Message-Id: <20200831182210.850852-4-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200831182210.850852-1-jim.cromie@gmail.com>
-References: <20200831182210.850852-1-jim.cromie@gmail.com>
+        Mon, 31 Aug 2020 14:25:09 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 07VIMj78001504;
+        Tue, 1 Sep 2020 03:22:46 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 07VIMj78001504
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1598898166;
+        bh=gDsWGmkcPm9WZCCqq0YASfbSSSRYZcdi2ssPSrYsKcY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IhZU2MnvJ7cGF9KHjklnkzDYggoJw15wUj3pFLZNEy0Mo1ectN0fiNrHR5Yi5r98w
+         Aw29vLPyVa4PoFzaGGR7OaDGdRruW7jzanXrm5mgWBfQX9kzt3fZxRdMo+SSMqv7Wq
+         fY2VaciLqDsWrElIqNwth4cbkrLx/ihzL8InqhsrIMxPgtOYRPTQd+GkNvR9wD8CbV
+         C59ToNLdXYfTY4hI+9dEHsUggli+kQDrZxBcVg6UwfgfgOLBEvIDUoMGg1HOyyBWvH
+         c7kDh4F1LsI93yNrr+MYTpYQCJx+dIFj2cCqIMqiL78QKk0p3PsRjb5bNZvsTqNg+M
+         knl6RhtaDhykg==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nick Hu <nickhu@andestech.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] arch: vdso: add vdso linker script to 'targets' instead of extra-y
+Date:   Tue,  1 Sep 2020 03:22:39 +0900
+Message-Id: <20200831182239.480317-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,101 +54,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 14775b049642 ("dyndbg: accept query terms like file=bar and module=foo")
+The vdso linker script is preprocessed on demand.
+Adding it to 'targets' is enough to include the .cmd file.
 
-added the combined keyword=value parsing poorly; revert most of it,
-keeping the keyword & arg change.
-
-Instead, fix the tokenizer for the new input, by terminating the
-keyword (an unquoted word) on '=' as well as space, thus letting the
-tokenizer work on the quoted argument, like it would have previously.
-
-Also add a few debug-prints to show more parsing context, into
-tokenizer and parse-query, and use "keyword, value" in others.
-
-Fixes: 14775b049642 ("dyndbg: accept query terms like file=bar and module=foo")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
--v3 commit message, checkpatch fixes
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- lib/dynamic_debug.c | 38 +++++++++++++++++---------------------
- 1 file changed, 17 insertions(+), 21 deletions(-)
+ arch/arm64/kernel/vdso/Makefile     | 2 +-
+ arch/arm64/kernel/vdso32/Makefile   | 2 +-
+ arch/nds32/kernel/vdso/Makefile     | 2 +-
+ arch/powerpc/kernel/vdso32/Makefile | 2 +-
+ arch/powerpc/kernel/vdso64/Makefile | 2 +-
+ arch/s390/kernel/vdso64/Makefile    | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 08e4b057514c..04f4c80b0d16 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -237,6 +237,7 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
- {
- 	int nwords = 0;
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 45d5cfe46429..7cd8aafbe96e 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -54,7 +54,7 @@ endif
+ GCOV_PROFILE := n
  
-+	vpr_info("entry, buf:'%s'\n", buf);
- 	while (*buf) {
- 		char *end;
+ obj-y += vdso.o
+-extra-y += vdso.lds
++targets += vdso.lds
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
  
-@@ -247,6 +248,8 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
- 		if (*buf == '#')
- 			break;	/* token starts comment, skip rest of line */
+ # Force dependency (incbin is bad)
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index d6adb4677c25..572475b7b7ed 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -155,7 +155,7 @@ asm-obj-vdso := $(addprefix $(obj)/, $(asm-obj-vdso))
+ obj-vdso := $(c-obj-vdso) $(c-obj-vdso-gettimeofday) $(asm-obj-vdso)
  
-+		vpr_info("start-of-word:%d '%s'\n", nwords, buf);
-+
- 		/* find `end' of word, whitespace separated or quoted */
- 		if (*buf == '"' || *buf == '\'') {
- 			int quote = *buf++;
-@@ -257,7 +260,9 @@ static int ddebug_tokenize(char *buf, char *words[], int maxwords)
- 				return -EINVAL;	/* unclosed quote */
- 			}
- 		} else {
--			for (end = buf; *end && !isspace(*end); end++)
-+			for (end = buf;
-+			     *end && *end != '=' && !isspace(*end);
-+			     end++)
- 				;
- 			BUG_ON(end == buf);
- 		}
-@@ -373,30 +378,21 @@ static int ddebug_parse_query(char *words[], int nwords,
- 	unsigned int i;
- 	int rc = 0;
- 	char *fline;
--	char *keyword, *arg;
+ obj-y += vdso.o
+-extra-y += vdso.lds
++targets += vdso.lds
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
  
--	if (modname)
-+	if (nwords % 2 != 0) {
-+		pr_err("expecting pairs of match-spec <value>\n");
-+		return -EINVAL;
-+	}
-+	if (modname) {
- 		/* support $modname.dyndbg=<multiple queries> */
-+		vpr_info("module:%s queries:'%s'\n", modname);
- 		query->module = modname;
-+	}
-+	for (i = 0; i < nwords; i += 2) {
-+		char *keyword = words[i];
-+		char *arg = words[i+1];
+ # Force dependency (vdso.s includes vdso.so through incbin)
+diff --git a/arch/nds32/kernel/vdso/Makefile b/arch/nds32/kernel/vdso/Makefile
+index 7c3c1ccb196e..55df25ef0057 100644
+--- a/arch/nds32/kernel/vdso/Makefile
++++ b/arch/nds32/kernel/vdso/Makefile
+@@ -20,7 +20,7 @@ GCOV_PROFILE := n
  
--	for (i = 0; i < nwords; i++) {
--		/* accept keyword=arg */
--		vpr_info("%d w:%s\n", i, words[i]);
--
--		keyword = words[i];
--		arg = strchr(keyword, '=');
--		if (arg) {
--			*arg++ = '\0';
--		} else {
--			i++; /* next word is arg */
--			if (!(i < nwords)) {
--				pr_err("missing arg to keyword: %s\n", keyword);
--				return -EINVAL;
--			}
--			arg = words[i];
--		}
--		vpr_info("%d key:%s arg:%s\n", i, keyword, arg);
--
-+		vpr_info("keyword:'%s' value:'%s'\n", keyword, arg);
- 		if (!strcmp(keyword, "func")) {
- 			rc = check_set(&query->function, arg, "func");
- 		} else if (!strcmp(keyword, "file")) {
+ 
+ obj-y += vdso.o
+-extra-y += vdso.lds
++targets += vdso.lds
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+ 
+ # Force dependency
+diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
+index 87ab1152d5ce..fd5072a4c73c 100644
+--- a/arch/powerpc/kernel/vdso32/Makefile
++++ b/arch/powerpc/kernel/vdso32/Makefile
+@@ -29,7 +29,7 @@ ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
+ asflags-y := -D__VDSO32__ -s
+ 
+ obj-y += vdso32_wrapper.o
+-extra-y += vdso32.lds
++targets += vdso32.lds
+ CPPFLAGS_vdso32.lds += -P -C -Upowerpc
+ 
+ # Force dependency (incbin is bad)
+diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
+index 38c317f25141..c737b3ea3207 100644
+--- a/arch/powerpc/kernel/vdso64/Makefile
++++ b/arch/powerpc/kernel/vdso64/Makefile
+@@ -17,7 +17,7 @@ ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
+ asflags-y := -D__VDSO64__ -s
+ 
+ obj-y += vdso64_wrapper.o
+-extra-y += vdso64.lds
++targets += vdso64.lds
+ CPPFLAGS_vdso64.lds += -P -C -U$(ARCH)
+ 
+ # Force dependency (incbin is bad)
+diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
+index 4a66a1cb919b..d0d406cfffa9 100644
+--- a/arch/s390/kernel/vdso64/Makefile
++++ b/arch/s390/kernel/vdso64/Makefile
+@@ -25,7 +25,7 @@ $(targets:%=$(obj)/%.dbg): KBUILD_CFLAGS = $(KBUILD_CFLAGS_64)
+ $(targets:%=$(obj)/%.dbg): KBUILD_AFLAGS = $(KBUILD_AFLAGS_64)
+ 
+ obj-y += vdso64_wrapper.o
+-extra-y += vdso64.lds
++targets += vdso64.lds
+ CPPFLAGS_vdso64.lds += -P -C -U$(ARCH)
+ 
+ # Disable gcov profiling, ubsan and kasan for VDSO code
 -- 
-2.26.2
+2.25.1
 
