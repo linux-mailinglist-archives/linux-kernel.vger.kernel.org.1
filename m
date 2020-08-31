@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E244525728C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9A1257294
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 06:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgHaD7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 23:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726126AbgHaD7j (ORCPT
+        id S1725891AbgHaEKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 00:10:09 -0400
+Received: from condef-10.nifty.com ([202.248.20.75]:64530 "EHLO
+        condef-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgHaEKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 23:59:39 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50695C061573;
-        Sun, 30 Aug 2020 20:59:39 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id q1so2296181pjd.1;
-        Sun, 30 Aug 2020 20:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CAK2taVhKaOL1VPAdPF1CAKiLijCzZCiNCOhkBkdyH8=;
-        b=FcHToBAC1G99IbYmEIWo5XdC31xWX1mAvUYwRIEeyPf6LAcLV0bBBKOv3knx/NLUBs
-         lVSx9HmaCeudrJPN2zSRnI3Go52uZVcxayDN/Uw7NZWqvLCo9BMnb4cq1RDrEMQJ5vq7
-         Un5H8lUqMaO2qQ/WW+UWWucylH6r8UNWVCAuZmYPDm6lgcB5GHyET72Z2VKUdPWBKyTl
-         QnS5U4OhaDRx8nr0ODgTNELx8uyjwSoU20qCWtMp9Y7v72ypOzY7S18io5+LX+txQBDs
-         xWqRFCy2B5nL2jVSKUAtfybALPfGuR/8J0t1ilIpzHmeFI671mJOrv85Ezw+SVqUqTIe
-         M4HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CAK2taVhKaOL1VPAdPF1CAKiLijCzZCiNCOhkBkdyH8=;
-        b=BvdlzhSAci6mwsAS7XongTB3U4xXgBd9cLv6UAryr3SFj5vnY16EoXV14Nj5ssdrMd
-         DPueAg3RpshED74b4EwV7Uh72C7QuloxVagthS8paohQIHsUyOeMV9eSWdhZgd55Y8B6
-         JLsHkr7Y796pvMOzYO2Tx35Rd+cn4p5p40oh4f1iUqRAhHN6e0DIF8ipW2yyAFZpsrZb
-         RymBPQedIQmReFWmYzuLRUNOIvHzYZLBRpM+dHcaPS+Xo0OuYCGBfHyFjLZrAaV/seTp
-         u6ICSQJQTLsZeBuuIAJ+T01eglbfGKfX3mbKizqpKnRv9Tkgf8amdRe7xHjSuSEOZ8eV
-         XAaQ==
-X-Gm-Message-State: AOAM533M4VIZjmVA7+7RijJJIdPKhoosxuHHfhwLAs6zRZsV7WGcNl3l
-        THGu7q9vIs5SXW2lzNfcwABszZ6vIDw=
-X-Google-Smtp-Source: ABdhPJwdKhsm6eCvXoumm3qIA5WBUjkkxHjtzGkZCwEMFQfwgrNR762FTqfxn8sm57bC0WNKDj6xEA==
-X-Received: by 2002:a17:90a:eb15:: with SMTP id j21mr9366185pjz.83.1598846378718;
-        Sun, 30 Aug 2020 20:59:38 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id m22sm5479595pja.36.2020.08.30.20.59.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Aug 2020 20:59:38 -0700 (PDT)
-Subject: Re: [PATCH 08/10] ARM: dts: Cygnus: Fix SP805 clocks
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-References: <20200828130602.42203-1-andre.przywara@arm.com>
- <20200828130602.42203-9-andre.przywara@arm.com>
- <20200831035506.1332109-1-f.fainelli@gmail.com>
-Message-ID: <4d9e64dd-c081-f68e-0682-a9e30e8e4793@gmail.com>
-Date:   Sun, 30 Aug 2020 20:59:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.1.1
+        Mon, 31 Aug 2020 00:10:06 -0400
+X-Greylist: delayed 383 seconds by postgrey-1.27 at vger.kernel.org; Mon, 31 Aug 2020 00:10:05 EDT
+Received: from conuserg-08.nifty.com ([10.126.8.71])by condef-10.nifty.com with ESMTP id 07V3wbus021302
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 12:58:37 +0900
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 07V3w5DR030876;
+        Mon, 31 Aug 2020 12:58:05 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 07V3w5DR030876
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1598846286;
+        bh=212Tg8dRQHTXyhLJhNGYLVujbS6eUdp8Ts6+PMHJ4NQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=de8chDCqq0s0ri+Gg6fRGxHFm6Ex2K7a1IpiYI13Zj8Dpfr00DQxAoxPCr8w+RWJ0
+         a2RSmnSPdfwpUAjz3bhFI7KeK1vETMWvTgTTbeWr7tbG+AhOxNaoX9pr0Z18eOFt9x
+         4xO087gyYvPEgBw5MWKcrBdYvc6SN9SVY/hwxWnX+pjghCyp2kotbcDYW18BbQu2lb
+         foxOB1gcJqWoJ/FIUrreP4iv7IV5ze9YolMvq7iBK5EBoKavPtFiOBXM/irs4KGWcw
+         EOQsC/sS5M7yREeb3LJBTiI8Mka4ji3De/FMu7Ba6di1m/B/WoELwyfvOPB9H3wDSM
+         A2LU0L8eMX02w==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     soc@kernel.org, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH] MAINTAINERS: step down as maintainer of UniPhier SoCs and Denali driver
+Date:   Mon, 31 Aug 2020 12:58:03 +0900
+Message-Id: <20200831035803.96852-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200831035506.1332109-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I am leaving Socionext. Orphan the UniPhier platform and Denali NAND
+driver until somebody takes the role.
 
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-On 8/30/2020 8:55 PM, Florian Fainelli wrote:
-> On Fri, 28 Aug 2020 14:06:00 +0100, Andre Przywara <andre.przywara@arm.com> wrote:
->> The SP805 DT binding requires two clocks to be specified, but the
->> Broadcom Cygnus DT currently only specifies one clock.
->>
->> In practice, Linux would pick a clock named "apb_pclk" for the bus
->> clock, and the Linux and U-Boot SP805 driver would use the first clock
->> to derive the actual watchdog counter frequency.
->>
->> Since currently both are the very same clock, we can just double the
->> clock reference, and add the correct clock-names, to match the binding.
->>
->> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
->> ---
-> 
-> Applied to qspi-fixes, thanks!
+I hope this can be applied to the ARM-SOC tree.
 
-Applied to devicetree/next actually, likewise for the next patch.
+ MAINTAINERS | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3b186ade3597..33aa482fdf47 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2652,10 +2652,8 @@ M:	Dirk Opfer <dirk@opfer-online.de>
+ S:	Maintained
+ 
+ ARM/UNIPHIER ARCHITECTURE
+-M:	Masahiro Yamada <yamada.masahiro@socionext.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+-S:	Maintained
+-T:	git git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-uniphier.git
++S:	Orphan
+ F:	Documentation/devicetree/bindings/arm/socionext/uniphier.yaml
+ F:	Documentation/devicetree/bindings/gpio/socionext,uniphier-gpio.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/socionext,uniphier-pinctrl.yaml
+@@ -4955,9 +4953,8 @@ T:	git git://linuxtv.org/media_tree.git
+ F:	drivers/media/platform/sti/delta
+ 
+ DENALI NAND DRIVER
+-M:	Masahiro Yamada <yamada.masahiro@socionext.com>
+ L:	linux-mtd@lists.infradead.org
+-S:	Supported
++S:	Orphan
+ F:	drivers/mtd/nand/raw/denali*
+ 
+ DESIGNWARE EDMA CORE IP DRIVER
 -- 
-Florian
+2.25.1
+
