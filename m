@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4107E25800B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1D5258011
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgHaSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:01:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36600 "EHLO mail.kernel.org"
+        id S1729146AbgHaSCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:02:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728875AbgHaSB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:01:29 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729029AbgHaSBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:01:44 -0400
+Received: from localhost (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 860C721897;
-        Mon, 31 Aug 2020 18:01:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9F422083E;
+        Mon, 31 Aug 2020 18:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896888;
-        bh=VfLU9LD+04vt7A1OohC/jg5ul0BHrmZJ47kzIFGG+7I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SphRx8EQQcIeFaXcEOCbF5k7rswtq/0JO00YCuA9Xo3pO9r4EIA9hr+e2vSD1aLP
-         bye6p074QAKJSLyQ/axeYT2QjUsrXFTVofxxDjU5OsVX0lWq+EQIJIO6C9umZkKJ2Y
-         r/Lq/C2FraIDfaFqG28ccdQCJnbjJdM3FsF4v13k=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        Zqiang <qiang.zhang@windriver.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 24/24] rcu: Shrink each possible cpu krcp
-Date:   Mon, 31 Aug 2020 11:01:16 -0700
-Message-Id: <20200831180116.32690-24-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
-References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
+        s=default; t=1598896903;
+        bh=1BSfVGYPM5em9cDJnKj94QsfZf/L2qKC8T3By5pkXos=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rd9KwLFdgKeEZwSOUv3XU7M7Bf36F9tw2s05UxvyIusTaB5OJfPqVizaYVDFLkzav
+         PFI2Be8gDLXplWNqHwMTZLZ30/l3fDp9dmuq/NRUp10+2WxsHRNAXwwA3lpF/P4Rz6
+         6aOmsfuqQ/b5s0a9nI/oP/y9TOR3vpJhNzJiYh68=
+Date:   Mon, 31 Aug 2020 11:01:43 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH v2 5/5] f2fs: support age threshold based garbage
+ collection
+Message-ID: <20200831180143.GB3665231@google.com>
+References: <20200804131449.50517-1-yuchao0@huawei.com>
+ <20200804131449.50517-6-yuchao0@huawei.com>
+ <20200825193404.GA2614120@google.com>
+ <7986af8c-1fe9-7140-f1c0-d8b4a58f702c@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7986af8c-1fe9-7140-f1c0-d8b4a58f702c@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+Hi Chao,
 
-CPUs can go offline shortly after kfree_call_rcu() has been invoked,
-which can leave memory stranded until those CPUs come back online.
-This commit therefore drains the kcrp of each CPU, not just the
-ones that happen to be online.
+Applied. Thanks.
 
-Acked-by: Joel Fernandes <joel@joelfernandes.org>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 2323622..9245064 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -3450,7 +3450,7 @@ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
- 	unsigned long count = 0;
- 
- 	/* Snapshot count of all CPUs */
--	for_each_online_cpu(cpu) {
-+	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		count += READ_ONCE(krcp->count);
-@@ -3465,7 +3465,7 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
- 	int cpu, freed = 0;
- 	unsigned long flags;
- 
--	for_each_online_cpu(cpu) {
-+	for_each_possible_cpu(cpu) {
- 		int count;
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
-@@ -3498,7 +3498,7 @@ void __init kfree_rcu_scheduler_running(void)
- 	int cpu;
- 	unsigned long flags;
- 
--	for_each_online_cpu(cpu) {
-+	for_each_possible_cpu(cpu) {
- 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
- 
- 		raw_spin_lock_irqsave(&krcp->lock, flags);
--- 
-2.9.5
-
+On 08/31, Chao Yu wrote:
+> Hi Jaegeuk,
+> 
+> I've changed code a bit to fix some bugs, including:
+> - gc_idle = 3 (GC_IDLE_AT) description
+> - disallow set gc_idle to 3 if atgc is off
+> - keep compatibility with checkpoint disabling
+> 
+> Could you please check and merge below diff?
+> 
+> From: Chao Yu <yuchao0@huawei.com>
+> 
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  Documentation/ABI/testing/sysfs-fs-f2fs |  3 ++-
+>  fs/f2fs/gc.c                            | 12 +++++++++++-
+>  fs/f2fs/sysfs.c                         | 11 ++++++++---
+>  3 files changed, 21 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+> index 7f730c4c8df2..834d0becae6d 100644
+> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
+> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+> @@ -22,7 +22,8 @@ Contact:	"Namjae Jeon" <namjae.jeon@samsung.com>
+>  Description:	Controls the victim selection policy for garbage collection.
+>  		Setting gc_idle = 0(default) will disable this option. Setting
+>  		gc_idle = 1 will select the Cost Benefit approach & setting
+> -		gc_idle = 2 will select the greedy approach.
+> +		gc_idle = 2 will select the greedy approach & setting
+> +		gc_idle = 3 will select the age-threshold based approach.
+> 
+>  What:		/sys/fs/f2fs/<disk>/reclaim_segments
+>  Date:		October 2013
+> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> index 6413886e52d4..3c0edb8b4cc5 100644
+> --- a/fs/f2fs/gc.c
+> +++ b/fs/f2fs/gc.c
+> @@ -388,6 +388,16 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
+>  	unsigned long long mtime = 0;
+>  	unsigned int i;
+> 
+> +	if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED)) {
+> +		if (p->gc_mode == GC_AT &&
+> +			get_valid_blocks(sbi, segno, true) == 0)
+> +			return;
+> +
+> +		if (p->alloc_mode == AT_SSR &&
+> +			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
+> +			return;
+> +	}
+> +
+>  	for (i = 0; i < sbi->segs_per_sec; i++)
+>  		mtime += get_seg_entry(sbi, start + i)->mtime;
+>  	mtime = div_u64(mtime, sbi->segs_per_sec);
+> @@ -721,7 +731,7 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
+>  		/* Don't touch checkpointed data */
+>  		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED) &&
+>  					get_ckpt_valid_blocks(sbi, segno) &&
+> -					p.alloc_mode != SSR))
+> +					p.alloc_mode == LFS))
+>  			goto next;
+>  		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
+>  			goto next;
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index 88ed9969cc86..bacfa9c35e6b 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -375,12 +375,17 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>  		return count;
+>  	}
+>  	if (!strcmp(a->attr.name, "gc_idle")) {
+> -		if (t == GC_IDLE_CB)
+> +		if (t == GC_IDLE_CB) {
+>  			sbi->gc_mode = GC_IDLE_CB;
+> -		else if (t == GC_IDLE_GREEDY)
+> +		} else if (t == GC_IDLE_GREEDY) {
+>  			sbi->gc_mode = GC_IDLE_GREEDY;
+> -		else
+> +		} else if (t == GC_IDLE_AT) {
+> +			if (!sbi->am.atgc_enabled)
+> +				return -EINVAL;
+> +			sbi->gc_mode = GC_AT;
+> +		} else {
+>  			sbi->gc_mode = GC_NORMAL;
+> +		}
+>  		return count;
+>  	}
+> 
+> -- 
+> 2.26.2
+> 
