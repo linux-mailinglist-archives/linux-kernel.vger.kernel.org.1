@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38A72583F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 00:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58BA2583F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 00:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgHaWPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 18:15:11 -0400
-Received: from ms.lwn.net ([45.79.88.28]:39018 "EHLO ms.lwn.net"
+        id S1728019AbgHaWQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 18:16:31 -0400
+Received: from ms.lwn.net ([45.79.88.28]:39036 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgHaWPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 18:15:11 -0400
+        id S1726044AbgHaWQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 18:16:31 -0400
 Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id A51992D5;
-        Mon, 31 Aug 2020 22:15:10 +0000 (UTC)
-Date:   Mon, 31 Aug 2020 16:15:09 -0600
+        by ms.lwn.net (Postfix) with ESMTPSA id B372C537;
+        Mon, 31 Aug 2020 22:16:30 +0000 (UTC)
+Date:   Mon, 31 Aug 2020 16:16:29 -0600
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH v2 0/3] docs/memory-barriers: Apply missed changes
-Message-ID: <20200831161509.43016cf4@lwn.net>
-In-Reply-To: <20200829082607.3146-1-sj38.park@gmail.com>
-References: <20200829082607.3146-1-sj38.park@gmail.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Cooper <amc96@cam.ac.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        <linux-ia64@vger.kernel.org>, <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH] docs/ia64: Drop obsolete Xen documentation
+Message-ID: <20200831161629.2dc218ff@lwn.net>
+In-Reply-To: <20200827175405.24344-1-andrew.cooper3@citrix.com>
+References: <20200827175405.24344-1-andrew.cooper3@citrix.com>
 Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -35,27 +37,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 Aug 2020 10:26:04 +0200
-SeongJae Park <sj38.park@gmail.com> wrote:
+On Thu, 27 Aug 2020 18:54:05 +0100
+Andrew Cooper <andrew.cooper3@citrix.com> wrote:
 
-> This patchset applies missed changes that should land in the
-> memory-barriers.txt and its Korean translation.
+> While the xensource.com URLs referenced still exist, neither the Xen or Linux
+> 2.6.18 fork have been touched since 2009, 11 years ago.  Other URLs are dead.
 > 
-> The patches are based on v5.9-rc2.
+> IA64 support was removed in Xen 4.2, in 2012.  Relegate this piece of
+> documentation to source history.
 > 
-> Changes from v1
->  - Fix mismatch between author and Signed-off-by:
-> 
-> SeongJae Park (3):
->   docs/memory-barriers.txt: Fix references for DMA*.txt files
->   docs/memory-barriers.txt/kokr: Remove remaining references to mmiowb()
->   dics/memory-barriers.txt/kokr: Allow architecture to override the
->     flush barrier
-> 
->  Documentation/memory-barriers.txt             |  8 ++---
->  .../translations/ko_KR/memory-barriers.txt    | 32 ++++++++++++-------
->  2 files changed, 24 insertions(+), 16 deletions(-)
+> Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
 
-I've applied the set, thanks.
+Applied, thanks.
 
 jon
