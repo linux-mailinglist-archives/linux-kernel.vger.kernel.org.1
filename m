@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA102578D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0468F2578FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbgHaL7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgHaL7B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:59:01 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48036C061573;
-        Mon, 31 Aug 2020 04:59:01 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id c8so1519596edv.5;
-        Mon, 31 Aug 2020 04:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ykiShrw6bxhIypPHvE5LttRsRsZen1FO3FKIqs9CWQ0=;
-        b=fJ4KqbNOkfyF+3ZdPXYbwLy44hmBg1Tivk3Zfvin3k+//S7ZifWvZ6t+Y5O4u19HY0
-         ZmwYn3ngNhBW1qh74QZ1fZ5Xktu52VuGnOro4a9EHhMUVjpgvBcw70tsIpa6wU/HoMoU
-         KCwD6WCZxJE3k7enVg89JQHTz37A/ejCBbygeMDuoCwaYorxTrhpd1weJVUbtjHa/2V1
-         SkdMbrN0UsxgbrA6ltbDfVG3NBn2Z7wJHjtxZodCQyBvvj5J+wg6D4z6+r1y7+UIO366
-         7POCXR0DUUVXC90LJ/O8mQ6Ozvxj3nD6ioUYQqwGxYcf2BFLxoTZMuJF6leu4mtvw/L9
-         gBHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ykiShrw6bxhIypPHvE5LttRsRsZen1FO3FKIqs9CWQ0=;
-        b=EKWULt6wtX0xtTBaVF6v31/3H1q1chFUKbrXCBQWTHEg0XFEo7DCX0ei6g2p0TfnaH
-         2AJmChHuDKZ6U2+OGNFVYt6NWZ8w8/S2uuAvUS5cahJeiOzHRDEZ8ML11hQzumiu2zWv
-         OMfPuJDmNcufUoj73v9FDHAB4Cm1Fu4QwCYqcpP13ab4uqrRQl8dRZDmBp2vH2hfNFQl
-         zORKF7hujqMKpIqNNDXpgKLqBi1lcNuzEtk/ABaa0hLBJKsRmbZ18unv3yXry6wuUd7v
-         ohl70siBJWX+geVv2hFynFGSyEjtg2R237s7gIny0vrRxXS0kkTgw/nYY4GtNQ8Tc9uD
-         Dm+w==
-X-Gm-Message-State: AOAM531CRiQjXLwYOPIVOVutX60wh0yRW8q4tijgjM/us6dVOOVS7rlj
-        73/r3cn2wGsZTVHBCrV336kNkbd9PnUaug==
-X-Google-Smtp-Source: ABdhPJwWc9p4KFa3upTd2QiNJtoMpLtA6Eb/+F5bg1FC0O4KE4g7LqIkCi18snad5YgU97VqLq8I/A==
-X-Received: by 2002:a05:6402:a46:: with SMTP id bt6mr884982edb.269.1598875140015;
-        Mon, 31 Aug 2020 04:59:00 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id oi24sm7919016ejb.69.2020.08.31.04.58.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 04:58:58 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 13:58:57 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v2 05/12] phy: tegra: xusb: add sleepwalk and
- suspend/resume
-Message-ID: <20200831115857.GC1689119@ulmo>
-References: <20200831044043.1561074-1-jckuo@nvidia.com>
- <20200831044043.1561074-6-jckuo@nvidia.com>
+        id S1726384AbgHaMMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:12:42 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:50958 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgHaMMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 08:12:42 -0400
+Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam02-ex.h3c.com with ESMTP id 07VB3WC4026959
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:03:32 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam02-ex.h3c.com with ESMTPS id 07VB2c1k026271
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Aug 2020 19:02:38 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 31 Aug 2020 19:02:42 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <kbusch@kernel.org>, <axboe@fb.com>, <hch@lst.de>,
+        <sagi@grimberg.me>
+CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] [v2] nvme-pci: check req to prevent crash in nvme_handle_cqe()
+Date:   Mon, 31 Aug 2020 18:55:53 +0800
+Message-ID: <20200831105553.1621-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xo44VMWPx7vlQ2+2"
-Content-Disposition: inline
-In-Reply-To: <20200831044043.1561074-6-jckuo@nvidia.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 07VB2c1k026271
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We met a crash issue when hot-insert a nvme device, blk_mq_tag_to_rq()
+returned null(req=null), then crash happened in nvme_end_request():
+	struct nvme_request *rq = nvme_req(req);
+	rq->result = result;  <==crash here
 
---xo44VMWPx7vlQ2+2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The test env is, a server is configured with 2 backplanes, each backplane
+support 8 nvme devices, this crash happened when hot-insert a nvme device
+to the second backplane. We measured the signal, which is send out of cpu
+to ack nvme interrupt, the signal is very weak when it reached the second
+backplane, the device can't distinguish it as a ack signal. So it caused
+the device can't clear the interrupt flag.
+After updating related driver, the signal sending out of cpu to the second
+backplane is good, the crash issue disappeared.
 
-Again, use a capital letter to start the subject after the prefix.
+As blk_mq_tag_to_rq() may return null, so it should be check whether it is
+null before using it to prevent a crash.
 
-On Mon, Aug 31, 2020 at 12:40:36PM +0800, JC Kuo wrote:
-> This commit adds sleepwalk/wake and suspend/resume interfaces
-> to Tegra XUSB PHY driver.
->=20
-> Tegra XUSB host controller driver makes use of sleepwalk functions
-> to enable/disable sleepwalk circuit which is in always-on partition
-> can respond to USB resume signals when controller is not powered.
+	[ 1124.256246] nvme nvme5: pci function 0000:e1:00.0
+	[ 1124.256323] nvme 0000:e1:00.0: enabling device (0000 -> 0002)
+	[ 1125.720859] nvme nvme5: 96/0/0 default/read/poll queues
+	[ 1125.732483]  nvme5n1: p1 p2 p3
+	[ 1125.788049] BUG: unable to handle kernel NULL pointer dereference at 0000000000000130
+	[ 1125.788054] PGD 0 P4D 0
+	[ 1125.788057] Oops: 0002 [#1] SMP NOPTI
+	[ 1125.788059] CPU: 50 PID: 0 Comm: swapper/50 Kdump: loaded Tainted: G   ------- -t - 4.18.0-147.el8.x86_64 #1
+	[ 1125.788065] RIP: 0010:nvme_irq+0xe8/0x240 [nvme]
+	[ 1125.788068] RSP: 0018:ffff916b8ec83ed0 EFLAGS: 00010813
+	[ 1125.788069] RAX: 0000000000000000 RBX: ffff918ae9211b00 RCX: 0000000000000000
+	[ 1125.788070] RDX: 000000000000400b RSI: 0000000000000000 RDI: 0000000000000000
+	[ 1125.788071] RBP: ffff918ae8870000 R08: 0000000000000004 R09: ffff918ae8870000
+	[ 1125.788072] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+	[ 1125.788073] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+	[ 1125.788075] FS:  0000000000000000(0000) GS:ffff916b8ec80000(0000) knlGS:0000000000000000
+	[ 1125.788075] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+	[ 1125.788076] CR2: 0000000000000130 CR3: 0000001768f00000 CR4: 0000000000340ee0
+	[ 1125.788077] Call Trace:
+	[ 1125.788080]  <IRQ>
+	[ 1125.788085]  __handle_irq_event_percpu+0x40/0x180
+	[ 1125.788087]  handle_irq_event_percpu+0x30/0x80
+	[ 1125.788089]  handle_irq_event+0x36/0x53
+	[ 1125.788090]  handle_edge_irq+0x82/0x190
+	[ 1125.788094]  handle_irq+0xbf/0x100
+	[ 1125.788098]  do_IRQ+0x49/0xd0
+	[ 1125.788100]  common_interrupt+0xf/0xf
 
-"and can respond to ..."?
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ drivers/nvme/host/pci.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> Sleepwalk can be enabled/disabled for any USB phy individually.
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index ba725ae47..5f1c51a43 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -960,6 +960,13 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+ 	}
+ 
+ 	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
++	if (unlikely(!req)) {
++		dev_warn(nvmeq->dev->ctrl.device,
++			"req is null(tag:%d) on queue %d\n",
++			cqe->command_id, le16_to_cpu(cqe->sq_id));
++		return;
++	}
++
+ 	trace_nvme_sq(req, cqe->sq_head, nvmeq->sq_tail);
+ 	if (!nvme_end_request(req, cqe->status, cqe->result))
+ 		nvme_pci_complete_rq(req);
+-- 
+2.17.1
 
-"USB PHY"
-
->=20
->   - tegra_xusb_padctl_enable_phy_sleepwalk()
->   - tegra_xusb_padctl_disable_phy_sleepwalk()
->=20
-> Tegra XUSB host controller driver makes use of wake functions to
-> enable/disable/query wake circuit which is in always-on partition
-> can wake system up when USB resume happens.
-> Wake circuit can be enabled/disabled for any USB phy individually.
-
-"USB PHY"
-
-Thierry
-
---xo44VMWPx7vlQ2+2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9M5gEACgkQ3SOs138+
-s6GNGhAAtD/MM6G/93WyWLJxQKN2+HjJXdkYSw8dtZ63vdet0kn74caMljKlEWLp
-PzQ0KHRho3lVLKDiDMolJlKnqk1b9DYZZz83W2vK9noRUDCyEQkgQ342paazKJk5
-/9GfGEJ0E9QnuySJ2wisfZVoJ+yKZHMaL6zdmaD0pXdiin9OQRA3oMcubTkhHCzY
-XMtdFqwAjePwgHP02Qbi2gI2Npzy++q6/kGwVStBW0DdTn7d3Sq9pGeyuzUSi333
-fCKTmWUDISVKa6tjreO5hW6au9F0Q5nC3Pe4ypQ3yUmBFFicxuy0w8VwR5bAEmbw
-XVeLGqAAfoLvJdos2BBNC9fKQM7OvPyj8tE4BypSj4BRwKFa9Fut21W/ZSGYrfO+
-0ntLTl1LIvpbRoA8e3JodATIrcJ82dTb8ehWDErSjbPXcCsCyejm7w7NOU4wSMgN
-KoZpYJFiitdfhOJ26agBRGI3oAsXTPKmqkH18wx9IH9AuRCXOKVSqdQHz41i0nhN
-xuAZ/MAa+AB2gV1W/Ii8co5c0CBKmH5PraVfsfROB03KdZNedmjvHkji17WfAygH
-aqEOky3ZGTYZb85NuIAbsDhTzqD7qt6pdnRqee1kGuXBMm09X41PjP1JEHxDXhpY
-Of5T0djDWkN7hV0QQPlj8TJsREUO3F73ybQLEUcKpleta5lochI=
-=UVSr
------END PGP SIGNATURE-----
-
---xo44VMWPx7vlQ2+2--
