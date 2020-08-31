@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD06258022
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C97258008
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729289AbgHaSDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:03:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
+        id S1728901AbgHaSBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:01:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728714AbgHaSBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728748AbgHaSBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:01:23 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B06121548;
-        Mon, 31 Aug 2020 18:01:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18E3621473;
+        Mon, 31 Aug 2020 18:01:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598896882;
-        bh=1xaEATgxVssMo8h40PwAundYZZ+vcxu3i/w1PXTLMjE=;
+        s=default; t=1598896883;
+        bh=XuNRlE4Rb0hSRg+c1QEP6KvYYPtwrQlse4WEUThoF08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JPRgrEuDfiRl2NCyQlI7gIrzFRX38r5iDcewFZDLkIYkMZ96EynY1w5bHmwNh4P45
-         epl+t+fAUU2QiuN+dJTxwKkigEt2w2k964+2Kg6wbZ2freYryN3tQhypTFQZJkB+uh
-         6yrN3gxo3LFghBdU2hy5DPxRAJz0iuffjdvWvh6E=
+        b=FVsn4QKbGl8/6t9B+WYZHaAz6y7ogmQcU7lI/9NfiITH7Q8P7m4Zmzwo2oCo4V2f4
+         DW5nEwhNCgvfoRKjbVa3uceSQCnyKHJpA2YxQ6jRrY3JArVbrqGn/y43lSWPUOo8r3
+         9vZmTPGpi4GM20gkstYQk6hIFP8M5H6Kp/0Sp3eU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/24] nocb: Remove show_rcu_nocb_state() false positive printout
-Date:   Mon, 31 Aug 2020 11:01:02 -0700
-Message-Id: <20200831180116.32690-10-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/24] rcu: Add READ_ONCE() to rcu_do_batch() access to rcu_divisor
+Date:   Mon, 31 Aug 2020 11:01:03 -0700
+Message-Id: <20200831180116.32690-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -45,38 +45,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The rcu_data structure's ->nocb_timer field is used to defer wakeups of
-the corresponding no-CBs CPU's grace-period kthread ("rcuog*"), and that
-structure's ->nocb_defer_wakeup field is used to track such deferral.
-This means that the show_rcu_nocb_state() printing an error when those
-fields are set for a CPU not corresponding to a no-CBs grace-period
-kthread is erroneous.
-
-This commit therefore switches the check from ->nocb_timer to
-->nocb_bypass_timer and removes the check of ->nocb_defer_wakeup.
+Given that sysfs can change the value of rcu_divisor at any time, this
+commit adds a READ_ONCE to the sole access to that variable.  While in
+the area, this commit also adds bounds checking, clamping the value to
+a shift that makes sense for a signed long.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index bbc0c07..4d63ee3 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2411,10 +2411,9 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		return;
- 
- 	waslocked = raw_spin_is_locked(&rdp->nocb_gp_lock);
--	wastimer = timer_pending(&rdp->nocb_timer);
-+	wastimer = timer_pending(&rdp->nocb_bypass_timer);
- 	wassleep = swait_active(&rdp->nocb_gp_wq);
--	if (!rdp->nocb_defer_wakeup && !rdp->nocb_gp_sleep &&
--	    !waslocked && !wastimer && !wassleep)
-+	if (!rdp->nocb_gp_sleep && !waslocked && !wastimer && !wassleep)
- 		return;  /* Nothing untowards. */
- 
- 	pr_info("   nocb GP activity on CB-only CPU!!! %c%c%c%c %c\n",
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index acc926f..1dca14c 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2362,6 +2362,7 @@ int rcutree_dead_cpu(unsigned int cpu)
+  */
+ static void rcu_do_batch(struct rcu_data *rdp)
+ {
++	int div;
+ 	unsigned long flags;
+ 	const bool offloaded = IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
+ 			       rcu_segcblist_is_offloaded(&rdp->cblist);
+@@ -2390,7 +2391,9 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 	rcu_nocb_lock(rdp);
+ 	WARN_ON_ONCE(cpu_is_offline(smp_processor_id()));
+ 	pending = rcu_segcblist_n_cbs(&rdp->cblist);
+-	bl = max(rdp->blimit, pending >> rcu_divisor);
++	div = READ_ONCE(rcu_divisor);
++	div = div < 0 ? 7 : div > sizeof(long) * 8 - 2 ? sizeof(long) * 8 - 2 : div;
++	bl = max(rdp->blimit, pending >> div);
+ 	if (unlikely(bl > 100))
+ 		tlimit = local_clock() + rcu_resched_ns;
+ 	trace_rcu_batch_start(rcu_state.name,
 -- 
 2.9.5
 
