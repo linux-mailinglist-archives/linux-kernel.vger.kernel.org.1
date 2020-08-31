@@ -2,168 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058C425717B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86AA257173
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 03:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgHaBVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 21:21:46 -0400
-Received: from mga02.intel.com ([134.134.136.20]:18375 "EHLO mga02.intel.com"
+        id S1726712AbgHaBTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 21:19:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727021AbgHaBVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 21:21:41 -0400
-IronPort-SDR: /gjYJnUWtj7VAIUwFNQDDiewG7VRfx9bMJqEJUMOoRSvUI2d8tUy52tfxc8j9RD5H4B17ZPHAg
- zj6uaVBu45yw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="144639119"
-X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; 
-   d="scan'208";a="144639119"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2020 18:21:41 -0700
-IronPort-SDR: qjEmzA0Hzk/Z7aJAVcRPHrQ+lVeFSGOwvrJe/040UfCFmiT+3vNbiK3/3n2WxVtP2xhLZ9QTWS
- WO2OalPcCPSA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,373,1592895600"; 
-   d="scan'208";a="324742092"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Aug 2020 18:21:38 -0700
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Use device numa domain if RHSA is missing
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200827055640.31408-1-baolu.lu@linux.intel.com>
- <MWHPR11MB1645E6D6BD1EFDFA139AA37C8C520@MWHPR11MB1645.namprd11.prod.outlook.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <757c4e10-519a-6736-8f22-7ae7308434b4@linux.intel.com>
-Date:   Mon, 31 Aug 2020 09:16:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726452AbgHaBTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 30 Aug 2020 21:19:14 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66E5F2076D;
+        Mon, 31 Aug 2020 01:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598836754;
+        bh=mgkYqqYUY/6gm3kecIYTT61uw6xviBxBd6zQOEXZCAM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GXNEbO+SnauOYu3JJOlhkAe3HD9/ab4KZUF0PKhs1z2rbVWpvjXn6bmcQkGQgCMro
+         cRY4/DUigBPD/m5bIGkMpap2xO0PLtqJDZDbl7GstMwkDEkOuzBKFkV4ji1ZbpDsHB
+         jovmN2oGap9fbOAWOzezTNuR4KstOSl97MprfXhI=
+Date:   Mon, 31 Aug 2020 09:19:07 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>, robh@kernel.org,
+        kernel@puri.sm, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        Anson.Huang@nxp.com, agx@sigxcpu.org, angus@akkea.ca,
+        broonie@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 2/3] MAINTAINERS: Add Purism Librem 5 section to the
+ list
+Message-ID: <20200831011906.GB4488@dragon>
+References: <20200821121755.24599-1-martin.kepplinger@puri.sm>
+ <20200821121755.24599-2-martin.kepplinger@puri.sm>
+ <20200830131459.GL32096@dragon>
+ <1d7c6ef2794bedca7e3164e5435f46864eacddfa.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1645E6D6BD1EFDFA139AA37C8C520@MWHPR11MB1645.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1d7c6ef2794bedca7e3164e5435f46864eacddfa.camel@perches.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
-
-Thanks a lot for looking at my patch.
-
-On 8/28/20 10:13 AM, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Thursday, August 27, 2020 1:57 PM
->>
->> If there are multiple NUMA domains but the RHSA is missing in ACPI/DMAR
->> table, we could default to the device NUMA domain as fall back. This also
->> benefits the vIOMMU use case where only a single vIOMMU is exposed,
->> hence
->> no RHSA will be present but device numa domain can be correct.
+On Sun, Aug 30, 2020 at 08:32:01AM -0700, Joe Perches wrote:
+> On Sun, 2020-08-30 at 21:15 +0800, Shawn Guo wrote:
+> > On Fri, Aug 21, 2020 at 02:17:54PM +0200, Martin Kepplinger wrote:
+> > > Add development information for the devicetree files for hardware
+> > > by Purism SPC.
+> > > 
+> > > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> > 
+> > I decided to drop this patch from my queue, as I took the suggestion
+> > from Joe and sent a patch to have get_maintainer report email address
+> > in the dts file.
 > 
-> this benefits vIOMMU but not necessarily only applied to single-vIOMMU
-> case. The logic still holds in multiple vIOMMU cases as long as RHSA is
-> not provided.
-
-Yes. Will refine the description.
-
+> It's OK to find maintainers in files, but what about the
+> B: bug reporting and T: source code repository location lines,
 > 
->>
->> Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Cc: Kevin Tian <kevin.tian@intel.com>
->> Cc: Ashok Raj <ashok.raj@intel.com>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 31 +++++++++++++++++++++++++++++--
->>   1 file changed, 29 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index e0516d64d7a3..bce158468abf 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -700,12 +700,41 @@ static int
->> domain_update_iommu_superpage(struct dmar_domain *domain,
->>   	return fls(mask);
->>   }
->>
->> +static int domain_update_device_node(struct dmar_domain *domain)
->> +{
->> +	struct device_domain_info *info;
->> +	int nid = NUMA_NO_NODE;
->> +
->> +	assert_spin_locked(&device_domain_lock);
->> +
->> +	if (list_empty(&domain->devices))
->> +		return NUMA_NO_NODE;
->> +
->> +	list_for_each_entry(info, &domain->devices, link) {
->> +		if (!info->dev)
->> +			continue;
->> +
->> +		nid = dev_to_node(info->dev);
->> +		if (nid != NUMA_NO_NODE)
->> +			break;
->> +	}
-> 
-> There could be multiple device numa nodes as devices within the
-> same domain may sit behind different IOMMUs. Of course there
-> is no perfect answer in such situation, and this patch is still an
-> obvious improvement on current always-on-node0 policy. But
-> some comment about such implication is welcomed.
+> Those seem useful.
 
-I will add some comments here. Without more knowledge, currently we
-choose to use the first hit.
+Hmm, I doubt they are practically useful for just a number of dts files.
+They are more used for out-of-tree Librem5 kernel drivers, I guess.
+
+Shawn
 
 > 
->> +
->> +	return nid;
->> +}
->> +
->>   /* Some capabilities may be different across iommus */
->>   static void domain_update_iommu_cap(struct dmar_domain *domain)
->>   {
->>   	domain_update_iommu_coherency(domain);
->>   	domain->iommu_snooping =
->> domain_update_iommu_snooping(NULL);
->>   	domain->iommu_superpage =
->> domain_update_iommu_superpage(domain, NULL);
->> +
->> +	/*
->> +	 * If RHSA is missing, we should default to the device numa domain
->> +	 * as fall back.
->> +	 */
->> +	if (domain->nid == NUMA_NO_NODE)
->> +		domain->nid = domain_update_device_node(domain);
->>   }
->>
->>   struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8
->> bus,
->> @@ -5086,8 +5115,6 @@ static struct iommu_domain
->> *intel_iommu_domain_alloc(unsigned type)
->>   		if (type == IOMMU_DOMAIN_DMA)
->>   			intel_init_iova_domain(dmar_domain);
->>
->> -		domain_update_iommu_cap(dmar_domain);
->> -
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> []
+> > > @@ -14061,6 +14061,13 @@ T:	git git://linuxtv.org/media_tree.git
+> > >  F:	Documentation/admin-guide/media/pulse8-cec.rst
+> > >  F:	drivers/media/cec/usb/pulse8/
+> > >  
+> > > +PURISM LIBREM 5
+> > > +M:	Purism Kernel Team <kernel@puri.sm>
 > 
-> Is it intended or by mistake? If the former, looks it is a separate fix...
-
-It's a cleanup. When a domain is newly created, this function is
-actually a no-op.
-
+> People feel like their mails go into a void when no
+> responses happen after sending to nameless addresses.
 > 
->>   		domain = &dmar_domain->domain;
->>   		domain->geometry.aperture_start = 0;
->>   		domain->geometry.aperture_end   =
->> --
->> 2.17.1
+> It's better to have a named individual as a maintainer
+> rather than an unspecified exploder address.
 > 
-
-Best regards,
-baolu
+> It's OK to have both, but just the exploder doesn't
+> really have that much value as it's faceless.
+> 
+> > > +S:	Supported
+> > > +B:	https://source.puri.sm/Librem5/linux-next/issues
+> > > +T:	https://source.puri.sm/Librem5/linux-next
+> 
+> This T: line should be something else.
+> 
+> Perhaps
+> W;	https://source.puri.sm/Librem5/linux-next
+> T:	git https://source.puri.sm/Librem5/linux-next.git
+> 
+> > > +F:	arch/arm64/boot/dts/freescale/imx8mq-librem5*
+> 
+> 
