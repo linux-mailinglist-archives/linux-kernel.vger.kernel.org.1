@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA30257207
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DBF257205
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 05:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727940AbgHaDLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Aug 2020 23:11:35 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38760 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726712AbgHaDLK (ORCPT
+        id S1727892AbgHaDLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Aug 2020 23:11:24 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:44415 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727105AbgHaDLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Aug 2020 23:11:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U7J4KfP_1598843467;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U7J4KfP_1598843467)
+        Sun, 30 Aug 2020 23:11:20 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0U7IrXzq_1598843467;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U7IrXzq_1598843467)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 31 Aug 2020 11:11:07 +0800
+          Mon, 31 Aug 2020 11:11:08 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
 To:     rostedt@goodmis.org, mingo@redhat.com
 Cc:     linux-kernel@vger.kernel.org,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH 2/6] ftrace: use fls() to get the bits for dup_hash()
-Date:   Mon, 31 Aug 2020 11:11:00 +0800
-Message-Id: <20200831031104.23322-3-richard.weiyang@linux.alibaba.com>
+Subject: [PATCH 3/6] ftrace: simplify the dyn_ftrace->flags macro
+Date:   Mon, 31 Aug 2020 11:11:01 +0800
+Message-Id: <20200831031104.23322-4-richard.weiyang@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 In-Reply-To: <20200831031104.23322-1-richard.weiyang@linux.alibaba.com>
 References: <20200831031104.23322-1-richard.weiyang@linux.alibaba.com>
@@ -33,30 +33,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The effect here is to get the number of bits, lets use fls() to do
-this job.
+All the three macro are defined to be used for ftrace_rec_count(). This
+can be achieved by (flags & FTRACE_REF_MAX) directly.
+
+Since no other places would use those macros, remove them for clarity.
+
+Also it fixes a typo in the comment.
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 ---
- kernel/trace/ftrace.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/linux/ftrace.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 12cb535769bc..9021e16fa079 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1370,8 +1370,9 @@ static struct ftrace_hash *dup_hash(struct ftrace_hash *src, int size)
- 	/*
- 	 * Make the hash size about 1/2 the # found
- 	 */
--	for (size /= 2; size; size >>= 1)
--		bits++;
-+	bits = fls(size);
-+	if (bits)
-+		bits--;
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 3e3fe779a8c2..23c4d6526998 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -433,7 +433,7 @@ bool is_ftrace_trampoline(unsigned long addr);
+  *  DIRECT   - there is a direct function to call
+  *
+  * When a new ftrace_ops is registered and wants a function to save
+- * pt_regs, the rec->flag REGS is set. When the function has been
++ * pt_regs, the rec->flags REGS is set. When the function has been
+  * set up to save regs, the REG_EN flag is set. Once a function
+  * starts saving regs it will do so until all ftrace_ops are removed
+  * from tracing that function.
+@@ -451,12 +451,9 @@ enum {
+ };
  
- 	/* Don't allocate too much */
- 	if (bits > FTRACE_HASH_MAX_BITS)
+ #define FTRACE_REF_MAX_SHIFT	23
+-#define FTRACE_FL_BITS		9
+-#define FTRACE_FL_MASKED_BITS	((1UL << FTRACE_FL_BITS) - 1)
+-#define FTRACE_FL_MASK		(FTRACE_FL_MASKED_BITS << FTRACE_REF_MAX_SHIFT)
+ #define FTRACE_REF_MAX		((1UL << FTRACE_REF_MAX_SHIFT) - 1)
+ 
+-#define ftrace_rec_count(rec)	((rec)->flags & ~FTRACE_FL_MASK)
++#define ftrace_rec_count(rec)	((rec)->flags & FTRACE_REF_MAX)
+ 
+ struct dyn_ftrace {
+ 	unsigned long		ip; /* address of mcount call-site */
 -- 
 2.20.1 (Apple Git-117)
 
