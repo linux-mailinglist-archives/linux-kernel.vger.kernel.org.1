@@ -2,197 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EAF2573DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA22573E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgHaGkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 02:40:47 -0400
-Received: from verein.lst.de ([213.95.11.211]:48164 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726756AbgHaGkq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 02:40:46 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 245D868CF0; Mon, 31 Aug 2020 08:40:39 +0200 (CEST)
-Date:   Mon, 31 Aug 2020 08:40:38 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>
-Cc:     Christoph Hellwig <hch@lst.de>, iommu@lists.linux-foundation.org,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        linuxppc-dev@lists.ozlabs.org, Lu Baolu <baolu.lu@linux.intel.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>, aacraid@microsemi.com
-Subject: Re: [PATCH 5/5] powerpc: use the generic dma_ops_bypass mode
-Message-ID: <20200831064038.GB27617@lst.de>
-References: <20200708152449.316476-1-hch@lst.de> <20200708152449.316476-6-hch@lst.de> <505bcc1d-01a7-9655-88e1-ebddd0b94d56@kaod.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <505bcc1d-01a7-9655-88e1-ebddd0b94d56@kaod.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1728015AbgHaGmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 02:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgHaGmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 02:42:11 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FCCC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:42:11 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h12so88653pgm.7
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=eero.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=lePqauQjz9Sd2dUbMGeNvcTItQagQt9MRkoKef7xMoE=;
+        b=mMuV++7kXi9DX4iUzgcE1l87I/NJm1DIKfEzEPkGIItjHYZmg/qZvA5Bj98Rdkhmj/
+         WwWA3GyDuYKpVcv3CgtUoUNg86K79TX8txJoQ5T6+v5RPPhXso2d/cVeovgp7TYEmHNr
+         yI0NiYcUl7bPBU7v6bsGSFU0w08apfXEy5ecM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lePqauQjz9Sd2dUbMGeNvcTItQagQt9MRkoKef7xMoE=;
+        b=Loz0w9nPlqF4koxh2nHIYHsf7s8F7vEiKQZiI2N6FcnRqTOHb0jadOALnUNjbXFDxx
+         Z4Njt1rI7W+nHj0/NncydMbhGP/0ZUtg18xtNwebYZ8VhfRx0l32a7QfmIUrkVVgRLo+
+         V0VTgl1VoDj6Uskc/nUb/FNnDEvDjsfXcDuCked/jBCcx9BRsl1uKLoJSqCUnAIoQl71
+         wzjXqQRbie6wPo4OdpCaY2YBXCTnpoIbWRsF8KdtD+YCw2jPDX1iVT6b4y0HkJUsBGTj
+         vafIZT++LCTNTS/DTyEmE/nRiO7NYpbi/Xv9MCFpGWMC5LgslMVaqonVUJ+lwC5MzyMc
+         bBrQ==
+X-Gm-Message-State: AOAM530RSztuWmv9tQXegd+RJqlwOSfrrBPPbMGOQf5FjBTV1JrT2qp2
+        mZ7lWgXCYHcnS1nQRZh1xdspyg==
+X-Google-Smtp-Source: ABdhPJzcbcXUZYCwB3meJr2TFj9fHrqbxRCp30+LZPJlad6BHtdL2x/t2akM9egg/i14APPq22uCaQ==
+X-Received: by 2002:a62:3641:: with SMTP id d62mr172887pfa.82.1598856130951;
+        Sun, 30 Aug 2020 23:42:10 -0700 (PDT)
+Received: from ubuntu.localdomain (c-73-170-162-203.hsd1.ca.comcast.net. [73.170.162.203])
+        by smtp.googlemail.com with ESMTPSA id o9sm6026346pjs.47.2020.08.30.23.42.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 30 Aug 2020 23:42:10 -0700 (PDT)
+From:   chao <chao@eero.com>
+To:     paulmck@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     chao <chao@eero.com>
+Subject: [PATCH] rcu: allow multiple stalls before panic
+Date:   Sun, 30 Aug 2020 23:41:17 -0700
+Message-Id: <1598856077-58603-1-git-send-email-chao@eero.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 11:04:21AM +0200, Cédric Le Goater wrote:
-> Hello,
-> 
-> On 7/8/20 5:24 PM, Christoph Hellwig wrote:
-> > Use the DMA API bypass mechanism for direct window mappings.  This uses
-> > common code and speed up the direct mapping case by avoiding indirect
-> > calls just when not using dma ops at all.  It also fixes a problem where
-> > the sync_* methods were using the bypass check for DMA allocations, but
-> > those are part of the streaming ops.
-> > 
-> > Note that this patch loses the DMA_ATTR_WEAK_ORDERING override, which
-> > has never been well defined, as is only used by a few drivers, which
-> > IIRC never showed up in the typical Cell blade setups that are affected
-> > by the ordering workaround.
-> > 
-> > Fixes: efd176a04bef ("powerpc/pseries/dma: Allow SWIOTLB")
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  arch/powerpc/Kconfig              |  1 +
-> >  arch/powerpc/include/asm/device.h |  5 --
-> >  arch/powerpc/kernel/dma-iommu.c   | 90 ++++---------------------------
-> >  3 files changed, 10 insertions(+), 86 deletions(-)
-> 
-> I am seeing corruptions on a couple of POWER9 systems (boston) when
-> stressed with IO. stress-ng gives some results but I have first seen
-> it when compiling the kernel in a guest and this is still the best way
-> to raise the issue.
-> 
-> These systems have of a SAS Adaptec controller :
-> 
->   0003:01:00.0 Serial Attached SCSI controller: Adaptec Series 8 12G SAS/PCIe 3 (rev 01)
-> 
-> When the failure occurs, the POWERPC EEH interrupt fires and dumps
-> lowlevel PHB4 registers among which :
-> 					  
->   [ 2179.251069490,3] PHB#0003[0:3]:           phbErrorStatus = 0000028000000000
->   [ 2179.251117476,3] PHB#0003[0:3]:      phbFirstErrorStatus = 0000020000000000
-> 
-> The bits raised identify a PPC 'TCE' error, which means it is related
-> to DMAs. See below for more details.
-> 
-> 
-> Reverting this patch "fixes" the issue but it is probably else where,
-> in some other layers or in the aacraid driver. How should I proceed 
-> to get more information ?
+Some stalls are transient and system can fully recover.
+Allow users to configure the number of stalls experienced
+to trigger kernel Panic.
 
-The aacraid DMA masks look like a mess.  Can you try the hack
-below and see it it helps?
+Signed-off-by: chao <chao@eero.com>
+---
+ include/linux/kernel.h  |  1 +
+ kernel/rcu/tree_stall.h |  6 ++++++
+ kernel/sysctl.c         | 11 +++++++++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
-index 769af4ca9ca97e..79c6b744dbb66c 100644
---- a/drivers/scsi/aacraid/aachba.c
-+++ b/drivers/scsi/aacraid/aachba.c
-@@ -2228,18 +2228,6 @@ int aac_get_adapter_info(struct aac_dev* dev)
- 		expose_physicals = 0;
- 	}
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 500def6..fc2dd3f 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -536,6 +536,7 @@ extern int panic_on_warn;
+ extern unsigned long panic_on_taint;
+ extern bool panic_on_taint_nousertaint;
+ extern int sysctl_panic_on_rcu_stall;
++extern int sysctl_max_rcu_stall_to_panic;
+ extern int sysctl_panic_on_stackoverflow;
  
--	if (dev->dac_support) {
--		if (!pci_set_dma_mask(dev->pdev, DMA_BIT_MASK(64))) {
--			if (!dev->in_reset)
--				dev_info(&dev->pdev->dev, "64 Bit DAC enabled\n");
--		} else if (!pci_set_dma_mask(dev->pdev, DMA_BIT_MASK(32))) {
--			dev_info(&dev->pdev->dev, "DMA mask set failed, 64 Bit DAC disabled\n");
--			dev->dac_support = 0;
--		} else {
--			dev_info(&dev->pdev->dev, "No suitable DMA available\n");
--			rcode = -ENOMEM;
--		}
--	}
- 	/*
- 	 * Deal with configuring for the individualized limits of each packet
- 	 * interface.
-diff --git a/drivers/scsi/aacraid/commsup.c b/drivers/scsi/aacraid/commsup.c
-index adbdc3b7c7a706..dbb23b351a4e7d 100644
---- a/drivers/scsi/aacraid/commsup.c
-+++ b/drivers/scsi/aacraid/commsup.c
-@@ -1479,7 +1479,6 @@ static int _aac_reset_adapter(struct aac_dev *aac, int forced, u8 reset_type)
- 	struct Scsi_Host *host = aac->scsi_host_ptr;
- 	int jafo = 0;
- 	int bled;
--	u64 dmamask;
- 	int num_of_fibs = 0;
+ extern bool crash_kexec_post_notifiers;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b5d3b47..2047423 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -13,6 +13,7 @@
  
- 	/*
-@@ -1558,22 +1557,7 @@ static int _aac_reset_adapter(struct aac_dev *aac, int forced, u8 reset_type)
- 	kfree(aac->fsa_dev);
- 	aac->fsa_dev = NULL;
+ /* panic() on RCU Stall sysctl. */
+ int sysctl_panic_on_rcu_stall __read_mostly;
++int sysctl_max_rcu_stall_to_panic __read_mostly;
  
--	dmamask = DMA_BIT_MASK(32);
- 	quirks = aac_get_driver_ident(index)->quirks;
--	if (quirks & AAC_QUIRK_31BIT)
--		retval = pci_set_dma_mask(aac->pdev, dmamask);
--	else if (!(quirks & AAC_QUIRK_SRC))
--		retval = pci_set_dma_mask(aac->pdev, dmamask);
--	else
--		retval = pci_set_consistent_dma_mask(aac->pdev, dmamask);
--
--	if (quirks & AAC_QUIRK_31BIT && !retval) {
--		dmamask = DMA_BIT_MASK(31);
--		retval = pci_set_consistent_dma_mask(aac->pdev, dmamask);
--	}
--
--	if (retval)
--		goto out;
- 
- 	if ((retval = (*(aac_get_driver_ident(index)->init))(aac)))
- 		goto out;
-diff --git a/drivers/scsi/aacraid/linit.c b/drivers/scsi/aacraid/linit.c
-index 8588da0a065551..d897a9d59e24a1 100644
---- a/drivers/scsi/aacraid/linit.c
-+++ b/drivers/scsi/aacraid/linit.c
-@@ -1634,8 +1634,6 @@ static int aac_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	struct list_head *insert = &aac_devices;
- 	int error;
- 	int unique_id = 0;
--	u64 dmamask;
--	int mask_bits = 0;
- 	extern int aac_sync_mode;
- 
- 	/*
-@@ -1658,33 +1656,6 @@ static int aac_probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (error)
- 		goto out;
- 
--	if (!(aac_drivers[index].quirks & AAC_QUIRK_SRC)) {
--		error = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
--		if (error) {
--			dev_err(&pdev->dev, "PCI 32 BIT dma mask set failed");
--			goto out_disable_pdev;
--		}
--	}
--
--	/*
--	 * If the quirk31 bit is set, the adapter needs adapter
--	 * to driver communication memory to be allocated below 2gig
--	 */
--	if (aac_drivers[index].quirks & AAC_QUIRK_31BIT) {
--		dmamask = DMA_BIT_MASK(31);
--		mask_bits = 31;
--	} else {
--		dmamask = DMA_BIT_MASK(32);
--		mask_bits = 32;
--	}
--
--	error = pci_set_consistent_dma_mask(pdev, dmamask);
--	if (error) {
--		dev_err(&pdev->dev, "PCI %d B consistent dma mask set failed\n"
--				, mask_bits);
--		goto out_disable_pdev;
--	}
--
- 	pci_set_master(pdev);
- 
- 	shost = scsi_host_alloc(&aac_driver_template, sizeof(struct aac_dev));
+ #ifdef CONFIG_PROVE_RCU
+ #define RCU_STALL_DELAY_DELTA		(5 * HZ)
+@@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
+ /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
+ static void panic_on_rcu_stall(void)
+ {
++	static int cpu_stall;
++
++	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
++		return;
++
+ 	if (sysctl_panic_on_rcu_stall)
+ 		panic("RCU Stall\n");
+ }
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 287862f..1bca490 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2651,6 +2651,17 @@ static struct ctl_table kern_table[] = {
+ 		.extra2		= SYSCTL_ONE,
+ 	},
+ #endif
++#if defined(CONFIG_TREE_RCU)
++	{
++		.procname	= "max_rcu_stall_to_panic",
++		.data		= &sysctl_max_rcu_stall_to_panic,
++		.maxlen		= sizeof(sysctl_max_rcu_stall_to_panic),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_INT_MAX,
++	},
++#endif
+ #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
+ 	{
+ 		.procname	= "stack_erasing",
+-- 
+2.7.4
+
