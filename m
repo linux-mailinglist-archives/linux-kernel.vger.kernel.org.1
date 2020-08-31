@@ -2,189 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E7825786D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B743257838
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgHaL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:29:14 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:41680 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727875AbgHaL16 (ORCPT
+        id S1727843AbgHaLXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgHaLEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 07:27:58 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200831110320euoutp029c8003ff0a6e53a077c05669a6f88c55~wVW6KHzk22829228292euoutp02W
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200831110320euoutp029c8003ff0a6e53a077c05669a6f88c55~wVW6KHzk22829228292euoutp02W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598871801;
-        bh=rdQyIH2KOZH3mhnhVLTP2HA6DF/GY37pGXwK8J6cMPY=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=EUBTbbxvVZD6jTsfgMGaX0o9FOLV+ncfjYKMgCPIemGxfmmLqbsDl58YCCv19GEq8
-         GXucueQNPiyRp49z4S91YuoDca+wPuKEXnsPkEiGTNRzy1jUijxW1Rx7OQxa6ITva9
-         KzEQJI6qESkukdVe3OxZv0m0UvQnisPUZ7Y7ALvI=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200831110320eucas1p2765da242473e9988f32f057578943200~wVW55A-OD0430004300eucas1p2t;
-        Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 04.83.06456.8F8DC4F5; Mon, 31
-        Aug 2020 12:03:20 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200831110320eucas1p218471e8d1a63955970f53645eac0d2f9~wVW5dXzvR2473124731eucas1p2E;
-        Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200831110320eusmtrp1db8dd80652955c7991139c8c05960840~wVW5ckhvL1245712457eusmtrp10;
-        Mon, 31 Aug 2020 11:03:20 +0000 (GMT)
-X-AuditID: cbfec7f2-7efff70000001938-57-5f4cd8f87567
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id F7.A5.06017.8F8DC4F5; Mon, 31
-        Aug 2020 12:03:20 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200831110319eusmtip1f2c6861d2f1bddd76c9598166476d1be~wVW4m3u761056310563eusmtip1K;
-        Mon, 31 Aug 2020 11:03:19 +0000 (GMT)
-Subject: Re: [RFT 2/4] ARM: dts: exynos: Move fixed clocks under root node
- in Exynos3250
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Mon, 31 Aug 2020 07:04:41 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7C1C06123C
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:04:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 5so412611pgl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:04:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SQHLmew/+Uw02hOPwl2KHpbtxwjKEHifcexkv1FCU6c=;
+        b=qu9xuHsiVO1/lhFmOB3Y3peMVj53ZshahjOB6elhp66R5CgK9whhOLPoUy9hJDwOml
+         Xx52NED74g9DEWtob9uJW3arR10F4ZGioAyQqYEs5SvJ1RjzcZA2QrePfX+NC69hXOpx
+         T2ZqORq8P48EJWSjC8u3HyAakTJWOPBND8tw/CDs4nTIDPYu0fE46kWrXoL+o5XVsLiq
+         ztj4QCcWejcIcr3s62PLOOcoR4zkUTdUUajQzYFsgdxoSYCfFfbcUWznqhF0ABqFnXPE
+         OHlJ3s1cAKonQKGi4+iTZ+TeuRQIbX3NmSxTqk9xxswBLaw7kbqZlhRogYMkOY2qzObd
+         Qt+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SQHLmew/+Uw02hOPwl2KHpbtxwjKEHifcexkv1FCU6c=;
+        b=pEzzDvDHdRY6wgFgPJ8BG5Rylbe6Tas1ilIXFsYbMX4RlLvLrr+bu/JOBw9RiQMila
+         JFtpVranP7KYFVkfWzIH+ApIf7ofPqE+UTR1xkqBs7v539CzRss77euu/hRE79sKN3vd
+         HkKQWt2A2cL5pZJXr9R4Unbg6vHXQcR+OkUrsEUtG9LGiKulsY/F0yuD4oCMjovJz1jz
+         sZjqbu3+0K6zxz0UEw9T9zWlZWNMazt4eF/O4o6MgtT4/zw+I9jz7VTxuMyx578z0Trn
+         JffsPJ/v0u1ZbhlBxmhgvQDbCwa+3UTPLwGsRjMd/R18l5ZJGzo9l+8gQGLhDndbwFay
+         03LQ==
+X-Gm-Message-State: AOAM533jpnvSQnD74il+d4Gy9GooeMw+Sgo7FS1nAAgAZpYcRIYbKnZB
+        FqV//lQm5VGKfg5pryOvCKSARhJPbRQUKA==
+X-Google-Smtp-Source: ABdhPJxeSefAgzvdXk9S266/E7KO0kwk+YEMEr+ulK04bFCe5SCH5jaiI2wePURUQh3DPfX154nn+A==
+X-Received: by 2002:a05:6a00:14d0:: with SMTP id w16mr833159pfu.39.1598871854010;
+        Mon, 31 Aug 2020 04:04:14 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id w16sm7665688pfq.13.2020.08.31.04.04.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 Aug 2020 04:04:13 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 16:34:08 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <1700b99a-4b57-2aa2-50f5-a2dcf32b037e@samsung.com>
-Date:   Mon, 31 Aug 2020 13:03:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] ARM: tegra: Pass multiple versions in
+ opp-supported-hw property
+Message-ID: <20200831110408.a6lwivim4w4jtkdc@vireshk-i7>
+References: <cover.1598442485.git.viresh.kumar@linaro.org>
+ <b13f1b112532fe0189d1f7bbb50903d9e1defb07.1598442485.git.viresh.kumar@linaro.org>
+ <b0763074-859f-fccb-dde4-03d1a50ea021@gmail.com>
+ <20200831043908.mtw4dglybcmcabjb@vireshk-i7>
+ <0da380c2-9161-d450-afd2-4b159c8cfb7d@gmail.com>
+ <20200831084111.6udzvrdonxgzju4l@vireshk-i7>
+ <cbfa012b-8f50-e460-972c-c51fa52bb858@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200829172532.29358-2-krzk@kernel.org>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0iTYRjl3XfZt+HsdVo+WRQNCgrSJKsXi9mN+qIi//THSJ35YdY2ZUvL
-        qJTsout+QW1Jmo0UIS+rtDTTxDZqOEstxMrMC2RlK6emIlrzs/LfOec95znPAy9HKXuZAC5e
-        f0gw6DVaFSunK2yjzuUjbTuiVjzLVpELzhcSUp5TypDJiisUyWtwMqR1yMUSV6GJJZe6v1Kk
-        qalMSqzdbxnSUpXLkpympxJyuqZBSopGHyJytrePIqNVt+j1s/ia4Xyaf2z+IOWtxZksXznc
-        yfAfz9kl/H1LKm/JesPyFx8UI95tXRAui5CvixW08cmCIUgdLd8/ONLIJFrwkfEfQ9I0ZPcy
-        IRkHOARcZdmsCck5JS5C0NzezohkEIErq2+auBHcsX9m/0aum0unsBIXIkjL3CaaXAheWbP+
-        JDjOF0dAdkOoR/fDryko+dhIewIUFqC638Z4MIuDwdRvmhqkwGr4NvABeTCNF0NvX9cUno0j
-        wfayixY9PvDiRg/tmS/Dq+BJtUwcuRAq+3MpEftDe0+exNMLOJODi3Wj00tvhvKyd1IR+8IX
-        +4NpPB8c187TYiAdwSfnPalIziNoOZmDRNdaeO8cYz3NFF4KpVVBorwB8nPuSjwyYG9o6/cR
-        l/CGqxXZlCgrIOOMUnQvAbO95F/ts1fN1GWkMs+4zDzjHPOMc8z/e/MRXYz8hSSjLk4wBuuF
-        w4FGjc6YpI8L3Jegs6I/n88xYR94hIaaY+oR5pDKSzHyfHuUktEkG1N09Qg4SuWn2NjoiFQq
-        YjUpRwVDQpQhSSsY69E8jlb5K1YW9O1V4jjNIeGgICQKhr+vEk4WkIbUc0PDrjmCSPv7A9qr
-        N8ITe9SFIbmpJL1h0U/ZzjO24Qjt7T21zbEThtbvYd4dnQF1W21mR8av0pqU+IrxH9Z3ae6D
-        a0tUBf6Jk5Zj5ZZz+iyH/fPDU+HHi2tvajN2r4kp+ZK8y13gu3pTx824OS/ldVvGkqt1nHtp
-        VbT66HCK3wkVbdyvCV5GGYya34zPjj94AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsVy+t/xu7o/bvjEG3T+YbXoPXeSyWLjjPWs
-        Fv+3TWS2mH/kHKvFla/v2SzeL+9is+h//JrZ4vz5DewWmx5fY7W4vGsOm8WM8/uYLFr3HmG3
-        WPFzK6NF+9OXzBY/d81jceD32PttAYvHzll32T02repk89j+7QGrx/3u40wem5fUeyyZdpXN
-        o2/LKkaPz5vkAjij9GyK8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX07WxSUnMy
-        y1KL9O0S9DK+/DjLWrBEoOLPh6/sDYzHeboYOTkkBEwkpsxaz9bFyMUhJLCUUWLy7gWMEAkZ
-        iZPTGlghbGGJP9e6oIreMkrs2/AOrEhYIEri+swmZpCEiMBFZolN6+awgySYBVIlJjZNZYLo
-        2MwocftiKxtIgk3AUKLrbReYzStgJ/Hm012wSSwCqhJPXz4Cs0UF4iTO9LyAqhGUODnzCUsX
-        IwcHp4CpxJ7dnBDzzSTmbX7IDGHLS2x/OwfKFpe49WQ+0wRGoVlIumchaZmFpGUWkpYFjCyr
-        GEVSS4tz03OLjfSKE3OLS/PS9ZLzczcxAqN927GfW3Ywdr0LPsQowMGoxMP746h3vBBrYllx
-        Ze4hRgkOZiURXqezp+OEeFMSK6tSi/Lji0pzUosPMZoC/TaRWUo0OR+YiPJK4g1NDc0tLA3N
-        jc2NzSyUxHk7BA7GCAmkJ5akZqemFqQWwfQxcXBKNTDK7847FXz+bE6RjY+kLOOyR26HA+7M
-        ePdvoe/HpG/KrHHuE3fcuDGVva5E70L1zW9bzFZcSzG7lXLtlJxp/6rv0nvEQhfaLVp187/r
-        uZ+hBnmaTMvOSbB+4Z144Ghi+tUbHyWN5pa1GV+ayiNVYnvsh6Xkuv5LRyS79+ae79f95voi
-        fRNbQoegEktxRqKhFnNRcSIAjNR2mgwDAAA=
-X-CMS-MailID: 20200831110320eucas1p218471e8d1a63955970f53645eac0d2f9
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200829172549eucas1p15e565c0703d5c5abf5527dfe7b03a602
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200829172549eucas1p15e565c0703d5c5abf5527dfe7b03a602
-References: <20200829172532.29358-1-krzk@kernel.org>
-        <CGME20200829172549eucas1p15e565c0703d5c5abf5527dfe7b03a602@eucas1p1.samsung.com>
-        <20200829172532.29358-2-krzk@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbfa012b-8f50-e460-972c-c51fa52bb858@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.08.2020 19:25, Krzysztof Kozlowski wrote:
-> The fixed clocks are kept under dedicated node fixed-rate-clocks, thus a
-> fake "reg" was added.  This is not correct with dtschema as fixed-clock
-> binding does not have a "reg" property:
->
->    arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml: clock@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
->
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->   arch/arm/boot/dts/exynos3250.dtsi | 42 +++++++++++++------------------
->   1 file changed, 17 insertions(+), 25 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/exynos3250.dtsi b/arch/arm/boot/dts/exynos3250.dtsi
-> index d3fb45a56527..c67c70e46794 100644
-> --- a/arch/arm/boot/dts/exynos3250.dtsi
-> +++ b/arch/arm/boot/dts/exynos3250.dtsi
-> @@ -97,33 +97,25 @@
->   		};
->   	};
->   
-> -	fixed-rate-clocks {
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -
-> -		xusbxti: clock@0 {
-> -			compatible = "fixed-clock";
-> -			reg = <0>;
-> -			clock-frequency = <0>;
-> -			#clock-cells = <0>;
-> -			clock-output-names = "xusbxti";
-> -		};
-> +	xusbxti: clock-0 {
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <0>;
-> +		#clock-cells = <0>;
-> +		clock-output-names = "xusbxti";
-> +	};
->   
-> -		xxti: clock@1 {
-> -			compatible = "fixed-clock";
-> -			reg = <1>;
-> -			clock-frequency = <0>;
-> -			#clock-cells = <0>;
-> -			clock-output-names = "xxti";
-> -		};
-> +	xxti: clock-1 {
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <0>;
-> +		#clock-cells = <0>;
-> +		clock-output-names = "xxti";
-> +	};
->   
-> -		xtcxo: clock@2 {
-> -			compatible = "fixed-clock";
-> -			reg = <2>;
-> -			clock-frequency = <0>;
-> -			#clock-cells = <0>;
-> -			clock-output-names = "xtcxo";
-> -		};
-> +	xtcxo: clock-2 {
-> +		compatible = "fixed-clock";
-> +		clock-frequency = <0>;
-> +		#clock-cells = <0>;
-> +		clock-output-names = "xtcxo";
->   	};
->   
->   	pmu {
+On 31-08-20, 12:54, Dmitry Osipenko wrote:
+> It's not clear to me how it could be applicable to the Tegra CPU OPP
+> because Tegra depends on a combination of SPEEDO + PROCESS versions.
+> 
+> It's not like all voltages are the same for all OPPs that have the same
+> PROCESS ID, otherwise it indeed would be nice to have
+> "opp-microvolt-process0", but unfortunately this variant is not suitable
+> for Tegra because some freqs have different voltages using the same
+> PROCESS ID and the same applies to the SPEEDO ID.
 
-Best regards
+How exactly do you know what voltage belongs to a particular OPP ?
+
+		opp@216000000 {
+			clock-latency-ns = <400000>;
+			opp-supported-hw = <0x0F 0x0003>;
+			opp-hz = /bits/ 64 <216000000>;
+			opp-microvolt-fast-process0 = <750000 750000 1125000>;
+			opp-microvolt-slow-process0 = <750000 850000 1125000>;
+
+		};
+
+		opp@312000000 {
+			clock-latency-ns = <400000>;
+			opp-supported-hw = <0x0F 0x0003>;
+			opp-hz = /bits/ 64 <312000000>;
+			opp-microvolt-fast-process0 = <750000 750000 1125000>;
+			opp-microvolt-slow-process0 = <750000 850000 1125000>;
+		};
+
+You can make any combinations of such names that come from speedo,
+process, or something else. If you can get this done as a fixed
+formula then it is workable.
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+viresh
