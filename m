@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2615225782E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63FB257831
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 13:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgHaLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 07:21:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726726AbgHaLR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727818AbgHaLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 07:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgHaLR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 07:17:58 -0400
-Received: from localhost (unknown [122.171.38.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0162D206F0;
-        Mon, 31 Aug 2020 11:08:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598872136;
-        bh=luuKNVi+KwBr1ekM6udfXcrivJveuP/tHqNrnFBYWzo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q9i5JjFRgd6CT0v9YoaM43xpHDTkyeMvqzq3Ssb0Bwy66dDENHm+T2c4kSr9F6e5F
-         yEMdfTYkuFjp5dQur7ohdLp0G40YvgqkgngONSvuR2XT1YwwpxfCQsGF1eAe8OHKhd
-         h9qDDRaJm9JIIW54F64ilO+Gwlnky3sIxbz/qE8Y=
-Date:   Mon, 31 Aug 2020 16:38:52 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Liam Beguin <liambeguin@gmail.com>
-Cc:     geert@linux-m68k.org, kishon@ti.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/1] phy: tusb1210: use bitmasks to set
- VENDOR_SPECIFIC2
-Message-ID: <20200831110852.GO2639@vkoul-mobl>
-References: <20200822205320.9746-1-liambeguin@gmail.com>
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB1DC0611E1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:09:42 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k15so381583pfc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 04:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=E02AUVeFQVT/Yby1TXwpBy6LjVsB+G1ulzMrGLTQLsU=;
+        b=FNd/akIMkL3eaopJcpGVw841qNXHifVpshOPHlo/uuzzMC1uIxR4rpF1cuEx20MJW8
+         zRU3b7IXYtOiWUHE2usegI5lqkz29pQSEe7lc2Zn6kFtFUMZkTsgPTu53uMWFebd0coM
+         iLMT0oFYlNnVymD+VsZPkcbeOQMjtAIsBp7DxOf1eo/wPc9H61/kybyugntRfQEZbv8D
+         gwC6Tj3nw1Cui3GshhMMxUmIqh6mQUDR4d6WK83d4fAnnl0g+V9RF79Hz/YfHby4mlw7
+         mR3PyKcjWV5VnHdjRO8FhwNUz77opdus4HEGeEpTBOw/d8C3bmxPjA6qWJWpAFad6iz7
+         g8gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=E02AUVeFQVT/Yby1TXwpBy6LjVsB+G1ulzMrGLTQLsU=;
+        b=p/8mx5Obb1f+sRcQgo4cpHNsOYWr9+J0KPOOw/BMYE4QwdWVLGQ1PFlrfPJr/qoDVG
+         6I4f6yhK/TFFnhVT6cYI5KtZuy9/F3hOj2JnQ4SmbfRuqPZxgWnekhPlHAIBxs8/6yz1
+         XpAPeyuVZfCenVJJ+f5HVppUPNObRaarL14NHOpg+piahyfdgcCygwIP2nqZZm1Tpl3F
+         2XKWoEmsBfb3GAtABSuE4pWgmSJpFnG4X4BpJuEGATO52Ky8Zi81AoWnYu3tTeesh8FY
+         hiNjTjEPeoCCqdqJI7UqzKcO2lcdP1Hkq4+4FVAcb4bm/DX94DzXFNDK9p0YOCK2J/Vd
+         O4oA==
+X-Gm-Message-State: AOAM533AD9TGfXrMaTXyUDq4sSQwa8nnYjo6pVkSfTs0rj/jjmzRtzNN
+        HE83maexoIoHcq8VUyQP52OhFA==
+X-Google-Smtp-Source: ABdhPJzSBT56cUJvUmQ1jeDl1RjMGJiu46b0HYsbuCGKuS2QrgmD92t81oKVAXJFmHCb4EhXLUuNfg==
+X-Received: by 2002:aa7:9207:: with SMTP id 7mr819876pfo.156.1598872182053;
+        Mon, 31 Aug 2020 04:09:42 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id u16sm7495367pfn.134.2020.08.31.04.09.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 Aug 2020 04:09:41 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 16:39:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     rnayak@codeaurora.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Qiang Yu <yuq825@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Clark <robdclark@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sean Paul <sean@poorly.run>, Shawn Guo <shawnguo@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        lima@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH V2 0/8] opp: Unconditionally call
+ dev_pm_opp_of_remove_table()
+Message-ID: <20200831110939.qnyugmhajkg36gzw@vireshk-i7>
+References: <cover.1598594714.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200822205320.9746-1-liambeguin@gmail.com>
+In-Reply-To: <cover.1598594714.git.viresh.kumar@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liam,
+On 28-08-20, 11:37, Viresh Kumar wrote:
+> Hello,
+> 
+> This cleans up some of the user code around calls to
+> dev_pm_opp_of_remove_table().
+> 
+> All the patches can be picked by respective maintainers directly except
+> for the last patch, which needs the previous two to get merged first.
+> 
+> These are based for 5.9-rc1.
+ 
+> Viresh Kumar (8):
+>   cpufreq: imx6q: Unconditionally call dev_pm_opp_of_remove_table()
+>   drm/lima: Unconditionally call dev_pm_opp_of_remove_table()
+>   drm/msm: Unconditionally call dev_pm_opp_of_remove_table()
+>   mmc: sdhci-msm: Unconditionally call dev_pm_opp_of_remove_table()
+>   spi: spi-geni-qcom: Unconditionally call dev_pm_opp_of_remove_table()
+>   spi: spi-qcom-qspi: Unconditionally call dev_pm_opp_of_remove_table()
+>   tty: serial: qcom_geni_serial: Unconditionally call
+>     dev_pm_opp_of_remove_table()
+>   qcom-geni-se: remove has_opp_table
 
-On 22-08-20, 16:53, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
-> 
-> Start by reading the content of the VENDOR_SPECIFIC2 register and update
-> each bit field based on device properties when defined.
-> 
-> The use of bit masks prevents fields from overriding each other and
-> enables users to clear bits which are set by default, like datapolarity
-> in this instance.
-> 
-> Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> ---
-> Changes since v1:
-> - use set_mask_bits
-> 
-> Changes since v2:
-> - fix missing bit shift dropped in v2
-> - rebase on 5.9-rc1
-> 
-> Changes since v3:
-> - switch to u8p_replace_bits() since there's little reason to protect
->   against concurrent access
-> 
->  drivers/phy/ti/phy-tusb1210.c | 27 ++++++++++++++-------------
->  1 file changed, 14 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb1210.c
-> index d8d0cc11d187..a63213f5972a 100644
-> --- a/drivers/phy/ti/phy-tusb1210.c
-> +++ b/drivers/phy/ti/phy-tusb1210.c
-> @@ -7,15 +7,16 @@
->   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->   */
->  #include <linux/module.h>
-> +#include <linux/bitfield.h>
->  #include <linux/ulpi/driver.h>
->  #include <linux/ulpi/regs.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/phy/ulpi_phy.h>
->  
->  #define TUSB1210_VENDOR_SPECIFIC2		0x80
-> -#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT	0
-> -#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT	4
-> -#define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT	6
-> +#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK	GENMASK(3, 0)
-> +#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK	GENMASK(5, 4)
-> +#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK	BIT(6)
->  
->  struct tusb1210 {
->  	struct ulpi *ulpi;
-> @@ -118,22 +119,22 @@ static int tusb1210_probe(struct ulpi *ulpi)
->  	 * diagram optimization and DP/DM swap.
->  	 */
->  
-> +	reg = ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
-> +
->  	/* High speed output drive strength configuration */
-> -	device_property_read_u8(&ulpi->dev, "ihstx", &val);
-> -	reg = val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
-> +	if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
-> +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK);
+During testing by some of the Linaro folks on linux-next, we found out
+that there was a bug in the OPP core (which makes the kernel crash in
+some corner cases with these patches) for which I have sent a fix
+today which should be part of 5.9-rc4:
 
-Any reason for using u8p_replace_bits and not u8_replace_bits? 
+https://lore.kernel.org/lkml/922ff0759a16299e24cacfc981ac07914d8f1826.1598865786.git.viresh.kumar@linaro.org/
 
-Also please drop the u8 casts above, they seem unnecessary here
-
->  
->  	/* High speed output impedance configuration */
-> -	device_property_read_u8(&ulpi->dev, "zhsdrv", &val);
-> -	reg |= val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT;
-> +	if (!device_property_read_u8(&ulpi->dev, "zhsdrv", &val))
-> +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK);
->  
->  	/* DP/DM swap control */
-> -	device_property_read_u8(&ulpi->dev, "datapolarity", &val);
-> -	reg |= val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT;
-> +	if (!device_property_read_u8(&ulpi->dev, "datapolarity", &val))
-> +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_DP_MASK);
->  
-> -	if (reg) {
-> -		ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
-> -		tusb->vendor_specific2 = reg;
-> -	}
-> +	ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
-> +	tusb->vendor_specific2 = reg;
->  
->  	tusb->phy = ulpi_phy_create(ulpi, &phy_ops);
->  	if (IS_ERR(tusb->phy))
-> 
-> base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
-> -- 
-> 2.27.0
+Please apply the patches over rc4 only once it comes out (I will
+confirm by that time once the patch gets merged). Else you guys can
+provide your Ack and I can take the patches through OPP tree.
 
 -- 
-~Vinod
+viresh
