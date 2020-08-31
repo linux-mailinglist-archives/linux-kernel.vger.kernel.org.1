@@ -2,60 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BF325736E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 07:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FA8257370
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 07:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgHaF5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 01:57:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725794AbgHaF5q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 01:57:46 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35C1B20719;
-        Mon, 31 Aug 2020 05:57:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598853466;
-        bh=XIOU28tJX7CV1eyusWssnat55LJrWoBdGa2JlqOB5fE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aRCNkkSGjc3YwJ36of9NJ6sv63hIVdU2Gawj1uS+GzuvCrPaMgTrb/1SgscXP9EN2
-         uWzNlNGsO9Rd+8ctnUG08cJ76jRWAOANJZbcLNr6Cm4E+jznE/8wsQI75M3Uo1LuWn
-         fT0llKP/zvpsDTVykQOUTb9DRml/nuITv/lLLp9o=
-Date:   Mon, 31 Aug 2020 13:57:40 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        "Angus Ainslie (Purism)" <angus@akkea.ca>,
-        Anson Huang <Anson.Huang@nxp.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mq-librem5-devkit: Add missing
- clock-cells to PMIC
-Message-ID: <20200831055739.GM4488@dragon>
-References: <20200828192228.23060-1-krzk@kernel.org>
+        id S1726312AbgHaF6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 01:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgHaF6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 01:58:37 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D3DC061575
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 22:58:36 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id d19so31840pgl.10
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 22:58:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H6AsLRpDHwakDmuXrbGWlIm7s+3UR/W0JknRh2YDfh4=;
+        b=hzSoGJdVJFRfVadzVGFkdQzGa0rAgCZxrxlqYLE051aqDUx0LJxBy0I2Pdmv8pwHuU
+         DwNzkona5VKhZ46ENMuGjoCwsHU1v+yBSm3P24B8YKXx50N9bsqT2VCenkt1U/SDNjeE
+         D3yzzwbTd2L0AIUT51McE3J0pNiuKL59rLHRMGYtgBj8rG37ySSCvzlQlriOHSkUn8tp
+         waJG/BfzTpgOkzohwxav2k4ItlgCPwbed2qxlSDRkyC6/fKLJxKQ+2523ymDD10YNddZ
+         P4SB4dZYGkgjdMCYUlcOAnFURre+mHzZ1WB45GdpsnN7CgBJdXkYMa6ntYlCcJyuRZA5
+         TkgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H6AsLRpDHwakDmuXrbGWlIm7s+3UR/W0JknRh2YDfh4=;
+        b=P71vSIou+AVwvpl4cH17Oya7WimSaPunSbH4U9wH3JCaPKK01TDZjfVEdECdyAXqLr
+         SqNHdI3kzb8HX0ftG8YJM/mbLrKU1Aym2IqR8yda0awSjgoNulR2jl6p43yDio2IKcDO
+         HuU6nCn6ZJ9Y0sHwUxEEjLzhBjPNbw+BzahsNZ87zEcYYGnqIeGpudz/qW4YNcGZrTlZ
+         QrtoImkLzoPSO0Zc32NIzZyH/xYS+i4cPQLd0FUWTqY47aeZkFiXSKG2OaRtY4fIuKIJ
+         PV+/jSiVPKpBKN4F8MEx7rBk9CqDCfjzd7jikSrh9aSermpe1ymWfCEZnCsmyndFFMOO
+         EGdQ==
+X-Gm-Message-State: AOAM530h52llVQ3/08CQDgCWiacqoO8fGlS/9MwCD1EtjyxqvuBrwWS6
+        0Ov5XHXZkXj40ptSBjnZMZlnpg==
+X-Google-Smtp-Source: ABdhPJwGXbHMsM66b23MXrHGO0zax4LzzRWevubMgGap8kSljvyXheQp6cNZ81GCwAXsKxIxJRe9dg==
+X-Received: by 2002:a63:5161:: with SMTP id r33mr91670pgl.242.1598853516288;
+        Sun, 30 Aug 2020 22:58:36 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id 79sm6549290pfw.97.2020.08.30.22.58.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 30 Aug 2020 22:58:35 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] opp: Prevent memory leak in dev_pm_opp_attach_genpd()
+Date:   Mon, 31 Aug 2020 11:28:28 +0530
+Message-Id: <1cadaccf3728ce84d5d0af50a48ce8caaa29eb53.1598853505.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828192228.23060-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 09:22:28PM +0200, Krzysztof Kozlowski wrote:
-> The PMIC node can be a clock provider (for its 32 kHz clock) and authors
-> of imx8mq-librem5-devkit.dts apparently wanted this because they added
-> input clock and clock-output-names.
-> 
-> Add necessary clock-cells to the PMIC node.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+If dev_pm_opp_attach_genpd() is called multiple times (once for each CPU
+sharing the table), then it would result in unwanted behavior like
+memory leak, attaching the domain multiple times, etc.
 
-Applied, thanks.
+Handle that by checking and returning earlier if the domains are already
+attached. Now that dev_pm_opp_detach_genpd() can get called multiple
+times as well, we need to protect that too.
+
+Note that the virtual device pointers aren't returned in this case, as
+they may become unavailable to some callers during the middle of the
+operation.
+
+Reported-by: Stephan Gerhold <stephan@gerhold.net>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/opp/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 000d0fcb4680..e65174725a4d 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -1960,6 +1960,9 @@ static void _opp_detach_genpd(struct opp_table *opp_table)
+ {
+ 	int index;
+ 
++	if (!opp_table->genpd_virt_devs)
++		return;
++
+ 	for (index = 0; index < opp_table->required_opp_count; index++) {
+ 		if (!opp_table->genpd_virt_devs[index])
+ 			continue;
+@@ -2006,6 +2009,9 @@ struct opp_table *dev_pm_opp_attach_genpd(struct device *dev,
+ 	if (IS_ERR(opp_table))
+ 		return opp_table;
+ 
++	if (opp_table->genpd_virt_devs)
++		return opp_table;
++
+ 	/*
+ 	 * If the genpd's OPP table isn't already initialized, parsing of the
+ 	 * required-opps fail for dev. We should retry this after genpd's OPP
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
