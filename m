@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E61A257B34
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4399257B4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 16:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgHaOWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 10:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726489AbgHaOWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 10:22:42 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 42D1120866;
-        Mon, 31 Aug 2020 14:22:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598883762;
-        bh=pgacFH3zLkMQq+pq3zSvPUadQeunRUThFZbP0DHzo0I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C50VzbBFvYX9zLgqtMrJboj+FzxN+wRm/j/9qEmp6tPYLGegR2M0ekWTyB2Bxfped
-         ijlESGqku/xQtZ2FYT9CIyKVKqCNc/ICSPEzBUd31e6OPCvDCn4liqmky7l7aXNvWB
-         FhXQkfRXX4VVvy2TbFTLnQT5MormLqRakds4ZEK4=
-Date:   Mon, 31 Aug 2020 09:28:48 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     dan.carpenter@oracle.com, andriy.shevchenko@linux.intel.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com
-Subject: Re: [PATCH v2] staging: atomisp: Remove unnecessary 'fallthrough'
-Message-ID: <20200831142848.GF2671@embeddedor>
-References: <20200831134021.GV8299@kadam>
- <20200831135103.93399-1-cengiz@kernel.wtf>
+        id S1727937AbgHaOaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 10:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726968AbgHaOaF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 10:30:05 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4330C061573;
+        Mon, 31 Aug 2020 07:30:04 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id m22so8745658eje.10;
+        Mon, 31 Aug 2020 07:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GsUtzJFOnvjviCxW2IjbStQvBGLGUPcyBXj6Cdtywt8=;
+        b=J6Ke5RC+m3g1nSBnNqPyMtumBUnXEruJri8HNZkz86liYmnV2q0HRxyDgJeF+6v9T9
+         4n4azliF11Ez2eEObZXMmtHD0FmbHx+7N9posUPy/zlOozzyLtbSvOE+nM60IREfw7FW
+         vI8Gg+dpC5KuXnXLBPmhXTFIaGsIG/vw9uq17gZ2ErjTWF89qH0PxVDrj201wh911bSK
+         QQlUSKnj6SwHECIMTl8fYRlABaTQX2wDevBhlW07ycZX5nIRg8jFqJI/x/9Uvo1P3EAC
+         tJ2KDKRGz7qplxNHR0+T3l4czwNFQZl2Pp3D4j7Rk71sQZxqBcsYhJIdqd69xMR/8wXp
+         5UAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GsUtzJFOnvjviCxW2IjbStQvBGLGUPcyBXj6Cdtywt8=;
+        b=UgszEvaSTc994HsML/7lUajcAQpTxvV+MKScjOzpvF5qi4JNVpBfwXCjkdjpxMaknf
+         AjuwVutjY63+oSnjuwjuUYLiujZS2ov9vHtXu5U5mvw+IclJy+IVLWGWijZoPRRUvmBk
+         zGTDSi0i3fqItnD70tSvkHC1HD9FQcZvrS/r9LLu1LGM4Tv4DpYSdOW1fov1D/p30e4c
+         wq0QO6/bOIU1ecQILzLAhUM+2+Z1Qe3OOPjQ484sffBIg2rwgqGUVm03gQYpEHBjkfvr
+         016TnaBPhwf9cqNbaXIfCUOfDbJAOJ6+jm9Hh2Vq+HqGcg3EZ2z/Rkzr3zCUK678gWbg
+         FXeg==
+X-Gm-Message-State: AOAM530L6AHIr0gch2yl1HbLYQW+eBbnUpASIlJ5kKBqAbmkNrw0HNuk
+        kjbMDuQ7xVWQw1xxXZ1Faef+8YS9QWF5pLdl65A=
+X-Google-Smtp-Source: ABdhPJyjPMgqhNVhFiUA4I3hTIZTzHOuaM4kG5ojHStRHxESukNTTW1UGb+Q1yubT4UmTTT2wlJTEVjFJ92AR9+xRdY=
+X-Received: by 2002:a17:906:656:: with SMTP id t22mr1363085ejb.392.1598884203426;
+ Mon, 31 Aug 2020 07:30:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831135103.93399-1-cengiz@kernel.wtf>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200828141344.2277088-1-alinde@google.com>
+In-Reply-To: <20200828141344.2277088-1-alinde@google.com>
+From:   Akinobu Mita <akinobu.mita@gmail.com>
+Date:   Mon, 31 Aug 2020 23:29:52 +0900
+Message-ID: <CAC5umyiNw7FA__Y3HZ1UEG8Y6uQDgAWHTJpOVf7okERzpCjnRg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] add fault injection to user memory access
+To:     albert.linde@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>, bp@alien8.de,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, glider@google.com,
+        andreyknvl@google.com, Dmitry Vyukov <dvyukov@google.com>,
+        elver@google.com, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>, x86@kernel.org,
+        Albert van der Linde <alinde@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 04:51:04PM +0300, Cengiz Can wrote:
-> commit df561f6688fe ("treewide: Use fallthrough pseudo-keyword") from
-> Gustavo A. R. Silva replaced and standardized /* fallthrough */ comments
-> with 'fallthrough' pseudo-keyword.
-> 
-> However, in one of the switch-case statements, Coverity Static Analyzer
-> throws a warning that 'fallthrough' is unreachable due to the adjacent
-> 'return false' statement. (Coverity ID CID 1466511)
-> 
-> In order to fix the unreachable code warning, remove unnecessary
-> fallthrough keyword.
-> 
-> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
+2020=E5=B9=B48=E6=9C=8828=E6=97=A5(=E9=87=91) 23:14 <albert.linde@gmail.com=
+>:
+>
+> From: Albert van der Linde <alinde@google.com>
+>
+> The goal of this series is to improve testing of fault-tolerance in
+> usages of user memory access functions, by adding support for fault
+> injection.
+>
+> The first patch adds failure injection capability for usercopy
+> functions. The second changes usercopy functions to use this new failure
+> capability (copy_from_user, ...). The third patch adds
+> get/put/clear_user failures to x86.
 
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+This series looks good to me.
 
-Thanks
---
-Gustavo
-
-> ---
->  drivers/staging/media/atomisp/pci/atomisp_compat_css20.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-> index 1b2b2c68025b..feb26c221e96 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_compat_css20.c
-> @@ -711,7 +711,6 @@ static bool is_pipe_valid_to_current_run_mode(struct atomisp_sub_device *asd,
->  			return true;
->  
->  		return false;
-> -		fallthrough;
->  	case ATOMISP_RUN_MODE_VIDEO:
->  		if (!asd->continuous_mode->val) {
->  			if (pipe_id == IA_CSS_PIPE_ID_VIDEO ||
-> -- 
-> 2.28.0
-> 
+Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
