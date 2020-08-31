@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385CC258019
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C5425802B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbgHaSBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:01:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35710 "EHLO mail.kernel.org"
+        id S1729334AbgHaSD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:03:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728306AbgHaSBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728353AbgHaSBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 14:01:21 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 404962151B;
+        by mail.kernel.org (Postfix) with ESMTPSA id A3CC221527;
         Mon, 31 Aug 2020 18:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1598896880;
-        bh=xBYCcO3EI/laB8yUb8DrmnchvpxpQDbnTIfeq3TmuJI=;
+        bh=gQ5QttFapLN86AL+i4XMLciqbTAsLhkfWpdqAzN7LU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lbRpxAFSHMmTbcUVpW3heSbRuOV2soYx1J2ztcylzJmppEWwwuTiiHBmHlkNCkRaU
-         D4KCDpAYPiLA3IcOprbrWt4zqAcE5PJYi+m9GngLzqg0inzhqb+YVeTtZD8V8l+B9n
-         1woZvfV88yNvq3E5nYN6dzuEjYkSANvzYb7hepWc=
+        b=Pv0k4bAvarSplgWFPl0nnJjNmqVgOp1Xs97WmQSTurtMqHeubyDboKRFiQW5euj6/
+         RbPrwk19yx0E1070oZxW6mKxEIQVDIvTV8UOjdu2W46Uhr8TFp2cb2Mvp24kkqU5Lv
+         AIgomnCt0B7HKp6nzFSbCTqSsSimO8zIb5DfsWGU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/24] rcu: Initialize at declaration time in rcu_exp_handler()
-Date:   Mon, 31 Aug 2020 11:00:56 -0700
-Message-Id: <20200831180116.32690-4-paulmck@kernel.org>
+        Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/24] rcu/trace: Print negative GP numbers correctly
+Date:   Mon, 31 Aug 2020 11:00:57 -0700
+Message-Id: <20200831180116.32690-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200831180050.GA32590@paulmck-ThinkPad-P72>
 References: <20200831180050.GA32590@paulmck-ThinkPad-P72>
@@ -43,35 +44,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-This commit moves the initialization of the CONFIG_PREEMPT=n version of
-the rcu_exp_handler() function's rdp and rnp local variables into their
-respective declarations to save a couple lines of code.
+GP numbers start from -300 and gp_seq numbers start of -1200 (for a
+shift of 2). These negative numbers are printed as unsigned long which
+not only takes up more text space, but is rather confusing to the reader
+as they have to constantly expend energy to truncate the number. Just
+print the negative numbering directly.
 
+Cc: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_exp.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/trace/events/rcu.h | 54 +++++++++++++++++++++++-----------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 1888c0e..8760b6e 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -732,11 +732,9 @@ static void rcu_exp_need_qs(void)
- /* Invoked on each online non-idle CPU for expedited quiescent state. */
- static void rcu_exp_handler(void *unused)
- {
--	struct rcu_data *rdp;
--	struct rcu_node *rnp;
-+	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-+	struct rcu_node *rnp = rdp->mynode;
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index ced7123..155b5cb 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -74,17 +74,17 @@ TRACE_EVENT_RCU(rcu_grace_period,
  
--	rdp = this_cpu_ptr(&rcu_data);
--	rnp = rdp->mynode;
- 	if (!(READ_ONCE(rnp->expmask) & rdp->grpmask) ||
- 	    __this_cpu_read(rcu_data.cpu_no_qs.b.exp))
- 		return;
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
++		__field(long, gp_seq)
+ 		__field(const char *, gpevent)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
++		__entry->gp_seq = (long)gp_seq;
+ 		__entry->gpevent = gpevent;
+ 	),
+ 
+-	TP_printk("%s %lu %s",
++	TP_printk("%s %ld %s",
+ 		  __entry->rcuname, __entry->gp_seq, __entry->gpevent)
+ );
+ 
+@@ -114,8 +114,8 @@ TRACE_EVENT_RCU(rcu_future_grace_period,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
+-		__field(unsigned long, gp_seq_req)
++		__field(long, gp_seq)
++		__field(long, gp_seq_req)
+ 		__field(u8, level)
+ 		__field(int, grplo)
+ 		__field(int, grphi)
+@@ -124,16 +124,16 @@ TRACE_EVENT_RCU(rcu_future_grace_period,
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
+-		__entry->gp_seq_req = gp_seq_req;
++		__entry->gp_seq = (long)gp_seq;
++		__entry->gp_seq_req = (long)gp_seq_req;
+ 		__entry->level = level;
+ 		__entry->grplo = grplo;
+ 		__entry->grphi = grphi;
+ 		__entry->gpevent = gpevent;
+ 	),
+ 
+-	TP_printk("%s %lu %lu %u %d %d %s",
+-		  __entry->rcuname, __entry->gp_seq, __entry->gp_seq_req, __entry->level,
++	TP_printk("%s %ld %ld %u %d %d %s",
++		  __entry->rcuname, (long)__entry->gp_seq, (long)__entry->gp_seq_req, __entry->level,
+ 		  __entry->grplo, __entry->grphi, __entry->gpevent)
+ );
+ 
+@@ -153,7 +153,7 @@ TRACE_EVENT_RCU(rcu_grace_period_init,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
++		__field(long, gp_seq)
+ 		__field(u8, level)
+ 		__field(int, grplo)
+ 		__field(int, grphi)
+@@ -162,14 +162,14 @@ TRACE_EVENT_RCU(rcu_grace_period_init,
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
++		__entry->gp_seq = (long)gp_seq;
+ 		__entry->level = level;
+ 		__entry->grplo = grplo;
+ 		__entry->grphi = grphi;
+ 		__entry->qsmask = qsmask;
+ 	),
+ 
+-	TP_printk("%s %lu %u %d %d %lx",
++	TP_printk("%s %ld %u %d %d %lx",
+ 		  __entry->rcuname, __entry->gp_seq, __entry->level,
+ 		  __entry->grplo, __entry->grphi, __entry->qsmask)
+ );
+@@ -197,17 +197,17 @@ TRACE_EVENT_RCU(rcu_exp_grace_period,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gpseq)
++		__field(long, gpseq)
+ 		__field(const char *, gpevent)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gpseq = gpseq;
++		__entry->gpseq = (long)gpseq;
+ 		__entry->gpevent = gpevent;
+ 	),
+ 
+-	TP_printk("%s %lu %s",
++	TP_printk("%s %ld %s",
+ 		  __entry->rcuname, __entry->gpseq, __entry->gpevent)
+ );
+ 
+@@ -316,17 +316,17 @@ TRACE_EVENT_RCU(rcu_preempt_task,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
++		__field(long, gp_seq)
+ 		__field(int, pid)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
++		__entry->gp_seq = (long)gp_seq;
+ 		__entry->pid = pid;
+ 	),
+ 
+-	TP_printk("%s %lu %d",
++	TP_printk("%s %ld %d",
+ 		  __entry->rcuname, __entry->gp_seq, __entry->pid)
+ );
+ 
+@@ -343,17 +343,17 @@ TRACE_EVENT_RCU(rcu_unlock_preempted_task,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
++		__field(long, gp_seq)
+ 		__field(int, pid)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
++		__entry->gp_seq = (long)gp_seq;
+ 		__entry->pid = pid;
+ 	),
+ 
+-	TP_printk("%s %lu %d", __entry->rcuname, __entry->gp_seq, __entry->pid)
++	TP_printk("%s %ld %d", __entry->rcuname, __entry->gp_seq, __entry->pid)
+ );
+ 
+ /*
+@@ -374,7 +374,7 @@ TRACE_EVENT_RCU(rcu_quiescent_state_report,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
++		__field(long, gp_seq)
+ 		__field(unsigned long, mask)
+ 		__field(unsigned long, qsmask)
+ 		__field(u8, level)
+@@ -385,7 +385,7 @@ TRACE_EVENT_RCU(rcu_quiescent_state_report,
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
++		__entry->gp_seq = (long)gp_seq;
+ 		__entry->mask = mask;
+ 		__entry->qsmask = qsmask;
+ 		__entry->level = level;
+@@ -394,7 +394,7 @@ TRACE_EVENT_RCU(rcu_quiescent_state_report,
+ 		__entry->gp_tasks = gp_tasks;
+ 	),
+ 
+-	TP_printk("%s %lu %lx>%lx %u %d %d %u",
++	TP_printk("%s %ld %lx>%lx %u %d %d %u",
+ 		  __entry->rcuname, __entry->gp_seq,
+ 		  __entry->mask, __entry->qsmask, __entry->level,
+ 		  __entry->grplo, __entry->grphi, __entry->gp_tasks)
+@@ -415,19 +415,19 @@ TRACE_EVENT_RCU(rcu_fqs,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(const char *, rcuname)
+-		__field(unsigned long, gp_seq)
++		__field(long, gp_seq)
+ 		__field(int, cpu)
+ 		__field(const char *, qsevent)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->rcuname = rcuname;
+-		__entry->gp_seq = gp_seq;
++		__entry->gp_seq = (long)gp_seq;
+ 		__entry->cpu = cpu;
+ 		__entry->qsevent = qsevent;
+ 	),
+ 
+-	TP_printk("%s %lu %d %s",
++	TP_printk("%s %ld %d %s",
+ 		  __entry->rcuname, __entry->gp_seq,
+ 		  __entry->cpu, __entry->qsevent)
+ );
 -- 
 2.9.5
 
