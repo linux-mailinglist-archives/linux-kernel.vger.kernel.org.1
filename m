@@ -2,73 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67074257984
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90629257988
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgHaMkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 08:40:24 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:45998 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727852AbgHaMj6 (ORCPT
+        id S1726521AbgHaMmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:42:02 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:36515 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726121AbgHaMlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:39:58 -0400
-Received: by mail-oi1-f195.google.com with SMTP id d189so806849oig.12;
-        Mon, 31 Aug 2020 05:39:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XHCYA5oJZVhGHAJRdQttbshGXKPap8SmMFNE084zhYE=;
-        b=VYT6XBeNp9zRLQ50HIL0vTEmeNYppQdjye2UkR3aeF9g3yRTpTUtbqzJQevqcUu6vQ
-         Mkzj0ZRvw11IHhjei9JRdt/dxMrBOZRiTLT/ClLnkdmYpHbBGZMJt/cSKzA1+T9Cz1vr
-         bZPEypx+6/f+sH8GgdaXCrgGoHsedzf8eoEx6wfctKPmwZxn93Xe+AbSL4bwgCMfPs8B
-         H6jkXOE+X+nQj6fUov9AOUbXrL8i5GosIpf+n9xxPYLUo9S7oZZqh5nlIGOQ9f7sYlVl
-         2J0DEoeAee/8p0K/0tFWx1WKwFc9dGbUYGFMhkJi69EXrqsLhTKTcVUZCIsd8COkm606
-         V5tw==
-X-Gm-Message-State: AOAM532TaTZYs61YC4fq3vXoIz283xOYGDCO/Ow7fo7u7Yf+YoMoALc8
-        Rz/FSpPvVMJBaDKp8zati3ti2jyo9oGwdWAiNtc=
-X-Google-Smtp-Source: ABdhPJy6RwAQBpER2TYEns7lNicV9t7u6BkLfC4+fy0uiInktknQ2cXV1Q/3QV+Y6DhOR53T1Bl37kyVL1xOOF1r/Ug=
-X-Received: by 2002:aca:b742:: with SMTP id h63mr596268oif.148.1598877597565;
- Mon, 31 Aug 2020 05:39:57 -0700 (PDT)
+        Mon, 31 Aug 2020 08:41:55 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 9B93E9DD;
+        Mon, 31 Aug 2020 08:41:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 31 Aug 2020 08:41:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=a2/0cAti7fRZnNrhavvYmYZV37C
+        YMMnRg+cCcgtHRKo=; b=UzzPsvAT1iDQgLb9X6ty/scoPpsWFx5NmAsg96KHB8c
+        ABeck/QX3R1yJFsTgOumTOZ3OXxtXJQKbeezPJ3RPeZQqfBW1bArFMzXbJ7l96+e
+        5seLnWY5GDhq/4jaZLUrrvEGy5vShIGjIDtvaCboEzOg/jL3pk43aVrhF+/5PSt0
+        DnaJ6UhyfhLqZjg8eRfe9VTB7bs75n9Yi6f4Bxnf4fAjiXB8v0aeZgzhywRJUS86
+        Pr/UP8C6YEyaaGfM5Wha3UBS+a8xtgmH+yi8p8dXtNcPVcsqCA1SR8YpL/btRthF
+        waBcA+I+y1GxWoerUnId7qkJ5MnaWcjHe6GgyGIfyRg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=a2/0cA
+        ti7fRZnNrhavvYmYZV37CYMMnRg+cCcgtHRKo=; b=LS/LxoeTl7Yf3gMl3fRRYN
+        3onXdkKkCMkwRmpei65DGbbbpcRkAU/uQ+kMJ0PnDVgwGoGNrnJPHJL0KnxASbK+
+        mYTJzKvcKvtVU5HpFDCEdziBBIQMFGlEWa4gvf5p72No/ONC1UgOdEKuC6mpOquA
+        0ATDSF8MjgcRUQdi13J9kBx/OGgD0vOChaxBINmLZaAO5602yyk5vjZVxuV/yHEe
+        H9lDc7axjghIGsBBl86mWtIBzwrZPurunvGmKNwJqsyIW142xPSHMWdGdIqreLVu
+        6lspccLgldyRfOiHaeA2veCtsZxL2yK0vkDltgeZAAvP7Na/nR+DggX3Y+zJ0prQ
+        ==
+X-ME-Sender: <xms:DvBMXyy_aZOvBpo58GOnYw9fU1KcPYPVKSvGfwDx8DnAsd15Uzy-KQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefhedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:DvBMX-QJTnIhN6pDUF3Z5yBrFQHAmfbOjZRWsZw1bMtlDZtra2YN6Q>
+    <xmx:DvBMX0VmrZUn6Acg1u9kk78coKfgSyAufC-NDRdDQvWw1xdOOMuR0g>
+    <xmx:DvBMX4j1Nef_d-cdd0YKSdeQDo7nj6gF_fWqWh22MZ7JYGo9mI3aUA>
+    <xmx:EfBMXz7wKYi1yJHY1rljH6-cxmCmYauk9Ux76vt_HRjC7qZJ1YpUDA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 6B0D53280060;
+        Mon, 31 Aug 2020 08:41:50 -0400 (EDT)
+Date:   Mon, 31 Aug 2020 14:41:48 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Ondrej Jirman <megous@megous.com>
+Cc:     linux-sunxi@googlegroups.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Chen-Yu Tsai <wens@csie.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS FOR ALLWINNER A10" 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/sun4i: Fix dsi dcs long write function
+Message-ID: <20200831124148.wxklchu3bygnumt4@gilmour.lan>
+References: <20200828125032.937148-1-megous@megous.com>
 MIME-Version: 1.0
-References: <20200826093220.10266-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200826093220.10266-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200826093220.10266-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 31 Aug 2020 14:39:46 +0200
-Message-ID: <CAMuHMdUgjvqL8Vb8MCVaZaoOP8ELk0QB0gfsc-7XAA+=9N0jJg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ARM: multi_v7_defconfig: enable CONFIG_PCIE_RCAR_HOST
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bo4es2ituvyk4gfz"
+Content-Disposition: inline
+In-Reply-To: <20200828125032.937148-1-megous@megous.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 11:32 AM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> config option PCIE_RCAR internally selects PCIE_RCAR_HOST which builds the
-> same driver. So this patch renames CONFIG_PCIE_RCAR to
-> CONFIG_PCIE_RCAR_HOST so that PCIE_RCAR can be safely dropped from Kconfig
-> file.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+--bo4es2ituvyk4gfz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Gr{oetje,eeting}s,
+On Fri, Aug 28, 2020 at 02:50:32PM +0200, Ondrej Jirman wrote:
+> It's writing too much data. regmap_bulk_write expects number of
+> register sized chunks to write, not a byte sized length of the
+> bounce buffer. Bounce buffer needs to be padded too, so that
+> regmap_bulk_write will not read past the end of the buffer.
+>=20
+> Fixes: 133add5b5ad4 ("drm/sun4i: Add Allwinner A31 MIPI-DSI controller su=
+pport")
+> Signed-off-by: Ondrej Jirman <megous@megous.com>
+> Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-                        Geert
+Applied, thanks
+Maxime
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--bo4es2ituvyk4gfz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0zwDAAKCRDj7w1vZxhR
+xUvxAQCi4X8KG2ve/vqvH7ccu9eiejZWW3SS62xXNT3V5YX9AQEAwlCIsdLKx6kC
+h9cF4hcGyros+fqCR/D32gijLZl4BAM=
+=A4sy
+-----END PGP SIGNATURE-----
+
+--bo4es2ituvyk4gfz--
