@@ -2,126 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9DE257FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5E4257FF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgHaRpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:45:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:37338 "EHLO mga01.intel.com"
+        id S1727864AbgHaRyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:54:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726446AbgHaRpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:45:19 -0400
-IronPort-SDR: 4+pOY6XgtJz5GIYqWemHHJG51ckVZTx8t55r7HcHahSnMeJlCPUMSgSnB8p0BbqbCr4XCcpe22
- ytNZ8pEMs2BA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="175075718"
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
-   d="scan'208";a="175075718"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 10:45:18 -0700
-IronPort-SDR: 4V0HKjPMEFKjJ0dIOMZTyD7eACTRqRvtsa0jzkyZrLLFrCUNsnqyHPIMd+XP7P1heylDfFA6Ly
- bRfswT/CRLSw==
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
-   d="scan'208";a="340728810"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 10:45:17 -0700
-Date:   Mon, 31 Aug 2020 10:52:24 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v7 7/7] iommu/vt-d: Check UAPI data processed by IOMMU
- core
-Message-ID: <20200831105224.7a90ba34@jacob-builder>
-In-Reply-To: <1b131401-a9a3-3641-99cc-430d9b51efa5@redhat.com>
-References: <1596068467-49322-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1596068467-49322-8-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1b131401-a9a3-3641-99cc-430d9b51efa5@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1725993AbgHaRyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 13:54:20 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C45E220866;
+        Mon, 31 Aug 2020 17:54:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598896459;
+        bh=jFwJF6GRbBWcPLF+xYvqZWxJ4QYQVdN67yM8Mqn7oHE=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=RRG8eIbMdiFg++fde4816iN0mE5VxY814UBar2KX3anx/hIoE2ivk0ognYS0BZTqi
+         1cS/KevVMYcd0Zb6JK1z43XjWgQIZgcoBaUM+6paooHLe4hMs36z2RmS3QCMcBGQb3
+         G4l6RMKJCkttC92M98h1ylBRECf/WB+PRuIDOrXY=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A273E35230F1; Mon, 31 Aug 2020 10:54:19 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 10:54:19 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/3] RCU documentation updates for v5.10
+Message-ID: <20200831175419.GA31013@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 Aug 2020 11:19:46 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
+Hello!
 
-> Hi Jacob,
-> 
-> On 7/30/20 2:21 AM, Jacob Pan wrote:
-> > IOMMU generic layer already does sanity checks UAPI data for version
-> > match and argsz range under generic information.
-> > Remove the redundant version check from VT-d driver and check for
-> > vendor specific data size.
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>  
-> 
-> > ---
-> >  drivers/iommu/intel/iommu.c | 3 +--
-> >  drivers/iommu/intel/svm.c   | 7 +++++--
-> >  2 files changed, 6 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/intel/iommu.c
-> > b/drivers/iommu/intel/iommu.c index 021f62078f52..7e03cca31a0e
-> > 100644 --- a/drivers/iommu/intel/iommu.c
-> > +++ b/drivers/iommu/intel/iommu.c
-> > @@ -5391,8 +5391,7 @@ intel_iommu_sva_invalidate(struct
-> > iommu_domain *domain, struct device *dev, int ret = 0;
-> >  	u64 size = 0;
-> >  
-> > -	if (!inv_info || !dmar_domain ||
-> > -	    inv_info->version !=
-> > IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
-> > +	if (!inv_info || !dmar_domain)
-> >  		return -EINVAL;
-> >  
-> >  	if (!dev || !dev_is_pci(dev))
-> > diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> > index 713b3a218483..55ea11e9c0f5 100644
-> > --- a/drivers/iommu/intel/svm.c
-> > +++ b/drivers/iommu/intel/svm.c
-> > @@ -240,8 +240,11 @@ int intel_svm_bind_gpasid(struct iommu_domain
-> > *domain, struct device *dev, if (WARN_ON(!iommu) || !data)
-> >  		return -EINVAL;
-> >  
-> > -	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
-> > -	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-> > +	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
-> > +		return -EINVAL;
-> > +
-> > +	/* IOMMU core ensures argsz is more than the start of the
-> > union */
-> > +	if (data->argsz < offsetofend(struct
-> > iommu_gpasid_bind_data, vendor.vtd)) return -EINVAL;  
-> Shouldn't you test the vendor flags here?
-> intel_pasid_setup_bind_data() only checks valid ones but not ~mask.
-> 
-Yes, vendor flags should be tested to make sure there is no undefined
-flags being used.
+This series provides documentation updates.
 
-Thanks!
+1.	Fix typo in synchronize_rcu() function name.
 
-> Thanks
-> 
-> Eric
-> >  
-> >  	if (!dev_is_pci(dev))
-> >   
-> 
+2.	Drop doubled words from RCU Data-Structures.rst.
 
-[Jacob Pan]
+3.	Drop doubled words from RCU requirements documentation.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Design/Data-Structures/Data-Structures.rst |    2 +-
+ Design/Requirements/Requirements.rst       |    4 ++--
+ whatisRCU.rst                              |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
