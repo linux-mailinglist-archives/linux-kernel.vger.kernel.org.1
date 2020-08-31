@@ -2,88 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115CD257F0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 18:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B90257F13
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 18:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgHaQwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 12:52:07 -0400
-Received: from st43p00im-zteg10063501.me.com ([17.58.63.176]:36644 "EHLO
-        st43p00im-zteg10063501.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727114AbgHaQwF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 12:52:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1598892723; bh=DNlHU0ivrGOqblJBFHDGPregVjE9x7n5r3lIlIsXHf4=;
-        h=From:To:Subject:Date:Message-Id;
-        b=XVcNETxouNsi+OIlZBgotuq0RfeDZhFe3L8eE1L1w3b1aNDQrttzPrSWrgtmqoFi+
-         AAfrn4swuBGgFVg6msjLSfehdFg2Ub04+IJLJoUbrjhC/t1POsrXWni8hq7TvJxLh6
-         tg7Ef9mYUekUfI5gnMisQSmqYyF+rhtvWXaFKktKJReNqKzfnodIs9azUv8hxBbDY7
-         710PxNNkRoWaYJFICYYp5KcOHKlUhKTz27H0yw+MMXMv/6F47Ps2fQ2lezgZnOyB/b
-         V4GL1wJklbOm8zL0iC9F22IoESHic9skjAxnuFx8lLb9dzLm0qAfj6QwFlv1OrvEKP
-         ZJ/5UGB5tXhpA==
-Received: from localhost (unknown [80.214.210.192])
-        by st43p00im-zteg10063501.me.com (Postfix) with ESMTPSA id 609F6C8096A;
-        Mon, 31 Aug 2020 16:52:03 +0000 (UTC)
-From:   Alain Volmat <avolmat@me.com>
-To:     Jassi Brar <jaswinder.singh@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Patrice Chotard <patrice.chotard@st.com>, avolmat@me.com
-Subject: [PATCH] mailbox: sti: fix struct description warnings
-Date:   Mon, 31 Aug 2020 18:52:01 +0200
-Message-Id: <20200831165201.23832-1-avolmat@me.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-08-31_08:2020-08-31,2020-08-31 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=610 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2008310101
+        id S1728838AbgHaQw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 12:52:26 -0400
+Received: from mga01.intel.com ([192.55.52.88]:32509 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728772AbgHaQwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 12:52:25 -0400
+IronPort-SDR: uQmyXIbDaE76I5btjcgNkFxTP1fKaZTdxPVobPta2pd2ZBrk4qboaYcFZNqR7Qx0PIk30Bi9Ck
+ Ej+u7pulqyXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="175066387"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="175066387"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 09:52:23 -0700
+IronPort-SDR: W2+IE27pQLjMaQbC7PYHRurSpcOOAvO8WlyMWDfsKP/zKKBAXOlnNvxMwl67pea2uOmir0Z/fg
+ 4h0UqW2z0TEg==
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="476800745"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 09:52:23 -0700
+Date:   Mon, 31 Aug 2020 09:52:22 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] bio: convert get_user_pages_fast() -->
+ pin_user_pages_fast()
+Message-ID: <20200831165222.GD1422350@iweiny-DESK2.sc.intel.com>
+References: <20200831071439.1014766-1-jhubbard@nvidia.com>
+ <20200831071439.1014766-4-jhubbard@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831071439.1014766-4-jhubbard@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix formating of struct description to avoid warning highlighted
-by W=1 compilation.
+On Mon, Aug 31, 2020 at 12:14:39AM -0700, John Hubbard wrote:
+> @@ -1113,8 +1113,8 @@ int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
+>  		} else {
+>  			if (is_bvec)
+>  				ret = __bio_iov_bvec_add_pages(bio, iter);
+> -			else
+> -				ret = __bio_iov_iter_get_pages(bio, iter);
+> +		else
+> +			ret = __bio_iov_iter_get_pages(bio, iter);
 
-Fixes: 9ef4546cbd7e ("mailbox: Add support for ST's Mailbox IP")
-Signed-off-by: Alain Volmat <avolmat@me.com>
----
- drivers/mailbox/mailbox-sti.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Why the white space change?
 
-diff --git a/drivers/mailbox/mailbox-sti.c b/drivers/mailbox/mailbox-sti.c
-index 2baf69a0b81c..0f2bc09c364d 100644
---- a/drivers/mailbox/mailbox-sti.c
-+++ b/drivers/mailbox/mailbox-sti.c
-@@ -36,7 +36,7 @@
- #define MBOX_BASE(mdev, inst)   ((mdev)->base + ((inst) * 4))
- 
- /**
-- * STi Mailbox device data
-+ * struct sti_mbox_device - STi Mailbox device data
-  *
-  * An IP Mailbox is currently composed of 4 instances
-  * Each instance is currently composed of 32 channels
-@@ -60,7 +60,7 @@ struct sti_mbox_device {
- };
- 
- /**
-- * STi Mailbox platform specific configuration
-+ * struct sti_mbox_pdata - STi Mailbox platform specific configuration
-  *
-  * @num_inst:	Maximum number of instances in one HW Mailbox
-  * @num_chan:	Maximum number of channel per instance
-@@ -71,7 +71,7 @@ struct sti_mbox_pdata {
- };
- 
- /**
-- * STi Mailbox allocated channel information
-+ * struct sti_channel - STi Mailbox allocated channel information
-  *
-  * @mdev:	Pointer to parent Mailbox device
-  * @instance:	Instance number channel resides in
--- 
-2.17.1
+Ira
 
