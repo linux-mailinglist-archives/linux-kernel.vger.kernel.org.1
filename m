@@ -2,143 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1442583E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 00:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA2D2583EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 00:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730414AbgHaWG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 18:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
+        id S1730406AbgHaWII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 18:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730395AbgHaWGU (ORCPT
+        with ESMTP id S1729173AbgHaWIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 18:06:20 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0742FC061755;
-        Mon, 31 Aug 2020 15:06:19 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id e5so5963850qth.5;
-        Mon, 31 Aug 2020 15:06:18 -0700 (PDT)
+        Mon, 31 Aug 2020 18:08:06 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7435CC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 15:08:06 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q1so633200pjd.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 15:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=f06cvpi9PWuBoxMm0Gzuv9nuHcw9zMoeEWnf83uw1Mo=;
-        b=dYGwCZahF4QF7kwO9xlGvLqbRlBAYcp0VWBlaMsUJnhVmbGXW/Mx0pOvWgp3n4x39+
-         WyxSnh/ec2fzsRn3ZV77+WHdd35R3Egl2neA6TA3BkNdOU/JaNExuCAm9jTNfhVBhNhj
-         3BuiPhVS6HhevL0iAv31d+wZZKEX0fPWF/HtYkcpFO9acOg7h851geN7EerCnkCMeJjD
-         RD2Azb1tl9bZpLxRv467mFhRatm3b0uxpU3uGwJE4UPHn4sMeX8T8XaX1vFdu9VFdrZs
-         r6LcHxpdT8GaVkUq69KrKu+JSrocgwAa6qOeJ83SJQRCYYXT8P3ScSIKUrosVlD9VCe6
-         EFSQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=U4+uhTBpQ4TnYUC3EzzBpVleBFNuIQlKM1znnPHB1ac=;
+        b=pFnUe2iZ3ov4n6I4Jfr63UCW7Vt5Hu/bWRsHROs5W7Ba6/+8R2TaKQ0Ij7+5z0TvDB
+         FJk88pG+iRs9LDOyxoh1ycpMKmobBTn6W646xKcpVACyv247icoEiIzzWqD97vvbqYlB
+         0BJR3ko28RdwulkwQDmpdbfwys9NOOOgSzDex8bmKSoY2bdauLzaJPBpqmhyqs0ytQR+
+         5//3v7/Ol7Lwv6gYZz9nJx5qFMjL+A9RZqMe45sLAPbYUg4JOG7/UCcC2EoNv8cXefE7
+         wHvhVIagg6mSAVN8X6xvZoAdYESL2F/MIIupn4S2m65CnlHXGS3tq6b/aSsG+dBeKmGt
+         1nyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=f06cvpi9PWuBoxMm0Gzuv9nuHcw9zMoeEWnf83uw1Mo=;
-        b=CXpzEFvZhY3KhOa4CDLKO9LQrWCzEvQMLLuTSpOlLxJTQng9HhiCnbj17C5FfJh1/X
-         ErdhpUKHgUhfHXvARr/+BcqbrcDbiGB0bNzsng8jmShGV6Z8jgrI2R8GuLt+VsercwGY
-         wouZZSA9sGaTOmG4nbGH7kjGrbGr6l3+Bmrq/TZnpDTcNWadfeM+0RuCJyNZqeVF9Lji
-         EfkXV8/sKyZ+kWnRCkwKnmMFFEoOHHb8nRvuxzA9/QHea9Ir04k73GeSXCTS7JjCBgal
-         arFz5VugTNKhWrdlBBzLfJXKsoYoXWgKMVMW7tZIIjvPWXahWL+6U5vzT0xZZBQa+6bx
-         DKgA==
-X-Gm-Message-State: AOAM531v9G8GRI+gH3c4RmXS9MxHSYkiRBphUE67rRgKDv9yNfVmJB9V
-        B+jCBNyJ+lgIG5VMJE37PlVPV0PHF/C7/w+m
-X-Google-Smtp-Source: ABdhPJzSiuTNIbOGmR+7k+q7vYYVas6DZOv6cS0taRrbi/uRO8oxA5bhQ5v6DVEIA4ac691SF203hg==
-X-Received: by 2002:ac8:742:: with SMTP id k2mr3506683qth.101.1598911577953;
-        Mon, 31 Aug 2020 15:06:17 -0700 (PDT)
-Received: from localhost.localdomain ([190.189.67.136])
-        by smtp.gmail.com with ESMTPSA id d10sm3051232qkk.1.2020.08.31.15.06.15
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=U4+uhTBpQ4TnYUC3EzzBpVleBFNuIQlKM1znnPHB1ac=;
+        b=U0JPb0mmDOkkLz5c7jy/AamO5fPHf/apvasQvXW+jd63qn5f7BDuJh0C6MyNGmydyV
+         jly+pP85kmXaAZ1+yt8ks8Erph267AY+cocSXxYoF3xnTEDV3v3GEGg0JN7G+NXCdZWD
+         lv3cqlEVCI5rwM2HfVJtldTy7WBkOLu7XwLaAtnC4trvLRaohyaOjtdLuXVCXtCH8jy/
+         +06XTmh9WpsDcDo5gMJBy3jcr6ews2j5z1+zao5wFE4o35EfA5eMW0VCNmd9ehu6DgP+
+         xH0XCXlwiP0DOnoyljQmYrxI/tCKvikhcRrc8chH8ifWUuPj2V/F0x7+kWJeY2A2nxME
+         OFiw==
+X-Gm-Message-State: AOAM531oYMZS+b0EzBQZUEWfHwJY+XJhqf6C9hoqma9PUSvNBTJdTT6/
+        GPSs+29KiX3HXceYmuO4e42/W/avpawP8g==
+X-Google-Smtp-Source: ABdhPJzByXePJdtVOTodzmZQ6Zxp98z1V0gvKmoHZGQPzP0LKaaLv4KXbF9MwtFl+nb5KWGhON6iwQ==
+X-Received: by 2002:a17:90b:3284:: with SMTP id ks4mr1195295pjb.116.1598911685771;
+        Mon, 31 Aug 2020 15:08:05 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.39.120])
+        by smtp.gmail.com with ESMTPSA id i20sm9150452pfq.204.2020.08.31.15.08.01
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 31 Aug 2020 15:06:17 -0700 (PDT)
-From:   Santiago Hormazabal <santiagohssl@gmail.com>
-To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Santiago Hormazabal <santiagohssl@gmail.com>
-Subject: [PATCH 3/3] media: kt0913: device tree binding
-Date:   Mon, 31 Aug 2020 19:06:01 -0300
-Message-Id: <20200831220601.20794-4-santiagohssl@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200831220601.20794-1-santiagohssl@gmail.com>
-References: <20200831220601.20794-1-santiagohssl@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 31 Aug 2020 15:08:04 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     akpm@linux-foundation.org, jhubbard@nvidia.com
+Cc:     jgg@ziepe.ca, dan.j.williams@intel.com, gregkh@linuxfoundation.org,
+        arnd@arndb.de, timur@freescale.com, galak@kernel.crashing.org,
+        linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [linux-next PATCH v3] drivers/virt/fsl_hypervisor: Fix error handling path
+Date:   Tue,  1 Sep 2020 03:37:47 +0530
+Message-Id: <1598911668-6178-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document bindings for the kt0913 AM/FM radio tuner.
+First, when memory allocation for sg_list_unaligned failed, there
+is a bug of calling put_pages() as we haven't pinned any pages.
 
-Signed-off-by: Santiago Hormazabal <santiagohssl@gmail.com>
+Second, if get_user_pages_fast() failed we should unpinned num_pinned
+pages instead of checking till num_pages.
+
+This will address both.
+
+As part of these changes, minor update in documentation.
+
+Fixes: 6db7199407ca ("drivers/virt: introduce Freescale hypervisor
+management driver")
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 ---
- .../bindings/media/i2c/ktm,kt0913.yaml        | 56 +++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/ktm,kt0913.yaml
+v2:
+   Added review tag.
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/ktm,kt0913.yaml b/Documentation/devicetree/bindings/media/i2c/ktm,kt0913.yaml
-new file mode 100644
-index 000000000000..2c3d1795da43
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/ktm,kt0913.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright (c) 2020 Santiago Hormazabal <santiagohssl@gmail.com>
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/ktm,kt0913.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Device-Tree bindings for the KTMicro KT0913 FM/AM radio tuner.
-+
-+maintainers:
-+  - Santiago Hormazabal <santiagohssl@gmail.com>
-+
-+description: |-
-+  The KT0913 is a low cost, low components FM/AM radio chip.
-+  It uses the I2C protocol for operation.
-+
-+properties:
-+  compatible:
-+    const: ktm,kt0913
-+
-+  reg:
-+    description: I2C device address
-+    const: 0x35
-+
-+  ktm,anti-pop:
-+    description:  |
-+      Selects the DAC Anti-Pop capacitor. Possible values are
-+      0 thru 3, which corresponds to 100uF (default), 60uF, 20uF or 10uF.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    enum: [0, 1, 2, 3]
-+
-+  ktm,refclk:
-+    description:  |
-+      Selects the reference clock used on the KT0913. Possible
-+      values are 0 thru 9, which corresponds to 32.768kHz (default),
-+      6.5MHz, 7.6MHz, 12MHz, 13MHz, 15.2MHz, 19.2MHz, 24MHz, 26MHz, 38kHz.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    enum: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        kt0913: fm-am-tuner@35 {
-+            compatible = "ktm,kt0913";
-+            reg = <0x35>;
-+            ktm,anti-pop = <0x01>;
-+            ktm,refclk = <0x00>;
-+        };
-+    };
-+...
+v3:
+   Address review comment on v2 from John.
+   Added review tag.
+
+ drivers/virt/fsl_hypervisor.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/virt/fsl_hypervisor.c b/drivers/virt/fsl_hypervisor.c
+index 1b0b11b..efb4e7f 100644
+--- a/drivers/virt/fsl_hypervisor.c
++++ b/drivers/virt/fsl_hypervisor.c
+@@ -157,7 +157,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 
+ 	unsigned int i;
+ 	long ret = 0;
+-	int num_pinned; /* return value from get_user_pages() */
++	int num_pinned = 0; /* return value from get_user_pages_fast() */
+ 	phys_addr_t remote_paddr; /* The next address in the remote buffer */
+ 	uint32_t count; /* The number of bytes left to copy */
+ 
+@@ -174,7 +174,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 		return -EINVAL;
+ 
+ 	/*
+-	 * The array of pages returned by get_user_pages() covers only
++	 * The array of pages returned by get_user_pages_fast() covers only
+ 	 * page-aligned memory.  Since the user buffer is probably not
+ 	 * page-aligned, we need to handle the discrepancy.
+ 	 *
+@@ -224,7 +224,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 
+ 	/*
+ 	 * 'pages' is an array of struct page pointers that's initialized by
+-	 * get_user_pages().
++	 * get_user_pages_fast().
+ 	 */
+ 	pages = kcalloc(num_pages, sizeof(struct page *), GFP_KERNEL);
+ 	if (!pages) {
+@@ -241,7 +241,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 	if (!sg_list_unaligned) {
+ 		pr_debug("fsl-hv: could not allocate S/G list\n");
+ 		ret = -ENOMEM;
+-		goto exit;
++		goto free_pages;
+ 	}
+ 	sg_list = PTR_ALIGN(sg_list_unaligned, sizeof(struct fh_sg_list));
+ 
+@@ -250,7 +250,7 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 		num_pages, param.source != -1 ? FOLL_WRITE : 0, pages);
+ 
+ 	if (num_pinned != num_pages) {
+-		/* get_user_pages() failed */
++		/* get_user_pages_fast() failed */
+ 		pr_debug("fsl-hv: could not lock source buffer\n");
+ 		ret = (num_pinned < 0) ? num_pinned : -EFAULT;
+ 		goto exit;
+@@ -293,12 +293,12 @@ static long ioctl_memcpy(struct fsl_hv_ioctl_memcpy __user *p)
+ 
+ exit:
+ 	if (pages) {
+-		for (i = 0; i < num_pages; i++)
+-			if (pages[i])
+-				put_page(pages[i]);
++		for (i = 0; i < num_pinned; i++)
++			put_page(pages[i]);
+ 	}
+ 
+ 	kfree(sg_list_unaligned);
++free_pages:
+ 	kfree(pages);
+ 
+ 	if (!ret)
 -- 
-2.24.1
+1.9.1
 
