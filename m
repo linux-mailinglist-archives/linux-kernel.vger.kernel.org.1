@@ -2,124 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BD9258070
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654CF258079
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbgHaSLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:11:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729325AbgHaSL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:11:27 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E3D22151B;
-        Mon, 31 Aug 2020 18:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598897484;
-        bh=Md1F4JPJeRjrVLa/O8zZqOK+IKqCvmD2zTJEeJk3ut8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jqEr/u1O+dXKVsOTUmIwBfv416WKGJi58bEDo6EiTwcjyI12RC70aPxu7VTqlSVyp
-         Wj8chE+TKuUQQ7xBJ5SAjihTDcZtqoTZSVrHSWxFETZSDyObqQ078o7rid/JlcQahQ
-         g8KrN2YZ3gP5VCqOHWa+sSnTVdEBVtuRtwclikww=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 13/13] rcu: Remove unused "cpu" parameter from rcu_report_qs_rdp()
-Date:   Mon, 31 Aug 2020 11:11:20 -0700
-Message-Id: <20200831181120.1044-13-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200831181101.GA950@paulmck-ThinkPad-P72>
-References: <20200831181101.GA950@paulmck-ThinkPad-P72>
+        id S1729603AbgHaSMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:12:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729238AbgHaSMD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:12:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598897521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R674/72dzH0s8wu0q77/o8Nko89CHzZBE+f9ohuJkc0=;
+        b=egHM9anVIRRhUxeBtMmAlY+jVs1veaqWvrOi5OL05bw+tPwAz1cQZk8lMKgEMRiXBqIQ6r
+        JKwU0+LsTv8FMZipxplJLuPOX21fvIJgSZSpUzryvwiNzu2KyJKGmEAU5LpQp4C/Pj8M1P
+        He+Z52tv6vdftpDsdc4V/tqv3mUJA5c=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-549--_MdY09bNqK-xp1ZASBLMg-1; Mon, 31 Aug 2020 14:11:59 -0400
+X-MC-Unique: -_MdY09bNqK-xp1ZASBLMg-1
+Received: by mail-il1-f199.google.com with SMTP id m80so5708063ilb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:11:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=R674/72dzH0s8wu0q77/o8Nko89CHzZBE+f9ohuJkc0=;
+        b=M9ENJB3cubU6Aw9pOsvOlhGwNKex4DVuLuJ4lFCt+u1NBerpr702GzlwsI4jAixnuL
+         CagnCbgq9ZckMhwEbQQhtABz1EI7xzlwFVdKecrBP5tdumWp77JrXcjpH45NVU/FK8Wr
+         qt4W4rJeOjbdgCbTkH4w+XRufsbHOuNVPlDDHf59hfSWphNE1ndZocq0vIc5UlUh0Yph
+         /mMsyWqkNsV4S3ZHwC2CXEwPeldTnhqWqrlRiozBboWOMyxb3aEkwlcNq7az6ag439+H
+         +QQDt3K8sf+/X8EK21ZAtmAv4fT1oPFqjh0eubHG54XBVhlo3SiMZvhBMAat0GcGhHBQ
+         nDIw==
+X-Gm-Message-State: AOAM532yI9C7SFtGDr+sLmnixX1s8yJrDPhBkN7ct2zjGmUrk5m16Cmx
+        2N7uzOXjw9SwPW9pV8tXY6M5pRbNQmKNcZ4qSehde+gErqde3bF2c1h0cYYxbY9eLF6YyqZKg/0
+        nkDcJ4a6EnmSCQV2XrtRe0Okc
+X-Received: by 2002:a92:cd0c:: with SMTP id z12mr2310933iln.95.1598897519246;
+        Mon, 31 Aug 2020 11:11:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQnv2fWHOPseIkHEUWf3rehvfnqBXk0m4BeVGmJn1hPjW7PLrM3iOz+bnxyXwgsl/vzs1PFA==
+X-Received: by 2002:a92:cd0c:: with SMTP id z12mr2310915iln.95.1598897519033;
+        Mon, 31 Aug 2020 11:11:59 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id u4sm4405350iol.17.2020.08.31.11.11.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Aug 2020 11:11:58 -0700 (PDT)
+Subject: Re: [PATCH] media: tc358743: initialize variable
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     matrandg@cisco.com, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        p.zabel@pengutronix.de, Hans Verkuil <hans.verkuil@cisco.com>,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <20200830163043.10317-1-trix@redhat.com>
+ <CAKwvOdkvY62xVKQcVHxMTpskO=bB2sxwiOQb+TGF0-oU2Q6unA@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <23bc7c20-f736-a8fb-b89c-c9039380e55b@redhat.com>
+Date:   Mon, 31 Aug 2020 11:11:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAKwvOdkvY62xVKQcVHxMTpskO=bB2sxwiOQb+TGF0-oU2Q6unA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The "cpu" parameter to rcu_report_qs_rdp() is not used, with rdp->cpu
-being used instead.  Furtheremore, every call to rcu_report_qs_rdp()
-invokes it on rdp->cpu.  This commit therefore removes this unused "cpu"
-parameter and converts a check of rdp->cpu against smp_processor_id()
-to a WARN_ON_ONCE().
+On 8/31/20 10:31 AM, Nick Desaulniers wrote:
+> On Sun, Aug 30, 2020 at 9:30 AM <trix@redhat.com> wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> clang static analysis flags this error
+>>
+>> tc358743.c:1468:9: warning: Branch condition evaluates
+>>   to a garbage value
+>>         return handled ? IRQ_HANDLED : IRQ_NONE;
+>>                ^~~~~~~
+>> handled should be initialized to false.
+>>
+>> Fixes: d747b806abf4 ("[media] tc358743: add direct interrupt handling")
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+> I'm guessing there was more to the report that says that `handled`
+> isn't necessarily initialized along any of the paths within
+> tc358743_isr()?  But you should fix this for all callers of
+> tc358743_isr(), such as tc358743_work_i2c_poll(), not just
+> tc358743_irq_handler().
 
-Reported-by: Jann Horn <jannh@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/tree.c        | 8 ++++----
- kernel/rcu/tree_plugin.h | 4 ++--
- 2 files changed, 6 insertions(+), 6 deletions(-)
+Interesting. The static analyzer did not catch this.
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index a295cadf..c612765 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2240,7 +2240,7 @@ rcu_report_unblock_qs_rnp(struct rcu_node *rnp, unsigned long flags)
-  * structure.  This must be called from the specified CPU.
-  */
- static void
--rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
-+rcu_report_qs_rdp(struct rcu_data *rdp)
- {
- 	unsigned long flags;
- 	unsigned long mask;
-@@ -2249,6 +2249,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
- 			       rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_node *rnp;
- 
-+	WARN_ON_ONCE(rdp->cpu != smp_processor_id());
- 	rnp = rdp->mynode;
- 	raw_spin_lock_irqsave_rcu_node(rnp, flags);
- 	if (rdp->cpu_no_qs.b.norm || rdp->gp_seq != rnp->gp_seq ||
-@@ -2265,8 +2266,7 @@ rcu_report_qs_rdp(int cpu, struct rcu_data *rdp)
- 		return;
- 	}
- 	mask = rdp->grpmask;
--	if (rdp->cpu == smp_processor_id())
--		rdp->core_needs_qs = false;
-+	rdp->core_needs_qs = false;
- 	if ((rnp->qsmask & mask) == 0) {
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- 	} else {
-@@ -2315,7 +2315,7 @@ rcu_check_quiescent_state(struct rcu_data *rdp)
- 	 * Tell RCU we are done (but rcu_report_qs_rdp() will be the
- 	 * judge of that).
- 	 */
--	rcu_report_qs_rdp(rdp->cpu, rdp);
-+	rcu_report_qs_rdp(rdp);
- }
- 
- /*
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 25a676d..ca31be0 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -461,7 +461,7 @@ rcu_preempt_deferred_qs_irqrestore(struct task_struct *t, unsigned long flags)
- 	t->rcu_read_unlock_special.s = 0;
- 	if (special.b.need_qs) {
- 		if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
--			rcu_report_qs_rdp(rdp->cpu, rdp);
-+			rcu_report_qs_rdp(rdp);
- 			udelay(rcu_unlock_delay);
- 		} else {
- 			rcu_qs();
-@@ -791,7 +791,7 @@ void rcu_read_unlock_strict(void)
- 	   irqs_disabled() || preempt_count() || !rcu_state.gp_kthread)
- 		return;
- 	rdp = this_cpu_ptr(&rcu_data);
--	rcu_report_qs_rdp(rdp->cpu, rdp);
-+	rcu_report_qs_rdp(rdp);
- 	udelay(rcu_unlock_delay);
- }
- EXPORT_SYMBOL_GPL(rcu_read_unlock_strict);
--- 
-2.9.5
+I will take another.
+
+Thanks
+
+Tom
+
+>> ---
+>>  drivers/media/i2c/tc358743.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+>> index a03dcab5ce61..c724bd1591de 100644
+>> --- a/drivers/media/i2c/tc358743.c
+>> +++ b/drivers/media/i2c/tc358743.c
+>> @@ -1461,7 +1461,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
+>>  static irqreturn_t tc358743_irq_handler(int irq, void *dev_id)
+>>  {
+>>         struct tc358743_state *state = dev_id;
+>> -       bool handled;
+>> +       bool handled = false;
+>>
+>>         tc358743_isr(&state->sd, 0, &handled);
+>>
+>> --
+>> 2.18.1
+>>
+>
 
