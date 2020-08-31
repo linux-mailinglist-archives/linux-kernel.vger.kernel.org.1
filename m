@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87506257AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43052257ADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgHaNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 09:50:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgHaNuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 09:50:07 -0400
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D6936214D8;
-        Mon, 31 Aug 2020 13:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598881807;
-        bh=ztLmZ+941EYqr7AcuVlAnDkvVWFOEg0Wm9jORnDkfUk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vYV/FGnlQ06Mj/nnQX76wRgv2qFhTHS7eVvVPBLvjpO93baFcabyDVe+wYQC1Lh/9
-         /QyPf451GSDyQH6zTMXYOggTlJyPDU0J/9TRQJa1M3PVfN8lyPGbPgU2+hcUYgPH/W
-         y7q1CTt1RI1xlnnrSJpNG2oXDCfTI9ekdZZNsZj0=
-Received: by mail-ej1-f41.google.com with SMTP id b17so8570941ejq.8;
-        Mon, 31 Aug 2020 06:50:06 -0700 (PDT)
-X-Gm-Message-State: AOAM533s61NeNXu8scRgccjylTOak68a9Zn2VJZQIkNSZb9uNMIIuicN
-        RBVLcfLyHrUbPfPt9Xrmv6ymsKosp07v30cvtSY=
-X-Google-Smtp-Source: ABdhPJzSNDPf0SiyxO/14ODP0ki5tEh8fCdOy7QMsQkV/SOOG8rXrfpgfQiPmDMwBNPvJpjGjdhWCIJ1LfOLyjDXiZU=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr1217460ejx.215.1598881805398;
- Mon, 31 Aug 2020 06:50:05 -0700 (PDT)
+        id S1727902AbgHaNvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 09:51:54 -0400
+Received: from out28-76.mail.aliyun.com ([115.124.28.76]:33484 "EHLO
+        out28-76.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727824AbgHaNvs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 09:51:48 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1641472|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0633989-0.0157613-0.92084;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03308;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.IQkeIH2_1598881885;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.IQkeIH2_1598881885)
+          by smtp.aliyun-inc.com(10.147.43.230);
+          Mon, 31 Aug 2020 21:51:42 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     kishon@ti.com, vkoul@kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, christophe.jaillet@wanadoo.fr,
+        aric.pzqi@ingenic.com, dongsheng.qiu@ingenic.com,
+        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
+        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
+Subject: [PATCH v2 0/1] Use the generic PHY framework for Ingenic USB PHY.
+Date:   Mon, 31 Aug 2020 21:50:45 +0800
+Message-Id: <20200831135046.54460-1-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-References: <20200829142501.31478-1-krzk@kernel.org> <CGME20200829142607eucas1p137f06c4bac607652e972f4c49d1a9982@eucas1p1.samsung.com>
- <20200829142501.31478-10-krzk@kernel.org> <84ec0795-2b7f-adde-4277-2238cede8c24@samsung.com>
-In-Reply-To: <84ec0795-2b7f-adde-4277-2238cede8c24@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 31 Aug 2020 15:49:54 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdTz0LScEFMzJtUytHo3zHwGd=w=EOpqOc04wvoLEhchQ@mail.gmail.com>
-Message-ID: <CAJKOXPdTz0LScEFMzJtUytHo3zHwGd=w=EOpqOc04wvoLEhchQ@mail.gmail.com>
-Subject: Re: [RFT 10/10] arm64: dts: exynos: Enable Arizona interrupt
- controller in Exynos5433 TM2
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Inki Dae <inki.dae@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020 at 15:12, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->
->
-> On 29.08.2020 16:25, Krzysztof Kozlowski wrote:
-> > The Wolfson Arizona codec is interrupt controller which is required by
-> > bindings.  This fixes dtbs_check warnings like:
-> >
-> >    arch/arm64/boot/dts/exynos/exynos5433-tm2e.dt.yaml: wm5110-codec@0: 'interrupt-controller' is a required property
-> >    arch/arm64/boot/dts/exynos/exynos5433-tm2e.dt.yaml: wm5110-codec@0: '#interrupt-cells' is a required property
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
->
-> However I really wonder if it makes sense to expose this to DTS. Indeed,
-> the main MFD device of the WM5110 chip is interrupt controller, but its
-> interrupts are requested internally by the respective drivers.
+v1->v2:
+Fix bug, ".of_match_table = of_match_ptr(ingenic_usb_phy_of_matches)" is wrong
+and should be replaced with ".of_match_table = ingenic_usb_phy_of_matches".
 
-In such case maybe the schema should be updated? Feel free to send a
-follow up or a replacement patch for this one.
+周琰杰 (Zhou Yanjie) (1):
+  USB: PHY: JZ4770: Use the generic PHY framework.
 
-Best regards,
-Krzysztof
+ drivers/phy/Kconfig                                |   1 +
+ drivers/phy/Makefile                               |   1 +
+ drivers/phy/ingenic/Kconfig                        |  12 +
+ drivers/phy/ingenic/Makefile                       |   2 +
+ .../phy-jz4770.c => phy/ingenic/phy-ingenic-usb.c} | 256 ++++++++++++---------
+ drivers/usb/phy/Kconfig                            |   8 -
+ drivers/usb/phy/Makefile                           |   1 -
+ 7 files changed, 165 insertions(+), 116 deletions(-)
+ create mode 100644 drivers/phy/ingenic/Kconfig
+ create mode 100644 drivers/phy/ingenic/Makefile
+ rename drivers/{usb/phy/phy-jz4770.c => phy/ingenic/phy-ingenic-usb.c} (63%)
+
+-- 
+2.11.0
+
