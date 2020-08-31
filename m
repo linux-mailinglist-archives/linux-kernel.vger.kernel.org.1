@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C55257FB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C98257FC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 19:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728070AbgHaRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 13:39:25 -0400
-Received: from mail.parknet.co.jp ([210.171.160.6]:33976 "EHLO
-        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbgHaRjW (ORCPT
+        id S1728428AbgHaRlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 13:41:36 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34412 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728307AbgHaRlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 13:39:22 -0400
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id 1A9151B44DF;
-        Tue,  1 Sep 2020 02:39:21 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-20) with ESMTPS id 07VHdJa6366555
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 1 Sep 2020 02:39:20 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-20) with ESMTPS id 07VHdJ753466384
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 1 Sep 2020 02:39:19 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 07VHdIdG3466383;
-        Tue, 1 Sep 2020 02:39:18 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] fat: Avoid oops when bdi->io_pages==0
-References: <87ft85osn6.fsf@mail.parknet.co.jp>
-        <b4e1f741-989c-6c9d-b559-4c1ada88c499@kernel.dk>
-        <87o8mq6aao.fsf@mail.parknet.co.jp>
-        <4010690f-20ad-f7ba-b595-2e07b0fa2d94@kernel.dk>
-        <20200831165659.GH14765@casper.infradead.org>
-        <33eb2820-894e-a42f-61a5-c25bc52345d5@kernel.dk>
-Date:   Tue, 01 Sep 2020 02:39:18 +0900
-In-Reply-To: <33eb2820-894e-a42f-61a5-c25bc52345d5@kernel.dk> (Jens Axboe's
-        message of "Mon, 31 Aug 2020 11:00:14 -0600")
-Message-ID: <87d03667g9.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Mon, 31 Aug 2020 13:41:31 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VHU4sM143395;
+        Mon, 31 Aug 2020 17:41:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=sdMVqMid/g3wPdDjL6h1OE4R752vt7FE0OPwRbalVCE=;
+ b=BNO6fdnMgyfjmiTNRF8k6PUZgR777x6xOOSg9nEs/WszXWJdIeMYEf9Y99kGzFZSCW6o
+ 1F/c9kb6tEgoOhYfCONXsOM0oC9CW/iFF06vZn/oIpOkvRcXMSQwv/uuv7kMqbaIYV8G
+ FdcMQk6uMsRUKP1V7mE2naancSXErmYpBFYHT1rHLxs3qKDwy4QUbVD3T7RxBRYHd/pA
+ zYLuvivPouVo25CXJoNWRPGsM3nr8w71kY7fOdFI51lPEbuymk21f22TkcCq/xgmV4U/
+ H4tG9bi/7J9rEzzxNKcPQl2Ep/cIUXpCTE/5QkNpAN3dGOlTx4jq5geoJSR6kgKtcOga 0A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 337eykyjg7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 31 Aug 2020 17:41:23 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07VHeY3D165590;
+        Mon, 31 Aug 2020 17:41:23 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 3380x0v0u6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 17:41:23 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07VHfF7K018200;
+        Mon, 31 Aug 2020 17:41:15 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 31 Aug 2020 10:41:15 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Bradley Grove <linuxdrivers@attotech.com>,
+        linux-scsi@vger.kernel.org, Alex Dewar <alex.dewar90@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>
+Subject: Re: [PATCH] scsi: esas2r: Remove unnecessary casts
+Date:   Mon, 31 Aug 2020 13:41:02 -0400
+Message-Id: <159889566025.22322.2756105346317546336.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200820181411.866057-1-alex.dewar90@gmail.com>
+References: <20200820181411.866057-1-alex.dewar90@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1011 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008310104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
+On Thu, 20 Aug 2020 19:14:11 +0100, Alex Dewar wrote:
 
-> On 8/31/20 10:56 AM, Matthew Wilcox wrote:
->> On Mon, Aug 31, 2020 at 10:39:26AM -0600, Jens Axboe wrote:
->>> We really should ensure that ->io_pages is always set, imho, instead of
->>> having to work-around it in other spots.
->> 
->> Interestingly, there are only three places in the entire kernel which
->> _use_ bdi->io_pages.  FAT, Verity and the pagecache readahead code.
->> 
->> Verity:
->>                         unsigned long num_ra_pages =
->>                                 min_t(unsigned long, num_blocks_to_hash - i,
->>                                       inode->i_sb->s_bdi->io_pages);
->> 
->> FAT:
->>         if (ra_pages > sb->s_bdi->io_pages)
->>                 ra_pages = rounddown(ra_pages, sb->s_bdi->io_pages);
->> 
->> Pagecache:
->>         max_pages = max_t(unsigned long, bdi->io_pages, ra->ra_pages);
->> and
->>         if (req_size > max_pages && bdi->io_pages > max_pages)
->>                 max_pages = min(req_size, bdi->io_pages);
->> 
->> The funny thing is that all three are using it differently.  Verity is
->> taking io_pages to be the maximum amount to readahead.  FAT is using
->> it as the unit of readahead (round down to the previous multiple) and
->> the pagecache uses it to limit reads that exceed the current per-file
->> readahead limit (but allows per-file readahead to exceed io_pages,
->> in which case it has no effect).
->> 
->> So how should it be used?  My inclination is to say that the pagecache
->> is right, by virtue of being the most-used.
->
-> When I added ->io_pages, it was for the page cache use case. The others
-> grew after that...
+> In a number of places in esas2r_ioctl.c, the void* returned from
+> pci_alloc_consistent() is cast unnecessarily. Remove casts.
+> 
+> Issue identified with Coccinelle.
 
-FAT and pagecache usage would be similar or same purpose. The both is
-using io_pages as optimal IO size.
+Applied to 5.10/scsi-queue, thanks!
 
-In pagecache case, it uses io_pages if one request size is exceeding
-io_pages. In FAT case, there is perfect knowledge about future/total
-request size. So FAT divides request by io_pages, and adjust ra_pages
-with knowledge.
+[1/1] scsi: esas2r: Remove unnecessary casts
+      https://git.kernel.org/mkp/scsi/c/32417d7844ab
 
-I don't know about verity.
-
-Thanks.
 -- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Martin K. Petersen	Oracle Linux Engineering
