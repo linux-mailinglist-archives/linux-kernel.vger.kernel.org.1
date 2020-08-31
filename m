@@ -2,306 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB1825760C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFACB25761F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgHaJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:09:10 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53146 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727979AbgHaJJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:09:10 -0400
-IronPort-SDR: D6zlpddwxtVDG3zQ0HRKGNe7bYCF2dDqiSdeeKwq5vWaGMvEGyZpwEMarni7acYfIPWaSwbmkU
- l2NBQZAzCaxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="136987660"
-X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
-   d="scan'208";a="136987660"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 02:09:05 -0700
-IronPort-SDR: jixwEQRidF76KpFfUpVyD4e/NMvaG5C6P8VqUv0jvnsAoM6u3tBu2har0K4ncX7ynHHeAI7h7x
- j4GdB1knWwxQ==
-X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
-   d="scan'208";a="340588964"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 02:09:01 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id D20AB204F9; Mon, 31 Aug 2020 12:08:59 +0300 (EEST)
-Date:   Mon, 31 Aug 2020 12:08:59 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Yeh, Andy" <andy.yeh@intel.com>,
-        "Chiang, Alan" <alanx.chiang@intel.com>,
-        "Chen, Jason" <jasonx.z.chen@intel.com>
-Subject: Re: [PATCH 3/3] media: imx258: Get clock from device properties and
- enable it
-Message-ID: <20200831090859.GF31019@paasikivi.fi.intel.com>
-References: <20200828160053.6064-1-krzk@kernel.org>
- <20200828160053.6064-3-krzk@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200828160053.6064-3-krzk@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728444AbgHaJKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:10:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28458 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728165AbgHaJKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 05:10:06 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 07V91wx3132558;
+        Mon, 31 Aug 2020 05:09:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=LAaTEag7rfqT6w9lcK2QWR89UbUVGYDylsa7lF6cjIw=;
+ b=UZWmdfeQoqE0x29aj2NVKcoTg1HZsmPFyABaLWS0BSdsXmf2DPiM92qUF/DVUDsFY1ht
+ 36BYzw2PGlwJ541c7GpHQKNy+uyfqCXOQ3t8VAjwGgPQUjc3mOnCbqBLaFtUR1ADgZEd
+ RuF3pM2L2qUgIcCR3PktDwm3xuYFqF4bDZ119CBL42qaPTELKZK13T/Ri6bYx6Bpbrla
+ feQ898e8ROMXbSNfMm1TiPZN5wH7HpLnZR2K1y1mgbZYcFii7NeyM9K+X0ayB6ixGu5u
+ C42zUin0fpZb69J/nsdxmwuOAK8KHoFU7WpsRlLWZ10qK848+GXYhPAHL9wDoQzSkwOM sQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 338x2dgcxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 05:09:56 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 07V92Nv4133765;
+        Mon, 31 Aug 2020 05:09:55 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 338x2dgcw4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 05:09:55 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 07V8TlVg007596;
+        Mon, 31 Aug 2020 09:09:51 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 337en81yac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Aug 2020 09:09:51 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 07V99mDt29032762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Aug 2020 09:09:48 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24C4EAE051;
+        Mon, 31 Aug 2020 09:09:48 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D51DAE045;
+        Mon, 31 Aug 2020 09:09:47 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.40.55])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Aug 2020 09:09:47 +0000 (GMT)
+From:   Pierre Morel <pmorel@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     pasic@linux.ibm.com, borntraeger@de.ibm.com, frankja@linux.ibm.com,
+        mst@redhat.com, jasowang@redhat.com, cohuck@redhat.com,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, thomas.lendacky@amd.com,
+        david@gibson.dropbear.id.au, linuxram@us.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: [PATCH v10 0/2] s390: virtio: let arch validate VIRTIO features
+Date:   Mon, 31 Aug 2020 11:09:44 +0200
+Message-Id: <1598864986-13875-1-git-send-email-pmorel@linux.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-08-31_01:2020-08-28,2020-08-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ suspectscore=1 bulkscore=0 spamscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008310051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi all,
 
-Thanks for the patchset.
+The goal of the series is to give a chance to the architecture
+to validate VIRTIO device features.
 
-On Fri, Aug 28, 2020 at 06:00:53PM +0200, Krzysztof Kozlowski wrote:
-> The IMX258 sensor driver checked in device properties for a
-> clock-frequency property which actually does not mean that the clock is
-> really running such frequency or is it even enabled.
-> 
-> Get the provided clock and check it frequency.  If none is provided,
-> fall back to old property.
-> 
-> Enable the clock when accessing the IMX258 registers and when streaming
-> starts.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/media/i2c/imx258.c | 107 ++++++++++++++++++++++++++++++-------
->  1 file changed, 87 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-> index c20bac9b00ec..4d763dcabb1d 100644
-> --- a/drivers/media/i2c/imx258.c
-> +++ b/drivers/media/i2c/imx258.c
-> @@ -2,6 +2,7 @@
->  // Copyright (C) 2018 Intel Corporation
->  
->  #include <linux/acpi.h>
-> +#include <linux/clk.h>
->  #include <linux/delay.h>
->  #include <linux/i2c.h>
->  #include <linux/module.h>
-> @@ -68,6 +69,9 @@
->  #define REG_CONFIG_MIRROR_FLIP		0x03
->  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
->  
-> +/* Input clock frequency in Hz */
-> +#define IMX258_INPUT_CLOCK_FREQ		19200000
-> +
->  struct imx258_reg {
->  	u16 address;
->  	u8 val;
-> @@ -610,6 +614,8 @@ struct imx258 {
->  
->  	/* Streaming on/off */
->  	bool streaming;
-> +
-> +	struct clk *clk;
->  };
->  
->  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
-> @@ -747,6 +753,12 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
->  	if (pm_runtime_get_if_in_use(&client->dev) == 0)
->  		return 0;
->  
-> +	ret = clk_prepare_enable(imx258->clk);
-> +	if (ret) {
-> +		dev_err(&client->dev, "failed to enable clock\n");
-> +		goto out;
-> +	}
-> +
->  	switch (ctrl->id) {
->  	case V4L2_CID_ANALOGUE_GAIN:
->  		ret = imx258_write_reg(imx258, IMX258_REG_ANALOG_GAIN,
-> @@ -779,6 +791,8 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
->  		break;
->  	}
->  
-> +out:
-> +	clk_disable_unprepare(imx258->clk);
->  	pm_runtime_put(&client->dev);
->  
->  	return ret;
-> @@ -972,10 +986,40 @@ static int imx258_stop_streaming(struct imx258 *imx258)
->  	return 0;
->  }
->  
-> +static int imx258_power_on(struct imx258 *imx258)
-> +{
-> +	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
-> +	int ret;
-> +
-> +	ret = pm_runtime_get_sync(&client->dev);
-> +	if (ret < 0)
-> +		goto err;
+The tests are back to virtio_finalize_features.
 
-Please continue to use runtime PM directly, and move the clock control to
-runtime PM callbacks (apart from probe and remove).
+No more argument for the architecture callback which only reports
+if the architecture needs guest memory access restrictions for
+VIRTIO.
 
-> +
-> +	ret = clk_prepare_enable(imx258->clk);
-> +	if (ret) {
-> +		dev_err(&client->dev, "failed to enable clock\n");
-> +		goto err;
-> +	}
-> +
-> +	return 0;
-> +
-> +err:
-> +	pm_runtime_put_noidle(&client->dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void imx258_power_off(struct imx258 *imx258)
-> +{
-> +	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
-> +
-> +	clk_disable_unprepare(imx258->clk);
-> +	pm_runtime_put(&client->dev);
-> +}
-> +
->  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
->  {
->  	struct imx258 *imx258 = to_imx258(sd);
-> -	struct i2c_client *client = v4l2_get_subdevdata(sd);
->  	int ret = 0;
->  
->  	mutex_lock(&imx258->mutex);
-> @@ -985,11 +1029,9 @@ static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
->  	}
->  
->  	if (enable) {
-> -		ret = pm_runtime_get_sync(&client->dev);
-> -		if (ret < 0) {
-> -			pm_runtime_put_noidle(&client->dev);
-> +		ret = imx258_power_on(imx258);
-> +		if (ret < 0)
->  			goto err_unlock;
-> -		}
->  
->  		/*
->  		 * Apply default & customized values
-> @@ -997,10 +1039,10 @@ static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
->  		 */
->  		ret = imx258_start_streaming(imx258);
->  		if (ret)
-> -			goto err_rpm_put;
-> +			goto err_power_off;
->  	} else {
->  		imx258_stop_streaming(imx258);
-> -		pm_runtime_put(&client->dev);
-> +		imx258_power_off(imx258);
->  	}
->  
->  	imx258->streaming = enable;
-> @@ -1008,8 +1050,8 @@ static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
->  
->  	return ret;
->  
-> -err_rpm_put:
-> -	pm_runtime_put(&client->dev);
-> +err_power_off:
-> +	imx258_power_off(imx258);
->  err_unlock:
->  	mutex_unlock(&imx258->mutex);
->  
-> @@ -1201,21 +1243,41 @@ static int imx258_probe(struct i2c_client *client)
->  	int ret;
->  	u32 val = 0;
->  
-> -	device_property_read_u32(&client->dev, "clock-frequency", &val);
-> -	if (val != 19200000)
-> -		return -EINVAL;
-> +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-> +	if (!imx258)
-> +		return -ENOMEM;
-> +
-> +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
-> +	if (!imx258->clk) {
-> +		dev_info(&client->dev, "no clock provided, using clock-frequency property\n");
-> +
-> +		device_property_read_u32(&client->dev, "clock-frequency", &val);
-> +		if (val != IMX258_INPUT_CLOCK_FREQ)
-> +			return -EINVAL;
-> +	} else if (IS_ERR(imx258->clk)) {
-> +		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk), "error getting clock\n");
-> +	} else {
-> +		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
-> +			dev_err(&client->dev, "input clock frequency not supported\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +		ret = clk_prepare_enable(imx258->clk);
-> +		if (ret) {
-> +			dev_err(&client->dev, "failed to enable clock\n");
-> +			return ret;
-> +		}
-> +	}
->  
->  	/*
->  	 * Check that the device is mounted upside down. The driver only
->  	 * supports a single pixel order right now.
->  	 */
->  	ret = device_property_read_u32(&client->dev, "rotation", &val);
-> -	if (ret || val != 180)
-> -		return -EINVAL;
-> -
-> -	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
-> -	if (!imx258)
-> -		return -ENOMEM;
-> +	if (ret || val != 180) {
-> +		ret = -EINVAL;
-> +		goto error_prop_read;
-> +	}
->  
->  	/* Initialize subdev */
->  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
-> @@ -1223,14 +1285,14 @@ static int imx258_probe(struct i2c_client *client)
->  	/* Check module identity */
->  	ret = imx258_identify_module(imx258);
->  	if (ret)
-> -		return ret;
-> +		goto error_prop_read;
->  
->  	/* Set default mode to max resolution */
->  	imx258->cur_mode = &supported_modes[0];
->  
->  	ret = imx258_init_controls(imx258);
->  	if (ret)
-> -		return ret;
-> +		goto error_prop_read;
->  
->  	/* Initialize subdev */
->  	imx258->sd.internal_ops = &imx258_internal_ops;
-> @@ -1252,8 +1314,13 @@ static int imx258_probe(struct i2c_client *client)
->  	pm_runtime_enable(&client->dev);
->  	pm_runtime_idle(&client->dev);
->  
-> +	clk_disable_unprepare(imx258->clk);
-> +
->  	return 0;
->  
-> +error_prop_read:
-> +	clk_disable_unprepare(imx258->clk);
 
-How about remove? Think of how this works when runtime PM is disabled.
+I renamed the callback to arch_has_restricted_virtio_memory_access,
+and the config option to ARCH_HAS_RESTRICTED_VIRTIO_MEMORY_ACCESS.
 
-> +
->  error_media_entity:
->  	media_entity_cleanup(&imx258->sd.entity);
->  
+Regards,
+Pierre
+
+Pierre Morel (2):
+  virtio: let arch advertise guest's memory access restrictions
+  s390: virtio: PV needs VIRTIO I/O device protection
+
+ arch/s390/Kconfig             |  1 +
+ arch/s390/mm/init.c           | 10 ++++++++++
+ drivers/virtio/Kconfig        |  6 ++++++
+ drivers/virtio/virtio.c       | 15 +++++++++++++++
+ include/linux/virtio_config.h |  9 +++++++++
+ 5 files changed, 41 insertions(+)
 
 -- 
-Kind regards,
+2.25.1
 
-Sakari Ailus
+Changelog
+
+to v10:
+- removed virtio_config.h unnecessary include
+- wording
+  (Connie)
+
+to v9:
+
+- move virtio tests back to virtio_finalize_features
+  (Connie)
+
+- remove virtio device argument
+
+to v8:
+
+- refactoring by using an optional callback
+  (Connie)
+
+to v7:
+
+- typo in warning message
+  (Connie)
+to v6:
+
+- rewording warning messages
+  (Connie, Halil)
+
+to v5:
+
+- return directly from S390 arch_validate_virtio_features()
+  when the guest is not protected.
+  (Connie)
+
+- Somme rewording
+  (Connie, Michael)
+
+- moved back code from arch/s390/ ...kernel/uv.c to ...mm/init.c
+  (Christian)
+
+to v4:
+
+- separate virtio and arch code
+  (Pierre)
+
+- moved code from arch/s390/mm/init.c to arch/s390/kernel/uv.c
+  (as interpreted from Heiko's comment)
+
+- moved validation inside the arch code
+  (Connie)
+
+- moved the call to arch validation before VIRTIO_F_1 test
+  (Michael)
+
+to v3:
+
+- add warning
+  (Connie, Christian)
+
+- add comment
+  (Connie)
+
+- change hook name
+  (Halil, Connie)
+
+to v2:
+
+- put the test in virtio_finalize_features()
+  (Connie)
+
+- put the test inside VIRTIO core
+  (Jason)
+
+- pass a virtio device as parameter
+  (Halil)
+
+
