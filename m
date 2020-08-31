@@ -2,96 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6DC257D2E
+	by mail.lfdr.de (Postfix) with ESMTP id E813C257D30
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgHaPe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729243AbgHaPem (ORCPT
+        id S1729258AbgHaPfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:35:11 -0400
+Received: from mail.efficios.com ([167.114.26.124]:45058 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbgHaPfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:34:42 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82095C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 08:34:42 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id d27so5030142qtg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 08:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iAMba//TxGLvi6KI3uMlOLBajkxl3K8BsmpgOVTnGqo=;
-        b=dB+PP0hQuSQ4ZE8AxL4ua78XiDhRqJG+WP1QgDTe/7c5TwCAzrVzmTcZGZSf6OldPO
-         WhDPMFpalcHqA0Qy776ZtI2GCBleXbcTKWEeg+/P7tf79mIOdsk5KvaH56H6lMdNFH1G
-         D+9ObvHehoceRDcgZ2Wet7VH/JvWFMPHflij80ZGdza/uj2fFTmVdwECA4UCfeOB/kMk
-         IhyLkwb7T+jZ0oUjKnX/7V4TaRMIT34uyoJ0eclyBj4w5xoCFv2jzuc7R6I/oryZMf8x
-         Cquly/geUjK1wp/F6ogLCRFLExLLC45L2AVHs95WZlyrIW7Cn3H8SqyD15vc9KOuN08M
-         Ca9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iAMba//TxGLvi6KI3uMlOLBajkxl3K8BsmpgOVTnGqo=;
-        b=re7mnbpXF7inaUGwvPRcHEuAs8AOwDMEZVi1UptblJxYOQonmv2r3WtmVSGmBVDnpy
-         KkQwh6TnxOrRA390oQSc94muX4mWgIdR1CZU7dEwrmN39LngL5ZpGj8SS99xSZ2NR53s
-         Oj+1TrPKjQ2Oy+eP2anMB0gPl62dz8DJUK9Isj06iDmcPqvO5Kwnv6soJIlE2zuMgfBx
-         aM9PAI+55bYC6UANjr+1A6A9++fGdgU/FmX7bo9LwEXhY5ImZWXFJztsCY3X8WdIjxn7
-         If1+Ff6ndclIu+SOWzLB96v85cC0b5AXDFp/reOZ8UsZWacK7Pa88B4+6y1IigPCfol5
-         f8Gw==
-X-Gm-Message-State: AOAM533iZpb27kaxgQKvYAq1pr6fp0HQ1Wn66cW13XY5EOfkQmX/7KYM
-        ejeI4WTjn3cBB9AoiJnCVP9Mgw==
-X-Google-Smtp-Source: ABdhPJxUTXkZenE7cBleXw6w+N0DnPg9wNGzSw1MSkAiXkrts3H3PIrQrcMTQoG+i4ivWGAfZjhflw==
-X-Received: by 2002:ac8:72da:: with SMTP id o26mr1887711qtp.266.1598888081636;
-        Mon, 31 Aug 2020 08:34:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id x13sm10404428qts.23.2020.08.31.08.34.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 08:34:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kClpQ-002mCz-C7; Mon, 31 Aug 2020 12:34:40 -0300
-Date:   Mon, 31 Aug 2020 12:34:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Cengiz Can <cengiz@kernel.wtf>
-Cc:     Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] infiniband: remove unnecessary fallthrough usage
-Message-ID: <20200831153440.GA24045@ziepe.ca>
-References: <20200831153033.113952-1-cengiz@kernel.wtf>
+        Mon, 31 Aug 2020 11:35:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 562C21CD4BA;
+        Mon, 31 Aug 2020 11:34:59 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Vx6_xCq9ojVR; Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D8B431CD270;
+        Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D8B431CD270
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1598888098;
+        bh=2Mam6DCLSCuSURMpjNaNaU52T6GrKrgXhYodBd4J1GU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=NcchU9d9SZZg7LMgNSKDxZ+MXG8ran11AWQhGfpbNbuQUFEqRu5baTOurx+zAnFjt
+         SfhOx3VEBdOBnEi8jku4lBY3tfZqUlQokmdIY/HyTMZy1OeFe3IvCcH5k9R+gBSJyR
+         0KR51a6Z1JGaI0OZ97LuY2AMRjWE/teYijeOmDfYkdTU5QK799v21GJP4mU+s6AWnv
+         JZcth9mfbgCZ84eNVoZl80E0jZqTjeD3RCvLbYRPuNl3NDo+970q0u0+KqD8fTmqwa
+         kzACbCdIZ7994FzDDCaBfCGXH6NZSys3uwt0lCw6cox4M4F7nzwt0FBC1Ipx+K7hc4
+         AZcU4pbmFu+5g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Xw98-Ow0WDcx; Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id BDF5E1CD0DE;
+        Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
+Date:   Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Oskolkov <posk@google.com>
+Cc:     paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul Turner <pjt@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Peter Oskolkov <posk@posk.io>
+Message-ID: <2086453141.23738.1598888098693.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200826230225.3782486-1-posk@google.com>
+References: <20200826230225.3782486-1-posk@google.com>
+Subject: Re: [PATCH 1/2 v5] rseq/membarrier: add
+ MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831153033.113952-1-cengiz@kernel.wtf>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3953)
+Thread-Topic: rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+Thread-Index: r7ar8Clu9Qv76aXZZzDu5muK3/7YYw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 06:30:34PM +0300, Cengiz Can wrote:
-> Since /* fallthrough */ comments are deprecated[1], they are being replaced
-> by new 'fallthrough' pseudo-keyword.
-> 
-> [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?\
->         highlight=fallthrough#implicit-switch-case-fall-through
-> 
-> This sometimes leads to unreachable code warnings by static analyzers,
-> particularly in this case, Coverity Scanner. (CID 1466512)
-> 
-> Remove unnecessary 'fallthrough' keywords to prevent dead code
-> warnings.
-> 
-> Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-> ---
->  drivers/infiniband/hw/qib/qib_mad.c | 2 --
->  1 file changed, 2 deletions(-)
 
-Alex beat you to it:
 
-https://patchwork.kernel.org/patch/11736039/
+----- On Aug 26, 2020, at 7:02 PM, Peter Oskolkov posk@google.com wrote:
+[...]
+> 
+> static void ipi_mb(void *info)
+> {
+> +#ifdef CONFIG_RSEQ
+> +	int *flags = info;
+> +
+> +	if (flags && (*flags == MEMBARRIER_FLAG_RSEQ))
+> +		rseq_preempt(current);
+> +#endif
+
+Please lift this into a new ipi_rseq(), which will be defined as an empty function
+if RSEQ is not defined.
+
+
+> 	smp_mb();	/* IPIs should be serializing but paranoid. */
+> }
+> 
+> @@ -129,19 +143,26 @@ static int membarrier_global_expedited(void)
+> 	return 0;
+> }
+> 
+> -static int membarrier_private_expedited(int flags)
+> +static int membarrier_private_expedited(int flags, int cpu_id)
+> {
+> 	int cpu;
+> 	cpumask_var_t tmpmask;
+> 	struct mm_struct *mm = current->mm;
+> 
+> -	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
+> +	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+
+I'm not sure why we need to change the behavior from a mask on flags to
+an equality, which means this behaves more like a list of items rather
+than flags.
+
+It's one thing to disallow combining things like SYNC_CORE and RSEQ in the
+ABI, but I wonder why we need to change the flags behavior to an equality
+for the internal flags.
+
+> 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+> 			return -EINVAL;
+> 		if (!(atomic_read(&mm->membarrier_state) &
+> 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+> 			return -EPERM;
+> +	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
+> +		if (!IS_ENABLED(CONFIG_RSEQ))
+> +			return -EINVAL;
+> +		if (!(atomic_read(&mm->membarrier_state) &
+> +		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY))
+> +			return -EPERM;
+> 	} else {
+> +		BUG_ON(flags != 0);
+> 		if (!(atomic_read(&mm->membarrier_state) &
+> 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY))
+> 			return -EPERM;
+> @@ -174,6 +195,8 @@ static int membarrier_private_expedited(int flags)
+> 		 */
+> 		if (cpu == raw_smp_processor_id())
+> 			continue;
+> +		if (cpu_id >= 0 && cpu != cpu_id)
+> +			continue;
+
+When the cpu is specified, it seems rather inefficient to iterate on all
+cpus to skip all but the one we are looking for. I suspect we don't want
+to go through the loop in that case.
+
+> 		p = rcu_dereference(cpu_rq(cpu)->curr);
+> 		if (p && p->mm == mm)
+> 			__cpumask_set_cpu(cpu, tmpmask);
+> @@ -181,7 +204,7 @@ static int membarrier_private_expedited(int flags)
+> 	rcu_read_unlock();
+> 
+> 	preempt_disable();
+> -	smp_call_function_many(tmpmask, ipi_mb, NULL, 1);
+> +	smp_call_function_many(tmpmask, ipi_mb, &flags, 1);
+> 	preempt_enable();
+> 
+> 	free_cpumask_var(tmpmask);
+> @@ -283,11 +306,18 @@ static int membarrier_register_private_expedited(int
+> flags)
+> 	    set_state = MEMBARRIER_STATE_PRIVATE_EXPEDITED,
+> 	    ret;
+> 
+> -	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
+> +	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+
+Same comment about changing this internal flags behavior from mask to equality.
+
+> 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+> 			return -EINVAL;
+> 		ready_state =
+> 			MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY;
+> +	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
+> +		if (!IS_ENABLED(CONFIG_RSEQ))
+> +			return -EINVAL;
+> +		ready_state =
+> +			MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY;
+> +	} else {
+> +		BUG_ON(flags != 0);
+> 	}
+> 
+> 	/*
+> @@ -299,6 +329,8 @@ static int membarrier_register_private_expedited(int flags)
+> 		return 0;
+> 	if (flags & MEMBARRIER_FLAG_SYNC_CORE)
+> 		set_state |= MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE;
+> +	if (flags & MEMBARRIER_FLAG_RSEQ)
+> +		set_state |= MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ;
+
+This one still behaves like a mask, so there is a discrepancy between registration
+and action functions.
+
+> 	atomic_or(set_state, &mm->membarrier_state);
+> 	ret = sync_runqueues_membarrier_state(mm);
+> 	if (ret)
+> @@ -310,8 +342,15 @@ static int membarrier_register_private_expedited(int flags)
+> 
+> /**
+>  * sys_membarrier - issue memory barriers on a set of threads
+> - * @cmd:   Takes command values defined in enum membarrier_cmd.
+> - * @flags: Currently needs to be 0. For future extensions.
+> + * @cmd:    Takes command values defined in enum membarrier_cmd.
+> + * @flags:  Currently needs to be 0 for all commands other than
+> + *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ: in the latter
+> + *          case it can be MEMBARRIER_CMD_FLAG_CPU, indicating that @cpu_id
+> + *          contains the CPU on which to interrupt (= restart)
+> + *          the RSEQ critical section.
+> + * @cpu_id: if @flags == MEMBARRIER_CMD_FLAG_CPU, indicates the cpu on which
+> + *          RSEQ CS should be interrupted (@cmd must be
+> + *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ).
+>  *
+>  * If this system call is not implemented, -ENOSYS is returned. If the
+>  * command specified does not exist, not available on the running
+> @@ -337,9 +376,9 @@ static int membarrier_register_private_expedited(int flags)
+>  *        smp_mb()           X           O            O
+>  *        sys_membarrier()   O           O            O
+>  */
+> -SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+> +SYSCALL_DEFINE3(membarrier, int, cmd, int, flags, int, cpu_id)
+> {
+> -	if (unlikely(flags))
+> +	if (unlikely(flags) && cmd != MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
+
+I would prefer that we deal with flags and cpu_id entirely here rather than
+half here, half below, with e.g.:
+
+switch (cmd) {
+case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
+    if (unlikely(flags && flags != MEMBARRIER_CMD_FLAG_CPU))
+        return -EINVAL;
+    break;
+default:
+    if (unlikely(flags))
+        return -EINVAL;
+}
+
+if (!(flags & MEMBARRIER_CMD_FLAG_CPU))
+    cpu_id = -1;
+
+> 		return -EINVAL;
+> 	switch (cmd) {
+> 	case MEMBARRIER_CMD_QUERY:
+> @@ -362,13 +401,21 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
+> 	case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
+> 		return membarrier_register_global_expedited();
+> 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
+> -		return membarrier_private_expedited(0);
+> +		return membarrier_private_expedited(0, -1);
+
+We can then change the -1 for cpu_id here.
+
+> 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
+> 		return membarrier_register_private_expedited(0);
+> 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
+> -		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+> +		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE, -1);
+
+And here.
+
+> 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
+> 		return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
+> +	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
+> +		if (flags == 0)
+> +			return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, -1);
+> +		if (flags == MEMBARRIER_CMD_FLAG_CPU)
+> +			return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, cpu_id);
+> +		return -EINVAL;
+
+and here we can just call:
+
+   return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, cpu_id);
 
 Thanks,
-Jason
+
+Mathieu
+
+> +	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
+> +		return membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ);
+> 	default:
+> 		return -EINVAL;
+> 	}
+> --
+> 2.28.0.297.g1956fa8f8d-goog
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
