@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473FF257999
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59B925799F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgHaMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 08:45:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgHaMpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:45:38 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15F222068E;
-        Mon, 31 Aug 2020 12:45:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598877937;
-        bh=e5EIMOJeKMi9b6keZiVq/cO923LLR8io6+rzRzIKcFM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bldEqf0IwY78tuQzH3HT5Hrfjo28N/H8Q7/wuilbVU9t+aVahDJqsRbVSiM12Qbp2
-         KxehqKFpG2TUHAUYdOaG64j5AYhIeHtMzTaa8lldq649M9dgPBCNI1t3A3OhwQELQc
-         rA+aZI3PWIiYAj81OxuvAK1pNyHniZtIZ3iLE57M=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH 1/6] kprobes: tracing/kprobes: Fix to kill kprobes on initmem after boot
-Date:   Mon, 31 Aug 2020 21:45:34 +0900
-Message-Id: <159887793377.1330989.1807362919167072561.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <159887792384.1330989.5993224243767476896.stgit@devnote2>
-References: <159887792384.1330989.5993224243767476896.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1727883AbgHaMqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgHaMqA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 08:46:00 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15F6C061573;
+        Mon, 31 Aug 2020 05:45:59 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id nv17so3082616pjb.3;
+        Mon, 31 Aug 2020 05:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pa6JcLul+a6lE0D1xdaF9TYM4EfgCjAor7g5z7fUwhk=;
+        b=B8RMICeUUT2UI+437Vp/yRQTeZCUVfXHdJOIZIuWk0sy8oxdgge4Ozr3ka8okAg74m
+         hr1G0wYveXi0hQlsQB+qz9N0Suj1KdKavvHUDnMpud/P0SW2Z6aXcXhdnPCSX4TN5b6p
+         aM/MfBCJ1LvhVPYJzjmeL5nddpOdiuwDvKmS33zODu8eFo7CNUPLTfD9WJFla7tEjbwr
+         dkbA8ngHAFKIEPd3pGaWK0DAo3d6r3HfdmDuC4PFKzoFmwIyAgmZ6KvsL/rfyULCSdFl
+         bXvO0gLiQuhnW6IR43V/UTh4P6mYRkIGR+8kmNRMmhgwg/wVqOU1q2sfhsn4rjO7Jrsv
+         fJ0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pa6JcLul+a6lE0D1xdaF9TYM4EfgCjAor7g5z7fUwhk=;
+        b=bSwU/oHze+itdWnKXHmVeKZSEDBmeYEOU65LWKjbufV8IDn7si6fhvc0b35kTxqfK8
+         EJDzIAEw9EUqFU8NlmVbYv5Go9Lnoi+RNgv0ocBIhIhRmq1vj8w3OV8dfJQ0CBx+AaOA
+         47z/nyk+vHMOaq2tAQN963jNBeHbi2EP2nj8ti7aM68mMQvQLSy7dt+K8iVldKkRNrMp
+         UO6dKpphY9DB5lL9JSan2oSWL3HgWFoO+6+43JcQ2xv9NqsfmJFDGtXziD3hVWxyjOeO
+         +ZkdJA2F7VIjshe5C83a++xYnxwlEH1pWO4FXlKAtPC9SPiy4nLRfl5jhQEaHR8VUXLG
+         lKNg==
+X-Gm-Message-State: AOAM532VQu4RJdsldhye7Eb3jxHzMaj5+E7IcU5Wb/3+2fEQBUUTpdIm
+        YxeijUCDgf0D7gaAiLhuJpw3rholHffj4S7RJj4=
+X-Google-Smtp-Source: ABdhPJywKdmDfUuf9QY9ZvDBz7C0v4U1PQVaeuyyFA0xhSBtfgBnIYIFptTzhuSUt68hsPxDIkvTrWz1D9H4SkNQ1wE=
+X-Received: by 2002:a17:90a:2c06:: with SMTP id m6mr1261475pjd.129.1598877959382;
+ Mon, 31 Aug 2020 05:45:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20200824054347.3805-1-william.sung@advantech.com.tw>
+ <CAHp75VeZLPR02xB2XRzec5mSBvq93XYZg56OOODxpFTPva6cXw@mail.gmail.com> <CAFv23QmDwcrdxEndH=mKMAomzt9kxG_f1Z6=Fd8iuuvCoY92SA@mail.gmail.com>
+In-Reply-To: <CAFv23QmDwcrdxEndH=mKMAomzt9kxG_f1Z6=Fd8iuuvCoY92SA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 31 Aug 2020 15:45:42 +0300
+Message-ID: <CAHp75Vcup9LUk0fgjW9T2FK-K5GD3=3ycPHi74Oykc8rq_tJqA@mail.gmail.com>
+Subject: Re: [PATCH] iio: dac: ad5593r: Dynamically set AD5593R channel modes
+To:     AceLan Kao <acelan.kao@canonical.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     William Sung <william.sung@advantech.com.tw>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Campion Kang <Campion.Kang@advantech.com.tw>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since kprobe_event= cmdline option allows user to put kprobes on the
-functions in initmem, kprobe has to make such probes gone after boot.
-Currently the probes on the init functions in modules will be handled
-by module callback, but the kernel init text isn't handled.
-Without this, kprobes may access non-exist text area to disable or
-remove it.
+On Mon, Aug 31, 2020 at 2:28 PM AceLan Kao <acelan.kao@canonical.com> wrote:
+> This patch is mainly for Advantech's UNO-420[1] which is a x86-based platform.
+> This platform is more like a development platform for customers to
+> customize their products,
+> so, specify the channel modes in ACPI table is not generic enough,
+> that's why William submit this patch.
+>
+> Are there other ways to specify or pass values to the module without
+> using module parameters?
+> It's good if we can leverage sysfs, but I don't know if there is one
+> for this scenario.
 
-Fixes: 970988e19eb0 ("tracing/kprobe: Add kprobe_event= boot parameter")
-Cc: stable@vger.kernel.org
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- include/linux/kprobes.h |    5 +++++
- init/main.c             |    2 ++
- kernel/kprobes.c        |   22 ++++++++++++++++++++++
- 3 files changed, 29 insertions(+)
+Can we provide DT bindings for that and use then in ACPI? ACPI has a
+possibility to reuse DT properties and compatible strings [1]. As far
+as I can see the driver uses fwnode API, so it supports ACPI case
+already [2]. So, what prevents you to utilize 'adi,mode' property?
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 9be1bff4f586..8aab327b5539 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -373,6 +373,8 @@ void unregister_kretprobes(struct kretprobe **rps, int num);
- void kprobe_flush_task(struct task_struct *tk);
- void recycle_rp_inst(struct kretprobe_instance *ri, struct hlist_head *head);
- 
-+void kprobe_free_init_mem(void);
-+
- int disable_kprobe(struct kprobe *kp);
- int enable_kprobe(struct kprobe *kp);
- 
-@@ -435,6 +437,9 @@ static inline void unregister_kretprobes(struct kretprobe **rps, int num)
- static inline void kprobe_flush_task(struct task_struct *tk)
- {
- }
-+static inline void kprobe_free_init_mem(void)
-+{
-+}
- static inline int disable_kprobe(struct kprobe *kp)
- {
- 	return -ENOSYS;
-diff --git a/init/main.c b/init/main.c
-index ae78fb68d231..038128b2a755 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -33,6 +33,7 @@
- #include <linux/nmi.h>
- #include <linux/percpu.h>
- #include <linux/kmod.h>
-+#include <linux/kprobes.h>
- #include <linux/vmalloc.h>
- #include <linux/kernel_stat.h>
- #include <linux/start_kernel.h>
-@@ -1402,6 +1403,7 @@ static int __ref kernel_init(void *unused)
- 	kernel_init_freeable();
- 	/* need to finish all async __init code before freeing the memory */
- 	async_synchronize_full();
-+	kprobe_free_init_mem();
- 	ftrace_free_init_mem();
- 	free_initmem();
- 	mark_readonly();
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 287b263c9cb9..48747bd60295 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2726,6 +2726,28 @@ static int disarm_all_kprobes(void)
- 	return ret;
- }
- 
-+void kprobe_free_init_mem(void)
-+{
-+	void *start = (void *)(&__init_begin);
-+	void *end = (void *)(&__init_end);
-+	struct hlist_head *head;
-+	struct kprobe *p;
-+	int i;
-+
-+	mutex_lock(&kprobe_mutex);
-+
-+	/* Kill all kprobes on initmem */
-+	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
-+		head = &kprobe_table[i];
-+		hlist_for_each_entry(p, head, hlist) {
-+			if (start <= (void *)p->addr && (void *)p->addr < end)
-+				kill_kprobe(p);
-+		}
-+	}
-+
-+	mutex_unlock(&kprobe_mutex);
-+}
-+
- /*
-  * XXX: The debugfs bool file interface doesn't allow for callbacks
-  * when the bool state is switched. We can reuse that facility when
+Also, we accept examples of ASL excerpt in meta-acpi project [3]. It
+has already plenty of examples [4] how to use PRP0001 for DIY /
+development boards.
 
+So, take all together I think this patch is simple redundant.
+
+[1]: https://www.kernel.org/doc/html/latest/firmware-guide/acpi/enumeration.html#device-tree-namespace-link-device-id
+[2]: https://elixir.bootlin.com/linux/v5.9-rc3/source/Documentation/devicetree/bindings/iio/dac/ad5592r.txt
+[3]: https://github.com/westeri/meta-acpi
+[4]: https://github.com/westeri/meta-acpi/tree/master/recipes-bsp/acpi-tables/samples
+
+P.S. Jonathan, it seems this driver has artificial ACPI HID. We
+probably have to remove it. However, ADS is indeed reserved for Analog
+Devices in PNP registry. Can we have AD's official answer on this?
+Cc'ing additional AD people.
+
+> 1. https://www.advantech.com/products/9a0cc561-8fc2-4e22-969c-9df90a3952b5/uno-420/mod_2d6a546b-39e3-4bc4-bbf4-ac89e6b7667c
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
