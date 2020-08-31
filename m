@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958BF2577B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B342577B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbgHaKuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 06:50:19 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:30513 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgHaKtz (ORCPT
+        id S1726167AbgHaKul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 06:50:41 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:41162 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726224AbgHaKuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:49:55 -0400
+        Mon, 31 Aug 2020 06:50:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1598870994; x=1630406994;
+  t=1598871013; x=1630407013;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=7crF3FKPqWt3cMPJkrXHleBoN5AqZg9Ge4umfcPJG48=;
-  b=VuHD2Vw3OTe1LeCIrTsHP80K/ulQ9FvFb9tIth6OogBLp5mPK2dm4MPS
-   GDu+MVgWbt7HW6A6gJivXQjWUUOG46pDuIDdTaOvFJLylqAU7Cy+toTKt
-   CgwJSG1O9mCd/hImF5CgN5IjcAdV/PDPkAHJYmY6BNfav5f9B0jqECLxm
-   c=;
+  bh=7XLAfjNDxAGlOXL+oVVQMgpD8ljZ3iheJ5Jq9ck8vb8=;
+  b=vasZcCXIPYk3rI5o8AkvNBTlOMtuZ5fBlP21WZMi+8WdprsFUKEcfNmV
+   tdsMA+fd96Nrtj85aA2ZWz5j/xJ5o3k5zLQCmbCPa7lYKEE/6qIwEEnyt
+   2IBrn9xXXkkFV+GbJ5fcW//SaO5XFM+bru27KqsBQISzymyQTNDG1DDmK
+   k=;
 X-IronPort-AV: E=Sophos;i="5.76,375,1592870400"; 
-   d="scan'208";a="64177142"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 31 Aug 2020 10:49:52 +0000
-Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com (Postfix) with ESMTPS id 2BB2DA1802;
-        Mon, 31 Aug 2020 10:49:48 +0000 (UTC)
+   d="scan'208";a="50991505"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 31 Aug 2020 10:50:09 +0000
+Received: from EX13D31EUB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 1AF37A1EAD;
+        Mon, 31 Aug 2020 10:50:06 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.100) by
  EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 31 Aug 2020 10:49:30 +0000
+ id 15.0.1497.2; Mon, 31 Aug 2020 10:49:48 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC v8 06/10] mm/damon: Implement callbacks for physical memory monitoring
-Date:   Mon, 31 Aug 2020 12:47:26 +0200
-Message-ID: <20200831104730.28970-7-sjpark@amazon.com>
+Subject: [RFC v8 07/10] mm/damon/debugfs: Support physical memory monitoring
+Date:   Mon, 31 Aug 2020 12:47:27 +0200
+Message-ID: <20200831104730.28970-8-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200831104730.28970-1-sjpark@amazon.com>
 References: <20200831104730.28970-1-sjpark@amazon.com>
@@ -71,296 +71,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit implements the four callbacks (->init_target_regions,
-->update_target_regions, ->prepare_access_check, and ->check_accesses)
-for the basic access monitoring of the physical memory address space.
-By setting the callback pointers to point those, users can easily
-monitor the accesses to the physical memory.
+This commit makes the debugfs interface to support the physical memory
+monitoring, in addition to the virtual memory monitoring.
 
-Internally, it uses the PTE Accessed bit, as similar to that of the
-virtual memory support.  Also, it supports only user memory pages, as
-idle page tracking also does, for the same reason.  If the monitoring
-target physical memory address range contains non-user memory pages,
-access check of the pages will do nothing but simply treat the pages as
-not accessed.
+Users can do the physical memory monitoring by writing a special
+keyword, 'paddr\n' to the 'pids' debugfs file.  Then, DAMON will check
+the special keyword and configure the callbacks of the monitoring
+context for the debugfs user for physical memory.  This will internally
+add one fake monitoring target process, which has pid as -1.
 
-Users who want to use other access check primitives and/or monitor the
-non-user memory regions could implement and use their own callbacks.
+Unlike the virtual memory monitoring, DAMON debugfs will not
+automatically set the monitoring target region.  Therefore, users should
+also set the monitoring target address region using the 'init_regions'
+debugfs file.  While doing this, the 'pid' in the input should be '-1'.
+
+Finally, the physical memory monitoring will not automatically
+terminated because it has fake monitoring target process.  The user
+should explicitly turn off the monitoring by writing 'off' to the
+'monitor_on' debugfs file.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- include/linux/damon.h |   6 ++
- mm/damon.c            | 214 ++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 220 insertions(+)
+ mm/damon.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 0e790af9c23a..306fa221ceae 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -242,6 +242,12 @@ unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx);
- bool kdamond_vm_target_valid(struct damon_target *t);
- void kdamond_vm_cleanup(struct damon_ctx *ctx);
- 
-+/* Reference callback implementations for physical memory */
-+void kdamond_init_phys_regions(struct damon_ctx *ctx);
-+void kdamond_update_phys_regions(struct damon_ctx *ctx);
-+void kdamond_prepare_phys_access_checks(struct damon_ctx *ctx);
-+unsigned int kdamond_check_phys_accesses(struct damon_ctx *ctx);
-+
- int damon_set_targets(struct damon_ctx *ctx,
- 		unsigned long *ids, ssize_t nr_ids);
- int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
 diff --git a/mm/damon.c b/mm/damon.c
-index 9815d22fc4de..464209039bf8 100644
+index 464209039bf8..98f52580bd5d 100644
 --- a/mm/damon.c
 +++ b/mm/damon.c
-@@ -26,11 +26,14 @@
- #include <linux/debugfs.h>
- #include <linux/delay.h>
- #include <linux/kthread.h>
-+#include <linux/memory_hotplug.h>
- #include <linux/mm.h>
- #include <linux/mmu_notifier.h>
- #include <linux/module.h>
- #include <linux/page_idle.h>
-+#include <linux/pagemap.h>
- #include <linux/random.h>
-+#include <linux/rmap.h>
- #include <linux/sched/mm.h>
- #include <linux/sched/task.h>
- #include <linux/slab.h>
-@@ -547,6 +550,18 @@ void kdamond_init_vm_regions(struct damon_ctx *ctx)
- 	}
- }
+@@ -2127,9 +2127,29 @@ static ssize_t debugfs_target_ids_write(struct file *file,
+ 		return PTR_ERR(kbuf);
  
-+/*
-+ * The initial regions construction function for the physical address space.
-+ *
-+ * This default version does nothing in actual.  Users should set the initial
-+ * regions by themselves before passing their damon_ctx to 'damon_start()', or
-+ * implement their version of this and set '->init_target_regions' of their
-+ * damon_ctx to point it.
-+ */
-+void kdamond_init_phys_regions(struct damon_ctx *ctx)
-+{
-+}
+ 	nrs = kbuf;
+-	if (!strncmp(kbuf, "pidfd ", 6)) {
+-		received_pidfds = true;
+-		nrs = &kbuf[6];
++	if (!strncmp(kbuf, "paddr\n", count)) {
++		/* Configure the context for physical memory monitoring */
++		ctx->init_target_regions = kdamond_init_phys_regions;
++		ctx->update_target_regions = kdamond_update_phys_regions;
++		ctx->prepare_access_checks = kdamond_prepare_phys_access_checks;
++		ctx->check_accesses = kdamond_check_phys_accesses;
++		ctx->target_valid = NULL;
++		ctx->cleanup = NULL;
 +
- /*
-  * Functions for the dynamic monitoring target regions update
-  */
-@@ -630,6 +645,19 @@ void kdamond_update_vm_regions(struct damon_ctx *ctx)
- 	}
- }
- 
-+/*
-+ * The dynamic monitoring target regions update function for the physical
-+ * address space.
-+ *
-+ * This default version does nothing in actual.  Users should update the
-+ * regions in other callbacks such as '->aggregate_cb', or implement their
-+ * version of this and set the '->init_target_regions' of their damon_ctx to
-+ * point it.
-+ */
-+void kdamond_update_phys_regions(struct damon_ctx *ctx)
-+{
-+}
-+
- /*
-  * Functions for the access checking of the regions
-  */
-@@ -805,6 +833,192 @@ unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx)
- 	return max_nr_accesses;
- }
- 
-+/* access check functions for physical address based regions */
-+
-+/*
-+ * Get a page by pfn if it is in the LRU list.  Otherwise, returns NULL.
-+ *
-+ * The body of this function is stollen from the 'page_idle_get_page()'.  We
-+ * steal rather than reuse it because the code is quite simple.
-+ */
-+static struct page *damon_phys_get_page(unsigned long pfn)
-+{
-+	struct page *page = pfn_to_online_page(pfn);
-+	pg_data_t *pgdat;
-+
-+	if (!page || !PageLRU(page) ||
-+	    !get_page_unless_zero(page))
-+		return NULL;
-+
-+	pgdat = page_pgdat(page);
-+	spin_lock_irq(&pgdat->lru_lock);
-+	if (unlikely(!PageLRU(page))) {
-+		put_page(page);
-+		page = NULL;
-+	}
-+	spin_unlock_irq(&pgdat->lru_lock);
-+	return page;
-+}
-+
-+static bool damon_page_mkold(struct page *page, struct vm_area_struct *vma,
-+		unsigned long addr, void *arg)
-+{
-+	damon_mkold(vma->vm_mm, addr);
-+	return true;
-+}
-+
-+static void damon_phys_mkold(unsigned long paddr)
-+{
-+	struct page *page = damon_phys_get_page(PHYS_PFN(paddr));
-+	struct rmap_walk_control rwc = {
-+		.rmap_one = damon_page_mkold,
-+		.anon_lock = page_lock_anon_vma_read,
-+	};
-+	bool need_lock;
-+
-+	if (!page)
-+		return;
-+
-+	if (!page_mapped(page) || !page_rmapping(page)) {
-+		set_page_idle(page);
-+		put_page(page);
-+		return;
-+	}
-+
-+	need_lock = !PageAnon(page) || PageKsm(page);
-+	if (need_lock && !trylock_page(page)) {
-+		put_page(page);
-+		return;
-+	}
-+
-+	rmap_walk(page, &rwc);
-+
-+	if (need_lock)
-+		unlock_page(page);
-+	put_page(page);
-+}
-+
-+static void damon_prepare_phys_access_check(struct damon_ctx *ctx,
-+					    struct damon_region *r)
-+{
-+	r->sampling_addr = damon_rand(r->ar.start, r->ar.end);
-+
-+	damon_phys_mkold(r->sampling_addr);
-+}
-+
-+void kdamond_prepare_phys_access_checks(struct damon_ctx *ctx)
-+{
-+	struct damon_target *t;
-+	struct damon_region *r;
-+
-+	damon_for_each_target(t, ctx) {
-+		damon_for_each_region(r, t)
-+			damon_prepare_phys_access_check(ctx, r);
-+	}
-+}
-+
-+struct damon_phys_access_chk_result {
-+	unsigned long page_sz;
-+	bool accessed;
-+};
-+
-+static bool damon_page_accessed(struct page *page, struct vm_area_struct *vma,
-+		unsigned long addr, void *arg)
-+{
-+	struct damon_phys_access_chk_result *result = arg;
-+
-+	result->accessed = damon_young(vma->vm_mm, addr, &result->page_sz);
-+
-+	/* If accessed, stop walking */
-+	return !result->accessed;
-+}
-+
-+static bool damon_phys_young(unsigned long paddr, unsigned long *page_sz)
-+{
-+	struct page *page = damon_phys_get_page(PHYS_PFN(paddr));
-+	struct damon_phys_access_chk_result result = {
-+		.page_sz = PAGE_SIZE,
-+		.accessed = false,
-+	};
-+	struct rmap_walk_control rwc = {
-+		.arg = &result,
-+		.rmap_one = damon_page_accessed,
-+		.anon_lock = page_lock_anon_vma_read,
-+	};
-+	bool need_lock;
-+
-+	if (!page)
-+		return false;
-+
-+	if (!page_mapped(page) || !page_rmapping(page)) {
-+		if (page_is_idle(page))
-+			result.accessed = false;
-+		else
-+			result.accessed = true;
-+		put_page(page);
-+		goto out;
-+	}
-+
-+	need_lock = !PageAnon(page) || PageKsm(page);
-+	if (need_lock && !trylock_page(page)) {
-+		put_page(page);
-+		return NULL;
-+	}
-+
-+	rmap_walk(page, &rwc);
-+
-+	if (need_lock)
-+		unlock_page(page);
-+	put_page(page);
-+
-+out:
-+	*page_sz = result.page_sz;
-+	return result.accessed;
-+}
-+
-+/*
-+ * Check whether the region was accessed after the last preparation
-+ *
-+ * mm	'mm_struct' for the given virtual address space
-+ * r	the region of physical address space that needs to be checked
-+ */
-+static void damon_check_phys_access(struct damon_ctx *ctx,
-+				    struct damon_region *r)
-+{
-+	static unsigned long last_addr;
-+	static unsigned long last_page_sz = PAGE_SIZE;
-+	static bool last_accessed;
-+
-+	/* If the region is in the last checked page, reuse the result */
-+	if (ALIGN_DOWN(last_addr, last_page_sz) ==
-+				ALIGN_DOWN(r->sampling_addr, last_page_sz)) {
-+		if (last_accessed)
-+			r->nr_accesses++;
-+		return;
-+	}
-+
-+	last_accessed = damon_phys_young(r->sampling_addr, &last_page_sz);
-+	if (last_accessed)
-+		r->nr_accesses++;
-+
-+	last_addr = r->sampling_addr;
-+}
-+
-+unsigned int kdamond_check_phys_accesses(struct damon_ctx *ctx)
-+{
-+	struct damon_target *t;
-+	struct damon_region *r;
-+	unsigned int max_nr_accesses = 0;
-+
-+	damon_for_each_target(t, ctx) {
-+		damon_for_each_region(r, t) {
-+			damon_check_phys_access(ctx, r);
-+			max_nr_accesses = max(r->nr_accesses, max_nr_accesses);
++		/* target id is meaningless here, but we set it just for fun */
++		snprintf(kbuf, count, "42    ");
++	} else {
++		/* Configure the context for virtual memory monitoring */
++		ctx->init_target_regions = kdamond_init_vm_regions;
++		ctx->update_target_regions = kdamond_update_vm_regions;
++		ctx->prepare_access_checks = kdamond_prepare_vm_access_checks;
++		ctx->check_accesses = kdamond_check_vm_accesses;
++		ctx->target_valid = kdamond_vm_target_valid;
++		ctx->cleanup = kdamond_vm_cleanup;
++		if (!strncmp(kbuf, "pidfd ", 6)) {
++			received_pidfds = true;
++			nrs = &kbuf[6];
 +		}
-+	}
-+
-+	return max_nr_accesses;
-+}
+ 	}
  
- /*
-  * Functions for the target validity check and cleanup
+ 	targets = str_to_target_ids(nrs, ret, &nr_targets);
 -- 
 2.17.1
 
