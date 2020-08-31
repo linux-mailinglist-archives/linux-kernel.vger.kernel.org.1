@@ -2,51 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E44258248
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD2025829C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgHaUIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 16:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729908AbgHaUIt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:08:49 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF651C061573;
-        Mon, 31 Aug 2020 13:08:49 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id DD8A1128A6C25;
-        Mon, 31 Aug 2020 12:52:02 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 13:08:48 -0700 (PDT)
-Message-Id: <20200831.130848.223715931100215289.davem@davemloft.net>
-To:     linmiaohe@huawei.com
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: ipv4: remove unused arg exact_dif in
- compute_score
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200831062634.8481-1-linmiaohe@huawei.com>
-References: <20200831062634.8481-1-linmiaohe@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 31 Aug 2020 12:52:03 -0700 (PDT)
+        id S1728449AbgHaU3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 16:29:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38736 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbgHaU3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 16:29:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 84576AD39;
+        Mon, 31 Aug 2020 20:29:32 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     tsbogend@alpha.franken.de
+Cc:     oleg@redhat.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] MIPS: Use rcu to lookup a task in mipsmt_sys_sched_setaffinity()
+Date:   Mon, 31 Aug 2020 13:14:02 -0700
+Message-Id: <20200831201402.2837-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
-Date: Mon, 31 Aug 2020 02:26:34 -0400
+The call simply looks up the corresponding task (without iterating
+the tasklist), which is safe under rcu instead of the tasklist_lock.
+In addition, the setaffinity counter part already does this.
 
-> The arg exact_dif is not used anymore, remove it. inet_exact_dif_match()
-> is no longer needed after the above is removed, so remove it too.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ arch/mips/kernel/mips-mt-fpaff.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied to net-next.
+diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fpaff.c
+index 1a08428eedcf..6c590ef27648 100644
+--- a/arch/mips/kernel/mips-mt-fpaff.c
++++ b/arch/mips/kernel/mips-mt-fpaff.c
+@@ -167,7 +167,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid, unsigned int len,
+ 		return -EINVAL;
+ 
+ 	get_online_cpus();
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 
+ 	retval = -ESRCH;
+ 	p = find_process_by_pid(pid);
+@@ -181,7 +181,7 @@ asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid, unsigned int len,
+ 	cpumask_and(&mask, &allowed, cpu_active_mask);
+ 
+ out_unlock:
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	put_online_cpus();
+ 	if (retval)
+ 		return retval;
+-- 
+2.26.2
+
