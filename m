@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D80257975
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C32E25797D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 14:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgHaMig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 08:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgHaMiV (ORCPT
+        id S1727046AbgHaMjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 08:39:17 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41600 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbgHaMit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 08:38:21 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C935C061575;
-        Mon, 31 Aug 2020 05:38:20 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id d26so8310170ejr.1;
-        Mon, 31 Aug 2020 05:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2Ghd6benh9pMZkzNgaI8YzCaPdDADCfybHIWxZ0IHe0=;
-        b=vNjkYRlmVLW0GIVLbXAQkNtQsKUuTp6QJt7K6gBi3ED95BHkal8KZbvyuv0gP+1KKn
-         2B7EkRgVyVfas8Vjx6dqi6nODxOD+QwZSsINJ+WWBeYa5MCe4341MuYwKLWBji102oqa
-         REJmK7syTflurowPfAwYVcj9d4B7sQ2zSWHGYdebUQhY5TMDQqw+r3bEcKBIK2RhDxgg
-         QHy1Yf01onLCrx8wfx3DZVfAQGACpDzT4o81/4w7HrYvmL4/d8qEBYHVl34M6haMOE/+
-         SGzH34jhq/mdNpUDFrHt7k0vs9E1CgIm+RDS5jPbNuKgEsXB54ip8uNmOtjUwHu3ItoP
-         X18A==
+        Mon, 31 Aug 2020 08:38:49 -0400
+Received: by mail-oi1-f196.google.com with SMTP id 2so815240ois.8;
+        Mon, 31 Aug 2020 05:38:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2Ghd6benh9pMZkzNgaI8YzCaPdDADCfybHIWxZ0IHe0=;
-        b=qZapMRdCEjo98VZKQhhPmfY1TDE467gSKO5OMn/Va6AWY+vStDt+wrNhDmsbATqIzb
-         dVJNmdyqMvtiUH9hyvj5ZNBNx4TmO/cNrGt39pqFrrKvYb8//XmTAq+pWzHHYwlAslEF
-         nAFMxB/jCBk1TvsU+IN/HtwrJBzMu73ajpx/ARXZeERwzFvzSA3aMvUe7QVOSmBe6RVB
-         OnyB33fe5S56s0NiejwbAlNk4x2iXyQnWnt13pJmYJA7EoNQDAHUeyYs1O/DRGC+POGs
-         A773OjV0BSWvxee2neZFSXazs8kwutQwjYdyP4SXTTTpW6tqRc2UVuyxIOwv72DH7cKL
-         5uSw==
-X-Gm-Message-State: AOAM531mW/YNA39ujjcKEtIihzbV1gmkIa9MlplPbjVeYanvOro8G8VM
-        8gX2Q7XKoah3blyvXom9g0IFnN7lL9LNrw==
-X-Google-Smtp-Source: ABdhPJy4KJqocHyGT8PzeWW8y1Eo+3fWSFhgASn0yLg0CJfgmcpwj/WbsIJfvZxqyEwcwMtQ/5CMYA==
-X-Received: by 2002:a17:907:205c:: with SMTP id pg28mr942111ejb.22.1598877499116;
-        Mon, 31 Aug 2020 05:38:19 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id a15sm4153236eje.16.2020.08.31.05.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 05:38:17 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 14:38:16 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v2 09/12] phy: tegra: xusb: t186: support wake and
- sleepwalk
-Message-ID: <20200831123816.GF1689119@ulmo>
-References: <20200831044043.1561074-1-jckuo@nvidia.com>
- <20200831044043.1561074-10-jckuo@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pCsWJiU+SeSX/BQT94U7ntSq2DXQU2wdBG6dv3ohm/A=;
+        b=snrgaOzUERKjWMwbP2Mq32S44hzGQgMsBpYMip7G6ah2ayCAjcd02Z5vMqdegoCvEo
+         hE39wJAjl6x2E3Ep0AOOfAkenpev18KYk5VBE2bhW8sR4U1TlYC56JjhRBFxxgbalQqQ
+         l68ldYB0UAbGZAOh9cpYPobqks9pX57gkg0xpLGmQ1rTqbIRKHXZrMTcxoxxbyLg9RhO
+         9zgGKmHAUXItskNRKhkUmEiF08xs+Lq/umsPnhw7DegkHoaqvMEG65mU//Rkn5aoJFGs
+         h7/kzp7oXLOibRy/WNGGCOFqUqSEd+mH6KXbY7cD1O721QTNiz60g+2Xlucq5ox07o25
+         42Pg==
+X-Gm-Message-State: AOAM532O1HPCr3t7opI9GPFIM45W2lZb/o6rPgbW4YhsTIMedmLT2N3W
+        V8ayodtJZQdS4vsXPysDDTY/bQ0Q6ezjFOLJ2oYZyTyJHQA=
+X-Google-Smtp-Source: ABdhPJzZB+2rt1wEa6gxS0s5ZyQyHRzufXJ1mYnhpK/hQPbXX6bNUonm86n9yv9d6v1JRXAsU5O4A+NuvGI1eRzAOJU=
+X-Received: by 2002:aca:52d6:: with SMTP id g205mr639635oib.54.1598877527029;
+ Mon, 31 Aug 2020 05:38:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="juZjCTNxrMaZdGZC"
-Content-Disposition: inline
-In-Reply-To: <20200831044043.1561074-10-jckuo@nvidia.com>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+References: <20200825134806.25295-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200825134806.25295-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 31 Aug 2020 14:38:35 +0200
+Message-ID: <CAMuHMdVcGz_C+e49pgNM=ui8bTu6Vg0A7pZY6nq7n3RdAJObgg@mail.gmail.com>
+Subject: Re: [PATCH] clk: renesas: cpg-mssr: Add clk entry for VSPR
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Prabhakar,
 
---juZjCTNxrMaZdGZC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for your patch!
 
-On Mon, Aug 31, 2020 at 12:40:40PM +0800, JC Kuo wrote:
-> This commit implements Tegra186/Tegra194 XUSB PADCTL/AO wake and
-> sleepwalk operations.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+On Tue, Aug 25, 2020 at 3:48 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add clock entry 130 for VSPR module, so that this module can be used
+
+VSPR ("VSP for Resizing")
+
+> on R8A7742 (RZ/G1H) SoC.
+>
+> Note: The entry for VSPR clock was accidentally dropped from RZ/G manual
+> when all the information related to RT were removed.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 > ---
->  drivers/phy/tegra/xusb-tegra186.c | 656 ++++++++++++++++++++++++++++++
->  1 file changed, 656 insertions(+)
+> Similar details can be seen in commit 79ea9934b8df ("ARM: shmobile:
+> r8a7790: Rename VSP1_(SY|RT) clocks to VSP1_(S|R)") for R-Car H2
 
-Same comments as for the Tegra210 patch.
+Indeed.  And R-Car H2 and other related soCs are still affected, as that
+fix never made it to the new clock drivers ;-(
 
-Thierry
+> --- a/drivers/clk/renesas/r8a7742-cpg-mssr.c
+> +++ b/drivers/clk/renesas/r8a7742-cpg-mssr.c
+> @@ -97,6 +97,7 @@ static const struct mssr_mod_clk r8a7742_mod_clks[] __initconst = {
+>         DEF_MOD("tmu0",                  125,   R8A7742_CLK_CP),
+>         DEF_MOD("vsp1du1",               127,   R8A7742_CLK_ZS),
+>         DEF_MOD("vsp1du0",               128,   R8A7742_CLK_ZS),
+> +       DEF_MOD("vspr",                  130,   R8A7742_CLK_ZS),
+>         DEF_MOD("vsp1-sy",               131,   R8A7742_CLK_ZS),
 
---juZjCTNxrMaZdGZC
-Content-Type: application/pgp-signature; name="signature.asc"
+While at it, can you please replace "vsp1-sy" by "vsps" (VSPS = "VSP
+Standard"), and fix the other drivers, too?
 
------BEGIN PGP SIGNATURE-----
+Thanks!
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9M7zgACgkQ3SOs138+
-s6GQXhAAhItmDp4JJqO1Dns4AMl+DivcQSPSiqC7eLaqPmiND64oCZhxN4ixp/02
-qK8S6bzDnV8mdT/1jz4uU7u3HfYW0qSyGK30oWqmYbbRQHI+bUzckaxUwWiD99PC
-+ETRN+/N8KyTG+m8TwdqJK8+5XLuMwRbNc1ChsmxGb5KOl6Ej2ct39qJ7ah9M7mL
-FHeS9ll34TMhu46oZU2HwcXUvlwKjKnYhh5KUV/W+/ij3h1T2sYyC2KQt2CLfsp2
-V5ESRtBugtybpe47+Ujp1vOk62DHLzzd7XJYoiIafUDg0DOHbfc/kARqtTkuh/4h
-Ofr3p/A5muZR+N0A2LjfUMWftf1EGJtHB5e+xQwg8M664vM8jgBaf2seoa8BOJh+
-8FkYYFNNzhzUHMpAMPtLm+4ZP/b7qIYVLTzZUeArkzfqk5zZp/qRVeDXXDs6SaaW
-Ik7uzYD+eFdFAN1u0E+VvkbN5VvUGJwNR7finsuqiOL+xn1LCqY1CSyKA4rtuhdz
-6qa+RTHgocfmd0Bb1fp2cDr/BB4oFqqnPCX67j3tLq6kRx0Vpc1cM2EbRsB2AJz6
-0KQ1d133P7KzmhTNUyVhhfoK2xvNISTa7DGEZYsnOwjOCooztCDnRxfWEfsjoYkm
-F20eVmaiUE0BhTIjIfxomcKtFrIbo1/JA6ds+TWwmGh/BS5Z+8Y=
-=AcBR
------END PGP SIGNATURE-----
+Gr{oetje,eeting}s,
 
---juZjCTNxrMaZdGZC--
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
