@@ -2,358 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50B3258220
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 21:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD89B258229
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 21:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729872AbgHaTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 15:53:07 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2974 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729833AbgHaTww (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 15:52:52 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4d54950000>; Mon, 31 Aug 2020 12:50:45 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 31 Aug 2020 12:52:51 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 31 Aug 2020 12:52:51 -0700
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 31 Aug
- 2020 19:52:51 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 31 Aug 2020 19:52:51 +0000
-Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.173.243]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f4d55120003>; Mon, 31 Aug 2020 12:52:51 -0700
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     <skomatineni@nvidia.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <sakari.ailus@iki.fi>,
-        <hverkuil@xs4all.nl>, <luca@lucaceresoli.net>,
-        <leonl@leopardimaging.com>, <robh+dt@kernel.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>
-CC:     <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 4/4] media: i2c: imx274: Add IMX274 power on and off sequence
-Date:   Mon, 31 Aug 2020 12:52:38 -0700
-Message-ID: <1598903558-9691-5-git-send-email-skomatineni@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1598903558-9691-1-git-send-email-skomatineni@nvidia.com>
-References: <1598903558-9691-1-git-send-email-skomatineni@nvidia.com>
-X-NVConfidentiality: public
+        id S1729893AbgHaTxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 15:53:22 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38451 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729885AbgHaTxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 15:53:21 -0400
+IronPort-SDR: J/+9NEiHHS//vry7bHBG9UndDUx26HxWyXGTHIZlsThRrcIZKyu3LZAjWLDPPGcah+ecjbU4n7
+ obvst38Z19Tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="137096378"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="137096378"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 12:53:20 -0700
+IronPort-SDR: sfefiNLyiGq5iVg1AwuLny5G5TU/O5qwtlHtgIYCUy4LdeO0dLcBoN1AVzGkDQHFSH3+wA+XN8
+ N3efer9xVYiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="340770469"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga007.jf.intel.com with SMTP; 31 Aug 2020 12:53:16 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 31 Aug 2020 22:53:16 +0300
+Date:   Mon, 31 Aug 2020 22:53:16 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     crj <algea.cao@rock-chips.com>
+Cc:     mripard@kernel.org, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, maarten.lankhorst@linux.intel.com,
+        daniel@ffwll.ch, linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH] drm: Parse Colorimetry data block from EDID
+Message-ID: <20200831195316.GC6112@intel.com>
+References: <20200826142328.131144-1-algea.cao@rock-chips.com>
+ <20200827105701.GS6112@intel.com>
+ <4cadf318-cfc3-92d6-6219-170166db94ce@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598903445; bh=lP1zhiAy94Lt2N8VXq4yZb/bmC1XQ1c+uwH/BIDJqd8=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:X-NVConfidentiality:MIME-Version:
-         Content-Type;
-        b=WkneU/+8H0TRxL7R3LjZ4xADK1bfCpq/647GSFvSF1bodE7Qg4Xbd0Ioj3Z6ZkzkO
-         W2HP1DpgQoYO3MiFtecQO6Hs0jZ0l9t8kXM9Kip+R5aFfsxaI+T53MjHeeAPGWdPxV
-         nCDVEjD8yKJFtiuZwbe3Dovz/fb/ZVGmMXMtntPB6Is4cQv9Qr3Gq6B2HTnWc8qGvR
-         qjgQV+20+RMGOFUrc920KYDr8NQObzsw9mYlYOPLbuw8VP6Y9DU8p9Gwg94UBiQmqk
-         wwklZIe7Em868tL3ACKR630WlXenQI4O+9ZP0xa7oF70OnQFyqBq1WGOTYnaptq4Xo
-         u1HNokKGco/Ow==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4cadf318-cfc3-92d6-6219-170166db94ce@rock-chips.com>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMX274 has VANA analog 2.8V supply, VDIG digital core 1.8V supply,
-and VDDL digital io 1.2V supply which are optional based on camera
-module design.
+On Fri, Aug 28, 2020 at 09:07:13AM +0800, crj wrote:
+> Hi Ville Syrjälä,
+> 
+> 在 2020/8/27 18:57, Ville Syrjälä 写道:
+> > On Wed, Aug 26, 2020 at 10:23:28PM +0800, Algea Cao wrote:
+> >> CEA 861.3 spec adds colorimetry data block for HDMI.
+> >> Parsing the block to get the colorimetry data from
+> >> panel.
+> > And what exactly do you want to do with that data?
+> 
+> 
+> We can get colorimetry data block from edid then support
+> 
+> HDMI colorimetry such as BT2020.
 
-IMX274 also need external 24Mhz clock and is optional based on
-camera module design.
+But what do you want to do with it? The patch does nothing
+functional.
 
-This patch adds support for IMX274 power on and off to enable and
-disable these supplies and external clock.
+> 
+> >> Signed-off-by: Algea Cao <algea.cao@rock-chips.com>
+> >> ---
+> >>
+> >>   drivers/gpu/drm/drm_edid.c  | 45 +++++++++++++++++++++++++++++++++++++
+> >>   include/drm/drm_connector.h |  3 +++
+> >>   include/drm/drm_edid.h      | 14 ++++++++++++
+> >>   3 files changed, 62 insertions(+)
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> >> index 31496b6cfc56..67e607c04492 100644
+> >> --- a/drivers/gpu/drm/drm_edid.c
+> >> +++ b/drivers/gpu/drm/drm_edid.c
+> >> @@ -3223,6 +3223,7 @@ add_detailed_modes(struct drm_connector *connector, struct edid *edid,
+> >>   #define VIDEO_BLOCK     0x02
+> >>   #define VENDOR_BLOCK    0x03
+> >>   #define SPEAKER_BLOCK	0x04
+> >> +#define COLORIMETRY_DATA_BLOCK		0x5
+> >>   #define HDR_STATIC_METADATA_BLOCK	0x6
+> >>   #define USE_EXTENDED_TAG 0x07
+> >>   #define EXT_VIDEO_CAPABILITY_BLOCK 0x00
+> >> @@ -4309,6 +4310,48 @@ static void fixup_detailed_cea_mode_clock(struct drm_display_mode *mode)
+> >>   	mode->clock = clock;
+> >>   }
+> >>   
+> >> +static bool cea_db_is_hdmi_colorimetry_data_block(const u8 *db)
+> >> +{
+> >> +	if (cea_db_tag(db) != USE_EXTENDED_TAG)
+> >> +		return false;
+> >> +
+> >> +	if (db[1] != COLORIMETRY_DATA_BLOCK)
+> >> +		return false;
+> >> +
+> >> +	if (cea_db_payload_len(db) < 2)
+> >> +		return false;
+> >> +
+> >> +	return true;
+> >> +}
+> >> +
+> >> +static void
+> >> +drm_parse_colorimetry_data_block(struct drm_connector *connector, const u8 *db)
+> >> +{
+> >> +	struct drm_hdmi_info *info = &connector->display_info.hdmi;
+> >> +
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_601)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_xvYCC_601;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_xvYCC_709)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_xvYCC_709;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_sYCC_601)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_sYCC_601;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_ADBYCC_601)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_ADBYCC_601;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_ADB_RGB)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_ADB_RGB;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_CYCC)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_CYCC;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_YCC)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_YCC;
+> >> +	if (db[2] & DRM_EDID_CLRMETRY_BT2020_RGB)
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_BT2020_RGB;
+> >> +	/* Byte 4 Bit 7: DCI-P3 */
+> >> +	if (db[3] & BIT(7))
+> >> +		info->colorimetry |= DRM_EDID_CLRMETRY_DCI_P3;
+> >> +
+> >> +	DRM_DEBUG_KMS("Supported Colorimetry 0x%x\n", info->colorimetry);
+> >> +}
+> >> +
+> >>   static bool cea_db_is_hdmi_hdr_metadata_block(const u8 *db)
+> >>   {
+> >>   	if (cea_db_tag(db) != USE_EXTENDED_TAG)
+> >> @@ -4994,6 +5037,8 @@ static void drm_parse_cea_ext(struct drm_connector *connector,
+> >>   			drm_parse_vcdb(connector, db);
+> >>   		if (cea_db_is_hdmi_hdr_metadata_block(db))
+> >>   			drm_parse_hdr_metadata_block(connector, db);
+> >> +		if (cea_db_is_hdmi_colorimetry_data_block(db))
+> >> +			drm_parse_colorimetry_data_block(connector, db);
+> >>   	}
+> >>   }
+> >>   
+> >> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> >> index af145608b5ed..d599c3b9e881 100644
+> >> --- a/include/drm/drm_connector.h
+> >> +++ b/include/drm/drm_connector.h
+> >> @@ -207,6 +207,9 @@ struct drm_hdmi_info {
+> >>   
+> >>   	/** @y420_dc_modes: bitmap of deep color support index */
+> >>   	u8 y420_dc_modes;
+> >> +
+> >> +	/* @colorimetry: bitmap of supported colorimetry modes */
+> >> +	u16 colorimetry;
+> >>   };
+> >>   
+> >>   /**
+> >> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> >> index cfa4f5af49af..98fa78c2f82d 100644
+> >> --- a/include/drm/drm_edid.h
+> >> +++ b/include/drm/drm_edid.h
+> >> @@ -229,6 +229,20 @@ struct detailed_timing {
+> >>   				    DRM_EDID_YCBCR420_DC_36 | \
+> >>   				    DRM_EDID_YCBCR420_DC_30)
+> >>   
+> >> +/*
+> >> + * Supported Colorimetry from colorimetry data block
+> >> + * as per CEA 861-G spec
+> >> + */
+> >> +#define DRM_EDID_CLRMETRY_xvYCC_601   (1 << 0)
+> >> +#define DRM_EDID_CLRMETRY_xvYCC_709   (1 << 1)
+> >> +#define DRM_EDID_CLRMETRY_sYCC_601    (1 << 2)
+> >> +#define DRM_EDID_CLRMETRY_ADBYCC_601  (1 << 3)
+> >> +#define DRM_EDID_CLRMETRY_ADB_RGB     (1 << 4)
+> >> +#define DRM_EDID_CLRMETRY_BT2020_CYCC (1 << 5)
+> >> +#define DRM_EDID_CLRMETRY_BT2020_YCC  (1 << 6)
+> >> +#define DRM_EDID_CLRMETRY_BT2020_RGB  (1 << 7)
+> >> +#define DRM_EDID_CLRMETRY_DCI_P3      (1 << 15)
+> >> +
+> >>   /* ELD Header Block */
+> >>   #define DRM_ELD_HEADER_BLOCK_SIZE	4
+> >>   
+> >> -- 
+> >> 2.25.1
+> >>
+> >>
+> >>
+> >> _______________________________________________
+> >> dri-devel mailing list
+> >> dri-devel@lists.freedesktop.org
+> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
 
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
----
- drivers/media/i2c/imx274.c | 151 ++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 148 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
-index a4b9dfd..18a1e87 100644
---- a/drivers/media/i2c/imx274.c
-+++ b/drivers/media/i2c/imx274.c
-@@ -18,7 +18,9 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of_gpio.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <linux/v4l2-mediabus.h>
- #include <linux/videodev2.h>
-@@ -131,6 +133,15 @@
- #define IMX274_TABLE_WAIT_MS			0
- #define IMX274_TABLE_END			1
- 
-+/* regulator supplies */
-+static const char * const imx274_supply_names[] = {
-+	"vddl",  /* IF (1.2V) supply */
-+	"vdig",  /* Digital Core (1.8V) supply */
-+	"vana",  /* Analog (2.8V) supply */
-+};
-+
-+#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
-+
- /*
-  * imx274 I2C operation related structure
-  */
-@@ -501,6 +512,8 @@ struct imx274_ctrls {
-  * @frame_rate: V4L2 frame rate structure
-  * @regmap: Pointer to regmap structure
-  * @reset_gpio: Pointer to reset gpio
-+ * @supplies: imx274 analog and digital supplies
-+ * @inck: input clock to imx274
-  * @lock: Mutex structure
-  * @mode: Parameters for the selected readout mode
-  */
-@@ -514,6 +527,8 @@ struct stimx274 {
- 	struct v4l2_fract frame_interval;
- 	struct regmap *regmap;
- 	struct gpio_desc *reset_gpio;
-+	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
-+	struct clk *inck;
- 	struct mutex lock; /* mutex lock for operations */
- 	const struct imx274_mode *mode;
- };
-@@ -767,6 +782,75 @@ static void imx274_reset(struct stimx274 *priv, int rst)
- 	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
- }
- 
-+/*
-+ * imx274_power_on - Function called to power on the sensor
-+ * @imx274: Pointer to device structure
-+ */
-+static int imx274_power_on(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct stimx274 *imx274 = to_imx274(sd);
-+	int ret;
-+
-+	/* keep sensor in reset before power on */
-+	imx274_reset(imx274, 0);
-+
-+	ret = clk_prepare_enable(imx274->inck);
-+	if (ret) {
-+		dev_err(&imx274->client->dev,
-+			"Failed to enable input clock: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
-+	if (ret) {
-+		dev_err(&imx274->client->dev,
-+			"Failed to enable regulators: %d\n", ret);
-+		goto fail_reg;
-+	}
-+
-+	usleep_range(1, 2);
-+	imx274_reset(imx274, 1);
-+
-+	return 0;
-+
-+fail_reg:
-+	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
-+	clk_disable_unprepare(imx274->inck);
-+	return ret;
-+}
-+
-+/*
-+ * imx274_power_off - Function called to power off the sensor
-+ * @imx274: Pointer to device structure
-+ */
-+static int imx274_power_off(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct stimx274 *imx274 = to_imx274(sd);
-+
-+	imx274_reset(imx274, 0);
-+
-+	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
-+
-+	clk_disable_unprepare(imx274->inck);
-+
-+	return 0;
-+}
-+
-+static int imx274_get_regulators(struct device *dev, struct stimx274 *imx274)
-+{
-+	int i;
-+
-+	for (i = 0; i < IMX274_NUM_SUPPLIES; i++)
-+		imx274->supplies[i].supply = imx274_supply_names[i];
-+
-+	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
-+					imx274->supplies);
-+}
-+
- /**
-  * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
-  * @ctrl: V4L2 control to be set
-@@ -781,6 +865,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
- 	struct stimx274 *imx274 = to_imx274(sd);
- 	int ret = -EINVAL;
- 
-+	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
-+		return 0;
-+
- 	dev_dbg(&imx274->client->dev,
- 		"%s : s_ctrl: %s, value: %d\n", __func__,
- 		ctrl->name, ctrl->val);
-@@ -811,6 +898,8 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
- 		break;
- 	}
- 
-+	pm_runtime_put(&imx274->client->dev);
-+
- 	return ret;
- }
- 
-@@ -1327,6 +1416,13 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
- 	mutex_lock(&imx274->lock);
- 
- 	if (on) {
-+		ret = pm_runtime_get_sync(&imx274->client->dev);
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(&imx274->client->dev);
-+			mutex_unlock(&imx274->lock);
-+			return ret;
-+		}
-+
- 		/* load mode registers */
- 		ret = imx274_mode_regs(imx274);
- 		if (ret)
-@@ -1362,6 +1458,7 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
- 		ret = imx274_write_table(imx274, imx274_stop);
- 		if (ret)
- 			goto fail;
-+		pm_runtime_put(&imx274->client->dev);
- 	}
- 
- 	mutex_unlock(&imx274->lock);
-@@ -1369,6 +1466,7 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
- 	return 0;
- 
- fail:
-+	pm_runtime_put(&imx274->client->dev);
- 	mutex_unlock(&imx274->lock);
- 	dev_err(&imx274->client->dev, "s_stream failed\n");
- 	return ret;
-@@ -1834,6 +1932,14 @@ static int imx274_probe(struct i2c_client *client)
- 
- 	mutex_init(&imx274->lock);
- 
-+	imx274->inck = devm_clk_get_optional(&client->dev, "inck");
-+	ret = imx274_get_regulators(&client->dev, imx274);
-+	if (ret) {
-+		dev_err(&client->dev,
-+			"Failed to get power regulators, err: %d\n", ret);
-+		return ret;
-+	}
-+
- 	/* initialize format */
- 	imx274->mode = &imx274_modes[IMX274_DEFAULT_BINNING];
- 	imx274->crop.width = IMX274_MAX_WIDTH;
-@@ -1881,15 +1987,23 @@ static int imx274_probe(struct i2c_client *client)
- 		goto err_me;
- 	}
- 
--	/* pull sensor out of reset */
--	imx274_reset(imx274, 1);
-+	/* power on the sensor */
-+	ret = imx274_power_on(&client->dev);
-+	if (ret < 0) {
-+		dev_err(&client->dev,
-+			"%s : imx274 power on failed\n", __func__);
-+		goto err_me;
-+	}
-+
-+	pm_runtime_set_active(&client->dev);
-+	pm_runtime_enable(&client->dev);
- 
- 	/* initialize controls */
- 	ret = v4l2_ctrl_handler_init(&imx274->ctrls.handler, 4);
- 	if (ret < 0) {
- 		dev_err(&client->dev,
- 			"%s : ctrl handler init Failed\n", __func__);
--		goto err_me;
-+		goto err_disable_rpm;
- 	}
- 
- 	imx274->ctrls.handler.lock = &imx274->lock;
-@@ -1951,11 +2065,16 @@ static int imx274_probe(struct i2c_client *client)
- 		goto err_ctrls;
- 	}
- 
-+	pm_runtime_idle(&client->dev);
-+
- 	dev_info(&client->dev, "imx274 : imx274 probe success !\n");
- 	return 0;
- 
- err_ctrls:
- 	v4l2_ctrl_handler_free(&imx274->ctrls.handler);
-+err_disable_rpm:
-+	pm_runtime_disable(&client->dev);
-+	pm_runtime_set_suspended(&client->dev);
- err_me:
- 	media_entity_cleanup(&sd->entity);
- err_regmap:
-@@ -1968,19 +2087,45 @@ static int imx274_remove(struct i2c_client *client)
- 	struct v4l2_subdev *sd = i2c_get_clientdata(client);
- 	struct stimx274 *imx274 = to_imx274(sd);
- 
-+	pm_runtime_get_sync(&imx274->client->dev);
-+
- 	/* stop stream */
- 	imx274_write_table(imx274, imx274_stop);
- 
- 	v4l2_async_unregister_subdev(sd);
- 	v4l2_ctrl_handler_free(&imx274->ctrls.handler);
-+
-+	pm_runtime_put(&client->dev);
-+	pm_runtime_disable(&client->dev);
-+	pm_runtime_set_suspended(&client->dev);
-+
- 	media_entity_cleanup(&sd->entity);
- 	mutex_destroy(&imx274->lock);
- 	return 0;
- }
- 
-+static int __maybe_unused imx274_runtime_suspend(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+
-+	return imx274_power_off(&client->dev);
-+}
-+
-+static int __maybe_unused imx274_runtime_resume(struct device *dev)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+
-+	return imx274_power_on(&client->dev);
-+}
-+
-+static const struct dev_pm_ops imx274_pm_ops = {
-+	SET_RUNTIME_PM_OPS(imx274_runtime_suspend, imx274_runtime_resume, NULL)
-+};
-+
- static struct i2c_driver imx274_i2c_driver = {
- 	.driver = {
- 		.name	= DRIVER_NAME,
-+		.pm = &imx274_pm_ops,
- 		.of_match_table	= imx274_of_id_table,
- 	},
- 	.probe_new	= imx274_probe,
 -- 
-2.7.4
-
+Ville Syrjälä
+Intel
