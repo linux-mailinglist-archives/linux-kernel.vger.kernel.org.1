@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428C4257BEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF94257BE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728252AbgHaPMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:12:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46742 "EHLO mail.kernel.org"
+        id S1728465AbgHaPMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:12:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:60079 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728180AbgHaPMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728150AbgHaPMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Aug 2020 11:12:13 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA4E1207EA;
-        Mon, 31 Aug 2020 15:12:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598886732;
-        bh=eFZllEYUhIAvSeDeYLn+fKBLu4gOuW9jrrfy+xDLiJs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NS9m3hQgMc6rHsepCcYSgVCfE5hZ1+3vxi8ZRVv+WWwhwoGK4554KFYIYQZqFj1yz
-         ZzAW+YefF37w4maAbGVoTdBqpiqPLs4D+MDe52eL36pj8lk+1KoZKSZdHXu6HEXjIi
-         VlnLmnchsEfykvKY43ujpT3Ia/hg8/il1mgzn9dk=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        David Miller <davem@davemloft.net>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Chengming Zhou <zhouchengming@bytedance.com>
-Subject: [BUGFIX PATCH] kprobes: Fix to check probe enabled before disarm_kprobe_ftrace()
-Date:   Tue,  1 Sep 2020 00:12:07 +0900
-Message-Id: <159888672694.1411785.5987998076694782591.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+IronPort-SDR: U7+C17HVFByB6Euuc0SBdvXp3o47SMB60HOO10m4VkXS9slgenepXVdv2li2HlWp6FvthLa9Ms
+ N+8RWN0sdhFw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="154514628"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="154514628"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 08:12:11 -0700
+IronPort-SDR: W2JTNx3hI1AVbQtJmUolyOm5HWXco2Bnn/FosS7i9xHr7AwwAdVR8Ta4SJaiRdxTSqkdd6aiE4
+ FlbHmIAICbtw==
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="501375147"
+Received: from jaeikcho-mobl.amr.corp.intel.com (HELO [10.213.165.6]) ([10.213.165.6])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 08:12:09 -0700
+Subject: Re: [PATCH v3 0/3] ASoC: soundwire: fix port_ready[] dynamic
+ allocation
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, broonie@kernel.org,
+        srinivas.kandagatla@linaro.org, jank@cadence.com,
+        mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <dd947a84-87cb-7eed-9ac2-fe3de42dfc31@linux.intel.com>
+Date:   Mon, 31 Aug 2020 10:12:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200830132742.20404-1-yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at
-kprobe_ftrace_handler") fixed one bug but not completely fixed yet.
-If we run a kprobe_module.tc of ftracetest, kernel showed a warning
-as below.
 
 
-# ./ftracetest test.d/kprobe/kprobe_module.tc
-=== Ftrace unit tests ===
-[1] Kprobe dynamic event - probing module
-...
-[   22.400215] ------------[ cut here ]------------
-[   22.400962] Failed to disarm kprobe-ftrace at trace_printk_irq_work+0x0/0x7e [trace_printk] (-2)
-[   22.402139] WARNING: CPU: 7 PID: 200 at kernel/kprobes.c:1091 __disarm_kprobe_ftrace.isra.0+0x7e/0xa0
-[   22.403358] Modules linked in: trace_printk(-)
-[   22.404028] CPU: 7 PID: 200 Comm: rmmod Not tainted 5.9.0-rc2+ #66
-[   22.404870] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-[   22.406139] RIP: 0010:__disarm_kprobe_ftrace.isra.0+0x7e/0xa0
-[   22.406947] Code: 30 8b 03 eb c9 80 3d e5 09 1f 01 00 75 dc 49 8b 34 24 89 c2 48 c7 c7 a0 c2 05 82 89 45 e4 c6 05 cc 09 1f 01 01 e8 a9 c7 f0 ff <0f> 0b 8b 45 e4 eb b9 89 c6 48 c7 c7 70 c2 05 82 89 45 e4 e8 91 c7
-[   22.409544] RSP: 0018:ffffc90000237df0 EFLAGS: 00010286
-[   22.410385] RAX: 0000000000000000 RBX: ffffffff83066024 RCX: 0000000000000000
-[   22.411434] RDX: 0000000000000001 RSI: ffffffff810de8d3 RDI: ffffffff810de8d3
-[   22.412687] RBP: ffffc90000237e10 R08: 0000000000000001 R09: 0000000000000001
-[   22.413762] R10: 0000000000000000 R11: 0000000000000001 R12: ffff88807c478640
-[   22.414852] R13: ffffffff8235ebc0 R14: ffffffffa00060c0 R15: 0000000000000000
-[   22.415941] FS:  00000000019d48c0(0000) GS:ffff88807d7c0000(0000) knlGS:0000000000000000
-[   22.417264] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   22.418176] CR2: 00000000005bb7e3 CR3: 0000000078f7a000 CR4: 00000000000006a0
-[   22.419309] Call Trace:
-[   22.419990]  kill_kprobe+0x94/0x160
-[   22.420652]  kprobes_module_callback+0x64/0x230
-[   22.421470]  notifier_call_chain+0x4f/0x70
-[   22.422184]  blocking_notifier_call_chain+0x49/0x70
-[   22.422979]  __x64_sys_delete_module+0x1ac/0x240
-[   22.423733]  do_syscall_64+0x38/0x50
-[   22.424366]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   22.425176] RIP: 0033:0x4bb81d
-[   22.425741] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e0 ff ff ff f7 d8 64 89 01 48
-[   22.428726] RSP: 002b:00007ffc70fef008 EFLAGS: 00000246 ORIG_RAX: 00000000000000b0
-[   22.430169] RAX: ffffffffffffffda RBX: 00000000019d48a0 RCX: 00000000004bb81d
-[   22.431375] RDX: 0000000000000000 RSI: 0000000000000880 RDI: 00007ffc70fef028
-[   22.432543] RBP: 0000000000000880 R08: 00000000ffffffff R09: 00007ffc70fef320
-[   22.433692] R10: 0000000000656300 R11: 0000000000000246 R12: 00007ffc70fef028
-[   22.434635] R13: 0000000000000000 R14: 0000000000000002 R15: 0000000000000000
-[   22.435682] irq event stamp: 1169
-[   22.436240] hardirqs last  enabled at (1179): [<ffffffff810df542>] console_unlock+0x422/0x580
-[   22.437466] hardirqs last disabled at (1188): [<ffffffff810df19b>] console_unlock+0x7b/0x580
-[   22.438608] softirqs last  enabled at (866): [<ffffffff81c0038e>] __do_softirq+0x38e/0x490
-[   22.439637] softirqs last disabled at (859): [<ffffffff81a00f42>] asm_call_on_stack+0x12/0x20
-[   22.440690] ---[ end trace 1e7ce7e1e4567276 ]---
-[   22.472832] trace_kprobe: This probe might be able to register after target module is loaded. Continue.
+On 8/30/20 8:27 AM, Bard Liao wrote:
+> The existing code allocates memory for the total number of ports.
+> This only works if the ports are contiguous, but will break if e.g. a
+> Devices uses port0, 1, and 14. The port_ready[] array would contain 3
+> elements, which would lead to an out-of-bounds access. Conversely in
+> other cases, the wrong port index would be used leading to timeouts on
+> prepare.
+> 
+> This can be fixed by allocating for the worst-case of 15
+> ports (DP0..DP14). In addition since the number is now fixed, we can
+> use an array instead of a dynamic allocation.
 
+Bard, the order of patches will break git bisect, no? I tried on my side 
+and get the following error after applying patch1
 
-This is because the kill_kprobe() calls disarm_kprobe_ftrace() even
-if the given probe is not enabled. In that case, ftrace_set_filter_ip()
-fails because the given probe point is not registered to ftrace.
+sound/soc/codecs/max98373-sdw.c:337:20: error: assignment to expression 
+with array type
+   337 |  slave->port_ready = devm_kcalloc(&slave->dev, num_of_ports,
+       |
 
-Fix to check the given (going) probe is enabled before invoking
-disarm_kprobe_ftrace().
+the order should be
 
-Fixes: 0cb2f1372baa ("kprobes: Fix NULL pointer dereference at kprobe_ftrace_handler")
-Cc: stable@vger.kernel.org
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/kprobes.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ASoC: codecs: soundwire: remove port_ready[] usage from codecs.
+soundwire: add definition for maximum number of ports
+soundwire: fix port_ready[] dynamic allocation in mipi_disco
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 287b263c9cb9..d43b48ecdb4f 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -2159,9 +2159,10 @@ static void kill_kprobe(struct kprobe *p)
- 
- 	/*
- 	 * The module is going away. We should disarm the kprobe which
--	 * is using ftrace.
-+	 * is using ftrace, because ftrace framework is still available at
-+	 * MODULE_STATE_GOING notification.
- 	 */
--	if (kprobe_ftrace(p))
-+	if (kprobe_ftrace(p) && !kprobe_disabled(p) && !kprobes_all_disarmed)
- 		disarm_kprobe_ftrace(p);
- }
- 
-
+> Changes in v3:
+> - Add ASoC tag in the cover letter title.
+> - Edit the title and commit message of the third patch for better
+>    understanding.
+> 
+> Changes in v2:
+> - Split patches into sdw and asoc patches. Please note that "soundwire:
+>    fix port_ready[] dynamic allocation in mipi_disco" and "ASoC: codecs:
+>    fix port_ready[] dynamic allocation in ASoC codecs" should be merged
+>    at the same time.
+> 
+> Pierre-Louis Bossart (3):
+>    soundwire: add definition for maximum number of ports
+>    soundwire: fix port_ready[] dynamic allocation in mipi_disco
+>    ASoC: codecs: soundwire: remove port_ready[] usage from codecs.
+> 
+>   drivers/soundwire/mipi_disco.c  | 18 +-----------------
+>   drivers/soundwire/slave.c       |  4 ++++
+>   include/linux/soundwire/sdw.h   |  5 +++--
+>   sound/soc/codecs/max98373-sdw.c | 15 +--------------
+>   sound/soc/codecs/rt1308-sdw.c   | 14 +-------------
+>   sound/soc/codecs/rt5682-sdw.c   | 15 +--------------
+>   sound/soc/codecs/rt700-sdw.c    | 15 +--------------
+>   sound/soc/codecs/rt711-sdw.c    | 15 +--------------
+>   sound/soc/codecs/rt715-sdw.c    | 33 +--------------------------------
+>   9 files changed, 14 insertions(+), 120 deletions(-)
+> 
