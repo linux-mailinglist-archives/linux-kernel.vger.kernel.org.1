@@ -2,97 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F00E257788
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E583325778B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 12:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgHaKmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 06:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726081AbgHaKmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 06:42:50 -0400
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0CF32098B;
-        Mon, 31 Aug 2020 10:42:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598870570;
-        bh=Ln4rslb3Qsf+jYORwga2CatpNCzcbpYy/Pfp93sjrw4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sZ7OU0XojCp1IV3YBbtZTQRSx2suJ/BI4B3xU1Dp75rSwSUEq9Z+5VOSBBlpyiVsh
-         BeccjOU83nQjGeOnUH6plZqG409HyITYDcMZ9Mvfrj7SD08/f82sxq2Jy6C+xi+xNi
-         CCo7EtL+aD/WMTrR6Lg5NcXVaPbL+LLcPaAzmN6Q=
-Received: by mail-ed1-f52.google.com with SMTP id w1so1325914edr.3;
-        Mon, 31 Aug 2020 03:42:49 -0700 (PDT)
-X-Gm-Message-State: AOAM530tgRyPuAu/45z6G23Fn+YcEFHfwFTNLZFXxjVgBcklD/csOa8V
-        /+GlYM99sKahOzJo43oN+ACwvkbVfnNJrK8vLoU=
-X-Google-Smtp-Source: ABdhPJwViqVYGSP6932iPPY+2iN3GoPMIaINZHzZatPm+H4YsszcHa5UXjR7pSZMmgTBEXj5UlNydJx7zm0sEPCX2u0=
-X-Received: by 2002:a05:6402:ca7:: with SMTP id cn7mr578907edb.143.1598870568303;
- Mon, 31 Aug 2020 03:42:48 -0700 (PDT)
+        id S1726492AbgHaKon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 06:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgHaKol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 06:44:41 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61077C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:44:41 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id z4so2639053wrr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 03:44:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k+EYgDY4h1YnjFAKejF6GzhKvmGlD2uTuVOl9S42RJU=;
+        b=XqB9pDZFFdbsN4WAsjqI6EX/O5KjFFP6wjsWbg9oDnQZBxcMHzwP7YSIBUJt5O0VAX
+         OJAyoBLH3V7jmSvh8XTcTRa/7UPkOSfImLuCq65zVihXa3b96Ef1YlqhHN96BiRyrjt8
+         RTNB3lCbQlbWxey2ErX645oW0ro3qstDprORVaDt1QBJAJser/0m/EPKi9yovckee5B9
+         FA/j6+zfLwp03TvPPRgHW2DyLPXKn/l4Z3kKweG8Z5yvPyvnsOc2ag7LSWwMd5wumTWj
+         o78Tmnuo5V11ZRQwk2ZMqofBq8HQwnVGCOfFw/Nntf3JUFQFnKJQJyLcFDVmQSe9rAaY
+         jejg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k+EYgDY4h1YnjFAKejF6GzhKvmGlD2uTuVOl9S42RJU=;
+        b=qd/FSwe9D/ckmbQCkIlE5eSoZX8Dlz3mSGdsnZtvouKQsVVNwi6BYRtEjZ7tCRbDsW
+         VU6VN3xfa4tNMbRb8BqT3KpGP7Pq+i0EMM+vXTRKQk0RiBUdmiENNPxEpYPVFYSTOTaE
+         ClexzhLHtXIRLQxijQ/wyxAiN2cPPAWrxdQYZbHxnR7afQ5dr+rBkEQXgn5od6Zd6I0W
+         TLdyOYlyVNq+KF1lPb+5foODrdW0/wOC8W0SKVb4DGGV8R5lLESrGXcLQlYrlhkQnDva
+         phuEMYxVub4MS3QDHZQhzGsSUWXv88HYXT0ZG6bu2ZeuHrTaoNjJb1p7SvBMU2cmovRW
+         cofA==
+X-Gm-Message-State: AOAM533vCGByho5F3lkygbiZ7/fQYW03jh3bvGsHFLOWLw/SdOTN4j95
+        FOvfYSgcqLJGpHGgIyJIQild/A==
+X-Google-Smtp-Source: ABdhPJyRFov4JuNLN5DAXSh9XQtJj9BZLjKnRtnTEzitPpCAZ1aI/EixspeKXwmvuQAztWmzQIGZzQ==
+X-Received: by 2002:adf:e58b:: with SMTP id l11mr1162050wrm.210.1598870679800;
+        Mon, 31 Aug 2020 03:44:39 -0700 (PDT)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id l10sm9639574wru.59.2020.08.31.03.44.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 03:44:39 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 12:44:38 +0200
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Moshe Shemesh <moshe@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v3 03/14] devlink: Add reload actions
+ counters to dev get
+Message-ID: <20200831104438.GA3794@nanopsycho.orion>
+References: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
+ <1598801254-27764-4-git-send-email-moshe@mellanox.com>
 MIME-Version: 1.0
-References: <20200830135200.24304-1-krzk@kernel.org> <CGME20200830135508eucas1p21ad0d4f6a2ef78f854fc74750db3fa2a@eucas1p2.samsung.com>
- <20200830135200.24304-23-krzk@kernel.org> <c9daff05-dca7-f1b1-8cfe-46b185bf60dd@samsung.com>
- <CAJKOXPfR8YVmBqCd5+8B2TdM_tXZbWobK0pLxXxxkrsDEMR-vw@mail.gmail.com> <96651e85-c27f-3167-7b41-2ea051c25c65@kernel.org>
-In-Reply-To: <96651e85-c27f-3167-7b41-2ea051c25c65@kernel.org>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 31 Aug 2020 12:42:37 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdF4zzXvYrOiGQM9o=4rrWHvEr=o9aSTuR238dEaiD4cQ@mail.gmail.com>
-Message-ID: <CAJKOXPdF4zzXvYrOiGQM9o=4rrWHvEr=o9aSTuR238dEaiD4cQ@mail.gmail.com>
-Subject: Re: [PATCH 23/33] ARM: dts: exynos: Remove empty camera pinctrl
- configuration in Odroid X/U3
-To:     Sylwester Nawrocki <snawrocki@kernel.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Denis GNUtoo Carikli <GNUtoo@cyberdimension.org>,
-        Simon Shields <simon@lineageos.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598801254-27764-4-git-send-email-moshe@mellanox.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020 at 12:35, Sylwester Nawrocki <snawrocki@kernel.org> wrote:
+Sun, Aug 30, 2020 at 05:27:23PM CEST, moshe@mellanox.com wrote:
+>Expose devlink reload actions counters to the user through devlink dev
+>get command.
 >
-> Hi,
+>Examples:
+>$ devlink dev show
+>pci/0000:82:00.0:
+>  reload_actions_stats:
+>    driver_reinit 2
+>    fw_activate 1
+>    fw_activate_no_reset 0
+>pci/0000:82:00.1:
+>  reload_actions_stats:
+>    driver_reinit 1
+>    fw_activate 1
+>    fw_activate_no_reset 0
 >
-> On 8/31/20 10:38, Krzysztof Kozlowski wrote:
-> > On Mon, 31 Aug 2020 at 10:31, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
-> >> On 30.08.2020 15:51, Krzysztof Kozlowski wrote:
-> >>> The camera's pinctrl configuration is simply empty and not effective.
-> >>> Remove it to fix dtbs_check warning:
-> >>>
-> >>>     arch/arm/boot/dts/exynos4412-odroidx.dt.yaml: camera: pinctrl-0: True is not of type 'array'
-> >>>
-> >>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> >>
-> >> I think that this was intentional to properly enable support for
-> >> mem-2-mem mode in Exynos4-IS (FIMC), but I'm not sure what are the
-> >> default values if no pinctrl properties are provided. Sylwester, could
-> >> you comment?
-> >
-> > Indeed it could be intentional... I see now errors:
-> > [   33.752203] s5p-fimc-md soc:camera: Failed to get pinctrl: -19
-> >
-> > I wonder why getting an empty pinctrl is needed... maybe the driver
-> > should accept missing pinctrl?
->
-> It might have been better to have the pinctrl properties optional, as there
-> might be boards without the image sensor attached and FIMC could still be
-> used in memory-to-memory mode, as Marek pointed out. But it seems too late
-> now to change that. The binding defines the pinctrl properties as required
-> (Documentation/devicetree/bindings/media/samsung-fimc.txt) and we need to
-> keep them in dtses.
+>$ devlink dev show -jp
+>{
+>    "dev": {
+>        "pci/0000:82:00.0": {
+>            "reload_actions_stats": [ {
 
-You can always make a required property optional and it is not a break
-of ABI. The other way around would be a break. Why then not changing
-the driver to accept optional pinctrl?
+Perhaps "reload_action_stats" would be better.
 
-Best regards,
-Krzysztof
+
+>                    "driver_reinit": 2
+>                },{
+>                    "fw_activate": 1
+>                },{
+>                    "fw_activate_no_reset": 0
+>                } ]
+>        },
+>        "pci/0000:82:00.1": {
+>            "reload_actions_stats": [ {
+>                    "driver_reinit": 1
+>                },{
+>                    "fw_activate": 1
+>                },{
+>                    "fw_activate_no_reset": 0
+>                } ]
+>        }
+>    }
+>}
+>
+>Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+>---
+>v2 -> v3:
+>- Add reload actions counters instead of supported reload actions
+>  (reload actions counters are only for supported action so no need for
+>   both)
+>v1 -> v2:
+>- Removed DEVLINK_ATTR_RELOAD_DEFAULT_LEVEL
+>- Removed DEVLINK_ATTR_RELOAD_LEVELS_INFO
+>- Have actions instead of levels
+>---
+> include/uapi/linux/devlink.h |  3 +++
+> net/core/devlink.c           | 37 +++++++++++++++++++++++++++++++-----
+> 2 files changed, 35 insertions(+), 5 deletions(-)
+>
+>diff --git a/include/uapi/linux/devlink.h b/include/uapi/linux/devlink.h
+>index 0a438135c3cf..fd7667c78417 100644
+>--- a/include/uapi/linux/devlink.h
+>+++ b/include/uapi/linux/devlink.h
+>@@ -478,6 +478,9 @@ enum devlink_attr {
+> 
+> 	DEVLINK_ATTR_RELOAD_ACTION,		/* u8 */
+> 	DEVLINK_ATTR_RELOAD_ACTIONS_DONE,	/* nested */
+>+	DEVLINK_ATTR_RELOAD_ACTION_CNT_VALUE,	/* u32 */
+>+	DEVLINK_ATTR_RELOAD_ACTION_CNT,		/* nested */
+>+	DEVLINK_ATTR_RELOAD_ACTIONS_CNTS,	/* nested */
+
+Be in-sync with the user outputs. Perhaps something like:
+	DEVLINK_ATTR_RELOAD_ACTION_STATS
+	DEVLINK_ATTR_RELOAD_ACTION_STAT
+	DEVLINK_ATTR_RELOAD_ACTION_STAT_VALUE
+?
+
+> 
+> 	/* add new attributes above here, update the policy in devlink.c */
+> 
+
+[..]
