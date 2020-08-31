@@ -2,79 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A9E257DF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FF7257DF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgHaPt7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Aug 2020 11:49:59 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:46162 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728251AbgHaPt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:49:58 -0400
-Received: from marcel-macbook.fritz.box (p4ff9f430.dip0.t-ipconnect.de [79.249.244.48])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8FED0CECCD;
-        Mon, 31 Aug 2020 18:00:04 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] Bluetooth: Clear suspend tasks on unregister
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200826154719.1.I24fb6cc377d03d64d74f83cec748afd12ee33e37@changeid>
-Date:   Mon, 31 Aug 2020 17:49:54 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Miao-chen Chou <mcchou@chromium.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A69701BE-FBB3-4053-8187-618C0BD4B380@holtmann.org>
-References: <20200826154719.1.I24fb6cc377d03d64d74f83cec748afd12ee33e37@changeid>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1728404AbgHaPuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:50:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727919AbgHaPui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 11:50:38 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 15A8720719;
+        Mon, 31 Aug 2020 15:50:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598889038;
+        bh=dQpfZaNAgiClmqPKDMjF2Yz+e+jKQj4shrJqtvKqmiU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UPJGD3bGtMa66nUuXu0AMi7MvPz9rC5TKF3LYd/4vWqqQCJVy3FJKLjmD2loTjGOf
+         ena/H6xC5KFKXCf1As5JTQULkFZGzng4JeU2kQZiEY/+oB73SZKPm7IiswCvLCLQE2
+         kYJbTBKXTHS5lZ6zxRybQw13KZNAIWy/VAIpRUYQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D0ABA3522A20; Mon, 31 Aug 2020 08:50:37 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 08:50:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [rcuperf] 4e88ec4a9e:
+ UBSAN:division-overflow_in_arch/x86/include/asm/div64.h
+Message-ID: <20200831155037.GZ2855@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200831120122.GH4299@shao2-debian>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831120122.GH4299@shao2-debian>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhishek,
-
-> While unregistering, make sure to clear the suspend tasks before
-> cancelling the work. If the unregister is called during resume from
-> suspend, this will unnecessarily add 2s to the resume time otherwise.
+On Mon, Aug 31, 2020 at 08:01:22PM +0800, kernel test robot wrote:
+> Greeting,
 > 
-> Fixes: 4e8c36c3b0d73d (Bluetooth: Fix suspend notifier race)
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> ---
-> This was discovered with RT8822CE using the btusb driver. This chipset
-> will reset on resume during system suspend and was unnecessarily adding
-> 2s to every resume. Since we're unregistering anyway, there's no harm in
-> just clearing the pending events.
+> FYI, we noticed the following commit (built with gcc-9):
 > 
-> net/bluetooth/hci_core.c | 11 +++++++++++
-> 1 file changed, 11 insertions(+)
+> commit: 4e88ec4a9eb17527e640b063f79e5b875733eb53 ("rcuperf: Change rcuperf to rcuscale")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
 > 
-> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-> index 68bfe57b66250f..ed4cb3479433c0 100644
-> --- a/net/bluetooth/hci_core.c
-> +++ b/net/bluetooth/hci_core.c
-> @@ -3442,6 +3442,16 @@ void hci_copy_identity_address(struct hci_dev *hdev, bdaddr_t *bdaddr,
-> 	}
-> }
 > 
-> +static void hci_suspend_clear_tasks(struct hci_dev *hdev)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < __SUSPEND_NUM_TASKS; ++i)
-> +		clear_bit(i, hdev->suspend_tasks);
+> in testcase: trinity
+> with following parameters:
+> 
+> 	runtime: 300s
+> 
+> test-description: Trinity is a linux system call fuzz tester.
+> test-url: http://codemonkey.org.uk/projects/trinity/
+> 
+> 
+> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> 
+> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> 
+> 
+> +---------------------------------------------------------+------------+------------+
+> |                                                         | 65bd77f554 | 4e88ec4a9e |
+> +---------------------------------------------------------+------------+------------+
+> | boot_successes                                          | 13         | 0          |
+> | boot_failures                                           | 0          | 14         |
+> | UBSAN:division-overflow_in_arch/x86/include/asm/div64.h | 0          | 14         |
+> | error:#[##]                                             | 0          | 14         |
+> | EIP:main_func.cold                                      | 0          | 14         |
+> | Kernel_panic-not_syncing:Fatal_exception                | 0          | 14         |
+> +---------------------------------------------------------+------------+------------+
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <lkp@intel.com>
 
-I prefer i++ instead of ++i.
+Does the patch below fix this for you?
 
-Regards
+							Thanx, Paul
 
-Marcel
+------------------------------------------------------------------------
 
+commit d301e320e952e2e604d83d9540e52510b0eb3d94
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Thu Aug 27 09:58:19 2020 -0700
+
+    refscale: Bounds-check module parameters
+    
+    The default value for refscale.nreaders is -1, which results in the code
+    setting the value to three-quarters of the number of CPUs.  On single-CPU
+    systems, this results in three-quarters of the value one, which the C
+    language's integer arithmetic rounds to zero.  This in turn results in
+    a divide-by-zero error.
+    
+    This commit therefore adds bounds checking to the refscale module
+    parameters, so that if they are less than one, they are set to the
+    value one.
+    
+    Reported-by: kernel test robot <lkp@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+index 952595c..fb5f20d 100644
+--- a/kernel/rcu/refscale.c
++++ b/kernel/rcu/refscale.c
+@@ -681,6 +681,12 @@ ref_scale_init(void)
+ 	// Reader tasks (default to ~75% of online CPUs).
+ 	if (nreaders < 0)
+ 		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
++	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
++		loops = 1;
++	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
++		nreaders = 1;
++	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
++		nruns = 1;
+ 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (!reader_tasks) {
