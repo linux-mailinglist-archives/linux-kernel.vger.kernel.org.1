@@ -2,111 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CC72575FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB1825760C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 11:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728273AbgHaJIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 05:08:01 -0400
-Received: from mail-am6eur05on2054.outbound.protection.outlook.com ([40.107.22.54]:40220
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726102AbgHaJH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 05:07:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=USRJ6OViOexlaGfjG8fgFfr+w3/HNAFyFop8XzhvVIBK8jrzTFMZYFzdase6Sfito8O9isezoMWKpAQxi/dekYTVCB6fnQTj66okhfzWbOMpJkU8uvdeMo6vLn6SKeRSy3dywLSd9d1nIpCUGWTch3emxt4a6rL/lnqo2PaHGPWJiDuT3bYxv2kl9/HOLEv3BhEynj3r47PdEU68fKqX3vR4upjSyfj8Vau41VdF4Jv8wB6UsOFmQRFpXTpxqfJBgabQnRgau60Yg/kTxkNj+vixKisWWWjqwi9cipdKrQtzEloQEuAQY2QmSN1cei182ugd4bECZfX9Zgfj1tAc+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E/CWNFQ98p20i+FbHHV4C5MepiBoqftIuGPLV44/lO0=;
- b=HiH1BZBIViTfX2RicDriFuWy4DYsBtBykIZpa8PvTjP6+JkrXUOcgEwF9L699USKjzk7Rb6fi4Vf5/gxGWzL3kUgPa+zVQFHie4dwO6OgVzs3iy+jaFHWXIzA5rjOEF/RFZxQYvaWO1XTbNRa9Sd8jdhyelJCSN06OMwy/opJsL2MVhwkiPWYtxXQU0zZyjTmPwumR2bCUNKF2I8T29Ljf39OcOatbzLUjwYJwq/NSgJhOLa3p6drzOZMcIxnZol7WKkX9+d17R1equw9Z3NdahBPhNy5w2OiYKbpx8NDkWAuse7H6CgZdhgP66b93TMPcg0Xsl5hcv4aA2B1f2a9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E/CWNFQ98p20i+FbHHV4C5MepiBoqftIuGPLV44/lO0=;
- b=WleO7IUHG0IosDyUxWtUxNQrWFbKZHUL5KbFLAHYs7ZR8Bs94MXSoqqZPUb3byqXyt5BAXS0mPyQhJSBRsqidjwr59VnS6I6lPRgs6gmVgbyfXMN7U6OyFuKMcrJlvVlUlfkwBscbQT2qN0UG+S4eZTkmj53oEmxS+gTbL1yzww=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB8PR04MB5657.eurprd04.prod.outlook.com (2603:10a6:10:a6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.23; Mon, 31 Aug
- 2020 09:07:53 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::24d0:f783:3c7d:e232%12]) with mapi id 15.20.3326.025; Mon, 31 Aug
- 2020 09:07:53 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH] cpufreq: dt: delay the clk/regulator check
-Thread-Topic: [PATCH] cpufreq: dt: delay the clk/regulator check
-Thread-Index: AQHWf3AAZbBH4ndxZkqgPA9p6ygXkalR5w+AgAAGS9A=
-Date:   Mon, 31 Aug 2020 09:07:53 +0000
-Message-ID: <DB6PR0402MB27605875A6F85CE06790BD0E88510@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <20200831084858.2398-1-peng.fan@nxp.com>
- <20200831084441.uvw4jx4cbfh5y3e6@vireshk-i7>
-In-Reply-To: <20200831084441.uvw4jx4cbfh5y3e6@vireshk-i7>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3f5de8ca-9c79-45c1-44eb-08d84d8d5835
-x-ms-traffictypediagnostic: DB8PR04MB5657:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB56572CE3B36C37A4B894110788510@DB8PR04MB5657.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /+N03jClKF8j7XBVDGijG5H0QDInCJaDoNNPZknexqjXVusUT/wXWrxPu9KJBLMSL5fbPz1CK81n+vz9xbnnY/1SFelujokvsuJ5HnckGwjvhNPwbxlUmRf2dw+YQf3tKHQcmp5pYtw8E+mwi9hNw0jfh3pK0BcveRuAnI946ShPTFF0EdyNIq74rc+Iwqq9gMq5yw+69B+14HgVH4f71CFaUa16NaZfbQ5FsIBuma1QYhbKilbaIUBfR+uBaHSs8418C7ETJQ0VQvoOi525lrnrYZxbPO9/5y41cSR2IDCA+v/j6U3Rsi5Qm+/Uw8v/RO7K1ZKNhIlau0OQgayfBA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(366004)(396003)(39860400002)(64756008)(186003)(86362001)(66446008)(9686003)(66556008)(44832011)(66476007)(76116006)(71200400001)(52536014)(26005)(66946007)(478600001)(33656002)(8676002)(8936002)(316002)(5660300002)(55016002)(54906003)(6916009)(53546011)(7696005)(4744005)(4326008)(2906002)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 1MZe72Mc1uEOo2fipudR+k0cMOz3cIqQQ3BNon8ICFutuc+Sqs7yKSazVzfTEeX0cOrPCmGXXXCqs1eVhSQ/scqMcGRmk7fr0dD6ccfac0PnzxwvvokEJqaERwthP7v3OtR8tsOvH71UuDcyC/ML+zu+xi5ev2wQjHuTdgXs369Kyi+wknK7Bbm5fFFzSS0Gdax7Nohldx/lpscp/vuG/SCSgtCl1fDMdgvB7A7L6RX/x/3BJRc6JViY0pGEqflU5a3ASTa5TtsZpZaB9qFmsbvgnVJW7mBRaqyaR7d7oGQAbnQ/5orqAZC3hhTsbOsk2Fu2ho9trfG5//zJ6SzkavRYbWRijhRL4AskHFKHQQoqKLyRVPvUtIX9iYRP+oIrZtOsa+/5pmNuF+v2BP426kpwoIbK1Qor7w2r352EV+21evzgk7msw5nvjyHKVpLPMkGdxMGBS0FmfLMcKs3S6hknoNUa/vzwz9RCPn6G7/kPzEauwJcNVhqlQ9ZUfnof/BKgCALWLW6OaRHqDD2vZEYisOtDaR8zIjSptXiYh8lrxqHYiOE9yajYRkdnzM5aoIDhtR3NkXj8en0BaSHq8g6sKtfXCAfeF+SsmhAOjvK9GMKudwUfoadsZRRfXT7lPGAWK9NfY7wnnWVwOtINLQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1728379AbgHaJJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 05:09:10 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53146 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727979AbgHaJJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 05:09:10 -0400
+IronPort-SDR: D6zlpddwxtVDG3zQ0HRKGNe7bYCF2dDqiSdeeKwq5vWaGMvEGyZpwEMarni7acYfIPWaSwbmkU
+ l2NBQZAzCaxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="136987660"
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="136987660"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 02:09:05 -0700
+IronPort-SDR: jixwEQRidF76KpFfUpVyD4e/NMvaG5C6P8VqUv0jvnsAoM6u3tBu2har0K4ncX7ynHHeAI7h7x
+ j4GdB1knWwxQ==
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="340588964"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 02:09:01 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id D20AB204F9; Mon, 31 Aug 2020 12:08:59 +0300 (EEST)
+Date:   Mon, 31 Aug 2020 12:08:59 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "Yeh, Andy" <andy.yeh@intel.com>,
+        "Chiang, Alan" <alanx.chiang@intel.com>,
+        "Chen, Jason" <jasonx.z.chen@intel.com>
+Subject: Re: [PATCH 3/3] media: imx258: Get clock from device properties and
+ enable it
+Message-ID: <20200831090859.GF31019@paasikivi.fi.intel.com>
+References: <20200828160053.6064-1-krzk@kernel.org>
+ <20200828160053.6064-3-krzk@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f5de8ca-9c79-45c1-44eb-08d84d8d5835
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2020 09:07:53.7429
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ksiV9upZzxxlhhju/BkaUjDst6u/qE0muf9WNn/XWFAeHh+f9NzIkJRGn4NTNICd0t7IBFUlwYi36dZ60sNovA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5657
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828160053.6064-3-krzk@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH] cpufreq: dt: delay the clk/regulator check
->=20
-> On 31-08-20, 16:48, peng.fan@nxp.com wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > cpufreq_init could be used to do check clk/regulator check, there is
-> > no need to duplicate the work in resources_available.
-> >
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
->=20
-> Hi can you please see if this happens on linux-next as well ? The routine
-> resources_available() isn't there anymore.
+Hi Krzysztof,
 
-Not happen in Linux-next after I rebase.
+Thanks for the patchset.
 
-Thanks,
-Peng.
+On Fri, Aug 28, 2020 at 06:00:53PM +0200, Krzysztof Kozlowski wrote:
+> The IMX258 sensor driver checked in device properties for a
+> clock-frequency property which actually does not mean that the clock is
+> really running such frequency or is it even enabled.
+> 
+> Get the provided clock and check it frequency.  If none is provided,
+> fall back to old property.
+> 
+> Enable the clock when accessing the IMX258 registers and when streaming
+> starts.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/media/i2c/imx258.c | 107 ++++++++++++++++++++++++++++++-------
+>  1 file changed, 87 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
+> index c20bac9b00ec..4d763dcabb1d 100644
+> --- a/drivers/media/i2c/imx258.c
+> +++ b/drivers/media/i2c/imx258.c
+> @@ -2,6 +2,7 @@
+>  // Copyright (C) 2018 Intel Corporation
+>  
+>  #include <linux/acpi.h>
+> +#include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+> @@ -68,6 +69,9 @@
+>  #define REG_CONFIG_MIRROR_FLIP		0x03
+>  #define REG_CONFIG_FLIP_TEST_PATTERN	0x02
+>  
+> +/* Input clock frequency in Hz */
+> +#define IMX258_INPUT_CLOCK_FREQ		19200000
+> +
+>  struct imx258_reg {
+>  	u16 address;
+>  	u8 val;
+> @@ -610,6 +614,8 @@ struct imx258 {
+>  
+>  	/* Streaming on/off */
+>  	bool streaming;
+> +
+> +	struct clk *clk;
+>  };
+>  
+>  static inline struct imx258 *to_imx258(struct v4l2_subdev *_sd)
+> @@ -747,6 +753,12 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
+>  	if (pm_runtime_get_if_in_use(&client->dev) == 0)
+>  		return 0;
+>  
+> +	ret = clk_prepare_enable(imx258->clk);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to enable clock\n");
+> +		goto out;
+> +	}
+> +
+>  	switch (ctrl->id) {
+>  	case V4L2_CID_ANALOGUE_GAIN:
+>  		ret = imx258_write_reg(imx258, IMX258_REG_ANALOG_GAIN,
+> @@ -779,6 +791,8 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
+>  		break;
+>  	}
+>  
+> +out:
+> +	clk_disable_unprepare(imx258->clk);
+>  	pm_runtime_put(&client->dev);
+>  
+>  	return ret;
+> @@ -972,10 +986,40 @@ static int imx258_stop_streaming(struct imx258 *imx258)
+>  	return 0;
+>  }
+>  
+> +static int imx258_power_on(struct imx258 *imx258)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
+> +	int ret;
+> +
+> +	ret = pm_runtime_get_sync(&client->dev);
+> +	if (ret < 0)
+> +		goto err;
 
->=20
-> --
-> viresh
+Please continue to use runtime PM directly, and move the clock control to
+runtime PM callbacks (apart from probe and remove).
+
+> +
+> +	ret = clk_prepare_enable(imx258->clk);
+> +	if (ret) {
+> +		dev_err(&client->dev, "failed to enable clock\n");
+> +		goto err;
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+> +	pm_runtime_put_noidle(&client->dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void imx258_power_off(struct imx258 *imx258)
+> +{
+> +	struct i2c_client *client = v4l2_get_subdevdata(&imx258->sd);
+> +
+> +	clk_disable_unprepare(imx258->clk);
+> +	pm_runtime_put(&client->dev);
+> +}
+> +
+>  static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+>  {
+>  	struct imx258 *imx258 = to_imx258(sd);
+> -	struct i2c_client *client = v4l2_get_subdevdata(sd);
+>  	int ret = 0;
+>  
+>  	mutex_lock(&imx258->mutex);
+> @@ -985,11 +1029,9 @@ static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+>  	}
+>  
+>  	if (enable) {
+> -		ret = pm_runtime_get_sync(&client->dev);
+> -		if (ret < 0) {
+> -			pm_runtime_put_noidle(&client->dev);
+> +		ret = imx258_power_on(imx258);
+> +		if (ret < 0)
+>  			goto err_unlock;
+> -		}
+>  
+>  		/*
+>  		 * Apply default & customized values
+> @@ -997,10 +1039,10 @@ static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+>  		 */
+>  		ret = imx258_start_streaming(imx258);
+>  		if (ret)
+> -			goto err_rpm_put;
+> +			goto err_power_off;
+>  	} else {
+>  		imx258_stop_streaming(imx258);
+> -		pm_runtime_put(&client->dev);
+> +		imx258_power_off(imx258);
+>  	}
+>  
+>  	imx258->streaming = enable;
+> @@ -1008,8 +1050,8 @@ static int imx258_set_stream(struct v4l2_subdev *sd, int enable)
+>  
+>  	return ret;
+>  
+> -err_rpm_put:
+> -	pm_runtime_put(&client->dev);
+> +err_power_off:
+> +	imx258_power_off(imx258);
+>  err_unlock:
+>  	mutex_unlock(&imx258->mutex);
+>  
+> @@ -1201,21 +1243,41 @@ static int imx258_probe(struct i2c_client *client)
+>  	int ret;
+>  	u32 val = 0;
+>  
+> -	device_property_read_u32(&client->dev, "clock-frequency", &val);
+> -	if (val != 19200000)
+> -		return -EINVAL;
+> +	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
+> +	if (!imx258)
+> +		return -ENOMEM;
+> +
+> +	imx258->clk = devm_clk_get_optional(&client->dev, NULL);
+> +	if (!imx258->clk) {
+> +		dev_info(&client->dev, "no clock provided, using clock-frequency property\n");
+> +
+> +		device_property_read_u32(&client->dev, "clock-frequency", &val);
+> +		if (val != IMX258_INPUT_CLOCK_FREQ)
+> +			return -EINVAL;
+> +	} else if (IS_ERR(imx258->clk)) {
+> +		return dev_err_probe(&client->dev, PTR_ERR(imx258->clk), "error getting clock\n");
+> +	} else {
+> +		if (clk_get_rate(imx258->clk) != IMX258_INPUT_CLOCK_FREQ) {
+> +			dev_err(&client->dev, "input clock frequency not supported\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +		ret = clk_prepare_enable(imx258->clk);
+> +		if (ret) {
+> +			dev_err(&client->dev, "failed to enable clock\n");
+> +			return ret;
+> +		}
+> +	}
+>  
+>  	/*
+>  	 * Check that the device is mounted upside down. The driver only
+>  	 * supports a single pixel order right now.
+>  	 */
+>  	ret = device_property_read_u32(&client->dev, "rotation", &val);
+> -	if (ret || val != 180)
+> -		return -EINVAL;
+> -
+> -	imx258 = devm_kzalloc(&client->dev, sizeof(*imx258), GFP_KERNEL);
+> -	if (!imx258)
+> -		return -ENOMEM;
+> +	if (ret || val != 180) {
+> +		ret = -EINVAL;
+> +		goto error_prop_read;
+> +	}
+>  
+>  	/* Initialize subdev */
+>  	v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
+> @@ -1223,14 +1285,14 @@ static int imx258_probe(struct i2c_client *client)
+>  	/* Check module identity */
+>  	ret = imx258_identify_module(imx258);
+>  	if (ret)
+> -		return ret;
+> +		goto error_prop_read;
+>  
+>  	/* Set default mode to max resolution */
+>  	imx258->cur_mode = &supported_modes[0];
+>  
+>  	ret = imx258_init_controls(imx258);
+>  	if (ret)
+> -		return ret;
+> +		goto error_prop_read;
+>  
+>  	/* Initialize subdev */
+>  	imx258->sd.internal_ops = &imx258_internal_ops;
+> @@ -1252,8 +1314,13 @@ static int imx258_probe(struct i2c_client *client)
+>  	pm_runtime_enable(&client->dev);
+>  	pm_runtime_idle(&client->dev);
+>  
+> +	clk_disable_unprepare(imx258->clk);
+> +
+>  	return 0;
+>  
+> +error_prop_read:
+> +	clk_disable_unprepare(imx258->clk);
+
+How about remove? Think of how this works when runtime PM is disabled.
+
+> +
+>  error_media_entity:
+>  	media_entity_cleanup(&imx258->sd.entity);
+>  
+
+-- 
+Kind regards,
+
+Sakari Ailus
