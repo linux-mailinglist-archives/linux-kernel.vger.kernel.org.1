@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACEB8257A6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8B6257A7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 15:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgHaNao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 09:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgHaN1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 09:27:12 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A73C0619E8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:26:29 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e11so6668771ljn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 06:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=o69Nac3LLMj5CDhyPqLcnP7WGq46U4gQb9HzFdG/MvE=;
-        b=GvS5ONqONS+SkRITeLOYK+nEKqeftr2e4zlw8iOljUdVaT4ei8mXK/eMe5gdebbxul
-         qejaiESAwrQo/TwRSbsV2RgWo1cR2hwlUx3zHZP6xDZHfKXln6WrMjydy1j5UDKStApO
-         83k6OMYB/O4HA/D4ksOUSzU9ZpUpEqmaButNQtqR6C29H3+mAHSKCbPlI067sUdB20EE
-         ixBTW9S1A2kyuIbzfdQN/JSL5cc/RZ+/MNHv7Yis6pX8HuuJNUwic97zwHx5MU4x4PUn
-         9VwFvJUStfi4hRDyGGDy0ijlpU3bNrs4tLAIT0WFfsT49jK8zJO72eI6R18XAB60K+Uk
-         aflg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=o69Nac3LLMj5CDhyPqLcnP7WGq46U4gQb9HzFdG/MvE=;
-        b=bnorauyiLN2rP8N7R9LhRjElUNtWVe8TMfGAJgVy43K7eec/AhOogjxD7sdeXD00QP
-         7o12RsxRWyURL2ej+DTBSUX8ICh70Em0lhmcYS0z309+hNDjeeSNXgtVP+WASSCjS8O8
-         CEbFkxPr3+jyW/m1AZMs2B+UpOtY5dFj8h1QJWlNUpGaS3lTOTPSujru2aG3l0AzYJe2
-         RXPlUx3lfw6KAD+dMPfSajOns3EEq0UteOyttaFbFS1pREp66Rau11HuSOwEXd7388LP
-         Y+mQ4VjyziWTAOiFbkUgH6WB1MK7yxEcwbrjjI4L5r5zFsau0QtJxOK1JDT7HStfc8xU
-         GkyQ==
-X-Gm-Message-State: AOAM533PGTUh5wdj1MnsRHCjYWAV2LlxG6FJ1ZGZOeCUMn7rJ6sNr0iV
-        ghr2TZ31xQShGkJhbmnYg7W9VurvqwYCUyKL0wk=
-X-Google-Smtp-Source: ABdhPJx5h73UdWdmqN0ZXklbmHxhGiANR3jS4fz3EetfufGWkyufJh3oSK0WTBZL+72KPBBqNF1EE+YcTj5isQyt2i4=
-X-Received: by 2002:a2e:5316:: with SMTP id h22mr714236ljb.167.1598880387154;
- Mon, 31 Aug 2020 06:26:27 -0700 (PDT)
+        id S1727933AbgHaNdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 09:33:15 -0400
+Received: from mga05.intel.com ([192.55.52.43]:25348 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726489AbgHaN2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 09:28:40 -0400
+IronPort-SDR: 30MqgE3vaJIDvUvR0a/xUyIm60Gs1ocCEKZuaoeOwovJWINkzSGF48pADUGA9/jbguT7sHq1lg
+ 3Q98Rtk5wBuA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9729"; a="241777786"
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="241777786"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 06:28:31 -0700
+IronPort-SDR: 0a6RGUdFd+sq21CVvn9Wa8r3qdq8zINIwWTh3WaR5k6tS+7E1dxa8yrM/u9Ep82tNl+279rtDx
+ B7Fxos0AYCww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,375,1592895600"; 
+   d="scan'208";a="476726708"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
+  by orsmga005.jf.intel.com with ESMTP; 31 Aug 2020 06:28:28 -0700
+Subject: Re: [PATCH 4/6] perf tools: Add FIFO file names as alternative
+ options to --control
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20200829105015.10800-1-adrian.hunter@intel.com>
+ <20200829105015.10800-5-adrian.hunter@intel.com>
+ <20200831131927.GD406859@krava>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <660d6f71-f34d-dd3d-bc3d-3d2b9e868267@intel.com>
+Date:   Mon, 31 Aug 2020 16:27:52 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Reply-To: marie_avis12@yahoo.com
-Received: by 2002:a2e:9817:0:0:0:0:0 with HTTP; Mon, 31 Aug 2020 06:26:26
- -0700 (PDT)
-From:   Miss Maris Avis <marie.avis11@gmail.com>
-Date:   Mon, 31 Aug 2020 13:26:26 +0000
-X-Google-Sender-Auth: aulnVZG-1gSOcZsrnz7-vOB6QCo
-Message-ID: <CADTVshPC=1cJsw0xvUiUZDDBg3VVdBcHJ+pk-zuvR4tycntngg@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200831131927.GD406859@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear,
+On 31/08/20 4:19 pm, Jiri Olsa wrote:
+> On Sat, Aug 29, 2020 at 01:50:13PM +0300, Adrian Hunter wrote:
+> 
+> SNIP
+> 
+>> +		*p = '\0';
+>> +
+>> +	/*
+>> +	 * O_RDWR avoids POLLHUPs which is necessary to allow the other
+>> +	 * end of a FIFO to be repeatedly opened and closed.
+>> +	 */
+>> +	fd = open(s, O_RDWR | O_NONBLOCK | O_CLOEXEC);
+>> +	if (fd < 0) {
+>> +		pr_err("Failed to open '%s'\n", s);
+>> +		ret = -errno;
+>> +		goto out_free;
+>> +	}
+>> +	*ctl_fd = fd;
+>> +	*ctl_fd_close = true;
+>> +
+>> +	if (p && *++p) {
+>> +		/* O_RDWR | O_NONBLOCK means the other end need not be open */
+>> +		fd = open(p, O_RDWR | O_NONBLOCK | O_CLOEXEC);
+>> +		if (fd < 0) {
+>> +			pr_err("Failed to open '%s'\n", p);
+>> +			ret = -errno;
+>> +			goto out_free;
+>> +		}
+>> +		*ctl_fd_ack = fd;
+>> +	}
+>> +
+>> +out_free:
+>> +	free(s);
+>> +	return ret;
+>> +}
+>> +
+>> +int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close)
+>>  {
+>>  	char *comma = NULL, *endptr = NULL;
+>>  
+>>  	if (strncmp(str, "fd:", 3))
+>> -		return -EINVAL;
+>> +		return evlist__parse_control_names(str, ctl_fd, ctl_fd_ack, ctl_fd_close);
+> 
+> do we want to mention somewhere that the fifo name is everything
+> except for 'fd:' ?
 
-My name is Miss Marie Avis the only daughter of Mr. Gabriel Avis, my
-Father was dealing in Cocoa and Timber in this country before his
-death,  It is my pleasure to contact you for a business venture which
-I intend to establish in your country. Though I have not met with you
-before but I believe one has to risk confiding before you can succeed
-sometimes in life.
+It is only mentioned in the documentation i.e.
 
-I can confide in you for my brighter future since you are a human
-being like me. There is this huge amount of Ten Million five hundred
-thousand United States dollars. ($10.500.000.00) which my late Father
-kept for me in a suspense account with one of the bank here in Abidjan
-Cote d'Ivoire before he was assassinated by unknown persons, Now I
-have decided to invest these money in your country or anywhere safe
-enough for me.
+--- a/tools/perf/Documentation/perf-record.txt
++++ b/tools/perf/Documentation/perf-record.txt
+@@ -627,7 +627,9 @@ option. The -e option and this one can be mixed and matched.  Events
+ can be grouped using the {} notation.
+ endif::HAVE_LIBPFM[]
+ 
++--control=ctl-fifo[,ack-fifo]::
+ --control=fd:ctl-fd[,ack-fd]::
++ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
+ Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
+ 'disable': disable events). Measurements can be started with events disabled using
+ --delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
 
-I want you to help me claim this fund from the bank and have it
-transfer into your personal account in your country for investment
-purposes in your country in these areas:
+> 
+> also how likely is that we will add another channel type that
+> will need another keyword (likd 'fd:')? I originaly thought
+> we'd use 'fifo:filename' for this ... would be great to somehow
+> avoid future confusions
 
-1). Telecommunication
-2). The transport Industry
-3). Five Star Hotel
-4). Tourism
-5). Real Estate
+Sure, I will add fifo: in V2
 
-If you can be of assistance to me I will be pleased to offer you 20%
-of the total fund.
 
-I await your soonest response.
 
-Respectfully yours,
-Miss Marie Evis
-Tel: +225597438528
