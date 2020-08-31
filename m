@@ -2,70 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9CC258298
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27B725829F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 22:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728402AbgHaU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 16:29:08 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:43551 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728324AbgHaU3I (ORCPT
+        id S1728472AbgHaUb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 16:31:29 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6818 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgHaUb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 16:29:08 -0400
-Received: by mail-io1-f72.google.com with SMTP id f19so4934964iol.10
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 13:29:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=gnKsjgJ5rv+iBjKke+34Do0zneKwGI7SNQuffWwXV30=;
-        b=TSb/FBaOaqiAtTJSO3Aw1gp8kj1cUkla+tjG4x9u7G+Vi+vJ3JX+uOXRzncD6aVeXA
-         gXuaF9vlbIxB5qSkWDGUyGLKPs92al0HejsQkqWdojkj3kZz49jJT7ddgTkD/ZcZbAR3
-         VjfHibIidPABS0bYuV2JML8N6wAg8kjbnrcsjewClyLMu/zetLb5asGkDi6BWWHeG4Vg
-         nKy6dyH/cVBsXIbOYNBEJ/uvJiMT3ZTZ961urHdYCQlUlAzuY/sslEU8W8KlN1Hxzrle
-         ExyU4KGxwCj5D4L7KyiLxPXFvK68BpROQKhiBIfXHxDDq12AjtGuTapXPxohZ7jI7NSX
-         ePjg==
-X-Gm-Message-State: AOAM532joGzTC7rg+1KuntnqYWnr7UtS1RvmKHH9isuXQK08HuVRp+DN
-        TPOt8JHf5v9XwWJBtaVYZighuVQdIGVhcCeRDukbPts6SPMb
-X-Google-Smtp-Source: ABdhPJwCvxBZTJEsf7HAcCNqGtxUArlv0LeJO8NfG5NM0O/U5K34R5yLEbt3NyLxslkp5VsQxwdtrntanuYjj9jwxim2j2G3q909
+        Mon, 31 Aug 2020 16:31:29 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4d5da30000>; Mon, 31 Aug 2020 13:29:23 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 31 Aug 2020 13:31:29 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 31 Aug 2020 13:31:29 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 31 Aug
+ 2020 20:31:28 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 31 Aug 2020 20:31:28 +0000
+Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f4d5e200001>; Mon, 31 Aug 2020 13:31:28 -0700
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>
+Subject: [PATCH v2] nouveau: fix the start/end range for migration
+Date:   Mon, 31 Aug 2020 13:31:11 -0700
+Message-ID: <20200831203111.4940-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2b13:: with SMTP id p19mr2800611iov.30.1598905747341;
- Mon, 31 Aug 2020 13:29:07 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 13:29:07 -0700
-In-Reply-To: <000000000000520ffc05ae2f4fee@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001985dc05ae32417b@google.com>
-Subject: Re: KASAN: use-after-free Read in bdev_del_partition
-From:   syzbot <syzbot+6448f3c229bc52b82f69@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, hch@lst.de, jack@suse.cz,
-        johannes.thumshirn@wdc.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598905763; bh=pZWsjSZM0QN5f+TE2diScGkjthiNwttyZzPcjsliW5Q=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=FbVDlCGjRypJsQ8N3BF746+otYl3PQqAgWuR0TY+dk8GXTAtlWV5XefOeqCOxaoEZ
+         eEZfHwpZnsUaexY5oxjWIYcDDXX19/3RS0dd1S0xtLhbRmW6makl1Time2m2F8j1l0
+         k5KNNpRnM1UVeUeq3eENJFcDvAsDPGKWfWMksttbvsshQwRfsk20fExdNFlhM9/nnz
+         VdY/+TbqUSw7SVYCtFfOnvCP59oM8odz7PbJtJZDeRJvRr7Pv02AWNRzmCR1YQSR2B
+         TPFcE6QgyFs5bWcuW9PwrfvunCKtWxP0qVDqkE5Dwt7ujmS7cWVN7lES5TXwsErMGt
+         Di9Df95W5s9qg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+The user level OpenCL code shouldn't have to align start and end
+addresses to a page boundary. That is better handled in the nouveau
+driver. The npages field is also redundant since it can be computed
+from the start and end addresses.
 
-commit cddae808aeb77e5c29d22a8e0dfbdaed413f9e04
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Tue Apr 14 07:28:54 2020 +0000
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+---
 
-    block: pass a hd_struct to delete_partition
+This is for Ben Skegg's nouveau tree.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17fa7656900000
-start commit:   dcc5c6f0 Merge tag 'x86-urgent-2020-08-30' of git://git.ke..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14067656900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10067656900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
-dashboard link: https://syzkaller.appspot.com/bug?extid=6448f3c229bc52b82f69
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154e2285900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f6e915900000
+I have been working with Karol Herbst on the OpenCL mesa changes for
+nouveau which will be merged upstream soon.
+With or without those changes, the user visible effect of this patch
+only extends the range by one page (round up vs. round down to page
+boundary).
 
-Reported-by: syzbot+6448f3c229bc52b82f69@syzkaller.appspotmail.com
-Fixes: cddae808aeb7 ("block: pass a hd_struct to delete_partition")
+Changes in v2:
+I changed the start/end check to require a size so start has to be less
+than end.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+ drivers/gpu/drm/nouveau/nouveau_svm.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouvea=
+u/nouveau_svm.c
+index 2df1c0460559..4f69e4c3dafd 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_svm.c
++++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
+@@ -105,11 +105,11 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 	struct nouveau_cli *cli =3D nouveau_cli(file_priv);
+ 	struct drm_nouveau_svm_bind *args =3D data;
+ 	unsigned target, cmd, priority;
+-	unsigned long addr, end, size;
++	unsigned long addr, end;
+ 	struct mm_struct *mm;
+=20
+ 	args->va_start &=3D PAGE_MASK;
+-	args->va_end &=3D PAGE_MASK;
++	args->va_end =3D ALIGN(args->va_end, PAGE_SIZE);
+=20
+ 	/* Sanity check arguments */
+ 	if (args->reserved0 || args->reserved1)
+@@ -118,8 +118,6 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 		return -EINVAL;
+ 	if (args->va_start >=3D args->va_end)
+ 		return -EINVAL;
+-	if (!args->npages)
+-		return -EINVAL;
+=20
+ 	cmd =3D args->header >> NOUVEAU_SVM_BIND_COMMAND_SHIFT;
+ 	cmd &=3D NOUVEAU_SVM_BIND_COMMAND_MASK;
+@@ -151,12 +149,6 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 	if (args->stride)
+ 		return -EINVAL;
+=20
+-	size =3D ((unsigned long)args->npages) << PAGE_SHIFT;
+-	if ((args->va_start + size) <=3D args->va_start)
+-		return -EINVAL;
+-	if ((args->va_start + size) > args->va_end)
+-		return -EINVAL;
+-
+ 	/*
+ 	 * Ok we are ask to do something sane, for now we only support migrate
+ 	 * commands but we will add things like memory policy (what to do on
+@@ -171,7 +163,7 @@ nouveau_svmm_bind(struct drm_device *dev, void *data,
+ 		return -EINVAL;
+ 	}
+=20
+-	for (addr =3D args->va_start, end =3D args->va_start + size; addr < end;)=
+ {
++	for (addr =3D args->va_start, end =3D args->va_end; addr < end;) {
+ 		struct vm_area_struct *vma;
+ 		unsigned long next;
+=20
+--=20
+2.20.1
+
