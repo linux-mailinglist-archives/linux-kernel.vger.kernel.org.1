@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354202573DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0CDC2573E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 08:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727842AbgHaGll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 02:41:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgHaGlj (ORCPT
+        id S1727859AbgHaGnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 02:43:19 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41056 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbgHaGnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 02:41:39 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABFFC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:41:39 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id j21so111526oii.10
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Aug 2020 23:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mBJNIRqUExiPeZF8xMwliEHPk0u0KNgv6oRniOleVd8=;
-        b=UYoh3tKAOAIrKDKQ4n/n3fg9NdqM4Zdv+pRbjqMsouewV6+NDU7kiuLwYNg0yfygvn
-         d+xvGICR8hgMeHYkQQUBF9nQbYNuPrXbFZ358Dnu5mprBOHgvtLUbzvndQOczfjLqDKp
-         4h5PpVTouOutgcfX6xFnVqrMrRXGpXyPSGcyrmuWMjBg5lzbyKZ1sVHwil4lUxQewNvq
-         hFxS+3CeDCaLYJBX9IiPoUtWgPc1/JrnT6TyBqC1Udmoyw40YOhe9mssfVtf2bgpCWme
-         qEmn+sJH/QE0bUHZI/H8CNSyPZeVoVYVDdgMx2ZJL9s3KDcNAAjxk17odKg6ahH+GaBL
-         4L0g==
+        Mon, 31 Aug 2020 02:43:18 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y4so4282032ljk.8;
+        Sun, 30 Aug 2020 23:43:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mBJNIRqUExiPeZF8xMwliEHPk0u0KNgv6oRniOleVd8=;
-        b=tsobvGzkhJpSVyniJP0aKtR/x+xRiEjwGtVNaPnvqCRS1T3kZjT8ISb4WzJHKgkcnp
-         FZ9LFo66bqf5Hoo+9QO7b7N8ZivLAWVBbBmIIvP3sT36tfMased6vr9fe6RTMWq26VIL
-         NXHkCFrWAwbfAf7D46qjTBXWFcCElEUcjuFcYdNV92lqb2vzip6rmwDMPb/Q9dNb0pHa
-         5Guu0q/zvFuen1vsXrsMLrilSI/tVi3AL0zAS0I0SHkC93GaHGODmVJTtswd00g9oU2S
-         fSvv+Evx95O9qx7G34kCDwZkz2DtKZH+kkGHpzISbPfRRuKT2NVa2l0Bcxn/dNc3b0Hz
-         zMqg==
-X-Gm-Message-State: AOAM533o8V9xvVJ1gJwyRrIQYdkK79sbZwctIsDENyXmTTN3SMuB3OfJ
-        T5QLhbmjWV0J6I1vkE82rcKe5UNingVs4H2DRtq2MzvHa7k=
-X-Google-Smtp-Source: ABdhPJzEm5vqrWCF7/cXwQ8t6SBioL0RPh9Y5s1KMXFlKBj7LghejkC9MfNkDumcK19Wqm1Khf0CkABoW0G9EPAu0mw=
-X-Received: by 2002:aca:5158:: with SMTP id f85mr53219oib.121.1598856098398;
- Sun, 30 Aug 2020 23:41:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wyW58DDBNp+B8mjoREWkn7J6NiyeeYGpM+salH1bjXM=;
+        b=YrQiutvdvFIanhD9xE4LfIzFpyTWE0k81PP4HCgGdvc7vedd9MwJrIuRaKs1aC/CDy
+         12UQFVaUiiXu7wdNUkmUXFuRIjiEUU61HsT/6RhEQD9ssSHhzpGX4nL9y4gxjVexjBkU
+         eMtHveR49P0Xskn2fcXnLxq35kPvaZbWf4XVkBljKX97u2nRfoe1w3yP19WbyIiZo1mm
+         9YjlmELBKPMKRaSClD/8RHI43+CKH6iWruY3P3O6wCf7QwBP1Q5g0zgMVUQUrLpEfIK0
+         kpcyPPLv5ObKG7tPXMDRqYImfPeCVCOmfeRJC2s2+JAsZDeXZW6R3EhMOqQ92xZ8ILUy
+         GwRw==
+X-Gm-Message-State: AOAM533vBK6xwtEkIZ3X1OsGXb6nDmc1Nu2+xV6HLkRCPmm2opGtteOw
+        14xYKNpUFlOcZ4DS25rfXME=
+X-Google-Smtp-Source: ABdhPJzybFq958m1TKK2GCBj+0bVRPOnQGvnyOyx0GNhUh2y6CEFA1Dt5qSQPV3Ry/w8ygYnkLIsSg==
+X-Received: by 2002:a2e:8690:: with SMTP id l16mr4245073lji.7.1598856194607;
+        Sun, 30 Aug 2020 23:43:14 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id a16sm1374592ljj.108.2020.08.30.23.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Aug 2020 23:43:13 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kCdX0-0006dm-98; Mon, 31 Aug 2020 08:43:06 +0200
+Date:   Mon, 31 Aug 2020 08:43:06 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Aleksander Morgado <aleksander@aleksander.es>
+Cc:     johan@kernel.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] USB: serial: option: add support for
+ SIM7070/SIM7080/SIM7090 modules
+Message-ID: <20200831064306.GN21288@localhost>
+References: <20200829090539.80140-1-aleksander@aleksander.es>
 MIME-Version: 1.0
-References: <159881061564.27993.11909051048930389391.tglx@nanos>
- <159881061804.27993.16119786735164087221.tglx@nanos> <CAHk-=wi6ufj=O-PDu=HVYw0QXpK52GPWKJfBaU4Djr0h6OFpKg@mail.gmail.com>
-In-Reply-To: <CAHk-=wi6ufj=O-PDu=HVYw0QXpK52GPWKJfBaU4Djr0h6OFpKg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 31 Aug 2020 08:41:27 +0200
-Message-ID: <CANpmjNPc7Hs0LvXPe540rgCzFAe9B7ec-ddStGfxVU_mtvFKOQ@mail.gmail.com>
-Subject: Re: [GIT pull] sched/urgent for v5.9-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829090539.80140-1-aleksander@aleksander.es>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 Aug 2020 at 20:54, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Sun, Aug 30, 2020 at 11:04 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> >  - Make is_idle_task() __always_inline to prevent the compiler from putting
-> >    it out of line into the wrong section because it's used inside noinstr
-> >    sections.
->
-> What completely broken compiler uninlined that single-instruction function?
->
-> I've obviously pulled this, but it sounds like there should be a
-> compiler bug-report for this insane behavior.
->
-> Or is Marco building the kernel without optimizations or something
-> like that? That has not been a supported model, for various good
-> reasons..
+On Sat, Aug 29, 2020 at 11:05:39AM +0200, Aleksander Morgado wrote:
+> These modules have 2 different USB layouts:
+> 
+> The default layout with PID 0x9205 (AT+CUSBSELNV=1) exposes 4 TTYs and
+> an ECM interface:
+> 
+>   T:  Bus=02 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  6 Spd=480 MxCh= 0
+>   D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+>   P:  Vendor=1e0e ProdID=9205 Rev=00.00
+>   S:  Manufacturer=SimTech, Incorporated
+>   S:  Product=SimTech SIM7080
+>   S:  SerialNumber=1234567890ABCDEF
+>   C:  #Ifs= 6 Cfg#= 1 Atr=e0 MxPwr=500mA
+>   I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x1 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x4 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
+>   I:  If#=0x5 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+> 
+> The purpose of each TTY is as follows:
+>  * ttyUSB0: DIAG/QCDM port.
+>  * ttyUSB1: GNSS data.
+>  * ttyUSB2: AT-capable port (control).
+>  * ttyUSB3: AT-capable port (data).
+> 
+> In the secondary layout with PID=0x9206 (AT+CUSBSELNV=86) the module
+> exposes 6 TTY ports:
+> 
+>   T:  Bus=02 Lev=01 Prnt=01 Port=02 Cnt=01 Dev#=  8 Spd=480 MxCh= 0
+>   D:  Ver= 2.00 Cls=02(commc) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+>   P:  Vendor=1e0e ProdID=9206 Rev=00.00
+>   S:  Manufacturer=SimTech, Incorporated
+>   S:  Product=SimTech SIM7080
+>   S:  SerialNumber=1234567890ABCDEF
+>   C:  #Ifs= 6 Cfg#= 1 Atr=e0 MxPwr=500mA
+>   I:  If#=0x0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x1 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x3 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+>   I:  If#=0x5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+> 
+> The purpose of each TTY is as follows:
+>  * ttyUSB0: DIAG/QCDM port.
+>  * ttyUSB1: GNSS data.
+>  * ttyUSB2: AT-capable port (control).
+>  * ttyUSB3: QFLOG interface.
+>  * ttyUSB4: DAM interface.
+>  * ttyUSB5: AT-capable port (data).
+> 
+> Signed-off-by: Aleksander Morgado <aleksander@aleksander.es>
 
-Certainly with optimizations, but also with various debug options and
-sanitizer instrumentation. (FTR, the config used:
-https://lore.kernel.org/lkml/20200820144931.GA4120397@elver.google.com/3-a.txt
-on GCC 10.1 with GCC 11's KCSAN patches backported.)
+Now applied. Thanks, Aleksander.
 
-Checking GCC's sources, the inlining policy here is that the compiler
-tries to sanitize as many functions as possible, and if only 'inline'
-is used, it'll avoid inlining such a function into a 'no_sanitize'
-function in favor of instrumenting it.
-
-With a normal non-debug config this should therefore never happen.
-
-Thanks,
--- Marco
+Johan
