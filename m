@@ -2,82 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DC0257597
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389BB25759E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728216AbgHaIjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 04:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59652 "EHLO mail.kernel.org"
+        id S1728070AbgHaIkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:40:23 -0400
+Received: from verein.lst.de ([213.95.11.211]:48504 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725978AbgHaIjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:39:06 -0400
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63E822137B;
-        Mon, 31 Aug 2020 08:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598863145;
-        bh=/mTBwH0H2XS7YSaOFVh9wZUjDwDeG33keE7ZBUOqWL8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=0DNDIqwVYE/LHMPUqsSOdHXnx3H56mMT3qGKhC9s3QEwOGKmmxQnu97kkJhw1RJaq
-         2GHqCupyOkmXsanizUsBDchdhqQPHXVlqMjtCKuydcx0+o6XIFHrHSKhUpFtyvlrsx
-         xWZNqcvQMZs05rusutSFTe7ho3t4z/XQZbUThdD4=
-Received: by mail-ej1-f42.google.com with SMTP id b17so7346564ejq.8;
-        Mon, 31 Aug 2020 01:39:05 -0700 (PDT)
-X-Gm-Message-State: AOAM532BFfH7Zek1BT1BKrmCo5g3F6qew6CzevyUkF9QOcPVoFh7gDpm
-        FBb6jEWOnAmO0x70xHbVDP4LDVsuaksKehvnhhY=
-X-Google-Smtp-Source: ABdhPJyowpEQH5t1dzDoER28m99xK7ss6Z0pLGH7Bkoqwr+INsBLkRiqyVs2tsVykl3vYYCRQYzfp7ZyLf/kAhBS5HA=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr111095ejx.215.1598863144013;
- Mon, 31 Aug 2020 01:39:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200830135200.24304-1-krzk@kernel.org> <CGME20200830135508eucas1p21ad0d4f6a2ef78f854fc74750db3fa2a@eucas1p2.samsung.com>
- <20200830135200.24304-23-krzk@kernel.org> <c9daff05-dca7-f1b1-8cfe-46b185bf60dd@samsung.com>
-In-Reply-To: <c9daff05-dca7-f1b1-8cfe-46b185bf60dd@samsung.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 31 Aug 2020 10:38:52 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfR8YVmBqCd5+8B2TdM_tXZbWobK0pLxXxxkrsDEMR-vw@mail.gmail.com>
-Message-ID: <CAJKOXPfR8YVmBqCd5+8B2TdM_tXZbWobK0pLxXxxkrsDEMR-vw@mail.gmail.com>
-Subject: Re: [PATCH 23/33] ARM: dts: exynos: Remove empty camera pinctrl
- configuration in Odroid X/U3
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
+        id S1725978AbgHaIkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:40:21 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 76C4168CEC; Mon, 31 Aug 2020 10:40:18 +0200 (CEST)
+Date:   Mon, 31 Aug 2020 10:40:18 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "ganapatrao.kulkarni@cavium.com" <ganapatrao.kulkarni@cavium.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Denis GNUtoo Carikli <GNUtoo@cyberdimension.org>,
-        Simon Shields <simon@lineageos.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        huangdaode <huangdaode@huawei.com>
+Subject: Re: [PATCH v6 0/2] make dma_alloc_coherent NUMA-aware by per-NUMA
+ CMA
+Message-ID: <20200831084018.GA903@lst.de>
+References: <20200821022615.28596-1-song.bao.hua@hisilicon.com> <20200821061918.GA28559@lst.de> <05dad074e0624367a3fc0dfd0b96a352@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05dad074e0624367a3fc0dfd0b96a352@hisilicon.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020 at 10:31, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->
-> Hi Krzysztof,
->
-> On 30.08.2020 15:51, Krzysztof Kozlowski wrote:
-> > The camera's pinctrl configuration is simply empty and not effective.
-> > Remove it to fix dtbs_check warning:
-> >
-> >    arch/arm/boot/dts/exynos4412-odroidx.dt.yaml: camera: pinctrl-0: True is not of type 'array'
-> >
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> I think that this was intentional to properly enable support for
-> mem-2-mem mode in Exynos4-IS (FIMC), but I'm not sure what are the
-> default values if no pinctrl properties are provided. Sylwester, could
-> you comment?
-
-Indeed it could be intentional... I see now errors:
-[   33.752203] s5p-fimc-md soc:camera: Failed to get pinctrl: -19
-
-I wonder why getting an empty pinctrl is needed... maybe the driver
-should accept missing pinctrl?
-
-Best regards,
-Krzysztof
+This is on my todo list to be applied this week.
