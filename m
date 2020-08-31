@@ -2,153 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5F225812E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF5125816C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729004AbgHaSgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:36:33 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53041 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726174AbgHaSgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:36:32 -0400
-IronPort-SDR: I2uRY27F7kLopoqYt62Ifp9xBW5JOhQgyHy4YzCOsXqSFUN4vr6VYSDPVrWrQdbz6N3z+IkOqb
- qlN/QyhXS0Zw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="241853056"
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
-   d="scan'208";a="241853056"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 11:36:31 -0700
-IronPort-SDR: 3Wbt34h2nl2+kUVhQX55Mbp6iMJfWQ68DYFndGnnetJCOomncp30+9Ft3X4pb7uJ56ZTyBgXdP
- UWUBJualG1/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
-   d="scan'208";a="501938138"
-Received: from marshy.an.intel.com ([10.122.105.159])
-  by fmsmga005.fm.intel.com with ESMTP; 31 Aug 2020 11:36:30 -0700
-From:   richard.gong@linux.intel.com
-To:     catalin.marinas@arm.com, will@kernel.org, dinguyen@kernel.org,
-        robh+dt@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Richard Gong <richard.gong@intel.com>
-Subject: [PATCHv2] arm64: dts: diamonmesa: add device tree for Intel Diamond Mesa
-Date:   Mon, 31 Aug 2020 13:55:24 -0500
-Message-Id: <1598900124-23299-1-git-send-email-richard.gong@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728621AbgHaS5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:57:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25710 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727933AbgHaS5P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:57:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598900234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=b9PG3irLIE6N/QMI1mVLnwUslXXwXq1frH2lpMwMGik=;
+        b=AI4L672MBC6o0ydbPBoqe3lA8DY6jrgWgVpETm6xQAYq/C+EEVsaxM0+YefM0Ze8ns8M1K
+        hfL+8wr/zpCRmuKJzI3NXWP87Bd1VWH7eLqVylAzfdclLomOLZb2J46WmoExXWSk6cNqf/
+        dBoF+7LtT2n8SS2NPDSHHLYwmlTT1Is=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-rU2DVE1IPRGIhIzBUpYYwA-1; Mon, 31 Aug 2020 14:57:10 -0400
+X-MC-Unique: rU2DVE1IPRGIhIzBUpYYwA-1
+Received: by mail-il1-f197.google.com with SMTP id b85so5850325ilg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:57:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=b9PG3irLIE6N/QMI1mVLnwUslXXwXq1frH2lpMwMGik=;
+        b=OckCm5/4tThs/1TzAU9z4XmgcFzQvWyuM4TMD39xmDsWVNWUZjqrVp5WcQNJwnyDmh
+         dhFPlOovBG7IsdiLHO1TKZEV8WGOqyjIJWTO6380N5atrr0kyf/02+wrhdIp9GMU58X7
+         OKbR6h0RmnzWh9VYcdkPUxWgAlxXDBf1DsAUlhTLUyEDAknY58gsrlYtcCgXoi9bC+vA
+         fvdNL9fXTWB9HacM6447EY+jjFLMioCfuOBNhs+B1AUpxf9/fm1j/fzimwyGY7badXlm
+         fqEOjPI7cBysnE5CHkxzIQCK9Ct5u0XskVMafNM9NDj40lx+G3PYgKdRBUmflvQncIXa
+         TBdg==
+X-Gm-Message-State: AOAM533WWvy5JNwYjQdGaiFuGaty1aVlfcqv1gB36E6KORugM3jFmqk0
+        3cga57xv2QZh/qEH2BczhmJ6shod7/RQuf1qA+VIM4e8fift8ERLfnFtPBcy/pSrJSpjFyF2hEQ
+        qG7QzYOcapU2FaK8MKGcvu5WN
+X-Received: by 2002:a92:c9ca:: with SMTP id k10mr2660993ilq.81.1598900229614;
+        Mon, 31 Aug 2020 11:57:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6363cf0Fuegrl6FGpQzQ60cX6Kv8aPKaONFfhmnNPoiSsY3mJNJNJkBiSY0Os9JB6vSP3Rw==
+X-Received: by 2002:a92:c9ca:: with SMTP id k10mr2660958ilq.81.1598900229155;
+        Mon, 31 Aug 2020 11:57:09 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id i144sm4320996ioa.55.2020.08.31.11.57.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Aug 2020 11:57:08 -0700 (PDT)
+Subject: Re: [PATCH] soundwire: fix error handling
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, yung-chuan.liao@linux.intel.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        shreyas.nc@intel.com, alsa-devel@alsa-project.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20200829153515.3840-1-trix@redhat.com>
+ <CAKwvOd=+X2AakX3kTYCvyug-MK_Y+atDbkDSRxA0pUfOatQ3mA@mail.gmail.com>
+ <CAKwvOdnn6eMqJsL=aJ8n5dWWoHjXUL0LBSyVwZPGCKpkBSLHXA@mail.gmail.com>
+ <5f9c8819-cd0f-6fb9-1b0f-b34f390ae65e@redhat.com>
+ <CAKwvOd=D=LWeSGYekOc9qs_aVOD_jpM2DVZO7=n_2L75Ad3Nxg@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <5075093a-0853-8030-1cbd-42a051ca3651@redhat.com>
+Date:   Mon, 31 Aug 2020 11:57:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAKwvOd=D=LWeSGYekOc9qs_aVOD_jpM2DVZO7=n_2L75Ad3Nxg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
 
-Add the device tree files for Intel Diamond Mesa SoC
+On 8/31/20 11:39 AM, Nick Desaulniers wrote:
+> On Mon, Aug 31, 2020 at 11:20 AM Tom Rix <trix@redhat.com> wrote:
+>>
+>> On 8/31/20 10:48 AM, Nick Desaulniers wrote:
+>>> On Mon, Aug 31, 2020 at 10:47 AM Nick Desaulniers
+>>> <ndesaulniers@google.com> wrote:
+>>>> On Sat, Aug 29, 2020 at 8:35 AM <trix@redhat.com> wrote:
+>>>>> From: Tom Rix <trix@redhat.com>
+>>>>>
+>>>>> clang static analysis flags this problem
+>>> Also, Tom, please use ./scripts/get_maintainer.pl on your patches to
+>>> CC our mailing list; clang-built-linux@googlegroups.com.
+>> gcc is still doing the building, so it this appropriate ?
+>>
+>> Asking because i have been sed-ing clang-build-linux out.
+> ah, right, you can use `--use-cc=clang` for analyses of builds with
+> clang.  It doesn't hurt to include our mailing list, since we'd like
+> to know if issues get reported with the analyzer itself.
 
-Signed-off-by: Richard Gong <richard.gong@intel.com>
----
-v2: use socfpga_agilex.dtsi rather than socfpga_diamondmesa.dtsi
----
- arch/arm64/Kconfig.platforms                      |  5 ++
- arch/arm64/boot/dts/intel/Makefile                |  1 +
- arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts | 62 +++++++++++++++++++++++
- 3 files changed, 68 insertions(+)
- create mode 100644 arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts
+Ok, i'll include it.
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index d235b27..ffae871 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -13,6 +13,11 @@ config ARCH_AGILEX
- 	help
- 	  This enables support for Intel's Agilex SoCFPGA Family.
- 
-+config ARCH_DIAMONDMESA
-+	bool "Intel's Diamond Mesa SoCFPGA Family"
-+	help
-+	  This enables support for Intel's Diamond Mesa SoCFPGA Family.
-+
- config ARCH_SUNXI
- 	bool "Allwinner sunxi 64-bit SoC Family"
- 	select ARCH_HAS_RESET_CONTROLLER
-diff --git a/arch/arm64/boot/dts/intel/Makefile b/arch/arm64/boot/dts/intel/Makefile
-index 296ecee..f725c60 100644
---- a/arch/arm64/boot/dts/intel/Makefile
-+++ b/arch/arm64/boot/dts/intel/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
- dtb-$(CONFIG_ARCH_AGILEX) += socfpga_agilex_socdk.dtb \
- 			     socfpga_agilex_socdk_nand.dtb
-+dtb-$(CONFIG_ARCH_DIAMONDMESA) += socfpga_diamondmesa.dtb
- dtb-$(CONFIG_ARCH_KEEMBAY) += keembay-evm.dtb
-diff --git a/arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts b/arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts
-new file mode 100644
-index 00000000..eb1af5b
---- /dev/null
-+++ b/arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier:     GPL-2.0
-+/*
-+ * Copyright (C) 2020 Intel Corporation
-+ */
-+#include "socfpga_agilex.dtsi"
-+
-+/ {
-+	model = "SoCFPGA Diamond Mesa Simics";
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		bootargs = "earlycon";
-+		stdout-path = "serial0:4800n8";
-+	};
-+
-+	memory {
-+		device_type = "memory";
-+		/* We expect the bootloader to fill in the reg */
-+		reg = <0 0 0 0x4000000>;
-+	};
-+
-+	soc {
-+		clocks {
-+			osc1 {
-+				clock-frequency = <100000000>;
-+			};
-+
-+			uart_clk: uart_clk {
-+				#clock-cells = <0>;
-+				compatible = "fixed-clock";
-+				clock-frequency = <76800>;
-+			};
-+
-+			mmc_clk: mmc_clk {
-+				#clock-cells = <0>;
-+				compatible = "fixed-clock";
-+				clock-frequency = <50000000>;
-+			};
-+		};
-+	};
-+};
-+
-+&uart0 {
-+	clocks = <&uart_clk>;
-+	status = "okay";
-+};
-+
-+&mmc {
-+	clocks = <&mmc_clk>, <&mmc_clk>;
-+	cap-sd-highspeed;
-+	broken-cd;
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&watchdog0 {
-+	clocks = <&osc1>;
-+	status = "okay";
-+};
--- 
-2.7.4
+The only real issue so far has been https://reviews.llvm.org/D83984
+
+which fixes reporting on a couple of files.
+
+Tom
 
