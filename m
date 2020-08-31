@@ -2,205 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40830257494
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3D82574BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgHaHvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 03:51:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31444 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728145AbgHaHvL (ORCPT
+        id S1728110AbgHaHye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 03:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbgHaHy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 03:51:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598860269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mYGPXCohwBE6lKDzDtC+rI4XDAHKSdS0UyWToHdUIRA=;
-        b=Y40EeV4YsFewBM3jVEhVcyFEsTASQaL7ZPdygwobeWPdVhNj8UM+SqIrM/v5hbMHMUobiG
-        k383zMz/1EcX+sJeJtyFU/U11c7hsqr2zQXSd2cRWrlk5/rwo3PFfKxnUCYT3UijmIbJaJ
-        Bf14ksqLXqlR2jkfyJyvGZTTSjWdH3g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-9GO8QyI4NMKhWv7jH_VV_w-1; Mon, 31 Aug 2020 03:51:05 -0400
-X-MC-Unique: 9GO8QyI4NMKhWv7jH_VV_w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A93D4425CE;
-        Mon, 31 Aug 2020 07:51:03 +0000 (UTC)
-Received: from [10.36.112.162] (ovpn-112-162.ams2.redhat.com [10.36.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8108E5C225;
-        Mon, 31 Aug 2020 07:51:01 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     trix@redhat.com
-Cc:     pshelar@ovn.org, davem@davemloft.net, kuba@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, dev@openvswitch.org,
+        Mon, 31 Aug 2020 03:54:28 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACCDC061573;
+        Mon, 31 Aug 2020 00:54:28 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id t23so5570718ljc.3;
+        Mon, 31 Aug 2020 00:54:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5ySzm6C/N6GusO8+WhnjxU91a+LGFeV0ennCZHd0ftc=;
+        b=MEdOC3oE13B00ncD1A6e6iOxKon2hzwKox6osA0eizVeUIreNnL8oos+aiT/XyJqKk
+         hltR48w4oCofK42giql4vItyWqwFd8FuOjCPnHnhMbYAN2hbVTMXAmANej0HnVkcA7rq
+         xJXwSXnPtIzhRhmWznurRyJs9m0NDozyp46DYhsvmkuiDg1ZugsDAr+fKOsp1YPC6AhK
+         S0tQBl12Joo7m3hL9meJoFTDXyUdHVb4Rl+h+/D/4q7CCqJk/zR9EKAzlZJaEQMJtLR3
+         Wg0C9djknj4KMQHagDYOdiTcRuUHz/IkaAjdctGvgglq3TxjNnSmIyuMrox5scjWE1Nw
+         qBow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5ySzm6C/N6GusO8+WhnjxU91a+LGFeV0ennCZHd0ftc=;
+        b=lCJDsVZl0vkAD38DW2FcTbLVnS6C68esi0bcukzGpNORChRHa27BJfZQ9qXUsx9fOj
+         +nMl6rXDEalHchSc9yfxzRJfWgG+0eooL3sF7/q+ifsz3DnAGmO4qgGpZ/2b/5gWR+wZ
+         Fzfzvjr6m+WlHt03d8tC4fy1nFjouePiBd1uTbsaed7gxVTQzXBFp3uqdECDy0v/ZOTE
+         GOFnTmGTY/ayIV3s22gxfcwqi3bkDeBWT35gKNz95ecwZsoQU0ojzt2bzn+aUlNIv3ZH
+         Gj7yhEvRde62RpMW7J/OSdkDYUIDBso3S/SGKEKgESqodWBTf8okJ/Yi2dBybUnyl3Xr
+         AcOQ==
+X-Gm-Message-State: AOAM531vzIuwaEEA7hwJuwyjpAF/xnGS30KJrqF+6raLUP+ArC17cA55
+        FjpvgsbzzD0xLfYhTKSPNQu03HarsvQ=
+X-Google-Smtp-Source: ABdhPJyfAmv+rH3T+J72qv5jTB//Lv7QImhS4MJT95CpUpBllj6cC+IS0RzeX3pMInMMiuJqUVsJ2w==
+X-Received: by 2002:a2e:a28b:: with SMTP id k11mr63428lja.405.1598860466583;
+        Mon, 31 Aug 2020 00:54:26 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id t25sm1805516lfq.7.2020.08.31.00.54.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Aug 2020 00:54:25 -0700 (PDT)
+Subject: Re: [PATCH 3/3] ARM: tegra: Pass multiple versions in
+ opp-supported-hw property
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: openvswitch: pass NULL for unused parameters
-Date:   Mon, 31 Aug 2020 09:50:59 +0200
-Message-ID: <398B5AF9-48CC-485C-A920-701649844719@redhat.com>
-In-Reply-To: <20200830212630.32241-1-trix@redhat.com>
-References: <20200830212630.32241-1-trix@redhat.com>
+References: <cover.1598442485.git.viresh.kumar@linaro.org>
+ <b13f1b112532fe0189d1f7bbb50903d9e1defb07.1598442485.git.viresh.kumar@linaro.org>
+ <b0763074-859f-fccb-dde4-03d1a50ea021@gmail.com>
+ <20200831043908.mtw4dglybcmcabjb@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <0da380c2-9161-d450-afd2-4b159c8cfb7d@gmail.com>
+Date:   Mon, 31 Aug 2020 10:54:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200831043908.mtw4dglybcmcabjb@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+31.08.2020 07:39, Viresh Kumar пишет:
+...
+>>> Dmitry, I think there is further scope of simplifying stuff here by
+>>> using the opp-microvolt-<name> property and corresponding
+>>> dev_pm_opp_set_prop_name() call.
+> 
+> Any inputs on this Dmitry ?
 
-
-On 30 Aug 2020, at 23:26, trix@redhat.com wrote:
-
-> From: Tom Rix <trix@redhat.com>
->
-> clang static analysis flags these problems
->
-> flow_table.c:713:2: warning: The expression is an uninitialized
->   value. The computed value will also be garbage
->         (*n_mask_hit)++;
->         ^~~~~~~~~~~~~~~
-> flow_table.c:748:5: warning: The expression is an uninitialized
->   value. The computed value will also be garbage
->                                 (*n_cache_hit)++;
->                                 ^~~~~~~~~~~~~~~~
->
-> These are not problems because neither parameter is used
-> by the calling function.
->
-> Looking at all of the calling functions, there are many
-> cases where the results are unused.  Passing unused
-> parameters is a waste.
->
-> In the case where the output mask index parameter of flow_lookup()
-> is not used by the caller, it is always has a value of 0.
->
-> To avoid passing unused parameters, rework the
-> masked_flow_lookup() and flow_lookup() routines to check
-> for NULL parameters and change the unused parameters to NULL.
->
-> For the mask index parameter, use a local pointer to a value of
-> 0 if user passed in NULL.
-
-
-Some of this code is fast path, and some of it is not. So maybe the 
-original author did this to avoid the null checks?
-
-Can you do some performance runs and see if it impact the performance in 
-a negative way?
-
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
-> v2
-> - fix spelling
-> - add mask index to NULL parameters
-> ---
-> net/openvswitch/flow_table.c | 32 +++++++++++++++-----------------
->  1 file changed, 15 insertions(+), 17 deletions(-)
->
-> diff --git a/net/openvswitch/flow_table.c 
-> b/net/openvswitch/flow_table.c
-> index e2235849a57e..eac25596e4f4 100644
-> --- a/net/openvswitch/flow_table.c
-> +++ b/net/openvswitch/flow_table.c
-> @@ -710,7 +710,8 @@ static struct sw_flow *masked_flow_lookup(struct 
-> table_instance *ti,
->  	ovs_flow_mask_key(&masked_key, unmasked, false, mask);
->  	hash = flow_hash(&masked_key, &mask->range);
->  	head = find_bucket(ti, hash);
-> -	(*n_mask_hit)++;
-> +	if (n_mask_hit)
-> +		(*n_mask_hit)++;
->
->  	hlist_for_each_entry_rcu(flow, head, flow_table.node[ti->node_ver],
->  				lockdep_ovsl_is_held()) {
-> @@ -730,12 +731,17 @@ static struct sw_flow *flow_lookup(struct 
-> flow_table *tbl,
->  				   const struct sw_flow_key *key,
->  				   u32 *n_mask_hit,
->  				   u32 *n_cache_hit,
-> -				   u32 *index)
-> +				   u32 *in_index)
->  {
->  	u64 *usage_counters = this_cpu_ptr(ma->masks_usage_cntr);
->  	struct sw_flow *flow;
->  	struct sw_flow_mask *mask;
->  	int i;
-> +	u32 idx = 0;
-> +	u32 *index = &idx;
-> +
-> +	if (in_index)
-> +		index = in_index;
->
->  	if (likely(*index < ma->max)) {
->  		mask = rcu_dereference_ovsl(ma->masks[*index]);
-> @@ -745,7 +751,8 @@ static struct sw_flow *flow_lookup(struct 
-> flow_table *tbl,
->  				u64_stats_update_begin(&ma->syncp);
->  				usage_counters[*index]++;
->  				u64_stats_update_end(&ma->syncp);
-> -				(*n_cache_hit)++;
-> +				if (n_cache_hit)
-> +					(*n_cache_hit)++;
->  				return flow;
->  			}
->  		}
-> @@ -796,13 +803,9 @@ struct sw_flow *ovs_flow_tbl_lookup_stats(struct 
-> flow_table *tbl,
->
->  	*n_mask_hit = 0;
->  	*n_cache_hit = 0;
-> -	if (unlikely(!skb_hash || mc->cache_size == 0)) {
-> -		u32 mask_index = 0;
-> -		u32 cache = 0;
-> -
-> -		return flow_lookup(tbl, ti, ma, key, n_mask_hit, &cache,
-> -				   &mask_index);
-> -	}
-> +	if (unlikely(!skb_hash || mc->cache_size == 0))
-> +		return flow_lookup(tbl, ti, ma, key, n_mask_hit, NULL,
-> +				   NULL);
->
->  	/* Pre and post recirulation flows usually have the same skb_hash
->  	 * value. To avoid hash collisions, rehash the 'skb_hash' with
-> @@ -849,11 +852,7 @@ struct sw_flow *ovs_flow_tbl_lookup(struct 
-> flow_table *tbl,
->  {
->  	struct table_instance *ti = rcu_dereference_ovsl(tbl->ti);
->  	struct mask_array *ma = rcu_dereference_ovsl(tbl->mask_array);
-> -	u32 __always_unused n_mask_hit;
-> -	u32 __always_unused n_cache_hit;
-> -	u32 index = 0;
-> -
-> -	return flow_lookup(tbl, ti, ma, key, &n_mask_hit, &n_cache_hit, 
-> &index);
-> +	return flow_lookup(tbl, ti, ma, key, NULL, NULL, NULL);
->  }
->
->  struct sw_flow *ovs_flow_tbl_lookup_exact(struct flow_table *tbl,
-> @@ -865,7 +864,6 @@ struct sw_flow *ovs_flow_tbl_lookup_exact(struct 
-> flow_table *tbl,
->  	/* Always called under ovs-mutex. */
->  	for (i = 0; i < ma->max; i++) {
->  		struct table_instance *ti = rcu_dereference_ovsl(tbl->ti);
-> -		u32 __always_unused n_mask_hit;
->  		struct sw_flow_mask *mask;
->  		struct sw_flow *flow;
->
-> @@ -873,7 +871,7 @@ struct sw_flow *ovs_flow_tbl_lookup_exact(struct 
-> flow_table *tbl,
->  		if (!mask)
->  			continue;
->
-> -		flow = masked_flow_lookup(ti, match->key, mask, &n_mask_hit);
-> +		flow = masked_flow_lookup(ti, match->key, mask, NULL);
->  		if (flow && ovs_identifier_is_key(&flow->id) &&
->  		    ovs_flow_cmp_unmasked_key(flow, match)) {
->  			return flow;
-> -- 
-> 2.18.1
-
+Could you please give an example?
