@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3D82574BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249D12574C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 09:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgHaHye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 03:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbgHaHy2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 03:54:28 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACCDC061573;
-        Mon, 31 Aug 2020 00:54:28 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id t23so5570718ljc.3;
-        Mon, 31 Aug 2020 00:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5ySzm6C/N6GusO8+WhnjxU91a+LGFeV0ennCZHd0ftc=;
-        b=MEdOC3oE13B00ncD1A6e6iOxKon2hzwKox6osA0eizVeUIreNnL8oos+aiT/XyJqKk
-         hltR48w4oCofK42giql4vItyWqwFd8FuOjCPnHnhMbYAN2hbVTMXAmANej0HnVkcA7rq
-         xJXwSXnPtIzhRhmWznurRyJs9m0NDozyp46DYhsvmkuiDg1ZugsDAr+fKOsp1YPC6AhK
-         S0tQBl12Joo7m3hL9meJoFTDXyUdHVb4Rl+h+/D/4q7CCqJk/zR9EKAzlZJaEQMJtLR3
-         Wg0C9djknj4KMQHagDYOdiTcRuUHz/IkaAjdctGvgglq3TxjNnSmIyuMrox5scjWE1Nw
-         qBow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5ySzm6C/N6GusO8+WhnjxU91a+LGFeV0ennCZHd0ftc=;
-        b=lCJDsVZl0vkAD38DW2FcTbLVnS6C68esi0bcukzGpNORChRHa27BJfZQ9qXUsx9fOj
-         +nMl6rXDEalHchSc9yfxzRJfWgG+0eooL3sF7/q+ifsz3DnAGmO4qgGpZ/2b/5gWR+wZ
-         Fzfzvjr6m+WlHt03d8tC4fy1nFjouePiBd1uTbsaed7gxVTQzXBFp3uqdECDy0v/ZOTE
-         GOFnTmGTY/ayIV3s22gxfcwqi3bkDeBWT35gKNz95ecwZsoQU0ojzt2bzn+aUlNIv3ZH
-         Gj7yhEvRde62RpMW7J/OSdkDYUIDBso3S/SGKEKgESqodWBTf8okJ/Yi2dBybUnyl3Xr
-         AcOQ==
-X-Gm-Message-State: AOAM531vzIuwaEEA7hwJuwyjpAF/xnGS30KJrqF+6raLUP+ArC17cA55
-        FjpvgsbzzD0xLfYhTKSPNQu03HarsvQ=
-X-Google-Smtp-Source: ABdhPJyfAmv+rH3T+J72qv5jTB//Lv7QImhS4MJT95CpUpBllj6cC+IS0RzeX3pMInMMiuJqUVsJ2w==
-X-Received: by 2002:a2e:a28b:: with SMTP id k11mr63428lja.405.1598860466583;
-        Mon, 31 Aug 2020 00:54:26 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id t25sm1805516lfq.7.2020.08.31.00.54.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 00:54:25 -0700 (PDT)
-Subject: Re: [PATCH 3/3] ARM: tegra: Pass multiple versions in
- opp-supported-hw property
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1598442485.git.viresh.kumar@linaro.org>
- <b13f1b112532fe0189d1f7bbb50903d9e1defb07.1598442485.git.viresh.kumar@linaro.org>
- <b0763074-859f-fccb-dde4-03d1a50ea021@gmail.com>
- <20200831043908.mtw4dglybcmcabjb@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0da380c2-9161-d450-afd2-4b159c8cfb7d@gmail.com>
-Date:   Mon, 31 Aug 2020 10:54:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728107AbgHaH4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 03:56:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727961AbgHaH4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 03:56:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7C8FCAC85;
+        Mon, 31 Aug 2020 07:56:48 +0000 (UTC)
+Date:   Mon, 31 Aug 2020 08:56:11 +0100
+From:   Mel Gorman <mgorman@suse.com>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, "Luck, Tony" <tony.luck@intel.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [LKP] Re: [x86/mce] 1de08dccd3: will-it-scale.per_process_ops
+ -14.1% regression
+Message-ID: <20200831075611.GA2976@suse.com>
+References: <20200818082943.GA65567@shbuild999.sh.intel.com>
+ <20200818200654.GA21494@agluck-desk2.amr.corp.intel.com>
+ <20200819020437.GA2605@shbuild999.sh.intel.com>
+ <20200821020259.GA90000@shbuild999.sh.intel.com>
+ <20200824151425.GF4794@zn.tnic>
+ <20200824153300.GA56944@shbuild999.sh.intel.com>
+ <20200824161238.GI4794@zn.tnic>
+ <20200825062305.GA83850@shbuild999.sh.intel.com>
+ <20200828174839.GD19448@zn.tnic>
+ <20200831021638.GB65971@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200831043908.mtw4dglybcmcabjb@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20200831021638.GB65971@shbuild999.sh.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.08.2020 07:39, Viresh Kumar пишет:
-...
->>> Dmitry, I think there is further scope of simplifying stuff here by
->>> using the opp-microvolt-<name> property and corresponding
->>> dev_pm_opp_set_prop_name() call.
+On Mon, Aug 31, 2020 at 10:16:38AM +0800, Feng Tang wrote:
+> > So why don't you define both variables with DEFINE_PER_CPU_ALIGNED and
+> > check if all your bad measurements go away this way?
 > 
-> Any inputs on this Dmitry ?
+> For 'arch_freq_scale', there are other percpu variables in the same
+> smpboot.c: 'arch_prev_aperf' and 'arch_prev_mperf', and in hot path
+> arch_scale_freq_tick(), these 3 variables are all accessed, so I didn't 
+> touch it. Or maybe we can align the first of these 3 variables, so
+> that they sit in one cacheline.
+> 
+> > You'd also need to check whether there's no detrimental effect from
+> > this change on other, i.e., !KNL platforms, and I think there won't
+> > be because both variables will be in separate cachelines then and all
+> > should be good.
+> 
+> Yes, these kind of changes should be verified on other platforms.
+> 
+> One thing still puzzles me, that the 2 variables are per-cpu things, and
+> there is no case of many CPU contending, why the cacheline layout matters?
+> I doubt it is due to the contention of the same cache set, and am trying
+> to find some way to test it.
+> 
 
-Could you please give an example?
+Because if you have two structures that are per-cpu and not cache-aligned
+then a write in one can bounce the cache line in another due to
+cache coherency protocol. It's generally called "false cache line
+sharing". https://en.wikipedia.org/wiki/False_sharing has basic examples
+(lets not get into whether wikipedia is a valid citation source, there
+are books on the topic if someone really cared).
+
+While it's in my imagination, this should happen with the page allocator
+pcpu structures because the core structure is 1.5 cache lines on 64-bit
+currently and not aligned.  That means that not only can two CPUs interfere
+with each others lists and counters but that could happen cross-node.
+
+The hypothesis can be tested with perf looking for abnormal cache
+misses. In this case, an intense allocating process bound to one CPU
+with intermittent allocations on the adjacent CPU should show unexpected
+cache line bounces. It would not be perfect as collisions would happen
+anyway when the pcpu lists spill over on either the alloc or free side
+to the the buddy lists but in that case, the cache misses would happen
+on different instructions.
+
+-- 
+Mel Gorman
+SUSE Labs
