@@ -2,279 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E813C257D30
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43914257D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 17:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729258AbgHaPfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 11:35:11 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45058 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729022AbgHaPfB (ORCPT
+        id S1729331AbgHaPhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 11:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728908AbgHaPhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 11:35:01 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 562C21CD4BA;
-        Mon, 31 Aug 2020 11:34:59 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Vx6_xCq9ojVR; Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D8B431CD270;
-        Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D8B431CD270
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1598888098;
-        bh=2Mam6DCLSCuSURMpjNaNaU52T6GrKrgXhYodBd4J1GU=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=NcchU9d9SZZg7LMgNSKDxZ+MXG8ran11AWQhGfpbNbuQUFEqRu5baTOurx+zAnFjt
-         SfhOx3VEBdOBnEi8jku4lBY3tfZqUlQokmdIY/HyTMZy1OeFe3IvCcH5k9R+gBSJyR
-         0KR51a6Z1JGaI0OZ97LuY2AMRjWE/teYijeOmDfYkdTU5QK799v21GJP4mU+s6AWnv
-         JZcth9mfbgCZ84eNVoZl80E0jZqTjeD3RCvLbYRPuNl3NDo+970q0u0+KqD8fTmqwa
-         kzACbCdIZ7994FzDDCaBfCGXH6NZSys3uwt0lCw6cox4M4F7nzwt0FBC1Ipx+K7hc4
-         AZcU4pbmFu+5g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Xw98-Ow0WDcx; Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id BDF5E1CD0DE;
-        Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
-Date:   Mon, 31 Aug 2020 11:34:58 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul Turner <pjt@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Peter Oskolkov <posk@posk.io>
-Message-ID: <2086453141.23738.1598888098693.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200826230225.3782486-1-posk@google.com>
-References: <20200826230225.3782486-1-posk@google.com>
-Subject: Re: [PATCH 1/2 v5] rseq/membarrier: add
- MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
+        Mon, 31 Aug 2020 11:37:19 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B064C061573;
+        Mon, 31 Aug 2020 08:37:19 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id cr8so638967qvb.10;
+        Mon, 31 Aug 2020 08:37:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jiQBbNngqw8IuyIhXzfGIT0+JHoFfv7mtdOFjAup3WM=;
+        b=nY4/WHzeh14Gz4k06j9sj2hHUQgb0o0vKw83EYBDo5y2WJsyE+naeliL14ibXte6Mg
+         V5mlr5G5VXGwpvrJIAulVbWl2WMu0MNti1mRnLS/OFmdogahV8iuN8NTk2XzSBv8x9ug
+         fnmLbmeCinlu+AvChQIYP8Th9ja5yiGygdDs5gFEZKzZlSnm96gGwPgLF2yGmUJ4EMHK
+         N4pt7R5/46LHkh2qIlTjLtJVE7YGdciFYQJ+ekoKK/TGDyilTy0qJ4B2Lp9QIijcgE90
+         skgwGyYDnLtjhGD3Qew2OzXoghx4qp7kvFLLtBBeXfyIFYlLYKEM8nqF8GcMCOp2yice
+         ggrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jiQBbNngqw8IuyIhXzfGIT0+JHoFfv7mtdOFjAup3WM=;
+        b=JamgA223/xcWaCVeoOik3jQVvnIxOba9Sb/JSaVtJv4+hoBsvwSHAzScjSuHY88HFM
+         yU0KnlWmIXbWXU7c0IxeYNAZF/foDB4qU+E4U23Ma2nv6Su7t6tkI8vCDu2/ZJ5wNbYh
+         L/lpUiy34Fh2JtvdRV/l88ZHlHPMbvqFDW2tFnaj5LIzjykRqa3S4Ry4mfug0DVnvLG7
+         om53s908VqkDfNXYnSanBEjNCGLwWVitFdFKYPypRqo6zfILRk0kjDXxaTPLYZAXBTPh
+         rCAqeMWG2x61g4AYVDXfztNWZDip2Z+ZgH6yOeHc3q48t69ATmaWbpC4570eKJ2WVwgL
+         rexQ==
+X-Gm-Message-State: AOAM531GFs6GH+BdsBqZhpNSnSXWhmWGtlhKETcnSY9BcwvbVkVvAeJJ
+        yU9t23CJuesRchT7Uowaf5o=
+X-Google-Smtp-Source: ABdhPJz4hqK1YGX+tTjEMtxf1tCzkK3llJ6iE4/enptUHC9YObIoMBc4iFMY8Ul+vZqN1hQDSBMxzQ==
+X-Received: by 2002:a0c:ec86:: with SMTP id u6mr1613973qvo.58.1598888238587;
+        Mon, 31 Aug 2020 08:37:18 -0700 (PDT)
+Received: from dschatzberg-fedora-PC0Y6AEN.thefacebook.com ([2620:10d:c091:480::1:2edc])
+        by smtp.gmail.com with ESMTPSA id s5sm9908872qke.120.2020.08.31.08.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 08:37:17 -0700 (PDT)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH v8 0/3] Charge loop device i/o to issuing cgroup
+Date:   Mon, 31 Aug 2020 11:36:57 -0400
+Message-Id: <20200831153704.16848-1-schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3959 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3953)
-Thread-Topic: rseq/membarrier: add MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ
-Thread-Index: r7ar8Clu9Qv76aXZZzDu5muK3/7YYw==
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Much of the discussion about this has died down. There's been a
+concern raised that we could generalize infrastructure across loop,
+md, etc. This may be possible, in the future, but it isn't clear to me
+how this would look like. I'm inclined to fix the existing issue with
+loop devices now (this is a problem we hit at FB) and address
+consolidation with other cases if and when those need to be addressed.
 
+Note that this series needs to be based off of Roman Gushchin's patch
+(https://lkml.org/lkml/2020/8/21/1464) to compile.
 
------ On Aug 26, 2020, at 7:02 PM, Peter Oskolkov posk@google.com wrote:
-[...]
-> 
-> static void ipi_mb(void *info)
-> {
-> +#ifdef CONFIG_RSEQ
-> +	int *flags = info;
-> +
-> +	if (flags && (*flags == MEMBARRIER_FLAG_RSEQ))
-> +		rseq_preempt(current);
-> +#endif
+Changes since V8:
 
-Please lift this into a new ipi_rseq(), which will be defined as an empty function
-if RSEQ is not defined.
+* Rebased on top of Roman Gushchin's patch
+  (https://lkml.org/lkml/2020/8/21/1464) which provides the nesting
+  support for setting active memcg. Dropped the patch from this series
+  that did the same thing.
 
+Changes since V7:
 
-> 	smp_mb();	/* IPIs should be serializing but paranoid. */
-> }
-> 
-> @@ -129,19 +143,26 @@ static int membarrier_global_expedited(void)
-> 	return 0;
-> }
-> 
-> -static int membarrier_private_expedited(int flags)
-> +static int membarrier_private_expedited(int flags, int cpu_id)
-> {
-> 	int cpu;
-> 	cpumask_var_t tmpmask;
-> 	struct mm_struct *mm = current->mm;
-> 
-> -	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
-> +	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+* Rebased against linus's branch
 
-I'm not sure why we need to change the behavior from a mask on flags to
-an equality, which means this behaves more like a list of items rather
-than flags.
+Changes since V6:
 
-It's one thing to disallow combining things like SYNC_CORE and RSEQ in the
-ABI, but I wonder why we need to change the flags behavior to an equality
-for the internal flags.
+* Added separate spinlock for worker synchronization
+* Minor style changes
 
-> 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
-> 			return -EINVAL;
-> 		if (!(atomic_read(&mm->membarrier_state) &
-> 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
-> 			return -EPERM;
-> +	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
-> +		if (!IS_ENABLED(CONFIG_RSEQ))
-> +			return -EINVAL;
-> +		if (!(atomic_read(&mm->membarrier_state) &
-> +		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY))
-> +			return -EPERM;
-> 	} else {
-> +		BUG_ON(flags != 0);
-> 		if (!(atomic_read(&mm->membarrier_state) &
-> 		      MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY))
-> 			return -EPERM;
-> @@ -174,6 +195,8 @@ static int membarrier_private_expedited(int flags)
-> 		 */
-> 		if (cpu == raw_smp_processor_id())
-> 			continue;
-> +		if (cpu_id >= 0 && cpu != cpu_id)
-> +			continue;
+Changes since V5:
 
-When the cpu is specified, it seems rather inefficient to iterate on all
-cpus to skip all but the one we are looking for. I suspect we don't want
-to go through the loop in that case.
+* Fixed a missing css_put when failing to allocate a worker
+* Minor style changes
 
-> 		p = rcu_dereference(cpu_rq(cpu)->curr);
-> 		if (p && p->mm == mm)
-> 			__cpumask_set_cpu(cpu, tmpmask);
-> @@ -181,7 +204,7 @@ static int membarrier_private_expedited(int flags)
-> 	rcu_read_unlock();
-> 
-> 	preempt_disable();
-> -	smp_call_function_many(tmpmask, ipi_mb, NULL, 1);
-> +	smp_call_function_many(tmpmask, ipi_mb, &flags, 1);
-> 	preempt_enable();
-> 
-> 	free_cpumask_var(tmpmask);
-> @@ -283,11 +306,18 @@ static int membarrier_register_private_expedited(int
-> flags)
-> 	    set_state = MEMBARRIER_STATE_PRIVATE_EXPEDITED,
-> 	    ret;
-> 
-> -	if (flags & MEMBARRIER_FLAG_SYNC_CORE) {
-> +	if (flags == MEMBARRIER_FLAG_SYNC_CORE) {
+Changes since V4:
 
-Same comment about changing this internal flags behavior from mask to equality.
+Only patches 1 and 2 have changed.
 
-> 		if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
-> 			return -EINVAL;
-> 		ready_state =
-> 			MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY;
-> +	} else if (flags == MEMBARRIER_FLAG_RSEQ) {
-> +		if (!IS_ENABLED(CONFIG_RSEQ))
-> +			return -EINVAL;
-> +		ready_state =
-> +			MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ_READY;
-> +	} else {
-> +		BUG_ON(flags != 0);
-> 	}
-> 
-> 	/*
-> @@ -299,6 +329,8 @@ static int membarrier_register_private_expedited(int flags)
-> 		return 0;
-> 	if (flags & MEMBARRIER_FLAG_SYNC_CORE)
-> 		set_state |= MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE;
-> +	if (flags & MEMBARRIER_FLAG_RSEQ)
-> +		set_state |= MEMBARRIER_STATE_PRIVATE_EXPEDITED_RSEQ;
+* Fixed irq lock ordering bug
+* Simplified loop detach
+* Added support for nesting memalloc_use_memcg
 
-This one still behaves like a mask, so there is a discrepancy between registration
-and action functions.
+Changes since V3:
 
-> 	atomic_or(set_state, &mm->membarrier_state);
-> 	ret = sync_runqueues_membarrier_state(mm);
-> 	if (ret)
-> @@ -310,8 +342,15 @@ static int membarrier_register_private_expedited(int flags)
-> 
-> /**
->  * sys_membarrier - issue memory barriers on a set of threads
-> - * @cmd:   Takes command values defined in enum membarrier_cmd.
-> - * @flags: Currently needs to be 0. For future extensions.
-> + * @cmd:    Takes command values defined in enum membarrier_cmd.
-> + * @flags:  Currently needs to be 0 for all commands other than
-> + *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ: in the latter
-> + *          case it can be MEMBARRIER_CMD_FLAG_CPU, indicating that @cpu_id
-> + *          contains the CPU on which to interrupt (= restart)
-> + *          the RSEQ critical section.
-> + * @cpu_id: if @flags == MEMBARRIER_CMD_FLAG_CPU, indicates the cpu on which
-> + *          RSEQ CS should be interrupted (@cmd must be
-> + *          MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ).
->  *
->  * If this system call is not implemented, -ENOSYS is returned. If the
->  * command specified does not exist, not available on the running
-> @@ -337,9 +376,9 @@ static int membarrier_register_private_expedited(int flags)
->  *        smp_mb()           X           O            O
->  *        sys_membarrier()   O           O            O
->  */
-> -SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
-> +SYSCALL_DEFINE3(membarrier, int, cmd, int, flags, int, cpu_id)
-> {
-> -	if (unlikely(flags))
-> +	if (unlikely(flags) && cmd != MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ)
+* Fix race on loop device destruction and deferred worker cleanup
+* Ensure charge on shmem_swapin_page works just like getpage
+* Minor style changes
 
-I would prefer that we deal with flags and cpu_id entirely here rather than
-half here, half below, with e.g.:
+Changes since V2:
 
-switch (cmd) {
-case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
-    if (unlikely(flags && flags != MEMBARRIER_CMD_FLAG_CPU))
-        return -EINVAL;
-    break;
-default:
-    if (unlikely(flags))
-        return -EINVAL;
-}
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
 
-if (!(flags & MEMBARRIER_CMD_FLAG_CPU))
-    cpu_id = -1;
+Changes since V1:
 
-> 		return -EINVAL;
-> 	switch (cmd) {
-> 	case MEMBARRIER_CMD_QUERY:
-> @@ -362,13 +401,21 @@ SYSCALL_DEFINE2(membarrier, int, cmd, int, flags)
-> 	case MEMBARRIER_CMD_REGISTER_GLOBAL_EXPEDITED:
-> 		return membarrier_register_global_expedited();
-> 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED:
-> -		return membarrier_private_expedited(0);
-> +		return membarrier_private_expedited(0, -1);
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
 
-We can then change the -1 for cpu_id here.
+* Add mem_css to struct loop_cmd to simplify logic
 
-> 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED:
-> 		return membarrier_register_private_expedited(0);
-> 	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE:
-> -		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
-> +		return membarrier_private_expedited(MEMBARRIER_FLAG_SYNC_CORE, -1);
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
 
-And here.
+A simple script to demonstrate this behavior on cgroupv2 machine:
 
-> 	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_SYNC_CORE:
-> 		return membarrier_register_private_expedited(MEMBARRIER_FLAG_SYNC_CORE);
-> +	case MEMBARRIER_CMD_PRIVATE_EXPEDITED_RSEQ:
-> +		if (flags == 0)
-> +			return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, -1);
-> +		if (flags == MEMBARRIER_CMD_FLAG_CPU)
-> +			return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, cpu_id);
-> +		return -EINVAL;
+'''
+#!/bin/bash
+set -e
 
-and here we can just call:
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
 
-   return membarrier_private_expedited(MEMBARRIER_FLAG_RSEQ, cpu_id);
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
 
-Thanks,
+grep oom_kill $CGROUP/memory.events
 
-Mathieu
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
 
-> +	case MEMBARRIER_CMD_REGISTER_PRIVATE_EXPEDITED_RSEQ:
-> +		return membarrier_register_private_expedited(MEMBARRIER_FLAG_RSEQ);
-> 	default:
-> 		return -EINVAL;
-> 	}
-> --
-> 2.28.0.297.g1956fa8f8d-goog
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 248 ++++++++++++++++++++++++++++++-------
+ drivers/block/loop.h       |  15 ++-
+ include/linux/memcontrol.h |   6 +
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/memcontrol.c            |  11 +-
+ mm/shmem.c                 |   4 +-
+ 6 files changed, 232 insertions(+), 53 deletions(-)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.24.1
+
