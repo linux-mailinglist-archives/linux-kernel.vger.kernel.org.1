@@ -2,121 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76943258058
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16D6258066
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729310AbgHaSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S1729194AbgHaSK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729118AbgHaSIz (ORCPT
+        with ESMTP id S1728376AbgHaSKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:08:55 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D3DC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:08:52 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a65so365743wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:08:52 -0700 (PDT)
+        Mon, 31 Aug 2020 14:10:24 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4139AC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:10:24 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id k20so6167971otr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 11:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PZdD3YkccjOVfF0atuAqD6nWNa6V5XxvIiUqs3VdtEk=;
-        b=DTYm1SPdGKG/SQtAldlYoFxpYjZpsl532qhv6HisDz50C8zjjFhEV6VYZYr/ZbT+YP
-         2dXuN0EArHJmyGH6Jkl1c2ql7cfM6UVizHL24w3vkUBubm2HJ1ct3QMJd4kMU+UAVlHj
-         rzaGTYp0oZXldmNTj8Xb7CpfnTFyYvOqXZwRhFpuLeLTYyTVHZ+rW4/+UFwZOpE7hyS+
-         31QOuY6UA00D7IURmMft9i+6WOx45GT/92Dl5UWgoNNppyhJ5XehPXy1wPMLE35Nh8wK
-         oiaMu8ZQSo01pCgeXrJAF+WAOxurJw9Tn+Vk7feQaXuBsocQYSjm60tLNh0K/bP3rKhW
-         MxOA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VjcOX+O6+Q0wVLVy5iOGuljY1HLUCKGrM2Zx4jaHF0E=;
+        b=vZaqRz6gPaztwYQyRjYHR8xtBaNnsakq7VS7gV1Jc2XbRTtD3KOy2/T7zfVrl7Ux41
+         m1n0QBSe07CxKazXvcJNC0qphB0ZM+F/RZjGclPdxPOyRIHHRotMD2u8Reilqq3Myt9t
+         rgTYnm4TiWZ6QqaLHb5/J3a0tRHoXezu30kMr8imgBwyjdcnydc9nDu7FeRKyB6s3E4x
+         6/yDTDyrcJg7rJiR9v10GikVAZHmp/mz1hT3K8ZvwaEwHbrwDRLYkgVQop12EIUogMcO
+         AvUJnuyQ5gFNW5MnufPLajm+bduenZYdgux9DfNckAmmArxY9lp3WMU2oFqRZAX56c5W
+         ajvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PZdD3YkccjOVfF0atuAqD6nWNa6V5XxvIiUqs3VdtEk=;
-        b=VrOrYD3Biqnj02R7SLcy3AgzdwiZ82AJGR21AHCZjhBDoYVsjO6jwKcqEtNgqCZPPy
-         M3MK8+6xxEL2d9SH7rUd+0SrixS7wlIxEPI0keOVMrqhHSNHYBLKYxPetxlpkTdxXIVi
-         m3qq1BPUe8rm80hSy24/is+kTZIkGvd7qXWzGfhEi1GmVwXyuXQfUtJWtAIycfhWx7aH
-         Ga+vVAXeOz9JlucxjyvvMsrq/yo+8n8rRbbChDvLxv/b4IjraRzE3btUnelB0/rV5D6J
-         DhNu6CsDOfVFaE/hRGp6P6s0bhoZiUwrHb0a/cU1cH5y08+Qo3lqZDHsFyBYbDU8FJbb
-         wSvQ==
-X-Gm-Message-State: AOAM5323PxhAme0hBf7MXJHYCnqYO4XVy3+uX8pYPQ20tzZdOoMr3WMk
-        FHGCV4wlZKcT5PQrbXBORE1B9w==
-X-Google-Smtp-Source: ABdhPJwSbeYkTbQaVd/c43rNwMacSmdUE9+ZmFXhzkNUOh+371xDIG9v6A+/BYEq63PSZ7ILqtj4Gw==
-X-Received: by 2002:a05:600c:22d6:: with SMTP id 22mr501445wmg.120.1598897331339;
-        Mon, 31 Aug 2020 11:08:51 -0700 (PDT)
-Received: from elver.google.com ([100.105.32.75])
-        by smtp.gmail.com with ESMTPSA id e18sm12975638wrx.50.2020.08.31.11.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 11:08:50 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 20:08:44 +0200
-From:   Marco Elver <elver@google.com>
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
-        Jonathan.Cameron@Huawei.com, aarcange@redhat.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
-        brendanhiggins@google.com, cai@lca.pw, colin.king@canonical.com,
-        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
-        fan.du@intel.com, foersleo@amazon.de, gthelen@google.com,
-        irogers@google.com, jolsa@redhat.com, kirill@shutemov.name,
-        mark.rutland@arm.com, mgorman@suse.de, minchan@kernel.org,
-        mingo@redhat.com, namhyung@kernel.org, peterz@infradead.org,
-        rdunlap@infradead.org, riel@surriel.com, rientjes@google.com,
-        rostedt@goodmis.org, rppt@kernel.org, sblbir@amazon.com,
-        shakeelb@google.com, shuah@kernel.org, sj38.park@gmail.com,
-        snu@amazon.de, vbabka@suse.cz, vdavydov.dev@gmail.com,
-        yang.shi@linux.alibaba.com, ying.huang@intel.com,
-        zgf574564920@gmail.com, linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v8 01/10] mm/damon/debugfs: Allow users to set initial
- monitoring target regions
-Message-ID: <20200831180844.GA3992970@elver.google.com>
-References: <20200831104730.28970-1-sjpark@amazon.com>
- <20200831104730.28970-2-sjpark@amazon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VjcOX+O6+Q0wVLVy5iOGuljY1HLUCKGrM2Zx4jaHF0E=;
+        b=osCfDILhMTqxpChL1fhpL1kbl8sKzGuBPMo1tcDo90bD5SmLmAlUHBRvdmxCS/UXg/
+         CnautafYHnIJgvFOEUGlK0SdSHMjzslTN+3iMkFlxKEF66MIA2W3OFiqdz2OWqzvMYZJ
+         RBMqasboXc+gXe97WBgWSIpdTmbhv+CCPsZTo1xLia5SxZm/wnG7EjEp3DVMPcdQWZWf
+         PmEfb5DaVP/N9dCXTwTyN6L8axUwKo7H1y1lhrwlbR2IeZdOiGg/UVq7vE492wfiL9Bz
+         XkmQHokiToA25UVCV/zrs39JtVQt0M8qMz2iuKjDPMAuXmQKiPPVEjFC9OXcee5nZSJ2
+         /SkQ==
+X-Gm-Message-State: AOAM5319GpwL23djjz0I2ELWwsa27sROnh1vk24gkVhTZLAQ9pZUEPCc
+        8YO8InNze6iXINIOSVRYEPtvpdXOm3tJncvTUrumQA==
+X-Google-Smtp-Source: ABdhPJwOgUYMtjt9QOITuY87oezIiwUst1TAAS19PpHboVYHCLYkQhWhxobP65iEGxxUZlwrpCSiZH+ta1y30jMxkos=
+X-Received: by 2002:a9d:7f06:: with SMTP id j6mr1714141otq.274.1598897423402;
+ Mon, 31 Aug 2020 11:10:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831104730.28970-2-sjpark@amazon.com>
-User-Agent: Mutt/1.14.4 (2020-06-18)
+References: <20200830213121.239533-1-tali.perry1@gmail.com> <CACPK8Xev4w4BxrxR1zQPk=wiHCK2fSGD9tEeAQwPe_uayGw_CA@mail.gmail.com>
+In-Reply-To: <CACPK8Xev4w4BxrxR1zQPk=wiHCK2fSGD9tEeAQwPe_uayGw_CA@mail.gmail.com>
+From:   Alex Qiu <xqiu@google.com>
+Date:   Mon, 31 Aug 2020 11:10:12 -0700
+Message-ID: <CAA_a9xKVEA-6n=rMA8Sk6zJpWV4_qGCcXwN7kFUFpJKuDiG=Bg@mail.gmail.com>
+Subject: Re: [PATCH v3] i2c: npcm7xx: Fix timeout calculation
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Tali Perry <tali.perry1@gmail.com>, Kun Yi <kunyi@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 12:47PM +0200, SeongJae Park wrote:
-[...]
-> diff --git a/mm/damon.c b/mm/damon.c
-> index 7e3c8c82a010..9815d22fc4de 100644
-> --- a/mm/damon.c
-> +++ b/mm/damon.c
-> @@ -2001,6 +2001,147 @@ static ssize_t debugfs_record_write(struct file *file,
->  	return ret;
->  }
->  
-> +static ssize_t sprint_init_regions(struct damon_ctx *c, char *buf, ssize_t len)
-> +{
-> +	struct damon_target *t;
-> +	struct damon_region *r;
-> +	int written = 0;
-> +	int rc;
-> +
-> +	damon_for_each_target(t, c) {
-> +		damon_for_each_region(r, t) {
-> +			rc = snprintf(&buf[written], len - written,
-> +					"%lu %lu %lu\n",
-> +					t->id, r->ar.start, r->ar.end);
-
-This most likely will not work as intended, because snprintf() returns
-"[...] the number of characters which would be generated for the given
-input, excluding the trailing null [...]". Would scnprintf() -- which
-returns "[...] the number of characters written into @buf not including
-the trailing '\0' [...]" -- do what you intended?
-
-> +			if (!rc)
-> +				return -ENOMEM;
-> +			written += rc;
-> +		}
-> +	}
-> +	return written;
-> +}
-[...]
+On Sun, Aug 30, 2020 at 8:35 PM Joel Stanley <joel@jms.id.au> wrote:
+>
+> On Sun, 30 Aug 2020 at 21:31, Tali Perry <tali.perry1@gmail.com> wrote:
+> >
+> > timeout_usec value calculation was wrong, the calculated value
+> > was in msec instead of usec.
+> >
+> > Signed-off-by: Tali Perry <tali.perry1@gmail.com>
+> > Reviewed-by: Avi Fishman <avifishman70@gmail.com>
+>
+> Fixes: 56a1485b102e ("i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver")
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+Reviewed-by: Alex Qiu <xqiu@google.com>
+>
+> Cheers,
+>
+> Joel
+>
+> > ---
+> >  drivers/i2c/busses/i2c-npcm7xx.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-npcm7xx.c
+> > index 75f07138a6fa..dfcf04e1967f 100644
+> > --- a/drivers/i2c/busses/i2c-npcm7xx.c
+> > +++ b/drivers/i2c/busses/i2c-npcm7xx.c
+> > @@ -2093,8 +2093,12 @@ static int npcm_i2c_master_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
+> >                 }
+> >         }
+> >
+> > -       /* Adaptive TimeOut: astimated time in usec + 100% margin */
+> > -       timeout_usec = (2 * 10000 / bus->bus_freq) * (2 + nread + nwrite);
+> > +       /*
+> > +        * Adaptive TimeOut: estimated time in usec + 100% margin:
+> > +        * 2: double the timeout for clock stretching case
+> > +        * 9: bits per transaction (including the ack/nack)
+> > +        */
+> > +       timeout_usec = (2 * 9 * USEC_PER_SEC / bus->bus_freq) * (2 + nread + nwrite);
+> >         timeout = max(msecs_to_jiffies(35), usecs_to_jiffies(timeout_usec));
+> >         if (nwrite >= 32 * 1024 || nread >= 32 * 1024) {
+> >                 dev_err(bus->dev, "i2c%d buffer too big\n", bus->num);
+> >
+> > base-commit: d012a7190fc1fd72ed48911e77ca97ba4521bccd
+> > --
+> > 2.22.0
+> >
