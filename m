@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF48258018
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C399125802D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbgHaSCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:02:41 -0400
-Received: from mga01.intel.com ([192.55.52.88]:38826 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgHaSCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:02:25 -0400
-IronPort-SDR: rzlPnvnlq7jGtrPHCA6BOM8SxxxwU3MYkR1ZzxDdDadConURZblh/WJiSIayoQmOyZ6AHuq4Du
- FfuUAXcrh0Ow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="175078414"
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
-   d="scan'208";a="175078414"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 11:02:23 -0700
-IronPort-SDR: asqsnI5DoYu89u4oqVfxs5wCJTx/nIRMKCyUJqY9oQH0nMt/1lZp5dZIMLja8wDB9r796Vf3NA
- q5ImjB9kQZPg==
-X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
-   d="scan'208";a="330777988"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 11:02:14 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 5DB5E20623; Mon, 31 Aug 2020 21:02:11 +0300 (EEST)
-Date:   Mon, 31 Aug 2020 21:02:11 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Xingyu Wu <wuxy@bitland.com.cn>
-Cc:     mchehab@kernel.org, robh+dt@kernel.org, davem@davemloft.net,
-        shawnx.tu@intel.com, hverkuil-cisco@xs4all.nl,
-        dave.stevenson@raspberrypi.com, manivannan.sadhasivam@linaro.org,
-        bingbu.cao@intel.com, tfiga@chromium.org, drinkcat@chromium.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dongchun.zhu@mediatek.com,
-        sj.huang@mediatek.com, darfur_liu@gcoreinc.com, hao.he7@gmail.com,
-        hao.he@bitland.com.cn
-Subject: Re: [PATCH V3] Add GalaxyCore image sensor driver
-Message-ID: <20200831180211.GQ31019@paasikivi.fi.intel.com>
-References: <1597380295-6297-1-git-send-email-wuxy@bitland.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1597380295-6297-1-git-send-email-wuxy@bitland.com.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729352AbgHaSEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:04:01 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:62742 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728375AbgHaSDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:03:52 -0400
+X-IronPort-AV: E=Sophos;i="5.76,376,1592838000"; 
+   d="scan'208";a="55787057"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 01 Sep 2020 03:03:49 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 665FE400755B;
+        Tue,  1 Sep 2020 03:03:47 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: [PATCH v2] clk: renesas: r8a7742-cpg-mssr: Add clk entry for VSPR
+Date:   Mon, 31 Aug 2020 19:03:12 +0100
+Message-Id: <20200831180312.7453-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xingyu,
+Add clock entry 130 for VSPR (VSP for Resizing) module, so that this module
+can be used on R8A7742 (RZ/G1H) SoC.
 
-On Fri, Aug 14, 2020 at 12:44:51PM +0800, Xingyu Wu wrote:
-> This patch series add GalaxyCore GC5035 image sensor driver.
-> 
-> Change in v3:
-> 1.Optimize gc5035 driver.
-> 2.Redescibe reset-gpio in documentation.
+Alongside rename clock entry "vsp1-sy" to "vsps" (VSP Standard), so that
+VSP1 clock names are in sync.
 
-It seems the e-mails you're sending do not end up to LMML nor kernel.org
-Patchwork.
+Note: The entry for VSPR clock was accidentally dropped from RZ/G manual
+when all the information related to RT were removed.
 
-I'm not sure why, but that needs to be fixed.
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+v1->v2
+* Alongside renamed "vsp1-sy" to "vsps"
+* Updated commit message
+---
+ drivers/clk/renesas/r8a7742-cpg-mssr.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/clk/renesas/r8a7742-cpg-mssr.c b/drivers/clk/renesas/r8a7742-cpg-mssr.c
+index e919828668a4..e541489bd1cd 100644
+--- a/drivers/clk/renesas/r8a7742-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a7742-cpg-mssr.c
+@@ -97,7 +97,8 @@ static const struct mssr_mod_clk r8a7742_mod_clks[] __initconst = {
+ 	DEF_MOD("tmu0",			 125,	R8A7742_CLK_CP),
+ 	DEF_MOD("vsp1du1",		 127,	R8A7742_CLK_ZS),
+ 	DEF_MOD("vsp1du0",		 128,	R8A7742_CLK_ZS),
+-	DEF_MOD("vsp1-sy",		 131,	R8A7742_CLK_ZS),
++	DEF_MOD("vspr",			 130,	R8A7742_CLK_ZS),
++	DEF_MOD("vsps",			 131,	R8A7742_CLK_ZS),
+ 	DEF_MOD("scifa2",		 202,	R8A7742_CLK_MP),
+ 	DEF_MOD("scifa1",		 203,	R8A7742_CLK_MP),
+ 	DEF_MOD("scifa0",		 204,	R8A7742_CLK_MP),
 -- 
-Kind regards,
+2.17.1
 
-Sakari Ailus
