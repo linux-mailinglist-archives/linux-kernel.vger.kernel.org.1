@@ -2,137 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57D5258163
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5F225812E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 20:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgHaSxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 14:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727933AbgHaSxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 14:53:38 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77395C061573;
-        Mon, 31 Aug 2020 11:53:38 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id h19so7883047ljg.13;
-        Mon, 31 Aug 2020 11:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=L+p5pMS5zt9rDPom08XJnrF8bxGqtpHNHupyZeHaC5s=;
-        b=ThTytV7Ig5B7hm5YhpUR7zmDLEA87iCYPbWjyx8p+PsfxGlbwgztuZy58UpfJO6Nxx
-         VhfPLNKvBjbBXXKzwM7D+1XMN/uomJ6lUKBWaFe2i4jpaRTu5Yi1yexGBMD4Aaxlq9Rg
-         q2bqNn89VqwZQNWafA2F341nTltxnX71p1yGQGO5lfemofdwH53xFcQytgqAu5CAQjA9
-         FUEGNXsRv5PiYfIW4JjW/Mu7fHCcI1AUIRKJXO2yWzCSQIUSxC/sQTPhszuq/4VJ3nv3
-         arh6NPgS34g3IKi0wmDM9XYYQTc0CClpl0sW3LkQsGW8iFzbcEKqZWhy1i+NpAInYUSi
-         RQeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L+p5pMS5zt9rDPom08XJnrF8bxGqtpHNHupyZeHaC5s=;
-        b=XPVOc+iKWXDIByWdOYllchJ/ANCeLNE0rPq26eaM0LrCc7i4mDwW/MFaFpqcqtt41M
-         nXFez4unNBYxwvDLQMKWD4m5d0ShwxWkDBcPq2fSDgI2o/5h7WF+tlpHWMzkJUJfkKGR
-         9xzlh7HVpu/BUVE/StxDH9gsOLexyknrA/g0K4GxOjzq3AvzNAC1MSbe5osTleQe/+U5
-         ZuFAE2suy12EG/ycx32yKQarVgUkU4KsAUjaFnLdEi5TR8HWU8NfeP3oiVByqQAd7Dkg
-         viJ0G/OtoofHtr8OjiFXJIvmxX5kACQKOS2OxbZD0gYNwSjB2JCr9gOXUkVUbcP7Kt9U
-         G0EA==
-X-Gm-Message-State: AOAM5314JipIG3BKrfFeL5XZWGnLd6VpymLr/ET3wHxWsEuYV3SHU/fH
-        cwIY0abUqk4FlWOZIhD67t78x+YSDLU=
-X-Google-Smtp-Source: ABdhPJxEzrfGn7i3KNEykO5kPP4BLGlg14bAOleoamj8Ou3Tqnrnw+7oiuPQ4tHno4EbnaB0QEFEXA==
-X-Received: by 2002:a2e:91d2:: with SMTP id u18mr1244754ljg.436.1598900016513;
-        Mon, 31 Aug 2020 11:53:36 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id m26sm1538132ljc.82.2020.08.31.11.53.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 11:53:35 -0700 (PDT)
-Subject: Re: Broadcom WiFi SDIO performance regression after commit "mmc:
- sdhci: Remove finish_tasklet"
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list@cypress.com,
-        brcm80211-dev-list.pdl@broadcom.com,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <5cf1af89-6026-09ad-7f20-82e19ad49fa1@gmail.com>
- <9332715c-6ee5-fce3-8b93-305823d5a551@intel.com>
- <eec0c7d2-87f3-1213-dec1-bb34c5bde35a@gmail.com>
- <379c7435-a940-c427-305d-c4fa5f1970d6@intel.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <17a4729b-b307-92cb-8669-bf043e65bc49@gmail.com>
-Date:   Mon, 31 Aug 2020 21:53:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <379c7435-a940-c427-305d-c4fa5f1970d6@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1729004AbgHaSgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 14:36:33 -0400
+Received: from mga05.intel.com ([192.55.52.43]:53041 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726174AbgHaSgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 14:36:32 -0400
+IronPort-SDR: I2uRY27F7kLopoqYt62Ifp9xBW5JOhQgyHy4YzCOsXqSFUN4vr6VYSDPVrWrQdbz6N3z+IkOqb
+ qlN/QyhXS0Zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="241853056"
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="241853056"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 11:36:31 -0700
+IronPort-SDR: 3Wbt34h2nl2+kUVhQX55Mbp6iMJfWQ68DYFndGnnetJCOomncp30+9Ft3X4pb7uJ56ZTyBgXdP
+ UWUBJualG1/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,376,1592895600"; 
+   d="scan'208";a="501938138"
+Received: from marshy.an.intel.com ([10.122.105.159])
+  by fmsmga005.fm.intel.com with ESMTP; 31 Aug 2020 11:36:30 -0700
+From:   richard.gong@linux.intel.com
+To:     catalin.marinas@arm.com, will@kernel.org, dinguyen@kernel.org,
+        robh+dt@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Richard Gong <richard.gong@intel.com>
+Subject: [PATCHv2] arm64: dts: diamonmesa: add device tree for Intel Diamond Mesa
+Date:   Mon, 31 Aug 2020 13:55:24 -0500
+Message-Id: <1598900124-23299-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-31.08.2020 18:08, Adrian Hunter пишет:
-> On 27/08/20 12:36 pm, Dmitry Osipenko wrote:
->> 27.08.2020 09:45, Adrian Hunter пишет:
->>> On 27/08/20 9:07 am, Dmitry Osipenko wrote:
->>>> Hello!
->>>>
->>>> I was debugging WiFi performance problems on Acer A500 tablet device
->>>> that has BCM4329 WiFi chip which is connected to NVIDIA Terga20 SoC via
->>>> SDIO and found that the following commit causes a solid 5-10 Mbit/s of
->>>> WiFi throughput regression after 5.2 kernel:
->>>
->>> What is that in percentage terms?
->>
->> That is about 20%.
->>
->>>> commit c07a48c2651965e84d35cf193dfc0e5f7892d612
->>>> Author: Adrian Hunter <adrian.hunter@intel.com>
->>>> Date:   Fri Apr 5 15:40:20 2019 +0300
->>>>
->>>>     mmc: sdhci: Remove finish_tasklet
->>>>
->>>>     Remove finish_tasklet. Requests that require DMA-unmapping or
->>>> sdhci_reset
->>>>     are completed either in the IRQ thread or a workqueue if the
->>>> completion is
->>>>     not initiated by the IRQ.
->>>>
->>>> Reverting the offending commit on top of recent linux-next resolves the
->>>> problem.
->>>>
->>>> Ulf / Adrian, do you have any ideas what could be done in regards to
->>>> restoring the SDIO performance? Should we just revert the offending commit?
->>>>
->>>
->>> Unfortunately I think we are past the point of returning to the tasklet.
->>>
->>> sdhci can complete requests in the irq handler but only if ->pre_req() and
->>> ->post_req() are used, which is not supported by SDIO at present.  pre_req
->>> and post_req were introduced to reduce latency for the block driver, so it
->>> seems reasonable perhaps to look at using them in SDIO as well.
->>>
->>
->> I'll try to take a look at pre/post_req(), but I'm not very familiar
->> with the MMC code, so it may take quite some time. Will be great if you
->> could help with making a patch that I could test!
->>
-> 
-> You could start by seeing if using pre/post_req helps at all, as below.
-> If that doesn't help, then it might need more analysis.
+From: Richard Gong <richard.gong@intel.com>
 
-Hello, Adrian! I tested yours patch and 100% fixes the problem! Thank
-you very much! Please make a proper patch and feel free to add my t-b!
+Add the device tree files for Intel Diamond Mesa SoC
 
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Richard Gong <richard.gong@intel.com>
+---
+v2: use socfpga_agilex.dtsi rather than socfpga_diamondmesa.dtsi
+---
+ arch/arm64/Kconfig.platforms                      |  5 ++
+ arch/arm64/boot/dts/intel/Makefile                |  1 +
+ arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts | 62 +++++++++++++++++++++++
+ 3 files changed, 68 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts
+
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index d235b27..ffae871 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -13,6 +13,11 @@ config ARCH_AGILEX
+ 	help
+ 	  This enables support for Intel's Agilex SoCFPGA Family.
+ 
++config ARCH_DIAMONDMESA
++	bool "Intel's Diamond Mesa SoCFPGA Family"
++	help
++	  This enables support for Intel's Diamond Mesa SoCFPGA Family.
++
+ config ARCH_SUNXI
+ 	bool "Allwinner sunxi 64-bit SoC Family"
+ 	select ARCH_HAS_RESET_CONTROLLER
+diff --git a/arch/arm64/boot/dts/intel/Makefile b/arch/arm64/boot/dts/intel/Makefile
+index 296ecee..f725c60 100644
+--- a/arch/arm64/boot/dts/intel/Makefile
++++ b/arch/arm64/boot/dts/intel/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ dtb-$(CONFIG_ARCH_AGILEX) += socfpga_agilex_socdk.dtb \
+ 			     socfpga_agilex_socdk_nand.dtb
++dtb-$(CONFIG_ARCH_DIAMONDMESA) += socfpga_diamondmesa.dtb
+ dtb-$(CONFIG_ARCH_KEEMBAY) += keembay-evm.dtb
+diff --git a/arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts b/arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts
+new file mode 100644
+index 00000000..eb1af5b
+--- /dev/null
++++ b/arch/arm64/boot/dts/intel/socfpga_diamondmesa.dts
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier:     GPL-2.0
++/*
++ * Copyright (C) 2020 Intel Corporation
++ */
++#include "socfpga_agilex.dtsi"
++
++/ {
++	model = "SoCFPGA Diamond Mesa Simics";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		bootargs = "earlycon";
++		stdout-path = "serial0:4800n8";
++	};
++
++	memory {
++		device_type = "memory";
++		/* We expect the bootloader to fill in the reg */
++		reg = <0 0 0 0x4000000>;
++	};
++
++	soc {
++		clocks {
++			osc1 {
++				clock-frequency = <100000000>;
++			};
++
++			uart_clk: uart_clk {
++				#clock-cells = <0>;
++				compatible = "fixed-clock";
++				clock-frequency = <76800>;
++			};
++
++			mmc_clk: mmc_clk {
++				#clock-cells = <0>;
++				compatible = "fixed-clock";
++				clock-frequency = <50000000>;
++			};
++		};
++	};
++};
++
++&uart0 {
++	clocks = <&uart_clk>;
++	status = "okay";
++};
++
++&mmc {
++	clocks = <&mmc_clk>, <&mmc_clk>;
++	cap-sd-highspeed;
++	broken-cd;
++	bus-width = <4>;
++	status = "okay";
++};
++
++&watchdog0 {
++	clocks = <&osc1>;
++	status = "okay";
++};
+-- 
+2.7.4
+
