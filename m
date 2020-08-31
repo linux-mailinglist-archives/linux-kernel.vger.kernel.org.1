@@ -2,133 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C091257565
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0717257569
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Aug 2020 10:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgHaIaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 04:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728255AbgHaI35 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 04:29:57 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A10C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 01:29:57 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id np15so992580pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 01:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6ar1ccFxAQ+NjHCrRFWWmqhgKK0vUlm1MI2pafScAxI=;
-        b=MsXIKLUXg6PfmKT6W75RWl++K5nOJNqQQ5tVkcCpdPbem3K+Hh0WLI0I9T5ZT0YkKd
-         ES7/zhukE/H6K5R+5f0qAPZT6GKBlzyZtVJM5tIaM9UiP5xCYYaom9vYCeI4db0tX5vy
-         mrimCAWDFntUWt3WjtyRqi1bk1PP9IfSwBPuE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6ar1ccFxAQ+NjHCrRFWWmqhgKK0vUlm1MI2pafScAxI=;
-        b=AvYRsrAb9UGNbN8IBKOPRwe4TMYdeu6xF1rnKexkUMlKY+XZMUowGJjzLbPIdxNQhp
-         GtXBQkb2m6oKB1NHk4tg1r5QIYEBAlwMsJNls3E0+Lo5BssBZmCvnpCEGl2BzOT6Y8w8
-         vlyM6QdORuzB5PtQJIJJsuv/9tRg0OQEyvaFEZ4FeRJ96uXjmggIVe4CT8qt/EGSAWgM
-         5PPZcHajiA+7hCuxaCY3pwpFMCqdFkxhuXry49Tal+WRCxZtPDQcvg5GfCkoNJLQ72aI
-         2yRXKcVGuM9jfDV+0IBUvvDz8unYgIOndjUqxqUVdGbn8u6AjAvKEpJIOg437hPhYhkT
-         RDUg==
-X-Gm-Message-State: AOAM530GXSbTrdMYgdVmIa5ZkA/m1pg5u/v8wO8vjCapCyEQG0A6hlIP
-        59EYtmp8hQKCs8NgVzvN5PWQ7w==
-X-Google-Smtp-Source: ABdhPJybatYfCdCWKwpksmunsSSxteIS/Iww7nq0leuuitPggZ/Q+8l8p4NfiAr1XwIN8gaLLz2z0Q==
-X-Received: by 2002:a17:902:c1d2:: with SMTP id c18mr262793plc.237.1598862597113;
-        Mon, 31 Aug 2020 01:29:57 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c809:c7d5:d50:45fe:aaf3:66ee])
-        by smtp.gmail.com with ESMTPSA id b5sm6411335pgi.83.2020.08.31.01.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 01:29:56 -0700 (PDT)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
-        Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v3 7/7] arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
-Date:   Mon, 31 Aug 2020 13:59:17 +0530
-Message-Id: <20200831082917.17117-8-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200831082917.17117-1-jagan@amarulasolutions.com>
-References: <20200831082917.17117-1-jagan@amarulasolutions.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728393AbgHaIau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 04:30:50 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:17519 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728083AbgHaIar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 04:30:47 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bg3LR36qlz9v477;
+        Mon, 31 Aug 2020 10:30:39 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id K6lQaRa8maTz; Mon, 31 Aug 2020 10:30:39 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bg3LR1m3Hz9v470;
+        Mon, 31 Aug 2020 10:30:39 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 49AD48B79B;
+        Mon, 31 Aug 2020 10:30:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id zLN717HQK_Vm; Mon, 31 Aug 2020 10:30:44 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.104])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0F8548B799;
+        Mon, 31 Aug 2020 10:30:44 +0200 (CEST)
+Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 7D05B65D48; Mon, 31 Aug 2020 08:30:43 +0000 (UTC)
+Message-Id: <f6ea2483c2c389567b007945948f704d18cfaeea.1598862623.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/2] powerpc/8xx: Refactor calculation of number of entries
+ per PTE in page tables
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 31 Aug 2020 08:30:43 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
+On 8xx, the number of entries occupied by a PTE in the page tables
+depends on the size of the page. At the time being, this calculation
+is done in two places: in pte_update() and in set_huge_pte_at()
 
-C.TOUCH 2.0 is a general purpose carrier board with capacitive
-touch interface support.
+Refactor this calculation into a helper called
+number_of_cells_per_pte(). For the time being, the val param is
+unused. It will be used by following patch.
 
-PX30.Core needs to mount on top of this Carrier board for creating
-complete PX30.Core C.TOUCH 2.0 board.
+Instead of opencoding is_hugepd(), use hugepd_ok() with a forward
+declaration.
 
-Add support for it.
-
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-Changes for v3:
-- add Amarula Solutions copyright
-Changes for v2:
-- new patch
+ arch/powerpc/include/asm/nohash/32/pgtable.h | 18 ++++++++++++------
+ arch/powerpc/mm/pgtable.c                    |  6 ++++--
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
- arch/arm64/boot/dts/rockchip/Makefile         |  1 +
- .../dts/rockchip/px30-px30-core-ctouch2.dts   | 22 +++++++++++++++++++
- 2 files changed, 23 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
-
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 65116fcb7368..958eb57e403a 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-px30-core-ctouch2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-px30-core-edimm2.2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-evb.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-roc-cc.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts b/arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
-new file mode 100644
-index 000000000000..2da01281883a
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Fuzhou Rockchip Electronics Co., Ltd
-+ * Copyright (c) 2020 Engicam srl
-+ * Copyright (c) 2020 Amarula Solutions
-+ * Copyright (c) 2020 Amarula Solutions(India)
-+ */
+diff --git a/arch/powerpc/include/asm/nohash/32/pgtable.h b/arch/powerpc/include/asm/nohash/32/pgtable.h
+index b9e134d0f03a..80bbc21b87f0 100644
+--- a/arch/powerpc/include/asm/nohash/32/pgtable.h
++++ b/arch/powerpc/include/asm/nohash/32/pgtable.h
+@@ -227,6 +227,17 @@ static inline void pmd_clear(pmd_t *pmdp)
+  */
+ #ifdef CONFIG_PPC_8xx
+ static pmd_t *pmd_off(struct mm_struct *mm, unsigned long addr);
++static int hugepd_ok(hugepd_t hpd);
 +
-+/dts-v1/;
-+#include "px30.dtsi"
-+#include "px30-engicam-ctouch2.dtsi"
-+#include "px30-px30-core.dtsi"
++static int number_of_cells_per_pte(pmd_t *pmd, pte_basic_t val, int huge)
++{
++	if (!huge)
++		return PAGE_SIZE / SZ_4K;
++	else if (hugepd_ok(*((hugepd_t *)pmd)))
++		return 1;
++	else
++		return SZ_512K / SZ_4K;
++}
+ 
+ static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, pte_t *p,
+ 				     unsigned long clr, unsigned long set, int huge)
+@@ -237,12 +248,7 @@ static inline pte_basic_t pte_update(struct mm_struct *mm, unsigned long addr, p
+ 	int num, i;
+ 	pmd_t *pmd = pmd_off(mm, addr);
+ 
+-	if (!huge)
+-		num = PAGE_SIZE / SZ_4K;
+-	else if ((pmd_val(*pmd) & _PMD_PAGE_MASK) != _PMD_PAGE_8M)
+-		num = SZ_512K / SZ_4K;
+-	else
+-		num = 1;
++	num = number_of_cells_per_pte(pmd, new, huge);
+ 
+ 	for (i = 0; i < num; i++, entry++, new += SZ_4K)
+ 		*entry = new;
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index 9c0547d77af3..2dcad640b869 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -266,8 +266,7 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_
+ 	pmd_t *pmd = pmd_off(mm, addr);
+ 	pte_basic_t val;
+ 	pte_basic_t *entry = &ptep->pte;
+-	int num = is_hugepd(*((hugepd_t *)pmd)) ? 1 : SZ_512K / SZ_4K;
+-	int i;
++	int num, i;
+ 
+ 	/*
+ 	 * Make sure hardware valid bit is not set. We don't do
+@@ -280,6 +279,9 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr, pte_t *ptep, pte_
+ 	pte = set_pte_filter(pte);
+ 
+ 	val = pte_val(pte);
 +
-+/ {
-+	model = "Engicam PX30.Core C.TOUCH 2.0";
-+	compatible = "engicam,px30-core-ctouch2", "engicam,px30-px30-core",
-+		     "rockchip,px30";
++	num = number_of_cells_per_pte(pmd, val, 1);
 +
-+	chosen {
-+		stdout-path = "serial2:115200n8";
-+	};
-+};
+ 	for (i = 0; i < num; i++, entry++, val += SZ_4K)
+ 		*entry = val;
+ }
 -- 
-2.25.1
+2.25.0
 
