@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3467258DEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B85258DE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgIAMIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727951AbgIAL6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:58:07 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A578C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 04:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=skogtun.org
-        ; s=ds201912; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ynB/1373qXSHfkD7oBCVQq27uJ8HjQ09s7IAIwHF1XE=; b=BnwfBWe9iNgxGuh18L4om3oVBd
-        /GyUkTldFGTUzRAy9IIeYareqre/XRpH4DeVfvA+bR5Y6NCihc/cfZexiGqjAOWnPI29Z8uYdPMn2
-        Km0bHANPT5FamoB6dNOEThtgHAfM/LFueHMHDkCYQevpdB/uH0L9xvQo2d0/3ksMPn+lCtaXuozIG
-        wzqN6nKDTHXHLqAor+YRjPUFHoYFcEaRn/iQdTd4swunYwv4XbGLLTYemxTQ2U3uXbe8opRDQvDsy
-        lxso51f/mEHPwjIHp0kQqiFBCj91HDP2pQESePjv8pU+s3nlO1Ppkd1Igr3I3tqQCnTuHXInY9RpO
-        CT5U/pUw==;
-Received: from [2a01:79c:cebf:7fb0:de97:df61:fecc:46bb] (port=35868)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <harald@skogtun.org>)
-        id 1kD4vH-0000ID-6S; Tue, 01 Sep 2020 13:57:59 +0200
-Subject: Re: [Intel-gfx] 5.9-rc1: graphics regression moved from -next to
- mainline
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dave Airlie <airlied@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-References: <20200817161132.GA4711@amd>
- <CAHk-=wh6_eWwvpL=AhOeY0btf_dkpu+0joNzPZWfbBWgAeAhMA@mail.gmail.com>
- <CAPM=9tw8LVWsuA6m_nkUDgm00iz2txYRNZY0b0WWZbyiUVzLEw@mail.gmail.com>
- <CAHk-=wg34bw1ude07nC_XCPOJHZ21-v6117p4574d5S7iP4gxw@mail.gmail.com>
- <20200820092349.GA3792@amd>
- <CAHk-=wjX=ck_u8uvp=PjGCQ3M9igE-yqyRPsJ54th1gQWpwMnA@mail.gmail.com>
- <20200821091900.hzbivycs5ky5d3iw@duo.ucw.cz> <87tuwr59te.fsf@intel.com>
- <7efa547d-b7a4-b873-f1aa-4f19eb849fa3@skogtun.org>
- <CAHk-=wj3WskPCtHncCWLdaP6xVecLp8bDBTT57vyiU-0=Ld6QQ@mail.gmail.com>
- <d4db4a52-3001-cb02-4888-a9dfd55cdd7c@skogtun.org>
- <656b8f9f-d696-c75d-aef6-2b8b5170f2f6@skogtun.org>
- <CAHk-=wiAK=AiqTD47o-BFFZciQXpEC0SiiDnXLWJUcQtCo-Pig@mail.gmail.com>
- <101bff45-0ebd-8fb6-7c99-963aa4fcc588@skogtun.org>
- <CAPM=9twLvHu_XLJ89GVXpNo=PHPZLJuRpHggkfzvvuVf+xrwoA@mail.gmail.com>
- <0f06d704-c14e-0d86-c8bb-8c7b3a34758a@skogtun.org>
- <CAHk-=wh=MjX6+Bn-ooHT_wf4VTpe7y-5czbAUT=vaAn2VCBNBQ@mail.gmail.com>
-From:   Harald Arnesen <harald@skogtun.org>
-Message-ID: <71064aa0-1b62-5437-8fa6-7e7af0e3d4c2@skogtun.org>
+        id S1728117AbgIAMH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:07:26 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:41211 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgIAL6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:58:47 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 081Bvts2001080;
+        Tue, 1 Sep 2020 13:57:55 +0200
 Date:   Tue, 1 Sep 2020 13:57:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+From:   Willy Tarreau <w@1wt.eu>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        George Spelvin <lkml@sdf.org>,
+        Amit Klein <aksecurity@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+        Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Subject: Re: [PATCH 2/2] random32: add noise from network and scheduling
+ activity
+Message-ID: <20200901115755.GA1059@1wt.eu>
+References: <20200901064302.849-1-w@1wt.eu>
+ <20200901064302.849-3-w@1wt.eu>
+ <ed5d4d2a-0f8f-f202-8c4f-9fc3d4307e97@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wh=MjX6+Bn-ooHT_wf4VTpe7y-5czbAUT=vaAn2VCBNBQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed5d4d2a-0f8f-f202-8c4f-9fc3d4307e97@gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Still (rc3) doesn't work without the three reverts.
+Hi Eric,
 
-I'm not sure how to proceed, I cannot capture any oops, and see nothing
-obvious in any logs.
--- 
-Hilsen Harald
+On Tue, Sep 01, 2020 at 12:24:38PM +0200, Eric Dumazet wrote:
+> There is not much entropy here really :
+> 
+> 1) dev & txq are mostly constant on a typical host (at least the kind of hosts that is targeted by 
+> Amit Klein and others in their attacks.
+> 
+> 2) len is also known by the attacker, attacking an idle host.
+> 
+> 3) skb are also allocations from slab cache, which tend to recycle always the same pointers (on idle hosts)
+> 
+> 
+> 4) jiffies might be incremented every 4 ms (if HZ=250)
+
+I know. The point is essentially that someone "remote" or with rare access
+to the host's memory (i.e. in a VM on the same CPU sharing L1 with some
+CPU vulnerabilities) cannot synchronize with the PRNG and easily stay
+synchronized forever. Otherwise I totally agree that these are pretty
+weak. But in my opinion they are sufficient to turn a 100% success into
+way less. I try not to forget that we're just trying to make a ~15-bit
+port require ~2^14 attempts on average. Oh and by the way the number of
+calls also counts here.
+
+> Maybe we could feed percpu prandom noise with samples of ns resolution timestamps,
+> lazily cached from ktime_get() or similar functions.
+>
+> This would use one instruction on x86 to update the cache, with maybe more generic noise.
+
+Sure! I think the principle here allows to easily extend it to various
+places, and the more the better. Maybe actually we'll figure that there
+are plenty of sources of randomness that were not considered secure enough
+to feed /dev/random while they're perfectly fine for such use cases.
+
+> diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+> index 4c47f388a83f17860fdafa3229bba0cc605ec25a..a3e026cbbb6e8c5499ed780e57de5fa09bc010b6 100644
+> --- a/kernel/time/timekeeping.c
+> +++ b/kernel/time/timekeeping.c
+> @@ -751,7 +751,7 @@ ktime_t ktime_get(void)
+>  {
+>         struct timekeeper *tk = &tk_core.timekeeper;
+>         unsigned int seq;
+> -       ktime_t base;
+> +       ktime_t res, base;
+>         u64 nsecs;
+>  
+>         WARN_ON(timekeeping_suspended);
+> @@ -763,7 +763,9 @@ ktime_t ktime_get(void)
+>  
+>         } while (read_seqcount_retry(&tk_core.seq, seq));
+>  
+> -       return ktime_add_ns(base, nsecs);
+> +       res = ktime_add_ns(base, nsecs);
+> +       __this_cpu_add(prandom_noise, (unsigned long)ktime_to_ns(res));
+> +       return res;
+>  }
+>  EXPORT_SYMBOL_GPL(ktime_get);
+
+Actually it could even be nice to combine it with __builtin_return_address(0)
+given the large number of callers this one has! But I generally agree with
+your proposal.
+
+Thanks,
+Willy
