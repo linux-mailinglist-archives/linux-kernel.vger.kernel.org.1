@@ -2,85 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C668258DEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08016258DEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgIAMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:08:35 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:42660 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbgIAL5t (ORCPT
+        id S1728110AbgIAMHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgIAL5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:57:49 -0400
-Received: by mail-ot1-f67.google.com with SMTP id g10so885143otq.9;
-        Tue, 01 Sep 2020 04:57:44 -0700 (PDT)
+        Tue, 1 Sep 2020 07:57:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5E7C061244;
+        Tue,  1 Sep 2020 04:57:06 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id 2so501784pjx.5;
+        Tue, 01 Sep 2020 04:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=mFkdWLKZl5wBoxMfTFXNzpq7BQ7hhrLO443ZFVNRdhM=;
+        b=mTaZ4112TNRS4prIcuvRmJGJGSj4Hytxxx3g67T2HWEmdGS4Sar2bnfqM2bCTXhXpF
+         Ry6cpqaOTNxTH8V+QfxX/MS3ddxvv998ZwMfAGxPXd0VEiJHdyDF5X7YIvg7neqDRF+9
+         W5W3i9KBK2Uj+mJgyBIM91ipOGUBQxGPHE1bPANxntAh3EHs8RXG0TiuidiZzhf+lOnd
+         0LbCzi2uRJf5lwFUvo+93vHEuhMbGq+q900kmTiwBGzMp854HFB9DdamMTsxsavhGqgx
+         yNxbPRK5GOAxuYDmsHh+emMvtbjwQWTrkhrHCSoLpDNjDRfzx3GC8e0BdInIo29II0mf
+         XJBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bS1viyL8NjfwjcMbt5ItRCCKbfY+WgWbL+lmwBqbddk=;
-        b=XCQGOoNfFs7MiAmmizNo4TWmVBcua3WaMZz7HcTQXw8pErpaf8/8UqzU5o8Tp2urpO
-         FGyrXrTHYR1XQmgTVZi+60BVNpF7sI2M0gajqmo2AIXkPQsPoNobexCEikXHN3eqIw94
-         e1dVimrJKJKOR01Vpr0Ch25gfgHPbhYTgqD/yvWOuGR8uJD2hlhZG9m/TxIQptd/RypT
-         1MkCmkAlnW0b6nbN6zvkfmj+mx2RseZjyW1P1S88GY5B0whn3L4fNTEN2b2WYxi99tbu
-         jgbtaUhY9aQcpOy2vmYdc8/FT+6XmJ8dQP+4uOtZe3umVF0aWjyq+xWrGxL/LeHVkmTn
-         oHVw==
-X-Gm-Message-State: AOAM5330+LDVvHLTMO/w5s1GmWoxNlq4Dwt5cmz+uOGZJOdnlmLhMRZz
-        GsdKY/qVKUDwhej8hczlpR2XqOpsqBFCBqASUgU=
-X-Google-Smtp-Source: ABdhPJwOq6HEEjQ3xAjudQZKFJPfbYu1NdSQrGq3FL2K08dbGzeOdfoH+V2BBxV3R1Xz+2libeoWvf6J9F6bWaodlSI=
-X-Received: by 2002:a9d:7e99:: with SMTP id m25mr1059559otp.118.1598961464586;
- Tue, 01 Sep 2020 04:57:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <1598943859-21857-1-git-send-email-claude.yen@mediatek.com>
-In-Reply-To: <1598943859-21857-1-git-send-email-claude.yen@mediatek.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 1 Sep 2020 13:57:33 +0200
-Message-ID: <CAJZ5v0hOGEUamXw124q4CnL67o97qRHy9Vv9_F2AQqefDdu3vQ@mail.gmail.com>
-Subject: Re: [PATCH] PM: s2idle: Introduce syscore callbacks in s2idle flow
-To:     Claude Yen <claude.yen@mediatek.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=mFkdWLKZl5wBoxMfTFXNzpq7BQ7hhrLO443ZFVNRdhM=;
+        b=Md3ZCFH7MM8iRUOOUnKcepozyUAay5Ii1GEsInAMgKpY0MTNvvZnLI5emeYRUobCaK
+         S9kAL3Ug+AQcMZSnb1NnNzwC5liHdyocRDMWbVH3v3rkzIsv2iNJlWxWagYbo6IQ0rwP
+         golc+jbR4sqCjtedXR/K0mYiJXJi50aLIvPrtOrq/GpV1SLz2m1H4gqMmGVpjILg0qZM
+         s7Jbs6iW+s+h5BSJx/z/oNxbATtK0RKq3FCQT55p7OgO3WHGasglFCMRddJrrjo27b+U
+         MJr1Jv6Lb1sUO4whAr4Xeqg7uGgPV9wCCH+xHJg/apcYW+SRtwhiwnto1SVGQpkWudWO
+         Ea2A==
+X-Gm-Message-State: AOAM53382FZhfY8VTZfkM4Bvcb6MccCUQfst2w+/GdxiPnOvX2fRQDQN
+        G/JPxmyESGEiPQm6rbuCT28=
+X-Google-Smtp-Source: ABdhPJyIQFi+pQHQd7e1qoPG/l//rgpUvJ3nMYPB/HrYM4gbDtdJ2ivUedp4aXBUx+gVH4xyRFj2EA==
+X-Received: by 2002:a17:90a:5298:: with SMTP id w24mr1161850pjh.221.1598961426409;
+        Tue, 01 Sep 2020 04:57:06 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.65])
+        by smtp.gmail.com with ESMTPSA id r2sm1854621pga.94.2020.09.01.04.56.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 04:57:06 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, jmattson@google.com,
+        junaids@google.com, bgardon@google.com, vkuznets@redhat.com,
+        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
+        lihaiwei.kernel@gmail.com, Yulei Zhang <yulei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [RFC V2 9/9] Handle certain mmu exposed functions properly while turn on direct build EPT mode
+Date:   Tue,  1 Sep 2020 19:57:47 +0800
+Message-Id: <e179ea944f30d6a83a02ef17f2f2a367a3b7fedf.1598868204.git.yulei.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1598868203.git.yulei.kernel@gmail.com>
+References: <cover.1598868203.git.yulei.kernel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 9:05 AM Claude Yen <claude.yen@mediatek.com> wrote:
->
-> This series based on 5.9-rc1
-> This patch makes s2idle call existing syscore callbacks. Currently,
-> when s2idle is selected as system suspend method, callbacks hooked
-> by register_syscore_ops() will not be triggered. This may induce
-> unexpected results.
+From: Yulei Zhang <yulei.kernel@gmail.com>
 
-They are not executed by design.
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> For example, sched_clock_suspend() was added to s2idle flow in
-> commit 3f2552f7e9c5 ("timers/sched_clock: Prevent generic sched_clock
-> wrap caused by tick_freeze()") to fix clock wrap problem. However,
-> sched_clock_suspend() is originally registered in syscore callback.
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6639d9c7012e..35bd87bf965f 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1719,6 +1719,9 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+ 	int i;
+ 	bool write_protected = false;
+ 
++	if (kvm->arch.global_root_hpa)
++		return write_protected;
++
+ 	for (i = PG_LEVEL_4K; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+ 		rmap_head = __gfn_to_rmap(gfn, i, slot);
+ 		write_protected |= __rmap_write_protect(kvm, rmap_head, true);
+@@ -5862,6 +5865,9 @@ static void kvm_zap_obsolete_pages(struct kvm *kvm)
+  */
+ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ {
++	if (kvm->arch.global_root_hpa)
++		return;
++
+ 	lockdep_assert_held(&kvm->slots_lock);
+ 
+ 	spin_lock(&kvm->mmu_lock);
+@@ -5924,6 +5930,9 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+ 	struct kvm_memory_slot *memslot;
+ 	int i;
+ 
++	if (kvm->arch.global_root_hpa)
++		return;
++
+ 	spin_lock(&kvm->mmu_lock);
+ 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+ 		slots = __kvm_memslots(kvm, i);
+-- 
+2.17.1
 
-I'm not sure why this matters here.
-
-> With this patch, if another syscore callback is needed in s2idle,
-> additional migration effort could be saved.
-
-s2idle cannot execute syscore callbacks, because it doesn' take
-non-boot CPUs offline and it won't do that.
-
-Thanks!
