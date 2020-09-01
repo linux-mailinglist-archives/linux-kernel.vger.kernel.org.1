@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D423259176
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E2C259186
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgIAOvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:51:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
+        id S1728782AbgIAOwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:52:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:42742 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728755AbgIAOvS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:51:18 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82B6D2078B;
-        Tue,  1 Sep 2020 14:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598971878;
-        bh=yqmMFIpZEbRaW5ShU6QJoTFWzap3EWFgiYQp3JYn0pc=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=Xt1B/YItZAkINRQXe+/atByGgbv97z7vWjumtGawq9UZa0QIS/H71DObD7qXix9V8
-         5rkoPihkw7M0HNHHXI2ZrUQzo2t2txOMA7XvEAvGjuuz5KoB/7zhiQufBC6lwAIjT4
-         7M2bDv5SCl2sFTQheqc9xyAIG+V1vz633wC2edLU=
-Date:   Tue, 01 Sep 2020 15:50:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
-References: <20200829221104.20870-1-rikard.falkeborn@gmail.com>
-Subject: Re: [PATCH 0/8] regulator/tps*: Constify static regulator ops
-Message-Id: <159897183313.47900.16357469471615056811.b4-ty@kernel.org>
+        id S1728792AbgIAOwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:52:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 37FE41045;
+        Tue,  1 Sep 2020 07:52:09 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.10.252])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 246CA3F71F;
+        Tue,  1 Sep 2020 07:52:05 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 15:52:03 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20200901145203.GB95447@C02TD0UTHF1T.local>
+References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
+ <20200901140208.GA95447@C02TD0UTHF1T.local>
+ <20200901142158.fo7tecobgki5hffa@treble>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901142158.fo7tecobgki5hffa@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 Aug 2020 00:10:56 +0200, Rikard Falkeborn wrote:
-> Constify static instances of struct regulator_ops to allow the compiler
-> to put them in read-only memory. Patches are independent. Compile-tested
-> only.
+On Tue, Sep 01, 2020 at 09:21:58AM -0500, Josh Poimboeuf wrote:
+> On Tue, Sep 01, 2020 at 03:02:08PM +0100, Mark Rutland wrote:
+> > d instead do user pointer
+> > > masking, throughout the x86 uaccess code.  This is similar to what arm64
+> > > is already doing.
+> > > 
+> > > barrier_nospec() is now unused, and can be removed.
+> > 
+> > One thing to consider is whether you need a speculation barrier after
+> > set_fs(). Otherwise for code like:
+> > 
+> > | fs = get_fs();
+> > | if (cond)
+> > |	set_fs(KERNEL_DS);
+> > | copy_to_user(...)
+> > | set_fs(fs)
+> > 
+> > ... the set_fs() can occur speculatively, and may be able to satisfy
+> > the masking logic if forwarded within the cpu.
+> > 
+> > See arm64 commit:
+> > 
+> >   c2f0ad4fc089cff8 ("arm64: uaccess: Prevent speculative use of the current addr_limit")
 > 
-> Rikard Falkeborn (8):
->   regulator: tps51632: Constify tps51632_dcdc_ops
->   regulator: tps6105x: Constify tps6105x_regulator_ops
->   regulator: tps62360: Constify tps62360_dcdc_ops
->   regulator: tps65086: Constify static regulator_ops
->   regulator: tps65090: constify static regulator_ops
->   regulator: tps6586x: Constify static regulator_ops
->   regulator: tps65912: Constify static regulator_ops
->   regulator: tps65910: Constify static regulator_ops
-> 
-> [...]
+> Do you have any examples of that conditional set_fs(KERNEL_DS) pattern?
+> I wasn't able to find any.
 
-Applied to
+I'm afraid not -- we used to in arm64 in some memory dump code, but that
+is now gone. It might be that this is no longer necessary.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
-
-Thanks!
-
-[1/8] regulator: tps51632: Constify tps51632_dcdc_ops
-      commit: dcb97c10f967c2cfea4c6316f026bc4a4a165f1e
-[2/8] regulator: tps6105x: Constify tps6105x_regulator_ops
-      commit: 55c81934e7040c1e0c26b72ee752203ccf190b51
-[3/8] regulator: tps62360: Constify tps62360_dcdc_ops
-      commit: 01167e88e9372f9748e94a7322b0d43ccb980d9f
-[4/8] regulator: tps65086: Constify static regulator_ops
-      commit: 2e6d9db83ac7c65b986d3037620dc735dee7383f
-[5/8] regulator: tps65090: constify static regulator_ops
-      commit: 7d844ac3b5a8a97ae4a05d9f545346a4fca77cea
-[6/8] regulator: tps6586x: Constify static regulator_ops
-      commit: 25c8044502ca9fb684fe7a0612985069e27e01eb
-[7/8] regulator: tps65912: Constify static regulator_ops
-      commit: e92b8ef87a8a4a95056d6b5852bd4b5288f34540
-[8/8] regulator: tps65910: Constify static regulator_ops
-      commit: 385d41d7edbc37d6b30197672b744021ce3baccf
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+If set_fs() goes entirely, that's even better...
 
 Thanks,
-Mark
+Mark.
