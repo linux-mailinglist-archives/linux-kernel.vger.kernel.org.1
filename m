@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A277D25868A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26FD25868B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgIAD5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 23:57:00 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10742 "EHLO huawei.com"
+        id S1726654AbgIAD5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 23:57:50 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45260 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726078AbgIAD5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 23:57:00 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3A44363A6BD7957E345B;
-        Tue,  1 Sep 2020 11:56:58 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
- 11:56:51 +0800
+        id S1726068AbgIAD5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 23:57:49 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A0B688FBE95676C350EE;
+        Tue,  1 Sep 2020 11:57:47 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
+ 11:57:37 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <rogerq@ti.com>, <tony@atomide.com>, <krzk@kernel.org>
-CC:     <linux-omap@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+To:     <mchehab+huawei@kernel.org>, <gregkh@linuxfoundation.org>
+CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
         YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] memory: omap-gpmc: Fix -Wunused-function warnings
-Date:   Tue, 1 Sep 2020 11:56:42 +0800
-Message-ID: <20200901035642.22772-1-yuehaibing@huawei.com>
+Subject: [PATCH -next] staging: spmi: hisi-spmi-controller: Use proper format in call to dev_err()
+Date:   Tue, 1 Sep 2020 11:57:22 +0800
+Message-ID: <20200901035722.9324-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [10.174.179.108]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
@@ -35,52 +34,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/memory/omap-gpmc.c:987:12: warning: ‘gpmc_cs_remap’ defined but not used [-Wunused-function]
- static int gpmc_cs_remap(int cs, u32 base)
-            ^~~~~~~~~~~~~
-drivers/memory/omap-gpmc.c:926:20: warning: ‘gpmc_cs_get_name’ defined but not used [-Wunused-function]
- static const char *gpmc_cs_get_name(int cs)
-                    ^~~~~~~~~~~~~~~~
-drivers/memory/omap-gpmc.c:919:13: warning: ‘gpmc_cs_set_name’ defined but not used [-Wunused-function]
- static void gpmc_cs_set_name(int cs, const char *name)
-             ^~~~~~~~~~~~~~~~
-Make them as  __maybe_unused to fix this.
+The correct format string for a size_t argument should be %zu.
 
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/memory/omap-gpmc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/hikey9xx/hisi-spmi-controller.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index ac0f577a51a1..24372254986e 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -916,14 +916,14 @@ static bool gpmc_cs_reserved(int cs)
- 	return gpmc->flags & GPMC_CS_RESERVED;
- }
+diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+index 66a0b296e06f..34c690da09e3 100644
+--- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
++++ b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+@@ -121,7 +121,7 @@ static int spmi_read_cmd(struct spmi_controller *ctrl,
  
--static void gpmc_cs_set_name(int cs, const char *name)
-+static void __maybe_unused gpmc_cs_set_name(int cs, const char *name)
- {
- 	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
+ 	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
+ 		dev_err(&ctrl->dev,
+-			"spmi_controller supports 1..%d bytes per trans, but:%ld requested\n",
++			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
+ 			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
+ 		return  -EINVAL;
+ 	}
+@@ -175,7 +175,7 @@ static int spmi_read_cmd(struct spmi_controller *ctrl,
+ 	spin_unlock_irqrestore(&spmi_controller->lock, flags);
+ 	if (rc)
+ 		dev_err(&ctrl->dev,
+-			"spmi read wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%ld\n",
++			"spmi read wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
+ 			opc, slave_id, slave_addr, bc + 1);
+ 	else
+ 		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, read value: %*ph\n",
+@@ -197,7 +197,7 @@ static int spmi_write_cmd(struct spmi_controller *ctrl,
  
- 	gpmc->name = name;
- }
+ 	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
+ 		dev_err(&ctrl->dev,
+-			"spmi_controller supports 1..%d bytes per trans, but:%ld requested\n",
++			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
+ 			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
+ 		return  -EINVAL;
+ 	}
+@@ -251,7 +251,7 @@ static int spmi_write_cmd(struct spmi_controller *ctrl,
+ 	spin_unlock_irqrestore(&spmi_controller->lock, flags);
  
--static const char *gpmc_cs_get_name(int cs)
-+static const __maybe_unused char *gpmc_cs_get_name(int cs)
- {
- 	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
- 
-@@ -984,7 +984,7 @@ static int gpmc_cs_delete_mem(int cs)
-  * "base". Returns 0 on success and appropriate negative error code
-  * on failure.
-  */
--static int gpmc_cs_remap(int cs, u32 base)
-+static int __maybe_unused gpmc_cs_remap(int cs, u32 base)
- {
- 	int ret;
- 	u32 old_base, size;
+ 	if (rc)
+-		dev_err(&ctrl->dev, "spmi write wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%ld\n",
++		dev_err(&ctrl->dev, "spmi write wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
+ 			opc, slave_id, slave_addr, bc);
+ 	else
+ 		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, wrote value: %*ph\n",
 -- 
 2.17.1
 
