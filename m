@@ -2,89 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C29259700
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64FA2596F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731429AbgIAPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731309AbgIAPg4 (ORCPT
+        id S1731770AbgIAQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:08:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22128 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728705AbgIAPjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:36:56 -0400
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EEFC061246
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:36:55 -0700 (PDT)
-Received: by mail-ua1-x943.google.com with SMTP id l1so560922uai.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1B9nLNVLY42WxzWWaQLkKFC09iT2uTznxSa/7Ga9+ik=;
-        b=EjZj6y+TjUP2e0zRcKUUQvE66STizixCKC/KAIDXV/69rk8mNQSfWyAU6WYWSKFuzu
-         YdysqzXgzI2xtpYHzb6Bg9vJ2avPXngJVilLH84994hthxQshimmjhHojPFW896ik/4d
-         7+SfIVuVuc/ZxqJXQpx6oVzAu/cP4B59SJR8lGPID+5gG2w4v4nOMnEQcQrCru633HNP
-         zuDN+/5pNOLV30vak4kZQMnpd+VUgw2bg+XdxSwnEBkVo/zJgSOy5ArWNiN7cmol12Bb
-         IqdXYacCg5YMcR4+mn8aBUmFtkx7PyrkYdutuPTIGu4pnVnQseXCdI/TJgx4fELy5snC
-         I+0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1B9nLNVLY42WxzWWaQLkKFC09iT2uTznxSa/7Ga9+ik=;
-        b=Qg8pXR1/bIeJBjDra3sd7iAwlRlQP3Y4TVJNzaUUcSCVYyBmJ17ZGFF8XXUzB/ZZaW
-         6mCoWkGitpY0epa9Lco9+uNEFlqAxIoJnB6s9F3ftQCT70r+gC+T4eADaAqUk0rIBU7v
-         EOvf+AXTdNDNz1Td2i0aTogHgku01EhOGMF2p3k+Qmzo/alIEBJ0RFlAGiYf/s8vgn4M
-         RiYMzTmZrnTkubijhp1cd/kJSTZhIC02Wz03dRWADH9n+N844beB8R4DjTnCdDKno9Kr
-         mMZRcztY30FBUmXLcYqvkxhPowZWkgSHpMW0f/vz02bIqThwkexZQBPDq8hl5jxGllxT
-         AuLg==
-X-Gm-Message-State: AOAM5305sKWokbdGKfRIew+9ehMEv+5oA67eyIxaNuMaibPTe5VntjTx
-        PNrN5iZlp3SdZC6MMFhNzczH/tm/5Gd9F8tH4vMm6gRPJGBkKU7p
-X-Google-Smtp-Source: ABdhPJwNEOdYZ2JzAa+esqv8ikW74w5nzhA2RPqk11Z0XyL+fuHQHEnv1hhlq9RrJ7o9td9gDXMcOORUJEPmsoYSFJ0=
-X-Received: by 2002:ab0:5e43:: with SMTP id a3mr1793697uah.19.1598974614146;
- Tue, 01 Sep 2020 08:36:54 -0700 (PDT)
+        Tue, 1 Sep 2020 11:39:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598974737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DYb3CdAw/3xAK/qRC2QBVZiO2nkH0iiwsfhpsVU4KCc=;
+        b=ZZvQuP35WvxWPoWhaWfDTfzqP4UoojuOHfNaFad1rJZMQLkYDE6Gbn5cn361KonItCRG6i
+        HWUqip4+T2dE+cM/ZNPvu4u+zVx/ZqUumY47FroX8FhgU247j3M1w90K2NoFLIB75ZmCwC
+        3iL+ohA/OYgpGTwa5zKDagWcQtYxsv8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-fXTCmDLjOeufcDVrOzxFVg-1; Tue, 01 Sep 2020 11:38:53 -0400
+X-MC-Unique: fXTCmDLjOeufcDVrOzxFVg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C57E1084C85;
+        Tue,  1 Sep 2020 15:38:51 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E0317D897;
+        Tue,  1 Sep 2020 15:38:48 +0000 (UTC)
+Subject: Re: [PATCH v2 5/9] iommu/ioasid: Introduce ioasid_set private ID
+To:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>
+References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1598070918-21321-6-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <8fe449f7-606e-e90a-28d5-9c29cac5a9c3@redhat.com>
+Date:   Tue, 1 Sep 2020 17:38:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200901150438.228887-1-ulf.hansson@linaro.org> <20200901150654.GB30034@lst.de>
-In-Reply-To: <20200901150654.GB30034@lst.de>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 1 Sep 2020 17:36:17 +0200
-Message-ID: <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when
- CONFIG_HAS_DMA is unset
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Rich Felker <dalias@libc.org>, Mark Brown <broonie@kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1598070918-21321-6-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Sep 2020 at 17:06, Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Sep 01, 2020 at 05:04:38PM +0200, Ulf Hansson wrote:
-> > +#ifdef CONFIG_HAS_DMA
-> > +static int mmc_spi_dma_alloc(struct mmc_spi_host *host)
-> > +{
-> > +     struct spi_device *spi = host->spi;
-> > +     struct device *dev;
-> > +
-> > +     if (!spi->master->dev.parent->dma_mask)
-> > +             return 0;
->
-> I still don't think this makes sense, as the dma_mask should always
-> be non-NULL here.
+Hi Jacob,
+On 8/22/20 6:35 AM, Jacob Pan wrote:
+> When an IOASID set is used for guest SVA, each VM will acquire its
+> ioasid_set for IOASID allocations. IOASIDs within the VM must have a
+> host/physical IOASID backing, mapping between guest and host IOASIDs can
+> be non-identical. IOASID set private ID (SPID) is introduced in this
+> patch to be used as guest IOASID. However, the concept of ioasid_set
+> specific namespace is generic, thus named SPID.
+> 
+> As SPID namespace is within the IOASID set, the IOASID core can provide
+> lookup services at both directions. SPIDs may not be allocated when its
+> IOASID is allocated, the mapping between SPID and IOASID is usually
+> established when a guest page table is bound to a host PASID.
+> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>  drivers/iommu/ioasid.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/ioasid.h | 12 +++++++++++
+>  2 files changed, 66 insertions(+)
+> 
+> diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
+> index 5f31d63c75b1..c0aef38a4fde 100644
+> --- a/drivers/iommu/ioasid.c
+> +++ b/drivers/iommu/ioasid.c
+> @@ -21,6 +21,7 @@ enum ioasid_state {
+>   * struct ioasid_data - Meta data about ioasid
+>   *
+>   * @id:		Unique ID
+> + * @spid:	Private ID unique within a set
+>   * @users	Number of active users
+>   * @state	Track state of the IOASID
+>   * @set		Meta data of the set this IOASID belongs to
+> @@ -29,6 +30,7 @@ enum ioasid_state {
+>   */
+>  struct ioasid_data {
+>  	ioasid_t id;
+> +	ioasid_t spid;
+>  	struct ioasid_set *set;
+>  	refcount_t users;
+>  	enum ioasid_state state;
+> @@ -326,6 +328,58 @@ int ioasid_attach_data(ioasid_t ioasid, void *data)
+>  EXPORT_SYMBOL_GPL(ioasid_attach_data);
+>  
+>  /**
+> + * ioasid_attach_spid - Attach ioasid_set private ID to an IOASID
+> + *
+> + * @ioasid: the ID to attach
+> + * @spid:   the ioasid_set private ID of @ioasid
+> + *
+> + * For IOASID that is already allocated, private ID within the set can be
+> + * attached via this API. Future lookup can be done via ioasid_find.
+I would remove "For IOASID that is already allocated, private ID within
+the set can be attached via this API"
+> + */
+> +int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid)
+> +{
+> +	struct ioasid_data *ioasid_data;
+> +	int ret = 0;
+> +
+> +	spin_lock(&ioasid_allocator_lock);
+We keep on saying the SPID is local to an IOASID set but we don't check
+any IOASID set contains this ioasid. It looks a bit weird to me.
+> +	ioasid_data = xa_load(&active_allocator->xa, ioasid);
+> +
+> +	if (!ioasid_data) {
+> +		pr_err("No IOASID entry %d to attach SPID %d\n",
+> +			ioasid, spid);
+> +		ret = -ENOENT;
+> +		goto done_unlock;
+> +	}
+> +	ioasid_data->spid = spid;
+is there any way/need to remove an spid binding?
+> +
+> +done_unlock:
+> +	spin_unlock(&ioasid_allocator_lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_attach_spid);
+> +
+> +ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid)
+> +{
+> +	struct ioasid_data *entry;
+> +	unsigned long index;
+> +
+> +	if (!xa_load(&ioasid_sets, set->sid)) {
+> +		pr_warn("Invalid set\n");
+> +		return INVALID_IOASID;
+> +	}
+> +
+> +	xa_for_each(&set->xa, index, entry) {
+> +		if (spid == entry->spid) {
+> +			pr_debug("Found ioasid %lu by spid %u\n", index, spid);
+> +			refcount_inc(&entry->users);
+> +			return index;
+> +		}
+> +	}
+> +	return INVALID_IOASID;
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_find_by_spid);
+> +
+> +/**
+>   * ioasid_alloc - Allocate an IOASID
+>   * @set: the IOASID set
+>   * @min: the minimum ID (inclusive)
+> diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
+> index 310abe4187a3..d4b3e83672f6 100644
+> --- a/include/linux/ioasid.h
+> +++ b/include/linux/ioasid.h
+> @@ -73,6 +73,8 @@ bool ioasid_is_active(ioasid_t ioasid);
+>  
+>  void *ioasid_find(struct ioasid_set *set, ioasid_t ioasid, bool (*getter)(void *));
+>  int ioasid_attach_data(ioasid_t ioasid, void *data);
+> +int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid);
+> +ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid);
+>  int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
+>  void ioasid_unregister_allocator(struct ioasid_allocator_ops *allocator);
+>  void ioasid_is_in_set(struct ioasid_set *set, ioasid_t ioasid);
+> @@ -136,5 +138,15 @@ static inline int ioasid_attach_data(ioasid_t ioasid, void *data)
+>  	return -ENOTSUPP;
+>  }
+>  
+> +staic inline int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+> +static inline ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid)
+> +{
+> +	return -ENOTSUPP;
+> +}
+> +
+>  #endif /* CONFIG_IOASID */
+>  #endif /* __LINUX_IOASID_H */
+> 
+Thanks
 
-If that is the case, I wonder how the driver could even have worked without DMA.
+Eric
 
-Because in the existing code, host->dma_dev gets assigned to
-spi->master->dev.parent->dma_mask - which seems to turn on the DMA
-usage in the driver.
-
-What am I missing?
-
-Kind regards
-Uffe
