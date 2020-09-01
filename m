@@ -2,201 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B69258D9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B132258DAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgIALuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:50:01 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:54224 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727051AbgIALl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:41:56 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D2EBBA84ABBB3ABEA869;
-        Tue,  1 Sep 2020 19:41:03 +0800 (CST)
-Received: from [127.0.0.1] (10.174.178.16) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
- 19:40:56 +0800
-Subject: Re: [Question] About SECCOMP issue for ILP32
-To:     Yury Norov <yury.norov@gmail.com>
-CC:     <bobo.shaobowang@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Adam Borowski <kilobyte@angband.pl>,
-        "Alexander Graf" <agraf@suse.de>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Andreas Schwab <schwab@suse.de>,
-        Andrew Pinski <pinskia@gmail.com>,
-        Bamvor Zhangjian <bamv2005@gmail.com>,
-        Chris Metcalf <cmetcalf@mellanox.com>,
-        "Christoph Muellner" <christoph.muellner@theobroma-systems.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Florian Weimer" <fweimer@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Heiko Carstens" <heiko.carstens@de.ibm.com>,
-        James Hogan <james.hogan@imgtec.com>,
-        James Morse <james.morse@arm.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Lin Yongting <linyongting@huawei.com>,
-        Manuel Montezelo <manuel.montezelo@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Martin Schwidefsky" <schwidefsky@de.ibm.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Nathan_Lynch <Nathan_Lynch@mentor.com>,
-        "Philipp Tomsich" <philipp.tomsich@theobroma-systems.com>,
-        Prasun Kapoor <Prasun.Kapoor@caviumnetworks.com>,
-        Ramana Radhakrishnan <ramana.gcc@googlemail.com>,
-        Steve Ellcey <sellcey@caviumnetworks.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
-References: <30b491ad-a7e1-f7b5-26b8-2cfffc81a080@huawei.com>
- <CAAH8bW_p3LJPgOoJgUHt6O0run+LB2RbjnAVpeLn_KCAZKNR+A@mail.gmail.com>
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Message-ID: <695fc573-25ce-b2e5-e61c-140d9ee241e2@huawei.com>
-Date:   Tue, 1 Sep 2020 19:40:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726510AbgIALw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgIALlz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:41:55 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D7C061245;
+        Tue,  1 Sep 2020 04:41:48 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y6so396465plk.10;
+        Tue, 01 Sep 2020 04:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=vL68VqqvBOJpmK0bclLXd33KppmDO85K8QP95o8vC+4=;
+        b=WTXFwaaOARSwB1lRXSnt3qJua0sM84oKQHSk1MVVav7KFevKHkgOdVWkOgVmbGz2HQ
+         rOSCUGNLXUF2a8hQ0U/7QnO8Ut6haIUxfAkW5QbrydpqnMTrL8ChApB111FHedpghk8M
+         qL9gl2Ulk1g7MaEOr5xX2SyOZw1fR0QrhePKuJPUmk3yXIlrBwk10NRgah5ptx0EJxo6
+         6o/Lre/7Qwt0vZzwavPXFv5c5Cj/9n3WZI4zh9PQWuTw/TX4z4mIt+8u2qonXS8i8BLt
+         q5gNIiVOa2LIDasdDEjPtxZloIkYI3TBp/TlgO+Myw8AincTMRjubtIaOiNIW3fiiVE9
+         J3EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=vL68VqqvBOJpmK0bclLXd33KppmDO85K8QP95o8vC+4=;
+        b=FBroC7xRngotSnK1Dg5LhfFeH3+sIwPHAk7ag9A7RZsGzazI0AmCNv4VzE4eA62QGn
+         LS0q++/BpxXJmAueBLaW5jkP1+GM8ZKrCHGtUl2K2NwX6SiZw7dKEpS26PRvylclTyiD
+         L11Xl4qWveGko/vqZGUMuf4smMTTHm1VHU1OnbepJvVjwM7BSM5yyf3GTfrwX+ezuJkw
+         WVMPQVSbGpUtl2rxpMo062OJpyhqkw9vVhS0slMXIhpMVzGUz6g3F5kmYitqOfIim57/
+         b69HjScrmCRsURgTzB5C5E5WUkNvQQhzJev0PFE4hhdWv+8fW5Kt+VTO2V1oaIFquL3+
+         81Mg==
+X-Gm-Message-State: AOAM531ytOHDJV7zyxw/ipVL+zjrTqP0MT2tABq3gyER5BYVALd7HB2n
+        NB4e/RyhckTv1/xL8LbtLQ==
+X-Google-Smtp-Source: ABdhPJw7j2QWldkxD7fX4qizVyKuseP3QD5Bv0/o1MGNiCfFzJZRsol9XRm13ns3zWHLLlrlzysLUw==
+X-Received: by 2002:a17:90a:8909:: with SMTP id u9mr1207128pjn.119.1598960507698;
+        Tue, 01 Sep 2020 04:41:47 -0700 (PDT)
+Received: from [127.0.0.1] ([103.7.29.7])
+        by smtp.gmail.com with ESMTPSA id 142sm1799131pgf.68.2020.09.01.04.41.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 04:41:46 -0700 (PDT)
+From:   Haiwei Li <lihaiwei.kernel@gmail.com>
+Subject: [PATCH] KVM: Check the allocation of pv cpu mask
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Cc:     "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>, tglx@linutronix.de,
+        joro@8bytes.org, jmattson@google.com,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        vkuznets@redhat.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+Message-ID: <d59f05df-e6d3-3d31-a036-cc25a2b2f33f@gmail.com>
+Date:   Tue, 1 Sep 2020 19:41:37 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAAH8bW_p3LJPgOoJgUHt6O0run+LB2RbjnAVpeLn_KCAZKNR+A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.16]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Haiwei Li <lihaiwei@tencent.com>
 
+check the allocation of per-cpu __pv_cpu_mask. Initialize ops only when
+successful.
 
-On 2020/9/1 2:15, Yury Norov wrote:
-> On Mon, Aug 31, 2020 at 5:48 AM Xiongfeng Wang
-> <wangxiongfeng2@huawei.com> wrote:
->>
->> Hi Yury,
->>
-> 
-> Hi Xiongfeng,
-> 
-> [restore CC list]
-> 
-> Haven't seen this before. What kernel / glibc / ltp do you use?
+Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+---
+  arch/x86/kernel/kvm.c | 23 +++++++++++++++++++----
+  1 file changed, 19 insertions(+), 4 deletions(-)
 
-The kernel version is 4.19. I applied the ILP32 patches from
-https://github.com/norov/linux.git. The glibc version is 2.28 and I applyed the
-ILP32 patches.
-The ltp testsuite is from https://github.com/linux-test-project/ltp. I build it
-with '-mabi=ilp32'.
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 08320b0b2b27..a64b894eaac0 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -555,7 +555,6 @@ static void kvm_send_ipi_mask_allbutself(const 
+struct cpumask *mask, int vector)
+  static void kvm_setup_pv_ipi(void)
+  {
+  	apic->send_IPI_mask = kvm_send_ipi_mask;
+-	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+  	pr_info("setup PV IPIs\n");
+  }
 
-> 
->> We were testing the ILP32 feature and came accross a problem. Very apperaciate
->> it if you could give us some help !
->>
->> We compile the LTP testsuite with '-mabi=ilp32' and run it on a machine with
->> kernel and glibc applied with ILP32 patches. But we failed on one testcase,
->> prctl04. It print the following error info.
->> 'prctl04.c:199: FAIL: SECCOMP_MODE_STRICT doesn't permit read(2) write(2) and
->> _exit(2)'
->>
->> The testcase is like below, syscall 'prctl' followed by a syscall 'write'.
->> prctl(PR_SET_SECCOMP, SECCOMP_MODE_STRICT);
->> SAFE_WRITE(1, fd, "a", 1);
->>
->> When we execute syscall 'write', we receive a SIGKILL. It's not as expected.
->> We track the kernel and found out it is because we failed the syscall_whitelist
->> check in '__secure_computing_strict'. Because flag 'TIF_32BIT_AARCH64' is set,
->> we falls into the 'in_compat_syscall()' branch. We compare the parameter
->> 'this_syscall' with return value of 'get_compat_model_syscalls()'
->> The syscall number of '__NR_write' for ilp32 application is 64, but it is 4 for
->> 'model_syscalls_32' returned from 'get_compat_model_syscalls()'
->> So '__secure_computing_strict' retuned with 'do_exit(SIGKILL)'. We have a
->> modification like below, but I am not sure if it correct or not.
->>
->> --- a/kernel/seccomp.c
->> +++ b/kernel/seccomp.c
->> @@ -618,7 +618,7 @@ static void __secure_computing_strict(int this_syscall)
->>  {
->>         const int *syscall_whitelist = mode1_syscalls;
->>  #ifdef CONFIG_COMPAT
->> -       if (in_compat_syscall())
->> +       if (is_a32_compat_task())
->>                 syscall_whitelist = get_compat_mode1_syscalls();
-> 
-> It calls the arch function from generic code. It may break build for
-> other arches.
-> This also looks dangerous because it treats ILP32 execution as non-compat.
-> 
-> The right approach would be implementing arch-specific
-> get_compat_mode1_syscalls()
-> in arch/arm64/include/asm/seccomp.h that returns an appropriate table.
-> Refer MIPS
-> code for this: arch/mips/include/asm/seccomp.h
+@@ -654,7 +653,6 @@ static void __init kvm_guest_init(void)
+  	}
 
-Thanks for your advice. Thanks a lot.
-I have written another version according to your advice.
+  	if (pv_tlb_flush_supported()) {
+-		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
+  		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
+  		pr_info("KVM setup pv remote TLB flush\n");
+  	}
+@@ -767,6 +765,14 @@ static __init int activate_jump_labels(void)
+  }
+  arch_initcall(activate_jump_labels);
 
---- a/arch/arm64/include/asm/seccomp.h
-+++ b/arch/arm64/include/asm/seccomp.h
-@@ -20,6 +20,36 @@
- #define __NR_seccomp_sigreturn_32      __NR_compat_rt_sigreturn
- #endif /* CONFIG_COMPAT */
-
-+#ifdef CONFIG_COMPAT
-+#ifndef __COMPAT_SYSCALL_NR
-+
-+static inline const int *get_compat_mode1_syscalls(void)
++static void kvm_free_pv_cpu_mask(void)
 +{
-+#ifdef CONFIG_AARCH32_EL0
-+       static const int mode1_syscalls_a32[] = {
-+               __NR_compat_read, __NR_compat_write,
-+               __NR_compat_read, __NR_compat_sigreturn,
-+               0, /* null terminated */
-+       };
-+#endif
-+       static const int mode1_syscalls_ilp32[] = {
-+               __NR_read, __NR_write,
-+               __NR_exit, __NR_rt_sigreturn,
-+               0, /* null terminated */
-+       };
++	unsigned int cpu;
 +
-+       if (is_ilp32_compat_task())
-+               return mode1_syscalls_ilp32;
-+#ifdef CONFIG_AARCH32_EL0
-+       return mode1_syscalls_a32;
-+#endif
++	for_each_possible_cpu(cpu)
++		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
 +}
 +
-+#define get_compat_mode1_syscalls get_compat_mode1_syscalls
+  static __init int kvm_alloc_cpumask(void)
+  {
+  	int cpu;
+@@ -785,11 +791,20 @@ static __init int kvm_alloc_cpumask(void)
+
+  	if (alloc)
+  		for_each_possible_cpu(cpu) {
+-			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+-				GFP_KERNEL, cpu_to_node(cpu));
++			if (!zalloc_cpumask_var_node(
++				per_cpu_ptr(&__pv_cpu_mask, cpu),
++				GFP_KERNEL, cpu_to_node(cpu))) {
++				goto zalloc_cpumask_fail;
++			}
+  		}
+
++	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
++	pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
+  	return 0;
 +
-+#endif
-+#endif
-+
- #include <asm-generic/seccomp.h>
++zalloc_cpumask_fail:
++	kvm_free_pv_cpu_mask();
++	return -ENOMEM;
+  }
+  arch_initcall(kvm_alloc_cpumask);
 
- #endif /* _ASM_SECCOMP_H */
-
-
-Thanks,
-Xiongfeng
-
-> 
-> Thanks,
-> Yury
-> 
->>  #endif
->>         do {
->>
->>
->> Thanks,
->> Xiongfeng
->>
-> 
-> .
-> 
+--
+2.18.4
 
