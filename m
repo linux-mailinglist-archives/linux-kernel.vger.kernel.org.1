@@ -2,155 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD1625914F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FDE259140
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgIAOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:49:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39678 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727855AbgIALs2 (ORCPT
+        id S1728294AbgIAOsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727937AbgIAOPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:48:28 -0400
-Date:   Tue, 01 Sep 2020 11:48:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598960885;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pjltpei6Tq9wjnxVqrhYpDj8TfZWi5wPzkttyxE+o6A=;
-        b=psg1OveAWTfiWuxHyaCbBCClD8nrxBLH+BxdPn9yMfx+6i5dnjpJtxzZzED+tLrd8lo5bv
-        kNPXhlKw1M6qryG2Rr08G/vFw8ji7HbwWAvERP/uMg6ED9zdXigPri8FyV0aWbalVfMTGl
-        m5fjDmaqEIwvKMcNnGmGEgE660scjehgZSoPV3yQVat8vpl9/MSLy8f4C3PYg5xljdFFdt
-        A5e3l34lHQP/uaB4ZcTKkmWQRfZv15LD4Cy1xq/dg4p+rWgi0Yq5x1nLNMf0hz4km8Rsaf
-        mpKzQpFUbs/eNropHZKeq6m6ci0RGDhu7Hr7kHkJZz4zoUAY79rzye+w1bn1TQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598960885;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pjltpei6Tq9wjnxVqrhYpDj8TfZWi5wPzkttyxE+o6A=;
-        b=w4tiHiGw2EMHigQ+ao1/RmWPTN7WpYnuVWDxh02PsiSbhdvDsblxAI7kR3i5keHF5MZHO3
-        Lr2C3OiR6FV7enCg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/static_call] x86/alternatives: Teach text_poke_bp() to emulate RET
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200818135804.982214828@infradead.org>
-References: <20200818135804.982214828@infradead.org>
-MIME-Version: 1.0
-Message-ID: <159896088450.20229.9636072765757896045.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Tue, 1 Sep 2020 10:15:11 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDFDC06125C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:14:53 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id u3so1034528qkd.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:14:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
+         :message-id:in-reply-to;
+        bh=BFo5n9HaRlQNxB7HLMjHORpQ6JwPJVs2FExjjB8oDWM=;
+        b=DEMQN9KfmUh5uM3zBJRl3lQDqYom89qxHOq2ebXdd3tjitjgsJQFOmhT7EPQoi1axi
+         49hDcvTNjGarxHI13WwKAdCOL6sFIO8AVEBBJh9u9ZhGS0kf/odIjTbVM0Y8dDyh/Gyw
+         q8eArrgvvZi6g6EIaqWa3vFouR0+OHqLk/of70PXe23AdoXhMpDUgJdI2INrHjKEHHta
+         lk2egh32w656MFJycIjuONVwMHhnKh1igySepYcRBy6W07+99N+CxwUZWeyd+IamiLTa
+         /1fDAZ1zKCklS1rvpw0+bK613WV9YEKcOpIoWNyJ4YUu05NPBfKe6QEljJcS0Essp5Xx
+         klrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
+         :subject:from:to:date:message-id:in-reply-to;
+        bh=BFo5n9HaRlQNxB7HLMjHORpQ6JwPJVs2FExjjB8oDWM=;
+        b=ULg5DRVEboQhFD3zNJloqPbhI2tKH9+gA8X3lNAllYrgmhteCgBL88MXAowrHq1/kV
+         AJ02vx64r+NLgDng/JbhLgTl2w+4k6FPVCfNXONuqZVFDAH+mpKtKFotunrVyP1Kms+Y
+         RpaYblYXQebLz6RbKtHTano7URFuH2XHp0OaYATgom8J8FFIaoqf06DJALFKe3p1uOzn
+         IexPkqYXjozFGpnbrVl5XsbytErvTRty1b69kj8Wznt8YQ4/RyCfidu41ReLOf/KQC7Y
+         QXbJe3nNtJ9bnxinI9nupL6XtBAiB5R9mwijpdx2F5l+jP+tTbRZyAaDHBSN+zoBLcxz
+         IqIg==
+X-Gm-Message-State: AOAM532GHJI0+BNE/XQsQei2CHWee68af2n9tjE/TkqIErxNJeb9a1g3
+        dPcmfoeXblXrG86evmuZ0PY=
+X-Google-Smtp-Source: ABdhPJxaraygGwMcMTnE4/+VjNjqPbtNtVbMVT1K44PE+gSiUIY4uEmKIZnwlOpxCRkAsTSF9+88cQ==
+X-Received: by 2002:ae9:e814:: with SMTP id a20mr2100888qkg.429.1598969692340;
+        Tue, 01 Sep 2020 07:14:52 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id g15sm1461629qtx.57.2020.09.01.07.14.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 07:14:51 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Cc:     <geert@linux-m68k.org>, <kishon@ti.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/1] phy: tusb1210: use bitmasks to set
+ VENDOR_SPECIFIC2
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Vinod Koul" <vkoul@kernel.org>
+Date:   Tue, 01 Sep 2020 10:11:38 -0400
+Message-Id: <C5C3DR429J1K.298P4KSJ2UAOX@atris>
+In-Reply-To: <20200831110852.GO2639@vkoul-mobl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/static_call branch of tip:
+Hi Vinod,
 
-Commit-ID:     c43a43e439e00ad2a4d98716895d961ade6bbbfc
-Gitweb:        https://git.kernel.org/tip/c43a43e439e00ad2a4d98716895d961ade6bbbfc
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 18 Aug 2020 15:57:47 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 01 Sep 2020 09:58:05 +02:00
+On Mon Aug 31, 2020 at 7:08 AM EDT, Vinod Koul wrote:
+> Hi Liam,
+>
+> On 22-08-20, 16:53, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > Start by reading the content of the VENDOR_SPECIFIC2 register and updat=
+e
+> > each bit field based on device properties when defined.
+> >=20
+> > The use of bit masks prevents fields from overriding each other and
+> > enables users to clear bits which are set by default, like datapolarity
+> > in this instance.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> > Changes since v1:
+> > - use set_mask_bits
+> >=20
+> > Changes since v2:
+> > - fix missing bit shift dropped in v2
+> > - rebase on 5.9-rc1
+> >=20
+> > Changes since v3:
+> > - switch to u8p_replace_bits() since there's little reason to protect
+> >   against concurrent access
+> >=20
+> >  drivers/phy/ti/phy-tusb1210.c | 27 ++++++++++++++-------------
+> >  1 file changed, 14 insertions(+), 13 deletions(-)
+> >=20
+> > diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb121=
+0.c
+> > index d8d0cc11d187..a63213f5972a 100644
+> > --- a/drivers/phy/ti/phy-tusb1210.c
+> > +++ b/drivers/phy/ti/phy-tusb1210.c
+> > @@ -7,15 +7,16 @@
+> >   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >   */
+> >  #include <linux/module.h>
+> > +#include <linux/bitfield.h>
+> >  #include <linux/ulpi/driver.h>
+> >  #include <linux/ulpi/regs.h>
+> >  #include <linux/gpio/consumer.h>
+> >  #include <linux/phy/ulpi_phy.h>
+> > =20
+> >  #define TUSB1210_VENDOR_SPECIFIC2		0x80
+> > -#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT	0
+> > -#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT	4
+> > -#define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT	6
+> > +#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK	GENMASK(3, 0)
+> > +#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK	GENMASK(5, 4)
+> > +#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK	BIT(6)
+> > =20
+> >  struct tusb1210 {
+> >  	struct ulpi *ulpi;
+> > @@ -118,22 +119,22 @@ static int tusb1210_probe(struct ulpi *ulpi)
+> >  	 * diagram optimization and DP/DM swap.
+> >  	 */
+> > =20
+> > +	reg =3D ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
+> > +
+> >  	/* High speed output drive strength configuration */
+> > -	device_property_read_u8(&ulpi->dev, "ihstx", &val);
+> > -	reg =3D val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
+> > +	if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
+> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK=
+);
+>
+> Any reason for using u8p_replace_bits and not u8_replace_bits?
+>
 
-x86/alternatives: Teach text_poke_bp() to emulate RET
+u8p_replace_bits seemed like a more concise notation.
 
-Future patches will need to poke a RET instruction, provide the
-infrastructure required for this.
+> Also please drop the u8 casts above, they seem unnecessary here
+>
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20200818135804.982214828@infradead.org
----
- arch/x86/include/asm/text-patching.h | 19 +++++++++++++++++++
- arch/x86/kernel/alternative.c        |  5 +++++
- 2 files changed, 24 insertions(+)
+I added the type casts to get rid of compilation warnings.
 
-diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
-index 6593b42..b742178 100644
---- a/arch/x86/include/asm/text-patching.h
-+++ b/arch/x86/include/asm/text-patching.h
-@@ -53,6 +53,9 @@ extern void text_poke_finish(void);
- #define INT3_INSN_SIZE		1
- #define INT3_INSN_OPCODE	0xCC
- 
-+#define RET_INSN_SIZE		1
-+#define RET_INSN_OPCODE		0xC3
-+
- #define CALL_INSN_SIZE		5
- #define CALL_INSN_OPCODE	0xE8
- 
-@@ -73,6 +76,7 @@ static __always_inline int text_opcode_size(u8 opcode)
- 
- 	switch(opcode) {
- 	__CASE(INT3);
-+	__CASE(RET);
- 	__CASE(CALL);
- 	__CASE(JMP32);
- 	__CASE(JMP8);
-@@ -141,11 +145,26 @@ void int3_emulate_push(struct pt_regs *regs, unsigned long val)
- }
- 
- static __always_inline
-+unsigned long int3_emulate_pop(struct pt_regs *regs)
-+{
-+	unsigned long val = *(unsigned long *)regs->sp;
-+	regs->sp += sizeof(unsigned long);
-+	return val;
-+}
-+
-+static __always_inline
- void int3_emulate_call(struct pt_regs *regs, unsigned long func)
- {
- 	int3_emulate_push(regs, regs->ip - INT3_INSN_SIZE + CALL_INSN_SIZE);
- 	int3_emulate_jmp(regs, func);
- }
-+
-+static __always_inline
-+void int3_emulate_ret(struct pt_regs *regs)
-+{
-+	unsigned long ip = int3_emulate_pop(regs);
-+	int3_emulate_jmp(regs, ip);
-+}
- #endif /* !CONFIG_UML_X86 */
- 
- #endif /* _ASM_X86_TEXT_PATCHING_H */
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index cdaab30..4adbe65 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1103,6 +1103,10 @@ noinstr int poke_int3_handler(struct pt_regs *regs)
- 		 */
- 		goto out_put;
- 
-+	case RET_INSN_OPCODE:
-+		int3_emulate_ret(regs);
-+		break;
-+
- 	case CALL_INSN_OPCODE:
- 		int3_emulate_call(regs, (long)ip + tp->rel32);
- 		break;
-@@ -1277,6 +1281,7 @@ static void text_poke_loc_init(struct text_poke_loc *tp, void *addr,
- 
- 	switch (tp->opcode) {
- 	case INT3_INSN_OPCODE:
-+	case RET_INSN_OPCODE:
- 		break;
- 
- 	case CALL_INSN_OPCODE:
+> > =20
+> >  	/* High speed output impedance configuration */
+> > -	device_property_read_u8(&ulpi->dev, "zhsdrv", &val);
+> > -	reg |=3D val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT;
+> > +	if (!device_property_read_u8(&ulpi->dev, "zhsdrv", &val))
+> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MAS=
+K);
+> > =20
+> >  	/* DP/DM swap control */
+> > -	device_property_read_u8(&ulpi->dev, "datapolarity", &val);
+> > -	reg |=3D val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT;
+> > +	if (!device_property_read_u8(&ulpi->dev, "datapolarity", &val))
+> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_DP_MASK);
+> > =20
+> > -	if (reg) {
+> > -		ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+> > -		tusb->vendor_specific2 =3D reg;
+> > -	}
+> > +	ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
+> > +	tusb->vendor_specific2 =3D reg;
+> > =20
+> >  	tusb->phy =3D ulpi_phy_create(ulpi, &phy_ops);
+> >  	if (IS_ERR(tusb->phy))
+> >=20
+> > base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
+> > --=20
+> > 2.27.0
+>
+> --
+> ~Vinod
+
+Thanks,
+Liam
