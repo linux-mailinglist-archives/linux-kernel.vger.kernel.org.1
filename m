@@ -2,113 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82192586B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1EF2586B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgIAEQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgIAEQq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:16:46 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C05DC0612FF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 21:08:22 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id h9so2014753ooo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 21:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=NaKIw5SZ2snUDIQdGMqi00rq2nlthzOV/iWfbjX5FMQ=;
-        b=p683/8OhcapwMB7X8q7CDgEHBEZLk8MTO0hDyyoM9IeA9kE1jRIaauqXjx3fBJ+pC6
-         bkI2qgc07N5yqXOBl2V6BHdGu20yzZnoZg+TwOa1qIGxyqJdwsYDs0hMfw3/KtjwkQGG
-         vnsJfnchUVEzc4BNmmdaQMjVBRx5yG/F5JNq9shKPsS9o9qcIYg1yXTFUfSHzJfH6hMv
-         4ghhrA1hsdXgGfMgZpx0cN6KtjCPhEImmwpOZ9Mppn739Hk2q9YlD9Kb/+t1IJ4r0u77
-         3tcZL+iewBUiyY+hWvxeYuAtH55WI5k52AudlT0oISRlRNItf5ty88bkLWccj4dytFLr
-         4AOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=NaKIw5SZ2snUDIQdGMqi00rq2nlthzOV/iWfbjX5FMQ=;
-        b=S7O7L3ScOyrGOFtAk82usfoQMtdLjK32+jAF2KPMhs8BHxBSoeRkss6EeyFlG6PaAH
-         x78fEqdqIVYl71Kyh+Qjmpwm2qir9M+S0cm751CM+Mf2TaMSoFA5+De3tdYiUCeJYB0T
-         NhiuSgwBamuTofOuTLVj9AS69ohRa+Gzh1x3jW0tSXcL7vYOxkT+U/+OuMyl8uX/eq7M
-         fushf+1VqnbQ4pWubfWUN32Hq516EKWf2leTzVipRmUL3ZTjWhZnUoTi7YJj/6FQxOhf
-         NCO5ybpb/UQC+llsewEAwz53N7JUigY90iu7oqAOHfRfx4XWKik1UXA0+yEJ2oLoBaHD
-         DLig==
-X-Gm-Message-State: AOAM5336fnkvcvYnIN7r5I5dJsP4/E733eEnPIb4RmBhzmk0tbVyk1Hf
-        UEIP29s9vigsQo4cSfHFZkDPkw==
-X-Google-Smtp-Source: ABdhPJzkFt5m7gLJkldd0ofDPLe6KYcRsEykTxbgdct/rik9AN7M4HTPmS3L9AsIy9mB81WhPqPoyg==
-X-Received: by 2002:a4a:dc03:: with SMTP id p3mr2986296oov.63.1598933301355;
-        Mon, 31 Aug 2020 21:08:21 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i23sm2070866oii.53.2020.08.31.21.08.19
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 31 Aug 2020 21:08:20 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 21:08:18 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 0/5] mm: fixes to past from future testing
-In-Reply-To: <9fa34576-92ec-37db-0b9c-b29d28aa8775@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2008312059480.1019@eggly.anvils>
-References: <alpine.LSU.2.11.2008301343270.5954@eggly.anvils> <9fa34576-92ec-37db-0b9c-b29d28aa8775@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1726183AbgIAELB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:11:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:8899 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgIAELA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 00:11:00 -0400
+IronPort-SDR: NwubxJry0KTpn4dM8SS2fRmanmTtQHiDKETmuc6fO2yItJG6ylBQn8G++CYBL4b08zKn2RmWfR
+ JPWRtTtIQYtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="156360290"
+X-IronPort-AV: E=Sophos;i="5.76,377,1592895600"; 
+   d="scan'208";a="156360290"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 21:10:56 -0700
+IronPort-SDR: 3Vr5g8NV+nJ2Vwb1nkWz9dxaxDkQGHfWYPFQi74ewYoTEPgHuItgHYaIhFoDvSVEm8nGzNFN3Y
+ k+lNgsGpK1rQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,377,1592895600"; 
+   d="scan'208";a="330934898"
+Received: from lkp-server02.sh.intel.com (HELO 713faec3b0e5) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 31 Aug 2020 21:10:55 -0700
+Received: from kbuild by 713faec3b0e5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kCxdG-0000Wa-Ie; Tue, 01 Sep 2020 04:10:54 +0000
+Date:   Tue, 01 Sep 2020 12:10:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/fam0] BUILD SUCCESS
+ a56dbff00095f3fc2c3fcb71dab2e536d42a4ff5
+Message-ID: <5f4dc9c0.xY5yZXesL5ePuzmL%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1105281253-1598933300=:1019"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/fam0
+branch HEAD: a56dbff00095f3fc2c3fcb71dab2e536d42a4ff5  scsi: target: tcmu: Replace zero-length array with flexible-array member
 
---0-1105281253-1598933300=:1019
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+elapsed time: 726m
 
-On Tue, 1 Sep 2020, Alex Shi wrote:
-> =E5=9C=A8 2020/8/31 =E4=B8=8A=E5=8D=884:57, Hugh Dickins =E5=86=99=E9=81=
-=93:
-> > Here's a set of independent fixes against 5.9-rc2: prompted by
-> > testing Alex Shi's "warning on !memcg" and lru_lock series, but
-> > I think fit for 5.9 - though maybe only the first for stable.
-> >=20
-> > [PATCH 1/5] ksm: reinstate memcg charge on copied pages
-> > [PATCH 2/5] mm: migration of hugetlbfs page skip memcg
-> > [PATCH 3/5] shmem: shmem_writepage() split unlikely i915 THP
-> > [PATCH 4/5] mm: fix check_move_unevictable_pages() on THP
-> > [PATCH 5/5] mlock: fix unevictable_pgs event counts on THP
->=20
-> Hi Hugh,
->=20
-> Thanks a lot for reporting and fix! All fixed looks fine for me.
+configs tested: 116
+configs skipped: 7
 
-Thanks for checking.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->=20
-> BTW,
-> I assume you already rebased lru_lock patchset on this. So I don't=20
-> need to redo rebase again, do I? :)
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         hackkit_defconfig
+powerpc                     pq2fads_defconfig
+arm                           h3600_defconfig
+sh                           se7712_defconfig
+powerpc64                        alldefconfig
+openrisc                         alldefconfig
+m68k                            mac_defconfig
+powerpc                      pmac32_defconfig
+sh                          lboxre2_defconfig
+sh                           se7751_defconfig
+arm                           u8500_defconfig
+parisc                generic-32bit_defconfig
+m68k                        mvme147_defconfig
+powerpc                          allmodconfig
+m68k                         apollo_defconfig
+sh                          r7785rp_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                          allyesconfig
+csky                                defconfig
+arm                        mini2440_defconfig
+arm                        cerfcube_defconfig
+h8300                               defconfig
+arm                       spear13xx_defconfig
+arc                                 defconfig
+m68k                          sun3x_defconfig
+arm                            u300_defconfig
+parisc                           allyesconfig
+mips                       capcella_defconfig
+powerpc                      ppc6xx_defconfig
+sh                      rts7751r2d1_defconfig
+m68k                            q40_defconfig
+arm                           omap1_defconfig
+arm                   milbeaut_m10v_defconfig
+sh                        edosk7705_defconfig
+mips                      malta_kvm_defconfig
+sh                         microdev_defconfig
+mips                      bmips_stb_defconfig
+arm                            mps2_defconfig
+nios2                               defconfig
+arm                       imx_v6_v7_defconfig
+mips                           rs90_defconfig
+i386                             alldefconfig
+powerpc                      ppc64e_defconfig
+arm                            hisi_defconfig
+nios2                         3c120_defconfig
+powerpc                    adder875_defconfig
+sh                            titan_defconfig
+mips                           gcw0_defconfig
+arm                         bcm2835_defconfig
+arc                            hsdk_defconfig
+arm                         s5pv210_defconfig
+powerpc                         wii_defconfig
+sh                        sh7757lcr_defconfig
+sh                               alldefconfig
+arm                           stm32_defconfig
+mips                        jmr3927_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+i386                 randconfig-a001-20200831
+i386                 randconfig-a002-20200831
+i386                 randconfig-a004-20200831
+i386                 randconfig-a006-20200831
+i386                 randconfig-a005-20200831
+i386                 randconfig-a003-20200831
+x86_64               randconfig-a012-20200831
+x86_64               randconfig-a015-20200831
+x86_64               randconfig-a014-20200831
+x86_64               randconfig-a011-20200831
+x86_64               randconfig-a016-20200831
+x86_64               randconfig-a013-20200831
+i386                 randconfig-a013-20200831
+i386                 randconfig-a011-20200831
+i386                 randconfig-a012-20200831
+i386                 randconfig-a015-20200831
+i386                 randconfig-a016-20200831
+i386                 randconfig-a014-20200831
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-That's right, no need for another posting: the only ones of yours
-which don't apply cleanly on top of mine are 20/32 and 21/32,
-touching check_move_unevictable_pages(); and they're easy enough
-to resolve.
-
-With my 5 fixes in, I'll advance to commenting on yours (but not today).
-
-Hugh
---0-1105281253-1598933300=:1019--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
