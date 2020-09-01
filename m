@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534AF2598A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943A3259675
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730825AbgIAPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:31:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59074 "EHLO mail.kernel.org"
+        id S1731584AbgIAPml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:42:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730545AbgIAP3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:29:38 -0400
+        id S1728986AbgIAPkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:40:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2DEB20684;
-        Tue,  1 Sep 2020 15:29:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11647205F4;
+        Tue,  1 Sep 2020 15:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974177;
-        bh=Evw0TAfbSQ69ANI8VceYk5KVjE9MAatzHdPPh8BbDOs=;
+        s=default; t=1598974811;
+        bh=raewuoMFNE7kx+5yn2JFZxyUHqYNFqxdXjV56LuMEc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qNU38RUC8xMgxAgwdL1XbRZXT3C4nFPgUxIGTZqR7IzuxyZ9sDgJe5Bn0MUA+zV8F
-         tg+SMHPOxsg6jYETrDbiZC9IoJj4WoTv38JBicC66EDKdbmU5zRyTSVWDh74LMKzjp
-         t+qF2rzwCHKCnQJulj7efPMQzZ92Y/GnryjTMTTs=
+        b=ZDo+zrkmBYChKmpq3vmzhA5NZMmJP1JaTVIAoLWONFPT5hGB4/zlUTqln+f9V3jS/
+         UgOH9A5HyGaOfuo9W2N7H9qsoog9ruX/1RoXFj6yM19+ti5CCxmqYZTcoBZGR17bgE
+         Lodx33WA8rzPWrJQYkEWeXPXlcVE4NtY2JtTPNoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 075/214] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-Date:   Tue,  1 Sep 2020 17:09:15 +0200
-Message-Id: <20200901150956.566463675@linuxfoundation.org>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 100/255] i2c: core: Dont fail PRP0001 enumeration when no ID table exist
+Date:   Tue,  1 Sep 2020 17:09:16 +0200
+Message-Id: <20200901151005.506490372@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,113 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 14dee058610446aa464254fc5c8e88c7535195e0 ]
+[ Upstream commit e3cb82c6d6f6c27ab754e13ae29bdd6b949982e2 ]
 
-The patch c575b7eeb89f: "drm/xen-front: Add support for Xen PV
-display frontend" from Apr 3, 2018, leads to the following static
-checker warning:
+When commit c64ffff7a9d1 ("i2c: core: Allow empty id_table in ACPI case
+as well") fixed the enumeration of I²C devices on ACPI enabled platforms
+when driver has no ID table, it missed the PRP0001 support.
 
-	drivers/gpu/drm/xen/xen_drm_front_gem.c:140 xen_drm_front_gem_create()
-	warn: passing zero to 'ERR_CAST'
+i2c_device_match() and i2c_acpi_match_device() differently match
+driver against given device. Use acpi_driver_match_device(), that is used
+in the former, in i2c_device_probe() and don't fail PRP0001 enumeration
+when no ID table exist.
 
-drivers/gpu/drm/xen/xen_drm_front_gem.c
-   133  struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
-   134                                                  size_t size)
-   135  {
-   136          struct xen_gem_object *xen_obj;
-   137
-   138          xen_obj = gem_create(dev, size);
-   139          if (IS_ERR_OR_NULL(xen_obj))
-   140                  return ERR_CAST(xen_obj);
-
-Fix this and the rest of misused places with IS_ERR_OR_NULL in the
-driver.
-
-Fixes:  c575b7eeb89f: "drm/xen-front: Add support for Xen PV display frontend"
-
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200813062113.11030-3-andr2000@gmail.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: c64ffff7a9d1 ("i2c: core: Allow empty id_table in ACPI case as well")
+BugLink: https://stackoverflow.com/q/63519678/2511795
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/xen/xen_drm_front.c     | 4 ++--
- drivers/gpu/drm/xen/xen_drm_front_gem.c | 8 ++++----
- drivers/gpu/drm/xen/xen_drm_front_kms.c | 2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/i2c/i2c-core-base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
-index 374142018171c..09894a1d343f3 100644
---- a/drivers/gpu/drm/xen/xen_drm_front.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front.c
-@@ -400,8 +400,8 @@ static int xen_drm_drv_dumb_create(struct drm_file *filp,
- 	args->size = args->pitch * args->height;
- 
- 	obj = xen_drm_front_gem_create(dev, args->size);
--	if (IS_ERR_OR_NULL(obj)) {
--		ret = PTR_ERR_OR_ZERO(obj);
-+	if (IS_ERR(obj)) {
-+		ret = PTR_ERR(obj);
- 		goto fail;
- 	}
- 
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-index f0b85e0941114..4ec8a49241e17 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-@@ -83,7 +83,7 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
- 
- 	size = round_up(size, PAGE_SIZE);
- 	xen_obj = gem_create_obj(dev, size);
--	if (IS_ERR_OR_NULL(xen_obj))
-+	if (IS_ERR(xen_obj))
- 		return xen_obj;
- 
- 	if (drm_info->front_info->cfg.be_alloc) {
-@@ -117,7 +117,7 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 26f03a14a4781..4f09d4c318287 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -354,7 +354,7 @@ static int i2c_device_probe(struct device *dev)
+ 	 * or ACPI ID table is supplied for the probing device.
  	 */
- 	xen_obj->num_pages = DIV_ROUND_UP(size, PAGE_SIZE);
- 	xen_obj->pages = drm_gem_get_pages(&xen_obj->base);
--	if (IS_ERR_OR_NULL(xen_obj->pages)) {
-+	if (IS_ERR(xen_obj->pages)) {
- 		ret = PTR_ERR(xen_obj->pages);
- 		xen_obj->pages = NULL;
- 		goto fail;
-@@ -136,7 +136,7 @@ struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
- 	struct xen_gem_object *xen_obj;
- 
- 	xen_obj = gem_create(dev, size);
--	if (IS_ERR_OR_NULL(xen_obj))
-+	if (IS_ERR(xen_obj))
- 		return ERR_CAST(xen_obj);
- 
- 	return &xen_obj->base;
-@@ -194,7 +194,7 @@ xen_drm_front_gem_import_sg_table(struct drm_device *dev,
- 
- 	size = attach->dmabuf->size;
- 	xen_obj = gem_create_obj(dev, size);
--	if (IS_ERR_OR_NULL(xen_obj))
-+	if (IS_ERR(xen_obj))
- 		return ERR_CAST(xen_obj);
- 
- 	ret = gem_alloc_pages_array(xen_obj, size);
-diff --git a/drivers/gpu/drm/xen/xen_drm_front_kms.c b/drivers/gpu/drm/xen/xen_drm_front_kms.c
-index 21ad1c359b613..e4dedbb184ab7 100644
---- a/drivers/gpu/drm/xen/xen_drm_front_kms.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_kms.c
-@@ -60,7 +60,7 @@ fb_create(struct drm_device *dev, struct drm_file *filp,
- 	int ret;
- 
- 	fb = drm_gem_fb_create_with_funcs(dev, filp, mode_cmd, &fb_funcs);
--	if (IS_ERR_OR_NULL(fb))
-+	if (IS_ERR(fb))
- 		return fb;
- 
- 	gem_obj = drm_gem_object_lookup(filp, mode_cmd->handles[0]);
+ 	if (!driver->id_table &&
+-	    !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
++	    !acpi_driver_match_device(dev, dev->driver) &&
+ 	    !i2c_of_match_device(dev->driver->of_match_table, client)) {
+ 		status = -ENODEV;
+ 		goto put_sync_adapter;
 -- 
 2.25.1
 
