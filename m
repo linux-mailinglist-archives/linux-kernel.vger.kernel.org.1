@@ -2,90 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5C6259968
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A938825996C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730654AbgIAQjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:39:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27012 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731184AbgIAQjO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:39:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598978353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6+Siw16/5zZv5latdr2RuSbzR6sWfZeXRN2Pb2vqAJA=;
-        b=g+mpGriIyPlZEhMHTzYB3MwC0SKHzvdvrCMOlT795SVu38h7xNwAWnoFgNTIyzQlEdEifO
-        AP6zrhsD7YF/XbMFgO+DF6WKmMBS720cSJlQbQelj5ZBdK9OQ+HLrRi6IrzUB2eijJVN0m
-        UZwXY1sO/057I0NRGzS705vtq4czwJk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-zHY5MrSXP42TFBfcxnlUZg-1; Tue, 01 Sep 2020 12:39:09 -0400
-X-MC-Unique: zHY5MrSXP42TFBfcxnlUZg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732173AbgIAQjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:39:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730335AbgIAQj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:39:29 -0400
+Received: from dhcp-10-100-145-180.wdl.wdc.com (unknown [199.255.45.60])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78DDD801AE6;
-        Tue,  1 Sep 2020 16:39:08 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9975C5C1A3;
-        Tue,  1 Sep 2020 16:39:06 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  1 Sep 2020 18:39:08 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 18:39:05 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Miaohe Lin <linmiaohe@huawei.com>, axboe@kernel.dk,
-        ebiederm@xmission.com, madhuparnabhowmik10@gmail.com,
-        gustavoars@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] signal: clean up codestyle
-Message-ID: <20200901163904.GC4386@redhat.com>
-References: <20200901115800.7916-1-linmiaohe@huawei.com>
- <20200901122047.7hzztrssvr72wb2d@wittgenstein>
+        by mail.kernel.org (Postfix) with ESMTPSA id 18E3120767;
+        Tue,  1 Sep 2020 16:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598978369;
+        bh=dr8lHwwOag/AEGKr0f2JEzvp5F69En5NKrtfPtmoJsU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dv/qp1cvjo4u1Q6QF8ETb659T0g0+yajEQdEqw8WyWSdiVqK4NIr+lbll5oPtdPCR
+         i0klifYzBqWT+ycUZ7i6+OQZL/05aPSXpEQmenRQrJiL7Gw41mVsH+2iqw3NhpsQ42
+         oKZ51Cvyt5xpKsGv+DOutjEoRCNUsInwthq5Po1E=
+Date:   Tue, 1 Sep 2020 09:39:27 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v2] nvme-pci: check req to prevent crash in
+ nvme_handle_cqe()
+Message-ID: <20200901163927.GC2831246@dhcp-10-100-145-180.wdl.wdc.com>
+References: <20200831105553.1621-1-tian.xianting@h3c.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901122047.7hzztrssvr72wb2d@wittgenstein>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200831105553.1621-1-tian.xianting@h3c.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/01, Christian Brauner wrote:
->
-> On Tue, Sep 01, 2020 at 07:58:00AM -0400, Miaohe Lin wrote:
-> > No functional change intended.
->
-> Hey Miaohe,
->
-> Thank you for the patch.
-> I'm sure this is well-intended but afaict the whole file has more or
-> less a consistent style already where e.g. sig-1 without spaces seems to
-> be preferred. The same for the casts where most places use a single
-> space.
->
-> Now, I know CodingStyle.rst is on your side at least when it comes to
-> the first point:
->
-> Use one space around (on each side of) most binary and ternary operators,
-> such as any of these::
->
-> 	=  +  -  <  >  *  /  %  |  &  ^  <=  >=  ==  !=  ?  :
->
-> but then you'd need to change each place in kernel/signal.c where that
-> is currently not the case.
+On Mon, Aug 31, 2020 at 06:55:53PM +0800, Xianting Tian wrote:
+> As blk_mq_tag_to_rq() may return null, so it should be check whether it is
+> null before using it to prevent a crash.
 
-Or simply leave this code alone ;)
+It may return NULL if the command id exceeds the number of tags. We
+already have a check for a valid command id value, so something is not
+adding up here if we're still getting NULL.
 
-To be honest I do not like the very idea of enforce-coding-style patches,
-coding style is very personal and even this trivial (but imho pointless)
-change can complicate the backporting of some bugfix. I hit this problem
-quite often.
-
-Oleg.
-
+>  	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
+> +	if (unlikely(!req)) {
+> +		dev_warn(nvmeq->dev->ctrl.device,
+> +			"req is null(tag:%d) on queue %d\n",
+> +			cqe->command_id, le16_to_cpu(cqe->sq_id));
+> +		return;
+> +	}
