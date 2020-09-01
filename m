@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468AE259937
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EADB259A89
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730515AbgIAP3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:29:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51458 "EHLO mail.kernel.org"
+        id S1732381AbgIAQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:50:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730085AbgIAP0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:26:10 -0400
+        id S1730094AbgIAP0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:26:16 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE803207D3;
-        Tue,  1 Sep 2020 15:26:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B7BE20FC3;
+        Tue,  1 Sep 2020 15:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973970;
-        bh=FIgXbcABySPjS5C8CGpU9kqOmSRTlk2niq4DSjsFc28=;
+        s=default; t=1598973975;
+        bh=UvvsNoJ+5tKl07PeyowvGq69SRt6WQQl+TPEQhs+5rE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sVTJGdShza8xew3xH0Zo+ZXOrp0p4dxcTtUp8BfVNEQEzJ8yBSe9ssp/ynl5L2ffE
-         KN3w9M0b5VCTe9t539eGtKsfxusHtyGMjz4r/i7DS1rwQ4fbRCFA2LuHo2gI1ALpBh
-         FyGON/lzh6m1zTZOQcmyQAYsoWk7Uszhnrtwsk9M=
+        b=lpxlUb6O5IcVmUASQAeJXPoJng59t4XgbQ4eFP8bLxO8274+JGlYgbNewO3QhY9XR
+         /e/xhE8YmPwXHvlvurGRdYt+IIXIbj6I/ugLnaftQ76iHPqgGIeLXQ7D98qwMf8cBy
+         YVgk7wK6ZIybrBRfcA5jiQIPqMNFkB9KeFnqYv5A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 119/125] btrfs: check the right error variable in btrfs_del_dir_entries_in_log
-Date:   Tue,  1 Sep 2020 17:11:14 +0200
-Message-Id: <20200901150940.444311659@linuxfoundation.org>
+Subject: [PATCH 4.19 121/125] usb: dwc3: gadget: Fix handling ZLP
+Date:   Tue,  1 Sep 2020 17:11:16 +0200
+Message-Id: <20200901150940.545803247@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -45,56 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-[ Upstream commit fb2fecbad50964b9f27a3b182e74e437b40753ef ]
+[ Upstream commit d2ee3ff79e6a3d4105e684021017d100524dc560 ]
 
-With my new locking code dbench is so much faster that I tripped over a
-transaction abort from ENOSPC.  This turned out to be because
-btrfs_del_dir_entries_in_log was checking for ret == -ENOSPC, but this
-function sets err on error, and returns err.  So instead of properly
-marking the inode as needing a full commit, we were returning -ENOSPC
-and aborting in __btrfs_unlink_inode.  Fix this by checking the proper
-variable so that we return the correct thing in the case of ENOSPC.
+The usb_request->zero doesn't apply for isoc. Also, if we prepare a
+0-length (ZLP) TRB for the OUT direction, we need to prepare an extra
+TRB to pad up to the MPS alignment. Use the same bounce buffer for the
+ZLP TRB and the extra pad TRB.
 
-The ENOENT needs to be checked, because btrfs_lookup_dir_item_index()
-can return -ENOENT if the dir item isn't in the tree log (which would
-happen if we hadn't fsync'ed this guy).  We actually handle that case in
-__btrfs_unlink_inode, so it's an expected error to get back.
-
-Fixes: 4a500fd178c8 ("Btrfs: Metadata ENOSPC handling for tree log")
-CC: stable@vger.kernel.org # 4.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-[ add note and comment about ENOENT ]
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: <stable@vger.kernel.org> # v4.5+
+Fixes: d6e5a549cc4d ("usb: dwc3: simplify ZLP handling")
+Fixes: 04c03d10e507 ("usb: dwc3: gadget: handle request->zero")
+Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/usb/dwc3/gadget.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 090315f4ac78f..3e903e6a33870 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -3422,11 +3422,13 @@ int btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
- 	btrfs_free_path(path);
- out_unlock:
- 	mutex_unlock(&dir->log_mutex);
--	if (ret == -ENOSPC) {
-+	if (err == -ENOSPC) {
- 		btrfs_set_log_full_commit(root->fs_info, trans);
--		ret = 0;
--	} else if (ret < 0)
--		btrfs_abort_transaction(trans, ret);
-+		err = 0;
-+	} else if (err < 0 && err != -ENOENT) {
-+		/* ENOENT can be returned if the entry hasn't been fsynced yet */
-+		btrfs_abort_transaction(trans, err);
-+	}
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 5d8a28efddad9..9f6b430773000 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1159,6 +1159,7 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
+ 				req->request.short_not_ok,
+ 				req->request.no_interrupt);
+ 	} else if (req->request.zero && req->request.length &&
++		   !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
+ 		   (IS_ALIGNED(req->request.length, maxp))) {
+ 		struct dwc3	*dwc = dep->dwc;
+ 		struct dwc3_trb	*trb;
+@@ -1168,13 +1169,23 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
+ 		/* prepare normal TRB */
+ 		dwc3_prepare_one_trb(dep, req, length, true, 0);
  
- 	btrfs_end_log_trans(root);
+-		/* Now prepare one extra TRB to handle ZLP */
++		/* Prepare one extra TRB to handle ZLP */
+ 		trb = &dep->trb_pool[dep->trb_enqueue];
+ 		req->num_trbs++;
+ 		__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, 0,
+-				false, 1, req->request.stream_id,
++				!req->direction, 1, req->request.stream_id,
+ 				req->request.short_not_ok,
+ 				req->request.no_interrupt);
++
++		/* Prepare one more TRB to handle MPS alignment for OUT */
++		if (!req->direction) {
++			trb = &dep->trb_pool[dep->trb_enqueue];
++			req->num_trbs++;
++			__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, maxp,
++					       false, 1, req->request.stream_id,
++					       req->request.short_not_ok,
++					       req->request.no_interrupt);
++		}
+ 	} else {
+ 		dwc3_prepare_one_trb(dep, req, length, false, 0);
+ 	}
+@@ -2347,8 +2358,17 @@ static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
+ 				status);
+ 
+ 	if (req->needs_extra_trb) {
++		unsigned int maxp = usb_endpoint_maxp(dep->endpoint.desc);
++
+ 		ret = dwc3_gadget_ep_reclaim_trb_linear(dep, req, event,
+ 				status);
++
++		/* Reclaim MPS padding TRB for ZLP */
++		if (!req->direction && req->request.zero && req->request.length &&
++		    !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
++		    (IS_ALIGNED(req->request.length, maxp)))
++			ret = dwc3_gadget_ep_reclaim_trb_linear(dep, req, event, status);
++
+ 		req->needs_extra_trb = false;
+ 	}
  
 -- 
 2.25.1
