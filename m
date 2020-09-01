@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D73259467
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5506125946E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729723AbgIAPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45844 "EHLO mail.kernel.org"
+        id S1731466AbgIAPji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:39:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726654AbgIAPhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:37:36 -0400
+        id S1731355AbgIAPho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:37:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97CA920866;
-        Tue,  1 Sep 2020 15:37:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2A5921582;
+        Tue,  1 Sep 2020 15:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974656;
-        bh=FS9LV1mgzKB2FrwnM+i3H+Tuad1djbcvC2VsGtvdOyI=;
+        s=default; t=1598974664;
+        bh=Oq7KjuIEGAsnarIYTg82Iav+HRMBExE8AuCjNT05MZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JCB6ks1kH+LJc17VhICAROPBG26RNbbKUFDA4nYpfVBz7Bia2hp6H/7EmMtsvhH5L
-         x7UZz0U+nEdTaHGsbZbrFawn5Ih8upztySXmNIGKe0vjriDA9sb8CYy7Bh8x1L23Um
-         kAhQuJ4Eqpa+DbBU/D75YXnka7AQI4yPqbjjml5E=
+        b=XcE6pdUFXkM+3zTsw+wZqFsxF2D+LcsBorvrK/4yxkG/dxQIHTcGuPDNg8nkpenqK
+         XqRHo8PK/HT9/ppI2aQ7ba5ZxR2B+TqCLCNomuJK6ykBvtWMugGdfNhCqsTKDUmh5p
+         N6J34xROuc/BKnTRTL1UEUvSkCARTGEhhYbkVuAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kaige Li <likaige@loongson.cn>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 044/255] ALSA: hda: Add support for Loongson 7A1000 controller
-Date:   Tue,  1 Sep 2020 17:08:20 +0200
-Message-Id: <20200901151002.863331843@linuxfoundation.org>
+        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 046/255] cec-api: prevent leaking memory through hole in structure
+Date:   Tue,  1 Sep 2020 17:08:22 +0200
+Message-Id: <20200901151002.951614154@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -43,33 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaige Li <likaige@loongson.cn>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 61eee4a7fc406f94e441778c3cecbbed30373c89 ]
+[ Upstream commit 6c42227c3467549ddc65efe99c869021d2f4a570 ]
 
-Add the new PCI ID 0x0014 0x7a07 to support Loongson 7A1000 controller.
+Fix this smatch warning:
 
-Signed-off-by: Kaige Li <likaige@loongson.cn>
-Link: https://lore.kernel.org/r/1594954292-1703-2-git-send-email-likaige@loongson.cn
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+drivers/media/cec/core/cec-api.c:156 cec_adap_g_log_addrs() warn: check that 'log_addrs' doesn't leak information (struct has a hole after
+'features')
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/cec/core/cec-api.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 4c23b169ac67e..1a26940a3fd7c 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2747,6 +2747,8 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
- 	/* Zhaoxin */
- 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
-+	/* Loongson */
-+	{ PCI_DEVICE(0x0014, 0x7a07), .driver_data = AZX_DRIVER_GENERIC },
- 	{ 0, }
- };
- MODULE_DEVICE_TABLE(pci, azx_ids);
+diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
+index 17d1cb2e5f976..f922a2196b2b7 100644
+--- a/drivers/media/cec/core/cec-api.c
++++ b/drivers/media/cec/core/cec-api.c
+@@ -147,7 +147,13 @@ static long cec_adap_g_log_addrs(struct cec_adapter *adap,
+ 	struct cec_log_addrs log_addrs;
+ 
+ 	mutex_lock(&adap->lock);
+-	log_addrs = adap->log_addrs;
++	/*
++	 * We use memcpy here instead of assignment since there is a
++	 * hole at the end of struct cec_log_addrs that an assignment
++	 * might ignore. So when we do copy_to_user() we could leak
++	 * one byte of memory.
++	 */
++	memcpy(&log_addrs, &adap->log_addrs, sizeof(log_addrs));
+ 	if (!adap->is_configured)
+ 		memset(log_addrs.log_addr, CEC_LOG_ADDR_INVALID,
+ 		       sizeof(log_addrs.log_addr));
 -- 
 2.25.1
 
