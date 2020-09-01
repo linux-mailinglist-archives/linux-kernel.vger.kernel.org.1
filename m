@@ -2,152 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F350259222
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB0125922A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgIAPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:03:31 -0400
-Received: from mga01.intel.com ([192.55.52.88]:8666 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgIAPD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:03:28 -0400
-IronPort-SDR: 32ERPcARan7kfUuzk7XhINayhrcZe/iDU0pUXTYNgqbH0L9EYqmtD9b3L/RaGb7rPkna8M+NJb
- WmZRIIXASWoA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="175228547"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="175228547"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 08:03:26 -0700
-IronPort-SDR: tq2ofberLy/TtBiy1TXtfKoNDJCWHtd/CgWV3yrDjhKJhi/RhfjSgsQmUe1g3/r0AjKslti7ZU
- KAaRi4wbJgzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="314756852"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 01 Sep 2020 08:03:25 -0700
-Received: from [10.214.152.83] (mreddy3x-MOBL.gar.corp.intel.com [10.214.152.83])
-        by linux.intel.com (Postfix) with ESMTP id 4A7D5580679;
-        Tue,  1 Sep 2020 08:03:23 -0700 (PDT)
-Subject: Re: [PATCH v5 1/2] dt-bindings: dma: Add bindings for intel LGM SOC
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com, chuanhua.lei@linux.intel.com,
-        malliamireddy009@gmail.com
-References: <cover.1597381889.git.mallikarjunax.reddy@linux.intel.com>
- <68c77fd2ffb477aa4a52a58f8a26bfb191d3c5d1.1597381889.git.mallikarjunax.reddy@linux.intel.com>
- <20200814203222.GA2674896@bogus>
- <7cdc0587-8b4f-4360-a303-1541c9ad57b2@linux.intel.com>
- <20200825112107.GN2639@vkoul-mobl>
- <ffa5ba4d-f1b2-6a30-f2f1-f4578a77bce2@linux.intel.com>
- <20200828104530.GT2639@vkoul-mobl>
- <09547b0e-1c2e-d916-d4c0-f66b0110e173@linux.intel.com>
- <20200831110032.GN2639@vkoul-mobl>
-From:   "Reddy, MallikarjunaX" <mallikarjunax.reddy@linux.intel.com>
-Message-ID: <b2f3df54-40b2-b90b-8696-48de2abadd34@linux.intel.com>
-Date:   Tue, 1 Sep 2020 23:03:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727089AbgIAPEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgIAPEq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:04:46 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18FAC061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:04:45 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id t23so1944322ljc.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Hb7r+KvjTn1fI1bbdwQosrAVf1D62HZ/qglZn6BY0k=;
+        b=m+/3w5yOKIp+/HPKm5IajyrPUsIvE8lLsvQ79OvZJQRYCtuwvb4+uKOHzhkZdtyDvG
+         8ytnhGluUZyOvgxu7tBXHoYaVE9LR0jS3S0zPuFPezUVejN04RwSEU2O+4r62XT72rWJ
+         rxi9/tfvaeJjuJsMEHLb1miKfjis8nxWHP2IvstsP/ztWqEwa+uQGI3FlyX4hLHBFibM
+         QmyTL9G5958Aur90NMzdNQBJyHz7Pjgb66D9VqpyoTM2HP+78fY/eTDuw38p6aCMx/uS
+         vsRngVRRVu4LsGmIvOs7lQaPVULqD6iAGAoa4Ivt1ar8HEb6G0kzZWdQRC9QtZmd+stx
+         u5dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Hb7r+KvjTn1fI1bbdwQosrAVf1D62HZ/qglZn6BY0k=;
+        b=UJMMwqYMPku9F6IErAEWhG8azqIDMMypSreT0s2e0abmQIr+5qIyvzaZEWwpKc1abZ
+         EYRxU3Fg9Iy1/l9jjfxEQfVJXAMF7TnKRnaMHHiYeZW4ogWQfZGbj0d/u7aMavr8S7+f
+         NCnrsHJX7s4oSCZRHSwC9JmBPbvb0cgzp3K+3mq+sQUh+qATS6IxC8siKz4hKKBZ91BH
+         wghvK8DMSLAvQPuJqNeFdpnuV+s2OH4l+A2WTsYKRiZZBGGpUd4LzLIkXSCbGHzdOQm/
+         vSYQ3WGKkqXBYXksjfD9bym/1NU1bRCXib4Evp5CnkUxTKzAClYiX7zPGibQuUSSrug6
+         uGNQ==
+X-Gm-Message-State: AOAM533ao/FKijBd23yJVvZiSMMDwmwvr351en9aybBQecfo6sPGZiTf
+        8OzlO7mHWEZ57BZHY7CVw0DRKA==
+X-Google-Smtp-Source: ABdhPJyPDO/atWKWL3yuF/BeRjbDONzlDxLqDuMjYm7EAhe/rsnhsSpu+ZmNGswu0PCPqQG6Q7AOVg==
+X-Received: by 2002:a05:651c:1122:: with SMTP id e2mr834205ljo.36.1598972683228;
+        Tue, 01 Sep 2020 08:04:43 -0700 (PDT)
+Received: from localhost.localdomain (h-98-128-180-79.NA.cust.bahnhof.se. [98.128.180.79])
+        by smtp.gmail.com with ESMTPSA id u11sm328651ljh.17.2020.09.01.08.04.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 08:04:42 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Mark Brown <broonie@kernel.org>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when CONFIG_HAS_DMA is unset
+Date:   Tue,  1 Sep 2020 17:04:38 +0200
+Message-Id: <20200901150438.228887-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200831110032.GN2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
-Thanks for the review, please see my comments inline.
+The commit cd57d07b1e4e ("sh: don't allow non-coherent DMA for NOMMU") made
+CONFIG_NO_DMA to be set for some platforms, for good reasons.
+Consequentially, CONFIG_HAS_DMA doesn't get set, which makes the DMA
+mapping interface to be built as stub functions, but also prevent the
+mmc_spi driver from being built as it depends on CONFIG_HAS_DMA.
 
-On 8/31/2020 7:00 PM, Vinod Koul wrote:
-> On 31-08-20, 16:06, Reddy, MallikarjunaX wrote:
->> Hi Vinod,
->>
->> Thanks for the review. Please see my comment inline.
->>
->> On 8/28/2020 6:45 PM, Vinod Koul wrote:
->>> On 27-08-20, 17:54, Reddy, MallikarjunaX wrote:
->>>> Hi Vinod,
->>>> Thanks for the review comments.
->>>>
->>>> On 8/25/2020 7:21 PM, Vinod Koul wrote:
->>>>> On 18-08-20, 15:00, Reddy, MallikarjunaX wrote:
->>>>>
->>>>>>>> +
->>>>>>>> +            intel,chans:
->>>>>>>> +              $ref: /schemas/types.yaml#/definitions/uint32-array
->>>>>>>> +              description:
->>>>>>>> +                 The channels included on this port. Format is channel start
->>>>>>>> +                 number and how many channels on this port.
->>>>>>> Why does this need to be in DT? This all seems like it can be in the dma
->>>>>>> cells for each client.
->>>>>> (*ABC)
->>>>>> Yes. We need this.
->>>>>> for dma0(lgm-cdma) old SOC supports 16 channels and the new SOC supports 22
->>>>>> channels. and the logical channel mapping for the peripherals also differ
->>>>>> b/w old and new SOCs.
->>>>>>
->>>>>> Because of this hardware limitation we are trying to configure the total
->>>>>> channels and port-channel mapping dynamically from device tree.
->>>>>>
->>>>>> based on port name we are trying to configure the default values for
->>>>>> different peripherals(ports).
->>>>>> Example: burst length is not same for all ports, so using port name to do
->>>>>> default configurations.
->>>>> Sorry that does not make sense to me, why not specify the values to be
->>>>> used here instead of defining your own name scheme!
->>>> OK. Agreed. I will remove port name from DT and only use intel,chans
->>> what is intel,chans, why not use dma-channels?
->>   The intel,chans says about the channels included on the correspondng port.
-> What do you mean by a port here?
-Here Port is nothing but Peripheral(SPI, HSNAND...)
->
->> Format is channel start number and how many channels on this port.
-> It is perfectly reasonable to have 16 channels but linux not use use all, lets
-> say from 5th channel channel onwards
->
-> So you need to use standard dma-channels also with dma-channel-mask to
-> specify which channels linux can use
-Ok, let me verify and use the standard dma-channels also dma-channel-mask.
->
->>   The reasong behind using this attribute instead of standrad dma-channels
->> is...
->>
->>
->> DMA_VER22 HW supports 22 channels. But there is a hole in HW, total it can
->> use only 16.
->>
->> Old soc supports 4ports and 16 channels.
->> New soc supports 6ports and 22 channels.
->> (old and new soc carry the same version VER22)
->>
->> port channel mapping for the old and new soc also not the same.
->> old soc: logical channels:(Rx, Tx)
->> 0, 1 - SPI0
->> 2, 3 - SPI1
->> 4, 5 - HSNAND
->> 12, 14, 13, 15 - Memcopy
->>
->> New soc: Logical channels(Rx, Tx)
->> 0, 1 - SPI0
->> 2, 3 - SPI1
->> 4, 5 - SPI2
->> 6, 7 - SPI3
->> 8, 9 - HSNAND
->> 10 to 21 - Mcopy
-> Mapping is different, client can set that channel required in dmas
-> property and use a specific required channel.
-OK.
->
->> Because of these reasons we are trying to use "intel,chans" attribute, and
->> reading then number of channels from the dt.
->> Advantaage:
->> 1. we can map the channels correspondign to port
->> 2. Dynamically configure the channels (due to hw limitation)
->>
->> If this is not ok, please suggest us the better way to handle this.
+It turns out that for some odd cases, the driver still relied on the DMA
+mapping interface, even if the DMA was not actively being used.
+
+To fixup the behaviour, let's drop the build dependency for CONFIG_HAS_DMA.
+Moreover, as to allow the driver to succeed probing, let's move the DMA
+initializations behind "#ifdef CONFIG_HAS_DMA".
+
+Fixes: cd57d07b1e4e ("sh: don't allow non-coherent DMA for NOMMU")
+Reported-by: Rich Felker <dalias@libc.org>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+
+Changes in v2:
+	- Drop build dependency to CONFIG_HAS_DMA.
+	- Rephrase commit message and its header, to reflect the updated change.
+
+---
+ drivers/mmc/host/Kconfig   |  2 +-
+ drivers/mmc/host/mmc_spi.c | 86 +++++++++++++++++++++++---------------
+ 2 files changed, 53 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 9c89a5b780e8..9a34c827c96e 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -602,7 +602,7 @@ config MMC_GOLDFISH
+ 
+ config MMC_SPI
+ 	tristate "MMC/SD/SDIO over SPI"
+-	depends on SPI_MASTER && HAS_DMA
++	depends on SPI_MASTER
+ 	select CRC7
+ 	select CRC_ITU_T
+ 	help
+diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+index 39bb1e30c2d7..5055a7eb134a 100644
+--- a/drivers/mmc/host/mmc_spi.c
++++ b/drivers/mmc/host/mmc_spi.c
+@@ -1278,6 +1278,52 @@ mmc_spi_detect_irq(int irq, void *mmc)
+ 	return IRQ_HANDLED;
+ }
+ 
++#ifdef CONFIG_HAS_DMA
++static int mmc_spi_dma_alloc(struct mmc_spi_host *host)
++{
++	struct spi_device *spi = host->spi;
++	struct device *dev;
++
++	if (!spi->master->dev.parent->dma_mask)
++		return 0;
++
++	dev = spi->master->dev.parent;
++
++	host->ones_dma = dma_map_single(dev, host->ones, MMC_SPI_BLOCKSIZE,
++					DMA_TO_DEVICE);
++	if (dma_mapping_error(dev, host->ones_dma))
++		return -ENOMEM;
++
++	host->data_dma = dma_map_single(dev, host->data, sizeof(*host->data),
++					DMA_BIDIRECTIONAL);
++	if (dma_mapping_error(dev, host->data_dma)) {
++		dma_unmap_single(dev, host->ones_dma, MMC_SPI_BLOCKSIZE,
++				 DMA_TO_DEVICE);
++		return -ENOMEM;
++	}
++
++	dma_sync_single_for_cpu(dev, host->data_dma, sizeof(*host->data),
++				DMA_BIDIRECTIONAL);
++
++	host->dma_dev = dev;
++	return 0;
++}
++
++static void mmc_spi_dma_free(struct mmc_spi_host *host)
++{
++	if (!host->dma_dev)
++		return;
++
++	dma_unmap_single(host->dma_dev, host->ones_dma, MMC_SPI_BLOCKSIZE,
++			 DMA_TO_DEVICE);
++	dma_unmap_single(host->dma_dev, host->data_dma,	sizeof(*host->data),
++			 DMA_BIDIRECTIONAL);
++}
++#else
++static inline mmc_spi_dma_alloc(struct mmc_spi_host *host) { return 0; }
++static inline void mmc_spi_dma_free(struct mmc_spi_host *host) {}
++#endif
++
+ static int mmc_spi_probe(struct spi_device *spi)
+ {
+ 	void			*ones;
+@@ -1374,23 +1420,9 @@ static int mmc_spi_probe(struct spi_device *spi)
+ 	if (!host->data)
+ 		goto fail_nobuf1;
+ 
+-	if (spi->master->dev.parent->dma_mask) {
+-		struct device	*dev = spi->master->dev.parent;
+-
+-		host->dma_dev = dev;
+-		host->ones_dma = dma_map_single(dev, ones,
+-				MMC_SPI_BLOCKSIZE, DMA_TO_DEVICE);
+-		if (dma_mapping_error(dev, host->ones_dma))
+-			goto fail_ones_dma;
+-		host->data_dma = dma_map_single(dev, host->data,
+-				sizeof(*host->data), DMA_BIDIRECTIONAL);
+-		if (dma_mapping_error(dev, host->data_dma))
+-			goto fail_data_dma;
+-
+-		dma_sync_single_for_cpu(host->dma_dev,
+-				host->data_dma, sizeof(*host->data),
+-				DMA_BIDIRECTIONAL);
+-	}
++	status = mmc_spi_dma_alloc(host);
++	if (status)
++		goto fail_dma;
+ 
+ 	/* setup message for status/busy readback */
+ 	spi_message_init(&host->readback);
+@@ -1458,20 +1490,12 @@ static int mmc_spi_probe(struct spi_device *spi)
+ fail_add_host:
+ 	mmc_remove_host(mmc);
+ fail_glue_init:
+-	if (host->dma_dev)
+-		dma_unmap_single(host->dma_dev, host->data_dma,
+-				sizeof(*host->data), DMA_BIDIRECTIONAL);
+-fail_data_dma:
+-	if (host->dma_dev)
+-		dma_unmap_single(host->dma_dev, host->ones_dma,
+-				MMC_SPI_BLOCKSIZE, DMA_TO_DEVICE);
+-fail_ones_dma:
++	mmc_spi_dma_free(host);
++fail_dma:
+ 	kfree(host->data);
+-
+ fail_nobuf1:
+ 	mmc_free_host(mmc);
+ 	mmc_spi_put_pdata(spi);
+-
+ nomem:
+ 	kfree(ones);
+ 	return status;
+@@ -1489,13 +1513,7 @@ static int mmc_spi_remove(struct spi_device *spi)
+ 
+ 	mmc_remove_host(mmc);
+ 
+-	if (host->dma_dev) {
+-		dma_unmap_single(host->dma_dev, host->ones_dma,
+-			MMC_SPI_BLOCKSIZE, DMA_TO_DEVICE);
+-		dma_unmap_single(host->dma_dev, host->data_dma,
+-			sizeof(*host->data), DMA_BIDIRECTIONAL);
+-	}
+-
++	mmc_spi_dma_free(host);
+ 	kfree(host->data);
+ 	kfree(host->ones);
+ 
+-- 
+2.25.1
+
