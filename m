@@ -2,96 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C943C25995C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B138A2599E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730412AbgIAQio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
+        id S1730838AbgIAQpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:45:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37340 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730401AbgIAP2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:28:45 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16CD620FC3;
-        Tue,  1 Sep 2020 15:28:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974125;
-        bh=/XJaGl06CsjTQv2yh1KyHC+7ktek0ZuAsx836iRegvw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n2mdRPDrNq2pVxukr4c3iPl+YkyyHJaWmRW5Jvz8KNAR0gjpv3Svn6cs3odcRB3wg
-         aRgXXOz0vV5ybQhyPw+p1EPa2Mq2mUsHfU3DKmGbzsjwiSC4oNC4xZ4tUsD30dQyNo
-         IIgfBbfOVuEEqmw46QROFHdgplBU7IGDhhHrHy7I=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 11/11] spi: tegra20: Simplify with dev_err_probe()
-Date:   Tue,  1 Sep 2020 17:27:13 +0200
-Message-Id: <20200901152713.18629-11-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901152713.18629-1-krzk@kernel.org>
-References: <20200901152713.18629-1-krzk@kernel.org>
+        id S1730014AbgIAP1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:27:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5AA32ACC3;
+        Tue,  1 Sep 2020 15:27:29 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 17:27:28 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Dirk Kostrewa <dirk.kostrewa@mailbox.org>
+Subject: Re: kworker/0:3+pm hogging CPU
+Message-ID: <20200901152728.GI16650@dhcp22.suse.cz>
+References: <20200720173807.GJ1228057@rowland.harvard.edu>
+ <20200720174530.GB4061@dhcp22.suse.cz>
+ <20200720174812.GK1228057@rowland.harvard.edu>
+ <20200720181605.GC4061@dhcp22.suse.cz>
+ <20200720200243.GA1244989@rowland.harvard.edu>
+ <20200721055917.GD4061@dhcp22.suse.cz>
+ <20200721143325.GB1272082@rowland.harvard.edu>
+ <20200829095003.GA2446485@eldamar.local>
+ <20200829155949.GA499295@rowland.harvard.edu>
+ <38dfdef4-f9ab-1755-8418-2285d843af86@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <38dfdef4-f9ab-1755-8418-2285d843af86@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and the error value gets printed.
+On Mon 31-08-20 14:37:10, Mathias Nyman wrote:
+[...]
+> I can't come up with any good solution to this right now.
+> Only bad ideas such as
+> a. Add a sleep to the over-current case, 
+>    doesn't solve anything else than the ~100% cpu hogging part of the problem 
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/spi/spi-tegra20-slink.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+This sounds like a better thing from the user space point of view. I do
+not have any insight on what kind of other side effects this might have
+so I didn't dare to try that on my piece of (broken) HW. I do not see
+the problem all the time and I plan to replace it soon anyway.
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index a07b72e9c344..a0810765d4e5 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -600,13 +600,9 @@ static int tegra_slink_init_dma_param(struct tegra_slink_data *tspi,
- 	struct dma_slave_config dma_sconfig;
- 
- 	dma_chan = dma_request_chan(tspi->dev, dma_to_memory ? "rx" : "tx");
--	if (IS_ERR(dma_chan)) {
--		ret = PTR_ERR(dma_chan);
--		if (ret != -EPROBE_DEFER)
--			dev_err(tspi->dev,
--				"Dma channel is not available: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(dma_chan))
-+		return dev_err_probe(tspi->dev, PTR_ERR(dma_chan),
-+				     "Dma channel is not available\n");
- 
- 	dma_buf = dma_alloc_coherent(tspi->dev, tspi->dma_buf_size,
- 				&dma_phys, GFP_KERNEL);
+Considering that tweaking the power management helps maybe that could be
+done automagically after many consecutive failures.
+
+Just my 2c
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
