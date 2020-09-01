@@ -2,157 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833CF2587D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B082587DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgIAGEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:04:45 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39160 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgIAGEp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:04:45 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08163331121009;
-        Tue, 1 Sep 2020 02:03:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=vRUOCjKNhfU4jC//SKcvUi/GAEvaaV/usn9kEKuTUcA=;
- b=VQZW+OLaKjIRGdE3ROu5xoHAaPqdZ6Q+MvYWFC9ak8M5zJwKeF8BrKqF35YO+WAIfL9s
- T7LyAZ/opx5hBYAwQf4oJHgxyG1VugO8Kc/vuT9tSOQu8mTU8DBwQ7ZgslSeIgyutYUQ
- 7LrQ7aPe1oyI6waZQcTJi2lv6Z5ZAoMi1Af+4D5C81NSzxgSerJ4gM0/hbXrFYOHwmGl
- CcqkCefdFj0gIXFRzqTSCPevJOQd5lcn3IOQvtAnqp4g8FS84I3j1p88n4fpJRmoN8Jz
- won6MaXDwIa00ut8GnCq8KjELd1FTNFevWbNqB0MgUw6VJx6QigrwwZ/XQN17neNqEJj Vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 339g8j8pt3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 02:03:35 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08163CKx121869;
-        Tue, 1 Sep 2020 02:03:35 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 339g8j8ps9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 02:03:35 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 081637Gg025175;
-        Tue, 1 Sep 2020 06:03:33 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma05wdc.us.ibm.com with ESMTP id 337en95ns2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 06:03:33 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08163WJS36766188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Sep 2020 06:03:33 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5338112062;
-        Tue,  1 Sep 2020 06:03:32 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2DD3112061;
-        Tue,  1 Sep 2020 06:03:24 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.82.45])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Sep 2020 06:03:24 +0000 (GMT)
-Subject: Re: [PATCH v6 3/5] perf jevents: Add support for parsing
- perchip/percore events
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        pc@us.ibm.com, namhyung@kernel.org, ak@linux.intel.com,
-        yao.jin@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        maddy@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        john.garry@huawei.com
-References: <20200827130958.189146-1-kjain@linux.ibm.com>
- <20200827130958.189146-4-kjain@linux.ibm.com> <20200831084404.GD287892@krava>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <466a0e9a-ad01-f436-8f70-10aba586796e@linux.ibm.com>
-Date:   Tue, 1 Sep 2020 11:33:23 +0530
+        id S1726091AbgIAGKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:10:53 -0400
+Received: from mga09.intel.com ([134.134.136.24]:13570 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726006AbgIAGKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:10:52 -0400
+IronPort-SDR: L3/9t1zFNr4oUDsNKq5z/47fZG/iwBC6GOO8g4hqmROmo0iM50XbExFP09DvhQ/dM6AObleb3H
+ FSbQVejcLBrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="158116489"
+X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
+   d="scan'208";a="158116489"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 23:10:50 -0700
+IronPort-SDR: FmcIXz8KDqJa+lRqZeMn+zJ4VBOfgY2gS9DC5i5ZFAmAxolZDDOYIA4j2letRcia0tulrbzp2i
+ QM0dKg78dxag==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
+   d="scan'208";a="325217549"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Aug 2020 23:10:47 -0700
+Cc:     baolu.lu@linux.intel.com, CobeChen-oc@zhaoxin.com,
+        RaymondPang-oc@zhaoxin.com, TonyWWang-oc@zhaoxin.com
+Subject: Re: [PATCH v3 1/2] iommu/vt-d:Add support for detecting ACPI device
+ in RMRR
+To:     FelixCuioc <FelixCui-oc@zhaoxin.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org
+References: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
+ <20200827100217.21324-2-FelixCui-oc@zhaoxin.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <a7492142-2fbf-781c-8ec7-e85d5ce3f1d5@linux.intel.com>
+Date:   Tue, 1 Sep 2020 14:05:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200831084404.GD287892@krava>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200827100217.21324-2-FelixCui-oc@zhaoxin.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-01_04:2020-09-01,2020-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 clxscore=1015 spamscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009010054
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Felix,
 
-
-On 8/31/20 2:14 PM, Jiri Olsa wrote:
-> On Thu, Aug 27, 2020 at 06:39:56PM +0530, Kajol Jain wrote:
->> Initially, every time we want to add new terms like chip, core thread etc,
->> we need to create corrsponding fields in pmu_events and event struct.
->> This patch adds an enum called 'aggr_mode_class' which store all these
->> aggregation like perchip/percore. It also adds new field 'aggr_mode'
->> to capture these terms.
->> Now, if user wants to add any new term, they just need to add it in
->> the enum defined.
->>
->> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
->> ---
->>  tools/perf/pmu-events/jevents.c    | 16 ++++++++++++++++
->>  tools/perf/pmu-events/pmu-events.h |  6 ++++++
->>  2 files changed, 22 insertions(+)
->>
->> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
->> index b205cd904a4f..f4ad2d403533 100644
->> --- a/tools/perf/pmu-events/jevents.c
->> +++ b/tools/perf/pmu-events/jevents.c
->> @@ -48,6 +48,7 @@
->>  #include <linux/list.h>
->>  #include "jsmn.h"
->>  #include "json.h"
->> +#include "pmu-events.h"
->>  
->>  int verbose;
->>  char *prog;
->> @@ -60,6 +61,7 @@ struct json_event {
->>  	char *pmu;
->>  	char *unit;
->>  	char *perpkg;
->> +	char *aggr_mode;
->>  	char *metric_expr;
->>  	char *metric_name;
->>  	char *metric_group;
->> @@ -74,6 +76,14 @@ struct json_event {
->>  	(void)(&_min1 == &_min2);		\
->>  	_min1 < _min2 ? _min1 : _min2; })
->>  #endif
+On 8/27/20 6:02 PM, FelixCuioc wrote:
+> Some ACPI devices need to issue dma requests to access
+> the reserved memory area.BIOS uses the device scope type
+> ACPI_NAMESPACE_DEVICE in RMRR to report these ACPI devices.
+> This patch add support for detecting ACPI devices in RMRR.
 > 
-> please add new line in here
+> Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
+> ---
+>   drivers/iommu/intel/dmar.c  | 76 +++++++++++++++++++++----------------
+>   drivers/iommu/intel/iommu.c | 23 ++++++++++-
+>   include/linux/dmar.h        | 12 +++++-
+>   3 files changed, 76 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 93e6345f3414..f6691c36bd3f 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -215,7 +215,7 @@ static bool dmar_match_pci_path(struct dmar_pci_notify_info *info, int bus,
+>   }
+>   
+>   /* Return: > 0 if match found, 0 if no match found, < 0 if error happens */
+> -int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
+> +int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
+>   			  void *start, void*end, u16 segment,
+>   			  struct dmar_dev_scope *devices,
+>   			  int devices_cnt)
+> @@ -304,7 +304,7 @@ static int dmar_pci_bus_add_dev(struct dmar_pci_notify_info *info)
+>   
+>   		drhd = container_of(dmaru->hdr,
+>   				    struct acpi_dmar_hardware_unit, header);
+> -		ret = dmar_insert_dev_scope(info, (void *)(drhd + 1),
+> +		ret = dmar_pci_insert_dev_scope(info, (void *)(drhd + 1),
+>   				((void *)drhd) + drhd->header.length,
+>   				dmaru->segment,
+>   				dmaru->devices, dmaru->devices_cnt);
+> @@ -697,47 +697,59 @@ dmar_find_matched_drhd_unit(struct pci_dev *dev)
+>   	return dmaru;
+>   }
+>   
+> -static void __init dmar_acpi_insert_dev_scope(u8 device_number,
+> -					      struct acpi_device *adev)
+> +/* Return: > 0 if match found, 0 if no match found */
+> +bool dmar_acpi_insert_dev_scope(u8 device_number,
+> +				struct acpi_device *adev,
+> +				void *start, void *end,
+> +				struct dmar_dev_scope *devices,
+> +				int devices_cnt)
+>   {
+> -	struct dmar_drhd_unit *dmaru;
+> -	struct acpi_dmar_hardware_unit *drhd;
+>   	struct acpi_dmar_device_scope *scope;
+>   	struct device *tmp;
+>   	int i;
+>   	struct acpi_dmar_pci_path *path;
+>   
+> +	for (; start < end; start += scope->length) {
+> +		scope = start;
+> +		if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
+> +			continue;
+> +		if (scope->enumeration_id != device_number)
+> +			continue;
+> +		path = (void *)(scope + 1);
+> +		for_each_dev_scope(devices, devices_cnt, i, tmp)
+> +			if (tmp == NULL) {
+> +				devices[i].bus = scope->bus;
+> +				devices[i].devfn = PCI_DEVFN(path->device, path->function);
+> +				rcu_assign_pointer(devices[i].dev,
+> +						   get_device(&adev->dev));
+> +				return true;
+> +			}
+> +		WARN_ON(i >= devices_cnt);
+> +	}
+> +	return false;
+> +}
+> +
+> +static int dmar_acpi_bus_add_dev(u8 device_number, struct acpi_device *adev)
+> +{
+> +	struct dmar_drhd_unit *dmaru;
+> +	struct acpi_dmar_hardware_unit *drhd;
+> +	int ret;
+> +
+>   	for_each_drhd_unit(dmaru) {
+>   		drhd = container_of(dmaru->hdr,
+>   				    struct acpi_dmar_hardware_unit,
+>   				    header);
+> +		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(drhd+1),
+> +						((void *)drhd)+drhd->header.length,
+> +						dmaru->devices, dmaru->devices_cnt);
+> +		if (ret)
+> +			break;
+> +	}
+> +	if (ret > 0)
+> +		ret = dmar_rmrr_add_acpi_dev(device_number, adev);
+>   
+> -		for (scope = (void *)(drhd + 1);
+> -		     (unsigned long)scope < ((unsigned long)drhd) + drhd->header.length;
+> -		     scope = ((void *)scope) + scope->length) {
+> -			if (scope->entry_type != ACPI_DMAR_SCOPE_TYPE_NAMESPACE)
+> -				continue;
+> -			if (scope->enumeration_id != device_number)
+> -				continue;
+> +	return ret;
+>   
+> -			path = (void *)(scope + 1);
+> -			pr_info("ACPI device \"%s\" under DMAR at %llx as %02x:%02x.%d\n",
+> -				dev_name(&adev->dev), dmaru->reg_base_addr,
+> -				scope->bus, path->device, path->function);
+
+Please keep such information. People are used to use them as a method to
+know the hardware configuration.
+
+> -			for_each_dev_scope(dmaru->devices, dmaru->devices_cnt, i, tmp)
+> -				if (tmp == NULL) {
+> -					dmaru->devices[i].bus = scope->bus;
+> -					dmaru->devices[i].devfn = PCI_DEVFN(path->device,
+> -									    path->function);
+> -					rcu_assign_pointer(dmaru->devices[i].dev,
+> -							   get_device(&adev->dev));
+> -					return;
+> -				}
+> -			BUG_ON(i >= dmaru->devices_cnt);
+> -		}
+> -	}
+> -	pr_warn("No IOMMU scope found for ANDD enumeration ID %d (%s)\n",
+> -		device_number, dev_name(&adev->dev));
+
+Ditto.
+
+>   }
+>   
+>   static int __init dmar_acpi_dev_scope_init(void)
+> @@ -766,7 +778,7 @@ static int __init dmar_acpi_dev_scope_init(void)
+>   				       andd->device_name);
+>   				continue;
+>   			}
+> -			dmar_acpi_insert_dev_scope(andd->device_number, adev);
+> +			dmar_acpi_bus_add_dev(andd->device_number, adev);
+>   		}
+>   	}
+>   	return 0;
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index ca557d351518..208a91605288 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -4508,6 +4508,25 @@ int dmar_find_matched_atsr_unit(struct pci_dev *dev)
+>   	return ret;
+>   }
+>   
+> +int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
+> +{
+> +	int ret;
+> +	struct dmar_rmrr_unit *rmrru;
+> +	struct acpi_dmar_reserved_memory *rmrr;
+> +
+> +	list_for_each_entry(rmrru, &dmar_rmrr_units, list) {
+> +		rmrr = container_of(rmrru->hdr,
+> +				struct acpi_dmar_reserved_memory,
+> +				header);
+> +		ret = dmar_acpi_insert_dev_scope(device_number, adev, (void *)(rmrr + 1),
+> +						((void *)rmrr) + rmrr->header.length,
+> +						rmrru->devices, rmrru->devices_cnt);
+> +		if (ret)
+> +			break;
+> +	}
+> +	return 0;
+> +}
+
+This is only used in dmar.c. Why do you want to define it here and use
+it in another file?
+
+> +
+>   int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+>   {
+>   	int ret;
+> @@ -4523,7 +4542,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+>   		rmrr = container_of(rmrru->hdr,
+>   				    struct acpi_dmar_reserved_memory, header);
+>   		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
+> -			ret = dmar_insert_dev_scope(info, (void *)(rmrr + 1),
+> +			ret = dmar_pci_insert_dev_scope(info, (void *)(rmrr + 1),
+>   				((void *)rmrr) + rmrr->header.length,
+>   				rmrr->segment, rmrru->devices,
+>   				rmrru->devices_cnt);
+> @@ -4541,7 +4560,7 @@ int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+>   
+>   		atsr = container_of(atsru->hdr, struct acpi_dmar_atsr, header);
+>   		if (info->event == BUS_NOTIFY_ADD_DEVICE) {
+> -			ret = dmar_insert_dev_scope(info, (void *)(atsr + 1),
+> +			ret = dmar_pci_insert_dev_scope(info, (void *)(atsr + 1),
+>   					(void *)atsr + atsr->header.length,
+>   					atsr->segment, atsru->devices,
+>   					atsru->devices_cnt);
+> diff --git a/include/linux/dmar.h b/include/linux/dmar.h
+> index 65565820328a..d0981d35d3c9 100644
+> --- a/include/linux/dmar.h
+> +++ b/include/linux/dmar.h
+> @@ -113,10 +113,14 @@ extern int dmar_parse_dev_scope(void *start, void *end, int *cnt,
+>   				struct dmar_dev_scope **devices, u16 segment);
+>   extern void *dmar_alloc_dev_scope(void *start, void *end, int *cnt);
+>   extern void dmar_free_dev_scope(struct dmar_dev_scope **devices, int *cnt);
+> -extern int dmar_insert_dev_scope(struct dmar_pci_notify_info *info,
+> +extern int dmar_pci_insert_dev_scope(struct dmar_pci_notify_info *info,
+>   				 void *start, void*end, u16 segment,
+>   				 struct dmar_dev_scope *devices,
+>   				 int devices_cnt);
+> +extern bool dmar_acpi_insert_dev_scope(u8 device_number,
+> +				struct acpi_device *adev, void *start, void *end,
+> +				struct dmar_dev_scope *devices, int devices_cnt);
+> +
+>   extern int dmar_remove_dev_scope(struct dmar_pci_notify_info *info,
+>   				 u16 segment, struct dmar_dev_scope *devices,
+>   				 int count);
+> @@ -140,6 +144,7 @@ extern int dmar_parse_one_atsr(struct acpi_dmar_header *header, void *arg);
+>   extern int dmar_check_one_atsr(struct acpi_dmar_header *hdr, void *arg);
+>   extern int dmar_release_one_atsr(struct acpi_dmar_header *hdr, void *arg);
+>   extern int dmar_iommu_hotplug(struct dmar_drhd_unit *dmaru, bool insert);
+> +extern int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev);
+>   extern int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info);
+>   #else /* !CONFIG_INTEL_IOMMU: */
+>   static inline int intel_iommu_init(void) { return -ENODEV; }
+> @@ -150,6 +155,11 @@ static inline void intel_iommu_shutdown(void) { }
+>   #define	dmar_check_one_atsr		dmar_res_noop
+>   #define	dmar_release_one_atsr		dmar_res_noop
+>   
+> +static inline int dmar_rmrr_add_acpi_dev(u8 device_number, struct acpi_device *adev)
+> +{
+> +	return 0;
+> +}
+> +
+>   static inline int dmar_iommu_notify_scope_dev(struct dmar_pci_notify_info *info)
+>   {
+>   	return 0;
 > 
 
-yes, will add.
-
->> +enum aggr_mode_class convert(const char *aggr_mode)
->> +{
->> +	if (!strcmp(aggr_mode, "PerCore"))
->> +		return PerCore;
->> +	else if (!strcmp(aggr_mode, "PerChip"))
->> +		return PerChip;
->> +	return -1;
-> 
-> should we display some warning in here?
-
-Sure can do that.
-
-Thanks,
-Kajol Jain
-> 
-> thanks,
-> jirka
-> 
+Best regards,
+baolu
