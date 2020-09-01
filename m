@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D7925954E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8BB2595B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732129AbgIAPtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:49:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S1732157AbgIAPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731926AbgIAPqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:46:07 -0400
+        id S1731929AbgIAPqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:46:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02691206FA;
-        Tue,  1 Sep 2020 15:46:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F69E2078B;
+        Tue,  1 Sep 2020 15:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975167;
-        bh=M6mO7aD4g3nwn2ky5GQ939Xtf4Z8vXz99rt/x9hNkn8=;
+        s=default; t=1598975170;
+        bh=uIwk2wrXnK7VOckal4KSAC2UKUEXqrPEx2GCl3fKxic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wG+r2VO5Jv65epQZfVvs/x5ll0EgcegQiPM+jSbMIoukDC6JV9xR5wWCPaBqbcCsD
-         C6ui0HlQXGSeN/OBQuYINC7Ahu0kvf0WEr670EoreV3/ovPuvnQ8utgNGTlyEmGhwn
-         FpovIzaZRuS9aATC1wnGUlb8IQXRFDS6kFnkOivw=
+        b=OHWQ6VBatCl6izu7XGeIA/cECQ28cn1rlraepEW7r/0P3wb21XIgtxSju7Hq8rDfJ
+         0Co49pjZHOukLHvoYlwZ1mHVeoihLBeP/0EF7klC0RM1d0N1U4ZRsJFq0J+aNMDmT+
+         TwQjEQmHGPytzQwyM8uiHQkbkLvaRrP7ebaneEjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        =?UTF-8?q?Till=20D=C3=B6rges?= <doerges@pre-sense.de>
-Subject: [PATCH 5.8 235/255] usb: storage: Add unusual_uas entry for Sony PSZ drives
-Date:   Tue,  1 Sep 2020 17:11:31 +0200
-Message-Id: <20200901151012.009820301@linuxfoundation.org>
+        stable@vger.kernel.org, Bastien Nocera <hadess@hadess.net>,
+        Alan Stern <stern@rowland.harvard.edu>
+Subject: [PATCH 5.8 236/255] USB: Also match device drivers using the ->match vfunc
+Date:   Tue,  1 Sep 2020 17:11:32 +0200
+Message-Id: <20200901151012.057602221@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -43,39 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Bastien Nocera <hadess@hadess.net>
 
-commit 20934c0de13b49a072fb1e0ca79fe0fe0e40eae5 upstream.
+commit adb6e6ac20eedcf1dce19dc75b224e63c0828ea1 upstream.
 
-The PSZ-HA* family of USB disk drives from Sony can't handle the
-REPORT OPCODES command when using the UAS protocol.  This patch adds
-an appropriate quirks entry.
+We only ever used the ID table matching before, but we should also support
+open-coded match functions.
 
-Reported-and-tested-by: Till Dörges <doerges@pre-sense.de>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-CC: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200826143229.GB400430@rowland.harvard.edu
+Fixes: 88b7381a939de ("USB: Select better matching USB drivers when available")
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Cc: stable <stable@vger.kernel.org>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20200818110445.509668-1-hadess@hadess.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/core/generic.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -28,6 +28,13 @@
-  * and don't forget to CC: the USB development list <linux-usb@vger.kernel.org>
-  */
+--- a/drivers/usb/core/generic.c
++++ b/drivers/usb/core/generic.c
+@@ -207,8 +207,9 @@ static int __check_usb_generic(struct de
+ 		return 0;
+ 	if (!udrv->id_table)
+ 		return 0;
+-
+-	return usb_device_match_id(udev, udrv->id_table) != NULL;
++	if (usb_device_match_id(udev, udrv->id_table) != NULL)
++		return 1;
++	return (udrv->match && udrv->match(udev));
+ }
  
-+/* Reported-by: Till Dörges <doerges@pre-sense.de> */
-+UNUSUAL_DEV(0x054c, 0x087d, 0x0000, 0x9999,
-+		"Sony",
-+		"PSZ-HA*",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_NO_REPORT_OPCODES),
-+
- /* Reported-by: Julian Groß <julian.g@posteo.de> */
- UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x9999,
- 		"LaCie",
+ static bool usb_generic_driver_match(struct usb_device *udev)
 
 
