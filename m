@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03745259B5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F815259B77
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:03:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbgIARAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:00:40 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56828 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbgIARAe (ORCPT
+        id S1729805AbgIARCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729984AbgIARCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:00:34 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 081Gsr8o013992;
-        Tue, 1 Sep 2020 17:00:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=aibERFvdWUYyUmBPyrFjkji1LkSFLR29QppeRLSjaDY=;
- b=H5/MMJ5QuXxZhpwreszvtwwTWXDkuqFToe0zYEtxEGW6D+CgiayRbUQORvvAoKQ7hhdC
- O2VNA5CkOp6VVHFr85FCmNfR/PJLQRtx3X3f/t8EVsInT2l3oKvVDqsuUDa6gKAoQRzl
- wtxZpDKhwAWlk8zCY1CPgJiHxCTxb2fGsb+ODuYpNdoXsrZ2JldTpWFToDyvkg8lG3QN
- +ZboiQURhXPZ+WWRBsmSqXjyM9WOkREjsRrn3i33QdweBmfeM4QM5+9YBt3A/6lmkxT7
- kVbJxm0kqo6WaUiAqvZwFBAjjdjZQv10E7y1KdTuLXfkK5Ve+pSsxBOc3es7pGSAI5+r FQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 337eeqwqw5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 01 Sep 2020 17:00:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 081GxfIH029482;
-        Tue, 1 Sep 2020 17:00:29 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3380xwsywp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 01 Sep 2020 17:00:29 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 081H0RpH028907;
-        Tue, 1 Sep 2020 17:00:27 GMT
-Received: from [10.154.191.218] (/10.154.191.218)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Sep 2020 10:00:26 -0700
-Subject: Re: [RFC RESEND PATCH 0/1] USB EHCI: repeated resets on full and low
- speed devices
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     gregkh@linuxfoundation.org, erkka.talvitie@vincit.fi,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1598887346.git.khalid@gonehiking.org>
- <20200901023117.GD571008@rowland.harvard.edu>
- <608418fa-b0ce-c2a4-ad79-fe505c842587@oracle.com>
- <20200901163602.GG587030@rowland.harvard.edu>
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-Organization: Oracle Corp
-X-Pep-Version: 2.0
-Message-ID: <4d1ab90a-ec55-85e8-d646-cfa58f08d449@oracle.com>
-Date:   Tue, 1 Sep 2020 11:00:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 1 Sep 2020 13:02:10 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D5DC061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:02:10 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id m22so2675796eje.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0W2yxpJArpylRLCAMIxUVDHEOE0Rtc8t8qbdRvvfyJY=;
+        b=X24yWagx+1ZBxGqiyugUJ2eJGaAd8LrpJbAszSn32GfXleOf7l+Ypbk3seu9N8m9wr
+         6rFo3aOLOdswBzxVz6unSED4HxB+bT3WIHtXET+LhFFSm4HHGO1rkE4I/Yu1Vdk3LYWf
+         b7bEDunKc/ozpoOXKv0FSOLA+nXGTcEaKgmJg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0W2yxpJArpylRLCAMIxUVDHEOE0Rtc8t8qbdRvvfyJY=;
+        b=Mc0JjgEKLwQehccTK0NYxmIuDfvX8m9Q+HKuRcDaEDDKgViliT4Z5oWjHwofil4JMH
+         pK1QVDI5UG/aZ3bRBH28KTQ9Azl1DwUNOFOijVUDFCfsIuq7Ez4GoL4skGby4cXv+6a7
+         cGy4ywOJsT1lbBWNJH7AxslAM7qc9Zr5xbtSePpSpfPS4tN5NpWdvRH8+M1mQca9+vx7
+         7xtYumrVBr5nGVe7G1lhb1eMexoihcaJLPqpRHqB5M+HwcpseiH0uSP/mwRdtDUFKKYP
+         bpCRFPrRhI2F+ocxNGwrXPE72ySsD5Drcz9DxzbL86aOqAIXdqdsI09povCYfWXHCqoh
+         n+6g==
+X-Gm-Message-State: AOAM533LT9LLrg56bL22cSpMWZCyOVE+qv8vU/bM84jTIciNFczk6L8g
+        /5/XnHa1hPFwum7knZua31OsjXqxAstUjg==
+X-Google-Smtp-Source: ABdhPJza+mrVDRJouEfFPORTPlR9A3AFDDoUba/JrzYSheajun2Ff+Kouqenc52a18JfBkG/hRbcrg==
+X-Received: by 2002:a17:906:a43:: with SMTP id x3mr2322752ejf.321.1598979728360;
+        Tue, 01 Sep 2020 10:02:08 -0700 (PDT)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
+        by smtp.gmail.com with ESMTPSA id q13sm1571206edr.27.2020.09.01.10.02.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 10:02:07 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id a65so1850829wme.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:02:06 -0700 (PDT)
+X-Received: by 2002:a1c:b407:: with SMTP id d7mr2845879wmf.59.1598979726047;
+ Tue, 01 Sep 2020 10:02:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200901163602.GG587030@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009010142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009010141
+References: <20200901081920.v2.1.Id02b2f451b3eed71ddd580f4b8b44b3e33e84970@changeid>
+ <159897502625.334488.7103007623601336114@swboyd.mtv.corp.google.com>
+In-Reply-To: <159897502625.334488.7103007623601336114@swboyd.mtv.corp.google.com>
+From:   Daniel Campello <campello@chromium.org>
+Date:   Tue, 1 Sep 2020 11:01:29 -0600
+X-Gmail-Original-Message-ID: <CAHcu+VarBz3m_zKfDB0osQsjZ0dMpvUk+q2Qt-yC5DbPjr0bRA@mail.gmail.com>
+Message-ID: <CAHcu+VarBz3m_zKfDB0osQsjZ0dMpvUk+q2Qt-yC5DbPjr0bRA@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: sx9310: Prefer async probe
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 10:36 AM, Alan Stern wrote:
-> On Tue, Sep 01, 2020 at 09:15:46AM -0700, Khalid Aziz wrote:
->> On 8/31/20 8:31 PM, Alan Stern wrote:
->>> Can you collect a usbmon trace showing an example of this problem?
->>>
->>
->> I have attached usbmon traces for when USB hub with keyboards and mous=
-e
->> is plugged into USB 2.0 port and when it is plugged into the NEC USB 3=
-=2E0
->> port.
->=20
-> The usbmon traces show lots of errors, but no Clear-TT events.  The=20
-> large number of errors suggests that you've got a hardware problem;=20
-> either a bad hub or bad USB connections.
+On Tue, Sep 1, 2020 at 9:43 AM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Douglas Anderson (2020-09-01 08:19:43)
+> > On one board I found that:
+> >   probe of 5-0028 returned 1 after 259547 usecs
+> >
+> > While some of this time is attributable to the pile of i2c transfers
+> > that we do at probe time, the lion's share (over 200 ms) is sitting
+> > waiting in the polling loop in sx9310_init_compensation() waiting for
+> > the hardware to indicate that it's done.
+> >
+> > There's no reason to block probe of all other devices on our probe.
+> > Turn on async probe.
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-That is what I thought initially which is why I got additional hubs and
-a USB 2.0 PCI card to test. I am seeing errors across 3 USB controllers,
-4 USB hubs and 4 slow/full speed devices. All of the hubs and slow/full
-devices work with zero errors on my laptop. My keyboard/mouse devices
-and 2 of my USB hubs predate motherboard update and they all worked
-flawlessly before the motherboard upgrade. Some combinations of these
-also works with no errors on my desktop with new motherboard that I had
-listed in my original email:
-
-2. USB 2.0 controller - WORKS
-5. USB 3.0/3.1 controller -> Bus powered USB 2.0 hub - WORKS
-
-I am not seeing a common failure here that would point to any specific
-hardware being bad. Besides, that one code change (which I still can't
-say is the right code change) in ehci-q.c makes USB 2.0 controller work
-reliably with all my devices.
-
---
-Khalid
-
+Reviewed-by: Daniel Campello <campello@chromium.org>
