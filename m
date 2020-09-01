@@ -2,171 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2752596AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02B8259670
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731538AbgIAQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        id S1729391AbgIAQCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730547AbgIAPlT (ORCPT
+        with ESMTP id S1731693AbgIAPns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18844C061247;
-        Tue,  1 Sep 2020 08:41:19 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 7so868402pgm.11;
-        Tue, 01 Sep 2020 08:41:19 -0700 (PDT)
+        Tue, 1 Sep 2020 11:43:48 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7511DC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:43:48 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l191so878331pgd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:43:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7KqqN6K3kTsWHUwp2VvfDs43IyNlxmbh5Rz2H4DpXUY=;
-        b=MvTcpkuWrabD04S1aEsSpjZHdD73NAt33h8AERs424BwAOPPWupOWGhDL8C4WysYQZ
-         41ggRfkqK0UZfEMslBFKEbSzQSlVvulfxCMW2E8xy8hHHHhiiQGx3Ha3D1WYaa9sTc3X
-         s/YwgBWcXjCh81KUhuirw1ap/a5dJKqgzvFkBGWkqZUUiYltChmcA5pNtKY66JE0QK5j
-         C7fgThG8sVRMDUYVNo/tpLW7DsYRZkU8IHMcjqCStaOQdfkLIR/duqoLgVRLC3b+z595
-         rojXUfSiBvSTUXpOs/l0T8gTL9JwVkWdLEbzoXC0wAD///WBr4JCzivhk11lGUsGqCGU
-         C8IQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=x8Z9wFHU5eJIz7vYKW4wsTnm7g9XBK4yOanCvKB9vjM=;
+        b=XjFnaTJZmA5aVtH7IjnlxheI47kFzEJ4agCy9CFsFrJocEXppx1FX7tJFIC+Nsvz5C
+         iZskAozotXH0nF+KDwZpSo5ugtemrAbisn6hO6tSABZhue9FEmxd7W++zZ+KWuP5C8V2
+         z5x5QUtioFI85El89P/Hqu0++DQotdobhbtGo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7KqqN6K3kTsWHUwp2VvfDs43IyNlxmbh5Rz2H4DpXUY=;
-        b=bJgK6gTn8kN+1apRo4M4KTLZ/S6HB4TOprVXEJLHuSN6eGnBRnP1emnE5jazXUixYn
-         AqqCvJsIEWljunczNIG2uzMX2WjW9B6jsKiSerJA+fYrQMby+cI83BopzBDHHSxnO3Bi
-         9x4IAzuF2gwTkcXu7JQdBnR9rhiDEnK67PVHuycGoXmF2yuRoGjtDrMcKCjbBp7SlRiO
-         hyZyuKsmKV6Uia4b2OGOlIIS2877cJIOs7zFwa7FFiU3mWvLno9P9Uu03yCFT4AhixAI
-         kUkiYEeIZtNXPgmVJGoRKTI4a0SNaeXAk61WD6y+Tlzd03EXCjiiSB1SWmt2VClpIcLj
-         Erxw==
-X-Gm-Message-State: AOAM532i0/ry0Kjb86st5waOC+XN954Ny+jJNuxunpc4KT8lXWo+KUKO
-        FhnGnQL/YD5dYUxattWcNLc=
-X-Google-Smtp-Source: ABdhPJx/KUf682r2Q/Pzf9hmQEXca9myE+iw7tLtWfLbi+QoMiwtNbP5nGWRrF9YVDIFr3rsJZy7dA==
-X-Received: by 2002:aa7:9556:: with SMTP id w22mr2393992pfq.245.1598974878560;
-        Tue, 01 Sep 2020 08:41:18 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id w3sm2487343pff.56.2020.09.01.08.41.17
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=x8Z9wFHU5eJIz7vYKW4wsTnm7g9XBK4yOanCvKB9vjM=;
+        b=fbxK97cEBsjL+rHwixmpB34QVQ1Dk0HjZT5JHFUW/2U7VmALfD4BXCu9GQmWRhoadl
+         evmVdVn87doVmafEvvJj++PKw4bEqcLa/mAQOvLGZRpTF3U3+Wrn0LdFzC8wcZdJSsKU
+         TVddZOUagOF4gY2OKk+adk7b8+OxpAuWIH8vTUpkpJaqs4QPBBrFPA5jsiAhoPULKQP9
+         w07UfuTqXGQe2+hHQlAhuGfGT6QTpN5/mLAFSF6WOS8WhZN1H/qaBzNSFI83p9IsUdrv
+         I5vnEkPtm9q+vho6cEOtrRseS9Weh8fyAUWNjr+iesogoYx1Yqi7Da9uIO6EWMg1HCYu
+         V/0g==
+X-Gm-Message-State: AOAM531Gce8hcjhC9iG58f267q0LyAtbJH+bFJZLvGSQd/096fSbQwe/
+        w7qhwAX5t6sw8hXleFVLZvtyfA==
+X-Google-Smtp-Source: ABdhPJyNGI5kBf/qAyktQrVkh0MPvczLzRTDwPGSTM/NCSklPkckoC5nnaCi8Suu2jOejF/FpswMQA==
+X-Received: by 2002:aa7:9598:: with SMTP id z24mr2336329pfj.223.1598975028043;
+        Tue, 01 Sep 2020 08:43:48 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id s68sm2421932pfb.91.2020.09.01.08.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 08:41:17 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/3] drm/msm/gpu: Add suspend/resume tracepoints
-Date:   Tue,  1 Sep 2020 08:41:56 -0700
-Message-Id: <20200901154200.2451899-4-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200901154200.2451899-1-robdclark@gmail.com>
-References: <20200901154200.2451899-1-robdclark@gmail.com>
+        Tue, 01 Sep 2020 08:43:47 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200901081920.v2.1.Id02b2f451b3eed71ddd580f4b8b44b3e33e84970@changeid>
+References: <20200901081920.v2.1.Id02b2f451b3eed71ddd580f4b8b44b3e33e84970@changeid>
+Subject: Re: [PATCH v2] iio: sx9310: Prefer async probe
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Campello <campello@chromium.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Douglas Anderson <dianders@chromium.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Date:   Tue, 01 Sep 2020 08:43:46 -0700
+Message-ID: <159897502625.334488.7103007623601336114@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+Quoting Douglas Anderson (2020-09-01 08:19:43)
+> On one board I found that:
+>   probe of 5-0028 returned 1 after 259547 usecs
+>=20
+> While some of this time is attributable to the pile of i2c transfers
+> that we do at probe time, the lion's share (over 200 ms) is sitting
+> waiting in the polling loop in sx9310_init_compensation() waiting for
+> the hardware to indicate that it's done.
+>=20
+> There's no reason to block probe of all other devices on our probe.
+> Turn on async probe.
+>=20
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
-I'm not sure if there is a better way to do no-arg tracepoints?  The
-trace framework seems to go out of it's way to make this difficult.
-Or maybe there is a more obvious thing that I'm not seeing.
-
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c |  4 ++++
- drivers/gpu/drm/msm/msm_gpu.c         |  2 ++
- drivers/gpu/drm/msm/msm_gpu_trace.h   | 26 ++++++++++++++++++++++++++
- 3 files changed, 32 insertions(+)
-
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index c5a3e4d4c007..2de280e45077 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -923,6 +923,8 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
- 
- 	gpu->needs_hw_init = true;
- 
-+	trace_msm_gpu_resume(0);
-+
- 	ret = a6xx_gmu_resume(a6xx_gpu);
- 	if (ret)
- 		return ret;
-@@ -937,6 +939,8 @@ static int a6xx_pm_suspend(struct msm_gpu *gpu)
- 	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
- 	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
- 
-+	trace_msm_gpu_suspend(0);
-+
- 	devfreq_suspend_device(gpu->devfreq.devfreq);
- 
- 	return a6xx_gmu_stop(a6xx_gpu);
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index b02866527386..5ceb2a966a87 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -202,6 +202,7 @@ int msm_gpu_pm_resume(struct msm_gpu *gpu)
- 	int ret;
- 
- 	DBG("%s", gpu->name);
-+	trace_msm_gpu_resume(0);
- 
- 	ret = enable_pwrrail(gpu);
- 	if (ret)
-@@ -227,6 +228,7 @@ int msm_gpu_pm_suspend(struct msm_gpu *gpu)
- 	int ret;
- 
- 	DBG("%s", gpu->name);
-+	trace_msm_gpu_suspend(0);
- 
- 	devfreq_suspend_device(gpu->devfreq.devfreq);
- 
-diff --git a/drivers/gpu/drm/msm/msm_gpu_trace.h b/drivers/gpu/drm/msm/msm_gpu_trace.h
-index 1079fe551279..03e0c2536b94 100644
---- a/drivers/gpu/drm/msm/msm_gpu_trace.h
-+++ b/drivers/gpu/drm/msm/msm_gpu_trace.h
-@@ -140,6 +140,32 @@ TRACE_EVENT(msm_gem_purge_vmaps,
- 		TP_printk("Purging %u vmaps", __entry->unmapped)
- );
- 
-+
-+TRACE_EVENT(msm_gpu_suspend,
-+		TP_PROTO(int dummy),
-+		TP_ARGS(dummy),
-+		TP_STRUCT__entry(
-+			__field(u32, dummy)
-+			),
-+		TP_fast_assign(
-+			__entry->dummy = dummy;
-+			),
-+		TP_printk("%u", __entry->dummy)
-+);
-+
-+
-+TRACE_EVENT(msm_gpu_resume,
-+		TP_PROTO(int dummy),
-+		TP_ARGS(dummy),
-+		TP_STRUCT__entry(
-+			__field(u32, dummy)
-+			),
-+		TP_fast_assign(
-+			__entry->dummy = dummy;
-+			),
-+		TP_printk("%u", __entry->dummy)
-+);
-+
- #endif
- 
- #undef TRACE_INCLUDE_PATH
--- 
-2.26.2
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
