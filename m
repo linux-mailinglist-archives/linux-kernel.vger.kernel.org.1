@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B1A425930D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F01025935F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729626AbgIAPUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36900 "EHLO mail.kernel.org"
+        id S1729996AbgIAPZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:25:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729495AbgIAPSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:33 -0400
+        id S1729743AbgIAPWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:22:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5536206FA;
-        Tue,  1 Sep 2020 15:18:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3912F21741;
+        Tue,  1 Sep 2020 15:22:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973512;
-        bh=pEBxRSw3TqO7gZcYEZTN6mdPju5fZa/dT5DRrcxV4UQ=;
+        s=default; t=1598973730;
+        bh=sbuRAFXxI/Ph6IhF4tUv38O3/dEMdBs5bq/X4iLKkPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=04//G6x5SdNcC3e1l/Jgmk8tIWbtlc9TYKatCb1CCwGGo9+sItWCv2JkjtUPV7Cab
-         IqptF4gTNAHLiPm9fa4TO78VBsRUx2gzKkk1Q1PeOp6gPnjyutEUjeq2r7Ec2SvOlT
-         xkDceBvDDAqcquBQI6t5yPaWipGx7J9N54lWqm+E=
+        b=deNObxsNZBqbmeauM+MPw7hTRNImgem07ClCg7B0JvRE2mMMItpEj0/Qrx5bwNAcD
+         asdULBQcvgN17IwT/IDgf65ocVINE0R04Fmm0tBy5XrpD6kyJnmblj9dj4jnsR/OyM
+         TqGKM+X8jD4azfaXaiBIl7ySt4TY8Y2933IvdYBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>,
-        Richard Alpe <richard.alpe@ericsson.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        syzbot+0e7181deafa7e0b79923@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 03/91] tipc: fix uninit skb->data in tipc_nl_compat_dumpit()
-Date:   Tue,  1 Sep 2020 17:09:37 +0200
-Message-Id: <20200901150928.286401608@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 023/125] drm/amd/display: fix ref count leak in amdgpu_drm_ioctl
+Date:   Tue,  1 Sep 2020 17:09:38 +0200
+Message-Id: <20200901150935.705074405@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,67 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 47733f9daf4fe4f7e0eb9e273f21ad3a19130487 ]
+[ Upstream commit 5509ac65f2fe5aa3c0003237ec629ca55024307c ]
 
-__tipc_nl_compat_dumpit() has two callers, and it expects them to
-pass a valid nlmsghdr via arg->data. This header is artificial and
-crafted just for __tipc_nl_compat_dumpit().
+in amdgpu_drm_ioctl the call to pm_runtime_get_sync increments the
+counter even in case of failure, leading to incorrect
+ref count. In case of failure, decrement the ref count before returning.
 
-tipc_nl_compat_publ_dump() does so by putting a genlmsghdr as well
-as some nested attribute, TIPC_NLA_SOCK. But the other caller
-tipc_nl_compat_dumpit() does not, this leaves arg->data uninitialized
-on this call path.
-
-Fix this by just adding a similar nlmsghdr without any payload in
-tipc_nl_compat_dumpit().
-
-This bug exists since day 1, but the recent commit 6ea67769ff33
-("net: tipc: prepare attrs in __tipc_nl_compat_dumpit()") makes it
-easier to appear.
-
-Reported-and-tested-by: syzbot+0e7181deafa7e0b79923@syzkaller.appspotmail.com
-Fixes: d0796d1ef63d ("tipc: convert legacy nl bearer dump to nl compat")
-Cc: Jon Maloy <jmaloy@redhat.com>
-Cc: Ying Xue <ying.xue@windriver.com>
-Cc: Richard Alpe <richard.alpe@ericsson.com>
-Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
-Acked-by: Ying Xue <ying.xue@windriver.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/netlink_compat.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/tipc/netlink_compat.c
-+++ b/net/tipc/netlink_compat.c
-@@ -250,8 +250,9 @@ err_out:
- static int tipc_nl_compat_dumpit(struct tipc_nl_compat_cmd_dump *cmd,
- 				 struct tipc_nl_compat_msg *msg)
- {
--	int err;
-+	struct nlmsghdr *nlh;
- 	struct sk_buff *arg;
-+	int err;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+index 5e29f14f4b301..63b1e325b45c5 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+@@ -1085,11 +1085,12 @@ long amdgpu_drm_ioctl(struct file *filp,
+ 	dev = file_priv->minor->dev;
+ 	ret = pm_runtime_get_sync(dev->dev);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
  
- 	if (msg->req_type && (!msg->req_size ||
- 			      !TLV_CHECK_TYPE(msg->req, msg->req_type)))
-@@ -280,6 +281,15 @@ static int tipc_nl_compat_dumpit(struct
- 		return -ENOMEM;
- 	}
+ 	ret = drm_ioctl(filp, cmd, arg);
  
-+	nlh = nlmsg_put(arg, 0, 0, tipc_genl_family.id, 0, NLM_F_MULTI);
-+	if (!nlh) {
-+		kfree_skb(arg);
-+		kfree_skb(msg->rep);
-+		msg->rep = NULL;
-+		return -EMSGSIZE;
-+	}
-+	nlmsg_end(arg, nlh);
-+
- 	err = __tipc_nl_compat_dumpit(cmd, msg, arg);
- 	if (err) {
- 		kfree_skb(msg->rep);
+ 	pm_runtime_mark_last_busy(dev->dev);
++out:
+ 	pm_runtime_put_autosuspend(dev->dev);
+ 	return ret;
+ }
+-- 
+2.25.1
+
 
 
