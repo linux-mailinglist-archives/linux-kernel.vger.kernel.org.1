@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCBB259BD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981A4259C6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728857AbgIARHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36392 "EHLO mail.kernel.org"
+        id S1731557AbgIARP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:15:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729476AbgIAPSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:18 -0400
+        id S1729131AbgIAPOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:14:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1277320FC3;
-        Tue,  1 Sep 2020 15:18:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7C5520FC3;
+        Tue,  1 Sep 2020 15:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973497;
+        s=default; t=1598973291;
         bh=8q7jpFrR7NzON+nIZSLEV/HXiwEd2JDxZmgzVD/bby0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cnxeL6GDpbYRdsdUIHomVi1s9O8vEjN5/gIKHN1cZ0PH39b7snkH2mKtaTRcMG8tM
-         wK0m9UGEQPg3vYXTZb32O6xu+kHqF8IN++GCQy3LF6F4DVRGskS5m4gl0xKCT0Un55
-         0vSIBfQKPlX3i3NSk0589QKpSVI666qEjd7rPcOY=
+        b=vBmVD+k0o7qWxIy91ffzFt/WvM0rtUH127KY7jv+spvLQoCNrPNP+GHinA/D4UwDp
+         4/hgNhAq0Yx9urfQ12c+8iIwvOFJUI1rrMlAJaGb/KtX8/q4mMfPuvsShBgH/uVXU0
+         xoCKM2oLnVhmumkBTXtFqJxGcg3gQmvRO714UnKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,12 +31,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sachin Sant <sachinp@linux.vnet.ibm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/91] selftests/powerpc: Purge extra count_pmc() calls of ebb selftests
+Subject: [PATCH 4.9 20/78] selftests/powerpc: Purge extra count_pmc() calls of ebb selftests
 Date:   Tue,  1 Sep 2020 17:09:56 +0200
-Message-Id: <20200901150929.259822936@linuxfoundation.org>
+Message-Id: <20200901150925.759806598@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
