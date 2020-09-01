@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62463259C9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC4A259C96
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732633AbgIARRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:17:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57630 "EHLO mail.kernel.org"
+        id S1729742AbgIARRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:17:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729012AbgIAPOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:14:05 -0400
+        id S1729014AbgIAPOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:14:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47731206EB;
-        Tue,  1 Sep 2020 15:14:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BDA32078B;
+        Tue,  1 Sep 2020 15:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973244;
-        bh=QUuJAmNLz3po6UFp0oXzAfDS2Wu+mrghwrPnl0fVEs8=;
+        s=default; t=1598973247;
+        bh=KZR/Ez5I0vI5NACVotVlfYFD1yU907tuWKBtUQ3nkUw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S0GtGD3sM7oF6pNrFTpedFKDnIyWyyv1kNvpDSrFjOHXA/EwT+ZtcV7rEc7Atok8n
-         I3K94IhsJGEHJ3YfirDbsCz/aYinNNq67ZEnX+VMiYlWe81aZHhMg4SV50iENkq/wC
-         gKZwfVCzL4IX4pec9W8wT6H3ispS2ZdCuyNWTfS0=
+        b=tra0Pqy5/CmRFntPMmisO83/0FFluhLvNTv4qw4K1IVKd3cPH9vHINO/ZYdXXGEVN
+         3qkvifeVXXSds2hEvZVSf7UxNL8pLHG8Gq53vK/qlcelfEbHNElFvG7iuQBtXfOTwm
+         RbwBImEDSNNMBofO9AK0R92Z2nOkCh7TTY0/tzI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brice Goglin <brice.goglin@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Cyril Roelandt <tipecaml@gmail.com>
-Subject: [PATCH 4.4 57/62] USB: Ignore UAS for JMicron JMS567 ATA/ATAPI Bridge
-Date:   Tue,  1 Sep 2020 17:10:40 +0200
-Message-Id: <20200901150923.607361490@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 4.4 58/62] usb: host: ohci-exynos: Fix error handling in exynos_ohci_probe()
+Date:   Tue,  1 Sep 2020 17:10:41 +0200
+Message-Id: <20200901150923.656117905@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
 References: <20200901150920.697676718@linuxfoundation.org>
@@ -44,37 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cyril Roelandt <tipecaml@gmail.com>
+From: Tang Bin <tangbin@cmss.chinamobile.com>
 
-commit 9aa37788e7ebb3f489fb4b71ce07adadd444264a upstream.
+commit 1d4169834628d18b2392a2da92b7fbf5e8e2ce89 upstream.
 
-This device does not support UAS properly and a similar entry already
-exists in drivers/usb/storage/unusual_uas.h. Without this patch,
-storage_probe() defers the handling of this device to UAS, which cannot
-handle it either.
+If the function platform_get_irq() failed, the negative value
+returned will not be detected here. So fix error handling in
+exynos_ohci_probe(). And when get irq failed, the function
+platform_get_irq() logs an error message, so remove redundant
+message here.
 
-Tested-by: Brice Goglin <brice.goglin@gmail.com>
-Fixes: bc3bdb12bbb3 ("usb-storage: Disable UAS on JMicron SATA enclosure")
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Cyril Roelandt <tipecaml@gmail.com>
-Link: https://lore.kernel.org/r/20200825212231.46309-1-tipecaml@gmail.com
+Fixes: 62194244cf87 ("USB: Add Samsung Exynos OHCI diver")
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20200826144931.1828-1-tangbin@cmss.chinamobile.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/storage/unusual_devs.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/ohci-exynos.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/storage/unusual_devs.h
-+++ b/drivers/usb/storage/unusual_devs.h
-@@ -2213,7 +2213,7 @@ UNUSUAL_DEV(  0x357d, 0x7788, 0x0114, 0x
- 		"JMicron",
- 		"USB to ATA/ATAPI Bridge",
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
--		US_FL_BROKEN_FUA ),
-+		US_FL_BROKEN_FUA | US_FL_IGNORE_UAS ),
+--- a/drivers/usb/host/ohci-exynos.c
++++ b/drivers/usb/host/ohci-exynos.c
+@@ -166,9 +166,8 @@ skip_phy:
+ 	hcd->rsrc_len = resource_size(res);
  
- /* Reported by Andrey Rahmatullin <wrar@altlinux.org> */
- UNUSUAL_DEV(  0x4102, 0x1020, 0x0100,  0x0100,
+ 	irq = platform_get_irq(pdev, 0);
+-	if (!irq) {
+-		dev_err(&pdev->dev, "Failed to get IRQ\n");
+-		err = -ENODEV;
++	if (irq < 0) {
++		err = irq;
+ 		goto fail_io;
+ 	}
+ 
 
 
