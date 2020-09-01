@@ -2,112 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C110258EC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE11258EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgIAM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:57:02 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44580 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728149AbgIAMz2 (ORCPT
+        id S1727822AbgIANE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727061AbgIALzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:55:28 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 081CWkTs003994;
-        Tue, 1 Sep 2020 08:55:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=EsE9aMLgZ5oLOJJb71EKETx/jtQMeuycu+5EYM7apeA=;
- b=Awx3HtL3wnJvpEXKKGxHBBkQC1BvC5v1p65zGwvdUj5KWwh9FMM/PM9OXL3HdP7WkE5w
- oMMmrL+sSxBdDv8i3FJz7XDh6+nR3zEGXUZ3LJVOH/Y4gKnWgf+DK/JBVf2QXJEYyPv1
- +xQLAfMioFA6SZbhMMkSvQxwHqRMAotmZynvZfjEGuf1Z2O4FhJyN9+37Ow44eqW30l4
- YYpa+3i27GcM4h4cFWsvN27LWJVso1z7xjIRpdiNvPWMWmBqabnG1yDkX8wmEelZGVc3
- hzs+yzPKiQtA8cKrWNn39jEcFbUpbjoAD/ft7RoPYwkR0kE/d7ev/FQFl5tbPaXFWOOB PA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 339pd48nku-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 08:55:16 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 081CWm3F004493;
-        Tue, 1 Sep 2020 08:55:16 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 339pd48njp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 08:55:16 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 081CrGUG022720;
-        Tue, 1 Sep 2020 12:55:14 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 337en8bdxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 12:55:13 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 081CtB8651118462
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Sep 2020 12:55:11 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B4BE611C05C;
-        Tue,  1 Sep 2020 12:55:11 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F100B11C052;
-        Tue,  1 Sep 2020 12:55:09 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.77.139])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Sep 2020 12:55:09 +0000 (GMT)
-Message-ID: <910f7fe3864925d1052f5f35785dd19ed1505fe6.camel@linux.ibm.com>
-Subject: Re: [PATCH 07/11] evm: Set IMA_CHANGE_XATTR/ATTR bit if
- EVM_ALLOW_METADATA_WRITES is set
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@google.com" <mjg59@google.com>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Date:   Tue, 01 Sep 2020 08:55:09 -0400
-In-Reply-To: <7f3dd815639a44ba9b0fb532c217bd21@huawei.com>
-References: <20200618160329.1263-2-roberto.sassu@huawei.com>
-         <20200618160458.1579-7-roberto.sassu@huawei.com>
-         <67cafcf63daf8e418871eb5302e7327ba851e253.camel@linux.ibm.com>
-         <a5e6a5acf2274a6d844b275dacfbabb8@huawei.com>
-         <ae06c113ec91442e293f2466cae3dd1b81f241eb.camel@linux.ibm.com>
-         <7f3dd815639a44ba9b0fb532c217bd21@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-01_08:2020-09-01,2020-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- mlxscore=0 malwarescore=0 adultscore=0 spamscore=0 priorityscore=1501
- suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009010109
+        Tue, 1 Sep 2020 07:55:18 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B1CC061244;
+        Tue,  1 Sep 2020 04:55:09 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id o20so638518pfp.11;
+        Tue, 01 Sep 2020 04:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=A6+zZK0PRKc1I+vce+8JY6xxs7Mg0NJgZr5FU/ZHS1w=;
+        b=lKxgZz62BU3j99HgKaMmS/kCvom0NQclIiW3BMeCVMOx546mVt7GmWi2yH1oYB2+0C
+         gQcDgTHmMr27FGuNwZzHoJFeZofywU7V1kFwbSTY90VH9LNAZYU/jXdcTNfp/ViWmz2/
+         KxqR2zXOuyX2hsRiv19TGMVtaVaWrn1onLTxaFyk5QddY2wzCTbhRAtQHEyc8Ub0p/qu
+         GaE64kRyCCDlg3rBf9f5mXSATnbtYB7B1uShIoOLX2PycNd1X0PBoLNqxUrONjN5lpio
+         J+rSHfLBE5fqPt47o0lwRGKxOMLMLzbamV9uKurjgVsP7z3KIrHeCKL/3YGL8Bg1gXsv
+         UuDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=A6+zZK0PRKc1I+vce+8JY6xxs7Mg0NJgZr5FU/ZHS1w=;
+        b=cIzFQUXMLO3ZEkGn2TZnDJxtc+mvi5MH6rtrSnuSyY2H/VtHI8/nikfsrHal0o6i6L
+         v5UIAACze8JrcvYQPFYTB8iXzWkMDGSNVMCkbt2txkrkVmOKF8IMR8Q/4F2I2O+ZGmZK
+         WB6EDBm0Q5pMBzoZJDsCJoZzAlOAV/+8CzZhzBHQ71ic+4ZJEAhN7B7BOu6mQLATo2Bq
+         T+PvtpDLqXtKli65G2GOngAeq192WWXj8LpSxTQf9SBHsWi7cwKmhSbS6Zxe1CAwdLB6
+         UZ5BLpqNS74Mxn1Q406d7qIhFk+XkRe4kTRwj5bnfbqiX/xoEqoN03x2RzOtX14VTqBF
+         DxOg==
+X-Gm-Message-State: AOAM533KnytxOWY8H1zfTquDTbPR8oerxhfLHUL3j45VvK7HsR54BtQI
+        IfglCo1zuGKhPOoOlKK1xh3MM4LrFIE=
+X-Google-Smtp-Source: ABdhPJzv9nDY12Kx6kNi2WR6XHoPB47fiHDLEBw9WzZGmJXBQV1jqv719wSs1cSwwcVUSJhPfOoWyA==
+X-Received: by 2002:a62:6503:: with SMTP id z3mr1497322pfb.132.1598961308884;
+        Tue, 01 Sep 2020 04:55:08 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.53])
+        by smtp.gmail.com with ESMTPSA id z17sm1737531pfq.38.2020.09.01.04.55.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 04:55:07 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, jmattson@google.com,
+        junaids@google.com, bgardon@google.com, vkuznets@redhat.com,
+        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
+        lihaiwei.kernel@gmail.com, Yulei Zhang <yulei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [RFC V2 5/9] Modify the page fault path to meet the direct build EPT requirement
+Date:   Tue,  1 Sep 2020 19:56:02 +0800
+Message-Id: <4a5c67fea73a18661cf4918860606e5a19f11b78.1598868204.git.yulei.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1598868203.git.yulei.kernel@gmail.com>
+References: <cover.1598868203.git.yulei.kernel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > I think it is better to set a flag, maybe a new one, directly in EVM, to notify
-> > > the integrity subsystem that iint->evm_status is no longer valid.
-> > >
-> > > If the EVM flag is set, IMA would reset the appraisal flags, as it uses
-> > > iint->evm_status for appraisal. We can consider to reset also the measure
-> > > flags when we have a template that includes file metadata.
-> > 
-> > When would IMA read the EVM flag?   Who would reset the flag?  At what
-> > point would it be reset?   Just as EVM shouldn't be resetting the IMA
-> > flag, IMA shouldn't be resetting the EVM flag.
-> 
-> IMA would read the flag in process_measurement() and behave similarly
-> to when it processes IMA_CHANGE_ATTR. The flag would be reset by
-> evm_verify_hmac().
+From: Yulei Zhang <yulei.kernel@gmail.com>
 
-Sounds good.
+Refine the fast page fault code so that it can be used in either
+normal ept mode or direct build EPT mode.
 
-Mimi
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 28 ++++++++++++++++++++--------
+ 1 file changed, 20 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index f2124f52b286..fda6c4196854 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3443,12 +3443,13 @@ static bool page_fault_can_be_fast(u32 error_code)
+  * someone else modified the SPTE from its original value.
+  */
+ static bool
+-fast_pf_fix_direct_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
++fast_pf_fix_direct_spte(struct kvm_vcpu *vcpu, gpa_t gpa,
+ 			u64 *sptep, u64 old_spte, u64 new_spte)
+ {
+ 	gfn_t gfn;
+ 
+-	WARN_ON(!sp->role.direct);
++	WARN_ON(!vcpu->arch.direct_build_tdp &&
++		(!sptep_to_sp(sptep)->role.direct));
+ 
+ 	/*
+ 	 * Theoretically we could also set dirty bit (and flush TLB) here in
+@@ -3470,7 +3471,8 @@ fast_pf_fix_direct_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+ 		 * The gfn of direct spte is stable since it is
+ 		 * calculated by sp->gfn.
+ 		 */
+-		gfn = kvm_mmu_page_get_gfn(sp, sptep - sp->spt);
++
++		gfn = gpa >> PAGE_SHIFT;
+ 		kvm_vcpu_mark_page_dirty(vcpu, gfn);
+ 	}
+ 
+@@ -3498,10 +3500,10 @@ static bool fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 			    u32 error_code)
+ {
+ 	struct kvm_shadow_walk_iterator iterator;
+-	struct kvm_mmu_page *sp;
+ 	bool fault_handled = false;
+ 	u64 spte = 0ull;
+ 	uint retry_count = 0;
++	int pte_level = 0;
+ 
+ 	if (!page_fault_can_be_fast(error_code))
+ 		return false;
+@@ -3515,8 +3517,15 @@ static bool fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 			if (!is_shadow_present_pte(spte))
+ 				break;
+ 
+-		sp = sptep_to_sp(iterator.sptep);
+-		if (!is_last_spte(spte, sp->role.level))
++		if (iterator.level < PG_LEVEL_4K)
++			pte_level  = PG_LEVEL_4K;
++		else
++			pte_level = iterator.level;
++
++		WARN_ON(!vcpu->arch.direct_build_tdp &&
++			(pte_level != sptep_to_sp(iterator.sptep)->role.level));
++
++		if (!is_last_spte(spte, pte_level))
+ 			break;
+ 
+ 		/*
+@@ -3559,7 +3568,7 @@ static bool fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 			 *
+ 			 * See the comments in kvm_arch_commit_memory_region().
+ 			 */
+-			if (sp->role.level > PG_LEVEL_4K)
++			if (pte_level > PG_LEVEL_4K)
+ 				break;
+ 		}
+ 
+@@ -3573,7 +3582,7 @@ static bool fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 		 * since the gfn is not stable for indirect shadow page. See
+ 		 * Documentation/virt/kvm/locking.rst to get more detail.
+ 		 */
+-		fault_handled = fast_pf_fix_direct_spte(vcpu, sp,
++		fault_handled = fast_pf_fix_direct_spte(vcpu, cr2_or_gpa,
+ 							iterator.sptep, spte,
+ 							new_spte);
+ 		if (fault_handled)
+@@ -4106,6 +4115,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 	if (fast_page_fault(vcpu, gpa, error_code))
+ 		return RET_PF_RETRY;
+ 
++	if (vcpu->arch.direct_build_tdp)
++		return RET_PF_EMULATE;
++
+ 	r = mmu_topup_memory_caches(vcpu, false);
+ 	if (r)
+ 		return r;
+-- 
+2.17.1
 
