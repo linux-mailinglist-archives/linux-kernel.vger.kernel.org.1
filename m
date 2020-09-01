@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536F22591D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0FD2591F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbgIAO4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:56:18 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:44772 "EHLO huawei.com"
+        id S1726764AbgIALY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:24:56 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47606 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726997AbgIALeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:34:31 -0400
+        id S1726285AbgIALTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:19:50 -0400
 Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4633EDAAF5E80908D7C9;
+        by Forcepoint Email with ESMTP id 5F488E04F8117BC3CBA4;
         Tue,  1 Sep 2020 19:17:07 +0800 (CST)
 Received: from localhost.localdomain (10.69.192.58) by
  DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Sep 2020 19:16:58 +0800
+ 14.3.487.0; Tue, 1 Sep 2020 19:17:00 +0800
 From:   John Garry <john.garry@huawei.com>
 To:     <jejb@linux.vnet.ibm.com>, <martin.petersen@oracle.com>
 CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
         <linux-scsi@vger.kernel.org>, Luo Jiaxing <luojiaxing@huawei.com>,
         John Garry <john.garry@huawei.com>
-Subject: [PATCH 3/8] scsi: hisi_sas: Do not modify upper fields of PROG_PHY_LINK_RATE reg
-Date:   Tue, 1 Sep 2020 19:13:05 +0800
-Message-ID: <1598958790-232272-4-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 8/8] scsi: hisi_sas: Some very minor tidying
+Date:   Tue, 1 Sep 2020 19:13:10 +0800
+Message-ID: <1598958790-232272-9-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1598958790-232272-1-git-send-email-john.garry@huawei.com>
 References: <1598958790-232272-1-git-send-email-john.garry@huawei.com>
@@ -39,78 +39,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Luo Jiaxing <luojiaxing@huawei.com>
 
-When we update register of PROG_PHY_LINK_RATE to set linkrate for a phy,
-we used a hard-coded initial value instead of getting the current value
-from register. We had assumed that this register would not be modified,
-but in fact it was partially modified in new version of hardware. So
-hard-coded value we used change default value of register to a wrong
-setting and make SAS controller can not change linkrate for phy at new
-version of hardware.
+We found an extra blank line at the end of some functions, so delete them.
 
-So we delete hard-coded value and always read the latest value of register
-before we update part of it.
+And add spaces around some operators.
 
 Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
 Signed-off-by: John Garry <john.garry@huawei.com>
 ---
- drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+ drivers/scsi/hisi_sas/hisi_sas_main.c  | 1 -
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c | 2 +-
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 4 +---
+ 3 files changed, 2 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+index f5ad8e662b4b..f18452942508 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_main.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+@@ -1430,7 +1430,6 @@ static void hisi_sas_rescan_topology(struct hisi_hba *hisi_hba, u32 state)
+ 		} else {
+ 			hisi_sas_phy_down(hisi_hba, phy_no, 0);
+ 		}
+-
+ 	}
+ }
+ 
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+index 68d07a4f8422..b57177b52fac 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v2_hw.c
+@@ -1202,7 +1202,7 @@ static void init_reg_v2_hw(struct hisi_hba *hisi_hba)
+ 	hisi_sas_write32(hisi_hba, ENT_INT_SRC_MSK3, 0x7ffe20fe);
+ 	hisi_sas_write32(hisi_hba, SAS_ECC_INTR_MSK, 0xfff00c30);
+ 	for (i = 0; i < hisi_hba->queue_count; i++)
+-		hisi_sas_write32(hisi_hba, OQ0_INT_SRC_MSK+0x4*i, 0);
++		hisi_sas_write32(hisi_hba, OQ0_INT_SRC_MSK + 0x4 * i, 0);
+ 
+ 	hisi_sas_write32(hisi_hba, AXI_AHB_CLK_CFG, 1);
+ 	hisi_sas_write32(hisi_hba, HYPER_STREAM_ID_EN_CFG, 1);
 diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-index 05b60cdf6b24..b7d94f2e49ae 100644
+index 397846388e85..87bda037303f 100644
 --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
 +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-@@ -191,6 +191,8 @@
- #define PHY_CFG_PHY_RST_OFF		3
- #define PHY_CFG_PHY_RST_MSK		(0x1 << PHY_CFG_PHY_RST_OFF)
- #define PROG_PHY_LINK_RATE		(PORT_BASE + 0x8)
-+#define CFG_PROG_PHY_LINK_RATE_OFF	0
-+#define CFG_PROG_PHY_LINK_RATE_MSK	(0xff << CFG_PROG_PHY_LINK_RATE_OFF)
- #define CFG_PROG_OOB_PHY_LINK_RATE_OFF	8
- #define CFG_PROG_OOB_PHY_LINK_RATE_MSK	(0xf << CFG_PROG_OOB_PHY_LINK_RATE_OFF)
- #define PHY_CTRL			(PORT_BASE + 0x14)
-@@ -598,20 +600,19 @@ static void init_reg_v3_hw(struct hisi_hba *hisi_hba)
+@@ -596,7 +596,7 @@ static void init_reg_v3_hw(struct hisi_hba *hisi_hba)
+ 	hisi_sas_write32(hisi_hba, AWQOS_AWCACHE_CFG, 0xf0f0);
+ 	hisi_sas_write32(hisi_hba, ARQOS_ARCACHE_CFG, 0xf0f0);
+ 	for (i = 0; i < hisi_hba->queue_count; i++)
+-		hisi_sas_write32(hisi_hba, OQ0_INT_SRC_MSK+0x4*i, 0);
++		hisi_sas_write32(hisi_hba, OQ0_INT_SRC_MSK + 0x4 * i, 0);
+ 
  	hisi_sas_write32(hisi_hba, HYPER_STREAM_ID_EN_CFG, 1);
  
- 	for (i = 0; i < hisi_hba->n_phy; i++) {
-+		enum sas_linkrate max;
- 		struct hisi_sas_phy *phy = &hisi_hba->phy[i];
- 		struct asd_sas_phy *sas_phy = &phy->sas_phy;
--		u32 prog_phy_link_rate = 0x800;
-+		u32 prog_phy_link_rate = hisi_sas_phy_read32(hisi_hba, i,
-+							   PROG_PHY_LINK_RATE);
+@@ -1350,7 +1350,6 @@ static void prep_smp_v3_hw(struct hisi_hba *hisi_hba,
  
-+		prog_phy_link_rate &= ~CFG_PROG_PHY_LINK_RATE_MSK;
- 		if (!sas_phy->phy || (sas_phy->phy->maximum_linkrate <
--				SAS_LINK_RATE_1_5_GBPS)) {
--			prog_phy_link_rate = 0x855;
--		} else {
--			enum sas_linkrate max = sas_phy->phy->maximum_linkrate;
+ 	hdr->cmd_table_addr = cpu_to_le64(req_dma_addr);
+ 	hdr->sts_buffer_addr = cpu_to_le64(hisi_sas_status_buf_addr_dma(slot));
 -
--			prog_phy_link_rate =
--				hisi_sas_get_prog_phy_linkrate_mask(max) |
--				0x800;
--		}
-+				SAS_LINK_RATE_1_5_GBPS))
-+			max = SAS_LINK_RATE_12_0_GBPS;
-+		else
-+			max = sas_phy->phy->maximum_linkrate;
-+		prog_phy_link_rate |= hisi_sas_get_prog_phy_linkrate_mask(max);
- 		hisi_sas_phy_write32(hisi_hba, i, PROG_PHY_LINK_RATE,
- 			prog_phy_link_rate);
- 		hisi_sas_phy_write32(hisi_hba, i, SERDES_CFG, 0xffc00);
-@@ -2501,8 +2502,10 @@ static void phy_set_linkrate_v3_hw(struct hisi_hba *hisi_hba, int phy_no,
- 		struct sas_phy_linkrates *r)
- {
- 	enum sas_linkrate max = r->maximum_linkrate;
--	u32 prog_phy_link_rate = 0x800;
-+	u32 prog_phy_link_rate = hisi_sas_phy_read32(hisi_hba, phy_no,
-+						     PROG_PHY_LINK_RATE);
+ }
  
-+	prog_phy_link_rate &= ~CFG_PROG_PHY_LINK_RATE_MSK;
- 	prog_phy_link_rate |= hisi_sas_get_prog_phy_linkrate_mask(max);
- 	hisi_sas_phy_write32(hisi_hba, phy_no, PROG_PHY_LINK_RATE,
- 			     prog_phy_link_rate);
+ static void prep_ata_v3_hw(struct hisi_hba *hisi_hba,
+@@ -1456,7 +1455,6 @@ static void prep_abort_v3_hw(struct hisi_hba *hisi_hba,
+ 	/* dw7 */
+ 	hdr->dw7 = cpu_to_le32(tag_to_abort << CMD_HDR_ABORT_IPTT_OFF);
+ 	hdr->transfer_tags = cpu_to_le32(slot->idx);
+-
+ }
+ 
+ static irqreturn_t phy_up_v3_hw(int phy_no, struct hisi_hba *hisi_hba)
 -- 
 2.26.2
 
