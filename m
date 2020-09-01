@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0142B258892
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E39D25889A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726895AbgIAGyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:54:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbgIAGyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:54:31 -0400
-Received: from kernel.org (unknown [87.70.91.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAA4E2087D;
-        Tue,  1 Sep 2020 06:54:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598943271;
-        bh=NVmhxz3quM6Qr+ee/JkOEjpslKF1E6DzA+56ugDqG9k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t9Y31Vy9OQ4upleKjlqFdKlJK15KKX0SeJMrIzpOD+h6YlgofD7l0DMfSRLJ3VJky
-         nrx3MQjQHGExn3IlWT0UpeVebNfTu7czSbvy817AI5ED9IboS07XLdgA4yy7spNWwP
-         DDlnAwt6zWXRDvjtlRUnCMDswWZXlDSzXZawiaLk=
-Date:   Tue, 1 Sep 2020 09:54:25 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 00/23] Use asm-generic for mmu_context no-op functions
-Message-ID: <20200901065425.GE432455@kernel.org>
-References: <20200826145249.745432-1-npiggin@gmail.com>
- <20200830101837.GB423750@kernel.org>
- <1598940942.o1fbygdcvl.astroid@bobo.none>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1598940942.o1fbygdcvl.astroid@bobo.none>
+        id S1726929AbgIAG6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726112AbgIAG6F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:58:05 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9082FC0612B0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 23:58:03 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id a20so119790pls.20
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 23:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=R1RsPGwLgQ6M8GTAaaA8I5EBvM6vROOQRDTadyBN0fI=;
+        b=i9QLmbfLyr4EJASj7o1W8s1hA1XT2OmxHDiSCtdHb80BlrgvCsewefgyU3u92gXTlZ
+         VU/LgsJ6dU6yoqnRn5PjrdKEfgidgXnEOIz7vYXzsWTMtU0PSgmFPfVrVzL9R/Y/6Sav
+         XQ64dZPcrFFIIzk3v3P141ze2+b/umxih7NHZKV5Kxjff3xbhfPRui8AMhynEMWxE8NE
+         QDmwZlkjd+HQiCa5OxxgPK7bh6aaAS9aRYOnCJN6il0ql5FKD77fdOVNw7M3YBbqXHKn
+         jkVduxS5FnPKJcfferWDE/YtX/1zRHKzmqQYvEyuaYOByKusGNmb1uuLY/9mb1c9af9R
+         E3Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=R1RsPGwLgQ6M8GTAaaA8I5EBvM6vROOQRDTadyBN0fI=;
+        b=UhX/amL0l6k+ZTi8x9JrjGs6xyEA2HIcmsOnZcu4XCj1CecYIX/+ydTWguRcFrhk+k
+         +t/yMg7DnOH0e+xEBhwdRfUDEVlBNbvLqxm2d007gnDXEn2LRSMTAE2Q+SRih7qigXAk
+         M/3lAA764r0ta1m3hxC1zZeG+jY4AXBpVrr85/sQP/kEkB3PxIpjpK1GoQK2sIUE0sYK
+         e8Qro9pJX1mh1W9Z8KdvToDboFlN9HpZ2yStcuUjUskwZ4yQ/jH6LsfUeyjBviXg9vNB
+         CIk2hjgRjWzycfRvH7CEz+javKaRC/n5uZE0NY7T0C5pqy6NfgSfsm3tIoj1kAKqgpBg
+         Q7Rg==
+X-Gm-Message-State: AOAM5322K9ca4wuALZ3o9Cz1tZjzHVwkaRx+N1NiiQJsV1NdR6T1yKN+
+        HHGcPp+4AWYElwTerAtlZ5OBCvY1vrHu
+X-Google-Smtp-Source: ABdhPJy3PPx1infkahXw5FXVuR6+lobnCfGfXBH82a8cmkfqGXGxfmUG+T2E7GLKNm/b9DjWDC4Tsmu4agQs
+X-Received: from brianvv.svl.corp.google.com ([2620:15c:2c4:201:a28c:fdff:fee1:c370])
+ (user=brianvv job=sendgmr) by 2002:a17:90b:110a:: with SMTP id
+ gi10mr236943pjb.206.1598943482728; Mon, 31 Aug 2020 23:58:02 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 23:57:58 -0700
+Message-Id: <20200901065758.1141786-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
+Subject: [PATCH] net: ipv6: fix __rt6_purge_dflt_routers when forwarding is
+ not set on all ifaces
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        David Ahern <dsa@cumulusnetworks.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 04:17:00PM +1000, Nicholas Piggin wrote:
-> Excerpts from Mike Rapoport's message of August 30, 2020 8:18 pm:
-> > On Thu, Aug 27, 2020 at 12:52:26AM +1000, Nicholas Piggin wrote:
-> >> It would be nice to be able to modify mmu_context functions or add a
-> >> hook without updating all architectures, many of which will be no-ops.
-> >> 
-> >> The motivation for this series is a change to lazy mmu handling, but
-> >> this series stands on its own as a good cleanup whether or not we end
-> >> up making that change.
-> > 
-> > I really like this series, I just have some small comments in reply to
-> > patch 1, otherwise feel free to add
-> > 
-> > Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> I can't see your comments in reply to patch 1.
+The problem is exposed when the system has multiple ifaces and
+forwarding is enabled on a subset of them, __rt6_purge_dflt_routers will
+clean the default route on all the ifaces which is not desired.
 
-Hmm, apparently I forgot to hit "Send"... 
+This patches fixes that by cleaning only the routes where the iface has
+forwarding enabled.
 
-> Thanks,
-> Nick
-> 
+Fixes: 830218c1add1 ("net: ipv6: Fix processing of RAs in presence of VRF")
+Cc: David Ahern <dsa@cumulusnetworks.com>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
+---
+ net/ipv6/route.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 5e7e25e2523a..41181cd489ea 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -4283,6 +4283,7 @@ static void __rt6_purge_dflt_routers(struct net *net,
+ 				     struct fib6_table *table)
+ {
+ 	struct fib6_info *rt;
++	bool deleted = false;
+ 
+ restart:
+ 	rcu_read_lock();
+@@ -4291,16 +4292,19 @@ static void __rt6_purge_dflt_routers(struct net *net,
+ 		struct inet6_dev *idev = dev ? __in6_dev_get(dev) : NULL;
+ 
+ 		if (rt->fib6_flags & (RTF_DEFAULT | RTF_ADDRCONF) &&
+-		    (!idev || idev->cnf.accept_ra != 2) &&
++		    (!idev || (idev->cnf.forwarding == 1 &&
++			       idev->cnf.accept_ra != 2)) &&
+ 		    fib6_info_hold_safe(rt)) {
+ 			rcu_read_unlock();
+ 			ip6_del_rt(net, rt, false);
++			deleted = true;
+ 			goto restart;
+ 		}
+ 	}
+ 	rcu_read_unlock();
+ 
+-	table->flags &= ~RT6_TABLE_HAS_DFLT_ROUTER;
++	if (deleted)
++		table->flags &= ~RT6_TABLE_HAS_DFLT_ROUTER;
+ }
+ 
+ void rt6_purge_dflt_routers(struct net *net)
 -- 
-Sincerely yours,
-Mike.
+2.28.0.402.g5ffc5be6b7-goog
+
