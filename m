@@ -2,154 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A326259CA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F384259CAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732622AbgIARRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:17:39 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:41382 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732599AbgIARRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:17:12 -0400
-Received: from hkpgpgate102.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4e82140000>; Wed, 02 Sep 2020 01:17:08 +0800
-Received: from HKMAIL103.nvidia.com ([10.18.16.12])
-  by hkpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 01 Sep 2020 10:17:08 -0700
-X-PGP-Universal: processed;
-        by hkpgpgate102.nvidia.com on Tue, 01 Sep 2020 10:17:08 -0700
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 1 Sep
- 2020 17:17:04 +0000
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.175)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Tue, 1 Sep 2020 17:17:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AHnjjOKxqaoTVDcyLPcF9zEyYSXD1IU17KlVky3nIDbloYx3zjIIabg4zXalnQHZo3TF0qMAEdzqCOXDomywNn9fgGPpZ1Bdu86Z+J4eZcwKjFkpcMvWJ5ayZpOgW0HGOvtqfUYJcvNnbRIcS07Iwm3JPH+IU3XTXsz8OZ7Ip2QgFHU69MhBTRkIeEgd00gRhX0f81FICYwcW45aNIarSKYJfoA9LgrltsvSwAimN4VYUVanwIPS/oB2XrcHCTOxRg8RehgXs9lYvP3PUpawelo+bJuOktdOoQES7NYVmX+V2GnNYW5JMefQk4pW3LFLmTk2fxah70tGGXBkHUU4LA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gbe7Q8Fkc31BiL/ON15r8fiuvWpfjSVWK2lsN0F8QtY=;
- b=DzzrWRo+H3Py4hJz+6Mgax/bGch/Mq4sYznFbOQUspTJuFztexxJUUFTqAPNOubTIHzJwAwLCuQnAD0Ug0Q0winAxcwBWro4YMBl+fZZGuJr4Sz43uD4vHmHLttLCaycjzD0/TnGOEwt7TXkKw1JLTRaIRmay9XxyyaTuQ5c///wiiEDz3ldP0melBdfY4yEMd2cK0EbBLfO/eyMP0+EITMH9FMIk9WtuRt7ILygZoxF2jH63KRniXspmMa7msL3qoU6nvog+NFlp9Zg2JB3/2CMML5ZIb8slUkSOxM3oq89oYKo17TOWIAO7IzTQW/ihHsirFxiwLQ5wd0PI26U0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
- by BYAPR12MB3093.namprd12.prod.outlook.com (2603:10b6:a03:dc::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Tue, 1 Sep
- 2020 17:17:00 +0000
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::e528:bb9a:b147:94a9]) by BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::e528:bb9a:b147:94a9%6]) with mapi id 15.20.3348.015; Tue, 1 Sep 2020
- 17:16:59 +0000
-From:   Saeed Mahameed <saeedm@nvidia.com>
-To:     "yuehaibing@huawei.com" <yuehaibing@huawei.com>,
-        "tariqt@mellanox.com" <tariqt@mellanox.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net/mlx5e: kTLS, Avoid kzalloc(GFP_KERNEL) under
- spinlock
-Thread-Topic: [PATCH net-next] net/mlx5e: kTLS, Avoid kzalloc(GFP_KERNEL)
- under spinlock
-Thread-Index: AQHWgG08sOx441VITkihaRnRX50/aalUBouA
-Date:   Tue, 1 Sep 2020 17:16:59 +0000
-Message-ID: <d92b28edfa72687114fe85c07cb1e190697485a0.camel@nvidia.com>
-References: <20200901143512.25424-1-yuehaibing@huawei.com>
-In-Reply-To: <20200901143512.25424-1-yuehaibing@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [24.6.56.119]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c86b36c0-26fb-4fdc-1bd0-08d84e9ad641
-x-ms-traffictypediagnostic: BYAPR12MB3093:
-x-ld-processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB3093EEC4B93104070A55B402B32E0@BYAPR12MB3093.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WDDYGIJ2bPlBgaIRbTjndFU77eBbp6rDbx4xJkQG48adyr9jgs0ZY5npXCavNM5aZb6UF1lGkMNNgHvXvSODJsNQVa23JTXUJISvZCQ1wGqR+wtOndwg8bruJWtDRYTjuCn8zDUnhrX1RZxbhJHRVDaX/jXN8MuIXqz0o1xcrJ/6CCtgizGiiwYgg48yNT0SqVN1f+eYBmmGtmkPQ7PyF3ysBUf0qPg/smFNyk3RR5T5HTif+lkiJ9y8kiXYyto9JP7gR+T8vsZyQNXd7IaUSpK6yFW9uYELn6nigzs8U/n2nc6UBpnOB68ed+COeSLUATB1WVvRNwosPfKxWzP9zA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(136003)(366004)(83380400001)(4326008)(66446008)(36756003)(2616005)(66556008)(2906002)(66476007)(76116006)(316002)(6506007)(64756008)(8936002)(8676002)(66946007)(6512007)(478600001)(6486002)(86362001)(186003)(54906003)(71200400001)(5660300002)(26005)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: HTTnZnefpXhjPk8Ym2c1SEpcxebVFpkQyR3pkoh7d7RSiU/b16rbqr4ykUWjAnbMIJyf2OdXNKcqrQs/btKgziuYJ/tMPuU9lK6LtWBA71u5vdk0Zae4sTPbky5CxFRQLc2Vk/L0nCmGGUbGCzR2JcclrIgTmwFtDC4fqTezRPillFQmaYm8zo3Pdl7w00CXFH3dMhDb5WHGC9xFc0Ge5B/2joLIcHDan8iBa3py3hXXKo62EUWe85GJK7znJ4eh+3bbazPiRLBd7O/3XXrg5Yb3tY4s5LuKMqUASA6SoWu3qi1jjYIfaQfnlupTt4dsSXVfQS/Fp9yskAWvIWApuH5Yf8kKp6h2vy6g1N1142MDgz8ilvPCNTXGyPP30U0THuS0WgD+ZeHWhIHfWlIGHfDUnuMPuM8VAvO8lcTyaZd4zwRaxdc4zpHB4XM6fgzfdtZH8C9ht4/6DL8HUnNQKqcYZrCE0DKR/9r7PGh0QEdfNMZBfBpqJafPOSkKfcsXqBKPTy+PdjYubzQ0TY1JYaCffChiGC2+dsXBKtmkuTslyA3Sp7m4KdFr35CC0JJ0LZ9sdcGnrHPcbdQsgFGYJt4Xv1g6hePmShvz10pJoqeAd+YRvdQDEfYr9TZeQ+OjnoQKmtHx0WLYUtCsGXVJyQ==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9B61A95E110C7A4D8FCF450062D0D6E3@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1731868AbgIARSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732650AbgIARSS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:18:18 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9A9C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:18:17 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id l9so861527plt.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:18:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dW7GB60WM2kkdTwVir0X+YeJCT4DzRMmVe7Fu3eHOuE=;
+        b=BkuhoMCQPMF9r7IbrTJB856k16mWef66ZLvrE0tI5gwb64pfmFnQ1HDIwhxGhJcGuO
+         SB4GYxlcSHw/KjaggedgpPQPVAD5UiMZ5p6u2H/nLBFtCU5LoveZH39Hbb2bFBTHWzNZ
+         LrGCy1TC0dlnpz6WnGC+wyajcxUhmxz4TBqJhm9fwOUzBo3UbS46sfgIqkUNXD22RUzm
+         3sWtlRULn44JvJ1GuwGccLQWSGOXvpWDlDwFN8oHh4e0+vjIGRPNhLkPYQ4PwwyD/7JQ
+         1TI0m8fj0IjTUJtLxEZKFSWgsAzDkJw7mfQeLCKbe9HBedBus8lziMtxUcXAisWO19l4
+         BFJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dW7GB60WM2kkdTwVir0X+YeJCT4DzRMmVe7Fu3eHOuE=;
+        b=TBnf0naNwNP11ZBa399jdBA97ogwlTdGMPJoARFJTx7DCJxWCIhQPuHqpFtqo38kLd
+         yaDlEz7aYXSln+tAktjtsTR2wkQlIcJHWGJzuygCGZEKBolzSN+A83uywb91zKMQw+ed
+         zcmQW8KdBoV9EdD73rl+QZV5dEdkmtL4SpRkI9939IB7hZjpNHKua1sHWUVuJibhpqEr
+         WAjtueOZJqpEvAydP/Wu3r1+xEspLFja1zC+H5LGceBy2yHtQ/5tHEilM0qC7I5geXkJ
+         10pAsV2leWUUcAm5oJPLoRtiUDUkl8X8lDMCw+pdyU4ZM9ONd/R8HIZvM0pahdvPCpnD
+         7lZg==
+X-Gm-Message-State: AOAM533oOjzWTIHuwczw5y+OIiIdpBjkcQ31kmhzasbwN5OHUBACUmkz
+        lVhJj5zIKhj78gfnZIi5OTnscOLlMLnIhQ==
+X-Google-Smtp-Source: ABdhPJyXHh/LWDGrGPsvzYmoxDsHwlqpFhaZQXh71pUs6QyW6PpXsHAPr3Z5mP+arjHcXouGnHTUtA==
+X-Received: by 2002:a17:90a:9292:: with SMTP id n18mr2620785pjo.159.1598980696876;
+        Tue, 01 Sep 2020 10:18:16 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id b15sm2480105pft.84.2020.09.01.10.18.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 10:18:16 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 11:18:14 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jeremy.linton@arm.com, coresight@lists.linaro.org,
+        mike.leach@linaro.org
+Subject: Re: [PATCH] coresight: etm4x: Handle unreachable sink in perf mode
+Message-ID: <20200901171814.GB236120@xps15>
+References: <20200818192931.168584-1-suzuki.poulose@arm.com>
+ <20200819192200.GA3845366@xps15>
+ <92f6080e-8168-fc6e-ec76-82560b91c36e@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c86b36c0-26fb-4fdc-1bd0-08d84e9ad641
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2020 17:16:59.8331
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RiInVsOB7czlN9HTpdWCeEZH7NQsP2ps5EfOU1mLRR4jUjXLu82GzDRnhLGgAa5uDCTLO3J6o25GvVuRjFn8Gw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3093
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1598980628; bh=gbe7Q8Fkc31BiL/ON15r8fiuvWpfjSVWK2lsN0F8QtY=;
-        h=X-PGP-Universal:ARC-Seal:ARC-Message-Signature:
-         ARC-Authentication-Results:From:To:CC:Subject:Thread-Topic:
-         Thread-Index:Date:Message-ID:References:In-Reply-To:
-         Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
-         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
-         x-ms-traffictypediagnostic:x-ld-processed:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         Content-Type:Content-ID:Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=NPo9W2uZIsmwrqYKg54JsouczgdzoWZkEEOpmhwOEv3P9EcK+2PWo8QCDU2XhMVar
-         i7/ium41ujoxoPqwFUo0+uDQofk4s85ki94JcIraPU205j/HjefLnpn/izs112KY6H
-         /aqFAGpva0uyQ0Ocu0sB2TcK0skq+tvu+liUl0noC6F9VnREGJKPmyJ+roow0d58pE
-         f8eux3TQUQCOqYCg1lHs2lQNq8utfZSAJ1K5giv7+FGeqe+SKTwLQBSEO05arjl1+j
-         koLO4uaAQlIzZ9xO9XHp9T06NWmyjljoTUWwd8o4CN+NIR3ZqhzTBNFsPbJ8FsVhR3
-         Z/OG9BdY/WjHw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92f6080e-8168-fc6e-ec76-82560b91c36e@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA5LTAxIGF0IDIyOjM1ICswODAwLCBZdWVIYWliaW5nIHdyb3RlOg0KPiBB
-IHNwaW4gbG9jayBpcyBoZWxkIGJlZm9yZSBremFsbG9jLCBpdCBtYXkgc2xlZXAgd2l0aCBob2xk
-aW5nDQo+IHRoZSBzcGlubG9jaywgc28gd2Ugc2hvdWxkIHVzZSBHRlBfQVRPTUlDIGluc3RlYWQu
-DQo+IA0KPiBUaGlzIGlzIGRldGVjdGVkIGJ5IGNvY2NpbmVsbGUuDQo+IA0KPiBGaXhlczogMDQx
-OWQ4YzlkOGY4ICgibmV0L21seDVlOiBrVExTLCBBZGQga1RMUyBSWCByZXN5bmMgc3VwcG9ydCIp
-DQo+IFNpZ25lZC1vZmYtYnk6IFl1ZUhhaWJpbmcgPHl1ZWhhaWJpbmdAaHVhd2VpLmNvbT4NCj4g
-LS0tDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fYWNjZWwv
-a3Rsc19yeC5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
-bGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0DQo+IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVs
-bGFub3gvbWx4NS9jb3JlL2VuX2FjY2VsL2t0bHNfcnguYw0KPiBiL2RyaXZlcnMvbmV0L2V0aGVy
-bmV0L21lbGxhbm94L21seDUvY29yZS9lbl9hY2NlbC9rdGxzX3J4LmMNCj4gaW5kZXggYWNmNmQ4
-MGE2YmI3Li4xYTMyNDM1YWNhYzMgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0
-L21lbGxhbm94L21seDUvY29yZS9lbl9hY2NlbC9rdGxzX3J4LmMNCj4gKysrIGIvZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX2FjY2VsL2t0bHNfcnguYw0KPiBAQCAt
-MjQ3LDcgKzI0Nyw3IEBAIHJlc3luY19wb3N0X2dldF9wcm9ncmVzc19wYXJhbXMoc3RydWN0DQo+
-IG1seDVlX2ljb3NxICpzcSwNCj4gIAlpbnQgZXJyOw0KPiAgCXUxNiBwaTsNCj4gIA0KPiAtCWJ1
-ZiA9IGt6YWxsb2Moc2l6ZW9mKCpidWYpLCBHRlBfS0VSTkVMKTsNCj4gKwlidWYgPSBremFsbG9j
-KHNpemVvZigqYnVmKSwgR0ZQX0FUT01JQyk7DQo+ICAJaWYgKHVubGlrZWx5KCFidWYpKSB7DQo+
-ICAJCWVyciA9IC1FTk9NRU07DQo+ICAJCWdvdG8gZXJyX291dDsNCg0KVGhhbmtzIGZvciB0aGUg
-cGF0Y2gsIHRoZSBremFsbG9jIGNhbiBtb3ZlIG91dHNpZGUgdGhlIHNwaW5sb2NrLg0KVGhpcyBw
-YXRjaCBzaG91bGQgYWxzbyBnbyB0byBuZXQuDQoNCkkgd2lsbCBwcm92aWRlIGEgbmV3ZXIgdmVy
-c2lvbiBvZiB0aGUgcGF0Y2ggdG8gZGVhbCB3aXRoIHRoaXMgYW5kIHdpdGgNCmEgbWlzc2luZyBr
-ZnJlZSBvbiBlcnJvciBoYW5kbGluZyBpIGZvdW5kIHdoaWxlIGxvb2tpbmcgYXQgdGhlIGNvZGUu
-DQoNClRoYW5rcywgDQpTYWVlZC4NCg==
+Good morning,
+
+On Tue, Sep 01, 2020 at 11:28:55AM +0100, Suzuki K Poulose wrote:
+> On 08/19/2020 08:22 PM, Mathieu Poirier wrote:
+> > Hi Suzuki,
+> > 
+> > On Tue, Aug 18, 2020 at 08:29:31PM +0100, Suzuki K Poulose wrote:
+> > > If the specified/hinted sink is not reachable from a subset of the CPUs,
+> > > we could end up unable to trace the event on those CPUs. This
+> > > is the best effort we could do until we support 1:1 configurations.
+> > > Fail gracefully in such cases avoiding a WARN_ON, which can be easily
+> > > triggered by the user on certain platforms, like :
+> > > 
+> > > [10919.513250] ------------[ cut here ]------------
+> > > [10919.517861] WARNING: CPU: 2 PID: 24021 at
+> > > drivers/hwtracing/coresight/coresight-etm-perf.c:316 etm_event_start+0xf8/0x100
+> > > ...
+> > > 
+> > > [10919.564403] CPU: 2 PID: 24021 Comm: perf Not tainted 5.8.0+ #24
+> > > [10919.570308] pstate: 80400089 (Nzcv daIf +PAN -UAO BTYPE=--)
+> > > [10919.575865] pc : etm_event_start+0xf8/0x100
+> > > [10919.580034] lr : etm_event_start+0x80/0x100
+> > > [10919.584202] sp : fffffe001932f940
+> > > [10919.587502] x29: fffffe001932f940 x28: fffffc834995f800
+> > > [10919.592799] x27: 0000000000000000 x26: fffffe0011f3ced0
+> > > [10919.598095] x25: fffffc837fce244c x24: fffffc837fce2448
+> > > [10919.603391] x23: 0000000000000002 x22: fffffc8353529c00
+> > > [10919.608688] x21: fffffc835bb31000 x20: 0000000000000000
+> > > [10919.613984] x19: fffffc837fcdcc70 x18: 0000000000000000
+> > > [10919.619281] x17: 0000000000000000 x16: 0000000000000000
+> > > [10919.624577] x15: 0000000000000000 x14: 00000000000009f8
+> > > [10919.629874] x13: 00000000000009f8 x12: 0000000000000018
+> > > [10919.635170] x11: 0000000000000000 x10: 0000000000000000
+> > > [10919.640467] x9 : fffffe00108cd168 x8 : 0000000000000000
+> > > [10919.645763] x7 : 0000000000000020 x6 : 0000000000000001
+> > > [10919.651059] x5 : 0000000000000002 x4 : 0000000000000001
+> > > [10919.656356] x3 : 0000000000000000 x2 : 0000000000000000
+> > > [10919.661652] x1 : fffffe836eb40000 x0 : 0000000000000000
+> > > [10919.666949] Call trace:
+> > > [10919.669382]  etm_event_start+0xf8/0x100
+> > > [10919.673203]  etm_event_add+0x40/0x60
+> > > [10919.676765]  event_sched_in.isra.134+0xcc/0x210
+> > > [10919.681281]  merge_sched_in+0xb0/0x2a8
+> > > [10919.685017]  visit_groups_merge.constprop.140+0x15c/0x4b8
+> > > [10919.690400]  ctx_sched_in+0x15c/0x170
+> > > [10919.694048]  perf_event_sched_in+0x6c/0xa0
+> > > [10919.698130]  ctx_resched+0x60/0xa0
+> > > [10919.701517]  perf_event_exec+0x288/0x2f0
+> > > [10919.705425]  begin_new_exec+0x4c8/0xf58
+> > > [10919.709247]  load_elf_binary+0x66c/0xf30
+> > > [10919.713155]  exec_binprm+0x15c/0x450
+> > > [10919.716716]  __do_execve_file+0x508/0x748
+> > > [10919.720711]  __arm64_sys_execve+0x40/0x50
+> > > [10919.724707]  do_el0_svc+0xf4/0x1b8
+> > > [10919.728095]  el0_sync_handler+0xf8/0x124
+> > > [10919.732003]  el0_sync+0x140/0x180
+> > > 
+> > > Fixes: f9d81a657bb8 ("coresight: perf: Allow tracing on hotplugged CPUs")
+> > > Reported-by: Jeremy Linton <jeremy.linton@arm.com>
+> > > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > > Cc: Mike Leach <mike.leach@linaro.org>
+> > > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > > ---
+> > >   drivers/hwtracing/coresight/coresight-etm-perf.c | 10 ++++++++++
+> > >   1 file changed, 10 insertions(+)
+> > > 
+> > > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > > index 1a3169e69bb1..9d61a71da96f 100644
+> > > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> > > @@ -321,6 +321,16 @@ static void etm_event_start(struct perf_event *event, int flags)
+> > >   	if (!event_data)
+> > >   		goto fail;
+> > > +	/*
+> > > +	 * Check if this ETM is allowed to trace, as decided
+> > > +	 * at etm_setup_aux(). This could be due to an unreachable
+> > > +	 * sink from this ETM. We can't do much in this case if
+> > > +	 * the sink was specified or hinted to the driver. For
+> > > +	 * now, simply don't record anything on this ETM.
+> > > +	 */
+> > 
+> > Can you provide more details on the scenario and the topology of the system?
+> > Without either it is hard to wrap my head around the problem to address.
+> > Having that information in the changelog would go a long way.
+> 
+> Sure. This was detected on N1SDP with the following topology, with the
+> command :
+> 
+> 
+> $ perf record -e cs_etm/@tmc_etf0/ --per-thread dd if=/dev/zero of=BIGFILE
+> bs=1M count=100
+> 
+> 
+> CPU0
+>       \
+>         Funnel0 ---- ETF0 --
+>       /                      \
+> CPU1
+>                                Funnel2
+> CPU2
+>       \                      /
+>         Funnel1 ---- ETF1 --
+>       /
+> CPU3
+> 
+> 
+> Basically, a pair of CPUS (0&1, 2&3 respectively) are connected to a static
+> funnel followed by a TMC-ETF, before connecting to a main
+> funnel which merges the ETMs and the STM on the system.
+> 
+> In such a case, if the user selects tmc_etf0 as the sink for a perf
+> session this could trigger a warning when starting the event on ETM2
+> as we haven't been able to create a path. Also the CPU2 is cleared in
+> the event_data->cpumask.
+
+Ok, that's the kind of topology I imagined you were dealing with.
+
+> 
+> I will add the above to the commit log.
+
+Yes please.
+
+> 
+> For now we don't really support multiple sinks for a perf session. This
+> will need to be addressed for the per-CPU buffer scenario. But, we
+> should fix the current logic until we get there, to avoid triggering
+> the warnings, which can be done quite easily on these systems, which
+> are not really per-CPU buffers.
+
+I agree that it should fail gracefully.  
+
+> 
+> > 
+> > I'm sure this is a per-thread scenario because there is more than one CPU per
+> 
+> Yes, it is a per-thread scenario.
+> 
+> > event.  I'm also suspecting this is on a system where there is one sink per CPU
+> > cluster, and that is not supported.
+> 
+> No, that is not exactly the case, from the topology above. But not N:1
+> either. More of N:M and this is possible on systems with per cluster ETFs.
+> 
+> > 
+> > If I am right on both account I am questionning the "Fixes".  On a system with
+> > N:1 topology the code introduced by f9d81a657bb8 will work in the event a CPU is
+> > hotplugged in.  The code introduced in this patch is simply to prevent a
+> 
+> Correct. But, without the above commit, we would have failed while
+> creating a path to the sink, because if a CPU was offline then we don't
+> care about a path from that ETM. So this warning is essentially
+> triggered only after the above commit and thus the Fixes tag.
+
+That is an equally valid argument.
+
+> 
+> > warn_on() trace from being generated on systems that aren't supported.  It should
+> > have a "stable" tag.
+> 
+> Cheers
+> Suzuki
