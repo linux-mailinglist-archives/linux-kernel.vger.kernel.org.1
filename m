@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFB2258E9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44968258EA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgIAMwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51126 "EHLO mail.kernel.org"
+        id S1726144AbgIAMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:53:48 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:41044 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgIAMv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:51:27 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BD45E206CD;
-        Tue,  1 Sep 2020 12:51:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598964680;
-        bh=yg/250nrats4qE+SuiX9Do3DhW2WXHg0wipMKKK8bH4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cFQyodSg+2l6w6kPeibO0GULGs+Vsdkq6mUZbBbB5HGS0lWEaxH3w8+UWZFU4Hh7N
-         08r5Ll27IpCpWu8h/3ol2IhRiKpdeQ4ieDBKZs/W+ZuX+q2UWmD3ZbFZKayubGFjH0
-         GPjXzsbINdvnQoMFKAdsfrLGSL5HX6OiTvvCzU/c=
-Date:   Tue, 1 Sep 2020 13:51:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Mark Rutland <mark.rutland@arm.com>, nd <nd@arm.com>
-Subject: Re: [PATCH v2] module: Harden STRICT_MODULE_RWX
-Message-ID: <20200901125114.GA3307@willie-the-truck>
-References: <20200812160017.GA30302@linux-8ccs>
- <CAMj1kXFfSLvujJYk4Em6T+UvAUDW3VX0BibsD43z30Q_TSsehg@mail.gmail.com>
- <20200812200019.GY3982@worktop.programming.kicks-ass.net>
- <CAMj1kXEn5o_7OOqgcntOPCqBYmpY74OkGqQ_bUBJvHG6Q9GVLA@mail.gmail.com>
- <20200813130422.GA16938@linux-8ccs>
- <CAMj1kXErCQYNN9r5siGNukc+9KC=QnER8LfFXVfbHdeDivYztg@mail.gmail.com>
- <20200821121959.GC20833@willie-the-truck>
- <CAMj1kXEyLMQz7+Fmv7i0FAu4x0uDmh7aUpbfuXaqs6k6XGog7w@mail.gmail.com>
- <20200821123036.GA21158@willie-the-truck>
- <20200831094651.GA16385@linux-8ccs>
+        id S1728116AbgIAMvj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 08:51:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=995; q=dns/txt; s=axis-central1;
+  t=1598964699; x=1630500699;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bZ/H5Fs/QMbb9e+PlCCs4RRk8UF5csgy4VmwPELJui4=;
+  b=cUZYoXMlxm6lDiWHdVC1l96lWCtLOKDF2RsOeMIa4q9SF4L0/7A4Xaoa
+   UjZSfQnfSGcRoxjCBWSSe3hW1605qK0+d67VIGgJK4Dt9ql/eSlIfQO0E
+   XyqwllIcX4oXYtHBAbcSVZOWW/cGoP2TdL1c4RpPsKi5wAN10gDcJo4RR
+   4VGSbVmOUxWi23T48EEnFZjifzvo8n6XXRMHme65JFek9yHX63paURQqn
+   PRIGrk4RBNp7LS1SjUbDnqkY3Tw9O0lQETfwVDLTkNC2GzRsqC10bTEej
+   MI2Uwr0n/WBf8rIxZsTzdyQr2eSN++w66UOZzcJF+Lx2TTK06RuIt1qH+
+   A==;
+IronPort-SDR: gzHzlcmCoOgPoBKEljhCVaeIS9elkzWwIBKSsDR/9WI5kwrKUMgd6HhCVlab82xpz/0rYuKNbt
+ XpylXJpQ0UDBcx2N2o8ygWoWviWgQzyYD5NvaN7qgWri1aWcDPHNf9Gx0W1VtUoRRtNR7F7QUw
+ YGgbkjXETCHMybezzxJ13U8h3l5j8cr5HfaQTNapkBL9E1DDR9o9cmB6B/otRSellwxM4ijL3b
+ R3MNdr8kYCBAvyzqsg7hVLf3FBFge2rULdnuSpzxYNDeDi/aQwHCxRHbee1NriFWVqTOy4rldP
+ K7A=
+X-IronPort-AV: E=Sophos;i="5.76,379,1592863200"; 
+   d="scan'208";a="12434794"
+From:   Camel Guo <camel.guo@axis.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <dmurphy@ti.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>,
+        Camel Guo <camel.guo@axis.com>
+Subject: [PATCH v2] ASoC: tlv320adcx140: Fix accessing uninitialized adcx140->dev
+Date:   Tue, 1 Sep 2020 14:51:22 +0200
+Message-ID: <20200901125123.25886-1-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831094651.GA16385@linux-8ccs>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 11:46:51AM +0200, Jessica Yu wrote:
-> +++ Will Deacon [21/08/20 13:30 +0100]:
-> [snipped]
-> > > > > > So module_enforce_rwx_sections() is already called after
-> > > > > > module_frob_arch_sections() - which really baffled me at first, since
-> > > > > > sh_type and sh_flags should have been set already in
-> > > > > > module_frob_arch_sections().
-> > > > > >
-> > > > > > I added some debug prints to see which section the module code was
-> > > > > > tripping on, and it was .text.ftrace_trampoline. See this snippet from
-> > > > > > arm64's module_frob_arch_sections():
-> > > > > >
-> > > > > >                 else if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE) &&
-> > > > > >                          !strcmp(secstrings + sechdrs[i].sh_name,
-> > > > > >                                  ".text.ftrace_trampoline"))
-> > > > > >                         tramp = sechdrs + i;
-> > > > > >
-> > > > > > Since Mauro's config doesn't have CONFIG_DYNAMIC_FTRACE enabled, tramp
-> > > > > > is never set here and the if (tramp) check at the end of the function
-> > > > > > fails, so its section flags are never set, so they remain WAX and fail
-> > > > > > the rwx check.
-> > > > >
-> > > > > Right. Our module.lds does not go through the preprocessor, so we
-> > > > > cannot add the #ifdef check there currently. So we should either drop
-> > > > > the IS_ENABLED() check here, or simply rename the section, dropping
-> > > > > the .text prefix (which doesn't seem to have any significance outside
-> > > > > this context)
-> > > > >
-> > > > > I'll leave it to Will to make the final call here.
-> > > >
-> > > > Why don't we just preprocess the linker script, like we do for the main
-> > > > kernel?
-> > > >
-> > > 
-> > > That should work as well, I just haven't checked how straight-forward
-> > > it is to change that.
-> > 
-> > Ok, if it's _not_ straightforward, then let's just drop the IS_ENABLED()
-> > altogether.
-> 
-> Unfortunately I've been getting more reports about this issue, so let's just
-> get the aforementioned workaround merged first. Does the following look OK?
-> 
-> diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
-> index 0ce3a28e3347..2e224435c024 100644
-> --- a/arch/arm64/kernel/module-plts.c
-> +++ b/arch/arm64/kernel/module-plts.c
-> @@ -305,8 +305,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
->                        mod->arch.core.plt_shndx = i;
->                else if (!strcmp(secstrings + sechdrs[i].sh_name, ".init.plt"))
->                        mod->arch.init.plt_shndx = i;
-> -               else if (IS_ENABLED(CONFIG_DYNAMIC_FTRACE) &&
-> -                        !strcmp(secstrings + sechdrs[i].sh_name,
-> +               else if (!strcmp(secstrings + sechdrs[i].sh_name,
->                                 ".text.ftrace_trampoline"))
->                        tramp = sechdrs + i;
->                else if (sechdrs[i].sh_type == SHT_SYMTAB)
-> 
-> If so I'll turn it into a formal patch and we can get that merged in the next -rc.
+From: Camel Guo <camelg@axis.com>
 
-Acked-by: Will Deacon <will@kernel.org>
+In adcx140_i2c_probe, adcx140->dev is accessed before its
+initialization. This commit fixes this bug.
 
-Will
+Signed-off-by: Camel Guo <camel.guo@axis.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 5cd50d841177..7ae6ec374be3 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -980,6 +980,8 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 	if (!adcx140)
+ 		return -ENOMEM;
+ 
++	adcx140->dev = &i2c->dev;
++
+ 	adcx140->gpio_reset = devm_gpiod_get_optional(adcx140->dev,
+ 						      "reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(adcx140->gpio_reset))
+@@ -1007,7 +1009,7 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 			ret);
+ 		return ret;
+ 	}
+-	adcx140->dev = &i2c->dev;
++
+ 	i2c_set_clientdata(i2c, adcx140);
+ 
+ 	return devm_snd_soc_register_component(&i2c->dev,
+-- 
+2.20.1
+
