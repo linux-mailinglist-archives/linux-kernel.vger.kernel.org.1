@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63993259B2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA18259ADC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgIAPWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
+        id S1732436AbgIAQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729566AbgIAPTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:19:50 -0400
+        id S1729698AbgIAPYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:24:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67464206EB;
-        Tue,  1 Sep 2020 15:19:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC1272151B;
+        Tue,  1 Sep 2020 15:24:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973589;
-        bh=X06z0IObTq8JdZDLzGz+Qgu2K+Dl1MOmU8cHQlUWyUI=;
+        s=default; t=1598973864;
+        bh=7PC9BQif68XqqFEG9ytLgGPrX/aktloSK91Ow6LgB4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rCe0v7eNymVkwt1ivd/sS0se8UnQpg/7DJ0v8s7aVsCJ8B5aZz1jvwKuyhBWCAUMu
-         SyFATEBNK3vrWoha/JK1JCeSKLqQ73t6e4Nl5tUbb6Q7FcJIKd4pvjqeuWNyequQ/Q
-         lmpWtFmIVyyS1dzeuGCoSFd7qMuO6XAJc4HDlMy0=
+        b=s6Wn4Jv7nnPA6Gy82aLZi7F9pli7qcYkT+rTegEtZDMLzLukEFdtKZzGvtX5uVkpG
+         L6DaAWu5qMekCfK6FiuXLgq3+pecj1Y2obwS1sMa0b/xzvV5A1SKY/AVuNDeczuZJs
+         lTCXPk4oSUDymXuPva1WeR7zqP3iI69RSmxANWN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Andrea Borgia <andrea@borgia.bo.it>
-Subject: [PATCH 4.14 58/91] HID: i2c-hid: Always sleep 60ms after I2C_HID_PWR_ON commands
-Date:   Tue,  1 Sep 2020 17:10:32 +0200
-Message-Id: <20200901150930.995121541@linuxfoundation.org>
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 078/125] net: gianfar: Add of_node_put() before goto statement
+Date:   Tue,  1 Sep 2020 17:10:33 +0200
+Message-Id: <20200901150938.395932806@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,93 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Sumera Priyadarsini <sylphrenadin@gmail.com>
 
-commit eef4016243e94c438f177ca8226876eb873b9c75 upstream.
+[ Upstream commit 989e4da042ca4a56bbaca9223d1a93639ad11e17 ]
 
-Before this commit i2c_hid_parse() consists of the following steps:
+Every iteration of for_each_available_child_of_node() decrements
+reference count of the previous node, however when control
+is transferred from the middle of the loop, as in the case of
+a return or break or goto, there is no decrement thus ultimately
+resulting in a memory leak.
 
-1. Send power on cmd
-2. usleep_range(1000, 5000)
-3. Send reset cmd
-4. Wait for reset to complete (device interrupt, or msleep(100))
-5. Send power on cmd
-6. Try to read HID descriptor
+Fix a potential memory leak in gianfar.c by inserting of_node_put()
+before the goto statement.
 
-Notice how there is an usleep_range(1000, 5000) after the first power-on
-command, but not after the second power-on command.
+Issue found with Coccinelle.
 
-Testing has shown that at least on the BMAX Y13 laptop's i2c-hid touchpad,
-not having a delay after the second power-on command causes the HID
-descriptor to read as all zeros.
-
-In case we hit this on other devices too, the descriptor being all zeros
-can be recognized by the following message being logged many, many times:
-
-hid-generic 0018:0911:5288.0002: unknown main item tag 0x0
-
-At the same time as the BMAX Y13's touchpad issue was debugged,
-Kai-Heng was working on debugging some issues with Goodix i2c-hid
-touchpads. It turns out that these need a delay after a PWR_ON command
-too, otherwise they stop working after a suspend/resume cycle.
-According to Goodix a delay of minimal 60ms is needed.
-
-Having multiple cases where we need a delay after sending the power-on
-command, seems to indicate that we should always sleep after the power-on
-command.
-
-This commit fixes the mentioned issues by moving the existing 1ms sleep to
-the i2c_hid_set_power() function and changing it to a 60ms sleep.
-
-Cc: stable@vger.kernel.org
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208247
-Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Reported-and-tested-by: Andrea Borgia <andrea@borgia.bo.it>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/i2c-hid/i2c-hid-core.c |   22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/freescale/gianfar.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -406,6 +406,19 @@ static int i2c_hid_set_power(struct i2c_
- 		dev_err(&client->dev, "failed to change power setting.\n");
+diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
+index cf2d1e846a692..8243501c37574 100644
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -844,8 +844,10 @@ static int gfar_of_init(struct platform_device *ofdev, struct net_device **pdev)
+ 				continue;
  
- set_pwr_exit:
-+
-+	/*
-+	 * The HID over I2C specification states that if a DEVICE needs time
-+	 * after the PWR_ON request, it should utilise CLOCK stretching.
-+	 * However, it has been observered that the Windows driver provides a
-+	 * 1ms sleep between the PWR_ON and RESET requests.
-+	 * According to Goodix Windows even waits 60 ms after (other?)
-+	 * PWR_ON requests. Testing has confirmed that several devices
-+	 * will not work properly without a delay after a PWR_ON request.
-+	 */
-+	if (!ret && power_state == I2C_HID_PWR_ON)
-+		msleep(60);
-+
- 	return ret;
- }
- 
-@@ -427,15 +440,6 @@ static int i2c_hid_hwreset(struct i2c_cl
- 	if (ret)
- 		goto out_unlock;
- 
--	/*
--	 * The HID over I2C specification states that if a DEVICE needs time
--	 * after the PWR_ON request, it should utilise CLOCK stretching.
--	 * However, it has been observered that the Windows driver provides a
--	 * 1ms sleep between the PWR_ON and RESET requests and that some devices
--	 * rely on this.
--	 */
--	usleep_range(1000, 5000);
--
- 	i2c_hid_dbg(ihid, "resetting...\n");
- 
- 	ret = i2c_hid_command(client, &hid_reset_cmd, NULL, 0);
+ 			err = gfar_parse_group(child, priv, model);
+-			if (err)
++			if (err) {
++				of_node_put(child);
+ 				goto err_grp_init;
++			}
+ 		}
+ 	} else { /* SQ_SG_MODE */
+ 		err = gfar_parse_group(np, priv, model);
+-- 
+2.25.1
+
 
 
