@@ -2,158 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC95F258FFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402DA258FCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgIAONe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:13:34 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38872 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728264AbgIAOM7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:12:59 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 081E6nQY059182;
-        Tue, 1 Sep 2020 09:06:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1598969209;
-        bh=RixAWEvCOs5TI6IoAywsdosmAxAkvKzfEAycZgP8sUM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=O/ijain6PDeOatHWv00hghgs347uxtwuBcIuuR+fAy7Ha25GfzHTLsy6vBM2BwOud
-         kkO1sp5sQprOxNCjfcWuElMy1710Ibe+d4N5M58LKqU36+RCk74yNW3i+vCViivkHc
-         w+Xf7t2QsHRjJ0kAPdL7uRnMLpBQHF2iCGfCpp/0=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 081E6ndi072961
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 1 Sep 2020 09:06:49 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 1 Sep
- 2020 09:06:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 1 Sep 2020 09:06:49 -0500
-Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 081E6Zlh034944;
-        Tue, 1 Sep 2020 09:06:46 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [RESEND PATCH 2/2] arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe instances
-Date:   Tue, 1 Sep 2020 19:36:28 +0530
-Message-ID: <20200901140628.8800-3-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901140628.8800-1-kishon@ti.com>
-References: <20200901140628.8800-1-kishon@ti.com>
+        id S1728215AbgIAOHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:07:19 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:49272 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728289AbgIAOEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:04:23 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id F272452195;
+        Tue,  1 Sep 2020 14:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1598969019; x=1600783420; bh=Cio/AuAeW0HBrdL9zokO5x1JI
+        loihymCKFdkc3tu5Rw=; b=hv5Tpu+pfEE+4TqMB+Tacv08S9E1AtZHx0I6ruCR/
+        9VTvOFvazAaOvNVY2lYLMmlDfYxFPuYIMoJi0aRcIp8IHzhss3UB5BQdxCQvnaB6
+        gYi5qWsqNv/jjrY6YRGBig+QP/e/B9VCTbSRcokU83k8yH4dNx25zrTTPuOHUOgz
+        FM=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jTjqBeJ6JhO5; Tue,  1 Sep 2020 17:03:39 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 23F644C866;
+        Tue,  1 Sep 2020 17:03:39 +0300 (MSK)
+Received: from localhost.localdomain (10.199.1.70) by T-EXCH-02.corp.yadro.com
+ (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 1 Sep
+ 2020 17:03:38 +0300
+Message-ID: <ceb27ac19cd66e9b8f1c95a27f4c92a3029eda0c.camel@yadro.com>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: enable lock interface for macronix
+ chips
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Date:   Tue, 1 Sep 2020 17:06:59 +0300
+In-Reply-To: <ae094597-e57e-dff1-f897-bf3cc75f5511@prevas.dk>
+References: <20200812151818.16699-1-i.mikhaylov@yadro.com>
+         <20200812151818.16699-3-i.mikhaylov@yadro.com>
+         <ae094597-e57e-dff1-f897-bf3cc75f5511@prevas.dk>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.199.1.70]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J721E Common Processor Board has PCIe connectors for the 1st three PCIe
-instances. Configure the three PCIe instances in RC mode and disable the
-4th PCIe instance.
+On Mon, 2020-08-31 at 12:55 +0200, Rasmus Villemoes wrote:
+> On 12/08/2020 17.18, Ivan Mikhaylov wrote:
+> > Add locks for whole macronix chip series with BP0-2 and BP0-3 bits.
+> > 
+> > Tested with mx25l51245g(BP0-3).
+> 
+> Hmm. I've tried adding support for locking on Macronix to U-Boot
+> (
+> https://patchwork.ozlabs.org/project/uboot/patch/20200326114257.1782-3-rasmus.villemoes@prevas.dk/
+> ),
+> but that was quite a bit more involved than this. Note in particular the
+> first part of my commit message:
+> 
+>   Macronix chips implements locking in (power-of-two multiple of) 64K
+>   blocks, not as a fraction of the chip's size.
+> 
+> At least, that was true for the chip I was interested in and the few
+> others whose data sheets I grabbed to double-check. So I'm a bit
+> skeptical that this can work out-of-the-box without introducing a new
+> struct spi_nor_locking_ops.
+> 
+> Rasmus
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../dts/ti/k3-j721e-common-proc-board.dts     | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
+Rasmus, but there is already locking of power-of-two as I see from the code,
+I'll double check on hw. Also compared documentation n25q512ax3(micron, which
+HAS_LOCK) to mx25l25635e(macronix) and they have same block protection table
+bits for example. I'd be glad to hear from maintainers on this spot.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index c355692796a9..8b57d22ca3cc 100644
---- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -558,3 +558,83 @@
- 
- 	status = "okay";
- };
-+
-+&serdes0 {
-+	serdes0_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <1>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz0 1>;
-+	};
-+};
-+
-+&serdes1 {
-+	serdes1_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz1 1>, <&serdes_wiz1 2>;
-+	};
-+};
-+
-+&serdes2 {
-+	serdes2_pcie_link: link@0 {
-+		reg = <0>;
-+		cdns,num-lanes = <2>;
-+		#phy-cells = <0>;
-+		cdns,phy-type = <PHY_TYPE_PCIE>;
-+		resets = <&serdes_wiz2 1>, <&serdes_wiz2 2>;
-+	};
-+};
-+
-+&pcie0_rc {
-+	reset-gpios = <&exp1 6 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+};
-+
-+&pcie1_rc {
-+	reset-gpios = <&exp1 2 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes1_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie2_rc {
-+	reset-gpios = <&exp2 20 GPIO_ACTIVE_HIGH>;
-+	phys = <&serdes2_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+};
-+
-+&pcie0_ep {
-+	phys = <&serdes0_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <1>;
-+	status = "disabled";
-+};
-+
-+&pcie1_ep {
-+	phys = <&serdes1_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
-+
-+&pcie2_ep {
-+	phys = <&serdes2_pcie_link>;
-+	phy-names = "pcie-phy";
-+	num-lanes = <2>;
-+	status = "disabled";
-+};
-+
-+&pcie3_rc {
-+	status = "disabled";
-+};
-+
-+&pcie3_ep {
-+	status = "disabled";
-+};
--- 
-2.17.1
+Thanks.
 
