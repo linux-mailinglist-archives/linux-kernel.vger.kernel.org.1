@@ -2,71 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0D7258D72
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0761A258D59
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgIAL3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726928AbgIALZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:25:27 -0400
-Received: from localhost (unknown [122.172.190.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB9A4207EA;
-        Tue,  1 Sep 2020 11:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598958469;
-        bh=Y3y5UkDAv4eqxhZr5c9rL5O7ZyCc/VXuq26MFzz9nq8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PR/oaQSSufNBm6+ewj1f1CKlOwqhr9DQhG0ymdEG1psbU4awNK4d8GmoFZGRz3//b
-         SJakzIt8uoE5C7CN+Tz0b1ckPnhMmej6SRyHSSpUPsC3j/kN2duHxDH5LLs81gsnn8
-         YtL3c8s2eqWk9dPgeiTyb1CxEl5Bt72kn/mKZcjI=
-Date:   Tue, 1 Sep 2020 16:37:45 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regmap: soundwire: remove unsed header mod_devicetable.h
-Message-ID: <20200901110745.GB2639@vkoul-mobl>
-References: <20200829103939.4007097-1-vkoul@kernel.org>
- <d329c295-b2d1-68d9-79bf-278f7af4bb58@linux.intel.com>
+        id S1726657AbgIALWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:22:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47604 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725949AbgIALTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:19:50 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 554C5CB1E8FE32F7B9DB;
+        Tue,  1 Sep 2020 19:17:07 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Sep 2020 19:16:59 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.vnet.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, Luo Jiaxing <luojiaxing@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 4/8] scsi: hisi_sas: Make phy index variable name consistent
+Date:   Tue, 1 Sep 2020 19:13:06 +0800
+Message-ID: <1598958790-232272-5-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1598958790-232272-1-git-send-email-john.garry@huawei.com>
+References: <1598958790-232272-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d329c295-b2d1-68d9-79bf-278f7af4bb58@linux.intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-08-20, 09:12, Pierre-Louis Bossart wrote:
-> typo in commit message?
+From: Luo Jiaxing <luojiaxing@huawei.com>
 
-Thanks for spotting, will send v2.
+We use "phy_id" to identify phy in the BIST code, but the rest of code
+always use "phy_no". So we change it for consistent coding style.
 
-> 
-> On 8/29/20 5:39 AM, Vinod Koul wrote:
-> > mod_devicetable.h does not seem to be required for this file, so
-> > remove it.
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >   drivers/base/regmap/regmap-sdw.c | 1 -
-> >   1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
-> > index 50a66382d87d..c92d614b4943 100644
-> > --- a/drivers/base/regmap/regmap-sdw.c
-> > +++ b/drivers/base/regmap/regmap-sdw.c
-> > @@ -2,7 +2,6 @@
-> >   // Copyright(c) 2015-17 Intel Corporation.
-> >   #include <linux/device.h>
-> > -#include <linux/mod_devicetable.h>
-> >   #include <linux/module.h>
-> >   #include <linux/soundwire/sdw.h>
-> >   #include "internal.h"
-> > 
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 50 +++++++++++++-------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index b7d94f2e49ae..8a5c6f5e2a7a 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -2971,42 +2971,42 @@ static void read_iost_itct_cache_v3_hw(struct hisi_hba *hisi_hba,
+ static void hisi_sas_bist_test_prep_v3_hw(struct hisi_hba *hisi_hba)
+ {
+ 	u32 reg_val;
+-	int phy_id = hisi_hba->debugfs_bist_phy_no;
++	int phy_no = hisi_hba->debugfs_bist_phy_no;
+ 
+ 	/* disable PHY */
+-	hisi_sas_phy_enable(hisi_hba, phy_id, 0);
++	hisi_sas_phy_enable(hisi_hba, phy_no, 0);
+ 
+ 	/* disable ALOS */
+-	reg_val = hisi_sas_phy_read32(hisi_hba, phy_id, SERDES_CFG);
++	reg_val = hisi_sas_phy_read32(hisi_hba, phy_no, SERDES_CFG);
+ 	reg_val |= CFG_ALOS_CHK_DISABLE_MSK;
+-	hisi_sas_phy_write32(hisi_hba, phy_id, SERDES_CFG, reg_val);
++	hisi_sas_phy_write32(hisi_hba, phy_no, SERDES_CFG, reg_val);
+ }
+ 
+ static void hisi_sas_bist_test_restore_v3_hw(struct hisi_hba *hisi_hba)
+ {
+ 	u32 reg_val;
+-	int phy_id = hisi_hba->debugfs_bist_phy_no;
++	int phy_no = hisi_hba->debugfs_bist_phy_no;
+ 
+ 	/* disable loopback */
+-	reg_val = hisi_sas_phy_read32(hisi_hba, phy_id, SAS_PHY_BIST_CTRL);
++	reg_val = hisi_sas_phy_read32(hisi_hba, phy_no, SAS_PHY_BIST_CTRL);
+ 	reg_val &= ~(CFG_RX_BIST_EN_MSK | CFG_TX_BIST_EN_MSK |
+ 		     CFG_BIST_TEST_MSK);
+-	hisi_sas_phy_write32(hisi_hba, phy_id, SAS_PHY_BIST_CTRL, reg_val);
++	hisi_sas_phy_write32(hisi_hba, phy_no, SAS_PHY_BIST_CTRL, reg_val);
+ 
+ 	/* enable ALOS */
+-	reg_val = hisi_sas_phy_read32(hisi_hba, phy_id, SERDES_CFG);
++	reg_val = hisi_sas_phy_read32(hisi_hba, phy_no, SERDES_CFG);
+ 	reg_val &= ~CFG_ALOS_CHK_DISABLE_MSK;
+-	hisi_sas_phy_write32(hisi_hba, phy_id, SERDES_CFG, reg_val);
++	hisi_sas_phy_write32(hisi_hba, phy_no, SERDES_CFG, reg_val);
+ 
+ 	/* restore the linkrate */
+-	reg_val = hisi_sas_phy_read32(hisi_hba, phy_id, PROG_PHY_LINK_RATE);
++	reg_val = hisi_sas_phy_read32(hisi_hba, phy_no, PROG_PHY_LINK_RATE);
+ 	/* init OOB link rate as 1.5 Gbits */
+ 	reg_val &= ~CFG_PROG_OOB_PHY_LINK_RATE_MSK;
+ 	reg_val |= (0x8 << CFG_PROG_OOB_PHY_LINK_RATE_OFF);
+-	hisi_sas_phy_write32(hisi_hba, phy_id, PROG_PHY_LINK_RATE, reg_val);
++	hisi_sas_phy_write32(hisi_hba, phy_no, PROG_PHY_LINK_RATE, reg_val);
+ 
+ 	/* enable PHY */
+-	hisi_sas_phy_enable(hisi_hba, phy_id, 1);
++	hisi_sas_phy_enable(hisi_hba, phy_no, 1);
+ }
+ 
+ #define SAS_PHY_BIST_CODE_INIT	0x1
+@@ -3015,28 +3015,28 @@ static int debugfs_set_bist_v3_hw(struct hisi_hba *hisi_hba, bool enable)
+ {
+ 	u32 reg_val, mode_tmp;
+ 	u32 linkrate = hisi_hba->debugfs_bist_linkrate;
+-	u32 phy_id = hisi_hba->debugfs_bist_phy_no;
++	u32 phy_no = hisi_hba->debugfs_bist_phy_no;
+ 	u32 code_mode = hisi_hba->debugfs_bist_code_mode;
+ 	u32 path_mode = hisi_hba->debugfs_bist_mode;
+ 	struct device *dev = hisi_hba->dev;
+ 
+-	dev_info(dev, "BIST info:linkrate=%d phy_id=%d code_mode=%d path_mode=%d\n",
+-		 linkrate, phy_id, code_mode, path_mode);
++	dev_info(dev, "BIST info:linkrate=%d phy_no=%d code_mode=%d path_mode=%d\n",
++		 linkrate, phy_no, code_mode, path_mode);
+ 	mode_tmp = path_mode ? 2 : 1;
+ 	if (enable) {
+ 		/* some preparations before bist test */
+ 		hisi_sas_bist_test_prep_v3_hw(hisi_hba);
+ 
+ 		/* set linkrate of bit test*/
+-		reg_val = hisi_sas_phy_read32(hisi_hba, phy_id,
++		reg_val = hisi_sas_phy_read32(hisi_hba, phy_no,
+ 					      PROG_PHY_LINK_RATE);
+ 		reg_val &= ~CFG_PROG_OOB_PHY_LINK_RATE_MSK;
+ 		reg_val |= (linkrate << CFG_PROG_OOB_PHY_LINK_RATE_OFF);
+-		hisi_sas_phy_write32(hisi_hba, phy_id,
+-				     PROG_PHY_LINK_RATE, reg_val);
++		hisi_sas_phy_write32(hisi_hba, phy_no, PROG_PHY_LINK_RATE,
++				     reg_val);
+ 
+ 		/* set code mode of bit test */
+-		reg_val = hisi_sas_phy_read32(hisi_hba, phy_id,
++		reg_val = hisi_sas_phy_read32(hisi_hba, phy_no,
+ 					      SAS_PHY_BIST_CTRL);
+ 		reg_val &= ~(CFG_BIST_MODE_SEL_MSK |
+ 				CFG_LOOP_TEST_MODE_MSK |
+@@ -3046,28 +3046,28 @@ static int debugfs_set_bist_v3_hw(struct hisi_hba *hisi_hba, bool enable)
+ 		reg_val |= ((code_mode << CFG_BIST_MODE_SEL_OFF) |
+ 			    (mode_tmp << CFG_LOOP_TEST_MODE_OFF) |
+ 			    CFG_BIST_TEST_MSK);
+-		hisi_sas_phy_write32(hisi_hba, phy_id,
++		hisi_sas_phy_write32(hisi_hba, phy_no,
+ 				     SAS_PHY_BIST_CTRL, reg_val);
+ 
+ 		/* set the bist init value */
+-		hisi_sas_phy_write32(hisi_hba, phy_id,
++		hisi_sas_phy_write32(hisi_hba, phy_no,
+ 				     SAS_PHY_BIST_CODE,
+ 				     SAS_PHY_BIST_CODE_INIT);
+-		hisi_sas_phy_write32(hisi_hba, phy_id, SAS_PHY_BIST_CODE1,
++		hisi_sas_phy_write32(hisi_hba, phy_no, SAS_PHY_BIST_CODE1,
+ 				     SAS_PHY_BIST_CODE1_INIT);
+ 
+ 		mdelay(100);
+ 		reg_val |= (CFG_RX_BIST_EN_MSK | CFG_TX_BIST_EN_MSK);
+-		hisi_sas_phy_write32(hisi_hba, phy_id,
++		hisi_sas_phy_write32(hisi_hba, phy_no,
+ 				     SAS_PHY_BIST_CTRL, reg_val);
+ 
+ 		/* clear error bit */
+ 		mdelay(100);
+-		hisi_sas_phy_read32(hisi_hba, phy_id, SAS_BIST_ERR_CNT);
++		hisi_sas_phy_read32(hisi_hba, phy_no, SAS_BIST_ERR_CNT);
+ 	} else {
+ 		/* disable bist test and recover it */
+ 		hisi_hba->debugfs_bist_cnt += hisi_sas_phy_read32(hisi_hba,
+-				phy_id, SAS_BIST_ERR_CNT);
++				phy_no, SAS_BIST_ERR_CNT);
+ 		hisi_sas_bist_test_restore_v3_hw(hisi_hba);
+ 	}
+ 
 -- 
-~Vinod
+2.26.2
+
