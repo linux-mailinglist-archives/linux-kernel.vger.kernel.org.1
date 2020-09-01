@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909662593AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5039A2593AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730520AbgIAP3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:29:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51106 "EHLO mail.kernel.org"
+        id S1730535AbgIAP3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730086AbgIAP0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:26:13 -0400
+        id S1729348AbgIAP0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:26:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D728206FA;
-        Tue,  1 Sep 2020 15:26:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86A44206FA;
+        Tue,  1 Sep 2020 15:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973973;
-        bh=BptcukaOpDLFwXjlv74voxVU++2dHhO/IkbkbWNIdyo=;
+        s=default; t=1598973981;
+        bh=NFl+yKMXwtBrc47p+jxfNOthq4tJ83NTEDrzNZw30CA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jqxex1ZZC6aDbefviXFLZmvGJEBceR7smfqeTzeNGIXuhAiamm0l8eLRYiqOTqCfO
-         7Ko6dNYv7HwZESjYUBr5EvpVaLEIbzkTyd4+BkS90a7ZYVF1mEJjl9Rfue42pfhIVQ
-         j94SsNM/+OhnWYxo7T1GGzx55icvgFsGF0H3XJYw=
+        b=QbRy7wwvHdrqqpmhcsJ/1Ft6m7V+xf+ow8JesAGAycpYJRtUe/F4hq+gZCWM4PdKz
+         enLRFeOEo30qjGDIAZQVjPuKdU5/Y2a1CNBHcb5LR3M9qvIszUa9cSebx7kFXO8S1a
+         IAmutcTDpF3sGIhbRUGOmhp0ecwl+tsPNY/x+oQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
+        stable@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 120/125] usb: dwc3: gadget: Dont setup more than requested
-Date:   Tue,  1 Sep 2020 17:11:15 +0200
-Message-Id: <20200901150940.493935432@linuxfoundation.org>
+Subject: [PATCH 4.19 123/125] tpm: Unify the mismatching TPM space buffer sizes
+Date:   Tue,  1 Sep 2020 17:11:18 +0200
+Message-Id: <20200901150940.640460749@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -44,172 +45,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 
-[ Upstream commit 5d187c0454ef4c5e046a81af36882d4d515922ec ]
+[ Upstream commit 6c4e79d99e6f42b79040f1a33cd4018f5425030b ]
 
-The SG list may be set up with entry size more than the requested
-length. Check the usb_request->length and make sure that we don't setup
-the TRBs to send/receive more than requested. This case may occur when
-the SG entry is allocated up to a certain minimum size, but the request
-length is less than that. It can also occur when the request is reused
-for a different request length.
+The size of the buffers for storing context's and sessions can vary from
+arch to arch as PAGE_SIZE can be anything between 4 kB and 256 kB (the
+maximum for PPC64). Define a fixed buffer size set to 16 kB. This should be
+enough for most use with three handles (that is how many we allow at the
+moment). Parametrize the buffer size while doing this, so that it is easier
+to revisit this later on if required.
 
-Cc: <stable@vger.kernel.org> # v4.18+
-Fixes: a31e63b608ff ("usb: dwc3: gadget: Correct handling of scattergather lists")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Stefan Berger <stefanb@linux.ibm.com>
+Fixes: 745b361e989a ("tpm: infrastructure for TPM spaces")
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Tested-by: Stefan Berger <stefanb@linux.ibm.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/gadget.c | 51 +++++++++++++++++++++++++++------------
- 1 file changed, 35 insertions(+), 16 deletions(-)
+ drivers/char/tpm/tpm-chip.c   |  9 ++-------
+ drivers/char/tpm/tpm.h        |  6 +++++-
+ drivers/char/tpm/tpm2-space.c | 26 ++++++++++++++++----------
+ drivers/char/tpm/tpmrm-dev.c  |  2 +-
+ 4 files changed, 24 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 2f5f4ca5c0d04..5d8a28efddad9 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1017,26 +1017,24 @@ static void __dwc3_prepare_one_trb(struct dwc3_ep *dep, struct dwc3_trb *trb,
-  * dwc3_prepare_one_trb - setup one TRB from one request
-  * @dep: endpoint for which this request is prepared
-  * @req: dwc3_request pointer
-+ * @trb_length: buffer size of the TRB
-  * @chain: should this TRB be chained to the next?
-  * @node: only for isochronous endpoints. First TRB needs different type.
-  */
- static void dwc3_prepare_one_trb(struct dwc3_ep *dep,
--		struct dwc3_request *req, unsigned chain, unsigned node)
-+		struct dwc3_request *req, unsigned int trb_length,
-+		unsigned chain, unsigned node)
- {
- 	struct dwc3_trb		*trb;
--	unsigned int		length;
- 	dma_addr_t		dma;
- 	unsigned		stream_id = req->request.stream_id;
- 	unsigned		short_not_ok = req->request.short_not_ok;
- 	unsigned		no_interrupt = req->request.no_interrupt;
+diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+index 4946c5b37d04d..f79f877942733 100644
+--- a/drivers/char/tpm/tpm-chip.c
++++ b/drivers/char/tpm/tpm-chip.c
+@@ -276,13 +276,8 @@ struct tpm_chip *tpm_chip_alloc(struct device *pdev,
+ 	chip->cdev.owner = THIS_MODULE;
+ 	chip->cdevs.owner = THIS_MODULE;
  
--	if (req->request.num_sgs > 0) {
--		length = sg_dma_len(req->start_sg);
-+	if (req->request.num_sgs > 0)
- 		dma = sg_dma_address(req->start_sg);
--	} else {
--		length = req->request.length;
-+	else
- 		dma = req->request.dma;
+-	chip->work_space.context_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+-	if (!chip->work_space.context_buf) {
+-		rc = -ENOMEM;
+-		goto out;
 -	}
+-	chip->work_space.session_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+-	if (!chip->work_space.session_buf) {
++	rc = tpm2_init_space(&chip->work_space, TPM2_SPACE_BUFFER_SIZE);
++	if (rc) {
+ 		rc = -ENOMEM;
+ 		goto out;
+ 	}
+diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
+index 289221d653cb2..b9a30f0b88257 100644
+--- a/drivers/char/tpm/tpm.h
++++ b/drivers/char/tpm/tpm.h
+@@ -188,6 +188,7 @@ struct tpm_space {
+ 	u8 *context_buf;
+ 	u32 session_tbl[3];
+ 	u8 *session_buf;
++	u32 buf_size;
+ };
  
- 	trb = &dep->trb_pool[dep->trb_enqueue];
+ enum tpm_chip_flags {
+@@ -278,6 +279,9 @@ struct tpm_output_header {
  
-@@ -1048,7 +1046,7 @@ static void dwc3_prepare_one_trb(struct dwc3_ep *dep,
+ #define TPM_TAG_RQU_COMMAND 193
  
- 	req->num_trbs++;
- 
--	__dwc3_prepare_one_trb(dep, trb, dma, length, chain, node,
-+	__dwc3_prepare_one_trb(dep, trb, dma, trb_length, chain, node,
- 			stream_id, short_not_ok, no_interrupt);
++/* TPM2 specific constants. */
++#define TPM2_SPACE_BUFFER_SIZE		16384 /* 16 kB */
++
+ struct	stclear_flags_t {
+ 	__be16	tag;
+ 	u8	deactivated;
+@@ -595,7 +599,7 @@ void tpm2_shutdown(struct tpm_chip *chip, u16 shutdown_type);
+ unsigned long tpm2_calc_ordinal_duration(struct tpm_chip *chip, u32 ordinal);
+ int tpm2_probe(struct tpm_chip *chip);
+ int tpm2_find_cc(struct tpm_chip *chip, u32 cc);
+-int tpm2_init_space(struct tpm_space *space);
++int tpm2_init_space(struct tpm_space *space, unsigned int buf_size);
+ void tpm2_del_space(struct tpm_chip *chip, struct tpm_space *space);
+ int tpm2_prepare_space(struct tpm_chip *chip, struct tpm_space *space, u32 cc,
+ 		       u8 *cmd);
+diff --git a/drivers/char/tpm/tpm2-space.c b/drivers/char/tpm/tpm2-space.c
+index d2e101b32482f..9f4e22dcde270 100644
+--- a/drivers/char/tpm/tpm2-space.c
++++ b/drivers/char/tpm/tpm2-space.c
+@@ -43,18 +43,21 @@ static void tpm2_flush_sessions(struct tpm_chip *chip, struct tpm_space *space)
+ 	}
  }
  
-@@ -1058,16 +1056,27 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
- 	struct scatterlist *sg = req->start_sg;
- 	struct scatterlist *s;
- 	int		i;
+-int tpm2_init_space(struct tpm_space *space)
++int tpm2_init_space(struct tpm_space *space, unsigned int buf_size)
+ {
+-	space->context_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	space->context_buf = kzalloc(buf_size, GFP_KERNEL);
+ 	if (!space->context_buf)
+ 		return -ENOMEM;
+ 
+-	space->session_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
++	space->session_buf = kzalloc(buf_size, GFP_KERNEL);
+ 	if (space->session_buf == NULL) {
+ 		kfree(space->context_buf);
++		/* Prevent caller getting a dangling pointer. */
++		space->context_buf = NULL;
+ 		return -ENOMEM;
+ 	}
+ 
++	space->buf_size = buf_size;
+ 	return 0;
+ }
+ 
+@@ -276,8 +279,10 @@ int tpm2_prepare_space(struct tpm_chip *chip, struct tpm_space *space, u32 cc,
+ 	       sizeof(space->context_tbl));
+ 	memcpy(&chip->work_space.session_tbl, &space->session_tbl,
+ 	       sizeof(space->session_tbl));
+-	memcpy(chip->work_space.context_buf, space->context_buf, PAGE_SIZE);
+-	memcpy(chip->work_space.session_buf, space->session_buf, PAGE_SIZE);
++	memcpy(chip->work_space.context_buf, space->context_buf,
++	       space->buf_size);
++	memcpy(chip->work_space.session_buf, space->session_buf,
++	       space->buf_size);
+ 
+ 	rc = tpm2_load_space(chip);
+ 	if (rc) {
+@@ -456,7 +461,7 @@ static int tpm2_save_space(struct tpm_chip *chip)
+ 			continue;
+ 
+ 		rc = tpm2_save_context(chip, space->context_tbl[i],
+-				       space->context_buf, PAGE_SIZE,
++				       space->context_buf, space->buf_size,
+ 				       &offset);
+ 		if (rc == -ENOENT) {
+ 			space->context_tbl[i] = 0;
+@@ -474,9 +479,8 @@ static int tpm2_save_space(struct tpm_chip *chip)
+ 			continue;
+ 
+ 		rc = tpm2_save_context(chip, space->session_tbl[i],
+-				       space->session_buf, PAGE_SIZE,
++				       space->session_buf, space->buf_size,
+ 				       &offset);
 -
-+	unsigned int length = req->request.length;
- 	unsigned int remaining = req->request.num_mapped_sgs
- 		- req->num_queued_sgs;
+ 		if (rc == -ENOENT) {
+ 			/* handle error saving session, just forget it */
+ 			space->session_tbl[i] = 0;
+@@ -522,8 +526,10 @@ int tpm2_commit_space(struct tpm_chip *chip, struct tpm_space *space,
+ 	       sizeof(space->context_tbl));
+ 	memcpy(&space->session_tbl, &chip->work_space.session_tbl,
+ 	       sizeof(space->session_tbl));
+-	memcpy(space->context_buf, chip->work_space.context_buf, PAGE_SIZE);
+-	memcpy(space->session_buf, chip->work_space.session_buf, PAGE_SIZE);
++	memcpy(space->context_buf, chip->work_space.context_buf,
++	       space->buf_size);
++	memcpy(space->session_buf, chip->work_space.session_buf,
++	       space->buf_size);
  
-+	/*
-+	 * If we resume preparing the request, then get the remaining length of
-+	 * the request and resume where we left off.
-+	 */
-+	for_each_sg(req->request.sg, s, req->num_queued_sgs, i)
-+		length -= sg_dma_len(s);
-+
- 	for_each_sg(sg, s, remaining, i) {
--		unsigned int length = req->request.length;
- 		unsigned int maxp = usb_endpoint_maxp(dep->endpoint.desc);
- 		unsigned int rem = length % maxp;
-+		unsigned int trb_length;
- 		unsigned chain = true;
- 
-+		trb_length = min_t(unsigned int, length, sg_dma_len(s));
-+
-+		length -= trb_length;
-+
- 		/*
- 		 * IOMMU driver is coalescing the list of sgs which shares a
- 		 * page boundary into one and giving it to USB driver. With
-@@ -1075,7 +1084,7 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
- 		 * sgs passed. So mark the chain bit to false if it isthe last
- 		 * mapped sg.
- 		 */
--		if (i == remaining - 1)
-+		if ((i == remaining - 1) || !length)
- 			chain = false;
- 
- 		if (rem && usb_endpoint_dir_out(dep->endpoint.desc) && !chain) {
-@@ -1085,7 +1094,7 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
- 			req->needs_extra_trb = true;
- 
- 			/* prepare normal TRB */
--			dwc3_prepare_one_trb(dep, req, true, i);
-+			dwc3_prepare_one_trb(dep, req, trb_length, true, i);
- 
- 			/* Now prepare one extra TRB to align transfer size */
- 			trb = &dep->trb_pool[dep->trb_enqueue];
-@@ -1096,7 +1105,7 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
- 					req->request.short_not_ok,
- 					req->request.no_interrupt);
- 		} else {
--			dwc3_prepare_one_trb(dep, req, chain, i);
-+			dwc3_prepare_one_trb(dep, req, trb_length, chain, i);
- 		}
- 
- 		/*
-@@ -1111,6 +1120,16 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
- 
- 		req->num_queued_sgs++;
- 
-+		/*
-+		 * The number of pending SG entries may not correspond to the
-+		 * number of mapped SG entries. If all the data are queued, then
-+		 * don't include unused SG entries.
-+		 */
-+		if (length == 0) {
-+			req->num_pending_sgs -= req->request.num_mapped_sgs - req->num_queued_sgs;
-+			break;
-+		}
-+
- 		if (!dwc3_calc_trbs_left(dep))
- 			break;
- 	}
-@@ -1130,7 +1149,7 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
- 		req->needs_extra_trb = true;
- 
- 		/* prepare normal TRB */
--		dwc3_prepare_one_trb(dep, req, true, 0);
-+		dwc3_prepare_one_trb(dep, req, length, true, 0);
- 
- 		/* Now prepare one extra TRB to align transfer size */
- 		trb = &dep->trb_pool[dep->trb_enqueue];
-@@ -1147,7 +1166,7 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
- 		req->needs_extra_trb = true;
- 
- 		/* prepare normal TRB */
--		dwc3_prepare_one_trb(dep, req, true, 0);
-+		dwc3_prepare_one_trb(dep, req, length, true, 0);
- 
- 		/* Now prepare one extra TRB to handle ZLP */
- 		trb = &dep->trb_pool[dep->trb_enqueue];
-@@ -1157,7 +1176,7 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
- 				req->request.short_not_ok,
- 				req->request.no_interrupt);
- 	} else {
--		dwc3_prepare_one_trb(dep, req, false, 0);
-+		dwc3_prepare_one_trb(dep, req, length, false, 0);
- 	}
+ 	return 0;
  }
+diff --git a/drivers/char/tpm/tpmrm-dev.c b/drivers/char/tpm/tpmrm-dev.c
+index 1a0e97a5da5a4..162fb16243d03 100644
+--- a/drivers/char/tpm/tpmrm-dev.c
++++ b/drivers/char/tpm/tpmrm-dev.c
+@@ -22,7 +22,7 @@ static int tpmrm_open(struct inode *inode, struct file *file)
+ 	if (priv == NULL)
+ 		return -ENOMEM;
  
+-	rc = tpm2_init_space(&priv->space);
++	rc = tpm2_init_space(&priv->space, TPM2_SPACE_BUFFER_SIZE);
+ 	if (rc) {
+ 		kfree(priv);
+ 		return -ENOMEM;
 -- 
 2.25.1
 
