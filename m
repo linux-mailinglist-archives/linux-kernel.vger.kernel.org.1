@@ -2,112 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B822C258B9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 683C5258B98
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgIAJbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 05:31:45 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45690 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726192AbgIAJbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 05:31:43 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6AF11EA56FCAAD2861CD;
-        Tue,  1 Sep 2020 17:31:41 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 1 Sep 2020 17:31:30 +0800
-From:   Zeng Tao <prime.zeng@hisilicon.com>
-To:     <tglx@linutronix.de>
-CC:     <arnd@arndb.de>, Zeng Tao <prime.zeng@hisilicon.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] time: Avoid undefined behaviour in timespec64_to_ns
-Date:   Tue, 1 Sep 2020 17:30:13 +0800
-Message-ID: <1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726269AbgIAJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 05:31:30 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53288 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725989AbgIAJb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 05:31:29 -0400
+IronPort-SDR: eOHY9B5zg/kc/lXGfOPjdW80MuYe+1hgajN5+oSspELrGu6zn1guw+/mjWoyCSkl5eXTRQuVPE
+ /BTfWRH9zwSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="154535291"
+X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
+   d="scan'208";a="154535291"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 02:31:23 -0700
+IronPort-SDR: RqSVLiw9qETRT6Gh2XJn1KfmSOca1/BnR6hMR3+0aIkTMBITSqT3qEufK96iVz8N0/FpOy0Sfa
+ N9NWZ+gGm1Tg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
+   d="scan'208";a="340965119"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga007.jf.intel.com with SMTP; 01 Sep 2020 02:31:21 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 01 Sep 2020 12:31:20 +0300
+Date:   Tue, 1 Sep 2020 12:31:20 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Sam McNally <sammc@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/dp_mst: Support remote i2c writes
+Message-ID: <20200901093120.GD6112@intel.com>
+References: <20200727160225.1.I4e95a534de051551cd143e6cb83d4c5a9b0ad1cd@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200727160225.1.I4e95a534de051551cd143e6cb83d4c5a9b0ad1cd@changeid>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got into this:
-================================================================================
-UBSAN: Undefined behaviour in ./include/linux/time64.h:127:27
-signed integer overflow:
-17179869187 * 1000000000 cannot be represented in type 'long long int'
-CPU: 0 PID: 4265 Comm: syz-executor.0 Not tainted 5.6.0+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xc6/0x11e lib/dump_stack.c:118
- ubsan_epilogue+0xa/0x30 lib/ubsan.c:154
- handle_overflow+0x119/0x130 lib/ubsan.c:184
- timespec64_to_ns include/linux/time64.h:127 [inline]
- set_cpu_itimer+0x65c/0x880 kernel/time/itimer.c:180
- do_setitimer+0x8e/0x740 kernel/time/itimer.c:245
- __do_sys_setitimer kernel/time/itimer.c:353 [inline]
- __se_sys_setitimer kernel/time/itimer.c:336 [inline]
- __x64_sys_setitimer+0x14c/0x2c0 kernel/time/itimer.c:336
- do_syscall_64+0xa1/0x540 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x4674d9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f63de999c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000026
-RAX: ffffffffffffffda RBX: 000000000074bf00 RCX: 00000000004674d9
-RDX: 0000000020000080 RSI: 0000000020000040 RDI: 0000000000000001
-RBP: 00007f63de99a6bc R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000a1c R14: 00000000004cb300 R15: 0000000000701660
-================================================================================
-when i ran the syzkaller.
+On Mon, Jul 27, 2020 at 04:03:37PM +1000, Sam McNally wrote:
+> For DP MST outputs, the i2c device currently only supports transfers
+> that can be implemented using remote i2c reads. Such transfers must
+> consist of zero or more write transactions followed by one read
+> transaction. DDC/CI commands require standalone write transactions and
+> hence aren't supported.
+> 
+> Since each remote i2c write is handled as a separate transfer, remote
+> i2c writes can support transfers consisting of write transactions, where
+> all but the last have I2C_M_STOP set. According to the DDC/CI 1.1
+> standard, DDC/CI commands only require a single write or read
+> transaction in a transfer, so this is sufficient.
+> 
+> For i2c transfers meeting the above criteria, generate and send a remote
+> i2c write message for each transaction. Add the trivial remote i2c write
+> reply parsing support so remote i2c write acks bubble up correctly.
 
-Since commit bd40a175769d ("y2038: itimer: change implementation to timespec64")
-we have break the time clamping which handles the potential overflow.
-In this patch, we fix it in the timespec64_to_ns because there is
-possiblity to cause the same undefined behaviour on overflow whenever
-the function is called.
+Looks great.
 
-Fixes: bd40a175769d ("y2038: itimer: change implementation to timespec64")
-Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
----
- include/linux/time64.h | 3 +++
- kernel/time/itimer.c   | 4 ----
- 2 files changed, 3 insertions(+), 4 deletions(-)
+For good measure I bounced this to intel-gfx so we got
+the CI to check it. Seems to have passed.
 
-diff --git a/include/linux/time64.h b/include/linux/time64.h
-index c9dcb3e..3215593 100644
---- a/include/linux/time64.h
-+++ b/include/linux/time64.h
-@@ -124,6 +124,9 @@ static inline bool timespec64_valid_settod(const struct timespec64 *ts)
-  */
- static inline s64 timespec64_to_ns(const struct timespec64 *ts)
- {
-+	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
-+		return KTIME_MAX;
-+
- 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
- }
- 
-diff --git a/kernel/time/itimer.c b/kernel/time/itimer.c
-index ca4e6d5..00629e6 100644
---- a/kernel/time/itimer.c
-+++ b/kernel/time/itimer.c
-@@ -172,10 +172,6 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
- 	u64 oval, nval, ointerval, ninterval;
- 	struct cpu_itimer *it = &tsk->signal->it[clock_id];
- 
--	/*
--	 * Use the to_ktime conversion because that clamps the maximum
--	 * value to KTIME_MAX and avoid multiplication overflows.
--	 */
- 	nval = timespec64_to_ns(&value->it_value);
- 	ninterval = timespec64_to_ns(&value->it_interval);
- 
+Amended with
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/37
+and pushed to drm-misc-next. Thanks!
+
+> 
+> Signed-off-by: Sam McNally <sammc@chromium.org>
+> ---
+> 
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 106 ++++++++++++++++++++++----
+>  1 file changed, 90 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 09b32289497e..1ac874e4e7a1 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -961,6 +961,8 @@ static bool drm_dp_sideband_parse_reply(struct drm_dp_sideband_msg_rx *raw,
+>  		return drm_dp_sideband_parse_remote_dpcd_write(raw, msg);
+>  	case DP_REMOTE_I2C_READ:
+>  		return drm_dp_sideband_parse_remote_i2c_read_ack(raw, msg);
+> +	case DP_REMOTE_I2C_WRITE:
+> +		return true; /* since there's nothing to parse */
+>  	case DP_ENUM_PATH_RESOURCES:
+>  		return drm_dp_sideband_parse_enum_path_resources_ack(raw, msg);
+>  	case DP_ALLOCATE_PAYLOAD:
+> @@ -5326,29 +5328,29 @@ static bool remote_i2c_read_ok(const struct i2c_msg msgs[], int num)
+>  		msgs[num - 1].len <= 0xff;
+>  }
+>  
+> -/* I2C device */
+> -static int drm_dp_mst_i2c_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs,
+> -			       int num)
+> +static bool remote_i2c_write_ok(const struct i2c_msg msgs[], int num)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < num - 1; i++) {
+> +		if (msgs[i].flags & I2C_M_RD || !(msgs[i].flags & I2C_M_STOP) ||
+> +		    msgs[i].len > 0xff)
+> +			return false;
+> +	}
+> +
+> +	return !(msgs[num - 1].flags & I2C_M_RD) && msgs[num - 1].len <= 0xff;
+> +}
+> +
+> +static int drm_dp_mst_i2c_read(struct drm_dp_mst_branch *mstb,
+> +			       struct drm_dp_mst_port *port,
+> +			       struct i2c_msg *msgs, int num)
+>  {
+> -	struct drm_dp_aux *aux = adapter->algo_data;
+> -	struct drm_dp_mst_port *port = container_of(aux, struct drm_dp_mst_port, aux);
+> -	struct drm_dp_mst_branch *mstb;
+>  	struct drm_dp_mst_topology_mgr *mgr = port->mgr;
+>  	unsigned int i;
+>  	struct drm_dp_sideband_msg_req_body msg;
+>  	struct drm_dp_sideband_msg_tx *txmsg = NULL;
+>  	int ret;
+>  
+> -	mstb = drm_dp_mst_topology_get_mstb_validated(mgr, port->parent);
+> -	if (!mstb)
+> -		return -EREMOTEIO;
+> -
+> -	if (!remote_i2c_read_ok(msgs, num)) {
+> -		DRM_DEBUG_KMS("Unsupported I2C transaction for MST device\n");
+> -		ret = -EIO;
+> -		goto out;
+> -	}
+> -
+>  	memset(&msg, 0, sizeof(msg));
+>  	msg.req_type = DP_REMOTE_I2C_READ;
+>  	msg.u.i2c_read.num_transactions = num - 1;
+> @@ -5389,6 +5391,78 @@ static int drm_dp_mst_i2c_xfer(struct i2c_adapter *adapter, struct i2c_msg *msgs
+>  	}
+>  out:
+>  	kfree(txmsg);
+> +	return ret;
+> +}
+> +
+> +static int drm_dp_mst_i2c_write(struct drm_dp_mst_branch *mstb,
+> +				struct drm_dp_mst_port *port,
+> +				struct i2c_msg *msgs, int num)
+> +{
+> +	struct drm_dp_mst_topology_mgr *mgr = port->mgr;
+> +	unsigned int i;
+> +	struct drm_dp_sideband_msg_req_body msg;
+> +	struct drm_dp_sideband_msg_tx *txmsg = NULL;
+> +	int ret;
+> +
+> +	txmsg = kzalloc(sizeof(*txmsg), GFP_KERNEL);
+> +	if (!txmsg) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +	for (i = 0; i < num; i++) {
+> +		memset(&msg, 0, sizeof(msg));
+> +		msg.req_type = DP_REMOTE_I2C_WRITE;
+> +		msg.u.i2c_write.port_number = port->port_num;
+> +		msg.u.i2c_write.write_i2c_device_id = msgs[i].addr;
+> +		msg.u.i2c_write.num_bytes = msgs[i].len;
+> +		msg.u.i2c_write.bytes = msgs[i].buf;
+> +
+> +		memset(txmsg, 0, sizeof(*txmsg));
+> +		txmsg->dst = mstb;
+> +
+> +		drm_dp_encode_sideband_req(&msg, txmsg);
+> +		drm_dp_queue_down_tx(mgr, txmsg);
+> +
+> +		ret = drm_dp_mst_wait_tx_reply(mstb, txmsg);
+> +		if (ret > 0) {
+> +			if (txmsg->reply.reply_type == DP_SIDEBAND_REPLY_NAK) {
+> +				ret = -EREMOTEIO;
+> +				goto out;
+> +			}
+> +		} else {
+> +			goto out;
+> +		}
+> +	}
+> +	ret = num;
+> +out:
+> +	kfree(txmsg);
+> +	return ret;
+> +}
+> +
+> +/* I2C device */
+> +static int drm_dp_mst_i2c_xfer(struct i2c_adapter *adapter,
+> +			       struct i2c_msg *msgs, int num)
+> +{
+> +	struct drm_dp_aux *aux = adapter->algo_data;
+> +	struct drm_dp_mst_port *port =
+> +		container_of(aux, struct drm_dp_mst_port, aux);
+> +	struct drm_dp_mst_branch *mstb;
+> +	struct drm_dp_mst_topology_mgr *mgr = port->mgr;
+> +	int ret;
+> +
+> +	mstb = drm_dp_mst_topology_get_mstb_validated(mgr, port->parent);
+> +	if (!mstb)
+> +		return -EREMOTEIO;
+> +
+> +	if (remote_i2c_read_ok(msgs, num)) {
+> +		ret = drm_dp_mst_i2c_read(mstb, port, msgs, num);
+> +	} else if (remote_i2c_write_ok(msgs, num)) {
+> +		ret = drm_dp_mst_i2c_write(mstb, port, msgs, num);
+> +	} else {
+> +		DRM_DEBUG_KMS("Unsupported I2C transaction for MST device\n");
+> +		ret = -EIO;
+> +	}
+> +
+>  	drm_dp_mst_topology_put_mstb(mstb);
+>  	return ret;
+>  }
+> -- 
+> 2.28.0.rc0.142.g3c755180ce-goog
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
 -- 
-2.8.1
-
+Ville Syrjälä
+Intel
