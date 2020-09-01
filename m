@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A75C2592A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1A425930D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgIAPOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:14:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58022 "EHLO mail.kernel.org"
+        id S1729626AbgIAPUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:20:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729031AbgIAPOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:14:22 -0400
+        id S1729495AbgIAPSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:18:33 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52C35206FA;
-        Tue,  1 Sep 2020 15:14:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5536206FA;
+        Tue,  1 Sep 2020 15:18:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973261;
-        bh=GJJPdSkny/5XoFP8yqKRzTNzBrHdn7FiGouB1ZnnFas=;
+        s=default; t=1598973512;
+        bh=pEBxRSw3TqO7gZcYEZTN6mdPju5fZa/dT5DRrcxV4UQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdCpnnisWAQ5ELQfKBj2r+MXSJwulZPXb4eKbENxcYsh4L23PFL2QizBpA1FNIU8I
-         ecLBXW74DtX2666potWFe446S6ZdZWsQOiM8h/ojZI1UdF8EQ+ihQvRYqIioORxyEG
-         +d9DTQCkQ8ifmF9TpdCeD6YZ7lR2N9M7CJL/ne6I=
+        b=04//G6x5SdNcC3e1l/Jgmk8tIWbtlc9TYKatCb1CCwGGo9+sItWCv2JkjtUPV7Cab
+         IqptF4gTNAHLiPm9fa4TO78VBsRUx2gzKkk1Q1PeOp6gPnjyutEUjeq2r7Ec2SvOlT
+         xkDceBvDDAqcquBQI6t5yPaWipGx7J9N54lWqm+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+af23e7f3e0a7e10c8b67@syzkaller.appspotmail.com,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>,
+        Richard Alpe <richard.alpe@ericsson.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 01/78] bonding: fix a potential double-unregister
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+0e7181deafa7e0b79923@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 03/91] tipc: fix uninit skb->data in tipc_nl_compat_dumpit()
 Date:   Tue,  1 Sep 2020 17:09:37 +0200
-Message-Id: <20200901150924.768910776@linuxfoundation.org>
+Message-Id: <20200901150928.286401608@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -52,41 +49,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Cong Wang <xiyou.wangcong@gmail.com>
 
-[ Upstream commit 832707021666411d04795c564a4adea5d6b94f17 ]
+[ Upstream commit 47733f9daf4fe4f7e0eb9e273f21ad3a19130487 ]
 
-When we tear down a network namespace, we unregister all
-the netdevices within it. So we may queue a slave device
-and a bonding device together in the same unregister queue.
+__tipc_nl_compat_dumpit() has two callers, and it expects them to
+pass a valid nlmsghdr via arg->data. This header is artificial and
+crafted just for __tipc_nl_compat_dumpit().
 
-If the only slave device is non-ethernet, it would
-automatically unregister the bonding device as well. Thus,
-we may end up unregistering the bonding device twice.
+tipc_nl_compat_publ_dump() does so by putting a genlmsghdr as well
+as some nested attribute, TIPC_NLA_SOCK. But the other caller
+tipc_nl_compat_dumpit() does not, this leaves arg->data uninitialized
+on this call path.
 
-Workaround this special case by checking reg_state.
+Fix this by just adding a similar nlmsghdr without any payload in
+tipc_nl_compat_dumpit().
 
-Fixes: 9b5e383c11b0 ("net: Introduce unregister_netdevice_many()")
-Reported-by: syzbot+af23e7f3e0a7e10c8b67@syzkaller.appspotmail.com
-Cc: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+This bug exists since day 1, but the recent commit 6ea67769ff33
+("net: tipc: prepare attrs in __tipc_nl_compat_dumpit()") makes it
+easier to appear.
+
+Reported-and-tested-by: syzbot+0e7181deafa7e0b79923@syzkaller.appspotmail.com
+Fixes: d0796d1ef63d ("tipc: convert legacy nl bearer dump to nl compat")
+Cc: Jon Maloy <jmaloy@redhat.com>
+Cc: Ying Xue <ying.xue@windriver.com>
+Cc: Richard Alpe <richard.alpe@ericsson.com>
 Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Acked-by: Ying Xue <ying.xue@windriver.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/bonding/bond_main.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/tipc/netlink_compat.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -1985,7 +1985,8 @@ static int  bond_release_and_destroy(str
- 	int ret;
+--- a/net/tipc/netlink_compat.c
++++ b/net/tipc/netlink_compat.c
+@@ -250,8 +250,9 @@ err_out:
+ static int tipc_nl_compat_dumpit(struct tipc_nl_compat_cmd_dump *cmd,
+ 				 struct tipc_nl_compat_msg *msg)
+ {
+-	int err;
++	struct nlmsghdr *nlh;
+ 	struct sk_buff *arg;
++	int err;
  
- 	ret = bond_release(bond_dev, slave_dev);
--	if (ret == 0 && !bond_has_slaves(bond)) {
-+	if (ret == 0 && !bond_has_slaves(bond) &&
-+	    bond_dev->reg_state != NETREG_UNREGISTERING) {
- 		bond_dev->priv_flags |= IFF_DISABLE_NETPOLL;
- 		netdev_info(bond_dev, "Destroying bond %s\n",
- 			    bond_dev->name);
+ 	if (msg->req_type && (!msg->req_size ||
+ 			      !TLV_CHECK_TYPE(msg->req, msg->req_type)))
+@@ -280,6 +281,15 @@ static int tipc_nl_compat_dumpit(struct
+ 		return -ENOMEM;
+ 	}
+ 
++	nlh = nlmsg_put(arg, 0, 0, tipc_genl_family.id, 0, NLM_F_MULTI);
++	if (!nlh) {
++		kfree_skb(arg);
++		kfree_skb(msg->rep);
++		msg->rep = NULL;
++		return -EMSGSIZE;
++	}
++	nlmsg_end(arg, nlh);
++
+ 	err = __tipc_nl_compat_dumpit(cmd, msg, arg);
+ 	if (err) {
+ 		kfree_skb(msg->rep);
 
 
