@@ -2,150 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133D0258DE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C668258DEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgIAMHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727910AbgIALyu (ORCPT
+        id S1727046AbgIAMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:08:35 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42660 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728018AbgIAL5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:54:50 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9833FC061244;
-        Tue,  1 Sep 2020 04:54:46 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id gf14so453555pjb.5;
-        Tue, 01 Sep 2020 04:54:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sdnO2t8hyd6szf53M/NoR2MSRbCRlxgUkss4z3MuOMc=;
-        b=bEaAHm1D1BxtyLa8bM9yjHZdHLd39ihus0lyKgaRyBs85nksQ+4dU+sz25MwdtKQts
-         d2HKQRbZBwLyUf9a6lfYxwuPnXafVh3S7C/BQ7FJCJ2ehldic5UYz24HeZwUN1wP1LB4
-         0ZSChwDSMrr8/KR2w33W2oRuEp4K12fDHyBacFgJloBkEzEmruXeWm7NLkjXxM0y44Zg
-         j2hPMLM+/eN6NfkmEkONbvt3rYyrAj1ZpKRelqA6CIt1j/9gueXwqR4CBxOiJiTqp0Au
-         8KDqtCWvPI5yjTpKE3yPZfbwDjOrM7veJm7VVNkJrXVqVqtgez4yxxxSv3t7v8+URum5
-         pOLw==
+        Tue, 1 Sep 2020 07:57:49 -0400
+Received: by mail-ot1-f67.google.com with SMTP id g10so885143otq.9;
+        Tue, 01 Sep 2020 04:57:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sdnO2t8hyd6szf53M/NoR2MSRbCRlxgUkss4z3MuOMc=;
-        b=gfE8fF/oXqovVctOB5rXRUTg7Ze5WMq3TD6FnY5GJsi4voRMEE8Pp94DuIYCTdJCib
-         v2NToEkqXxDYAIesevgfz4RS3vRCpQcNGrI6FIHEE7Xx/Max0siMqmj8uu/w++DQmKTh
-         JQ7zQhfeDIG8QvzWH9Vman5wlL0YDHydB3ocyU7cpgovjUhyDJxzIqPgtQSOzR5V19Kf
-         kuaY2FQyQS4Za5T1XF9Yvrig9uB3K97Cwu9w/wu+rJLEKz6grEGeTVW1Wl9uwoxuVDKJ
-         AbmG+h5NHieEOeZyUJt9d98igyACRETYN8CNUf7PexWi51drGoWWSDRKyIXDyBtPCszq
-         mYrg==
-X-Gm-Message-State: AOAM530HQE6v2AtCRNXn6VunWgKMrGBt8EON984AYE4DSjq3KJ8CQ+CU
-        cz9tlwEZRVnslWacLhDuFyw=
-X-Google-Smtp-Source: ABdhPJyni4c3PgtmyacjDwV12dTFaVS4/RbZSyqkMStZs1OED2/1zfh/a5HSIQdBWXIHrjsO0lpkTw==
-X-Received: by 2002:a17:90a:ccd:: with SMTP id 13mr1228049pjt.123.1598961286223;
-        Tue, 01 Sep 2020 04:54:46 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.65])
-        by smtp.gmail.com with ESMTPSA id q71sm1478964pjq.7.2020.09.01.04.54.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 04:54:45 -0700 (PDT)
-From:   yulei.kernel@gmail.com
-X-Google-Original-From: yuleixzhang@tencent.com
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sean.j.christopherson@intel.com, jmattson@google.com,
-        junaids@google.com, bgardon@google.com, vkuznets@redhat.com,
-        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
-        lihaiwei.kernel@gmail.com, Yulei Zhang <yulei.kernel@gmail.com>,
-        Yulei Zhang <yuleixzhang@tencent.com>
-Subject: [RFC V2 4/9] Add release function for direct build ept when guest VM exit
-Date:   Tue,  1 Sep 2020 19:55:42 +0800
-Message-Id: <6023066803ff748b73080fe3bad7aee45ce3f9fa.1598868204.git.yulei.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1598868203.git.yulei.kernel@gmail.com>
-References: <cover.1598868203.git.yulei.kernel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bS1viyL8NjfwjcMbt5ItRCCKbfY+WgWbL+lmwBqbddk=;
+        b=XCQGOoNfFs7MiAmmizNo4TWmVBcua3WaMZz7HcTQXw8pErpaf8/8UqzU5o8Tp2urpO
+         FGyrXrTHYR1XQmgTVZi+60BVNpF7sI2M0gajqmo2AIXkPQsPoNobexCEikXHN3eqIw94
+         e1dVimrJKJKOR01Vpr0Ch25gfgHPbhYTgqD/yvWOuGR8uJD2hlhZG9m/TxIQptd/RypT
+         1MkCmkAlnW0b6nbN6zvkfmj+mx2RseZjyW1P1S88GY5B0whn3L4fNTEN2b2WYxi99tbu
+         jgbtaUhY9aQcpOy2vmYdc8/FT+6XmJ8dQP+4uOtZe3umVF0aWjyq+xWrGxL/LeHVkmTn
+         oHVw==
+X-Gm-Message-State: AOAM5330+LDVvHLTMO/w5s1GmWoxNlq4Dwt5cmz+uOGZJOdnlmLhMRZz
+        GsdKY/qVKUDwhej8hczlpR2XqOpsqBFCBqASUgU=
+X-Google-Smtp-Source: ABdhPJwOq6HEEjQ3xAjudQZKFJPfbYu1NdSQrGq3FL2K08dbGzeOdfoH+V2BBxV3R1Xz+2libeoWvf6J9F6bWaodlSI=
+X-Received: by 2002:a9d:7e99:: with SMTP id m25mr1059559otp.118.1598961464586;
+ Tue, 01 Sep 2020 04:57:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <1598943859-21857-1-git-send-email-claude.yen@mediatek.com>
+In-Reply-To: <1598943859-21857-1-git-send-email-claude.yen@mediatek.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 1 Sep 2020 13:57:33 +0200
+Message-ID: <CAJZ5v0hOGEUamXw124q4CnL67o97qRHy9Vv9_F2AQqefDdu3vQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: s2idle: Introduce syscore callbacks in s2idle flow
+To:     Claude Yen <claude.yen@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yulei Zhang <yulei.kernel@gmail.com>
+On Tue, Sep 1, 2020 at 9:05 AM Claude Yen <claude.yen@mediatek.com> wrote:
+>
+> This series based on 5.9-rc1
+> This patch makes s2idle call existing syscore callbacks. Currently,
+> when s2idle is selected as system suspend method, callbacks hooked
+> by register_syscore_ops() will not be triggered. This may induce
+> unexpected results.
 
-Release the pre-pinned memory in direct build ept when guest VM
-exit.
+They are not executed by design.
 
-Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
----
- arch/x86/kvm/mmu/mmu.c | 37 ++++++++++++++++++++++++++++---------
- 1 file changed, 28 insertions(+), 9 deletions(-)
+> For example, sched_clock_suspend() was added to s2idle flow in
+> commit 3f2552f7e9c5 ("timers/sched_clock: Prevent generic sched_clock
+> wrap caused by tick_freeze()") to fix clock wrap problem. However,
+> sched_clock_suspend() is originally registered in syscore callback.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 03c5e73b96cb..f2124f52b286 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4309,8 +4309,11 @@ static void __kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd,
- void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd, bool skip_tlb_flush,
- 		     bool skip_mmu_sync)
- {
--	__kvm_mmu_new_pgd(vcpu, new_pgd, kvm_mmu_calc_root_page_role(vcpu),
--			  skip_tlb_flush, skip_mmu_sync);
-+	if (!vcpu->arch.direct_build_tdp)
-+		__kvm_mmu_new_pgd(vcpu, new_pgd, kvm_mmu_calc_root_page_role(vcpu),
-+				  skip_tlb_flush, skip_mmu_sync);
-+	else
-+		vcpu->arch.mmu->root_hpa = INVALID_PAGE;
- }
- EXPORT_SYMBOL_GPL(kvm_mmu_new_pgd);
- 
-@@ -5207,10 +5210,14 @@ EXPORT_SYMBOL_GPL(kvm_mmu_load);
- 
- void kvm_mmu_unload(struct kvm_vcpu *vcpu)
- {
--	kvm_mmu_free_roots(vcpu, &vcpu->arch.root_mmu, KVM_MMU_ROOTS_ALL);
--	WARN_ON(VALID_PAGE(vcpu->arch.root_mmu.root_hpa));
--	kvm_mmu_free_roots(vcpu, &vcpu->arch.guest_mmu, KVM_MMU_ROOTS_ALL);
--	WARN_ON(VALID_PAGE(vcpu->arch.guest_mmu.root_hpa));
-+	if (!vcpu->arch.direct_build_tdp) {
-+		kvm_mmu_free_roots(vcpu, &vcpu->arch.root_mmu, KVM_MMU_ROOTS_ALL);
-+		WARN_ON(VALID_PAGE(vcpu->arch.root_mmu.root_hpa));
-+		kvm_mmu_free_roots(vcpu, &vcpu->arch.guest_mmu, KVM_MMU_ROOTS_ALL);
-+		WARN_ON(VALID_PAGE(vcpu->arch.guest_mmu.root_hpa));
-+	}
-+	vcpu->arch.direct_build_tdp = false;
-+	vcpu->arch.mmu->root_hpa = INVALID_PAGE;
- }
- EXPORT_SYMBOL_GPL(kvm_mmu_unload);
- 
-@@ -6538,6 +6545,14 @@ void kvm_direct_tdp_remove_page_table(struct kvm *kvm, struct kvm_memory_slot *s
- 	kvm_flush_remote_tlbs(kvm);
- }
- 
-+void kvm_direct_tdp_release_global_root(struct kvm *kvm)
-+{
-+	if (kvm->arch.global_root_hpa)
-+		__kvm_walk_global_page(kvm, kvm->arch.global_root_hpa, max_tdp_level);
-+
-+	return;
-+}
-+
- /*
-  * Calculate mmu pages needed for kvm.
-  */
-@@ -6564,9 +6579,13 @@ unsigned long kvm_mmu_calculate_default_mmu_pages(struct kvm *kvm)
- 
- void kvm_mmu_destroy(struct kvm_vcpu *vcpu)
- {
--	kvm_mmu_unload(vcpu);
--	free_mmu_pages(&vcpu->arch.root_mmu);
--	free_mmu_pages(&vcpu->arch.guest_mmu);
-+	if (vcpu->arch.direct_build_tdp) {
-+		vcpu->arch.mmu->root_hpa = INVALID_PAGE;
-+	} else {
-+		kvm_mmu_unload(vcpu);
-+		free_mmu_pages(&vcpu->arch.root_mmu);
-+		free_mmu_pages(&vcpu->arch.guest_mmu);
-+	}
- 	mmu_free_memory_caches(vcpu);
- }
- 
--- 
-2.17.1
+I'm not sure why this matters here.
 
+> With this patch, if another syscore callback is needed in s2idle,
+> additional migration effort could be saved.
+
+s2idle cannot execute syscore callbacks, because it doesn' take
+non-boot CPUs offline and it won't do that.
+
+Thanks!
