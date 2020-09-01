@@ -2,119 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFA0259ABE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E750259AED
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730001AbgIAQxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:53:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60744 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732332AbgIAQx1 (ORCPT
+        id S1732281AbgIAQzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:55:25 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:4936 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730554AbgIAQzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:53:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598979206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=avbleNGUb+J89GYGqB+uFJ1WJDboHCvs4T7vUTWniQ8=;
-        b=TcVTXNKwvy8WXucWGP4mJkUQdVx4bYP9jCQpD6JqLie2KEfkHdjIij1Axa6kuUczVTSiw7
-        JJA4wrMGPnOfqMK5+sldOalIFDQAOo/Oid1/ZviL50OWQh7VkadSOnboS3AEfiWrCae+IG
-        aGuv00ZtUKwFqcO3pSWTQ66AZlYwmTw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-Aag7nKneMkuxngkgxQu7uA-1; Tue, 01 Sep 2020 12:53:22 -0400
-X-MC-Unique: Aag7nKneMkuxngkgxQu7uA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A8BD10ABDA7;
-        Tue,  1 Sep 2020 16:53:20 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 283C87C558;
-        Tue,  1 Sep 2020 16:53:16 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  1 Sep 2020 18:53:20 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 18:53:16 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH 1/4] pidfd: support PIDFD_NONBLOCK in pidfd_open()
-Message-ID: <20200901165315.GD4386@redhat.com>
-References: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
- <20200831134551.1599689-2-christian.brauner@ubuntu.com>
- <20200901162309.GB4386@redhat.com>
- <20200901163308.mwd334y462fmml6s@wittgenstein>
+        Tue, 1 Sep 2020 12:55:21 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 081GqaHK026681;
+        Tue, 1 Sep 2020 18:55:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=dOGKJLyQja/sG1HbGmIDAJSbIZyWV9DTJ1K3Lx5m4SA=;
+ b=bPgamNSSeXKmE4tcLlGG2Amml1sMlm8aFYUHTEHf27LyJomBpm4AcvIQ/nHODz/EKSSd
+ zfLzujbNjTDKlWbCmiwqgIhO3ligyBGW0vmMeLTv7AdqTmkwHYocwBVAc+izEJJn6/aW
+ PpK4Ta3QEtUX3TfYk1uwrQNBy7GKzxZpcdLHp9ULpQa2NIKoNHGsKN6Ug2TLdPRp8XY5
+ HJx08EUbr0S0OlaNpJ1hzJTojJ0jaaLoigxoWt/WaPZs9uJfzYShZuSYT1SnYI9eeM0f
+ 3Wp6rwSbTcPHJJt0vthTV2Wikug8vGVdB/CWe8n+KuoYgSix+tdeQvvdc9HtA2FrdM4t 4A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 337c58gva4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Sep 2020 18:55:17 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C909A10002A;
+        Tue,  1 Sep 2020 18:55:16 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B4D4B2B427D;
+        Tue,  1 Sep 2020 18:55:16 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 1 Sep
+ 2020 18:55:15 +0200
+Subject: Re: [PATCH 00/13] remoteproc: Add support for detaching from rproc
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200826164529.224476-1-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <cc10db90-92ca-41e1-110d-885ef8266191@st.com>
+Date:   Tue, 1 Sep 2020 18:55:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901163308.mwd334y462fmml6s@wittgenstein>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20200826164529.224476-1-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-01_10:2020-09-01,2020-09-01 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/01, Christian Brauner wrote:
->
-> On Tue, Sep 01, 2020 at 06:23:10PM +0200, Oleg Nesterov wrote:
-> > On 08/31, Christian Brauner wrote:
-> > >
-> > > --- /dev/null
-> > > +++ b/include/uapi/linux/pidfd.h
-> > > @@ -0,0 +1,12 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > +
-> > > +#ifndef _UAPI_LINUX_PIDFD_H
-> > > +#define _UAPI_LINUX_PIDFD_H
-> > > +
-> > > +#include <linux/types.h>
-> > > +#include <linux/fcntl.h>
-> > > +
-> > > +/* Flags for pidfd_open().  */
-> > > +#define PIDFD_NONBLOCK O_NONBLOCK
-> > > +
-> > > +#endif /* _UAPI_LINUX_PIDFD_H */
-> >
-> > Why? Can't we simply use O_NONBLOCK ?
->
-> It's the same thing we seem to do for any other (anon inode) fds:
->
-> include/linux/eventfd.h:#define		EFD_NONBLOCK O_NONBLOCK
-> include/uapi/linux/inotify.h:#define	IN_NONBLOCK O_NONBLOCK
-> include/uapi/linux/signalfd.h:#define	SFD_NONBLOCK O_NONBLOCK
-> include/uapi/linux/timerfd.h:#define	TFD_NONBLOCK O_NONBLOCK
->
-> also for O_CLOEXEC:
->
-> include/linux/eventfd.h:#define		EFD_CLOEXEC O_CLOEXEC
-> include/linux/userfaultfd_k.h:#define	UFFD_CLOEXEC O_CLOEXEC
-> include/uapi/linux/eventpoll.h:#define	EPOLL_CLOEXEC O_CLOEXEC
-> include/uapi/linux/mount.h:#define	OPEN_TREE_CLOEXEC    O_CLOEXEC
-> include/uapi/linux/perf_event.h:#define PERF_FLAG_FD_CLOEXEC (1UL << 3) /* O_CLOEXEC */
-> include/uapi/linux/signalfd.h:#define	SFD_CLOEXEC O_CLOEXEC
-> include/uapi/linux/timerfd.h:#define	TFD_CLOEXEC O_CLOEXEC
->
-> So I think we should just do the same.
+Hi Mathieu,
 
-Hmm, OK, then I have to agree.
+On 8/26/20 6:45 PM, Mathieu Poirier wrote:
+> Following the work done here [1] this set provides support for the
+> remoteproc core to release resources associated with a remote processor
+> without having to switch it off. That way a platform driver can be removed
+> or the applcation processor power cycled while the remote processor is
+> still operating.
+> 
+> I have not tested the solution because of the work involved in getting
+> a new firmware image to support the feature.  I will do so once it is
+> determined that this is the right approach to follow.
 
-> A clean flag namespace seems
-> nicer to me too tbh.
+I just started watching your series. I also think that we have first to
+determine the approach that match meets the requirements of all companies.
 
-Disagree but this doesn't matter ;)
+Here is my feeling, waiting more feedback from community:
 
-Oleg.
+If I understand your approach correctly you propose that the application
+determines the firmware live-cycle. Depending on request, the remoteproc core
+performs a "shutdown" ( stop + unprepare) or a "detach".
+The platform driver can(or have to?) implement the stop and/or the detach.
+By default a preloaded firmware is detached and a "standard" firmware is stopped
+on kernel shutdown (rproc_del).
 
+As we have seen with the rproc cdev, it might not be simple to manage this
+in case of crash.
+For instance you can have a Firmware started by the boot-stages but
+which must be gracefully stopped in case of crash.  
+
+Another approach would be to let the platform driver decides what should
+be done on the stop and prepare ops depending on the HW context.
+So the platform driver would be in charge of detaching the firmware.
+In this case the issue is to determine the state after stop. the information
+would be in platform driver.
+
+I would be more in flavor of the second one, because application would not
+have to be aware of the co-processor firmware life-cycle, and the firmware
+could expose its own constraints for shutdown.  
+
+A third approach (or complementary approach): 
+I don't know why i didn't think of it before... The attach/detach
+feature is quite similar to the regulator management.
+
+For regulator 2 DT properties exist[1]:
+- regulator-always-on: boolean, regulator should never be disabled
+- regulator-boot-on: bootloader/firmware enabled regulator
+
+It is a static configuration but could be implemented for both the attach and
+the detach in the core part.
+Else if a more dynamic management could be managed by the platform driver
+(depending on the loaded firmware).
+  
+[1]https://elixir.bootlin.com/linux/v4.0/source/Documentation/devicetree/bindings/regulator/regulator.txt
+
+Thanks,
+Arnaud
+
+> 
+> Applies cleanly on rproc-next (62b8f9e99329)
+> 
+> Thanks,
+> Mathieu 
+> 
+> [1]. https://lkml.org/lkml/2020/7/14/1600
+> 
+> Mathieu Poirier (13):
+>   remoteproc: Re-check state in rproc_shutdown()
+>   remoteproc: Remove useless check in rproc_del()
+>   remoteproc: Add new RPROC_ATTACHED state
+>   remoteproc: Properly represent the attached state
+>   remoteproc: Add new detach() remoteproc operation
+>   remoteproc: Introduce function __rproc_detach()
+>   remoteproc: Introduce function rproc_detach()
+>   remoteproc: Rename function rproc_actuate()
+>   remoteproc: Add return value to function rproc_shutdown()
+>   remoteproc: Properly deal with a stop request when attached
+>   remoteproc: Properly deal with detach request
+>   remoteproc: Refactor rproc delete and cdev release path
+>   remoteproc: Properly deal with a kernel panic when attached
+> 
+>  drivers/remoteproc/remoteproc_cdev.c  |  18 ++-
+>  drivers/remoteproc/remoteproc_core.c  | 151 +++++++++++++++++++++-----
+>  drivers/remoteproc/remoteproc_sysfs.c |  17 ++-
+>  include/linux/remoteproc.h            |  14 ++-
+>  4 files changed, 157 insertions(+), 43 deletions(-)
+> 
