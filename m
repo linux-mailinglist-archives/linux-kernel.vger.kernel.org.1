@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081D4259998
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77F72599B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731955AbgIAQll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:41:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730413AbgIAQle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:41:34 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0E5C20767;
-        Tue,  1 Sep 2020 16:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598978493;
-        bh=Dpj3KMcxE1VLvM7pvNMakfITVTdblxRjjMAZljRkcDU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WvjCz2qBgk+FjDtaXrxOLkuzmSpoC4TPO6NJF7n+CDvIMNWJQWf99TvOqppqIMqw8
-         6AhmQ6HzzYRQSIMUnBHMLF7hekb3DnxI1zqCnflew4pbnq/sR2xUas2XQNIH19JdHZ
-         F9Syn/FXhE0QGH+nz2WFVMtNgTW0oGlziYXvCKB0=
-Date:   Tue, 1 Sep 2020 09:41:32 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     willy@infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/7] mm: Make more use of readahead_control
-Message-ID: <20200901164132.GD669796@gmail.com>
-References: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
+        id S1732244AbgIAQmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:42:45 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54665 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731048AbgIAQmj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:42:39 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kD9MS-00034e-78; Tue, 01 Sep 2020 16:42:20 +0000
+Date:   Tue, 1 Sep 2020 18:42:19 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, axboe@kernel.dk,
+        ebiederm@xmission.com, madhuparnabhowmik10@gmail.com,
+        gustavoars@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] signal: clean up codestyle
+Message-ID: <20200901164219.h7aqy6h7xjbj7mzc@wittgenstein>
+References: <20200901115800.7916-1-linmiaohe@huawei.com>
+ <20200901122047.7hzztrssvr72wb2d@wittgenstein>
+ <20200901163904.GC4386@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
+In-Reply-To: <20200901163904.GC4386@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:28:15PM +0100, David Howells wrote:
+On Tue, Sep 01, 2020 at 06:39:05PM +0200, Oleg Nesterov wrote:
+> On 09/01, Christian Brauner wrote:
+> >
+> > On Tue, Sep 01, 2020 at 07:58:00AM -0400, Miaohe Lin wrote:
+> > > No functional change intended.
+> >
+> > Hey Miaohe,
+> >
+> > Thank you for the patch.
+> > I'm sure this is well-intended but afaict the whole file has more or
+> > less a consistent style already where e.g. sig-1 without spaces seems to
+> > be preferred. The same for the casts where most places use a single
+> > space.
+> >
+> > Now, I know CodingStyle.rst is on your side at least when it comes to
+> > the first point:
+> >
+> > Use one space around (on each side of) most binary and ternary operators,
+> > such as any of these::
+> >
+> > 	=  +  -  <  >  *  /  %  |  &  ^  <=  >=  ==  !=  ?  :
+> >
+> > but then you'd need to change each place in kernel/signal.c where that
+> > is currently not the case.
 > 
-> Hi Willy,
-> 
-> Here's a set of patches to expand the use of the readahead_control struct,
-> essentially from do_sync_mmap_readahead() down.  Note that I've been
-> passing the number of pages to read in rac->_nr_pages, and then saving it
-> and changing it certain points, e.g. page_cache_readahead_unbounded().
-> 
-> Also pass file_ra_state into force_page_cache_readahead().
-> 
-> Also there's an apparent minor bug in khugepaged.c that I've included a
-> patch for: page_cache_sync_readahead() looks to be given the wrong size in
-> collapse_file().
-> 
+> Or simply leave this code alone ;)
 
-What branch does this apply to?
+I was trying to imply that by pointing out that this would be
+file-global change. I was likely too subtle. ;)
 
-- Eric
+Christian
