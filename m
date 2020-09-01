@@ -2,191 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBA8259D64
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4504E259D5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgIARkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:40:24 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60874 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726116AbgIARjz (ORCPT
+        id S1726493AbgIARj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727996AbgIARjv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:39:55 -0400
-Received: from 89-64-88-247.dynamic.chello.pl (89.64.88.247) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
- id 0a7eba54eafc963d; Tue, 1 Sep 2020 19:39:49 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH v4 5/5] cpufreq: intel_pstate: Free memory only when turning off
-Date:   Tue, 01 Sep 2020 19:39:32 +0200
-Message-ID: <28055847.QciAqr1Adi@kreacher>
-In-Reply-To: <3748218.V0HrpZKF9g@kreacher>
-References: <3748218.V0HrpZKF9g@kreacher>
+        Tue, 1 Sep 2020 13:39:51 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F075FC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:39:50 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id x12so1555830qtp.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:39:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=dTH+bNJOVXEV4YAgVROsUKTRXuusFobQPV2qEAjExjo=;
+        b=L8WxnfzL7AjVEPVEFFYMhuzTTkiy3cDiPoU3L2Qm/DwRsWLOONreXcS5pbwCFBPy9t
+         l232tfTWNlOovA89iItN4WS+KqrH0dkAPc/ZO4mxd/XN254aNdNQLahXJlNSOMc37OPD
+         WzZyBgEjJQpR+gbV2KOho/F5+Ds+Z7jQ78iQ4zuk+DLkN1NEqTh1F1XYK6DKzRLr/Dri
+         7MjcbfodXNLn+OzaCxbc3YSERJyn8DPM+441qKvnU1o41Ciq/g1tOxewxljvDIGwcv0J
+         OoLWUzaG1JE0NXtgbP2a6sUJb+y9FVosAAK2oFkPrgQ2tmt7Oj6rK9+feBIwDxqL+fHm
+         NbSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=dTH+bNJOVXEV4YAgVROsUKTRXuusFobQPV2qEAjExjo=;
+        b=U/c10/gYN9BPmp8++cxqKF63JLTHCYKLjo8bcH3SdvRMwBbk9al+m1Q5vvn5OCzuPO
+         xxzUYyA3GIrvV2VWYhNH1k2qK5HOhetXo2lzsQ2KZOM7mbTLpB+ln/NN+wDAW+BSO2y3
+         iYnGtei1fFOya0PhQt5ZUD1mqrQ8sKmWfAHUC8Q1aL54yXEaIddW0QCu4rg8UswmPaHJ
+         gVBqpx2f7KMZ0dRGnJRKh48/sDO5KU3Qa0QinWrDYTi/annsafA2Lw/Li1Yd20T8dCRU
+         fdZY1JQH0t/R7eQanLmdFyi47XCAAvHS+8HqbBgUBi5YqRe2QlzTCvWTevr/oMuSl9m0
+         39/A==
+X-Gm-Message-State: AOAM533Jyv4ZQbke+0Al2Oy1MNXlbfkgB7dxUbLJgMkfVm1QZKxU8pnh
+        OABXryKtjJbjj8tkVWq/n1xE5Q==
+X-Google-Smtp-Source: ABdhPJzvQHBl6Chcsv/zF6psJYIrXB7fxj1CAXvQqzy+08HzZ3fbAc7sQwPmZbAF4Qmn+KshYyci5w==
+X-Received: by 2002:aed:26a7:: with SMTP id q36mr2892127qtd.57.1598981989480;
+        Tue, 01 Sep 2020 10:39:49 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id g14sm2323619qkk.38.2020.09.01.10.39.46
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 01 Sep 2020 10:39:47 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 10:39:34 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Yang Shi <shy828301@gmail.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Kuo-Hsin Yang <vovoy@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH 3/5] shmem: shmem_writepage() split unlikely i915 THP
+In-Reply-To: <CAHbLzko5xAyzJ7s31B55uXJPXT+2dzun+XcGPJngTwJ6mE=ETg@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2009011033080.2984@eggly.anvils>
+References: <alpine.LSU.2.11.2008301401390.5954@eggly.anvils> <CAHbLzko5xAyzJ7s31B55uXJPXT+2dzun+XcGPJngTwJ6mE=ETg@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On Tue, 1 Sep 2020, Yang Shi wrote:
+> On Sun, Aug 30, 2020 at 2:04 PM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > drivers/gpu/drm/i915/gem/i915_gem_shmem.c contains a shmem_writeback()
+> > which calls shmem_writepage() from a shrinker: that usually works well
+> > enough; but if /sys/kernel/mm/transparent_hugepage/shmem_enabled has
+> > been set to "force" (documented as "Force the huge option on for all -
+> > very useful for testing"), shmem_writepage() is surprised to be called
+> > with a huge page, and crashes on the VM_BUG_ON_PAGE(PageCompound) (I
+> > did not find out where the crash happens when CONFIG_DEBUG_VM is off).
+> >
+> > LRU page reclaim always splits the shmem huge page first: I'd prefer not
+> > to demand that of i915, so check and split compound in shmem_writepage().
+> >
+> > Fixes: 2d6692e642e7 ("drm/i915: Start writeback from the shrinker")
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > Cc: stable@vger.kernel.org # v5.3+
+> > ---
+> > I've marked this for stable just for the info, but the number of users
+> > affected is very probably 1, so please feel free to delete that marking.
+> >
+> >  mm/shmem.c |    9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > --- 5.9-rc2/mm/shmem.c  2020-08-16 17:32:50.693507198 -0700
+> > +++ linux/mm/shmem.c    2020-08-28 17:35:08.326024349 -0700
+> > @@ -1362,7 +1362,15 @@ static int shmem_writepage(struct page *
+> >         swp_entry_t swap;
+> >         pgoff_t index;
+> >
+> > -       VM_BUG_ON_PAGE(PageCompound(page), page);
+> > +       /*
+> > +        * If /sys/kernel/mm/transparent_hugepage/shmem_enabled is "force",
+> > +        * then drivers/gpu/drm/i915/gem/i915_gem_shmem.c gets huge pages,
+> > +        * and its shmem_writeback() needs them to be split when swapping.
+> > +        */
+> > +       if (PageTransCompound(page))
+> > +               if (split_huge_page(page) < 0)
+> > +                       goto redirty;
+> 
+> The change looks good to me. Acked-by: Yang Shi <shy828301@gmail.com>
 
-When intel_pstate switches the operation mode from "active" to
-"passive" or the other way around, freeing its data structures
-representing CPUs and allocating them again from scratch is not
-necessary and wasteful.  Moreover, if these data structures are
-preserved, the cached HWP Request MSR value from there may be
-written to the MSR to start with to reinitialize it and help to
-restore the EPP value set previously (it is set to 0xFF when CPUs
-go offline to allow their SMT siblings to use the full range of
-EPP values and that also happens when the driver gets unregistered).
+Thanks.
 
-Accordingly, modify the driver to only do a full cleanup on driver
-object registration errors and when its status is changed to "off"
-via sysfs and to write the cached HWP Request MSR value back to
-the MSR on CPU init if the data structure representing the given
-CPU is still there.
+> 
+> Just a nit: it may be better to move the spilte after the !PageLocked
+> assertion? Split needs page locked too.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+I hadn't considered that, but I think it's best left as is:
+split_huge_page_to_list() has its own 
+	VM_BUG_ON_PAGE(!PageLocked(head), head);
+to enforce its needs: think of the old BUG_ON(!PageLocked(page))
+below as enforcing shmem's needs, checking that split_huge_page()
+did not unlock it :)
 
--> v2: Rearrange intel_pstate_init_cpu() to restore some of the previous
-       behavior of it to retain the current active-mode EPP management.
-
-v2 -> v3:
-   * Rebase (it was [4/5] previously).
-
-v3 -> v4:
-   * Re-enable HWP in "init" even if the data structures are in there.
-
----
- drivers/cpufreq/intel_pstate.c | 57 ++++++++++++++--------------------
- 1 file changed, 24 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 8181a1f1dc79..c92c085fc495 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2116,25 +2116,31 @@ static int intel_pstate_init_cpu(unsigned int cpunum)
- 
- 		all_cpu_data[cpunum] = cpu;
- 
--		cpu->epp_default = -EINVAL;
--		cpu->epp_powersave = -EINVAL;
--	}
-+		cpu->cpu = cpunum;
- 
--	cpu = all_cpu_data[cpunum];
-+		cpu->epp_default = -EINVAL;
- 
--	cpu->cpu = cpunum;
-+		if (hwp_active) {
-+			const struct x86_cpu_id *id;
- 
--	if (hwp_active) {
--		const struct x86_cpu_id *id;
-+			intel_pstate_hwp_enable(cpu);
- 
--		intel_pstate_hwp_enable(cpu);
--		cpu->epp_policy = 0;
--
--		id = x86_match_cpu(intel_pstate_hwp_boost_ids);
--		if (id && intel_pstate_acpi_pm_profile_server())
--			hwp_boost = true;
-+			id = x86_match_cpu(intel_pstate_hwp_boost_ids);
-+			if (id && intel_pstate_acpi_pm_profile_server())
-+				hwp_boost = true;
-+		}
-+	} else if (hwp_active) {
-+		/*
-+		 * Re-enable HWP in case this happens after a resume from ACPI
-+		 * S3 if the CPU was offline during the whole system/resume
-+		 * cycle.
-+		 */
-+		intel_pstate_hwp_reenable(cpu);
- 	}
- 
-+	cpu->epp_powersave = -EINVAL;
-+	cpu->epp_policy = 0;
-+
- 	intel_pstate_get_cpu_pstates(cpu);
- 
- 	pr_debug("controlling: cpu %d\n", cpunum);
-@@ -2730,9 +2736,6 @@ static void intel_pstate_driver_cleanup(void)
- 	}
- 	put_online_cpus();
- 
--	if (intel_pstate_driver == &intel_pstate)
--		intel_pstate_sysfs_hide_hwp_dynamic_boost();
--
- 	intel_pstate_driver = NULL;
- }
- 
-@@ -2758,14 +2761,6 @@ static int intel_pstate_register_driver(struct cpufreq_driver *driver)
- 	return 0;
- }
- 
--static int intel_pstate_unregister_driver(void)
--{
--	cpufreq_unregister_driver(intel_pstate_driver);
--	intel_pstate_driver_cleanup();
--
--	return 0;
--}
--
- static ssize_t intel_pstate_show_status(char *buf)
- {
- 	if (!intel_pstate_driver)
-@@ -2777,8 +2772,6 @@ static ssize_t intel_pstate_show_status(char *buf)
- 
- static int intel_pstate_update_status(const char *buf, size_t size)
- {
--	int ret;
--
- 	if (size == 3 && !strncmp(buf, "off", size)) {
- 		if (!intel_pstate_driver)
- 			return -EINVAL;
-@@ -2786,7 +2779,8 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- 		if (hwp_active)
- 			return -EBUSY;
- 
--		return intel_pstate_unregister_driver();
-+		cpufreq_unregister_driver(intel_pstate_driver);
-+		intel_pstate_driver_cleanup();
- 	}
- 
- 	if (size == 6 && !strncmp(buf, "active", size)) {
-@@ -2794,9 +2788,7 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- 			if (intel_pstate_driver == &intel_pstate)
- 				return 0;
- 
--			ret = intel_pstate_unregister_driver();
--			if (ret)
--				return ret;
-+			cpufreq_unregister_driver(intel_pstate_driver);
- 		}
- 
- 		return intel_pstate_register_driver(&intel_pstate);
-@@ -2807,9 +2799,8 @@ static int intel_pstate_update_status(const char *buf, size_t size)
- 			if (intel_pstate_driver == &intel_cpufreq)
- 				return 0;
- 
--			ret = intel_pstate_unregister_driver();
--			if (ret)
--				return ret;
-+			cpufreq_unregister_driver(intel_pstate_driver);
-+			intel_pstate_sysfs_hide_hwp_dynamic_boost();
- 		}
- 
- 		return intel_pstate_register_driver(&intel_cpufreq);
--- 
-2.26.2
-
-
-
-
+> 
+> > +
+> >         BUG_ON(!PageLocked(page));
+> >         mapping = page->mapping;
+> >         index = page->index;
+> >
