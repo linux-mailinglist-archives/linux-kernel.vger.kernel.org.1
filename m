@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CF0259380
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2DF25931A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgIAP0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:26:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45864 "EHLO mail.kernel.org"
+        id S1728967AbgIAPVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:21:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729780AbgIAPXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:23:07 -0400
+        id S1729516AbgIAPSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:18:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00071206FA;
-        Tue,  1 Sep 2020 15:23:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6D57206FA;
+        Tue,  1 Sep 2020 15:18:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973787;
-        bh=Ttkps5pps/+L2vqi5gedAmzC0sp9bGqD8MQBJGpJzGA=;
+        s=default; t=1598973532;
+        bh=lCoJotzf1Gl92+R5EX6TjqbudBJhFFcPs0ZmkIymhXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uOleXKj9lXioQoi0Wr8VAJon0yczXVLPmVcBZBqHTByrxTO5VLUNYN4ZU6ewZdHp4
-         DZHBSOXn6yrhUyDOcisZ7jTNUxQc9rFZaPha9sBQsVzbiuyrmq5lhrVZM/2rDDtoyY
-         zKF13A/jN3gj49cOyvZqDpQmXLXru/EvhBAxqjKI=
+        b=FwkvQqCyOn+tz/0qDS66xqdUlCTF8qTkzDGzPdqFzkrV+RZ8plIdiq3kBH4X0c1Xf
+         uSx9GT6pAHKivUz9JbOskJFSs5u7aaSRXPZdLlZKL9CczXisO2+qceiztvT7OXCrD/
+         MHi8gELpOHFy5U7jKLwtFSo1H0mB2oBqqXbHfBEs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Ben Skeggs <bskeggs@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 047/125] media: davinci: vpif_capture: fix potential double free
-Date:   Tue,  1 Sep 2020 17:10:02 +0200
-Message-Id: <20200901150936.857115610@linuxfoundation.org>
+Subject: [PATCH 4.14 29/91] drm/nouveau/drm/noveau: fix reference count leak in nouveau_fbcon_open
+Date:   Tue,  1 Sep 2020 17:10:03 +0200
+Message-Id: <20200901150929.605842245@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit 602649eadaa0c977e362e641f51ec306bc1d365d ]
+[ Upstream commit bfad51c7633325b5d4b32444efe04329d53297b2 ]
 
-In case of errors vpif_probe_complete() releases memory for vpif_obj.sd
-and unregisters the V4L2 device. But then this is done again by
-vpif_probe() itself. The patch removes the cleaning from
-vpif_probe_complete().
+nouveau_fbcon_open() calls calls pm_runtime_get_sync() that
+increments the reference count. In case of failure, decrement the
+ref count before returning the error.
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/davinci/vpif_capture.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/nouveau/nouveau_fbcon.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/davinci/vpif_capture.c b/drivers/media/platform/davinci/vpif_capture.c
-index a96f53ce80886..cf1d11e6dd8c4 100644
---- a/drivers/media/platform/davinci/vpif_capture.c
-+++ b/drivers/media/platform/davinci/vpif_capture.c
-@@ -1489,8 +1489,6 @@ probe_out:
- 		/* Unregister video device */
- 		video_unregister_device(&ch->video_dev);
- 	}
--	kfree(vpif_obj.sd);
--	v4l2_device_unregister(&vpif_obj.v4l2_dev);
- 
- 	return err;
+diff --git a/drivers/gpu/drm/nouveau/nouveau_fbcon.c b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+index 9ffb09679cc4a..cae1beabcd05d 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_fbcon.c
++++ b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
+@@ -184,8 +184,10 @@ nouveau_fbcon_open(struct fb_info *info, int user)
+ 	struct nouveau_fbdev *fbcon = info->par;
+ 	struct nouveau_drm *drm = nouveau_drm(fbcon->helper.dev);
+ 	int ret = pm_runtime_get_sync(drm->dev->dev);
+-	if (ret < 0 && ret != -EACCES)
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put(drm->dev->dev);
+ 		return ret;
++	}
+ 	return 0;
  }
+ 
 -- 
 2.25.1
 
