@@ -2,162 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D603259191
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A88259115
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728316AbgIAOxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:53:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728344AbgIAOux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:50:53 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88456206FA;
-        Tue,  1 Sep 2020 14:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598971852;
-        bh=BPdT+vTAX6b+20pGNGQv/OEbZaMm0piOs8VCTI0srpA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rps4GY9gN8fybFalh9c5lnWMZwkkH1zuRtJ60pzcQjJkkonglUCe1QwZdD9BUYRm6
-         4fZWMCDJErlewG6JspDzoutVDNeyYxnmYlnPn7YxEcAg2Q8iQWu6V0aKCJnLXnZttU
-         2cJESJLIJcPE+LXy1UQQ8uLCI4MBKli5pMCBUIvc=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kD7Vf-008IQP-5D; Tue, 01 Sep 2020 15:43:43 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Saravana Kannan <saravanak@google.com>,
-        kernel-team@android.com,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: [PATCH v3 16/16] ARM: Remove custom IRQ stat accounting
-Date:   Tue,  1 Sep 2020 15:43:24 +0100
-Message-Id: <20200901144324.1071694-17-maz@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200901144324.1071694-1-maz@kernel.org>
-References: <20200901144324.1071694-1-maz@kernel.org>
+        id S1728513AbgIAOo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:44:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21140 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728591AbgIAOnc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:43:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598971411;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GPbP04lPt1v0iZ449hyOji4fcc1kzdBh1pIqDA8zHp0=;
+        b=ATRqzzRklr3EHlpf8qRXvCiX+RiMq8U7B5RoXM4y7UY0x3MR0DANBAiVnT9O2sJSfbbpG7
+        RUUpfcWM3avs4mAgyAP7J+J4vp1VGf8jESztr8Ap3NgTAVW6EVLTTuT1SQGzQkXXdh1Q6f
+        2NNpkF8sf67zBUucg0Oi0b99i1Hn/oU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-483-hexgGdO1MiSP2Lk88VGIPw-1; Tue, 01 Sep 2020 10:43:28 -0400
+X-MC-Unique: hexgGdO1MiSP2Lk88VGIPw-1
+Received: by mail-wr1-f72.google.com with SMTP id k11so668606wrw.16
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:43:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GPbP04lPt1v0iZ449hyOji4fcc1kzdBh1pIqDA8zHp0=;
+        b=Ja3LUs0FQnBSUa3N0zz5yIljckVU1RFK2ubYLd8ITTnsgqrQDMmoFgbQbgRDsC4vwd
+         zIL+/XOBVBddCSXKxMdvk+xrVVLdB37KstcgOWFTsIAKZ058TyUhSs8yfDbElsxKOsd4
+         xTbQdrI1b6lYS5C5CLq2IXjAV4vAJ52kgzVCGLloqxGKExbVa4IhpWtzPa/ir7+PF3wa
+         Oqdi9Yns2EeruyPDDQg/HG0NbQP1UZOxMe+JIP7CDMnRWzaE2zvFPxNy8203yVAIlmVD
+         rIMqfVX0Ia8y3xAaHJnsIgQLkifbYu4ThQyFg7HEfMTdMlOVUwjlPeDRymmxMzxGJ4cU
+         RqyA==
+X-Gm-Message-State: AOAM531fqL/7FucUeCeSpxBdDwGvLGWNFQyz6mrbYld4iyLXa7VBWoYc
+        M0k0nzb+YlY/bQ5BrC43H0sCjRzsSHp1GGYN17tWWtwQ5f/gbFIpWv0ImO/zfvKOWsrPhCH9OIp
+        ZUGQVPo4f9J5m43WT5fC1mcmq
+X-Received: by 2002:adf:db52:: with SMTP id f18mr2217332wrj.397.1598971406999;
+        Tue, 01 Sep 2020 07:43:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJzKR8a+SsyTI8zecqTgZ0D4P1NUMXQNbFg4Z1fpLhaO9xme/Gd1HwibnnhuJcxZ1jjgroFg==
+X-Received: by 2002:adf:db52:: with SMTP id f18mr2217303wrj.397.1598971406756;
+        Tue, 01 Sep 2020 07:43:26 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p16sm2574255wro.71.2020.09.01.07.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 07:43:26 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+In-Reply-To: <20200825212526.GC8235@xz-x1>
+References: <20200807141232.402895-1-vkuznets@redhat.com> <20200825212526.GC8235@xz-x1>
+Date:   Tue, 01 Sep 2020 16:43:25 +0200
+Message-ID: <87eenlwoaa.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com, valentin.schneider@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's switch the arm code to the core accounting, which already
-does everything we need.
+Peter Xu <peterx@redhat.com> writes:
 
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm/include/asm/hardirq.h | 17 -----------------
- arch/arm/kernel/smp.c          | 20 ++++----------------
- 2 files changed, 4 insertions(+), 33 deletions(-)
+> On Fri, Aug 07, 2020 at 04:12:29PM +0200, Vitaly Kuznetsov wrote:
+>> When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
+>> I observed 8193 accesses to PCI hole memory. When such exit is handled
+>> in KVM without exiting to userspace, it takes roughly 0.000001 sec.
+>> Handling the same exit in userspace is six times slower (0.000006 sec) so
+>> the overal; difference is 0.04 sec. This may be significant for 'microvm'
+>> ideas.
+>
+> Sorry to comment so late, but just curious... have you looked at what's those
+> 8000+ accesses to PCI holes and what they're used for?  What I can think of are
+> some port IO reads (e.g. upon vendor ID field) during BIOS to scan the devices
+> attached.  Though those should be far less than 8000+, and those should also be
+> pio rather than mmio.
 
-diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
-index 7a88f160b1fb..b95848ed2bc7 100644
---- a/arch/arm/include/asm/hardirq.h
-+++ b/arch/arm/include/asm/hardirq.h
-@@ -6,29 +6,12 @@
- #include <linux/threads.h>
- #include <asm/irq.h>
- 
--/* number of IPIS _not_ including IPI_CPU_BACKTRACE */
--#define NR_IPI	7
--
- typedef struct {
- 	unsigned int __softirq_pending;
--#ifdef CONFIG_SMP
--	unsigned int ipi_irqs[NR_IPI];
--#endif
- } ____cacheline_aligned irq_cpustat_t;
- 
- #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
- 
--#define __inc_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)++
--#define __get_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)
--
--#ifdef CONFIG_SMP
--u64 smp_irq_stat_cpu(unsigned int cpu);
--#else
--#define smp_irq_stat_cpu(cpu)	0
--#endif
--
--#define arch_irq_stat_cpu	smp_irq_stat_cpu
--
- #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
- 
- #endif /* __ASM_HARDIRQ_H */
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index d51e64955a26..aead847ac8b9 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -65,6 +65,7 @@ enum ipi_msg_type {
- 	IPI_CPU_STOP,
- 	IPI_IRQ_WORK,
- 	IPI_COMPLETION,
-+	NR_IPI,
- 	/*
- 	 * CPU_BACKTRACE is special and not included in NR_IPI
- 	 * or tracable with trace_ipi_*
-@@ -529,27 +530,16 @@ void show_ipi_list(struct seq_file *p, int prec)
- 	unsigned int cpu, i;
- 
- 	for (i = 0; i < NR_IPI; i++) {
-+		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
- 		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
- 
- 		for_each_online_cpu(cpu)
--			seq_printf(p, "%10u ",
--				   __get_irq_stat(cpu, ipi_irqs[i]));
-+			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
- 
- 		seq_printf(p, " %s\n", ipi_types[i]);
- 	}
- }
- 
--u64 smp_irq_stat_cpu(unsigned int cpu)
--{
--	u64 sum = 0;
--	int i;
--
--	for (i = 0; i < NR_IPI; i++)
--		sum += __get_irq_stat(cpu, ipi_irqs[i]);
--
--	return sum;
--}
--
- void arch_send_call_function_ipi_mask(const struct cpumask *mask)
- {
- 	smp_cross_call(mask, IPI_CALL_FUNC);
-@@ -630,10 +620,8 @@ static void do_handle_IPI(int ipinr)
- {
- 	unsigned int cpu = smp_processor_id();
- 
--	if ((unsigned)ipinr < NR_IPI) {
-+	if ((unsigned)ipinr < NR_IPI)
- 		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
--		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
--	}
- 
- 	switch (ipinr) {
- 	case IPI_WAKEUP:
+And sorry for replying late)
+
+We explicitly want MMIO instead of PIO to speed things up, afaiu PIO
+requires two exits per device (and we exit all the way to
+QEMU). Julia/Michael know better about the size of the space.
+
+>
+> If this is only an overhead for virt (since baremetal mmios should be fast),
+> I'm also thinking whether we can make it even better to skip those pci hole
+> reads.  Because we know we're virt, so it also gives us possibility that we may
+> provide those information in a better way than reading PCI holes in the guest?
+
+This means let's invent a PV interface and if we decide to go down this
+road, I'd even argue for abandoning PCI completely. E.g. we can do
+something similar to Hyper-V's Vmbus.
+
 -- 
-2.27.0
+Vitaly
 
