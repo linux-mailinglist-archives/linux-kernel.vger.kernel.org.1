@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9900C2594AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF59C25947B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbgIAPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:42:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49890 "EHLO mail.kernel.org"
+        id S1728975AbgIAPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:40:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731325AbgIAPjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:39:40 -0400
+        id S1728597AbgIAPiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:38:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93B9D21534;
-        Tue,  1 Sep 2020 15:39:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CCB420866;
+        Tue,  1 Sep 2020 15:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974779;
-        bh=q80865g4cKNeUhpRJl0wdHIIh4zKgCeHakfCqEH55pw=;
+        s=default; t=1598974697;
+        bh=7FLAhkpdZYZNY6BxWLsZPdbDhw/khZFS6fnCA4pRsH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLXZaBZc/pyhf3xMGBPLbqyZbKOikv7TNe5f3oavb+ulyiUVSTsv9Rrlb3xmeYKB+
-         2quEqRPOdHK+AycO7HjpdtlXTgfC6TGaeHLG8iqhsT8nSYhfXFBeAuxgG0Wj7jlCKi
-         +bQDZFprBeGMtIK7T1c5CLRGEMyCtua0OoNnXmCY=
+        b=kbdHlD+N9MNcefZTs1OdtspWl/JY/KbJQ+JLxlfm/CZ2m4k9YtCc2gdbF5UrjM+NK
+         SZTMoB7Eshvn8HaHXqpp4RNGcTEiEtNITnIFhUxPTk3WJytMrufjM7/UDoBK2tus12
+         FPqwnhKfXQIAA8vVqs4ZpK81B1If4O6rri6MaAdA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
+        stable@vger.kernel.org, Girish Basrur <gbasrur@marvell.com>,
+        Santosh Vernekar <svernekar@marvell.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Shyam Sundar <ssundar@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 057/255] netfilter: nf_tables: report EEXIST on overlaps
-Date:   Tue,  1 Sep 2020 17:08:33 +0200
-Message-Id: <20200901151003.454130312@linuxfoundation.org>
+Subject: [PATCH 5.8 060/255] scsi: fcoe: Memory leak fix in fcoe_sysfs_fcf_del()
+Date:   Tue,  1 Sep 2020 17:08:36 +0200
+Message-Id: <20200901151003.601543217@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -43,101 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit 77a92189ecfd061616ad531d386639aab7baaad9 ]
+[ Upstream commit e95b4789ff4380733006836d28e554dc296b2298 ]
 
-Replace EBUSY by EEXIST in the following cases:
+In fcoe_sysfs_fcf_del(), we first deleted the fcf from the list and then
+freed it if ctlr_dev was not NULL. This was causing a memory leak.
 
-- If the user adds a chain with a different configuration such as different
-  type, hook and priority.
+Free the fcf even if ctlr_dev is NULL.
 
-- If the user adds a non-base chain that clashes with an existing basechain.
-
-- If the user adds a { key : value } mapping element and the key exists
-  but the value differs.
-
-- If the device already belongs to an existing flowtable.
-
-User describe that this error reporting is confusing:
-
-- https://bugzilla.netfilter.org/show_bug.cgi?id=1176
-- https://bugzilla.netfilter.org/show_bug.cgi?id=1413
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Link: https://lore.kernel.org/r/20200729081824.30996-3-jhasan@marvell.com
+Reviewed-by: Girish Basrur <gbasrur@marvell.com>
+Reviewed-by: Santosh Vernekar <svernekar@marvell.com>
+Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
+Reviewed-by: Shyam Sundar <ssundar@marvell.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netfilter/nf_tables_api.c | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+ drivers/scsi/fcoe/fcoe_ctlr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index 88325b264737f..d31832d32e028 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2037,7 +2037,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+diff --git a/drivers/scsi/fcoe/fcoe_ctlr.c b/drivers/scsi/fcoe/fcoe_ctlr.c
+index 1791a393795da..07a0dadc75bf5 100644
+--- a/drivers/scsi/fcoe/fcoe_ctlr.c
++++ b/drivers/scsi/fcoe/fcoe_ctlr.c
+@@ -255,9 +255,9 @@ static void fcoe_sysfs_fcf_del(struct fcoe_fcf *new)
+ 		WARN_ON(!fcf_dev);
+ 		new->fcf_dev = NULL;
+ 		fcoe_fcf_device_delete(fcf_dev);
+-		kfree(new);
+ 		mutex_unlock(&cdev->lock);
+ 	}
++	kfree(new);
+ }
  
- 	if (nla[NFTA_CHAIN_HOOK]) {
- 		if (!nft_is_base_chain(chain))
--			return -EBUSY;
-+			return -EEXIST;
- 
- 		err = nft_chain_parse_hook(ctx->net, nla, &hook, ctx->family,
- 					   false);
-@@ -2047,21 +2047,21 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
- 		basechain = nft_base_chain(chain);
- 		if (basechain->type != hook.type) {
- 			nft_chain_release_hook(&hook);
--			return -EBUSY;
-+			return -EEXIST;
- 		}
- 
- 		if (ctx->family == NFPROTO_NETDEV) {
- 			if (!nft_hook_list_equal(&basechain->hook_list,
- 						 &hook.list)) {
- 				nft_chain_release_hook(&hook);
--				return -EBUSY;
-+				return -EEXIST;
- 			}
- 		} else {
- 			ops = &basechain->ops;
- 			if (ops->hooknum != hook.num ||
- 			    ops->priority != hook.priority) {
- 				nft_chain_release_hook(&hook);
--				return -EBUSY;
-+				return -EEXIST;
- 			}
- 		}
- 		nft_chain_release_hook(&hook);
-@@ -5160,10 +5160,8 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			if (nft_set_ext_exists(ext, NFT_SET_EXT_DATA) ^
- 			    nft_set_ext_exists(ext2, NFT_SET_EXT_DATA) ||
- 			    nft_set_ext_exists(ext, NFT_SET_EXT_OBJREF) ^
--			    nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF)) {
--				err = -EBUSY;
-+			    nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF))
- 				goto err_element_clash;
--			}
- 			if ((nft_set_ext_exists(ext, NFT_SET_EXT_DATA) &&
- 			     nft_set_ext_exists(ext2, NFT_SET_EXT_DATA) &&
- 			     memcmp(nft_set_ext_data(ext),
-@@ -5171,7 +5169,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
- 			    (nft_set_ext_exists(ext, NFT_SET_EXT_OBJREF) &&
- 			     nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF) &&
- 			     *nft_set_ext_obj(ext) != *nft_set_ext_obj(ext2)))
--				err = -EBUSY;
-+				goto err_element_clash;
- 			else if (!(nlmsg_flags & NLM_F_EXCL))
- 				err = 0;
- 		} else if (err == -ENOTEMPTY) {
-@@ -6308,7 +6306,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
- 			list_for_each_entry(hook2, &ft->hook_list, list) {
- 				if (hook->ops.dev == hook2->ops.dev &&
- 				    hook->ops.pf == hook2->ops.pf) {
--					err = -EBUSY;
-+					err = -EEXIST;
- 					goto err_unregister_net_hooks;
- 				}
- 			}
+ /**
 -- 
 2.25.1
 
