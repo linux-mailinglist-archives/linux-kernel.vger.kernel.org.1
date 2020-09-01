@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC59259225
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 452C025920E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbgIAPDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
+        id S1726122AbgIAPCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIAPDt (ORCPT
+        with ESMTP id S1726800AbgIAPCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:03:49 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649ACC061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:03:49 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id d27so1112333qtg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:03:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mAaL6U+iakwGOs+fKr9GVAdl6EHOJaIxZ7vvSFP7iy4=;
-        b=QSlvYWiApz3Il7TzqFB1RZN0q7RWIwkf5QFz7RNkzlO+xImve52k6f+ehFMq4/w1+2
-         zGfYq/J/yn1WLm1/nerm9ZFIcBt9/aMtnrc4is0GNCBmR1gLKui/4PSJTm+KF8St48kS
-         kCpHlHeOQf+F+xrvfkYYAFeZDgUosGYBaSkSeZWXRVKKIp+E7vgt8D6VzlxFKpXBkCi5
-         6vokKRH5obxIM3wov/h7MeIAyGdI4EWOPPyLFoG0YFf8JrTfshxGr7viaB/R/Gi12gKQ
-         VzPDKb7+RQkpyvxykXHJ/rcMXnf28rZVX0VUzRl7OdcwNyphjQ5LxOwG7fT3tbz9hDnU
-         GgzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mAaL6U+iakwGOs+fKr9GVAdl6EHOJaIxZ7vvSFP7iy4=;
-        b=gu0tHS9VQjaSHtrHExS2qwX0FU09A5IS842qMhigH2TJH5ZwkwevD/IxbnuKK1xI6U
-         M0IKMxBCwmrg5ioBBZ01nMxTuManIS/ut+kfXPoz4MC53tIJZjXJw6MA80WDzGu+f6FV
-         a5CJnk+YJ50tP/hfjGXXSs6TDl3df6tt87NYrQ5zPeSJOEiAZadEWlQ3ch0rJRBvVqR1
-         cfdMxTnXHK4D4jzbLyFg9YcBHRjnv9F20ku1Q6MJ/yl3z9wfmCoaAOaJYuWYEWq7+Y5N
-         rIcHZiwtGXS+FvT239GmufWTN1+pGOUmakAzh925+mCLWDL01QInIeHycow+Y4GJIGXl
-         xSuQ==
-X-Gm-Message-State: AOAM5314AOngUSO43MFlkqQGtJDDcLBLnIn7AGqR1Dyi8gz1GIEawBtN
-        4VmSzhiBzd9YefNYM3b5UA4isw==
-X-Google-Smtp-Source: ABdhPJyJ/mmJ7wKiwiGfXg73+aLX68eKTyDwVHU8p4OwQPU3PwpkwjigQ67x+5KcBMyhz0Rfo3liRA==
-X-Received: by 2002:aed:362a:: with SMTP id e39mr2192152qtb.121.1598972628686;
-        Tue, 01 Sep 2020 08:03:48 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:fc60])
-        by smtp.gmail.com with ESMTPSA id s20sm1852279qkg.65.2020.09.01.08.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 08:03:48 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 11:02:32 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH 2/5] mm: migration of hugetlbfs page skip memcg
-Message-ID: <20200901150232.GB45118@cmpxchg.org>
-References: <alpine.LSU.2.11.2008301343270.5954@eggly.anvils>
- <alpine.LSU.2.11.2008301359460.5954@eggly.anvils>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2008301359460.5954@eggly.anvils>
+        Tue, 1 Sep 2020 11:02:43 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EF7C061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:02:42 -0700 (PDT)
+Received: from ramsan ([84.195.186.194])
+        by baptiste.telenet-ops.be with bizsmtp
+        id Nf2g230054C55Sk01f2g9P; Tue, 01 Sep 2020 17:02:40 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan with esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kD7o0-000651-3o; Tue, 01 Sep 2020 17:02:40 +0200
+Received: from geert by rox.of.borg with local (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kD7o0-0003zf-1W; Tue, 01 Sep 2020 17:02:40 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Gaku Inami <gaku.inami.xh@renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] Revert "net: linkwatch: add check for netdevice being present to linkwatch_do_dev"
+Date:   Tue,  1 Sep 2020 17:02:37 +0200
+Message-Id: <20200901150237.15302-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 02:01:30PM -0700, Hugh Dickins wrote:
-> hugetlbfs pages do not participate in memcg: so although they do find
-> most of migrate_page_states() useful, it would be better if they did
-> not call into mem_cgroup_migrate() - where Qian Cai reported that LTP's
-> move_pages12 triggers the warning in Alex Shi's prospective commit
-> "mm/memcg: warning on !memcg after readahead page charged".
-> 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+This reverts commit 124eee3f6955f7aa19b9e6ff5c9b6d37cb3d1e2c.
 
-Acked-by: Johannes Weiner <hannes@cmpxch.org>
+Inami-san reported that this commit breaks bridge support in a Xen
+environment, and that reverting it fixes this.
+
+During system resume, bridge ports are no longer enabled, as that relies
+on the receipt of the NETDEV_CHANGE notification.  This notification is
+not sent, as netdev_state_change() is no longer called.
+
+Note that the condition this commit intended to fix never existed
+upstream, as the patch triggering it and referenced in the commit was
+never applied upstream.  Hence I can confirm s2ram on r8a73a4/ape6evm
+and sh73a0/kzm9g works fine before/after this revert.
+
+Reported-by Gaku Inami <gaku.inami.xh@renesas.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ net/core/link_watch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/core/link_watch.c b/net/core/link_watch.c
+index 75431ca9300fb9c4..c24574493ecf95e6 100644
+--- a/net/core/link_watch.c
++++ b/net/core/link_watch.c
+@@ -158,7 +158,7 @@ static void linkwatch_do_dev(struct net_device *dev)
+ 	clear_bit(__LINK_STATE_LINKWATCH_PENDING, &dev->state);
+ 
+ 	rfc2863_policy(dev);
+-	if (dev->flags & IFF_UP && netif_device_present(dev)) {
++	if (dev->flags & IFF_UP) {
+ 		if (netif_carrier_ok(dev))
+ 			dev_activate(dev);
+ 		else
+-- 
+2.17.1
+
