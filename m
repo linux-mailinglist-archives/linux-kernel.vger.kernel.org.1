@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6009D259791
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42902597AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728233AbgIAPek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38426 "EHLO mail.kernel.org"
+        id S1728980AbgIAQRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:17:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731225AbgIAPdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:33:55 -0400
+        id S1728604AbgIAPd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:33:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9693921548;
-        Tue,  1 Sep 2020 15:33:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A09520E65;
+        Tue,  1 Sep 2020 15:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974434;
-        bh=F28mCmXKaBmHgq8qKpeLK4Q0Oq+MJkm+PsF6ppduwXk=;
+        s=default; t=1598974436;
+        bh=LrFyfFDXc9/jLnZm3rg0fByB+NJEn1pQKELGSz4xFsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+E3APUV+wWAlRxdsL4ywzjsGtMabHWoOShhXN4TbyLaSe3IMSgcmg3o7f/RSS8Hf
-         FWw8tJswDRMtf2xIY5Dk/3BbpTZvJ4gJ02+Kudo0tGiJyeIop7mU9XqM2YLAG2fU7b
-         5dJiXIoXrPBEWcYSTkDTzIW/hKL6FYDcORfWEk9k=
+        b=XYvKVSN7E2iB4163ZTolk+BROOAHx1304cWfYqBqEeq3T0wmkR3165MnCDg1lfpbD
+         jWZNu6Mui4n8J8+VJU5vOoRgD4xe62QxXbPHIKf+Aj+iYKbeOBK7p/UTw66HocCQkC
+         fnJS8HCpE4+AiyGQRuauBWjOeNR1SRqAzhD8a2vQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: [PATCH 5.4 175/214] PM: sleep: core: Fix the handling of pending runtime resume requests
-Date:   Tue,  1 Sep 2020 17:10:55 +0200
-Message-Id: <20200901151001.366487984@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 176/214] powerpc/perf: Fix crashes with generic_compat_pmu & BHRB
+Date:   Tue,  1 Sep 2020 17:10:56 +0200
+Message-Id: <20200901151001.413630837@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -46,82 +44,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-commit e3eb6e8fba65094328b8dca635d00de74ba75b45 upstream.
+commit b460b512417ae9c8b51a3bdcc09020cd6c60ff69 upstream.
 
-It has been reported that system-wide suspend may be aborted in the
-absence of any wakeup events due to unforseen interactions of it with
-the runtume PM framework.
+The bhrb_filter_map ("The Branch History Rolling Buffer") callback is
+only defined in raw CPUs' power_pmu structs. The "architected" CPUs
+use generic_compat_pmu, which does not have this callback, and crashes
+occur if a user tries to enable branch stack for an event.
 
-One failing scenario is when there are multiple devices sharing an
-ACPI power resource and runtime-resume needs to be carried out for
-one of them during system-wide suspend (for example, because it needs
-to be reconfigured before the whole system goes to sleep).  In that
-case, the runtime-resume of that device involves turning the ACPI
-power resource "on" which in turn causes runtime-resume requests
-to be queued up for all of the other devices sharing it.  Those
-requests go to the runtime PM workqueue which is frozen during
-system-wide suspend, so they are not actually taken care of until
-the resume of the whole system, but the pm_runtime_barrier()
-call in __device_suspend() sees them and triggers system wakeup
-events for them which then cause the system-wide suspend to be
-aborted if wakeup source objects are in active use.
+This add a NULL pointer check for bhrb_filter_map() which behaves as
+if the callback returned an error.
 
-Of course, the logic that leads to triggering those wakeup events is
-questionable in the first place, because clearly there are cases in
-which a pending runtime resume request for a device is not connected
-to any real wakeup events in any way (like the one above).  Moreover,
-it is racy, because the device may be resuming already by the time
-the pm_runtime_barrier() runs and so if the driver doesn't take care
-of signaling the wakeup event as appropriate, it will be lost.
-However, if the driver does take care of that, the extra
-pm_wakeup_event() call in the core is redundant.
+This does not add the same check for config_bhrb() as the only caller
+checks for cpuhw->bhrb_users which remains zero if bhrb_filter_map==0.
 
-Accordingly, drop the conditional pm_wakeup_event() call fron
-__device_suspend() and make the latter call pm_runtime_barrier()
-alone.  Also modify the comment next to that call to reflect the new
-code and extend it to mention the need to avoid unwanted interactions
-between runtime PM and system-wide device suspend callbacks.
-
-Fixes: 1e2ef05bb8cf8 ("PM: Limit race conditions between runtime PM and system sleep (v2)")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Tested-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-Cc: All applicable <stable@vger.kernel.org>
+Fixes: be80e758d0c2 ("powerpc/perf: Add generic compat mode pmu driver")
+Cc: stable@vger.kernel.org # v5.2+
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200602025612.62707-1-aik@ozlabs.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/power/main.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ arch/powerpc/perf/core-book3s.c |   19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
 
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -1728,13 +1728,17 @@ static int __device_suspend(struct devic
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -1522,9 +1522,16 @@ nocheck:
+ 	ret = 0;
+  out:
+ 	if (has_branch_stack(event)) {
+-		power_pmu_bhrb_enable(event);
+-		cpuhw->bhrb_filter = ppmu->bhrb_filter_map(
+-					event->attr.branch_sample_type);
++		u64 bhrb_filter = -1;
++
++		if (ppmu->bhrb_filter_map)
++			bhrb_filter = ppmu->bhrb_filter_map(
++				event->attr.branch_sample_type);
++
++		if (bhrb_filter != -1) {
++			cpuhw->bhrb_filter = bhrb_filter;
++			power_pmu_bhrb_enable(event);
++		}
  	}
  
- 	/*
--	 * If a device configured to wake up the system from sleep states
--	 * has been suspended at run time and there's a resume request pending
--	 * for it, this is equivalent to the device signaling wakeup, so the
--	 * system suspend operation should be aborted.
-+	 * Wait for possible runtime PM transitions of the device in progress
-+	 * to complete and if there's a runtime resume request pending for it,
-+	 * resume it before proceeding with invoking the system-wide suspend
-+	 * callbacks for it.
-+	 *
-+	 * If the system-wide suspend callbacks below change the configuration
-+	 * of the device, they must disable runtime PM for it or otherwise
-+	 * ensure that its runtime-resume callbacks will not be confused by that
-+	 * change in case they are invoked going forward.
- 	 */
--	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
--		pm_wakeup_event(dev, 0);
-+	pm_runtime_barrier(dev);
+ 	perf_pmu_enable(event->pmu);
+@@ -1846,7 +1853,6 @@ static int power_pmu_event_init(struct p
+ 	int n;
+ 	int err;
+ 	struct cpu_hw_events *cpuhw;
+-	u64 bhrb_filter;
  
- 	if (pm_wakeup_pending()) {
- 		dev->power.direct_complete = false;
+ 	if (!ppmu)
+ 		return -ENOENT;
+@@ -1952,7 +1958,10 @@ static int power_pmu_event_init(struct p
+ 	err = power_check_constraints(cpuhw, events, cflags, n + 1);
+ 
+ 	if (has_branch_stack(event)) {
+-		bhrb_filter = ppmu->bhrb_filter_map(
++		u64 bhrb_filter = -1;
++
++		if (ppmu->bhrb_filter_map)
++			bhrb_filter = ppmu->bhrb_filter_map(
+ 					event->attr.branch_sample_type);
+ 
+ 		if (bhrb_filter == -1) {
 
 
