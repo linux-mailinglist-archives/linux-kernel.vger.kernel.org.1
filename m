@@ -2,147 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D5625A16C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A9225A165
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgIAWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 18:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
+        id S1726800AbgIAWZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 18:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgIAWZj (ORCPT
+        with ESMTP id S1726426AbgIAWZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 18:25:39 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3E5C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:25:39 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id z190so2017850qkc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:25:39 -0700 (PDT)
+        Tue, 1 Sep 2020 18:25:27 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A6FC061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:25:26 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id e23so2592530otk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=xFF5qxswQ8XcvkvdvfVY4/mMkz+/5Nm8uIdW/HNF4l0=;
-        b=CgqVD+cUWdzWbxzhIKI7RaHd9LEyOmQtSIfGxSeTZx3wjhQwa49KpJeXWTcaf02UaT
-         1t1h7E4GQ51bnUwDBSLFbqTvq29wGC4ct4Zyu8vgZtkM46eQJN1UsEKFm/8Of7YG8Kv5
-         A/r8lJXFwwttWKEbrul9OMFa6vSTWwUvt9OXf+wEX4A0aUKS8+RiOBiIr+8uA9ECs8bN
-         Vl03pCefqLV6Bj+L87/WKvPDlpeTmXl597+8SYhKOlLzzvbsd2ifJ5UoyxVWQbs3AK3v
-         u1F1qssZJ/KbKpGQp1c2MiRQlak+5cFS+kkOb5rIh5b0yPkY6YgNgyaHrOEJD4WpCq9p
-         3+Dw==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yeewx12qLKB4TGySW2pJhTuDPaEyodFbF3F+b907ybc=;
+        b=XjvJc8w083w+AVX9qGcMvSjZ8tHUdN44x6QsU2gflWOxuBTft9+95zsF5TR6F6akOk
+         RLxC7GkVuCS2xWSS0u2TqENjzMLn7HHkeOZEg6KomPkbnJflWv76/brQR0DRscFrlFu9
+         vejl1mabJSdCq4kVPo2EHa//F7Z8SvrvKDJYY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=xFF5qxswQ8XcvkvdvfVY4/mMkz+/5Nm8uIdW/HNF4l0=;
-        b=RP+AGbaNOrDBHDlrDnag3S4dneW3rzqBGdA8bPEaHTxV8RjERVejz91Xyky3hWn00R
-         bbL+vruKOeoFKt2HnJDmE898XLh8G2jYNZ+Apsh1aDzgpg2R006zL98Sw6Ie9i+WlEit
-         ZyrPU/nA6SIvN72OWmnFWi+bdTTXb+q1m9hzzj8COJtBciQ2M2x0hzNFnr9CILme+9zp
-         UGA3/cGtkd55F71k/m7M96hPk5BgABbzUDYwzmTx2xu4j8Rubcz9/J0kDzE+O5i4LS0E
-         qFXgKnhTai/RJyA1GiMu3qn61wD1XHkNmDvxXrN1y/1fwLngAvyCo0qMx5m6y93WnlO4
-         +t1w==
-X-Gm-Message-State: AOAM531MHwi1oihFaX5HPAmzeGZb4NM61NBmJTf2XyzEfWQuJHlbpByP
-        +neJN1zQyEQXCJUTUJLuHaobUtmjWbi0W4UtM/A=
-X-Google-Smtp-Source: ABdhPJxyzoZmVuOGUXyZqPhNEmq3n7shEn4qdfzq8u7nGZfUD+VJvMmXZlfbSSn7oT0RWF6YqEQvDoRsCL3W6Eb4Rbc=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:10e8:: with SMTP id
- q8mr4223437qvt.59.1598999138727; Tue, 01 Sep 2020 15:25:38 -0700 (PDT)
-Date:   Tue,  1 Sep 2020 15:25:23 -0700
-In-Reply-To: <20200901222523.1941988-1-ndesaulniers@google.com>
-Message-Id: <20200901222523.1941988-3-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20200901222523.1941988-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH 2/2] powerpc/vdso32: link vdso64 with linker
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Kees Cook <keescook@chromium.org>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yeewx12qLKB4TGySW2pJhTuDPaEyodFbF3F+b907ybc=;
+        b=tblT2GFjAAVL/b0ot7fvW/GWBj2GzvRcduERQbHaYjNt8eVJx/4I5EyFDjFnI4uAnt
+         5x7l68mtikjLNmClxjTvBtpNrGViLeB3blLXI4FlHWNGBQrgZH1R5+puDgis0gcRHlMu
+         +osJzsdg7c0k0tNgbdPbfZEaynAdBtxXYzVnDDWXk0VnxmheZdSMKaxjbk8JVdb86Sed
+         bTp7GphcR9lKMAlVcCAwGZSNQ2YDecoYlYaYVqpmuCaNB3nrzF3eGjsQR3ooBOSyEzo1
+         UeO8MJ++Oee8VSepEnqoI9/80bh4dZQ2CfAbx4wIXsjVbo85K40E04m6T+q2E83uel9v
+         TT9Q==
+X-Gm-Message-State: AOAM532s2IoSK8NSvaxNuUhTkuKGvxYmbU8Oivk1MGK1CxqvDWvauzKf
+        tNlVkiVJgH75ZIqttnlvEIXGrw==
+X-Google-Smtp-Source: ABdhPJwst0xtfYUOYcg1BW4vPIgCBhP6Sh9f0PYiGK4uFWJ+pl9IETurWsOkFjh1FjwEIN4RXMJSvQ==
+X-Received: by 2002:a05:6830:134a:: with SMTP id r10mr2883686otq.252.1598999126171;
+        Tue, 01 Sep 2020 15:25:26 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id z12sm464223ooh.41.2020.09.01.15.25.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 15:25:25 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/78] 4.9.235-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <83fb2e3e-c7b5-962b-ee3b-8b2081f584b2@linuxfoundation.org>
+Date:   Tue, 1 Sep 2020 16:25:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than invoke the compiler as the driver, use the linker. That way
-we can check --orphan-handling=warn support correctly, as cc-ldoption
-was removed in
-commit 055efab3120b ("kbuild: drop support for cc-ldoption").
+On 9/1/20 9:09 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.235 release.
+> There are 78 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 03 Sep 2020 15:09:01 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.235-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Requires dropping the .got section.  I couldn't find how it was used in
-the vdso32.
+Compiled and booted on my test system. No dmesg regressions.
 
-Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for orphan sections")
-Link: https://lore.kernel.org/lkml/CAKwvOdnn3wxYdJomvnveyD_njwRku3fABWT_bS92duihhywLJQ@mail.gmail.com/
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-Not sure removing .got is a good idea or not.  Otherwise I observe the
-following link error:
-powerpc-linux-gnu-ld: warning: orphan section `.got' from `arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.got'
-powerpc-linux-gnu-ld: _GLOBAL_OFFSET_TABLE_ not defined in linker created .got
-powerpc-linux-gnu-ld: final link failed: bad value
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-sigtramp.c doesn't mention anything from the GOT AFAICT, and doesn't
-look like it contains relocations that do, so I'm not sure where
-references to _GLOBAL_OFFSET_TABLE_ are coming from.
+thanks,
+-- Shuah
 
- arch/powerpc/kernel/vdso32/Makefile     | 7 +++++--
- arch/powerpc/kernel/vdso32/vdso32.lds.S | 3 ++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
-index 87ab1152d5ce..611a5951945a 100644
---- a/arch/powerpc/kernel/vdso32/Makefile
-+++ b/arch/powerpc/kernel/vdso32/Makefile
-@@ -27,6 +27,9 @@ UBSAN_SANITIZE := n
- ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
- 	-Wl,-soname=linux-vdso32.so.1 -Wl,--hash-style=both
- asflags-y := -D__VDSO32__ -s
-+ldflags-y := -shared -soname linux-vdso32.so.1 \
-+	$(call ld-option, --eh-frame-hdr) \
-+	$(call ld-option, --orphan-handling=warn) -T
- 
- obj-y += vdso32_wrapper.o
- extra-y += vdso32.lds
-@@ -49,8 +52,8 @@ $(obj-vdso32): %.o: %.S FORCE
- 	$(call if_changed_dep,vdso32as)
- 
- # actual build commands
--quiet_cmd_vdso32ld = VDSO32L $@
--      cmd_vdso32ld = $(VDSOCC) $(c_flags) $(CC32FLAGS) -o $@ $(call cc-ldoption, -Wl$(comma)--orphan-handling=warn) -Wl,-T$(filter %.lds,$^) $(filter %.o,$^)
-+quiet_cmd_vdso32ld = LD      $@
-+      cmd_vdso32ld = $(cmd_ld)
- quiet_cmd_vdso32as = VDSO32A $@
-       cmd_vdso32as = $(VDSOCC) $(a_flags) $(CC32FLAGS) -c -o $@ $<
- 
-diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-index 4c985467a668..0ccdebad18b8 100644
---- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
-+++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-@@ -61,7 +61,6 @@ SECTIONS
- 	.fixup		: { *(.fixup) }
- 
- 	.dynamic	: { *(.dynamic) }		:text	:dynamic
--	.got		: { *(.got) }			:text
- 	.plt		: { *(.plt) }
- 
- 	_end = .;
-@@ -108,7 +107,9 @@ SECTIONS
- 	.debug_varnames  0 : { *(.debug_varnames) }
- 
- 	/DISCARD/	: {
-+		*(.got)
- 		*(.note.GNU-stack)
-+		*(.branch_lt)
- 		*(.data .data.* .gnu.linkonce.d.* .sdata*)
- 		*(.bss .sbss .dynbss .dynsbss)
- 		*(.glink .iplt .plt .rela*)
--- 
-2.28.0.402.g5ffc5be6b7-goog
 
