@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5137B259783
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53463259756
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731952AbgIAQPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39798 "EHLO mail.kernel.org"
+        id S1728035AbgIAPf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:35:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729232AbgIAPel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:34:41 -0400
+        id S1729571AbgIAPet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:34:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1017F205F4;
-        Tue,  1 Sep 2020 15:34:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7DAA205F4;
+        Tue,  1 Sep 2020 15:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974480;
-        bh=2zFgQ/EK2UjnFNqLNvQO5Li4cdQ+2xUr2yjlL79tAYc=;
+        s=default; t=1598974488;
+        bh=9i2+7e8Ntk02cW3nUYBZh+5NioLti2D2TNosexCGLXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y0jb/4Y/m5Upi3IqoM3dpClmi28Ra6ZuYXBlotuDnjQIIAOjLQopbmMz5/GRTDnkU
-         Uj4FIVCOdwGrl4qto0Gvk+tPn69JiuqI/U76rSxKMtNiRIytms8RExGst3Vnjr/zXi
-         kUX3+zXL+w4OBflyDa7kgI2scSb11zcjiqN9CDhc=
+        b=TI5uE4P3CXZy2DUPk4IwWN6mfqDUqbF31VYTr9wJZpwvyPl60zF81pdE7q+HfG+Cm
+         3w4QThh4sqtJTrdMQaXPz9yOa8nd5vmiYxo/aCyMFc05QyIJiOQyyZVnE20jsu5+Qr
+         851xYXAzVMNsLha9vPQc6iaF1cLXGgF89N7YReQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Aleksey Makarov <amakarov@marvell.com>,
-        Peter Hurley <peter@hurleysoftware.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Christopher Covington <cov@codeaurora.org>
-Subject: [PATCH 5.4 162/214] serial: pl011: Fix oops on -EPROBE_DEFER
-Date:   Tue,  1 Sep 2020 17:10:42 +0200
-Message-Id: <20200901151000.735976266@linuxfoundation.org>
+        stable@vger.kernel.org, Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Subject: [PATCH 5.4 165/214] serial: 8250_exar: Fix number of ports for Commtech PCIe cards
+Date:   Tue,  1 Sep 2020 17:10:45 +0200
+Message-Id: <20200901151000.888617574@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -46,93 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Valmer Huhn <valmer.huhn@concurrent-rt.com>
 
-commit 27afac93e3bd7fa89749cf11da5d86ac9cde4dba upstream.
+commit c6b9e95dde7b54e6a53c47241201ab5a4035c320 upstream.
 
-If probing of a pl011 gets deferred until after free_initmem(), an oops
-ensues because pl011_console_match() is called which has been freed.
+The following in 8250_exar.c line 589 is used to determine the number
+of ports for each Exar board:
 
-Fix by removing the __init attribute from the function and those it
-calls.
+nr_ports = board->num_ports ? board->num_ports : pcidev->device & 0x0f;
 
-Commit 10879ae5f12e ("serial: pl011: add console matching function")
-introduced pl011_console_match() not just for early consoles but
-regular preferred consoles, such as those added by acpi_parse_spcr().
-Regular consoles may be registered after free_initmem() for various
-reasons, one being deferred probing, another being dynamic enablement
-of serial ports using a DeviceTree overlay.
+If the number of ports a card has is not explicitly specified, it defaults
+to the rightmost 4 bits of the PCI device ID. This is prone to error since
+not all PCI device IDs contain a number which corresponds to the number of
+ports that card provides.
 
-Thus, pl011_console_match() must not be declared __init and the
-functions it calls mustn't either.
+This particular case involves COMMTECH_4222PCIE, COMMTECH_4224PCIE and
+COMMTECH_4228PCIE cards with device IDs 0x0022, 0x0020 and 0x0021.
+Currently the multiport cards receive 2, 0 and 1 port instead of 2, 4 and
+8 ports respectively.
 
-Stack trace for posterity:
+To fix this, each Commtech Fastcom PCIe card is given a struct where the
+number of ports is explicitly specified. This ensures 'board->num_ports'
+is used instead of the default 'pcidev->device & 0x0f'.
 
-Unable to handle kernel paging request at virtual address 80c38b58
-Internal error: Oops: 8000000d [#1] PREEMPT SMP ARM
-PC is at pl011_console_match+0x0/0xfc
-LR is at register_console+0x150/0x468
-[<80187004>] (register_console)
-[<805a8184>] (uart_add_one_port)
-[<805b2b68>] (pl011_register_port)
-[<805b3ce4>] (pl011_probe)
-[<80569214>] (amba_probe)
-[<805ca088>] (really_probe)
-[<805ca2ec>] (driver_probe_device)
-[<805ca5b0>] (__device_attach_driver)
-[<805c8060>] (bus_for_each_drv)
-[<805c9dfc>] (__device_attach)
-[<805ca630>] (device_initial_probe)
-[<805c90a8>] (bus_probe_device)
-[<805c95a8>] (deferred_probe_work_func)
-
-Fixes: 10879ae5f12e ("serial: pl011: add console matching function")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v4.10+
-Cc: Aleksey Makarov <amakarov@marvell.com>
-Cc: Peter Hurley <peter@hurleysoftware.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Christopher Covington <cov@codeaurora.org>
-Link: https://lore.kernel.org/r/f827ff09da55b8c57d316a1b008a137677b58921.1597315557.git.lukas@wunner.de
+Fixes: d0aeaa83f0b0 ("serial: exar: split out the exar code from 8250_pci")
+Signed-off-by: Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Tested-by: Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200813165255.GC345440@icarus.concurrent-rt.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/amba-pl011.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/tty/serial/8250/8250_exar.c |   24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -2252,9 +2252,8 @@ pl011_console_write(struct console *co,
- 	clk_disable(uap->clk);
- }
+--- a/drivers/tty/serial/8250/8250_exar.c
++++ b/drivers/tty/serial/8250/8250_exar.c
+@@ -725,6 +725,24 @@ static const struct exar8250_board pbn_e
+ 	.exit		= pci_xr17v35x_exit,
+ };
  
--static void __init
--pl011_console_get_options(struct uart_amba_port *uap, int *baud,
--			     int *parity, int *bits)
-+static void pl011_console_get_options(struct uart_amba_port *uap, int *baud,
-+				      int *parity, int *bits)
- {
- 	if (pl011_read(uap, REG_CR) & UART01x_CR_UARTEN) {
- 		unsigned int lcr_h, ibrd, fbrd;
-@@ -2287,7 +2286,7 @@ pl011_console_get_options(struct uart_am
- 	}
- }
++static const struct exar8250_board pbn_fastcom35x_2 = {
++	.num_ports	= 2,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
++static const struct exar8250_board pbn_fastcom35x_4 = {
++	.num_ports	= 4,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
++static const struct exar8250_board pbn_fastcom35x_8 = {
++	.num_ports	= 8,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
+ static const struct exar8250_board pbn_exar_XR17V4358 = {
+ 	.num_ports	= 12,
+ 	.setup		= pci_xr17v35x_setup,
+@@ -795,9 +813,9 @@ static const struct pci_device_id exar_p
+ 	EXAR_DEVICE(EXAR, EXAR_XR17V358, pbn_exar_XR17V35x),
+ 	EXAR_DEVICE(EXAR, EXAR_XR17V4358, pbn_exar_XR17V4358),
+ 	EXAR_DEVICE(EXAR, EXAR_XR17V8358, pbn_exar_XR17V8358),
+-	EXAR_DEVICE(COMMTECH, COMMTECH_4222PCIE, pbn_exar_XR17V35x),
+-	EXAR_DEVICE(COMMTECH, COMMTECH_4224PCIE, pbn_exar_XR17V35x),
+-	EXAR_DEVICE(COMMTECH, COMMTECH_4228PCIE, pbn_exar_XR17V35x),
++	EXAR_DEVICE(COMMTECH, COMMTECH_4222PCIE, pbn_fastcom35x_2),
++	EXAR_DEVICE(COMMTECH, COMMTECH_4224PCIE, pbn_fastcom35x_4),
++	EXAR_DEVICE(COMMTECH, COMMTECH_4228PCIE, pbn_fastcom35x_8),
  
--static int __init pl011_console_setup(struct console *co, char *options)
-+static int pl011_console_setup(struct console *co, char *options)
- {
- 	struct uart_amba_port *uap;
- 	int baud = 38400;
-@@ -2355,8 +2354,8 @@ static int __init pl011_console_setup(st
-  *
-  *	Returns 0 if console matches; otherwise non-zero to use default matching
-  */
--static int __init pl011_console_match(struct console *co, char *name, int idx,
--				      char *options)
-+static int pl011_console_match(struct console *co, char *name, int idx,
-+			       char *options)
- {
- 	unsigned char iotype;
- 	resource_size_t addr;
+ 	EXAR_DEVICE(COMMTECH, COMMTECH_4222PCI335, pbn_fastcom335_2),
+ 	EXAR_DEVICE(COMMTECH, COMMTECH_4224PCI335, pbn_fastcom335_4),
 
 
