@@ -2,63 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958242591DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB8F2591EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgIAO4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:56:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:42826 "EHLO foss.arm.com"
+        id S1727801AbgIAO5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:57:36 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:41251 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728678AbgIAOyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:54:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26FDF1045;
-        Tue,  1 Sep 2020 07:54:48 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.10.252])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E05A13F71F;
-        Tue,  1 Sep 2020 07:54:44 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 15:54:42 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1726984AbgIAO53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:57:29 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 081Et9cK001156;
+        Tue, 1 Sep 2020 16:55:09 +0200
+Date:   Tue, 1 Sep 2020 16:55:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        George Spelvin <lkml@sdf.org>,
+        Amit Klein <aksecurity@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <20200901145442.GC95447@C02TD0UTHF1T.local>
-References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
- <20200901140208.GA95447@C02TD0UTHF1T.local>
- <20200901144641.GA28580@lst.de>
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+        Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Subject: Re: [PATCH 0/2] prandom_u32: make output less predictable
+Message-ID: <20200901145509.GC1059@1wt.eu>
+References: <20200901064302.849-1-w@1wt.eu>
+ <CA+icZUVvOArpuR=PJBg288pJmLmYxtgZxJOHnjk943e9M22WOQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901144641.GA28580@lst.de>
+In-Reply-To: <CA+icZUVvOArpuR=PJBg288pJmLmYxtgZxJOHnjk943e9M22WOQ@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 04:46:41PM +0200, Christoph Hellwig wrote:
-> On Tue, Sep 01, 2020 at 03:02:08PM +0100, Mark Rutland wrote:
-> > One thing to consider is whether you need a speculation barrier after
-> > set_fs(). Otherwise for code like:
-> 
-> FYI, at least for x86 and powerpc I have a pending series to kill
-> set_fs().  I'd love to see someone help with the arm/arm64 side, otherwise
-> I'll try to get to it eventually.
+On Tue, Sep 01, 2020 at 04:41:13PM +0200, Sedat Dilek wrote:
+> I have tested with the patchset from [1].
+> ( Later I saw, you dropped "WIP: tcp: reuse incoming skb hash in
+> tcp_conn_request()". )
 
-Is there anything in particular that's tricky, or do you just want
-someone to look generally? From a quick grep arch/arm64/* looks clean, but
-I suspect that's misleading.
+Yes because it's a bit out of the cope of this series and makes sense
+even without these patches, thus I assume Eric will take care of it
+separately.
 
-Thanks,
-Mark.
+Willy
