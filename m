@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C612598D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A959D259A77
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgIAQdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:33:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
+        id S1730127AbgIAP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:26:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730738AbgIAPbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:45 -0400
+        id S1729788AbgIAPXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:23:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4742E205F4;
-        Tue,  1 Sep 2020 15:31:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF627206FA;
+        Tue,  1 Sep 2020 15:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974304;
-        bh=ySBnpwnF0CNXjCXAEVMorz59mCAeieq6TpQ0Z/HUrxE=;
+        s=default; t=1598973792;
+        bh=s1FMidq3wD/dyOM19kLBhZ8R6vwh+ZWiVn506wglIyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HmFWNKwUIhSlr+HMX4yYCtyB8A+mELT+IY2Z6gCN7HHfRXkHpJeG2ieHJX+mynq2w
-         WelXk9E+pd8dOUdxeeeFYX+hEOQKCwBSTFLzF6X5ElR2bog7HO6MXvnlakuKsDjro1
-         BK5PcHUjVwzYoRA3FXkrSp1w0+KqqT97zsVDTCZs=
+        b=kWdKRL6XJ2qons59x5uH10LzyiMDBXMCrb9SQuENUrkGIWsVFZPqWdP9Vt8fXAidO
+         Ha0rBcdy0MD3WDVSyJeHkxME7A8ioJc5tI8mHsw+D7XCxtswXfD0eg6nV+7hoQ6okZ
+         LjaErRgpnQKh0T27qDe/1iJXc+Fn+Y4L6qARhgYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 123/214] spi: stm32: fix fifo threshold level in case of short transfer
+        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 048/125] KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe
 Date:   Tue,  1 Sep 2020 17:10:03 +0200
-Message-Id: <20200901150958.878202484@linuxfoundation.org>
+Message-Id: <20200901150936.906354748@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,97 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: David Brazdil <dbrazdil@google.com>
 
-[ Upstream commit 3373e9004acc0603242622b4378c64bc01d21b5f ]
+[ Upstream commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 ]
 
-When transfer is shorter than half of the fifo, set the data packet size
-up to transfer size instead of up to half of the fifo.
-Check also that threshold is set at least to 1 data frame.
+__hyp_call_panic_nvhe contains inline assembly which did not declare
+its dependency on the __hyp_panic_string symbol.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-3-git-send-email-alain.volmat@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The static-declared string has previously been kept alive because of a use in
+__hyp_call_panic_vhe. Fix this in preparation for separating the source files
+between VHE and nVHE when the two users land in two different compilation
+units. The static variable otherwise gets dropped when compiling the nVHE
+source file, causing an undefined symbol linker error later.
+
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200625131420.71444-2-dbrazdil@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+ arch/arm64/kvm/hyp/switch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 25b1348aaa549..f092bc8e00819 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -469,20 +469,27 @@ static int stm32_spi_prepare_mbr(struct stm32_spi *spi, u32 speed_hz,
- /**
-  * stm32h7_spi_prepare_fthlv - Determine FIFO threshold level
-  * @spi: pointer to the spi controller data structure
-+ * @xfer_len: length of the message to be transferred
-  */
--static u32 stm32h7_spi_prepare_fthlv(struct stm32_spi *spi)
-+static u32 stm32h7_spi_prepare_fthlv(struct stm32_spi *spi, u32 xfer_len)
- {
--	u32 fthlv, half_fifo;
-+	u32 fthlv, half_fifo, packet;
+diff --git a/arch/arm64/kvm/hyp/switch.c b/arch/arm64/kvm/hyp/switch.c
+index f3978931aaf40..3cdefd84af545 100644
+--- a/arch/arm64/kvm/hyp/switch.c
++++ b/arch/arm64/kvm/hyp/switch.c
+@@ -626,7 +626,7 @@ static void __hyp_text __hyp_call_panic_nvhe(u64 spsr, u64 elr, u64 par,
+ 	 * making sure it is a kernel address and not a PC-relative
+ 	 * reference.
+ 	 */
+-	asm volatile("ldr %0, =__hyp_panic_string" : "=r" (str_va));
++	asm volatile("ldr %0, =%1" : "=r" (str_va) : "S" (__hyp_panic_string));
  
- 	/* data packet should not exceed 1/2 of fifo space */
- 	half_fifo = (spi->fifo_size / 2);
- 
-+	/* data_packet should not exceed transfer length */
-+	if (half_fifo > xfer_len)
-+		packet = xfer_len;
-+	else
-+		packet = half_fifo;
-+
- 	if (spi->cur_bpw <= 8)
--		fthlv = half_fifo;
-+		fthlv = packet;
- 	else if (spi->cur_bpw <= 16)
--		fthlv = half_fifo / 2;
-+		fthlv = packet / 2;
- 	else
--		fthlv = half_fifo / 4;
-+		fthlv = packet / 4;
- 
- 	/* align packet size with data registers access */
- 	if (spi->cur_bpw > 8)
-@@ -490,6 +497,9 @@ static u32 stm32h7_spi_prepare_fthlv(struct stm32_spi *spi)
- 	else
- 		fthlv -= (fthlv % 4); /* multiple of 4 */
- 
-+	if (!fthlv)
-+		fthlv = 1;
-+
- 	return fthlv;
- }
- 
-@@ -1396,7 +1406,7 @@ static void stm32h7_spi_set_bpw(struct stm32_spi *spi)
- 	cfg1_setb |= (bpw << STM32H7_SPI_CFG1_DSIZE_SHIFT) &
- 		     STM32H7_SPI_CFG1_DSIZE;
- 
--	spi->cur_fthlv = stm32h7_spi_prepare_fthlv(spi);
-+	spi->cur_fthlv = stm32h7_spi_prepare_fthlv(spi, spi->cur_xferlen);
- 	fthlv = spi->cur_fthlv - 1;
- 
- 	cfg1_clrb |= STM32H7_SPI_CFG1_FTHLV;
-@@ -1582,6 +1592,8 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
- 
- 	spin_lock_irqsave(&spi->lock, flags);
- 
-+	spi->cur_xferlen = transfer->len;
-+
- 	if (spi->cur_bpw != transfer->bits_per_word) {
- 		spi->cur_bpw = transfer->bits_per_word;
- 		spi->cfg->set_bpw(spi);
-@@ -1629,8 +1641,6 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
- 			goto out;
- 	}
- 
--	spi->cur_xferlen = transfer->len;
--
- 	dev_dbg(spi->dev, "transfer communication mode set to %d\n",
- 		spi->cur_comm);
- 	dev_dbg(spi->dev,
+ 	__hyp_do_panic(str_va,
+ 		       spsr,  elr,
 -- 
 2.25.1
 
