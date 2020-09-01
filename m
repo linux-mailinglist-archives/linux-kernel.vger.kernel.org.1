@@ -2,135 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D73259D0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786F2259D24
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgIARXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:23:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:59156 "EHLO mga11.intel.com"
+        id S1728856AbgIARZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:25:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:47234 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729384AbgIARXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:23:15 -0400
-IronPort-SDR: 4B0tkcJC6JmsWNq3TyA+uqJaq/KHgRyf5UCkhB3Rk0oPDtDqP2jMsF8yLlDf3w96GsrMNe73XO
- we4wYTnQ1VCg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="154729712"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="154729712"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 10:23:14 -0700
-IronPort-SDR: wuavfJxSyAPpELTV8WPFMMAHFUIjYWk2p5fLGqafU8dChGcX+q9xPL+vQSSxs9yoHADPFY7gzF
- UEmYO/DPRnJg==
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="301519837"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.241.30]) ([10.212.241.30])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 10:23:12 -0700
-Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
- shadow stack
-To:     Dave Martin <Dave.Martin@arm.com>, "H.J. Lu" <hjl.tools@gmail.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-References: <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
- <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
- <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
- <ef7f9e24-f952-d78c-373e-85435f742688@intel.com>
- <20200826164604.GW6642@arm.com> <87ft892vvf.fsf@oldenburg2.str.redhat.com>
- <CALCETrVeNA0Kt2rW0CRCVo1JE0CKaBxu9KrJiyqUA8LPraY=7g@mail.gmail.com>
- <0e9996bc-4c1b-cc99-9616-c721b546f857@intel.com>
- <4f2dfefc-b55e-bf73-f254-7d95f9c67e5c@intel.com>
- <CAMe9rOqt9kbqERC8U1+K-LiDyNYuuuz3TX++DChrRJwr5ajt6Q@mail.gmail.com>
- <20200901102758.GY6642@arm.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <c91bbad8-9e45-724b-4526-fe3674310c57@intel.com>
-Date:   Tue, 1 Sep 2020 10:23:11 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+        id S1732731AbgIARYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:24:00 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 52E8A1FB;
+        Tue,  1 Sep 2020 10:23:58 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 401F73F71F;
+        Tue,  1 Sep 2020 10:23:56 -0700 (PDT)
+Subject: Re: [PATCH v9 01/32] drm: prime: add common helper to check
+ scatterlist contiguity
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20200826063316.23486-1-m.szyprowski@samsung.com>
+ <CGME20200826063527eucas1p1d68954adf1c25e1d760b92ca0845ab48@eucas1p1.samsung.com>
+ <20200826063316.23486-2-m.szyprowski@samsung.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <bbbd5f0c-a0ae-015e-dbfd-4ae41e586983@arm.com>
+Date:   Tue, 1 Sep 2020 18:23:54 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200901102758.GY6642@arm.com>
+In-Reply-To: <20200826063316.23486-2-m.szyprowski@samsung.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/2020 3:28 AM, Dave Martin wrote:
-> On Thu, Aug 27, 2020 at 06:26:11AM -0700, H.J. Lu wrote:
->> On Wed, Aug 26, 2020 at 12:57 PM Dave Hansen <dave.hansen@intel.com> wrote:
->>>
->>> On 8/26/20 11:49 AM, Yu, Yu-cheng wrote:
->>>>> I would expect things like Go and various JITs to call it directly.
->>>>>
->>>>> If we wanted to be fancy and add a potentially more widely useful
->>>>> syscall, how about:
->>>>>
->>>>> mmap_special(void *addr, size_t length, int prot, int flags, int type);
->>>>>
->>>>> Where type is something like MMAP_SPECIAL_X86_SHSTK.  Fundamentally,
->>>>> this is really just mmap() except that we want to map something a bit
->>>>> magical, and we don't want to require opening a device node to do it.
->>>>
->>>> One benefit of MMAP_SPECIAL_* is there are more free bits than MAP_*.
->>>> Does ARM have similar needs for memory mapping, Dave?
->>>
->>> No idea.
->>>
->>> But, mmap_special() is *basically* mmap2() with extra-big flags space.
->>> I suspect it will grow some more uses on top of shadow stacks.  It could
->>> have, for instance, been used to allocate MPX bounds tables.
->>
->> There is no reason we can't use
->>
->> long arch_prctl (int, unsigned long, unsigned long, unsigned long, ..);
->>
->> for ARCH_X86_CET_MMAP_SHSTK.   We just need to use
->>
->> syscall (SYS_arch_prctl, ARCH_X86_CET_MMAP_SHSTK, ...);
-> 
-> 
-> For arm64 (and sparc etc.) we continue to use the regular mmap/mprotect
-> family of calls.  One or two additional arch-specific mmap flags are
-> sufficient for now.
-> 
-> Is x86 definitely not going to fit within those calls?
+On 2020-08-26 07:32, Marek Szyprowski wrote:
+> It is a common operation done by DRM drivers to check the contiguity
+> of the DMA-mapped buffer described by a scatterlist in the
+> sg_table object. Let's add a common helper for this operation.
 
-That can work for x86.  Andy, what if we create PROT_SHSTK, which can 
-been seen only from the user.  Once in kernel, it is translated to 
-VM_SHSTK.  One question for mremap/mprotect is, do we allow a normal 
-data area to become shadow stack?
+I still think this could be hoisted even further out to the common 
+sgtable API level, but let's get the individual subsystems straightened 
+out first then worry about consolidation later.
 
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+> ---
+>   drivers/gpu/drm/drm_gem_cma_helper.c | 23 +++------------------
+>   drivers/gpu/drm/drm_prime.c          | 31 ++++++++++++++++++++++++++++
+>   include/drm/drm_prime.h              |  2 ++
+>   3 files changed, 36 insertions(+), 20 deletions(-)
 > 
-> For now, I can't see what arg[2] is used for (and hence the type
-> argument of mmap_special()), but I haven't dug through the whole series.
-
-If we use the approach above, then we don't need arch_prctl changes.
-
-Thanks,
-Yu-cheng
+> diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+> index 822edeadbab3..59b9ca207b42 100644
+> --- a/drivers/gpu/drm/drm_gem_cma_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+> @@ -471,26 +471,9 @@ drm_gem_cma_prime_import_sg_table(struct drm_device *dev,
+>   {
+>   	struct drm_gem_cma_object *cma_obj;
+>   
+> -	if (sgt->nents != 1) {
+> -		/* check if the entries in the sg_table are contiguous */
+> -		dma_addr_t next_addr = sg_dma_address(sgt->sgl);
+> -		struct scatterlist *s;
+> -		unsigned int i;
+> -
+> -		for_each_sg(sgt->sgl, s, sgt->nents, i) {
+> -			/*
+> -			 * sg_dma_address(s) is only valid for entries
+> -			 * that have sg_dma_len(s) != 0
+> -			 */
+> -			if (!sg_dma_len(s))
+> -				continue;
+> -
+> -			if (sg_dma_address(s) != next_addr)
+> -				return ERR_PTR(-EINVAL);
+> -
+> -			next_addr = sg_dma_address(s) + sg_dma_len(s);
+> -		}
+> -	}
+> +	/* check if the entries in the sg_table are contiguous */
+> +	if (drm_prime_get_contiguous_size(sgt) < attach->dmabuf->size)
+> +		return ERR_PTR(-EINVAL);
+>   
+>   	/* Create a CMA GEM buffer. */
+>   	cma_obj = __drm_gem_cma_create(dev, attach->dmabuf->size);
+> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+> index 1693aa7c14b5..4ed5ed1f078c 100644
+> --- a/drivers/gpu/drm/drm_prime.c
+> +++ b/drivers/gpu/drm/drm_prime.c
+> @@ -825,6 +825,37 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
+>   }
+>   EXPORT_SYMBOL(drm_prime_pages_to_sg);
+>   
+> +/**
+> + * drm_prime_get_contiguous_size - returns the contiguous size of the buffer
+> + * @sgt: sg_table describing the buffer to check
+> + *
+> + * This helper calculates the contiguous size in the DMA address space
+> + * of the the buffer described by the provided sg_table.
+> + *
+> + * This is useful for implementing
+> + * &drm_gem_object_funcs.gem_prime_import_sg_table.
+> + */
+> +unsigned long drm_prime_get_contiguous_size(struct sg_table *sgt)
+> +{
+> +	dma_addr_t expected = sg_dma_address(sgt->sgl);
+> +	struct scatterlist *sg;
+> +	unsigned long size = 0;
+> +	int i;
+> +
+> +	for_each_sgtable_dma_sg(sgt, sg, i) {
+> +		unsigned int len = sg_dma_len(sg);
+> +
+> +		if (!len)
+> +			break;
+> +		if (sg_dma_address(sg) != expected)
+> +			break;
+> +		expected += len;
+> +		size += len;
+> +	}
+> +	return size;
+> +}
+> +EXPORT_SYMBOL(drm_prime_get_contiguous_size);
+> +
+>   /**
+>    * drm_gem_prime_export - helper library implementation of the export callback
+>    * @obj: GEM object to export
+> diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
+> index 9af7422b44cf..47ef11614627 100644
+> --- a/include/drm/drm_prime.h
+> +++ b/include/drm/drm_prime.h
+> @@ -92,6 +92,8 @@ struct sg_table *drm_prime_pages_to_sg(struct page **pages, unsigned int nr_page
+>   struct dma_buf *drm_gem_prime_export(struct drm_gem_object *obj,
+>   				     int flags);
+>   
+> +unsigned long drm_prime_get_contiguous_size(struct sg_table *sgt);
+> +
+>   /* helper functions for importing */
+>   struct drm_gem_object *drm_gem_prime_import_dev(struct drm_device *dev,
+>   						struct dma_buf *dma_buf,
+> 
