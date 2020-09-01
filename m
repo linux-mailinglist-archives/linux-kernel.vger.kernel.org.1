@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFAF2590C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC03D2590B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728497AbgIAOi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
+        id S1728204AbgIAOhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727845AbgIAOR6 (ORCPT
+        with ESMTP id S1728272AbgIAOTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:17:58 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893A4C061249
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:17:56 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mw10so677732pjb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:17:56 -0700 (PDT)
+        Tue, 1 Sep 2020 10:19:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AE4C061249
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:19:33 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w2so1343268wmi.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:19:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KeS8GKVJq4T+CUgWiidHvzznWbWtkMB2WevyIbiUS5I=;
-        b=XLzONATGaZUk6RmUTMF0GqUspbosIonDxdLp5n7lUSWgIaD9z1FySY8zCcjgDgdO9c
-         UfwDEOX20gSkEu9ogQk1AmBfwiYDZAMyTtT+OQwliywIdq0yzqV5xju1jDq8CypTR7er
-         AcudE8BiwbZkuQsOze0xqL/NtoOQdF5TsCWkedgUUBmTzuyg+2CZrBvq7hkqKwQVvtWZ
-         mhkPySDERdy15+hmLSDJMq0rV3bsG+0B+YBokrPl2XrFYDExJFQrB3umYTmJPnKTIwJp
-         15CukajAo9d9+K+gzOSNhPvM1zW6CcXg0x5QhowwfWHJR8hE1n9+0MQfFCi+HslBbPvJ
-         ysrQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d0qADbe6lms6ja4jpLh/7o17Sin0XkGvPQGFqKKb+qg=;
+        b=as6ZhId9BGoiIsUyZNdl9MSpaccNfWAqHVVOh4EZLW3JAc7umkdnIUkQYJW9Y/O7O6
+         V/3ukFkjQ1fQ1J4BmR9M3TZVjFuHNa7tAvFQy/qtRvWhU5kqhcjh5wGmooW0riApIaAC
+         qdU8ki+7vWhPKZn2Q/o+8neu2WcjW+svESa4ASqDpoR4edxM8444vT0U3pWovFpXRhDR
+         XDZ062GHZLCaaxuJWsVUogdrjcyQqVDllx7IoAzq2iXEbz5xDISPSFoZpAddlGpJfHwT
+         1g22zEyYs0IK+9XPqgqhxPXLzNySLPlLzaOI12aM2dwwTU98/CpSdK8jqxCgW/JFIYXW
+         xrSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KeS8GKVJq4T+CUgWiidHvzznWbWtkMB2WevyIbiUS5I=;
-        b=l4t2O6woRMikGVOE5J38gDoa2+0po/X+VBq9laP3kdnOjdVvcj/t95PI9mif4T0ZWp
-         yTtBQ7em8CWitqkmutlKfO/xN52m4pap6hpjW5G2LE7FyyKl3jgqOwfZ0IM1OQnjaeP5
-         75OaIQGF4E2dwHPyiOf7rNEBCkXcPurcL0WSJq9NlX/cPpWCU5XiFUSBVl6ROpRn3DoO
-         VLMjqU9r/bY2zooZOe7Iz8UIxM5ONQVSC/uk6SS+aO3rrC88Q4M0PFK9EMUBXgmfBYrT
-         SpMT66HFM04SnWZ+AsiKUUw7gOjvGU2MseoLbUPDyexb/DTZO3qYOeKHZC0+2aFPDF+P
-         Td4A==
-X-Gm-Message-State: AOAM530rVw29d9Llx/O8j69M1/b46PcLgoeMw69rH6tkpH5ggyIvdyS7
-        hKan3NYfRl1wmQDK7FhbqXJU2w==
-X-Google-Smtp-Source: ABdhPJwTKTTtzYF2fDa2cowvfZektAF3tPSKAyVIQ88mb1mgNFiqoQOXUnIV/DKwOj3wmrEflZZYiA==
-X-Received: by 2002:a17:902:ff12:: with SMTP id f18mr560148plj.118.1598969875941;
-        Tue, 01 Sep 2020 07:17:55 -0700 (PDT)
-Received: from [192.168.1.187] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id c8sm2041855pfc.203.2020.09.01.07.17.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 07:17:55 -0700 (PDT)
-Subject: Re: [PATCH v2] io_wq: Make io_wqe::lock a raw_spinlock_t
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20200819123758.6v45rj2gvojddsnn@linutronix.de>
- <20200819131507.GC2674@hirez.programming.kicks-ass.net>
- <f26205ac-9da9-253e-ea43-db2417714a94@kernel.dk>
- <20200819194443.eabkhlkocvkgifyh@linutronix.de>
- <20200901084146.4ttqrom2avcoatea@linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <dd494f20-40d3-1abd-697b-f69d3edbb406@kernel.dk>
-Date:   Tue, 1 Sep 2020 08:17:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d0qADbe6lms6ja4jpLh/7o17Sin0XkGvPQGFqKKb+qg=;
+        b=UUV+ttT45KhbOjAzOtBlsHxuwjau6oBe31mMbWkKTBsE9I4WJlRbex/eBDnMiLnazj
+         4JRwno5UdLDblm3Djm5Pk1DJCQCuapJRggvqfCUADDLAS+sY8OnxAJDkGjssgr+rrav5
+         sm4DWF671t8TGoEEFq0ML2tLy6Hw+0oR7etXjowR6Fa//s4FotFzV/KJxTUdtFN3RrlB
+         hPGpA8887kaYokajttOMrbR6j9TuTCbrap6rqUE0rbwIaeaZs6kbUwZ05nxtSiwYjhTC
+         iR4ZPRGonB/6I2FlQfQeeoC8bKN5yLgr+xjK2M4xXd2PmmuAA9aP4KII9R+rioguthIj
+         QkTQ==
+X-Gm-Message-State: AOAM530Ug/lbhPeqRdM7puFapZYk004mVG3T5TldxkKkYOXyn4RCw0CH
+        XTTXlIRAbba3JFAjfwj6QqSq3JEVv/UQVb1Euhw=
+X-Google-Smtp-Source: ABdhPJx3A8LQc1AKi5DhvdsaNfy/S9210zyQvGHZaEZytNnb0nVwDTHCrkHOYp694kkRcwuI/Tuh7/aRO9coNr/vsSw=
+X-Received: by 2002:a7b:cb17:: with SMTP id u23mr2075647wmj.79.1598969971757;
+ Tue, 01 Sep 2020 07:19:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200901084146.4ttqrom2avcoatea@linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200901063227.6057-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20200901063227.6057-1-kai.heng.feng@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 1 Sep 2020 10:19:20 -0400
+Message-ID: <CADnq5_MXs-=BpMrYVudhHPjTpgs1XUE=GEujpp5AeYy5vWS=YA@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Reset ASIC if suspend is not managed by
+ platform firmware
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 2:41 AM, Sebastian Andrzej Siewior wrote:
-> During a context switch the scheduler invokes wq_worker_sleeping() with
-> disabled preemption. Disabling preemption is needed because it protects
-> access to `worker->sleeping'. As an optimisation it avoids invoking
-> schedule() within the schedule path as part of possible wake up (thus
-> preempt_enable_no_resched() afterwards).
-> 
-> The io-wq has been added to the mix in the same section with disabled
-> preemption. This breaks on PREEMPT_RT because io_wq_worker_sleeping()
-> acquires a spinlock_t. Also within the schedule() the spinlock_t must be
-> acquired after tsk_is_pi_blocked() otherwise it will block on the
-> sleeping lock again while scheduling out.
-> 
-> While playing with `io_uring-bench' I didn't notice a significant
-> latency spike after converting io_wqe::lock to a raw_spinlock_t. The
-> latency was more or less the same.
-> 
-> In order to keep the spinlock_t it would have to be moved after the
-> tsk_is_pi_blocked() check which would introduce a branch instruction
-> into the hot path.
-> 
-> The lock is used to maintain the `work_list' and wakes one task up at
-> most.
-> Should io_wqe_cancel_pending_work() cause latency spikes, while
-> searching for a specific item, then it would need to drop the lock
-> during iterations.
-> revert_creds() is also invoked under the lock. According to debug
-> cred::non_rcu is 0. Otherwise it should be moved outside of the locked
-> section because put_cred_rcu()->free_uid() acquires a sleeping lock.
-> 
-> Convert io_wqe::lock to a raw_spinlock_t.c
+On Tue, Sep 1, 2020 at 3:32 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> Suspend with s2idle or by the following steps cause screen frozen:
+>  # echo devices > /sys/power/pm_test
+>  # echo freeze > /sys/power/mem
+>
+> [  289.625461] [drm:uvd_v1_0_ib_test [radeon]] *ERROR* radeon: fence wait timed out.
+> [  289.625494] [drm:radeon_ib_ring_tests [radeon]] *ERROR* radeon: failed testing IB on ring 5 (-110).
+>
+> The issue doesn't happen on traditional S3, probably because firmware or
+> hardware provides extra power management.
+>
+> Inspired by Daniel Drake's patch [1] on amdgpu, using a similar approach
+> can fix the issue.
 
-Thanks, I've applied this for 5.10.
+It doesn't actually fix the issue.  The device is never powered down
+so you are using more power than you would if you did not suspend in
+the first place.  The reset just works around the fact that the device
+is never powered down.
 
--- 
-Jens Axboe
+Alex
 
+>
+> [1] https://patchwork.freedesktop.org/patch/335839/
+>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/gpu/drm/radeon/radeon_device.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
+> index 266e3cbbd09b..df823b9ad79f 100644
+> --- a/drivers/gpu/drm/radeon/radeon_device.c
+> +++ b/drivers/gpu/drm/radeon/radeon_device.c
+> @@ -33,6 +33,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/vga_switcheroo.h>
+>  #include <linux/vgaarb.h>
+> +#include <linux/suspend.h>
+>
+>  #include <drm/drm_cache.h>
+>  #include <drm/drm_crtc_helper.h>
+> @@ -1643,6 +1644,8 @@ int radeon_suspend_kms(struct drm_device *dev, bool suspend,
+>                 rdev->asic->asic_reset(rdev, true);
+>                 pci_restore_state(dev->pdev);
+>         } else if (suspend) {
+> +               if (pm_suspend_no_platform())
+> +                       rdev->asic->asic_reset(rdev, true);
+>                 /* Shut down the device */
+>                 pci_disable_device(dev->pdev);
+>                 pci_set_power_state(dev->pdev, PCI_D3hot);
+> --
+> 2.17.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
