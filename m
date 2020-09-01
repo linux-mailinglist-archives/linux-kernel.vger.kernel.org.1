@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECAB25968A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0A8259643
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729551AbgIAQEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55228 "EHLO mail.kernel.org"
+        id S1728717AbgIAQAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728474AbgIAPmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:24 -0400
+        id S1726726AbgIAQAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:00:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4123A206EB;
-        Tue,  1 Sep 2020 15:42:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6D65B206EB;
+        Tue,  1 Sep 2020 16:00:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974943;
-        bh=zEVh5qL9qm/yB6jpYys63bBeSyhHRkjD+rP54dVUYwI=;
+        s=default; t=1598976022;
+        bh=AZgGkmsEKBiJExdxkihjVPR+JtprHDCEAxlOGifQRsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0WZSiJtEYiCoB7ouazKCjk6SQ1AOSWw9R2er6QgFEmiL+noDD+rLYoFFpoU0if3qM
-         wTdmUE4F9IU86skO5AsMQzD0nL24DZzPz/iDDF2JSX+nN8ijYcC0GH+X0I3dgvW+op
-         qS72X7poj4jTgbqUe2LKMaPwKah/IUPE4fxS5o10=
+        b=Nq6oi/unh9OQ+KrSq/80AUKhuKybZ2qkuGsGRhvsko2ONEYZB++YJA+WVfD3rnc0H
+         W1UvZzV0R3teYS9uG4vMOzJYh4lvmqccO8tbEaig1o3wwudZtPatD6PrLr5Au3y8Jw
+         HBi5LQ0PlT9IuetXIyMGJ2p8joeHoRY/HpS6LV1U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 120/255] spi: stm32: fix stm32_spi_prepare_mbr in case of odd clk_rate
-Date:   Tue,  1 Sep 2020 17:09:36 +0200
-Message-Id: <20200901151006.480047165@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 097/214] ALSA: usb-audio: Add capture support for Saffire 6 (USB 1.1)
+Date:   Tue,  1 Sep 2020 17:09:37 +0200
+Message-Id: <20200901150957.640240872@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-[ Upstream commit 9cc61973bf9385b19ff5dda4a2a7e265fcba85e4 ]
+[ Upstream commit 470757f5b3a46bd85741bb0d8c1fd3f21048a2af ]
 
-Fix spi->clk_rate when it is odd to the nearest lowest even value because
-minimum SPI divider is 2.
+Capture and playback endpoints on Saffire 6 (USB 1.1) resides on the same
+interface. This was not supported by the composite quirk back in the day
+when initial support for this device was added, thus only playback was
+enabled until now.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-4-git-send-email-alain.volmat@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 11e424e88bd4 ("ALSA: usb-audio: Add support for Focusrite Saffire 6 USB")
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Cc: <stable.vger.kernel.org>
+Link: https://lore.kernel.org/r/20200815002103.29247-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/usb/quirks-table.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 7f2113e7b3ddc..9b90a22543fd7 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -442,7 +442,8 @@ static int stm32_spi_prepare_mbr(struct stm32_spi *spi, u32 speed_hz,
- {
- 	u32 div, mbrdiv;
- 
--	div = DIV_ROUND_UP(spi->clk_rate, speed_hz);
-+	/* Ensure spi->clk_rate is even */
-+	div = DIV_ROUND_UP(spi->clk_rate & ~0x1, speed_hz);
- 
- 	/*
- 	 * SPI framework set xfer->speed_hz to master->max_speed_hz if
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 1573229d8cf4c..2d335fdae28ed 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2695,6 +2695,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+ 		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
+ 			{
+ 				.ifnum = 0,
+ 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+@@ -2707,6 +2711,32 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+ 					.endpoint = 0x01,
+ 					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.datainterval = 1,
++					.maxpacksize = 0x024c,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000,
++					.rate_min = 44100,
++					.rate_max = 48000,
++					.nr_rates = 2,
++					.rate_table = (unsigned int[]) {
++						44100, 48000
++					}
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 2,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0,
++					.endpoint = 0x82,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.datainterval = 1,
++					.maxpacksize = 0x0126,
+ 					.rates = SNDRV_PCM_RATE_44100 |
+ 						 SNDRV_PCM_RATE_48000,
+ 					.rate_min = 44100,
 -- 
 2.25.1
 
