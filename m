@@ -2,116 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB863259FB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 22:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B68259FA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 22:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgIAUNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 16:13:40 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:51454 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726323AbgIAUNi (ORCPT
+        id S1728825AbgIAULP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 16:11:15 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:38371 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727842AbgIAULL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 16:13:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598991217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xUuZ6mEXauP3gq+OoIUq+Lrp43JbuOxI9ofegT73lio=;
-        b=iRbUhJv8HTMS2ciW+v6xaNhM+qMZlcvmuuk4n//OxuTniK+i+MCuISz4Zpf81f6d9ve1MD
-        OGXy+N7VHxP+BBEnO5fYMi2HPxtL6vfPePcVMyExIQvYGsmeKRhX+NtK4Nz8I2SP+bkH+P
-        TvpLcGqKFw8PnjCcq8OTkR0J4BxQQ8E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-I_8VKxF5PEu_dC1dfSID1g-1; Tue, 01 Sep 2020 16:09:17 -0400
-X-MC-Unique: I_8VKxF5PEu_dC1dfSID1g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 711D71074651;
-        Tue,  1 Sep 2020 20:09:15 +0000 (UTC)
-Received: from krava (unknown [10.40.193.186])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 490EA5D9CC;
-        Tue,  1 Sep 2020 20:09:13 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 22:09:12 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v4 1/7] perf util: Create streams
-Message-ID: <20200901200912.GD470123@krava>
-References: <20200824233513.16930-1-yao.jin@linux.intel.com>
- <20200824233513.16930-2-yao.jin@linux.intel.com>
- <20200831135609.GE406859@krava>
- <4cef1f08-e1c1-3227-24f2-be3108ea4d99@linux.intel.com>
+        Tue, 1 Sep 2020 16:11:11 -0400
+Received: (qmail 600595 invoked by uid 1000); 1 Sep 2020 16:11:10 -0400
+Date:   Tue, 1 Sep 2020 16:11:10 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH kcsan 9/9] tools/memory-model:  Document locking corner
+ cases
+Message-ID: <20200901201110.GB599114@rowland.harvard.edu>
+References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
+ <20200831182037.2034-9-paulmck@kernel.org>
+ <20200831201701.GB558270@rowland.harvard.edu>
+ <20200831214738.GE2855@paulmck-ThinkPad-P72>
+ <20200901014504.GB571008@rowland.harvard.edu>
+ <20200901170421.GF29330@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4cef1f08-e1c1-3227-24f2-be3108ea4d99@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200901170421.GF29330@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 10:26:25AM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 8/31/2020 9:56 PM, Jiri Olsa wrote:
-> > On Tue, Aug 25, 2020 at 07:35:07AM +0800, Jin Yao wrote:
-> > 
-> > SNIP
-> > 
-> > > +						  int nr_streams_max,
-> > > +						  enum stream_type type)
-> > > +{
-> > > +	struct evsel_streams *es;
-> > > +	int nr_evsel = evlist->core.nr_entries, ret = -1;
-> > > +
-> > > +	es = create_evsel_streams(nr_evsel, nr_streams_max);
-> > > +	if (!es)
-> > > +		return NULL;
-> > > +
-> > > +	if (type == STREAM_CALLCHAIN)
-> > > +		ret = evlist_init_callchain_streams(evlist, es, nr_evsel);
-> > > +
-> > > +	if (ret) {
-> > > +		free_evsel_streams(es, nr_evsel);
-> > > +		return NULL;
-> > > +	}
-> > > +
-> > > +	return es;
-> > > +}
-> > > diff --git a/tools/perf/util/stream.h b/tools/perf/util/stream.h
-> > > new file mode 100644
-> > > index 000000000000..a8a0172b4d13
-> > > --- /dev/null
-> > > +++ b/tools/perf/util/stream.h
-> > > @@ -0,0 +1,30 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef __PERF_STREAM_H
-> > > +#define __PERF_STREAM_H
-> > > +
-> > > +#include "callchain.h"
-> > > +
-> > > +enum stream_type {
-> > > +	STREAM_NONE = 0,
-> > > +	STREAM_CALLCHAIN
-> > 
-> > do you plan to add more types?
-> > 
-> > jirka
-> > 
-> 
-> Thanks for looking at this patch series.
-> 
-> So far, no more types in plan. :)
+On Tue, Sep 01, 2020 at 10:04:21AM -0700, Paul E. McKenney wrote:
+> On Mon, Aug 31, 2020 at 09:45:04PM -0400, Alan Stern wrote:
 
-I was wondering what's the enum for then, it could
-be hardcoded and ease up the code maybe? but it's
-jus a thought, I don't follow the change deeply
+> > The question is, what are you trying to accomplish in this section?  Are 
+> > you trying to demonstrate that it isn't safe to allow arbitrary code to 
+> > leak into a critical section?  If so then you don't need to present an 
+> > LKMM litmus test to make the point; the example I gave here will do 
+> > quite as well.  Perhaps even better, since it doesn't drag in all sorts 
+> > of extraneous concepts like limitations of litmus tests or how to 
+> > emulate a spin loop.
+> > 
+> > On the other hand, if your goal is to show how to construct a litmus 
+> > test that will model a particular C language test case (such as the one 
+> > I gave), then the text does a reasonable job -- although I do think it 
+> > could be clarified somewhat.  For instance, it wouldn't hurt to include 
+> > the real C code before giving the corresponding litmus test, so that the 
+> > reader will have a clear idea of what you're trying to model.
+> 
+> Makes sense.  I can apply this at some point, but I would welcome a patch
+> from you, which I would be happy to fold in with your Codeveloped-by.
 
-jirka
+I don't have time to work on these documents now.  Maybe later on.  They 
+do need some serious editing.  (You could try reading through them 
+carefully yourself; I'm sure you'd find a lot of things to fix up.)
 
+Incidentally, your patch bomb from yesterday was the first time I had 
+seen these things (except for the litmus-test format document).
+
+> > Just what you want to achieve here is not clear from the context.
+> 
+> People who have internalized the "roach motel" model of locking
+> (https://www.cs.umd.edu/~pugh/java/memoryModel/BidirectionalMemoryBarrier.html)
+> need their internalization adjusted.
+
+Shucks, if you only want to show that letting arbitrary code (i.e., 
+branches) migrate into a critical section is unsafe, all you need is 
+this uniprocessor example:
+
+	P0(int *sl)
+	{
+		goto Skip;
+		spin_lock(sl);
+		spin_unlock(sl);
+	Skip:
+		spin_lock(sl);
+		spin_unlock(sl);
+	}
+
+This does nothing but runs fine.  Letting the branch move into the first 
+critical section gives:
+
+	P0(int *sl)
+	{
+		spin_lock(sl);
+		goto Skip;
+		spin_unlock(sl);
+	Skip:
+		spin_lock(sl);
+		spin_unlock(sl);
+	}
+
+which self-deadlocks 100% of the time.  You don't need to know anything 
+about memory models or concurrency to understand this.
+
+On the other hand, if you want to show that letting memory accesses leak 
+into a critical section is unsafe then you need a different example: 
+spin loops won't do it.
+
+> > Besides, the example is in any case a straw man.  The text starts out 
+> > saying "It is tempting to allow memory-reference instructions to be 
+> > pulled into a critical section", but then the example pulls an entire 
+> > spin loop inside -- not just the memory references but also the 
+> > conditional branch instruction at the bottom of the loop!  I can't 
+> > imagine anyone would think it was safe to allow branches to leak into a 
+> > critical section, particularly when doing so would break a control 
+> > dependency (as it does here).
+> 
+> Most people outside of a few within the Linux kernel community and within
+> the various hardware memory-ordering communities don't know that control
+> dependencies even exist, so could not be expected to see any danger
+> in rather thoroughly folding, spindling, or otherwise mutilating them,
+> let alone pulling them into a lock-based critical section.  And many in
+> the various toolchain communities see dependencies of any sort as an
+> impediment to performance that should be broken wherever and whenever
+> possible.
+> 
+> That said, a less prejudicial introduction to this example might be good.
+> What did you have in mind?
+
+Again, it depends on what example is intended to accomplish (which you 
+still haven't said explicitly).  Whatever it is, I don't think the 
+current text is a good way to do it.
+
+Alan
