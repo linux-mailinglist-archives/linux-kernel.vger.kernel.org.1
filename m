@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10D4259BCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73221259B3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgIARH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
+        id S1729900AbgIAQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:58:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727786AbgIAPSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:37 -0400
+        id S1729746AbgIAPWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:22:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 989A9206FA;
-        Tue,  1 Sep 2020 15:18:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A0D5F206FA;
+        Tue,  1 Sep 2020 15:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973517;
-        bh=TkDQcsAX3HHNrBrO+Mb/QHzzrFQRrw+VNf7CO+9GGfM=;
+        s=default; t=1598973733;
+        bh=+qMlhpBqo7uDBTw2M3PwWfIBd3Tya3VGpz/pwkPdLDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ERWxrLomp9X8FyQidWrVwFafeFDEOdimE5hPP0addmqlm425ujenPhtOni984e0dj
-         len/kwR2jNYjabMmxPIb5GzQmnXP5CryprnNDH70ZdgopIiiQ3sJM1SBzSzgQi5p9H
-         AOyi6XaRBdjS5gFgr8r5IwiK3+wclLx+lECpgVBk=
+        b=zkFfHvA8RHk9hTLIo16hLHGeCaoK7s92g+dh4k8GEAiwXBGUTnuXOWfE71RShn/kr
+         8u/OTrCOzSAe7hz9n5f8GzNObEvW/Sw5UrQcp0ZMwEwtU39r6vF9BZPJYpstbIJLlT
+         8l9G3THDoNMLzIXtXFKSipW1csjiLngi5WppQsNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 05/91] gre6: Fix reception with IP6_TNL_F_RCV_DSCP_COPY
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 024/125] drm/amdgpu: fix ref count leak in amdgpu_display_crtc_set_config
 Date:   Tue,  1 Sep 2020 17:09:39 +0200
-Message-Id: <20200901150928.383698607@linuxfoundation.org>
+Message-Id: <20200901150935.750706681@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 272502fcb7cda01ab07fc2fcff82d1d2f73d43cc ]
+[ Upstream commit e008fa6fb41544b63973a529b704ef342f47cc65 ]
 
-When receiving an IPv4 packet inside an IPv6 GRE packet, and the
-IP6_TNL_F_RCV_DSCP_COPY flag is set on the tunnel, the IPv4 header would
-get corrupted. This is due to the common ip6_tnl_rcv() function assuming
-that the inner header is always IPv6. This patch checks the tunnel
-protocol for IPv4 inner packets, but still defaults to IPv6.
+in amdgpu_display_crtc_set_config, the call to pm_runtime_get_sync
+increments the counter even in case of failure, leading to incorrect
+ref count. In case of failure, decrement the ref count before returning.
 
-Fixes: 308edfdf1563 ("gre6: Cleanup GREv6 receive path, call common GRE functions")
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ip6_tunnel.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/net/ipv6/ip6_tunnel.c
-+++ b/net/ipv6/ip6_tunnel.c
-@@ -872,7 +872,15 @@ int ip6_tnl_rcv(struct ip6_tnl *t, struc
- 		struct metadata_dst *tun_dst,
- 		bool log_ecn_err)
- {
--	return __ip6_tnl_rcv(t, skb, tpi, NULL, ip6ip6_dscp_ecn_decapsulate,
-+	int (*dscp_ecn_decapsulate)(const struct ip6_tnl *t,
-+				    const struct ipv6hdr *ipv6h,
-+				    struct sk_buff *skb);
-+
-+	dscp_ecn_decapsulate = ip6ip6_dscp_ecn_decapsulate;
-+	if (tpi->proto == htons(ETH_P_IP))
-+		dscp_ecn_decapsulate = ip4ip6_dscp_ecn_decapsulate;
-+
-+	return __ip6_tnl_rcv(t, skb, tpi, NULL, dscp_ecn_decapsulate,
- 			     log_ecn_err);
- }
- EXPORT_SYMBOL(ip6_tnl_rcv);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+index 686a26de50f91..049a1961c3fa5 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -275,7 +275,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
+ 
+ 	ret = pm_runtime_get_sync(dev->dev);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+ 	ret = drm_crtc_helper_set_config(set, ctx);
+ 
+@@ -290,7 +290,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
+ 	   take the current one */
+ 	if (active && !adev->have_disp_power_ref) {
+ 		adev->have_disp_power_ref = true;
+-		return ret;
++		goto out;
+ 	}
+ 	/* if we have no active crtcs, then drop the power ref
+ 	   we got before */
+@@ -299,6 +299,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
+ 		adev->have_disp_power_ref = false;
+ 	}
+ 
++out:
+ 	/* drop the power reference we got coming in here */
+ 	pm_runtime_put_autosuspend(dev->dev);
+ 	return ret;
+-- 
+2.25.1
+
 
 
