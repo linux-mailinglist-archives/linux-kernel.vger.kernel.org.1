@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A1A259AC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDDD6259AFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732494AbgIAQyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48872 "EHLO mail.kernel.org"
+        id S1729862AbgIAPXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729070AbgIAPYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:24:51 -0400
+        id S1729236AbgIAPVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:21:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C35C920FC3;
-        Tue,  1 Sep 2020 15:24:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C234206FA;
+        Tue,  1 Sep 2020 15:21:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973889;
-        bh=CvSkdwDg6PRknrGxMyqrHFPTdy7TeeZG/HZYNd6mZRQ=;
+        s=default; t=1598973684;
+        bh=haMngcYoHsu/t+/mS4mejSu6pXO3QuqXEo3Pm1l24Ag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tKoukL++EDMwYQ1LDNIZX8HfKH3hrY9qTu4nRpIcTb9SD53rG5ZTfLLlBPDvm55m/
-         1Y/EMFpzlMfnAgbEnFf/vbQUAO83YWyp8/BV4bLOyMq2R/VRtzH+UfOXasEpvFbRs/
-         Ia+/8nJF+eGnizRbZCPXrRV6Oc6Twd8vCzV9B8Zg=
+        b=dlfwCZl1xF79FdHoFG4IxRc9QzdNvmoaWJ+7zF2p9lFTMdJhXCZz0JM27YumbVBfP
+         CtDu049rI4g063pIWyGA0mrp87TsNPpFKad3+7ZryneY8o1CtOXftokgXapU/pwwYn
+         daIlXBcXIxn/fh02wZvKeSiroMKPEl6PP1c6Dm1Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 4.19 087/125] vt: defer kfree() of vc_screenbuf in vc_do_resize()
-Date:   Tue,  1 Sep 2020 17:10:42 +0200
-Message-Id: <20200901150938.837990318@linuxfoundation.org>
+        stable@vger.kernel.org, Martijn Coenen <maco@android.com>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
+Subject: [PATCH 4.14 69/91] writeback: Protect inode->i_io_list with inode->i_lock
+Date:   Tue,  1 Sep 2020 17:10:43 +0200
+Message-Id: <20200901150931.602200418@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Jan Kara <jack@suse.cz>
 
-commit f8d1653daec02315e06d30246cff4af72e76e54e upstream.
+commit b35250c0816c7cf7d0a8de92f5fafb6a7508a708 upstream.
 
-syzbot is reporting UAF bug in set_origin() from vc_do_resize() [1], for
-vc_do_resize() calls kfree(vc->vc_screenbuf) before calling set_origin().
+Currently, operations on inode->i_io_list are protected by
+wb->list_lock. In the following patches we'll need to maintain
+consistency between inode->i_state and inode->i_io_list so change the
+code so that inode->i_lock protects also all inode's i_io_list handling.
 
-Unfortunately, in set_origin(), vc->vc_sw->con_set_origin() might access
-vc->vc_pos when scroll is involved in order to manipulate cursor, but
-vc->vc_pos refers already released vc->vc_screenbuf until vc->vc_pos gets
-updated based on the result of vc->vc_sw->con_set_origin().
-
-Preserving old buffer and tolerating outdated vc members until set_origin()
-completes would be easier than preventing vc->vc_sw->con_set_origin() from
-accessing outdated vc members.
-
-[1] https://syzkaller.appspot.com/bug?id=6649da2081e2ebdc65c0642c214b27fe91099db3
-
-Reported-by: syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1596034621-4714-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp
+Reviewed-by: Martijn Coenen <maco@android.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+CC: stable@vger.kernel.org # Prerequisite for "writeback: Avoid skipping inode writeback"
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/vt.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/fs-writeback.c |   22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1199,7 +1199,7 @@ static int vc_do_resize(struct tty_struc
- 	unsigned int old_rows, old_row_size, first_copied_row;
- 	unsigned int new_cols, new_rows, new_row_size, new_screen_size;
- 	unsigned int user;
--	unsigned short *newscreen;
-+	unsigned short *oldscreen, *newscreen;
- 	struct uni_screen *new_uniscr = NULL;
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -160,6 +160,7 @@ static void inode_io_list_del_locked(str
+ 				     struct bdi_writeback *wb)
+ {
+ 	assert_spin_locked(&wb->list_lock);
++	assert_spin_locked(&inode->i_lock);
  
- 	WARN_CONSOLE_UNLOCKED();
-@@ -1297,10 +1297,11 @@ static int vc_do_resize(struct tty_struc
- 	if (new_scr_end > new_origin)
- 		scr_memsetw((void *)new_origin, vc->vc_video_erase_char,
- 			    new_scr_end - new_origin);
--	kfree(vc->vc_screenbuf);
-+	oldscreen = vc->vc_screenbuf;
- 	vc->vc_screenbuf = newscreen;
- 	vc->vc_screenbuf_size = new_screen_size;
- 	set_origin(vc);
-+	kfree(oldscreen);
+ 	list_del_init(&inode->i_io_list);
+ 	wb_io_lists_depopulated(wb);
+@@ -1039,7 +1040,9 @@ void inode_io_list_del(struct inode *ino
+ 	struct bdi_writeback *wb;
  
- 	/* do part of a reset_terminal() */
- 	vc->vc_top = 0;
+ 	wb = inode_to_wb_and_lock_list(inode);
++	spin_lock(&inode->i_lock);
+ 	inode_io_list_del_locked(inode, wb);
++	spin_unlock(&inode->i_lock);
+ 	spin_unlock(&wb->list_lock);
+ }
+ 
+@@ -1088,8 +1091,10 @@ void sb_clear_inode_writeback(struct ino
+  * the case then the inode must have been redirtied while it was being written
+  * out and we don't reset its dirtied_when.
+  */
+-static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
++static void redirty_tail_locked(struct inode *inode, struct bdi_writeback *wb)
+ {
++	assert_spin_locked(&inode->i_lock);
++
+ 	if (!list_empty(&wb->b_dirty)) {
+ 		struct inode *tail;
+ 
+@@ -1100,6 +1105,13 @@ static void redirty_tail(struct inode *i
+ 	inode_io_list_move_locked(inode, wb, &wb->b_dirty);
+ }
+ 
++static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
++{
++	spin_lock(&inode->i_lock);
++	redirty_tail_locked(inode, wb);
++	spin_unlock(&inode->i_lock);
++}
++
+ /*
+  * requeue inode for re-scanning after bdi->b_io list is exhausted.
+  */
+@@ -1310,7 +1322,7 @@ static void requeue_inode(struct inode *
+ 		 * writeback is not making progress due to locked
+ 		 * buffers. Skip this inode for now.
+ 		 */
+-		redirty_tail(inode, wb);
++		redirty_tail_locked(inode, wb);
+ 		return;
+ 	}
+ 
+@@ -1330,7 +1342,7 @@ static void requeue_inode(struct inode *
+ 			 * retrying writeback of the dirty page/inode
+ 			 * that cannot be performed immediately.
+ 			 */
+-			redirty_tail(inode, wb);
++			redirty_tail_locked(inode, wb);
+ 		}
+ 	} else if (inode->i_state & I_DIRTY) {
+ 		/*
+@@ -1338,7 +1350,7 @@ static void requeue_inode(struct inode *
+ 		 * such as delayed allocation during submission or metadata
+ 		 * updates after data IO completion.
+ 		 */
+-		redirty_tail(inode, wb);
++		redirty_tail_locked(inode, wb);
+ 	} else if (inode->i_state & I_DIRTY_TIME) {
+ 		inode->dirtied_when = jiffies;
+ 		inode_io_list_move_locked(inode, wb, &wb->b_dirty_time);
+@@ -1585,8 +1597,8 @@ static long writeback_sb_inodes(struct s
+ 		 */
+ 		spin_lock(&inode->i_lock);
+ 		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
++			redirty_tail_locked(inode, wb);
+ 			spin_unlock(&inode->i_lock);
+-			redirty_tail(inode, wb);
+ 			continue;
+ 		}
+ 		if ((inode->i_state & I_SYNC) && wbc.sync_mode != WB_SYNC_ALL) {
 
 
