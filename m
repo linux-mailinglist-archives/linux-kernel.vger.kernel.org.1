@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8A1259B93
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F527259C77
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgIAREM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:04:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39538 "EHLO mail.kernel.org"
+        id S1729053AbgIAPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:14:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729285AbgIAPUA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:20:00 -0400
+        id S1728944AbgIAPNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:13:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A9E0206EB;
-        Tue,  1 Sep 2020 15:19:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25EA2206FA;
+        Tue,  1 Sep 2020 15:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973599;
-        bh=1yPzK9t3GFlkQwdBVi7C7ZW6wopToJk1Y05XWH4ziTA=;
+        s=default; t=1598973219;
+        bh=5CE2VeFnJFV+DsK2+ilItzzAgkQ63gk5C0GCI9RpE+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oIFwFnHN+RMAAjbm/qgq0Takxe2fUlqtymzSk3pKmWKmDB7VVRb6ZLDsmCpgPqKwh
-         rc7ID21SufDpn/RIRi6NssKw5slOhFwqvYfXuFUkqraL3cU2x0nFjTAWH2v0JLuHFt
-         Kw+QFJYyWutliVGWC3IJiCsS3SHkfnXovJlF6C4Y=
+        b=A+288OQduX/9XZBly+Vl67M9Qq5V9kShK2v3heUw19CA5WdTNf7+KAdRXLf7Pm9i4
+         qei4+8Ghk2FLU/0+FWPUXJ54xwRnA7jucZ5Wsx4fBm1/1lKU4RIm1l1KZ7WnOEp1cs
+         tVPbNPcxzR9fM2rXb1KWSqL5wh37nqARvhmsmQl0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 33/91] ceph: fix potential mdsc use-after-free crash
-Date:   Tue,  1 Sep 2020 17:10:07 +0200
-Message-Id: <20200901150929.790388450@linuxfoundation.org>
+Subject: [PATCH 4.4 25/62] scsi: iscsi: Do not put host in iscsi_set_flashnode_param()
+Date:   Tue,  1 Sep 2020 17:10:08 +0200
+Message-Id: <20200901150921.998015647@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
+References: <20200901150920.697676718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiubo Li <xiubli@redhat.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit fa9967734227b44acb1b6918033f9122dc7825b9 ]
+[ Upstream commit 68e12e5f61354eb42cfffbc20a693153fc39738e ]
 
-Make sure the delayed work stopped before releasing the resources.
+If scsi_host_lookup() fails we will jump to put_host which may cause a
+panic. Jump to exit_set_fnode instead.
 
-cancel_delayed_work_sync() will only guarantee that the work finishes
-executing if the work is already in the ->worklist.  That means after
-the cancel_delayed_work_sync() returns, it will leave the work requeued
-if it was rearmed at the end. That can lead to a use after free once the
-work struct is freed.
-
-Fix it by flushing the delayed work instead of trying to cancel it, and
-ensure that the work doesn't rearm if the mdsc is stopping.
-
-URL: https://tracker.ceph.com/issues/46293
-Signed-off-by: Xiubo Li <xiubli@redhat.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Link: https://lore.kernel.org/r/20200615081226.183068-1-jingxiangfeng@huawei.com
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/mds_client.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_transport_iscsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index f36ddfea4997e..06109314d93c8 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -3518,6 +3518,9 @@ static void delayed_work(struct work_struct *work)
- 	dout("mdsc delayed_work\n");
- 	ceph_check_delayed_caps(mdsc);
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index de10b461ec7ef..4903640316480 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -3192,7 +3192,7 @@ static int iscsi_set_flashnode_param(struct iscsi_transport *transport,
+ 		pr_err("%s could not find host no %u\n",
+ 		       __func__, ev->u.set_flashnode.host_no);
+ 		err = -ENODEV;
+-		goto put_host;
++		goto exit_set_fnode;
+ 	}
  
-+	if (mdsc->stopping)
-+		return;
-+
- 	mutex_lock(&mdsc->mutex);
- 	renew_interval = mdsc->mdsmap->m_session_timeout >> 2;
- 	renew_caps = time_after_eq(jiffies, HZ*renew_interval +
-@@ -3851,7 +3854,16 @@ void ceph_mdsc_force_umount(struct ceph_mds_client *mdsc)
- static void ceph_mdsc_stop(struct ceph_mds_client *mdsc)
- {
- 	dout("stop\n");
--	cancel_delayed_work_sync(&mdsc->delayed_work); /* cancel timer */
-+	/*
-+	 * Make sure the delayed work stopped before releasing
-+	 * the resources.
-+	 *
-+	 * Because the cancel_delayed_work_sync() will only
-+	 * guarantee that the work finishes executing. But the
-+	 * delayed work will re-arm itself again after that.
-+	 */
-+	flush_delayed_work(&mdsc->delayed_work);
-+
- 	if (mdsc->mdsmap)
- 		ceph_mdsmap_destroy(mdsc->mdsmap);
- 	kfree(mdsc->sessions);
+ 	idx = ev->u.set_flashnode.flashnode_idx;
 -- 
 2.25.1
 
