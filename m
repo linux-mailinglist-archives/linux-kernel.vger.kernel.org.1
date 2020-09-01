@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3986A259579
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D04102595D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732063AbgIAPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32996 "EHLO mail.kernel.org"
+        id S1731620AbgIAP4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:56:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731856AbgIAPpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:45:03 -0400
+        id S1729763AbgIAPpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:45:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F877206EB;
-        Tue,  1 Sep 2020 15:45:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50A6A2064B;
+        Tue,  1 Sep 2020 15:45:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975102;
-        bh=yDLS4GpALiS50MdUjX1h3o8hJC1zdRP3oJyAoFAveEY=;
+        s=default; t=1598975112;
+        bh=vyBKgTstExfaBCk1Y6nblj5Oorsha5j4zcPMCeia2nI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WyEvA2xNy60OhA/IFxl9vn9YcO5vYvTaABC8gYSD2ofHrydmnfP/EF71Guhh1evWH
-         ZSNEu1uVqnc1KU5PpNJs/n+zQkn/u3jHxJBxczrh62Jiq4GRqc5cSKT9jF7oeEcW0o
-         hajRe4dIH36dbqNM3IDBrj90dX4cVhB3CL0NrPOI=
+        b=T8rKVO6cNhE37CoY8YjRqtE8bVETg3ncT4XHew0V2ny4wIBv8cpge1gcwTttc6+VA
+         h28BWPtg+4wyTtwVm/S6zkRNJ5dxabq8zs+nL7DHMh1BxIlmPDldHPDvFeq0kYhzYE
+         wvnaiAdVYS3ju8nKVFUFxgcZrd9P/59fpzI7w4DY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Holger Assmann <h.assmann@pengutronix.de>
-Subject: [PATCH 5.8 183/255] serial: stm32: avoid kernel warning on absence of optional IRQ
-Date:   Tue,  1 Sep 2020 17:10:39 +0200
-Message-Id: <20200901151009.455296070@linuxfoundation.org>
+        stable@vger.kernel.org, Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Subject: [PATCH 5.8 184/255] serial: 8250_exar: Fix number of ports for Commtech PCIe cards
+Date:   Tue,  1 Sep 2020 17:10:40 +0200
+Message-Id: <20200901151009.502520930@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -42,38 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Holger Assmann <h.assmann@pengutronix.de>
+From: Valmer Huhn <valmer.huhn@concurrent-rt.com>
 
-commit fdf16d78941b4f380753053d229955baddd00712 upstream.
+commit c6b9e95dde7b54e6a53c47241201ab5a4035c320 upstream.
 
-stm32_init_port() of the stm32-usart may trigger a warning in
-platform_get_irq() when the device tree specifies no wakeup interrupt.
+The following in 8250_exar.c line 589 is used to determine the number
+of ports for each Exar board:
 
-The wakeup interrupt is usually a board-specific GPIO and the driver
-functions correctly in its absence. The mainline stm32mp151.dtsi does
-not specify it, so all mainline device trees trigger an unnecessary
-kernel warning. Use of platform_get_irq_optional() avoids this.
+nr_ports = board->num_ports ? board->num_ports : pcidev->device & 0x0f;
 
-Fixes: 2c58e56096dd ("serial: stm32: fix the get_irq error case")
-Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
+If the number of ports a card has is not explicitly specified, it defaults
+to the rightmost 4 bits of the PCI device ID. This is prone to error since
+not all PCI device IDs contain a number which corresponds to the number of
+ports that card provides.
+
+This particular case involves COMMTECH_4222PCIE, COMMTECH_4224PCIE and
+COMMTECH_4228PCIE cards with device IDs 0x0022, 0x0020 and 0x0021.
+Currently the multiport cards receive 2, 0 and 1 port instead of 2, 4 and
+8 ports respectively.
+
+To fix this, each Commtech Fastcom PCIe card is given a struct where the
+number of ports is explicitly specified. This ensures 'board->num_ports'
+is used instead of the default 'pcidev->device & 0x0f'.
+
+Fixes: d0aeaa83f0b0 ("serial: exar: split out the exar code from 8250_pci")
+Signed-off-by: Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Tested-by: Valmer Huhn <valmer.huhn@concurrent-rt.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200813152757.32751-1-h.assmann@pengutronix.de
+Link: https://lore.kernel.org/r/20200813165255.GC345440@icarus.concurrent-rt.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/stm32-usart.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/serial/8250/8250_exar.c |   24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -962,7 +962,7 @@ static int stm32_init_port(struct stm32_
- 		return ret;
+--- a/drivers/tty/serial/8250/8250_exar.c
++++ b/drivers/tty/serial/8250/8250_exar.c
+@@ -744,6 +744,24 @@ static const struct exar8250_board pbn_e
+ 	.exit		= pci_xr17v35x_exit,
+ };
  
- 	if (stm32port->info->cfg.has_wakeup) {
--		stm32port->wakeirq = platform_get_irq(pdev, 1);
-+		stm32port->wakeirq = platform_get_irq_optional(pdev, 1);
- 		if (stm32port->wakeirq <= 0 && stm32port->wakeirq != -ENXIO)
- 			return stm32port->wakeirq ? : -ENODEV;
- 	}
++static const struct exar8250_board pbn_fastcom35x_2 = {
++	.num_ports	= 2,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
++static const struct exar8250_board pbn_fastcom35x_4 = {
++	.num_ports	= 4,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
++static const struct exar8250_board pbn_fastcom35x_8 = {
++	.num_ports	= 8,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
+ static const struct exar8250_board pbn_exar_XR17V4358 = {
+ 	.num_ports	= 12,
+ 	.setup		= pci_xr17v35x_setup,
+@@ -811,9 +829,9 @@ static const struct pci_device_id exar_p
+ 	EXAR_DEVICE(EXAR, XR17V358, pbn_exar_XR17V35x),
+ 	EXAR_DEVICE(EXAR, XR17V4358, pbn_exar_XR17V4358),
+ 	EXAR_DEVICE(EXAR, XR17V8358, pbn_exar_XR17V8358),
+-	EXAR_DEVICE(COMMTECH, 4222PCIE, pbn_exar_XR17V35x),
+-	EXAR_DEVICE(COMMTECH, 4224PCIE, pbn_exar_XR17V35x),
+-	EXAR_DEVICE(COMMTECH, 4228PCIE, pbn_exar_XR17V35x),
++	EXAR_DEVICE(COMMTECH, 4222PCIE, pbn_fastcom35x_2),
++	EXAR_DEVICE(COMMTECH, 4224PCIE, pbn_fastcom35x_4),
++	EXAR_DEVICE(COMMTECH, 4228PCIE, pbn_fastcom35x_8),
+ 
+ 	EXAR_DEVICE(COMMTECH, 4222PCI335, pbn_fastcom335_2),
+ 	EXAR_DEVICE(COMMTECH, 4224PCI335, pbn_fastcom335_4),
 
 
