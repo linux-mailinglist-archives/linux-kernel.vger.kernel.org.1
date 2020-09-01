@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A9225A165
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F9125A176
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgIAWZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 18:25:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgIAWZ1 (ORCPT
+        id S1728361AbgIAWbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 18:31:19 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:49674 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728070AbgIAWbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 18:25:27 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A6FC061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:25:26 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id e23so2592530otk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Yeewx12qLKB4TGySW2pJhTuDPaEyodFbF3F+b907ybc=;
-        b=XjvJc8w083w+AVX9qGcMvSjZ8tHUdN44x6QsU2gflWOxuBTft9+95zsF5TR6F6akOk
-         RLxC7GkVuCS2xWSS0u2TqENjzMLn7HHkeOZEg6KomPkbnJflWv76/brQR0DRscFrlFu9
-         vejl1mabJSdCq4kVPo2EHa//F7Z8SvrvKDJYY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Yeewx12qLKB4TGySW2pJhTuDPaEyodFbF3F+b907ybc=;
-        b=tblT2GFjAAVL/b0ot7fvW/GWBj2GzvRcduERQbHaYjNt8eVJx/4I5EyFDjFnI4uAnt
-         5x7l68mtikjLNmClxjTvBtpNrGViLeB3blLXI4FlHWNGBQrgZH1R5+puDgis0gcRHlMu
-         +osJzsdg7c0k0tNgbdPbfZEaynAdBtxXYzVnDDWXk0VnxmheZdSMKaxjbk8JVdb86Sed
-         bTp7GphcR9lKMAlVcCAwGZSNQ2YDecoYlYaYVqpmuCaNB3nrzF3eGjsQR3ooBOSyEzo1
-         UeO8MJ++Oee8VSepEnqoI9/80bh4dZQ2CfAbx4wIXsjVbo85K40E04m6T+q2E83uel9v
-         TT9Q==
-X-Gm-Message-State: AOAM532s2IoSK8NSvaxNuUhTkuKGvxYmbU8Oivk1MGK1CxqvDWvauzKf
-        tNlVkiVJgH75ZIqttnlvEIXGrw==
-X-Google-Smtp-Source: ABdhPJwst0xtfYUOYcg1BW4vPIgCBhP6Sh9f0PYiGK4uFWJ+pl9IETurWsOkFjh1FjwEIN4RXMJSvQ==
-X-Received: by 2002:a05:6830:134a:: with SMTP id r10mr2883686otq.252.1598999126171;
-        Tue, 01 Sep 2020 15:25:26 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id z12sm464223ooh.41.2020.09.01.15.25.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 15:25:25 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/78] 4.9.235-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <83fb2e3e-c7b5-962b-ee3b-8b2081f584b2@linuxfoundation.org>
-Date:   Tue, 1 Sep 2020 16:25:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Sep 2020 18:31:13 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 081MV6Xs120502;
+        Tue, 1 Sep 2020 17:31:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1598999466;
+        bh=RICOIzWjSODfmeMzx1fNWMWjnS7MPPZWyc9csFlAc3w=;
+        h=From:To:CC:Subject:Date;
+        b=iA1rH8jaPgaohru11g7auHOOP88msLvkPk11Vsz23JQYSKv5A3GsX45qtjg2OBe5P
+         NjSCjXxrZ5VpQ1oyYA9PBAM7QmKbQHBpFeDEaCaD8CSfnyfc7yudZq5zD/GWhWXPvK
+         Y3hWRzOWbBje4eo8w5N7NGdda18pojFTMh4GRgmY=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 081MV6Iv029129
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Sep 2020 17:31:06 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 1 Sep
+ 2020 17:31:05 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 1 Sep 2020 17:31:05 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 081MV5Gu060400;
+        Tue, 1 Sep 2020 17:31:05 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <t-kristo@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Suman Anna <s-anna@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <lokeshvutla@ti.com>,
+        <grygorii.strashko@ti.com>, <nsekhar@ti.com>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH 0/7] arm64: dts: ti: k3-*: Squash up node_name_chars_strict warnings
+Date:   Tue, 1 Sep 2020 17:30:52 -0500
+Message-ID: <20200901223059.14801-1-nm@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 9:09 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.235 release.
-> There are 78 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 03 Sep 2020 15:09:01 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.235-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi,
 
-Compiled and booted on my test system. No dmesg regressions.
+This is one part of cleanups meant for make W=2 dtbs for 5.10 on TI
+dtbs. Hopefully we dont see node_name_chars_strict warnings anymore.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+As part of this cleanup, I ran a cross check of nodes that are
+part of K3 as of right now, Vs what is "generic" definition as per 0.3
+dt specification:
+https://pastebin.ubuntu.com/p/kp3g4ktBYp/
 
-thanks,
--- Shuah
+I dont think the remaining have a good reference, at least in my
+subjective view.
 
+In possibly some cases, bootloaders may need to sync before doing DT
+fixup etc.
+
+Nishanth Menon (7):
+  arm64: dts: ti: k3-am65*: Use generic gpio for node names
+  arm64: dts: ti: k3-am65*: Use generic clock for serdes clock name
+  arm64: dts: ti: k3-*: Use generic pinctrl for node names
+  arm64: dts: ti: k3-am65-base-board Use generic camera for node name
+    instead of ov5640
+  arm64: dts: ti: k3-am65-wakeup: Use generic temperature-sensor for
+    node name
+  arm64: dts: ti: k3-*: Use generic adc for node names
+  arm64: dts: ti: k3-*: Fix up node_name_chars_strict errors
+
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi       | 18 +++++++++---------
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi        |  8 ++++----
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi     |  6 +++---
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts | 18 +++++++++---------
+ .../dts/ti/k3-am654-industrial-thermal.dtsi    | 12 ++++++------
+ .../boot/dts/ti/k3-j721e-common-proc-board.dts | 18 +++++++++---------
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi      |  8 ++++----
+ .../arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi |  8 ++++----
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi    |  2 +-
+ 9 files changed, 49 insertions(+), 49 deletions(-)
+
+-- 
+2.17.1
 
