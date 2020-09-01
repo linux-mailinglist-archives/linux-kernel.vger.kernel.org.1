@@ -2,83 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FD7259D29
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8F4259D30
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728965AbgIAR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:26:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57388 "EHLO mail.kernel.org"
+        id S1729870AbgIAR23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:28:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728454AbgIAR0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:26:12 -0400
+        id S1728799AbgIAR20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:28:26 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BA652078B;
-        Tue,  1 Sep 2020 17:26:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A6DC2071B;
+        Tue,  1 Sep 2020 17:28:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598981171;
-        bh=fEW6oJfvn5Ucjhclk7f4qerwSkmRvaGzBLRUjhSJGCg=;
+        s=default; t=1598981305;
+        bh=JU0HmHTW0+SAz5aWhKsyhRbAns5tITtLG2IJlfNOZLo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LykNUrVs3FSPdq/7Cys5tJ+kyZbOsgPy32lcNp8gZ3IFPvkRPuCF3SPnhYeGvltE/
-         VmSlzT5sDAUshbgs88HAmlibM+C1/yJZNnE3IZI6xWtHl9vCAiz4HrUdqsOjJZ5ufH
-         3JKDbb7gKEJS8G3jZo0pomhsjNQPwsiHa6EwJ0nU=
+        b=Mh531gRaL6Uab01cmtChdt9B1a5Y+PXf5TC8WVV17FTjINzRtb8XIzzdHJt70fS5Y
+         4y3F4ZxkfmTD0hFisyEsnYy1Qtv0JLr9tuHCmBt6WGgoIdju2I/jATysF4ZyOF/Vh4
+         Id2wmKxOVKg772H+p7HaHjRaMqfunhRktW9MYPow=
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C146740D3D; Tue,  1 Sep 2020 14:26:08 -0300 (-03)
-Date:   Tue, 1 Sep 2020 14:26:08 -0300
+        id AC4A040D3D; Tue,  1 Sep 2020 14:28:23 -0300 (-03)
+Date:   Tue, 1 Sep 2020 14:28:23 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Al Grant <al.grant@foss.arm.com>
-Cc:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        acme@redhat.com
-Subject: Re: [PATCH] perf inject: correct event attribute sizes
-Message-ID: <20200901172608.GE1424523@kernel.org>
-References: <b5f9e19c-6adb-ccdd-3dbd-df8e1b82ee93@foss.arm.com>
+To:     Al Grant <al.grant@foss.arm.com>, Jiri Olsa <jolsa@kernel.org>,
+        Joe Mario <jmario@redhat.com>
+Cc:     David Ahern <dsahern@gmail.com>, Don Zickus <dzickus@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, andi.kleen@linux.intel.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf c2c report: count remote loads correctly
+Message-ID: <20200901172823.GF1424523@kernel.org>
+References: <6282053a-d813-8638-531d-56e852d582a2@foss.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b5f9e19c-6adb-ccdd-3dbd-df8e1b82ee93@foss.arm.com>
+In-Reply-To: <6282053a-d813-8638-531d-56e852d582a2@foss.arm.com>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 26, 2020 at 10:42:04AM +0100, Al Grant escreveu:
-> When perf inject reads a perf.data file from an older version of perf,
-> it writes event attributes into the output with the original size field,
-> but lays them out as if they had the size currently used. Readers see
-> a corrupt file. Update the size field to match the layout.
-> 
-> From: Denis Nikitin <denik@google.com>
-> Signed-off-by: Al Grant <al.grant@foss.arm.com>
+Em Thu, Aug 20, 2020 at 02:48:58PM +0100, Al Grant escreveu:
+> "perf c2c report" can show load counts for cache lines, which don't match
+> the actual number of load samples, e.g. as displayed by "perf script". This
+> is specific to "Remote Any cache hit" loads. Firstly, these loads are
+> counted twice, because if the "remote" flag is set, rmt_dram is always
+> incremented, and then rmt_hitm or rmt_hit may also be incremented. These are
+> then totalled in the overall load count, causing double-counting. "Remote
+> Any cache hit" should not increment rmt_dram. Instead, use LVLNUM to
+> discriminate between remote cache and remote DRAM. Also, non-HITM loads to
+> remote cache are not being counted as hits (the last column in the cache
+> line report is zero), when the SNOOP field is unset. This causes
+> under-reporting of the load count. The code currently only increments
+> counters if the SNOOP field is set to either HIT or HITM. Instead, for
+> access to remote cache (as indicated by LVLNUM), increment rmt_hitm if
+> SNOOP=HITM, increment rmt_hit otherwise.
 
-Ok, so the author is Denis, has he provided his Signed-off-by?
+Hi Joe, Jiri, can you please take a look and provide your Acked-by or
+better, Reviewed-by?
 
 - Arnaldo
  
->  tools/perf/util/header.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> From: Al Grant <al.grant@arm.com>
+
+Al, please provide Signed-off-by: lines for code your write,
+
+Thanks,
+
+- Arnaldo
+ 
+>  tools/perf/util/mem-events.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
 > 
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 9cf4efdcbbbd..762eb94bd532 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -3326,6 +3326,14 @@ int perf_session__write_header(struct
-> perf_session *session,
->         attr_offset = lseek(ff.fd, 0, SEEK_CUR);
+> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+> index ea0af0bc4314..c6bb86fd4330 100644
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -332,11 +332,13 @@ int c2c_decode_stats(struct c2c_stats *stats, struct
+> mem_info *mi)
+>         u64 lvl    = data_src->mem_lvl;
+>         u64 snoop  = data_src->mem_snoop;
+>         u64 lock   = data_src->mem_lock;
+> +       u64 lvlnum = data_src->mem_lvl_num;
+>         /*
+>          * Skylake might report unknown remote level via this
+>          * bit, consider it when evaluating remote HITMs.
+>          */
+>         bool mrem  = data_src->mem_remote;
+> +       bool mmem = (lvlnum == PERF_MEM_LVLNUM_RAM || lvlnum ==
+> PERF_MEM_LVLNUM_PMEM);
+>         int err = 0;
 > 
->         evlist__for_each_entry(evlist, evsel) {
-> +               if (evsel->core.attr.size < sizeof(evsel->core.attr)) {
-> +                       /*
-> +                        * We are likely in "perf inject" and have read +
-> * from an older file. Update attr size so that
-> +                        * reader gets the right offset to the ids.
-> +                        */
-> +                       evsel->core.attr.size = sizeof(evsel->core.attr);
-> +               }
->                 f_attr = (struct perf_file_attr){
->                         .attr = evsel->core.attr,
->                         .ids  = {
+>  #define HITM_INC(__f)          \
+> @@ -383,7 +385,7 @@ do {                                \
+> 
+>                         if ((lvl & P(LVL, REM_RAM1)) ||
+>                             (lvl & P(LVL, REM_RAM2)) ||
+> -                            mrem) {
+> +                            (mrem && mmem)) {
+>                                 stats->rmt_dram++;
+>                                 if (snoop & P(SNOOP, HIT))
+>                                         stats->ld_shared++;
+> @@ -394,11 +396,11 @@ do {                              \
+> 
+>                 if ((lvl & P(LVL, REM_CCE1)) ||
+>                     (lvl & P(LVL, REM_CCE2)) ||
+> -                    mrem) {
+> -                       if (snoop & P(SNOOP, HIT))
+> -                               stats->rmt_hit++;
+> -                       else if (snoop & P(SNOOP, HITM))
+> +                    (mrem && !mmem)) {
+> +                       if (snoop & P(SNOOP, HITM))
+>                                 HITM_INC(rmt_hitm);
+> +                       else
+> +                               stats->rmt_hit++;
+>                 }
+> 
+>                 if ((lvl & P(LVL, MISS)))
 
 -- 
 
