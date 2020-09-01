@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5A8258546
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F0F25854B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbgIABqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 21:46:45 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:52427 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726023AbgIABqo (ORCPT
+        id S1726310AbgIABqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 21:46:48 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47877 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726044AbgIABqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 21:46:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U7UMeCq_1598924802;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U7UMeCq_1598924802)
+        Mon, 31 Aug 2020 21:46:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U7UAs.4_1598924802;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U7UAs.4_1598924802)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 01 Sep 2020 09:46:42 +0800
+          Tue, 01 Sep 2020 09:46:43 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, bhe@redhat.com,
         Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [Patch v4 1/7] mm/hugetlb: not necessary to coalesce regions recursively
-Date:   Tue,  1 Sep 2020 09:46:30 +0800
-Message-Id: <20200901014636.29737-2-richard.weiyang@linux.alibaba.com>
+Subject: [Patch v4 2/7] mm/hugetlb: remove VM_BUG_ON(!nrg) in get_file_region_entry_from_cache()
+Date:   Tue,  1 Sep 2020 09:46:31 +0800
+Message-Id: <20200901014636.29737-3-richard.weiyang@linux.alibaba.com>
 X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 In-Reply-To: <20200901014636.29737-1-richard.weiyang@linux.alibaba.com>
 References: <20200901014636.29737-1-richard.weiyang@linux.alibaba.com>
@@ -33,43 +33,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per my understanding, we keep the regions ordered and would always
-coalesce regions properly. So the task to keep this property is just
-to coalesce its neighbour.
+We are sure to get a valid file_region, otherwise the
+VM_BUG_ON(resv->region_cache_count <= 0) at the very beginning would be
+triggered.
 
-Let's simplify this.
+Let's remove the redundant one.
 
 Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-Reviewed-by: Baoquan He <bhe@redhat.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- mm/hugetlb.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ mm/hugetlb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a301c2d672bf..db6af2654f12 100644
+index db6af2654f12..fbaf49bc1d26 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -309,8 +309,7 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
- 		list_del(&rg->link);
- 		kfree(rg);
+@@ -240,7 +240,6 @@ get_file_region_entry_from_cache(struct resv_map *resv, long from, long to)
  
--		coalesce_file_region(resv, prg);
--		return;
-+		rg = prg;
- 	}
+ 	resv->region_cache_count--;
+ 	nrg = list_first_entry(&resv->region_cache, struct file_region, link);
+-	VM_BUG_ON(!nrg);
+ 	list_del(&nrg->link);
  
- 	nrg = list_next_entry(rg, link);
-@@ -320,9 +319,6 @@ static void coalesce_file_region(struct resv_map *resv, struct file_region *rg)
- 
- 		list_del(&rg->link);
- 		kfree(rg);
--
--		coalesce_file_region(resv, nrg);
--		return;
- 	}
- }
- 
+ 	nrg->from = from;
 -- 
 2.20.1 (Apple Git-117)
 
