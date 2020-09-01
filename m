@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C8C259F12
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F6E259F3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730661AbgIATRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 15:17:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:48720 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgIATRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 15:17:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0A3B1FB;
-        Tue,  1 Sep 2020 12:17:21 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EC9D3F71F;
-        Tue,  1 Sep 2020 12:17:20 -0700 (PDT)
-Subject: Re: [PATCH v9 13/32] drm: omapdrm: use common helper for extracting
- pages array
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-References: <20200826063316.23486-1-m.szyprowski@samsung.com>
- <CGME20200826063535eucas1p1a98e3295a64f14d475371ac0b003782f@eucas1p1.samsung.com>
- <20200826063316.23486-14-m.szyprowski@samsung.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f1474b67-eca5-d115-82a6-e7e74cccaf9f@arm.com>
-Date:   Tue, 1 Sep 2020 20:17:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729869AbgIATbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 15:31:36 -0400
+Received: from k17.unixstorm.org ([91.227.123.100]:38506 "EHLO
+        k17.unixstorm.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726102AbgIATbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 15:31:35 -0400
+Received: from aadu223.neoplus.adsl.tpnet.pl ([83.4.98.223] helo=kamil)
+        by k17.unixstorm.org with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <kamil@re-ws.pl>)
+        id 1kDBz9-0002Lq-5x; Tue, 01 Sep 2020 21:31:27 +0200
+From:   Kamil Lorenc <kamil@re-ws.pl>
+To:     Peter Korsgaard <jacmet@sunsite.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kamil Lorenc <kamil@re-ws.pl>
+Subject: [PATCH] net: usb: dm9601: Add USB ID of Keenetic Plus DSL
+In_reply-To: <20200901085738.27482-1-kamil@re-ws.pl>
 MIME-Version: 1.0
-In-Reply-To: <20200826063316.23486-14-m.szyprowski@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Message-ID: <GENERATED-WASMISSING-1kDBz9-0002Lq-5x@k17.unixstorm.org>
+X-ACL-Warn: Adding Message-ID header because it is missing!
+X-Authenticated-Id: kamil@re-ws.pl
+Date:   Tue, 1 Sep 2020 15:31:35 -0400
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-26 07:32, Marek Szyprowski wrote:
-> Use common helper for converting a sg_table object into struct
-> page pointer array.
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Keenetic Plus DSL is a xDSL modem that uses dm9620 as its USB interface.
+>
+> Signed-off-by: Kamil Lorenc <kamil@re-ws.pl>
 > ---
->   drivers/gpu/drm/omapdrm/omap_gem.c | 14 ++++----------
->   1 file changed, 4 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/omapdrm/omap_gem.c b/drivers/gpu/drm/omapdrm/omap_gem.c
-> index d0d12d5dd76c..ff0c4b0c3fd0 100644
-> --- a/drivers/gpu/drm/omapdrm/omap_gem.c
-> +++ b/drivers/gpu/drm/omapdrm/omap_gem.c
-> @@ -1297,10 +1297,9 @@ struct drm_gem_object *omap_gem_new_dmabuf(struct drm_device *dev, size_t size,
->   		omap_obj->dma_addr = sg_dma_address(sgt->sgl);
->   	} else {
->   		/* Create pages list from sgt */
-> -		struct sg_page_iter iter;
->   		struct page **pages;
->   		unsigned int npages;
-> -		unsigned int i = 0;
-> +		unsigned int ret;
->   
->   		npages = DIV_ROUND_UP(size, PAGE_SIZE);
->   		pages = kcalloc(npages, sizeof(*pages), GFP_KERNEL);
-> @@ -1311,14 +1310,9 @@ struct drm_gem_object *omap_gem_new_dmabuf(struct drm_device *dev, size_t size,
->   		}
->   
->   		omap_obj->pages = pages;
-> -
-> -		for_each_sg_page(sgt->sgl, &iter, sgt->orig_nents, 0) {
-> -			pages[i++] = sg_page_iter_page(&iter);
-> -			if (i > npages)
-> -				break;
-> -		}
-> -
-> -		if (WARN_ON(i != npages)) {
-> +		ret = drm_prime_sg_to_page_addr_arrays(sgt, pages, NULL,
-> +						       npages);
-> +		if (WARN_ON(ret)) {
+>  drivers/net/usb/dm9601.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/net/usb/dm9601.c b/drivers/net/usb/dm9601.c
+> index b91f92e4e5f2..915ac75b55fc 100644
+> --- a/drivers/net/usb/dm9601.c
+> +++ b/drivers/net/usb/dm9601.c
+> @@ -625,6 +625,10 @@ static const struct usb_device_id products[] = {
+>    USB_DEVICE(0x0a46, 0x1269),  /* DM9621A USB to Fast Ethernet Adapter */
+>    .driver_info = (unsigned long)&dm9601_info,
+>   },
+> + {
+> +  USB_DEVICE(0x0586, 0x3427),  /* ZyXEL Keenetic Plus DSL xDSL modem */
+> +  .driver_info = (unsigned long)&dm9601_info,
+> + },
+>   {},     // END
+>  };
+>
+> --
+> 2.28.0
 
-Again, I'm inclined to think the WARN_ON should remain in 
-drm_prime_sg_to_page_addr_arrays() itself such that it could be removed 
-here, but either way,
+I received an error from Peter Korsgaard's mailserver informing that his
+email address does not exist. Should I do something with that fact?
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-
->   			omap_gem_free_object(obj);
->   			obj = ERR_PTR(-ENOMEM);
->   			goto done;
-> 
