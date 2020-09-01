@@ -2,144 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E90259D90
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE151259D97
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729577AbgIARr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbgIARrZ (ORCPT
+        id S1729158AbgIARs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:48:56 -0400
+Received: from sonic314-13.consmr.mail.bf2.yahoo.com ([74.6.132.123]:42057
+        "EHLO sonic314-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgIARst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:47:25 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67655C061246
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:47:24 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b16so779369pjp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IsThTySUC2LXoDe5C5uelfQGGzR8IIc/eah+C0Q213A=;
-        b=XpsC/oBxOrx4l0QwY0wYpPyU12/z2BUrVW00eLZvg+PjRFJ0rr7HBN4K89mKq/ahLx
-         HMSTKYYuq63/D9UyOHzdL8xYU4W7Ipz4ixkCQ3zxlJ+Eyz9+jaSQBYL1TY9/W9e6ODld
-         3DRvt8IClVNVZGNx3CRVKDvo3ylRp7X3pem3Kn5udMhFpTAcrmYxkYjIz+xWfAZVSs3b
-         NQvUXL7xj/KHzh7CmWScQ3//BiJKXoByLtcpna+7a4lx8M1MeyAJnpLQvLcgjoEIy16m
-         jl9GQfR4//ETenO6byMmJhVyy9WBBHX6WIJ6H+eduzIMzYzyt7bU9mKW2G76f4OCSbCu
-         q27g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IsThTySUC2LXoDe5C5uelfQGGzR8IIc/eah+C0Q213A=;
-        b=XGnWkiDGZYLr1KzG2syWdXfm1Er1a/M05w1hMPvfGIz8oGzoKG+SB+zdGeO/Zh9ir6
-         wWUBH4NUnwnVnfNhlJwTdLZF3t6dWH9ubu9PWpZuv6O9I1cdG8+XP31cl/1Rx7Jxtcm4
-         UFVafVYsAjSlZAlQXUW0njsxLqpO7d16dcY6YRwyB/eKDyqNGqu7g13IlqkzzCmbdJgh
-         C8e3MECueG+GurL3gyo/j25kDZxAb6GuJgzt/BF5+f2Dr6FMiVYWGt6TlKt9i9sOiZdi
-         +SWtnDgeOqDKclCbgcWbLWEzGy+NG59g+obFu/QATD7U+yVwubSbuwbCrP9zWux3imil
-         8c4Q==
-X-Gm-Message-State: AOAM5336Lry4XtYmzIWwsAMbTnBtBpXkvwNCGmQX7zZhx+gxk7ilvHGY
-        T5MNtrZmxxlULh71nqKKh1He2P7nX9mkADGlQpgAEw==
-X-Google-Smtp-Source: ABdhPJyy/gARQ06E1lQvzSFMajJ+LnC3PB8OuEJKEaCQMevyZx2d+23ztQstfofFoOhGr9dGnniONqsiWwobCSfcQRk=
-X-Received: by 2002:a17:902:9a45:: with SMTP id x5mr2304256plv.208.1598982443692;
- Tue, 01 Sep 2020 10:47:23 -0700 (PDT)
+        Tue, 1 Sep 2020 13:48:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598982528; bh=V09D8a1N75lUFkJxVR9aVpVPFU2IfPbM8afoyzXI9EQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=A4ZG/mXSKY10caoltvoznEQ6dZASKszUfa2hFKdtFPJbR5TAmUVkjyqnn8UrRMyCgSt1Pf8imajE+Hx1dGU8bnNoxVtgzuswfxoqZXHWhDNg94RCO+H0UdCAf3i6Y3qMZazcXDNHseK8ym/b4x8etbP1apMaM8VT0aRY7sHzeSJR+XHnMYXRIlbzbB6/gYmIcZ/Cl5kgnMWJFa/c/TUIpVxro13PvNCGRq3Y1vRv7nkkb30u4rORBaqXHtSdIg5AF9EP5JsZpR6p6WWIRChY2EYdXEIgqefhuNAo1dEPEpaWjPcrZfFPSPDYdS7dSPEfK8x5UlyMMmHIZqYf1RlDLA==
+X-YMail-OSG: Czl.pb4VM1nNRWFudDN5ephyKrkR7xDjq4OD0QquwM_0PgNtFXZ6nJq3EXssiAP
+ jY2hS1RItmpnPxun8ruGXy6Kk_tS2yxTDp9rRpCF5kxhe2JvuzK4IVpiB1Gctdz87OnYZaNkUHMG
+ 5YKKE5uV7EpkwONBujp.BrYdjrJ0MsqjOn9gfZVvsxBQL.OCcp3cnWy1Yz.pjIfKyRC1IKIzp2YD
+ cLXSo2pkZla.8aDyaC05vAoKr6KYTN2QWVQCbdxgGIvuvVgQP5_.fwZNMOGUkVF8ZLPzVazU1zDg
+ c4nfScoEjy18jiD7KlDFfK2yuUa7I6SPMi6u2hGKR_Ro5SFWchb7NKD283DcTt01EP6UbEOo5orO
+ g.LBKjVfESg2Co94O_T9ZmREdDg3XuQMRbczne6mOVRhF23yZPJPzFr6b23qxE0fddoMYeJvZhRX
+ DIBEzKIp0CTA65rs8vlFE4zdxTF7s8PCYukNubj01uUZX9x4bllKouI4ypCN3XKQYp2tC8ZYKwCz
+ asMEU_C7NVaFDv9rawX2KhU1E1iCiaegfM55N_y_AVajW3RhFIrphPhvdAOHH02fEY9_JvaNcMH_
+ x10emjxtF50pzxKkV8otK5b9lvxRUJnUAQAe4XGHsaiAxMlZntwlLR35kvbaIdrgHl0gDdcpqNZt
+ cqUmHXdUtjdIsYby5yxfAUWwW8Q5V3oAZbuqOF2GWK.INp.YKbJSP02OZUaADyY3PLll77U9iJlI
+ kA9YuSddxCgU2gewKe4aQGu1XXgQObeuiEU.S1XjI_hcHNgf7x75pHsf6KKbAfnoYsCHHqt0fu8b
+ psEQbpzxBneJJF6cNgZXqizQTwkXLV6JJxyN0avlDP5go6.mj2zTTt8h5Hz7WyIkf5pYl1n8P5Aa
+ KZvpRVeAMLPt.Z1vJlqYiggLGM3Q.PneX9gCqAeXarJHXrTrOz6WVbZrUrAQ5oJzf3xn0H85DI09
+ .lOS9JQhjP7U0fEekcVbHDjNajK7jRucOi8g9la9TIKf_1GnrzwDBJhFZ1oerrliWnxnLvqdOJaV
+ wqIQjsYTVTYUI4Aq_.SltmN2VUzH8BfoEJYOSgRG67ht0IzRARV8PejLupIqzmmPXmZFk2RtQ6Ue
+ M0.m0U_MudB3Bn.GMNQZI1rc9ZqH.styvFQsVg1281aCHs.ql5alDhAJIUCVhQDV1ZsJn6yB.dsr
+ 3pYiJeFxp8Bs6PMIFzv79HKSgsavctTlfQ4TSPoD7mFFmsGUzeH_14IqTIxTmeQEOc273o6yBDbj
+ loTzMbY7V4DtJ9SkJgz9WM_ygChHRz7q.FFxtDpnQ14B7WtrGoZmNYqTQBoaytiWs79anLRqZlcv
+ BHnYF6Lsxy9ckAIA6VdlJuGJCsJcVXhpURvkQmiyZSpw8wqXchraHaxopGz5DK47hIP7HhHF5E9r
+ z_Uw5wQ61FQwlILAXicxVoF.FjScZ4Z.m8P5nylKSaEAj71ahay4-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.bf2.yahoo.com with HTTP; Tue, 1 Sep 2020 17:48:48 +0000
+Date:   Tue, 1 Sep 2020 17:48:44 +0000 (UTC)
+From:   Ahmed <mrahmedoue@gmail.com>
+Reply-To: ouedraogoahmed@outlook.com
+Message-ID: <1828172015.1193889.1598982524974@mail.yahoo.com>
+Subject: With due respect.
 MIME-Version: 1.0
-References: <20200901070834.1015754-1-natechancellor@gmail.com>
-In-Reply-To: <20200901070834.1015754-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 1 Sep 2020 10:47:12 -0700
-Message-ID: <CAKwvOdnrg0-s64kPCv4+kyFrxmJPXmYm66QbjrROkTr6OVTUYA@mail.gmail.com>
-Subject: Re: [PATCH] mwifiex: Remove unnecessary braces from HostCmd_SET_SEQ_NO_BSS_INFO
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andy Lavr <andy.lavr@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1828172015.1193889.1598982524974.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:80.0) Gecko/20100101 Firefox/80.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 12:08 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> A new warning in clang points out when macro expansion might result in a
-> GNU C statement expression. There is an instance of this in the mwifiex
-> driver:
->
-> drivers/net/wireless/marvell/mwifiex/cmdevt.c:217:34: warning: '}' and
-> ')' tokens terminating statement expression appear in different macro
-> expansion contexts [-Wcompound-token-split-by-macro]
->         host_cmd->seq_num = cpu_to_le16(HostCmd_SET_SEQ_NO_BSS_INFO
->                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/marvell/mwifiex/fw.h:519:46: note: expanded from
-> macro 'HostCmd_SET_SEQ_NO_BSS_INFO'
->         (((type) & 0x000f) << 12);                  }
->                                                     ^
->
-> This does not appear to be a real issue. Removing the braces and
-> replacing them with parentheses will fix the warning and not change the
-> meaning of the code.
->
-> Fixes: 5e6e3a92b9a4 ("wireless: mwifiex: initial commit for Marvell mwifiex driver")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1146
-> Reported-by: Andy Lavr <andy.lavr@gmail.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Wow, that's tricky. The unnecessary extra parens mix with the extra
-curly braces to form a GNU C statement expression.  Thanks for the
-patch.
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> ---
->  drivers/net/wireless/marvell/mwifiex/cmdevt.c | 4 ++--
->  drivers/net/wireless/marvell/mwifiex/fw.h     | 8 ++++----
->  2 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/net/wireless/marvell/mwifiex/cmdevt.c b/drivers/net/wireless/marvell/mwifiex/cmdevt.c
-> index d068b9075c32..3a11342a6bde 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/cmdevt.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/cmdevt.c
-> @@ -322,9 +322,9 @@ static int mwifiex_dnld_sleep_confirm_cmd(struct mwifiex_adapter *adapter)
->
->         adapter->seq_num++;
->         sleep_cfm_buf->seq_num =
-> -               cpu_to_le16((HostCmd_SET_SEQ_NO_BSS_INFO
-> +               cpu_to_le16(HostCmd_SET_SEQ_NO_BSS_INFO
->                                         (adapter->seq_num, priv->bss_num,
-> -                                        priv->bss_type)));
-> +                                        priv->bss_type));
->
->         mwifiex_dbg(adapter, CMD,
->                     "cmd: DNLD_CMD: %#x, act %#x, len %d, seqno %#x\n",
-> diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
-> index 8047e307892e..1f02c5058aed 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/fw.h
-> +++ b/drivers/net/wireless/marvell/mwifiex/fw.h
-> @@ -513,10 +513,10 @@ enum mwifiex_channel_flags {
->
->  #define RF_ANTENNA_AUTO                 0xFFFF
->
-> -#define HostCmd_SET_SEQ_NO_BSS_INFO(seq, num, type) {   \
-> -       (((seq) & 0x00ff) |                             \
-> -        (((num) & 0x000f) << 8)) |                     \
-> -       (((type) & 0x000f) << 12);                  }
-> +#define HostCmd_SET_SEQ_NO_BSS_INFO(seq, num, type) \
-> +       ((((seq) & 0x00ff) |                        \
-> +        (((num) & 0x000f) << 8)) |                 \
-> +       (((type) & 0x000f) << 12))
->
->  #define HostCmd_GET_SEQ_NO(seq)       \
->         ((seq) & HostCmd_SEQ_NUM_MASK)
-> --
+Dear Friend,
 
--- 
-Thanks,
-~Nick Desaulniers
+I know that this mail will come to you as a surprise as we have never met before, but need not to worry as I am contacting you independently of my investigation and no one is informed of this communication. I need your urgent assistance in transferring the sum of $11.3million immediately to your private account.The money has been here in our Bank lying dormant for years now without anybody coming for the claim of it.
+
+I want to release the money to you as the relative to our deceased customer (the account owner) who died a long with his supposed Next Of Kin since 16th October 2005. The Banking laws here does not allow such money to stay more than 15 years, because the money will be recalled to the Bank treasury account as unclaimed fund.
+
+By indicating your interest I will send you the full details on how the business will be executed.
+
+Please respond urgently and delete if you are not interested.
+
+Best Regards,
+Ahmed Ouedraogo.
