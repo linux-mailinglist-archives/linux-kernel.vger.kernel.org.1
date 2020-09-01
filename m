@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18EF2589D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9F72589DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgIAH4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51040 "EHLO mail.kernel.org"
+        id S1728087AbgIAH4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:56:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgIAH4g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:56:36 -0400
+        id S1726044AbgIAH4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 03:56:46 -0400
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D007A2078B;
-        Tue,  1 Sep 2020 07:56:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D88D2065F;
+        Tue,  1 Sep 2020 07:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598946995;
-        bh=L83kyDyjs+VkGWTN+LCdkeP51ajJNz4QLy7rIBLuONM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kAHrN+Burr1jiFyzAI/WOb4/b1fS0g4iuPGbh4Q1VzRx+ycKjurcaKJK8EyoHRHeT
-         mA/iQopm//1dTBcTinZudTXC+rZxsAFx6pmsiaNUiWmwGMzwLCTJEoD3cdmMmv5hTO
-         e6YRn3AgZ9ZGYn84vmTkKoeftR2iaU22m/UfmZm8=
+        s=default; t=1598947005;
+        bh=rfxlWXkoFVg1nBhyifXGxOJ6QA+J4LqvbC5/ABiyWGI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=u34VdFazsI0Ubsd1KqLW5mU91j4KnVgtftSHxJ4I+w1/sp8WDGAtsmwHi58zhmfE0
+         jHIwTotnvvNfeAZMTs8YTGmFujxy5EneDAZpRlEW8ZmhaWbdi3v+qTo38MjiC90SXB
+         KWVpk/lmT6WGcROR5tGdLtFv5rVtB8oFFwhDPcAM=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH v2 0/6] tracing/boot: Add new options for tracing specific period
-Date:   Tue,  1 Sep 2020 16:56:30 +0900
-Message-Id: <159894698993.1478826.2813843560314595660.stgit@devnote2>
+Subject: [PATCH v2 1/6] kprobes: tracing/kprobes: Fix to kill kprobes on initmem after boot
+Date:   Tue,  1 Sep 2020 16:56:41 +0900
+Message-Id: <159894700101.1478826.3210757333571150353.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <159894698993.1478826.2813843560314595660.stgit@devnote2>
+References: <159894698993.1478826.2813843560314595660.stgit@devnote2>
 User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -42,102 +44,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Since kprobe_event= cmdline option allows user to put kprobes on the
+functions in initmem, kprobe has to make such probes gone after boot.
+Currently the probes on the init functions in modules will be handled
+by module callback, but the kernel init text isn't handled.
+Without this, kprobes may access non-exist text area to disable or
+remove it.
 
-Here is the 2nd version of the series to improve the boot-time tracing to
-support kretprobe and tracing_on option. Previous version is here:
-
- https://lkml.kernel.org/r/159887792384.1330989.5993224243767476896.stgit@devnote2
-
-This version fixes a build error ([1/6]) and fix a space indent issue
-([5/6]).
-
-The combination of tracing_on and kretprobe allows us to trace events
-while a specific function call period. For example, the below bootconfig
-will make a function callgraph in the pci_proc_init() function at boot
-time.
-
-ftrace {
-	tracing_on = 0  # off at start
-	tracer = function_graph
-	event.kprobes {
-		start_event {
-			probes = "pci_proc_init"
-			actions = "traceon"
-		}
-		end_event {
-			probes = "pci_proc_init%return"
-			actions = "traceoff"
-		}
-	}
-}
-
-Here is the example output;
-
-# tracer: function_graph
-#
-# CPU  DURATION                  FUNCTION CALLS
-# |     |   |                     |   |   |   |
- 0)               |  pci_proc_init() {
- 0)               |    proc_mkdir() {
- 0)               |      proc_mkdir_data() {
- 0)               |        __proc_create() {
- 0)               |          _raw_read_lock() {
- 0)   0.179 us    |            preempt_count_add();
- 0)   0.203 us    |            do_raw_read_lock();
- 0)   1.210 us    |          }
- 0)               |          __xlate_proc_name() {
- 0)   0.449 us    |            pde_subdir_find();
- 0)   0.913 us    |          }
- 0)               |          _raw_read_unlock() {
- 0)   0.169 us    |            do_raw_read_unlock();
- 0)   0.175 us    |            preempt_count_sub();
- 0)   0.841 us    |          }
- 0)               |          kmem_cache_alloc() {
- 0)               |            fs_reclaim_acquire() {
- 0)   0.154 us    |              __need_fs_reclaim();
- 0)   0.240 us    |              fs_reclaim_acquire.part.0();
- 0)   0.889 us    |            }
- 0)               |            fs_reclaim_release() {
- 0)   0.174 us    |              __need_fs_reclaim();
- 0)   0.516 us    |            }
- 0)   0.157 us    |            should_failslab();
- 0)               |            rcu_read_lock_sched_held() {
- 0)               |              rcu_read_lock_held_common() {
- 0)   0.156 us    |                rcu_is_watching();
- 0)   0.158 us    |                rcu_lockdep_current_cpu_online();
- 0)   0.735 us    |              }
- 0)   1.054 us    |            }
- 0)   3.407 us    |          }
- 0)   0.168 us    |          __raw_spin_lock_init();
- 0)   7.575 us    |        }
- 0)               |        proc_register() {
- 0)               |          _raw_spin_lock_irqsave() {
- 0)   0.187 us    |            preempt_count_add();
-...
-
-
-Thank you,
-
+Fixes: 970988e19eb0 ("tracing/kprobe: Add kprobe_event= boot parameter")
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
+  Changes in v2:
+   - Fix kprobe_free_init_mem() not depending on CONFIG_DEBUG_FS.
+---
+ include/linux/kprobes.h |    5 +++++
+ init/main.c             |    2 ++
+ kernel/kprobes.c        |   22 ++++++++++++++++++++++
+ 3 files changed, 29 insertions(+)
 
-Masami Hiramatsu (6):
-      kprobes: tracing/kprobes: Fix to kill kprobes on initmem after boot
-      tracing/boot: Add per-instance tracing_on option support
-      Documentation: tracing: Add tracing_on option to boot-time tracer
-      tracing/kprobes: Support perf-style return probe
-      Documentation: tracing: Add %return suffix description
-      Documentation: tracing: boot: Add an example of tracing function-calls
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 9be1bff4f586..8aab327b5539 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -373,6 +373,8 @@ void unregister_kretprobes(struct kretprobe **rps, int num);
+ void kprobe_flush_task(struct task_struct *tk);
+ void recycle_rp_inst(struct kretprobe_instance *ri, struct hlist_head *head);
+ 
++void kprobe_free_init_mem(void);
++
+ int disable_kprobe(struct kprobe *kp);
+ int enable_kprobe(struct kprobe *kp);
+ 
+@@ -435,6 +437,9 @@ static inline void unregister_kretprobes(struct kretprobe **rps, int num)
+ static inline void kprobe_flush_task(struct task_struct *tk)
+ {
+ }
++static inline void kprobe_free_init_mem(void)
++{
++}
+ static inline int disable_kprobe(struct kprobe *kp)
+ {
+ 	return -ENOSYS;
+diff --git a/init/main.c b/init/main.c
+index ae78fb68d231..038128b2a755 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -33,6 +33,7 @@
+ #include <linux/nmi.h>
+ #include <linux/percpu.h>
+ #include <linux/kmod.h>
++#include <linux/kprobes.h>
+ #include <linux/vmalloc.h>
+ #include <linux/kernel_stat.h>
+ #include <linux/start_kernel.h>
+@@ -1402,6 +1403,7 @@ static int __ref kernel_init(void *unused)
+ 	kernel_init_freeable();
+ 	/* need to finish all async __init code before freeing the memory */
+ 	async_synchronize_full();
++	kprobe_free_init_mem();
+ 	ftrace_free_init_mem();
+ 	free_initmem();
+ 	mark_readonly();
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 287b263c9cb9..2880cdf37c47 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2452,6 +2452,28 @@ static struct notifier_block kprobe_module_nb = {
+ extern unsigned long __start_kprobe_blacklist[];
+ extern unsigned long __stop_kprobe_blacklist[];
+ 
++void kprobe_free_init_mem(void)
++{
++	void *start = (void *)(&__init_begin);
++	void *end = (void *)(&__init_end);
++	struct hlist_head *head;
++	struct kprobe *p;
++	int i;
++
++	mutex_lock(&kprobe_mutex);
++
++	/* Kill all kprobes on initmem */
++	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
++		head = &kprobe_table[i];
++		hlist_for_each_entry(p, head, hlist) {
++			if (start <= (void *)p->addr && (void *)p->addr < end)
++				kill_kprobe(p);
++		}
++	}
++
++	mutex_unlock(&kprobe_mutex);
++}
++
+ static int __init init_kprobes(void)
+ {
+ 	int i, err = 0;
 
-
- Documentation/trace/boottime-trace.rst |   24 ++++++++++++++++++++++++
- Documentation/trace/kprobetrace.rst    |    2 ++
- include/linux/kprobes.h                |    5 +++++
- init/main.c                            |    2 ++
- kernel/kprobes.c                       |   22 ++++++++++++++++++++++
- kernel/trace/trace_boot.c              |   10 ++++++++++
- kernel/trace/trace_kprobe.c            |   21 ++++++++++++++++++++-
- 7 files changed, 85 insertions(+), 1 deletion(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
