@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBC9259902
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06FD2598C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730980AbgIAQfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:35:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32936 "EHLO mail.kernel.org"
+        id S1730801AbgIAQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:30:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730621AbgIAPam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:30:42 -0400
+        id S1730750AbgIAPbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05117205F4;
-        Tue,  1 Sep 2020 15:30:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6536A205F4;
+        Tue,  1 Sep 2020 15:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974242;
-        bh=dUnRKN63euXMnnE/TPo9Pk5s7qNIZV5FF+T1lo9FPVQ=;
+        s=default; t=1598974309;
+        bh=UZT3Fjd3XBpWhvlqFpTTLZmTGvD98yi612Mb9LH7YXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q6KJ78C3zZ+Wn+GXEWOOO0N+ZPWoAsJ+Vu0zj8e3gE5cOytkloGaAZ9z7AIrCeNos
-         zR/J7/vPImiC3vErh0hmNbAugjzQpvd0gDrTBTcD8+Oc4YSJAWJAMZpcWzgxje+ueG
-         JGsnLcB35udI52y7drLxPVJXcG6ojaFGe6bJWGLc=
+        b=CkSi+R/iwbqWJ5C4O9EWFhqTS2ZxvB/SLuZxT1fp/d5Bhfrfwnp5kewqp+1FFp4Ac
+         edjonwMLUWG+MKnAOEOt3E+7AydjNbN7zKqYQ2wxzSbdy9LGc8zzYWjcQ9GVLAlx2f
+         iXjIbGMpDfqboH5UX2BBIa7c/tSrTywifxQcC8eE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sham Muthayyan <smuthayy@codeaurora.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        stable@vger.kernel.org, Francisco Jerez <currojerez@riseup.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 093/214] PCI: qcom: Add missing ipq806x clocks in PCIe driver
-Date:   Tue,  1 Sep 2020 17:09:33 +0200
-Message-Id: <20200901150957.444681609@linuxfoundation.org>
+Subject: [PATCH 5.4 096/214] cpufreq: intel_pstate: Fix EPP setting via sysfs in active mode
+Date:   Tue,  1 Sep 2020 17:09:36 +0200
+Message-Id: <20200901150957.594991881@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -47,111 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ansuel Smith <ansuelsmth@gmail.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 8b6f0330b5f9a7543356bfa9e76d580f03aa2c1e ]
+[ Upstream commit de002c55cadfc2f6cdf0ed427526f6085d240238 ]
 
-Aux and Ref clk are missing in PCIe qcom driver. Add support for this
-optional clks for ipq8064/apq8064 SoC.
+Because intel_pstate_set_energy_pref_index() reads and writes the
+MSR_HWP_REQUEST register without using the cached value of it used by
+intel_pstate_hwp_boost_up() and intel_pstate_hwp_boost_down(), those
+functions may overwrite the value written by it and so the EPP value
+set via sysfs may be lost.
 
-Link: https://lore.kernel.org/r/20200615210608.21469-2-ansuelsmth@gmail.com
-Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
-Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
+To avoid that, make intel_pstate_set_energy_pref_index() take the
+cached value of MSR_HWP_REQUEST just like the other two routines
+mentioned above and update it with the new EPP value coming from
+user space in addition to updating the MSR.
+
+Note that the MSR itself still needs to be updated too in case
+hwp_boost is unset or the boosting mechanism is not active at the
+EPP change time.
+
+Fixes: e0efd5be63e8 ("cpufreq: intel_pstate: Add HWP boost utility and sched util hooks")
+Reported-by: Francisco Jerez <currojerez@riseup.net>
+Cc: 4.18+ <stable@vger.kernel.org> # 4.18+: 3da97d4db8ee cpufreq: intel_pstate: Rearrange ...
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Francisco Jerez <currojerez@riseup.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-qcom.c | 38 ++++++++++++++++++++++----
- 1 file changed, 33 insertions(+), 5 deletions(-)
+ drivers/cpufreq/intel_pstate.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 270d502b8cd50..380a77a914fa0 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -103,6 +103,8 @@ struct qcom_pcie_resources_2_1_0 {
- 	struct clk *iface_clk;
- 	struct clk *core_clk;
- 	struct clk *phy_clk;
-+	struct clk *aux_clk;
-+	struct clk *ref_clk;
- 	struct reset_control *pci_reset;
- 	struct reset_control *axi_reset;
- 	struct reset_control *ahb_reset;
-@@ -253,6 +255,14 @@ static int qcom_pcie_get_resources_2_1_0(struct qcom_pcie *pcie)
- 	if (IS_ERR(res->phy_clk))
- 		return PTR_ERR(res->phy_clk);
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index c7540ad28995b..8c730a47e0537 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -649,11 +649,12 @@ static int intel_pstate_set_energy_pref_index(struct cpudata *cpu_data,
+ 	mutex_lock(&intel_pstate_limits_lock);
  
-+	res->aux_clk = devm_clk_get_optional(dev, "aux");
-+	if (IS_ERR(res->aux_clk))
-+		return PTR_ERR(res->aux_clk);
-+
-+	res->ref_clk = devm_clk_get_optional(dev, "ref");
-+	if (IS_ERR(res->ref_clk))
-+		return PTR_ERR(res->ref_clk);
-+
- 	res->pci_reset = devm_reset_control_get_exclusive(dev, "pci");
- 	if (IS_ERR(res->pci_reset))
- 		return PTR_ERR(res->pci_reset);
-@@ -285,6 +295,8 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
- 	clk_disable_unprepare(res->iface_clk);
- 	clk_disable_unprepare(res->core_clk);
- 	clk_disable_unprepare(res->phy_clk);
-+	clk_disable_unprepare(res->aux_clk);
-+	clk_disable_unprepare(res->ref_clk);
- 	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
- }
+ 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+-		u64 value;
+-
+-		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
+-		if (ret)
+-			goto return_pref;
++		/*
++		 * Use the cached HWP Request MSR value, because the register
++		 * itself may be updated by intel_pstate_hwp_boost_up() or
++		 * intel_pstate_hwp_boost_down() at any time.
++		 */
++		u64 value = READ_ONCE(cpu_data->hwp_req_cached);
  
-@@ -315,16 +327,28 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
- 		goto err_assert_ahb;
+ 		value &= ~GENMASK_ULL(31, 24);
+ 
+@@ -661,13 +662,18 @@ static int intel_pstate_set_energy_pref_index(struct cpudata *cpu_data,
+ 			epp = epp_values[pref_index - 1];
+ 
+ 		value |= (u64)epp << 24;
++		/*
++		 * The only other updater of hwp_req_cached in the active mode,
++		 * intel_pstate_hwp_set(), is called under the same lock as this
++		 * function, so it cannot run in parallel with the update below.
++		 */
++		WRITE_ONCE(cpu_data->hwp_req_cached, value);
+ 		ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
+ 	} else {
+ 		if (epp == -EINVAL)
+ 			epp = (pref_index - 1) << 2;
+ 		ret = intel_pstate_set_epb(cpu_data->cpu, epp);
  	}
+-return_pref:
+ 	mutex_unlock(&intel_pstate_limits_lock);
  
-+	ret = clk_prepare_enable(res->core_clk);
-+	if (ret) {
-+		dev_err(dev, "cannot prepare/enable core clock\n");
-+		goto err_clk_core;
-+	}
-+
- 	ret = clk_prepare_enable(res->phy_clk);
- 	if (ret) {
- 		dev_err(dev, "cannot prepare/enable phy clock\n");
- 		goto err_clk_phy;
- 	}
- 
--	ret = clk_prepare_enable(res->core_clk);
-+	ret = clk_prepare_enable(res->aux_clk);
- 	if (ret) {
--		dev_err(dev, "cannot prepare/enable core clock\n");
--		goto err_clk_core;
-+		dev_err(dev, "cannot prepare/enable aux clock\n");
-+		goto err_clk_aux;
-+	}
-+
-+	ret = clk_prepare_enable(res->ref_clk);
-+	if (ret) {
-+		dev_err(dev, "cannot prepare/enable ref clock\n");
-+		goto err_clk_ref;
- 	}
- 
- 	ret = reset_control_deassert(res->ahb_reset);
-@@ -400,10 +424,14 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
- 	return 0;
- 
- err_deassert_ahb:
--	clk_disable_unprepare(res->core_clk);
--err_clk_core:
-+	clk_disable_unprepare(res->ref_clk);
-+err_clk_ref:
-+	clk_disable_unprepare(res->aux_clk);
-+err_clk_aux:
- 	clk_disable_unprepare(res->phy_clk);
- err_clk_phy:
-+	clk_disable_unprepare(res->core_clk);
-+err_clk_core:
- 	clk_disable_unprepare(res->iface_clk);
- err_assert_ahb:
- 	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
+ 	return ret;
 -- 
 2.25.1
 
