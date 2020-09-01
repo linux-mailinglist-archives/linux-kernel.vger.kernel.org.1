@@ -2,112 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06B225858A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 04:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C24A25859C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 04:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgIACIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 22:08:09 -0400
-Received: from mail-am6eur05on2076.outbound.protection.outlook.com ([40.107.22.76]:64865
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726020AbgIACII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 22:08:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MRNmVoz5z6dpciCVwa1zQtXFaNYKEsWAcbnfWhKIba4j6NHJm6dVSKA7AVTupgNboJ1LwV/8H3qv7I2g8wBTcgnGabkg4ng2/D+b6nodcrO429ykY8J2eYNCQD1bFhL1Icak+2ojcXbiZH7geNCW6mch6pK/OzwkkdAoknQYC90qv1M89cLZZi7zoLWCYw8krXy+o242K0wbliCjsNn7kmH4o3SLMU7mKMhkxxURKeN3eoMMXsIBV0uGSc0ysKBrwRs2STFL88gLcGCJcSS96V0rb7MSGM1qbcbr0JRRkh+ukT3wGbzo3LafeKse6RLkSBLPuA+qPRetZbL08vKrAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M+NazmLuNG8c9HYs1fDjzbg2LB4YU4yl5HPQ3Tk7LkA=;
- b=H26mlhe5vCPyxxhGaEgPLg6ZwqL0SyyIBG4nfPf48G2VJxc5G05XcHSHlA2iH30+LA8hvlczl5zrVWWEHp0B3aTBx20r5ARe2xI0IJipt4K6CfF146MFlpsQJm389xNwLVtBF2KD3DmYp7rvbTvySYmOQk94eAa9fTUUY22J/BRewL1YvpNS/jbBe/baaGJoc5rKUDAXE5No2x3VNMtJfx7NhNu2SLw6Pax61mrHvOQPsEb13g3gOjgOduJi9YbI7EzHm6aXjaqkzqVmJkCL1trFJQTkbmEU4I1QrN6BkdPdzB2WzNe37bnpLEdVuIWgQIURcTaF0QsI6CSBU0DYKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M+NazmLuNG8c9HYs1fDjzbg2LB4YU4yl5HPQ3Tk7LkA=;
- b=IssFgC/eKtV7aG+GQqWVXKylB0kjj0fm5hMzfsu9nFV/JMLd6eCRdQN6xw/Xj78+x3T0+Ftgre4zgrQWu0unsN1GDPNZuOdRFTEd/q3C03ILn3r3iMaUPAeJYUOX8FxAvTPbxSsvlgfWxHw/04LWINunrYu8Vjgt2PFe+KezYcM=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com (2603:10a6:803:119::15)
- by VI1PR0401MB2302.eurprd04.prod.outlook.com (2603:10a6:800:2b::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.23; Tue, 1 Sep
- 2020 02:08:03 +0000
-Received: from VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950]) by VE1PR04MB6638.eurprd04.prod.outlook.com
- ([fe80::ad7f:d95a:5413:a950%3]) with mapi id 15.20.3326.025; Tue, 1 Sep 2020
- 02:08:03 +0000
-From:   Robin Gong <yibin.gong@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, Anson.Huang@nxp.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 RESEND] ARM64: dts: imx8mp: correct sdma1 clk setting
-Date:   Tue,  1 Sep 2020 18:21:49 +0800
-Message-Id: <1598955709-28688-1-git-send-email-yibin.gong@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR04CA0135.apcprd04.prod.outlook.com
- (2603:1096:3:16::19) To VE1PR04MB6638.eurprd04.prod.outlook.com
- (2603:10a6:803:119::15)
+        id S1726521AbgIACbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 22:31:18 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:54251 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725993AbgIACbS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 22:31:18 -0400
+Received: (qmail 572242 invoked by uid 1000); 31 Aug 2020 22:31:17 -0400
+Date:   Mon, 31 Aug 2020 22:31:17 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Khalid Aziz <khalid.aziz@oracle.com>
+Cc:     gregkh@linuxfoundation.org, erkka.talvitie@vincit.fi,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC RESEND PATCH 0/1] USB EHCI: repeated resets on full and low
+ speed devices
+Message-ID: <20200901023117.GD571008@rowland.harvard.edu>
+References: <cover.1598887346.git.khalid@gonehiking.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from robin-OptiPlex-790.ap.freescale.net (119.31.174.66) by SG2PR04CA0135.apcprd04.prod.outlook.com (2603:1096:3:16::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3326.19 via Frontend Transport; Tue, 1 Sep 2020 02:08:00 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [119.31.174.66]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 70d9755d-b698-4136-f471-08d84e1bdbdd
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2302:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB230208228AC11B6DD255B838892E0@VI1PR0401MB2302.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:311;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3QRsh/gb94/wTU8ck0CZZ+z7fk4ssuce7Y1j5TZOmL7K05SmH3PMGzDbGI8L4oCcQmRRXD1ZbJfMQbUBTQhT5Mv4/H4Nz444PKM6Xdr5RP4d9LZZhua+iHFh8I/Svl5BTcXGVf4YD7IL5vsloIlLyXBMKLDJ0LcBizhrmIfBYfg0M3+S4yVvfsSPr2WkHyzfVtH+c6N0e3/Z2nBne0bFvQmGHiMS7fftSc8Nn0eJ8i1l47lhM4i4kxDm2Dhylsvg7i8/FNWlm/j4vR1mL6neYKYOkt0IenphoFTr7RKLbYoiyJGzsaEvuHDUnCmk9u4OT7NCuBXMEsc3bwjzf9+lpkkgzy8d59Rrk3vekPE0el1MVrvlWlh/UiKNf8E2ACgE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(136003)(346002)(366004)(396003)(66556008)(16526019)(4744005)(6506007)(6636002)(956004)(316002)(2616005)(186003)(26005)(52116002)(86362001)(66476007)(66946007)(6486002)(6512007)(36756003)(8676002)(2906002)(5660300002)(478600001)(6666004)(4326008)(83380400001)(8936002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: bPnOO750MHdaqV9owwSmp2vEqljKdzukZbHrZzDfggG/LLsz+wMPiXP2H/NyyE/77o346VCFbbAzHOISHexyomrgxBKb4aT/I0ckTFvqB76d5EHkyn4lwPOU4ovQSnz2ZRPkrPPH666p/Kf8rF8L+0ciHElDvQIsW6gKkDSSFCyu6OPBALA4rxfsb7Z/rXBC3aDArBWaxtR5QhlFHRDiMlXXU9DkdOcAFo1fCzeU3nkeNLLgSKHcKX0AikIPnepoCHit9UGKD5arL1X5QstXbFSGXViroDw7oVx2HqQG2yqtuIAw+vYEheFWvLRSkXCjPgnQ605z09Z7GQY2AuAVB5fJKg9TQhS39WHcsUzlkEeTcp+A1dtHeYrvkZQyO2iev3RwIlMNvqgY/W0QmVuiCtZFh4nMz9v81JlNE6ZBUrsS/NtHYm28n6NU717IBL6mgeP30ld2ZTX73THciYCNwjIzS4iUC54rsmg5PdwUY5J7bjOF23jAX+kxeUylIwvBftTeISyLvoFBArR15eA3+6QnVCadS6qL1F5tV4SNIrsBLB9bIUVFlzC+uOmM5OaiLeUu2y7Cy1FznTlS+N2Q4vt+mv0SvG5ZLUM6khnbVIvSzCkHl9n6cPYVSr+nRYHeQcLK2OmoCVcy8TpAZTdObw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70d9755d-b698-4136-f471-08d84e1bdbdd
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6638.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2020 02:08:03.6023
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XZ6RPURIJiR6wmQZ9rUw5G9h1oWdSx2QyLzstgS6o6G9aBaSsrt034n2QDHTBrslQBElV1gCluGamLnoAatYCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2302
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1598887346.git.khalid@gonehiking.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct sdma1 ahb clk, otherwise wrong 1:1 clk ratio will be chosed so
-that sdma1 function broken. sdma1 should use 1:2 clk, while sdma2/3 use
-1:1.
+On Mon, Aug 31, 2020 at 10:23:30AM -0600, Khalid Aziz wrote:
+> [Resending since I screwed up linux-usb mailing list address in
+> cut-n-paste in original email]
+> 
+> 
+> I recently replaced the motherboard on my desktop with an MSI B450-A
+> Pro Max motherboard. Since then my keybaords, mouse and tablet have
+> become very unreliable. I see messages like this over and over in
+> dmesg:
+> 
+> ug 23 00:01:49 rhapsody kernel: [198769.314732] usb 1-2.4: reset full-speed USB
+>  device number 27 using ehci-pci
+> Aug 23 00:01:49 rhapsody kernel: [198769.562234] usb 1-2.1: reset full-speed USB
+>  device number 28 using ehci-pci
+> Aug 23 00:01:52 rhapsody kernel: [198772.570704] usb 1-2.1: reset full-speed USB
+>  device number 28 using ehci-pci
+> Aug 23 00:02:02 rhapsody kernel: [198782.526669] usb 1-2.4: reset full-speed USB
+>  device number 27 using ehci-pci
+> Aug 23 00:02:03 rhapsody kernel: [198782.714660] usb 1-2.1: reset full-speed USB
+>  device number 28 using ehci-pci
+> Aug 23 00:02:04 rhapsody kernel: [198784.210171] usb 1-2.3: reset low-speed USB device number 26 using ehci-pci
+> Aug 23 00:02:06 rhapsody kernel: [198786.110181] usb 1-2.4: reset full-speed USB device number 27 using ehci-pci
+> Aug 23 00:02:08 rhapsody kernel: [198787.726158] usb 1-2.4: reset full-speed USB device number 27 using ehci-pci
+> Aug 23 00:02:10 rhapsody kernel: [198790.126628] usb 1-2.1: reset full-speed USB device number 28 using ehci-pci
+> Aug 23 00:02:10 rhapsody kernel: [198790.314141] usb 1-2.4: reset full-speed USB device number 27 using ehci-pci
+> Aug 23 00:02:12 rhapsody kernel: [198792.518765] usb 1-2.4: reset full-speed USB device number 27 using ehci-pci
+> 
+> The devices I am using are:
+> 
+> - Logitech K360 wireless keyboard
+> - Wired Lenovo USB keyboard
+> - Wired Lenovo USB mouse
+> - Wired Wacom Intuos tablet
+> 
+> After a reset, the wireless keyboard simply stops working. Rest of
+> the devices keep seeing intermittent failure.
+> 
+> I tried various combinations of hubs and USB controllers to see what
+> works. MSI B450-A motherboard has USB 3.0 and USB 3.1 controllers. I
+> added a USB 2.0 PCI card as well for this test:
+> 
+> 03:00.0 USB controller: Advanced Micro Devices, Inc. [AMD] 400 Series Chipset USB 3.1 XHCI Controller (rev 01)
+> 29:01.0 USB controller: NEC Corporation OHCI USB Controller (rev 43)
+> 29:01.1 USB controller: NEC Corporation OHCI USB Controller (rev 43)
+> 29:01.2 USB controller: NEC Corporation uPD72010x USB 2.0 Controller (rev 04)
+> 2c:00.3 USB controller: Advanced Micro Devices, Inc. [AMD] Matisse USB 3.0 Host Controller
+> 
+> I have a bus powered USB 3.0 hub, a bus powered USB 2.0 hub and a
+> self powered USB 2.0 hub built into my monitor.
+> 
+> I have connected my devices directly into the ports on motherboard
+> and PCI card as well as into external hub. Here are the results I
+> saw when devices wee plugged into various combination of ports:
+> 
+> 1. USB 3.0/3.1 controller - does NOT work
+> 2. USB 2.0 controller - WORKS
+> 3. USB 3.0/3.1 controller -> Self powered USB 2.0 hub in monitor - does
+>    NOT work
+> 4. USB 3.0/3.1 controller -> bus powered USB 3.0 hub - does NOT work
+> 5. USB 3.0/3.1 controller -> Bus powered USB 2.0 hub - WORKS
+> 7. USB 2.0 controller -> Bus powered USB 3.0 hub - does NOT work
+> 8. USB 2.0 controller -> Bus powered 2.0 hub - Does not work
 
-Fixes: 6d9b8d20431f ("arm64: dts: freescale: Add i.MX8MP dtsi support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The error messages in your log extract all refer to ehci-pci, which is 
+the driver for a USB-2 controller.  They are completely unrelated to any 
+problems you may be having with USB-3 controllers.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index cad2dd7..6038f66 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -702,7 +702,7 @@
- 				reg = <0x30bd0000 0x10000>;
- 				interrupts = <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX8MP_CLK_SDMA1_ROOT>,
--					 <&clk IMX8MP_CLK_SDMA1_ROOT>;
-+					 <&clk IMX8MP_CLK_AHB>;
- 				clock-names = "ipg", "ahb";
- 				#dma-cells = <3>;
- 				fsl,sdma-ram-script-name = "imx/sdma/sdma-imx7d.bin";
--- 
-2.7.4
+> I narrowed the failure down to following lines (this code was added
+> in 5.5 with commit 64cc3f12d1c7 "USB: EHCI: Do not return -EPIPE
+> when hub is disconnected"):
+> 
+> drivers/usb/host/ehci-q.c:
+> 
+>  217                 } else if ((token & QTD_STS_MMF) &&
+>  218                                         (QTD_PID(token) == PID_CODE_IN)) {
+>  219                         status = -EPROTO;
+>  220                 /* CERR nonzero + halt --> stall */
+> 
+> At the time of failure, when we reach this conditional, token is
+> either 0x80408d46 or 0x408d46 which means following bits are set:
+> 
+> QTD_STS_STS, QTD_STS_MMF, QTD_STS_HALT, QTD_IOC, QTD_TOGGLE
+> 
+> and 
+> 
+>         QTD_PID = 1
+>         QTD_CERR = 3
+>         QTD_LENGTH = 0x40 (64)
+> 
+> This causes  the branch "(token & QTD_STS_MMF) && (QTD_PID(token) ==
+> PID_CODE_IN" to be taken and qtd_copy_status() returns EPROTO. This
+> return value in qh_completions() results in ehci_clear_tt_buffer()
+> being called:
+> 
+> drivers/usb/host/ehci-q.c:
+>  472                         /* As part of low/full-speed endpoint-halt processi     ng
+>  473                          * we must clear the TT buffer (11.17.5).
+>  474                          */
+>  475                         if (unlikely(last_status != -EINPROGRESS &&
+>  476                                         last_status != -EREMOTEIO)) {
+>  477                                 /* The TT's in some hubs malfunction when t     hey
+>  478                                  * receive this request following a STALL (     they
+>  479                                  * stop sending isochronous packets).  Sinc     e a
+>  480                                  * STALL can't leave the TT buffer in a bus     y
+>  481                                  * state (if you believe Figures 11-48 - 11     -51
+>  482                                  * in the USB 2.0 spec), we won't clear the      TT
+>  483                                  * buffer in this case.  Strictly speaking      this
+>  484                                  * is a violation of the spec.
+>  485                                  */
+>  486                                 if (last_status != -EPIPE)
+>  487                                         ehci_clear_tt_buffer(ehci, qh, urb,
+>  488                                                         token);
+>  489                         }
+> 
+> It seems like clearing TT buffers in this case is resulting in hub
+> hanging. A USB reset gets it going again until we repeat the cycle
+> over again. The comment in this code says "The TT's in some hubs
+> malfunction when they receive this request following a STALL (they
+> stop sending isochronous packets)". That may be what is happening.
 
+What makes you think that?  Do you have any evidence that the hub is 
+receiving a STALL?  Indeed, the commit you referenced above specifically 
+mentions that when MMF is set and the PID code is IN then it is not a 
+STALL.
+
+> Removing the code that returns EPROTO for such case solves the
+> problem on my machine (as in the RFC patch)
+
+It certainly can't solve the problem for any USB-3 connections, because 
+the patch doesn't touch any of the USB-3 driver code.
+
+>  but that probably is not
+> the right solution. I do not understand USB protocol well enough to
+> propose a better solution. Does anyone have a better idea?
+
+Can you collect a usbmon trace showing an example of this problem?
+
+One possibility is to introduce a special quirk for the NEC uPD72010x 
+EHCI controller.  But we should hold off on that until we know exactly 
+what is happening.
+
+Alan Stern
