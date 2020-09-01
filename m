@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BE1259B56
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3E8259BA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732508AbgIARAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:00:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
+        id S1729518AbgIAPSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:18:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729432AbgIAPVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:21:18 -0400
+        id S1729407AbgIAPR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:17:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 343F420BED;
-        Tue,  1 Sep 2020 15:21:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA779206EB;
+        Tue,  1 Sep 2020 15:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973676;
-        bh=zN2Iby1ZKm7omsTZAQGL95YJNxQ1YAcqguS9LL32lJ4=;
+        s=default; t=1598973445;
+        bh=O9i79/4pOrv/EnUoloGvZU7+Ujgq6MiWdF4z1apSMoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gwaaHuzYvnWdwgIB64qqtwA+TD2mwIMs01ZGfrrrArzk/CrAPpO0DZF1JVFZL5Vy1
-         jU52cZQYwDNxT4R/hyMIMoRH2RNTA0rrt0mgA6rzGiODKx7t4UP80dPSperoqKb4IJ
-         fNbg7R4588abS/gsjqrDJ1tJVdCJzPCUADY7tYok=
+        b=SM7WC6oF+l7UfOuAVpki4MroVT/zjFWO9M87lQokqLjaIXoDwa3x4HxmBmAYsvxet
+         ePR0RcOFIvDoypnKHotlKjnbz3uMBBzUn/xYV6LUdFHdK0MBKKtenbJleAwl+EztSN
+         ui+ycm4kRWiN2kiSg+NfptnTAeaXUHFw//v2fFDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 4.14 66/91] serial: pl011: Dont leak amba_ports entry on driver register error
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: [PATCH 4.9 64/78] PM: sleep: core: Fix the handling of pending runtime resume requests
 Date:   Tue,  1 Sep 2020 17:10:40 +0200
-Message-Id: <20200901150931.442350089@linuxfoundation.org>
+Message-Id: <20200901150927.982359608@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +46,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 89efbe70b27dd325d8a8c177743a26b885f7faec upstream.
+commit e3eb6e8fba65094328b8dca635d00de74ba75b45 upstream.
 
-pl011_probe() calls pl011_setup_port() to reserve an amba_ports[] entry,
-then calls pl011_register_port() to register the uart driver with the
-tty layer.
+It has been reported that system-wide suspend may be aborted in the
+absence of any wakeup events due to unforseen interactions of it with
+the runtume PM framework.
 
-If registration of the uart driver fails, the amba_ports[] entry is not
-released.  If this happens 14 times (value of UART_NR macro), then all
-amba_ports[] entries will have been leaked and driver probing is no
-longer possible.  (To be fair, that can only happen if the DeviceTree
-doesn't contain alias IDs since they cause the same entry to be used for
-a given port.)   Fix it.
+One failing scenario is when there are multiple devices sharing an
+ACPI power resource and runtime-resume needs to be carried out for
+one of them during system-wide suspend (for example, because it needs
+to be reconfigured before the whole system goes to sleep).  In that
+case, the runtime-resume of that device involves turning the ACPI
+power resource "on" which in turn causes runtime-resume requests
+to be queued up for all of the other devices sharing it.  Those
+requests go to the runtime PM workqueue which is frozen during
+system-wide suspend, so they are not actually taken care of until
+the resume of the whole system, but the pm_runtime_barrier()
+call in __device_suspend() sees them and triggers system wakeup
+events for them which then cause the system-wide suspend to be
+aborted if wakeup source objects are in active use.
 
-Fixes: ef2889f7ffee ("serial: pl011: Move uart_register_driver call to device")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.15+
-Cc: Tushar Behera <tushar.behera@linaro.org>
-Link: https://lore.kernel.org/r/138f8c15afb2f184d8102583f8301575566064a6.1597316167.git.lukas@wunner.de
+Of course, the logic that leads to triggering those wakeup events is
+questionable in the first place, because clearly there are cases in
+which a pending runtime resume request for a device is not connected
+to any real wakeup events in any way (like the one above).  Moreover,
+it is racy, because the device may be resuming already by the time
+the pm_runtime_barrier() runs and so if the driver doesn't take care
+of signaling the wakeup event as appropriate, it will be lost.
+However, if the driver does take care of that, the extra
+pm_wakeup_event() call in the core is redundant.
+
+Accordingly, drop the conditional pm_wakeup_event() call fron
+__device_suspend() and make the latter call pm_runtime_barrier()
+alone.  Also modify the comment next to that call to reflect the new
+code and extend it to mention the need to avoid unwanted interactions
+between runtime PM and system-wide device suspend callbacks.
+
+Fixes: 1e2ef05bb8cf8 ("PM: Limit race conditions between runtime PM and system sleep (v2)")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Tested-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+Cc: All applicable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/amba-pl011.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/base/power/main.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -2613,7 +2613,7 @@ static int pl011_setup_port(struct devic
- 
- static int pl011_register_port(struct uart_amba_port *uap)
- {
--	int ret;
-+	int ret, i;
- 
- 	/* Ensure interrupts from this UART are masked and cleared */
- 	pl011_write(0, uap, REG_IMSC);
-@@ -2624,6 +2624,9 @@ static int pl011_register_port(struct ua
- 		if (ret < 0) {
- 			dev_err(uap->port.dev,
- 				"Failed to register AMBA-PL011 driver\n");
-+			for (i = 0; i < ARRAY_SIZE(amba_ports); i++)
-+				if (amba_ports[i] == uap)
-+					amba_ports[i] = NULL;
- 			return ret;
- 		}
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1366,13 +1366,17 @@ static int __device_suspend(struct devic
  	}
+ 
+ 	/*
+-	 * If a device configured to wake up the system from sleep states
+-	 * has been suspended at run time and there's a resume request pending
+-	 * for it, this is equivalent to the device signaling wakeup, so the
+-	 * system suspend operation should be aborted.
++	 * Wait for possible runtime PM transitions of the device in progress
++	 * to complete and if there's a runtime resume request pending for it,
++	 * resume it before proceeding with invoking the system-wide suspend
++	 * callbacks for it.
++	 *
++	 * If the system-wide suspend callbacks below change the configuration
++	 * of the device, they must disable runtime PM for it or otherwise
++	 * ensure that its runtime-resume callbacks will not be confused by that
++	 * change in case they are invoked going forward.
+ 	 */
+-	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
+-		pm_wakeup_event(dev, 0);
++	pm_runtime_barrier(dev);
+ 
+ 	if (pm_wakeup_pending()) {
+ 		dev->power.direct_complete = false;
 
 
