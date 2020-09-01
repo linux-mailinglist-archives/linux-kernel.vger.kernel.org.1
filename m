@@ -2,146 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B132258DAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E01E258D98
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgIALw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgIALlz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:41:55 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8D7C061245;
-        Tue,  1 Sep 2020 04:41:48 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y6so396465plk.10;
-        Tue, 01 Sep 2020 04:41:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=vL68VqqvBOJpmK0bclLXd33KppmDO85K8QP95o8vC+4=;
-        b=WTXFwaaOARSwB1lRXSnt3qJua0sM84oKQHSk1MVVav7KFevKHkgOdVWkOgVmbGz2HQ
-         rOSCUGNLXUF2a8hQ0U/7QnO8Ut6haIUxfAkW5QbrydpqnMTrL8ChApB111FHedpghk8M
-         qL9gl2Ulk1g7MaEOr5xX2SyOZw1fR0QrhePKuJPUmk3yXIlrBwk10NRgah5ptx0EJxo6
-         6o/Lre/7Qwt0vZzwavPXFv5c5Cj/9n3WZI4zh9PQWuTw/TX4z4mIt+8u2qonXS8i8BLt
-         q5gNIiVOa2LIDasdDEjPtxZloIkYI3TBp/TlgO+Myw8AincTMRjubtIaOiNIW3fiiVE9
-         J3EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=vL68VqqvBOJpmK0bclLXd33KppmDO85K8QP95o8vC+4=;
-        b=FBroC7xRngotSnK1Dg5LhfFeH3+sIwPHAk7ag9A7RZsGzazI0AmCNv4VzE4eA62QGn
-         LS0q++/BpxXJmAueBLaW5jkP1+GM8ZKrCHGtUl2K2NwX6SiZw7dKEpS26PRvylclTyiD
-         L11Xl4qWveGko/vqZGUMuf4smMTTHm1VHU1OnbepJvVjwM7BSM5yyf3GTfrwX+ezuJkw
-         WVMPQVSbGpUtl2rxpMo062OJpyhqkw9vVhS0slMXIhpMVzGUz6g3F5kmYitqOfIim57/
-         b69HjScrmCRsURgTzB5C5E5WUkNvQQhzJev0PFE4hhdWv+8fW5Kt+VTO2V1oaIFquL3+
-         81Mg==
-X-Gm-Message-State: AOAM531ytOHDJV7zyxw/ipVL+zjrTqP0MT2tABq3gyER5BYVALd7HB2n
-        NB4e/RyhckTv1/xL8LbtLQ==
-X-Google-Smtp-Source: ABdhPJw7j2QWldkxD7fX4qizVyKuseP3QD5Bv0/o1MGNiCfFzJZRsol9XRm13ns3zWHLLlrlzysLUw==
-X-Received: by 2002:a17:90a:8909:: with SMTP id u9mr1207128pjn.119.1598960507698;
-        Tue, 01 Sep 2020 04:41:47 -0700 (PDT)
-Received: from [127.0.0.1] ([103.7.29.7])
-        by smtp.gmail.com with ESMTPSA id 142sm1799131pgf.68.2020.09.01.04.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 04:41:46 -0700 (PDT)
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Subject: [PATCH] KVM: Check the allocation of pv cpu mask
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Cc:     "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
-        "mingo@redhat.com" <mingo@redhat.com>, tglx@linutronix.de,
-        joro@8bytes.org, jmattson@google.com,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        vkuznets@redhat.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>
-Message-ID: <d59f05df-e6d3-3d31-a036-cc25a2b2f33f@gmail.com>
-Date:   Tue, 1 Sep 2020 19:41:37 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.11.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726947AbgIALse convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 07:48:34 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2724 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726928AbgIALl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:41:59 -0400
+Received: from lhreml726-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id F168EDFA3E5FEAFFAA85;
+        Tue,  1 Sep 2020 12:41:57 +0100 (IST)
+Received: from fraeml706-chm.china.huawei.com (10.206.15.55) by
+ lhreml726-chm.china.huawei.com (10.201.108.77) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Tue, 1 Sep 2020 12:41:57 +0100
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 1 Sep 2020 13:41:56 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.1913.007;
+ Tue, 1 Sep 2020 13:41:56 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH 07/11] evm: Set IMA_CHANGE_XATTR/ATTR bit if
+ EVM_ALLOW_METADATA_WRITES is set
+Thread-Topic: [PATCH 07/11] evm: Set IMA_CHANGE_XATTR/ATTR bit if
+ EVM_ALLOW_METADATA_WRITES is set
+Thread-Index: AQHWRYqWnNLPRhTOMk2ID5bSdlZ6YalHdJUAgAx1KTCAAAkjgIAAJpbA
+Date:   Tue, 1 Sep 2020 11:41:56 +0000
+Message-ID: <7f3dd815639a44ba9b0fb532c217bd21@huawei.com>
+References: <20200618160329.1263-2-roberto.sassu@huawei.com>
+         <20200618160458.1579-7-roberto.sassu@huawei.com>
+         <67cafcf63daf8e418871eb5302e7327ba851e253.camel@linux.ibm.com>
+         <a5e6a5acf2274a6d844b275dacfbabb8@huawei.com>
+ <ae06c113ec91442e293f2466cae3dd1b81f241eb.camel@linux.ibm.com>
+In-Reply-To: <ae06c113ec91442e293f2466cae3dd1b81f241eb.camel@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.48.193.114]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haiwei Li <lihaiwei@tencent.com>
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Tuesday, September 1, 2020 1:05 PM
+> On Tue, 2020-09-01 at 09:08 +0000, Roberto Sassu wrote:
+> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > Sent: Monday, August 24, 2020 2:18 PM
+> > > On Thu, 2020-06-18 at 18:04 +0200, Roberto Sassu wrote:
+> > > > When EVM_ALLOW_METADATA_WRITES is set, EVM allows any
+> operation
+> > > on
+> > > > metadata. Its main purpose is to allow users to freely set metadata
+> when
+> > > > they are protected by a portable signature, until the HMAC key is
+> loaded.
+> > > >
+> > > > However, IMA is not notified about metadata changes and, after the
+> first
+> > > > appraisal, always allows access to the files without checking metadata
+> > > > again.
+> > >
+> > > ^after the first successful appraisal
+> > > >
+> > > > This patch checks in evm_reset_status() if EVM_ALLOW_METADATA
+> > > WRITES is
+> > > > enabled and if it is, sets the IMA_CHANGE_XATTR/ATTR bits
+> depending on
+> > > the
+> > > > operation performed. At the next appraisal, metadata are revalidated.
+> > >
+> > > EVM modifying IMA bits crosses the boundary between EVM and IMA.
+> > > There
+> > > is already an IMA post_setattr hook.  IMA could reset its own bit
+> > > there.  If necessary EVM could export as a function it's status info.
+> >
+> > I wouldn't try to guess in IMA when EVM resets its status. We would have
+> > to duplicate the logic to check if an EVM key is loaded, if the passed xattr
+> > is a POSIX ACL, ...
+> 
+> Agreed, but IMA could call an EVM function.
+> 
+> >
+> > I think it is better to set a flag, maybe a new one, directly in EVM, to notify
+> > the integrity subsystem that iint->evm_status is no longer valid.
+> >
+> > If the EVM flag is set, IMA would reset the appraisal flags, as it uses
+> > iint->evm_status for appraisal. We can consider to reset also the measure
+> > flags when we have a template that includes file metadata.
+> 
+> When would IMA read the EVM flag?   Who would reset the flag?  At what
+> point would it be reset?   Just as EVM shouldn't be resetting the IMA
+> flag, IMA shouldn't be resetting the EVM flag.
 
-check the allocation of per-cpu __pv_cpu_mask. Initialize ops only when
-successful.
+IMA would read the flag in process_measurement() and behave similarly
+to when it processes IMA_CHANGE_ATTR. The flag would be reset by
+evm_verify_hmac().
 
-Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
----
-  arch/x86/kernel/kvm.c | 23 +++++++++++++++++++----
-  1 file changed, 19 insertions(+), 4 deletions(-)
+Roberto
 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 08320b0b2b27..a64b894eaac0 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -555,7 +555,6 @@ static void kvm_send_ipi_mask_allbutself(const 
-struct cpumask *mask, int vector)
-  static void kvm_setup_pv_ipi(void)
-  {
-  	apic->send_IPI_mask = kvm_send_ipi_mask;
--	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
-  	pr_info("setup PV IPIs\n");
-  }
-
-@@ -654,7 +653,6 @@ static void __init kvm_guest_init(void)
-  	}
-
-  	if (pv_tlb_flush_supported()) {
--		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
-  		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
-  		pr_info("KVM setup pv remote TLB flush\n");
-  	}
-@@ -767,6 +765,14 @@ static __init int activate_jump_labels(void)
-  }
-  arch_initcall(activate_jump_labels);
-
-+static void kvm_free_pv_cpu_mask(void)
-+{
-+	unsigned int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
-+}
-+
-  static __init int kvm_alloc_cpumask(void)
-  {
-  	int cpu;
-@@ -785,11 +791,20 @@ static __init int kvm_alloc_cpumask(void)
-
-  	if (alloc)
-  		for_each_possible_cpu(cpu) {
--			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
--				GFP_KERNEL, cpu_to_node(cpu));
-+			if (!zalloc_cpumask_var_node(
-+				per_cpu_ptr(&__pv_cpu_mask, cpu),
-+				GFP_KERNEL, cpu_to_node(cpu))) {
-+				goto zalloc_cpumask_fail;
-+			}
-  		}
-
-+	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
-+	pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
-  	return 0;
-+
-+zalloc_cpumask_fail:
-+	kvm_free_pv_cpu_mask();
-+	return -ENOMEM;
-  }
-  arch_initcall(kvm_alloc_cpumask);
-
---
-2.18.4
-
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
