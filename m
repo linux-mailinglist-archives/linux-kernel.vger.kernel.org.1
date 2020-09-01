@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A3D258F7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3054B258F2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgIANwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:52:04 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35572 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728064AbgIANav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:30:51 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3C02F361D37743339AAB;
-        Tue,  1 Sep 2020 21:28:54 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.211) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
- 21:28:48 +0800
-Subject: Re: [PATCH v3] PCI: Add pci_iounmap
-To:     George Cherian <george.cherian@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>
-CC:     <kbuild-all@lists.01.org>, <bhelgaas@google.com>, <arnd@arndb.de>,
-        <mst@redhat.com>
-References: <20200824132046.3114383-1-george.cherian@marvell.com>
- <202008250903.G0uQ5UZk%lkp@intel.com>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <13af6d70-7de4-e86f-5db0-f42159c5b4a5@huawei.com>
-Date:   Tue, 1 Sep 2020 21:28:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726144AbgIANdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:33:50 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45627 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728129AbgIANby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:31:54 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kD6NY-0001cg-00; Tue, 01 Sep 2020 15:31:16 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id A31F7C0E44; Tue,  1 Sep 2020 15:29:05 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 15:29:05 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-mm@kvack.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 06/28] lib82596: move DMA allocation into the callers of
+ i82596_probe
+Message-ID: <20200901132905.GA11506@alpha.franken.de>
+References: <20200819065555.1802761-1-hch@lst.de>
+ <20200819065555.1802761-7-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <202008250903.G0uQ5UZk%lkp@intel.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.211]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819065555.1802761-7-hch@lst.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/8/25 9:25, kernel test robot wrote:
-> Hi George,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on pci/next]
-> [also build test ERROR on linux/master linus/master asm-generic/master v5.9-rc2 next-20200824]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/George-Cherian/PCI-Add-pci_iounmap/20200824-212149
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git next
-> config: powerpc-allyesconfig (attached as .config)
-> compiler: powerpc64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->     powerpc64-linux-ld: lib/pci_iomap.o: in function `__crc_pci_iounmap':
->>> (.rodata+0x10): multiple definition of `__crc_pci_iounmap'; lib/iomap.o:(.rodata+0x68): first defined here
-EXPORT_SYMBOL(pci_iounmap) in lib/iomap.c need be removed.
+On Wed, Aug 19, 2020 at 08:55:33AM +0200, Christoph Hellwig wrote:
+> This allows us to get rid of the LIB82596_DMA_ATTR defined and prepare
+> for untangling the coherent vs non-coherent DMA allocation API.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  drivers/net/ethernet/i825xx/lasi_82596.c | 24 ++++++++++------
+>  drivers/net/ethernet/i825xx/lib82596.c   | 36 ++++++++----------------
+>  drivers/net/ethernet/i825xx/sni_82596.c  | 19 +++++++++----
+>  3 files changed, 40 insertions(+), 39 deletions(-)
+> 
+> [...]
+> diff --git a/drivers/net/ethernet/i825xx/sni_82596.c b/drivers/net/ethernet/i825xx/sni_82596.c
+> index 22f5887578b2bd..e80e790ffbd4d4 100644
+> --- a/drivers/net/ethernet/i825xx/sni_82596.c
+> +++ b/drivers/net/ethernet/i825xx/sni_82596.c
+> @@ -24,8 +24,6 @@
+>  
+>  static const char sni_82596_string[] = "snirm_82596";
+>  
+> -#define LIB82596_DMA_ATTR	0
+> -
+>  #define DMA_WBACK(priv, addr, len)     do { } while (0)
+>  #define DMA_INV(priv, addr, len)       do { } while (0)
+>  #define DMA_WBACK_INV(priv, addr, len) do { } while (0)
+> @@ -134,10 +132,19 @@ static int sni_82596_probe(struct platform_device *dev)
+>  	lp->ca = ca_addr;
+>  	lp->mpu_port = mpu_addr;
+>  
+> +	lp->dma = dma_alloc_coherent(dev->dev.parent, sizeof(struct i596_dma),
+> +				     &lp->dma_addr, GFP_KERNEL);
 
+this needs to use &dev->dev as device argument otherwise I get a
+
+WARNING: CPU: 0 PID: 1 at linux/kernel/dma/mapping.c:416 dma_alloc_attrs+0x64/0x98
+
+(coherent_dma_mask is set correctly).
+
+dev->dev.parent was correct when going from netdevice to underlying device,
+but now allocation is done via platform_device probe. I wonder why this works
+for parisc.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
