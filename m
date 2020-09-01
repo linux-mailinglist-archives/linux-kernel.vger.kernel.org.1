@@ -2,190 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D045825891C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522CD258948
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgIAHcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S1727081AbgIAHek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgIAHcM (ORCPT
+        with ESMTP id S1726050AbgIAHeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:32:12 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7E8C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 00:32:12 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id s2so190540pjr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 00:32:12 -0700 (PDT)
+        Tue, 1 Sep 2020 03:34:37 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C748C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 00:34:37 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id f7so334348wrw.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 00:34:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=7c8FWHabhNiA3wbCJBExE1cm7AjheLEh6XznHaWmc4E=;
-        b=R/N6oSU+eal314kD3fWO6djHTfaPEATfyxlCCCU4c7McGN2WDgMEPHnURJDKXCNs7O
-         +jn9s1fzze39k6OboAs9nfqpGB+YzHzHutVWc6iKIBbwuF0nM1T+KkqZKQRJrhUe4+4b
-         TiE/7mGv5J6hIuc/YmXgrqHWfDElxuztPilVU=
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uBet/qOZ4arKPd9HG45s6/yizvDfyghb5+cpF1ynNlk=;
+        b=WvVYlLyur5enfsW0jQmGhW/33TGWeA+s81WiSCZtZGnTGInRKT4lauH7Tv1Ncl35e2
+         MBX5Tgg7qp8H8HcEG0u+P7InO1kW6IesVw7yOSV3w6hoG7v7YNwh+0elQjnUhzR8dPSM
+         ehQdEWDPud2Aj7A0/V0iRfznqpu4qvj7PURgg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=7c8FWHabhNiA3wbCJBExE1cm7AjheLEh6XznHaWmc4E=;
-        b=YS078FGVK5Lad2jNCkohRieQsYtYiCGaYNZSflX5VoZ3W2vjaPMDACDMN9JqxHpoW1
-         atqU2GRfDPJqnL73C7hNRU7hfHqzkiMSZGbftfBu08JwiBe1xfCgw23r2JNDgZIMXldG
-         cci6vXALiCI03YXwOvhiuAuJTovGxGraqZwfuAK/MP6fQaagx0HDGvotHAQ3Rp42eNfA
-         OFwBBBJ9dYBOAjOSrsvObcmtZV3C6Ug+IrfI32dFHuuOwQTtGmRgvoRcmrPFVYJVZAG/
-         BDCb56YJy5QoSzpkBLW6jvyhgQ/mp+md51xp2R/d9L56A7dD4tX2Hu3KiirW7VJsmnjg
-         EW/g==
-X-Gm-Message-State: AOAM532eV+F0FAo+tMsTOCy/ENGhGgagVA8k/ys2kX9wQs3lNw3TalxG
-        TLeql9NnapUqDT/WVSWbLPGSLg==
-X-Google-Smtp-Source: ABdhPJxRSerQ9wQoir2LSEhPgWfjzSr+4YbUaBQJByGGsoMetPbz0tzh/DADiqm589TbU5OdIhh8TA==
-X-Received: by 2002:a17:90a:e609:: with SMTP id j9mr313486pjy.129.1598945531556;
-        Tue, 01 Sep 2020 00:32:11 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id i7sm910801pgh.58.2020.09.01.00.32.11
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=uBet/qOZ4arKPd9HG45s6/yizvDfyghb5+cpF1ynNlk=;
+        b=c2wPLtQYQ266q35e8umQOtjhrKrTL54Ax2Zesq3e/xG+mi+wxdVkv3P2Zc+rNp/eap
+         3mM42UCN8qM6AU7stfOhmnd1CPIQMuFKmp9ZdUGoX6cbjCATFYrcDowWndMjeCqeQ1bS
+         k8hb57JZVfPnildlofIkza05xg6YcF/2WkMbYTORJxy/h1WQFFbbTZl0Y3shwKAzQphp
+         /Fwz7uirJMII14YtLnt/WcqUm9mIUR4YUrGC9pVgkBAdnjagzBGtTljH/s5tkvc/c/O5
+         ewEadu/KXlQK4IDAla52kye+gh6LKOVbPTlK1aNDND8+NX/32nb9l4ckYs3biWG+3i0x
+         i9CQ==
+X-Gm-Message-State: AOAM5328mIsWgZRSv4QjogAjXkKUYVZH+WyKhRe/7+a/hqe0Nsh1PDbp
+        Qpywoi9j5ozHGaPGwnIxZeX4sk0ygvqxwRQf
+X-Google-Smtp-Source: ABdhPJyt8crlnEcBML2lk0r4FJiVx9broYmBFybtfg7pUBuXao0ZikQLrPS8dTTtHkn7WHCj3P0hHw==
+X-Received: by 2002:adf:e2c7:: with SMTP id d7mr408449wrj.110.1598945675900;
+        Tue, 01 Sep 2020 00:34:35 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 2sm831925wrs.64.2020.09.01.00.34.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 00:32:11 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 01 Sep 2020 00:34:35 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 09:34:33 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, David Airlie <airlied@linux.ie>,
+        1882851@bugs.launchpad.net,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        "open list:VIRTIO GPU DRIVER" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 1/2] drm/virtio: fix unblank
+Message-ID: <20200901073433.GS2352366@phenom.ffwll.local>
+Mail-Followup-To: Gerd Hoffmann <kraxel@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, David Airlie <airlied@linux.ie>,
+        1882851@bugs.launchpad.net,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        "open list:VIRTIO GPU DRIVER" <virtualization@lists.linux-foundation.org>
+References: <20200818072511.6745-1-kraxel@redhat.com>
+ <20200818072511.6745-2-kraxel@redhat.com>
+ <88ae71c2-c3ed-e0e4-e62c-bdf9d6534f2a@kernel.org>
+ <20200828112759.rmeeh5bonrewiqte@sirius.home.kraxel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1598855964-1042-5-git-send-email-srivasam@codeaurora.org>
-References: <1598855964-1042-1-git-send-email-srivasam@codeaurora.org> <1598855964-1042-5-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH v3 4/5] ASoC: qcom: Add support for audio over DP
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
-        Srinivasa Rao <srivasam@codeaurora.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
-        robh+dt@kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org, tiwai@suse.com
-Date:   Tue, 01 Sep 2020 00:32:09 -0700
-Message-ID: <159894552988.334488.8290895362888910651@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828112759.rmeeh5bonrewiqte@sirius.home.kraxel.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2020-08-30 23:39:23)
-> diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-> index 167bf2c..cea7ae7 100644
-> --- a/sound/soc/qcom/lpass-sc7180.c
-> +++ b/sound/soc/qcom/lpass-sc7180.c
-> @@ -190,15 +232,92 @@ static struct lpass_variant sc7180_data =3D {
->                                    "mi2s-bit-clk0",
->                                    "mi2s-bit-clk1",
->                                 },
-> +       .id                             =3D I2S_INTERFACE,
->         .init                   =3D sc7180_lpass_init,
->         .exit                   =3D sc7180_lpass_exit,
->         .alloc_dma_channel      =3D sc7180_lpass_alloc_dma_channel,
->         .free_dma_channel       =3D sc7180_lpass_free_dma_channel,
->  };
-> =20
-> +static struct lpass_variant sc7180_hdmi_data =3D {
+On Fri, Aug 28, 2020 at 01:27:59PM +0200, Gerd Hoffmann wrote:
+> On Mon, Aug 24, 2020 at 09:24:40AM +0200, Jiri Slaby wrote:
+> > On 18. 08. 20, 9:25, Gerd Hoffmann wrote:
+> > > When going through a disable/enable cycle without changing the
+> > > framebuffer the optimization added by commit 3954ff10e06e ("drm/virtio:
+> > > skip set_scanout if framebuffer didn't change") causes the screen stay
+> > > blank.  Add a bool to force an update to fix that.
+> > > 
+> > > v2: use drm_atomic_crtc_needs_modeset() (Daniel).
+> > > 
+> > > Cc: 1882851@bugs.launchpad.net
+> > > Fixes: 3954ff10e06e ("drm/virtio: skip set_scanout if framebuffer didn't change")
+> > > Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> > 
+> > Tested-by: Jiri Slaby <jirislaby@kernel.org>
+> 
+> Ping.  Need an ack or an review to merge this.
 
-Can this be const?
+In case you still need that, on both patches:
 
-> +       .hdmi_tx_ctl_addr       =3D 0x1000,
-> +       .hdmi_legacy_addr       =3D 0x1008,
-> +       .hdmi_vbit_addr         =3D 0x610c0,
-> +       .hdmi_ch_lsb_addr       =3D 0x61048,
-> +       .hdmi_ch_msb_addr       =3D 0x6104c,
-> +       .ch_stride              =3D 0x8,
-> +       .hdmi_parity_addr       =3D 0x61034,
-> +       .hdmi_dmactl_addr       =3D 0x61038,
-> +       .hdmi_dma_stride        =3D 0x4,
-> +       .hdmi_DP_addr           =3D 0x610c8,
-> +       .hdmi_sstream_addr      =3D 0x6101c,
-> +       .irq_reg_base           =3D 0x63000,
-> +       .irq_ports              =3D 1,
-> +       .rdma_reg_base          =3D 0x64000,
-> +       .rdma_reg_stride        =3D 0x1000,
-> +       .rdma_channels          =3D 4,
-> +
-> +       .rdma_dyncclk           =3D REG_FIELD_ID(0x64000, 14, 14, 4, 0x10=
-00),
-> +       .rdma_bursten           =3D REG_FIELD_ID(0x64000, 13, 13, 4, 0x10=
-00),
-> +       .rdma_burst8            =3D REG_FIELD_ID(0x64000, 15, 15, 4, 0x10=
-00),
-> +       .rdma_burst16           =3D REG_FIELD_ID(0x64000, 16, 16, 4, 0x10=
-00),
-> +       .rdma_dynburst          =3D REG_FIELD_ID(0x64000, 18, 18, 4, 0x10=
-00),
-> +       .rdma_wpscnt            =3D REG_FIELD_ID(0x64000, 10, 12, 4, 0x10=
-00),
-> +       .rdma_fifowm            =3D REG_FIELD_ID(0x64000, 1, 5, 4, 0x1000=
-),
-> +       .rdma_enable            =3D REG_FIELD_ID(0x64000, 0, 0, 4, 0x1000=
-),
-> +
-> +       .sstream_en             =3D REG_FIELD(0x6101c, 0, 0),
-> +       .dma_sel                        =3D REG_FIELD(0x6101c, 1, 2),
-> +       .auto_bbit_en   =3D REG_FIELD(0x6101c, 3, 3),
-> +       .layout                 =3D REG_FIELD(0x6101c, 4, 4),
-> +       .layout_sp              =3D REG_FIELD(0x6101c, 5, 8),
-> +       .set_sp_on_en   =3D REG_FIELD(0x6101c, 10, 10),
-> +       .dp_audio               =3D REG_FIELD(0x6101c, 11, 11),
-> +       .dp_staffing_en =3D REG_FIELD(0x6101c, 12, 12),
-> +       .dp_sp_b_hw_en  =3D REG_FIELD(0x6101c, 13, 13),
-> +
-> +       .mute                   =3D REG_FIELD(0x610c8, 0, 0),
-> +       .as_sdp_cc              =3D REG_FIELD(0x610c8, 1, 3),
-> +       .as_sdp_ct              =3D REG_FIELD(0x610c8, 4, 7),
-> +       .aif_db4                        =3D REG_FIELD(0x610c8, 8, 15),
-> +       .frequency              =3D REG_FIELD(0x610c8, 16, 21),
-> +       .mst_index              =3D REG_FIELD(0x610c8, 28, 29),
-> +       .dptx_index             =3D REG_FIELD(0x610c8, 30, 31),
-> +
-> +       .soft_reset             =3D REG_FIELD(0x1000, 31, 31),
-> +       .force_reset    =3D REG_FIELD(0x1000, 30, 30),
-> +
-> +       .use_hw_chs             =3D REG_FIELD(0x61038, 0, 0),
-> +       .use_hw_usr             =3D REG_FIELD(0x61038, 1, 1),
-> +       .hw_chs_sel             =3D REG_FIELD(0x61038, 2, 4),
-> +       .hw_usr_sel             =3D REG_FIELD(0x61038, 5, 6),
-> +
-> +       .replace_vbit   =3D REG_FIELD(0x610c0, 0, 0),
-> +       .vbit_stream    =3D REG_FIELD(0x610c0, 1, 1),
-> +
-> +       .legacy_en              =3D  REG_FIELD(0x1008, 0, 0),
-> +       .calc_en                =3D  REG_FIELD(0x61034, 0, 0),
-> +       .lsb_bits               =3D  REG_FIELD(0x61048, 0, 31),
-> +       .msb_bits               =3D  REG_FIELD(0x6104c, 0, 31),
-> +
-> +       .clk_name               =3D (const char*[]) {
-> +                                       "pcnoc-sway-clk",
-> +                                       "audio-core",
-> +                                       "pcnoc-mport-clk",
-> +                               },
-> +       .num_clks               =3D 3,
-> +       .id                     =3D HDMI_INTERFACE,
-> +       .dai_driver             =3D sc7180_lpass_cpu_hdmi_dai_driver,
-> +       .num_dai                =3D ARRAY_SIZE(sc7180_lpass_cpu_hdmi_dai_=
-driver),
-> +       .init                   =3D sc7180_lpass_init,
-> +       .exit                   =3D sc7180_lpass_exit,
-> +       .alloc_dma_channel =3D sc7180_lpass_alloc_hdmi_dma_channel,
-> +       .free_dma_channel =3D sc7180_lpass_free_hdmi_dma_channel,
-> +
-> +};
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> thanks,
+>   Gerd
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-Add a newline here?
-
->  static const struct of_device_id sc7180_lpass_cpu_device_id[] =3D {
->         {.compatible =3D "qcom,sc7180-lpass-cpu", .data =3D &sc7180_data},
-> -       {}
-> +       {.compatible =3D "qcom,sc7180-lpass-hdmi", .data =3D &sc7180_hdmi=
-_data}
-
-This most likely needs to keep the sentinel around so that a match can
-be made or stop if nothing is found.
-
->  };
->
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
