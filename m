@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C9A2597EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33C22597C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731990AbgIAQUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
+        id S1730447AbgIAPdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729190AbgIAPcs (ORCPT
+        with ESMTP id S1729209AbgIAPc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:32:48 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36CCC061244;
-        Tue,  1 Sep 2020 08:32:47 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id d11so2240705ejt.13;
-        Tue, 01 Sep 2020 08:32:47 -0700 (PDT)
+        Tue, 1 Sep 2020 11:32:56 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BF6C061244;
+        Tue,  1 Sep 2020 08:32:54 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id d11so2241288ejt.13;
+        Tue, 01 Sep 2020 08:32:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4y5+uILsrYEyrll+p0CQ1799yDtGVcYn/QLXWN/UkVA=;
-        b=EHuuu2pzBr1VfUBw4YoRiSfvSUiZeM+77kGjAP5zTLHasH7nR9vXXYvwCrbZU6c2jd
-         4seupK2oQl7hy/pRNHsPIqGejkRNxOtFMlnhfBZDpAiMkHr5pZB6BzPT4m+xJPonISe1
-         HNL48Aq235dCBlPMhV8inHNlZDOIrbnOh1JBXPfbeG8+sj6XuyqKsj94Gpd9ONs14vLu
-         deSYvLYAn6bVnvmYKfnhfxtYq2kvw0toScDDKCc1SxRZHd8XQ+4rc2te9/bh4pe/QeAl
-         lQCzapBnm6XmP/Hk7wQ5e2G3zy3d5GlwxxTvtVvi1NsTwVz1Ra28amh4VKBfVkpE2OfS
-         5CZw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zEPKP0AU97R+PVYnTVD02jf9E8X+9qMRm9ouiwdoWWA=;
+        b=InCwqcJTR/4A4+EuZFsM5xaKx0nFq9NH/7wDwaCpNHNzYmfW1s67o66afdrgjeT+42
+         3/IBsOzuQmvbcTIMqzeilMo8jynJopsDvJ04YORoFPrNoteMPeOR9CGnYRn5sTCTx/F8
+         MExLqETfRiiBnfdt5p4S8Fw+UhsQjMtDLGVO+SktivIJKL0jgOtiulaSQfPNJxhuvalA
+         YnMxjXkFrVLYsf7Q9rHbGANzrB4pQCOFOXTTolGhIm/OgJ1H1t2modzQdKwRXUsADB8L
+         Wr95PT8IW7Kyqe+GrX2iD2azK1Ul6M6Ln7WgHWIYOkYGFRrhvMpSiRjMe9w0F1HwAjjO
+         5qzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4y5+uILsrYEyrll+p0CQ1799yDtGVcYn/QLXWN/UkVA=;
-        b=Ym+mzSh5cdCJNDMZabqt1Xrre+C7S3QscthrKgYreDVxXYNKGitSweOAqTCszH3Box
-         tg2GwzbbYbuz6bWiK0UT2SkMzycRnGizC+LLShGqrmbNsLXDpnhDuXy6P2MAJW7i494m
-         Bf9/xLDB51yHKQCySoacOKDet30xcUatIACt2+wqEinE5mz8FqWKEPiUOIJYcjLRsmMu
-         jLQo8fy1ahFTDX9CXwxy1hFrhHomRBM1wf11hM1Pvz6tzMqYwyKu0RiEcFTd2Ew17obQ
-         l8XbRq9n8NJ8zXbkBZr6a5IBRUE2Pemfg84uPXXhf50uZ3uHOGM8rYnDO0alxs4QjKs4
-         01Yw==
-X-Gm-Message-State: AOAM531JT8P+b4s9qR1KvH8fzdyjEfWspmuoGKlpS0wpbgBFpzGXZTSk
-        jly3t9ZNjz+nzdQTTm1ViHsmOjk1Urj/cDPx0CE=
-X-Google-Smtp-Source: ABdhPJzjka1igjLabnL5+FLiBQxxm/UurFtkX4pyV20hzOcltWvHAgjxNxAU2zE5rwt6/lT63IqZjcdxApMAe3KOB6I=
-X-Received: by 2002:a17:906:3a85:: with SMTP id y5mr1900924ejd.507.1598974366460;
- Tue, 01 Sep 2020 08:32:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zEPKP0AU97R+PVYnTVD02jf9E8X+9qMRm9ouiwdoWWA=;
+        b=kZZAjUtuN3hiPdfltUcr+jhnrz7c9rru5yMEq/CkI9aBm/ETez84EH3hV1B78K5P7L
+         hNmGrJSHJ5IWuxDnUZQfaEPySWbcOwFUhahKgCeHLV/pbdTdosT0dhbnN1YfuCqO0dzc
+         iPOvOI7WM/A19xKHKPCspaPpluPkBiUabwFLCWWVb06ZBUUNgVhy/7Dx7Ju8GP3kNUaA
+         Pt0XvSw/Mp/rm2gKvnuDO9QKteP66lw5hvCUTUEIh76d8jMRMY8378JiysKz2wdaz8Fd
+         BYHMvMGbdRy6TAA/Uez3CT9nV1OyhEST03ttXC1lJTpyHbNiA34oKyeRtqCxxOXza5yA
+         k22g==
+X-Gm-Message-State: AOAM5312YM/x/KVL6Su0HEVLMkmVlAUpCOSazQK4PIdtRtPsaThSHihn
+        RPsOkzFPKcz36DsW5eZOFaE=
+X-Google-Smtp-Source: ABdhPJx8pgbFxwX4+nQIkeKINcUC4+itTbYvBBHcPVcN6ZtaYmSEFVcT5J21t8xvkFqrlVQX3t3VOg==
+X-Received: by 2002:a17:907:9c3:: with SMTP id bx3mr2005039ejc.164.1598974373583;
+        Tue, 01 Sep 2020 08:32:53 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id r23sm1371455edt.57.2020.09.01.08.32.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 08:32:52 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matias Zuniga <matias.nicolas.zc@gmail.com>
+Subject: [PATCH] memory: tegra: Remove GPU from DRM IOMMU group
+Date:   Tue,  1 Sep 2020 17:32:48 +0200
+Message-Id: <20200901153248.1831263-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20190812222911.2364802-1-guro@fb.com> <20190812222911.2364802-2-guro@fb.com>
- <20190813142752.35807b6070db795674f86feb@linux-foundation.org> <20190813214643.GA20632@tower.DHCP.thefacebook.com>
-In-Reply-To: <20190813214643.GA20632@tower.DHCP.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 1 Sep 2020 08:32:33 -0700
-Message-ID: <CAHbLzkrEWnfgUT7gEPvKR9uz+NkANzKUMOd17GEAoe-dHTjF_g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: memcontrol: flush percpu vmstats before releasing memcg
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This report is kind of late, hope everyone still remembers the context.
+From: Thierry Reding <treding@nvidia.com>
 
-I just happened to see a similar problem on our v4.19 kernel, please
-see the below output from memory.stat:
+Commit 63a613fdb16c ("memory: tegra: Add gr2d and gr3d to DRM IOMMU
+group") added the GPU to the DRM IOMMU group, which doesn't make any
+sense. This causes problems when Nouveau tries to attach to the SMMU
+and causes it to fall back to using the DMA API.
 
-total_cache 7361626112
-total_rss 8268165120
-total_rss_huge 0
-total_shmem 0
-total_mapped_file 4154929152
-total_dirty 389689344
-total_writeback 101376000
-...
-[snip]
-...
-total_inactive_anon 4096
-total_active_anon 1638400
-total_inactive_file 208990208
-total_active_file 275030016
+Remove the GPU from the DRM groups to restore the old behaviour. The
+GPU should always have its own IOMMU domain to make sure it can map
+buffers into contiguous chunks (for big page support) without getting
+in the way of mappings from the DRM group.
 
-And memory.usage_in_bytes:
-1248215040
+Fixes: 63a613fdb16c ("memory: tegra: Add gr2d and gr3d to DRM IOMMU group")
+Reported-by: Matias Zuniga <matias.nicolas.zc@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+---
+ drivers/memory/tegra/tegra124.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-The total_* counters are way bigger than the counters of LRUs and usage.
+diff --git a/drivers/memory/tegra/tegra124.c b/drivers/memory/tegra/tegra124.c
+index 493b5dc3a4b3..0cede24479bf 100644
+--- a/drivers/memory/tegra/tegra124.c
++++ b/drivers/memory/tegra/tegra124.c
+@@ -957,7 +957,6 @@ static const struct tegra_smmu_swgroup tegra124_swgroups[] = {
+ static const unsigned int tegra124_group_drm[] = {
+ 	TEGRA_SWGROUP_DC,
+ 	TEGRA_SWGROUP_DCB,
+-	TEGRA_SWGROUP_GPU,
+ 	TEGRA_SWGROUP_VIC,
+ };
+ 
+-- 
+2.28.0
 
-Some ephemeral cgroups were created/deleted frequently under this
-problematic cgroup. And this host has been up for more than 200 days.
-I didn't see such problems on shorter uptime hosts (the other 4.19
-host is up for 19 days) and v5.4 hosts.
-
-v4.19 also updates stats from per-cpu caches, and total_* sum all sub
-cgroups together. So it seems this is the same problem.
-
-Anyway this is not a significant problem since we can get the correct
-numbers from other counters, i.e. LRUs, but just confusing. Not sure
-if it is worth backporting the fix to v4.19.
-
-On Tue, Aug 13, 2019 at 2:46 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Aug 13, 2019 at 02:27:52PM -0700, Andrew Morton wrote:
-> > On Mon, 12 Aug 2019 15:29:10 -0700 Roman Gushchin <guro@fb.com> wrote:
-> >
-> > > Percpu caching of local vmstats with the conditional propagation
-> > > by the cgroup tree leads to an accumulation of errors on non-leaf
-> > > levels.
-> > >
-> > > Let's imagine two nested memory cgroups A and A/B. Say, a process
-> > > belonging to A/B allocates 100 pagecache pages on the CPU 0.
-> > > The percpu cache will spill 3 times, so that 32*3=96 pages will be
-> > > accounted to A/B and A atomic vmstat counters, 4 pages will remain
-> > > in the percpu cache.
-> > >
-> > > Imagine A/B is nearby memory.max, so that every following allocation
-> > > triggers a direct reclaim on the local CPU. Say, each such attempt
-> > > will free 16 pages on a new cpu. That means every percpu cache will
-> > > have -16 pages, except the first one, which will have 4 - 16 = -12.
-> > > A/B and A atomic counters will not be touched at all.
-> > >
-> > > Now a user removes A/B. All percpu caches are freed and corresponding
-> > > vmstat numbers are forgotten. A has 96 pages more than expected.
-> > >
-> > > As memory cgroups are created and destroyed, errors do accumulate.
-> > > Even 1-2 pages differences can accumulate into large numbers.
-> > >
-> > > To fix this issue let's accumulate and propagate percpu vmstat
-> > > values before releasing the memory cgroup. At this point these
-> > > numbers are stable and cannot be changed.
-> > >
-> > > Since on cpu hotplug we do flush percpu vmstats anyway, we can
-> > > iterate only over online cpus.
-> > >
-> > > Fixes: 42a300353577 ("mm: memcontrol: fix recursive statistics correctness & scalabilty")
-> >
-> > Is this not serious enough for a cc:stable?
->
-> I hope the "Fixes" tag will work, but yeah, my bad, cc:stable is definitely
-> a good idea here.
->
-> Added stable@ to cc.
->
-> Thanks!
->
