@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802652590F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0E32590EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728451AbgIAOm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        id S1728018AbgIAOmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728242AbgIAOl2 (ORCPT
+        with ESMTP id S1728536AbgIAOl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:41:28 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE52BC061244;
-        Tue,  1 Sep 2020 07:41:27 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id j21so1336537oii.10;
-        Tue, 01 Sep 2020 07:41:27 -0700 (PDT)
+        Tue, 1 Sep 2020 10:41:58 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03584C061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:41:57 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b16so516471pjp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=sZhvalbA03rUwegYGv+Cay08wKnFHq0gcapj8Z9U2kk=;
-        b=Y/SqwzUN1T5jUMi6cZ2ZuDXFCwQ9pIW40bV/unURxBXPwk7DRwOLaHDwtTXPzup9gL
-         cEFKY7SCHTeJimhPAs3bFuPsn0kDmnDHqJqlzU9FZmxXnMBjVPM//99pbmwwqN6oIWte
-         cPVMbo+bJSoElNYuopQ8bm3qvB88PXV5tK4HvcEMtbO3qu1BW8WHnx9BmeYzDwOW94IC
-         ce00MEsUDYw8friyEmXWOpscVEu6BASNFxHjNF7w/Je9hjg36WLddNLUiz4ApumVkjXB
-         JCgKn4rBc2l++lCHpIQKhu6u/KNpjBU6MIMXDIe6asHbk3XQ6DA03spR28BYEr5LsOT7
-         Vn1Q==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rN6mVq1C675COOeO9181t4h75F89OjQk6hHpgH+S2X8=;
+        b=zWf7fhWFHujfWaocQn49l9sQhhPq6xyQeaCS4rvpip82Yg4nGFcQsS/l32lvBaxghQ
+         w8UaOQwYaD6gwz9dGJN2uVaNuBPQZYnoFcap4fWwhOCDmaaq4RrKwPeefiocvDkkgHrJ
+         24Uuwoy8QMsErURjw7uLdcKrhxkFqbkopqSxv/HyZO/ftoDj+/LMXPdlvUmq1LM3M2Yy
+         th1SUVnuedh8P7SRbR7zqCtQchZ55aIsGN9Tez4fMp9NS+3qhEQZAaOneAMbclltMKdH
+         Ly8iQ51E0C6AGzrvyHAL99zOB1yxiMqKYX5tIUS75Po6vwYmPu9+lw7PDYD+usWZ0So7
+         5hGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=sZhvalbA03rUwegYGv+Cay08wKnFHq0gcapj8Z9U2kk=;
-        b=iWSNWnBFYOKBddw/tSz7QbMmjI3FiAZAfTBljY5JkN2rMNP4lzxmgnEu0fmGm51YxI
-         B5723LYRGFerK1n4bszVMYsb906SpdGa6TduhAnM/iHp7douK7d8pyDMEu1uaH6xTliY
-         tnTlk1HRTlnitzdEM9XAKHRvbl+73FEP1uZUujzXbxzvVCwJZRlU3zJDopVGGitGwKTO
-         C+oO/HDs9N/G5ybi9qyrgz/cH5vXZc/4scLBbtHhMcbPtKiDhsDE2IIcicRzvhThY+QG
-         o6o2cOCvBT7rwhxwj6k1oQFtavqgK0ImIIgiHSEmL6zkRpdmH/6bwUfCfR+KS0jnFV1w
-         lrpw==
-X-Gm-Message-State: AOAM531QHxhHXjvu7r+nYInNKQ9B3m6Z1H3FqOh/4YY/WLI/1J495FME
-        9krJuJ9kFmcPc/fvqc/VjcpoyUS/E//KCnjgBKVNg8HMbL0FtQ==
-X-Google-Smtp-Source: ABdhPJy3jGYbnV0erw5CDV78wbHykPio/a1ecP5Cmr4JMTFhJXSUqBMYPpa4dn07GhhqNIJgtM5NUmjuAwVvejaykGs=
-X-Received: by 2002:aca:d409:: with SMTP id l9mr1255941oig.70.1598971287129;
- Tue, 01 Sep 2020 07:41:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rN6mVq1C675COOeO9181t4h75F89OjQk6hHpgH+S2X8=;
+        b=TrjLGJWYzdRl9lnjksYeQN4C9WmYic27Kl+mQ7gN4NBcc4+FlVlpBG8bmhjJyO7qkF
+         gc3KzighaGvag+2sCsUK7aQj+oroPVD5NyEUIbwP5Ad1N8VAm0bqxCjdE+lM4tND4xNw
+         BtzvaQ1H+++Dt835/secUyPeC4TEoxCb3cGMGZLYXFg6kKRzK8Yit/KARfHvpEBFKfFm
+         86r5RUeTlgzzB7TCVSdJb/jPelxvOTqTKgkz7iTWttx5Qs94s2HZJyLBvgzRIK3JhXZM
+         mD5do2BWwO23zTX3ixgrdT77uCLSrIDvLm0tXeU/UGnaOCqpUdy9Ud3u0aSCFK1hYYgg
+         Md7w==
+X-Gm-Message-State: AOAM5331XehP1rCThGDLKCE621nEgg1h3SiuCjANTe9k4CmHkDitwKLm
+        RPurQNFYmLDPEmaJg6/wD61AniMrvnOoEDoi
+X-Google-Smtp-Source: ABdhPJxyUYNNoAYg+p0rUio5na1hUQeQkT9Gz50MFaKFx0Ho8v3YbST/94HbTYB5NkVRq+gbMPEODQ==
+X-Received: by 2002:a17:90b:1049:: with SMTP id gq9mr1941000pjb.28.1598971317157;
+        Tue, 01 Sep 2020 07:41:57 -0700 (PDT)
+Received: from [192.168.1.187] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id r123sm2340138pfc.187.2020.09.01.07.41.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 07:41:56 -0700 (PDT)
+Subject: Re: [PATCH v3 0/4] Some clean-ups for bio merge
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang7@gmail.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1598580324.git.baolin.wang@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <aa37ce36-c02f-835b-e62b-3e47daa27022@kernel.dk>
+Date:   Tue, 1 Sep 2020 08:41:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200901064302.849-1-w@1wt.eu>
-In-Reply-To: <20200901064302.849-1-w@1wt.eu>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 1 Sep 2020 16:41:13 +0200
-Message-ID: <CA+icZUVvOArpuR=PJBg288pJmLmYxtgZxJOHnjk943e9M22WOQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] prandom_u32: make output less predictable
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        George Spelvin <lkml@sdf.org>,
-        Amit Klein <aksecurity@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
-        Florian Westphal <fw@strlen.de>,
-        Marc Plumb <lkml.mplumb@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1598580324.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 8:43 AM Willy Tarreau <w@1wt.eu> wrote:
->
-> This is the cleanup of the latest series of prandom_u32 experimentations
-> consisting in using SipHash instead of Tausworthe to produce the randoms
-> used by the network stack. The changes to the files were kept minimal,
-> and the controversial commit that used to take noise from the fast_pool
-> (f227e3ec3b5c) was reverted. Instead, a dedicated "net_rand_noise" per_cpu
-> variable is fed from various sources of activities (networking, scheduling)
-> to perturb the SipHash state using fast, non-trivially predictable data,
-> instead of keeping it fully deterministic. The goal is essentially to make
-> any occasional memory leakage or brute-force attempt useless.
->
-> The resulting code was verified to be very slightly faster on x86_64 than
-> what is was with the controversial commit above, though this remains barely
-> above measurement noise. It was only build-tested on arm & arm64.
->
-> George Spelvin (1):
->   random32: make prandom_u32() output unpredictable
->
-> Willy Tarreau (1):
->   random32: add noise from network and scheduling activity
->
->  drivers/char/random.c   |   1 -
->  include/linux/prandom.h |  55 ++++-
->  kernel/time/timer.c     |   9 +-
->  lib/random32.c          | 438 ++++++++++++++++++++++++----------------
->  net/core/dev.c          |   4 +
->  5 files changed, 326 insertions(+), 181 deletions(-)
->
-> Cc: George Spelvin <lkml@sdf.org>
-> Cc: Amit Klein <aksecurity@gmail.com>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: tytso@mit.edu
-> Cc: Florian Westphal <fw@strlen.de>
-> Cc: Marc Plumb <lkml.mplumb@gmail.com>
-> Cc: Sedat Dilek <sedat.dilek@gmail.com>
->
+On 8/27/20 8:52 PM, Baolin Wang wrote:
+> Hi,
+> 
+> There are some duplicated code when trying to merge bio from pluged list
+> and software queue, thus this patch set did some clean-ups when merging
+> a bio. Any comments are welcome. Thanks.
 
-I have tested with the patchset from [1].
-( Later I saw, you dropped "WIP: tcp: reuse incoming skb hash in
-tcp_conn_request()". )
+Applied, thanks.
 
-- Sedat -
+-- 
+Jens Axboe
 
-https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git/log/?h=20200901-siphash-noise
-
-
-> --
-> 2.28.0
