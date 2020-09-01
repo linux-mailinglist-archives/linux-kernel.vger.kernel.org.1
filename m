@@ -2,256 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E80D259882
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C3F259886
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731018AbgIAQ1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:27:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59054 "EHLO mail.kernel.org"
+        id S1730593AbgIAQ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730947AbgIAQ0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:26:47 -0400
+        id S1731020AbgIAQ1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:27:20 -0400
 Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45F6C20767;
-        Tue,  1 Sep 2020 16:26:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F38D1206FA;
+        Tue,  1 Sep 2020 16:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598977606;
-        bh=8JcoG4QfiNvthJaec9Mx24MjKYkSUFTJ0zyQRbwhp34=;
+        s=default; t=1598977640;
+        bh=v3ubAj4K8yP34BRJWBT76VmMtHRcJqZ7TClZ7Gyqd4k=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=XuYPKZidhCCNbTF+lDHtnwjrkm5u6KTr5NsSR1gUQasPDHlSWCUlX1ZCoPYiOHZs9
-         sBZRsOj7SiFO7W+eXztO6SYtflJ7Jtz4cr9M9LnHY0dfoqnTqXHMmU9kML5APsAOKj
-         0TKDV/2cQkNExSyoBgBGlwiDBKUfRZr/LOb+kPAc=
+        b=Q6HE2OGr/FVFJepUDnOmpdTMZnb1YikSFFeWlERuqMdEh3lZCIgUI92wkfPVrRCHQ
+         hIZsU5xQD7TMqN8zhsdA3A67squHOh4loHeiupztWrDR6O0tNzmC7HHj6jgwweuTBS
+         ePpJ8gzeuOsmgnIrjcymimF4H6J91Biv+B2z+IKI=
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 2864D35226A5; Tue,  1 Sep 2020 09:26:46 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 09:26:46 -0700
+        id CF92135226A5; Tue,  1 Sep 2020 09:27:19 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 09:27:19 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
-        dave@stgolabs.net, Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
-Subject: Re: [PATCH v4 -rcu 1/4] rcu/segcblist: Do not depend on rcl->len to
- store the segcb len during merge
-Message-ID: <20200901162646.GD29330@paulmck-ThinkPad-P72>
+To:     Rong Chen <rong.a.chen@intel.com>
+Cc:     kernel test robot <lkp@intel.com>, Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+Subject: Re: [LKP] Re: [rcuperf] 4e88ec4a9e:
+ UBSAN:division-overflow_in_arch/x86/include/asm/div64.h
+Message-ID: <20200901162719.GE29330@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20200825024842.3408659-1-joel@joelfernandes.org>
- <20200825024842.3408659-2-joel@joelfernandes.org>
- <20200825200809.GW2855@paulmck-ThinkPad-P72>
- <20200825224723.GB579506@google.com>
- <20200826142028.GN2855@paulmck-ThinkPad-P72>
- <20200827225518.GB3821640@google.com>
- <20200828141855.GO2855@paulmck-ThinkPad-P72>
- <20200901150609.GA1506230@google.com>
+References: <20200831120122.GH4299@shao2-debian>
+ <20200831155037.GZ2855@paulmck-ThinkPad-P72>
+ <649fd850-602f-7f0d-d286-73a8dd88ad6d@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200901150609.GA1506230@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <649fd850-602f-7f0d-d286-73a8dd88ad6d@intel.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 11:06:09AM -0400, Joel Fernandes wrote:
-> Hi,
-> Resuming regular activities here, post-LPC :)
+On Tue, Sep 01, 2020 at 03:03:28PM +0800, Rong Chen wrote:
 > 
-> On Fri, Aug 28, 2020 at 07:18:55AM -0700, Paul E. McKenney wrote:
-> > On Thu, Aug 27, 2020 at 06:55:18PM -0400, Joel Fernandes wrote:
-> > > On Wed, Aug 26, 2020 at 07:20:28AM -0700, Paul E. McKenney wrote:
-> > > [...]
-> > > > > > Or better yet, please see below, which should allow getting rid of both
-> > > > > > of them.
-> > > > > > 
-> > > > > > >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
-> > > > > > >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
-> > > > > > > -	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
-> > > > > > > +
-> > > > > > > +	rcu_segcblist_add_len(dst_rsclp, src_len);
-> > > > > > >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
-> > > > > > >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-> > > > > > 
-> > > > > > Rather than adding the blank lines, why not have the rcu_cblist structures
-> > > > > > carry the lengths?  You are already adjusting one of the two call sites
-> > > > > > that care (rcu_do_batch()), and the other is srcu_invoke_callbacks().
-> > > > > > That should shorten this function a bit more.  And make callback handling
-> > > > > > much more approachable, I suspect.
-> > > > > 
-> > > > > Sorry, I did not understand. The rcu_cblist structure already has a length
-> > > > > field. I do modify rcu_segcblist_extract_done_cbs() and
-> > > > > rcu_segcblist_extract_pend_cbs() to carry the length already, in a later
-> > > > > patch.
-> > > > > 
-> > > > > Just to emphasize, this patch is just a small refactor to avoid an issue in
-> > > > > later patches. It aims to keep current functionality unchanged.
-> > > > 
-> > > > True enough.  I am just suggesting that an equally small refactor in
-> > > > a slightly different direction should get to a better place.  The key
-> > > > point enabling this slightly different direction is that this code is
-> > > > an exception to the "preserve ->cblist.len" rule because it is invoked
-> > > > only from the CPU hotplug code.
-> > > > 
-> > > > So you could use the rcu_cblist .len field to update the ->cblist.len
-> > > > field, thus combining the _cbs and _count updates.  One thing that helps
-> > > > is that setting th e rcu_cblist .len field doesn't hurt the other use
-> > > > cases that require careful handling of ->cblist.len.
+> 
+> On 8/31/20 11:50 PM, Paul E. McKenney wrote:
+> > On Mon, Aug 31, 2020 at 08:01:22PM +0800, kernel test robot wrote:
+> > > Greeting,
 > > > 
-> > > Thank you for the ideas. I am trying something like this on top of this
-> > > series based on the ideas. One thing I concerned a bit is if getting rid of
-> > > the rcu_segcblist_xchg_len() function (which has memory barriers in them)
-> > > causes issues in the hotplug path. I am now directly updating the length
-> > > without additional memory barriers. I will test it more and try to reason
-> > > more about it as well.
-> > 
-> > In this particular case, the CPU-hotplug locks prevent rcu_barrier()
-> > from running concurrently, so it should be OK.  Is there an easy way
-> > to make lockdep help us check this?  Does lockdep_assert_cpus_held()
-> > suffice, or is it too easily satisfied?
+> > > FYI, we noticed the following commit (built with gcc-9):
+> > > 
+> > > commit: 4e88ec4a9eb17527e640b063f79e5b875733eb53 ("rcuperf: Change rcuperf to rcuscale")
+> > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > > 
+> > > 
+> > > in testcase: trinity
+> > > with following parameters:
+> > > 
+> > > 	runtime: 300s
+> > > 
+> > > test-description: Trinity is a linux system call fuzz tester.
+> > > test-url: http://codemonkey.org.uk/projects/trinity/
+> > > 
+> > > 
+> > > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
+> > > 
+> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
+> > > 
+> > > 
+> > > +---------------------------------------------------------+------------+------------+
+> > > |                                                         | 65bd77f554 | 4e88ec4a9e |
+> > > +---------------------------------------------------------+------------+------------+
+> > > | boot_successes                                          | 13         | 0          |
+> > > | boot_failures                                           | 0          | 14         |
+> > > | UBSAN:division-overflow_in_arch/x86/include/asm/div64.h | 0          | 14         |
+> > > | error:#[##]                                             | 0          | 14         |
+> > > | EIP:main_func.cold                                      | 0          | 14         |
+> > > | Kernel_panic-not_syncing:Fatal_exception                | 0          | 14         |
+> > > +---------------------------------------------------------+------------+------------+
+> > > 
+> > > 
+> > > If you fix the issue, kindly add following tag
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > Does the patch below fix this for you?
 > 
-> Just to clarify, the race you mention is rcu_barrier() should not run
-> concurrently with CPU hotplug operation.
+> Yes, this patch can fix the issue, and nreaders was adjusted to 1:
 > 
-> The reason is:
-> rcu_barrier() checks whether the segmented list's length is 0 before sending
-> IPIs for entraining a callback onto the destination CPU. But if it
-> misunderstands the length's value due to a lack of memory barriers, it may
-> not missing sending an IPI causing the barrier to fail. Please correct me if
-> I'm wrong though.
+> [    5.953645] The force parameter has not been set to 1. The Iris poweroff
+> handler will not be installed.
+> [   12.546587] rcu-ref-scale: --- Start of test:  verbose=0 shutdown=1
+> holdoff=10 loops=10000 nreaders=-1 nruns=30 readdelay=0
+> [   12.561495] ------------[ cut here ]------------
+> [   12.562016] ref_scale_init: nreaders = 0, adjusted to 1
+> [   12.562601] WARNING: CPU: 0 PID: 1 at kernel/rcu/refscale.c:684
+> ref_scale_init+0x653/0x80
 
-That is the concern for code that is not part of a CPU-hotplug operation.
-
-> Due to CPU hotplug locking, such race is impossible because both
-> rcu_barrier() and the CPU migrating the callbacks holds it.
-
-Exactly.
-
-> I think the lockdep_assert_cpus_held() may suffice. I can add it to the
-> rcu_segcblist_merge() function.
-
-The main thing to check is that the following results in a lockdep splat:
-
-	cpus_read_lock();
-	lockdep_assert_cpus_held();
-
-> BTW, I think we can simplify rcu_barrier() a bit and combine the tracepoint
-> and rid one outer if clause (diff at end of email).
-
-If you were already changing this function for some reason, OK.  But you
-are trading a pair of lines for a long line (though still less than the
-new 100-character limit), so as a standalone patch I am left uninspired.
-
-> > >  }
-> > >  
-> > >  /*
-> > > @@ -448,6 +419,7 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
-> > >  			break;
-> > >  	rclp->head = NULL;
-> > >  	rclp->tail = &rclp->head;
-> > > +	rcu_segcblist_add_len(rsclp, rclp->len);
-> > 
-> > Does there need to be a compensating action in rcu_do_batch(), or is
-> > this the point of the "rcu_segcblist_add_len(rsclp, -(rclp->len));"
-> > added to rcu_segcblist_extract_done_cbs() above?
-> > 
-> > If so, a comment would be good.
-> 
-> I think external compensation by rcu_do_batch is not needed, its best to
-> handle all cblist.len modifications internally in the segcblist API
-> where possible.
-
-At the very least, the segcblist function providing a negative-length
-list needs to very carefully explain itself!!!  ;-)
-
-> > >  /*
-> > > @@ -463,6 +435,7 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
-> > >  	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
-> > >  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
-> > >  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
-> > > +	rcu_segcblist_add_len(rsclp, rclp->len);
-> > >  }
-> > >  
-> > >  /*
-> > > @@ -601,16 +574,13 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
-> > >  {
-> > >  	struct rcu_cblist donecbs;
-> > >  	struct rcu_cblist pendcbs;
-> > > -	long src_len;
-> > >  
-> > >  	rcu_cblist_init(&donecbs);
-> > >  	rcu_cblist_init(&pendcbs);
-> > >  
-> > > -	src_len = rcu_segcblist_xchg_len(src_rsclp, 0);
-> > >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
-> > >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
-> > >  
-> > > -	rcu_segcblist_add_len(dst_rsclp, src_len);
-> > >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
-> > >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
-> > 
-> > Can we now pair the corresponding _extract_ and _insert_ calls, thus
-> > requiring only one rcu_cblist structure?  This would drop two more lines
-> > of code.  Or would that break something?
-> 
-> That could work as well, yes. But may not be worth adding another function to
-> combine extract/insert operation, since the extract and insert operations are
-> needed by rcutree and srcutree as well (other than hotplug).
-
-I was thinking in terms of just reordering the calls to the existing
-functions, though I clearly was having trouble counting.  Like this:
-
- 	struct rcu_cblist cbs;
- 
- 	rcu_cblist_init(&cbs);
- 	rcu_segcblist_extract_done_cbs(src_rsclp, &cbs);
- 	rcu_segcblist_insert_done_cbs(dst_rsclp, &cbs);
- 	rcu_cblist_init(&cbs);
- 	rcu_segcblist_insert_pend_cbs(dst_rsclp, &cbs);
- 	rcu_segcblist_extract_pend_cbs(src_rsclp, &cbs);
+Thank you!  May I add your Tested-by?
 
 							Thanx, Paul
 
-> thanks,
+> Best Regards,
+> Rong Chen
 > 
->  - Joel
+> > 
+> > 							Thanx, Paul
+> > 
+> > ------------------------------------------------------------------------
+> > 
+> > commit d301e320e952e2e604d83d9540e52510b0eb3d94
+> > Author: Paul E. McKenney <paulmck@kernel.org>
+> > Date:   Thu Aug 27 09:58:19 2020 -0700
+> > 
+> >      refscale: Bounds-check module parameters
+> >      The default value for refscale.nreaders is -1, which results in the code
+> >      setting the value to three-quarters of the number of CPUs.  On single-CPU
+> >      systems, this results in three-quarters of the value one, which the C
+> >      language's integer arithmetic rounds to zero.  This in turn results in
+> >      a divide-by-zero error.
+> >      This commit therefore adds bounds checking to the refscale module
+> >      parameters, so that if they are less than one, they are set to the
+> >      value one.
+> >      Reported-by: kernel test robot <lkp@intel.com>
+> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
+> > index 952595c..fb5f20d 100644
+> > --- a/kernel/rcu/refscale.c
+> > +++ b/kernel/rcu/refscale.c
+> > @@ -681,6 +681,12 @@ ref_scale_init(void)
+> >   	// Reader tasks (default to ~75% of online CPUs).
+> >   	if (nreaders < 0)
+> >   		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
+> > +	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
+> > +		loops = 1;
+> > +	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
+> > +		nreaders = 1;
+> > +	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
+> > +		nruns = 1;
+> >   	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+> >   			       GFP_KERNEL);
+> >   	if (!reader_tasks) {
+> > _______________________________________________
+> > LKP mailing list -- lkp@lists.01.org
+> > To unsubscribe send an email to lkp-leave@lists.01.org
 > 
-> ---8<-----------------------
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 16ad99a9ebba..274a1845ad38 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3856,17 +3856,16 @@ void rcu_barrier(void)
->  		if (cpu_is_offline(cpu) &&
->  		    !rcu_segcblist_is_offloaded(&rdp->cblist))
->  			continue;
-> -		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
-> -			rcu_barrier_trace(TPS("OnlineQ"), cpu,
-> -					  rcu_state.barrier_sequence);
-> -			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
-> -		} else if (rcu_segcblist_n_cbs(&rdp->cblist) &&
-> -			   cpu_is_offline(cpu)) {
-> -			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
-> -					  rcu_state.barrier_sequence);
-> -			local_irq_disable();
-> -			rcu_barrier_func((void *)cpu);
-> -			local_irq_enable();
-> +		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
-> +			rcu_barrier_trace(cpu_online(cpu) ? TPS("OnlineQ") : TPS("OfflineNoCBQ"),
-> +					  cpu, rcu_state.barrier_sequence);
-> +			if (cpu_online(cpu)) {
-> +				smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
-> +			} else {
-> +				local_irq_disable();
-> +				rcu_barrier_func((void *)cpu);
-> +				local_irq_enable();
-> +			}
->  		} else if (cpu_is_offline(cpu)) {
->  			rcu_barrier_trace(TPS("OfflineNoCBNoQ"), cpu,
->  					  rcu_state.barrier_sequence);
