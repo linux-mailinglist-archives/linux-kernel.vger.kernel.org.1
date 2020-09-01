@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1292593C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D73259467
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730659AbgIAPbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:31:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53856 "EHLO mail.kernel.org"
+        id S1729723AbgIAPjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:39:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730183AbgIAP1N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:27:13 -0400
+        id S1726654AbgIAPhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:37:36 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2795206FA;
-        Tue,  1 Sep 2020 15:27:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97CA920866;
+        Tue,  1 Sep 2020 15:37:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974032;
-        bh=wfyP6ErZoZxY7ltPAxt9V2YaYyKjCJkU6bza5vC6jfQ=;
+        s=default; t=1598974656;
+        bh=FS9LV1mgzKB2FrwnM+i3H+Tuad1djbcvC2VsGtvdOyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x6dAE+RKDnkaOF2JKqOj4UmVscY4ftDN+DrNBrHpIqGs6LmjledWo7L4ngyphO6DV
-         Qcwp4aYnNcl1XpVhcLvNMWOxsCrGo7R0XuSBLKqSz8mBKirbzLCS2hfxmOc+nF7heR
-         qXFUyH5s5czYtIoeIEcBoXZG1gaC5BCgwh/nkezE=
+        b=JCB6ks1kH+LJc17VhICAROPBG26RNbbKUFDA4nYpfVBz7Bia2hp6H/7EmMtsvhH5L
+         x7UZz0U+nEdTaHGsbZbrFawn5Ih8upztySXmNIGKe0vjriDA9sb8CYy7Bh8x1L23Um
+         kAhQuJ4Eqpa+DbBU/D75YXnka7AQI4yPqbjjml5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/214] ASoC: img-parallel-out: Fix a reference count leak
-Date:   Tue,  1 Sep 2020 17:08:18 +0200
-Message-Id: <20200901150953.840058605@linuxfoundation.org>
+        stable@vger.kernel.org, Kaige Li <likaige@loongson.cn>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 044/255] ALSA: hda: Add support for Loongson 7A1000 controller
+Date:   Tue,  1 Sep 2020 17:08:20 +0200
+Message-Id: <20200901151002.863331843@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Kaige Li <likaige@loongson.cn>
 
-[ Upstream commit 6b9fbb073636906eee9fe4d4c05a4f445b9e2a23 ]
+[ Upstream commit 61eee4a7fc406f94e441778c3cecbbed30373c89 ]
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-when it returns an error code, causing incorrect ref count if
-pm_runtime_put_noidle() is not called in error handling paths.
-Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
+Add the new PCI ID 0x0014 0x7a07 to support Loongson 7A1000 controller.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Link: https://lore.kernel.org/r/20200614033344.1814-1-wu000273@umn.edu
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kaige Li <likaige@loongson.cn>
+Link: https://lore.kernel.org/r/1594954292-1703-2-git-send-email-likaige@loongson.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/img/img-parallel-out.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
-index 5ddbe3a31c2e9..4da49a42e8547 100644
---- a/sound/soc/img/img-parallel-out.c
-+++ b/sound/soc/img/img-parallel-out.c
-@@ -163,8 +163,10 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	}
- 
- 	ret = pm_runtime_get_sync(prl->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(prl->dev);
- 		return ret;
-+	}
- 
- 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
- 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4c23b169ac67e..1a26940a3fd7c 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2747,6 +2747,8 @@ static const struct pci_device_id azx_ids[] = {
+ 	  .driver_data = AZX_DRIVER_GENERIC | AZX_DCAPS_PRESET_ATI_HDMI },
+ 	/* Zhaoxin */
+ 	{ PCI_DEVICE(0x1d17, 0x3288), .driver_data = AZX_DRIVER_ZHAOXIN },
++	/* Loongson */
++	{ PCI_DEVICE(0x0014, 0x7a07), .driver_data = AZX_DRIVER_GENERIC },
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, azx_ids);
 -- 
 2.25.1
 
