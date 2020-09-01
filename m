@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3FF2591DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA3D2591F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgIAO4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:56:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57485 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728303AbgIAOzy (ORCPT
+        id S1728379AbgIAO57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726895AbgIAO54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:55:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598972153;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ha8ceeJV++XLnGMTI8EAI1v8M0o9ZVG9VPLjJ2EiJh8=;
-        b=iX43OtAU/iUosFM7/B7qME8EXS75TzkBOb9yP56tckfOP3waXo9yvHD4tCycYc/UOgfzyL
-        w2e2sff1mt2wRvBBYQ4+81UcB6T62MYX5sgWzd+Fm1bOi/HfgHMzDD9dvUn0wnxNG5inG6
-        EMa5SeG8A4sjI/Ct+vog8n4HSkxtXPc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-OJ7BSQ96PYqA_9FsyNJ_rA-1; Tue, 01 Sep 2020 10:55:51 -0400
-X-MC-Unique: OJ7BSQ96PYqA_9FsyNJ_rA-1
-Received: by mail-wr1-f71.google.com with SMTP id n15so675351wrv.23
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:55:51 -0700 (PDT)
+        Tue, 1 Sep 2020 10:57:56 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C6EC061244;
+        Tue,  1 Sep 2020 07:57:56 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id w20so1566379iom.1;
+        Tue, 01 Sep 2020 07:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yRdwCQYWLWUYD6ZttodlfuSxdtjBUQxn+XNGerSDtP8=;
+        b=EtaFk03tzFwc5tMH+rsxUSik8g5VJPPMvtx7M/eykf/pdLY84+Saka4JNpUYX9rEd7
+         Q5LAlX/krsv7FtUzuQB6zcJyGR8HeC10zgYf80u762uJ2yDTmoV9SVvy1F3HShRYJ6yI
+         akO9VdSeu+H6SkRmw0bPOoNuCRmagy+KkAX2ba/EcIIiify1pZfjY4HjMClyKRZ521FP
+         Rp96phfXdtEnDyfl0anZeHOyft166Eu+XarYvgsxxCLkhtHUjG7tje//NFOGEtHFfa6a
+         lgklnX6QB9+fyJnjD/CLQbNIPfrA9TfTybR6mIJMx6gREgzej+ZQ6JwkZtf1eMe+5use
+         NFXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Ha8ceeJV++XLnGMTI8EAI1v8M0o9ZVG9VPLjJ2EiJh8=;
-        b=JGQV985fxUjppEsbG0Dpmq/z7bmerlHelofA2E+KPLWnRk8SOAhHdTgnb8g/X36bYh
-         /nRbWBb8Dn3sbXGeOwA19IF7cpor4EwSp1YfL8AgcDUL3xMB1TUGPJdvNSk5R9uwq4oJ
-         iTipYiSM2u9UAqGKtCNQcxNOrD9tCRU2uebjmOMwVl+xh4Oy4TrDXs3yuNGhyZ8y28+J
-         ZAbPIESl7HZtI1pPFk5y5D2477h3LHXntNO8s57SGABUTiJt5pZMGfyt5+aCzQRUTYme
-         eiLno8RYhjy35IrPLEdzLM7mqNBmWOErrTAavYQ6+eLcT2pMzNDX83QX5NNhVXF818XK
-         Zi6A==
-X-Gm-Message-State: AOAM533WLoqmFhxsDK43FpeSRgajGT0lwmx8P6o4QprYYYMDMGAry3PD
-        61uep6fwSj3ilyh99KrCh4oUEbVlG2t2xpyzoZnw1LuXcjOCrnbKvk3llMC5LR6FVfJ2jtTnl+7
-        kC+fzy2Mflf3n76t0pQqZNIm0
-X-Received: by 2002:a5d:5261:: with SMTP id l1mr2303738wrc.193.1598972150673;
-        Tue, 01 Sep 2020 07:55:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy0/d8/Yxd2dCD06xdpMy8cay26xVfJk8tZTMxMCzO6R2TkC1wQy0bxfE6FRVZFbEmTC91rOw==
-X-Received: by 2002:a5d:5261:: with SMTP id l1mr2303723wrc.193.1598972150439;
-        Tue, 01 Sep 2020 07:55:50 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id l15sm2777902wrt.81.2020.09.01.07.55.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 07:55:49 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 0/7] KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID more useful
-In-Reply-To: <20200807083946.377654-1-vkuznets@redhat.com>
-References: <20200807083946.377654-1-vkuznets@redhat.com>
-Date:   Tue, 01 Sep 2020 16:55:48 +0200
-Message-ID: <87blipwnpn.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yRdwCQYWLWUYD6ZttodlfuSxdtjBUQxn+XNGerSDtP8=;
+        b=h1Mb/HPvCuYKDpCjG4RfMsDLOYc57AwBswCgjdLwjzf9nLDmwKsRsus31DjKOhNQZq
+         lAk1b/sLMe82UiIKg3O3IOApPmH7RKGS5BTvaqZKzKvsia7AInEVQbGAZHPFr5Sbaxj2
+         UwC6qSGWEXkVj75BCzfWUaAp2B0zkTlF/Zbp2exlKhYyWCqy/1N+z7Wgk1GpvRFWK7SH
+         CPURVTcWvPx/a5uJrD9QNy8gK5LujytplfxYMHH4JYNAirzkx+/QPwzR2yvqJJO8m5Hh
+         kT1dE06g+/3lvQFxF92Txz1VrC9hOW2BsyZiGUbvCQ82PYGzCM2mZNUBUmWpZK70yqI3
+         X0sQ==
+X-Gm-Message-State: AOAM530rNSsidg5vbA8zwKf9l33jbHZe2ulVqYLhK6IyQHewj6cein2w
+        ua8F4PcR0xXqNaIGbkYO7Nk=
+X-Google-Smtp-Source: ABdhPJz5bVWB/XcnZwbiI+pPNVRovMYhKxzkM0mN3BvGS5MXTNMu9yOT9AnUL2uMpI21paadlqf3kg==
+X-Received: by 2002:a05:6602:1589:: with SMTP id e9mr1746626iow.85.1598972275182;
+        Tue, 01 Sep 2020 07:57:55 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([2601:282:803:7700:883e:eb9e:60a1:7cfb])
+        by smtp.googlemail.com with ESMTPSA id u25sm633459iob.51.2020.09.01.07.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 07:57:54 -0700 (PDT)
+Subject: Re: [PATCH] net: ipv6: fix __rt6_purge_dflt_routers when forwarding
+ is not set on all ifaces
+To:     Eric Dumazet <edumazet@google.com>,
+        Brian Vazquez <brianvv@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        David Ahern <dsa@cumulusnetworks.com>
+References: <20200901065758.1141786-1-brianvv@google.com>
+ <CANn89iKA5Ut4AcZfsZi3bVpE33_pqgO=E1RhBzePUeBDn6gznQ@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <52832405-fa37-38fb-b8fb-d7bd7a0d1d52@gmail.com>
+Date:   Tue, 1 Sep 2020 08:57:53 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CANn89iKA5Ut4AcZfsZi3bVpE33_pqgO=E1RhBzePUeBDn6gznQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+On 9/1/20 1:56 AM, Eric Dumazet wrote:
+> On Tue, Sep 1, 2020 at 8:58 AM Brian Vazquez <brianvv@google.com> wrote:
+>>
+>> The problem is exposed when the system has multiple ifaces and
+>> forwarding is enabled on a subset of them, __rt6_purge_dflt_routers will
+>> clean the default route on all the ifaces which is not desired.
+>>
+>> This patches fixes that by cleaning only the routes where the iface has
+>> forwarding enabled.
+>>
+>> Fixes: 830218c1add1 ("net: ipv6: Fix processing of RAs in presence of VRF")
 
-> KVM_GET_SUPPORTED_HV_CPUID was initially implemented as a vCPU ioctl but
-> this is not very useful when VMM is just trying to query which Hyper-V
-> features are supported by the host prior to creating VM/vCPUs. The data
-> in KVM_GET_SUPPORTED_HV_CPUID is mostly static with a few exceptions but
-> it seems we can change this. Add support for KVM_GET_SUPPORTED_HV_CPUID as
-> a system ioctl as well.
->
-> QEMU specific description:
-> In some cases QEMU needs to collect the information about which Hyper-V
-> features are supported by KVM and pass it up the stack. For non-hyper-v
-> features this is done with system-wide KVM_GET_SUPPORTED_CPUID/
-> KVM_GET_MSRS ioctls but Hyper-V specific features don't get in the output
-> (as Hyper-V CPUIDs intersect with KVM's). In QEMU, CPU feature expansion
-> happens before any KVM vcpus are created so KVM_GET_SUPPORTED_HV_CPUID
-> can't be used in its current shape.
->
+are you sure that is a Fixes tag for this problem? looking at that
+change it only handles RA for tables beyond the main table; it does not
+change the logic of how many or which routes are purged.
 
-Ping ;-)
 
-I know Hyper-V emulation in KVM is a very specific topic so it's not
-very easy to find reviewers but I'd be very happy if someone could
-provide any feedback on the idea (above) in general.
-
--- 
-Vitaly
 
