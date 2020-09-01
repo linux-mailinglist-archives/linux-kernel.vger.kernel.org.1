@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73982593BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9522225933D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730122AbgIAPaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:30:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52762 "EHLO mail.kernel.org"
+        id S1729777AbgIAPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:23:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727825AbgIAP0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:26:47 -0400
+        id S1729606AbgIAPU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:20:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C112078B;
-        Tue,  1 Sep 2020 15:26:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 586B5206FA;
+        Tue,  1 Sep 2020 15:20:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974006;
-        bh=v/vKjx16isHzj9Sc9+V682K7sljiXacG/SeAOCFo6bM=;
+        s=default; t=1598973626;
+        bh=F3CfCHGHySuUWWNVaJBbuYS2V+uCwRkrEAJps+lQ6DI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RgBAOZNHI5787968lH4tQwNHTWYIdWDRVevGUJDudZWUBBlcVKCRvplEFDOHEl1zg
-         xMnMjfl8ODk0g3vRJ9xiKPJWPs3vmMpv90CStsdcJRHYmGUnJbqqhis1KBP0T54fxL
-         f4qjYFyL06mPgL85hPdz3WRV4sRvSXzc7AGz/DYY=
+        b=mElynAdH1ls9MvesqYCTGubLqKQ/uoOVDuQi9oFeBfqtaRgNHbswR0o02fDrJ4kPC
+         Kc4Qrp6cxReZJQdKZYfllMh86iTG0+U+PnBFjevW7rNy+lY6yDZQsb1tNeFIl+/Y9U
+         N/Z6VuYkLkqH2DcG422j5BPgROJ7TGVCqnD8jBw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martijn Coenen <maco@android.com>,
-        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>
-Subject: [PATCH 4.19 094/125] writeback: Protect inode->i_io_list with inode->i_lock
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.14 75/91] device property: Fix the secondary firmware node handling in set_primary_fwnode()
 Date:   Tue,  1 Sep 2020 17:10:49 +0200
-Message-Id: <20200901150939.199815190@linuxfoundation.org>
+Message-Id: <20200901150931.917488506@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,107 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-commit b35250c0816c7cf7d0a8de92f5fafb6a7508a708 upstream.
+commit c15e1bdda4365a5f17cdadf22bf1c1df13884a9e upstream.
 
-Currently, operations on inode->i_io_list are protected by
-wb->list_lock. In the following patches we'll need to maintain
-consistency between inode->i_state and inode->i_io_list so change the
-code so that inode->i_lock protects also all inode's i_io_list handling.
+When the primary firmware node pointer is removed from a
+device (set to NULL) the secondary firmware node pointer,
+when it exists, is made the primary node for the device.
+However, the secondary firmware node pointer of the original
+primary firmware node is never cleared (set to NULL).
 
-Reviewed-by: Martijn Coenen <maco@android.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-CC: stable@vger.kernel.org # Prerequisite for "writeback: Avoid skipping inode writeback"
-Signed-off-by: Jan Kara <jack@suse.cz>
+To avoid situation where the secondary firmware node pointer
+is pointing to a non-existing object, clearing it properly
+when the primary node is removed from a device in
+set_primary_fwnode().
+
+Fixes: 97badf873ab6 ("device property: Make it possible to use secondary firmware nodes")
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fs-writeback.c |   22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ drivers/base/core.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -160,6 +160,7 @@ static void inode_io_list_del_locked(str
- 				     struct bdi_writeback *wb)
- {
- 	assert_spin_locked(&wb->list_lock);
-+	assert_spin_locked(&inode->i_lock);
- 
- 	list_del_init(&inode->i_io_list);
- 	wb_io_lists_depopulated(wb);
-@@ -1042,7 +1043,9 @@ void inode_io_list_del(struct inode *ino
- 	struct bdi_writeback *wb;
- 
- 	wb = inode_to_wb_and_lock_list(inode);
-+	spin_lock(&inode->i_lock);
- 	inode_io_list_del_locked(inode, wb);
-+	spin_unlock(&inode->i_lock);
- 	spin_unlock(&wb->list_lock);
- }
- 
-@@ -1091,8 +1094,10 @@ void sb_clear_inode_writeback(struct ino
-  * the case then the inode must have been redirtied while it was being written
-  * out and we don't reset its dirtied_when.
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3074,9 +3074,9 @@ static inline bool fwnode_is_primary(str
   */
--static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
-+static void redirty_tail_locked(struct inode *inode, struct bdi_writeback *wb)
+ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
  {
-+	assert_spin_locked(&inode->i_lock);
-+
- 	if (!list_empty(&wb->b_dirty)) {
- 		struct inode *tail;
+-	if (fwnode) {
+-		struct fwnode_handle *fn = dev->fwnode;
++	struct fwnode_handle *fn = dev->fwnode;
  
-@@ -1103,6 +1108,13 @@ static void redirty_tail(struct inode *i
- 	inode_io_list_move_locked(inode, wb, &wb->b_dirty);
- }
++	if (fwnode) {
+ 		if (fwnode_is_primary(fn))
+ 			fn = fn->secondary;
  
-+static void redirty_tail(struct inode *inode, struct bdi_writeback *wb)
-+{
-+	spin_lock(&inode->i_lock);
-+	redirty_tail_locked(inode, wb);
-+	spin_unlock(&inode->i_lock);
-+}
-+
- /*
-  * requeue inode for re-scanning after bdi->b_io list is exhausted.
-  */
-@@ -1313,7 +1325,7 @@ static void requeue_inode(struct inode *
- 		 * writeback is not making progress due to locked
- 		 * buffers. Skip this inode for now.
- 		 */
--		redirty_tail(inode, wb);
-+		redirty_tail_locked(inode, wb);
- 		return;
+@@ -3086,8 +3086,12 @@ void set_primary_fwnode(struct device *d
+ 		}
+ 		dev->fwnode = fwnode;
+ 	} else {
+-		dev->fwnode = fwnode_is_primary(dev->fwnode) ?
+-			dev->fwnode->secondary : NULL;
++		if (fwnode_is_primary(fn)) {
++			dev->fwnode = fn->secondary;
++			fn->secondary = NULL;
++		} else {
++			dev->fwnode = NULL;
++		}
  	}
- 
-@@ -1333,7 +1345,7 @@ static void requeue_inode(struct inode *
- 			 * retrying writeback of the dirty page/inode
- 			 * that cannot be performed immediately.
- 			 */
--			redirty_tail(inode, wb);
-+			redirty_tail_locked(inode, wb);
- 		}
- 	} else if (inode->i_state & I_DIRTY) {
- 		/*
-@@ -1341,7 +1353,7 @@ static void requeue_inode(struct inode *
- 		 * such as delayed allocation during submission or metadata
- 		 * updates after data IO completion.
- 		 */
--		redirty_tail(inode, wb);
-+		redirty_tail_locked(inode, wb);
- 	} else if (inode->i_state & I_DIRTY_TIME) {
- 		inode->dirtied_when = jiffies;
- 		inode_io_list_move_locked(inode, wb, &wb->b_dirty_time);
-@@ -1588,8 +1600,8 @@ static long writeback_sb_inodes(struct s
- 		 */
- 		spin_lock(&inode->i_lock);
- 		if (inode->i_state & (I_NEW | I_FREEING | I_WILL_FREE)) {
-+			redirty_tail_locked(inode, wb);
- 			spin_unlock(&inode->i_lock);
--			redirty_tail(inode, wb);
- 			continue;
- 		}
- 		if ((inode->i_state & I_SYNC) && wbc.sync_mode != WB_SYNC_ALL) {
+ }
+ EXPORT_SYMBOL_GPL(set_primary_fwnode);
 
 
