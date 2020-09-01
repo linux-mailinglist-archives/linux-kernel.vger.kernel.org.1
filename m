@@ -2,586 +2,488 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4D2259011
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6935F258FFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbgIAOPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:15:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39768 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIALt3 (ORCPT
+        id S1728304AbgIAONw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbgIALyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:49:29 -0400
-Date:   Tue, 01 Sep 2020 11:48:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598960887;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lfq5Y6RZBlFitQrrAbG7s2uKjXYMRziGFPYG/R9/02M=;
-        b=1ZJ9+9VHxE9M9MViJgdYXGT43BojbShyueK9MzH0sEL0a8waUTMA4QxgI2A5XlRWbKdmcW
-        f/UboVytla+7gy4sATkIyluZGoJBw6FEbt6HjVs1BmT2/JH322LDNHXXrVGc0rA2+IAUM+
-        opXihO7Ew7z8STiAYAMQ+6hclJuaI/itzIOCE56z1tJZl1kON4PNa4tqfN2CcYrzwskOEE
-        F4wvYFZhqaQ705OLunS/ycnBN+wm05stbWCgLuq8EBfEdE7okp7Ylr8LWB+3b2gf2jv8tb
-        pG09ez09Nu97kkI3HsdxBdcci8GlXz3nmmaNL1uSTPo1AZKsreQIR3nEAKVxOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598960887;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lfq5Y6RZBlFitQrrAbG7s2uKjXYMRziGFPYG/R9/02M=;
-        b=CpRIMmJoGcznlJfL0m+VmGG/ZboTLhsZJj5Kwzel4lyRFveU4hv+oX32PqyPRzRULA+EWN
-        gijaDeX1mKhNBkDQ==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/static_call] static_call: Add inline static call infrastructure
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200818135804.684334440@infradead.org>
-References: <20200818135804.684334440@infradead.org>
-MIME-Version: 1.0
-Message-ID: <159896088657.20229.14497152178407959374.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Tue, 1 Sep 2020 07:54:09 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7730BC061245;
+        Tue,  1 Sep 2020 04:54:07 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 17so642022pfw.9;
+        Tue, 01 Sep 2020 04:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=pOqYeropJ62YM2OgWoPUvDK/Rkd9kPdtv4BLqP7MaoU=;
+        b=VZo55aX/J56pXxx2D2SYcmA1yZxwfXhdRPoZBdDyojXdoKxeLmI8N6OhXFR6MRdD0w
+         rPZqq1m677LVprtVT3HxcTKxT4h43ABPxwuWcKzGLfSCrW3gforHJLoy8fTWBSrPDup0
+         fg41kqezf1BjtqXTUTSSg5GCT+b+6RCaO0SzIkqobiZbEq7E5vREaTmjmqks1095k14+
+         TcnVe5qgLznA+j0Z2Ood71Ze6K8FjCrimNWlmItQDvVvtBl6tHmTvGdyd28kahEQjvay
+         8mJiFBEbp7iwXMkUK43lXQGE88HJ0CquNvdkidWFHuBGNkfQ1j5gDYxLn1TcVEoYGqdI
+         SdsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=pOqYeropJ62YM2OgWoPUvDK/Rkd9kPdtv4BLqP7MaoU=;
+        b=U3Wu32jA/DJ/KXQN0O8rVot4roOXNTLnqnmK3gpH17vS+pHg+6cnSQgIVOR8DuebH+
+         IsdXL9VijAVcJS+5BLdWNI536hXlCja5sUh93v+01OpNk3fRapzruFR8EMrnkFF0+YHw
+         lhrqE1/aIBWXRMD9nTnGwv/Enf4DEpjTMK5QaNMyoKjpiBlegq5fmfJFKYzogUOAjddm
+         jX0fLNC0/jqBPb+93G4OX9PeOiLw5m8I22YAHPW62i9F91nJdG3D+vW652IW2dCpMQOB
+         lmdr7/+n6hDXIH7CF4KxL7707FdVXsLLALUGOmKb7DMfVXxyCcYonwojQTAqGkRzTfjo
+         B5/A==
+X-Gm-Message-State: AOAM5322GJE57Ebf30egtdB83DPXLigzciLaXXL1+IqNGb7khQXnLbMg
+        yJRDhuqjflZpiWucLLsKbks=
+X-Google-Smtp-Source: ABdhPJwfRD+62iKxT+H1uPBcQ2jnDDvio0crNd8n9LVLpUHE5gnTpN1+lJ9nVMrtj9Wu5t4KVb9j6A==
+X-Received: by 2002:aa7:9584:: with SMTP id z4mr315491pfj.271.1598961246932;
+        Tue, 01 Sep 2020 04:54:06 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.53])
+        by smtp.gmail.com with ESMTPSA id y3sm1503545pjg.8.2020.09.01.04.54.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 04:54:06 -0700 (PDT)
+From:   yulei.kernel@gmail.com
+X-Google-Original-From: yuleixzhang@tencent.com
+To:     pbonzini@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sean.j.christopherson@intel.com, jmattson@google.com,
+        junaids@google.com, bgardon@google.com, vkuznets@redhat.com,
+        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
+        lihaiwei.kernel@gmail.com, Yulei Zhang <yulei.kernel@gmail.com>,
+        Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [RFC V2 2/9] Introduce page table population function for direct build EPT feature
+Date:   Tue,  1 Sep 2020 19:55:03 +0800
+Message-Id: <f0c109e76f3cd4a1bfd1ca3ff74e0d36c0288ca9.1598868204.git.yulei.kernel@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1598868203.git.yulei.kernel@gmail.com>
+References: <cover.1598868203.git.yulei.kernel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/static_call branch of tip:
+From: Yulei Zhang <yulei.kernel@gmail.com>
 
-Commit-ID:     9183c3f9ed710a8edf1a61e8a96d497258d26e08
-Gitweb:        https://git.kernel.org/tip/9183c3f9ed710a8edf1a61e8a96d497258d26e08
-Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Tue, 18 Aug 2020 15:57:42 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 01 Sep 2020 09:58:04 +02:00
+Page table population function will pin the memory and pre-construct
+the EPT base on the input memory slot configuration so that it won't
+relay on the page fault interrupt to setup the page table.
 
-static_call: Add inline static call infrastructure
-
-Add infrastructure for an arch-specific CONFIG_HAVE_STATIC_CALL_INLINE
-option, which is a faster version of CONFIG_HAVE_STATIC_CALL.  At
-runtime, the static call sites are patched directly, rather than using
-the out-of-line trampolines.
-
-Compared to out-of-line static calls, the performance benefits are more
-modest, but still measurable.  Steven Rostedt did some tracepoint
-measurements:
-
-  https://lkml.kernel.org/r/20181126155405.72b4f718@gandalf.local.home
-
-This code is heavily inspired by the jump label code (aka "static
-jumps"), as some of the concepts are very similar.
-
-For more details, see the comments in include/linux/static_call.h.
-
-[peterz: simplified interface; merged trampolines]
-
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20200818135804.684334440@infradead.org
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
 ---
- arch/Kconfig                      |   4 +-
- include/asm-generic/vmlinux.lds.h |   7 +-
- include/linux/module.h            |   5 +-
- include/linux/static_call.h       |  36 ++-
- include/linux/static_call_types.h |  13 +-
- kernel/Makefile                   |   1 +-
- kernel/module.c                   |   5 +-
- kernel/static_call.c              | 303 +++++++++++++++++++++++++++++-
- 8 files changed, 373 insertions(+), 1 deletion(-)
- create mode 100644 kernel/static_call.c
+ arch/x86/include/asm/kvm_host.h |   2 +-
+ arch/x86/kvm/mmu/mmu.c          | 212 +++++++++++++++++++++++++++++++-
+ arch/x86/kvm/svm/svm.c          |   2 +-
+ arch/x86/kvm/vmx/vmx.c          |   7 +-
+ include/linux/kvm_host.h        |   4 +-
+ virt/kvm/kvm_main.c             |  30 ++++-
+ 6 files changed, 244 insertions(+), 13 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 806e6df..2c4936a 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -978,6 +978,10 @@ config ARCH_HAS_VDSO_DATA
- config HAVE_STATIC_CALL
- 	bool
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 485b1239ad39..ab3cbef8c1aa 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1138,7 +1138,7 @@ struct kvm_x86_ops {
+ 	int (*sync_pir_to_irr)(struct kvm_vcpu *vcpu);
+ 	int (*set_tss_addr)(struct kvm *kvm, unsigned int addr);
+ 	int (*set_identity_map_addr)(struct kvm *kvm, u64 ident_addr);
+-	u64 (*get_mt_mask)(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio);
++	u64 (*get_mt_mask)(struct kvm *kvm, struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio);
  
-+config HAVE_STATIC_CALL_INLINE
-+	bool
-+	depends on HAVE_STATIC_CALL
-+
- source "kernel/gcov/Kconfig"
+ 	void (*load_mmu_pgd)(struct kvm_vcpu *vcpu, unsigned long pgd,
+ 			     int pgd_level);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 4e03841f053d..bfe4d2b3e809 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -241,6 +241,11 @@ struct kvm_shadow_walk_iterator {
+ 		({ spte = mmu_spte_get_lockless(_walker.sptep); 1; });	\
+ 	     __shadow_walk_next(&(_walker), spte))
  
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 5430feb..0088a5c 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -388,6 +388,12 @@
- 	KEEP(*(__jump_table))						\
- 	__stop___jump_table = .;
++#define for_each_direct_build_shadow_entry(_walker, shadow_addr, _addr, level)	\
++	for (__shadow_walk_init(&(_walker), shadow_addr, _addr, level);		\
++	     shadow_walk_okay(&(_walker));					\
++	     shadow_walk_next(&(_walker)))
++
+ static struct kmem_cache *pte_list_desc_cache;
+ static struct kmem_cache *mmu_page_header_cache;
+ static struct percpu_counter kvm_total_used_mmu_pages;
+@@ -2506,13 +2511,20 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+ 	return sp;
+ }
  
-+#define STATIC_CALL_DATA						\
-+	. = ALIGN(8);							\
-+	__start_static_call_sites = .;					\
-+	KEEP(*(.static_call_sites))					\
-+	__stop_static_call_sites = .;
-+
- /*
-  * Allow architectures to handle ro_after_init data on their
-  * own by defining an empty RO_AFTER_INIT_DATA.
-@@ -398,6 +404,7 @@
- 	__start_ro_after_init = .;					\
- 	*(.data..ro_after_init)						\
- 	JUMP_TABLE_DATA							\
-+	STATIC_CALL_DATA						\
- 	__end_ro_after_init = .;
- #endif
- 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index e30ed5f..a29187f 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -25,6 +25,7 @@
- #include <linux/error-injection.h>
- #include <linux/tracepoint-defs.h>
- #include <linux/srcu.h>
-+#include <linux/static_call_types.h>
- 
- #include <linux/percpu.h>
- #include <asm/module.h>
-@@ -498,6 +499,10 @@ struct module {
- 	unsigned long *kprobe_blacklist;
- 	unsigned int num_kprobe_blacklist;
- #endif
-+#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
-+	int num_static_call_sites;
-+	struct static_call_site *static_call_sites;
-+#endif
- 
- #ifdef CONFIG_LIVEPATCH
- 	bool klp; /* Is this a livepatch module? */
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index d8892df..0d7f9ef 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -95,7 +95,41 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func);
- 			     STATIC_CALL_TRAMP_ADDR(name), func);	\
- })
- 
--#if defined(CONFIG_HAVE_STATIC_CALL)
-+#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
-+
-+struct static_call_mod {
-+	struct static_call_mod *next;
-+	struct module *mod; /* for vmlinux, mod == NULL */
-+	struct static_call_site *sites;
-+};
-+
-+struct static_call_key {
-+	void *func;
-+	struct static_call_mod *mods;
-+};
-+
-+extern void __static_call_update(struct static_call_key *key, void *tramp, void *func);
-+extern int static_call_mod_init(struct module *mod);
-+
-+#define DEFINE_STATIC_CALL(name, _func)					\
-+	DECLARE_STATIC_CALL(name, _func);				\
-+	struct static_call_key STATIC_CALL_KEY(name) = {		\
-+		.func = _func,						\
-+		.mods = NULL,						\
-+	};								\
-+	ARCH_DEFINE_STATIC_CALL_TRAMP(name, _func)
-+
-+#define static_call(name)	__static_call(name)
-+
-+#define EXPORT_STATIC_CALL(name)					\
-+	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
-+	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-+
-+#define EXPORT_STATIC_CALL_GPL(name)					\
-+	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name));			\
-+	EXPORT_SYMBOL_GPL(STATIC_CALL_TRAMP(name))
-+
-+#elif defined(CONFIG_HAVE_STATIC_CALL)
- 
- struct static_call_key {
- 	void *func;
-diff --git a/include/linux/static_call_types.h b/include/linux/static_call_types.h
-index 5ed249d..408d345 100644
---- a/include/linux/static_call_types.h
-+++ b/include/linux/static_call_types.h
-@@ -2,14 +2,27 @@
- #ifndef _STATIC_CALL_TYPES_H
- #define _STATIC_CALL_TYPES_H
- 
-+#include <linux/types.h>
- #include <linux/stringify.h>
- 
- #define STATIC_CALL_KEY_PREFIX		__SCK__
-+#define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
-+#define STATIC_CALL_KEY_PREFIX_LEN	(sizeof(STATIC_CALL_KEY_PREFIX_STR) - 1)
- #define STATIC_CALL_KEY(name)		__PASTE(STATIC_CALL_KEY_PREFIX, name)
- 
- #define STATIC_CALL_TRAMP_PREFIX	__SCT__
- #define STATIC_CALL_TRAMP_PREFIX_STR	__stringify(STATIC_CALL_TRAMP_PREFIX)
-+#define STATIC_CALL_TRAMP_PREFIX_LEN	(sizeof(STATIC_CALL_TRAMP_PREFIX_STR) - 1)
- #define STATIC_CALL_TRAMP(name)		__PASTE(STATIC_CALL_TRAMP_PREFIX, name)
- #define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
- 
-+/*
-+ * The static call site table needs to be created by external tooling (objtool
-+ * or a compiler plugin).
-+ */
-+struct static_call_site {
-+	s32 addr;
-+	s32 key;
-+};
-+
- #endif /* _STATIC_CALL_TYPES_H */
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 9a20016..b74820d 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -111,6 +111,7 @@ obj-$(CONFIG_CPU_PM) += cpu_pm.o
- obj-$(CONFIG_BPF) += bpf/
- obj-$(CONFIG_KCSAN) += kcsan/
- obj-$(CONFIG_SHADOW_CALL_STACK) += scs.o
-+obj-$(CONFIG_HAVE_STATIC_CALL_INLINE) += static_call.o
- 
- obj-$(CONFIG_PERF_EVENTS) += events/
- 
-diff --git a/kernel/module.c b/kernel/module.c
-index 3c465cf..c075a18 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3275,6 +3275,11 @@ static int find_module_sections(struct module *mod, struct load_info *info)
- 						sizeof(unsigned long),
- 						&mod->num_kprobe_blacklist);
- #endif
-+#ifdef CONFIG_HAVE_STATIC_CALL_INLINE
-+	mod->static_call_sites = section_objs(info, ".static_call_sites",
-+					      sizeof(*mod->static_call_sites),
-+					      &mod->num_static_call_sites);
-+#endif
- 	mod->extable = section_objs(info, "__ex_table",
- 				    sizeof(*mod->extable), &mod->num_exentries);
- 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-new file mode 100644
-index 0000000..d243492
---- /dev/null
-+++ b/kernel/static_call.c
-@@ -0,0 +1,303 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/init.h>
-+#include <linux/static_call.h>
-+#include <linux/bug.h>
-+#include <linux/smp.h>
-+#include <linux/sort.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/cpu.h>
-+#include <linux/processor.h>
-+#include <asm/sections.h>
-+
-+extern struct static_call_site __start_static_call_sites[],
-+			       __stop_static_call_sites[];
-+
-+static bool static_call_initialized;
-+
-+#define STATIC_CALL_INIT 1UL
-+
-+/* mutex to protect key modules/sites */
-+static DEFINE_MUTEX(static_call_mutex);
-+
-+static void static_call_lock(void)
++static void __shadow_walk_init(struct kvm_shadow_walk_iterator *iterator,
++			       hpa_t shadow_addr, u64 addr, int level)
 +{
-+	mutex_lock(&static_call_mutex);
++	iterator->addr = addr;
++	iterator->shadow_addr = shadow_addr;
++	iterator->level = level;
++	iterator->sptep = NULL;
 +}
 +
-+static void static_call_unlock(void)
+ static void shadow_walk_init_using_root(struct kvm_shadow_walk_iterator *iterator,
+ 					struct kvm_vcpu *vcpu, hpa_t root,
+ 					u64 addr)
+ {
+-	iterator->addr = addr;
+-	iterator->shadow_addr = root;
+-	iterator->level = vcpu->arch.mmu->shadow_root_level;
++	__shadow_walk_init(iterator, root, addr, vcpu->arch.mmu->shadow_root_level);
+ 
+ 	if (iterator->level == PT64_ROOT_4LEVEL &&
+ 	    vcpu->arch.mmu->root_level < PT64_ROOT_4LEVEL &&
+@@ -3014,7 +3026,7 @@ static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+ 	if (level > PG_LEVEL_4K)
+ 		spte |= PT_PAGE_SIZE_MASK;
+ 	if (tdp_enabled)
+-		spte |= kvm_x86_ops.get_mt_mask(vcpu, gfn,
++		spte |= kvm_x86_ops.get_mt_mask(vcpu->kvm, vcpu, gfn,
+ 			kvm_is_mmio_pfn(pfn));
+ 
+ 	if (host_writable)
+@@ -6278,6 +6290,198 @@ int kvm_mmu_module_init(void)
+ 	return ret;
+ }
+ 
++static int direct_build_tdp_set_spte(struct kvm *kvm, struct kvm_memory_slot *slot,
++		    u64 *sptep, unsigned pte_access, int level,
++		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
++		    bool dirty, bool host_writable)
 +{
-+	mutex_unlock(&static_call_mutex);
-+}
-+
-+static inline void *static_call_addr(struct static_call_site *site)
-+{
-+	return (void *)((long)site->addr + (long)&site->addr);
-+}
-+
-+
-+static inline struct static_call_key *static_call_key(const struct static_call_site *site)
-+{
-+	return (struct static_call_key *)
-+		(((long)site->key + (long)&site->key) & ~STATIC_CALL_INIT);
-+}
-+
-+/* These assume the key is word-aligned. */
-+static inline bool static_call_is_init(struct static_call_site *site)
-+{
-+	return ((long)site->key + (long)&site->key) & STATIC_CALL_INIT;
-+}
-+
-+static inline void static_call_set_init(struct static_call_site *site)
-+{
-+	site->key = ((long)static_call_key(site) | STATIC_CALL_INIT) -
-+		    (long)&site->key;
-+}
-+
-+static int static_call_site_cmp(const void *_a, const void *_b)
-+{
-+	const struct static_call_site *a = _a;
-+	const struct static_call_site *b = _b;
-+	const struct static_call_key *key_a = static_call_key(a);
-+	const struct static_call_key *key_b = static_call_key(b);
-+
-+	if (key_a < key_b)
-+		return -1;
-+
-+	if (key_a > key_b)
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static void static_call_site_swap(void *_a, void *_b, int size)
-+{
-+	long delta = (unsigned long)_a - (unsigned long)_b;
-+	struct static_call_site *a = _a;
-+	struct static_call_site *b = _b;
-+	struct static_call_site tmp = *a;
-+
-+	a->addr = b->addr  - delta;
-+	a->key  = b->key   - delta;
-+
-+	b->addr = tmp.addr + delta;
-+	b->key  = tmp.key  + delta;
-+}
-+
-+static inline void static_call_sort_entries(struct static_call_site *start,
-+					    struct static_call_site *stop)
-+{
-+	sort(start, stop - start, sizeof(struct static_call_site),
-+	     static_call_site_cmp, static_call_site_swap);
-+}
-+
-+void __static_call_update(struct static_call_key *key, void *tramp, void *func)
-+{
-+	struct static_call_site *site, *stop;
-+	struct static_call_mod *site_mod;
-+
-+	cpus_read_lock();
-+	static_call_lock();
-+
-+	if (key->func == func)
-+		goto done;
-+
-+	key->func = func;
-+
-+	arch_static_call_transform(NULL, tramp, func);
-+
++	u64 spte = 0;
++	int ret = 0;
 +	/*
-+	 * If uninitialized, we'll not update the callsites, but they still
-+	 * point to the trampoline and we just patched that.
++	 * For the EPT case, shadow_present_mask is 0 if hardware
++	 * supports exec-only page table entries.  In that case,
++	 * ACC_USER_MASK and shadow_user_mask are used to represent
++	 * read access.  See FNAME(gpte_access) in paging_tmpl.h.
 +	 */
-+	if (WARN_ON_ONCE(!static_call_initialized))
-+		goto done;
++	spte |= shadow_present_mask;
++	if (!speculative)
++		spte |= shadow_accessed_mask;
 +
-+	for (site_mod = key->mods; site_mod; site_mod = site_mod->next) {
-+		struct module *mod = site_mod->mod;
++	if (level > PG_LEVEL_4K && (pte_access & ACC_EXEC_MASK) &&
++	    is_nx_huge_page_enabled()) {
++		pte_access &= ~ACC_EXEC_MASK;
++	}
 +
-+		if (!site_mod->sites) {
-+			/*
-+			 * This can happen if the static call key is defined in
-+			 * a module which doesn't use it.
-+			 */
-+			continue;
++	if (pte_access & ACC_EXEC_MASK)
++		spte |= shadow_x_mask;
++	else
++		spte |= shadow_nx_mask;
++
++	if (pte_access & ACC_USER_MASK)
++		spte |= shadow_user_mask;
++
++	if (level > PG_LEVEL_4K)
++		spte |= PT_PAGE_SIZE_MASK;
++
++	if (tdp_enabled)
++		spte |= kvm_x86_ops.get_mt_mask(kvm, NULL, gfn, kvm_is_mmio_pfn(pfn));
++
++	if (host_writable)
++		spte |= SPTE_HOST_WRITEABLE;
++	else
++		pte_access &= ~ACC_WRITE_MASK;
++
++	spte |= (u64)pfn << PAGE_SHIFT;
++
++	if (pte_access & ACC_WRITE_MASK) {
++
++		spte |= PT_WRITABLE_MASK | SPTE_MMU_WRITEABLE;
++
++		if (dirty) {
++			mark_page_dirty_in_slot(slot, gfn);
++			spte |= shadow_dirty_mask;
 +		}
++	}
 +
-+		stop = __stop_static_call_sites;
++	if (mmu_spte_update(sptep, spte))
++		kvm_flush_remote_tlbs(kvm);
 +
-+#ifdef CONFIG_MODULES
-+		if (mod) {
-+			stop = mod->static_call_sites +
-+			       mod->num_static_call_sites;
-+		}
-+#endif
++	return ret;
++}
 +
-+		for (site = site_mod->sites;
-+		     site < stop && static_call_key(site) == key; site++) {
-+			void *site_addr = static_call_addr(site);
++static void __kvm_walk_global_page(struct kvm *kvm, u64 addr, int level)
++{
++	int i;
++	kvm_pfn_t pfn;
++	u64 *sptep = (u64 *)__va(addr);
 +
-+			if (static_call_is_init(site)) {
-+				/*
-+				 * Don't write to call sites which were in
-+				 * initmem and have since been freed.
-+				 */
-+				if (!mod && system_state >= SYSTEM_RUNNING)
-+					continue;
-+				if (mod && !within_module_init((unsigned long)site_addr, mod))
-+					continue;
++	for (i = 0; i < PT64_ENT_PER_PAGE; ++i) {
++		if (is_shadow_present_pte(sptep[i])) {
++			if (!is_last_spte(sptep[i], level)) {
++				__kvm_walk_global_page(kvm, sptep[i] & PT64_BASE_ADDR_MASK, level - 1);
++			} else {
++				pfn = spte_to_pfn(sptep[i]);
++				mmu_spte_clear_track_bits(&sptep[i]);
++				kvm_release_pfn_clean(pfn);
 +			}
-+
-+			if (!kernel_text_address((unsigned long)site_addr)) {
-+				WARN_ONCE(1, "can't patch static call site at %pS",
-+					  site_addr);
-+				continue;
-+			}
-+
-+			arch_static_call_transform(site_addr, NULL, func);
 +		}
 +	}
-+
-+done:
-+	static_call_unlock();
-+	cpus_read_unlock();
-+}
-+EXPORT_SYMBOL_GPL(__static_call_update);
-+
-+static int __static_call_init(struct module *mod,
-+			      struct static_call_site *start,
-+			      struct static_call_site *stop)
-+{
-+	struct static_call_site *site;
-+	struct static_call_key *key, *prev_key = NULL;
-+	struct static_call_mod *site_mod;
-+
-+	if (start == stop)
-+		return 0;
-+
-+	static_call_sort_entries(start, stop);
-+
-+	for (site = start; site < stop; site++) {
-+		void *site_addr = static_call_addr(site);
-+
-+		if ((mod && within_module_init((unsigned long)site_addr, mod)) ||
-+		    (!mod && init_section_contains(site_addr, 1)))
-+			static_call_set_init(site);
-+
-+		key = static_call_key(site);
-+		if (key != prev_key) {
-+			prev_key = key;
-+
-+			site_mod = kzalloc(sizeof(*site_mod), GFP_KERNEL);
-+			if (!site_mod)
-+				return -ENOMEM;
-+
-+			site_mod->mod = mod;
-+			site_mod->sites = site;
-+			site_mod->next = key->mods;
-+			key->mods = site_mod;
-+		}
-+
-+		arch_static_call_transform(site_addr, NULL, key->func);
-+	}
-+
-+	return 0;
++	put_page(pfn_to_page(addr >> PAGE_SHIFT));
 +}
 +
-+#ifdef CONFIG_MODULES
-+
-+static int static_call_add_module(struct module *mod)
++static int direct_build_tdp_map(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn,
++				kvm_pfn_t pfn, int level)
 +{
-+	return __static_call_init(mod, mod->static_call_sites,
-+				  mod->static_call_sites + mod->num_static_call_sites);
-+}
-+
-+static void static_call_del_module(struct module *mod)
-+{
-+	struct static_call_site *start = mod->static_call_sites;
-+	struct static_call_site *stop = mod->static_call_sites +
-+					mod->num_static_call_sites;
-+	struct static_call_key *key, *prev_key = NULL;
-+	struct static_call_mod *site_mod, **prev;
-+	struct static_call_site *site;
-+
-+	for (site = start; site < stop; site++) {
-+		key = static_call_key(site);
-+		if (key == prev_key)
-+			continue;
-+
-+		prev_key = key;
-+
-+		for (prev = &key->mods, site_mod = key->mods;
-+		     site_mod && site_mod->mod != mod;
-+		     prev = &site_mod->next, site_mod = site_mod->next)
-+			;
-+
-+		if (!site_mod)
-+			continue;
-+
-+		*prev = site_mod->next;
-+		kfree(site_mod);
-+	}
-+}
-+
-+static int static_call_module_notify(struct notifier_block *nb,
-+				     unsigned long val, void *data)
-+{
-+	struct module *mod = data;
 +	int ret = 0;
 +
-+	cpus_read_lock();
-+	static_call_lock();
++	struct kvm_shadow_walk_iterator iterator;
++	kvm_pfn_t old_pfn;
++	u64 spte;
 +
-+	switch (val) {
-+	case MODULE_STATE_COMING:
-+		ret = static_call_add_module(mod);
-+		if (ret) {
-+			WARN(1, "Failed to allocate memory for static calls");
-+			static_call_del_module(mod);
++	for_each_direct_build_shadow_entry(iterator, kvm->arch.global_root_hpa,
++				gfn << PAGE_SHIFT, max_tdp_level) {
++		if (iterator.level == level) {
++			break;
 +		}
-+		break;
-+	case MODULE_STATE_GOING:
-+		static_call_del_module(mod);
-+		break;
++
++		if (!is_shadow_present_pte(*iterator.sptep)) {
++			struct page *page;
++			page = alloc_page(GFP_KERNEL | __GFP_ZERO);
++			if (!page)
++				return 0;
++
++			spte = page_to_phys(page) | PT_PRESENT_MASK | PT_WRITABLE_MASK |
++				shadow_user_mask | shadow_x_mask | shadow_accessed_mask;
++			mmu_spte_set(iterator.sptep, spte);
++		}
 +	}
++	/* if presented pte, release the original pfn  */
++	if (is_shadow_present_pte(*iterator.sptep)) {
++		if (level > PG_LEVEL_4K)
++			__kvm_walk_global_page(kvm, (*iterator.sptep) & PT64_BASE_ADDR_MASK, level - 1);
++		else {
++			old_pfn = spte_to_pfn(*iterator.sptep);
++			mmu_spte_clear_track_bits(iterator.sptep);
++			kvm_release_pfn_clean(old_pfn);
++		}
++	}
++	direct_build_tdp_set_spte(kvm, slot, iterator.sptep, ACC_ALL, level, gfn, pfn, false, true, true);
 +
-+	static_call_unlock();
-+	cpus_read_unlock();
-+
-+	return notifier_from_errno(ret);
++	return ret;
 +}
 +
-+static struct notifier_block static_call_module_nb = {
-+	.notifier_call = static_call_module_notify,
-+};
-+
-+#endif /* CONFIG_MODULES */
-+
-+static void __init static_call_init(void)
++static int host_mapping_level(struct kvm *kvm, gfn_t gfn)
 +{
-+	int ret;
++	unsigned long page_size;
++	int i, ret = 0;
 +
-+	if (static_call_initialized)
-+		return;
++	page_size = kvm_host_page_size(kvm, NULL, gfn);
 +
-+	cpus_read_lock();
-+	static_call_lock();
-+	ret = __static_call_init(NULL, __start_static_call_sites,
-+				 __stop_static_call_sites);
-+	static_call_unlock();
-+	cpus_read_unlock();
-+
-+	if (ret) {
-+		pr_err("Failed to allocate memory for static_call!\n");
-+		BUG();
++	for (i = PG_LEVEL_4K; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
++		if (page_size >= KVM_HPAGE_SIZE(i))
++			ret = i;
++		else
++			break;
 +	}
 +
-+	static_call_initialized = true;
-+
-+#ifdef CONFIG_MODULES
-+	register_module_notifier(&static_call_module_nb);
-+#endif
++	return ret;
 +}
-+early_initcall(static_call_init);
++
++int direct_build_mapping_level(struct kvm *kvm, struct kvm_memory_slot *slot, gfn_t gfn)
++{
++	int host_level, max_level, level;
++	struct kvm_lpage_info *linfo;
++
++	host_level = host_mapping_level(kvm, gfn);
++	if (host_level != PG_LEVEL_4K) {
++		max_level = min(max_huge_page_level, host_level);
++		for (level = PG_LEVEL_4K; level <= max_level; ++level) {
++			linfo = lpage_info_slot(gfn, slot, level);
++			if (linfo->disallow_lpage)
++				break;
++		}
++		host_level = level - 1;
++	}
++	return host_level;
++}
++
++int kvm_direct_tdp_populate_page_table(struct kvm *kvm, struct kvm_memory_slot *slot)
++{
++	gfn_t gfn;
++	kvm_pfn_t pfn;
++	int host_level;
++
++	if (!kvm->arch.global_root_hpa) {
++		struct page *page;
++		WARN_ON(!tdp_enabled);
++		WARN_ON(max_tdp_level != PT64_ROOT_4LEVEL);
++
++		/* init global root hpa */
++		page = alloc_page(GFP_KERNEL | __GFP_ZERO);
++		if (!page)
++			return -ENOMEM;
++
++		kvm->arch.global_root_hpa = page_to_phys(page);
++	}
++
++	/* setup page table for the slot */
++	for (gfn = slot->base_gfn;
++		gfn < slot->base_gfn + slot->npages;
++		gfn += KVM_PAGES_PER_HPAGE(host_level)) {
++		pfn = gfn_to_pfn_try_write(slot, gfn);
++		if ((pfn & KVM_PFN_ERR_FAULT) || is_noslot_pfn(pfn))
++			return -ENOMEM;
++
++		host_level = direct_build_mapping_level(kvm, slot, gfn);
++
++		if (host_level > PG_LEVEL_4K)
++			MMU_WARN_ON(gfn & (KVM_PAGES_PER_HPAGE(host_level) - 1));
++		direct_build_tdp_map(kvm, slot, gfn, pfn, host_level);
++	}
++
++	return 0;
++}
++
+ /*
+  * Calculate mmu pages needed for kvm.
+  */
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 03dd7bac8034..3b7ee65cd941 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3607,7 +3607,7 @@ static bool svm_has_emulated_msr(u32 index)
+ 	return true;
+ }
+ 
+-static u64 svm_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
++static u64 svm_get_mt_mask(struct kvm *kvm, struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+ {
+ 	return 0;
+ }
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 46ba2e03a892..6f79343ed40e 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7106,7 +7106,7 @@ static int __init vmx_check_processor_compat(void)
+ 	return 0;
+ }
+ 
+-static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
++static u64 vmx_get_mt_mask(struct kvm *kvm, struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+ {
+ 	u8 cache;
+ 	u64 ipat = 0;
+@@ -7134,12 +7134,15 @@ static u64 vmx_get_mt_mask(struct kvm_vcpu *vcpu, gfn_t gfn, bool is_mmio)
+ 		goto exit;
+ 	}
+ 
+-	if (!kvm_arch_has_noncoherent_dma(vcpu->kvm)) {
++	if (!kvm_arch_has_noncoherent_dma(kvm)) {
+ 		ipat = VMX_EPT_IPAT_BIT;
+ 		cache = MTRR_TYPE_WRBACK;
+ 		goto exit;
+ 	}
+ 
++	if (!vcpu)
++		vcpu = kvm->vcpus[0];
++
+ 	if (kvm_read_cr0(vcpu) & X86_CR0_CD) {
+ 		ipat = VMX_EPT_IPAT_BIT;
+ 		if (kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_CD_NW_CLEARED))
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index a23076765b4c..8901862ba2a3 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -694,6 +694,7 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+ 				struct kvm_memory_slot *old,
+ 				const struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change);
++void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
+ /* flush all memory translations */
+ void kvm_arch_flush_shadow_all(struct kvm *kvm);
+ /* flush memory translations pointing to 'slot' */
+@@ -721,6 +722,7 @@ kvm_pfn_t gfn_to_pfn_memslot_atomic(struct kvm_memory_slot *slot, gfn_t gfn);
+ kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
+ 			       bool atomic, bool *async, bool write_fault,
+ 			       bool *writable);
++kvm_pfn_t gfn_to_pfn_try_write(struct kvm_memory_slot *slot, gfn_t gfn);
+ 
+ void kvm_release_pfn_clean(kvm_pfn_t pfn);
+ void kvm_release_pfn_dirty(kvm_pfn_t pfn);
+@@ -775,7 +777,7 @@ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len);
+ struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn);
+ bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn);
+ bool kvm_vcpu_is_visible_gfn(struct kvm_vcpu *vcpu, gfn_t gfn);
+-unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn);
++unsigned long kvm_host_page_size(struct kvm *kvm, struct kvm_vcpu *vcpu, gfn_t gfn);
+ void mark_page_dirty(struct kvm *kvm, gfn_t gfn);
+ 
+ struct kvm_memslots *kvm_vcpu_memslots(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 737666db02de..47fc18b05c53 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -143,7 +143,7 @@ static void hardware_disable_all(void);
+ 
+ static void kvm_io_bus_destroy(struct kvm_io_bus *bus);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
++void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
+ 
+ __visible bool kvm_rebooting;
+ EXPORT_SYMBOL_GPL(kvm_rebooting);
+@@ -1689,14 +1689,17 @@ bool kvm_vcpu_is_visible_gfn(struct kvm_vcpu *vcpu, gfn_t gfn)
+ }
+ EXPORT_SYMBOL_GPL(kvm_vcpu_is_visible_gfn);
+ 
+-unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn)
++unsigned long kvm_host_page_size(struct kvm *kvm, struct kvm_vcpu *vcpu, gfn_t gfn)
+ {
+ 	struct vm_area_struct *vma;
+ 	unsigned long addr, size;
+ 
+ 	size = PAGE_SIZE;
+ 
+-	addr = kvm_vcpu_gfn_to_hva_prot(vcpu, gfn, NULL);
++	if (vcpu)
++		addr = kvm_vcpu_gfn_to_hva_prot(vcpu, gfn, NULL);
++	else
++		addr = gfn_to_hva(kvm, gfn);
+ 	if (kvm_is_error_hva(addr))
+ 		return PAGE_SIZE;
+ 
+@@ -1989,6 +1992,25 @@ static kvm_pfn_t hva_to_pfn(unsigned long addr, bool atomic, bool *async,
+ 	return pfn;
+ }
+ 
++/* Map pfn for direct EPT mode, if map failed and it is readonly memslot,
++ * will try to remap it with readonly flag.
++ */
++kvm_pfn_t gfn_to_pfn_try_write(struct kvm_memory_slot *slot, gfn_t gfn)
++{
++	kvm_pfn_t pfn;
++	unsigned long addr = __gfn_to_hva_many(slot, gfn, NULL, !memslot_is_readonly(slot));
++
++	if (kvm_is_error_hva(addr))
++		return KVM_PFN_NOSLOT;
++
++	pfn = hva_to_pfn(addr, false, NULL, true, NULL);
++	if (pfn & KVM_PFN_ERR_FAULT) {
++		if (memslot_is_readonly(slot))
++			pfn = hva_to_pfn(addr, false, NULL, false, NULL);
++	}
++	return pfn;
++}
++
+ kvm_pfn_t __gfn_to_pfn_memslot(struct kvm_memory_slot *slot, gfn_t gfn,
+ 			       bool atomic, bool *async, bool write_fault,
+ 			       bool *writable)
+@@ -2638,7 +2660,7 @@ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len)
+ }
+ EXPORT_SYMBOL_GPL(kvm_clear_guest);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
++void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
+ 				    gfn_t gfn)
+ {
+ 	if (memslot && memslot->dirty_bitmap) {
+-- 
+2.17.1
+
