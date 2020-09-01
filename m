@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637B625943A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:37:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7378259553
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731306AbgIAPgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41622 "EHLO mail.kernel.org"
+        id S1731995AbgIAPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:50:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731161AbgIAPfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:35:40 -0400
+        id S1730581AbgIAPqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:46:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47E7A21534;
-        Tue,  1 Sep 2020 15:35:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03143206FA;
+        Tue,  1 Sep 2020 15:46:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974540;
-        bh=ZtBz4H4zHKmKdeBV2j6B7ls2H3PJ6PDwFiAz16xd6zc=;
+        s=default; t=1598975201;
+        bh=5oVvWcrZ767oERhJ8xsKzlCDXFR23KpVPFON8pBBBmg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jcG1eAF90iosU/QfsmnhvX+rM5hSsf51O/VPlfO0/pRVRO2dRA4/JDkLTJQB4Dk2J
-         TrivLwdeWhMl//Emc3f+0kGDyhX+Id9CD9eJbzRupcR/h8B7A7gjE89i43yoA6zkSN
-         e6P8DjZJPpwTJ4+rR2aTFFHx01Pq5nzOnIYqa8Vs=
+        b=EfcTBV0mXfMFvfm18BrBErA3hyHG2PQhlgRvLTchaLSC/bcAVhDo7JLK4DN1TjRXe
+         rXu5MoMZLveZW8kswVl+PacocWl55GFzWoFFDbcNJXTjm4O7f+i1j2cV1ldj/Vym0a
+         g6WFAt6RP23MlpVjiG2J5xsyqxF24HXJ182Y6b+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.4 194/214] usb: host: ohci-exynos: Fix error handling in exynos_ohci_probe()
+        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.8 218/255] drm/amd/pm: correct Vega10 swctf limit setting
 Date:   Tue,  1 Sep 2020 17:11:14 +0200
-Message-Id: <20200901151002.244766167@linuxfoundation.org>
+Message-Id: <20200901151011.147038614@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tang Bin <tangbin@cmss.chinamobile.com>
+From: Evan Quan <evan.quan@amd.com>
 
-commit 1d4169834628d18b2392a2da92b7fbf5e8e2ce89 upstream.
+commit b05d71b51078fc428c6b72582126d9d75d3c1f4c upstream.
 
-If the function platform_get_irq() failed, the negative value
-returned will not be detected here. So fix error handling in
-exynos_ohci_probe(). And when get irq failed, the function
-platform_get_irq() logs an error message, so remove redundant
-message here.
+Correct the Vega10 thermal swctf limit.
 
-Fixes: 62194244cf87 ("USB: Add Samsung Exynos OHCI diver")
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20200826144931.1828-1-tangbin@cmss.chinamobile.com
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1267
+
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/ohci-exynos.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/powerplay/hwmgr/vega10_thermal.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/ohci-exynos.c
-+++ b/drivers/usb/host/ohci-exynos.c
-@@ -171,9 +171,8 @@ static int exynos_ohci_probe(struct plat
- 	hcd->rsrc_len = resource_size(res);
+--- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_thermal.c
++++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_thermal.c
+@@ -363,6 +363,9 @@ int vega10_thermal_get_temperature(struc
+ static int vega10_thermal_set_temperature_range(struct pp_hwmgr *hwmgr,
+ 		struct PP_TemperatureRange *range)
+ {
++	struct phm_ppt_v2_information *pp_table_info =
++		(struct phm_ppt_v2_information *)(hwmgr->pptable);
++	struct phm_tdp_table *tdp_table = pp_table_info->tdp_table;
+ 	struct amdgpu_device *adev = hwmgr->adev;
+ 	int low = VEGA10_THERMAL_MINIMUM_ALERT_TEMP *
+ 			PP_TEMPERATURE_UNITS_PER_CENTIGRADES;
+@@ -372,8 +375,8 @@ static int vega10_thermal_set_temperatur
  
- 	irq = platform_get_irq(pdev, 0);
--	if (!irq) {
--		dev_err(&pdev->dev, "Failed to get IRQ\n");
--		err = -ENODEV;
-+	if (irq < 0) {
-+		err = irq;
- 		goto fail_io;
- 	}
+ 	if (low < range->min)
+ 		low = range->min;
+-	if (high > range->max)
+-		high = range->max;
++	if (high > tdp_table->usSoftwareShutdownTemp)
++		high = tdp_table->usSoftwareShutdownTemp;
  
+ 	if (low > high)
+ 		return -EINVAL;
 
 
