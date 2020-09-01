@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D38259BA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0C1259C1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728697AbgIARFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:05:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39028 "EHLO mail.kernel.org"
+        id S1732388AbgIARLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:11:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729563AbgIAPTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:19:45 -0400
+        id S1729311AbgIAPQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:16:25 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58338206FA;
-        Tue,  1 Sep 2020 15:19:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C3B4206FA;
+        Tue,  1 Sep 2020 15:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973584;
-        bh=y1xrZB73UBLkKpH9sshs4QQ2EYIUcbA/kyqtn27aCng=;
+        s=default; t=1598973383;
+        bh=W1ORujb5/xqtuO1rGmU0tZxlYYe49tnOPCCj3QgW8Uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Omb0K10gjujKOfkkkTCeepG0jnSl6gv7GpptUNfkBVROjXwTZ6wBLtIFEuC0BYgr7
-         Zkq1m8tgkwOHA7/QWgyNGVWt/kGOZi3a4HtRoiDe+njRzD5QKTnFGKrtUAugFv1e3P
-         Iwz80MCtcMI6xGhRcCP82ebJK8LmGlSn/v0NKHy0=
+        b=pW2c09wdbABSkbFugXA8KjVR/fPxFVoU3wqL+bjIPGQtOkT3Z0ssKnRQm11asfgez
+         81YWt+Oj7/sPUOfnheG74ehbjHgIA9mKtfu6c8e5jvLMc1avXKc5rFMb53JlPhdSEX
+         JbqeEWbsnlvS4KN0OEzq61g7WLR6rJQZhrtHMVgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 57/91] powerpc/perf: Fix soft lockups due to missed interrupt accounting
-Date:   Tue,  1 Sep 2020 17:10:31 +0200
-Message-Id: <20200901150930.944866900@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Aleksey Makarov <amakarov@marvell.com>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Christopher Covington <cov@codeaurora.org>
+Subject: [PATCH 4.9 56/78] serial: pl011: Fix oops on -EPROBE_DEFER
+Date:   Tue,  1 Sep 2020 17:10:32 +0200
+Message-Id: <20200901150927.566535277@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,56 +46,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 17899eaf88d689529b866371344c8f269ba79b5f ]
+commit 27afac93e3bd7fa89749cf11da5d86ac9cde4dba upstream.
 
-Performance monitor interrupt handler checks if any counter has
-overflown and calls record_and_restart() in core-book3s which invokes
-perf_event_overflow() to record the sample information. Apart from
-creating sample, perf_event_overflow() also does the interrupt and
-period checks via perf_event_account_interrupt().
+If probing of a pl011 gets deferred until after free_initmem(), an oops
+ensues because pl011_console_match() is called which has been freed.
 
-Currently we record information only if the SIAR (Sampled Instruction
-Address Register) valid bit is set (using siar_valid() check) and
-hence the interrupt check.
+Fix by removing the __init attribute from the function and those it
+calls.
 
-But it is possible that we do sampling for some events that are not
-generating valid SIAR, and hence there is no chance to disable the
-event if interrupts are more than max_samples_per_tick. This leads to
-soft lockup.
+Commit 10879ae5f12e ("serial: pl011: add console matching function")
+introduced pl011_console_match() not just for early consoles but
+regular preferred consoles, such as those added by acpi_parse_spcr().
+Regular consoles may be registered after free_initmem() for various
+reasons, one being deferred probing, another being dynamic enablement
+of serial ports using a DeviceTree overlay.
 
-Fix this by adding perf_event_account_interrupt() in the invalid SIAR
-code path for a sampling event. ie if SIAR is invalid, just do
-interrupt check and don't record the sample information.
+Thus, pl011_console_match() must not be declared __init and the
+functions it calls mustn't either.
 
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Tested-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1596717992-7321-1-git-send-email-atrajeev@linux.vnet.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Stack trace for posterity:
+
+Unable to handle kernel paging request at virtual address 80c38b58
+Internal error: Oops: 8000000d [#1] PREEMPT SMP ARM
+PC is at pl011_console_match+0x0/0xfc
+LR is at register_console+0x150/0x468
+[<80187004>] (register_console)
+[<805a8184>] (uart_add_one_port)
+[<805b2b68>] (pl011_register_port)
+[<805b3ce4>] (pl011_probe)
+[<80569214>] (amba_probe)
+[<805ca088>] (really_probe)
+[<805ca2ec>] (driver_probe_device)
+[<805ca5b0>] (__device_attach_driver)
+[<805c8060>] (bus_for_each_drv)
+[<805c9dfc>] (__device_attach)
+[<805ca630>] (device_initial_probe)
+[<805c90a8>] (bus_probe_device)
+[<805c95a8>] (deferred_probe_work_func)
+
+Fixes: 10879ae5f12e ("serial: pl011: add console matching function")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v4.10+
+Cc: Aleksey Makarov <amakarov@marvell.com>
+Cc: Peter Hurley <peter@hurleysoftware.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Christopher Covington <cov@codeaurora.org>
+Link: https://lore.kernel.org/r/f827ff09da55b8c57d316a1b008a137677b58921.1597315557.git.lukas@wunner.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/powerpc/perf/core-book3s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/tty/serial/amba-pl011.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 3188040022c4f..78f75e48dfe7f 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2096,6 +2096,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -2249,9 +2249,8 @@ pl011_console_write(struct console *co,
+ 	clk_disable(uap->clk);
+ }
  
- 		if (perf_event_overflow(event, &data, regs))
- 			power_pmu_stop(event, 0);
-+	} else if (period) {
-+		/* Account for interrupt in case of invalid SIAR */
-+		if (perf_event_account_interrupt(event))
-+			power_pmu_stop(event, 0);
+-static void __init
+-pl011_console_get_options(struct uart_amba_port *uap, int *baud,
+-			     int *parity, int *bits)
++static void pl011_console_get_options(struct uart_amba_port *uap, int *baud,
++				      int *parity, int *bits)
+ {
+ 	if (pl011_read(uap, REG_CR) & UART01x_CR_UARTEN) {
+ 		unsigned int lcr_h, ibrd, fbrd;
+@@ -2284,7 +2283,7 @@ pl011_console_get_options(struct uart_am
  	}
  }
  
--- 
-2.25.1
-
+-static int __init pl011_console_setup(struct console *co, char *options)
++static int pl011_console_setup(struct console *co, char *options)
+ {
+ 	struct uart_amba_port *uap;
+ 	int baud = 38400;
+@@ -2352,8 +2351,8 @@ static int __init pl011_console_setup(st
+  *
+  *	Returns 0 if console matches; otherwise non-zero to use default matching
+  */
+-static int __init pl011_console_match(struct console *co, char *name, int idx,
+-				      char *options)
++static int pl011_console_match(struct console *co, char *name, int idx,
++			       char *options)
+ {
+ 	unsigned char iotype;
+ 	resource_size_t addr;
 
 
