@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3054B258F2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D09C258F79
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgIANdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:33:50 -0400
-Received: from elvis.franken.de ([193.175.24.41]:45627 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728129AbgIANby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:31:54 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kD6NY-0001cg-00; Tue, 01 Sep 2020 15:31:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A31F7C0E44; Tue,  1 Sep 2020 15:29:05 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 15:29:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
+        id S1728303AbgIANvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728020AbgIANau (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:30:50 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B247C061245;
+        Tue,  1 Sep 2020 06:30:03 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id B2BB7391; Tue,  1 Sep 2020 15:29:52 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 15:29:51 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
         Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-mm@kvack.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 06/28] lib82596: move DMA allocation into the callers of
- i82596_probe
-Message-ID: <20200901132905.GA11506@alpha.franken.de>
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-7-hch@lst.de>
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v6 48/76] x86/entry/64: Add entry code for #VC handler
+Message-ID: <20200901132951.GD22385@8bytes.org>
+References: <20200824085511.7553-1-joro@8bytes.org>
+ <20200824085511.7553-49-joro@8bytes.org>
+ <20200831113002.GH27517@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200819065555.1802761-7-hch@lst.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200831113002.GH27517@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 08:55:33AM +0200, Christoph Hellwig wrote:
-> This allows us to get rid of the LIB82596_DMA_ATTR defined and prepare
-> for untangling the coherent vs non-coherent DMA allocation API.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/net/ethernet/i825xx/lasi_82596.c | 24 ++++++++++------
->  drivers/net/ethernet/i825xx/lib82596.c   | 36 ++++++++----------------
->  drivers/net/ethernet/i825xx/sni_82596.c  | 19 +++++++++----
->  3 files changed, 40 insertions(+), 39 deletions(-)
-> 
-> [...]
-> diff --git a/drivers/net/ethernet/i825xx/sni_82596.c b/drivers/net/ethernet/i825xx/sni_82596.c
-> index 22f5887578b2bd..e80e790ffbd4d4 100644
-> --- a/drivers/net/ethernet/i825xx/sni_82596.c
-> +++ b/drivers/net/ethernet/i825xx/sni_82596.c
-> @@ -24,8 +24,6 @@
->  
->  static const char sni_82596_string[] = "snirm_82596";
->  
-> -#define LIB82596_DMA_ATTR	0
-> -
->  #define DMA_WBACK(priv, addr, len)     do { } while (0)
->  #define DMA_INV(priv, addr, len)       do { } while (0)
->  #define DMA_WBACK_INV(priv, addr, len) do { } while (0)
-> @@ -134,10 +132,19 @@ static int sni_82596_probe(struct platform_device *dev)
->  	lp->ca = ca_addr;
->  	lp->mpu_port = mpu_addr;
->  
-> +	lp->dma = dma_alloc_coherent(dev->dev.parent, sizeof(struct i596_dma),
-> +				     &lp->dma_addr, GFP_KERNEL);
+On Mon, Aug 31, 2020 at 01:30:02PM +0200, Borislav Petkov wrote:
+> AFAICT, that STACK_TYPE_UNKNOWN gets set only by the plain
+> get_stack_info() function - not by the _noinstr() variant so you'd need
+> to check the return value of latter...
 
-this needs to use &dev->dev as device argument otherwise I get a
+You are right, it needs to check the return value of
+get_stack_info_noinstr() instead of STACK_TYPE_UNKNOWN. Fixed that now.
 
-WARNING: CPU: 0 PID: 1 at linux/kernel/dma/mapping.c:416 dma_alloc_attrs+0x64/0x98
 
-(coherent_dma_mask is set correctly).
+Regards,
 
-dev->dev.parent was correct when going from netdevice to underlying device,
-but now allocation is done via platform_device probe. I wonder why this works
-for parisc.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+	Joerg
