@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E21259297
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569E02592E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729042AbgIAPO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:14:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56762 "EHLO mail.kernel.org"
+        id S1729462AbgIAPSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728407AbgIAPNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:13:38 -0400
+        id S1729350AbgIAPQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:16:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B71C52078B;
-        Tue,  1 Sep 2020 15:13:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A967920767;
+        Tue,  1 Sep 2020 15:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973217;
-        bh=0kmkTFNsK2Lv9fGs/6hQNxiybJYvll7aL8HJRkNe6bY=;
+        s=default; t=1598973415;
+        bh=PYUt93+swhZmMLY0+/3p5zr9XO59IJWlnOuNbwSmF/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hpcolHkkLeXwPTYZB/HPURagD9II191c3sk8EoQDrACr9akDyYNT4h21MND2kTWDg
-         CS5kcSStRLpXJi4JhFxKRi5rP+0IuiRDed5aeXBeEa3KtunssWLBU8/MQNdd7MNgVi
-         /9caic6eQQayroI9lzVO3kH7RdPlkRKWjVYsngTY=
+        b=taQ6eIGBeKUTtiTDUtvNA5qx27J1KRV7+ypZ8yY9lZi2NBazx5Bw3jojEhJ7JOOqV
+         1iqB7e3U2jhiqNKGzOKzZd+VY92+40SbpSFjlkETUKkdQM2ujOP9OxQQnMZjZIdJEe
+         dUwivPdJ/c9q05SUJVfZ68LgP1oTI8QQibV288/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Subject: [PATCH 4.4 52/62] PM: sleep: core: Fix the handling of pending runtime resume requests
-Date:   Tue,  1 Sep 2020 17:10:35 +0200
-Message-Id: <20200901150923.330917902@linuxfoundation.org>
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jan Kara <jack@suse.cz>
+Subject: [PATCH 4.9 61/78] writeback: Fix sync livelock due to b_dirty_time processing
+Date:   Tue,  1 Sep 2020 17:10:37 +0200
+Message-Id: <20200901150927.840663549@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
-References: <20200901150920.697676718@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,82 +43,193 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Jan Kara <jack@suse.cz>
 
-commit e3eb6e8fba65094328b8dca635d00de74ba75b45 upstream.
+commit f9cae926f35e8230330f28c7b743ad088611a8de upstream.
 
-It has been reported that system-wide suspend may be aborted in the
-absence of any wakeup events due to unforseen interactions of it with
-the runtume PM framework.
+When we are processing writeback for sync(2), move_expired_inodes()
+didn't set any inode expiry value (older_than_this). This can result in
+writeback never completing if there's steady stream of inodes added to
+b_dirty_time list as writeback rechecks dirty lists after each writeback
+round whether there's more work to be done. Fix the problem by using
+sync(2) start time is inode expiry value when processing b_dirty_time
+list similarly as for ordinarily dirtied inodes. This requires some
+refactoring of older_than_this handling which simplifies the code
+noticeably as a bonus.
 
-One failing scenario is when there are multiple devices sharing an
-ACPI power resource and runtime-resume needs to be carried out for
-one of them during system-wide suspend (for example, because it needs
-to be reconfigured before the whole system goes to sleep).  In that
-case, the runtime-resume of that device involves turning the ACPI
-power resource "on" which in turn causes runtime-resume requests
-to be queued up for all of the other devices sharing it.  Those
-requests go to the runtime PM workqueue which is frozen during
-system-wide suspend, so they are not actually taken care of until
-the resume of the whole system, but the pm_runtime_barrier()
-call in __device_suspend() sees them and triggers system wakeup
-events for them which then cause the system-wide suspend to be
-aborted if wakeup source objects are in active use.
-
-Of course, the logic that leads to triggering those wakeup events is
-questionable in the first place, because clearly there are cases in
-which a pending runtime resume request for a device is not connected
-to any real wakeup events in any way (like the one above).  Moreover,
-it is racy, because the device may be resuming already by the time
-the pm_runtime_barrier() runs and so if the driver doesn't take care
-of signaling the wakeup event as appropriate, it will be lost.
-However, if the driver does take care of that, the extra
-pm_wakeup_event() call in the core is redundant.
-
-Accordingly, drop the conditional pm_wakeup_event() call fron
-__device_suspend() and make the latter call pm_runtime_barrier()
-alone.  Also modify the comment next to that call to reflect the new
-code and extend it to mention the need to avoid unwanted interactions
-between runtime PM and system-wide device suspend callbacks.
-
-Fixes: 1e2ef05bb8cf8 ("PM: Limit race conditions between runtime PM and system sleep (v2)")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Tested-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
-Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-Cc: All applicable <stable@vger.kernel.org>
+Fixes: 0ae45f63d4ef ("vfs: add support for a lazytime mount option")
+CC: stable@vger.kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/power/main.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ fs/fs-writeback.c                |   44 +++++++++++++++------------------------
+ include/trace/events/writeback.h |   13 +++++------
+ 2 files changed, 23 insertions(+), 34 deletions(-)
 
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -1361,13 +1361,17 @@ static int __device_suspend(struct devic
- 	}
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -45,7 +45,6 @@ struct wb_completion {
+ struct wb_writeback_work {
+ 	long nr_pages;
+ 	struct super_block *sb;
+-	unsigned long *older_than_this;
+ 	enum writeback_sync_modes sync_mode;
+ 	unsigned int tagged_writepages:1;
+ 	unsigned int for_kupdate:1;
+@@ -1150,16 +1149,13 @@ static bool inode_dirtied_after(struct i
+ #define EXPIRE_DIRTY_ATIME 0x0001
  
- 	/*
--	 * If a device configured to wake up the system from sleep states
--	 * has been suspended at run time and there's a resume request pending
--	 * for it, this is equivalent to the device signaling wakeup, so the
--	 * system suspend operation should be aborted.
-+	 * Wait for possible runtime PM transitions of the device in progress
-+	 * to complete and if there's a runtime resume request pending for it,
-+	 * resume it before proceeding with invoking the system-wide suspend
-+	 * callbacks for it.
-+	 *
-+	 * If the system-wide suspend callbacks below change the configuration
-+	 * of the device, they must disable runtime PM for it or otherwise
-+	 * ensure that its runtime-resume callbacks will not be confused by that
-+	 * change in case they are invoked going forward.
- 	 */
--	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
--		pm_wakeup_event(dev, 0);
-+	pm_runtime_barrier(dev);
+ /*
+- * Move expired (dirtied before work->older_than_this) dirty inodes from
++ * Move expired (dirtied before dirtied_before) dirty inodes from
+  * @delaying_queue to @dispatch_queue.
+  */
+ static int move_expired_inodes(struct list_head *delaying_queue,
+ 			       struct list_head *dispatch_queue,
+-			       int flags,
+-			       struct wb_writeback_work *work)
++			       int flags, unsigned long dirtied_before)
+ {
+-	unsigned long *older_than_this = NULL;
+-	unsigned long expire_time;
+ 	LIST_HEAD(tmp);
+ 	struct list_head *pos, *node;
+ 	struct super_block *sb = NULL;
+@@ -1167,16 +1163,9 @@ static int move_expired_inodes(struct li
+ 	int do_sb_sort = 0;
+ 	int moved = 0;
  
- 	if (pm_wakeup_pending()) {
- 		dev->power.direct_complete = false;
+-	if ((flags & EXPIRE_DIRTY_ATIME) == 0)
+-		older_than_this = work->older_than_this;
+-	else if (!work->for_sync) {
+-		expire_time = jiffies - (dirtytime_expire_interval * HZ);
+-		older_than_this = &expire_time;
+-	}
+ 	while (!list_empty(delaying_queue)) {
+ 		inode = wb_inode(delaying_queue->prev);
+-		if (older_than_this &&
+-		    inode_dirtied_after(inode, *older_than_this))
++		if (inode_dirtied_after(inode, dirtied_before))
+ 			break;
+ 		list_move(&inode->i_io_list, &tmp);
+ 		moved++;
+@@ -1222,18 +1211,22 @@ out:
+  *                                           |
+  *                                           +--> dequeue for IO
+  */
+-static void queue_io(struct bdi_writeback *wb, struct wb_writeback_work *work)
++static void queue_io(struct bdi_writeback *wb, struct wb_writeback_work *work,
++		     unsigned long dirtied_before)
+ {
+ 	int moved;
++	unsigned long time_expire_jif = dirtied_before;
+ 
+ 	assert_spin_locked(&wb->list_lock);
+ 	list_splice_init(&wb->b_more_io, &wb->b_io);
+-	moved = move_expired_inodes(&wb->b_dirty, &wb->b_io, 0, work);
++	moved = move_expired_inodes(&wb->b_dirty, &wb->b_io, 0, dirtied_before);
++	if (!work->for_sync)
++		time_expire_jif = jiffies - dirtytime_expire_interval * HZ;
+ 	moved += move_expired_inodes(&wb->b_dirty_time, &wb->b_io,
+-				     EXPIRE_DIRTY_ATIME, work);
++				     EXPIRE_DIRTY_ATIME, time_expire_jif);
+ 	if (moved)
+ 		wb_io_lists_populated(wb);
+-	trace_writeback_queue_io(wb, work, moved);
++	trace_writeback_queue_io(wb, work, dirtied_before, moved);
+ }
+ 
+ static int write_inode(struct inode *inode, struct writeback_control *wbc)
+@@ -1745,7 +1738,7 @@ static long writeback_inodes_wb(struct b
+ 	blk_start_plug(&plug);
+ 	spin_lock(&wb->list_lock);
+ 	if (list_empty(&wb->b_io))
+-		queue_io(wb, &work);
++		queue_io(wb, &work, jiffies);
+ 	__writeback_inodes_wb(wb, &work);
+ 	spin_unlock(&wb->list_lock);
+ 	blk_finish_plug(&plug);
+@@ -1765,7 +1758,7 @@ static long writeback_inodes_wb(struct b
+  * takes longer than a dirty_writeback_interval interval, then leave a
+  * one-second gap.
+  *
+- * older_than_this takes precedence over nr_to_write.  So we'll only write back
++ * dirtied_before takes precedence over nr_to_write.  So we'll only write back
+  * all dirty pages if they are all attached to "old" mappings.
+  */
+ static long wb_writeback(struct bdi_writeback *wb,
+@@ -1773,14 +1766,11 @@ static long wb_writeback(struct bdi_writ
+ {
+ 	unsigned long wb_start = jiffies;
+ 	long nr_pages = work->nr_pages;
+-	unsigned long oldest_jif;
++	unsigned long dirtied_before = jiffies;
+ 	struct inode *inode;
+ 	long progress;
+ 	struct blk_plug plug;
+ 
+-	oldest_jif = jiffies;
+-	work->older_than_this = &oldest_jif;
+-
+ 	blk_start_plug(&plug);
+ 	spin_lock(&wb->list_lock);
+ 	for (;;) {
+@@ -1814,14 +1804,14 @@ static long wb_writeback(struct bdi_writ
+ 		 * safe.
+ 		 */
+ 		if (work->for_kupdate) {
+-			oldest_jif = jiffies -
++			dirtied_before = jiffies -
+ 				msecs_to_jiffies(dirty_expire_interval * 10);
+ 		} else if (work->for_background)
+-			oldest_jif = jiffies;
++			dirtied_before = jiffies;
+ 
+ 		trace_writeback_start(wb, work);
+ 		if (list_empty(&wb->b_io))
+-			queue_io(wb, work);
++			queue_io(wb, work, dirtied_before);
+ 		if (work->sb)
+ 			progress = writeback_sb_inodes(work->sb, wb, work);
+ 		else
+--- a/include/trace/events/writeback.h
++++ b/include/trace/events/writeback.h
+@@ -360,8 +360,9 @@ DEFINE_WBC_EVENT(wbc_writepage);
+ TRACE_EVENT(writeback_queue_io,
+ 	TP_PROTO(struct bdi_writeback *wb,
+ 		 struct wb_writeback_work *work,
++		 unsigned long dirtied_before,
+ 		 int moved),
+-	TP_ARGS(wb, work, moved),
++	TP_ARGS(wb, work, dirtied_before, moved),
+ 	TP_STRUCT__entry(
+ 		__array(char,		name, 32)
+ 		__field(unsigned long,	older)
+@@ -371,19 +372,17 @@ TRACE_EVENT(writeback_queue_io,
+ 		__field(unsigned int,	cgroup_ino)
+ 	),
+ 	TP_fast_assign(
+-		unsigned long *older_than_this = work->older_than_this;
+ 		strncpy(__entry->name, dev_name(wb->bdi->dev), 32);
+-		__entry->older	= older_than_this ?  *older_than_this : 0;
+-		__entry->age	= older_than_this ?
+-				  (jiffies - *older_than_this) * 1000 / HZ : -1;
++		__entry->older	= dirtied_before;
++		__entry->age	= (jiffies - dirtied_before) * 1000 / HZ;
+ 		__entry->moved	= moved;
+ 		__entry->reason	= work->reason;
+ 		__entry->cgroup_ino	= __trace_wb_assign_cgroup(wb);
+ 	),
+ 	TP_printk("bdi %s: older=%lu age=%ld enqueue=%d reason=%s cgroup_ino=%u",
+ 		__entry->name,
+-		__entry->older,	/* older_than_this in jiffies */
+-		__entry->age,	/* older_than_this in relative milliseconds */
++		__entry->older,	/* dirtied_before in jiffies */
++		__entry->age,	/* dirtied_before in relative milliseconds */
+ 		__entry->moved,
+ 		__print_symbolic(__entry->reason, WB_WORK_REASON),
+ 		__entry->cgroup_ino
 
 
