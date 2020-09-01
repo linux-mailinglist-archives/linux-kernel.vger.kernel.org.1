@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072E0259662
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1CA259820
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731723AbgIAPn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:43:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53378 "EHLO mail.kernel.org"
+        id S1730991AbgIAPcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730616AbgIAPlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:22 -0400
+        id S1730617AbgIAPar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:30:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C46F1206EB;
-        Tue,  1 Sep 2020 15:41:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC812205F4;
+        Tue,  1 Sep 2020 15:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974880;
-        bh=TYTTdCegp15oLYrWq/F7PP5Ab8BnxcWk62tjoSVlprc=;
+        s=default; t=1598974247;
+        bh=KMaCEr9hIazVnaJX5NLqVXB6MyFYkILtr0umHanmixo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bwd3Xi4C1KYyvuUCd8bkTFO/tHAXpuwCYnUnLvAwPn7f7pTK4Y2eyFWmDNCW53o8M
-         Ot0iWMThnKLDfibJfaW39ldcpBtOcYPATRHDY7PPDCuMQv4NUGemJJJRJBukMR5WfY
-         BNawrRqStVr5IysMrTjLPKQelGWLKHpYV+eNqvmo=
+        b=e253W+4rDWHr/x/CxkT4i7vshkjuhZ3adOWN2fCEapvmpRo/1kY0QwxfLvuZMi2Pr
+         p3Amg1pXLLHl/8KkBOl+ak13GMnwf4dmOadkQbwNn3A1MjZF8eKiAfIHtN5WdVpSu5
+         RA9rAOY0wU9n9CJ8sj2eVunLwqRyy3C1vOfyrz2A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianlin Lv <Jianlin.Lv@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 126/255] selftests/bpf: Fix segmentation fault in test_progs
-Date:   Tue,  1 Sep 2020 17:09:42 +0200
-Message-Id: <20200901151006.765388854@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 103/214] bfq: fix blkio cgroup leakage v4
+Date:   Tue,  1 Sep 2020 17:09:43 +0200
+Message-Id: <20200901150957.939809582@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,99 +45,153 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianlin Lv <Jianlin.Lv@arm.com>
+From: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
 
-[ Upstream commit 0390c429dbed4068bd2cd8dded937d9a5ec24cd2 ]
+[ Upstream commit 2de791ab4918969d8108f15238a701968375f235 ]
 
-test_progs reports the segmentation fault as below:
+Changes from v1:
+    - update commit description with proper ref-accounting justification
 
-  $ sudo ./test_progs -t mmap --verbose
-  test_mmap:PASS:skel_open_and_load 0 nsec
-  [...]
-  test_mmap:PASS:adv_mmap1 0 nsec
-  test_mmap:PASS:adv_mmap2 0 nsec
-  test_mmap:PASS:adv_mmap3 0 nsec
-  test_mmap:PASS:adv_mmap4 0 nsec
-  Segmentation fault
+commit db37a34c563b ("block, bfq: get a ref to a group when adding it to a service tree")
+introduce leak forbfq_group and blkcg_gq objects because of get/put
+imbalance.
+In fact whole idea of original commit is wrong because bfq_group entity
+can not dissapear under us because it is referenced by child bfq_queue's
+entities from here:
+ -> bfq_init_entity()
+    ->bfqg_and_blkg_get(bfqg);
+    ->entity->parent = bfqg->my_entity
 
-This issue was triggered because mmap() and munmap() used inconsistent
-length parameters; mmap() creates a new mapping of 3 * page_size, but the
-length parameter set in the subsequent re-map and munmap() functions is
-4 * page_size; this leads to the destruction of the process space.
+ -> bfq_put_queue(bfqq)
+    FINAL_PUT
+    ->bfqg_and_blkg_put(bfqq_group(bfqq))
+    ->kmem_cache_free(bfq_pool, bfqq);
 
-To fix this issue, first create 4 pages of anonymous mapping, then do all
-the mmap() with MAP_FIXED.
+So parent entity can not disappear while child entity is in tree,
+and child entities already has proper protection.
+This patch revert commit db37a34c563b ("block, bfq: get a ref to a group when adding it to a service tree")
 
-Another issue is that when unmap the second page fails, the length
-parameter to delete tmp1 mappings should be 4 * page_size.
+bfq_group leak trace caused by bad commit:
+-> blkg_alloc
+   -> bfq_pq_alloc
+     -> bfqg_get (+1)
+->bfq_activate_bfqq
+  ->bfq_activate_requeue_entity
+    -> __bfq_activate_entity
+       ->bfq_get_entity
+         ->bfqg_and_blkg_get (+1)  <==== : Note1
+->bfq_del_bfqq_busy
+  ->bfq_deactivate_entity+0x53/0xc0 [bfq]
+    ->__bfq_deactivate_entity+0x1b8/0x210 [bfq]
+      -> bfq_forget_entity(is_in_service = true)
+	 entity->on_st_or_in_serv = false   <=== :Note2
+	 if (is_in_service)
+	     return;  ==> do not touch reference
+-> blkcg_css_offline
+ -> blkcg_destroy_blkgs
+  -> blkg_destroy
+   -> bfq_pd_offline
+    -> __bfq_deactivate_entity
+         if (!entity->on_st_or_in_serv) /* true, because (Note2)
+		return false;
+ -> bfq_pd_free
+    -> bfqg_put() (-1, byt bfqg->ref == 2) because of (Note2)
+So bfq_group and blkcg_gq  will leak forever, see test-case below.
 
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200810153940.125508-1-Jianlin.Lv@arm.com
+##TESTCASE_BEGIN:
+#!/bin/bash
+
+max_iters=${1:-100}
+#prep cgroup mounts
+mount -t tmpfs cgroup_root /sys/fs/cgroup
+mkdir /sys/fs/cgroup/blkio
+mount -t cgroup -o blkio none /sys/fs/cgroup/blkio
+
+# Prepare blkdev
+grep blkio /proc/cgroups
+truncate -s 1M img
+losetup /dev/loop0 img
+echo bfq > /sys/block/loop0/queue/scheduler
+
+grep blkio /proc/cgroups
+for ((i=0;i<max_iters;i++))
+do
+    mkdir -p /sys/fs/cgroup/blkio/a
+    echo 0 > /sys/fs/cgroup/blkio/a/cgroup.procs
+    dd if=/dev/loop0 bs=4k count=1 of=/dev/null iflag=direct 2> /dev/null
+    echo 0 > /sys/fs/cgroup/blkio/cgroup.procs
+    rmdir /sys/fs/cgroup/blkio/a
+    grep blkio /proc/cgroups
+done
+##TESTCASE_END:
+
+Fixes: db37a34c563b ("block, bfq: get a ref to a group when adding it to a service tree")
+Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Signed-off-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/prog_tests/mmap.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ block/bfq-cgroup.c  |  2 +-
+ block/bfq-iosched.h |  1 -
+ block/bfq-wf2q.c    | 12 ++----------
+ 3 files changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
-index 43d0b5578f461..9c3c5c0f068fb 100644
---- a/tools/testing/selftests/bpf/prog_tests/mmap.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
-@@ -21,7 +21,7 @@ void test_mmap(void)
- 	const long page_size = sysconf(_SC_PAGE_SIZE);
- 	int err, duration = 0, i, data_map_fd, data_map_id, tmp_fd, rdmap_fd;
- 	struct bpf_map *data_map, *bss_map;
--	void *bss_mmaped = NULL, *map_mmaped = NULL, *tmp1, *tmp2;
-+	void *bss_mmaped = NULL, *map_mmaped = NULL, *tmp0, *tmp1, *tmp2;
- 	struct test_mmap__bss *bss_data;
- 	struct bpf_map_info map_info;
- 	__u32 map_info_sz = sizeof(map_info);
-@@ -183,16 +183,23 @@ void test_mmap(void)
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 12b707a4e52fd..342a1cfa48c57 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -332,7 +332,7 @@ static void bfqg_put(struct bfq_group *bfqg)
+ 		kfree(bfqg);
+ }
  
- 	/* check some more advanced mmap() manipulations */
+-void bfqg_and_blkg_get(struct bfq_group *bfqg)
++static void bfqg_and_blkg_get(struct bfq_group *bfqg)
+ {
+ 	/* see comments in bfq_bic_update_cgroup for why refcounting bfqg */
+ 	bfqg_get(bfqg);
+diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+index c0232975075d0..de98fdfe9ea17 100644
+--- a/block/bfq-iosched.h
++++ b/block/bfq-iosched.h
+@@ -980,7 +980,6 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
+ struct blkcg_gq *bfqg_to_blkg(struct bfq_group *bfqg);
+ struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
+ struct bfq_group *bfq_create_group_hierarchy(struct bfq_data *bfqd, int node);
+-void bfqg_and_blkg_get(struct bfq_group *bfqg);
+ void bfqg_and_blkg_put(struct bfq_group *bfqg);
  
-+	tmp0 = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED | MAP_ANONYMOUS,
-+			  -1, 0);
-+	if (CHECK(tmp0 == MAP_FAILED, "adv_mmap0", "errno %d\n", errno))
-+		goto cleanup;
-+
- 	/* map all but last page: pages 1-3 mapped */
--	tmp1 = mmap(NULL, 3 * page_size, PROT_READ, MAP_SHARED,
-+	tmp1 = mmap(tmp0, 3 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
- 			  data_map_fd, 0);
--	if (CHECK(tmp1 == MAP_FAILED, "adv_mmap1", "errno %d\n", errno))
-+	if (CHECK(tmp0 != tmp1, "adv_mmap1", "tmp0: %p, tmp1: %p\n", tmp0, tmp1)) {
-+		munmap(tmp0, 4 * page_size);
- 		goto cleanup;
+ #ifdef CONFIG_BFQ_GROUP_IOSCHED
+diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+index 44079147e396e..05f0bf4a1144d 100644
+--- a/block/bfq-wf2q.c
++++ b/block/bfq-wf2q.c
+@@ -536,9 +536,7 @@ static void bfq_get_entity(struct bfq_entity *entity)
+ 		bfqq->ref++;
+ 		bfq_log_bfqq(bfqq->bfqd, bfqq, "get_entity: %p %d",
+ 			     bfqq, bfqq->ref);
+-	} else
+-		bfqg_and_blkg_get(container_of(entity, struct bfq_group,
+-					       entity));
 +	}
+ }
  
- 	/* unmap second page: pages 1, 3 mapped */
- 	err = munmap(tmp1 + page_size, page_size);
- 	if (CHECK(err, "adv_mmap2", "errno %d\n", errno)) {
--		munmap(tmp1, map_sz);
-+		munmap(tmp1, 4 * page_size);
- 		goto cleanup;
- 	}
+ /**
+@@ -652,14 +650,8 @@ static void bfq_forget_entity(struct bfq_service_tree *st,
  
-@@ -201,7 +208,7 @@ void test_mmap(void)
- 		    MAP_SHARED | MAP_FIXED, data_map_fd, 0);
- 	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap3", "errno %d\n", errno)) {
- 		munmap(tmp1, page_size);
--		munmap(tmp1 + 2*page_size, page_size);
-+		munmap(tmp1 + 2*page_size, 2 * page_size);
- 		goto cleanup;
- 	}
- 	CHECK(tmp1 + page_size != tmp2, "adv_mmap4",
-@@ -211,7 +218,7 @@ void test_mmap(void)
- 	tmp2 = mmap(tmp1, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
- 		    data_map_fd, 0);
- 	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap5", "errno %d\n", errno)) {
--		munmap(tmp1, 3 * page_size); /* unmap page 1 */
-+		munmap(tmp1, 4 * page_size); /* unmap page 1 */
- 		goto cleanup;
- 	}
- 	CHECK(tmp1 != tmp2, "adv_mmap6", "tmp1: %p, tmp2: %p\n", tmp1, tmp2);
+ 	entity->on_st = false;
+ 	st->wsum -= entity->weight;
+-	if (is_in_service)
+-		return;
+-
+-	if (bfqq)
++	if (bfqq && !is_in_service)
+ 		bfq_put_queue(bfqq);
+-	else
+-		bfqg_and_blkg_put(container_of(entity, struct bfq_group,
+-					       entity));
+ }
+ 
+ /**
 -- 
 2.25.1
 
