@@ -2,150 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BC02588B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900292588B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgIAHEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:04:13 -0400
-Received: from mga01.intel.com ([192.55.52.88]:31873 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgIAHEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:04:11 -0400
-IronPort-SDR: ZMtPtc26BJ17MpnKYf/1RKl5SyDtCW7td/N0GiokmpGeugIH+tkfknZ12NYQH0KwceYhh5F1jY
- uc2kbXMt+Kig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="175163124"
-X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
-   d="scan'208";a="175163124"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 00:04:09 -0700
-IronPort-SDR: efF1CteDSvGUjeuCqyhMEUNm9cFV4TnP7lq8jUVXOjIXznGnws6g1EdUdV4PMWcoPSQL7jVqCX
- 5ZCmFbREJVsw==
-X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
-   d="scan'208";a="502140536"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 00:04:06 -0700
-Subject: Re: [LKP] Re: [rcuperf] 4e88ec4a9e:
- UBSAN:division-overflow_in_arch/x86/include/asm/div64.h
-To:     paulmck@kernel.org, kernel test robot <lkp@intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200831120122.GH4299@shao2-debian>
- <20200831155037.GZ2855@paulmck-ThinkPad-P72>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <649fd850-602f-7f0d-d286-73a8dd88ad6d@intel.com>
-Date:   Tue, 1 Sep 2020 15:03:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727025AbgIAHEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:04:04 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37875 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgIAHEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 03:04:00 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 37so304916oto.4;
+        Tue, 01 Sep 2020 00:03:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v+UCqMpoxNkc8HR8b48PCCPouXs4GQ+iFq6WKu3/gPA=;
+        b=HckLls99BmQHfpV4zTbZRYJd4QNX0Ujw2QGAhBeQMLlHzXOaHXIIrU9r8EdF1Lr54C
+         c727ScohG9M+ZeRidtTHE+DEuOFDpYRr8FrDUOXYfXviX6smdKWwDVVfLKC9HCYD6fsg
+         2zwGKJUKMjEeGYLPovTAS0UyHF5SeDsFZQayLzfvD2pMRtVroaMsPSJqFpWXWUMrnK7p
+         aUO+i+d2wGXqN261zbu9/KH6tTBkAJBftwlW0U/Ps3XLamBxSaYfp02ijeC7LT2Awgfb
+         c93/pJCJq6XxCNSsswc7OnvHIUiXgKSUl27gg1YQOkksd5TaIgzD0BoBkHDd/SEP2RtA
+         geNA==
+X-Gm-Message-State: AOAM533mp0Lo2GJj3p7zozeo/CuoUIoXI/VzWHnDCtp1NAWsMB2SP1qO
+        6U34SaEzXXX9M26CB4AFxllrbLbT7ryDkg2Ge7m67LDTa/4=
+X-Google-Smtp-Source: ABdhPJw+W75f7LvhKPJmBkANHigTowv41ATseQQVo1zrxnPwXtFSjat/hlrHbRc7rhVmMPWs0LwXP4Ln8wspP9PRVow=
+X-Received: by 2002:a9d:32e5:: with SMTP id u92mr373423otb.107.1598943839340;
+ Tue, 01 Sep 2020 00:03:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200831155037.GZ2855@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200826145249.745432-1-npiggin@gmail.com> <20200826145249.745432-10-npiggin@gmail.com>
+ <CAMuHMdX5qo+2XpEm5QNbuwWRn508Ewee9rHYtmCBadj0x=3VnA@mail.gmail.com> <1598941313.t5y1w43jgl.astroid@bobo.none>
+In-Reply-To: <1598941313.t5y1w43jgl.astroid@bobo.none>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 1 Sep 2020 09:03:48 +0200
+Message-ID: <CAMuHMdWfACYhp8434GOx0qx2oHSBTX3Tq+=gtqNtYahnP-t1JQ@mail.gmail.com>
+Subject: Re: [PATCH v2 09/23] m68k: use asm-generic/mmu_context.h for no-op implementations
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nick,
 
-
-On 8/31/20 11:50 PM, Paul E. McKenney wrote:
-> On Mon, Aug 31, 2020 at 08:01:22PM +0800, kernel test robot wrote:
->> Greeting,
->>
->> FYI, we noticed the following commit (built with gcc-9):
->>
->> commit: 4e88ec4a9eb17527e640b063f79e5b875733eb53 ("rcuperf: Change rcuperf to rcuscale")
->> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
->>
->>
->> in testcase: trinity
->> with following parameters:
->>
->> 	runtime: 300s
->>
->> test-description: Trinity is a linux system call fuzz tester.
->> test-url: http://codemonkey.org.uk/projects/trinity/
->>
->>
->> on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
->>
->> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->>
->>
->> +---------------------------------------------------------+------------+------------+
->> |                                                         | 65bd77f554 | 4e88ec4a9e |
->> +---------------------------------------------------------+------------+------------+
->> | boot_successes                                          | 13         | 0          |
->> | boot_failures                                           | 0          | 14         |
->> | UBSAN:division-overflow_in_arch/x86/include/asm/div64.h | 0          | 14         |
->> | error:#[##]                                             | 0          | 14         |
->> | EIP:main_func.cold                                      | 0          | 14         |
->> | Kernel_panic-not_syncing:Fatal_exception                | 0          | 14         |
->> +---------------------------------------------------------+------------+------------+
->>
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kernel test robot <lkp@intel.com>
-> Does the patch below fix this for you?
-
-Yes, this patch can fix the issue, and nreaders was adjusted to 1:
-
-[    5.953645] The force parameter has not been set to 1. The Iris 
-poweroff handler will not be installed.
-[   12.546587] rcu-ref-scale: --- Start of test:  verbose=0 shutdown=1 
-holdoff=10 loops=10000 nreaders=-1 nruns=30 readdelay=0
-[   12.561495] ------------[ cut here ]------------
-[   12.562016] ref_scale_init: nreaders = 0, adjusted to 1
-[   12.562601] WARNING: CPU: 0 PID: 1 at kernel/rcu/refscale.c:684 
-ref_scale_init+0x653/0x80
-
-Best Regards,
-Rong Chen
-
+On Tue, Sep 1, 2020 at 8:23 AM Nicholas Piggin <npiggin@gmail.com> wrote:
+> Excerpts from Geert Uytterhoeven's message of August 27, 2020 7:33 pm:
+> > On Wed, Aug 26, 2020 at 4:53 PM Nicholas Piggin <npiggin@gmail.com> wrote:
+> >> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> >> Cc: linux-m68k@lists.linux-m68k.org
+> >> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> >
+> > With the below fixed:
+> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> >
+> >> --- a/arch/m68k/include/asm/mmu_context.h
+> >> +++ b/arch/m68k/include/asm/mmu_context.h
+> >> @@ -79,19 +76,6 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+> >>         set_context(tsk->mm->context, next->pgd);
+> >>  }
+> >>
+> >> -/*
+> >> - * After we have set current->mm to a new value, this activates
+> >> - * the context for the new mm so we see the new mappings.
+> >> - */
+> >> -static inline void activate_mm(struct mm_struct *active_mm,
+> >> -       struct mm_struct *mm)
+> >> -{
+> >> -       get_mmu_context(mm);
+> >> -       set_context(mm->context, mm->pgd);
+> >> -}
+> >
+> > Assumed switch_mm() in [PATCH v2 01/23] is revived with the above body.
 >
-> 							Thanx, Paul
->
-> ------------------------------------------------------------------------
->
-> commit d301e320e952e2e604d83d9540e52510b0eb3d94
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Thu Aug 27 09:58:19 2020 -0700
->
->      refscale: Bounds-check module parameters
->      
->      The default value for refscale.nreaders is -1, which results in the code
->      setting the value to three-quarters of the number of CPUs.  On single-CPU
->      systems, this results in three-quarters of the value one, which the C
->      language's integer arithmetic rounds to zero.  This in turn results in
->      a divide-by-zero error.
->      
->      This commit therefore adds bounds checking to the refscale module
->      parameters, so that if they are less than one, they are set to the
->      value one.
->      
->      Reported-by: kernel test robot <lkp@intel.com>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->
-> diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> index 952595c..fb5f20d 100644
-> --- a/kernel/rcu/refscale.c
-> +++ b/kernel/rcu/refscale.c
-> @@ -681,6 +681,12 @@ ref_scale_init(void)
->   	// Reader tasks (default to ~75% of online CPUs).
->   	if (nreaders < 0)
->   		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
-> +	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
-> +		loops = 1;
-> +	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
-> +		nreaders = 1;
-> +	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
-> +		nruns = 1;
->   	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
->   			       GFP_KERNEL);
->   	if (!reader_tasks) {
-> _______________________________________________
-> LKP mailing list -- lkp@lists.01.org
-> To unsubscribe send an email to lkp-leave@lists.01.org
+> I'm not sure what you mean here. We can remove this because it's a copy
+> of switch_mm above, and that's what the new header defaults to if you
+> don't provide an active_mm.
 
+IC.  I thought it started relying on <asm-generic/mmu_context.h> for this,
+where you removed switch_mm().
+
+Seems I missed the definition above.
+
+> Patch 1 should not have changed that, it should only affect the nommu
+> architectures (and actually didn't touch m68k because it was not using
+> the asm-generic/mmu_context.h header).
+
+OK. Sorry for the noise.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
