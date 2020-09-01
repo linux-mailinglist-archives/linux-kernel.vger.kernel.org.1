@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46871259B15
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F4F259B12
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729924AbgIAQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:57:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46430 "EHLO mail.kernel.org"
+        id S1729903AbgIAQ5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729646AbgIAPXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:23:24 -0400
+        id S1729272AbgIAPXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:23:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E400020FC3;
-        Tue,  1 Sep 2020 15:23:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09799206FA;
+        Tue,  1 Sep 2020 15:23:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973804;
-        bh=m5M8Awz22GmrEwV0BJ4+h7A02qBUcB/cu5vWpcC9nPo=;
+        s=default; t=1598973809;
+        bh=YgC0YRxiUO8aFLyonSNozBZtblQ0WwwViSlbYTEgmFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jk5CdyFDZopav0xqTwwPD/kCj0Hy01R/AIQ0YaDVgwlG1sc4C4UBiw58GHhAx6X06
-         8AzYNn0mspMltnDZy0L7L09OLrcRs7zbVjzNampBu6MD9OU2PMvX65H53O7v3TrZws
-         Tzg1HsgLKrCOrAFHHKnPGtqSFrDFPylno3HGORVQ=
+        b=o7JDLNRNUoPZ107GH3O8VZ8xNRMQdS/17AOTQ4spmZgaFPcL41qpLqzMX2UgRf3no
+         iP4x0WZ0QrhbnqG8tHPbO1bxGRgf5kpULYBIR1lH7/g0ruhCIKueENnPFBwqzNlOMf
+         Jlyj41fNfMLDmhEDddtlFReBCIOdXQlmvZqxdxSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 053/125] media: gpio-ir-tx: improve precision of transmitted signal due to scheduling
-Date:   Tue,  1 Sep 2020 17:10:08 +0200
-Message-Id: <20200901150937.150292200@linuxfoundation.org>
+Subject: [PATCH 4.19 055/125] nvme-fc: Fix wrong return value in __nvme_fc_init_request()
+Date:   Tue,  1 Sep 2020 17:10:10 +0200
+Message-Id: <20200901150937.251719140@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -44,40 +47,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit ea8912b788f8144e7d32ee61e5ccba45424bef83 ]
+[ Upstream commit f34448cd0dc697723fb5f4118f8431d9233b370d ]
 
-usleep_range() may take longer than the max argument due to scheduling,
-especially under load. This is causing random errors in the transmitted
-IR. Remove the usleep_range() in favour of busy-looping with udelay().
+On an error exit path, a negative error code should be returned
+instead of a positive return value.
 
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: e399441de9115 ("nvme-fabrics: Add host support for FC transport")
+Cc: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/gpio-ir-tx.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/nvme/host/fc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/rc/gpio-ir-tx.c b/drivers/media/rc/gpio-ir-tx.c
-index cd476cab97820..4e70b67ccd181 100644
---- a/drivers/media/rc/gpio-ir-tx.c
-+++ b/drivers/media/rc/gpio-ir-tx.c
-@@ -87,13 +87,8 @@ static int gpio_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 			// space
- 			edge = ktime_add_us(edge, txbuf[i]);
- 			delta = ktime_us_delta(edge, ktime_get());
--			if (delta > 10) {
--				spin_unlock_irqrestore(&gpio_ir->lock, flags);
--				usleep_range(delta, delta + 10);
--				spin_lock_irqsave(&gpio_ir->lock, flags);
--			} else if (delta > 0) {
-+			if (delta > 0)
- 				udelay(delta);
--			}
- 		} else {
- 			// pulse
- 			ktime_t last = ktime_add_us(edge, txbuf[i]);
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index ed43b06353a39..bb3b447c56468 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -1716,7 +1716,7 @@ __nvme_fc_init_request(struct nvme_fc_ctrl *ctrl,
+ 	if (fc_dma_mapping_error(ctrl->lport->dev, op->fcp_req.cmddma)) {
+ 		dev_err(ctrl->dev,
+ 			"FCP Op failed - cmdiu dma mapping failed.\n");
+-		ret = EFAULT;
++		ret = -EFAULT;
+ 		goto out_on_error;
+ 	}
+ 
+@@ -1726,7 +1726,7 @@ __nvme_fc_init_request(struct nvme_fc_ctrl *ctrl,
+ 	if (fc_dma_mapping_error(ctrl->lport->dev, op->fcp_req.rspdma)) {
+ 		dev_err(ctrl->dev,
+ 			"FCP Op failed - rspiu dma mapping failed.\n");
+-		ret = EFAULT;
++		ret = -EFAULT;
+ 	}
+ 
+ 	atomic_set(&op->state, FCPOP_STATE_IDLE);
 -- 
 2.25.1
 
