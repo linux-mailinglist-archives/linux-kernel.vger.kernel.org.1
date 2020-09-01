@@ -2,169 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACF525888A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2F825883A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgIAGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:53:06 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:22577 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgIAGxE (ORCPT
+        id S1726352AbgIAGa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:30:59 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:50413 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726050AbgIAGa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:53:04 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200901065302epoutp028b6c09fd87ba55112a5f21b7b14b1fc6~wllpGA06g0708407084epoutp02N
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:53:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200901065302epoutp028b6c09fd87ba55112a5f21b7b14b1fc6~wllpGA06g0708407084epoutp02N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598943182;
-        bh=0RqILSjSluQTcp7A9cjKSqQAf2l2HI407ixivTHWcYQ=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=lJ1lfp7VsLNvtClJJrW/f9/5SSDxlY9L4e/Os7ULuidmOGfytLjYeYDu7mWYkrf09
-         lxfzCZjsckGbV8cPc5mc1f/ErU/7VWb1I5cnbjnPLiQklqlWvl/H/dRac93Jb7oYlS
-         XqEYi/BD79ylhAXhnbzsGru5B/VVCY12N/HgwEAs=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200901065301epcas1p406b00849d5bdf061d3537cb1d964072c~wllomjVQG0503605036epcas1p4p;
-        Tue,  1 Sep 2020 06:53:01 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH v10 0/4] scsi: ufs: Add Host Performance Booster Support
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
-Date:   Tue, 01 Sep 2020 13:31:52 +0900
-X-CMS-MailID: 20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72
+        Tue, 1 Sep 2020 02:30:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U7VD5SL_1598941853;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7VD5SL_1598941853)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Sep 2020 14:30:53 +0800
+Subject: Re: [PATCH v3 3/3] mm/armv6: work around armv6 cmpxchg support issue
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Russell King <linux@armlinux.org.uk>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <1598928612-68996-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1598928612-68996-3-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <ffa89b09-995a-77d8-03c6-2c1234a5474a@linux.alibaba.com>
+Date:   Tue, 1 Sep 2020 14:30:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <1598928612-68996-3-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72
-References: <CGME20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog:
+seems there are couples archs can not do cmpxchg1
+So update the patch here. And it's easy to fix if more arch issue find here.
 
-v9 -> v10
-1. Fix 64-bit division error
-2. Fix problems commentted in Bart's review.
+From cdf98ae7b5e83bb7210c927d4749f62fee4ed115 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Mon, 31 Aug 2020 15:41:20 +0800
+Subject: [PATCH v4 3/3] mm/pageblock: work around multiple arch's cmpxchg
+ support issue
 
-v8 -> v9
-1. Change sysfs initialization.
-2. Change reading descriptor during HPB initialization
-3. Fix problems commentted in Bart's review.
-4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
+Armv6, sh2, sparc32 and xtensa can not do cmpxchg1, so we have to use
+cmpxchg4 on it.
 
-v7 -> v8
-Remove wrongly added tags.
+arm-linux-gnueabi-ld: mm/page_alloc.o: in function `set_pfnblock_flags_mask':
+(.text+0x32b4): undefined reference to `__bad_cmpxchg'
+arm-linux-gnueabi-ld: (.text+0x32e0): undefined reference to `__bad_cmpxchg'
 
-v6 -> v7
-1. Remove UFS feature layer.
-2. Cleanup for sparse error.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+---
+ include/linux/mmzone.h | 20 +++++++++++++++++---
+ mm/page_alloc.c        | 24 ++++++++++++------------
+ 2 files changed, 29 insertions(+), 15 deletions(-)
 
-v5 -> v6
-Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index be676e659fb7..364b29ed99b3 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -406,6 +406,20 @@ enum zone_type {
+ 
+ #ifndef __GENERATING_BOUNDS_H
+ 
++/*
++ * cmpxchg only support 32-bits operands on the following archs ARMv6, SPARC32
++ * sh2, XTENSA.
++ */
++#if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_SH2) || \
++	defined(CONFIG_SPARC32) || defined(CONFIG_XTENSA)
++
++#define BITS_PER_FLAGS	BITS_PER_LONG
++typedef unsigned long pageblockflags_t;
++#else
++#define BITS_PER_FLAGS	BITS_PER_BYTE
++typedef unsigned char pageblockflags_t;
++#endif
++
+ struct zone {
+ 	/* Read-mostly fields */
+ 
+@@ -437,7 +451,7 @@ struct zone {
+ 	 * Flags for a pageblock_nr_pages block. See pageblock-flags.h.
+ 	 * In SPARSEMEM, this map is stored in struct mem_section
+ 	 */
+-	unsigned char		*pageblock_flags;
++	pageblockflags_t	*pageblock_flags;
+ #endif /* CONFIG_SPARSEMEM */
+ 
+ 	/* zone_start_pfn == zone_start_paddr >> PAGE_SHIFT */
+@@ -1159,7 +1173,7 @@ struct mem_section_usage {
+ 	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION);
+ #endif
+ 	/* See declaration of similar field in struct zone */
+-	unsigned char	pageblock_flags[0];
++	pageblockflags_t	pageblock_flags[0];
+ };
+ 
+ void subsection_map_init(unsigned long pfn, unsigned long nr_pages);
+@@ -1212,7 +1226,7 @@ struct mem_section {
+ extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
+ #endif
+ 
+-static inline unsigned char *section_to_usemap(struct mem_section *ms)
++static inline pageblockflags_t *section_to_usemap(struct mem_section *ms)
+ {
+ 	return ms->usage->pageblock_flags;
+ }
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 60342e764090..9a41c5dc78eb 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -445,7 +445,7 @@ static inline bool defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
+ #endif
+ 
+ /* Return a pointer to the bitmap storing bits affecting a block of pages */
+-static inline unsigned char *get_pageblock_bitmap(struct page *page,
++static inline pageblockflags_t *get_pageblock_bitmap(struct page *page,
+ 							unsigned long pfn)
+ {
+ #ifdef CONFIG_SPARSEMEM
+@@ -474,24 +474,24 @@ static inline int pfn_to_bitidx(struct page *page, unsigned long pfn)
+  * Return: pageblock_bits flags
+  */
+ static __always_inline
+-unsigned char __get_pfnblock_flags_mask(struct page *page,
++pageblockflags_t __get_pfnblock_flags_mask(struct page *page,
+ 					unsigned long pfn,
+ 					unsigned long mask)
+ {
+-	unsigned char *bitmap;
++	pageblockflags_t *bitmap;
+ 	unsigned long bitidx, byte_bitidx;
+-	unsigned char byte;
++	pageblockflags_t byte;
+ 
+ 	bitmap = get_pageblock_bitmap(page, pfn);
+ 	bitidx = pfn_to_bitidx(page, pfn);
+-	byte_bitidx = bitidx / BITS_PER_BYTE;
+-	bitidx &= (BITS_PER_BYTE-1);
++	byte_bitidx = bitidx / BITS_PER_FLAGS;
++	bitidx &= (BITS_PER_FLAGS - 1);
+ 
+ 	byte = bitmap[byte_bitidx];
+ 	return (byte >> bitidx) & mask;
+ }
+ 
+-unsigned char get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
++pageblockflags_t get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
+ 					unsigned long mask)
+ {
+ 	return __get_pfnblock_flags_mask(page, pfn, mask);
+@@ -513,17 +513,17 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
+ 					unsigned long pfn,
+ 					unsigned long mask)
+ {
+-	unsigned char *bitmap;
++	pageblockflags_t *bitmap;
+ 	unsigned long bitidx, byte_bitidx;
+-	unsigned char old_byte, byte;
++	pageblockflags_t old_byte, byte;
+ 
+-	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != BITS_PER_BYTE);
++	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != BITS_PER_FLAGS);
+ 	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
+ 
+ 	bitmap = get_pageblock_bitmap(page, pfn);
+ 	bitidx = pfn_to_bitidx(page, pfn);
+-	byte_bitidx = bitidx / BITS_PER_BYTE;
+-	bitidx &= (BITS_PER_BYTE-1);
++	byte_bitidx = bitidx / BITS_PER_FLAGS;
++	bitidx &= (BITS_PER_FLAGS - 1);
+ 
+ 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+ 
+-- 
+1.8.3.1
 
-v4 -> v5
-Delete unused macro define.
-
-v3 -> v4
-1. Cleanup.
-
-v2 -> v3
-1. Add checking input module parameter value.
-2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-3. Cleanup for unused variables and label.
-
-v1 -> v2
-1. Change the full boilerplate text to SPDX style.
-2. Adopt dynamic allocation for sub-region data structure.
-3. Cleanup.
-
-NAND flash memory-based storage devices use Flash Translation Layer (FTL)
-to translate logical addresses of I/O requests to corresponding flash
-memory addresses. Mobile storage devices typically have RAM with
-constrained size, thus lack in memory to keep the whole mapping table.
-Therefore, mapping tables are partially retrieved from NAND flash on
-demand, causing random-read performance degradation.
-
-To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-(Host Performance Booster) which uses host system memory as a cache for the
-FTL mapping table. By using HPB, FTL data can be read from host memory
-faster than from NAND flash memory. 
-
-The current version only supports the DCM (device control mode).
-This patch consists of 3 parts to support HPB feature.
-
-1) HPB probe and initialization process
-2) READ -> HPB READ using cached map information
-3) L2P (logical to physical) map management
-
-In the HPB probe and init process, the device information of the UFS is
-queried. After checking supported features, the data structure for the HPB
-is initialized according to the device information.
-
-A read I/O in the active sub-region where the map is cached is changed to
-HPB READ by the HPB.
-
-The HPB manages the L2P map using information received from the
-device. For active sub-region, the HPB caches through ufshpb_map
-request. For the in-active region, the HPB discards the L2P map.
-When a write I/O occurs in an active sub-region area, associated dirty
-bitmap checked as dirty for preventing stale read.
-
-HPB is shown to have a performance improvement of 58 - 67% for random read
-workload. [1]
-
-This series patches are based on the 5.9/scsi-queue branch.
-
-[1]:
-https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-
-Daejun park (4):
- scsi: ufs: Add HPB feature related parameters
- scsi: ufs: Introduce HPB feature
- scsi: ufs: L2P map management for HPB read
- scsi: ufs: Prepare HPB read for cached sub-region
-  
- drivers/scsi/ufs/Kconfig  |    9 +
- drivers/scsi/ufs/Makefile |    1 +
- drivers/scsi/ufs/ufs.h    |   47 +
- drivers/scsi/ufs/ufshcd.c |   60 ++
- drivers/scsi/ufs/ufshcd.h |   23 +-
- drivers/scsi/ufs/ufshpb.c | 1845 ++++++++++++++++++++++++++++++++++++++++
- drivers/scsi/ufs/ufshpb.h |  229 +++++
- 7 files changed, 2213 insertions(+), 1 deletion(-)
- created mode 100644 drivers/scsi/ufs/ufshpb.c
- created mode 100644 drivers/scsi/ufs/ufshpb.h
