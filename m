@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50B625952B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950A52593FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731150AbgIAPr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:47:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59688 "EHLO mail.kernel.org"
+        id S1731217AbgIAPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:33:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731468AbgIAPoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:44:22 -0400
+        id S1730684AbgIAPdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:33:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 733C4206FA;
-        Tue,  1 Sep 2020 15:44:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8293A21534;
+        Tue,  1 Sep 2020 15:33:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975061;
-        bh=UJ42Mfh9bPHjl8/DqG67pNEC5IjIOdTO5F1IYqKYwS0=;
+        s=default; t=1598974426;
+        bh=uA9d7PLz3Fk1KzewkgANv5EeFN+kJC1pbKi4uGNTtLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0JGoPpgmbVNx/3zgzzIR+ISnD2ESIV05Bbfhlbln2fhW7yvuViei2TygW1n13i4s+
-         XG42WbsVsffFtd1gzb9W6pZ8jlscIdWGv3+Q5MA1yLNbKqrZ/DiUvVLLWiZXRM7d/k
-         u3daXV2CgjVCrhDQIOTbJ5oPaEbpZsKpB+Y3XwAU=
+        b=T4KJ7RjkHF5tlIL6NR9kl2l2G3rneAwzES/fnU1Opji7WkZR/XWqwvYEXf4dhbOee
+         WqesL7XnwnLJf+nNIll1QjmrFvSGiQD/AtvCBxTi8GGtBxby5+EJJCoSjgNwgG4nQn
+         brn88XfeEdH85CfDRYsbz4qXCfBUCdtLdTGRb810=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Kai-Heng Feng <kai.heng.feng@canonical.com>,
         Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.8 195/255] xhci: Do warm-reset when both CAS and XDEV_RESUME are set
-Date:   Tue,  1 Sep 2020 17:10:51 +0200
-Message-Id: <20200901151010.030657212@linuxfoundation.org>
+Subject: [PATCH 5.4 172/214] xhci: Do warm-reset when both CAS and XDEV_RESUME are set
+Date:   Tue,  1 Sep 2020 17:10:52 +0200
+Message-Id: <20200901151001.218679544@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -75,7 +75,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/usb/host/xhci-hub.c
 +++ b/drivers/usb/host/xhci-hub.c
-@@ -740,15 +740,6 @@ static void xhci_hub_report_usb3_link_st
+@@ -738,15 +738,6 @@ static void xhci_hub_report_usb3_link_st
  {
  	u32 pls = status_reg & PORT_PLS_MASK;
  
@@ -91,7 +91,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	/* When the CAS bit is set then warm reset
  	 * should be performed on port
  	 */
-@@ -771,6 +762,16 @@ static void xhci_hub_report_usb3_link_st
+@@ -769,6 +760,16 @@ static void xhci_hub_report_usb3_link_st
  		pls |= USB_PORT_STAT_CONNECTION;
  	} else {
  		/*
