@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E972D2593DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0310225960A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731106AbgIAPca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        id S1731618AbgIAP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:57:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730728AbgIAPbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:42 -0400
+        id S1731158AbgIAPoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:44:05 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A632E21582;
-        Tue,  1 Sep 2020 15:31:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5CE52064B;
+        Tue,  1 Sep 2020 15:44:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974302;
-        bh=XLPcl2FH3swdl5UwvcCQtT2pdcZTolwEr4lc6czp6xU=;
+        s=default; t=1598975044;
+        bh=r9HBhZi5uRfTCPjOUZlAFzjcdKyoVIqdk98dp7qcDAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yyyn9j8rA+kcU+rNFqULO0W+ijb8Nttf6E1jeRt4eBzPMgOYwwiq7AFrQajq/QkSl
-         1AvzuR5EZkwpcazfexnej5Q7yMlUuLarsGWR+JDRYhfdq4CiF3gv2gxxLBu2ktzN5F
-         ZChcLt6qKhPl+wBIXX61d3Ya6Vq94r8bgUkBgGCk=
+        b=OAjvg+jiButgE/y/ixwrX7McM6LflBvGprTEykOf8ZGLjjSRIsXi2XkFkYkXtO2+l
+         sjYIUwVB9g54hxosfxw0Z1+fv98iAPxvEjjBAdvdavX5JeupypcOAuAEtLY6meZSZQ
+         1509X/XgBP1hn54A0wH/K0Bf0eey8+6VPt38+WUw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Lee Duncan <lduncan@suse.com>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 122/214] spi: stm32h7: fix race condition at end of transfer
-Date:   Tue,  1 Sep 2020 17:10:02 +0200
-Message-Id: <20200901150958.829122069@linuxfoundation.org>
+Subject: [PATCH 5.8 147/255] scsi: scsi_debug: Fix scp is NULL errors
+Date:   Tue,  1 Sep 2020 17:10:03 +0200
+Message-Id: <20200901151007.745398956@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +46,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antonio Borneo <antonio.borneo@st.com>
+From: Douglas Gilbert <dgilbert@interlog.com>
 
-[ Upstream commit 135dd873d3c76d812ae64c668adef3f2c59ed27f ]
+[ Upstream commit 223f91b48079227f914657f07d2d686f7b60aa26 ]
 
-The caller of stm32_spi_transfer_one(), spi_transfer_one_message(),
-is waiting for us to call spi_finalize_current_transfer() and will
-eventually schedule a new transfer, if available.
-We should guarantee that the spi controller is really available
-before calling spi_finalize_current_transfer().
+John Garry reported 'sdebug_q_cmd_complete: scp is NULL' failures that were
+mainly seen on aarch64 machines (e.g. RPi 4 with four A72 CPUs). The
+problem was tracked down to a missing critical section on a "short circuit"
+path. Namely, the time to process the current command so far has already
+exceeded the requested command duration (i.e. the number of nanoseconds in
+the ndelay parameter).
 
-Move the call to spi_finalize_current_transfer() _after_ the call
-to stm32_spi_disable().
+The random=1 parameter setting was pivotal in finding this error.  The
+failure scenario involved first taking that "short circuit" path (due to a
+very short command duration) and then taking the more likely
+hrtimer_start() path (due to a longer command duration). With random=1 each
+command's duration is taken from the uniformly distributed [0..ndelay)
+interval.  The fio utility also helped by reliably generating the error
+scenario at about once per minute on a RPi 4 (64 bit OS).
 
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-2-git-send-email-alain.volmat@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200813155738.109298-1-dgilbert@interlog.com
+Reported-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_debug.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index dc6334f67e6ae..25b1348aaa549 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -967,8 +967,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	spin_unlock_irqrestore(&spi->lock, flags);
+diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+index b0d93bf79978f..25faad7f8e617 100644
+--- a/drivers/scsi/scsi_debug.c
++++ b/drivers/scsi/scsi_debug.c
+@@ -5486,9 +5486,11 @@ static int schedule_resp(struct scsi_cmnd *cmnd, struct sdebug_dev_info *devip,
+ 				u64 d = ktime_get_boottime_ns() - ns_from_boot;
  
- 	if (end) {
--		spi_finalize_current_transfer(master);
- 		stm32h7_spi_disable(spi);
-+		spi_finalize_current_transfer(master);
- 	}
- 
- 	return IRQ_HANDLED;
+ 				if (kt <= d) {	/* elapsed duration >= kt */
++					spin_lock_irqsave(&sqp->qc_lock, iflags);
+ 					sqcp->a_cmnd = NULL;
+ 					atomic_dec(&devip->num_in_q);
+ 					clear_bit(k, sqp->in_use_bm);
++					spin_unlock_irqrestore(&sqp->qc_lock, iflags);
+ 					if (new_sd_dp)
+ 						kfree(sd_dp);
+ 					/* call scsi_done() from this thread */
 -- 
 2.25.1
 
