@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1B32598CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB8A259B17
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730537AbgIAQcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:32:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35172 "EHLO mail.kernel.org"
+        id S1730039AbgIAQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730740AbgIAPbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:47 -0400
+        id S1729795AbgIAPXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:23:17 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4BA821534;
-        Tue,  1 Sep 2020 15:31:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA79C2100A;
+        Tue,  1 Sep 2020 15:23:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974307;
-        bh=PGgPonbuMctZ14if7l7JBzf62pDMSbaJSGT+E013UtI=;
+        s=default; t=1598973797;
+        bh=kmamFZ2shPcWg1K0wauWkZZ2BELptm1EAJQ2DNJ4tiI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P4pC+mvfzKKmJnGoYyS+JcX4vpBTNmIFpRT610SnSiWd3Z1eruFnT5p6RnBN+F2DG
-         PsyyepljvlVcpWcZT74u96v8gIQscotXaMwtTLSMt4H96uEV5t5VRVTnRR4QqKDmnw
-         3ZgfQ/NaJ3Aiv83sX0N/0nSIl8ioCoGMzPMk0CP0=
+        b=1Oa7EtPclgELkbmuBtHeO/S0hUyddfKpIhYONlzDlFaXPNa+lToqBlHgNZ6H6kB4l
+         FCa3yLYaYHwV4pgqf/l243RTItM4HcflZnmcn/GhlHtxQDU+85FAJeUu5RaGHTEpuX
+         NWRMpdLKPK5RO1td+sEfGazVi47rLgzRr4uMcknQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Changming Liu <charley.ashbringer@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 124/214] spi: stm32: fix stm32_spi_prepare_mbr in case of odd clk_rate
-Date:   Tue,  1 Sep 2020 17:10:04 +0200
-Message-Id: <20200901150958.924939081@linuxfoundation.org>
+Subject: [PATCH 4.19 050/125] USB: sisusbvga: Fix a potential UB casued by left shifting a negative value
+Date:   Tue,  1 Sep 2020 17:10:05 +0200
+Message-Id: <20200901150937.001525313@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Changming Liu <charley.ashbringer@gmail.com>
 
-[ Upstream commit 9cc61973bf9385b19ff5dda4a2a7e265fcba85e4 ]
+[ Upstream commit 2b53a19284f537168fb506f2f40d7fda40a01162 ]
 
-Fix spi->clk_rate when it is odd to the nearest lowest even value because
-minimum SPI divider is 2.
+The char buffer buf, receives data directly from user space,
+so its content might be negative and its elements are left
+shifted to form an unsigned integer.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-4-git-send-email-alain.volmat@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Since left shifting a negative value is undefined behavior, thus
+change the char to u8 to elimintate this UB.
+
+Signed-off-by: Changming Liu <charley.ashbringer@gmail.com>
+Link: https://lore.kernel.org/r/20200711043018.928-1-charley.ashbringer@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/misc/sisusbvga/sisusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index f092bc8e00819..50ef03a8252d7 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -443,7 +443,8 @@ static int stm32_spi_prepare_mbr(struct stm32_spi *spi, u32 speed_hz,
- {
- 	u32 div, mbrdiv;
+diff --git a/drivers/usb/misc/sisusbvga/sisusb.c b/drivers/usb/misc/sisusbvga/sisusb.c
+index 6376be1f5fd22..4877bf82ad395 100644
+--- a/drivers/usb/misc/sisusbvga/sisusb.c
++++ b/drivers/usb/misc/sisusbvga/sisusb.c
+@@ -761,7 +761,7 @@ static int sisusb_write_mem_bulk(struct sisusb_usb_data *sisusb, u32 addr,
+ 	u8   swap8, fromkern = kernbuffer ? 1 : 0;
+ 	u16  swap16;
+ 	u32  swap32, flag = (length >> 28) & 1;
+-	char buf[4];
++	u8 buf[4];
  
--	div = DIV_ROUND_UP(spi->clk_rate, speed_hz);
-+	/* Ensure spi->clk_rate is even */
-+	div = DIV_ROUND_UP(spi->clk_rate & ~0x1, speed_hz);
- 
- 	/*
- 	 * SPI framework set xfer->speed_hz to master->max_speed_hz if
+ 	/* if neither kernbuffer not userbuffer are given, assume
+ 	 * data in obuf
 -- 
 2.25.1
 
