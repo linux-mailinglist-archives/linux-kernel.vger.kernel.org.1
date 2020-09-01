@@ -2,214 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1875E2586B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE302586C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgIAEPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:15:35 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:20900 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgIAEPc (ORCPT
+        id S1726085AbgIAEYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:24:02 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:45522 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgIAEYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:15:32 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200901041529epoutp0444dd5a222f9c9fba4e6173a28b7c7aae~wjcFYbUqZ2699126991epoutp04t
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 04:15:29 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200901041529epoutp0444dd5a222f9c9fba4e6173a28b7c7aae~wjcFYbUqZ2699126991epoutp04t
+        Tue, 1 Sep 2020 00:24:01 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200901042356epoutp037a7789cc2c8b25b9025109b3f3cbd84b~wjjdwweJ91795217952epoutp03O
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 04:23:56 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200901042356epoutp037a7789cc2c8b25b9025109b3f3cbd84b~wjjdwweJ91795217952epoutp03O
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598933729;
-        bh=3WdAxCuqh6cVlPfws3AsDDQng2gxwI57KUnhSvyF9tI=;
+        s=mail20170921; t=1598934236;
+        bh=HEleXd154gvtjOYUHD9LEA9e4nbT1EF1jtvkB6V95Lg=;
         h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=XF3LTrDRqF3kfOHpqiBPEyL66Tp8CCcC5ezXioif3+rMsLuuEYE5Ujl/nZMYrq3le
-         n/JAuZwwtMoH6HZWo8jPu8MTO6d9HPuASBi5Kefi3tOVXIFEgi7L/PMPl559tRYyxV
-         wMwBIixzkNpCSsWrpGGFYz2zNqFotDMjqBeSOW7Y=
+        b=fHbUjcMUX7VjNoHDYeGGxorN1o8u3lh1bybhe2OGa3TsOb626C/xeQBURhn/t43BT
+         Gxta8mlFhTn3YLG5UysuXMxoFNusqBPvjECrjccgUwJrDCMvMKmJnjq/kOS24XAFat
+         TJBhYVYiOS9LkhWNsCXLBFODgHpjKOhg3VD+Hr5g=
 Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
         epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200901041528epcas1p145d317901fc190254fc5a8fcf84a52d4~wjcE0rWDN0736407364epcas1p1l;
-        Tue,  1 Sep 2020 04:15:28 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4BgYdG5FqwzMqYm6; Tue,  1 Sep
-        2020 04:15:14 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AE.C6.18978.ACACD4F5; Tue,  1 Sep 2020 13:15:06 +0900 (KST)
+        20200901042356epcas1p17eab17f52fdcfdf244aa8ef518002097~wjjdcTY_m2881228812epcas1p1r;
+        Tue,  1 Sep 2020 04:23:56 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4BgYqC6zbhzMqYm7; Tue,  1 Sep
+        2020 04:23:51 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3E.84.28578.6DCCD4F5; Tue,  1 Sep 2020 13:23:50 +0900 (KST)
 Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
         epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200901041505epcas1p4f6bb868de0beb554e708f9aa3a578f6d~wjbvChLbr1010310103epcas1p4_;
-        Tue,  1 Sep 2020 04:15:05 +0000 (GMT)
+        20200901042349epcas1p4c0906c49619e7fcaf04eb28ac495eb90~wjjXIZqRX1004910049epcas1p4n;
+        Tue,  1 Sep 2020 04:23:49 +0000 (GMT)
 Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
         epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200901041505epsmtrp17553141b8b96e2004732a83f30a11e8b~wjbvBQs890331203312epsmtrp1w;
-        Tue,  1 Sep 2020 04:15:05 +0000 (GMT)
-X-AuditID: b6c32a35-5edff70000004a22-ac-5f4dcaca9505
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        20200901042349epsmtrp1b69f539acfdf8a54c5d044446e63d24c~wjjXHebWk0757407574epsmtrp1v;
+        Tue,  1 Sep 2020 04:23:49 +0000 (GMT)
+X-AuditID: b6c32a39-8dfff70000006fa2-32-5f4dccd6017f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
         epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        28.40.08303.9CACD4F5; Tue,  1 Sep 2020 13:15:05 +0900 (KST)
+        23.31.08303.5DCCD4F5; Tue,  1 Sep 2020 13:23:49 +0900 (KST)
 Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200901041504epsmtip213960aef21407382983f4a7ead95547a~wjbupowAQ1597015970epsmtip2_;
-        Tue,  1 Sep 2020 04:15:04 +0000 (GMT)
-Subject: Re: [PATCH v2 2/4] drm/vc4: hdmi: Add pixel bvb clock control
-To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>, nsaenzjulienne@suse.de,
-        eric@anholt.net, maxime@cerno.tech, stefan.wahren@i2se.com,
-        dave.stevenson@raspberrypi.com
-Cc:     devicetree@vger.kernel.org, tim.gover@raspberrypi.com,
-        sboyd@kernel.org, mturquette@baylibre.com, kdasu.kdev@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, robh+dt@kernel.org,
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200901042349epsmtip161026905ebc73cab9b7dde031bca6d24~wjjW30X411709917099epsmtip1f;
+        Tue,  1 Sep 2020 04:23:49 +0000 (GMT)
+Subject: Re: [PATCH v4 62/78] drm/vc4: hdmi: Adjust HSM clock rate depending
+ on pixel rate
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
 From:   Chanwoo Choi <cw00.choi@samsung.com>
 Organization: Samsung Electronics
-Message-ID: <46e051f7-ba72-5960-da95-a2e9c44d2d85@samsung.com>
-Date:   Tue, 1 Sep 2020 13:27:33 +0900
+Message-ID: <95172a9a-e861-5e5d-bf51-2ec03c730237@samsung.com>
+Date:   Tue, 1 Sep 2020 13:36:17 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
         Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <20200901040759.29992-3-hoegeun.kwon@samsung.com>
+In-Reply-To: <5919dccdd4a792936e6cb7eb55983c530c9a468d.1594230107.git-series.maxime@cerno.tech>
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc/q4LSxldwXkUN1W73ADMh7XWnZ51BAn7A5m6GZmDDGUG7gD
-        Bn2st6gbf+iYoKAT0YHY0eBEg8MHrDAeJayIRQOCDCrIOhgMSMYgtdvQwCDg+sCM/76/3/l8
-        8833nBw+W/gvIuLnqHS0VkXlYYg3p+VuSERYX98+RWTHqoi49XUPh7AbajlEjeUhl3j0zIEQ
-        XV9aAeGoK0WI9ke3OIRxZpRL/H3mNy5hNVUjRPmvjTyiankdEEN9CUSLvg4hbtsWEKKo08Ij
-        1kd/cBqujyHEdMUkiPclCx33ENIxVsQj9ZMDCDn+cBAh2/UTPPJHm5Q01pcg5OTp+yyy6eox
-        sqhnhUOeba4HZNODAnLR+JpckJobl01TmbRWTKsy1Jk5qiwZlrxf8a5CGhWJh+HRxDuYWEUp
-        aRm29wN5WGJOnrMmJj5M5eU7V3KKYbCI3XFadb6OFmerGZ0MozWZeZpoTThDKZl8VVZ4hloZ
-        g0dG7pQ6wfTc7BtjsZrKwKNXKu284+CxXynw4kN0F5wutYNS4M0Xom0AfmOqZHmGfwC0PbjK
-        9QyLAC4O9yMvLNbxpg3KBGBTlYHjGRwAlozeYLkoXzQRnq+84nb4obUAttkOuSA2usqC1tOd
-        7gMEDYXmuTG3fhndDkeWZ4BLC9DdsGWo3b3noEFwqqOV49L+6AHY23Jig3kF9l6ade+9nPxw
-        4Wk3z0YDoG22huXRr8NWezXbFQzROi94bWGZ5+mwFz5uPruhfeH8/eYNLYJ/lhVv6AL4fa8F
-        8ZhPAdhs/pnrOZBA87ULzgS+MyEENpgiPOvtsH3VADzBPvDJszNcFwJRATxVLPQgb0Dr1ATL
-        owNh7ckS5BzA9Jvq6DdV0G+qoP8/7DLg1IMttIZRZtEMrsE3P7cRuP9AqLQNlNv/Cu8GLD7o
-        BpDPxvwEXaZkhVCQSX3+Ba1VK7T5eTTTDaTOCy5ni/wz1M5PpNIpcOlOiURC7MKjpDiOBQh+
-        t4kVQjSL0tG5NK2htS98LL6X6DhLNt55tDapPmZA/VVKytKbizHa+v6PnsZbSiSWpYYgS1lw
-        cdBL+elp1HPHNiRzj2Sux8BbUB5+/9ubQx3+z0dO4MmrcYIdn12cMvssJYpeLffJumT0Dhxc
-        MyeWriSmdrwn2+pI67prC9v2pERcVpGgCjYkrX8iOzj/S/9cRnpaj2JwLQT748LBLmOhSiQ/
-        okxPYh2Q3DRMx+Yw1xtkEylM+7xuJbbm6WX52ki/tcCEV7DP9zUwvjNbg1sDBFTjYP/bs2vf
-        fRx8J/qn+NvHqqn9drMcFR2iRWsrYZItA40JC8Z99FstQcMfxo5W1TUfMXuf/NQ3qmiP8E56
-        7o57qRdrSYzDZFN4KFvLUP8BBZwTWIwEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Se1BMURzHnb23s7dtdtzaTadELOOxRivPMx5NM4k7QpoxxvhDLa5CWzv3
-        InkmxSjv0eJapQftLIUibWqkLKOHnSRSVGyZBlmsjMpEuztm+u9zvr/P579DEV5W0o/aFr+T
-        5eLVcQooIUtrFAEzn9Wuippl1ktw4UkziXuv5JE4+/FzN/yyzwZx1eEmgG0F6RCbXhaSuNj6
-        yg1/P9HuhpvK9RCfbbstxhd/DwHcWBuGS4UCiItaP0OcVvlYjIde3RkODC0Qf8jsACEyJsX2
-        BDK2ljQxI3Q0QObtcwtkTMI7MXOvdR5TbDwOmY6MpyKmJP8Qk2YeIJlTd42AKanbx9iLx6+R
-        bpAs3sLGbdvNcqrgaEnsjZZFWp3vnlxdrzgZvJanA3cK0XNR09sSkYO96DKA6j5td+2+SNdo
-        JtIBNcwyVFPDpwPJsNILUGq7wenL6GXonC4XOg5yOg+gC/WFwPEg6EERMrz/BF2JGaD6snOE
-        I4G0Ej3saYEOHk1PRM2/rcDBUjoYlTaanDtJT0adD+6TDvam1yFTvlXkcjzRs0tdzt192H+R
-        kuH0CXoq+pP1gnCxD2rtyha5OADd79UTZ4BMGJELIxJhRCKMSK4C0gh8WS2vidHwQdrZ8Wxi
-        IK/W8LviYwI3J2iKgfMfKJVloML4LbAaiChQDRBFKOTSqvLwKC/pFnXSXpZLiOJ2xbF8NRhL
-        kQofaZ+Qs9GLjlHvZHewrJbl/l9FlLtfsig0aTC6Ad5oMxaYOrvak8aoqit+Ltk0bWnPQsv6
-        IuFk4iKL/FQjafe3+BVJl8f2X5r28WY/ebxyXE7knIF1qq/++s8zsn6ujQiXdftPxDGwu+Qy
-        U0cdud2zJnbB1+7AUCYsuIG/9kv+JqP/x75bxqMpd9vCI7iUTSGyg+drH7z2EF9XcjU+c1ce
-        To0ozxzM9jB4j33aSWik0bmPRo/b+MP3SNgTVV/PsfVBHjumD6TW5TYnNK++JavIs6+wJUaB
-        01p+mcpqmT5lv/2gITOSkLyfNGNCyNAH+wEyKyBM4No8dTbP1q36Vce81waMqZy3lfqb3Pfl
-        Tej8qvGjLi/ffKBeHKkg+Vh1kJLgePU/4FAB8XYDAAA=
-X-CMS-MailID: 20200901041505epcas1p4f6bb868de0beb554e708f9aa3a578f6d
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJJsWRmVeSWpSXmKPExsWy7bCmnu61M77xBitmyFus7T3KYvF27mIW
+        iytf37NZHGi8zGix6fE1VovLu+awWUy8vYHdYsaPf4wW22YtZ7NYd+s1m8WjqfcZHbg9mt4f
+        Y/OYdf8sm8edc+fZPO53H2fy2Lyk3qP16C8Wj82nqz0+b5IL4IjKtslITUxJLVJIzUvOT8nM
+        S7dV8g6Od443NTMw1DW0tDBXUshLzE21VXLxCdB1y8wBulNJoSwxpxQoFJBYXKykb2dTlF9a
+        kqqQkV9cYquUWpCSU2BZoFecmFtcmpeul5yfa2VoYGBkClSYkJ2x9d1RxoKHDhWf35xmb2C8
+        atzFyMkhIWAiMW/dTrYuRi4OIYEdjBJNe/YyQjifGCW67y2FynxmlGg5ep0NpuX663VQiV2M
+        Eht3vGcGSQgJvAdqOSEOYgsLxEgc69/PCGKLCJRLtHfuZwZpYBbYwSTRcWo62CQ2AS2J/S9u
+        gNn8AooSV388BmvgFbCTWPJnDdhQFgEVif+HPrOA2KICYRInt7VA1QhKnJz5BCzOKRAvseDC
+        alYQm1lAXOLWk/lMELa8xPa3c5ghrr7CIXG5NQPCdpFYt3IlC4QtLPHq+BZ2CFtK4mV/G5Rd
+        LbHy5BGwLyUEOhgltuy/wAqRMJbYv3Qy0AIOoAWaEut36UOEFSV2/p7LCLGXT+Ld1x5WkBIJ
+        AV6JjjYhiBJlicsP7jJB2JISi9s72SYwKs1C8s0sJB/MQvLBLIRlCxhZVjGKpRYU56anFhsW
+        mCLH9iZGcBrWstzBOP3tB71DjEwcjIcYJTiYlUR4D+zyjhfiTUmsrEotyo8vKs1JLT7EaAoM
+        34nMUqLJ+cBMkFcSb2hqZGxsbGFiaGZqaKgkzvvwlkK8kEB6YklqdmpqQWoRTB8TB6dUAxPb
+        X12HR5liulwBRcw/SmXEX1YIVb5f92Pp6U2G2lVeZrNC9m07H3PDSHDZcb6DDxn6kg/yTAzK
+        OvpbiqP8VcWz6sY899ooz6xjFpvn+6/Tu6L+YVGwU0DHS6Fjxtd++J3RT4pL33JZW+WscJvh
+        80mv7d9UJpyw6b92/2HXd4eP4kvKHRtrIpZdLP6ux9UaMmV6jswnCX5VA/1Hh6LnKJzZuD3P
+        Ya236lTDM1EhZzpjuZgv3wxtvijqvOhE+J+1vaaSD7dlJYivbZer9wt6fHD9ylydi3GaP1Zw
+        9/F6VTivrXmeaFil8S9luwu3a9bc3Y8f/MhwMtWttNg4edoMXc5t2VWXdnCdYzKbc95svRJL
+        cUaioRZzUXEiAD0MPpVMBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKIsWRmVeSWpSXmKPExsWy7bCSnO7VM77xBjv6BC3W9h5lsXg7dzGL
+        xZWv79ksDjReZrTY9Pgaq8XlXXPYLCbe3sBuMePHP0aLbbOWs1msu/WazeLR1PuMDtweTe+P
+        sXnMun+WzePOufNsHve7jzN5bF5S79F69BeLx+bT1R6fN8kFcERx2aSk5mSWpRbp2yVwZWx9
+        d5Sx4KFDxec3p9kbGK8adzFyckgImEhcf72OrYuRi0NIYAejxOWJB9ghEpIS0y4eZe5i5ACy
+        hSUOHy6GqHnLKLFzwWQmkBphgRiJY/37GUFsEYFKic9zdjGDFDEL7GCS6Hp8mgWio5dJYsXm
+        WWBVbAJaEvtf3GADsfkFFCWu/ngMFucVsJNY8mcNM4jNIqAi8f/QZxYQW1QgTGLnksdMEDWC
+        EidnPgGLcwrESyy4sJoVxGYWUJf4M+8SM4QtLnHryXwmCFteYvvbOcwTGIVnIWmfhaRlFpKW
+        WUhaFjCyrGKUTC0ozk3PLTYsMMpLLdcrTswtLs1L10vOz93ECI5JLa0djHtWfdA7xMjEwXiI
+        UYKDWUmE98Au73gh3pTEyqrUovz4otKc1OJDjNIcLErivF9nLYwTEkhPLEnNTk0tSC2CyTJx
+        cEo1MPm/2tV82ngFY+TjmUn1b4ol1kptS7xp2D63a8O+/erGKy+xTn6rY1jbXv9QKt5H8sNP
+        mYsTdmyeoSDLuvNP972LHq83qzMcCoh7Jj916W7pdC29W1b3H1h9X2kxp55viunvaaZKEyTP
+        7zzkvfLHCcFtviU6X/YeC2HLWsz/axHjXwm3mi/nbBbmNst7ZKUbZl00CKyPqFtWbG3EnXxo
+        4xqpxbu2NwtemtmvyPG7wc24UIX3whKuFc3XOVMn+8RoP3KZpbzvtHLGQcHDuy/pnZnnIVCi
+        lBDccddepMMipXgtQ4pbbG71e4ftf1ZdmHdqf/RJw2npLErvj+wxUPPYXt3L/GNazv7J0o8n
+        Xt/A8liJpTgj0VCLuag4EQC62TWmOAMAAA==
+X-CMS-MailID: 20200901042349epcas1p4c0906c49619e7fcaf04eb28ac495eb90
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200901040851epcas1p3124094e38175758b2310bdae6d76793c
-References: <20200901040759.29992-1-hoegeun.kwon@samsung.com>
-        <CGME20200901040851epcas1p3124094e38175758b2310bdae6d76793c@epcas1p3.samsung.com>
-        <20200901040759.29992-3-hoegeun.kwon@samsung.com>
+X-CMS-RootMailID: 20200708174513epcas1p2c059db88d8dad1d58aae3651b3c98c2b
+References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+        <CGME20200708174513epcas1p2c059db88d8dad1d58aae3651b3c98c2b@epcas1p2.samsung.com>
+        <5919dccdd4a792936e6cb7eb55983c530c9a468d.1594230107.git-series.maxime@cerno.tech>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hoegeun,
+Hi Maxime,
 
-It looks good to me. But, just one comment.
-
-On 9/1/20 1:07 PM, Hoegeun Kwon wrote:
-> There is a problem that the output does not work at a resolution
-> exceeding FHD. To solve this, we need to adjust the bvb clock at a
-> resolution exceeding FHD.
+On 7/9/20 2:42 AM, Maxime Ripard wrote:
+> The HSM clock needs to be setup at around 101% of the pixel rate. This
+> was done previously by setting the clock rate to 163.7MHz at probe time and
+> only check in mode_valid whether the mode pixel clock was under the pixel
+> clock +1% or not.
 > 
-> Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> However, with 4k we need to change that frequency to a higher frequency
+> than 163.7MHz, and yet want to have the lowest clock as possible to have a
+> decent power saving.
+> 
+> Let's change that logic a bit by setting the clock rate of the HSM clock
+> to the pixel rate at encoder_enable time. This would work for the
+> BCM2711 that support 4k resolutions and has a clock that can provide it,
+> but we still have to take care of a 4k panel plugged on a BCM283x SoCs
+> that wouldn't be able to use those modes, so let's define the limit in
+> the variant.
+> 
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 > ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 25 +++++++++++++++++++++++++
->  drivers/gpu/drm/vc4/vc4_hdmi.h |  1 +
->  2 files changed, 26 insertions(+)
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 79 ++++++++++++++++-------------------
+>  drivers/gpu/drm/vc4/vc4_hdmi.h |  3 +-
+>  2 files changed, 41 insertions(+), 41 deletions(-)
 > 
 > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index 95ec5eedea39..eb3192d1fd86 100644
+> index 17797b14cde4..9f30fab744f2 100644
 > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
 > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -80,6 +80,7 @@
->  # define VC4_HD_M_ENABLE			BIT(0)
+> @@ -53,7 +53,6 @@
+>  #include "vc4_hdmi_regs.h"
+>  #include "vc4_regs.h"
 >  
+> -#define HSM_CLOCK_FREQ 163682864
 >  #define CEC_CLOCK_FREQ 40000
-> +#define VC4_HSM_MID_CLOCK 149985000
 >  
 >  static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
->  {
-> @@ -380,6 +381,7 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder)
+> @@ -326,6 +325,7 @@ static void vc4_hdmi_encoder_disable(struct drm_encoder *encoder)
 >  	HDMI_WRITE(HDMI_VID_CTL,
 >  		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
 >  
-> +	clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
->  	clk_disable_unprepare(vc4_hdmi->hsm_clock);
+> +	clk_disable_unprepare(vc4_hdmi->hsm_clock);
 >  	clk_disable_unprepare(vc4_hdmi->pixel_clock);
 >  
-> @@ -638,6 +640,23 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
+>  	ret = pm_runtime_put(&vc4_hdmi->pdev->dev);
+> @@ -423,6 +423,7 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
+>  	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+>  	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
+>  	bool debug_dump_regs = false;
+> +	unsigned long pixel_rate, hsm_rate;
+>  	int ret;
+>  
+>  	ret = pm_runtime_get_sync(&vc4_hdmi->pdev->dev);
+> @@ -431,9 +432,8 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
 >  		return;
 >  	}
 >  
-> +	ret = clk_set_rate(vc4_hdmi->pixel_bvb_clock,
-> +			(hsm_rate > VC4_HSM_MID_CLOCK ? 150000000 : 75000000));
+> -	ret = clk_set_rate(vc4_hdmi->pixel_clock,
+> -			   mode->clock * 1000 *
+> -			   ((mode->flags & DRM_MODE_FLAG_DBLCLK) ? 2 : 1));
+> +	pixel_rate = mode->clock * 1000 * ((mode->flags & DRM_MODE_FLAG_DBLCLK) ? 2 : 1);
+> +	ret = clk_set_rate(vc4_hdmi->pixel_clock, pixel_rate);
+>  	if (ret) {
+>  		DRM_ERROR("Failed to set pixel clock rate: %d\n", ret);
+>  		return;
+> @@ -445,6 +445,36 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
+>  		return;
+>  	}
+>  
+> +	/*
+> +	 * As stated in RPi's vc4 firmware "HDMI state machine (HSM) clock must
+> +	 * be faster than pixel clock, infinitesimally faster, tested in
+> +	 * simulation. Otherwise, exact value is unimportant for HDMI
+> +	 * operation." This conflicts with bcm2835's vc4 documentation, which
+> +	 * states HSM's clock has to be at least 108% of the pixel clock.
+> +	 *
+> +	 * Real life tests reveal that vc4's firmware statement holds up, and
+> +	 * users are able to use pixel clocks closer to HSM's, namely for
+> +	 * 1920x1200@60Hz. So it was decided to have leave a 1% margin between
+> +	 * both clocks. Which, for RPi0-3 implies a maximum pixel clock of
+> +	 * 162MHz.
+> +	 *
+> +	 * Additionally, the AXI clock needs to be at least 25% of
+> +	 * pixel clock, but HSM ends up being the limiting factor.
+> +	 */
+> +	hsm_rate = max_t(unsigned long, 120000000, (pixel_rate / 100) * 101);
+> +	ret = clk_set_rate(vc4_hdmi->hsm_clock, hsm_rate);
 > +	if (ret) {
-> +		DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
-> +		clk_disable_unprepare(vc4_hdmi->hsm_clock);
-> +		clk_disable_unprepare(vc4_hdmi->pixel_clock);
+> +		DRM_ERROR("Failed to set HSM clock rate: %d\n", ret);
 > +		return;
 > +	}
 > +
-> +	ret = clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
+> +	ret = clk_prepare_enable(vc4_hdmi->hsm_clock);
 > +	if (ret) {
-> +		DRM_ERROR("Failed to turn on pixel bvb clock: %d\n", ret);
-> +		clk_disable_unprepare(vc4_hdmi->hsm_clock);
+> +		DRM_ERROR("Failed to turn on HSM clock: %d\n", ret);
 > +		clk_disable_unprepare(vc4_hdmi->pixel_clock);
 > +		return;
 > +	}
 
-Generally, enable the clock before using clk and then change the clock rate.
-I think that you better to change the order between clk_prepare_enable and clk_set_rate.
+About vc4_hdmi->hsm_clock instance, usually, we need to enable the clock
+with clk_prepare_enable() and then touch the clock like clk_set_rate().
+I think that need to enable the clock before calling clk_set_rate().
 
+When I tested this patchset, it is well working because I think that
+vc4_hdmi->hsm_clock was already enabled on other side.
 
 > +
 >  	if (vc4_hdmi->variant->reset)
 >  		vc4_hdmi->variant->reset(vc4_hdmi);
 >  
-> @@ -1593,6 +1612,12 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
->  		return PTR_ERR(vc4_hdmi->audio_clock);
+> @@ -559,23 +589,9 @@ static enum drm_mode_status
+>  vc4_hdmi_encoder_mode_valid(struct drm_encoder *encoder,
+>  			    const struct drm_display_mode *mode)
+>  {
+> -	/*
+> -	 * As stated in RPi's vc4 firmware "HDMI state machine (HSM) clock must
+> -	 * be faster than pixel clock, infinitesimally faster, tested in
+> -	 * simulation. Otherwise, exact value is unimportant for HDMI
+> -	 * operation." This conflicts with bcm2835's vc4 documentation, which
+> -	 * states HSM's clock has to be at least 108% of the pixel clock.
+> -	 *
+> -	 * Real life tests reveal that vc4's firmware statement holds up, and
+> -	 * users are able to use pixel clocks closer to HSM's, namely for
+> -	 * 1920x1200@60Hz. So it was decided to have leave a 1% margin between
+> -	 * both clocks. Which, for RPi0-3 implies a maximum pixel clock of
+> -	 * 162MHz.
+> -	 *
+> -	 * Additionally, the AXI clock needs to be at least 25% of
+> -	 * pixel clock, but HSM ends up being the limiting factor.
+> -	 */
+> -	if (mode->clock > HSM_CLOCK_FREQ / (1000 * 101 / 100))
+> +	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+> +
+> +	if ((mode->clock * 1000) > vc4_hdmi->variant->max_pixel_clock)
+>  		return MODE_CLOCK_HIGH;
+>  
+>  	return MODE_OK;
+> @@ -1349,23 +1365,6 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>  		return -EPROBE_DEFER;
 >  	}
 >  
-> +	vc4_hdmi->pixel_bvb_clock = devm_clk_get(dev, "bvb");
-> +	if (IS_ERR(vc4_hdmi->pixel_bvb_clock)) {
-> +		DRM_ERROR("Failed to get pixel bvb clock\n");
-> +		return PTR_ERR(vc4_hdmi->pixel_bvb_clock);
-> +	}
-> +
->  	vc4_hdmi->reset = devm_reset_control_get(dev, NULL);
->  	if (IS_ERR(vc4_hdmi->reset)) {
->  		DRM_ERROR("Failed to get HDMI reset line\n");
+> -	/* This is the rate that is set by the firmware.  The number
+> -	 * needs to be a bit higher than the pixel clock rate
+> -	 * (generally 148.5Mhz).
+> -	 */
+> -	ret = clk_set_rate(vc4_hdmi->hsm_clock, HSM_CLOCK_FREQ);
+> -	if (ret) {
+> -		DRM_ERROR("Failed to set HSM clock rate: %d\n", ret);
+> -		goto err_put_i2c;
+> -	}
+> -
+> -	ret = clk_prepare_enable(vc4_hdmi->hsm_clock);
+> -	if (ret) {
+> -		DRM_ERROR("Failed to turn on HDMI state machine clock: %d\n",
+> -			  ret);
+> -		goto err_put_i2c;
+> -	}
+> -
+>  	/* Only use the GPIO HPD pin if present in the DT, otherwise
+>  	 * we'll use the HDMI core's register.
+>  	 */
+> @@ -1413,9 +1412,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+>  err_destroy_encoder:
+>  	drm_encoder_cleanup(encoder);
+>  err_unprepare_hsm:
+> -	clk_disable_unprepare(vc4_hdmi->hsm_clock);
+>  	pm_runtime_disable(dev);
+> -err_put_i2c:
+>  	put_device(&vc4_hdmi->ddc->dev);
+>  
+>  	return ret;
+> @@ -1454,7 +1451,6 @@ static void vc4_hdmi_unbind(struct device *dev, struct device *master,
+>  	vc4_hdmi_connector_destroy(&vc4_hdmi->connector);
+>  	drm_encoder_cleanup(&vc4_hdmi->encoder.base.base);
+>  
+> -	clk_disable_unprepare(vc4_hdmi->hsm_clock);
+>  	pm_runtime_disable(dev);
+>  
+>  	put_device(&vc4_hdmi->ddc->dev);
+> @@ -1479,6 +1475,7 @@ static int vc4_hdmi_dev_remove(struct platform_device *pdev)
+>  static const struct vc4_hdmi_variant bcm2835_variant = {
+>  	.encoder_type		= VC4_ENCODER_TYPE_HDMI0,
+>  	.debugfs_name		= "hdmi_regs",
+> +	.max_pixel_clock	= 162000000,
+>  	.cec_available		= true,
+>  	.registers		= vc4_hdmi_fields,
+>  	.num_registers		= ARRAY_SIZE(vc4_hdmi_fields),
 > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> index 0806c6d9f24e..63c6f8bddf1d 100644
+> index 3f07aebe89f1..342f6e0227a2 100644
 > --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
 > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> @@ -147,6 +147,7 @@ struct vc4_hdmi {
->  	struct clk *pixel_clock;
->  	struct clk *hsm_clock;
->  	struct clk *audio_clock;
-> +	struct clk *pixel_bvb_clock;
+> @@ -36,6 +36,9 @@ struct vc4_hdmi_variant {
+>  	/* Set to true when the CEC support is available */
+>  	bool cec_available;
 >  
->  	struct reset_control *reset;
+> +	/* Maximum pixel clock supported by the controller (in Hz) */
+> +	unsigned long long max_pixel_clock;
+> +
+>  	/* List of the registers available on that variant */
+>  	const struct vc4_hdmi_register *registers;
 >  
 > 
 
