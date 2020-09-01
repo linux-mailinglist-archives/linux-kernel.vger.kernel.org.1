@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB8A259B17
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46871259B15
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgIAQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:57:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46184 "EHLO mail.kernel.org"
+        id S1729924AbgIAQ53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:57:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729795AbgIAPXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:23:17 -0400
+        id S1729646AbgIAPXY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:23:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA79C2100A;
-        Tue,  1 Sep 2020 15:23:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E400020FC3;
+        Tue,  1 Sep 2020 15:23:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973797;
-        bh=kmamFZ2shPcWg1K0wauWkZZ2BELptm1EAJQ2DNJ4tiI=;
+        s=default; t=1598973804;
+        bh=m5M8Awz22GmrEwV0BJ4+h7A02qBUcB/cu5vWpcC9nPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Oa7EtPclgELkbmuBtHeO/S0hUyddfKpIhYONlzDlFaXPNa+lToqBlHgNZ6H6kB4l
-         FCa3yLYaYHwV4pgqf/l243RTItM4HcflZnmcn/GhlHtxQDU+85FAJeUu5RaGHTEpuX
-         NWRMpdLKPK5RO1td+sEfGazVi47rLgzRr4uMcknQ=
+        b=jk5CdyFDZopav0xqTwwPD/kCj0Hy01R/AIQ0YaDVgwlG1sc4C4UBiw58GHhAx6X06
+         8AzYNn0mspMltnDZy0L7L09OLrcRs7zbVjzNampBu6MD9OU2PMvX65H53O7v3TrZws
+         Tzg1HsgLKrCOrAFHHKnPGtqSFrDFPylno3HGORVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Changming Liu <charley.ashbringer@gmail.com>,
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 050/125] USB: sisusbvga: Fix a potential UB casued by left shifting a negative value
-Date:   Tue,  1 Sep 2020 17:10:05 +0200
-Message-Id: <20200901150937.001525313@linuxfoundation.org>
+Subject: [PATCH 4.19 053/125] media: gpio-ir-tx: improve precision of transmitted signal due to scheduling
+Date:   Tue,  1 Sep 2020 17:10:08 +0200
+Message-Id: <20200901150937.150292200@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -44,38 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changming Liu <charley.ashbringer@gmail.com>
+From: Sean Young <sean@mess.org>
 
-[ Upstream commit 2b53a19284f537168fb506f2f40d7fda40a01162 ]
+[ Upstream commit ea8912b788f8144e7d32ee61e5ccba45424bef83 ]
 
-The char buffer buf, receives data directly from user space,
-so its content might be negative and its elements are left
-shifted to form an unsigned integer.
+usleep_range() may take longer than the max argument due to scheduling,
+especially under load. This is causing random errors in the transmitted
+IR. Remove the usleep_range() in favour of busy-looping with udelay().
 
-Since left shifting a negative value is undefined behavior, thus
-change the char to u8 to elimintate this UB.
-
-Signed-off-by: Changming Liu <charley.ashbringer@gmail.com>
-Link: https://lore.kernel.org/r/20200711043018.928-1-charley.ashbringer@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/misc/sisusbvga/sisusb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/rc/gpio-ir-tx.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/usb/misc/sisusbvga/sisusb.c b/drivers/usb/misc/sisusbvga/sisusb.c
-index 6376be1f5fd22..4877bf82ad395 100644
---- a/drivers/usb/misc/sisusbvga/sisusb.c
-+++ b/drivers/usb/misc/sisusbvga/sisusb.c
-@@ -761,7 +761,7 @@ static int sisusb_write_mem_bulk(struct sisusb_usb_data *sisusb, u32 addr,
- 	u8   swap8, fromkern = kernbuffer ? 1 : 0;
- 	u16  swap16;
- 	u32  swap32, flag = (length >> 28) & 1;
--	char buf[4];
-+	u8 buf[4];
- 
- 	/* if neither kernbuffer not userbuffer are given, assume
- 	 * data in obuf
+diff --git a/drivers/media/rc/gpio-ir-tx.c b/drivers/media/rc/gpio-ir-tx.c
+index cd476cab97820..4e70b67ccd181 100644
+--- a/drivers/media/rc/gpio-ir-tx.c
++++ b/drivers/media/rc/gpio-ir-tx.c
+@@ -87,13 +87,8 @@ static int gpio_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+ 			// space
+ 			edge = ktime_add_us(edge, txbuf[i]);
+ 			delta = ktime_us_delta(edge, ktime_get());
+-			if (delta > 10) {
+-				spin_unlock_irqrestore(&gpio_ir->lock, flags);
+-				usleep_range(delta, delta + 10);
+-				spin_lock_irqsave(&gpio_ir->lock, flags);
+-			} else if (delta > 0) {
++			if (delta > 0)
+ 				udelay(delta);
+-			}
+ 		} else {
+ 			// pulse
+ 			ktime_t last = ktime_add_us(edge, txbuf[i]);
 -- 
 2.25.1
 
