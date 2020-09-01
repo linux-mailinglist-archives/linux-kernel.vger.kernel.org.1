@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B736B2595C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6495D2595C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730207AbgIAPp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:45:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55458 "EHLO mail.kernel.org"
+        id S1731861AbgIAPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:45:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731563AbgIAPma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:30 -0400
+        id S1731566AbgIAPmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:42:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9739C206EB;
-        Tue,  1 Sep 2020 15:42:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6573C2064B;
+        Tue,  1 Sep 2020 15:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974949;
-        bh=+fTUKEyrtLg4Uiu2RbCq3/3bQ+IX0Dc03GZZYbNK0kc=;
+        s=default; t=1598974951;
+        bh=FpnvJsQ/MFxUvX0nLrEfcR+kiwscTrNVnhbkPdBa00g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1619Y0ZPjfp7TQlJw5bw4whGfR8bElW6FkAviJxVBeOzGTPUK8q4F4V1/63lb9nj9
-         n3pC0aMIYo34Iu8RKopXfWznLmAJ9zAEljTBB1v0/zNK8nI9E/EYBmebNL0Y6e9xxi
-         pe7iw5eUnRuueGe6Z/5TcXLpc0I+2qCUhAOZxuqU=
+        b=NOnu1130Uq3TBMr8Wf/2FDvKejCPShoOVaDjMBLBbtdeS1ASDMPa9vwaSaWK0N4D2
+         VcQdPc2IKtHVjYDiDWEuTyn2TPnqTJnjFLkPY6o6Kfe1gOvaLIwIAl6CMoMSQebgYD
+         WVQyON9gaUfSGZXTnOJBwVOdzD1JKq3BdYc3/FnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 122/255] drm/amd/powerplay: correct Vega20 cached smu feature state
-Date:   Tue,  1 Sep 2020 17:09:38 +0200
-Message-Id: <20200901151006.576070658@linuxfoundation.org>
+Subject: [PATCH 5.8 123/255] drm/amd/powerplay: correct UVD/VCE PG state on custom pptable uploading
+Date:   Tue,  1 Sep 2020 17:09:39 +0200
+Message-Id: <20200901151006.623759292@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -46,89 +46,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Evan Quan <evan.quan@amd.com>
 
-[ Upstream commit 266d81d9eed30f4994d76a2b237c63ece062eefe ]
+[ Upstream commit 2c5b8080d810d98e3e59617680218499b17c84a1 ]
 
-Correct the cached smu feature state on pp_features sysfs
-setting.
+The UVD/VCE PG state is managed by UVD and VCE IP. It's error-prone to
+assume the bootup state in SMU based on the dpm status.
 
 Signed-off-by: Evan Quan <evan.quan@amd.com>
 Acked-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/powerplay/hwmgr/vega20_hwmgr.c    | 38 +++++++++----------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c
-index 9ff470f1b826c..b7f3f8b62c2ac 100644
+index b7f3f8b62c2ac..9bd2874a122b4 100644
 --- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c
 +++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c
-@@ -979,10 +979,7 @@ static int vega20_disable_all_smu_features(struct pp_hwmgr *hwmgr)
- {
- 	struct vega20_hwmgr *data =
- 			(struct vega20_hwmgr *)(hwmgr->backend);
--	uint64_t features_enabled;
--	int i;
--	bool enabled;
--	int ret = 0;
-+	int i, ret = 0;
+@@ -1640,12 +1640,6 @@ static void vega20_init_powergate_state(struct pp_hwmgr *hwmgr)
  
- 	PP_ASSERT_WITH_CODE((ret = smum_send_msg_to_smc(hwmgr,
- 			PPSMC_MSG_DisableAllSmuFeatures,
-@@ -990,17 +987,8 @@ static int vega20_disable_all_smu_features(struct pp_hwmgr *hwmgr)
- 			"[DisableAllSMUFeatures] Failed to disable all smu features!",
- 			return ret);
- 
--	ret = vega20_get_enabled_smc_features(hwmgr, &features_enabled);
--	PP_ASSERT_WITH_CODE(!ret,
--			"[DisableAllSMUFeatures] Failed to get enabled smc features!",
--			return ret);
+ 	data->uvd_power_gated = true;
+ 	data->vce_power_gated = true;
 -
--	for (i = 0; i < GNLD_FEATURES_MAX; i++) {
--		enabled = (features_enabled & data->smu_features[i].smu_feature_bitmap) ?
--			true : false;
--		data->smu_features[i].enabled = enabled;
--		data->smu_features[i].supported = enabled;
--	}
-+	for (i = 0; i < GNLD_FEATURES_MAX; i++)
-+		data->smu_features[i].enabled = 0;
- 
- 	return 0;
- }
-@@ -3230,10 +3218,11 @@ static int vega20_get_ppfeature_status(struct pp_hwmgr *hwmgr, char *buf)
- 
- static int vega20_set_ppfeature_status(struct pp_hwmgr *hwmgr, uint64_t new_ppfeature_masks)
- {
--	uint64_t features_enabled;
--	uint64_t features_to_enable;
--	uint64_t features_to_disable;
--	int ret = 0;
-+	struct vega20_hwmgr *data =
-+			(struct vega20_hwmgr *)(hwmgr->backend);
-+	uint64_t features_enabled, features_to_enable, features_to_disable;
-+	int i, ret = 0;
-+	bool enabled;
- 
- 	if (new_ppfeature_masks >= (1ULL << GNLD_FEATURES_MAX))
- 		return -EINVAL;
-@@ -3262,6 +3251,17 @@ static int vega20_set_ppfeature_status(struct pp_hwmgr *hwmgr, uint64_t new_ppfe
- 			return ret;
- 	}
- 
-+	/* Update the cached feature enablement state */
-+	ret = vega20_get_enabled_smc_features(hwmgr, &features_enabled);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < GNLD_FEATURES_MAX; i++) {
-+		enabled = (features_enabled & data->smu_features[i].smu_feature_bitmap) ?
-+			true : false;
-+		data->smu_features[i].enabled = enabled;
-+	}
-+
- 	return 0;
+-	if (data->smu_features[GNLD_DPM_UVD].enabled)
+-		data->uvd_power_gated = false;
+-
+-	if (data->smu_features[GNLD_DPM_VCE].enabled)
+-		data->vce_power_gated = false;
  }
  
+ static int vega20_enable_dpm_tasks(struct pp_hwmgr *hwmgr)
 -- 
 2.25.1
 
