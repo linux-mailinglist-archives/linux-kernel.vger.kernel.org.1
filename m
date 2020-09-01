@@ -2,913 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A72A259F22
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF6B259F28
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732053AbgIATWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 15:22:10 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53437 "EHLO mga06.intel.com"
+        id S1732715AbgIATWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 15:22:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:53433 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728531AbgIATVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 15:21:38 -0400
-IronPort-SDR: 4uI4pBTBh2bwMjSCq9HmWdDmj9Hwv38HEcOwPQYd4e7Pm90mEaCOVjJV/TX7BvyNH940MSxfWp
- zdU/si+i3oOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="218807326"
+        id S1729441AbgIATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 15:21:44 -0400
+IronPort-SDR: DRcEI7iam1LSd42BLElBjE8yRWuH6yQy3QxPRFwS1M1VE+gimIs5aXwhG6eRW0q6d4oC9GZXlf
+ dJ/RAWIS2DxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="218807331"
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="218807326"
+   d="scan'208";a="218807331"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 12:21:31 -0700
-IronPort-SDR: B2pQb+cOkGia/u9yw9FKF9Dga41z0osw6iTAdzF3L8+hdgv2aiqdGBshVQu+q+iu597QKCDOaE
- DVS9oHQS3VbQ==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 12:21:32 -0700
+IronPort-SDR: +/amIk7g1CUI0r5MCOg6CByiPmU0HBNmWeuTG4xNZyO0eJjcN9raMPU3Yt/KWmgQL9wk2nN52j
+ pquawZaEgwXw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="325480477"
+   d="scan'208";a="325480480"
 Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
   by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2020 12:21:31 -0700
 From:   Gage Eads <gage.eads@intel.com>
 To:     linux-kernel@vger.kernel.org, arnd@arndb.de,
         gregkh@linuxfoundation.org
 Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com
-Subject: [PATCH v3 09/19] dlb2: add port mmap support
-Date:   Tue,  1 Sep 2020 14:15:38 -0500
-Message-Id: <20200901191548.31646-10-gage.eads@intel.com>
+Subject: [PATCH v3 10/19] dlb2: add start domain ioctl
+Date:   Tue,  1 Sep 2020 14:15:39 -0500
+Message-Id: <20200901191548.31646-11-gage.eads@intel.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20200901191548.31646-1-gage.eads@intel.com>
 References: <20200901191548.31646-1-gage.eads@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once a port is created, the application can mmap the corresponding DMA
-memory and MMIO into user-space. This allows user-space applications to
-do (performance-sensitive) enqueue and dequeue independent of the kernel
-driver.
-
-The mmap callback is only available through special port files: a producer
-port (PP) file and a consumer queue (CQ) file. User-space gets an fd for
-these files by calling a new ioctl, DLB2_DOMAIN_CMD_GET_{LDB,
-DIR}_PORT_{PP, CQ}_FD, and passing in a port ID. If the ioctl succeeds, the
-returned fd can be used to mmap that port's PP/CQ.
-
-Device reset requires first unmapping all user-space mappings, to prevent
-applications from interfering with the reset operation. To this end, the
-driver uses a single inode -- allocated when the first PP/CQ file is
-created, and freed when the last such file is closed -- and attaches all
-port files to this common inode, as done elsewhere in Linux (e.g. cxl,
-dax).
-
-Allocating this inode requires creating a pseudo-filesystem. The driver
-initializes this FS when the inode is allocated, and frees the FS after the
-inode is freed.
-
-The driver doesn't use anon_inode_getfd() for these port mmap files because
-the anon inode layer uses a single inode that is shared with other kernel
-components -- calling unmap_mapping_range() on that shared inode would
-likely break the kernel.
+Once a scheduling domain and its resources have been configured, the start
+domain ioctl is called to enable its ports to begin enqueueing to the
+device. Once started, the domain's resources cannot be configured again
+until after the domain is reset.
 
 Signed-off-by: Gage Eads <gage.eads@intel.com>
-Reviewed-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Reviewed-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- drivers/misc/dlb2/Makefile        |   1 +
- drivers/misc/dlb2/dlb2_file.c     | 133 ++++++++++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_file.h     |  19 +++++
- drivers/misc/dlb2/dlb2_ioctl.c    | 154 ++++++++++++++++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_main.c     | 100 +++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_main.h     |  13 ++++
- drivers/misc/dlb2/dlb2_pf_ops.c   |  22 ++++++
- drivers/misc/dlb2/dlb2_resource.c |  99 ++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_resource.h |  50 +++++++++++++
- include/uapi/linux/dlb2_user.h    |  59 +++++++++++++++
- 10 files changed, 650 insertions(+)
- create mode 100644 drivers/misc/dlb2/dlb2_file.c
- create mode 100644 drivers/misc/dlb2/dlb2_file.h
+ drivers/misc/dlb2/dlb2_ioctl.c    |   3 +
+ drivers/misc/dlb2/dlb2_main.h     |   4 ++
+ drivers/misc/dlb2/dlb2_pf_ops.c   |  10 ++++
+ drivers/misc/dlb2/dlb2_resource.c | 120 ++++++++++++++++++++++++++++++++++++++
+ drivers/misc/dlb2/dlb2_resource.h |  30 ++++++++++
+ include/uapi/linux/dlb2_user.h    |  22 +++++++
+ 6 files changed, 189 insertions(+)
 
-diff --git a/drivers/misc/dlb2/Makefile b/drivers/misc/dlb2/Makefile
-index 18b5498b20e6..12361461dcff 100644
---- a/drivers/misc/dlb2/Makefile
-+++ b/drivers/misc/dlb2/Makefile
-@@ -6,6 +6,7 @@ obj-$(CONFIG_INTEL_DLB2) := dlb2.o
- 
- dlb2-objs :=      \
-   dlb2_main.o     \
-+  dlb2_file.o     \
-   dlb2_ioctl.o    \
-   dlb2_pf_ops.o   \
-   dlb2_resource.o \
-diff --git a/drivers/misc/dlb2/dlb2_file.c b/drivers/misc/dlb2/dlb2_file.c
-new file mode 100644
-index 000000000000..8e73231336d7
---- /dev/null
-+++ b/drivers/misc/dlb2/dlb2_file.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright(c) 2020 Intel Corporation */
-+
-+#include <linux/anon_inodes.h>
-+#include <linux/file.h>
-+#include <linux/module.h>
-+#include <linux/mount.h>
-+#include <linux/pseudo_fs.h>
-+
-+#include "dlb2_file.h"
-+#include "dlb2_main.h"
-+
-+/*
-+ * dlb2 tracks its memory mappings so it can revoke them when an FLR is
-+ * requested and user-space cannot be allowed to access the device. To achieve
-+ * that, the driver creates a single inode through which all driver-created
-+ * files can share a struct address_space, and unmaps the inode's address space
-+ * during the reset preparation phase. Since the anon inode layer shares its
-+ * inode with multiple kernel components, we cannot use that here.
-+ *
-+ * Doing so requires a custom pseudo-filesystem to allocate the inode. The FS
-+ * and the inode are allocated on demand when a file is created, and both are
-+ * freed when the last such file is closed.
-+ *
-+ * This is inspired by other drivers (cxl, dax, mem) and the anon inode layer.
-+ */
-+static int dlb2_fs_cnt;
-+static struct vfsmount *dlb2_vfs_mount;
-+
-+#define DLB2FS_MAGIC 0x444C4232
-+static int dlb2_init_fs_context(struct fs_context *fc)
-+{
-+	return init_pseudo(fc, DLB2FS_MAGIC) ? 0 : -ENOMEM;
-+}
-+
-+static struct file_system_type dlb2_fs_type = {
-+	.name	 = "dlb2",
-+	.owner	 = THIS_MODULE,
-+	.init_fs_context = dlb2_init_fs_context,
-+	.kill_sb = kill_anon_super,
-+};
-+
-+static struct inode *dlb2_alloc_inode(struct dlb2_dev *dev)
-+{
-+	struct inode *inode;
-+	int ret;
-+
-+	/* Increment the pseudo-FS's refcnt and (if not already) mount it. */
-+	ret = simple_pin_fs(&dlb2_fs_type, &dlb2_vfs_mount, &dlb2_fs_cnt);
-+	if (ret < 0) {
-+		dev_err(dev->dlb2_device,
-+			"[%s()] Cannot mount pseudo filesystem: %d\n",
-+			__func__, ret);
-+		return ERR_PTR(ret);
-+	}
-+
-+	if (dlb2_fs_cnt > 1) {
-+		/*
-+		 * Return the previously allocated inode. In this case, there
-+		 * is guaranteed >= 1 reference and so ihold() is safe to call.
-+		 */
-+		ihold(dev->inode);
-+		return dev->inode;
-+	}
-+
-+	inode = alloc_anon_inode(dlb2_vfs_mount->mnt_sb);
-+	if (IS_ERR(inode)) {
-+		dev_err(dev->dlb2_device,
-+			"[%s()] Cannot allocate inode: %d\n",
-+			__func__, ret);
-+		simple_release_fs(&dlb2_vfs_mount, &dlb2_fs_cnt);
-+	}
-+
-+	dev->inode = inode;
-+
-+	return inode;
-+}
-+
-+/*
-+ * Decrement the inode reference count and release the FS. Intended for
-+ * unwinding dlb2_alloc_inode(). Must hold the resource mutex while calling.
-+ */
-+static void dlb2_free_inode(struct inode *inode)
-+{
-+	iput(inode);
-+	simple_release_fs(&dlb2_vfs_mount, &dlb2_fs_cnt);
-+}
-+
-+/*
-+ * Release the FS. Intended for use in a file_operations release callback,
-+ * which decrements the inode reference count separately. Must hold the
-+ * resource mutex while calling.
-+ */
-+void dlb2_release_fs(struct dlb2_dev *dev)
-+{
-+	simple_release_fs(&dlb2_vfs_mount, &dlb2_fs_cnt);
-+
-+	/* When the fs refcnt reaches zero, the inode has been freed */
-+	if (dlb2_fs_cnt == 0)
-+		dev->inode = NULL;
-+}
-+
-+/*
-+ * Allocate a file with the requested flags, file operations, and name that
-+ * uses the device's shared inode. Must hold the resource mutex while calling.
-+ *
-+ * Caller must separately allocate an fd and install the file in that fd.
-+ */
-+struct file *dlb2_getfile(struct dlb2_dev *dev,
-+			  int flags,
-+			  const struct file_operations *fops,
-+			  const char *name)
-+{
-+	struct inode *inode;
-+	struct file *f;
-+
-+	if (!try_module_get(THIS_MODULE))
-+		return ERR_PTR(-ENOENT);
-+
-+	inode = dlb2_alloc_inode(dev);
-+	if (IS_ERR(inode)) {
-+		module_put(THIS_MODULE);
-+		return ERR_CAST(inode);
-+	}
-+
-+	f = alloc_file_pseudo(inode, dlb2_vfs_mount, name, flags, fops);
-+	if (IS_ERR(f)) {
-+		dlb2_free_inode(inode);
-+		module_put(THIS_MODULE);
-+	}
-+
-+	return f;
-+}
-diff --git a/drivers/misc/dlb2/dlb2_file.h b/drivers/misc/dlb2/dlb2_file.h
-new file mode 100644
-index 000000000000..20a3b04eb00e
---- /dev/null
-+++ b/drivers/misc/dlb2/dlb2_file.h
-@@ -0,0 +1,19 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ * Copyright(c) 2020 Intel Corporation
-+ */
-+
-+#ifndef __DLB2_FILE_H
-+#define __DLB2_FILE_H
-+
-+#include <linux/file.h>
-+
-+#include "dlb2_main.h"
-+
-+void dlb2_release_fs(struct dlb2_dev *dev);
-+
-+struct file *dlb2_getfile(struct dlb2_dev *dev,
-+			  int flags,
-+			  const struct file_operations *fops,
-+			  const char *name);
-+
-+#endif /* __DLB2_FILE_H */
 diff --git a/drivers/misc/dlb2/dlb2_ioctl.c b/drivers/misc/dlb2/dlb2_ioctl.c
-index 7a3fea60c302..68db45842e34 100644
+index 68db45842e34..5b6d3b4c3297 100644
 --- a/drivers/misc/dlb2/dlb2_ioctl.c
 +++ b/drivers/misc/dlb2/dlb2_ioctl.c
-@@ -6,6 +6,7 @@
+@@ -51,6 +51,7 @@ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(create_ldb_queue)
+ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(create_dir_queue)
+ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(get_ldb_queue_depth)
+ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(get_dir_queue_depth)
++DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(start_domain)
  
- #include <uapi/linux/dlb2_user.h>
- 
-+#include "dlb2_file.h"
- #include "dlb2_ioctl.h"
- #include "dlb2_main.h"
- 
-@@ -171,6 +172,151 @@ static int dlb2_domain_ioctl_create_dir_port(struct dlb2_dev *dev,
- 	return ret;
+ /*
+  * Port creation ioctls don't use the callback template macro because they have
+@@ -343,6 +344,8 @@ long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 		return dlb2_domain_ioctl_get_dir_port_pp_fd(dev, dom, arg);
+ 	case DLB2_IOC_GET_DIR_PORT_CQ_FD:
+ 		return dlb2_domain_ioctl_get_dir_port_cq_fd(dev, dom, arg);
++	case DLB2_IOC_START_DOMAIN:
++		return dlb2_domain_ioctl_start_domain(dev, dom, arg);
+ 	default:
+ 		return -ENOTTY;
+ 	}
+diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
+index 06b9130643cb..abe9808b4638 100644
+--- a/drivers/misc/dlb2/dlb2_main.h
++++ b/drivers/misc/dlb2/dlb2_main.h
+@@ -78,6 +78,10 @@ struct dlb2_device_ops {
+ 			       struct dlb2_create_dir_port_args *args,
+ 			       uintptr_t cq_dma_base,
+ 			       struct dlb2_cmd_response *resp);
++	int (*start_domain)(struct dlb2_hw *hw,
++			    u32 domain_id,
++			    struct dlb2_start_domain_args *args,
++			    struct dlb2_cmd_response *resp);
+ 	int (*get_num_resources)(struct dlb2_hw *hw,
+ 				 struct dlb2_get_num_resources_args *args);
+ 	int (*reset_domain)(struct dlb2_hw *hw, u32 domain_id);
+diff --git a/drivers/misc/dlb2/dlb2_pf_ops.c b/drivers/misc/dlb2/dlb2_pf_ops.c
+index 1e2e89d6945e..4ab4d9fe3f61 100644
+--- a/drivers/misc/dlb2/dlb2_pf_ops.c
++++ b/drivers/misc/dlb2/dlb2_pf_ops.c
+@@ -263,6 +263,15 @@ dlb2_pf_create_dir_port(struct dlb2_hw *hw,
  }
  
-+static int dlb2_create_port_fd(struct dlb2_dev *dev,
-+			       struct dlb2_domain *domain,
-+			       const char *prefix,
-+			       u32 id,
-+			       const struct file_operations *fops,
-+			       int *fd,
-+			       struct file **f)
+ static int
++dlb2_pf_start_domain(struct dlb2_hw *hw,
++		     u32 id,
++		     struct dlb2_start_domain_args *args,
++		     struct dlb2_cmd_response *resp)
 +{
-+	char *name;
-+	int ret;
++	return dlb2_hw_start_domain(hw, id, args, resp, false, 0);
++}
 +
-+	ret = get_unused_fd_flags(O_RDWR);
-+	if (ret < 0)
-+		return ret;
++static int
+ dlb2_pf_get_num_resources(struct dlb2_hw *hw,
+ 			  struct dlb2_get_num_resources_args *args)
+ {
+@@ -349,6 +358,7 @@ struct dlb2_device_ops dlb2_pf_ops = {
+ 	.create_dir_queue = dlb2_pf_create_dir_queue,
+ 	.create_ldb_port = dlb2_pf_create_ldb_port,
+ 	.create_dir_port = dlb2_pf_create_dir_port,
++	.start_domain = dlb2_pf_start_domain,
+ 	.get_num_resources = dlb2_pf_get_num_resources,
+ 	.reset_domain = dlb2_pf_reset_domain,
+ 	.ldb_port_owned_by_domain = dlb2_pf_ldb_port_owned_by_domain,
+diff --git a/drivers/misc/dlb2/dlb2_resource.c b/drivers/misc/dlb2/dlb2_resource.c
+index 454a1aacfaf2..4d8b56a4b437 100644
+--- a/drivers/misc/dlb2/dlb2_resource.c
++++ b/drivers/misc/dlb2/dlb2_resource.c
+@@ -1303,6 +1303,34 @@ dlb2_verify_create_dir_port_args(struct dlb2_hw *hw,
+ 	return 0;
+ }
+ 
++static int dlb2_verify_start_domain_args(struct dlb2_hw *hw,
++					 u32 domain_id,
++					 struct dlb2_cmd_response *resp,
++					 bool vdev_req,
++					 unsigned int vdev_id)
++{
++	struct dlb2_hw_domain *domain;
 +
-+	*fd = ret;
++	domain = dlb2_get_domain_from_id(hw, domain_id, vdev_req, vdev_id);
 +
-+	name = kasprintf(GFP_KERNEL, "%s:%d", prefix, id);
-+	if (!name) {
-+		put_unused_fd(*fd);
-+		return -ENOMEM;
++	if (!domain) {
++		resp->status = DLB2_ST_INVALID_DOMAIN_ID;
++		return -EINVAL;
 +	}
 +
-+	*f = dlb2_getfile(dev, O_RDWR, fops, name);
++	if (!domain->configured) {
++		resp->status = DLB2_ST_DOMAIN_NOT_CONFIGURED;
++		return -EINVAL;
++	}
 +
-+	kfree(name);
-+
-+	if (IS_ERR(*f)) {
-+		put_unused_fd(*fd);
-+		return PTR_ERR(*f);
++	if (domain->started) {
++		resp->status = DLB2_ST_DOMAIN_STARTED;
++		return -EINVAL;
 +	}
 +
 +	return 0;
 +}
 +
-+static int dlb2_domain_get_port_fd(struct dlb2_dev *dev,
-+				   struct dlb2_domain *domain,
-+				   unsigned long user_arg,
-+				   const char *name,
-+				   const struct file_operations *fops,
-+				   bool is_ldb)
+ static bool dlb2_port_find_slot(struct dlb2_ldb_port *port,
+ 				enum dlb2_qid_map_state state,
+ 				int *slot)
+@@ -3259,6 +3287,98 @@ int dlb2_hw_create_dir_port(struct dlb2_hw *hw,
+ 	return 0;
+ }
+ 
++static void dlb2_log_start_domain(struct dlb2_hw *hw,
++				  u32 domain_id,
++				  bool vdev_req,
++				  unsigned int vdev_id)
 +{
-+	struct dlb2_cmd_response response = {0};
-+	struct dlb2_get_port_fd_args arg;
-+	struct file *file = NULL;
-+	struct dlb2_port *port;
-+	int ret, fd;
++	DLB2_HW_DBG(hw, "DLB2 start domain arguments:\n");
++	if (vdev_req)
++		DLB2_HW_DBG(hw, "(Request from vdev %d)\n", vdev_id);
++	DLB2_HW_DBG(hw, "\tDomain ID: %d\n", domain_id);
++}
 +
-+	if (copy_from_user(&arg, (void __user *)user_arg, sizeof(arg)))
++/**
++ * dlb2_hw_start_domain() - Lock the domain configuration
++ * @hw:	Contains the current state of the DLB2 hardware.
++ * @domain_id: Domain ID
++ * @arg: User-provided arguments (unused, here for ioctl callback template).
++ * @resp: Response to user.
++ * @vdev_req: Request came from a virtual device.
++ * @vdev_id: If vdev_req is true, this contains the virtual device's ID.
++ *
++ * Return: returns < 0 on error, 0 otherwise. If the driver is unable to
++ * satisfy a request, resp->status will be set accordingly.
++ */
++int
++dlb2_hw_start_domain(struct dlb2_hw *hw,
++		     u32 domain_id,
++		     __attribute((unused)) struct dlb2_start_domain_args *arg,
++		     struct dlb2_cmd_response *resp,
++		     bool vdev_req,
++		     unsigned int vdev_id)
++{
++	struct dlb2_dir_pq_pair *dir_queue;
++	struct dlb2_ldb_queue *ldb_queue;
++	struct dlb2_hw_domain *domain;
++	int ret;
++
++	dlb2_log_start_domain(hw, domain_id, vdev_req, vdev_id);
++
++	ret = dlb2_verify_start_domain_args(hw,
++					    domain_id,
++					    resp,
++					    vdev_req,
++					    vdev_id);
++	if (ret)
++		return ret;
++
++	domain = dlb2_get_domain_from_id(hw, domain_id, vdev_req, vdev_id);
++	if (!domain) {
++		DLB2_HW_ERR(hw,
++			    "[%s():%d] Internal error: domain not found\n",
++			    __func__, __LINE__);
 +		return -EFAULT;
-+
-+	mutex_lock(&dev->resource_mutex);
-+
-+	if ((is_ldb &&
-+	     dev->ops->ldb_port_owned_by_domain(&dev->hw,
-+						domain->id,
-+						arg.port_id) != 1)) {
-+		response.status = DLB2_ST_INVALID_PORT_ID;
-+		ret = -EINVAL;
-+		goto end;
 +	}
-+
-+	if (!is_ldb &&
-+	    dev->ops->dir_port_owned_by_domain(&dev->hw,
-+					       domain->id,
-+					       arg.port_id) != 1) {
-+		response.status = DLB2_ST_INVALID_PORT_ID;
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
-+	port = (is_ldb) ? &dev->ldb_port[arg.port_id] :
-+			  &dev->dir_port[arg.port_id];
-+
-+	if (!port->valid) {
-+		response.status = DLB2_ST_INVALID_PORT_ID;
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
-+	ret = dlb2_create_port_fd(dev, domain, name, arg.port_id,
-+				  fops, &fd, &file);
-+	if (ret < 0)
-+		goto end;
-+
-+	file->private_data = port;
-+
-+	response.id = fd;
-+	ret = 0;
-+
-+end:
-+	BUILD_BUG_ON(offsetof(typeof(arg), response) != 0);
-+
-+	if (copy_to_user((void __user *)user_arg, &response, sizeof(response)))
-+		ret = -EFAULT;
 +
 +	/*
-+	 * Save fd_install() until after the last point of failure. The domain
-+	 * and pm refcnt are decremented in the close callback.
++	 * Enable load-balanced and directed queue write permissions for the
++	 * queues this domain owns. Without this, the DLB2 will drop all
++	 * incoming traffic to those queues.
 +	 */
-+	if (ret == 0) {
-+		kref_get(&domain->refcnt);
++	DLB2_DOM_LIST_FOR(domain->used_ldb_queues, ldb_queue) {
++		union dlb2_sys_ldb_vasqid_v r0 = { {0} };
++		unsigned int offs;
 +
-+		dev->ops->inc_pm_refcnt(dev->pdev, true);
++		r0.field.vasqid_v = 1;
 +
-+		fd_install(fd, file);
++		offs = domain->id.phys_id * DLB2_MAX_NUM_LDB_QUEUES +
++			ldb_queue->id.phys_id;
++
++		DLB2_CSR_WR(hw, DLB2_SYS_LDB_VASQID_V(offs), r0.val);
 +	}
 +
-+	mutex_unlock(&dev->resource_mutex);
++	DLB2_DOM_LIST_FOR(domain->used_dir_pq_pairs, dir_queue) {
++		union dlb2_sys_dir_vasqid_v r0 = { {0} };
++		unsigned int offs;
 +
-+	return ret;
-+}
++		r0.field.vasqid_v = 1;
 +
-+static int dlb2_domain_ioctl_get_ldb_port_pp_fd(struct dlb2_dev *dev,
-+						struct dlb2_domain *domain,
-+						unsigned long user_arg)
-+{
-+	return dlb2_domain_get_port_fd(dev, domain, user_arg,
-+				       "dlb2_ldb_pp:", &dlb2_pp_fops, true);
-+}
++		offs = domain->id.phys_id * DLB2_MAX_NUM_DIR_PORTS +
++			dir_queue->id.phys_id;
 +
-+static int dlb2_domain_ioctl_get_ldb_port_cq_fd(struct dlb2_dev *dev,
-+						struct dlb2_domain *domain,
-+						unsigned long user_arg)
-+{
-+	return dlb2_domain_get_port_fd(dev, domain, user_arg,
-+				       "dlb2_ldb_cq:", &dlb2_cq_fops, true);
-+}
-+
-+static int dlb2_domain_ioctl_get_dir_port_pp_fd(struct dlb2_dev *dev,
-+						struct dlb2_domain *domain,
-+						unsigned long user_arg)
-+{
-+	return dlb2_domain_get_port_fd(dev, domain, user_arg,
-+				       "dlb2_dir_pp:", &dlb2_pp_fops, false);
-+}
-+
-+static int dlb2_domain_ioctl_get_dir_port_cq_fd(struct dlb2_dev *dev,
-+						struct dlb2_domain *domain,
-+						unsigned long user_arg)
-+{
-+	return dlb2_domain_get_port_fd(dev, domain, user_arg,
-+				       "dlb2_dir_cq:", &dlb2_cq_fops, false);
-+}
-+
- long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- {
- 	struct dlb2_domain *dom = f->private_data;
-@@ -189,6 +335,14 @@ long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
- 		return dlb2_domain_ioctl_create_ldb_port(dev, dom, arg);
- 	case DLB2_IOC_CREATE_DIR_PORT:
- 		return dlb2_domain_ioctl_create_dir_port(dev, dom, arg);
-+	case DLB2_IOC_GET_LDB_PORT_PP_FD:
-+		return dlb2_domain_ioctl_get_ldb_port_pp_fd(dev, dom, arg);
-+	case DLB2_IOC_GET_LDB_PORT_CQ_FD:
-+		return dlb2_domain_ioctl_get_ldb_port_cq_fd(dev, dom, arg);
-+	case DLB2_IOC_GET_DIR_PORT_PP_FD:
-+		return dlb2_domain_ioctl_get_dir_port_pp_fd(dev, dom, arg);
-+	case DLB2_IOC_GET_DIR_PORT_CQ_FD:
-+		return dlb2_domain_ioctl_get_dir_port_cq_fd(dev, dom, arg);
- 	default:
- 		return -ENOTTY;
- 	}
-diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
-index a7512832fc1c..3fe59e99b402 100644
---- a/drivers/misc/dlb2/dlb2_main.c
-+++ b/drivers/misc/dlb2/dlb2_main.c
-@@ -11,6 +11,7 @@
- #include <linux/pci.h>
- #include <linux/uaccess.h>
- 
-+#include "dlb2_file.h"
- #include "dlb2_ioctl.h"
- #include "dlb2_main.h"
- #include "dlb2_resource.h"
-@@ -226,6 +227,105 @@ const struct file_operations dlb2_domain_fops = {
- 	.compat_ioctl = compat_ptr_ioctl,
- };
- 
-+static int dlb2_pp_mmap(struct file *f, struct vm_area_struct *vma)
-+{
-+	struct dlb2_port *port = f->private_data;
-+	struct dlb2_domain *domain = port->domain;
-+	struct dlb2_dev *dev = domain->dlb2_dev;
-+	unsigned long pgoff;
-+	pgprot_t pgprot;
-+	int ret;
-+
-+	mutex_lock(&dev->resource_mutex);
-+
-+	if ((vma->vm_end - vma->vm_start) != DLB2_PP_SIZE) {
-+		ret = -EINVAL;
-+		goto end;
++		DLB2_CSR_WR(hw, DLB2_SYS_DIR_VASQID_V(offs), r0.val);
 +	}
 +
-+	pgprot = pgprot_noncached(vma->vm_page_prot);
++	dlb2_flush_csr(hw);
 +
-+	pgoff = dev->hw.func_phys_addr;
++	domain->started = true;
 +
-+	if (port->is_ldb)
-+		pgoff += DLB2_LDB_PP_OFFS(port->id);
-+	else
-+		pgoff += DLB2_DIR_PP_OFFS(port->id);
++	resp->status = 0;
 +
-+	ret = io_remap_pfn_range(vma,
-+				 vma->vm_start,
-+				 pgoff >> PAGE_SHIFT,
-+				 vma->vm_end - vma->vm_start,
-+				 pgprot);
-+
-+end:
-+	mutex_unlock(&dev->resource_mutex);
-+
-+	return ret;
++	return 0;
 +}
 +
-+static int dlb2_cq_mmap(struct file *f, struct vm_area_struct *vma)
-+{
-+	struct dlb2_port *port = f->private_data;
-+	struct dlb2_domain *domain = port->domain;
-+	struct dlb2_dev *dev = domain->dlb2_dev;
-+	struct page *page;
-+	int ret;
-+
-+	mutex_lock(&dev->resource_mutex);
-+
-+	if ((vma->vm_end - vma->vm_start) != DLB2_CQ_SIZE) {
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
-+	page = virt_to_page(port->cq_base);
-+
-+	ret = remap_pfn_range(vma,
-+			      vma->vm_start,
-+			      page_to_pfn(page),
-+			      vma->vm_end - vma->vm_start,
-+			      vma->vm_page_prot);
-+
-+end:
-+	mutex_unlock(&dev->resource_mutex);
-+
-+	return ret;
-+}
-+
-+static int dlb2_port_close(struct inode *i, struct file *f)
-+{
-+	struct dlb2_port *port = f->private_data;
-+	struct dlb2_domain *domain = port->domain;
-+	struct dlb2_dev *dev = domain->dlb2_dev;
-+	int ret = 0;
-+
-+	mutex_lock(&dev->resource_mutex);
-+
-+	kref_put(&domain->refcnt, dlb2_free_domain);
-+
-+	dev->ops->dec_pm_refcnt(dev->pdev);
-+
-+	/* Decrement the refcnt of the pseudo-FS used to allocate the inode */
-+	dlb2_release_fs(dev);
-+
-+	mutex_unlock(&dev->resource_mutex);
-+
-+	return ret;
-+}
-+
-+const struct file_operations dlb2_pp_fops = {
-+	.owner   = THIS_MODULE,
-+	.release = dlb2_port_close,
-+	.mmap    = dlb2_pp_mmap,
-+};
-+
-+const struct file_operations dlb2_cq_fops = {
-+	.owner   = THIS_MODULE,
-+	.release = dlb2_port_close,
-+	.mmap    = dlb2_cq_mmap,
-+};
-+
- /**********************************/
- /****** PCI driver callbacks ******/
- /**********************************/
-diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
-index ceb5512a104c..06b9130643cb 100644
---- a/drivers/misc/dlb2/dlb2_main.h
-+++ b/drivers/misc/dlb2/dlb2_main.h
-@@ -81,6 +81,12 @@ struct dlb2_device_ops {
- 	int (*get_num_resources)(struct dlb2_hw *hw,
- 				 struct dlb2_get_num_resources_args *args);
- 	int (*reset_domain)(struct dlb2_hw *hw, u32 domain_id);
-+	int (*ldb_port_owned_by_domain)(struct dlb2_hw *hw,
-+					u32 domain_id,
-+					u32 port_id);
-+	int (*dir_port_owned_by_domain)(struct dlb2_hw *hw,
-+					u32 domain_id,
-+					u32 port_id);
- 	int (*get_ldb_queue_depth)(struct dlb2_hw *hw,
- 				   u32 domain_id,
- 				   struct dlb2_get_ldb_queue_depth_args *args,
-@@ -96,6 +102,8 @@ struct dlb2_device_ops {
- 
- extern struct dlb2_device_ops dlb2_pf_ops;
- extern const struct file_operations dlb2_domain_fops;
-+extern const struct file_operations dlb2_pp_fops;
-+extern const struct file_operations dlb2_cq_fops;
- 
- struct dlb2_port {
- 	void *cq_base;
-@@ -123,6 +131,11 @@ struct dlb2_dev {
- 	struct dlb2_port ldb_port[DLB2_MAX_NUM_LDB_PORTS];
- 	struct dlb2_port dir_port[DLB2_MAX_NUM_DIR_PORTS];
- 	/*
-+	 * Anonymous inode used to share an address_space for all domain
-+	 * device file mappings.
-+	 */
-+	struct inode *inode;
-+	/*
- 	 * The resource mutex serializes access to driver data structures and
- 	 * hardware registers.
- 	 */
-diff --git a/drivers/misc/dlb2/dlb2_pf_ops.c b/drivers/misc/dlb2/dlb2_pf_ops.c
-index 8556dcdff8c4..1e2e89d6945e 100644
---- a/drivers/misc/dlb2/dlb2_pf_ops.c
-+++ b/drivers/misc/dlb2/dlb2_pf_ops.c
-@@ -307,6 +307,26 @@ dlb2_pf_query_cq_poll_mode(struct dlb2_dev *dlb2_dev,
- 	return 0;
- }
- 
-+/**************************************/
-+/****** Resource query callbacks ******/
-+/**************************************/
-+
-+static int
-+dlb2_pf_ldb_port_owned_by_domain(struct dlb2_hw *hw,
-+				 u32 domain_id,
-+				 u32 port_id)
-+{
-+	return dlb2_ldb_port_owned_by_domain(hw, domain_id, port_id, false, 0);
-+}
-+
-+static int
-+dlb2_pf_dir_port_owned_by_domain(struct dlb2_hw *hw,
-+				 u32 domain_id,
-+				 u32 port_id)
-+{
-+	return dlb2_dir_port_owned_by_domain(hw, domain_id, port_id, false, 0);
-+}
-+
- /********************************/
- /****** DLB2 PF Device Ops ******/
- /********************************/
-@@ -331,6 +351,8 @@ struct dlb2_device_ops dlb2_pf_ops = {
- 	.create_dir_port = dlb2_pf_create_dir_port,
- 	.get_num_resources = dlb2_pf_get_num_resources,
- 	.reset_domain = dlb2_pf_reset_domain,
-+	.ldb_port_owned_by_domain = dlb2_pf_ldb_port_owned_by_domain,
-+	.dir_port_owned_by_domain = dlb2_pf_dir_port_owned_by_domain,
- 	.get_ldb_queue_depth = dlb2_pf_get_ldb_queue_depth,
- 	.get_dir_queue_depth = dlb2_pf_get_dir_queue_depth,
- 	.init_hardware = dlb2_pf_init_hardware,
-diff --git a/drivers/misc/dlb2/dlb2_resource.c b/drivers/misc/dlb2/dlb2_resource.c
-index 03824fd48f60..454a1aacfaf2 100644
---- a/drivers/misc/dlb2/dlb2_resource.c
-+++ b/drivers/misc/dlb2/dlb2_resource.c
-@@ -237,6 +237,32 @@ static struct dlb2_hw_domain *dlb2_get_domain_from_id(struct dlb2_hw *hw,
- 	return NULL;
- }
- 
-+static struct dlb2_ldb_port *
-+dlb2_get_domain_ldb_port(u32 id,
-+			 bool vdev_req,
-+			 struct dlb2_hw_domain *domain)
-+{
-+	struct dlb2_ldb_port *port;
-+	int i;
-+
-+	if (id >= DLB2_MAX_NUM_LDB_PORTS)
-+		return NULL;
-+
-+	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++) {
-+		DLB2_DOM_LIST_FOR(domain->used_ldb_ports[i], port)
-+			if ((!vdev_req && port->id.phys_id == id) ||
-+			    (vdev_req && port->id.virt_id == id))
-+				return port;
-+
-+		DLB2_DOM_LIST_FOR(domain->avail_ldb_ports[i], port)
-+			if ((!vdev_req && port->id.phys_id == id) ||
-+			    (vdev_req && port->id.virt_id == id))
-+				return port;
-+	}
-+
-+	return NULL;
-+}
-+
- static struct dlb2_dir_pq_pair *
- dlb2_get_domain_used_dir_pq(u32 id,
- 			    bool vdev_req,
-@@ -255,6 +281,29 @@ dlb2_get_domain_used_dir_pq(u32 id,
- 	return NULL;
- }
- 
-+static struct dlb2_dir_pq_pair *
-+dlb2_get_domain_dir_pq(u32 id,
-+		       bool vdev_req,
-+		       struct dlb2_hw_domain *domain)
-+{
-+	struct dlb2_dir_pq_pair *port;
-+
-+	if (id >= DLB2_MAX_NUM_DIR_PORTS)
-+		return NULL;
-+
-+	DLB2_DOM_LIST_FOR(domain->used_dir_pq_pairs, port)
-+		if ((!vdev_req && port->id.phys_id == id) ||
-+		    (vdev_req && port->id.virt_id == id))
-+			return port;
-+
-+	DLB2_DOM_LIST_FOR(domain->avail_dir_pq_pairs, port)
-+		if ((!vdev_req && port->id.phys_id == id) ||
-+		    (vdev_req && port->id.virt_id == id))
-+			return port;
-+
-+	return NULL;
-+}
-+
- static struct dlb2_ldb_queue *
- dlb2_get_ldb_queue_from_id(struct dlb2_hw *hw,
- 			   u32 id,
-@@ -4949,6 +4998,56 @@ int dlb2_reset_domain(struct dlb2_hw *hw,
- 	return 0;
- }
- 
-+int dlb2_ldb_port_owned_by_domain(struct dlb2_hw *hw,
-+				  u32 domain_id,
-+				  u32 port_id,
-+				  bool vdev_req,
-+				  unsigned int vdev_id)
-+{
-+	struct dlb2_hw_domain *domain;
-+	struct dlb2_ldb_port *port;
-+
-+	if (vdev_req && vdev_id >= DLB2_MAX_NUM_VDEVS)
-+		return -EINVAL;
-+
-+	domain = dlb2_get_domain_from_id(hw, domain_id, vdev_req, vdev_id);
-+
-+	if (!domain || !domain->configured)
-+		return -EINVAL;
-+
-+	port = dlb2_get_domain_ldb_port(port_id, vdev_req, domain);
-+
-+	if (!port)
-+		return -EINVAL;
-+
-+	return port->domain_id.phys_id == domain->id.phys_id;
-+}
-+
-+int dlb2_dir_port_owned_by_domain(struct dlb2_hw *hw,
-+				  u32 domain_id,
-+				  u32 port_id,
-+				  bool vdev_req,
-+				  unsigned int vdev_id)
-+{
-+	struct dlb2_dir_pq_pair *port;
-+	struct dlb2_hw_domain *domain;
-+
-+	if (vdev_req && vdev_id >= DLB2_MAX_NUM_VDEVS)
-+		return -EINVAL;
-+
-+	domain = dlb2_get_domain_from_id(hw, domain_id, vdev_req, vdev_id);
-+
-+	if (!domain || !domain->configured)
-+		return -EINVAL;
-+
-+	port = dlb2_get_domain_dir_pq(port_id, vdev_req, domain);
-+
-+	if (!port)
-+		return -EINVAL;
-+
-+	return port->domain_id.phys_id == domain->id.phys_id;
-+}
-+
- int dlb2_hw_get_num_resources(struct dlb2_hw *hw,
- 			      struct dlb2_get_num_resources_args *arg,
- 			      bool vdev_req,
+ static void
+ dlb2_domain_finish_unmap_port_slot(struct dlb2_hw *hw,
+ 				   struct dlb2_hw_domain *domain,
 diff --git a/drivers/misc/dlb2/dlb2_resource.h b/drivers/misc/dlb2/dlb2_resource.h
-index d355bc1a8f08..ffdc35ebbc1e 100644
+index ffdc35ebbc1e..d5b554b701f5 100644
 --- a/drivers/misc/dlb2/dlb2_resource.h
 +++ b/drivers/misc/dlb2/dlb2_resource.h
-@@ -239,6 +239,56 @@ int dlb2_reset_domain(struct dlb2_hw *hw,
- 		      unsigned int vdev_id);
+@@ -209,6 +209,36 @@ int dlb2_hw_create_ldb_port(struct dlb2_hw *hw,
+ 			    unsigned int vdev_id);
  
  /**
-+ * dlb2_ldb_port_owned_by_domain() - query whether a port is owned by a domain
++ * dlb2_hw_start_domain() - start a scheduling domain
 + * @hw: dlb2_hw handle for a particular device.
 + * @domain_id: domain ID.
-+ * @port_id: port ID.
++ * @args: start domain arguments.
++ * @resp: response structure.
 + * @vdev_request: indicates whether this request came from a vdev.
 + * @vdev_id: If vdev_request is true, this contains the vdev's ID.
 + *
-+ * This function returns whether a load-balanced port is owned by a specified
-+ * domain.
++ * This function starts a scheduling domain, which allows applications to send
++ * traffic through it. Once a domain is started, its resources can no longer be
++ * configured (besides QID remapping and port enable/disable).
 + *
 + * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
 + * device.
 + *
 + * Return:
-+ * Returns 0 if false, 1 if true, <0 otherwise.
++ * Returns 0 upon success, < 0 otherwise. If an error occurs, resp->status is
++ * assigned a detailed error code from enum dlb2_error.
 + *
-+ * EINVAL - Invalid domain or port ID, or the domain is not configured.
++ * Errors:
++ * EINVAL - the domain is not configured, or the domain is already started.
 + */
-+int dlb2_ldb_port_owned_by_domain(struct dlb2_hw *hw,
-+				  u32 domain_id,
-+				  u32 port_id,
-+				  bool vdev_request,
-+				  unsigned int vdev_id);
++int dlb2_hw_start_domain(struct dlb2_hw *hw,
++			 u32 domain_id,
++			 struct dlb2_start_domain_args *args,
++			 struct dlb2_cmd_response *resp,
++			 bool vdev_request,
++			 unsigned int vdev_id);
 +
 +/**
-+ * dlb2_dir_port_owned_by_domain() - query whether a port is owned by a domain
-+ * @hw: dlb2_hw handle for a particular device.
-+ * @domain_id: domain ID.
-+ * @port_id: port ID.
-+ * @vdev_request: indicates whether this request came from a vdev.
-+ * @vdev_id: If vdev_request is true, this contains the vdev's ID.
-+ *
-+ * This function returns whether a directed port is owned by a specified
-+ * domain.
-+ *
-+ * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
-+ * device.
-+ *
-+ * Return:
-+ * Returns 0 if false, 1 if true, <0 otherwise.
-+ *
-+ * EINVAL - Invalid domain or port ID, or the domain is not configured.
-+ */
-+int dlb2_dir_port_owned_by_domain(struct dlb2_hw *hw,
-+				  u32 domain_id,
-+				  u32 port_id,
-+				  bool vdev_request,
-+				  unsigned int vdev_id);
-+
-+/**
-  * dlb2_hw_get_num_resources() - query the PCI function's available resources
+  * dlb2_reset_domain() - reset a scheduling domain
   * @hw: dlb2_hw handle for a particular device.
-  * @arg: pointer to resource counts.
+  * @domain_id: domain ID.
 diff --git a/include/uapi/linux/dlb2_user.h b/include/uapi/linux/dlb2_user.h
-index df7bb72096cd..898ff4df3462 100644
+index 898ff4df3462..0eb9e14de11d 100644
 --- a/include/uapi/linux/dlb2_user.h
 +++ b/include/uapi/linux/dlb2_user.h
-@@ -422,6 +422,40 @@ struct dlb2_create_dir_port_args {
- 	__s32 queue_id;
+@@ -456,6 +456,23 @@ struct dlb2_get_port_fd_args {
+ 	__u32 padding0;
  };
  
 +/*
-+ * DLB2_CMD_GET_LDB_PORT_PP_FD: Get file descriptor to mmap a load-balanced
-+ *	port's producer port (PP).
-+ * DLB2_CMD_GET_LDB_PORT_CQ_FD: Get file descriptor to mmap a load-balanced
-+ *	port's consumer queue (CQ).
-+ *
-+ *	The load-balanced port must have been previously created with the ioctl
-+ *	DLB2_CMD_CREATE_LDB_PORT. The fd is used to mmap the PP/CQ region.
-+ *
-+ * DLB2_CMD_GET_DIR_PORT_PP_FD: Get file descriptor to mmap a directed port's
-+ *	producer port (PP).
-+ * DLB2_CMD_GET_DIR_PORT_CQ_FD: Get file descriptor to mmap a directed port's
-+ *	consumer queue (CQ).
-+ *
-+ *	The directed port must have been previously created with the ioctl
-+ *	DLB2_CMD_CREATE_DIR_PORT. The fd is used to mmap PP/CQ region.
-+ *
++ * DLB2_DOMAIN_CMD_START_DOMAIN: Mark the end of the domain configuration. This
++ *	must be called before passing QEs into the device, and no configuration
++ *	ioctls can be issued once the domain has started. Sending QEs into the
++ *	device before calling this ioctl will result in undefined behavior.
 + * Input parameters:
-+ * - port_id: port ID.
-+ * - padding0: Reserved for future use.
++ * - (None)
 + *
 + * Output parameters:
 + * - response.status: Detailed error code. In certain cases, such as if the
 + *	ioctl request arg is invalid, the driver won't set status.
-+ * - response.id: fd.
 + */
-+struct dlb2_get_port_fd_args {
++struct dlb2_start_domain_args {
 +	/* Output parameters */
 +	struct dlb2_cmd_response response;
-+	/* Input parameters */
-+	__u32 port_id;
-+	__u32 padding0;
 +};
 +
  enum dlb2_domain_user_interface_commands {
  	DLB2_DOMAIN_CMD_CREATE_LDB_QUEUE,
  	DLB2_DOMAIN_CMD_CREATE_DIR_QUEUE,
-@@ -429,12 +463,21 @@ enum dlb2_domain_user_interface_commands {
- 	DLB2_DOMAIN_CMD_GET_DIR_QUEUE_DEPTH,
- 	DLB2_DOMAIN_CMD_CREATE_LDB_PORT,
- 	DLB2_DOMAIN_CMD_CREATE_DIR_PORT,
-+	DLB2_DOMAIN_CMD_GET_LDB_PORT_PP_FD,
-+	DLB2_DOMAIN_CMD_GET_LDB_PORT_CQ_FD,
-+	DLB2_DOMAIN_CMD_GET_DIR_PORT_PP_FD,
-+	DLB2_DOMAIN_CMD_GET_DIR_PORT_CQ_FD,
+@@ -467,6 +484,7 @@ enum dlb2_domain_user_interface_commands {
+ 	DLB2_DOMAIN_CMD_GET_LDB_PORT_CQ_FD,
+ 	DLB2_DOMAIN_CMD_GET_DIR_PORT_PP_FD,
+ 	DLB2_DOMAIN_CMD_GET_DIR_PORT_CQ_FD,
++	DLB2_DOMAIN_CMD_START_DOMAIN,
  
  	/* NUM_DLB2_DOMAIN_CMD must be last */
  	NUM_DLB2_DOMAIN_CMD,
- };
- 
-+/*
-+ * Mapping sizes for memory mapping the consumer queue (CQ) memory space, and
-+ * producer port (PP) MMIO space.
-+ */
- #define DLB2_CQ_SIZE 65536
-+#define DLB2_PP_SIZE 4096
- 
- /********************/
- /* dlb2 ioctl codes */
-@@ -482,5 +525,21 @@ enum dlb2_domain_user_interface_commands {
+@@ -541,5 +559,9 @@ enum dlb2_domain_user_interface_commands {
  		_IOWR(DLB2_IOC_MAGIC,				\
- 		      DLB2_DOMAIN_CMD_CREATE_DIR_PORT,		\
- 		      struct dlb2_create_dir_port_args)
-+#define DLB2_IOC_GET_LDB_PORT_PP_FD				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_GET_LDB_PORT_PP_FD,	\
-+		      struct dlb2_get_port_fd_args)
-+#define DLB2_IOC_GET_LDB_PORT_CQ_FD				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_GET_LDB_PORT_CQ_FD,	\
-+		      struct dlb2_get_port_fd_args)
-+#define DLB2_IOC_GET_DIR_PORT_PP_FD				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_GET_DIR_PORT_PP_FD,	\
-+		      struct dlb2_get_port_fd_args)
-+#define DLB2_IOC_GET_DIR_PORT_CQ_FD				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_GET_DIR_PORT_CQ_FD,	\
-+		      struct dlb2_get_port_fd_args)
+ 		      DLB2_DOMAIN_CMD_GET_DIR_PORT_CQ_FD,	\
+ 		      struct dlb2_get_port_fd_args)
++#define DLB2_IOC_START_DOMAIN					\
++		_IOR(DLB2_IOC_MAGIC,				\
++		     DLB2_DOMAIN_CMD_START_DOMAIN,		\
++		     struct dlb2_start_domain_args)
  
  #endif /* __DLB2_USER_H */
 -- 
