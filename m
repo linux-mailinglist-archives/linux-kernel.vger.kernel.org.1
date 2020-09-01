@@ -2,117 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 250D9259D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ED71259D5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732585AbgIAR34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726900AbgIAR3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:29:54 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91EE920866;
-        Tue,  1 Sep 2020 17:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598981393;
-        bh=+s+pCurhvidYuSPa5gLrpalcWwRdWwzFktQe+NIAdVs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pLFRoNLzcPgdZE4K1Nv9wRlDf1cGZh5X+Ixcih4U6XT2LYU/mxHz6sPJBunBRLh6c
-         H9RVhxy6iW5YGyllgPQj3i0+qaNUS0qvzqyX6Wpt9cBjOawsurfGKA9UtGtrBvnSIw
-         CA18o22vkpuDCKAO1pIQI7T3HOgOovl2kYaQnJmE=
-Date:   Tue, 1 Sep 2020 12:36:03 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jakub Kicinski <kubakici@wp.pl>, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH][next] mt7601u: Use fallthrough pseudo-keyword
-Message-ID: <20200901173603.GA2701@embeddedor>
+        id S1730362AbgIARkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:40:03 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:59394 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729385AbgIARj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:39:57 -0400
+Received: from 89-64-88-247.dynamic.chello.pl (89.64.88.247) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.459)
+ id 17a99e8a40e6e1df; Tue, 1 Sep 2020 19:39:55 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH v4 0/5] cpufreq: intel_pstate: Address some HWP-related oddities
+Date:   Tue, 01 Sep 2020 19:23:06 +0200
+Message-ID: <3748218.V0HrpZKF9g@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the existing /* fall through */ comments and its variants with
-the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
-fall-through markings when it is the case.
+Hi All,
 
-[1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+The last two patches in the v3 needed to be updated to take re-enabling of HWP
+after an ACPI S3 suspend/resume cycle into account appropriately.  The first
+three patches are the same as before.
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/mediatek/mt7601u/dma.c | 4 ++--
- drivers/net/wireless/mediatek/mt7601u/mac.c | 4 ++--
- drivers/net/wireless/mediatek/mt7601u/phy.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+The purpose of this series is to address some peculiarities related to
+taking CPUs offline/online and switching between different operation
+modes with HWP enabled that have become visible after allowing the
+driver to work in the passive mode with HWP enabled in 5.9-rc1 (and
+one that was there earlier, but can be addressed easily after the
+changes made in 5.9-rc1).
 
-diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
-index f6a0454abe04..09f931d4598c 100644
---- a/drivers/net/wireless/mediatek/mt7601u/dma.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
-@@ -196,7 +196,7 @@ static void mt7601u_complete_rx(struct urb *urb)
- 	default:
- 		dev_err_ratelimited(dev->dev, "rx urb failed: %d\n",
- 				    urb->status);
--		/* fall through */
-+		fallthrough;
- 	case 0:
- 		break;
- 	}
-@@ -241,7 +241,7 @@ static void mt7601u_complete_tx(struct urb *urb)
- 	default:
- 		dev_err_ratelimited(dev->dev, "tx urb failed: %d\n",
- 				    urb->status);
--		/* fall through */
-+		fallthrough;
- 	case 0:
- 		break;
- 	}
-diff --git a/drivers/net/wireless/mediatek/mt7601u/mac.c b/drivers/net/wireless/mediatek/mt7601u/mac.c
-index cad5e81fcf77..d2ee1aaa3c81 100644
---- a/drivers/net/wireless/mediatek/mt7601u/mac.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/mac.c
-@@ -45,7 +45,7 @@ mt76_mac_process_tx_rate(struct ieee80211_tx_rate *txrate, u16 rate)
- 		return;
- 	case MT_PHY_TYPE_HT_GF:
- 		txrate->flags |= IEEE80211_TX_RC_GREEN_FIELD;
--		/* fall through */
-+		fallthrough;
- 	case MT_PHY_TYPE_HT:
- 		txrate->flags |= IEEE80211_TX_RC_MCS;
- 		txrate->idx = idx;
-@@ -419,7 +419,7 @@ mt76_mac_process_rate(struct ieee80211_rx_status *status, u16 rate)
- 		return;
- 	case MT_PHY_TYPE_HT_GF:
- 		status->enc_flags |= RX_ENC_FLAG_HT_GF;
--		/* fall through */
-+		fallthrough;
- 	case MT_PHY_TYPE_HT:
- 		status->encoding = RX_ENC_HT;
- 		status->rate_idx = idx;
-diff --git a/drivers/net/wireless/mediatek/mt7601u/phy.c b/drivers/net/wireless/mediatek/mt7601u/phy.c
-index d863ab4a66c9..430ae4c1d7db 100644
---- a/drivers/net/wireless/mediatek/mt7601u/phy.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/phy.c
-@@ -787,7 +787,7 @@ mt7601u_phy_rf_pa_mode_val(struct mt7601u_dev *dev, int phy_mode, int tx_rate)
- 	switch (phy_mode) {
- 	case MT_PHY_TYPE_OFDM:
- 		tx_rate += 4;
--		/* fall through */
-+		fallthrough;
- 	case MT_PHY_TYPE_CCK:
- 		reg = dev->rf_pa_mode[0];
- 		break;
--- 
-2.27.0
+Please refer to the patch changelogs for details.
+
+For easier testing/review, the series is available from the git branch at:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ intel_pstate-testing
+
+I've done my best to address all of the possible corner cases, but the test
+matrix is quite extensive and I may have missed something, so go ahead
+and test.
+
+Thanks,
+Rafael
+
+
 
