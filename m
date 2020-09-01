@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E1F2591CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCFB259152
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbgIAOzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgIALs0 (ORCPT
+        id S1728632AbgIAOtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:49:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39444 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727804AbgIALs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:48:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBB9C061246;
-        Tue,  1 Sep 2020 04:47:57 -0700 (PDT)
-Date:   Tue, 01 Sep 2020 11:47:54 -0000
+        Tue, 1 Sep 2020 07:48:28 -0400
+Date:   Tue, 01 Sep 2020 11:47:55 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1598960875;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FbqG1YikYHiBLEwEfDbLhy4c0U3oUUcvXguN9MUeGqc=;
-        b=U7k2lYKQLOTziFb+QWRmZSh6MTv/uP1eTiJJdQzi6Q/JCocH0i1vKREsWFu1eTlS5+W2pm
-        XdzS4JObGtFpok7TwpLPjc/IpKAn8NgYngHGhXPab7tB0fAQIIuAcU/qbnSQJDMUfeqZ2f
-        ZbsVkUemaFnJgfUxBgJz+qKpbL327XulLIqgSrVWe//NqKWlYyBQ5P7Iqz2BqzvYunP0h0
-        r/SoTVnKXmyt8kzz09iT6GnqB2AQRY2coOEj9qlQyxFrNPkedexaNLZ23hpItuuOuCe0x4
-        Zq1RKbSkseMz+ZhFJYeaGpQO0uYcP4VnpTCeTS7nNUFshJEkSdqbQPpVhbiqBw==
+        bh=6H7pYz/RFeshDuKqJ0FUSS9Irmz7kYYz+37l6Oei5ow=;
+        b=R0HVw9LxkjIRBtXJElIuI12FZ5TI+tLD3drCGmXpty5c85zS/s6xrsD9S04Vof/kTRAvyc
+        hJ1Pv7aRvrJj9K3K7zUlM6V9CzwPMKMmXnFE2oQPBmt8qlk2tRYp3L3popuJxTbNrZci+H
+        Q3YXVaT09fy5/Y8jjIAnN0SIzMf1uOMqBOUOeUwrrQE9tYRuUEkL31XbYxDR6KJj69tYWm
+        WtrjxF5YGqNTumRFYyOVAgbDqAFMjSybb5RKrfa/mtPH0NFlzASFgrQ2yLhfb7Io7Ez/+R
+        ZkJz60yHOGAWFMdntmG2QKmeL9TAuis7M52vDZ3AEwiFeR9OxPUw/hFGRH48aQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1598960875;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,20 +33,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=FbqG1YikYHiBLEwEfDbLhy4c0U3oUUcvXguN9MUeGqc=;
-        b=aAIn8IoOT1nUcj6WHCzTch2bQkYEtf6PgdOW6eyAKCh/bPBT4jrfwlOlbNmfDcdOBs1Hjp
-        FnkoQgaxAQB1LjCQ==
+        bh=6H7pYz/RFeshDuKqJ0FUSS9Irmz7kYYz+37l6Oei5ow=;
+        b=YH9xp/eQviAl5DtSeffSdqIQQuS5mdyjK0ko70sJENMUin5vsmSqhZSeIjxfvVlpxIDG69
+        2/GJyUzOlrGra1AA==
 From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/build] arm/boot: Handle all sections explicitly
+Subject: [tip: core/build] arm/build: Assert for unwanted sections
 Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
         Russell King <linux@armlinux.org.uk>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200821194310.3089815-21-keescook@chromium.org>
-References: <20200821194310.3089815-21-keescook@chromium.org>
+In-Reply-To: <20200821194310.3089815-19-keescook@chromium.org>
+References: <20200821194310.3089815-19-keescook@chromium.org>
 MIME-Version: 1.0
-Message-ID: <159896087466.20229.9387629554145292260.tip-bot2@tip-bot2>
+Message-ID: <159896087511.20229.3683531986832107213.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,77 +58,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/build branch of tip:
 
-Commit-ID:     7e8c4ed2638d08a1604c87b60ed7161bf92e6f86
-Gitweb:        https://git.kernel.org/tip/7e8c4ed2638d08a1604c87b60ed7161bf92e6f86
+Commit-ID:     0c918e753f8c03b0308a635c0721a8c24d738d4a
+Gitweb:        https://git.kernel.org/tip/0c918e753f8c03b0308a635c0721a8c24d738d4a
 Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 21 Aug 2020 12:43:01 -07:00
+AuthorDate:    Fri, 21 Aug 2020 12:42:59 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 01 Sep 2020 10:03:18 +02:00
 
-arm/boot: Handle all sections explicitly
+arm/build: Assert for unwanted sections
 
-In preparation for warning on orphan sections, use common macros for
-debug sections, discards, and text stubs. Add discards for unwanted .note,
-and .rel sections.
+In preparation for warning on orphan sections, enforce
+expected-to-be-zero-sized sections (since discarding them might hide
+problems with them suddenly gaining unexpected entries).
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: Russell King <linux@armlinux.org.uk>
-Link: https://lore.kernel.org/r/20200821194310.3089815-21-keescook@chromium.org
+Link: https://lore.kernel.org/r/20200821194310.3089815-19-keescook@chromium.org
 ---
- arch/arm/boot/compressed/vmlinux.lds.S | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/arm/include/asm/vmlinux.lds.h | 11 +++++++++++
+ arch/arm/kernel/vmlinux-xip.lds.S  |  2 ++
+ arch/arm/kernel/vmlinux.lds.S      |  2 ++
+ 3 files changed, 15 insertions(+)
 
-diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
-index 09ac33f..b914be3 100644
---- a/arch/arm/boot/compressed/vmlinux.lds.S
-+++ b/arch/arm/boot/compressed/vmlinux.lds.S
-@@ -2,6 +2,7 @@
- /*
-  *  Copyright (C) 2000 Russell King
-  */
-+#include <asm/vmlinux.lds.h>
+diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
+index 6624dd9..4a91428 100644
+--- a/arch/arm/include/asm/vmlinux.lds.h
++++ b/arch/arm/include/asm/vmlinux.lds.h
+@@ -52,6 +52,17 @@
+ 		ARM_MMU_DISCARD(*(__ex_table))				\
+ 		COMMON_DISCARDS
  
- #ifdef CONFIG_CPU_ENDIAN_BE8
- #define ZIMAGE_MAGIC(x) ( (((x) >> 24) & 0x000000ff) | \
-@@ -17,8 +18,11 @@ ENTRY(_start)
- SECTIONS
- {
-   /DISCARD/ : {
-+    COMMON_DISCARDS
-     *(.ARM.exidx*)
-     *(.ARM.extab*)
-+    *(.note.*)
-+    *(.rel.*)
-     /*
-      * Discard any r/w data - this produces a link error if we have any,
-      * which is required for PIC decompression.  Local data generates
-@@ -36,9 +40,7 @@ SECTIONS
-     *(.start)
-     *(.text)
-     *(.text.*)
--    *(.gnu.warning)
--    *(.glue_7t)
--    *(.glue_7)
-+    ARM_STUBS_TEXT
-   }
-   .table : ALIGN(4) {
-     _table_start = .;
-@@ -128,12 +130,10 @@ SECTIONS
-   PROVIDE(__pecoff_data_size = ALIGN(512) - ADDR(.data));
-   PROVIDE(__pecoff_end = ALIGN(512));
- 
--  .stab 0		: { *(.stab) }
--  .stabstr 0		: { *(.stabstr) }
--  .stab.excl 0		: { *(.stab.excl) }
--  .stab.exclstr 0	: { *(.stab.exclstr) }
--  .stab.index 0		: { *(.stab.index) }
--  .stab.indexstr 0	: { *(.stab.indexstr) }
--  .comment 0		: { *(.comment) }
-+  STABS_DEBUG
-+  DWARF_DEBUG
-+  ARM_DETAILS
++/*
++ * Sections that should stay zero sized, which is safer to explicitly
++ * check instead of blindly discarding.
++ */
++#define ARM_ASSERTS							\
++	.plt : {							\
++		*(.iplt) *(.rel.iplt) *(.iplt) *(.igot.plt)		\
++	}								\
++	ASSERT(SIZEOF(.plt) == 0,					\
++	       "Unexpected run-time procedure linkages detected!")
 +
-+  ARM_ASSERTS
+ #define ARM_DETAILS							\
+ 		ELF_DETAILS						\
+ 		.ARM.attributes 0 : { *(.ARM.attributes) }
+diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
+index 11ffa79..5013682 100644
+--- a/arch/arm/kernel/vmlinux-xip.lds.S
++++ b/arch/arm/kernel/vmlinux-xip.lds.S
+@@ -152,6 +152,8 @@ SECTIONS
+ 	STABS_DEBUG
+ 	DWARF_DEBUG
+ 	ARM_DETAILS
++
++	ARM_ASSERTS
  }
- ASSERT(_edata_real == _edata, "error: zImage file size is incorrect");
+ 
+ /*
+diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
+index dc672fe..5f4922e 100644
+--- a/arch/arm/kernel/vmlinux.lds.S
++++ b/arch/arm/kernel/vmlinux.lds.S
+@@ -151,6 +151,8 @@ SECTIONS
+ 	STABS_DEBUG
+ 	DWARF_DEBUG
+ 	ARM_DETAILS
++
++	ARM_ASSERTS
+ }
+ 
+ #ifdef CONFIG_STRICT_KERNEL_RWX
