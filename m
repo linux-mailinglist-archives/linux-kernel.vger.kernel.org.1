@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E57C25928B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665472592CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgIAPNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:13:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55970 "EHLO mail.kernel.org"
+        id S1729125AbgIAPRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:17:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728861AbgIAPNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:13:07 -0400
+        id S1729267AbgIAPQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:16:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3BDA2078B;
-        Tue,  1 Sep 2020 15:13:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36B70206FA;
+        Tue,  1 Sep 2020 15:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973187;
-        bh=0IHfMM1s3befRcEn9mSaFSTKf4HKZA9VqVK3eO/CPXs=;
+        s=default; t=1598973365;
+        bh=/UCB/PpDEnLE9Fta+4Tzj3SAueG/dBgdBs1/QLbgD8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q3ZCXnOdggcAUXwtaMr5BXzALKFEyqAbQlT32pumxV+clVlleHvOji2xJPQl1y9SY
-         5dIcKhe3HzcYewUWo1zKLqT3ShUpRmkGAhFbsUTQJgIgj+Uxp5qpouOGm919u3ET4X
-         CgwkzY9QJkvto5RMB03t9fq088kdqjX174pXXKOY=
+        b=Z+2k4fIT32C3hn3PnEzulmXiCI6dQNzRP+ccFUYuxthmxkouUyvpngRU2gyM2TSf4
+         wUNovE9s6mpdi8dxq2j3y4BNhgQLE3v61JGvgP9ye7OkGeTSsBaNSv+t6ial1hIGOS
+         1q17NXvpEfeiT8/uwXDH9lyo9sFXPE2zUA+w5SpE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>
-Subject: [PATCH 4.4 41/62] USB: lvtest: return proper error code in probe
-Date:   Tue,  1 Sep 2020 17:10:24 +0200
-Message-Id: <20200901150922.799754719@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Andrea Borgia <andrea@borgia.bo.it>
+Subject: [PATCH 4.9 49/78] HID: i2c-hid: Always sleep 60ms after I2C_HID_PWR_ON commands
+Date:   Tue,  1 Sep 2020 17:10:25 +0200
+Message-Id: <20200901150927.196454030@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
-References: <20200901150920.697676718@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +46,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 531412492ce93ea29b9ca3b4eb5e3ed771f851dd upstream.
+commit eef4016243e94c438f177ca8226876eb873b9c75 upstream.
 
-lvs_rh_probe() can return some nonnegative value from usb_control_msg()
-when it is less than "USB_DT_HUB_NONVAR_SIZE + 2" that is considered as
-a failure. Make lvs_rh_probe() return -EINVAL in this case.
+Before this commit i2c_hid_parse() consists of the following steps:
 
-Found by Linux Driver Verification project (linuxtesting.org).
+1. Send power on cmd
+2. usleep_range(1000, 5000)
+3. Send reset cmd
+4. Wait for reset to complete (device interrupt, or msleep(100))
+5. Send power on cmd
+6. Try to read HID descriptor
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200805090643.3432-1-novikov@ispras.ru
+Notice how there is an usleep_range(1000, 5000) after the first power-on
+command, but not after the second power-on command.
+
+Testing has shown that at least on the BMAX Y13 laptop's i2c-hid touchpad,
+not having a delay after the second power-on command causes the HID
+descriptor to read as all zeros.
+
+In case we hit this on other devices too, the descriptor being all zeros
+can be recognized by the following message being logged many, many times:
+
+hid-generic 0018:0911:5288.0002: unknown main item tag 0x0
+
+At the same time as the BMAX Y13's touchpad issue was debugged,
+Kai-Heng was working on debugging some issues with Goodix i2c-hid
+touchpads. It turns out that these need a delay after a PWR_ON command
+too, otherwise they stop working after a suspend/resume cycle.
+According to Goodix a delay of minimal 60ms is needed.
+
+Having multiple cases where we need a delay after sending the power-on
+command, seems to indicate that we should always sleep after the power-on
+command.
+
+This commit fixes the mentioned issues by moving the existing 1ms sleep to
+the i2c_hid_set_power() function and changing it to a 60ms sleep.
+
+Cc: stable@vger.kernel.org
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208247
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Reported-and-tested-by: Andrea Borgia <andrea@borgia.bo.it>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/misc/lvstest.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/i2c-hid/i2c-hid-core.c |   22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/misc/lvstest.c
-+++ b/drivers/usb/misc/lvstest.c
-@@ -396,7 +396,7 @@ static int lvs_rh_probe(struct usb_inter
- 			USB_DT_SS_HUB_SIZE, USB_CTRL_GET_TIMEOUT);
- 	if (ret < (USB_DT_HUB_NONVAR_SIZE + 2)) {
- 		dev_err(&hdev->dev, "wrong root hub descriptor read %d\n", ret);
--		return ret;
-+		return ret < 0 ? ret : -EINVAL;
- 	}
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -407,6 +407,19 @@ static int i2c_hid_set_power(struct i2c_
+ 		dev_err(&client->dev, "failed to change power setting.\n");
  
- 	/* submit urb to poll interrupt endpoint */
+ set_pwr_exit:
++
++	/*
++	 * The HID over I2C specification states that if a DEVICE needs time
++	 * after the PWR_ON request, it should utilise CLOCK stretching.
++	 * However, it has been observered that the Windows driver provides a
++	 * 1ms sleep between the PWR_ON and RESET requests.
++	 * According to Goodix Windows even waits 60 ms after (other?)
++	 * PWR_ON requests. Testing has confirmed that several devices
++	 * will not work properly without a delay after a PWR_ON request.
++	 */
++	if (!ret && power_state == I2C_HID_PWR_ON)
++		msleep(60);
++
+ 	return ret;
+ }
+ 
+@@ -428,15 +441,6 @@ static int i2c_hid_hwreset(struct i2c_cl
+ 	if (ret)
+ 		goto out_unlock;
+ 
+-	/*
+-	 * The HID over I2C specification states that if a DEVICE needs time
+-	 * after the PWR_ON request, it should utilise CLOCK stretching.
+-	 * However, it has been observered that the Windows driver provides a
+-	 * 1ms sleep between the PWR_ON and RESET requests and that some devices
+-	 * rely on this.
+-	 */
+-	usleep_range(1000, 5000);
+-
+ 	i2c_hid_dbg(ihid, "resetting...\n");
+ 
+ 	ret = i2c_hid_command(client, &hid_reset_cmd, NULL, 0);
 
 
