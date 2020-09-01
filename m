@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DACA725953C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A17D259419
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731859AbgIAPs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33464 "EHLO mail.kernel.org"
+        id S1731227AbgIAPfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731480AbgIAPpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:45:18 -0400
+        id S1728387AbgIAPen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:34:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70C28206FA;
-        Tue,  1 Sep 2020 15:45:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B42A20866;
+        Tue,  1 Sep 2020 15:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975117;
-        bh=AC80ehk6MWnB6KDYF3opTQgFibhyfg/7C7NTDOOw+IM=;
+        s=default; t=1598974483;
+        bh=onWtOnOe38uujL9+85ri15ureODnZNtdVZRCOwH2QR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1bDjcCZJF7cijzu+axAS0D9uTO1xk1pq4jCzdNbLX58kNl+sk0evyuByTDanyIODI
-         48Y9QuZ1IVGXK7IbqdRuXyBR8tqV15rx8gE87O+IBjqJcc+XNC1B32zceS0nA88Lis
-         76KPmqK/R15ywjHA37DUipCI1s3+3CXuz1pEa9Ek=
+        b=vF23FAoSqvCZnBbDo+FZbMGnRXGFlziVXOioVKOqphkZMNWgzjm748mRAj8tLZjRx
+         TnYBUxuHpgvDM7ZdL5NBwUYBH8/nHj0/T1PH/K+P9czWiQWf6U3JL1QXnLsJohTdSU
+         GtQRdXnMI4WaWu+cRdMMwudmOXoGSljxBTHxcOfE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andres Freund <andres@anarazel.de>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.8 186/255] io_uring: clear req->result on IOPOLL re-issue
-Date:   Tue,  1 Sep 2020 17:10:42 +0200
-Message-Id: <20200901151009.598705719@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Tushar Behera <tushar.behera@linaro.org>
+Subject: [PATCH 5.4 163/214] serial: pl011: Dont leak amba_ports entry on driver register error
+Date:   Tue,  1 Sep 2020 17:10:43 +0200
+Message-Id: <20200901151000.785511843@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 56450c20fe10d4d93f58019109aa4e06fc0b9206 upstream.
+commit 89efbe70b27dd325d8a8c177743a26b885f7faec upstream.
 
-Make sure we clear req->result, which was set to -EAGAIN for retry
-purposes, when moving it to the reissue list. Otherwise we can end up
-retrying a request more than once, which leads to weird results in
-the io-wq handling (and other spots).
+pl011_probe() calls pl011_setup_port() to reserve an amba_ports[] entry,
+then calls pl011_register_port() to register the uart driver with the
+tty layer.
 
-Cc: stable@vger.kernel.org
-Reported-by: Andres Freund <andres@anarazel.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+If registration of the uart driver fails, the amba_ports[] entry is not
+released.  If this happens 14 times (value of UART_NR macro), then all
+amba_ports[] entries will have been leaked and driver probing is no
+longer possible.  (To be fair, that can only happen if the DeviceTree
+doesn't contain alias IDs since they cause the same entry to be used for
+a given port.)   Fix it.
+
+Fixes: ef2889f7ffee ("serial: pl011: Move uart_register_driver call to device")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v3.15+
+Cc: Tushar Behera <tushar.behera@linaro.org>
+Link: https://lore.kernel.org/r/138f8c15afb2f184d8102583f8301575566064a6.1597316167.git.lukas@wunner.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/io_uring.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/tty/serial/amba-pl011.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1810,6 +1810,7 @@ static void io_iopoll_complete(struct io
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -2593,7 +2593,7 @@ static int pl011_setup_port(struct devic
  
- 		req = list_first_entry(done, struct io_kiocb, list);
- 		if (READ_ONCE(req->result) == -EAGAIN) {
-+			req->result = 0;
- 			req->iopoll_completed = 0;
- 			list_move_tail(&req->list, &again);
- 			continue;
+ static int pl011_register_port(struct uart_amba_port *uap)
+ {
+-	int ret;
++	int ret, i;
+ 
+ 	/* Ensure interrupts from this UART are masked and cleared */
+ 	pl011_write(0, uap, REG_IMSC);
+@@ -2604,6 +2604,9 @@ static int pl011_register_port(struct ua
+ 		if (ret < 0) {
+ 			dev_err(uap->port.dev,
+ 				"Failed to register AMBA-PL011 driver\n");
++			for (i = 0; i < ARRAY_SIZE(amba_ports); i++)
++				if (amba_ports[i] == uap)
++					amba_ports[i] = NULL;
+ 			return ret;
+ 		}
+ 	}
 
 
