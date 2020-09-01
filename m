@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5506125946E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5200D2594AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731466AbgIAPji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:39:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46126 "EHLO mail.kernel.org"
+        id S1731537AbgIAPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:42:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731355AbgIAPho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:37:44 -0400
+        id S1731471AbgIAPjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:39:44 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2A5921582;
-        Tue,  1 Sep 2020 15:37:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1EC9F205F4;
+        Tue,  1 Sep 2020 15:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974664;
-        bh=Oq7KjuIEGAsnarIYTg82Iav+HRMBExE8AuCjNT05MZk=;
+        s=default; t=1598974784;
+        bh=4P0E1TdwEUvHFMgvNrSm/DXS5S0ovHvkEWD5HGQ/MOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XcE6pdUFXkM+3zTsw+wZqFsxF2D+LcsBorvrK/4yxkG/dxQIHTcGuPDNg8nkpenqK
-         XqRHo8PK/HT9/ppI2aQ7ba5ZxR2B+TqCLCNomuJK6ykBvtWMugGdfNhCqsTKDUmh5p
-         N6J34xROuc/BKnTRTL1UEUvSkCARTGEhhYbkVuAI=
+        b=MNS+zAgbXOEB3KxCncMYw1o3fsomsiR+5GSYyIWJKIN688loTXMIdO4I/s+2fOQqM
+         jyK21DG8JiecDYLQQAFGOjfhTOkq/6JzINP8hfd17eXCRBfbVsLhw71wxdUzhIJAtS
+         Zs2GqoRtk/0ndBrEubBEGJ2MOATsq9xqkfgYR30o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Li Guifu <bluce.liguifu@huawei.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 046/255] cec-api: prevent leaking memory through hole in structure
-Date:   Tue,  1 Sep 2020 17:08:22 +0200
-Message-Id: <20200901151002.951614154@linuxfoundation.org>
+Subject: [PATCH 5.8 049/255] f2fs: fix use-after-free issue
+Date:   Tue,  1 Sep 2020 17:08:25 +0200
+Message-Id: <20200901151003.082217220@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -44,41 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Li Guifu <bluce.liguifu@huawei.com>
 
-[ Upstream commit 6c42227c3467549ddc65efe99c869021d2f4a570 ]
+[ Upstream commit 99c787cfd2bd04926f1f553b30bd7dcea2caaba1 ]
 
-Fix this smatch warning:
+During umount, f2fs_put_super() unregisters procfs entries after
+f2fs_destroy_segment_manager(), it may cause use-after-free
+issue when umount races with procfs accessing, fix it by relocating
+f2fs_unregister_sysfs().
 
-drivers/media/cec/core/cec-api.c:156 cec_adap_g_log_addrs() warn: check that 'log_addrs' doesn't leak information (struct has a hole after
-'features')
+[Chao Yu: change commit title/message a bit]
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Li Guifu <bluce.liguifu@huawei.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/core/cec-api.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/f2fs/super.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/cec/core/cec-api.c b/drivers/media/cec/core/cec-api.c
-index 17d1cb2e5f976..f922a2196b2b7 100644
---- a/drivers/media/cec/core/cec-api.c
-+++ b/drivers/media/cec/core/cec-api.c
-@@ -147,7 +147,13 @@ static long cec_adap_g_log_addrs(struct cec_adapter *adap,
- 	struct cec_log_addrs log_addrs;
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 20e56b0fa46a9..0deb839da0a03 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1173,6 +1173,9 @@ static void f2fs_put_super(struct super_block *sb)
+ 	int i;
+ 	bool dropped;
  
- 	mutex_lock(&adap->lock);
--	log_addrs = adap->log_addrs;
-+	/*
-+	 * We use memcpy here instead of assignment since there is a
-+	 * hole at the end of struct cec_log_addrs that an assignment
-+	 * might ignore. So when we do copy_to_user() we could leak
-+	 * one byte of memory.
-+	 */
-+	memcpy(&log_addrs, &adap->log_addrs, sizeof(log_addrs));
- 	if (!adap->is_configured)
- 		memset(log_addrs.log_addr, CEC_LOG_ADDR_INVALID,
- 		       sizeof(log_addrs.log_addr));
++	/* unregister procfs/sysfs entries in advance to avoid race case */
++	f2fs_unregister_sysfs(sbi);
++
+ 	f2fs_quota_off_umount(sb);
+ 
+ 	/* prevent remaining shrinker jobs */
+@@ -1238,8 +1241,6 @@ static void f2fs_put_super(struct super_block *sb)
+ 
+ 	kvfree(sbi->ckpt);
+ 
+-	f2fs_unregister_sysfs(sbi);
+-
+ 	sb->s_fs_info = NULL;
+ 	if (sbi->s_chksum_driver)
+ 		crypto_free_shash(sbi->s_chksum_driver);
 -- 
 2.25.1
 
