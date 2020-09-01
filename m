@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C70259679
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B592597E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgIAQC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56978 "EHLO mail.kernel.org"
+        id S1731115AbgIAPci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731446AbgIAPnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:43:11 -0400
+        id S1730595AbgIAPce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:32:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8A9E2064B;
-        Tue,  1 Sep 2020 15:43:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4E0E205F4;
+        Tue,  1 Sep 2020 15:32:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974991;
-        bh=h68ZEXTEgHOBmJRPT4W4AKNXN5F2l6HFFOywB0QBYrs=;
+        s=default; t=1598974354;
+        bh=uRJCU0jqydOCQjEdqrxJWapHI3L0k/9sZlHerSON5kc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVXP+rFgGbvpzeHPpjSwMC+dOc+4P2FztW4rCbbo/IgLhQwNEYM2+Dw3ujLVWRCjM
-         Dlrug6QSU3eAn0HLQK9g7vjlqPOn95ILqwrcbCpOvcER3byDCLxHG279Vu9s12q4or
-         RzUODZMYglBcjhlw74jbON0+r9tq1+4naTwSqfdo=
+        b=DhAsGrZTEDDrSRVcYwGukt4KAfOa8jPIxx2V4Br+9kZ+LW4suY9zK0V2mF5gxzA69
+         EpkIJrwPo6ZxhysLKyqwvijcQdFKp0/zigG4UdlPVciaIxNxUiE9Lo8lUR8X/7CuLv
+         9lSgwFlq03X8jkcYaeONnPEIbqR79p3xDOXhRaic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.8 167/255] hwmon: (gsc-hwmon) Scale temperature to millidegrees
-Date:   Tue,  1 Sep 2020 17:10:23 +0200
-Message-Id: <20200901151008.696784793@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 144/214] macvlan: validate setting of multiple remote source MAC addresses
+Date:   Tue,  1 Sep 2020 17:10:24 +0200
+Message-Id: <20200901150959.880429621@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +45,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Harvey <tharvey@gateworks.com>
+From: Alvin Šipraga <alsi@bang-olufsen.dk>
 
-commit c1ae18d313e24bc7833e1749dd36dba5d47f259c upstream.
+[ Upstream commit 8b61fba503904acae24aeb2bd5569b4d6544d48f ]
 
-The GSC registers report temperature in decidegrees celcius so we
-need to scale it to represent the hwmon sysfs API of millidegrees.
+Remote source MAC addresses can be set on a 'source mode' macvlan
+interface via the IFLA_MACVLAN_MACADDR_DATA attribute. This commit
+tightens the validation of these MAC addresses to match the validation
+already performed when setting or adding a single MAC address via the
+IFLA_MACVLAN_MACADDR attribute.
 
-Cc: stable@vger.kernel.org
-Fixes: 3bce5377ef66 ("hwmon: Add Gateworks System Controller support")
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-Link: https://lore.kernel.org/r/1598548824-16898-1-git-send-email-tharvey@gateworks.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+iproute2 uses IFLA_MACVLAN_MACADDR_DATA for its 'macvlan macaddr set'
+command, and IFLA_MACVLAN_MACADDR for its 'macvlan macaddr add' command,
+which demonstrates the inconsistent behaviour that this commit
+addresses:
 
+ # ip link add link eth0 name macvlan0 type macvlan mode source
+ # ip link set link dev macvlan0 type macvlan macaddr add 01:00:00:00:00:00
+ RTNETLINK answers: Cannot assign requested address
+ # ip link set link dev macvlan0 type macvlan macaddr set 01:00:00:00:00:00
+ # ip -d link show macvlan0
+ 5: macvlan0@eth0: <BROADCAST,MULTICAST,DYNAMIC,UP,LOWER_UP> mtu 1500 ...
+     link/ether 2e:ac:fd:2d:69:f8 brd ff:ff:ff:ff:ff:ff promiscuity 0
+     macvlan mode source remotes (1) 01:00:00:00:00:00 numtxqueues 1 ...
+
+With this change, the 'set' command will (rightly) fail in the same way
+as the 'add' command.
+
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/gsc-hwmon.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/macvlan.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
---- a/drivers/hwmon/gsc-hwmon.c
-+++ b/drivers/hwmon/gsc-hwmon.c
-@@ -172,6 +172,7 @@ gsc_hwmon_read(struct device *dev, enum
- 	case mode_temperature:
- 		if (tmp > 0x8000)
- 			tmp -= 0xffff;
-+		tmp *= 100; /* convert to millidegrees celsius */
- 		break;
- 	case mode_voltage_raw:
- 		tmp = clamp_val(tmp, 0, BIT(GSC_HWMON_RESOLUTION));
+diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
+index 9d3209ae41cfb..07622cf8765ae 100644
+--- a/drivers/net/macvlan.c
++++ b/drivers/net/macvlan.c
+@@ -1259,6 +1259,9 @@ static void macvlan_port_destroy(struct net_device *dev)
+ static int macvlan_validate(struct nlattr *tb[], struct nlattr *data[],
+ 			    struct netlink_ext_ack *extack)
+ {
++	struct nlattr *nla, *head;
++	int rem, len;
++
+ 	if (tb[IFLA_ADDRESS]) {
+ 		if (nla_len(tb[IFLA_ADDRESS]) != ETH_ALEN)
+ 			return -EINVAL;
+@@ -1306,6 +1309,20 @@ static int macvlan_validate(struct nlattr *tb[], struct nlattr *data[],
+ 			return -EADDRNOTAVAIL;
+ 	}
+ 
++	if (data[IFLA_MACVLAN_MACADDR_DATA]) {
++		head = nla_data(data[IFLA_MACVLAN_MACADDR_DATA]);
++		len = nla_len(data[IFLA_MACVLAN_MACADDR_DATA]);
++
++		nla_for_each_attr(nla, head, len, rem) {
++			if (nla_type(nla) != IFLA_MACVLAN_MACADDR ||
++			    nla_len(nla) != ETH_ALEN)
++				return -EINVAL;
++
++			if (!is_valid_ether_addr(nla_data(nla)))
++				return -EADDRNOTAVAIL;
++		}
++	}
++
+ 	if (data[IFLA_MACVLAN_MACADDR_COUNT])
+ 		return -EINVAL;
+ 
+@@ -1362,10 +1379,6 @@ static int macvlan_changelink_sources(struct macvlan_dev *vlan, u32 mode,
+ 		len = nla_len(data[IFLA_MACVLAN_MACADDR_DATA]);
+ 
+ 		nla_for_each_attr(nla, head, len, rem) {
+-			if (nla_type(nla) != IFLA_MACVLAN_MACADDR ||
+-			    nla_len(nla) != ETH_ALEN)
+-				continue;
+-
+ 			addr = nla_data(nla);
+ 			ret = macvlan_hash_add_source(vlan, addr);
+ 			if (ret)
+-- 
+2.25.1
+
 
 
