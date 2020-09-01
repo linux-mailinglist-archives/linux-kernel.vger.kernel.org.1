@@ -2,47 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BAB259D27
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E15C259CC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgIARZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:25:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728938AbgIARZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:25:24 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2899C061244;
-        Tue,  1 Sep 2020 10:25:23 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDA1w-008nxM-Ez; Tue, 01 Sep 2020 17:25:12 +0000
-Date:   Tue, 1 Sep 2020 18:25:12 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Kees Cook <keescook@chromium.org>,
+        id S1732663AbgIARTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732658AbgIARTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:19:51 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B492207D3;
+        Tue,  1 Sep 2020 17:19:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598980787;
+        bh=sy0aZR96Ca8zfAgxzaqIau0tuJKmSH20xpMv6v/itjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mpSSRs53CiZXxpSOuVmXsNXuEeSeeViItUrAmb3/GnrxgtHhPOl+8Xwekl0SfN3Sv
+         uG04zUDkeLYaPKhFlulxTfCJCRxiIMqcTPTeZIBh+2982P57NlTNRkEGo9nplG8Jk5
+         Qa7vA58sWoVd5uulnV4xqbeH78otNhJs9422igJY=
+Date:   Tue, 1 Sep 2020 12:25:56 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Leesoo Ahn <dev@ooseel.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Niu Xilei <niu_xilei@163.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: remove the last set_fs() in common code, and remove it for x86
- and powerpc v2
-Message-ID: <20200901172512.GI1236603@ZenIV.linux.org.uk>
-References: <20200827150030.282762-1-hch@lst.de>
- <a8bb0319-0928-4687-9e9c-777c5860dbdd@csgroup.eu>
+Subject: Re: [PATCH] pktgen: fix error message with wrong function name
+Message-ID: <20200901172556.GA31464@embeddedor>
+References: <20200901130449.15422-1-dev@ooseel.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a8bb0319-0928-4687-9e9c-777c5860dbdd@csgroup.eu>
+In-Reply-To: <20200901130449.15422-1-dev@ooseel.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 07:13:00PM +0200, Christophe Leroy wrote:
+On Tue, Sep 01, 2020 at 10:04:47PM +0900, Leesoo Ahn wrote:
+> Error on calling kthread_create_on_node prints wrong function name,
+> kernel_thread.
+> 
+> Signed-off-by: Leesoo Ahn <dev@ooseel.net>
 
->     10.92%  dd       [kernel.kallsyms]  [k] iov_iter_zero
+You might need to add the following tag:
 
-Interesting...  Could you get an instruction-level profile inside iov_iter_zero(),
-along with the disassembly of that sucker?
+Fixes: 94dcf29a11b3 ("kthread: use kthread_create_on_node()")
+
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+--
+Gustavo
+
+> ---
+>  net/core/pktgen.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/core/pktgen.c b/net/core/pktgen.c
+> index 95f4c6b8f51a..44fdbb9c6e53 100644
+> --- a/net/core/pktgen.c
+> +++ b/net/core/pktgen.c
+> @@ -3699,7 +3699,7 @@ static int __net_init pktgen_create_thread(int cpu, struct pktgen_net *pn)
+>  				   cpu_to_node(cpu),
+>  				   "kpktgend_%d", cpu);
+>  	if (IS_ERR(p)) {
+> -		pr_err("kernel_thread() failed for cpu %d\n", t->cpu);
+> +		pr_err("kthread_create_on_node() failed for cpu %d\n", t->cpu);
+>  		list_del(&t->th_list);
+>  		kfree(t);
+>  		return PTR_ERR(p);
+> -- 
+> 2.25.4
+> 
