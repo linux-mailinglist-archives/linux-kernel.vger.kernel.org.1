@@ -2,95 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402DA258FCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85D325906A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbgIAOHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:07:19 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:49272 "EHLO mta-01.yadro.com"
+        id S1728316AbgIAO3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:29:38 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10752 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728289AbgIAOEX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:04:23 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id F272452195;
-        Tue,  1 Sep 2020 14:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-transfer-encoding:mime-version:user-agent:content-type
-        :content-type:organization:references:in-reply-to:date:date:from
-        :from:subject:subject:message-id:received:received:received; s=
-        mta-01; t=1598969019; x=1600783420; bh=Cio/AuAeW0HBrdL9zokO5x1JI
-        loihymCKFdkc3tu5Rw=; b=hv5Tpu+pfEE+4TqMB+Tacv08S9E1AtZHx0I6ruCR/
-        9VTvOFvazAaOvNVY2lYLMmlDfYxFPuYIMoJi0aRcIp8IHzhss3UB5BQdxCQvnaB6
-        gYi5qWsqNv/jjrY6YRGBig+QP/e/B9VCTbSRcokU83k8yH4dNx25zrTTPuOHUOgz
-        FM=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jTjqBeJ6JhO5; Tue,  1 Sep 2020 17:03:39 +0300 (MSK)
-Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 23F644C866;
-        Tue,  1 Sep 2020 17:03:39 +0300 (MSK)
-Received: from localhost.localdomain (10.199.1.70) by T-EXCH-02.corp.yadro.com
- (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 1 Sep
- 2020 17:03:38 +0300
-Message-ID: <ceb27ac19cd66e9b8f1c95a27f4c92a3029eda0c.camel@yadro.com>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: enable lock interface for macronix
- chips
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Date:   Tue, 1 Sep 2020 17:06:59 +0300
-In-Reply-To: <ae094597-e57e-dff1-f897-bf3cc75f5511@prevas.dk>
-References: <20200812151818.16699-1-i.mikhaylov@yadro.com>
-         <20200812151818.16699-3-i.mikhaylov@yadro.com>
-         <ae094597-e57e-dff1-f897-bf3cc75f5511@prevas.dk>
-Organization: YADRO
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        id S1728297AbgIAO1t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:27:49 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 294A94EDE485CCBE6BD4;
+        Tue,  1 Sep 2020 22:10:39 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
+ 22:10:32 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] net: sungem: Remove unneeded cast from memory allocation
+Date:   Tue, 1 Sep 2020 22:10:28 +0800
+Message-ID: <20200901141028.25264-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.199.1.70]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-02.corp.yadro.com (172.17.10.102)
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-31 at 12:55 +0200, Rasmus Villemoes wrote:
-> On 12/08/2020 17.18, Ivan Mikhaylov wrote:
-> > Add locks for whole macronix chip series with BP0-2 and BP0-3 bits.
-> > 
-> > Tested with mx25l51245g(BP0-3).
-> 
-> Hmm. I've tried adding support for locking on Macronix to U-Boot
-> (
-> https://patchwork.ozlabs.org/project/uboot/patch/20200326114257.1782-3-rasmus.villemoes@prevas.dk/
-> ),
-> but that was quite a bit more involved than this. Note in particular the
-> first part of my commit message:
-> 
->   Macronix chips implements locking in (power-of-two multiple of) 64K
->   blocks, not as a fraction of the chip's size.
-> 
-> At least, that was true for the chip I was interested in and the few
-> others whose data sheets I grabbed to double-check. So I'm a bit
-> skeptical that this can work out-of-the-box without introducing a new
-> struct spi_nor_locking_ops.
-> 
-> Rasmus
+Remove dma_alloc_coherent return value cast.
+This is detected by coccinelle.
 
-Rasmus, but there is already locking of power-of-two as I see from the code,
-I'll double check on hw. Also compared documentation n25q512ax3(micron, which
-HAS_LOCK) to mx25l25635e(macronix) and they have same block protection table
-bits for example. I'd be glad to hear from maintainers on this spot.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/ethernet/sun/sungem.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Thanks.
+diff --git a/drivers/net/ethernet/sun/sungem.c b/drivers/net/ethernet/sun/sungem.c
+index eeb8518c8a84..b7093975b14c 100644
+--- a/drivers/net/ethernet/sun/sungem.c
++++ b/drivers/net/ethernet/sun/sungem.c
+@@ -2965,9 +2965,8 @@ static int gem_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	/* It is guaranteed that the returned buffer will be at least
+ 	 * PAGE_SIZE aligned.
+ 	 */
+-	gp->init_block = (struct gem_init_block *)
+-		dma_alloc_coherent(&pdev->dev, sizeof(struct gem_init_block),
+-				   &gp->gblock_dvma, GFP_KERNEL);
++	gp->init_block = dma_alloc_coherent(&pdev->dev, sizeof(struct gem_init_block),
++					    &gp->gblock_dvma, GFP_KERNEL);
+ 	if (!gp->init_block) {
+ 		pr_err("Cannot allocate init block, aborting\n");
+ 		err = -ENOMEM;
+-- 
+2.17.1
+
 
