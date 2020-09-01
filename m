@@ -2,119 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EB3258F21
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06C9258F50
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgIANck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:32:40 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45739 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727930AbgIANbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:31:44 -0400
-IronPort-SDR: wUNd+JOqiJ8eiDvFzP4qwfJ6RfzN0l2DRRinJvo5GqLck4AU3mD3gBCDFQNgkexBegw4sLeBE9
- gCbyOr1qZozA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="136681369"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="136681369"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 06:31:22 -0700
-IronPort-SDR: AGXl7TqFyYMzY+0nDQFWipcPsAWD9PripkK5s9uET5CINDhTMhqK+2b+R0jdg2W+iA9o5DbvLv
- ExDHSdugl+QA==
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="446127414"
-Received: from dlabricc-mobl.amr.corp.intel.com (HELO [10.212.239.51]) ([10.212.239.51])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 06:31:21 -0700
-Subject: Re: [PATCH 09/11] soundwire: intel: add dynamic debug trace for
- clock-stop invalid configs
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     alsa-devel@alsa-project.org, tiwai@suse.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        broonie@kernel.org, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20200829110047.GC2639@vkoul-mobl>
- <051afb2d-dd2e-0ea4-d8a9-980f5df136b7@linux.intel.com>
- <20200901110716.GA2639@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <101ce54e-a368-d25f-c849-48aeb2bc14c0@linux.intel.com>
-Date:   Tue, 1 Sep 2020 08:31:19 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728047AbgIANmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728203AbgIANcF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:32:05 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080B2C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:32:03 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e11so984105wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 06:32:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=bx9oQ2NagEe6NO8GIGkDSi51bJAcX461SHWuEDdlU9s=;
+        b=aODv4vSb/PtYX2etcdsUG9b4DkQ7ggsrTqv4odqPbmVeKSOtc8x4orvCVl5pTPdofn
+         GzpU8kzSxnyrFLBsV4wDhaUkZVId84QvpqgasHh9RvVJ0U1Mk7G/7qsTfZCy2OJUeYaY
+         v84qOYWsNzUtbkktxEDEnj+npfSVvCVZvemEU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=bx9oQ2NagEe6NO8GIGkDSi51bJAcX461SHWuEDdlU9s=;
+        b=bJC20ayGTuuJt16Wwrn8BB2Wz8Nc3BexcYxarFtK8cE1ssV+s4UJozKmrtfEC0ZXE0
+         5wOB0oEjX7D/zLk6l/DmpX9GtXx2kAzByVovsyWJIndsC4/Z6HeIdhfj5S9xWodf6Tcj
+         UhFpIIziREGNqvlVcezWGTIurseqeBveYerSSXyoADr9nAkd78ZIWmbE1p6Z8rpHXoCU
+         OiXnFN4JRnzwsEr8y/fnSog7/3ZRkxZk8a5aERDTP5HLWsYIdzMhx8/hOsqsxp1mmqc+
+         8QMok4H7ufAseVpso8RaIdc0goaj3VV9xXvxDoFwFAzLHDeJ3upoNT08xcMX3f/hxJEl
+         w9aA==
+X-Gm-Message-State: AOAM532XzhTrhlQKOJIr7IvjgXTYniBqrpLxExcPQkHl478ILyAxtatO
+        18RPE/+cw2iaGXjlReUTSM6k3onoz/60ZG6i
+X-Google-Smtp-Source: ABdhPJxMIpyA4+ivRVmjL76n4SwUIJPpyNp2oXzgh60A0zsTrXOGV9cAYNKuDeIxPZ/25Yor8JDoOQ==
+X-Received: by 2002:a1c:2b43:: with SMTP id r64mr1778101wmr.105.1598967122596;
+        Tue, 01 Sep 2020 06:32:02 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id s124sm2056569wme.29.2020.09.01.06.32.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 06:32:01 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 15:32:00 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Gustavo Padovan <gustavo@padovan.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] dma-buf: fix kernel-doc warning in dma-fence.c
+Message-ID: <20200901133200.GE2352366@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Gustavo Padovan <gustavo@padovan.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+References: <20200831041713.12571-1-rdunlap@infradead.org>
+ <81dc0a34-90f6-401a-f846-924fdff4aaff@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20200901110716.GA2639@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <81dc0a34-90f6-401a-f846-924fdff4aaff@amd.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/1/20 6:07 AM, Vinod Koul wrote:
-> On 31-08-20, 10:15, Pierre-Louis Bossart wrote:
->>
->>>>>>>> Detect cases where the clock is assumed to be stopped but the IP is
->>>>>>>> not in the relevant state, and add a dynamic debug trace.
->>>>>>>
->>>>>>> you meant a debug print..and it looks like error print below (also in title).
->>>>>>
->>>>>> I don't understand the comment. Is the 'trace' confusing and are you asking
->>>>>> to e.g. change the commit message to 'add dynamic debug log'?
->>>>>
->>>>> Question is what is dynamic about this?
->>>> dev_dbg() is part of the kernel dynamic debug capability...
->>>>
->>>> https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html
->>>>
->>>> Not sure what you are asking here?
->>>
->>> :-| where is dev_dbg() ?
->>>
->>> See [1]
->>
->>>
->>> [1]
->>>
->>>> +			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
->>>
->>>                           ^^^^^^^
->>
->> it's still a log using the "dynamic debug" framework.
->>
->> Again, what are you asking us to fix?
+On Mon, Aug 31, 2020 at 12:02:03PM +0200, Christian König wrote:
+> Am 31.08.20 um 06:17 schrieb Randy Dunlap:
+> > Add @cookie to dma_fence_end_signalling() to prevent kernel-doc
+> > warning in drivers/dma-buf/dma-fence.c:
+> > 
+> > ../drivers/dma-buf/dma-fence.c:291: warning: Function parameter or member 'cookie' not described in 'dma_fence_end_signalling'
+> > 
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: Gustavo Padovan <gustavo@padovan.org>
+> > Cc: Christian König <christian.koenig@amd.com>
+> > Cc: linux-media@vger.kernel.org
+> > Cc: dri-devel@lists.freedesktop.org
 > 
-> Ah you are really testing my patience!
+> Acked-by: Christian König <christian.koenig@amd.com>
 
-I was asking a question, not making a statement.
+Will you merge these two to drm-misc-fixes or should someone else?
 
-There is no need to blow a fuse or yell via exclamation marks at people 
-who provide 90% of the patches for the subsystem you maintain, or 
-provide fixes for your own patches.
+Always a bit confusing when maintainers reply with acks/r-b but not what
+they'll do with the patch :-)
 
-> The title says "dynamic debug" and then you use a dev_err which is *not*
-> part of dynamic debug as it is printed always and cannot be dynamically
-> enabled and disabled!
+Cheers, Daniel
 
-I accept the argument, I just didn't understand what the issue was.
-
-> See Documentation/admin-guide/dynamic-debug-howto.rst:
 > 
-> "Dynamic debug is designed to allow you to dynamically enable/disable
-> kernel code to obtain additional kernel information.  Currently, if
-> ``CONFIG_DYNAMIC_DEBUG`` is set, then all ``pr_debug()``/``dev_dbg()`` and
-> ``print_hex_dump_debug()``/``print_hex_dump_bytes()`` calls can be dynamically
-> enabled per-callsite."
+> > ---
+> >   drivers/dma-buf/dma-fence.c |    1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > --- lnx-59-rc3.orig/drivers/dma-buf/dma-fence.c
+> > +++ lnx-59-rc3/drivers/dma-buf/dma-fence.c
+> > @@ -283,6 +283,7 @@ EXPORT_SYMBOL(dma_fence_begin_signalling
+> >   /**
+> >    * dma_fence_end_signalling - end a critical DMA fence signalling section
+> > + * @cookie: opaque cookie from dma_fence_begin_signalling()
+> >    *
+> >    * Closes a critical section annotation opened by dma_fence_begin_signalling().
+> >    */
 > 
-> No dev_err here!
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-ok, so we will change the title to 'soundwire: intel: add error log for 
-clock-stop invalid config'.
-
-Thanks
--Pierre
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
