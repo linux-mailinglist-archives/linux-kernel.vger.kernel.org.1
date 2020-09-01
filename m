@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D482591BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082432591D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgIAOys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:54:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41006 "EHLO mail.kernel.org"
+        id S1728857AbgIAO4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:56:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39942 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727924AbgIAOyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:54:36 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8E852078B;
-        Tue,  1 Sep 2020 14:54:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598972075;
-        bh=MAxRLRhpKMxTjMaTPe+Mkc3zeiFKKPVO0RG7AiViFRM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sCzdBfWBFNqhHaufroH8myQ/yRWFIa6uXdVJhF4tPrcHAknmxS5eVfj6fmi6++Pk8
-         wiQ886QH6BMlcmMimT8XzVUpsPKXnMqTUFApAs3d9SoKP40Ny07LAac7ofP1A79t3E
-         27ejYTaqjc/Bj3NtMWTyzOKNp9L5xRP6c6NyesIM=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1326D40D3D; Tue,  1 Sep 2020 11:54:33 -0300 (-03)
-Date:   Tue, 1 Sep 2020 11:54:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Al Grant <al.grant@arm.com>
-Subject: Re: [PATCH 1/2] perf cs-etm: Fix corrupt data after perf inject from
-Message-ID: <20200901145432.GB1422817@kernel.org>
-References: <20200819084751.17686-1-leo.yan@linaro.org>
- <20200827205354.GE22307@xps15>
- <20200831000432.GA4715@leoy-ThinkPad-X240s>
+        id S1728637AbgIAOyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:54:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D50A6ACC3;
+        Tue,  1 Sep 2020 14:54:41 +0000 (UTC)
+Subject: Re: [PATCH v5 3/3] xen: add helpers to allocate unpopulated memory
+To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>, Wei Liu <wl@xen.org>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
+        linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20200901083326.21264-1-roger.pau@citrix.com>
+ <20200901083326.21264-4-roger.pau@citrix.com>
+ <20200901144539.GI753@Air-de-Roger>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <4b24c8c3-fb0f-23ad-09c5-81fcfdb6a2b5@suse.com>
+Date:   Tue, 1 Sep 2020 16:54:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831000432.GA4715@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200901144539.GI753@Air-de-Roger>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 31, 2020 at 08:04:32AM +0800, Leo Yan escreveu:
-> Hi Mathieu,
+On 01.09.20 16:45, Roger Pau Monné wrote:
+> On Tue, Sep 01, 2020 at 10:33:26AM +0200, Roger Pau Monne wrote:
+>> +static int fill_list(unsigned int nr_pages)
+>> +{
+>> +	struct dev_pagemap *pgmap;
+>> +	void *vaddr;
+>> +	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+>> +	int nid, ret;
+>> +
+>> +	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+>> +	if (!pgmap)
+>> +		return -ENOMEM;
+>> +
+>> +	pgmap->type = MEMORY_DEVICE_GENERIC;
+>> +	pgmap->res.name = "Xen scratch";
+>> +	pgmap->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+>> +
+>> +	ret = allocate_resource(&iomem_resource, &pgmap->res,
+>> +				alloc_pages * PAGE_SIZE, 0, -1,
+>> +				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+>> +	if (ret < 0) {
+>> +		pr_err("Cannot allocate new IOMEM resource\n");
+>> +		kfree(pgmap);
+>> +		return ret;
+>> +	}
+>> +
+>> +	nid = memory_add_physaddr_to_nid(pgmap->res.start);
 > 
-> On Thu, Aug 27, 2020 at 02:53:54PM -0600, Mathieu Poirier wrote:
-> > Hi Leo and Al,
-> > 
-> > On Wed, Aug 19, 2020 at 04:47:50PM +0800, Leo Yan wrote:
-> > > From: Al Grant <al.grant@arm.com>
-> > > 
-> > > Commit 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
-> > > changed the format of branch stacks in perf samples. When samples use
-> > > this new format, a flag must be set in the corresponding event.
-> > > Synthesized branch stacks generated from CoreSight ETM trace were using
-> > > the new format, but not setting the event attribute, leading to
-> > > consumers seeing corrupt data. This patch fixes the issue by setting the
-> > > event attribute to indicate use of the new format.
-> > > 
-> > > Fixes: 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
-> > > Signed-off-by: Al Grant <al.grant@arm.com>
-> > > Reviewed-by: Andrea Brunato <andrea.brunato@arm.com>
-> > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > > ---
-> > >  tools/perf/util/cs-etm.c | 9 ++++++++-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> > > index c283223fb31f..a2a369e2fbb6 100644
-> > > --- a/tools/perf/util/cs-etm.c
-> > > +++ b/tools/perf/util/cs-etm.c
-> > > @@ -1344,8 +1344,15 @@ static int cs_etm__synth_events(struct cs_etm_auxtrace *etm,
-> > >  		attr.sample_type &= ~(u64)PERF_SAMPLE_ADDR;
-> > >  	}
-> > >  
-> > > -	if (etm->synth_opts.last_branch)
-> > > +	if (etm->synth_opts.last_branch) {
-> > >  		attr.sample_type |= PERF_SAMPLE_BRANCH_STACK;
-> > > +		/*
-> > > +		 * We don't use the hardware index, but the sample generation
-> > > +		 * code uses the new format branch_stack with this field,
-> > > +		 * so the event attributes must indicate that it's present.
-> > > +		 */
-> > > +		attr.branch_sample_type |= PERF_SAMPLE_BRANCH_HW_INDEX;
-> > > +	}
-> > 
-> > I've see this patch before...  I thought it had been merged - what happened?
+> I think this is not needed ...
 > 
-> This patch before has been sent by Al to CoreSight mailing list but has
-> not sent to LKML, this is why I resent it to LKML in case it's missed.
+>> +
+>> +#ifdef CONFIG_XEN_HAVE_PVMMU
+>> +        /*
+>> +         * memremap will build page tables for the new memory so
+>> +         * the p2m must contain invalid entries so the correct
+>> +         * non-present PTEs will be written.
+>> +         *
+>> +         * If a failure occurs, the original (identity) p2m entries
+>> +         * are not restored since this region is now known not to
+>> +         * conflict with any devices.
+>> +         */
+>> +	if (!xen_feature(XENFEAT_auto_translated_physmap)) {
+>> +		xen_pfn_t pfn = PFN_DOWN(pgmap->res.start);
+>> +
+>> +		for (i = 0; i < alloc_pages; i++) {
+>> +			if (!set_phys_to_machine(pfn + i, INVALID_P2M_ENTRY)) {
+>> +				pr_warn("set_phys_to_machine() failed, no memory added\n");
+>> +				release_resource(&pgmap->res);
+>> +				kfree(pgmap);
+>> +				return -ENOMEM;
+>> +			}
+>> +                }
+>> +	}
+>> +#endif
+>> +
+>> +	vaddr = memremap_pages(pgmap, nid);
+> 
+> ... and NUMA_NO_NODE should be used here instead, as this memory is just
+> fictitious space to map foreign memory, and shouldn't be related to
+> any NUMA node.
+> 
+> The following chunk should be folded in, or I can resend.
 
-So, was it Acked on the CoreSight mailing list? Are we missing any
-Acked-by or Reviewed-by for this 1/2 patch as we got for 2/2?
+I can fold it in.
 
-- Arnaldo
+
+Juergen
