@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6C72593DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F21F25950C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731125AbgIAPcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36124 "EHLO mail.kernel.org"
+        id S1731699AbgIAPqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:46:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730728AbgIAPcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:32:32 -0400
+        id S1731652AbgIAPnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:43:14 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E3EC205F4;
-        Tue,  1 Sep 2020 15:32:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DB12206EB;
+        Tue,  1 Sep 2020 15:43:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974351;
-        bh=Xlt4LANXdOrhRf7zi/oAhoOIZdeFcPS4vzsgy5swhxA=;
+        s=default; t=1598974994;
+        bh=qQYC96ys55bOwFktWPSHo6ffF8BCXRT989q4ofQBy+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XLP/HiNETWTCCDoEtvjFQg/1yMRILuKKULyCVq5vk6zCIS3jO1Q261p2104lnqND7
-         NonNxAafQxCmPBjb/Lqw2OzfAYcGY1IG0DzrsWCvtQnELooypkEUjiLK8XtwdLiV03
-         nlE7BY5YyvNhckWAfQ53XwQaDzTt1AJoc7j9LsOE=
+        b=Z/BtNddI6gHUTVsK6JT8Eu+lOkQeJ7vVCT6NzVsPgQVxiZmxlOtk2301ls5VLpO4u
+         k4RkPcghx8x7aAkkQiFiJzDmK//qkfXB7wx6gwhtErISuxUEyzIrD0hjoFHAI5IYt7
+         Mkazo6wQxw4gSoBEwTHlmC/4/Cu3W15WgicyfHhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 143/214] Revert "scsi: qla2xxx: Fix crash on qla2x00_mailbox_command"
-Date:   Tue,  1 Sep 2020 17:10:23 +0200
-Message-Id: <20200901150959.831506820@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Deal <eric.deal@wdc.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.8 168/255] block: fix get_max_io_size()
+Date:   Tue,  1 Sep 2020 17:10:24 +0200
+Message-Id: <20200901151008.744593322@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,47 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurav Kashyap <skashyap@marvell.com>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit de7e6194301ad31c4ce95395eb678e51a1b907e5 ]
+commit e4b469c66f3cbb81c2e94d31123d7bcdf3c1dabd upstream.
 
-FCoE adapter initialization failed for ISP8021 with the following patch
-applied. In addition, reproduction of the issue the patch originally tried
-to address has been unsuccessful.
+A previous commit aligning splits to physical block sizes inadvertently
+modified one return case such that that it now returns 0 length splits
+when the number of sectors doesn't exceed the physical offset. This
+later hits a BUG in bio_split(). Restore the previous working behavior.
 
-This reverts commit 3cb182b3fa8b7a61f05c671525494697cba39c6a.
+Fixes: 9cc5169cd478b ("block: Improve physical block alignment of split bios")
+Reported-by: Eric Deal <eric.deal@wdc.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: https://lore.kernel.org/r/20200806111014.28434-11-njavali@marvell.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_mbx.c | 8 --------
- 1 file changed, 8 deletions(-)
+ block/blk-merge.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
-index 62a16463f0254..c1631e42d35d1 100644
---- a/drivers/scsi/qla2xxx/qla_mbx.c
-+++ b/drivers/scsi/qla2xxx/qla_mbx.c
-@@ -335,14 +335,6 @@ qla2x00_mailbox_command(scsi_qla_host_t *vha, mbx_cmd_t *mcp)
- 			if (time_after(jiffies, wait_time))
- 				break;
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -154,7 +154,7 @@ static inline unsigned get_max_io_size(s
+ 	if (max_sectors > start_offset)
+ 		return max_sectors - start_offset;
  
--			/*
--			 * Check if it's UNLOADING, cause we cannot poll in
--			 * this case, or else a NULL pointer dereference
--			 * is triggered.
--			 */
--			if (unlikely(test_bit(UNLOADING, &base_vha->dpc_flags)))
--				return QLA_FUNCTION_TIMEOUT;
--
- 			/* Check for pending interrupts. */
- 			qla2x00_poll(ha->rsp_q_map[0]);
+-	return sectors & (lbs - 1);
++	return sectors & ~(lbs - 1);
+ }
  
--- 
-2.25.1
-
+ static inline unsigned get_max_segment_size(const struct request_queue *q,
 
 
