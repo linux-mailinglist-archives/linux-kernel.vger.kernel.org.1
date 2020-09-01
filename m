@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF3C2591DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8EF2591AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbgIAOz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:55:57 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:24688 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727058AbgIALqR (ORCPT
+        id S1727807AbgIAOyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:54:12 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39396 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727783AbgIALs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:46:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598960740; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=liKI+Th2GySsbUd2xn9K1QLhy5bhTX64G88wpmW0HAU=; b=xhhVgTq+pI3cSKpgDVH120wCn8FnDeeo63wu5PEbBgPiBfqKwj24ce/S8MOykc9HWH+5orZj
- 8341xsdFbGm+1rUweRubyeYfaugBeT2TDN64pK98rLr8vl/LboeRBTbrTpswpdqBtNqtBgtj
- bdNl0sfzTLPa46AQ6E5CoOhDu6k=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f4e34644f13e63f04d5fc8d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Sep 2020 11:45:40
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 69988C433AD; Tue,  1 Sep 2020 11:45:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D073C433C9;
-        Tue,  1 Sep 2020 11:45:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D073C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     "Bouganim\, Raz" <r-bouganim@ti.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "linuxarm\@huawei.com" <linuxarm@huawei.com>,
-        "mauro.chehab\@huawei.com" <mauro.chehab@huawei.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Hahn\, Maital" <maitalm@ti.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Johannes Berg <johannes.berg@intel.com>,
-        "Fuqian Huang" <huangfq.daxian@gmail.com>,
-        "linux-wireless\@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH] Revert "wlcore: Adding suppoprt for IGTK key in wlcore driver"
-References: <f0a2cb7ea606f1a284d4c23cbf983da2954ce9b6.1598420968.git.mchehab+huawei@kernel.org>
-        <20200901093129.8A0FAC433B1@smtp.codeaurora.org>
-        <49d4cdaf6aad40f591e8b2f17e09007c@ti.com>
-Date:   Tue, 01 Sep 2020 14:45:33 +0300
-In-Reply-To: <49d4cdaf6aad40f591e8b2f17e09007c@ti.com> (Raz Bouganim's message
-        of "Tue, 1 Sep 2020 10:59:47 +0000")
-Message-ID: <87k0xd67qa.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Tue, 1 Sep 2020 07:48:27 -0400
+Date:   Tue, 01 Sep 2020 11:47:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598960873;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d9wop9RHUjCjERWVdTd3kUo7Nmuag7HCI+WHPRHgIjw=;
+        b=sWmq658BSYQnvnm+nboWl8P7Rw+a9hTv/JuJKDeQCMBtsmvvYv+Rba/fU12viV/wDiXRG+
+        asVexdTsPfL8GWGfov+qVqmsWpSdZRkn5T/rbYZFQywkjsIcJOM6zXYC/xtzhhJFCY620f
+        JR3mXriqi0gnBjlajubmKSaFDwCvMcpA4Ck5jiKtTqIIucC5UCkY+i3w5V3h8ngtFs+1GL
+        hGOLV733e6bFUwEafKqChO2wsWSM4UIjYKRoQG23GgucGSA1AC1VbgUdedP3HkVXwVJOjj
+        kVWGJqLhSBQ4RvATcsWjViAaiOsiEaYOsQlBt91w2k6gLCmolO5Rn4XME09B+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598960873;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d9wop9RHUjCjERWVdTd3kUo7Nmuag7HCI+WHPRHgIjw=;
+        b=17pyMS9UQOjQt2s75pU94NbSeKzxNyrPOsMmJMnumkXHlb5/aQwldjde/ztNZBBIdSzXyn
+        5UFtXy/40qBzU3Ag==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/build] x86/boot/compressed: Add missing debugging sections
+ to output
+Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200821194310.3089815-29-keescook@chromium.org>
+References: <20200821194310.3089815-29-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <159896087226.20229.1708368825874555559.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Bouganim, Raz" <r-bouganim@ti.com> writes:
+The following commit has been merged into the core/build branch of tip:
 
-> We are going to release a new FW version 8.9.0.0.83 that contains
-> support with the new IGTK key.
->
-> In addition, we also going to release a new patch that mandates the
-> driver to work with an 8.9.0.0.83 FW version or above.
->
-> We going to push it today/tomorrow.
+Commit-ID:     414d2ff5e5f21049b6b242271a6a8579f9dffc1b
+Gitweb:        https://git.kernel.org/tip/414d2ff5e5f21049b6b242271a6a8579f9dffc1b
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Fri, 21 Aug 2020 12:43:09 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 01 Sep 2020 10:03:18 +02:00
 
-You shouldn't break the support for old firmware, instead please
-implement it so that both old and new firmware are supported at the same
-time.
+x86/boot/compressed: Add missing debugging sections to output
 
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Include the missing DWARF and STABS sections in the compressed image,
+when they are present.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20200821194310.3089815-29-keescook@chromium.org
+---
+ arch/x86/boot/compressed/vmlinux.lds.S | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+index 02f6feb..112b237 100644
+--- a/arch/x86/boot/compressed/vmlinux.lds.S
++++ b/arch/x86/boot/compressed/vmlinux.lds.S
+@@ -69,6 +69,8 @@ SECTIONS
+ 	. = ALIGN(PAGE_SIZE);	/* keep ZO size page aligned */
+ 	_end = .;
+ 
++	STABS_DEBUG
++	DWARF_DEBUG
+ 	ELF_DETAILS
+ 
+ 	DISCARDS
