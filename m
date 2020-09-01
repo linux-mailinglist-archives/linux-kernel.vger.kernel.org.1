@@ -2,156 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9E4258B9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E88B258BA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgIAJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 05:31:37 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44797 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgIAJbb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 05:31:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598952690; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=Q1lV8KhrZCAIfqPbV5rZXQBrWxtYYldKYVPcKGHRII0=;
- b=NfCQ/X1tVyTv16nx1QsyV/Q00OVAP2FSO953R1mBkbklMV+871flmJ+BEeQSEnZuUBKA6y3G
- QgHxfhSf0sYWVuaF+ig11TKisOPy0bA/1AIN2eFQHk0jxnJEIISQGCY/ZcEu3Ol37uPnz+uK
- gNPlErl9vpHI0UC8g2BuhpXQj5o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f4e14f29f3347551fc768a6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Sep 2020 09:31:30
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 76516C433AF; Tue,  1 Sep 2020 09:31:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BAC81C433CA;
-        Tue,  1 Sep 2020 09:31:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BAC81C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] Revert "wlcore: Adding suppoprt for IGTK key in wlcore
- driver"
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <f0a2cb7ea606f1a284d4c23cbf983da2954ce9b6.1598420968.git.mchehab+huawei@kernel.org>
-References: <f0a2cb7ea606f1a284d4c23cbf983da2954ce9b6.1598420968.git.mchehab+huawei@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
+        id S1726490AbgIAJc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 05:32:58 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:49071 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726064AbgIAJc4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 05:32:56 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id C4BA659D;
+        Tue,  1 Sep 2020 05:32:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 01 Sep 2020 05:32:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=yIMO5rI2UI9aNW11XZSdXqbn1PQ
+        yhmBmZc0nKtxCGM8=; b=X+18kR/dcIcBZlSEKNZXOhlDi6oOIpZCYa/PTp89lmL
+        3Sv/TeqqeIqazxg2SKt5L+lfDxSy1AJqwZv8TcPBBBo54xavcK6SGp9btwrWBEqT
+        ft4/+FpJ/1KMaRPb0XmjkRvi5Ro+Urd1QsHFSAywSIrPiZP/MqO5EONRCsaO4Tf/
+        MHVEAyxcE5lJpT22Z3Xcnj57kHuAdFiVpgu5dCZg+h5pabBVUEcgr8pdvAbRsC8p
+        aAx5YWbT0HZAyMJkDE7ANuDB9KOgGlx3LMJXpYJkCvJaLpj2rz96nQok0UbZUanQ
+        WY60O4HwzKEOq3EhqfDSfQNsaAe4Sv6kFRO4EwVA5YA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=yIMO5r
+        I2UI9aNW11XZSdXqbn1PQyhmBmZc0nKtxCGM8=; b=rRijvwHG7QMBE4mEd+P+wt
+        /0C1D5h47o1xdCddxPgYcBm5LbgXJT0mq/qkEoRvA6HlnUm7KmRFvMW+Mw5L+Dip
+        iZFtCFKFqW/9XI6ydJ4azqYYw8IfYYY1ljXj3o3Jb7/T5bMClRKJlFTxmtu7isGH
+        hFDJrt5P+TDmCEsBHaCxyQ+1Ixk6+cr/k5Y8QmNk/tDVLwf0smpRblOEjO3GbJwJ
+        7Z3S450xVbiESk60nl1u7iIgfMIfd1VXfN/fTF36gnu86sye4c/6V8potpw2GcPn
+        71Re7XB6A/0jgXv6P0LO236LhERlRvdiGcgBoZlmMxFPIbs0BGdF7xslU0T5jFqA
+        ==
+X-ME-Sender: <xms:RBVOX2ac15VheW_otOioHv7wRO6gfzaQiD0DFJO1_-Du53ZMyA_8eg>
+    <xme:RBVOX5ZXT21KpxqdG5NGrBuG3B4zE1hCuonIR64npDTZKuOR7-TGhy-VSKgqjZnu5
+    rC4LatSNpmpu2LiLD4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefjedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:RBVOXw9nIZ2dK33-qTY2qPLabpT_d-N1DJi9wVsfM9n9IEbWvfkSWA>
+    <xmx:RBVOX4rHhzIuONgF4_EPiGdzMWD2eTorFOPfnFjJat7vZAJcC-LNyg>
+    <xmx:RBVOXxq2kVzR3R5hqm_iuUShSdhHaNfxfBu3uhuBAPx1-ACTrFHuLg>
+    <xmx:RhVOX1LzNUK-ynqTU9D6E9_IhRaZ0unxXqrWL8ybjYYdamPAhEBrpg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2B5D1328005A;
+        Tue,  1 Sep 2020 05:32:52 -0400 (EDT)
+Date:   Tue, 1 Sep 2020 11:32:49 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Martin Cerveny <m.cerveny@computer.org>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Maital Hahn <maitalm@ti.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Raz Bouganim <r-bouganim@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Fuqian Huang <huangfq.daxian@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200901093129.76516C433AF@smtp.codeaurora.org>
-Date:   Tue,  1 Sep 2020 09:31:29 +0000 (UTC)
+        devicetree@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: crypto: add new compatible for V3s
+Message-ID: <20200901093249.orwyc5sr3z2y43fz@gilmour.lan>
+References: <20200831073101.3608-1-m.cerveny@computer.org>
+ <20200831073101.3608-2-m.cerveny@computer.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ywkqrhvkhmefty2q"
+Content-Disposition: inline
+In-Reply-To: <20200831073101.3608-2-m.cerveny@computer.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> This patch causes a regression betwen Kernel 5.7 and 5.8 at wlcore:
-> with it applied, WiFi stops working, and the Kernel starts printing
-> this message every second:
-> 
->    wlcore: PHY firmware version: Rev 8.2.0.0.242
->    wlcore: firmware booted (Rev 8.9.0.0.79)
->    wlcore: ERROR command execute failure 14
->    ------------[ cut here ]------------
->    WARNING: CPU: 0 PID: 133 at drivers/net/wireless/ti/wlcore/main.c:795 wl12xx_queue_recovery_work.part.0+0x6c/0x74 [wlcore]
->    Modules linked in: wl18xx wlcore mac80211 libarc4 cfg80211 rfkill snd_soc_hdmi_codec crct10dif_ce wlcore_sdio adv7511 cec kirin9xx_drm(C) kirin9xx_dw_drm_dsi(C) drm_kms_helper drm ip_tables x_tables ipv6 nf_defrag_ipv6
->    CPU: 0 PID: 133 Comm: kworker/0:1 Tainted: G        WC        5.8.0+ #186
->    Hardware name: HiKey970 (DT)
->    Workqueue: events_freezable ieee80211_restart_work [mac80211]
->    pstate: 60000005 (nZCv daif -PAN -UAO BTYPE=--)
->    pc : wl12xx_queue_recovery_work.part.0+0x6c/0x74 [wlcore]
->    lr : wl12xx_queue_recovery_work+0x24/0x30 [wlcore]
->    sp : ffff8000126c3a60
->    x29: ffff8000126c3a60 x28: 00000000000025de
->    x27: 0000000000000010 x26: 0000000000000005
->    x25: ffff0001a5d49e80 x24: ffff8000092cf580
->    x23: ffff0001b7c12623 x22: ffff0001b6fcf2e8
->    x21: ffff0001b7e46200 x20: 00000000fffffffb
->    x19: ffff0001a78e6400 x18: 0000000000000030
->    x17: 0000000000000001 x16: 0000000000000001
->    x15: ffff0001b7e46670 x14: ffffffffffffffff
->    x13: ffff8000926c37d7 x12: ffff8000126c37e0
->    x11: ffff800011e01000 x10: ffff8000120526d0
->    x9 : 0000000000000000 x8 : 3431206572756c69
->    x7 : 6166206574756365 x6 : 0000000000000c2c
->    x5 : 0000000000000000 x4 : ffff0001bf1361e8
->    x3 : ffff0001bf1790b0 x2 : 0000000000000000
->    x1 : ffff0001a5d49e80 x0 : 0000000000000001
->    Call trace:
->     wl12xx_queue_recovery_work.part.0+0x6c/0x74 [wlcore]
->     wl12xx_queue_recovery_work+0x24/0x30 [wlcore]
->     wl1271_cmd_set_sta_key+0x258/0x25c [wlcore]
->     wl1271_set_key+0x7c/0x2dc [wlcore]
->     wlcore_set_key+0xe4/0x360 [wlcore]
->     wl18xx_set_key+0x48/0x1d0 [wl18xx]
->     wlcore_op_set_key+0xa4/0x180 [wlcore]
->     ieee80211_key_enable_hw_accel+0xb0/0x2d0 [mac80211]
->     ieee80211_reenable_keys+0x70/0x110 [mac80211]
->     ieee80211_reconfig+0xa00/0xca0 [mac80211]
->     ieee80211_restart_work+0xc4/0xfc [mac80211]
->     process_one_work+0x1cc/0x350
->     worker_thread+0x13c/0x470
->     kthread+0x154/0x160
->     ret_from_fork+0x10/0x30
->    ---[ end trace b1f722abf9af5919 ]---
->    wlcore: WARNING could not set keys
->    wlcore: ERROR Could not add or replace key
->    wlan0: failed to set key (4, ff:ff:ff:ff:ff:ff) to hardware (-5)
->    wlcore: Hardware recovery in progress. FW ver: Rev 8.9.0.0.79
->    wlcore: pc: 0x0, hint_sts: 0x00000040 count: 39
->    wlcore: down
->    wlcore: down
->    ieee80211 phy0: Hardware restart was requested
->    mmc_host mmc0: Bus speed (slot 0) = 400000Hz (slot req 400000Hz, actual 400000HZ div = 0)
->    mmc_host mmc0: Bus speed (slot 0) = 25000000Hz (slot req 25000000Hz, actual 25000000HZ div = 0)
->    wlcore: PHY firmware version: Rev 8.2.0.0.242
->    wlcore: firmware booted (Rev 8.9.0.0.79)
->    wlcore: ERROR command execute failure 14
->    ------------[ cut here ]------------
-> 
-> Tested on Hikey 970.
-> 
-> This reverts commit 2b7aadd3b9e17e8b81eeb8d9cc46756ae4658265.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+--ywkqrhvkhmefty2q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Any updates? If I don't hear anything I will just queue this to v5.9.
+On Mon, Aug 31, 2020 at 09:30:59AM +0200, Martin Cerveny wrote:
+> Like A33 "sun4i-ss" has a difference, it give SHA1 digest
+> directly in BE. So add new compatible.
+>=20
+> Tested-by: Martin Cerveny <m.cerveny@computer.org>
 
-Reminder to myself: remove Mauro's duplicate s-o-b tag, that's a patchwork bug
+The Tested-by tag is for the other developpers. You're very much
+expected to have tested your patch before contributing it.
 
--- 
-https://patchwork.kernel.org/patch/11737193/
+> Signed-off-by: Martin Cerveny <m.cerveny@computer.org>
+> ---
+>  .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml          | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
+-crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
+-crypto.yaml
+> index fc823572b..180efd13a 100644
+> --- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
+=2Eyaml
+> @@ -25,6 +25,7 @@ properties:
+>            - const: allwinner,sun4i-a10-crypto
+>        - items:
+>            - const: allwinner,sun8i-a33-crypto
+> +      - const: allwinner,sun8i-v3s-crypto
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+If it's compatible with the A33, why do we need to introduce a new compatib=
+le?
 
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -59,7 +60,9 @@ if:
+>    properties:
+>      compatible:
+>        contains:
+> -        const: allwinner,sun6i-a31-crypto
+> +        oneOf:
+> +          - const: allwinner,sun6i-a31-crypto
+> +          - const: allwinner,sun8i-v3s-crypto
+
+I guess the A33 compatible should be on that list as well?
+
+Maxime
+
+--ywkqrhvkhmefty2q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX04VNwAKCRDj7w1vZxhR
+xUoPAP0aRVMtT5aReBzaR1rKfHMozA+BGin5xSE3NDdtc42+KgEAsOJOAuG0uraq
+QzryFy0SRC8lrKJdLsGgk3G1Xt6Uxgg=
+=YS/W
+-----END PGP SIGNATURE-----
+
+--ywkqrhvkhmefty2q--
