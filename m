@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BC0259A81
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA540259A75
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732312AbgIAQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727931AbgIAP03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:26:29 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1730100AbgIAP0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:26:21 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:42978 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729348AbgIAPXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:23:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 0E0068EE187;
+        Tue,  1 Sep 2020 08:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1598973779;
+        bh=oM6M8l0ba8Kwr86wVvWOr0ibc9GeoVF02RI3gdpRvZg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=UvqMRf/V4bYGUnXRFYzHR0MoWszTvt72MUDJlkPgLVL7Z5C9ghIwUJJ5HYM5kfJ3n
+         5VYFPt986TvN+zbqjMT6pkl+t9bvzRZjP81gXVEMiUig/anUDkmm0cM9tI1gLXtLCF
+         UIwKWRUmpM4JixpLzQm9dVgj9tnlX6pm+UJWHqoc=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U-JPs2CIcW43; Tue,  1 Sep 2020 08:22:58 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AD6D2078B;
-        Tue,  1 Sep 2020 15:26:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973988;
-        bh=fRMoqr4/w2YvC2L0ERB/A4WVkG0CZBpH9dm1ycTIcfM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HXcFF2HcgAOt6ErPCJhos8UXG5ebs1jDfaD0GS70FR3KESiPYv3HS8p3i0ohet7X8
-         nzeBJJrTxqEDL4JXToIqM3jYhe6+JZh8HLvMBAiis9EYx+IioREI0fCpvIjORDMNag
-         iELPZoy4+yN3lXOPoJwjaxEcEzVueO2uv1L5TasE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 125/125] ALSA: usb-audio: Update documentation comment for MS2109 quirk
-Date:   Tue,  1 Sep 2020 17:11:20 +0200
-Message-Id: <20200901150940.730505107@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 8B8B18EE0F5;
+        Tue,  1 Sep 2020 08:22:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1598973778;
+        bh=oM6M8l0ba8Kwr86wVvWOr0ibc9GeoVF02RI3gdpRvZg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QlglmDYfmn+LUmPHNl9G1vxZ4WANgTGEDBcv3VoTq5jkCobGzHRwV7MDXP/8CkPRF
+         DlnAvyJzmngr5D0/wC86DqyXRPVdp/OwUQc4zsVd3Mrk54apOxtDVbGKnBnOuqrFqS
+         /e8+ps58Vp9230FkQlqzYQQbltdvuVP33ee7Vxcw=
+Message-ID: <1598973776.4238.11.camel@HansenPartnership.com>
+Subject: Re: [PATCH 07/28] 53c700: improve non-coherent DMA handling
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-mm@kvack.org, alsa-devel@alsa-project.org
+Date:   Tue, 01 Sep 2020 08:22:56 -0700
+In-Reply-To: <20200901150554.GN14765@casper.infradead.org>
+References: <20200819065555.1802761-1-hch@lst.de>
+         <20200819065555.1802761-8-hch@lst.de>
+         <1598971960.4238.5.camel@HansenPartnership.com>
+         <20200901150554.GN14765@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hector Martin <marcan@marcan.st>
+On Tue, 2020-09-01 at 16:05 +0100, Matthew Wilcox wrote:
+> On Tue, Sep 01, 2020 at 07:52:40AM -0700, James Bottomley wrote:
+> > I think this looks mostly OK, except for one misnamed parameter
+> > below. Unfortunately, the last non-coherent parisc was the 700
+> > series and I no longer own a box, so I can't test that part of it
+> > (I can fire up the C360 to test it on a coherent arch).
+> 
+> I have a 715/50 that probably hasn't been powered on in 15 years if
+> you need something that old to test on (I believe the 725/100 uses
+> the 7100LC and so is coherent).  I'll need to set up a cross-compiler 
+> ...
 
-commit 74a2a7de81a2ef20732ec02087314e92692a7a1b upstream.
+I'm not going to say no to actual testing, but it's going to be a world
+of pain getting something so old going.  I do have a box of older
+systems I keep for architectural testing that I need to rummage around
+in ... I just have a vague memory that my 715 actually caught fire a
+decade ago and had to be disposed of.
 
-As the recent fix addressed the channel swap problem more properly,
-update the comment as well.
-
-Fixes: 1b7ecc241a67 ("ALSA: usb-audio: work around streaming quirk for MacroSilicon MS2109")
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Link: https://lore.kernel.org/r/20200816084431.102151-1-marcan@marcan.st
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- sound/usb/quirks-table.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3524,8 +3524,8 @@ ALC1220_VB_DESKTOP(0x26ce, 0x0a01), /* A
-  * they pretend to be 96kHz mono as a workaround for stereo being broken
-  * by that...
-  *
-- * They also have swapped L-R channels, but that's for userspace to deal
-- * with.
-+ * They also have an issue with initial stream alignment that causes the
-+ * channels to be swapped and out of phase, which is dealt with in quirks.c.
-  */
- {
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
-
+James
 
