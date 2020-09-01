@@ -2,118 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983E225984C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C9A2597EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731394AbgIAQZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S1731990AbgIAQUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730900AbgIAPcH (ORCPT
+        with ESMTP id S1729190AbgIAPcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:32:07 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91213C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:32:06 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id z22so2269548ejl.7
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:32:06 -0700 (PDT)
+        Tue, 1 Sep 2020 11:32:48 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36CCC061244;
+        Tue,  1 Sep 2020 08:32:47 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id d11so2240705ejt.13;
+        Tue, 01 Sep 2020 08:32:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DCVhL1ZYQZ/22NoSfVaU5SfSk2cz/Z2rvr8f2hgBXYE=;
-        b=hSk2aRhaoXQzHn2L9qxNLKMKe4q2ytVWr9XD8EZBuMQvnu6eTMXe0V3J5EoiDegMzv
-         nh7Vh47lF6rk5+eLg1mT8/kLFHD4WfIZYPSnveptzFnhbE0VrxtXagjjCnw1KfMtTExd
-         VEz1v3zTyFk7QODgF52sMUfMKdxKbdWECSpMIVSnWAmM6K6boqfz+9Hdogf4uqvR5iPd
-         2tqUjYPXzv69BmZ+Tkx4GGmJ2JjIR0JPhyDl7KhkWD+rQYnW1Xh+Ki0u63+yGtksuAjs
-         1MWVIawm0T6qXF2c4YxFPjdRZ9n30E7CoIQ8sSMmku9JHy6WC+/U6Q+fxCVl2a4afBTn
-         cmxQ==
+        bh=4y5+uILsrYEyrll+p0CQ1799yDtGVcYn/QLXWN/UkVA=;
+        b=EHuuu2pzBr1VfUBw4YoRiSfvSUiZeM+77kGjAP5zTLHasH7nR9vXXYvwCrbZU6c2jd
+         4seupK2oQl7hy/pRNHsPIqGejkRNxOtFMlnhfBZDpAiMkHr5pZB6BzPT4m+xJPonISe1
+         HNL48Aq235dCBlPMhV8inHNlZDOIrbnOh1JBXPfbeG8+sj6XuyqKsj94Gpd9ONs14vLu
+         deSYvLYAn6bVnvmYKfnhfxtYq2kvw0toScDDKCc1SxRZHd8XQ+4rc2te9/bh4pe/QeAl
+         lQCzapBnm6XmP/Hk7wQ5e2G3zy3d5GlwxxTvtVvi1NsTwVz1Ra28amh4VKBfVkpE2OfS
+         5CZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DCVhL1ZYQZ/22NoSfVaU5SfSk2cz/Z2rvr8f2hgBXYE=;
-        b=g/hPz0tbIE5ShecctJGJSsYJvEkW64IebxtE60/LA7bdZqZCveKtByPdgnaCMkWIm8
-         RRSJgktNudM6vY7GI31EFPRCaawUUZtRH+/FT48+YLJcWZnujwy529sOoy/KEXaATUFC
-         jZO5E9FsxNTReTL1DdMlb9J3gdq/hwOB4iEpkj7Gh9uZCgi01QZlHQqyfRzGyszMHFa7
-         ovGeMHnsyMzdsAe4Qsj/b0+BnbHcnGQw77DrM33EqC3NrbTi4z4LYUIcvEfvHapaKTze
-         tY0owI5CDbSt2TKWmN0jjl1atQb0SanweBlupE0UWYq0Y0qANQkw433ubdCvdfl4wTDB
-         yLpA==
-X-Gm-Message-State: AOAM530KMADi6EbV0c4G4dSyUndsvCxoI73rWpA4YUPBZg0JCwZkeahX
-        KNvP1Bx24apsGsCWQ8wiXVqI34vPeK+Jq35GJvf1
-X-Google-Smtp-Source: ABdhPJy+Q/X9dDz5TF7cJeuAhbImPPrbr4wy997A9iOn686JZ/umRzprOdiyRWGJMjZtiOEbLIUZH+jtc3lGHsGMNFM=
-X-Received: by 2002:a17:906:5205:: with SMTP id g5mr1887861ejm.488.1598974325033;
- Tue, 01 Sep 2020 08:32:05 -0700 (PDT)
+        bh=4y5+uILsrYEyrll+p0CQ1799yDtGVcYn/QLXWN/UkVA=;
+        b=Ym+mzSh5cdCJNDMZabqt1Xrre+C7S3QscthrKgYreDVxXYNKGitSweOAqTCszH3Box
+         tg2GwzbbYbuz6bWiK0UT2SkMzycRnGizC+LLShGqrmbNsLXDpnhDuXy6P2MAJW7i494m
+         Bf9/xLDB51yHKQCySoacOKDet30xcUatIACt2+wqEinE5mz8FqWKEPiUOIJYcjLRsmMu
+         jLQo8fy1ahFTDX9CXwxy1hFrhHomRBM1wf11hM1Pvz6tzMqYwyKu0RiEcFTd2Ew17obQ
+         l8XbRq9n8NJ8zXbkBZr6a5IBRUE2Pemfg84uPXXhf50uZ3uHOGM8rYnDO0alxs4QjKs4
+         01Yw==
+X-Gm-Message-State: AOAM531JT8P+b4s9qR1KvH8fzdyjEfWspmuoGKlpS0wpbgBFpzGXZTSk
+        jly3t9ZNjz+nzdQTTm1ViHsmOjk1Urj/cDPx0CE=
+X-Google-Smtp-Source: ABdhPJzjka1igjLabnL5+FLiBQxxm/UurFtkX4pyV20hzOcltWvHAgjxNxAU2zE5rwt6/lT63IqZjcdxApMAe3KOB6I=
+X-Received: by 2002:a17:906:3a85:: with SMTP id y5mr1900924ejd.507.1598974366460;
+ Tue, 01 Sep 2020 08:32:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHC9VhRuvK55JVyHOxckThbRQ7sCwkeZsudwCaBo2f5G4g11VA@mail.gmail.com>
- <20200824132252.31261-1-peter.enderborg@sony.com> <20200824132252.31261-2-peter.enderborg@sony.com>
- <CAHC9VhR8PscKpA5BrgTNj8cq_eQ6svqru6UXidc=v5+Ha+PM7Q@mail.gmail.com>
- <6cbe5d27-ebb2-70a6-bad4-31c9f310eff2@sony.com> <CAHC9VhRGaE4FwE8iXo_zeAPdimE9ryMR+r4Jcq=ZpF_2aTJxzQ@mail.gmail.com>
- <59fa190f-37c0-79f3-ea46-8f821d820e1c@sony.com> <CAHC9VhRE94YVK5bTcqqbNYJu-EwjbcwjSFgqV8jkyLn9HD39Ag@mail.gmail.com>
- <abaccc15-85a8-24d2-4481-8303e3a42362@sony.com> <CAHC9VhRi87H2GhsKQN9iMOQeSw3g5_qwok9jpx+pfFSouQ9d5w@mail.gmail.com>
- <000e6a1b-6026-5e99-9a92-6ae9aafc07d4@sony.com>
-In-Reply-To: <000e6a1b-6026-5e99-9a92-6ae9aafc07d4@sony.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 1 Sep 2020 11:31:53 -0400
-Message-ID: <CAHC9VhQiPTEarUWWA1RH8AsymhRpAa7kWTmmefTAqfouts8WGw@mail.gmail.com>
-Subject: Re: [RFC PATCH] selinux: Add denied trace with permssion filter
-To:     peter enderborg <peter.enderborg@sony.com>
-Cc:     linux-kernel@vger.kernel.org,
-        SElinux list <selinux@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>
+References: <20190812222911.2364802-1-guro@fb.com> <20190812222911.2364802-2-guro@fb.com>
+ <20190813142752.35807b6070db795674f86feb@linux-foundation.org> <20190813214643.GA20632@tower.DHCP.thefacebook.com>
+In-Reply-To: <20190813214643.GA20632@tower.DHCP.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 1 Sep 2020 08:32:33 -0700
+Message-ID: <CAHbLzkrEWnfgUT7gEPvKR9uz+NkANzKUMOd17GEAoe-dHTjF_g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: memcontrol: flush percpu vmstats before releasing memcg
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 11:34 AM peter enderborg wrote:
-> On 8/31/20 4:16 PM, Paul Moore wrote:
-> > On Thu, Aug 27, 2020 at 10:04 AM peter enderborg wrote:
+This report is kind of late, hope everyone still remembers the context.
 
+I just happened to see a similar problem on our v4.19 kernel, please
+see the below output from memory.stat:
+
+total_cache 7361626112
+total_rss 8268165120
+total_rss_huge 0
+total_shmem 0
+total_mapped_file 4154929152
+total_dirty 389689344
+total_writeback 101376000
 ...
+[snip]
+...
+total_inactive_anon 4096
+total_active_anon 1638400
+total_inactive_file 208990208
+total_active_file 275030016
 
-> >> Im happly fine with replacing the selinux_audited with selinux_denied.  However it is the case where there are more than one denial at the same time. Im not sure how and when it might happen.
-> > One thing I wondered about was why not build up a single string with
-> > all of the permissions instead of generating multiple trace events?
-> > In the previous discussion it was implied that this was due to
-> > limitations in the tracing subsystem's filtering, and based on the
-> > discussion thus far I'm guessing there is little desire for this
-> > information if it can't be filtered on?
+And memory.usage_in_bytes:
+1248215040
+
+The total_* counters are way bigger than the counters of LRUs and usage.
+
+Some ephemeral cgroups were created/deleted frequently under this
+problematic cgroup. And this host has been up for more than 200 days.
+I didn't see such problems on shorter uptime hosts (the other 4.19
+host is up for 19 days) and v5.4 hosts.
+
+v4.19 also updates stats from per-cpu caches, and total_* sum all sub
+cgroups together. So it seems this is the same problem.
+
+Anyway this is not a significant problem since we can get the correct
+numbers from other counters, i.e. LRUs, but just confusing. Not sure
+if it is worth backporting the fix to v4.19.
+
+On Tue, Aug 13, 2019 at 2:46 PM Roman Gushchin <guro@fb.com> wrote:
 >
-> The information is of course as essential as for audit messages.
-> I dont see much of the problem with having as the first suggestion with
-> a list. It works fine for trace_pipe. It is not failing due to that we can not
-> filter with that.
-
-I don't really have much personal experience with the kernel tracing
-tools, so an example would be helpful as I'm not really following what
-you are saying.  Are you talking about something like
-"permission=foo,bar,baz"?
-
-> It is cause in other tools in user-space
-> that needs a plugin to parse it. It need static
-> mapping for something that is not really static. Not in runtime, and it will
-> change over time.
-
-I think we've all come to the conclusion that doing the permission
-bitmap-to-string translation in a plugin is not really desirable.
-
-> A other idea based on the first one is to have multiple pairs like
+> On Tue, Aug 13, 2019 at 02:27:52PM -0700, Andrew Morton wrote:
+> > On Mon, 12 Aug 2019 15:29:10 -0700 Roman Gushchin <guro@fb.com> wrote:
+> >
+> > > Percpu caching of local vmstats with the conditional propagation
+> > > by the cgroup tree leads to an accumulation of errors on non-leaf
+> > > levels.
+> > >
+> > > Let's imagine two nested memory cgroups A and A/B. Say, a process
+> > > belonging to A/B allocates 100 pagecache pages on the CPU 0.
+> > > The percpu cache will spill 3 times, so that 32*3=96 pages will be
+> > > accounted to A/B and A atomic vmstat counters, 4 pages will remain
+> > > in the percpu cache.
+> > >
+> > > Imagine A/B is nearby memory.max, so that every following allocation
+> > > triggers a direct reclaim on the local CPU. Say, each such attempt
+> > > will free 16 pages on a new cpu. That means every percpu cache will
+> > > have -16 pages, except the first one, which will have 4 - 16 = -12.
+> > > A/B and A atomic counters will not be touched at all.
+> > >
+> > > Now a user removes A/B. All percpu caches are freed and corresponding
+> > > vmstat numbers are forgotten. A has 96 pages more than expected.
+> > >
+> > > As memory cgroups are created and destroyed, errors do accumulate.
+> > > Even 1-2 pages differences can accumulate into large numbers.
+> > >
+> > > To fix this issue let's accumulate and propagate percpu vmstat
+> > > values before releasing the memory cgroup. At this point these
+> > > numbers are stable and cannot be changed.
+> > >
+> > > Since on cpu hotplug we do flush percpu vmstats anyway, we can
+> > > iterate only over online cpus.
+> > >
+> > > Fixes: 42a300353577 ("mm: memcontrol: fix recursive statistics correctness & scalabilty")
+> >
+> > Is this not serious enough for a cc:stable?
 >
-> class=file permission=read permission=write permission=open
+> I hope the "Fixes" tag will work, but yeah, my bad, cc:stable is definitely
+> a good idea here.
 >
-> but then you need to filter on numeric values that are not static and
-> I don't know if library can make anything useful from that.
-
-Oh, wait, is the issue that the tracing subsystem can't filter on
-strings?  That doesn't seem right, but I can understand why one might
-want to avoid that for performance reasons.  If the tracing subsystem
-*can* filter on strings, why did you say that in the "perm=foo
-perm=bar" format one would need to filter on numeric values?  I still
-think I'm missing something here ...
-
--- 
-paul moore
-www.paul-moore.com
+> Added stable@ to cc.
+>
+> Thanks!
+>
