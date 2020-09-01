@@ -2,82 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CA42587F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0263258802
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgIAGRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:17:35 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54232 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726006AbgIAGRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:17:35 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 9513316CCEF2AEE92511;
-        Tue,  1 Sep 2020 14:17:32 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.108) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
- 14:17:28 +0800
-Subject: Re: [PATCH] x86/platform/intel-mid: Fix build error without
- CONFIG_ACPI
-To:     Randy Dunlap <rdunlap@infradead.org>, <bhelgaas@google.com>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <efremov@linux.com>,
-        <andriy.shevchenko@linux.intel.com>
-References: <20200901035825.25256-1-yuehaibing@huawei.com>
- <5427fca0-6674-42e9-a3b1-52b060ef0301@infradead.org>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <6d686f3f-b4ee-70e0-3050-1eb6d060ffc3@huawei.com>
-Date:   Tue, 1 Sep 2020 14:17:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1726112AbgIAGWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgIAGWb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:22:31 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE82C0612AC
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 23:22:31 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id mm21so107860pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 23:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vhLdqliPfynJAiD7/3YXz7Gp09SJzpU1HbkYzOvkmgQ=;
+        b=HOlq1yYIeUL+dWUZOuj6ufRG2WgU1lgJm3H3P0ucojnvC8gEnJ2XHuODPRAZteFRw+
+         4JHYhlocD0X4WXdWcOogIK4k78R5FediQh89mujqO3BJO5tfVSDLMliisMSacD+9j1Md
+         Rw+laVnBl6qev64cCE4eZXb4cD8PKw/gg5CpI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vhLdqliPfynJAiD7/3YXz7Gp09SJzpU1HbkYzOvkmgQ=;
+        b=F2Dc5q1vqX1HKYR4AbGEpSMbTChgr/O7bklgiqKYJ6bfeaHvKNF42LBiVkShaJTs3a
+         DGPc6nxMMGW/uc+PEboWC1caj7nZN4I4ER4Q1blNenAI+RqUFwYX3xErM0gtYEbzp8jG
+         AYPRIbaxVRf+ad6IgqMLCp3WQL/sFRzVYpt/lj/EFEdHpIRxgqTEGxSiTELJfwcPRkQ/
+         D6GpiJ+VvL7eXBNysTU72oCOtotpHRDOJ1VhrHj26+2B3bOkM2t6snJWCjZ7wU7pet9p
+         Z6CaL6fUidoRJ5HqOxrQuMfjGXQrqzA8fR96WB+EHKFeDtpogVZTPb4/ZYmNllsSsvu9
+         cUvw==
+X-Gm-Message-State: AOAM533J6FcpjOSv6l2160F+hVy10J7M1911PgQWfoMiscyqze6nS1SU
+        ZlYCy2Ll175yRz1PY6yeYA8X41nHW3C1LA==
+X-Google-Smtp-Source: ABdhPJzd76J+XsuHIgb7R5FqGvKf1M7ffquE/FEbXOhkojG1KVbRpLbYvVVZPLksvnly9EPZJTH7EA==
+X-Received: by 2002:a17:902:b7cc:: with SMTP id v12mr77694plz.105.1598941350792;
+        Mon, 31 Aug 2020 23:22:30 -0700 (PDT)
+Received: from localhost ([2401:fa00:9:15:7220:84ff:fe09:cabc])
+        by smtp.gmail.com with ESMTPSA id w82sm271119pfc.183.2020.08.31.23.22.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Aug 2020 23:22:30 -0700 (PDT)
+From:   Sam McNally <sammc@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Hans Verkuil <hans.verkuil@cisco.com>,
+        Sam McNally <sammc@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 1/5] dp/dp_mst: Add support for sink event notify messages
+Date:   Tue,  1 Sep 2020 16:22:15 +1000
+Message-Id: <20200901162133.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
 MIME-Version: 1.0
-In-Reply-To: <5427fca0-6674-42e9-a3b1-52b060ef0301@infradead.org>
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/1 12:07, Randy Dunlap wrote:
-> On 8/31/20 8:58 PM, YueHaibing wrote:
->> arch/x86/pci/intel_mid_pci.c: In function ‘intel_mid_pci_init’:
->> arch/x86/pci/intel_mid_pci.c:303:2: error: implicit declaration of function ‘acpi_noirq_set’; did you mean ‘acpi_irq_get’? [-Werror=implicit-function-declaration]
->>   acpi_noirq_set();
->>   ^~~~~~~~~~~~~~
->>   acpi_irq_get
->>
->> Fixes: a912a7584ec3 ("x86/platform/intel-mid: Move PCI initialization to arch_init()")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> 
-> Bjorn has merged my patch (or so his email says), but apparently it's not
-> in linux-next yet.
+Sink event notify messages are used for MST CEC IRQs. Add parsing
+support for sink event notify messages in preparation for handling MST
+CEC IRQs.
 
-Thanks for info.
+Signed-off-by: Sam McNally <sammc@chromium.org>
+---
 
-> 
-> 
->> ---
->>  arch/x86/pci/intel_mid_pci.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/x86/pci/intel_mid_pci.c b/arch/x86/pci/intel_mid_pci.c
->> index 00c62115f39c..0aaf31917061 100644
->> --- a/arch/x86/pci/intel_mid_pci.c
->> +++ b/arch/x86/pci/intel_mid_pci.c
->> @@ -33,6 +33,7 @@
->>  #include <asm/hw_irq.h>
->>  #include <asm/io_apic.h>
->>  #include <asm/intel-mid.h>
->> +#include <asm/acpi.h>
->>  
->>  #define PCIE_CAP_OFFSET	0x100
->>  
->>
-> 
-> thanks.
-> 
+ drivers/gpu/drm/drm_dp_mst_topology.c | 37 ++++++++++++++++++++++++++-
+ include/drm/drm_dp_mst_helper.h       | 14 ++++++++++
+ 2 files changed, 50 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 17dbed0a9800..15b6cc39a754 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -1027,6 +1027,30 @@ static bool drm_dp_sideband_parse_resource_status_notify(struct drm_dp_sideband_
+ 	return false;
+ }
+ 
++static bool drm_dp_sideband_parse_sink_event_notify(
++	struct drm_dp_sideband_msg_rx *raw,
++	struct drm_dp_sideband_msg_req_body *msg)
++{
++	int idx = 1;
++
++	msg->u.sink_event.port_number = (raw->msg[idx] & 0xf0) >> 4;
++	idx++;
++	if (idx > raw->curlen)
++		goto fail_len;
++
++	memcpy(msg->u.sink_event.guid, &raw->msg[idx], 16);
++	idx += 16;
++	if (idx > raw->curlen)
++		goto fail_len;
++
++	msg->u.sink_event.event_id = (raw->msg[idx] << 8) | (raw->msg[idx + 1]);
++	idx++;
++	return true;
++fail_len:
++	DRM_DEBUG_KMS("sink event notify parse length fail %d %d\n", idx, raw->curlen);
++	return false;
++}
++
+ static bool drm_dp_sideband_parse_req(struct drm_dp_sideband_msg_rx *raw,
+ 				      struct drm_dp_sideband_msg_req_body *msg)
+ {
+@@ -1038,6 +1062,8 @@ static bool drm_dp_sideband_parse_req(struct drm_dp_sideband_msg_rx *raw,
+ 		return drm_dp_sideband_parse_connection_status_notify(raw, msg);
+ 	case DP_RESOURCE_STATUS_NOTIFY:
+ 		return drm_dp_sideband_parse_resource_status_notify(raw, msg);
++	case DP_SINK_EVENT_NOTIFY:
++		return drm_dp_sideband_parse_sink_event_notify(raw, msg);
+ 	default:
+ 		DRM_ERROR("Got unknown request 0x%02x (%s)\n", msg->req_type,
+ 			  drm_dp_mst_req_type_str(msg->req_type));
+@@ -3875,6 +3901,8 @@ drm_dp_mst_process_up_req(struct drm_dp_mst_topology_mgr *mgr,
+ 			guid = msg->u.conn_stat.guid;
+ 		else if (msg->req_type == DP_RESOURCE_STATUS_NOTIFY)
+ 			guid = msg->u.resource_stat.guid;
++		else if (msg->req_type == DP_SINK_EVENT_NOTIFY)
++			guid = msg->u.sink_event.guid;
+ 
+ 		if (guid)
+ 			mstb = drm_dp_get_mst_branch_device_by_guid(mgr, guid);
+@@ -3948,7 +3976,8 @@ static int drm_dp_mst_handle_up_req(struct drm_dp_mst_topology_mgr *mgr)
+ 	drm_dp_sideband_parse_req(&mgr->up_req_recv, &up_req->msg);
+ 
+ 	if (up_req->msg.req_type != DP_CONNECTION_STATUS_NOTIFY &&
+-	    up_req->msg.req_type != DP_RESOURCE_STATUS_NOTIFY) {
++	    up_req->msg.req_type != DP_RESOURCE_STATUS_NOTIFY &&
++	    up_req->msg.req_type != DP_SINK_EVENT_NOTIFY) {
+ 		DRM_DEBUG_KMS("Received unknown up req type, ignoring: %x\n",
+ 			      up_req->msg.req_type);
+ 		kfree(up_req);
+@@ -3976,6 +4005,12 @@ static int drm_dp_mst_handle_up_req(struct drm_dp_mst_topology_mgr *mgr)
+ 		DRM_DEBUG_KMS("Got RSN: pn: %d avail_pbn %d\n",
+ 			      res_stat->port_number,
+ 			      res_stat->available_pbn);
++	} else if (up_req->msg.req_type == DP_SINK_EVENT_NOTIFY) {
++		const struct drm_dp_sink_event_notify *sink_event =
++			&up_req->msg.u.sink_event;
++
++		DRM_DEBUG_KMS("Got SEN: pn: %d event_id %d\n",
++			      sink_event->port_number, sink_event->event_id);
+ 	}
+ 
+ 	up_req->hdr = mgr->up_req_recv.initial_hdr;
+diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
+index 6ae5860d8644..c7c79e0ced18 100644
+--- a/include/drm/drm_dp_mst_helper.h
++++ b/include/drm/drm_dp_mst_helper.h
+@@ -402,6 +402,19 @@ struct drm_dp_resource_status_notify {
+ 	u16 available_pbn;
+ };
+ 
++#define DP_SINK_EVENT_PANEL_REPLAY_ACTIVE_FRAME_CRC_ERROR	BIT(0)
++#define DP_SINK_EVENT_PANEL_REPLAY_RFB_STORAGE_ERROR		BIT(1)
++#define DP_SINK_EVENT_DSC_RC_BUFFER_UNDER_RUN			BIT(2)
++#define DP_SINK_EVENT_DSC_RC_BUFFER_OVERFLOW			BIT(3)
++#define DP_SINK_EVENT_DSC_CHUNK_LENGTH_ERROR			BIT(4)
++#define DP_SINK_EVENT_CEC_IRQ_EVENT				BIT(5)
++
++struct drm_dp_sink_event_notify {
++	u8 port_number;
++	u8 guid[16];
++	u16 event_id;
++};
++
+ struct drm_dp_query_payload_ack_reply {
+ 	u8 port_number;
+ 	u16 allocated_pbn;
+@@ -413,6 +426,7 @@ struct drm_dp_sideband_msg_req_body {
+ 		struct drm_dp_connection_status_notify conn_stat;
+ 		struct drm_dp_port_number_req port_num;
+ 		struct drm_dp_resource_status_notify resource_stat;
++		struct drm_dp_sink_event_notify sink_event;
+ 
+ 		struct drm_dp_query_payload query_payload;
+ 		struct drm_dp_allocate_payload allocate_payload;
+-- 
+2.28.0.402.g5ffc5be6b7-goog
 
