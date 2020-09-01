@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE7125983D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CEC2596D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730903AbgIAPcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60394 "EHLO mail.kernel.org"
+        id S1731344AbgIAQGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:06:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730593AbgIAPaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:30:15 -0400
+        id S1728421AbgIAPk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:40:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6E172078B;
-        Tue,  1 Sep 2020 15:30:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A47E02098B;
+        Tue,  1 Sep 2020 15:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974215;
-        bh=gFg3mT5egsP14MTeQNbTG7x7JmJeEAdQR1uiseNTQp8=;
+        s=default; t=1598974855;
+        bh=RqdeLEbmMQXULoSZsQmjQtt6OU/wzOpttepJrcg+/Zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jalBhlbSmDnlSqVe0DIiUKysobK8i+Fjy7EU/GixghuNpIlqQkYbEbypPTQJI8WOm
-         cVvkHhJnDrVsvVSYsTmoWD6ISohlbq+ZnLuvJBMsYIjqsbifECInIHHqeqJUB2eIUZ
-         Hx0OKO3gvEwb7dAwgBQiiiJ//fIciH45h9yJ67wY=
+        b=zgf03aGc/9Tmg6NDlL7R/maAt9zs8hfHOEgsr78SbNWVd7iGppbNQw1u3laBs7LHL
+         U6vpTUi5//LQHSI5QErParolRhMBEECP3DDCPvAf1zs8ysbXUMo9QuW2fIsSEZ3PeD
+         /rrTJ2ZC3CXYrvU9aYexLySW/pJZd5gjLo5u3jLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeremy Kerr <jk@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 062/214] powerpc/spufs: add CONFIG_COREDUMP dependency
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 086/255] block: respect queue limit of max discard segment
 Date:   Tue,  1 Sep 2020 17:09:02 +0200
-Message-Id: <20200901150955.946510868@linuxfoundation.org>
+Message-Id: <20200901151004.853971341@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit b648a5132ca3237a0f1ce5d871fff342b0efcf8a ]
+[ Upstream commit 943b40c832beb71115e38a1c4d99b640b5342738 ]
 
-The kernel test robot pointed out a slightly different error message
-after recent commit 5456ffdee666 ("powerpc/spufs: simplify spufs core
-dumping") to spufs for a configuration that never worked:
+When queue_max_discard_segments(q) is 1, blk_discard_mergable() will
+return false for discard request, then normal request merge is applied.
+However, only queue_max_segments() is checked, so max discard segment
+limit isn't respected.
 
-   powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_proxydma_info_dump':
->> file.c:(.text+0x4c68): undefined reference to `.dump_emit'
-   powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_dma_info_dump':
-   file.c:(.text+0x4d70): undefined reference to `.dump_emit'
-   powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_wbox_info_dump':
-   file.c:(.text+0x4df4): undefined reference to `.dump_emit'
+Check max discard segment limit in the request merge code for fixing
+the issue.
 
-Add a Kconfig dependency to prevent this from happening again.
+Discard request failure of virtio_blk is fixed.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Jeremy Kerr <jk@ozlabs.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200706132302.3885935-1-arnd@arndb.de
+Fixes: 69840466086d ("block: fix the DISCARD request merge")
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/cell/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ block/blk-merge.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/cell/Kconfig b/arch/powerpc/platforms/cell/Kconfig
-index 0f7c8241912b9..f2ff359041eec 100644
---- a/arch/powerpc/platforms/cell/Kconfig
-+++ b/arch/powerpc/platforms/cell/Kconfig
-@@ -44,6 +44,7 @@ config SPU_FS
- 	tristate "SPU file system"
- 	default m
- 	depends on PPC_CELL
-+	depends on COREDUMP
- 	select SPU_BASE
- 	help
- 	  The SPU file system is used to access Synergistic Processing
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index f0b0bae075a0c..0b590907676af 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -534,10 +534,17 @@ int __blk_rq_map_sg(struct request_queue *q, struct request *rq,
+ }
+ EXPORT_SYMBOL(__blk_rq_map_sg);
+ 
++static inline unsigned int blk_rq_get_max_segments(struct request *rq)
++{
++	if (req_op(rq) == REQ_OP_DISCARD)
++		return queue_max_discard_segments(rq->q);
++	return queue_max_segments(rq->q);
++}
++
+ static inline int ll_new_hw_segment(struct request *req, struct bio *bio,
+ 		unsigned int nr_phys_segs)
+ {
+-	if (req->nr_phys_segments + nr_phys_segs > queue_max_segments(req->q))
++	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
+ 		goto no_merge;
+ 
+ 	if (blk_integrity_merge_bio(req->q, req, bio) == false)
+@@ -625,7 +632,7 @@ static int ll_merge_requests_fn(struct request_queue *q, struct request *req,
+ 		return 0;
+ 
+ 	total_phys_segments = req->nr_phys_segments + next->nr_phys_segments;
+-	if (total_phys_segments > queue_max_segments(q))
++	if (total_phys_segments > blk_rq_get_max_segments(req))
+ 		return 0;
+ 
+ 	if (blk_integrity_merge_rq(q, req, next) == false)
 -- 
 2.25.1
 
