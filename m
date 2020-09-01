@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861B4259715
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D528259738
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731527AbgIAQKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731340AbgIAQKQ (ORCPT
+        id S1731316AbgIAQMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:12:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42000 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731318AbgIAQMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:10:16 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639DCC061244;
-        Tue,  1 Sep 2020 09:10:16 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f18so1045444pfa.10;
-        Tue, 01 Sep 2020 09:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=NsQXaCw31y4r2uMbkl6htgoK/WBIwM078xbS0cXU+7w=;
-        b=C+h+cgcvCdrvsyM+XY6TVnknhOFCDL5CwskerXbP75VOQCWFbZN3VDOoKK3mYDE2Ho
-         8xjUAX4TZXOr5ocf08At2G3jXdQXJXMFupaCuTuTXAoiKMbK4Vi3Q78rpCYWKBgOwzej
-         lV3M/pKI9jlR+vlE1meAo8UfT7hEOtb97EepRRb0Vuk4nA5YMqzjfs6e/QSo8Yy+Mo3R
-         y3u1rufk8yt3lNvVzPqtvAsa1UXgPCKr80Q3iKwWX9MMxdWS+YISCPaOk3ghRT/XfZvj
-         z9nIlBWyKqiSbwDVHY7XB0jmbZ10rqZRfEL24/Xato3AxOJXYDsx+kYrEz/GtCtS23lW
-         I9+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NsQXaCw31y4r2uMbkl6htgoK/WBIwM078xbS0cXU+7w=;
-        b=bvXtCDnYPQHGlob5b0sYj6Y83fROlJXOEQoTEbdBbBIUfGVhu9jDxiC9dBqpUzOhFA
-         9ovTwZNbZv7/ZqIaK7ZWOhvB5lWJcSjugrPKo6i6u5r+VRZZwwhcsXLX1kpP+d93i47H
-         CSA1YYjIoOG7Hx1aV6mIjb+b+xwijW2VRq/NpLWk7XIV6Hfeu37kXwUKKcg52ZbKURvT
-         hv0L5qBq9hIUkIYc+1kMhYugEGbUcgv/nZEvgarc01D8kGYhz5xxrgXXCer2r/OS+H6i
-         A8kgOJTm1JMyboATA2xQQ8Ka4HUsJ4gMGdmLpsfmwhcSog05BuSniSpyLXBqg3dWMUOt
-         2+zw==
-X-Gm-Message-State: AOAM5325tmgJgSd3gAl5yvtBeZfPeCNCnXLQ/qY/vpZ0n8yzvEskYgMC
-        iszmvK5EEClAWczO9pDNxIWENwlidzQ=
-X-Google-Smtp-Source: ABdhPJwKtA1KUbqtGdo3afUnY5etbEnRl0rJyDOflcBsCus3lfPEuSBXspRQU1fIzltpiNIbRaOsAQ==
-X-Received: by 2002:a63:4e5e:: with SMTP id o30mr2091042pgl.254.1598976615541;
-        Tue, 01 Sep 2020 09:10:15 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id c3sm2506092pfo.120.2020.09.01.09.10.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 09:10:14 -0700 (PDT)
-Subject: Re: [PATCH 1/2] serial: 8250: Simplify with dev_err_probe()
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lukas Wunner <lukas@wunner.de>, linux-serial@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200901153100.18827-1-krzk@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <04f68fe6-2f92-031d-a96f-e93d7c741d88@gmail.com>
-Date:   Tue, 1 Sep 2020 09:10:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.1.1
+        Tue, 1 Sep 2020 12:12:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598976727;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y+b5xXaX5m8wZ2FgPgUYG/nIzSZ1Byhj+uYXSWe5fXo=;
+        b=Md535z7Iup0mjWemE0OShauqwxSQ3MXOLmp+t001O+IRDcCuDVSJGYiWoXL7qjyWRtQE7z
+        EQ9Jjjz9cdfwO7i9xCbaHV9umtT4dacihpHe7gUx3TXzkjBzkuYu7cq9ggPAtm0wTjHfM7
+        6R0KJbawlDqF0GXvMyB6LNLme5e4OHo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-TlXE-Fu8OJ2wdU5uqK2MJQ-1; Tue, 01 Sep 2020 12:12:05 -0400
+X-MC-Unique: TlXE-Fu8OJ2wdU5uqK2MJQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EB8510ABDAB;
+        Tue,  1 Sep 2020 16:12:02 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 333F01002D51;
+        Tue,  1 Sep 2020 16:11:56 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  1 Sep 2020 18:12:02 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 18:11:54 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 2/4] exit: support non-blocking pidfds
+Message-ID: <20200901161154.GA4386@redhat.com>
+References: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
+ <20200831134551.1599689-3-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-In-Reply-To: <20200901153100.18827-1-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831134551.1599689-3-christian.brauner@ubuntu.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/31, Christian Brauner wrote:
+>
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -934,6 +934,7 @@ struct wait_opts {
+>  
+>  	wait_queue_entry_t		child_wait;
+>  	int			notask_error;
+> +	int			eagain_error;
+>  };
+>  
+>  static int eligible_pid(struct wait_opts *wo, struct task_struct *p)
+> @@ -1461,6 +1462,8 @@ static long do_wait(struct wait_opts *wo)
+>  
+>  notask:
+>  	retval = wo->notask_error;
+> +	if (!retval)
+> +		retval = wo->eagain_error;
+>  	if (!retval && !(wo->wo_flags & WNOHANG)) {
+>  		retval = -ERESTARTSYS;
 
+I must have missed something but I don't understand why do we need
+the new ->eagain_error and the change in do_wait().
 
-On 9/1/2020 8:30 AM, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->   drivers/tty/serial/8250/8250_bcm2835aux.c | 12 +++---------
->   drivers/tty/serial/8250/8250_ingenic.c    | 20 ++++++--------------
->   2 files changed, 9 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
-> index 12d03e678295..fd95860cd661 100644
-> --- a/drivers/tty/serial/8250/8250_bcm2835aux.c
-> +++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
-> @@ -110,12 +110,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
->   
->   	/* get the clock - this also enables the HW */
->   	data->clk = devm_clk_get(&pdev->dev, NULL);
-> -	ret = PTR_ERR_OR_ZERO(data->clk);
-> -	if (ret) {
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(&pdev->dev, "could not get clk: %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(data->clk))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk\n");
+> @@ -1544,6 +1551,11 @@ static long kernel_waitid(int which, pid_t upid, struct waitid_info *infop,
+>  	wo.wo_flags	= options;
+>  	wo.wo_info	= infop;
+>  	wo.wo_rusage	= ru;
+> +	wo.eagain_error = 0;
+> +	if (f_flags & O_NONBLOCK) {
+> +		wo.wo_flags	|= WNOHANG;
+> +		wo.eagain_error	= -EAGAIN;
+> +	}
+>  	ret = do_wait(&wo);
 
-For 8250_bcm2835aux.c:
+Can't kernel_waitid() simply do
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+	if (f_flags & O_NONBLOCK)
+		wo.wo_flags |= WNOHANG;
+	ret = do_wait();
+	if (!ret & (f_flags & O_NONBLOCK))
+		ret = -EAGAIN;
+
+?
+
+Oleg.
+
