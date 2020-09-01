@@ -2,192 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55878258B88
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D07258B85
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgIAJ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 05:28:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:39178 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726789AbgIAJ1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 05:27:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF1361045;
-        Tue,  1 Sep 2020 02:27:54 -0700 (PDT)
-Received: from a077416.arm.com (unknown [10.57.6.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3CD573F71F;
-        Tue,  1 Sep 2020 02:27:51 -0700 (PDT)
-From:   Amit Daniel Kachhap <amit.kachhap@arm.com>
-To:     linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <Vincenzo.Frascino@arm.com>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>
-Subject: [PATCH 6/6] kselftest/arm64: Check mte tagged user address in kernel
-Date:   Tue,  1 Sep 2020 14:57:19 +0530
-Message-Id: <20200901092719.9918-7-amit.kachhap@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901092719.9918-1-amit.kachhap@arm.com>
-References: <20200901092719.9918-1-amit.kachhap@arm.com>
+        id S1726800AbgIAJ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 05:27:56 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:45483 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726686AbgIAJ1t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 05:27:49 -0400
+Received: by mail-lj1-f196.google.com with SMTP id c2so637710ljj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 02:27:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bxHj9IkP2gtxX/i6bFF2tG+AqOJbAH96n0YTP0cULME=;
+        b=Cv0H7/+k/if0+aIbTp+289k5Wf2HlUZBjSkxItzbUpYHTs0RU4sYGr0kMwV8e7VbTV
+         mMX0LfPD0DmA9fp3Iqjc076VwsKg7WCIl4h2LaCOfRzCz+6qsXbDtcOgf7w2lG5rh1FB
+         Oa/V8VOpJ73cx9US9xJ3UekpU+mD459AWrDp2mAsDG3A/BIwtjiazQKQDEwkUVrcHyOM
+         zegCyN56hkPqBCsNLODm+mTsK9XUbfLu9eRUfXeEFjY7k02/2uHIjP7WV/nfrTWpqFBH
+         FF5j0RMorExuIA+tsHKxtiOHQtTIN/o0PxROwg/lwHwhYckcHbRxMwAp/Sb+NScGIaUs
+         HhBA==
+X-Gm-Message-State: AOAM533iu0dciJUtDIP00+lYKOH1O8abSGus5BjKYtZEZf77cfEu3rzq
+        SSLEv+b2lQX7Oov+eOJMhZE=
+X-Google-Smtp-Source: ABdhPJx0qGwCOTQ7CSAhelVaFobcO3DyBY2PqNQwxS+oFESnC0sGXMHSiHAzBtv++XLExhGWdojKEA==
+X-Received: by 2002:a2e:96cb:: with SMTP id d11mr98310ljj.239.1598952465687;
+        Tue, 01 Sep 2020 02:27:45 -0700 (PDT)
+Received: from localhost.localdomain (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.googlemail.com with ESMTPSA id t4sm152816ljh.122.2020.09.01.02.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 02:27:44 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <Julia.Lawall@lip6.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] coccinelle: api: kobj_to_dev: don't warn about kobj_to_dev()
+Date:   Tue,  1 Sep 2020 12:27:29 +0300
+Message-Id: <20200901092729.427515-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a testcase to check that user address with valid/invalid
-mte tag works in kernel mode. This test verifies the kernel API's
-__arch_copy_from_user/__arch_copy_to_user works by considering
-if the user pointer has valid/invalid allocation tags.
+Exclude kobj_to_dev() definition from warnings.
 
-In MTE sync mode a SIGSEV fault is generated if a user memory
-with invalid tag is accessed in kernel. In async mode no such
-fault occurs.
-
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Amit Daniel Kachhap <amit.kachhap@arm.com>
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- tools/testing/selftests/arm64/mte/.gitignore  |   1 +
- .../selftests/arm64/mte/check_user_mem.c      | 118 ++++++++++++++++++
- 2 files changed, 119 insertions(+)
- create mode 100644 tools/testing/selftests/arm64/mte/check_user_mem.c
+No changes in performance. This patch can be squashed to the
+original patch with kobj_to_dev.cocci script.
 
-diff --git a/tools/testing/selftests/arm64/mte/.gitignore b/tools/testing/selftests/arm64/mte/.gitignore
-index 44e9bfdaeca6..bc3ac63f3314 100644
---- a/tools/testing/selftests/arm64/mte/.gitignore
-+++ b/tools/testing/selftests/arm64/mte/.gitignore
-@@ -3,3 +3,4 @@ check_tags_inclusion
- check_child_memory
- check_mmap_options
- check_ksm_options
-+check_user_mem
-diff --git a/tools/testing/selftests/arm64/mte/check_user_mem.c b/tools/testing/selftests/arm64/mte/check_user_mem.c
-new file mode 100644
-index 000000000000..9df0681af5bd
---- /dev/null
-+++ b/tools/testing/selftests/arm64/mte/check_user_mem.c
-@@ -0,0 +1,118 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (C) 2020 ARM Limited
+ scripts/coccinelle/api/kobj_to_dev.cocci | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/coccinelle/api/kobj_to_dev.cocci b/scripts/coccinelle/api/kobj_to_dev.cocci
+index cd5d31c6fe76..d0b3b9647c19 100644
+--- a/scripts/coccinelle/api/kobj_to_dev.cocci
++++ b/scripts/coccinelle/api/kobj_to_dev.cocci
+@@ -15,10 +15,18 @@ virtual org
+ virtual patch
+ 
+ 
++@initialize:python@
++@@
++filter = frozenset(['kobj_to_dev'])
 +
-+#define _GNU_SOURCE
++def relevant(p):
++    return not (filter & {el.current_element for el in p})
 +
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <signal.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <ucontext.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
 +
-+#include "kselftest.h"
-+#include "mte_common_util.h"
-+#include "mte_def.h"
-+
-+static size_t page_sz;
-+
-+static int check_usermem_access_fault(int mem_type, int mode, int mapping)
-+{
-+	int fd, ret, i, err;
-+	char val = 'A';
-+	size_t len, read_len;
-+	void *ptr, *ptr_next;
-+	bool fault;
-+
-+	len = 2 * page_sz;
-+	err = KSFT_FAIL;
-+	/*
-+	 * Accessing user memory in kernel with invalid tag should fault in sync
-+	 * mode but may not fault in async mode as per the implemented MTE
-+	 * support in Arm64 kernel.
-+	 */
-+	if (mode == MTE_ASYNC_ERR)
-+		fault = false;
-+	else
-+		fault = true;
-+	mte_switch_mode(mode, MTE_ALLOW_NON_ZERO_TAG);
-+	fd = create_temp_file();
-+	if (fd == -1)
-+		return KSFT_FAIL;
-+	for (i = 0; i < len; i++)
-+		write(fd, &val, sizeof(val));
-+	lseek(fd, 0, 0);
-+	ptr = mte_allocate_memory(len, mem_type, mapping, true);
-+	if (check_allocated_memory(ptr, len, mem_type, true) != KSFT_PASS) {
-+		close(fd);
-+		return KSFT_FAIL;
-+	}
-+	mte_initialize_current_context(mode, (uintptr_t)ptr, len);
-+	/* Copy from file into buffer with valid tag */
-+	read_len = read(fd, ptr, len);
-+	ret = errno;
-+	mte_wait_after_trig();
-+	if ((cur_mte_cxt.fault_valid == true) || ret == EFAULT || read_len < len)
-+		goto usermem_acc_err;
-+	/* Verify same pattern is read */
-+	for (i = 0; i < len; i++)
-+		if (*(char *)(ptr + i) != val)
-+			break;
-+	if (i < len)
-+		goto usermem_acc_err;
-+
-+	/* Tag the next half of memory with different value */
-+	ptr_next = (void *)((unsigned long)ptr + page_sz);
-+	ptr_next = mte_insert_tags(ptr_next, page_sz);
-+	if (!ptr_next)
-+		goto usermem_acc_err;
-+	lseek(fd, 0, 0);
-+	/* Copy from file into buffer with invalid tag */
-+	read_len = read(fd, ptr, len);
-+	ret = errno;
-+	mte_wait_after_trig();
-+	if ((fault == true) &&
-+	    (cur_mte_cxt.fault_valid == true || ret == EFAULT || read_len < len)) {
-+		err = KSFT_PASS;
-+	} else if ((fault == false) &&
-+		   (cur_mte_cxt.fault_valid == false && read_len == len)) {
-+		err = KSFT_PASS;
-+	}
-+usermem_acc_err:
-+	mte_free_memory((void *)ptr, len, mem_type, true);
-+	close(fd);
-+	return err;
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int err;
-+
-+	page_sz = getpagesize();
-+	if (!page_sz) {
-+		ksft_print_msg("ERR: Unable to get page size\n");
-+		return KSFT_FAIL;
-+	}
-+	err = mte_default_setup();
-+	if (err)
-+		return err;
-+	/* Register signal handlers */
-+	mte_register_signal(SIGSEGV, mte_default_handler);
-+
-+	evaluate_test(check_usermem_access_fault(USE_MMAP, MTE_SYNC_ERR, MAP_PRIVATE),
-+		"Check memory access from kernel in sync mode, private mapping and mmap memory\n");
-+	evaluate_test(check_usermem_access_fault(USE_MMAP, MTE_SYNC_ERR, MAP_SHARED),
-+		"Check memory access from kernel in sync mode, shared mapping and mmap memory\n");
-+
-+	evaluate_test(check_usermem_access_fault(USE_MMAP, MTE_ASYNC_ERR, MAP_PRIVATE),
-+		"Check memory access from kernel in async mode, private mapping and mmap memory\n");
-+	evaluate_test(check_usermem_access_fault(USE_MMAP, MTE_ASYNC_ERR, MAP_SHARED),
-+		"Check memory access from kernel in async mode, shared mapping and mmap memory\n");
-+
-+	mte_restore_setup();
-+	ksft_print_cnts();
-+	return ksft_get_fail_cnt() == 0 ? KSFT_PASS : KSFT_FAIL;
-+}
+ @r depends on !patch@
+ expression ptr;
+ symbol kobj;
+-position p;
++position p : script:python() { relevant(p) };
+ @@
+ 
+ * container_of(ptr, struct device, kobj)@p
+@@ -26,9 +34,10 @@ position p;
+ 
+ @depends on patch@
+ expression ptr;
++position p : script:python() { relevant(p) };
+ @@
+ 
+-- container_of(ptr, struct device, kobj)
++- container_of(ptr, struct device, kobj)@p
+ + kobj_to_dev(ptr)
+ 
+ 
 -- 
-2.17.1
+2.26.2
 
