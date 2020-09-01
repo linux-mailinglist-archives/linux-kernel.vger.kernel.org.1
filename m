@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA56259697
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D842597F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730472AbgIAQEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:04:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54596 "EHLO mail.kernel.org"
+        id S1731074AbgIAPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728401AbgIAPmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:04 -0400
+        id S1730702AbgIAPb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1622206EB;
-        Tue,  1 Sep 2020 15:42:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A13D21534;
+        Tue,  1 Sep 2020 15:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974922;
-        bh=1N7E8jTdaJiP5AS0s7ssZc9dpyomkdQrUUBLpq3o5w0=;
+        s=default; t=1598974288;
+        bh=eYhWix2xUao8vCB3n9SUDaOvJAJW8cGFpF+RV79FK3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dddhBOJdNon7j4CmRT++IbuCxjHU/oYeLes6htWOEDqKHAoudKwElTK49Ck/CUMU+
-         q6Bl6My5fXGhWPi+JAqB46B5Jr3a0mpInl5aWG61nxwRMssge3g2gFXz+Zy95Zy3lL
-         BweIIs8WaLvbe+O2Fm+PKtOImufFs5jt3x7wp4w4=
+        b=iaPa9u+P+18Cp7TESoFEaYO99uip6r1S8Llj9LH7kxEc9+sbcKd7FF5/xn+BOVfsm
+         iY0NmrmEnhK2+56fvIukj94i84UckTEMtfLhl8NPa0XljElD/yfwPfbl92RfMXGgKA
+         Zpq4ILkPeXWJenb1D6Ex1UsGkHy/3W0MrqDJCnPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Yan <tom.ty89@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 141/255] ALSA: usb-audio: ignore broken processing/extension unit
-Date:   Tue,  1 Sep 2020 17:09:57 +0200
-Message-Id: <20200901151007.459879002@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 118/214] ext4: handle option set by mount flags correctly
+Date:   Tue,  1 Sep 2020 17:09:58 +0200
+Message-Id: <20200901150958.640838738@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Yan <tom.ty89@gmail.com>
+From: Lukas Czerner <lczerner@redhat.com>
 
-[ Upstream commit d8d0db7bb358ef65d60726a61bfcd08eccff0bc0 ]
+[ Upstream commit f25391ebb475d3ffb3aa61bb90e3594c841749ef ]
 
-Some devices have broken extension unit where getting current value
-doesn't work. Attempt that once when creating mixer control for it. If
-it fails, just ignore it, so that it won't cripple the device entirely
-(and/or make the error floods).
+Currently there is a problem with mount options that can be both set by
+vfs using mount flags or by a string parsing in ext4.
 
-Signed-off-by: Tom Yan <tom.ty89@gmail.com>
-Link: https://lore.kernel.org/r/5f3abc52.1c69fb81.9cf2.fe91@mx.google.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+i_version/iversion options gets lost after remount, for example
+
+$ mount -o i_version /dev/pmem0 /mnt
+$ grep pmem0 /proc/self/mountinfo | grep i_version
+310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,seclabel,i_version
+$ mount -o remount,ro /mnt
+$ grep pmem0 /proc/self/mountinfo | grep i_version
+
+nolazytime gets ignored by ext4 on remount, for example
+
+$ mount -o lazytime /dev/pmem0 /mnt
+$ grep pmem0 /proc/self/mountinfo | grep lazytime
+310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
+$ mount -o remount,nolazytime /mnt
+$ grep pmem0 /proc/self/mountinfo | grep lazytime
+310 95 259:0 / /mnt rw,relatime shared:163 - ext4 /dev/pmem0 rw,lazytime,seclabel
+
+Fix it by applying the SB_LAZYTIME and SB_I_VERSION flags from *flags to
+s_flags before we parse the option and use the resulting state of the
+same flags in *flags at the end of successful remount.
+
+Signed-off-by: Lukas Czerner <lczerner@redhat.com>
+Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
+Link: https://lore.kernel.org/r/20200723150526.19931-1-lczerner@redhat.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/mixer.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/ext4/super.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index eab0fd4fd7c33..e0b7174c10430 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2367,7 +2367,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
- 	int num_ins;
- 	struct usb_mixer_elem_info *cval;
- 	struct snd_kcontrol *kctl;
--	int i, err, nameid, type, len;
-+	int i, err, nameid, type, len, val;
- 	const struct procunit_info *info;
- 	const struct procunit_value_info *valinfo;
- 	const struct usbmix_name_map *map;
-@@ -2470,6 +2470,12 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
- 			break;
- 		}
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 76c5529394395..92a6741c4bdd9 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5342,7 +5342,7 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ {
+ 	struct ext4_super_block *es;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+-	unsigned long old_sb_flags;
++	unsigned long old_sb_flags, vfs_flags;
+ 	struct ext4_mount_options old_opts;
+ 	int enable_quota = 0;
+ 	ext4_group_t g;
+@@ -5385,6 +5385,14 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	if (sbi->s_journal && sbi->s_journal->j_task->io_context)
+ 		journal_ioprio = sbi->s_journal->j_task->io_context->ioprio;
  
-+		err = get_cur_ctl_value(cval, cval->control << 8, &val);
-+		if (err < 0) {
-+			usb_mixer_elem_info_free(cval);
-+			return -EINVAL;
-+		}
++	/*
++	 * Some options can be enabled by ext4 and/or by VFS mount flag
++	 * either way we need to make sure it matches in both *flags and
++	 * s_flags. Copy those selected flags from *flags to s_flags
++	 */
++	vfs_flags = SB_LAZYTIME | SB_I_VERSION;
++	sb->s_flags = (sb->s_flags & ~vfs_flags) | (*flags & vfs_flags);
 +
- 		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
- 		if (!kctl) {
- 			usb_mixer_elem_info_free(cval);
+ 	if (!parse_options(data, sb, NULL, &journal_ioprio, 1)) {
+ 		err = -EINVAL;
+ 		goto restore_opts;
+@@ -5438,9 +5446,6 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 		set_task_ioprio(sbi->s_journal->j_task, journal_ioprio);
+ 	}
+ 
+-	if (*flags & SB_LAZYTIME)
+-		sb->s_flags |= SB_LAZYTIME;
+-
+ 	if ((bool)(*flags & SB_RDONLY) != sb_rdonly(sb)) {
+ 		if (sbi->s_mount_flags & EXT4_MF_FS_ABORTED) {
+ 			err = -EROFS;
+@@ -5580,7 +5585,13 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
+ 	}
+ #endif
+ 
+-	*flags = (*flags & ~SB_LAZYTIME) | (sb->s_flags & SB_LAZYTIME);
++	/*
++	 * Some options can be enabled by ext4 and/or by VFS mount flag
++	 * either way we need to make sure it matches in both *flags and
++	 * s_flags. Copy those selected flags from s_flags to *flags
++	 */
++	*flags = (*flags & ~vfs_flags) | (sb->s_flags & vfs_flags);
++
+ 	ext4_msg(sb, KERN_INFO, "re-mounted. Opts: %s", orig_data);
+ 	kfree(orig_data);
+ 	return 0;
 -- 
 2.25.1
 
