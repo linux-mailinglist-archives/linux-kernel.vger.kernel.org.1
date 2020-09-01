@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B976259533
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE49E2593F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIAPsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60120 "EHLO mail.kernel.org"
+        id S1728580AbgIAPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:33:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731811AbgIAPof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:44:35 -0400
+        id S1731185AbgIAPde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:33:34 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2D49206EB;
-        Tue,  1 Sep 2020 15:44:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E388C205F4;
+        Tue,  1 Sep 2020 15:33:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975074;
-        bh=gtDhabSivw4cGmvrnozQ6XGSVvbPKtZI0lOisUQbQvM=;
+        s=default; t=1598974413;
+        bh=yV4NorN4UzjU8UKxeQwkwOTaHZr/jd/fGwxrs6294rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CKHExTShoUBo0ni0ozWdebtXqlragx8dTZyvHl3p/0e8m9jryInV2Fz00ZpDFj63s
-         PTraAKWVpviBoUm5Mqo4qSahYr7e208QQiCnK+8AEm2gBCCTIiMu/YarV85BOoV912
-         J61gThGD38iyJDU57CJnBRW/ESVEVmGQN4cb3lW0=
+        b=eDlTJ/vwgdwmfu8iEufRqIon7cMoGYUMfO65nuN5I0WjO5kheIi7h8GbAvd2IkZMT
+         f6SvMSbGiUV2aNRcVQA5w9wTrktTtFTa3pRfNminEgj6fQytTDQ50BdDO/BhgSP7Je
+         y3a2FG3IwHexqXfvfmJUVEFAPGiIb/M3RgOV0MYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Tushar Behera <tushar.behera@linaro.org>
-Subject: [PATCH 5.8 182/255] serial: pl011: Dont leak amba_ports entry on driver register error
-Date:   Tue,  1 Sep 2020 17:10:38 +0200
-Message-Id: <20200901151009.407730952@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH 5.4 159/214] vt: defer kfree() of vc_screenbuf in vc_do_resize()
+Date:   Tue,  1 Sep 2020 17:10:39 +0200
+Message-Id: <20200901151000.589544106@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-commit 89efbe70b27dd325d8a8c177743a26b885f7faec upstream.
+commit f8d1653daec02315e06d30246cff4af72e76e54e upstream.
 
-pl011_probe() calls pl011_setup_port() to reserve an amba_ports[] entry,
-then calls pl011_register_port() to register the uart driver with the
-tty layer.
+syzbot is reporting UAF bug in set_origin() from vc_do_resize() [1], for
+vc_do_resize() calls kfree(vc->vc_screenbuf) before calling set_origin().
 
-If registration of the uart driver fails, the amba_ports[] entry is not
-released.  If this happens 14 times (value of UART_NR macro), then all
-amba_ports[] entries will have been leaked and driver probing is no
-longer possible.  (To be fair, that can only happen if the DeviceTree
-doesn't contain alias IDs since they cause the same entry to be used for
-a given port.)   Fix it.
+Unfortunately, in set_origin(), vc->vc_sw->con_set_origin() might access
+vc->vc_pos when scroll is involved in order to manipulate cursor, but
+vc->vc_pos refers already released vc->vc_screenbuf until vc->vc_pos gets
+updated based on the result of vc->vc_sw->con_set_origin().
 
-Fixes: ef2889f7ffee ("serial: pl011: Move uart_register_driver call to device")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.15+
-Cc: Tushar Behera <tushar.behera@linaro.org>
-Link: https://lore.kernel.org/r/138f8c15afb2f184d8102583f8301575566064a6.1597316167.git.lukas@wunner.de
+Preserving old buffer and tolerating outdated vc members until set_origin()
+completes would be easier than preventing vc->vc_sw->con_set_origin() from
+accessing outdated vc members.
+
+[1] https://syzkaller.appspot.com/bug?id=6649da2081e2ebdc65c0642c214b27fe91099db3
+
+Reported-by: syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1596034621-4714-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/amba-pl011.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/tty/vt/vt.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/serial/amba-pl011.c
-+++ b/drivers/tty/serial/amba-pl011.c
-@@ -2615,7 +2615,7 @@ static int pl011_setup_port(struct devic
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1196,7 +1196,7 @@ static int vc_do_resize(struct tty_struc
+ 	unsigned int old_rows, old_row_size, first_copied_row;
+ 	unsigned int new_cols, new_rows, new_row_size, new_screen_size;
+ 	unsigned int user;
+-	unsigned short *newscreen;
++	unsigned short *oldscreen, *newscreen;
+ 	struct uni_screen *new_uniscr = NULL;
  
- static int pl011_register_port(struct uart_amba_port *uap)
- {
--	int ret;
-+	int ret, i;
+ 	WARN_CONSOLE_UNLOCKED();
+@@ -1294,10 +1294,11 @@ static int vc_do_resize(struct tty_struc
+ 	if (new_scr_end > new_origin)
+ 		scr_memsetw((void *)new_origin, vc->vc_video_erase_char,
+ 			    new_scr_end - new_origin);
+-	kfree(vc->vc_screenbuf);
++	oldscreen = vc->vc_screenbuf;
+ 	vc->vc_screenbuf = newscreen;
+ 	vc->vc_screenbuf_size = new_screen_size;
+ 	set_origin(vc);
++	kfree(oldscreen);
  
- 	/* Ensure interrupts from this UART are masked and cleared */
- 	pl011_write(0, uap, REG_IMSC);
-@@ -2626,6 +2626,9 @@ static int pl011_register_port(struct ua
- 		if (ret < 0) {
- 			dev_err(uap->port.dev,
- 				"Failed to register AMBA-PL011 driver\n");
-+			for (i = 0; i < ARRAY_SIZE(amba_ports); i++)
-+				if (amba_ports[i] == uap)
-+					amba_ports[i] = NULL;
- 			return ret;
- 		}
- 	}
+ 	/* do part of a reset_terminal() */
+ 	vc->vc_top = 0;
 
 
