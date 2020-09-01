@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CEC2596D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F74259840
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731344AbgIAQGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:06:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
+        id S1730926AbgIAPcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728421AbgIAPk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:40:56 -0400
+        id S1730588AbgIAPa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:30:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A47E02098B;
-        Tue,  1 Sep 2020 15:40:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B15B2206C0;
+        Tue,  1 Sep 2020 15:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974855;
-        bh=RqdeLEbmMQXULoSZsQmjQtt6OU/wzOpttepJrcg+/Zc=;
+        s=default; t=1598974225;
+        bh=gwf4wWC0vORa2uGQfb3OiUSJDKLfwwSQvhew2ikLsvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zgf03aGc/9Tmg6NDlL7R/maAt9zs8hfHOEgsr78SbNWVd7iGppbNQw1u3laBs7LHL
-         U6vpTUi5//LQHSI5QErParolRhMBEECP3DDCPvAf1zs8ysbXUMo9QuW2fIsSEZ3PeD
-         /rrTJ2ZC3CXYrvU9aYexLySW/pJZd5gjLo5u3jLE=
+        b=nqGQpLPdLRCATD8XbKESYA4F1z/NC/p/9xoYL+fAhh68a0xKbB/F8Y13eXcDBtLxq
+         9GfjIu/ZyBmdGBKcpn5GhqvStkxUDO+xaTkWDbKQ4O+ifvZGiG/dmXTWPur82lVd6f
+         tYTzdqjcpLhNia8WUQCX1AQ4rcVdnVz8VtHjsWgU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 086/255] block: respect queue limit of max discard segment
-Date:   Tue,  1 Sep 2020 17:09:02 +0200
-Message-Id: <20200901151004.853971341@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Changming Liu <charley.ashbringer@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 063/214] USB: sisusbvga: Fix a potential UB casued by left shifting a negative value
+Date:   Tue,  1 Sep 2020 17:09:03 +0200
+Message-Id: <20200901150955.997013862@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Changming Liu <charley.ashbringer@gmail.com>
 
-[ Upstream commit 943b40c832beb71115e38a1c4d99b640b5342738 ]
+[ Upstream commit 2b53a19284f537168fb506f2f40d7fda40a01162 ]
 
-When queue_max_discard_segments(q) is 1, blk_discard_mergable() will
-return false for discard request, then normal request merge is applied.
-However, only queue_max_segments() is checked, so max discard segment
-limit isn't respected.
+The char buffer buf, receives data directly from user space,
+so its content might be negative and its elements are left
+shifted to form an unsigned integer.
 
-Check max discard segment limit in the request merge code for fixing
-the issue.
+Since left shifting a negative value is undefined behavior, thus
+change the char to u8 to elimintate this UB.
 
-Discard request failure of virtio_blk is fixed.
-
-Fixes: 69840466086d ("block: fix the DISCARD request merge")
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Changming Liu <charley.ashbringer@gmail.com>
+Link: https://lore.kernel.org/r/20200711043018.928-1-charley.ashbringer@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-merge.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/usb/misc/sisusbvga/sisusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index f0b0bae075a0c..0b590907676af 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -534,10 +534,17 @@ int __blk_rq_map_sg(struct request_queue *q, struct request *rq,
- }
- EXPORT_SYMBOL(__blk_rq_map_sg);
+diff --git a/drivers/usb/misc/sisusbvga/sisusb.c b/drivers/usb/misc/sisusbvga/sisusb.c
+index fc8a5da4a07c9..0734e6dd93862 100644
+--- a/drivers/usb/misc/sisusbvga/sisusb.c
++++ b/drivers/usb/misc/sisusbvga/sisusb.c
+@@ -761,7 +761,7 @@ static int sisusb_write_mem_bulk(struct sisusb_usb_data *sisusb, u32 addr,
+ 	u8   swap8, fromkern = kernbuffer ? 1 : 0;
+ 	u16  swap16;
+ 	u32  swap32, flag = (length >> 28) & 1;
+-	char buf[4];
++	u8 buf[4];
  
-+static inline unsigned int blk_rq_get_max_segments(struct request *rq)
-+{
-+	if (req_op(rq) == REQ_OP_DISCARD)
-+		return queue_max_discard_segments(rq->q);
-+	return queue_max_segments(rq->q);
-+}
-+
- static inline int ll_new_hw_segment(struct request *req, struct bio *bio,
- 		unsigned int nr_phys_segs)
- {
--	if (req->nr_phys_segments + nr_phys_segs > queue_max_segments(req->q))
-+	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
- 		goto no_merge;
- 
- 	if (blk_integrity_merge_bio(req->q, req, bio) == false)
-@@ -625,7 +632,7 @@ static int ll_merge_requests_fn(struct request_queue *q, struct request *req,
- 		return 0;
- 
- 	total_phys_segments = req->nr_phys_segments + next->nr_phys_segments;
--	if (total_phys_segments > queue_max_segments(q))
-+	if (total_phys_segments > blk_rq_get_max_segments(req))
- 		return 0;
- 
- 	if (blk_integrity_merge_rq(q, req, next) == false)
+ 	/* if neither kernbuffer not userbuffer are given, assume
+ 	 * data in obuf
 -- 
 2.25.1
 
