@@ -2,52 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AF0F258529
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FA2258538
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgIABfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 21:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgIABfb (ORCPT
+        id S1726085AbgIABmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 21:42:08 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:57547 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgIABmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 21:35:31 -0400
-Received: from caffeine.csclub.uwaterloo.ca (caffeine.csclub.uwaterloo.ca [IPv6:2620:101:f000:4901:c5c:0:caff:e12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7DFC061757;
-        Mon, 31 Aug 2020 18:35:31 -0700 (PDT)
-Received: by caffeine.csclub.uwaterloo.ca (Postfix, from userid 20367)
-        id 46D4F4611C8; Mon, 31 Aug 2020 21:35:19 -0400 (EDT)
-Date:   Mon, 31 Aug 2020 21:35:19 -0400
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: Re: [Intel-wired-lan] VRRP not working on i40e X722 S2600WFT
-Message-ID: <20200901013519.rfmavd4763gdzw4r@csclub.uwaterloo.ca>
-References: <20200827183039.hrfnb63cxq3pmv4z@csclub.uwaterloo.ca>
- <20200828155616.3sd2ivrml2gpcvod@csclub.uwaterloo.ca>
- <20200831103512.00001fab@intel.com>
+        Mon, 31 Aug 2020 21:42:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U7Tly0l_1598924523;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U7Tly0l_1598924523)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Sep 2020 09:42:04 +0800
+Date:   Tue, 1 Sep 2020 09:42:03 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, bhe@redhat.com
+Subject: Re: [Patch v3 7/7] mm/hugetlb: take the free hpage during the
+ iteration directly
+Message-ID: <20200901014203.GA29343@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200831022351.20916-1-richard.weiyang@linux.alibaba.com>
+ <20200831022351.20916-8-richard.weiyang@linux.alibaba.com>
+ <d36e57db-b02f-fd75-6c0c-734635f58ff5@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200831103512.00001fab@intel.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-From:   lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
+In-Reply-To: <d36e57db-b02f-fd75-6c0c-734635f58ff5@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 10:35:12AM -0700, Jesse Brandeburg wrote:
-> Thanks for the report Lennart, I understand your frustration, as this
-> should probably work without user configuration.
-> 
-> However, please give this command a try:
-> ethtool --set-priv-flags ethX disable-source-pruning on
+On Mon, Aug 31, 2020 at 04:06:54PM -0700, Mike Kravetz wrote:
+>On 8/30/20 7:23 PM, Wei Yang wrote:
+>> Function dequeue_huge_page_node_exact() iterates the free list and
+>> return the first valid free hpage.
+>> 
+>> Instead of break and check the loop variant, we could return in the loop
+>> directly. This could reduce some redundant check.
+>> 
+>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> ---
+>>  mm/hugetlb.c | 20 ++++++++------------
+>>  1 file changed, 8 insertions(+), 12 deletions(-)
+>> 
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index 7b3357c1dcec..709be7ab65af 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -1040,21 +1040,17 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+>>  		if (nocma && is_migrate_cma_page(page))
+>>  			continue;
+>>  
+>> -		if (!PageHWPoison(page))
+>> +		if (PageHWPoison(page))
+>>  			break;
+>
+>Previously, when encountering a PageHWPoison(page) the loop would continue
+>and check the next page in the list.  It now breaks the loop and returns
+>NULL.  Is not this a change in behavior?  Perhaps you want to change that
+>break to a continue.  Or, restructure in some other way.
 
-Hmm, our 4.9 kernel is just a touch too old to support that.  And yes
-that really should not require a flag to be set, given the card has no
-reason to ever do that pruning.  There is no justification you could
-have for doing it in the first place.
+Shame on me. You are right. I should change it to continue.
+
+Andrew,
+
+Sorry for the inconvenience.
+
+>-- 
+>Mike Kravetz
+>
+>> +
+>> +		list_move(&page->lru, &h->hugepage_activelist);
+>> +		set_page_refcounted(page);
+>> +		h->free_huge_pages--;
+>> +		h->free_huge_pages_node[nid]--;
+>> +		return page;
+>>  	}
+>>  
+>> -	/*
+>> -	 * if 'non-isolated free hugepage' not found on the list,
+>> -	 * the allocation fails.
+>> -	 */
+>> -	if (&h->hugepage_freelists[nid] == &page->lru)
+>> -		return NULL;
+>> -	list_move(&page->lru, &h->hugepage_activelist);
+>> -	set_page_refcounted(page);
+>> -	h->free_huge_pages--;
+>> -	h->free_huge_pages_node[nid]--;
+>> -	return page;
+>> +	return NULL;
+>>  }
+>>  
+>>  static struct page *dequeue_huge_page_nodemask(struct hstate *h, gfp_t gfp_mask, int nid,
+>> 
 
 -- 
-Len Sorensen
+Wei Yang
+Help you, Help me
