@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB1C2596DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 534AF2598A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgIAQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:07:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50906 "EHLO mail.kernel.org"
+        id S1730825AbgIAPb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:31:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728043AbgIAPkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:40:07 -0400
+        id S1730545AbgIAP3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:29:38 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9106F20866;
-        Tue,  1 Sep 2020 15:40:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2DEB20684;
+        Tue,  1 Sep 2020 15:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974806;
-        bh=3EnFM1EqhxlGEIjlFAWWwx+otHaDaxoJh5K+xDYKgPQ=;
+        s=default; t=1598974177;
+        bh=Evw0TAfbSQ69ANI8VceYk5KVjE9MAatzHdPPh8BbDOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EfwEXppeD+zvq/a9LFS7P2Wm+jrgWjeudHtdiVW3XP3+se80GzuRF1EfTjvjMuZ8v
-         6mo2VXr6KxxQIymjKefRBa0UTskY6Uh8z4WgIE3Khc/oBIJ5T5ECkzi0mzaeLMa0Q9
-         3u4inttmmRVIO/KdZy9QwqJ74zJobMtJV/bDYuZs=
+        b=qNU38RUC8xMgxAgwdL1XbRZXT3C4nFPgUxIGTZqR7IzuxyZ9sDgJe5Bn0MUA+zV8F
+         tg+SMHPOxsg6jYETrDbiZC9IoJj4WoTv38JBicC66EDKdbmU5zRyTSVWDh74LMKzjp
+         t+qF2rzwCHKCnQJulj7efPMQzZ92Y/GnryjTMTTs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
+        stable@vger.kernel.org,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 098/255] habanalabs: Fix memory corruption in debugfs
-Date:   Tue,  1 Sep 2020 17:09:14 +0200
-Message-Id: <20200901151005.418565007@linuxfoundation.org>
+Subject: [PATCH 5.4 075/214] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
+Date:   Tue,  1 Sep 2020 17:09:15 +0200
+Message-Id: <20200901150956.566463675@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +46,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-[ Upstream commit eeec23cd325ad4d83927b8ee162693579cf3813f ]
+[ Upstream commit 14dee058610446aa464254fc5c8e88c7535195e0 ]
 
-This has to be a long instead of a u32 because we write a long value.
-On 64 bit systems, this will cause memory corruption.
+The patch c575b7eeb89f: "drm/xen-front: Add support for Xen PV
+display frontend" from Apr 3, 2018, leads to the following static
+checker warning:
 
-Fixes: c216477363a3 ("habanalabs: add debugfs support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+	drivers/gpu/drm/xen/xen_drm_front_gem.c:140 xen_drm_front_gem_create()
+	warn: passing zero to 'ERR_CAST'
+
+drivers/gpu/drm/xen/xen_drm_front_gem.c
+   133  struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
+   134                                                  size_t size)
+   135  {
+   136          struct xen_gem_object *xen_obj;
+   137
+   138          xen_obj = gem_create(dev, size);
+   139          if (IS_ERR_OR_NULL(xen_obj))
+   140                  return ERR_CAST(xen_obj);
+
+Fix this and the rest of misused places with IS_ERR_OR_NULL in the
+driver.
+
+Fixes:  c575b7eeb89f: "drm/xen-front: Add support for Xen PV display frontend"
+
+Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200813062113.11030-3-andr2000@gmail.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/debugfs.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/xen/xen_drm_front.c     | 4 ++--
+ drivers/gpu/drm/xen/xen_drm_front_gem.c | 8 ++++----
+ drivers/gpu/drm/xen/xen_drm_front_kms.c | 2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/debugfs.c b/drivers/misc/habanalabs/debugfs.c
-index 0bc036e01ee8d..6c2b9cf45e831 100644
---- a/drivers/misc/habanalabs/debugfs.c
-+++ b/drivers/misc/habanalabs/debugfs.c
-@@ -19,7 +19,7 @@
- static struct dentry *hl_debug_root;
+diff --git a/drivers/gpu/drm/xen/xen_drm_front.c b/drivers/gpu/drm/xen/xen_drm_front.c
+index 374142018171c..09894a1d343f3 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front.c
++++ b/drivers/gpu/drm/xen/xen_drm_front.c
+@@ -400,8 +400,8 @@ static int xen_drm_drv_dumb_create(struct drm_file *filp,
+ 	args->size = args->pitch * args->height;
  
- static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
--				u8 i2c_reg, u32 *val)
-+				u8 i2c_reg, long *val)
- {
- 	struct armcp_packet pkt;
- 	int rc;
-@@ -36,7 +36,7 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
- 	pkt.i2c_reg = i2c_reg;
- 
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
--						0, (long *) val);
-+						0, val);
- 
- 	if (rc)
- 		dev_err(hdev->dev, "Failed to read from I2C, error %d\n", rc);
-@@ -827,7 +827,7 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
- 	struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
- 	struct hl_device *hdev = entry->hdev;
- 	char tmp_buf[32];
--	u32 val;
-+	long val;
- 	ssize_t rc;
- 
- 	if (*ppos)
-@@ -842,7 +842,7 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
- 		return rc;
+ 	obj = xen_drm_front_gem_create(dev, args->size);
+-	if (IS_ERR_OR_NULL(obj)) {
+-		ret = PTR_ERR_OR_ZERO(obj);
++	if (IS_ERR(obj)) {
++		ret = PTR_ERR(obj);
+ 		goto fail;
  	}
  
--	sprintf(tmp_buf, "0x%02x\n", val);
-+	sprintf(tmp_buf, "0x%02lx\n", val);
- 	rc = simple_read_from_buffer(buf, count, ppos, tmp_buf,
- 			strlen(tmp_buf));
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+index f0b85e0941114..4ec8a49241e17 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+@@ -83,7 +83,7 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
  
+ 	size = round_up(size, PAGE_SIZE);
+ 	xen_obj = gem_create_obj(dev, size);
+-	if (IS_ERR_OR_NULL(xen_obj))
++	if (IS_ERR(xen_obj))
+ 		return xen_obj;
+ 
+ 	if (drm_info->front_info->cfg.be_alloc) {
+@@ -117,7 +117,7 @@ static struct xen_gem_object *gem_create(struct drm_device *dev, size_t size)
+ 	 */
+ 	xen_obj->num_pages = DIV_ROUND_UP(size, PAGE_SIZE);
+ 	xen_obj->pages = drm_gem_get_pages(&xen_obj->base);
+-	if (IS_ERR_OR_NULL(xen_obj->pages)) {
++	if (IS_ERR(xen_obj->pages)) {
+ 		ret = PTR_ERR(xen_obj->pages);
+ 		xen_obj->pages = NULL;
+ 		goto fail;
+@@ -136,7 +136,7 @@ struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
+ 	struct xen_gem_object *xen_obj;
+ 
+ 	xen_obj = gem_create(dev, size);
+-	if (IS_ERR_OR_NULL(xen_obj))
++	if (IS_ERR(xen_obj))
+ 		return ERR_CAST(xen_obj);
+ 
+ 	return &xen_obj->base;
+@@ -194,7 +194,7 @@ xen_drm_front_gem_import_sg_table(struct drm_device *dev,
+ 
+ 	size = attach->dmabuf->size;
+ 	xen_obj = gem_create_obj(dev, size);
+-	if (IS_ERR_OR_NULL(xen_obj))
++	if (IS_ERR(xen_obj))
+ 		return ERR_CAST(xen_obj);
+ 
+ 	ret = gem_alloc_pages_array(xen_obj, size);
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_kms.c b/drivers/gpu/drm/xen/xen_drm_front_kms.c
+index 21ad1c359b613..e4dedbb184ab7 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_kms.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_kms.c
+@@ -60,7 +60,7 @@ fb_create(struct drm_device *dev, struct drm_file *filp,
+ 	int ret;
+ 
+ 	fb = drm_gem_fb_create_with_funcs(dev, filp, mode_cmd, &fb_funcs);
+-	if (IS_ERR_OR_NULL(fb))
++	if (IS_ERR(fb))
+ 		return fb;
+ 
+ 	gem_obj = drm_gem_object_lookup(filp, mode_cmd->handles[0]);
 -- 
 2.25.1
 
