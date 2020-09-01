@@ -2,67 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AB825889B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE88D2588A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgIAG6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:58:09 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45332 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726085AbgIAG6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:58:07 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E5F782469EB139DBFF69;
-        Tue,  1 Sep 2020 14:58:03 +0800 (CST)
-Received: from [127.0.0.1] (10.174.179.108) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
- 14:58:00 +0800
-Subject: Re: [PATCH -next] memory: omap-gpmc: Fix -Wunused-function warnings
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-References: <20200901035642.22772-1-yuehaibing@huawei.com>
- <20200901065241.GA7720@kozik-lap>
-CC:     <rogerq@ti.com>, <tony@atomide.com>, <linux-omap@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Yuehaibing <yuehaibing@huawei.com>
-Message-ID: <a8b622ac-eb41-1371-9514-f4a31dc6589d@huawei.com>
-Date:   Tue, 1 Sep 2020 14:58:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200901065241.GA7720@kozik-lap>
+        id S1726117AbgIAHBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:01:06 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:13736 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgIAHA1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 03:00:27 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200901070003epoutp042b4b18f9f3f6151e9094995fea1a8b49~wlrxEtcP11225112251epoutp04H
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:00:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200901070003epoutp042b4b18f9f3f6151e9094995fea1a8b49~wlrxEtcP11225112251epoutp04H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598943603;
+        bh=DSnklmNM1iRH6V9fPTu0ChZ9yrpvpym06lWfFNwv+dQ=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=uoeG71ejSC6RG9HQgfIItAPwmQPuM12NteedpTFH9jwAFdOqZUzt8Kr/luoiFMTuD
+         T/7XlXkP1aVo9b09Rja7QJmqInoCySXXIVwing/ehFxSp3V/d1H87XYfzG42cP8yh9
+         ko0fR2/B9P1EZQO8nR2ijW2LwdIc98dNpuj/u1S4=
+Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p3.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200901070002epcas1p3663b4ac20444e4bc81463a9bc07bc589~wlrwrsgXW0540605406epcas1p3S;
+        Tue,  1 Sep 2020 07:00:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH V10 1/4] scsi: ufs: Add HPB feature related parameters
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21598943602645.JavaMail.epsvc@epcpadp1>
+Date:   Tue, 01 Sep 2020 15:53:44 +0900
+X-CMS-MailID: 20200901065344epcms2p6030a44c984b24fb9bafc64ff71bfe67f
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72
+References: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
+        <CGME20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72@epcms2p6>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/1 14:52, Krzysztof Kozlowski wrote:
-> On Tue, Sep 01, 2020 at 11:56:42AM +0800, YueHaibing wrote:
->> drivers/memory/omap-gpmc.c:987:12: warning: ‘gpmc_cs_remap’ defined but not used [-Wunused-function]
->>  static int gpmc_cs_remap(int cs, u32 base)
->>             ^~~~~~~~~~~~~
->> drivers/memory/omap-gpmc.c:926:20: warning: ‘gpmc_cs_get_name’ defined but not used [-Wunused-function]
->>  static const char *gpmc_cs_get_name(int cs)
->>                     ^~~~~~~~~~~~~~~~
->> drivers/memory/omap-gpmc.c:919:13: warning: ‘gpmc_cs_set_name’ defined but not used [-Wunused-function]
->>  static void gpmc_cs_set_name(int cs, const char *name)
->>              ^~~~~~~~~~~~~~~~
->> Make them as  __maybe_unused to fix this.
-> 
-> Hi,
-> 
-> Do you know what configuration triggers these warnings? What has to be
-> disabled (e.g. CONFIG_OF)? Such information is useful in the commit
-> message.
+This is a patch for parameters to be used for HPB feature.
 
-Yes, this is triggered by disable CONFIG_OF, I will update the commit log.
-> 
-> Best regards,
-> Krzysztof
-> 
-> .
-> 
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Can Guo <cang@codeaurora.org>
+Acked-by: Avri Altman <Avri.Altman@wdc.com>
+Tested-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufs.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index f8ab16f30fdc..e879ac34c065 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -122,6 +122,7 @@ enum flag_idn {
+ 	QUERY_FLAG_IDN_WB_EN                            = 0x0E,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
+ 	QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
++	QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
+ };
+ 
+ /* Attribute idn for Query requests */
+@@ -195,6 +196,9 @@ enum unit_desc_param {
+ 	UNIT_DESC_PARAM_PHY_MEM_RSRC_CNT	= 0x18,
+ 	UNIT_DESC_PARAM_CTX_CAPABILITIES	= 0x20,
+ 	UNIT_DESC_PARAM_LARGE_UNIT_SIZE_M1	= 0x22,
++	UNIT_DESC_HPB_LU_MAX_ACTIVE_REGIONS	= 0x23,
++	UNIT_DESC_HPB_LU_PIN_REGION_START_OFFSET	= 0x25,
++	UNIT_DESC_HPB_LU_NUM_PIN_REGIONS	= 0x27,
+ 	UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS	= 0x29,
+ };
+ 
+@@ -235,6 +239,8 @@ enum device_desc_param {
+ 	DEVICE_DESC_PARAM_PSA_MAX_DATA		= 0x25,
+ 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
+ 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
++	DEVICE_DESC_PARAM_HPB_VER		= 0x40,
++	DEVICE_DESC_PARAM_HPB_CONTROL		= 0x42,
+ 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
+ 	DEVICE_DESC_PARAM_WB_PRESRV_USRSPC_EN	= 0x53,
+ 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
+@@ -283,6 +289,10 @@ enum geometry_desc_param {
+ 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
+ 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
+ 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
++	GEOMETRY_DESC_PARAM_HPB_REGION_SIZE	= 0x48,
++	GEOMETRY_DESC_PARAM_HPB_NUMBER_LU	= 0x49,
++	GEOMETRY_DESC_PARAM_HPB_SUBREGION_SIZE	= 0x4A,
++	GEOMETRY_DESC_PARAM_HPB_MAX_ACTIVE_REGS	= 0x4B,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
+ 	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
+ 	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
+@@ -327,8 +337,10 @@ enum {
+ 
+ /* Possible values for dExtendedUFSFeaturesSupport */
+ enum {
++	UFS_DEV_HPB_SUPPORT		= BIT(7),
+ 	UFS_DEV_WRITE_BOOSTER_SUP	= BIT(8),
+ };
++#define UFS_DEV_HPB_SUPPORT_VERSION		0x310
+ 
+ #define POWER_DESC_MAX_SIZE			0x62
+ #define POWER_DESC_MAX_ACTV_ICC_LVLS		16
+@@ -537,6 +549,7 @@ struct ufs_dev_info {
+ 	u8 *model;
+ 	u16 wspecversion;
+ 	u32 clk_gating_wait_us;
++	u8 b_ufs_feature_sup;
+ 	u32 d_ext_ufs_feature_sup;
+ 	u8 b_wb_buffer_type;
+ 	u32 d_wb_alloc_units;
+-- 
+2.17.1
+
 
