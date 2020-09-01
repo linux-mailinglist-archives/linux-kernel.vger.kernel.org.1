@@ -2,206 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147A1259047
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC72725904B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgIAOXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S1728203AbgIAOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727883AbgIAOT6 (ORCPT
+        with ESMTP id S1728387AbgIAOXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:19:58 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AC0C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:19:58 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x14so1278098oic.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:19:58 -0700 (PDT)
+        Tue, 1 Sep 2020 10:23:11 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DCBC061246
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:23:02 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id x7so576813qvi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:23:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kYeT1kWREy9iw8RMXrMLIUajXpDFHqwarYEHBSXtPVs=;
-        b=BkbvCa0wDTGiRy3Mtu7XIbr0k4OXQtL0lOVpT/ZRRe19u76OiPgHmLIKSd6BYGHbEZ
-         9R0IChDbN7K3wFjdEcRCrvGObCHQ/voDFWWvrwae2UQ7JYrtGIofURnVNwWlq6ZVEWvU
-         BzO25Fu6dIzqvQVPGfH2YvEGabB+dUM01uTuX5N5RqgtQd6qtC+qQzLvMukYIChXjPV8
-         48L6U/cjB8NxihkEKwmw6cd9vppOYQar/UXGARV2JGfKaHgn+4rUA332WaZPdG0MClWE
-         oEblIXKR0rBsfVuV8JfmA5xS7fJH6iWBXuDpH8quiyKztYmbkO+aRnzwNU2qc3zHDFkZ
-         3Q8g==
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=quGUUOQsnj0nKT/WAhfV3HFgb488kDC45KlIYy9fT78=;
+        b=O0pbfkrVuvQ4XtDJpgLpDmNnmE7fpzdPhbPtODDcNRuOTd7dD9b/IE1b1Yswybf6qj
+         D/YFwkpRHt4DVKimrawcJUEkLYpQUUIDlT99IliwA9/5m8P386SBoNgcgkmaudXxTTAA
+         GJabKO16qNKZbL7s0NOhwCch5ZboTDNI9GW55gLOUpT5060bPcFb1aK5RzwAql9n7n5K
+         X2s8KZ+HbCkls1mOyXkhonS5x8JlslmxnvT6wRpmB3Po87xN3c8ql+EejD83nZdTtBta
+         Sb7BI67+oUQmVwSmhuUp7dzlIj3PrURiQtEEsHaGxqNfF5OwnVZbDZBabUvgI8GrwW2Q
+         977w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kYeT1kWREy9iw8RMXrMLIUajXpDFHqwarYEHBSXtPVs=;
-        b=fp/1abAjgTXH1Ii413kgggQqDlHeRxmf8EwEwZ6XLoXa+2xFkQDLivmKQ75eCFjZks
-         M0aAU9evz1x+/arm39rWTOQq+2Dy0AuouLbB5sr54fXRFepzrfJvP/jnE2B/k4/9zhlP
-         5UH0KPH5CtDXzhXEKEiVQyjISlp90Ph7w21MbsxxYX7x3foLWW1wtlREkhSXz4rttTqi
-         tSvKCWJjHUmMgiGZoJKkQukuyBu/Wfs5ttyBQ40Do6ixfpzmdYQYHhMRywLJepk/RuTv
-         UlY/Yan5IiCfR7/yDjEsiA0AxbQpfi9FM4ynlogZxjicP1KljAITBnijIBjQn07OXjHX
-         u8Eg==
-X-Gm-Message-State: AOAM533JNr/RZRVXt1Hf4FqvctMm64YtMbmeKpcurGJLSZ/5k2lHzEN2
-        fUKuLHK5InydbyT/h/EnjAY82fAOke4IUcpVBlA=
-X-Google-Smtp-Source: ABdhPJxG3/HiNa+3SgPdltCpIDqdd48zpcgJbgavkTxTieZYdq02TFXosB+BEK5L9z8LDAXFi+ix5rZ6WehV1/B9UAA=
-X-Received: by 2002:aca:e144:: with SMTP id y65mr1200583oig.101.1598969995921;
- Tue, 01 Sep 2020 07:19:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=quGUUOQsnj0nKT/WAhfV3HFgb488kDC45KlIYy9fT78=;
+        b=GuLwQawYqb+dBLAHKvbTemFMuzG8r1F/jA74k9FD83TXxWAxtH03vyqezHtZAHMDTP
+         LgwBag1YkN7hHro5eKkWbHWxBPeXW7WZ3Jd1Ol+1vcWAvJo1URGYv6zNiU1anltV0dKm
+         FUGSRx2s6OSajfz8TlO1uSbzaRVG8sKlAPoWV2BlFyIVrM6AMRu6fD6D7R9w/8OjW89H
+         P4JpHyKfnj5xd0uL9cVWg/oqOnmKbU3hmkNfc9EmSEw/KyiuyG5F1mau0YawIH8/2pn7
+         1fE79w9D4HDCPK2cg2Oqk79Jn5r1+rPVzFMBxDG0DmdypCBv9v9Szbu2t2QjznJwppGE
+         +y6g==
+X-Gm-Message-State: AOAM533lziDywW/+qz+MN4LxuENCrCcwLdGqgKVjMcLKVQ5gUJIybUXc
+        MfB4HrB3WpV2B0lMHn/8V6VYOw==
+X-Google-Smtp-Source: ABdhPJxbWFRugHWiabXaS77unc1r6Z088JNJumB5tBlF+LPd46BUhC4ACcO50gK5UD8mdIdk1S2MkQ==
+X-Received: by 2002:a0c:9b85:: with SMTP id o5mr2285567qve.11.1598970181201;
+        Tue, 01 Sep 2020 07:23:01 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id r6sm1782341qkc.43.2020.09.01.07.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 07:22:57 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 10:22:51 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Ming Lei <tom.leiming@gmail.com>
+Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        syzkaller-bugs@googlegroups.com,
+        syzbot <syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ming Lei <ming.lei@canonical.com>, paulmck@kernel.org
+Subject: Re: splice: infinite busy loop lockup bug
+Message-ID: <20200901142251.GA16065@lca.pw>
+References: <00000000000084b59f05abe928ee@google.com>
+ <29de15ff-15e9-5c52-cf87-e0ebdfa1a001@I-love.SAKURA.ne.jp>
+ <20200807122727.GR1236603@ZenIV.linux.org.uk>
+ <d96b0b3f-51f3-be3d-0a94-16471d6bf892@i-love.sakura.ne.jp>
+ <20200901005131.GA3300@lca.pw>
+ <CACVXFVNy+qKeSytvDduCuH3HV02mB7i88P27Ou+h=PC22hqwHw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200820120025.74460-1-benbjiang@tencent.com> <CAKfTPtABCbEuYf3uup5ZODyPXpUqBjgM8A5gBQqM0cQGxWk5zw@mail.gmail.com>
- <20200820125829.GT2674@hirez.programming.kicks-ass.net> <CAKfTPtBuZOb9-W5sS=DqxcuMFa8Lw=7XqMJ_YrXEgd5zvufYjA@mail.gmail.com>
- <20200820134341.GW2674@hirez.programming.kicks-ass.net> <CAKfTPtC203mVB6QB1APbZ5igavdcwbJsCQH_8K__rhGxi+KXoQ@mail.gmail.com>
- <CAPJCdBmbTULFE=tS0-VM9aqKmC0b0PFfny6=UiuVZB=hVW996Q@mail.gmail.com>
- <CAKfTPtCTd5eihtcg=B0Gu3RUydbSgjurD1uHD3rEvbTV61nf6Q@mail.gmail.com>
- <CAPJCdBmzcmomLaxNyN=VJiOCxrqrYdeJ=N8YksJ8mVY-BGHASA@mail.gmail.com> <CAKfTPtBerqpbay-=2ws85K6hRJNXfsexaNpUyesz4OtZrZVRWQ@mail.gmail.com>
-In-Reply-To: <CAKfTPtBerqpbay-=2ws85K6hRJNXfsexaNpUyesz4OtZrZVRWQ@mail.gmail.com>
-From:   Jiang Biao <benbjiang@gmail.com>
-Date:   Tue, 1 Sep 2020 22:19:45 +0800
-Message-ID: <CAPJCdBkuENFgm0XAemZzNVOtTdkxEioyWkZH81pDuLfY8jJ-mQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: avoid vruntime compensation for SCHED_IDLE task
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jiang Biao <benbjiang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACVXFVNy+qKeSytvDduCuH3HV02mB7i88P27Ou+h=PC22hqwHw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, 1 Sep 2020 at 21:04, Vincent Guittot <vincent.guittot@linaro.org> wrote:
->
-> On Tue, 1 Sep 2020 at 12:15, Jiang Biao <benbjiang@gmail.com> wrote:
+On Tue, Sep 01, 2020 at 09:10:05AM +0800, Ming Lei wrote:
+> On Tue, Sep 1, 2020 at 8:53 AM Qian Cai <cai@lca.pw> wrote:
 > >
-> > Hi, Vincent
+> > On Fri, Aug 07, 2020 at 09:34:08PM +0900, Tetsuo Handa wrote:
+> > > On 2020/08/07 21:27, Al Viro wrote:
+> > > > On Fri, Aug 07, 2020 at 07:35:08PM +0900, Tetsuo Handa wrote:
+> > > >> syzbot is reporting hung task at pipe_release() [1], for for_each_bvec() from
+> > > >> iterate_bvec() from iterate_all_kinds() from iov_iter_alignment() from
+> > > >> ext4_unaligned_io() from ext4_dio_write_iter() from ext4_file_write_iter() from
+> > > >> call_write_iter() from do_iter_readv_writev() from do_iter_write() from
+> > > >> vfs_iter_write() from iter_file_splice_write() falls into infinite busy loop
+> > > >> with pipe->mutex held.
+> > > >>
+> > > >> The reason of falling into infinite busy loop is that iter_file_splice_write()
+> > > >> for some reason generates "struct bio_vec" entry with .bv_len=0 and .bv_offset=0
+> > > >> while for_each_bvec() cannot handle .bv_len == 0.
+> > > >
+> > > > broken in 1bdc76aea115 "iov_iter: use bvec iterator to implement iterate_bvec()",
+> > > > unless I'm misreading it...
 > >
-> > Sorry for the late reply.:)
+> > I have been chasing something similar for a while as in,
 > >
-> > On Fri, 28 Aug 2020 at 20:55, Vincent Guittot
-> > <vincent.guittot@linaro.org> wrote:
-> > >
-> > > On Sun, 23 Aug 2020 at 09:33, Jiang Biao <benbjiang@gmail.com> wrote:
-> > > >
-> > > > Hi, Vincent and Peter
-> > > >
-> > > > On Thu, 20 Aug 2020 at 22:09, Vincent Guittot
-> > > > <vincent.guittot@linaro.org> wrote:
-> > > > >
-> > > > > On Thu, 20 Aug 2020 at 15:44, <peterz@infradead.org> wrote:
-> > > > > >
-> > > > > > > That's been said, not compensating the vruntime for a sched_idle task
-> > > > > > > makes sense for me. Even if that will only help for others task in the
-> > > > > > > same cfs_rq
-> > > > > >
-> > > > > > Yeah, but it is worth the extra pointer chasing and branches?
-> > > > >
-> > > > > For that I let Jiang provides figures to show the worthful
-> > > > Using the following configuration for rt-app,
-> > > > {
-> > > >         "tasks" : {
-> > > >                 "task_other" : {
-> > > >                         "instance" : 1, //only 1 instance to be easy to observe
-> > > >                         "cpus" : [2],
-> > > >                         "loop" : 2000,
-> > > >                         "policy" : "SCHED_OTHER",
-> > > >                         "run" : -1,  //make normal task 100% running
-> > > >                         "priority" : 0,
-> > > >                         "sleep" : 0
-> > > >                 },
-> > > >                 "task_idle" : {
-> > > >                         "instance" : 1,
-> > > >                         "cpus" : [2],
-> > > >                         "loop" : 2000,
-> > > >                         "policy" : "SCHED_IDLE",
-> > > >                         "run" : 1, //only run 1us to avoid
-> > > > blocking(always waiting for running), making check_preempt_wakeup
-> > > > work(S->R switching)
-> > > >                         "timer" : { "ref" : "unique2" , "period" :
-> > > > 16000, "mode" : "absolute" }
-> > > >                 }
-> > > >         },
-> > > >         "global" : {
-> > > >                 "calibration" : "CPU0",
-> > > >                 "default_policy" : "SCHED_OTHER",
-> > > >                 "duration" : -1
-> > > >         }
-> > > > }
-> > > > without the patch,
-> > > >           <...>-39771 [002] d.h. 42478.177771: sched_wakeup:
-> > > > comm=task_idle-1 pid=39772 prio=120 target_cpu=002
-> > > >            <...>-39771 [002] d... 42478.190437: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=39771 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=39772 next_prio=120
-> > > >            <...>-39771 [002] d.h. 42478.193771: sched_wakeup:
-> > > > comm=task_idle-1 pid=39772 prio=120 target_cpu=002
-> > > >            <...>-39771 [002] d... 42478.206438: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=39771 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=39772 next_prio=120
-> > > >            <...>-39771 [002] d.h. 42478.209771: sched_wakeup:
-> > > > comm=task_idle-1 pid=39772 prio=120 target_cpu=002
-> > > >            <...>-39771 [002] d... 42478.222438: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=39771 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=39772 next_prio=120
-> > > >            <...>-39771 [002] d.h. 42478.225771: sched_wakeup:
-> > > > comm=task_idle-1 pid=39772 prio=120 target_cpu=002
-> > > >            <...>-39771 [002] d... 42478.238438: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=39771 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=39772 next_prio=120
-> > > > *task_idle*  preempts every 12ms because of the compensation.
-> > > >
-> > > > with the patch,
-> > > >    task_other-0-27670 [002] d.h. 136785.278059: sched_wakeup:
-> > > > comm=task_idle-1 pid=27671 prio=120 target_cpu=002
-> > > >     task_other-0-27670 [002] d... 136785.293623: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=27670 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=27671 next_prio=120
-> > > >     task_other-0-27670 [002] d.h. 136785.294059: sched_wakeup:
-> > > > comm=task_idle-1 pid=27671 prio=120 target_cpu=002
-> > > >     task_other-0-27670 [002] d... 136785.317624: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=27670 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=27671 next_prio=120
-> > > >     task_other-0-27670 [002] d.h. 136785.326059: sched_wakeup:
-> > > > comm=task_idle-1 pid=27671 prio=120 target_cpu=002
-> > > >     task_other-0-27670 [002] d... 136785.341622: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=27670 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=27671 next_prio=120
-> > > >     task_other-0-27670 [002] d.h. 136785.342059: sched_wakeup:
-> > > > comm=task_idle-1 pid=27671 prio=120 target_cpu=002
-> > > >     task_other-0-27670 [002] d... 136785.365623: sched_switch:
-> > > > prev_comm=task_other-0 prev_pid=27670 prev_prio=120 prev_state=R ==>
-> > > > next_comm=task_idle-1 next_pid=27671 next_prio=120
-> > > > *task_idle* preempts every 24 or 16 ms.
-> > > >
-> > > > This patch could reduce the preempting frequency of task_idle, and
-> > > > reduce the interference from SCHED_IDLE task.
-> > >
-> > > For this use case, the preemption is only 1us long. Is it a realistic
-> > > problem use case ? your normal threads might be more impacted by tick,
-> > Nop.
-> > 1us is just to make the logic in place_entity() work. If the preemption is
-> > longer, the IDLE task could not finish its work before being preempted back
-> > by normal task, and the IDLE task would be always in RUNNING status from
-> > then on. In that case place_entity() would never be reached because of the
-> > RUNNING status.
->
-> Yeah, I agree that the setup is the right one to check the worst
-> wakeup pre emption period but it doesn't sound like a realistic
-> problem
-Indeed.
+> > https://lore.kernel.org/linux-fsdevel/89F418A9-EB20-48CB-9AE0-52C700E6BB74@lca.pw/
+> >
+> > In my case, it seems the endless loop happens in iterate_iovec() instead where
+> > I put a debug patch here,
+> >
+> > --- a/lib/iov_iter.c
+> > +++ b/lib/iov_iter.c
+> > @@ -33,6 +33,7 @@
+> >                 if (unlikely(!__v.iov_len))             \
+> >                         continue;                       \
+> >                 __v.iov_base = __p->iov_base;           \
+> > +               printk_ratelimited("ITER_IOVEC left = %zu, n = %zu\n", left, n); \
+> >                 left = (STEP);                          \
+> >                 __v.iov_len -= left;                    \
+> >                 skip = __v.iov_len;                     \
+> >
+> > and end up seeing overflows ("n" supposes to be less than PAGE_SIZE) before the
+> > soft-lockups and a dead system,
+> >
+> > [ 4300.249180][T470195] ITER_IOVEC left = 0, n = 48566423
+> >
+> > Thoughts?
+> 
+> Does the following patch make a difference for you?
+> 
+> https://lore.kernel.org/linux-block/20200817100055.2495905-1-ming.lei@redhat.com/
 
->
-> Have you tried this with your system and does it improve anything ?
-> Otherwise, I agree with Peter that it doesn't worth having an
-> additional test in the wakeup path if it doesn't help any cases
-We have not utilized SCHED_IDLE for running offline tasks, so we can
-not give a realistic scenario for that.
-So let's just forget about it for now.
-
-Much appreciated for your time again. :)
-Thx.
-Regards,
-Jiang
+Yes, it does. I could no longer be able to reproduce the soft lockups with the
+patch applied.
