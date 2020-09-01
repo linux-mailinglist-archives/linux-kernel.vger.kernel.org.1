@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1878C259832
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E14259851
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731935AbgIAQXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:23:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:57723 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728828AbgIAQXX (ORCPT
+        id S1730894AbgIAQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:25:24 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12001 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730481AbgIAQZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:23:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598977402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a32Yjr2eFkkA5dmrRXs0DH1p+/gxeW0TLToW+n8z3yc=;
-        b=hgNGO+u9jxtRdhjzkNizg4FWAFEvrIFyxzrcOVMkeqjH1vtpMm+dXsFNT/7NUgHiG+Lsle
-        l6m1yh4yLPNT8K7BOv3CYx/5o7Tmfn2DM76L48YT8g8vUkne+MiAqHJOFFxexyRz2hg93N
-        bqv6AP+bZywIQEfK9OEH/L02wHY1NyY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-W7hirFWAM9WKO2i0NHJmjA-1; Tue, 01 Sep 2020 12:23:17 -0400
-X-MC-Unique: W7hirFWAM9WKO2i0NHJmjA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B61110ABDAB;
-        Tue,  1 Sep 2020 16:23:15 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9CA257EB9A;
-        Tue,  1 Sep 2020 16:23:11 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  1 Sep 2020 18:23:14 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 18:23:10 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH 1/4] pidfd: support PIDFD_NONBLOCK in pidfd_open()
-Message-ID: <20200901162309.GB4386@redhat.com>
-References: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
- <20200831134551.1599689-2-christian.brauner@ubuntu.com>
+        Tue, 1 Sep 2020 12:25:17 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f4e75bd0000>; Tue, 01 Sep 2020 09:24:29 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 01 Sep 2020 09:25:15 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 01 Sep 2020 09:25:15 -0700
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 1 Sep
+ 2020 16:25:14 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Tue, 1 Sep 2020 16:25:14 +0000
+Received: from skomatineni-linux.nvidia.com (Not Verified[10.2.173.243]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5f4e75e90002>; Tue, 01 Sep 2020 09:25:14 -0700
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     <adrian.hunter@intel.com>, <ulf.hansson@linaro.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <robh+dt@kernel.org>
+CC:     <skomatineni@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: [PATCH v2 4.19 0/7] Fix timeout clock used by hardware data timeout
+Date:   Tue, 1 Sep 2020 09:24:43 -0700
+Message-ID: <1598977490-1826-1-git-send-email-skomatineni@nvidia.com>
+X-Mailer: git-send-email 2.7.4
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831134551.1599689-2-christian.brauner@ubuntu.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1598977469; bh=Cca7bmR9nIFI8RrnEW7AxQ+a0Yt3pOge7xAtLBFuFro=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         X-NVConfidentiality:MIME-Version:Content-Type;
+        b=KhhAk5ghNn9CVbz2nDtZ/upYcVOlEq/7WUvwHzozImSaYVFuyjQIaJaDUJZsDhWLN
+         KcH+q5CaSBA+ezDYjtoQqMJVHEIrTmo9tqqy/+hGolz+jeGBdEsQAiQdCPUPQ+qlZI
+         e8vVmlzPe7Moaou5MswgqOT+1x7RdP5ttkzMryQyUBFJ0jkTO3spOkLMe/6EWXhjBL
+         jWVKNKAezvPxsiNgBqMxM/Mw9SuYMfcUBCeoLn1vXSIc4JE/A2LQ8LgXdNnMHdG4JP
+         pTf7ujxwcM557G+JvJbvhNFYbvXe79CdwDtgCO7uUvPh9RTqta4TjF27dSFWJbTryT
+         uPZnV1XSlwFCw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/31, Christian Brauner wrote:
->
-> --- /dev/null
-> +++ b/include/uapi/linux/pidfd.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +
-> +#ifndef _UAPI_LINUX_PIDFD_H
-> +#define _UAPI_LINUX_PIDFD_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/fcntl.h>
-> +
-> +/* Flags for pidfd_open().  */
-> +#define PIDFD_NONBLOCK O_NONBLOCK
-> +
-> +#endif /* _UAPI_LINUX_PIDFD_H */
+Tegra210/Tegra186/Tegra194 has incorrectly enabled
+SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK from the beginning of their support.
 
-Why? Can't we simply use O_NONBLOCK ?
+Tegra210 and later SDMMC hardware default uses sdmmc_legacy_tm (TMCLK)
+all the time for hardware data timeout instead of SDCLK and this TMCLK
+need to be kept enabled by Tegra sdmmc driver.
 
-Oleg.
+This series includes manual backport patches to fix this for stable
+kernel #4.19
+
+Note:
+Patch series v2 is same as v1 except updated commit message in all patches
+properly for backporting.
+
+Sowjanya Komatineni (7):
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+  sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+  dt-bindings: mmc: tegra: Add tmclk for Tegra210 and Tegra186
+  arm64: tegra: Add missing timeout clock to Tegra210 SDMMC
+  arm64: tegra: Add missing timeout clock to Tegra186 SDMMC nodes
+  arm64: tegra: Add missing timeout clock to Tegra194 SDMMC nodes
+  sdhci: tegra: Add missing TMCLK for data timeout
+
+ .../bindings/mmc/nvidia,tegra20-sdhci.txt          | 23 +++++++++-
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi           | 20 +++++----
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi           | 15 ++++---
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           | 28 ++++++------
+ drivers/mmc/host/sdhci-tegra.c                     | 50 +++++++++++++++++++++-
+ 5 files changed, 106 insertions(+), 30 deletions(-)
+
+-- 
+2.7.4
 
