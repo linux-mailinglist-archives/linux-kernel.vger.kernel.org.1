@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBC6258859
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADD325887B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgIAGjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:39:06 -0400
-Received: from out1.zte.com.cn ([202.103.147.172]:27541 "EHLO mxct.zte.com.cn"
+        id S1726933AbgIAGtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:49:33 -0400
+Received: from mx.blih.net ([212.83.155.74]:46689 "EHLO mx.blih.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbgIAGjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:39:05 -0400
-Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
-        by Forcepoint Email with ESMTPS id EA52283F3CB19F970398;
-        Tue,  1 Sep 2020 14:38:51 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl1.zte.com.cn with ESMTP id 0816cWoY026407;
-        Tue, 1 Sep 2020 14:38:32 +0800 (GMT-8)
-        (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020090114384412-4808023 ;
-          Tue, 1 Sep 2020 14:38:44 +0800 
-From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     minchan@kernel.org
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.yi59@zte.com.cn, jiang.xuexin@zte.com.cn,
-        zhanglin <zhang.lin16@zte.com.cn>
-Subject: [PATCH] zram: add restriction on dynamic zram device creation
-Date:   Tue, 1 Sep 2020 14:42:47 +0800
-Message-Id: <1598942567-33440-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-09-01 14:38:44,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-09-01 14:38:39,
-        Serialize complete at 2020-09-01 14:38:39
-X-MAIL: mse-fl1.zte.com.cn 0816cWoY026407
+        id S1726006AbgIAGtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:49:32 -0400
+X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Sep 2020 02:49:31 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bidouilliste.com;
+        s=mx; t=1598942569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nZvkdgfEsx8IUABfhx71Dpoxee70fmEUTqE8AA7jJGE=;
+        b=YrKuyRgS7QNfdF7qc4hPTROgfFajA7Fk9Ph+iwvL4aPMHfAkWgKP6nOnmArJ1pn+u1TWq2
+        Cd91ByVr7E2rDIilyqYa/3Zyd/93ANKbFJxeHCP+m8YDm64qxE65dqaI+MukDy6JM7NyRu
+        rCmQsqbvJSUHjiMTKOj+S6geJCxe3A0=
+Received: from amy.home (lfbn-idf2-1-1138-237.w90-92.abo.wanadoo.fr [90.92.20.237])
+        by mx.blih.net (OpenSMTPD) with ESMTPSA id 8cb32919 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Tue, 1 Sep 2020 06:42:49 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 08:42:49 +0200
+From:   Emmanuel Vadot <manu@bidouilliste.com>
+To:     =?ISO-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>, Chanho Min <chanho.min@lge.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 0/6] dt-bindings: Convert SP804 to Json-schema (and
+ fix users)
+Message-Id: <20200901084249.b72bb69d617cc32733432da1@bidouilliste.com>
+In-Reply-To: <28acf821-fa6f-7259-ec1b-4810ca1ff48f@arm.com>
+References: <20200828142018.43298-1-andre.przywara@arm.com>
+        <CACRpkdZUrPeUbpNeCZcw8kq5k3egijAuh7R1_3TkbPz5wN+=Lw@mail.gmail.com>
+        <28acf821-fa6f-7259-ec1b-4810ca1ff48f@arm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; amd64-portbld-freebsd13.0)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhanglin <zhang.lin16@zte.com.cn>
+On Fri, 28 Aug 2020 16:44:28 +0100
+Andr=E9 Przywara <andre.przywara@arm.com> wrote:
 
-Add max_num_devices to limit dynamic zram device creation to prevent
- potential OOM
+> On 28/08/2020 15:54, Linus Walleij wrote:
+>=20
+> Hi,
+>=20
+> > On Fri, Aug 28, 2020 at 4:20 PM Andre Przywara <andre.przywara@arm.com>=
+ wrote:
+> >=20
+> >> This is the second attempt at converting the SP804 timer binding to ya=
+ml.
+> >> Compared to v1, I forbid additional properties, and included the prime=
+cell
+> >> binding. Also the clock-names property is now listed, although without
+> >> further requirements on the names. Changelog below.
+> >=20
+> > The series:
+> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> >=20
+> >> I couldn't test any of those DT files on actual machines, but tried
+> >> to make the changes in a way that would be transparent to at least the
+> >> Linux driver. The only other SP804 DT user I could find is FreeBSD,
+> >> but they seem to use a different binding (no clocks, but a
+> >> clock-frequency property).
+> >=20
+> > That's annoying. I suppose FreeBSD just made that up and doesn't
+> > even have a binding document for it?
+>=20
+> I couldn't find bindings at all in their git tree.
 
-Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
----
- drivers/block/zram/zram_drv.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ That's because I don't merge the bindings in the main branch.
 
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 36d49159140f..4f2c4eef5051 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -43,8 +43,9 @@ static DEFINE_MUTEX(zram_index_mutex);
- static int zram_major;
- static const char *default_compressor = "lzo-rle";
- 
--/* Module params (documentation at end) */
- static unsigned int num_devices = 1;
-+/* Module params (documentation at end) */
-+static unsigned int max_num_devices = 8;
- /*
-  * Pages that compress to sizes equals or greater than this are stored
-  * uncompressed in memory.
-@@ -2013,10 +2014,16 @@ static ssize_t hot_add_show(struct class *class,
- 			struct class_attribute *attr,
- 			char *buf)
- {
--	int ret;
-+	int ret = -ENOSPC;
- 
- 	mutex_lock(&zram_index_mutex);
-+	if (num_devices >= max_num_devices) {
-+		mutex_unlock(&zram_index_mutex);
-+		return ret;
-+	}
- 	ret = zram_add();
-+	if (ret >= 0)
-+		num_devices += 1;
- 	mutex_unlock(&zram_index_mutex);
- 
- 	if (ret < 0)
-@@ -2046,8 +2053,10 @@ static ssize_t hot_remove_store(struct class *class,
- 	zram = idr_find(&zram_index_idr, dev_id);
- 	if (zram) {
- 		ret = zram_remove(zram);
--		if (!ret)
-+		if (!ret) {
- 			idr_remove(&zram_index_idr, dev_id);
-+			num_devices -= 1;
-+		}
- 	} else {
- 		ret = -ENODEV;
- 	}
-@@ -2089,6 +2098,7 @@ static void destroy_devices(void)
- static int __init zram_init(void)
- {
- 	int ret;
-+	unsigned int i;
- 
- 	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
- 				      zcomp_cpu_up_prepare, zcomp_cpu_dead);
-@@ -2111,13 +2121,15 @@ static int __init zram_init(void)
- 		return -EBUSY;
- 	}
- 
--	while (num_devices != 0) {
-+	if (num_devices > max_num_devices)
-+		num_devices = max_num_devices;
-+
-+	for (i = 0; i < num_devices; i++) {
- 		mutex_lock(&zram_index_mutex);
- 		ret = zram_add();
- 		mutex_unlock(&zram_index_mutex);
- 		if (ret < 0)
- 			goto out_error;
--		num_devices--;
- 	}
- 
- 	return 0;
-@@ -2135,8 +2147,8 @@ static void __exit zram_exit(void)
- module_init(zram_init);
- module_exit(zram_exit);
- 
--module_param(num_devices, uint, 0);
--MODULE_PARM_DESC(num_devices, "Number of pre-created zram devices");
-+module_param(max_num_devices, uint, 0);
-+MODULE_PARM_DESC(max_num_devices, "Max number of created zram devices");
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
--- 
-2.17.1
+> I don't think they
+> treat this very formally, it seems to be more use-case driven.
+> Their SP804 driver does not know how to handle clock properties, so most
+> of the DTs (in sys/gnu/dts, so apparently copied from Linux) would not
+> work really well, because the driver assumes a hardcoded frequency of
+> 1MHz by default.
 
+ In addition to sys/gnu/dts we also have sys/dts/ which are our own DTs
+before we used the Linux ones (a long time ago but some platform
+weren't converted, they will just die sometime in the futur if nobody
+takes care of them I guess).
+
+> There is only one DT (Annapurna Alpine with Cortex-A15) that provides
+> this clock-frequency property. The Linux DT does not mention the SP804
+> in there at all, interestingly.
+
+ I'm not familiar with this platform at all, it was done under
+contract by Semihalf and I'm sure that if something fails and their
+client starts to complain they will fix it.
+
+> > In an ideal world I suppose we should go and fix FreeBSD but I have
+> > no idea how easy or hard that is.
+>=20
+> It seems to be messy, at least in this case, and I guess unifying DTs
+> means some work on drivers as well.
+
+ I wouldn't worry about us on this case, this binding requirements
+seems to have be done a long time ago before we had any clock framework
+and if our drivers needs to be updated we will do it when we imports
+DTS from whatever Linux version this will be merged in.
+
+> But AFAIK most of the more modern platforms copy the DTs (and thus
+> implicitly the bindings) from Linux, so there is probably much less
+> deviation for many more relevant boards.
+
+ Yes, I (and others) insist on using the DTs from Linux and not doing
+any patches to it without sending them to the Linux ML.
+
+> Cheers,
+> Andre
+
+ Cheers,
+
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+
+--=20
+Emmanuel Vadot <manu@bidouilliste.com>
