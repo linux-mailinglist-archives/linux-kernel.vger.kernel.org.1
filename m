@@ -2,150 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FC82595E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9C92595EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731843AbgIAP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:56:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:44610 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731364AbgIAP4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:56:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFAE91045;
-        Tue,  1 Sep 2020 08:56:34 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17F3C3F71F;
-        Tue,  1 Sep 2020 08:56:31 -0700 (PDT)
-Subject: Re: [PATCH 00/10] dt-bindings: Convert SP805 to Json-schema (and fix
- users)
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chanho Min <chanho.min@lge.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Wei Xu <xuwei5@hisilicon.com>
-References: <20200828130602.42203-1-andre.przywara@arm.com>
- <19c6a67e-48f0-c0b6-3653-32a5a1f09e07@gmail.com>
- <CAL_JsqKvcGAotS6xL7pu+wM8X33PLCQCuoaXYmWrA3j3OdoR5A@mail.gmail.com>
- <bbba0345-f1e3-a240-eaca-d67fa5f8259b@gmail.com>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- xsFNBFNPCKMBEAC+6GVcuP9ri8r+gg2fHZDedOmFRZPtcrMMF2Cx6KrTUT0YEISsqPoJTKld
- tPfEG0KnRL9CWvftyHseWTnU2Gi7hKNwhRkC0oBL5Er2hhNpoi8x4VcsxQ6bHG5/dA7ctvL6
- kYvKAZw4X2Y3GTbAZIOLf+leNPiF9175S8pvqMPi0qu67RWZD5H/uT/TfLpvmmOlRzNiXMBm
- kGvewkBpL3R2clHquv7pB6KLoY3uvjFhZfEedqSqTwBVu/JVZZO7tvYCJPfyY5JG9+BjPmr+
- REe2gS6w/4DJ4D8oMWKoY3r6ZpHx3YS2hWZFUYiCYovPxfj5+bOr78sg3JleEd0OB0yYtzTT
- esiNlQpCo0oOevwHR+jUiaZevM4xCyt23L2G+euzdRsUZcK/M6qYf41Dy6Afqa+PxgMEiDto
- ITEH3Dv+zfzwdeqCuNU0VOGrQZs/vrKOUmU/QDlYL7G8OIg5Ekheq4N+Ay+3EYCROXkstQnf
- YYxRn5F1oeVeqoh1LgGH7YN9H9LeIajwBD8OgiZDVsmb67DdF6EQtklH0ycBcVodG1zTCfqM
- AavYMfhldNMBg4vaLh0cJ/3ZXZNIyDlV372GmxSJJiidxDm7E1PkgdfCnHk+pD8YeITmSNyb
- 7qeU08Hqqh4ui8SSeUp7+yie9zBhJB5vVBJoO5D0MikZAODIDwARAQABzS1BbmRyZSBQcnp5
- d2FyYSAoQVJNKSA8YW5kcmUucHJ6eXdhcmFAYXJtLmNvbT7CwXsEEwECACUCGwMGCwkIBwMC
- BhUIAgkKCwQWAgMBAh4BAheABQJTWSV8AhkBAAoJEAL1yD+ydue63REP/1tPqTo/f6StS00g
- NTUpjgVqxgsPWYWwSLkgkaUZn2z9Edv86BLpqTY8OBQZ19EUwfNehcnvR+Olw+7wxNnatyxo
- D2FG0paTia1SjxaJ8Nx3e85jy6l7N2AQrTCFCtFN9lp8Pc0LVBpSbjmP+Peh5Mi7gtCBNkpz
- KShEaJE25a/+rnIrIXzJHrsbC2GwcssAF3bd03iU41J1gMTalB6HCtQUwgqSsbG8MsR/IwHW
- XruOnVp0GQRJwlw07e9T3PKTLj3LWsAPe0LHm5W1Q+euoCLsZfYwr7phQ19HAxSCu8hzp43u
- zSw0+sEQsO+9wz2nGDgQCGepCcJR1lygVn2zwRTQKbq7Hjs+IWZ0gN2nDajScuR1RsxTE4WR
- lj0+Ne6VrAmPiW6QqRhliDO+e82riI75ywSWrJb9TQw0+UkIQ2DlNr0u0TwCUTcQNN6aKnru
- ouVt3qoRlcD5MuRhLH+ttAcmNITMg7GQ6RQajWrSKuKFrt6iuDbjgO2cnaTrLbNBBKPTG4oF
- D6kX8Zea0KvVBagBsaC1CDTDQQMxYBPDBSlqYCb/b2x7KHTvTAHUBSsBRL6MKz8wwruDodTM
- 4E4ToV9URl4aE/msBZ4GLTtEmUHBh4/AYwk6ACYByYKyx5r3PDG0iHnJ8bV0OeyQ9ujfgBBP
- B2t4oASNnIOeGEEcQ2rjzsFNBFNPCKMBEACm7Xqafb1Dp1nDl06aw/3O9ixWsGMv1Uhfd2B6
- it6wh1HDCn9HpekgouR2HLMvdd3Y//GG89irEasjzENZPsK82PS0bvkxxIHRFm0pikF4ljIb
- 6tca2sxFr/H7CCtWYZjZzPgnOPtnagN0qVVyEM7L5f7KjGb1/o5EDkVR2SVSSjrlmNdTL2Rd
- zaPqrBoxuR/y/n856deWqS1ZssOpqwKhxT1IVlF6S47CjFJ3+fiHNjkljLfxzDyQXwXCNoZn
- BKcW9PvAMf6W1DGASoXtsMg4HHzZ5fW+vnjzvWiC4pXrcP7Ivfxx5pB+nGiOfOY+/VSUlW/9
- GdzPlOIc1bGyKc6tGREH5lErmeoJZ5k7E9cMJx+xzuDItvnZbf6RuH5fg3QsljQy8jLlr4S6
- 8YwxlObySJ5K+suPRzZOG2+kq77RJVqAgZXp3Zdvdaov4a5J3H8pxzjj0yZ2JZlndM4X7Msr
- P5tfxy1WvV4Km6QeFAsjcF5gM+wWl+mf2qrlp3dRwniG1vkLsnQugQ4oNUrx0ahwOSm9p6kM
- CIiTITo+W7O9KEE9XCb4vV0ejmLlgdDV8ASVUekeTJkmRIBnz0fa4pa1vbtZoi6/LlIdAEEt
- PY6p3hgkLLtr2GRodOW/Y3vPRd9+rJHq/tLIfwc58ZhQKmRcgrhtlnuTGTmyUqGSiMNfpwAR
- AQABwsFfBBgBAgAJBQJTTwijAhsMAAoJEAL1yD+ydue64BgP/33QKczgAvSdj9XTC14wZCGE
- U8ygZwkkyNf021iNMj+o0dpLU48PIhHIMTXlM2aiiZlPWgKVlDRjlYuc9EZqGgbOOuR/pNYA
- JX9vaqszyE34JzXBL9DBKUuAui8z8GcxRcz49/xtzzP0kH3OQbBIqZWuMRxKEpRptRT0wzBL
- O31ygf4FRxs68jvPCuZjTGKELIo656/Hmk17cmjoBAJK7JHfqdGkDXk5tneeHCkB411p9WJU
- vMO2EqsHjobjuFm89hI0pSxlUoiTL0Nuk9Edemjw70W4anGNyaQtBq+qu1RdjUPBvoJec7y/
- EXJtoGxq9Y+tmm22xwApSiIOyMwUi9A1iLjQLmngLeUdsHyrEWTbEYHd2sAM2sqKoZRyBDSv
- ejRvZD6zwkY/9nRqXt02H1quVOP42xlkwOQU6gxm93o/bxd7S5tEA359Sli5gZRaucpNQkwd
- KLQdCvFdksD270r4jU/rwR2R/Ubi+txfy0dk2wGBjl1xpSf0Lbl/KMR5TQntELfLR4etizLq
- Xpd2byn96Ivi8C8u9zJruXTueHH8vt7gJ1oax3yKRGU5o2eipCRiKZ0s/T7fvkdq+8beg9ku
- fDO4SAgJMIl6H5awliCY2zQvLHysS/Wb8QuB09hmhLZ4AifdHyF1J5qeePEhgTA+BaUbiUZf
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <5fc1f463-7d48-e1e1-e316-3083becf8c34@arm.com>
-Date:   Tue, 1 Sep 2020 16:56:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727889AbgIAP5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731507AbgIAP5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:57:30 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F38C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:57:28 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id i26so2361405ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:57:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ja1Ngj7NH47x40mFJlmmy6/fspeTMYwfVXDFlvDZIns=;
+        b=R5Ah/xy7z0CYa/cOPWoKydl55+5AZx0X0xQJSi7oXsefEDGnUWoEmUvrBgHDB6qi9M
+         /0BqPFsX1uD16ZqQrlqlFY/brxotDPaHIoOx5hvvLGC7lSE/Rn1VXNwev5SZpYADEWZW
+         xGNROhES6O3tp7K9FtFb1rbn1WTcgV36Lmdx4vC4Z9L++ntjEsM9CkS30Xkv7gD8IL23
+         xj71aaX3htYZQSlf+C1O1oREaf7eGZp+A5SifAfa3S5foT+pHlv7zElngZUgc2r/DNbI
+         3ceu3otruVt5OiOnce89EX+sGUkJIuxUfOEGdYo8PjqYYHV/c0UHcQUPFJI8vhhJiyUW
+         Uyvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ja1Ngj7NH47x40mFJlmmy6/fspeTMYwfVXDFlvDZIns=;
+        b=PhXA+m9Yy3s282lhu/WpyNXMLv88oBE0fw0WiezpZAu1zA752w6MGeYeYv+kQBCu5C
+         SBjN/D2Cwpi2fdH2v3zZ6xsmJ+2lajHHg5U6lfLQ/Kg/gFEeeauohUBE6wfTtaOZ+bCa
+         GrU5pIP0VwFdnDoMQs/6gbtYM34pMjK7me0xxOIGbTraNDWiUl2Xgphc2Hln1x48GT2O
+         9cXXVxA/rG12JAqBPzH8YoVmMpdTiS7hjSNQYI7A7H9uA2PZTv+SRsczDWFrFnpL178x
+         jp8/m3mj0KBJWuxaIElc4IMRuFcTve61soqaLZdrehIQBDi2T70p+iYUFFF8wWVKlteH
+         9cEw==
+X-Gm-Message-State: AOAM533e+xXXZBhZRfi/bB1XNR0woJrC+nflWq/LUgsDBVfSllRMweJW
+        EZT9H6fpRDUyya5VWnErwDjcAVhgxrEfVhtg36I=
+X-Google-Smtp-Source: ABdhPJyuNoXmSK9kdaNb5NJmH/3HsU8fUsgYikM66A4Np4f+RaqiTJn5bkqn7polwbuP2ipcbL+X4LqpsmkGVqFyETs=
+X-Received: by 2002:a17:906:edd6:: with SMTP id sb22mr1911092ejb.499.1598975847689;
+ Tue, 01 Sep 2020 08:57:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bbba0345-f1e3-a240-eaca-d67fa5f8259b@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <alpine.LSU.2.11.2008301343270.5954@eggly.anvils> <alpine.LSU.2.11.2008301405000.5954@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2008301405000.5954@eggly.anvils>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 1 Sep 2020 08:57:15 -0700
+Message-ID: <CAHbLzkrJ-E1LVbjfTAmoZ37Hw68SWjnUovvcedFVHfsLecp2Mw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] mm: fix check_move_unevictable_pages() on THP
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Kuo-Hsin Yang <vovoy@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/08/2020 22:32, Florian Fainelli wrote:
+On Sun, Aug 30, 2020 at 2:08 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> check_move_unevictable_pages() is used in making unevictable shmem pages
+> evictable: by shmem_unlock_mapping(), drm_gem_check_release_pagevec() and
+> i915/gem check_release_pagevec().  Those may pass down subpages of a huge
+> page, when /sys/kernel/mm/transparent_hugepage/shmem_enabled is "force".
+>
+> That does not crash or warn at present, but the accounting of vmstats
+> unevictable_pgs_scanned and unevictable_pgs_rescued is inconsistent:
+> scanned being incremented on each subpage, rescued only on the head
+> (since tails already appear evictable once the head has been updated).
+>
+> 5.8 commit 5d91f31faf8e ("mm: swap: fix vmstats for huge page") has
+> established that vm_events in general (and unevictable_pgs_rescued in
+> particular) should count every subpage: so follow that precedent here.
+>
+> Do this in such a way that if mem_cgroup_page_lruvec() is made stricter
+> (to check page->mem_cgroup is always set), no problem: skip the tails
+> before calling it, and add thp_nr_pages() to vmstats on the head.
+>
+> Signed-off-by: Hugh Dickins <hughd@google.com>
 
-Hi,
+Acked-by: Yang Shi <shy828301@gmail.com>
 
-Florian, thanks for queueing the Broadcom specific patches!
-
-> On 8/28/20 2:28 PM, Rob Herring wrote:
->> On Fri, Aug 28, 2020 at 1:34 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>
->>> On 8/28/20 6:05 AM, Andre Przywara wrote:
->>>> This is an attempt to convert the SP805 watchdog DT binding to yaml.
->>>> This is done in the first patch, the remaining nine fix some DT users.
->>>>
->>>> I couldn't test any of those DT files on actual machines, but tried
->>>> to make the changes in a way that would be transparent to at least the
->>>> Linux driver. The only other SP805 DT user I could find is U-Boot, which
->>>> seems to only use a very minimal subset of the binding (just the first
->>>> clock).
->>>> I only tried to fix those DTs that were easily and reliably fixable.
->>>> AFAICT, a missing primecell compatible string, for instance, would
->>>> prevent the Linux driver from probing the device at all, so I didn't
->>>> dare to touch those DTs at all. Missing clocks are equally fatal.
->>>
->>> What is the plan for merging this series? Should Rob pick up all changes
->>> or since those are non critical changes, should we just leave it to the
->>> SoC maintainers to pick up the changes in their tree?
->>
->> I don't take .dts files. Either subarch maintainers can pick up
->> individual patches or send a PR to SoC maintainers.
-> 
-> OK, so we are fine, to say make sure this all lands in v5.10-rc1 at some
-> point and the warnings should no longer exist by then?
-
-So yes, I would be very grateful if subsystem maintainers take this at
-their discretion.
-For once, I didn't actually change anything in the binding, so most
-things were already slightly wrong according to the .txt binding, just
-nobody realised or cared. So those .dts files changes are actually
-independent and justified even without patch 01/10.
-
-Secondly, there are already so many warnings in many .dts files at the
-moment, that (in the worst case) a few more - for a brief period of time
-- do not really matter. But at the end it will improve the situation.
-
-Rob, if you are fine with the actual binding, I would try to pursue the
-remaining subsystem maintainers to get the .dts changes merged.
-
-Thanks,
-Andre.
+> ---
+> Nothing here worth going to stable, since it's just a testing config
+> that is fixed, whose event numbers are not very important; but this
+> will be needed before Alex Shi's warning, and might as well go in now.
+>
+> The callers of check_move_unevictable_pages() could be optimized,
+> to skip over tails: but Matthew Wilcox has other changes in flight
+> there, so let's skip the optimization for now.
+>
+>  mm/vmscan.c |   10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> --- 5.9-rc2/mm/vmscan.c 2020-08-16 17:32:50.721507348 -0700
+> +++ linux/mm/vmscan.c   2020-08-28 17:47:10.595580876 -0700
+> @@ -4260,8 +4260,14 @@ void check_move_unevictable_pages(struct
+>         for (i = 0; i < pvec->nr; i++) {
+>                 struct page *page = pvec->pages[i];
+>                 struct pglist_data *pagepgdat = page_pgdat(page);
+> +               int nr_pages;
+> +
+> +               if (PageTransTail(page))
+> +                       continue;
+> +
+> +               nr_pages = thp_nr_pages(page);
+> +               pgscanned += nr_pages;
+>
+> -               pgscanned++;
+>                 if (pagepgdat != pgdat) {
+>                         if (pgdat)
+>                                 spin_unlock_irq(&pgdat->lru_lock);
+> @@ -4280,7 +4286,7 @@ void check_move_unevictable_pages(struct
+>                         ClearPageUnevictable(page);
+>                         del_page_from_lru_list(page, lruvec, LRU_UNEVICTABLE);
+>                         add_page_to_lru_list(page, lruvec, lru);
+> -                       pgrescued++;
+> +                       pgrescued += nr_pages;
+>                 }
+>         }
+>
+>
