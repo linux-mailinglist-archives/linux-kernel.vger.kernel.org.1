@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A30259418
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87211259443
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgIAPfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:35:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39706 "EHLO mail.kernel.org"
+        id S1731340AbgIAPha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:37:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726733AbgIAPei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:34:38 -0400
+        id S1728742AbgIAPf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:35:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FBC720866;
-        Tue,  1 Sep 2020 15:34:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E394C21707;
+        Tue,  1 Sep 2020 15:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974477;
-        bh=nLJ+6B4bgisxIzyhAjXdfAcpFlxAgiJfxV7qDHHQ0pk=;
+        s=default; t=1598974558;
+        bh=4XZChSonufT3q06m5nVNuIAve7CPg3nWB8K8EqYwj6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqBK/F5AUmvdSx91n/a3IXMndycNLSIB8bWYk6GG/eK+t6YTsefDpYB16Rfe/dWMk
-         2xXGioIEA8PJJcEW4uuLRB2MkbMkL6HfqWhXZb6NdTC1WJHYj9KNluPtC+cns87Zzv
-         p8Kx6ivEMnBhf6i3hRMBiuuNPF8WqJsBoXSHhoSQ=
+        b=GzbijrLT+0sOS21ucty74D9krxrABdkGrOTsIpU31NGhzYcwl3+cGgYGbKb3wPzAs
+         diRuxqKBXHO3oAp1mRY4XxIqkAGd04vBtMLXK+/Pry6dwqvyPB0zxDEc5dli3s9gUJ
+         1hqNoM1gEy+2jPYIStWe876sP5qlJ31QeorHvdGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>
-Subject: [PATCH 5.4 190/214] usb: uas: Add quirk for PNY Pro Elite
-Date:   Tue,  1 Sep 2020 17:11:10 +0200
-Message-Id: <20200901151002.050829426@linuxfoundation.org>
+        stable@vger.kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH 5.4 191/214] USB: quirks: Add no-lpm quirk for another Raydium touchscreen
+Date:   Tue,  1 Sep 2020 17:11:11 +0200
+Message-Id: <20200901151002.098805180@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -42,39 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 9a469bc9f32dd33c7aac5744669d21a023a719cd upstream.
+commit 5967116e8358899ebaa22702d09b0af57fef23e1 upstream.
 
-PNY Pro Elite USB 3.1 Gen 2 device (SSD) doesn't respond to ATA_12
-pass-through command (i.e. it just hangs). If it doesn't support this
-command, it should respond properly to the host. Let's just add a quirk
-to be able to move forward with other operations.
+There's another Raydium touchscreen needs the no-lpm quirk:
+[    1.339149] usb 1-9: New USB device found, idVendor=2386, idProduct=350e, bcdDevice= 0.00
+[    1.339150] usb 1-9: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[    1.339151] usb 1-9: Product: Raydium Touch System
+[    1.339152] usb 1-9: Manufacturer: Raydium Corporation
+...
+[    6.450497] usb 1-9: can't set config #1, error -110
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Link: https://lore.kernel.org/r/2b0585228b003eedcc82db84697b31477df152e0.1597803605.git.thinhn@synopsys.com
+BugLink: https://bugs.launchpad.net/bugs/1889446
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200731051622.28643-1-kai.heng.feng@canonical.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/core/quirks.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -80,6 +80,13 @@ UNUSUAL_DEV(0x152d, 0x0578, 0x0000, 0x99
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_BROKEN_FUA),
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -465,6 +465,8 @@ static const struct usb_device_id usb_qu
  
-+/* Reported-by: Thinh Nguyen <thinhn@synopsys.com> */
-+UNUSUAL_DEV(0x154b, 0xf00d, 0x0000, 0x9999,
-+		"PNY",
-+		"Pro Elite SSD",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_NO_ATA_1X),
+ 	{ USB_DEVICE(0x2386, 0x3119), .driver_info = USB_QUIRK_NO_LPM },
+ 
++	{ USB_DEVICE(0x2386, 0x350e), .driver_info = USB_QUIRK_NO_LPM },
 +
- /* Reported-by: Hans de Goede <hdegoede@redhat.com> */
- UNUSUAL_DEV(0x2109, 0x0711, 0x0000, 0x9999,
- 		"VIA",
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
+ 
 
 
