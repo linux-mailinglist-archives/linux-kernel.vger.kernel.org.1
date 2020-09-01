@@ -2,146 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7D7259068
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC0925905F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIAO33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:29:29 -0400
-Received: from crapouillou.net ([89.234.176.41]:45394 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728289AbgIAO1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:27:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1598970419; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
+        id S1728371AbgIAO2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:28:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52185 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728417AbgIAO1F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:27:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598970422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yU+G5wm9UV0/Lr0JJrsdPUDzSeYzX6a4lcXqh4c6G+0=;
-        b=HhHU3Nc6W8OyBdfECWVhQHZrKsN6YU67y7ugf5zT0hdIOTsbRpIry/YTQJY4IHt7pyqlgm
-        u3XKVUQJRz67Ja9q01KpglQXo9i7er1TVwlHD/6zvqAvba2zwPnjfuKNohZBYBw9pEU9jp
-        G9nm5SGShMU9AI9MOC87A5L/Rrrvr1A=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Terrell <terrelln@fb.com>
-Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 2/2] MIPS: Add support for ZSTD-compressed kernels
-Date:   Tue,  1 Sep 2020 16:26:51 +0200
-Message-Id: <20200901142651.1165237-3-paul@crapouillou.net>
-In-Reply-To: <20200901142651.1165237-1-paul@crapouillou.net>
-References: <20200901142651.1165237-1-paul@crapouillou.net>
+        bh=U9xIgE3+KmrSNJy7uQ6sZ0yRjjbYaG5BWRMCjkhvH7c=;
+        b=goEQnO2vz/0Xdqfh/v5izGVGGuktPm5XBYse3FGIvasZjB4ZK1SMGyPbeLROf8FoYm9yxi
+        XMlZTTM7+bPjV62fTeWw5pdByFyDeCVrFSNx4h3h1dETOeRBt0VF+RlbJqA8ZEolyaUltd
+        zfHjNDl39GhGl7rH83nSKzVmDGZb9HM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-U6hKbO9uMRqm7ZDuh0AcuA-1; Tue, 01 Sep 2020 10:27:00 -0400
+X-MC-Unique: U6hKbO9uMRqm7ZDuh0AcuA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7AEDD10059A8;
+        Tue,  1 Sep 2020 14:26:57 +0000 (UTC)
+Received: from treble (ovpn-113-168.rdu2.redhat.com [10.10.113.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26EC860BE2;
+        Tue,  1 Sep 2020 14:26:52 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 09:26:51 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "'x86@kernel.org'" <x86@kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        'Linus Torvalds' <torvalds@linux-foundation.org>,
+        'Al Viro' <viro@zeniv.linux.org.uk>,
+        'Will Deacon' <will@kernel.org>,
+        'Dan Williams' <dan.j.williams@intel.com>,
+        'Andrea Arcangeli' <aarcange@redhat.com>,
+        'Waiman Long' <longman@redhat.com>,
+        'Peter Zijlstra' <peterz@infradead.org>,
+        'Thomas Gleixner' <tglx@linutronix.de>,
+        'Andrew Cooper' <andrew.cooper3@citrix.com>,
+        'Andy Lutomirski' <luto@kernel.org>,
+        'Christoph Hellwig' <hch@lst.de>
+Subject: Re: [PATCH] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20200901142651.eir5nx4gpy63shlm@treble>
+References: <f12e7d3cecf41b2c29734ea45a393be21d4a8058.1597848273.git.jpoimboe@redhat.com>
+ <20200828192911.ezqspexfb2gtvrr7@treble>
+ <f54657f1b5e74ec99cef62228db50dee@AcuMS.aculab.com>
+ <56488b800d044a7e81efd8b40198a527@AcuMS.aculab.com>
+ <20200831173112.fjfnnup5cfc5t226@treble>
+ <93873def6ede46f89fa33b3fc78876f6@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <93873def6ede46f89fa33b3fc78876f6@AcuMS.aculab.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for self-extracting kernels with a ZSTD compression.
+On Tue, Sep 01, 2020 at 08:32:20AM +0000, David Laight wrote:
+> > Yes, it would make sense to put the masking in access_ok() somehow.  But
+> > to do it properly, I think we'd first need to make access_ok() generic.
+> > Maybe that's do-able, but it would be a much bigger patch set.
+> > 
+> > First I'd prefer to just fix x86, like my patch does.  Then we could do
+> > an access_ok() rework.
+> 
+> If you do a modified access_ok() you get to (slowly) collect all
+> the important paths.
+> No point replicating the same test.
+> 
+> A lot of the access_ok() can be deleted - maybe remove some __
+> from the following functions.
+> Or change to the variants that enable user-space accesses.
 
-Tested on a kernel for the GCW-Zero, it allows to reduce the size of the
-kernel file from 4.1 MiB with gzip to 3.5 MiB with ZSTD, and boots just
-as fast.
+Well, yes, but that's a much bigger job which can be done later.
 
-Compressed kernels are now also compiled with -D__DISABLE_EXPORTS in
-order to disable the EXPORT_SYMBOL() macros inside of
-lib/zstd/decompress.c.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
-
-Notes:
-    v2: Add -D__DISABLE_EXPORTS to CFLAGS and use zstd22
-    
-    v3: Make memmove __weak, since it is provided for other compression
-        schemes
-
- arch/mips/Kconfig                      |  1 +
- arch/mips/boot/compressed/Makefile     |  3 ++-
- arch/mips/boot/compressed/decompress.c |  4 ++++
- arch/mips/boot/compressed/string.c     | 17 +++++++++++++++++
- 4 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index c95fa3a2484c..b9d7c4249dc9 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1890,6 +1890,7 @@ config SYS_SUPPORTS_ZBOOT
- 	select HAVE_KERNEL_LZMA
- 	select HAVE_KERNEL_LZO
- 	select HAVE_KERNEL_XZ
-+	select HAVE_KERNEL_ZSTD
- 
- config SYS_SUPPORTS_ZBOOT_UART16550
- 	bool
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 6e56caef69f0..9a9ba77b745e 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -22,7 +22,7 @@ KBUILD_CFLAGS := $(filter-out -pg, $(KBUILD_CFLAGS))
- 
- KBUILD_CFLAGS := $(filter-out -fstack-protector, $(KBUILD_CFLAGS))
- 
--KBUILD_CFLAGS := $(KBUILD_CFLAGS) -D__KERNEL__ \
-+KBUILD_CFLAGS := $(KBUILD_CFLAGS) -D__KERNEL__ -D__DISABLE_EXPORTS \
- 	-DBOOT_HEAP_SIZE=$(BOOT_HEAP_SIZE) -D"VMLINUX_LOAD_ADDRESS_ULL=$(VMLINUX_LOAD_ADDRESS)ull"
- 
- KBUILD_AFLAGS := $(KBUILD_AFLAGS) -D__ASSEMBLY__ \
-@@ -70,6 +70,7 @@ tool_$(CONFIG_KERNEL_LZ4)     = lz4
- tool_$(CONFIG_KERNEL_LZMA)    = lzma
- tool_$(CONFIG_KERNEL_LZO)     = lzo
- tool_$(CONFIG_KERNEL_XZ)      = xzkern
-+tool_$(CONFIG_KERNEL_ZSTD)    = zstd22
- 
- targets += vmlinux.bin.z
- $(obj)/vmlinux.bin.z: $(obj)/vmlinux.bin FORCE
-diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-index 88f5d637b1c4..c61c641674e6 100644
---- a/arch/mips/boot/compressed/decompress.c
-+++ b/arch/mips/boot/compressed/decompress.c
-@@ -72,6 +72,10 @@ void error(char *x)
- #include "../../../../lib/decompress_unxz.c"
- #endif
- 
-+#ifdef CONFIG_KERNEL_ZSTD
-+#include "../../../../lib/decompress_unzstd.c"
-+#endif
-+
- const unsigned long __stack_chk_guard = 0x000a0dff;
- 
- void __stack_chk_fail(void)
-diff --git a/arch/mips/boot/compressed/string.c b/arch/mips/boot/compressed/string.c
-index 43beecc3587c..0b593b709228 100644
---- a/arch/mips/boot/compressed/string.c
-+++ b/arch/mips/boot/compressed/string.c
-@@ -5,6 +5,7 @@
-  * Very small subset of simple string routines
-  */
- 
-+#include <linux/compiler_attributes.h>
- #include <linux/types.h>
- 
- void *memcpy(void *dest, const void *src, size_t n)
-@@ -27,3 +28,19 @@ void *memset(void *s, int c, size_t n)
- 		ss[i] = c;
- 	return s;
- }
-+
-+void * __weak memmove(void *dest, const void *src, size_t n)
-+{
-+	unsigned int i;
-+	const char *s = src;
-+	char *d = dest;
-+
-+	if ((uintptr_t)dest < (uintptr_t)src) {
-+		for (i = 0; i < n; i++)
-+			d[i] = s[i];
-+	} else {
-+		for (i = n; i > 0; i--)
-+			d[i - 1] = s[i - 1];
-+	}
-+	return dest;
-+}
 -- 
-2.28.0
+Josh
 
