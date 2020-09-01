@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692BD259781
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09A9259784
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731929AbgIAQPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
+        id S1731202AbgIAQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729482AbgIAQPQ (ORCPT
+        with ESMTP id S1731944AbgIAQPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:15:16 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A32C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 09:15:15 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id q1so845479pjd.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 09:15:15 -0700 (PDT)
+        Tue, 1 Sep 2020 12:15:39 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34931C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 09:15:39 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id u20so1079162pfn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 09:15:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jzUV1ToBnPSzuyXeMWjIThN/0jU4c6GM1tdII/RDC3M=;
-        b=Qa2EBwHkepYbnrf459ys3AYVZFFdsy1Y3PcpfKOk3PfdKt+pLJB8U9oVzNpEzsyn73
-         YFhI7tgxaZlR+EQY6LKBh0OcrLFzNkJmd3raQkpfsBIYdVMtEyMYZZx0GswKGIltGToS
-         G+uVYCKvKUVjKNH1ohJVwguCQ0DX0f8P/hji9zzx4ngf5JHGzDo75ejUk+h6ev8VX1qL
-         PH6vImgO4a4OjgHWREmh7SaejKv/eLj2HSzfVN/peM0nFBBvbaKTj2IJws9f51ZPKe8i
-         gP1yhhiCkfgGvlsiBbCElMYUZ0bmiI+R+nL6zhf4Xp9kn0huqiAqvzocpUd5egE7ijhv
-         nybQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=U1h0WFxrmlZti/5PdriJmCxO8e4BuJ9nFjihIY3qycs=;
+        b=DMJZzRBurdYUN4x8gReiESvjIjB6WMHksdeGaRDN41WunAsqZ5Yvt1bO5dntkRFy3t
+         8wwhIkp4rgfa2J7aKnYStujtMWjfHwnF6BkSHyc7XPqxl15S8Wx58seJIlrKeXoJmuGj
+         MQaukCMelikiVQ/1Wm711W7exb+6DNt43lv72RbxdW6K74pL+q9Y56zYnklCSiMeeL35
+         pRebHGva3Zi2MmJ3dxDLMqa5QnCLLLYiGadJKrLiaLGeasmp+w0PpyFwxsv0zQw8Or3z
+         1eho9mmEcHG7AK6OcGSov1ce9KH+R9Js6Mtep8s4aW9yT+PGaaaWQiXvT8tY8YznovIj
+         7SWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jzUV1ToBnPSzuyXeMWjIThN/0jU4c6GM1tdII/RDC3M=;
-        b=QLpZFr/rTDOuhycjlhH3ogh/Yw4DDAUwR4BN6Z8SN898v/+IZgb/IYyIteWGQ1buV4
-         ok13dzOt6HPLNXpErnGhh5kr3xfOekYDxe+p554xkxOwilFV7tIZwp594DgwwUtCAGY3
-         AESfQ4jcVpe519+r7MB6IqDFyJw1XmsSe+agUWr1jzXaj192nN4gJ/GKpaeaBa5AJ8vC
-         xcmLcAIhYbFAuK/yU+6OUxq6O+tNLYhzxB1LUnxdE6wytPh65Ua0WoGp2jO3g+EGV0eI
-         oL1kBLOOT0MMlSkB6ZR6SfoGydYdY+aZ/7Bu1wxVWHjKqB8ylbXEqzRN57uwCNC7BcJQ
-         ZqNw==
-X-Gm-Message-State: AOAM5308BOtp5B2iChdo9dDIAHDghKFrJQ+ILHVcz/Ehq3PEuRnvdzUn
-        B9extPi4ajQv2zmeOo8H/gaE5g==
-X-Google-Smtp-Source: ABdhPJz+CXSBMLxjORPZ02TS54ZJrZBVY0+DTj3EswB4Eolon8bJ/NdGrtm/qHdYBJE0ZZeswpFkyA==
-X-Received: by 2002:a17:902:b683:: with SMTP id c3mr2069892pls.248.1598976914697;
-        Tue, 01 Sep 2020 09:15:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=U1h0WFxrmlZti/5PdriJmCxO8e4BuJ9nFjihIY3qycs=;
+        b=S6wjgjAokvWbx4TlUtzCFI7yzkqey3uLWZNbN2ykwU/ac/5tN5PBADTzmIDFdmhnxB
+         wYoPmVkFwa5dk9hDju80+cDH1BqsrSiBZ9MSRF0++pu9i0ZRjYuAvEIL7/xPsdobF1y5
+         NopOjpxqztVC01PCDNEIv/r3apMjfG4E58Sm2L2noQblZxZd60/kKeLwtImaWGt6hvnE
+         ugMdPY0uFsTqms4KXNowpzFYCOVaCjLN1d24m103AvTom7q4z2wFgwFu+7wVPgA3McY8
+         2+GZLcgcGojuVNmUgbeoaviyQ0YsA/nwiTbz6wa/bCUw36HYbFLHruyqSTP/hGfhGvhv
+         E1uQ==
+X-Gm-Message-State: AOAM531D9TWmtMwjb2jrutl39B4mhewWvjqqftCvAAWTxYPpMYrIc5Nx
+        WHQzh/y0jIskvkNPZMT1TZov1Q==
+X-Google-Smtp-Source: ABdhPJzWV89RR/QWyu3dI160WKOjSKjBNJugNB1VuwvaljQHlhcb659AvPrOk3k8yapRkjnyxkRAeg==
+X-Received: by 2002:a63:1b42:: with SMTP id b2mr1968103pgm.397.1598976938667;
+        Tue, 01 Sep 2020 09:15:38 -0700 (PDT)
 Received: from nagraj.lan ([175.100.146.50])
-        by smtp.gmail.com with ESMTPSA id d77sm2553169pfd.121.2020.09.01.09.15.05
+        by smtp.gmail.com with ESMTPSA id d77sm2553169pfd.121.2020.09.01.09.15.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 09:15:13 -0700 (PDT)
+        Tue, 01 Sep 2020 09:15:37 -0700 (PDT)
 From:   Sumit Semwal <sumit.semwal@linaro.org>
 To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
@@ -82,10 +82,12 @@ Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-fsdevel@vger.kernel.org,
         John Stultz <john.stultz@linaro.org>,
         Sumit Semwal <sumit.semwal@linaro.org>
-Subject: [PATCH v7 0/3] Anonymous VMA naming patches
-Date:   Tue,  1 Sep 2020 21:44:56 +0530
-Message-Id: <20200901161459.11772-1-sumit.semwal@linaro.org>
+Subject: [PATCH v7 2/3] mm: memory: Add access_remote_vm_locked variant
+Date:   Tue,  1 Sep 2020 21:44:58 +0530
+Message-Id: <20200901161459.11772-3-sumit.semwal@linaro.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200901161459.11772-1-sumit.semwal@linaro.org>
+References: <20200901161459.11772-1-sumit.semwal@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -93,47 +95,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Version v4 of these patches was sent by Colin Cross a long time ago [1]
-and [2]. At the time, these patches were not merged, and it looks like they
-just fell off the radar since.
+This allows accessing a remote vm while the mmap_lock is already
+held by the caller.
 
-In our efforts to run Android on mainline kernels, we realised that since past
-some time, this patchset is needed for Android to boot, hence I am re-posting
-it to try and get these discussed and hopefully merged.
+While adding support for anonymous vma naming, show_map_vma()
+needs to access the remote vm to get the name of the anonymous vma.
+Since show_map_vma() already holds the mmap_lock, so this _locked
+variant was required.
 
-I have rebased these for v5.9-rc3 and fixed minor updates as required.
-
+Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
 ---
-v6: Rebased to v5.9-rc3 and addressed review comments:
-    - added missing callers in fs/userfaultd.c
-    - simplified the union
-    - use the new access_remote_vm_locked() in show_map_vma() since that
-       already holds mmap_lock
-v7: fixed randconfig build failure when CONFIG_ADVISE_SYSCALLS isn't defined
+ include/linux/mm.h |  2 ++
+ mm/memory.c        | 49 ++++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 45 insertions(+), 6 deletions(-)
 
-Colin Cross (2):
-  mm: rearrange madvise code to allow for reuse
-  mm: add a field to store names for private anonymous memory
-
-Sumit Semwal (1):
-  mm: memory: Add access_remote_vm_locked variant
-
- Documentation/filesystems/proc.rst |   2 +
- fs/proc/task_mmu.c                 |  24 +-
- fs/userfaultfd.c                   |   7 +-
- include/linux/mm.h                 |  14 +-
- include/linux/mm_types.h           |  25 +-
- include/uapi/linux/prctl.h         |   3 +
- kernel/sys.c                       |  32 +++
- mm/interval_tree.c                 |   2 +-
- mm/madvise.c                       | 356 +++++++++++++++++------------
- mm/memory.c                        |  49 +++-
- mm/mempolicy.c                     |   3 +-
- mm/mlock.c                         |   2 +-
- mm/mmap.c                          |  38 +--
- mm/mprotect.c                      |   2 +-
- 14 files changed, 381 insertions(+), 178 deletions(-)
-
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index ca6e6a81576b..e9212c0bb5ac 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1708,6 +1708,8 @@ extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
+ 		void *buf, int len, unsigned int gup_flags);
+ extern int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+ 		unsigned long addr, void *buf, int len, unsigned int gup_flags);
++extern int access_remote_vm_locked(struct mm_struct *mm, unsigned long addr,
++				   void *buf, int len, unsigned int gup_flags);
+ 
+ long get_user_pages_remote(struct mm_struct *mm,
+ 			    unsigned long start, unsigned long nr_pages,
+diff --git a/mm/memory.c b/mm/memory.c
+index 602f4283122f..207be99390e9 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4726,17 +4726,17 @@ EXPORT_SYMBOL_GPL(generic_access_phys);
+ /*
+  * Access another process' address space as given in mm.  If non-NULL, use the
+  * given task for page fault accounting.
++ * This variant assumes that the mmap_lock is already held by the caller, so
++ * doesn't take the mmap_lock.
+  */
+-int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+-		unsigned long addr, void *buf, int len, unsigned int gup_flags)
++int __access_remote_vm_locked(struct task_struct *tsk, struct mm_struct *mm,
++			      unsigned long addr, void *buf, int len,
++			      unsigned int gup_flags)
+ {
+ 	struct vm_area_struct *vma;
+ 	void *old_buf = buf;
+ 	int write = gup_flags & FOLL_WRITE;
+ 
+-	if (mmap_read_lock_killable(mm))
+-		return 0;
+-
+ 	/* ignore errors, just check how much was successfully transferred */
+ 	while (len) {
+ 		int bytes, ret, offset;
+@@ -4785,9 +4785,46 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+ 		buf += bytes;
+ 		addr += bytes;
+ 	}
++	return buf - old_buf;
++}
++
++/*
++ * Access another process' address space as given in mm.  If non-NULL, use the
++ * given task for page fault accounting.
++ */
++int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
++		       unsigned long addr, void *buf, int len, unsigned int gup_flags)
++{
++	int ret;
++
++	if (mmap_read_lock_killable(mm))
++		return 0;
++
++	ret = __access_remote_vm_locked(tsk, mm, addr, buf, len, gup_flags);
+ 	mmap_read_unlock(mm);
+ 
+-	return buf - old_buf;
++	return ret;
++}
++
++/**
++ * access_remote_vm_locked - access another process' address space, without
++ * taking the mmap_lock. This allows nested calls from callers that already have
++ * taken the lock.
++ *
++ * @mm:		the mm_struct of the target address space
++ * @addr:	start address to access
++ * @buf:	source or destination buffer
++ * @len:	number of bytes to transfer
++ * @gup_flags:	flags modifying lookup behaviour
++ *
++ * The caller must hold a reference on @mm, as well as hold the mmap_lock
++ *
++ * Return: number of bytes copied from source to destination.
++ */
++int access_remote_vm_locked(struct mm_struct *mm, unsigned long addr, void *buf,
++			    int len, unsigned int gup_flags)
++{
++	return __access_remote_vm_locked(NULL, mm, addr, buf, len, gup_flags);
+ }
+ 
+ /**
 -- 
 2.28.0
 
