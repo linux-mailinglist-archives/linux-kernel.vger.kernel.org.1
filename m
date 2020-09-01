@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75951259CBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079C3259BFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728934AbgIAPNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:13:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55872 "EHLO mail.kernel.org"
+        id S1729414AbgIAPRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:17:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728851AbgIAPNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:13:05 -0400
+        id S1729331AbgIAPQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:16:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 583A1206FA;
-        Tue,  1 Sep 2020 15:13:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3B5F206FA;
+        Tue,  1 Sep 2020 15:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973184;
-        bh=zby1bdyNKvlbw/2B9KxrATkPOOQOOknxZ7Nnr25BQoc=;
+        s=default; t=1598973397;
+        bh=NCCYA7XQpOw6FN4ph4PoCowNIPY7z9H4bCxnvQuB82E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWDvmPMwi+Pkp5ijDWb9VxsWAlffsgh2I4UVvcZnmteq/uhwiNqHNaaULE/roIlpJ
-         QsIKl1kd1vXGfPHKTXwiR8WKSVA8ukpvvIg0RmO4iQ1XaLuMnnWsB1ehg8Fz0AT5nQ
-         f0bdlfhHoDqNxoaz1EHw+ntZ5O2I9VS23DD1bQk8=
+        b=ARI420TXY5dS8Ot+4zV454AX2LqoooALeLV1noUOaAORj2JAWu0C2154WE4R5iHOt
+         MmZHlk7DsbjyXUtcEqXev9sKDZ8Yg55nEqIeXF8sFFawanBa+O1s7JM3Rgh1NpT0It
+         66+S6E3huH+tjl0lTWFgJbaEjLAxZa8CJqvIdEEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Ben Skeggs <bskeggs@redhat.com>,
+        stable@vger.kernel.org, Girish Basrur <gbasrur@marvell.com>,
+        Santosh Vernekar <svernekar@marvell.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Shyam Sundar <ssundar@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 23/62] drm/nouveau: Fix reference count leak in nouveau_connector_detect
-Date:   Tue,  1 Sep 2020 17:10:06 +0200
-Message-Id: <20200901150921.904221454@linuxfoundation.org>
+Subject: [PATCH 4.9 31/78] scsi: fcoe: Memory leak fix in fcoe_sysfs_fcf_del()
+Date:   Tue,  1 Sep 2020 17:10:07 +0200
+Message-Id: <20200901150926.300055437@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
-References: <20200901150920.697676718@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +48,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit 990a1162986e8eff7ca18cc5a0e03b4304392ae2 ]
+[ Upstream commit e95b4789ff4380733006836d28e554dc296b2298 ]
 
-nouveau_connector_detect() calls pm_runtime_get_sync and in turn
-increments the reference count. In case of failure, decrement the
-ref count before returning the error.
+In fcoe_sysfs_fcf_del(), we first deleted the fcf from the list and then
+freed it if ctlr_dev was not NULL. This was causing a memory leak.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Free the fcf even if ctlr_dev is NULL.
+
+Link: https://lore.kernel.org/r/20200729081824.30996-3-jhasan@marvell.com
+Reviewed-by: Girish Basrur <gbasrur@marvell.com>
+Reviewed-by: Santosh Vernekar <svernekar@marvell.com>
+Reviewed-by: Saurav Kashyap <skashyap@marvell.com>
+Reviewed-by: Shyam Sundar <ssundar@marvell.com>
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_connector.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/fcoe/fcoe_ctlr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
-index 1855b475cc0b2..42be04813b682 100644
---- a/drivers/gpu/drm/nouveau/nouveau_connector.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
-@@ -263,8 +263,10 @@ nouveau_connector_detect(struct drm_connector *connector, bool force)
- 		pm_runtime_get_noresume(dev->dev);
- 	} else {
- 		ret = pm_runtime_get_sync(dev->dev);
--		if (ret < 0 && ret != -EACCES)
-+		if (ret < 0 && ret != -EACCES) {
-+			pm_runtime_put_autosuspend(dev->dev);
- 			return conn_status;
-+		}
+diff --git a/drivers/scsi/fcoe/fcoe_ctlr.c b/drivers/scsi/fcoe/fcoe_ctlr.c
+index 3c2f34db937b6..f5f3a8113bc55 100644
+--- a/drivers/scsi/fcoe/fcoe_ctlr.c
++++ b/drivers/scsi/fcoe/fcoe_ctlr.c
+@@ -267,9 +267,9 @@ static void fcoe_sysfs_fcf_del(struct fcoe_fcf *new)
+ 		WARN_ON(!fcf_dev);
+ 		new->fcf_dev = NULL;
+ 		fcoe_fcf_device_delete(fcf_dev);
+-		kfree(new);
+ 		mutex_unlock(&cdev->lock);
  	}
++	kfree(new);
+ }
  
- 	nv_encoder = nouveau_connector_ddc_detect(connector);
+ /**
 -- 
 2.25.1
 
