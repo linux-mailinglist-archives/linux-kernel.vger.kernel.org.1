@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E9225A150
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5655C25A159
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgIAWRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 18:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60694 "EHLO
+        id S1726686AbgIAWUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 18:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIAWR0 (ORCPT
+        with ESMTP id S1726463AbgIAWUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 18:17:26 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D65CC061246;
-        Tue,  1 Sep 2020 15:17:24 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id h2so1270791plr.0;
-        Tue, 01 Sep 2020 15:17:24 -0700 (PDT)
+        Tue, 1 Sep 2020 18:20:02 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AADC061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:20:01 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id u25so2579728otq.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:20:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=8oVSt+XXgts9V9hBX8ORH+AS6m2J43vGA4wo7bjMGSw=;
-        b=qlO5fZKXWIaweztfSZt5lscCfMeb95G8MhWsQ/lSaJ+FDb1SNokcNpp+7z3DLE4rF3
-         2dysm9rS4OSd3k64RrCb2iDLfTihhQIBsWHIM4pO3zun/ZZiHw5M0ZYz7xotRRp0Vl6H
-         gVuKb6zzb+/D4Aziqs+kgokfp0Tdgx+wAi7EGpiAZ/wFNGynAtvTJuP+UbdooYJgbhjP
-         o7AepCWbCypJyziUVIcTQr08TEiIxGgWthqCZQfDFV+gKNvojJajEcK9KwneuTuD6th6
-         msoaUb3F3Quj/oIp2iNYcujpjaBrVxAyuvNikmWWuoEg7qjTdOjx5lIdZ2jVaiaUQPfR
-         XRDQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WNfZAUxXAABQdDQchDkXXMD/igGrhM8AWkqaIapbhzY=;
+        b=DjpZ8Pz43XQPA4tMFhKjxeMvsZnmgo5TZYK6EQtknRt18NBR+Z1CPP8FvDanN1eqrI
+         5RfLYveqvbJ0UoMN3poP3t7ptYdA0ifx2+onPY4KHHIpho2WohvUCN5+WBn/l40YwGce
+         E7tiPyJ3v9nH2j5rdWXzC0IkhPmDsYx4ne9q4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=8oVSt+XXgts9V9hBX8ORH+AS6m2J43vGA4wo7bjMGSw=;
-        b=ALIO8OW2BRqHXGaYnyIl/Br/NpqTSmuVlnURkFmOfol4rrjvPy28qBySBvtCU0Xw4a
-         nOp5ziw1gVD11xhNMXKyuoOONB3ah0FmHOQsc1o22xchaM1466JGjb+nvHuKUE7H5FIN
-         GAmoJFJ64QoXygxNEeYAKf+i3iqwnGz8Qk1oq0p91tBicYNKOkIN0299/JcNMUUcaAPw
-         Y8ZJ8Ka6Gz5CqJiWBeqW/TChjoOLE4Ke3CsvU18jwutVYAL2nkEzx+vPXEVIHMk4U/Qd
-         4bBlNGHSSut061V9KmU4mtKvvsi29x2A5dyxTpRXCmRYTNyCFwZmktWdjekqfNc8Ox+r
-         5qyw==
-X-Gm-Message-State: AOAM530wSMOLbikDFwlzmeAvrJKnn23hzuTcFSeCnOj03FMhTRU3JHSB
-        SZsVqRujl3KuXy48mV21kMs=
-X-Google-Smtp-Source: ABdhPJzdJq9eyRVuKNEYyNWukVThnPxVvwkVZFW01G6oPEDkIuTUBku5fZJKBabSN7o4EGbI7+mmXA==
-X-Received: by 2002:a17:902:6ac2:: with SMTP id i2mr3270568plt.71.1598998644148;
-        Tue, 01 Sep 2020 15:17:24 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id w203sm3201356pfc.97.2020.09.01.15.17.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 15:17:23 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     hch@lst.de
-Cc:     sfr@canb.auug.org.au, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, rth@twiddle.net,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        linux-alpha@vger.kernel.org, tony.luck@intel.com,
-        fenghua.yu@intel.com, linux-ia64@vger.kernel.org,
-        schnelle@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org, davem@davemloft.net,
-        sparclinux@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH 2/2] dma-mapping: set default segment_boundary_mask to ULONG_MAX
-Date:   Tue,  1 Sep 2020 15:16:46 -0700
-Message-Id: <20200901221646.26491-3-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901221646.26491-1-nicoleotsuka@gmail.com>
-References: <20200901221646.26491-1-nicoleotsuka@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WNfZAUxXAABQdDQchDkXXMD/igGrhM8AWkqaIapbhzY=;
+        b=NkiuaZWAi+GhlOJhpgHAibRiHmCl4x7hcZAHbH2umEAelshDeHQYLn5V01jU33P3I8
+         KT20Z/QaH5M0ycYqY7i/vEqQGyUOAAgIWEyFEDUtyf22RZXA/p/FaNRUa3yLJykoBAoT
+         AiLcFwkroVE7qos38gTwVFsbnQLoBQcA7uPE7SjsIXxpiAakRT3g9BdotlRo1/m+uOJY
+         lessWuliG2YL35sBlHqUeDySRoCcwWYUivVZu/MHCddR/xBMNgdWp8lE1wOrpNHC2bCG
+         kRboagt4E1TuKYsBwHe+IaP+Ahfa0ReL6KQKjDToly5ifz/t6KInQ2Il9VDbQKC+DEa4
+         Kmwg==
+X-Gm-Message-State: AOAM532QrsA2Xp4tIwX5KVIJ8FqjJ0Jxp/L228GOAt78S8OFgOny7uyL
+        QITW8Jp/igwi6PFrC/1hYxqxqw==
+X-Google-Smtp-Source: ABdhPJzVdMILrV31cHU4FnnfEnKxSF+tr4R1UsCYj9MSPtvicCYZx37ciIkB9EknaLKLbehoAOgvqw==
+X-Received: by 2002:a05:6830:3097:: with SMTP id f23mr2752664ots.305.1598998800742;
+        Tue, 01 Sep 2020 15:20:00 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 3sm419299otu.46.2020.09.01.15.19.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 15:20:00 -0700 (PDT)
+Subject: Re: [PATCH 5.8 000/255] 5.8.6-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <5774a892-bf17-c759-0616-aaec4b740b9d@linuxfoundation.org>
+Date:   Tue, 1 Sep 2020 16:19:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The default segment_boundary_mask was set to DMA_BIT_MAKS(32)
-a decade ago by referencing SCSI/block subsystem, as a 32-bit
-mask was good enough for most of the devices.
+On 9/1/20 9:07 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.6 release.
+> There are 255 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 03 Sep 2020 15:09:01 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.6-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Now more and more drivers set dma_masks above DMA_BIT_MAKS(32)
-while only a handful of them call dma_set_seg_boundary(). This
-means that most drivers have a 4GB segmention boundary because
-DMA API returns a 32-bit default value, though they might not
-really have such a limit.
+Compiled and booted on my test system. No dmesg regressions.
 
-The default segment_boundary_mask should mean "no limit" since
-the device doesn't explicitly set the mask. But a 32-bit mask
-certainly limits those devices capable of 32+ bits addressing.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-So this patch sets default segment_boundary_mask to ULONG_MAX.
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- include/linux/dma-mapping.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
-index faab0a8210b9..df0bff2ea750 100644
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -629,7 +629,7 @@ static inline unsigned long dma_get_seg_boundary(struct device *dev)
- {
- 	if (dev->dma_parms && dev->dma_parms->segment_boundary_mask)
- 		return dev->dma_parms->segment_boundary_mask;
--	return DMA_BIT_MASK(32);
-+	return ULONG_MAX;
- }
- 
- /**
--- 
-2.17.1
+thanks,
+-- Shuah
 
