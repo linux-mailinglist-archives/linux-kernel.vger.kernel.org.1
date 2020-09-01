@@ -2,124 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AE9258D3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093CC258D63
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgIALJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51444 "EHLO mail.kernel.org"
+        id S1726406AbgIALZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:25:27 -0400
+Received: from verein.lst.de ([213.95.11.211]:53056 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726107AbgIALC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:02:56 -0400
-Received: from localhost (unknown [122.172.190.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39CA6206EF;
-        Tue,  1 Sep 2020 11:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598958174;
-        bh=QCYSdtAYLN+f++6XyOMvY/CKpRVLzqQUReDYKl7Tmk0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QFCek2P99Re/uJ+lbJOk+hM/WTo83VuQDJl5MTmEiSpeXuOMZHVVAFJLw4Qt1XJiJ
-         8+Wb77oxTGWzZ7wN5uNn3ob2xbEdF+8vDxWmwEqr5N1tWHkdaDYZkepuJf2b8OICc3
-         Yu8TDwfe2ld3easguiL64mePN/51/9jhV1b5ueno=
-Date:   Tue, 1 Sep 2020 16:32:44 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     trix@redhat.com
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        shreyas.nc@intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] soundwire: fix error handling
-Message-ID: <20200901110244.GZ2639@vkoul-mobl>
-References: <20200829153515.3840-1-trix@redhat.com>
+        id S1726107AbgIALYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:24:07 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 508E268B05; Tue,  1 Sep 2020 13:06:18 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 13:06:17 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>, alsa-devel@alsa-project.org,
+        linux-ia64@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org, linux-nvme@lists.infradead.org,
+        linux-mips@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-mm@kvack.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-scsi@vger.kernel.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
+Subject: Re: [PATCH 05/28] media/v4l2: remove
+ V4L2-FLAG-MEMORY-NON-CONSISTENT
+Message-ID: <20200901110617.GA13232@lst.de>
+References: <20200819065555.1802761-1-hch@lst.de> <20200819065555.1802761-6-hch@lst.de> <CAAFQd5COLxjydDYrfx47ht8tj-aNPiaVnC+WyQA7nvpW4gs=ww@mail.gmail.com> <20200819135454.GA17098@lst.de> <CAAFQd5BuXP7t3d-Rwft85j=KTyXq7y4s24mQxLr=VoY9krEGZw@mail.gmail.com> <20200820044347.GA4533@lst.de> <20200820052004.GA5305@lst.de> <CAAFQd5CFiA2WBaaPQ9ezvMjYZfNw37c42UEy9Pk7kJyCi1mLzQ@mail.gmail.com> <20200820165407.GD12693@lst.de> <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200829153515.3840-1-trix@redhat.com>
+In-Reply-To: <CAAFQd5D=NzgjosB51-O_cH27a8V6CPgCfaPSfHHz7nKJPbazgg@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Tom,
+On Thu, Aug 20, 2020 at 07:33:48PM +0200, Tomasz Figa wrote:
+> > It wasn't meant to be too insulting, but I found this out when trying
+> > to figure out how to just disable it.  But it also ends up using
+> > the actual dma attr flags for it's own consistency checks, so just
+> > not setting the flag did not turn out to work that easily.
+> >
+> 
+> Yes, sadly the videobuf2 ended up becoming quite counterintuitive
+> after growing for the long years and that is reflected in the design
+> of this feature as well. I think we need to do something about it.
 
-On 29-08-20, 08:35, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> clang static analysis flags this problem
-> 
-> stream.c:844:9: warning: Use of memory after
->   it is freed
->         kfree(bus->defer_msg.msg->buf);
->               ^~~~~~~~~~~~~~~~~~~~~~~
-> 
-> This happens in an error handler cleaning up memory
-> allocated for elements in a list.
-> 
-> 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-> 		bus = m_rt->bus;
-> 
-> 		kfree(bus->defer_msg.msg->buf);
-> 		kfree(bus->defer_msg.msg);
-> 	}
-> 
-> And is triggered when the call to sdw_bank_switch() fails.
-> There are a two problems.
-> 
-> First, when sdw_bank_switch() fails, though it frees memory it
-> does not clear bus's reference 'defer_msg.msg' to that memory.
-> 
-> The second problem is the freeing msg->buf. In some cases
-> msg will be NULL so this will dereference a null pointer.
-> Need to check before freeing.
+So I'm about to respin the series and wonder how we should proceed.
+I've failed to come up with a clean patch to keep the flag and make
+it a no-op.  Can you or your team give it a spin?
 
-The change looks good to me, but the title of patch should be revised.
-
-The patch subject should describe the patch, in this case is setting
-pointer to null on cleanup, so an appropriate subject may be"
-"[PATCH]: soundwire: set defer_msg to null".
-
-Please revise subject line and update including the ack/reviews
-received
-
-Thanks
-> 
-> Fixes: 99b8a5d608a6 ("soundwire: Add bank switch routine")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/soundwire/stream.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 37290a799023..6e36deb505b1 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -717,6 +717,7 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
->  	kfree(wbuf);
->  error_1:
->  	kfree(wr_msg);
-> +	bus->defer_msg.msg = NULL;
->  	return ret;
->  }
->  
-> @@ -840,9 +841,10 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
->  error:
->  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
->  		bus = m_rt->bus;
-> -
-> -		kfree(bus->defer_msg.msg->buf);
-> -		kfree(bus->defer_msg.msg);
-> +		if (bus->defer_msg.msg) {
-> +			kfree(bus->defer_msg.msg->buf);
-> +			kfree(bus->defer_msg.msg);
-> +		}
->  	}
->  
->  msg_unlock:
-> -- 
-> 2.18.1
-
--- 
-~Vinod
+Also I wonder if the flag should be renamed from NON_CONSISTENT
+to NON_COHERENT - the consistent thing is a weird wart from the times
+the old PCI DMA API that is mostly gone now.
