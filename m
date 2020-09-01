@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E684525928A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BE2259328
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbgIAPNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:13:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55826 "EHLO mail.kernel.org"
+        id S1729724AbgIAPWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:22:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728812AbgIAPND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:13:03 -0400
+        id S1729506AbgIAPTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:19:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0774D20FC3;
-        Tue,  1 Sep 2020 15:13:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2E8A214F1;
+        Tue,  1 Sep 2020 15:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973182;
-        bh=mg5iWGS1BY1vJNmmAxsLZKacHGgFFjwrUb8e8RjDbV8=;
+        s=default; t=1598973567;
+        bh=kln/52Ec7fs2A7jHa5N0CHcMCW4dKWnZEG/iLv3hCmU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cyGQI1dn3WJ0zom3eYKGqKjdYn6uDsRLckrLj3pGA4iz3RfRW00TdHjH6NhvOdtGd
-         +/FdflVZ7L9zTaWnCNlEG9r3AO32vHBAGX+HgLN65NKOkXn7z1jud4dAU3kGHEtWCD
-         Ec/mRr6ig8ctT/3o3OPCNWn1hjthx3FoId3bPOjM=
+        b=Cc3BL0v7NvAHviBYgmHAuZG6CuxX3kuxoc5TlZ6mbwBEd3KTNBVf9OHMZ6pUmpIhC
+         1+bmweKiw+QIy/3Q732ZHpyb4k7inxJKmDIaJzzLElwJOFsCFHeF+yaK8+hZuZuPXn
+         TRvwkHTRjaHwkvUe5d+QeDujWteZCfRzXQ7PkXMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
-        syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 40/62] fbcon: prevent user font height or width change from causing potential out-of-bounds access
-Date:   Tue,  1 Sep 2020 17:10:23 +0200
-Message-Id: <20200901150922.753818663@linuxfoundation.org>
+        stable@vger.kernel.org, Xianting Tian <xianting_tian@126.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 50/91] fs: prevent BUG_ON in submit_bh_wbc()
+Date:   Tue,  1 Sep 2020 17:10:24 +0200
+Message-Id: <20200901150930.624934208@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
-References: <20200901150920.697676718@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +43,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Kennedy <george.kennedy@oracle.com>
+From: Xianting Tian <xianting_tian@126.com>
 
-commit 39b3cffb8cf3111738ea993e2757ab382253d86a upstream.
+[ Upstream commit 377254b2cd2252c7c3151b113cbdf93a7736c2e9 ]
 
-Add a check to fbcon_resize() to ensure that a possible change to user font
-height or user font width will not allow a font data out-of-bounds access.
-NOTE: must use original charcount in calculation as font charcount can
-change and cannot be used to determine the font data allocated size.
+If a device is hot-removed --- for example, when a physical device is
+unplugged from pcie slot or a nbd device's network is shutdown ---
+this can result in a BUG_ON() crash in submit_bh_wbc().  This is
+because the when the block device dies, the buffer heads will have
+their Buffer_Mapped flag get cleared, leading to the crash in
+submit_bh_wbc.
 
-Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Reported-by: syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/1596213192-6635-1-git-send-email-george.kennedy@oracle.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+We had attempted to work around this problem in commit a17712c8
+("ext4: check superblock mapped prior to committing").  Unfortunately,
+it's still possible to hit the BUG_ON(!buffer_mapped(bh)) if the
+device dies between when the work-around check in ext4_commit_super()
+and when submit_bh_wbh() is finally called:
 
+Code path:
+ext4_commit_super
+    judge if 'buffer_mapped(sbh)' is false, return <== commit a17712c8
+          lock_buffer(sbh)
+          ...
+          unlock_buffer(sbh)
+               __sync_dirty_buffer(sbh,...
+                    lock_buffer(sbh)
+                        judge if 'buffer_mapped(sbh))' is false, return <== added by this patch
+                            submit_bh(...,sbh)
+                                submit_bh_wbc(...,sbh,...)
+
+[100722.966497] kernel BUG at fs/buffer.c:3095! <== BUG_ON(!buffer_mapped(bh))' in submit_bh_wbc()
+[100722.966503] invalid opcode: 0000 [#1] SMP
+[100722.966566] task: ffff8817e15a9e40 task.stack: ffffc90024744000
+[100722.966574] RIP: 0010:submit_bh_wbc+0x180/0x190
+[100722.966575] RSP: 0018:ffffc90024747a90 EFLAGS: 00010246
+[100722.966576] RAX: 0000000000620005 RBX: ffff8818a80603a8 RCX: 0000000000000000
+[100722.966576] RDX: ffff8818a80603a8 RSI: 0000000000020800 RDI: 0000000000000001
+[100722.966577] RBP: ffffc90024747ac0 R08: 0000000000000000 R09: ffff88207f94170d
+[100722.966578] R10: 00000000000437c8 R11: 0000000000000001 R12: 0000000000020800
+[100722.966578] R13: 0000000000000001 R14: 000000000bf9a438 R15: ffff88195f333000
+[100722.966580] FS:  00007fa2eee27700(0000) GS:ffff88203d840000(0000) knlGS:0000000000000000
+[100722.966580] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[100722.966581] CR2: 0000000000f0b008 CR3: 000000201a622003 CR4: 00000000007606e0
+[100722.966582] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[100722.966583] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[100722.966583] PKRU: 55555554
+[100722.966583] Call Trace:
+[100722.966588]  __sync_dirty_buffer+0x6e/0xd0
+[100722.966614]  ext4_commit_super+0x1d8/0x290 [ext4]
+[100722.966626]  __ext4_std_error+0x78/0x100 [ext4]
+[100722.966635]  ? __ext4_journal_get_write_access+0xca/0x120 [ext4]
+[100722.966646]  ext4_reserve_inode_write+0x58/0xb0 [ext4]
+[100722.966655]  ? ext4_dirty_inode+0x48/0x70 [ext4]
+[100722.966663]  ext4_mark_inode_dirty+0x53/0x1e0 [ext4]
+[100722.966671]  ? __ext4_journal_start_sb+0x6d/0xf0 [ext4]
+[100722.966679]  ext4_dirty_inode+0x48/0x70 [ext4]
+[100722.966682]  __mark_inode_dirty+0x17f/0x350
+[100722.966686]  generic_update_time+0x87/0xd0
+[100722.966687]  touch_atime+0xa9/0xd0
+[100722.966690]  generic_file_read_iter+0xa09/0xcd0
+[100722.966694]  ? page_cache_tree_insert+0xb0/0xb0
+[100722.966704]  ext4_file_read_iter+0x4a/0x100 [ext4]
+[100722.966707]  ? __inode_security_revalidate+0x4f/0x60
+[100722.966709]  __vfs_read+0xec/0x160
+[100722.966711]  vfs_read+0x8c/0x130
+[100722.966712]  SyS_pread64+0x87/0xb0
+[100722.966716]  do_syscall_64+0x67/0x1b0
+[100722.966719]  entry_SYSCALL64_slow_path+0x25/0x25
+
+To address this, add the check of 'buffer_mapped(bh)' to
+__sync_dirty_buffer().  This also has the benefit of fixing this for
+other file systems.
+
+With this addition, we can drop the workaround in ext4_commit_supper().
+
+[ Commit description rewritten by tytso. ]
+
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+Link: https://lore.kernel.org/r/1596211825-8750-1-git-send-email-xianting_tian@126.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/console/fbcon.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ fs/buffer.c     | 9 +++++++++
+ fs/ext4/super.c | 7 -------
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
---- a/drivers/video/console/fbcon.c
-+++ b/drivers/video/console/fbcon.c
-@@ -2117,6 +2117,9 @@ static void updatescrollmode(struct disp
- 	}
- }
- 
-+#define PITCH(w) (((w) + 7) >> 3)
-+#define CALC_FONTSZ(h, p, c) ((h) * (p) * (c)) /* size = height * pitch * charcount */
-+
- static int fbcon_resize(struct vc_data *vc, unsigned int width, 
- 			unsigned int height, unsigned int user)
- {
-@@ -2126,6 +2129,24 @@ static int fbcon_resize(struct vc_data *
- 	struct fb_var_screeninfo var = info->var;
- 	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
- 
-+	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
-+		int size;
-+		int pitch = PITCH(vc->vc_font.width);
-+
+diff --git a/fs/buffer.c b/fs/buffer.c
+index cae7f24a0410e..9fbeddb6834a4 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -3250,6 +3250,15 @@ int __sync_dirty_buffer(struct buffer_head *bh, int op_flags)
+ 	WARN_ON(atomic_read(&bh->b_count) < 1);
+ 	lock_buffer(bh);
+ 	if (test_clear_buffer_dirty(bh)) {
 +		/*
-+		 * If user font, ensure that a possible change to user font
-+		 * height or width will not allow a font data out-of-bounds access.
-+		 * NOTE: must use original charcount in calculation as font
-+		 * charcount can change and cannot be used to determine the
-+		 * font data allocated size.
++		 * The bh should be mapped, but it might not be if the
++		 * device was hot-removed. Not much we can do but fail the I/O.
 +		 */
-+		if (pitch <= 0)
-+			return -EINVAL;
-+		size = CALC_FONTSZ(vc->vc_font.height, pitch, FNTCHARCNT(vc->vc_font.data));
-+		if (size > FNTSIZE(vc->vc_font.data))
-+			return -EINVAL;
-+	}
++		if (!buffer_mapped(bh)) {
++			unlock_buffer(bh);
++			return -EIO;
++		}
 +
- 	virt_w = FBCON_SWAP(ops->rotate, width, height);
- 	virt_h = FBCON_SWAP(ops->rotate, height, width);
- 	virt_fw = FBCON_SWAP(ops->rotate, vc->vc_font.width,
-@@ -2587,7 +2608,7 @@ static int fbcon_set_font(struct vc_data
- 	int size;
- 	int i, csum;
- 	u8 *new_data, *data = font->data;
--	int pitch = (font->width+7) >> 3;
-+	int pitch = PITCH(font->width);
+ 		get_bh(bh);
+ 		bh->b_end_io = end_buffer_write_sync;
+ 		ret = submit_bh(REQ_OP_WRITE, op_flags, bh);
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index da0cb9a7d6fdc..634c822d1dc98 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -4861,13 +4861,6 @@ static int ext4_commit_super(struct super_block *sb, int sync)
+ 	if (!sbh || block_device_ejected(sb))
+ 		return error;
  
- 	/* Is there a reason why fbconsole couldn't handle any charcount >256?
- 	 * If not this check should be changed to charcount < 256 */
-@@ -2603,7 +2624,7 @@ static int fbcon_set_font(struct vc_data
- 	if (fbcon_invalid_charcount(info, charcount))
- 		return -EINVAL;
- 
--	size = h * pitch * charcount;
-+	size = CALC_FONTSZ(h, pitch, charcount);
- 
- 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
- 
+-	/*
+-	 * The superblock bh should be mapped, but it might not be if the
+-	 * device was hot-removed. Not much we can do but fail the I/O.
+-	 */
+-	if (!buffer_mapped(sbh))
+-		return error;
+-
+ 	/*
+ 	 * If the file system is mounted read-only, don't update the
+ 	 * superblock write time.  This avoids updating the superblock
+-- 
+2.25.1
+
 
 
