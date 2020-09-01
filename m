@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FD12595BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E45259428
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731894AbgIAPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:55:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34238 "EHLO mail.kernel.org"
+        id S1729511AbgIAPgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731889AbgIAPpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:45:39 -0400
+        id S1730173AbgIAPfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:35:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CA38206EB;
-        Tue,  1 Sep 2020 15:45:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6A02205F4;
+        Tue,  1 Sep 2020 15:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975138;
-        bh=oohKm4wA5PeEduUAWRlKUhWqsHa0F45uQylFxb/AJN8=;
+        s=default; t=1598974503;
+        bh=JnmZe8XzSOgqg59KJrWgMOELIz/Vdsy5PjnUdu0lnDc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtTISVl5Oht43lCjANU/S+7YES5etmBVk80OFfthHqvCuGk6q9yqNKXrJjhI5QMN9
-         urXkZMNPkV7Rhf+WitAaWuuitncLTB6YITrKip8YRJmR575wGOntLJBy6xzvCvoApk
-         LfRN7cxWtIZzlxCVKvp4ewajAy7sXKguTPbjWMMk=
+        b=g3FAj6EAZRTv53UiZcc6Pp2NaxzvKq7aZ4DTiKHQbIsL8iZHrSmWdLy6HF3aPxhT0
+         VsYnLWqdaVu6rmrqzDBjgsXQ5rPmZonZ0kP6PBa6S3lmMxhYyAkn2AU12PjGCz+TgR
+         uU4X+2wc3H3lrg0/l/HbE7DW1dNc9bfsqS//nOfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Jean-Christophe Barnoud <jcbarnoud@gmail.com>
-Subject: [PATCH 5.8 225/255] USB: quirks: Ignore duplicate endpoint on Sound Devices MixPre-D
-Date:   Tue,  1 Sep 2020 17:11:21 +0200
-Message-Id: <20200901151011.538574094@linuxfoundation.org>
+        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 202/214] usb: dwc3: gadget: Fix handling ZLP
+Date:   Tue,  1 Sep 2020 17:11:22 +0200
+Message-Id: <20200901151002.610777550@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit 068834a2773b6a12805105cfadbb3d4229fc6e0a upstream.
+[ Upstream commit d2ee3ff79e6a3d4105e684021017d100524dc560 ]
 
-The Sound Devices MixPre-D audio card suffers from the same defect
-as the Sound Devices USBPre2: an endpoint shared between a normal
-audio interface and a vendor-specific interface, in violation of the
-USB spec.  Since the USB core now treats duplicated endpoints as bugs
-and ignores them, the audio endpoint isn't available and the card
-can't be used for audio capture.
+The usb_request->zero doesn't apply for isoc. Also, if we prepare a
+0-length (ZLP) TRB for the OUT direction, we need to prepare an extra
+TRB to pad up to the MPS alignment. Use the same bounce buffer for the
+ZLP TRB and the extra pad TRB.
 
-Along the same lines as commit bdd1b147b802 ("USB: quirks: blacklist
-duplicate ep on Sound Devices USBPre2"), this patch adds a quirks
-entry saying to ignore ep5in for interface 1, leaving it available for
-use with standard audio interface 2.
-
-Reported-and-tested-by: Jean-Christophe Barnoud <jcbarnoud@gmail.com>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-CC: <stable@vger.kernel.org>
-Fixes: 3e4f8e21c4f2 ("USB: core: fix check for duplicate endpoints")
-Link: https://lore.kernel.org/r/20200826194624.GA412633@rowland.harvard.edu
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: <stable@vger.kernel.org> # v4.5+
+Fixes: d6e5a549cc4d ("usb: dwc3: simplify ZLP handling")
+Fixes: 04c03d10e507 ("usb: dwc3: gadget: handle request->zero")
+Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/quirks.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/dwc3/gadget.c | 24 ++++++++++++++++++++++--
+ 1 file changed, 22 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -370,6 +370,10 @@ static const struct usb_device_id usb_qu
- 	{ USB_DEVICE(0x0926, 0x0202), .driver_info =
- 			USB_QUIRK_ENDPOINT_BLACKLIST },
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 816216870a1bb..8e67591df76be 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1159,6 +1159,7 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
+ 				req->request.short_not_ok,
+ 				req->request.no_interrupt);
+ 	} else if (req->request.zero && req->request.length &&
++		   !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
+ 		   (IS_ALIGNED(req->request.length, maxp))) {
+ 		struct dwc3	*dwc = dep->dwc;
+ 		struct dwc3_trb	*trb;
+@@ -1168,13 +1169,23 @@ static void dwc3_prepare_one_trb_linear(struct dwc3_ep *dep,
+ 		/* prepare normal TRB */
+ 		dwc3_prepare_one_trb(dep, req, length, true, 0);
  
-+	/* Sound Devices MixPre-D */
-+	{ USB_DEVICE(0x0926, 0x0208), .driver_info =
-+			USB_QUIRK_ENDPOINT_BLACKLIST },
+-		/* Now prepare one extra TRB to handle ZLP */
++		/* Prepare one extra TRB to handle ZLP */
+ 		trb = &dep->trb_pool[dep->trb_enqueue];
+ 		req->num_trbs++;
+ 		__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, 0,
+-				false, 1, req->request.stream_id,
++				!req->direction, 1, req->request.stream_id,
+ 				req->request.short_not_ok,
+ 				req->request.no_interrupt);
 +
- 	/* Keytouch QWERTY Panel keyboard */
- 	{ USB_DEVICE(0x0926, 0x3333), .driver_info =
- 			USB_QUIRK_CONFIG_INTF_STRINGS },
-@@ -511,6 +515,7 @@ static const struct usb_device_id usb_am
-  */
- static const struct usb_device_id usb_endpoint_blacklist[] = {
- 	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0202, 1), .driver_info = 0x85 },
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x0926, 0x0208, 1), .driver_info = 0x85 },
- 	{ }
- };
++		/* Prepare one more TRB to handle MPS alignment for OUT */
++		if (!req->direction) {
++			trb = &dep->trb_pool[dep->trb_enqueue];
++			req->num_trbs++;
++			__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, maxp,
++					       false, 1, req->request.stream_id,
++					       req->request.short_not_ok,
++					       req->request.no_interrupt);
++		}
+ 	} else {
+ 		dwc3_prepare_one_trb(dep, req, length, false, 0);
+ 	}
+@@ -2578,8 +2589,17 @@ static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
+ 				status);
  
+ 	if (req->needs_extra_trb) {
++		unsigned int maxp = usb_endpoint_maxp(dep->endpoint.desc);
++
+ 		ret = dwc3_gadget_ep_reclaim_trb_linear(dep, req, event,
+ 				status);
++
++		/* Reclaim MPS padding TRB for ZLP */
++		if (!req->direction && req->request.zero && req->request.length &&
++		    !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
++		    (IS_ALIGNED(req->request.length, maxp)))
++			ret = dwc3_gadget_ep_reclaim_trb_linear(dep, req, event, status);
++
+ 		req->needs_extra_trb = false;
+ 	}
+ 
+-- 
+2.25.1
+
 
 
