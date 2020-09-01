@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AD0258A7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF74258A7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgIAIjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 04:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
+        id S1727901AbgIAIjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 04:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727796AbgIAIis (ORCPT
+        with ESMTP id S1727800AbgIAIiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 04:38:48 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D993C061246
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:48 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id k15so513606wrn.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:48 -0700 (PDT)
+        Tue, 1 Sep 2020 04:38:50 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1A9C061247
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:49 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id o21so325610wmc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=g6ETLd9bglqQpiac4Zb6z2Bmq6IptWFaePDp0F0oRHw=;
-        b=RZPDpwuuKedWB6h8a/uSbCCoLu0kxGmEAPkM0FticaRUfJpyXEkQbRvNXFKO53GFTt
-         fYPGobjfTXmmRTmgQ595FxVc4FPpIRNaiR5aAvsJuCvr9BEn76ZqMYJeraC+28I6Cc8q
-         T89maoq+rewEofygXL0/9vm1MKJgj244rbdxMvCoGfSw6R2e+T7ahiFf8o7BMKDOa70C
-         5KXJPwn9MXMdnfZiVhsoYiT1xshzyDqbqld8QFxCbup28w5Gby1VizwUBKs/kOKLjJAL
-         N5Vk20AkrbgCKJQA6wI4IkmeQ8Ml83Wu5mLSHDYKgdyTdDZ7OUQkiXxfAXW9jJIPjiYf
-         Qy/g==
+        bh=LGZEMSAJ/+KpI41IbIOIytfHUTobv/W7rivd/M7D32g=;
+        b=u5E/IDtl6chlv/wJnDGBg5rc3mCp9iSXOSB1XSzeG9juqKnnqifBHvEQeI0eO9rMML
+         PfPFlP4lfpqm4+c5ky4mMfuXnq0k3+YSSj7bmYs+N9Q/CXwyF1jMV0c4NANYOJOevpp4
+         Ep3LArmn+GBktLaxxXpy/+SDlkvw+k4Lu2U9JMAvJdqWVBmLNW6ysQflShARQxvbyGpZ
+         bGCURT6f0YwIH1/pFHP46mJLD14ScezF0ftxjGB93w5FJom+EkgXJQ7I64vKZXi5S3u2
+         GmKWvT5NHyBO/Qsa2vpj7Cm9D7UZTuKclRLTfrYdnDN9C+mDRCOVMDYsRwLXCv39LkQZ
+         afuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=g6ETLd9bglqQpiac4Zb6z2Bmq6IptWFaePDp0F0oRHw=;
-        b=Q5eZSxBBlEAcGdoKRGYMQeisBTc8+Hhfqy66qGm6UaniXK+6Ncq2KJxBV8+BLaGYa3
-         OgNhskuWpoeEle/lyDqWg89gWPD+D9AuvHfSAKZ4S7EB49PZpvPI2eLbk0/PVwArTykE
-         Xm7LgNl8hLp1KHImjx3a4RUA5FBQo8enXgTa4DhT5opn1BAQvIWSBZDujQF5biRWPojx
-         IA5QVD5h7y9ZpN9gNIbgCmJ1Lr3WapV32Nh4ASCzhSgq4bYYmqZezWLnm6EuCCkEP4hl
-         sXyVvvEefiNpFhn9Q6TqmwfoVLeRdktKGS3xRlWTWVC6pJKkQh+B2cKsACb54sDAVXzU
-         EvAA==
-X-Gm-Message-State: AOAM530+M0/GN3pqjq5gWO2dWdeXVqj1pM/Qz6oVVrWJ5hyQa1oN3UAA
-        /AVuX3lFKihUqPEblU2IEQW5Sw==
-X-Google-Smtp-Source: ABdhPJzziQDCBVc7U7h2gz2c/fdXSLSHngZVg2NODT88W0TjPcG1Xj18d4EERKU7qIK4r0rSaCpgPg==
-X-Received: by 2002:adf:fd91:: with SMTP id d17mr653991wrr.234.1598949526674;
-        Tue, 01 Sep 2020 01:38:46 -0700 (PDT)
+        bh=LGZEMSAJ/+KpI41IbIOIytfHUTobv/W7rivd/M7D32g=;
+        b=kdrT4GMqZvtwRpT37mWwmM9djfzOJx5zsEiDsoJSBpaEyPiBZjZSl3vxxG5z1ETL2h
+         X64y/XbHCD1LVmfNWDphmdkjL265EQ5Ju7SXgvmWGWPOWYNfb6Ld1tOEITcgVht3w3vB
+         aY/OyL/aerkch/Q2K/w7WV1R0FLFTNtuaALo4G8Q4IQo0ML5UrVRch5bR9tErOCU/Chi
+         T0fVAVuLkNSg4poYow/FWdVJx25XrYPJ7JgZrLRidNiSk/MlokmpFCw4x34FAJpEPpLN
+         taOIY+NVfPYDvMjLXHBM3FLGj6tMK/p5xsZerpqmiTNiyUvXtfZqE5DFQPbbkwV4K8a5
+         hCfg==
+X-Gm-Message-State: AOAM533aNYVla72lzLSvRWGx//tM69ZLAOPqEyuhZ4CzW6c0lzt5ByBW
+        kSR71gtk9HnGce8S/fGr6XkZRg==
+X-Google-Smtp-Source: ABdhPJwjNbAo0a+Yp91UFIEVkMVpRePxx3DdyuqGORAi3L7hXKUqmD4p1+1bD+cAEYnT45obDpgsVQ==
+X-Received: by 2002:a1c:bdd4:: with SMTP id n203mr663202wmf.119.1598949528226;
+        Tue, 01 Sep 2020 01:38:48 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id d190sm911260wmd.23.2020.09.01.01.38.45
+        by smtp.gmail.com with ESMTPSA id d190sm911260wmd.23.2020.09.01.01.38.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 01:38:46 -0700 (PDT)
+        Tue, 01 Sep 2020 01:38:47 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -68,9 +68,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mike Leach <mike.leach@linaro.org>,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 12/14] perf arm-spe: Synthesize memory event
-Date:   Tue,  1 Sep 2020 09:38:13 +0100
-Message-Id: <20200901083815.13755-13-leo.yan@linaro.org>
+Subject: [PATCH v2 13/14] perf arm-spe: Set sample's data source field
+Date:   Tue,  1 Sep 2020 09:38:14 +0100
+Message-Id: <20200901083815.13755-14-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200901083815.13755-1-leo.yan@linaro.org>
 References: <20200901083815.13755-1-leo.yan@linaro.org>
@@ -79,99 +79,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to synthesize memory event, it generates memory events for
-all memory levels.  The memory event can delivery two benefits for SPE:
+The sample structure contains the field 'data_src' which is used to
+tell the detailed info for data operations, e.g. this field indicates
+the data operation is loading or storing, on which cache level, it's
+snooping or remote accessing, etc.  At the end, the 'data_src' will be
+parsed by perf memory tool to display human readable strings.
 
-- The first benefit is the memory event can give out global view for
-  memory accessing, rather than using scatter mode to organize events
-  (such as L1 cache, last level cache, remote accessing, etc) which can
-  only display a single memory type, memory events contain all memory
-  accessing so it's easier to review the memory behaviour cross
-  different memory levels;
+This patch is to fill the 'data_src' field in the synthesized samples
+base on different types.  Now support types for Level 1 dcache miss,
+Level 1 dcache hit, Last level cache miss, Last level cache access,
+TLB miss, TLB hit, remote access for other socket.
 
-- The second benefit is the samples generation might introduce big
-  overhead and need to wait for long time for Perf reporting, we can
-  specify itrace option '--itrace=M' to filter out other events and only
-  output memory events, this can significantly reduce the overhead
-  caused by generating samples.
+Note, current perf tool can display statistics for L1/L2/L3 caches but
+it doesn't support the 'last level cache'.  To fit into current
+implementation, 'data_src' field uses L3 cache for last level cache.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/arm-spe.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ tools/perf/util/arm-spe.c | 63 +++++++++++++++++++++++++++++++++------
+ 1 file changed, 54 insertions(+), 9 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 44e73e0ff4e7..7f44ef8c89f1 100644
+index 7f44ef8c89f1..142149f732b3 100644
 --- a/tools/perf/util/arm-spe.c
 +++ b/tools/perf/util/arm-spe.c
-@@ -55,6 +55,7 @@ struct arm_spe {
- 	u8				sample_tlb;
- 	u8				sample_branch;
- 	u8				sample_remote_access;
-+	u8				sample_memory;
- 
- 	u64				l1d_miss_id;
- 	u64				l1d_access_id;
-@@ -64,6 +65,7 @@ struct arm_spe {
- 	u64				tlb_access_id;
- 	u64				branch_miss_id;
- 	u64				remote_access_id;
-+	u64				memory_id;
- 
- 	u64				kernel_start;
- 
-@@ -296,6 +298,19 @@ static int arm_spe__synth_branch_sample(struct arm_spe_queue *speq,
- 	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+@@ -264,7 +264,7 @@ arm_spe_deliver_synth_event(struct arm_spe *spe,
  }
  
-+static bool arm_spe__is_memory_event(enum arm_spe_sample_type type)
+ static int arm_spe__synth_mem_sample(struct arm_spe_queue *speq,
+-				     u64 spe_events_id)
++				     u64 spe_events_id, u64 data_src)
+ {
+ 	struct arm_spe *spe = speq->spe;
+ 	struct arm_spe_record *record = &speq->decoder->record;
+@@ -277,6 +277,7 @@ static int arm_spe__synth_mem_sample(struct arm_spe_queue *speq,
+ 	sample.stream_id = spe_events_id;
+ 	sample.addr = record->addr;
+ 	sample.phys_addr = record->phys_addr;
++	sample.data_src = data_src;
+ 
+ 	return arm_spe_deliver_synth_event(spe, speq, event, &sample);
+ }
+@@ -311,21 +312,60 @@ static bool arm_spe__is_memory_event(enum arm_spe_sample_type type)
+ 	return false;
+ }
+ 
++static u64 arm_spe__synth_data_source(const struct arm_spe_record *record)
 +{
-+	int mem_type = ARM_SPE_L1D_ACCESS | ARM_SPE_L1D_MISS |
-+		       ARM_SPE_LLC_ACCESS | ARM_SPE_LLC_MISS |
-+		       ARM_SPE_TLB_ACCESS | ARM_SPE_TLB_MISS |
-+		       ARM_SPE_REMOTE_ACCESS;
++	union perf_mem_data_src	data_src = { 0 };
 +
-+	if (type & mem_type)
-+		return true;
++	if (record->op == ARM_SPE_LD)
++		data_src.mem_op = PERF_MEM_OP_LOAD;
++	else
++		data_src.mem_op = PERF_MEM_OP_STORE;
 +
-+	return false;
++	if (record->type & ARM_SPE_L1D_MISS) {
++		data_src.mem_lvl_num = PERF_MEM_LVLNUM_L1;
++		data_src.mem_lvl = PERF_MEM_LVL_MISS | PERF_MEM_LVL_L1;
++	} else if (record->type & ARM_SPE_L1D_ACCESS) {
++		data_src.mem_lvl_num = PERF_MEM_LVLNUM_L1;
++		data_src.mem_lvl = PERF_MEM_LVL_HIT | PERF_MEM_LVL_L1;
++	} else if (record->type & ARM_SPE_LLC_MISS) {
++		data_src.mem_lvl_num = PERF_MEM_LVLNUM_L3;
++		data_src.mem_lvl = PERF_MEM_LVL_MISS | PERF_MEM_LVL_L3;
++	} else if (record->type & ARM_SPE_LLC_ACCESS) {
++		data_src.mem_lvl_num = PERF_MEM_LVLNUM_L3;
++		data_src.mem_lvl = PERF_MEM_LVL_HIT | PERF_MEM_LVL_L3;
++	} else if (record->type & ARM_SPE_REMOTE_ACCESS) {
++		data_src.mem_lvl_num = PERF_MEM_LVLNUM_ANY_CACHE;
++		data_src.mem_lvl = PERF_MEM_LVL_HIT | PERF_MEM_LVL_REM_CCE1;
++	}
++
++	if (record->type & ARM_SPE_TLB_MISS)
++		data_src.mem_dtlb = PERF_MEM_TLB_WK | PERF_MEM_TLB_MISS;
++	else if (record->type & ARM_SPE_TLB_ACCESS)
++		data_src.mem_dtlb = PERF_MEM_TLB_WK | PERF_MEM_TLB_HIT;
++
++	return data_src.val;
 +}
 +
  static int arm_spe_sample(struct arm_spe_queue *speq)
  {
  	const struct arm_spe_record *record = &speq->decoder->record;
-@@ -357,6 +372,12 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 	struct arm_spe *spe = speq->spe;
++	u64 data_src;
+ 	int err;
+ 
++	data_src = arm_spe__synth_data_source(record);
++
+ 	if (spe->sample_flc) {
+ 		if (record->type & ARM_SPE_L1D_MISS) {
+-			err = arm_spe__synth_mem_sample(speq, spe->l1d_miss_id);
++			err = arm_spe__synth_mem_sample(speq, spe->l1d_miss_id,
++							data_src);
+ 			if (err)
+ 				return err;
+ 		}
+ 
+ 		if (record->type & ARM_SPE_L1D_ACCESS) {
+-			err = arm_spe__synth_mem_sample(speq, spe->l1d_access_id);
++			err = arm_spe__synth_mem_sample(speq, spe->l1d_access_id,
++							data_src);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -333,13 +373,15 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 
+ 	if (spe->sample_llc) {
+ 		if (record->type & ARM_SPE_LLC_MISS) {
+-			err = arm_spe__synth_mem_sample(speq, spe->llc_miss_id);
++			err = arm_spe__synth_mem_sample(speq, spe->llc_miss_id,
++							data_src);
+ 			if (err)
+ 				return err;
+ 		}
+ 
+ 		if (record->type & ARM_SPE_LLC_ACCESS) {
+-			err = arm_spe__synth_mem_sample(speq, spe->llc_access_id);
++			err = arm_spe__synth_mem_sample(speq, spe->llc_access_id,
++							data_src);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -347,13 +389,15 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 
+ 	if (spe->sample_tlb) {
+ 		if (record->type & ARM_SPE_TLB_MISS) {
+-			err = arm_spe__synth_mem_sample(speq, spe->tlb_miss_id);
++			err = arm_spe__synth_mem_sample(speq, spe->tlb_miss_id,
++							data_src);
+ 			if (err)
+ 				return err;
+ 		}
+ 
+ 		if (record->type & ARM_SPE_TLB_ACCESS) {
+-			err = arm_spe__synth_mem_sample(speq, spe->tlb_access_id);
++			err = arm_spe__synth_mem_sample(speq, spe->tlb_access_id,
++							data_src);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -367,13 +411,14 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
+ 
+ 	if (spe->sample_remote_access &&
+ 	    (record->type & ARM_SPE_REMOTE_ACCESS)) {
+-		err = arm_spe__synth_mem_sample(speq, spe->remote_access_id);
++		err = arm_spe__synth_mem_sample(speq, spe->remote_access_id,
++						data_src);
+ 		if (err)
  			return err;
  	}
  
-+	if (spe->sample_memory && arm_spe__is_memory_event(record->type)) {
-+		err = arm_spe__synth_mem_sample(speq, spe->memory_id);
-+		if (err)
-+			return err;
-+	}
-+
- 	return 0;
- }
- 
-@@ -924,6 +945,18 @@ arm_spe_synth_events(struct arm_spe *spe, struct perf_session *session)
- 		id += 1;
+ 	if (spe->sample_memory && arm_spe__is_memory_event(record->type)) {
+-		err = arm_spe__synth_mem_sample(speq, spe->memory_id);
++		err = arm_spe__synth_mem_sample(speq, spe->memory_id, data_src);
+ 		if (err)
+ 			return err;
  	}
- 
-+	if (spe->synth_opts.mem) {
-+		spe->sample_memory = true;
-+
-+		/* Remote access */
-+		err = arm_spe_synth_event(session, &attr, id);
-+		if (err)
-+			return err;
-+		spe->memory_id = id;
-+		arm_spe_set_event_name(evlist, id, "memory");
-+		id += 1;
-+	}
-+
- 	return 0;
- }
- 
 -- 
 2.20.1
 
