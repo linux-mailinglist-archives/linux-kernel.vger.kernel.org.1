@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBF2258DDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E245E258DE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgIAMFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        id S1728077AbgIAMGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727035AbgIALw7 (ORCPT
+        with ESMTP id S1726419AbgIALxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:52:59 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567A1C061244;
-        Tue,  1 Sep 2020 04:52:59 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y6so422147plt.3;
-        Tue, 01 Sep 2020 04:52:59 -0700 (PDT)
+        Tue, 1 Sep 2020 07:53:50 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F381C061244;
+        Tue,  1 Sep 2020 04:53:50 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y6so423060plt.3;
+        Tue, 01 Sep 2020 04:53:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3rTng8S6klnaXBOW81+9mrDYY1I9NVTRnB9JeoS2jtw=;
-        b=LcSn7KwXfafkZ0IC+YHw5KEiNnvCSWevlxP8z2DjXGAba25LnTum8hh367JdOezYo2
-         su945SOoKCr6SLGAWrrDZNyxzj733IghhO9OBGKnVDWilTSKf9UeA/49n1Oo32wndh0e
-         GJ7d21ncUOh+4vpNZA6vcFw3SLdwlH+juMamv4iR09qEbB8BdDnvj1Zs/H9CiVrKweF6
-         Tn9Cyl+HNyOSoA9z4FOJ58sH/1vi4WvxjfCc3i7V99HdXaGiNLfJGKoDASktdRqQV5OG
-         AAN1aRnOW51QSqDuUjLeCOZyRc6AgmmLeOookncCLvHomGNlAPvMWpPkRW3Cawv+7FN3
-         r8+Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=deukqrTnR0cMzsDKDaqxmBI2QdBNNOMXdjj1IqkXDBo=;
+        b=XGknnUl5Ax4ZlofOqiThlZt8dgwF/9fDJdmA9cH5irula3kLI7CPRZdtZKjoWcQvDn
+         6B04V4QhFIMLMKg+Mhd8b086sl9AYx3mAjclN+TgDMQ319a+bG4Y//xrZ/QFSp6FwN1g
+         0lO8uOwRIXqEUW1RzJNAIdBx8rj4eO8oOR4/GGJc1uusHoco4LjMvs4Lqe9ia/CEUqNX
+         1ZwV0v1yg34L7gtWDlMPlZf3muPjnnssrC/R5Z6knCMEzWj+6mrPtfrQVSwZofUoNI3X
+         6Nb51M0GQZmfzS89waYtM2Ee4I8ImR2PxPSgF1+3LvQlDDB2z2NYs2t7R/RzGLy1A5cz
+         n0Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3rTng8S6klnaXBOW81+9mrDYY1I9NVTRnB9JeoS2jtw=;
-        b=s21VMyY7isUOwWoK8PoumextrMy2Po5gnOptFcmGr9dc0HbtCeZaxBESznZHVivRX6
-         AgsxArgCTO0YUM27R6D4d3VEpixq4ts7ZnsNs0XTljA30z9RfRnUvxpaNmR/bwN6t1KP
-         f8XNIUQCny8swXH2rTsRfpq7ltpDBGOVTfm8VU41+lQWouoqRI0JZgDEv27SeAryN/75
-         hGBIPYaYRXHfZbulh68ohXaxT6qMFdf0zO2KUoNrKhCm2rKyYcSbnnkoaZIQiPLDqGs0
-         KSRYWiQ2/2Pa8oJElpIQPQrvEFYBfC5KN0PfJinTV+hE+o3U5Y781wUQqQDxWZbCTDfb
-         lNcQ==
-X-Gm-Message-State: AOAM532lrs6eo0biUJ/RuNmvS+LyPdsHnZdZllVc4ox8w3drYy+HX3Ef
-        SArqtLcRGT49Tq/BFD3zxck=
-X-Google-Smtp-Source: ABdhPJzajFQFmglNSy1ftQejcM7kY3dMr6o6k6FV5TerWypS4jTtWmLGRJbydsOgb7NrR6ESgRP7UQ==
-X-Received: by 2002:a17:90a:ba04:: with SMTP id s4mr1280236pjr.3.1598961178901;
-        Tue, 01 Sep 2020 04:52:58 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.65])
-        by smtp.gmail.com with ESMTPSA id h15sm1482498pjf.54.2020.09.01.04.52.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=deukqrTnR0cMzsDKDaqxmBI2QdBNNOMXdjj1IqkXDBo=;
+        b=uRgLdV3zy/Pe9lAaLZkpssfjnQaDfv3lfwfWQ0yy+HjoiyaYh+PgGfUwxRHI7x2Lvd
+         hfzaFFCoI0I6u0GZaWuKlKIWGPECPV2tdKF/4zTDBZdjyb1rZKr3KpjRlp1qSs93wCYK
+         vpWbllGo/5Rwq7ohwe1V3KX+EvI7vCgCKSN+oiiIplYAhrmsw3IC8FEKNpYESOJtSyZY
+         bdjqgNYjXVqkz36s1mK8dIwT9Ubh0w8vztLaANgVV91lvtdYUFmcEc/gzXw9Ri9DbFsd
+         mxydgBoJOCU/H/ImIaVuXhKswoEUbA57I8GKse9TPEjrU/jo9BhsHG7fPiHKxMzJau6R
+         ifFw==
+X-Gm-Message-State: AOAM533bQZGfWWR0JzSs6n+NyI3rYXCAdwTJz/T6wx2OvnTqvR2/dMQd
+        CCRFFiTaPJ17x2mQIT2uIA4=
+X-Google-Smtp-Source: ABdhPJwNjXvlt61ssgWgPZnZKqp427rrJB0T8ROpLi2YxiDjwxc1bBuVnFWLhkztKoKUIcxnj0fhnA==
+X-Received: by 2002:a17:902:b111:: with SMTP id q17mr1066230plr.202.1598961229988;
+        Tue, 01 Sep 2020 04:53:49 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.53])
+        by smtp.gmail.com with ESMTPSA id fs24sm1365344pjb.8.2020.09.01.04.53.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 04:52:58 -0700 (PDT)
+        Tue, 01 Sep 2020 04:53:49 -0700 (PDT)
 From:   yulei.kernel@gmail.com
 X-Google-Original-From: yuleixzhang@tencent.com
 To:     pbonzini@redhat.com
@@ -53,74 +54,52 @@ Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         sean.j.christopherson@intel.com, jmattson@google.com,
         junaids@google.com, bgardon@google.com, vkuznets@redhat.com,
         xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
-        lihaiwei.kernel@gmail.com, Yulei Zhang <yulei.kernel@gmail.com>
-Subject: [RFC V2 0/9] x86/mmu:Introduce parallel memory virtualization to boost performance 
-Date:   Tue,  1 Sep 2020 19:52:42 +0800
-Message-Id: <cover.1598868203.git.yulei.kernel@gmail.com>
+        lihaiwei.kernel@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>
+Subject: [RFC V2 1/9] Introduce new fields in kvm_arch/vcpu_arch struct for direct build EPT support
+Date:   Tue,  1 Sep 2020 19:54:43 +0800
+Message-Id: <d7684439e1aa1c213c3a29219afda55b9b70b662.1598868204.git.yulei.kernel@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1598868203.git.yulei.kernel@gmail.com>
+References: <cover.1598868203.git.yulei.kernel@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yulei Zhang <yulei.kernel@gmail.com>
+From: Yulei Zhang <yuleixzhang@tencent.com>
 
-Currently in KVM memory virtulization we relay on mmu_lock to
-synchronize the memory mapping update, which make vCPUs work
-in serialize mode and slow down the execution, especially after
-migration to do substantial memory mapping will cause visible
-performance drop, and it can get worse if guest has more vCPU
-numbers and memories.
-  
-The idea we present in this patch set is to mitigate the issue
-with pre-constructed memory mapping table. We will fast pin the
-guest memory to build up a global memory mapping table according
-to the guest memslots changes and apply it to cr3, so that after
-guest starts up all the vCPUs would be able to update the memory
-simultaneously without page fault exception, thus the performance
-improvement is expected. 
+Add parameter global_root_hpa for saving direct build global EPT root point,
+and add per-vcpu flag direct_build_tdp to indicate using global EPT root
+point.
 
-We use memory dirty pattern workload to test the initial patch
-set and get positive result even with huge page enabled. For example,
-we create guest with 32 vCPUs and 64G memories, and let the vcpus
-dirty the entire memory region concurrently, as the initial patch
-eliminate the overhead of mmu_lock, in 2M/1G huge page mode we would
-get the job done in about 50% faster.
+Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+---
+ arch/x86/include/asm/kvm_host.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-We only validate this feature on Intel x86 platform. And as Ben
-pointed out in RFC V1, so far we disable the SMM for resource
-consideration, drop the mmu notification as in this case the
-memory is pinned.
-
-V1->V2:
-* Rebase the code to kernel version 5.9.0-rc1.
-
-Yulei Zhang (9):
-  Introduce new fields in kvm_arch/vcpu_arch struct for direct build EPT
-    support
-  Introduce page table population function for direct build EPT feature
-  Introduce page table remove function for direct build EPT feature
-  Add release function for direct build ept when guest VM exit
-  Modify the page fault path to meet the direct build EPT requirement
-  Apply the direct build EPT according to the memory slots change
-  Add migration support when using direct build EPT
-  Introduce kvm module parameter global_tdp to turn on the direct build
-    EPT mode
-  Handle certain mmu exposed functions properly while turn on direct
-    build EPT mode
-
- arch/mips/kvm/mips.c            |  13 +
- arch/powerpc/kvm/powerpc.c      |  13 +
- arch/s390/kvm/kvm-s390.c        |  13 +
- arch/x86/include/asm/kvm_host.h |  13 +-
- arch/x86/kvm/mmu/mmu.c          | 533 ++++++++++++++++++++++++++++++--
- arch/x86/kvm/svm/svm.c          |   2 +-
- arch/x86/kvm/vmx/vmx.c          |   7 +-
- arch/x86/kvm/x86.c              |  55 ++--
- include/linux/kvm_host.h        |   7 +-
- virt/kvm/kvm_main.c             |  43 ++-
- 10 files changed, 639 insertions(+), 60 deletions(-)
-
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 5ab3af7275d8..485b1239ad39 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -788,6 +788,9 @@ struct kvm_vcpu_arch {
+ 
+ 	/* AMD MSRC001_0015 Hardware Configuration */
+ 	u64 msr_hwcr;
++
++	/* vcpu use pre-constructed EPT */
++	bool direct_build_tdp;
+ };
+ 
+ struct kvm_lpage_info {
+@@ -963,6 +966,8 @@ struct kvm_arch {
+ 
+ 	struct kvm_pmu_event_filter *pmu_event_filter;
+ 	struct task_struct *nx_lpage_recovery_thread;
++	/* global root hpa for pre-constructed EPT */
++	hpa_t  global_root_hpa;
+ };
+ 
+ struct kvm_vm_stat {
 -- 
 2.17.1
 
