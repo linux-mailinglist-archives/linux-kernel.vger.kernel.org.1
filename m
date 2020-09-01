@@ -2,139 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDD4258E31
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83979258E2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgIAM2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:28:21 -0400
-Received: from mga11.intel.com ([192.55.52.93]:29629 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727924AbgIAMUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:20:40 -0400
-IronPort-SDR: +Y58Nfe+2xzVBuQxPOE+vtsc1+Wo1uJ+KW23QY3mC6uaplk7FjyWZLJbjtBUXRxPQAzoqV5Vyh
- b+zDFGALAmHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="154663713"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="154663713"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 05:20:15 -0700
-IronPort-SDR: zK7OorMoSOaxzYDHEAlRJHlcn2R5hw3H7mViMqe8GXURp2ENj082eqMQvZvaO5zr/iL5lfA63X
- mLFakkxiBMtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="502221986"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Sep 2020 05:20:08 -0700
-Subject: Re: [PATCH] mmc: sdhci-acpi: Clear amd_sdhci_host on reset
-To:     Raul E Rangel <rrangel@chromium.org>
-Cc:     Nehal-bakulchandra.Shah@amd.com, chris.wang@amd.com,
-        Akshu.Agrawal@amd.com, Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <20200831150517.1.I93c78bfc6575771bb653c9d3fca5eb018a08417d@changeid>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <99bd9e1a-7062-83d5-8416-9aef53d2eda0@intel.com>
-Date:   Tue, 1 Sep 2020 15:19:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728231AbgIAM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:26:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:46547 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727845AbgIAMVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 08:21:23 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kD5HM-0001Aw-G3; Tue, 01 Sep 2020 12:20:48 +0000
+Date:   Tue, 1 Sep 2020 14:20:47 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     oleg@redhat.com, axboe@kernel.dk, ebiederm@xmission.com,
+        madhuparnabhowmik10@gmail.com, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] signal: clean up codestyle
+Message-ID: <20200901122047.7hzztrssvr72wb2d@wittgenstein>
+References: <20200901115800.7916-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200831150517.1.I93c78bfc6575771bb653c9d3fca5eb018a08417d@changeid>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200901115800.7916-1-linmiaohe@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/09/20 12:10 am, Raul E Rangel wrote:
-> commit 61d7437ed1390 ("mmc: sdhci-acpi: Fix HS400 tuning for AMDI0040")
-> broke resume for HS400. When the system suspends the eMMC controller is
-> powered down. So on resume we need to reinitialize the controller.
-> amd_sdhci_host was not getting cleared, so the DLL was never re-enabled
-> on resume. This results in HS400 being non-functional.
-> 
-> This change clears the tuned_clock flag, clears the dll_enabled flag and
-> disables the DLL on reset.
-> 
-> Fixes: 61d7437ed1390 ("mmc: sdhci-acpi: Fix HS400 tuning for AMDI0040")
-> 
-> Signed-off-by: Raul E Rangel <rrangel@chromium.org>
+On Tue, Sep 01, 2020 at 07:58:00AM -0400, Miaohe Lin wrote:
+> No functional change intended.
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Hey Miaohe,
 
+Thank you for the patch.
+I'm sure this is well-intended but afaict the whole file has more or
+less a consistent style already where e.g. sig-1 without spaces seems to
+be preferred. The same for the casts where most places use a single
+space.
+
+Now, I know CodingStyle.rst is on your side at least when it comes to
+the first point:
+
+Use one space around (on each side of) most binary and ternary operators,
+such as any of these::
+
+	=  +  -  <  >  *  /  %  |  &  ^  <=  >=  ==  !=  ?  :
+
+but then you'd need to change each place in kernel/signal.c where that
+is currently not the case. Otherwise we end up with a weird mix.
+
+Thanks!
+Christian
+
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
-> - Performed 100+ suspend/resume cycles without issue.
-> - Also verified tuning continues to work.
+>  kernel/signal.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
->  drivers/mmc/host/sdhci-acpi.c | 31 ++++++++++++++++++++++++-------
->  1 file changed, 24 insertions(+), 7 deletions(-)
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index a38b3edc6851..10a31fafc35b 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -1115,8 +1115,8 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
+>  	q = __sigqueue_alloc(sig, t, GFP_ATOMIC, override_rlimit);
+>  	if (q) {
+>  		list_add_tail(&q->list, &pending->list);
+> -		switch ((unsigned long) info) {
+> -		case (unsigned long) SEND_SIG_NOINFO:
+> +		switch ((unsigned long)info) {
+> +		case (unsigned long)SEND_SIG_NOINFO:
+>  			clear_siginfo(&q->info);
+>  			q->info.si_signo = sig;
+>  			q->info.si_errno = 0;
+> @@ -1129,7 +1129,7 @@ static int __send_signal(int sig, struct kernel_siginfo *info, struct task_struc
+>  						 current_uid());
+>  			rcu_read_unlock();
+>  			break;
+> -		case (unsigned long) SEND_SIG_PRIV:
+> +		case (unsigned long)SEND_SIG_PRIV:
+>  			clear_siginfo(&q->info);
+>  			q->info.si_signo = sig;
+>  			q->info.si_errno = 0;
+> @@ -1314,7 +1314,7 @@ force_sig_info_to_task(struct kernel_siginfo *info, struct task_struct *t)
+>  	int sig = info->si_signo;
+>  
+>  	spin_lock_irqsave(&t->sighand->siglock, flags);
+> -	action = &t->sighand->action[sig-1];
+> +	action = &t->sighand->action[sig - 1];
+>  	ignored = action->sa.sa_handler == SIG_IGN;
+>  	blocked = sigismember(&t->blocked, sig);
+>  	if (blocked || ignored) {
+> -- 
+> 2.19.1
 > 
-> diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
-> index 962f074ca1742..284cba11e2795 100644
-> --- a/drivers/mmc/host/sdhci-acpi.c
-> +++ b/drivers/mmc/host/sdhci-acpi.c
-> @@ -551,12 +551,18 @@ static int amd_select_drive_strength(struct mmc_card *card,
->  	return MMC_SET_DRIVER_TYPE_A;
->  }
->  
-> -static void sdhci_acpi_amd_hs400_dll(struct sdhci_host *host)
-> +static void sdhci_acpi_amd_hs400_dll(struct sdhci_host *host, bool enable)
->  {
-> +	struct sdhci_acpi_host *acpi_host = sdhci_priv(host);
-> +	struct amd_sdhci_host *amd_host = sdhci_acpi_priv(acpi_host);
-> +
->  	/* AMD Platform requires dll setting */
->  	sdhci_writel(host, 0x40003210, SDHCI_AMD_RESET_DLL_REGISTER);
->  	usleep_range(10, 20);
-> -	sdhci_writel(host, 0x40033210, SDHCI_AMD_RESET_DLL_REGISTER);
-> +	if (enable)
-> +		sdhci_writel(host, 0x40033210, SDHCI_AMD_RESET_DLL_REGISTER);
-> +
-> +	amd_host->dll_enabled = enable;
->  }
->  
->  /*
-> @@ -596,10 +602,8 @@ static void amd_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->  
->  		/* DLL is only required for HS400 */
->  		if (host->timing == MMC_TIMING_MMC_HS400 &&
-> -		    !amd_host->dll_enabled) {
-> -			sdhci_acpi_amd_hs400_dll(host);
-> -			amd_host->dll_enabled = true;
-> -		}
-> +		    !amd_host->dll_enabled)
-> +			sdhci_acpi_amd_hs400_dll(host, true);
->  	}
->  }
->  
-> @@ -620,10 +624,23 @@ static int amd_sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode)
->  	return err;
->  }
->  
-> +static void amd_sdhci_reset(struct sdhci_host *host, u8 mask)
-> +{
-> +	struct sdhci_acpi_host *acpi_host = sdhci_priv(host);
-> +	struct amd_sdhci_host *amd_host = sdhci_acpi_priv(acpi_host);
-> +
-> +	if (mask & SDHCI_RESET_ALL) {
-> +		amd_host->tuned_clock = false;
-> +		sdhci_acpi_amd_hs400_dll(host, false);
-> +	}
-> +
-> +	sdhci_reset(host, mask);
-> +}
-> +
->  static const struct sdhci_ops sdhci_acpi_ops_amd = {
->  	.set_clock	= sdhci_set_clock,
->  	.set_bus_width	= sdhci_set_bus_width,
-> -	.reset		= sdhci_reset,
-> +	.reset		= amd_sdhci_reset,
->  	.set_uhs_signaling = sdhci_set_uhs_signaling,
->  };
->  
-> 
-
