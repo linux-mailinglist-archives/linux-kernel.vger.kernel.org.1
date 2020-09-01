@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C366F259803
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223152596A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731025AbgIAPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33776 "EHLO mail.kernel.org"
+        id S1731351AbgIAQFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:05:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730424AbgIAPbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:05 -0400
+        id S1731461AbgIAPll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:41:41 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB46A207D3;
-        Tue,  1 Sep 2020 15:31:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC2AA2064B;
+        Tue,  1 Sep 2020 15:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974265;
-        bh=cfgD2IK8xu8zcj5eIPs7iYsC+AdHZyjrZ8eBDn+eJPk=;
+        s=default; t=1598974901;
+        bh=k3sLFeyZTzrCfkRSumuFDZjdrcsEaxOYzrV5Z7HyN04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkxKEYAyHjlG8JKr5KXzN6HXzjTHSTj3ds8NLsGcYXOnUl1YHwFWrorx3z91L2gla
-         YK+9NwjXq2tntbA0oeRbMomVz4CCBBurowRCPTFrNriprAdQ/+Lx2RU2jFuU6mOyUd
-         kWspHj7coMFAORecFI2zFT60uf3k8JH5qqQltWVQ=
+        b=k2S3Bac97nZWyiOBV4pnwwLLnypGeehhJaBDPF21kdFDkSm/OTpMh/nYaZnXX8RGO
+         2aqviVgnegEU7Dg3Bb8NdSouEVqWjMO6g4WbQkzdWkFrqRRtjiI0MORkJ0Y53Jb7ML
+         f9vNzq91qVrMD48RBLoazfKAO0EIvluHVuaJQAl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 110/214] i2c: core: Dont fail PRP0001 enumeration when no ID table exist
+        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 134/255] can: j1939: transport: j1939_xtp_rx_dat_one(): compare own packets to detect corruptions
 Date:   Tue,  1 Sep 2020 17:09:50 +0200
-Message-Id: <20200901150958.256116243@linuxfoundation.org>
+Message-Id: <20200901151007.136796033@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit e3cb82c6d6f6c27ab754e13ae29bdd6b949982e2 ]
+[ Upstream commit e052d0540298bfe0f6cbbecdc7e2ea9b859575b2 ]
 
-When commit c64ffff7a9d1 ("i2c: core: Allow empty id_table in ACPI case
-as well") fixed the enumeration of I²C devices on ACPI enabled platforms
-when driver has no ID table, it missed the PRP0001 support.
+Since the stack relays on receiving own packets, it was overwriting own
+transmit buffer from received packets.
 
-i2c_device_match() and i2c_acpi_match_device() differently match
-driver against given device. Use acpi_driver_match_device(), that is used
-in the former, in i2c_device_probe() and don't fail PRP0001 enumeration
-when no ID table exist.
+At least theoretically, the received echo buffer can be corrupt or
+changed and the session partner can request to resend previous data. In
+this case we will re-send bad data.
 
-Fixes: c64ffff7a9d1 ("i2c: core: Allow empty id_table in ACPI case as well")
-BugLink: https://stackoverflow.com/q/63519678/2511795
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+With this patch we will stop to overwrite own TX buffer and use it for
+sanity checking.
+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20200807105200.26441-6-o.rempel@pengutronix.de
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-core-base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/can/j1939/transport.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index cc193f2ba5d37..def62d5b42ca7 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -354,7 +354,7 @@ static int i2c_device_probe(struct device *dev)
- 	 * or ACPI ID table is supplied for the probing device.
- 	 */
- 	if (!driver->id_table &&
--	    !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
-+	    !acpi_driver_match_device(dev, dev->driver) &&
- 	    !i2c_of_match_device(dev->driver->of_match_table, client)) {
- 		status = -ENODEV;
- 		goto put_sync_adapter;
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index dbd215cbc53d8..a8dd956b5e8e1 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1803,7 +1803,20 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+ 	}
+ 
+ 	tpdat = se_skb->data;
+-	memcpy(&tpdat[offset], &dat[1], nbytes);
++	if (!session->transmission) {
++		memcpy(&tpdat[offset], &dat[1], nbytes);
++	} else {
++		int err;
++
++		err = memcmp(&tpdat[offset], &dat[1], nbytes);
++		if (err)
++			netdev_err_once(priv->ndev,
++					"%s: 0x%p: Data of RX-looped back packet (%*ph) doesn't match TX data (%*ph)!\n",
++					__func__, session,
++					nbytes, &dat[1],
++					nbytes, &tpdat[offset]);
++	}
++
+ 	if (packet == session->pkt.rx)
+ 		session->pkt.rx++;
+ 
 -- 
 2.25.1
 
