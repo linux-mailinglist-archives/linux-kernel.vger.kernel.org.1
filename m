@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA612598FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D1D2599BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730945AbgIAQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49268 "EHLO mail.kernel.org"
+        id S1732187AbgIAQnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:43:17 -0400
+Received: from mx4.veeam.com ([104.41.138.86]:44256 "EHLO mx4.veeam.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730758AbgIAQe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:34:56 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1729612AbgIAQnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:43:00 -0400
+X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Sep 2020 12:42:57 EDT
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EA5E2065F;
-        Tue,  1 Sep 2020 16:34:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598978095;
-        bh=HBkRRvQE+GiQk8IOw0FoaBIHoluBbUBv6L4fFWhsE5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L/iEuxCO+KfmZi287JoZ65Tq12nYlzvVrD+ML3ClX0nNGPTK2N2lPuulBIkC9QUl/
-         8rBiVmFR7U3ypc52pchwlRwqrwzLOUdwfvGIFFl1E7tbGDO8whMdDje1Zheb5V1Qpm
-         2NqKXJIiQXGMoOp5C+4Zd6y6OxtYfiJmivTRVmiM=
-Date:   Tue, 1 Sep 2020 18:35:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sean Young <sean@mess.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Jia-Ju Bai <baijiaju@tsinghua.edu.cn>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 016/125] media: pci: ttpci: av7110: fix possible
- buffer overflow caused by bad DMA value in debiirq()
-Message-ID: <20200901163523.GA1458104@kroah.com>
-References: <20200901150934.576210879@linuxfoundation.org>
- <20200901150935.368387062@linuxfoundation.org>
- <20200901162512.GA30837@gofer.mess.org>
+        by mx4.veeam.com (Postfix) with ESMTPS id D7F9D1C024;
+        Tue,  1 Sep 2020 19:35:48 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1598978149; bh=+BMtm99s9XyztXblpi3T4Vm9IisWYhjraisdoVw+JuQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=aeTVlhLIYOGf++htY0VV5QvgL79Jr8uQJLDAQWlIMUcJ0zFsNt1A2IUYBuggR+GVU
+         VOfcQcdngxBQNiNZ1uofvAPkPhdGn+YQxzuVdE551n5+v+QABEtOPhjeqW4apOT5l6
+         cCtfS1J+yTV5ayOCbOgk3bmXMWTuCGpy9+6k4l5U=
+Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.595.3; Tue, 1 Sep 2020
+ 18:35:47 +0200
+Date:   Tue, 1 Sep 2020 19:35:27 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Jens Axboe <axboe@kernel.dk>
+CC:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Subject: Re: [PATCH 0/1] block io layer filters api
+Message-ID: <20200901163240.GA18490@veeam.com>
+References: <1598555619-14792-1-git-send-email-sergei.shtepa@veeam.com>
+ <7a517822-6be2-7d0d-fae3-31472c85f543@kernel.dk>
+ <20200901132957.GA18251@veeam.com>
+ <722e85ac-f494-2cb3-4caf-d903d79a5645@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20200901162512.GA30837@gofer.mess.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <722e85ac-f494-2cb3-4caf-d903d79a5645@kernel.dk>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
+ (172.24.0.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29C604D26B637063
+X-Veeam-MMEX: True
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx4.veeam.com [172.31.224.40]); Tue, 01 Sep 2020 19:35:49 +0300 (MSK)
+X-Veeam-MailScanner-Information: Please contact email@veeam.com if you have any problems
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:25:12PM +0100, Sean Young wrote:
-> Greg,
-> 
-> On Tue, Sep 01, 2020 at 05:09:31PM +0200, Greg Kroah-Hartman wrote:
-> > From: Jia-Ju Bai <baijiaju@tsinghua.edu.cn>
-> > 
-> > [ Upstream commit 6499a0db9b0f1e903d52f8244eacc1d4be00eea2 ]
-> > 
-> > The value av7110->debi_virt is stored in DMA memory, and it is assigned
-> > to data, and thus data[0] can be modified at any time by malicious
-> > hardware. In this case, "if (data[0] < 2)" can be passed, but then
-> > data[0] can be changed into a large number, which may cause buffer
-> > overflow when the code "av7110->ci_slot[data[0]]" is used.
-> > 
-> > To fix this possible bug, data[0] is assigned to a local variable, which
-> > replaces the use of data[0].
-> 
-> See the discussion here:
-> 
-> https://lkml.org/lkml/2020/8/31/479
-> 
-> It does not seem worthwhile merging to the stable trees.
+Jens, thank you so much for your prompt response and clarification on your
+position.
 
-It doesn't hurt either :)
+We’re totally committed to having the upstream driver as the canonical version,
+and to maintaining it. 
 
-thanks,
+It was probably a mistake not to build it like that right away considering it
+has always been our vision, but frankly speaking we were simply too shy to go
+this route when we first started 4 years ago, with just a handful of users and
+an unclear demand/future. But now in 2020, it’s a different story.
 
-greg k-h
+We’ll get started on the in-tree kernel mode right away, and will reconvene
+once ready.
+
+-- 
+Sergei Shtepa
+Veeam Software developer.
