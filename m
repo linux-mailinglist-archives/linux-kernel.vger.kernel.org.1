@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 432B7259849
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFE625966F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731278AbgIAQYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:24:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35624 "EHLO mail.kernel.org"
+        id S1731722AbgIAQCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730904AbgIAPcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:32:09 -0400
+        id S1730602AbgIAPnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:43:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B38AC214D8;
-        Tue,  1 Sep 2020 15:32:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B76C3208CA;
+        Tue,  1 Sep 2020 15:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974328;
-        bh=s5WS0RpB5021Z5Smn7KqlHoo/qgBwAFA/bRBhOH6u00=;
+        s=default; t=1598975028;
+        bh=Y6DJoX2DZcX0pjal8o/qkiugyWoFm/l5LEkEMpG+PAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wcnA5ctlfIFOLRfI30xsdQ4T2oXhouml4NhkZL3RP9WappXgryTKRhIiPJcGWopw9
-         vVaxxDwsJCPUndgChpaEObxdHP3NbLWw4+1cwXAWTz5MP0vXzD2o41V68QU6WoLwJv
-         D5kNy65NpJhQFBc4mIK5Uhg4wX3unV7JmPP15OFk=
+        b=lGF+Oj/evuOeWr2SxW5++K12pUvm/ejuhDNMA+Bv16AUgYa5iqJlxP9SsYtgudgcY
+         GjieRgvB6t5+CdEsSjbXSgbMi0ge6ZkBkW7b1jNaaafungELKyJA1Qqj4AwNF0P5oX
+         yx8WZYJouinAQBh7oKbcnEGtTcUubffpS1ReUDOQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 126/214] drm/amd/powerplay: correct Vega20 cached smu feature state
-Date:   Tue,  1 Sep 2020 17:10:06 +0200
-Message-Id: <20200901150959.013289330@linuxfoundation.org>
+Subject: [PATCH 5.8 151/255] scsi: qla2xxx: Fix login timeout
+Date:   Tue,  1 Sep 2020 17:10:07 +0200
+Message-Id: <20200901151007.924804046@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,89 +47,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit 266d81d9eed30f4994d76a2b237c63ece062eefe ]
+[ Upstream commit abb31aeaa9b20680b0620b23fea5475ea4591e31 ]
 
-Correct the cached smu feature state on pp_features sysfs
-setting.
+Multipath errors were seen during failback due to login timeout.  The
+remote device sent LOGO, the local host tore down the session and did
+relogin. The RSCN arrived indicates remote device is going through failover
+after which the relogin is in a 20s timeout phase.  At this point the
+driver is stuck in the relogin process.  Add a fix to delete the session as
+part of abort/flush the login.
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20200806111014.28434-5-njavali@marvell.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/powerplay/hwmgr/vega20_hwmgr.c    | 38 +++++++++----------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ drivers/scsi/qla2xxx/qla_gs.c     | 18 +++++++++++++++---
+ drivers/scsi/qla2xxx/qla_target.c |  2 +-
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c
-index f5915308e643a..08b91c31532ba 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega20_hwmgr.c
-@@ -981,27 +981,15 @@ static int vega20_disable_all_smu_features(struct pp_hwmgr *hwmgr)
- {
- 	struct vega20_hwmgr *data =
- 			(struct vega20_hwmgr *)(hwmgr->backend);
--	uint64_t features_enabled;
--	int i;
--	bool enabled;
--	int ret = 0;
-+	int i, ret = 0;
+diff --git a/drivers/scsi/qla2xxx/qla_gs.c b/drivers/scsi/qla2xxx/qla_gs.c
+index 3bfb5678f6515..de9fd7f688d01 100644
+--- a/drivers/scsi/qla2xxx/qla_gs.c
++++ b/drivers/scsi/qla2xxx/qla_gs.c
+@@ -3538,10 +3538,22 @@ login_logout:
+ 		}
  
- 	PP_ASSERT_WITH_CODE((ret = smum_send_msg_to_smc(hwmgr,
- 			PPSMC_MSG_DisableAllSmuFeatures)) == 0,
- 			"[DisableAllSMUFeatures] Failed to disable all smu features!",
- 			return ret);
- 
--	ret = vega20_get_enabled_smc_features(hwmgr, &features_enabled);
--	PP_ASSERT_WITH_CODE(!ret,
--			"[DisableAllSMUFeatures] Failed to get enabled smc features!",
--			return ret);
--
--	for (i = 0; i < GNLD_FEATURES_MAX; i++) {
--		enabled = (features_enabled & data->smu_features[i].smu_feature_bitmap) ?
--			true : false;
--		data->smu_features[i].enabled = enabled;
--		data->smu_features[i].supported = enabled;
--	}
-+	for (i = 0; i < GNLD_FEATURES_MAX; i++)
-+		data->smu_features[i].enabled = 0;
- 
- 	return 0;
- }
-@@ -3211,10 +3199,11 @@ static int vega20_get_ppfeature_status(struct pp_hwmgr *hwmgr, char *buf)
- 
- static int vega20_set_ppfeature_status(struct pp_hwmgr *hwmgr, uint64_t new_ppfeature_masks)
- {
--	uint64_t features_enabled;
--	uint64_t features_to_enable;
--	uint64_t features_to_disable;
--	int ret = 0;
-+	struct vega20_hwmgr *data =
-+			(struct vega20_hwmgr *)(hwmgr->backend);
-+	uint64_t features_enabled, features_to_enable, features_to_disable;
-+	int i, ret = 0;
-+	bool enabled;
- 
- 	if (new_ppfeature_masks >= (1ULL << GNLD_FEATURES_MAX))
- 		return -EINVAL;
-@@ -3243,6 +3232,17 @@ static int vega20_set_ppfeature_status(struct pp_hwmgr *hwmgr, uint64_t new_ppfe
- 			return ret;
- 	}
- 
-+	/* Update the cached feature enablement state */
-+	ret = vega20_get_enabled_smc_features(hwmgr, &features_enabled);
-+	if (ret)
-+		return ret;
+ 		if (fcport->scan_state != QLA_FCPORT_FOUND) {
++			bool do_delete = false;
 +
-+	for (i = 0; i < GNLD_FEATURES_MAX; i++) {
-+		enabled = (features_enabled & data->smu_features[i].smu_feature_bitmap) ?
-+			true : false;
-+		data->smu_features[i].enabled = enabled;
-+	}
++			if (fcport->scan_needed &&
++			    fcport->disc_state == DSC_LOGIN_PEND) {
++				/* Cable got disconnected after we sent
++				 * a login. Do delete to prevent timeout.
++				 */
++				fcport->logout_on_delete = 1;
++				do_delete = true;
++			}
 +
- 	return 0;
- }
+ 			fcport->scan_needed = 0;
+-			if ((qla_dual_mode_enabled(vha) ||
+-				qla_ini_mode_enabled(vha)) &&
+-			    atomic_read(&fcport->state) == FCS_ONLINE) {
++			if (((qla_dual_mode_enabled(vha) ||
++			      qla_ini_mode_enabled(vha)) &&
++			    atomic_read(&fcport->state) == FCS_ONLINE) ||
++				do_delete) {
+ 				if (fcport->loop_id != FC_NO_LOOP_ID) {
+ 					if (fcport->flags & FCF_FCP2_DEVICE)
+ 						fcport->logout_on_delete = 0;
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index fbb80a043b4fe..90289162dbd4c 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -1270,7 +1270,7 @@ void qlt_schedule_sess_for_deletion(struct fc_port *sess)
+ 
+ 	qla24xx_chk_fcp_state(sess);
+ 
+-	ql_dbg(ql_dbg_tgt, sess->vha, 0xe001,
++	ql_dbg(ql_dbg_disc, sess->vha, 0xe001,
+ 	    "Scheduling sess %p for deletion %8phC\n",
+ 	    sess, sess->port_name);
  
 -- 
 2.25.1
