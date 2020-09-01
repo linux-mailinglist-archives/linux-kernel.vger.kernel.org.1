@@ -2,137 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190712586C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1875E2586B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726193AbgIAETT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:19:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54568 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725987AbgIAETT (ORCPT
+        id S1725987AbgIAEPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:15:35 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:20900 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbgIAEPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:19:19 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 081431xk119262;
-        Tue, 1 Sep 2020 00:19:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=Q246u/fQhcgO/yq7KHhZm2ekFkfZRubkGRPgvvC7blU=;
- b=Zh9tUDJHTPb3QXMbh0l4b4TkPFCUsEas+cI5gzTV8VvqwuSi5tP3LsjjY7ok+kbmt50p
- hRJMmcH/fotuOYBVHufFTgSZyDAbiNKBEUc6GPsonV9+hgz8u3A3CGBtI6s3yWmlXbmd
- hoJ8lcw+k0Z9NxXjXL9WKeiF05C2pe7Qkg592CcY+h8z25QdDaiw89VF/KNyOt7wEQT4
- ndH78U6AgAphmKJ5QjaVm+bT9NMkWIodMOWH9aTbmtTlmVVGT64w94j8NFTwNDymMmmR
- WhlUIcvVFSoM9HowyKitjpJMgqnLGOFYoQy3d1ZTHkH8m9td0TBNNyuvch2gX23BgpUx 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 339eg9gvk6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 00:19:10 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08143QPN121201;
-        Tue, 1 Sep 2020 00:19:10 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 339eg9gvjn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 00:19:10 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0814HJEp028925;
-        Tue, 1 Sep 2020 04:19:08 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 337e9gty7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Sep 2020 04:19:07 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0814J5o328049904
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Sep 2020 04:19:05 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A7172AE053;
-        Tue,  1 Sep 2020 04:19:05 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9B524AE04D;
-        Tue,  1 Sep 2020 04:19:04 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.157.5])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  1 Sep 2020 04:19:04 +0000 (GMT)
-Date:   Tue, 1 Sep 2020 07:19:02 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
-Subject: Re: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
-Message-ID: <20200901041902.GC424181@linux.ibm.com>
-References: <20200829000126.2463-1-rdunlap@infradead.org>
+        Tue, 1 Sep 2020 00:15:32 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200901041529epoutp0444dd5a222f9c9fba4e6173a28b7c7aae~wjcFYbUqZ2699126991epoutp04t
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 04:15:29 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200901041529epoutp0444dd5a222f9c9fba4e6173a28b7c7aae~wjcFYbUqZ2699126991epoutp04t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598933729;
+        bh=3WdAxCuqh6cVlPfws3AsDDQng2gxwI57KUnhSvyF9tI=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=XF3LTrDRqF3kfOHpqiBPEyL66Tp8CCcC5ezXioif3+rMsLuuEYE5Ujl/nZMYrq3le
+         n/JAuZwwtMoH6HZWo8jPu8MTO6d9HPuASBi5Kefi3tOVXIFEgi7L/PMPl559tRYyxV
+         wMwBIixzkNpCSsWrpGGFYz2zNqFotDMjqBeSOW7Y=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200901041528epcas1p145d317901fc190254fc5a8fcf84a52d4~wjcE0rWDN0736407364epcas1p1l;
+        Tue,  1 Sep 2020 04:15:28 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4BgYdG5FqwzMqYm6; Tue,  1 Sep
+        2020 04:15:14 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        AE.C6.18978.ACACD4F5; Tue,  1 Sep 2020 13:15:06 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200901041505epcas1p4f6bb868de0beb554e708f9aa3a578f6d~wjbvChLbr1010310103epcas1p4_;
+        Tue,  1 Sep 2020 04:15:05 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200901041505epsmtrp17553141b8b96e2004732a83f30a11e8b~wjbvBQs890331203312epsmtrp1w;
+        Tue,  1 Sep 2020 04:15:05 +0000 (GMT)
+X-AuditID: b6c32a35-5edff70000004a22-ac-5f4dcaca9505
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        28.40.08303.9CACD4F5; Tue,  1 Sep 2020 13:15:05 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200901041504epsmtip213960aef21407382983f4a7ead95547a~wjbupowAQ1597015970epsmtip2_;
+        Tue,  1 Sep 2020 04:15:04 +0000 (GMT)
+Subject: Re: [PATCH v2 2/4] drm/vc4: hdmi: Add pixel bvb clock control
+To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>, nsaenzjulienne@suse.de,
+        eric@anholt.net, maxime@cerno.tech, stefan.wahren@i2se.com,
+        dave.stevenson@raspberrypi.com
+Cc:     devicetree@vger.kernel.org, tim.gover@raspberrypi.com,
+        sboyd@kernel.org, mturquette@baylibre.com, kdasu.kdev@gmail.com,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, robh+dt@kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
+        linux-arm-kernel@lists.infradead.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <46e051f7-ba72-5960-da95-a2e9c44d2d85@samsung.com>
+Date:   Tue, 1 Sep 2020 13:27:33 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200829000126.2463-1-rdunlap@infradead.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-01_01:2020-08-31,2020-09-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 adultscore=0 spamscore=0
- phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0 mlxlogscore=812
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009010035
+In-Reply-To: <20200901040759.29992-3-hoegeun.kwon@samsung.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc/q4LSxldwXkUN1W73ADMh7XWnZ51BAn7A5m6GZmDDGUG7gD
+        Bn2st6gbf+iYoKAT0YHY0eBEg8MHrDAeJayIRQOCDCrIOhgMSMYgtdvQwCDg+sCM/76/3/l8
+        8833nBw+W/gvIuLnqHS0VkXlYYg3p+VuSERYX98+RWTHqoi49XUPh7AbajlEjeUhl3j0zIEQ
+        XV9aAeGoK0WI9ke3OIRxZpRL/H3mNy5hNVUjRPmvjTyiankdEEN9CUSLvg4hbtsWEKKo08Ij
+        1kd/cBqujyHEdMUkiPclCx33ENIxVsQj9ZMDCDn+cBAh2/UTPPJHm5Q01pcg5OTp+yyy6eox
+        sqhnhUOeba4HZNODAnLR+JpckJobl01TmbRWTKsy1Jk5qiwZlrxf8a5CGhWJh+HRxDuYWEUp
+        aRm29wN5WGJOnrMmJj5M5eU7V3KKYbCI3XFadb6OFmerGZ0MozWZeZpoTThDKZl8VVZ4hloZ
+        g0dG7pQ6wfTc7BtjsZrKwKNXKu284+CxXynw4kN0F5wutYNS4M0Xom0AfmOqZHmGfwC0PbjK
+        9QyLAC4O9yMvLNbxpg3KBGBTlYHjGRwAlozeYLkoXzQRnq+84nb4obUAttkOuSA2usqC1tOd
+        7gMEDYXmuTG3fhndDkeWZ4BLC9DdsGWo3b3noEFwqqOV49L+6AHY23Jig3kF9l6ade+9nPxw
+        4Wk3z0YDoG22huXRr8NWezXbFQzROi94bWGZ5+mwFz5uPruhfeH8/eYNLYJ/lhVv6AL4fa8F
+        8ZhPAdhs/pnrOZBA87ULzgS+MyEENpgiPOvtsH3VADzBPvDJszNcFwJRATxVLPQgb0Dr1ATL
+        owNh7ckS5BzA9Jvq6DdV0G+qoP8/7DLg1IMttIZRZtEMrsE3P7cRuP9AqLQNlNv/Cu8GLD7o
+        BpDPxvwEXaZkhVCQSX3+Ba1VK7T5eTTTDaTOCy5ni/wz1M5PpNIpcOlOiURC7MKjpDiOBQh+
+        t4kVQjSL0tG5NK2htS98LL6X6DhLNt55tDapPmZA/VVKytKbizHa+v6PnsZbSiSWpYYgS1lw
+        cdBL+elp1HPHNiRzj2Sux8BbUB5+/9ubQx3+z0dO4MmrcYIdn12cMvssJYpeLffJumT0Dhxc
+        MyeWriSmdrwn2+pI67prC9v2pERcVpGgCjYkrX8iOzj/S/9cRnpaj2JwLQT748LBLmOhSiQ/
+        okxPYh2Q3DRMx+Yw1xtkEylM+7xuJbbm6WX52ki/tcCEV7DP9zUwvjNbg1sDBFTjYP/bs2vf
+        fRx8J/qn+NvHqqn9drMcFR2iRWsrYZItA40JC8Z99FstQcMfxo5W1TUfMXuf/NQ3qmiP8E56
+        7o57qRdrSYzDZFN4KFvLUP8BBZwTWIwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Se1BMURzHnb23s7dtdtzaTadELOOxRivPMx5NM4k7QpoxxvhDLa5CWzv3
+        InkmxSjv0eJapQftLIUibWqkLKOHnSRSVGyZBlmsjMpEuztm+u9zvr/P579DEV5W0o/aFr+T
+        5eLVcQooIUtrFAEzn9Wuippl1ktw4UkziXuv5JE4+/FzN/yyzwZx1eEmgG0F6RCbXhaSuNj6
+        yg1/P9HuhpvK9RCfbbstxhd/DwHcWBuGS4UCiItaP0OcVvlYjIde3RkODC0Qf8jsACEyJsX2
+        BDK2ljQxI3Q0QObtcwtkTMI7MXOvdR5TbDwOmY6MpyKmJP8Qk2YeIJlTd42AKanbx9iLx6+R
+        bpAs3sLGbdvNcqrgaEnsjZZFWp3vnlxdrzgZvJanA3cK0XNR09sSkYO96DKA6j5td+2+SNdo
+        JtIBNcwyVFPDpwPJsNILUGq7wenL6GXonC4XOg5yOg+gC/WFwPEg6EERMrz/BF2JGaD6snOE
+        I4G0Ej3saYEOHk1PRM2/rcDBUjoYlTaanDtJT0adD+6TDvam1yFTvlXkcjzRs0tdzt192H+R
+        kuH0CXoq+pP1gnCxD2rtyha5OADd79UTZ4BMGJELIxJhRCKMSK4C0gh8WS2vidHwQdrZ8Wxi
+        IK/W8LviYwI3J2iKgfMfKJVloML4LbAaiChQDRBFKOTSqvLwKC/pFnXSXpZLiOJ2xbF8NRhL
+        kQofaZ+Qs9GLjlHvZHewrJbl/l9FlLtfsig0aTC6Ad5oMxaYOrvak8aoqit+Ltk0bWnPQsv6
+        IuFk4iKL/FQjafe3+BVJl8f2X5r28WY/ebxyXE7knIF1qq/++s8zsn6ujQiXdftPxDGwu+Qy
+        U0cdud2zJnbB1+7AUCYsuIG/9kv+JqP/x75bxqMpd9vCI7iUTSGyg+drH7z2EF9XcjU+c1ce
+        To0ozxzM9jB4j33aSWik0bmPRo/b+MP3SNgTVV/PsfVBHjumD6TW5TYnNK++JavIs6+wJUaB
+        01p+mcpqmT5lv/2gITOSkLyfNGNCyNAH+wEyKyBM4No8dTbP1q36Vce81waMqZy3lfqb3Pfl
+        Tej8qvGjLi/ffKBeHKkg+Vh1kJLgePU/4FAB8XYDAAA=
+X-CMS-MailID: 20200901041505epcas1p4f6bb868de0beb554e708f9aa3a578f6d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200901040851epcas1p3124094e38175758b2310bdae6d76793c
+References: <20200901040759.29992-1-hoegeun.kwon@samsung.com>
+        <CGME20200901040851epcas1p3124094e38175758b2310bdae6d76793c@epcas1p3.samsung.com>
+        <20200901040759.29992-3-hoegeun.kwon@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tony,
+Hi Hoegeun,
 
-I can take it via the memblock tree, would appreciate an Ack.
+It looks good to me. But, just one comment.
 
-On Fri, Aug 28, 2020 at 05:01:26PM -0700, Randy Dunlap wrote:
-> Fix min_low_pfn/max_low_pfn build errors for arch/ia64/: (e.g.)
+On 9/1/20 1:07 PM, Hoegeun Kwon wrote:
+> There is a problem that the output does not work at a resolution
+> exceeding FHD. To solve this, we need to adjust the bvb clock at a
+> resolution exceeding FHD.
 > 
->  ERROR: "max_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
->  ERROR: "max_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
->  ERROR: "max_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
->  ERROR: "max_low_pfn" [drivers/md/dm-integrity.ko] undefined!
->  ERROR: "min_low_pfn" [drivers/md/dm-integrity.ko] undefined!
->  ERROR: "max_low_pfn" [crypto/tcrypt.ko] undefined!
->  ERROR: "min_low_pfn" [crypto/tcrypt.ko] undefined!
->  ERROR: "min_low_pfn" [security/keys/encrypted-keys/encrypted-keys.ko] undefined!
->  ERROR: "max_low_pfn" [security/keys/encrypted-keys/encrypted-keys.ko] undefined!
->  ERROR: "min_low_pfn" [arch/ia64/kernel/mca_recovery.ko] undefined!
->  ERROR: "max_low_pfn" [arch/ia64/kernel/mca_recovery.ko] undefined!
-> 
-> David suggested just exporting min_low_pfn & max_low_pfn in
-> mm/memblock.c:
-> https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2006291911220.1118534@chino.kir.corp.google.com/
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: linux-mm@kvack.org
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: Tony Luck <tony.luck@intel.com>
-> Cc: Fenghua Yu <fenghua.yu@intel.com>
-> Cc: linux-ia64@vger.kernel.org
+> Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
 > ---
->  arch/ia64/kernel/ia64_ksyms.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/vc4/vc4_hdmi.c | 25 +++++++++++++++++++++++++
+>  drivers/gpu/drm/vc4/vc4_hdmi.h |  1 +
+>  2 files changed, 26 insertions(+)
 > 
-> --- linux-next-20200825.orig/arch/ia64/kernel/ia64_ksyms.c
-> +++ linux-next-20200825/arch/ia64/kernel/ia64_ksyms.c
-> @@ -3,7 +3,7 @@
->   * Architecture-specific kernel symbols
->   */
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> index 95ec5eedea39..eb3192d1fd86 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+> @@ -80,6 +80,7 @@
+>  # define VC4_HD_M_ENABLE			BIT(0)
 >  
-> -#ifdef CONFIG_VIRTUAL_MEM_MAP
-> +#if defined(CONFIG_VIRTUAL_MEM_MAP) || defined(CONFIG_DISCONTIGMEM)
->  #include <linux/compiler.h>
->  #include <linux/export.h>
->  #include <linux/memblock.h>
+>  #define CEC_CLOCK_FREQ 40000
+> +#define VC4_HSM_MID_CLOCK 149985000
+>  
+>  static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
+>  {
+> @@ -380,6 +381,7 @@ static void vc4_hdmi_encoder_post_crtc_powerdown(struct drm_encoder *encoder)
+>  	HDMI_WRITE(HDMI_VID_CTL,
+>  		   HDMI_READ(HDMI_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
+>  
+> +	clk_disable_unprepare(vc4_hdmi->pixel_bvb_clock);
+>  	clk_disable_unprepare(vc4_hdmi->hsm_clock);
+>  	clk_disable_unprepare(vc4_hdmi->pixel_clock);
+>  
+> @@ -638,6 +640,23 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
+>  		return;
+>  	}
+>  
+> +	ret = clk_set_rate(vc4_hdmi->pixel_bvb_clock,
+> +			(hsm_rate > VC4_HSM_MID_CLOCK ? 150000000 : 75000000));
+> +	if (ret) {
+> +		DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
+> +		clk_disable_unprepare(vc4_hdmi->hsm_clock);
+> +		clk_disable_unprepare(vc4_hdmi->pixel_clock);
+> +		return;
+> +	}
+> +
+> +	ret = clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
+> +	if (ret) {
+> +		DRM_ERROR("Failed to turn on pixel bvb clock: %d\n", ret);
+> +		clk_disable_unprepare(vc4_hdmi->hsm_clock);
+> +		clk_disable_unprepare(vc4_hdmi->pixel_clock);
+> +		return;
+> +	}
+
+Generally, enable the clock before using clk and then change the clock rate.
+I think that you better to change the order between clk_prepare_enable and clk_set_rate.
+
+
+> +
+>  	if (vc4_hdmi->variant->reset)
+>  		vc4_hdmi->variant->reset(vc4_hdmi);
+>  
+> @@ -1593,6 +1612,12 @@ static int vc5_hdmi_init_resources(struct vc4_hdmi *vc4_hdmi)
+>  		return PTR_ERR(vc4_hdmi->audio_clock);
+>  	}
+>  
+> +	vc4_hdmi->pixel_bvb_clock = devm_clk_get(dev, "bvb");
+> +	if (IS_ERR(vc4_hdmi->pixel_bvb_clock)) {
+> +		DRM_ERROR("Failed to get pixel bvb clock\n");
+> +		return PTR_ERR(vc4_hdmi->pixel_bvb_clock);
+> +	}
+> +
+>  	vc4_hdmi->reset = devm_reset_control_get(dev, NULL);
+>  	if (IS_ERR(vc4_hdmi->reset)) {
+>  		DRM_ERROR("Failed to get HDMI reset line\n");
+> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> index 0806c6d9f24e..63c6f8bddf1d 100644
+> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
+> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+> @@ -147,6 +147,7 @@ struct vc4_hdmi {
+>  	struct clk *pixel_clock;
+>  	struct clk *hsm_clock;
+>  	struct clk *audio_clock;
+> +	struct clk *pixel_bvb_clock;
+>  
+>  	struct reset_control *reset;
+>  
+> 
+
 
 -- 
-Sincerely yours,
-Mike.
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
