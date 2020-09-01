@@ -2,261 +2,543 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE37E258D94
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E79B258DBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgIALqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:46:24 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:23625 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgIALgC (ORCPT
+        id S1726789AbgIAL57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:57:59 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39762 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727099AbgIALt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:36:02 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200901113538epoutp01c3b12e34550a96619b3ff8ddd55d9653~wpcZC0Vo_0814908149epoutp01V
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 11:35:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200901113538epoutp01c3b12e34550a96619b3ff8ddd55d9653~wpcZC0Vo_0814908149epoutp01V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598960138;
-        bh=YqLyEyefd2EuCky1gKbGz4lUozJOx/Mj4j1disZQLO0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=BwLfTsvommtNq70lpjXaQFlHqGR3SPvl8bfVDzMXW1c0PObRutvWDL5aSWKGvstj0
-         CUmr0bsDcSIsiBQY5wU6gCnM00DnFFxW6zxDaNexF6XzcWon5syo/fdUdli3f5L1xM
-         LGBDHlncLun6LR2nVjyvXnN4Nws8PZqOplLk02Rw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200901113538epcas1p4694458fd90ac4d9601b79cf99ce20b6e~wpcYgjG8Q0702007020epcas1p4F;
-        Tue,  1 Sep 2020 11:35:38 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.154]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4BglPN0Ff3zMqYkb; Tue,  1 Sep
-        2020 11:35:36 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C9.D6.29173.7023E4F5; Tue,  1 Sep 2020 20:35:35 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200901113535epcas1p3a5d9ee1600e343886cabf86cdea1023b~wpcV1sezp0683206832epcas1p3I;
-        Tue,  1 Sep 2020 11:35:35 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200901113535epsmtrp1b151ed8540122e28c548772ac6cfd14a~wpcV055Do0918009180epsmtrp1h;
-        Tue,  1 Sep 2020 11:35:35 +0000 (GMT)
-X-AuditID: b6c32a37-9b7ff700000071f5-c0-5f4e3207e4ba
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9B.FF.08303.7023E4F5; Tue,  1 Sep 2020 20:35:35 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200901113534epsmtip1e3167e347495f932743fa656683ddfe4~wpcVmbfSe1857018570epsmtip1L;
-        Tue,  1 Sep 2020 11:35:34 +0000 (GMT)
-Subject: Re: [PATCH v4 03/78] drm/vc4: hvs: Boost the core clock during
- modeset
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Organization: Samsung Electronics
-Message-ID: <6aa8ed4d-1457-ce27-f801-11a197088c56@samsung.com>
-Date:   Tue, 1 Sep 2020 20:48:03 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Tue, 1 Sep 2020 07:49:28 -0400
+Date:   Tue, 01 Sep 2020 11:48:05 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598960886;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGQjeWf1hLiLciva78HOycNG8H6yPpz+kQHneI4zQlA=;
+        b=NmC/61DIfhzPPaifQEOqZBA/ffqstDwFKmHM5QD51RZnj2ST+8I0ltuZ6acdEbdPaW5lin
+        spIho4DZV2AqlxXinAI4fIIzidNUohA3RyVOGlrqdqvAp4bqJ21hsE10vpcayXYNL9HieO
+        0ZXVgBLJoQ+DVvaQRckm6D8meYwt+P5pZAgSUpHJIOQNGWI5e7g+2/0PQZDm4l/Lf5ESkF
+        j6GNb+YrmdNqeaAsrwAGQx1buC/MX2dSGjBMJWAkQkh6Y7jW/Cc9T7f+1JEaDSa1R8tyXZ
+        oMkVnRO0QxB9cgArB7ZkxMhT99PczZh4wsVQ5RhfqiA61LVPNexKCZuU1kZbYg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598960886;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VGQjeWf1hLiLciva78HOycNG8H6yPpz+kQHneI4zQlA=;
+        b=0ARU/wUdFWYaxIQ0v4uIs1GvQxwckGI1z9cswUWt55BBht3T1aLGe7HzsxYmHDCtGy3lR9
+        96o+oWx4nog93pAA==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/static_call] x86/static_call: Add inline static call
+ implementation for x86-64
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200818135804.864271425@infradead.org>
+References: <20200818135804.864271425@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <a4f6ea62-441a-8e5b-5383-13d7f2b1a920@samsung.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJJsWRmVeSWpSXmKPExsWy7bCmri67kV+8wbaVVhZre4+yWLydu5jF
-        4srX92wWBxovM1psenyN1eLyrjlsFhNvb2C3mPHjH6PFtlnL2SzW3XrNZvFo6n1GB26PpvfH
-        2Dxm3T/L5nHn3Hk2j/vdx5k8Ni+p92g9+ovFY/Ppao/Pm+QCOKKybTJSE1NSixRS85LzUzLz
-        0m2VvIPjneNNzQwMdQ0tLcyVFPISc1NtlVx8AnTdMnOA7lRSKEvMKQUKBSQWFyvp29kU5ZeW
-        pCpk5BeX2CqlFqTkFFgW6BUn5haX5qXrJefnWhkaGBiZAhUmZGc875jPUtCuXPHlfDtrA+MO
-        6S5GTg4JAROJAw+2MncxcnEICexglPg1aTUbhPOJUWL7q3+sEM5nRon1P1czwrQ03O1iBrGF
-        BHYxSvy5qw9R9J5R4umWF0xdjBwcwgKBEhN2K4HUsAloSex/cYMNxBYRKJdo79wPto5ZYAeT
-        RMep6WAJfgFFias/HoMt4BWwk9g79RUTiM0ioCJx4NorsBpRgTCJk9taoGoEJU7OfMICYnMK
-        2Ess6X0IdhCzgLjErSfzmSBseYntb+eALZMQOMMhMX3/AXaID1wkGiZMg/pGWOLV8S1QcSmJ
-        l/1tUHa1xMqTR9ggmjsYJbbsv8AKkTCW2L90MtiXzAKaEut36UOEFSV2/p7LCLGYT+Ld1x5W
-        kBIJAV6JjjYhiBJlicsP7jJB2JISi9s72SYwKs1C8s4sJC/MQvLCLIRlCxhZVjGKpRYU56an
-        FhsWGCPH9iZGcBrWMt/BOO3tB71DjEwcjIcYJTiYlUR4Z97wjRfiTUmsrEotyo8vKs1JLT7E
-        aAoM4InMUqLJ+cBMkFcSb2hqZGxsbGFiaGZqaKgkzvvwlkK8kEB6YklqdmpqQWoRTB8TB6dU
-        A1MCo9JH/tZwrrXBGT91donkN5WXXvp7mH9FUpJAYYe4dTLLaY2VthdPr9WS3vR7wuutfxfO
-        M3dJSjU7t7Nq/WQV9itvTwcZ3NYOj7RrdtL7ylgd4jS15Nnhkk4tX++jeVfe+8mpV87KtPra
-        W5vo7jjpq/hfF/OMsiVVxS/39arM3rp9hsw8Hz+Z0OAOpd4l9dzHhTRE45acsbY5tj/uwpln
-        zWYfXv7/+yRSJdWJ7bPyvnWcr8oWX/afntSiF/Jvb4XO0cMcIgt14lzijt18oqCUtkCV6YnI
-        w+Tj+4978/C87BUSckhryzoou++lLf+jwzmbO3ZdqZ2hd3798tMRqWWLAyae/LJ1g/nl5ytd
-        wpRYijMSDbWYi4oTAZtZubVMBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsWy7bCSnC67kV+8wYof7BZre4+yWLydu5jF
-        4srX92wWBxovM1psenyN1eLyrjlsFhNvb2C3mPHjH6PFtlnL2SzW3XrNZvFo6n1GB26PpvfH
-        2Dxm3T/L5nHn3Hk2j/vdx5k8Ni+p92g9+ovFY/Ppao/Pm+QCOKK4bFJSczLLUov07RK4Mp53
-        zGcpaFeu+HK+nbWBcYd0FyMnh4SAiUTD3S7mLkYuDiGBHYwSq968ZYFISEpMu3gUKMEBZAtL
-        HD5cDFHzllFiY8MONpC4sECgxITdSiDlbAJaEvtf3GADsUUEKiU+z9kFNpNZYAeTRNfj02Az
-        hQQOMUm0HPQCsfkFFCWu/njMCGLzCthJ7J36ignEZhFQkThw7RXYIFGBMImdSx4zQdQISpyc
-        +QRsDqeAvcSS3ofMIDazgLrEn3mXoGxxiVtP5jNB2PIS29/OYZ7AKDwLSfssJC2zkLTMQtKy
-        gJFlFaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcDxqae1g3LPqg94hRiYOxkOMEhzM
-        SiK8M2/4xgvxpiRWVqUW5ccXleakFh9ilOZgURLn/TprYZyQQHpiSWp2ampBahFMlomDU6qB
-        acGFSb+eOGz875yw+TzjZ+GvBW9df3RN3m24ZxbLxuiL5X/mfpuRcm/nkdXc9QxfrgR5TS/e
-        ytMTWRTzbpfUXfbAucelr/n+b3taF71gjrayc3bQrvsCqZFHnJ1NnszSeTqLSylF+4e72In1
-        U7LW5s/qs5u9iW3JxLIdaz9bfanpDj9ZcluoYUrX3T1p4uutV2d2OC6LtftTsM8g12M1S++K
-        LysU9dQ7n+xjSLq5cIKYoX7gDBXvLTKZIVY6X883+HOZfzp2LaZj2XXdoIv60tp5pt0PL2w4
-        VG0kvPxixBOlgL2vO8sO1+tempSd48a8R6dDYMPqfVUNd2pqDs/s4D15dovdfIa8biflb+2X
-        jJVYijMSDbWYi4oTAejn/Dk2AwAA
-X-CMS-MailID: 20200901113535epcas1p3a5d9ee1600e343886cabf86cdea1023b
-X-Msg-Generator: CA
+Message-ID: <159896088526.20229.3949504518078094725.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200708174243epcas1p2b5646e3d45e412d1cd1286d90cb9cc37
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
-        <CGME20200708174243epcas1p2b5646e3d45e412d1cd1286d90cb9cc37@epcas1p2.samsung.com>
-        <b04341887fb1acb9ed4adc28d109f9e21f146c7d.1594230107.git-series.maxime@cerno.tech>
-        <a4f6ea62-441a-8e5b-5383-13d7f2b1a920@samsung.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 8:21 PM, Chanwoo Choi wrote:
-> Hi Maxime,
-> 
-> On 7/9/20 2:41 AM, Maxime Ripard wrote:
->> In order to prevent timeouts and stalls in the pipeline, the core clock
->> needs to be maxed at 500MHz during a modeset on the BCM2711.
->>
->> Reviewed-by: Eric Anholt <eric@anholt.net>
->> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
->> ---
->>  drivers/gpu/drm/vc4/vc4_drv.h |  2 ++
->>  drivers/gpu/drm/vc4/vc4_hvs.c |  9 +++++++++
->>  drivers/gpu/drm/vc4/vc4_kms.c |  9 +++++++++
->>  3 files changed, 20 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
->> index e4cde1f9224b..6358f6ca8d56 100644
->> --- a/drivers/gpu/drm/vc4/vc4_drv.h
->> +++ b/drivers/gpu/drm/vc4/vc4_drv.h
->> @@ -320,6 +320,8 @@ struct vc4_hvs {
->>  	void __iomem *regs;
->>  	u32 __iomem *dlist;
->>  
->> +	struct clk *core_clk;
->> +
->>  	/* Memory manager for CRTCs to allocate space in the display
->>  	 * list.  Units are dwords.
->>  	 */
->> diff --git a/drivers/gpu/drm/vc4/vc4_hvs.c b/drivers/gpu/drm/vc4/vc4_hvs.c
->> index 836d8799d79e..091fdf4908aa 100644
->> --- a/drivers/gpu/drm/vc4/vc4_hvs.c
->> +++ b/drivers/gpu/drm/vc4/vc4_hvs.c
->> @@ -19,6 +19,7 @@
->>   * each CRTC.
->>   */
->>  
->> +#include <linux/clk.h>
->>  #include <linux/component.h>
->>  #include <linux/platform_device.h>
->>  
->> @@ -540,6 +541,14 @@ static int vc4_hvs_bind(struct device *dev, struct device *master, void *data)
->>  	hvs->regset.regs = hvs_regs;
->>  	hvs->regset.nregs = ARRAY_SIZE(hvs_regs);
->>  
->> +	if (hvs->hvs5) {
->> +		hvs->core_clk = devm_clk_get(&pdev->dev, NULL);
->> +		if (IS_ERR(hvs->core_clk)) {
->> +			dev_err(&pdev->dev, "Couldn't get core clock\n");
->> +			return PTR_ERR(hvs->core_clk);
->> +		}
->> +	}
->> +
->>  	if (!hvs->hvs5)
->>  		hvs->dlist = hvs->regs + SCALER_DLIST_START;
->>  	else
->> diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
->> index 08318e69061b..210cc2408087 100644
->> --- a/drivers/gpu/drm/vc4/vc4_kms.c
->> +++ b/drivers/gpu/drm/vc4/vc4_kms.c
->> @@ -11,6 +11,8 @@
->>   * crtc, HDMI encoder).
->>   */
->>  
->> +#include <linux/clk.h>
->> +
->>  #include <drm/drm_atomic.h>
->>  #include <drm/drm_atomic_helper.h>
->>  #include <drm/drm_crtc.h>
->> @@ -149,6 +151,7 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
->>  {
->>  	struct drm_device *dev = state->dev;
->>  	struct vc4_dev *vc4 = to_vc4_dev(dev);
->> +	struct vc4_hvs *hvs = vc4->hvs;
->>  	struct vc4_crtc *vc4_crtc;
->>  	int i;
->>  
->> @@ -160,6 +163,9 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
->>  		vc4_hvs_mask_underrun(dev, vc4_crtc->channel);
->>  	}
->>  
->> +	if (vc4->hvs->hvs5)
->> +		clk_set_min_rate(hvs->core_clk, 500000000);
->> +
->>  	drm_atomic_helper_wait_for_fences(dev, state, false);
->>  
->>  	drm_atomic_helper_wait_for_dependencies(state);
->> @@ -182,6 +188,9 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
->>  
->>  	drm_atomic_helper_commit_cleanup_done(state);
->>  
->> +	if (vc4->hvs->hvs5)
->> +		clk_set_min_rate(hvs->core_clk, 0);
->> +
->>  	drm_atomic_state_put(state);
->>  
->>  	up(&vc4->async_modeset);
->>
-> 
-> This patch doesn't control the enable/disable of core_clk.
-> So, I think that it need to handle the clock as following:
-> 
-> diff --git a/drivers/gpu/drm/vc4/vc4_hvs.c b/drivers/gpu/drm/vc4/vc4_hvs.c
-> index 4ef88c0b51ab..355d67fd8beb 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hvs.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hvs.c
-> @@ -588,6 +588,12 @@ static int vc4_hvs_bind(struct device *dev, struct device *master, void *data)
->                         dev_err(&pdev->dev, "Couldn't get core clock\n");
->                         return PTR_ERR(hvs->core_clk);
->                 }
-> +
-> +               ret = clk_prepare_enable(hvs->core_clk);
-> +               if (ret) {
-> +                       dev_err(&pdev->dev, "Couldn't enable core clock\n");
-> +                       return ret;
-> +               }
->         }
->  
->         if (!hvs->hvs5)
-> @@ -681,6 +687,8 @@ static void vc4_hvs_unbind(struct device *dev, struct device *master,
->         drm_mm_takedown(&vc4->hvs->dlist_mm);
->         drm_mm_takedown(&vc4->hvs->lbm_mm);
->  
-> +       clk_prepare_enable(vc4->hvs->core_clk);
+The following commit has been merged into the core/static_call branch of tip:
 
-I'm sorry. Change to clk_disable_unprepare(vc4->hvs->core_clk);
+Commit-ID:     1e7e47883830aae5e8246a22ca2fc6883c61acdf
+Gitweb:        https://git.kernel.org/tip/1e7e47883830aae5e8246a22ca2fc6883c61acdf
+Author:        Josh Poimboeuf <jpoimboe@redhat.com>
+AuthorDate:    Tue, 18 Aug 2020 15:57:45 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 01 Sep 2020 09:58:05 +02:00
 
-> +
->         vc4->hvs = NULL;
->  }
-> 
-> 
-> 
+x86/static_call: Add inline static call implementation for x86-64
 
+Add the inline static call implementation for x86-64. The generated code
+is identical to the out-of-line case, except we move the trampoline into
+it's own section.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Objtool uses the trampoline naming convention to detect all the call
+sites. It then annotates those call sites in the .static_call_sites
+section.
+
+During boot (and module init), the call sites are patched to call
+directly into the destination function.  The temporary trampoline is
+then no longer used.
+
+[peterz: merged trampolines, put trampoline in section]
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20200818135804.864271425@infradead.org
+---
+ arch/x86/Kconfig                        |   3 +-
+ arch/x86/include/asm/static_call.h      |  13 +-
+ arch/x86/kernel/static_call.c           |   3 +-
+ arch/x86/kernel/vmlinux.lds.S           |   1 +-
+ include/asm-generic/vmlinux.lds.h       |   6 +-
+ tools/include/linux/static_call_types.h |  28 +++++-
+ tools/objtool/check.c                   | 130 +++++++++++++++++++++++-
+ tools/objtool/check.h                   |   1 +-
+ tools/objtool/elf.c                     |   8 +-
+ tools/objtool/elf.h                     |   3 +-
+ tools/objtool/objtool.h                 |   1 +-
+ tools/objtool/orc_gen.c                 |   4 +-
+ tools/objtool/sync-check.sh             |   1 +-
+ 13 files changed, 193 insertions(+), 9 deletions(-)
+ create mode 100644 tools/include/linux/static_call_types.h
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 595c06b..8a48d3e 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -216,6 +216,7 @@ config X86
+ 	select HAVE_STACKPROTECTOR		if CC_HAS_SANE_STACKPROTECTOR
+ 	select HAVE_STACK_VALIDATION		if X86_64
+ 	select HAVE_STATIC_CALL
++	select HAVE_STATIC_CALL_INLINE		if HAVE_STACK_VALIDATION
+ 	select HAVE_RSEQ
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+@@ -231,6 +232,7 @@ config X86
+ 	select RTC_MC146818_LIB
+ 	select SPARSE_IRQ
+ 	select SRCU
++	select STACK_VALIDATION			if HAVE_STACK_VALIDATION && (HAVE_STATIC_CALL_INLINE || RETPOLINE)
+ 	select SYSCTL_EXCEPTION_TRACE
+ 	select THREAD_INFO_IN_TASK
+ 	select USER_STACKTRACE_SUPPORT
+@@ -452,7 +454,6 @@ config GOLDFISH
+ config RETPOLINE
+ 	bool "Avoid speculative indirect branches in kernel"
+ 	default y
+-	select STACK_VALIDATION if HAVE_STACK_VALIDATION
+ 	help
+ 	  Compile kernel with the retpoline compiler options to guard against
+ 	  kernel-to-user data leaks by avoiding speculative indirect
+diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
+index 07aa879..33469ae 100644
+--- a/arch/x86/include/asm/static_call.h
++++ b/arch/x86/include/asm/static_call.h
+@@ -5,12 +5,23 @@
+ #include <asm/text-patching.h>
+ 
+ /*
++ * For CONFIG_HAVE_STATIC_CALL_INLINE, this is a temporary trampoline which
++ * uses the current value of the key->func pointer to do an indirect jump to
++ * the function.  This trampoline is only used during boot, before the call
++ * sites get patched by static_call_update().  The name of this trampoline has
++ * a magical aspect: objtool uses it to find static call sites so it can create
++ * the .static_call_sites section.
++ *
+  * For CONFIG_HAVE_STATIC_CALL, this is a permanent trampoline which
+  * does a direct jump to the function.  The direct jump gets patched by
+  * static_call_update().
++ *
++ * Having the trampoline in a special section forces GCC to emit a JMP.d32 when
++ * it does tail-call optimization on the call; since you cannot compute the
++ * relative displacement across sections.
+  */
+ #define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
+-	asm(".pushsection .text, \"ax\"				\n"	\
++	asm(".pushsection .static_call.text, \"ax\"		\n"	\
+ 	    ".align 4						\n"	\
+ 	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
+ 	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
+diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
+index 0565825..5ff2b63 100644
+--- a/arch/x86/kernel/static_call.c
++++ b/arch/x86/kernel/static_call.c
+@@ -26,6 +26,9 @@ void arch_static_call_transform(void *site, void *tramp, void *func)
+ 	if (tramp)
+ 		__static_call_transform(tramp, JMP32_INSN_OPCODE, func);
+ 
++	if (IS_ENABLED(CONFIG_HAVE_STATIC_CALL_INLINE) && site)
++		__static_call_transform(site, CALL_INSN_OPCODE, func);
++
+ 	mutex_unlock(&text_mutex);
+ }
+ EXPORT_SYMBOL_GPL(arch_static_call_transform);
+diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+index 9a03e5b..2568f4c 100644
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -136,6 +136,7 @@ SECTIONS
+ 		ENTRY_TEXT
+ 		ALIGN_ENTRY_TEXT_END
+ 		SOFTIRQENTRY_TEXT
++		STATIC_CALL_TEXT
+ 		*(.fixup)
+ 		*(.gnu.warning)
+ 
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 0088a5c..0502087 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -642,6 +642,12 @@
+ 		*(.softirqentry.text)					\
+ 		__softirqentry_text_end = .;
+ 
++#define STATIC_CALL_TEXT						\
++		ALIGN_FUNCTION();					\
++		__static_call_text_start = .;				\
++		*(.static_call.text)					\
++		__static_call_text_end = .;
++
+ /* Section used for early init (in .S files) */
+ #define HEAD_TEXT  KEEP(*(.head.text))
+ 
+diff --git a/tools/include/linux/static_call_types.h b/tools/include/linux/static_call_types.h
+new file mode 100644
+index 0000000..408d345
+--- /dev/null
++++ b/tools/include/linux/static_call_types.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _STATIC_CALL_TYPES_H
++#define _STATIC_CALL_TYPES_H
++
++#include <linux/types.h>
++#include <linux/stringify.h>
++
++#define STATIC_CALL_KEY_PREFIX		__SCK__
++#define STATIC_CALL_KEY_PREFIX_STR	__stringify(STATIC_CALL_KEY_PREFIX)
++#define STATIC_CALL_KEY_PREFIX_LEN	(sizeof(STATIC_CALL_KEY_PREFIX_STR) - 1)
++#define STATIC_CALL_KEY(name)		__PASTE(STATIC_CALL_KEY_PREFIX, name)
++
++#define STATIC_CALL_TRAMP_PREFIX	__SCT__
++#define STATIC_CALL_TRAMP_PREFIX_STR	__stringify(STATIC_CALL_TRAMP_PREFIX)
++#define STATIC_CALL_TRAMP_PREFIX_LEN	(sizeof(STATIC_CALL_TRAMP_PREFIX_STR) - 1)
++#define STATIC_CALL_TRAMP(name)		__PASTE(STATIC_CALL_TRAMP_PREFIX, name)
++#define STATIC_CALL_TRAMP_STR(name)	__stringify(STATIC_CALL_TRAMP(name))
++
++/*
++ * The static call site table needs to be created by external tooling (objtool
++ * or a compiler plugin).
++ */
++struct static_call_site {
++	s32 addr;
++	s32 key;
++};
++
++#endif /* _STATIC_CALL_TYPES_H */
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e034a8f..f8f7a40 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -16,6 +16,7 @@
+ 
+ #include <linux/hashtable.h>
+ #include <linux/kernel.h>
++#include <linux/static_call_types.h>
+ 
+ #define FAKE_JUMP_OFFSET -1
+ 
+@@ -433,6 +434,103 @@ reachable:
+ 	return 0;
+ }
+ 
++static int create_static_call_sections(struct objtool_file *file)
++{
++	struct section *sec, *reloc_sec;
++	struct reloc *reloc;
++	struct static_call_site *site;
++	struct instruction *insn;
++	struct symbol *key_sym;
++	char *key_name, *tmp;
++	int idx;
++
++	sec = find_section_by_name(file->elf, ".static_call_sites");
++	if (sec) {
++		INIT_LIST_HEAD(&file->static_call_list);
++		WARN("file already has .static_call_sites section, skipping");
++		return 0;
++	}
++
++	if (list_empty(&file->static_call_list))
++		return 0;
++
++	idx = 0;
++	list_for_each_entry(insn, &file->static_call_list, static_call_node)
++		idx++;
++
++	sec = elf_create_section(file->elf, ".static_call_sites", SHF_WRITE,
++				 sizeof(struct static_call_site), idx);
++	if (!sec)
++		return -1;
++
++	reloc_sec = elf_create_reloc_section(file->elf, sec, SHT_RELA);
++	if (!reloc_sec)
++		return -1;
++
++	idx = 0;
++	list_for_each_entry(insn, &file->static_call_list, static_call_node) {
++
++		site = (struct static_call_site *)sec->data->d_buf + idx;
++		memset(site, 0, sizeof(struct static_call_site));
++
++		/* populate reloc for 'addr' */
++		reloc = malloc(sizeof(*reloc));
++		if (!reloc) {
++			perror("malloc");
++			return -1;
++		}
++		memset(reloc, 0, sizeof(*reloc));
++		reloc->sym = insn->sec->sym;
++		reloc->addend = insn->offset;
++		reloc->type = R_X86_64_PC32;
++		reloc->offset = idx * sizeof(struct static_call_site);
++		reloc->sec = reloc_sec;
++		elf_add_reloc(file->elf, reloc);
++
++		/* find key symbol */
++		key_name = strdup(insn->call_dest->name);
++		if (!key_name) {
++			perror("strdup");
++			return -1;
++		}
++		if (strncmp(key_name, STATIC_CALL_TRAMP_PREFIX_STR,
++			    STATIC_CALL_TRAMP_PREFIX_LEN)) {
++			WARN("static_call: trampoline name malformed: %s", key_name);
++			return -1;
++		}
++		tmp = key_name + STATIC_CALL_TRAMP_PREFIX_LEN - STATIC_CALL_KEY_PREFIX_LEN;
++		memcpy(tmp, STATIC_CALL_KEY_PREFIX_STR, STATIC_CALL_KEY_PREFIX_LEN);
++
++		key_sym = find_symbol_by_name(file->elf, tmp);
++		if (!key_sym) {
++			WARN("static_call: can't find static_call_key symbol: %s", tmp);
++			return -1;
++		}
++		free(key_name);
++
++		/* populate reloc for 'key' */
++		reloc = malloc(sizeof(*reloc));
++		if (!reloc) {
++			perror("malloc");
++			return -1;
++		}
++		memset(reloc, 0, sizeof(*reloc));
++		reloc->sym = key_sym;
++		reloc->addend = 0;
++		reloc->type = R_X86_64_PC32;
++		reloc->offset = idx * sizeof(struct static_call_site) + 4;
++		reloc->sec = reloc_sec;
++		elf_add_reloc(file->elf, reloc);
++
++		idx++;
++	}
++
++	if (elf_rebuild_reloc_section(file->elf, reloc_sec))
++		return -1;
++
++	return 0;
++}
++
+ /*
+  * Warnings shouldn't be reported for ignored functions.
+  */
+@@ -1522,6 +1620,23 @@ static int read_intra_function_calls(struct objtool_file *file)
+ 	return 0;
+ }
+ 
++static int read_static_call_tramps(struct objtool_file *file)
++{
++	struct section *sec;
++	struct symbol *func;
++
++	for_each_sec(file, sec) {
++		list_for_each_entry(func, &sec->symbol_list, list) {
++			if (func->bind == STB_GLOBAL &&
++			    !strncmp(func->name, STATIC_CALL_TRAMP_PREFIX_STR,
++				     strlen(STATIC_CALL_TRAMP_PREFIX_STR)))
++				func->static_call_tramp = true;
++		}
++	}
++
++	return 0;
++}
++
+ static void mark_rodata(struct objtool_file *file)
+ {
+ 	struct section *sec;
+@@ -1601,6 +1716,10 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = read_static_call_tramps(file);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
+ 
+@@ -2432,6 +2551,11 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			if (dead_end_function(file, insn->call_dest))
+ 				return 0;
+ 
++			if (insn->type == INSN_CALL && insn->call_dest->static_call_tramp) {
++				list_add_tail(&insn->static_call_node,
++					      &file->static_call_list);
++			}
++
+ 			break;
+ 
+ 		case INSN_JUMP_CONDITIONAL:
+@@ -2791,6 +2915,7 @@ int check(const char *_objname, bool orc)
+ 
+ 	INIT_LIST_HEAD(&file.insn_list);
+ 	hash_init(file.insn_hash);
++	INIT_LIST_HEAD(&file.static_call_list);
+ 	file.c_file = !vmlinux && find_section_by_name(file.elf, ".comment");
+ 	file.ignore_unreachables = no_unreachable;
+ 	file.hints = false;
+@@ -2838,6 +2963,11 @@ int check(const char *_objname, bool orc)
+ 		warnings += ret;
+ 	}
+ 
++	ret = create_static_call_sections(&file);
++	if (ret < 0)
++		goto out;
++	warnings += ret;
++
+ 	if (orc) {
+ 		ret = create_orc(&file);
+ 		if (ret < 0)
+diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+index 061aa96..36d38b9 100644
+--- a/tools/objtool/check.h
++++ b/tools/objtool/check.h
+@@ -22,6 +22,7 @@ struct insn_state {
+ struct instruction {
+ 	struct list_head list;
+ 	struct hlist_node hash;
++	struct list_head static_call_node;
+ 	struct section *sec;
+ 	unsigned long offset;
+ 	unsigned int len;
+diff --git a/tools/objtool/elf.c b/tools/objtool/elf.c
+index 3ddbd66..4e1d746 100644
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -652,7 +652,7 @@ err:
+ }
+ 
+ struct section *elf_create_section(struct elf *elf, const char *name,
+-				   size_t entsize, int nr)
++				   unsigned int sh_flags, size_t entsize, int nr)
+ {
+ 	struct section *sec, *shstrtab;
+ 	size_t size = entsize * nr;
+@@ -712,7 +712,7 @@ struct section *elf_create_section(struct elf *elf, const char *name,
+ 	sec->sh.sh_entsize = entsize;
+ 	sec->sh.sh_type = SHT_PROGBITS;
+ 	sec->sh.sh_addralign = 1;
+-	sec->sh.sh_flags = SHF_ALLOC;
++	sec->sh.sh_flags = SHF_ALLOC | sh_flags;
+ 
+ 
+ 	/* Add section name to .shstrtab (or .strtab for Clang) */
+@@ -767,7 +767,7 @@ static struct section *elf_create_rel_reloc_section(struct elf *elf, struct sect
+ 	strcpy(relocname, ".rel");
+ 	strcat(relocname, base->name);
+ 
+-	sec = elf_create_section(elf, relocname, sizeof(GElf_Rel), 0);
++	sec = elf_create_section(elf, relocname, 0, sizeof(GElf_Rel), 0);
+ 	free(relocname);
+ 	if (!sec)
+ 		return NULL;
+@@ -797,7 +797,7 @@ static struct section *elf_create_rela_reloc_section(struct elf *elf, struct sec
+ 	strcpy(relocname, ".rela");
+ 	strcat(relocname, base->name);
+ 
+-	sec = elf_create_section(elf, relocname, sizeof(GElf_Rela), 0);
++	sec = elf_create_section(elf, relocname, 0, sizeof(GElf_Rela), 0);
+ 	free(relocname);
+ 	if (!sec)
+ 		return NULL;
+diff --git a/tools/objtool/elf.h b/tools/objtool/elf.h
+index 6cc80a0..807f8c6 100644
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -56,6 +56,7 @@ struct symbol {
+ 	unsigned int len;
+ 	struct symbol *pfunc, *cfunc, *alias;
+ 	bool uaccess_safe;
++	bool static_call_tramp;
+ };
+ 
+ struct reloc {
+@@ -120,7 +121,7 @@ static inline u32 reloc_hash(struct reloc *reloc)
+ }
+ 
+ struct elf *elf_open_read(const char *name, int flags);
+-struct section *elf_create_section(struct elf *elf, const char *name, size_t entsize, int nr);
++struct section *elf_create_section(struct elf *elf, const char *name, unsigned int sh_flags, size_t entsize, int nr);
+ struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
+ void elf_add_reloc(struct elf *elf, struct reloc *reloc);
+ int elf_write_insn(struct elf *elf, struct section *sec,
+diff --git a/tools/objtool/objtool.h b/tools/objtool/objtool.h
+index 528028a..9a7cd0b 100644
+--- a/tools/objtool/objtool.h
++++ b/tools/objtool/objtool.h
+@@ -16,6 +16,7 @@ struct objtool_file {
+ 	struct elf *elf;
+ 	struct list_head insn_list;
+ 	DECLARE_HASHTABLE(insn_hash, 20);
++	struct list_head static_call_list;
+ 	bool ignore_unreachables, c_file, hints, rodata;
+ };
+ 
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index 968f55e..e6b2363 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -177,7 +177,7 @@ int create_orc_sections(struct objtool_file *file)
+ 
+ 
+ 	/* create .orc_unwind_ip and .rela.orc_unwind_ip sections */
+-	sec = elf_create_section(file->elf, ".orc_unwind_ip", sizeof(int), idx);
++	sec = elf_create_section(file->elf, ".orc_unwind_ip", 0, sizeof(int), idx);
+ 	if (!sec)
+ 		return -1;
+ 
+@@ -186,7 +186,7 @@ int create_orc_sections(struct objtool_file *file)
+ 		return -1;
+ 
+ 	/* create .orc_unwind section */
+-	u_sec = elf_create_section(file->elf, ".orc_unwind",
++	u_sec = elf_create_section(file->elf, ".orc_unwind", 0,
+ 				   sizeof(struct orc_entry), idx);
+ 
+ 	/* populate sections */
+diff --git a/tools/objtool/sync-check.sh b/tools/objtool/sync-check.sh
+index 2a1261b..aa099b2 100755
+--- a/tools/objtool/sync-check.sh
++++ b/tools/objtool/sync-check.sh
+@@ -7,6 +7,7 @@ arch/x86/include/asm/orc_types.h
+ arch/x86/include/asm/emulate_prefix.h
+ arch/x86/lib/x86-opcode-map.txt
+ arch/x86/tools/gen-insn-attr-x86.awk
++include/linux/static_call_types.h
+ '
+ 
+ check_2 () {
