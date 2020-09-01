@@ -2,17 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D6A259012
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A5125901B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbgIAOP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:15:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39766 "EHLO
+        id S1727990AbgIAOQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:16:33 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39608 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbgIALt2 (ORCPT
+        with ESMTP id S1727883AbgIALt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Sep 2020 07:49:28 -0400
-Date:   Tue, 01 Sep 2020 11:48:05 -0000
+Date:   Tue, 01 Sep 2020 11:48:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1598960886;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YuuHGJ9yfmY4jELDvg9egCEybap0peXRJB1laA8MTko=;
-        b=MXtj6Vb1YqtYS9QcoMCi73Pd9OyjwkeHXWPclsBgsFjdE7MqcUNnWxII/dpx77eOYWpOcF
-        v+jiknmKg2pG8dbW/kB1+rxq0HT57FxJDJYKkW9b64OP5/w8rjFfiSWyS6DY3e/Ou7woZF
-        Er8NvzpO/INgX+W3dBI/TwovCH5K8UXS0hNFAS4BWO6SmNltQ2PfFlEY6f4TavaEH//2EM
-        z+I0J1dTZ8fOLfz4aslIeVVGQ0K5z9WmP5jhuW+IVZTqHg5DoyRbPtyDd8r/aNfNc1OIew
-        fZsC+aJ1fb2LbtgKtc8B1gIiDTRx9CSZyudV9OrOgSVO26JHsNIy8XTm0bAX2g==
+        bh=4kgut8ahZ0Lq5VEhFAm0U5nUC9zhWeebYfNZufUqLCU=;
+        b=uP6cbJoFXj0+lpXl+lBPj8OenWKGrf49PGRNYgwpRkuwxoZBoPRy98np3QjpkAgi93ZF32
+        sdbgb4NdSGAVM/WYbVM1xmZnSYmBxzKDLoQlnhWBDtxqtk6XifrBzxQutHojUvp9bt44lJ
+        JiMpQfuKr4nzz+6HsUhExXGcSebZ+YJsLndIVnOuO7X6GEVczcrR24m8nEEFAliLz5G2IS
+        gEApeB7vDyiw+rPvj1U0sZqwrD75ifpgiOtOSRuW+5ZMq2vxH1e45ZWQwAr43zEZlXQ5aQ
+        LohAsaZwJb6X/Qb70V3jBAnD4Bx6T+elzVQwRyXEucNf83OnrQOnvqx9jEKB7Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1598960886;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +33,20 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YuuHGJ9yfmY4jELDvg9egCEybap0peXRJB1laA8MTko=;
-        b=Tt8snEdHt01sJ7lbUYMhlq49i8j8bT1qcu7G4F8q7kqPobGpJz8YlwenUqKqc0ZEMQsOoi
-        tz4nizPwiOXkX7Cg==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+        bh=4kgut8ahZ0Lq5VEhFAm0U5nUC9zhWeebYfNZufUqLCU=;
+        b=6jL0d5GKOvR9NRdV7PXns3ki8Wq8lW08b6J9fby+KHKaS1ot3ybgjwvMrTJFrFJumqbxdF
+        f1MHs2cRYQekGPCA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/static_call] x86/static_call: Add out-of-line static call
- implementation
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200818135804.804315175@infradead.org>
-References: <20200818135804.804315175@infradead.org>
+Subject: [tip: core/static_call] static_call: Avoid kprobes on inline static_call()s
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200818135804.744920586@infradead.org>
+References: <20200818135804.744920586@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159896088572.20229.14571044596234684455.tip-bot2@tip-bot2>
+Message-ID: <159896088615.20229.15511148906614733874.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,123 +58,193 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/static_call branch of tip:
 
-Commit-ID:     e6d6c071f22de29e4993784fc00cd2202b7ba149
-Gitweb:        https://git.kernel.org/tip/e6d6c071f22de29e4993784fc00cd2202b7ba149
-Author:        Josh Poimboeuf <jpoimboe@redhat.com>
-AuthorDate:    Tue, 18 Aug 2020 15:57:44 +02:00
+Commit-ID:     6333e8f73b834f54e395a056e6002403f0862c51
+Gitweb:        https://git.kernel.org/tip/6333e8f73b834f54e395a056e6002403f0862c51
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 18 Aug 2020 15:57:43 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 01 Sep 2020 09:58:05 +02:00
+CommitterDate: Tue, 01 Sep 2020 09:58:04 +02:00
 
-x86/static_call: Add out-of-line static call implementation
+static_call: Avoid kprobes on inline static_call()s
 
-Add the x86 out-of-line static call implementation.  For each key, a
-permanent trampoline is created which is the destination for all static
-calls for the given key.  The trampoline has a direct jump which gets
-patched by static_call_update() when the destination function changes.
+Similar to how we disallow kprobes on any other dynamic text
+(ftrace/jump_label) also disallow kprobes on inline static_call()s.
 
-[peterz: fixed trampoline, rewrote patching code]
-
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20200818135804.804315175@infradead.org
+Link: https://lore.kernel.org/r/20200818135804.744920586@infradead.org
 ---
- arch/x86/Kconfig                   |  1 +-
- arch/x86/include/asm/static_call.h | 23 ++++++++++++++++++++++-
- arch/x86/kernel/Makefile           |  1 +-
- arch/x86/kernel/static_call.c      | 31 +++++++++++++++++++++++++++++-
- 4 files changed, 56 insertions(+)
- create mode 100644 arch/x86/include/asm/static_call.h
- create mode 100644 arch/x86/kernel/static_call.c
+ arch/x86/kernel/kprobes/opt.c |  4 +-
+ include/linux/static_call.h   | 11 ++++++-
+ kernel/kprobes.c              |  2 +-
+ kernel/static_call.c          | 68 ++++++++++++++++++++++++++++++++++-
+ 4 files changed, 84 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac6..595c06b 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -215,6 +215,7 @@ config X86
- 	select HAVE_FUNCTION_ARG_ACCESS_API
- 	select HAVE_STACKPROTECTOR		if CC_HAS_SANE_STACKPROTECTOR
- 	select HAVE_STACK_VALIDATION		if X86_64
-+	select HAVE_STATIC_CALL
- 	select HAVE_RSEQ
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select HAVE_UNSTABLE_SCHED_CLOCK
-diff --git a/arch/x86/include/asm/static_call.h b/arch/x86/include/asm/static_call.h
-new file mode 100644
-index 0000000..07aa879
---- /dev/null
-+++ b/arch/x86/include/asm/static_call.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_STATIC_CALL_H
-+#define _ASM_STATIC_CALL_H
-+
-+#include <asm/text-patching.h>
-+
-+/*
-+ * For CONFIG_HAVE_STATIC_CALL, this is a permanent trampoline which
-+ * does a direct jump to the function.  The direct jump gets patched by
-+ * static_call_update().
-+ */
-+#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
-+	asm(".pushsection .text, \"ax\"				\n"	\
-+	    ".align 4						\n"	\
-+	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-+	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-+	    "	.byte 0xe9 # jmp.d32				\n"	\
-+	    "	.long " #func " - (. + 4)			\n"	\
-+	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-+	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-+	    ".popsection					\n")
-+
-+#endif /* _ASM_STATIC_CALL_H */
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index e77261d..de09af0 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -68,6 +68,7 @@ obj-y			+= tsc.o tsc_msr.o io_delay.o rtc.o
- obj-y			+= pci-iommu_table.o
- obj-y			+= resource.o
- obj-y			+= irqflags.o
-+obj-y			+= static_call.o
- 
- obj-y				+= process.o
- obj-y				+= fpu/
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-new file mode 100644
-index 0000000..0565825
---- /dev/null
-+++ b/arch/x86/kernel/static_call.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
+diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
+index 40f3804..c068e21 100644
+--- a/arch/x86/kernel/kprobes/opt.c
++++ b/arch/x86/kernel/kprobes/opt.c
+@@ -18,6 +18,7 @@
+ #include <linux/ftrace.h>
+ #include <linux/frame.h>
+ #include <linux/pgtable.h>
 +#include <linux/static_call.h>
-+#include <linux/memory.h>
-+#include <linux/bug.h>
-+#include <asm/text-patching.h>
-+
-+static void __static_call_transform(void *insn, u8 opcode, void *func)
+ 
+ #include <asm/text-patching.h>
+ #include <asm/cacheflush.h>
+@@ -210,7 +211,8 @@ static int copy_optimized_instructions(u8 *dest, u8 *src, u8 *real)
+ 	/* Check whether the address range is reserved */
+ 	if (ftrace_text_reserved(src, src + len - 1) ||
+ 	    alternatives_text_reserved(src, src + len - 1) ||
+-	    jump_label_text_reserved(src, src + len - 1))
++	    jump_label_text_reserved(src, src + len - 1) ||
++	    static_call_text_reserved(src, src + len - 1))
+ 		return -EBUSY;
+ 
+ 	return len;
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index 0d7f9ef..6f62ced 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -110,6 +110,7 @@ struct static_call_key {
+ 
+ extern void __static_call_update(struct static_call_key *key, void *tramp, void *func);
+ extern int static_call_mod_init(struct module *mod);
++extern int static_call_text_reserved(void *start, void *end);
+ 
+ #define DEFINE_STATIC_CALL(name, _func)					\
+ 	DECLARE_STATIC_CALL(name, _func);				\
+@@ -153,6 +154,11 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+ 	cpus_read_unlock();
+ }
+ 
++static inline int static_call_text_reserved(void *start, void *end)
 +{
-+	const void *code = text_gen_insn(opcode, insn, func);
-+
-+	if (WARN_ONCE(*(u8 *)insn != opcode,
-+		      "unexpected static call insn opcode 0x%x at %pS\n",
-+		      opcode, insn))
-+		return;
-+
-+	if (memcmp(insn, code, CALL_INSN_SIZE) == 0)
-+		return;
-+
-+	text_poke_bp(insn, code, CALL_INSN_SIZE, NULL);
++	return 0;
 +}
 +
-+void arch_static_call_transform(void *site, void *tramp, void *func)
+ #define EXPORT_STATIC_CALL(name)					\
+ 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
+ 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
+@@ -182,6 +188,11 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+ 	WRITE_ONCE(key->func, func);
+ }
+ 
++static inline int static_call_text_reserved(void *start, void *end)
 +{
-+	mutex_lock(&text_mutex);
-+
-+	if (tramp)
-+		__static_call_transform(tramp, JMP32_INSN_OPCODE, func);
-+
-+	mutex_unlock(&text_mutex);
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(arch_static_call_transform);
++
+ #define EXPORT_STATIC_CALL(name)	EXPORT_SYMBOL(STATIC_CALL_KEY(name))
+ #define EXPORT_STATIC_CALL_GPL(name)	EXPORT_SYMBOL_GPL(STATIC_CALL_KEY(name))
+ 
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 287b263..67e6a8c 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -36,6 +36,7 @@
+ #include <linux/cpu.h>
+ #include <linux/jump_label.h>
+ #include <linux/perf_event.h>
++#include <linux/static_call.h>
+ 
+ #include <asm/sections.h>
+ #include <asm/cacheflush.h>
+@@ -1634,6 +1635,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 	if (!kernel_text_address((unsigned long) p->addr) ||
+ 	    within_kprobe_blacklist((unsigned long) p->addr) ||
+ 	    jump_label_text_reserved(p->addr, p->addr) ||
++	    static_call_text_reserved(p->addr, p->addr) ||
+ 	    find_bug((unsigned long)p->addr)) {
+ 		ret = -EINVAL;
+ 		goto out;
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index d243492..753b2f1 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -204,8 +204,58 @@ static int __static_call_init(struct module *mod,
+ 	return 0;
+ }
+ 
++static int addr_conflict(struct static_call_site *site, void *start, void *end)
++{
++	unsigned long addr = (unsigned long)static_call_addr(site);
++
++	if (addr <= (unsigned long)end &&
++	    addr + CALL_INSN_SIZE > (unsigned long)start)
++		return 1;
++
++	return 0;
++}
++
++static int __static_call_text_reserved(struct static_call_site *iter_start,
++				       struct static_call_site *iter_stop,
++				       void *start, void *end)
++{
++	struct static_call_site *iter = iter_start;
++
++	while (iter < iter_stop) {
++		if (addr_conflict(iter, start, end))
++			return 1;
++		iter++;
++	}
++
++	return 0;
++}
++
+ #ifdef CONFIG_MODULES
+ 
++static int __static_call_mod_text_reserved(void *start, void *end)
++{
++	struct module *mod;
++	int ret;
++
++	preempt_disable();
++	mod = __module_text_address((unsigned long)start);
++	WARN_ON_ONCE(__module_text_address((unsigned long)end) != mod);
++	if (!try_module_get(mod))
++		mod = NULL;
++	preempt_enable();
++
++	if (!mod)
++		return 0;
++
++	ret = __static_call_text_reserved(mod->static_call_sites,
++			mod->static_call_sites + mod->num_static_call_sites,
++			start, end);
++
++	module_put(mod);
++
++	return ret;
++}
++
+ static int static_call_add_module(struct module *mod)
+ {
+ 	return __static_call_init(mod, mod->static_call_sites,
+@@ -273,8 +323,26 @@ static struct notifier_block static_call_module_nb = {
+ 	.notifier_call = static_call_module_notify,
+ };
+ 
++#else
++
++static inline int __static_call_mod_text_reserved(void *start, void *end)
++{
++	return 0;
++}
++
+ #endif /* CONFIG_MODULES */
+ 
++int static_call_text_reserved(void *start, void *end)
++{
++	int ret = __static_call_text_reserved(__start_static_call_sites,
++			__stop_static_call_sites, start, end);
++
++	if (ret)
++		return ret;
++
++	return __static_call_mod_text_reserved(start, end);
++}
++
+ static void __init static_call_init(void)
+ {
+ 	int ret;
