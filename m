@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435B0259ECA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 20:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161E4259EDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 20:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732564AbgIAS4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 14:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S1731918AbgIAS5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 14:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731566AbgIAS4Z (ORCPT
+        with ESMTP id S1728638AbgIAS5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 14:56:25 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11949C061244;
-        Tue,  1 Sep 2020 11:56:25 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y2so1379503lfy.10;
-        Tue, 01 Sep 2020 11:56:24 -0700 (PDT)
+        Tue, 1 Sep 2020 14:57:39 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66BBC061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 11:57:39 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id q1so1064291pjd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 11:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G85PUm7a3EZzS/FYnNEVI0eznDTH8pPJcc+osLm7WqY=;
-        b=tVRoeQwB/gWeuJVETgIoI6uDSLBu9Oi18EgggfK6uMO6UdxaRljqsV964YZWadqrUD
-         gnqR/AUlD1T/UL2fXjhcB4us5pytm/ub02fZv4t79xOsyGD7v2OKOonJB1hxTlohcn/b
-         3SL21pqUtnNXQs4+7+oouQ2Ppzio4eXKbbvGhuujsuUCRBRioI75eRg/okkBcUhbEPXT
-         Wb1CQfA3E//DU2JpFZteOvIezkrUmhiGht8sT2mEGv4iAMtCcwm76LuMvZO0fb6Dv1V/
-         jScuFD/qzzG4zSH31l/chlaXN3QgEuoeBbsGZBYjbVRN9Hxo17lJ2aY1WoAw1VrY0L6M
-         GiBg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=myAjLsXJJ5WrIyplttBLOJrb3cYFWSnfDJgomMmHBsY=;
+        b=ebiQOl0HdWb1qsZ8K4nAaddfFhbr3U7deevLOcXXTD6OLvfKSnSROhSsCjgZ7mCdSU
+         KEk3JPhKcmdeA0QtKKnHHoNdav2XUrlVbf6RKDK+ixxHf+lELn4fBRXQcE7RzE2wmQCF
+         jhg7c/3b8g07wxtC6uK6VnR8kOyuLPgRU1LbY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G85PUm7a3EZzS/FYnNEVI0eznDTH8pPJcc+osLm7WqY=;
-        b=RJC9J7ogCFEv8GMgyeZ913sFscxuqelQjVKtRHYo7YittwUVmNRKCUHOLaTF0kceu4
-         2zkitXYaZAkCBEOUeP0OWJyGibM7zyy+pgONjKXTxtYyKIBSan3sg+jkuQp6WTQNFACZ
-         KSuOO4K2BycPLDK4KopZedM5JD+qgOO5EbznYJwc6s5y9xzGPUjRI3eHJbodumxQ4/hT
-         Gz6KSxB7FN5vx65OMvAueSsFYBXeJWvyhtbDTnlD4JXUEQrEoWlp9zWXtk4cg/Aepvlc
-         IHZ/T3e4ADzPyUyMBw1o5rjAdU///D+OyWm4V01k+ouTR799bxUaO2oMC8ESsuSxFWxc
-         HFUQ==
-X-Gm-Message-State: AOAM531un6BGW7OgJTJR0Zrf+tORPIASHZGJwMBu+/XD0edyn/JsVYdL
-        4tL4CsBpH7rsIUXkYKCtA1Bhn7es1X8=
-X-Google-Smtp-Source: ABdhPJytkMxC+QnEFyPCwOzPuvfcWYWQYoBFmyrc6f5aTlvzcgsyU7pjMfTvbqXAGKvX8ZR5PgQIPg==
-X-Received: by 2002:a19:447:: with SMTP id 68mr1387400lfe.26.1598986583325;
-        Tue, 01 Sep 2020 11:56:23 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id 10sm468433lfq.64.2020.09.01.11.56.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 11:56:22 -0700 (PDT)
-Subject: Re: [PATCH v4] iommu/tegra-smmu: Add locking around mapping
- operations
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>
-Cc:     iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200901171305.6929-1-digetx@gmail.com>
-Message-ID: <2d38fcab-bc7a-2986-ff39-9403164914e4@gmail.com>
-Date:   Tue, 1 Sep 2020 21:56:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=myAjLsXJJ5WrIyplttBLOJrb3cYFWSnfDJgomMmHBsY=;
+        b=NjHCpTB2hmthyBjs6IIHVU4fW1swrRaYOmCq5ilebebQEIIMVQgjc7SDWXwt9loGZB
+         bXED9puYVx5tNwhN6ToB0kKL4KRQ/dEiUp5JvzBBY/VT1c4MEOgnusmlwWERs9mQ5yR2
+         bH1rXc/Sqhw3yoTb0KXGVFwPSKndV/S+6l4B1uqzaje374zYR15NSbkpjWeEcJEbe1HK
+         9pFORcOT/mFWnc5VvACS4kUqNitYF5JpfCumQ2dm7z9hwuFR+8i5g9NCkuuDYLLw7nIK
+         6Gyc1Hf6Nn7aOO93tuw4ENtSa6AoJy7X5hc/lyXgBKeea8yRkbkE7zcufXDkje1wm7eJ
+         N7+Q==
+X-Gm-Message-State: AOAM532+PGH9qm+LrgqFE797HVrsdRT+QCAfdJ0f5s1StLN2X5Pca4eT
+        gXDH8KFOxtBEtErNYzjqZe8kFw==
+X-Google-Smtp-Source: ABdhPJxM7CI6ObOTA/dAnpNqk4c7bPseM/evKd+pRwbVQYq3IOIRkOFgQb1ors7cvRWIw5JowuZv0w==
+X-Received: by 2002:a17:90a:450d:: with SMTP id u13mr2718413pjg.99.1598986659307;
+        Tue, 01 Sep 2020 11:57:39 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b10sm1613877pff.85.2020.09.01.11.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 11:57:38 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 11:57:37 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 05/10] lkdtm: disable set_fs-based tests for
+ !CONFIG_SET_FS
+Message-ID: <202009011156.0F49882@keescook>
+References: <20200827150030.282762-1-hch@lst.de>
+ <20200827150030.282762-6-hch@lst.de>
+ <CAHk-=wipbWD66sU7etETXwDW5NRsU2vnbDpXXQ5i94hiTcawyw@mail.gmail.com>
+ <20200829092406.GB8833@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200901171305.6929-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829092406.GB8833@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.09.2020 20:13, Dmitry Osipenko пишет:
-...
-> +	/*
-> +	 * In order to prevent exhaustion of the atomic memory pool, we
-> +	 * allocate page in a sleeping context if GFP flags permit. Hence
-> +	 * spinlock needs to be unlocked and re-locked after allocation.
-> +	 */
-> +	if (!(gfp & GFP_NOWAIT))
-> +		spin_unlock_irqrestore(&as->lock, *flags);
-> +
-> +	page = alloc_page(gfp | __GFP_DMA | __GFP_ZERO);
-> +
-> +	if (!(gfp & GFP_NOWAIT))
-> +		spin_lock_irqsave(&as->lock, *flags);
+On Sat, Aug 29, 2020 at 11:24:06AM +0200, Christoph Hellwig wrote:
+> On Thu, Aug 27, 2020 at 11:06:28AM -0700, Linus Torvalds wrote:
+> > On Thu, Aug 27, 2020 at 8:00 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > Once we can't manipulate the address limit, we also can't test what
+> > > happens when the manipulation is abused.
+> > 
+> > Just remove these tests entirely.
+> > 
+> > Once set_fs() doesn't exist on x86, the tests no longer make any sense
+> > what-so-ever, because test coverage will be basically zero.
+> > 
+> > So don't make the code uglier just to maintain a fiction that
+> > something is tested when it isn't really.
+> 
+> Sure fine with me unless Kees screams.
 
-I realized that GFP_NOWAIT is a wrong flag to check here once I saw
-warnings about sleeping in atomic context. Apparently __GFP_ATOMIC
-should be used instead, I'll make v5.
+To clarify: if any of x86, arm64, arm, powerpc, riscv, and s390 are
+using set_fs(), I want to keep this test. "ugly" is fine in lkdtm. :)
+
+-- 
+Kees Cook
