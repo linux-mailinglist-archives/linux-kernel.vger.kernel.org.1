@@ -2,62 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665FA258D77
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BA0258D8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgIALdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:33:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10355 "EHLO huawei.com"
+        id S1726091AbgIALog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:44:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:43740 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726255AbgIAL2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:28:42 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id B6C335C5C8A95CC4DC61;
-        Tue,  1 Sep 2020 19:11:15 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
- 19:11:10 +0800
-Subject: Re: [PATCH v4 0/1] libnvdimm: fix memory leaks in of_pmem.c
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Oliver O'Halloran <oohall@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>
-References: <20200901081450.1969-1-thunder.leizhen@huawei.com>
- <9d82bd85-5d6c-b8fe-15c7-c87348aa7a3a@web.de>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <6a9ec7f5-f822-dce5-0560-d49d3bacaf0b@huawei.com>
-Date:   Tue, 1 Sep 2020 19:11:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726537AbgIALeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:34:37 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 69B232334A629702BB85;
+        Tue,  1 Sep 2020 19:17:07 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 1 Sep 2020 19:16:58 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.vnet.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, Luo Jiaxing <luojiaxing@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 2/8] scsi: hisi_sas: Modify macro name for OOB phy linkrate
+Date:   Tue, 1 Sep 2020 19:13:04 +0800
+Message-ID: <1598958790-232272-3-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1598958790-232272-1-git-send-email-john.garry@huawei.com>
+References: <1598958790-232272-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <9d82bd85-5d6c-b8fe-15c7-c87348aa7a3a@web.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Luo Jiaxing <luojiaxing@huawei.com>
 
+The macro for OOB phy linkrate is named as CFG_PROG_PHY_LINK_RATE_*, but
+it's not correct. To avoid some misunderstand, we modify it to a correct
+naming.
 
-On 2020/9/1 18:14, Markus Elfring wrote:
->> v3 --> v4
->> 1. Merge patch 1 and 2 into one:
-> 
-> How do you think about to omit a cover letter for a single patch?
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-After all, the code hasn't changed except this merge.
-
-> 
-> Regards,
-> Markus
-> 
-> 
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index 60adf5c32143..05b60cdf6b24 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -191,8 +191,8 @@
+ #define PHY_CFG_PHY_RST_OFF		3
+ #define PHY_CFG_PHY_RST_MSK		(0x1 << PHY_CFG_PHY_RST_OFF)
+ #define PROG_PHY_LINK_RATE		(PORT_BASE + 0x8)
+-#define CFG_PROG_PHY_LINK_RATE_OFF	8
+-#define CFG_PROG_PHY_LINK_RATE_MSK	(0xf << CFG_PROG_PHY_LINK_RATE_OFF)
++#define CFG_PROG_OOB_PHY_LINK_RATE_OFF	8
++#define CFG_PROG_OOB_PHY_LINK_RATE_MSK	(0xf << CFG_PROG_OOB_PHY_LINK_RATE_OFF)
+ #define PHY_CTRL			(PORT_BASE + 0x14)
+ #define PHY_CTRL_RESET_OFF		0
+ #define PHY_CTRL_RESET_MSK		(0x1 << PHY_CTRL_RESET_OFF)
+@@ -2998,8 +2998,8 @@ static void hisi_sas_bist_test_restore_v3_hw(struct hisi_hba *hisi_hba)
+ 	/* restore the linkrate */
+ 	reg_val = hisi_sas_phy_read32(hisi_hba, phy_id, PROG_PHY_LINK_RATE);
+ 	/* init OOB link rate as 1.5 Gbits */
+-	reg_val &= ~CFG_PROG_PHY_LINK_RATE_MSK;
+-	reg_val |= (0x8 << CFG_PROG_PHY_LINK_RATE_OFF);
++	reg_val &= ~CFG_PROG_OOB_PHY_LINK_RATE_MSK;
++	reg_val |= (0x8 << CFG_PROG_OOB_PHY_LINK_RATE_OFF);
+ 	hisi_sas_phy_write32(hisi_hba, phy_id, PROG_PHY_LINK_RATE, reg_val);
+ 
+ 	/* enable PHY */
+@@ -3027,8 +3027,8 @@ static int debugfs_set_bist_v3_hw(struct hisi_hba *hisi_hba, bool enable)
+ 		/* set linkrate of bit test*/
+ 		reg_val = hisi_sas_phy_read32(hisi_hba, phy_id,
+ 					      PROG_PHY_LINK_RATE);
+-		reg_val &= ~CFG_PROG_PHY_LINK_RATE_MSK;
+-		reg_val |= (linkrate << CFG_PROG_PHY_LINK_RATE_OFF);
++		reg_val &= ~CFG_PROG_OOB_PHY_LINK_RATE_MSK;
++		reg_val |= (linkrate << CFG_PROG_OOB_PHY_LINK_RATE_OFF);
+ 		hisi_sas_phy_write32(hisi_hba, phy_id,
+ 				     PROG_PHY_LINK_RATE, reg_val);
+ 
+@@ -3050,8 +3050,7 @@ static int debugfs_set_bist_v3_hw(struct hisi_hba *hisi_hba, bool enable)
+ 		hisi_sas_phy_write32(hisi_hba, phy_id,
+ 				     SAS_PHY_BIST_CODE,
+ 				     SAS_PHY_BIST_CODE_INIT);
+-		hisi_sas_phy_write32(hisi_hba, phy_id,
+-				     SAS_PHY_BIST_CODE1,
++		hisi_sas_phy_write32(hisi_hba, phy_id, SAS_PHY_BIST_CODE1,
+ 				     SAS_PHY_BIST_CODE1_INIT);
+ 
+ 		mdelay(100);
+-- 
+2.26.2
 
