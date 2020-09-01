@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766F52592EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161E0259397
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgIAPSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:18:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        id S1730310AbgIAP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729405AbgIAPRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:17:23 -0400
+        id S1729977AbgIAPYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:24:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6102A206FA;
-        Tue,  1 Sep 2020 15:17:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3E6420BED;
+        Tue,  1 Sep 2020 15:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973442;
-        bh=Ucie5NyIWuOUUe0Y0RKuuHPGZyWsA1GWruljSdNz9vk=;
+        s=default; t=1598973884;
+        bh=t1LNtG/Jdd0VPLwGJg2Ezz0CbpvnD31LnWJbbEwRVp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOSRPDD8DOefIqw/L8S7Wddb+xdMIZFtFS0UT5iAMplqzDTHiwIJ54+2b6wPublqa
-         HQBTlroqKcDGdJDocQzj5RtlvFhFv30YDl94CC5Nf6QkRgfFx1whSzlrQH7DBNDFWe
-         7qh+QrUh4MCxhnqcBq8SkCIvLzNCVYpBot9M4Jc8=
+        b=RHemctS5EaXdPEhcmLN5DFvyTl2ZM+W4C7NtFi9k8WT9QyTQQxA7zUaMQyB/HXqHb
+         ZaRdRtxOhXVo2JbF7QNoKZxuhgWakRM02NCTp5YhDYZmRBv+w7Njxe4r4Jko209fKL
+         BzRC2x9rVhSnaRUhGpiIsJ5ULi43VlD6EXncboBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.9 63/78] xhci: Do warm-reset when both CAS and XDEV_RESUME are set
-Date:   Tue,  1 Sep 2020 17:10:39 +0200
-Message-Id: <20200901150927.931444650@linuxfoundation.org>
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 085/125] fbcon: prevent user font height or width change from causing potential out-of-bounds access
+Date:   Tue,  1 Sep 2020 17:10:40 +0200
+Message-Id: <20200901150938.740748818@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,69 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: George Kennedy <george.kennedy@oracle.com>
 
-commit 904df64a5f4d5ebd670801d869ca0a6d6a6e8df6 upstream.
+commit 39b3cffb8cf3111738ea993e2757ab382253d86a upstream.
 
-Sometimes re-plugging a USB device during system sleep renders the device
-useless:
-[  173.418345] xhci_hcd 0000:00:14.0: Get port status 2-4 read: 0x14203e2, return 0x10262
-...
-[  176.496485] usb 2-4: Waited 2000ms for CONNECT
-[  176.496781] usb usb2-port4: status 0000.0262 after resume, -19
-[  176.497103] usb 2-4: can't resume, status -19
-[  176.497438] usb usb2-port4: logical disconnect
+Add a check to fbcon_resize() to ensure that a possible change to user font
+height or user font width will not allow a font data out-of-bounds access.
+NOTE: must use original charcount in calculation as font charcount can
+change and cannot be used to determine the font data allocated size.
 
-Because PLS equals to XDEV_RESUME, xHCI driver reports U3 to usbcore,
-despite of CAS bit is flagged.
-
-So proritize CAS over XDEV_RESUME to let usbcore handle warm-reset for
-the port.
-
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200821091549.20556-3-mathias.nyman@linux.intel.com
+Reported-by: syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/1596213192-6635-1-git-send-email-george.kennedy@oracle.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-hub.c |   19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/video/fbdev/core/fbcon.c |   25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -623,15 +623,6 @@ static void xhci_hub_report_usb3_link_st
- {
- 	u32 pls = status_reg & PORT_PLS_MASK;
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -2152,6 +2152,9 @@ static void updatescrollmode(struct disp
+ 	}
+ }
  
--	/* resume state is a xHCI internal state.
--	 * Do not report it to usb core, instead, pretend to be U3,
--	 * thus usb core knows it's not ready for transfer
--	 */
--	if (pls == XDEV_RESUME) {
--		*status |= USB_SS_PORT_LS_U3;
--		return;
--	}
--
- 	/* When the CAS bit is set then warm reset
- 	 * should be performed on port
- 	 */
-@@ -654,6 +645,16 @@ static void xhci_hub_report_usb3_link_st
- 		pls |= USB_PORT_STAT_CONNECTION;
- 	} else {
- 		/*
-+		 * Resume state is an xHCI internal state.  Do not report it to
-+		 * usb core, instead, pretend to be U3, thus usb core knows
-+		 * it's not ready for transfer.
-+		 */
-+		if (pls == XDEV_RESUME) {
-+			*status |= USB_SS_PORT_LS_U3;
-+			return;
-+		}
++#define PITCH(w) (((w) + 7) >> 3)
++#define CALC_FONTSZ(h, p, c) ((h) * (p) * (c)) /* size = height * pitch * charcount */
++
+ static int fbcon_resize(struct vc_data *vc, unsigned int width, 
+ 			unsigned int height, unsigned int user)
+ {
+@@ -2161,6 +2164,24 @@ static int fbcon_resize(struct vc_data *
+ 	struct fb_var_screeninfo var = info->var;
+ 	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
+ 
++	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
++		int size;
++		int pitch = PITCH(vc->vc_font.width);
 +
 +		/*
- 		 * If CAS bit isn't set but the Port is already at
- 		 * Compliance Mode, fake a connection so the USB core
- 		 * notices the Compliance state and resets the port.
++		 * If user font, ensure that a possible change to user font
++		 * height or width will not allow a font data out-of-bounds access.
++		 * NOTE: must use original charcount in calculation as font
++		 * charcount can change and cannot be used to determine the
++		 * font data allocated size.
++		 */
++		if (pitch <= 0)
++			return -EINVAL;
++		size = CALC_FONTSZ(vc->vc_font.height, pitch, FNTCHARCNT(vc->vc_font.data));
++		if (size > FNTSIZE(vc->vc_font.data))
++			return -EINVAL;
++	}
++
+ 	virt_w = FBCON_SWAP(ops->rotate, width, height);
+ 	virt_h = FBCON_SWAP(ops->rotate, height, width);
+ 	virt_fw = FBCON_SWAP(ops->rotate, vc->vc_font.width,
+@@ -2623,7 +2644,7 @@ static int fbcon_set_font(struct vc_data
+ 	int size;
+ 	int i, csum;
+ 	u8 *new_data, *data = font->data;
+-	int pitch = (font->width+7) >> 3;
++	int pitch = PITCH(font->width);
+ 
+ 	/* Is there a reason why fbconsole couldn't handle any charcount >256?
+ 	 * If not this check should be changed to charcount < 256 */
+@@ -2639,7 +2660,7 @@ static int fbcon_set_font(struct vc_data
+ 	if (fbcon_invalid_charcount(info, charcount))
+ 		return -EINVAL;
+ 
+-	size = h * pitch * charcount;
++	size = CALC_FONTSZ(h, pitch, charcount);
+ 
+ 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
+ 
 
 
