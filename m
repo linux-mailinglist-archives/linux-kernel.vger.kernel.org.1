@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B532596BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E750A2596BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731201AbgIAPjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:39:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45564 "EHLO mail.kernel.org"
+        id S1731447AbgIAPjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:39:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728037AbgIAPh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:37:29 -0400
+        id S1731341AbgIAPhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:37:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B44B2205F4;
-        Tue,  1 Sep 2020 15:37:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F9EE20866;
+        Tue,  1 Sep 2020 15:37:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974648;
-        bh=z08zS9fdCbZEek5MarOJHv6P9oDI3fRckVQBcMExBLk=;
+        s=default; t=1598974650;
+        bh=ZS5koshl9P5XnEP6E1J+YO76VIZh7Oth6V8mWrNQ9Ps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BxFNZWqOtedFrxpXn2FbaLL8HsijHhaSQdy0oNb9qstrgG4g7kDNVz/o07bL9/Fmo
-         n7esJsYpOBB0u8kkaa0lZ2ipaWDKOH9ufT/a9HF7jdjarV7Lo3nxHmI3O3e1y2rvAL
-         +2uOKPqa+ZDe8/rfGto5Giua3lCIiHBlo0cOwIWU=
+        b=QSQgUU8CXHbSMRo4gtzoa6QwXh248fyQ8fbuTBeSs3Nc45PJwkuUrV+yzB1ZA93hs
+         enqJ9mNibKh1uuREWBlE4tE8b+W+SIjx6thsrgbRruDXe6gVfDMeg89m4NXFhsiaYx
+         ZagPtqv4FZRLlFWa0Ebqm9k5azQYfkWC53znIiAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yangbo Lu <yangbo.lu@nxp.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Reto Schneider <code@reto-schneider.ch>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 041/255] ARM: dts: ls1021a: output PPS signal on FIPER2
-Date:   Tue,  1 Sep 2020 17:08:17 +0200
-Message-Id: <20200901151002.717933305@linuxfoundation.org>
+Subject: [PATCH 5.8 042/255] rtlwifi: rtl8192cu: Prevent leaking urb
+Date:   Tue,  1 Sep 2020 17:08:18 +0200
+Message-Id: <20200901151002.766076852@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -45,49 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangbo Lu <yangbo.lu@nxp.com>
+From: Reto Schneider <code@reto-schneider.ch>
 
-[ Upstream commit 5656bb3857c4904d1dec6e1b8f876c1c0337274e ]
+[ Upstream commit 03128643eb5453a798db5770952c73dc64fcaf00 ]
 
-The timer fixed interval period pulse generator register
-is used to generate periodic pulses. The down count
-register loads the value programmed in the fixed period
-interval (FIPER). At every tick of the timer accumulator
-overflow, the counter decrements by the value of
-TMR_CTRL[TCLK_PERIOD]. It generates a pulse when the down
-counter value reaches zero. It reloads the down counter
-in the cycle following a pulse.
+If usb_submit_urb fails the allocated urb should be unanchored and
+released.
 
-To use the TMR_FIPER register to generate desired periodic
-pulses. The value should programmed is,
-desired_period - tclk_period
-
-Current tmr-fiper2 value is to generate 100us periodic pulses.
-(But the value should have been 99995, not 99990. The tclk_period is 5.)
-This patch is to generate 1 second periodic pulses with value
-999999995 programmed which is more desired by user.
-
-Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Signed-off-by: Reto Schneider <code@reto-schneider.ch>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200622132113.14508-3-code@reto-schneider.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/ls1021a.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/realtek/rtlwifi/usb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 760a68c163c83..b2ff27af090ec 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -772,7 +772,7 @@
- 			fsl,tmr-prsc    = <2>;
- 			fsl,tmr-add     = <0xaaaaaaab>;
- 			fsl,tmr-fiper1  = <999999995>;
--			fsl,tmr-fiper2  = <99990>;
-+			fsl,tmr-fiper2  = <999999995>;
- 			fsl,max-adj     = <499999999>;
- 			fsl,extts-fifo;
- 		};
+diff --git a/drivers/net/wireless/realtek/rtlwifi/usb.c b/drivers/net/wireless/realtek/rtlwifi/usb.c
+index c66c6dc003783..bad06939a247c 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/usb.c
++++ b/drivers/net/wireless/realtek/rtlwifi/usb.c
+@@ -718,8 +718,11 @@ static int _rtl_usb_receive(struct ieee80211_hw *hw)
+ 
+ 		usb_anchor_urb(urb, &rtlusb->rx_submitted);
+ 		err = usb_submit_urb(urb, GFP_KERNEL);
+-		if (err)
++		if (err) {
++			usb_unanchor_urb(urb);
++			usb_free_urb(urb);
+ 			goto err_out;
++		}
+ 		usb_free_urb(urb);
+ 	}
+ 	return 0;
 -- 
 2.25.1
 
