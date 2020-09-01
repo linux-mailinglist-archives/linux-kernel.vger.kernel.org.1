@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE84258F59
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C347B258F5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgIANq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:46:26 -0400
-Received: from mga06.intel.com ([134.134.136.31]:21500 "EHLO mga06.intel.com"
+        id S1728203AbgIANr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:47:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727937AbgIANoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:44:16 -0400
-IronPort-SDR: XwqyiRFBGqz6dT/XqYn29ktHJuXQAaBJaogHyl3SJndca544u2Jk8954Ca18Xq/WOW0yOyWkxb
- 6/It8qdvrtLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="218716992"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="218716992"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 06:43:52 -0700
-IronPort-SDR: F97Nl6M4+gKE+m+OZaZKFNWuKx8k1xlWUrXo/A72FuUkANm6Z1SDaftvAs//5IWn4w2eFJtOWU
- r8vITEePHSWQ==
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="446131895"
-Received: from dlabricc-mobl.amr.corp.intel.com (HELO [10.212.239.51]) ([10.212.239.51])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 06:43:52 -0700
-Subject: Re: [PATCH v2] regmap: soundwire: remove unused header
- mod_devicetable.h
-To:     Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200901111331.641072-1-vkoul@kernel.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <9d4720f4-83e1-ec3d-74cc-b94474eb07e9@linux.intel.com>
-Date:   Tue, 1 Sep 2020 08:43:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728249AbgIANpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:45:43 -0400
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FCD4207D3;
+        Tue,  1 Sep 2020 13:45:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598967913;
+        bh=guT/B9fm9Ax+xhrDZqhYNKmIiJEYV14+wiZXb20HXnI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hudO0/H+uQAeOGPA+ktyBcHnLqVX2dyLBCxEt+ywj0UIO1YSNwOhHCVAcYZEPv9EY
+         1D5/bzVAS5GlVN0xalWvRoOkhw5BOA3bOtnpLlmlTFAPeaBVUC6l/5EvetxKRFGc+I
+         ACbDt2katkMN2P6321ZbpXOSsHy4GwMsPYuffik0=
+Received: by mail-ej1-f50.google.com with SMTP id m22so1702052eje.10;
+        Tue, 01 Sep 2020 06:45:13 -0700 (PDT)
+X-Gm-Message-State: AOAM530B4eaYFD/DyGbYe7FKsqjO5dDSpFsuWoSRUkW4JbnaszM9ynsU
+        2AHrYHHIJ0qizXGxTnDsorJuqBsN5k2neSJQrg8=
+X-Google-Smtp-Source: ABdhPJz6uIBMsaYsaaZUhy+VeyCk3/2LqThr6HHemeSXoOexn5BStaqskVKcLfb/AYO3ekqe9civ7FgwssrPQoIa3ps=
+X-Received: by 2002:a17:906:9356:: with SMTP id p22mr1481115ejw.119.1598967912146;
+ Tue, 01 Sep 2020 06:45:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200901111331.641072-1-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <267a81e550a0b5d479c82b5908e2a2caa4c9c874.1597061474.git.guillaume.tucker@collabora.com>
+ <c0509b5f-a064-2e73-7e04-51f41a56d222@collabora.com>
+In-Reply-To: <c0509b5f-a064-2e73-7e04-51f41a56d222@collabora.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 1 Sep 2020 15:45:00 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPczS_RpSFpjGygZ_1MCYxJ_cUDRjriZvrHd6+zhmq=c8Q@mail.gmail.com>
+Message-ID: <CAJKOXPczS_RpSFpjGygZ_1MCYxJ_cUDRjriZvrHd6+zhmq=c8Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] ARM: exynos: clear L310_AUX_CTRL_NS_LOCKDOWN in
+ default l2c_aux_val
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Kukjin Kim <kgene@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, kernel@collabora.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 1 Sep 2020 at 15:34, Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
+>
+> Hi Krzysztof, Russell,
+>
+> On 10/08/2020 13:22, Guillaume Tucker wrote:
+> > The L310_AUX_CTRL_NS_LOCKDOWN flag is set during the L2C enable
+> > sequence.  There is no need to set it in the default register value,
+> > this was done before support for it was implemented in the code.  It
+> > is not set in the hardware initial value either.
+> >
+> > Clean this up by removing this flag from the default l2c_aux_val, and
+> > add it to the l2c_aux_mask to print an alert message if it was already
+> > set before the kernel initialisation.
+> >
+> > Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+> > ---
+> >
+> > Notes:
+> >     v2: fix flag name L310_AUX_CTRL_NS_LOCKDOWN
+> >
+> >  arch/arm/mach-exynos/exynos.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> I believe this v2 series has addressed all previous comments and
+> you were waiting for the 5.9 merge window to end.  The patches
+> all still apply cleanly on v5.9-rc3.  Do you want me to resend
+> the series anyway or is there anything else needed at this point?
+>
+> Maybe one thing that wasn't completely clear in v1 was whether
+> patch 2/4 was the right approach.  I've explained the reason
+> behind it but didn't get a final reply from Russell[1].
 
+I am sorry, my bad. I already applied this one and 3/4 (dts).
+Apparently I forgot to reply with confirmation and Patchwork did not
+notify you for some reason.
 
-On 9/1/20 6:13 AM, Vinod Koul wrote:
-> mod_devicetable.h does not seem to be required for this file, so
-> remove it.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Patch 2/4 does not look like one for me so I would need ack from
+Russell to take. Did you submit it to the ARM patches queue?
+Patch 4/4 will wait for v5.10-rc1 as it depends on 1/4 and it is DTS patch.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
-> 
-> changes in v2:
->    - fix typo in patch subject
-> 
->   drivers/base/regmap/regmap-sdw.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
-> index 50a66382d87d..c92d614b4943 100644
-> --- a/drivers/base/regmap/regmap-sdw.c
-> +++ b/drivers/base/regmap/regmap-sdw.c
-> @@ -2,7 +2,6 @@
->   // Copyright(c) 2015-17 Intel Corporation.
->   
->   #include <linux/device.h>
-> -#include <linux/mod_devicetable.h>
->   #include <linux/module.h>
->   #include <linux/soundwire/sdw.h>
->   #include "internal.h"
-> 
+Best regards,
+Krzysztof
