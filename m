@@ -2,230 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB0125922A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB798259238
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgIAPEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgIAPEq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:04:46 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18FAC061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:04:45 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id t23so1944322ljc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8Hb7r+KvjTn1fI1bbdwQosrAVf1D62HZ/qglZn6BY0k=;
-        b=m+/3w5yOKIp+/HPKm5IajyrPUsIvE8lLsvQ79OvZJQRYCtuwvb4+uKOHzhkZdtyDvG
-         8ytnhGluUZyOvgxu7tBXHoYaVE9LR0jS3S0zPuFPezUVejN04RwSEU2O+4r62XT72rWJ
-         rxi9/tfvaeJjuJsMEHLb1miKfjis8nxWHP2IvstsP/ztWqEwa+uQGI3FlyX4hLHBFibM
-         QmyTL9G5958Aur90NMzdNQBJyHz7Pjgb66D9VqpyoTM2HP+78fY/eTDuw38p6aCMx/uS
-         vsRngVRRVu4LsGmIvOs7lQaPVULqD6iAGAoa4Ivt1ar8HEb6G0kzZWdQRC9QtZmd+stx
-         u5dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8Hb7r+KvjTn1fI1bbdwQosrAVf1D62HZ/qglZn6BY0k=;
-        b=UJMMwqYMPku9F6IErAEWhG8azqIDMMypSreT0s2e0abmQIr+5qIyvzaZEWwpKc1abZ
-         EYRxU3Fg9Iy1/l9jjfxEQfVJXAMF7TnKRnaMHHiYeZW4ogWQfZGbj0d/u7aMavr8S7+f
-         NCnrsHJX7s4oSCZRHSwC9JmBPbvb0cgzp3K+3mq+sQUh+qATS6IxC8siKz4hKKBZ91BH
-         wghvK8DMSLAvQPuJqNeFdpnuV+s2OH4l+A2WTsYKRiZZBGGpUd4LzLIkXSCbGHzdOQm/
-         vSYQ3WGKkqXBYXksjfD9bym/1NU1bRCXib4Evp5CnkUxTKzAClYiX7zPGibQuUSSrug6
-         uGNQ==
-X-Gm-Message-State: AOAM533ao/FKijBd23yJVvZiSMMDwmwvr351en9aybBQecfo6sPGZiTf
-        8OzlO7mHWEZ57BZHY7CVw0DRKA==
-X-Google-Smtp-Source: ABdhPJyPDO/atWKWL3yuF/BeRjbDONzlDxLqDuMjYm7EAhe/rsnhsSpu+ZmNGswu0PCPqQG6Q7AOVg==
-X-Received: by 2002:a05:651c:1122:: with SMTP id e2mr834205ljo.36.1598972683228;
-        Tue, 01 Sep 2020 08:04:43 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-180-79.NA.cust.bahnhof.se. [98.128.180.79])
-        by smtp.gmail.com with ESMTPSA id u11sm328651ljh.17.2020.09.01.08.04.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 08:04:42 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>
-Cc:     Mark Brown <broonie@kernel.org>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when CONFIG_HAS_DMA is unset
-Date:   Tue,  1 Sep 2020 17:04:38 +0200
-Message-Id: <20200901150438.228887-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728229AbgIAPGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:06:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:43104 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726771AbgIAPF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:05:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81DDE1045;
+        Tue,  1 Sep 2020 08:05:52 -0700 (PDT)
+Received: from [10.57.5.66] (unknown [10.57.5.66])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B77623F71F;
+        Tue,  1 Sep 2020 08:05:51 -0700 (PDT)
+Subject: Re: [PATCH] perf: correct SNOOPX field offset
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <9974f2d0-bf7f-518e-d9f7-4520e5ff1bb0@foss.arm.com>
+ <20200825174043.GQ1509399@tassilo.jf.intel.com>
+ <20200826142631.GA5351@redhat.com>
+ <d68e68f5-a7c3-c276-6134-a68f068a2b80@foss.arm.com>
+ <20200901150225.GA1424523@kernel.org>
+From:   Al Grant <al.grant@foss.arm.com>
+Message-ID: <67062e1a-98b1-1f0d-d405-2c0dc2ce655a@foss.arm.com>
+Date:   Tue, 1 Sep 2020 16:05:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.0.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200901150225.GA1424523@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit cd57d07b1e4e ("sh: don't allow non-coherent DMA for NOMMU") made
-CONFIG_NO_DMA to be set for some platforms, for good reasons.
-Consequentially, CONFIG_HAS_DMA doesn't get set, which makes the DMA
-mapping interface to be built as stub functions, but also prevent the
-mmc_spi driver from being built as it depends on CONFIG_HAS_DMA.
 
-It turns out that for some odd cases, the driver still relied on the DMA
-mapping interface, even if the DMA was not actively being used.
 
-To fixup the behaviour, let's drop the build dependency for CONFIG_HAS_DMA.
-Moreover, as to allow the driver to succeed probing, let's move the DMA
-initializations behind "#ifdef CONFIG_HAS_DMA".
+On 01/09/2020 16:02, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Aug 26, 2020 at 03:33:35PM +0100, Al Grant escreveu:
+>> On 26/08/2020 15:26, Arnaldo Carvalho de Melo wrote:
+>>> Em Tue, Aug 25, 2020 at 10:40:43AM -0700, Andi Kleen escreveu:
+>>>> On Mon, Aug 24, 2020 at 10:28:34AM +0100, Al Grant wrote:
+>>>>> perf_event.h has macros that define the field offsets in the
+>>>>> data_src bitmask in perf records. The SNOOPX and REMOTE offsets
+>>>>> were both 37. These are distinct fields, and the bitfield layout
+>>>>> in perf_mem_data_src confirms that SNOOPX should be at offset 38.
+>>>>
+>>>> Looks good.
+>>>>
+>>>> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+>>>>
+>>>> Probably should have a Fixes: header
+>>>
+>>> Please do so, find the patch that introduced the error, add the Fixes
+>>> tag, will help me not having to do it myself :-)
+>>
+>> Fixes: 52839e653b562 ("perf tools: Add support for printing new mem_info
+>> encodings")
+> 
+> Ok, I'll add that, thanks.
+>  > But you forgot to add your Signed-off-by:, can you please provide it?
 
-Fixes: cd57d07b1e4e ("sh: don't allow non-coherent DMA for NOMMU")
-Reported-by: Rich Felker <dalias@libc.org>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
+Signed-off-by: Al Grant <al.grant@arm.com>
 
-Changes in v2:
-	- Drop build dependency to CONFIG_HAS_DMA.
-	- Rephrase commit message and its header, to reflect the updated change.
+> There was also a minor problem in the patch, there was no separation of
+> --- from the patch comment section to the patch itself, I'll fix that as
+> well.
 
----
- drivers/mmc/host/Kconfig   |  2 +-
- drivers/mmc/host/mmc_spi.c | 86 +++++++++++++++++++++++---------------
- 2 files changed, 53 insertions(+), 35 deletions(-)
+Thanks, will remember for next time.
 
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 9c89a5b780e8..9a34c827c96e 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -602,7 +602,7 @@ config MMC_GOLDFISH
- 
- config MMC_SPI
- 	tristate "MMC/SD/SDIO over SPI"
--	depends on SPI_MASTER && HAS_DMA
-+	depends on SPI_MASTER
- 	select CRC7
- 	select CRC_ITU_T
- 	help
-diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-index 39bb1e30c2d7..5055a7eb134a 100644
---- a/drivers/mmc/host/mmc_spi.c
-+++ b/drivers/mmc/host/mmc_spi.c
-@@ -1278,6 +1278,52 @@ mmc_spi_detect_irq(int irq, void *mmc)
- 	return IRQ_HANDLED;
- }
- 
-+#ifdef CONFIG_HAS_DMA
-+static int mmc_spi_dma_alloc(struct mmc_spi_host *host)
-+{
-+	struct spi_device *spi = host->spi;
-+	struct device *dev;
-+
-+	if (!spi->master->dev.parent->dma_mask)
-+		return 0;
-+
-+	dev = spi->master->dev.parent;
-+
-+	host->ones_dma = dma_map_single(dev, host->ones, MMC_SPI_BLOCKSIZE,
-+					DMA_TO_DEVICE);
-+	if (dma_mapping_error(dev, host->ones_dma))
-+		return -ENOMEM;
-+
-+	host->data_dma = dma_map_single(dev, host->data, sizeof(*host->data),
-+					DMA_BIDIRECTIONAL);
-+	if (dma_mapping_error(dev, host->data_dma)) {
-+		dma_unmap_single(dev, host->ones_dma, MMC_SPI_BLOCKSIZE,
-+				 DMA_TO_DEVICE);
-+		return -ENOMEM;
-+	}
-+
-+	dma_sync_single_for_cpu(dev, host->data_dma, sizeof(*host->data),
-+				DMA_BIDIRECTIONAL);
-+
-+	host->dma_dev = dev;
-+	return 0;
-+}
-+
-+static void mmc_spi_dma_free(struct mmc_spi_host *host)
-+{
-+	if (!host->dma_dev)
-+		return;
-+
-+	dma_unmap_single(host->dma_dev, host->ones_dma, MMC_SPI_BLOCKSIZE,
-+			 DMA_TO_DEVICE);
-+	dma_unmap_single(host->dma_dev, host->data_dma,	sizeof(*host->data),
-+			 DMA_BIDIRECTIONAL);
-+}
-+#else
-+static inline mmc_spi_dma_alloc(struct mmc_spi_host *host) { return 0; }
-+static inline void mmc_spi_dma_free(struct mmc_spi_host *host) {}
-+#endif
-+
- static int mmc_spi_probe(struct spi_device *spi)
- {
- 	void			*ones;
-@@ -1374,23 +1420,9 @@ static int mmc_spi_probe(struct spi_device *spi)
- 	if (!host->data)
- 		goto fail_nobuf1;
- 
--	if (spi->master->dev.parent->dma_mask) {
--		struct device	*dev = spi->master->dev.parent;
--
--		host->dma_dev = dev;
--		host->ones_dma = dma_map_single(dev, ones,
--				MMC_SPI_BLOCKSIZE, DMA_TO_DEVICE);
--		if (dma_mapping_error(dev, host->ones_dma))
--			goto fail_ones_dma;
--		host->data_dma = dma_map_single(dev, host->data,
--				sizeof(*host->data), DMA_BIDIRECTIONAL);
--		if (dma_mapping_error(dev, host->data_dma))
--			goto fail_data_dma;
--
--		dma_sync_single_for_cpu(host->dma_dev,
--				host->data_dma, sizeof(*host->data),
--				DMA_BIDIRECTIONAL);
--	}
-+	status = mmc_spi_dma_alloc(host);
-+	if (status)
-+		goto fail_dma;
- 
- 	/* setup message for status/busy readback */
- 	spi_message_init(&host->readback);
-@@ -1458,20 +1490,12 @@ static int mmc_spi_probe(struct spi_device *spi)
- fail_add_host:
- 	mmc_remove_host(mmc);
- fail_glue_init:
--	if (host->dma_dev)
--		dma_unmap_single(host->dma_dev, host->data_dma,
--				sizeof(*host->data), DMA_BIDIRECTIONAL);
--fail_data_dma:
--	if (host->dma_dev)
--		dma_unmap_single(host->dma_dev, host->ones_dma,
--				MMC_SPI_BLOCKSIZE, DMA_TO_DEVICE);
--fail_ones_dma:
-+	mmc_spi_dma_free(host);
-+fail_dma:
- 	kfree(host->data);
--
- fail_nobuf1:
- 	mmc_free_host(mmc);
- 	mmc_spi_put_pdata(spi);
--
- nomem:
- 	kfree(ones);
- 	return status;
-@@ -1489,13 +1513,7 @@ static int mmc_spi_remove(struct spi_device *spi)
- 
- 	mmc_remove_host(mmc);
- 
--	if (host->dma_dev) {
--		dma_unmap_single(host->dma_dev, host->ones_dma,
--			MMC_SPI_BLOCKSIZE, DMA_TO_DEVICE);
--		dma_unmap_single(host->dma_dev, host->data_dma,
--			sizeof(*host->data), DMA_BIDIRECTIONAL);
--	}
--
-+	mmc_spi_dma_free(host);
- 	kfree(host->data);
- 	kfree(host->ones);
- 
--- 
-2.25.1
-
+Al
