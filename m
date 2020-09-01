@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66292599A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DAA259AC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730321AbgIAP2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:28:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        id S1732332AbgIAQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:53:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728720AbgIAPYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:24:52 -0400
+        id S1729984AbgIAPYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:24:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C5242078B;
-        Tue,  1 Sep 2020 15:24:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0996A20BED;
+        Tue,  1 Sep 2020 15:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973892;
-        bh=mI2ix3jDcTd6+yitBSFLtIfCRzJi7p2SJWcUmdKPOQU=;
+        s=default; t=1598973894;
+        bh=nMiUbtiD3nYXYSkO+Ot20R5VrvcgfqXTe/FDnXweDlg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i+QQTq9HG5QQhQWy1cTS6Uzk8btU7GGg5PY9q4gz1X/LT9HSHQuJubjurgOJIlYj0
-         0vdSB+qkWmncRZWTuISR9XQcPx6Kr38uoX+8AmEh/HuAKpVKIOxN4B8RnGhEYbjqec
-         duhty0sposNLo6fYOhMoVlG3hAOEIEQ/A1WS8dV8=
+        b=Jqlfs1WEeJwuM6oJSXWoWEXnmtcuexdkPXckBxhMYqh17/g2M2am0c9Xm4w5fQWSa
+         PvnIvvGkMUpyzXd1CD1CbQMXmal/bY3akEiYUY5kcC1yNPeqNl+4BqFoogDftmWOff
+         s7qXEX2fiOdbFjm8CvkRCw4pJhIcd52roUcU0LRg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
-        syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 088/125] vt_ioctl: change VT_RESIZEX ioctl to check for error return from vc_resize()
-Date:   Tue,  1 Sep 2020 17:10:43 +0200
-Message-Id: <20200901150938.891267321@linuxfoundation.org>
+        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH 4.19 089/125] serial: samsung: Removes the IRQ not found warning
+Date:   Tue,  1 Sep 2020 17:10:44 +0200
+Message-Id: <20200901150938.942179490@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -43,49 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Kennedy <george.kennedy@oracle.com>
+From: Tamseel Shams <m.shams@samsung.com>
 
-commit bc5269ca765057a1b762e79a1cfd267cd7bf1c46 upstream.
+commit 8c6c378b0cbe0c9f1390986b5f8ffb5f6ff7593b upstream.
 
-vc_resize() can return with an error after failure. Change VT_RESIZEX ioctl
-to save struct vc_data values that are modified and restore the original
-values in case of error.
+In few older Samsung SoCs like s3c2410, s3c2412
+and s3c2440, UART IP is having 2 interrupt lines.
+However, in other SoCs like s3c6400, s5pv210,
+exynos5433, and exynos4210 UART is having only 1
+interrupt line. Due to this, "platform_get_irq(platdev, 1)"
+call in the driver gives the following false-positive error:
+"IRQ index 1 not found" on newer SoC's.
 
-Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+This patch adds the condition to check for Tx interrupt
+only for the those SoC's which have 2 interrupt lines.
+
+Tested-by: Alim Akhtar <alim.akhtar@samsung.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
 Cc: stable <stable@vger.kernel.org>
-Reported-by: syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/1596213192-6635-2-git-send-email-george.kennedy@oracle.com
+Link: https://lore.kernel.org/r/20200810030021.45348-1-m.shams@samsung.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/vt_ioctl.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/tty/serial/samsung.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -893,12 +893,22 @@ int vt_ioctl(struct tty_struct *tty,
- 			console_lock();
- 			vcp = vc_cons[i].d;
- 			if (vcp) {
-+				int ret;
-+				int save_scan_lines = vcp->vc_scan_lines;
-+				int save_font_height = vcp->vc_font.height;
-+
- 				if (v.v_vlin)
- 					vcp->vc_scan_lines = v.v_vlin;
- 				if (v.v_clin)
- 					vcp->vc_font.height = v.v_clin;
- 				vcp->vc_resize_user = 1;
--				vc_resize(vcp, v.v_cols, v.v_rows);
-+				ret = vc_resize(vcp, v.v_cols, v.v_rows);
-+				if (ret) {
-+					vcp->vc_scan_lines = save_scan_lines;
-+					vcp->vc_font.height = save_font_height;
-+					console_unlock();
-+					return ret;
-+				}
- 			}
- 			console_unlock();
- 		}
+--- a/drivers/tty/serial/samsung.c
++++ b/drivers/tty/serial/samsung.c
+@@ -1755,9 +1755,11 @@ static int s3c24xx_serial_init_port(stru
+ 		ourport->tx_irq = ret + 1;
+ 	}
+ 
+-	ret = platform_get_irq(platdev, 1);
+-	if (ret > 0)
+-		ourport->tx_irq = ret;
++	if (!s3c24xx_serial_has_interrupt_mask(port)) {
++		ret = platform_get_irq(platdev, 1);
++		if (ret > 0)
++			ourport->tx_irq = ret;
++	}
+ 	/*
+ 	 * DMA is currently supported only on DT platforms, if DMA properties
+ 	 * are specified.
 
 
