@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90808259B9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE88F259BB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728363AbgIAREl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:04:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728354AbgIAREY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:04:24 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6018E206FA;
-        Tue,  1 Sep 2020 17:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598979861;
-        bh=LM0ZlQMq+116FxcurgkDhzTV7jHjOc0VMnH67syAMUQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Z112+wpOmHZYDF5q2YSpWCIrvYLUOuuPlvm2AUn1IFORq7sAlh9G0pNLthwMK0910
-         gL4m4deu8dWoMmcLR8/W/O4Bih0lEGbIUJn/kzR0yKkn9JiaLira3RW0tStd8P0thD
-         Q9oawRnaRslbUECyBzZfs32mFe4m9aEoX26mHscg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 332C835226A5; Tue,  1 Sep 2020 10:04:21 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 10:04:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH kcsan 9/9] tools/memory-model:  Document locking corner
- cases
-Message-ID: <20200901170421.GF29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
- <20200831182037.2034-9-paulmck@kernel.org>
- <20200831201701.GB558270@rowland.harvard.edu>
- <20200831214738.GE2855@paulmck-ThinkPad-P72>
- <20200901014504.GB571008@rowland.harvard.edu>
+        id S1729679AbgIARGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729383AbgIARFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:05:52 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60878C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:05:52 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 17so1145113pfw.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:05:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B7oiHWaXK5gHfmhnB8vkdM5EgHYpD4CD1tmZh3/WSwY=;
+        b=GGMdhR+rBEO/tSiqGxTejDVPW9ILsYjv0inAaOCyjrdSvZucIdsLpikJW1/3A4lGF2
+         P5vfHGsN8IzLPv9emV53iAdi6T6szf+cJKNqsXZHMd634yFckut1cE82ER9Rll4ZBfXN
+         RcVabtYMDBqZ5RGrq9TC5K5maURSucr3mr5SL8np6e7DmErcjDI5eJP8nCOk7K2zkD3W
+         nRCH4/76wVJuMmfin7Tr9TlqkNZJCZgAlIwfJrIZyQbq7LibFYjxAtrX8kW6FY3mVA56
+         yCM9uoIv//nbY2Gxc0wL0hu0Zw4/bT+Wjj3k2WD4CyY+N5EHduf2d56+E5FAea+yBaSq
+         1KIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B7oiHWaXK5gHfmhnB8vkdM5EgHYpD4CD1tmZh3/WSwY=;
+        b=Wmgg+tqUzNCH5Sa5qQIrTWVXyGZzTKSP0D6rW4p0FZLLl59yI2Vpb1IkRNksHIcnSG
+         z6f+P6H06/zCl7Sjb+LT/2s7HyiXi9jCjGAPSEa2mLaD0Uk7WQeHhkQh6uwaOSOIgnKI
+         li2k9IEcFo/a8OKSUAaJw7eRhL24p5b5OOebQLdXh1zeIDELYkjifXQB5HCqpSreEV+e
+         toJ3vUs7/vAblYeM8he14dPXmLceSV3WjNq1uTOYNSMIi+WaBGSkC7URzWTNya9Wv0yB
+         7h+U1wjS2JiLHBWJ4i34sZhPoGYrwnOnSyBfo4VyuzXIL3FvD5gulo92SrzIR9Ra1SK4
+         pLLA==
+X-Gm-Message-State: AOAM531s9rVQZJaWTRJHJVJwYpRjAcX9/fOAzRiPlIcOJVZTRhiEQUt2
+        yfroV3o2/WgYftIyLN0gYU29Jg==
+X-Google-Smtp-Source: ABdhPJwjYKFWgFUlv1XxLf6dgTYcmUO5Ej6yBP6by63YisyJ4R2/ST1UnmmFaAIg6LIFJvqB1BoxZw==
+X-Received: by 2002:aa7:9ecc:: with SMTP id r12mr2716361pfq.285.1598979951764;
+        Tue, 01 Sep 2020 10:05:51 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id z126sm2691059pfc.94.2020.09.01.10.05.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 10:05:51 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 11:05:49 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tingwei Zhang <tingweiz@codeaurora.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Message-ID: <20200901170549.GA236120@xps15>
+References: <20200813014552.23539-1-tingwei@codeaurora.org>
+ <20200901063740.GB13784@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901014504.GB571008@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200901063740.GB13784@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 09:45:04PM -0400, Alan Stern wrote:
-> On Mon, Aug 31, 2020 at 02:47:38PM -0700, Paul E. McKenney wrote:
-> > On Mon, Aug 31, 2020 at 04:17:01PM -0400, Alan Stern wrote:
+On Tue, Sep 01, 2020 at 02:37:40PM +0800, Tingwei Zhang wrote:
+> Hi Mathieu,
 > 
-> > > Is this discussion perhaps overkill?
-> > > 
-> > > Let's put it this way: Suppose we have the following code:
-> > > 
-> > > 	P0(int *x, int *lck)
-> > > 	{
-> > > 		spin_lock(lck);
-> > > 		WRITE_ONCE(*x, 1);
-> > > 		do_something();
-> > > 		spin_unlock(lck);
-> > > 	}
-> > > 
-> > > 	P1(int *x, int *lck)
-> > > 	{
-> > > 		while (READ_ONCE(*x) == 0)
-> > > 			;
-> > > 		spin_lock(lck);
-> > > 		do_something_else();
-> > > 		spin_unlock(lck);
-> > > 	}
-> > > 
-> > > It's obvious that this test won't deadlock.  But if P1 is changed to:
-> > > 
-> > > 	P1(int *x, int *lck)
-> > > 	{
-> > > 		spin_lock(lck);
-> > > 		while (READ_ONCE(*x) == 0)
-> > > 			;
-> > > 		do_something_else();
-> > > 		spin_unlock(lck);
-> > > 	}
-> > > 
-> > > then it's equally obvious that the test can deadlock.  No need for
-> > > fancy memory models or litmus tests or anything else.
-> > 
-> > For people like you and me, who have been thinking about memory ordering
-> > for longer than either of us care to admit, this level of exposition is
-> > most definitely -way- overkill!!!
-> > 
-> > But I have had people be very happy and grateful that I explained this to
-> > them at this level of detail.  Yes, I started parallel programming before
-> > some of them were born, but they are definitely within our target audience
-> > for this particular document.  And it is not just Linux kernel hackers
-> > who need this level of detail.  A roughly similar transactional-memory
-> > scenario proved to be so non-obvious to any number of noted researchers
-> > that Blundell, Lewis, and Martin needed to feature it in this paper:
-> > https://ieeexplore.ieee.org/abstract/document/4069174
-> > (Alternative source: https://repository.upenn.edu/cgi/viewcontent.cgi?article=1344&context=cis_papers)
-> > 
-> > Please note that I am -not- advocating making (say) explanation.txt or
-> > recipes.txt more newbie-accessible than they already are.  After all,
-> > the point of the README file in that same directory is to direct people
-> > to the documentation files that are the best fit for them, and both
-> > explanation.txt and recipes.txt contain advanced material, and thus
-> > require similarly advanced prerequisites.
-> > 
-> > Seem reasonable, or am I missing your point?
+> May I know your comments for this patch set?
+
+I do not maintain any of these files.
+
 > 
-> The question is, what are you trying to accomplish in this section?  Are 
-> you trying to demonstrate that it isn't safe to allow arbitrary code to 
-> leak into a critical section?  If so then you don't need to present an 
-> LKMM litmus test to make the point; the example I gave here will do 
-> quite as well.  Perhaps even better, since it doesn't drag in all sorts 
-> of extraneous concepts like limitations of litmus tests or how to 
-> emulate a spin loop.
+> Thanks,
+> Tingwei
 > 
-> On the other hand, if your goal is to show how to construct a litmus 
-> test that will model a particular C language test case (such as the one 
-> I gave), then the text does a reasonable job -- although I do think it 
-> could be clarified somewhat.  For instance, it wouldn't hurt to include 
-> the real C code before giving the corresponding litmus test, so that the 
-> reader will have a clear idea of what you're trying to model.
-
-Makes sense.  I can apply this at some point, but I would welcome a patch
-from you, which I would be happy to fold in with your Codeveloped-by.
-
-> Just what you want to achieve here is not clear from the context.
-
-People who have internalized the "roach motel" model of locking
-(https://www.cs.umd.edu/~pugh/java/memoryModel/BidirectionalMemoryBarrier.html)
-need their internalization adjusted.
-
-> Besides, the example is in any case a straw man.  The text starts out 
-> saying "It is tempting to allow memory-reference instructions to be 
-> pulled into a critical section", but then the example pulls an entire 
-> spin loop inside -- not just the memory references but also the 
-> conditional branch instruction at the bottom of the loop!  I can't 
-> imagine anyone would think it was safe to allow branches to leak into a 
-> critical section, particularly when doing so would break a control 
-> dependency (as it does here).
-
-Most people outside of a few within the Linux kernel community and within
-the various hardware memory-ordering communities don't know that control
-dependencies even exist, so could not be expected to see any danger
-in rather thoroughly folding, spindling, or otherwise mutilating them,
-let alone pulling them into a lock-based critical section.  And many in
-the various toolchain communities see dependencies of any sort as an
-impediment to performance that should be broken wherever and whenever
-possible.
-
-That said, a less prejudicial introduction to this example might be good.
-What did you have in mind?
-
-							Thanx, Paul
+> On Thu, Aug 13, 2020 at 09:45:46AM +0800, Tingwei Zhang wrote:
+> > Ftrace has ability to export trace packets to other destination.
+> > Currently, only function trace can be exported. This series extends the
+> > support to event trace and trace_maker. STM is one possible destination to
+> > export ftrace. Use separate channel for each CPU to avoid mixing up
+> > packets
+> > from different CPUs together.
+> > 
+> > Change from v2:
+> > Change flag definition to BIT(). (Steven)
+> > Add comment in stm_ftrace_write() to clarify it's safe to use 
+> > smp_processor_id() here since preempt is disabled. (Steven) 
+> > 
+> > Change from v1:
+> > All changes are suggested by Steven Rostedt.
+> > User separate flag to control function trace, event trace and trace mark.
+> > Allocate channels according to num_possible_cpu() dynamically.
+> > Move ftrace_exports routines up so all ftrace can use them.
+> > 
+> > Tingwei Zhang (6):
+> >   stm class: ftrace: change dependency to TRACING
+> >   tracing: add flag to control different traces
+> >   tracing: add trace_export support for event trace
+> >   tracing: add trace_export support for trace_marker
+> >   stm class: ftrace: enable supported trace export flag
+> >   stm class: ftrace: use different channel accroding to CPU
+> > 
+> >  drivers/hwtracing/stm/Kconfig  |   2 +-
+> >  drivers/hwtracing/stm/ftrace.c |   7 +-
+> >  include/linux/trace.h          |   7 +
+> >  kernel/trace/trace.c           | 270 ++++++++++++++++++---------------
+> >  4 files changed, 159 insertions(+), 127 deletions(-)
+> > 
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> > 
