@@ -2,166 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3439259264
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5512125925E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgIAPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIAPIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:08:17 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36628C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:08:17 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id 2so761846pjx.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QZZAmt3NC6QblC9/oOUbzzxE2cTL6pED0AVWyZ9CzSA=;
-        b=EVRQhziYoIWUWb6kwgPBU9uxVRVKKpQ+Pkbi/W+4VvpuXEwlXL8BiwMqc8Hx+A/RJh
-         zbOHTFx1Tof8AQMYBVe5cty45Cbg/3EIr+LDmNB0RUPm0CInT4MQEHh7NWa5gaC5hX/p
-         RkDxqpILxkfISzURz2Blc/HhoVsRUb+3h5i/k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QZZAmt3NC6QblC9/oOUbzzxE2cTL6pED0AVWyZ9CzSA=;
-        b=hER2YGpmSRz3Ae1s6k7Ff5co+0FU0nnJbzI9WPb3eszcLBl6YRH40UGPtV7Wx4exAb
-         NxML03BpgK4mxjUIEZHM4cSMxLtGgXT1wriA9gtS1h2ChURB1+4idpT74XK1jRgpQVey
-         UqgHI7dQbvG31fBExFHiM0HeHF3qCCjuC8lsZhKr9FDGt7CV1zaWuqkHNstziSgLDPpY
-         gPawkbR084IUNRuHSCaDg8Gq1ZiFjIECFuN7BzVjKx0Tee183xQbHF0yGaLLEd15xpAD
-         iLwNx5/XOSbSnoApt7bhjGmKin+3l5J8kANVEL/ZRvRSiBF1/KAGRSokyexY42n4cfbO
-         jEiw==
-X-Gm-Message-State: AOAM530A4LOGATSA97t1T7z7dIGFTHZYoOUI3N2koHk4INBQQ89dGaEc
-        LcKIpltu/ZvmC4qOO1OVVLuJziCZN5kZgQ==
-X-Google-Smtp-Source: ABdhPJxMq85g+Q6tJiMAqwYZiqLaCQMh3akF+zHBK+owj2yMBbtvC4hunTNDoJzE2/LzDHJwAJCWIA==
-X-Received: by 2002:a17:90a:19dc:: with SMTP id 28mr1972382pjj.103.1598972896638;
-        Tue, 01 Sep 2020 08:08:16 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x3sm1055250pgg.54.2020.09.01.08.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 08:08:14 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 08:08:13 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org, luto@amacapital.net,
-        syzbot <syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com, wad@chromium.org
-Subject: Re: memory leak in do_seccomp
-Message-ID: <202008311921.3D64C23D@keescook>
-References: <000000000000e5ea9e05ac9d16c1@google.com>
- <000000000000df80ae05ae244c2b@google.com>
- <202008311620.AC4A7047D@keescook>
- <20200901000915.GA564594@cisco>
- <20200901011459.GA583718@cisco>
+        id S1728348AbgIAPK1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 11:10:27 -0400
+Received: from mga11.intel.com ([192.55.52.93]:44800 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726406AbgIAPKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:10:14 -0400
+IronPort-SDR: lGB35X8lVXqmeURg5B9yY/hSidyFMrhUriySavm/P2O703ZaDR3QUjfYJi58IsZW6zuhsMDZOO
+ gn2Mbg1GmeFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="154691600"
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="154691600"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 08:10:11 -0700
+IronPort-SDR: jLzcTjk/uOBg0RoHZOwp9TqCg46yUBWklGXcFqU/0inGvOaQE/ITf+KSTV66U7KvtoGIQ1EVrF
+ 2SdB7Su8O8GQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="404805931"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Sep 2020 08:10:11 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Sep 2020 08:08:38 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Sep 2020 08:08:37 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Tue, 1 Sep 2020 08:08:37 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lkp <lkp@intel.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David Rientjes" <rientjes@google.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>
+Subject: RE: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
+Thread-Topic: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
+Thread-Index: AQHWfZeQG2gN8ZpSAUuKNWhMot21E6lTqDQAgAA/7AA=
+Date:   Tue, 1 Sep 2020 15:08:37 +0000
+Message-ID: <706c8eed209c4379baf2f1ac81b0112a@intel.com>
+References: <20200829000126.2463-1-rdunlap@infradead.org>
+ <20200901041902.GC424181@linux.ibm.com>
+In-Reply-To: <20200901041902.GC424181@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901011459.GA583718@cisco>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 07:14:59PM -0600, Tycho Andersen wrote:
-> On Mon, Aug 31, 2020 at 06:09:15PM -0600, Tycho Andersen wrote:
-> > On Mon, Aug 31, 2020 at 04:25:35PM -0700, Kees Cook wrote:
-> > > On Sun, Aug 30, 2020 at 08:50:15PM -0700, syzbot wrote:
-> > > > syzbot has found a reproducer for the following issue on:
-> > > > 
-> > > > HEAD commit:    dcc5c6f0 Merge tag 'x86-urgent-2020-08-30' of git://git.ke..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10b297d5900000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=903b9fecc3c6d231
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3ad9614a12f80994c32e
-> > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14649561900000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118aacc1900000
-> > > > 
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
-> > > > 
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > BUG: memory leak
-> > > > unreferenced object 0xffff88811ba93600 (size 64):
-> > > >   comm "syz-executor680", pid 6503, jiffies 4294951104 (age 21.940s)
-> > > >   hex dump (first 32 bytes):
-> > > >     00 00 00 00 00 00 00 00 08 36 a9 1b 81 88 ff ff  .........6......
-> > > >     08 36 a9 1b 81 88 ff ff 11 ce 98 89 3a d5 b4 8f  .6..........:...
-> > > >   backtrace:
-> > > >     [<00000000896418b0>] kmalloc include/linux/slab.h:554 [inline]
-> > > >     [<00000000896418b0>] kzalloc include/linux/slab.h:666 [inline]
-> > > >     [<00000000896418b0>] init_listener kernel/seccomp.c:1473 [inline]
-> > > >     [<00000000896418b0>] seccomp_set_mode_filter kernel/seccomp.c:1546 [inline]
-> > > >     [<00000000896418b0>] do_seccomp+0x8ce/0xd40 kernel/seccomp.c:1649
-> > > >     [<000000002b04976c>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > > >     [<00000000322b4126>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > 
-> > > I haven't narrowed this down yet (and it *might* be a false positive),
-> > > but it looks like this is filter->notif. The only way that's possible is
-> > > if seccomp_notify_release() was never called *and* seccomp_filter_free()
-> > > got called... which would imply a reference counting problem. The way
-> > > there doesn't jump out at me yet, but I haven't yet decoded the C
-> > > reproducer into the actual seccomp arguments, etc.
-> > 
-> > Looks like it's just a bunch of threads in the same thread group
-> > trying to install a filter with TSYNC and NEW_LISTENER turned on. Does
-> > the patch below look reasonable?
-> > 
-> > I didn't send it separately since I'm in the process of switching my
-> > e-mail address to tycho@tycho.pizza; let this e-mail serve as proof
-> > that that e-mail really is me too :). I can send it the normal way if
-> > it looks good.
-> > 
-> > 
-> > From d497e787e8e1b3e8b9230fdc4c9802616709c920 Mon Sep 17 00:00:00 2001
-> > From: Tycho Andersen <tycho@tycho.pizza>
-> > Date: Mon, 31 Aug 2020 17:55:07 -0600
-> > Subject: [PATCH] seccomp: don't leak memory when filter install races
-> > 
-> > In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
-> > the listener fd, then check to see if we can actually use it later in
-> > seccomp_may_assign_mode(), which can fail if anyone else in our thread
-> > group has installed a filter and caused some divergence. If we can't, we
-> > partially clean up the newly allocated file: we put the fd, put the file,
-> > but don't actually clean up the *memory* that was allocated at
-> > filter->notif. Let's clean that up too.
-> > 
-> > Fixes: 51891498f2da ("seccomp: allow TSYNC and USER_NOTIF together")
-> > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
-> > Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
-> > ---
-> >  kernel/seccomp.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index 3ee59ce0a323..21a76127833f 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -1581,6 +1581,8 @@ static long seccomp_set_mode_filter(unsigned int flags,
-> >  			listener_f->private_data = NULL;
-> >  			fput(listener_f);
-> >  			put_unused_fd(listener);
-> > +			kfree(filter->notif);
-> > +			filter->notif = NULL;
-> 
-> Oof, actually this isn't quite right. It should be s/filter/prepared/g.
-> I can fix that and send out a real patch that's actually tested at
-> some point tomorrow.
+> I can take it via the memblock tree, would appreciate an Ack.
 
-Ah! Yes, nice catch. I was staring at the wrong failure path. :)
+Thanks
 
-I'm thinking the free/NULL pattern, since it's repeated in a few places,
-should likely be a short helper. I'll stare at this some more...
+Acked-by: Tony Luck <tony.luck@intel.com>
 
--- 
-Kees Cook
+-Tony
