@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C4C25A162
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6D25A16A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgIAWWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 18:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
+        id S1727822AbgIAWZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 18:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726679AbgIAWWj (ORCPT
+        with ESMTP id S1726426AbgIAWZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 18:22:39 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328F9C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:22:39 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 109so2593227otv.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:22:39 -0700 (PDT)
+        Tue, 1 Sep 2020 18:25:35 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3081FC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:25:35 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id k17so2047212qvj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:25:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3ER0ltEsDy6u1Dz73olx5pTxbVk1kq7hDykAcPOe3uo=;
-        b=d/Uoy50Kuzv54wghayiKGcy824eN1I/m4AutGRLLdU7lpdYzD9U9JcfM6tgXDTrC72
-         L6VABgZR17HHPE+XDURYMjkoKFyuVqyAh7XsESyGB6hf5UU/gVm7eSDCFnE4GkgnodNN
-         j2xl4bkzGqAVMrpAm+pPTmO0y0WBIkthWWUfE=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=8Cpt1ljRc5OUFvhttJIkywuliHVtTrKBkn67gE9JDjs=;
+        b=nNo4Vy9va2+LZTqvDKpxwiSMCYKfhf2ERgp336ctF3JBDUsOPg+Y9R4xBuOvFzpqbb
+         7bsr8zYEpC6m04ZiYGlNZj9fs4bp2HfQDMr92bKf3fRoWcglT9tA5zOrFC7nL4q229xt
+         8nBfw+3DA4zhaNIc5yVoAEdYZbhcU3K3wjF5Jw6WvYS25TWQYnzAPbVrQQK+8SlS7qqx
+         TA2vtd3iFV9EAGTsZUUApqRrrBcVvZQ0gqexY0Qp6jEgW9nRS3WDQuxltOk+WH4em8GQ
+         cVOWTfLfbcjYWyPhj1yQW4xLtr/uxt+I5NYJi58hUfOhL/mYJoS0sKmVexYEXcnpW99W
+         8Kcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3ER0ltEsDy6u1Dz73olx5pTxbVk1kq7hDykAcPOe3uo=;
-        b=fNIdoJjWJqpvPkoKZNeIlLJYhlU25QJphzy29jNapMkoeX0clSjgDRTcSNEsPQxrma
-         lY50XKmgxmND22cJjcpPXqbB8ChZfjXFzEtr6ps+uZbKicy06EdDyBeMxMxOBiU4djq6
-         egozveKl+RtG2gFV+5NssC9thqlWBCFcnwUcut4UURJUoBcZ/eNTPnw8TB02YYUJoImJ
-         Oes7h5Jt24URc0Q123bzhBnSsBeQZUDFno+vaXtr0/Rf+iP4CjfuO8Ep3QUElxXVfPrA
-         Otqglv2aoXxpNn+YMXfw57OtOk3q6NyQmuvOGApxj+TdoKTVCaq3Y1K38p3XyOB7xmOZ
-         8QBg==
-X-Gm-Message-State: AOAM5315/wUDkqiLPK7w0qPs3CT+cSjBRR5Bgsxff3ldk0f0QII5hCfM
-        YmaGSNcKGzIzGFkKKPsPcvd1xQ==
-X-Google-Smtp-Source: ABdhPJzoQAftt1vQrLXjLw9PMDCUtYjUe3gNIkgrmpErP3pF8iGpyMTNXFBjRWwrxiQJVBmqx54jGA==
-X-Received: by 2002:a9d:3d4a:: with SMTP id a68mr3107674otc.216.1598998958607;
-        Tue, 01 Sep 2020 15:22:38 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 91sm434946otn.18.2020.09.01.15.22.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 15:22:38 -0700 (PDT)
-Subject: Re: [PATCH 4.14 00/91] 4.14.196-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1856b9cb-a750-c10a-e88b-c7860509424b@linuxfoundation.org>
-Date:   Tue, 1 Sep 2020 16:22:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=8Cpt1ljRc5OUFvhttJIkywuliHVtTrKBkn67gE9JDjs=;
+        b=trhhB/Og4uBJcDsMau2iuFAWGzSulfuBo07+OchT9hoTKk77gC+bMKe3w1WCEhjXmE
+         IKWfkEXRGADZ5jW57lAzOp9TuwtVtrgtHRpV1L7nozJTPJvktJiZ9+gqkQgaL/zNeEG1
+         jSvfD+oBoI+A6boWFi7zVyrvKXvLrqvZpMlRYIbolMTgymM+tEgwZ5ou5GwowEQV8Jje
+         MzGZkOiP9aXA5EKEQQpT44IKnfxdDByjpJZOmmHdyKmAYz4U8hCoMA5VRB7/YE0rV27k
+         xlflAXMUwGMwZH3DkDBthmN22+ZXgzEJGO3DNJS/t++R8EpxActRbVGFOLx7zDsevydy
+         azGw==
+X-Gm-Message-State: AOAM532ZkaZwhMy2WhybDp6lcxEmMTgk7JWQ7moXCURkpYHMdPk9tcRg
+        w4K2ZUw4Fb/9fJnK8oN9jLclWknTZXtCWLeUQno=
+X-Google-Smtp-Source: ABdhPJw4pDP7L/8jSUUI60udN2zaLrmNYvzSnz3iTfjyKHES7GeqPrOawy43a3WEWoiGf2R3turAoULAtxPlbxsLVLY=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:e8c9:: with SMTP id
+ m9mr4288274qvo.51.1598999134297; Tue, 01 Sep 2020 15:25:34 -0700 (PDT)
+Date:   Tue,  1 Sep 2020 15:25:21 -0700
+Message-Id: <20200901222523.1941988-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
+Subject: [PATCH 0/2] link vdso with linker
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 9:09 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.196 release.
-> There are 91 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 03 Sep 2020 15:09:01 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.196-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Kees Cook is working on series that adds --orphan-section=warn to arm,
+arm64, and x86.  I noticed that ppc vdso were still using cc-ldoption
+for these which I removed.  It seems this results in that flag being
+silently dropped.
 
-Compiled and booted on my test system. No dmesg regressions.
+I'm very confident with the first patch, but the second needs closer
+review around the error mentioned below the fold related to the .got
+section.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Nick Desaulniers (2):
+  powerpc/vdso64: link vdso64 with linker
+  powerpc/vdso32: link vdso64 with linker
 
-thanks,
--- Shuah
+ arch/powerpc/include/asm/vdso.h         | 17 ++---------------
+ arch/powerpc/kernel/vdso32/Makefile     |  7 +++++--
+ arch/powerpc/kernel/vdso32/vdso32.lds.S |  3 ++-
+ arch/powerpc/kernel/vdso64/Makefile     |  8 ++++++--
+ arch/powerpc/kernel/vdso64/vdso64.lds.S |  1 -
+ 5 files changed, 15 insertions(+), 21 deletions(-)
+
+-- 
+2.28.0.402.g5ffc5be6b7-goog
+
