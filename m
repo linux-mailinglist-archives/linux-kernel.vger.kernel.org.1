@@ -2,78 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3587E2589C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB0A2589D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgIAHzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:55:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727970AbgIAHzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:55:20 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D9062083B;
-        Tue,  1 Sep 2020 07:55:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598946920;
-        bh=zApmnDF9Ii9NjM8St9RUBDwhe2Focy2FrYiga7i/r7Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T5LPiGw/g9O4Z77CpiahKBkbcMz3DQQMBXlcVnwOfFUlk8v4mf+kg1YQoNGD1iwb/
-         kymBEr6EFE1HnBAKP/pSuH3/vR7Yla/0RVAzsgKQ9ys0vxg/RWW/7U4eIG43aitJ48
-         xvkpVSMFpZMuIZqzUR/Su+NyDWaI3oYyA8W36mYE=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: [PATCH 13/13] ARM: dts: exynos: Use S2MPS11 clock in S3C RTC in SMDK5420
-Date:   Tue,  1 Sep 2020 09:54:17 +0200
-Message-Id: <20200901075417.22481-14-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901075417.22481-1-krzk@kernel.org>
-References: <20200901075417.22481-1-krzk@kernel.org>
+        id S1726293AbgIAH4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIAH4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 03:56:41 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6485C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 00:56:40 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id e14so397102ile.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 00:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TEWosj+T/FRGHSF9tH65GTqlEJ9j3rwP8Dj/lqmsNo8=;
+        b=ILDt4bQbXAm2fNXcqA27lrOZxCdF/zXdcbjLA74g0gZSpUOh8srrDHs5dzuCQ7hpe+
+         a6tLJfBYvF97GfS6EwZzZMMSavbQ1TDHuI24//IQx5nRolW+H8zunuG3uAYt51D8KTkX
+         2bWTazW6q3DUO9ehNgEb3gmWhuNS34HJDqph80nZL5JImd7vgyl4PKlYRkeQ3TRFdIs4
+         D7sAAdTh2pIFg9shiHyc4n9cjyGqjPX7nTPNt1EpQCSyKi46f3dW+0tH7Dv2ksNKwpBS
+         7fryGzuHI8VefQ7r+EwAW1hd/jEaXwbSJZ3j4vg6hHL5edpCf0nC5fw17aMwYJtv7NXT
+         Mh1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TEWosj+T/FRGHSF9tH65GTqlEJ9j3rwP8Dj/lqmsNo8=;
+        b=HOMwin+NQFdqiu2RE9MY3ShcmRuqTOLycJmayHpvKK0nK3F3qBkzlImo/zKdPYN7I5
+         WkKSUAcQFQdOdGSB1gldOY/uoI7o51H0WEj6NJVGqy2Fhew2VGlOQvarD/iYk5K/b9Fe
+         OS9/GUvzd0py9Axx5PJqpKrjFeJFux8IIh2ci+/pxpD+EMUVSAfgbJwk9dq2huorlepA
+         EQ5ug2OoBrLun1jrKfWKSPvzpJO1M+KinGF2WjhjA/Rn4jekVd0iGabxOLNs5PcA5LZ2
+         0kJGkPVE8xEy2rcdrRKj2KPo7vHtELFTsUF+mG8DgLejt5WPDscAr3/++nLDBgCeNxSG
+         gjDA==
+X-Gm-Message-State: AOAM530fy+dLy1lVO5z7wiVHsGJC/Y/ZySa/Vqcjqkv1yXwdgqWaFiCw
+        Zr6LlGztZR9lYR//drw4VyO7MM5StzpryZX5xoXgxA==
+X-Google-Smtp-Source: ABdhPJyzfgc7rPdiRryei3TV9tpT3eT551dswjAZusUJFZsBCA8Lc7j+N5wK7ANhav4txz/BTlblPGK0DUE/GbM97Wo=
+X-Received: by 2002:a92:4001:: with SMTP id n1mr310227ila.69.1598947000122;
+ Tue, 01 Sep 2020 00:56:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200901065758.1141786-1-brianvv@google.com>
+In-Reply-To: <20200901065758.1141786-1-brianvv@google.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 1 Sep 2020 09:56:28 +0200
+Message-ID: <CANn89iKA5Ut4AcZfsZi3bVpE33_pqgO=E1RhBzePUeBDn6gznQ@mail.gmail.com>
+Subject: Re: [PATCH] net: ipv6: fix __rt6_purge_dflt_routers when forwarding
+ is not set on all ifaces
+To:     Brian Vazquez <brianvv@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        David Ahern <dsa@cumulusnetworks.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the 32 kHz clock from S2MPS11 PMIC in the S3C RTC node. Except
-making the S3C RTC working, this also fixes dtbs_check warnings:
+On Tue, Sep 1, 2020 at 8:58 AM Brian Vazquez <brianvv@google.com> wrote:
+>
+> The problem is exposed when the system has multiple ifaces and
+> forwarding is enabled on a subset of them, __rt6_purge_dflt_routers will
+> clean the default route on all the ifaces which is not desired.
+>
+> This patches fixes that by cleaning only the routes where the iface has
+> forwarding enabled.
+>
+> Fixes: 830218c1add1 ("net: ipv6: Fix processing of RAs in presence of VRF")
 
-  arch/arm/boot/dts/exynos5420-smdk5420.dt.yaml: rtc@101e0000: clocks: [[2, 317]] is too short
-  arch/arm/boot/dts/exynos5420-smdk5420.dt.yaml: rtc@101e0000: clock-names: ['rtc'] is too short
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm/boot/dts/exynos5420-smdk5420.dts | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm/boot/dts/exynos5420-smdk5420.dts b/arch/arm/boot/dts/exynos5420-smdk5420.dts
-index 83fa800fa1eb..4e49d8095b29 100644
---- a/arch/arm/boot/dts/exynos5420-smdk5420.dts
-+++ b/arch/arm/boot/dts/exynos5420-smdk5420.dts
-@@ -9,6 +9,7 @@
- /dts-v1/;
- #include "exynos5420.dtsi"
- #include "exynos5420-cpus.dtsi"
-+#include <dt-bindings/clock/samsung,s2mps11.h>
- #include <dt-bindings/gpio/gpio.h>
- 
- / {
-@@ -401,6 +402,8 @@
- 
- &rtc {
- 	status = "okay";
-+	clocks = <&clock CLK_RTC>, <&s2mps11_osc S2MPS11_CLK_AP>;
-+	clock-names = "rtc", "rtc_src";
- };
- 
- &usbdrd_phy0 {
--- 
-2.17.1
 
+
+> Cc: David Ahern <dsa@cumulusnetworks.com>
+> Signed-off-by: Brian Vazquez <brianvv@google.com>
+> ---
+>  net/ipv6/route.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+> index 5e7e25e2523a..41181cd489ea 100644
+> --- a/net/ipv6/route.c
+> +++ b/net/ipv6/route.c
+> @@ -4283,6 +4283,7 @@ static void __rt6_purge_dflt_routers(struct net *net,
+>                                      struct fib6_table *table)
+>  {
+>         struct fib6_info *rt;
+> +       bool deleted = false;
+>
+>  restart:
+>         rcu_read_lock();
+> @@ -4291,16 +4292,19 @@ static void __rt6_purge_dflt_routers(struct net *net,
+>                 struct inet6_dev *idev = dev ? __in6_dev_get(dev) : NULL;
+>
+>                 if (rt->fib6_flags & (RTF_DEFAULT | RTF_ADDRCONF) &&
+> -                   (!idev || idev->cnf.accept_ra != 2) &&
+> +                   (!idev || (idev->cnf.forwarding == 1 &&
+> +                              idev->cnf.accept_ra != 2)) &&
+>                     fib6_info_hold_safe(rt)) {
+>                         rcu_read_unlock();
+>                         ip6_del_rt(net, rt, false);
+> +                       deleted = true;
+>                         goto restart;
+>                 }
+>         }
+>         rcu_read_unlock();
+>
+> -       table->flags &= ~RT6_TABLE_HAS_DFLT_ROUTER;
+> +       if (deleted)
+> +               table->flags &= ~RT6_TABLE_HAS_DFLT_ROUTER;
+
+
+This seems wrong : We want to keep the flag set if at least one
+candidate route has not been deleted,
+so that next time rt6_purge_dflt_routers() is called, we can call
+__rt6_purge_dflt_routers() ?
