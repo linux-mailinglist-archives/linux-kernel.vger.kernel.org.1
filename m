@@ -2,166 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831AC258634
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8592E258646
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgIADci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 23:32:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgIADch (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 23:32:37 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E183FC0612FF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 20:32:36 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b14so8301934qkn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 20:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=D9LQOOZMhk5sGMfOr4O9KkwDsvLVRqelWrWxaR7xfSg=;
-        b=irDldOUhcTG9Ln66BCPoHZ18lasJTXAdXl52OIMakYvfZpSLWJQm9CCRGkw38gYvxE
-         62WNrZV6h4mmiNOB6XKFu47+hPBQA2ImO7Gl5/J00RvHAkdGgbNiUEQqkwZkhsj32dIp
-         XMqpePtNDW4eef/RawyKIyyVGeRUs+uwCL2mRvfvZT/TmqURCqkofPKXA0PazKWdZZEl
-         aNBNlZOThqQiugYG1oRgKUqgGUitI0amnMBRwzpPaoM1u1mj1lZ4SIxhRKg2IqWqhvhf
-         hHdYdayvBPc1W/vy23fOxuyYrWDv4XHba61kAonvTEYLl4AOEqXIzxQywRLnrfK+3z3s
-         nV4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=D9LQOOZMhk5sGMfOr4O9KkwDsvLVRqelWrWxaR7xfSg=;
-        b=VYNO+bCkg8vkT6EgF7dNOKny1/IQ0ZHGF3ihGXIEEncgWtfTxnM7p/ZupCHI4uXYcM
-         0H2CJQMItXf9jvYIdgvZ/MufkXNQJ8NNBNCa9YywBg7EZA24XsYq3PKmMW2L7zNnvV8t
-         rnSkMwGagpyT1UhYN/S+sTFHlJsewgDjuf/lldhqrB6iD0+WRvOYpdnad7WBopQYtrq5
-         mv4ZchGAmU+TkEF08Ph5zdwUiBgtFMguAhPPGAOwQk24SJ9rb12+lr3GmofcOtsDF/Bo
-         5ioFIFNUafrZ6602oiMS1GOLrFJqkgChIsulliAvZCbi04QTS3t3/OgnkrWGSqMTxkqF
-         qw3Q==
-X-Gm-Message-State: AOAM533wzGh7WvgG4QgceD8OtpKGpQc0o5KQY31QbbGJ0h5jZMe9Erai
-        YwWT8Wj1AORsKltubl3mxvnVOg==
-X-Google-Smtp-Source: ABdhPJyZ12jz6sA34cLdjam+P+4nzb9LIvuDeGEB9QepX1ckrsKMkPcSSG9jKEFMisESG6z1f12SNw==
-X-Received: by 2002:a05:620a:b1a:: with SMTP id t26mr4627615qkg.353.1598931155876;
-        Mon, 31 Aug 2020 20:32:35 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id z10sm12294219qtf.24.2020.08.31.20.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 20:32:35 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 23:32:28 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.leiming@gmail.com, paulmck@kernel.org
-Subject: Re: splice: infinite busy loop lockup bug
-Message-ID: <20200901033227.GA10262@lca.pw>
-References: <00000000000084b59f05abe928ee@google.com>
- <29de15ff-15e9-5c52-cf87-e0ebdfa1a001@I-love.SAKURA.ne.jp>
- <20200807122727.GR1236603@ZenIV.linux.org.uk>
- <d96b0b3f-51f3-be3d-0a94-16471d6bf892@i-love.sakura.ne.jp>
- <20200901005131.GA3300@lca.pw>
- <20200901010928.GC1236603@ZenIV.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901010928.GC1236603@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726523AbgIADkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 23:40:10 -0400
+Received: from mga12.intel.com ([192.55.52.136]:62487 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgIADkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 23:40:10 -0400
+IronPort-SDR: GAFvU7O0EQRfcymRArsXWKjZP3g/ubMy11GaareUnUBGHphZ15cb+uVGOiEvxOues+4njavCjD
+ yqJtbF0abb5w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="136620916"
+X-IronPort-AV: E=Sophos;i="5.76,377,1592895600"; 
+   d="scan'208";a="136620916"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 20:40:09 -0700
+IronPort-SDR: xGboYKzvsJlkHn6PaFg2gJdD6Ho9X+J4xWldMcYK4l8ocnu41LSY2oGnWtKaxhn0DKvjOlZD+S
+ 0KuPivwRFKtQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,377,1592895600"; 
+   d="scan'208";a="325180845"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Aug 2020 20:40:06 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v4 0/5] iommu aux-domain APIs extensions
+Date:   Tue,  1 Sep 2020 11:34:17 +0800
+Message-Id: <20200901033422.22249-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:09:28AM +0100, Al Viro wrote:
-> On Mon, Aug 31, 2020 at 08:51:32PM -0400, Qian Cai wrote:
-> > On Fri, Aug 07, 2020 at 09:34:08PM +0900, Tetsuo Handa wrote:
-> > > On 2020/08/07 21:27, Al Viro wrote:
-> > > > On Fri, Aug 07, 2020 at 07:35:08PM +0900, Tetsuo Handa wrote:
-> > > >> syzbot is reporting hung task at pipe_release() [1], for for_each_bvec() from
-> > > >> iterate_bvec() from iterate_all_kinds() from iov_iter_alignment() from
-> > > >> ext4_unaligned_io() from ext4_dio_write_iter() from ext4_file_write_iter() from
-> > > >> call_write_iter() from do_iter_readv_writev() from do_iter_write() from
-> > > >> vfs_iter_write() from iter_file_splice_write() falls into infinite busy loop
-> > > >> with pipe->mutex held.
-> > > >>
-> > > >> The reason of falling into infinite busy loop is that iter_file_splice_write()
-> > > >> for some reason generates "struct bio_vec" entry with .bv_len=0 and .bv_offset=0
-> > > >> while for_each_bvec() cannot handle .bv_len == 0.
-> > > > 
-> > > > broken in 1bdc76aea115 "iov_iter: use bvec iterator to implement iterate_bvec()",
-> > > > unless I'm misreading it...
-> > 
-> > I have been chasing something similar for a while as in,
-> > 
-> > https://lore.kernel.org/linux-fsdevel/89F418A9-EB20-48CB-9AE0-52C700E6BB74@lca.pw/
-> > 
-> > In my case, it seems the endless loop happens in iterate_iovec() instead where
-> > I put a debug patch here,
-> > 
-> > --- a/lib/iov_iter.c
-> > +++ b/lib/iov_iter.c
-> > @@ -33,6 +33,7 @@
-> >                 if (unlikely(!__v.iov_len))             \
-> >                         continue;                       \
-> >                 __v.iov_base = __p->iov_base;           \
-> > +               printk_ratelimited("ITER_IOVEC left = %zu, n = %zu\n", left, n); \
-> >                 left = (STEP);                          \
-> >                 __v.iov_len -= left;                    \
-> >                 skip = __v.iov_len;                     \
-> > 
-> > and end up seeing overflows ("n" supposes to be less than PAGE_SIZE) before the
-> > soft-lockups and a dead system,
-> > 
-> > [ 4300.249180][T470195] ITER_IOVEC left = 0, n = 48566423
-> > 
-> > Thoughts?
-> 
-> Er...  Where does that size come from?  If that's generic_perform_write(),
-> I'd like to see pos, offset and bytes at the time of call...  ->iov_offset would
-> also be interesting to see (along with the entire iovec array, really).
+This series aims to extend the IOMMU aux-domain API set so that it
+could be more friendly to vfio/mdev usage. The interactions between
+vfio/mdev and iommu during mdev creation and passthr are:
 
-I used a new debug patch but not sure how to capture without
-printk_ratelimited() because the call sites are large,
+1. Create a group for mdev with iommu_group_alloc();
+2. Add the device to the group with
 
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index d812eef23a32..214b93c3d8a8 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -33,6 +33,7 @@
-                if (unlikely(!__v.iov_len))             \
-                        continue;                       \
-                __v.iov_base = __p->iov_base;           \
-+               printk_ratelimited("ITER_IOVEC left = %zu, n = %zu, iov_offset = %zu, iov_base = %px, iov_len = %lu\n", left, n, i->iov_offset, __p->iov_base, __p->iov_len); \
-                left = (STEP);                          \
-                __v.iov_len -= left;                    \
-                skip = __v.iov_len;                     \
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc..202b0ab28adf 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -3408,6 +3408,7 @@ ssize_t generic_perform_write(struct file *file,
-                if (mapping_writably_mapped(mapping))
-                        flush_dcache_page(page);
- 
-+               printk_ratelimited("pos = %lld, offset = %ld, bytes = %ld\n", pos, offset, bytes);
-                copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
-                flush_dcache_page(page);
+       group = iommu_group_alloc();
+       if (IS_ERR(group))
+               return PTR_ERR(group);
 
-Al, does it help? If not, can you cook a debug patch instead?
+       ret = iommu_group_add_device(group, &mdev->dev);
+       if (!ret)
+               dev_info(&mdev->dev, "MDEV: group_id = %d\n",
+                        iommu_group_id(group));
 
-[  587.765400][T21348] pos = 468152746240, offset = 256, bytes = 3840
-[  587.765424][T21348] pos = 468152750080, offset = 0, bytes = 4096
-[  587.765439][T21348] pos = 468152754176, offset = 0, bytes = 4096
-[  587.765455][T21348] pos = 468152758272, offset = 0, bytes = 4096
-[  591.235409][T22038] ITER_IOVEC left = 0, n = 22476968, iov_offset = 0, iov_base = 00007ff12570c000, iov_len = 20
-[  591.313456][T22038] ITER_IOVEC left = 0, n = 22476948, iov_offset = 0, iov_base = 00007ff123250000, iov_len = 20
-[  591.363679][T22038] ITER_IOVEC left = 0, n = 22476928, iov_offset = 0, iov_base = 00007ff123650000, iov_len = 6370
-[  591.413217][T22038] ITER_IOVEC left = 0, n = 22470558, iov_offset = 0, iov_base = 00007ff123850000, iov_len = 20
-[  591.459754][T22038] ITER_IOVEC left = 0, n = 22470538, iov_offset = 0, iov_base = 00007ff12570c000, iov_len = 376
-[  591.507748][T22038] ITER_IOVEC left = 0, n = 22470162, iov_offset = 0, iov_base = 00007ff12570c000, iov_len = 3473
-[  591.557395][T22038] ITER_IOVEC left = 0, n = 22466689, iov_offset = 0, iov_base = 00007ff123250000, iov_len = 20
-[  591.605295][T22038] ITER_IOVEC left = 0, n = 22466669, iov_offset = 0, iov_base = 00007ff12570a000, iov_len = 3392
-[  591.653045][T22038] ITER_IOVEC left = 0, n = 22463277, iov_offset = 0, iov_base = 00007ff123250000, iov_len = 1329038
-[  591.705324][T22038] ITER_IOVEC left = 0, n = 21134239, iov_offset = 0, iov_base = 00007ff123850000, iov_len = 20
+3. Allocate an aux-domain with iommu_domain_alloc();
+4. Attach the aux-domain to the iommu_group.
+
+       iommu_group_for_each_dev {
+               if (iommu_dev_feature_enabled(iommu_device, IOMMU_DEV_FEAT_AUX))
+                       return iommu_aux_attach_device(domain, iommu_device);
+               else
+                       return iommu_attach_device(domain, iommu_device);
+        }
+
+   where, iommu_device is the aux-domain-capable device. The mdev's in
+   the group are all derived from it.
+
+In the whole process, an iommu group was allocated for the mdev and an
+iommu domain was attached to the group, but the group->domain leaves
+NULL. As the result, iommu_get_domain_for_dev() (or other similar
+interfaces) doesn't work anymore.
+
+The iommu_get_domain_for_dev() is a necessary interface for device
+drivers that want to support vfio/mdev based aux-domain. For example,
+
+        unsigned long pasid;
+        struct iommu_domain *domain;
+        struct device *dev = mdev_dev(mdev);
+        struct device *iommu_device = vfio_mdev_get_iommu_device(dev);
+
+        domain = iommu_aux_get_domain_for_dev(dev);
+        if (!domain)
+                return -ENODEV;
+
+        pasid = iommu_aux_get_pasid(domain, iommu_device);
+        if (pasid <= 0)
+                return -EINVAL;
+
+         /* Program the device context */
+         ....
+
+We tried to address this by extending iommu_aux_at(de)tach_device() so that
+the users could pass in an optional device pointer (for example vfio/mdev).
+(v2 of this series)
+
+https://lore.kernel.org/linux-iommu/20200707013957.23672-1-baolu.lu@linux.intel.com/
+
+But that will cause a lock issue as group->mutex has been applied in
+iommu_group_for_each_dev(), but has to be reapplied again in the
+iommu_aux_attach_device().
+
+We also tried to implement an equivalent iommu_attch_group() for groups
+which includes subdevices derived from a single physical device. (v3 of
+this series)
+
+https://lore.kernel.org/linux-iommu/20200714055703.5510-1-baolu.lu@linux.intel.com/
+
+But that's too harsh (requires that all subdevices in an iommu_group
+must be derived from a same physical device) and breaks some generic
+concept of iommmu_group.
+
+This version continues to address this by introducing some new APIs into
+the aux-domain API set according to comments during v3 reviewing period.
+
+/**
+ * iommu_attach_subdev_group - attach domain to an iommu_group which
+ *                             contains subdevices.
+ *
+ * @domain: domain
+ * @group:  iommu_group which contains subdevices
+ * @fn:     callback for each subdevice in the @iommu_group to retrieve the
+ *          physical device where the subdevice was created from.
+ *
+ * Returns 0 on success, or an error value.
+ */
+int iommu_attach_subdev_group(struct iommu_domain *domain,
+                              struct iommu_group *group,
+                              iommu_device_lookup_t fn)
+
+/**
+ * iommu_detach_subdev_group - detach domain from an iommu_group which
+ *                             contains subdevices
+ *
+ * @domain: domain
+ * @group:  iommu_group which contains subdevices
+ * @fn:     callback for each subdevice in the @iommu_group to retrieve the
+ *          physical device where the subdevice was created from.
+ *
+ * The domain must have been attached to @group via iommu_attach_subdev_group().
+ */
+void iommu_detach_subdev_group(struct iommu_domain *domain,
+                               struct iommu_group *group,
+                               iommu_device_lookup_t fn)
+
+struct iommu_domain *iommu_aux_get_domain_for_dev(struct device *subdev)
+
+This version is evolved according to feedbacks from Robin, Alex and Kevin.
+I'm very appreciated to their contributions.
+
+Best regards,
+baolu
+
+---
+Change log:
+ - v1->v2:
+   - https://lore.kernel.org/linux-iommu/20200627031532.28046-1-baolu.lu@linux.intel.com/
+   - Suggested by Robin.
+
+ - v2->v3:
+   - https://lore.kernel.org/linux-iommu/20200707013957.23672-1-baolu.lu@linux.intel.com/
+   - Suggested by Alex, Kevin.
+
+ - v3->v4:
+   - https://lore.kernel.org/linux-iommu/20200714055703.5510-1-baolu.lu@linux.intel.com/
+   - Evolve the aux_attach_group APIs to take an iommu_device lookup
+     callback.
+   - Add interface to check whether a domain is aux-domain for a device.
+   - Return domain only if the domain is aux-domain in
+     iommu_aux_get_domain_for_dev().
+
+Lu Baolu (5):
+  iommu: Add optional subdev in aux_at(de)tach ops
+  iommu: Add iommu_at(de)tach_subdev_group()
+  iommu: Add iommu_aux_get_domain_for_dev()
+  vfio/type1: Use iommu_aux_at(de)tach_group() APIs
+  iommu/vt-d: Add is_aux_domain support
+
+ drivers/iommu/intel/iommu.c     | 135 +++++++++++++++++++--------
+ drivers/iommu/iommu.c           | 158 +++++++++++++++++++++++++++++++-
+ drivers/vfio/vfio_iommu_type1.c |  43 ++-------
+ include/linux/intel-iommu.h     |  17 ++--
+ include/linux/iommu.h           |  46 +++++++++-
+ 5 files changed, 315 insertions(+), 84 deletions(-)
+
+-- 
+2.17.1
+
