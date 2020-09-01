@@ -2,79 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5512125925E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC75259356
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgIAPK1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 11:10:27 -0400
-Received: from mga11.intel.com ([192.55.52.93]:44800 "EHLO mga11.intel.com"
+        id S1729964AbgIAPYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:24:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726406AbgIAPKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:10:14 -0400
-IronPort-SDR: lGB35X8lVXqmeURg5B9yY/hSidyFMrhUriySavm/P2O703ZaDR3QUjfYJi58IsZW6zuhsMDZOO
- gn2Mbg1GmeFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="154691600"
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="154691600"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 08:10:11 -0700
-IronPort-SDR: jLzcTjk/uOBg0RoHZOwp9TqCg46yUBWklGXcFqU/0inGvOaQE/ITf+KSTV66U7KvtoGIQ1EVrF
- 2SdB7Su8O8GQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
-   d="scan'208";a="404805931"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Sep 2020 08:10:11 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 1 Sep 2020 08:08:38 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 1 Sep 2020 08:08:37 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Tue, 1 Sep 2020 08:08:37 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-CC:     Randy Dunlap <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        lkp <lkp@intel.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David Rientjes" <rientjes@google.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>
-Subject: RE: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
-Thread-Topic: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
-Thread-Index: AQHWfZeQG2gN8ZpSAUuKNWhMot21E6lTqDQAgAA/7AA=
-Date:   Tue, 1 Sep 2020 15:08:37 +0000
-Message-ID: <706c8eed209c4379baf2f1ac81b0112a@intel.com>
-References: <20200829000126.2463-1-rdunlap@infradead.org>
- <20200901041902.GC424181@linux.ibm.com>
-In-Reply-To: <20200901041902.GC424181@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.22.254.132]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729314AbgIAPWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:22:01 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D404A2078B;
+        Tue,  1 Sep 2020 15:21:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598973720;
+        bh=nk7DUPCQ4LCq491rY6FJmz0IjHemtEpYN9mthPiTfyU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LblQs5iNksaa5WozbTFIlvxjOOvt+r30p3kzDd17B3f5LquH7eGhSFvcoqtozZ/oJ
+         h8yIsY2ry39n7zsSdY6LO/9NXQfYEdDIzZpS5zmJEMjyd0htNQgUCof5NiL45NF1J/
+         iaSryYzWC4jtzIkWFp3e0rmX7Y7Kin8GWI6xoOB8=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 002/125] gre6: Fix reception with IP6_TNL_F_RCV_DSCP_COPY
+Date:   Tue,  1 Sep 2020 17:09:17 +0200
+Message-Id: <20200901150934.703341200@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I can take it via the memblock tree, would appreciate an Ack.
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-Thanks
+[ Upstream commit 272502fcb7cda01ab07fc2fcff82d1d2f73d43cc ]
 
-Acked-by: Tony Luck <tony.luck@intel.com>
+When receiving an IPv4 packet inside an IPv6 GRE packet, and the
+IP6_TNL_F_RCV_DSCP_COPY flag is set on the tunnel, the IPv4 header would
+get corrupted. This is due to the common ip6_tnl_rcv() function assuming
+that the inner header is always IPv6. This patch checks the tunnel
+protocol for IPv4 inner packets, but still defaults to IPv6.
 
--Tony
+Fixes: 308edfdf1563 ("gre6: Cleanup GREv6 receive path, call common GRE functions")
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/ipv6/ip6_tunnel.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+--- a/net/ipv6/ip6_tunnel.c
++++ b/net/ipv6/ip6_tunnel.c
+@@ -865,7 +865,15 @@ int ip6_tnl_rcv(struct ip6_tnl *t, struc
+ 		struct metadata_dst *tun_dst,
+ 		bool log_ecn_err)
+ {
+-	return __ip6_tnl_rcv(t, skb, tpi, tun_dst, ip6ip6_dscp_ecn_decapsulate,
++	int (*dscp_ecn_decapsulate)(const struct ip6_tnl *t,
++				    const struct ipv6hdr *ipv6h,
++				    struct sk_buff *skb);
++
++	dscp_ecn_decapsulate = ip6ip6_dscp_ecn_decapsulate;
++	if (tpi->proto == htons(ETH_P_IP))
++		dscp_ecn_decapsulate = ip4ip6_dscp_ecn_decapsulate;
++
++	return __ip6_tnl_rcv(t, skb, tpi, tun_dst, dscp_ecn_decapsulate,
+ 			     log_ecn_err);
+ }
+ EXPORT_SYMBOL(ip6_tnl_rcv);
+
+
