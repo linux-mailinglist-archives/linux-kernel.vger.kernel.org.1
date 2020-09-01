@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8204C25869B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93502586B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbgIAEIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        id S1726204AbgIAEQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgIAEIC (ORCPT
+        with ESMTP id S1725993AbgIAEQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:08:02 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29A5C0612FE;
-        Mon, 31 Aug 2020 21:08:01 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kCxaL-008SmC-D3; Tue, 01 Sep 2020 04:07:53 +0000
-Date:   Tue, 1 Sep 2020 05:07:53 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tom.leiming@gmail.com, paulmck@kernel.org
-Subject: Re: splice: infinite busy loop lockup bug
-Message-ID: <20200901040753.GF1236603@ZenIV.linux.org.uk>
-References: <00000000000084b59f05abe928ee@google.com>
- <29de15ff-15e9-5c52-cf87-e0ebdfa1a001@I-love.SAKURA.ne.jp>
- <20200807122727.GR1236603@ZenIV.linux.org.uk>
- <d96b0b3f-51f3-be3d-0a94-16471d6bf892@i-love.sakura.ne.jp>
- <20200901005131.GA3300@lca.pw>
- <20200901010928.GC1236603@ZenIV.linux.org.uk>
- <20200901033227.GA10262@lca.pw>
+        Tue, 1 Sep 2020 00:16:46 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02899C0612FE;
+        Mon, 31 Aug 2020 21:08:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=uzhqqdZx9jNcfD1fIRfqPbz58tTt8QIP5mco0hX64GM=; b=I8M85DYxXFwTKfCgfmwTZ1Imq0
+        LA3oYRRdSQpyoxc7IGs6ZsOUJo3ETh3WNL6u5JU427IKX1TuFgYIAiIjiPxjkBYi5ubJKO1r3EDS6
+        EozLQNOs65YVKKf+Pq7jFR8C2FGm8eE7ew6Z5m7c4TWnMYCir6y/iDH+0rD5PkNIhOItmyi/7GbsI
+        uZOytiZzdHHUlXldgqFZOO0UuSIqKI/OkFpX0SRIasqh2CMxjaSvnHtswlFJyU+4k0wK0ta29izoi
+        LT7U2wHOvchmbDkIzE1nkeJRJjhazDtggMxaUktTbdz8EsxlkLzsLz2HPXGkKECpcdd54ufr0XJ5f
+        bSh6nTQw==;
+Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kCxaR-0006N5-Tr; Tue, 01 Sep 2020 04:08:00 +0000
+Subject: Re: [PATCH] x86/platform/intel-mid: Fix build error without
+ CONFIG_ACPI
+To:     YueHaibing <yuehaibing@huawei.com>, bhelgaas@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, efremov@linux.com, andriy.shevchenko@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200901035825.25256-1-yuehaibing@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5427fca0-6674-42e9-a3b1-52b060ef0301@infradead.org>
+Date:   Mon, 31 Aug 2020 21:07:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901033227.GA10262@lca.pw>
+In-Reply-To: <20200901035825.25256-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 11:32:28PM -0400, Qian Cai wrote:
+On 8/31/20 8:58 PM, YueHaibing wrote:
+> arch/x86/pci/intel_mid_pci.c: In function ‘intel_mid_pci_init’:
+> arch/x86/pci/intel_mid_pci.c:303:2: error: implicit declaration of function ‘acpi_noirq_set’; did you mean ‘acpi_irq_get’? [-Werror=implicit-function-declaration]
+>   acpi_noirq_set();
+>   ^~~~~~~~~~~~~~
+>   acpi_irq_get
+> 
+> Fixes: a912a7584ec3 ("x86/platform/intel-mid: Move PCI initialization to arch_init()")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-> I used a new debug patch but not sure how to capture without
-> printk_ratelimited() because the call sites are large,
+Bjorn has merged my patch (or so his email says), but apparently it's not
+in linux-next yet.
 
-	if (!strcmp(current->comm, "bugger"))
-		printk(KERN_ERR....
-and call the binary you are running ./bugger...  And I'd slap such
-printk into the beginning of iterate_iovec() as well, if not into
-the entry of iov_iter_copy_from_user_atomic().  That BS value of
-n must've come from somewhere; it should expand to 'bytes'.
-What we have in the beginning is
 
-	const struct iovec *iov;
-	struct iovec v;
-        size_t skip = i->iov_offset;
-        size_t left;
-        size_t wanted = bytes;
+> ---
+>  arch/x86/pci/intel_mid_pci.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/pci/intel_mid_pci.c b/arch/x86/pci/intel_mid_pci.c
+> index 00c62115f39c..0aaf31917061 100644
+> --- a/arch/x86/pci/intel_mid_pci.c
+> +++ b/arch/x86/pci/intel_mid_pci.c
+> @@ -33,6 +33,7 @@
+>  #include <asm/hw_irq.h>
+>  #include <asm/io_apic.h>
+>  #include <asm/intel-mid.h>
+> +#include <asm/acpi.h>
+>  
+>  #define PCIE_CAP_OFFSET	0x100
+>  
+> 
 
-        iov = i->iov;
+thanks.
+-- 
+~Randy
 
-        __v.iov_len = min(bytes, iov->iov_len - skip);
-        if (likely(__v.iov_len)) {
-                __v.iov_base = iov->iov_base + skip;
-                left = copyin((p += v.iov_len) - v.iov_len, v.iov_base, v.iov_len);
-                __v.iov_len -= left;
-                skip += __v.iov_len;
-                bytes -= __v.iov_len;
-        } else {
-                left = 0;
-	}
-
-and something leaves you with bytes bumped to 22476968.  What was in that first
-iovec?  Incidentally, what's in 'wanted'?  And...  Timestamps don't look like
-that crap has come from generic_perform_write() - it's about 4 seconds later.
-
-While we are at it, there are other users of iterate_all_kinds(), and some of them
-can very well get large sizes; they are not copying anything (iov_iter_advance(),
-for starters).  There that kind of values would be just fine; are you sure those
-printks came from iov_iter_copy_from_user_atomic()?
