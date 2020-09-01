@@ -2,119 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A27825955F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF11B259573
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731698AbgIAPuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728819AbgIAPuh (ORCPT
+        id S1732026AbgIAPvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:51:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38318 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726622AbgIAPvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:50:37 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C556C06125F;
-        Tue,  1 Sep 2020 08:50:32 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id u20so1033506pfn.0;
-        Tue, 01 Sep 2020 08:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HeGBPCmtRrSwxguF1t/lDmn0Piwm4iwKIT8Cjmy4NkE=;
-        b=jUGWBg6UDQJ3uPksKhZadG9q93rq50zkSmOYkb+I7uRfsp/K3JEQx5xPSTtkl2PUNp
-         4w7XOHG2bNhNAFOVF1ZueSiw3Z75ZRe+xy9lCQNrI+YtELLCDhDo8MdRUtX5D9Hiiivn
-         N4PVbwfK7wVcHIDBrX46RpEkpLfiZ7Ro+pK/5YvV5kLWkDY3r21BXmHOc3xmrBlvZVq6
-         EdVxlShmrwWim2V2Ga6mF+8NXk68vqhq1VwC9dadxI2zheO4vtl2A85KmYKJ8m4UJ3CW
-         1Q18tBTLxdCprt7NxK+ia4He3scuEY/Xymwvd/UNlKcBogbWmaGjTkDWPvkNOtBeE7Sy
-         lrjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HeGBPCmtRrSwxguF1t/lDmn0Piwm4iwKIT8Cjmy4NkE=;
-        b=rdC7epMpy2mueL2J/sQvOtHA/lU1l1bdYBubEsdLCN1CWJaKysN4dijjrSchTf3XsV
-         cqk0qahaFAvvlfLcM+aphlLSwqOcDd+vu5WA7M1fFL1SGP77RCkbnjInYLB7BZ9S1zqG
-         66LGKKrPnrHo7s8JXTUWdTbyErGoQBE1neOW2+TIMT/7niLkK4mIMxL5ueK0r9FeBcYo
-         Ga5c9HZ0MutHW5pyIsZJgEPWvIzGPC9zxK1cgGiop4Xo0+Qx2fP4vVr32Av5POg1buKR
-         bboIn/09f/4OxZ43TUWwOROy7OreUousAAQaeJ9PcsjrCpmQxAs9iv34T/mccbQJPXfX
-         eqMg==
-X-Gm-Message-State: AOAM531jLMgd3Yt8c59age4olMAVZUZSiChIn9dzaIgEwgXOofVA+nTb
-        Fuf83BsvTb+7V99RViz1Vvs=
-X-Google-Smtp-Source: ABdhPJyGGjI8lazFMYb/Odt42bJDkZ204tyXwU4ZazliCZIiAlQ0mvO/XkGrMisfYInXA8eBXVmzFA==
-X-Received: by 2002:a65:6714:: with SMTP id u20mr2085793pgf.252.1598975431993;
-        Tue, 01 Sep 2020 08:50:31 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x144sm2324377pfc.82.2020.09.01.08.50.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Sep 2020 08:50:31 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 08:50:30 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] watchdog: rti: Simplify with dev_err_probe()
-Message-ID: <20200901155030.GC106798@roeck-us.net>
-References: <20200901153141.18960-1-krzk@kernel.org>
- <20200901153141.18960-3-krzk@kernel.org>
+        Tue, 1 Sep 2020 11:51:32 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 081FoANV174298;
+        Tue, 1 Sep 2020 15:51:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=BJNLXtlqaEToKSsENhPBjm8oi2i2ztaQ9ZdndhtUWws=;
+ b=Q19hdjimkn+cLPx11zxB0sauk464/AivYL5BdiHW9VZOIJsH5WOGHIBSfF8VjYa78maZ
+ gv1wQKIgy0crUT9sr6agTEcbWSYBTxqCRnMfH8AFynaeNs6rYSFSlV8O5YWXbVFoGevm
+ faFTd+LCj3Z/vsedewejxGElWQLePcNTmDenYcSFJI3ankJlgJq8tdDTinTwGB6rKV4x
+ 74xcH4gfYgL6YQrRCtF4KHeRg/2+SASCaTZq09oS1TpXPUOu8O+i9zvyM5vh94poBgLQ
+ P83OCVxKbc5EjW9tz8Jc3KQ7Ww3+mcFku4awOkbd+JNxtKXi6VP5xDr9wq+TcLh/O5+I uw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 337eym574e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Sep 2020 15:51:26 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 081FochZ154670;
+        Tue, 1 Sep 2020 15:51:26 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 3380x3qb5d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Sep 2020 15:51:26 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 081FpOc7017946;
+        Tue, 1 Sep 2020 15:51:24 GMT
+X-PEP-VERSION: 2.0
+Received: from [10.154.191.218] (/10.154.191.218) by default (Oracle Beehive
+ Gateway v4.0) with ESMTP ; Tue, 01 Sep 2020 08:51:23 -0700
+ORGANIZATION: Oracle Corp
+USER-AGENT: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+Content-Language: en-US
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901153141.18960-3-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <0ec31395-56d9-c490-4e42-1c27bbc69df3@oracle.com>
+Date:   Tue, 1 Sep 2020 08:51:14 -0700 (PDT)
+From:   Khalid Aziz <khalid.aziz@oracle.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     gregkh@linuxfoundation.org, erkka.talvitie@vincit.fi,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC RESEND PATCH 0/1] USB EHCI: repeated resets on full and low
+ speed devices
+References: <cover.1598887346.git.khalid@gonehiking.org>
+ <20200901023117.GD571008@rowland.harvard.edu>
+In-Reply-To: <20200901023117.GD571008@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009010130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9731 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009010130
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:31:41PM +0200, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+On 8/31/20 8:31 PM, Alan Stern wrote:
+> On Mon, Aug 31, 2020 at 10:23:30AM -0600, Khalid Aziz wrote:
+>> [Resending since I screwed up linux-usb mailing list address in
+>> cut-n-paste in original email]
+>>
+>>
+>> I recently replaced the motherboard on my desktop with an MSI B450-A
+>> Pro Max motherboard. Since then my keybaords, mouse and tablet have
+>> become very unreliable. I see messages like this over and over in
+>> dmesg:
+>>
+>> ug 23 00:01:49 rhapsody kernel: [198769.314732] usb 1-2.4: reset full-=
+speed USB
+>>  device number 27 using ehci-pci
+>> Aug 23 00:01:49 rhapsody kernel: [198769.562234] usb 1-2.1: reset full=
+-speed USB
+>>  device number 28 using ehci-pci
+>> Aug 23 00:01:52 rhapsody kernel: [198772.570704] usb 1-2.1: reset full=
+-speed USB
+>>  device number 28 using ehci-pci
+>> Aug 23 00:02:02 rhapsody kernel: [198782.526669] usb 1-2.4: reset full=
+-speed USB
+>>  device number 27 using ehci-pci
+>> Aug 23 00:02:03 rhapsody kernel: [198782.714660] usb 1-2.1: reset full=
+-speed USB
+>>  device number 28 using ehci-pci
+>> Aug 23 00:02:04 rhapsody kernel: [198784.210171] usb 1-2.3: reset low-=
+speed USB device number 26 using ehci-pci
+>> Aug 23 00:02:06 rhapsody kernel: [198786.110181] usb 1-2.4: reset full=
+-speed USB device number 27 using ehci-pci
+>> Aug 23 00:02:08 rhapsody kernel: [198787.726158] usb 1-2.4: reset full=
+-speed USB device number 27 using ehci-pci
+>> Aug 23 00:02:10 rhapsody kernel: [198790.126628] usb 1-2.1: reset full=
+-speed USB device number 28 using ehci-pci
+>> Aug 23 00:02:10 rhapsody kernel: [198790.314141] usb 1-2.4: reset full=
+-speed USB device number 27 using ehci-pci
+>> Aug 23 00:02:12 rhapsody kernel: [198792.518765] usb 1-2.4: reset full=
+-speed USB device number 27 using ehci-pci
+>>
+>> The devices I am using are:
+>>
+>> - Logitech K360 wireless keyboard
+>> - Wired Lenovo USB keyboard
+>> - Wired Lenovo USB mouse
+>> - Wired Wacom Intuos tablet
+>>
+>> After a reset, the wireless keyboard simply stops working. Rest of
+>> the devices keep seeing intermittent failure.
+>>
+>> I tried various combinations of hubs and USB controllers to see what
+>> works. MSI B450-A motherboard has USB 3.0 and USB 3.1 controllers. I
+>> added a USB 2.0 PCI card as well for this test:
+>>
+>> 03:00.0 USB controller: Advanced Micro Devices, Inc. [AMD] 400 Series =
+Chipset USB 3.1 XHCI Controller (rev 01)
+>> 29:01.0 USB controller: NEC Corporation OHCI USB Controller (rev 43)
+>> 29:01.1 USB controller: NEC Corporation OHCI USB Controller (rev 43)
+>> 29:01.2 USB controller: NEC Corporation uPD72010x USB 2.0 Controller (=
+rev 04)
+>> 2c:00.3 USB controller: Advanced Micro Devices, Inc. [AMD] Matisse USB=
+ 3.0 Host Controller
+>>
+>> I have a bus powered USB 3.0 hub, a bus powered USB 2.0 hub and a
+>> self powered USB 2.0 hub built into my monitor.
+>>
+>> I have connected my devices directly into the ports on motherboard
+>> and PCI card as well as into external hub. Here are the results I
+>> saw when devices wee plugged into various combination of ports:
+>>
+>> 1. USB 3.0/3.1 controller - does NOT work
+>> 2. USB 2.0 controller - WORKS
+>> 3. USB 3.0/3.1 controller -> Self powered USB 2.0 hub in monitor - doe=
+s
+>>    NOT work
+>> 4. USB 3.0/3.1 controller -> bus powered USB 3.0 hub - does NOT work
+>> 5. USB 3.0/3.1 controller -> Bus powered USB 2.0 hub - WORKS
+>> 7. USB 2.0 controller -> Bus powered USB 3.0 hub - does NOT work
+>> 8. USB 2.0 controller -> Bus powered 2.0 hub - Does not work
+>=20
+> The error messages in your log extract all refer to ehci-pci, which is =
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> the driver for a USB-2 controller.  They are completely unrelated to an=
+y=20
+> problems you may be having with USB-3 controllers.
 
-> 
-> ---
-> 
-> It is unusual to expect deferred probe from pm_runtime_get()...
-> ---
->  drivers/watchdog/rti_wdt.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-> index 705e8f7523e8..836319cbaca9 100644
-> --- a/drivers/watchdog/rti_wdt.c
-> +++ b/drivers/watchdog/rti_wdt.c
-> @@ -205,11 +205,8 @@ static int rti_wdt_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	clk = clk_get(dev, NULL);
-> -	if (IS_ERR(clk)) {
-> -		if (PTR_ERR(clk) != -EPROBE_DEFER)
-> -			dev_err(dev, "failed to get clock\n");
-> -		return PTR_ERR(clk);
-> -	}
-> +	if (IS_ERR(clk))
-> +		return dev_err_probe(dev, PTR_ERR(clk), "failed to get clock\n");
->  
->  	wdt->freq = clk_get_rate(clk);
->  
-> @@ -230,11 +227,8 @@ static int rti_wdt_probe(struct platform_device *pdev)
->  
->  	pm_runtime_enable(dev);
->  	ret = pm_runtime_get_sync(dev);
-> -	if (ret) {
-> -		if (ret != -EPROBE_DEFER)
-> -			dev_err(&pdev->dev, "runtime pm failed\n");
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "runtime pm failed\n");
->  
->  	platform_set_drvdata(pdev, wdt);
->  
-> -- 
-> 2.17.1
-> 
+I just happened to cut and paste the messages from when I was testing
+with the USB 2.0 controller. Here are the messages when I ran the test
+with USB 3.0 controller:
+
+Aug 13 14:25:48 rhapsody kernel: [78779.868354] usb 1-9.4: reset
+full-speed USB  device number 38 using xhci_hcd
+Aug 13 14:26:18 rhapsody kernel: [78809.939457] usb 1-9.4: reset
+full-speed USB  device number 38 using xhci_hcd
+Aug 13 14:26:39 rhapsody kernel: [78830.899982] usb 1-9.4: reset
+full-speed USB  device number 38 using xhci_hcd
+Aug 13 14:26:39 rhapsody kernel: [78831.379883] usb 1-9.2: reset
+low-speed USB device number 36 using xhci_hcd
+Aug 13 14:26:40 rhapsody kernel: [78832.043900] usb 1-9.3: reset
+low-speed USB device number 37 using xhci_hcd
+Aug 13 14:26:47 rhapsody kernel: [78839.520211] usb 1-9.4: reset
+full-speed USB device number 38 using xhci_hcd
+Aug 13 14:26:49 rhapsody kernel: [78841.035843] usb 1-9.2: reset
+low-speed USB device number 36 using xhci_hcd
+Aug 13 14:26:50 rhapsody kernel: [78841.695837] usb 1-9.3: reset
+low-speed USB device number 37 using xhci_hcd
+Aug 13 14:27:57 rhapsody kernel: [78909.299772] usb 1-9.4: reset
+full-speed USB device number 38 using xhci_hcd
+Aug 13 14:27:58 rhapsody kernel: [78909.779179] usb 1-9.2: reset
+low-speed USB device number 36 using xhci_hcd
+Aug 13 14:28:05 rhapsody kernel: [78916.650851] usb 1-9.4: reset
+full-speed USB device number 38 using xhci_hcd
+Aug 13 14:32:02 rhapsody kernel: [79153.986777] usb 1-9.4: reset
+full-speed USB device number 38 using xhci_hcd
+Aug 13 14:32:22 rhapsody kernel: [79173.898757] usb 1-9.4: reset
+full-speed USB device number 38 using xhci_hcd
+Aug 13 14:32:23 rhapsody kernel: [79175.174206] usb 1-9.3: reset
+low-speed USB device number 37 using xhci_hcd
+Aug 13 14:32:24 rhapsody kernel: [79175.833619] usb 1-9.2: reset
+low-speed USB device number 36 using xhci_hcd
+Aug 13 14:34:23 rhapsody kernel: [79295.230293] usb 1-9.4: reset
+full-speed USB device number 38 using xhci_hcd
+
+>=20
+>> I narrowed the failure down to following lines (this code was added
+>> in 5.5 with commit 64cc3f12d1c7 "USB: EHCI: Do not return -EPIPE
+>> when hub is disconnected"):
+>>
+>> drivers/usb/host/ehci-q.c:
+>>
+>>  217                 } else if ((token & QTD_STS_MMF) &&
+>>  218                                         (QTD_PID(token) =3D=3D PI=
+D_CODE_IN)) {
+>>  219                         status =3D -EPROTO;
+>>  220                 /* CERR nonzero + halt --> stall */
+>>
+>> At the time of failure, when we reach this conditional, token is
+>> either 0x80408d46 or 0x408d46 which means following bits are set:
+>>
+>> QTD_STS_STS, QTD_STS_MMF, QTD_STS_HALT, QTD_IOC, QTD_TOGGLE
+>>
+>> and=20
+>>
+>>         QTD_PID =3D 1
+>>         QTD_CERR =3D 3
+>>         QTD_LENGTH =3D 0x40 (64)
+>>
+>> This causes  the branch "(token & QTD_STS_MMF) && (QTD_PID(token) =3D=3D=
+
+>> PID_CODE_IN" to be taken and qtd_copy_status() returns EPROTO. This
+>> return value in qh_completions() results in ehci_clear_tt_buffer()
+>> being called:
+>>
+>> drivers/usb/host/ehci-q.c:
+>>  472                         /* As part of low/full-speed endpoint-hal=
+t processi     ng
+>>  473                          * we must clear the TT buffer (11.17.5).=
+
+>>  474                          */
+>>  475                         if (unlikely(last_status !=3D -EINPROGRES=
+S &&
+>>  476                                         last_status !=3D -EREMOTE=
+IO)) {
+>>  477                                 /* The TT's in some hubs malfunct=
+ion when t     hey
+>>  478                                  * receive this request following=
+ a STALL (     they
+>>  479                                  * stop sending isochronous packe=
+ts).  Sinc     e a
+>>  480                                  * STALL can't leave the TT buffe=
+r in a bus     y
+>>  481                                  * state (if you believe Figures =
+11-48 - 11     -51
+>>  482                                  * in the USB 2.0 spec), we won't=
+ clear the      TT
+>>  483                                  * buffer in this case.  Strictly=
+ speaking      this
+>>  484                                  * is a violation of the spec.
+>>  485                                  */
+>>  486                                 if (last_status !=3D -EPIPE)
+>>  487                                         ehci_clear_tt_buffer(ehci=
+, qh, urb,
+>>  488                                                         token);
+>>  489                         }
+>>
+>> It seems like clearing TT buffers in this case is resulting in hub
+>> hanging. A USB reset gets it going again until we repeat the cycle
+>> over again. The comment in this code says "The TT's in some hubs
+>> malfunction when they receive this request following a STALL (they
+>> stop sending isochronous packets)". That may be what is happening.
+>=20
+> What makes you think that?  Do you have any evidence that the hub is=20
+> receiving a STALL?  Indeed, the commit you referenced above specificall=
+y=20
+> mentions that when MMF is set and the PID code is IN then it is not a=20
+> STALL.
+>=20
+
+You are probably right about that. I do not understand USB protocol well
+enough. Eliminating clearing TT buffers when split transaction is
+incomplete fixed the problem for me. If I changed qtd_copy_status() to
+return EPIPE as it was doing before commit 64cc3f12d1c7, USB resets went
+away on my machine, so I am wondering if the comment at
+drivers/usb/host/ehci-q.c:477 is applicable here.
+
+>> Removing the code that returns EPROTO for such case solves the
+>> problem on my machine (as in the RFC patch)
+>=20
+> It certainly can't solve the problem for any USB-3 connections, because=
+=20
+> the patch doesn't touch any of the USB-3 driver code.
+
+Right. It solves the problem I see with USB 2.0 controller. I continue
+to see issues with USB 3.0 if I move the hub to a USB 3.0 port.
+
+>=20
+>>  but that probably is not
+>> the right solution. I do not understand USB protocol well enough to
+>> propose a better solution. Does anyone have a better idea?
+>=20
+> Can you collect a usbmon trace showing an example of this problem?
+Sure. I will do that. Tracing the code when debugging for USB 2.0
+controller led me to that specific line of code. As I said, I do not
+understand USB well enough to say if changing that code is the right
+solution, and it indeed solves the problem for USB 2.0 only.
+
+>=20
+> One possibility is to introduce a special quirk for the NEC uPD72010x=20
+> EHCI controller.  But we should hold off on that until we know exactly =
+
+> what is happening.
+
+I do not believe whatever is causing USB resets is unique to NEC chip. I
+am seeing issues on the USB 3.0 controllers as well.
+
+>=20
+> Alan Stern
+>=20
+
+Thanks,
+Khalid
+
