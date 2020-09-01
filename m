@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8529B25928D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43FD2592D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728956AbgIAPNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56062 "EHLO mail.kernel.org"
+        id S1729370AbgIAPRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728871AbgIAPNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:13:10 -0400
+        id S1729276AbgIAPQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:16:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ED3F206FA;
-        Tue,  1 Sep 2020 15:13:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 738CD206FA;
+        Tue,  1 Sep 2020 15:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973189;
-        bh=vyX6KFhLDPQYWOhNZKHtYhMGbJn531QYcAQCxQwkDKI=;
+        s=default; t=1598973370;
+        bh=gbrPAb5D+pucDE79Ksf5Uxw0vvUmK08Y4Q2vfBlMLJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ofsZaN5eyIeZpW0+ru0jDFAUb9Y0E0gVBaBLcVrMj2HHMexrMoNKIRtJxlRfzILew
-         EiuzCcsOKD7I2EmZd8o/WlVmCJok+V26I8T43YDDcLZK/fbA8KHyPUWKZdQs4Pdb1v
-         VwG4bNZm1q3B9MtWFBWlPx3FlpVeDMC4qsdQGrVw=
+        b=SIXjjAY4YMK1Yt15+FDRvoZfcjs4sW8amtrCjasj6HwjVTr0zeszFn6YXUTP4etpS
+         TVrE7kNNhhoZw3xrruJfCh5aFk8HzheHbJOr5Yq7R0GkStCSa4TOqo7QtD5sZKjT8F
+         KQ+nI3LVO42tpeIJ6lDybJTA93F0RYQWWJJm+0Sc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 4.4 42/62] vt: defer kfree() of vc_screenbuf in vc_do_resize()
-Date:   Tue,  1 Sep 2020 17:10:25 +0200
-Message-Id: <20200901150922.848353509@linuxfoundation.org>
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 51/78] fbcon: prevent user font height or width change from causing potential out-of-bounds access
+Date:   Tue,  1 Sep 2020 17:10:27 +0200
+Message-Id: <20200901150927.299704736@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
-References: <20200901150920.697676718@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: George Kennedy <george.kennedy@oracle.com>
 
-commit f8d1653daec02315e06d30246cff4af72e76e54e upstream.
+commit 39b3cffb8cf3111738ea993e2757ab382253d86a upstream.
 
-syzbot is reporting UAF bug in set_origin() from vc_do_resize() [1], for
-vc_do_resize() calls kfree(vc->vc_screenbuf) before calling set_origin().
+Add a check to fbcon_resize() to ensure that a possible change to user font
+height or user font width will not allow a font data out-of-bounds access.
+NOTE: must use original charcount in calculation as font charcount can
+change and cannot be used to determine the font data allocated size.
 
-Unfortunately, in set_origin(), vc->vc_sw->con_set_origin() might access
-vc->vc_pos when scroll is involved in order to manipulate cursor, but
-vc->vc_pos refers already released vc->vc_screenbuf until vc->vc_pos gets
-updated based on the result of vc->vc_sw->con_set_origin().
-
-Preserving old buffer and tolerating outdated vc members until set_origin()
-completes would be easier than preventing vc->vc_sw->con_set_origin() from
-accessing outdated vc members.
-
-[1] https://syzkaller.appspot.com/bug?id=6649da2081e2ebdc65c0642c214b27fe91099db3
-
-Reported-by: syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1596034621-4714-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp
+Reported-by: syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/1596213192-6635-1-git-send-email-george.kennedy@oracle.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/vt.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/video/console/fbcon.c |   25 +++++++++++++++++++++++--
+ 1 file changed, 23 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -864,7 +864,7 @@ static int vc_do_resize(struct tty_struc
- 	unsigned int old_rows, old_row_size;
- 	unsigned int new_cols, new_rows, new_row_size, new_screen_size;
- 	unsigned int user;
--	unsigned short *newscreen;
-+	unsigned short *oldscreen, *newscreen;
+--- a/drivers/video/console/fbcon.c
++++ b/drivers/video/console/fbcon.c
+@@ -2116,6 +2116,9 @@ static void updatescrollmode(struct disp
+ 	}
+ }
  
- 	WARN_CONSOLE_UNLOCKED();
++#define PITCH(w) (((w) + 7) >> 3)
++#define CALC_FONTSZ(h, p, c) ((h) * (p) * (c)) /* size = height * pitch * charcount */
++
+ static int fbcon_resize(struct vc_data *vc, unsigned int width, 
+ 			unsigned int height, unsigned int user)
+ {
+@@ -2125,6 +2128,24 @@ static int fbcon_resize(struct vc_data *
+ 	struct fb_var_screeninfo var = info->var;
+ 	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
  
-@@ -946,10 +946,11 @@ static int vc_do_resize(struct tty_struc
- 	if (new_scr_end > new_origin)
- 		scr_memsetw((void *)new_origin, vc->vc_video_erase_char,
- 			    new_scr_end - new_origin);
--	kfree(vc->vc_screenbuf);
-+	oldscreen = vc->vc_screenbuf;
- 	vc->vc_screenbuf = newscreen;
- 	vc->vc_screenbuf_size = new_screen_size;
- 	set_origin(vc);
-+	kfree(oldscreen);
++	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
++		int size;
++		int pitch = PITCH(vc->vc_font.width);
++
++		/*
++		 * If user font, ensure that a possible change to user font
++		 * height or width will not allow a font data out-of-bounds access.
++		 * NOTE: must use original charcount in calculation as font
++		 * charcount can change and cannot be used to determine the
++		 * font data allocated size.
++		 */
++		if (pitch <= 0)
++			return -EINVAL;
++		size = CALC_FONTSZ(vc->vc_font.height, pitch, FNTCHARCNT(vc->vc_font.data));
++		if (size > FNTSIZE(vc->vc_font.data))
++			return -EINVAL;
++	}
++
+ 	virt_w = FBCON_SWAP(ops->rotate, width, height);
+ 	virt_h = FBCON_SWAP(ops->rotate, height, width);
+ 	virt_fw = FBCON_SWAP(ops->rotate, vc->vc_font.width,
+@@ -2586,7 +2607,7 @@ static int fbcon_set_font(struct vc_data
+ 	int size;
+ 	int i, csum;
+ 	u8 *new_data, *data = font->data;
+-	int pitch = (font->width+7) >> 3;
++	int pitch = PITCH(font->width);
  
- 	/* do part of a reset_terminal() */
- 	vc->vc_top = 0;
+ 	/* Is there a reason why fbconsole couldn't handle any charcount >256?
+ 	 * If not this check should be changed to charcount < 256 */
+@@ -2602,7 +2623,7 @@ static int fbcon_set_font(struct vc_data
+ 	if (fbcon_invalid_charcount(info, charcount))
+ 		return -EINVAL;
+ 
+-	size = h * pitch * charcount;
++	size = CALC_FONTSZ(h, pitch, charcount);
+ 
+ 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
+ 
 
 
