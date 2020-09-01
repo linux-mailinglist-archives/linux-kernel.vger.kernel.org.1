@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502C32593D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAE7259482
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgIAPb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:31:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56504 "EHLO mail.kernel.org"
+        id S1731491AbgIAPk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730369AbgIAP2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:28:17 -0400
+        id S1731246AbgIAPim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:38:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0895D206FA;
-        Tue,  1 Sep 2020 15:28:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A620E215A4;
+        Tue,  1 Sep 2020 15:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974096;
-        bh=zCZ33BklVnKYUEopkh/0KayWTmTcqi6YUqN1XavLMJY=;
+        s=default; t=1598974718;
+        bh=lngNyFxX/DnstX+1EJ7n1XfWmHHqJakTC8eaUVu7TfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lO7lCQfhrrUufeKh/Lfp1iGXEbpA0Zzd3oudhuTpcUsGyFM5ej1CFbvjs1/gEmi9E
-         9cqAJT+JCNJSq6KygX3TlkO6I5GaDDSwIMwpqqjit78kOl94xglhf0+GFJ4nq/zr9s
-         h2JmgGXhBn+gA+3LkuTRDVxTFkB6Lr2w55K3bp5E=
+        b=Nb9BZPMiwjR+HVlXD2J/nEhXIpuPMcm6sLc4wmd1GVf5KqB893ojwS2cBXw9ZXF4i
+         TZn/ehWx+mhZysErRkFavs9A3DrnB5a8wB/4rI+PaBU5Ob/wgpQKvKeUCfxUf34EtQ
+         DKyG/eiuJ1aJRjNr3gQT88SSLGUlcRu0i52QLE0E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Fan <fanpeng@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 043/214] mips/vdso: Fix resource leaks in genvdso.c
-Date:   Tue,  1 Sep 2020 17:08:43 +0200
-Message-Id: <20200901150955.029537171@linuxfoundation.org>
+        stable@vger.kernel.org, David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 068/255] KVM: arm64: Fix symbol dependency in __hyp_call_panic_nvhe
+Date:   Tue,  1 Sep 2020 17:08:44 +0200
+Message-Id: <20200901151003.992019324@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <fanpeng@loongson.cn>
+From: David Brazdil <dbrazdil@google.com>
 
-[ Upstream commit a859647b4e6bfeb192284d27d24b6a0c914cae1d ]
+[ Upstream commit b38b298aa4397e2dc74a89b4dd3eac9e59b64c96 ]
 
-Close "fd" before the return of map_vdso() and close "out_file"
-in main().
+__hyp_call_panic_nvhe contains inline assembly which did not declare
+its dependency on the __hyp_panic_string symbol.
 
-Signed-off-by: Peng Fan <fanpeng@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+The static-declared string has previously been kept alive because of a use in
+__hyp_call_panic_vhe. Fix this in preparation for separating the source files
+between VHE and nVHE when the two users land in two different compilation
+units. The static variable otherwise gets dropped when compiling the nVHE
+source file, causing an undefined symbol linker error later.
+
+Signed-off-by: David Brazdil <dbrazdil@google.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200625131420.71444-2-dbrazdil@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/genvdso.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/kvm/hyp/switch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
-index b66b6b1c4aeb9..8f581a2c8578b 100644
---- a/arch/mips/vdso/genvdso.c
-+++ b/arch/mips/vdso/genvdso.c
-@@ -122,6 +122,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (fstat(fd, &stat) != 0) {
- 		fprintf(stderr, "%s: Failed to stat '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
+diff --git a/arch/arm64/kvm/hyp/switch.c b/arch/arm64/kvm/hyp/switch.c
+index db1c4487d95d1..9270b14157b55 100644
+--- a/arch/arm64/kvm/hyp/switch.c
++++ b/arch/arm64/kvm/hyp/switch.c
+@@ -897,7 +897,7 @@ static void __hyp_text __hyp_call_panic_nvhe(u64 spsr, u64 elr, u64 par,
+ 	 * making sure it is a kernel address and not a PC-relative
+ 	 * reference.
+ 	 */
+-	asm volatile("ldr %0, =__hyp_panic_string" : "=r" (str_va));
++	asm volatile("ldr %0, =%1" : "=r" (str_va) : "S" (__hyp_panic_string));
  
-@@ -130,6 +131,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (addr == MAP_FAILED) {
- 		fprintf(stderr, "%s: Failed to map '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -139,6 +141,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG) != 0) {
- 		fprintf(stderr, "%s: '%s' is not an ELF file\n", program_name,
- 			path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -150,6 +153,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF class\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -161,6 +165,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF data order\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -168,15 +173,18 @@ static void *map_vdso(const char *path, size_t *_size)
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF machine (expected EM_MIPS)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	} else if (swap_uint16(ehdr->e_type) != ET_DYN) {
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF type (expected ET_DYN)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
- 	*_size = stat.st_size;
-+	close(fd);
- 	return addr;
- }
- 
-@@ -280,10 +288,12 @@ int main(int argc, char **argv)
- 	/* Calculate and write symbol offsets to <output file> */
- 	if (!get_symbols(dbg_vdso_path, dbg_vdso)) {
- 		unlink(out_path);
-+		fclose(out_file);
- 		return EXIT_FAILURE;
- 	}
- 
- 	fprintf(out_file, "};\n");
-+	fclose(out_file);
- 
- 	return EXIT_SUCCESS;
- }
+ 	__hyp_do_panic(str_va,
+ 		       spsr, elr,
 -- 
 2.25.1
 
