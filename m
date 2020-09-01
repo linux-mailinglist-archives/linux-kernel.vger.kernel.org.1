@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA53A2595B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD97925942C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732072AbgIAPzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:55:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
+        id S1731275AbgIAPg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731907AbgIAPpw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:45:52 -0400
+        id S1731218AbgIAPfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:35:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DE50206FA;
-        Tue,  1 Sep 2020 15:45:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DD30120E65;
+        Tue,  1 Sep 2020 15:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975152;
-        bh=Qj7JQS+ohLx5lQJpKyzZQKyNdacmCCnN1LoA2xLvZVU=;
+        s=default; t=1598974516;
+        bh=ruD5cWIY+Ek85uJXcD6i8enXVkymOXbsy4UrpvC6r1I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H6Et77B6ryxLhtgMmKDyvoQ9jkSfCNzawBn4tYX+AWIGNiHmBC8lwfLP8UC3jlsoI
-         iUXic9T7M2QWY1uRnVkUCwymnHywXqLaWPX6iuCNaVgfp081E4PHlNMY1S5c3iBL2+
-         mIE7rpwOyKzh5A1HeTwsem0vN9dbNzCeAY+apWDk=
+        b=bJKqqXApW03dKnXsL99+4gumjQzAbCW1Nlk0CyYkY71QIXhGczmRdvSDMEI9TyA2m
+         XEDj42BEglwqe+mInLPW1qVGSRVzQXqQ4eKpGP7rrjeuCJebnQUzD4Syt68IyZTKyA
+         YC5dCymxIvJ21j4LAgMEghLJMLaH+WhK2o5v2HiE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brooke Basile <brookebasile@gmail.com>,
-        stable <stable@kernel.org>
-Subject: [PATCH 5.8 230/255] USB: gadget: u_f: Unbreak offset calculation in VLAs
-Date:   Tue,  1 Sep 2020 17:11:26 +0200
-Message-Id: <20200901151011.770892111@linuxfoundation.org>
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Matthias Maennich <maennich@google.com>
+Subject: [PATCH 5.4 207/214] kheaders: optimize header copy for in-tree builds
+Date:   Tue,  1 Sep 2020 17:11:27 +0200
+Message-Id: <20200901151002.845982333@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,51 +44,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-commit bfd08d06d978d0304eb6f7855b548aa2cd1c5486 upstream.
+commit ea79e5168be644fdaf7d4e6a73eceaf07b3da76a upstream.
 
-Inadvertently the commit b1cd1b65afba ("USB: gadget: u_f: add overflow checks
-to VLA macros") makes VLA macros to always return 0 due to different scope of
-two variables of the same name. Obviously we need to have only one.
+This script copies headers by the cpio command twice; first from
+srctree, and then from objtree. However, when we building in-tree,
+we know the srctree and the objtree are the same. That is, all the
+headers copied by the first cpio are overwritten by the second one.
 
-Fixes: b1cd1b65afba ("USB: gadget: u_f: add overflow checks to VLA macros")
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Brooke Basile <brookebasile@gmail.com>
-Cc: stable <stable@kernel.org>
-Link: https://lore.kernel.org/r/20200826192119.56450-1-andriy.shevchenko@linux.intel.com
+Skip the first cpio when we are building in-tree.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Matthias Maennich <maennich@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/u_f.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/gen_kheaders.sh |   16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/gadget/u_f.h
-+++ b/drivers/usb/gadget/u_f.h
-@@ -25,9 +25,9 @@
- 		size_t offset = 0;					       \
- 		if (groupname##__next != SIZE_MAX) {			       \
- 			size_t align_mask = __alignof__(type) - 1;	       \
--			size_t offset = (groupname##__next + align_mask)       \
--					 & ~align_mask;			       \
- 			size_t size = array_size(n, sizeof(type));	       \
-+			offset = (groupname##__next + align_mask) &	       \
-+				  ~align_mask;				       \
- 			if (check_add_overflow(offset, size,		       \
- 					       &groupname##__next)) {          \
- 				groupname##__next = SIZE_MAX;		       \
-@@ -43,8 +43,8 @@
- 		size_t offset = 0;						\
- 		if (groupname##__next != SIZE_MAX) {				\
- 			size_t align_mask = __alignof__(type) - 1;		\
--			size_t offset = (groupname##__next + align_mask)	\
--					 & ~align_mask;				\
-+			offset = (groupname##__next + align_mask) &		\
-+				  ~align_mask;					\
- 			if (check_add_overflow(offset, groupname##_##name##__sz,\
- 							&groupname##__next)) {	\
- 				groupname##__next = SIZE_MAX;			\
+--- a/kernel/gen_kheaders.sh
++++ b/kernel/gen_kheaders.sh
+@@ -56,14 +56,16 @@ fi
+ rm -rf $cpio_dir
+ mkdir $cpio_dir
+ 
+-pushd $srctree > /dev/null
+-for f in $dir_list;
+-	do find "$f" -name "*.h";
+-done | cpio --quiet -pd $cpio_dir
+-popd > /dev/null
++if [ "$building_out_of_srctree" ]; then
++	pushd $srctree > /dev/null
++	for f in $dir_list
++		do find "$f" -name "*.h";
++	done | cpio --quiet -pd $cpio_dir
++	popd > /dev/null
++fi
+ 
+-# The second CPIO can complain if files already exist which can
+-# happen with out of tree builds. Just silence CPIO for now.
++# The second CPIO can complain if files already exist which can happen with out
++# of tree builds having stale headers in srctree. Just silence CPIO for now.
+ for f in $dir_list;
+ 	do find "$f" -name "*.h";
+ done | cpio --quiet -pd $cpio_dir >/dev/null 2>&1
 
 
