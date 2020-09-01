@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73221259B3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95285259C29
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729900AbgIAQ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:58:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43706 "EHLO mail.kernel.org"
+        id S1729284AbgIAPQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:16:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729746AbgIAPWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:22:17 -0400
+        id S1729185AbgIAPPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:15:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0D5F206FA;
-        Tue,  1 Sep 2020 15:22:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45CC1206FA;
+        Tue,  1 Sep 2020 15:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973733;
-        bh=+qMlhpBqo7uDBTw2M3PwWfIBd3Tya3VGpz/pwkPdLDU=;
+        s=default; t=1598973308;
+        bh=7/WCKlMTvBR7YmWfYFwJp9dRNVnCi7LtZNSvGah06qg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zkFfHvA8RHk9hTLIo16hLHGeCaoK7s92g+dh4k8GEAiwXBGUTnuXOWfE71RShn/kr
-         8u/OTrCOzSAe7hz9n5f8GzNObEvW/Sw5UrQcp0ZMwEwtU39r6vF9BZPJYpstbIJLlT
-         8l9G3THDoNMLzIXtXFKSipW1csjiLngi5WppQsNQ=
+        b=iQtQPnYsP0rLd9WQEy+KUWrLxkEwyTAiK3QprMs07CAUCsbrNPyDbG1SW+sI+XfzT
+         lvwEyGZSnrJQ4zIqFGAtimuvLc5QlKD4rr1lDPlHAm0fI0PEkl39ywcQNHmxdPgxe0
+         xwAbM67SiH99dbLZ8das6DgR1blUNN4rrnwN/wM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 024/125] drm/amdgpu: fix ref count leak in amdgpu_display_crtc_set_config
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 03/78] net: Fix potential wrong skb->protocol in skb_vlan_untag()
 Date:   Tue,  1 Sep 2020 17:09:39 +0200
-Message-Id: <20200901150935.750706681@linuxfoundation.org>
+Message-Id: <20200901150924.884408213@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit e008fa6fb41544b63973a529b704ef342f47cc65 ]
+[ Upstream commit 55eff0eb7460c3d50716ed9eccf22257b046ca92 ]
 
-in amdgpu_display_crtc_set_config, the call to pm_runtime_get_sync
-increments the counter even in case of failure, leading to incorrect
-ref count. In case of failure, decrement the ref count before returning.
+We may access the two bytes after vlan_hdr in vlan_set_encap_proto(). So
+we should pull VLAN_HLEN + sizeof(unsigned short) in skb_vlan_untag() or
+we may access the wrong data.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0d5501c1c828 ("net: Always untag vlan-tagged traffic on input.")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/core/skbuff.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-index 686a26de50f91..049a1961c3fa5 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-@@ -275,7 +275,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4591,8 +4591,8 @@ struct sk_buff *skb_vlan_untag(struct sk
+ 	skb = skb_share_check(skb, GFP_ATOMIC);
+ 	if (unlikely(!skb))
+ 		goto err_free;
+-
+-	if (unlikely(!pskb_may_pull(skb, VLAN_HLEN)))
++	/* We may access the two bytes after vlan_hdr in vlan_set_encap_proto(). */
++	if (unlikely(!pskb_may_pull(skb, VLAN_HLEN + sizeof(unsigned short))))
+ 		goto err_free;
  
- 	ret = pm_runtime_get_sync(dev->dev);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
- 	ret = drm_crtc_helper_set_config(set, ctx);
- 
-@@ -290,7 +290,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
- 	   take the current one */
- 	if (active && !adev->have_disp_power_ref) {
- 		adev->have_disp_power_ref = true;
--		return ret;
-+		goto out;
- 	}
- 	/* if we have no active crtcs, then drop the power ref
- 	   we got before */
-@@ -299,6 +299,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
- 		adev->have_disp_power_ref = false;
- 	}
- 
-+out:
- 	/* drop the power reference we got coming in here */
- 	pm_runtime_put_autosuspend(dev->dev);
- 	return ret;
--- 
-2.25.1
-
+ 	vhdr = (struct vlan_hdr *)skb->data;
 
 
