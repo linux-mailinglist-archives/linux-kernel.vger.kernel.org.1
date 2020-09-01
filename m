@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908CD2595B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D18C2593F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731917AbgIAPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:46:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
+        id S1731188AbgIAPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:33:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731642AbgIAPnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:43:09 -0400
+        id S1731181AbgIAPdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:33:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2CCE720866;
-        Tue,  1 Sep 2020 15:43:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F97F20E65;
+        Tue,  1 Sep 2020 15:33:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974988;
-        bh=mC8QRiua3TxU8EWz/9lpCvr+KGukWMfPbUNQDuVcy7k=;
+        s=default; t=1598974410;
+        bh=sAup6i1TyDNEvyHr5kbEXLilOnYaX+9pUJ9MR6tGqQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CHBBMO4k13czWaQrMlchOhqIU59flWmx0zLEFVAb44J4b3kETAZ1Oz3THQ9C/XmpK
-         l+HcAmfOlN5O7S65jGDWsmXNDgwU59UTA81jWcnpuUL81kzAKe2+KLQNRS5ZKOhVCi
-         oVV6h3dGYca7O8Im1ac0cJntvTcJiD9YndZ7hkRw=
+        b=S+hQk47FgOSDQ7pxS1b9dUQz/1f9XAz7sZDk63WZrzFiqDHrS3+GfaN3mAezsnEoK
+         tWDSMGmrZ1pGKFhPVVwYqW1s66H9LAGdxD7ChKwKY5mlzDmp7fvELT2nKXxanQy7Ko
+         0TVV8HhPhX0BbsQAE2Tcncojpu/gXB7vq9jYfXQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Quinn Tran <qutran@marvell.com>,
-        Himanshu Madhani <hmadhani@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Alain Volmat <alain.volmat@st.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 149/255] scsi: qla2xxx: Flush I/O on zone disable
+Subject: [PATCH 5.4 125/214] spi: stm32: always perform registers configuration prior to transfer
 Date:   Tue,  1 Sep 2020 17:10:05 +0200
-Message-Id: <20200901151007.826848481@linuxfoundation.org>
+Message-Id: <20200901150958.974266096@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,35 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quinn Tran <qutran@marvell.com>
+From: Alain Volmat <alain.volmat@st.com>
 
-[ Upstream commit a117579d0205b5a0592a3a98493e2b875e4da236 ]
+[ Upstream commit 60ccb3515fc61a0124c70aa37317f75b67560024 ]
 
-Perform implicit logout to flush I/O on zone disable.
+SPI registers content may have been lost upon suspend/resume sequence.
+So, always compute and apply the necessary configuration in
+stm32_spi_transfer_one_setup routine.
 
-Link: https://lore.kernel.org/r/20200806111014.28434-3-njavali@marvell.com
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Quinn Tran <qutran@marvell.com>
-Signed-off-by: Himanshu Madhani <hmadhani@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Alain Volmat <alain.volmat@st.com>
+Link: https://lore.kernel.org/r/1597043558-29668-6-git-send-email-alain.volmat@st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_gs.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/spi/spi-stm32.c | 42 +++++++++++++++++------------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_gs.c b/drivers/scsi/qla2xxx/qla_gs.c
-index c6b6a3250312e..7074073446701 100644
---- a/drivers/scsi/qla2xxx/qla_gs.c
-+++ b/drivers/scsi/qla2xxx/qla_gs.c
-@@ -3436,7 +3436,6 @@ void qla24xx_async_gnnft_done(scsi_qla_host_t *vha, srb_t *sp)
- 			list_for_each_entry(fcport, &vha->vp_fcports, list) {
- 				if ((fcport->flags & FCF_FABRIC_DEVICE) != 0) {
- 					fcport->scan_state = QLA_FCPORT_SCAN;
--					fcport->logout_on_delete = 0;
- 				}
- 			}
- 			goto login_logout;
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index 50ef03a8252d7..8146c2d91d307 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -1590,41 +1590,33 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
+ 	unsigned long flags;
+ 	unsigned int comm_type;
+ 	int nb_words, ret = 0;
++	int mbr;
+ 
+ 	spin_lock_irqsave(&spi->lock, flags);
+ 
+ 	spi->cur_xferlen = transfer->len;
+ 
+-	if (spi->cur_bpw != transfer->bits_per_word) {
+-		spi->cur_bpw = transfer->bits_per_word;
+-		spi->cfg->set_bpw(spi);
+-	}
+-
+-	if (spi->cur_speed != transfer->speed_hz) {
+-		int mbr;
+-
+-		/* Update spi->cur_speed with real clock speed */
+-		mbr = stm32_spi_prepare_mbr(spi, transfer->speed_hz,
+-					    spi->cfg->baud_rate_div_min,
+-					    spi->cfg->baud_rate_div_max);
+-		if (mbr < 0) {
+-			ret = mbr;
+-			goto out;
+-		}
++	spi->cur_bpw = transfer->bits_per_word;
++	spi->cfg->set_bpw(spi);
+ 
+-		transfer->speed_hz = spi->cur_speed;
+-		stm32_spi_set_mbr(spi, mbr);
++	/* Update spi->cur_speed with real clock speed */
++	mbr = stm32_spi_prepare_mbr(spi, transfer->speed_hz,
++				    spi->cfg->baud_rate_div_min,
++				    spi->cfg->baud_rate_div_max);
++	if (mbr < 0) {
++		ret = mbr;
++		goto out;
+ 	}
+ 
+-	comm_type = stm32_spi_communication_type(spi_dev, transfer);
+-	if (spi->cur_comm != comm_type) {
+-		ret = spi->cfg->set_mode(spi, comm_type);
++	transfer->speed_hz = spi->cur_speed;
++	stm32_spi_set_mbr(spi, mbr);
+ 
+-		if (ret < 0)
+-			goto out;
++	comm_type = stm32_spi_communication_type(spi_dev, transfer);
++	ret = spi->cfg->set_mode(spi, comm_type);
++	if (ret < 0)
++		goto out;
+ 
+-		spi->cur_comm = comm_type;
+-	}
++	spi->cur_comm = comm_type;
+ 
+ 	if (spi->cfg->set_data_idleness)
+ 		spi->cfg->set_data_idleness(spi, transfer->len);
 -- 
 2.25.1
 
