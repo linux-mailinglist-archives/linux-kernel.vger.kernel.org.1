@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397792593CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B77259459
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730667AbgIAPbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:31:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54108 "EHLO mail.kernel.org"
+        id S1728089AbgIAPid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:38:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730188AbgIAP1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:27:18 -0400
+        id S1731293AbgIAPgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:36:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0F52207D3;
-        Tue,  1 Sep 2020 15:27:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CA4020866;
+        Tue,  1 Sep 2020 15:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974037;
-        bh=MqAyc3vVX6Sn4o+E+TZtYRzJyGODsIk2bdb5U1rmkkw=;
+        s=default; t=1598974609;
+        bh=W2rAa3hVKvGfCtUIdsWN4znjxtVhRCXRyUpQdLekit0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0eG3BRWnuB7PiB3IQ2SCQEiDOCmjO2IwQD8uSIpsHKw7T4WLEYU6MRm0996P8gkw9
-         pYJPXHG3t/qinz4qtkSB50ET/DbZFDb7oJOa/Sv6Vbkvlf5fbSDdvo3IX02m9DSCZd
-         e6zcmEBnyF4b/+DHnk1K9J5AMSI1ZzETCUrp/uQM=
+        b=bHfgfg4QVliNbGxuYg90/xDDAs0i/SxRF9DPz5pzOCV0abqMAIOjuega5PZsfGKYM
+         BZjUJKi2Pkn6moiAaKt04kgCZoJiRDwaLkQbnuLfQaHk0dsVd1vEIbIRVxbWviO6EQ
+         7/VwpT/IhcwiALPGMCnVyVlpau69ezPbxre1cGCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>
-Subject: [PATCH 5.4 002/214] binfmt_flat: revert "binfmt_flat: dont offset the data start"
-Date:   Tue,  1 Sep 2020 17:08:02 +0200
-Message-Id: <20200901150953.075216023@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 027/255] drm/amdgpu: fix ref count leak in amdgpu_display_crtc_set_config
+Date:   Tue,  1 Sep 2020 17:08:03 +0200
+Message-Id: <20200901151002.076582814@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Filippov <jcmvbkbc@gmail.com>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-commit 2217b982624680d19a80ebb4600d05c8586c4f96 upstream.
+[ Upstream commit e008fa6fb41544b63973a529b704ef342f47cc65 ]
 
-binfmt_flat loader uses the gap between text and data to store data
-segment pointers for the libraries. Even in the absence of shared
-libraries it stores at least one pointer to the executable's own data
-segment. Text and data can go back to back in the flat binary image and
-without offsetting data segment last few instructions in the text
-segment may get corrupted by the data segment pointer.
+in amdgpu_display_crtc_set_config, the call to pm_runtime_get_sync
+increments the counter even in case of failure, leading to incorrect
+ref count. In case of failure, decrement the ref count before returning.
 
-Fix it by reverting commit a2357223c50a ("binfmt_flat: don't offset the
-data start").
-
-Cc: stable@vger.kernel.org
-Fixes: a2357223c50a ("binfmt_flat: don't offset the data start")
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/binfmt_flat.c |   20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/binfmt_flat.c
-+++ b/fs/binfmt_flat.c
-@@ -571,7 +571,7 @@ static int load_flat_file(struct linux_b
- 			goto err;
- 		}
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+index f7143d927b6d8..5e51f0acf744f 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -282,7 +282,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
  
--		len = data_len + extra;
-+		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
- 		len = PAGE_ALIGN(len);
- 		realdatastart = vm_mmap(NULL, 0, len,
- 			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
-@@ -585,7 +585,9 @@ static int load_flat_file(struct linux_b
- 			vm_munmap(textpos, text_len);
- 			goto err;
- 		}
--		datapos = ALIGN(realdatastart, FLAT_DATA_ALIGN);
-+		datapos = ALIGN(realdatastart +
-+				MAX_SHARED_LIBS * sizeof(unsigned long),
-+				FLAT_DATA_ALIGN);
+ 	ret = pm_runtime_get_sync(dev->dev);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
  
- 		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
- 			 data_len + bss_len + stack_len, datapos);
-@@ -615,7 +617,7 @@ static int load_flat_file(struct linux_b
- 		memp_size = len;
- 	} else {
+ 	ret = drm_crtc_helper_set_config(set, ctx);
  
--		len = text_len + data_len + extra;
-+		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
- 		len = PAGE_ALIGN(len);
- 		textpos = vm_mmap(NULL, 0, len,
- 			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
-@@ -630,7 +632,9 @@ static int load_flat_file(struct linux_b
- 		}
- 
- 		realdatastart = textpos + ntohl(hdr->data_start);
--		datapos = ALIGN(realdatastart, FLAT_DATA_ALIGN);
-+		datapos = ALIGN(realdatastart +
-+				MAX_SHARED_LIBS * sizeof(u32),
-+				FLAT_DATA_ALIGN);
- 
- 		reloc = (__be32 __user *)
- 			(datapos + (ntohl(hdr->reloc_start) - text_len));
-@@ -647,9 +651,8 @@ static int load_flat_file(struct linux_b
- 					 (text_len + full_data
- 						  - sizeof(struct flat_hdr)),
- 					 0);
--			if (datapos != realdatastart)
--				memmove((void *)datapos, (void *)realdatastart,
--						full_data);
-+			memmove((void *) datapos, (void *) realdatastart,
-+					full_data);
- #else
- 			/*
- 			 * This is used on MMU systems mainly for testing.
-@@ -705,7 +708,8 @@ static int load_flat_file(struct linux_b
- 		if (IS_ERR_VALUE(result)) {
- 			ret = result;
- 			pr_err("Unable to read code+data+bss, errno %d\n", ret);
--			vm_munmap(textpos, text_len + data_len + extra);
-+			vm_munmap(textpos, text_len + data_len + extra +
-+				MAX_SHARED_LIBS * sizeof(u32));
- 			goto err;
- 		}
+@@ -297,7 +297,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
+ 	   take the current one */
+ 	if (active && !adev->have_disp_power_ref) {
+ 		adev->have_disp_power_ref = true;
+-		return ret;
++		goto out;
  	}
+ 	/* if we have no active crtcs, then drop the power ref
+ 	   we got before */
+@@ -306,6 +306,7 @@ int amdgpu_display_crtc_set_config(struct drm_mode_set *set,
+ 		adev->have_disp_power_ref = false;
+ 	}
+ 
++out:
+ 	/* drop the power reference we got coming in here */
+ 	pm_runtime_put_autosuspend(dev->dev);
+ 	return ret;
+-- 
+2.25.1
+
 
 
