@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F94259ADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63993259B2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732337AbgIAQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:54:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
+        id S1726594AbgIAPWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729560AbgIAPYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:24:22 -0400
+        id S1729566AbgIAPTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:19:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3CE462078B;
-        Tue,  1 Sep 2020 15:24:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67464206EB;
+        Tue,  1 Sep 2020 15:19:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973861;
-        bh=kjggIwyu8tGGql/uP4yWKtPejoz6uZLhw5z0iPKYxWk=;
+        s=default; t=1598973589;
+        bh=X06z0IObTq8JdZDLzGz+Qgu2K+Dl1MOmU8cHQlUWyUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDkwGtl7o/MRDpXy6ukf06txuQFQJ0tKcDb+3bvhf9aNRFsPy3LeFPZLSi7nSozi0
-         PJztCRH8uUyxf26MqNw4tVxg7EX4VVPWaTtw+++oALK3b7zoHf97Jk42BFC06mD3mG
-         vCXJBuNdYM6jcog3qUukfMTgzMhvcwxx+4OD8VdI=
+        b=rCe0v7eNymVkwt1ivd/sS0se8UnQpg/7DJ0v8s7aVsCJ8B5aZz1jvwKuyhBWCAUMu
+         SyFATEBNK3vrWoha/JK1JCeSKLqQ73t6e4Nl5tUbb6Q7FcJIKd4pvjqeuWNyequQ/Q
+         lmpWtFmIVyyS1dzeuGCoSFd7qMuO6XAJc4HDlMy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Alvin=20=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 077/125] macvlan: validate setting of multiple remote source MAC addresses
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Andrea Borgia <andrea@borgia.bo.it>
+Subject: [PATCH 4.14 58/91] HID: i2c-hid: Always sleep 60ms after I2C_HID_PWR_ON commands
 Date:   Tue,  1 Sep 2020 17:10:32 +0200
-Message-Id: <20200901150938.355420686@linuxfoundation.org>
+Message-Id: <20200901150930.995121541@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,88 +46,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Šipraga <alsi@bang-olufsen.dk>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 8b61fba503904acae24aeb2bd5569b4d6544d48f ]
+commit eef4016243e94c438f177ca8226876eb873b9c75 upstream.
 
-Remote source MAC addresses can be set on a 'source mode' macvlan
-interface via the IFLA_MACVLAN_MACADDR_DATA attribute. This commit
-tightens the validation of these MAC addresses to match the validation
-already performed when setting or adding a single MAC address via the
-IFLA_MACVLAN_MACADDR attribute.
+Before this commit i2c_hid_parse() consists of the following steps:
 
-iproute2 uses IFLA_MACVLAN_MACADDR_DATA for its 'macvlan macaddr set'
-command, and IFLA_MACVLAN_MACADDR for its 'macvlan macaddr add' command,
-which demonstrates the inconsistent behaviour that this commit
-addresses:
+1. Send power on cmd
+2. usleep_range(1000, 5000)
+3. Send reset cmd
+4. Wait for reset to complete (device interrupt, or msleep(100))
+5. Send power on cmd
+6. Try to read HID descriptor
 
- # ip link add link eth0 name macvlan0 type macvlan mode source
- # ip link set link dev macvlan0 type macvlan macaddr add 01:00:00:00:00:00
- RTNETLINK answers: Cannot assign requested address
- # ip link set link dev macvlan0 type macvlan macaddr set 01:00:00:00:00:00
- # ip -d link show macvlan0
- 5: macvlan0@eth0: <BROADCAST,MULTICAST,DYNAMIC,UP,LOWER_UP> mtu 1500 ...
-     link/ether 2e:ac:fd:2d:69:f8 brd ff:ff:ff:ff:ff:ff promiscuity 0
-     macvlan mode source remotes (1) 01:00:00:00:00:00 numtxqueues 1 ...
+Notice how there is an usleep_range(1000, 5000) after the first power-on
+command, but not after the second power-on command.
 
-With this change, the 'set' command will (rightly) fail in the same way
-as the 'add' command.
+Testing has shown that at least on the BMAX Y13 laptop's i2c-hid touchpad,
+not having a delay after the second power-on command causes the HID
+descriptor to read as all zeros.
 
-Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In case we hit this on other devices too, the descriptor being all zeros
+can be recognized by the following message being logged many, many times:
+
+hid-generic 0018:0911:5288.0002: unknown main item tag 0x0
+
+At the same time as the BMAX Y13's touchpad issue was debugged,
+Kai-Heng was working on debugging some issues with Goodix i2c-hid
+touchpads. It turns out that these need a delay after a PWR_ON command
+too, otherwise they stop working after a suspend/resume cycle.
+According to Goodix a delay of minimal 60ms is needed.
+
+Having multiple cases where we need a delay after sending the power-on
+command, seems to indicate that we should always sleep after the power-on
+command.
+
+This commit fixes the mentioned issues by moving the existing 1ms sleep to
+the i2c_hid_set_power() function and changing it to a 60ms sleep.
+
+Cc: stable@vger.kernel.org
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208247
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Reported-and-tested-by: Andrea Borgia <andrea@borgia.bo.it>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/macvlan.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ drivers/hid/i2c-hid/i2c-hid-core.c |   22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index 349123592af0f..e226a96da3a39 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -1230,6 +1230,9 @@ static void macvlan_port_destroy(struct net_device *dev)
- static int macvlan_validate(struct nlattr *tb[], struct nlattr *data[],
- 			    struct netlink_ext_ack *extack)
- {
-+	struct nlattr *nla, *head;
-+	int rem, len;
-+
- 	if (tb[IFLA_ADDRESS]) {
- 		if (nla_len(tb[IFLA_ADDRESS]) != ETH_ALEN)
- 			return -EINVAL;
-@@ -1277,6 +1280,20 @@ static int macvlan_validate(struct nlattr *tb[], struct nlattr *data[],
- 			return -EADDRNOTAVAIL;
- 	}
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -406,6 +406,19 @@ static int i2c_hid_set_power(struct i2c_
+ 		dev_err(&client->dev, "failed to change power setting.\n");
  
-+	if (data[IFLA_MACVLAN_MACADDR_DATA]) {
-+		head = nla_data(data[IFLA_MACVLAN_MACADDR_DATA]);
-+		len = nla_len(data[IFLA_MACVLAN_MACADDR_DATA]);
+ set_pwr_exit:
 +
-+		nla_for_each_attr(nla, head, len, rem) {
-+			if (nla_type(nla) != IFLA_MACVLAN_MACADDR ||
-+			    nla_len(nla) != ETH_ALEN)
-+				return -EINVAL;
++	/*
++	 * The HID over I2C specification states that if a DEVICE needs time
++	 * after the PWR_ON request, it should utilise CLOCK stretching.
++	 * However, it has been observered that the Windows driver provides a
++	 * 1ms sleep between the PWR_ON and RESET requests.
++	 * According to Goodix Windows even waits 60 ms after (other?)
++	 * PWR_ON requests. Testing has confirmed that several devices
++	 * will not work properly without a delay after a PWR_ON request.
++	 */
++	if (!ret && power_state == I2C_HID_PWR_ON)
++		msleep(60);
 +
-+			if (!is_valid_ether_addr(nla_data(nla)))
-+				return -EADDRNOTAVAIL;
-+		}
-+	}
-+
- 	if (data[IFLA_MACVLAN_MACADDR_COUNT])
- 		return -EINVAL;
+ 	return ret;
+ }
  
-@@ -1333,10 +1350,6 @@ static int macvlan_changelink_sources(struct macvlan_dev *vlan, u32 mode,
- 		len = nla_len(data[IFLA_MACVLAN_MACADDR_DATA]);
+@@ -427,15 +440,6 @@ static int i2c_hid_hwreset(struct i2c_cl
+ 	if (ret)
+ 		goto out_unlock;
  
- 		nla_for_each_attr(nla, head, len, rem) {
--			if (nla_type(nla) != IFLA_MACVLAN_MACADDR ||
--			    nla_len(nla) != ETH_ALEN)
--				continue;
+-	/*
+-	 * The HID over I2C specification states that if a DEVICE needs time
+-	 * after the PWR_ON request, it should utilise CLOCK stretching.
+-	 * However, it has been observered that the Windows driver provides a
+-	 * 1ms sleep between the PWR_ON and RESET requests and that some devices
+-	 * rely on this.
+-	 */
+-	usleep_range(1000, 5000);
 -
- 			addr = nla_data(nla);
- 			ret = macvlan_hash_add_source(vlan, addr);
- 			if (ret)
--- 
-2.25.1
-
+ 	i2c_hid_dbg(ihid, "resetting...\n");
+ 
+ 	ret = i2c_hid_command(client, &hid_reset_cmd, NULL, 0);
 
 
