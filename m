@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4A625966E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72ED25966A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731705AbgIAQCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:02:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
+        id S1731708AbgIAQCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:02:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731697AbgIAPnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:43:51 -0400
+        id S1729998AbgIAPny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:43:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D4D32078B;
-        Tue,  1 Sep 2020 15:43:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 023122064B;
+        Tue,  1 Sep 2020 15:43:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975030;
-        bh=2naeV90/6QPcwClhBjGW6V0liFn96cP65u6M9DzPqM4=;
+        s=default; t=1598975033;
+        bh=lFb2Q2xM9c4Y7D6VE/bsVUu/YFedlovtL8eR4vN3fhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bw0gcW5aABuKVvGgFWx+7XLKbwj9NSEg9FFN+9Fkt80o7kL5y/rW+LTNQyUXR6ezY
-         vaSzCxgesxCsE7Puz4wsnBjoQdY5gmsY4sSSEvGKO66Z4fh1Q0doeyVXcPsRjm3v7E
-         fWQbThH2mXTAVICQQ7y3O3Ic1uvfHACzEiohLRN0=
+        b=cG1NJbwMzo621lVACqSys9OUKyi1JhJ54PbjCtEr2p5BuAeV826hAB603PLNV1WRa
+         JgxfKJPW1wM70AtTBUTP4avEH86QR3EIOxFxOPjgAO6V4+F72V/bsvM7aeE4B/2tlH
+         X7pm6QFnEuffS2O1H9WKm1bmwGjIMVwGOrjTfDaI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
+        Quinn Tran <qutran@marvell.com>,
         Nilesh Javali <njavali@marvell.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 152/255] scsi: qla2xxx: Check if FW supports MQ before enabling
-Date:   Tue,  1 Sep 2020 17:10:08 +0200
-Message-Id: <20200901151007.973250752@linuxfoundation.org>
+Subject: [PATCH 5.8 153/255] scsi: qla2xxx: Fix null pointer access during disconnect from subsystem
+Date:   Tue,  1 Sep 2020 17:10:09 +0200
+Message-Id: <20200901151008.021403229@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -47,40 +47,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurav Kashyap <skashyap@marvell.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit dffa11453313a115157b19021cc2e27ea98e624c ]
+[ Upstream commit 83949613fac61e8e37eadf8275bf072342302f4e ]
 
-OS boot during Boot from SAN was stuck at dracut emergency shell after
-enabling NVMe driver parameter. For non-MQ support the driver was enabling
-MQ. Add a check to confirm if FW supports MQ.
+NVMEAsync command is being submitted to QLA while the same NVMe controller
+is in the middle of reset. The reset path has deleted the association and
+freed aen_op->fcp_req.private. Add a check for this private pointer before
+issuing the command.
 
-Link: https://lore.kernel.org/r/20200806111014.28434-9-njavali@marvell.com
+...
+ 6 [ffffb656ca11fce0] page_fault at ffffffff8c00114e
+    [exception RIP: qla_nvme_post_cmd+394]
+    RIP: ffffffffc0d012ba  RSP: ffffb656ca11fd98  RFLAGS: 00010206
+    RAX: ffff8fb039eda228  RBX: ffff8fb039eda200  RCX: 00000000000da161
+    RDX: ffffffffc0d4d0f0  RSI: ffffffffc0d26c9b  RDI: ffff8fb039eda220
+    RBP: 0000000000000013   R8: ffff8fb47ff6aa80   R9: 0000000000000002
+    R10: 0000000000000000  R11: ffffb656ca11fdc8  R12: ffff8fb27d04a3b0
+    R13: ffff8fc46dd98a58  R14: 0000000000000000  R15: ffff8fc4540f0000
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ 7 [ffffb656ca11fe08] nvme_fc_start_fcp_op at ffffffffc0241568 [nvme_fc]
+ 8 [ffffb656ca11fe50] nvme_fc_submit_async_event at ffffffffc0241901 [nvme_fc]
+ 9 [ffffb656ca11fe68] nvme_async_event_work at ffffffffc014543d [nvme_core]
+10 [ffffb656ca11fe98] process_one_work at ffffffff8b6cd437
+11 [ffffb656ca11fed8] worker_thread at ffffffff8b6cdcef
+12 [ffffb656ca11ff10] kthread at ffffffff8b6d3402
+13 [ffffb656ca11ff50] ret_from_fork at ffffffff8c000255
+
+--
+PID: 37824  TASK: ffff8fb033063d80  CPU: 20  COMMAND: "kworker/u97:451"
+ 0 [ffffb656ce1abc28] __schedule at ffffffff8be629e3
+ 1 [ffffb656ce1abcc8] schedule at ffffffff8be62fe8
+ 2 [ffffb656ce1abcd0] schedule_timeout at ffffffff8be671ed
+ 3 [ffffb656ce1abd70] wait_for_completion at ffffffff8be639cf
+ 4 [ffffb656ce1abdd0] flush_work at ffffffff8b6ce2d5
+ 5 [ffffb656ce1abe70] nvme_stop_ctrl at ffffffffc0144900 [nvme_core]
+ 6 [ffffb656ce1abe80] nvme_fc_reset_ctrl_work at ffffffffc0243445 [nvme_fc]
+ 7 [ffffb656ce1abe98] process_one_work at ffffffff8b6cd437
+ 8 [ffffb656ce1abed8] worker_thread at ffffffff8b6cdb50
+ 9 [ffffb656ce1abf10] kthread at ffffffff8b6d3402
+10 [ffffb656ce1abf50] ret_from_fork at ffffffff8c000255
+
+Link: https://lore.kernel.org/r/20200806111014.28434-10-njavali@marvell.com
 Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
 Signed-off-by: Nilesh Javali <njavali@marvell.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_os.c | 5 +++++
+ drivers/scsi/qla2xxx/qla_nvme.c | 5 +++++
  1 file changed, 5 insertions(+)
 
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index 5c7c22d0fab4b..8b6803f4f2dc1 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -2017,6 +2017,11 @@ skip_pio:
- 	/* Determine queue resources */
- 	ha->max_req_queues = ha->max_rsp_queues = 1;
- 	ha->msix_count = QLA_BASE_VECTORS;
+diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
+index fa695a4007f86..262dfd7635a48 100644
+--- a/drivers/scsi/qla2xxx/qla_nvme.c
++++ b/drivers/scsi/qla2xxx/qla_nvme.c
+@@ -536,6 +536,11 @@ static int qla_nvme_post_cmd(struct nvme_fc_local_port *lport,
+ 	struct nvme_private *priv = fd->private;
+ 	struct qla_nvme_rport *qla_rport = rport->private;
+ 
++	if (!priv) {
++		/* nvme association has been torn down */
++		return rval;
++	}
 +
-+	/* Check if FW supports MQ or not */
-+	if (!(ha->fw_attributes & BIT_6))
-+		goto mqiobase_exit;
-+
- 	if (!ql2xmqsupport || !ql2xnvmeenable ||
- 	    (!IS_QLA25XX(ha) && !IS_QLA81XX(ha)))
- 		goto mqiobase_exit;
+ 	fcport = qla_rport->fcport;
+ 
+ 	if (!qpair || !fcport || (qpair && !qpair->fw_started) ||
 -- 
 2.25.1
 
