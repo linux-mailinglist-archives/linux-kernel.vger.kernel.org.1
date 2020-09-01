@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB80258CDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1077258CE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgIAKdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 06:33:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:40168 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgIAKdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 06:33:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3851113E;
-        Tue,  1 Sep 2020 03:33:38 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 005BD3F71F;
-        Tue,  1 Sep 2020 03:33:37 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        op-tee@lists.trustedfirmware.org
-Subject: [PATCH 2/2] tee: avoid explicit sysfs_create/delete_group by initialising dev->groups
-Date:   Tue,  1 Sep 2020 11:33:35 +0100
-Message-Id: <20200901103335.685-2-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901103335.685-1-sudeep.holla@arm.com>
-References: <20200901103335.685-1-sudeep.holla@arm.com>
+        id S1726419AbgIAKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 06:37:15 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47435 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725848AbgIAKgr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 06:36:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598956605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AEINv34Fu2CdWohARgHW6X/rv0Y1PeRzDZvhyy6A9Hw=;
+        b=HoTrQxvcHi1OEOdzfxI14tpuQCdDOcvLSJ6phrToeRFHXDQMYY/lkX5dZqN9pP/RxGCzv6
+        9F8CAsXotDdXSzkRXqS8GUkHZDiWx/tOfsX+Ph3NjLlBVUh/zRUxGzgFwMUJPPzdV55+JX
+        sGSc4csbWRHcByRjdDdRfwGnBYgh6vM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-xYCpb0hHMqODDjR1DAacTw-1; Tue, 01 Sep 2020 06:36:44 -0400
+X-MC-Unique: xYCpb0hHMqODDjR1DAacTw-1
+Received: by mail-wr1-f72.google.com with SMTP id m7so393710wrb.20
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 03:36:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=AEINv34Fu2CdWohARgHW6X/rv0Y1PeRzDZvhyy6A9Hw=;
+        b=aQyNRNs8AfSbyv19ui/V/SqHqC73SeTUtEh2cobNJEQRY3hmihb45rbDg/50/00QmZ
+         U6CMA1O0hhY+/Bd9lfhQOgR+KEElIgQhA48lCz6bx6A7CaIwsuSwZT0+VUSlt6UHrD+e
+         jL8sU9sCB8LMHQav8eAbXD3bBsnW1BqK8qz8YM1vg04uMl9zOzdJ2vDr0KCE+aX9M0U2
+         uMd+5hwcuIvYQ0PQ9kFCCKHhQvjOjzBZ0owaVRkT6jwRYinV5U9OfsV3rie3cxQyCJIO
+         DW3lNQAPLgwhsFnL7R8lltFOlW+aQn+p5QBkm2ImUIhqZuuCxQpCCNyPLi7ihK+/Rc+R
+         +vhQ==
+X-Gm-Message-State: AOAM531NUzXwjdKZHg5PhxrVAjZ/ONUnsF4P0aS0urLXKE+CO/2FZLDo
+        xdjsh2DZ4X6xo65ZKFfpUK63Rj0Pst6AXL3uEPeBfe592uJOR5qJdSGhuOjye5FUy1qWogyiWwJ
+        dYjdiJitBoBJuDW/zi33Gnequ
+X-Received: by 2002:adf:8b1d:: with SMTP id n29mr1078499wra.383.1598956602597;
+        Tue, 01 Sep 2020 03:36:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3p55BcW/B1gRIkaQp0176fOY3DHBYTFK/XSRZMR0fLQx7LPfXuDNXAxisUTOh0txmQK8fNw==
+X-Received: by 2002:adf:8b1d:: with SMTP id n29mr1078479wra.383.1598956602379;
+        Tue, 01 Sep 2020 03:36:42 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id w1sm1318093wmc.18.2020.09.01.03.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 03:36:41 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: VMX: fix crash cleanup when KVM wasn't used
+In-Reply-To: <20200825000920.GB15046@sjchrist-ice>
+References: <20200401081348.1345307-1-vkuznets@redhat.com> <CALMp9eROXAOg_g=R8JRVfywY7uQXzBtVxKJYXq0dUcob-BfR-g@mail.gmail.com> <20200822034046.GE4769@sjchrist-ice> <CALMp9eRHh9KXO12k4GaoenSJazFnSaN68FTVxOGhE9Mxw-hf2A@mail.gmail.com> <CALMp9eS1HusEZvzLShuuuxQnReKgTtunsKLoy+2GMVJAaTrZ7A@mail.gmail.com> <20200825000920.GB15046@sjchrist-ice>
+Date:   Tue, 01 Sep 2020 12:36:40 +0200
+Message-ID: <87pn75wzpj.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the dev->groups is initialised, the sysfs group is created as part
-of device_add call. There is no need to call sysfs_create/delete_group
-explicitly.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/tee/tee_core.c | 21 ++++-----------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+> On Mon, Aug 24, 2020 at 03:45:26PM -0700, Jim Mattson wrote:
+>> On Mon, Aug 24, 2020 at 11:57 AM Jim Mattson <jmattson@google.com> wrote:
+>> >
+>> > On Fri, Aug 21, 2020 at 8:40 PM Sean Christopherson
+>> > <sean.j.christopherson@intel.com> wrote:
+>> > > I agree the code is a mess (kvm_init() and kvm_exit() included), but I'm
+>> > > pretty sure hardware_disable_nolock() is guaranteed to be a nop as it's
+>> > > impossible for kvm_usage_count to be non-zero if vmx_init() hasn't
+>> > > finished.
+>> >
+>> > Unless I'm missing something, there's no check for a non-zero
+>> > kvm_usage_count on this path. There is such a check in
+>> > hardware_disable_all_nolock(), but not in hardware_disable_nolock().
+>> 
+>> However, cpus_hardware_enabled shouldn't have any bits set, so
+>> everything's fine. Nothing to see here, after all.
+>
+> Ugh, I forgot that hardware_disable_all_nolock() does a BUG_ON() instead of
+> bailing on !kvm_usage_count.
 
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index b4a8b362d78f..f77d64fafead 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -962,9 +962,7 @@ static struct attribute *tee_dev_attrs[] = {
- 	NULL
- };
- 
--static const struct attribute_group tee_dev_group = {
--	.attrs = tee_dev_attrs,
--};
-+ATTRIBUTE_GROUPS(tee_dev);
- 
- /**
-  * tee_device_register() - Registers a TEE device
-@@ -984,6 +982,8 @@ int tee_device_register(struct tee_device *teedev)
- 		return -EINVAL;
- 	}
- 
-+	teedev->dev.groups = tee_dev_groups;
-+
- 	rc = cdev_device_add(&teedev->cdev, &teedev->dev);
- 	if (rc) {
- 		dev_err(&teedev->dev,
-@@ -993,19 +993,8 @@ int tee_device_register(struct tee_device *teedev)
- 		return rc;
- 	}
- 
--	rc = sysfs_create_group(&teedev->dev.kobj, &tee_dev_group);
--	if (rc) {
--		dev_err(&teedev->dev,
--			"failed to create sysfs attributes, err=%d\n", rc);
--		goto err_sysfs_create_group;
--	}
--
- 	teedev->flags |= TEE_DEVICE_FLAG_REGISTERED;
- 	return 0;
--
--err_sysfs_create_group:
--	cdev_device_del(&teedev->cdev, &teedev->dev);
--	return rc;
- }
- EXPORT_SYMBOL_GPL(tee_device_register);
- 
-@@ -1048,10 +1037,8 @@ void tee_device_unregister(struct tee_device *teedev)
- 	if (!teedev)
- 		return;
- 
--	if (teedev->flags & TEE_DEVICE_FLAG_REGISTERED) {
--		sysfs_remove_group(&teedev->dev.kobj, &tee_dev_group);
-+	if (teedev->flags & TEE_DEVICE_FLAG_REGISTERED)
- 		cdev_device_del(&teedev->cdev, &teedev->dev);
--	}
- 
- 	tee_device_put(teedev);
- 	wait_for_completion(&teedev->c_no_users);
+But we can't hit this BUG_ON(), right? I'm failing to see how
+hardware_disable_all_nolock() can be reached with kvm_usage_count==0.
+
 -- 
-2.17.1
+Vitaly
 
