@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAA62592BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:16:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014FA259321
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgIAPQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:16:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60160 "EHLO mail.kernel.org"
+        id S1729307AbgIAPVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:21:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729228AbgIAPPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:15:42 -0400
+        id S1728762AbgIAPTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:19:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 270F120BED;
-        Tue,  1 Sep 2020 15:15:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFD08206EB;
+        Tue,  1 Sep 2020 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973341;
-        bh=I5sszpnEsWLW9bceSHEeRvrJ/DB70tDxtWUEm34wodg=;
+        s=default; t=1598973547;
+        bh=Aj2i/GFWkXVTO/WsK2WQJzbadJ+weGi3Imo/eq3lzZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hISJ2K2j/LzPCb2EDWVk2wn7i/dCgof1eSM4dkgeU0R0bBxh0BGJ7IDeNg4gh+HSz
-         jqdZiH6/n8eKsPBbmPPe5j9bxqRAJxYEPihk6DZiiYpWxfvfwEwSyVz9Il0R39Izpb
-         wwsoNk2M7agQr6OXJD/JuTk1oxAm21otGV9mAcns=
+        b=ux10aOT888Qt/YYqs92rwQB5IrQaZDuFFvcvsh8jWO4YspHvgM7EIU76TdU/5pFae
+         Uy8R0lS71WuIXwzx5tmOQQfAip242ZR3dL86SjBQWaJfvIw7sLfe+Hlj7beApfubck
+         F8OiO+LWsim8ud0Kc6s1MuBxkFiKXvBHjNh2vQig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 41/78] jbd2: make sure jh have b_transaction set in refile/unfile_buffer
+Subject: [PATCH 4.14 43/91] nvme-fc: Fix wrong return value in __nvme_fc_init_request()
 Date:   Tue,  1 Sep 2020 17:10:17 +0200
-Message-Id: <20200901150926.807375332@linuxfoundation.org>
+Message-Id: <20200901150930.277875366@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,60 +47,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Czerner <lczerner@redhat.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-[ Upstream commit 24dc9864914eb5813173cfa53313fcd02e4aea7d ]
+[ Upstream commit f34448cd0dc697723fb5f4118f8431d9233b370d ]
 
-Callers of __jbd2_journal_unfile_buffer() and
-__jbd2_journal_refile_buffer() assume that the b_transaction is set. In
-fact if it's not, we can end up with journal_head refcounting errors
-leading to crash much later that might be very hard to track down. Add
-asserts to make sure that is the case.
+On an error exit path, a negative error code should be returned
+instead of a positive return value.
 
-We also make sure that b_next_transaction is NULL in
-__jbd2_journal_unfile_buffer() since the callers expect that as well and
-we should not get into that stage in this state anyway, leading to
-problems later on if we do.
-
-Tested with fstests.
-
-Signed-off-by: Lukas Czerner <lczerner@redhat.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200617092549.6712-1-lczerner@redhat.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: e399441de9115 ("nvme-fabrics: Add host support for FC transport")
+Cc: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/transaction.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/nvme/host/fc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 8de458d64134a..1478512ecab3e 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -1896,6 +1896,9 @@ static void __jbd2_journal_temp_unlink_buffer(struct journal_head *jh)
-  */
- static void __jbd2_journal_unfile_buffer(struct journal_head *jh)
- {
-+	J_ASSERT_JH(jh, jh->b_transaction != NULL);
-+	J_ASSERT_JH(jh, jh->b_next_transaction == NULL);
-+
- 	__jbd2_journal_temp_unlink_buffer(jh);
- 	jh->b_transaction = NULL;
- 	jbd2_journal_put_journal_head(jh);
-@@ -2443,6 +2446,13 @@ void __jbd2_journal_refile_buffer(struct journal_head *jh)
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index 058d542647dd5..13c89cc9d10cf 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -1492,7 +1492,7 @@ __nvme_fc_init_request(struct nvme_fc_ctrl *ctrl,
+ 	if (fc_dma_mapping_error(ctrl->lport->dev, op->fcp_req.cmddma)) {
+ 		dev_err(ctrl->dev,
+ 			"FCP Op failed - cmdiu dma mapping failed.\n");
+-		ret = EFAULT;
++		ret = -EFAULT;
+ 		goto out_on_error;
+ 	}
  
- 	was_dirty = test_clear_buffer_jbddirty(bh);
- 	__jbd2_journal_temp_unlink_buffer(jh);
-+
-+	/*
-+	 * b_transaction must be set, otherwise the new b_transaction won't
-+	 * be holding jh reference
-+	 */
-+	J_ASSERT_JH(jh, jh->b_transaction != NULL);
-+
- 	/*
- 	 * We set b_transaction here because b_next_transaction will inherit
- 	 * our jh reference and thus __jbd2_journal_file_buffer() must not
+@@ -1502,7 +1502,7 @@ __nvme_fc_init_request(struct nvme_fc_ctrl *ctrl,
+ 	if (fc_dma_mapping_error(ctrl->lport->dev, op->fcp_req.rspdma)) {
+ 		dev_err(ctrl->dev,
+ 			"FCP Op failed - rspiu dma mapping failed.\n");
+-		ret = EFAULT;
++		ret = -EFAULT;
+ 	}
+ 
+ 	atomic_set(&op->state, FCPOP_STATE_IDLE);
 -- 
 2.25.1
 
