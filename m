@@ -2,67 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96357258E7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C92258E96
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIAMsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:48:16 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3150 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727937AbgIAMre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:47:34 -0400
-Received: from dggeme702-chm.china.huawei.com (unknown [172.30.72.54])
-        by Forcepoint Email with ESMTP id 55F02E07E3C272259619;
-        Tue,  1 Sep 2020 20:47:18 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme702-chm.china.huawei.com (10.1.199.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Tue, 1 Sep 2020 20:47:17 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Tue, 1 Sep 2020 20:47:18 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-CC:     "oleg@redhat.com" <oleg@redhat.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "madhuparnabhowmik10@gmail.com" <madhuparnabhowmik10@gmail.com>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] signal: clean up codestyle
-Thread-Topic: [PATCH] signal: clean up codestyle
-Thread-Index: AdaAWr2XxVwWGeARTF6vGMVxh/orgQ==
-Date:   Tue, 1 Sep 2020 12:47:17 +0000
-Message-ID: <1461a6c6bfe34ae9a5220a7d47d304e8@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.74]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727902AbgIAMvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727025AbgIAMuD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 08:50:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DA6C061245;
+        Tue,  1 Sep 2020 05:50:02 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id e23so1469624eja.3;
+        Tue, 01 Sep 2020 05:50:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TeP2OMTnX08luhi/Cf+M20naxDcFqoHuSCfrsdvdbQs=;
+        b=u25gocfmHvWnUENdqC+EIpRNM7WAVhgZnDdK3HH5Qvx421X8HpAscJvCHSrUvXoFem
+         2i+K90Pqxe4XtoYu0IwUtCBOXD3e2LwPCRTofmLnNytjINMAUxdoFO/JRauOrDWnwVZy
+         y/gj0c7sGeDgJI1T+ivYt07SorAAWwGokZNSYFm/bFA7Rzh9mGvIV9YD5h+g5XP/ha/r
+         Yw7XoMIr1h0Mss+DEjXaXvYAIrgN5+0neD+CLwe/eVTJMpYXac568ktpjfxUviTyVciX
+         oc4mC0ypWa3ZYWRmghWNVvXaCEFhyRAm1q30sl3bZIrwl5BsPgT7dJwOv5eOQhkFyhXc
+         JC/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TeP2OMTnX08luhi/Cf+M20naxDcFqoHuSCfrsdvdbQs=;
+        b=ro6Cajyh96x8VoDqBKsu0RXELWFFzLTzGlwVFIgF8KLgqJYMZahEX8cuQdROLdwbQL
+         XUc1uZssn0Cujj/RYV8ecPsGdE5MWm1RoRzW+P/ovJUDUPTih8+tboKmYKY4ZIlNrhCk
+         tcvP0bWiGXLLlqAcIpAp9G+KCjYgBstLZnWuxf+Sn3u+ZqfY2xppIS3h8VFGy1hn6+Jd
+         p9yA02H6+aTk+AA0wp4sZ6ZQ+WyaBtyG5iYNVDx643af9l52fLG4GNt4JdGhASTUvaD3
+         O+wzMKjJE35dkfoPBasMbREewFjnyN70sxMXuFuCzFHoiZ5S5rRRX/wN4Hw3ts2UFcS0
+         GSrg==
+X-Gm-Message-State: AOAM532RgIvBG6emHclXys7xU+rtwu/+NvVZcucMNOec9fexTsD4qjKX
+        wWpLl3LYaZxNkGakazPCiqE=
+X-Google-Smtp-Source: ABdhPJwd22fDSrMBk6KGt7ZiNC578JKHfx4PFTxHyLD3s9thWNGwOYt2JHqd5L9J5spk0LQZTWNGZA==
+X-Received: by 2002:a17:906:3755:: with SMTP id e21mr1294445ejc.39.1598964601056;
+        Tue, 01 Sep 2020 05:50:01 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (host-95-235-252-96.retail.telecomitalia.it. [95.235.252.96])
+        by smtp.googlemail.com with ESMTPSA id t12sm1068724edy.61.2020.09.01.05.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 05:50:00 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>, stable@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: qcom: Make sure PCIe is reset before init for rev 2.1.0
+Date:   Tue,  1 Sep 2020 14:49:54 +0200
+Message-Id: <20200901124955.137-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hyaXN0aWFuIEJyYXVuZXIgPGNocmlzdGlhbi5icmF1bmVyQHVidW50dS5jb20+IHdyb3RlOg0K
-PiBPbiBUdWUsIFNlcCAwMSwgMjAyMCBhdCAwNzo1ODowMEFNIC0wNDAwLCBNaWFvaGUgTGluIHdy
-b3RlOg0KPiBObyBmdW5jdGlvbmFsIGNoYW5nZSBpbnRlbmRlZC4NCg0KPkhleSBNaWFvaGUsDQo+
-DQo+VGhhbmsgeW91IGZvciB0aGUgcGF0Y2guDQo+SSdtIHN1cmUgdGhpcyBpcyB3ZWxsLWludGVu
-ZGVkIGJ1dCBhZmFpY3QgdGhlIHdob2xlIGZpbGUgaGFzIG1vcmUgb3IgbGVzcyBhIGNvbnNpc3Rl
-bnQgc3R5bGUgYWxyZWFkeSB3aGVyZSBlLmcuIHNpZy0xIHdpdGhvdXQgc3BhY2VzIHNlZW1zIHRv
-IGJlIHByZWZlcnJlZC4gVGhlIHNhbWUgZm9yIHRoZSBjYXN0cyB3aGVyZSBtb3N0IHBsYWNlcyB1
-c2UgYSBzaW5nbGUgc3BhY2UuDQo+DQo+Tm93LCBJIGtub3cgQ29kaW5nU3R5bGUucnN0IGlzIG9u
-IHlvdXIgc2lkZSBhdCBsZWFzdCB3aGVuIGl0IGNvbWVzIHRvIHRoZSBmaXJzdCBwb2ludDoNCj4N
-Cj5Vc2Ugb25lIHNwYWNlIGFyb3VuZCAob24gZWFjaCBzaWRlIG9mKSBtb3N0IGJpbmFyeSBhbmQg
-dGVybmFyeSBvcGVyYXRvcnMsIHN1Y2ggYXMgYW55IG9mIHRoZXNlOjoNCj4NCj4JPSAgKyAgLSAg
-PCAgPiAgKiAgLyAgJSAgfCAgJiAgXiAgPD0gID49ICA9PSAgIT0gID8gIDoNCj4NCj5idXQgdGhl
-biB5b3UnZCBuZWVkIHRvIGNoYW5nZSBlYWNoIHBsYWNlIGluIGtlcm5lbC9zaWduYWwuYyB3aGVy
-ZSB0aGF0IGlzIGN1cnJlbnRseSBub3QgdGhlIGNhc2UuIE90aGVyd2lzZSB3ZSBlbmQgdXAgd2l0
-aCBhIHdlaXJkIG1peC4NCj4NCj5UaGFua3MhDQo+Q2hyaXN0aWFuDQo+IA0KDQpNYW55IHRoYW5r
-cyBmb3IgeW91ciByZXBseS4gSXQgbG9va3MgaXQncyBiZXR0ZXIgdG8gbWFrZSBjb2Rlc3R5bGUg
-Y29uc2lzdGVudC4gV2lsbCBkbyBpdCB3aGVuIEknYW0gZnJlZS4gOikNClRoYW5rcyBhZ2Fpbi4N
-Cg0K
+Qsdk U-Boot can incorrectly leave the PCIe interface in an undefined
+state if bootm command is used instead of bootipq. This is caused by the
+not deinit of PCIe when bootm is called. Reset the PCIe before init
+anyway to fix this U-Boot bug.
+
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
+Cc: stable@vger.kernel.org # v4.19+
+---
+ drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 3aac77a295ba..82336bbaf8dc 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -302,6 +302,9 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
+ 	reset_control_assert(res->por_reset);
+ 	reset_control_assert(res->ext_reset);
+ 	reset_control_assert(res->phy_reset);
++
++	writel(1, pcie->parf + PCIE20_PARF_PHY_CTRL);
++
+ 	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
+ }
+ 
+@@ -314,6 +317,16 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+ 	u32 val;
+ 	int ret;
+ 
++	/* reset the PCIe interface as uboot can leave it undefined state */
++	reset_control_assert(res->pci_reset);
++	reset_control_assert(res->axi_reset);
++	reset_control_assert(res->ahb_reset);
++	reset_control_assert(res->por_reset);
++	reset_control_assert(res->ext_reset);
++	reset_control_assert(res->phy_reset);
++
++	writel(1, pcie->parf + PCIE20_PARF_PHY_CTRL);
++
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(res->supplies), res->supplies);
+ 	if (ret < 0) {
+ 		dev_err(dev, "cannot enable regulators\n");
+-- 
+2.27.0
+
