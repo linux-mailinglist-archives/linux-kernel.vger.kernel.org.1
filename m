@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CF32597AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDA225978D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731198AbgIAPdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38092 "EHLO mail.kernel.org"
+        id S1729574AbgIAPeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:34:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731186AbgIAPdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:33:44 -0400
+        id S1731147AbgIAPdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:33:49 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2D3820E65;
-        Tue,  1 Sep 2020 15:33:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3DE6C20E65;
+        Tue,  1 Sep 2020 15:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974423;
-        bh=aXpEuyQ/p1Qd1rdpw+8abJdNj/g6K6GnX7Nll9ucIto=;
+        s=default; t=1598974428;
+        bh=XZofRMEuhipyLINL8hAHelkVwYgHCkVlOIbGVYdKOns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d9hQVDlnsbvpDErYLS9LkJIKyeiHZ6/3ywkauTKzQZUPC+030UQ6wgQwZrZKj9Sew
-         ovAuPX4eWP86qR1y9o5RHUp1iFv2A4L9Jble9UAxJuTeG9Y+SngtvEayY8CdR1ZvSE
-         p6sjdV658es2zZ+EhtT/w3+WHVt7okeezizcEj9c=
+        b=i00tafQZhVAfqXlBHgbwWdMADjSMnGAhnFrqYe8Q7SQDNNH3k1OEd3d43DeT+IfM/
+         i/F1q6WirAj0v6wVlxJm1Ag+YVJeE/giPY3MWumG8y6ypAKakg/PToM9oDrqiMzA7P
+         +fejyNACFB/UiLEHhrPD4TfVA/fsKWLU1nl218Mg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Li Jun <jun.li@nxp.com>,
+        stable@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>,
         Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.4 171/214] usb: host: xhci: fix ep context print mismatch in debugfs
-Date:   Tue,  1 Sep 2020 17:10:51 +0200
-Message-Id: <20200901151001.167627400@linuxfoundation.org>
+Subject: [PATCH 5.4 173/214] xhci: Always restore EP_SOFT_CLEAR_TOGGLE even if ep reset failed
+Date:   Tue,  1 Sep 2020 17:10:53 +0200
+Message-Id: <20200901151001.266477923@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -43,48 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jun <jun.li@nxp.com>
+From: Ding Hui <dinghui@sangfor.com.cn>
 
-commit 0077b1b2c8d9ad5f7a08b62fb8524cdb9938388f upstream.
+commit f1ec7ae6c9f8c016db320e204cb519a1da1581b8 upstream.
 
-dci is 0 based and xhci_get_ep_ctx() will do ep index increment to get
-the ep context.
+Some device drivers call libusb_clear_halt when target ep queue
+is not empty. (eg. spice client connected to qemu for usb redir)
 
-[rename dci to ep_index -Mathias]
-Cc: stable <stable@vger.kernel.org> # v4.15+
-Fixes: 02b6fdc2a153 ("usb: xhci: Add debugfs interface for xHCI driver")
-Signed-off-by: Li Jun <jun.li@nxp.com>
+Before commit f5249461b504 ("xhci: Clear the host side toggle
+manually when endpoint is soft reset"), that works well.
+But now, we got the error log:
+
+    EP not empty, refuse reset
+
+xhci_endpoint_reset failed and left ep_state's EP_SOFT_CLEAR_TOGGLE
+bit still set
+
+So all the subsequent urb sumbits to the ep will fail with the
+warn log:
+
+    Can't enqueue URB while manually clearing toggle
+
+We need to clear ep_state EP_SOFT_CLEAR_TOGGLE bit after
+xhci_endpoint_reset, even if it failed.
+
+Fixes: f5249461b504 ("xhci: Clear the host side toggle manually when endpoint is soft reset")
+Cc: stable <stable@vger.kernel.org> # v4.17+
+Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
 Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200821091549.20556-2-mathias.nyman@linux.intel.com
+Link: https://lore.kernel.org/r/20200821091549.20556-4-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-debugfs.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/xhci-debugfs.c
-+++ b/drivers/usb/host/xhci-debugfs.c
-@@ -273,7 +273,7 @@ static int xhci_slot_context_show(struct
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -3236,10 +3236,11 @@ static void xhci_endpoint_reset(struct u
  
- static int xhci_endpoint_context_show(struct seq_file *s, void *unused)
- {
--	int			dci;
-+	int			ep_index;
- 	dma_addr_t		dma;
- 	struct xhci_hcd		*xhci;
- 	struct xhci_ep_ctx	*ep_ctx;
-@@ -282,9 +282,9 @@ static int xhci_endpoint_context_show(st
+ 	wait_for_completion(cfg_cmd->completion);
  
- 	xhci = hcd_to_xhci(bus_to_hcd(dev->udev->bus));
+-	ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
+ 	xhci_free_command(xhci, cfg_cmd);
+ cleanup:
+ 	xhci_free_command(xhci, stop_cmd);
++	if (ep->ep_state & EP_SOFT_CLEAR_TOGGLE)
++		ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
+ }
  
--	for (dci = 1; dci < 32; dci++) {
--		ep_ctx = xhci_get_ep_ctx(xhci, dev->out_ctx, dci);
--		dma = dev->out_ctx->dma + dci * CTX_SIZE(xhci->hcc_params);
-+	for (ep_index = 0; ep_index < 31; ep_index++) {
-+		ep_ctx = xhci_get_ep_ctx(xhci, dev->out_ctx, ep_index);
-+		dma = dev->out_ctx->dma + (ep_index + 1) * CTX_SIZE(xhci->hcc_params);
- 		seq_printf(s, "%pad: %s\n", &dma,
- 			   xhci_decode_ep_context(le32_to_cpu(ep_ctx->ep_info),
- 						  le32_to_cpu(ep_ctx->ep_info2),
+ static int xhci_check_streams_endpoint(struct xhci_hcd *xhci,
 
 
