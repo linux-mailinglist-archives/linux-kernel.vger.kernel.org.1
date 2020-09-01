@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B632259B35
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEB8259C3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729689AbgIAPVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:21:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37762 "EHLO mail.kernel.org"
+        id S1732145AbgIARNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729140AbgIAPTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:19:05 -0400
+        id S1728764AbgIAPPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:15:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C5AA206FA;
-        Tue,  1 Sep 2020 15:19:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8565920767;
+        Tue,  1 Sep 2020 15:15:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973544;
-        bh=m5M8Awz22GmrEwV0BJ4+h7A02qBUcB/cu5vWpcC9nPo=;
+        s=default; t=1598973339;
+        bh=jJ9s4BRQTppGhHlywkzlUypq+zFkvImt/Sm5IUwmriI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cRRYGMaGUDD1DSXWiG/2TWIWskuRx0KWozTXcv2F0xs/vTXvJdGk/DGl0ikdNxRyO
-         sXyiUZv68wuecrPYxZZtaJXodO03wlINQ9MKjP0Eo/4BBgy1P3l7uhOCEfJV93g8qZ
-         aFYFG+R9Kpq0ExsBm91dJWMYQorvZ6Of0PN+EQjo=
+        b=1ckGz+uiaFWYMRJQIGIMVmvtkv8KCsEHhPjo3HrHIcoX5qFRnxf8TNdzlO8hl37/x
+         lD9eRbB/o9DdRdOSza2dcxDlqFnUIdTO+vYs9Z53ZJAVUp2d18+cFKyDb/1o4TvUDz
+         zsSfraY8jSUula6qRMDZekSMJIvR9H4cFleaDV+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 42/91] media: gpio-ir-tx: improve precision of transmitted signal due to scheduling
+Subject: [PATCH 4.9 40/78] usb: gadget: f_tcm: Fix some resource leaks in some error paths
 Date:   Tue,  1 Sep 2020 17:10:16 +0200
-Message-Id: <20200901150930.228808263@linuxfoundation.org>
+Message-Id: <20200901150926.740293283@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ea8912b788f8144e7d32ee61e5ccba45424bef83 ]
+[ Upstream commit 07c8434150f4eb0b65cae288721c8af1080fde17 ]
 
-usleep_range() may take longer than the max argument due to scheduling,
-especially under load. This is causing random errors in the transmitted
-IR. Remove the usleep_range() in favour of busy-looping with udelay().
+If a memory allocation fails within a 'usb_ep_alloc_request()' call, the
+already allocated memory must be released.
 
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fix a mix-up in the code and free the correct requests.
+
+Fixes: c52661d60f63 ("usb-gadget: Initial merge of target module for UASP + BOT")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/rc/gpio-ir-tx.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ drivers/usb/gadget/function/f_tcm.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/rc/gpio-ir-tx.c b/drivers/media/rc/gpio-ir-tx.c
-index cd476cab97820..4e70b67ccd181 100644
---- a/drivers/media/rc/gpio-ir-tx.c
-+++ b/drivers/media/rc/gpio-ir-tx.c
-@@ -87,13 +87,8 @@ static int gpio_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 			// space
- 			edge = ktime_add_us(edge, txbuf[i]);
- 			delta = ktime_us_delta(edge, ktime_get());
--			if (delta > 10) {
--				spin_unlock_irqrestore(&gpio_ir->lock, flags);
--				usleep_range(delta, delta + 10);
--				spin_lock_irqsave(&gpio_ir->lock, flags);
--			} else if (delta > 0) {
-+			if (delta > 0)
- 				udelay(delta);
--			}
- 		} else {
- 			// pulse
- 			ktime_t last = ktime_add_us(edge, txbuf[i]);
+diff --git a/drivers/usb/gadget/function/f_tcm.c b/drivers/usb/gadget/function/f_tcm.c
+index d2351139342f6..7e8e262b36297 100644
+--- a/drivers/usb/gadget/function/f_tcm.c
++++ b/drivers/usb/gadget/function/f_tcm.c
+@@ -751,12 +751,13 @@ static int uasp_alloc_stream_res(struct f_uas *fu, struct uas_stream *stream)
+ 		goto err_sts;
+ 
+ 	return 0;
++
+ err_sts:
+-	usb_ep_free_request(fu->ep_status, stream->req_status);
+-	stream->req_status = NULL;
+-err_out:
+ 	usb_ep_free_request(fu->ep_out, stream->req_out);
+ 	stream->req_out = NULL;
++err_out:
++	usb_ep_free_request(fu->ep_in, stream->req_in);
++	stream->req_in = NULL;
+ out:
+ 	return -ENOMEM;
+ }
 -- 
 2.25.1
 
