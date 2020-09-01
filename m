@@ -2,118 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED56258507
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55FF258512
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgIABKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 21:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbgIABKS (ORCPT
+        id S1726085AbgIABRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 21:17:20 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:46375 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725941AbgIABPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 21:10:18 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B37C061757;
-        Mon, 31 Aug 2020 18:10:18 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id h126so2998594ybg.4;
-        Mon, 31 Aug 2020 18:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SLItMwpds8PvPU4P2sv7HLwrxBWiBP0Um7y+hmraGk4=;
-        b=Hs1BdaBWzOjEbPg2cphBXMN4RraVXJKEmo1h3dT7eY9IU1SX6amhN0wtHTFz+YD+WA
-         FsItNSY2k3iRFTBmYJb1KjzYDHnIbmNM8Cxrr7dc0Nw95Tl8+S44dxcXFX6lj2zHZCtS
-         eTdLiV6p/Os8AHbr+bDGP4j18paY0f3bAn/mDR8f+ajo3Wf4lzA/pN2QFkyICdFfdA6Z
-         uO4libdvdiNOuLBBBP/TZqF2dWQlOk5qwrdxEQsvymhnKGwp9UTEQWNt2feRrjpUQgb9
-         OoQYG2cGd+Y+BROyWk1OQC4wVSXVm631n1k3s8PWB28A/ePX03NYRP5oZxthuq8KdKyz
-         g9+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SLItMwpds8PvPU4P2sv7HLwrxBWiBP0Um7y+hmraGk4=;
-        b=rGIKKDEWej2p8WlL49BkOIrlTSYVOy8VmC1GL4tebeSRAj9KJcNes83Apil2xeJCJO
-         GQ7googO1KP5JL78uF6y9UUompqQNMMVZu3YI89Rl8n8k1TIaNePTDTJmylfr+nM8/5j
-         pLhHkYWpYNOHyC+r+fAYPwpDbUdSTSZk7mPfHDxVzmxI+lEGDBGkmMkKNfs7Mw7PyDT5
-         aT8pUbAvEN7Wut1fexRiXBt+HEek+aRPkhr/EVlFK15SorrfkEFVUpZ6FOproGU25kN8
-         OctU3zRDfjiubcCHrmDcTbpZPBjBdg/KjCMw7TWS6L2F8G/bRE6nrhmbkUQ79s+MT7eD
-         dtZg==
-X-Gm-Message-State: AOAM532Og2ylLCexd2d4Fd/c/BGpr/BHvmIdDFCKIlYVV/8iQjv89Sv1
-        +xe2JBNJYhVHq3ldNslgw9pUL6Nszlkgw2VvLSVU+XudDCmJig==
-X-Google-Smtp-Source: ABdhPJwsRT//0rU9e9wznipNTD/56Rj9A9Cdlc1ilEiMr34cB2GPA2wPAMU9aB1Av3+JTO4XaIu4exvj3bwwXLd/cOc=
-X-Received: by 2002:a5b:38a:: with SMTP id k10mr6694048ybp.428.1598922616582;
- Mon, 31 Aug 2020 18:10:16 -0700 (PDT)
+        Mon, 31 Aug 2020 21:15:50 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id A1C70E2F;
+        Mon, 31 Aug 2020 21:15:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 31 Aug 2020 21:15:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=y7U4YcbylZBpyJ3yH6rFWdJSbPI
+        nXbwLt1azlfiFuPY=; b=RJyg9Fa/m9dXWn7xAH4H6BdFRqPhj/UeUVcImUIGmg6
+        F2wjTEspoU9IC0ivriSOPZ5cnkMpCLcB6oquJgp/PT8woAxBAEt69rlrP06Ke7Jr
+        WeroN+VfKFnj9pwpDTkxrMpGIqa5APDgo8HFu91Rl8PeDasLtfBYAz7AYKpQyvhJ
+        aO+iKqlRRfjI1kQpc2gzdNbGatVol/J9HdBpxaxrY8JqUxOh5v+FOaWOzjXoxnTJ
+        8Jh8aIrRaqEXixsH+0Vs2TADrCJuMxUO0KBsyUo28UeMxh8dvAN87CwB5xWjVCye
+        7R1qgUSiQ/x2bBAapCnKxtJHzgFeCDfkKK8drDxHcDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=y7U4Yc
+        bylZBpyJ3yH6rFWdJSbPInXbwLt1azlfiFuPY=; b=QOXH1VRqSaB5EZV6qhgfTa
+        Ti3ngCuTN+orkAc9TDnxwwWvKov7KhiKmR7iSTcNfEzkEC8oRvWdnq8EhaU9WT/A
+        CXOu8ij6jUzrgOil2v5kObsmBbE3nRmG5CmMbOFlMmnfcRcKnDVHx1EeksPehl0w
+        pNir7ibhO4Y8fXuM6Bof0zqU7xpk0n9OskI5Ehc+RURXBkhGJhzWKBkEU1Iz5D61
+        waFhPum/blR4tKAEM8EKkiJlRoFocfQoBHdfIQVFuG+NP2U2KiBHVhB/HpWkWkrR
+        rMXxxQOiMbzmabTJrGgOHmGdKDXmgAWkYVKHPdZFNx8+ZTgYKsBjPwC1pvwzoATA
+        ==
+X-ME-Sender: <xms:l6BNX6jKSwhcA-tuFMU_30bV1-ymaqC0EIJnzClxn5odu70H6asijQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefiedggeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpefvhigthhhoucetnhguvghrshgvnhcuoehthigthh
+    hosehthigthhhordhpihiiiigrqeenucggtffrrghtthgvrhhnpeffieegtdfhudeiveef
+    iedtveevgeevhfejfeduieeivedvveetgfeuveejkeffudenucffohhmrghinheprghpph
+    hsphhothdrtghomhenucfkphepuddvkedruddtjedrvdeguddrudekfeenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthh
+    hordhpihiiiigr
+X-ME-Proxy: <xmx:l6BNX7BVLmstGc1IMlennBLn1L8LF0oNzkhEYr6VDNfA_lZ-yStQHw>
+    <xmx:l6BNXyH0VtlxQfADsRo4fzWxxamm0ENCMxvzwV5RhdoBnZI0t2FA9g>
+    <xmx:l6BNXzQEq5o3EtW40DJnENh8yZDQEaCH1VRUEsi4NovIcR8xik2ggw>
+    <xmx:l6BNX3_yYV6rZi1nvYVGNSqUcUJpBn8dyGhp4vqYJCMVh77J8uorHu0WpTGbbclE>
+Received: from cisco (unknown [128.107.241.183])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 56FC83280064;
+        Mon, 31 Aug 2020 21:15:01 -0400 (EDT)
+Date:   Mon, 31 Aug 2020 19:14:59 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org, luto@amacapital.net,
+        syzbot <syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com, wad@chromium.org
+Subject: Re: memory leak in do_seccomp
+Message-ID: <20200901011459.GA583718@cisco>
+References: <000000000000e5ea9e05ac9d16c1@google.com>
+ <000000000000df80ae05ae244c2b@google.com>
+ <202008311620.AC4A7047D@keescook>
+ <20200901000915.GA564594@cisco>
 MIME-Version: 1.0
-References: <00000000000084b59f05abe928ee@google.com> <29de15ff-15e9-5c52-cf87-e0ebdfa1a001@I-love.SAKURA.ne.jp>
- <20200807122727.GR1236603@ZenIV.linux.org.uk> <d96b0b3f-51f3-be3d-0a94-16471d6bf892@i-love.sakura.ne.jp>
- <20200901005131.GA3300@lca.pw>
-In-Reply-To: <20200901005131.GA3300@lca.pw>
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Tue, 1 Sep 2020 09:10:05 +0800
-Message-ID: <CACVXFVNy+qKeSytvDduCuH3HV02mB7i88P27Ou+h=PC22hqwHw@mail.gmail.com>
-Subject: Re: splice: infinite busy loop lockup bug
-To:     Qian Cai <cai@lca.pw>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        syzkaller-bugs@googlegroups.com,
-        syzbot <syzbot+61acc40a49a3e46e25ea@syzkaller.appspotmail.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ming Lei <ming.lei@canonical.com>, paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901000915.GA564594@cisco>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 8:53 AM Qian Cai <cai@lca.pw> wrote:
->
-> On Fri, Aug 07, 2020 at 09:34:08PM +0900, Tetsuo Handa wrote:
-> > On 2020/08/07 21:27, Al Viro wrote:
-> > > On Fri, Aug 07, 2020 at 07:35:08PM +0900, Tetsuo Handa wrote:
-> > >> syzbot is reporting hung task at pipe_release() [1], for for_each_bvec() from
-> > >> iterate_bvec() from iterate_all_kinds() from iov_iter_alignment() from
-> > >> ext4_unaligned_io() from ext4_dio_write_iter() from ext4_file_write_iter() from
-> > >> call_write_iter() from do_iter_readv_writev() from do_iter_write() from
-> > >> vfs_iter_write() from iter_file_splice_write() falls into infinite busy loop
-> > >> with pipe->mutex held.
-> > >>
-> > >> The reason of falling into infinite busy loop is that iter_file_splice_write()
-> > >> for some reason generates "struct bio_vec" entry with .bv_len=0 and .bv_offset=0
-> > >> while for_each_bvec() cannot handle .bv_len == 0.
-> > >
-> > > broken in 1bdc76aea115 "iov_iter: use bvec iterator to implement iterate_bvec()",
-> > > unless I'm misreading it...
->
-> I have been chasing something similar for a while as in,
->
-> https://lore.kernel.org/linux-fsdevel/89F418A9-EB20-48CB-9AE0-52C700E6BB74@lca.pw/
->
-> In my case, it seems the endless loop happens in iterate_iovec() instead where
-> I put a debug patch here,
->
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -33,6 +33,7 @@
->                 if (unlikely(!__v.iov_len))             \
->                         continue;                       \
->                 __v.iov_base = __p->iov_base;           \
-> +               printk_ratelimited("ITER_IOVEC left = %zu, n = %zu\n", left, n); \
->                 left = (STEP);                          \
->                 __v.iov_len -= left;                    \
->                 skip = __v.iov_len;                     \
->
-> and end up seeing overflows ("n" supposes to be less than PAGE_SIZE) before the
-> soft-lockups and a dead system,
->
-> [ 4300.249180][T470195] ITER_IOVEC left = 0, n = 48566423
->
-> Thoughts?
+On Mon, Aug 31, 2020 at 06:09:15PM -0600, Tycho Andersen wrote:
+> On Mon, Aug 31, 2020 at 04:25:35PM -0700, Kees Cook wrote:
+> > On Sun, Aug 30, 2020 at 08:50:15PM -0700, syzbot wrote:
+> > > syzbot has found a reproducer for the following issue on:
+> > > 
+> > > HEAD commit:    dcc5c6f0 Merge tag 'x86-urgent-2020-08-30' of git://git.ke..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=10b297d5900000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=903b9fecc3c6d231
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3ad9614a12f80994c32e
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14649561900000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118aacc1900000
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+> > > 
+> > > executing program
+> > > executing program
+> > > executing program
+> > > executing program
+> > > executing program
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88811ba93600 (size 64):
+> > >   comm "syz-executor680", pid 6503, jiffies 4294951104 (age 21.940s)
+> > >   hex dump (first 32 bytes):
+> > >     00 00 00 00 00 00 00 00 08 36 a9 1b 81 88 ff ff  .........6......
+> > >     08 36 a9 1b 81 88 ff ff 11 ce 98 89 3a d5 b4 8f  .6..........:...
+> > >   backtrace:
+> > >     [<00000000896418b0>] kmalloc include/linux/slab.h:554 [inline]
+> > >     [<00000000896418b0>] kzalloc include/linux/slab.h:666 [inline]
+> > >     [<00000000896418b0>] init_listener kernel/seccomp.c:1473 [inline]
+> > >     [<00000000896418b0>] seccomp_set_mode_filter kernel/seccomp.c:1546 [inline]
+> > >     [<00000000896418b0>] do_seccomp+0x8ce/0xd40 kernel/seccomp.c:1649
+> > >     [<000000002b04976c>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > >     [<00000000322b4126>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > I haven't narrowed this down yet (and it *might* be a false positive),
+> > but it looks like this is filter->notif. The only way that's possible is
+> > if seccomp_notify_release() was never called *and* seccomp_filter_free()
+> > got called... which would imply a reference counting problem. The way
+> > there doesn't jump out at me yet, but I haven't yet decoded the C
+> > reproducer into the actual seccomp arguments, etc.
+> 
+> Looks like it's just a bunch of threads in the same thread group
+> trying to install a filter with TSYNC and NEW_LISTENER turned on. Does
+> the patch below look reasonable?
+> 
+> I didn't send it separately since I'm in the process of switching my
+> e-mail address to tycho@tycho.pizza; let this e-mail serve as proof
+> that that e-mail really is me too :). I can send it the normal way if
+> it looks good.
+> 
+> 
+> From d497e787e8e1b3e8b9230fdc4c9802616709c920 Mon Sep 17 00:00:00 2001
+> From: Tycho Andersen <tycho@tycho.pizza>
+> Date: Mon, 31 Aug 2020 17:55:07 -0600
+> Subject: [PATCH] seccomp: don't leak memory when filter install races
+> 
+> In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
+> the listener fd, then check to see if we can actually use it later in
+> seccomp_may_assign_mode(), which can fail if anyone else in our thread
+> group has installed a filter and caused some divergence. If we can't, we
+> partially clean up the newly allocated file: we put the fd, put the file,
+> but don't actually clean up the *memory* that was allocated at
+> filter->notif. Let's clean that up too.
+> 
+> Fixes: 51891498f2da ("seccomp: allow TSYNC and USER_NOTIF together")
+> Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+> Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
+> ---
+>  kernel/seccomp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 3ee59ce0a323..21a76127833f 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1581,6 +1581,8 @@ static long seccomp_set_mode_filter(unsigned int flags,
+>  			listener_f->private_data = NULL;
+>  			fput(listener_f);
+>  			put_unused_fd(listener);
+> +			kfree(filter->notif);
+> +			filter->notif = NULL;
 
-Does the following patch make a difference for you?
+Oof, actually this isn't quite right. It should be s/filter/prepared/g.
+I can fix that and send out a real patch that's actually tested at
+some point tomorrow.
 
-https://lore.kernel.org/linux-block/20200817100055.2495905-1-ming.lei@redhat.com/
-
-thanks,
-Ming Lei
+Tycho
