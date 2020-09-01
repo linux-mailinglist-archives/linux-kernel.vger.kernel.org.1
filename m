@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7378259553
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F187F25943C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731995AbgIAPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:50:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36756 "EHLO mail.kernel.org"
+        id S1728419AbgIAPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730581AbgIAPqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:46:42 -0400
+        id S1731170AbgIAPfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:35:43 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03143206FA;
-        Tue,  1 Sep 2020 15:46:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17113205F4;
+        Tue,  1 Sep 2020 15:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975201;
-        bh=5oVvWcrZ767oERhJ8xsKzlCDXFR23KpVPFON8pBBBmg=;
+        s=default; t=1598974542;
+        bh=Oz7t0NWmXB5bAB+zgwUm8UAx3M15rm8xgTdMeCo8jq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EfcTBV0mXfMFvfm18BrBErA3hyHG2PQhlgRvLTchaLSC/bcAVhDo7JLK4DN1TjRXe
-         rXu5MoMZLveZW8kswVl+PacocWl55GFzWoFFDbcNJXTjm4O7f+i1j2cV1ldj/Vym0a
-         g6WFAt6RP23MlpVjiG2J5xsyqxF24HXJ182Y6b+A=
+        b=rlXaIaNGLDdqu8/YUV53afbD9TMMnYpNgLXcasqMeoS0U2LtCLyNH74/C1AQ73iju
+         0BCfCSqZq5MNwp1V2WpoiVeH/8tOxrjtDr2oWMoZh12rccUU+gQZ0Xm+9eNP+v/TIg
+         vCioqWk6iLp+538f5wlnv6vkxRLpD7e44hSyiqo0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.8 218/255] drm/amd/pm: correct Vega10 swctf limit setting
-Date:   Tue,  1 Sep 2020 17:11:14 +0200
-Message-Id: <20200901151011.147038614@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        Kees Cook <keescook@chromium.org>,
+        Brooke Basile <brookebasile@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>, stable <stable@kernel.org>
+Subject: [PATCH 5.4 195/214] USB: gadget: u_f: add overflow checks to VLA macros
+Date:   Tue,  1 Sep 2020 17:11:15 +0200
+Message-Id: <20200901151002.294183568@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +46,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Brooke Basile <brookebasile@gmail.com>
 
-commit b05d71b51078fc428c6b72582126d9d75d3c1f4c upstream.
+commit b1cd1b65afba95971fa457dfdb2c941c60d38c5b upstream.
 
-Correct the Vega10 thermal swctf limit.
+size can potentially hold an overflowed value if its assigned expression
+is left unchecked, leading to a smaller than needed allocation when
+vla_group_size() is used by callers to allocate memory.
+To fix this, add a test for saturation before declaring variables and an
+overflow check to (n) * sizeof(type).
+If the expression results in overflow, vla_group_size() will return SIZE_MAX.
 
-Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1267
-
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Cc: stable <stable@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/vega10_thermal.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/u_f.h |   38 +++++++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 11 deletions(-)
 
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_thermal.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/vega10_thermal.c
-@@ -363,6 +363,9 @@ int vega10_thermal_get_temperature(struc
- static int vega10_thermal_set_temperature_range(struct pp_hwmgr *hwmgr,
- 		struct PP_TemperatureRange *range)
- {
-+	struct phm_ppt_v2_information *pp_table_info =
-+		(struct phm_ppt_v2_information *)(hwmgr->pptable);
-+	struct phm_tdp_table *tdp_table = pp_table_info->tdp_table;
- 	struct amdgpu_device *adev = hwmgr->adev;
- 	int low = VEGA10_THERMAL_MINIMUM_ALERT_TEMP *
- 			PP_TEMPERATURE_UNITS_PER_CENTIGRADES;
-@@ -372,8 +375,8 @@ static int vega10_thermal_set_temperatur
+--- a/drivers/usb/gadget/u_f.h
++++ b/drivers/usb/gadget/u_f.h
+@@ -14,6 +14,7 @@
+ #define __U_F_H__
  
- 	if (low < range->min)
- 		low = range->min;
--	if (high > range->max)
--		high = range->max;
-+	if (high > tdp_table->usSoftwareShutdownTemp)
-+		high = tdp_table->usSoftwareShutdownTemp;
+ #include <linux/usb/gadget.h>
++#include <linux/overflow.h>
  
- 	if (low > high)
- 		return -EINVAL;
+ /* Variable Length Array Macros **********************************************/
+ #define vla_group(groupname) size_t groupname##__next = 0
+@@ -21,21 +22,36 @@
+ 
+ #define vla_item(groupname, type, name, n) \
+ 	size_t groupname##_##name##__offset = ({			       \
+-		size_t align_mask = __alignof__(type) - 1;		       \
+-		size_t offset = (groupname##__next + align_mask) & ~align_mask;\
+-		size_t size = (n) * sizeof(type);			       \
+-		groupname##__next = offset + size;			       \
++		size_t offset = 0;					       \
++		if (groupname##__next != SIZE_MAX) {			       \
++			size_t align_mask = __alignof__(type) - 1;	       \
++			size_t offset = (groupname##__next + align_mask)       \
++					 & ~align_mask;			       \
++			size_t size = array_size(n, sizeof(type));	       \
++			if (check_add_overflow(offset, size,		       \
++					       &groupname##__next)) {          \
++				groupname##__next = SIZE_MAX;		       \
++				offset = 0;				       \
++			}						       \
++		}							       \
+ 		offset;							       \
+ 	})
+ 
+ #define vla_item_with_sz(groupname, type, name, n) \
+-	size_t groupname##_##name##__sz = (n) * sizeof(type);		       \
+-	size_t groupname##_##name##__offset = ({			       \
+-		size_t align_mask = __alignof__(type) - 1;		       \
+-		size_t offset = (groupname##__next + align_mask) & ~align_mask;\
+-		size_t size = groupname##_##name##__sz;			       \
+-		groupname##__next = offset + size;			       \
+-		offset;							       \
++	size_t groupname##_##name##__sz = array_size(n, sizeof(type));	        \
++	size_t groupname##_##name##__offset = ({			        \
++		size_t offset = 0;						\
++		if (groupname##__next != SIZE_MAX) {				\
++			size_t align_mask = __alignof__(type) - 1;		\
++			size_t offset = (groupname##__next + align_mask)	\
++					 & ~align_mask;				\
++			if (check_add_overflow(offset, groupname##_##name##__sz,\
++							&groupname##__next)) {	\
++				groupname##__next = SIZE_MAX;			\
++				offset = 0;					\
++			}							\
++		}								\
++		offset;								\
+ 	})
+ 
+ #define vla_ptr(ptr, groupname, name) \
 
 
