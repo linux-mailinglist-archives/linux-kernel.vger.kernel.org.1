@@ -2,179 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1DE2599C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817292599F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732262AbgIAQnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:43:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:45986 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730012AbgIAQm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:42:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D9831063;
-        Tue,  1 Sep 2020 09:42:55 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AC5B3F71F;
-        Tue,  1 Sep 2020 09:42:54 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 17:42:49 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Samuel Dionne-Riel <samuel@dionne-riel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Boot failure on gru-scarlet-inx with 5.9-rc2
-Message-ID: <20200901164249.GA15045@e121166-lin.cambridge.arm.com>
-References: <20200829164920.7d28e01a@DUFFMAN>
- <65d88bdd0888a69849327501a2aad186@kernel.org>
- <20200831031838.2d6d76d9@DUFFMAN>
- <90731ebb54fe03003dce03bc7ec4872e@kernel.org>
- <20200831234542.295b1275@DUFFMAN>
- <5db50a8e5b251714cebe0a719ee9dc73@kernel.org>
+        id S1730824AbgIAQpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:45:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730195AbgIAQpu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:45:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D20C061244;
+        Tue,  1 Sep 2020 09:45:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=J6+IAA1/Qxueriknxq0uDzpiCbpmOl/UdSGkYlD7U80=; b=ZlLRrQPIe93CNqVC+FS8YzQzYd
+        rWTRmnfnVe4PrHV0eGjlsLYs2/bCm3uAYRhLUShzIwOxLkNAi5EsVnA/8PW247F7PlnB1oZ1i+VPF
+        ckSNOCdKKbP4P6lcE91/dFTauRGtsBvPOjbkuK70bYXa0bgV1CHZ9o5KFzOqvsUQdH7xD00b6Xdje
+        bbTGAnw1h/pMb5Hl1pPrwS3HlDCBa/S0tzP98kr099iODZlB2w6bqohtYmgbFIq6iqYnBlTAfPR1k
+        K354XF/18p7rjBeMl5XxCmiya5C9LcWxDpAdcB3HWuEbN84yGAkllyga1VKABA16UTlUILuH5CxT0
+        j+qiLLBg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kD9Pl-0000mR-V8; Tue, 01 Sep 2020 16:45:46 +0000
+Date:   Tue, 1 Sep 2020 17:45:45 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/7] mm: Make more use of readahead_control
+Message-ID: <20200901164545.GP14765@casper.infradead.org>
+References: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
+ <20200901164132.GD669796@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5db50a8e5b251714cebe0a719ee9dc73@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200901164132.GD669796@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 04:37:42PM +0100, Marc Zyngier wrote:
-> On 2020-09-01 04:45, Samuel Dionne-Riel wrote:
-> > On Mon, 31 Aug 2020 10:27:37 +0100
-> > Marc Zyngier <maz@kernel.org> wrote:
-> > > 
-> > > Ah, so actually anything that *enables pcie* kills your system.
-> > > Great investigative work!
-> > > 
-> > > >
-> > > > And backed by a further bisection with this that points to
-> > > > d84c572de1a360501d2e439ac632126f5facf59d being the actual change
-> > > > that causes the tablet to fail to boot, as long as the pcie0 node is
-> > > > identified as pci properly.
-> > > >
-> > > > I am unsure if I should add as a Cc everyone involved in that change
-> > > > set, though the author (coincidentally) is already in the original
-> > > > list of recipients.
-> > > 
-> > > I've deliberately moved Rob from Cc to To... ;-)
+On Tue, Sep 01, 2020 at 09:41:32AM -0700, Eric Biggers wrote:
+> On Tue, Sep 01, 2020 at 05:28:15PM +0100, David Howells wrote:
 > > 
-> > Thanks, I don't actually know who to write to exactly.
+> > Hi Willy,
+> > 
+> > Here's a set of patches to expand the use of the readahead_control struct,
+> > essentially from do_sync_mmap_readahead() down.  Note that I've been
+> > passing the number of pages to read in rac->_nr_pages, and then saving it
+> > and changing it certain points, e.g. page_cache_readahead_unbounded().
+> > 
+> > Also pass file_ra_state into force_page_cache_readahead().
+> > 
+> > Also there's an apparent minor bug in khugepaged.c that I've included a
+> > patch for: page_cache_sync_readahead() looks to be given the wrong size in
+> > collapse_file().
+> > 
 > 
-> Given that this is a PCI regression, I guess the PCI maintainers
-> are the likely victims. Adding Bjorn and Lorenzo to the list in
-> addition to Rob.
-> 
-> You can find the relevant people by looking at the MAINTAINERS
-> file.
-> 
-> > > > Any additional thoughts from this additional information?
-> > > 
-> > > What you could do is to start looking at which of the
-> > > pci_is_root_bus() changes breaks PCIe on this system.  The fact that
-> > > it breaks on your system and not on mine is a bit puzzling.
-> > 
-> > Let me show you, on top of v5.9-rc3 I can successfully boot using this
-> > partial revert / adaptation of d84c572d. In addition, it also allows
-> > the Wi-Fi to work again, compared to how it didn't in 5.9-rc1 or
-> > 5.9-rc[23] with the dumb revert of your fix.
-> > 
-> > So, if we number each pci_is_root_bus by order appearance, it is only
-> > the second use, in rockchip_pcie_valid_device, which seem to cause
-> > scarlet not to boot.
-> > 
-> > The patch (not actually a patch submission) reverts only that instance
-> > of pci_is_root_bus, while also doing some leg work to put back some
-> > functionally equivalent code that was refactored away since.
-> > 
-> > If there's anything else you want me to try, don't hesitate.
-> > 
-> > ---
-> >  drivers/pci/controller/pcie-rockchip-host.c | 8 +++++++-
-> >  drivers/pci/controller/pcie-rockchip.h      | 1 +
-> >  2 files changed, 8 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/controller/pcie-rockchip-host.c
-> > b/drivers/pci/controller/pcie-rockchip-host.c
-> > index 0bb2fb3e8a0b..5a27fa833fbd 100644
-> > --- a/drivers/pci/controller/pcie-rockchip-host.c
-> > +++ b/drivers/pci/controller/pcie-rockchip-host.c
-> > @@ -79,7 +79,7 @@ static int rockchip_pcie_valid_device(struct
-> > rockchip_pcie *rockchip,
-> >  	 * do not read more than one device on the bus directly attached
-> >  	 * to RC's downstream side.
-> >  	 */
-> > -	if (pci_is_root_bus(bus->parent) && dev > 0)
-> > +	if (bus->primary == rockchip->root_bus_nr && dev > 0)
+> What branch does this apply to?
 
-Can you dump bus->primary when this condition is hit please ?
+He's done it on top of http://git.infradead.org/users/willy/pagecache.git
 
-Also on a working system (ie prior to regression) please drop the output
-of:
+I was hoping he'd include
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/c71de787328809026cfabbcc5485cb01caca8646
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/f3a1cd6447e29a54b03efc2189d943f12ac1c9b9
+http://git.infradead.org/users/willy/pagecache.git/commitdiff/c03d3a5a5716bb0df2fe15ec528bbd895cd18e6e
 
-lspci -t
-
-here.
-
-> >  		return 0;
-> > 
-> >  	return 1;
-> > @@ -944,6 +944,7 @@ static int rockchip_pcie_probe(struct
-> > platform_device *pdev)
-> >  	struct rockchip_pcie *rockchip;
-> >  	struct device *dev = &pdev->dev;
-> >  	struct pci_host_bridge *bridge;
-> > +	struct resource *bus_res;
-> >  	int err;
-> > 
-> >  	if (!dev->of_node)
-> > @@ -983,6 +984,11 @@ static int rockchip_pcie_probe(struct
-> > platform_device *pdev)
-> >  	if (err < 0)
-> >  		goto err_deinit_port;
-> > 
-> > +	/* HACK; ~equiv to last param of pci_parse_request_of_pci_ranges */
-> > +	bus_res = (resource_list_first_type(&bridge->windows,
-> > IORESOURCE_MEM))->res;
-
-IORESOURCE_MEM ? I am a bit puzzled by this hack, what is it supposed
-to do ?
-
-> > +	rockchip->root_bus_nr = bus_res->start;
-> > +
-> >  	err = rockchip_pcie_cfg_atu(rockchip);
-> >  	if (err)
-> >  		goto err_remove_irq_domain;
-> > diff --git a/drivers/pci/controller/pcie-rockchip.h
-> > b/drivers/pci/controller/pcie-rockchip.h
-> > index c7d0178fc8c2..0952fec7e34d 100644
-> > --- a/drivers/pci/controller/pcie-rockchip.h
-> > +++ b/drivers/pci/controller/pcie-rockchip.h
-> > @@ -298,6 +298,7 @@ struct rockchip_pcie {
-> >  	struct	gpio_desc *ep_gpio;
-> >  	u32	lanes;
-> >  	u8      lanes_map;
-> > +	u8      root_bus_nr;
-> >  	int	link_gen;
-> >  	struct	device *dev;
-> >  	struct	irq_domain *irq_domain;
-> > --
-> > 2.25.4
-> > 
-> > 
-> > Thanks again!
-> 
-> Hmmm. It seems that the original commit (d84c572d) considered that
-> root_bus_nr was always zero, while it may not have been.
-> 
-> Rob, Lorenzo: do you guys have any idea what is going on here?
-
-That's a possibility - it would also be useful to have a look at
-the DTS to check the bus-range property.
-
-Thanks for reporting it,
-Lorenzo
+as the first three patches in the series; then it should apply to Linus'
+tree.
