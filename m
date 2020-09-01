@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CCD2594A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9900C2594AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731531AbgIAPlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:41:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
+        id S1728798AbgIAPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727846AbgIAPjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:39:31 -0400
+        id S1731325AbgIAPjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:39:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A62020866;
-        Tue,  1 Sep 2020 15:39:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93B9D21534;
+        Tue,  1 Sep 2020 15:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974771;
-        bh=MAsR+OKTtX8ypJugoUpKQOC+iT+UUck+JGdkWEnOczA=;
+        s=default; t=1598974779;
+        bh=q80865g4cKNeUhpRJl0wdHIIh4zKgCeHakfCqEH55pw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iB8VKN19OpRN5uxuM1kR2zps8Xj8M+1VezElPKLbDi4Fto7VA+gyHhm3rE3fUQ+2Z
-         8fvOSyOJexd0QC3UybliZ92yLkuuqBZfWWRY9I5HUt0hkPgaNZrtvA4NymEZ1cOMBY
-         wvdE5/fjMCFqRoqx2EwV6X+rq/q6FWXpgobvSEUA=
+        b=oLXZaBZc/pyhf3xMGBPLbqyZbKOikv7TNe5f3oavb+ulyiUVSTsv9Rrlb3xmeYKB+
+         2quEqRPOdHK+AycO7HjpdtlXTgfC6TGaeHLG8iqhsT8nSYhfXFBeAuxgG0Wj7jlCKi
+         +bQDZFprBeGMtIK7T1c5CLRGEMyCtua0OoNnXmCY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 054/255] btrfs: file: reserve qgroup space after the hole punch range is locked
-Date:   Tue,  1 Sep 2020 17:08:30 +0200
-Message-Id: <20200901151003.313221333@linuxfoundation.org>
+Subject: [PATCH 5.8 057/255] netfilter: nf_tables: report EEXIST on overlaps
+Date:   Tue,  1 Sep 2020 17:08:33 +0200
+Message-Id: <20200901151003.454130312@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -44,58 +43,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-[ Upstream commit a7f8b1c2ac21bf081b41264c9cfd6260dffa6246 ]
+[ Upstream commit 77a92189ecfd061616ad531d386639aab7baaad9 ]
 
-The incoming qgroup reserved space timing will move the data reservation
-to ordered extent completely.
+Replace EBUSY by EEXIST in the following cases:
 
-However in btrfs_punch_hole_lock_range() will call
-btrfs_invalidate_page(), which will clear QGROUP_RESERVED bit for the
-range.
+- If the user adds a chain with a different configuration such as different
+  type, hook and priority.
 
-In current stage it's OK, but if we're making ordered extents handle the
-reserved space, then btrfs_punch_hole_lock_range() can clear the
-QGROUP_RESERVED bit before we submit ordered extent, leading to qgroup
-reserved space leakage.
+- If the user adds a non-base chain that clashes with an existing basechain.
 
-So here change the timing to make reserve data space after
-btrfs_punch_hole_lock_range().
-The new timing is fine for either current code or the new code.
+- If the user adds a { key : value } mapping element and the key exists
+  but the value differs.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+- If the device already belongs to an existing flowtable.
+
+User describe that this error reporting is confusing:
+
+- https://bugzilla.netfilter.org/show_bug.cgi?id=1176
+- https://bugzilla.netfilter.org/show_bug.cgi?id=1413
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/file.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/netfilter/nf_tables_api.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 1523aa4eaff07..9e8f6c66788d0 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3176,14 +3176,14 @@ reserve_space:
- 		if (ret < 0)
- 			goto out;
- 		space_reserved = true;
--		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
--						alloc_start, bytes_to_reserve);
--		if (ret)
--			goto out;
- 		ret = btrfs_punch_hole_lock_range(inode, lockstart, lockend,
- 						  &cached_state);
- 		if (ret)
- 			goto out;
-+		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
-+						alloc_start, bytes_to_reserve);
-+		if (ret)
-+			goto out;
- 		ret = btrfs_prealloc_file_range(inode, mode, alloc_start,
- 						alloc_end - alloc_start,
- 						i_blocksize(inode),
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 88325b264737f..d31832d32e028 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -2037,7 +2037,7 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 
+ 	if (nla[NFTA_CHAIN_HOOK]) {
+ 		if (!nft_is_base_chain(chain))
+-			return -EBUSY;
++			return -EEXIST;
+ 
+ 		err = nft_chain_parse_hook(ctx->net, nla, &hook, ctx->family,
+ 					   false);
+@@ -2047,21 +2047,21 @@ static int nf_tables_updchain(struct nft_ctx *ctx, u8 genmask, u8 policy,
+ 		basechain = nft_base_chain(chain);
+ 		if (basechain->type != hook.type) {
+ 			nft_chain_release_hook(&hook);
+-			return -EBUSY;
++			return -EEXIST;
+ 		}
+ 
+ 		if (ctx->family == NFPROTO_NETDEV) {
+ 			if (!nft_hook_list_equal(&basechain->hook_list,
+ 						 &hook.list)) {
+ 				nft_chain_release_hook(&hook);
+-				return -EBUSY;
++				return -EEXIST;
+ 			}
+ 		} else {
+ 			ops = &basechain->ops;
+ 			if (ops->hooknum != hook.num ||
+ 			    ops->priority != hook.priority) {
+ 				nft_chain_release_hook(&hook);
+-				return -EBUSY;
++				return -EEXIST;
+ 			}
+ 		}
+ 		nft_chain_release_hook(&hook);
+@@ -5160,10 +5160,8 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 			if (nft_set_ext_exists(ext, NFT_SET_EXT_DATA) ^
+ 			    nft_set_ext_exists(ext2, NFT_SET_EXT_DATA) ||
+ 			    nft_set_ext_exists(ext, NFT_SET_EXT_OBJREF) ^
+-			    nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF)) {
+-				err = -EBUSY;
++			    nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF))
+ 				goto err_element_clash;
+-			}
+ 			if ((nft_set_ext_exists(ext, NFT_SET_EXT_DATA) &&
+ 			     nft_set_ext_exists(ext2, NFT_SET_EXT_DATA) &&
+ 			     memcmp(nft_set_ext_data(ext),
+@@ -5171,7 +5169,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 			    (nft_set_ext_exists(ext, NFT_SET_EXT_OBJREF) &&
+ 			     nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF) &&
+ 			     *nft_set_ext_obj(ext) != *nft_set_ext_obj(ext2)))
+-				err = -EBUSY;
++				goto err_element_clash;
+ 			else if (!(nlmsg_flags & NLM_F_EXCL))
+ 				err = 0;
+ 		} else if (err == -ENOTEMPTY) {
+@@ -6308,7 +6306,7 @@ static int nft_register_flowtable_net_hooks(struct net *net,
+ 			list_for_each_entry(hook2, &ft->hook_list, list) {
+ 				if (hook->ops.dev == hook2->ops.dev &&
+ 				    hook->ops.pf == hook2->ops.pf) {
+-					err = -EBUSY;
++					err = -EEXIST;
+ 					goto err_unregister_net_hooks;
+ 				}
+ 			}
 -- 
 2.25.1
 
