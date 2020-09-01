@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6FC259954
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00684259951
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730420AbgIAP2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:28:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
+        id S1730470AbgIAP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730029AbgIAPZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:25:20 -0400
+        id S1729781AbgIAPZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:25:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A26B206FA;
-        Tue,  1 Sep 2020 15:25:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4851206FA;
+        Tue,  1 Sep 2020 15:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973919;
-        bh=z7HQxv9VSgRcd7nBu9ujYpFT8TnEHBX4hITSL08r+ps=;
+        s=default; t=1598973922;
+        bh=7vW9pubFJ2lXT/pAXpSXlFiiGmSmzPr2BzVU76xukgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D0niYYpJ0LRiNMW1WKGFR0hdV/JVFlbIWUh158q9N1Q/vwBVlHdlZ1Fbqrj94v8uY
-         yk2xK0KvBYZWA0i1Yvd27ud/U9PHDqnaEVGnIE0Qxpcf1o2XhTVJx9klvFbCsmVOH7
-         BVvXk+ZJtA4GyRivyjO4fEnQbKRFtVMZJEoT79Lc=
+        b=OF1GcMRcveuex0/zK3txw31U0oci/8UgEt8A+Zsx+HM+eP9AUjl2oMwxCTxZvhZTg
+         6BmOX75cNfWU8tZsdvWAAFhaeRRVPLrevE+SOHhP3nXx6KZoQv7bQrgcl09YlqnxVb
+         xYGLUKK5HhkUAtZcttgxh/9FO3LQDjtKo2HO8nlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 069/125] ASoC: wm8994: Avoid attempts to read unreadable registers
-Date:   Tue,  1 Sep 2020 17:10:24 +0200
-Message-Id: <20200901150937.959924308@linuxfoundation.org>
+Subject: [PATCH 4.19 070/125] scsi: fcoe: Fix I/O path allocation
+Date:   Tue,  1 Sep 2020 17:10:25 +0200
+Message-Id: <20200901150938.006852549@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -46,50 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit f082bb59b72039a2326ec1a44496899fb8aa6d0e ]
+[ Upstream commit fa39ab5184d64563cd36f2fb5f0d3fbad83a432c ]
 
-The driver supports WM1811, WM8994, WM8958 devices but according to
-documentation and the regmap definitions the WM8958_DSP2_* registers
-are only available on WM8958. In current code these registers are
-being accessed as if they were available on all the three chips.
+ixgbe_fcoe_ddp_setup() can be called from the main I/O path and is called
+with a spin_lock held, so we have to use GFP_ATOMIC allocation instead of
+GFP_KERNEL.
 
-When starting playback on WM1811 CODEC multiple errors like:
-"wm8994-codec wm8994-codec: ASoC: error at soc_component_read_no_lock on wm8994-codec: -5"
-can be seen, which is caused by attempts to read an unavailable
-WM8958_DSP2_PROGRAM register. The issue has been uncovered by recent
-commit "e2329ee ASoC: soc-component: add soc_component_err()".
-
-This patch adds a check in wm8958_aif_ev() callback so the DSP2 handling
-is only done for WM8958.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20200731173834.23832-1-s.nawrocki@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/1596831813-9839-1-git-send-email-michael.christie@oracle.com
+cc: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8958-dsp2.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_fcoe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index 108e8bf42a346..f0a409504a13b 100644
---- a/sound/soc/codecs/wm8958-dsp2.c
-+++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -419,8 +419,12 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
- 		  struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wm8994 *control = dev_get_drvdata(component->dev->parent);
- 	int i;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_fcoe.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_fcoe.c
+index ccd852ad62a4b..d50c5b55da180 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_fcoe.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_fcoe.c
+@@ -192,7 +192,7 @@ static int ixgbe_fcoe_ddp_setup(struct net_device *netdev, u16 xid,
+ 	}
  
-+	if (control->type != WM8958)
-+		return 0;
-+
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
- 	case SND_SOC_DAPM_PRE_PMU:
+ 	/* alloc the udl from per cpu ddp pool */
+-	ddp->udl = dma_pool_alloc(ddp_pool->pool, GFP_KERNEL, &ddp->udp);
++	ddp->udl = dma_pool_alloc(ddp_pool->pool, GFP_ATOMIC, &ddp->udp);
+ 	if (!ddp->udl) {
+ 		e_err(drv, "failed allocated ddp context\n");
+ 		goto out_noddp_unmap;
 -- 
 2.25.1
 
