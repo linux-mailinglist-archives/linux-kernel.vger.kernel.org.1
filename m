@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEDA2584CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 02:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C67452584D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 02:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgIAAXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 20:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        id S1726510AbgIAAX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 20:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgIAAXi (ORCPT
+        with ESMTP id S1726192AbgIAAXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 20:23:38 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E60C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:37 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id x125so1676903pfc.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:37 -0700 (PDT)
+        Mon, 31 Aug 2020 20:23:40 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3245DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:40 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v11so11007051ybm.22
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=x7hoSHeAWK5P4oeCQGgLVlcI02P7mwgUY7iVKcw4mtY=;
-        b=YDk70RuxUX7JQxUoCoDpBMB4Nx2aegPpci+1o9QaktjEfeowcrNv+0ouGv724IqC8j
-         E2Tqc64XZ/ymVWNhnLAcq3uKinmAGRj0iXaYmqfvusL+IBKOp3hXe8RzakZ5TZtykMsP
-         H21xkmRpBkBTJmxSSOJ4IGQFh9HCTudfkATQ7LeIrQmZ7sueou1bCu0WJuOndNJDE2/1
-         MmheDrpYbHtKEjwVaDI+x3ZjkV64wIByHFUc90xTNlh5v7f9PVEri1cFA94LJwOlYH4q
-         kd8a6w0sQ8Mvc1aLNaD6Rrj/d902fu/fbBEYwOJGOq6isRAf+dQf/mQPdQTlkcAmH9G+
-         3Stg==
+        bh=pi3QdKLaSBYHipbQP2OJPwq0eZQkVdLTCOuN85yE044=;
+        b=fVms6QscBRH8AiO1MkY49J0TtfW/piuC7bAqq4WXgy4nhYFWpBjrWCW3jlyADzHlII
+         EWF93Ip2um7u+Z3o6U07VnkA7xaVMbV1rn47phivCjFf3IhtRQ5gwnj7ImJ5Z+UzfZNe
+         MSAtMqIzV34lb1IdxlcRDwvUsGfCeH+cSRzWZRrwChtsAnYTi5lo2EK8/yAVsxuwNaJW
+         YtZg8fcjQUJPdbjq8xZuQ+C+0de1s+M0R9BvP/5CrQI6bGuYzALMRs5oAlDVeWAPqzc5
+         1ygwMdWTfLc5629S8itJgIgwEM1D/xHNs8vB+osjVov/OeTblBLjVhqJOl9iqLmAzV8E
+         E9fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=x7hoSHeAWK5P4oeCQGgLVlcI02P7mwgUY7iVKcw4mtY=;
-        b=aqG1V8ditnppGvvrxCG+jgNv0VDEuKw2JLT6oLhd8jvJJYbtH0CSdNONR1moL8IZ1M
-         92dAeU31g7piPBMaQha8tTrPX64cqcXpgMrDuaxOwGC0bx3d4r2lsP3T85Xdgci1mWNg
-         nOF+gIDLyTGAUsOT/b7l0NYcazPy8RxZ6D2O9ZaBH+CtnaSu3tcutPyGyWEnrUThQ5ES
-         Ag47KfKpyRkAq6Zr64PtjdTyv+2IA58UNSzxXz3uWI1D7R5ioAy9uQMNT53pzl0+NPog
-         0cwp+r3WUS95PRezwXQt1/sLB7gCksCybbb+f3cCsIITTlbxLytHQ+crvrxTPhCtIKFF
-         DyPQ==
-X-Gm-Message-State: AOAM530UrYQJHMJc5kQMxT606Qsx94zb4qv3vireG7ImR5s3ega3VV0u
-        D1lBr2D4jZeOyniGkYH6dH/Rf4loIXMrJj1t0JE=
-X-Google-Smtp-Source: ABdhPJwED4nLxHhSz5AKhDraPa+/J0fY4ButKN1zuzXmRYkgkklqlX1iwDxieuNT/RU/gbhQkyoLgKvW/jlXNgldQ10=
+        bh=pi3QdKLaSBYHipbQP2OJPwq0eZQkVdLTCOuN85yE044=;
+        b=hTUw0Es7STH+cDKwcVhthsfT4300EMhLnLGCxufpfNZmYAakWxKjlhRY2G6/2BRASd
+         28I2w6MFS1Nu3suWbIoifCcZHXVJxw9C4viU3jlWZyQm4xw48yHq1FJz1+klLP07NekR
+         BcCkE8pbNyJL0Jeah1YGXoLtcablIEKIb+jengJex+xRkG/cteFn8yTvI8SHrdHe6ehr
+         ctIyxcN+Pxo7K33i36UnynQZRJV3xyYAAXY0Lu+Io84R7owUjSPB9/wzeOEyST/JzZqH
+         iHYYb/NSmcoJbE2ulItOvWK7PJxFjcSRJfJ41fuKluLodTBEr5YcrzeT7xc5jkUurDRF
+         EWzA==
+X-Gm-Message-State: AOAM53186Z4ZnKumJLVQSfO80hCi4N2TuQKO6eFNU1UFgtfRZNmCEiGb
+        OufMQmXc0A+BIb+fzwbmAhXfD3GQiEXuvywqkuc=
+X-Google-Smtp-Source: ABdhPJy8QDFsrATttaFvj4/7adWYxIH3879dKnZf971t/EmVLxTguOBUGskoTzF3i4hz++IAHJLBV8I/KYlnICy1Olk=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a62:4c5:0:b029:138:413e:3e65 with
- SMTP id 188-20020a6204c50000b0290138413e3e65mr782938pfe.3.1598919817460; Mon,
- 31 Aug 2020 17:23:37 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 17:23:22 -0700
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6902:1025:: with SMTP id
+ x5mr6385851ybt.58.1598919819398; Mon, 31 Aug 2020 17:23:39 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 17:23:23 -0700
 In-Reply-To: <20200901002326.1137289-1-ndesaulniers@google.com>
-Message-Id: <20200901002326.1137289-4-ndesaulniers@google.com>
+Message-Id: <20200901002326.1137289-5-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20200901002326.1137289-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH v2 3/7] Revert "arm64: bti: Require clang >= 10.0.1 for
- in-kernel BTI support"
+Subject: [PATCH v2 4/7] Revert "arm64: vdso: Fix compilation with clang older
+ than 8"
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -76,29 +75,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b9249cba25a5dce5de87e5404503a5e11832c2dd.
+This reverts commit 3acf4be235280f14d838581a750532219d67facc.
 
-The minimum supported version of clang is now 10.0.1.
+The minimum supported version of clang is clang 10.0.1.
 
 Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- arch/arm64/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+ arch/arm64/kernel/vdso/Makefile | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 6d232837cbee..2a70b85b1a61 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -1630,8 +1630,6 @@ config ARM64_BTI_KERNEL
- 	depends on CC_HAS_BRANCH_PROT_PAC_RET_BTI
- 	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94697
- 	depends on !CC_IS_GCC || GCC_VERSION >= 100100
--	# https://reviews.llvm.org/rGb8ae3fdfa579dbf366b1bb1cbfdbf8c51db7fa55
--	depends on !CC_IS_CLANG || CLANG_VERSION >= 100001
- 	depends on !(CC_IS_CLANG && GCOV_KERNEL)
- 	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_REGS)
- 	help
+diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+index 45d5cfe46429..04021a93171c 100644
+--- a/arch/arm64/kernel/vdso/Makefile
++++ b/arch/arm64/kernel/vdso/Makefile
+@@ -43,13 +43,6 @@ ifneq ($(c-gettimeofday-y),)
+   CFLAGS_vgettimeofday.o += -include $(c-gettimeofday-y)
+ endif
+ 
+-# Clang versions less than 8 do not support -mcmodel=tiny
+-ifeq ($(CONFIG_CC_IS_CLANG), y)
+-  ifeq ($(shell test $(CONFIG_CLANG_VERSION) -lt 80000; echo $$?),0)
+-    CFLAGS_REMOVE_vgettimeofday.o += -mcmodel=tiny
+-  endif
+-endif
+-
+ # Disable gcov profiling for VDSO code
+ GCOV_PROFILE := n
+ 
 -- 
 2.28.0.402.g5ffc5be6b7-goog
 
