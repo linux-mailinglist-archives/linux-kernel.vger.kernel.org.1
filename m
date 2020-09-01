@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3314B259952
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6FC259954
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730402AbgIAP2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49668 "EHLO mail.kernel.org"
+        id S1730420AbgIAP2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:28:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729446AbgIAPZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:25:17 -0400
+        id S1730029AbgIAPZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:25:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3FB920FC3;
-        Tue,  1 Sep 2020 15:25:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A26B206FA;
+        Tue,  1 Sep 2020 15:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973917;
-        bh=9WsD+M7msmhvOrmHNhbANDUr/qQT8t+aOQRv8aa9ybg=;
+        s=default; t=1598973919;
+        bh=z7HQxv9VSgRcd7nBu9ujYpFT8TnEHBX4hITSL08r+ps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xOmRR5UtgPqNWZJ/+y/PLwlB5uBHwxX48in7LPS812NbnbR+USiITowsJ5UaCBA19
-         qkJvYT3WI9hFLV5r40AfWYE8P+y8DK6ShneUJbv8FMzwwL1sY+8b6Vfm8T92w/+eXe
-         WqBhb7QomJ71u1x1smChmQ1sGn7cfaFwFEnTWC1k=
+        b=D0niYYpJ0LRiNMW1WKGFR0hdV/JVFlbIWUh158q9N1Q/vwBVlHdlZ1Fbqrj94v8uY
+         yk2xK0KvBYZWA0i1Yvd27ud/U9PHDqnaEVGnIE0Qxpcf1o2XhTVJx9klvFbCsmVOH7
+         BVvXk+ZJtA4GyRivyjO4fEnQbKRFtVMZJEoT79Lc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 068/125] s390/cio: add cond_resched() in the slow_eval_known_fn() loop
-Date:   Tue,  1 Sep 2020 17:10:23 +0200
-Message-Id: <20200901150937.911488032@linuxfoundation.org>
+Subject: [PATCH 4.19 069/125] ASoC: wm8994: Avoid attempts to read unreadable registers
+Date:   Tue,  1 Sep 2020 17:10:24 +0200
+Message-Id: <20200901150937.959924308@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -46,41 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineeth Vijayan <vneethv@linux.ibm.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit 0b8eb2ee9da1e8c9b8082f404f3948aa82a057b2 ]
+[ Upstream commit f082bb59b72039a2326ec1a44496899fb8aa6d0e ]
 
-The scanning through subchannels during the time of an event could
-take significant amount of time in case of platforms with lots of
-known subchannels. This might result in higher scheduling latencies
-for other tasks especially on systems with a single CPU. Add
-cond_resched() call, as the loop in slow_eval_known_fn() can be
-executed for a longer duration.
+The driver supports WM1811, WM8994, WM8958 devices but according to
+documentation and the regmap definitions the WM8958_DSP2_* registers
+are only available on WM8958. In current code these registers are
+being accessed as if they were available on all the three chips.
 
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+When starting playback on WM1811 CODEC multiple errors like:
+"wm8994-codec wm8994-codec: ASoC: error at soc_component_read_no_lock on wm8994-codec: -5"
+can be seen, which is caused by attempts to read an unavailable
+WM8958_DSP2_PROGRAM register. The issue has been uncovered by recent
+commit "e2329ee ASoC: soc-component: add soc_component_err()".
+
+This patch adds a check in wm8958_aif_ev() callback so the DSP2 handling
+is only done for WM8958.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200731173834.23832-1-s.nawrocki@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/css.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/wm8958-dsp2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
-index df09ed53ab459..825a8f2703b4f 100644
---- a/drivers/s390/cio/css.c
-+++ b/drivers/s390/cio/css.c
-@@ -615,6 +615,11 @@ static int slow_eval_known_fn(struct subchannel *sch, void *data)
- 		rc = css_evaluate_known_subchannel(sch, 1);
- 		if (rc == -EAGAIN)
- 			css_schedule_eval(sch->schid);
-+		/*
-+		 * The loop might take long time for platforms with lots of
-+		 * known devices. Allow scheduling here.
-+		 */
-+		cond_resched();
- 	}
- 	return 0;
- }
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index 108e8bf42a346..f0a409504a13b 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -419,8 +419,12 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
+ 		  struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wm8994 *control = dev_get_drvdata(component->dev->parent);
+ 	int i;
+ 
++	if (control->type != WM8958)
++		return 0;
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 	case SND_SOC_DAPM_PRE_PMU:
 -- 
 2.25.1
 
