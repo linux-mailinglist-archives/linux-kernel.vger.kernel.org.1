@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899092594F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E972D2593DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731836AbgIAPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54984 "EHLO mail.kernel.org"
+        id S1731106AbgIAPca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731545AbgIAPmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:16 -0400
+        id S1730728AbgIAPbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:42 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1358320866;
-        Tue,  1 Sep 2020 15:42:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A632E21582;
+        Tue,  1 Sep 2020 15:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974935;
-        bh=EwyNBG2IzdlP/13j20gMb+LmmcdlJ2IRdKLrRAF4Uh0=;
+        s=default; t=1598974302;
+        bh=XLPcl2FH3swdl5UwvcCQtT2pdcZTolwEr4lc6czp6xU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kDvqDlPeTmxNe7rXTDMSg8chGmD9pGoeNvnQzerpwEpszI7QUWxFVW4O1L+Ct2yKL
-         WmvmSLs9PCOyaUp3Be/RESGuBO8b9V8+FXdCex1Sz3tvupaJUtjRa1MpNH2+BzMmgm
-         IAzcXsD+3uMb4Vv70gFWC59oiSyA9wwOLrtdFn64=
+        b=Yyyn9j8rA+kcU+rNFqULO0W+ijb8Nttf6E1jeRt4eBzPMgOYwwiq7AFrQajq/QkSl
+         1AvzuR5EZkwpcazfexnej5Q7yMlUuLarsGWR+JDRYhfdq4CiF3gv2gxxLBu2ktzN5F
+         ZChcLt6qKhPl+wBIXX61d3Ya6Vq94r8bgUkBgGCk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 145/255] scsi: ufs: Improve interrupt handling for shared interrupts
-Date:   Tue,  1 Sep 2020 17:10:01 +0200
-Message-Id: <20200901151007.649033864@linuxfoundation.org>
+Subject: [PATCH 5.4 122/214] spi: stm32h7: fix race condition at end of transfer
+Date:   Tue,  1 Sep 2020 17:10:02 +0200
+Message-Id: <20200901150958.829122069@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Antonio Borneo <antonio.borneo@st.com>
 
-[ Upstream commit 127d5f7c4b653b8be5eb3b2c7bbe13728f9003ff ]
+[ Upstream commit 135dd873d3c76d812ae64c668adef3f2c59ed27f ]
 
-For shared interrupts, the interrupt status might be zero, so check that
-first.
+The caller of stm32_spi_transfer_one(), spi_transfer_one_message(),
+is waiting for us to call spi_finalize_current_transfer() and will
+eventually schedule a new transfer, if available.
+We should guarantee that the spi controller is really available
+before calling spi_finalize_current_transfer().
 
-Link: https://lore.kernel.org/r/20200811133936.19171-2-adrian.hunter@intel.com
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Move the call to spi_finalize_current_transfer() _after_ the call
+to stm32_spi_disable().
+
+Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
+Signed-off-by: Alain Volmat <alain.volmat@st.com>
+Link: https://lore.kernel.org/r/1597043558-29668-2-git-send-email-alain.volmat@st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/spi/spi-stm32.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 2b5acdfb17820..6af79ff5185f6 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5991,7 +5991,7 @@ static irqreturn_t ufshcd_sl_intr(struct ufs_hba *hba, u32 intr_status)
-  */
- static irqreturn_t ufshcd_intr(int irq, void *__hba)
- {
--	u32 intr_status, enabled_intr_status;
-+	u32 intr_status, enabled_intr_status = 0;
- 	irqreturn_t retval = IRQ_NONE;
- 	struct ufs_hba *hba = __hba;
- 	int retries = hba->nutrs;
-@@ -6005,7 +6005,7 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
- 	 * read, make sure we handle them by checking the interrupt status
- 	 * again in a loop until we process all of the reqs before returning.
- 	 */
--	do {
-+	while (intr_status && retries--) {
- 		enabled_intr_status =
- 			intr_status & ufshcd_readl(hba, REG_INTERRUPT_ENABLE);
- 		if (intr_status)
-@@ -6014,7 +6014,7 @@ static irqreturn_t ufshcd_intr(int irq, void *__hba)
- 			retval |= ufshcd_sl_intr(hba, enabled_intr_status);
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index dc6334f67e6ae..25b1348aaa549 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -967,8 +967,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
+ 	spin_unlock_irqrestore(&spi->lock, flags);
  
- 		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
--	} while (intr_status && --retries);
-+	}
+ 	if (end) {
+-		spi_finalize_current_transfer(master);
+ 		stm32h7_spi_disable(spi);
++		spi_finalize_current_transfer(master);
+ 	}
  
- 	if (enabled_intr_status && retval == IRQ_NONE) {
- 		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+ 	return IRQ_HANDLED;
 -- 
 2.25.1
 
