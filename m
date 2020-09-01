@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A92E259484
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D4C2593D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731498AbgIAPk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47734 "EHLO mail.kernel.org"
+        id S1730727AbgIAPbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:31:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56954 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727778AbgIAPip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:38:45 -0400
+        id S1730387AbgIAP2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:28:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7CF22168B;
-        Tue,  1 Sep 2020 15:38:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C814420684;
+        Tue,  1 Sep 2020 15:28:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974723;
-        bh=gFg3mT5egsP14MTeQNbTG7x7JmJeEAdQR1uiseNTQp8=;
+        s=default; t=1598974109;
+        bh=fkPacdxcIDrC+/G09KUx/KOtmzao1YE/gaGyIXvqfxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ln7baXd+P4KP4a9aMO1omaJB61U5y6Di7alvq19fzcCfpd7LVxdr254roaqSiAea6
-         gNXRRUILyYWP+QdXnn1M4m/zmKYAd8vsI9n5+2mGcPEF/09DhuW0eKHWHyOMyVjU9P
-         StGGVKNWfvHfDX8eRF5cUB0xA8k31vSNdRwOCL7o=
+        b=d8xehc4474/vQrDpdqgQNSr9qaFivcC0Jn3hVkE5v6WiCEn0NTxeMjgc9dSHKocdQ
+         HNCnCpY7U3g238To/x704ZPQfM3H+6Rh3g3bTwDL+OiTBM+ibbcy5aIqT1pXvPDxal
+         +8odIz4A6k2Bg07Ady31wgUZQpSGlm9TiA9XX1iY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jeremy Kerr <jk@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Li Guifu <bluce.liguifu@huawei.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 069/255] powerpc/spufs: add CONFIG_COREDUMP dependency
-Date:   Tue,  1 Sep 2020 17:08:45 +0200
-Message-Id: <20200901151004.038118585@linuxfoundation.org>
+Subject: [PATCH 5.4 047/214] f2fs: fix use-after-free issue
+Date:   Tue,  1 Sep 2020 17:08:47 +0200
+Message-Id: <20200901150955.233010981@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Li Guifu <bluce.liguifu@huawei.com>
 
-[ Upstream commit b648a5132ca3237a0f1ce5d871fff342b0efcf8a ]
+[ Upstream commit 99c787cfd2bd04926f1f553b30bd7dcea2caaba1 ]
 
-The kernel test robot pointed out a slightly different error message
-after recent commit 5456ffdee666 ("powerpc/spufs: simplify spufs core
-dumping") to spufs for a configuration that never worked:
+During umount, f2fs_put_super() unregisters procfs entries after
+f2fs_destroy_segment_manager(), it may cause use-after-free
+issue when umount races with procfs accessing, fix it by relocating
+f2fs_unregister_sysfs().
 
-   powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_proxydma_info_dump':
->> file.c:(.text+0x4c68): undefined reference to `.dump_emit'
-   powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_dma_info_dump':
-   file.c:(.text+0x4d70): undefined reference to `.dump_emit'
-   powerpc64-linux-ld: arch/powerpc/platforms/cell/spufs/file.o: in function `.spufs_wbox_info_dump':
-   file.c:(.text+0x4df4): undefined reference to `.dump_emit'
+[Chao Yu: change commit title/message a bit]
 
-Add a Kconfig dependency to prevent this from happening again.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Jeremy Kerr <jk@ozlabs.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200706132302.3885935-1-arnd@arndb.de
+Signed-off-by: Li Guifu <bluce.liguifu@huawei.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/cell/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ fs/f2fs/super.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/cell/Kconfig b/arch/powerpc/platforms/cell/Kconfig
-index 0f7c8241912b9..f2ff359041eec 100644
---- a/arch/powerpc/platforms/cell/Kconfig
-+++ b/arch/powerpc/platforms/cell/Kconfig
-@@ -44,6 +44,7 @@ config SPU_FS
- 	tristate "SPU file system"
- 	default m
- 	depends on PPC_CELL
-+	depends on COREDUMP
- 	select SPU_BASE
- 	help
- 	  The SPU file system is used to access Synergistic Processing
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index f4b882ee48ddf..fa461db696e79 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1075,6 +1075,9 @@ static void f2fs_put_super(struct super_block *sb)
+ 	int i;
+ 	bool dropped;
+ 
++	/* unregister procfs/sysfs entries in advance to avoid race case */
++	f2fs_unregister_sysfs(sbi);
++
+ 	f2fs_quota_off_umount(sb);
+ 
+ 	/* prevent remaining shrinker jobs */
+@@ -1138,8 +1141,6 @@ static void f2fs_put_super(struct super_block *sb)
+ 
+ 	kvfree(sbi->ckpt);
+ 
+-	f2fs_unregister_sysfs(sbi);
+-
+ 	sb->s_fs_info = NULL;
+ 	if (sbi->s_chksum_driver)
+ 		crypto_free_shash(sbi->s_chksum_driver);
 -- 
 2.25.1
 
