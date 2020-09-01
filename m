@@ -2,175 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD62258796
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 07:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A57B25879B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 07:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgIAFln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 01:41:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15326 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgIAFln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 01:41:43 -0400
-IronPort-SDR: n6PWLXtLQcSF8fS698tgyqk4ZdwIdFZW+A4qA+wgrLcmjcLjb+0va6Ic+HbWqCG+Cka9Fo5cE4
- P3bXrzNvK8AQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="156368003"
-X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
-   d="scan'208";a="156368003"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 22:41:42 -0700
-IronPort-SDR: vAJa7izK3M6m55eqowXVzXQaizdSNGk2Is0UH91JUpv/cUg+lwN2tlpMALQZq9hbYg1PsfgO3h
- yjwAP6TbOnjg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
-   d="scan'208";a="333603812"
-Received: from myalaman-mobl1.amr.corp.intel.com (HELO [10.255.229.207]) ([10.255.229.207])
-  by fmsmga002.fm.intel.com with ESMTP; 31 Aug 2020 22:41:41 -0700
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     20200714230803.GA92891@bjorn-Precision-5520, bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@intel.com, Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <56ad4901-725f-7b88-2117-b124b28b027f@linux.intel.com>
-Date:   Mon, 31 Aug 2020 22:41:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726679AbgIAFmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 01:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgIAFmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 01:42:31 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBB5C0612A3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 22:42:30 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id cv8so5756qvb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 22:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iGwUze2oGaJp8e7svDfyTEoxtCcK4dtRTXC+KcGij48=;
+        b=QfisIazdqtTMNcoNEj0SZAReR2Pmf9qYrfEfbMonwSdEIA+7Dm9UminlBVvpKsDzQz
+         ooApTWc7bJW1z5pJvKoZRm84JVjAFwpEFPLHCpp1LiPVEqCmoZHUb2nULe4GROFMFwoh
+         I54TqoMJB0ewdpQDbp9U7wOfPA+BzG4yfQ4f0X35RQOYiAwQVz1FxsJKxf/kh306qN8x
+         RwjkLSOhYHvD0QWaRZtJMYYJmaBR7W6HDqzfjOXfTAtuGqCB3Pvhz/h2c8MGfBGJziP9
+         SfadU0eVMulNjZHEoD1OQLXkTLzbtdQFdunvmu8vMx2ep20SGcptpomomxA8Vnr57aH1
+         5osA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iGwUze2oGaJp8e7svDfyTEoxtCcK4dtRTXC+KcGij48=;
+        b=OljbKEaqBxhcLo7Jv7XeKaVw8vaWHuOC1rsiRTJoywemvsU3eYma9VDftCcPz45FBA
+         X8722bfrDI6CARc2XE/Mo5YjXMja2TL+30mlWye3FF+dp+1sdEWCtpqfDeiyi7I1xuyi
+         VKuUx4OjeoH1oFvdhLgsPTkCZx/dpNKnG0onQW+FooS6CF8wJ0l1hG2kf1R7kE105czx
+         OIqVzJ8nJJhfWKjiG9apTgeoLmWb9NPyjuytUCf48MzebQJtEenW7i1cWg+RqOSyEGTr
+         ViKgEaMoPQMgrXs0q+4qImhvdcaRKIu2o6uzSUh/c07/lPPKvyvpvtm3/ToXUK8/MH/Q
+         A8Hg==
+X-Gm-Message-State: AOAM530b7XQF0SnCdV9TP2TrQJvzMRT756z8XNrNuSEFsQEUxW1usBPx
+        309FS0sEmupEDYif2qLDCIS9tQ==
+X-Google-Smtp-Source: ABdhPJxBeU18wZYbq6a0ep/R0bjilgWJcbebj3mDIgOZ/cwdY+tof6zfyzvZNJhxFh1hmNJtAPCKEQ==
+X-Received: by 2002:a0c:ca87:: with SMTP id a7mr330935qvk.17.1598938949857;
+        Mon, 31 Aug 2020 22:42:29 -0700 (PDT)
+Received: from uller (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
+        by smtp.gmail.com with ESMTPSA id o25sm346909qkm.42.2020.08.31.22.42.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 22:42:29 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 05:42:27 +0000
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vivek Gautam <vivek.gautam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/19] drm/msm: remove dangling submitqueue references
+Message-ID: <20200901054227.GB54956@uller>
+References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
+ <20200814024114.1177553-2-robdclark@gmail.com>
+ <20200901023517.GA54956@uller>
+ <CAF6AEGsx5mmUCuNApP692L-rS3wEbn4UqJBXuSr-38MAcVfoBw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cbba08a5e9ca62778c8937f44eda2192a2045da7.1595617529.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGsx5mmUCuNApP692L-rS3wEbn4UqJBXuSr-38MAcVfoBw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Tue 01 Sep 03:42 UTC 2020, Rob Clark wrote:
 
-On 7/24/20 12:07 PM, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
-> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> On Mon, Aug 31, 2020 at 7:35 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Fri 14 Aug 02:40 UTC 2020, Rob Clark wrote:
+> >
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Currently it doesn't matter, since we free the ctx immediately.  But
+> > > when we start refcnt'ing the ctx, we don't want old dangling list
+> > > entries to hang around.
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >  drivers/gpu/drm/msm/msm_submitqueue.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
+> > > index a1d94be7883a..90c9d84e6155 100644
+> > > --- a/drivers/gpu/drm/msm/msm_submitqueue.c
+> > > +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
+> > > @@ -49,8 +49,10 @@ void msm_submitqueue_close(struct msm_file_private *ctx)
+> > >        * No lock needed in close and there won't
+> > >        * be any more user ioctls coming our way
+> > >        */
+> > > -     list_for_each_entry_safe(entry, tmp, &ctx->submitqueues, node)
+> > > +     list_for_each_entry_safe(entry, tmp, &ctx->submitqueues, node) {
+> > > +             list_del(&entry->node);
+> >
+> > If you refcount ctx, what does that do for the entries in the submit
+> > queue?
+> >
+> > "entry" here is kref'ed, but you're popping it off the list regardless
+> > of the put ends up freeing the object or not - which afaict would mean
+> > leaking the object.
+> >
 > 
-> Current pcie_do_recovery() implementation has following two issues:
+> What ends up happening is the submit has reference to submit-queue,
+> which has reference to the ctx.. the submitqueue could be alive still
+> pending in-flight submits (in a later patch), but dead from the PoV of
+> userspace interface.
 > 
-> 1. Fatal (DPC) error recovery is currently broken for non-hotplug
-> capable devices. Current fatal error recovery implementation relies
-> on PCIe hotplug (pciehp) handler for detaching and re-enumerating
-> the affected devices/drivers. pciehp handler listens for DLLSC state
-> changes and handles device/driver detachment on DLLSC_LINK_DOWN event
-> and re-enumeration on DLLSC_LINK_UP event. So when dealing with
-> non-hotplug capable devices, recovery code does not restore the state
-> of the affected devices correctly. Correct implementation should
-> restore the device state and call report_slot_reset() function after
-> resetting the link to restore the state of the device/driver.
-> 
-> You can find fatal non-hotplug related issues reported in following links:
-> 
-> https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
-> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
-> https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
-> 
-> 2. For non-fatal errors if report_error_detected() or
-> report_mmio_enabled() functions requests PCI_ERS_RESULT_NEED_RESET then
-> current pcie_do_recovery() implementation does not do the requested
-> explicit device reset, instead just calls the report_slot_reset() on all
-> affected devices. Notifying about the reset via report_slot_reset()
-> without doing the actual device reset is incorrect.
-> 
-> To fix above issues, use PCI_ERS_RESULT_NEED_RESET as error state after
-> successful reset_link() operation. This will ensure ->slot_reset() be
-> called after reset_link() operation for fatal errors. Also call
-> pci_bus_reset() to do slot/bus reset() before triggering device specific
-> ->slot_reset() callback. Also, using pci_bus_reset() will restore the state
-> of the devices after performing the reset operation.
-> 
-> Even though using pci_bus_reset() will do redundant reset operation after
-> ->reset_link() for fatal errors, it should should affect the functional
-> behavior.
-Any comment on this patch?
-> 
-> [original patch is from jay.vosburgh@canonical.com]
-> [original patch link https://lore.kernel.org/linux-pci/12115.1588207324@famine/]
-> Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> Signed-off-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> ---
-> 
-> Changes since v2:
->   * Changed the subject of patch to "PCI/ERR: Fix reset logic in
->     pcie_do_recovery() call". v2 patch link is,
->     https://lore.kernel.org/linux-pci/ce417fbf81a8a46a89535f44b9224ee9fbb55a29.1591307288.git.sathyanarayanan.kuppuswamy@linux.intel.com/
->   * Squashed "PCI/ERR: Add reset support for non fatal errors" patch.
-> 
->   drivers/pci/pcie/err.c | 41 +++++++++++++++++++++++++++++++++++++----
->   1 file changed, 37 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> index 14bb8f54723e..b5eb6ba65be1 100644
-> --- a/drivers/pci/pcie/err.c
-> +++ b/drivers/pci/pcie/err.c
-> @@ -165,8 +165,29 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->   	pci_dbg(dev, "broadcast error_detected message\n");
->   	if (state == pci_channel_io_frozen) {
->   		pci_walk_bus(bus, report_frozen_detected, &status);
-> +		/*
-> +		 * After resetting the link using reset_link() call, the
-> +		 * possible value of error status is either
-> +		 * PCI_ERS_RESULT_DISCONNECT (failure case) or
-> +		 * PCI_ERS_RESULT_NEED_RESET (success case).
-> +		 * So ignore the return value of report_error_detected()
-> +		 * call for fatal errors.
-> +		 *
-> +		 * In EDR mode, since AER and DPC Capabilities are owned by
-> +		 * firmware, reported_error_detected() will return error
-> +		 * status PCI_ERS_RESULT_NO_AER_DRIVER. Continuing
-> +		 * pcie_do_recovery() with error status as
-> +		 * PCI_ERS_RESULT_NO_AER_DRIVER will report recovery failure
-> +		 * irrespective of recovery status. But successful reset_link()
-> +		 * call usually recovers all fatal errors. So ignoring the
-> +		 * status result of report_error_detected() also helps EDR based
-> +		 * error recovery.
-> +		 */
->   		status = reset_link(dev);
-> -		if (status != PCI_ERS_RESULT_RECOVERED) {
-> +		if (status == PCI_ERS_RESULT_RECOVERED) {
-> +			status = PCI_ERS_RESULT_NEED_RESET;
-> +		} else {
-> +			status = PCI_ERS_RESULT_DISCONNECT;
->   			pci_warn(dev, "link reset failed\n");
->   			goto failed;
->   		}
-> @@ -182,10 +203,22 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->   
->   	if (status == PCI_ERS_RESULT_NEED_RESET) {
->   		/*
-> -		 * TODO: Should call platform-specific
-> -		 * functions to reset slot before calling
-> -		 * drivers' slot_reset callbacks?
-> +		 * TODO: Optimize the call to pci_reset_bus()
-> +		 *
-> +		 * There are two components to pci_reset_bus().
-> +		 *
-> +		 * 1. Do platform specific slot/bus reset.
-> +		 * 2. Save/Restore all devices in the bus.
-> +		 *
-> +		 * For hotplug capable devices and fatal errors,
-> +		 * device is already in reset state due to link
-> +		 * reset. So repeating platform specific slot/bus
-> +		 * reset via pci_reset_bus() call is redundant. So
-> +		 * can optimize this logic and conditionally call
-> +		 * pci_reset_bus().
->   		 */
-> +		pci_reset_bus(dev);
-> +
->   		status = PCI_ERS_RESULT_RECOVERED;
->   		pci_dbg(dev, "broadcast slot_reset message\n");
->   		pci_walk_bus(bus, report_slot_reset, &status);
+> We aren't relying (or at least aren't in the end, and I *think* I
+> didn't miss anything in the middle) relying on ctx->submitqueues list
+> to clean anything up in the end, just track what is still a valid
+> submitqueue from userspace PoV
 > 
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Looks reasonable, thanks for the explanation.
+
+> BR,
+> -R
+> 
+> >
+> > On the other hand, with the current implementation an object with higher
+> > refcount with adjacent objects of single refcount would end up with
+> > dangling pointers after the put. So in itself this change seems like a
+> > net gain, but I'm wondering about the plan described in the commit
+> > message.
+> >
+> > Regards,
+> > Bjorn
+> >
+> > >               msm_submitqueue_put(entry);
+> > > +     }
+> > >  }
+> > >
+> > >  int msm_submitqueue_create(struct drm_device *drm, struct msm_file_private *ctx,
+> > > --
+> > > 2.26.2
+> > >
