@@ -2,148 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7315F2585E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5682585F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727924AbgIADAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 23:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbgIAC77 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 22:59:59 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68073C06137B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:59:59 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 139so5256416qkl.11
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=sMKBHNl6/ZnX2Z7G/QMZIJh0U7nsb/eDujVhyPbAMgY=;
-        b=Lc0M0pPOpGtw5J3TQd8lyCy3Vy2eRpkR3i1FvyU1XsWERPNIY++z4CT8QBIMsB/8Cb
-         xZTaMSUWuZ/oIo1JjxIxAObRSMKumnb332gMI6CgV+vb6H5EM/7V3Pg9jHvLu0N7OiAW
-         yaKWqli2Wq0ucXV1+dok9mLui7mzVhxFRy6WbI3kyfZOjE21mAdD+g6GMsuDI0YZTohO
-         6gWQJLS529qCyFXAU2sanYmLF167T+TQDs/d7yfXlYRaiIhS7YJv2mkWrPK6fqJlj11O
-         9P6wpZBRf+XrUYPIXa5NpM7DGh2jY/bD+jjUKNzrZ2mMOxG9CKessA8YgNj+dwTkzkih
-         iDZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sMKBHNl6/ZnX2Z7G/QMZIJh0U7nsb/eDujVhyPbAMgY=;
-        b=mjfusbBE9ql8bwSXP7q6TOjKzmjvlJSqBHUZoABBbPe7ojUW7zcgtrIik8Rvegu+a4
-         KoFntmtB6fsjkvQnDnLqskQ6+WVDIfDQ6oHnBtmSZg+2hwul2sW8M1fdwAzP+nPthGmK
-         /d/ioaEIc3GWzJPs28bty5lDi30m+68wZbeaiLqaUUrZtsIYGIOgEiDMgwJ/ZziDC6K4
-         O8RDPhFrcEUYtCi2sW6so7iY0Mp/fwuyoWd8Xdn0Syv4hAoDjN8sOG0tMFetfTkxAk4y
-         frb2Ss0b481R+u9OVSiboGLtiYXYaE9nKMTS823coPBwvs4mTdKXsGFj2xHQUsp9T+9+
-         cf0g==
-X-Gm-Message-State: AOAM532WmCmUutpmb4p9QD11eXU5BvkLsH6GnVLkvLsU9uTjSzc6sfMf
-        zLReOGqa/ftEo1aJJ0XXdURzdRHc7ew=
-X-Google-Smtp-Source: ABdhPJxx6aqt4vm8qU+0zPtj+sU1OUbh+tp3Mzgs8W9KTWNhYpiHiqDxFx4G/vul6U6GyHMLj/PsrZcf93E=
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a05:6214:2a:: with SMTP id
- b10mr314451qvr.0.1598929198619; Mon, 31 Aug 2020 19:59:58 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 19:59:27 -0700
-In-Reply-To: <20200901025927.3596190-1-badhri@google.com>
-Message-Id: <20200901025927.3596190-15-badhri@google.com>
-Mime-Version: 1.0
-References: <20200901025927.3596190-1-badhri@google.com>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH v6 14/14] usb: typec: tcpci_maxim: Implemnent set_auto_vbus_discharge_threshold
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726794AbgIADBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 23:01:36 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:37530 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726301AbgIADBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 31 Aug 2020 23:01:36 -0400
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 08130va1020900
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Sep 2020 11:00:57 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Sep 2020 11:00:58 +0800
+From:   Xianting Tian <tian.xianting@h3c.com>
+To:     <ysato@users.sourceforge.jp>, <daniel.lezcano@linaro.org>,
+        <tglx@linutronix.de>
+CC:     <uclinux-h8-devel@lists.sourceforge.jp>,
+        <linux-kernel@vger.kernel.org>,
+        Xianting Tian <tian.xianting@h3c.com>
+Subject: [PATCH] clocksource: return negative error code
+Date:   Tue, 1 Sep 2020 10:54:12 +0800
+Message-ID: <20200901025412.39128-1-tian.xianting@h3c.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 08130va1020900
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Programs VBUS_SINK_DISCONNECT_THRESHOLD based on the power_role,
-voltage requested as sink, mode of operation.
+A negative error code should be returned
 
-The programmed threshold is based on vSinkDisconnect and
-vSinkDisconnectPD values.
-
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 ---
-Changes since v1:
-- Changing patch version to v6 to fix version number confusion.
----
- drivers/usb/typec/tcpm/tcpci_maxim.c | 48 ++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ drivers/clocksource/h8300_timer8.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-index 6ba808ad901a..e35bd995c037 100644
---- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-+++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-@@ -137,6 +137,52 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
- 		return;
- }
+diff --git a/drivers/clocksource/h8300_timer8.c b/drivers/clocksource/h8300_timer8.c
+index 1d740a8c4..47114c2a7 100644
+--- a/drivers/clocksource/h8300_timer8.c
++++ b/drivers/clocksource/h8300_timer8.c
+@@ -169,7 +169,7 @@ static int __init h8300_8timer_init(struct device_node *node)
+ 		return PTR_ERR(clk);
+ 	}
  
-+static int max_tcpci_set_auto_vbus_discharge_threshold(struct tcpci *tcpci, struct tcpci_data *data,
-+						       enum typec_role port_role,
-+						       enum typec_pwr_opmode mode, bool pps_active,
-+						       u32 requested_vbus_voltage_mv)
-+{
-+	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-+	u32 threshold = 0;
-+	u8 pwr_ctrl;
-+
-+	/*
-+	 * Indicates that vbus is going to go away due PR_SWAP, hard reset etc.
-+	 * Do not discharge vbus here.
-+	 */
-+	if (requested_vbus_voltage_mv == 0)
-+		goto write_thresh;
-+
-+	if (port_role == TYPEC_SINK) {
-+		max_tcpci_read8(chip, TCPC_POWER_CTRL, &pwr_ctrl);
-+		if (pwr_ctrl & TCPC_FAST_ROLE_SWAP_EN) {
-+			/* To prevent disconnect when the source is fast role swap is capable. */
-+			threshold = 3500;
-+		} else if (mode == TYPEC_PWR_MODE_PD) {
-+			if (pps_active)
-+				threshold = (95 * requested_vbus_voltage_mv / 100) - 850;
-+			else
-+				threshold = (95 * requested_vbus_voltage_mv / 100) - 1250;
-+		} else {
-+			/* 3.5V for non-pd sink */
-+			threshold = 3500;
-+		}
-+	} else {
-+		/* 4V for source */
-+		threshold = 4000;
-+	}
-+
-+	threshold = threshold / TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB;
-+
-+	if (threshold > TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX) {
-+		dev_err(chip->dev, "VBUS_SINK_DISCONNECT_THRESH out of range");
-+		return -EINVAL;
-+	}
-+
-+write_thresh:
-+	return max_tcpci_write16(chip, TCPC_VBUS_SINK_DISCONNECT_THRESH, threshold);
-+}
-+
- static void process_rx(struct max_tcpci_chip *chip, u16 status)
- {
- 	struct pd_message msg;
-@@ -454,6 +500,8 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
- 	chip->data.start_drp_toggling = max_tcpci_start_toggling;
- 	chip->data.TX_BUF_BYTE_x_hidden = true;
- 	chip->data.init = tcpci_init;
-+	chip->data.set_auto_vbus_discharge_threshold = max_tcpci_set_auto_vbus_discharge_threshold;
-+	chip->data.auto_discharge_disconnect = true;
- 
- 	max_tcpci_init_regs(chip);
- 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+-	ret = ENXIO;
++	ret = -ENXIO;
+ 	base = of_iomap(node, 0);
+ 	if (!base) {
+ 		pr_err("failed to map registers for clockevent\n");
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.17.1
 
