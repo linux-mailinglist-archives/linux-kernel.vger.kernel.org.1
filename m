@@ -2,102 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA25259D81
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42602259D8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgIARqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726941AbgIARqC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:46:02 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EA3C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:46:01 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id b14so1784307qkn.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:46:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cSy4+2RDeeEJIAWSQYiuQheGRdiGJb8NlbxFbBqq2AM=;
-        b=cXlpMLt/MZjGGJxxIXI3dRVI4uswoqGbuubaqPQro5E+Vxlidjbo5VD4YxUte9yV9n
-         JGggD9c+n5hNtPF04P2fLwYCnLrn2PjcBNJ2TPdvwxby+LqAdjuTStUJWwXWsv7+VmVM
-         5mRh+XQTeS1ZkGcYpcS2I2jsA3aNfqqxESdch/Lfa1suLKFyKj7pL/q/CaFoZCr613vh
-         nMtVSMocVtIEc52WDjqw2OvCz5cwb6gn8KIGuZiEbNTm8mwhjITdAQNlXSR/HEbhcE/I
-         OWouCb9f0F3A8GvtPJWlYO2AuTtiExzS5h17AM3EKMSVIiqlJsvrIIghN+G9eZ0GdcD3
-         223Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cSy4+2RDeeEJIAWSQYiuQheGRdiGJb8NlbxFbBqq2AM=;
-        b=VKJ7C7br4V0V9sqCjH0vPVCMxvB6GI5+PXRAjAW5pyKN9fJinSCDMVdOY1qYqw+FbC
-         UmelcGsuhFeQajpNqWga8v0i2iGC2WPzu5M26iaaPB5+hFuZ3yFmeiGngPwnHg62PYq6
-         xzvTs1KLrRhxCj+QGVrsFbTMOOnlqpny7TpMvAPmK8rn/FxJuoftTNix3cKBxLEUjndk
-         RwP6uL6CIXMCvglLIYS2raPomBxl1e2N1g/Emt84qehrIv2N8lm7JzkLaBU8DE1ZK3QJ
-         3IdtoNht+iBNK2nlHxDUUV2TRMuOb3pjaPHOqOhn1ZLEg50cK1xeIEfHThCdZhqN48qy
-         PvCw==
-X-Gm-Message-State: AOAM532vo+nTWrHw1h0ybSkhbzQM/w2AjtrYART+kiEWOEjU8rcfx3V3
-        6cabcetd95z5Opoo6zjDXQgiGk8wb9fnnc04NbM=
-X-Google-Smtp-Source: ABdhPJzuyOEEW4u0szMWmuV8qaZb9/osteZ8Kxw8co7ysE17hCNMDWr3cE6A6fD+O8okSgr6GveAkA==
-X-Received: by 2002:a37:2d07:: with SMTP id t7mr2973895qkh.255.1598982360401;
-        Tue, 01 Sep 2020 10:46:00 -0700 (PDT)
-Received: from [192.168.1.45] (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id w20sm2217486qki.108.2020.09.01.10.45.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 10:45:59 -0700 (PDT)
-Subject: Re: remove revalidate_disk()
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Dan Williams <dan.j.williams@intel.com>, dm-devel@redhat.com,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        nbd@other.debian.org, ceph-devel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200901155748.2884-1-hch@lst.de>
-From:   Josef Bacik <josef@toxicpanda.com>
-Message-ID: <b89fe35d-cdf9-e652-2016-599d67bdc5eb@toxicpanda.com>
-Date:   Tue, 1 Sep 2020 13:45:58 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1729035AbgIARqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:46:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:47622 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726102AbgIARqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:46:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 679CC1FB;
+        Tue,  1 Sep 2020 10:46:44 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A5AC3F71F;
+        Tue,  1 Sep 2020 10:46:37 -0700 (PDT)
+Subject: Re: [PATCH v9 03/32] drm: core: fix common struct sg_table related
+ issues
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20200826063316.23486-1-m.szyprowski@samsung.com>
+ <CGME20200826063529eucas1p19d797cf74bf653bf68b0a0e860806dbf@eucas1p1.samsung.com>
+ <20200826063316.23486-4-m.szyprowski@samsung.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a96aefea-936a-e54d-1604-93902443b360@arm.com>
+Date:   Tue, 1 Sep 2020 18:46:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200901155748.2884-1-hch@lst.de>
+In-Reply-To: <20200826063316.23486-4-m.szyprowski@samsung.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 11:57 AM, Christoph Hellwig wrote:
-> Hi Jens,
+On 2020-08-26 07:32, Marek Szyprowski wrote:
+> The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
+> returns the number of the created entries in the DMA address space.
+> However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
+> dma_unmap_sg must be called with the original number of the entries
+> passed to the dma_map_sg().
 > 
-> this series removes the revalidate_disk() function, which has been a
-> really odd duck in the last years.  The prime reason why most people
-> use it is because it propagates a size change from the gendisk to
-> the block_device structure.  But it also calls into the rather ill
-> defined ->revalidate_disk method which is rather useless for the
-> callers.  So this adds a new helper to just propagate the size, and
-> cleans up all kinds of mess around this area.  Follow on patches
-> will eventuall kill of ->revalidate_disk entirely, but ther are a lot
-> more patches needed for that.
+> struct sg_table is a common structure used for describing a non-contiguous
+> memory buffer, used commonly in the DRM and graphics subsystems. It
+> consists of a scatterlist with memory pages and DMA addresses (sgl entry),
+> as well as the number of scatterlist entries: CPU pages (orig_nents entry)
+> and DMA mapped pages (nents entry).
 > 
+> It turned out that it was a common mistake to misuse nents and orig_nents
+> entries, calling DMA-mapping functions with a wrong number of entries or
+> ignoring the number of mapped entries returned by the dma_map_sg()
+> function.
+> 
+> To avoid such issues, lets use a common dma-mapping wrappers operating
+> directly on the struct sg_table objects and use scatterlist page
+> iterators where possible. This, almost always, hides references to the
+> nents and orig_nents entries, making the code robust, easier to follow
+> and copy/paste safe.
+> 
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+> ---
+>   drivers/gpu/drm/drm_cache.c            |  2 +-
+>   drivers/gpu/drm/drm_gem_shmem_helper.c | 14 +++++++++-----
+>   drivers/gpu/drm/drm_prime.c            | 11 ++++++-----
+>   3 files changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_cache.c b/drivers/gpu/drm/drm_cache.c
+> index 03e01b000f7a..0fe3c496002a 100644
+> --- a/drivers/gpu/drm/drm_cache.c
+> +++ b/drivers/gpu/drm/drm_cache.c
+> @@ -127,7 +127,7 @@ drm_clflush_sg(struct sg_table *st)
+>   		struct sg_page_iter sg_iter;
+>   
+>   		mb(); /*CLFLUSH is ordered only by using memory barriers*/
+> -		for_each_sg_page(st->sgl, &sg_iter, st->nents, 0)
+> +		for_each_sgtable_page(st, &sg_iter, 0)
+>   			drm_clflush_page(sg_page_iter_page(&sg_iter));
+>   		mb(); /*Make sure that all cache line entry is flushed*/
+>   
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 4b7cfbac4daa..47d8211221f2 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -126,8 +126,8 @@ void drm_gem_shmem_free_object(struct drm_gem_object *obj)
+>   		drm_prime_gem_destroy(obj, shmem->sgt);
+>   	} else {
+>   		if (shmem->sgt) {
+> -			dma_unmap_sg(obj->dev->dev, shmem->sgt->sgl,
+> -				     shmem->sgt->nents, DMA_BIDIRECTIONAL);
+> +			dma_unmap_sgtable(obj->dev->dev, shmem->sgt,
+> +					  DMA_BIDIRECTIONAL, 0);
+>   			sg_free_table(shmem->sgt);
+>   			kfree(shmem->sgt);
+>   		}
+> @@ -424,8 +424,7 @@ void drm_gem_shmem_purge_locked(struct drm_gem_object *obj)
+>   
+>   	WARN_ON(!drm_gem_shmem_is_purgeable(shmem));
+>   
+> -	dma_unmap_sg(obj->dev->dev, shmem->sgt->sgl,
+> -		     shmem->sgt->nents, DMA_BIDIRECTIONAL);
+> +	dma_unmap_sgtable(obj->dev->dev, shmem->sgt, DMA_BIDIRECTIONAL, 0);
+>   	sg_free_table(shmem->sgt);
+>   	kfree(shmem->sgt);
+>   	shmem->sgt = NULL;
+> @@ -697,12 +696,17 @@ struct sg_table *drm_gem_shmem_get_pages_sgt(struct drm_gem_object *obj)
+>   		goto err_put_pages;
+>   	}
+>   	/* Map the pages for use by the h/w. */
+> -	dma_map_sg(obj->dev->dev, sgt->sgl, sgt->nents, DMA_BIDIRECTIONAL);
+> +	ret = dma_map_sgtable(obj->dev->dev, sgt, DMA_BIDIRECTIONAL, 0);
+> +	if (ret)
+> +		goto err_free_sgt;
+>   
+>   	shmem->sgt = sgt;
+>   
+>   	return sgt;
+>   
+> +err_free_sgt:
+> +	sg_free_table(sgt);
+> +	kfree(sgt);
 
-I applied and built everything on Jens's for-next, patch #2 was fuzzy but it 
-applied.
+Should this be a separate patch to add the missing error handling to the 
+existing code first?
 
-I checked through everything, the only thing that was strange to me is not 
-calling revalidate_disk_size() in nvdimm, but since it's during attach you point 
-out it doesn't matter.  You can add
+Otherwise the rest of the mechanical conversion looks straightforward 
+enough, and I'm not the separation-of-concerns police (for this 
+subsystem, at least), so either way,
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-To the series, thanks,
-
-Josef
+>   err_put_pages:
+>   	drm_gem_shmem_put_pages(shmem);
+>   	return ERR_PTR(ret);
+> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+> index 5d181bf60a44..c45b0cc6e31d 100644
+> --- a/drivers/gpu/drm/drm_prime.c
+> +++ b/drivers/gpu/drm/drm_prime.c
+> @@ -617,6 +617,7 @@ struct sg_table *drm_gem_map_dma_buf(struct dma_buf_attachment *attach,
+>   {
+>   	struct drm_gem_object *obj = attach->dmabuf->priv;
+>   	struct sg_table *sgt;
+> +	int ret;
+>   
+>   	if (WARN_ON(dir == DMA_NONE))
+>   		return ERR_PTR(-EINVAL);
+> @@ -626,11 +627,12 @@ struct sg_table *drm_gem_map_dma_buf(struct dma_buf_attachment *attach,
+>   	else
+>   		sgt = obj->dev->driver->gem_prime_get_sg_table(obj);
+>   
+> -	if (!dma_map_sg_attrs(attach->dev, sgt->sgl, sgt->nents, dir,
+> -			      DMA_ATTR_SKIP_CPU_SYNC)) {
+> +	ret = dma_map_sgtable(attach->dev, sgt, dir,
+> +			      DMA_ATTR_SKIP_CPU_SYNC);
+> +	if (ret) {
+>   		sg_free_table(sgt);
+>   		kfree(sgt);
+> -		sgt = ERR_PTR(-ENOMEM);
+> +		sgt = ERR_PTR(ret);
+>   	}
+>   
+>   	return sgt;
+> @@ -652,8 +654,7 @@ void drm_gem_unmap_dma_buf(struct dma_buf_attachment *attach,
+>   	if (!sgt)
+>   		return;
+>   
+> -	dma_unmap_sg_attrs(attach->dev, sgt->sgl, sgt->nents, dir,
+> -			   DMA_ATTR_SKIP_CPU_SYNC);
+> +	dma_unmap_sgtable(attach->dev, sgt, dir, DMA_ATTR_SKIP_CPU_SYNC);
+>   	sg_free_table(sgt);
+>   	kfree(sgt);
+>   }
+> 
