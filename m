@@ -2,173 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ACF259F0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD465259F30
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731637AbgIATOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 15:14:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:48644 "EHLO foss.arm.com"
+        id S1728465AbgIATVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 15:21:34 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26016 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727990AbgIATOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 15:14:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F21C51FB;
-        Tue,  1 Sep 2020 12:14:31 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC4A93F71F;
-        Tue,  1 Sep 2020 12:14:29 -0700 (PDT)
-Subject: Re: [PATCH v9 12/32] drm: msm: fix common struct sg_table related
- issues
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org
-References: <20200826063316.23486-1-m.szyprowski@samsung.com>
- <CGME20200826063535eucas1p10cef37d8364216cf57c97e96d3959dd2@eucas1p1.samsung.com>
- <20200826063316.23486-13-m.szyprowski@samsung.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <fe224152-b621-d96e-b432-bf837d320210@arm.com>
-Date:   Tue, 1 Sep 2020 20:14:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727049AbgIATVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 15:21:30 -0400
+IronPort-SDR: agylgvqYIDbDc6q8i1QOtzPlbHRJ0e4VdVKJSUYDLkhrTGXdpIgr8X2hADA2PaakC/QjS8MNk/
+ 0oqhxTOHtbYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="144995640"
+X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
+   d="scan'208";a="144995640"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 12:21:27 -0700
+IronPort-SDR: hUKmR4Uqlhq8Ls0cbTgJzertPv0sajciW9dkILJZ+F+J7ijW3GVf/khygE7eiioxth47xa9ulm
+ D2Dr/HXYZs1g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
+   d="scan'208";a="325480437"
+Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2020 12:21:26 -0700
+From:   Gage Eads <gage.eads@intel.com>
+To:     linux-kernel@vger.kernel.org, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com
+Subject: [PATCH v3 00/19] dlb2: introduce DLB 2.0 device driver
+Date:   Tue,  1 Sep 2020 14:15:29 -0500
+Message-Id: <20200901191548.31646-1-gage.eads@intel.com>
+X-Mailer: git-send-email 2.13.6
 MIME-Version: 1.0
-In-Reply-To: <20200826063316.23486-13-m.szyprowski@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-26 07:32, Marek Szyprowski wrote:
-> The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
-> returns the number of the created entries in the DMA address space.
-> However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
-> dma_unmap_sg must be called with the original number of the entries
-> passed to the dma_map_sg().
-> 
-> struct sg_table is a common structure used for describing a non-contiguous
-> memory buffer, used commonly in the DRM and graphics subsystems. It
-> consists of a scatterlist with memory pages and DMA addresses (sgl entry),
-> as well as the number of scatterlist entries: CPU pages (orig_nents entry)
-> and DMA mapped pages (nents entry).
-> 
-> It turned out that it was a common mistake to misuse nents and orig_nents
-> entries, calling DMA-mapping functions with a wrong number of entries or
-> ignoring the number of mapped entries returned by the dma_map_sg()
-> function.
-> 
-> To avoid such issues, lets use a common dma-mapping wrappers operating
-> directly on the struct sg_table objects and use scatterlist page
-> iterators where possible. This, almost always, hides references to the
-> nents and orig_nents entries, making the code robust, easier to follow
-> and copy/paste safe.
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Acked-by: Rob Clark <robdclark@gmail.com>
-> ---
->   drivers/gpu/drm/msm/msm_gem.c    | 13 +++++--------
->   drivers/gpu/drm/msm/msm_gpummu.c | 14 ++++++--------
->   drivers/gpu/drm/msm/msm_iommu.c  |  2 +-
->   3 files changed, 12 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-> index b2f49152b4d4..8c7ae812b813 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.c
-> +++ b/drivers/gpu/drm/msm/msm_gem.c
-> @@ -53,11 +53,10 @@ static void sync_for_device(struct msm_gem_object *msm_obj)
->   	struct device *dev = msm_obj->base.dev->dev;
->   
->   	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
-> -		dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
-> -			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +		dma_sync_sgtable_for_device(dev, msm_obj->sgt,
-> +					    DMA_BIDIRECTIONAL);
->   	} else {
-> -		dma_map_sg(dev, msm_obj->sgt->sgl,
-> -			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +		dma_map_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
->   	}
->   }
->   
-> @@ -66,11 +65,9 @@ static void sync_for_cpu(struct msm_gem_object *msm_obj)
->   	struct device *dev = msm_obj->base.dev->dev;
->   
->   	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
-> -		dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
-> -			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +		dma_sync_sgtable_for_cpu(dev, msm_obj->sgt, DMA_BIDIRECTIONAL);
->   	} else {
-> -		dma_unmap_sg(dev, msm_obj->sgt->sgl,
-> -			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +		dma_unmap_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
->   	}
->   }
->   
-> diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
-> index 310a31b05faa..319f06c28235 100644
-> --- a/drivers/gpu/drm/msm/msm_gpummu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpummu.c
-> @@ -30,21 +30,19 @@ static int msm_gpummu_map(struct msm_mmu *mmu, uint64_t iova,
->   {
->   	struct msm_gpummu *gpummu = to_msm_gpummu(mmu);
->   	unsigned idx = (iova - GPUMMU_VA_START) / GPUMMU_PAGE_SIZE;
-> -	struct scatterlist *sg;
-> +	struct sg_dma_page_iter dma_iter;
->   	unsigned prot_bits = 0;
-> -	unsigned i, j;
->   
->   	if (prot & IOMMU_WRITE)
->   		prot_bits |= 1;
->   	if (prot & IOMMU_READ)
->   		prot_bits |= 2;
->   
-> -	for_each_sg(sgt->sgl, sg, sgt->nents, i) {
-> -		dma_addr_t addr = sg->dma_address;
-> -		for (j = 0; j < sg->length / GPUMMU_PAGE_SIZE; j++, idx++) {
-> -			gpummu->table[idx] = addr | prot_bits;
-> -			addr += GPUMMU_PAGE_SIZE;
-> -		}
-> +	for_each_sgtable_dma_page(sgt, &dma_iter, 0) {
-> +		dma_addr_t addr = sg_page_iter_dma_address(&dma_iter);
-> +
-> +		BUILD_BUG_ON(GPUMMU_PAGE_SIZE != PAGE_SIZE);
-> +		gpummu->table[idx++] = addr | prot_bits;
+This commit introduces a new misc device driver for the Intel(r) Dynamic
+Load Balancer 2.0 (Intel(r) DLB 2.0). The Intel DLB 2.0 is a PCIe device that
+provides load-balanced, prioritized scheduling of core-to-core communication.
 
-Given that the BUILD_BUG_ON might prevent valid arm64 configs from 
-building, how about a simple tweak like:
+The Intel DLB 2.0 consists of queues and arbiters that connect producer cores
+and consumer cores. The device implements load-balanced queueing features
+including:
+- Lock-free multi-producer/multi-consumer operation.
+- Multiple priority levels for varying traffic types.
+- 'Direct' traffic (i.e. multi-producer/single-consumer)
+- Simple unordered load-balanced distribution.
+- Atomic lock free load balancing across multiple consumers.
+- Queue element reordering feature allowing ordered load-balanced
+  distribution.
 
-		for (i = 0; i < PAGE_SIZE; i += GPUMMU_PAGE_SIZE)
-			gpummu->table[idx++] = i + addr | prot_bits;
-?
+Intel DLB 2.0 can be used in an event-driven programming model, such as DPDK's
+Event Device Library[2]. Such frameworks are commonly used in packet processing
+pipelines that benefit from the framework's multi-core scalability, dynamic
+load-balancing, and variety of packet distribution and synchronization schemes.
 
-Or alternatively perhaps some more aggressive #ifdefs or makefile tweaks 
-to prevent the GPUMMU code building for arm64 at all if it's only 
-relevant to 32-bit platforms (which I believe might be the case).
+These distribution schemes include "parallel" (packets are load-balanced
+across multiple cores and processed in parallel), "ordered" (similar to
+"parallel" but packets are reordered into ingress order by the device), and
+"atomic" (packet flows are scheduled to a single core at a time such that
+locks are not required to access per-flow data, and dynamically migrated to
+ensure load-balance).
 
-Robin.
+The fundamental unit of communication through the device is a queue entry
+(QE), which consists of 8B of data and 8B of metadata (destination queue,
+priority, etc.). The data field can be any type that fits within 8B.
 
->   	}
->   
->   	/* we can improve by deferring flush for multiple map() */
-> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-> index 3a381a9674c9..6c31e65834c6 100644
-> --- a/drivers/gpu/drm/msm/msm_iommu.c
-> +++ b/drivers/gpu/drm/msm/msm_iommu.c
-> @@ -36,7 +36,7 @@ static int msm_iommu_map(struct msm_mmu *mmu, uint64_t iova,
->   	struct msm_iommu *iommu = to_msm_iommu(mmu);
->   	size_t ret;
->   
-> -	ret = iommu_map_sg(iommu->domain, iova, sgt->sgl, sgt->nents, prot);
-> +	ret = iommu_map_sgtable(iommu->domain, iova, sgt, prot);
->   	WARN_ON(!ret);
->   
->   	return (ret == len) ? 0 : -EINVAL;
-> 
+A core's interface to the device, a "port," consists of a memory-mappable
+region through which the core enqueues a queue entry, and an in-memory
+queue (the "consumer queue") to which the device schedules QEs. Each QE
+is enqueued to a device-managed queue, and from there scheduled to a port.
+Software specifies the "linking" of queues and ports; i.e. which ports the
+device is allowed to schedule to for a given queue. The device uses a
+credit scheme to prevent overflow of the on-device queue storage.
+
+Applications can interface directly with the device by mapping the port's
+memory and MMIO regions into the application's address space for enqueue
+and dequeue operations, but call into the kernel driver for configuration
+operations. An application can also be polling- or interrupt-driven;
+Intel DLB 2.0 supports both modes of operation.
+
+Device resources -- i.e. ports, queues, and credits -- are contained within
+a scheduling domain. Scheduling domains are isolated from one another; a
+port can only enqueue to and dequeue from queues within its scheduling
+domain. A scheduling domain's resources are configured through a scheduling
+domain file, which is acquired through an ioctl.
+
+Intel DLB 2.0 supports SR-IOV and Scalable IOV, and allows for a flexible
+division of its resources among the PF and its virtual devices. The virtual
+devices are incapable of configuring the device directly; they use a hardware
+mailbox to proxy configuration requests to the PF driver. This driver supports
+both PF and virtual devices, as there is significant code re-use between the
+two, with device-specific behavior handled through a callback interface.
+Virtualization support will be added in a later patch set.
+
+The dlb driver uses ioctls as its primary interface (it makes use of sysfs
+as well, to a lesser extent). The dlb device file supports a different
+ioctl interface than the scheduling domain file; the dlb device file
+is used for device-wide operations (including scheduling domain creation),
+and the scheduling domain file supports operations on the scheduling
+domain's resources (primarily resource configuration).
+
+[1] https://builders.intel.com/docs/networkbuilders/SKU-343247-001US-queue-management-and-load-balancing-on-intel-architecture.pdf
+[2] https://doc.dpdk.org/guides/prog_guide/eventdev.html
+
+v3:
+- Remove DLB2_PCI_REG_READ/WRITE macros
+
+v2:
+- Change driver license to GPLv2 only
+- Expand Kconfig help text and remove unnecessary (R)s
+- Remove unnecessary prints
+- Add a new entry in ioctl-number.rst
+- Convert the ioctl handler into a switch statement
+- Correct some instances of IOWR that should have been IOR
+- Align macro blocks
+- Don't break ioctl ABI when introducing new commands
+- Remove indirect pointers from ioctl data structures
+- Remove the get-sched-domain-fd ioctl command
+
+Gage Eads (19):
+  dlb2: add skeleton for DLB 2.0 driver
+  dlb2: initialize PF device
+  dlb2: add resource and device initialization
+  dlb2: add device ioctl layer and first three ioctls
+  dlb2: add sched domain config and reset support
+  dlb2: add runtime power-management support
+  dlb2: add queue create and queue-depth-get ioctls
+  dlb2: add ioctl to configure ports, query poll mode
+  dlb2: add port mmap support
+  dlb2: add start domain ioctl
+  dlb2: add queue map and unmap ioctls
+  dlb2: add port enable/disable ioctls
+  dlb2: add CQ interrupt support
+  dlb2: add domain alert support
+  dlb2: add sequence-number management ioctls
+  dlb2: add cos bandwidth get/set ioctls
+  dlb2: add device FLR support
+  dlb2: add basic PF sysfs interfaces
+  dlb2: add ingress error handling
+
+ Documentation/ABI/testing/sysfs-driver-dlb2        |  202 +
+ Documentation/misc-devices/dlb2.rst                |  310 +
+ Documentation/misc-devices/index.rst               |    1 +
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
+ MAINTAINERS                                        |    7 +
+ drivers/misc/Kconfig                               |    1 +
+ drivers/misc/Makefile                              |    1 +
+ drivers/misc/dlb2/Kconfig                          |   17 +
+ drivers/misc/dlb2/Makefile                         |   13 +
+ drivers/misc/dlb2/dlb2_bitmap.h                    |  286 +
+ drivers/misc/dlb2/dlb2_file.c                      |  133 +
+ drivers/misc/dlb2/dlb2_file.h                      |   19 +
+ drivers/misc/dlb2/dlb2_hw_types.h                  |  353 +
+ drivers/misc/dlb2/dlb2_intr.c                      |  137 +
+ drivers/misc/dlb2/dlb2_intr.h                      |   30 +
+ drivers/misc/dlb2/dlb2_ioctl.c                     |  892 +++
+ drivers/misc/dlb2/dlb2_ioctl.h                     |   14 +
+ drivers/misc/dlb2/dlb2_main.c                      | 1091 +++
+ drivers/misc/dlb2/dlb2_main.h                      |  285 +
+ drivers/misc/dlb2/dlb2_pf_ops.c                    | 1286 ++++
+ drivers/misc/dlb2/dlb2_regs.h                      | 3702 ++++++++++
+ drivers/misc/dlb2/dlb2_resource.c                  | 7117 ++++++++++++++++++++
+ drivers/misc/dlb2/dlb2_resource.h                  |  924 +++
+ include/linux/pci_ids.h                            |    2 +
+ include/uapi/linux/dlb2_user.h                     | 1045 +++
+ 25 files changed, 17869 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-dlb2
+ create mode 100644 Documentation/misc-devices/dlb2.rst
+ create mode 100644 drivers/misc/dlb2/Kconfig
+ create mode 100644 drivers/misc/dlb2/Makefile
+ create mode 100644 drivers/misc/dlb2/dlb2_bitmap.h
+ create mode 100644 drivers/misc/dlb2/dlb2_file.c
+ create mode 100644 drivers/misc/dlb2/dlb2_file.h
+ create mode 100644 drivers/misc/dlb2/dlb2_hw_types.h
+ create mode 100644 drivers/misc/dlb2/dlb2_intr.c
+ create mode 100644 drivers/misc/dlb2/dlb2_intr.h
+ create mode 100644 drivers/misc/dlb2/dlb2_ioctl.c
+ create mode 100644 drivers/misc/dlb2/dlb2_ioctl.h
+ create mode 100644 drivers/misc/dlb2/dlb2_main.c
+ create mode 100644 drivers/misc/dlb2/dlb2_main.h
+ create mode 100644 drivers/misc/dlb2/dlb2_pf_ops.c
+ create mode 100644 drivers/misc/dlb2/dlb2_regs.h
+ create mode 100644 drivers/misc/dlb2/dlb2_resource.c
+ create mode 100644 drivers/misc/dlb2/dlb2_resource.h
+ create mode 100644 include/uapi/linux/dlb2_user.h
+
+
+base-commit: dd5597245d35cfbb0890b8a868028aa1d2018701
+-- 
+2.13.6
+
