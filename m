@@ -2,51 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42DE25916F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9969C259194
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:53:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728741AbgIAOvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:51:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36146 "EHLO mail.kernel.org"
+        id S1728827AbgIAOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:53:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728506AbgIAOup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:50:45 -0400
+        id S1728469AbgIAOuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:50:51 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8501D206EB;
-        Tue,  1 Sep 2020 14:50:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB76A215A4;
+        Tue,  1 Sep 2020 14:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598971845;
-        bh=ZXbib2oV5w0YlPIh/haYE+UDUt9otm2EZ8ObPawlcOA=;
+        s=default; t=1598971851;
+        bh=fCAv1y//4a6UC8MVETGKggnvPbFkFDYGouK55xIoJqo=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=KZootyeLyjib4y1qrCcS/xBceUm4FEua8DQgAHaJjhfgX7+u4D16kmrSqqBLGSh3D
-         bXvX0dlfHef/j/SyplsIQ7kz5odClVmMG4A4FO32MhAVMV93T4XPS4awe9d1XoK0E3
-         xGl01/tUrNUkhhuiPc+dXN/6wxzxOnBRZAlkG43M=
-Date:   Tue, 01 Sep 2020 15:50:05 +0100
+        b=g4S0BMe/r8cu4FMwk0ntbalQbZsJaQSAhjHnAiabD+OgG0sBV2KQVfFMq+FF0NDV6
+         054WFdeOA6VomWybTpZkwG0dvwGCXdVtM1injYU3jWjUld85qzz8zc93Q2UqHRzWLO
+         XRYipEN0LwQx/gRIv6oBJ+2KgesA+KqvugcK5CEg=
+Date:   Tue, 01 Sep 2020 15:50:11 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>,
-        devicetree@vger.kernel.org
-In-Reply-To: <20200830112633.6732-1-krzk@kernel.org>
-References: <20200830112633.6732-1-krzk@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: sound: midas-audio: Correct parsing sound-dai phandles
-Message-Id: <159897179515.47719.6003518135515395142.b4-ty@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Oder Chiou <oder_chiou@realtek.com>,
+        linux-kernel@vger.kernel.org, cychiang@chromium.org,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20200828162005.1.I4f67f494c4f759b0e5c7f487e040dfdcf16e0876@changeid>
+References: <20200828162005.1.I4f67f494c4f759b0e5c7f487e040dfdcf16e0876@changeid>
+Subject: Re: [PATCH] ASoC: rt5682: Prefer async probe
+Message-Id: <159897179515.47719.15361648860135990824.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 Aug 2020 13:26:32 +0200, Krzysztof Kozlowski wrote:
-> The "sound-dai" property has cells therefore phandle-array should be
-> used, even if it is just one phandle.  This fixes dtbs_check warnings
-> like:
-> 
->   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0:1: missing phandle tag in 0
->   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0: [158, 0] is too long
+On Fri, 28 Aug 2020 16:20:27 -0700, Douglas Anderson wrote:
+> The probe of rt5682 is pretty slow.  A quick measurement shows that it
+> takes ~650 ms on at least one board.  There's no reason to block all
+> other drivers waiting for this probe to finish.  Set the flag to allow
+> other drivers to probe while we're probing.
 
 Applied to
 
@@ -54,10 +51,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: midas-audio: Correct parsing sound-dai phandles
-      commit: 3e7ba1c0432ef9a792b9c77d36f78037626303b0
-[2/2] ASoC: odroid: Use unevaluatedProperties
-      commit: a57307ca6b661e16f9435a25f376ac277c3de697
+[1/1] ASoC: rt5682: Prefer async probe
+      commit: 160c174ff6972bb56bf48ac3335297889839e1f1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
