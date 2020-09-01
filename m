@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824812585E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7315F2585E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgIADAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 23:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
+        id S1727924AbgIADAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 23:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727815AbgIAC76 (ORCPT
+        with ESMTP id S1727842AbgIAC77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 22:59:58 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B7FC06136D
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:59:57 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id i2so7594191qki.19
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:59:57 -0700 (PDT)
+        Mon, 31 Aug 2020 22:59:59 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68073C06137B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:59:59 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 139so5256416qkl.11
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 19:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=NvJ2VnbEYAYNeySI2UMz3nNsuBDzU+DibpijFkeFTwU=;
-        b=rwoP/KzKMTUtfPUdUc5xfgfKCr+yJX1fhhyjbK/Qu4I+MfJ8w7db/YozhmwGZQ5f6H
-         L136ua3tFoFxfUbiWrFqCwJxRMqiZUa2kqSjZPKhfCb4bapTiIigfIZmXX2InxDexVj3
-         aYO1dYhptbQxzVBdZUtv5Wn0PmkHgy0MqyPO4XcE1RhoUof3v+sNTXIOBiPKYeMGASNh
-         orpb9LnrKJFL87+4ef1fb9pAA/jvNlc64vqhJYBclKH3C8kXLPFKs+hofMZkO1kFxEbh
-         PiE1QcRCaDVrdGFV1PhrJikQozhDv4pWnyTpOqeoYHJ639Q79jH9R4rmSBWDvlwK3Vfy
-         0ypg==
+        bh=sMKBHNl6/ZnX2Z7G/QMZIJh0U7nsb/eDujVhyPbAMgY=;
+        b=Lc0M0pPOpGtw5J3TQd8lyCy3Vy2eRpkR3i1FvyU1XsWERPNIY++z4CT8QBIMsB/8Cb
+         xZTaMSUWuZ/oIo1JjxIxAObRSMKumnb332gMI6CgV+vb6H5EM/7V3Pg9jHvLu0N7OiAW
+         yaKWqli2Wq0ucXV1+dok9mLui7mzVhxFRy6WbI3kyfZOjE21mAdD+g6GMsuDI0YZTohO
+         6gWQJLS529qCyFXAU2sanYmLF167T+TQDs/d7yfXlYRaiIhS7YJv2mkWrPK6fqJlj11O
+         9P6wpZBRf+XrUYPIXa5NpM7DGh2jY/bD+jjUKNzrZ2mMOxG9CKessA8YgNj+dwTkzkih
+         iDZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=NvJ2VnbEYAYNeySI2UMz3nNsuBDzU+DibpijFkeFTwU=;
-        b=A0aCIxk11kXSvHpBiC8iEVxaMXKVC8HMUk3CndzpdG3FJu09dW8zVO+17/oJXemYBi
-         tyyAp3gdYqw1z/as8LorBgXwRQg8hLYERCQaG8lb1s2mEMXehqgw3AByoLR9XU0H93xT
-         EZSR8hhOmYZ5/ImaRoXQFCmtr/ycSD8l8xyJXQJZL4Y2kaVjOeRUA8IpjujSHi+d8Gjp
-         /1iaVOIjUw3VnosrcJcBWt04ZMK1EZqNK2qAE/qQ7qSZOspgxAOZfIOpbw9Fi8jeo8hm
-         9F17JK1+LbIZ/negIJV4kK0f0ZhZpE8HhO+PxkqGSTHNOBAFDTDTZZiJV0GCnBUZ2am/
-         8XcA==
-X-Gm-Message-State: AOAM532DLRxXVx9+BlWICx1C4ZXCoi7FAiYserhw/UislYdV8GqcN5Ez
-        KY2zQGDLdpzV5Bbyz0AhSrCQJPujJdY=
-X-Google-Smtp-Source: ABdhPJxSporgvmLh9JheFlcNPScXLScZEU1MaP/rF9Bjioud2QC52nSdQni9PtIlbiLeYYowS1Ol3sUXok8=
+        bh=sMKBHNl6/ZnX2Z7G/QMZIJh0U7nsb/eDujVhyPbAMgY=;
+        b=mjfusbBE9ql8bwSXP7q6TOjKzmjvlJSqBHUZoABBbPe7ojUW7zcgtrIik8Rvegu+a4
+         KoFntmtB6fsjkvQnDnLqskQ6+WVDIfDQ6oHnBtmSZg+2hwul2sW8M1fdwAzP+nPthGmK
+         /d/ioaEIc3GWzJPs28bty5lDi30m+68wZbeaiLqaUUrZtsIYGIOgEiDMgwJ/ZziDC6K4
+         O8RDPhFrcEUYtCi2sW6so7iY0Mp/fwuyoWd8Xdn0Syv4hAoDjN8sOG0tMFetfTkxAk4y
+         frb2Ss0b481R+u9OVSiboGLtiYXYaE9nKMTS823coPBwvs4mTdKXsGFj2xHQUsp9T+9+
+         cf0g==
+X-Gm-Message-State: AOAM532WmCmUutpmb4p9QD11eXU5BvkLsH6GnVLkvLsU9uTjSzc6sfMf
+        zLReOGqa/ftEo1aJJ0XXdURzdRHc7ew=
+X-Google-Smtp-Source: ABdhPJxx6aqt4vm8qU+0zPtj+sU1OUbh+tp3Mzgs8W9KTWNhYpiHiqDxFx4G/vul6U6GyHMLj/PsrZcf93E=
 X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:1:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a0c:b2d4:: with SMTP id d20mr1399687qvf.1.1598929196808;
- Mon, 31 Aug 2020 19:59:56 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 19:59:26 -0700
+ (user=badhri job=sendgmr) by 2002:a05:6214:2a:: with SMTP id
+ b10mr314451qvr.0.1598929198619; Mon, 31 Aug 2020 19:59:58 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 19:59:27 -0700
 In-Reply-To: <20200901025927.3596190-1-badhri@google.com>
-Message-Id: <20200901025927.3596190-14-badhri@google.com>
+Message-Id: <20200901025927.3596190-15-badhri@google.com>
 Mime-Version: 1.0
 References: <20200901025927.3596190-1-badhri@google.com>
 X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH v6 13/14] usb: typec: tcpci: Implement Auto discharge
- disconnect callbacks
+Subject: [PATCH v6 14/14] usb: typec: tcpci_maxim: Implemnent set_auto_vbus_discharge_threshold
 From:   Badhri Jagan Sridharan <badhri@google.com>
 To:     Guenter Roeck <linux@roeck-us.net>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
@@ -65,149 +64,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement callbacks for enabling/disabling
-POWER_CONTROL.AutoDischargeDisconnect.
+Programs VBUS_SINK_DISCONNECT_THRESHOLD based on the power_role,
+voltage requested as sink, mode of operation.
 
-TCPCI spec allows TCPC hardware to autonomously discharge the vbus
-capacitance upon disconnect. The expectation is that the TCPM enables
-AutoDischargeDisconnect while entering SNK/SRC_ATTACHED states. Hardware
-then automously discharges vbus when the vbus falls below a certain
-threshold i.e. VBUS_SINK_DISCONNECT_THRESHOLD.
-
-Apart from enabling the vbus discharge circuit, AutoDischargeDisconnect
-is also used a flag to move TCPCI based TCPC implementations into
-Attached.Snk/Attached.Src state as mentioned in
-Figure 4-15. TCPC State Diagram before a Connection of the
-USB Type-C Port Controller Interface Specification.
-In such TCPC implementations, setting AutoDischargeDisconnect would
-prevent TCPC into entering "Connection_Invalid" state as well.
+The programmed threshold is based on vSinkDisconnect and
+vSinkDisconnectPD values.
 
 Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 ---
 Changes since v1:
 - Changing patch version to v6 to fix version number confusion.
 ---
- drivers/usb/typec/tcpm/tcpci.c | 33 +++++++++++++++++++++++++++++++++
- drivers/usb/typec/tcpm/tcpci.h | 22 ++++++++++++++++++++--
- 2 files changed, 53 insertions(+), 2 deletions(-)
+ drivers/usb/typec/tcpm/tcpci_maxim.c | 48 ++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
-index f9f0af64da5f..4ca64e8c8fe8 100644
---- a/drivers/usb/typec/tcpm/tcpci.c
-+++ b/drivers/usb/typec/tcpm/tcpci.c
-@@ -268,6 +268,33 @@ static int tcpci_set_vconn(struct tcpc_dev *tcpc, bool enable)
- 				enable ? TCPC_POWER_CTRL_VCONN_ENABLE : 0);
+diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
+index 6ba808ad901a..e35bd995c037 100644
+--- a/drivers/usb/typec/tcpm/tcpci_maxim.c
++++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
+@@ -137,6 +137,52 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
+ 		return;
  }
  
-+static int tcpci_enable_auto_vbus_discharge(struct tcpc_dev *dev, bool enable)
++static int max_tcpci_set_auto_vbus_discharge_threshold(struct tcpci *tcpci, struct tcpci_data *data,
++						       enum typec_role port_role,
++						       enum typec_pwr_opmode mode, bool pps_active,
++						       u32 requested_vbus_voltage_mv)
 +{
-+	struct tcpci *tcpci = tcpc_to_tcpci(dev);
-+	int ret;
++	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
++	u32 threshold = 0;
++	u8 pwr_ctrl;
 +
-+	ret = regmap_update_bits(tcpci->regmap, TCPC_POWER_CTRL, TCPC_POWER_CTRL_AUTO_DISCHARGE,
-+				 enable ? TCPC_POWER_CTRL_AUTO_DISCHARGE : 0);
-+	return ret;
-+}
++	/*
++	 * Indicates that vbus is going to go away due PR_SWAP, hard reset etc.
++	 * Do not discharge vbus here.
++	 */
++	if (requested_vbus_voltage_mv == 0)
++		goto write_thresh;
 +
-+static int tcpci_set_auto_vbus_discharge_threshold(struct tcpc_dev *dev, enum typec_role port_role,
-+						   enum typec_pwr_opmode mode, bool pps_active,
-+						   u32 requested_vbus_voltage)
-+{
-+	struct tcpci *tcpci = tcpc_to_tcpci(dev);
-+	int (*set_auto_vbus_threshold)(struct tcpci *tcpci, struct tcpci_data *data,
-+				       enum typec_role port_role, enum typec_pwr_opmode mode,
-+				       bool pps_active, u32 requested_vbus_voltage);
-+
-+	set_auto_vbus_threshold = tcpci->data->set_auto_vbus_discharge_threshold;
-+	if (set_auto_vbus_threshold)
-+		return set_auto_vbus_threshold(tcpci, tcpci->data, port_role, mode, pps_active,
-+					       requested_vbus_voltage);
-+
-+	return 0;
-+}
-+
- static int tcpci_enable_frs(struct tcpc_dev *dev, bool enable)
- {
- 	struct tcpci *tcpci = tcpc_to_tcpci(dev);
-@@ -629,6 +656,12 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
- 	tcpci->tcpc.set_bist_data = tcpci_set_bist_data;
- 	tcpci->tcpc.enable_frs = tcpci_enable_frs;
- 
-+	if (tcpci->data->auto_discharge_disconnect) {
-+		tcpci->tcpc.enable_auto_vbus_discharge = tcpci_enable_auto_vbus_discharge;
-+		tcpci->tcpc.set_auto_vbus_discharge_threshold =
-+			tcpci_set_auto_vbus_discharge_threshold;
++	if (port_role == TYPEC_SINK) {
++		max_tcpci_read8(chip, TCPC_POWER_CTRL, &pwr_ctrl);
++		if (pwr_ctrl & TCPC_FAST_ROLE_SWAP_EN) {
++			/* To prevent disconnect when the source is fast role swap is capable. */
++			threshold = 3500;
++		} else if (mode == TYPEC_PWR_MODE_PD) {
++			if (pps_active)
++				threshold = (95 * requested_vbus_voltage_mv / 100) - 850;
++			else
++				threshold = (95 * requested_vbus_voltage_mv / 100) - 1250;
++		} else {
++			/* 3.5V for non-pd sink */
++			threshold = 3500;
++		}
++	} else {
++		/* 4V for source */
++		threshold = 4000;
 +	}
 +
- 	err = tcpci_parse_config(tcpci);
- 	if (err < 0)
- 		return ERR_PTR(err);
-diff --git a/drivers/usb/typec/tcpm/tcpci.h b/drivers/usb/typec/tcpm/tcpci.h
-index 5ef07a56d67a..6a0aea34e544 100644
---- a/drivers/usb/typec/tcpm/tcpci.h
-+++ b/drivers/usb/typec/tcpm/tcpci.h
-@@ -8,6 +8,8 @@
- #ifndef __LINUX_USB_TCPCI_H
- #define __LINUX_USB_TCPCI_H
- 
-+#include <linux/usb/typec.h>
++	threshold = threshold / TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB;
 +
- #define TCPC_VENDOR_ID			0x0
- #define TCPC_PRODUCT_ID			0x2
- #define TCPC_BCD_DEV			0x4
-@@ -67,6 +69,7 @@
- 
- #define TCPC_POWER_CTRL			0x1c
- #define TCPC_POWER_CTRL_VCONN_ENABLE	BIT(0)
-+#define TCPC_POWER_CTRL_AUTO_DISCHARGE	BIT(4)
- #define TCPC_FAST_ROLE_SWAP_EN		BIT(7)
- 
- #define TCPC_CC_STATUS			0x1d
-@@ -133,6 +136,8 @@
- 
- #define TCPC_VBUS_VOLTAGE			0x70
- #define TCPC_VBUS_SINK_DISCONNECT_THRESH	0x72
-+#define TCPC_VBUS_SINK_DISCONNECT_THRESH_LSB	25
-+#define TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX	1023
- #define TCPC_VBUS_STOP_DISCHARGE_THRESH		0x74
- #define TCPC_VBUS_VOLTAGE_ALARM_HI_CFG		0x76
- #define TCPC_VBUS_VOLTAGE_ALARM_LO_CFG		0x78
-@@ -140,20 +145,33 @@
- /* I2C_WRITE_BYTE_COUNT + 1 when TX_BUF_BYTE_x is only accessible I2C_WRITE_BYTE_COUNT */
- #define TCPC_TRANSMIT_BUFFER_MAX_LEN		31
- 
-+struct tcpci;
++	if (threshold > TCPC_VBUS_SINK_DISCONNECT_THRESH_MAX) {
++		dev_err(chip->dev, "VBUS_SINK_DISCONNECT_THRESH out of range");
++		return -EINVAL;
++	}
 +
- /*
-- * @TX_BUF_BYTE_x_hidden
-+ * @TX_BUF_BYTE_x_hidden:
-  *		optional; Set when TX_BUF_BYTE_x can only be accessed through I2C_WRITE_BYTE_COUNT.
-+ * @auto_discharge_disconnect:
-+ *		Optional; Enables TCPC to autonously discharge vbus on disconnect.
-+ * @set_auto_vbus_discharge_threshold:
-+ *		Mandatory when @auto_discharge_disconnect is sets. Allows
-+ *		programming the voltage threshold of vbus below which TCPC
-+ *		enables the vbus discharge circuit.
-  */
--struct tcpci;
- struct tcpci_data {
- 	struct regmap *regmap;
- 	unsigned char TX_BUF_BYTE_x_hidden:1;
-+	unsigned char auto_discharge_disconnect:1;
++write_thresh:
++	return max_tcpci_write16(chip, TCPC_VBUS_SINK_DISCONNECT_THRESH, threshold);
++}
 +
- 	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
- 	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
- 			 bool enable);
- 	int (*start_drp_toggling)(struct tcpci *tcpci, struct tcpci_data *data,
- 				  enum typec_cc_status cc);
- 	int (*set_vbus)(struct tcpci *tcpci, struct tcpci_data *data, bool source, bool sink);
-+	int (*set_auto_vbus_discharge_threshold)(struct tcpci *tcpci, struct tcpci_data *data,
-+						 enum typec_role port_role,
-+						 enum typec_pwr_opmode mode, bool pps_active,
-+						 u32 requested_vbus_voltage);
- };
+ static void process_rx(struct max_tcpci_chip *chip, u16 status)
+ {
+ 	struct pd_message msg;
+@@ -454,6 +500,8 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
+ 	chip->data.start_drp_toggling = max_tcpci_start_toggling;
+ 	chip->data.TX_BUF_BYTE_x_hidden = true;
+ 	chip->data.init = tcpci_init;
++	chip->data.set_auto_vbus_discharge_threshold = max_tcpci_set_auto_vbus_discharge_threshold;
++	chip->data.auto_discharge_disconnect = true;
  
- struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data);
+ 	max_tcpci_init_regs(chip);
+ 	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
 -- 
 2.28.0.402.g5ffc5be6b7-goog
 
