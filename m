@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73FF52592BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B852592FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgIAPQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:16:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59684 "EHLO mail.kernel.org"
+        id S1729016AbgIAPTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729205AbgIAPPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:15:24 -0400
+        id S1729436AbgIAPRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:17:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BF8E206FA;
-        Tue,  1 Sep 2020 15:15:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39E04214F1;
+        Tue,  1 Sep 2020 15:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973323;
-        bh=rf6r7FGrSusW9nyMm5YZNR5hcVa8B0478aduwuw7Vwc=;
+        s=default; t=1598973472;
+        bh=qy/zy7/k3qprHoSgslxOorRcVvl71aW5F34JsIVxdt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IFwS+WC0AWp3Ip1VGethaUmBGaRYvnPgt1EjHXXsMmPwHWXNmtgnNugwM4HlUXFKv
-         l9OS2uHPoHLp/rYQ2FYB6f1gakza4UAK1N0iy/OY7O2/8DUXGOpX4pb9TAklHbPjVq
-         jgnXMSIe5weeJJF7xwKhsSJUQQgp5XtNMNFCAKxE=
+        b=lSphPAGaVVE4y7+n6hIIX6dUfKz5RW/XgesJJCn5vht/9xBhLv6PuCHJiokHUWj0X
+         +cE5lf0oDHoUgc1p/QI2+zkMGNSb4mtwxh9Dx1dp33xWtVCbqNG4tVhMbGHu/TS7ii
+         LuAMOwapWwjNTCadxneMv4bzhmqbx+eeVETj5/SI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, JiangYu <lnsyyj@hotmail.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 09/78] arm64: dts: qcom: msm8916: Pull down PDM GPIOs during sleep
-Date:   Tue,  1 Sep 2020 17:09:45 +0200
-Message-Id: <20200901150925.197140912@linuxfoundation.org>
+Subject: [PATCH 4.14 13/91] scsi: target: tcmu: Fix crash on ARM during cmd completion
+Date:   Tue,  1 Sep 2020 17:09:47 +0200
+Message-Id: <20200901150928.768711010@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,42 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Bodo Stroesser <bstroesser@ts.fujitsu.com>
 
-[ Upstream commit e2ee9edc282961783d519c760bbaa20fed4dec38 ]
+[ Upstream commit 5a0c256d96f020e4771f6fd5524b80f89a2d3132 ]
 
-The original qcom kernel changed the PDM GPIOs to be pull-down
-during sleep at some point. Reportedly this was done because
-there was some "leakage at PDM outputs during sleep":
+If tcmu_handle_completions() has to process a padding shorter than
+sizeof(struct tcmu_cmd_entry), the current call to
+tcmu_flush_dcache_range() with sizeof(struct tcmu_cmd_entry) as length
+param is wrong and causes crashes on e.g. ARM, because
+tcmu_flush_dcache_range() in this case calls
+flush_dcache_page(vmalloc_to_page(start)); with start being an invalid
+address above the end of the vmalloc'ed area.
 
-  https://source.codeaurora.org/quic/la/kernel/msm-3.10/commit/?id=0f87e08c1cd3e6484a6f7fb3e74e37340bdcdee0
+The fix is to use the minimum of remaining ring space and sizeof(struct
+tcmu_cmd_entry) as the length param.
 
-I cannot say how effective this is, but everything seems to work
-fine with this change so let's apply the same to mainline just
-to be sure.
+The patch was tested on kernel 4.19.118.
 
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20200605185916.318494-3-stephan@gerhold.net
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+See https://bugzilla.kernel.org/show_bug.cgi?id=208045#c10
+
+Link: https://lore.kernel.org/r/20200629093756.8947-1-bstroesser@ts.fujitsu.com
+Tested-by: JiangYu <lnsyyj@hotmail.com>
+Acked-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Bodo Stroesser <bstroesser@ts.fujitsu.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916-pins.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/target/target_core_user.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-index fabc0cebe2aa2..1f9ff2cea2151 100644
---- a/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916-pins.dtsi
-@@ -555,7 +555,7 @@
- 				pins = "gpio63", "gpio64", "gpio65", "gpio66",
- 				       "gpio67", "gpio68";
- 				drive-strength = <2>;
--				bias-disable;
-+				bias-pull-down;
- 			};
- 		};
- 	};
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index c4a5fb6f038fc..96601fda47b18 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -997,7 +997,14 @@ static unsigned int tcmu_handle_completions(struct tcmu_dev *udev)
+ 		struct tcmu_cmd_entry *entry = (void *) mb + CMDR_OFF + udev->cmdr_last_cleaned;
+ 		struct tcmu_cmd *cmd;
+ 
+-		tcmu_flush_dcache_range(entry, sizeof(*entry));
++		/*
++		 * Flush max. up to end of cmd ring since current entry might
++		 * be a padding that is shorter than sizeof(*entry)
++		 */
++		size_t ring_left = head_to_end(udev->cmdr_last_cleaned,
++					       udev->cmdr_size);
++		tcmu_flush_dcache_range(entry, ring_left < sizeof(*entry) ?
++					ring_left : sizeof(*entry));
+ 
+ 		if (tcmu_hdr_get_op(entry->hdr.len_op) == TCMU_OP_PAD) {
+ 			UPDATE_HEAD(udev->cmdr_last_cleaned,
 -- 
 2.25.1
 
