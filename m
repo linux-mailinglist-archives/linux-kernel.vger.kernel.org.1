@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68140259309
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD7B2592B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729605AbgIAPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:20:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
+        id S1729206AbgIAPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:15:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729490AbgIAPSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:22 -0400
+        id S1729070AbgIAPO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:14:56 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5CF9206EB;
-        Tue,  1 Sep 2020 15:18:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5321206FA;
+        Tue,  1 Sep 2020 15:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973502;
-        bh=Lj8KoI+teNo/4KtB8pvPKE4MgbiKSTb6IqPldKFfLw4=;
+        s=default; t=1598973296;
+        bh=vf8P7knMKxAd8czp29JUejgGx8ytmQ5ofKwx9f36CKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uxhUgHf1q/MMyIJVB3js1P7HQTtr5rsQ3CeKYWA/Zbe+WBNHX5muwE4Rknqy0LERi
-         jwNvb9LNgXEyIT2XyNl8VZlOgL+6jjp9ajn2z+BZ3sc4+ylPkEWPn9z9I1N+I4gqRn
-         Oi7Yqwpkz4221+ZvnFXv7AytHIYxUTYQx1kfGzQk=
+        b=AfcnwuPOulqVu2loWh0rnypGxWGovd4Jtf46prfkxMwwwvB50Lu51AOP5DZ5g8DIp
+         Om/LdXVV6V+dsiThQSXt5a1FGB434cQrXOu7qw0UzZFWVYAwU4LUUuKfTgIM7RFKkA
+         BwPZzDJahH5PmOkH0gB609Ot/SO0/Qa1TWeRlFlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 24/91] PCI: Fix pci_create_slot() reference count leak
+Subject: [PATCH 4.9 22/78] PCI: Fix pci_create_slot() reference count leak
 Date:   Tue,  1 Sep 2020 17:09:58 +0200
-Message-Id: <20200901150929.361696281@linuxfoundation.org>
+Message-Id: <20200901150925.857660977@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,10 +66,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
-index e42909524deed..379925fc49d4e 100644
+index 429d34c348b9f..01a343ad7155c 100644
 --- a/drivers/pci/slot.c
 +++ b/drivers/pci/slot.c
-@@ -303,13 +303,16 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+@@ -303,13 +303,16 @@ placeholder:
  	slot_name = make_slot_name(name);
  	if (!slot_name) {
  		err = -ENOMEM;
@@ -87,7 +87,7 @@ index e42909524deed..379925fc49d4e 100644
  
  	INIT_LIST_HEAD(&slot->list);
  	list_add(&slot->list, &parent->slots);
-@@ -328,7 +331,6 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+@@ -328,7 +331,6 @@ out:
  	mutex_unlock(&pci_slot_mutex);
  	return slot;
  err:
