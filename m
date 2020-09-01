@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE5259B0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C37259AB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729649AbgIAPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:23:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
+        id S1732435AbgIAQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:53:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729635AbgIAPUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:20:52 -0400
+        id S1730041AbgIAPZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:25:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43F4E206EB;
-        Tue,  1 Sep 2020 15:20:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63CA6206FA;
+        Tue,  1 Sep 2020 15:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973651;
-        bh=EqPliGIz8LkLYmz7yNFkXSKHzPxpvzdAIlvfctSHUJY=;
+        s=default; t=1598973930;
+        bh=YN6z6t1igdxdmPtWM9p/oZkiYtSvg0xJAQvZjA5iT0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sKsTbmbZc7FswZl790GhFf3a4S3e15qyxV/GFfmTh3puMvmHWXt6id0yZ/0eKlKQz
-         XHeS5QjstlSUXf4YdteRJTHnF87u4Gw290VXj50TU+dIFKPM9LTpOrsF5/v7M1r4Uf
-         J5FwcN1yo4wIt8JLniKv9LvEzO5ScVDfgDJUcwWo=
+        b=ktkVQIX+G1hrOiRhMl7LCmFfvykxTBFMjXx9w/D1nbZKObX3SNQ+ad8Zle6bbD1Qt
+         4En5F01vNCnidjo6IX3+N1xMWRFCNqGir1ZvngYHlgh9tzo0q20O6XZjoWB4qZbYD7
+         lyaXuHHgHWSxGb3RRI8YUSjAHe4tk0vGw6D4RUK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ilja Van Sprundel <ivansprundel@ioactive.com>,
-        Brooke Basile <brookebasile@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>, stable <stable@kernel.org>
-Subject: [PATCH 4.14 84/91] USB: gadget: f_ncm: add bounds checks to ncm_unwrap_ntb()
-Date:   Tue,  1 Sep 2020 17:10:58 +0200
-Message-Id: <20200901150932.342721290@linuxfoundation.org>
+        stable@vger.kernel.org, qiuguorui1 <qiuguorui1@huawei.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.19 104/125] irqchip/stm32-exti: Avoid losing interrupts due to clearing pending bits by mistake
+Date:   Tue,  1 Sep 2020 17:10:59 +0200
+Message-Id: <20200901150939.704632067@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,178 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brooke Basile <brookebasile@gmail.com>
+From: qiuguorui1 <qiuguorui1@huawei.com>
 
-commit 2b74b0a04d3e9f9f08ff026e5663dce88ff94e52 upstream.
+commit e579076ac0a3bebb440fab101aef3c42c9f4c709 upstream.
 
-Some values extracted by ncm_unwrap_ntb() could possibly lead to several
-different out of bounds reads of memory.  Specifically the values passed
-to netdev_alloc_skb_ip_align() need to be checked so that memory is not
-overflowed.
+In the current code, when the eoi callback of the exti clears the pending
+bit of the current interrupt, it will first read the values of fpr and
+rpr, then logically OR the corresponding bit of the interrupt number,
+and finally write back to fpr and rpr.
 
-Resolve this by applying bounds checking to a number of different
-indexes and lengths of the structure parsing logic.
+We found through experiments that if two exti interrupts,
+we call them int1/int2, arrive almost at the same time. in our scenario,
+the time difference is 30 microseconds, assuming int1 is triggered first.
 
-Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
-Signed-off-by: Brooke Basile <brookebasile@gmail.com>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@kernel.org>
+there will be an extreme scenario: both int's pending bit are set to 1,
+the irq handle of int1 is executed first, and eoi handle is then executed,
+at this moment, all pending bits are cleared, but the int 2 has not
+finally been reported to the cpu yet, which eventually lost int2.
+
+According to stm32's TRM description about rpr and fpr: Writing a 1 to this
+bit will trigger a rising edge event on event x, Writing 0 has no
+effect.
+
+Therefore, when clearing the pending bit, we only need to clear the
+pending bit of the irq.
+
+Fixes: 927abfc4461e7 ("irqchip/stm32: Add stm32mp1 support with hierarchy domain")
+Signed-off-by: qiuguorui1 <qiuguorui1@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org # v4.18+
+Link: https://lore.kernel.org/r/20200820031629.15582-1-qiuguorui1@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/function/f_ncm.c |   81 ++++++++++++++++++++++++++++++------
- 1 file changed, 69 insertions(+), 12 deletions(-)
+ drivers/irqchip/irq-stm32-exti.c |   14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -1202,12 +1202,15 @@ static int ncm_unwrap_ntb(struct gether
- 	int		ndp_index;
- 	unsigned	dg_len, dg_len2;
- 	unsigned	ndp_len;
-+	unsigned	block_len;
- 	struct sk_buff	*skb2;
- 	int		ret = -EINVAL;
--	unsigned	max_size = le32_to_cpu(ntb_parameters.dwNtbOutMaxSize);
-+	unsigned	ntb_max = le32_to_cpu(ntb_parameters.dwNtbOutMaxSize);
-+	unsigned	frame_max = le16_to_cpu(ecm_desc.wMaxSegmentSize);
- 	const struct ndp_parser_opts *opts = ncm->parser_opts;
- 	unsigned	crc_len = ncm->is_crc ? sizeof(uint32_t) : 0;
- 	int		dgram_counter;
-+	bool		ndp_after_header;
+--- a/drivers/irqchip/irq-stm32-exti.c
++++ b/drivers/irqchip/irq-stm32-exti.c
+@@ -382,6 +382,16 @@ static void stm32_irq_ack(struct irq_dat
+ 	irq_gc_unlock(gc);
+ }
  
- 	/* dwSignature */
- 	if (get_unaligned_le32(tmp) != opts->nth_sign) {
-@@ -1226,25 +1229,37 @@ static int ncm_unwrap_ntb(struct gether
- 	}
- 	tmp++; /* skip wSequence */
- 
-+	block_len = get_ncm(&tmp, opts->block_length);
- 	/* (d)wBlockLength */
--	if (get_ncm(&tmp, opts->block_length) > max_size) {
-+	if (block_len > ntb_max) {
- 		INFO(port->func.config->cdev, "OUT size exceeded\n");
- 		goto err;
- 	}
- 
- 	ndp_index = get_ncm(&tmp, opts->ndp_index);
-+	ndp_after_header = false;
- 
- 	/* Run through all the NDP's in the NTB */
- 	do {
--		/* NCM 3.2 */
--		if (((ndp_index % 4) != 0) &&
--				(ndp_index < opts->nth_size)) {
-+		/*
-+		 * NCM 3.2
-+		 * dwNdpIndex
-+		 */
-+		if (((ndp_index % 4) != 0) ||
-+				(ndp_index < opts->nth_size) ||
-+				(ndp_index > (block_len -
-+					      opts->ndp_size))) {
- 			INFO(port->func.config->cdev, "Bad index: %#X\n",
- 			     ndp_index);
- 			goto err;
- 		}
-+		if (ndp_index == opts->nth_size)
-+			ndp_after_header = true;
- 
--		/* walk through NDP */
-+		/*
-+		 * walk through NDP
-+		 * dwSignature
-+		 */
- 		tmp = (void *)(skb->data + ndp_index);
- 		if (get_unaligned_le32(tmp) != ncm->ndp_sign) {
- 			INFO(port->func.config->cdev, "Wrong NDP SIGN\n");
-@@ -1255,14 +1270,15 @@ static int ncm_unwrap_ntb(struct gether
- 		ndp_len = get_unaligned_le16(tmp++);
- 		/*
- 		 * NCM 3.3.1
-+		 * wLength
- 		 * entry is 2 items
- 		 * item size is 16/32 bits, opts->dgram_item_len * 2 bytes
- 		 * minimal: struct usb_cdc_ncm_ndpX + normal entry + zero entry
- 		 * Each entry is a dgram index and a dgram length.
- 		 */
- 		if ((ndp_len < opts->ndp_size
--				+ 2 * 2 * (opts->dgram_item_len * 2))
--				|| (ndp_len % opts->ndplen_align != 0)) {
-+				+ 2 * 2 * (opts->dgram_item_len * 2)) ||
-+				(ndp_len % opts->ndplen_align != 0)) {
- 			INFO(port->func.config->cdev, "Bad NDP length: %#X\n",
- 			     ndp_len);
- 			goto err;
-@@ -1279,8 +1295,21 @@ static int ncm_unwrap_ntb(struct gether
- 
- 		do {
- 			index = index2;
-+			/* wDatagramIndex[0] */
-+			if ((index < opts->nth_size) ||
-+					(index > block_len - opts->dpe_size)) {
-+				INFO(port->func.config->cdev,
-+				     "Bad index: %#X\n", index);
-+				goto err;
-+			}
++/* directly set the target bit without reading first. */
++static inline void stm32_exti_write_bit(struct irq_data *d, u32 reg)
++{
++	struct stm32_exti_chip_data *chip_data = irq_data_get_irq_chip_data(d);
++	void __iomem *base = chip_data->host_data->base;
++	u32 val = BIT(d->hwirq % IRQS_PER_BANK);
 +
- 			dg_len = dg_len2;
--			if (dg_len < 14 + crc_len) { /* ethernet hdr + crc */
-+			/*
-+			 * wDatagramLength[0]
-+			 * ethernet hdr + crc or larger than max frame size
-+			 */
-+			if ((dg_len < 14 + crc_len) ||
-+					(dg_len > frame_max)) {
- 				INFO(port->func.config->cdev,
- 				     "Bad dgram length: %#X\n", dg_len);
- 				goto err;
-@@ -1304,6 +1333,37 @@ static int ncm_unwrap_ntb(struct gether
- 			index2 = get_ncm(&tmp, opts->dgram_item_len);
- 			dg_len2 = get_ncm(&tmp, opts->dgram_item_len);
++	writel_relaxed(val, base + reg);
++}
++
+ static inline u32 stm32_exti_set_bit(struct irq_data *d, u32 reg)
+ {
+ 	struct stm32_exti_chip_data *chip_data = irq_data_get_irq_chip_data(d);
+@@ -415,9 +425,9 @@ static void stm32_exti_h_eoi(struct irq_
  
-+			if (index2 == 0 || dg_len2 == 0)
-+				break;
-+
-+			/* wDatagramIndex[1] */
-+			if (ndp_after_header) {
-+				if (index2 < opts->nth_size + opts->ndp_size) {
-+					INFO(port->func.config->cdev,
-+					     "Bad index: %#X\n", index2);
-+					goto err;
-+				}
-+			} else {
-+				if (index2 < opts->nth_size + opts->dpe_size) {
-+					INFO(port->func.config->cdev,
-+					     "Bad index: %#X\n", index2);
-+					goto err;
-+				}
-+			}
-+			if (index2 > block_len - opts->dpe_size) {
-+				INFO(port->func.config->cdev,
-+				     "Bad index: %#X\n", index2);
-+				goto err;
-+			}
-+
-+			/* wDatagramLength[1] */
-+			if ((dg_len2 < 14 + crc_len) ||
-+					(dg_len2 > frame_max)) {
-+				INFO(port->func.config->cdev,
-+				     "Bad dgram length: %#X\n", dg_len);
-+				goto err;
-+			}
-+
- 			/*
- 			 * Copy the data into a new skb.
- 			 * This ensures the truesize is correct
-@@ -1320,9 +1380,6 @@ static int ncm_unwrap_ntb(struct gether
- 			ndp_len -= 2 * (opts->dgram_item_len * 2);
+ 	raw_spin_lock(&chip_data->rlock);
  
- 			dgram_counter++;
--
--			if (index2 == 0 || dg_len2 == 0)
--				break;
- 		} while (ndp_len > 2 * (opts->dgram_item_len * 2));
- 	} while (ndp_index);
+-	stm32_exti_set_bit(d, stm32_bank->rpr_ofst);
++	stm32_exti_write_bit(d, stm32_bank->rpr_ofst);
+ 	if (stm32_bank->fpr_ofst != UNDEF_REG)
+-		stm32_exti_set_bit(d, stm32_bank->fpr_ofst);
++		stm32_exti_write_bit(d, stm32_bank->fpr_ofst);
+ 
+ 	raw_spin_unlock(&chip_data->rlock);
  
 
 
