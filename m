@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43D7259A7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C022598E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:36:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732305AbgIAQuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52434 "EHLO mail.kernel.org"
+        id S1730559AbgIAP3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbgIAP0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:26:37 -0400
+        id S1730131AbgIAP0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:26:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2943C20684;
-        Tue,  1 Sep 2020 15:26:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADC5B206FA;
+        Tue,  1 Sep 2020 15:26:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973996;
-        bh=DG9OHfeW8F6tLrVgd2ohMmxBtikjb2q/Qyou/zTJanM=;
+        s=default; t=1598973999;
+        bh=jjDMnBfV2kf4oqJ8ZC0kEzNA16gpPYlYpFDeXHx93tc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCFzsBvPwrSo900z9U2+8Fl33Lw4G40ZmuvXccmf3QTSedcX0wE9PE0+5QZfFTV/W
-         s+qQ3tPq7XfFwdbpd033yvQvDZuQIiFoFYJ867gh29w5tq69p0A7ggKLPjIWASl3cn
-         /MAHTOSYebNU/Tr3JMkrHZX7ln8lTHDOgFbLUuJI=
+        b=TK0tQUh1tsSVYRM0He7RZjnsFXOLVVoS+mECYVgaoV8D/259+kSKNPmw3Zr6nAzvM
+         U2kdQbFS1NHbieyoB28WWCJpc9BFkSL9hu9WeMsoChNn95zp/TOYx5LT5sU0LJG7Oo
+         eJJ5MBGnpWwa9hNZSJWhEJ1QUlXy5FX2a47gx0d8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ding Hui <dinghui@sangfor.com.cn>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.19 100/125] xhci: Always restore EP_SOFT_CLEAR_TOGGLE even if ep reset failed
-Date:   Tue,  1 Sep 2020 17:10:55 +0200
-Message-Id: <20200901150939.506712849@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Utkarsh H Patel <utkarsh.h.patel@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: [PATCH 4.19 101/125] PM: sleep: core: Fix the handling of pending runtime resume requests
+Date:   Tue,  1 Sep 2020 17:10:56 +0200
+Message-Id: <20200901150939.557264880@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
 References: <20200901150934.576210879@linuxfoundation.org>
@@ -43,55 +46,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ding Hui <dinghui@sangfor.com.cn>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit f1ec7ae6c9f8c016db320e204cb519a1da1581b8 upstream.
+commit e3eb6e8fba65094328b8dca635d00de74ba75b45 upstream.
 
-Some device drivers call libusb_clear_halt when target ep queue
-is not empty. (eg. spice client connected to qemu for usb redir)
+It has been reported that system-wide suspend may be aborted in the
+absence of any wakeup events due to unforseen interactions of it with
+the runtume PM framework.
 
-Before commit f5249461b504 ("xhci: Clear the host side toggle
-manually when endpoint is soft reset"), that works well.
-But now, we got the error log:
+One failing scenario is when there are multiple devices sharing an
+ACPI power resource and runtime-resume needs to be carried out for
+one of them during system-wide suspend (for example, because it needs
+to be reconfigured before the whole system goes to sleep).  In that
+case, the runtime-resume of that device involves turning the ACPI
+power resource "on" which in turn causes runtime-resume requests
+to be queued up for all of the other devices sharing it.  Those
+requests go to the runtime PM workqueue which is frozen during
+system-wide suspend, so they are not actually taken care of until
+the resume of the whole system, but the pm_runtime_barrier()
+call in __device_suspend() sees them and triggers system wakeup
+events for them which then cause the system-wide suspend to be
+aborted if wakeup source objects are in active use.
 
-    EP not empty, refuse reset
+Of course, the logic that leads to triggering those wakeup events is
+questionable in the first place, because clearly there are cases in
+which a pending runtime resume request for a device is not connected
+to any real wakeup events in any way (like the one above).  Moreover,
+it is racy, because the device may be resuming already by the time
+the pm_runtime_barrier() runs and so if the driver doesn't take care
+of signaling the wakeup event as appropriate, it will be lost.
+However, if the driver does take care of that, the extra
+pm_wakeup_event() call in the core is redundant.
 
-xhci_endpoint_reset failed and left ep_state's EP_SOFT_CLEAR_TOGGLE
-bit still set
+Accordingly, drop the conditional pm_wakeup_event() call fron
+__device_suspend() and make the latter call pm_runtime_barrier()
+alone.  Also modify the comment next to that call to reflect the new
+code and extend it to mention the need to avoid unwanted interactions
+between runtime PM and system-wide device suspend callbacks.
 
-So all the subsequent urb sumbits to the ep will fail with the
-warn log:
-
-    Can't enqueue URB while manually clearing toggle
-
-We need to clear ep_state EP_SOFT_CLEAR_TOGGLE bit after
-xhci_endpoint_reset, even if it failed.
-
-Fixes: f5249461b504 ("xhci: Clear the host side toggle manually when endpoint is soft reset")
-Cc: stable <stable@vger.kernel.org> # v4.17+
-Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200821091549.20556-4-mathias.nyman@linux.intel.com
+Fixes: 1e2ef05bb8cf8 ("PM: Limit race conditions between runtime PM and system sleep (v2)")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Tested-by: Utkarsh H Patel <utkarsh.h.patel@intel.com>
+Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+Cc: All applicable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/base/power/main.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -3154,10 +3154,11 @@ static void xhci_endpoint_reset(struct u
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1751,13 +1751,17 @@ static int __device_suspend(struct devic
+ 	}
  
- 	wait_for_completion(cfg_cmd->completion);
+ 	/*
+-	 * If a device configured to wake up the system from sleep states
+-	 * has been suspended at run time and there's a resume request pending
+-	 * for it, this is equivalent to the device signaling wakeup, so the
+-	 * system suspend operation should be aborted.
++	 * Wait for possible runtime PM transitions of the device in progress
++	 * to complete and if there's a runtime resume request pending for it,
++	 * resume it before proceeding with invoking the system-wide suspend
++	 * callbacks for it.
++	 *
++	 * If the system-wide suspend callbacks below change the configuration
++	 * of the device, they must disable runtime PM for it or otherwise
++	 * ensure that its runtime-resume callbacks will not be confused by that
++	 * change in case they are invoked going forward.
+ 	 */
+-	if (pm_runtime_barrier(dev) && device_may_wakeup(dev))
+-		pm_wakeup_event(dev, 0);
++	pm_runtime_barrier(dev);
  
--	ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
- 	xhci_free_command(xhci, cfg_cmd);
- cleanup:
- 	xhci_free_command(xhci, stop_cmd);
-+	if (ep->ep_state & EP_SOFT_CLEAR_TOGGLE)
-+		ep->ep_state &= ~EP_SOFT_CLEAR_TOGGLE;
- }
- 
- static int xhci_check_streams_endpoint(struct xhci_hcd *xhci,
+ 	if (pm_wakeup_pending()) {
+ 		dev->power.direct_complete = false;
 
 
