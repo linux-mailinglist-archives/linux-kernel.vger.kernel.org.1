@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB812596AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55405259822
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731569AbgIAQFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:05:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53260 "EHLO mail.kernel.org"
+        id S1730975AbgIAPcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730544AbgIAPlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:18 -0400
+        id S1728903AbgIAPap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:30:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AD032064B;
-        Tue,  1 Sep 2020 15:41:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F09C207D3;
+        Tue,  1 Sep 2020 15:30:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974877;
-        bh=JuLsNZjZqesuqcAnyc87ATn2vCVdmiJJkLFcGGjUi/0=;
+        s=default; t=1598974244;
+        bh=WdnpDlkzTQsxN4919At8IGyxFiDcqFVjfe6E6UOUb4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lZoG3adGUuFmawNp1EJp6tpBN9HNcWHte7YBOeDM0A3Ifm58BdYPF1WqToB5RhZTg
-         VX5Ko4xfqUoN56HlK9dRM8vCfVGGae49vEPXtI4ytrPWGoAu8x438Snn3hsP+G/sQ5
-         33sC8hpb+IES+Mq/LvocwdmpG2XvHeE68Op2F4aY=
+        b=Zl0xKS1tKwe2wODF9uR94n6h83xocOd3L11Emzvx5Ek3R05/pqny+1jrpsEc5fVk5
+         gXWOYzP0nm0bUNrQW9vP8ZoW1JLi6Rvk95o8VP3HJpPKDT+fp443oGoAUKVT6Udnla
+         6YZe4MYFaP0kJG2+dYtyOYO4+fbSoxnnesIThVgY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anthony Koo <Anthony.Koo@amd.com>,
-        Ashley Thomas <Ashley.Thomas2@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 125/255] drm/amd/display: Switch to immediate mode for updating infopackets
-Date:   Tue,  1 Sep 2020 17:09:41 +0200
-Message-Id: <20200901151006.716983246@linuxfoundation.org>
+Subject: [PATCH 5.4 102/214] block: Fix page_is_mergeable() for compound pages
+Date:   Tue,  1 Sep 2020 17:09:42 +0200
+Message-Id: <20200901150957.887959537@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,112 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anthony Koo <Anthony.Koo@amd.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit abba907c7a20032c2d504fd5afe3af7d440a09d0 ]
+[ Upstream commit d81665198b83e55a28339d1f3e4890ed8a434556 ]
 
-[Why]
-Using FRAME_UPDATE will result in infopacket to be potentially updated
-one frame late.
-In commit stream scenarios for previously active stream, some stale
-infopacket data from previous config might be erroneously sent out on
-initial frame after stream is re-enabled.
+If we pass in an offset which is larger than PAGE_SIZE, then
+page_is_mergeable() thinks it's not mergeable with the previous bio_vec,
+leading to a large number of bio_vecs being used.  Use a slightly more
+obvious test that the two pages are compatible with each other.
 
-[How]
-Switch to using IMMEDIATE_UPDATE mode
-
-Signed-off-by: Anthony Koo <Anthony.Koo@amd.com>
-Reviewed-by: Ashley Thomas <Ashley.Thomas2@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 52d52d1c98a9 ("block: only allow contiguous page structs in a bio_vec")
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../amd/display/dc/dcn10/dcn10_stream_encoder.c  | 16 ++++++++--------
- .../amd/display/dc/dcn10/dcn10_stream_encoder.h  | 14 ++++++++++++++
- 2 files changed, 22 insertions(+), 8 deletions(-)
+ block/bio.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c
-index 07b2f9399671d..842abb4c475bc 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.c
-@@ -121,35 +121,35 @@ void enc1_update_generic_info_packet(
- 	switch (packet_index) {
- 	case 0:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC0_FRAME_UPDATE, 1);
-+				AFMT_GENERIC0_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 1:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC1_FRAME_UPDATE, 1);
-+				AFMT_GENERIC1_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 2:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC2_FRAME_UPDATE, 1);
-+				AFMT_GENERIC2_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 3:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC3_FRAME_UPDATE, 1);
-+				AFMT_GENERIC3_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 4:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC4_FRAME_UPDATE, 1);
-+				AFMT_GENERIC4_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 5:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC5_FRAME_UPDATE, 1);
-+				AFMT_GENERIC5_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 6:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC6_FRAME_UPDATE, 1);
-+				AFMT_GENERIC6_IMMEDIATE_UPDATE, 1);
- 		break;
- 	case 7:
- 		REG_UPDATE(AFMT_VBI_PACKET_CONTROL1,
--				AFMT_GENERIC7_FRAME_UPDATE, 1);
-+				AFMT_GENERIC7_IMMEDIATE_UPDATE, 1);
- 		break;
- 	default:
- 		break;
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.h b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.h
-index f9b9e221c698b..7507000a99ac4 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.h
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_stream_encoder.h
-@@ -273,7 +273,14 @@ struct dcn10_stream_enc_registers {
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC2_FRAME_UPDATE, mask_sh),\
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC3_FRAME_UPDATE, mask_sh),\
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC4_FRAME_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC0_IMMEDIATE_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC1_IMMEDIATE_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC2_IMMEDIATE_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC3_IMMEDIATE_UPDATE, mask_sh),\
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC4_IMMEDIATE_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC5_IMMEDIATE_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC6_IMMEDIATE_UPDATE, mask_sh),\
-+	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC7_IMMEDIATE_UPDATE, mask_sh),\
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC5_FRAME_UPDATE, mask_sh),\
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC6_FRAME_UPDATE, mask_sh),\
- 	SE_SF(DIG0_AFMT_VBI_PACKET_CONTROL1, AFMT_GENERIC7_FRAME_UPDATE, mask_sh),\
-@@ -337,7 +344,14 @@ struct dcn10_stream_enc_registers {
- 	type AFMT_GENERIC2_FRAME_UPDATE;\
- 	type AFMT_GENERIC3_FRAME_UPDATE;\
- 	type AFMT_GENERIC4_FRAME_UPDATE;\
-+	type AFMT_GENERIC0_IMMEDIATE_UPDATE;\
-+	type AFMT_GENERIC1_IMMEDIATE_UPDATE;\
-+	type AFMT_GENERIC2_IMMEDIATE_UPDATE;\
-+	type AFMT_GENERIC3_IMMEDIATE_UPDATE;\
- 	type AFMT_GENERIC4_IMMEDIATE_UPDATE;\
-+	type AFMT_GENERIC5_IMMEDIATE_UPDATE;\
-+	type AFMT_GENERIC6_IMMEDIATE_UPDATE;\
-+	type AFMT_GENERIC7_IMMEDIATE_UPDATE;\
- 	type AFMT_GENERIC5_FRAME_UPDATE;\
- 	type AFMT_GENERIC6_FRAME_UPDATE;\
- 	type AFMT_GENERIC7_FRAME_UPDATE;\
+diff --git a/block/bio.c b/block/bio.c
+index 94d697217887a..87505a93bcff6 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -683,8 +683,8 @@ static inline bool page_is_mergeable(const struct bio_vec *bv,
+ 		struct page *page, unsigned int len, unsigned int off,
+ 		bool *same_page)
+ {
+-	phys_addr_t vec_end_addr = page_to_phys(bv->bv_page) +
+-		bv->bv_offset + bv->bv_len - 1;
++	size_t bv_end = bv->bv_offset + bv->bv_len;
++	phys_addr_t vec_end_addr = page_to_phys(bv->bv_page) + bv_end - 1;
+ 	phys_addr_t page_addr = page_to_phys(page);
+ 
+ 	if (vec_end_addr + 1 != page_addr + off)
+@@ -693,9 +693,9 @@ static inline bool page_is_mergeable(const struct bio_vec *bv,
+ 		return false;
+ 
+ 	*same_page = ((vec_end_addr & PAGE_MASK) == page_addr);
+-	if (!*same_page && pfn_to_page(PFN_DOWN(vec_end_addr)) + 1 != page)
+-		return false;
+-	return true;
++	if (*same_page)
++		return true;
++	return (bv->bv_page + bv_end / PAGE_SIZE) == (page + off / PAGE_SIZE);
+ }
+ 
+ static bool bio_try_merge_pc_page(struct request_queue *q, struct bio *bio,
 -- 
 2.25.1
 
