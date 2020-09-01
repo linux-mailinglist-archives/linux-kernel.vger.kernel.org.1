@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0DD25972C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699A42596C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731701AbgIAQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:11:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45716 "EHLO mail.kernel.org"
+        id S1730048AbgIAPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:39:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728774AbgIAPhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:37:34 -0400
+        id S1731158AbgIAPhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:37:39 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D25A7205F4;
-        Tue,  1 Sep 2020 15:37:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C88820E65;
+        Tue,  1 Sep 2020 15:37:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974653;
-        bh=duA5OZY/skQ/JAo3h/E2BEJCdypBbG0QAcMV7CMJLRU=;
+        s=default; t=1598974658;
+        bh=RirBJnGWSx+8SfHSLXWiXEKeGrvmh1KYf16yHJ8Ti0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OORzpvVxSOTREKmk+7nwe07PZ/nuX+Wq6oPs72rXGd0F5Qxj4H3ciZvPtnIpnDKBp
-         j2um7ZBva1KDpvTX1JbwQm7vx6ZWR5DHb32hVLxTSMTjjIB36x3ccuGR0vNw1f9Fw9
-         F0ucjpFh/5McHmdN8TMs42t+aN2CkK0LlCSespWw=
+        b=0iVTI0T25Fc7gDTgJqkOwjGwBHvo5IjqtGPJygiOyEfPKUSAuzJuHqi7r1UQeZ3Kp
+         qbq63waxvgl1DtVe6yDvPYrIscbnMf1yJuKXgx5EncMj+0K8fm0UMnsOo8h3nsE7ld
+         vojZ9z3iUHrDGDd11YMsu8G/A4t40sxCI9MfFYOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Fan <fanpeng@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 043/255] mips/vdso: Fix resource leaks in genvdso.c
-Date:   Tue,  1 Sep 2020 17:08:19 +0200
-Message-Id: <20200901151002.813862582@linuxfoundation.org>
+Subject: [PATCH 5.8 045/255] gpu: host1x: Put gathers BO on pinning error
+Date:   Tue,  1 Sep 2020 17:08:21 +0200
+Message-Id: <20200901151002.910083150@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -44,96 +44,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <fanpeng@loongson.cn>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit a859647b4e6bfeb192284d27d24b6a0c914cae1d ]
+[ Upstream commit fd323e9ef0a19112c0c85b85afc4848c0518174b ]
 
-Close "fd" before the return of map_vdso() and close "out_file"
-in main().
+This patch fixes gather's BO refcounting on a pinning error. Gather's BO
+won't be leaked now if something goes wrong.
 
-Signed-off-by: Peng Fan <fanpeng@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/genvdso.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/gpu/host1x/job.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
-index be57b832bbe0a..ccba50ec8a40e 100644
---- a/arch/mips/vdso/genvdso.c
-+++ b/arch/mips/vdso/genvdso.c
-@@ -122,6 +122,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (fstat(fd, &stat) != 0) {
- 		fprintf(stderr, "%s: Failed to stat '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
+diff --git a/drivers/gpu/host1x/job.c b/drivers/gpu/host1x/job.c
+index a10643aa89aa5..2ac5a99406d98 100644
+--- a/drivers/gpu/host1x/job.c
++++ b/drivers/gpu/host1x/job.c
+@@ -102,6 +102,7 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
+ {
+ 	struct host1x_client *client = job->client;
+ 	struct device *dev = client->dev;
++	struct host1x_job_gather *g;
+ 	struct iommu_domain *domain;
+ 	unsigned int i;
+ 	int err;
+@@ -184,7 +185,6 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
  	}
  
-@@ -130,6 +131,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (addr == MAP_FAILED) {
- 		fprintf(stderr, "%s: Failed to map '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
+ 	for (i = 0; i < job->num_gathers; i++) {
+-		struct host1x_job_gather *g = &job->gathers[i];
+ 		size_t gather_size = 0;
+ 		struct scatterlist *sg;
+ 		struct sg_table *sgt;
+@@ -194,6 +194,7 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
+ 		dma_addr_t *phys;
+ 		unsigned int j;
  
-@@ -139,6 +141,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG) != 0) {
- 		fprintf(stderr, "%s: '%s' is not an ELF file\n", program_name,
- 			path);
-+		close(fd);
- 		return NULL;
- 	}
++		g = &job->gathers[i];
+ 		g->bo = host1x_bo_get(g->bo);
+ 		if (!g->bo) {
+ 			err = -EINVAL;
+@@ -213,7 +214,7 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
+ 		sgt = host1x_bo_pin(host->dev, g->bo, phys);
+ 		if (IS_ERR(sgt)) {
+ 			err = PTR_ERR(sgt);
+-			goto unpin;
++			goto put;
+ 		}
  
-@@ -150,6 +153,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF class\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
+ 		if (!IS_ENABLED(CONFIG_TEGRA_HOST1X_FIREWALL) && host->domain) {
+@@ -226,7 +227,7 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
+ 					   host->iova_end >> shift, true);
+ 			if (!alloc) {
+ 				err = -ENOMEM;
+-				goto unpin;
++				goto put;
+ 			}
  
-@@ -161,6 +165,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF data order\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
+ 			err = iommu_map_sg(host->domain,
+@@ -235,7 +236,7 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
+ 			if (err == 0) {
+ 				__free_iova(&host->iova, alloc);
+ 				err = -EINVAL;
+-				goto unpin;
++				goto put;
+ 			}
  
-@@ -168,15 +173,18 @@ static void *map_vdso(const char *path, size_t *_size)
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF machine (expected EM_MIPS)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	} else if (swap_uint16(ehdr->e_type) != ET_DYN) {
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF type (expected ET_DYN)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
+ 			job->unpins[job->num_unpins].size = gather_size;
+@@ -245,7 +246,7 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
+ 					 DMA_TO_DEVICE);
+ 			if (!err) {
+ 				err = -ENOMEM;
+-				goto unpin;
++				goto put;
+ 			}
  
- 	*_size = stat.st_size;
-+	close(fd);
- 	return addr;
- }
+ 			job->unpins[job->num_unpins].dir = DMA_TO_DEVICE;
+@@ -263,6 +264,8 @@ static unsigned int pin_job(struct host1x *host, struct host1x_job *job)
  
-@@ -293,10 +301,12 @@ int main(int argc, char **argv)
- 	/* Calculate and write symbol offsets to <output file> */
- 	if (!get_symbols(dbg_vdso_path, dbg_vdso)) {
- 		unlink(out_path);
-+		fclose(out_file);
- 		return EXIT_FAILURE;
- 	}
+ 	return 0;
  
- 	fprintf(out_file, "};\n");
-+	fclose(out_file);
- 
- 	return EXIT_SUCCESS;
- }
++put:
++	host1x_bo_put(g->bo);
+ unpin:
+ 	host1x_job_unpin(job);
+ 	return err;
 -- 
 2.25.1
 
