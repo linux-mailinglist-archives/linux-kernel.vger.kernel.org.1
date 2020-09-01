@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEC4258EE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51710258EE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbgIANMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:12:06 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:45874 "EHLO smtp2.axis.com"
+        id S1728060AbgIANKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:10:25 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:42489 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727910AbgIANIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:08:17 -0400
+        id S1728031AbgIANIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:08:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=axis.com; l=1083; q=dns/txt; s=axis-central1;
   t=1598965698; x=1630501698;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
   bh=XM/YiO1AN+GvGSxUyxQbpOxOSqb3rPJ2qUV4jnebMHM=;
-  b=aCznlRUIkbKvI3sryWZwlM5RabuvRLWGJqu1ojNNGX4J20qFDwYIYtYL
-   txGIHYrol5zhwIq1jM2wMIZUsllRq8sIzwnAgW82lNYpCuyQQ85auakJO
-   6A+szlrAu1cx7U/5M6ncMTtomd4ehdxxbc1wMoX/H+2VrO2Zmj1uAMjxx
-   NCL3PDn73gE6wIvr2Nh68H+zIrp4NcGYMzsHu+AjNGpGWS8lkWaVZcHEj
-   K6Q3JNgZ3WgWc1tHdwd8c/1CK9EMlKHhxyzFu/LxIeJCwIqb7gIvWbjUm
-   X3/UNxscOSWxfdHM/iB5axVOtwlYUHwBhCEeoILoLJJKwj7p0yXCEVEsX
-   Q==;
-IronPort-SDR: urVlRcHZRIGbnH4AspnR2uVOcG06TA9Z0n8XexRq5uYKEEPHYbwJGmrq0Ioo5lxoG/KKgmyqo6
- BsjAEXKDGc8CFYzk/FNoVYj+qxJBhf8xeh/FF9+VLrER3BrxNJRlyPgscEIMY9cW9sSQTnWS+0
- 0esfg9GrMu8aRpsgsUcc/lsVmNCooNQ+FwKZxVSkn2RK1qXs5VQZ/vASoOJK5w/gFCsWOc4Fi/
- e2970Rqug8IDPYt4/2Ns4Uv0cuRuuHVKJS1l9hTEktJJZJCgAuoOVmt6kbyn1OCNehCyMewJ07
- peE=
+  b=TG49cmr5xGTWothO2DnT16JGI8wtshMGF+WPcGdS9wuKLTp/EPVnl3EG
+   JH+WJPBlx/oxUA0M6CgjSCxi4AY2vdafpphIogpQYMKDVOV5ixGMaUrUR
+   LbN22hCV7Qt5+z7xyheMIHknXRCV338sha5dCaF+S9k9dNVrRJaIbM5Gb
+   TqnfTHm+mbYbjqNZiSFZlsOwIFTMcZwwa6JEUdgg2ltbaIm7ht+2jjFWb
+   R7m+4xvbLWkCx5BMETNqY+pnpdDKTtjMVumKef1/QEhmaZd2oIkqB730N
+   FmunBtW7ipdWX+PfCfn5wh6KVq38SwnYUzV2KT4/cNDHa/YdhG8Oud5E2
+   w==;
+IronPort-SDR: JSWorGGGlbfcZbzI5fleFnnnHVRJWrr9awe3/ZTkPFcjNndKis4aT3mf4kLCBRg7CLgBsNQsP/
+ VmhwplkhScCG1ZsWDV/6cO89BonM6vV9ZUtnMj8DXa2IRWh9XgyAoP76bgaEYFl7MaENAci8vF
+ ZU7yzW/TQ5fJhjJhuvzhic6Aylqj3I8DXEzh3jvoMS5VhSKPIB8purSKuRkWRW/QQoSE4pPFkP
+ VJOf7CF6q1h2rrGIQW8M8YLths3IIjNRtqgSFY3sExQDZG+XZSAdbfx8+fODezYDqcer8jq4/Z
+ mEg=
 X-IronPort-AV: E=Sophos;i="5.76,379,1592863200"; 
-   d="scan'208";a="12085624"
+   d="scan'208";a="12435719"
 From:   Camel Guo <camel.guo@axis.com>
 To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
         <tiwai@suse.com>, <dmurphy@ti.com>
 CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
         <kernel@axis.com>, Camel Guo <camelg@axis.com>,
         Camel Guo <camel.guo@axis.com>
-Subject: [PATCH v3] ASoC: tlv320adcx140: Fix accessing uninitialized adcx140->dev
-Date:   Tue, 1 Sep 2020 15:07:52 +0200
-Message-ID: <20200901130753.27670-1-camel.guo@axis.com>
+Subject: [PATCH] ASoC: tlv320adcx140: Fix accessing uninitialized adcx140->dev
+Date:   Tue, 1 Sep 2020 15:07:53 +0200
+Message-ID: <20200901130753.27670-2-camel.guo@axis.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200901130753.27670-1-camel.guo@axis.com>
+References: <20200901130753.27670-1-camel.guo@axis.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
