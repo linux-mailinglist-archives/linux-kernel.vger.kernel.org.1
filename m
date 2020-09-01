@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389DD259BB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D78259CCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgIARFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:05:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
+        id S1728966AbgIAPNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:13:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729523AbgIAPTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:19:39 -0400
+        id S1728885AbgIAPNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:13:15 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E04E421582;
-        Tue,  1 Sep 2020 15:19:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14D9E2078B;
+        Tue,  1 Sep 2020 15:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973572;
-        bh=4TG4KMIY0v5Q13GLnA/64q9bgsmokJekESKQfdHsjfM=;
+        s=default; t=1598973194;
+        bh=mh5pmd+ydcLQgSPEm3k6W6nzqyhZ2EDwNOyI/0lDTcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Smck+Qkj7DDRIIBr9DSsKXUtWMyCRRmQti9sjPg2cKKydTc/NMcMUVdhVS5TMftpW
-         /a9WwyvxxJ/d9liEwEjn6x46aFr9xx0+2gE/mLAkqA/1/Uh6SaZlm64Fo6rytYTYnM
-         92yjGTFqCJDHw4lE28uApS54vRMynRTphEDOhEhc=
+        b=bJgzTaKsTOIdCOQzrwkVr/S024O4t5XDC6HbcpQJw6K450tofU2Ryt0cDewJWaoxu
+         XKKrezkQzEnDuLDNjz+OOUb8Pcn3HZ/3Uj0aa8ZxszlCc/Z6T0u6y4mfgiOKGAeEv0
+         4se580sIO/h6AOajlLFFA08khO3Y0IncRA2efZWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 52/91] s390/cio: add cond_resched() in the slow_eval_known_fn() loop
-Date:   Tue,  1 Sep 2020 17:10:26 +0200
-Message-Id: <20200901150930.715715759@linuxfoundation.org>
+        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tamseel Shams <m.shams@samsung.com>
+Subject: [PATCH 4.4 44/62] serial: samsung: Removes the IRQ not found warning
+Date:   Tue,  1 Sep 2020 17:10:27 +0200
+Message-Id: <20200901150922.953840554@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
+References: <20200901150920.697676718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,43 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineeth Vijayan <vneethv@linux.ibm.com>
+From: Tamseel Shams <m.shams@samsung.com>
 
-[ Upstream commit 0b8eb2ee9da1e8c9b8082f404f3948aa82a057b2 ]
+commit 8c6c378b0cbe0c9f1390986b5f8ffb5f6ff7593b upstream.
 
-The scanning through subchannels during the time of an event could
-take significant amount of time in case of platforms with lots of
-known subchannels. This might result in higher scheduling latencies
-for other tasks especially on systems with a single CPU. Add
-cond_resched() call, as the loop in slow_eval_known_fn() can be
-executed for a longer duration.
+In few older Samsung SoCs like s3c2410, s3c2412
+and s3c2440, UART IP is having 2 interrupt lines.
+However, in other SoCs like s3c6400, s5pv210,
+exynos5433, and exynos4210 UART is having only 1
+interrupt line. Due to this, "platform_get_irq(platdev, 1)"
+call in the driver gives the following false-positive error:
+"IRQ index 1 not found" on newer SoC's.
 
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch adds the condition to check for Tx interrupt
+only for the those SoC's which have 2 interrupt lines.
+
+Tested-by: Alim Akhtar <alim.akhtar@samsung.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200810030021.45348-1-m.shams@samsung.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/s390/cio/css.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/tty/serial/samsung.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
-index dadff1838fec1..e2026d54dd375 100644
---- a/drivers/s390/cio/css.c
-+++ b/drivers/s390/cio/css.c
-@@ -581,6 +581,11 @@ static int slow_eval_known_fn(struct subchannel *sch, void *data)
- 		rc = css_evaluate_known_subchannel(sch, 1);
- 		if (rc == -EAGAIN)
- 			css_schedule_eval(sch->schid);
-+		/*
-+		 * The loop might take long time for platforms with lots of
-+		 * known devices. Allow scheduling here.
-+		 */
-+		cond_resched();
+--- a/drivers/tty/serial/samsung.c
++++ b/drivers/tty/serial/samsung.c
+@@ -1719,9 +1719,11 @@ static int s3c24xx_serial_init_port(stru
+ 		ourport->tx_irq = ret + 1;
  	}
- 	return 0;
- }
--- 
-2.25.1
-
+ 
+-	ret = platform_get_irq(platdev, 1);
+-	if (ret > 0)
+-		ourport->tx_irq = ret;
++	if (!s3c24xx_serial_has_interrupt_mask(port)) {
++		ret = platform_get_irq(platdev, 1);
++		if (ret > 0)
++			ourport->tx_irq = ret;
++	}
+ 	/*
+ 	 * DMA is currently supported only on DT platforms, if DMA properties
+ 	 * are specified.
 
 
