@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2522A259208
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B404625921F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgIAPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
+        id S1728486AbgIAPDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725989AbgIAPBK (ORCPT
+        with ESMTP id S1728386AbgIAPDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:01:10 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B360DC061244;
-        Tue,  1 Sep 2020 08:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=c4Ee9icQII2DGAoMrIbwKT8Ude3XzoISGtg+XB13lKQ=; b=afn94a0rd08dIeIK+nPtOLy9ZF
-        2kHzRnga5rpNnJdpfqAdEkDoDXnbQLFe53sru0CkEghz/uu1jDS/OLaSJ+nTqEjhT34UhvcmEEJIY
-        MqjQVEuWOQeiiEIl9BzC7QTXM3oeEPCjpJZW0uTROZyy/No0zCe/etHYanQR7sMptJckLhBj1ciT8
-        pB3s3YkIryDdSN+nEtCUxp7av0xGykhSncbcxwlkFtcNGZVMyZ4FT31TI2XkJIpM72reeWASyq8Lo
-        1Es0Ru63eoYj9KldC//FQZ4EIGB9kRInPDRT/Y1JbvmfYRhsX3+W+/83DND1k4IpIOTaeVkdknDH/
-        mlMV2o1Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kD7mL-0004dC-KN; Tue, 01 Sep 2020 15:00:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 770E6300F7A;
-        Tue,  1 Sep 2020 17:00:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6633520BEB41B; Tue,  1 Sep 2020 17:00:55 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 17:00:55 +0200
-From:   peterz@infradead.org
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, paulmck@kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Saravana Kannan <saravanak@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        madhuparnabhowmik10@gmail.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
- OF driver helper
-Message-ID: <20200901150055.GD2674@hirez.programming.kicks-ass.net>
-References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
- <20200831194402.GD2855@paulmck-ThinkPad-P72>
- <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
- <CAPDyKFrTERjpLrPOFtkqLyNsk2T_58Ye2FQ1mPf-0u78aWW=Xw@mail.gmail.com>
- <20200901104206.GU1362448@hirez.programming.kicks-ass.net>
- <CAPDyKFo0VkW-cgRSkvPQ0whpuJCo4OKcL1nmH7nz1tDEChOtVg@mail.gmail.com>
+        Tue, 1 Sep 2020 11:03:07 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6FEC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:03:06 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id b13so650686qvl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7hamU6hh70qynnTiDqdZnxkwA4lZpFog+JwYUlEr/IU=;
+        b=yf2xWWvk1xRfdDfp5/KDnPzVZmvLVynwUatxUyczMxvoo5qoWCz2qKcQxQU5mFSpxw
+         NhRb12uOylBNsJ1CMLYVSQXaAGWHeX/eo1nS6nEmcUx2UPP93DWSblcZlbXuOZxRW1hQ
+         mHo5vzXl8FzCyzcogsYpiwRXSh5mq4UzkHPeThfBd8DZnkJ8FI+IEPw7F9doDbu0QrIO
+         HR9BQOYBpg2EwPDUPn8el3O4u6N+g7GCcfWVuHk0h1ZFaSA23RnMd7gHXjL3EwbRcCSL
+         RikWYHtdni0MdsfqEjfbdfQ7AqmNItT8xlpt3hJYb4MyUNt07Je4rKAOSAMSAHYaS54p
+         rVwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7hamU6hh70qynnTiDqdZnxkwA4lZpFog+JwYUlEr/IU=;
+        b=SH8My7rMv/TvhBh6tZtf66BaoYwLMduWolM8KKu36wYYZWXKFPp5PFjrJpGamuacmr
+         g+r1Y8PnbOIvwGcroSwv81CEVyZnKu16RolkRHSaaioqv80mg4lvhQPNNXVVFzYvG6GZ
+         ymsetNQ4ZGvHW7l5LQOaDHhZh0Uz2McHTlgodvT6vQS9k7BeeuQwT8Psmadl2f1ECWGr
+         cbpl29mDeCRSBYkTgk64XLZuGgomaWZCnbLaF1WiInM7XFvjrxNbwU33+ieTdkQW5ThF
+         kFvmDCtLdxMU0Y4BaZJCt2x0hBrnWeJCoW1LkkVcHxO+rEaYL+Kj6KN/WI/hqbt7WQrF
+         cKCA==
+X-Gm-Message-State: AOAM532wgAcHynCne3rZrP70Fj10ENsH2nZj4yXutr8ZqAtTHtmVFtGz
+        y7Ewnz1L2gZ0Rs/KaLLWHwf0mQ==
+X-Google-Smtp-Source: ABdhPJwtD/7grvATMu4/sg0JKKjoDM+Eqq34lDdwy3HkegafTZWNtmYCYMELv86LJoXc8FcgmDD6gQ==
+X-Received: by 2002:a0c:e04e:: with SMTP id y14mr2200632qvk.117.1598972585297;
+        Tue, 01 Sep 2020 08:03:05 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:fc60])
+        by smtp.gmail.com with ESMTPSA id s20sm1850047qkg.65.2020.09.01.08.03.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 08:03:04 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 11:01:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 1/5] ksm: reinstate memcg charge on copied pages
+Message-ID: <20200901150149.GA45118@cmpxchg.org>
+References: <alpine.LSU.2.11.2008301343270.5954@eggly.anvils>
+ <alpine.LSU.2.11.2008301358020.5954@eggly.anvils>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFo0VkW-cgRSkvPQ0whpuJCo4OKcL1nmH7nz1tDEChOtVg@mail.gmail.com>
+In-Reply-To: <alpine.LSU.2.11.2008301358020.5954@eggly.anvils>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:35:52PM +0200, Ulf Hansson wrote:
-> On Tue, 1 Sep 2020 at 12:42, <peterz@infradead.org> wrote:
-
-> > That said; I pushed the rcu_idle_enter() about as deep as it goes into
-> > generic code in commit 1098582a0f6c ("sched,idle,rcu: Push rcu_idle
-> > deeper into the idle path")
+On Sun, Aug 30, 2020 at 01:59:35PM -0700, Hugh Dickins wrote:
+> In 5.8 some instances of memcg charging in do_swap_page() and unuse_pte()
+> were removed, on the understanding that swap cache is now already charged
+> at those points; but a case was missed, when ksm_might_need_to_copy() has
+> decided it must allocate a substitute page: such pages were never charged.
+> Fix it inside ksm_might_need_to_copy().
 > 
-> Aha, that commit should fix this problem, I think. Looks like that
-> commit was sent as a fix and included in the recent v5.9-rc3.
-
-AFAICT psci_enter_domain_idle_state() is still buggered. All that
-pm_runtime_*() stuff is using locks.
-
-Look at this:
-
-  psci_enter_domain_idle_state()
-    pm_runtime_put_sync_suspend()
-      __pm_runtime_suspend()
-        spin_lock_irqsave(&dev->power.lock, flags);
-
-That's a definite fail after we've done rcu_idle_enter().
-
-> > I suppose the next step is pushing it into individual driver when
-> > needed, something like the below perhaps. I realize the coupled idle
-> > state stuff is more complicated that most, but it's also not an area
-> > I've looked at in detail, so perhaps I've just made a bigger mess, but
-> > it ought to give you enough to get going I think.
+> This was discovered by Alex Shi's prospective commit "mm/memcg: warning
+> on !memcg after readahead page charged".
 > 
-> These aren't coupled states. Instead, in cpuidle-psci, we are using PM
-> domains through genpd and runtime PM to manage "shared idle states"
-> between CPUs.
+> But there is a another surprise: this also fixes some rarer uncharged
+> PageAnon cases, when KSM is configured in, but has never been activated.
+> ksm_might_need_to_copy()'s anon_vma->root and linear_page_index() check
+> sometimes catches a case which would need to have been copied if KSM
+> were turned on.  Or that's my optimistic interpretation (of my own old
+> code), but it leaves some doubt as to whether everything is working as
+> intended there - might it hint at rare anon ptes which rmap cannot find?
+> A question not easily answered: put in the fix for missed memcg charges.
+> 
+> Fixes: 4c6355b25e8b ("mm: memcontrol: charge swapin pages on instantiation")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Cc: stable@vger.kernel.org # v5.8
 
-Similar problem I'm thinking, 'complicated' stuff.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
