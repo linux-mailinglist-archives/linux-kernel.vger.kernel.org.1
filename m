@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06FD2598C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01AA259ABA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730801AbgIAQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35212 "EHLO mail.kernel.org"
+        id S1729601AbgIAPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730750AbgIAPbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:50 -0400
+        id S1729723AbgIAPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:22:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6536A205F4;
-        Tue,  1 Sep 2020 15:31:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC6762078B;
+        Tue,  1 Sep 2020 15:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974309;
-        bh=UZT3Fjd3XBpWhvlqFpTTLZmTGvD98yi612Mb9LH7YXQ=;
+        s=default; t=1598973725;
+        bh=yQyMBT46SZoHadtKSXflaksZ1z3AR/88HqAFqwP552I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkSi+R/iwbqWJ5C4O9EWFhqTS2ZxvB/SLuZxT1fp/d5Bhfrfwnp5kewqp+1FFp4Ac
-         edjonwMLUWG+MKnAOEOt3E+7AydjNbN7zKqYQ2wxzSbdy9LGc8zzYWjcQ9GVLAlx2f
-         iXjIbGMpDfqboH5UX2BBIa7c/tSrTywifxQcC8eE=
+        b=ncFSQ0tK3W1K5V3sHknm+LFwNVoJJz2KFkrU+GexDxhiqerPkcN9sYMoSp/ociGAC
+         ZFNDUkA8Nq/UDGSFO8gJxjaE8TBAp7l+/X0OM/eTdm4oqRf5B3GuEyD+er1I7861o+
+         ai/XBIH6IHk5dxjGB09MRKGEgdl4WwTzr5nBWzxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Francisco Jerez <currojerez@riseup.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 096/214] cpufreq: intel_pstate: Fix EPP setting via sysfs in active mode
+Subject: [PATCH 4.19 021/125] drm/radeon: fix multiple reference count leak
 Date:   Tue,  1 Sep 2020 17:09:36 +0200
-Message-Id: <20200901150957.594991881@linuxfoundation.org>
+Message-Id: <20200901150935.604482804@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit de002c55cadfc2f6cdf0ed427526f6085d240238 ]
+[ Upstream commit 6f2e8acdb48ed166b65d47837c31b177460491ec ]
 
-Because intel_pstate_set_energy_pref_index() reads and writes the
-MSR_HWP_REQUEST register without using the cached value of it used by
-intel_pstate_hwp_boost_up() and intel_pstate_hwp_boost_down(), those
-functions may overwrite the value written by it and so the EPP value
-set via sysfs may be lost.
+On calling pm_runtime_get_sync() the reference count of the device
+is incremented. In case of failure, decrement the
+reference count before returning the error.
 
-To avoid that, make intel_pstate_set_energy_pref_index() take the
-cached value of MSR_HWP_REQUEST just like the other two routines
-mentioned above and update it with the new EPP value coming from
-user space in addition to updating the MSR.
-
-Note that the MSR itself still needs to be updated too in case
-hwp_boost is unset or the boosting mechanism is not active at the
-EPP change time.
-
-Fixes: e0efd5be63e8 ("cpufreq: intel_pstate: Add HWP boost utility and sched util hooks")
-Reported-by: Francisco Jerez <currojerez@riseup.net>
-Cc: 4.18+ <stable@vger.kernel.org> # 4.18+: 3da97d4db8ee cpufreq: intel_pstate: Rearrange ...
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Francisco Jerez <currojerez@riseup.net>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/intel_pstate.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/radeon/radeon_connectors.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index c7540ad28995b..8c730a47e0537 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -649,11 +649,12 @@ static int intel_pstate_set_energy_pref_index(struct cpudata *cpu_data,
- 	mutex_lock(&intel_pstate_limits_lock);
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+index de656f5553839..b9927101e8450 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -882,8 +882,10 @@ radeon_lvds_detect(struct drm_connector *connector, bool force)
  
- 	if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
--		u64 value;
--
--		ret = rdmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, &value);
--		if (ret)
--			goto return_pref;
-+		/*
-+		 * Use the cached HWP Request MSR value, because the register
-+		 * itself may be updated by intel_pstate_hwp_boost_up() or
-+		 * intel_pstate_hwp_boost_down() at any time.
-+		 */
-+		u64 value = READ_ONCE(cpu_data->hwp_req_cached);
- 
- 		value &= ~GENMASK_ULL(31, 24);
- 
-@@ -661,13 +662,18 @@ static int intel_pstate_set_energy_pref_index(struct cpudata *cpu_data,
- 			epp = epp_values[pref_index - 1];
- 
- 		value |= (u64)epp << 24;
-+		/*
-+		 * The only other updater of hwp_req_cached in the active mode,
-+		 * intel_pstate_hwp_set(), is called under the same lock as this
-+		 * function, so it cannot run in parallel with the update below.
-+		 */
-+		WRITE_ONCE(cpu_data->hwp_req_cached, value);
- 		ret = wrmsrl_on_cpu(cpu_data->cpu, MSR_HWP_REQUEST, value);
- 	} else {
- 		if (epp == -EINVAL)
- 			epp = (pref_index - 1) << 2;
- 		ret = intel_pstate_set_epb(cpu_data->cpu, epp);
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
  	}
--return_pref:
- 	mutex_unlock(&intel_pstate_limits_lock);
  
- 	return ret;
+ 	if (encoder) {
+@@ -1028,8 +1030,10 @@ radeon_vga_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	encoder = radeon_best_single_encoder(connector);
+@@ -1166,8 +1170,10 @@ radeon_tv_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	encoder = radeon_best_single_encoder(connector);
+@@ -1250,8 +1256,10 @@ radeon_dvi_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	if (radeon_connector->detected_hpd_without_ddc) {
+@@ -1665,8 +1673,10 @@ radeon_dp_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	if (!force && radeon_check_hpd_status_unchanged(connector)) {
 -- 
 2.25.1
 
