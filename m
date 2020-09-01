@@ -2,56 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA3B259C63
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836DD259B4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731498AbgIAROk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 13:14:40 -0400
-Received: from mx.metalurgs.lv ([81.198.125.103]:64957 "EHLO mx.metalurgs.lv"
+        id S1732461AbgIAQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731227AbgIAROK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:14:10 -0400
-Received: from mx.metalurgs.lv (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id 4F70471155
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 20:03:01 +0300 (EEST)
-Received: from kas30pipe.localhost (localhost [127.0.0.1])
-        by mx.metalurgs.lv (Postfix) with ESMTP id BDB67B10
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 19:43:11 +0300 (EEST)
-Received: by mx.metalurgs.lv (Postfix, from userid 1005)
-        id 0964B32905; Tue,  1 Sep 2020 18:42:21 +0300 (EEST)
-Received: from [192.168.8.10] (ip168-243-231-195.intercom.com.sv [168.243.231.195])
-        (Authenticated sender: admin)
-        by mx.metalurgs.lv (Postfix) with ESMTPA id 0997E71A19
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 18:02:09 +0300 (EEST)
-MIME-Version: 1.0
-Content-Description: Mail message body
+        id S1729484AbgIAPVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:21:33 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF2FF20BED;
+        Tue,  1 Sep 2020 15:21:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598973692;
+        bh=poQNJrzrDvhFPWx10cxsYYI+35zh4WAvnQL6BWr19hI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=0c85XNzThJPz0s9NhQlAIYjQgvmNmCm+4RO5hIcj/qjdlIiQWhVUeIScLANSYttRq
+         7Kh+O5sgFbEhuEBeD0OYPr1Cx/f98HKIIaSq2tq6vFO6Dwke/tGEZoQdPcxfaaYkSh
+         yhgu0pJ0rzWDckAS6Xsx6EPw+n0TVWqmHfvrNf6g=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-From:   "Angel Investors" <info@unituscapital.com>
-Date:   Tue, 01 Sep 2020 09:02:03 -0600
-Reply-To: andrewmacklin12@gmail.com
-X-SpamTest-Envelope-From: info@unituscapital.com
-X-SpamTest-Group-ID: 00000000
-X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
-X-SpamTest-Info: {RECEIVED: dynamic ip detected}
-X-SpamTest-Info: {DATE: unreal year}
-X-SpamTest-Method: none
-X-SpamTest-Rate: 35
-X-SpamTest-Status: Not detected
-X-SpamTest-Status-Extended: not_detected
-X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
-Message-ID: <20200901160810.0964B32905@mx.metalurgs.lv>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-Subject: GREETINGS!!!
-X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
-         bases: 20140401 #7726142, check: 20200901 notchecked
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+        Alistair Popple <alistair@popple.id.au>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Subject: [PATCH 4.19 001/125] powerpc/64s: Dont init FSCR_DSCR in __init_FSCR()
+Date:   Tue,  1 Sep 2020 17:09:16 +0200
+Message-Id: <20200901150934.653860750@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention To Email : linux-kernel@vger.kernel.org
-Good Day Sir,
-Our Group have the financial capability to finance any investment portfolio as far as is genuine, all we need is a capable business partner that possesses investment strategies for profitable business information for good turn over within 10-30years. Our Partners are willing to invest 10million — 5billon USD. We can provide proof of funds on demand, after certification of your documents/details. Please write me back if you can work with me on this project. Thank You,
-Best Regards
-Andrew Macklin
+From: Michael Ellerman <mpe@ellerman.id.au>
+
+commit 0828137e8f16721842468e33df0460044a0c588b upstream.
+
+__init_FSCR() was added originally in commit 2468dcf641e4 ("powerpc:
+Add support for context switching the TAR register") (Feb 2013), and
+only set FSCR_TAR.
+
+At that point FSCR (Facility Status and Control Register) was not
+context switched, so the setting was permanent after boot.
+
+Later we added initialisation of FSCR_DSCR to __init_FSCR(), in commit
+54c9b2253d34 ("powerpc: Set DSCR bit in FSCR setup") (Mar 2013), again
+that was permanent after boot.
+
+Then commit 2517617e0de6 ("powerpc: Fix context switch DSCR on
+POWER8") (Aug 2013) added a limited context switch of FSCR, just the
+FSCR_DSCR bit was context switched based on thread.dscr_inherit. That
+commit said "This clears the H/FSCR DSCR bit initially", but it
+didn't, it left the initialisation of FSCR_DSCR in __init_FSCR().
+However the initial context switch from init_task to pid 1 would clear
+FSCR_DSCR because thread.dscr_inherit was 0.
+
+That commit also introduced the requirement that FSCR_DSCR be clear
+for user processes, so that we can take the facility unavailable
+interrupt in order to manage dscr_inherit.
+
+Then in commit 152d523e6307 ("powerpc: Create context switch helpers
+save_sprs() and restore_sprs()") (Dec 2015) FSCR was added to
+thread_struct. However it still wasn't fully context switched, we just
+took the existing value and set FSCR_DSCR if the new thread had
+dscr_inherit set. FSCR was still initialised at boot to FSCR_DSCR |
+FSCR_TAR, but that value was not propagated into the thread_struct, so
+the initial context switch set FSCR_DSCR back to 0.
+
+Finally commit b57bd2de8c6c ("powerpc: Improve FSCR init and context
+switching") (Jun 2016) added a full context switch of the FSCR, and
+added an initialisation of init_task.thread.fscr to FSCR_TAR |
+FSCR_EBB, but omitted FSCR_DSCR.
+
+The end result is that swapper runs with FSCR_DSCR set because of the
+initialisation in __init_FSCR(), but no other processes do, they use
+the value from init_task.thread.fscr.
+
+Having FSCR_DSCR set for swapper allows it to access SPR 3 from
+userspace, but swapper never runs userspace, so it has no useful
+effect. It's also confusing to have the value initialised in two
+places to two different values.
+
+So remove FSCR_DSCR from __init_FSCR(), this at least gets us to the
+point where there's a single value of FSCR, even if it's still set in
+two places.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Tested-by: Alistair Popple <alistair@popple.id.au>
+Link: https://lore.kernel.org/r/20200527145843.2761782-1-mpe@ellerman.id.au
+Cc: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ arch/powerpc/kernel/cpu_setup_power.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/powerpc/kernel/cpu_setup_power.S
++++ b/arch/powerpc/kernel/cpu_setup_power.S
+@@ -183,7 +183,7 @@ __init_LPCR_ISA300:
+ 
+ __init_FSCR:
+ 	mfspr	r3,SPRN_FSCR
+-	ori	r3,r3,FSCR_TAR|FSCR_DSCR|FSCR_EBB
++	ori	r3,r3,FSCR_TAR|FSCR_EBB
+ 	mtspr	SPRN_FSCR,r3
+ 	blr
+ 
+
+
