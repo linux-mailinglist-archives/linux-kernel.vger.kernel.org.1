@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0BB259410
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BE12595DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgIAPfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
+        id S1731975AbgIAP4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728630AbgIAPeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:34:10 -0400
+        id S1731839AbgIAPou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:44:50 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7897920866;
-        Tue,  1 Sep 2020 15:34:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EC46206EB;
+        Tue,  1 Sep 2020 15:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974450;
-        bh=px4bCdgldJNN2SrLtBSSsGhmQR2maebJ4rb7YVyyUBE=;
+        s=default; t=1598975089;
+        bh=h20gwhi+ec5+XhdOH3pXAyexGBcuS6qPY0q8ACdgBgo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wmo/OI2T35qDvnuqmDXzr/izyY/TbE71ht5yvcUmtmIu4/dxcEopcXzwp/ceUoBS1
-         dRbGpyVZ07W+yomO8NQiC1Ky5W+rfMLQkXatY5lmh7mQrqPJwLy9g+HN+SlfwoUaG1
-         SHGxbbSlXR/wavRm2o5zt3O/JCLpWCZffkrkL0e8=
+        b=X9mdfTFREPMsr9/3eLMJ7i37gisPGYpr5y93x0PHHG5K0OgnYI0Koiw4S57qEiANI
+         mJnjD0K2uzBz8TsNN1adn5tIrS+yLfPX3mWVT1w7HP/cH3aFVSnAilXRoKQKRKHG1C
+         UlRkMe/Nhf3qrXEFzXJur4/CuIhsATR5jG6Mwh6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, qiuguorui1 <qiuguorui1@huawei.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.4 180/214] irqchip/stm32-exti: Avoid losing interrupts due to clearing pending bits by mistake
-Date:   Tue,  1 Sep 2020 17:11:00 +0200
-Message-Id: <20200901151001.587033153@linuxfoundation.org>
+        stable@vger.kernel.org, "M. Vefa Bicakci" <m.v.b@runbox.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Bastien Nocera <hadess@hadess.net>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH 5.8 205/255] usbip: Implement a match function to fix usbip
+Date:   Tue,  1 Sep 2020 17:11:01 +0200
+Message-Id: <20200901151010.524599037@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +46,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: qiuguorui1 <qiuguorui1@huawei.com>
+From: M. Vefa Bicakci <m.v.b@runbox.com>
 
-commit e579076ac0a3bebb440fab101aef3c42c9f4c709 upstream.
+commit 7a2f2974f26542b4e7b9b4321edb3cbbf3eeb91a upstream.
 
-In the current code, when the eoi callback of the exti clears the pending
-bit of the current interrupt, it will first read the values of fpr and
-rpr, then logically OR the corresponding bit of the interrupt number,
-and finally write back to fpr and rpr.
+Commit 88b7381a939d ("USB: Select better matching USB drivers when
+available") introduced the use of a "match" function to select a
+non-generic/better driver for a particular USB device. This
+unfortunately breaks the operation of usbip in general, as reported in
+the kernel bugzilla with bug 208267 (linked below).
 
-We found through experiments that if two exti interrupts,
-we call them int1/int2, arrive almost at the same time. in our scenario,
-the time difference is 30 microseconds, assuming int1 is triggered first.
+Upon inspecting the aforementioned commit, one can observe that the
+original code in the usb_device_match function used to return 1
+unconditionally, but the aforementioned commit makes the usb_device_match
+function use identifier tables and "match" virtual functions, if either of
+them are available.
 
-there will be an extreme scenario: both int's pending bit are set to 1,
-the irq handle of int1 is executed first, and eoi handle is then executed,
-at this moment, all pending bits are cleared, but the int 2 has not
-finally been reported to the cpu yet, which eventually lost int2.
+Hence, this commit implements a match function for usbip that
+unconditionally returns true to ensure that usbip is functional again.
 
-According to stm32's TRM description about rpr and fpr: Writing a 1 to this
-bit will trigger a rising edge event on event x, Writing 0 has no
-effect.
+This change has been verified to restore usbip functionality, with a
+v5.7.y kernel on an up-to-date version of Qubes OS 4.0, which uses
+usbip to redirect USB devices between VMs.
 
-Therefore, when clearing the pending bit, we only need to clear the
-pending bit of the irq.
+Thanks to Jonathan Dieter for the effort in bisecting this issue down
+to the aforementioned commit.
 
-Fixes: 927abfc4461e7 ("irqchip/stm32: Add stm32mp1 support with hierarchy domain")
-Signed-off-by: qiuguorui1 <qiuguorui1@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org # v4.18+
-Link: https://lore.kernel.org/r/20200820031629.15582-1-qiuguorui1@huawei.com
+Fixes: 88b7381a939d ("USB: Select better matching USB drivers when available")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=208267
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1856443
+Link: https://github.com/QubesOS/qubes-issues/issues/5905
+Signed-off-by: M. Vefa Bicakci <m.v.b@runbox.com>
+Cc: <stable@vger.kernel.org> # 5.7
+Cc: Valentina Manea <valentina.manea.m@gmail.com>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Reviewed-by: Bastien Nocera <hadess@hadess.net>
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200810160017.46002-1-m.v.b@runbox.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/irqchip/irq-stm32-exti.c |   14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/usb/usbip/stub_dev.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/irqchip/irq-stm32-exti.c
-+++ b/drivers/irqchip/irq-stm32-exti.c
-@@ -431,6 +431,16 @@ static void stm32_irq_ack(struct irq_dat
- 	irq_gc_unlock(gc);
+--- a/drivers/usb/usbip/stub_dev.c
++++ b/drivers/usb/usbip/stub_dev.c
+@@ -461,6 +461,11 @@ static void stub_disconnect(struct usb_d
+ 	return;
  }
  
-+/* directly set the target bit without reading first. */
-+static inline void stm32_exti_write_bit(struct irq_data *d, u32 reg)
++static bool usbip_match(struct usb_device *udev)
 +{
-+	struct stm32_exti_chip_data *chip_data = irq_data_get_irq_chip_data(d);
-+	void __iomem *base = chip_data->host_data->base;
-+	u32 val = BIT(d->hwirq % IRQS_PER_BANK);
-+
-+	writel_relaxed(val, base + reg);
++	return true;
 +}
 +
- static inline u32 stm32_exti_set_bit(struct irq_data *d, u32 reg)
- {
- 	struct stm32_exti_chip_data *chip_data = irq_data_get_irq_chip_data(d);
-@@ -464,9 +474,9 @@ static void stm32_exti_h_eoi(struct irq_
+ #ifdef CONFIG_PM
  
- 	raw_spin_lock(&chip_data->rlock);
- 
--	stm32_exti_set_bit(d, stm32_bank->rpr_ofst);
-+	stm32_exti_write_bit(d, stm32_bank->rpr_ofst);
- 	if (stm32_bank->fpr_ofst != UNDEF_REG)
--		stm32_exti_set_bit(d, stm32_bank->fpr_ofst);
-+		stm32_exti_write_bit(d, stm32_bank->fpr_ofst);
- 
- 	raw_spin_unlock(&chip_data->rlock);
- 
+ /* These functions need usb_port_suspend and usb_port_resume,
+@@ -486,6 +491,7 @@ struct usb_device_driver stub_driver = {
+ 	.name		= "usbip-host",
+ 	.probe		= stub_probe,
+ 	.disconnect	= stub_disconnect,
++	.match		= usbip_match,
+ #ifdef CONFIG_PM
+ 	.suspend	= stub_suspend,
+ 	.resume		= stub_resume,
 
 
