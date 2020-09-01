@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D34259478
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CCD2594A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731490AbgIAPkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        id S1731531AbgIAPlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:41:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731393AbgIAPiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:38:11 -0400
+        id S1727846AbgIAPjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:39:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D67C620866;
-        Tue,  1 Sep 2020 15:38:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A62020866;
+        Tue,  1 Sep 2020 15:39:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974691;
-        bh=uQrE+MlhzItmOhpMJ6I/GttJEkgsDMhrOz1QABjShHw=;
+        s=default; t=1598974771;
+        bh=MAsR+OKTtX8ypJugoUpKQOC+iT+UUck+JGdkWEnOczA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gWYZnH2sAA+fDR3JKPqylqm/fKnvCkHHW43rLtcxf3DMjnOwmLi/XzUFvjHnScj0M
-         cqKeE8PpDntDy8ZBdaOHzZTUlEtkOvg4Wg2pkqJr1x52e+dWarKD6o+/mA0rUTRMeT
-         EddOrhT68h/iISgwrHOwtZ34wIoqcaaiVRQCGfRw=
+        b=iB8VKN19OpRN5uxuM1kR2zps8Xj8M+1VezElPKLbDi4Fto7VA+gyHhm3rE3fUQ+2Z
+         8fvOSyOJexd0QC3UybliZ92yLkuuqBZfWWRY9I5HUt0hkPgaNZrtvA4NymEZ1cOMBY
+         wvdE5/fjMCFqRoqx2EwV6X+rq/q6FWXpgobvSEUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Ben Skeggs <bskeggs@redhat.com>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 050/255] drm/nouveau/drm/noveau: fix reference count leak in nouveau_fbcon_open
-Date:   Tue,  1 Sep 2020 17:08:26 +0200
-Message-Id: <20200901151003.130233222@linuxfoundation.org>
+Subject: [PATCH 5.8 054/255] btrfs: file: reserve qgroup space after the hole punch range is locked
+Date:   Tue,  1 Sep 2020 17:08:30 +0200
+Message-Id: <20200901151003.313221333@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -44,37 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit bfad51c7633325b5d4b32444efe04329d53297b2 ]
+[ Upstream commit a7f8b1c2ac21bf081b41264c9cfd6260dffa6246 ]
 
-nouveau_fbcon_open() calls calls pm_runtime_get_sync() that
-increments the reference count. In case of failure, decrement the
-ref count before returning the error.
+The incoming qgroup reserved space timing will move the data reservation
+to ordered extent completely.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+However in btrfs_punch_hole_lock_range() will call
+btrfs_invalidate_page(), which will clear QGROUP_RESERVED bit for the
+range.
+
+In current stage it's OK, but if we're making ordered extents handle the
+reserved space, then btrfs_punch_hole_lock_range() can clear the
+QGROUP_RESERVED bit before we submit ordered extent, leading to qgroup
+reserved space leakage.
+
+So here change the timing to make reserve data space after
+btrfs_punch_hole_lock_range().
+The new timing is fine for either current code or the new code.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_fbcon.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/file.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_fbcon.c b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
-index d5c23d1c20d88..44e515bbbb444 100644
---- a/drivers/gpu/drm/nouveau/nouveau_fbcon.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_fbcon.c
-@@ -189,8 +189,10 @@ nouveau_fbcon_open(struct fb_info *info, int user)
- 	struct nouveau_fbdev *fbcon = info->par;
- 	struct nouveau_drm *drm = nouveau_drm(fbcon->helper.dev);
- 	int ret = pm_runtime_get_sync(drm->dev->dev);
--	if (ret < 0 && ret != -EACCES)
-+	if (ret < 0 && ret != -EACCES) {
-+		pm_runtime_put(drm->dev->dev);
- 		return ret;
-+	}
- 	return 0;
- }
- 
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 1523aa4eaff07..9e8f6c66788d0 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3176,14 +3176,14 @@ reserve_space:
+ 		if (ret < 0)
+ 			goto out;
+ 		space_reserved = true;
+-		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
+-						alloc_start, bytes_to_reserve);
+-		if (ret)
+-			goto out;
+ 		ret = btrfs_punch_hole_lock_range(inode, lockstart, lockend,
+ 						  &cached_state);
+ 		if (ret)
+ 			goto out;
++		ret = btrfs_qgroup_reserve_data(inode, &data_reserved,
++						alloc_start, bytes_to_reserve);
++		if (ret)
++			goto out;
+ 		ret = btrfs_prealloc_file_range(inode, mode, alloc_start,
+ 						alloc_end - alloc_start,
+ 						i_blocksize(inode),
 -- 
 2.25.1
 
