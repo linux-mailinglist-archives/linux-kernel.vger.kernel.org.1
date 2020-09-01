@@ -2,97 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2015C258F61
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4022F258FB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728275AbgIANrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:47:48 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2725 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728241AbgIANrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:47:06 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id AA6FADA0A00693C13AF8;
-        Tue,  1 Sep 2020 14:46:57 +0100 (IST)
-Received: from localhost (10.52.122.233) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 1 Sep 2020
- 14:46:57 +0100
-Date:   Tue, 1 Sep 2020 14:45:20 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-CC:     Doug Anderson <dianders@chromium.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Daniel Campello <campello@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dtor@chromium.org>
-Subject: Re: [PATCH] iio: sx9310: Prefer async probe
-Message-ID: <20200901144520.0000576c@Huawei.com>
-In-Reply-To: <159894383586.334488.2938301456606601581@swboyd.mtv.corp.google.com>
-References: <20200828170052.1.Id02b2f451b3eed71ddd580f4b8b44b3e33e84970@changeid>
-        <20200829161230.398e0051@archlinux>
-        <CAD=FV=W3=kRFH0TzEAX0DWS7jb113LuWUJqVS686EyRzexvoRA@mail.gmail.com>
-        <20200829181754.52d3cc3b@archlinux>
-        <CAD=FV=VWrXwDwoxBK9y2ZeFEoG-edO4WktdSW0MFZLfbcS2hLQ@mail.gmail.com>
-        <159894383586.334488.2938301456606601581@swboyd.mtv.corp.google.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1728272AbgIAN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:58:25 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45704 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728292AbgIANzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:55:32 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kD6kf-0001nf-00; Tue, 01 Sep 2020 15:55:09 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 202E0C0E4B; Tue,  1 Sep 2020 15:49:35 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 15:49:35 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-mm@kvack.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 09/28] MIPS/jazzdma: remove the unused vdma_remap function
+Message-ID: <20200901134935.GA11944@alpha.franken.de>
+References: <20200819065555.1802761-1-hch@lst.de>
+ <20200819065555.1802761-10-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.122.233]
-X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819065555.1802761-10-hch@lst.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Sep 2020 00:03:55 -0700
-Stephen Boyd <swboyd@chromium.org> wrote:
+On Wed, Aug 19, 2020 at 08:55:36AM +0200, Christoph Hellwig wrote:
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/mips/include/asm/jazzdma.h |  2 -
+>  arch/mips/jazz/jazzdma.c        | 70 ---------------------------------
+>  2 files changed, 72 deletions(-)
 
-> Quoting Doug Anderson (2020-08-31 11:59:37)
-> > On Sat, Aug 29, 2020 at 10:18 AM Jonathan Cameron <jic23@kernel.org> wrote:  
-> > > Agreed. However, I'd like a comment next to the place we turn it on
-> > > saying what delays we are trying to mitigate by enabling it in this
-> > > driver.  
-> > 
-> > OK, I used function graph to get a trace.  Some of the time is simply
-> > i2c transfers, which we do A LOT of during initialization (and i2c
-> > transfers aren't known for being instant).  However, that's not the
-> > big problem.  Check out the regmap_read_poll_timeout() in
-> > sx9310_init_compensation().  20 ms per sleep with a 2 second timeout.
-> > This seems to eat over around 220 ms of the time on my system.
-> > 
-> > So how do you want to do this?  Do you want me to re-post the patch
-> > and mention the regmap_read_poll_timeout() in the commit message?  Do
-> > you want to just add that to the commit message yourself?
-> >   
-> 
-> I think the suggestion is to put a comment next to the
-> PROBE_PREFER_ASYNCHRONOUS flag indicating that
-> sx9310_init_compensation() can take a while. 
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Yup. That's what I meant. Sorry for lack of clarity.
-A comment in the code stops others copying it without making sure they
-understand whether it is relevant in their case.  No one is going
-to look in commit messages.
-
-> Should the compensation be
-> delayed even further though to some time when userspace opens the device
-> node?
-
-It's tricky because we may hit it on an individual sysfs read.
-We could spin off a thread to do it I suppose, though that would be
-more or less the same as allowing async probe.
-
-Jonathan
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
