@@ -2,209 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69380259BBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BEC259BD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729765AbgIARGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:06:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52894 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729600AbgIARGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:06:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D990FAC26;
-        Tue,  1 Sep 2020 17:06:02 +0000 (UTC)
-Subject: Re: [PATCH v3 1/3] mm/pageblock: mitigation cmpxchg false sharing in
- pageblock flags
-To:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1598928612-68996-1-git-send-email-alex.shi@linux.alibaba.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <fab9e78e-5635-5d0a-9aa7-227178684044@suse.cz>
-Date:   Tue, 1 Sep 2020 19:06:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1730053AbgIARH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728610AbgIARHs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:07:48 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271B8C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:07:48 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id v196so487933pfc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1VyEi1l0lOpd52Y7IvNbMVag3NVkD7N6u6BLF7rZqxQ=;
+        b=d9f5Gtt7VQ7McMueG9lou77FPV3UfkIMWyZ2e+cscKXv6JkNF7PYpBaZHD3b7ZYsex
+         +7mpAQ0Nm5GaK5MhZX5peVPJlFGn/h6VzYKhrTSx7tnfjy3q9jOGABY+AQfWOR1tgA8e
+         MMWy3ABq++u/Y4ttPLGF4zk4/yOXTntKxIh2o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1VyEi1l0lOpd52Y7IvNbMVag3NVkD7N6u6BLF7rZqxQ=;
+        b=bWmeEmyUOhxvX1Fb7sIM7vdGzgY7k9qgcxLXfWOzQkOulQB0FD/zz+6SsHeZOoPQWB
+         hGWeKrb6jCk8QeHdBQ9Zy7gh/vnPeapRhMSdQz8/aFAOLwcyT025aQhAEXQJ9xtoFxXl
+         B+o1IB/0f6UupG7R9HB81pNUhA8GDcgm74y9YTmAfR6YvwdT7fwaLWlurXms7ded5UZt
+         RdX1o3opRpZiZ4Vma3MSeQ3l/Bc1hqDa92i9r0Mu/7ekWc1K1fhrtpkTeZTZSvS7cTuC
+         18BSPvw39qZRkGP12Ypk1BJVMQVYfNDwpGo2H4q9nWiVtzBO0pqPsYIjZLISqC0S45bZ
+         268g==
+X-Gm-Message-State: AOAM532rQ5kqxe6/xDhcPq0iFXPaMTmQef2C0rttO4CR8vpihw14CNB8
+        JtBpDaKzUIpy7MMJb2M1RbjMiA==
+X-Google-Smtp-Source: ABdhPJy/J9QTlV1QLz55vVOu3QT4SNaPomEwKXsQSSS5USZRon8dmLop0heEKjD6Ih3bJYQHimqowQ==
+X-Received: by 2002:a62:1a91:: with SMTP id a139mr2676443pfa.75.1598980067698;
+        Tue, 01 Sep 2020 10:07:47 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id a5sm2818723pgb.23.2020.09.01.10.07.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 10:07:47 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 10:07:45 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Amit Kucheria <amit.kucheria@linaro.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add 'sustainable_power' for
+ CPU thermal zones
+Message-ID: <20200901170745.GA3419728@google.com>
+References: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
 MIME-Version: 1.0
-In-Reply-To: <1598928612-68996-1-git-send-email-alex.shi@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 4:50 AM, Alex Shi wrote:
-> pageblock_flags is used as long, since every pageblock_flags is just 4
-> bits, 'long' size will include 8(32bit machine) or 16 pageblocks' flags,
-> that flag setting has to sync in cmpxchg with 7 or 15 other pageblock
-> flags. It would cause long waiting for sync.
+On Thu, Aug 13, 2020 at 11:30:33AM -0700, Matthias Kaehlcke wrote:
+> The 'sustainable_power' attribute provides an estimate of the sustained
+> power that can be dissipated at the desired control temperature. One
+> could argue that this value is not necessarily the same for all devices
+> with the same SoC, which may have different form factors or thermal
+> designs. However there are reasons to specify a (default) value at SoC
+> level for SC7180: most importantly, if no value is specified at all the
+> power_allocator thermal governor (aka 'IPA') estimates a value, using the
+> minimum power of all cooling devices of the zone, which can result in
+> overly aggressive thermal throttling. For most devices an approximate
+> conservative value should be more useful than the minimum guesstimate
+> of power_allocator. Devices that need a different value can overwrite
+> it in their <device>.dts. Also the thermal zones for SC7180 have a high
+> level of granularity (essentially one for each function block), which
+> makes it more likely that the default value just works for many devices.
 > 
-> If we could change the pageblock_flags variable as char, we could use
-> char size cmpxchg, which just sync up with 2 pageblock flags. it could
-> relief much false sharing in cmpxchg.
+> The values correspond to 1901 MHz for the big cores, and 1804 MHz for
+> the small cores. The values were determined by limiting the CPU
+> frequencies to different max values and launching a bunch of processes
+> that cause high CPU load ('while true; do true; done &' is simple and
+> does a good job). A frequency is deemed sustainable if the CPU
+> temperatures don't rise (consistently) above the second trip point
+> ('control temperature', 95 degC in this case). Once the highest
+> sustainable frequency is found, the sustainable power can be calculated
+> by multiplying the energy consumption per core at this frequency (which
+> can be found in /sys/kernel/debug/energy_model/) with the number of
+> cores that are specified as cooling devices.
 > 
-> With this and next patch, we could see mmtests/thpscale get slight fast
-> on my 4 cores box, and cmpxchg retry times is reduced.
+> The sustainable frequencies were determined at room temperature
+> on a device without heat sink or other passive cooling elements.
 > 
->                    pageblock   pageblock   pageblock        rc2         rc2         rc2
->                           16        16-2        16-3          a           b           c
-> Duration User          14.81       15.24       14.55      14.76       14.97       14.38
-> Duration System        84.44       88.38       90.64     100.43       89.15       88.89
-> Duration Elapsed       98.83       99.06       99.81     100.30       99.24       99.14
-
-The large variance in these numbers suggest that 3 iterations are not enough to
-conclude a statistically significant difference. You'd need more iterations and
-calculate at least mean+variance.
-
-> rc2 is 5.9-rc2 kernel, pageblock is 5.9-rc2 + this patchset
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 > ---
->  include/linux/mmzone.h          |  6 +++---
->  include/linux/pageblock-flags.h |  2 +-
->  mm/page_alloc.c                 | 38 +++++++++++++++++++-------------------
->  3 files changed, 23 insertions(+), 23 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 8379432f4f2f..be676e659fb7 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -437,7 +437,7 @@ struct zone {
->  	 * Flags for a pageblock_nr_pages block. See pageblock-flags.h.
->  	 * In SPARSEMEM, this map is stored in struct mem_section
->  	 */
-> -	unsigned long		*pageblock_flags;
-> +	unsigned char		*pageblock_flags;
->  #endif /* CONFIG_SPARSEMEM */
->  
->  	/* zone_start_pfn == zone_start_paddr >> PAGE_SHIFT */
-> @@ -1159,7 +1159,7 @@ struct mem_section_usage {
->  	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION);
->  #endif
->  	/* See declaration of similar field in struct zone */
-> -	unsigned long pageblock_flags[0];
-> +	unsigned char	pageblock_flags[0];
->  };
->  
->  void subsection_map_init(unsigned long pfn, unsigned long nr_pages);
-> @@ -1212,7 +1212,7 @@ struct mem_section {
->  extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
->  #endif
->  
-> -static inline unsigned long *section_to_usemap(struct mem_section *ms)
-> +static inline unsigned char *section_to_usemap(struct mem_section *ms)
->  {
->  	return ms->usage->pageblock_flags;
->  }
-> diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
-> index fff52ad370c1..d189441568eb 100644
-> --- a/include/linux/pageblock-flags.h
-> +++ b/include/linux/pageblock-flags.h
-> @@ -54,7 +54,7 @@ enum pageblock_bits {
->  /* Forward declaration */
->  struct page;
->  
-> -unsigned long get_pfnblock_flags_mask(struct page *page,
-> +unsigned char get_pfnblock_flags_mask(struct page *page,
->  				unsigned long pfn,
->  				unsigned long mask);
->  
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fab5e97dc9ca..81e96d4d9c42 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -445,7 +445,7 @@ static inline bool defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
->  #endif
->  
->  /* Return a pointer to the bitmap storing bits affecting a block of pages */
-> -static inline unsigned long *get_pageblock_bitmap(struct page *page,
-> +static inline unsigned char *get_pageblock_bitmap(struct page *page,
->  							unsigned long pfn)
->  {
->  #ifdef CONFIG_SPARSEMEM
-> @@ -474,24 +474,24 @@ static inline int pfn_to_bitidx(struct page *page, unsigned long pfn)
->   * Return: pageblock_bits flags
->   */
->  static __always_inline
-> -unsigned long __get_pfnblock_flags_mask(struct page *page,
-> +unsigned char __get_pfnblock_flags_mask(struct page *page,
->  					unsigned long pfn,
->  					unsigned long mask)
->  {
-> -	unsigned long *bitmap;
-> -	unsigned long bitidx, word_bitidx;
-> -	unsigned long word;
-> +	unsigned char *bitmap;
-> +	unsigned long bitidx, byte_bitidx;
-> +	unsigned char byte;
->  
->  	bitmap = get_pageblock_bitmap(page, pfn);
->  	bitidx = pfn_to_bitidx(page, pfn);
-> -	word_bitidx = bitidx / BITS_PER_LONG;
-> -	bitidx &= (BITS_PER_LONG-1);
-> +	byte_bitidx = bitidx / BITS_PER_BYTE;
-> +	bitidx &= (BITS_PER_BYTE-1);
->  
-> -	word = bitmap[word_bitidx];
-> -	return (word >> bitidx) & mask;
-> +	byte = bitmap[byte_bitidx];
-> +	return (byte >> bitidx) & mask;
->  }
->  
-> -unsigned long get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
-> +unsigned char get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
->  					unsigned long mask)
->  {
->  	return __get_pfnblock_flags_mask(page, pfn, mask);
-> @@ -513,29 +513,29 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
->  					unsigned long pfn,
->  					unsigned long mask)
->  {
-> -	unsigned long *bitmap;
-> -	unsigned long bitidx, word_bitidx;
-> -	unsigned long old_word, word;
-> +	unsigned char *bitmap;
-> +	unsigned long bitidx, byte_bitidx;
-> +	unsigned char old_byte, byte;
->  
->  	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != 4);
->  	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
->  
->  	bitmap = get_pageblock_bitmap(page, pfn);
->  	bitidx = pfn_to_bitidx(page, pfn);
-> -	word_bitidx = bitidx / BITS_PER_LONG;
-> -	bitidx &= (BITS_PER_LONG-1);
-> +	byte_bitidx = bitidx / BITS_PER_BYTE;
-> +	bitidx &= (BITS_PER_BYTE-1);
->  
->  	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
->  
->  	mask <<= bitidx;
->  	flags <<= bitidx;
->  
-> -	word = READ_ONCE(bitmap[word_bitidx]);
-> +	byte = READ_ONCE(bitmap[byte_bitidx]);
->  	for (;;) {
-> -		old_word = cmpxchg(&bitmap[word_bitidx], word, (word & ~mask) | flags);
-> -		if (word == old_word)
-> +		old_byte = cmpxchg(&bitmap[byte_bitidx], byte, (byte & ~mask) | flags);
-> +		if (byte == old_byte)
->  			break;
-> -		word = old_word;
-> +		byte = old_byte;
->  	}
->  }
->  
-> 
+> If maintainers think 'sustainable_power' should be specified at
+> device level (with which I conceptually agree) I'm fine with
+> doing that, just seemed it could be useful to have a reasonable
+> 'default' at SoC level in this case.
 
+Any comments on this?
