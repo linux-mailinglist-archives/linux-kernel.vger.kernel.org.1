@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63585259A6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE792598F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732327AbgIAQtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53652 "EHLO mail.kernel.org"
+        id S1730650AbgIAPbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:31:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729623AbgIAP1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:27:07 -0400
+        id S1730149AbgIAP1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:27:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D9A720684;
-        Tue,  1 Sep 2020 15:27:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40D83206FA;
+        Tue,  1 Sep 2020 15:27:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974027;
-        bh=xLVwb0w4XTSUj3JwDiKNBo/VprSnSpTNy1zh6aFbFUI=;
+        s=default; t=1598974029;
+        bh=fbGa6hXFYDUx0qQvVLBElXseSMxRIENuGCkKMVoNJdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KwUP81YqV7Yfk0zpUWSDHYH0CT+/rNHOo9tn8RflzczAltwIId5Gjso25H/kf1PVk
-         OYqBEy+8vA5fxp5McjWPdPqdqd342k/+DCAGjG7GDOMkPu5zf2KFO7DrCiyeUhgWH6
-         4B9r6PzDEoRA2sEF7M6Zpu7L3NGdWtBPdTJ8Ca20=
+        b=ZPOlqkCsxnxL4S/AgjTFEoDeFgBAmjbCvVpjaHK+CA4IYmDVFjK+nuest6z6J1JnT
+         pmsiHspjB9IjqdXA49u/lzvlG8h4Eo10nLDFqoigW0y2R0Y3WxkY889sh4Y0v1TOrA
+         p1IJR0PpsDG8OhJyMbcmd0BCWq3n9av5chEgXwJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 016/214] ALSA: hda/hdmi: Use force connectivity quirk on another HP desktop
-Date:   Tue,  1 Sep 2020 17:08:16 +0200
-Message-Id: <20200901150953.744828202@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 017/214] ASoC: img: Fix a reference count leak in img_i2s_in_set_fmt
+Date:   Tue,  1 Sep 2020 17:08:17 +0200
+Message-Id: <20200901150953.793095535@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -44,35 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit d96f27c80b65437a7b572647ecb4717ec9a50c98 ]
+[ Upstream commit c4c59b95b7f7d4cef5071b151be2dadb33f3287b ]
 
-There's another HP desktop has buggy BIOS which flags the Port
-Connectivity bit as no connection.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code, causing incorrect ref count if
+pm_runtime_put_noidle() is not called in error handling paths.
+Thus call pm_runtime_put_noidle() if pm_runtime_get_sync() fails.
 
-Apply force connectivity quirk to enable DP/HDMI audio.
-
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Link: https://lore.kernel.org/r/20200811095336.32396-1-kai.heng.feng@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Link: https://lore.kernel.org/r/20200614033749.2975-1-wu000273@umn.edu
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/img/img-i2s-in.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index a9559fb29e209..ec9460f3a288e 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1818,6 +1818,7 @@ static int hdmi_add_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
- }
+diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
+index 869fe0068cbd3..bb668551dd4b2 100644
+--- a/sound/soc/img/img-i2s-in.c
++++ b/sound/soc/img/img-i2s-in.c
+@@ -343,8 +343,10 @@ static int img_i2s_in_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	chan_control_mask = IMG_I2S_IN_CH_CTL_CLK_TRANS_MASK;
  
- static const struct snd_pci_quirk force_connect_list[] = {
-+	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
- 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
- 	{}
- };
+ 	ret = pm_runtime_get_sync(i2s->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(i2s->dev);
+ 		return ret;
++	}
+ 
+ 	for (i = 0; i < i2s->active_channels; i++)
+ 		img_i2s_in_ch_disable(i2s, i);
 -- 
 2.25.1
 
