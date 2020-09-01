@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06C9258F50
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A653E258F3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgIANmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgIANcF (ORCPT
+        id S1728249AbgIANff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:35:35 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57370 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728242AbgIANds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:32:05 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080B2C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:32:03 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e11so984105wme.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 06:32:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bx9oQ2NagEe6NO8GIGkDSi51bJAcX461SHWuEDdlU9s=;
-        b=aODv4vSb/PtYX2etcdsUG9b4DkQ7ggsrTqv4odqPbmVeKSOtc8x4orvCVl5pTPdofn
-         GzpU8kzSxnyrFLBsV4wDhaUkZVId84QvpqgasHh9RvVJ0U1Mk7G/7qsTfZCy2OJUeYaY
-         v84qOYWsNzUtbkktxEDEnj+npfSVvCVZvemEU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=bx9oQ2NagEe6NO8GIGkDSi51bJAcX461SHWuEDdlU9s=;
-        b=bJC20ayGTuuJt16Wwrn8BB2Wz8Nc3BexcYxarFtK8cE1ssV+s4UJozKmrtfEC0ZXE0
-         5wOB0oEjX7D/zLk6l/DmpX9GtXx2kAzByVovsyWJIndsC4/Z6HeIdhfj5S9xWodf6Tcj
-         UhFpIIziREGNqvlVcezWGTIurseqeBveYerSSXyoADr9nAkd78ZIWmbE1p6Z8rpHXoCU
-         OiXnFN4JRnzwsEr8y/fnSog7/3ZRkxZk8a5aERDTP5HLWsYIdzMhx8/hOsqsxp1mmqc+
-         8QMok4H7ufAseVpso8RaIdc0goaj3VV9xXvxDoFwFAzLHDeJ3upoNT08xcMX3f/hxJEl
-         w9aA==
-X-Gm-Message-State: AOAM532XzhTrhlQKOJIr7IvjgXTYniBqrpLxExcPQkHl478ILyAxtatO
-        18RPE/+cw2iaGXjlReUTSM6k3onoz/60ZG6i
-X-Google-Smtp-Source: ABdhPJxMIpyA4+ivRVmjL76n4SwUIJPpyNp2oXzgh60A0zsTrXOGV9cAYNKuDeIxPZ/25Yor8JDoOQ==
-X-Received: by 2002:a1c:2b43:: with SMTP id r64mr1778101wmr.105.1598967122596;
-        Tue, 01 Sep 2020 06:32:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id s124sm2056569wme.29.2020.09.01.06.32.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 06:32:01 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 15:32:00 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Gustavo Padovan <gustavo@padovan.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH] dma-buf: fix kernel-doc warning in dma-fence.c
-Message-ID: <20200901133200.GE2352366@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Gustavo Padovan <gustavo@padovan.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-References: <20200831041713.12571-1-rdunlap@infradead.org>
- <81dc0a34-90f6-401a-f846-924fdff4aaff@amd.com>
+        Tue, 1 Sep 2020 09:33:48 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 081D0l24055238;
+        Tue, 1 Sep 2020 13:33:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=tncZGQIWIEZ4FEAe9DcScrIAwrizsiWeexR76yy0IIQ=;
+ b=dtxeQRglYiDPtopyn3Vtf+9DrDAhfWhdGROhVxPHqIwJhl+iHvMOw0pEd8HhECQCZWQF
+ ho4IaMLRqiDXC6tIsrmGKz45zY/OoxfynnwsJ2jFY3TxlzPhZWJ4hgj2bEKVH7ynT69T
+ tp4XrQYEsma2BgVzqbj90NbaxBhEOsMvNQUfkZ4arjiiMd66kmIAyM/p4apARficfUaI
+ T6MWYgOJyD9uG3nmfiZ76C77214aLORN7A+cyXw68GgBX0s1urhSl0ooCbN248CIpcfY
+ 5vIl2Y00jNd42ORP/PuXcCl/rq42c3YoRGVpekc3tzSlt8Js/wXWn5YGdI6kw0FfYV+R vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 337eym4960-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 01 Sep 2020 13:33:39 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 081D0eqO076616;
+        Tue, 1 Sep 2020 13:33:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 3380x3bv2m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 01 Sep 2020 13:33:39 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 081DXciR002439;
+        Tue, 1 Sep 2020 13:33:38 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 01 Sep 2020 06:33:38 -0700
+Date:   Tue, 1 Sep 2020 16:33:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     antoniprzybylik <antoni.przybylik@wp.pl>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: gdm724x: gdm_tty: corrected macro by adding
+ brackets
+Message-ID: <20200901133332.GY8299@kadam>
+References: <20200901104311.17270-1-antoni.przybylik@wp.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <81dc0a34-90f6-401a-f846-924fdff4aaff@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20200901104311.17270-1-antoni.przybylik@wp.pl>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009010113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9730 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009010113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 12:02:03PM +0200, Christian König wrote:
-> Am 31.08.20 um 06:17 schrieb Randy Dunlap:
-> > Add @cookie to dma_fence_end_signalling() to prevent kernel-doc
-> > warning in drivers/dma-buf/dma-fence.c:
-> > 
-> > ../drivers/dma-buf/dma-fence.c:291: warning: Function parameter or member 'cookie' not described in 'dma_fence_end_signalling'
-> > 
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> > Cc: Gustavo Padovan <gustavo@padovan.org>
-> > Cc: Christian König <christian.koenig@amd.com>
-> > Cc: linux-media@vger.kernel.org
-> > Cc: dri-devel@lists.freedesktop.org
+On Tue, Sep 01, 2020 at 12:43:11PM +0200, antoniprzybylik wrote:
+                                          ^^^^^^^^^^^^^^^
+Please, fix your From: header so that it says "Antoni Przybylik".
+
+> Such macros are dangerous. Consider following example:
+> 	#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
+> 	GDM_TTY_READY(a + b)
+> This macro will be expanded in such a way:
+> 	(a + b && a + b->tty_dev && a + b->port.count)
+> And it will lead to errors.
 > 
-> Acked-by: Christian König <christian.koenig@amd.com>
-
-Will you merge these two to drm-misc-fixes or should someone else?
-
-Always a bit confusing when maintainers reply with acks/r-b but not what
-they'll do with the patch :-)
-
-Cheers, Daniel
-
+> Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
+> ---
+>  drivers/staging/gdm724x/gdm_tty.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > ---
-> >   drivers/dma-buf/dma-fence.c |    1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > --- lnx-59-rc3.orig/drivers/dma-buf/dma-fence.c
-> > +++ lnx-59-rc3/drivers/dma-buf/dma-fence.c
-> > @@ -283,6 +283,7 @@ EXPORT_SYMBOL(dma_fence_begin_signalling
-> >   /**
-> >    * dma_fence_end_signalling - end a critical DMA fence signalling section
-> > + * @cookie: opaque cookie from dma_fence_begin_signalling()
-> >    *
-> >    * Closes a critical section annotation opened by dma_fence_begin_signalling().
-> >    */
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+> index 6e813693a766..eab5c75ee5b1 100644
+> --- a/drivers/staging/gdm724x/gdm_tty.c
+> +++ b/drivers/staging/gdm724x/gdm_tty.c
+> @@ -27,7 +27,7 @@
+>  
+>  #define MUX_TX_MAX_SIZE 2048
+>  
+> -#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
+> +#define GDM_TTY_READY(gdm) ((gdm) && (gdm)->tty_dev && (gdm)->port.count)
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I cannot imagine a real life example where adding these parentheses will
+prevent a bug.  One idea it to silence this by making dereference ops
+like this a special case where checkpatch.pl doesn't suggest adding
+parentheses.
+
+regards,
+dan carpenter
