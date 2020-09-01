@@ -2,101 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977DB25882C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACF525888A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgIAG1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:27:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726044AbgIAG1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:27:33 -0400
-Received: from coco.lan (ip5f5ad5cf.dynamic.kabel-deutschland.de [95.90.213.207])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 824342098B;
-        Tue,  1 Sep 2020 06:27:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598941653;
-        bh=vQRDkJyojcuTd04BSfsdD23ZJb7l6n5sNRdUCsmf2cs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=yvDgvoVju9G9ODuA094i3jquBkzguo+LxrkgiGFFMFfbzAziJtG6VeEIsaf1m1m1d
-         1hF9sY3RAOezm9xb2RnSmLVT5ZiDKOGAUS5Xj5DJKyrRVhuapd2nXYZjgibfMfAhKp
-         U3c/RS0SnzJGuP5c9yPZEIWcSRYKHzh5/iBajJq4=
-Date:   Tue, 1 Sep 2020 08:27:28 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     <gregkh@linuxfoundation.org>, <devel@driverdev.osuosl.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] staging: spmi: hisi-spmi-controller: Use proper
- format in call to dev_err()
-Message-ID: <20200901082728.5ce6eda1@coco.lan>
-In-Reply-To: <20200901035722.9324-1-yuehaibing@huawei.com>
-References: <20200901035722.9324-1-yuehaibing@huawei.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726984AbgIAGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:53:06 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:22577 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIAGxE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:53:04 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200901065302epoutp028b6c09fd87ba55112a5f21b7b14b1fc6~wllpGA06g0708407084epoutp02N
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:53:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200901065302epoutp028b6c09fd87ba55112a5f21b7b14b1fc6~wllpGA06g0708407084epoutp02N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1598943182;
+        bh=0RqILSjSluQTcp7A9cjKSqQAf2l2HI407ixivTHWcYQ=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=lJ1lfp7VsLNvtClJJrW/f9/5SSDxlY9L4e/Os7ULuidmOGfytLjYeYDu7mWYkrf09
+         lxfzCZjsckGbV8cPc5mc1f/ErU/7VWb1I5cnbjnPLiQklqlWvl/H/dRac93Jb7oYlS
+         XqEYi/BD79ylhAXhnbzsGru5B/VVCY12N/HgwEAs=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p4.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200901065301epcas1p406b00849d5bdf061d3537cb1d964072c~wllomjVQG0503605036epcas1p4p;
+        Tue,  1 Sep 2020 06:53:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [PATCH v10 0/4] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
+Date:   Tue, 01 Sep 2020 13:31:52 +0900
+X-CMS-MailID: 20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72
+References: <CGME20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72@epcms2p5>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 1 Sep 2020 11:57:22 +0800
-YueHaibing <yuehaibing@huawei.com> escreveu:
+Changelog:
 
-> The correct format string for a size_t argument should be %zu.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+v9 -> v10
+1. Fix 64-bit division error
+2. Fix problems commentted in Bart's review.
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+v8 -> v9
+1. Change sysfs initialization.
+2. Change reading descriptor during HPB initialization
+3. Fix problems commentted in Bart's review.
+4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
 
-> ---
->  drivers/staging/hikey9xx/hisi-spmi-controller.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
-> index 66a0b296e06f..34c690da09e3 100644
-> --- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
-> +++ b/drivers/staging/hikey9xx/hisi-spmi-controller.c
-> @@ -121,7 +121,7 @@ static int spmi_read_cmd(struct spmi_controller *ctrl,
->  
->  	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
->  		dev_err(&ctrl->dev,
-> -			"spmi_controller supports 1..%d bytes per trans, but:%ld requested\n",
-> +			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
->  			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
->  		return  -EINVAL;
->  	}
-> @@ -175,7 +175,7 @@ static int spmi_read_cmd(struct spmi_controller *ctrl,
->  	spin_unlock_irqrestore(&spmi_controller->lock, flags);
->  	if (rc)
->  		dev_err(&ctrl->dev,
-> -			"spmi read wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%ld\n",
-> +			"spmi read wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
->  			opc, slave_id, slave_addr, bc + 1);
->  	else
->  		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, read value: %*ph\n",
-> @@ -197,7 +197,7 @@ static int spmi_write_cmd(struct spmi_controller *ctrl,
->  
->  	if (bc > SPMI_CONTROLLER_MAX_TRANS_BYTES) {
->  		dev_err(&ctrl->dev,
-> -			"spmi_controller supports 1..%d bytes per trans, but:%ld requested\n",
-> +			"spmi_controller supports 1..%d bytes per trans, but:%zu requested\n",
->  			SPMI_CONTROLLER_MAX_TRANS_BYTES, bc);
->  		return  -EINVAL;
->  	}
-> @@ -251,7 +251,7 @@ static int spmi_write_cmd(struct spmi_controller *ctrl,
->  	spin_unlock_irqrestore(&spmi_controller->lock, flags);
->  
->  	if (rc)
-> -		dev_err(&ctrl->dev, "spmi write wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%ld\n",
-> +		dev_err(&ctrl->dev, "spmi write wait timeout op:0x%x slave_id:%d slave_addr:0x%x bc:%zu\n",
->  			opc, slave_id, slave_addr, bc);
->  	else
->  		dev_dbg(&ctrl->dev, "%s: id:%d slave_addr:0x%x, wrote value: %*ph\n",
+v7 -> v8
+Remove wrongly added tags.
 
+v6 -> v7
+1. Remove UFS feature layer.
+2. Cleanup for sparse error.
 
+v5 -> v6
+Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
 
-Thanks,
-Mauro
+v4 -> v5
+Delete unused macro define.
+
+v3 -> v4
+1. Cleanup.
+
+v2 -> v3
+1. Add checking input module parameter value.
+2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+3. Cleanup for unused variables and label.
+
+v1 -> v2
+1. Change the full boilerplate text to SPDX style.
+2. Adopt dynamic allocation for sub-region data structure.
+3. Cleanup.
+
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
+
+To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+(Host Performance Booster) which uses host system memory as a cache for the
+FTL mapping table. By using HPB, FTL data can be read from host memory
+faster than from NAND flash memory. 
+
+The current version only supports the DCM (device control mode).
+This patch consists of 3 parts to support HPB feature.
+
+1) HPB probe and initialization process
+2) READ -> HPB READ using cached map information
+3) L2P (logical to physical) map management
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB.
+
+The HPB manages the L2P map using information received from the
+device. For active sub-region, the HPB caches through ufshpb_map
+request. For the in-active region, the HPB discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+This series patches are based on the 5.9/scsi-queue branch.
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Daejun park (4):
+ scsi: ufs: Add HPB feature related parameters
+ scsi: ufs: Introduce HPB feature
+ scsi: ufs: L2P map management for HPB read
+ scsi: ufs: Prepare HPB read for cached sub-region
+  
+ drivers/scsi/ufs/Kconfig  |    9 +
+ drivers/scsi/ufs/Makefile |    1 +
+ drivers/scsi/ufs/ufs.h    |   47 +
+ drivers/scsi/ufs/ufshcd.c |   60 ++
+ drivers/scsi/ufs/ufshcd.h |   23 +-
+ drivers/scsi/ufs/ufshpb.c | 1845 ++++++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h |  229 +++++
+ 7 files changed, 2213 insertions(+), 1 deletion(-)
+ created mode 100644 drivers/scsi/ufs/ufshpb.c
+ created mode 100644 drivers/scsi/ufs/ufshpb.h
