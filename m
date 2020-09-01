@@ -2,110 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1AB259248
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB6D259243
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgIAPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728603AbgIAPGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:06:30 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028B8C061244;
-        Tue,  1 Sep 2020 08:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=tss5M/CgWtNHrn8kN3neH2rNWYnxcMFrfLkwrH1qZaA=; b=yraft6TribLHwkrXJ7oKDtJRbK
-        cOoSth/ZTysdAmjuNC9rchtYeF0z+4F1RM8ZSndjz2v5LMkusAM9mIEOSPtOBEwb0PrM+xXx7Ea7l
-        /ikF7LoG7gYahgDVNW4fpo5YAAYo7+GSKX3Kj5LrIdLfBohdGxGfIZnJ7e4SMWbdBgoLHEIW8Tgf+
-        njRXFLID+gofXGqnwhgAGdxbeaCAz+DaJh+I7tc9ACsUsCsauw+lX1T/rK1szN+XezzxnPVRwgJmj
-        cElkLQkrY4Cp0YxyEUGpaWUKkF76V0isaghz3YuqDIfij7YJSYYX6sQuqof0yxOOvFOlXTjYKms7X
-        VU1axofA==;
-Received: from [2601:1c0:6280:3f0:897c:6038:c71d:ecac]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kD7rf-0005MS-Oa; Tue, 01 Sep 2020 15:06:28 +0000
-Subject: Re: [PATCH] dma-buf: fix kernel-doc warning in dma-fence.c
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Gustavo Padovan <gustavo@padovan.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-References: <20200831041713.12571-1-rdunlap@infradead.org>
- <81dc0a34-90f6-401a-f846-924fdff4aaff@amd.com>
- <20200901133200.GE2352366@phenom.ffwll.local>
- <d057988a-7ba4-7e3b-1c36-e40e9a5a8d9a@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e15d8d9b-3988-191d-f9c0-6e5c3efe7485@infradead.org>
-Date:   Tue, 1 Sep 2020 08:06:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728697AbgIAPGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:06:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728660AbgIAPGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:06:34 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E80A20BED;
+        Tue,  1 Sep 2020 15:06:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598972792;
+        bh=LCDLVU8qJ08+iGKXvR5r+dlBm0nlk/9Y29X+1wE/JVY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wLK8Ef5foZZY9WpTlt3nC2+tsUSLEyQxiyf5H/RBoWYmwEO2QoYZ/eHVD2muJFJpg
+         5WOKgM/vWtbB3NNEhXL/iQWnZVLCKyIAz1/MGSqIRO2Nv5dNEuM0cxu4VgqNBsowle
+         Lvl53dXC9yzmzRRa6ukDJ4+J8VHvveL/geeqQAcQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A4AB540D3D; Tue,  1 Sep 2020 12:06:30 -0300 (-03)
+Date:   Tue, 1 Sep 2020 12:06:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Al Grant <al.grant@foss.arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf: correct SNOOPX field offset
+Message-ID: <20200901150630.GB1424523@kernel.org>
+References: <9974f2d0-bf7f-518e-d9f7-4520e5ff1bb0@foss.arm.com>
+ <20200825174043.GQ1509399@tassilo.jf.intel.com>
+ <20200826142631.GA5351@redhat.com>
+ <d68e68f5-a7c3-c276-6134-a68f068a2b80@foss.arm.com>
+ <20200901150225.GA1424523@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d057988a-7ba4-7e3b-1c36-e40e9a5a8d9a@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901150225.GA1424523@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 6:37 AM, Christian König wrote:
-> Am 01.09.20 um 15:32 schrieb Daniel Vetter:
->> On Mon, Aug 31, 2020 at 12:02:03PM +0200, Christian König wrote:
->>> Am 31.08.20 um 06:17 schrieb Randy Dunlap:
->>>> Add @cookie to dma_fence_end_signalling() to prevent kernel-doc
->>>> warning in drivers/dma-buf/dma-fence.c:
->>>>
->>>> ../drivers/dma-buf/dma-fence.c:291: warning: Function parameter or member 'cookie' not described in 'dma_fence_end_signalling'
->>>>
->>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>>> Cc: Sumit Semwal <sumit.semwal@linaro.org>
->>>> Cc: Gustavo Padovan <gustavo@padovan.org>
->>>> Cc: Christian König <christian.koenig@amd.com>
->>>> Cc: linux-media@vger.kernel.org
->>>> Cc: dri-devel@lists.freedesktop.org
->>> Acked-by: Christian König <christian.koenig@amd.com>
->> Will you merge these two to drm-misc-fixes or should someone else?
+Em Tue, Sep 01, 2020 at 12:02:25PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Aug 26, 2020 at 03:33:35PM +0100, Al Grant escreveu:
+> > On 26/08/2020 15:26, Arnaldo Carvalho de Melo wrote:
+> > > Em Tue, Aug 25, 2020 at 10:40:43AM -0700, Andi Kleen escreveu:
+> > > > On Mon, Aug 24, 2020 at 10:28:34AM +0100, Al Grant wrote:
+> > > > > perf_event.h has macros that define the field offsets in the
+> > > > > data_src bitmask in perf records. The SNOOPX and REMOTE offsets
+> > > > > were both 37. These are distinct fields, and the bitfield layout
+> > > > > in perf_mem_data_src confirms that SNOOPX should be at offset 38.
+> > > > 
+> > > > Looks good.
+> > > > 
+> > > > Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> > > > 
+> > > > Probably should have a Fixes: header
+> > > 
+> > > Please do so, find the patch that introduced the error, add the Fixes
+> > > tag, will help me not having to do it myself :-)
+> > 
+> > Fixes: 52839e653b562 ("perf tools: Add support for printing new mem_info
+> > encodings")
 > 
-> I was wondering the same thing and just waiting for Randy to reply with please pick them up or I'm going to push them because I have commit access.
-
-I didn't realize that was needed, but anyway, Christian, please apply these 2
-dma-buf kernel-doc patches.
-
-thanks.
-
-> Regards,
-> Christian.
+> Ok, I'll add that, thanks.
 > 
->>
->> Always a bit confusing when maintainers reply with acks/r-b but not what
->> they'll do with the patch :-)
+> But you forgot to add your Signed-off-by:, can you please provide it?
+> 
+> There was also a minor problem in the patch, there was no separation of
+> --- from the patch comment section to the patch itself, I'll fix that as
+> well.
 
-Agreed.
+Also you mixed up tools/ with include/ things, the perf part of the
+kernel is maintained by Ingo, PeterZ.
 
->> Cheers, Daniel
->>
->>>> ---
->>>>    drivers/dma-buf/dma-fence.c |    1 +
->>>>    1 file changed, 1 insertion(+)
->>>>
->>>> --- lnx-59-rc3.orig/drivers/dma-buf/dma-fence.c
->>>> +++ lnx-59-rc3/drivers/dma-buf/dma-fence.c
->>>> @@ -283,6 +283,7 @@ EXPORT_SYMBOL(dma_fence_begin_signalling
->>>>    /**
->>>>     * dma_fence_end_signalling - end a critical DMA fence signalling section
->>>> + * @cookie: opaque cookie from dma_fence_begin_signalling()
->>>>     *
->>>>     * Closes a critical section annotation opened by dma_fence_begin_signalling().
->>>>     */
->>> _______________________________________________
->>> dri-devel mailing list
->>> dri-devel@lists.freedesktop.org
+Peter, the patch is the one below, I'll collect the
+tools/include/uapi/linux/perf_event.h bit as it fixes the tooling,
+please consider taking the kernel part.
 
+Thanks,
 
--- 
-~Randy
+- Arnaldo
 
+---
+
+From:   Al Grant <al.grant@foss.arm.com>
+Subject: [PATCH] perf: correct SNOOPX field offset
+Message-ID: <9974f2d0-bf7f-518e-d9f7-4520e5ff1bb0@foss.arm.com>
+Date:   Mon, 24 Aug 2020 10:28:34 +0100
+
+perf_event.h has macros that define the field offsets in the
+data_src bitmask in perf records. The SNOOPX and REMOTE offsets
+were both 37. These are distinct fields, and the bitfield layout
+in perf_mem_data_src confirms that SNOOPX should be at offset 38.
+
+Signed-off-by: Al Grant <al.grant@arm.com>
+
+---
+
+  include/uapi/linux/perf_event.h       | 2 +-
+  tools/include/uapi/linux/perf_event.h | 2 +-
+  2 files changed, 2 insertions(+), 2 deletions(-)
+
+---
+
+diff --git a/include/uapi/linux/perf_event.h 
+b/include/uapi/linux/perf_event.h
+index 077e7ee69e3d..3e5dcdd48a49 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -1196,7 +1196,7 @@ union perf_mem_data_src {
+
+  #define PERF_MEM_SNOOPX_FWD    0x01 /* forward */
+  /* 1 free */
+-#define PERF_MEM_SNOOPX_SHIFT  37
++#define PERF_MEM_SNOOPX_SHIFT  38
+
+  /* locked instruction */
+  #define PERF_MEM_LOCK_NA       0x01 /* not available */
+diff --git a/tools/include/uapi/linux/perf_event.h 
+b/tools/include/uapi/linux/perf_event.h
+index 077e7ee69e3d..3e5dcdd48a49 100644
+--- a/tools/include/uapi/linux/perf_event.h
++++ b/tools/include/uapi/linux/perf_event.h
+@@ -1196,7 +1196,7 @@ union perf_mem_data_src {
+
+  #define PERF_MEM_SNOOPX_FWD    0x01 /* forward */
+  /* 1 free */
+-#define PERF_MEM_SNOOPX_SHIFT  37
++#define PERF_MEM_SNOOPX_SHIFT  38
+
+  /* locked instruction */
+  #define PERF_MEM_LOCK_NA       0x01 /* not available */
