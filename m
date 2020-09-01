@@ -2,76 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620C725A109
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 23:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F3625A11D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgIAV6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 17:58:38 -0400
-Received: from mailoutvs49.siol.net ([185.57.226.240]:45292 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728254AbgIAV6h (ORCPT
+        id S1729657AbgIAWBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 18:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727778AbgIAWBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 17:58:37 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id F0B71526784;
-        Tue,  1 Sep 2020 23:58:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id vxLCUTGcJHyJ; Tue,  1 Sep 2020 23:58:34 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id A06835267B9;
-        Tue,  1 Sep 2020 23:58:34 +0200 (CEST)
-Received: from kista.localdomain (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id C97F0526784;
-        Tue,  1 Sep 2020 23:58:33 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     jernej.skrabec@siol.net, irlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Roman Stratiienko <r.stratiienko@gmail.com>
-Subject: [PATCH] drm/sun4i: Fix DE2 YVU handling
-Date:   Wed,  2 Sep 2020 00:03:05 +0200
-Message-Id: <20200901220305.6809-1-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.28.0
+        Tue, 1 Sep 2020 18:01:49 -0400
+X-Greylist: delayed 366 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 01 Sep 2020 15:01:47 PDT
+Received: from mail.sammserver.com (sammserver.com [IPv6:2001:470:5a5b:1::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D32C061244;
+        Tue,  1 Sep 2020 15:01:46 -0700 (PDT)
+Received: by mail.sammserver.com (Postfix, from userid 5011)
+        id 3E106FCD560; Tue,  1 Sep 2020 23:55:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
+        t=1598997337; bh=/RtFyWyJDIkCcWhBfGLKv/03qnf5PIZh/94SZpxGp1A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RG2ZnBVrBVVv2CWA6WDCwMa0eLBQ4d0jpslftDpLYIdld9Ytz6c6FqQo/V6fq132k
+         Gf1EnDLFzYjiWhHNayqWJ65uit6t/XM/FMg5VOA3y9mYqx2KqAeYMwZJob4S3Xr2cQ
+         BueooTfZ7LTmuewXAJ7msNBki0wFDjxbRTLUtCq8=
+Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
+        by mail.sammserver.com (Postfix) with ESMTP id F3187FCD55D;
+        Tue,  1 Sep 2020 23:55:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
+        t=1598997337; bh=/RtFyWyJDIkCcWhBfGLKv/03qnf5PIZh/94SZpxGp1A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RG2ZnBVrBVVv2CWA6WDCwMa0eLBQ4d0jpslftDpLYIdld9Ytz6c6FqQo/V6fq132k
+         Gf1EnDLFzYjiWhHNayqWJ65uit6t/XM/FMg5VOA3y9mYqx2KqAeYMwZJob4S3Xr2cQ
+         BueooTfZ7LTmuewXAJ7msNBki0wFDjxbRTLUtCq8=
+Received: by fastboi.localdomain (Postfix, from userid 1000)
+        id D67EC14210F4; Tue,  1 Sep 2020 23:55:36 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 23:55:36 +0200
+From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Corentin Chary <corentin.chary@gmail.com>
+Cc:     acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: platform/x86: asus-wmi: SW_TABLET_MODE is always 1 on some devices
+Message-ID: <20200901215536.qcouepovmfxje4n5@fastboi.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function sun8i_vi_layer_get_csc_mode() is supposed to return CSC mode
-but due to inproper return type (bool instead of u32) it returns just 0
-or 1. Colors are wrong for YVU formats because of that.
+Hello!
 
-Fixes: daab3d0e8e2b ("drm/sun4i: de2: csc_mode in de2 format struct is mo=
-stly redundant")
-Reported-by: Roman Stratiienko <r.stratiienko@gmail.com>
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- drivers/gpu/drm/sun4i/sun8i_vi_layer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+A bug was introduced with the following commit[1]:
 
-diff --git a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c b/drivers/gpu/drm/sun=
-4i/sun8i_vi_layer.c
-index 22c8c5375d0d..c0147af6a840 100644
---- a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-+++ b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-@@ -211,7 +211,7 @@ static int sun8i_vi_layer_update_coord(struct sun8i_m=
-ixer *mixer, int channel,
- 	return 0;
- }
-=20
--static bool sun8i_vi_layer_get_csc_mode(const struct drm_format_info *fo=
-rmat)
-+static u32 sun8i_vi_layer_get_csc_mode(const struct drm_format_info *for=
-mat)
- {
- 	if (!format->is_yuv)
- 		return SUN8I_CSC_MODE_OFF;
---=20
-2.28.0
+    b0dbd97de: platform/x86: asus-wmi: Add support for SW_TABLET_MODE
 
+The SW_TABLET_MODE switch seems to be always 1 on some devices,
+including my UX360CA and a UX390UAK[2].
+
+This can be seen in the output of evtest:
+
+    # evtest /dev/input/by-path/platform-asus-nb-wmi-event
+    Input driver version is 1.0.1
+    Input device ID: bus 0x19 vendor 0x0 product 0x0 version 0x0
+    Input device name: "Asus WMI hotkeys"
+    Supported events:
+      (...)
+      Event type 5 (EV_SW)
+        Event code 1 (SW_TABLET_MODE) state 1
+
+And directly results in libinput disabling the trackpad and keyboard via
+its tablet-mode mechanism, rendering X.org and Wayland unusable (not even
+switching to VT works without sysrq+r):
+
+    # libinput debug-events
+    (...)
+    -event8   DEVICE_ADDED     Asus WMI hotkeys     seat0 default group10 cap:kS
+     event8   SWITCH_TOGGLE    +0.000s	switch tablet-mode state 1
+    (...)
+
+I have been using the following workaround to get my input working
+again:
+
+    # cat /usr/share/libinput/50-system-asus.quirks
+    (...)
+    [Asus WMI hotkeys]
+    MatchName=*Asus WMI hotkeys*
+    ModelTabletModeSwitchUnreliable=1
+
+Another option would be to rmmod asus_nb_wmi and blacklist it for now.
+
+I am not sure what the solution would be as I am not acquainted with the
+WMI module. However, I can provide some information about my hardware:
+
+The UX360CA fully disables the keyboard in hardware(firmware?) when the
+lid is flipped beyond 180 degrees (tablet mode). The trackpad is not
+disabled. A KEY_PROG2 event is generated by the same "Asus WMI hotkeys"
+input device at this moment, it however does not carry the actual state
+-- a 1 is sent and a 0 follows immediately[3]. The same KEY_PROG2
+sequence is generated when the lid is returned back to laptop position.
+The SW_TABLET_MODE switch does not change state at all during this.
+Thank you.
+
+Have a nice day,
+Samuel
+
+[1]: https://patchwork.kernel.org/patch/11539215/
+[2]: https://bugzilla.kernel.org/show_bug.cgi?id=209011
+[3]: https://lore.kernel.org/patchwork/patch/973647/
