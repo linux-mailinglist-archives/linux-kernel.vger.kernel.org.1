@@ -2,127 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22066258541
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254A8258548
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 03:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbgIABpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 21:45:06 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:37433 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726023AbgIABpF (ORCPT
+        id S1726419AbgIABqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 21:46:49 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:35196 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725987AbgIABqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 21:45:05 -0400
-Received: (qmail 571492 invoked by uid 1000); 31 Aug 2020 21:45:04 -0400
-Date:   Mon, 31 Aug 2020 21:45:04 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH kcsan 9/9] tools/memory-model:  Document locking corner
- cases
-Message-ID: <20200901014504.GB571008@rowland.harvard.edu>
-References: <20200831182012.GA1965@paulmck-ThinkPad-P72>
- <20200831182037.2034-9-paulmck@kernel.org>
- <20200831201701.GB558270@rowland.harvard.edu>
- <20200831214738.GE2855@paulmck-ThinkPad-P72>
+        Mon, 31 Aug 2020 21:46:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0U7UN03A_1598924801;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U7UN03A_1598924801)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Sep 2020 09:46:42 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, bhe@redhat.com,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [Patch v4 0/7] mm/hugetlb: code refine and simplification
+Date:   Tue,  1 Sep 2020 09:46:29 +0800
+Message-Id: <20200901014636.29737-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831214738.GE2855@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 02:47:38PM -0700, Paul E. McKenney wrote:
-> On Mon, Aug 31, 2020 at 04:17:01PM -0400, Alan Stern wrote:
+Following are some cleanup for hugetlb.
 
-> > Is this discussion perhaps overkill?
-> > 
-> > Let's put it this way: Suppose we have the following code:
-> > 
-> > 	P0(int *x, int *lck)
-> > 	{
-> > 		spin_lock(lck);
-> > 		WRITE_ONCE(*x, 1);
-> > 		do_something();
-> > 		spin_unlock(lck);
-> > 	}
-> > 
-> > 	P1(int *x, int *lck)
-> > 	{
-> > 		while (READ_ONCE(*x) == 0)
-> > 			;
-> > 		spin_lock(lck);
-> > 		do_something_else();
-> > 		spin_unlock(lck);
-> > 	}
-> > 
-> > It's obvious that this test won't deadlock.  But if P1 is changed to:
-> > 
-> > 	P1(int *x, int *lck)
-> > 	{
-> > 		spin_lock(lck);
-> > 		while (READ_ONCE(*x) == 0)
-> > 			;
-> > 		do_something_else();
-> > 		spin_unlock(lck);
-> > 	}
-> > 
-> > then it's equally obvious that the test can deadlock.  No need for
-> > fancy memory models or litmus tests or anything else.
-> 
-> For people like you and me, who have been thinking about memory ordering
-> for longer than either of us care to admit, this level of exposition is
-> most definitely -way- overkill!!!
-> 
-> But I have had people be very happy and grateful that I explained this to
-> them at this level of detail.  Yes, I started parallel programming before
-> some of them were born, but they are definitely within our target audience
-> for this particular document.  And it is not just Linux kernel hackers
-> who need this level of detail.  A roughly similar transactional-memory
-> scenario proved to be so non-obvious to any number of noted researchers
-> that Blundell, Lewis, and Martin needed to feature it in this paper:
-> https://ieeexplore.ieee.org/abstract/document/4069174
-> (Alternative source: https://repository.upenn.edu/cgi/viewcontent.cgi?article=1344&context=cis_papers)
-> 
-> Please note that I am -not- advocating making (say) explanation.txt or
-> recipes.txt more newbie-accessible than they already are.  After all,
-> the point of the README file in that same directory is to direct people
-> to the documentation files that are the best fit for them, and both
-> explanation.txt and recipes.txt contain advanced material, and thus
-> require similarly advanced prerequisites.
-> 
-> Seem reasonable, or am I missing your point?
+Simple test with tools/testing/selftests/vm/map_hugetlb pass.
 
-The question is, what are you trying to accomplish in this section?  Are 
-you trying to demonstrate that it isn't safe to allow arbitrary code to 
-leak into a critical section?  If so then you don't need to present an 
-LKMM litmus test to make the point; the example I gave here will do 
-quite as well.  Perhaps even better, since it doesn't drag in all sorts 
-of extraneous concepts like limitations of litmus tests or how to 
-emulate a spin loop.
+v4:
+  * fix a logic error for patch 7, thanks Mike
+v3:
+  * rebase on v5.9-rc2 which adjust the last patch a little
+v2:
+  * drop 5/6/10 since similar patches are merged or under review.
+  * adjust 2 based on comment from Mike Kravetz
 
-On the other hand, if your goal is to show how to construct a litmus 
-test that will model a particular C language test case (such as the one 
-I gave), then the text does a reasonable job -- although I do think it 
-could be clarified somewhat.  For instance, it wouldn't hurt to include 
-the real C code before giving the corresponding litmus test, so that the 
-reader will have a clear idea of what you're trying to model.
+Wei Yang (7):
+  mm/hugetlb: not necessary to coalesce regions recursively
+  mm/hugetlb: remove VM_BUG_ON(!nrg) in
+    get_file_region_entry_from_cache()
+  mm/hugetlb: use list_splice to merge two list at once
+  mm/hugetlb: count file_region to be added when regions_needed != NULL
+  mm/hugetlb: a page from buddy is not on any list
+  mm/hugetlb: narrow the hugetlb_lock protection area during preparing
+    huge page
+  mm/hugetlb: take the free hpage during the iteration directly
 
-Just what you want to achieve here is not clear from the context.
+ mm/hugetlb.c | 73 ++++++++++++++++++++++------------------------------
+ 1 file changed, 31 insertions(+), 42 deletions(-)
 
-Besides, the example is in any case a straw man.  The text starts out 
-saying "It is tempting to allow memory-reference instructions to be 
-pulled into a critical section", but then the example pulls an entire 
-spin loop inside -- not just the memory references but also the 
-conditional branch instruction at the bottom of the loop!  I can't 
-imagine anyone would think it was safe to allow branches to leak into a 
-critical section, particularly when doing so would break a control 
-dependency (as it does here).
+-- 
+2.20.1 (Apple Git-117)
 
-Alan
