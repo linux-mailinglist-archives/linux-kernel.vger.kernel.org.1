@@ -2,96 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F815259B77
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED952259B8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729805AbgIARCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:02:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729984AbgIARCK (ORCPT
+        id S1728402AbgIARDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:03:54 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48245 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726764AbgIARDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:02:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D5DC061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 10:02:10 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id m22so2675796eje.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0W2yxpJArpylRLCAMIxUVDHEOE0Rtc8t8qbdRvvfyJY=;
-        b=X24yWagx+1ZBxGqiyugUJ2eJGaAd8LrpJbAszSn32GfXleOf7l+Ypbk3seu9N8m9wr
-         6rFo3aOLOdswBzxVz6unSED4HxB+bT3WIHtXET+LhFFSm4HHGO1rkE4I/Yu1Vdk3LYWf
-         b7bEDunKc/ozpoOXKv0FSOLA+nXGTcEaKgmJg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0W2yxpJArpylRLCAMIxUVDHEOE0Rtc8t8qbdRvvfyJY=;
-        b=Mc0JjgEKLwQehccTK0NYxmIuDfvX8m9Q+HKuRcDaEDDKgViliT4Z5oWjHwofil4JMH
-         pK1QVDI5UG/aZ3bRBH28KTQ9Azl1DwUNOFOijVUDFCfsIuq7Ez4GoL4skGby4cXv+6a7
-         cGy4ywOJsT1lbBWNJH7AxslAM7qc9Zr5xbtSePpSpfPS4tN5NpWdvRH8+M1mQca9+vx7
-         7xtYumrVBr5nGVe7G1lhb1eMexoihcaJLPqpRHqB5M+HwcpseiH0uSP/mwRdtDUFKKYP
-         bpCRFPrRhI2F+ocxNGwrXPE72ySsD5Drcz9DxzbL86aOqAIXdqdsI09povCYfWXHCqoh
-         n+6g==
-X-Gm-Message-State: AOAM533LT9LLrg56bL22cSpMWZCyOVE+qv8vU/bM84jTIciNFczk6L8g
-        /5/XnHa1hPFwum7knZua31OsjXqxAstUjg==
-X-Google-Smtp-Source: ABdhPJza+mrVDRJouEfFPORTPlR9A3AFDDoUba/JrzYSheajun2Ff+Kouqenc52a18JfBkG/hRbcrg==
-X-Received: by 2002:a17:906:a43:: with SMTP id x3mr2322752ejf.321.1598979728360;
-        Tue, 01 Sep 2020 10:02:08 -0700 (PDT)
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id q13sm1571206edr.27.2020.09.01.10.02.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 10:02:07 -0700 (PDT)
-Received: by mail-wm1-f53.google.com with SMTP id a65so1850829wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 10:02:06 -0700 (PDT)
-X-Received: by 2002:a1c:b407:: with SMTP id d7mr2845879wmf.59.1598979726047;
- Tue, 01 Sep 2020 10:02:06 -0700 (PDT)
+        Tue, 1 Sep 2020 13:03:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598979812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QWFn91v9jwxb4FQ+OzyyCBPLeQ75xcVaOZUTQVfcSyQ=;
+        b=EH2ETTpbu8X3ymcjV36Nai7nWIdN56XEItHSE3hQETzpi3rRK70vMQX/807ZOtH+BzF5W5
+        pakXxhGo9D69KyVeS7vffGpA5Z7Uwjit9y2ri85LoF0agEbrwtlJO+xuDBVIUUSA1Nk7pT
+        W3wdhlO+nN+3Jw4soVJ28CN9bqa7Gec=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-TDnHW8uOOv-P_WcGfmNhSw-1; Tue, 01 Sep 2020 13:03:29 -0400
+X-MC-Unique: TDnHW8uOOv-P_WcGfmNhSw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2ACA110ABDA1;
+        Tue,  1 Sep 2020 17:03:28 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C29360BE2;
+        Tue,  1 Sep 2020 17:03:25 +0000 (UTC)
+Subject: Re: [PATCH v2 7/9] iommu/vt-d: Listen to IOASID notifications
+To:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>
+References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1598070918-21321-8-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <e9394a9e-c9d0-9ebc-30a7-745e6b6d8fa0@redhat.com>
+Date:   Tue, 1 Sep 2020 19:03:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20200901081920.v2.1.Id02b2f451b3eed71ddd580f4b8b44b3e33e84970@changeid>
- <159897502625.334488.7103007623601336114@swboyd.mtv.corp.google.com>
-In-Reply-To: <159897502625.334488.7103007623601336114@swboyd.mtv.corp.google.com>
-From:   Daniel Campello <campello@chromium.org>
-Date:   Tue, 1 Sep 2020 11:01:29 -0600
-X-Gmail-Original-Message-ID: <CAHcu+VarBz3m_zKfDB0osQsjZ0dMpvUk+q2Qt-yC5DbPjr0bRA@mail.gmail.com>
-Message-ID: <CAHcu+VarBz3m_zKfDB0osQsjZ0dMpvUk+q2Qt-yC5DbPjr0bRA@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: sx9310: Prefer async probe
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1598070918-21321-8-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 9:43 AM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Douglas Anderson (2020-09-01 08:19:43)
-> > On one board I found that:
-> >   probe of 5-0028 returned 1 after 259547 usecs
-> >
-> > While some of this time is attributable to the pile of i2c transfers
-> > that we do at probe time, the lion's share (over 200 ms) is sitting
-> > waiting in the polling loop in sx9310_init_compensation() waiting for
-> > the hardware to indicate that it's done.
-> >
-> > There's no reason to block probe of all other devices on our probe.
-> > Turn on async probe.
-> >
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > ---
->
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Hi Jacob,
 
-Reviewed-by: Daniel Campello <campello@chromium.org>
+On 8/22/20 6:35 AM, Jacob Pan wrote:
+> On Intel Scalable I/O Virtualization (SIOV) enabled platforms, IOMMU
+> driver is one of the users of IOASIDs. In normal flow, callers will
+> perform IOASID allocation, bind, unbind, and free in order. However, for
+> guest SVA, IOASID free could come before unbind as guest is untrusted.
+> This patch registers IOASID notification handler such that IOMMU driver
+> can perform PASID teardown upon receiving an unexpected IOASID free
+> event.
+> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>  drivers/iommu/intel/svm.c   | 74 ++++++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/intel-iommu.h |  2 ++
+>  2 files changed, 75 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 634e191ca2c3..600e3ae5b656 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -95,6 +95,72 @@ static inline bool intel_svm_capable(struct intel_iommu *iommu)
+>  	return iommu->flags & VTD_FLAG_SVM_CAPABLE;
+>  }
+>  
+> +#define pasid_lock_held() lock_is_held(&pasid_mutex.dep_map)
+put after the pasid_mutex definition?
+> +static DEFINE_MUTEX(pasid_mutex);
+> +
+> +static void intel_svm_free_async_fn(struct work_struct *work)
+> +{
+> +	struct intel_svm *svm = container_of(work, struct intel_svm, work);
+> +	struct intel_svm_dev *sdev;
+> +
+> +	/*
+> +	 * Unbind all devices associated with this PASID which is
+> +	 * being freed by other users such as VFIO.
+> +	 */
+> +	mutex_lock(&pasid_mutex);
+> +	list_for_each_entry_rcu(sdev, &svm->devs, list, pasid_lock_held()) {
+> +		/* Does not poison forward pointer */
+> +		list_del_rcu(&sdev->list);
+> +		spin_lock(&svm->iommu->lock);
+> +		intel_pasid_tear_down_entry(svm->iommu, sdev->dev,
+> +					svm->pasid, true);
+> +		spin_unlock(&svm->iommu->lock);
+> +		kfree_rcu(sdev, rcu);
+> +		/*
+> +		 * Free before unbind only happens with guest usaged
+usaged?
+> +		 * host PASIDs. IOASID free will detach private data
+> +		 * and free the IOASID entry.
+> +		 */
+> +		ioasid_put(NULL, svm->pasid);
+> +		if (list_empty(&svm->devs))
+> +			kfree(svm);
+> +	}
+> +	mutex_unlock(&pasid_mutex);
+> +}
+> +
+> +
+> +static int pasid_status_change(struct notifier_block *nb,
+> +				unsigned long code, void *data)
+> +{
+> +	struct ioasid_nb_args *args = (struct ioasid_nb_args *)data;
+> +	struct intel_svm *svm = (struct intel_svm *)args->pdata;
+> +	int ret = NOTIFY_DONE;
+> +
+> +	if (code == IOASID_FREE) {
+> +		if (!svm)
+> +			goto done;
+> +		if (args->id != svm->pasid) {
+> +			pr_warn("Notify PASID does not match data %d : %d\n",
+> +				args->id, svm->pasid);
+> +			goto done;
+> +		}
+> +		schedule_work(&svm->work);
+> +		return NOTIFY_OK;
+> +	}
+> +done:
+> +	return ret;> +}
+> +
+> +static struct notifier_block pasid_nb = {
+> +	.notifier_call = pasid_status_change,
+> +};
+> +
+> +void intel_svm_add_pasid_notifier(void)
+> +{
+> +	/* Listen to all PASIDs, not specific to a set */
+> +	ioasid_register_notifier(NULL, &pasid_nb);
+> +}
+> +
+>  void intel_svm_check(struct intel_iommu *iommu)
+>  {
+>  	if (!pasid_supported(iommu))
+> @@ -221,7 +287,6 @@ static const struct mmu_notifier_ops intel_mmuops = {
+>  	.invalidate_range = intel_invalidate_range,
+>  };
+>  
+> -static DEFINE_MUTEX(pasid_mutex);
+>  static LIST_HEAD(global_svm_list);
+>  
+>  #define for_each_svm_dev(sdev, svm, d)			\
+> @@ -342,7 +407,14 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+>  			svm->gpasid = data->gpasid;
+>  			svm->flags |= SVM_FLAG_GUEST_PASID;
+>  		}
+> +		svm->iommu = iommu;
+> +		/*
+> +		 * Set up cleanup async work in case IOASID core notify us PASID
+> +		 * is freed before unbind.
+> +		 */
+> +		INIT_WORK(&svm->work, intel_svm_free_async_fn);
+>  		ioasid_attach_data(data->hpasid, svm);
+> +		ioasid_get(NULL, svm->pasid);
+>  		INIT_LIST_HEAD_RCU(&svm->devs);
+>  		mmput(svm->mm);
+>  	}
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index b1ed2f25f7c0..d36038e6ae0b 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -744,6 +744,7 @@ void intel_svm_unbind(struct iommu_sva *handle);
+>  int intel_svm_get_pasid(struct iommu_sva *handle);
+>  int intel_svm_page_response(struct device *dev, struct iommu_fault_event *evt,
+>  			    struct iommu_page_response *msg);
+> +void intel_svm_add_pasid_notifier(void);
+>  
+>  struct svm_dev_ops;
+>  
+> @@ -770,6 +771,7 @@ struct intel_svm {
+>  	int gpasid; /* In case that guest PASID is different from host PASID */
+>  	struct list_head devs;
+>  	struct list_head list;
+> +	struct work_struct work; /* For deferred clean up */
+>  };
+>  #else
+>  static inline void intel_svm_check(struct intel_iommu *iommu) {}
+> 
+
+Thanks
+
+Eric
+
