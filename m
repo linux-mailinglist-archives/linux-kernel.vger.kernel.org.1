@@ -2,57 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE8F258A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A1F258AA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgIAIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 04:44:39 -0400
-Received: from uho.ysoft.cz ([81.19.3.130]:38910 "EHLO uho.ysoft.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbgIAIoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 04:44:37 -0400
-Received: from [10.1.8.111] (unknown [10.1.8.111])
-        by uho.ysoft.cz (Postfix) with ESMTP id 8046CA00D7;
-        Tue,  1 Sep 2020 10:44:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ysoft.com;
-        s=20160406-ysoft-com; t=1598949875;
-        bh=mIdANwWwlPqHszzYGjhQKPmy/JsZ+HrTUgoApsidgoY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=hgJzV6bbgTlG6jqkhi4G/K86n/3yxvlWgkaIxznqz/g03TnZpxBUf5V6impw8wE+S
-         HCuYNUHOmAQxJ7F1ihLVdNHeK6I8xK/JG9LNmPtoK1rf5XJoTDPR1krxDh5i04phrI
-         YQHWNRRSjTghnlmtZvgDNYl8L3cUh3GLPirE+++o=
-Subject: Re: [PATCH v4] video: fbdev: ssd1307fb: Added support to Column
- offset
-To:     b.zolnierkie@samsung.com
-Cc:     Rodrigo Alencar <455.rodrigo.alencar@gmail.com>,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
-References: <1595622138-3965-1-git-send-email-455.rodrigo.alencar@gmail.com>
-From:   =?UTF-8?B?TWljaGFsIFZva8OhxI0=?= <michal.vokac@ysoft.com>
-Message-ID: <d15729dd-63d1-7a06-f957-22eab6d74c9f@ysoft.com>
-Date:   Tue, 1 Sep 2020 10:44:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726312AbgIAIqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 04:46:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgIAIqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 04:46:30 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D818BC061244;
+        Tue,  1 Sep 2020 01:46:29 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 109so508499otv.3;
+        Tue, 01 Sep 2020 01:46:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=AGctBs2sDmt4ExjN4cAU8I9Yq9CZgsHUVhDgE0odfdA=;
+        b=JZhdAwXLEqO1maNzgzV4iNSzNEsdWXMsuq8Diw3KiHENmdAXxVsghAgx+O6xiALh19
+         oJs/xNEWE2efFDO0TbBhYIkpo6y3JlNi3ubrdWFjdwyqor0fpK/PVtAwW1HUENhn8SAC
+         IspZ4Agdi2UA+OhTLiOCc5Mgh4sETgmKUV3S+gDKZ8DGccYff2LtHY/NNgL4sD47/pj0
+         WR1I9UpVMfVhPVCsX9ldcPVEgpraD27ORyCtgPpTCWQuHnwqDJmcPBdsRUwlWTgDSCgb
+         T71lBH4KkzC4vi70dIBAR3kVSchhk0wTDcs5yb7ncIPr9mheOcc0heDdjtsjPCxx0LWR
+         aWQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=AGctBs2sDmt4ExjN4cAU8I9Yq9CZgsHUVhDgE0odfdA=;
+        b=I5SXWOcKvFBAGewDaMPif8HED1s2baNvGDsbLlujK4uxQcA1fXLzWWpRC4isL2Qob8
+         S1XLqiJ9EMYyI3trivjnlg/7CH2nKBTkWB7AXn78aI/thpHN0QZDfHtlA7tHLr9T//rD
+         x4g8M9QFDEXhWx+Jty1QIK3v/hmQlHCawVbI80GBMlXkezlPpGOZGvBJeHm3gmcrgqU1
+         Z88J7JqmSuQ1uPAudaJAXpMWELOn8jdmVhWPJsiF4n9FxaPLI5e3Kc3BnnzlwBDJNEZ5
+         7DhNDp3/iqZzUdIQRKfifAyU5osCf5aOEZJzQGywCBHWxKIRuiotXuOI3RP0Zs1n8YXU
+         5K7A==
+X-Gm-Message-State: AOAM531wHaMJnBGkJD6VjaTMo7lTyiPHXvnfVJj9tV5w2yX992RvqQaI
+        iL/sCcXAlu7riJv40WTcKut9Km9sV8qlJniOkps=
+X-Google-Smtp-Source: ABdhPJyWZ3NTRRvSNIT/KxkPbedzD1MVC9yAZ8pG2y47s/El3XH+OP4Ny2jbdlyovyKrMOnC3ftcc0CnlBfA7CT7NvU=
+X-Received: by 2002:a9d:7656:: with SMTP id o22mr600508otl.109.1598949987882;
+ Tue, 01 Sep 2020 01:46:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1595622138-3965-1-git-send-email-455.rodrigo.alencar@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200901064302.849-1-w@1wt.eu> <20200901064302.849-2-w@1wt.eu>
+ <CAKQ1sVM9SMYVTSZYaGuPDhQHfyEOFSxBL8PNixyaN4pR2PWMxQ@mail.gmail.com> <20200901083947.GB901@1wt.eu>
+In-Reply-To: <20200901083947.GB901@1wt.eu>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 1 Sep 2020 10:46:16 +0200
+Message-ID: <CA+icZUXjDaoLG36X7Jd7i6=Ncf6xTm44qL7ZV+i7pmNgtLuJSA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] random32: make prandom_u32() output unpredictable
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Yann Ylavic <ylavic.dev@gmail.com>, linux-kernel@vger.kernel.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        George Spelvin <lkml@sdf.org>,
+        Amit Klein <aksecurity@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+        Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24. 07. 20 22:22, Rodrigo Alencar wrote:
-> This patch provides support for displays like VGM128064B0W10,
-> which requires a column offset of 2, i.e., its segments starts
-> in SEG2 and ends in SEG129.
-> 
-> Signed-off-by: Rodrigo Alencar <455.rodrigo.alencar@gmail.com>
+On Tue, Sep 1, 2020 at 10:39 AM Willy Tarreau <w@1wt.eu> wrote:
+>
+> On Tue, Sep 01, 2020 at 10:33:40AM +0200, Yann Ylavic wrote:
+> > On Tue, Sep 1, 2020 at 8:45 AM Willy Tarreau <w@1wt.eu> wrote:
+> > >
+> > > +/*
+> > > + *     Generate some initially weak seeding values to allow
+> > > + *     the prandom_u32() engine to be started.
+> > > + */
+> > > +static int __init prandom_init_early(void)
+> > > +{
+> > > +       int i;
+> > > +       unsigned long v0, v1, v2, v3;
+> > > +
+> > > +       if (!arch_get_random_long(&v0))
+> > > +               v0 = jiffies;
+> > > +       if (!arch_get_random_long(&v1))
+> > > +               v0 = random_get_entropy();
+> >
+> > Shouldn't the above be:
+> >                   v1 = random_get_entropy();
+> > ?
+>
+> Very good catch, many thanks Yann! Now fixed in my local tree.
+>
 
-Hi Bartlomiej,
-what is the status of this patch? I would like to see this merged so I can send
-patches for our in-tree imx6dl-yapp4 device trees that need exactly this change.
+Thanks for offering a new patchset, Willy.
 
-Thank you,
-Michal
+Will you push the updated patchset to your prandom Git - for easy fetching?
+
+Thanks.
+
+- Sedat -
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git/
