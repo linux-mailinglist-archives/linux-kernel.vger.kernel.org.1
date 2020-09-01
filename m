@@ -2,73 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76AE25923F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298E0259247
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728681AbgIAPGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        id S1728576AbgIAPG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728021AbgIAPGZ (ORCPT
+        with ESMTP id S1728337AbgIAPGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:06:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F326C061244;
-        Tue,  1 Sep 2020 08:06:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TQLSoH0xPQ3SjLQOZr/hg2RXQ7cUeDg7DQ8wAuWlnPY=; b=jZd0L7aTlxDR248PzMNlW27wkh
-        U5RPUon6By39MJmZf0ctObEI9pE6t9/Rga1EYLZwsrKYL9QKBtSzQY4MensUyVRxNASrX33Pl6ldS
-        zbXRi9/lO7DOPWfK1zGncHVRI29r2AMThiNWFyK5BL0hKgOTicHc7ljMttBaeAT085JBU3dfIIkhB
-        i2DXKzLWz59dGh9/sp69/KBXolj/SaGGtRWihBzzh4x4klX60zoq5kB/U7R9cVPhcDeNn5gerBNkJ
-        glYPLWys77T11Ln0t8j7NNm/ySZOphISgDrR6WnPzsdkVah1bi4+EBuWuom6AkSHomcEJms18cORZ
-        5mRx4n8A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kD7r8-0008OT-59; Tue, 01 Sep 2020 15:05:54 +0000
-Date:   Tue, 1 Sep 2020 16:05:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-mm@kvack.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 07/28] 53c700: improve non-coherent DMA handling
-Message-ID: <20200901150554.GN14765@casper.infradead.org>
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-8-hch@lst.de>
- <1598971960.4238.5.camel@HansenPartnership.com>
+        Tue, 1 Sep 2020 11:06:12 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807F1C061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:06:11 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id ef16so656949qvb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G3wQ4lF+yQjVw3eGTbnf5wDvMhK9ag2us5aK+XcBt7c=;
+        b=x1YIiGWPzcFFOWHI9EgzlEIMXSNC5NZ8HBnrQI8JLoXCNsGWciffXn8aXJsVV7Grz5
+         /ifSTQEPQPsLKGBUnGIg/XduEGdE3bP9RyQFtN4JfTh/JBRLJh339UJgmN4FS/AIU/Ec
+         Lu7fOG9O8x+dOBQFs2/EmXWrRGaU2YSzPDd1M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G3wQ4lF+yQjVw3eGTbnf5wDvMhK9ag2us5aK+XcBt7c=;
+        b=HSd07BGLVQLQOZou1tj/x7JAeRExH4h/dJlbR+mR/AU+mwlgzm1pYZIvQPllKXCWUN
+         CrFKCGpCWFP461JLx6aIlvqDqZkqB9WvNFtD1s6oZe6Qeb2ECaklHVt2fFZUFsdrykuN
+         +26hxLNKpWe6zuSQUorxcq/Gdu7cEFrFaUrSySw+Bwvece93GP79v3fZvNkBIKxAwh+T
+         CfaV77H9ok83FS4vnQAhFtXpcvQfmdn10g3nJOhSmm4imJojZBpsOpmCgyhmOFpWycOS
+         Nrs8+2rwP0oKsLnM1+tLyimsrDC3oN1PDAoyiKLr9XhVXlpifsGcvHp4seZBkCrOZ9kt
+         HoOA==
+X-Gm-Message-State: AOAM532edp7hbfR1Q3nESG0nFyfg2Yg392j+emwjMMPwMaHtG/6reO5g
+        U5oZOG8AymAi5plkGC7Tz43O4Q==
+X-Google-Smtp-Source: ABdhPJwA9/HKRCH9Li6CXShU/h6qZiCq0jQ9WujUEL69odw2A4N56bpsQ2bIZZduaM37C+xJuDf8cQ==
+X-Received: by 2002:a05:6214:2a:: with SMTP id b10mr2532081qvr.0.1598972770573;
+        Tue, 01 Sep 2020 08:06:10 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id e9sm1924377qkb.8.2020.09.01.08.06.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 08:06:09 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 11:06:09 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com,
+        dave@stgolabs.net, Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        neeraj.iitr10@gmail.com, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, vineethrp@gmail.com
+Subject: Re: [PATCH v4 -rcu 1/4] rcu/segcblist: Do not depend on rcl->len to
+ store the segcb len during merge
+Message-ID: <20200901150609.GA1506230@google.com>
+References: <20200825024842.3408659-1-joel@joelfernandes.org>
+ <20200825024842.3408659-2-joel@joelfernandes.org>
+ <20200825200809.GW2855@paulmck-ThinkPad-P72>
+ <20200825224723.GB579506@google.com>
+ <20200826142028.GN2855@paulmck-ThinkPad-P72>
+ <20200827225518.GB3821640@google.com>
+ <20200828141855.GO2855@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1598971960.4238.5.camel@HansenPartnership.com>
+In-Reply-To: <20200828141855.GO2855@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 07:52:40AM -0700, James Bottomley wrote:
-> I think this looks mostly OK, except for one misnamed parameter below. 
-> Unfortunately, the last non-coherent parisc was the 700 series and I no
-> longer own a box, so I can't test that part of it (I can fire up the
-> C360 to test it on a coherent arch).
+Hi,
+Resuming regular activities here, post-LPC :)
 
-I have a 715/50 that probably hasn't been powered on in 15 years if you
-need something that old to test on (I believe the 725/100 uses the 7100LC
-and so is coherent).  I'll need to set up a cross-compiler ...
+On Fri, Aug 28, 2020 at 07:18:55AM -0700, Paul E. McKenney wrote:
+> On Thu, Aug 27, 2020 at 06:55:18PM -0400, Joel Fernandes wrote:
+> > On Wed, Aug 26, 2020 at 07:20:28AM -0700, Paul E. McKenney wrote:
+> > [...]
+> > > > > Or better yet, please see below, which should allow getting rid of both
+> > > > > of them.
+> > > > > 
+> > > > > >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
+> > > > > >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
+> > > > > > -	rcu_segcblist_insert_count(dst_rsclp, &donecbs);
+> > > > > > +
+> > > > > > +	rcu_segcblist_add_len(dst_rsclp, src_len);
+> > > > > >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
+> > > > > >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
+> > > > > 
+> > > > > Rather than adding the blank lines, why not have the rcu_cblist structures
+> > > > > carry the lengths?  You are already adjusting one of the two call sites
+> > > > > that care (rcu_do_batch()), and the other is srcu_invoke_callbacks().
+> > > > > That should shorten this function a bit more.  And make callback handling
+> > > > > much more approachable, I suspect.
+> > > > 
+> > > > Sorry, I did not understand. The rcu_cblist structure already has a length
+> > > > field. I do modify rcu_segcblist_extract_done_cbs() and
+> > > > rcu_segcblist_extract_pend_cbs() to carry the length already, in a later
+> > > > patch.
+> > > > 
+> > > > Just to emphasize, this patch is just a small refactor to avoid an issue in
+> > > > later patches. It aims to keep current functionality unchanged.
+> > > 
+> > > True enough.  I am just suggesting that an equally small refactor in
+> > > a slightly different direction should get to a better place.  The key
+> > > point enabling this slightly different direction is that this code is
+> > > an exception to the "preserve ->cblist.len" rule because it is invoked
+> > > only from the CPU hotplug code.
+> > > 
+> > > So you could use the rcu_cblist .len field to update the ->cblist.len
+> > > field, thus combining the _cbs and _count updates.  One thing that helps
+> > > is that setting th e rcu_cblist .len field doesn't hurt the other use
+> > > cases that require careful handling of ->cblist.len.
+> > 
+> > Thank you for the ideas. I am trying something like this on top of this
+> > series based on the ideas. One thing I concerned a bit is if getting rid of
+> > the rcu_segcblist_xchg_len() function (which has memory barriers in them)
+> > causes issues in the hotplug path. I am now directly updating the length
+> > without additional memory barriers. I will test it more and try to reason
+> > more about it as well.
+> 
+> In this particular case, the CPU-hotplug locks prevent rcu_barrier()
+> from running concurrently, so it should be OK.  Is there an easy way
+> to make lockdep help us check this?  Does lockdep_assert_cpus_held()
+> suffice, or is it too easily satisfied?
+
+Just to clarify, the race you mention is rcu_barrier() should not run
+concurrently with CPU hotplug operation.
+
+The reason is:
+rcu_barrier() checks whether the segmented list's length is 0 before sending
+IPIs for entraining a callback onto the destination CPU. But if it
+misunderstands the length's value due to a lack of memory barriers, it may
+not missing sending an IPI causing the barrier to fail. Please correct me if
+I'm wrong though.
+
+Due to CPU hotplug locking, such race is impossible because both
+rcu_barrier() and the CPU migrating the callbacks holds it.
+
+I think the lockdep_assert_cpus_held() may suffice. I can add it to the
+rcu_segcblist_merge() function.
+
+BTW, I think we can simplify rcu_barrier() a bit and combine the tracepoint
+and rid one outer if clause (diff at end of email).
+
+> >  }
+> >  
+> >  /*
+> > @@ -448,6 +419,7 @@ void rcu_segcblist_insert_done_cbs(struct rcu_segcblist *rsclp,
+> >  			break;
+> >  	rclp->head = NULL;
+> >  	rclp->tail = &rclp->head;
+> > +	rcu_segcblist_add_len(rsclp, rclp->len);
+> 
+> Does there need to be a compensating action in rcu_do_batch(), or is
+> this the point of the "rcu_segcblist_add_len(rsclp, -(rclp->len));"
+> added to rcu_segcblist_extract_done_cbs() above?
+> 
+> If so, a comment would be good.
+
+I think external compensation by rcu_do_batch is not needed, its best to
+handle all cblist.len modifications internally in the segcblist API
+where possible.
+
+> >  /*
+> > @@ -463,6 +435,7 @@ void rcu_segcblist_insert_pend_cbs(struct rcu_segcblist *rsclp,
+> >  	rcu_segcblist_add_seglen(rsclp, RCU_NEXT_TAIL, rclp->len);
+> >  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rclp->head);
+> >  	WRITE_ONCE(rsclp->tails[RCU_NEXT_TAIL], rclp->tail);
+> > +	rcu_segcblist_add_len(rsclp, rclp->len);
+> >  }
+> >  
+> >  /*
+> > @@ -601,16 +574,13 @@ void rcu_segcblist_merge(struct rcu_segcblist *dst_rsclp,
+> >  {
+> >  	struct rcu_cblist donecbs;
+> >  	struct rcu_cblist pendcbs;
+> > -	long src_len;
+> >  
+> >  	rcu_cblist_init(&donecbs);
+> >  	rcu_cblist_init(&pendcbs);
+> >  
+> > -	src_len = rcu_segcblist_xchg_len(src_rsclp, 0);
+> >  	rcu_segcblist_extract_done_cbs(src_rsclp, &donecbs);
+> >  	rcu_segcblist_extract_pend_cbs(src_rsclp, &pendcbs);
+> >  
+> > -	rcu_segcblist_add_len(dst_rsclp, src_len);
+> >  	rcu_segcblist_insert_done_cbs(dst_rsclp, &donecbs);
+> >  	rcu_segcblist_insert_pend_cbs(dst_rsclp, &pendcbs);
+> 
+> Can we now pair the corresponding _extract_ and _insert_ calls, thus
+> requiring only one rcu_cblist structure?  This would drop two more lines
+> of code.  Or would that break something?
+
+That could work as well, yes. But may not be worth adding another function to
+combine extract/insert operation, since the extract and insert operations are
+needed by rcutree and srcutree as well (other than hotplug).
+
+thanks,
+
+ - Joel
+
+---8<-----------------------
+
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 16ad99a9ebba..274a1845ad38 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3856,17 +3856,16 @@ void rcu_barrier(void)
+ 		if (cpu_is_offline(cpu) &&
+ 		    !rcu_segcblist_is_offloaded(&rdp->cblist))
+ 			continue;
+-		if (rcu_segcblist_n_cbs(&rdp->cblist) && cpu_online(cpu)) {
+-			rcu_barrier_trace(TPS("OnlineQ"), cpu,
+-					  rcu_state.barrier_sequence);
+-			smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
+-		} else if (rcu_segcblist_n_cbs(&rdp->cblist) &&
+-			   cpu_is_offline(cpu)) {
+-			rcu_barrier_trace(TPS("OfflineNoCBQ"), cpu,
+-					  rcu_state.barrier_sequence);
+-			local_irq_disable();
+-			rcu_barrier_func((void *)cpu);
+-			local_irq_enable();
++		if (rcu_segcblist_n_cbs(&rdp->cblist)) {
++			rcu_barrier_trace(cpu_online(cpu) ? TPS("OnlineQ") : TPS("OfflineNoCBQ"),
++					  cpu, rcu_state.barrier_sequence);
++			if (cpu_online(cpu)) {
++				smp_call_function_single(cpu, rcu_barrier_func, (void *)cpu, 1);
++			} else {
++				local_irq_disable();
++				rcu_barrier_func((void *)cpu);
++				local_irq_enable();
++			}
+ 		} else if (cpu_is_offline(cpu)) {
+ 			rcu_barrier_trace(TPS("OfflineNoCBNoQ"), cpu,
+ 					  rcu_state.barrier_sequence);
