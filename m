@@ -2,134 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9C92595EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED176259635
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgIAP5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
+        id S1732237AbgIAQAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731507AbgIAP5a (ORCPT
+        with ESMTP id S1731796AbgIAP6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:57:30 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F38C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:57:28 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i26so2361405ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:57:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ja1Ngj7NH47x40mFJlmmy6/fspeTMYwfVXDFlvDZIns=;
-        b=R5Ah/xy7z0CYa/cOPWoKydl55+5AZx0X0xQJSi7oXsefEDGnUWoEmUvrBgHDB6qi9M
-         /0BqPFsX1uD16ZqQrlqlFY/brxotDPaHIoOx5hvvLGC7lSE/Rn1VXNwev5SZpYADEWZW
-         xGNROhES6O3tp7K9FtFb1rbn1WTcgV36Lmdx4vC4Z9L++ntjEsM9CkS30Xkv7gD8IL23
-         xj71aaX3htYZQSlf+C1O1oREaf7eGZp+A5SifAfa3S5foT+pHlv7zElngZUgc2r/DNbI
-         3ceu3otruVt5OiOnce89EX+sGUkJIuxUfOEGdYo8PjqYYHV/c0UHcQUPFJI8vhhJiyUW
-         Uyvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ja1Ngj7NH47x40mFJlmmy6/fspeTMYwfVXDFlvDZIns=;
-        b=PhXA+m9Yy3s282lhu/WpyNXMLv88oBE0fw0WiezpZAu1zA752w6MGeYeYv+kQBCu5C
-         SBjN/D2Cwpi2fdH2v3zZ6xsmJ+2lajHHg5U6lfLQ/Kg/gFEeeauohUBE6wfTtaOZ+bCa
-         GrU5pIP0VwFdnDoMQs/6gbtYM34pMjK7me0xxOIGbTraNDWiUl2Xgphc2Hln1x48GT2O
-         9cXXVxA/rG12JAqBPzH8YoVmMpdTiS7hjSNQYI7A7H9uA2PZTv+SRsczDWFrFnpL178x
-         jp8/m3mj0KBJWuxaIElc4IMRuFcTve61soqaLZdrehIQBDi2T70p+iYUFFF8wWVKlteH
-         9cEw==
-X-Gm-Message-State: AOAM533e+xXXZBhZRfi/bB1XNR0woJrC+nflWq/LUgsDBVfSllRMweJW
-        EZT9H6fpRDUyya5VWnErwDjcAVhgxrEfVhtg36I=
-X-Google-Smtp-Source: ABdhPJyuNoXmSK9kdaNb5NJmH/3HsU8fUsgYikM66A4Np4f+RaqiTJn5bkqn7polwbuP2ipcbL+X4LqpsmkGVqFyETs=
-X-Received: by 2002:a17:906:edd6:: with SMTP id sb22mr1911092ejb.499.1598975847689;
- Tue, 01 Sep 2020 08:57:27 -0700 (PDT)
+        Tue, 1 Sep 2020 11:58:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC2AC061247;
+        Tue,  1 Sep 2020 08:58:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=JssZ/9cfFlKY9nXiXN1eWHNYfq2IqPkVO48PJ0G1HVM=; b=TsLN4Ki5H6wDqMT7EkDDmICR5s
+        2ikY9tR6e67GKJEqjuS9L66bSUIo+pu5PYEAc9ljO3uyf6oMcNiepE5rzwUxhjE+/vnTmCPgENmda
+        C0OeAfERJgyA7K8KeFysVlBHyF0BPeIG7el80V9O61CNCYuSKhfujxSQgjXJOjMOSEy03HwmPQuPh
+        RJCdiSoEUrRAJIJ7z0BaLS8JSw/BmFlWFm/qiMtciExAsNyJHCr7Vvb8RIEQV1UW0Wnk6ZMFBndz3
+        +EuD/g9pjFt/AGKn2OUIwLAq2rE5vGf6lWordEqx3jg+9VI6y7EPXjBeepMY6Nus8DQ6cZOSE4OGn
+        R3KU2Xqg==;
+Received: from [2001:4bb8:18c:45ba:2f95:e5:ca6b:9b4a] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kD8fR-0004Op-3n; Tue, 01 Sep 2020 15:57:53 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Dan Williams <dan.j.williams@intel.com>, dm-devel@redhat.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        nbd@other.debian.org, ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 2/9] block: don't clear bd_invalidated in check_disk_size_change
+Date:   Tue,  1 Sep 2020 17:57:41 +0200
+Message-Id: <20200901155748.2884-3-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200901155748.2884-1-hch@lst.de>
+References: <20200901155748.2884-1-hch@lst.de>
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2008301343270.5954@eggly.anvils> <alpine.LSU.2.11.2008301405000.5954@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2008301405000.5954@eggly.anvils>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 1 Sep 2020 08:57:15 -0700
-Message-ID: <CAHbLzkrJ-E1LVbjfTAmoZ37Hw68SWjnUovvcedFVHfsLecp2Mw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mm: fix check_move_unevictable_pages() on THP
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Kuo-Hsin Yang <vovoy@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 2:08 PM Hugh Dickins <hughd@google.com> wrote:
->
-> check_move_unevictable_pages() is used in making unevictable shmem pages
-> evictable: by shmem_unlock_mapping(), drm_gem_check_release_pagevec() and
-> i915/gem check_release_pagevec().  Those may pass down subpages of a huge
-> page, when /sys/kernel/mm/transparent_hugepage/shmem_enabled is "force".
->
-> That does not crash or warn at present, but the accounting of vmstats
-> unevictable_pgs_scanned and unevictable_pgs_rescued is inconsistent:
-> scanned being incremented on each subpage, rescued only on the head
-> (since tails already appear evictable once the head has been updated).
->
-> 5.8 commit 5d91f31faf8e ("mm: swap: fix vmstats for huge page") has
-> established that vm_events in general (and unevictable_pgs_rescued in
-> particular) should count every subpage: so follow that precedent here.
->
-> Do this in such a way that if mem_cgroup_page_lruvec() is made stricter
-> (to check page->mem_cgroup is always set), no problem: skip the tails
-> before calling it, and add thp_nr_pages() to vmstats on the head.
->
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+bd_invalidated is set by check_disk_change or in add_disk to initiate a
+partition scan.  Move it from check_disk_size_change which is called
+from both revalidate_disk() and bdev_disk_changed() to only the latter,
+as that is what is called from the block device open code (and nbd) to
+deal with the bd_invalidated event.  revalidate_disk() on the other hand
+is mostly used to propagate a size update from the gendisk to the block
+device, which is entirely unrelated.
 
-Acked-by: Yang Shi <shy828301@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/block_dev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> ---
-> Nothing here worth going to stable, since it's just a testing config
-> that is fixed, whose event numbers are not very important; but this
-> will be needed before Alex Shi's warning, and might as well go in now.
->
-> The callers of check_move_unevictable_pages() could be optimized,
-> to skip over tails: but Matthew Wilcox has other changes in flight
-> there, so let's skip the optimization for now.
->
->  mm/vmscan.c |   10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> --- 5.9-rc2/mm/vmscan.c 2020-08-16 17:32:50.721507348 -0700
-> +++ linux/mm/vmscan.c   2020-08-28 17:47:10.595580876 -0700
-> @@ -4260,8 +4260,14 @@ void check_move_unevictable_pages(struct
->         for (i = 0; i < pvec->nr; i++) {
->                 struct page *page = pvec->pages[i];
->                 struct pglist_data *pagepgdat = page_pgdat(page);
-> +               int nr_pages;
-> +
-> +               if (PageTransTail(page))
-> +                       continue;
-> +
-> +               nr_pages = thp_nr_pages(page);
-> +               pgscanned += nr_pages;
->
-> -               pgscanned++;
->                 if (pagepgdat != pgdat) {
->                         if (pgdat)
->                                 spin_unlock_irq(&pgdat->lru_lock);
-> @@ -4280,7 +4286,7 @@ void check_move_unevictable_pages(struct
->                         ClearPageUnevictable(page);
->                         del_page_from_lru_list(page, lruvec, LRU_UNEVICTABLE);
->                         add_page_to_lru_list(page, lruvec, lru);
-> -                       pgrescued++;
-> +                       pgrescued += nr_pages;
->                 }
->         }
->
->
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 08158bb2e76c85..2760292045c082 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1302,7 +1302,6 @@ static void check_disk_size_change(struct gendisk *disk,
+ 		}
+ 		i_size_write(bdev->bd_inode, disk_size);
+ 	}
+-	bdev->bd_invalidated = 0;
+ 	spin_unlock(&bdev->bd_size_lock);
+ 
+ 	if (bdev_size > disk_size) {
+@@ -1391,6 +1390,8 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
+ 
+ 	lockdep_assert_held(&bdev->bd_mutex);
+ 
++	bdev->bd_invalidated = 0;
++
+ rescan:
+ 	ret = blk_drop_partitions(bdev);
+ 	if (ret)
+-- 
+2.28.0
+
