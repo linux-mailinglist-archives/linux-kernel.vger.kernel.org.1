@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ED62586AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82192586B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgIAEJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:09:13 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:36730 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgIAEJF (ORCPT
+        id S1726124AbgIAEQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbgIAEQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:09:05 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200901040902epoutp033f8e0fd1de0ad9f6ebe14ef55c2a9b49~wjWcvp4dv0505205052epoutp03h
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 04:09:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200901040902epoutp033f8e0fd1de0ad9f6ebe14ef55c2a9b49~wjWcvp4dv0505205052epoutp03h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598933342;
-        bh=iHQfb3qtW7lSUWGtt4riwSXRHVNT71MHvCk8OlOASjI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5mQLLI+wnCrQWatFlpPSDeXonNntrm/EMWl5uBA5bT0LQaMZew4fisr5d5Fshi+e
-         RuNHLtyKOf/+2KGQb4S0mOcEjYtdGGwHa3pQDe7hFbiOGZhli9LB9L6Ab0VAQp7zKJ
-         gl2wefAPIJt4fsQM5Viq6z99CUlJUUI3EpMee2Z4=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200901040901epcas1p3822797b9a8406a8e31fe85404521ee9c~wjWcIj8Ep1718217182epcas1p34;
-        Tue,  1 Sep 2020 04:09:01 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4BgYTw1wxYzMqYkk; Tue,  1 Sep
-        2020 04:08:52 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0E.E0.28578.459CD4F5; Tue,  1 Sep 2020 13:08:52 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200901040851epcas1p18d6757ed06d19c7fd68cbcd439672183~wjWTLhEXz1138411384epcas1p1M;
-        Tue,  1 Sep 2020 04:08:51 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200901040851epsmtrp1a6db328e3576dfcfbd5c9cb5e6fe4631~wjWTKtkJJ3200232002epsmtrp1A;
-        Tue,  1 Sep 2020 04:08:51 +0000 (GMT)
-X-AuditID: b6c32a39-8dfff70000006fa2-02-5f4dc9546808
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DE.03.08382.359CD4F5; Tue,  1 Sep 2020 13:08:51 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.113.111.64]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200901040851epsmtip10befad98f02fa7a40afb06d9bf727306~wjWS0aXrp0442504425epsmtip16;
-        Tue,  1 Sep 2020 04:08:51 +0000 (GMT)
-From:   Hoegeun Kwon <hoegeun.kwon@samsung.com>
-To:     nsaenzjulienne@suse.de, eric@anholt.net, maxime@cerno.tech,
-        stefan.wahren@i2se.com, dave.stevenson@raspberrypi.com
-Cc:     devicetree@vger.kernel.org, tim.gover@raspberrypi.com,
-        sboyd@kernel.org, mturquette@baylibre.com, kdasu.kdev@gmail.com,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-clk@vger.kernel.org, robh+dt@kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org, hoegeun.kwon@samsung.com
-Subject: [PATCH v2 4/4] ARM: dts: bcm2711: Add bvb clock for hdmi-pixel
-Date:   Tue,  1 Sep 2020 13:07:59 +0900
-Message-Id: <20200901040759.29992-5-hoegeun.kwon@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901040759.29992-1-hoegeun.kwon@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf1CTZRzv2d69e9m57r2B8LjrEHflCXdDJmw9eG5kmr2FJll5V/2xXuBt
-        cMC227t1CmXTGiEMdBmiICAngaFMfsU5TnOSaIJQyPhxSKHAKNFJghPPiBrbvPrv8/1+P5/v
-        z+chuKJLuJjI1BoZg5bOluACrP3HaKn03es71HFVbj5qLO7CkKfyFIaqr/TxkMs7iyPn/gGA
-        ZusLceRwNWKoZXKIhx5af+OhgY4TOLLdauKjY0+WAOrvfg21l9fjyD56D0eWi1f4aGmo2Sc4
-        PYKjidJx8EoodWD2Kk7Njlj4VPl4L06N9f2MU47yX/nU96NyqqXhIE6NF13jUK21n1OWrqcY
-        VdLWAKjWnjxqviUyRfhB1qYMhk5nDFGMNk2XnqnVKCXJ76i3qOWKOJlUlohelkRp6RxGKdm6
-        PUW6LTPbN6Yk6hM62+RzpdAsK1mv2mTQmYxMVIaONSoljD49W5+oj2XpHNak1cSm6XI2yuLi
-        Nsh9xI+yMqZOzvD1Zv6eCWs/MAM3rxCEEJBMgM2jZ7FCICBE5HkA/3AvgIAxB+DVwT48YDwG
-        sOHMHPZM0vG3hx8IXATQ/tMFTsCYB3BgzAKWWTgphV7rMGcZh5F74A+/D/vzcslSLnSfqPMH
-        QsnX4eDDIXwZY+RLsGDpPncZC0klXDw3Fiy3Gp5pcvr9IaQKDtd6/N1CcoSAx83TnABpK/zy
-        YA03gEPhzLU2fgCL4d1D+UHMQtfxmaDYDOAhW0UwEA8vfXvEl4jwtRcNz3WsD7jXQMdflf5p
-        uOTz8IHXylumQFIIC/JFAcpaOG12Bjf5Auwurg+2Q8GpxdLgVm0Anh3yYodBZPl/FU4C0ADC
-        GT2bo2FYmV7+/6O1AP9Ljkk8D8o8f8Z2Ag4BOgEkuJIwobMjWS0SptN7cxmDTm0wZTNsJ5D7
-        tmfjilem6XxfQWtUy+Qb4uPjUYJMIZfJJBHCO6NRahGpoY1MFsPoGcMzHYcIEZs5lyPcCtqV
-        qpicnbwX8oa3qq7RUvi1UvXNztT+nsTBiLLND/Yp9yv0JWGGrBeHPCb66XO311b0VLML62xP
-        JqrC247d6Pk0+b2NS3N5Sfib4prHfSmtisq7Ow4U2W+uej8rqbiwSJx5Ux/z4aq3az3gUcGI
-        UdXbhxy36hQVt7vVqYlyUjOvaW2J9vASdtu6brS5DN5d9pIewz/C0N4vtM66UO82x6vf1aou
-        TzTlCt5asTosqa7eK9tctjBVPJo/9lkVc1+w+077dtO+lY1cW/iRpKN5A2m7rGUXiMM1v2zJ
-        Lf9qYcplr95LFEcOX2+r4j1as5gusLZOrzj68YBDMLkzovm0BGMzaFkM18DS/wIQCmWOUgQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSnG7wSd94g1u3NCzW9h5lsXg7dzGL
-        xfwj51gtrnx9z2ZxoPEyo8X75V1sFjuvrGWx2PT4GqvFx557rBaXd81hs5h4ewO7xYwf/xgt
-        Lp5ytdg2azmbxbpbr9ksWvceYbf4d20jUMOKG2wWj6beZ3QQ9mh6f4zN4/2NVnaPWffPsnnc
-        OXeezWPnrLvsHltvmXpsWtXJ5nG/+ziTx+Yl9R6tR3+xePRtWcXosfl0tcfnTXIBvFFcNimp
-        OZllqUX6dglcGU8WvGIvaGCveNRzkbGB8SlrFyMnh4SAicSuv2/Zuxi5OIQEdjNK7D58nhki
-        ISOxqn8LUBEHkC0scfhwMUTNR0aJN0vfMoLUsAnoSnztuc4EYosI1Ek86WhkAbGZBZYyS7RM
-        UgCxhQXcJa5+vMYGYrMIqEp0/HsDNp9XwFbiz/o7LBC75CVWbzgAFucUsJO4vuQtWFwIqOb4
-        mw1sExj5FjAyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECI4aLc0djNtXfdA7xMjE
-        wXiIUYKDWUmE98Au73gh3pTEyqrUovz4otKc1OJDjNIcLErivDcKF8YJCaQnlqRmp6YWpBbB
-        ZJk4OKUamKZ5nma82fcwe/bcnNmrlnxtTrwQcfvXRIfofsZT4otle/ULru+1FmjVWbTNOWKy
-        /vb4w7Ifu5fN82uaLnVE+PTra9K1E89XX+m98pnT7dSqN5ddZduYDX2Wn+5l2WNy/vUi5hvl
-        LT8WSqvO/JfscoDvc+2Kx9d4Lmbc2Ji88PWjH6lTObj1Q5sv7XlWlNP04yzbJOsmRtXeQwdm
-        Pv/8QNkv65rJHyut2mqdTOND1yXUO36zawSkXrwUP9nvgaR4elSK/eGrs8v2fZrMuUb5oNGc
-        t9Pu1U7e7Gwedpkt2tKy+UmS54o9NV3rq4+pvnWpK+a8Lvxlzmyl6wltsjP1D8nc+Pvsd7X1
-        +2zrd3FX418osRRnJBpqMRcVJwIAZSIZbQkDAAA=
-X-CMS-MailID: 20200901040851epcas1p18d6757ed06d19c7fd68cbcd439672183
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200901040851epcas1p18d6757ed06d19c7fd68cbcd439672183
-References: <20200901040759.29992-1-hoegeun.kwon@samsung.com>
-        <CGME20200901040851epcas1p18d6757ed06d19c7fd68cbcd439672183@epcas1p1.samsung.com>
+        Tue, 1 Sep 2020 00:16:46 -0400
+Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C05DC0612FF
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 21:08:22 -0700 (PDT)
+Received: by mail-oo1-xc42.google.com with SMTP id h9so2014753ooo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 21:08:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=NaKIw5SZ2snUDIQdGMqi00rq2nlthzOV/iWfbjX5FMQ=;
+        b=p683/8OhcapwMB7X8q7CDgEHBEZLk8MTO0hDyyoM9IeA9kE1jRIaauqXjx3fBJ+pC6
+         bkI2qgc07N5yqXOBl2V6BHdGu20yzZnoZg+TwOa1qIGxyqJdwsYDs0hMfw3/KtjwkQGG
+         vnsJfnchUVEzc4BNmmdaQMjVBRx5yG/F5JNq9shKPsS9o9qcIYg1yXTFUfSHzJfH6hMv
+         4ghhrA1hsdXgGfMgZpx0cN6KtjCPhEImmwpOZ9Mppn739Hk2q9YlD9Kb/+t1IJ4r0u77
+         3tcZL+iewBUiyY+hWvxeYuAtH55WI5k52AudlT0oISRlRNItf5ty88bkLWccj4dytFLr
+         4AOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=NaKIw5SZ2snUDIQdGMqi00rq2nlthzOV/iWfbjX5FMQ=;
+        b=S7O7L3ScOyrGOFtAk82usfoQMtdLjK32+jAF2KPMhs8BHxBSoeRkss6EeyFlG6PaAH
+         x78fEqdqIVYl71Kyh+Qjmpwm2qir9M+S0cm751CM+Mf2TaMSoFA5+De3tdYiUCeJYB0T
+         NhiuSgwBamuTofOuTLVj9AS69ohRa+Gzh1x3jW0tSXcL7vYOxkT+U/+OuMyl8uX/eq7M
+         fushf+1VqnbQ4pWubfWUN32Hq516EKWf2leTzVipRmUL3ZTjWhZnUoTi7YJj/6FQxOhf
+         NCO5ybpb/UQC+llsewEAwz53N7JUigY90iu7oqAOHfRfx4XWKik1UXA0+yEJ2oLoBaHD
+         DLig==
+X-Gm-Message-State: AOAM5336fnkvcvYnIN7r5I5dJsP4/E733eEnPIb4RmBhzmk0tbVyk1Hf
+        UEIP29s9vigsQo4cSfHFZkDPkw==
+X-Google-Smtp-Source: ABdhPJzkFt5m7gLJkldd0ofDPLe6KYcRsEykTxbgdct/rik9AN7M4HTPmS3L9AsIy9mB81WhPqPoyg==
+X-Received: by 2002:a4a:dc03:: with SMTP id p3mr2986296oov.63.1598933301355;
+        Mon, 31 Aug 2020 21:08:21 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id i23sm2070866oii.53.2020.08.31.21.08.19
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 31 Aug 2020 21:08:20 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 21:08:18 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 0/5] mm: fixes to past from future testing
+In-Reply-To: <9fa34576-92ec-37db-0b9c-b29d28aa8775@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2008312059480.1019@eggly.anvils>
+References: <alpine.LSU.2.11.2008301343270.5954@eggly.anvils> <9fa34576-92ec-37db-0b9c-b29d28aa8775@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-1105281253-1598933300=:1019"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is necessary to control the hdmi pixel bvb clock. Add bvb clock.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
----
- arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+--0-1105281253-1598933300=:1019
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-index b93eb30e1ddb..90dee4cb38bc 100644
---- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-+++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-@@ -172,12 +172,14 @@
- };
- 
- &hdmi0 {
--	clocks = <&firmware_clocks 13>, <&dvp 0>;
-+	clocks = <&firmware_clocks 13>, <&dvp 0>, <&firmware_clocks 14>;
-+	clock-names = "hdmi", "clk-108M", "bvb";
- 	status = "okay";
- };
- 
- &hdmi1 {
--	clocks = <&firmware_clocks 13>, <&dvp 1>;
-+	clocks = <&firmware_clocks 13>, <&dvp 1>, <&firmware_clocks 14>;
-+	clock-names = "hdmi", "clk-108M", "bvb";
- 	status = "okay";
- };
- 
--- 
-2.17.1
+On Tue, 1 Sep 2020, Alex Shi wrote:
+> =E5=9C=A8 2020/8/31 =E4=B8=8A=E5=8D=884:57, Hugh Dickins =E5=86=99=E9=81=
+=93:
+> > Here's a set of independent fixes against 5.9-rc2: prompted by
+> > testing Alex Shi's "warning on !memcg" and lru_lock series, but
+> > I think fit for 5.9 - though maybe only the first for stable.
+> >=20
+> > [PATCH 1/5] ksm: reinstate memcg charge on copied pages
+> > [PATCH 2/5] mm: migration of hugetlbfs page skip memcg
+> > [PATCH 3/5] shmem: shmem_writepage() split unlikely i915 THP
+> > [PATCH 4/5] mm: fix check_move_unevictable_pages() on THP
+> > [PATCH 5/5] mlock: fix unevictable_pgs event counts on THP
+>=20
+> Hi Hugh,
+>=20
+> Thanks a lot for reporting and fix! All fixed looks fine for me.
 
+Thanks for checking.
+
+>=20
+> BTW,
+> I assume you already rebased lru_lock patchset on this. So I don't=20
+> need to redo rebase again, do I? :)
+
+That's right, no need for another posting: the only ones of yours
+which don't apply cleanly on top of mine are 20/32 and 21/32,
+touching check_move_unevictable_pages(); and they're easy enough
+to resolve.
+
+With my 5 fixes in, I'll advance to commenting on yours (but not today).
+
+Hugh
+--0-1105281253-1598933300=:1019--
