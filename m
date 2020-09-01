@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99F8259105
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA50259110
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgIAOno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:43:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
+        id S1728505AbgIAOol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:44:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728310AbgIAOna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:43:30 -0400
+        id S1728597AbgIAOnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:43:32 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D08F4206EB;
-        Tue,  1 Sep 2020 14:43:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D28AA21941;
+        Tue,  1 Sep 2020 14:43:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598971410;
-        bh=GHG8Q5LGBd/C87oXVQh9+PpSYGYMCoE7jrDiu2FaKCI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aKYNGwPX5beYzRHU1P28m+loKhvDs9jL8wUyf/QDaLeZK/iFj9NllUfoyVSQdB8ZT
-         7ZEFTATUtFMGri7nhESL4aljhdXeu1AJYUY+HGpHswdBWeHYBJX31OcihTLhm/EVVC
-         4M6ZPySIR0NH9bFwUZ5XCbaOs9zWU6vBZl9VNCUA=
+        s=default; t=1598971412;
+        bh=r6OMV+k73c/v0QmL2y5Q7v1wav2v6TvKpqSSTHWVU+Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DWwu1BBVScEbx1viQ7lWQQYUeaZcyHkffku82foe5R4M9aVbzbZAdwnDqPI8UW+3J
+         xEERTFENt8vsnN44HSEHj4bXB6oXxFOZELdS3k7dNVTrXaumRXYW2SbZCIvhsRwMG7
+         +kQ4Bp3uFkIQZckkv6GqBVYulB5ENfAnVBWHOxDs=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1kD7VQ-008IQP-5n; Tue, 01 Sep 2020 15:43:28 +0100
+        id 1kD7VR-008IQP-1j; Tue, 01 Sep 2020 15:43:30 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -40,15 +40,19 @@ Cc:     Will Deacon <will@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>,
-        Saravana Kannan <saravanak@google.com>, kernel-team@android.com
-Subject: [PATCH v3 00/16] arm/arm64: Turning IPIs into normal interrupts
-Date:   Tue,  1 Sep 2020 15:43:08 +0100
-Message-Id: <20200901144324.1071694-1-maz@kernel.org>
+        Saravana Kannan <saravanak@google.com>,
+        kernel-team@android.com,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH v3 01/16] genirq: Add fasteoi IPI flow
+Date:   Tue,  1 Sep 2020 15:43:09 +0100
+Message-Id: <20200901144324.1071694-2-maz@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200901144324.1071694-1-maz@kernel.org>
+References: <20200901144324.1071694-1-maz@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com, valentin.schneider@arm.com
 X-SA-Exim-Mail-From: maz@kernel.org
 X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
@@ -56,98 +60,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For as long as SMP ARM has existed, IPIs have been handled as
-something special. The arch code and the interrupt controller exchange
-a couple of hooks (one to generate an IPI, another to handle it).
+For irqchips using the fasteoi flow, IPIs are a bit special.
+They need to be EOI'd early (before calling the handler), as
+funny things may happen in the handler (they do not necessarily
+behave like a normal interrupt).
 
-Although this is perfectly manageable, it prevents the use of features
-that we could use if IPIs were Linux IRQs (such as pseudo-NMIs). It
-also means that each interrupt controller driver has to follow an
-architecture-specific interface instead of just implementing the base
-irqchip functionalities. The arch code also duplicates a number of
-things that the core irq code already does (such as calling
-set_irq_regs(), irq_enter()...).
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ include/linux/irq.h |  1 +
+ kernel/irq/chip.c   | 27 +++++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
 
-This series tries to remedy this on arm/arm64 by offering a new
-registration interface where the irqchip gives the arch code a range
-of interrupts to use for IPIs. The arch code requests these as normal
-per-cpu interrupts.
-
-The bulk of the work is at the interrupt controller level, where all 5
-irqchips used on arm+SMP/arm64 get converted.
-
-Finally, we drop the legacy registration interface as well as the
-custom statistics accounting.
-
-Note that I have had a look at providing a "generic" interface by
-expanding the kernel/irq/ipi.c bag of helpers, but so far all
-irqchips have very different requirements, so there is hardly anything
-to consolidate for now. Maybe some as hip04 and the Marvell horror get
-cleaned up (the latter certainly could do with a good dusting).
-
-This has been tested on a bunch of 32 and 64bit guests (GICv2, GICv3),
-as well as 64bit bare metal (GICv3). The RPi part has only been tested
-in QEMU as a 64bit guest, while the HiSi and Marvell parts have only
-been compile-tested.
-
-I'm aiming for 5.10 for this, so any comment would be appreciated.
-
-* From v2:
-  - Tidied up the arch code (__read_mostly for the IPI handling data,
-    WARN_ON_ONCE on setup and teardown), dropped spurious prototype
-    on 32bit
-  - Prevent IPIs from being forwarded to VCPUs
-  - Merged the GIC affinity fix, hence one less patch
-  - Added RBs from Valentin
-
-* From v1:
-  - Clarified the effect of nesting irq_enter/exit (Russell)
-  - Changed the point where we tear IPIs down on (Valentin)
-  - IPIs are no longer accessible from DT
-  - HIP04 and Armada 370-XP have been converted, but are untested
-  - arch-specific kstat accounting is removed
-  - ARM's legacy interface is dropped
-
-Marc Zyngier (16):
-  genirq: Add fasteoi IPI flow
-  genirq: Allow interrupts to be excluded from /proc/interrupts
-  arm64: Allow IPIs to be handled as normal interrupts
-  ARM: Allow IPIs to be handled as normal interrupts
-  irqchip/gic-v3: Describe the SGI range
-  irqchip/gic-v3: Configure SGIs as standard interrupts
-  irqchip/gic: Refactor SMP configuration
-  irqchip/gic: Configure SGIs as standard interrupts
-  irqchip/gic-common: Don't enable SGIs by default
-  irqchip/bcm2836: Configure mailbox interrupts as standard interrupts
-  irqchip/hip04: Configure IPIs as standard interrupts
-  irqchip/armada-370-xp: Configure IPIs as standard interrupts
-  arm64: Kill __smp_cross_call and co
-  arm64: Remove custom IRQ stat accounting
-  ARM: Kill __smp_cross_call and co
-  ARM: Remove custom IRQ stat accounting
-
- arch/arm/Kconfig                    |   1 +
- arch/arm/include/asm/hardirq.h      |  17 --
- arch/arm/include/asm/smp.h          |   5 +-
- arch/arm/kernel/smp.c               | 135 +++++++++-----
- arch/arm64/Kconfig                  |   1 +
- arch/arm64/include/asm/hardirq.h    |   9 -
- arch/arm64/include/asm/irq_work.h   |   4 +-
- arch/arm64/include/asm/smp.h        |   6 +-
- arch/arm64/kernel/smp.c             | 121 ++++++++-----
- drivers/irqchip/irq-armada-370-xp.c | 262 +++++++++++++++++++---------
- drivers/irqchip/irq-bcm2836.c       | 151 +++++++++++++---
- drivers/irqchip/irq-gic-common.c    |   3 -
- drivers/irqchip/irq-gic-v3.c        | 104 ++++++-----
- drivers/irqchip/irq-gic.c           | 177 +++++++++++--------
- drivers/irqchip/irq-hip04.c         |  89 +++++-----
- include/linux/irq.h                 |   5 +-
- kernel/irq/chip.c                   |  27 +++
- kernel/irq/debugfs.c                |   1 +
- kernel/irq/proc.c                   |   2 +-
- kernel/irq/settings.h               |   7 +
- 20 files changed, 720 insertions(+), 407 deletions(-)
-
+diff --git a/include/linux/irq.h b/include/linux/irq.h
+index 1b7f4dfee35b..57205bbf46bf 100644
+--- a/include/linux/irq.h
++++ b/include/linux/irq.h
+@@ -634,6 +634,7 @@ static inline int irq_set_parent(int irq, int parent_irq)
+  */
+ extern void handle_level_irq(struct irq_desc *desc);
+ extern void handle_fasteoi_irq(struct irq_desc *desc);
++extern void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc);
+ extern void handle_edge_irq(struct irq_desc *desc);
+ extern void handle_edge_eoi_irq(struct irq_desc *desc);
+ extern void handle_simple_irq(struct irq_desc *desc);
+diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
+index 857f5f4c8098..bed517d5aa4d 100644
+--- a/kernel/irq/chip.c
++++ b/kernel/irq/chip.c
+@@ -944,6 +944,33 @@ void handle_percpu_devid_irq(struct irq_desc *desc)
+ 		chip->irq_eoi(&desc->irq_data);
+ }
+ 
++/**
++ * handle_percpu_devid_fasteoi_ipi - Per CPU local IPI handler with per cpu
++ *				     dev ids
++ * @desc:	the interrupt description structure for this irq
++ *
++ * The biggest difference with the IRQ version is that the interrupt is
++ * EOIed early, as the IPI could result in a context switch, and we need to
++ * make sure the IPI can fire again. We also assume that the arch code has
++ * registered an action. If not, we are positively doomed.
++ */
++void handle_percpu_devid_fasteoi_ipi(struct irq_desc *desc)
++{
++	struct irq_chip *chip = irq_desc_get_chip(desc);
++	struct irqaction *action = desc->action;
++	unsigned int irq = irq_desc_get_irq(desc);
++	irqreturn_t res;
++
++	__kstat_incr_irqs_this_cpu(desc);
++
++	if (chip->irq_eoi)
++		chip->irq_eoi(&desc->irq_data);
++
++	trace_irq_handler_entry(irq, action);
++	res = action->handler(irq, raw_cpu_ptr(action->percpu_dev_id));
++	trace_irq_handler_exit(irq, action, res);
++}
++
+ /**
+  * handle_percpu_devid_fasteoi_nmi - Per CPU local NMI handler with per cpu
+  *				     dev ids
 -- 
 2.27.0
 
