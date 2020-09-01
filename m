@@ -2,145 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB678258666
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB9525866E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727818AbgIADmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 23:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
+        id S1726131AbgIADpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 23:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgIADmM (ORCPT
+        with ESMTP id S1725987AbgIADps (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 23:42:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A243C0612FE;
-        Mon, 31 Aug 2020 20:42:11 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w5so7904936wrp.8;
-        Mon, 31 Aug 2020 20:42:11 -0700 (PDT)
+        Mon, 31 Aug 2020 23:45:48 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3733C0612FE
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 20:45:46 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 92so6448790qtb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 20:45:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gEP+l6VmZ2AQhT9y6MxnJyCmEVijpcWpEhbN/rykvcE=;
-        b=CWrOGraZ3/zNXixoJEwLA3hwBYU2PWVJEJ6ylxVJux52OFGXCCNEGTUhC6mkNsNKpA
-         i1TXATaF9rTSGwMaVqrUu1Zz/Y1O9y1drCGCIQXqHRHg9tOaU+j7fvsU/CuvZxVlMMw5
-         jVxSR6ue24PPOYOWBejC9MloKJqqT/iDlRnzo7+6cRlhm0s17nQW9Gh2F7FrU9ZfvUxp
-         kAj8AgciZRjeU/IJPsUe/joigfP+Mc6xw8KC+pdmtDdlV3fkmAR0oIVELnk2GPlk1ru0
-         iqtKfLijhcQEQ37e9PwlNuKupuMgl1u6xVjd2ZRO3vozd8LXzB4Mr45MwWeEmJ4j6Osg
-         kkIA==
+        d=dionne-riel-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Sb15qLWva7b5eccs+rAtHW207dq5g5GxXtdLjsQxg3E=;
+        b=p+DLtz7WvZ7g/1FEoh9amfFpz7eFYZxiSbjhiDaOyDTkIowmmAKSmS4KeP9Z+9hxTo
+         ROWSFXHQgVaVpnjkJXvwngQ9y35iINpSi6zTbx0lORgmnBlPMYh2pyEidc2tsX9m0tME
+         RXB5+GRrqz5uVE3ZpDX2uC242n2ycolauL/vA1HqDsFfwwgvB5RP39jj15E9K0l2dlYi
+         3Lle9LoWLxdXrNRrgl/aUEBIgdvpmfwnUH1+KiEokL7pMR1yzJ82wmuOtc7mqtShLVRM
+         wvRKH0JiBw02cynF9aPycAVhonAaTK2OrlttLMUY/eRYRS+tazmzR+KSWsGG74gMcWtg
+         wJRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gEP+l6VmZ2AQhT9y6MxnJyCmEVijpcWpEhbN/rykvcE=;
-        b=EweFKDjX+clP5mxkMY0DlaoNwLVBNJILyvXJReUJD49WiHllT60lCeDlLkD+/agiSA
-         zE+90OUpJmDgwN+w+yz6Jo2FKR8XrwQf+HCJDZRS7xCssR8E34/06jgUurOuKvpKGelG
-         xjHb7H3a1RPM3vCBEpTL+18kTNE3h+Dyb8aAY4LdadWmSx8JP8mo4mGnI9KmLhnUydAi
-         t6fXwdTHRl392S0pSYnoJhy7KO8JGoZ2w5rCcvBQ9+36Z2yEGUoOxHfnd4u+psjKFb5L
-         NLVQHgFb0BNPuLNEnjte4XP9BJRwWiMbjTf0CFJck4POvkfKRsxNhiXtPfhxDVwELS72
-         w59A==
-X-Gm-Message-State: AOAM530elihLRNX3YUSBPug59E9c7/Y+QSm/cATVi/aCwKRTx8Irw+Aj
-        +t6vxjiTW2hOkB2UPXCr9fWB1cqUZOIBQb6qm1w=
-X-Google-Smtp-Source: ABdhPJyAYV0Dm0qLaL1mXbuG+PPAW1SP8BjwTCx+mqZtIG0Clr3g+Jy+4HR4m6cw7nu44h9gRxaSIWDuskrjmVwm3j8=
-X-Received: by 2002:adf:e6c7:: with SMTP id y7mr4030589wrm.147.1598931729990;
- Mon, 31 Aug 2020 20:42:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Sb15qLWva7b5eccs+rAtHW207dq5g5GxXtdLjsQxg3E=;
+        b=Tke+stG8RlpNvqlrZajMBNrrG4sXCFEjoY5xGUdDbL2ADrJF8eXaYUNwDsrYpEMYZH
+         iT1/M5/xywh2DuULGuLTaht7trdJssokkMIqLWN0Y24j9EPSXFbPjnqTY4gNhGyz+nz7
+         73ltXvuZQG21/maFfyge04b4DrAS45/U/9B8KZ7aFZXa+nh8NUdp3KjOvo0VaYvZ09Py
+         fZrXUElk8Sojj8Iem2ynqwrS8mapZGr0qiL9kzgajUwn7npAx09vZDN4eNbTJCDiLyBG
+         f3Zz8pV7YEKzMdS+aNbfScplAnIUFdIrdFPKIFSCageCAQAa07drJYuz8cMC2gdO6PR0
+         L44A==
+X-Gm-Message-State: AOAM5321gLYBQvtPgs8x9JMY0sdgLWGCrX/osUFd0JZ9YuyrIzfMk22y
+        GfT7DN6rWXd+SHAibRTEv/CPzQ==
+X-Google-Smtp-Source: ABdhPJytKLui/iELEzCyDiiipRYaftb3La6isv90YSp0yFSiuo20xYRbxtdXV+Nd4vBPGaXncxF/dA==
+X-Received: by 2002:ac8:ec7:: with SMTP id w7mr4676763qti.118.1598931945770;
+        Mon, 31 Aug 2020 20:45:45 -0700 (PDT)
+Received: from DUFFMAN (135-23-195-85.cpe.pppoe.ca. [135.23.195.85])
+        by smtp.gmail.com with ESMTPSA id s17sm13489048qte.50.2020.08.31.20.45.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Aug 2020 20:45:45 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 23:45:42 -0400
+From:   Samuel Dionne-Riel <samuel@dionne-riel.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Boot failure on gru-scarlet-inx with 5.9-rc2
+Message-ID: <20200831234542.295b1275@DUFFMAN>
+In-Reply-To: <90731ebb54fe03003dce03bc7ec4872e@kernel.org>
+References: <20200829164920.7d28e01a@DUFFMAN>
+        <65d88bdd0888a69849327501a2aad186@kernel.org>
+        <20200831031838.2d6d76d9@DUFFMAN>
+        <90731ebb54fe03003dce03bc7ec4872e@kernel.org>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200810222657.1841322-1-jcrouse@codeaurora.org>
- <20200814024114.1177553-2-robdclark@gmail.com> <20200901023517.GA54956@uller>
-In-Reply-To: <20200901023517.GA54956@uller>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 31 Aug 2020 20:42:57 -0700
-Message-ID: <CAF6AEGsx5mmUCuNApP692L-rS3wEbn4UqJBXuSr-38MAcVfoBw@mail.gmail.com>
-Subject: Re: [PATCH 01/19] drm/msm: remove dangling submitqueue references
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 7:35 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Fri 14 Aug 02:40 UTC 2020, Rob Clark wrote:
->
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > Currently it doesn't matter, since we free the ctx immediately.  But
-> > when we start refcnt'ing the ctx, we don't want old dangling list
-> > entries to hang around.
-> >
-> > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > ---
-> >  drivers/gpu/drm/msm/msm_submitqueue.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_submitqueue.c b/drivers/gpu/drm/msm/msm_submitqueue.c
-> > index a1d94be7883a..90c9d84e6155 100644
-> > --- a/drivers/gpu/drm/msm/msm_submitqueue.c
-> > +++ b/drivers/gpu/drm/msm/msm_submitqueue.c
-> > @@ -49,8 +49,10 @@ void msm_submitqueue_close(struct msm_file_private *ctx)
-> >        * No lock needed in close and there won't
-> >        * be any more user ioctls coming our way
-> >        */
-> > -     list_for_each_entry_safe(entry, tmp, &ctx->submitqueues, node)
-> > +     list_for_each_entry_safe(entry, tmp, &ctx->submitqueues, node) {
-> > +             list_del(&entry->node);
->
-> If you refcount ctx, what does that do for the entries in the submit
-> queue?
->
-> "entry" here is kref'ed, but you're popping it off the list regardless
-> of the put ends up freeing the object or not - which afaict would mean
-> leaking the object.
->
+On Mon, 31 Aug 2020 10:27:37 +0100
+Marc Zyngier <maz@kernel.org> wrote:
+> 
+> Ah, so actually anything that *enables pcie* kills your system.
+> Great investigative work!
+> 
+> > 
+> > And backed by a further bisection with this that points to
+> > d84c572de1a360501d2e439ac632126f5facf59d being the actual change
+> > that causes the tablet to fail to boot, as long as the pcie0 node is
+> > identified as pci properly.
+> > 
+> > I am unsure if I should add as a Cc everyone involved in that change
+> > set, though the author (coincidentally) is already in the original
+> > list of recipients.
+> 
+> I've deliberately moved Rob from Cc to To... ;-)
 
-What ends up happening is the submit has reference to submit-queue,
-which has reference to the ctx.. the submitqueue could be alive still
-pending in-flight submits (in a later patch), but dead from the PoV of
-userspace interface.
+Thanks, I don't actually know who to write to exactly.
 
-We aren't relying (or at least aren't in the end, and I *think* I
-didn't miss anything in the middle) relying on ctx->submitqueues list
-to clean anything up in the end, just track what is still a valid
-submitqueue from userspace PoV
+> > Any additional thoughts from this additional information?  
+> 
+> What you could do is to start looking at which of the
+> pci_is_root_bus() changes breaks PCIe on this system.  The fact that
+> it breaks on your system and not on mine is a bit puzzling.
 
-BR,
--R
+Let me show you, on top of v5.9-rc3 I can successfully boot using this
+partial revert / adaptation of d84c572d. In addition, it also allows
+the Wi-Fi to work again, compared to how it didn't in 5.9-rc1 or
+5.9-rc[23] with the dumb revert of your fix.
 
->
-> On the other hand, with the current implementation an object with higher
-> refcount with adjacent objects of single refcount would end up with
-> dangling pointers after the put. So in itself this change seems like a
-> net gain, but I'm wondering about the plan described in the commit
-> message.
->
-> Regards,
-> Bjorn
->
-> >               msm_submitqueue_put(entry);
-> > +     }
-> >  }
-> >
-> >  int msm_submitqueue_create(struct drm_device *drm, struct msm_file_private *ctx,
-> > --
-> > 2.26.2
-> >
+So, if we number each pci_is_root_bus by order appearance, it is only
+the second use, in rockchip_pcie_valid_device, which seem to cause
+scarlet not to boot.
+
+The patch (not actually a patch submission) reverts only that instance
+of pci_is_root_bus, while also doing some leg work to put back some
+functionally equivalent code that was refactored away since.
+
+If there's anything else you want me to try, don't hesitate.
+
+---
+ drivers/pci/controller/pcie-rockchip-host.c | 8 +++++++-
+ drivers/pci/controller/pcie-rockchip.h      | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+index 0bb2fb3e8a0b..5a27fa833fbd 100644
+--- a/drivers/pci/controller/pcie-rockchip-host.c
++++ b/drivers/pci/controller/pcie-rockchip-host.c
+@@ -79,7 +79,7 @@ static int rockchip_pcie_valid_device(struct rockchip_pcie *rockchip,
+ 	 * do not read more than one device on the bus directly attached
+ 	 * to RC's downstream side.
+ 	 */
+-	if (pci_is_root_bus(bus->parent) && dev > 0)
++	if (bus->primary == rockchip->root_bus_nr && dev > 0)
+ 		return 0;
+ 
+ 	return 1;
+@@ -944,6 +944,7 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+ 	struct rockchip_pcie *rockchip;
+ 	struct device *dev = &pdev->dev;
+ 	struct pci_host_bridge *bridge;
++	struct resource *bus_res;
+ 	int err;
+ 
+ 	if (!dev->of_node)
+@@ -983,6 +984,11 @@ static int rockchip_pcie_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		goto err_deinit_port;
+ 
++	/* HACK; ~equiv to last param of pci_parse_request_of_pci_ranges */
++	bus_res = (resource_list_first_type(&bridge->windows, IORESOURCE_MEM))->res;
++
++	rockchip->root_bus_nr = bus_res->start;
++
+ 	err = rockchip_pcie_cfg_atu(rockchip);
+ 	if (err)
+ 		goto err_remove_irq_domain;
+diff --git a/drivers/pci/controller/pcie-rockchip.h b/drivers/pci/controller/pcie-rockchip.h
+index c7d0178fc8c2..0952fec7e34d 100644
+--- a/drivers/pci/controller/pcie-rockchip.h
++++ b/drivers/pci/controller/pcie-rockchip.h
+@@ -298,6 +298,7 @@ struct rockchip_pcie {
+ 	struct	gpio_desc *ep_gpio;
+ 	u32	lanes;
+ 	u8      lanes_map;
++	u8      root_bus_nr;
+ 	int	link_gen;
+ 	struct	device *dev;
+ 	struct	irq_domain *irq_domain;
+-- 
+2.25.4
+
+
+Thanks again!
+
+-- 
+Samuel Dionne-Riel
