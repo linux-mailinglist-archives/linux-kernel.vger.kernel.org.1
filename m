@@ -2,178 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1EF2586B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190712586C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbgIAELB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:11:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:8899 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725987AbgIAELA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:11:00 -0400
-IronPort-SDR: NwubxJry0KTpn4dM8SS2fRmanmTtQHiDKETmuc6fO2yItJG6ylBQn8G++CYBL4b08zKn2RmWfR
- JPWRtTtIQYtw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="156360290"
-X-IronPort-AV: E=Sophos;i="5.76,377,1592895600"; 
-   d="scan'208";a="156360290"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 21:10:56 -0700
-IronPort-SDR: 3Vr5g8NV+nJ2Vwb1nkWz9dxaxDkQGHfWYPFQi74ewYoTEPgHuItgHYaIhFoDvSVEm8nGzNFN3Y
- k+lNgsGpK1rQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,377,1592895600"; 
-   d="scan'208";a="330934898"
-Received: from lkp-server02.sh.intel.com (HELO 713faec3b0e5) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 31 Aug 2020 21:10:55 -0700
-Received: from kbuild by 713faec3b0e5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kCxdG-0000Wa-Ie; Tue, 01 Sep 2020 04:10:54 +0000
-Date:   Tue, 01 Sep 2020 12:10:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/fam0] BUILD SUCCESS
- a56dbff00095f3fc2c3fcb71dab2e536d42a4ff5
-Message-ID: <5f4dc9c0.xY5yZXesL5ePuzmL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726193AbgIAETT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:19:19 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54568 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725987AbgIAETT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 00:19:19 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 081431xk119262;
+        Tue, 1 Sep 2020 00:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=Q246u/fQhcgO/yq7KHhZm2ekFkfZRubkGRPgvvC7blU=;
+ b=Zh9tUDJHTPb3QXMbh0l4b4TkPFCUsEas+cI5gzTV8VvqwuSi5tP3LsjjY7ok+kbmt50p
+ hRJMmcH/fotuOYBVHufFTgSZyDAbiNKBEUc6GPsonV9+hgz8u3A3CGBtI6s3yWmlXbmd
+ hoJ8lcw+k0Z9NxXjXL9WKeiF05C2pe7Qkg592CcY+h8z25QdDaiw89VF/KNyOt7wEQT4
+ ndH78U6AgAphmKJ5QjaVm+bT9NMkWIodMOWH9aTbmtTlmVVGT64w94j8NFTwNDymMmmR
+ WhlUIcvVFSoM9HowyKitjpJMgqnLGOFYoQy3d1ZTHkH8m9td0TBNNyuvch2gX23BgpUx 0Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 339eg9gvk6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Sep 2020 00:19:10 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08143QPN121201;
+        Tue, 1 Sep 2020 00:19:10 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 339eg9gvjn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Sep 2020 00:19:10 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0814HJEp028925;
+        Tue, 1 Sep 2020 04:19:08 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 337e9gty7c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Sep 2020 04:19:07 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0814J5o328049904
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Sep 2020 04:19:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7172AE053;
+        Tue,  1 Sep 2020 04:19:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9B524AE04D;
+        Tue,  1 Sep 2020 04:19:04 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.157.5])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  1 Sep 2020 04:19:04 +0000 (GMT)
+Date:   Tue, 1 Sep 2020 07:19:02 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
+Subject: Re: [PATCH] ia64: fix min_low_pfn/max_low_pfn build errors
+Message-ID: <20200901041902.GC424181@linux.ibm.com>
+References: <20200829000126.2463-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200829000126.2463-1-rdunlap@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-01_01:2020-08-31,2020-09-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 adultscore=0 spamscore=0
+ phishscore=0 impostorscore=0 bulkscore=0 mlxscore=0 mlxlogscore=812
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009010035
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/fam0
-branch HEAD: a56dbff00095f3fc2c3fcb71dab2e536d42a4ff5  scsi: target: tcmu: Replace zero-length array with flexible-array member
+Tony,
 
-elapsed time: 726m
+I can take it via the memblock tree, would appreciate an Ack.
 
-configs tested: 116
-configs skipped: 7
+On Fri, Aug 28, 2020 at 05:01:26PM -0700, Randy Dunlap wrote:
+> Fix min_low_pfn/max_low_pfn build errors for arch/ia64/: (e.g.)
+> 
+>  ERROR: "max_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
+>  ERROR: "min_low_pfn" [drivers/rpmsg/virtio_rpmsg_bus.ko] undefined!
+>  ERROR: "min_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
+>  ERROR: "max_low_pfn" [drivers/hwtracing/intel_th/intel_th_msu.ko] undefined!
+>  ERROR: "min_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
+>  ERROR: "max_low_pfn" [drivers/crypto/cavium/nitrox/n5pf.ko] undefined!
+>  ERROR: "max_low_pfn" [drivers/md/dm-integrity.ko] undefined!
+>  ERROR: "min_low_pfn" [drivers/md/dm-integrity.ko] undefined!
+>  ERROR: "max_low_pfn" [crypto/tcrypt.ko] undefined!
+>  ERROR: "min_low_pfn" [crypto/tcrypt.ko] undefined!
+>  ERROR: "min_low_pfn" [security/keys/encrypted-keys/encrypted-keys.ko] undefined!
+>  ERROR: "max_low_pfn" [security/keys/encrypted-keys/encrypted-keys.ko] undefined!
+>  ERROR: "min_low_pfn" [arch/ia64/kernel/mca_recovery.ko] undefined!
+>  ERROR: "max_low_pfn" [arch/ia64/kernel/mca_recovery.ko] undefined!
+> 
+> David suggested just exporting min_low_pfn & max_low_pfn in
+> mm/memblock.c:
+> https://lore.kernel.org/lkml/alpine.DEB.2.22.394.2006291911220.1118534@chino.kir.corp.google.com/
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: linux-mm@kvack.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Fenghua Yu <fenghua.yu@intel.com>
+> Cc: linux-ia64@vger.kernel.org
+> ---
+>  arch/ia64/kernel/ia64_ksyms.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- linux-next-20200825.orig/arch/ia64/kernel/ia64_ksyms.c
+> +++ linux-next-20200825/arch/ia64/kernel/ia64_ksyms.c
+> @@ -3,7 +3,7 @@
+>   * Architecture-specific kernel symbols
+>   */
+>  
+> -#ifdef CONFIG_VIRTUAL_MEM_MAP
+> +#if defined(CONFIG_VIRTUAL_MEM_MAP) || defined(CONFIG_DISCONTIGMEM)
+>  #include <linux/compiler.h>
+>  #include <linux/export.h>
+>  #include <linux/memblock.h>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         hackkit_defconfig
-powerpc                     pq2fads_defconfig
-arm                           h3600_defconfig
-sh                           se7712_defconfig
-powerpc64                        alldefconfig
-openrisc                         alldefconfig
-m68k                            mac_defconfig
-powerpc                      pmac32_defconfig
-sh                          lboxre2_defconfig
-sh                           se7751_defconfig
-arm                           u8500_defconfig
-parisc                generic-32bit_defconfig
-m68k                        mvme147_defconfig
-powerpc                          allmodconfig
-m68k                         apollo_defconfig
-sh                          r7785rp_defconfig
-powerpc                     mpc83xx_defconfig
-powerpc                          allyesconfig
-csky                                defconfig
-arm                        mini2440_defconfig
-arm                        cerfcube_defconfig
-h8300                               defconfig
-arm                       spear13xx_defconfig
-arc                                 defconfig
-m68k                          sun3x_defconfig
-arm                            u300_defconfig
-parisc                           allyesconfig
-mips                       capcella_defconfig
-powerpc                      ppc6xx_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                            q40_defconfig
-arm                           omap1_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                        edosk7705_defconfig
-mips                      malta_kvm_defconfig
-sh                         microdev_defconfig
-mips                      bmips_stb_defconfig
-arm                            mps2_defconfig
-nios2                               defconfig
-arm                       imx_v6_v7_defconfig
-mips                           rs90_defconfig
-i386                             alldefconfig
-powerpc                      ppc64e_defconfig
-arm                            hisi_defconfig
-nios2                         3c120_defconfig
-powerpc                    adder875_defconfig
-sh                            titan_defconfig
-mips                           gcw0_defconfig
-arm                         bcm2835_defconfig
-arc                            hsdk_defconfig
-arm                         s5pv210_defconfig
-powerpc                         wii_defconfig
-sh                        sh7757lcr_defconfig
-sh                               alldefconfig
-arm                           stm32_defconfig
-mips                        jmr3927_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-i386                 randconfig-a001-20200831
-i386                 randconfig-a002-20200831
-i386                 randconfig-a004-20200831
-i386                 randconfig-a006-20200831
-i386                 randconfig-a005-20200831
-i386                 randconfig-a003-20200831
-x86_64               randconfig-a012-20200831
-x86_64               randconfig-a015-20200831
-x86_64               randconfig-a014-20200831
-x86_64               randconfig-a011-20200831
-x86_64               randconfig-a016-20200831
-x86_64               randconfig-a013-20200831
-i386                 randconfig-a013-20200831
-i386                 randconfig-a011-20200831
-i386                 randconfig-a012-20200831
-i386                 randconfig-a015-20200831
-i386                 randconfig-a016-20200831
-i386                 randconfig-a014-20200831
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Sincerely yours,
+Mike.
