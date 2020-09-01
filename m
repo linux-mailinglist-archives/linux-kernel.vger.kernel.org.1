@@ -2,128 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC118258F88
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FD7258F8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgIANyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbgIANwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:52:06 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9128C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:52:05 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id u126so1178832oif.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 06:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=8hcm2K727CJua1c+VIHcKsQUWGaU38NC8nW5M5njWS0=;
-        b=RzB+6u5Rh384ZLBaf8gb7xled8dPfCLq+M2yOBByA0tFWFBkZQaR+kN9x2/6LT6eRl
-         mexSqTVWGfN9maHW7dUYIxUseUHzUA0tILgKWHslrsfW9+Eiksr7uG40fwDLuvsd6JGC
-         y126TvWhr/wt6v6B9u23q4PFYqVYXRnjrSeTt5aCcuDJ1MXsIZqduhGFdsW9yC/3xauB
-         O9utFyuiP6lDr1F1DqF3YPz59bSKYWyu0ZKXA9v0VQ2NTxr6q2+d6IkhAVRpqrbh0jHN
-         dbcgQwk0w0ofT8vtjquQS5u8S7ROgNAOMlME+vl/8RgOPbUs32ZMTmAj3jsX43gh4RUk
-         Wo9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=8hcm2K727CJua1c+VIHcKsQUWGaU38NC8nW5M5njWS0=;
-        b=cRsMxOmTIZ9P6zRRtCNS2rRlXqpSlTDR9vg2Q1tAv0j5SJ1K26AYHCTLJbe0KdjDZI
-         mm6xk7jKfBmVjJctLLbl8wNlLDzsjYbJFGM4vrlVjBI2aHheRtNdgTJOkhJAjE018Nx4
-         YbTQppIAbHEy2Zrbs4havrky7GcO83kqqFiZKcl0mHHrr0zjsUf89LagzI5J53ZySBNE
-         uOwHdax4SRZBDc4fsI87rq9cTEPdGdNTlZfmEJ9CJEieINNOrRlVx4x3CgYlxlBYgm3p
-         VN4oSbFZMoSzteIWpXZQVPNtevcHg7aXdvTDCgzJpyM8WrUg3n0Lr1jM+uWQDjPyRt+H
-         kKPA==
-X-Gm-Message-State: AOAM532dO4qW9Xf7/DukbgHDbccum/7BUzZiebFFlVMpHkOzf+lPgIrt
-        7rbsyqURNQDJs7kMn6b7a2XuTYiMcxabUQtiA8o=
-X-Google-Smtp-Source: ABdhPJxg2Hv2wMNBD5cwLy4ygarowXgs9U0Ug/N06kuRO8ITa7JOinjMQlO+/bn4AbKgWoD6EHBqyqmaySDbTH10lhQ=
-X-Received: by 2002:aca:ec50:: with SMTP id k77mr1149644oih.35.1598968325175;
- Tue, 01 Sep 2020 06:52:05 -0700 (PDT)
+        id S1728289AbgIANy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:54:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728267AbgIANyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:54:46 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21121206EF;
+        Tue,  1 Sep 2020 13:54:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598968485;
+        bh=fgdQbvNKfrT9RQxxwbrS+G3c51w2CaurFPEVweTkSFs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=foEI5kCGhAdHd4Lc751iDhiFVCWbPPfNcIr92QxDyn3UHDswkD+id1vtNBkV1y7Cy
+         WfRn3Dz3pzF+lfzQ60RdprxObBsaeOpcqgut597Zbdm26EejvLtQh58icB6LxAWsau
+         sUd7M0EMs0QUirzh+WA6y4pe1Yl9VE4Du6yiE8+k=
+Date:   Tue, 1 Sep 2020 15:55:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     Sasha Levin <sashal@kernel.org>, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, robh+dt@kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 1/7] sdhci: tegra: Remove
+ SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
+Message-ID: <20200901135513.GA397411@kroah.com>
+References: <1598653517-13658-1-git-send-email-skomatineni@nvidia.com>
+ <1598653517-13658-2-git-send-email-skomatineni@nvidia.com>
+ <20200828231536.GU8670@sasha-vm>
+ <dc6bfd08-baaf-e1ad-6b3f-77ff82d110bb@nvidia.com>
 MIME-Version: 1.0
-References: <20200901002326.1137289-1-ndesaulniers@google.com> <20200901002326.1137289-2-ndesaulniers@google.com>
-In-Reply-To: <20200901002326.1137289-2-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Tue, 1 Sep 2020 15:51:52 +0200
-Message-ID: <CA+icZUXZAsenwohDCiUb9ZvtJUfFOJV6xHFiekfMPJh68UGvPQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] compiler-clang: add build check for clang 10.0.1
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc6bfd08-baaf-e1ad-6b3f-77ff82d110bb@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 2:23 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> During Plumbers 2020, we voted to just support the latest release of
-> Clang for now.  Add a compile time check for this.
->
-> We plan to remove workarounds for older versions now, which will break
-> in subtle and not so subtle ways.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/9
-> Link: https://github.com/ClangBuiltLinux/linux/issues/941
-> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Marco Elver <elver@google.com>
-> Acked-by: Nathan Chancellor <natechancellor@gmail.com>
-> Acked-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Fri, Aug 28, 2020 at 04:23:48PM -0700, Sowjanya Komatineni wrote:
+> 
+> On 8/28/20 4:15 PM, Sasha Levin wrote:
+> > On Fri, Aug 28, 2020 at 03:25:11PM -0700, Sowjanya Komatineni wrote:
+> > > commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
+> > 
+> > What does this line above represent?
+> > 
+> SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK is set incorrectly in above commit
+> 
+> when Tegra210 support was added.
 
-Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Odd, that's a new format to send to us to apply :)
 
-- Sedat -
+Can you please provide the git commit id of the original commit in
+Linus's tree, as per the documentation, so we know what this is, and can
+document that?
 
-> ---
-> Changes V1 -> V2:
-> * use a more informational error, as per Kees.
-> * collect tags.
->
->  include/linux/compiler-clang.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index cee0c728d39a..230604e7f057 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -3,6 +3,14 @@
->  #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
->  #endif
->
-> +#define CLANG_VERSION (__clang_major__ * 10000 \
-> +                    + __clang_minor__ * 100    \
-> +                    + __clang_patchlevel__)
-> +
-> +#if CLANG_VERSION < 100001
-> +# error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
-> +#endif
-> +
->  /* Compiler specific definitions for Clang compiler */
->
->  /* same as gcc, this was present in clang-2.6 so we can assume it works
-> --
-> 2.28.0.402.g5ffc5be6b7-goog
->
+Look at all of the commits in the stable trees for examples of how to do
+this.
+
+Can y ou fix that up and resend this whole series?
+
+thanks,
+
+greg k-h
