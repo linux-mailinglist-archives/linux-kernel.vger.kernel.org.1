@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0A0258905
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453C8258945
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726537AbgIAH3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:29:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbgIAH3v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:29:51 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DECCC061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 00:29:51 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id d11so177019ejt.13
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 00:29:51 -0700 (PDT)
+        id S1726679AbgIAHec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:34:32 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:33014 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbgIAHec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 03:34:32 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Sep 2020 03:34:31 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7DysICoorfZUUUIF+WpJaAVpr1xSSxTvFAEY3lBDX5U=;
-        b=hbS++nkxV7r4hrc5mADMRlI0aoeJGkpoGtGhsbvCJETmC5+uwfdTl3r8Qv2FTRx9DE
-         Cp+6c/529ATrN3XZmbNP7HzIaqWETtMBLIjBb3yxLRGqMdDnKQfTjoAzCRHw8nq4rZO0
-         8micol+BGeCoIuVKZ5mjc78MAnf6rpxLnzUGIMDkI2nS6bR+NMArVPJlDkNuEC2Vv+vB
-         Heqj3PyH1Npfv+6l0NhkThlcrIlw+ZM7BaEKvlsMUM5kQLOvid//fGoUk1FESUGOz3DR
-         Jt83fD0F3yCpb/x11mFuDZoUQundFTQ5xlYdQsXfEjV8Dc1EMngImDA3axkMA7zQJ97B
-         Y33Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7DysICoorfZUUUIF+WpJaAVpr1xSSxTvFAEY3lBDX5U=;
-        b=pYghMMMOIQ98R6UtssUIy89YTZSyzwl3rr5ECGz4ui1pXU/xUgBH1JtSbS6qbtcRqu
-         +z/2ym7TfDKHEmEde5SeP3uD3TFbDIx3LnDnKOynGyf3Z47Hd7lvXzoPN00CPXkWsPhB
-         0pt+OTmL24vtcfKNJ9fJHzgmF/pJ7y5qAiOSW68MV4G0VGXcEJweJzgv33WJShSp0LwL
-         Eww+h6RrAqosa8/uN36kHFoO/KdMmCL57ILA3fqFaeqXkmWCBPkx4PdN2nGV6l+hAzYY
-         UBOk+1Hc52rbxdyvCjWSW/+ZsRxuT+ewn03LcMEFdwWTvFECojrk+EF+2KOUDVDLFqHV
-         dT1g==
-X-Gm-Message-State: AOAM530CYz5lmtl4FbfIzmyGE77+es9c6TwQsFRgTZmFkf8iAj29F332
-        vSZkbAdhTmv+UD2F00O19Fvgnq98ltioUg==
-X-Google-Smtp-Source: ABdhPJzcEvNnP11aPaOGDAzf9tv6YNP8kpZaQNGAOH/ks5gp7+aVtUsoe1pCyEiwyiD3WLsrno1MlQ==
-X-Received: by 2002:a17:906:f1cf:: with SMTP id gx15mr308395ejb.241.1598945389872;
-        Tue, 01 Sep 2020 00:29:49 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f23:5700:cd1b:84f5:8ffb:1aa3? (p200300ea8f235700cd1b84f58ffb1aa3.dip0.t-ipconnect.de. [2003:ea:8f23:5700:cd1b:84f5:8ffb:1aa3])
-        by smtp.googlemail.com with ESMTPSA id g5sm430031ejk.52.2020.09.01.00.29.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 00:29:49 -0700 (PDT)
-Subject: Re: [PATCH] drivers: reduce the param length of the line
-To:     Tong Chen <tongchen@whu.edu.cn>
-Cc:     nic_swsd@realtek.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org
-References: <20200901022811.8675-1-tongchen@whu.edu.cn>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <2552dde8-7d2a-03f9-79cc-07dd506d8b41@gmail.com>
-Date:   Tue, 1 Sep 2020 09:29:43 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+  d=axis.com; l=995; q=dns/txt; s=axis-central1;
+  t=1598945671; x=1630481671;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ShxaEFx48sdlmYl8Cn29yMPtphJjPlK3B3A8bgDbuVQ=;
+  b=SD848XAEIwsawHwHgmSaK2V3yHxC7f9vUZn5nqbMQfNED8DIXEU+xwje
+   ckE9MhOWa/7xs7jdH/czBgrDLnksZwCE+MQRfVWNeCANMb/DRKIcMWHco
+   tbZUyHmQLGXRG+oQu7gjID0PKS5LcEClkE7m8GlaiLC5HpIGig3jV7iOP
+   NQgXnIfEoWZlxhngFIMH+f/5Vfy5Op5mUM7jk4fDVYwWBDFYzr5DMQCQr
+   8t3XtiYU2HYQSZTMVHC8Web0dpt17Go/bpDvlroecdqAQJf+bOtE8mqZC
+   /XfmypUX8SydYmdntIVOch2CbjtAxuA+NcUa4c5afqCqQDexVgSqcHh+0
+   w==;
+IronPort-SDR: 6wvZqcrh8ZvNMxqhgd4/XGbB+UlSLzwDBAWg/RS3zxVpQu80m5TPFiDIX2iMUBowe98gnwm//z
+ 8VJnQFFVcQZgKFAlO0NK3/issBqDOp0IpfG7EMJdVaKWuW7qCpsO/T/3+Cyv7wcZ+pX6a1O4f7
+ P6CIfANY+XDAcnHaHxzBTfTOo/w+hqD0FgaGvjEbsanfOI9mH1KMTXpf3XgoC2vKf9ugoEx5EG
+ 9zepESA3jj9btI5RD2ktpSnvPEB9ddQ09a40wwGEL9ADjXChE7nX6iv29iCGO1keMGecn1cC7R
+ xJE=
+X-IronPort-AV: E=Sophos;i="5.76,378,1592863200"; 
+   d="scan'208";a="12070617"
+From:   Camel Guo <camel.guo@axis.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <dmurphy@ti.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@axis.com>, Camel Guo <camelg@axis.com>,
+        Camel Guo <camel.guo@axis.com>
+Subject: [PATCH] ASoC: tlv320adcx140: Fix accessing uninitialized abcx140->dev
+Date:   Tue, 1 Sep 2020 09:27:10 +0200
+Message-ID: <20200901072710.2031-1-camel.guo@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200901022811.8675-1-tongchen@whu.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.2020 04:28, Tong Chen wrote:
-> Reduce the param length of the line from 79 chars to 52 chars,
-> which complies with kernel preferences.
+From: Camel Guo <camelg@axis.com>
 
-Apart from formal issues with the patch (missing net/net-next
-annotation, wrong prefix): Did you get a checkpatch warning?
-Or what's the source of your assumed kernel preference?
+in adcx140_i2c_probe, adcx140->dev is accessed before its
+initialization. This commit fixes this bug.
 
-> Signed-off-by: Tong Chen <tongchen@whu.edu.cn>
-> ---
->  drivers/net/ethernet/realtek/r8169_phy_config.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/r8169_phy_config.c b/drivers/net/ethernet/realtek/r8169_phy_config.c
-> index 913d030d73eb..f4b738cf8ad7 100644
-> --- a/drivers/net/ethernet/realtek/r8169_phy_config.c
-> +++ b/drivers/net/ethernet/realtek/r8169_phy_config.c
-> @@ -1302,7 +1302,8 @@ static void rtl8125b_hw_phy_config(struct rtl8169_private *tp,
->  	rtl8125b_config_eee_phy(phydev);
->  }
->  
-> -void r8169_hw_phy_config(struct rtl8169_private *tp, struct phy_device *phydev,
-> +void r8169_hw_phy_config(struct rtl8169_private *tp,
-> +			 struct phy_device *phydev,
->  			 enum mac_version ver)
->  {
->  	static const rtl_phy_cfg_fct phy_configs[] = {
-> 
+Signed-off-by: Camel Guo <camel.guo@axis.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 5cd50d841177..7ae6ec374be3 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -980,6 +980,8 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 	if (!adcx140)
+ 		return -ENOMEM;
+ 
++	adcx140->dev = &i2c->dev;
++
+ 	adcx140->gpio_reset = devm_gpiod_get_optional(adcx140->dev,
+ 						      "reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(adcx140->gpio_reset))
+@@ -1007,7 +1009,7 @@ static int adcx140_i2c_probe(struct i2c_client *i2c,
+ 			ret);
+ 		return ret;
+ 	}
+-	adcx140->dev = &i2c->dev;
++
+ 	i2c_set_clientdata(i2c, adcx140);
+ 
+ 	return devm_snd_soc_register_component(&i2c->dev,
+-- 
+2.20.1
 
