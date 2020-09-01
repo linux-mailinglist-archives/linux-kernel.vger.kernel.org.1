@@ -2,102 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5FC1259A48
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627C4259A61
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730197AbgIAQr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S1732280AbgIAQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730268AbgIAQrp (ORCPT
+        with ESMTP id S1731971AbgIAQsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:47:45 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F60C061244;
-        Tue,  1 Sep 2020 09:47:43 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so984280pgl.2;
-        Tue, 01 Sep 2020 09:47:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eTzVI35DRVJv330Nqj3ET+6aUZCHukORN2vVqCI+diU=;
-        b=Q9J0siRiCBTUvlTt1kvK7tVe6kE41TN+kIDNXErBGCMEu1mS9WGl+7HnaY7AizAAhM
-         MGgJn5r7Rof/eu1Uou0PMSTw5hFRpugiRYy1Zicok/Tfuyw1H3V1tq3kahNYERz3c8YT
-         bXHl75p+tvjsOILMrKaZDr3cZEd5sXyOpNnNhuqDgkx3L6L6Kb3YuoljJJBZkNLHwbFo
-         soPQIChGhslKZccNHRLkXXS2dp3278kCoXtym2UYyH9+JavhTLC8/CcPIIx8CECq/6fQ
-         wY6/1CctuejLklrAEC2Nb6tplD1fgnMzEIXMROD7R3A/ASkM5gP75Pv1ZPmEFTZQnh5W
-         DuSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eTzVI35DRVJv330Nqj3ET+6aUZCHukORN2vVqCI+diU=;
-        b=VAWZfuhfSKn0hTqZeWTT7OCeqA+NkxkNVuZJC7sDNZEigCU1Oh6hrA1J6VAljnpX0y
-         hlkbq1nE3XhhTpv28W5Ka6imnTv9Zny0YxH1Rm+91wjiqJ7YAXx/g4PaPLtdcAkHuVvK
-         jvg3iuhOqxhr28dGDMWpiXiLBok5uZ3EuuHLzybOaVEicbwC21FOb8y8kJx7niR3wGvX
-         hgRDk2Usqpniqim89Jn9hG71A0MUXdo87TqePesFKAVk3/sjqB5aaFqZJ0BEn+6FYCT7
-         a21SmhsIoopJQDj7vL/oCkyeHKKQsb/+epuFA7O3ZpcyGB8WaTN/icae22xV96v3IIXy
-         5Tmw==
-X-Gm-Message-State: AOAM531+JUxHrBAQsYVoYEzaQ3m+CXtxwZ6R6mLFcFJzVEu4fweBakpG
-        yyxiYD8VRZbcENOfcoGMHbk=
-X-Google-Smtp-Source: ABdhPJy7payz3Vghp5VrIVR/57rRNtRm4gc2iwL+b/6W66VztvW4dVIOty7fJYRx21hhgXmVGY0cFg==
-X-Received: by 2002:a62:928d:: with SMTP id o135mr2763620pfd.22.1598978863218;
-        Tue, 01 Sep 2020 09:47:43 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id w66sm2622381pfb.126.2020.09.01.09.47.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 09:47:41 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v16 20/20] arm: dts: qcom: sc7180: Set the compatible string for the GPU SMMU
-Date:   Tue,  1 Sep 2020 09:46:37 -0700
-Message-Id: <20200901164707.2645413-21-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200901164707.2645413-1-robdclark@gmail.com>
-References: <20200901164707.2645413-1-robdclark@gmail.com>
+        Tue, 1 Sep 2020 12:48:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31737C061244;
+        Tue,  1 Sep 2020 09:48:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nQQXUA/VGMtj9K229q9a5IZGP8mnt1kdy4SDzXnaIyc=; b=cwij6vHukHNI+V8tjoKhjVndSE
+        gHsk+IJlyMeIRWYx4AVNurvCNmfsy0SfFSMaga++40VcM+HONvLSs1dSlVU1f/YssK2YwRcEUOJfG
+        eC2qsL78uXeHG7Yf+ODvSXKT243Im987iab/BsWqck5lvdleXbt2EeEZoKOeTJcNrXh3KTCkLeNHg
+        wjPvflkN5PE7QD3S5mgT7sYUqWp88w7GnsOlIJGSWzBlqcZa5iptC7H7xAq+f0i054XhHoHy/rxIM
+        uq7hO4yRgYh1wlyJ8C5wYmuNV2LJpve4+FqnqANXyP8//XGjIUaVlqqWspiCL0uiEkVQX9NPThD9b
+        XxMSXSwQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kD9SN-00018H-J3; Tue, 01 Sep 2020 16:48:27 +0000
+Date:   Tue, 1 Sep 2020 17:48:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/7] mm: Make more use of readahead_control
+Message-ID: <20200901164827.GQ14765@casper.infradead.org>
+References: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Tue, Sep 01, 2020 at 05:28:15PM +0100, David Howells wrote:
+> Here's a set of patches to expand the use of the readahead_control struct,
+> essentially from do_sync_mmap_readahead() down.
 
-Set the qcom,adreno-smmu compatible string for the GPU SMMU to enable
-split pagetables and per-instance pagetables for drm/msm.
+I like this.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Note that I've been
+> passing the number of pages to read in rac->_nr_pages, and then saving it
+> and changing it certain points, e.g. page_cache_readahead_unbounded().
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d46b3833e52f..f3bef1cad889 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -1937,7 +1937,7 @@ opp-180000000 {
- 		};
- 
- 		adreno_smmu: iommu@5040000 {
--			compatible = "qcom,sc7180-smmu-v2", "qcom,smmu-v2";
-+			compatible = "qcom,sc7180-smmu-v2", "qcom,adreno-smmu", "qcom,smmu-v2";
- 			reg = <0 0x05040000 0 0x10000>;
- 			#iommu-cells = <1>;
- 			#global-interrupts = <2>;
--- 
-2.26.2
+I do not like this.  You're essentially mutating the meaning of _nr_pages
+as the ractl moves down the stack, and that's going to lead to bugs.
+I'd keep it as a separate argument.
 
+> Also there's an apparent minor bug in khugepaged.c that I've included a
+> patch for: page_cache_sync_readahead() looks to be given the wrong size in
+> collapse_file().
+
+This needs to go in as an independent fix.  But you didn't actually cc Song.
