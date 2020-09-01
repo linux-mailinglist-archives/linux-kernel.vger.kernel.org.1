@@ -2,19 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999AC259143
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA19259160
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgIAOtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727778AbgIALt0 (ORCPT
+        id S1728665AbgIAOuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:50:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39528 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727824AbgIALs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:49:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6D7C061251;
-        Tue,  1 Sep 2020 04:48:02 -0700 (PDT)
+        Tue, 1 Sep 2020 07:48:27 -0400
 Date:   Tue, 01 Sep 2020 11:47:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1598960878;
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M8l0IYkR9lCXARzVcRZa526IrTnP/rBGVKVMQNtfffs=;
-        b=ab0zaBJzKo9CmDRi02xrbm+gnkWe8J/+w+saqtYnvnQwfttUPIlNyRvQ5RiMwmEuRd0ejg
-        7LlaAfq8MkSzBopGRnqC3pfZ5yIIQnavTJfJBKuejdMHD6+8QjU06Yb4JA+pS9jAK82AXB
-        ToxbitAve353b/Xcuy1ZPUYYy/3Lzfi6FkJVE7awXP2hZ0Z/rzFbUQFM4T0KfITA0KB+ER
-        HJ6UfvWR7BV/cn8kRU6SQ18CXQn80X/D1pUJBfcov/hkAu/tJcMhmwtbUbDQ1GckZ03xma
-        oWwS3SlQ4GECEbfgGgqkwzPcflRtLY/jqHo+XL7T+xcMikYVpOvKrZjnautj4w==
+        bh=agpKXEn4IiVG0idalDrSysa9oc+oy3SJpMth1in+B6A=;
+        b=u7zu40ZA/e6dXI/wSYWJzFGW1T4yvb9cBm+oFRIA8GyNVVGCL5SX7YzsIjAu5ATQse++o4
+        i+cLn9gliA0uVcXbCVeI4U+qeRC+u9a6x/H95C7Dk9KYOefQ/6M5tJPKXuLWNck+bWQ+PX
+        H+kS1sdgQ+KW+pnzZFcLAAadh5ylRq2WieUxYFDz7snPy7dxl6NObLgpCNbgybcPj/WMov
+        9KfotLKknteM+GddCWACmNIw5lcAfDEBirNdUtPv7Npvl1vcasaSQj799cY6ooGydzSLHF
+        OkH+rvMtLNCoA+FhaVjCDjS40FiwAI0nhczFVGSHK3xSt21ruQ43eUh31UuHYQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1598960878;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,20 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M8l0IYkR9lCXARzVcRZa526IrTnP/rBGVKVMQNtfffs=;
-        b=MKS8n47H4Z5BBJb/DfVNo7RJWUc1kvx4xEQnPOoCzFdBod2pGlvAlb48XqfrzKhXSJW+Nt
-        2nalC9WCLv2Pu/AA==
+        bh=agpKXEn4IiVG0idalDrSysa9oc+oy3SJpMth1in+B6A=;
+        b=InbigVtayoX2HWBQhqXki/dlnb2XS1q7Ld8luRmPJLEL8ZKR3uMCoL6tbgEP15pmJQzg6u
+        muv4I2RaWzJM1xBg==
 From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/build] arm64/build: Use common DISCARDS in linker script
-Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200821194310.3089815-12-keescook@chromium.org>
-References: <20200821194310.3089815-12-keescook@chromium.org>
+Subject: [tip: core/build] arm64/build: Remove .eh_frame* sections due to
+ unwind tables
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200821194310.3089815-11-keescook@chromium.org>
+References: <20200821194310.3089815-11-keescook@chromium.org>
 MIME-Version: 1.0
-Message-ID: <159896087749.20229.1643947752770611995.tip-bot2@tip-bot2>
+Message-ID: <159896087788.20229.17729780848112883247.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,48 +60,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/build branch of tip:
 
-Commit-ID:     2883352bf801d093a04f269800b48bb8aa2515fb
-Gitweb:        https://git.kernel.org/tip/2883352bf801d093a04f269800b48bb8aa2515fb
+Commit-ID:     6e0a66d10c5b629369afa47b753d0ec46fa812dd
+Gitweb:        https://git.kernel.org/tip/6e0a66d10c5b629369afa47b753d0ec46fa812dd
 Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 21 Aug 2020 12:42:52 -07:00
+AuthorDate:    Fri, 21 Aug 2020 12:42:51 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 01 Sep 2020 09:50:36 +02:00
 
-arm64/build: Use common DISCARDS in linker script
+arm64/build: Remove .eh_frame* sections due to unwind tables
 
-Use the common DISCARDS rule for the linker script in an effort to
-regularize the linker script to prepare for warning on orphaned
-sections. Additionally clean up left-over no-op macros.
+Avoid .eh_frame* section generation by making sure both CFLAGS and AFLAGS
+contain -fno-asychronous-unwind-tables and -fno-unwind-tables.
 
+With all sources of .eh_frame now removed from the build, drop this
+DISCARD so we can be alerted in the future if it returns unexpectedly
+once orphan section warnings have been enabled.
+
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20200821194310.3089815-12-keescook@chromium.org
+Link: https://lore.kernel.org/r/20200821194310.3089815-11-keescook@chromium.org
 ---
- arch/arm64/kernel/vmlinux.lds.S | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/arm64/Makefile             | 5 ++++-
+ arch/arm64/kernel/vmlinux.lds.S | 1 -
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 55bc854..6de7f55 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -47,13 +47,16 @@ endif
+ 
+ KBUILD_CFLAGS	+= -mgeneral-regs-only	\
+ 		   $(compat_vdso) $(cc_has_k_constraint)
+-KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables
+ KBUILD_CFLAGS	+= $(call cc-disable-warning, psabi)
+ KBUILD_AFLAGS	+= $(compat_vdso)
+ 
+ KBUILD_CFLAGS	+= $(call cc-option,-mabi=lp64)
+ KBUILD_AFLAGS	+= $(call cc-option,-mabi=lp64)
+ 
++# Avoid generating .eh_frame* sections.
++KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables -fno-unwind-tables
++KBUILD_AFLAGS	+= -fno-asynchronous-unwind-tables -fno-unwind-tables
++
+ ifeq ($(CONFIG_STACKPROTECTOR_PER_TASK),y)
+ prepare: stack_protector_prepare
+ stack_protector_prepare: prepare0
 diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index c2b8426..082e9ef 100644
+index 13fc2ec..c2b8426 100644
 --- a/arch/arm64/kernel/vmlinux.lds.S
 +++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -6,6 +6,7 @@
-  */
- 
- #define RO_EXCEPTION_TABLE_ALIGN	8
-+#define RUNTIME_DISCARD_EXIT
- 
- #include <asm-generic/vmlinux.lds.h>
- #include <asm/cache.h>
-@@ -88,10 +89,8 @@ SECTIONS
- 	 * matching the same input section name.  There is no documented
- 	 * order of matching.
- 	 */
-+	DISCARDS
- 	/DISCARD/ : {
--		EXIT_CALL
--		*(.discard)
--		*(.discard.*)
+@@ -94,7 +94,6 @@ SECTIONS
+ 		*(.discard.*)
  		*(.interp .dynamic)
  		*(.dynsym .dynstr .hash .gnu.hash)
+-		*(.eh_frame)
  	}
+ 
+ 	. = KIMAGE_VADDR + TEXT_OFFSET;
