@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6BE259AF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD992598FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729701AbgIAQzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:55:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
+        id S1730938AbgIAQeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729557AbgIAPXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:23:52 -0400
+        id S1730183AbgIAPbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EB68207D3;
-        Tue,  1 Sep 2020 15:23:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A3B0207D3;
+        Tue,  1 Sep 2020 15:31:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973832;
-        bh=hHlrvVv6ZvQQkb3Q7+JMMIw0qSxNayamM1etArGofpc=;
+        s=default; t=1598974262;
+        bh=ukgZArakq9MIOFCXo4+CkkhacHVf1hJGI1kvxJf+JJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UhYDMLNTv3oWyMIV5DocpSaJTZd72laqGDAM75gk8WL2ZkERLbwZuzEtohADzKasj
-         jyz8qliqaTx7cCNIdFosVkWGnCzA1iS6ffxgxz2m/S3T4wGhOigm6YINt4QF5E84j5
-         e7av0cSbtjgfIu7sRwG0NN+7psHycW8qCDzwqziE=
+        b=QtG9ihjtrxbpK8vLILe8zaO7uu0qygAgGt+PTGq9dPMDa3iA+63XTdFOH1SllsMOd
+         y/3AhjGP14Dy9QIXTlm7Yv+KG7U2QpZa6SZMvbw0IePeU17/wCH1VuGi0mhpdMTgTV
+         y0sN/sSVm8wA3Tr6jZColbS7DjQIFg3ty82KARvA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peng Fan <fanpeng@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 034/125] mips/vdso: Fix resource leaks in genvdso.c
+        stable@vger.kernel.org, Hou Pu <houpu@bytedance.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 109/214] null_blk: fix passing of REQ_FUA flag in null_handle_rq
 Date:   Tue,  1 Sep 2020 17:09:49 +0200
-Message-Id: <20200901150936.234791320@linuxfoundation.org>
+Message-Id: <20200901150958.207828731@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,96 +43,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <fanpeng@loongson.cn>
+From: Hou Pu <houpu@bytedance.com>
 
-[ Upstream commit a859647b4e6bfeb192284d27d24b6a0c914cae1d ]
+[ Upstream commit 2d62e6b038e729c3e4bfbfcfbd44800ef0883680 ]
 
-Close "fd" before the return of map_vdso() and close "out_file"
-in main().
+REQ_FUA should be checked using rq->cmd_flags instead of req_op().
 
-Signed-off-by: Peng Fan <fanpeng@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: deb78b419dfda ("nullb: emulate cache")
+Signed-off-by: Hou Pu <houpu@bytedance.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/vdso/genvdso.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/block/null_blk_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/vdso/genvdso.c b/arch/mips/vdso/genvdso.c
-index 530a36f465ced..afcc86726448e 100644
---- a/arch/mips/vdso/genvdso.c
-+++ b/arch/mips/vdso/genvdso.c
-@@ -126,6 +126,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (fstat(fd, &stat) != 0) {
- 		fprintf(stderr, "%s: Failed to stat '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -134,6 +135,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (addr == MAP_FAILED) {
- 		fprintf(stderr, "%s: Failed to map '%s': %s\n", program_name,
- 			path, strerror(errno));
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -143,6 +145,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	if (memcmp(ehdr->e_ident, ELFMAG, SELFMAG) != 0) {
- 		fprintf(stderr, "%s: '%s' is not an ELF file\n", program_name,
- 			path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -154,6 +157,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF class\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -165,6 +169,7 @@ static void *map_vdso(const char *path, size_t *_size)
- 	default:
- 		fprintf(stderr, "%s: '%s' has invalid ELF data order\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
-@@ -172,15 +177,18 @@ static void *map_vdso(const char *path, size_t *_size)
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF machine (expected EM_MIPS)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	} else if (swap_uint16(ehdr->e_type) != ET_DYN) {
- 		fprintf(stderr,
- 			"%s: '%s' has invalid ELF type (expected ET_DYN)\n",
- 			program_name, path);
-+		close(fd);
- 		return NULL;
- 	}
- 
- 	*_size = stat.st_size;
-+	close(fd);
- 	return addr;
- }
- 
-@@ -284,10 +292,12 @@ int main(int argc, char **argv)
- 	/* Calculate and write symbol offsets to <output file> */
- 	if (!get_symbols(dbg_vdso_path, dbg_vdso)) {
- 		unlink(out_path);
-+		fclose(out_file);
- 		return EXIT_FAILURE;
- 	}
- 
- 	fprintf(out_file, "};\n");
-+	fclose(out_file);
- 
- 	return EXIT_SUCCESS;
- }
+diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
+index c4454cfc6d530..13eae973eaea4 100644
+--- a/drivers/block/null_blk_main.c
++++ b/drivers/block/null_blk_main.c
+@@ -1072,7 +1072,7 @@ static int null_handle_rq(struct nullb_cmd *cmd)
+ 		len = bvec.bv_len;
+ 		err = null_transfer(nullb, bvec.bv_page, len, bvec.bv_offset,
+ 				     op_is_write(req_op(rq)), sector,
+-				     req_op(rq) & REQ_FUA);
++				     rq->cmd_flags & REQ_FUA);
+ 		if (err) {
+ 			spin_unlock_irq(&nullb->lock);
+ 			return err;
 -- 
 2.25.1
 
