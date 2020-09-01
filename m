@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84735258A83
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F550258A70
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgIAIjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 04:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
+        id S1726293AbgIAIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 04:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgIAIii (ORCPT
+        with ESMTP id S1726020AbgIAIiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 04:38:38 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E89BC061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a17so525500wrn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:38 -0700 (PDT)
+        Tue, 1 Sep 2020 04:38:15 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0675C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:15 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id t9so392164pfq.8
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IGEV3Dj0zdTm4lmhSELRfe2JuQcrfwegpsmmDL1fTa8=;
-        b=GI2GAFmtbTFP4ZAGaqgSkoAU4ZCPcfU20SlhK7FW7sj5XcZYu6Snoe2SmRMFvWwK57
-         YhjsdZ+rGsjR6xHD/b4gSl/Q0CXeIeufzX6eY9Tq0tro7mleRcpCauFq5ShXbGHqHufH
-         8fN1DsqduI9AQaCUJaICsp1twVeKao79bfllWOG11PSj6Z0q5I2Z3FtNYtN3UOhDmQEV
-         uJeZGgX91Gtzh7Kd67sLiP24Nnj6slLbSL8YMeU9CgQnFSPfdMxzQ352+E6ZcsUkQVTx
-         BpSMSZTTqrLLc6evU/jRVEfrRxT6AbHdZ0H9OD9X8Gsr7zVcYiEKp4LieKd9wXporyXA
-         +OEA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sVtA4BoZtd+qYp70Vhjk25E1OWB6lKP1vnEo/fyHhLs=;
+        b=SnQgHt594OnvLQ+HxoV+1b+xHTfWiZdjynemjFAeMz42JIh9tNJ12ru0Sdf87mOruN
+         YIS2eu2r1BgbUmwZ5B6/xd2LkGoztpFrlWs8OA5BQTUysDWl9UFYPnuOpjogN4KbX2YR
+         cKS6X66plUmYw9WLQnKQB2lbF41fKnPmq0ZAc4NUbGlb6lhiNtmG25L7KtxXA67rgAtq
+         2BNfqsH4eLHVD18cv5Y0FLwxrPM2ZeN9ZVsrWYIVi7A8mp3/FYORXPRdo5jFVHPf8xtD
+         JaHb7u2FUskbMnYCc+RlYKp/pNEoGHUdb790uRF8fS08FGQeaVWozJSDGsWLJt2fZCRE
+         PsWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=IGEV3Dj0zdTm4lmhSELRfe2JuQcrfwegpsmmDL1fTa8=;
-        b=c589TDBZBUFIHBfZsp5OALwnzAdwVE3LceUpV3osCQlHHtnQUMqzhYshBHAPwcmjB9
-         9VbDEIBuPsMG8o+0VvjBulm9WdogqFrRlU05zGEflKzBlnxeuD0N/e+eAbaxZIfrEpat
-         ukF5JAGUu0MTW2t23NJ8DuJK4umoih1k2fCgI4Pm5AcxIYA3b4k18TajATYwREeK06aZ
-         CYJS+5zd+xlo90Q1u0q38iiP36FPJmomj4Xo5oil2AlOk2Al1fW5Ef74u1gKb+ikHW/X
-         TkE6zD1htRzl78U/HQ0+bijro3mrYNKGV+4ADWrBP5El88I4MXVj/2pn6oxxSQ5icqCX
-         dILw==
-X-Gm-Message-State: AOAM5330vHG5Qe51YCGfWbQvJ52f/7KEg1DJahyFkpi0duJpjUwak6qD
-        Bj8gpPx/MGsl8xMVOYGny4Dnzg==
-X-Google-Smtp-Source: ABdhPJxybUjp8cHUS+ZIkgHyXsmi4fUsKMNukC75be0TqeXvw7GlIfZZdLLm0aiN6hunCuChMzlScA==
-X-Received: by 2002:adf:b442:: with SMTP id v2mr687707wrd.213.1598949517037;
-        Tue, 01 Sep 2020 01:38:37 -0700 (PDT)
-Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id d190sm911260wmd.23.2020.09.01.01.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 01:38:36 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Wei Li <liwei391@huawei.com>, Al Grant <Al.Grant@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 04/14] perf mem: Only initialize memory event for recording
-Date:   Tue,  1 Sep 2020 09:38:05 +0100
-Message-Id: <20200901083815.13755-5-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901083815.13755-1-leo.yan@linaro.org>
-References: <20200901083815.13755-1-leo.yan@linaro.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sVtA4BoZtd+qYp70Vhjk25E1OWB6lKP1vnEo/fyHhLs=;
+        b=OG2ujQVHFMLa1iQ12cJrhlcS8n6gwxIG6wqAnc7dAPSmIAwy+sZMVFhpy9Gh1o6/Br
+         FMMW3c6UvklOL0KfL9LIwegViADSJLo6WzFzOOlGYeIcd5tlycR7H+U67wjb0Eps7xVM
+         cPpm0328Vi286fWYXJea6d6BjEjHq9XhfWBF31ExgaMSan6XYXbWXlbc1LRvqTwPvmkY
+         f3FSiMb5fFel2jaB76nrMRbqCjltpfl+1WOa1P98MbLYA+Z7FDLi1sppcVVrN88fXavM
+         x0xp5ZY5MnJn2lj8xYcFH/CAtZJLH5Syw0vuvTOH/BJROGT1L/4lZMCDCRTpQWeV08SW
+         Knag==
+X-Gm-Message-State: AOAM531NlFAXFzX/nXGerydmeUTIqqklF3AUONf7YtauZLONCrupciEE
+        d/HtVUvIOEJWhaJBSvm+38lkSg==
+X-Google-Smtp-Source: ABdhPJwZHBfT3ETPIgNI5qRnnz8/BpmRAeI4KxWCHE2M6+mIYJNgUAe/wNWoWcH+xoGqRksqZeUjGg==
+X-Received: by 2002:a63:ba49:: with SMTP id l9mr605427pgu.101.1598949495328;
+        Tue, 01 Sep 2020 01:38:15 -0700 (PDT)
+Received: from localhost ([122.167.135.199])
+        by smtp.gmail.com with ESMTPSA id o6sm708807pju.25.2020.09.01.01.38.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Sep 2020 01:38:14 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 14:08:06 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/8] drm/msm: Unconditionally call
+ dev_pm_opp_of_remove_table()
+Message-ID: <20200901083806.a2wz7idmfce2aj3a@vireshk-i7>
+References: <cover.1598594714.git.viresh.kumar@linaro.org>
+ <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
+ <bc64e031-c42f-9ed2-c597-18a790a4d3bb@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bc64e031-c42f-9ed2-c597-18a790a4d3bb@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's needless to initialize memory events for perf reporting, so only
-initialize memory event for perf recording.  This change allows to parse
-perf data on cross platforms, e.g. perf tool can output reports even the
-machine doesn't enable any memory events.
+On 01-09-20, 13:01, Rajendra Nayak wrote:
+> So FWIU, dpu_unbind() gets called even when dpu_bind() fails for some reason.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/builtin-mem.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Ahh, I see.
 
-diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-index 9fd730019e45..b9432ee27754 100644
---- a/tools/perf/builtin-mem.c
-+++ b/tools/perf/builtin-mem.c
-@@ -78,6 +78,11 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
- 	OPT_END()
- 	};
- 
-+	if (perf_mem_events__init()) {
-+		pr_err("failed: memory events not supported\n");
-+		return -1;
-+	}
-+
- 	argc = parse_options(argc, argv, options, record_mem_usage,
- 			     PARSE_OPT_KEEP_UNKNOWN);
- 
-@@ -439,11 +444,6 @@ int cmd_mem(int argc, const char **argv)
- 		NULL
- 	};
- 
--	if (perf_mem_events__init()) {
--		pr_err("failed: memory events not supported\n");
--		return -1;
--	}
--
- 	argc = parse_options_subcommand(argc, argv, mem_options, mem_subcommands,
- 					mem_usage, PARSE_OPT_KEEP_UNKNOWN);
- 
+> I tried to address that earlier [1] which I realized did not land.
+
+I don't think that patch was required, as you can call
+dev_pm_opp_put_clkname() multiple times and it will return without any
+errors/crash.
+
+> But with these changes
+> it will be even more broken unless we identify if we failed dpu_bind() before
+> adding the OPP table, while adding it, or all went well with opps and handle things
+> accordingly in dpu_unbind.
+
+Maybe not as dev_pm_opp_of_remove_table() can be called multiple times
+as well without any errors or crash.
+
+> [1] https://lore.kernel.org/patchwork/patch/1275632/
+
 -- 
-2.20.1
-
+viresh
