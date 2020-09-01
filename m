@@ -2,119 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5422A2596EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54652596D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731796AbgIAQIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731455AbgIAPjP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:39:15 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34409C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:39:14 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id i26so2274664ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:39:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6PG5SiNwVZVH2pkgJv+IFK7tt0WCjvP76ZbFGjJc07s=;
-        b=i/8U9ZP+xxv0b1D3KLACprbO6f9XSdui6Bpc8qWHCAGjJKdf6SV/BwLJGyCkNI3w8z
-         utwAKrw3BY6mIzso/yYfFuWfGTECQ7+S2GJJglSWnuRG1i7Bp7IEakBk2lI8ydIqqedT
-         v9oYslNVOGXacY4YbhO1cqsCwlEYrOZUV0biEgmGK1TKRp95SDA12NtKfAwlcUMe93ud
-         dHZS9fZM0xCRZnZQ5JOyObYV58dweBq4qelLd7pQ0t8xe9+RE9neWOy4ZWoYf9TCf50V
-         L8Wrp+SBtYeR3Pq0uEVbTaRF4pyNXDottPB0Ao1kbMW2rgURZ9yPc+nvFWeuJ8jxGVRD
-         S2zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6PG5SiNwVZVH2pkgJv+IFK7tt0WCjvP76ZbFGjJc07s=;
-        b=L3xEM7UVTl3ywXWdfMWQXmZerWoVFfy5pJl25Q7r1lv9Agzoh3GuA/iLeuHZHL0b+p
-         Yuk8tnWTEI9TfTd+PWemnU5WYTiqw4ZgP1fmL/1gp1rcGnELIjpBPv7b3c75FQc1sgpq
-         mc0dQqO3+q2buCJRQBfnjTpscXdry0Ebb/7fVIB1tYo743hoVZBwZIw/Iqo1eJCrxMPa
-         cqVE4YDA15MDZ7hCImE8qFDFOS7J1Zz2fOzZnsKWFqb8W4izB0XwGzuKOZ7MBy2HOZ0h
-         ZObKjhYZMig58khOBOXgm4ATiIjCiUpMWUf+x96T6Eqi7JzbyJwJBoJTI6H0fmTucczB
-         fKAQ==
-X-Gm-Message-State: AOAM532IaKLCVUCE3thEZIxpZJ2o2jIFA5FVNlrfmh04anegjEvw1e18
-        TZhm4AT8tqdVCV4hG0np6tarsnaqHyykEDkwq37EzcdG6bs=
-X-Google-Smtp-Source: ABdhPJy3CwrJ6zEga+umlT+PQ35ecu20mv5XP4qIonGiniaxceoYl6LbA+wYSR0qjjmWEQ8IBfCfFcdjm5xcXMm/KK8=
-X-Received: by 2002:a17:907:2173:: with SMTP id rl19mr1935562ejb.514.1598974752908;
- Tue, 01 Sep 2020 08:39:12 -0700 (PDT)
+        id S1728287AbgIAQGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:06:52 -0400
+Received: from verein.lst.de ([213.95.11.211]:53903 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731513AbgIAPkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:40:53 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 12DF268B05; Tue,  1 Sep 2020 17:40:50 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 17:40:49 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Rich Felker <dalias@libc.org>, Mark Brown <broonie@kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when
+ CONFIG_HAS_DMA is unset
+Message-ID: <20200901154049.GA376@lst.de>
+References: <20200901150438.228887-1-ulf.hansson@linaro.org> <20200901150654.GB30034@lst.de> <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2008301401390.5954@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2008301401390.5954@eggly.anvils>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 1 Sep 2020 08:39:00 -0700
-Message-ID: <CAHbLzko5xAyzJ7s31B55uXJPXT+2dzun+XcGPJngTwJ6mE=ETg@mail.gmail.com>
-Subject: Re: [PATCH 3/5] shmem: shmem_writepage() split unlikely i915 THP
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, Qian Cai <cai@lca.pw>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Kuo-Hsin Yang <vovoy@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 2:04 PM Hugh Dickins <hughd@google.com> wrote:
->
-> drivers/gpu/drm/i915/gem/i915_gem_shmem.c contains a shmem_writeback()
-> which calls shmem_writepage() from a shrinker: that usually works well
-> enough; but if /sys/kernel/mm/transparent_hugepage/shmem_enabled has
-> been set to "force" (documented as "Force the huge option on for all -
-> very useful for testing"), shmem_writepage() is surprised to be called
-> with a huge page, and crashes on the VM_BUG_ON_PAGE(PageCompound) (I
-> did not find out where the crash happens when CONFIG_DEBUG_VM is off).
->
-> LRU page reclaim always splits the shmem huge page first: I'd prefer not
-> to demand that of i915, so check and split compound in shmem_writepage().
->
-> Fixes: 2d6692e642e7 ("drm/i915: Start writeback from the shrinker")
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-> Cc: stable@vger.kernel.org # v5.3+
-> ---
-> I've marked this for stable just for the info, but the number of users
-> affected is very probably 1, so please feel free to delete that marking.
->
->  mm/shmem.c |    9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> --- 5.9-rc2/mm/shmem.c  2020-08-16 17:32:50.693507198 -0700
-> +++ linux/mm/shmem.c    2020-08-28 17:35:08.326024349 -0700
-> @@ -1362,7 +1362,15 @@ static int shmem_writepage(struct page *
->         swp_entry_t swap;
->         pgoff_t index;
->
-> -       VM_BUG_ON_PAGE(PageCompound(page), page);
-> +       /*
-> +        * If /sys/kernel/mm/transparent_hugepage/shmem_enabled is "force",
-> +        * then drivers/gpu/drm/i915/gem/i915_gem_shmem.c gets huge pages,
-> +        * and its shmem_writeback() needs them to be split when swapping.
-> +        */
-> +       if (PageTransCompound(page))
-> +               if (split_huge_page(page) < 0)
-> +                       goto redirty;
+On Tue, Sep 01, 2020 at 05:36:17PM +0200, Ulf Hansson wrote:
+> > I still don't think this makes sense, as the dma_mask should always
+> > be non-NULL here.
+> 
+> If that is the case, I wonder how the driver could even have worked without DMA.
+> 
+> Because in the existing code, host->dma_dev gets assigned to
+> spi->master->dev.parent->dma_mask - which seems to turn on the DMA
+> usage in the driver.
+> 
+> What am I missing?
 
-The change looks good to me. Acked-by: Yang Shi <shy828301@gmail.com>
-
-Just a nit: it may be better to move the spilte after the !PageLocked
-assertion? Split needs page locked too.
-
-> +
->         BUG_ON(!PageLocked(page));
->         mapping = page->mapping;
->         index = page->index;
->
+Do you know of other non-DMA users?  For SH nommu it probably worked
+because SH nommu used to provide a DMA implementation that worked
+fine for streaming maps, but was completely broken for coherent
+allocation.  And this driver appears to only use the former.
