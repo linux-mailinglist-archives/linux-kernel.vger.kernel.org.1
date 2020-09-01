@@ -2,134 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F0E258F4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4825258F5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgIANjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727025AbgIANij (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:38:39 -0400
-Received: from smtp2-3.goneo.de (smtp2.goneo.de [IPv6:2001:1640:5::8:33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E5EC061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:38:19 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp2.goneo.de (Postfix) with ESMTP id EFA7223F56F;
-        Tue,  1 Sep 2020 15:38:12 +0200 (CEST)
-X-Virus-Scanned: by goneo
-X-Spam-Flag: NO
-X-Spam-Score: -3.846
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.846 tagged_above=-999 tests=[ALL_TRUSTED=-1,
-        AWL=1.184, BAYES_00=-1.9, NICE_REPLY_A=-2.13] autolearn=ham
-Received: from smtp2.goneo.de ([127.0.0.1])
-        by localhost (smtp2.goneo.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id J9dzge83HrKw; Tue,  1 Sep 2020 15:38:11 +0200 (CEST)
-Received: from [192.168.1.127] (dyndsl-091-096-137-061.ewe-ip-backbone.de [91.96.137.61])
-        by smtp2.goneo.de (Postfix) with ESMTPSA id 5854823F03B;
-        Tue,  1 Sep 2020 15:38:11 +0200 (CEST)
-Subject: Re: linux-next: build failure after upgrading sphinx
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200827145017.47c16c73@canb.auug.org.au>
- <20200831130312.0a2cbd0c@lwn.net>
-From:   Markus Heiser <markus.heiser@darmarit.de>
-Message-ID: <089b8100-0ee6-36b2-c524-0d9370d6bb52@darmarit.de>
-Date:   Tue, 1 Sep 2020 15:38:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728192AbgIANrJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 09:47:09 -0400
+Received: from smtp.h3c.com ([60.191.123.50]:1634 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728222AbgIANnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:43:39 -0400
+Received: from DAG2EX01-BASE.srv.huawei-3com.com ([10.8.0.64])
+        by h3cspam02-ex.h3c.com with ESMTPS id 081Dg3ce035167
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Sep 2020 21:42:04 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX01-BASE.srv.huawei-3com.com (10.8.0.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 1 Sep 2020 21:42:07 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Tue, 1 Sep 2020 21:42:07 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@fb.com" <axboe@fb.com>, "hch@lst.de" <hch@lst.de>,
+        "sagi@grimberg.me" <sagi@grimberg.me>
+CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v2] nvme-pci: check req to prevent crash in
+ nvme_handle_cqe()
+Thread-Topic: [PATCH] [v2] nvme-pci: check req to prevent crash in
+ nvme_handle_cqe()
+Thread-Index: AQHWf4Y/N8Vq1L809kGpFMXahwhkUqlTyqMA
+Date:   Tue, 1 Sep 2020 13:42:07 +0000
+Message-ID: <632c4570812a4d2b81102190497fe9c7@h3c.com>
+References: <20200831105553.1621-1-tian.xianting@h3c.com>
+In-Reply-To: <20200831105553.1621-1-tian.xianting@h3c.com>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20200831130312.0a2cbd0c@lwn.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 081Dg3ce035167
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 31.08.20 um 21:03 schrieb Jonathan Corbet:
-> On Thu, 27 Aug 2020 14:50:17 +1000
-> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> 
->> Today I upgraded ot sphinx v3.2.1 and got the following error from
->> "make htmldocs":
->>
->> Running Sphinx v3.2.1
->> enabling CJK for LaTeX builder
->>
->> Extension error:
->> Could not import extension cdomain (exception: cannot import name 'c_funcptr_sig_re' from 'sphinx.domains.c' (/usr/lib/python3/dist-packages/sphinx/domains/c.py))
->>
->> I have downgraded to version 2.4.3 and await suggestions/patches :-)
-> 
-> [Adding Markus]
-> 
-> Markus, this looks like an issue with the "handle function-like macros"
-> code that has your name on it.  The Sphinx folks think that functionality
-> can just be removed:
-> 
-> 	https://github.com/sphinx-doc/sphinx/issues/7421
-> 
-> Do you agree?  We need to look at what they're saying about the :name:
-> directive as well; somehow I missed that when it first went in.
-> 
-> Thanks,
-> 
-> jon
+Hi,
+Could I get the feedback for the patch, whether it can be applied or need some improvement?
+It really can prevent a crash we met.
+Thanks:)
 
-Hi Jon, thanks for taking me into CC.
+-----Original Message-----
+From: tianxianting (RD) 
+Sent: Monday, August 31, 2020 6:56 PM
+To: kbusch@kernel.org; axboe@fb.com; hch@lst.de; sagi@grimberg.me
+Cc: linux-nvme@lists.infradead.org; linux-kernel@vger.kernel.org; tianxianting (RD) <tian.xianting@h3c.com>
+Subject: [PATCH] [v2] nvme-pci: check req to prevent crash in nvme_handle_cqe()
 
-I guess you refer this post:
+We met a crash issue when hot-insert a nvme device, blk_mq_tag_to_rq() returned null(req=null), then crash happened in nvme_end_request():
+	struct nvme_request *rq = nvme_req(req);
+	rq->result = result;  <==crash here
 
-   https://github.com/sphinx-doc/sphinx/issues/7421#issuecomment-609830660
+The test env is, a server is configured with 2 backplanes, each backplane support 8 nvme devices, this crash happened when hot-insert a nvme device to the second backplane. We measured the signal, which is send out of cpu to ack nvme interrupt, the signal is very weak when it reached the second backplane, the device can't distinguish it as a ack signal. So it caused the device can't clear the interrupt flag.
+After updating related driver, the signal sending out of cpu to the second backplane is good, the crash issue disappeared.
 
-What I know is: The Sphinx >= v3.0 includes a "C, initial
-rewrite" which is not downward compatible.
+As blk_mq_tag_to_rq() may return null, so it should be check whether it is null before using it to prevent a crash.
 
-  https://github.com/sphinx-doc/sphinx/commit/0f49e30c#diff-59e33b0
+	[ 1124.256246] nvme nvme5: pci function 0000:e1:00.0
+	[ 1124.256323] nvme 0000:e1:00.0: enabling device (0000 -> 0002)
+	[ 1125.720859] nvme nvme5: 96/0/0 default/read/poll queues
+	[ 1125.732483]  nvme5n1: p1 p2 p3
+	[ 1125.788049] BUG: unable to handle kernel NULL pointer dereference at 0000000000000130
+	[ 1125.788054] PGD 0 P4D 0
+	[ 1125.788057] Oops: 0002 [#1] SMP NOPTI
+	[ 1125.788059] CPU: 50 PID: 0 Comm: swapper/50 Kdump: loaded Tainted: G   ------- -t - 4.18.0-147.el8.x86_64 #1
+	[ 1125.788065] RIP: 0010:nvme_irq+0xe8/0x240 [nvme]
+	[ 1125.788068] RSP: 0018:ffff916b8ec83ed0 EFLAGS: 00010813
+	[ 1125.788069] RAX: 0000000000000000 RBX: ffff918ae9211b00 RCX: 0000000000000000
+	[ 1125.788070] RDX: 000000000000400b RSI: 0000000000000000 RDI: 0000000000000000
+	[ 1125.788071] RBP: ffff918ae8870000 R08: 0000000000000004 R09: ffff918ae8870000
+	[ 1125.788072] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+	[ 1125.788073] R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+	[ 1125.788075] FS:  0000000000000000(0000) GS:ffff916b8ec80000(0000) knlGS:0000000000000000
+	[ 1125.788075] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+	[ 1125.788076] CR2: 0000000000000130 CR3: 0000001768f00000 CR4: 0000000000340ee0
+	[ 1125.788077] Call Trace:
+	[ 1125.788080]  <IRQ>
+	[ 1125.788085]  __handle_irq_event_percpu+0x40/0x180
+	[ 1125.788087]  handle_irq_event_percpu+0x30/0x80
+	[ 1125.788089]  handle_irq_event+0x36/0x53
+	[ 1125.788090]  handle_edge_irq+0x82/0x190
+	[ 1125.788094]  handle_irq+0xbf/0x100
+	[ 1125.788098]  do_IRQ+0x49/0xd0
+	[ 1125.788100]  common_interrupt+0xf/0xf
 
+Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 ---
+ drivers/nvme/host/pci.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-To give an short answer to opener's question:
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c index ba725ae47..5f1c51a43 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -960,6 +960,13 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+ 	}
+ 
+ 	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
++	if (unlikely(!req)) {
++		dev_warn(nvmeq->dev->ctrl.device,
++			"req is null(tag:%d) on queue %d\n",
++			cqe->command_id, le16_to_cpu(cqe->sq_id));
++		return;
++	}
++
+ 	trace_nvme_sq(req, cqe->sq_head, nvmeq->sq_tail);
+ 	if (!nvme_end_request(req, cqe->status, cqe->result))
+ 		nvme_pci_complete_rq(req);
+--
+2.17.1
 
-Our Sphinx-build is not Sphinx >= v3.0 ready.  We recommend
-to follow our installation instructions [1] and install
-requirements by::
-
-   (virtualenv) $ pip install -r Documentation/sphinx/requirements.txt
-
-In the requirements.txt we stick Sphinx at 'Sphinx==2.4.4'.
-In my personal opinion there are more problems than just the
-C-domain when using other Sphinx Versions (e.g. PDF is most
-often problematic).
-
-[1] https://www.kernel.org/doc/html/latest/doc-guide/sphinx.html#sphinx-install
-
----
-
-I can't say if this *rewrite* has a better "handle
-function-like macros" or not.
-
-Since the changes are not downward compatible,
-Documentation/sphinx/cdomain.py needs a rewrite
-(Unfortunately, I hadn't had the time to do this).
-
-TL;DR;
-
-In my linuxdoc [2] project I use the same cdomain.py
-implementation and split cdomain into v2 and v3 [3].  ATM
-linuxdoc/cdomainv3.py is just a skeleton which is used in
-Sphinx >= v3.0 installations.  My experience is, that it
-spits out more noise, but I haven't had time to look closer
-right now.
-
-[2] https://return42.github.io/linuxdoc
-[3] https://github.com/return42/linuxdoc/commit/70673dc
-
-
-   -- Markus --
