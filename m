@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4022F258FB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BEC258FA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgIAN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:58:25 -0400
-Received: from elvis.franken.de ([193.175.24.41]:45704 "EHLO elvis.franken.de"
+        id S1728306AbgIAN4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:56:32 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45703 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728292AbgIANzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:55:32 -0400
+        id S1728274AbgIANzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:55:33 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kD6kf-0001nf-00; Tue, 01 Sep 2020 15:55:09 +0200
+        id 1kD6kf-0001nf-01; Tue, 01 Sep 2020 15:55:09 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 202E0C0E4B; Tue,  1 Sep 2020 15:49:35 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 15:49:35 +0200
+        id 422A1C0E4C; Tue,  1 Sep 2020 15:49:49 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 15:49:49 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -37,26 +37,30 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
         linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
         linux-mm@kvack.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 09/28] MIPS/jazzdma: remove the unused vdma_remap function
-Message-ID: <20200901134935.GA11944@alpha.franken.de>
+Subject: Re: [PATCH 10/28] MIPS/jazzdma: decouple from dma-direct
+Message-ID: <20200901134949.GB11944@alpha.franken.de>
 References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-10-hch@lst.de>
+ <20200819065555.1802761-11-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200819065555.1802761-10-hch@lst.de>
+In-Reply-To: <20200819065555.1802761-11-hch@lst.de>
 User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 08:55:36AM +0200, Christoph Hellwig wrote:
+On Wed, Aug 19, 2020 at 08:55:37AM +0200, Christoph Hellwig wrote:
+> The jazzdma ops implement support for a very basic IOMMU.  Thus we really
+> should not use the dma-direct code that takes physical address limits
+> into account.  This survived through the great MIPS DMA ops cleanup mostly
+> because I was lazy, but now it is time to fully split the implementations.
+> 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  arch/mips/include/asm/jazzdma.h |  2 -
->  arch/mips/jazz/jazzdma.c        | 70 ---------------------------------
->  2 files changed, 72 deletions(-)
+>  arch/mips/jazz/jazzdma.c | 32 +++++++++++++++++++++-----------
+>  1 file changed, 21 insertions(+), 11 deletions(-)
 
 Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
