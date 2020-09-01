@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEC4258E91
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2851F258E8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgIAMuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgIAL4u (ORCPT
+        id S1728014AbgIAMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:49:37 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:60811 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728057AbgIAMAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:56:50 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BC4C061246;
-        Tue,  1 Sep 2020 04:56:32 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mm21so501855pjb.4;
-        Tue, 01 Sep 2020 04:56:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6PscAPz6fJLdJCbTjR01ipVe7lAs+7UBRAQ+T/hUa/I=;
-        b=BkBIHA6iylmK2/Gte+vvVSLgPmncidY9zzYNBNG9P3Qahsca2Doj2FbECMoQQX8tWC
-         kHN6QBfedZ2llxGqOk3xexWi9gDsBYGSIlttQh6U3BtFenZMjtI3pQCriJRMBXVdaWmV
-         gfsuodcbx8HwM24s4+LNhbpJiR59MTuaV8FEcBFh6UaglAoIsTT6OKKLhQBtIQ3JD/+Y
-         8YUE+9c6RXwqzy+Ss0l8EDBEQRTAsBqyss7SwHOrOyrNhMFqLupV/vc6G4XX37eUVPWu
-         da0MAMdVWuvOTP13pdBw6g7Q23xlDByXOzE1K0AvHVu6sRZXjZZfZOda0igPAX/njBDj
-         FkcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=6PscAPz6fJLdJCbTjR01ipVe7lAs+7UBRAQ+T/hUa/I=;
-        b=FN1hDaB2MuxM/XQwDR8xH80dx7gYJgIii9zaqKJep62iurPBhrlztyQ4iKS3D/3uh4
-         03Dp5denaHmOmwt/lhLAb+eH2s0hJ8NUIE5UE8xhDnIy4sBikT+MCjPkBktXAHqkFhq5
-         jkAHtP0exy5JzogWSWAXtROVwmUVMsEcgMRkNQERCm2dRhouHCWWI/6hMRo75nnqJa/y
-         99WcGgOJmG9lWyOMOdGq/gz3vigW57I+cObhu9W0LrM0Vd7QDGSFg8FAHb0JF0E6S+eH
-         4sa83Eh5WQuynsnGosSDVZM42+l8nXFeZ5UhkmUpnaJXyO/ahah/+EjKCXkVPNNKRqcc
-         XnPw==
-X-Gm-Message-State: AOAM533RnW53V8oEjoPA4Z2YtHotQ2eMphVgLWDfS3A+d+tK4OjnxkH2
-        Io9TkdnxrkLwEqM098qIn48=
-X-Google-Smtp-Source: ABdhPJyyX1YalBgcnSdcnKVOeaXxXVMHVXACebJC7SOJGm7YpRRxC5ouTKV6Ni+uKIPsId1VUyrK+w==
-X-Received: by 2002:a17:90a:5216:: with SMTP id v22mr1225391pjh.97.1598961392461;
-        Tue, 01 Sep 2020 04:56:32 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.65])
-        by smtp.gmail.com with ESMTPSA id 31sm931534pgo.17.2020.09.01.04.56.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 04:56:32 -0700 (PDT)
-From:   yulei.kernel@gmail.com
-X-Google-Original-From: yuleixzhang@tencent.com
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sean.j.christopherson@intel.com, jmattson@google.com,
-        junaids@google.com, bgardon@google.com, vkuznets@redhat.com,
-        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
-        lihaiwei.kernel@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>
-Subject: [RFC V2 8/9] Introduce kvm module parameter global_tdp to turn on the direct build EPT mode
-Date:   Tue,  1 Sep 2020 19:57:11 +0800
-Message-Id: <1c628ce7f4f068fccfaafdf1e2d30b96753ff370.1598868204.git.yulei.kernel@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1598868203.git.yulei.kernel@gmail.com>
-References: <cover.1598868203.git.yulei.kernel@gmail.com>
+        Tue, 1 Sep 2020 08:00:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598961618; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=0jMDgX0W1BZ/pON/uohBkNZ0K8cxTtaj7bi4Iz5LFzw=;
+ b=HRvBFb5d4UOM45JsiQb2z6zuVWhcncd1jvUVHckJ6RJrBVFih+7AN8KFR0IhPSXFcD1thCoQ
+ pU534IJGwHfjzYVtxy+OA2zqO8Cm7BL6/AnpovXmaRRDMBFExH+ycx/6fiEaSfAePmKPakTh
+ EK1pS03CS3QTEeWt8x63GvY2ywg=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f4e37bf252c52244081a492 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Sep 2020 11:59:59
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B9E3EC433C6; Tue,  1 Sep 2020 11:59:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 126B1C433C9;
+        Tue,  1 Sep 2020 11:59:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 126B1C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath10k: Add interrupt summary based CE processing
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+References: <1593193967-29897-1-git-send-email-pillair@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rakesh Pillai <pillair@codeaurora.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200901115959.B9E3EC433C6@smtp.codeaurora.org>
+Date:   Tue,  1 Sep 2020 11:59:59 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yulei Zhang <yuleixzhang@tencent.com>
+Rakesh Pillai <pillair@codeaurora.org> wrote:
 
-Currently global_tdp is only supported on intel X86 system with ept
-supported, and it will turn off the smm mode when enable global_tdp.
+> Currently the NAPI processing loops through all
+> the copy engines and processes a particular copy
+> engine is the copy completion is set for that copy
+> engine. The host driver is not supposed to access
+> any copy engine register after clearing the interrupt
+> status register.
+> 
+> This might result in kernel crash like the one below
+> [ 1159.220143] Call trace:
+> [ 1159.220170]  ath10k_snoc_read32+0x20/0x40 [ath10k_snoc]
+> [ 1159.220193]  ath10k_ce_per_engine_service_any+0x78/0x130 [ath10k_core]
+> [ 1159.220203]  ath10k_snoc_napi_poll+0x38/0x8c [ath10k_snoc]
+> [ 1159.220270]  net_rx_action+0x100/0x3b0
+> [ 1159.220312]  __do_softirq+0x164/0x30c
+> [ 1159.220345]  run_ksoftirqd+0x2c/0x64
+> [ 1159.220380]  smpboot_thread_fn+0x1b0/0x288
+> [ 1159.220405]  kthread+0x11c/0x12c
+> [ 1159.220423]  ret_from_fork+0x10/0x18
+> 
+> To avoid such a scenario, we generate an interrupt
+> summary by reading the copy completion for all the
+> copy engine before actually processing any of them.
+> This will avoid reading the interrupt status register
+> for any CE after the interrupt status is cleared.
+> 
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+> 
+> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Tested-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
----
- arch/x86/include/asm/kvm_host.h |  4 ++++
- arch/x86/kvm/mmu/mmu.c          |  5 ++++-
- arch/x86/kvm/x86.c              | 11 ++++++++++-
- 3 files changed, 18 insertions(+), 2 deletions(-)
+Patch applied to ath-next branch of ath.git, thanks.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 429a50c89268..330cb254b34b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1357,6 +1357,8 @@ extern u64  kvm_default_tsc_scaling_ratio;
- 
- extern u64 kvm_mce_cap_supported;
- 
-+extern bool global_tdp;
-+
- /*
-  * EMULTYPE_NO_DECODE - Set when re-emulating an instruction (after completing
-  *			userspace I/O) to indicate that the emulation context
-@@ -1689,6 +1691,8 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
- #endif
- }
- 
-+inline bool boot_cpu_is_amd(void);
-+
- #define put_smstate(type, buf, offset, val)                      \
- 	*(type *)((buf) + (offset) - 0x7e00) = val
- 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index f03bf8efcefe..6639d9c7012e 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4573,7 +4573,7 @@ reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu, struct kvm_mmu *context)
- }
- EXPORT_SYMBOL_GPL(reset_shadow_zero_bits_mask);
- 
--static inline bool boot_cpu_is_amd(void)
-+inline bool boot_cpu_is_amd(void)
- {
- 	WARN_ON_ONCE(!tdp_enabled);
- 	return shadow_x_mask == 0;
-@@ -6497,6 +6497,9 @@ int kvm_direct_tdp_populate_page_table(struct kvm *kvm, struct kvm_memory_slot *
- 	kvm_pfn_t pfn;
- 	int host_level;
- 
-+	if (!global_tdp)
-+		return 0;
-+
- 	if (!kvm->arch.global_root_hpa) {
- 		struct page *page;
- 		WARN_ON(!tdp_enabled);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index ee898003f22f..57d64f3239e1 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -161,6 +161,9 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
- int __read_mostly pi_inject_timer = -1;
- module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
- 
-+bool __read_mostly global_tdp;
-+module_param_named(global_tdp, global_tdp, bool, S_IRUGO);
-+
- #define KVM_NR_SHARED_MSRS 16
- 
- struct kvm_shared_msrs_global {
-@@ -3539,7 +3542,10 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		 * fringe case that is not enabled except via specific settings
- 		 * of the module parameters.
- 		 */
--		r = kvm_x86_ops.has_emulated_msr(MSR_IA32_SMBASE);
-+		if (global_tdp)
-+			r = 0;
-+		else
-+			r = kvm_x86_ops.has_emulated_msr(MSR_IA32_SMBASE);
- 		break;
- 	case KVM_CAP_VAPIC:
- 		r = !kvm_x86_ops.cpu_has_accelerated_tpr();
-@@ -9808,6 +9814,9 @@ int kvm_arch_hardware_setup(void *opaque)
- 	if (r != 0)
- 		return r;
- 
-+	if ((tdp_enabled == false) || boot_cpu_is_amd())
-+		global_tdp = 0;
-+
- 	memcpy(&kvm_x86_ops, ops->runtime_ops, sizeof(kvm_x86_ops));
- 
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
+b92aba35d39d ath10k: Add interrupt summary based CE processing
+
 -- 
-2.17.1
+https://patchwork.kernel.org/patch/11628289/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
