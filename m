@@ -2,57 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF1E2596F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861B4259715
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731509AbgIAQJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        id S1731527AbgIAQKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731703AbgIAQJL (ORCPT
+        with ESMTP id S1731340AbgIAQKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:09:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F36C061244;
-        Tue,  1 Sep 2020 09:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oBkq3glCAHtvOG8UIAGHt/0r5y1zdNiyvtDIVrqUvHM=; b=Z6sUr62WUfxGIitZ30fveIfF6A
-        sXIe5ryrpygTcH3h/5Hsf2cIPUx68XYgdr1wFENvDfHzFtag1rQ0MY/9ppQfHdCl8y/BnIDYcp5wI
-        RBC6+NlQ5XYuEQVFUoGTXVDfdA2zGcLyuEZs5S5Y3wWjtH1ONvJtNJcVwH3XQrX22wULSvWOcg/HB
-        chXB6vq1s8wF5ObT20ymr0uIGz5ZWmNYQSDj3SD50dKASxH6mw0ml+hP3OLN1pTxK1EIy1rIek2rp
-        Lu6zdD0DyOOZ9FBHCWKbrKagsxKLP/8ttJeZFgWGI5Iv23cfUhpYZGlSHi/dIDrVGtSKFUIzujpGX
-        bkWsYFYA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kD8qH-0005hT-H0; Tue, 01 Sep 2020 16:09:05 +0000
-Date:   Tue, 1 Sep 2020 17:09:05 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] block: Fix potential page reference leak in
- __bio_iov_iter_get_pages()
-Message-ID: <20200901160905.GA21372@infradead.org>
-References: <20200901120006.9545-1-linmiaohe@huawei.com>
+        Tue, 1 Sep 2020 12:10:16 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639DCC061244;
+        Tue,  1 Sep 2020 09:10:16 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id f18so1045444pfa.10;
+        Tue, 01 Sep 2020 09:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=NsQXaCw31y4r2uMbkl6htgoK/WBIwM078xbS0cXU+7w=;
+        b=C+h+cgcvCdrvsyM+XY6TVnknhOFCDL5CwskerXbP75VOQCWFbZN3VDOoKK3mYDE2Ho
+         8xjUAX4TZXOr5ocf08At2G3jXdQXJXMFupaCuTuTXAoiKMbK4Vi3Q78rpCYWKBgOwzej
+         lV3M/pKI9jlR+vlE1meAo8UfT7hEOtb97EepRRb0Vuk4nA5YMqzjfs6e/QSo8Yy+Mo3R
+         y3u1rufk8yt3lNvVzPqtvAsa1UXgPCKr80Q3iKwWX9MMxdWS+YISCPaOk3ghRT/XfZvj
+         z9nIlBWyKqiSbwDVHY7XB0jmbZ10rqZRfEL24/Xato3AxOJXYDsx+kYrEz/GtCtS23lW
+         I9+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NsQXaCw31y4r2uMbkl6htgoK/WBIwM078xbS0cXU+7w=;
+        b=bvXtCDnYPQHGlob5b0sYj6Y83fROlJXOEQoTEbdBbBIUfGVhu9jDxiC9dBqpUzOhFA
+         9ovTwZNbZv7/ZqIaK7ZWOhvB5lWJcSjugrPKo6i6u5r+VRZZwwhcsXLX1kpP+d93i47H
+         CSA1YYjIoOG7Hx1aV6mIjb+b+xwijW2VRq/NpLWk7XIV6Hfeu37kXwUKKcg52ZbKURvT
+         hv0L5qBq9hIUkIYc+1kMhYugEGbUcgv/nZEvgarc01D8kGYhz5xxrgXXCer2r/OS+H6i
+         A8kgOJTm1JMyboATA2xQQ8Ka4HUsJ4gMGdmLpsfmwhcSog05BuSniSpyLXBqg3dWMUOt
+         2+zw==
+X-Gm-Message-State: AOAM5325tmgJgSd3gAl5yvtBeZfPeCNCnXLQ/qY/vpZ0n8yzvEskYgMC
+        iszmvK5EEClAWczO9pDNxIWENwlidzQ=
+X-Google-Smtp-Source: ABdhPJwKtA1KUbqtGdo3afUnY5etbEnRl0rJyDOflcBsCus3lfPEuSBXspRQU1fIzltpiNIbRaOsAQ==
+X-Received: by 2002:a63:4e5e:: with SMTP id o30mr2091042pgl.254.1598976615541;
+        Tue, 01 Sep 2020 09:10:15 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id c3sm2506092pfo.120.2020.09.01.09.10.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 09:10:14 -0700 (PDT)
+Subject: Re: [PATCH 1/2] serial: 8250: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lukas Wunner <lukas@wunner.de>, linux-serial@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200901153100.18827-1-krzk@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <04f68fe6-2f92-031d-a96f-e93d7c741d88@gmail.com>
+Date:   Tue, 1 Sep 2020 09:10:12 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901120006.9545-1-linmiaohe@huawei.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20200901153100.18827-1-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 08:00:06AM -0400, Miaohe Lin wrote:
-> When bio is full, __bio_iov_iter_get_pages() would return error directly
-> while left page reference still held in pages. Release these references.
-> Also advance the iov_iter according to what we have done successfully.
-> 
-> Fixes: 576ed9135489 ("block: use bio_add_page in bio_iov_iter_get_pages")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-The WARN_ON means something is fundamentally wrong here.  I think a few
-leaked pages are the least of our problems in this case.
+
+On 9/1/2020 8:30 AM, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>   drivers/tty/serial/8250/8250_bcm2835aux.c | 12 +++---------
+>   drivers/tty/serial/8250/8250_ingenic.c    | 20 ++++++--------------
+>   2 files changed, 9 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+> index 12d03e678295..fd95860cd661 100644
+> --- a/drivers/tty/serial/8250/8250_bcm2835aux.c
+> +++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+> @@ -110,12 +110,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+>   
+>   	/* get the clock - this also enables the HW */
+>   	data->clk = devm_clk_get(&pdev->dev, NULL);
+> -	ret = PTR_ERR_OR_ZERO(data->clk);
+> -	if (ret) {
+> -		if (ret != -EPROBE_DEFER)
+> -			dev_err(&pdev->dev, "could not get clk: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (IS_ERR(data->clk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk\n");
+
+For 8250_bcm2835aux.c:
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
