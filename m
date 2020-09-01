@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FD7258F8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A01C259026
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgIANy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728267AbgIANyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:54:46 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21121206EF;
-        Tue,  1 Sep 2020 13:54:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598968485;
-        bh=fgdQbvNKfrT9RQxxwbrS+G3c51w2CaurFPEVweTkSFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=foEI5kCGhAdHd4Lc751iDhiFVCWbPPfNcIr92QxDyn3UHDswkD+id1vtNBkV1y7Cy
-         WfRn3Dz3pzF+lfzQ60RdprxObBsaeOpcqgut597Zbdm26EejvLtQh58icB6LxAWsau
-         sUd7M0EMs0QUirzh+WA6y4pe1Yl9VE4Du6yiE8+k=
-Date:   Tue, 1 Sep 2020 15:55:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     Sasha Levin <sashal@kernel.org>, adrian.hunter@intel.com,
-        ulf.hansson@linaro.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, robh+dt@kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 1/7] sdhci: tegra: Remove
- SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra210
-Message-ID: <20200901135513.GA397411@kroah.com>
-References: <1598653517-13658-1-git-send-email-skomatineni@nvidia.com>
- <1598653517-13658-2-git-send-email-skomatineni@nvidia.com>
- <20200828231536.GU8670@sasha-vm>
- <dc6bfd08-baaf-e1ad-6b3f-77ff82d110bb@nvidia.com>
+        id S1727902AbgIAOS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727867AbgIALt0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:49:26 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECE5C061258;
+        Tue,  1 Sep 2020 04:48:02 -0700 (PDT)
+Date:   Tue, 01 Sep 2020 11:47:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1598960878;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QxQGD3orW6Tw8fMSFhy6+mq1binzzE0l0OZ3Nu2XiJo=;
+        b=xsEoUGLyeMdxgqI/TyKy7fbqX+aaD6cy6odKKwipVHLzLskKaS0a1Sxz7Z/NtXfJJ+FlWd
+        kaGMu10yUPe1cIn3oR+e3zN1u1AdszjeNnIO8zuUgzhbgerXynXoJVGT0khkCgYHjvZ8eU
+        hl9fxHnADG5KycRjf9aKSwx8L2aKbX5kTt5gbEKPfyEGqYAF9z2iuo2DkVsNpGlw1rVKYZ
+        DtEWNbZk6WvtDsl95V6xuQ/gBLNn5e+WCGhgYLSwjvVex3vnhAIOnaXWSsjyI2DFQJ2E9r
+        VsAntu78Q+SBZxxNVk5pddXR6R/qgb6np0Fw7JQSWn84zhBBVSTVTKFIPE2hkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1598960878;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QxQGD3orW6Tw8fMSFhy6+mq1binzzE0l0OZ3Nu2XiJo=;
+        b=h3xAjGS8VUsYkn/hNG24eHmB9dd5+Jgu8A0vVZxHwg9Aghtgoj/bXGINEL9mA5BBPGlqzB
+        kq1z1qO6KORwr8DQ==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/build] arm64/kernel: Remove needless Call Frame
+ Information annotations
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200821194310.3089815-10-keescook@chromium.org>
+References: <20200821194310.3089815-10-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc6bfd08-baaf-e1ad-6b3f-77ff82d110bb@nvidia.com>
+Message-ID: <159896087826.20229.6704483539643786154.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 28, 2020 at 04:23:48PM -0700, Sowjanya Komatineni wrote:
-> 
-> On 8/28/20 4:15 PM, Sasha Levin wrote:
-> > On Fri, Aug 28, 2020 at 03:25:11PM -0700, Sowjanya Komatineni wrote:
-> > > commit b5a84ecf025a ("mmc: tegra: Add Tegra210 support")
-> > 
-> > What does this line above represent?
-> > 
-> SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK is set incorrectly in above commit
-> 
-> when Tegra210 support was added.
+The following commit has been merged into the core/build branch of tip:
 
-Odd, that's a new format to send to us to apply :)
+Commit-ID:     34b4a5c54c429d12bcc783a27650752237c49a36
+Gitweb:        https://git.kernel.org/tip/34b4a5c54c429d12bcc783a27650752237c49a36
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Fri, 21 Aug 2020 12:42:50 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 01 Sep 2020 09:50:36 +02:00
 
-Can you please provide the git commit id of the original commit in
-Linus's tree, as per the documentation, so we know what this is, and can
-document that?
+arm64/kernel: Remove needless Call Frame Information annotations
 
-Look at all of the commits in the stable trees for examples of how to do
-this.
+Remove last instance of an .eh_frame section by removing the needless Call
+Frame Information annotations which were likely leftovers from 32-bit ARM.
 
-Can y ou fix that up and resend this whole series?
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20200821194310.3089815-10-keescook@chromium.org
+---
+ arch/arm64/kernel/smccc-call.S | 2 --
+ 1 file changed, 2 deletions(-)
 
-thanks,
-
-greg k-h
+diff --git a/arch/arm64/kernel/smccc-call.S b/arch/arm64/kernel/smccc-call.S
+index 1f93809..d624479 100644
+--- a/arch/arm64/kernel/smccc-call.S
++++ b/arch/arm64/kernel/smccc-call.S
+@@ -9,7 +9,6 @@
+ #include <asm/assembler.h>
+ 
+ 	.macro SMCCC instr
+-	.cfi_startproc
+ 	\instr	#0
+ 	ldr	x4, [sp]
+ 	stp	x0, x1, [x4, #ARM_SMCCC_RES_X0_OFFS]
+@@ -21,7 +20,6 @@
+ 	b.ne	1f
+ 	str	x6, [x4, ARM_SMCCC_QUIRK_STATE_OFFS]
+ 1:	ret
+-	.cfi_endproc
+ 	.endm
+ 
+ /*
