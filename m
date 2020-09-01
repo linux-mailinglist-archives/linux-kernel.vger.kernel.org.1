@@ -2,179 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450462590EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD522591D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgIAOl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728305AbgIAOQq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:16:46 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31CEC061251
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:07:39 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id d20so1019187qka.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:cc:subject:from:to:date
-         :message-id:in-reply-to;
-        bh=+c7gUM4M1NG54PZN7hYz3O1VCdsfHKYvNA1RcLxjRT4=;
-        b=DtGglfrVkajnixQQs92D4Z0K2684L1xRNQx6ROkO6nL5ByavpK+z7lGv2Cj6qIVlli
-         tivZ9xsZnEX7sLIbciNgwJSu4trMy6XhwZXTI14WxS2mR6KrA6clkgacrsmnIBGHRvHp
-         Vdy+oFh2uQbBRobIDRo81RCTxaMMIE0B6EhjSeNt00LGQ95FAzJGP1Aa4IaR8HaTW1XS
-         /tq9s4WiENbGx7GoGSaRe1DX8WDy8jo8dOniiKviBzPhQVxo2pTpIDWQ34Huy8qRElfy
-         LQwPyJOTok+HG4mw0V6qHwOtJFfJVobOzD2X6sKH7Ia7ydvgiME1lIT/t2Bhahr2ioJ3
-         ZD1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:cc
-         :subject:from:to:date:message-id:in-reply-to;
-        bh=+c7gUM4M1NG54PZN7hYz3O1VCdsfHKYvNA1RcLxjRT4=;
-        b=O+OddR6EataWoUEi0L5K2ZwhxMT8/82Cv+3ONCy9+6BPU838dVFHhu/9dWfXs4LhuS
-         5ZS2gKG7LwUIuh4FMVtu9erD+i+9HxpQjkD3eRSo8j8UpFCYI7QaPjb7DTFbSTwH+g0h
-         pnQZKXEmIBNTzSv9IWfJTvTy2VJz38BxmSSfv8N3GRYubB6l5lqsxeRk89RtwkUJFdUo
-         8TbmDKOl4T5d4OLo+pUT+CRr5n5Y70B1SVXM7uXvYp2ubGuRhqRtJwmqlUzj+aFf/pQn
-         SIZTjdhty8wM+cLPkyp0TcGNwX2K3jmiw6Eova/Vakacpg5Q+lore6v6A91Ew+f3EaIJ
-         3Ktw==
-X-Gm-Message-State: AOAM5321H3GYpa3i4aYZqKWdFV2I2cbSaWkefGWPRRdomX/QX/hHZPj4
-        qoTpyH2M2kbuqUUFNOQUEnsfdm3zReQ=
-X-Google-Smtp-Source: ABdhPJySP7qnv73ndy+4kJiIaZROYfwZkec0hTAOuXjwxulZXTMbdceuSrDBTJex1URL8ZO7Mwvv0Q==
-X-Received: by 2002:a37:8f04:: with SMTP id r4mr2015273qkd.495.1598969259038;
-        Tue, 01 Sep 2020 07:07:39 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id 192sm1429688qkm.110.2020.09.01.07.07.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 07:07:37 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Cc:     <geert@linux-m68k.org>, <kishon@ti.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/1] phy: tusb1210: use bitmasks to set
- VENDOR_SPECIFIC2
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Vinod Koul" <vkoul@kernel.org>
-Date:   Mon, 31 Aug 2020 12:10:18 -0400
-Message-Id: <C5BBA21WKTPB.3H0L7E96UPHZ9@atris>
-In-Reply-To: <20200831110852.GO2639@vkoul-mobl>
+        id S1728431AbgIAO4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:56:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726800AbgIALbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:31:00 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6A09206EF;
+        Tue,  1 Sep 2020 11:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598958269;
+        bh=sCpI4sCnV3VGw7tpt2uhRXxYsas+I7NB/Odw+Dl23IY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FDd3LEddcQgT0dEr51HuI/Fty7nNad3vVXzB/Minh19fwULeTvHYJBVc55s4eLpbi
+         Ezharmx8LU+LlA4FUvouooc2+VAvv/clRrm1h0zLWfMr02QvnX/a0TPzJTnB2FUQJz
+         OGJ6uDai7gdiYK0TaEVL7t8ylfh+2c7WS7AXdI2g=
+Date:   Tue, 1 Sep 2020 12:03:49 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Sangbeom Kim <sbkim73@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: sound: midas-audio: Correct parsing
+ sound-dai phandles
+Message-ID: <20200901110349.GC6262@sirena.org.uk>
+References: <20200830112633.6732-1-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zCKi3GIZzVBPywwA"
+Content-Disposition: inline
+In-Reply-To: <20200830112633.6732-1-krzk@kernel.org>
+X-Cookie: Equal bytes for women.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
 
-On Mon Aug 31, 2020 at 7:08 AM EDT, Vinod Koul wrote:
-> Hi Liam,
->
-> On 22-08-20, 16:53, Liam Beguin wrote:
-> > From: Liam Beguin <lvb@xiphos.com>
-> >=20
-> > Start by reading the content of the VENDOR_SPECIFIC2 register and updat=
-e
-> > each bit field based on device properties when defined.
-> >=20
-> > The use of bit masks prevents fields from overriding each other and
-> > enables users to clear bits which are set by default, like datapolarity
-> > in this instance.
-> >=20
-> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
-> > ---
-> > Changes since v1:
-> > - use set_mask_bits
-> >=20
-> > Changes since v2:
-> > - fix missing bit shift dropped in v2
-> > - rebase on 5.9-rc1
-> >=20
-> > Changes since v3:
-> > - switch to u8p_replace_bits() since there's little reason to protect
-> >   against concurrent access
-> >=20
-> >  drivers/phy/ti/phy-tusb1210.c | 27 ++++++++++++++-------------
-> >  1 file changed, 14 insertions(+), 13 deletions(-)
-> >=20
-> > diff --git a/drivers/phy/ti/phy-tusb1210.c b/drivers/phy/ti/phy-tusb121=
-0.c
-> > index d8d0cc11d187..a63213f5972a 100644
-> > --- a/drivers/phy/ti/phy-tusb1210.c
-> > +++ b/drivers/phy/ti/phy-tusb1210.c
-> > @@ -7,15 +7,16 @@
-> >   * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >   */
-> >  #include <linux/module.h>
-> > +#include <linux/bitfield.h>
-> >  #include <linux/ulpi/driver.h>
-> >  #include <linux/ulpi/regs.h>
-> >  #include <linux/gpio/consumer.h>
-> >  #include <linux/phy/ulpi_phy.h>
-> > =20
-> >  #define TUSB1210_VENDOR_SPECIFIC2		0x80
-> > -#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT	0
-> > -#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT	4
-> > -#define TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT	6
-> > +#define TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK	GENMASK(3, 0)
-> > +#define TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MASK	GENMASK(5, 4)
-> > +#define TUSB1210_VENDOR_SPECIFIC2_DP_MASK	BIT(6)
-> > =20
-> >  struct tusb1210 {
-> >  	struct ulpi *ulpi;
-> > @@ -118,22 +119,22 @@ static int tusb1210_probe(struct ulpi *ulpi)
-> >  	 * diagram optimization and DP/DM swap.
-> >  	 */
-> > =20
-> > +	reg =3D ulpi_read(ulpi, TUSB1210_VENDOR_SPECIFIC2);
-> > +
-> >  	/* High speed output drive strength configuration */
-> > -	device_property_read_u8(&ulpi->dev, "ihstx", &val);
-> > -	reg =3D val << TUSB1210_VENDOR_SPECIFIC2_IHSTX_SHIFT;
-> > +	if (!device_property_read_u8(&ulpi->dev, "ihstx", &val))
-> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_IHSTX_MASK=
-);
->
-> Any reason for using u8p_replace_bits and not u8_replace_bits?
->
+--zCKi3GIZzVBPywwA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-u8p_replace_bits seems like a more concise notation.
+On Sun, Aug 30, 2020 at 01:26:32PM +0200, Krzysztof Kozlowski wrote:
+> The "sound-dai" property has cells therefore phandle-array should be
+> used, even if it is just one phandle.  This fixes dtbs_check warnings
+> like:
 
-> Also please drop the u8 casts above, they seem unnecessary here
->
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-I added the casts to get rid of compilation warnings.
+--zCKi3GIZzVBPywwA
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> > =20
-> >  	/* High speed output impedance configuration */
-> > -	device_property_read_u8(&ulpi->dev, "zhsdrv", &val);
-> > -	reg |=3D val << TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_SHIFT;
-> > +	if (!device_property_read_u8(&ulpi->dev, "zhsdrv", &val))
-> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_ZHSDRV_MAS=
-K);
-> > =20
-> >  	/* DP/DM swap control */
-> > -	device_property_read_u8(&ulpi->dev, "datapolarity", &val);
-> > -	reg |=3D val << TUSB1210_VENDOR_SPECIFIC2_DP_SHIFT;
-> > +	if (!device_property_read_u8(&ulpi->dev, "datapolarity", &val))
-> > +		u8p_replace_bits(&reg, val, (u8)TUSB1210_VENDOR_SPECIFIC2_DP_MASK);
-> > =20
-> > -	if (reg) {
-> > -		ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
-> > -		tusb->vendor_specific2 =3D reg;
-> > -	}
-> > +	ulpi_write(ulpi, TUSB1210_VENDOR_SPECIFIC2, reg);
-> > +	tusb->vendor_specific2 =3D reg;
-> > =20
-> >  	tusb->phy =3D ulpi_phy_create(ulpi, &phy_ops);
-> >  	if (IS_ERR(tusb->phy))
-> >=20
-> > base-commit: 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5
-> > --=20
-> > 2.27.0
->
-> --
-> ~Vinod
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Liam
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9OKpQACgkQJNaLcl1U
+h9DsLwgAhvsY22laZUsm46wBuYEqas5QBnB4KMgxezBwkPaRr5NrJsVQMp2S9QI1
+gZzZ5eFVZZYB6Ij8hFNZKlgGp5W+D1negXAJ8WhH8zFXsgg1F+SZmFFD9/6reT5M
+1gab7+yPGHs6FLLJ1VbQnyv0xEcV6RnNgTKC3KuUH4Y2LHSDj6qzwYMZWl29Xu8t
+p9VZtWTg5g/upxDxbsW8vLVddkjb6KcdhbVsZQ+qb0QxibK8nX+8XbTWyH6T3OeS
+4FtJYdEsaHXhkrSDJtf1XpnXVG9RfBgNReqwmHTxdP2PSLDpFR7sCB6FLtNrJfAI
+fpab8x1a5104UrbblCQD6ny1IGwvQg==
+=Emty
+-----END PGP SIGNATURE-----
+
+--zCKi3GIZzVBPywwA--
