@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F7025945D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 128802593CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729665AbgIAPio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
+        id S1730492AbgIAPbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgIAPgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:36:52 -0400
+        id S1730279AbgIAP1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:27:46 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AE6F20866;
-        Tue,  1 Sep 2020 15:36:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3864720BED;
+        Tue,  1 Sep 2020 15:27:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974611;
-        bh=GwiJXLRvB5e9CxSOmoT4bs9rK/an/E+PE8TN3zdX0ds=;
+        s=default; t=1598974065;
+        bh=lHjVCNb+Y24qQJ+20TP7JRBp6qoTPqc/m8f2Ri154yw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K/wGvcXc9Qqf0dvhHQkd/Vos0FlPzRKivHHtyuwx2Bam0QoB8r2zBWrs5ohlUakKX
-         lu7jpv+ijXlAg90QhTxM+TV8PZuu+1yJGm0YXkA6OMY5lzNnRV2JqOlE/P6NQIWWq7
-         PJWxB3boiiebUOQamNbomDXiW4UM4tBwABnHC48g=
+        b=BrEdmmAtcz3aZ1Z8h/++Fq4k9+LJPC8y7OsXypkE8WP9WFtn0e6WkxHM67M9kHXQh
+         05J4+V0ppOxBxBX7nfB/sOdxDtn8qvzDnV+5YNRQVSrB3ogcOfPs73QwJcSvTseTSR
+         3pocM4y3XGSq2ki04eOEaISCopgG5vy/tC7+nE0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 028/255] drm/amdgpu/display: fix ref count leak when pm_runtime_get_sync fails
-Date:   Tue,  1 Sep 2020 17:08:04 +0200
-Message-Id: <20200901151002.121912582@linuxfoundation.org>
+        stable@vger.kernel.org, David Laight <david.laight@aculab.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 007/214] net: sctp: Fix negotiation of the number of data streams.
+Date:   Tue,  1 Sep 2020 17:08:07 +0200
+Message-Id: <20200901150953.307943936@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +44,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: David Laight <David.Laight@ACULAB.COM>
 
-[ Upstream commit f79f94765f8c39db0b7dec1d335ab046aac03f20 ]
+[ Upstream commit ab921f3cdbec01c68705a7ade8bec628d541fc2b ]
 
-The call to pm_runtime_get_sync increments the counter even in case of
-failure, leading to incorrect ref count.
-In case of failure, decrement the ref count before returning.
+The number of output and input streams was never being reduced, eg when
+processing received INIT or INIT_ACK chunks.
+The effect is that DATA chunks can be sent with invalid stream ids
+and then discarded by the remote system.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2075e50caf5ea ("sctp: convert to genradix")
+Signed-off-by: David Laight <david.laight@aculab.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ net/sctp/stream.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-index f355d9a752d29..a1aec205435de 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-@@ -716,8 +716,10 @@ amdgpu_connector_lvds_detect(struct drm_connector *connector, bool force)
+--- a/net/sctp/stream.c
++++ b/net/sctp/stream.c
+@@ -88,12 +88,13 @@ static int sctp_stream_alloc_out(struct
+ 	int ret;
  
- 	if (!drm_kms_helper_is_poll_worker()) {
- 		r = pm_runtime_get_sync(connector->dev->dev);
--		if (r < 0)
-+		if (r < 0) {
-+			pm_runtime_put_autosuspend(connector->dev->dev);
- 			return connector_status_disconnected;
-+		}
- 	}
+ 	if (outcnt <= stream->outcnt)
+-		return 0;
++		goto out;
  
- 	if (encoder) {
-@@ -854,8 +856,10 @@ amdgpu_connector_vga_detect(struct drm_connector *connector, bool force)
+ 	ret = genradix_prealloc(&stream->out, outcnt, gfp);
+ 	if (ret)
+ 		return ret;
  
- 	if (!drm_kms_helper_is_poll_worker()) {
- 		r = pm_runtime_get_sync(connector->dev->dev);
--		if (r < 0)
-+		if (r < 0) {
-+			pm_runtime_put_autosuspend(connector->dev->dev);
- 			return connector_status_disconnected;
-+		}
- 	}
++out:
+ 	stream->outcnt = outcnt;
+ 	return 0;
+ }
+@@ -104,12 +105,13 @@ static int sctp_stream_alloc_in(struct s
+ 	int ret;
  
- 	encoder = amdgpu_connector_best_single_encoder(connector);
-@@ -977,8 +981,10 @@ amdgpu_connector_dvi_detect(struct drm_connector *connector, bool force)
+ 	if (incnt <= stream->incnt)
+-		return 0;
++		goto out;
  
- 	if (!drm_kms_helper_is_poll_worker()) {
- 		r = pm_runtime_get_sync(connector->dev->dev);
--		if (r < 0)
-+		if (r < 0) {
-+			pm_runtime_put_autosuspend(connector->dev->dev);
- 			return connector_status_disconnected;
-+		}
- 	}
+ 	ret = genradix_prealloc(&stream->in, incnt, gfp);
+ 	if (ret)
+ 		return ret;
  
- 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
-@@ -1328,8 +1334,10 @@ amdgpu_connector_dp_detect(struct drm_connector *connector, bool force)
- 
- 	if (!drm_kms_helper_is_poll_worker()) {
- 		r = pm_runtime_get_sync(connector->dev->dev);
--		if (r < 0)
-+		if (r < 0) {
-+			pm_runtime_put_autosuspend(connector->dev->dev);
- 			return connector_status_disconnected;
-+		}
- 	}
- 
- 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
--- 
-2.25.1
-
++out:
+ 	stream->incnt = incnt;
+ 	return 0;
+ }
 
 
