@@ -2,352 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AFF2588AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B762588A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgIAHDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:03:16 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:47684 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgIAHDH (ORCPT
+        id S1726174AbgIAHBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726012AbgIAHBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:03:07 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200901070302epoutp01ddbf88fcebc0eeb6b9703aad0ce883d5~wluYXHsyb0128401284epoutp01B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:03:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200901070302epoutp01ddbf88fcebc0eeb6b9703aad0ce883d5~wluYXHsyb0128401284epoutp01B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598943782;
-        bh=fQzOwnKl71y9vFlqOMQkwhC4yQbO7O5YdXFCmZaDovU=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=OfEbp+yRnrbLWkaTPZUnXpRJ+hTYPOM+vgMoobtrD9ig2hMTAQTM2vRlPIqjEg3EE
-         UIX82oxT9F+QAN0aLMLMUwnlrY389NvzhUQeIY1mkwaQszG5EyZbAOuNXH2BfGQ9SL
-         eQe46uDmcHJVcrQ3Sslh9jq7RBtBtfNphhmzKg3I=
-Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
-        (KnoxPortal) with ESMTP id
-        20200901070302epcas1p169d482d727ddba2f3ab043c28a1f6512~wluX8-AAO0631106311epcas1p1B;
-        Tue,  1 Sep 2020 07:03:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: [PATCH V10 4/4] scsi: ufs: Prepare HPB read for cached sub-region
-Reply-To: daejun7.park@samsung.com
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Daejun Park <daejun7.park@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sang-yoon Oh <sangyoon.oh@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Adel Choi <adel.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <717176949.41598943782242.JavaMail.epsvc@epcpadp2>
-Date:   Tue, 01 Sep 2020 15:55:09 +0900
-X-CMS-MailID: 20200901065509epcms2p4bb795439dd7423b1c3b22f779ceef7cb
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72
-References: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
-        <CGME20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72@epcms2p4>
+        Tue, 1 Sep 2020 03:01:52 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4716C0612AC
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 00:01:51 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id h9so52256ooo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 00:01:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=tw1MV8GeiFQ+Xv3XeAF7O+O+i26Ube8CLE3F3n/lzf8=;
+        b=jF7bXBGxOz4P+3nsSzIPUW0/U+b/Ri+JDAtx6iSdwuhHsRjNItRUsewTfAjG+M/4bW
+         /lScLL/z3u1kCcF6vrusQRO/+Vzc/sdO7IxpKJSzKYFGZ2YCCVUbey09jnvYwaBMb+1m
+         hVt/h8W74xYw+77rVTwtoHhM+DfomsXvCegLDq+GT+nBn+emqYGKhmQ+jxuhH84tnkie
+         Y5vDA1hA71RO1vBpm0tAEIXRvqhNJBrjMZGP0bj8EMpfbmEc7a9kkz8GJsjbzI3ZKqKq
+         uYrauX4d+UQeR++31gkXrN0BrH7ZyYrCLyEgKLCpxjFZcSR/BqDkzweRHWTBEkNvj5CX
+         INVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=tw1MV8GeiFQ+Xv3XeAF7O+O+i26Ube8CLE3F3n/lzf8=;
+        b=W3jnmR47LIdSqpdOKz5aGUivl+x+UiKhrQVDcFkmn6KuO6hSpSnFDEwUB0SkHIskky
+         E0u4PCZCTRfmMMVULnPSudp+llrJmlxKkV5+wjyCVhFDXkg6Io4scqNctfXnAHeGv+zY
+         ANaYuQRsAqTrWTuPYrQbJhI3Xn2HBoZUoSZ8qYhyxrFh37AxJAeWFeMZGu82IH8GuLyH
+         JRt0XJfSlZ/HslwBdEQ5VTkRLahvoEWpAwp7oOLQgNWcclzuCuy03hxSP0vVTb587Sec
+         5QYaFyynUSS3QNN+AQWCV8TxpGZQc/jnOX5TdtMjjG1DKT9DeDiPofWAvsUAKHS9mGqs
+         9bHw==
+X-Gm-Message-State: AOAM530DoekhWFloJS/1YOq4FvK204HNrprbzbMoGlqXgYt2YPhKABgZ
+        CyJIZDT4N6eqGFtNOd9aJpp/Bg==
+X-Google-Smtp-Source: ABdhPJzGk5leZUzCMIZ+F8TJMVGLuyVC7+BZvgcGWCa9tZMqOZJSnZ961gdf7AYdme4vU1BwhDOjcw==
+X-Received: by 2002:a4a:c299:: with SMTP id b25mr202617ooq.35.1598943710135;
+        Tue, 01 Sep 2020 00:01:50 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id k1sm77427oot.20.2020.09.01.00.01.47
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 01 Sep 2020 00:01:49 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 00:01:35 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Kirill Tkhai <ktkhai@virtuozzo.com>, Jan Kara <jack@suse.cz>,
+        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+In-Reply-To: <CAHk-=whXyMiXLujhPdfQN3q5n-DpbVRFZfJqjBYLTYw37uSMvA@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2008312207450.1212@eggly.anvils>
+References: <20200821234958.7896-1-peterx@redhat.com> <20200821234958.7896-2-peterx@redhat.com> <42bc9a68-ef9e-2542-0b21-392a7f47bd74@virtuozzo.com> <20200824143010.GG24877@quack2.suse.cz> <dd6eb3e6-2797-1cf3-e1af-62a809ce83f2@virtuozzo.com>
+ <CAHk-=whXyMiXLujhPdfQN3q5n-DpbVRFZfJqjBYLTYw37uSMvA@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch changes the read I/O to the HPB read I/O.
+I am not happy with this patch.  But every time I come back to it,
+I realize that you've written more to justify it here or there, that
+I haven't fully digested; yet if I wait until I've grasped it all,
+I shall never arrive at responding at all, so let's wade in now.
+(Sometimes I wonder why I say "I" more than other people.)
 
-If the logical address of the read I/O belongs to active sub-region, the
-HPB driver modifies the read I/O command to HPB read. It modifies the UPIU
-command of UFS instead of modifying the existing SCSI command.
+On Mon, 24 Aug 2020, Linus Torvalds wrote:
+> On Mon, Aug 24, 2020 at 8:38 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+> >
+> > Sure, KSM does not increment page counter, when a page becomes PageKsm().
+> > Is patch comment about that? Even if so, I don't understand what this
+> > comment is about. "PageKsm() does not take additional counter" is not
+> > a reason the page can't be reused there.
+> 
+> No, the reason is that we don't want to reuse a KSM page, and the
+> page_count() check apparently isn't sufficient in all circumstances.
+> 
+> So the comment is there to explain why a plain "page_count()"
+> apparently isn't sufficient.
+> 
+> > The reason is that readers
+> > of this page may increase a counter without taking the lock, so
+> > this page_count() == 1 under the lock does not guarantee anything.
 
-In the HPB version 1.0, the maximum read I/O size that can be converted to
-HPB read is 4KB.
+One thing I'm happy with, is the removal of reuse_ksm_page().  I did
+not speak up at the time, but it always seemed to me a misdirected
+optimization, if even an optimization at all; and it violates the
+comment in mm/rmap.c "but PageKsm is never downgraded to PageAnon" -
+though I'd have some trouble enumerating where that assumption matters.
 
-The dirty map of the active sub-region prevents an incorrect HPB read that
-has stale physical page number which is updated by previous write I/O.
+> 
+> The intent is to get rid of
+> 
+>  (a) all the locking costs. The "lock_page()" we had here used to be
+> very expensive.
+> 
+>      It's shown up several times in the page lock problems, and the
+> reason seems to be simply that this is _the_ hottest non-IO path there
+> is, so it's somewhat easy to generate lots of contention on a shared
+> page.
 
-Acked-by: Avri Altman <Avri.Altman@wdc.com>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Tested-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- drivers/scsi/ufs/ufshpb.c | 231 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 231 insertions(+)
+And I'd be happy with adding a "page_mapcount(page) > 1" check, to
+avoid trying for page lock in unambiguous cases of shared PageAnon.
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 2ac4cd6e4aa4..8ad2a711dd16 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -31,6 +31,29 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
- 	return !(hba->ufshpb_dev.hpb_disabled);
- }
- 
-+static int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
-+			     struct ufshpb_subregion *srgn)
-+{
-+	return rgn->rgn_state != HPB_RGN_INACTIVE &&
-+		srgn->srgn_state == HPB_SRGN_VALID;
-+}
-+
-+static bool ufshpb_is_read_cmd(struct scsi_cmnd *cmd)
-+{
-+	return req_op(cmd->request) == REQ_OP_READ;
-+}
-+
-+static bool ufshpb_is_write_discard_cmd(struct scsi_cmnd *cmd)
-+{
-+	return op_is_write(req_op(cmd->request)) ||
-+	       op_is_discard(req_op(cmd->request));
-+}
-+
-+static bool ufshpb_is_support_chunk(int transfer_len)
-+{
-+	return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-+}
-+
- static bool ufshpb_is_general_lun(int lun)
- {
- 	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
-@@ -97,8 +120,216 @@ static void ufshpb_set_state(struct ufshpb_lu *hpb, int state)
- 	atomic_set(&hpb->hpb_state, state);
- }
- 
-+static void ufshpb_set_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+			     int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int set_bit_len;
-+	int bitmap_len = hpb->entries_per_srgn;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		set_bit_len = bitmap_len - srgn_offset;
-+	else
-+		set_bit_len = cnt;
-+
-+	if (rgn->rgn_state != HPB_RGN_INACTIVE &&
-+	    srgn->srgn_state == HPB_SRGN_VALID)
-+		bitmap_set(srgn->mctx->ppn_dirty, srgn_offset, set_bit_len);
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= set_bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	WARN_ON(cnt < 0);
-+}
-+
-+static bool ufshpb_test_ppn_dirty(struct ufshpb_lu *hpb, int rgn_idx,
-+				   int srgn_idx, int srgn_offset, int cnt)
-+{
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	int bitmap_len = hpb->entries_per_srgn;
-+	int bit_len;
-+
-+next_srgn:
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	if (!ufshpb_is_valid_srgn(rgn, srgn))
-+		return true;
-+
-+	/*
-+	 * If the region state is active, mctx must be allocated.
-+	 * In this case, check whether the region is evicted or
-+	 * mctx allcation fail.
-+	 */
-+	WARN_ON(!srgn->mctx);
-+
-+	if ((srgn_offset + cnt) > bitmap_len)
-+		bit_len = bitmap_len - srgn_offset;
-+	else
-+		bit_len = cnt;
-+
-+	if (find_next_bit(srgn->mctx->ppn_dirty,
-+			  bit_len, srgn_offset) >= srgn_offset)
-+		return true;
-+
-+	srgn_offset = 0;
-+	if (++srgn_idx == hpb->srgns_per_rgn) {
-+		srgn_idx = 0;
-+		rgn_idx++;
-+	}
-+
-+	cnt -= bit_len;
-+	if (cnt > 0)
-+		goto next_srgn;
-+
-+	return false;
-+}
-+
-+static u64 ufshpb_get_ppn(struct ufshpb_lu *hpb,
-+			  struct ufshpb_map_ctx *mctx, int pos, int *error)
-+{
-+	u64 *ppn_table;
-+	struct page *page;
-+	int index, offset;
-+
-+	index = pos / (PAGE_SIZE / HPB_ENTRY_SIZE);
-+	offset = pos % (PAGE_SIZE / HPB_ENTRY_SIZE);
-+
-+	page = mctx->m_page[index];
-+	if (unlikely(!page)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot find page in mctx\n");
-+		return 0;
-+	}
-+
-+	ppn_table = page_address(page);
-+	if (unlikely(!ppn_table)) {
-+		*error = -ENOMEM;
-+		dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-+			"error. cannot get ppn_table\n");
-+		return 0;
-+	}
-+
-+	return ppn_table[offset];
-+}
-+
-+static void
-+ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb, unsigned long lpn, int *rgn_idx,
-+			int *srgn_idx, int *offset)
-+{
-+	int rgn_offset;
-+
-+	*rgn_idx = lpn >> hpb->entries_per_rgn_shift;
-+	rgn_offset = lpn & hpb->entries_per_rgn_mask;
-+	*srgn_idx = rgn_offset >> hpb->entries_per_srgn_shift;
-+	*offset = rgn_offset & hpb->entries_per_srgn_mask;
-+}
-+
-+static void
-+ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb *lrbp,
-+				  u32 lpn, u64 ppn,  unsigned int transfer_len)
-+{
-+	unsigned char *cdb = lrbp->ucd_req_ptr->sc.cdb;
-+
-+	cdb[0] = UFSHPB_READ;
-+
-+	put_unaligned_be64(ppn, &cdb[6]);
-+	cdb[14] = transfer_len;
-+}
-+
-+/*
-+ * This function will set up HPB read command using host-side L2P map data.
-+ * In HPB v1.0, maximum size of HPB read command is 4KB.
-+ */
- void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- {
-+	struct ufshpb_lu *hpb;
-+	struct ufshpb_region *rgn;
-+	struct ufshpb_subregion *srgn;
-+	struct scsi_cmnd *cmd = lrbp->cmd;
-+	u32 lpn;
-+	u64 ppn;
-+	unsigned long flags;
-+	int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-+	int err = 0;
-+
-+	hpb = ufshpb_get_hpb_data(cmd);
-+	if (!hpb)
-+		return;
-+
-+	if (ufshpb_get_state(hpb) != HPB_PRESENT) {
-+		dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
-+			   "%s: ufshpb state is not PRESENT", __func__);
-+		return;
-+	}
-+
-+	WARN_ON(hpb->lun != cmd->device->lun);
-+	if (!ufshpb_is_write_discard_cmd(cmd) &&
-+	    !ufshpb_is_read_cmd(cmd))
-+		return;
-+
-+	transfer_len = sectors_to_logical(cmd->device, blk_rq_sectors(cmd->request));
-+	if (unlikely(!transfer_len))
-+		return;
-+
-+	lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
-+	ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-+	rgn = hpb->rgn_tbl + rgn_idx;
-+	srgn = rgn->srgn_tbl + srgn_idx;
-+
-+	/* If command type is WRITE or DISCARD, set bitmap as drity */
-+	if (ufshpb_is_write_discard_cmd(cmd)) {
-+		spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				 transfer_len);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	WARN_ON(!ufshpb_is_read_cmd(cmd));
-+
-+	if (!ufshpb_is_support_chunk(transfer_len))
-+		return;
-+
-+	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
-+	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-+				   transfer_len)) {
-+		atomic_inc(&hpb->stats.miss_cnt);
-+		spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+		return;
-+	}
-+
-+	ppn = ufshpb_get_ppn(hpb, srgn->mctx, srgn_offset, &err);
-+	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
-+	if (unlikely(err)) {
-+		/*
-+		 * In this case, the region state is active,
-+		 * but the ppn table is not allocated.
-+		 * Make sure that ppn table must be allocated on
-+		 * active state.
-+		 */
-+		WARN_ON(true);
-+		dev_err(hba->dev, "ufshpb_get_ppn failed. err %d\n", err);
-+		return;
-+	}
-+
-+	ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-+
-+	atomic_inc(&hpb->stats.hit_cnt);
- }
- 
- static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
--- 
-2.17.1
+But it's there that we part company: you believe in page_count()
+and trylock_page(), which to me are buggily unreliable indicators.
 
+2.6.13 21jun05 c475a8ab625d ("can_share_swap_page: use page_mapcount")
+2.6.29 06jan09 ab967d86015a ("mm: wp lock page before deciding cow")
 
+The latter was (two years belated) response to bugreport
+https://lore.kernel.org/lkml/20060913140241.60C5FFB046@ncic.ac.cn/
+which after some confusion I came to understand in
+https://lore.kernel.org/lkml/Pine.LNX.4.64.0609151431320.22674@blonde.wat.veritas.com/
+
+2006: some years before the net_dma adventures that you highlighted in
+https://lore.kernel.org/lkml/CAHk-=whw3QcceKCdYS2ktCPQ96m8Ysyek+w4ny0ygvy7z-_2rw@mail.gmail.com/
+
+> 
+>  (b) the problems with GUP - because GUP (and some other page sharing
+> cases) don't increase the page_mapping() count, GUP was "invisible" to
+> the re-use code, and as a result the reuse code was a buggy mess.
+
+We have certainly had lots of GUP/fork/COW bugs and difficulties down
+the years, plenty of mail threads that I haven't attempted to collate,
+2.6.16 14feb06 f822566165dd ("madvise MADV_DONTFORK/MADV_DOFORK").
+
+But I thought that we had arrived at a reasonably understood compromise
+eleven years ago.  "the reuse code was a buggy mess" is news to me, and
+I still haven't grasped why GUP needs to be "visible" to it.
+
+Obviously, if someone is writing to private pages via GUP, without having
+declared that intention with the appropriate flag to break COW in advance,
+trouble may follow.  But you saw a problem just with reading, that I have
+failed to grasp.
+
+> 
+>  (c) the complete and pointless complexity of this path, that isn't
+> actually done anywhere else. The GUP issue was the immediate - and
+> currently existing - bug caused by this, but the locking costs are
+> another example.
+
+I probably need that particular GUP issue explained again.  But no rush:
+having sounded this alarm, I must turn attention to other things.
+
+> 
+> So the page reuse is simply wrong. It's almost certainly also
+> pointless and entirely historical. The _reason_ for trying to reuse
+> the KSM pages was documented not as performance, but simple to match
+> the other (also pointless) complexity of the swap cache reuse.
+
+I concede on KSM, but disagree that the rest was pointless: Yingchao
+Zhou in the lore links above had a reasonable expectation, that COW
+would *not* be broken erratically and unnecessarily.  You see it
+differently, you think that relying on COW not being broken is wrong.
+
+You may be right that it's all historical by now; but we do risk
+breaking users by changing the guarantee of the last eleven years:
+blame me for establishing that guarantee by fixing the page_count
+and trylock_page unreliabilities.
+
+Hugh
+
+(Not snipping what you wrote below, so it's easy to come back to if
+necessary: some I agree with, some I don't, but have said enough.)
+
+> 
+> So the intent is to do the "page_count()" test early, to get rid of
+> the locking issues with any shared pages.
+> 
+> So the logic is "if this page is marked PageKsm(), or if it has an
+> elevated page count, don't even try - just copy".
+> 
+> To make a very concrete example: it's not unusual at all to basically
+> have simultaneous page faults on a dirty page because it's COW-shared
+> in both parent and child. Trivial to trigger, with the child and
+> parent running on different CPU's and just writing to the same page
+> right after a fork. And there is absolutely _zero_ reason that should
+> be serialized by anything at all. The parent and child are complete
+> share-nothing things: taking the page lock was and is simply wrong.
+> 
+> Solution: don't do it. Just notice "Oh, this page has other users"
+> (and page_count() is the correct thing to do for that, not
+> page_mappings(), since GUP is also another user), and actively *avoid*
+> any serialization. Just copy the damn thing.
+> 
+> I'll take full blame for the historical stupidity. This was a bigger
+> deal back in the days when 4MB of RAM was considered normal. Plus page
+> locking wasn't even an issue back then. In fact, no locking at all was
+> needed back when the "try to reuse" code was originally written.
+> Things were simpler back then.
+> 
+> It's just that I'm 100% convinced that that historical legacy is very
+> very wrong these days. That "serialize on page lock if COW fault in
+> parent and child" is just an example of where this is fundamentally
+> wrong. But the whole complexity in the map count logic is just wholly
+> and totally wrong too.
+> 
+> I dare anybody to read the swapfile code for "total_map_swapcount" and
+> tell me they understand it fully.
+> 
+> So my theory is that this code - that is meant to *improve*
+> performance by sharing pages aggressively after a fork(), because that
+> used to be a primary issue, is now in fact making performance *much
+> worse*, because it's trying to optimize for a case that doesn't even
+> matter any more (does anybody truly believe that swap cache and shared
+> COW pages are a major source of performance?) and it does so at a huge
+> complexity _and_ performance cost.
+> 
+> So ripping out the KSM reuse code is just another "this is pointless
+> and wrong" issue. If you seriously try to KSM share a page that now
+> only has _one_ single user left, and that one single user writes to it
+> and is modifying it, then the problem is absolutely *NOT* that we
+> should try to re-use the page. No, the problem is that the KSM code
+> picked a horribly bad page to try to share.
+> 
+> Will that happen _occasionally_? Sure. But if it happens once in a
+> blue moon, we really shouldn't have that code to deal with it.
+> 
+> It's really that simple. All that reuse code is pointless and wrong.
+> It has historical roots, and it made sense at the time, but in this
+> day and age I'm convinced it's completely wrong.
+> 
+> Now, I'm _also_ admittedly convinced that I am occasionally completely
+> wrong, and people do odd things, and maybe there are loads where it
+> really matters. I doubt it in this case, but I think what we should do
+> is rip out all the existing historical code, and _if_ somebody has a
+> case where it matters, we can look at THAT case, and people can show
+> 
+>  (a) what the exact pattern is that we actually care about
+> 
+>  (b) numbers
+> 
+> and then maybe we can re-introduce some sort of re-use code with -
+> hopefully - a much more targeted and documented "this is why this
+> matters" approach.
+> 
+> So the intent is to get rid of the page lock thing, but I also hope
+> that long-term, we can get rid of reuse_swap_page() and some of that
+> mapcount stuff entirely.
+> 
+>                 Linus
