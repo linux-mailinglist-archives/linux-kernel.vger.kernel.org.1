@@ -2,133 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9637B259F60
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E72C8259F68
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730121AbgIATrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 15:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726936AbgIATrP (ORCPT
+        id S1732300AbgIATu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 15:50:26 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:42115 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726936AbgIATuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 15:47:15 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D2CC061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 12:47:15 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id lo4so3374635ejb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 12:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kTur4TszHq9523qD6iPQQf45ohXDEUrbbOabBCfKuUw=;
-        b=CWzyYuoBpHyopcW6UGJzCRrbzhPmoxUBaCxI7bRNujUqWrF5to/QhuZqjrS7nxWu0W
-         jAbOrW/VUjLw5eCygcxnnz4+H4WcP4zPwj0aufjfMcS7bjx3wkayFffr7Z6u5k2s8TFD
-         8tXV8kM+VzEYM9fO8VnSzWieJ5cQoi7lXniCotDInsAEJFLJ7zfDy2L/kUH4emO0IlvH
-         gpqmf3HLFgBRudRPyT4CD2lBOGN0UFZiJ0WwVcUE7jm9LSNP+IE3hPw9g59DEqCzfSEL
-         THiflFVqtJ+7m5QY2g3VNZ5cZdTzYUjw1h86UqHsaXiHTetSrbuY9+PWlnuAGvW1/UM7
-         Af1Q==
+        Tue, 1 Sep 2020 15:50:24 -0400
+Received: by mail-il1-f197.google.com with SMTP id f67so1761117ilf.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 12:50:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kTur4TszHq9523qD6iPQQf45ohXDEUrbbOabBCfKuUw=;
-        b=kZOvoeb96PUtM2COatqg7KzF48btOEiVH4WQD0mXMQOLQztPN+8N0mfcFSOE+HwWge
-         2Rdcem2DVD5r7C8h2XOBkFuA/xpVmWNKnjo155T6ccFIAwnAJ3XHcmQJWkcKZgA7kj0T
-         DJSB5gC1oUbbZPEYeunVWMrzIeYbXrxZl5bGjYwmH6x086d0LgkZcjfgoqOquhhe34yc
-         NuTBCCk+YKpjrZvEjPkPx0JzFuvaR2tQz8TubAhneZVTlJvycTXtWsNOzSy7S8W7zAUP
-         Ct9dvus94XYL2xh97I2pUJXE3hr1t5t0+PTUSceBrzQ+ahNf5JQWUMjkv8Qp7Raw5Qax
-         jW3g==
-X-Gm-Message-State: AOAM533rxV3ghfY1kYr4h7HTtJPnE9loqj8SqJ7Cr/DRdflXhSsziEdc
-        xsH5BlZoYPLpJrqAs2zIwgSQpPZkaa19/4LFOr7zyw==
-X-Google-Smtp-Source: ABdhPJzf8T7FXtY0Q7Fx2epgXAQyimHZxDg5Mh5UyXW9wn394/QoJXCbMs9CPXEix3VkOUNcTb7yISndZZ2r4JYr/AI=
-X-Received: by 2002:a17:906:a209:: with SMTP id r9mr3270866ejy.413.1598989633789;
- Tue, 01 Sep 2020 12:47:13 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=QCcUk6PDJ66T5rY64nvFgrqzOsiBnvjDHR8LfK6QB6w=;
+        b=dR2VumguXn0HEwuVrkQMNoat30ZMkSoud3HmdmPrcYK5FfgCuXzZlQA1JxJdbZrNaR
+         2J14io63VwATxNstbQ0P7k4sedktFjCoIISsuSXELYwQNXKtRXSzttkL1XBJIQOpq8iS
+         DRgbIHovY79CKwgIYwnKrFST+aDSPQecX1GUXyJ6J9VDXIT1s/xTHK3f79D8oSf3MYoh
+         PIVHQ3vUGZKEhTM+xxwpaj99/YIheb715CPxmYwHTkt4T7o9GxRkf2FKf1hnPcZ/SNdi
+         HbfwSUVumsvjtaSBON/9v00D9WrrmyByYqzedjLe8KhTMoGkX2PWiIVo+sNWzGU2YO/5
+         Utxw==
+X-Gm-Message-State: AOAM530Li3JALT1f9m422oCbYn7133HT4YrtkMyLW0LVffFAumnub/z1
+        lNgZ3v7MqlmYvXaxPvA0HQrbx8eO6Pj/F929N11yuwoe2J1q
+X-Google-Smtp-Source: ABdhPJxiYFujkpS7nBzuzp8GpXCF2cbV4LuRtjQLL2CXA/QBzPK3lBB9PlerEbjYZDQ9Sj8fB40lmIkZgytC4lHDz+r0+w2dkPEv
 MIME-Version: 1.0
-References: <20200819224030.1615203-1-haoluo@google.com> <20200819224030.1615203-9-haoluo@google.com>
- <CAEf4BzYC0JRQusCxTrmraYQC7SZdkVjdy8DMUNECKwCbXP9-dw@mail.gmail.com>
- <CA+khW7jYWNT5aVe5vCinw5qwKKoB0w386qz2g+0ndv1LeeoGGg@mail.gmail.com> <CAEf4Bza5+m72JQ1Q3a2GRetGB7C-Zemvd-ib0u_VKC2nrYkgdQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bza5+m72JQ1Q3a2GRetGB7C-Zemvd-ib0u_VKC2nrYkgdQ@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Tue, 1 Sep 2020 12:47:02 -0700
-Message-ID: <CA+khW7iP+BsXnNg0E-K3npR74FqV0b+oHo9j27ymKWobi-QBVw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 8/8] bpf/selftests: Test for bpf_per_cpu_ptr()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
+X-Received: by 2002:a02:820b:: with SMTP id o11mr2893214jag.136.1598989822335;
+ Tue, 01 Sep 2020 12:50:22 -0700 (PDT)
+Date:   Tue, 01 Sep 2020 12:50:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005c1dc605ae45d401@google.com>
+Subject: INFO: task can't die in register_netdevice_notifier
+From:   syzbot <syzbot+df649192fec7dd1beaa7@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mkl@pengutronix.de,
+        netdev@vger.kernel.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 11:12 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Aug 27, 2020 at 8:42 PM Hao Luo <haoluo@google.com> wrote:
-> >
-[...]
-> > > >
-> > > > -extern const struct rq runqueues __ksym; /* struct type global var. */
-> > > > +extern const struct rq runqueues __ksym; /* struct type percpu var. */
-> > > >  extern const int bpf_prog_active __ksym; /* int type global var. */
-> > > > +extern const unsigned long process_counts __ksym; /* int type percpu var. */
-> > > >
-> > > >  SEC("raw_tp/sys_enter")
-> > > >  int handler(const void *ctx)
-> > > >  {
-> > > > +       struct rq *rq;
-> > > > +       unsigned long *count;
-> > > > +
-> > > >         out__runqueues = (__u64)&runqueues;
-> > > >         out__bpf_prog_active = (__u64)&bpf_prog_active;
-> > > >
-> > > > +       rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, 1);
-> > > > +       if (rq)
-> > > > +               out__rq_cpu = rq->cpu;
-> > >
-> > > this is awesome!
-> > >
-> > > Are there any per-cpu variables that are arrays? Would be nice to test
-> > > those too.
-> > >
-> > >
-> >
-> > There are currently per-cpu arrays, but not common. There is a
-> > 'pmc_prev_left' in arch/x86, I can add that in this test.
->
-> arch-specific variables are bad, because selftests will be failing on
-> other architectures; let's not do this then.
->
+Hello,
 
-Yeah, no problem. Though not going to add this arch-specific variable
-in the posted patches, I tried array-typed ksyms locally in my test
-environment. It worked fine, except that the array size is not
-checked. For instance, if there is a percpu array in kernel as
+syzbot found the following issue on:
 
-DEFINE_PER_CPU(u32[64], foo);
+HEAD commit:    b36c9697 Add linux-next specific files for 20200828
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16660271900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5e3cf99580b5542c
+dashboard link: https://syzkaller.appspot.com/bug?extid=df649192fec7dd1beaa7
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-we can declare a ksym of different size and it passes libbpf checks
-and kernel verification.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-extern u32 foo[128] __ksyms;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+df649192fec7dd1beaa7@syzkaller.appspotmail.com
 
-It seems that bpf_core_types_are_compat() doesn't check nr_elem. But
-it seems the kernel verifier does check out-of-bounds accesses, so
-this may not be a real problem. Just want to list what I saw.
+INFO: task syz-executor.4:10877 can't die for more than 143 seconds.
+task:syz-executor.4  state:D stack:29424 pid:10877 ppid:  6874 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0x8e5/0x21e0 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ rwsem_down_write_slowpath+0x603/0xc60 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1532
+ register_netdevice_notifier+0x1e/0x260 net/core/dev.c:1814
+ bcm_init+0x1a3/0x210 net/can/bcm.c:1451
+ can_create+0x27c/0x4d0 net/can/af_can.c:168
+ __sock_create+0x3ca/0x740 net/socket.c:1427
+ sock_create net/socket.c:1478 [inline]
+ __sys_socket+0xef/0x200 net/socket.c:1520
+ __do_sys_socket net/socket.c:1529 [inline]
+ __se_sys_socket net/socket.c:1527 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5b9
+Code: Bad RIP value.
+RSP: 002b:00007f336efccc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000032b40 RCX: 000000000045d5b9
+RDX: 0000000000000002 RSI: 0000000000000002 RDI: 000000000000001d
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffed071b14f R14: 00007f336efcd9c0 R15: 000000000118cf4c
+INFO: task syz-executor.4:10877 blocked for more than 143 seconds.
+      Not tainted 5.9.0-rc2-next-20200828-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.4  state:D stack:29424 pid:10877 ppid:  6874 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0x8e5/0x21e0 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ rwsem_down_write_slowpath+0x603/0xc60 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1532
+ register_netdevice_notifier+0x1e/0x260 net/core/dev.c:1814
+ bcm_init+0x1a3/0x210 net/can/bcm.c:1451
+ can_create+0x27c/0x4d0 net/can/af_can.c:168
+ __sock_create+0x3ca/0x740 net/socket.c:1427
+ sock_create net/socket.c:1478 [inline]
+ __sys_socket+0xef/0x200 net/socket.c:1520
+ __do_sys_socket net/socket.c:1529 [inline]
+ __se_sys_socket net/socket.c:1527 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5b9
+Code: Bad RIP value.
+RSP: 002b:00007f336efccc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000032b40 RCX: 000000000045d5b9
+RDX: 0000000000000002 RSI: 0000000000000002 RDI: 000000000000001d
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffed071b14f R14: 00007f336efcd9c0 R15: 000000000118cf4c
+INFO: task syz-executor.4:10881 can't die for more than 144 seconds.
+task:syz-executor.4  state:D stack:29792 pid:10881 ppid:  6874 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0x8e5/0x21e0 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ rwsem_down_write_slowpath+0x603/0xc60 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1532
+ register_netdevice_notifier+0x1e/0x260 net/core/dev.c:1814
+ bcm_init+0x1a3/0x210 net/can/bcm.c:1451
+ can_create+0x27c/0x4d0 net/can/af_can.c:168
+ __sock_create+0x3ca/0x740 net/socket.c:1427
+ sock_create net/socket.c:1478 [inline]
+ __sys_socket+0xef/0x200 net/socket.c:1520
+ __do_sys_socket net/socket.c:1529 [inline]
+ __se_sys_socket net/socket.c:1527 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5b9
+Code: Bad RIP value.
+RSP: 002b:00007f336edccc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000032b40 RCX: 000000000045d5b9
+RDX: 0000000000000002 RSI: 0000000000000002 RDI: 000000000000001d
+RBP: 000000000118d0c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118d08c
+R13: 00007ffed071b14f R14: 00007f336edcd9c0 R15: 000000000118d08c
+INFO: task syz-executor.4:10881 blocked for more than 144 seconds.
+      Not tainted 5.9.0-rc2-next-20200828-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor.4  state:D stack:29792 pid:10881 ppid:  6874 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:3778 [inline]
+ __schedule+0x8e5/0x21e0 kernel/sched/core.c:4527
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4602
+ rwsem_down_write_slowpath+0x603/0xc60 kernel/locking/rwsem.c:1235
+ __down_write kernel/locking/rwsem.c:1389 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1532
+ register_netdevice_notifier+0x1e/0x260 net/core/dev.c:1814
+ bcm_init+0x1a3/0x210 net/can/bcm.c:1451
+ can_create+0x27c/0x4d0 net/can/af_can.c:168
+ __sock_create+0x3ca/0x740 net/socket.c:1427
+ sock_create net/socket.c:1478 [inline]
+ __sys_socket+0xef/0x200 net/socket.c:1520
+ __do_sys_socket net/socket.c:1529 [inline]
+ __se_sys_socket net/socket.c:1527 [inline]
+ __x64_sys_socket+0x6f/0xb0 net/socket.c:1527
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45d5b9
+Code: Bad RIP value.
+RSP: 002b:00007f336edccc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000029
+RAX: ffffffffffffffda RBX: 0000000000032b40 RCX: 000000000045d5b9
+RDX: 0000000000000002 RSI: 0000000000000002 RDI: 000000000000001d
+RBP: 000000000118d0c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118d08c
+R13: 00007ffed071b14f R14: 00007f336edcd9c0 R15: 000000000118d08c
 
-> >
-> > [...]
+Showing all locks held in the system:
+2 locks held by kworker/u4:2/80:
+ #0: ffff8880ae635f98 (&rq->lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+ #0: ffff8880ae635f98 (&rq->lock){-.-.}-{2:2}, at: __schedule+0x232/0x21e0 kernel/sched/core.c:4445
+ #1: ffff8880ae620ec8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x2fb/0x400 kernel/sched/psi.c:833
+1 lock held by khungtaskd/1169:
+ #0: ffffffff89c67640 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5825
+1 lock held by in:imklog/6548:
+ #0: ffff888093dd26b0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+2 locks held by rs:main Q:Reg/6549:
+ #0: ffff88809deee130 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+ #1: ffff888098aea460 (sb_writers#4){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2790 [inline]
+ #1: ffff888098aea460 (sb_writers#4){.+.+}-{0:0}, at: vfs_write+0x54f/0x730 fs/read_write.c:574
+3 locks held by kworker/u4:8/8625:
+1 lock held by syz-executor.4/10877:
+ #0: ffffffff8a879430 (pernet_ops_rwsem){++++}-{3:3}, at: register_netdevice_notifier+0x1e/0x260 net/core/dev.c:1814
+1 lock held by syz-executor.4/10881:
+ #0: ffffffff8a879430 (pernet_ops_rwsem){++++}-{3:3}, at: register_netdevice_notifier+0x1e/0x260 net/core/dev.c:1814
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1169 Comm: khungtaskd Not tainted 5.9.0-rc2-next-20200828-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd89/0xf30 kernel/hung_task.c:339
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 8625 Comm: kworker/u4:8 Not tainted 5.9.0-rc2-next-20200828-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: netns cleanup_net
+RIP: 0010:lock_acquire+0x1e/0xad0 kernel/locking/lockdep.c:4977
+Code: 66 90 66 2e 0f 1f 84 00 00 00 00 00 41 57 41 56 41 89 d6 41 55 49 89 fd 41 54 41 89 cc 48 b9 00 00 00 00 00 fc ff df 55 89 f5 <53> 44 89 c3 48 81 ec c0 00 00 00 48 8d 44 24 20 4c 89 0c 24 48 c7
+RSP: 0018:ffffc900065ffb40 EFLAGS: 00000246
+RAX: 0000000000000201 RBX: 0000000000010000 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff89a6be98
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 000000000000160f R11: 0000000000000001 R12: 0000000000000000
+R13: ffffffff89a6be98 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8fc077f000 CR3: 000000009f467000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ nf_conntrack_lock net/netfilter/nf_conntrack_core.c:91 [inline]
+ get_next_corpse net/netfilter/nf_conntrack_core.c:2204 [inline]
+ nf_ct_iterate_cleanup+0x102/0x330 net/netfilter/nf_conntrack_core.c:2249
+ nf_conntrack_cleanup_net_list+0x81/0x250 net/netfilter/nf_conntrack_core.c:2436
+ ops_exit_list+0x10d/0x160 net/core/net_namespace.c:189
+ cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:603
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
