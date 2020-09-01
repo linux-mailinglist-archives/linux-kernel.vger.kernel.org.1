@@ -2,116 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932C02589EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763B52589F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgIAH7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgIAH7m (ORCPT
+        id S1727833AbgIAIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 04:00:28 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:43267 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726044AbgIAIA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:59:42 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF33C061244;
-        Tue,  1 Sep 2020 00:59:42 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id q21so538352edv.1;
-        Tue, 01 Sep 2020 00:59:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1tUkMsxqX+EmvRrvz0z84bC2IgPMV2uqRkretCUGwiQ=;
-        b=qkxZLlPRV+HvJ1qB5AZTMRDPW93Z/gzTs0x18/F1NW5XRe5b7fQSGM/dUk5AQ+7TY+
-         L+3oJiEQCjjswVwRkAz8MEGaDpWxIlfKhvbV9ByS3B9z0US62lCR1AXO9dN33RXqYtLI
-         sWaSYa87lhOHVY3YpM/I8IWuhM1Wp+v18UI7NVByfcIETSsKma+jN6GunmH5vZMiq8xb
-         2XkoSC7T3ntj3r1ELFyVnvnThVv9kyg/H59v0XtjkvUao8wRKWBr/KZBYUpQ0UJHgbKJ
-         pY1xbx9gralqUwLbXi1wyERRawpucmFuYlfp/6cgHsg2xDKgiOwg9X3rzhbVckmAIHcR
-         8Z2w==
+        Tue, 1 Sep 2020 04:00:27 -0400
+Received: by mail-ot1-f67.google.com with SMTP id v16so396944otp.10;
+        Tue, 01 Sep 2020 01:00:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=1tUkMsxqX+EmvRrvz0z84bC2IgPMV2uqRkretCUGwiQ=;
-        b=BaSg72Ke5DnTW6obA0cNTSMX/z3a/m/p92s952Q2h2yFIed/ALKXxIMa9pXTpYmZGY
-         7jMd6A4GuWBTIHaRzW0lBbARHxxsy7C9pPVqhy9meAh1cWQtcQPRPLmoQR3QkK2a9Chh
-         1mIxEsQXf8p9woCdhpxLTcvpO72yc0IAFcN7Bteq9lYSN82KhRYZzGCknfdPL4O0LPTS
-         WCgvAfKT+criMdPx9sNjxtj6e46hNiujQ+DqIPAuyxZNDa/rYU/n4QbBpn6GvSp3sJ/3
-         x1AeHpLhZbMv6pIYEd2Xb5LqaGIB7wzxA1bKzxxbRPg8epHNHxYKcWNRln+tnYLgxqiz
-         YCtg==
-X-Gm-Message-State: AOAM530ty+EMbS8NMrPyvFqAlOLgw5gZ+vA/BbWVoNpvfTgJcKLbjJRE
-        lmeKbyQ3PrOaE2n+PadyhBY=
-X-Google-Smtp-Source: ABdhPJzeDWymrCPJVQGGseKzqQGGkA79Su6T6BnnuBxUsnIU8yb3Ft7Lc0UMjmZqTp7y2AROzPerXQ==
-X-Received: by 2002:a50:8881:: with SMTP id d1mr689496edd.306.1598947180775;
-        Tue, 01 Sep 2020 00:59:40 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id qu11sm511021ejb.15.2020.09.01.00.59.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 00:59:40 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 09:59:37 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/29] Warn on orphan section placement
-Message-ID: <20200901075937.GA3602433@gmail.com>
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <202008311240.9F94A39@keescook>
- <20200901071133.GA3577996@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tfjwZecOvf9PlYjWmqCsC4ASTXGKL7VS6W1u6/SHeYw=;
+        b=q6k/W3TcIMUu/QAGR+drLXmq3RT4d5jDgmEi8NNwgLALY9nSswuSF9/txJwhf+xyps
+         D+5zv4Is5iqMLwJw6/pmKz0z2HvuShKOeXZkAzZkfwm8bfCvBEb9kkyD2p++FVtDsMjv
+         k9z8I+IA0hpUKsSjBxPk+nyKhTfBkmjjeOmbkyzEQXOOGygMN7wx5RxEDtyVvl926MMV
+         bHOOyu9YoeUY8Ud6C4jNHcw/CEr5aBKlYwxE4GI6aY9FHV8TcPE405GBkaPB1msRShar
+         99y6G5RCGnDDvuyyH5/CZ9zAqQXpCnpacLfBIotsNBAqWvz7FZUAn5pgRaslUGh79AAM
+         s8Cg==
+X-Gm-Message-State: AOAM531zTdr/COSVNAHe6PMKLKVvhXbikJpLFPR210IV4Olbz7zrFPhv
+        YEMhw54Y+moQlDLUEnL6KVDxQAp8W75d5cZeQHI=
+X-Google-Smtp-Source: ABdhPJyak+o0FWIDI6uA2czIjPC1+5V/5hXLaQXa5ncT0xIXvPCkjyT1ltkeXU+ngALHqaWRSD8JzFrP/CkeaUSgRBU=
+X-Received: by 2002:a9d:1b62:: with SMTP id l89mr523230otl.145.1598947227043;
+ Tue, 01 Sep 2020 01:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901071133.GA3577996@gmail.com>
+References: <20200826093220.10266-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200826093220.10266-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200826093220.10266-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 1 Sep 2020 10:00:16 +0200
+Message-ID: <CAMuHMdWuNc-Sb8yhSb3oNeBjPD5ixJ7mug54Uuwq7y=94dPnyg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: shmobile: defconfig: enable CONFIG_PCIE_RCAR_HOST
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 26, 2020 at 11:33 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> config option PCIE_RCAR internally selects PCIE_RCAR_HOST which builds the
+> same driver. So this patch renames CONFIG_PCIE_RCAR to
+> CONFIG_PCIE_RCAR_HOST so that PCIE_RCAR can be safely dropped from Kconfig
+> file.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-* Ingo Molnar <mingo@kernel.org> wrote:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.10.
 
-> 
-> * Kees Cook <keescook@chromium.org> wrote:
-> 
-> > On Fri, Aug 21, 2020 at 12:42:41PM -0700, Kees Cook wrote:
-> > > Hi Ingo,
-> > > 
-> > > Based on my testing, this is ready to go. I've reviewed the feedback on
-> > > v5 and made a few small changes, noted below.
-> > 
-> > If no one objects, I'll pop this into my tree for -next. I'd prefer it
-> > go via -tip though! :)
-> > 
-> > Thanks!
-> 
-> I'll pick it up today, it all looks very good now!
+Gr{oetje,eeting}s,
 
-One thing I found in testing is that it doesn't handler older LD 
-versions well enough:
+                        Geert
 
-  ld: unrecognized option '--orphan-handling=warn'
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Could we just detect the availability of this flag, and emit a warning 
-if it doesn't exist but otherwise not abort the build?
-
-This is with:
-
-  GNU ld version 2.25-17.fc23
-
-Thanks,
-
-	Ingo
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
