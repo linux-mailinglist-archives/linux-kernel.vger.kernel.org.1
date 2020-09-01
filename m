@@ -2,139 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 038BD259BED
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8338E259B9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgIARIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        id S1726537AbgIARFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729442AbgIAPSA (ORCPT
+        with ESMTP id S1729312AbgIAPTw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:00 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D43C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:17:57 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id nv17so779921pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:17:57 -0700 (PDT)
+        Tue, 1 Sep 2020 11:19:52 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24BABC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:19:51 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id f18so956732pfa.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jN9lhIYk+vgw0Ck0cVCcWxfdMAHspCt08b10OTqq50Y=;
-        b=QNwyUWGqs9owKFllSjci/t28I81jLcjvgiBtzPpNMRmB+M2e4JBvG3SftYAgE8DETw
-         A5b6HYulpcZeseDvZnxy5DImevpZ81cF8dcEq9K+/+/1l71Pmted5STlCijieeHbus5d
-         vU2UHyXJC6TyBYorxv12caOk04LJayZkpsHkE=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5dyfdcxsLFzsVNr0u5gT5EuEw5CBY0e+onCAlz+mSE=;
+        b=Uhg0AGCWZP0J1d3Tmwb/SBoSO/BKLuzoaqykqd8SqpN8k6h5EPp7DGfIF4/VovOsGY
+         tu1X4zLWl7H9QE5J/rI/0FXoGHNZ24sfO8OejjyxR0ubCYUZhCrYatzsZb+smmDxXNvY
+         PUJmuAe5N52oPr4zgPvLyBkcwHMouDvh5jDKg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jN9lhIYk+vgw0Ck0cVCcWxfdMAHspCt08b10OTqq50Y=;
-        b=n2/u/kX0d08hxbPa48/CPUpm/HoqypJOGRGfrOHOgJWq2V9wfkob0wSUWDLzCry97K
-         0Pu722sy2p6XHHl5JuDGRz5vj911cDxujlx37cSzWTDYwGMGz3C5qLlNxKmo7KtZpcYc
-         isDVpObXL/DqBhMbY1Mzb5ZC9CFzlGAKMHwDlyVKujNUnvKveKUcDHpjP2uDf+YgdrzF
-         K65Ub/S6ZArUnCsZk5HZKICWY9UjQEg81Z0h2LRhRDo0UN6qdSatq2RZ90Rpjk/28Kbs
-         vwAUmKGx5Acd3O2VfwyiVrSoxd00lNK/KQxOC5qzsa9DWGvPQur8V58AI1XXQxjnazkN
-         hKiw==
-X-Gm-Message-State: AOAM530CgUcJGYwpUnVq/jm3XyJ1Ic5ux1RzExoGSDJSKTLLQTZDOMI3
-        uLmgepCprZepHZ8E5aBOrDMrNg==
-X-Google-Smtp-Source: ABdhPJzj6yhyG4RDEF44EWGGFa00f7t2qp0yXpcOrOBamPDLCZ2Fwy8Mo8dB/mLaqQdQJtP1wf76Hg==
-X-Received: by 2002:a17:90a:8a0d:: with SMTP id w13mr2008556pjn.218.1598973476573;
-        Tue, 01 Sep 2020 08:17:56 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a12sm2324629pfr.217.2020.09.01.08.17.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y5dyfdcxsLFzsVNr0u5gT5EuEw5CBY0e+onCAlz+mSE=;
+        b=gp0CBq5mQqULw1DY5nnJu0Xq+bgjWYTStOqJT+supEJRTuhu7T+YMxE60y5KR/G+d+
+         yHO4NG70OMs0mu/7Uc9vAm7Rj93uMzDzUjOW75zmjxcOhvTE+hhJnCs7YPTcplPIyp8j
+         OhNtfnjrtToCO5EiXwxhAA3R0D+lB1nDXLt9Ro9jxCyyJIVQSg9u03+Rf3CrzjaSOri7
+         7jKitNLd5KXlwmOjx4CY9KKhEyApeMSD0ZJcdLe5b8vkfQevf21u0cZnGoxCV4GDmls+
+         9OCWFn+LtwWLPkilEilIrLqlFRpW8X0LunLhzyeTR0yWROopUTyOeqwpVcj0e1UKQJtC
+         KTIA==
+X-Gm-Message-State: AOAM530u3HDXJzagayEYNzibC7sUQIombNOgiqkMF09Ng2nkXFmP1KuO
+        MmzvBKh8SfvuFaSPLGIuSmvr+Q==
+X-Google-Smtp-Source: ABdhPJz0oBbcKmWg4W+h+GHSNp7GbwrluQt340XIS43yWmSsaUM9b8QjpOJk9M+QQ6FIZWy93DuA1A==
+X-Received: by 2002:a63:ba49:: with SMTP id l9mr1985721pgu.101.1598973590734;
+        Tue, 01 Sep 2020 08:19:50 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id a24sm1885478pju.25.2020.09.01.08.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 08:17:55 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 08:17:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 00/29] Warn on orphan section placement
-Message-ID: <202009010816.80F4692@keescook>
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <202008311240.9F94A39@keescook>
- <20200901071133.GA3577996@gmail.com>
- <20200901075937.GA3602433@gmail.com>
- <20200901081647.GB3602433@gmail.com>
+        Tue, 01 Sep 2020 08:19:50 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Campello <campello@chromium.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] iio: sx9310: Prefer async probe
+Date:   Tue,  1 Sep 2020 08:19:43 -0700
+Message-Id: <20200901081920.v2.1.Id02b2f451b3eed71ddd580f4b8b44b3e33e84970@changeid>
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901081647.GB3602433@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 10:16:47AM +0200, Ingo Molnar wrote:
-> 
-> * Ingo Molnar <mingo@kernel.org> wrote:
-> 
-> > 
-> > * Ingo Molnar <mingo@kernel.org> wrote:
-> > 
-> > > 
-> > > * Kees Cook <keescook@chromium.org> wrote:
-> > > 
-> > > > On Fri, Aug 21, 2020 at 12:42:41PM -0700, Kees Cook wrote:
-> > > > > Hi Ingo,
-> > > > > 
-> > > > > Based on my testing, this is ready to go. I've reviewed the feedback on
-> > > > > v5 and made a few small changes, noted below.
-> > > > 
-> > > > If no one objects, I'll pop this into my tree for -next. I'd prefer it
-> > > > go via -tip though! :)
-> > > > 
-> > > > Thanks!
-> > > 
-> > > I'll pick it up today, it all looks very good now!
-> > 
-> > One thing I found in testing is that it doesn't handler older LD 
-> > versions well enough:
-> > 
-> >   ld: unrecognized option '--orphan-handling=warn'
+On one board I found that:
+  probe of 5-0028 returned 1 after 259547 usecs
 
-Oh! Uhm, yikes. Thanks for noticing this.
+While some of this time is attributable to the pile of i2c transfers
+that we do at probe time, the lion's share (over 200 ms) is sitting
+waiting in the polling loop in sx9310_init_compensation() waiting for
+the hardware to indicate that it's done.
 
-> > Could we just detect the availability of this flag, and emit a warning 
-> > if it doesn't exist but otherwise not abort the build?
+There's no reason to block probe of all other devices on our probe.
+Turn on async probe.
 
-Yeah, I'll respin those patches.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-> > This is with:
-> > 
-> >   GNU ld version 2.25-17.fc23
+Changes in v2:
+- Updated commit message w/ details on why probe is slow.
+- Added comment next to flag about why probe is slow.
 
-(At best, this is from 2015 ... but yes, min binutils in 2.23.)
+ drivers/iio/proximity/sx9310.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> 
-> I've resolved this for now by not applying the 5 patches that add the 
-> actual orphan section warnings:
-> 
->   arm64/build: Warn on orphan section placement
->   arm/build: Warn on orphan section placement
->   arm/boot: Warn on orphan section placement
->   x86/build: Warn on orphan section placement
->   x86/boot/compressed: Warn on orphan section placement
-> 
-> The new asserts plus the actual fixes/enhancements are enough changes 
-> to test for now in any case. :-)
-
-Yup! I'll respin the enabling patches. Thanks again!
-
+diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx9310.c
+index 9d72d08ab9e7..6d3f4ab8c6b2 100644
+--- a/drivers/iio/proximity/sx9310.c
++++ b/drivers/iio/proximity/sx9310.c
+@@ -1056,6 +1056,13 @@ static struct i2c_driver sx9310_driver = {
+ 		.acpi_match_table = sx9310_acpi_match,
+ 		.of_match_table = sx9310_of_match,
+ 		.pm = &sx9310_pm_ops,
++
++		/*
++		 * Lots of i2c transfers in probe + over 200 ms waiting in
++		 * sx9310_init_compensation() mean a slow probe; prefer async
++		 * so we don't delay boot if we're builtin to the kernel.
++		 */
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 	},
+ 	.probe_new	= sx9310_probe,
+ 	.id_table	= sx9310_id,
 -- 
-Kees Cook
+2.28.0.402.g5ffc5be6b7-goog
+
