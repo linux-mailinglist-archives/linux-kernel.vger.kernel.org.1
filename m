@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C3F259886
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432E3259890
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730593AbgIAQ1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:27:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731020AbgIAQ1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:27:20 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730901AbgIAQ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:28:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727992AbgIAQ2V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:28:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598977700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Q/jxouQHscjmTrAHRVozJy9AEeAW/LaC4zIz56UQCmk=;
+        b=SBUVUwHuUfhQcwvtIvp0qk8WzKsqAG/eBbD4QEb+rdnA1vBLnKsxL2wLFkJgIw/PuNH7xE
+        zXCptr35QGjYQUhmSqR36nfcSQHdGbdpH6m1oKqralAdVIpETthy6HgBPy7ujiCVJvjrfg
+        JjsT6PHD5zmsgDLJzVcrg1YoE//B5rg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-t6RQvitsPEClxJ8wnJRupw-1; Tue, 01 Sep 2020 12:28:18 -0400
+X-MC-Unique: t6RQvitsPEClxJ8wnJRupw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F38D1206FA;
-        Tue,  1 Sep 2020 16:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598977640;
-        bh=v3ubAj4K8yP34BRJWBT76VmMtHRcJqZ7TClZ7Gyqd4k=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Q6HE2OGr/FVFJepUDnOmpdTMZnb1YikSFFeWlERuqMdEh3lZCIgUI92wkfPVrRCHQ
-         hIZsU5xQD7TMqN8zhsdA3A67squHOh4loHeiupztWrDR6O0tNzmC7HHj6jgwweuTBS
-         ePpJ8gzeuOsmgnIrjcymimF4H6J91Biv+B2z+IKI=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id CF92135226A5; Tue,  1 Sep 2020 09:27:19 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 09:27:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     kernel test robot <lkp@intel.com>, Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [LKP] Re: [rcuperf] 4e88ec4a9e:
- UBSAN:division-overflow_in_arch/x86/include/asm/div64.h
-Message-ID: <20200901162719.GE29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200831120122.GH4299@shao2-debian>
- <20200831155037.GZ2855@paulmck-ThinkPad-P72>
- <649fd850-602f-7f0d-d286-73a8dd88ad6d@intel.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35931807333;
+        Tue,  1 Sep 2020 16:28:17 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-113-231.rdu2.redhat.com [10.10.113.231])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F9F77C564;
+        Tue,  1 Sep 2020 16:28:16 +0000 (UTC)
+Subject: [RFC PATCH 0/7] mm: Make more use of readahead_control
+From:   David Howells <dhowells@redhat.com>
+To:     willy@infradead.org
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date:   Tue, 01 Sep 2020 17:28:15 +0100
+Message-ID: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <649fd850-602f-7f0d-d286-73a8dd88ad6d@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 03:03:28PM +0800, Rong Chen wrote:
-> 
-> 
-> On 8/31/20 11:50 PM, Paul E. McKenney wrote:
-> > On Mon, Aug 31, 2020 at 08:01:22PM +0800, kernel test robot wrote:
-> > > Greeting,
-> > > 
-> > > FYI, we noticed the following commit (built with gcc-9):
-> > > 
-> > > commit: 4e88ec4a9eb17527e640b063f79e5b875733eb53 ("rcuperf: Change rcuperf to rcuscale")
-> > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> > > 
-> > > 
-> > > in testcase: trinity
-> > > with following parameters:
-> > > 
-> > > 	runtime: 300s
-> > > 
-> > > test-description: Trinity is a linux system call fuzz tester.
-> > > test-url: http://codemonkey.org.uk/projects/trinity/
-> > > 
-> > > 
-> > > on test machine: qemu-system-i386 -enable-kvm -cpu SandyBridge -smp 2 -m 8G
-> > > 
-> > > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
-> > > 
-> > > 
-> > > +---------------------------------------------------------+------------+------------+
-> > > |                                                         | 65bd77f554 | 4e88ec4a9e |
-> > > +---------------------------------------------------------+------------+------------+
-> > > | boot_successes                                          | 13         | 0          |
-> > > | boot_failures                                           | 0          | 14         |
-> > > | UBSAN:division-overflow_in_arch/x86/include/asm/div64.h | 0          | 14         |
-> > > | error:#[##]                                             | 0          | 14         |
-> > > | EIP:main_func.cold                                      | 0          | 14         |
-> > > | Kernel_panic-not_syncing:Fatal_exception                | 0          | 14         |
-> > > +---------------------------------------------------------+------------+------------+
-> > > 
-> > > 
-> > > If you fix the issue, kindly add following tag
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > Does the patch below fix this for you?
-> 
-> Yes, this patch can fix the issue, and nreaders was adjusted to 1:
-> 
-> [    5.953645] The force parameter has not been set to 1. The Iris poweroff
-> handler will not be installed.
-> [   12.546587] rcu-ref-scale: --- Start of test:  verbose=0 shutdown=1
-> holdoff=10 loops=10000 nreaders=-1 nruns=30 readdelay=0
-> [   12.561495] ------------[ cut here ]------------
-> [   12.562016] ref_scale_init: nreaders = 0, adjusted to 1
-> [   12.562601] WARNING: CPU: 0 PID: 1 at kernel/rcu/refscale.c:684
-> ref_scale_init+0x653/0x80
 
-Thank you!  May I add your Tested-by?
+Hi Willy,
 
-							Thanx, Paul
+Here's a set of patches to expand the use of the readahead_control struct,
+essentially from do_sync_mmap_readahead() down.  Note that I've been
+passing the number of pages to read in rac->_nr_pages, and then saving it
+and changing it certain points, e.g. page_cache_readahead_unbounded().
 
-> Best Regards,
-> Rong Chen
-> 
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit d301e320e952e2e604d83d9540e52510b0eb3d94
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Thu Aug 27 09:58:19 2020 -0700
-> > 
-> >      refscale: Bounds-check module parameters
-> >      The default value for refscale.nreaders is -1, which results in the code
-> >      setting the value to three-quarters of the number of CPUs.  On single-CPU
-> >      systems, this results in three-quarters of the value one, which the C
-> >      language's integer arithmetic rounds to zero.  This in turn results in
-> >      a divide-by-zero error.
-> >      This commit therefore adds bounds checking to the refscale module
-> >      parameters, so that if they are less than one, they are set to the
-> >      value one.
-> >      Reported-by: kernel test robot <lkp@intel.com>
-> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/kernel/rcu/refscale.c b/kernel/rcu/refscale.c
-> > index 952595c..fb5f20d 100644
-> > --- a/kernel/rcu/refscale.c
-> > +++ b/kernel/rcu/refscale.c
-> > @@ -681,6 +681,12 @@ ref_scale_init(void)
-> >   	// Reader tasks (default to ~75% of online CPUs).
-> >   	if (nreaders < 0)
-> >   		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
-> > +	if (WARN_ONCE(loops <= 0, "%s: loops = %ld, adjusted to 1\n", __func__, loops))
-> > +		loops = 1;
-> > +	if (WARN_ONCE(nreaders <= 0, "%s: nreaders = %d, adjusted to 1\n", __func__, nreaders))
-> > +		nreaders = 1;
-> > +	if (WARN_ONCE(nruns <= 0, "%s: nruns = %d, adjusted to 1\n", __func__, nruns))
-> > +		nruns = 1;
-> >   	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
-> >   			       GFP_KERNEL);
-> >   	if (!reader_tasks) {
-> > _______________________________________________
-> > LKP mailing list -- lkp@lists.01.org
-> > To unsubscribe send an email to lkp-leave@lists.01.org
-> 
+Also pass file_ra_state into force_page_cache_readahead().
+
+Also there's an apparent minor bug in khugepaged.c that I've included a
+patch for: page_cache_sync_readahead() looks to be given the wrong size in
+collapse_file().
+
+David
+---
+David Howells (7):
+      Fix khugepaged's request size in collapse_file()
+      mm: Make ondemand_readahead() take a readahead_control struct
+      mm: Push readahead_control down into force_page_cache_readahead()
+      mm: Pass readahead_control into page_cache_{sync,async}_readahead()
+      mm: Make __do_page_cache_readahead() use rac->_nr_pages
+      mm: Fold ra_submit() into do_sync_mmap_readahead()
+      mm: Pass a file_ra_state struct into force_page_cache_readahead()
+
+
+ fs/btrfs/free-space-cache.c |  7 +--
+ fs/btrfs/ioctl.c            | 10 +++--
+ fs/btrfs/relocation.c       | 14 +++---
+ fs/btrfs/send.c             | 15 ++++---
+ fs/ext4/dir.c               | 12 ++---
+ fs/ext4/verity.c            |  8 ++--
+ fs/f2fs/dir.c               | 10 +++--
+ fs/f2fs/verity.c            |  8 ++--
+ include/linux/pagemap.h     | 11 ++---
+ mm/fadvise.c                |  6 ++-
+ mm/filemap.c                | 33 +++++++-------
+ mm/internal.h               | 16 +------
+ mm/khugepaged.c             |  6 +--
+ mm/readahead.c              | 89 ++++++++++++++++++-------------------
+ 14 files changed, 127 insertions(+), 118 deletions(-)
+
+
