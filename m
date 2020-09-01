@@ -2,201 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09A9259784
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856212597CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731202AbgIAQPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731944AbgIAQPj (ORCPT
+        id S1729668AbgIAQSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:18:51 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54113 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731974AbgIAQSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:15:39 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34931C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 09:15:39 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u20so1079162pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 09:15:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=U1h0WFxrmlZti/5PdriJmCxO8e4BuJ9nFjihIY3qycs=;
-        b=DMJZzRBurdYUN4x8gReiESvjIjB6WMHksdeGaRDN41WunAsqZ5Yvt1bO5dntkRFy3t
-         8wwhIkp4rgfa2J7aKnYStujtMWjfHwnF6BkSHyc7XPqxl15S8Wx58seJIlrKeXoJmuGj
-         MQaukCMelikiVQ/1Wm711W7exb+6DNt43lv72RbxdW6K74pL+q9Y56zYnklCSiMeeL35
-         pRebHGva3Zi2MmJ3dxDLMqa5QnCLLLYiGadJKrLiaLGeasmp+w0PpyFwxsv0zQw8Or3z
-         1eho9mmEcHG7AK6OcGSov1ce9KH+R9Js6Mtep8s4aW9yT+PGaaaWQiXvT8tY8YznovIj
-         7SWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U1h0WFxrmlZti/5PdriJmCxO8e4BuJ9nFjihIY3qycs=;
-        b=S6wjgjAokvWbx4TlUtzCFI7yzkqey3uLWZNbN2ykwU/ac/5tN5PBADTzmIDFdmhnxB
-         wYoPmVkFwa5dk9hDju80+cDH1BqsrSiBZ9MSRF0++pu9i0ZRjYuAvEIL7/xPsdobF1y5
-         NopOjpxqztVC01PCDNEIv/r3apMjfG4E58Sm2L2noQblZxZd60/kKeLwtImaWGt6hvnE
-         ugMdPY0uFsTqms4KXNowpzFYCOVaCjLN1d24m103AvTom7q4z2wFgwFu+7wVPgA3McY8
-         2+GZLcgcGojuVNmUgbeoaviyQ0YsA/nwiTbz6wa/bCUw36HYbFLHruyqSTP/hGfhGvhv
-         E1uQ==
-X-Gm-Message-State: AOAM531D9TWmtMwjb2jrutl39B4mhewWvjqqftCvAAWTxYPpMYrIc5Nx
-        WHQzh/y0jIskvkNPZMT1TZov1Q==
-X-Google-Smtp-Source: ABdhPJzWV89RR/QWyu3dI160WKOjSKjBNJugNB1VuwvaljQHlhcb659AvPrOk3k8yapRkjnyxkRAeg==
-X-Received: by 2002:a63:1b42:: with SMTP id b2mr1968103pgm.397.1598976938667;
-        Tue, 01 Sep 2020 09:15:38 -0700 (PDT)
-Received: from nagraj.lan ([175.100.146.50])
-        by smtp.gmail.com with ESMTPSA id d77sm2553169pfd.121.2020.09.01.09.15.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 09:15:37 -0700 (PDT)
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Colin Cross <ccross@google.com>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michel Lespinasse <walken@google.com>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Song Liu <songliubraving@fb.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        chenqiwu <chenqiwu@xiaomi.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mike Christie <mchristi@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
+        Tue, 1 Sep 2020 12:18:44 -0400
+Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1kD8zZ-00015R-Fs; Tue, 01 Sep 2020 16:18:41 +0000
+Date:   Tue, 1 Sep 2020 18:18:40 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Adrian Reber <areber@redhat.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: [PATCH v7 2/3] mm: memory: Add access_remote_vm_locked variant
-Date:   Tue,  1 Sep 2020 21:44:58 +0530
-Message-Id: <20200901161459.11772-3-sumit.semwal@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901161459.11772-1-sumit.semwal@linaro.org>
-References: <20200901161459.11772-1-sumit.semwal@linaro.org>
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 2/4] exit: support non-blocking pidfds
+Message-ID: <20200901161840.e5eo33ctmq7zavak@wittgenstein>
+References: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
+ <20200831134551.1599689-3-christian.brauner@ubuntu.com>
+ <20200901161154.GA4386@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200901161154.GA4386@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows accessing a remote vm while the mmap_lock is already
-held by the caller.
+On Tue, Sep 01, 2020 at 06:11:54PM +0200, Oleg Nesterov wrote:
+> On 08/31, Christian Brauner wrote:
+> >
+> > --- a/kernel/exit.c
+> > +++ b/kernel/exit.c
+> > @@ -934,6 +934,7 @@ struct wait_opts {
+> >  
+> >  	wait_queue_entry_t		child_wait;
+> >  	int			notask_error;
+> > +	int			eagain_error;
+> >  };
+> >  
+> >  static int eligible_pid(struct wait_opts *wo, struct task_struct *p)
+> > @@ -1461,6 +1462,8 @@ static long do_wait(struct wait_opts *wo)
+> >  
+> >  notask:
+> >  	retval = wo->notask_error;
+> > +	if (!retval)
+> > +		retval = wo->eagain_error;
+> >  	if (!retval && !(wo->wo_flags & WNOHANG)) {
+> >  		retval = -ERESTARTSYS;
+> 
+> I must have missed something but I don't understand why do we need
+> the new ->eagain_error and the change in do_wait().
+> 
+> > @@ -1544,6 +1551,11 @@ static long kernel_waitid(int which, pid_t upid, struct waitid_info *infop,
+> >  	wo.wo_flags	= options;
+> >  	wo.wo_info	= infop;
+> >  	wo.wo_rusage	= ru;
+> > +	wo.eagain_error = 0;
+> > +	if (f_flags & O_NONBLOCK) {
+> > +		wo.wo_flags	|= WNOHANG;
+> > +		wo.eagain_error	= -EAGAIN;
+> > +	}
+> >  	ret = do_wait(&wo);
+> 
+> Can't kernel_waitid() simply do
+> 
+> 	if (f_flags & O_NONBLOCK)
+> 		wo.wo_flags |= WNOHANG;
+> 	ret = do_wait();
+> 	if (!ret & (f_flags & O_NONBLOCK))
+> 		ret = -EAGAIN;
+> 
+> ?
 
-While adding support for anonymous vma naming, show_map_vma()
-needs to access the remote vm to get the name of the anonymous vma.
-Since show_map_vma() already holds the mmap_lock, so this _locked
-variant was required.
+Heh, indeed, that's even a smaller patch. Will change to that!
 
-Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
----
- include/linux/mm.h |  2 ++
- mm/memory.c        | 49 ++++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 45 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ca6e6a81576b..e9212c0bb5ac 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1708,6 +1708,8 @@ extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
- 		void *buf, int len, unsigned int gup_flags);
- extern int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
- 		unsigned long addr, void *buf, int len, unsigned int gup_flags);
-+extern int access_remote_vm_locked(struct mm_struct *mm, unsigned long addr,
-+				   void *buf, int len, unsigned int gup_flags);
- 
- long get_user_pages_remote(struct mm_struct *mm,
- 			    unsigned long start, unsigned long nr_pages,
-diff --git a/mm/memory.c b/mm/memory.c
-index 602f4283122f..207be99390e9 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4726,17 +4726,17 @@ EXPORT_SYMBOL_GPL(generic_access_phys);
- /*
-  * Access another process' address space as given in mm.  If non-NULL, use the
-  * given task for page fault accounting.
-+ * This variant assumes that the mmap_lock is already held by the caller, so
-+ * doesn't take the mmap_lock.
-  */
--int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
--		unsigned long addr, void *buf, int len, unsigned int gup_flags)
-+int __access_remote_vm_locked(struct task_struct *tsk, struct mm_struct *mm,
-+			      unsigned long addr, void *buf, int len,
-+			      unsigned int gup_flags)
- {
- 	struct vm_area_struct *vma;
- 	void *old_buf = buf;
- 	int write = gup_flags & FOLL_WRITE;
- 
--	if (mmap_read_lock_killable(mm))
--		return 0;
--
- 	/* ignore errors, just check how much was successfully transferred */
- 	while (len) {
- 		int bytes, ret, offset;
-@@ -4785,9 +4785,46 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
- 		buf += bytes;
- 		addr += bytes;
- 	}
-+	return buf - old_buf;
-+}
-+
-+/*
-+ * Access another process' address space as given in mm.  If non-NULL, use the
-+ * given task for page fault accounting.
-+ */
-+int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
-+		       unsigned long addr, void *buf, int len, unsigned int gup_flags)
-+{
-+	int ret;
-+
-+	if (mmap_read_lock_killable(mm))
-+		return 0;
-+
-+	ret = __access_remote_vm_locked(tsk, mm, addr, buf, len, gup_flags);
- 	mmap_read_unlock(mm);
- 
--	return buf - old_buf;
-+	return ret;
-+}
-+
-+/**
-+ * access_remote_vm_locked - access another process' address space, without
-+ * taking the mmap_lock. This allows nested calls from callers that already have
-+ * taken the lock.
-+ *
-+ * @mm:		the mm_struct of the target address space
-+ * @addr:	start address to access
-+ * @buf:	source or destination buffer
-+ * @len:	number of bytes to transfer
-+ * @gup_flags:	flags modifying lookup behaviour
-+ *
-+ * The caller must hold a reference on @mm, as well as hold the mmap_lock
-+ *
-+ * Return: number of bytes copied from source to destination.
-+ */
-+int access_remote_vm_locked(struct mm_struct *mm, unsigned long addr, void *buf,
-+			    int len, unsigned int gup_flags)
-+{
-+	return __access_remote_vm_locked(NULL, mm, addr, buf, len, gup_flags);
- }
- 
- /**
--- 
-2.28.0
-
+Thanks for the review, Oleg!
+Christia
