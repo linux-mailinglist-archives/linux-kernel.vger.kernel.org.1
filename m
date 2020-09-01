@@ -2,200 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6112599AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862AD259997
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732101AbgIAQmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:42:19 -0400
-Received: from mout.gmx.net ([212.227.15.19]:55739 "EHLO mout.gmx.net"
+        id S1730657AbgIAQlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:41:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18936 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730334AbgIAQmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:42:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1598978476;
-        bh=iS+KmbY1ndEJSpXJ6ApP71r110vbaj/m88hnuZyQwTA=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
-        b=Ub1CAZJYKYLiobVhHR8Et1pUU6d5a0ERsK2MsY7wzhw0HjhUjXhJSc4b4w7JLVY2K
-         imx2QUOs2xWvIZbhXholxKb0puJB9y9zCeV2KFD9q6C/NjJJszwTuwNoPvI/AfTNic
-         kg6J1s8vPoCo/SATwJopqTMYp2II/N+zrO+5Tf7M=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.187.2]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MqaxO-1kzdF62DEe-00mXqh; Tue, 01
- Sep 2020 18:41:16 +0200
-Subject: Re: [PATCH 07/28] 53c700: improve non-coherent DMA handling
-From:   Helge Deller <deller@gmx.de>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-mm@kvack.org, alsa-devel@alsa-project.org
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-8-hch@lst.de>
- <1598971960.4238.5.camel@HansenPartnership.com>
- <20200901150554.GN14765@casper.infradead.org>
- <1598973776.4238.11.camel@HansenPartnership.com>
- <3369218e-eea4-14e9-15f1-870269e4649d@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
- c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
-Message-ID: <77c9b2b6-bedc-d090-8b23-6ac664df1d1f@gmx.de>
-Date:   Tue, 1 Sep 2020 18:41:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1729988AbgIAQlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:41:23 -0400
+IronPort-SDR: rK38O8rpd8fPOza5NPLDUWJL/vAS6sWQ4FRjqhl80kKpzlgdKSjDrSMf0OfCjFJwFbtfpDlKSK
+ AGCQeDulUAMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175253659"
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="175253659"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 09:41:22 -0700
+IronPort-SDR: 097d6bKOysjxAh4dEtJg26RVYocU5CsZgMAqW7MQWKzV+snzWR4BYsX4eGJSDjNIIWeeVh+wKl
+ muaH8j8Eutaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="477267075"
+Received: from hhuan26-mobl1.amr.corp.intel.com ([10.255.33.198])
+  by orsmga005.jf.intel.com with ESMTP; 01 Sep 2020 09:41:15 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Jethro Beekman" <jethro@fortanix.com>,
+        "Chunyang Hui" <sanqian.hcy@antfin.com>,
+        "Jordan Hand" <jorhand@linux.microsoft.com>,
+        "Nathaniel McCallum" <npmccallum@redhat.com>,
+        "Seth Moore" <sethmo@google.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        "Suresh Siddha" <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com
+Subject: Re: [PATCH v36 12/24] x86/sgx: Add SGX_IOC_ENCLAVE_CREATE
+References: <20200716135303.276442-1-jarkko.sakkinen@linux.intel.com>
+ <20200716135303.276442-13-jarkko.sakkinen@linux.intel.com>
+Date:   Tue, 01 Sep 2020 11:41:14 -0500
 MIME-Version: 1.0
-In-Reply-To: <3369218e-eea4-14e9-15f1-870269e4649d@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4Y8gxSC3mimemrR4PtvEKNwyw28FqcRZSkoK2gQkqvo/KOoRbTg
- w40kQskhrNaheI6REKgULCG68Fy6MEYc0KsJy9WRPUH71+WKoerrwaE3EISLn47wt9qPakq
- Z9gMZCEqcjMGAkwuPOCtdfBULoqR2MkqoEWEFsPLv/Ad3iHMpMr0z0ACL6exzE1IUZ+o2Jw
- GUtUnwHdeUzKCJ46isMYw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4lG/PGFS7YQ=:rR2RWvp5WhtvYGYgat1e00
- 0rF5u2mtUMkAk5WSd9Aa85NoBhY1TSBoWKZBCJ4rwtlnRn8wdTBwkngGfwpVVlNUoTFLjSyrV
- dM46jjweSnPFr8XhH+kUbZi8nfv6BYzG7I3YF2PswSg74hJGslsbwd81I/cZ8KPvjSLwgvlMG
- qic+xZolA+MdQVgJGn64EkYW1DlcXV4gMG9LXW4+9553DiKfcM+5/zwWxw0cpO6Jnoe1L7rrA
- kOYQmwe1wTN3lP6q4Xz99dj7FqfZVVuegxF6peou2o6w+ITCPtuLm6egQPtVE3C6amruAZb29
- glICo0l6SpftC4oBEVgkOIRfdQ2jQlwZcG9QmH3rSp9u2BHEwOTXSLJGiNFvzVoeqt4t7uyVj
- eXAkUz9hT0d3IU2KosWY3+BLBxNPncgp0/VCs5JvwdO2SHDAByGYT2FqbPFevV9b4XMT/M5PU
- eh/og76n7UYqpMe+mlzJq5cKbAJVu450dqW7JGEm/PibmF9c0u6QJTppVgX6yAGLFMQI5O9xU
- 2apy5bcA5aU8jWW9cDTNCwuqkNw0U0/2WWfyQEKJTgRxKgJBU0sIEczgDpxOO5RTNcdBtGFBs
- V8jzcgpZ5KsngR5t2lWAZMzdwZVP34TfYH1XK6c0CVgBD47Sw5eX5U1Q0rCy37oNa6YIXTE9a
- Xp6aYP4h3KFkk0s/RoT6Ke1bjKj3Va5B9o5MciBLLx7WvEBlZXYF/EEysP4bV82Xrv5FGgcOg
- oh52J5bfjodQ5wWNdaRK+e38oUkyRhmURb3XRxrW2fDrcBCchtAsE9mGJ6LB5fBtmYoRsJTmf
- cXUesL8SjI8AG1F15nWfDKKjsgJI9i4Nv1rLO7jSenStdlCv9bzYkzFYplFgiJQ7cLqwWvAjc
- 7CPUrsYcLfK4Wbdm0m/VUh6wASK8K0QNytwoXTs/ljGIIK4U52UZJrzgFAKQJhXuVubth+eZY
- AZkmQQLpSFPMuX6IF1nH1Mc2UjtK1Cp2LEUeAnKDI1fCjiem+fClfbf2G10U0l3tob6wDRsRI
- t7OdZsZXe0f7TM/u0vGP4R9Cwsl6Fho63YI7D5w6/u5NL5QGtBDEC95y9+G63wmiXSBcng3A4
- 1UTqryoUHc8aKHXYqF84O5q/rWzFMRztwG8wy1uv0KBlIypD0gFTmCI+GG5eMT7pfTy4hzJ0B
- r5KBGKxghDj+/3MGdhdvMFOuYS5qssBiWkis3r4/O5Ueg/OUyPJBrZmB18VBFEydfdyctQt6r
- mkZNnjtzj1HuFIBiQ
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0p9xohs2wjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+In-Reply-To: <20200716135303.276442-13-jarkko.sakkinen@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.20 18:21, Helge Deller wrote:
-> On 01.09.20 17:22, James Bottomley wrote:
->> On Tue, 2020-09-01 at 16:05 +0100, Matthew Wilcox wrote:
->>> On Tue, Sep 01, 2020 at 07:52:40AM -0700, James Bottomley wrote:
->>>> I think this looks mostly OK, except for one misnamed parameter
->>>> below. Unfortunately, the last non-coherent parisc was the 700
->>>> series and I no longer own a box, so I can't test that part of it
->>>> (I can fire up the C360 to test it on a coherent arch).
->>>
->>> I have a 715/50 that probably hasn't been powered on in 15 years if
->>> you need something that old to test on (I believe the 725/100 uses
->>> the 7100LC and so is coherent).  I'll need to set up a cross-compiler
->>> ...
->>
->> I'm not going to say no to actual testing, but it's going to be a world
->> of pain getting something so old going.  I do have a box of older
->> systems I keep for architectural testing that I need to rummage around
->> in ... I just have a vague memory that my 715 actually caught fire a
->> decade ago and had to be disposed of.
+On Thu, 16 Jul 2020 08:52:51 -0500, Jarkko Sakkinen  
+<jarkko.sakkinen@linux.intel.com> wrote:
+
+> Add an ioctl that performs ENCLS[ECREATE], which creates SGX Enclave
+> Control Structure for the enclave. SECS contains attributes about the
+> enclave that are used by the hardware and cannot be directly accessed by
+> software, as SECS resides in the EPC.
 >
-> I still have a zoo of machines running for such testing, including a
-> 715/64 and two 730.
-> I'm going to test this git tree on the 715/64:
-> git://git.infradead.org/users/hch/misc.git dma_alloc_pages
+> One essential field in SECS is a field that stores the SHA256 of the
+> measured enclave pages. This field, MRENCLAVE, is initialized by the
+> ECREATE instruction and updated by every EADD and EEXTEND operation.
+> Finally, EINIT locks down the value.
+>
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+> Tested-by: Seth Moore <sethmo@google.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+>  arch/x86/include/uapi/asm/sgx.h               |  25 ++
+>  arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+>  arch/x86/kernel/cpu/sgx/driver.c              |  12 +
+>  arch/x86/kernel/cpu/sgx/driver.h              |   1 +
+>  arch/x86/kernel/cpu/sgx/ioctl.c               | 226 ++++++++++++++++++
+>  6 files changed, 266 insertions(+)
+>  create mode 100644 arch/x86/include/uapi/asm/sgx.h
+>  create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
+>
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst  
+> b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 59472cd6a11d..35f713e3a267 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -323,6 +323,7 @@ Code  Seq#    Include  
+> File                                           Comments
+>                                                                       <mailto:tlewis@mindspring.com>
+>  0xA3  90-9F  linux/dtlk.h
+>  0xA4  00-1F  uapi/linux/tee.h                                         
+> Generic TEE subsystem
+> +0xA4  00-1F  uapi/asm/sgx.h                                           
+> Intel SGX subsystem (a legit conflict as TEE and SGX do not co-exist)
+>  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
+>  0xAB  00-1F  linux/nbd.h
+>  0xAC  00-1F  linux/raw.h
+> diff --git a/arch/x86/include/uapi/asm/sgx.h  
+> b/arch/x86/include/uapi/asm/sgx.h
+> new file mode 100644
+> index 000000000000..3787d278e84b
+> --- /dev/null
+> +++ b/arch/x86/include/uapi/asm/sgx.h
+> @@ -0,0 +1,25 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH  
+> Linux-syscall-note */
+> +/*
+> + * Copyright(c) 2016-19 Intel Corporation.
+> + */
+> +#ifndef _UAPI_ASM_X86_SGX_H
+> +#define _UAPI_ASM_X86_SGX_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/ioctl.h>
+> +
+> +#define SGX_MAGIC 0xA4
+> +
+> +#define SGX_IOC_ENCLAVE_CREATE \
+> +	_IOW(SGX_MAGIC, 0x00, struct sgx_enclave_create)
+> +
+> +/**
+> + * struct sgx_enclave_create - parameter structure for the
+> + *                             %SGX_IOC_ENCLAVE_CREATE ioctl
+> + * @src:	address for the SECS page data
+> + */
+> +struct sgx_enclave_create  {
+> +	__u64	src;
+> +};
+> +
+> +#endif /* _UAPI_ASM_X86_SGX_H */
+> diff --git a/arch/x86/kernel/cpu/sgx/Makefile  
+> b/arch/x86/kernel/cpu/sgx/Makefile
+> index 3fc451120735..91d3dc784a29 100644
+> --- a/arch/x86/kernel/cpu/sgx/Makefile
+> +++ b/arch/x86/kernel/cpu/sgx/Makefile
+> @@ -1,4 +1,5 @@
+>  obj-y += \
+>  	driver.o \
+>  	encl.o \
+> +	ioctl.o \
+>  	main.o
+> diff --git a/arch/x86/kernel/cpu/sgx/driver.c  
+> b/arch/x86/kernel/cpu/sgx/driver.c
+> index b52520407f5b..5559bc18de41 100644
+> --- a/arch/x86/kernel/cpu/sgx/driver.c
+> +++ b/arch/x86/kernel/cpu/sgx/driver.c
+> @@ -118,10 +118,22 @@ static unsigned long sgx_get_unmapped_area(struct  
+> file *file,
+>  	return current->mm->get_unmapped_area(file, addr, len, pgoff, flags);
+>  }
+> +#ifdef CONFIG_COMPAT
+> +static long sgx_compat_ioctl(struct file *filep, unsigned int cmd,
+> +			      unsigned long arg)
+> +{
+> +	return sgx_ioctl(filep, cmd, arg);
+> +}
+> +#endif
+> +
+>  static const struct file_operations sgx_encl_fops = {
+>  	.owner			= THIS_MODULE,
+>  	.open			= sgx_open,
+>  	.release		= sgx_release,
+> +	.unlocked_ioctl		= sgx_ioctl,
+> +#ifdef CONFIG_COMPAT
+> +	.compat_ioctl		= sgx_compat_ioctl,
+> +#endif
+>  	.mmap			= sgx_mmap,
+>  	.get_unmapped_area	= sgx_get_unmapped_area,
+>  };
+> diff --git a/arch/x86/kernel/cpu/sgx/driver.h  
+> b/arch/x86/kernel/cpu/sgx/driver.h
+> index f7ce40dedc91..e4063923115b 100644
+> --- a/arch/x86/kernel/cpu/sgx/driver.h
+> +++ b/arch/x86/kernel/cpu/sgx/driver.h
+> @@ -9,6 +9,7 @@
+>  #include <linux/rwsem.h>
+>  #include <linux/sched.h>
+>  #include <linux/workqueue.h>
+> +#include <uapi/asm/sgx.h>
+>  #include "sgx.h"
+> #define SGX_EINIT_SPIN_COUNT	20
+> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c  
+> b/arch/x86/kernel/cpu/sgx/ioctl.c
+> new file mode 100644
+> index 000000000000..7981c411b05a
+> --- /dev/null
+> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> @@ -0,0 +1,226 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+> +// Copyright(c) 2016-19 Intel Corporation.
+> +
+> +#include <asm/mman.h>
+> +#include <linux/mman.h>
+> +#include <linux/delay.h>
+> +#include <linux/file.h>
+> +#include <linux/hashtable.h>
+> +#include <linux/highmem.h>
+> +#include <linux/ratelimit.h>
+> +#include <linux/sched/signal.h>
+> +#include <linux/shmem_fs.h>
+> +#include <linux/slab.h>
+> +#include <linux/suspend.h>
+> +#include "driver.h"
+> +#include "encl.h"
+> +#include "encls.h"
+> +
+> +static u32 sgx_calc_ssa_frame_size(u32 miscselect, u64 xfrm)
+> +{
+> +	u32 size_max = PAGE_SIZE;
+> +	u32 size;
+> +	int i;
+> +
+> +	for (i = 2; i < 64; i++) {
+> +		if (!((1 << i) & xfrm))
+> +			continue;
+> +
 
-This tree boots nicely (up to a command prompt with i82596 nic working):
+Potential overflow for signed integer shift. Originally spotted and fixed  
+in OOT from Colin I. K.: https://github.com/intel/linux-sgx-driver/pull/16
 
-53c700: Version 2.8 By James.Bottomley@HansenPartnership.com
-scsi0: 53c710 rev 2
-scsi host0: LASI SCSI 53c700
-scsi 0:0:6:0: Direct-Access     QUANTUM  FIREBALL_TM3200S 300X PQ: 0 ANSI:=
- 2
-scsi target0:0:6: Beginning Domain Validation
-scsi 0:0:6:0: tag#56 Enabling Tag Command Queuing
-scsi target0:0:6: asynchronous
-scsi target0:0:6: FAST-10 SCSI 10.0 MB/s ST (100 ns, offset 8)
-scsi target0:0:6: Domain Validation skipping write tests
-scsi target0:0:6: Ending Domain Validation
-scsi 0:0:6:1: tag#63 Disabling Tag Command Queuing
-st: Version 20160209, fixed bufsize 32768, s/g segs 256
-sd 0:0:6:0: Power-on or device reset occurred
-sd 0:0:6:0: Attached scsi generic sg0 type 0
-LASI 82596 driver - Revision: 1.30
-Found i82596 at 0xf0107000, IRQ 17
-eth0: 82596 at 0xf0107000, 08:00:09:c2:9e:60 IRQ 17.
-sd 0:0:6:0: [sda] 6281856 512-byte logical blocks: (3.22 GB/3.00 GiB)
-sd 0:0:6:0: [sda] Write Protect is off
-
-Christoph, you may add a
-Tested-by: Helge Deller <deller@gmx.de> # parisc
-to the series.
-
-Helge
+Thanks
+Haitao
