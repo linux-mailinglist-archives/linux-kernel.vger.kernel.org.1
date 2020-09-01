@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864E7258705
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A939258703
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726313AbgIAEn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:43:58 -0400
-Received: from mga18.intel.com ([134.134.136.126]:24048 "EHLO mga18.intel.com"
+        id S1726493AbgIAEoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:44:03 -0400
+Received: from mga18.intel.com ([134.134.136.126]:24056 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725930AbgIAEnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:43:55 -0400
-IronPort-SDR: VG3fkZriJv0D4bK6Hoygj6RhzLy1xDX8yS0tC46xAcr3z7bU0LTR5RV4L7ln/12rPyUmDcmI/y
- t84FliQ2Zhhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="144793078"
+        id S1726078AbgIAEn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 00:43:57 -0400
+IronPort-SDR: T/f7l3Dq7ntoZ2qkXN1Up2Ti7Ca7wKqJweH+YTo+mEB2ycwOkJmjzTjFE+/dB1472MQNkUBkNi
+ AJyNd8hPoMAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="144793084"
 X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
-   d="scan'208";a="144793078"
+   d="scan'208";a="144793084"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 21:43:54 -0700
-IronPort-SDR: IyBBK6IFHlTt3wTtQdJqppllBx22tFM4ZLpw1qna7jLd309NI4GG+LZFNUcv/EPqdskVQ2QVlw
- Om1RHmrcRLCw==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 21:43:57 -0700
+IronPort-SDR: ihQm/5hMOKcC6sBrUiagGDYIgkpZLCoGRuPas/Np/Ko8av4rX3KlBZmv7Xsgb2Qh/XG7/pSsEt
+ cWJ0DmissQ6w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
-   d="scan'208";a="314599666"
+   d="scan'208";a="314599674"
 Received: from wwanmoha-ilbpg2.png.intel.com ([10.88.227.42])
-  by orsmga002.jf.intel.com with ESMTP; 31 Aug 2020 21:43:52 -0700
+  by orsmga002.jf.intel.com with ESMTP; 31 Aug 2020 21:43:54 -0700
 From:   Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
 To:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org
 Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
@@ -35,9 +35,9 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         eswara.kota@linux.intel.com,
         lakshmi.bai.raja.subramanian@intel.com,
         wan.ahmad.zainie.wan.mohamad@intel.com
-Subject: [PATCH v8 1/3] phy: intel: Rename phy-intel to phy-intel-lgm
-Date:   Tue,  1 Sep 2020 12:41:59 +0800
-Message-Id: <20200901044201.20978-2-wan.ahmad.zainie.wan.mohamad@intel.com>
+Subject: [PATCH v8 2/3] dt-bindings: phy: intel: Add Keem Bay eMMC PHY bindings
+Date:   Tue,  1 Sep 2020 12:42:00 +0800
+Message-Id: <20200901044201.20978-3-wan.ahmad.zainie.wan.mohamad@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200901044201.20978-1-wan.ahmad.zainie.wan.mohamad@intel.com>
 References: <20200901044201.20978-1-wan.ahmad.zainie.wan.mohamad@intel.com>
@@ -46,67 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename phy-intel-{combo,emmc}.c to phy-intel-lgm-{combo,emmc}.c
-to make drivers/phy/intel directory more generic for future use.
+Binding description for Intel Keem Bay eMMC PHY.
 
 Signed-off-by: Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
-Reviewed-by: Ramuthevar Vadivel Murugan
-<vadivel.muruganx.ramuthevar@linux.intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/phy/intel/Kconfig                              | 10 +++++-----
- drivers/phy/intel/Makefile                             |  4 ++--
- .../intel/{phy-intel-combo.c => phy-intel-lgm-combo.c} |  0
- .../intel/{phy-intel-emmc.c => phy-intel-lgm-emmc.c}   |  0
- 4 files changed, 7 insertions(+), 7 deletions(-)
- rename drivers/phy/intel/{phy-intel-combo.c => phy-intel-lgm-combo.c} (100%)
- rename drivers/phy/intel/{phy-intel-emmc.c => phy-intel-lgm-emmc.c} (100%)
+ .../bindings/phy/intel,keembay-emmc-phy.yaml  | 44 +++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
 
-diff --git a/drivers/phy/intel/Kconfig b/drivers/phy/intel/Kconfig
-index 7b47682a4e0e..db8586c3eed8 100644
---- a/drivers/phy/intel/Kconfig
-+++ b/drivers/phy/intel/Kconfig
-@@ -1,9 +1,9 @@
- # SPDX-License-Identifier: GPL-2.0
- #
--# Phy drivers for Intel Lightning Mountain(LGM) platform
-+# Phy drivers for Intel platforms
- #
--config PHY_INTEL_COMBO
--	bool "Intel ComboPHY driver"
-+config PHY_INTEL_LGM_COMBO
-+	bool "Intel Lightning Mountain ComboPHY driver"
- 	depends on X86 || COMPILE_TEST
- 	depends on OF && HAS_IOMEM
- 	select MFD_SYSCON
-@@ -16,8 +16,8 @@ config PHY_INTEL_COMBO
- 	  chipsets which provides PHYs for various controllers, EMAC,
- 	  SATA and PCIe.
- 
--config PHY_INTEL_EMMC
--	tristate "Intel EMMC PHY driver"
-+config PHY_INTEL_LGM_EMMC
-+	tristate "Intel Lightning Mountain EMMC PHY driver"
- 	depends on X86 || COMPILE_TEST
- 	select GENERIC_PHY
- 	help
-diff --git a/drivers/phy/intel/Makefile b/drivers/phy/intel/Makefile
-index 233d530dadde..662385d0a366 100644
---- a/drivers/phy/intel/Makefile
-+++ b/drivers/phy/intel/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--obj-$(CONFIG_PHY_INTEL_COMBO)		+= phy-intel-combo.o
--obj-$(CONFIG_PHY_INTEL_EMMC)            += phy-intel-emmc.o
-+obj-$(CONFIG_PHY_INTEL_LGM_COMBO)	+= phy-intel-lgm-combo.o
-+obj-$(CONFIG_PHY_INTEL_LGM_EMMC)	+= phy-intel-lgm-emmc.o
-diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-lgm-combo.c
-similarity index 100%
-rename from drivers/phy/intel/phy-intel-combo.c
-rename to drivers/phy/intel/phy-intel-lgm-combo.c
-diff --git a/drivers/phy/intel/phy-intel-emmc.c b/drivers/phy/intel/phy-intel-lgm-emmc.c
-similarity index 100%
-rename from drivers/phy/intel/phy-intel-emmc.c
-rename to drivers/phy/intel/phy-intel-lgm-emmc.c
+diff --git a/Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml b/Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
+new file mode 100644
+index 000000000000..4cbbd3887c13
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/intel,keembay-emmc-phy.yaml
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/phy/intel,keembay-emmc-phy.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Intel Keem Bay eMMC PHY bindings
++
++maintainers:
++  - Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
++
++properties:
++  compatible:
++    const: intel,keembay-emmc-phy
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: emmcclk
++
++  "#phy-cells":
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - "#phy-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    phy@20290000 {
++          compatible = "intel,keembay-emmc-phy";
++          reg = <0x20290000 0x54>;
++          clocks = <&emmc>;
++          clock-names = "emmcclk";
++          #phy-cells = <0>;
++    };
 -- 
 2.17.1
 
