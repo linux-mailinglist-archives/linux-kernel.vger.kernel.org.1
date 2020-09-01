@@ -2,165 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA7D258DFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C3D258DFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbgIAMLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:11:32 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33643 "EHLO ozlabs.org"
+        id S1727993AbgIAMMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:12:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:40882 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728058AbgIAMAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:00:55 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bgly111gqz9sVS;
-        Tue,  1 Sep 2020 22:00:25 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1598961626;
-        bh=bNF75aZajY8dqH+S8STH5rR/AlZdtT5JXvFy8iAsGMo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=E17/BDja+BGxSe7whyBgQehfG9HYsbuS0N2b54qlT+T+cAB2KLGOtAxvb2OGmXrJA
-         bQthxgUNnHzp89QxLQQSNbrAwruCWESMzbhoRX5MjYqIdlS0OzA7TZ5ghxvom32cqH
-         nNAKwDeHIiQzirC92lmv6+7QMv0TEFTnqrQr4bGJ7XPvz9xuTp+rfsdQNeaA4qEPxN
-         m/yr7Odq5uA4LxkxOZ5RkVFmkUaTt3fxyUix1Y2acOTlY09WsqhDpqGJtmna8Vmr1q
-         BNj5ShKytxaGa3uyCI9wd1wZir0Dt1ZRWrQhpejLoWhQPRsYGYE4GkQPBxfdNU9ha0
-         Kq0RR7TEYO5PA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4/4] powerpc/64s/radix: Fix mm_cpumask trimming race vs kthread_use_mm
-In-Reply-To: <20200828100022.1099682-5-npiggin@gmail.com>
-References: <20200828100022.1099682-1-npiggin@gmail.com> <20200828100022.1099682-5-npiggin@gmail.com>
-Date:   Tue, 01 Sep 2020 22:00:20 +1000
-Message-ID: <87pn751zcb.fsf@mpe.ellerman.id.au>
+        id S1728060AbgIAMAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 08:00:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 463E01FB;
+        Tue,  1 Sep 2020 05:00:30 -0700 (PDT)
+Received: from [10.57.40.122] (unknown [10.57.40.122])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 937E73F68F;
+        Tue,  1 Sep 2020 05:00:28 -0700 (PDT)
+Subject: Re: [PATCH 2/2] usb: dwc3: Add driver for Xilinx platforms
+To:     Manish Narani <MNARANI@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>
+Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <1598467441-124203-1-git-send-email-manish.narani@xilinx.com>
+ <1598467441-124203-3-git-send-email-manish.narani@xilinx.com>
+ <0927fb9f-1044-38b3-d6f3-76edffefd99c@arm.com>
+ <DM6PR02MB589878EB45E441F87B6D177CC1520@DM6PR02MB5898.namprd02.prod.outlook.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <98c17481-e9c5-ce03-ad30-3653ec2305d4@arm.com>
+Date:   Tue, 1 Sep 2020 13:00:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <DM6PR02MB589878EB45E441F87B6D177CC1520@DM6PR02MB5898.namprd02.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicholas Piggin <npiggin@gmail.com> writes:
-> Commit 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of
-> single-threaded mm_cpumask") added a mechanism to trim the mm_cpumask of
-> a process under certain conditions. One of the assumptions is that
-> mm_users would not be incremented via a reference outside the process
-> context with mmget_not_zero() then go on to kthread_use_mm() via that
-> reference.
->
-> That invariant was broken by io_uring code (see previous sparc64 fix),
-> but I'll point Fixes: to the original powerpc commit because we are
-> changing that assumption going forward, so this will make backports
-> match up.
->
-> Fix this by no longer relying on that assumption, but by having each CPU
-> check the mm is not being used, and clearing their own bit from the mask
-> if it's okay. This fix relies on commit 38cf307c1f20 ("mm: fix
-> kthread_use_mm() vs TLB invalidate") to disable irqs over the mm switch,
-> and ARCH_WANT_IRQS_OFF_ACTIVATE_MM to be enabled.
+On 2020-08-28 18:53, Manish Narani wrote:
+> Hi Robin,
+> 
+> Thanks for the review. Please find my comment below inline.
+> 
+>> -----Original Message-----
+>> From: Robin Murphy <robin.murphy@arm.com>
+>> Sent: Friday, August 28, 2020 12:17 AM
+>> To: Manish Narani <MNARANI@xilinx.com>; gregkh@linuxfoundation.org;
+>> robh+dt@kernel.org; Michal Simek <michals@xilinx.com>; balbi@kernel.org;
+>> p.zabel@pengutronix.de
+>> Cc: devicetree@vger.kernel.org; linux-usb@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; git <git@xilinx.com>; linux-arm-
+>> kernel@lists.infradead.org
+>> Subject: Re: [PATCH 2/2] usb: dwc3: Add driver for Xilinx platforms
+>>
+>> On 2020-08-26 19:44, Manish Narani wrote:
+>> [...]
+>>> +	/*
+>>> +	 * This routes the usb dma traffic to go through CCI path instead
+>>> +	 * of reaching DDR directly. This traffic routing is needed to
+>>> +	 * make SMMU and CCI work with USB dma.
+>>> +	 */
+>>> +	if (of_dma_is_coherent(dev->of_node) || dev->iommu_group) {
+>>> +		reg = readl(priv_data->regs + XLNX_USB_COHERENCY);
+>>> +		reg |= XLNX_USB_COHERENCY_ENABLE;
+>>> +		writel(reg, priv_data->regs + XLNX_USB_COHERENCY);
+>>> +	}
+>>
+>> This looks rather suspect - coherency should be based on coherency, not
+>> on whether an IOMMU group is present. If the device isn't described as
+>> coherent in the DT, then any SMMU mappings will end up using attributes
+>> that will downgrade traffic to be non-snooping anyway. And if the SMMU
+>> is enabled but not translating (e.g. "iommu.passthrough=1") then
+>> enabling hardware coherency when the DMA layer hasn't been told about it
+>> can potentially lead to nasty subtle problems and data loss.
+> 
+> May be the description needs to be updated in this. This is not the actual coherency enabling bit, but this is needed when coherency is enabled.
+> This is a register inside Xilinx USB controller which handles USB (which is in LPD) traffic route switching from LPD (Low Power Domain) to FPD (Full Power Domain)  path in the Xilinx SoC in either of the below scenarios:
+> 1. Device is described coherent in  DT.
+> 2. SMMU is enabled.
+> 
+> I will update the same in v2.
 
-You could use:
+Ah, OK, so it's just that the control bit itself has a terrible name :)
 
-Depends-on: 38cf307c1f20 ("mm: fix kthread_use_mm() vs TLB invalidate")
+ From the available information I had assumed that this controlled the 
+output attributes, and that the interconnect might then steer traffic 
+based on those. Explaining a bit more clearly in the comment probably 
+would be a good idea. In that case, I'd concur that the current logic is 
+in fact appropriate, but please use the device_iommu_mapped() helper for 
+cleanliness.
 
-> Fixes: 0cef77c7798a7 ("powerpc/64s/radix: flush remote CPUs out of single-threaded mm_cpumask")
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-> ---
->  arch/powerpc/include/asm/tlb.h       | 13 -------------
->  arch/powerpc/mm/book3s64/radix_tlb.c | 23 ++++++++++++++++-------
->  2 files changed, 16 insertions(+), 20 deletions(-)
-
-One minor nit below if you're respinning anyway.
-
-You know this stuff better than me, but I still reviewed it and it seems
-good to me.
-
-Reviewed-by: Michael Ellerman <mpe@ellerman.id.au>
-
-> diff --git a/arch/powerpc/include/asm/tlb.h b/arch/powerpc/include/asm/tlb.h
-> index fbc6f3002f23..d97f061fecac 100644
-> --- a/arch/powerpc/include/asm/tlb.h
-> +++ b/arch/powerpc/include/asm/tlb.h
-> @@ -66,19 +66,6 @@ static inline int mm_is_thread_local(struct mm_struct *mm)
->  		return false;
->  	return cpumask_test_cpu(smp_processor_id(), mm_cpumask(mm));
->  }
-> -static inline void mm_reset_thread_local(struct mm_struct *mm)
-> -{
-> -	WARN_ON(atomic_read(&mm->context.copros) > 0);
-> -	/*
-> -	 * It's possible for mm_access to take a reference on mm_users to
-> -	 * access the remote mm from another thread, but it's not allowed
-> -	 * to set mm_cpumask, so mm_users may be > 1 here.
-> -	 */
-> -	WARN_ON(current->mm != mm);
-> -	atomic_set(&mm->context.active_cpus, 1);
-> -	cpumask_clear(mm_cpumask(mm));
-> -	cpumask_set_cpu(smp_processor_id(), mm_cpumask(mm));
-> -}
->  #else /* CONFIG_PPC_BOOK3S_64 */
->  static inline int mm_is_thread_local(struct mm_struct *mm)
->  {
-> diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
-> index 0d233763441f..a421a0e3f930 100644
-> --- a/arch/powerpc/mm/book3s64/radix_tlb.c
-> +++ b/arch/powerpc/mm/book3s64/radix_tlb.c
-> @@ -645,19 +645,29 @@ static void do_exit_flush_lazy_tlb(void *arg)
->  	struct mm_struct *mm = arg;
->  	unsigned long pid = mm->context.id;
->  
-> +	/*
-> +	 * A kthread could have done a mmget_not_zero() after the flushing CPU
-> +	 * checked mm_users == 1, and be in the process of kthread_use_mm when
-                                ^
-                                in mm_is_singlethreaded()
-
-Adding that reference would help join the dots for a new reader I think.
-
-cheers
-
-> +	 * interrupted here. In that case, current->mm will be set to mm,
-> +	 * because kthread_use_mm() setting ->mm and switching to the mm is
-> +	 * done with interrupts off.
-> +	 */
->  	if (current->mm == mm)
-> -		return; /* Local CPU */
-> +		goto out_flush;
->  
->  	if (current->active_mm == mm) {
-> -		/*
-> -		 * Must be a kernel thread because sender is single-threaded.
-> -		 */
-> -		BUG_ON(current->mm);
-> +		WARN_ON_ONCE(current->mm != NULL);
-> +		/* Is a kernel thread and is using mm as the lazy tlb */
->  		mmgrab(&init_mm);
-> -		switch_mm(mm, &init_mm, current);
->  		current->active_mm = &init_mm;
-> +		switch_mm_irqs_off(mm, &init_mm, current);
->  		mmdrop(mm);
->  	}
-> +
-> +	atomic_dec(&mm->context.active_cpus);
-> +	cpumask_clear_cpu(smp_processor_id(), mm_cpumask(mm));
-> +
-> +out_flush:
->  	_tlbiel_pid(pid, RIC_FLUSH_ALL);
->  }
->  
-> @@ -672,7 +682,6 @@ static void exit_flush_lazy_tlbs(struct mm_struct *mm)
->  	 */
->  	smp_call_function_many(mm_cpumask(mm), do_exit_flush_lazy_tlb,
->  				(void *)mm, 1);
-> -	mm_reset_thread_local(mm);
->  }
->  
->  void radix__flush_tlb_mm(struct mm_struct *mm)
+Cheers,
+Robin.
