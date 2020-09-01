@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230FF259720
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB88259747
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731401AbgIAQK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:10:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46778 "EHLO mail.kernel.org"
+        id S1731824AbgIAQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:12:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731224AbgIAPiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:38:06 -0400
+        id S1728671AbgIAPgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:36:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6764D205F4;
-        Tue,  1 Sep 2020 15:38:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5AA220E65;
+        Tue,  1 Sep 2020 15:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974686;
-        bh=OdkqtBV3OgW7BJbj4JUVEARVm6DHMpSCUn3XLTLT04g=;
+        s=default; t=1598974614;
+        bh=M+Bk+/4lU9mMcnvrN2jpBXG1aWpPW0uTtcT+LKxuSn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=juCEPI9UfOqKXg+M4CRKPP0LX6fQSfSekN7lLIygJz215qKeA5WInkm31N8hmvuVn
-         NWglPylpDZJKytk6IjDReqqIKX6V2HrCeWPfAJTa0lcZnF80zHjZfh4nd7A1ox6VXC
-         JINM+W3/dHda4M4+UnPnWvwf/H9+flzSjquCh0A4=
+        b=JXR/qp2+RJitLnmQfwrP/2N12Q4/DahSddvAt/mt0ntAMg4cIfFDTdeEXw9rq0nLp
+         PMCmSBy2QFwEdZdC7TSFYVbEDJk2X1OjHeB7xce+vpvVgL+vlrY9kg1t68xbEheJci
+         mCtqUp0FL7DmqJDXhXkgA+z6/bp1UIHBlKXLxmQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        stable@vger.kernel.org, Felix Kuehling <Felix.Kuehling@amd.com>,
+        Rajneesh Bhardwaj <rajneesh.bhardwaj@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 025/255] drm/amdgpu: fix ref count leak in amdgpu_driver_open_kms
-Date:   Tue,  1 Sep 2020 17:08:01 +0200
-Message-Id: <20200901151001.977920685@linuxfoundation.org>
+Subject: [PATCH 5.8 029/255] drm/amdgpu/fence: fix ref count leak when pm_runtime_get_sync fails
+Date:   Tue,  1 Sep 2020 17:08:05 +0200
+Message-Id: <20200901151002.170202815@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -45,42 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-[ Upstream commit 9ba8923cbbe11564dd1bf9f3602add9a9cfbb5c6 ]
+[ Upstream commit e520d3e0d2818aafcdf9d8b60916754d8fedc366 ]
 
-in amdgpu_driver_open_kms the call to pm_runtime_get_sync increments the
-counter even in case of failure, leading to incorrect
-ref count. In case of failure, decrement the ref count before returning.
+The call to pm_runtime_get_sync increments the counter even in case of
+failure, leading to incorrect ref count.
+In case of failure, decrement the ref count before returning.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Acked-by: Rajneesh Bhardwaj <rajneesh.bhardwaj@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-index 21292098bc023..0c49ab17be303 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-@@ -992,7 +992,7 @@ int amdgpu_driver_open_kms(struct drm_device *dev, struct drm_file *file_priv)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
+index 3414e119f0cbf..f5a6ee7c2eaa3 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
+@@ -754,8 +754,10 @@ static int amdgpu_debugfs_gpu_recover(struct seq_file *m, void *data)
+ 	int r;
  
  	r = pm_runtime_get_sync(dev->dev);
- 	if (r < 0)
--		return r;
-+		goto pm_put;
+-	if (r < 0)
++	if (r < 0) {
++		pm_runtime_put_autosuspend(dev->dev);
+ 		return 0;
++	}
  
- 	fpriv = kzalloc(sizeof(*fpriv), GFP_KERNEL);
- 	if (unlikely(!fpriv)) {
-@@ -1043,6 +1043,7 @@ error_pasid:
- 
- out_suspend:
- 	pm_runtime_mark_last_busy(dev->dev);
-+pm_put:
- 	pm_runtime_put_autosuspend(dev->dev);
- 
- 	return r;
+ 	seq_printf(m, "gpu recover\n");
+ 	amdgpu_device_gpu_recover(adev, NULL);
 -- 
 2.25.1
 
