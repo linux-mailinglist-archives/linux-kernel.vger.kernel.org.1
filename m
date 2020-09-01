@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F9925968E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C2E2597E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729930AbgIAQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:04:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54880 "EHLO mail.kernel.org"
+        id S1731098AbgIAPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731252AbgIAPmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:13 -0400
+        id S1730721AbgIAPbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 391762064B;
-        Tue,  1 Sep 2020 15:42:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBA5A21548;
+        Tue,  1 Sep 2020 15:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974932;
-        bh=yHyrhqyRzo37n6XS5S+rgv5s3Y3LcuonABG1xHhiZc0=;
+        s=default; t=1598974299;
+        bh=NJTSeJrTc91T1jCZwxChPI4LytyfAOEkBE1Nr9OJmPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ixpzo2XL8ji44SZl6wlvYXne2s/VxYxf5VgW5xCEMS8eYKKoZMsW/0EWinhyJqM9A
-         chFOkdY8+LzEz/tgD9KR+hWPkEl+Y4Atb0u8kNJjdtjGQNtH+dY80ELgqVaqBqQhrF
-         ky1KkO3mAwDFwE8Y+a4U9oaQDvTFvQcyASO/s0o4=
+        b=cXyk6pyagLdcutUkJDm6c4QOsAGYOZiSWgNvU+kEmnYYALELr+CKTkzYyS2vzbK1m
+         L9sR6bKaOGZ2N2vzodFxs78tsMRX1gB/V3dy2xEBpwFTn0IxOunCWzfnWvK4D+AhxN
+         R3CfKocQUTc5Nw0svf6e5fAbei960S2jB1W0XURE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antonio Borneo <antonio.borneo@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Sham Muthayyan <smuthayy@codeaurora.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 118/255] spi: stm32h7: fix race condition at end of transfer
-Date:   Tue,  1 Sep 2020 17:09:34 +0200
-Message-Id: <20200901151006.382895121@linuxfoundation.org>
+Subject: [PATCH 5.4 095/214] PCI: qcom: Add missing reset for ipq806x
+Date:   Tue,  1 Sep 2020 17:09:35 +0200
+Message-Id: <20200901150957.545928126@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +48,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antonio Borneo <antonio.borneo@st.com>
+From: Ansuel Smith <ansuelsmth@gmail.com>
 
-[ Upstream commit 135dd873d3c76d812ae64c668adef3f2c59ed27f ]
+[ Upstream commit ee367e2cdd2202b5714982739e684543cd2cee0e ]
 
-The caller of stm32_spi_transfer_one(), spi_transfer_one_message(),
-is waiting for us to call spi_finalize_current_transfer() and will
-eventually schedule a new transfer, if available.
-We should guarantee that the spi controller is really available
-before calling spi_finalize_current_transfer().
+Add missing ext reset used by ipq8064 SoC in PCIe qcom driver.
 
-Move the call to spi_finalize_current_transfer() _after_ the call
-to stm32_spi_disable().
-
-Signed-off-by: Antonio Borneo <antonio.borneo@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-2-git-send-email-alain.volmat@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200615210608.21469-5-ansuelsmth@gmail.com
+Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
+Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
+Cc: stable@vger.kernel.org # v4.5+
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/dwc/pcie-qcom.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 13f3d959759fb..fce679635829c 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -972,8 +972,8 @@ static irqreturn_t stm32h7_spi_irq_thread(int irq, void *dev_id)
- 	spin_unlock_irqrestore(&spi->lock, flags);
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 9cf7599a198c4..374db5d59cf87 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -110,6 +110,7 @@ struct qcom_pcie_resources_2_1_0 {
+ 	struct reset_control *ahb_reset;
+ 	struct reset_control *por_reset;
+ 	struct reset_control *phy_reset;
++	struct reset_control *ext_reset;
+ 	struct regulator_bulk_data supplies[QCOM_PCIE_2_1_0_MAX_SUPPLY];
+ };
  
- 	if (end) {
--		spi_finalize_current_transfer(master);
- 		stm32h7_spi_disable(spi);
-+		spi_finalize_current_transfer(master);
+@@ -279,6 +280,10 @@ static int qcom_pcie_get_resources_2_1_0(struct qcom_pcie *pcie)
+ 	if (IS_ERR(res->por_reset))
+ 		return PTR_ERR(res->por_reset);
+ 
++	res->ext_reset = devm_reset_control_get_optional_exclusive(dev, "ext");
++	if (IS_ERR(res->ext_reset))
++		return PTR_ERR(res->ext_reset);
++
+ 	res->phy_reset = devm_reset_control_get_exclusive(dev, "phy");
+ 	return PTR_ERR_OR_ZERO(res->phy_reset);
+ }
+@@ -292,6 +297,7 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
+ 	reset_control_assert(res->axi_reset);
+ 	reset_control_assert(res->ahb_reset);
+ 	reset_control_assert(res->por_reset);
++	reset_control_assert(res->ext_reset);
+ 	reset_control_assert(res->phy_reset);
+ 	clk_disable_unprepare(res->iface_clk);
+ 	clk_disable_unprepare(res->core_clk);
+@@ -351,6 +357,12 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+ 		goto err_deassert_ahb;
  	}
  
- 	return IRQ_HANDLED;
++	ret = reset_control_deassert(res->ext_reset);
++	if (ret) {
++		dev_err(dev, "cannot deassert ext reset\n");
++		goto err_deassert_ahb;
++	}
++
+ 	/* enable PCIe clocks and resets */
+ 	val = readl(pcie->parf + PCIE20_PARF_PHY_CTRL);
+ 	val &= ~BIT(0);
 -- 
 2.25.1
 
