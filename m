@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECF225929A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 766F52592EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgIAPOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
+        id S1729502AbgIAPSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729007AbgIAPN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:13:59 -0400
+        id S1729405AbgIAPRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:17:23 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF553206EB;
-        Tue,  1 Sep 2020 15:13:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6102A206FA;
+        Tue,  1 Sep 2020 15:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973239;
-        bh=+bnBL3MGrBJAv8hplTWu8YL7eEhU7qYBZycfW4Qv6rU=;
+        s=default; t=1598973442;
+        bh=Ucie5NyIWuOUUe0Y0RKuuHPGZyWsA1GWruljSdNz9vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4f0ypCX4EwXGDXyHaLcQn9w/K5xWboHS3ycnoMxS0u9f4T2JHbkDwktYnM3EyxW3
-         6j6m/YW2GYC3Zrm73WSCa4ISxUuhdCPIhAM3nsq7KJgWouekkpjR8P6fM+jCELS8IO
-         MZDIzXtXRJ7Xbu/y6heT7rIWlyJyofw8yzGDbZXw=
+        b=MOSRPDD8DOefIqw/L8S7Wddb+xdMIZFtFS0UT5iAMplqzDTHiwIJ54+2b6wPublqa
+         HQBTlroqKcDGdJDocQzj5RtlvFhFv30YDl94CC5Nf6QkRgfFx1whSzlrQH7DBNDFWe
+         7qh+QrUh4MCxhnqcBq8SkCIvLzNCVYpBot9M4Jc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>
-Subject: [PATCH 4.4 55/62] usb: uas: Add quirk for PNY Pro Elite
-Date:   Tue,  1 Sep 2020 17:10:38 +0200
-Message-Id: <20200901150923.502234652@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.9 63/78] xhci: Do warm-reset when both CAS and XDEV_RESUME are set
+Date:   Tue,  1 Sep 2020 17:10:39 +0200
+Message-Id: <20200901150927.931444650@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
-References: <20200901150920.697676718@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 9a469bc9f32dd33c7aac5744669d21a023a719cd upstream.
+commit 904df64a5f4d5ebd670801d869ca0a6d6a6e8df6 upstream.
 
-PNY Pro Elite USB 3.1 Gen 2 device (SSD) doesn't respond to ATA_12
-pass-through command (i.e. it just hangs). If it doesn't support this
-command, it should respond properly to the host. Let's just add a quirk
-to be able to move forward with other operations.
+Sometimes re-plugging a USB device during system sleep renders the device
+useless:
+[  173.418345] xhci_hcd 0000:00:14.0: Get port status 2-4 read: 0x14203e2, return 0x10262
+...
+[  176.496485] usb 2-4: Waited 2000ms for CONNECT
+[  176.496781] usb usb2-port4: status 0000.0262 after resume, -19
+[  176.497103] usb 2-4: can't resume, status -19
+[  176.497438] usb usb2-port4: logical disconnect
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Link: https://lore.kernel.org/r/2b0585228b003eedcc82db84697b31477df152e0.1597803605.git.thinhn@synopsys.com
+Because PLS equals to XDEV_RESUME, xHCI driver reports U3 to usbcore,
+despite of CAS bit is flagged.
+
+So proritize CAS over XDEV_RESUME to let usbcore handle warm-reset for
+the port.
+
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200821091549.20556-3-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/host/xhci-hub.c |   19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -155,6 +155,13 @@ UNUSUAL_DEV(0x152d, 0x0578, 0x0000, 0x99
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_BROKEN_FUA),
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -623,15 +623,6 @@ static void xhci_hub_report_usb3_link_st
+ {
+ 	u32 pls = status_reg & PORT_PLS_MASK;
  
-+/* Reported-by: Thinh Nguyen <thinhn@synopsys.com> */
-+UNUSUAL_DEV(0x154b, 0xf00d, 0x0000, 0x9999,
-+		"PNY",
-+		"Pro Elite SSD",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_NO_ATA_1X),
+-	/* resume state is a xHCI internal state.
+-	 * Do not report it to usb core, instead, pretend to be U3,
+-	 * thus usb core knows it's not ready for transfer
+-	 */
+-	if (pls == XDEV_RESUME) {
+-		*status |= USB_SS_PORT_LS_U3;
+-		return;
+-	}
+-
+ 	/* When the CAS bit is set then warm reset
+ 	 * should be performed on port
+ 	 */
+@@ -654,6 +645,16 @@ static void xhci_hub_report_usb3_link_st
+ 		pls |= USB_PORT_STAT_CONNECTION;
+ 	} else {
+ 		/*
++		 * Resume state is an xHCI internal state.  Do not report it to
++		 * usb core, instead, pretend to be U3, thus usb core knows
++		 * it's not ready for transfer.
++		 */
++		if (pls == XDEV_RESUME) {
++			*status |= USB_SS_PORT_LS_U3;
++			return;
++		}
 +
- /* Reported-by: Hans de Goede <hdegoede@redhat.com> */
- UNUSUAL_DEV(0x2109, 0x0711, 0x0000, 0x9999,
- 		"VIA",
++		/*
+ 		 * If CAS bit isn't set but the Port is already at
+ 		 * Compliance Mode, fake a connection so the USB core
+ 		 * notices the Compliance state and resets the port.
 
 
