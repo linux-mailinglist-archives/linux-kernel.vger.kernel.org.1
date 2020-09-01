@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC778259C73
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92720259C1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729664AbgIARPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:15:53 -0400
-Received: from verein.lst.de ([213.95.11.211]:53778 "EHLO verein.lst.de"
+        id S1729293AbgIAPQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:16:16 -0400
+Received: from verein.lst.de ([213.95.11.211]:53788 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729101AbgIAPOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:14:46 -0400
+        id S1729196AbgIAPPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:15:20 -0400
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id D8B0A68B05; Tue,  1 Sep 2020 17:14:44 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 17:14:44 +0200
+        id 0B52968B05; Tue,  1 Sep 2020 17:15:19 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 17:15:18 +0200
 From:   Christoph Hellwig <hch@lst.de>
 To:     Josef Bacik <josef@toxicpanda.com>
 Cc:     hch@lst.de, viro@ZenIV.linux.org.uk, linux-fsdevel@vger.kernel.org,
         linux-kernel@vger.kernel.org, willy@infradead.org,
         kernel-team@fb.com
-Subject: Re: [PATCH 3/6] proc: allocate count + 1 for our read buffer
-Message-ID: <20200901151444.GC30709@lst.de>
-References: <20200813210411.905010-1-josef@toxicpanda.com> <20200813210411.905010-4-josef@toxicpanda.com>
+Subject: Re: [PATCH 5/6] parport: rework procfs handlers to take advantage
+ of the new buffer
+Message-ID: <20200901151518.GE30709@lst.de>
+References: <20200813210411.905010-1-josef@toxicpanda.com> <20200813210411.905010-6-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200813210411.905010-4-josef@toxicpanda.com>
+In-Reply-To: <20200813210411.905010-6-josef@toxicpanda.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 13, 2020 at 05:04:08PM -0400, Josef Bacik wrote:
-> Al suggested that if we allocate enough space to add in the '\0'
-> character at the end of our strings, we could just use scnprintf() in
-> our ->proc_handler functions without having to be fancy about keeping
-> track of space.  There are a lot of these handlers, so the follow ups
-> will be separate, but start with allocating the extra byte to handle the
-> null termination of strings.
+On Thu, Aug 13, 2020 at 05:04:10PM -0400, Josef Bacik wrote:
+> The buffer coming from higher up the stack has an extra byte to handle
+> the NULL terminator in the string.  Instead of using a temporary buffer
+> to sprintf into and then copying into the buffer, just scnprintf
+> directly into the buffer and update lenp as appropriate.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
