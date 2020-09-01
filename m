@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21AC259506
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6C72593DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729708AbgIAPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:45:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56756 "EHLO mail.kernel.org"
+        id S1731125AbgIAPcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731637AbgIAPnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:43:06 -0400
+        id S1730728AbgIAPcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:32:32 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EEE920866;
-        Tue,  1 Sep 2020 15:43:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E3EC205F4;
+        Tue,  1 Sep 2020 15:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974986;
-        bh=nN2X4oEKGVhTNSkEAU4v2/jWqY5AJGIkryR8OT7ctnQ=;
+        s=default; t=1598974351;
+        bh=Xlt4LANXdOrhRf7zi/oAhoOIZdeFcPS4vzsgy5swhxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08tVhlU8O46NqbZRFBzbf7Ah+IRqhqOR0MXtPoImm7Y8NdQy4UFxdYz5IcqQLYvaD
-         dFUjNFuhWB/9M/McQ8PDSlatZnXZT8OeUt+4OC/UAivxQhZeiqePh4SgfzzmfBwTJ/
-         pQ2uI33a+tFXF5jHh1QqI54373bOHe4eEF14QDt4=
+        b=XLP/HiNETWTCCDoEtvjFQg/1yMRILuKKULyCVq5vk6zCIS3jO1Q261p2104lnqND7
+         NonNxAafQxCmPBjb/Lqw2OzfAYcGY1IG0DzrsWCvtQnELooypkEUjiLK8XtwdLiV03
+         nlE7BY5YyvNhckWAfQ53XwQaDzTt1AJoc7j9LsOE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 166/255] arm64: Allow booting of late CPUs affected by erratum 1418040
-Date:   Tue,  1 Sep 2020 17:10:22 +0200
-Message-Id: <20200901151008.648624285@linuxfoundation.org>
+Subject: [PATCH 5.4 143/214] Revert "scsi: qla2xxx: Fix crash on qla2x00_mailbox_command"
+Date:   Tue,  1 Sep 2020 17:10:23 +0200
+Message-Id: <20200901150959.831506820@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,39 +47,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Saurav Kashyap <skashyap@marvell.com>
 
-[ Upstream commit bf87bb0881d0f59181fe3bbcf29c609f36483ff8 ]
+[ Upstream commit de7e6194301ad31c4ce95395eb678e51a1b907e5 ]
 
-As we can now switch from a system that isn't affected by 1418040
-to a system that globally is affected, let's allow affected CPUs
-to come in at a later time.
+FCoE adapter initialization failed for ISP8021 with the following patch
+applied. In addition, reproduction of the issue the patch originally tried
+to address has been unsuccessful.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20200731173824.107480-3-maz@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+This reverts commit 3cb182b3fa8b7a61f05c671525494697cba39c6a.
+
+Link: https://lore.kernel.org/r/20200806111014.28434-11-njavali@marvell.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/cpu_errata.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/qla2xxx/qla_mbx.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
-index 79728bfb5351f..2c0b82db825ba 100644
---- a/arch/arm64/kernel/cpu_errata.c
-+++ b/arch/arm64/kernel/cpu_errata.c
-@@ -910,6 +910,8 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
- 		.desc = "ARM erratum 1418040",
- 		.capability = ARM64_WORKAROUND_1418040,
- 		ERRATA_MIDR_RANGE_LIST(erratum_1418040_list),
-+		.type = (ARM64_CPUCAP_SCOPE_LOCAL_CPU |
-+			 ARM64_CPUCAP_PERMITTED_FOR_LATE_CPU),
- 	},
- #endif
- #ifdef CONFIG_ARM64_WORKAROUND_SPECULATIVE_AT
+diff --git a/drivers/scsi/qla2xxx/qla_mbx.c b/drivers/scsi/qla2xxx/qla_mbx.c
+index 62a16463f0254..c1631e42d35d1 100644
+--- a/drivers/scsi/qla2xxx/qla_mbx.c
++++ b/drivers/scsi/qla2xxx/qla_mbx.c
+@@ -335,14 +335,6 @@ qla2x00_mailbox_command(scsi_qla_host_t *vha, mbx_cmd_t *mcp)
+ 			if (time_after(jiffies, wait_time))
+ 				break;
+ 
+-			/*
+-			 * Check if it's UNLOADING, cause we cannot poll in
+-			 * this case, or else a NULL pointer dereference
+-			 * is triggered.
+-			 */
+-			if (unlikely(test_bit(UNLOADING, &base_vha->dpc_flags)))
+-				return QLA_FUNCTION_TIMEOUT;
+-
+ 			/* Check for pending interrupts. */
+ 			qla2x00_poll(ha->rsp_q_map[0]);
+ 
 -- 
 2.25.1
 
