@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5984325A1B3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AF225A1BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 00:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgIAW5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 18:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
+        id S1727020AbgIAW7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 18:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIAW5q (ORCPT
+        with ESMTP id S1726091AbgIAW7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 18:57:46 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39054C061246
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 15:57:46 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id t9so1706332pfq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 15:57:46 -0700 (PDT)
+        Tue, 1 Sep 2020 18:59:18 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F67FC061244;
+        Tue,  1 Sep 2020 15:59:18 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id c142so1710825pfb.7;
+        Tue, 01 Sep 2020 15:59:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8SCB1R5S0rIlXAP1gD/42mN3rEFGnClEAzglzWI/f5A=;
-        b=kx9pMxbaG7HxeA/hSNOaElEvYF6zneOI88aycKG6Q8jpxb2w7bV344cmhdkTDMxzM8
-         s4owDu6/DO5Uv9cHyTnKBdmy+nqJhz7wwHz61yAXmFMMhK4Cu789DJwxYjlbPXe0s5+l
-         1eE7XdCSERl8fSlQzYXHj1ACbWfO6xdmj6kFMFBA+oZIO+F0oUEUFwv1qB4zVLOSf3Tb
-         cEm0nPav5qtkrw25Z04awrm9iRz2WofDvEuWX38Z7ApDCYln3CV04pw1ye/mPQ710zxe
-         cuHimPUl3H9I9rn9HJAOO2hqAuXJqTUInl3Y6aiY+aq7bLFN524E3gnv+652wfX5cgO4
-         qCzw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4jS/NdDL0jR/GxH0UkvOA/rOyTppb7860U24VxNbz6Q=;
+        b=Cu1gz2rkND3wStNEAaro1bXjDG6xSAkEJfJIQBs3jdEQMihqqKaHKWQaHmqrGtnbRS
+         v4D7eDKaiBX90mJPQi89whPu2j4CS3XOECvP3sP7K0UBInjBlHet8l84Ea9YMcz+xOpW
+         FFDucObCAKdiP7+U3hKLU8HPvIxFEuUHr7/FRb1cnlWM3dZ+sinxGPNa/jxKRDKCkjZE
+         2tFWJyFUjkslh+ZVz/VwOnpsz3sqM+EFtimGonKDdc/GR+xk9vqt3ft4bugOGXvCQwIN
+         qr0uvCprK72UU5MF+W1JxotEExi8UK0DRS5i25SUvwEEdk/vCHoxOxSCeR4YSoimE/7r
+         4q1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=8SCB1R5S0rIlXAP1gD/42mN3rEFGnClEAzglzWI/f5A=;
-        b=heXzc1XSxf1A0VCrY8qtmoudEU2pxpczTHS+mG6WiVMQMlkIUSeCmiOwf4UZQel95b
-         VJNpw2raimXYo9zQh5EUdPEDN08PD5v+pQ8Y7ulgQFg/h/fox6CFKcMAweizUjJH1lsm
-         zMk9Qmy6NX1k3b1LpXd30HtxBbDPqes7YAdlk2ECpZ9oDxUL2s3k53PQ+fISlV17lyrO
-         /9znWk6c+zGw0KvX5ZHb8dBGtuCNo7TOkSD/YW3pcTApgAQMCocdx4Bf1/oQdUu+rnyS
-         f+uBSTytHJ1khj9BkXGqr0ghmhTezhC/8sT4k4ttfOJcuoM9dsicjHPPqIjINAqQwEUh
-         n+dg==
-X-Gm-Message-State: AOAM5334IAavFn73Ayrv/siEExYOKRBBiYs+oFSBRJ0ajXMne7FsYj/g
-        ZEqPd7HdBTMW8IpAJ2y2nOlsbCNfcXEYqjRQ
-X-Google-Smtp-Source: ABdhPJz7/PuTI6toqDV7Y9ZAOMNodGuUCNOHnU2Zfi3eqQltoMCij8HkSX98gsEIVX42xBTyba1VqA==
-X-Received: by 2002:a63:521c:: with SMTP id g28mr3479485pgb.247.1599001065304;
-        Tue, 01 Sep 2020 15:57:45 -0700 (PDT)
-Received: from [192.168.1.187] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id q5sm3122211pfu.16.2020.09.01.15.57.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 15:57:44 -0700 (PDT)
-Subject: Re: [PATCHSET for-5.10/block] blk-iocost: iocost: improve donation,
- debt and excess handling
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com
-References: <20200901185257.645114-1-tj@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cac016f9-ee13-9fd4-22b2-8be0d830f076@kernel.dk>
-Date:   Tue, 1 Sep 2020 16:57:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=4jS/NdDL0jR/GxH0UkvOA/rOyTppb7860U24VxNbz6Q=;
+        b=XkCIRbMump2E2XmrFj9SXTky9SA3mlZ8uH+NaFuc/m1oeSvrByUO32BuCpr728S0WG
+         Xci4wg20Gc/vGd1fsySw87XAhzYR922r09+RYc5nLA3rGWY9LJAjAoSKdVtgxn92a1ni
+         fJT41Ag/u87ykygjJvPOztmhnJso05QeyxsL5YREPPGfqPh2AxJdgeZkC7tdVqE6Wldd
+         Gnga3q9SSDM6ZNyh1WW0EHB9pdOfVK4Pemdn3KCMbofLU0G4TQKFJcBJtvOTcUYcQTHQ
+         jYPi733pafDGubI9Qn5QfBhUvAtGUccrytZ3cvIPQc/CkbHj4Jcrcu6RDkc6+hVFEGtT
+         nRvg==
+X-Gm-Message-State: AOAM530aNHaYQJyh54Hb3Mu2VpVSG/bNBELTFIZMYJFvIfmAUwLP2LnD
+        Nk6LagDd4NLQ/eLk9pDIqs2Ktn7CMQ0=
+X-Google-Smtp-Source: ABdhPJzMpLjTU5htMiK2FZlKuyLiFPYwhEW98jAI2f+GW+NM7agnDAiIJJ38Stc7XeofN9qZOzE04Q==
+X-Received: by 2002:a63:754:: with SMTP id 81mr3321778pgh.435.1599001157605;
+        Tue, 01 Sep 2020 15:59:17 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id m188sm2952750pfm.220.2020.09.01.15.59.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 15:59:16 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next 0/3] net: dsa: bcm_sf2: Clock support
+Date:   Tue,  1 Sep 2020 15:59:10 -0700
+Message-Id: <20200901225913.1587628-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1-2 applied for 5.9, and the rest for 5.10. Thanks Tejun.
+Hi David,
+
+This patch series adds support for controlling the SF2 switch core and
+divider clock (where applicable).
+
+Florian Fainelli (3):
+  dt-bindings: net: Document Broadcom SF2 switch clocks
+  net: dsa: bcm_sf2: request and handle clocks
+  net: dsa: bcm_sf2: recalculate switch clock rate based on ports
+
+ .../bindings/net/brcm,bcm7445-switch-v4.0.txt |  7 ++
+ drivers/net/dsa/bcm_sf2.c                     | 84 ++++++++++++++++++-
+ drivers/net/dsa/bcm_sf2.h                     |  4 +
+ 3 files changed, 93 insertions(+), 2 deletions(-)
 
 -- 
-Jens Axboe
+2.25.1
 
