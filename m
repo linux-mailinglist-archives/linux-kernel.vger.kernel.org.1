@@ -2,65 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0E32590EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2222590F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgIAOmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728536AbgIAOl6 (ORCPT
+        id S1728413AbgIAOmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:42:42 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55886 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728360AbgIAOme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:41:58 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03584C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:41:57 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b16so516471pjp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rN6mVq1C675COOeO9181t4h75F89OjQk6hHpgH+S2X8=;
-        b=zWf7fhWFHujfWaocQn49l9sQhhPq6xyQeaCS4rvpip82Yg4nGFcQsS/l32lvBaxghQ
-         w8UaOQwYaD6gwz9dGJN2uVaNuBPQZYnoFcap4fWwhOCDmaaq4RrKwPeefiocvDkkgHrJ
-         24Uuwoy8QMsErURjw7uLdcKrhxkFqbkopqSxv/HyZO/ftoDj+/LMXPdlvUmq1LM3M2Yy
-         th1SUVnuedh8P7SRbR7zqCtQchZ55aIsGN9Tez4fMp9NS+3qhEQZAaOneAMbclltMKdH
-         Ly8iQ51E0C6AGzrvyHAL99zOB1yxiMqKYX5tIUS75Po6vwYmPu9+lw7PDYD+usWZ0So7
-         5hGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rN6mVq1C675COOeO9181t4h75F89OjQk6hHpgH+S2X8=;
-        b=TrjLGJWYzdRl9lnjksYeQN4C9WmYic27Kl+mQ7gN4NBcc4+FlVlpBG8bmhjJyO7qkF
-         gc3KzighaGvag+2sCsUK7aQj+oroPVD5NyEUIbwP5Ad1N8VAm0bqxCjdE+lM4tND4xNw
-         BtzvaQ1H+++Dt835/secUyPeC4TEoxCb3cGMGZLYXFg6kKRzK8Yit/KARfHvpEBFKfFm
-         86r5RUeTlgzzB7TCVSdJb/jPelxvOTqTKgkz7iTWttx5Qs94s2HZJyLBvgzRIK3JhXZM
-         mD5do2BWwO23zTX3ixgrdT77uCLSrIDvLm0tXeU/UGnaOCqpUdy9Ud3u0aSCFK1hYYgg
-         Md7w==
-X-Gm-Message-State: AOAM5331XehP1rCThGDLKCE621nEgg1h3SiuCjANTe9k4CmHkDitwKLm
-        RPurQNFYmLDPEmaJg6/wD61AniMrvnOoEDoi
-X-Google-Smtp-Source: ABdhPJxyUYNNoAYg+p0rUio5na1hUQeQkT9Gz50MFaKFx0Ho8v3YbST/94HbTYB5NkVRq+gbMPEODQ==
-X-Received: by 2002:a17:90b:1049:: with SMTP id gq9mr1941000pjb.28.1598971317157;
-        Tue, 01 Sep 2020 07:41:57 -0700 (PDT)
-Received: from [192.168.1.187] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id r123sm2340138pfc.187.2020.09.01.07.41.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 07:41:56 -0700 (PDT)
-Subject: Re: [PATCH v3 0/4] Some clean-ups for bio merge
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1598580324.git.baolin.wang@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <aa37ce36-c02f-835b-e62b-3e47daa27022@kernel.dk>
-Date:   Tue, 1 Sep 2020 08:41:55 -0600
+        Tue, 1 Sep 2020 10:42:34 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 46FC8299AB2
+Subject: Re: [PATCH v2 1/4] ARM: exynos: clear L310_AUX_CTRL_NS_LOCKDOWN in
+ default l2c_aux_val
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        kernel@collabora.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <267a81e550a0b5d479c82b5908e2a2caa4c9c874.1597061474.git.guillaume.tucker@collabora.com>
+ <c0509b5f-a064-2e73-7e04-51f41a56d222@collabora.com>
+ <CAJKOXPczS_RpSFpjGygZ_1MCYxJ_cUDRjriZvrHd6+zhmq=c8Q@mail.gmail.com>
+ <CAJKOXPfT7LvHVpTdaQ1voVi=OtC4aV6hbyzcekmrPMkb+5ebNg@mail.gmail.com>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <fd1a34c4-dcc1-1480-1e96-8bd94ada9846@collabora.com>
+Date:   Tue, 1 Sep 2020 15:42:28 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1598580324.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <CAJKOXPfT7LvHVpTdaQ1voVi=OtC4aV6hbyzcekmrPMkb+5ebNg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,15 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/27/20 8:52 PM, Baolin Wang wrote:
-> Hi,
+On 01/09/2020 14:51, Krzysztof Kozlowski wrote:
+> On Tue, 1 Sep 2020 at 15:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>
+>> On Tue, 1 Sep 2020 at 15:34, Guillaume Tucker
+>> <guillaume.tucker@collabora.com> wrote:
+>>>
+>>> Hi Krzysztof, Russell,
+>>>
+>>> On 10/08/2020 13:22, Guillaume Tucker wrote:
+>>>> The L310_AUX_CTRL_NS_LOCKDOWN flag is set during the L2C enable
+>>>> sequence.  There is no need to set it in the default register value,
+>>>> this was done before support for it was implemented in the code.  It
+>>>> is not set in the hardware initial value either.
+>>>>
+>>>> Clean this up by removing this flag from the default l2c_aux_val, and
+>>>> add it to the l2c_aux_mask to print an alert message if it was already
+>>>> set before the kernel initialisation.
+>>>>
+>>>> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>>>> ---
+>>>>
+>>>> Notes:
+>>>>     v2: fix flag name L310_AUX_CTRL_NS_LOCKDOWN
+>>>>
+>>>>  arch/arm/mach-exynos/exynos.c | 4 ++--
+>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> I believe this v2 series has addressed all previous comments and
+>>> you were waiting for the 5.9 merge window to end.  The patches
+>>> all still apply cleanly on v5.9-rc3.  Do you want me to resend
+>>> the series anyway or is there anything else needed at this point?
+>>>
+>>> Maybe one thing that wasn't completely clear in v1 was whether
+>>> patch 2/4 was the right approach.  I've explained the reason
+>>> behind it but didn't get a final reply from Russell[1].
+>>
+>> I am sorry, my bad. I already applied this one and 3/4 (dts).
+>> Apparently I forgot to reply with confirmation and Patchwork did not
+>> notify you for some reason.
+
+No problem, I see them in linux-next now.  Thanks!
+
+>> Patch 2/4 does not look like one for me so I would need ack from
+>> Russell to take. Did you submit it to the ARM patches queue?
+
+I've CC-ed linux-arm-kernel@lists.infradead.org on the whole
+series.  Did you mean anything else by the ARM patches queue?
+
+>> Patch 4/4 will wait for v5.10-rc1 as it depends on 1/4 and it is DTS patch.
 > 
-> There are some duplicated code when trying to merge bio from pluged list
-> and software queue, thus this patch set did some clean-ups when merging
-> a bio. Any comments are welcome. Thanks.
+> Correct: Patch 4/4 will wait for v5.10 because it depends on the DTS patch.
 
-Applied, thanks.
+Sure, in fact patch 4/4 depends on the DTS one (3/4) and also on
+the l2c fix (2/4) as otherwise prefetch would actually not be
+enabled.  So it sounds like both remaining ones 2/4 and 4/4 are
+actually now pending Russell's ack.
 
--- 
-Jens Axboe
+Best wishes,
+Guillaume
 
+
+[1] https://lore.kernel.org/lkml/46fa1159-fcd6-b528-b8e8-2fba048236b2@collabora.com/
