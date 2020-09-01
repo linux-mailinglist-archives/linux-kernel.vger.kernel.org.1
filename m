@@ -2,165 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB0C258A6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB90258A84
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgIAIgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 04:36:24 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:50537 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgIAIgW (ORCPT
+        id S1726446AbgIAIif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 04:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgIAIie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 04:36:22 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200901083620euoutp01c4828bf6831b8b7ed6f58e56c461131a~wm-2GGWXR0695506955euoutp01Q
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:36:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200901083620euoutp01c4828bf6831b8b7ed6f58e56c461131a~wm-2GGWXR0695506955euoutp01Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598949380;
-        bh=xR60+7s8BqCjxeWnqjPQ9S9O7uBfe2TsKeQWYCRE+y0=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=F9sTFviQk9qjms2b3QsgQLf/8dVZQmNWuUp/XXiAfX2mFvsva446HHFTeyIwW9hZR
-         kEDwRJxWiD8rpftHk+4d/Mcq0yY1qt90FAVyYvpYAZ/oxxJRltdV1uLnQVPghpmYcc
-         pvdapM1D/8yEQtdal2aTBtmgg9BAbf2vDjoyzpRM=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200901083620eucas1p2823474dfa00527a05d1c42b1f61056fb~wm-1w6lq51367313673eucas1p2m;
-        Tue,  1 Sep 2020 08:36:20 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 1C.05.06318.4080E4F5; Tue,  1
-        Sep 2020 09:36:20 +0100 (BST)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200901083620eucas1p2a570a3d06b998cb77d166e8945842dad~wm-1XEf2w1248912489eucas1p2j;
-        Tue,  1 Sep 2020 08:36:20 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200901083620eusmtrp2157a3ac1522f540976297c5cd27e8ebf~wm-1WagBQ2805528055eusmtrp2i;
-        Tue,  1 Sep 2020 08:36:20 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-23-5f4e080405fb
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 99.35.06017.4080E4F5; Tue,  1
-        Sep 2020 09:36:20 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200901083619eusmtip2ac6b59d9e62cfbcec465bff0a6e29d5d~wm-0Ylgq90125801258eusmtip2g;
-        Tue,  1 Sep 2020 08:36:18 +0000 (GMT)
-Subject: Re: [PATCH 11/13] ARM: dts: exynos: Silence SATA PHY warning in
- Exynos5250 Arndale
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <4836dc12-df88-5936-c208-8f6ff2a6bdc1@samsung.com>
-Date:   Tue, 1 Sep 2020 10:36:20 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <CAJKOXPfKnzsRA3D8b3z=iG4oD6P+M7Q7YMVbrOAmLTiNgZ5mXA@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRjm2zlnOxvNPufKL4uiUdGFnGLRIUO8FEwou9CvQNfSg0pukx21
-        lCLRtFpiZYFzk7SSlHmftxJcZcNVQ1eJOkq7bf7Qmv5Ymkq23I6W/573uXzv+8BHYqIWIoRM
-        V2XRGpUiQ8IV4J198/a9OJkgD3tesYFq1TUTVJVlgKBuOb9jlN3ewqNMzmGCGuyu5FI6u5lD
-        FfVYeNS18Qksmi8zGW9wZW01V2Sl7UYg85g2n8DPCA6l0BnpObRGGnVWkOadMIDMEvHFLy0f
-        iXxghFrAJxHch37M9hBaICBFsA6gubaC5eEnQOVXp3B28AA0aTYQK5ESazXGCrVLQmXTcmQa
-        oAZbFdfnCoKJyFv0iOfDYrgLjSz+8pswOMdB9W4D5hO4MBxp3dqlAEkKYRS6/+yUj8bhNlSq
-        a8d9eB1MQn1vvvmxEAai1xUuP+bDk2iotd7/Pga3oC53JcbiYPTBVcXx7UKwm4dqpheWzz6M
-        iqd6cBYHoUlrO4/Fm5D36UqgEKCvA408digBaLBAB1hXJBodWPBfii3Vae6WsnQM8oyU+2kE
-        A5DDHcgeEYDKOssxlhai68Ui1r0D6a1N/9a+ePseuw0k+lXV9Kvq6FfV0f/fWw1wIwimsxll
-        Ks1EqOgLoYxCyWSrUkOT1UoTWPpHtj/WmSfA/PtcL4AkkKwR1s0elYsIRQ6Tq+wFiMQkYmFs
-        vy1JJExR5ObRGrVck51BM71gI4lLgoURDycSRTBVkUWfp+lMWrOickh+SD446H0Z55l9F+zw
-        7LQd//wpekjNaKf2yPmRJaOqxy5cPVa3Xz8eEWCZuXeavEvFxJnjU10Wd2HsvGBG6rzkCK9Y
-        m3DnVbUhL1EP1gdt1deWJTOLxptSUZjOZu4fs6jbttd2PKh0ZnKOpAwnXG7oSmtMPxDfgRMN
-        4r4wh9d9TIIzaYrw3ZiGUfwFYE+O8EMDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsVy+t/xe7osHH7xBg9aWCw2zljPajH/yDlW
-        i/7Hr5ktzp/fwG6x6fE1VovLu+awWcw4v4/JonXvEXaL9qcvmR04PTat6mTz2Lyk3qNvyypG
-        j8+b5AJYovRsivJLS1IVMvKLS2yVog0tjPQMLS30jEws9QyNzWOtjEyV9O1sUlJzMstSi/Tt
-        EvQy/r+czVjQI1LxYMNt1gbGVQJdjJwcEgImEj3HFzCD2EICSxkl2o4zQcRlJE5Oa2CFsIUl
-        /lzrYuti5AKqecso0bz9JFhCWCBW4n/rYnYQW0RAU+L63++sIEXMAj+YJKb/mM8I0fGdSWLy
-        he9gY9kEDCW63oKM4uDgFbCTmLc/CCTMIqAi0TdjCwuILSoQJ3Gm5wUbiM0rIChxcuYTsDin
-        QKDE1Y2rwZYxC5hJzNv8kBnClpfY/nYOlC0ucevJfKYJjEKzkLTPQtIyC0nLLCQtCxhZVjGK
-        pJYW56bnFhvpFSfmFpfmpesl5+duYgRG37ZjP7fsYOx6F3yIUYCDUYmHN+CLT7wQa2JZcWXu
-        IUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzGaAj03kVlKNDkfmBjySuINTQ3NLSwNzY3N
-        jc0slMR5OwQOxggJpCeWpGanphakFsH0MXFwSjUwHpkcxyUva2FyzylEYrOyUP669Z0TlvSu
-        XFVu4bWP2W7lr7hVTs6ykbJyzjp6RiqXbUVP33p/VEWaP9xcQmDKl9z3Jo37s42axXV+PZzc
-        Iu+wOTjhpInClE96KsqyJ9z+Okoocv88N1tlVVrzKf4dh5cueXsi7RafTNRlWXGRWIZHazS4
-        rFYqsRRnJBpqMRcVJwIAtNCFL9QCAAA=
-X-CMS-MailID: 20200901083620eucas1p2a570a3d06b998cb77d166e8945842dad
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200901075518eucas1p252ef2b85cf5e1a83d88f8de2dd4a8196
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200901075518eucas1p252ef2b85cf5e1a83d88f8de2dd4a8196
-References: <20200901075417.22481-1-krzk@kernel.org>
-        <CGME20200901075518eucas1p252ef2b85cf5e1a83d88f8de2dd4a8196@eucas1p2.samsung.com>
-        <20200901075417.22481-12-krzk@kernel.org>
-        <800d8fa8-7fd4-6221-f8be-ef422e5642d9@samsung.com>
-        <CAJKOXPd+Mr0c7ype1KTseBc2=qx0NNKKj5Ku0w0HBOgjEsGvKg@mail.gmail.com>
-        <CAJKOXPfKnzsRA3D8b3z=iG4oD6P+M7Q7YMVbrOAmLTiNgZ5mXA@mail.gmail.com>
+        Tue, 1 Sep 2020 04:38:34 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059A3C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:33 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id s13so297287wmh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=iVsq81HPEYX496NaJd4owSpS0iekNB/zml51XlcrGc8=;
+        b=Eb2Dqd6FoZNsc6d4ii7VC8E24Ne6rsogRu0S55o516FePFDP8F/o7HwEv62wknG2fN
+         /R+4cJMglE5+LBRapxPUoZWDhj099SwUjx3BiDk1GlbJzPNbv/CQM9rQJVxSnjtGjtqA
+         XZRqTCfOKrTMowDYGCdbP2vY0UIEQs7F/sx6CLl9ZJLWIsYt952+h1kgEhobGM/Vnz9Z
+         Wv1bpKQOpfYlZIayuhS4noEr1w8WpJX+A+EhzSBQl+QK8I9lvMo9O28VAKpmwP0kOueg
+         SfNeEqa79CI8iFwi3QOrl+48aaGaOo+5R4cTh/MIhueRjNyKLJyTnes44i/VnU8aciZG
+         K9tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iVsq81HPEYX496NaJd4owSpS0iekNB/zml51XlcrGc8=;
+        b=TsAMEFHR9uJi2dG/bz6bJqPV7HxUEGuh7jDlSz+QJkusVA1yTBng2LNsAQ7sIZuF+h
+         nPhthDWH9fGZTjLOTui3KOJwYU0XfBD7H6iIv3EvXm8XY6ZM+3M9zI3woyF2oWcQubkj
+         ql6sHXl+jY+6Az2z1tnQjRyjn7q4XtIXnr2ekoxspz2jvoOdEepLY7eZhGF/KYECVjTu
+         nla/jMk+RnyEM7WS4yJIxQMqYu5JnBC40V/m6Ch1vrslbcBQjYIktVbF3zN/mBxtfXzR
+         KcGfWQY13fhXrmILUPjTXSBTBoFiqSsvgb1Vd0bJXO3QztDS9Z/S4RQx5xpOeysc6WHT
+         V9xw==
+X-Gm-Message-State: AOAM531vtog6S3h8jtNET2AIieuuruIaMYmyNFf1X6XaxKrJ5N2PkO4T
+        uGaQPrvZAOMVWb6lR9BB/s4mjQ==
+X-Google-Smtp-Source: ABdhPJzorDsuuSr3E3GK19eANL2fJspExNgMXxEWE9/9mOOioYi8KjjFJixhokfd38QnKoTvHXmm+Q==
+X-Received: by 2002:a7b:cf30:: with SMTP id m16mr714237wmg.0.1598949511578;
+        Tue, 01 Sep 2020 01:38:31 -0700 (PDT)
+Received: from hackbox2.linaro.org ([81.128.185.34])
+        by smtp.gmail.com with ESMTPSA id d190sm911260wmd.23.2020.09.01.01.38.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 01:38:30 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Wei Li <liwei391@huawei.com>, Al Grant <Al.Grant@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v2 00/14] perf mem: Support AUX trace and Arm SPE
+Date:   Tue,  1 Sep 2020 09:38:01 +0100
+Message-Id: <20200901083815.13755-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.2020 10:19, Krzysztof Kozlowski wrote:
-> On Tue, 1 Sep 2020 at 10:17, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->> On Tue, 1 Sep 2020 at 10:13, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
->>> On 01.09.2020 09:54, Krzysztof Kozlowski wrote:
->>>> The SATA PHY in Exynos5250 SoCs has two interfaces and two device nodes:
->>>> 1. sata-phy@12170000
->>>> 2. i2c-9/i2c@38
->>>>
->>>> The first node represents the actual SATA PHY device with phy-cells.
->>>> The second represents additional I2C interface, needed by the driver
->>>> to communicate with the SATA PHY device.  It is not a PHY-provider in
->>>> the terms of dtschema so rename it to silence dtbs_check warning:
->>>>
->>>>     arch/arm/boot/dts/exynos5250-arndale.dt.yaml: sata-phy@38: '#phy-cells' is a required property
->>>>       From schema: lib/python3.6/site-packages/dtschema/schemas/phy/phy-provider.yaml
->>>>
->>>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>>> ---
->>>>    arch/arm/boot/dts/exynos5250-arndale.dts | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/arm/boot/dts/exynos5250-arndale.dts b/arch/arm/boot/dts/exynos5250-arndale.dts
->>>> index f2bcce167b2d..3c401c82905c 100644
->>>> --- a/arch/arm/boot/dts/exynos5250-arndale.dts
->>>> +++ b/arch/arm/boot/dts/exynos5250-arndale.dts
->>>> @@ -544,7 +544,7 @@
->>>>        samsung,i2c-max-bus-freq = <40000>;
->>>>        samsung,i2c-slave-addr = <0x38>;
->>>>
->>>> -     sata_phy_i2c: sata-phy@38 {
->>>> +     sata_phy_i2c: sata-phy-i2c@38 {
->>>>                compatible = "samsung,exynos-sataphy-i2c";
->>>>                reg = <0x38>;
->>>>        };
->>> I'm not against the rename, but frankly, the above node and all i2c
->>> parameters should be moved to exynos5250.dtsi. This is a SoC internal
->>> things (the same way as hdmiphy in exynos4.dtsi), so the board dts
->>> should only contain information like status = "enabled" for i2c_8 and
->>> hdmi_i2c_phy nodes. No need to duplicate it here and in smdk5250.dts.
->> Good point, the I2C bus used here is an internal part of SoC.
->>
->> I will squash these two changes into a new one. Thanks for the review!
-> While at it, I wonder about the samsung,i2c-slave-addr property. Is it
-> really needed? Are there multiple masters on this bus?
+This patch set is to support AUX trace and Arm SPE as the first enabled
+hardware tracing for Perf memory tool.
 
-This might be some cargo-cult, probably copied from HDMI DDC (I'm not 
-sure if it is needed there). I've removed it and SATA still works fine 
-on Exynos5250 Arndale board.
+Patches 01 ~ 04 are preparasion patches which mainly resolve the issue
+for memory events, since the existed code is hard coded the memory
+events which based on x86 and PowerPC architectures, so patches 01 ~ 04
+extend to support more flexible memory event name, and introduce weak
+functions so can allow every architecture to define its own memory
+events structure and returning event pointer and name respectively.
 
-Best regards
+Patches 05 and 06 are used to extend Perf memory tool to support AUX
+trace, and add a new option 'M' for itrace for generate memory events.
+
+Patches 07 ~ 13 are to support Arm SPE with Perf memory tool.  Firstly it
+registers SPE events for memory events, then it extends the SPE packet
+to pass addresses info and operation types, and also set 'data_src'
+field so can allow the tool to display readable string in the result.
+
+Patch 14 is to update documentation to reflect changes introduced for
+support Arm SPE.
+
+This patch set has been tested on ARMv8 Hisilicon D06 platform and
+verfied on x86 so avoid to cause regression.  Please note, this patch
+set is dependent on the patch set "perf arm-spe: Refactor decoding &
+dumping flow" [1].
+
+Below commands can run successfully on D06:
+
+  $ perf mem record -t ldst -- ~/false_sharing.exe 2
+  $ perf mem record -t load -- ~/false_sharing.exe 2
+  $ perf mem record -t store -- ~/false_sharing.exe 2
+  $ perf mem report
+  $ perf mem report --itrace=M
+
+  # Samples: 391K of event 'memory'
+  # Total weight : 391193
+  # Sort order   : local_weight,mem,sym,dso,symbol_daddr,dso_daddr,snoop,tlb,locked
+  #
+  # Overhead       Samples  Local Weight  Memory access             Symbol                                           Shared Object       Data Symbol                                                   Data Object        Snoop         TLB access              Locked
+  # ........  ............  ............  ........................  ...............................................  ..................  ............................................................  .................  ............  ......................  ......
+  #
+      18.56%         72611  0             L1 or L1 miss             [.] read_write_func                              false_sharing.exe   [.] buf1+0x0                                                  false_sharing.exe  N/A           Walker hit              No
+      16.16%         63207  0             L1 or L1 hit              [.] read_write_func                              false_sharing.exe   [.] __do_global_dtors_aux_fini_array_entry+0x228              false_sharing.exe  N/A           Walker hit              No
+      15.91%         62239  0             L1 or L1 hit              [.] read_write_func                              false_sharing.exe   [.] __do_global_dtors_aux_fini_array_entry+0x250              false_sharing.exe  N/A           Walker hit              No
+       4.67%         18280  0             N/A                       [.] read_write_func                              false_sharing.exe   [.] buf2+0x8                                                  false_sharing.exe  N/A           Walker hit              No
+       3.34%         13082  0             L1 or L1 hit              [.] read_write_func                              false_sharing.exe   [.] __do_global_dtors_aux_fini_array_entry+0x230              false_sharing.exe  N/A           Walker hit              No
+       2.49%          9755  0             L1 or L1 hit              [.] read_write_func                              false_sharing.exe   [.] 0x0000aaaac23a3450                                        false_sharing.exe  N/A           Walker hit              No
+       2.46%          9611  0             L1 or L1 hit              [.] read_write_func                              false_sharing.exe   [.] lock_thd_name+0x0                                         false_sharing.exe  N/A           Walker hit              No
+       2.26%          8856  0             L1 or L1 hit              [.] read_write_func                              false_sharing.exe   [.] 0x0000aaaac23a3458                                        false_sharing.exe  N/A           Walker hit              No
+       2.19%          8549  0             L1 or L1 miss             [.] read_write_func                              false_sharing.exe   [.] buf2+0x28                                                 false_sharing.exe  N/A           Walker hit              No
+
+Changes from v1:
+* Refined patch 02 to use perf_mem_events__ptr() to return event pointer
+  and check if pointer is NULL, and remove the condition checking for
+  PERF_MEM_EVENTS__MAX; (James Clark)
+* Added new itrace option 'M' for memory events;
+* Added patch 14 to update documentation.
+
+[1] https://lore.kernel.org/patchwork/cover/1288406/
+
+
+Leo Yan (14):
+  perf mem: Search event name with more flexible path
+  perf mem: Introduce weak function perf_mem_events__ptr()
+  perf mem: Support new memory event PERF_MEM_EVENTS__LOAD_STORE
+  perf mem: Only initialize memory event for recording
+  perf auxtrace: Add option '-M' for memory events
+  perf mem: Support AUX trace
+  perf mem: Support Arm SPE events
+  perf arm-spe: Enable attribution PERF_SAMPLE_DATA_SRC
+  perf arm-spe: Save memory addresses in packet
+  perf arm-spe: Store operation types in packet
+  perf arm-spe: Fill address info for samples
+  perf arm-spe: Synthesize memory event
+  perf arm-spe: Set sample's data source field
+  perf mem: Document options introduced by Arm SPE
+
+ tools/perf/Documentation/itrace.txt           |   1 +
+ tools/perf/Documentation/perf-mem.txt         |  10 +-
+ tools/perf/arch/arm64/util/Build              |   2 +-
+ tools/perf/arch/arm64/util/mem-events.c       |  46 ++++++
+ tools/perf/builtin-c2c.c                      |  23 ++-
+ tools/perf/builtin-mem.c                      |  73 ++++++++--
+ .../util/arm-spe-decoder/arm-spe-decoder.c    |  15 ++
+ .../util/arm-spe-decoder/arm-spe-decoder.h    |   8 ++
+ tools/perf/util/arm-spe.c                     | 132 +++++++++++++++---
+ tools/perf/util/auxtrace.c                    |   4 +
+ tools/perf/util/auxtrace.h                    |   2 +
+ tools/perf/util/mem-events.c                  |  41 ++++--
+ tools/perf/util/mem-events.h                  |   3 +-
+ 13 files changed, 302 insertions(+), 58 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/util/mem-events.c
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.20.1
 
