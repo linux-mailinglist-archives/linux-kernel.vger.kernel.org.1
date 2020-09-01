@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA012584C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 02:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEDA2584CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 02:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgIAAXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 20:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
+        id S1726503AbgIAAXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 20:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726192AbgIAAXg (ORCPT
+        with ESMTP id S1726400AbgIAAXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 20:23:36 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEF8C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:36 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id w1so7332740qto.4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:36 -0700 (PDT)
+        Mon, 31 Aug 2020 20:23:38 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E60C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:37 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id x125so1676903pfc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:23:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=OpCRtcsPpFRLic5hvjC2zaEKYM15+afAD1UpP9e19yY=;
-        b=vXbvBt0ydWJpSbrePzJiwyZF3yTIoFQqhrG+f71LvHy1hBFePv6+9A0LM2YOL/J1pH
-         UenXtaEO3Swyb6owdtq+v60ovlxyeuGW63KCw9s7UshgzIGFDweCmb93nVehvu09zoj7
-         9vW+O4MLF9sHxq/G2EHutXhyTN9ARP4A1dhnm1cOT+wCb9VixqmN9Te8L17J8QGj3WzY
-         Ts1u9PaCBq8evxOj696mLzImp6zv3GN9xylZzOpLnZ1ZekH9W+BcOIR9j6CNCoWeNXfW
-         sd4E11kGHUHuZUqqYUPuRcsfXDD4sf6fwa/58oTH9CaY0OppljOHfSny2ohj0+7kbKb4
-         jruQ==
+        bh=x7hoSHeAWK5P4oeCQGgLVlcI02P7mwgUY7iVKcw4mtY=;
+        b=YDk70RuxUX7JQxUoCoDpBMB4Nx2aegPpci+1o9QaktjEfeowcrNv+0ouGv724IqC8j
+         E2Tqc64XZ/ymVWNhnLAcq3uKinmAGRj0iXaYmqfvusL+IBKOp3hXe8RzakZ5TZtykMsP
+         H21xkmRpBkBTJmxSSOJ4IGQFh9HCTudfkATQ7LeIrQmZ7sueou1bCu0WJuOndNJDE2/1
+         MmheDrpYbHtKEjwVaDI+x3ZjkV64wIByHFUc90xTNlh5v7f9PVEri1cFA94LJwOlYH4q
+         kd8a6w0sQ8Mvc1aLNaD6Rrj/d902fu/fbBEYwOJGOq6isRAf+dQf/mQPdQTlkcAmH9G+
+         3Stg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=OpCRtcsPpFRLic5hvjC2zaEKYM15+afAD1UpP9e19yY=;
-        b=oX7IX737XI39DfctHwEX8Rvxatwhlny8kWjN7kKirr6FF98GWpLpd85YvR3kbUjQj1
-         3JUgAmqsrSEWCm1I+SX5186crzXoFUDKbc8AbMhYIP4qStN9qtMVTsy6Mn9ZoW++Gwn2
-         Z/JiBNQjznGFmnsTvC1exSfRF5h1N5ZiDBjckrUIX1Mk1y99EpM1B33XwYlc1L5HYSVn
-         CrW9RvTlbG21oqGNswvoTrYUbq0Bu70A3vB1kCSqTzUZEHfIhEjFPGj+Q3e6VnSLRk8e
-         VTMbHjshmY3Q/+YbLlac6bW391uoytH60ArTtKqFosvMMgyRNVTtJFuPFmuW+DCrpIiz
-         BYgg==
-X-Gm-Message-State: AOAM5314DlREynmZxpkYRuxLw4SET/mzKPtyFPmHDP7dCM5Mpgou37lp
-        CQO2qudeLSqSRLWze/eQxJdqLwGgaT8eiblWLb8=
-X-Google-Smtp-Source: ABdhPJzmB9zUGYUYDfr5ruRvfjynhXPf5vtI696h1nnKit+Ix1PRIw2niAYqN5275XDAgcB2xOsAo/RhfHQwLmqkv+A=
+        bh=x7hoSHeAWK5P4oeCQGgLVlcI02P7mwgUY7iVKcw4mtY=;
+        b=aqG1V8ditnppGvvrxCG+jgNv0VDEuKw2JLT6oLhd8jvJJYbtH0CSdNONR1moL8IZ1M
+         92dAeU31g7piPBMaQha8tTrPX64cqcXpgMrDuaxOwGC0bx3d4r2lsP3T85Xdgci1mWNg
+         nOF+gIDLyTGAUsOT/b7l0NYcazPy8RxZ6D2O9ZaBH+CtnaSu3tcutPyGyWEnrUThQ5ES
+         Ag47KfKpyRkAq6Zr64PtjdTyv+2IA58UNSzxXz3uWI1D7R5ioAy9uQMNT53pzl0+NPog
+         0cwp+r3WUS95PRezwXQt1/sLB7gCksCybbb+f3cCsIITTlbxLytHQ+crvrxTPhCtIKFF
+         DyPQ==
+X-Gm-Message-State: AOAM530UrYQJHMJc5kQMxT606Qsx94zb4qv3vireG7ImR5s3ega3VV0u
+        D1lBr2D4jZeOyniGkYH6dH/Rf4loIXMrJj1t0JE=
+X-Google-Smtp-Source: ABdhPJwED4nLxHhSz5AKhDraPa+/J0fY4ButKN1zuzXmRYkgkklqlX1iwDxieuNT/RU/gbhQkyoLgKvW/jlXNgldQ10=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:a789:: with SMTP id
- v9mr923919qva.2.1598919815516; Mon, 31 Aug 2020 17:23:35 -0700 (PDT)
-Date:   Mon, 31 Aug 2020 17:23:21 -0700
+ (user=ndesaulniers job=sendgmr) by 2002:a62:4c5:0:b029:138:413e:3e65 with
+ SMTP id 188-20020a6204c50000b0290138413e3e65mr782938pfe.3.1598919817460; Mon,
+ 31 Aug 2020 17:23:37 -0700 (PDT)
+Date:   Mon, 31 Aug 2020 17:23:22 -0700
 In-Reply-To: <20200901002326.1137289-1-ndesaulniers@google.com>
-Message-Id: <20200901002326.1137289-3-ndesaulniers@google.com>
+Message-Id: <20200901002326.1137289-4-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20200901002326.1137289-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH v2 2/7] Revert "kbuild: disable clang's default use of -fmerge-all-constants"
+Subject: [PATCH v2 3/7] Revert "arm64: bti: Require clang >= 10.0.1 for
+ in-kernel BTI support"
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -74,39 +76,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 87e0d4f0f37fb0c8c4aeeac46fff5e957738df79.
+This reverts commit b9249cba25a5dce5de87e5404503a5e11832c2dd.
 
-This was fixed in clang-6; the minimum supported version of clang in the
-kernel is clang-10 (10.0.1).
+The minimum supported version of clang is now 10.0.1.
 
-Link: https://reviews.llvm.org/rL329300.
-Link: https://github.com/ClangBuiltLinux/linux/issues/9
 Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- Makefile | 9 ---------
- 1 file changed, 9 deletions(-)
+ arch/arm64/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 37739ee53f27..144ac6a073ff 100644
---- a/Makefile
-+++ b/Makefile
-@@ -932,15 +932,6 @@ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
- # disable invalid "can't wrap" optimizations for signed / pointers
- KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
- 
--# clang sets -fmerge-all-constants by default as optimization, but this
--# is non-conforming behavior for C and in fact breaks the kernel, so we
--# need to disable it here generally.
--KBUILD_CFLAGS	+= $(call cc-option,-fno-merge-all-constants)
--
--# for gcc -fno-merge-all-constants disables everything, but it is fine
--# to have actual conforming behavior enabled.
--KBUILD_CFLAGS	+= $(call cc-option,-fmerge-constants)
--
- # Make sure -fstack-check isn't enabled (like gentoo apparently did)
- KBUILD_CFLAGS  += $(call cc-option,-fno-stack-check,)
- 
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 6d232837cbee..2a70b85b1a61 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1630,8 +1630,6 @@ config ARM64_BTI_KERNEL
+ 	depends on CC_HAS_BRANCH_PROT_PAC_RET_BTI
+ 	# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94697
+ 	depends on !CC_IS_GCC || GCC_VERSION >= 100100
+-	# https://reviews.llvm.org/rGb8ae3fdfa579dbf366b1bb1cbfdbf8c51db7fa55
+-	depends on !CC_IS_CLANG || CLANG_VERSION >= 100001
+ 	depends on !(CC_IS_CLANG && GCOV_KERNEL)
+ 	depends on (!FUNCTION_GRAPH_TRACER || DYNAMIC_FTRACE_WITH_REGS)
+ 	help
 -- 
 2.28.0.402.g5ffc5be6b7-goog
 
