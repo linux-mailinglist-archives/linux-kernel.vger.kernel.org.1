@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24EA25A0D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 23:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879DA25A0CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 23:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729094AbgIAVci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 17:32:38 -0400
-Received: from mga01.intel.com ([192.55.52.88]:46054 "EHLO mga01.intel.com"
+        id S1728847AbgIAVcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 17:32:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:37062 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728179AbgIAVch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 17:32:37 -0400
-IronPort-SDR: A3mMD3sIYLNg1X0ErigcGa9FDJfcckp/3Xd8oGIOgfe/2QRmdhUJnsnsakTaZ1VXKdHMcUdHDd
- yveVVx2Cet6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175321337"
+        id S1726521AbgIAVcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 17:32:24 -0400
+IronPort-SDR: 6keiERsgdEoStis64q4KVG0O2ycJwnf1rUkzjruLTh4raHQ4NWQN9XNngiDfoFRGeg3221iatH
+ 6MQUNSWP07wg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="145011230"
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="175321337"
+   d="scan'208";a="145011230"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 14:32:35 -0700
-IronPort-SDR: IVMWvnvQz9gWwGfvATgQdNS4FPjkvV2upWhrM6cpHoBCEncyDTgExCbk1EhFZdkPo47NPzvjey
- s1VnTQnOuA7w==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 14:32:22 -0700
+IronPort-SDR: ymRizTg7QcSI9HacyoaHP9RTCaYhG1hXyjTkftiXaZXzeqMbrexY2RTxECSL4wxhbqk5Ov2Up/
+ IdgdlAmLy0MA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="501894935"
+   d="scan'208";a="477353658"
 Received: from lkp-server02.sh.intel.com (HELO f796b30506bf) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Sep 2020 14:32:34 -0700
+  by orsmga005.jf.intel.com with ESMTP; 01 Sep 2020 14:32:21 -0700
 Received: from kbuild by f796b30506bf with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1kDDt7-00006q-6K; Tue, 01 Sep 2020 21:32:21 +0000
-Date:   Wed, 02 Sep 2020 05:32:11 +0800
+        id 1kDDt6-00006k-Vz; Tue, 01 Sep 2020 21:32:21 +0000
+Date:   Wed, 02 Sep 2020 05:32:13 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:core/static_call] BUILD SUCCESS
- 7c9903c9bf716d89b34f96cc2ed64e28dabf570b
-Message-ID: <5f4ebddb.rRKl65ok+nmSgOOa%lkp@intel.com>
+Subject: [tip:core/build] BUILD SUCCESS
+ 414d2ff5e5f21049b6b242271a6a8579f9dffc1b
+Message-ID: <5f4ebddd.xfw1Uiu4y5mc0VRY%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -46,13 +46,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/static_call
-branch HEAD: 7c9903c9bf716d89b34f96cc2ed64e28dabf570b  x86/perf, static_call: Optimize x86_pmu methods
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  core/build
+branch HEAD: 414d2ff5e5f21049b6b242271a6a8579f9dffc1b  x86/boot/compressed: Add missing debugging sections to output
 
 elapsed time: 721m
 
 configs tested: 157
-configs skipped: 17
+configs skipped: 13
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -72,10 +72,8 @@ mips                        nlm_xlp_defconfig
 arm                     eseries_pxa_defconfig
 arm                      footbridge_defconfig
 sh                            migor_defconfig
-mips                           ip28_defconfig
-sparc64                             defconfig
-sparc                       sparc32_defconfig
-powerpc                          allmodconfig
+sh                                  defconfig
+um                           x86_64_defconfig
 sh                          rsk7264_defconfig
 powerpc                      mgcoge_defconfig
 sh                          r7780mp_defconfig
@@ -85,11 +83,10 @@ sh                           se7750_defconfig
 nios2                         3c120_defconfig
 ia64                      gensparse_defconfig
 mips                 decstation_r4k_defconfig
-sh                               alldefconfig
-sh                             sh03_defconfig
-sh                             espt_defconfig
-ia64                          tiger_defconfig
-arm                            xcep_defconfig
+riscv                    nommu_k210_defconfig
+sh                            shmin_defconfig
+arm                       multi_v4t_defconfig
+arm                        spear3xx_defconfig
 powerpc                     pq2fads_defconfig
 i386                                defconfig
 mips                      loongson3_defconfig
@@ -119,6 +116,10 @@ mips                         tb0287_defconfig
 mips                     cu1000-neo_defconfig
 mips                          malta_defconfig
 powerpc                    gamecube_defconfig
+arm                        shmobile_defconfig
+arm                       imx_v6_v7_defconfig
+arm                           stm32_defconfig
+arm                       spear13xx_defconfig
 m68k                             alldefconfig
 mips                      malta_kvm_defconfig
 m68k                       m5249evb_defconfig
@@ -129,31 +130,29 @@ arm                         s5pv210_defconfig
 powerpc                     skiroot_defconfig
 powerpc                  mpc866_ads_defconfig
 arm                         lubbock_defconfig
-sh                         microdev_defconfig
-sh                            titan_defconfig
-arm                        mvebu_v7_defconfig
 xtensa                         virt_defconfig
 arm                          moxart_defconfig
 arc                              allyesconfig
 arm                        magician_defconfig
 mips                         bigsur_defconfig
 mips                    maltaup_xpa_defconfig
-arm                          gemini_defconfig
-nios2                         10m50_defconfig
-x86_64                           alldefconfig
-mips                           rs90_defconfig
-um                            kunit_defconfig
-m68k                         amcore_defconfig
-powerpc                     mpc83xx_defconfig
-ia64                             allyesconfig
+sh                         microdev_defconfig
 riscv                    nommu_virt_defconfig
 arm                          exynos_defconfig
 arm                        neponset_defconfig
 m68k                        stmark2_defconfig
+nios2                         10m50_defconfig
 mips                          rm200_defconfig
 arm                          prima2_defconfig
+m68k                       m5475evb_defconfig
+parisc                           alldefconfig
+arm                       cns3420vb_defconfig
+powerpc                         wii_defconfig
+arm                           tegra_defconfig
+mips                      maltasmvp_defconfig
 ia64                             allmodconfig
 ia64                                defconfig
+ia64                             allyesconfig
 m68k                             allmodconfig
 m68k                                defconfig
 m68k                             allyesconfig
@@ -180,6 +179,7 @@ mips                             allyesconfig
 mips                             allmodconfig
 powerpc                             defconfig
 powerpc                          allyesconfig
+powerpc                          allmodconfig
 powerpc                           allnoconfig
 x86_64               randconfig-a004-20200901
 x86_64               randconfig-a006-20200901
