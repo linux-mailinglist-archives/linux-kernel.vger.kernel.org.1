@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B3E2596B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CFB2596CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730130AbgIAQGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:06:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51183 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730544AbgIAQFs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:05:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598976347;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mupIaS0dTEeO07mNOTIqZq0+JowOp33CO07KogYwAJE=;
-        b=DHCTElMcNKOtA8mxdODVINkr5S2kadOYLpXEfnKfmkF3MqETQw3WMvYpF2cpNV7IfEhEES
-        JX4A3QNka9CD/bQzkqKMAfCFR1ADaigIZ4PGs2iflN1imEdJkCPmVRKN8135+bGwbSeRCp
-        41t+1tnvsrUoIulq4G8AWGVHxX6eCi8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-202-tu6J1amPNxGCLdngGv6UsA-1; Tue, 01 Sep 2020 12:05:44 -0400
-X-MC-Unique: tu6J1amPNxGCLdngGv6UsA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D82D518BFEC5;
-        Tue,  1 Sep 2020 16:05:42 +0000 (UTC)
-Received: from treble (ovpn-113-168.rdu2.redhat.com [10.10.113.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CECD05D9CD;
-        Tue,  1 Sep 2020 16:05:40 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 11:05:38 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, mbenes@suse.cz,
-        benh@kernel.crashing.org
-Subject: Re: [PATCH v4 0/4] Remove dependency of check subcmd upon orc
-Message-ID: <20200901160538.a2t3qiagdanx6xtw@treble>
-References: <20200825124742.29782-1-jthierry@redhat.com>
+        id S1731693AbgIAQGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:06:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:44880 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731549AbgIAQGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:06:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC8E81045;
+        Tue,  1 Sep 2020 09:06:31 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.10.252])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF7303F71F;
+        Tue,  1 Sep 2020 09:06:28 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 17:06:26 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH v2 0/3] arm64: Convert to ARCH_STACKWALK
+Message-ID: <20200901160626.GE95447@C02TD0UTHF1T.local>
+References: <20200819124913.37261-1-broonie@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200825124742.29782-1-jthierry@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200819124913.37261-1-broonie@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 01:47:38PM +0100, Julien Thierry wrote:
-> Hi,
-> 
-> Matt Helsley's change[1] provided a base framework to opt-in/out
-> objtool subcommands at compile time. This makes it easier for
-> architectures to port objtool, one subcommand at a time.
-> 
-> Orc generation relies on the check operation implementation. However,
-> the way this is done causes the check implementation to depend on the
-> implementation of orc generation functions to call if orc generation is
-> requested. This means that in order to implement check subcmd, orc
-> subcmd also need to be implemented.
-> 
-> These patches aim at removing that dependency, having orc subcmd
-> being built on top of the check subcmd.
-> 
-> 
-> Changes since v3 [2]:
-> - Rebased on v5.9-rc1
-> - Renamed objtool_setup_file() to objtool_open_read()
-> - Fixed misplaced elf_write() when file->elf->changed is true
-> - Avoid additional allocation for orc data and compile out orc
->   definition when not needed instead
-> 
-> [1] https://www.spinics.net/lists/kernel/msg3510844.html
-> [2] https://lkml.org/lkml/2020/7/30/415
+Hi,
 
-Thanks, I grabbed the patches and will work with Peter to get them
-merged.
+On Wed, Aug 19, 2020 at 01:49:10PM +0100, Mark Brown wrote:
+> This series updates the arm64 stacktrace code to use the newer and much
+> simpler arch_stack_walk() interface, the main benefit being a single
+> entry point to the arch code with no need for the arch code to worry
+> about skipping frames. Along the way I noticed that the reliable
+> parameter to the arch_stack_walk() callback appears to be redundant
+> so there's also a patch here removing that from the existing code to
+> simplify the interface.
+> 
+> This is preparatory work for implementing reliable stack trace for
+> arm64.
 
--- 
-Josh
+This all looks pretty nice!
 
+Just to check, has the skipping logic been tested to work equivalently
+to what we had before? By inspection I think it should, but since it
+relies on function call boundaries it always strikes me as fragile.
+
+If you could confirm that (e.g. with LKDTM perhaps?) that'd be great.
+Assuming that looks right, for the series:
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Mark.
+
+> 
+> v2: Rebase onto v5.9-rc1.
+> 
+> Mark Brown (3):
+>   stacktrace: Remove reliable argument from arch_stack_walk() callback
+>   arm64: stacktrace: Make stack walk callback consistent with generic
+>     code
+>   arm64: stacktrace: Convert to ARCH_STACKWALK
+> 
+>  arch/arm64/Kconfig                  |  1 +
+>  arch/arm64/include/asm/stacktrace.h |  2 +-
+>  arch/arm64/kernel/perf_callchain.c  |  6 +--
+>  arch/arm64/kernel/return_address.c  |  8 +--
+>  arch/arm64/kernel/stacktrace.c      | 84 ++++-------------------------
+>  arch/s390/kernel/stacktrace.c       |  4 +-
+>  arch/x86/kernel/stacktrace.c        | 10 ++--
+>  include/linux/stacktrace.h          |  5 +-
+>  kernel/stacktrace.c                 |  8 ++-
+>  9 files changed, 30 insertions(+), 98 deletions(-)
+> 
+> -- 
+> 2.20.1
+> 
