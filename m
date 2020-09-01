@@ -2,47 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA8125981E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500FA259642
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730967AbgIAPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32844 "EHLO mail.kernel.org"
+        id S1731220AbgIAQAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:00:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729373AbgIAPak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:30:40 -0400
+        id S1727119AbgIAQAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 12:00:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 472AD20767;
-        Tue,  1 Sep 2020 15:30:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E02DB20767;
+        Tue,  1 Sep 2020 16:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974240;
-        bh=Zd9trFmb/P/F9p8nDs9AnkiHR6lVNPcpkIQyVaBL0kg=;
+        s=default; t=1598976024;
+        bh=S5C81WiV8OV3qp8z5Nyo7c98chNJsKCzHkYy4/d8fE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZvvYUxDonjQfRpW2KCBUVksnl2gPX11bNU8hnug7jG8lbx3ZPYFYMXgR9TqdkpZRx
-         qY6Yrv6qk+ArOhIFF2BRVFmNWs/jG7YKErMNRCQprBU+AVxNc35Fagb3v2WmCMQonn
-         2BDc8PYkSYS6Rue63/bHYsiLLYgTDoFAfbGIgefo=
+        b=iIO1d154iBheuw72X/qgqIIzQCLQXiDNGyTh+lJua4nPajl5pajIgWlQ1iiGSoVn5
+         7CXob2nqCWa22OLSyX8pTp1LHKLk5TIwmsxQwcCnoVecvV2yEjQn3Ii/7kezbv5Iwg
+         nJ8TsQrnicZSARYnotXex8JC3HFpfs4nenBRjPCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com,
-        Amir Goldstein <amir73il@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Colin Walters <walters@verbum.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 059/214] hugetlbfs: prevent filesystem stacking of hugetlbfs
-Date:   Tue,  1 Sep 2020 17:08:59 +0200
-Message-Id: <20200901150955.817821964@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 084/255] ALSA: usb-audio: Add capture support for Saffire 6 (USB 1.1)
+Date:   Tue,  1 Sep 2020 17:09:00 +0200
+Message-Id: <20200901151004.760924921@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,50 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-[ Upstream commit 15568299b7d9988063afce60731df605ab236e2a ]
+[ Upstream commit 470757f5b3a46bd85741bb0d8c1fd3f21048a2af ]
 
-syzbot found issues with having hugetlbfs on a union/overlay as reported
-in [1].  Due to the limitations (no write) and special functionality of
-hugetlbfs, it does not work well in filesystem stacking.  There are no
-know use cases for hugetlbfs stacking.  Rather than making modifications
-to get hugetlbfs working in such environments, simply prevent stacking.
+Capture and playback endpoints on Saffire 6 (USB 1.1) resides on the same
+interface. This was not supported by the composite quirk back in the day
+when initial support for this device was added, thus only playback was
+enabled until now.
 
-[1] https://lore.kernel.org/linux-mm/000000000000b4684e05a2968ca6@google.com/
-
-Reported-by: syzbot+d6ec23007e951dadf3de@syzkaller.appspotmail.com
-Suggested-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Colin Walters <walters@verbum.org>
-Link: http://lkml.kernel.org/r/80f869aa-810d-ef6c-8888-b46cee135907@oracle.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 11e424e88bd4 ("ALSA: usb-audio: Add support for Focusrite Saffire 6 USB")
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Cc: <stable.vger.kernel.org>
+Link: https://lore.kernel.org/r/20200815002103.29247-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hugetlbfs/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/usb/quirks-table.h | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index 40306c1eab07c..5fff7cb3582f0 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -1284,6 +1284,12 @@ hugetlbfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	sb->s_magic = HUGETLBFS_MAGIC;
- 	sb->s_op = &hugetlbfs_ops;
- 	sb->s_time_gran = 1;
-+
-+	/*
-+	 * Due to the special and limited functionality of hugetlbfs, it does
-+	 * not work well as a stacking filesystem.
-+	 */
-+	sb->s_stack_depth = FILESYSTEM_MAX_STACK_DEPTH;
- 	sb->s_root = d_make_root(hugetlbfs_get_root(sb, ctx));
- 	if (!sb->s_root)
- 		goto out_free;
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index a53eb67ad4bd8..946e7804942c7 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2678,6 +2678,10 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		.ifnum = QUIRK_ANY_INTERFACE,
+ 		.type = QUIRK_COMPOSITE,
+ 		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
+ 			{
+ 				.ifnum = 0,
+ 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
+@@ -2690,6 +2694,32 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 					.attributes = UAC_EP_CS_ATTR_SAMPLE_RATE,
+ 					.endpoint = 0x01,
+ 					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.datainterval = 1,
++					.maxpacksize = 0x024c,
++					.rates = SNDRV_PCM_RATE_44100 |
++						 SNDRV_PCM_RATE_48000,
++					.rate_min = 44100,
++					.rate_max = 48000,
++					.nr_rates = 2,
++					.rate_table = (unsigned int[]) {
++						44100, 48000
++					}
++				}
++			},
++			{
++				.ifnum = 0,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 2,
++					.iface = 0,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0,
++					.endpoint = 0x82,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC,
++					.datainterval = 1,
++					.maxpacksize = 0x0126,
+ 					.rates = SNDRV_PCM_RATE_44100 |
+ 						 SNDRV_PCM_RATE_48000,
+ 					.rate_min = 44100,
 -- 
 2.25.1
 
