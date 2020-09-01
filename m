@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CE2258A80
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F1B258A7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 10:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgIAIj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 04:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S1727937AbgIAIjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 04:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727784AbgIAIio (ORCPT
+        with ESMTP id S1727061AbgIAIiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 04:38:44 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7608EC061247
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:44 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so513399wrn.10
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:44 -0700 (PDT)
+        Tue, 1 Sep 2020 04:38:46 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5ED8C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 01:38:45 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id k15so513473wrn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 01:38:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QyuNgv+RVd1VIyxBoD/N8sD0qrYIVJos+n990uvu1UA=;
-        b=qqyvmuYirbc/RZhn3fEijjtkQDEmGShM7dHDUfmvmTZhWLnfI/aos7mvjYr01g+8W3
-         /D4Pdcv7cbnAbSXxo8IVjE0oF/0/OHb5c0hYpyPWdL527RHg2URvS9wnye0hF+Wk/98Z
-         8itFBK2xdG3NM77B43KzOno7HrbnyaZVMdSb2VCxFFxMOLvnl7z2gBtic33oTQX8EvjO
-         lmmx4fOP1e0jXYPXYMstMnzfSjT9VBZPeFqIoJpLgq1NF/207YH+DMS/mBjRy0jPybBc
-         KK8E/p8yT46qTjywfaYbwrghO9Yt9nJMyqMM2NXQE+57Ah87ZLdRV74FCShq944OcD5B
-         IAXQ==
+        bh=sBRnYjU064gEYAlNNyys3pbyfTYht326JQtzigEYeSY=;
+        b=Wa90BOimC+g5VzhDsBajpTWJUp6jgoHAbgz0lEBFy6wfs3RPSZ+P413Xi4NmvdkWd1
+         OEZtiyXb5O8f/XFO+kMC7LtwrCHJhq1/gHav2qhaqQ/5EjL6f6/sqZw0T5ckiSzSdNU/
+         nFfZDGlZLWo7lAyzDhgpYQY9r89oxkjrPAfb8QR/fa0Sd5mltnIh4+wYG1KsQQmEcMG9
+         zkOO12+POPOHagYpfXPxvPIoSRdrHDJk+OXNQUloHqSn/vKXZVtAScyXK8US/3dyyy6M
+         CtODS+30iXNmzeM9dJD56N1zs4PYsKfLVdm6H3MRfNGIVwAu3BeTn1Jovk5706db4vGg
+         Borw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=QyuNgv+RVd1VIyxBoD/N8sD0qrYIVJos+n990uvu1UA=;
-        b=FGHchgvSUZ87D4zfzkN/ee4jhXohwHoxFZRYR6XVkIzTezjqOyuhxMv7M4SK3BV8ft
-         xhBOE2RwuXwp/0OoMjD+g9XSWPqloT5JzlTfDwAeHIzVdrzebSlR2xkFSurnz8S31dgG
-         diXvnfGAp8LV6F+MgKTLM8bLsq0s1VhwF8G/nsFc5theTjxprCkHYNw0ihsr3wN+gMD5
-         V8qX+yQbTRBLhXTCFuoU4ZOrv7sFi5tKSuSlJv0zQ2nyQ0sHkTvZ/jgdkrucLQwxlySI
-         Na7tuPcc5i14+nRr+dszdot3i/70aJ5HhlNNaKEuExQNIOTC3AlQHW9OtnTRpivhkU41
-         a+VA==
-X-Gm-Message-State: AOAM5320MiVQwXJr2pv2rUVF8tCkfopOMyl03SNJko2tkI78IfjHEg+h
-        T8sNfwwEaa49NmsX6XTdzZdF0Q==
-X-Google-Smtp-Source: ABdhPJxxBUlZrsak+qKciu1DXtZVvDt56EFaJdDH/thRp4Hrst4L/QxprGLfpttTKFEv3KvJYpxHyQ==
-X-Received: by 2002:adf:b442:: with SMTP id v2mr688196wrd.213.1598949523124;
-        Tue, 01 Sep 2020 01:38:43 -0700 (PDT)
+        bh=sBRnYjU064gEYAlNNyys3pbyfTYht326JQtzigEYeSY=;
+        b=Od6DhrA69edO27VAtTpVl8tMAli0uOcr+4BX9LQdUlJ2QWxTKzMARPSs99bijKoqu/
+         sDhi3W4vWo0ajAaG1eEpzHu5VW2mmn2XeDg1GVld9w4BJ32Mi+Ni9A3/x7F7ofutg40w
+         vFKZHLyh8tsMSTThSgEfat8IzlnerjeIiq6ToXPUkrPxlSJTdKd2AX4GtNPpfPYuW6IZ
+         wPZp2oEN8gBSOaDf77YkDppM82Llr+HAwn4woDtX2/+XJx/KUaZTAgjlZGVCtx6R7VXs
+         eVgy4+Rjm4yQxapd6WFK9eTl8/5UPEF2uSy74WmX+BbZz3DjXmvkDrHlDxqepzoGMNmD
+         iFCQ==
+X-Gm-Message-State: AOAM532+5/D9qzEzItVJyW9L3a4/+pwzjjFzU6rHQuSgm6dFvj+xX57l
+        hLWwQA6NmchQxCpO33zti1HFGA==
+X-Google-Smtp-Source: ABdhPJxBHmyilpVCg56qL3/ZzIkl0024GckLEOpApFd0ZEUktkH38mkC6WYKNCEdAISK5DSZF9Kdeg==
+X-Received: by 2002:adf:9d44:: with SMTP id o4mr621874wre.361.1598949524317;
+        Tue, 01 Sep 2020 01:38:44 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id d190sm911260wmd.23.2020.09.01.01.38.42
+        by smtp.gmail.com with ESMTPSA id d190sm911260wmd.23.2020.09.01.01.38.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 01:38:42 -0700 (PDT)
+        Tue, 01 Sep 2020 01:38:43 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -68,9 +68,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mike Leach <mike.leach@linaro.org>,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 09/14] perf arm-spe: Save memory addresses in packet
-Date:   Tue,  1 Sep 2020 09:38:10 +0100
-Message-Id: <20200901083815.13755-10-leo.yan@linaro.org>
+Subject: [PATCH v2 10/14] perf arm-spe: Store operation types in packet
+Date:   Tue,  1 Sep 2020 09:38:11 +0100
+Message-Id: <20200901083815.13755-11-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200901083815.13755-1-leo.yan@linaro.org>
 References: <20200901083815.13755-1-leo.yan@linaro.org>
@@ -79,43 +79,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to save virtual and physical memory addresses in packet,
-the address info can be used for generating memory samples.
+This patch is to store operation types into packet structure, this can
+be used by frontend to generate memory accessing info for samples.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 4 ++++
- tools/perf/util/arm-spe-decoder/arm-spe-decoder.h | 2 ++
- 2 files changed, 6 insertions(+)
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.c | 11 +++++++++++
+ tools/perf/util/arm-spe-decoder/arm-spe-decoder.h |  6 ++++++
+ 2 files changed, 17 insertions(+)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-index ae718e3419e3..1c430657939f 100644
+index 1c430657939f..7bf787c47f5b 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
-@@ -160,6 +160,10 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
- 				decoder->record.from_ip = ip;
- 			else if (idx == SPE_ADDR_PKT_HDR_INDEX_BRANCH)
- 				decoder->record.to_ip = ip;
-+			else if (idx == SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT)
-+				decoder->record.addr = ip;
-+			else if (idx == SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS)
-+				decoder->record.phys_addr = ip;
+@@ -170,6 +170,17 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 		case ARM_SPE_CONTEXT:
  			break;
- 		case ARM_SPE_COUNTER:
+ 		case ARM_SPE_OP_TYPE:
++			/*
++			 * When operation type packet header's class equals 1,
++			 * the payload's least significant bit (LSB) indicates
++			 * the operation type: load/swap or store.
++			 */
++			if (idx == 1) {
++				if (payload & 0x1)
++					decoder->record.op = ARM_SPE_ST;
++				else
++					decoder->record.op = ARM_SPE_LD;
++			}
  			break;
+ 		case ARM_SPE_EVENTS:
+ 			if (payload & SPE_EVT_PKT_L1D_REFILL)
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-index 24727b8ca7ff..31d1776785de 100644
+index 31d1776785de..3273cee95ea1 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-@@ -30,6 +30,8 @@ struct arm_spe_record {
+@@ -24,9 +24,15 @@ enum arm_spe_sample_type {
+ 	ARM_SPE_REMOTE_ACCESS	= 1 << 7,
+ };
+ 
++enum arm_spe_op_type {
++	ARM_SPE_LD		= 1 << 0,
++	ARM_SPE_ST		= 1 << 1,
++};
++
+ struct arm_spe_record {
+ 	enum arm_spe_sample_type type;
+ 	int err;
++	u32 op;
  	u64 from_ip;
  	u64 to_ip;
  	u64 timestamp;
-+	u64 addr;
-+	u64 phys_addr;
- };
- 
- struct arm_spe_insn;
 -- 
 2.20.1
 
