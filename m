@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E1C259FD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 22:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E966259FD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 22:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgIAUQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 16:16:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:49600 "EHLO foss.arm.com"
+        id S1729199AbgIAUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 16:16:56 -0400
+Received: from mx4.wp.pl ([212.77.101.11]:13869 "EHLO mx4.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgIAUQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 16:16:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 62C201063;
-        Tue,  1 Sep 2020 13:16:07 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBC083F66F;
-        Tue,  1 Sep 2020 13:16:04 -0700 (PDT)
-Subject: Re: [PATCH v9 30/32] samples: vfio-mdev/mbochs: fix common struct
- sg_table related issues
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org
-References: <20200826063316.23486-1-m.szyprowski@samsung.com>
- <CGME20200826063546eucas1p268558dcd08ac9b43843f9f5e23da227d@eucas1p2.samsung.com>
- <20200826063316.23486-31-m.szyprowski@samsung.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2cd26a4d-ca66-2ee8-145c-b928474fefe9@arm.com>
-Date:   Tue, 1 Sep 2020 21:16:03 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728580AbgIAUQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 16:16:56 -0400
+Received: (wp-smtpd smtp.wp.pl 21030 invoked from network); 1 Sep 2020 22:16:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1598991413; bh=VolP2AdWJDNHJUxzl2uH3Tf1xodNxV4v/c7KNG3s6dM=;
+          h=From:To:Cc:Subject;
+          b=MGUliN1VCS1LL2fiONrnIleoysVx67v0G6wvxQ0gZK6rZ9NfHeXyja5+YFH5sQAHq
+           FOc3Tw/3w/d21nYMGzpW+UPDiwscf0dcKMms4oiddJWZcJIXtRs7j9b9eTgilBg+zk
+           M6ksyD1h/ayE8jaQGCtcuL0/qAXmE/xXKzp9G4ds=
+Received: from 188.146.102.178.nat.umts.dynamic.t-mobile.pl (HELO localhost) (antoni.przybylik@wp.pl@[188.146.102.178])
+          (envelope-sender <antoni.przybylik@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <gregkh@linuxfoundation.org>; 1 Sep 2020 22:16:53 +0200
+From:   Antoni Przybylik <antoni.przybylik@wp.pl>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Antoni Przybylik <antoni.przybylik@wp.pl>
+Subject: [PATCH] staging: gdm724x: gdm_tty: replaced macro with a function
+Date:   Tue,  1 Sep 2020 22:16:26 +0200
+Message-Id: <20200901201626.75405-1-antoni.przybylik@wp.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200826063316.23486-31-m.szyprowski@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: 44cd1ac88d72e20bcf7ed632bb54e9df
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000002 [cXER]                               
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-26 07:33, Marek Szyprowski wrote:
-> The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
-> returns the number of the created entries in the DMA address space.
-> However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
-> dma_unmap_sg must be called with the original number of the entries
-> passed to the dma_map_sg().
-> 
-> struct sg_table is a common structure used for describing a non-contiguous
-> memory buffer, used commonly in the DRM and graphics subsystems. It
-> consists of a scatterlist with memory pages and DMA addresses (sgl entry),
-> as well as the number of scatterlist entries: CPU pages (orig_nents entry)
-> and DMA mapped pages (nents entry).
-> 
-> It turned out that it was a common mistake to misuse nents and orig_nents
-> entries, calling DMA-mapping functions with a wrong number of entries or
-> ignoring the number of mapped entries returned by the dma_map_sg()
-> function.
-> 
-> To avoid such issues, lets use a common dma-mapping wrappers operating
-> directly on the struct sg_table objects and use scatterlist page
-> iterators where possible. This, almost always, hides references to the
-> nents and orig_nents entries, making the code robust, easier to follow
-> and copy/paste safe.
-> 
-> While touching this code, also add missing call to dma_unmap_sgtable.
+This approach is more elegant and prevents some problems related to
+macros such as operator precedence in expanded expression.
 
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
+---
+ drivers/staging/gdm724x/gdm_tty.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
->   samples/vfio-mdev/mbochs.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/samples/vfio-mdev/mbochs.c b/samples/vfio-mdev/mbochs.c
-> index 3cc5e5921682..e03068917273 100644
-> --- a/samples/vfio-mdev/mbochs.c
-> +++ b/samples/vfio-mdev/mbochs.c
-> @@ -846,7 +846,7 @@ static struct sg_table *mbochs_map_dmabuf(struct dma_buf_attachment *at,
->   	if (sg_alloc_table_from_pages(sg, dmabuf->pages, dmabuf->pagecount,
->   				      0, dmabuf->mode.size, GFP_KERNEL) < 0)
->   		goto err2;
-> -	if (!dma_map_sg(at->dev, sg->sgl, sg->nents, direction))
-> +	if (dma_map_sgtable(at->dev, sg, direction, 0))
->   		goto err3;
->   
->   	return sg;
-> @@ -868,6 +868,7 @@ static void mbochs_unmap_dmabuf(struct dma_buf_attachment *at,
->   
->   	dev_dbg(dev, "%s: %d\n", __func__, dmabuf->id);
->   
-> +	dma_unmap_sgtable(at->dev, sg, direction, 0);
->   	sg_free_table(sg);
->   	kfree(sg);
->   }
-> 
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index 6e813693a766..c19d82a6f25e 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -27,8 +27,6 @@
+ 
+ #define MUX_TX_MAX_SIZE 2048
+ 
+-#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
+-
+ static struct tty_driver *gdm_driver[TTY_MAX_COUNT];
+ static struct gdm *gdm_table[TTY_MAX_COUNT][GDM_TTY_MINOR];
+ static DEFINE_MUTEX(gdm_table_lock);
+@@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
+ static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
+ static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
+ 
++static int gdm_tty_ready(struct gdm *gdm)
++{
++	return (gdm && gdm->tty_dev && gdm->port.count);
++}
++
+ static void gdm_port_destruct(struct tty_port *port)
+ {
+ 	struct gdm *gdm = container_of(port, struct gdm, port);
+@@ -119,7 +122,7 @@ static int gdm_tty_recv_complete(void *data,
+ {
+ 	struct gdm *gdm = tty_dev->gdm[index];
+ 
+-	if (!GDM_TTY_READY(gdm)) {
++	if (!gdm_tty_ready(gdm)) {
+ 		if (complete == RECV_PACKET_PROCESS_COMPLETE)
+ 			gdm->tty_dev->recv_func(gdm->tty_dev->priv_dev,
+ 						gdm_tty_recv_complete);
+@@ -146,7 +149,7 @@ static void gdm_tty_send_complete(void *arg)
+ {
+ 	struct gdm *gdm = arg;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return;
+ 
+ 	tty_port_tty_wakeup(&gdm->port);
+@@ -160,7 +163,7 @@ static int gdm_tty_write(struct tty_struct *tty, const unsigned char *buf,
+ 	int sent_len = 0;
+ 	int sending_len = 0;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	if (!len)
+@@ -187,7 +190,7 @@ static int gdm_tty_write_room(struct tty_struct *tty)
+ {
+ 	struct gdm *gdm = tty->driver_data;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	return WRITE_SIZE;
+-- 
+2.28.0
+
