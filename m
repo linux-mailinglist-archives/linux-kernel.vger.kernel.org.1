@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D83A25967F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A082597BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgIAQDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:03:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55974 "EHLO mail.kernel.org"
+        id S1731403AbgIAQSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:18:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731587AbgIAPmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:43 -0400
+        id S1729324AbgIAPd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:33:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 28AF320866;
-        Tue,  1 Sep 2020 15:42:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C68C5205F4;
+        Tue,  1 Sep 2020 15:33:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974962;
-        bh=YBMxGta17FoLOSD5i5I0H4LnKtfJC+vSUhoXYq4gL3Q=;
+        s=default; t=1598974408;
+        bh=SGrvq5KpMJDOoo8ypt7Ljvm6VOL79mY9JtRX84+7CDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2F3rG+Z+ApMKl/NAnfgDEdCPWC/Y4hJ3w5sBWd2ZS1+n81y/3Q/7dfB63nuKmBp2O
-         p7I3yddfpe7ZwwryrwY0igGkE1cZ0exCwA3FMY5R/xzs0X5t5GafeZS7v9WigbF7PZ
-         xU4wfsxHwIut73MDtmXCTCY/hGMK0gpb2oJYbZYg=
+        b=Nlv0mtKYHpWzIJCpsnQ06gQ48Ubw7LVvVNRW8ORspAhGyfZ5OeSAOr3VeWVJt6Kkn
+         b/QXKiW41vMSP3SaWH4EBJ8PP9KqMgRAgJGyZDYCMaC5MBQfPX2o6KSGgQNweZrlWQ
+         Y/HFQoPlhBHHnrCCgYHtrYMB9n+miySF/8fFmzHY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Tao Zhou <tao.zhou1@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 157/255] drm/amdgpu: fix NULL pointer access issue when unloading driver
-Date:   Tue,  1 Sep 2020 17:10:13 +0200
-Message-Id: <20200901151008.213401409@linuxfoundation.org>
+Subject: [PATCH 5.4 134/214] ASoC: wm8994: Avoid attempts to read unreadable registers
+Date:   Tue,  1 Sep 2020 17:10:14 +0200
+Message-Id: <20200901150959.400801523@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guchun Chen <guchun.chen@amd.com>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-[ Upstream commit 1a68d96f81b8e7eb2a121fbf9abf9e5974e58832 ]
+[ Upstream commit f082bb59b72039a2326ec1a44496899fb8aa6d0e ]
 
-When unloading driver by "modprobe -r amdgpu", one NULL pointer
-dereference bug occurs in ras debugfs releasing. The cause is the
-duplicated debugfs_remove, as drm debugfs_root dir has been cleaned
-up already by drm_minor_unregister.
+The driver supports WM1811, WM8994, WM8958 devices but according to
+documentation and the regmap definitions the WM8958_DSP2_* registers
+are only available on WM8958. In current code these registers are
+being accessed as if they were available on all the three chips.
 
-BUG: kernel NULL pointer dereference, address: 00000000000000a0
-PGD 0 P4D 0
-Oops: 0002 [#1] SMP PTI
-CPU: 11 PID: 1526 Comm: modprobe Tainted: G           OE     5.6.0-guchchen #1
-Hardware name: System manufacturer System Product Name/TUF Z370-PLUS GAMING II, BIOS 0411 09/21/2018
-RIP: 0010:down_write+0x15/0x40
-Code: eb de e8 7e 17 72 ff cc cc cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 53 48 89 fb e8 92
-d8 ff ff 31 c0 ba 01 00 00 00 <f0> 48 0f b1 13 75 0f 65 48 8b 04 25 c0 8b 01 00 48 89 43 08 5b c3
-RSP: 0018:ffffb1590386fcd0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 00000000000000a0 RCX: 0000000000000000
-RDX: 0000000000000001 RSI: ffffffff85b2fcc2 RDI: 00000000000000a0
-RBP: ffffb1590386fd30 R08: ffffffff85b2fcc2 R09: 000000000002b3c0
-R10: ffff97a330618c40 R11: 00000000000005f6 R12: ffff97a3481beb40
-R13: 00000000000000a0 R14: ffff97a3481beb40 R15: 0000000000000000
-FS:  00007fb11a717540(0000) GS:ffff97a376cc0000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000000a0 CR3: 00000004066d6006 CR4: 00000000003606e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- simple_recursive_removal+0x63/0x370
- ? debugfs_remove+0x60/0x60
- debugfs_remove+0x40/0x60
- amdgpu_ras_fini+0x82/0x230 [amdgpu]
- ? __kernfs_remove.part.17+0x101/0x1f0
- ? kernfs_name_hash+0x12/0x80
- amdgpu_device_fini+0x1c0/0x580 [amdgpu]
- amdgpu_driver_unload_kms+0x3e/0x70 [amdgpu]
- amdgpu_pci_remove+0x36/0x60 [amdgpu]
- pci_device_remove+0x3b/0xb0
- device_release_driver_internal+0xe5/0x1c0
- driver_detach+0x46/0x90
- bus_remove_driver+0x58/0xd0
- pci_unregister_driver+0x29/0x90
- amdgpu_exit+0x11/0x25 [amdgpu]
- __x64_sys_delete_module+0x13d/0x210
- do_syscall_64+0x5f/0x250
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+When starting playback on WM1811 CODEC multiple errors like:
+"wm8994-codec wm8994-codec: ASoC: error at soc_component_read_no_lock on wm8994-codec: -5"
+can be seen, which is caused by attempts to read an unavailable
+WM8958_DSP2_PROGRAM register. The issue has been uncovered by recent
+commit "e2329ee ASoC: soc-component: add soc_component_err()".
 
-Signed-off-by: Guchun Chen <guchun.chen@amd.com>
-Reviewed-by: Tao Zhou <tao.zhou1@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+This patch adds a check in wm8958_aif_ev() callback so the DSP2 handling
+is only done for WM8958.
+
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200731173834.23832-1-s.nawrocki@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/wm8958-dsp2.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-index 20a7d75b2eb88..3f47f35eedff1 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
-@@ -1240,7 +1240,6 @@ void amdgpu_ras_debugfs_remove(struct amdgpu_device *adev,
- 	if (!obj || !obj->ent)
- 		return;
+diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
+index 18535b326680a..04f23477039a5 100644
+--- a/sound/soc/codecs/wm8958-dsp2.c
++++ b/sound/soc/codecs/wm8958-dsp2.c
+@@ -416,8 +416,12 @@ int wm8958_aif_ev(struct snd_soc_dapm_widget *w,
+ 		  struct snd_kcontrol *kcontrol, int event)
+ {
+ 	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wm8994 *control = dev_get_drvdata(component->dev->parent);
+ 	int i;
  
--	debugfs_remove(obj->ent);
- 	obj->ent = NULL;
- 	put_obj(obj);
- }
-@@ -1254,7 +1253,6 @@ static void amdgpu_ras_debugfs_remove_all(struct amdgpu_device *adev)
- 		amdgpu_ras_debugfs_remove(adev, &obj->head);
- 	}
- 
--	debugfs_remove_recursive(con->dir);
- 	con->dir = NULL;
- }
- /* debugfs end */
++	if (control->type != WM8958)
++		return 0;
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+ 	case SND_SOC_DAPM_PRE_PMU:
 -- 
 2.25.1
 
