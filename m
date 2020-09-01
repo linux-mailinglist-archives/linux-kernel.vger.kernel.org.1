@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846C0258CB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995F4258C48
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726212AbgIAKYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 06:24:14 -0400
-Received: from se14-4.privateemail.com ([198.54.127.71]:43938 "EHLO
-        se14-4.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgIAKYJ (ORCPT
+        id S1726107AbgIAKE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 06:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgIAKEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 06:24:09 -0400
-X-Greylist: delayed 4387 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Sep 2020 06:24:09 EDT
-Received: from new-01.privateemail.com ([68.65.122.22])
-        by se14.registrar-servers.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92)
-        (envelope-from <javier@beren.dev>)
-        id 1kD2JV-0002RT-G2; Tue, 01 Sep 2020 02:10:53 -0700
-Received: from MTA-12.privateemail.com (unknown [10.20.147.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by NEW-01.privateemail.com (Postfix) with ESMTPS id C82FE60047;
-        Tue,  1 Sep 2020 09:10:41 +0000 (UTC)
-Received: from mta-12.privateemail.com (localhost [127.0.0.1])
-        by mta-12.privateemail.com (Postfix) with ESMTP id 1CD0D8005D;
-        Tue,  1 Sep 2020 05:10:40 -0400 (EDT)
-Received: from localhost.localdomain (unknown [10.20.151.207])
-        by mta-12.privateemail.com (Postfix) with ESMTPA id 2F7388005E;
-        Tue,  1 Sep 2020 09:10:36 +0000 (UTC)
-From:   Javier Garcia <javier@beren.dev>
-To:     corbet@lwn.net
-Cc:     rdunlap@infradead.org, grandmaster@al2klimov.de,
-        billy_wilson@byu.edu, tony.fischetti@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Garcia <javier@beren.dev>
-Subject: [PATCH] Documentation: process: step 2: Link to email list fixed.
-Date:   Tue,  1 Sep 2020 11:09:49 +0200
-Message-Id: <20200901090949.14514-1-javier@beren.dev>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Sep 2020 06:04:54 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A599C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 03:04:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e11so783382ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 03:04:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uAA3vppKz35+iasup+iTPe2COzoTe++NhtknlN0MtRU=;
+        b=pat1YOLrY1lkERA0Ub/Qf+YQaTpUjdzjz8pLR5aYIhmJEiT4Tl0786IT8sqhce0Giz
+         XFQLM8QBHAh8Gmg+/bJd7pLfnufGUuYRutbTsT+DCmTy2ucSs/rlILHvGt0VOzztqtEm
+         k7P2KW9cTAlfScwsDLCl0wbezuGVvKE7zMCco1q42ikNxgDbUj5A6sZEmyXxdLVGBQTC
+         /m1CYU2/Tu3IfNgEt7XFWqBKmyR+uXIgLWACjqE+1+3BKVNpjkGZTYvFumqT6mJnZ41b
+         HQhKPRTPyD6JubiRzSk0rjEQ0oEn0vOLa/uHxU0ehin4LLe9TbjABDJgBZavh01VrpyG
+         AUdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uAA3vppKz35+iasup+iTPe2COzoTe++NhtknlN0MtRU=;
+        b=eeEBy12F/EGqC69P/5MlIEc5fGYiFCI6NVipKylbLuqFfBK+6EtL7BtAgQVyRsoTIS
+         +IY+NONgNQ8J1LHYKWDA9KBbtquT11i9MdmfVAAoN+8qhpuZLCjr0E0eHlAHPK42RW42
+         SP2pVCgjuabmKcoys3OcvndsCwiznvYueoUQ5yP9vVGL4jxqJC86hBZnPKJFVC5c2XRe
+         QWsutrhpnao/QSx+ounakQXw+H1f6zo/5cPzREilXi9q44geXOZ4aq7msO+6ampXEb5j
+         BHUfY202VjvGHpwuDBk4OeIdtO9ZMMAFx+CugSI4+tDi4aY5ozFDubU5GsvC2yv3ik8f
+         EUBA==
+X-Gm-Message-State: AOAM530VwTIZhRwUNU0DrbSSWhUkoyG3Tdu+wqe9wjDH8MhTOiC95LmE
+        tC+N0Ffqlx1uIJEtLkV6Ig2FtcGxs3l4lw==
+X-Google-Smtp-Source: ABdhPJxfDoTndIovjkFvluSlbk1E1TRsuPCAaVYmQSADr+P6D+DeGJZYUqIeAYi63RudGId91yq9Yg==
+X-Received: by 2002:a2e:8593:: with SMTP id b19mr185956lji.290.1598954691797;
+        Tue, 01 Sep 2020 03:04:51 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id n8sm173775ljj.69.2020.09.01.03.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 03:04:51 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 12:04:49 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>
+Cc:     rdunlap@infradead.org, sumit.garg@linaro.org,
+        tee-dev@lists.linaro.org, linux-kernel@vger.kernel.org,
+        ricardo@foundries.io
+Subject: Re: [PATCHv2] drivers: optee: fix i2c build issue
+Message-ID: <20200901100449.GA3255765@jade>
+References: <20200831161102.14735-1-jorge@foundries.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
-X-Originating-IP: 68.65.122.22
-X-SpamExperts-Domain: o1.privateemail.com
-X-SpamExperts-Username: out-01
-Authentication-Results: registrar-servers.com; auth=pass (plain) smtp.auth=out-01@o1.privateemail.com
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.08)
-X-Recommended-Action: accept
-X-Filter-ID: Mvzo4OR0dZXEDF/gcnlw0VKALJWqpbz84ezJUOplsTqpSDasLI4SayDByyq9LIhVIuQF43nnBMRX
- MP08rPosJ0TNWdUk1Ol2OGx3IfrIJKyP9eGNFz9TW9u+Jt8z2T3K8BDv5Ys6stOQKuhUsdyE/YXh
- jScmTpVv5IonvxmB5O2cLC1IK8e+Ehvc2ewaYOyqLDmknkFCtrExuxg140V9nMQADXLdBQ+nLlc/
- tA4Sj9OZ3L3pjRPMgR642BMqzMTpdD5k9W8Y1NI1olsN2+X6tW8f5KzuRwo/u4ywWX5sXihWdYve
- LjBT1D2OrZqPRZiV+tkmU+/KX0nJnQyIUdcchsZB14E0iQtvqvjtp9rD8IfSSTIqPFW0EznUJres
- HIC6dmOq8/idP5dSGXlfHvUTLiTg127TqHZDxA/kZB41Rh/voK34s6CNmUeOB0vgUWUzE9aykhW0
- 8S2Q9BZfV4rjkuGF6ePhLVNfQ99xpFdqMeNulR8PV9sblK50edB8qs77GrXdW109g+lAMkAbyNlo
- TmD2SPbyZg7C0RNzNzUl0hPX/5RQ1HtujZudOVdkqb3xdfogTEiyipNb7Us9zHswFHAQhDClaeZ3
- 9G/lq5mRCb4Z9Ey3vmI3Pf8Lyj0qFPdM2eJGTkj50kHu0eP3+1tcOW5Gb3kL1+ScpijA9VJdIVZb
- 7VBYLa6SImlWmEsHWCOKqycb0ySQ8Q07QZMExH8QT39q0aZI3qbhXsaDdLgW9bprwAm+Udkqe7Lp
- E2Hbbj4OR1THjBWZFF00ALVWc/sntqhVr03UHlrscRrHorFm3BMamUdylUIKhf3z2GAHxH7IVEmg
- Qguj/lqkiC7ysrrDB5+6T7ALZGg9YLgY4aE4PatIT5U1N+BGv6dnx6KLDRADCyAuqK3fwzkfwU8H
- tX9oG/hw5BrSTYo8TxfzGzupTiaBDudO1dDoXig4TwvcULI7uP1eRabXi62XkKnwoNEefWv6ViZL
- 9FCh/jIOcMlF46KNFdtqMvNGFbSZmdAMur/jYg8E23qlZg9I758Jzz+FbLwq2QQraYe+zAzhh4qo
- 6jj7LEO/oCofTKVeJ/7WMCTsrjj7zXbV00TFoWVIRaGUZ61JS1wPrYDD/ctpiLRIW50zenHiZyHp
- r4AKKQd4IGQ04A7VxFLPO2D4Ht1VWvy1QT999TZxGwd1aPlvUNMk2g7ooxwbXsRR+vzvUHpiFqCM
- KokzYs+OyHavH6lgRmVX2PVSNSRLgqDi+US6XMgTGhTPGZb0dYXfvI9I/tmgU3euMS+4ayUpOtEh
- dxekWDmK9g==
-X-Report-Abuse-To: spam@se16.registrar-servers.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200831161102.14735-1-jorge@foundries.io>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the past, these email lists where located at lists.redhat.com. This
-is not longer the case and they are now at redhat.com/mailman/listinfo
+On Mon, Aug 31, 2020 at 06:11:02PM +0200, Jorge Ramirez-Ortiz wrote:
+> When the optee driver is compiled into the kernel while the i2c core
+> is configured as a module, the i2c symbols are not available.
+> 
+> This commit addresses the situation by disabling the i2c support for
+> this use case while allowing it in all other scenarios:
+> 
+>  i2c=y, optee=y
+>  i2c=m, optee=m
+>  i2c=y, optee=m
+>  i2c=m, optee=y (not supported)
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> ---
+>   v2: uses IS_REACHABLE instead of macro combination
+> 
+>   This patch applies on top of
+>   https://git.linaro.org/people/jens.wiklander/linux-tee.git/tag/?h=optee-i2c-for-v5.10 
+> 
+>  drivers/tee/optee/rpc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Signed-off-by: Javier Garcia <javier@beren.dev>
----
- Documentation/process/2.Process.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the prompt fix, I'm picking this up.
 
-diff --git a/Documentation/process/2.Process.rst b/Documentation/process/2.Process.rst
-index 4ae1e0f600c1..e05fb1b8f8b6 100644
---- a/Documentation/process/2.Process.rst
-+++ b/Documentation/process/2.Process.rst
-@@ -405,7 +405,7 @@ be found at:
- 	http://vger.kernel.org/vger-lists.html
- 
- There are lists hosted elsewhere, though; a number of them are at
--lists.redhat.com.
-+redhat.com/mailman/listinfo.
- 
- The core mailing list for kernel development is, of course, linux-kernel.
- This list is an intimidating place to be; volume can reach 500 messages per
--- 
-2.25.1
-
+Cheers,
+Jens
