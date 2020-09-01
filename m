@@ -2,188 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDB2259E8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 20:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B47259E74
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 20:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732060AbgIASyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 14:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
+        id S1731496AbgIASxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 14:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731934AbgIASyZ (ORCPT
+        with ESMTP id S1728761AbgIASxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 14:54:25 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651CEC061244;
-        Tue,  1 Sep 2020 11:54:25 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id v69so1995109qkb.7;
-        Tue, 01 Sep 2020 11:54:25 -0700 (PDT)
+        Tue, 1 Sep 2020 14:53:02 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D292C061246
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 11:53:02 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u128so1334364pfb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 11:53:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cm+df0jFPyE1zTjCqgFLh2q6gImstDntHA7G0hKbn1c=;
-        b=XajDkh8P9KQTJXpi9a5vP6TJ7CkEhXM4INtbnSsTamKj77lttU5yXy9F/WfSWTKkxK
-         TH5ddWvVKmWD8wKvRAttyvS3Hgh7AoiRULzZSGWVQvleLF5fH4ms+fK/evyW3FMFqfl4
-         B4z5fZo3UOC08McpaqbKgKFmzLEPi7zu/4gvz4qaHXJQPqK/4QI++6MWT5BGL/paChPI
-         wY+8Puhdm0BglBfCawCT0Do8mk4x0L1pmSSWJcKpPNEBEOuofB3vh6hoyFBMc0Qe3B2c
-         Fm+FWJOo51I2OrqxBjvSla140/ntPH3CsqqFeutrsnj4zy+W5HEkgRYSlMFTxOeFMvqE
-         1A+A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DW1zJLlrp+b/X5DsaUJywWHpm9f8YdypCEJotWWzal8=;
+        b=iu/mivdeQ6AWpfUigREEipYqDA+JBPragzl35o9Nu9ycwxuP1pT/n/GUj28IBjGlJy
+         tASUZD6UQpFduus8RxIUHnWDo/ii2QxBTb8+/rddFmc7Q2BvQtdvriL4oOcAbvX3fTik
+         a3CX0t1k/eCXUbO98m4G5hAHF2rr9hmEGAwHw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=cm+df0jFPyE1zTjCqgFLh2q6gImstDntHA7G0hKbn1c=;
-        b=tPdi3q/3Vg/+xxW+CEJ/4qotvu+adlPZaPr2IA1olq86BIWDiJxEjp4ER4zcXXs8En
-         hREwp6VIEpKnOanVDPmG09PufQD0DN1YXKKW8GON6PFpnaajPm+brDcUY2roqlkuhBc7
-         7549HzUPsfElUNheIEuWPCL0LqEuYzcqgE1/DHhkNImipe/esxczHVak7XsUeLTBsX0h
-         XPrnav+b7jzVql1xJXH9PE4nfCaTagY3bT2KAdafYdmJyMdnmZHfneWwmcK7xO6zyZrk
-         i3lPHnda9RfNh9CdIPflDksCNqEgKvJCX/GgPGHwiAVLMnfuHz0fgIQYlG4hfvoY2j4l
-         G5kQ==
-X-Gm-Message-State: AOAM530gtNKi0VtUDaFekRpwhf139BGAdDpVi11bCcjPFCa1IVZVVbZB
-        CBnoWbPaTtX4QCfeeMu05twagEXtXD2LAg==
-X-Google-Smtp-Source: ABdhPJyC1zrmWahk0Un9SvEpY6Bbw4MwTkW6QE19cV+1OyUU/CrIaLlLAJ85naK2tPp7q0zf9GIF9g==
-X-Received: by 2002:a37:4c15:: with SMTP id z21mr3170782qka.334.1598986464504;
-        Tue, 01 Sep 2020 11:54:24 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id p68sm2697824qka.78.2020.09.01.11.54.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DW1zJLlrp+b/X5DsaUJywWHpm9f8YdypCEJotWWzal8=;
+        b=WbDGwxrd3f9MQ++XytOkgWgxrXjk2hOkSmQOLn3cTGX/i40qP8TGRsjkdvftaBwFnz
+         cYk0toDrmj5cBU3T/BzwB5E3tmdd3CSrcFsBJdOE1nSie/fF/J1k5FUTacGFCyhmWmhQ
+         Wc1aN7CPArFGjEdwz9PkDxlOP8L1ioo2IWX3E0ij1xg+uGZwj6YnJaH025diwxOSDOvL
+         lnbOd4k0Rwa73fcBXAs3PKPxn5piu7CRRsfvvnYq0+7Se+G+dpmX5Lq3xTj3SH7NK37p
+         uv59mkgscdB8l8sSKt+tB6vkauqW/SXbum95xnv+rc1N8dAuiLPZPsqTPiWqh48iHrK2
+         Gszg==
+X-Gm-Message-State: AOAM531x0eujrFujf2BZgswUqYx6RsAjAH2ElL0ztuwtU8vvVbv5rA3z
+        qlYUnwv/BBM6xbMYdSC0ZCwKgQ==
+X-Google-Smtp-Source: ABdhPJw/YsKunmr1Z0dpXo1/zK3rMUMV+IlY1oP54bh4p+BaEO8LJP6shIZse5erSoELJy0YDj4+Gg==
+X-Received: by 2002:a65:4187:: with SMTP id a7mr2642045pgq.102.1598986382061;
+        Tue, 01 Sep 2020 11:53:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m19sm2192249pjq.18.2020.09.01.11.53.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:54:24 -0700 (PDT)
-From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH 27/27] blk-iocost: update iocost_monitor.py
-Date:   Tue,  1 Sep 2020 14:52:57 -0400
-Message-Id: <20200901185257.645114-28-tj@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
-References: <20200901185257.645114-1-tj@kernel.org>
+        Tue, 01 Sep 2020 11:53:01 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 11:52:59 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 05/10] lkdtm: disable set_fs-based tests for
+ !CONFIG_SET_FS
+Message-ID: <202009011152.335EE467@keescook>
+References: <20200827150030.282762-1-hch@lst.de>
+ <20200827150030.282762-6-hch@lst.de>
+ <CAHk-=wipbWD66sU7etETXwDW5NRsU2vnbDpXXQ5i94hiTcawyw@mail.gmail.com>
+ <20200829092406.GB8833@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829092406.GB8833@lst.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iocost went through significant internal changes. Update iocost_monitor.py
-accordingly.
+On Sat, Aug 29, 2020 at 11:24:06AM +0200, Christoph Hellwig wrote:
+> On Thu, Aug 27, 2020 at 11:06:28AM -0700, Linus Torvalds wrote:
+> > On Thu, Aug 27, 2020 at 8:00 AM Christoph Hellwig <hch@lst.de> wrote:
+> > >
+> > > Once we can't manipulate the address limit, we also can't test what
+> > > happens when the manipulation is abused.
+> > 
+> > Just remove these tests entirely.
+> > 
+> > Once set_fs() doesn't exist on x86, the tests no longer make any sense
+> > what-so-ever, because test coverage will be basically zero.
+> > 
+> > So don't make the code uglier just to maintain a fiction that
+> > something is tested when it isn't really.
+> 
+> Sure fine with me unless Kees screams.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- tools/cgroup/iocost_monitor.py | 54 ++++++++++++----------------------
- 1 file changed, 19 insertions(+), 35 deletions(-)
+If we don't have set_fs, we don't need the tests. :)
 
-diff --git a/tools/cgroup/iocost_monitor.py b/tools/cgroup/iocost_monitor.py
-index f4699f9b46ba..c4ff907c078b 100644
---- a/tools/cgroup/iocost_monitor.py
-+++ b/tools/cgroup/iocost_monitor.py
-@@ -45,8 +45,7 @@ args = parser.parse_args()
-     err('The kernel does not have iocost enabled')
- 
- IOC_RUNNING     = prog['IOC_RUNNING'].value_()
--NR_USAGE_SLOTS  = prog['NR_USAGE_SLOTS'].value_()
--HWEIGHT_WHOLE   = prog['HWEIGHT_WHOLE'].value_()
-+WEIGHT_ONE      = prog['WEIGHT_ONE'].value_()
- VTIME_PER_SEC   = prog['VTIME_PER_SEC'].value_()
- VTIME_PER_USEC  = prog['VTIME_PER_USEC'].value_()
- AUTOP_SSD_FAST  = prog['AUTOP_SSD_FAST'].value_()
-@@ -100,7 +99,7 @@ autop_names = {
-         self.period_ms = ioc.period_us.value_() / 1_000
-         self.period_at = ioc.period_at.value_() / 1_000_000
-         self.vperiod_at = ioc.period_at_vtime.value_() / VTIME_PER_SEC
--        self.vrate_pct = ioc.vtime_rate.counter.value_() * 100 / VTIME_PER_USEC
-+        self.vrate_pct = ioc.vtime_base_rate.value_() * 100 / VTIME_PER_USEC
-         self.busy_level = ioc.busy_level.value_()
-         self.autop_idx = ioc.autop_idx.value_()
-         self.user_cost_model = ioc.user_cost_model.value_()
-@@ -136,7 +135,7 @@ autop_names = {
- 
-     def table_header_str(self):
-         return f'{"":25} active {"weight":>9} {"hweight%":>13} {"inflt%":>6} ' \
--               f'{"dbt":>3} {"delay":>6} {"usages%"}'
-+               f'{"debt":>7} {"delay":>7} {"usage%"}'
- 
- class IocgStat:
-     def __init__(self, iocg):
-@@ -144,11 +143,11 @@ autop_names = {
-         blkg = iocg.pd.blkg
- 
-         self.is_active = not list_empty(iocg.active_list.address_of_())
--        self.weight = iocg.weight.value_()
--        self.active = iocg.active.value_()
--        self.inuse = iocg.inuse.value_()
--        self.hwa_pct = iocg.hweight_active.value_() * 100 / HWEIGHT_WHOLE
--        self.hwi_pct = iocg.hweight_inuse.value_() * 100 / HWEIGHT_WHOLE
-+        self.weight = iocg.weight.value_() / WEIGHT_ONE
-+        self.active = iocg.active.value_() / WEIGHT_ONE
-+        self.inuse = iocg.inuse.value_() / WEIGHT_ONE
-+        self.hwa_pct = iocg.hweight_active.value_() * 100 / WEIGHT_ONE
-+        self.hwi_pct = iocg.hweight_inuse.value_() * 100 / WEIGHT_ONE
-         self.address = iocg.value_()
- 
-         vdone = iocg.done_vtime.counter.value_()
-@@ -160,23 +159,13 @@ autop_names = {
-         else:
-             self.inflight_pct = 0
- 
--        # vdebt used to be an atomic64_t and is now u64, support both
--        try:
--            self.debt_ms = iocg.abs_vdebt.counter.value_() / VTIME_PER_USEC / 1000
--        except:
--            self.debt_ms = iocg.abs_vdebt.value_() / VTIME_PER_USEC / 1000
--
--        self.use_delay = blkg.use_delay.counter.value_()
--        self.delay_ms = blkg.delay_nsec.counter.value_() / 1_000_000
--
--        usage_idx = iocg.usage_idx.value_()
--        self.usages = []
--        self.usage = 0
--        for i in range(NR_USAGE_SLOTS):
--            usage = iocg.usages[(usage_idx + 1 + i) % NR_USAGE_SLOTS].value_()
--            upct = usage * 100 / HWEIGHT_WHOLE
--            self.usages.append(upct)
--            self.usage = max(self.usage, upct)
-+        self.usage = (100 * iocg.usage_delta_us.value_() /
-+                      ioc.period_us.value_()) if self.active else 0
-+        self.debt_ms = iocg.abs_vdebt.value_() / VTIME_PER_USEC / 1000
-+        if blkg.use_delay.counter.value_() != 0:
-+            self.delay_ms = blkg.delay_nsec.counter.value_() / 1_000_000
-+        else:
-+            self.delay_ms = 0
- 
-     def dict(self, now, path):
-         out = { 'cgroup'                : path,
-@@ -189,25 +178,20 @@ autop_names = {
-                 'hweight_inuse_pct'     : self.hwi_pct,
-                 'inflight_pct'          : self.inflight_pct,
-                 'debt_ms'               : self.debt_ms,
--                'use_delay'             : self.use_delay,
-                 'delay_ms'              : self.delay_ms,
-                 'usage_pct'             : self.usage,
-                 'address'               : self.address }
--        for i in range(len(self.usages)):
--            out[f'usage_pct_{i}'] = str(self.usages[i])
-         return out
- 
-     def table_row_str(self, path):
-         out = f'{path[-28:]:28} ' \
-               f'{"*" if self.is_active else " "} ' \
--              f'{self.inuse:5}/{self.active:5} ' \
-+              f'{round(self.inuse):5}/{round(self.active):5} ' \
-               f'{self.hwi_pct:6.2f}/{self.hwa_pct:6.2f} ' \
-               f'{self.inflight_pct:6.2f} ' \
--              f'{min(math.ceil(self.debt_ms), 999):3} ' \
--              f'{min(self.use_delay, 99):2}*'\
--              f'{min(math.ceil(self.delay_ms), 999):03} '
--        for u in self.usages:
--            out += f'{min(round(u), 999):03d}:'
-+              f'{self.debt_ms:7.2f} ' \
-+              f'{self.delay_ms:7.2f} '\
-+              f'{min(self.usage, 999):6.2f}'
-         out = out.rstrip(':')
-         return out
- 
 -- 
-2.26.2
-
+Kees Cook
