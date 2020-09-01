@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452FF25951B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6484D2593E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726167AbgIAPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57752 "EHLO mail.kernel.org"
+        id S1731154AbgIAPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:33:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731667AbgIAPne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:43:34 -0400
+        id S1731144AbgIAPc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:32:57 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77383206FA;
-        Tue,  1 Sep 2020 15:43:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54C8E20E65;
+        Tue,  1 Sep 2020 15:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975013;
-        bh=Sjr8/goA5SUDV5EHxnPLgivfSrAg7FA/YC3bRLX7zfQ=;
+        s=default; t=1598974376;
+        bh=jbo9dTLCVn9GjanCcLLAnzad3me4gNbwqGBH7gudVxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VVV6lKCES+ebxf3pSDEXFPGNJqVTB8ohn7uiU31E+v3tc7OkeqMftNIWzdnIUONqJ
-         b8COcua1e5kPIGZBzHomzfCiHD9HbrdacEmoaHOSUPuPK/P3QqXowT8Y/yeOGvm1AE
-         gvO+Y7OMcSw9XmXg/ruVJ+JlZVNP6+ZJ15DackGw=
+        b=kASw8oi0tZ68Kulo8nvgRW1Fd48wGtk2iZiNT5qgE8o5346PHBoNjt8MxcIMrAo2u
+         0S1QnmXtZfC2DvFxixbpnLcT+WoJDI0nv8gh98drWnDngwhEy45gKQC/F7DGE3Q2Qt
+         8FMh5Ck8GbtCFus8pTS86Di6JK2kt2MLEglPiEwM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Omar Sandoval <osandov@osandov.com>,
-        Boris Burkov <boris@bur.io>, David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.8 175/255] btrfs: detect nocow for swap after snapshot delete
-Date:   Tue,  1 Sep 2020 17:10:31 +0200
-Message-Id: <20200901151009.080285230@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <rong.a.chen@intel.com>,
+        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        David Jeffery <djeffery@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.4 152/214] blk-mq: order adding requests to hctx->dispatch and checking SCHED_RESTART
+Date:   Tue,  1 Sep 2020 17:10:32 +0200
+Message-Id: <20200901151000.248894276@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,181 +46,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Boris Burkov <boris@bur.io>
+From: Ming Lei <ming.lei@redhat.com>
 
-commit a84d5d429f9eb56f81b388609841ed993f0ddfca upstream.
+commit d7d8535f377e9ba87edbf7fbbd634ac942f3f54f upstream.
 
-can_nocow_extent and btrfs_cross_ref_exist both rely on a heuristic for
-detecting a must cow condition which is not exactly accurate, but saves
-unnecessary tree traversal. The incorrect assumption is that if the
-extent was created in a generation smaller than the last snapshot
-generation, it must be referenced by that snapshot. That is true, except
-the snapshot could have since been deleted, without affecting the last
-snapshot generation.
+SCHED_RESTART code path is relied to re-run queue for dispatch requests
+in hctx->dispatch. Meantime the SCHED_RSTART flag is checked when adding
+requests to hctx->dispatch.
 
-The original patch claimed a performance win from this check, but it
-also leads to a bug where you are unable to use a swapfile if you ever
-snapshotted the subvolume it's in. Make the check slower and more strict
-for the swapon case, without modifying the general cow checks as a
-compromise. Turning swap on does not seem to be a particularly
-performance sensitive operation, so incurring a possibly unnecessary
-btrfs_search_slot seems worthwhile for the added usability.
+memory barriers have to be used for ordering the following two pair of OPs:
 
-Note: Until the snapshot is competely cleaned after deletion,
-check_committed_refs will still cause the logic to think that cow is
-necessary, so the user must until 'btrfs subvolu sync' finished before
-activating the swapfile swapon.
+1) adding requests to hctx->dispatch and checking SCHED_RESTART in
+blk_mq_dispatch_rq_list()
 
-CC: stable@vger.kernel.org # 5.4+
-Suggested-by: Omar Sandoval <osandov@osandov.com>
-Signed-off-by: Boris Burkov <boris@bur.io>
-Signed-off-by: David Sterba <dsterba@suse.com>
+2) clearing SCHED_RESTART and checking if there is request in hctx->dispatch
+in blk_mq_sched_restart().
+
+Without the added memory barrier, either:
+
+1) blk_mq_sched_restart() may miss requests added to hctx->dispatch meantime
+blk_mq_dispatch_rq_list() observes SCHED_RESTART, and not run queue in
+dispatch side
+
+or
+
+2) blk_mq_dispatch_rq_list still sees SCHED_RESTART, and not run queue
+in dispatch side, meantime checking if there is request in
+hctx->dispatch from blk_mq_sched_restart() is missed.
+
+IO hang in ltp/fs_fill test is reported by kernel test robot:
+
+	https://lkml.org/lkml/2020/7/26/77
+
+Turns out it is caused by the above out-of-order OPs. And the IO hang
+can't be observed any more after applying this patch.
+
+Fixes: bd166ef183c2 ("blk-mq-sched: add framework for MQ capable IO schedulers")
+Reported-by: kernel test robot <rong.a.chen@intel.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Cc: Bart Van Assche <bvanassche@acm.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: David Jeffery <djeffery@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ctree.h       |    4 ++--
- fs/btrfs/extent-tree.c |   17 +++++++++++------
- fs/btrfs/file.c        |    2 +-
- fs/btrfs/inode.c       |   16 +++++++++-------
- 4 files changed, 23 insertions(+), 16 deletions(-)
+ block/blk-mq-sched.c |    9 +++++++++
+ block/blk-mq.c       |    9 +++++++++
+ 2 files changed, 18 insertions(+)
 
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2468,7 +2468,7 @@ int btrfs_pin_extent_for_log_replay(stru
- 				    u64 bytenr, u64 num_bytes);
- int btrfs_exclude_logged_extents(struct extent_buffer *eb);
- int btrfs_cross_ref_exist(struct btrfs_root *root,
--			  u64 objectid, u64 offset, u64 bytenr);
-+			  u64 objectid, u64 offset, u64 bytenr, bool strict);
- struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 					     struct btrfs_root *root,
- 					     u64 parent, u64 root_objectid,
-@@ -2854,7 +2854,7 @@ struct extent_map *btrfs_get_extent_fiem
- 					   u64 start, u64 len);
- noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
- 			      u64 *orig_start, u64 *orig_block_len,
--			      u64 *ram_bytes);
-+			      u64 *ram_bytes, bool strict);
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -77,6 +77,15 @@ void blk_mq_sched_restart(struct blk_mq_
+ 		return;
+ 	clear_bit(BLK_MQ_S_SCHED_RESTART, &hctx->state);
  
- void __btrfs_del_delalloc_inode(struct btrfs_root *root,
- 				struct btrfs_inode *inode);
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2306,7 +2306,8 @@ static noinline int check_delayed_ref(st
- 
- static noinline int check_committed_ref(struct btrfs_root *root,
- 					struct btrfs_path *path,
--					u64 objectid, u64 offset, u64 bytenr)
-+					u64 objectid, u64 offset, u64 bytenr,
-+					bool strict)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_root *extent_root = fs_info->extent_root;
-@@ -2348,9 +2349,13 @@ static noinline int check_committed_ref(
- 	    btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY))
- 		goto out;
- 
--	/* If extent created before last snapshot => it's definitely shared */
--	if (btrfs_extent_generation(leaf, ei) <=
--	    btrfs_root_last_snapshot(&root->root_item))
 +	/*
-+	 * If extent created before last snapshot => it's shared unless the
-+	 * snapshot has been deleted. Use the heuristic if strict is false.
++	 * Order clearing SCHED_RESTART and list_empty_careful(&hctx->dispatch)
++	 * in blk_mq_run_hw_queue(). Its pair is the barrier in
++	 * blk_mq_dispatch_rq_list(). So dispatch code won't see SCHED_RESTART,
++	 * meantime new request added to hctx->dispatch is missed to check in
++	 * blk_mq_run_hw_queue().
 +	 */
-+	if (!strict &&
-+	    (btrfs_extent_generation(leaf, ei) <=
-+	     btrfs_root_last_snapshot(&root->root_item)))
- 		goto out;
- 
- 	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
-@@ -2375,7 +2380,7 @@ out:
++	smp_mb();
++
+ 	blk_mq_run_hw_queue(hctx, true);
  }
  
- int btrfs_cross_ref_exist(struct btrfs_root *root, u64 objectid, u64 offset,
--			  u64 bytenr)
-+			  u64 bytenr, bool strict)
- {
- 	struct btrfs_path *path;
- 	int ret;
-@@ -2386,7 +2391,7 @@ int btrfs_cross_ref_exist(struct btrfs_r
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1319,6 +1319,15 @@ bool blk_mq_dispatch_rq_list(struct requ
+ 		spin_unlock(&hctx->lock);
  
- 	do {
- 		ret = check_committed_ref(root, path, objectid,
--					  offset, bytenr);
-+					  offset, bytenr, strict);
- 		if (ret && ret != -ENOENT)
- 			goto out;
- 
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1568,7 +1568,7 @@ int btrfs_check_can_nocow(struct btrfs_i
- 	}
- 
- 	ret = can_nocow_extent(&inode->vfs_inode, lockstart, &num_bytes,
--			NULL, NULL, NULL);
-+			NULL, NULL, NULL, false);
- 	if (ret <= 0) {
- 		ret = 0;
- 		if (!nowait)
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1611,7 +1611,7 @@ next_slot:
- 				goto out_check;
- 			ret = btrfs_cross_ref_exist(root, ino,
- 						    found_key.offset -
--						    extent_offset, disk_bytenr);
-+						    extent_offset, disk_bytenr, false);
- 			if (ret) {
- 				/*
- 				 * ret could be -EIO if the above fails to read
-@@ -6957,7 +6957,7 @@ static struct extent_map *btrfs_new_exte
-  */
- noinline int can_nocow_extent(struct inode *inode, u64 offset, u64 *len,
- 			      u64 *orig_start, u64 *orig_block_len,
--			      u64 *ram_bytes)
-+			      u64 *ram_bytes, bool strict)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_path *path;
-@@ -7035,8 +7035,9 @@ noinline int can_nocow_extent(struct ino
- 	 * Do the same check as in btrfs_cross_ref_exist but without the
- 	 * unnecessary search.
- 	 */
--	if (btrfs_file_extent_generation(leaf, fi) <=
--	    btrfs_root_last_snapshot(&root->root_item))
-+	if (!strict &&
-+	    (btrfs_file_extent_generation(leaf, fi) <=
-+	     btrfs_root_last_snapshot(&root->root_item)))
- 		goto out;
- 
- 	backref_offset = btrfs_file_extent_offset(leaf, fi);
-@@ -7072,7 +7073,8 @@ noinline int can_nocow_extent(struct ino
- 	 */
- 
- 	ret = btrfs_cross_ref_exist(root, btrfs_ino(BTRFS_I(inode)),
--				    key.offset - backref_offset, disk_bytenr);
-+				    key.offset - backref_offset, disk_bytenr,
-+				    strict);
- 	if (ret) {
- 		ret = 0;
- 		goto out;
-@@ -7293,7 +7295,7 @@ static int btrfs_get_blocks_direct_write
- 		block_start = em->block_start + (start - em->start);
- 
- 		if (can_nocow_extent(inode, start, &len, &orig_start,
--				     &orig_block_len, &ram_bytes) == 1 &&
-+				     &orig_block_len, &ram_bytes, false) == 1 &&
- 		    btrfs_inc_nocow_writers(fs_info, block_start)) {
- 			struct extent_map *em2;
- 
-@@ -10103,7 +10105,7 @@ static int btrfs_swap_activate(struct sw
- 		free_extent_map(em);
- 		em = NULL;
- 
--		ret = can_nocow_extent(inode, start, &len, NULL, NULL, NULL);
-+		ret = can_nocow_extent(inode, start, &len, NULL, NULL, NULL, true);
- 		if (ret < 0) {
- 			goto out;
- 		} else if (ret) {
+ 		/*
++		 * Order adding requests to hctx->dispatch and checking
++		 * SCHED_RESTART flag. The pair of this smp_mb() is the one
++		 * in blk_mq_sched_restart(). Avoid restart code path to
++		 * miss the new added requests to hctx->dispatch, meantime
++		 * SCHED_RESTART is observed here.
++		 */
++		smp_mb();
++
++		/*
+ 		 * If SCHED_RESTART was set by the caller of this function and
+ 		 * it is no longer set that means that it was cleared by another
+ 		 * thread and hence that a queue rerun is needed.
 
 
