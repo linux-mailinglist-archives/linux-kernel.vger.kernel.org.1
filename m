@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484DF259302
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55952259276
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729579AbgIAPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:20:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35742 "EHLO mail.kernel.org"
+        id S1728723AbgIAPMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:12:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729441AbgIAPSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:01 -0400
+        id S1728725AbgIAPM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:12:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B95121527;
-        Tue,  1 Sep 2020 15:17:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A41F6206FA;
+        Tue,  1 Sep 2020 15:12:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973477;
-        bh=HGL5Op0feGs6xIwMLfwoEoZrGaTgBEfpzudxmdqy9eo=;
+        s=default; t=1598973148;
+        bh=4RWpZvOoJA/5UINqIY4RDIvOA2ssL54rfpG3Hg+9Hsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1hnSwn7VaT9OaEX5x4AqZgVIMEzwFaD2s4WFUk7KVszfti77zWhGyKCvK1LkjgB6v
-         dVrUqjM7JFvYxQ0Varo5WYExjlpcMXrOnnnJdLr9RTeNr5MEMDwPHr55tVxvx9c4ez
-         U0B9QpYGhFkYp4fZUxN3rodKHhMJEkaOwfzUBq7E=
+        b=OAZrmcd2hVPcTHboG1ZuxtJ17MTWYPh4PhwP7juj9miONYAlNLHg9ZsZ2tT9Ss/cy
+         ddKJbRJjwrGr0Wm+R8gzmIl+1km1DMn90jT18nCFHf1zTLvbp6gxBwmgqmQeb8bfpd
+         X9rgdT4ZiHBAsHhkq7JFHyoQXYWkwWayzogiPCgU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 15/91] drm/amdkfd: Fix reference count leaks.
-Date:   Tue,  1 Sep 2020 17:09:49 +0200
-Message-Id: <20200901150928.866547819@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 07/62] ALSA: pci: delete repeated words in comments
+Date:   Tue,  1 Sep 2020 17:09:50 +0200
+Message-Id: <20200901150921.083289829@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
+References: <20200901150920.697676718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,87 +43,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 20eca0123a35305e38b344d571cf32768854168c ]
+[ Upstream commit c7fabbc51352f50cc58242a6dc3b9c1a3599849b ]
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object.
+Drop duplicated words in sound/pci/.
+{and, the, at}
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20200806021926.32418-1-rdunlap@infradead.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_topology.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/pci/cs46xx/cs46xx_lib.c       | 2 +-
+ sound/pci/cs46xx/dsp_spos_scb_lib.c | 2 +-
+ sound/pci/hda/hda_codec.c           | 2 +-
+ sound/pci/hda/hda_generic.c         | 2 +-
+ sound/pci/hda/patch_sigmatel.c      | 2 +-
+ sound/pci/ice1712/prodigy192.c      | 2 +-
+ sound/pci/oxygen/xonar_dg.c         | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_topology.c b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
-index e0b78fd9804de..ab79c1030f005 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
-@@ -821,8 +821,10 @@ static int kfd_build_sysfs_node_entry(struct kfd_topology_device *dev,
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 2706f271a83b0..8a174c170e0aa 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -780,7 +780,7 @@ static void snd_cs46xx_set_capture_sample_rate(struct snd_cs46xx *chip, unsigned
+ 		rate = 48000 / 9;
  
- 	ret = kobject_init_and_add(dev->kobj_node, &node_type,
- 			sys_props.kobj_nodes, "%d", id);
--	if (ret < 0)
-+	if (ret < 0) {
-+		kobject_put(dev->kobj_node);
- 		return ret;
-+	}
+ 	/*
+-	 *  We can not capture at at rate greater than the Input Rate (48000).
++	 *  We can not capture at a rate greater than the Input Rate (48000).
+ 	 *  Return an error if an attempt is made to stray outside that limit.
+ 	 */
+ 	if (rate > 48000)
+diff --git a/sound/pci/cs46xx/dsp_spos_scb_lib.c b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+index 7488e1b7a7707..4e726d39b05d1 100644
+--- a/sound/pci/cs46xx/dsp_spos_scb_lib.c
++++ b/sound/pci/cs46xx/dsp_spos_scb_lib.c
+@@ -1742,7 +1742,7 @@ int cs46xx_iec958_pre_open (struct snd_cs46xx *chip)
+ 	struct dsp_spos_instance * ins = chip->dsp_spos_instance;
  
- 	dev->kobj_mem = kobject_create_and_add("mem_banks", dev->kobj_node);
- 	if (!dev->kobj_mem)
-@@ -865,8 +867,10 @@ static int kfd_build_sysfs_node_entry(struct kfd_topology_device *dev,
- 			return -ENOMEM;
- 		ret = kobject_init_and_add(mem->kobj, &mem_type,
- 				dev->kobj_mem, "%d", i);
--		if (ret < 0)
-+		if (ret < 0) {
-+			kobject_put(mem->kobj);
- 			return ret;
-+		}
+ 	if ( ins->spdif_status_out & DSP_SPDIF_STATUS_OUTPUT_ENABLED ) {
+-		/* remove AsynchFGTxSCB and and PCMSerialInput_II */
++		/* remove AsynchFGTxSCB and PCMSerialInput_II */
+ 		cs46xx_dsp_disable_spdif_out (chip);
  
- 		mem->attr.name = "properties";
- 		mem->attr.mode = KFD_SYSFS_FILE_MODE;
-@@ -884,8 +888,10 @@ static int kfd_build_sysfs_node_entry(struct kfd_topology_device *dev,
- 			return -ENOMEM;
- 		ret = kobject_init_and_add(cache->kobj, &cache_type,
- 				dev->kobj_cache, "%d", i);
--		if (ret < 0)
-+		if (ret < 0) {
-+			kobject_put(cache->kobj);
- 			return ret;
-+		}
+ 		/* save state */
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 825d9b27dbe12..4962a9d8a572b 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -3496,7 +3496,7 @@ EXPORT_SYMBOL_GPL(snd_hda_set_power_save);
+  * @nid: NID to check / update
+  *
+  * Check whether the given NID is in the amp list.  If it's in the list,
+- * check the current AMP status, and update the the power-status according
++ * check the current AMP status, and update the power-status according
+  * to the mute status.
+  *
+  * This function is supposed to be set or called from the check_power_status
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 869c322ddae31..7cd1047a4edf3 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -837,7 +837,7 @@ static void activate_amp_in(struct hda_codec *codec, struct nid_path *path,
+ 	}
+ }
  
- 		cache->attr.name = "properties";
- 		cache->attr.mode = KFD_SYSFS_FILE_MODE;
-@@ -903,8 +909,10 @@ static int kfd_build_sysfs_node_entry(struct kfd_topology_device *dev,
- 			return -ENOMEM;
- 		ret = kobject_init_and_add(iolink->kobj, &iolink_type,
- 				dev->kobj_iolink, "%d", i);
--		if (ret < 0)
-+		if (ret < 0) {
-+			kobject_put(iolink->kobj);
- 			return ret;
-+		}
+-/* sync power of each widget in the the given path */
++/* sync power of each widget in the given path */
+ static hda_nid_t path_power_update(struct hda_codec *codec,
+ 				   struct nid_path *path,
+ 				   bool allow_powerdown)
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index d1a6d20ace0da..80b72d0702c5e 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -862,7 +862,7 @@ static int stac_auto_create_beep_ctls(struct hda_codec *codec,
+ 	static struct snd_kcontrol_new beep_vol_ctl =
+ 		HDA_CODEC_VOLUME(NULL, 0, 0, 0);
  
- 		iolink->attr.name = "properties";
- 		iolink->attr.mode = KFD_SYSFS_FILE_MODE;
-@@ -956,8 +964,10 @@ static int kfd_topology_update_sysfs(void)
- 		ret = kobject_init_and_add(sys_props.kobj_topology,
- 				&sysprops_type,  &kfd_device->kobj,
- 				"topology");
--		if (ret < 0)
-+		if (ret < 0) {
-+			kobject_put(sys_props.kobj_topology);
- 			return ret;
-+		}
- 
- 		sys_props.kobj_nodes = kobject_create_and_add("nodes",
- 				sys_props.kobj_topology);
+-	/* check for mute support for the the amp */
++	/* check for mute support for the amp */
+ 	if ((caps & AC_AMPCAP_MUTE) >> AC_AMPCAP_MUTE_SHIFT) {
+ 		const struct snd_kcontrol_new *temp;
+ 		if (spec->anabeep_nid == nid)
+diff --git a/sound/pci/ice1712/prodigy192.c b/sound/pci/ice1712/prodigy192.c
+index 3919aed39ca03..5e52086d7b986 100644
+--- a/sound/pci/ice1712/prodigy192.c
++++ b/sound/pci/ice1712/prodigy192.c
+@@ -31,7 +31,7 @@
+  *		  Experimentally I found out that only a combination of
+  *		  OCKS0=1, OCKS1=1 (128fs, 64fs output) and ice1724 -
+  *		  VT1724_MT_I2S_MCLK_128X=0 (256fs input) yields correct
+- *		  sampling rate. That means the the FPGA doubles the
++ *		  sampling rate. That means that the FPGA doubles the
+  *		  MCK01 rate.
+  *
+  *	Copyright (c) 2003 Takashi Iwai <tiwai@suse.de>
+diff --git a/sound/pci/oxygen/xonar_dg.c b/sound/pci/oxygen/xonar_dg.c
+index 4cf3200e988b0..df44135e1b0c9 100644
+--- a/sound/pci/oxygen/xonar_dg.c
++++ b/sound/pci/oxygen/xonar_dg.c
+@@ -39,7 +39,7 @@
+  *   GPIO 4 <- headphone detect
+  *   GPIO 5 -> enable ADC analog circuit for the left channel
+  *   GPIO 6 -> enable ADC analog circuit for the right channel
+- *   GPIO 7 -> switch green rear output jack between CS4245 and and the first
++ *   GPIO 7 -> switch green rear output jack between CS4245 and the first
+  *             channel of CS4361 (mechanical relay)
+  *   GPIO 8 -> enable output to speakers
+  *
 -- 
 2.25.1
 
