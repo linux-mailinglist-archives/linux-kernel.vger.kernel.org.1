@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4096B259813
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DE725981F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbgIAPcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
+        id S1730999AbgIAPcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730635AbgIAPaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730112AbgIAPaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Sep 2020 11:30:55 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C49BE20FC3;
-        Tue,  1 Sep 2020 15:30:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 44F85206EB;
+        Tue,  1 Sep 2020 15:30:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974252;
-        bh=iHraPqcWIuC6KUiwWwCGn2hqCPFfZxVGTyd79HTIvtY=;
+        s=default; t=1598974254;
+        bh=5nlWCuWIm7npu4Fda4YzVL0ATK2lwj9iiU7vzapDB98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=akDXqimAjwnJen8vguT3ReJ76uulIFtNp2j9f4VsuMJ/LMsC5+TOjxIi4+6i0FnrF
-         on528O/XAdvabPf/EBdXnAbJ0j67mk8NitGBIG1x/z6y3IueAU6D76Q76TArtIrwKk
-         6axX6iMi9aBqjPcgWoP0qJJVuQKEdYV14nIz3D0c=
+        b=pTMoElE6UTLnSDtbZQWx+CH3g8K/ffPDadRsKbjx1qSUq5a08QMaYjv/JDmuqpTl8
+         D9N0kA8WNu26evNHKeec4IJ1agogFJKKgKlV5vKOkctXY+SqpJKTjz1MeOE2fMcPDp
+         aVRZ08/Op/U5xJtHmCx3D+1D23sZnywIiLGD/E3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Yufen Yu <yuyufen@huawei.com>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 105/214] blk-mq: insert request not through ->queue_rq into sw/scheduler queue
-Date:   Tue,  1 Sep 2020 17:09:45 +0200
-Message-Id: <20200901150958.018897922@linuxfoundation.org>
+Subject: [PATCH 5.4 106/214] blkcg: fix memleak for iolatency
+Date:   Tue,  1 Sep 2020 17:09:46 +0200
+Message-Id: <20200901150958.067453405@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
 References: <20200901150952.963606936@linuxfoundation.org>
@@ -46,49 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Yufen Yu <yuyufen@huawei.com>
 
-[ Upstream commit db03f88fae8a2c8007caafa70287798817df2875 ]
+[ Upstream commit 27029b4b18aa5d3b060f0bf2c26dae254132cfce ]
 
-c616cbee97ae ("blk-mq: punt failed direct issue to dispatch list") supposed
-to add request which has been through ->queue_rq() to the hw queue dispatch
-list, however it adds request running out of budget or driver tag to hw queue
-too. This way basically bypasses request merge, and causes too many request
-dispatched to LLD, and system% is unnecessary increased.
+Normally, blkcg_iolatency_exit() will free related memory in iolatency
+when cleanup queue. But if blk_throtl_init() return error and queue init
+fail, blkcg_iolatency_exit() will not do that for us. Then it cause
+memory leak.
 
-Fixes this issue by adding request not through ->queue_rq into sw/scheduler
-queue, and this way is safe because no ->queue_rq is called on this request
-yet.
-
-High %system can be observed on Azure storvsc device, and even soft lock
-is observed. This patch reduces %system during heavy sequential IO,
-meantime decreases soft lockup risk.
-
-Fixes: c616cbee97ae ("blk-mq: punt failed direct issue to dispatch list")
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Bart Van Assche <bvanassche@acm.org>
-Cc: Mike Snitzer <snitzer@redhat.com>
+Fixes: d70675121546 ("block: introduce blk-iolatency io controller")
+Signed-off-by: Yufen Yu <yuyufen@huawei.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ block/blk-cgroup.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index ae7d31cb5a4e1..8f67f0f16ec2e 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1869,7 +1869,8 @@ insert:
- 	if (bypass_insert)
- 		return BLK_STS_RESOURCE;
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 1eb8895be4c6b..0c7addcd19859 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1219,13 +1219,15 @@ int blkcg_init_queue(struct request_queue *q)
+ 	if (preloaded)
+ 		radix_tree_preload_end();
  
--	blk_mq_request_bypass_insert(rq, false, run_queue);
-+	blk_mq_sched_insert_request(rq, false, run_queue, false);
-+
- 	return BLK_STS_OK;
- }
+-	ret = blk_iolatency_init(q);
++	ret = blk_throtl_init(q);
+ 	if (ret)
+ 		goto err_destroy_all;
  
+-	ret = blk_throtl_init(q);
+-	if (ret)
++	ret = blk_iolatency_init(q);
++	if (ret) {
++		blk_throtl_exit(q);
+ 		goto err_destroy_all;
++	}
+ 	return 0;
+ 
+ err_destroy_all:
 -- 
 2.25.1
 
