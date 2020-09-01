@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735B42594F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B24F2595D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731848AbgIAPo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:44:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55134 "EHLO mail.kernel.org"
+        id S1731606AbgIAPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:45:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgIAPmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:22 -0400
+        id S1731480AbgIAPm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:42:27 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A3A32064B;
-        Tue,  1 Sep 2020 15:42:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 077FA2064B;
+        Tue,  1 Sep 2020 15:42:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974941;
-        bh=tnGaXVxjFd8tE27j01WMCgbuhktIS9wS63ugvbMZQ2E=;
+        s=default; t=1598974946;
+        bh=gXx1808BFXWYHVNW1k78F5RVe0+ZIypNl0B+qbYbcd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ajBSidSaXiRoI+NObjjq3RBxfaA7oUxJaQ0f8BtYDmbrfU4dHqkMgOLXvy/JNt+4j
-         ghOpNal++yNZjgyXqL3nTjfr1eoPHvZZmOLDa+nD597TT78kEuUTN2T0zR8MGlOFHn
-         84RSGXMbEY4qAfKuN5ZVCsebPlfFchoUBoVAVp0Q=
+        b=kKks/Am5NtSUt2ODf41D/MQ4qXzeI3ZMF4hpw6jiZnU8/nq1O6FMBc+Pjzeg1fvog
+         1YL4d+FQxvysnKjrt5aHoWG8mExVBcddlSwzMVtTZAp4NQx2QAzlGO45yncMc2hL+L
+         czaVheR/KqqAKkIgPkHoThdF+5J4TXxttmZuyPro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
-        Alain Volmat <alain.volmat@st.com>,
+        stable@vger.kernel.org, Alain Volmat <alain.volmat@st.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 119/255] spi: stm32: fix fifo threshold level in case of short transfer
-Date:   Tue,  1 Sep 2020 17:09:35 +0200
-Message-Id: <20200901151006.430575434@linuxfoundation.org>
+Subject: [PATCH 5.8 121/255] spi: stm32: always perform registers configuration prior to transfer
+Date:   Tue,  1 Sep 2020 17:09:37 +0200
+Message-Id: <20200901151006.529384349@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -45,97 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@st.com>
+From: Alain Volmat <alain.volmat@st.com>
 
-[ Upstream commit 3373e9004acc0603242622b4378c64bc01d21b5f ]
+[ Upstream commit 60ccb3515fc61a0124c70aa37317f75b67560024 ]
 
-When transfer is shorter than half of the fifo, set the data packet size
-up to transfer size instead of up to half of the fifo.
-Check also that threshold is set at least to 1 data frame.
+SPI registers content may have been lost upon suspend/resume sequence.
+So, always compute and apply the necessary configuration in
+stm32_spi_transfer_one_setup routine.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
 Signed-off-by: Alain Volmat <alain.volmat@st.com>
-Link: https://lore.kernel.org/r/1597043558-29668-3-git-send-email-alain.volmat@st.com
+Link: https://lore.kernel.org/r/1597043558-29668-6-git-send-email-alain.volmat@st.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 26 ++++++++++++++++++--------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+ drivers/spi/spi-stm32.c | 42 +++++++++++++++++------------------------
+ 1 file changed, 17 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index fce679635829c..7f2113e7b3ddc 100644
+index 9b90a22543fd7..d4b33b358a31e 100644
 --- a/drivers/spi/spi-stm32.c
 +++ b/drivers/spi/spi-stm32.c
-@@ -468,20 +468,27 @@ static int stm32_spi_prepare_mbr(struct stm32_spi *spi, u32 speed_hz,
- /**
-  * stm32h7_spi_prepare_fthlv - Determine FIFO threshold level
-  * @spi: pointer to the spi controller data structure
-+ * @xfer_len: length of the message to be transferred
-  */
--static u32 stm32h7_spi_prepare_fthlv(struct stm32_spi *spi)
-+static u32 stm32h7_spi_prepare_fthlv(struct stm32_spi *spi, u32 xfer_len)
- {
--	u32 fthlv, half_fifo;
-+	u32 fthlv, half_fifo, packet;
- 
- 	/* data packet should not exceed 1/2 of fifo space */
- 	half_fifo = (spi->fifo_size / 2);
- 
-+	/* data_packet should not exceed transfer length */
-+	if (half_fifo > xfer_len)
-+		packet = xfer_len;
-+	else
-+		packet = half_fifo;
-+
- 	if (spi->cur_bpw <= 8)
--		fthlv = half_fifo;
-+		fthlv = packet;
- 	else if (spi->cur_bpw <= 16)
--		fthlv = half_fifo / 2;
-+		fthlv = packet / 2;
- 	else
--		fthlv = half_fifo / 4;
-+		fthlv = packet / 4;
- 
- 	/* align packet size with data registers access */
- 	if (spi->cur_bpw > 8)
-@@ -489,6 +496,9 @@ static u32 stm32h7_spi_prepare_fthlv(struct stm32_spi *spi)
- 	else
- 		fthlv -= (fthlv % 4); /* multiple of 4 */
- 
-+	if (!fthlv)
-+		fthlv = 1;
-+
- 	return fthlv;
- }
- 
-@@ -1394,7 +1404,7 @@ static void stm32h7_spi_set_bpw(struct stm32_spi *spi)
- 	cfg1_setb |= (bpw << STM32H7_SPI_CFG1_DSIZE_SHIFT) &
- 		     STM32H7_SPI_CFG1_DSIZE;
- 
--	spi->cur_fthlv = stm32h7_spi_prepare_fthlv(spi);
-+	spi->cur_fthlv = stm32h7_spi_prepare_fthlv(spi, spi->cur_xferlen);
- 	fthlv = spi->cur_fthlv - 1;
- 
- 	cfg1_clrb |= STM32H7_SPI_CFG1_FTHLV;
-@@ -1589,6 +1599,8 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
+@@ -1597,41 +1597,33 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
+ 	unsigned long flags;
+ 	unsigned int comm_type;
+ 	int nb_words, ret = 0;
++	int mbr;
  
  	spin_lock_irqsave(&spi->lock, flags);
  
-+	spi->cur_xferlen = transfer->len;
-+
- 	if (spi->cur_bpw != transfer->bits_per_word) {
- 		spi->cur_bpw = transfer->bits_per_word;
- 		spi->cfg->set_bpw(spi);
-@@ -1636,8 +1648,6 @@ static int stm32_spi_transfer_one_setup(struct stm32_spi *spi,
- 			goto out;
+ 	spi->cur_xferlen = transfer->len;
+ 
+-	if (spi->cur_bpw != transfer->bits_per_word) {
+-		spi->cur_bpw = transfer->bits_per_word;
+-		spi->cfg->set_bpw(spi);
+-	}
+-
+-	if (spi->cur_speed != transfer->speed_hz) {
+-		int mbr;
+-
+-		/* Update spi->cur_speed with real clock speed */
+-		mbr = stm32_spi_prepare_mbr(spi, transfer->speed_hz,
+-					    spi->cfg->baud_rate_div_min,
+-					    spi->cfg->baud_rate_div_max);
+-		if (mbr < 0) {
+-			ret = mbr;
+-			goto out;
+-		}
++	spi->cur_bpw = transfer->bits_per_word;
++	spi->cfg->set_bpw(spi);
+ 
+-		transfer->speed_hz = spi->cur_speed;
+-		stm32_spi_set_mbr(spi, mbr);
++	/* Update spi->cur_speed with real clock speed */
++	mbr = stm32_spi_prepare_mbr(spi, transfer->speed_hz,
++				    spi->cfg->baud_rate_div_min,
++				    spi->cfg->baud_rate_div_max);
++	if (mbr < 0) {
++		ret = mbr;
++		goto out;
  	}
  
--	spi->cur_xferlen = transfer->len;
--
- 	dev_dbg(spi->dev, "transfer communication mode set to %d\n",
- 		spi->cur_comm);
- 	dev_dbg(spi->dev,
+-	comm_type = stm32_spi_communication_type(spi_dev, transfer);
+-	if (spi->cur_comm != comm_type) {
+-		ret = spi->cfg->set_mode(spi, comm_type);
++	transfer->speed_hz = spi->cur_speed;
++	stm32_spi_set_mbr(spi, mbr);
+ 
+-		if (ret < 0)
+-			goto out;
++	comm_type = stm32_spi_communication_type(spi_dev, transfer);
++	ret = spi->cfg->set_mode(spi, comm_type);
++	if (ret < 0)
++		goto out;
+ 
+-		spi->cur_comm = comm_type;
+-	}
++	spi->cur_comm = comm_type;
+ 
+ 	if (spi->cfg->set_data_idleness)
+ 		spi->cfg->set_data_idleness(spi, transfer->len);
 -- 
 2.25.1
 
