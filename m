@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29999259BDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65BF259D1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgIARII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:08:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36288 "EHLO mail.kernel.org"
+        id S1732743AbgIARYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729079AbgIAPSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:13 -0400
+        id S1726771AbgIAPLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:11:53 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C697206FA;
-        Tue,  1 Sep 2020 15:18:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59AC1206FA;
+        Tue,  1 Sep 2020 15:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973492;
-        bh=D/0gcnPabBSJphbOyrSVqn1GCFwmPW3WMf8lTK5aF/w=;
+        s=default; t=1598973112;
+        bh=qNEvP+YxjN9cHUGvRDWTfOl1iZ6hTNDjEXd2QmD7820=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKMyOHfQ4Ez4OxGPGEa+o2zTLJvbILRMGoscyOAUN2PgA21yXHNyIsZOL8tIaJ/cN
-         z8qggqYE0kfk5U9o5o+X6Pk2Q14lWcC9mdfY1BiyJEd33sUMm1EgjOYCCFsysX1ntL
-         6aoLIBcW5iDf1gjlV4imfxvdgSOafGP9lDAMFx0g=
+        b=qxRPOq93RzcEAkR53z6SNFhS3FBcqDmqQ4Th+wTUcDa56jGyNFL/09TW8uNJ7Rj2G
+         vfo0mnSR7jXU9Lt62fPOgYNrtDJ31BoKyigUgxN5QlCxM66m3A7OQo60zfpqw8/7zP
+         aNYh5EcuMP6/s+J4YNAqDhVMJJ+5jFZjAtXfuw+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 20/91] drm/amdgpu/display: fix ref count leak when pm_runtime_get_sync fails
-Date:   Tue,  1 Sep 2020 17:09:54 +0200
-Message-Id: <20200901150929.156162305@linuxfoundation.org>
+Subject: [PATCH 4.4 12/62] drm/radeon: fix multiple reference count leak
+Date:   Tue,  1 Sep 2020 17:09:55 +0200
+Message-Id: <20200901150921.317831987@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
+References: <20200901150920.697676718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,26 +44,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Navid Emamdoost <navid.emamdoost@gmail.com>
+From: Aditya Pakki <pakki001@umn.edu>
 
-[ Upstream commit f79f94765f8c39db0b7dec1d335ab046aac03f20 ]
+[ Upstream commit 6f2e8acdb48ed166b65d47837c31b177460491ec ]
 
-The call to pm_runtime_get_sync increments the counter even in case of
-failure, leading to incorrect ref count.
-In case of failure, decrement the ref count before returning.
+On calling pm_runtime_get_sync() the reference count of the device
+is incremented. In case of failure, decrement the
+reference count before returning the error.
 
-Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/radeon/radeon_connectors.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-index 1eff36a875958..3992e1cbb61ca 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
-@@ -734,8 +734,10 @@ amdgpu_connector_lvds_detect(struct drm_connector *connector, bool force)
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+index bebcef2ce6b88..a9f1d99bb6f99 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -886,8 +886,10 @@ radeon_lvds_detect(struct drm_connector *connector, bool force)
  
  	if (!drm_kms_helper_is_poll_worker()) {
  		r = pm_runtime_get_sync(connector->dev->dev);
@@ -76,7 +75,7 @@ index 1eff36a875958..3992e1cbb61ca 100644
  	}
  
  	if (encoder) {
-@@ -872,8 +874,10 @@ amdgpu_connector_vga_detect(struct drm_connector *connector, bool force)
+@@ -1021,8 +1023,10 @@ radeon_vga_detect(struct drm_connector *connector, bool force)
  
  	if (!drm_kms_helper_is_poll_worker()) {
  		r = pm_runtime_get_sync(connector->dev->dev);
@@ -87,8 +86,8 @@ index 1eff36a875958..3992e1cbb61ca 100644
 +		}
  	}
  
- 	encoder = amdgpu_connector_best_single_encoder(connector);
-@@ -996,8 +1000,10 @@ amdgpu_connector_dvi_detect(struct drm_connector *connector, bool force)
+ 	encoder = radeon_best_single_encoder(connector);
+@@ -1158,8 +1162,10 @@ radeon_tv_detect(struct drm_connector *connector, bool force)
  
  	if (!drm_kms_helper_is_poll_worker()) {
  		r = pm_runtime_get_sync(connector->dev->dev);
@@ -99,8 +98,8 @@ index 1eff36a875958..3992e1cbb61ca 100644
 +		}
  	}
  
- 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
-@@ -1371,8 +1377,10 @@ amdgpu_connector_dp_detect(struct drm_connector *connector, bool force)
+ 	encoder = radeon_best_single_encoder(connector);
+@@ -1241,8 +1247,10 @@ radeon_dvi_detect(struct drm_connector *connector, bool force)
  
  	if (!drm_kms_helper_is_poll_worker()) {
  		r = pm_runtime_get_sync(connector->dev->dev);
@@ -111,7 +110,19 @@ index 1eff36a875958..3992e1cbb61ca 100644
 +		}
  	}
  
- 	if (!force && amdgpu_connector_check_hpd_status_unchanged(connector)) {
+ 	if (radeon_connector->detected_hpd_without_ddc) {
+@@ -1681,8 +1689,10 @@ radeon_dp_detect(struct drm_connector *connector, bool force)
+ 
+ 	if (!drm_kms_helper_is_poll_worker()) {
+ 		r = pm_runtime_get_sync(connector->dev->dev);
+-		if (r < 0)
++		if (r < 0) {
++			pm_runtime_put_autosuspend(connector->dev->dev);
+ 			return connector_status_disconnected;
++		}
+ 	}
+ 
+ 	if (!force && radeon_check_hpd_status_unchanged(connector)) {
 -- 
 2.25.1
 
