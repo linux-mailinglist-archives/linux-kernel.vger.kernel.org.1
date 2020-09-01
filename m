@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7946D259BA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA2A259B54
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgIAPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34928 "EHLO mail.kernel.org"
+        id S1729619AbgIARAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:00:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729409AbgIAPR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:17:28 -0400
+        id S1729290AbgIAPVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:21:20 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C4BB206FA;
-        Tue,  1 Sep 2020 15:17:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA5DB2137B;
+        Tue,  1 Sep 2020 15:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973447;
-        bh=MDQ3YFm4ts8kzIdj/wglZl7UAQvpMkyuN4o+sv1ekHM=;
+        s=default; t=1598973679;
+        bh=GfwWG9EQnFtJ3cUZuqwa7lGFY1ZYI9hNpEGGAcLS/Gg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W7/qvQBcNeelssxSAsQ0hrldALwSlbqE4fSaxQNOvj954hZpznBiEvw4kfpFYxDrD
-         Syo/2/r8FqSQWQ/sogiodPOV/pB490WIfNmxllAaBlOxNdtis6f5QmpcTtEzaTNSbI
-         ++mccC8UQTy8N4jV0fhoy8XRS3CvDLEYKN1Nt4dk=
+        b=1itIwpfMJ9RgLo6HjO6qA7Efg2DvJ3WPyq+o/BkSotAc3/xJoRp8ENnhsniKBht9b
+         xLF7fUvT1k8G+pyfvJx9HIoO4iDuQ7+gWvraIbP1fHJTnvsBuVvh2LnvomjSDaDFdZ
+         +GtBnxYc4FcbswluARxirETYBVob0cTN6OkXej/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 65/78] device property: Fix the secondary firmware node handling in set_primary_fwnode()
+        stable@vger.kernel.org, Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Subject: [PATCH 4.14 67/91] serial: 8250_exar: Fix number of ports for Commtech PCIe cards
 Date:   Tue,  1 Sep 2020 17:10:41 +0200
-Message-Id: <20200901150928.031897026@linuxfoundation.org>
+Message-Id: <20200901150931.496139273@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+From: Valmer Huhn <valmer.huhn@concurrent-rt.com>
 
-commit c15e1bdda4365a5f17cdadf22bf1c1df13884a9e upstream.
+commit c6b9e95dde7b54e6a53c47241201ab5a4035c320 upstream.
 
-When the primary firmware node pointer is removed from a
-device (set to NULL) the secondary firmware node pointer,
-when it exists, is made the primary node for the device.
-However, the secondary firmware node pointer of the original
-primary firmware node is never cleared (set to NULL).
+The following in 8250_exar.c line 589 is used to determine the number
+of ports for each Exar board:
 
-To avoid situation where the secondary firmware node pointer
-is pointing to a non-existing object, clearing it properly
-when the primary node is removed from a device in
-set_primary_fwnode().
+nr_ports = board->num_ports ? board->num_ports : pcidev->device & 0x0f;
 
-Fixes: 97badf873ab6 ("device property: Make it possible to use secondary firmware nodes")
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+If the number of ports a card has is not explicitly specified, it defaults
+to the rightmost 4 bits of the PCI device ID. This is prone to error since
+not all PCI device IDs contain a number which corresponds to the number of
+ports that card provides.
+
+This particular case involves COMMTECH_4222PCIE, COMMTECH_4224PCIE and
+COMMTECH_4228PCIE cards with device IDs 0x0022, 0x0020 and 0x0021.
+Currently the multiport cards receive 2, 0 and 1 port instead of 2, 4 and
+8 ports respectively.
+
+To fix this, each Commtech Fastcom PCIe card is given a struct where the
+number of ports is explicitly specified. This ensures 'board->num_ports'
+is used instead of the default 'pcidev->device & 0x0f'.
+
+Fixes: d0aeaa83f0b0 ("serial: exar: split out the exar code from 8250_pci")
+Signed-off-by: Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Tested-by: Valmer Huhn <valmer.huhn@concurrent-rt.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200813165255.GC345440@icarus.concurrent-rt.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/base/core.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_exar.c |   24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2348,9 +2348,9 @@ static inline bool fwnode_is_primary(str
-  */
- void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
- {
--	if (fwnode) {
--		struct fwnode_handle *fn = dev->fwnode;
-+	struct fwnode_handle *fn = dev->fwnode;
+--- a/drivers/tty/serial/8250/8250_exar.c
++++ b/drivers/tty/serial/8250/8250_exar.c
+@@ -629,6 +629,24 @@ static const struct exar8250_board pbn_e
+ 	.exit		= pci_xr17v35x_exit,
+ };
  
-+	if (fwnode) {
- 		if (fwnode_is_primary(fn))
- 			fn = fn->secondary;
++static const struct exar8250_board pbn_fastcom35x_2 = {
++	.num_ports	= 2,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
++static const struct exar8250_board pbn_fastcom35x_4 = {
++	.num_ports	= 4,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
++static const struct exar8250_board pbn_fastcom35x_8 = {
++	.num_ports	= 8,
++	.setup		= pci_xr17v35x_setup,
++	.exit		= pci_xr17v35x_exit,
++};
++
+ static const struct exar8250_board pbn_exar_XR17V4358 = {
+ 	.num_ports	= 12,
+ 	.has_slave	= true,
+@@ -701,9 +719,9 @@ static const struct pci_device_id exar_p
+ 	EXAR_DEVICE(EXAR, EXAR_XR17V358, pbn_exar_XR17V35x),
+ 	EXAR_DEVICE(EXAR, EXAR_XR17V4358, pbn_exar_XR17V4358),
+ 	EXAR_DEVICE(EXAR, EXAR_XR17V8358, pbn_exar_XR17V8358),
+-	EXAR_DEVICE(COMMTECH, COMMTECH_4222PCIE, pbn_exar_XR17V35x),
+-	EXAR_DEVICE(COMMTECH, COMMTECH_4224PCIE, pbn_exar_XR17V35x),
+-	EXAR_DEVICE(COMMTECH, COMMTECH_4228PCIE, pbn_exar_XR17V35x),
++	EXAR_DEVICE(COMMTECH, COMMTECH_4222PCIE, pbn_fastcom35x_2),
++	EXAR_DEVICE(COMMTECH, COMMTECH_4224PCIE, pbn_fastcom35x_4),
++	EXAR_DEVICE(COMMTECH, COMMTECH_4228PCIE, pbn_fastcom35x_8),
  
-@@ -2360,8 +2360,12 @@ void set_primary_fwnode(struct device *d
- 		}
- 		dev->fwnode = fwnode;
- 	} else {
--		dev->fwnode = fwnode_is_primary(dev->fwnode) ?
--			dev->fwnode->secondary : NULL;
-+		if (fwnode_is_primary(fn)) {
-+			dev->fwnode = fn->secondary;
-+			fn->secondary = NULL;
-+		} else {
-+			dev->fwnode = NULL;
-+		}
- 	}
- }
- EXPORT_SYMBOL_GPL(set_primary_fwnode);
+ 	EXAR_DEVICE(COMMTECH, COMMTECH_4222PCI335, pbn_fastcom335_2),
+ 	EXAR_DEVICE(COMMTECH, COMMTECH_4224PCI335, pbn_fastcom335_4),
 
 
