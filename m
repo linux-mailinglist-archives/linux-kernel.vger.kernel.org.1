@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE49E2593F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3986A259579
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbgIAPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
+        id S1732063AbgIAPsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731185AbgIAPde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:33:34 -0400
+        id S1731856AbgIAPpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:45:03 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E388C205F4;
-        Tue,  1 Sep 2020 15:33:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F877206EB;
+        Tue,  1 Sep 2020 15:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974413;
-        bh=yV4NorN4UzjU8UKxeQwkwOTaHZr/jd/fGwxrs6294rk=;
+        s=default; t=1598975102;
+        bh=yDLS4GpALiS50MdUjX1h3o8hJC1zdRP3oJyAoFAveEY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eDlTJ/vwgdwmfu8iEufRqIon7cMoGYUMfO65nuN5I0WjO5kheIi7h8GbAvd2IkZMT
-         f6SvMSbGiUV2aNRcVQA5w9wTrktTtFTa3pRfNminEgj6fQytTDQ50BdDO/BhgSP7Je
-         y3a2FG3IwHexqXfvfmJUVEFAPGiIb/M3RgOV0MYM=
+        b=WyEvA2xNy60OhA/IFxl9vn9YcO5vYvTaABC8gYSD2ofHrydmnfP/EF71Guhh1evWH
+         ZSNEu1uVqnc1KU5PpNJs/n+zQkn/u3jHxJBxczrh62Jiq4GRqc5cSKT9jF7oeEcW0o
+         hajRe4dIH36dbqNM3IDBrj90dX4cVhB3CL0NrPOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 5.4 159/214] vt: defer kfree() of vc_screenbuf in vc_do_resize()
+        stable@vger.kernel.org, Holger Assmann <h.assmann@pengutronix.de>
+Subject: [PATCH 5.8 183/255] serial: stm32: avoid kernel warning on absence of optional IRQ
 Date:   Tue,  1 Sep 2020 17:10:39 +0200
-Message-Id: <20200901151000.589544106@linuxfoundation.org>
+Message-Id: <20200901151009.455296070@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Holger Assmann <h.assmann@pengutronix.de>
 
-commit f8d1653daec02315e06d30246cff4af72e76e54e upstream.
+commit fdf16d78941b4f380753053d229955baddd00712 upstream.
 
-syzbot is reporting UAF bug in set_origin() from vc_do_resize() [1], for
-vc_do_resize() calls kfree(vc->vc_screenbuf) before calling set_origin().
+stm32_init_port() of the stm32-usart may trigger a warning in
+platform_get_irq() when the device tree specifies no wakeup interrupt.
 
-Unfortunately, in set_origin(), vc->vc_sw->con_set_origin() might access
-vc->vc_pos when scroll is involved in order to manipulate cursor, but
-vc->vc_pos refers already released vc->vc_screenbuf until vc->vc_pos gets
-updated based on the result of vc->vc_sw->con_set_origin().
+The wakeup interrupt is usually a board-specific GPIO and the driver
+functions correctly in its absence. The mainline stm32mp151.dtsi does
+not specify it, so all mainline device trees trigger an unnecessary
+kernel warning. Use of platform_get_irq_optional() avoids this.
 
-Preserving old buffer and tolerating outdated vc members until set_origin()
-completes would be easier than preventing vc->vc_sw->con_set_origin() from
-accessing outdated vc members.
-
-[1] https://syzkaller.appspot.com/bug?id=6649da2081e2ebdc65c0642c214b27fe91099db3
-
-Reported-by: syzbot <syzbot+9116ecc1978ca3a12f43@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 2c58e56096dd ("serial: stm32: fix the get_irq error case")
+Signed-off-by: Holger Assmann <h.assmann@pengutronix.de>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1596034621-4714-1-git-send-email-penguin-kernel@I-love.SAKURA.ne.jp
+Link: https://lore.kernel.org/r/20200813152757.32751-1-h.assmann@pengutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/vt.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/tty/serial/stm32-usart.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1196,7 +1196,7 @@ static int vc_do_resize(struct tty_struc
- 	unsigned int old_rows, old_row_size, first_copied_row;
- 	unsigned int new_cols, new_rows, new_row_size, new_screen_size;
- 	unsigned int user;
--	unsigned short *newscreen;
-+	unsigned short *oldscreen, *newscreen;
- 	struct uni_screen *new_uniscr = NULL;
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -962,7 +962,7 @@ static int stm32_init_port(struct stm32_
+ 		return ret;
  
- 	WARN_CONSOLE_UNLOCKED();
-@@ -1294,10 +1294,11 @@ static int vc_do_resize(struct tty_struc
- 	if (new_scr_end > new_origin)
- 		scr_memsetw((void *)new_origin, vc->vc_video_erase_char,
- 			    new_scr_end - new_origin);
--	kfree(vc->vc_screenbuf);
-+	oldscreen = vc->vc_screenbuf;
- 	vc->vc_screenbuf = newscreen;
- 	vc->vc_screenbuf_size = new_screen_size;
- 	set_origin(vc);
-+	kfree(oldscreen);
- 
- 	/* do part of a reset_terminal() */
- 	vc->vc_top = 0;
+ 	if (stm32port->info->cfg.has_wakeup) {
+-		stm32port->wakeirq = platform_get_irq(pdev, 1);
++		stm32port->wakeirq = platform_get_irq_optional(pdev, 1);
+ 		if (stm32port->wakeirq <= 0 && stm32port->wakeirq != -ENXIO)
+ 			return stm32port->wakeirq ? : -ENODEV;
+ 	}
 
 
