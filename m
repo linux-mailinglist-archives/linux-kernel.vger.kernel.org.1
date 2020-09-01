@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A10D258F0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEA6258EFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgIAN1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727937AbgIANSl (ORCPT
+        id S1728027AbgIANTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:19:46 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:43293 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728192AbgIANSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:18:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A004AC061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 06:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9uW7HqUpxdzqV40dT/tamC4W2czgW8JE3IFLKMzq3Eo=; b=brOl6QMQuceus0POSkNwRKBOPc
-        a4W5E4fFl7mLou9iwqiW83OOIPD5tloQdE1hL+3dHtn3KeDWt1WiK/amSqHISq0Ms6iR6KD+ijhX1
-        9pD/BauzyKChN3tT8YoEAhpVb3nFR1j1Xdj247X9Jk8/yn+AlnpZ+6CGwTAR4yUSM6qXC2Uh7KuFx
-        0jSgoTqBKhEA1eCqArL9i2lvKkEx6/NcG6KBFZZ6HvoaHI0oy+GXHXokOG0RopsEGzAzz7N3jz57I
-        3+HG3RbBSp9JJ9QZLfwWv95iRlJhKcuZrEEIAmLPBos5B/+SSld/kA0mMpTtIQmbe7o2hkcq3QQi8
-        1UYGo03w==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kD6AX-0000v5-Gv; Tue, 01 Sep 2020 13:17:49 +0000
-Date:   Tue, 1 Sep 2020 14:17:49 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Russell King <linux@armlinux.org.uk>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 3/3] mm/armv6: work around armv6 cmpxchg support issue
-Message-ID: <20200901131749.GL14765@casper.infradead.org>
-References: <1598928612-68996-1-git-send-email-alex.shi@linux.alibaba.com>
- <1598928612-68996-3-git-send-email-alex.shi@linux.alibaba.com>
- <ffa89b09-995a-77d8-03c6-2c1234a5474a@linux.alibaba.com>
+        Tue, 1 Sep 2020 09:18:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1598966331; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=AEO8pEII4HuEe78jrxrLd41P2SBMxSgl0kd3vWYrMyw=;
+ b=dGELwvqmqS6Q6z7sWlRni2WCxUBE8b2JD+Fy3xXSnsb8j2p0z4JQmEK3t43gby88VZlm6Oev
+ eq9hMiBSQS1Tnh4UEMHzLXyFFjz4KUPGG7c4rUtT5SyIbKOr2Kzs34wRFlIu1mmu005sKasy
+ XlQm+zD8KU6BZvdXHVQCVOVHe7A=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f4e4a3a4ba82a82fde8c9b3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Sep 2020 13:18:50
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4A207C433CB; Tue,  1 Sep 2020 13:18:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1BB0CC433C6;
+        Tue,  1 Sep 2020 13:18:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1BB0CC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ffa89b09-995a-77d8-03c6-2c1234a5474a@linux.alibaba.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] libertas_tf: Remove unused macro QOS_CONTROL_LEN
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200829115924.7572-1-yuehaibing@huawei.com>
+References: <20200829115924.7572-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <kuba@kernel.org>, <yuehaibing@huawei.com>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200901131850.4A207C433CB@smtp.codeaurora.org>
+Date:   Tue,  1 Sep 2020 13:18:50 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:30:51PM +0800, Alex Shi wrote:
-> seems there are couples archs can not do cmpxchg1
-> So update the patch here. And it's easy to fix if more arch issue find here.
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-> +/*
-> + * cmpxchg only support 32-bits operands on the following archs ARMv6, SPARC32
-> + * sh2, XTENSA.
-> + */
-> +#if defined(CONFIG_CPU_V6) || defined(CONFIG_CPU_SH2) || \
-> +	defined(CONFIG_SPARC32) || defined(CONFIG_XTENSA)
+> There is no caller in tree.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Looks like we need a HAVE_CMPXCHG_BYTE in Kconfig to parallel
-HAVE_CMPXCHG_DOUBLE.
+Patch applied to wireless-drivers-next.git, thanks.
+
+2c92790b1203 libertas_tf: Remove unused macro QOS_CONTROL_LEN
+
+-- 
+https://patchwork.kernel.org/patch/11744379/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
