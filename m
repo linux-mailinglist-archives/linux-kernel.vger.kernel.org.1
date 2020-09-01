@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B456259541
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4052225942F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgIAPtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
+        id S1728817AbgIAPgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:36:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731911AbgIAPp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:45:58 -0400
+        id S1731182AbgIAPfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:35:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B86A2078B;
-        Tue,  1 Sep 2020 15:45:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAEEA20866;
+        Tue,  1 Sep 2020 15:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975157;
-        bh=Y5zoPBOA/xMCtTOnx3pSck5cOG0QFwVJ7NuEgCZTuPs=;
+        s=default; t=1598974521;
+        bh=bvWFV2a4Kqn7UBOT2pn4bMdej+uDUFfTkyG2Rh/G8RM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BrlkUVC6HglgmO1iwM0EX+9MM8hjJdIrmEpCMUkAXALyzzkorvi1RUzChaRAkuMvL
-         r18fm/vLxaA4czYaRRJpudfvSWGS1QYcxtdfJvaoTTVLw4WOtT1WmgJSFfRrAPWIE9
-         dUcOZjgu27xadF5cTdH+mk8+g9iNkpen/SCiOAfY=
+        b=f0bVnkKBs/gsH08lcKSh2U2do/uqs4Z1c6zcEfK6jwAuW1Y+W+JlVnIuuMrfcUiqY
+         TBiszAR8jlEQY0p1dhdaGHaRksBVnk1H1zkX3u4ER/RwvdZDPRFDgI1V6bEHvxKDnf
+         PB0NmyNne59vqdvBTu+i3gUNFhJeJhhWwQhsbPIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.8 232/255] usb: dwc3: gadget: Fix handling ZLP
-Date:   Tue,  1 Sep 2020 17:11:28 +0200
-Message-Id: <20200901151011.866295207@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Matthias Maennich <maennich@google.com>
+Subject: [PATCH 5.4 209/214] kheaders: explain why include/config/autoconf.h is excluded from md5sum
+Date:   Tue,  1 Sep 2020 17:11:29 +0200
+Message-Id: <20200901151002.938717565@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-commit d2ee3ff79e6a3d4105e684021017d100524dc560 upstream.
+commit f276031b4e2f4c961ed6d8a42f0f0124ccac2e09 upstream.
 
-The usb_request->zero doesn't apply for isoc. Also, if we prepare a
-0-length (ZLP) TRB for the OUT direction, we need to prepare an extra
-TRB to pad up to the MPS alignment. Use the same bounce buffer for the
-ZLP TRB and the extra pad TRB.
+This comment block explains why include/generated/compile.h is omitted,
+but nothing about include/generated/autoconf.h, which might be more
+difficult to understand. Add more comments.
 
-Cc: <stable@vger.kernel.org> # v4.5+
-Fixes: d6e5a549cc4d ("usb: dwc3: simplify ZLP handling")
-Fixes: 04c03d10e507 ("usb: dwc3: gadget: handle request->zero")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Matthias Maennich <maennich@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/gadget.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ kernel/gen_kheaders.sh |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1199,6 +1199,7 @@ static void dwc3_prepare_one_trb_linear(
- 				req->request.no_interrupt,
- 				req->request.is_last);
- 	} else if (req->request.zero && req->request.length &&
-+		   !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
- 		   (IS_ALIGNED(req->request.length, maxp))) {
- 		struct dwc3	*dwc = dep->dwc;
- 		struct dwc3_trb	*trb;
-@@ -1208,14 +1209,25 @@ static void dwc3_prepare_one_trb_linear(
- 		/* prepare normal TRB */
- 		dwc3_prepare_one_trb(dep, req, length, true, 0);
+--- a/kernel/gen_kheaders.sh
++++ b/kernel/gen_kheaders.sh
+@@ -32,8 +32,15 @@ fi
+ all_dirs="$all_dirs $dir_list"
  
--		/* Now prepare one extra TRB to handle ZLP */
-+		/* Prepare one extra TRB to handle ZLP */
- 		trb = &dep->trb_pool[dep->trb_enqueue];
- 		req->num_trbs++;
- 		__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, 0,
--				false, 1, req->request.stream_id,
-+				!req->direction, 1, req->request.stream_id,
- 				req->request.short_not_ok,
- 				req->request.no_interrupt,
- 				req->request.is_last);
-+
-+		/* Prepare one more TRB to handle MPS alignment for OUT */
-+		if (!req->direction) {
-+			trb = &dep->trb_pool[dep->trb_enqueue];
-+			req->num_trbs++;
-+			__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, maxp,
-+					       false, 1, req->request.stream_id,
-+					       req->request.short_not_ok,
-+					       req->request.no_interrupt,
-+					       req->request.is_last);
-+		}
- 	} else {
- 		dwc3_prepare_one_trb(dep, req, length, false, 0);
- 	}
-@@ -2668,8 +2680,17 @@ static int dwc3_gadget_ep_cleanup_comple
- 				status);
- 
- 	if (req->needs_extra_trb) {
-+		unsigned int maxp = usb_endpoint_maxp(dep->endpoint.desc);
-+
- 		ret = dwc3_gadget_ep_reclaim_trb_linear(dep, req, event,
- 				status);
-+
-+		/* Reclaim MPS padding TRB for ZLP */
-+		if (!req->direction && req->request.zero && req->request.length &&
-+		    !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
-+		    (IS_ALIGNED(req->request.length, maxp)))
-+			ret = dwc3_gadget_ep_reclaim_trb_linear(dep, req, event, status);
-+
- 		req->needs_extra_trb = false;
- 	}
- 
+ # include/generated/compile.h is ignored because it is touched even when none
+-# of the source files changed. This causes pointless regeneration, so let us
+-# ignore them for md5 calculation.
++# of the source files changed.
++#
++# When Kconfig regenerates include/generated/autoconf.h, its timestamp is
++# updated, but the contents might be still the same. When any CONFIG option is
++# changed, Kconfig touches the corresponding timestamp file include/config/*.h.
++# Hence, the md5sum detects the configuration change anyway. We do not need to
++# check include/generated/autoconf.h explicitly.
++#
++# Ignore them for md5 calculation to avoid pointless regeneration.
+ headers_md5="$(find $all_dirs -name "*.h"			|
+ 		grep -v "include/generated/compile.h"	|
+ 		grep -v "include/generated/autoconf.h"	|
 
 
