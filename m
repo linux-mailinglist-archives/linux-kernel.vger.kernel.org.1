@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555B2258C8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AF9258C96
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbgIAKPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 06:15:44 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:32779 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgIAKPj (ORCPT
+        id S1726144AbgIAKSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 06:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgIAKSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 06:15:39 -0400
-Received: by mail-wm1-f52.google.com with SMTP id e11so632757wme.0;
-        Tue, 01 Sep 2020 03:15:38 -0700 (PDT)
+        Tue, 1 Sep 2020 06:18:11 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F4EC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 03:18:10 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b19so804377lji.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 03:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Ef8FM3fZiqNvJvHo58pBjnwUlM9KEzscD9rQlYx0eGc=;
+        b=AVileoi2SrjN6mIUNrV8sPg2X2abCs8HR3te4781sHRVVsaLcQVCanoNIqwvUfSOLN
+         ZMFDv4OHiNT7lUrIk1fY5CvW6OY5echHoPdU+jYs3LZz40juVlsPW/I5KrJ+JGX6y7vN
+         O5uVNgcRUzQPrVE4iysRStYBT1F2+sxMxMcjCsKSipfxdGV6cxNGS+YuTu/uZthLgzOK
+         sBVrFUFWACo36XQf+7f2+Qwh6e533aZ9czCb97a0TcCiRxmO/68Is3YX9u77yXLUzgCm
+         JlLYXpsmvdQ4ar9DPhTWI5Di9FmLBs0DTwVzkAmcgrmsvFgMoVYjizC23BfBV48W65FF
+         aLdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pLH5AgoXpGhrsa52Snk5FTxJg17QsSXpFgLhDFft8A8=;
-        b=G01X2LHl3AlbnjCNvRLWMX3PQNiJBXhWRXcQaOP7glOvAyb8vkmW0mHjHc0R/B939p
-         OreH6NEQq0I6sZdEgBW6BLOgSlmgMWRzM8z8kkEfFiQOaZ9d5qDOcgImkdrqIkdG4jH/
-         yEA2VsCoVhk8fozR04PETgH3CPsqyGTrYwAZwwqqEd5sXrgGaKi6rmO7woS9UiE3JKDV
-         VTvsbLEDaRiG8XP6KehuzSzJeHTGzpy2nCIndqW2hofSl+TTxpiOkoM4pKbvWFiZS0Ro
-         ptxLsadaLH1OUvz+AmZRLceK6HjKzf0gYzLZNvtnnEAHLKYZ5c7v4y5AqgMW12FCnJe6
-         2WFg==
-X-Gm-Message-State: AOAM530sSQjIsefrb24b9NexFDS2MxoJ7WnDvwqNopT1UmfG0cwmLgKx
-        +fmo7xT9A7SCrObq6LvBs2E=
-X-Google-Smtp-Source: ABdhPJwg2dcdM6+5RfvAb5uRSTytSw6wmKRiuo8vRcUAavtF9U7ySqhFZpn0KffXgkNU3dhursmPFw==
-X-Received: by 2002:a7b:c084:: with SMTP id r4mr1030648wmh.23.1598955337291;
-        Tue, 01 Sep 2020 03:15:37 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.106])
-        by smtp.googlemail.com with ESMTPSA id e18sm1792617wra.36.2020.09.01.03.15.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Sep 2020 03:15:36 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 12:15:34 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [RFT 2/4] ARM: dts: exynos: Move fixed clocks under root node in
- Exynos3250
-Message-ID: <20200901101534.GE23793@kozik-lap>
-References: <20200829172532.29358-1-krzk@kernel.org>
- <20200829172532.29358-2-krzk@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Ef8FM3fZiqNvJvHo58pBjnwUlM9KEzscD9rQlYx0eGc=;
+        b=dBqrCBgFboGPMiKPupHC6G4NClwbi6bIezRWjfZKe5KCz3vBaj+Iah8kSY4ZNI2Kl+
+         b379y8GggihhNr+4KbURIeVYBZgcy92XY8OCCr3kc6RqwiKtnIkErPEZfmOHsI7qY25f
+         YoFg3BcrouDklZczq3n1qndQCmFWgzscOqMnQ8+b7E8TAtI7xwWVKJcjCaN3rfcT2awU
+         j9TFtjwyO+2WWAaAZxLkrZ4ZEi7wvQ580u2PVeke5HJgYIhRiAnBmy+o0OBoGG/L0c8s
+         ZmMY/aFF4cyQDw4fDvFBmVwTptIcCVnqd9Kfc6n5fN2VjIB17z8lmNDrDoVxmblGmiQk
+         QLeg==
+X-Gm-Message-State: AOAM532x8blrfRNRHfqq6gz3aCWHl2O3SX/6bjgT1hgPUt/BKvXB7LJC
+        q0wMj1fBypF9bh9DzR/n8gtOCw==
+X-Google-Smtp-Source: ABdhPJxjEWIk/C8X/TOVakCtirf3E75tDpiV+SA+pviVGJb32xUUqhskxZGFr9wtDaWAv89UXQCehA==
+X-Received: by 2002:a05:651c:106f:: with SMTP id y15mr237739ljm.170.1598955488658;
+        Tue, 01 Sep 2020 03:18:08 -0700 (PDT)
+Received: from jade (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
+        by smtp.gmail.com with ESMTPSA id r11sm180316lji.104.2020.09.01.03.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Sep 2020 03:18:08 -0700 (PDT)
+Date:   Tue, 1 Sep 2020 12:18:06 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org,
+        Jorge Ramirez-Ortiz <jorge@foundries.io>
+Subject: [GIT PULL] optee i2c fix for v5.10
+Message-ID: <20200901101806.GA3286324@jade>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200829172532.29358-2-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 07:25:30PM +0200, Krzysztof Kozlowski wrote:
-> The fixed clocks are kept under dedicated node fixed-rate-clocks, thus a
-> fake "reg" was added.  This is not correct with dtschema as fixed-clock
-> binding does not have a "reg" property:
-> 
->   arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml: clock@0: 'reg' does not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/exynos3250.dtsi | 42 +++++++++++++------------------
->  1 file changed, 17 insertions(+), 25 deletions(-)
+Hello arm-soc maintainers,
 
-Applied.
+Please pull this small patch fixing a build issue in the previous OP-TEE
+I2C patch. The test IS_REACHABLE(CONFIG_I2C) is used instead of
+IS_ENABLED(CONFIG_I2C) to see if the I2C functions are available from
+the OP-TEE driver.
 
-Best regards,
-Krzysztof
+If you rather have the patches squashed feel free to do so.
 
+Thanks,
+Jens
+
+The following changes since commit c05210ab975771e161427eb47696b869d820bdaf:
+
+  drivers: optee: allow op-tee to access devices on the i2c bus (2020-08-21 11:41:45 +0200)
+
+are available in the Git repository at:
+
+  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/optee-i2c-fix-for-v5.10
+
+for you to fetch changes up to 539f8fc253ece5501fdea1a6aa227d0618374111:
+
+  drivers: optee: fix i2c build issue (2020-09-01 12:03:16 +0200)
+
+----------------------------------------------------------------
+Make sure I2C functions used in OP-TEE are reachable with IS_REACHABLE()
+
+----------------------------------------------------------------
+Jorge Ramirez-Ortiz (1):
+      drivers: optee: fix i2c build issue
+
+ drivers/tee/optee/rpc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
