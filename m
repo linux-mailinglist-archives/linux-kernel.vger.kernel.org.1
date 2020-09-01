@@ -2,68 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28F025A1EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 01:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF5C25A1E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 01:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgIAXaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 19:30:21 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:52834 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgIAXaU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 19:30:20 -0400
-X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Sep 2020 19:30:19 EDT
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 081NMtMT027356
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 1 Sep 2020 18:22:58 -0500
-Message-ID: <658051b1ba6533fef92648eba08dfdf240af7a18.camel@kernel.crashing.org>
-Subject: Re: [PATCH] arm64: Enable PCI write-combine resources under sysfs
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>, Clint Sbisa <csbisa@amazon.com>
-Cc:     linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Wed, 02 Sep 2020 09:22:53 +1000
-In-Reply-To: <20200901183702.GA196025@bjorn-Precision-5520>
-References: <20200901183702.GA196025@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726224AbgIAXZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 19:25:38 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43636 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725949AbgIAXZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 19:25:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1599002737; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=ZkW7ty3uIzuXHYRN5kYKENLHrMZzk/bA3jjECy/fIlU=; b=NV4P+yQzBU2X6Z4SZix163mbPj820MdOSEyywio0p39l+XvNqVu0cGIXXe0EgRmfZRJDk5RL
+ ZRPD8kI8nr0dTfP2XpWjrFnUygBYLA/ESpQPzBDgSgVUCKJM10sWJUnEQv/UQhCLXAz6flrv
+ A1jZXHvVTdgD2wltLyE/Z9jZZR4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f4ed86ed3d3df8c3987699c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Sep 2020 23:25:34
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 71159C43395; Tue,  1 Sep 2020 23:25:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tingwei)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AC6E8C433C6;
+        Tue,  1 Sep 2020 23:25:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AC6E8C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingweiz@codeaurora.org
+Date:   Wed, 2 Sep 2020 07:25:25 +0800
+From:   Tingwei Zhang <tingweiz@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        tsoni@codeaurora.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        linux-kernel@vger.kernel.org, coresight@lists.linaro.org
+Subject: Re: [PATCH v3 0/6] tracing: export event trace and trace_marker
+Message-ID: <20200901232524.GA13346@codeaurora.org>
+References: <20200813014552.23539-1-tingwei@codeaurora.org>
+ <20200901063740.GB13784@codeaurora.org>
+ <20200901170549.GA236120@xps15>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901170549.GA236120@xps15>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-01 at 13:37 -0500, Bjorn Helgaas wrote:
-> On Mon, Aug 31, 2020 at 03:18:27PM +0000, Clint Sbisa wrote:
-> > Using write-combine is crucial for performance of PCI devices where
-> > significant amounts of transactions go over PCI BARs.
+On Wed, Sep 02, 2020 at 01:05:49AM +0800, Mathieu Poirier wrote:
+> On Tue, Sep 01, 2020 at 02:37:40PM +0800, Tingwei Zhang wrote:
+> > Hi Mathieu,
 > > 
-> > arm64 supports write-combine PCI mappings, so the appropriate
-> > define
-> > has been added which will expose write-combine mappings under sysfs
-> > for prefetchable PCI resources.
-> > 
-> > Signed-off-by: Clint Sbisa <csbisa@amazon.com>
+> > May I know your comments for this patch set?
 > 
-> Fine with me, I assume Will or Catalin will apply this.
+> I do not maintain any of these files.
+> 
+Sorry for my wrong assumption.
 
-Haha ! Client had sent it to them originally and I told him to resend
-it to linux-pci, yourself and Lorenzo :-)
-
-So the confusion is on me.
-
-Will, Catalin, it's all yours. You should have the original patch in
-your mbox already, otherwise:
-
-https://patchwork.kernel.org/patch/11729875/
-
-Cheers,
-Ben.
-
-
+> > 
+> > Thanks,
+> > Tingwei
+> > 
+> > On Thu, Aug 13, 2020 at 09:45:46AM +0800, Tingwei Zhang wrote:
+> > > Ftrace has ability to export trace packets to other destination.
+> > > Currently, only function trace can be exported. This series extends
+> the
+> > > support to event trace and trace_maker. STM is one possible
+> destination to
+> > > export ftrace. Use separate channel for each CPU to avoid mixing up
+> > > packets
+> > > from different CPUs together.
+> > > 
+> > > Change from v2:
+> > > Change flag definition to BIT(). (Steven)
+> > > Add comment in stm_ftrace_write() to clarify it's safe to use 
+> > > smp_processor_id() here since preempt is disabled. (Steven) 
+> > > 
+> > > Change from v1:
+> > > All changes are suggested by Steven Rostedt.
+> > > User separate flag to control function trace, event trace and trace
+> mark.
+> > > Allocate channels according to num_possible_cpu() dynamically.
+> > > Move ftrace_exports routines up so all ftrace can use them.
+> > > 
+> > > Tingwei Zhang (6):
+> > >   stm class: ftrace: change dependency to TRACING
+> > >   tracing: add flag to control different traces
+> > >   tracing: add trace_export support for event trace
+> > >   tracing: add trace_export support for trace_marker
+> > >   stm class: ftrace: enable supported trace export flag
+> > >   stm class: ftrace: use different channel accroding to CPU
+> > > 
+> > >  drivers/hwtracing/stm/Kconfig  |   2 +-
+> > >  drivers/hwtracing/stm/ftrace.c |   7 +-
+> > >  include/linux/trace.h          |   7 +
+> > >  kernel/trace/trace.c           | 270
+> ++++++++++++++++++---------------
+> > >  4 files changed, 159 insertions(+), 127 deletions(-)
+> > > 
+> > > -- 
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+> Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
