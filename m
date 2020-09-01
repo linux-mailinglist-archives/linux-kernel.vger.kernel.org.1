@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CE8258642
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2680258645
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 05:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgIADjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 23:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgIADjD (ORCPT
+        id S1726490AbgIADkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 23:40:01 -0400
+Received: from sonic304-56.consmr.mail.bf2.yahoo.com ([74.6.128.31]:45612 "EHLO
+        sonic304-56.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725987AbgIADkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 23:39:03 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE21C061290
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 20:39:03 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b124so1934pfg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 20:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CmWImjbfkai8w8IYrzWttSFE/ShThoXbvLekJzQkDNE=;
-        b=2Hpp2pGPGoM76EKftl74jbI1jE6i7BkynyJ4YEmKkncEDpi7syFP4I6+fZ40aXoMWP
-         4jHntOowSoOmVOmt3/HKPrWZeu0hPu4w4Xw5l/nPcBhXe8mpT+ekpd6/nvfhlPBvka35
-         bVdb4MsJL2T012kuCrdQLPBK9FQWt2jc38W+VKcfMdwe4fcc1ydnRfEXtPvTTdqB0uz1
-         Roak8DeVTXNH9SdCwuhtN4cW48ZXgHlA4qR1GtjrQO9Zv5qm1FSCvQvlqfL50Xsdkfpp
-         aL6oEfHl4LCfAP/k+ddBM2K88gUh0fwJoqJpZLv8o8PMGJlB2cvgsmslGDup+j6jdPxL
-         mlKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CmWImjbfkai8w8IYrzWttSFE/ShThoXbvLekJzQkDNE=;
-        b=X3EucK/c0umqnKH0U8FBcPtpII9QqIi12E/Pt8bHX/5IsB8A7RvYmP5XjOInq8Rnf/
-         2YeblJ68Zm+NU1LTKZtw2X8quEDzq924zuSWT2XgxXQNBVs+H95zEW9kl5fUjqbt1bS0
-         MO/jKu4bVAlHqTxa7jz6XXoZGMmTaNelqUb0KIUf0jRM5lq5eYeSlYdnrNB4Gye57cr8
-         AzCKZ+1HZ9diNrFS2LFsIuIgq+MLj3foALVHnMFj/XdfQKVfeLvRXMP5yOL5fZ3VYckI
-         oYmhGoxYX9cvfMcvvfZxnRRotNBZtNijgxDVXlY02QkUWAyhD2ADLvS4gPMVafcOJA1N
-         t0mA==
-X-Gm-Message-State: AOAM530tS6r+YnDrc0NsGobiYdLbar9HmBmBaqE+TTiDpNr+fSCkxHKF
-        yeHapkVMVJ/HHxP8TYm3ToJrB0WCrnGv9CVd
-X-Google-Smtp-Source: ABdhPJxwc59YPWeeBw2UNybtTAbxjkWeEOLQHBC6jojvyuHuUAYP7kos/LMRkBGs5mEgIM5IdCOWkw==
-X-Received: by 2002:aa7:8657:: with SMTP id a23mr3953845pfo.169.1598931542218;
-        Mon, 31 Aug 2020 20:39:02 -0700 (PDT)
-Received: from [192.168.1.187] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id o192sm9966704pfg.81.2020.08.31.20.39.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Aug 2020 20:39:01 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: Fix NULL pointer dereference in
- io_sq_wq_submit_work()
-To:     Xin Yin <yinxin_1989@aliyun.com>, viro@zeniv.linux.org.uk
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200901015442.44831-1-yinxin_1989@aliyun.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ae9f3887-5205-8aa8-afa7-4e01d03921bc@kernel.dk>
-Date:   Mon, 31 Aug 2020 21:38:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 31 Aug 2020 23:40:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598931599; bh=lJYVaiDATjla84gWJfGLUgPBIk1ls/SQaELqT22q9P4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=WjKjVMEtg7kPNxFogBbJKKX6CPaYMIF6NCzt/AGNxxOSNybW3osD5BmewZEz7M+tTyvjribqvGTYE0G3G6wlXEE+aInJvQxuNqLFdP2MdweP77IcA542A9LALGPbUbxfRaQCPnFbaKBLM7CwdKgHMHPSiq66+CNxjOIJBJQJp2fuGTG71vgOOdXnE8FnZPlw+FBE/xAkSUuTuYNm4y6kgCO+eKBd0SnzX3+eM1A7ZbWr2NSrCUSX0yhIyNLtPurbPXZ5mF9KgGqIqeGgJOHe6wm2toKW2oGVUZU+Ce04vlyF/CqhfJ5wtq2ZqB2cMGN1RLWUEukBneZ0IxrT6JkBuw==
+X-YMail-OSG: VsUHM8gVM1kThE_SFYCpR2nXGZS4lReM6.CJt6KfKm.AMzGYWdDRm0GdBH1oMaP
+ M1Wm1NbAkOoURZrJZsZm8D68jGcL3TObbzPXgq6OBfJC1bTLT6x.lSEu3rjUyd.SkMQg5vs4MvU_
+ j7PwlIRsi1MAKjfhoVMkwfVw4LolxJgLDrkwo1WeY0gy4D08LnheqF5LfbTbbBDv.JkQOLBpfUr0
+ xsUYYwZH8ulsEetPYBgrMWJcw8gizOmefdsAKeGuBymWmD2SpafH_tvO2enIDkrZUtXe.YsmTPtm
+ froXShZN0.Agco3rr.UQbSlscHRHXo0WxGH2ymqjwAtpiaambDgtMyWQCXoNt0inLY.kabIyoNKP
+ tiYQMWRfwAGT_Pi17W9.dYZUqwCIFkcf0mvbIyYGp0c3gPn1RRRkqBSqFVp3odwGuRZE0kI2JLGf
+ 3miWJ4QaGmQGG9IfZOvT24ZR5DmvKkhU0qTwW4m7YBLLEwtLWWrjKgcvAv.VYXUsXKqMZE0YxCTw
+ oNSWGms7.nd3cNKEvRV23senY5lgau6xcwTkXSmmFimnwjtsb0n2CKFeKP3nbTjrc7ya52HgPTLZ
+ GlGfWAJnNvRm3danLheWZ6z6ByJ.yOwo6hs9zBurzRyT3bAxJ3dw96D21X5Rkg8ZvCLI1JiUwh7G
+ BEhvK89s9rNdZ6Y89l11FqQUxsT_wbX05D1VO6z3dMCqGDD1C75WH2Qv0CMgI0Ho_wqxipbuWg1A
+ aRPbaZAobF0rLqK0n.XU82r2wzIbfTLT5u6G8zV0TJZku5W127fCXjfUq7Rpd4IDBpukYaO0_Xo4
+ jA_fJtEqK8m1OPo6PdorvzukPxSk4YgDETGHeM2tWOKbH4dzds6YK7K7JM2T.m1CkdtsCYNHTMTr
+ yYIQ5Cy7Hs_ecbU8jijf5kwgU56DS0STV4_nBmTvXfGFdk8p5CIhzW9wJHxHEDzE7eKTBREGq5Ey
+ ZX_4jy4SGiKnyRhSWZ4F_4Qy_EP.O91ngETLDZDXuu_WAES0X5ly37ueIFzwIda66j_pkIwmZMSX
+ Djwh177Rb2NjpJcWwPMb4aeev1n3I8Tro8f7D_YskkIyy5iNhDqaJAZay5sBbTDZSH1uy50cRB4Q
+ JjFayDjE9pkNkpW6IaNUAZF2o147f4Sp_Qb_UVkHOf1gR8RHpTthbd1SlL6PFqw2RXyR4mYrIMd.
+ sfuBXZkqkYSghPNf3PGL_UJi0xwoeG.6c.w4clZdIvltJXjMZmT2h8Gm.2Th6vLlvhe3VPqpdhE9
+ bJcH.7A21zqp0_wPfHvTMfNBEw73TQkmhzKHFzrzz80tmf4h92pjCE6X1v_uWpufyVGXOOtwMlGY
+ CUS_CIBSuoFTw116PtjyPpwhCOqU.J7kTtptMMqe3bQlgljLntnBrCTISUXYQWXXkGGKyl7pPu_o
+ m3mc_M1oR58_.ydjuf9Qa4qOZjr5UKFPYFYHPPYYYIGE-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.bf2.yahoo.com with HTTP; Tue, 1 Sep 2020 03:39:59 +0000
+Date:   Tue, 1 Sep 2020 03:39:54 +0000 (UTC)
+From:   Mrs Rukia Nimine <rukianimine925@gmail.com>
+Reply-To: rukianimine56@gmail.com
+Message-ID: <158097397.960989.1598931594542@mail.yahoo.com>
+Subject: I'AM SUFFERING FROM CANCER OF THE HEART
 MIME-Version: 1.0
-In-Reply-To: <20200901015442.44831-1-yinxin_1989@aliyun.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <158097397.960989.1598931594542.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/20 7:54 PM, Xin Yin wrote:
-> the commit <1c4404efcf2c0> ("<io_uring: make sure async workqueue
-> is canceled on exit>") caused a crash in io_sq_wq_submit_work().
-> when io_ring-wq get a req form async_list, which may not have been
-> added to task_list. Then try to delete the req from task_list will caused
-> a "NULL pointer dereference".
 
-Hmm, do you have a reproducer for this?
 
-> @@ -2356,9 +2358,11 @@ static void io_sq_wq_submit_work(struct work_struct *work)
->   * running. We currently only allow this if the new request is sequential
->   * to the previous one we punted.
->   */
-> -static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req)
-> +static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req,
-> +							struct io_ring_ctx *ctx)
->  {
->  	bool ret;
-> +	unsigned long flags;
->  
->  	if (!list)
->  		return false;
-> @@ -2378,6 +2382,13 @@ static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req)
->  		list_del_init(&req->list);
->  		ret = false;
->  	}
-> +
-> +	if (ret) {
-> +		spin_lock_irqsave(&ctx->task_lock, flags);
-> +		list_add(&req->task_list, &ctx->task_list);
-> +		req->work_task = NULL;
-> +		spin_unlock_irqrestore(&ctx->task_lock, flags);
-> +	}
->  	spin_unlock(&list->lock);
->  	return ret;
->  }
-> @@ -2454,7 +2465,7 @@ static int __io_queue_sqe(struct io_ring_ctx *ctx, struct io_kiocb *req,
->  			s->sqe = sqe_copy;
->  			memcpy(&req->submit, s, sizeof(*s));
->  			list = io_async_list_from_req(ctx, req);
-> -			if (!io_add_to_prev_work(list, req)) {
-> +			if (!io_add_to_prev_work(list, req, ctx)) {
->  				if (list)
->  					atomic_inc(&list->cnt);
->  				INIT_WORK(&req->work, io_sq_wq_submit_work);
-> 
+I'AM SUFFERING FROM CANCER OF THE HEART
 
-ctx == req->ctx, so you should not need that change.
 
--- 
-Jens Axboe
+Dear Friend.
 
+
+Greetings to you in the name of the Lord God Almighty am MRS RUKIA NIMINE F=
+rom (Paris) France, but am based in Burkina Faso Africa for eight years now=
+ as a business woman dealing on gold exportation and cotton Sales. But I ha=
+ve been suffering from this deadly disease called cancer for long and the d=
+octor just said I have just few days to leave. I know it will be difficult =
+for you to believe my story now, but this is the situation I found myself i=
+n, it=E2=80=99s not my desire to be on a sick bed today but God knows best,
+
+Now that I am about to end the race like this, without any family Members a=
+nd no child. I have $5.8 Million US DOLLARS in BANK OF AFRICA (B.O.A) Burki=
+na Faso it=E2=80=99s all my life savings, I instructed the Bank to give it =
+to St Andrews Missionary and Home Kizito Orphanage in Burkina Faso. But my =
+mind is not at rest because i do not trust them, I am writing this letter n=
+ow through the help of my computer beside my sick bed.
+
+I will instruct the bank to transfer this fund to you as a foreigner but yo=
+u have to promise me that you will take 40 Percent(%) of the total money fo=
+r your personal use While 60 Percent (%) of the money will go to charity, O=
+rphanages and less Privileges" people in the street and helping the Needed.=
+ I grew up as an Orphan and I don't have anybody as my family member, just =
+to Endeavour that the house of God is maintained. Am doing this so that God=
+ will forgive my sins and accept my soul because these sicknesses have suff=
+ered me so much.
+
+As soon as I receive your reply I shall give you the contact of the bank an=
+d I will also instruct my Bank Manger to issue you an authority letter that=
+ will prove you the present beneficiary of the money in the bank that is if=
+ you assure me that you will act accordingly as I Stated herein.
+
+
+I look forward to getting a reply from you.
+
+Thanks and God bless you,
+
+MRS RUKIA NIMINE
