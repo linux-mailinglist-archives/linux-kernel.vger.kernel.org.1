@@ -2,126 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D86258F19
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A3D258F7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 15:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgIANbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 09:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgIAN1x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 09:27:53 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD23C061245;
-        Tue,  1 Sep 2020 06:27:52 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bgntf72DLz9sTN;
-        Tue,  1 Sep 2020 23:27:38 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1598966866;
-        bh=b8fBMPirmgEDaVPbjXdRIYPwIrTUtQaTXRmfGBF/egk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pXwfFcp7DEZhdSaVT5PD8DrmDNJcZnA4u3LePXbs+Xb49cAmRXaxJrmXg/VJlWIzR
-         Q9Z+EfZBm7r6mhEVXxyXQhUmW0fa5OWGfrmOVAZI3itGQAU61ebluXbCJK+AIc60vF
-         1lpEQtozskWFVBMd7eJLB6Kr3ed2+dixG5IYLvugFo8ywj0S6XpgkfnAthm3BhrzXv
-         8D0og0Lq9pFYRuwgHyCnfhfBZXrYFBGSojjeGeHhiOdKVVtQpLLH9UWs9qF4OuV5Cr
-         KzxdsR4L7qCBMFnd1HxBtLQKZU2Du8AyMTHI6pRxfwvNsOSSUSd9mxXbEuet6K+c7h
-         OfGS3/kjMeThw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, benh@kernel.crashing.org,
-        paulus@samba.org, rth@twiddle.net, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, tony.luck@intel.com, fenghua.yu@intel.com,
-        schnelle@linux.ibm.com, gerald.schaefer@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        davem@davemloft.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de
-Cc:     sfr@canb.auug.org.au, hch@lst.de, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [RESEND][PATCH 1/7] powerpc/iommu: Avoid overflow at boundary_size
-In-Reply-To: <20200831203811.8494-2-nicoleotsuka@gmail.com>
-References: <20200831203811.8494-1-nicoleotsuka@gmail.com> <20200831203811.8494-2-nicoleotsuka@gmail.com>
-Date:   Tue, 01 Sep 2020 23:27:36 +1000
-Message-ID: <87lfht1vav.fsf@mpe.ellerman.id.au>
+        id S1726144AbgIANwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 09:52:04 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:35572 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728064AbgIANav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 09:30:51 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 3C02F361D37743339AAB;
+        Tue,  1 Sep 2020 21:28:54 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.211) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 1 Sep 2020
+ 21:28:48 +0800
+Subject: Re: [PATCH v3] PCI: Add pci_iounmap
+To:     George Cherian <george.cherian@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>
+CC:     <kbuild-all@lists.01.org>, <bhelgaas@google.com>, <arnd@arndb.de>,
+        <mst@redhat.com>
+References: <20200824132046.3114383-1-george.cherian@marvell.com>
+ <202008250903.G0uQ5UZk%lkp@intel.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <13af6d70-7de4-e86f-5db0-f42159c5b4a5@huawei.com>
+Date:   Tue, 1 Sep 2020 21:28:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <202008250903.G0uQ5UZk%lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.211]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicolin Chen <nicoleotsuka@gmail.com> writes:
-> The boundary_size might be as large as ULONG_MAX, which means
-> that a device has no specific boundary limit. So either "+ 1"
-> or passing it to ALIGN() would potentially overflow.
+
+On 2020/8/25 9:25, kernel test robot wrote:
+> Hi George,
 >
-> According to kernel defines:
->     #define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
->     #define ALIGN(x, a)	ALIGN_MASK(x, (typeof(x))(a) - 1)
+> I love your patch! Yet something to improve:
 >
-> We can simplify the logic here:
->   ALIGN(boundary + 1, 1 << shift) >> shift
-> = ALIGN_MASK(b + 1, (1 << s) - 1) >> s
-> = {[b + 1 + (1 << s) - 1] & ~[(1 << s) - 1]} >> s
-> = [b + 1 + (1 << s) - 1] >> s
-> = [b + (1 << s)] >> s
-> = (b >> s) + 1
+> [auto build test ERROR on pci/next]
+> [also build test ERROR on linux/master linus/master asm-generic/master v5.9-rc2 next-20200824]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
 >
-> So fixing a potential overflow with the safer shortcut.
+> url:    https://github.com/0day-ci/linux/commits/George-Cherian/PCI-Add-pci_iounmap/20200824-212149
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git next
+> config: powerpc-allyesconfig (attached as .config)
+> compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
 >
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> Cc: Christoph Hellwig <hch@lst.de>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>     powerpc64-linux-ld: lib/pci_iomap.o: in function `__crc_pci_iounmap':
+>>> (.rodata+0x10): multiple definition of `__crc_pci_iounmap'; lib/iomap.o:(.rodata+0x68): first defined here
+EXPORT_SYMBOL(pci_iounmap) in lib/iomap.c need be removed.
 > ---
->  arch/powerpc/kernel/iommu.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Are you asking for acks, or for maintainers to merge the patches
-individually?
-
-> diff --git a/arch/powerpc/kernel/iommu.c b/arch/powerpc/kernel/iommu.c
-> index 9704f3f76e63..c01ccbf8afdd 100644
-> --- a/arch/powerpc/kernel/iommu.c
-> +++ b/arch/powerpc/kernel/iommu.c
-> @@ -236,15 +236,14 @@ static unsigned long iommu_range_alloc(struct device *dev,
->  		}
->  	}
->  
-> -	if (dev)
-> -		boundary_size = ALIGN(dma_get_seg_boundary(dev) + 1,
-> -				      1 << tbl->it_page_shift);
-> -	else
-> -		boundary_size = ALIGN(1UL << 32, 1 << tbl->it_page_shift);
->  	/* 4GB boundary for iseries_hv_alloc and iseries_hv_map */
-> +	boundary_size = dev ? dma_get_seg_boundary(dev) : U32_MAX;
-
-Is there any path that passes a NULL dev anymore?
-
-Both iseries_hv_alloc() and iseries_hv_map() were removed years ago.
-See:
-  8ee3e0d69623 ("powerpc: Remove the main legacy iSerie platform code")
-
-
-So maybe we should do a lead-up patch that drops the NULL dev support,
-which will then make this patch simpler.
-
-cheers
-
-
-> +	/* Overflow-free shortcut for: ALIGN(b + 1, 1 << s) >> s */
-> +	boundary_size = (boundary_size >> tbl->it_page_shift) + 1;
->  
->  	n = iommu_area_alloc(tbl->it_map, limit, start, npages, tbl->it_offset,
-> -			     boundary_size >> tbl->it_page_shift, align_mask);
-> +			     boundary_size, align_mask);
->  	if (n == -1) {
->  		if (likely(pass == 0)) {
->  			/* First try the pool from the start */
-> -- 
-> 2.17.1
