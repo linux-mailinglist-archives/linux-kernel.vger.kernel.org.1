@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EE7259719
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E76F2596FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731574AbgIAQKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:10:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
+        id S1731450AbgIAPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:38:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731391AbgIAPiJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:38:09 -0400
+        id S1731287AbgIAPhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:37:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E42220E65;
-        Tue,  1 Sep 2020 15:38:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAAA620E65;
+        Tue,  1 Sep 2020 15:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974688;
-        bh=oTjC9jfaLqaZgNMzxkpn5Xgk4LZV2PW+EeOGjegi/zA=;
+        s=default; t=1598974632;
+        bh=cLkCh0TQ3r1z5Bof6eBuZFAV4BBLrF+5jl34LRuXq4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yl6BC8DZp1TErz3osVJr9xSHxuyTGiQKyn/2O53+D8ETQ7LwLkSHVdahnYXoANRTe
-         JA+yllBT37Jl0y1x4m8zzy+yM5l6WxxTTf2npci+5T1GTXZdSOM7fv/wSwAMTbDmLJ
-         Ywy0Hfi9wS5Lx2hrycgPWCYwgyh5nz5jjCA0eoc0=
+        b=o1IG8XRpAYxW5xG1q73L2Wpi8WAqTb9asQqCXBOUVPbz2tiyysuMy0xc/CsEBZaNn
+         OVvTSWydoeIhW8t5YRl6ek2fP8D1nMvQM/oNzr8cDR9ZyM7DLug1MLgUdwHXi5XTTr
+         OGv97K85aM+6wKod3Qrh6wx01hU5cK9wlsBWV8Rg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Popov <alex.popov@linux.com>,
-        Kees Cook <keescook@chromium.org>,
+        stable@vger.kernel.org, Evgeny Novikov <novikov@ispras.ru>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 016/255] gcc-plugins/stackleak: Dont instrument itself
-Date:   Tue,  1 Sep 2020 17:07:52 +0200
-Message-Id: <20200901151001.568883262@linuxfoundation.org>
+Subject: [PATCH 5.8 018/255] staging: rts5208: fix memleaks on error handling paths in probe
+Date:   Tue,  1 Sep 2020 17:07:54 +0200
+Message-Id: <20200901151001.652486270@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -44,34 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Popov <alex.popov@linux.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 005e696df65d0ff90468ecf38a50aa584dc82421 ]
+[ Upstream commit 11507bf9a8832741db69efd32bf09a2ab26426bf ]
 
-There is no need to try instrumenting functions in kernel/stackleak.c.
-Otherwise that can cause issues if the cleanup pass of stackleak gcc plugin
-is disabled.
+rtsx_probe() allocates host, but does not free it on error handling
+paths. The patch adds missed scsi_host_put().
 
-Signed-off-by: Alexander Popov <alex.popov@linux.com>
-Link: https://lore.kernel.org/r/20200624123330.83226-2-alex.popov@linux.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Link: https://lore.kernel.org/r/20200623141230.7258-1-novikov@ispras.ru
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/Makefile | 1 +
+ drivers/staging/rts5208/rtsx.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/kernel/Makefile b/kernel/Makefile
-index f3218bc5ec69f..155b5380500ad 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -125,6 +125,7 @@ obj-$(CONFIG_WATCH_QUEUE) += watch_queue.o
- 
- obj-$(CONFIG_SYSCTL_KUNIT_TEST) += sysctl-test.o
- 
-+CFLAGS_stackleak.o += $(DISABLE_STACKLEAK_PLUGIN)
- obj-$(CONFIG_GCC_PLUGIN_STACKLEAK) += stackleak.o
- KASAN_SANITIZE_stackleak.o := n
- KCSAN_SANITIZE_stackleak.o := n
+diff --git a/drivers/staging/rts5208/rtsx.c b/drivers/staging/rts5208/rtsx.c
+index be0053c795b7a..937f4e732a75c 100644
+--- a/drivers/staging/rts5208/rtsx.c
++++ b/drivers/staging/rts5208/rtsx.c
+@@ -972,6 +972,7 @@ ioremap_fail:
+ 	kfree(dev->chip);
+ chip_alloc_fail:
+ 	dev_err(&pci->dev, "%s failed\n", __func__);
++	scsi_host_put(host);
+ scsi_host_alloc_fail:
+ 	pci_release_regions(pci);
+ 	return err;
 -- 
 2.25.1
 
