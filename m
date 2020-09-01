@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C15825937B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68140259309
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729742AbgIAP0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:26:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
+        id S1729605AbgIAPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:20:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728512AbgIAPW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:22:58 -0400
+        id S1729490AbgIAPSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:18:22 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED34D206FA;
-        Tue,  1 Sep 2020 15:22:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5CF9206EB;
+        Tue,  1 Sep 2020 15:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973777;
-        bh=aTZLwlQyCFvyZkMxkLIwGuWolRH0Yckkp2Be1TpzaLg=;
+        s=default; t=1598973502;
+        bh=Lj8KoI+teNo/4KtB8pvPKE4MgbiKSTb6IqPldKFfLw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2nOupszr60dzc+wPwanokuJf2icf+iSWF113/zfFFEKIoGnUr+3+5KrIUNuYZKuyt
-         gV0O4m/riYRsQOu09tFn68MFrOiHBSkqJSMPGgj8bBNYqduzW35PhYJIw9y7XmkvwS
-         D1rXJX57RVHr49PE+ApUPhKtuzvFELiF26O4RQCY=
+        b=uxhUgHf1q/MMyIJVB3js1P7HQTtr5rsQ3CeKYWA/Zbe+WBNHX5muwE4Rknqy0LERi
+         jwNvb9LNgXEyIT2XyNl8VZlOgL+6jjp9ajn2z+BZ3sc4+ylPkEWPn9z9I1N+I4gqRn
+         Oi7Yqwpkz4221+ZvnFXv7AytHIYxUTYQx1kfGzQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 043/125] scsi: iscsi: Do not put host in iscsi_set_flashnode_param()
+Subject: [PATCH 4.14 24/91] PCI: Fix pci_create_slot() reference count leak
 Date:   Tue,  1 Sep 2020 17:09:58 +0200
-Message-Id: <20200901150936.674229985@linuxfoundation.org>
+Message-Id: <20200901150929.361696281@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
+References: <20200901150928.096174795@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,35 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 68e12e5f61354eb42cfffbc20a693153fc39738e ]
+[ Upstream commit 8a94644b440eef5a7b9c104ac8aa7a7f413e35e5 ]
 
-If scsi_host_lookup() fails we will jump to put_host which may cause a
-panic. Jump to exit_set_fnode instead.
+kobject_init_and_add() takes a reference even when it fails.  If it returns
+an error, kobject_put() must be called to clean up the memory associated
+with the object.
 
-Link: https://lore.kernel.org/r/20200615081226.183068-1-jingxiangfeng@huawei.com
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+When kobject_init_and_add() fails, call kobject_put() instead of kfree().
+
+b8eb718348b8 ("net-sysfs: Fix reference count leak in
+rx|netdev_queue_add_kobject") fixed a similar problem.
+
+Link: https://lore.kernel.org/r/20200528021322.1984-1-wu000273@umn.edu
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/slot.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 04d095488c764..6983473011980 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -3172,7 +3172,7 @@ static int iscsi_set_flashnode_param(struct iscsi_transport *transport,
- 		pr_err("%s could not find host no %u\n",
- 		       __func__, ev->u.set_flashnode.host_no);
- 		err = -ENODEV;
--		goto put_host;
-+		goto exit_set_fnode;
+diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
+index e42909524deed..379925fc49d4e 100644
+--- a/drivers/pci/slot.c
++++ b/drivers/pci/slot.c
+@@ -303,13 +303,16 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+ 	slot_name = make_slot_name(name);
+ 	if (!slot_name) {
+ 		err = -ENOMEM;
++		kfree(slot);
+ 		goto err;
  	}
  
- 	idx = ev->u.set_flashnode.flashnode_idx;
+ 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
+ 				   "%s", slot_name);
+-	if (err)
++	if (err) {
++		kobject_put(&slot->kobj);
+ 		goto err;
++	}
+ 
+ 	INIT_LIST_HEAD(&slot->list);
+ 	list_add(&slot->list, &parent->slots);
+@@ -328,7 +331,6 @@ struct pci_slot *pci_create_slot(struct pci_bus *parent, int slot_nr,
+ 	mutex_unlock(&pci_slot_mutex);
+ 	return slot;
+ err:
+-	kfree(slot);
+ 	slot = ERR_PTR(err);
+ 	goto out;
+ }
 -- 
 2.25.1
 
