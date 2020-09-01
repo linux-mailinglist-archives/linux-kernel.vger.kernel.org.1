@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004CD25942A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CB6259575
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731268AbgIAPgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:36:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40668 "EHLO mail.kernel.org"
+        id S1732101AbgIAPtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:49:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729607AbgIAPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:35:06 -0400
+        id S1731898AbgIAPpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:45:47 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7059920866;
-        Tue,  1 Sep 2020 15:35:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5CC6C206FA;
+        Tue,  1 Sep 2020 15:45:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974506;
-        bh=Kic1QFBMmfsiLLqVcXRF13eeR/kpQuM9+nAq1RLFgjM=;
+        s=default; t=1598975146;
+        bh=Oz7t0NWmXB5bAB+zgwUm8UAx3M15rm8xgTdMeCo8jq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sVF7wlikKYpnMrxRq/NqDpGXBKdl3T8uRSGX4OJJBdqAj/ezpqabiInaFqFjfLXfD
-         aUYXFCZgySWOY2Y1Tlhh2Z54PY8oUeIE+Lp2WGukHBreHyRjaoXzkAclUCf62+cyJg
-         ltVWpID0c7NpAhwE5EthCle/yyz4HHxOtR5XKOIs=
+        b=Ztx4czgjq82g3UKgmTp/FWYSvD5vXYxmoOGWfuSfjWdAvqLPORuoyUE9zkQ/85/JW
+         k72veLDszYlSUDKVQCTLgJsEl9gqTte1PLyLVA1VbFsDpA2aa9qoKnyCa8hK/YAMX9
+         mEK3vocNThdkxzVqbH08tac7QlfK1WaP50wfjLsE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 203/214] usb: dwc3: gadget: Handle ZLP for sg requests
-Date:   Tue,  1 Sep 2020 17:11:23 +0200
-Message-Id: <20200901151002.657404941@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ilja Van Sprundel <ivansprundel@ioactive.com>,
+        Kees Cook <keescook@chromium.org>,
+        Brooke Basile <brookebasile@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>, stable <stable@kernel.org>
+Subject: [PATCH 5.8 228/255] USB: gadget: u_f: add overflow checks to VLA macros
+Date:   Tue,  1 Sep 2020 17:11:24 +0200
+Message-Id: <20200901151011.684588719@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,64 +46,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Brooke Basile <brookebasile@gmail.com>
 
-[ Upstream commit bc9a2e226ea95e1699f7590845554de095308b75 ]
+commit b1cd1b65afba95971fa457dfdb2c941c60d38c5b upstream.
 
-Currently dwc3 doesn't handle usb_request->zero for SG requests. This
-change checks and prepares extra TRBs for the ZLP for SG requests.
+size can potentially hold an overflowed value if its assigned expression
+is left unchecked, leading to a smaller than needed allocation when
+vla_group_size() is used by callers to allocate memory.
+To fix this, add a test for saturation before declaring variables and an
+overflow check to (n) * sizeof(type).
+If the expression results in overflow, vla_group_size() will return SIZE_MAX.
 
-Cc: <stable@vger.kernel.org> # v4.5+
-Fixes: 04c03d10e507 ("usb: dwc3: gadget: handle request->zero")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Brooke Basile <brookebasile@gmail.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Cc: stable <stable@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/usb/dwc3/gadget.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/usb/gadget/u_f.h |   38 +++++++++++++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 8e67591df76be..4225544342519 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1104,6 +1104,35 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
- 					req->request.stream_id,
- 					req->request.short_not_ok,
- 					req->request.no_interrupt);
-+		} else if (req->request.zero && req->request.length &&
-+			   !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
-+			   !rem && !chain) {
-+			struct dwc3	*dwc = dep->dwc;
-+			struct dwc3_trb	*trb;
-+
-+			req->needs_extra_trb = true;
-+
-+			/* Prepare normal TRB */
-+			dwc3_prepare_one_trb(dep, req, trb_length, true, i);
-+
-+			/* Prepare one extra TRB to handle ZLP */
-+			trb = &dep->trb_pool[dep->trb_enqueue];
-+			req->num_trbs++;
-+			__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, 0,
-+					       !req->direction, 1,
-+					       req->request.stream_id,
-+					       req->request.short_not_ok,
-+					       req->request.no_interrupt);
-+
-+			/* Prepare one more TRB to handle MPS alignment */
-+			if (!req->direction) {
-+				trb = &dep->trb_pool[dep->trb_enqueue];
-+				req->num_trbs++;
-+				__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, maxp,
-+						       false, 1, req->request.stream_id,
-+						       req->request.short_not_ok,
-+						       req->request.no_interrupt);
-+			}
- 		} else {
- 			dwc3_prepare_one_trb(dep, req, trb_length, chain, i);
- 		}
--- 
-2.25.1
-
+--- a/drivers/usb/gadget/u_f.h
++++ b/drivers/usb/gadget/u_f.h
+@@ -14,6 +14,7 @@
+ #define __U_F_H__
+ 
+ #include <linux/usb/gadget.h>
++#include <linux/overflow.h>
+ 
+ /* Variable Length Array Macros **********************************************/
+ #define vla_group(groupname) size_t groupname##__next = 0
+@@ -21,21 +22,36 @@
+ 
+ #define vla_item(groupname, type, name, n) \
+ 	size_t groupname##_##name##__offset = ({			       \
+-		size_t align_mask = __alignof__(type) - 1;		       \
+-		size_t offset = (groupname##__next + align_mask) & ~align_mask;\
+-		size_t size = (n) * sizeof(type);			       \
+-		groupname##__next = offset + size;			       \
++		size_t offset = 0;					       \
++		if (groupname##__next != SIZE_MAX) {			       \
++			size_t align_mask = __alignof__(type) - 1;	       \
++			size_t offset = (groupname##__next + align_mask)       \
++					 & ~align_mask;			       \
++			size_t size = array_size(n, sizeof(type));	       \
++			if (check_add_overflow(offset, size,		       \
++					       &groupname##__next)) {          \
++				groupname##__next = SIZE_MAX;		       \
++				offset = 0;				       \
++			}						       \
++		}							       \
+ 		offset;							       \
+ 	})
+ 
+ #define vla_item_with_sz(groupname, type, name, n) \
+-	size_t groupname##_##name##__sz = (n) * sizeof(type);		       \
+-	size_t groupname##_##name##__offset = ({			       \
+-		size_t align_mask = __alignof__(type) - 1;		       \
+-		size_t offset = (groupname##__next + align_mask) & ~align_mask;\
+-		size_t size = groupname##_##name##__sz;			       \
+-		groupname##__next = offset + size;			       \
+-		offset;							       \
++	size_t groupname##_##name##__sz = array_size(n, sizeof(type));	        \
++	size_t groupname##_##name##__offset = ({			        \
++		size_t offset = 0;						\
++		if (groupname##__next != SIZE_MAX) {				\
++			size_t align_mask = __alignof__(type) - 1;		\
++			size_t offset = (groupname##__next + align_mask)	\
++					 & ~align_mask;				\
++			if (check_add_overflow(offset, groupname##_##name##__sz,\
++							&groupname##__next)) {	\
++				groupname##__next = SIZE_MAX;			\
++				offset = 0;					\
++			}							\
++		}								\
++		offset;								\
+ 	})
+ 
+ #define vla_ptr(ptr, groupname, name) \
 
 
