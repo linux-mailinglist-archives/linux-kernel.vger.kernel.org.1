@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D349259030
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652A3259013
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgIAOTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727869AbgIALt0 (ORCPT
+        id S1728228AbgIAOP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:15:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39764 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727771AbgIALt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:49:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7655C061260;
-        Tue,  1 Sep 2020 04:48:06 -0700 (PDT)
-Date:   Tue, 01 Sep 2020 11:48:01 -0000
+        Tue, 1 Sep 2020 07:49:28 -0400
+Date:   Tue, 01 Sep 2020 11:48:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1598960882;
+        s=2020; t=1598960885;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y2/6jghBtX5EU5gikVpmYI7uEvJ3z2/flvzwOMJ2oS4=;
-        b=2f743sddocZ/AjZe3Y8FU6ATuiKyDMLN2QXgaDl+YzZfbFUgAD3Xl79XvsdUexLlV45tVt
-        aO2HUiv9bgzo1LoxQ8LvuhjFSXF1EQ0DdpQHeQxUa9M6mqTCcdnXyWBzPsQqu5hn6Q9kOy
-        HjHV15VO7GfIGKq71OMvsndE3X0AKH2TLx2Pmzl2qvTh2Cy0v8U/Phor0JivbEHSousAN3
-        70SjXmeWV/RbKMiX4EqdDqrQH36O6eX/bHhgdBbYtFb16blvgD15R9Q5R1UXId33RoZxSV
-        lFzDdCoWrS7hy9bVMXZY4hdBo0V+55Gld7fov4Fja/IZQUM/5MA497+BlcnROA==
+        bh=Kasz4ywG7LhJWVjmtq4Val0RF1UWPJ3KkUO7H9xHB3A=;
+        b=MQs2nIpvAtL0j09Me68xlF/SqKUCztL8URBYOo3RvQEzO4Hq0aJh28R7wLM82gMHIj3+iu
+        +E0YcMwxo1h3bvhDS+oORffwun8tNnQDf+tyNWgIPt9y6LxwWZ6vSiNxwvQmr6W7S1z3pc
+        ML63U1UuQdAAR08973xWtIyTEpZvorgOE5NpN3bU9B/dIlRNVf8fI9onJL07rU3ZIxS2wN
+        vVMUxiQYSoO1vheMzY1i/CN3vHqMYj9GSuZmt20/Qmm6S+v6QXhCNw4waCiScwgXPXGwQ4
+        3Rcriif2OpU8kicDQ9QG1vQi7Mjp5iDhiYZi7Aps8c5JyYDQrs1CAhY68rSEGw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1598960882;
+        s=2020e; t=1598960885;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y2/6jghBtX5EU5gikVpmYI7uEvJ3z2/flvzwOMJ2oS4=;
-        b=0Ga86mkoVGFK31qCWK7pP82i+WDcDWUL4yPD/QLREyZBsxbdzs/FmmPpBBkhCCM8S3E+Od
-        CCpMNJ0Mtc2WtKAQ==
-From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+        bh=Kasz4ywG7LhJWVjmtq4Val0RF1UWPJ3KkUO7H9xHB3A=;
+        b=v2o0DQvTeuw62ayZCf8fh/Coc8kIA+8+MCC0/rJMmv/pO6eSfmpPq7M1kvo87V/ZJnSi7h
+        Fj9sJidcNTx7qaCw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/build] vmlinux.lds.h: Create COMMON_DISCARDS
-Cc:     Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>,
-        linux-arch@vger.kernel.org, x86 <x86@kernel.org>,
+Subject: [tip: core/static_call] static_call: Add simple self-test for static calls
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200821194310.3089815-2-keescook@chromium.org>
-References: <20200821194310.3089815-2-keescook@chromium.org>
+In-Reply-To: <20200818135804.922581202@infradead.org>
+References: <20200818135804.922581202@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159896088150.20229.12193229393565370294.tip-bot2@tip-bot2>
+Message-ID: <159896088487.20229.10616348998847001332.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,50 +56,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/build branch of tip:
+The following commit has been merged into the core/static_call branch of tip:
 
-Commit-ID:     03c2b85cb7f13e9bd82cbe4201ede52177d433f5
-Gitweb:        https://git.kernel.org/tip/03c2b85cb7f13e9bd82cbe4201ede52177d433f5
-Author:        Kees Cook <keescook@chromium.org>
-AuthorDate:    Fri, 21 Aug 2020 12:42:42 -07:00
+Commit-ID:     f03c412915f5f69f2d17bcd20ecdd69320bcbf7b
+Gitweb:        https://git.kernel.org/tip/f03c412915f5f69f2d17bcd20ecdd69320bcbf7b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 18 Aug 2020 15:57:46 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 01 Sep 2020 09:50:34 +02:00
+CommitterDate: Tue, 01 Sep 2020 09:58:05 +02:00
 
-vmlinux.lds.h: Create COMMON_DISCARDS
+static_call: Add simple self-test for static calls
 
-Collect the common DISCARD sections for architectures that need more
-specialized discard control than what the standard DISCARDS section
-provides.
-
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: linux-arch@vger.kernel.org
-Link: https://lore.kernel.org/r/20200821194310.3089815-2-keescook@chromium.org
+Link: https://lore.kernel.org/r/20200818135804.922581202@infradead.org
 ---
- include/asm-generic/vmlinux.lds.h |  9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/Kconfig         |  6 ++++++-
+ kernel/static_call.c | 43 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 49 insertions(+)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 7616ff0..184b23d 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -954,13 +954,16 @@
- 	EXIT_DATA
- #endif
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 2c4936a..76ec339 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -106,6 +106,12 @@ config STATIC_KEYS_SELFTEST
+ 	help
+ 	  Boot time self-test of the branch patching code.
  
-+#define COMMON_DISCARDS							\
-+	*(.discard)							\
-+	*(.discard.*)							\
-+	*(.modinfo)
++config STATIC_CALL_SELFTEST
++	bool "Static call selftest"
++	depends on HAVE_STATIC_CALL
++	help
++	  Boot time self-test of the call patching code.
 +
- #define DISCARDS							\
- 	/DISCARD/ : {							\
- 	EXIT_DISCARDS							\
- 	EXIT_CALL							\
--	*(.discard)							\
--	*(.discard.*)							\
--	*(.modinfo)							\
-+	COMMON_DISCARDS							\
- 	}
- 
- /**
+ config OPTPROBES
+ 	def_bool y
+ 	depends on KPROBES && HAVE_OPTPROBES
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 753b2f1..97142cb 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -369,3 +369,46 @@ static void __init static_call_init(void)
+ #endif
+ }
+ early_initcall(static_call_init);
++
++#ifdef CONFIG_STATIC_CALL_SELFTEST
++
++static int func_a(int x)
++{
++	return x+1;
++}
++
++static int func_b(int x)
++{
++	return x+2;
++}
++
++DEFINE_STATIC_CALL(sc_selftest, func_a);
++
++static struct static_call_data {
++      int (*func)(int);
++      int val;
++      int expect;
++} static_call_data [] __initdata = {
++      { NULL,   2, 3 },
++      { func_b, 2, 4 },
++      { func_a, 2, 3 }
++};
++
++static int __init test_static_call_init(void)
++{
++      int i;
++
++      for (i = 0; i < ARRAY_SIZE(static_call_data); i++ ) {
++	      struct static_call_data *scd = &static_call_data[i];
++
++              if (scd->func)
++                      static_call_update(sc_selftest, scd->func);
++
++              WARN_ON(static_call(sc_selftest)(scd->val) != scd->expect);
++      }
++
++      return 0;
++}
++early_initcall(test_static_call_init);
++
++#endif /* CONFIG_STATIC_CALL_SELFTEST */
