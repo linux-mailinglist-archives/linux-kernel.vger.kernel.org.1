@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20962259660
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 088282596A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731681AbgIAPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:43:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53478 "EHLO mail.kernel.org"
+        id S1731459AbgIAQFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:05:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731522AbgIAPlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:23 -0400
+        id S1728161AbgIAPl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:41:26 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A201207D3;
-        Tue,  1 Sep 2020 15:41:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3F4C2064B;
+        Tue,  1 Sep 2020 15:41:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974882;
-        bh=oTARuwR/1mchUtNNkLCWoveYMMVPoNEEk5qgz+NHa2U=;
+        s=default; t=1598974885;
+        bh=AJ5GY7sStFFpN4d2wp55vrmNmGGsqU3GnYKHqvcwtPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2o3puX4LdfREOdIkju8FJpXmKEDIdLm46Uro/b2J06doTcgT6GqeiQtN5kCGugjek
-         w/2g1wA1nZnP7XBRkk6Sw5xGu/gP3NWRLFUh/Llctofa6cMmc6SQMdo/fH9StBgqJl
-         aEBHIqj9O2QBSdcnxB9ja4RN8odpI1GcjNzkFCrU=
+        b=PMssXZBqm7X/axKEqkfT3OS+jQSQ37rKNVUoWuKQRYdDaUu5tEFvQkIBl8+9KrQuD
+         ieJVD3LTDo3bzr2fi3UTtqudtjYrM/phQo9kmcacxMopy5QnwUlxC4RXNdO8GMEe9K
+         oHKIYHcDK4VVA5SPVajAsksZAVHXy/mX1ACzXAjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakov Petrina <jakov.petrina@sartura.hr>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 127/255] libbpf: Handle GCC built-in types for Arm NEON
-Date:   Tue,  1 Sep 2020 17:09:43 +0200
-Message-Id: <20200901151006.813605878@linuxfoundation.org>
+Subject: [PATCH 5.8 128/255] netfilter: avoid ipv6 -> nf_defrag_ipv6 module dependency
+Date:   Tue,  1 Sep 2020 17:09:44 +0200
+Message-Id: <20200901151006.851536741@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -46,113 +44,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 702eddc77a905782083b14ccd05b23840675fd18 ]
+[ Upstream commit 2404b73c3f1a5f15726c6ecd226b56f6f992767f ]
 
-When building Arm NEON (SIMD) code from lib/raid6/neon.uc, GCC emits
-DWARF information using a base type "__Poly8_t", which is internal to
-GCC and not recognized by Clang. This causes build failures when
-building with Clang a vmlinux.h generated from an arm64 kernel that was
-built with GCC.
+nf_ct_frag6_gather is part of nf_defrag_ipv6.ko, not ipv6 core.
 
-	vmlinux.h:47284:9: error: unknown type name '__Poly8_t'
-	typedef __Poly8_t poly8x16_t[16];
-	        ^~~~~~~~~
+The current use of the netfilter ipv6 stub indirections  causes a module
+dependency between ipv6 and nf_defrag_ipv6.
 
-The polyX_t types are defined as unsigned integers in the "Arm C
-Language Extension" document (101028_Q220_00_en). Emit typedefs based on
-standard integer types for the GCC internal types, similar to those
-emitted by Clang.
+This prevents nf_defrag_ipv6 module from being removed because ipv6 can't
+be unloaded.
 
-Including linux/kernel.h to use ARRAY_SIZE() incidentally redefined
-max(), causing a build bug due to different types, hence the seemingly
-unrelated change.
+Remove the indirection and always use a direct call.  This creates a
+depency from nf_conntrack_bridge to nf_defrag_ipv6 instead:
 
-Reported-by: Jakov Petrina <jakov.petrina@sartura.hr>
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200812143909.3293280-1-jean-philippe@linaro.org
+modinfo nf_conntrack
+depends:        nf_conntrack,nf_defrag_ipv6,bridge
+
+.. and nf_conntrack already depends on nf_defrag_ipv6 anyway.
+
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/btf_dump.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ include/linux/netfilter_ipv6.h             | 18 ------------------
+ net/bridge/netfilter/nf_conntrack_bridge.c |  8 ++++++--
+ net/ipv6/netfilter.c                       |  3 ---
+ 3 files changed, 6 insertions(+), 23 deletions(-)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index bbb4303172606..4edf76c5a7101 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -13,6 +13,7 @@
- #include <errno.h>
- #include <linux/err.h>
- #include <linux/btf.h>
-+#include <linux/kernel.h>
- #include "btf.h"
- #include "hashmap.h"
- #include "libbpf.h"
-@@ -548,6 +549,9 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
- 	}
- }
+diff --git a/include/linux/netfilter_ipv6.h b/include/linux/netfilter_ipv6.h
+index aac42c28fe62d..9b67394471e1c 100644
+--- a/include/linux/netfilter_ipv6.h
++++ b/include/linux/netfilter_ipv6.h
+@@ -58,7 +58,6 @@ struct nf_ipv6_ops {
+ 			int (*output)(struct net *, struct sock *, struct sk_buff *));
+ 	int (*reroute)(struct sk_buff *skb, const struct nf_queue_entry *entry);
+ #if IS_MODULE(CONFIG_IPV6)
+-	int (*br_defrag)(struct net *net, struct sk_buff *skb, u32 user);
+ 	int (*br_fragment)(struct net *net, struct sock *sk,
+ 			   struct sk_buff *skb,
+ 			   struct nf_bridge_frag_data *data,
+@@ -117,23 +116,6 @@ static inline int nf_ip6_route(struct net *net, struct dst_entry **dst,
  
-+static void btf_dump_emit_missing_aliases(struct btf_dump *d, __u32 id,
-+					  const struct btf_type *t);
-+
- static void btf_dump_emit_struct_fwd(struct btf_dump *d, __u32 id,
- 				     const struct btf_type *t);
- static void btf_dump_emit_struct_def(struct btf_dump *d, __u32 id,
-@@ -670,6 +674,9 @@ static void btf_dump_emit_type(struct btf_dump *d, __u32 id, __u32 cont_id)
+ #include <net/netfilter/ipv6/nf_defrag_ipv6.h>
  
- 	switch (kind) {
- 	case BTF_KIND_INT:
-+		/* Emit type alias definitions if necessary */
-+		btf_dump_emit_missing_aliases(d, id, t);
-+
- 		tstate->emit_state = EMITTED;
- 		break;
- 	case BTF_KIND_ENUM:
-@@ -869,7 +876,7 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
- 			btf_dump_printf(d, ": %d", m_sz);
- 			off = m_off + m_sz;
- 		} else {
--			m_sz = max(0, btf__resolve_size(d->btf, m->type));
-+			m_sz = max(0LL, btf__resolve_size(d->btf, m->type));
- 			off = m_off + m_sz * 8;
- 		}
- 		btf_dump_printf(d, ";");
-@@ -889,6 +896,32 @@ static void btf_dump_emit_struct_def(struct btf_dump *d,
- 		btf_dump_printf(d, " __attribute__((packed))");
- }
- 
-+static const char *missing_base_types[][2] = {
-+	/*
-+	 * GCC emits typedefs to its internal __PolyX_t types when compiling Arm
-+	 * SIMD intrinsics. Alias them to standard base types.
-+	 */
-+	{ "__Poly8_t",		"unsigned char" },
-+	{ "__Poly16_t",		"unsigned short" },
-+	{ "__Poly64_t",		"unsigned long long" },
-+	{ "__Poly128_t",	"unsigned __int128" },
-+};
-+
-+static void btf_dump_emit_missing_aliases(struct btf_dump *d, __u32 id,
-+					  const struct btf_type *t)
-+{
-+	const char *name = btf_dump_type_name(d, id);
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(missing_base_types); i++) {
-+		if (strcmp(name, missing_base_types[i][0]) == 0) {
-+			btf_dump_printf(d, "typedef %s %s;\n\n",
-+					missing_base_types[i][1], name);
-+			break;
-+		}
-+	}
-+}
-+
- static void btf_dump_emit_enum_fwd(struct btf_dump *d, __u32 id,
- 				   const struct btf_type *t)
+-static inline int nf_ipv6_br_defrag(struct net *net, struct sk_buff *skb,
+-				    u32 user)
+-{
+-#if IS_MODULE(CONFIG_IPV6)
+-	const struct nf_ipv6_ops *v6_ops = nf_get_ipv6_ops();
+-
+-	if (!v6_ops)
+-		return 1;
+-
+-	return v6_ops->br_defrag(net, skb, user);
+-#elif IS_BUILTIN(CONFIG_IPV6)
+-	return nf_ct_frag6_gather(net, skb, user);
+-#else
+-	return 1;
+-#endif
+-}
+-
+ int br_ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+ 		    struct nf_bridge_frag_data *data,
+ 		    int (*output)(struct net *, struct sock *sk,
+diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
+index 8096732223828..8d033a75a766e 100644
+--- a/net/bridge/netfilter/nf_conntrack_bridge.c
++++ b/net/bridge/netfilter/nf_conntrack_bridge.c
+@@ -168,6 +168,7 @@ static unsigned int nf_ct_br_defrag4(struct sk_buff *skb,
+ static unsigned int nf_ct_br_defrag6(struct sk_buff *skb,
+ 				     const struct nf_hook_state *state)
  {
++#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+ 	u16 zone_id = NF_CT_DEFAULT_ZONE_ID;
+ 	enum ip_conntrack_info ctinfo;
+ 	struct br_input_skb_cb cb;
+@@ -180,14 +181,17 @@ static unsigned int nf_ct_br_defrag6(struct sk_buff *skb,
+ 
+ 	br_skb_cb_save(skb, &cb, sizeof(struct inet6_skb_parm));
+ 
+-	err = nf_ipv6_br_defrag(state->net, skb,
+-				IP_DEFRAG_CONNTRACK_BRIDGE_IN + zone_id);
++	err = nf_ct_frag6_gather(state->net, skb,
++				 IP_DEFRAG_CONNTRACK_BRIDGE_IN + zone_id);
+ 	/* queued */
+ 	if (err == -EINPROGRESS)
+ 		return NF_STOLEN;
+ 
+ 	br_skb_cb_restore(skb, &cb, IP6CB(skb)->frag_max_size);
+ 	return err == 0 ? NF_ACCEPT : NF_DROP;
++#else
++	return NF_ACCEPT;
++#endif
+ }
+ 
+ static int nf_ct_br_ip_check(const struct sk_buff *skb)
+diff --git a/net/ipv6/netfilter.c b/net/ipv6/netfilter.c
+index 409e79b84a830..6d0e942d082d4 100644
+--- a/net/ipv6/netfilter.c
++++ b/net/ipv6/netfilter.c
+@@ -245,9 +245,6 @@ static const struct nf_ipv6_ops ipv6ops = {
+ 	.route_input		= ip6_route_input,
+ 	.fragment		= ip6_fragment,
+ 	.reroute		= nf_ip6_reroute,
+-#if IS_MODULE(CONFIG_IPV6) && IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+-	.br_defrag		= nf_ct_frag6_gather,
+-#endif
+ #if IS_MODULE(CONFIG_IPV6)
+ 	.br_fragment		= br_ip6_fragment,
+ #endif
 -- 
 2.25.1
 
