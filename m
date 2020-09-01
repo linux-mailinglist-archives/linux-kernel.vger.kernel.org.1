@@ -2,149 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A8925919F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2C12591A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728711AbgIAOxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728803AbgIAOwy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:52:54 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D67C061246
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 07:52:54 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t11so653275plr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PeEvLT3ZeLb9RUi+PCRykN+cW6hUGCxRkYbA2o4fn5k=;
-        b=15tSL2fbI1s+CH/9pPU2MqmXgB6/4QeX47wS7112qGbNIbllC+VReFbU8PMENPfa7/
-         YhGkLVV/NXqToUlWR0dd5cqj5i3+LuRzFuOPA2r14lrGeui0AUsFompldgpWid5xQ5Qt
-         lxx4Ps1ygDasjk4UWEGYex/Aa0Rt1VQUz6m5E5Ux0If38eFA4DRnntq/uWf22C1WDHTs
-         MsFL0FWJnsM+uB1OHGOi+CNI2lgFfhcM3K0BiFMfnGHECt5FJ6gHT1ZOuB4t+U1X57/e
-         ip5MwuUoB0mJQZVWNLDb5YCy/njsBdpgLKqf+2KOOvlXgI5cJjBF8LR4VKor3XhENude
-         3x2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PeEvLT3ZeLb9RUi+PCRykN+cW6hUGCxRkYbA2o4fn5k=;
-        b=ULQje0LNdwGaNHl7ynzd3YwWPeSQAnBE0D2sAtHmaiyHV9Ughpj/d4gXvgw8xu+I9W
-         fyDwa+wnGoDxDg+lStTCaHr8L0YOd6P7nEZhTejvPQT5SPeUSuqMJ7PH8/Oqt9gxINgm
-         TnkeXuEAXtzlL+O/cyPSohW0ZrXoHSyn7f/ZvM882NZupR8guIO9UB5ojuFVUsjSR+Q9
-         RVRqaXZZdb3ZZfOGGSJD7FdwnnC3iDClm6IxvTCWKneL2rwEyAyeB9N15BxRTNzWxIpX
-         Mjzuc1Xj/c1JaG6gPEmXdegMxOoEm/lrRalex7TlPYFTvzz31Rt2mwqIyF88bIfyfb21
-         MrGA==
-X-Gm-Message-State: AOAM532STA+vKvaANnOT/yU493yWZNqTfEnnaenJAnxD8LumtpQpx8Gb
-        RmqIHVVkjZUqWLvNikG1I2PvcQXH3i3f+T00
-X-Google-Smtp-Source: ABdhPJx9iVsy84SXSpOJhrRsgO11zARscHkukzKgfd1qNsRoO9jOB5lRdzHX9yX/AlMI0IMgj0mLqQ==
-X-Received: by 2002:a17:90a:a583:: with SMTP id b3mr1941881pjq.127.1598971973129;
-        Tue, 01 Sep 2020 07:52:53 -0700 (PDT)
-Received: from [192.168.1.187] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id e124sm2351945pfa.87.2020.09.01.07.52.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 07:52:52 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: Fix NULL pointer dereference in
- io_sq_wq_submit_work()
-To:     yinxin_1989 <yinxin_1989@aliyun.com>,
-        viro <viro@zeniv.linux.org.uk>
-Cc:     linux-block <linux-block@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200901015442.44831-1-yinxin_1989@aliyun.com>
- <ae9f3887-5205-8aa8-afa7-4e01d03921bc@kernel.dk>
- <67f27d17-81fa-43a8-baa9-429b1ccd65d0.yinxin_1989@aliyun.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4eeefb43-488c-dc90-f47c-10defe6f9278@kernel.dk>
-Date:   Tue, 1 Sep 2020 08:52:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728857AbgIAOxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:53:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728386AbgIAOxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:53:35 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF05B206FA;
+        Tue,  1 Sep 2020 14:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598972014;
+        bh=HpWZik1j9+sfkS0/wxDG2E/McFvOr29VTlfELilXyDk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s2M6tw5X2FLoO+ZaIl4ZPFNPkHUGNWOZL/zyWY1eneiNGh28OmxjMRbVMiAcof+Vu
+         soAAVcPhNf9jBLHjBnIkLm7/FpfSyEQbLb5MSfeXD1GZDCA9LOU6C50kbyo4bVmRds
+         gUQavtUt0yb/rahYnLHiF2bYNhddSHACmA+oW5A4=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4446840D3D; Tue,  1 Sep 2020 11:53:31 -0300 (-03)
+Date:   Tue, 1 Sep 2020 11:53:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Leo Yan <leo.yan@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        AAl Grant <al.grant@arm.com>
+Subject: Re: [PATCH 2/2] perf intel-pt: Fix corrupt data after perf inject
+ from
+Message-ID: <20200901145331.GA1422817@kernel.org>
+References: <20200819084751.17686-1-leo.yan@linaro.org>
+ <20200819084751.17686-2-leo.yan@linaro.org>
+ <20200831203832.GA120995@xps15>
 MIME-Version: 1.0
-In-Reply-To: <67f27d17-81fa-43a8-baa9-429b1ccd65d0.yinxin_1989@aliyun.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831203832.GA120995@xps15>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/20 10:59 PM, yinxin_1989 wrote:
+Em Mon, Aug 31, 2020 at 02:38:32PM -0600, Mathieu Poirier escreveu:
+> On Wed, Aug 19, 2020 at 04:47:51PM +0800, Leo Yan wrote:
+> > From: Al Grant <al.grant@arm.com>
+> > 
+> > Commit 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
+> > changed the format of branch stacks in perf samples. When samples use
+> > this new format, a flag must be set in the corresponding event.
+> > Synthesized branch stacks generated from Intel PT were using the new
+> > format, but not setting the event attribute, leading to consumers
+> > seeing corrupt data. This patch fixes the issue by setting the event
+> > attribute to indicate use of the new format.
+> > 
+> > Fixes: 42bbabed09ce ("perf tools: Add hw_idx in struct branch_stack")
+> > Signed-off-by: Al Grant <al.grant@arm.com>
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > 
->>On 8/31/20 7:54 PM, Xin Yin wrote:
->>> the commit <1c4404efcf2c0> ("<io_uring: make sure async workqueue
->>> is canceled on exit>") caused a crash in io_sq_wq_submit_work().
->>> when io_ring-wq get a req form async_list, which may not have been
->>> added to task_list. Then try to delete the req from task_list will caused
->>> a "NULL pointer dereference".
->>
->>Hmm, do you have a reproducer for this?
+> Arnaldo, please consider.
 > 
-> I update code to linux5.4.y , and I can reproduce this issue on an arm
-> board and my x86 pc by fio tools.
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Right, I figured this was 5.4 stable, as that's the only version that
-has this patch.
+Thanks, applied, and 1/2 too.
 
-> fio -filename=/home/yinxin/testfile -direct=0 -ioengine=io_uring -iodepth 128 -rw=read -bs=16K -size=1G -numjobs=1 -runtime=60 -group_reporting -name=iops
-
-Gotcha, thanks!
-
->>> @@ -2356,9 +2358,11 @@ static void io_sq_wq_submit_work(struct work_struct *work)
->>>   * running. We currently only allow this if the new request is sequential
->>>   * to the previous one we punted.
->>>   */
->>> -static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req)
->>> +static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req,
->>> +       struct io_ring_ctx *ctx)
->>>  {
->>>   bool ret;
->>> + unsigned long flags;
->>>  
->>>   if (!list)
->>>    return false;
->>> @@ -2378,6 +2382,13 @@ static bool io_add_to_prev_work(struct async_list *list, struct io_kiocb *req)
->>>    list_del_init(&req->list);
->>>    ret = false;
->>>   }
->>> +
->>> + if (ret) {
->>> +  spin_lock_irqsave(&ctx->task_lock, flags);
->>> +  list_add(&req->task_list, &ctx->task_list);
->>> +  req->work_task = NULL;
->>> +  spin_unlock_irqrestore(&ctx->task_lock, flags);
->>> + }
->>>   spin_unlock(&list->lock);
->>>   return ret;
->>>  }
->>> @@ -2454,7 +2465,7 @@ static int __io_queue_sqe(struct io_ring_ctx *ctx, struct io_kiocb *req,
->>>     s->sqe = sqe_copy;
->>>     memcpy(&req->submit, s, sizeof(*s));
->>>     list = io_async_list_from_req(ctx, req);
->>> -   if (!io_add_to_prev_work(list, req)) {
->>> +   if (!io_add_to_prev_work(list, req, ctx)) {
->>>      if (list)
->>>       atomic_inc(&list->cnt);
->>>      INIT_WORK(&req->work, io_sq_wq_submit_work);
->>> 
->>ctx == req->ctx, so you should not need that change.
-> 
-> In my test , the req have not been add to req->task_list(maybe waiting
-> for the ctx->task_lock) , and in io_sq_wq_submit_work() try to delete
-> it from req->task_list ,which will cause this issue.
-
-Sure, but req->ctx is set when the req is initialized. If req->ctx !=
-ctx here, then that would be pretty disastrous... So you can drop that
-part of the patch.
-
-Care to send with that changed? Then I'm fine with queueing this up for
-5.4-stable. Thanks!
+- Arnaldo
+ 
+> > ---
+> >  tools/perf/util/intel-pt.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+> > index 2a8d245351e7..0af4e81c46e2 100644
+> > --- a/tools/perf/util/intel-pt.c
+> > +++ b/tools/perf/util/intel-pt.c
+> > @@ -3017,8 +3017,15 @@ static int intel_pt_synth_events(struct intel_pt *pt,
+> >  
+> >  	if (pt->synth_opts.callchain)
+> >  		attr.sample_type |= PERF_SAMPLE_CALLCHAIN;
+> > -	if (pt->synth_opts.last_branch)
+> > +	if (pt->synth_opts.last_branch) {
+> >  		attr.sample_type |= PERF_SAMPLE_BRANCH_STACK;
+> > +		/*
+> > +		 * We don't use the hardware index, but the sample generation
+> > +		 * code uses the new format branch_stack with this field,
+> > +		 * so the event attributes must indicate that it's present.
+> > +		 */
+> > +		attr.branch_sample_type |= PERF_SAMPLE_BRANCH_HW_INDEX;
+> > +	}
+> >  
+> >  	if (pt->synth_opts.instructions) {
+> >  		attr.config = PERF_COUNT_HW_INSTRUCTIONS;
+> > -- 
+> > 2.17.1
+> > 
 
 -- 
-Jens Axboe
 
+- Arnaldo
