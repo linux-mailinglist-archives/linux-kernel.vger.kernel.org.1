@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5969258B0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A394258B01
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 11:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgIAJJG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 05:09:06 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:59782 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726515AbgIAJJD (ORCPT
+        id S1726310AbgIAJIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 05:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbgIAJIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 05:09:03 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-283-TOoGT-t2Oa-s63UZlOFx8A-1; Tue, 01 Sep 2020 10:07:44 +0100
-X-MC-Unique: TOoGT-t2Oa-s63UZlOFx8A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 1 Sep 2020 10:07:42 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 1 Sep 2020 10:07:42 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>, Denis Efremov <efremov@linux.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Alex Dewar <alex.dewar90@gmail.com>
-CC:     York Sun <york.sun@nxp.com>, Borislav Petkov <bp@alien8.de>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "James Morse" <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        "Maxim Levitsky" <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        "Arnd Bergmann" <arnd@arndb.de>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Douglas Miller" <dougmill@linux.ibm.com>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        =?iso-8859-1?Q?Kai_M=E4kisara?= <Kai.Makisara@kolumbus.fi>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Mark Brown <broonie@kernel.org>,
-        Oliver Neukum <oneukum@suse.com>,
-        Pete Zaitcev <zaitcev@redhat.com>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: sysfs output without newlines
-Thread-Topic: sysfs output without newlines
-Thread-Index: AQHWfkO/+C/EB0p8Hk2MEQnp7JjooqlTgZKw
-Date:   Tue, 1 Sep 2020 09:07:42 +0000
-Message-ID: <5f0b48e0291b4b54bc1caeb8b5715c65@AcuMS.aculab.com>
-References: <0f837bfb394ac632241eaac3e349b2ba806bce09.camel@perches.com>
-         <4cd6275c-6e95-3aeb-9924-141f62e00449@linux.com>
- <b64a4cb0ee68fee01973616e5ef0f299ac191f6d.camel@perches.com>
-In-Reply-To: <b64a4cb0ee68fee01973616e5ef0f299ac191f6d.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 1 Sep 2020 05:08:41 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD349C061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 02:08:40 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 7804A2993BC
+Subject: Re: [PATCH v2] platform/chrome: cros_ec_typec: USB4 support
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     rajmohan.mani@intel.com,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+References: <20200710194017.1126000-1-pmalani@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <7c539d28-d1aa-4f4b-ebc4-f92ef3af93d6@collabora.com>
+Date:   Tue, 1 Sep 2020 11:08:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200710194017.1126000-1-pmalani@chromium.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 29 August 2020 21:34
-...
-> > On 8/29/20 9:23 PM, Joe Perches wrote:
-> > > While doing an investigation for a possible treewide conversion of
-> > > sysfs output using sprintf/snprintf/scnprintf, I discovered
-> > > several instances of sysfs output without terminating newlines.
-> > >
-> > > It seems likely all of these should have newline terminations
-> > > or have the \n\r termination changed to a single newline.
-> >
-> > I think that it could break badly written scripts in rare cases.
+Hi Prashant and Heikki,
+
+On 10/7/20 21:40, Prashant Malani wrote:
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 > 
-> Maybe.
+> With USB4 mode the mux driver needs the Enter_USB Data
+> Object (EUDO) that was used when the USB mode was entered.
+> Though the object is not available in the driver, it is
+> possible to construct it from the information we have.
 > 
-> Is sysfs output a nominally unchangeable api like seq_?
-> Dunno.  seq_ output is extended all the time.
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> ---
 > 
-> I think whitespace isn't generally considered part of
-> sscanf type input content awareness.
 
-The shell will remove trailing '\n' (but not '\r') from:
-	foo=$(cat bar)
-So shell scripts are unlikely to be affected.
+Applied for 5.10.
 
-	David
+Thanks,
+ Enric
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> This patch depends on latest usb-next from Greg KH, this commit in
+> particular:
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/?h=usb-next&id=ad8db94d6813dc659bd4de0531a8a1150559eafb
+> 
+> Changes in v2:
+> - Removed EUDO bits for cable current and tunneling support.
+> 
+>  drivers/platform/chrome/cros_ec_typec.c | 33 ++++++++++++++++++++++++-
+>  1 file changed, 32 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 0c041b79cbba..a9700275a851 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/platform_data/cros_ec_proto.h>
+>  #include <linux/platform_data/cros_usbpd_notify.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/usb/pd.h>
+>  #include <linux/usb/typec.h>
+>  #include <linux/usb/typec_altmode.h>
+>  #include <linux/usb/typec_dp.h>
+> @@ -494,6 +495,34 @@ static int cros_typec_enable_dp(struct cros_typec_data *typec,
+>  	return typec_mux_set(port->mux, &port->state);
+>  }
+>  
+> +static int cros_typec_enable_usb4(struct cros_typec_data *typec,
+> +				  int port_num,
+> +				  struct ec_response_usb_pd_control_v2 *pd_ctrl)
+> +{
+> +	struct cros_typec_port *port = typec->ports[port_num];
+> +	struct enter_usb_data data;
+> +
+> +	data.eudo = EUDO_USB_MODE_USB4 << EUDO_USB_MODE_SHIFT;
+> +
+> +	/* Cable Speed */
+> +	data.eudo |= pd_ctrl->cable_speed << EUDO_CABLE_SPEED_SHIFT;
+> +
+> +	/* Cable Type */
+> +	if (pd_ctrl->control_flags & USB_PD_CTRL_OPTICAL_CABLE)
+> +		data.eudo |= EUDO_CABLE_TYPE_OPTICAL << EUDO_CABLE_TYPE_SHIFT;
+> +	else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
+> +		data.eudo |= EUDO_CABLE_TYPE_RE_TIMER << EUDO_CABLE_TYPE_SHIFT;
+> +
+> +	data.active_link_training = !!(pd_ctrl->control_flags &
+> +				       USB_PD_CTRL_ACTIVE_LINK_UNIDIR);
+> +
+> +	port->state.alt = NULL;
+> +	port->state.data = &data;
+> +	port->state.mode = TYPEC_MODE_USB4;
+> +
+> +	return typec_mux_set(port->mux, &port->state);
+> +}
+> +
+>  static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+>  				uint8_t mux_flags,
+>  				struct ec_response_usb_pd_control_v2 *pd_ctrl)
+> @@ -514,7 +543,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
+>  	if (ret)
+>  		return ret;
+>  
+> -	if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
+> +	if (mux_flags & USB_PD_MUX_USB4_ENABLED) {
+> +		ret = cros_typec_enable_usb4(typec, port_num, pd_ctrl);
+> +	} else if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
+>  		ret = cros_typec_enable_tbt(typec, port_num, pd_ctrl);
+>  	} else if (mux_flags & USB_PD_MUX_DP_ENABLED) {
+>  		ret = cros_typec_enable_dp(typec, port_num, pd_ctrl);
+> 
