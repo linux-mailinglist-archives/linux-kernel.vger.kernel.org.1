@@ -2,40 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9961C2596CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FA625981C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgIAQGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:06:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52756 "EHLO mail.kernel.org"
+        id S1730941AbgIAPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727865AbgIAPlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:04 -0400
+        id S1730605AbgIAPaa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:30:30 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1CBB2064B;
-        Tue,  1 Sep 2020 15:41:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AC0220767;
+        Tue,  1 Sep 2020 15:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974863;
-        bh=3JX588tNPwGpRZZC6T4Et8TcnZARJm/mvLuOUuV0AVo=;
+        s=default; t=1598974230;
+        bh=iwwrjsRIAJUQyuCjybCmNKWMiu/9B3HjaHena9EblRY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qEqkns9A6dGVAk4kRjGZaH/1Psb57fYnV2vwZrLgpGkky9kR9eQZZHsyhKDau4t+s
-         FL9I6Lqg7kYx7oqdlPzJ27UGCmef1n9+ZKuoBI2cpX2hR42/hZ0A0TE61Zuw/MkGPR
-         p76d7Liv4IGj44i5OyVy9xMiwLnA1+WJJ8sLbFI8=
+        b=jBGEnSKUqxwNHyUa/acC/dXYvCv+3I5kchd5ITXt8pwTy0ih360zrYTMFi4pqzyj7
+         YMeplzCBusSuFASwxosJPwLpQOfdG4mu/JMsiv/glPTM0+PuRui6eF42aKVmh3eeVL
+         ww2bvmbZWb4MoDFYk8A4v5veuIclqgBTIqdrccTI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Marco Elver <elver@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 089/255] block: Fix page_is_mergeable() for compound pages
+Subject: [PATCH 5.4 065/214] efi: provide empty efi_enter_virtual_mode implementation
 Date:   Tue,  1 Sep 2020 17:09:05 +0200
-Message-Id: <20200901151004.989111224@linuxfoundation.org>
+Message-Id: <20200901150956.091585597@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +55,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Andrey Konovalov <andreyknvl@google.com>
 
-[ Upstream commit d81665198b83e55a28339d1f3e4890ed8a434556 ]
+[ Upstream commit 2c547f9da0539ad1f7ef7f08c8c82036d61b011a ]
 
-If we pass in an offset which is larger than PAGE_SIZE, then
-page_is_mergeable() thinks it's not mergeable with the previous bio_vec,
-leading to a large number of bio_vecs being used.  Use a slightly more
-obvious test that the two pages are compatible with each other.
+When CONFIG_EFI is not enabled, we might get an undefined reference to
+efi_enter_virtual_mode() error, if this efi_enabled() call isn't inlined
+into start_kernel().  This happens in particular, if start_kernel() is
+annodated with __no_sanitize_address.
 
-Fixes: 52d52d1c98a9 ("block: only allow contiguous page structs in a bio_vec")
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Elena Petrova <lenaptr@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Walter Wu <walter-zh.wu@mediatek.com>
+Link: http://lkml.kernel.org/r/6514652d3a32d3ed33d6eb5c91d0af63bf0d1a0c.1596544734.git.andreyknvl@google.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bio.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ include/linux/efi.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/block/bio.c b/block/bio.c
-index a7366c02c9b57..b1883adc8f154 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -738,8 +738,8 @@ static inline bool page_is_mergeable(const struct bio_vec *bv,
- 		struct page *page, unsigned int len, unsigned int off,
- 		bool *same_page)
- {
--	phys_addr_t vec_end_addr = page_to_phys(bv->bv_page) +
--		bv->bv_offset + bv->bv_len - 1;
-+	size_t bv_end = bv->bv_offset + bv->bv_len;
-+	phys_addr_t vec_end_addr = page_to_phys(bv->bv_page) + bv_end - 1;
- 	phys_addr_t page_addr = page_to_phys(page);
- 
- 	if (vec_end_addr + 1 != page_addr + off)
-@@ -748,9 +748,9 @@ static inline bool page_is_mergeable(const struct bio_vec *bv,
- 		return false;
- 
- 	*same_page = ((vec_end_addr & PAGE_MASK) == page_addr);
--	if (!*same_page && pfn_to_page(PFN_DOWN(vec_end_addr)) + 1 != page)
--		return false;
--	return true;
-+	if (*same_page)
-+		return true;
-+	return (bv->bv_page + bv_end / PAGE_SIZE) == (page + off / PAGE_SIZE);
- }
- 
- /*
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index d87acf62958e2..13ed2c6b13f8b 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -1039,7 +1039,11 @@ extern void *efi_get_pal_addr (void);
+ extern void efi_map_pal_code (void);
+ extern void efi_memmap_walk (efi_freemem_callback_t callback, void *arg);
+ extern void efi_gettimeofday (struct timespec64 *ts);
++#ifdef CONFIG_EFI
+ extern void efi_enter_virtual_mode (void);	/* switch EFI to virtual mode, if possible */
++#else
++static inline void efi_enter_virtual_mode (void) {}
++#endif
+ #ifdef CONFIG_X86
+ extern efi_status_t efi_query_variable_store(u32 attributes,
+ 					     unsigned long size,
 -- 
 2.25.1
 
