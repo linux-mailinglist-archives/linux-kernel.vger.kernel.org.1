@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D0725A059
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 23:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CD825A06F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 23:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgIAVDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 17:03:45 -0400
-Received: from mga12.intel.com ([192.55.52.136]:23422 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728098AbgIAVDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 17:03:35 -0400
-IronPort-SDR: +Mr+6vVp5TJcvdxd+Pd3f/P+4f6nPYNghpaOWlLO115JuqYUs+Q5Z+8QnWapQEHZRPjVuPZK6H
- z8D2hMACKukw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="136786013"
-X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="136786013"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 14:03:35 -0700
-IronPort-SDR: XEZWkK12m3NRurgxOZ0Ler6s1GjrNyuUSTV2HECMOdTxCR64tDMXiREISajPYuDtfexl3iBdJk
- Xnq+rSUltiSA==
-X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="477343364"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 14:03:31 -0700
-Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id A383722AF1;
-        Wed,  2 Sep 2020 00:03:24 +0300 (EEST)
-Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@linux.intel.com>)
-        id 1kDDRF-0002Da-HG; Wed, 02 Sep 2020 00:03:33 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: [PATCH v7 6/6] Documentation: ACPI: Document allow-low-power-probe _DSD property
-Date:   Wed,  2 Sep 2020 00:03:33 +0300
-Message-Id: <20200901210333.8462-7-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200901210333.8462-1-sakari.ailus@linux.intel.com>
-References: <20200901210333.8462-1-sakari.ailus@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1729277AbgIAVFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 17:05:01 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:48922 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726355AbgIAVFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 17:05:00 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 254838EE112;
+        Tue,  1 Sep 2020 14:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1598994299;
+        bh=3yQ8KCRSQAxpdGZ/cPAEMssmlgc5FoQPkt68+FhXhxM=;
+        h=Subject:From:To:Cc:Date:From;
+        b=n31IY9+1uutwxiqCR+Tn4Q7rdAWPoY4rda8bR1HpKjiKLQ71Pjq5paIXO9dU/qqWH
+         h2+cln0tPXpxCNBL2bFq8WOBg02oM594M1bap9MPIIF+6ktR4mm0Z4UOIdY+oDQUVa
+         L+5lYiuklSFGaQtWVi4vTBRdDgGDr9S75cmbSo+g=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lm76zS-PMhPO; Tue,  1 Sep 2020 14:04:58 -0700 (PDT)
+Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 19FB08EE0F5;
+        Tue,  1 Sep 2020 14:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1598994298;
+        bh=3yQ8KCRSQAxpdGZ/cPAEMssmlgc5FoQPkt68+FhXhxM=;
+        h=Subject:From:To:Cc:Date:From;
+        b=MQVRwKN0KxlkwKC6kn2YW9+cq2JmRRS8FKN/tYXwjUfniwiPB10V7c5WRUPuTpvz1
+         L3Q1S1yNsCSNfRwFmaBfLO538PQvBryfNrOv8kQXgXvVjJiewjOltdF/93XBYBAE0T
+         K7l2BURG6KZRQmJSXWENJChxKci82+hNAOlo45lU=
+Message-ID: <1598994296.4238.30.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.8-rc3
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Tue, 01 Sep 2020 14:04:56 -0700
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the probe-low-power _DSD property and how it is used with I²C
-drivers.
+Three minor fixes, all in drivers.
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+The patch is available here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+
+The short changelog is:
+
+Dan Carpenter (1):
+      scsi: libcxgbi: Fix a use after free in cxgbi_conn_xmit_pdu()
+
+Niklas Cassel (1):
+      scsi: scsi_debug: Remove superfluous close zone in resp_open_zone()
+
+Ye Bin (1):
+      scsi: qedf: Fix null ptr reference in qedf_stag_change_work
+
+With the diffstat:
+
+ drivers/scsi/cxgbi/libcxgbi.c | 2 +-
+ drivers/scsi/qedf/qedf_main.c | 2 +-
+ drivers/scsi/scsi_debug.c     | 2 --
+ 3 files changed, 2 insertions(+), 4 deletions(-)
+
+And full diff below.
+
+James
+
 ---
- .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++++++++++++++
- Documentation/firmware-guide/acpi/index.rst   |  1 +
- 2 files changed, 29 insertions(+)
- create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
 
-diff --git a/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-new file mode 100644
-index 0000000000000..6fcc89162b898
---- /dev/null
-+++ b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-@@ -0,0 +1,28 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================================
-+Probing I²C devices in low power state
-+======================================
-+
-+Introduction
-+============
-+
-+In some cases it may be preferred to leave certain devices powered off for the
-+entire system bootup if powering on these devices has adverse side effects,
-+beyond just powering on the said device. Linux recognizes the _DSD property
-+"allow-low-power-probe" that can be used for this purpose.
-+
-+How it works
-+============
-+
-+The property "allow-low-power-probe" boolean property may be used to tell Linux
-+that the I²C framework should instruct the kernel ACPI framework to leave the
-+device in the low power state. If the driver indicates its support for this by
-+setting the I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag in struct i2c_driver.flags
-+field and the "allow-low-power-probe" property is present, the device will not
-+be powered on for probe.
-+
-+The downside is that as the device is not powered on, even if there's a problem
-+with the device, the driver likely probes just fine but the first user will
-+find out the device doesn't work, instead of a failure at probe time. This
-+feature should thus be used sparingly.
-diff --git a/Documentation/firmware-guide/acpi/index.rst b/Documentation/firmware-guide/acpi/index.rst
-index ad3b5afdae77e..0070fcde9e669 100644
---- a/Documentation/firmware-guide/acpi/index.rst
-+++ b/Documentation/firmware-guide/acpi/index.rst
-@@ -11,6 +11,7 @@ ACPI Support
-    dsd/graph
-    dsd/data-node-references
-    dsd/leds
-+   dsd/allow-low-power-probe
-    enumeration
-    osi
-    method-customizing
--- 
-2.20.1
-
+diff --git a/drivers/scsi/cxgbi/libcxgbi.c b/drivers/scsi/cxgbi/libcxgbi.c
+index 71aebaf533ea..0e8621a6956d 100644
+--- a/drivers/scsi/cxgbi/libcxgbi.c
++++ b/drivers/scsi/cxgbi/libcxgbi.c
+@@ -2457,10 +2457,10 @@ int cxgbi_conn_xmit_pdu(struct iscsi_task *task)
+ 		return err;
+ 	}
+ 
+-	__kfree_skb(skb);
+ 	log_debug(1 << CXGBI_DBG_ISCSI | 1 << CXGBI_DBG_PDU_TX,
+ 		  "itt 0x%x, skb 0x%p, len %u/%u, xmit err %d.\n",
+ 		  task->itt, skb, skb->len, skb->data_len, err);
++	__kfree_skb(skb);
+ 	iscsi_conn_printk(KERN_ERR, task->conn, "xmit err %d.\n", err);
+ 	iscsi_conn_failure(task->conn, ISCSI_ERR_XMIT_FAILED);
+ 	return err;
+diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
+index 3f04f2c81366..5ca424df355c 100644
+--- a/drivers/scsi/qedf/qedf_main.c
++++ b/drivers/scsi/qedf/qedf_main.c
+@@ -3863,7 +3863,7 @@ void qedf_stag_change_work(struct work_struct *work)
+ 	    container_of(work, struct qedf_ctx, stag_work.work);
+ 
+ 	if (!qedf) {
+-		QEDF_ERR(&qedf->dbg_ctx, "qedf is NULL");
++		QEDF_ERR(NULL, "qedf is NULL");
+ 		return;
+ 	}
+ 	QEDF_ERR(&qedf->dbg_ctx, "Performing software context reset.\n");
+diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+index 139f0073da37..1ad7260d4758 100644
+--- a/drivers/scsi/scsi_debug.c
++++ b/drivers/scsi/scsi_debug.c
+@@ -4482,8 +4482,6 @@ static int resp_open_zone(struct scsi_cmnd *scp, struct sdebug_dev_info *devip)
+ 		goto fini;
+ 	}
+ 
+-	if (zc == ZC2_IMPLICIT_OPEN)
+-		zbc_close_zone(devip, zsp);
+ 	zbc_open_zone(devip, zsp, true);
+ fini:
+ 	write_unlock(macc_lckp);
