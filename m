@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3285259936
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 270AA259A92
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730506AbgIAP3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:29:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51194 "EHLO mail.kernel.org"
+        id S1732328AbgIAQvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730078AbgIAP0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:26:04 -0400
+        id S1729878AbgIAP0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:26:08 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABC482151B;
-        Tue,  1 Sep 2020 15:25:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75FA721534;
+        Tue,  1 Sep 2020 15:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973963;
-        bh=dmuzdEMkWpJ2XunLy5TWSr/ChN5Y2eJJuRVReEFs1o8=;
+        s=default; t=1598973967;
+        bh=ovBGAei74FK31o+QhuioieTu3Pt4iRVAUaBnNVTmqlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y7+IM86krsVpZqXeWOsl7Hl53BXun2lQDzl3t/nJFFL0zhoFU5iuqUywOQoFtdv+v
-         AsGipIUi3I8al3evi43iyzt7mwxwg4hkociDaHxNk2OmDtv/9kL2rJ9dDmknQ5gl+8
-         vdQY/uMsVqSh1hpyvIzJ4WMdYp1phgli4sq3w7jA=
+        b=ENsm4EAunS7F0nL8ERbt7m49X1AAhazZmdqrJAKGLhvfbXPue8ndX2hBMLaTjLddr
+         DmNx5oAebQp59W9Zg44YMxdwAcVh5LGaBsdLueaRUhFM/hO7SEafKAf8kidMDoJVio
+         dZwoZdKnJbXdfU1g2oqZx4K/Md9MaPV0A4wVAPX8=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Kyungmin Park <kyungmin.park@samsung.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
@@ -35,9 +35,9 @@ To:     Kyungmin Park <kyungmin.park@samsung.com>,
         Han Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/6] mtd: rawnand: atmel: Simplify with dev_err_probe()
-Date:   Tue,  1 Sep 2020 16:25:31 +0200
-Message-Id: <20200901142535.12819-2-krzk@kernel.org>
+Subject: [PATCH 3/6] mtd: rawnand: gpmi: Simplify with dev_err_probe()
+Date:   Tue,  1 Sep 2020 16:25:32 +0200
+Message-Id: <20200901142535.12819-3-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200901142535.12819-1-krzk@kernel.org>
 References: <20200901142535.12819-1-krzk@kernel.org>
@@ -51,30 +51,26 @@ dev_err_probe().  Less code and the error value gets printed.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index c9818f548d07..71e2b83485d7 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1976,13 +1976,9 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 	platform_set_drvdata(pdev, nc);
- 
- 	nc->pmecc = devm_atmel_pmecc_get(dev);
--	if (IS_ERR(nc->pmecc)) {
--		ret = PTR_ERR(nc->pmecc);
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 5d4aee46cc55..3d8fe0d0721f 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1003,10 +1003,8 @@ static int acquire_dma_channels(struct gpmi_nand_data *this)
+ 	/* request dma channel */
+ 	dma_chan = dma_request_chan(&pdev->dev, "rx-tx");
+ 	if (IS_ERR(dma_chan)) {
+-		ret = PTR_ERR(dma_chan);
 -		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "Could not get PMECC object (err = %d)\n",
+-			dev_err(this->dev, "DMA channel request failed: %d\n",
 -				ret);
--		return ret;
--	}
-+	if (IS_ERR(nc->pmecc))
-+		return dev_err_probe(dev, PTR_ERR(nc->pmecc),
-+				     "Could not get PMECC object\n");
- 
- 	if (nc->caps->has_dma && !atmel_nand_avoid_dma) {
- 		dma_cap_mask_t mask;
++		ret = dev_err_probe(this->dev, PTR_ERR(dma_chan),
++				    "DMA channel request failed\n");
+ 		release_dma_channels(this);
+ 	} else {
+ 		this->dma_chans[0] = dma_chan;
 -- 
 2.17.1
 
