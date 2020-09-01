@@ -2,89 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02025259D23
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BAB259D27
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgIARZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:25:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27833 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726771AbgIARZA (ORCPT
+        id S1729384AbgIARZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728938AbgIARZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598981099;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8PqT0EakorR2gsUjc/WrDrlcsD1OTR+SxQRxSKs2oGQ=;
-        b=K6U6qqw4W5EXo36ba9g8GAtdfaWIE/2GIYq4DS0yhPjeMT9gHmIUoZiAeQEPcIemwi7mYk
-        N/DPtrGEUCm3Fn4et3c8ED4XR59a7jax4qW3MbRmovEPpXWzto9VhYIDoO+51/p7YvbGUv
-        iZAERVc/jQL+Ue75tXCKdUOrRg5D750=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-Ubgxi10CMnChTxIDXzvLyw-1; Tue, 01 Sep 2020 13:24:55 -0400
-X-MC-Unique: Ubgxi10CMnChTxIDXzvLyw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DD3810ABDB2;
-        Tue,  1 Sep 2020 17:24:54 +0000 (UTC)
-Received: from treble (ovpn-113-168.rdu2.redhat.com [10.10.113.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B97F95C1BB;
-        Tue,  1 Sep 2020 17:24:53 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 12:24:51 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Miroslav Benes <mbenes@suse.cz>, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH] Revert "kbuild: use -flive-patching when
- CONFIG_LIVEPATCH is enabled"
-Message-ID: <20200901172451.uckohkruradfhd6g@treble>
-References: <696262e997359666afa053fe7d1a9fb2bb373964.1595010490.git.jpoimboe@redhat.com>
- <alpine.LSU.2.21.2007211316410.31851@pobox.suse.cz>
- <20200806092426.GL24529@alley>
+        Tue, 1 Sep 2020 13:25:24 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2899C061244;
+        Tue,  1 Sep 2020 10:25:23 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDA1w-008nxM-Ez; Tue, 01 Sep 2020 17:25:12 +0000
+Date:   Tue, 1 Sep 2020 18:25:12 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: remove the last set_fs() in common code, and remove it for x86
+ and powerpc v2
+Message-ID: <20200901172512.GI1236603@ZenIV.linux.org.uk>
+References: <20200827150030.282762-1-hch@lst.de>
+ <a8bb0319-0928-4687-9e9c-777c5860dbdd@csgroup.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200806092426.GL24529@alley>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <a8bb0319-0928-4687-9e9c-777c5860dbdd@csgroup.eu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 11:24:26AM +0200, Petr Mladek wrote:
-> On Tue 2020-07-21 13:17:00, Miroslav Benes wrote:
-> > On Fri, 17 Jul 2020, Josh Poimboeuf wrote:
-> > 
-> > > Use of the new -flive-patching flag was introduced with the following
-> > > commit:
-> > > 
-> > >   43bd3a95c98e ("kbuild: use -flive-patching when CONFIG_LIVEPATCH is enabled")
-> > > 
-> > > This reverts commit 43bd3a95c98e1a86b8b55d97f745c224ecff02b9.
-> > > 
-> > > Fixes: 43bd3a95c98e ("kbuild: use -flive-patching when CONFIG_LIVEPATCH is enabled")
-> > > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > 
-> > Acked-by: Miroslav Benes <mbenes@suse.cz>
-> 
-> Acked-by: Petr Mladek <pmladek@suse.com>
-> 
-> Hmm, the patch has not been pushed into livepatching.git and is not
-> available in the pull request for 5.9.
-> 
-> Is it OK to leave it for 5.10?
-> Or would you prefer to get it into 5.9 even on this stage?
-> 
-> I personally do not mind. It depends how urgent it is for others.
+On Tue, Sep 01, 2020 at 07:13:00PM +0200, Christophe Leroy wrote:
 
-Sorry for leaving this question hanging.  Let's go with 5.10 ;-)
+>     10.92%  dd       [kernel.kallsyms]  [k] iov_iter_zero
 
--- 
-Josh
-
+Interesting...  Could you get an instruction-level profile inside iov_iter_zero(),
+along with the disassembly of that sucker?
