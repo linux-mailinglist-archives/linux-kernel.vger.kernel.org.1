@@ -2,120 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C35259BC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CDB259C34
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729746AbgIARGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729544AbgIARGh (ORCPT
+        id S1729353AbgIARMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:12:46 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:49664 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730242AbgIARMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:06:37 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A5FC061244;
-        Tue,  1 Sep 2020 10:06:36 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id m8so1157557pfh.3;
-        Tue, 01 Sep 2020 10:06:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PwNRndak15FLf6udHGPDXV3xJclmFk58fcQPrWISEyg=;
-        b=u82f5+1anvYlYHJs/pJvG3+NLXqCVZH3FiTol6fLHW1d3wmBNBgerRa4yBh73/LOQr
-         JJOrhtRUVUP2xuQVN5Ydp6AmboX0BMO4ziQXoNB7AickRbwiT1QTlIa9n+2cEWVRefjP
-         Dkjj/Icu7TrDSd79eTW1qGRWm7ZPAQUi3M6Cwuib+RNoGzm64F7tFXAKuyDddMODzoc8
-         kwDn1jUuDQcF4+TicXIKRz6ayPVb+6XuC5JyXjKfAGiB65AlCo1Yy9qG0r8d6RtMuDAR
-         bVtOu2k3HcIlVHGAL2LgWrTe/HXhHAbRQ4PLruDD/wVJU85WGEPbQ48qCxVr5+Dg3d9z
-         TP0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PwNRndak15FLf6udHGPDXV3xJclmFk58fcQPrWISEyg=;
-        b=lcaEaFq6i5sO62wmt1gawR/L6aOOZMI/zo5x9mPg/yxPU+9VeAb1cI5Abc71YaUe0P
-         NcpuvENtL/46jKZgtMCoZACVw7+lcvAJ7UdR1ilS/gjxZu+yqgdVpmWtfBlv/RdqNhp6
-         LG/x+Qim/2j4J21/yLI2yhNSIQGYcylWqnZcPSD9FHQjnR7C42Mn34t/o5l5fnuRgGTv
-         Gwz6+j5PtMhP9+re5VhrRzcUI5mYbsT8+bteQ41OU0+lN7Yg/DFcK51nTgPvgiOfMFob
-         +65D7ljHOiykelh0S+OPp+ZerJARWSUtEKX1550O13Qb99bR+JVj6EArjkogbjjmXV7t
-         6cLw==
-X-Gm-Message-State: AOAM531sTj6DEepIlooxQDH9DJSa5pb42BzDPHjiQxZWx/2/oHBNmbx/
-        DVam7ai2NWozzx7o27quuK8=
-X-Google-Smtp-Source: ABdhPJyy7JOa3sxonsjDIcIjoW7WMS7fwqpw3kiqxp+QzUYZE4hxNju76g8xRz1QZ/Dl2wBypUzyhg==
-X-Received: by 2002:a63:4418:: with SMTP id r24mr2281840pga.8.1598979995594;
-        Tue, 01 Sep 2020 10:06:35 -0700 (PDT)
-Received: from [192.168.219.31] (ip72-219-184-175.oc.oc.cox.net. [72.219.184.175])
-        by smtp.gmail.com with ESMTPSA id 13sm2603359pfp.3.2020.09.01.10.06.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 10:06:34 -0700 (PDT)
-Subject: Re: RFC: backport of commit a32c1c61212d
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Pavel Tatashin <pasha.tatashin@oracle.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michal Hocko <mhocko@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        zhaoyang <huangzhaoyang@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Hildenbrand <david@redhat.com>,
-        Baoquan He <bhe@redhat.com>
-References: <bd960a80-c953-ad11-cdfd-1e48ffdce443@gmail.com>
- <20200901140018.GD397411@kroah.com>
- <4eb51ae0-427d-5359-2439-b38dc0d3b2e5@gmail.com>
- <98f2309c-e674-c3fc-0c13-0bf85f123f8c@gmail.com>
-From:   Doug Berger <opendmb@gmail.com>
-Message-ID: <62fef535-199b-9b62-c206-c92d2d929be3@gmail.com>
-Date:   Tue, 1 Sep 2020 10:09:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Tue, 1 Sep 2020 13:12:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598980351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6tq9XbBkkctfISvu/8JAip4aOF6DG++oXbCP77hju3Y=;
+        b=Nc5W8jjHYz3TEc8a2EyIdmPuFOTGztX3Fkv8vjGWzm8pB20RSsn2zz0YtjmE2k11pxtZPD
+        1yHtl36fby/j2d1PxS9WISPI6OfX/Mb781KPLv9XGFntzAKB1WKiwenLrKIBM0llcDc3WQ
+        rTduzCi3x51+mbUcUvQYBUj0mLkrsCY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-gfbAtqhlPbKr-7JAzqN6xw-1; Tue, 01 Sep 2020 13:12:27 -0400
+X-MC-Unique: gfbAtqhlPbKr-7JAzqN6xw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 344B11006708;
+        Tue,  1 Sep 2020 17:12:26 +0000 (UTC)
+Received: from treble (ovpn-113-168.rdu2.redhat.com [10.10.113.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B1BD1002D60;
+        Tue,  1 Sep 2020 17:12:22 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 12:12:20 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: refactoring livepatch documentation was Re: [PATCH 1/2]
+ docs/livepatch: Add new compiler considerations doc
+Message-ID: <20200901171220.pgepj3hxrfwy37rj@treble>
+References: <20200721161407.26806-1-joe.lawrence@redhat.com>
+ <20200721161407.26806-2-joe.lawrence@redhat.com>
+ <20200721230442.5v6ah7bpjx4puqva@treble>
+ <de3672ef-8779-245f-943d-3d5a4b875446@redhat.com>
+ <20200722205139.hwbej2atk2ejq27n@treble>
+ <20200806120336.GP24529@alley>
+ <3842fe65-332e-9f90-fe75-7cd80b34b75e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <98f2309c-e674-c3fc-0c13-0bf85f123f8c@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <3842fe65-332e-9f90-fe75-7cd80b34b75e@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/2020 9:36 AM, Florian Fainelli wrote:
-> 
-> 
-> On 9/1/2020 9:06 AM, Doug Berger wrote:
->> On 9/1/2020 7:00 AM, Greg Kroah-Hartman wrote:
-> 
-> [snip]
-> 
->> [snip]
->>
->> My best guess at this point is to submit patches to the affected stable
->> branches like the one in my RFC and reference a32c1c61212d as the
->> upstream commit. This would be confusing to anyone that tried to compare
->> the submitted patch with the upstream patch since they
->> wouldn't look at all alike, but the fixes and upstream tags would define
->> the affected range in Linus' tree.
->>
->> I would appreciate any guidance on how best to handle this kind of
->> situation.
-> 
-> You could submit various patches with [PATCH stable x.y] in the subject
-> to indicate they are targeting a specific stable branch, copy
-> stable@vger.kernel.org as well as all recipients in this email and see
-> if that works.
-> 
-> Not sure if there is a more documented process than that.
-Yes, that is what I had in mind based on the "Option 3" for patch
-submission. The sticking point is this requirement:
-"You must note the upstream commit ID in the changelog of your submission"
+On Mon, Aug 10, 2020 at 03:46:46PM -0400, Joe Lawrence wrote:
+> > > > > I'm thinking a newcomer reading this might be lost.  It's not
+> > > > > necessarily clear that there are currently two completely different
+> > > > > approaches to creating a livepatch module, each with their own quirks
+> > > > > and benefits/drawbacks.  There is one mention of a "source-based
+> > > > > livepatch author" but no explanation of what that means.
+> > > > > 
+> > > > 
+> > > > Yes, the initial draft was light on source-based patching since I only
+> > > > really tinker with it for samples/kselftests.  The doc was the result of an
+> > > > experienced livepatch developer and Sunday afternoon w/the compiler. I'm
+> > > > sure it reads as such. :)
+> > > 
+> > > Are experienced livepatch developers the intended audience?  If so I
+> > > question what value this document has in its current form.  Presumably
+> > > experienced livepatch developers would already know this stuff.
+> > 
+> > IMHO, this document is useful even for newbies. They might at
+> > least get a clue about these catches. It is better than nothing.
+> > 
+> > I do not want to discourage Joe from creating even better
+> > documentation. But if he does not have interest or time
+> > to work on it, I am happy even for this piece.
 
-My best guess is to use a32c1c61212d, but that could easily cause
-confusion in this case. My hope is that now I can reference this
-discussion to provide additional clarity.
+Agreed.  Joe, sorry for instigating and then disappearing :-)
 
-Thanks,
-    Doug
+I know we're all busy and I didn't intend to block the patch until we
+reach Documentation Nirvana.  Though it would be _really_ nice to get
+more input from those who have more experience with the subject matter
+(source-based patch generation).
+
+It's part of my job as a maintainer to push back, question, and
+sometimes even complain.  I was just wondering where this is heading,
+because as our documentation grows (a good thing), the overall state is
+getting less cohesive (a bad thing).
+
+Anyway, ACK to the original patch.
+
+> 1. Provide a better index page to connect the other files/docs, like
+> https://www.kernel.org/doc/html/latest/core-api/index.html but obviously not
+> that extensive.  Right now we have only a Table of Contents tree without any
+> commentary.
+> 
+> 2. Rearrange and refactor sections:
+> 
+> livepatch.rst
+>   Keep just about everything
+>   Add a history section to explain ksplice, kgraft, kpatch for the
+>     uninitiated?
+>   Add a section on source based vs. binary diff livepatch creation,
+>     this may be worth its own top-level section
+> 
+> Livepatch API
+>   Basic API
+>   Callbacks
+>   Shadow variables
+>   Cumulative patches
+>   System state
+> 
+> KLP Relocations
+>   Right now this is a bit academic AFAIK kpatch is the only tool
+>   currently making use of them.  So maybe this document becomes a
+>   more general purpose doc explaining how to reference unexported
+>   symbols?  (ie, how does kgraft currently do it, particularly
+>   w/kallsyms going unexported?)
+> 
+>   Eventually this could contain klp-convert howto if it ever gets
+>   merged.
+> 
+> Compiler considerations
+>   TBD
+
+This is certainly a logical way to organize things.  But again I would
+wonder, who's the audience?
+
+> I suppose this doesn't create a "Livepatching creation for dummies" guide,
+> but my feeling is that there are so many potential (hidden) pitfalls that
+> such guide would be dangerous.
+
+I disagree that a live patching creation guide would be dangerous.  I
+think it would be less dangerous than *not* having one.  There are
+several companies now delivering (hopefully reliable) livepatches to
+customers, and they're all presumably following processes.  We just need
+to agree on best practices and document the resulting process.  Over
+time I believe that will create much more good than harm.
+
+Sure, there are pitfalls, but the known ones can be highlighted in the
+guide.  No document is perfect but it hopefully improves and becomes
+more useful over time.
+
+-- 
+Josh
+
