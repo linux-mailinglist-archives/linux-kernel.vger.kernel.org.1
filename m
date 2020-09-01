@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8535E259559
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8C3259570
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732203AbgIAPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        id S1732066AbgIAPvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732167AbgIAPuG (ORCPT
+        with ESMTP id S1727114AbgIAPu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:50:06 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F50EC061244;
-        Tue,  1 Sep 2020 08:50:06 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m5so885692pgj.9;
-        Tue, 01 Sep 2020 08:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tvCRLYAyQWKkqKGKttpKhLQlN/6T9uJa0Fn4mM13fKc=;
-        b=sqYq5WtIm/TLWTlkZEO/dSBzKmYZH++45u7iU5u4C2tbERPBHIhxiaP7OkTywsLpNe
-         /zpuQlsrd4FJEVD95xDPTbRJlmnpOI18tvokDp7JgJyTCGli9EGg1wU/7LcGWW4RuB3L
-         i3JipCEnQo+JjYoJmR/9QPthSRVoYiyGSXQO2o4JxfzRlZ0RHAB+2FKyl6ZfuZI5On0L
-         lvqMNTf8NgV/dZHPZS7ZRc+K1+mfq7uNvo5uP4tRE3qTsmnLzfekHEXkOwTlikZyRxyR
-         Pypq3yijEotlP36SB2yncox6G9JfwDSd5+0nALPx9jLRcx76lKPrpbP/ZYAbcuNgerK6
-         FXXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tvCRLYAyQWKkqKGKttpKhLQlN/6T9uJa0Fn4mM13fKc=;
-        b=Sv/SK3oh0tItKElH1OWmnmSs//AITtkBnNKNj7PNhP6jZEZ5a/Ka4COjadcRzw27kA
-         k0+U5uEpK0rWWMIere0XOREiYtxtAB1f/YvjAcgBpVublOUibeoORlabv6rzOVkMkItX
-         7+NMGmCLYps9Vg4ZEigvVEpzYSksQnPxBJnDmRm2IvUUF5NAPST7MIH39WJKHgFZ/Bl2
-         NDQFUuNQae5/5OjxPCD295jCCHCnX3isnLfNyMbwlpXDjsVAM140AZ/h6UNhJmqc1jPx
-         ULJEsFkg0cStpTi4dRunEayg+ULA9jaOSACzkcqjK0zeEELS3YHs/9kwT7ciSMYc+DQb
-         ML/g==
-X-Gm-Message-State: AOAM530tODMI5N+BeVoOaIEstnp/rPrRXdzFHMTlhcFAUC5RuqQDl/9X
-        AWK4lLgdUizGTRaVOAbdg/FVdyBUQJQ=
-X-Google-Smtp-Source: ABdhPJxwuWDznI85eI7yiwwdGg0TFwDFrVOkrOhk+JBqxxr1Obtsvh/cGYxkl9jid0GdM7yqRvWo/Q==
-X-Received: by 2002:a63:4e10:: with SMTP id c16mr2033803pgb.54.1598975405984;
-        Tue, 01 Sep 2020 08:50:05 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q71sm2059375pjq.7.2020.09.01.08.50.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Sep 2020 08:50:05 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 08:50:04 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] watchdog: davinci: Simplify with dev_err_probe()
-Message-ID: <20200901155004.GB106798@roeck-us.net>
-References: <20200901153141.18960-1-krzk@kernel.org>
- <20200901153141.18960-2-krzk@kernel.org>
+        Tue, 1 Sep 2020 11:50:27 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6356C061247;
+        Tue,  1 Sep 2020 08:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tHPi+SjkOF6w9APKcpbiTQrV0DyQaBz6SgJbSF6lXMk=; b=3NjA7NmECoivZ7oLm1KxCRgUdI
+        gcm8mw9F1Z8G3GoMzLr1uhEe84sAtLIki46X+4JpIaR7wmlZB8eyeWkPscMyUauxVt2QhcldUDJhu
+        N7Bv7E8wgOmUSrXr561FZuMQhOw6QWKNQRgQtDqbWInsG1Pe2tUPw5tDx3n7GugRm7rfQNcN70TkM
+        bMaZ5J4hqMKSrjKSjP7eJgvWSnmHBM2IETGWnLmyF/pgz6fBOjDKT9BJJw4oP3lgyzK8THMYh6bTX
+        svOA2UkXDiIopjcIIfQ1h1rvsR74sGInfUraA3hmPzVvFT2nqTYtD+EDxH6ZUswkP5IYdTAr02s8E
+        hmIvzZCQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kD8Y4-0001I2-Tt; Tue, 01 Sep 2020 15:50:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2A878307936;
+        Tue,  1 Sep 2020 17:50:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 03B3220D7C0E3; Tue,  1 Sep 2020 17:50:14 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 17:50:14 +0200
+From:   peterz@infradead.org
+To:     Lina Iyer <ilina@codeaurora.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>, paulmck@kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Saravana Kannan <saravanak@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        madhuparnabhowmik10@gmail.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
+ OF driver helper
+Message-ID: <20200901155014.GF2674@hirez.programming.kicks-ass.net>
+References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+ <20200831194402.GD2855@paulmck-ThinkPad-P72>
+ <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
+ <CAPDyKFrTERjpLrPOFtkqLyNsk2T_58Ye2FQ1mPf-0u78aWW=Xw@mail.gmail.com>
+ <20200901104206.GU1362448@hirez.programming.kicks-ass.net>
+ <CAPDyKFo0VkW-cgRSkvPQ0whpuJCo4OKcL1nmH7nz1tDEChOtVg@mail.gmail.com>
+ <CAPDyKFrv+DTF8=twZZk_tenB-sLg6H-CFn9HVDVA5S2kK2=U5Q@mail.gmail.com>
+ <20200901154417.GD20303@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901153141.18960-2-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200901154417.GD20303@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:31:40PM +0200, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+On Tue, Sep 01, 2020 at 09:44:17AM -0600, Lina Iyer wrote:
+> > > > > > I could add RCU_NONIDLE for the calls to pm_runtime_put_sync_suspend()
+> > > > > > and pm_runtime_get_sync() in psci_enter_domain_idle_state(). Perhaps
+> > > > > > that's the easiest approach, at least to start with.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> I think this would be nice. This should also cover the case, where PM domain
+> power off notification callbacks call trace function internally. Right?
 
-> ---
->  drivers/watchdog/davinci_wdt.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/watchdog/davinci_wdt.c b/drivers/watchdog/davinci_wdt.c
-> index 2b3f3cd382ef..e6eaba6bae5b 100644
-> --- a/drivers/watchdog/davinci_wdt.c
-> +++ b/drivers/watchdog/davinci_wdt.c
-> @@ -206,12 +206,9 @@ static int davinci_wdt_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	davinci_wdt->clk = devm_clk_get(dev, NULL);
-> -
-> -	if (IS_ERR(davinci_wdt->clk)) {
-> -		if (PTR_ERR(davinci_wdt->clk) != -EPROBE_DEFER)
-> -			dev_err(dev, "failed to get clock node\n");
-> -		return PTR_ERR(davinci_wdt->clk);
-> -	}
-> +	if (IS_ERR(davinci_wdt->clk))
-> +		return dev_err_probe(dev, PTR_ERR(davinci_wdt->clk),
-> +				     "failed to get clock node\n");
->  
->  	ret = clk_prepare_enable(davinci_wdt->clk);
->  	if (ret) {
-> -- 
-> 2.17.1
-> 
+That's just more crap for me to clean up later :-(
+
+trace_*_rcuidle() and RCU_NONIDLE() need to die, not proliferate.
