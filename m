@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F2D259174
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BAB259178
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgIAOva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:51:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36992 "EHLO mail.kernel.org"
+        id S1728780AbgIAOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbgIAOvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:51:08 -0400
+        id S1728745AbgIAOvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:51:13 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70B8A206EB;
-        Tue,  1 Sep 2020 14:51:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B3362078B;
+        Tue,  1 Sep 2020 14:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598971867;
-        bh=hfukjQ/MUILfw8yDC7cf0oDeEgXFfD/okOKu4FWtQjo=;
+        s=default; t=1598971872;
+        bh=anuuC+nyOp49gnlHHAG1/TrEkpLdDC9qf98Nwn4rs3s=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=KdZkKrPbJPR6PVQp86UaHDX+HsDJrrw5I5U4tYBdv8Pl0BBqfci5MRo14nfvRMDZw
-         MRR1yz/s4kYCrYRB1Vw2MjvW/WsWHTc8nezzIGOQVoqvC8/QlhSntVTYcCUTBlmyrB
-         LsYvyQzhb74p2tAKSwJ1WvFh4/h2Dk3Uz7uVy3/o=
-Date:   Tue, 01 Sep 2020 15:50:27 +0100
+        b=YfbDWAJVGN1SmpC3e39BG5KOauWOSh9drKQX26b7xgcJ5ha74rdQMvaUYIXmMdc02
+         fvUSYQqi4grDxZyW6Gv0x6rhU2Ki3Bh+h48QnunrmrzdJsJwZz/m5RQFHa464ocCzA
+         vbT3AnopW/phaGT3fICSivalHthTEUKZMFvnmxj8=
+Date:   Tue, 01 Sep 2020 15:50:33 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Dan Murphy <dmurphy@ti.com>, Lee Jones <lee.jones@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200830185356.5365-1-digetx@gmail.com>
-References: <20200830185356.5365-1-digetx@gmail.com>
-Subject: Re: [PATCH v2 0/6] Introduce Embedded Controller driver for Acer A500
-Message-Id: <159897181721.47861.7031289432829890619.b4-ty@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20200831204335.19489-1-digetx@gmail.com>
+References: <20200831204335.19489-1-digetx@gmail.com>
+Subject: Re: [PATCH v1] regulator: core: Fix slab-out-of-bounds in regulator_unlock_recursive()
+Message-Id: <159897183313.47900.9927134230098775732.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 Aug 2020 21:53:50 +0300, Dmitry Osipenko wrote:
-> This series adds support for the Embedded Controller which is found on
-> Acer Iconia Tab A500 (Android tablet device).
-> 
-> The Embedded Controller is ENE KB930 and it's running firmware customized
-> for the A500. The firmware interface may be reused by some other sibling
-> Acer tablets, although none of those tablets are supported in upstream yet.
-> Please review and apply, thanks in advance!
-> 
-> [...]
+On Mon, 31 Aug 2020 23:43:35 +0300, Dmitry Osipenko wrote:
+> The recent commit 7d8196641ee1 ("regulator: Remove pointer table
+> overallocation") changed the size of coupled_rdevs and now KASAN is able
+> to detect slab-out-of-bounds problem in regulator_unlock_recursive(),
+> which is a legit problem caused by a typo in the code. The recursive
+> unlock function uses n_coupled value of a parent regulator for unlocking
+> supply regulator, while supply's n_coupled should be used. In practice
+> problem may only affect platforms that use coupled regulators.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] regmap: Use flexible sleep
-      commit: 2b32d2f7ce0a54ce74a75f0d939b5ee063a05ec5
+[1/1] regulator: core: Fix slab-out-of-bounds in regulator_unlock_recursive()
+      commit: 0a7416f94707c60b9f66b01c0a505b7e41375f3a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
