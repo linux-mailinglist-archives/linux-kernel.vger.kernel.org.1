@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F36259329
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C585A2592D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgIAPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:22:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38754 "EHLO mail.kernel.org"
+        id S1729392AbgIAPRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:17:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729020AbgIAPTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:19:42 -0400
+        id S1729301AbgIAPQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:16:19 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E95B3206EB;
-        Tue,  1 Sep 2020 15:19:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17649206FA;
+        Tue,  1 Sep 2020 15:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973582;
-        bh=HcQS+VMvWdRoEZwki/4Ya7RkFs+DvHo1w0eac91M6eo=;
+        s=default; t=1598973378;
+        bh=/0x0y/GQrcn63gNTrSWw+xV5AuBbNyfSInGmLAJtQMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pmiZTCOPJObB+8GNtcIdYslCOBrLOIL5NHi+jctjKiKSA1c2RVs2omjAUgnoG5G1N
-         rmftDSz8SDfTxc11KcHc09AjwWx/WI3rIVTrV0HXNiq/QDbU7j7tbp4O9UhBVXn/lb
-         Pm5g11q1OnX79+COjJ2yIQgBvSZyT89wXDpZuZ9w=
+        b=NYcHaov/fV4JBQkDoOM5BLv2XTSO9PM3zEsmN3DpTKQI5lC7FCkRZyPpOfJbtuOHJ
+         EOL8NonfNQfJL4qhjfh89RL71yOzfl2e6VuFmDz3Hfx5bOyZH+KasFgAvRImdtXEYk
+         3VIE1nUXG6sVF/HbnFOpMzsNkw2FqY6uy/tQPmpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 56/91] net: gianfar: Add of_node_put() before goto statement
+        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
+        syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 54/78] vt_ioctl: change VT_RESIZEX ioctl to check for error return from vc_resize()
 Date:   Tue,  1 Sep 2020 17:10:30 +0200
-Message-Id: <20200901150930.898406813@linuxfoundation.org>
+Message-Id: <20200901150927.463655379@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumera Priyadarsini <sylphrenadin@gmail.com>
+From: George Kennedy <george.kennedy@oracle.com>
 
-[ Upstream commit 989e4da042ca4a56bbaca9223d1a93639ad11e17 ]
+commit bc5269ca765057a1b762e79a1cfd267cd7bf1c46 upstream.
 
-Every iteration of for_each_available_child_of_node() decrements
-reference count of the previous node, however when control
-is transferred from the middle of the loop, as in the case of
-a return or break or goto, there is no decrement thus ultimately
-resulting in a memory leak.
+vc_resize() can return with an error after failure. Change VT_RESIZEX ioctl
+to save struct vc_data values that are modified and restore the original
+values in case of error.
 
-Fix a potential memory leak in gianfar.c by inserting of_node_put()
-before the goto statement.
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Reported-by: syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/1596213192-6635-2-git-send-email-george.kennedy@oracle.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Issue found with Coccinelle.
-
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/gianfar.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/tty/vt/vt_ioctl.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
-index e4a2c74a9b47e..6b95334e172d1 100644
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -844,8 +844,10 @@ static int gfar_of_init(struct platform_device *ofdev, struct net_device **pdev)
- 				continue;
- 
- 			err = gfar_parse_group(child, priv, model);
--			if (err)
-+			if (err) {
-+				of_node_put(child);
- 				goto err_grp_init;
-+			}
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -896,12 +896,22 @@ int vt_ioctl(struct tty_struct *tty,
+ 			console_lock();
+ 			vcp = vc_cons[i].d;
+ 			if (vcp) {
++				int ret;
++				int save_scan_lines = vcp->vc_scan_lines;
++				int save_font_height = vcp->vc_font.height;
++
+ 				if (v.v_vlin)
+ 					vcp->vc_scan_lines = v.v_vlin;
+ 				if (v.v_clin)
+ 					vcp->vc_font.height = v.v_clin;
+ 				vcp->vc_resize_user = 1;
+-				vc_resize(vcp, v.v_cols, v.v_rows);
++				ret = vc_resize(vcp, v.v_cols, v.v_rows);
++				if (ret) {
++					vcp->vc_scan_lines = save_scan_lines;
++					vcp->vc_font.height = save_font_height;
++					console_unlock();
++					return ret;
++				}
+ 			}
+ 			console_unlock();
  		}
- 	} else { /* SQ_SG_MODE */
- 		err = gfar_parse_group(np, priv, model);
--- 
-2.25.1
-
 
 
