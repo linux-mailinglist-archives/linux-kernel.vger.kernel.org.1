@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C2E2597E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECAB25968A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731098AbgIAPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34858 "EHLO mail.kernel.org"
+        id S1729551AbgIAQEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:04:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730721AbgIAPbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:40 -0400
+        id S1728474AbgIAPmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:42:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EBA5A21548;
-        Tue,  1 Sep 2020 15:31:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4123A206EB;
+        Tue,  1 Sep 2020 15:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974299;
-        bh=NJTSeJrTc91T1jCZwxChPI4LytyfAOEkBE1Nr9OJmPs=;
+        s=default; t=1598974943;
+        bh=zEVh5qL9qm/yB6jpYys63bBeSyhHRkjD+rP54dVUYwI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cXyk6pyagLdcutUkJDm6c4QOsAGYOZiSWgNvU+kEmnYYALELr+CKTkzYyS2vzbK1m
-         L9sR6bKaOGZ2N2vzodFxs78tsMRX1gB/V3dy2xEBpwFTn0IxOunCWzfnWvK4D+AhxN
-         R3CfKocQUTc5Nw0svf6e5fAbei960S2jB1W0XURE=
+        b=0WZSiJtEYiCoB7ouazKCjk6SQ1AOSWw9R2er6QgFEmiL+noDD+rLYoFFpoU0if3qM
+         wTdmUE4F9IU86skO5AsMQzD0nL24DZzPz/iDDF2JSX+nN8ijYcC0GH+X0I3dgvW+op
+         qS72X7poj4jTgbqUe2LKMaPwKah/IUPE4fxS5o10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sham Muthayyan <smuthayy@codeaurora.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        stable@vger.kernel.org, Amelie Delaunay <amelie.delaunay@st.com>,
+        Alain Volmat <alain.volmat@st.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 095/214] PCI: qcom: Add missing reset for ipq806x
-Date:   Tue,  1 Sep 2020 17:09:35 +0200
-Message-Id: <20200901150957.545928126@linuxfoundation.org>
+Subject: [PATCH 5.8 120/255] spi: stm32: fix stm32_spi_prepare_mbr in case of odd clk_rate
+Date:   Tue,  1 Sep 2020 17:09:36 +0200
+Message-Id: <20200901151006.480047165@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,70 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ansuel Smith <ansuelsmth@gmail.com>
+From: Amelie Delaunay <amelie.delaunay@st.com>
 
-[ Upstream commit ee367e2cdd2202b5714982739e684543cd2cee0e ]
+[ Upstream commit 9cc61973bf9385b19ff5dda4a2a7e265fcba85e4 ]
 
-Add missing ext reset used by ipq8064 SoC in PCIe qcom driver.
+Fix spi->clk_rate when it is odd to the nearest lowest even value because
+minimum SPI divider is 2.
 
-Link: https://lore.kernel.org/r/20200615210608.21469-5-ansuelsmth@gmail.com
-Fixes: 82a823833f4e ("PCI: qcom: Add Qualcomm PCIe controller driver")
-Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc: stable@vger.kernel.org # v4.5+
+Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Signed-off-by: Alain Volmat <alain.volmat@st.com>
+Link: https://lore.kernel.org/r/1597043558-29668-4-git-send-email-alain.volmat@st.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-qcom.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/spi/spi-stm32.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 9cf7599a198c4..374db5d59cf87 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -110,6 +110,7 @@ struct qcom_pcie_resources_2_1_0 {
- 	struct reset_control *ahb_reset;
- 	struct reset_control *por_reset;
- 	struct reset_control *phy_reset;
-+	struct reset_control *ext_reset;
- 	struct regulator_bulk_data supplies[QCOM_PCIE_2_1_0_MAX_SUPPLY];
- };
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index 7f2113e7b3ddc..9b90a22543fd7 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -442,7 +442,8 @@ static int stm32_spi_prepare_mbr(struct stm32_spi *spi, u32 speed_hz,
+ {
+ 	u32 div, mbrdiv;
  
-@@ -279,6 +280,10 @@ static int qcom_pcie_get_resources_2_1_0(struct qcom_pcie *pcie)
- 	if (IS_ERR(res->por_reset))
- 		return PTR_ERR(res->por_reset);
+-	div = DIV_ROUND_UP(spi->clk_rate, speed_hz);
++	/* Ensure spi->clk_rate is even */
++	div = DIV_ROUND_UP(spi->clk_rate & ~0x1, speed_hz);
  
-+	res->ext_reset = devm_reset_control_get_optional_exclusive(dev, "ext");
-+	if (IS_ERR(res->ext_reset))
-+		return PTR_ERR(res->ext_reset);
-+
- 	res->phy_reset = devm_reset_control_get_exclusive(dev, "phy");
- 	return PTR_ERR_OR_ZERO(res->phy_reset);
- }
-@@ -292,6 +297,7 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
- 	reset_control_assert(res->axi_reset);
- 	reset_control_assert(res->ahb_reset);
- 	reset_control_assert(res->por_reset);
-+	reset_control_assert(res->ext_reset);
- 	reset_control_assert(res->phy_reset);
- 	clk_disable_unprepare(res->iface_clk);
- 	clk_disable_unprepare(res->core_clk);
-@@ -351,6 +357,12 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
- 		goto err_deassert_ahb;
- 	}
- 
-+	ret = reset_control_deassert(res->ext_reset);
-+	if (ret) {
-+		dev_err(dev, "cannot deassert ext reset\n");
-+		goto err_deassert_ahb;
-+	}
-+
- 	/* enable PCIe clocks and resets */
- 	val = readl(pcie->parf + PCIE20_PARF_PHY_CTRL);
- 	val &= ~BIT(0);
+ 	/*
+ 	 * SPI framework set xfer->speed_hz to master->max_speed_hz if
 -- 
 2.25.1
 
