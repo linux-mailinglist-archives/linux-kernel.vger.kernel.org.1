@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 161E0259397
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CB72592F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730310AbgIAP1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:27:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48806 "EHLO mail.kernel.org"
+        id S1728666AbgIAPTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729977AbgIAPYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:24:45 -0400
+        id S1729411AbgIAPRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:17:31 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3E6420BED;
-        Tue,  1 Sep 2020 15:24:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C33E7206EB;
+        Tue,  1 Sep 2020 15:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973884;
-        bh=t1LNtG/Jdd0VPLwGJg2Ezz0CbpvnD31LnWJbbEwRVp8=;
+        s=default; t=1598973450;
+        bh=S2oNKUwSR74H5j+fjKvzzgnn14FaQ415un7UD9caseA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RHemctS5EaXdPEhcmLN5DFvyTl2ZM+W4C7NtFi9k8WT9QyTQQxA7zUaMQyB/HXqHb
-         ZaRdRtxOhXVo2JbF7QNoKZxuhgWakRM02NCTp5YhDYZmRBv+w7Njxe4r4Jko209fKL
-         BzRC2x9rVhSnaRUhGpiIsJ5ULi43VlD6EXncboBQ=
+        b=AJUpq9xNS5EYhP3tlLNK44oV+nLZ8s1w5y/yI4nM5ilGEeUF4ZRDzeRNaXeO+HPau
+         TDlVOUAXHYpAOYD7p6elT/eq2OWmfw0z30F/HnUixKzMZ82xrfJx20ERcZ8+6ht6ZD
+         wVM21Q4EH51DET06wZToFoIKNCdC6eJAMx9dl6pc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, George Kennedy <george.kennedy@oracle.com>,
-        syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 085/125] fbcon: prevent user font height or width change from causing potential out-of-bounds access
-Date:   Tue,  1 Sep 2020 17:10:40 +0200
-Message-Id: <20200901150938.740748818@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        syzbot+c2c3302f9c601a4b1be2@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 66/78] USB: yurex: Fix bad gfp argument
+Date:   Tue,  1 Sep 2020 17:10:42 +0200
+Message-Id: <20200901150928.081609096@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
-References: <20200901150934.576210879@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,79 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: George Kennedy <george.kennedy@oracle.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-commit 39b3cffb8cf3111738ea993e2757ab382253d86a upstream.
+commit f176ede3a3bde5b398a6777a7f9ff091baa2d3ff upstream.
 
-Add a check to fbcon_resize() to ensure that a possible change to user font
-height or user font width will not allow a font data out-of-bounds access.
-NOTE: must use original charcount in calculation as font charcount can
-change and cannot be used to determine the font data allocated size.
+The syzbot fuzzer identified a bug in the yurex driver: It passes
+GFP_KERNEL as a memory-allocation flag to usb_submit_urb() at a time
+when its state is TASK_INTERRUPTIBLE, not TASK_RUNNING:
 
-Signed-off-by: George Kennedy <george.kennedy@oracle.com>
-Cc: stable <stable@vger.kernel.org>
-Reported-by: syzbot+38a3699c7eaf165b97a6@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/1596213192-6635-1-git-send-email-george.kennedy@oracle.com
+do not call blocking ops when !TASK_RUNNING; state=1 set at [<00000000370c7c68>] prepare_to_wait+0xb1/0x2a0 kernel/sched/wait.c:247
+WARNING: CPU: 1 PID: 340 at kernel/sched/core.c:7253 __might_sleep+0x135/0x190
+kernel/sched/core.c:7253
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 340 Comm: syz-executor677 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google
+01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xf6/0x16e lib/dump_stack.c:118
+ panic+0x2aa/0x6e1 kernel/panic.c:231
+ __warn.cold+0x20/0x50 kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x41/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:__might_sleep+0x135/0x190 kernel/sched/core.c:7253
+Code: 65 48 8b 1c 25 40 ef 01 00 48 8d 7b 10 48 89 fe 48 c1 ee 03 80 3c 06 00 75
+2b 48 8b 73 10 48 c7 c7 e0 9e 06 86 e8 ed 12 f6 ff <0f> 0b e9 46 ff ff ff e8 1f
+b2 4b 00 e9 29 ff ff ff e8 15 b2 4b 00
+RSP: 0018:ffff8881cdb77a28 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: ffff8881c6458000 RCX: 0000000000000000
+RDX: ffff8881c6458000 RSI: ffffffff8129ec93 RDI: ffffed1039b6ef37
+RBP: ffffffff86fdade2 R08: 0000000000000001 R09: ffff8881db32f54f
+R10: 0000000000000000 R11: 0000000030343354 R12: 00000000000001f2
+R13: 0000000000000000 R14: 0000000000000068 R15: ffffffff83c1b1aa
+ slab_pre_alloc_hook.constprop.0+0xea/0x200 mm/slab.h:498
+ slab_alloc_node mm/slub.c:2816 [inline]
+ slab_alloc mm/slub.c:2900 [inline]
+ kmem_cache_alloc_trace+0x46/0x220 mm/slub.c:2917
+ kmalloc include/linux/slab.h:554 [inline]
+ dummy_urb_enqueue+0x7a/0x880 drivers/usb/gadget/udc/dummy_hcd.c:1251
+ usb_hcd_submit_urb+0x2b2/0x22d0 drivers/usb/core/hcd.c:1547
+ usb_submit_urb+0xb4e/0x13e0 drivers/usb/core/urb.c:570
+ yurex_write+0x3ea/0x820 drivers/usb/misc/yurex.c:495
+
+This patch changes the call to use GFP_ATOMIC instead of GFP_KERNEL.
+
+Reported-and-tested-by: syzbot+c2c3302f9c601a4b1be2@syzkaller.appspotmail.com
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+CC: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200810182954.GB307778@rowland.harvard.edu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/video/fbdev/core/fbcon.c |   25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ drivers/usb/misc/yurex.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2152,6 +2152,9 @@ static void updatescrollmode(struct disp
- 	}
- }
- 
-+#define PITCH(w) (((w) + 7) >> 3)
-+#define CALC_FONTSZ(h, p, c) ((h) * (p) * (c)) /* size = height * pitch * charcount */
-+
- static int fbcon_resize(struct vc_data *vc, unsigned int width, 
- 			unsigned int height, unsigned int user)
- {
-@@ -2161,6 +2164,24 @@ static int fbcon_resize(struct vc_data *
- 	struct fb_var_screeninfo var = info->var;
- 	int x_diff, y_diff, virt_w, virt_h, virt_fw, virt_fh;
- 
-+	if (ops->p && ops->p->userfont && FNTSIZE(vc->vc_font.data)) {
-+		int size;
-+		int pitch = PITCH(vc->vc_font.width);
-+
-+		/*
-+		 * If user font, ensure that a possible change to user font
-+		 * height or width will not allow a font data out-of-bounds access.
-+		 * NOTE: must use original charcount in calculation as font
-+		 * charcount can change and cannot be used to determine the
-+		 * font data allocated size.
-+		 */
-+		if (pitch <= 0)
-+			return -EINVAL;
-+		size = CALC_FONTSZ(vc->vc_font.height, pitch, FNTCHARCNT(vc->vc_font.data));
-+		if (size > FNTSIZE(vc->vc_font.data))
-+			return -EINVAL;
-+	}
-+
- 	virt_w = FBCON_SWAP(ops->rotate, width, height);
- 	virt_h = FBCON_SWAP(ops->rotate, height, width);
- 	virt_fw = FBCON_SWAP(ops->rotate, vc->vc_font.width,
-@@ -2623,7 +2644,7 @@ static int fbcon_set_font(struct vc_data
- 	int size;
- 	int i, csum;
- 	u8 *new_data, *data = font->data;
--	int pitch = (font->width+7) >> 3;
-+	int pitch = PITCH(font->width);
- 
- 	/* Is there a reason why fbconsole couldn't handle any charcount >256?
- 	 * If not this check should be changed to charcount < 256 */
-@@ -2639,7 +2660,7 @@ static int fbcon_set_font(struct vc_data
- 	if (fbcon_invalid_charcount(info, charcount))
- 		return -EINVAL;
- 
--	size = h * pitch * charcount;
-+	size = CALC_FONTSZ(h, pitch, charcount);
- 
- 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
- 
+--- a/drivers/usb/misc/yurex.c
++++ b/drivers/usb/misc/yurex.c
+@@ -502,7 +502,7 @@ static ssize_t yurex_write(struct file *
+ 	prepare_to_wait(&dev->waitq, &wait, TASK_INTERRUPTIBLE);
+ 	dev_dbg(&dev->interface->dev, "%s - submit %c\n", __func__,
+ 		dev->cntl_buffer[0]);
+-	retval = usb_submit_urb(dev->cntl_urb, GFP_KERNEL);
++	retval = usb_submit_urb(dev->cntl_urb, GFP_ATOMIC);
+ 	if (retval >= 0)
+ 		timeout = schedule_timeout(YUREX_WRITE_TIMEOUT);
+ 	finish_wait(&dev->waitq, &wait);
 
 
