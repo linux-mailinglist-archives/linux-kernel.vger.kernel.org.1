@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD690258E36
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C95258E59
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgIAMal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:30:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:41118 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727906AbgIAMZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:25:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 671891FB;
-        Tue,  1 Sep 2020 05:25:07 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D0D03F68F;
-        Tue,  1 Sep 2020 05:25:06 -0700 (PDT)
-Subject: Re: [PATCH v2] arm64: dts: rockchip: enable HDMI sound nodes for
- rk3328-rock64
-To:     Katsuhiro Suzuki <katsuhiro@katsuster.net>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200802154231.2639186-1-katsuhiro@katsuster.net>
- <7880329.2VsnZ9RgxX@phil>
- <0e1c3467-0ba0-6b82-4227-40959f0c4b0e@katsuster.net>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <cca43999-fd73-2a71-a4f8-894a44f03032@arm.com>
-Date:   Tue, 1 Sep 2020 13:25:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728224AbgIAMlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728037AbgIAM3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 08:29:53 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A800C06124F;
+        Tue,  1 Sep 2020 05:29:49 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id g14so1006804iom.0;
+        Tue, 01 Sep 2020 05:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nr3oAO1J7ou/Wa9BRVlR/mWJbOSg9zgxTm5r/RYqoxo=;
+        b=CWt5TTyFycCJCtjJPv8aWy8tpmsRd8b/odwKabtR23wfFxkLqHSNKNG41TvRZHSAF1
+         u1ZjDzx+V7+Un/FOxvqZNnaIwViOUFnKv8+IDkqp/amKHRaROg5FjoikQvk/UcHTvVhg
+         dUeSyBvmhuMLAC3ShQr7SqvYMxG0ums6/1iPOoawhFdq/NG6mETYKZTTGbMfhWJ2HVsl
+         vL60M+aBY95RET5WKuUFFrQn/ZRVslJR9zJmR+GTKcduhqny4OwwPTj/mfo5VdtNVekY
+         qrFNcPKoGmd1xDeK63cX/W5BhGvWK4IGrn4jlJnqofXBtZZDh767L+P8JkPsQJup9WO1
+         I3Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nr3oAO1J7ou/Wa9BRVlR/mWJbOSg9zgxTm5r/RYqoxo=;
+        b=D9Oqzk34YRAZzrIRnx7iGjQHp5UQprgWN9gncft21SB7ND60vBZrwfZK6BfuKWYbsW
+         WYoCW55103xJktZuMAyF0WIz1/xP8o6zfhTRYIoQUjje3o/PRqEy8adwkNSLcUsheGfc
+         T3q8t8WBjTtiL7fVODxxI90wG+WMn06VU0PIcYhbmqfjFpnsjLJ5LtqMuj8P6vRwh5j5
+         t0KwXmvTYWDzWJgD0Ox7wA5Ultg3nwUEJwx53B6NhSJCeIfmL4OUy8FkhJDtLSe28udo
+         WV96PTIm6J6oURCbOnQCUjvBMlwTVd3/2CMx9DLCR0B10+TFWnAnwXM6wcySZ5P2PlQI
+         L+pA==
+X-Gm-Message-State: AOAM530rNPr2gFaSPXKWGOPHelbQ2X25r35kmjFHytFUxlblU3MmiALS
+        jDxCHy+2mOdZqRwsgYk6G7GQCv/JwG0Jsvb/ycE=
+X-Google-Smtp-Source: ABdhPJyoc+ysyeuiX9W3a9XcXr6aUKFAc1uY9bosrpv8NxM0mimkeTh0YjpVyD3McAmhUwVQkjUVzsH5DCRKbbjXjLE=
+X-Received: by 2002:a5e:8e0a:: with SMTP id a10mr1255594ion.200.1598963388756;
+ Tue, 01 Sep 2020 05:29:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0e1c3467-0ba0-6b82-4227-40959f0c4b0e@katsuster.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+References: <1598441840-15226-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1598441840-15226-2-git-send-email-gene.chen.richtek@gmail.com> <f35bf9c1-6397-3369-954d-fe05d77438cd@infradead.org>
+In-Reply-To: <f35bf9c1-6397-3369-954d-fe05d77438cd@infradead.org>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Tue, 1 Sep 2020 20:29:37 +0800
+Message-ID: <CAE+NS36MAwNJkbNV30h=bjB6UnW8u9XuzNkDB4Nor=x63Oz3Eg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] leds: mt6360: Add LED driver for MT6360
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     jacek.anaszewski@gmail.com, pavel@ucw.cz,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-31 02:26, Katsuhiro Suzuki wrote:
-> On 2020/08/31 4:16, Heiko Stuebner wrote:
->> Hi,
->>
->> Am Sonntag, 2. August 2020, 17:42:31 CEST schrieb Katsuhiro Suzuki:
->>> This patch enables HDMI sound (I2S0) and Analog sound (I2S1) which
->>> are defined in rk3328.dtsi, and replace SPDIF nodes.
->>>
->>> We can use SPDIF pass-through with suitable ALSA settings and on
->>> mpv or other media players.
->>>    - Settings: 
->>> https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/filesystem/usr/share/alsa/cards/SPDIF.conf 
->>>
->>>    - Ex.: mpv foo.ac3 --audio-spdif=ac3 
->>> --audio-device='alsa/SPDIF.pcm.iec958.0:SPDIF'
->>>
->>> [Why use simple-audio-card for SPDIF?]
->>>
->>> For newly adding nodes, ASoC guys recommend to use audio-graph-card.
->>> But all other sound nodes for rk3328 have already been defined by
->>> simple-audio-card. In this time, I chose for consistent sound nodes.
->>>
->>> [DMA allocation problem]
->>>
->>> After this patch is applied, UART2 will fail to allocate DMA resources
->>> but UART driver can work fine without DMA.
->>>
->>> This error is related to the DMAC of rk3328 (pl330 or compatible).
->>> DMAC connected to 16 DMA sources. Each sources have ID number that is
->>> called 'Req number' in rk3328 TRM. After this patch is applied total 7
->>> of DMA sources will be activated as follows:
->>>
->>> | Req number | Source | Required  |
->>> |            |        | channels  |
->>> |------------+--------+-----------|
->>> |  8,  9     | SPI0   | 2ch       |
->>> | 11, 12     | I2S0   | 2ch       |
->>> | 14, 15     | I2S1   | 2ch       |
->>> |     10     | SPDIF  | 1ch       |
->>> |------------+--------+-----------|
->>> |            | Total  | 7ch       |
->>> |------------+--------+-----------|
->>> |  6,  7     | UART2  | 2ch       | -> cannot get DMA channels
->>>
->>> Due to rk3328 DMAC specification we can use max 8 channels at same
->>> time. If SPI0/I2S0/I2S1/SPDIF will be activated by this patch,
->>> required DMAC channels reach to 7. So the last two channels (for
->>> UART2) cannot get DMA resources.
->>
->> Wouldn't the dma allocation depend on the probe ordering?
->> Or is this predetermined, so that always uart2 looses its dmas?
->>
-> 
-> Ah, it's depends on probe ordering when users use kernel modules...
-> 
-> It's better to disable DMA channels for UART2 for avoiding problem.
-> I'll fix and resend patch.
+Randy Dunlap <rdunlap@infradead.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8826=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8811:30=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> On 8/26/20 4:37 AM, Gene Chen wrote:
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index 1c181df..ce95ead 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -271,6 +271,17 @@ config LEDS_MT6323
+> >         This option enables support for on-chip LED drivers found on
+> >         Mediatek MT6323 PMIC.
+> >
+> > +config LEDS_MT6360
+> > +     tristate "LED Support for Mediatek MT6360 PMIC"
+> > +     depends on LEDS_CLASS_FLASH && OF
+> > +     depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
+> > +     depends on MFD_MT6360
+> > +     help
+> > +       This option enables support for dual Flash LED drivers found on
+> > +       Mediatek MT6360 PMIC.
+> > +       Support Torch and Strobe mode independently current source.
+>
+>           Supports                      independently of current source.
+>
+> I'm guessing on that ending; I wasn't sure what was intended, but it does=
+n't
+> make sense as posted.
+>
+>
 
-FWIW it seems that since 089b6d365491, DMA is effectively disabled for 
-UART2 anyway (unless the user goes out of their way to repurpose it), so 
-maybe this is no longer such an immediate concern?
+I want to say is fled1/2 can independently control.
+For example, fled1 in strobe mode, or fled2 in torch mode,
+or both fled1 and fled2 in torch or strobe mode
 
-Robin.
+> > +       Include Low-VF and short protection.
+>
+>           Includes
+>
+
+ACK
+
+> > +
+> >  config LEDS_S3C24XX
+> >       tristate "LED Support for Samsung S3C24XX GPIO LEDs"
+> >       depends on LEDS_CLASS
+>
+>
+> thanks.
+> --
+> ~Randy
