@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0310225960A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908CD2595B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731618AbgIAP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:57:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58966 "EHLO mail.kernel.org"
+        id S1731917AbgIAPqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:46:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731158AbgIAPoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:44:05 -0400
+        id S1731642AbgIAPnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:43:09 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5CE52064B;
-        Tue,  1 Sep 2020 15:44:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CCE720866;
+        Tue,  1 Sep 2020 15:43:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975044;
-        bh=r9HBhZi5uRfTCPjOUZlAFzjcdKyoVIqdk98dp7qcDAI=;
+        s=default; t=1598974988;
+        bh=mC8QRiua3TxU8EWz/9lpCvr+KGukWMfPbUNQDuVcy7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAjvg+jiButgE/y/ixwrX7McM6LflBvGprTEykOf8ZGLjjSRIsXi2XkFkYkXtO2+l
-         sjYIUwVB9g54hxosfxw0Z1+fv98iAPxvEjjBAdvdavX5JeupypcOAuAEtLY6meZSZQ
-         1509X/XgBP1hn54A0wH/K0Bf0eey8+6VPt38+WUw=
+        b=CHBBMO4k13czWaQrMlchOhqIU59flWmx0zLEFVAb44J4b3kETAZ1Oz3THQ9C/XmpK
+         l+HcAmfOlN5O7S65jGDWsmXNDgwU59UTA81jWcnpuUL81kzAKe2+KLQNRS5ZKOhVCi
+         oVV6h3dGYca7O8Im1ac0cJntvTcJiD9YndZ7hkRw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Lee Duncan <lduncan@suse.com>,
-        Douglas Gilbert <dgilbert@interlog.com>,
+        stable@vger.kernel.org,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Quinn Tran <qutran@marvell.com>,
+        Himanshu Madhani <hmadhani@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 147/255] scsi: scsi_debug: Fix scp is NULL errors
-Date:   Tue,  1 Sep 2020 17:10:03 +0200
-Message-Id: <20200901151007.745398956@linuxfoundation.org>
+Subject: [PATCH 5.8 149/255] scsi: qla2xxx: Flush I/O on zone disable
+Date:   Tue,  1 Sep 2020 17:10:05 +0200
+Message-Id: <20200901151007.826848481@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -46,51 +48,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Gilbert <dgilbert@interlog.com>
+From: Quinn Tran <qutran@marvell.com>
 
-[ Upstream commit 223f91b48079227f914657f07d2d686f7b60aa26 ]
+[ Upstream commit a117579d0205b5a0592a3a98493e2b875e4da236 ]
 
-John Garry reported 'sdebug_q_cmd_complete: scp is NULL' failures that were
-mainly seen on aarch64 machines (e.g. RPi 4 with four A72 CPUs). The
-problem was tracked down to a missing critical section on a "short circuit"
-path. Namely, the time to process the current command so far has already
-exceeded the requested command duration (i.e. the number of nanoseconds in
-the ndelay parameter).
+Perform implicit logout to flush I/O on zone disable.
 
-The random=1 parameter setting was pivotal in finding this error.  The
-failure scenario involved first taking that "short circuit" path (due to a
-very short command duration) and then taking the more likely
-hrtimer_start() path (due to a longer command duration). With random=1 each
-command's duration is taken from the uniformly distributed [0..ndelay)
-interval.  The fio utility also helped by reliably generating the error
-scenario at about once per minute on a RPi 4 (64 bit OS).
-
-Link: https://lore.kernel.org/r/20200813155738.109298-1-dgilbert@interlog.com
-Reported-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+Link: https://lore.kernel.org/r/20200806111014.28434-3-njavali@marvell.com
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Quinn Tran <qutran@marvell.com>
+Signed-off-by: Himanshu Madhani <hmadhani@marvell.com>
+Signed-off-by: Nilesh Javali <njavali@marvell.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_debug.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/scsi/qla2xxx/qla_gs.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
-index b0d93bf79978f..25faad7f8e617 100644
---- a/drivers/scsi/scsi_debug.c
-+++ b/drivers/scsi/scsi_debug.c
-@@ -5486,9 +5486,11 @@ static int schedule_resp(struct scsi_cmnd *cmnd, struct sdebug_dev_info *devip,
- 				u64 d = ktime_get_boottime_ns() - ns_from_boot;
- 
- 				if (kt <= d) {	/* elapsed duration >= kt */
-+					spin_lock_irqsave(&sqp->qc_lock, iflags);
- 					sqcp->a_cmnd = NULL;
- 					atomic_dec(&devip->num_in_q);
- 					clear_bit(k, sqp->in_use_bm);
-+					spin_unlock_irqrestore(&sqp->qc_lock, iflags);
- 					if (new_sd_dp)
- 						kfree(sd_dp);
- 					/* call scsi_done() from this thread */
+diff --git a/drivers/scsi/qla2xxx/qla_gs.c b/drivers/scsi/qla2xxx/qla_gs.c
+index c6b6a3250312e..7074073446701 100644
+--- a/drivers/scsi/qla2xxx/qla_gs.c
++++ b/drivers/scsi/qla2xxx/qla_gs.c
+@@ -3436,7 +3436,6 @@ void qla24xx_async_gnnft_done(scsi_qla_host_t *vha, srb_t *sp)
+ 			list_for_each_entry(fcport, &vha->vp_fcports, list) {
+ 				if ((fcport->flags & FCF_FABRIC_DEVICE) != 0) {
+ 					fcport->scan_state = QLA_FCPORT_SCAN;
+-					fcport->logout_on_delete = 0;
+ 				}
+ 			}
+ 			goto login_logout;
 -- 
 2.25.1
 
