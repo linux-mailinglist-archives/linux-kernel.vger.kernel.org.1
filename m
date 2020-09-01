@@ -2,235 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B407C25A1F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 01:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7359625A1FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 01:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgIAXbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 19:31:53 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:39039 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725949AbgIAXbw (ORCPT
+        id S1726419AbgIAXjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 19:39:14 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35398 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726310AbgIAXjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 19:31:52 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CEC2E84487;
-        Wed,  2 Sep 2020 11:31:44 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1599003104;
-        bh=49+HuLkyWuSeSY4/skkmoILG0tKclmzqhawDJyR6ZhY=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=yyZHO9mrQQmwWrQipMW5RwqsvQvtsX3L8n1N8KRGIY65AgauOzbLlL1cJqb5BbgkM
-         DIfjLiEwTpkSVtAJ+UE4CjUuDSDYaI5QVFN99siWtCgmV+dlmC6xbc7HxcBzolAwYg
-         ZDaTNdto/jRnjdo04nWLeQ18Ew3LYT+ZjZilViLmdYNajYpMMjwqRT2rlNnhl4di8v
-         zuKwjrDrAt3oHEK3/IHReNhtWLktw+PTaqMsEtjyDwh1OuewXrzr/WoG6RcL3U4HE3
-         MmZ+ae2n9FrJ/IZC5gxFk6Bkwfsqcyoq0c00bARJwhM6gDx/3g4iOtrCb/jGSE5F/g
-         9qGU9KH6N3/0A==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f4ed9e00000>; Wed, 02 Sep 2020 11:31:44 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Sep 2020 11:31:39 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Wed, 2 Sep 2020 11:31:39 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "Heiner Kallweit" <hkallweit1@gmail.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "paulus@samba.org" <paulus@samba.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-Subject: Re: fsl_espi errors on v5.7.15
-Thread-Topic: fsl_espi errors on v5.7.15
-Thread-Index: AQHWceVnik7XsBYbp0S+yHVGh1hdQak2WMaAgAQdSwCAAz9MAIAAfdcAgAD5u4CAB+sMAIAAYfwAgAA6JQCAAPtUgIAAOXyAgABIbACAAAjRgIABm7wAgAD5+gCABBXPAIAAjqOAgAALRACAAAUXgIAA9CsAgADXoQCAAFDQAIABITyAgAAAmgA=
-Date:   Tue, 1 Sep 2020 23:31:38 +0000
-Message-ID: <fff5c456-5c4b-fa30-577e-75d13ae91c40@alliedtelesis.co.nz>
-References: <1598940515.6e06nwgi0c.astroid@bobo.none>
- <bfaaa982-33b9-c427-48a4-ddf9dd35e7b9@alliedtelesis.co.nz>
-In-Reply-To: <bfaaa982-33b9-c427-48a4-ddf9dd35e7b9@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AA119E2643C36A4383FC1DED0CCE9809@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Tue, 1 Sep 2020 19:39:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599003551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/iIgftDPZ6SF8umaBejPdd+v6H04Rm7NRcY7/1QkewU=;
+        b=SwHCtrf65Ll2sxI0qddzHtrum7UuBZ+BRziOqvEjkUdouX3YSSS4PQGOyKuMi/i0Nf6bQc
+        Mp5VHXJKJVAjS/kc2zBnEu2HvhHBKHEBsMtzPUrrJINwfaj1yjcXW5nZp6lcN6cldbR8uu
+        m6of/D6AqzjosbUm4MX2El+Jw6Hj/vA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-p3seJ9kXNYCK5akRClhjmg-1; Tue, 01 Sep 2020 19:39:08 -0400
+X-MC-Unique: p3seJ9kXNYCK5akRClhjmg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 798D910082E8;
+        Tue,  1 Sep 2020 23:39:05 +0000 (UTC)
+Received: from Whitewolf.redhat.com (ovpn-119-108.rdu2.redhat.com [10.10.119.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B4E96198E;
+        Tue,  1 Sep 2020 23:39:00 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     nouveau@lists.freedesktop.org
+Cc:     stable@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@gmail.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Nirmoy Das <nirmoy.aiemd@gmail.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        James Jones <jajones@nvidia.com>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
+        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] drm/nouveau/kms/nv50-: Program notifier offset before requesting disp caps
+Date:   Tue,  1 Sep 2020 19:38:27 -0400
+Message-Id: <20200901233842.196818-1-lyude@redhat.com>
+In-Reply-To: <20200824183253.826343-2-lyude@redhat.com>
+References: <20200824183253.826343-2-lyude@redhat.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyLzA5LzIwIDExOjI5IGFtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPg0KPiBPbiAxLzA5
-LzIwIDY6MTQgcG0sIE5pY2hvbGFzIFBpZ2dpbiB3cm90ZToNCj4+IEV4Y2VycHRzIGZyb20gQ2hy
-aXMgUGFja2hhbSdzIG1lc3NhZ2Ugb2YgU2VwdGVtYmVyIDEsIDIwMjAgMTE6MjUgYW06DQo+Pj4g
-T24gMS8wOS8yMCAxMjozMyBhbSwgSGVpbmVyIEthbGx3ZWl0IHdyb3RlOg0KPj4+PiBPbiAzMC4w
-OC4yMDIwIDIzOjU5LCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPj4+Pj4gT24gMzEvMDgvMjAgOTo0
-MSBhbSwgSGVpbmVyIEthbGx3ZWl0IHdyb3RlOg0KPj4+Pj4+IE9uIDMwLjA4LjIwMjAgMjM6MDAs
-IENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pj4+Pj4+IE9uIDMxLzA4LzIwIDEyOjMwIGFtLCBOaWNo
-b2xhcyBQaWdnaW4gd3JvdGU6DQo+Pj4+Pj4+PiBFeGNlcnB0cyBmcm9tIENocmlzIFBhY2toYW0n
-cyBtZXNzYWdlIG9mIEF1Z3VzdCAyOCwgMjAyMCA4OjA3IGFtOg0KPj4+Pj4+PiA8c25pcD4NCj4+
-Pj4+Pj4NCj4+Pj4+Pj4+Pj4+Pj4gSSd2ZSBhbHNvIG5vdyBzZWVuIHRoZSBSWCBGSUZPIG5vdCBl
-bXB0eSBlcnJvciBvbiB0aGUgDQo+Pj4+Pj4+Pj4+Pj4+IFQyMDgwUkRCDQo+Pj4+Pj4+Pj4+Pj4+
-DQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IFRyYW5zZmVyIGRvbmUgYnV0
-IFNQSUVfRE9OIGlzbid0IHNldCENCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNw
-aTogVHJhbnNmZXIgZG9uZSBidXQgU1BJRV9ET04gaXNuJ3Qgc2V0IQ0KPj4+Pj4+Pj4+Pj4+PiBm
-c2xfZXNwaSBmZmUxMTAwMDAuc3BpOiBUcmFuc2ZlciBkb25lIGJ1dCBTUElFX0RPTiBpc24ndCBz
-ZXQhDQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IFRyYW5zZmVyIGRvbmUg
-YnV0IFNQSUVfRE9OIGlzbid0IHNldCENCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAw
-LnNwaTogVHJhbnNmZXIgZG9uZSBidXQgcngvdHggZmlmbydzIA0KPj4+Pj4+Pj4+Pj4+PiBhcmVu
-J3QgZW1wdHkhDQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IFNQSUVfUlhD
-TlQgPSAxLCBTUElFX1RYQ05UID0gMzINCj4+Pj4+Pj4+Pj4+Pj4NCj4+Pj4+Pj4+Pj4+Pj4gV2l0
-aCBteSBjdXJyZW50IHdvcmthcm91bmQgb2YgZW1wdHlpbmcgdGhlIFJYIEZJRk8uIEl0IHNlZW1z
-DQo+Pj4+Pj4+Pj4+Pj4+IHN1cnZpdmFibGUuIEludGVyZXN0aW5nbHkgaXQgb25seSBldmVyIHNl
-ZW1zIHRvIGJlIDEgZXh0cmEgDQo+Pj4+Pj4+Pj4+Pj4+IGJ5dGUgaW4gdGhlDQo+Pj4+Pj4+Pj4+
-Pj4+IFJYIEZJRk8gYW5kIGl0IHNlZW1zIHRvIGJlIGFmdGVyIGVpdGhlciBhIFJFQURfU1Igb3Ig
-YSANCj4+Pj4+Pj4+Pj4+Pj4gUkVBRF9GU1IuDQo+Pj4+Pj4+Pj4+Pj4+DQo+Pj4+Pj4+Pj4+Pj4+
-IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IHR4IDcwDQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZm
-ZTExMDAwMC5zcGk6IHJ4IDAzDQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6
-IEV4dHJhIFJYIDAwDQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IFRyYW5z
-ZmVyIGRvbmUgYnV0IFNQSUVfRE9OIGlzbid0IHNldCENCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkg
-ZmZlMTEwMDAwLnNwaTogVHJhbnNmZXIgZG9uZSBidXQgcngvdHggZmlmbydzIA0KPj4+Pj4+Pj4+
-Pj4+PiBhcmVuJ3QgZW1wdHkhDQo+Pj4+Pj4+Pj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6
-IFNQSUVfUlhDTlQgPSAxLCBTUElFX1RYQ05UID0gMzINCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkg
-ZmZlMTEwMDAwLnNwaTogdHggMDUNCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNw
-aTogcnggMDANCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNwaTogRXh0cmEgUlgg
-MDMNCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNwaTogVHJhbnNmZXIgZG9uZSBi
-dXQgU1BJRV9ET04gaXNuJ3Qgc2V0IQ0KPj4+Pj4+Pj4+Pj4+PiBmc2xfZXNwaSBmZmUxMTAwMDAu
-c3BpOiBUcmFuc2ZlciBkb25lIGJ1dCByeC90eCBmaWZvJ3MgDQo+Pj4+Pj4+Pj4+Pj4+IGFyZW4n
-dCBlbXB0eSENCj4+Pj4+Pj4+Pj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNwaTogU1BJRV9SWENO
-VCA9IDEsIFNQSUVfVFhDTlQgPSAzMg0KPj4+Pj4+Pj4+Pj4+PiBmc2xfZXNwaSBmZmUxMTAwMDAu
-c3BpOiB0eCAwNQ0KPj4+Pj4+Pj4+Pj4+PiBmc2xfZXNwaSBmZmUxMTAwMDAuc3BpOiByeCAwMA0K
-Pj4+Pj4+Pj4+Pj4+PiBmc2xfZXNwaSBmZmUxMTAwMDAuc3BpOiBFeHRyYSBSWCAwMw0KPj4+Pj4+
-Pj4+Pj4+Pg0KPj4+Pj4+Pj4+Pj4+PiDCoMKgwqDCoCBGcm9tIGFsbCB0aGUgTWljcm9uIFNQSS1O
-T1IgZGF0YXNoZWV0cyBJJ3ZlIGdvdCANCj4+Pj4+Pj4+Pj4+Pj4gYWNjZXNzIHRvIGl0IGlzDQo+
-Pj4+Pj4+Pj4+Pj4+IHBvc3NpYmxlIHRvIGNvbnRpbnVhbGx5IHJlYWQgdGhlIFNSL0ZTUi4gQnV0
-IEkndmUgbm8gaWRlYSANCj4+Pj4+Pj4+Pj4+Pj4gd2h5IGl0DQo+Pj4+Pj4+Pj4+Pj4+IGhhcHBl
-bnMgc29tZSB0aW1lcyBhbmQgbm90IG90aGVycy4NCj4+Pj4+Pj4+Pj4+PiBTbyBJIHRoaW5rIEkn
-dmUgZ290IGEgcmVwcm9kdWN0aW9uIGFuZCBJIHRoaW5rIEkndmUgDQo+Pj4+Pj4+Pj4+Pj4gYmlz
-ZWN0ZWQgdGhlIHByb2JsZW0NCj4+Pj4+Pj4+Pj4+PiB0byBjb21taXQgMzI4MmEzZGEyNWJkICgi
-cG93ZXJwYy82NDogSW1wbGVtZW50IHNvZnQgDQo+Pj4+Pj4+Pj4+Pj4gaW50ZXJydXB0IHJlcGxh
-eSBpbg0KPj4+Pj4+Pj4+Pj4+IEMiKS4gTXkgZGF5IGlzIGp1c3QgZmluaXNoaW5nIG5vdyBzbyBJ
-IGhhdmVuJ3QgYXBwbGllZCB0b28gDQo+Pj4+Pj4+Pj4+Pj4gbXVjaCBzY3J1dGlueQ0KPj4+Pj4+
-Pj4+Pj4+IHRvIHRoaXMgcmVzdWx0LiBHaXZlbiB0aGUgdmFyaW91cyByYWJiaXQgaG9sZXMgSSd2
-ZSBiZWVuIA0KPj4+Pj4+Pj4+Pj4+IGRvd24gb24gdGhpcw0KPj4+Pj4+Pj4+Pj4+IGlzc3VlIGFs
-cmVhZHkgSSdkIHRha2UgdGhpcyBpbmZvcm1hdGlvbiB3aXRoIGEgZ29vZCBkZWdyZWUgDQo+Pj4+
-Pj4+Pj4+Pj4gb2Ygc2tlcHRpY2lzbS4NCj4+Pj4+Pj4+Pj4+Pg0KPj4+Pj4+Pj4+Pj4gT0ssIHNv
-IGFuIGVhc3kgdGVzdCBzaG91bGQgYmUgdG8gcmUtdGVzdCB3aXRoIGEgNS40IGtlcm5lbC4NCj4+
-Pj4+Pj4+Pj4+IEl0IGRvZXNuJ3QgaGF2ZSB5ZXQgdGhlIGNoYW5nZSB5b3UncmUgcmVmZXJyaW5n
-IHRvLCBhbmQgdGhlIA0KPj4+Pj4+Pj4+Pj4gZnNsLWVzcGkgZHJpdmVyDQo+Pj4+Pj4+Pj4+PiBp
-cyBiYXNpY2FsbHkgdGhlIHNhbWUgYXMgaW4gNS43IChqdXN0IHR3byBzbWFsbCBjaGFuZ2VzIGlu
-IA0KPj4+Pj4+Pj4+Pj4gNS43KS4NCj4+Pj4+Pj4+Pj4gVGhlcmUncyA2Y2MwYzE2ZDgyZjg4IGFu
-ZCBtYXliZSBhbHNvIG90aGVyIGludGVycnVwdCByZWxhdGVkIA0KPj4+Pj4+Pj4+PiBwYXRjaGVz
-DQo+Pj4+Pj4+Pj4+IGFyb3VuZCB0aGlzIHRpbWUgdGhhdCBjb3VsZCBhZmZlY3QgYm9vayBFLCBz
-byBpdCdzIGdvb2QgaWYgDQo+Pj4+Pj4+Pj4+IHRoYXQgZXhhY3QNCj4+Pj4+Pj4+Pj4gcGF0Y2gg
-aXMgY29uZmlybWVkLg0KPj4+Pj4+Pj4+IE15IGNvbmZpcm1hdGlvbiBpcyBiYXNpY2FsbHkgdGhh
-dCBJIGNhbiBpbmR1Y2UgdGhlIGlzc3VlIGluIGEgDQo+Pj4+Pj4+Pj4gNS40IGtlcm5lbA0KPj4+
-Pj4+Pj4+IGJ5IGNoZXJyeS1waWNraW5nIDMyODJhM2RhMjViZC4gSSdtIGFsc28gYWJsZSB0byAi
-Zml4IiB0aGUgDQo+Pj4+Pj4+Pj4gaXNzdWUgaW4NCj4+Pj4+Pj4+PiA1LjktcmMyIGJ5IHJldmVy
-dGluZyB0aGF0IG9uZSBjb21taXQuDQo+Pj4+Pj4+Pj4NCj4+Pj4+Pj4+PiBJIGJvdGggY2FzZXMg
-aXQncyBub3QgZXhhY3RseSBhIGNsZWFuIGNoZXJyeS1waWNrL3JldmVydCBzbyBJIA0KPj4+Pj4+
-Pj4+IGFsc28NCj4+Pj4+Pj4+PiBjb25maXJtZWQgdGhlIGJpc2VjdGlvbiByZXN1bHQgYnkgYnVp
-bGRpbmcgYXQgMzI4MmEzZGEyNWJkIA0KPj4+Pj4+Pj4+ICh3aGljaCBzZWVzDQo+Pj4+Pj4+Pj4g
-dGhlIGlzc3VlKSBhbmQgdGhlIGNvbW1pdCBqdXN0IGJlZm9yZSAod2hpY2ggZG9lcyBub3QpLg0K
-Pj4+Pj4+Pj4gVGhhbmtzIGZvciB0ZXN0aW5nLCB0aGF0IGNvbmZpcm1zIGl0IHdlbGwuDQo+Pj4+
-Pj4+Pg0KPj4+Pj4+Pj4gW3NuaXAgcGF0Y2hdDQo+Pj4+Pj4+Pg0KPj4+Pj4+Pj4+IEkgc3RpbGwg
-c2F3IHRoZSBpc3N1ZSB3aXRoIHRoaXMgY2hhbmdlIGFwcGxpZWQuIA0KPj4+Pj4+Pj4+IFBQQ19J
-UlFfU09GVF9NQVNLX0RFQlVHDQo+Pj4+Pj4+Pj4gZGlkbid0IHJlcG9ydCBhbnl0aGluZyAoZWl0
-aGVyIHdpdGggb3Igd2l0aG91dCB0aGUgY2hhbmdlIGFib3ZlKS4NCj4+Pj4+Pj4+IE9rYXksIGl0
-IHdhcyBhIGJpdCBvZiBhIHNob3QgaW4gdGhlIGRhcmsuIEkgc3RpbGwgY2FuJ3Qgc2VlIHdoYXQN
-Cj4+Pj4+Pj4+IGVsc2UgaGFzIGNoYW5nZWQuDQo+Pj4+Pj4+Pg0KPj4+Pj4+Pj4gV2hhdCB3b3Vs
-ZCBjYXVzZSB0aGlzLCBhIGxvc3QgaW50ZXJydXB0PyBBIHNwdXJpb3VzIGludGVycnVwdD8gT3IN
-Cj4+Pj4+Pj4+IGhpZ2hlciBpbnRlcnJ1cHQgbGF0ZW5jeT8NCj4+Pj4+Pj4+DQo+Pj4+Pj4+PiBJ
-IGRvbid0IHRoaW5rIHRoZSBwYXRjaCBzaG91bGQgY2F1c2Ugc2lnbmlmaWNhbnRseSB3b3JzZSBs
-YXRlbmN5LA0KPj4+Pj4+Pj4gKGl0J3Mgc3VwcG9zZWQgdG8gYmUgYSBiaXQgYmV0dGVyIGlmIGFu
-eXRoaW5nIGJlY2F1c2UgaXQgDQo+Pj4+Pj4+PiBkb2Vzbid0IHNldA0KPj4+Pj4+Pj4gdXAgdGhl
-IGZ1bGwgaW50ZXJydXB0IGZyYW1lKS4gQnV0IGl0J3MgcG9zc2libGUuDQo+Pj4+Pj4+IE15IHdv
-cmtpbmcgdGhlb3J5IGlzIHRoYXQgdGhlIFNQSV9ET04gaW5kaWNhdGlvbiBpcyBhbGwgYWJvdXQg
-DQo+Pj4+Pj4+IHRoZSBUWA0KPj4+Pj4+PiBkaXJlY3Rpb24gYW4gbm93IHRoYXQgdGhlIGludGVy
-cnVwdHMgYXJlIGZhc3RlciB3ZSdyZSBoaXR0aW5nIGFuIA0KPj4+Pj4+PiBlcnJvcg0KPj4+Pj4+
-PiBiZWNhdXNlIHRoZXJlIGlzIHN0aWxsIFJYIGFjdGl2aXR5IGdvaW5nIG9uLiBIZWluZXIgZGlz
-YWdyZWVzIA0KPj4+Pj4+PiB3aXRoIG15DQo+Pj4+Pj4+IGludGVycHJldGF0aW9uIG9mIHRoZSBT
-UElfRE9OIGluZGljYXRpb24gYW5kIHRoZSBmYWN0IHRoYXQgaXQgDQo+Pj4+Pj4+IGRvZXNuJ3QN
-Cj4+Pj4+Pj4gaGFwcGVuIGV2ZXJ5IHRpbWUgZG9lcyB0aHJvdyBkb3VidCBvbiBpdC4NCj4+Pj4+
-Pj4NCj4+Pj4+PiBJdCdzIHJpZ2h0IHRoYXQgdGhlIGVTUEkgc3BlYyBjYW4gYmUgaW50ZXJwcmV0
-ZWQgdGhhdCBTUElfRE9OIA0KPj4+Pj4+IHJlZmVycyB0bw0KPj4+Pj4+IFRYIG9ubHkuIEhvd2V2
-ZXIgdGhpcyB3b3VsZG4ndCByZWFsbHkgbWFrZSBzZW5zZSwgYmVjYXVzZSBhbHNvIA0KPj4+Pj4+
-IGZvciBSWA0KPj4+Pj4+IHdlIHByb2dyYW0gdGhlIGZyYW1lIGxlbmd0aCwgYW5kIHRoZXJlZm9y
-ZSB3YW50IHRvIGJlIG5vdGlmaWVkIA0KPj4+Pj4+IG9uY2UgdGhlDQo+Pj4+Pj4gZnVsbCBmcmFt
-ZSB3YXMgcmVjZWl2ZWQuIEFsc28gcHJhY3RpY2FsIGV4cGVyaWVuY2Ugc2hvd3MgdGhhdCANCj4+
-Pj4+PiBTUElfRE9ODQo+Pj4+Pj4gaXMgc2V0IGFsc28gYWZ0ZXIgUlgtb25seSB0cmFuc2ZlcnMu
-DQo+Pj4+Pj4gVHlwaWNhbCBTUEkgTk9SIHVzZSBjYXNlIGlzIHRoYXQgeW91IHdyaXRlIHJlYWQg
-Y29tbWFuZCArIHN0YXJ0IA0KPj4+Pj4+IGFkZHJlc3MsDQo+Pj4+Pj4gZm9sbG93ZWQgYnkgYSBs
-b25nZXIgcmVhZC4gSWYgdGhlIFRYLW9ubHkgaW50ZXJwcmV0YXRpb24gd291bGQgYmUgDQo+Pj4+
-Pj4gcmlnaHQsDQo+Pj4+Pj4gd2UnZCBhbHdheXMgZW5kIHVwIHdpdGggU1BJX0RPTiBub3QgYmVp
-bmcgc2V0Lg0KPj4+Pj4+DQo+Pj4+Pj4+IEkgY2FuJ3QgcmVhbGx5IGV4cGxhaW4gdGhlIGV4dHJh
-IFJYIGJ5dGUgaW4gdGhlIGZpZm8uIFdlIGtub3cgDQo+Pj4+Pj4+IGhvdyBtYW55DQo+Pj4+Pj4+
-IGJ5dGVzIHRvIGV4cGVjdCBhbmQgd2UgcHVsbCB0aGF0IG1hbnkgZnJvbSB0aGUgZmlmbyBzbyBp
-dCdzIG5vdCANCj4+Pj4+Pj4gYXMgaWYNCj4+Pj4+Pj4gd2UncmUgbWlzc2luZyBhbiBpbnRlcnJ1
-cHQgY2F1c2luZyB1cyB0byBza2lwIHRoZSBsYXN0IGJ5dGUuIA0KPj4+Pj4+PiBJJ3ZlIGJlZW4N
-Cj4+Pj4+Pj4gbG9va2luZyBmb3Igc29tZSBraW5kIG9mIG9mZi1ieS1vbmUgY2FsY3VsYXRpb24g
-YnV0IGFnYWluIGlmIGl0IA0KPj4+Pj4+PiB3ZXJlDQo+Pj4+Pj4+IHNvbWV0aGluZyBsaWtlIHRo
-YXQgaXQnZCBoYXBwZW4gYWxsIHRoZSB0aW1lLg0KPj4+Pj4+Pg0KPj4+Pj4+IE1heWJlIGl0IGhl
-bHBzIHRvIGtub3cgd2hhdCB2YWx1ZSB0aGlzIGV4dHJhIGJ5dGUgaW4gdGhlIEZJRk8gDQo+Pj4+
-Pj4gaGFzLiBJcyBpdDoNCj4+Pj4+PiAtIGEgZHVwbGljYXRlIG9mIHRoZSBsYXN0IHJlYWQgYnl0
-ZQ0KPj4+Pj4+IC0gb3IgdGhlIG5leHQgYnl0ZSAoYXQgPGVuZCBhZGRyZXNzPiArIDEpDQo+Pj4+
-Pj4gLSBvciBhIGZpeGVkIHZhbHVlLCBlLmcuIGFsd2F5cyAweDAwIG9yIDB4ZmYNCj4+Pj4+IFRo
-ZSB2YWx1ZXMgd2VyZSB1cCB0aHJlYWQgYSBiaXQgYnV0IEknbGwgcmVwZWF0IHRoZW0gaGVyZQ0K
-Pj4+Pj4NCj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IHR4IDcwDQo+Pj4+PiBmc2xfZXNw
-aSBmZmUxMTAwMDAuc3BpOiByeCAwMw0KPj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNwaTogRXh0
-cmEgUlggMDANCj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IFRyYW5zZmVyIGRvbmUgYnV0
-IFNQSUVfRE9OIGlzbid0IHNldCENCj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IFRyYW5z
-ZmVyIGRvbmUgYnV0IHJ4L3R4IGZpZm8ncyBhcmVuJ3QgZW1wdHkhDQo+Pj4+PiBmc2xfZXNwaSBm
-ZmUxMTAwMDAuc3BpOiBTUElFX1JYQ05UID0gMSwgU1BJRV9UWENOVCA9IDMyDQo+Pj4+PiBmc2xf
-ZXNwaSBmZmUxMTAwMDAuc3BpOiB0eCAwNQ0KPj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNwaTog
-cnggMDANCj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IEV4dHJhIFJYIDAzDQo+Pj4+PiBm
-c2xfZXNwaSBmZmUxMTAwMDAuc3BpOiBUcmFuc2ZlciBkb25lIGJ1dCBTUElFX0RPTiBpc24ndCBz
-ZXQhDQo+Pj4+PiBmc2xfZXNwaSBmZmUxMTAwMDAuc3BpOiBUcmFuc2ZlciBkb25lIGJ1dCByeC90
-eCBmaWZvJ3MgYXJlbid0IGVtcHR5IQ0KPj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNwaTogU1BJ
-RV9SWENOVCA9IDEsIFNQSUVfVFhDTlQgPSAzMg0KPj4+Pj4gZnNsX2VzcGkgZmZlMTEwMDAwLnNw
-aTogdHggMDUNCj4+Pj4+IGZzbF9lc3BpIGZmZTExMDAwMC5zcGk6IHJ4IDAwDQo+Pj4+PiBmc2xf
-ZXNwaSBmZmUxMTAwMDAuc3BpOiBFeHRyYSBSWCAwMw0KPj4+Pj4NCj4+Pj4+DQo+Pj4+PiBUaGUg
-cnggMDAgRXh0cmEgUlggMDMgaXMgYSBiaXQgY29uY2VybmluZy4gSSd2ZSBvbmx5IGV2ZXIgc2Vl
-biANCj4+Pj4+IHRoZW0gd2l0aA0KPj4+Pj4gZWl0aGVyIGEgUkVBRF9TUiBvciBhIFJFQURfRlNS
-LiBOZXZlciBhIGRhdGEgcmVhZC4NCj4+Pj4+DQo+Pj4+IEp1c3QgcmVtZW1iZXJlZCBzb21ldGhp
-bmcgYWJvdXQgU1BJRV9ET046DQo+Pj4+IFRyYW5zZmVycyBhcmUgYWx3YXlzIGZ1bGwgZHVwbGV4
-LCB0aGVyZWZvcmUgaW4gY2FzZSBvZiBhIHJlYWQgdGhlIGNoaXANCj4+Pj4gc2VuZHMgZHVtbXkg
-emVybydzLiBIYXZpbmcgc2FpZCB0aGF0IGluIGNhc2Ugb2YgYSByZWFkIFNQSUVfRE9OIG1lYW5z
-DQo+Pj4+IHRoYXQgdGhlIGxhc3QgZHVtbXkgemVybyB3YXMgc2hpZnRlZCBvdXQuDQo+Pj4+DQo+
-Pj4+IFJFQURfU1IgYW5kIFJFQURfRlNSIGFyZSB0aGUgc2hvcnRlc3QgdHJhbnNmZXJzLCAxIGJ5
-dGUgb3V0IGFuZCAxIA0KPj4+PiBieXRlIGluLg0KPj4+PiBTbyB0aGUgaXNzdWUgbWF5IGhhdmUg
-YSBkZXBlbmRlbmN5IG9uIHRoZSBsZW5ndGggb2YgdGhlIHRyYW5zZmVyLg0KPj4+PiBIb3dldmVy
-IEkgc2VlIG5vIGdvb2QgZXhwbGFuYXRpb24gc28gZmFyLiBZb3UgY2FuIHRyeSBhZGRpbmcgYSAN
-Cj4+Pj4gZGVsYXkgb2YNCj4+Pj4gYSBmZXcgbWlyb3NlY29uZHMgYmV0d2VlbiB0aGUgZm9sbG93
-aW5nIHRvIGNvbW1hbmRzIGluIA0KPj4+PiBmc2xfZXNwaV9idWZzKCkuDQo+Pj4+DQo+Pj4+IMKg
-wqDCoMKgZnNsX2VzcGlfd3JpdGVfcmVnKGVzcGksIEVTUElfU1BJTSwgbWFzayk7DQo+Pj4+DQo+
-Pj4+IMKgwqDCoMKgLyogUHJldmVudCBmaWxsaW5nIHRoZSBmaWZvIGZyb20gZ2V0dGluZyBpbnRl
-cnJ1cHRlZCAqLw0KPj4+PiDCoMKgwqDCoHNwaW5fbG9ja19pcnEoJmVzcGktPmxvY2spOw0KPj4+
-Pg0KPj4+PiBNYXliZSBlbmFibGluZyBpbnRlcnJ1cHRzIGFuZCBzZWVpbmcgdGhlIFNQSUVfRE9O
-IGludGVycnVwdCBhcmUgdG9vIA0KPj4+PiBjbG9zZS4NCj4+PiBJIHRoaW5rIHRoaXMgbWlnaHQg
-YmUgaGVhZGluZyBpbiB0aGUgcmlnaHQgZGlyZWN0aW9uLiBQbGF5aW5nIGFib3V0IA0KPj4+IHdp
-dGgNCj4+PiBhIGRlbGF5IGRvZXMgc2VlbSB0byBtYWtlIHRoZSB0d28gc3ltcHRvbXMgbGVzcyBs
-aWtlbHkuIEFsdGhvdWdoIEkgaGF2ZQ0KPj4+IHRvIHNldCBpdCBxdWl0ZSBoaWdoIChpLmUuIG1z
-bGVlcCgxMDApKSB0byBjb21wbGV0ZWx5IGF2b2lkIGFueQ0KPj4+IHBvc3NpYmlsaXR5IG9mIHNl
-ZWluZyBlaXRoZXIgbWVzc2FnZS4NCj4+IFRoZSBwYXRjaCBtaWdodCByZXBsYXkgdGhlIGludGVy
-cnVwdCBhIGxpdHRsZSBiaXQgZmFzdGVyLCBidXQgaXQgd291bGQNCj4+IGJlIGEgZmV3IG1pY3Jv
-c2Vjb25kcyBhdCBtb3N0IEkgdGhpbmsgKGp1c3QgZnJvbSBpbXByb3ZlZCBjb2RlKS4NCj4+DQo+
-PiBXb3VsZCB5b3UgYmUgYWJsZSB0byBmdHJhY2UgdGhlIGludGVycnVwdCBoYW5kbGVyIGZ1bmN0
-aW9uIGFuZCBzZWUgaWYgDQo+PiB5b3UNCj4+IGNhbiBzZWUgYSBkaWZmZXJlbmNlIGluIG51bWJl
-ciBvciB0aW1pbmcgb2YgaW50ZXJydXB0cz8gSSdtIGF0IGEgYml0IG9mDQo+PiBhIGxvc3MuDQo+
-IFRoaXMgaXMgZ2V0dGluZyByZWFsbHkgd2VpcmQuIEkgd2FzIHNldHRpbmcgdXAgdG8gcnVuIHdp
-dGggZnRyYWNlIGFuZCANCj4gZm91bmQgSSBjb3VsZG4ndCByZXByb2R1Y2UgaXQgb24gdGhlIHRp
-cCBvZiBMaW51cydzIHRyZWUgKGN1cnJlbnRseSANCj4gcG9pbnRpbmcgYXQgZTdhNTIyYzgzYjg2
-KS4gQnV0IEkgc3dlYXIgSSBjb3VsZCBsYXN0IHdlZWsuIFN1cmUgZW5vdWdoIA0KPiBpZiBJIGNo
-ZWNrb3V0IDUuOS1yYzIgKG9yIDUuNy4xNSkgSSBjYW4gcmVwcm9kdWNlIHRoZSBwcm9ibGVtIGFn
-YWluLg0KDQoqU2lnaCogbXkgbWFzdGVyIGJyYW5jaCBzdGlsbCBoYXMgdGhlIGludGVycnVwdCBj
-aGFuZ2VzIHJldmVydGVkLg0K
+Not entirely sure why this never came up when I originally tested this
+(maybe some BIOSes already have this setup?) but the ->caps_init vfunc
+appears to cause the display engine to throw an exception on driver
+init, at least on my ThinkPad P72:
+
+nouveau 0000:01:00.0: disp: chid 0 mthd 008c data 00000000 0000508c 0000102b
+
+This is magic nvidia speak for "You need to have the DMA notifier offset
+programmed before you can call NV507D_GET_CAPABILITIES." So, let's fix
+this by doing that, and also perform an update afterwards to prevent
+racing with the GPU when reading capabilities.
+
+v2:
+* Don't just program the DMA notifier offset, make sure to actually
+  perform an update
+v3:
+* Don't call UPDATE()
+* Actually read the correct notifier fields, as apparently the
+  CAPABILITIES_DONE field lives in a different location than the main
+  NV_DISP_CORE_NOTIFIER_1 field. As well, 907d+ use a different
+  CAPABILITIES_DONE field then pre-907d cards.
+
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Fixes: 4a2cb4181b07 ("drm/nouveau/kms/nv50-: Probe SOR and PIOR caps for DP interlacing support")
+Cc: <stable@vger.kernel.org> # v5.8+
+---
+ drivers/gpu/drm/nouveau/dispnv50/core.h       |  2 ++
+ drivers/gpu/drm/nouveau/dispnv50/core507d.c   | 34 +++++++++++++++++--
+ drivers/gpu/drm/nouveau/dispnv50/core907d.c   | 33 +++++++++++++++++-
+ drivers/gpu/drm/nouveau/dispnv50/core917d.c   |  2 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.h       |  2 ++
+ .../drm/nouveau/include/nvhw/class/cl507d.h   |  5 ++-
+ .../drm/nouveau/include/nvhw/class/cl907d.h   |  4 +++
+ 7 files changed, 77 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/core.h b/drivers/gpu/drm/nouveau/dispnv50/core.h
+index 498622c0c670d..b789139e5fff6 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/core.h
++++ b/drivers/gpu/drm/nouveau/dispnv50/core.h
+@@ -44,6 +44,7 @@ int core507d_new_(const struct nv50_core_func *, struct nouveau_drm *, s32,
+ 		  struct nv50_core **);
+ int core507d_init(struct nv50_core *);
+ void core507d_ntfy_init(struct nouveau_bo *, u32);
++int core507d_read_caps(struct nv50_disp *disp, u32 offset);
+ int core507d_caps_init(struct nouveau_drm *, struct nv50_disp *);
+ int core507d_ntfy_wait_done(struct nouveau_bo *, u32, struct nvif_device *);
+ int core507d_update(struct nv50_core *, u32 *, bool);
+@@ -55,6 +56,7 @@ extern const struct nv50_outp_func pior507d;
+ int core827d_new(struct nouveau_drm *, s32, struct nv50_core **);
+ 
+ int core907d_new(struct nouveau_drm *, s32, struct nv50_core **);
++int core907d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp);
+ extern const struct nv50_outp_func dac907d;
+ extern const struct nv50_outp_func sor907d;
+ 
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/core507d.c b/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+index ad1f09a143aa4..3ec4c3a238c41 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/core507d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/core507d.c
+@@ -75,18 +75,48 @@ core507d_ntfy_init(struct nouveau_bo *bo, u32 offset)
+ }
+ 
+ int
+-core507d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
++core507d_read_caps(struct nv50_disp *disp, u32 offset)
+ {
+ 	struct nvif_push *push = disp->core->chan.push;
+ 	int ret;
+ 
+-	if ((ret = PUSH_WAIT(push, 2)))
++	ret = PUSH_WAIT(push, 4);
++	if (ret)
+ 		return ret;
+ 
++	PUSH_MTHD(push, NV507D, SET_NOTIFIER_CONTROL,
++		  NVDEF(NV507D, SET_NOTIFIER_CONTROL, MODE, WRITE) |
++		  NVVAL(NV507D, SET_NOTIFIER_CONTROL, OFFSET, offset >> 2) |
++		  NVDEF(NV507D, SET_NOTIFIER_CONTROL, NOTIFY, ENABLE));
+ 	PUSH_MTHD(push, NV507D, GET_CAPABILITIES, 0x00000000);
++
+ 	return PUSH_KICK(push);
+ }
+ 
++int
++core507d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
++{
++	struct nv50_core *core = disp->core;
++	struct nouveau_bo *bo = disp->sync;
++	s64 time;
++
++	NVBO_WR32(bo, NV50_DISP_CAPS_NTFY1, NV_DISP_CORE_NOTIFIER_1, CAPABILITIES_1,
++				      NVDEF(NV_DISP_CORE_NOTIFIER_1, CAPABILITIES_1, DONE, FALSE));
++
++	core507d_read_caps(disp, NV50_DISP_CAPS_NTFY1);
++
++	time = nvif_msec(core->chan.base.device, 2000ULL,
++			 if (NVBO_TD32(bo, NV50_DISP_CAPS_NTFY1,
++				       NV_DISP_CORE_NOTIFIER_1, CAPABILITIES_1, DONE, ==, TRUE))
++				 break;
++			 usleep_range(1, 2);
++			 );
++	if (time < 0)
++		NV_ERROR(drm, "core caps notifier timeout\n");
++
++	return 0;
++}
++
+ int
+ core507d_init(struct nv50_core *core)
+ {
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/core907d.c b/drivers/gpu/drm/nouveau/dispnv50/core907d.c
+index b17c03529c784..8a2005adb0e2f 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/core907d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/core907d.c
+@@ -22,11 +22,42 @@
+ #include "core.h"
+ #include "head.h"
+ 
++#include <nvif/push507c.h>
++#include <nvif/timer.h>
++
++#include <nvhw/class/cl907d.h>
++
++#include "nouveau_bo.h"
++
++int
++core907d_caps_init(struct nouveau_drm *drm, struct nv50_disp *disp)
++{
++	struct nv50_core *core = disp->core;
++	struct nouveau_bo *bo = disp->sync;
++	s64 time;
++
++	NVBO_WR32(bo, NV50_DISP_CAPS_NTFY4, NV907D_CORE_NOTIFIER_3, CAPABILITIES_4,
++				      NVDEF(NV907D_CORE_NOTIFIER_3, CAPABILITIES_4, DONE, FALSE));
++
++	core507d_read_caps(disp, NV50_DISP_CAPS_NTFY4);
++
++	time = nvif_msec(core->chan.base.device, 2000ULL,
++			 if (NVBO_TD32(bo, NV50_DISP_CAPS_NTFY4,
++				       NV907D_CORE_NOTIFIER_3, CAPABILITIES_4, DONE, ==, TRUE))
++				 break;
++			 usleep_range(1, 2);
++			 );
++	if (time < 0)
++		NV_ERROR(drm, "core caps notifier timeout\n");
++
++	return 0;
++}
++
+ static const struct nv50_core_func
+ core907d = {
+ 	.init = core507d_init,
+ 	.ntfy_init = core507d_ntfy_init,
+-	.caps_init = core507d_caps_init,
++	.caps_init = core907d_caps_init,
+ 	.ntfy_wait_done = core507d_ntfy_wait_done,
+ 	.update = core507d_update,
+ 	.head = &head907d,
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/core917d.c b/drivers/gpu/drm/nouveau/dispnv50/core917d.c
+index 66846f3720805..1cd3a2a35dfb7 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/core917d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/core917d.c
+@@ -26,7 +26,7 @@ static const struct nv50_core_func
+ core917d = {
+ 	.init = core507d_init,
+ 	.ntfy_init = core507d_ntfy_init,
+-	.caps_init = core507d_caps_init,
++	.caps_init = core907d_caps_init,
+ 	.ntfy_wait_done = core507d_ntfy_wait_done,
+ 	.update = core507d_update,
+ 	.head = &head917d,
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.h b/drivers/gpu/drm/nouveau/dispnv50/disp.h
+index 92bddc0836171..a59051bd070d7 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/disp.h
++++ b/drivers/gpu/drm/nouveau/dispnv50/disp.h
+@@ -16,6 +16,8 @@ struct nv50_disp {
+ 
+ #define NV50_DISP_SYNC(c, o)                                ((c) * 0x040 + (o))
+ #define NV50_DISP_CORE_NTFY                       NV50_DISP_SYNC(0      , 0x00)
++#define NV50_DISP_CAPS_NTFY1                      NV50_DISP_SYNC(0      , 0x01)
++#define NV50_DISP_CAPS_NTFY4                      NV50_DISP_SYNC(0      , 0x04)
+ #define NV50_DISP_WNDW_SEM0(c)                    NV50_DISP_SYNC(1 + (c), 0x00)
+ #define NV50_DISP_WNDW_SEM1(c)                    NV50_DISP_SYNC(1 + (c), 0x10)
+ #define NV50_DISP_WNDW_NTFY(c)                    NV50_DISP_SYNC(1 + (c), 0x20)
+diff --git a/drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h b/drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h
+index 2e444bac701dd..6a463f308b64f 100644
+--- a/drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h
++++ b/drivers/gpu/drm/nouveau/include/nvhw/class/cl507d.h
+@@ -32,7 +32,10 @@
+ #define NV_DISP_CORE_NOTIFIER_1_COMPLETION_0_DONE_TRUE                               0x00000001
+ #define NV_DISP_CORE_NOTIFIER_1_COMPLETION_0_R0                                      15:1
+ #define NV_DISP_CORE_NOTIFIER_1_COMPLETION_0_TIMESTAMP                               29:16
+-
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1                                       0x00000001
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1_DONE                                  0:0
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1_DONE_FALSE                            0x00000000
++#define NV_DISP_CORE_NOTIFIER_1_CAPABILITIES_1_DONE_TRUE                             0x00000001
+ 
+ // class methods
+ #define NV507D_UPDATE                                                           (0x00000080)
+diff --git a/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h b/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
+index 34bc3eafac7d1..79aff6ff31385 100644
+--- a/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
++++ b/drivers/gpu/drm/nouveau/include/nvhw/class/cl907d.h
+@@ -24,6 +24,10 @@
+ #ifndef _cl907d_h_
+ #define _cl907d_h_
+ 
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4                                       0x00000004
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4_DONE                                  0:0
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4_DONE_FALSE                            0x00000000
++#define NV907D_CORE_NOTIFIER_3_CAPABILITIES_4_DONE_TRUE                             0x00000001
+ #define NV907D_CORE_NOTIFIER_3_CAPABILITIES_CAP_SOR0_20                             0x00000014
+ #define NV907D_CORE_NOTIFIER_3_CAPABILITIES_CAP_SOR0_20_SINGLE_LVDS18               0:0
+ #define NV907D_CORE_NOTIFIER_3_CAPABILITIES_CAP_SOR0_20_SINGLE_LVDS18_FALSE         0x00000000
+-- 
+2.26.2
+
