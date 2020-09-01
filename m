@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF55F2587CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EA82587C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgIAGBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:01:33 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55904 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726226AbgIAGB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:01:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1598940087; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=JkB5t793pKcL4ZJ57eDDbDImH896a5Jx/bAmj4NC5Vg=; b=hr6lfg6eZpnhCRfBSrUWTMTNwM4h2faZaTIfuSA821ClybjgNHepeWk3XraEtQ2FLRtT5eny
- WuMbl4+my9cajseQWPsPJcRmBqWnl4COKXV6U+ndZ36SxHUeZf3cgIbk+xuT1pmHICGD1HkN
- Yx3Z2SwRfYHqjgESjennY0vqCRw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f4de3a173afa3417e2a8ce5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 01 Sep 2020 06:01:05
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3F88C433A0; Tue,  1 Sep 2020 06:01:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from pacamara-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A11D1C433CA;
-        Tue,  1 Sep 2020 06:01:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A11D1C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=nguyenb@codeaurora.org
-From:   "Bao D. Nguyen" <nguyenb@codeaurora.org>
-To:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     "Bao D. Nguyen" <nguyenb@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1 2/2] scsi: ufs: Support reading UFS's Vcc voltage from device tree
-Date:   Mon, 31 Aug 2020 23:00:48 -0700
-Message-Id: <69db325a09d5c3fa7fc260db031b1e498b601c25.1598939393.git.nguyenb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1598939393.git.nguyenb@codeaurora.org>
-References: <cover.1598939393.git.nguyenb@codeaurora.org>
-In-Reply-To: <cover.1598939393.git.nguyenb@codeaurora.org>
-References: <cover.1598939393.git.nguyenb@codeaurora.org>
+        id S1726521AbgIAGBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgIAGBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:01:21 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 027E4C0612A3;
+        Mon, 31 Aug 2020 23:01:21 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id z22so839539ejl.7;
+        Mon, 31 Aug 2020 23:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XaHfsFFvsKz8Si4WdVVOjQJsf4E9yNDaoM4FPWbSNvE=;
+        b=Yrn5M09qMo7Ev8s79fvPnWTl2NFswv8DuA0HiCrXU9QyHiKt4/Q9LiFX09QFi10GZW
+         bPayA7qZ+7h9StZJ6G8Rzq/FUGwnovc+Abo/ZKNmcTxwIiUJi2uD/uvpELc8KQojWu6s
+         OAwRQUh16hX9et97nwHOUEx6hpkcFJ+Bk9O7I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XaHfsFFvsKz8Si4WdVVOjQJsf4E9yNDaoM4FPWbSNvE=;
+        b=UKr8AJ3ofZsh/S2z2vtKquDAhNXQdlDAgRYmYK3APaWxRkV10432gizThFeLBLXskk
+         ty7BUXJ/l7no00gDqQl6QNwr6w4lzRUcB3/ig7qx14MsvzBOf1bgUEkgXe3KLxzcZXjv
+         +N/2MH6Qykw4C6Slibd3B4UXzkNlcrSIcMycARxCxEw5qcVBHKm4cChqmN7g6QVsszj1
+         KG3sEXJWXTs2Ug2XaPDLXoyx/kqfVIjO4nF/PZ+rVBgBVEjHFY/g9CRYK6NyMYVt+rZ5
+         MoVALOkjqoTB8LmgH+5sOStLhTC8jdzeBQyK4fF9gSSjt6vV20TQkqJg8quy0C1t8eS+
+         Nq5w==
+X-Gm-Message-State: AOAM533whvYH+RxA+/jSNC4iKTHhbjftJZC9lNlkuiBT0ArRGrRAWggm
+        YWdCTK8J/1O/MxRqMegG2wU90lKKEIGp8owL+RCxctp4BnY=
+X-Google-Smtp-Source: ABdhPJxqy/GN58FoQLdvnCX11Vvy8+zzlnuPo/ylntZPwFduXZjSx80mFGNsb6xczOXnJ2uuauRFvtkGNeRxJJbngzI=
+X-Received: by 2002:a17:906:4c58:: with SMTP id d24mr110959ejw.108.1598940079725;
+ Mon, 31 Aug 2020 23:01:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200820161152.22751-1-eajames@linux.ibm.com> <20200820161152.22751-6-eajames@linux.ibm.com>
+In-Reply-To: <20200820161152.22751-6-eajames@linux.ibm.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 1 Sep 2020 06:01:07 +0000
+Message-ID: <CACPK8XcW-LfJ6FBdKntod_F1dnRoSP=4D7=TLtM5yGkhTm79Rw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] ARM: dts: Aspeed: Rainier: Add IBM Operation Panel
+ I2C device
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-input@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        dmitry.torokhov@gmail.com, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UFS specifications supports a range of Vcc operating voltage
-from 2.4-3.6V depending on the device and manufacturers.
-Allows selecting the UFS Vcc voltage level by setting the
-UFS's entry vcc-voltage-level in the device tree. If UFS's
-vcc-voltage-level setting is not found in the device tree,
-use default values provided by the driver.
+On Thu, 20 Aug 2020 at 16:12, Eddie James <eajames@linux.ibm.com> wrote:
+>
+> Set I2C bus 7 to multi-master mode and add the panel device that will
+> register as a slave.
+>
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd-pltfrm.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+Same comments as for Tacoma.
 
-diff --git a/drivers/scsi/ufs/ufshcd-pltfrm.c b/drivers/scsi/ufs/ufshcd-pltfrm.c
-index 3db0af6..48f429c 100644
---- a/drivers/scsi/ufs/ufshcd-pltfrm.c
-+++ b/drivers/scsi/ufs/ufshcd-pltfrm.c
-@@ -104,10 +104,11 @@ static int ufshcd_parse_clock_info(struct ufs_hba *hba)
- static int ufshcd_populate_vreg(struct device *dev, const char *name,
- 		struct ufs_vreg **out_vreg)
- {
--	int ret = 0;
-+	int len, ret = 0;
- 	char prop_name[MAX_PROP_SIZE];
- 	struct ufs_vreg *vreg = NULL;
- 	struct device_node *np = dev->of_node;
-+	const __be32 *prop;
- 
- 	if (!np) {
- 		dev_err(dev, "%s: non DT initialization\n", __func__);
-@@ -138,8 +139,16 @@ static int ufshcd_populate_vreg(struct device *dev, const char *name,
- 			vreg->min_uV = UFS_VREG_VCC_1P8_MIN_UV;
- 			vreg->max_uV = UFS_VREG_VCC_1P8_MAX_UV;
- 		} else {
--			vreg->min_uV = UFS_VREG_VCC_MIN_UV;
--			vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-+			prop = of_get_property(np, "vcc-voltage-level", &len);
-+			if (!prop || (len != (2 * sizeof(__be32)))) {
-+				dev_warn(dev, "%s vcc-voltage-level property.\n",
-+					prop ? "invalid format" : "no");
-+				vreg->min_uV = UFS_VREG_VCC_MIN_UV;
-+				vreg->max_uV = UFS_VREG_VCC_MAX_UV;
-+			} else {
-+				vreg->min_uV = be32_to_cpup(&prop[0]);
-+				vreg->max_uV = be32_to_cpup(&prop[1]);
-+			}
- 		}
- 	} else if (!strcmp(name, "vccq")) {
- 		vreg->min_uV = UFS_VREG_VCCQ_MIN_UV;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
+> ---
+>  arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> index b94421f6cbd5..f121f3c26a3a 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+> @@ -698,6 +698,7 @@ eeprom@53 {
+>  };
+>
+>  &i2c7 {
+> +       multi-master;
+>         status = "okay";
+>
+>         si7021-a20@20 {
+> @@ -831,6 +832,11 @@ gpio@15 {
+>                 };
+>         };
+>
+> +       ibm-panel@62 {
+> +               compatible = "ibm,op-panel";
+> +               reg = <0x40000062>;     /* I2C_OWN_SLAVE_ADDRESS */
+> +       };
+> +
+>         dps: dps310@76 {
+>                 compatible = "infineon,dps310";
+>                 reg = <0x76>;
+> --
+> 2.26.2
+>
