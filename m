@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F50C259764
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C29259700
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731866AbgIAQNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:13:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728355AbgIAPgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:36:14 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B18F214D8;
-        Tue,  1 Sep 2020 15:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974573;
-        bh=l1KxbslgXDTTFr//cJ3Gfyy1Gco4KliBv+y/wKQgfew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jOqn0iuYFzorU/TALy7/NaFHLNxaHjeM66V447+gk7sU/ArUiRPcNR4hJncWIDc/m
-         quMoc8AKiGuz2a6YKeomOhQ16P2X2ysHvILxTv0wbp2GJ9R/plHqscBfD0YKrNk2pE
-         +QMg6JaAsC0W2bXhUgAWFcUA1Pc6uWfwvEuSB/CA=
-Date:   Tue, 1 Sep 2020 16:36:08 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     William Mcvicker <willmcvicker@google.com>, security@kernel.org,
-        Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] netfilter: nat: add a range check for l3/l4
- protonum
-Message-ID: <20200901153607.GC4292@willie-the-truck>
-References: <20200727175720.4022402-1-willmcvicker@google.com>
- <20200727175720.4022402-2-willmcvicker@google.com>
- <20200729214607.GA30831@salvia>
- <20200731002611.GA1035680@google.com>
- <20200731175115.GA16982@salvia>
- <20200731181633.GA1209076@google.com>
- <20200803183156.GA3084830@google.com>
- <20200804113711.GA20988@salvia>
+        id S1731429AbgIAPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:38:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731309AbgIAPg4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:36:56 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EEFC061246
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:36:55 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id l1so560922uai.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1B9nLNVLY42WxzWWaQLkKFC09iT2uTznxSa/7Ga9+ik=;
+        b=EjZj6y+TjUP2e0zRcKUUQvE66STizixCKC/KAIDXV/69rk8mNQSfWyAU6WYWSKFuzu
+         YdysqzXgzI2xtpYHzb6Bg9vJ2avPXngJVilLH84994hthxQshimmjhHojPFW896ik/4d
+         7+SfIVuVuc/ZxqJXQpx6oVzAu/cP4B59SJR8lGPID+5gG2w4v4nOMnEQcQrCru633HNP
+         zuDN+/5pNOLV30vak4kZQMnpd+VUgw2bg+XdxSwnEBkVo/zJgSOy5ArWNiN7cmol12Bb
+         IqdXYacCg5YMcR4+mn8aBUmFtkx7PyrkYdutuPTIGu4pnVnQseXCdI/TJgx4fELy5snC
+         I+0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1B9nLNVLY42WxzWWaQLkKFC09iT2uTznxSa/7Ga9+ik=;
+        b=Qg8pXR1/bIeJBjDra3sd7iAwlRlQP3Y4TVJNzaUUcSCVYyBmJ17ZGFF8XXUzB/ZZaW
+         6mCoWkGitpY0epa9Lco9+uNEFlqAxIoJnB6s9F3ftQCT70r+gC+T4eADaAqUk0rIBU7v
+         EOvf+AXTdNDNz1Td2i0aTogHgku01EhOGMF2p3k+Qmzo/alIEBJ0RFlAGiYf/s8vgn4M
+         RiYMzTmZrnTkubijhp1cd/kJSTZhIC02Wz03dRWADH9n+N844beB8R4DjTnCdDKno9Kr
+         mMZRcztY30FBUmXLcYqvkxhPowZWkgSHpMW0f/vz02bIqThwkexZQBPDq8hl5jxGllxT
+         AuLg==
+X-Gm-Message-State: AOAM5305sKWokbdGKfRIew+9ehMEv+5oA67eyIxaNuMaibPTe5VntjTx
+        PNrN5iZlp3SdZC6MMFhNzczH/tm/5Gd9F8tH4vMm6gRPJGBkKU7p
+X-Google-Smtp-Source: ABdhPJwNEOdYZ2JzAa+esqv8ikW74w5nzhA2RPqk11Z0XyL+fuHQHEnv1hhlq9RrJ7o9td9gDXMcOORUJEPmsoYSFJ0=
+X-Received: by 2002:ab0:5e43:: with SMTP id a3mr1793697uah.19.1598974614146;
+ Tue, 01 Sep 2020 08:36:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200804113711.GA20988@salvia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200901150438.228887-1-ulf.hansson@linaro.org> <20200901150654.GB30034@lst.de>
+In-Reply-To: <20200901150654.GB30034@lst.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 1 Sep 2020 17:36:17 +0200
+Message-ID: <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when
+ CONFIG_HAS_DMA is unset
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Rich Felker <dalias@libc.org>, Mark Brown <broonie@kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will, Pablo,
+On Tue, 1 Sep 2020 at 17:06, Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Tue, Sep 01, 2020 at 05:04:38PM +0200, Ulf Hansson wrote:
+> > +#ifdef CONFIG_HAS_DMA
+> > +static int mmc_spi_dma_alloc(struct mmc_spi_host *host)
+> > +{
+> > +     struct spi_device *spi = host->spi;
+> > +     struct device *dev;
+> > +
+> > +     if (!spi->master->dev.parent->dma_mask)
+> > +             return 0;
+>
+> I still don't think this makes sense, as the dma_mask should always
+> be non-NULL here.
 
-On Tue, Aug 04, 2020 at 01:37:11PM +0200, Pablo Neira Ayuso wrote:
-> This patch is much smaller and if you confirm this is address the
-> issue, then this is awesome.
+If that is the case, I wonder how the driver could even have worked without DMA.
 
-Did that ever get confirmed? AFAICT, nothing ended up landing in the stable
-trees for this.
+Because in the existing code, host->dma_dev gets assigned to
+spi->master->dev.parent->dma_mask - which seems to turn on the DMA
+usage in the driver.
 
-Cheers,
+What am I missing?
 
-Will
-
-
-> On Mon, Aug 03, 2020 at 06:31:56PM +0000, William Mcvicker wrote:
-> [...]
-> > diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-> > index 31fa94064a62..56d310f8b29a 100644
-> > --- a/net/netfilter/nf_conntrack_netlink.c
-> > +++ b/net/netfilter/nf_conntrack_netlink.c
-> > @@ -1129,6 +1129,8 @@ ctnetlink_parse_tuple(const struct nlattr * const cda[],
-> >  	if (!tb[CTA_TUPLE_IP])
-> >  		return -EINVAL;
-> >  
-> > +	if (l3num >= NFPROTO_NUMPROTO)
-> > +		return -EINVAL;
-> 
-> l3num can only be either NFPROTO_IPV4 or NFPROTO_IPV6.
-> 
-> Other than that, bail out with EOPNOTSUPP.
-> 
-> Thank you.
+Kind regards
+Uffe
