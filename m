@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD7B2592B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C6825937C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729206AbgIAPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:15:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58994 "EHLO mail.kernel.org"
+        id S1730090AbgIAP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729070AbgIAPO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:14:56 -0400
+        id S1728556AbgIAPXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:23:00 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5321206FA;
-        Tue,  1 Sep 2020 15:14:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 695612078B;
+        Tue,  1 Sep 2020 15:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973296;
-        bh=vf8P7knMKxAd8czp29JUejgGx8ytmQ5ofKwx9f36CKI=;
+        s=default; t=1598973779;
+        bh=tS6wCFBnmInIhbJdhLXjodAbxNXaMdJe2JzSqhoA64U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfcnwuPOulqVu2loWh0rnypGxWGovd4Jtf46prfkxMwwwvB50Lu51AOP5DZ5g8DIp
-         Om/LdXVV6V+dsiThQSXt5a1FGB434cQrXOu7qw0UzZFWVYAwU4LUUuKfTgIM7RFKkA
-         BwPZzDJahH5PmOkH0gB609Ot/SO0/Qa1TWeRlFlw=
+        b=guTZE8QlwJI7JRXmp85+ClvB/8N3bHDEB/dQru6pOJqbvCExVGPsx4aB/aFO4OhVA
+         mEM3yGENbj5XuRH94xv/lqzCLSebXHWpnRxWspNS4gRudt4Wa6RDE1615hWs8oL+7f
+         UzvG5UbG+J1kb+KJyJSzWUwOXEYXYxSuYC3wreGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org, Xiubo Li <xiubli@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 22/78] PCI: Fix pci_create_slot() reference count leak
-Date:   Tue,  1 Sep 2020 17:09:58 +0200
-Message-Id: <20200901150925.857660977@linuxfoundation.org>
+Subject: [PATCH 4.19 044/125] ceph: fix potential mdsc use-after-free crash
+Date:   Tue,  1 Sep 2020 17:09:59 +0200
+Message-Id: <20200901150936.724649920@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+References: <20200901150934.576210879@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Xiubo Li <xiubli@redhat.com>
 
-[ Upstream commit 8a94644b440eef5a7b9c104ac8aa7a7f413e35e5 ]
+[ Upstream commit fa9967734227b44acb1b6918033f9122dc7825b9 ]
 
-kobject_init_and_add() takes a reference even when it fails.  If it returns
-an error, kobject_put() must be called to clean up the memory associated
-with the object.
+Make sure the delayed work stopped before releasing the resources.
 
-When kobject_init_and_add() fails, call kobject_put() instead of kfree().
+cancel_delayed_work_sync() will only guarantee that the work finishes
+executing if the work is already in the ->worklist.  That means after
+the cancel_delayed_work_sync() returns, it will leave the work requeued
+if it was rearmed at the end. That can lead to a use after free once the
+work struct is freed.
 
-b8eb718348b8 ("net-sysfs: Fix reference count leak in
-rx|netdev_queue_add_kobject") fixed a similar problem.
+Fix it by flushing the delayed work instead of trying to cancel it, and
+ensure that the work doesn't rearm if the mdsc is stopping.
 
-Link: https://lore.kernel.org/r/20200528021322.1984-1-wu000273@umn.edu
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+URL: https://tracker.ceph.com/issues/46293
+Signed-off-by: Xiubo Li <xiubli@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/slot.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/ceph/mds_client.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
-index 429d34c348b9f..01a343ad7155c 100644
---- a/drivers/pci/slot.c
-+++ b/drivers/pci/slot.c
-@@ -303,13 +303,16 @@ placeholder:
- 	slot_name = make_slot_name(name);
- 	if (!slot_name) {
- 		err = -ENOMEM;
-+		kfree(slot);
- 		goto err;
- 	}
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index 0fa14d8b9c64c..5f3707a90e7f7 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -3615,6 +3615,9 @@ static void delayed_work(struct work_struct *work)
+ 	dout("mdsc delayed_work\n");
+ 	ceph_check_delayed_caps(mdsc);
  
- 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
- 				   "%s", slot_name);
--	if (err)
-+	if (err) {
-+		kobject_put(&slot->kobj);
- 		goto err;
-+	}
- 
- 	INIT_LIST_HEAD(&slot->list);
- 	list_add(&slot->list, &parent->slots);
-@@ -328,7 +331,6 @@ out:
- 	mutex_unlock(&pci_slot_mutex);
- 	return slot;
- err:
--	kfree(slot);
- 	slot = ERR_PTR(err);
- 	goto out;
- }
++	if (mdsc->stopping)
++		return;
++
+ 	mutex_lock(&mdsc->mutex);
+ 	renew_interval = mdsc->mdsmap->m_session_timeout >> 2;
+ 	renew_caps = time_after_eq(jiffies, HZ*renew_interval +
+@@ -3950,7 +3953,16 @@ void ceph_mdsc_force_umount(struct ceph_mds_client *mdsc)
+ static void ceph_mdsc_stop(struct ceph_mds_client *mdsc)
+ {
+ 	dout("stop\n");
+-	cancel_delayed_work_sync(&mdsc->delayed_work); /* cancel timer */
++	/*
++	 * Make sure the delayed work stopped before releasing
++	 * the resources.
++	 *
++	 * Because the cancel_delayed_work_sync() will only
++	 * guarantee that the work finishes executing. But the
++	 * delayed work will re-arm itself again after that.
++	 */
++	flush_delayed_work(&mdsc->delayed_work);
++
+ 	if (mdsc->mdsmap)
+ 		ceph_mdsmap_destroy(mdsc->mdsmap);
+ 	kfree(mdsc->sessions);
 -- 
 2.25.1
 
