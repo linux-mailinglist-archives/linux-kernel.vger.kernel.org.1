@@ -2,41 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93062588E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C7D2588ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 09:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgIAHUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 03:20:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:52176 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbgIAHUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 03:20:11 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E569468B05; Tue,  1 Sep 2020 09:20:07 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 09:20:07 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Barry Song <song.bao.hua@hisilicon.com>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        will@kernel.org, ganapatrao.kulkarni@cavium.com,
-        catalin.marinas@arm.com, akpm@linux-foundation.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        prime.zeng@hisilicon.com, huangdaode@huawei.com,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v8 0/3] make dma_alloc_coherent NUMA-aware by per-NUMA
- CMA
-Message-ID: <20200901072007.GA30123@lst.de>
-References: <20200823230309.28980-1-song.bao.hua@hisilicon.com>
+        id S1726204AbgIAHXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 03:23:17 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:38736 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726006AbgIAHXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 03:23:16 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0817M1M9027321;
+        Tue, 1 Sep 2020 09:23:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=7hpAwwgoscZtiR1idbag9pcr+1nyLmBycUSgjh28YnQ=;
+ b=uPbNtBqaVV+AczDQTChkUVgk+hTTxCLrEtjOBPLdzl2KCtZ0Ykn5ZVLVN4mgT/aGAvzy
+ ZcVoBt8ZpOGtuU3iyKGfWzPt1R6Ypar8xzdSMHm10PTXYdnaw7OMde1g6DZhiU7JfuFw
+ 0JHRcLIwvWMU2ChlP/mzc8BsnS5Kh1zgXN7unhDgIN+33S4OfQO9I60Tx2o/cWJp1VjA
+ 8ts4IXl96QleSsTnCCaAbBjTxpzdRL3NcA9R7PHKZYNHDURo0tuLxQQyN5q0Q0tX/rt4
+ LWnvmq+uYSU0eTGOYavA+SAIxJBD746H+kQX3CETWOvy/j17v+xXpvIJQRFihPuPncQe 8A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 337dwh5r8g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Sep 2020 09:23:05 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F2EE510002A;
+        Tue,  1 Sep 2020 09:23:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E20B421E67E;
+        Tue,  1 Sep 2020 09:23:04 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 1 Sep
+ 2020 09:23:03 +0200
+Subject: Re: [PATCH] remoteproc: stm32: Fix pointer assignement
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>
+CC:     "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200831213758.206690-1-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <7d63d684-d675-3812-312f-d6b248e06700@st.com>
+Date:   Tue, 1 Sep 2020 09:23:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200823230309.28980-1-song.bao.hua@hisilicon.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200831213758.206690-1-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-01_04:2020-09-01,2020-09-01 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+Hi Mathieu,
 
-applied to the dma-mapping tree.
+On 8/31/20 11:37 PM, Mathieu Poirier wrote:
+> Fix the assignment of the @state pointer - it is obviously wrong.
+> 
+> Fixes: 376ffdc04456 ("remoteproc: stm32: Properly set co-processor state when attaching")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+
+Thanks,
+Arnaud
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index f4da42fc0eeb..d2414cc1d90d 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -685,7 +685,7 @@ static int stm32_rproc_get_m4_status(struct stm32_rproc *ddata,
+>  		 * We couldn't get the coprocessor's state, assume
+>  		 * it is not running.
+>  		 */
+> -		state = M4_STATE_OFF;
+> +		*state = M4_STATE_OFF;
+>  		return 0;
+>  	}
+>  
+> 
