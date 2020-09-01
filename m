@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE85259F1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4C0259F31
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731891AbgIATVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 15:21:50 -0400
-Received: from mga02.intel.com ([134.134.136.20]:26016 "EHLO mga02.intel.com"
+        id S1732751AbgIATXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 15:23:13 -0400
+Received: from mga02.intel.com ([134.134.136.20]:26017 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728076AbgIATVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727924AbgIATVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Sep 2020 15:21:35 -0400
-IronPort-SDR: UyMh0sU6xUzNeZgjplgIGueUhJIXDmexn3rV81uVM9IzZS4RJJ5vMiiybToQPl+hjKcI+cUW69
- slEPnSrfa95g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="144995650"
+IronPort-SDR: xpdgfdapnRX7flKFFYBBAheH7zDOwugIZ69YbsjmcEWP0uxUFFY/ueijQCv0MrBk/PMLtY+tUl
+ 5Gpb5WDOo3pA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="144995653"
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="144995650"
+   d="scan'208";a="144995653"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 12:21:28 -0700
-IronPort-SDR: 6QGVQN8ISHZdA0h9VQvJyDudm33rkJN6DOg4xN/7QxCl1L7nmQN6mx+FkiLb9gu/Y7pBZyFnV/
- YmVLCE4WW0lw==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 12:21:29 -0700
+IronPort-SDR: CNOPhV2lFgJxy3Rs4Jfa+1fkfg5TDSJeiLfcYw3SciB3Zs17qloGBkc6Jj8fjVHS34BIWxKHnU
+ GnIqdo2+zwoA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="325480448"
+   d="scan'208";a="325480453"
 Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
   by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2020 12:21:28 -0700
 From:   Gage Eads <gage.eads@intel.com>
 To:     linux-kernel@vger.kernel.org, arnd@arndb.de,
         gregkh@linuxfoundation.org
 Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com
-Subject: [PATCH v3 03/19] dlb2: add resource and device initialization
-Date:   Tue,  1 Sep 2020 14:15:32 -0500
-Message-Id: <20200901191548.31646-4-gage.eads@intel.com>
+Subject: [PATCH v3 04/19] dlb2: add device ioctl layer and first three ioctls
+Date:   Tue,  1 Sep 2020 14:15:33 -0500
+Message-Id: <20200901191548.31646-5-gage.eads@intel.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20200901191548.31646-1-gage.eads@intel.com>
 References: <20200901191548.31646-1-gage.eads@intel.com>
@@ -42,946 +42,595 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds the hardware resource data structures and functions for
-their initialization/teardown and for device power-on. In subsequent
-commits, dlb2_resource.c will be expanded to hold the dlb2
-resource-management and configuration logic (using the data structures
-defined in dlb2_hw_types.h).
+This commit introduces the dlb2 device ioctl layer, and the first three
+ioctls: query device version, query available resources, and create a
+scheduling domain. This commit also introduces the user-space interface
+file dlb2_user.h.
 
-This commit also introduces dlb2_bitmap_* functions, a thin convenience
-layer wrapping the Linux bitmap interfaces, used by the bitmaps in the dlb2
-hardware types.
+The device version query is designed to allow each DLB device version/type
+to have its own unique ioctl API through the /dev/dlb%d node. Each such API
+would share in common the device version command as its first command, and
+all subsequent commands can be unique to the particular device.
+
+The PF hardware operation for scheduling domain creation will be added in a
+subsequent commit.
 
 Signed-off-by: Gage Eads <gage.eads@intel.com>
 Reviewed-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- drivers/misc/dlb2/Makefile        |   7 +-
- drivers/misc/dlb2/dlb2_bitmap.h   | 121 +++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_hw_types.h | 173 +++++++++++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_main.c     |  51 ++++++++++
- drivers/misc/dlb2/dlb2_main.h     |  11 +++
- drivers/misc/dlb2/dlb2_pf_ops.c   |  68 +++++++++++++
- drivers/misc/dlb2/dlb2_regs.h     |  83 ++++++++++++++++
- drivers/misc/dlb2/dlb2_resource.c | 197 ++++++++++++++++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_resource.h |  46 +++++++++
- 9 files changed, 754 insertions(+), 3 deletions(-)
- create mode 100644 drivers/misc/dlb2/dlb2_bitmap.h
- create mode 100644 drivers/misc/dlb2/dlb2_regs.h
- create mode 100644 drivers/misc/dlb2/dlb2_resource.c
- create mode 100644 drivers/misc/dlb2/dlb2_resource.h
+ Documentation/userspace-api/ioctl/ioctl-number.rst |   1 +
+ drivers/misc/dlb2/Makefile                         |   1 +
+ drivers/misc/dlb2/dlb2_bitmap.h                    |  63 ++++++++
+ drivers/misc/dlb2/dlb2_ioctl.c                     |  86 +++++++++++
+ drivers/misc/dlb2/dlb2_ioctl.h                     |  12 ++
+ drivers/misc/dlb2/dlb2_main.c                      |   6 +
+ drivers/misc/dlb2/dlb2_main.h                      |   7 +
+ drivers/misc/dlb2/dlb2_pf_ops.c                    |  21 +++
+ drivers/misc/dlb2/dlb2_resource.c                  |  46 ++++++
+ drivers/misc/dlb2/dlb2_resource.h                  |  22 +++
+ include/uapi/linux/dlb2_user.h                     | 163 +++++++++++++++++++++
+ 11 files changed, 428 insertions(+)
+ create mode 100644 drivers/misc/dlb2/dlb2_ioctl.c
+ create mode 100644 drivers/misc/dlb2/dlb2_ioctl.h
+ create mode 100644 include/uapi/linux/dlb2_user.h
 
+diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+index 2a198838fca9..6cd2c1550024 100644
+--- a/Documentation/userspace-api/ioctl/ioctl-number.rst
++++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+@@ -241,6 +241,7 @@ Code  Seq#    Include File                                           Comments
+ 'h'   00-7F                                                          conflict! Charon filesystem
+                                                                      <mailto:zapman@interlan.net>
+ 'h'   00-1F  linux/hpet.h                                            conflict!
++'h'   00-1F  uapi/linux/dlb2_user.h                                  conflict!
+ 'h'   80-8F  fs/hfsplus/ioctl.c
+ 'i'   00-3F  linux/i2o-dev.h                                         conflict!
+ 'i'   0B-1F  linux/ipmi.h                                            conflict!
 diff --git a/drivers/misc/dlb2/Makefile b/drivers/misc/dlb2/Makefile
-index 95e67e5bd8ff..4fdf7ffc555b 100644
+index 4fdf7ffc555b..18b5498b20e6 100644
 --- a/drivers/misc/dlb2/Makefile
 +++ b/drivers/misc/dlb2/Makefile
-@@ -4,6 +4,7 @@
+@@ -6,5 +6,6 @@ obj-$(CONFIG_INTEL_DLB2) := dlb2.o
  
- obj-$(CONFIG_INTEL_DLB2) := dlb2.o
- 
--dlb2-objs :=    \
--  dlb2_main.o   \
--  dlb2_pf_ops.o \
-+dlb2-objs :=      \
-+  dlb2_main.o     \
-+  dlb2_pf_ops.o   \
-+  dlb2_resource.o \
+ dlb2-objs :=      \
+   dlb2_main.o     \
++  dlb2_ioctl.o    \
+   dlb2_pf_ops.o   \
+   dlb2_resource.o \
 diff --git a/drivers/misc/dlb2/dlb2_bitmap.h b/drivers/misc/dlb2/dlb2_bitmap.h
-new file mode 100644
-index 000000000000..c5bb4ba84d5c
---- /dev/null
+index c5bb4ba84d5c..2d2d2927b0ec 100644
+--- a/drivers/misc/dlb2/dlb2_bitmap.h
 +++ b/drivers/misc/dlb2/dlb2_bitmap.h
-@@ -0,0 +1,121 @@
+@@ -118,4 +118,67 @@ static inline int dlb2_bitmap_zero(struct dlb2_bitmap *bitmap)
+ 	return 0;
+ }
+ 
++/**
++ * dlb2_bitmap_count() - returns the number of set bits
++ * @bitmap: pointer to dlb2_bitmap structure.
++ *
++ * This function looks for a single set bit.
++ *
++ * Return:
++ * Returns the number of set bits upon success, <0 otherwise.
++ *
++ * Errors:
++ * EINVAL - bitmap is NULL or is uninitialized.
++ */
++static inline int dlb2_bitmap_count(struct dlb2_bitmap *bitmap)
++{
++	if (!bitmap || !bitmap->map)
++		return -EINVAL;
++
++	return bitmap_weight(bitmap->map, bitmap->len);
++}
++
++/**
++ * dlb2_bitmap_longest_set_range() - returns longest contiguous range of set
++ *				     bits
++ * @bitmap: pointer to dlb2_bitmap structure.
++ *
++ * Return:
++ * Returns the bitmap's longest contiguous range of of set bits upon success,
++ * <0 otherwise.
++ *
++ * Errors:
++ * EINVAL - bitmap is NULL or is uninitialized.
++ */
++static inline int dlb2_bitmap_longest_set_range(struct dlb2_bitmap *bitmap)
++{
++	unsigned int bits_per_long;
++	unsigned int i, j;
++	int max_len, len;
++
++	if (!bitmap || !bitmap->map)
++		return -EINVAL;
++
++	if (dlb2_bitmap_count(bitmap) == 0)
++		return 0;
++
++	max_len = 0;
++	len = 0;
++	bits_per_long = sizeof(unsigned long) * BITS_PER_BYTE;
++
++	for (i = 0; i < BITS_TO_LONGS(bitmap->len); i++) {
++		for (j = 0; j < bits_per_long; j++) {
++			if ((i * bits_per_long + j) >= bitmap->len)
++				break;
++
++			len = (test_bit(j, &bitmap->map[i])) ? len + 1 : 0;
++
++			if (len > max_len)
++				max_len = len;
++		}
++	}
++
++	return max_len;
++}
++
+ #endif /*  __DLB2_OSDEP_BITMAP_H */
+diff --git a/drivers/misc/dlb2/dlb2_ioctl.c b/drivers/misc/dlb2/dlb2_ioctl.c
+new file mode 100644
+index 000000000000..39f772d80215
+--- /dev/null
++++ b/drivers/misc/dlb2/dlb2_ioctl.c
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright(c) 2017-2020 Intel Corporation */
++
++#include <linux/uaccess.h>
++
++#include <uapi/linux/dlb2_user.h>
++
++#include "dlb2_ioctl.h"
++#include "dlb2_main.h"
++
++/* [7:0]: device revision, [15:8]: device version */
++#define DLB2_SET_DEVICE_VERSION(ver, rev) (((ver) << 8) | (rev))
++
++static int dlb2_ioctl_get_device_version(struct dlb2_dev *dev,
++					 unsigned long user_arg)
++{
++	struct dlb2_get_device_version_args arg;
++
++	arg.response.status = 0;
++	arg.response.id = DLB2_SET_DEVICE_VERSION(2, DLB2_REV_A0);
++
++	if (copy_to_user((void __user *)user_arg, &arg, sizeof(arg)))
++		return -EFAULT;
++
++	return 0;
++}
++
++static int dlb2_ioctl_create_sched_domain(struct dlb2_dev *dev,
++					  unsigned long user_arg)
++{
++	struct dlb2_create_sched_domain_args arg;
++	struct dlb2_cmd_response response = {0};
++	int ret;
++
++	if (copy_from_user(&arg, (void __user *)user_arg, sizeof(arg)))
++		return -EFAULT;
++
++	mutex_lock(&dev->resource_mutex);
++
++	ret = dev->ops->create_sched_domain(&dev->hw, &arg, &response);
++
++	mutex_unlock(&dev->resource_mutex);
++
++	BUILD_BUG_ON(offsetof(typeof(arg), response) != 0);
++
++	if (copy_to_user((void __user *)user_arg, &response, sizeof(response)))
++		return -EFAULT;
++
++	return ret;
++}
++
++static int dlb2_ioctl_get_num_resources(struct dlb2_dev *dev,
++					unsigned long user_arg)
++{
++	struct dlb2_get_num_resources_args arg;
++	int ret;
++
++	mutex_lock(&dev->resource_mutex);
++
++	ret = dev->ops->get_num_resources(&dev->hw, &arg);
++
++	mutex_unlock(&dev->resource_mutex);
++
++	if (copy_to_user((void __user *)user_arg, &arg, sizeof(arg)))
++		return -EFAULT;
++
++	return ret;
++}
++
++long dlb2_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
++{
++	struct dlb2_dev *dev;
++
++	dev = container_of(f->f_inode->i_cdev, struct dlb2_dev, cdev);
++
++	switch (cmd) {
++	case DLB2_IOC_GET_DEVICE_VERSION:
++		return dlb2_ioctl_get_device_version(dev, arg);
++	case DLB2_IOC_CREATE_SCHED_DOMAIN:
++		return dlb2_ioctl_create_sched_domain(dev, arg);
++	case DLB2_IOC_GET_NUM_RESOURCES:
++		return dlb2_ioctl_get_num_resources(dev, arg);
++	default:
++		return -ENOTTY;
++	}
++}
+diff --git a/drivers/misc/dlb2/dlb2_ioctl.h b/drivers/misc/dlb2/dlb2_ioctl.h
+new file mode 100644
+index 000000000000..367c93b98414
+--- /dev/null
++++ b/drivers/misc/dlb2/dlb2_ioctl.h
+@@ -0,0 +1,12 @@
 +/* SPDX-License-Identifier: GPL-2.0-only
 + * Copyright(c) 2017-2020 Intel Corporation
 + */
 +
-+#ifndef __DLB2_OSDEP_BITMAP_H
-+#define __DLB2_OSDEP_BITMAP_H
-+
-+#include <linux/bitmap.h>
-+#include <linux/slab.h>
++#ifndef __DLB2_IOCTL_H
++#define __DLB2_IOCTL_H
 +
 +#include "dlb2_main.h"
 +
-+/*************************/
-+/*** Bitmap operations ***/
-+/*************************/
-+struct dlb2_bitmap {
-+	unsigned long *map;
-+	unsigned int len;
-+};
++long dlb2_ioctl(struct file *f, unsigned int cmd, unsigned long arg);
 +
-+/**
-+ * dlb2_bitmap_alloc() - alloc a bitmap data structure
-+ * @bitmap: pointer to dlb2_bitmap structure pointer.
-+ * @len: number of entries in the bitmap.
-+ *
-+ * This function allocates a bitmap and initializes it with length @len. All
-+ * entries are initially zero.
-+ *
-+ * Return:
-+ * Returns 0 upon success, < 0 otherwise.
-+ *
-+ * Errors:
-+ * EINVAL - bitmap is NULL or len is 0.
-+ * ENOMEM - could not allocate memory for the bitmap data structure.
-+ */
-+static inline int dlb2_bitmap_alloc(struct dlb2_bitmap **bitmap,
-+				    unsigned int len)
-+{
-+	struct dlb2_bitmap *bm;
-+
-+	if (!bitmap || len == 0)
-+		return -EINVAL;
-+
-+	bm = kzalloc(sizeof(*bm), GFP_KERNEL);
-+	if (!bm)
-+		return -ENOMEM;
-+
-+	bm->map = kcalloc(BITS_TO_LONGS(len), sizeof(*bm->map), GFP_KERNEL);
-+	if (!bm->map) {
-+		kfree(bm);
-+		return -ENOMEM;
-+	}
-+
-+	bm->len = len;
-+
-+	*bitmap = bm;
-+
-+	return 0;
-+}
-+
-+/**
-+ * dlb2_bitmap_free() - free a previously allocated bitmap data structure
-+ * @bitmap: pointer to dlb2_bitmap structure.
-+ *
-+ * This function frees a bitmap that was allocated with dlb2_bitmap_alloc().
-+ */
-+static inline void dlb2_bitmap_free(struct dlb2_bitmap *bitmap)
-+{
-+	if (!bitmap)
-+		return;
-+
-+	kfree(bitmap->map);
-+
-+	kfree(bitmap);
-+}
-+
-+/**
-+ * dlb2_bitmap_fill() - fill a bitmap with all 1s
-+ * @bitmap: pointer to dlb2_bitmap structure.
-+ *
-+ * This function sets all bitmap values to 1.
-+ *
-+ * Return:
-+ * Returns 0 upon success, < 0 otherwise.
-+ *
-+ * Errors:
-+ * EINVAL - bitmap is NULL or is uninitialized.
-+ */
-+static inline int dlb2_bitmap_fill(struct dlb2_bitmap *bitmap)
-+{
-+	if (!bitmap || !bitmap->map)
-+		return -EINVAL;
-+
-+	bitmap_fill(bitmap->map, bitmap->len);
-+
-+	return 0;
-+}
-+
-+/**
-+ * dlb2_bitmap_zero() - fill a bitmap with all 0s
-+ * @bitmap: pointer to dlb2_bitmap structure.
-+ *
-+ * This function sets all bitmap values to 0.
-+ *
-+ * Return:
-+ * Returns 0 upon success, < 0 otherwise.
-+ *
-+ * Errors:
-+ * EINVAL - bitmap is NULL or is uninitialized.
-+ */
-+static inline int dlb2_bitmap_zero(struct dlb2_bitmap *bitmap)
-+{
-+	if (!bitmap || !bitmap->map)
-+		return -EINVAL;
-+
-+	bitmap_zero(bitmap->map, bitmap->len);
-+
-+	return 0;
-+}
-+
-+#endif /*  __DLB2_OSDEP_BITMAP_H */
-diff --git a/drivers/misc/dlb2/dlb2_hw_types.h b/drivers/misc/dlb2/dlb2_hw_types.h
-index 10b26356535f..0db398aeccd5 100644
---- a/drivers/misc/dlb2/dlb2_hw_types.h
-+++ b/drivers/misc/dlb2/dlb2_hw_types.h
-@@ -6,6 +6,9 @@
- #define __DLB2_HW_TYPES_H
- 
- #include <linux/io.h>
-+#include <linux/types.h>
-+
-+#include "dlb2_bitmap.h"
- 
- #define DLB2_PCI_REG_READ(addr)        ioread32(addr)
- #define DLB2_PCI_REG_WRITE(reg, value) iowrite32(value, reg)
-@@ -45,6 +48,169 @@
- #define DLB2_MAX_QID_EMPTY_CHECK_LOOPS		(32 * 64 * 1024 * (800 / 30))
- #define DLB2_HZ					800000000
- 
-+struct dlb2_resource_id {
-+	u32 phys_id;
-+	u32 virt_id;
-+	u8 vdev_owned;
-+	u8 vdev_id;
-+};
-+
-+struct dlb2_freelist {
-+	u32 base;
-+	u32 bound;
-+	u32 offset;
-+};
-+
-+static inline u32 dlb2_freelist_count(struct dlb2_freelist *list)
-+{
-+	return list->bound - list->base - list->offset;
-+}
-+
-+struct dlb2_ldb_queue {
-+	struct list_head domain_list;
-+	struct list_head func_list;
-+	struct dlb2_resource_id id;
-+	struct dlb2_resource_id domain_id;
-+	u32 num_qid_inflights;
-+	u32 aqed_limit;
-+	u32 sn_group; /* sn == sequence number */
-+	u32 sn_slot;
-+	u32 num_mappings;
-+	u8 sn_cfg_valid;
-+	u8 num_pending_additions;
-+	u8 owned;
-+	u8 configured;
-+};
-+
-+/*
-+ * Directed ports and queues are paired by nature, so the driver tracks them
-+ * with a single data structure.
-+ */
-+struct dlb2_dir_pq_pair {
-+	struct list_head domain_list;
-+	struct list_head func_list;
-+	struct dlb2_resource_id id;
-+	struct dlb2_resource_id domain_id;
-+	u32 ref_cnt;
-+	u8 init_tkn_cnt;
-+	u8 queue_configured;
-+	u8 port_configured;
-+	u8 owned;
-+	u8 enabled;
-+};
-+
-+enum dlb2_qid_map_state {
-+	/* The slot doesn't contain a valid queue mapping */
-+	DLB2_QUEUE_UNMAPPED,
-+	/* The slot contains a valid queue mapping */
-+	DLB2_QUEUE_MAPPED,
-+	/* The driver is mapping a queue into this slot */
-+	DLB2_QUEUE_MAP_IN_PROG,
-+	/* The driver is unmapping a queue from this slot */
-+	DLB2_QUEUE_UNMAP_IN_PROG,
-+	/*
-+	 * The driver is unmapping a queue from this slot, and once complete
-+	 * will replace it with another mapping.
-+	 */
-+	DLB2_QUEUE_UNMAP_IN_PROG_PENDING_MAP,
-+};
-+
-+struct dlb2_ldb_port_qid_map {
-+	enum dlb2_qid_map_state state;
-+	u16 qid;
-+	u16 pending_qid;
-+	u8 priority;
-+	u8 pending_priority;
-+};
-+
-+struct dlb2_ldb_port {
-+	struct list_head domain_list;
-+	struct list_head func_list;
-+	struct dlb2_resource_id id;
-+	struct dlb2_resource_id domain_id;
-+	/* The qid_map represents the hardware QID mapping state. */
-+	struct dlb2_ldb_port_qid_map qid_map[DLB2_MAX_NUM_QIDS_PER_LDB_CQ];
-+	u32 hist_list_entry_base;
-+	u32 hist_list_entry_limit;
-+	u32 ref_cnt;
-+	u8 init_tkn_cnt;
-+	u8 num_pending_removals;
-+	u8 num_mappings;
-+	u8 owned;
-+	u8 enabled;
-+	u8 configured;
-+};
-+
-+struct dlb2_sn_group {
-+	u32 mode;
-+	u32 sequence_numbers_per_queue;
-+	u32 slot_use_bitmap;
-+	u32 id;
-+};
-+
-+struct dlb2_hw_domain {
-+	struct dlb2_function_resources *parent_func;
-+	struct list_head func_list;
-+	struct list_head used_ldb_queues;
-+	struct list_head used_ldb_ports[DLB2_NUM_COS_DOMAINS];
-+	struct list_head used_dir_pq_pairs;
-+	struct list_head avail_ldb_queues;
-+	struct list_head avail_ldb_ports[DLB2_NUM_COS_DOMAINS];
-+	struct list_head avail_dir_pq_pairs;
-+	u32 total_hist_list_entries;
-+	u32 avail_hist_list_entries;
-+	u32 hist_list_entry_base;
-+	u32 hist_list_entry_offset;
-+	u32 num_ldb_credits;
-+	u32 num_dir_credits;
-+	u32 num_avail_aqed_entries;
-+	u32 num_used_aqed_entries;
-+	struct dlb2_resource_id id;
-+	int num_pending_removals;
-+	int num_pending_additions;
-+	u8 configured;
-+	u8 started;
-+};
-+
-+struct dlb2_function_resources {
-+	struct list_head avail_domains;
-+	struct list_head used_domains;
-+	struct list_head avail_ldb_queues;
-+	struct list_head avail_ldb_ports[DLB2_NUM_COS_DOMAINS];
-+	struct list_head avail_dir_pq_pairs;
-+	struct dlb2_bitmap *avail_hist_list_entries;
-+	u32 num_avail_domains;
-+	u32 num_avail_ldb_queues;
-+	u32 num_avail_ldb_ports[DLB2_NUM_COS_DOMAINS];
-+	u32 num_avail_dir_pq_pairs;
-+	u32 num_avail_qed_entries;
-+	u32 num_avail_dqed_entries;
-+	u32 num_avail_aqed_entries;
-+	u8 locked; /* (VDEV only) */
-+};
-+
-+/*
-+ * After initialization, each resource in dlb2_hw_resources is located in one
-+ * of the following lists:
-+ * -- The PF's available resources list. These are unconfigured resources owned
-+ *	by the PF and not allocated to a dlb2 scheduling domain.
-+ * -- A VDEV's available resources list. These are VDEV-owned unconfigured
-+ *	resources not allocated to a dlb2 scheduling domain.
-+ * -- A domain's available resources list. These are domain-owned unconfigured
-+ *	resources.
-+ * -- A domain's used resources list. These are are domain-owned configured
-+ *	resources.
-+ *
-+ * A resource moves to a new list when a VDEV or domain is created or destroyed,
-+ * or when the resource is configured.
-+ */
-+struct dlb2_hw_resources {
-+	struct dlb2_ldb_queue ldb_queues[DLB2_MAX_NUM_LDB_QUEUES];
-+	struct dlb2_ldb_port ldb_ports[DLB2_MAX_NUM_LDB_PORTS];
-+	struct dlb2_dir_pq_pair dir_pq_pairs[DLB2_MAX_NUM_DIR_PORTS];
-+	struct dlb2_sn_group sn_groups[DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS];
-+};
-+
- struct dlb2_hw {
- 	/* BAR 0 address */
- 	void __iomem *csr_kva;
-@@ -52,6 +218,13 @@ struct dlb2_hw {
- 	/* BAR 2 address */
- 	void __iomem *func_kva;
- 	unsigned long func_phys_addr;
-+
-+	/* Resource tracking */
-+	struct dlb2_hw_resources rsrcs;
-+	struct dlb2_function_resources pf;
-+	struct dlb2_function_resources vdev[DLB2_MAX_NUM_VDEVS];
-+	struct dlb2_hw_domain domains[DLB2_MAX_NUM_DOMAINS];
-+	u8 cos_reservation[DLB2_NUM_COS_DOMAINS];
- };
- 
- #endif /* __DLB2_HW_TYPES_H */
++#endif /* __DLB2_IOCTL_H */
 diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
-index 5d530ea862a3..f6d78d1532b0 100644
+index f6d78d1532b0..a6e0eead7de4 100644
 --- a/drivers/misc/dlb2/dlb2_main.c
 +++ b/drivers/misc/dlb2/dlb2_main.c
-@@ -12,6 +12,7 @@
+@@ -11,12 +11,16 @@
+ #include <linux/pci.h>
  #include <linux/uaccess.h>
  
++#include "dlb2_ioctl.h"
  #include "dlb2_main.h"
-+#include "dlb2_resource.h"
+ #include "dlb2_resource.h"
  
  static const char
  dlb2_driver_copyright[] = "Copyright(c) 2018-2020 Intel Corporation";
-@@ -27,6 +28,23 @@ static struct list_head dlb2_dev_list = LIST_HEAD_INIT(dlb2_dev_list);
- static struct class *dlb2_class;
- static dev_t dlb2_dev_number_base;
  
-+static int dlb2_reset_device(struct pci_dev *pdev)
-+{
-+	int ret;
++#define TO_STR2(s) #s
++#define TO_STR(s) TO_STR2(s)
 +
-+	ret = pci_save_state(pdev);
-+	if (ret)
-+		return ret;
-+
-+	ret = __pci_reset_function_locked(pdev);
-+	if (ret)
-+		return ret;
-+
-+	pci_restore_state(pdev);
-+
-+	return 0;
-+}
-+
- /*****************************/
- /****** Devfs callbacks ******/
- /*****************************/
-@@ -137,12 +155,41 @@ static int dlb2_probe(struct pci_dev *pdev,
- 	if (ret)
- 		goto dma_set_mask_fail;
- 
-+	/*
-+	 * PM enable must be done before any other MMIO accesses, and this
-+	 * setting is persistent across device reset.
-+	 */
-+	dlb2_dev->ops->enable_pm(dlb2_dev);
-+
-+	ret = dlb2_dev->ops->wait_for_device_ready(dlb2_dev, pdev);
-+	if (ret)
-+		goto wait_for_device_ready_fail;
-+
-+	ret = dlb2_reset_device(pdev);
-+	if (ret)
-+		goto dlb2_reset_fail;
-+
-+	ret = dlb2_resource_init(&dlb2_dev->hw);
-+	if (ret)
-+		goto resource_init_fail;
-+
-+	ret = dlb2_dev->ops->init_driver_state(dlb2_dev);
-+	if (ret)
-+		goto init_driver_state_fail;
-+
-+	dlb2_dev->ops->init_hardware(dlb2_dev);
-+
- 	mutex_lock(&dlb2_driver_lock);
- 	list_add(&dlb2_dev->list, &dlb2_dev_list);
- 	mutex_unlock(&dlb2_driver_lock);
- 
- 	return 0;
- 
-+init_driver_state_fail:
-+	dlb2_resource_free(&dlb2_dev->hw);
-+resource_init_fail:
-+dlb2_reset_fail:
-+wait_for_device_ready_fail:
- dma_set_mask_fail:
- 	dlb2_dev->ops->device_destroy(dlb2_dev, dlb2_class);
- device_add_fail:
-@@ -172,6 +219,10 @@ static void dlb2_remove(struct pci_dev *pdev)
- 	list_del(&dlb2_dev->list);
- 	mutex_unlock(&dlb2_driver_lock);
- 
-+	dlb2_dev->ops->free_driver_state(dlb2_dev);
-+
-+	dlb2_resource_free(&dlb2_dev->hw);
-+
- 	dlb2_dev->ops->device_destroy(dlb2_dev, dlb2_class);
- 
- 	dlb2_dev->ops->cdev_del(dlb2_dev);
-diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
-index 7d04e0d8869d..115cfadc0f12 100644
---- a/drivers/misc/dlb2/dlb2_main.h
-+++ b/drivers/misc/dlb2/dlb2_main.h
-@@ -39,6 +39,8 @@ struct dlb2_device_ops {
- 	int (*map_pci_bar_space)(struct dlb2_dev *dev, struct pci_dev *pdev);
- 	void (*unmap_pci_bar_space)(struct dlb2_dev *dev,
- 				    struct pci_dev *pdev);
-+	int (*init_driver_state)(struct dlb2_dev *dev);
-+	void (*free_driver_state)(struct dlb2_dev *dev);
- 	int (*device_create)(struct dlb2_dev *dlb2_dev,
- 			     struct pci_dev *pdev,
- 			     struct class *dlb2_class);
-@@ -48,6 +50,10 @@ struct dlb2_device_ops {
- 			dev_t base,
- 			const struct file_operations *fops);
- 	void (*cdev_del)(struct dlb2_dev *dlb2_dev);
-+	void (*enable_pm)(struct dlb2_dev *dev);
-+	int (*wait_for_device_ready)(struct dlb2_dev *dev,
-+				     struct pci_dev *pdev);
-+	void (*init_hardware)(struct dlb2_dev *dev);
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Copyright(c) 2018-2020 Intel Corporation");
+ MODULE_DESCRIPTION("Intel(R) Dynamic Load Balancer 2.0 Driver");
+@@ -63,6 +67,8 @@ static const struct file_operations dlb2_fops = {
+ 	.owner   = THIS_MODULE,
+ 	.open    = dlb2_open,
+ 	.release = dlb2_close,
++	.unlocked_ioctl = dlb2_ioctl,
++	.compat_ioctl = compat_ptr_ioctl,
  };
  
- extern struct dlb2_device_ops dlb2_pf_ops;
-@@ -59,6 +65,11 @@ struct dlb2_dev {
- 	struct dlb2_device_ops *ops;
- 	struct list_head list;
- 	struct device *dlb2_device;
-+	/*
-+	 * The resource mutex serializes access to driver data structures and
-+	 * hardware registers.
-+	 */
-+	struct mutex resource_mutex;
- 	enum dlb2_device_type type;
- 	int id;
- 	dev_t dev_number;
+ /**********************************/
+diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
+index 115cfadc0f12..5445736d86b2 100644
+--- a/drivers/misc/dlb2/dlb2_main.h
++++ b/drivers/misc/dlb2/dlb2_main.h
+@@ -13,6 +13,8 @@
+ #include <linux/pci.h>
+ #include <linux/types.h>
+ 
++#include <uapi/linux/dlb2_user.h>
++
+ #include "dlb2_hw_types.h"
+ 
+ static const char dlb2_driver_name[] = KBUILD_MODNAME;
+@@ -53,6 +55,11 @@ struct dlb2_device_ops {
+ 	void (*enable_pm)(struct dlb2_dev *dev);
+ 	int (*wait_for_device_ready)(struct dlb2_dev *dev,
+ 				     struct pci_dev *pdev);
++	int (*create_sched_domain)(struct dlb2_hw *hw,
++				   struct dlb2_create_sched_domain_args *args,
++				   struct dlb2_cmd_response *resp);
++	int (*get_num_resources)(struct dlb2_hw *hw,
++				 struct dlb2_get_num_resources_args *args);
+ 	void (*init_hardware)(struct dlb2_dev *dev);
+ };
+ 
 diff --git a/drivers/misc/dlb2/dlb2_pf_ops.c b/drivers/misc/dlb2/dlb2_pf_ops.c
-index 7920e491110f..cc35c3537507 100644
+index cc35c3537507..1f5998862e31 100644
 --- a/drivers/misc/dlb2/dlb2_pf_ops.c
 +++ b/drivers/misc/dlb2/dlb2_pf_ops.c
-@@ -1,7 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /* Copyright(c) 2017-2020 Intel Corporation */
- 
-+#include <linux/delay.h>
-+
- #include "dlb2_main.h"
-+#include "dlb2_regs.h"
-+#include "dlb2_resource.h"
- 
- /********************************/
- /****** PCI BAR management ******/
-@@ -50,6 +54,19 @@ dlb2_pf_map_pci_bar_space(struct dlb2_dev *dlb2_dev,
- /*******************************/
- 
- static int
-+dlb2_pf_init_driver_state(struct dlb2_dev *dlb2_dev)
-+{
-+	mutex_init(&dlb2_dev->resource_mutex);
-+
-+	return 0;
-+}
-+
-+static void
-+dlb2_pf_free_driver_state(struct dlb2_dev *dlb2_dev)
-+{
-+}
-+
-+static int
- dlb2_pf_cdev_add(struct dlb2_dev *dlb2_dev,
- 		 dev_t base,
- 		 const struct file_operations *fops)
-@@ -112,6 +129,52 @@ dlb2_pf_device_destroy(struct dlb2_dev *dlb2_dev,
- 	device_destroy(dlb2_class, dlb2_dev->dev_number);
+@@ -175,6 +175,25 @@ dlb2_pf_init_hardware(struct dlb2_dev *dlb2_dev)
+ {
  }
  
-+static void
-+dlb2_pf_enable_pm(struct dlb2_dev *dlb2_dev)
-+{
-+	dlb2_clr_pmcsr_disable(&dlb2_dev->hw);
-+}
++/*****************************/
++/****** IOCTL callbacks ******/
++/*****************************/
 +
-+#define DLB2_READY_RETRY_LIMIT 1000
 +static int
-+dlb2_pf_wait_for_device_ready(struct dlb2_dev *dlb2_dev,
-+			      struct pci_dev *pdev)
++dlb2_pf_create_sched_domain(struct dlb2_hw *hw,
++			    struct dlb2_create_sched_domain_args *args,
++			    struct dlb2_cmd_response *resp)
 +{
-+	u32 retries = DLB2_READY_RETRY_LIMIT;
-+
-+	/* Allow at least 1s for the device to become active after power-on */
-+	do {
-+		union dlb2_cfg_mstr_cfg_diagnostic_idle_status idle;
-+		union dlb2_cfg_mstr_cfg_pm_status pm_st;
-+		u32 addr;
-+
-+		addr = DLB2_CFG_MSTR_CFG_PM_STATUS;
-+
-+		pm_st.val = DLB2_CSR_RD(&dlb2_dev->hw, addr);
-+
-+		addr = DLB2_CFG_MSTR_CFG_DIAGNOSTIC_IDLE_STATUS;
-+
-+		idle.val = DLB2_CSR_RD(&dlb2_dev->hw, addr);
-+
-+		if (pm_st.field.pmsm == 1 && idle.field.dlb_func_idle == 1)
-+			break;
-+
-+		usleep_range(1000, 2000);
-+	} while (--retries);
-+
-+	if (!retries) {
-+		dev_err(&pdev->dev, "Device idle test failed\n");
-+		return -EIO;
-+	}
-+
 +	return 0;
 +}
 +
-+static void
-+dlb2_pf_init_hardware(struct dlb2_dev *dlb2_dev)
++static int
++dlb2_pf_get_num_resources(struct dlb2_hw *hw,
++			  struct dlb2_get_num_resources_args *args)
 +{
++	return dlb2_hw_get_num_resources(hw, args, false, 0);
 +}
 +
  /********************************/
  /****** DLB2 PF Device Ops ******/
  /********************************/
-@@ -119,8 +182,13 @@ dlb2_pf_device_destroy(struct dlb2_dev *dlb2_dev,
- struct dlb2_device_ops dlb2_pf_ops = {
- 	.map_pci_bar_space = dlb2_pf_map_pci_bar_space,
- 	.unmap_pci_bar_space = dlb2_pf_unmap_pci_bar_space,
-+	.init_driver_state = dlb2_pf_init_driver_state,
-+	.free_driver_state = dlb2_pf_free_driver_state,
- 	.device_create = dlb2_pf_device_create,
- 	.device_destroy = dlb2_pf_device_destroy,
- 	.cdev_add = dlb2_pf_cdev_add,
+@@ -190,5 +209,7 @@ struct dlb2_device_ops dlb2_pf_ops = {
  	.cdev_del = dlb2_pf_cdev_del,
-+	.enable_pm = dlb2_pf_enable_pm,
-+	.wait_for_device_ready = dlb2_pf_wait_for_device_ready,
-+	.init_hardware = dlb2_pf_init_hardware,
+ 	.enable_pm = dlb2_pf_enable_pm,
+ 	.wait_for_device_ready = dlb2_pf_wait_for_device_ready,
++	.create_sched_domain = dlb2_pf_create_sched_domain,
++	.get_num_resources = dlb2_pf_get_num_resources,
+ 	.init_hardware = dlb2_pf_init_hardware,
  };
-diff --git a/drivers/misc/dlb2/dlb2_regs.h b/drivers/misc/dlb2/dlb2_regs.h
-new file mode 100644
-index 000000000000..b1a3ef2f4537
---- /dev/null
-+++ b/drivers/misc/dlb2/dlb2_regs.h
-@@ -0,0 +1,83 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
-+ * Copyright(c) 2016-2020 Intel Corporation
-+ */
-+
-+#ifndef __DLB2_REGS_H
-+#define __DLB2_REGS_H
-+
-+#include "linux/types.h"
-+
-+#define DLB2_CFG_MSTR_CFG_DIAGNOSTIC_IDLE_STATUS 0xb4000004
-+#define DLB2_CFG_MSTR_CFG_DIAGNOSTIC_IDLE_STATUS_RST 0x9d0fffff
-+union dlb2_cfg_mstr_cfg_diagnostic_idle_status {
-+	struct {
-+		u32 chp_pipeidle : 1;
-+		u32 rop_pipeidle : 1;
-+		u32 lsp_pipeidle : 1;
-+		u32 nalb_pipeidle : 1;
-+		u32 ap_pipeidle : 1;
-+		u32 dp_pipeidle : 1;
-+		u32 qed_pipeidle : 1;
-+		u32 dqed_pipeidle : 1;
-+		u32 aqed_pipeidle : 1;
-+		u32 sys_pipeidle : 1;
-+		u32 chp_unit_idle : 1;
-+		u32 rop_unit_idle : 1;
-+		u32 lsp_unit_idle : 1;
-+		u32 nalb_unit_idle : 1;
-+		u32 ap_unit_idle : 1;
-+		u32 dp_unit_idle : 1;
-+		u32 qed_unit_idle : 1;
-+		u32 dqed_unit_idle : 1;
-+		u32 aqed_unit_idle : 1;
-+		u32 sys_unit_idle : 1;
-+		u32 rsvd1 : 4;
-+		u32 mstr_cfg_ring_idle : 1;
-+		u32 mstr_cfg_mstr_idle : 1;
-+		u32 mstr_flr_clkreq_b : 1;
-+		u32 mstr_proc_idle : 1;
-+		u32 mstr_proc_idle_masked : 1;
-+		u32 rsvd0 : 2;
-+		u32 dlb_func_idle : 1;
-+	} field;
-+	u32 val;
-+};
-+
-+#define DLB2_CFG_MSTR_CFG_PM_STATUS 0xb4000014
-+#define DLB2_CFG_MSTR_CFG_PM_STATUS_RST 0x100403e
-+union dlb2_cfg_mstr_cfg_pm_status {
-+	struct {
-+		u32 prochot : 1;
-+		u32 pgcb_dlb_idle : 1;
-+		u32 pgcb_dlb_pg_rdy_ack_b : 1;
-+		u32 pmsm_pgcb_req_b : 1;
-+		u32 pgbc_pmc_pg_req_b : 1;
-+		u32 pmc_pgcb_pg_ack_b : 1;
-+		u32 pmc_pgcb_fet_en_b : 1;
-+		u32 pgcb_fet_en_b : 1;
-+		u32 rsvz0 : 1;
-+		u32 rsvz1 : 1;
-+		u32 fuse_force_on : 1;
-+		u32 fuse_proc_disable : 1;
-+		u32 rsvz2 : 1;
-+		u32 rsvz3 : 1;
-+		u32 pm_fsm_d0tod3_ok : 1;
-+		u32 pm_fsm_d3tod0_ok : 1;
-+		u32 dlb_in_d3 : 1;
-+		u32 rsvz4 : 7;
-+		u32 pmsm : 8;
-+	} field;
-+	u32 val;
-+};
-+
-+#define DLB2_CFG_MSTR_CFG_PM_PMCSR_DISABLE 0xb4000018
-+#define DLB2_CFG_MSTR_CFG_PM_PMCSR_DISABLE_RST 0x1
-+union dlb2_cfg_mstr_cfg_pm_pmcsr_disable {
-+	struct {
-+		u32 disable : 1;
-+		u32 rsvz0 : 31;
-+	} field;
-+	u32 val;
-+};
-+
-+#endif /* __DLB2_REGS_H */
 diff --git a/drivers/misc/dlb2/dlb2_resource.c b/drivers/misc/dlb2/dlb2_resource.c
-new file mode 100644
-index 000000000000..70036a2f5d60
---- /dev/null
+index 70036a2f5d60..3b36bfef1e9b 100644
+--- a/drivers/misc/dlb2/dlb2_resource.c
 +++ b/drivers/misc/dlb2/dlb2_resource.c
-@@ -0,0 +1,197 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright(c) 2016-2020 Intel Corporation */
-+
-+#include "dlb2_bitmap.h"
-+#include "dlb2_hw_types.h"
-+#include "dlb2_regs.h"
-+#include "dlb2_resource.h"
-+
-+static void dlb2_init_fn_rsrc_lists(struct dlb2_function_resources *rsrc)
+@@ -185,6 +185,52 @@ int dlb2_resource_init(struct dlb2_hw *hw)
+ 	return ret;
+ }
+ 
++int dlb2_hw_get_num_resources(struct dlb2_hw *hw,
++			      struct dlb2_get_num_resources_args *arg,
++			      bool vdev_req,
++			      unsigned int vdev_id)
 +{
++	struct dlb2_function_resources *rsrcs;
++	struct dlb2_bitmap *map;
 +	int i;
 +
-+	INIT_LIST_HEAD(&rsrc->avail_domains);
-+	INIT_LIST_HEAD(&rsrc->used_domains);
-+	INIT_LIST_HEAD(&rsrc->avail_ldb_queues);
-+	INIT_LIST_HEAD(&rsrc->avail_dir_pq_pairs);
++	if (vdev_req && vdev_id >= DLB2_MAX_NUM_VDEVS)
++		return -EINVAL;
++
++	if (vdev_req)
++		rsrcs = &hw->vdev[vdev_id];
++	else
++		rsrcs = &hw->pf;
++
++	arg->num_sched_domains = rsrcs->num_avail_domains;
++
++	arg->num_ldb_queues = rsrcs->num_avail_ldb_queues;
++
++	arg->num_ldb_ports = 0;
++	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++)
++		arg->num_ldb_ports += rsrcs->num_avail_ldb_ports[i];
 +
 +	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++)
-+		INIT_LIST_HEAD(&rsrc->avail_ldb_ports[i]);
-+}
++		arg->num_cos_ldb_ports[i] = rsrcs->num_avail_ldb_ports[i];
 +
-+static void dlb2_init_domain_rsrc_lists(struct dlb2_hw_domain *domain)
-+{
-+	int i;
++	arg->num_dir_ports = rsrcs->num_avail_dir_pq_pairs;
 +
-+	INIT_LIST_HEAD(&domain->used_ldb_queues);
-+	INIT_LIST_HEAD(&domain->used_dir_pq_pairs);
-+	INIT_LIST_HEAD(&domain->avail_ldb_queues);
-+	INIT_LIST_HEAD(&domain->avail_dir_pq_pairs);
++	arg->num_atomic_inflights = rsrcs->num_avail_aqed_entries;
 +
-+	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++)
-+		INIT_LIST_HEAD(&domain->used_ldb_ports[i]);
-+	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++)
-+		INIT_LIST_HEAD(&domain->avail_ldb_ports[i]);
-+}
++	map = rsrcs->avail_hist_list_entries;
 +
-+void dlb2_resource_free(struct dlb2_hw *hw)
-+{
-+	int i;
++	arg->num_hist_list_entries = dlb2_bitmap_count(map);
 +
-+	if (hw->pf.avail_hist_list_entries)
-+		dlb2_bitmap_free(hw->pf.avail_hist_list_entries);
++	arg->max_contiguous_hist_list_entries =
++		dlb2_bitmap_longest_set_range(map);
 +
-+	for (i = 0; i < DLB2_MAX_NUM_VDEVS; i++) {
-+		if (hw->vdev[i].avail_hist_list_entries)
-+			dlb2_bitmap_free(hw->vdev[i].avail_hist_list_entries);
-+	}
-+}
++	arg->num_ldb_credits = rsrcs->num_avail_qed_entries;
 +
-+int dlb2_resource_init(struct dlb2_hw *hw)
-+{
-+	struct list_head *list;
-+	unsigned int i;
-+	int ret;
-+
-+	/*
-+	 * For optimal load-balancing, ports that map to one or more QIDs in
-+	 * common should not be in numerical sequence. This is application
-+	 * dependent, but the driver interleaves port IDs as much as possible
-+	 * to reduce the likelihood of this. This initial allocation maximizes
-+	 * the average distance between an ID and its immediate neighbors (i.e.
-+	 * the distance from 1 to 0 and to 2, the distance from 2 to 1 and to
-+	 * 3, etc.).
-+	 */
-+	u8 init_ldb_port_allocation[DLB2_MAX_NUM_LDB_PORTS] = {
-+		0,  7,  14,  5, 12,  3, 10,  1,  8, 15,  6, 13,  4, 11,  2,  9,
-+		16, 23, 30, 21, 28, 19, 26, 17, 24, 31, 22, 29, 20, 27, 18, 25,
-+		32, 39, 46, 37, 44, 35, 42, 33, 40, 47, 38, 45, 36, 43, 34, 41,
-+		48, 55, 62, 53, 60, 51, 58, 49, 56, 63, 54, 61, 52, 59, 50, 57,
-+	};
-+
-+	/* Zero-out resource tracking data structures */
-+	memset(&hw->rsrcs, 0, sizeof(hw->rsrcs));
-+	memset(&hw->pf, 0, sizeof(hw->pf));
-+
-+	dlb2_init_fn_rsrc_lists(&hw->pf);
-+
-+	for (i = 0; i < DLB2_MAX_NUM_VDEVS; i++) {
-+		memset(&hw->vdev[i], 0, sizeof(hw->vdev[i]));
-+		dlb2_init_fn_rsrc_lists(&hw->vdev[i]);
-+	}
-+
-+	for (i = 0; i < DLB2_MAX_NUM_DOMAINS; i++) {
-+		memset(&hw->domains[i], 0, sizeof(hw->domains[i]));
-+		dlb2_init_domain_rsrc_lists(&hw->domains[i]);
-+		hw->domains[i].parent_func = &hw->pf;
-+	}
-+
-+	/* Give all resources to the PF driver */
-+	hw->pf.num_avail_domains = DLB2_MAX_NUM_DOMAINS;
-+	for (i = 0; i < hw->pf.num_avail_domains; i++) {
-+		list = &hw->domains[i].func_list;
-+
-+		list_add(list, &hw->pf.avail_domains);
-+	}
-+
-+	hw->pf.num_avail_ldb_queues = DLB2_MAX_NUM_LDB_QUEUES;
-+	for (i = 0; i < hw->pf.num_avail_ldb_queues; i++) {
-+		list = &hw->rsrcs.ldb_queues[i].func_list;
-+
-+		list_add(list, &hw->pf.avail_ldb_queues);
-+	}
-+
-+	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++)
-+		hw->pf.num_avail_ldb_ports[i] =
-+			DLB2_MAX_NUM_LDB_PORTS / DLB2_NUM_COS_DOMAINS;
-+
-+	for (i = 0; i < DLB2_MAX_NUM_LDB_PORTS; i++) {
-+		int cos_id = i >> DLB2_NUM_COS_DOMAINS;
-+		struct dlb2_ldb_port *port;
-+
-+		port = &hw->rsrcs.ldb_ports[init_ldb_port_allocation[i]];
-+
-+		list_add(&port->func_list, &hw->pf.avail_ldb_ports[cos_id]);
-+	}
-+
-+	hw->pf.num_avail_dir_pq_pairs = DLB2_MAX_NUM_DIR_PORTS;
-+	for (i = 0; i < hw->pf.num_avail_dir_pq_pairs; i++) {
-+		list = &hw->rsrcs.dir_pq_pairs[i].func_list;
-+
-+		list_add(list, &hw->pf.avail_dir_pq_pairs);
-+	}
-+
-+	hw->pf.num_avail_qed_entries = DLB2_MAX_NUM_LDB_CREDITS;
-+	hw->pf.num_avail_dqed_entries = DLB2_MAX_NUM_DIR_CREDITS;
-+	hw->pf.num_avail_aqed_entries = DLB2_MAX_NUM_AQED_ENTRIES;
-+
-+	ret = dlb2_bitmap_alloc(&hw->pf.avail_hist_list_entries,
-+				DLB2_MAX_NUM_HIST_LIST_ENTRIES);
-+	if (ret)
-+		goto unwind;
-+
-+	ret = dlb2_bitmap_fill(hw->pf.avail_hist_list_entries);
-+	if (ret)
-+		goto unwind;
-+
-+	for (i = 0; i < DLB2_MAX_NUM_VDEVS; i++) {
-+		ret = dlb2_bitmap_alloc(&hw->vdev[i].avail_hist_list_entries,
-+					DLB2_MAX_NUM_HIST_LIST_ENTRIES);
-+		if (ret)
-+			goto unwind;
-+
-+		ret = dlb2_bitmap_zero(hw->vdev[i].avail_hist_list_entries);
-+		if (ret)
-+			goto unwind;
-+	}
-+
-+	/* Initialize the hardware resource IDs */
-+	for (i = 0; i < DLB2_MAX_NUM_DOMAINS; i++) {
-+		hw->domains[i].id.phys_id = i;
-+		hw->domains[i].id.vdev_owned = false;
-+	}
-+
-+	for (i = 0; i < DLB2_MAX_NUM_LDB_QUEUES; i++) {
-+		hw->rsrcs.ldb_queues[i].id.phys_id = i;
-+		hw->rsrcs.ldb_queues[i].id.vdev_owned = false;
-+	}
-+
-+	for (i = 0; i < DLB2_MAX_NUM_LDB_PORTS; i++) {
-+		hw->rsrcs.ldb_ports[i].id.phys_id = i;
-+		hw->rsrcs.ldb_ports[i].id.vdev_owned = false;
-+	}
-+
-+	for (i = 0; i < DLB2_MAX_NUM_DIR_PORTS; i++) {
-+		hw->rsrcs.dir_pq_pairs[i].id.phys_id = i;
-+		hw->rsrcs.dir_pq_pairs[i].id.vdev_owned = false;
-+	}
-+
-+	for (i = 0; i < DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS; i++) {
-+		hw->rsrcs.sn_groups[i].id = i;
-+		/* Default mode (0) is 64 sequence numbers per queue */
-+		hw->rsrcs.sn_groups[i].mode = 0;
-+		hw->rsrcs.sn_groups[i].sequence_numbers_per_queue = 64;
-+		hw->rsrcs.sn_groups[i].slot_use_bitmap = 0;
-+	}
-+
-+	for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++)
-+		hw->cos_reservation[i] = 100 / DLB2_NUM_COS_DOMAINS;
++	arg->num_dir_credits = rsrcs->num_avail_dqed_entries;
 +
 +	return 0;
-+
-+unwind:
-+	dlb2_resource_free(hw);
-+
-+	return ret;
 +}
 +
-+void dlb2_clr_pmcsr_disable(struct dlb2_hw *hw)
-+{
-+	union dlb2_cfg_mstr_cfg_pm_pmcsr_disable r0;
-+
-+	r0.val = DLB2_CSR_RD(hw, DLB2_CFG_MSTR_CFG_PM_PMCSR_DISABLE);
-+
-+	r0.field.disable = 0;
-+
-+	DLB2_CSR_WR(hw, DLB2_CFG_MSTR_CFG_PM_PMCSR_DISABLE, r0.val);
-+}
+ void dlb2_clr_pmcsr_disable(struct dlb2_hw *hw)
+ {
+ 	union dlb2_cfg_mstr_cfg_pm_pmcsr_disable r0;
 diff --git a/drivers/misc/dlb2/dlb2_resource.h b/drivers/misc/dlb2/dlb2_resource.h
-new file mode 100644
-index 000000000000..af20fcf0a0cb
---- /dev/null
+index af20fcf0a0cb..b23676df22a6 100644
+--- a/drivers/misc/dlb2/dlb2_resource.h
 +++ b/drivers/misc/dlb2/dlb2_resource.h
-@@ -0,0 +1,46 @@
-+/* SPDX-License-Identifier: GPL-2.0-only
+@@ -35,6 +35,28 @@ int dlb2_resource_init(struct dlb2_hw *hw);
+ void dlb2_resource_free(struct dlb2_hw *hw);
+ 
+ /**
++ * dlb2_hw_get_num_resources() - query the PCI function's available resources
++ * @hw: dlb2_hw handle for a particular device.
++ * @arg: pointer to resource counts.
++ * @vdev_request: indicates whether this request came from a vdev.
++ * @vdev_id: If vdev_request is true, this contains the vdev's ID.
++ *
++ * This function returns the number of available resources for the PF or for a
++ * VF.
++ *
++ * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
++ * device.
++ *
++ * Return:
++ * Returns 0 upon success, -EINVAL if vdev_request is true and vdev_id is
++ * invalid.
++ */
++int dlb2_hw_get_num_resources(struct dlb2_hw *hw,
++			      struct dlb2_get_num_resources_args *arg,
++			      bool vdev_request,
++			      unsigned int vdev_id);
++
++/**
+  * dlb2_clr_pmcsr_disable() - power on bulk of DLB 2.0 logic
+  * @hw: dlb2_hw handle for a particular device.
+  *
+diff --git a/include/uapi/linux/dlb2_user.h b/include/uapi/linux/dlb2_user.h
+new file mode 100644
+index 000000000000..49a8a39f79a2
+--- /dev/null
++++ b/include/uapi/linux/dlb2_user.h
+@@ -0,0 +1,163 @@
++/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note
 + * Copyright(c) 2016-2020 Intel Corporation
 + */
 +
-+#ifndef __DLB2_RESOURCE_H
-+#define __DLB2_RESOURCE_H
++#ifndef __DLB2_USER_H
++#define __DLB2_USER_H
 +
 +#include <linux/types.h>
 +
-+#include "dlb2_hw_types.h"
++struct dlb2_cmd_response {
++	__u32 status; /* Interpret using enum dlb2_error */
++	__u32 id;
++};
 +
-+/**
-+ * dlb2_resource_init() - initialize the device
-+ * @hw: pointer to struct dlb2_hw.
++/********************************/
++/* 'dlb2' device file commands  */
++/********************************/
++
++#define DLB2_DEVICE_VERSION(x) (((x) >> 8) & 0xFF)
++#define DLB2_DEVICE_REVISION(x) ((x) & 0xFF)
++
++enum dlb2_revisions {
++	DLB2_REV_A0 = 0,
++};
++
++/*
++ * DLB2_CMD_GET_DEVICE_VERSION: Query the DLB device version.
 + *
-+ * This function initializes the device's software state (pointed to by the hw
-+ * argument) and programs global scheduling QoS registers. This function should
-+ * be called during driver initialization.
++ *	Each DLB device version has its own unique ioctl API, but all share
++ *	this as the first command in their interface, which tells user-space
++ *	which API to use. The device revision is provided in case of any
++ *	hardware errata.
 + *
-+ * The dlb2_hw struct must be unique per DLB 2.0 device and persist until the
-+ * device is reset.
-+ *
-+ * Return:
-+ * Returns 0 upon success, <0 otherwise.
++ * Output parameters:
++ * - response.status: Detailed error code. In certain cases, such as if the
++ *	ioctl request arg is invalid, the driver won't set status.
++ * - response.id[7:0]: Device revision.
++ * - response.id[15:8]: Device version.
 + */
-+int dlb2_resource_init(struct dlb2_hw *hw);
 +
-+/**
-+ * dlb2_resource_free() - free device state memory
-+ * @hw: dlb2_hw handle for a particular device.
++struct dlb2_get_device_version_args {
++	/* Output parameters */
++	struct dlb2_cmd_response response;
++};
++
++/*
++ * DLB2_CMD_CREATE_SCHED_DOMAIN: Create a DLB 2.0 scheduling domain and reserve
++ *	its hardware resources. This command returns the newly created domain
++ *	ID and a file descriptor for accessing the domain.
 + *
-+ * This function frees software state pointed to by dlb2_hw. This function
-+ * should be called when resetting the device or unloading the driver.
-+ */
-+void dlb2_resource_free(struct dlb2_hw *hw);
-+
-+/**
-+ * dlb2_clr_pmcsr_disable() - power on bulk of DLB 2.0 logic
-+ * @hw: dlb2_hw handle for a particular device.
++ * Input parameters:
++ * - num_ldb_queues: Number of load-balanced queues.
++ * - num_ldb_ports: Number of load-balanced ports that can be allocated from
++ *	from any class-of-service with available ports.
++ * - num_cos_ldb_ports[4]: Number of load-balanced ports from
++ *	classes-of-service 0-3.
++ * - num_dir_ports: Number of directed ports. A directed port has one directed
++ *	queue, so no num_dir_queues argument is necessary.
++ * - num_atomic_inflights: This specifies the amount of temporary atomic QE
++ *	storage for the domain. This storage is divided among the domain's
++ *	load-balanced queues that are configured for atomic scheduling.
++ * - num_hist_list_entries: Amount of history list storage. This is divided
++ *	among the domain's CQs.
++ * - num_ldb_credits: Amount of load-balanced QE storage (QED). QEs occupy this
++ *	space until they are scheduled to a load-balanced CQ. One credit
++ *	represents the storage for one QE.
++ * - num_dir_credits: Amount of directed QE storage (DQED). QEs occupy this
++ *	space until they are scheduled to a directed CQ. One credit represents
++ *	the storage for one QE.
++ * - cos_strict: If set, return an error if there are insufficient ports in
++ *	class-of-service N to satisfy the num_ldb_ports_cosN argument. If
++ *	unset, attempt to fulfill num_ldb_ports_cosN arguments from other
++ *	classes-of-service if class N does not contain enough free ports.
++ * - padding1: Reserved for future use.
 + *
-+ * Clearing the PMCSR must be done at initialization to make the device fully
-+ * operational.
++ * Output parameters:
++ * - response.status: Detailed error code. In certain cases, such as if the
++ *	ioctl request arg is invalid, the driver won't set status.
++ * - response.id: domain ID.
++ * - domain_fd: file descriptor for performing the domain's ioctl operations
++ * - padding0: Reserved for future use.
 + */
-+void dlb2_clr_pmcsr_disable(struct dlb2_hw *hw);
++struct dlb2_create_sched_domain_args {
++	/* Output parameters */
++	struct dlb2_cmd_response response;
++	__u32 domain_fd;
++	__u32 padding0;
++	/* Input parameters */
++	__u32 num_ldb_queues;
++	__u32 num_ldb_ports;
++	__u32 num_cos_ldb_ports[4];
++	__u32 num_dir_ports;
++	__u32 num_atomic_inflights;
++	__u32 num_hist_list_entries;
++	__u32 num_ldb_credits;
++	__u32 num_dir_credits;
++	__u8 cos_strict;
++	__u8 padding1[3];
++};
 +
-+#endif /* __DLB2_RESOURCE_H */
++/*
++ * DLB2_CMD_GET_NUM_RESOURCES: Return the number of available resources
++ *	(queues, ports, etc.) that this device owns.
++ *
++ * Output parameters:
++ * - num_domains: Number of available scheduling domains.
++ * - num_ldb_queues: Number of available load-balanced queues.
++ * - num_ldb_ports: Total number of available load-balanced ports.
++ * - num_cos_ldb_ports[4]: Number of available load-balanced ports from
++ *	classes-of-service 0-3.
++ * - num_dir_ports: Number of available directed ports. There is one directed
++ *	queue for every directed port.
++ * - num_atomic_inflights: Amount of available temporary atomic QE storage.
++ * - num_hist_list_entries: Amount of history list storage.
++ * - max_contiguous_hist_list_entries: History list storage is allocated in
++ *	a contiguous chunk, and this return value is the longest available
++ *	contiguous range of history list entries.
++ * - num_ldb_credits: Amount of available load-balanced QE storage.
++ * - num_dir_credits: Amount of available directed QE storage.
++ */
++struct dlb2_get_num_resources_args {
++	/* Output parameters */
++	__u32 num_sched_domains;
++	__u32 num_ldb_queues;
++	__u32 num_ldb_ports;
++	__u32 num_cos_ldb_ports[4];
++	__u32 num_dir_ports;
++	__u32 num_atomic_inflights;
++	__u32 num_hist_list_entries;
++	__u32 max_contiguous_hist_list_entries;
++	__u32 num_ldb_credits;
++	__u32 num_dir_credits;
++};
++
++enum dlb2_user_interface_commands {
++	DLB2_CMD_GET_DEVICE_VERSION,
++	DLB2_CMD_CREATE_SCHED_DOMAIN,
++	DLB2_CMD_GET_NUM_RESOURCES,
++
++	/* NUM_DLB2_CMD must be last */
++	NUM_DLB2_CMD,
++};
++
++/********************/
++/* dlb2 ioctl codes */
++/********************/
++
++#define DLB2_IOC_MAGIC  'h'
++
++#define DLB2_IOC_GET_DEVICE_VERSION				\
++		_IOR(DLB2_IOC_MAGIC,				\
++		     DLB2_CMD_GET_DEVICE_VERSION,		\
++		     struct dlb2_get_device_version_args)
++#define DLB2_IOC_CREATE_SCHED_DOMAIN				\
++		_IOWR(DLB2_IOC_MAGIC,				\
++		      DLB2_CMD_CREATE_SCHED_DOMAIN,		\
++		      struct dlb2_create_sched_domain_args)
++#define DLB2_IOC_GET_NUM_RESOURCES				\
++		_IOR(DLB2_IOC_MAGIC,				\
++		     DLB2_CMD_GET_NUM_RESOURCES,		\
++		     struct dlb2_get_num_resources_args)
++
++#endif /* __DLB2_USER_H */
 -- 
 2.13.6
 
