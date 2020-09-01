@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7FB259308
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391462592B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgIAPUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:20:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36774 "EHLO mail.kernel.org"
+        id S1729265AbgIAPQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:16:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728899AbgIAPS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:18:27 -0400
+        id S1729165AbgIAPPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:15:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E00E82166E;
-        Tue,  1 Sep 2020 15:18:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98E0521527;
+        Tue,  1 Sep 2020 15:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973507;
+        s=default; t=1598973301;
         bh=hHlrvVv6ZvQQkb3Q7+JMMIw0qSxNayamM1etArGofpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lliYAVuGYS5tSCJPvi+ghv5DFIoG3MBzdRdBuoAbuNMOnZe94wwMlgaL8H4saQCR1
-         pT0c0xsKpX/76Z6WpYzI/oshfEDJJLP0L0O8PFa7UcnOv4XVClizfyRn0v/SHNR3QI
-         wcU6rdwDRmPKQZSo4awqILVul6oggNbI8HCY5Gas=
+        b=NtEYYJ+YbHPKXVAI89OdlHxPLDIb6VEwPKYlDzsyeQ3aVAlOvvvnSy1LCP9brQCI8
+         hqSjvbJHbALha6HtEb0NfD3EB8L2dOja/1yJ79nsbhNq+W7qaIxITpZz72mlvvEaD2
+         zfs+Hc1bRVdo/MCEbxAMZEQOvaRKizW/AV6ydKYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Peng Fan <fanpeng@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 26/91] mips/vdso: Fix resource leaks in genvdso.c
+Subject: [PATCH 4.9 24/78] mips/vdso: Fix resource leaks in genvdso.c
 Date:   Tue,  1 Sep 2020 17:10:00 +0200
-Message-Id: <20200901150929.456402242@linuxfoundation.org>
+Message-Id: <20200901150925.950379199@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150928.096174795@linuxfoundation.org>
-References: <20200901150928.096174795@linuxfoundation.org>
+In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
+References: <20200901150924.680106554@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
