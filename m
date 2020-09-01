@@ -2,66 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100B4258D68
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E92C258DA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 13:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgIAL0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 07:26:48 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:35854 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbgIALZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 07:25:24 -0400
-Received: from marcel-macbook.fritz.box (p4ff9f430.dip0.t-ipconnect.de [79.249.244.48])
-        by mail.holtmann.org (Postfix) with ESMTPSA id AEE5ECECDF;
-        Tue,  1 Sep 2020 13:31:27 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v2] Bluetooth: Clear suspend tasks on unregister
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200831095119.v2.1.I24fb6cc377d03d64d74f83cec748afd12ee33e37@changeid>
-Date:   Tue, 1 Sep 2020 13:24:34 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Miao-chen Chou <mcchou@chromium.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <86419845-3365-4925-8CD4-9D3F35BE5ED7@holtmann.org>
-References: <20200831095119.v2.1.I24fb6cc377d03d64d74f83cec748afd12ee33e37@changeid>
-To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1727109AbgIALvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 07:51:33 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:55210 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727032AbgIALn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 07:43:58 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6EEEF1A006E;
+        Tue,  1 Sep 2020 13:07:11 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BF7B11A004F;
+        Tue,  1 Sep 2020 13:07:06 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id F32454024E;
+        Tue,  1 Sep 2020 13:07:00 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_sai: Support multiple data channel enable bits
+Date:   Tue,  1 Sep 2020 19:01:08 +0800
+Message-Id: <1598958068-10552-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhishek,
+One data channel is one data line. From imx7ulp, the SAI IP is
+enhanced to support multiple data channels.
 
-> While unregistering, make sure to clear the suspend tasks before
-> cancelling the work. If the unregister is called during resume from
-> suspend, this will unnecessarily add 2s to the resume time otherwise.
-> 
-> Fixes: 4e8c36c3b0d73d (Bluetooth: Fix suspend notifier race)
-> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-> ---
-> This was discovered with RT8822CE using the btusb driver. This chipset
-> will reset on resume during system suspend and was unnecessarily adding
-> 2s to every resume. Since we're unregistering anyway, there's no harm in
-> just clearing the pending events.
-> 
-> Changes in v2:
-> - ++i to i++
-> 
-> net/bluetooth/hci_core.c | 11 +++++++++++
-> 1 file changed, 11 insertions(+)
+If there is only two channels input and slots is 2, then enable one
+data channel is enough for data transfer. So enable the TCE/RCE and
+transmit/receive mask register according to the input channels and
+slots configuration.
 
-patch has been applied to bluetooth-next tree.
+Move the data channel enablement from startup() to hw_params().
 
-Regards
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 30 ++++++++++++------------------
+ sound/soc/fsl/fsl_sai.h |  2 +-
+ 2 files changed, 13 insertions(+), 19 deletions(-)
 
-Marcel
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 62c5fdb678fc..38c7bcbb361d 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -443,6 +443,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	u32 slots = (channels == 1) ? 2 : channels;
+ 	u32 slot_width = word_width;
+ 	int adir = tx ? RX : TX;
++	u32 pins;
+ 	int ret;
+ 
+ 	if (sai->slots)
+@@ -451,6 +452,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	if (sai->slot_width)
+ 		slot_width = sai->slot_width;
+ 
++	pins = DIV_ROUND_UP(channels, slots);
++
+ 	if (!sai->is_slave_mode) {
+ 		if (sai->bclk_ratio)
+ 			ret = fsl_sai_set_bclk(cpu_dai, tx,
+@@ -501,13 +504,17 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 				   FSL_SAI_CR5_FBT_MASK, val_cr5);
+ 	}
+ 
++	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
++			   FSL_SAI_CR3_TRCE_MASK,
++			   FSL_SAI_CR3_TRCE((1 << pins) - 1));
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
+ 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
+ 			   val_cr4);
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
+ 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
+ 			   FSL_SAI_CR5_FBT_MASK, val_cr5);
+-	regmap_write(sai->regmap, FSL_SAI_xMR(tx), ~0UL - ((1 << channels) - 1));
++	regmap_write(sai->regmap, FSL_SAI_xMR(tx),
++		     ~0UL - ((1 << min(channels, slots)) - 1));
+ 
+ 	return 0;
+ }
+@@ -517,6 +524,10 @@ static int fsl_sai_hw_free(struct snd_pcm_substream *substream,
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
++	unsigned int ofs = sai->soc_data->reg_offset;
++
++	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
++			   FSL_SAI_CR3_TRCE_MASK, 0);
+ 
+ 	if (!sai->is_slave_mode &&
+ 			sai->mclk_streams & BIT(substream->stream)) {
+@@ -651,14 +662,9 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+-	unsigned int ofs = sai->soc_data->reg_offset;
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	int ret;
+ 
+-	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
+-			   FSL_SAI_CR3_TRCE_MASK,
+-			   FSL_SAI_CR3_TRCE);
+-
+ 	/*
+ 	 * EDMA controller needs period size to be a multiple of
+ 	 * tx/rx maxburst
+@@ -675,17 +681,6 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static void fsl_sai_shutdown(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *cpu_dai)
+-{
+-	struct fsl_sai *sai = snd_soc_dai_get_drvdata(cpu_dai);
+-	unsigned int ofs = sai->soc_data->reg_offset;
+-	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+-
+-	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
+-			   FSL_SAI_CR3_TRCE_MASK, 0);
+-}
+-
+ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+ 	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
+ 	.set_sysclk	= fsl_sai_set_dai_sysclk,
+@@ -695,7 +690,6 @@ static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
+ 	.hw_free	= fsl_sai_hw_free,
+ 	.trigger	= fsl_sai_trigger,
+ 	.startup	= fsl_sai_startup,
+-	.shutdown	= fsl_sai_shutdown,
+ };
+ 
+ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 6aba7d28f5f3..5f630be74853 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -109,7 +109,7 @@
+ #define FSL_SAI_CR2_DIV_MASK	0xff
+ 
+ /* SAI Transmit and Receive Configuration 3 Register */
+-#define FSL_SAI_CR3_TRCE	BIT(16)
++#define FSL_SAI_CR3_TRCE(x)     ((x) << 16)
+ #define FSL_SAI_CR3_TRCE_MASK	GENMASK(23, 16)
+ #define FSL_SAI_CR3_WDFL(x)	(x)
+ #define FSL_SAI_CR3_WDFL_MASK	0x1f
+-- 
+2.27.0
 
