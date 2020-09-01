@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC36258C67
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD6A258C5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 12:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726237AbgIAKHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 06:07:48 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42428 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbgIAKHr (ORCPT
+        id S1726167AbgIAKIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 06:08:39 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:39674 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725949AbgIAKIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 06:07:47 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kD3CX-0007Aq-NJ; Tue, 01 Sep 2020 10:07:41 +0000
-Date:   Tue, 1 Sep 2020 12:07:41 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-kernel@vger.kernel.org, luto@amacapital.net,
-        syzbot <syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com, wad@chromium.org
-Subject: Re: memory leak in do_seccomp
-Message-ID: <20200901100741.wx33nrfi5mrbxudd@wittgenstein>
-References: <000000000000e5ea9e05ac9d16c1@google.com>
- <000000000000df80ae05ae244c2b@google.com>
- <202008311620.AC4A7047D@keescook>
- <20200901000915.GA564594@cisco>
- <20200901011459.GA583718@cisco>
+        Tue, 1 Sep 2020 06:08:17 -0400
+Received: by mail-io1-f69.google.com with SMTP id v10so542003iot.6
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 03:08:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vcq85hTgfFbOTzSGIGZ0MEl5+wa57BmvY+5hA/EWY2Y=;
+        b=JTfyXca+oP3AbdFEaGLnArh9T6THerqZT8OXTZi1dV13ICmVSMK2hM+25YerSAWWSu
+         MiJOXjt3hfdC/xmdHSNJm1JWTYUbZG1mWD4oBhkFpp/ECg65UA+q1OMm3/cKCMLXln94
+         VKECHycJiI3JFl/XKEmBKbR5DdKAvfF+9hDDJvC9+qDx6okxwCeQBf+7+M8LB4nM0r72
+         YAln5VqdxIgTh1YaPYvq5iyQH1Uev84iO1CzO8YloYZxkJUDIy7eLIYy/Te2C+XNdrG7
+         SCJZD3nxS6EuuIZ/zdryiYvxlVCog7XcnUv70Scv/A/8a4zHX+xmAfSHViNX+1a5/vyw
+         bB/g==
+X-Gm-Message-State: AOAM530ZO5Ku+2AiiAw+iZYzplbAJcqCp+3R9U+OD3Jd3cjS+//WUqDk
+        fMH0YxxLi0T0dk/5C2jX02BlcKOF6stPb71ZoqBiaPzfatZj
+X-Google-Smtp-Source: ABdhPJxznVX6UqT+Ib0Jsa6yzEKkg9S0WBmz58bmho7qUoI5y0QJy1MflBd9YqqLJGCYt2vJcCkvlJRpca2lmWouQKzMDqdk8wO4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200901011459.GA583718@cisco>
+X-Received: by 2002:a6b:6016:: with SMTP id r22mr853494iog.42.1598954896037;
+ Tue, 01 Sep 2020 03:08:16 -0700 (PDT)
+Date:   Tue, 01 Sep 2020 03:08:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000971bc005ae3db23d@google.com>
+Subject: WARNING in snd_pcm_plugin_build_mulaw
+From:   syzbot <syzbot+23b22dc2e0b81cbfcc95@syzkaller.appspotmail.com>
+To:     alsa-devel@alsa-project.org, broonie@kernel.org,
+        festevam@gmail.com, linux-kernel@vger.kernel.org, perex@perex.cz,
+        robh@kernel.org, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 07:14:59PM -0600, Tycho Andersen wrote:
-> On Mon, Aug 31, 2020 at 06:09:15PM -0600, Tycho Andersen wrote:
-> > On Mon, Aug 31, 2020 at 04:25:35PM -0700, Kees Cook wrote:
-> > > On Sun, Aug 30, 2020 at 08:50:15PM -0700, syzbot wrote:
-> > > > syzbot has found a reproducer for the following issue on:
-> > > > 
-> > > > HEAD commit:    dcc5c6f0 Merge tag 'x86-urgent-2020-08-30' of git://git.ke..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10b297d5900000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=903b9fecc3c6d231
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3ad9614a12f80994c32e
-> > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14649561900000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118aacc1900000
-> > > > 
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
-> > > > 
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > BUG: memory leak
-> > > > unreferenced object 0xffff88811ba93600 (size 64):
-> > > >   comm "syz-executor680", pid 6503, jiffies 4294951104 (age 21.940s)
-> > > >   hex dump (first 32 bytes):
-> > > >     00 00 00 00 00 00 00 00 08 36 a9 1b 81 88 ff ff  .........6......
-> > > >     08 36 a9 1b 81 88 ff ff 11 ce 98 89 3a d5 b4 8f  .6..........:...
-> > > >   backtrace:
-> > > >     [<00000000896418b0>] kmalloc include/linux/slab.h:554 [inline]
-> > > >     [<00000000896418b0>] kzalloc include/linux/slab.h:666 [inline]
-> > > >     [<00000000896418b0>] init_listener kernel/seccomp.c:1473 [inline]
-> > > >     [<00000000896418b0>] seccomp_set_mode_filter kernel/seccomp.c:1546 [inline]
-> > > >     [<00000000896418b0>] do_seccomp+0x8ce/0xd40 kernel/seccomp.c:1649
-> > > >     [<000000002b04976c>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > > >     [<00000000322b4126>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > 
-> > > I haven't narrowed this down yet (and it *might* be a false positive),
-> > > but it looks like this is filter->notif. The only way that's possible is
-> > > if seccomp_notify_release() was never called *and* seccomp_filter_free()
-> > > got called... which would imply a reference counting problem. The way
-> > > there doesn't jump out at me yet, but I haven't yet decoded the C
-> > > reproducer into the actual seccomp arguments, etc.
-> > 
-> > Looks like it's just a bunch of threads in the same thread group
-> > trying to install a filter with TSYNC and NEW_LISTENER turned on. Does
-> > the patch below look reasonable?
-> > 
-> > I didn't send it separately since I'm in the process of switching my
-> > e-mail address to tycho@tycho.pizza; let this e-mail serve as proof
-> > that that e-mail really is me too :). I can send it the normal way if
-> > it looks good.
-> > 
-> > 
-> > From d497e787e8e1b3e8b9230fdc4c9802616709c920 Mon Sep 17 00:00:00 2001
-> > From: Tycho Andersen <tycho@tycho.pizza>
-> > Date: Mon, 31 Aug 2020 17:55:07 -0600
-> > Subject: [PATCH] seccomp: don't leak memory when filter install races
-> > 
-> > In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
-> > the listener fd, then check to see if we can actually use it later in
-> > seccomp_may_assign_mode(), which can fail if anyone else in our thread
-> > group has installed a filter and caused some divergence. If we can't, we
-> > partially clean up the newly allocated file: we put the fd, put the file,
-> > but don't actually clean up the *memory* that was allocated at
-> > filter->notif. Let's clean that up too.
-> > 
-> > Fixes: 51891498f2da ("seccomp: allow TSYNC and USER_NOTIF together")
-> > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
-> > Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
-> > ---
-> >  kernel/seccomp.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> > index 3ee59ce0a323..21a76127833f 100644
-> > --- a/kernel/seccomp.c
-> > +++ b/kernel/seccomp.c
-> > @@ -1581,6 +1581,8 @@ static long seccomp_set_mode_filter(unsigned int flags,
-> >  			listener_f->private_data = NULL;
-> >  			fput(listener_f);
-> >  			put_unused_fd(listener);
-> > +			kfree(filter->notif);
-> > +			filter->notif = NULL;
-> 
-> Oof, actually this isn't quite right. It should be s/filter/prepared/g.
-> I can fix that and send out a real patch that's actually tested at
-> some point tomorrow.
+Hello,
 
-Please do. :)
-Do we have tests for this scenario in the selftests, Tycho?
+syzbot found the following issue on:
 
-Christian
+HEAD commit:    15bc20c6 Merge tag 'tty-5.9-rc3' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1268efb1900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
+dashboard link: https://syzkaller.appspot.com/bug?extid=23b22dc2e0b81cbfcc95
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a95f41900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a452f2900000
+
+The issue was bisected to:
+
+commit f3ca3f5b0966cfc2737178cca8a7a65b09991898
+Author: Fabio Estevam <festevam@gmail.com>
+Date:   Fri Mar 27 15:57:21 2020 +0000
+
+    dt-bindings: sound: cs42l51: Remove unneeded I2C unit name
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15395f41900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17395f41900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13395f41900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+23b22dc2e0b81cbfcc95@syzkaller.appspotmail.com
+Fixes: f3ca3f5b0966 ("dt-bindings: sound: cs42l51: Remove unneeded I2C unit name")
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6835 at sound/core/oss/mulaw.c:332 snd_pcm_plugin_build_mulaw+0x4ef/0x6e0 sound/core/oss/mulaw.c:332
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6835 Comm: syz-executor088 Not tainted 5.9.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:snd_pcm_plugin_build_mulaw+0x4ef/0x6e0 sound/core/oss/mulaw.c:332
+Code: 0f 0b bb fa ff ff ff eb cd e8 fd e3 2d fb 0f 0b bb fa ff ff ff eb bf e8 ef e3 2d fb 0f 0b bb fa ff ff ff eb b1 e8 e1 e3 2d fb <0f> 0b bb fa ff ff ff eb a3 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c 77
+RSP: 0018:ffffc90001ed7950 EFLAGS: 00010293
+RAX: ffffffff8647143f RBX: 0000000000000000 RCX: ffff88808dcbc540
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff86471e70 R08: ffffffff864710ee R09: fffff520003daf47
+R10: fffff520003daf47 R11: 0000000000000000 R12: 1ffff920003daf45
+R13: ffffc90001ed7a18 R14: ffffc90001ed7a28 R15: ffffc90001ed7a28
+ snd_pcm_plug_format_plugins+0xbbd/0x1640 sound/core/oss/pcm_plugin.c:494
+ snd_pcm_oss_change_params_locked+0x2c29/0x4410 sound/core/oss/pcm_oss.c:952
+ snd_pcm_oss_change_params sound/core/oss/pcm_oss.c:1084 [inline]
+ snd_pcm_oss_make_ready+0x115/0x2b0 sound/core/oss/pcm_oss.c:1143
+ snd_pcm_oss_sync+0x265/0x900 sound/core/oss/pcm_oss.c:1642
+ snd_pcm_oss_release+0x119/0x270 sound/core/oss/pcm_oss.c:2546
+ __fput+0x34f/0x7b0 fs/file_table.c:281
+ task_work_run+0x137/0x1c0 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0x5f3/0x1f20 kernel/exit.c:806
+ do_group_exit+0x161/0x2d0 kernel/exit.c:903
+ __do_sys_exit_group+0x13/0x20 kernel/exit.c:914
+ __se_sys_exit_group+0x10/0x10 kernel/exit.c:912
+ __x64_sys_exit_group+0x37/0x40 kernel/exit.c:912
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440038
+Code: Bad RIP value.
+RSP: 002b:00007ffe721a2058 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000440038
+RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+RBP: 00000000004bf870 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
