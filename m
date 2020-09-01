@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108452598A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4191A259688
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731222AbgIAQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:29:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        id S1730138AbgIAQDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730824AbgIAPb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:31:58 -0400
+        id S1731565AbgIAPmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:42:35 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47518205F4;
-        Tue,  1 Sep 2020 15:31:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 055E92064B;
+        Tue,  1 Sep 2020 15:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974317;
-        bh=GkwWLyrg0SY/P4gHh/wH7AUIehCk6uU61q5j3nQlCRI=;
+        s=default; t=1598974954;
+        bh=hEcf91JbzgPXRuztevJtJxtp78NU32tVPVA7ZRUoHnU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mW4rQcCtqGco4ohTiYHyyvw0mWA2LaywmUkRZrp4Un1kwsqOmiNkyU6Xm3CP2v0+l
-         sLgX7Ieu5aLKPxLVIBZ3kiJDvc9DeYuOxXjdaj7xaIZxAus+ium6OQRLbJaukjoNLv
-         bWLyC2m3I61jd/YdWSkas8ohItJH4+5pX/UTkFBw=
+        b=REPgVan5/Q6Rt1Oq2idcuIrKb4w5nba6deQdQXHzhMO+s6skHdRD47/9OZ176YHQc
+         pvhthVi37NyLxw7wWFPFvyxWS5Qhm0rDPT+3Puw3eUEbfml6ARtPk4EWfxpTNuTNGK
+         z98qu/dpcu2oWVNxUhWoDgbH5o/u2e6We7D+muPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 099/214] block: respect queue limit of max discard segment
-Date:   Tue,  1 Sep 2020 17:09:39 +0200
-Message-Id: <20200901150957.738121289@linuxfoundation.org>
+        stable@vger.kernel.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Aric Cyr <Aric.Cyr@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 124/255] drm/amd/display: Fix LFC multiplier changing erratically
+Date:   Tue,  1 Sep 2020 17:09:40 +0200
+Message-Id: <20200901151006.670575737@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,62 +46,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Anthony Koo <Anthony.Koo@amd.com>
 
-[ Upstream commit 943b40c832beb71115e38a1c4d99b640b5342738 ]
+[ Upstream commit e4ed4dbbc8383d42a197da8fe7ca6434b0f14def ]
 
-When queue_max_discard_segments(q) is 1, blk_discard_mergable() will
-return false for discard request, then normal request merge is applied.
-However, only queue_max_segments() is checked, so max discard segment
-limit isn't respected.
+[Why]
+1. There is a calculation that is using frame_time_in_us instead of
+last_render_time_in_us to calculate whether choosing an LFC multiplier
+would cause the inserted frame duration to be outside of range.
 
-Check max discard segment limit in the request merge code for fixing
-the issue.
+2. We do not handle unsigned integer subtraction correctly and it underflows
+to a really large value, which causes some logic errors.
 
-Discard request failure of virtio_blk is fixed.
+[How]
+1. Fix logic to calculate 'within range' using last_render_time_in_us
+2. Split out delta_from_mid_point_delta_in_us calculation to ensure
+we don't underflow and wrap around
 
-Fixes: 69840466086d ("block: fix the DISCARD request merge")
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Anthony Koo <Anthony.Koo@amd.com>
+Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
+Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-merge.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ .../amd/display/modules/freesync/freesync.c   | 36 +++++++++++++++----
+ 1 file changed, 29 insertions(+), 7 deletions(-)
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 93cff719b0661..c874931bae6b5 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -553,10 +553,17 @@ int blk_rq_map_sg(struct request_queue *q, struct request *rq,
- }
- EXPORT_SYMBOL(blk_rq_map_sg);
+diff --git a/drivers/gpu/drm/amd/display/modules/freesync/freesync.c b/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
+index eb7421e83b865..23a7fa8447e24 100644
+--- a/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
++++ b/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
+@@ -324,22 +324,44 @@ static void apply_below_the_range(struct core_freesync *core_freesync,
  
-+static inline unsigned int blk_rq_get_max_segments(struct request *rq)
-+{
-+	if (req_op(rq) == REQ_OP_DISCARD)
-+		return queue_max_discard_segments(rq->q);
-+	return queue_max_segments(rq->q);
-+}
-+
- static inline int ll_new_hw_segment(struct request *req, struct bio *bio,
- 		unsigned int nr_phys_segs)
- {
--	if (req->nr_phys_segments + nr_phys_segs > queue_max_segments(req->q))
-+	if (req->nr_phys_segments + nr_phys_segs > blk_rq_get_max_segments(req))
- 		goto no_merge;
+ 		/* Choose number of frames to insert based on how close it
+ 		 * can get to the mid point of the variable range.
++		 *  - Delta for CEIL: delta_from_mid_point_in_us_1
++		 *  - Delta for FLOOR: delta_from_mid_point_in_us_2
+ 		 */
+-		if ((frame_time_in_us / mid_point_frames_ceil) > in_out_vrr->min_duration_in_us &&
+-				(delta_from_mid_point_in_us_1 < delta_from_mid_point_in_us_2 ||
+-						mid_point_frames_floor < 2)) {
++		if ((last_render_time_in_us / mid_point_frames_ceil) < in_out_vrr->min_duration_in_us) {
++			/* Check for out of range.
++			 * If using CEIL produces a value that is out of range,
++			 * then we are forced to use FLOOR.
++			 */
++			frames_to_insert = mid_point_frames_floor;
++		} else if (mid_point_frames_floor < 2) {
++			/* Check if FLOOR would result in non-LFC. In this case
++			 * choose to use CEIL
++			 */
++			frames_to_insert = mid_point_frames_ceil;
++		} else if (delta_from_mid_point_in_us_1 < delta_from_mid_point_in_us_2) {
++			/* If choosing CEIL results in a frame duration that is
++			 * closer to the mid point of the range.
++			 * Choose CEIL
++			 */
+ 			frames_to_insert = mid_point_frames_ceil;
+-			delta_from_mid_point_delta_in_us = delta_from_mid_point_in_us_2 -
+-					delta_from_mid_point_in_us_1;
+ 		} else {
++			/* If choosing FLOOR results in a frame duration that is
++			 * closer to the mid point of the range.
++			 * Choose FLOOR
++			 */
+ 			frames_to_insert = mid_point_frames_floor;
+-			delta_from_mid_point_delta_in_us = delta_from_mid_point_in_us_1 -
+-					delta_from_mid_point_in_us_2;
+ 		}
  
- 	if (blk_integrity_merge_bio(req->q, req, bio) == false)
-@@ -640,7 +647,7 @@ static int ll_merge_requests_fn(struct request_queue *q, struct request *req,
- 		return 0;
- 
- 	total_phys_segments = req->nr_phys_segments + next->nr_phys_segments;
--	if (total_phys_segments > queue_max_segments(q))
-+	if (total_phys_segments > blk_rq_get_max_segments(req))
- 		return 0;
- 
- 	if (blk_integrity_merge_rq(q, req, next) == false)
+ 		/* Prefer current frame multiplier when BTR is enabled unless it drifts
+ 		 * too far from the midpoint
+ 		 */
++		if (delta_from_mid_point_in_us_1 < delta_from_mid_point_in_us_2) {
++			delta_from_mid_point_delta_in_us = delta_from_mid_point_in_us_2 -
++					delta_from_mid_point_in_us_1;
++		} else {
++			delta_from_mid_point_delta_in_us = delta_from_mid_point_in_us_1 -
++					delta_from_mid_point_in_us_2;
++		}
+ 		if (in_out_vrr->btr.frames_to_insert != 0 &&
+ 				delta_from_mid_point_delta_in_us < BTR_DRIFT_MARGIN) {
+ 			if (((last_render_time_in_us / in_out_vrr->btr.frames_to_insert) <
 -- 
 2.25.1
 
