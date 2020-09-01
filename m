@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF136259C69
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51758259CEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729753AbgIARPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:15:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59184 "EHLO mail.kernel.org"
+        id S1728596AbgIAPMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:12:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729172AbgIAPPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:15:04 -0400
+        id S1728458AbgIAPMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:12:10 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12993206FA;
-        Tue,  1 Sep 2020 15:15:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC74620BED;
+        Tue,  1 Sep 2020 15:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973303;
-        bh=8kd2JWfylGbyX5junfsVFBIFiC5m0s7OyUEiuP3YRFk=;
+        s=default; t=1598973130;
+        bh=vf8P7knMKxAd8czp29JUejgGx8ytmQ5ofKwx9f36CKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bKkk0w124Z8OXZZvyiXBC+ciL7jZq8xULnDwiolbPsmWl934ohoq2Vcvpihh/BngE
-         cn6z/Q6NsqUE1fgmmuH1AkHPiUgTERPUaM7PpppBmmIFIwdvoXYJtzM9xX+FfHqTFf
-         y1bNw/h5e7hD/DSXrXe31deqcLlIS31pGNybNYH4=
+        b=aPzdBGxv6p7yghBldCS90f5hIgai74pXWO0L0wIzUzmhhSY+TasXgoxPaY7tF1iTs
+         Xzt09RXK/R6P2ecbh4YSW8q1hmbjdu9hEnw0FQj8xwmibaOahTJyvjVjursCOh6Elr
+         7MWVcN6Txyy+1oLfTvcU/Eq0OhgpAIrADcyfWlFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 25/78] cec-api: prevent leaking memory through hole in structure
-Date:   Tue,  1 Sep 2020 17:10:01 +0200
-Message-Id: <20200901150925.999428474@linuxfoundation.org>
+Subject: [PATCH 4.4 19/62] PCI: Fix pci_create_slot() reference count leak
+Date:   Tue,  1 Sep 2020 17:10:02 +0200
+Message-Id: <20200901150921.706666833@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150924.680106554@linuxfoundation.org>
-References: <20200901150924.680106554@linuxfoundation.org>
+In-Reply-To: <20200901150920.697676718@linuxfoundation.org>
+References: <20200901150920.697676718@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 6c42227c3467549ddc65efe99c869021d2f4a570 ]
+[ Upstream commit 8a94644b440eef5a7b9c104ac8aa7a7f413e35e5 ]
 
-Fix this smatch warning:
+kobject_init_and_add() takes a reference even when it fails.  If it returns
+an error, kobject_put() must be called to clean up the memory associated
+with the object.
 
-drivers/media/cec/core/cec-api.c:156 cec_adap_g_log_addrs() warn: check that 'log_addrs' doesn't leak information (struct has a hole after
-'features')
+When kobject_init_and_add() fails, call kobject_put() instead of kfree().
 
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+b8eb718348b8 ("net-sysfs: Fix reference count leak in
+rx|netdev_queue_add_kobject") fixed a similar problem.
+
+Link: https://lore.kernel.org/r/20200528021322.1984-1-wu000273@umn.edu
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/cec/cec-api.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/pci/slot.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/cec/cec-api.c b/drivers/staging/media/cec/cec-api.c
-index e274e2f223986..264bb7d1efcb8 100644
---- a/drivers/staging/media/cec/cec-api.c
-+++ b/drivers/staging/media/cec/cec-api.c
-@@ -141,7 +141,13 @@ static long cec_adap_g_log_addrs(struct cec_adapter *adap,
- 	struct cec_log_addrs log_addrs;
+diff --git a/drivers/pci/slot.c b/drivers/pci/slot.c
+index 429d34c348b9f..01a343ad7155c 100644
+--- a/drivers/pci/slot.c
++++ b/drivers/pci/slot.c
+@@ -303,13 +303,16 @@ placeholder:
+ 	slot_name = make_slot_name(name);
+ 	if (!slot_name) {
+ 		err = -ENOMEM;
++		kfree(slot);
+ 		goto err;
+ 	}
  
- 	mutex_lock(&adap->lock);
--	log_addrs = adap->log_addrs;
-+	/*
-+	 * We use memcpy here instead of assignment since there is a
-+	 * hole at the end of struct cec_log_addrs that an assignment
-+	 * might ignore. So when we do copy_to_user() we could leak
-+	 * one byte of memory.
-+	 */
-+	memcpy(&log_addrs, &adap->log_addrs, sizeof(log_addrs));
- 	if (!adap->is_configured)
- 		memset(log_addrs.log_addr, CEC_LOG_ADDR_INVALID,
- 		       sizeof(log_addrs.log_addr));
+ 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
+ 				   "%s", slot_name);
+-	if (err)
++	if (err) {
++		kobject_put(&slot->kobj);
+ 		goto err;
++	}
+ 
+ 	INIT_LIST_HEAD(&slot->list);
+ 	list_add(&slot->list, &parent->slots);
+@@ -328,7 +331,6 @@ out:
+ 	mutex_unlock(&pci_slot_mutex);
+ 	return slot;
+ err:
+-	kfree(slot);
+ 	slot = ERR_PTR(err);
+ 	goto out;
+ }
 -- 
 2.25.1
 
