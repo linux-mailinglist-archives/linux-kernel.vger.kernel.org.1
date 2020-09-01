@@ -2,65 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B138A2599E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2517C2598F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730838AbgIAQpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:45:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37340 "EHLO mx2.suse.de"
+        id S1730857AbgIAQed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730014AbgIAP1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:27:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5AA32ACC3;
-        Tue,  1 Sep 2020 15:27:29 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 17:27:28 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Salvatore Bonaccorso <carnil@debian.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Dirk Kostrewa <dirk.kostrewa@mailbox.org>
-Subject: Re: kworker/0:3+pm hogging CPU
-Message-ID: <20200901152728.GI16650@dhcp22.suse.cz>
-References: <20200720173807.GJ1228057@rowland.harvard.edu>
- <20200720174530.GB4061@dhcp22.suse.cz>
- <20200720174812.GK1228057@rowland.harvard.edu>
- <20200720181605.GC4061@dhcp22.suse.cz>
- <20200720200243.GA1244989@rowland.harvard.edu>
- <20200721055917.GD4061@dhcp22.suse.cz>
- <20200721143325.GB1272082@rowland.harvard.edu>
- <20200829095003.GA2446485@eldamar.local>
- <20200829155949.GA499295@rowland.harvard.edu>
- <38dfdef4-f9ab-1755-8418-2285d843af86@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <38dfdef4-f9ab-1755-8418-2285d843af86@linux.intel.com>
+        id S1730671AbgIAPbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:10 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B96C21527;
+        Tue,  1 Sep 2020 15:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598974269;
+        bh=DcBlB18rbAsmyBD9sb9dDR94iJ5BAmzF5Xo0e4RxksY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sBJjxRcFa7GzT6SamUEOBeBB4W2Ofp99PojRb8SLlckVfMyokPt9uatH0MnbBHXpD
+         E8Z30W3gjJKJ6u338nbOuu0x4gUCBRo2RSLnm9eEEDESkEIjVomd8K6GYBjLpdEsuM
+         NxbukGKI9+I10NsKUnvx2pFV+yCHg7r7Zm3Assm8=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lukas Wunner <lukas@wunner.de>, linux-serial@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/2] serial: 8250: Simplify with dev_err_probe()
+Date:   Tue,  1 Sep 2020 17:30:59 +0200
+Message-Id: <20200901153100.18827-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 31-08-20 14:37:10, Mathias Nyman wrote:
-[...]
-> I can't come up with any good solution to this right now.
-> Only bad ideas such as
-> a. Add a sleep to the over-current case, 
->    doesn't solve anything else than the ~100% cpu hogging part of the problem 
+Common pattern of handling deferred probe can be simplified with
+dev_err_probe().  Less code and the error value gets printed.
 
-This sounds like a better thing from the user space point of view. I do
-not have any insight on what kind of other side effects this might have
-so I didn't dare to try that on my piece of (broken) HW. I do not see
-the problem all the time and I plan to replace it soon anyway.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/tty/serial/8250/8250_bcm2835aux.c | 12 +++---------
+ drivers/tty/serial/8250/8250_ingenic.c    | 20 ++++++--------------
+ 2 files changed, 9 insertions(+), 23 deletions(-)
 
-Considering that tweaking the power management helps maybe that could be
-done automagically after many consecutive failures.
-
-Just my 2c
+diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+index 12d03e678295..fd95860cd661 100644
+--- a/drivers/tty/serial/8250/8250_bcm2835aux.c
++++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+@@ -110,12 +110,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 
+ 	/* get the clock - this also enables the HW */
+ 	data->clk = devm_clk_get(&pdev->dev, NULL);
+-	ret = PTR_ERR_OR_ZERO(data->clk);
+-	if (ret) {
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "could not get clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(data->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk\n");
+ 
+ 	/* get the interrupt */
+ 	ret = platform_get_irq(pdev, 0);
+@@ -155,9 +151,7 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 	/* register the port */
+ 	ret = serial8250_register_8250_port(&up);
+ 	if (ret < 0) {
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev,
+-				"unable to register 8250 port - %d\n", ret);
++		dev_err_probe(&pdev->dev, ret, "unable to register 8250 port\n");
+ 		goto dis_clk;
+ 	}
+ 	data->line = ret;
+diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
+index dde766fa465f..988bf6bcce42 100644
+--- a/drivers/tty/serial/8250/8250_ingenic.c
++++ b/drivers/tty/serial/8250/8250_ingenic.c
+@@ -259,22 +259,14 @@ static int ingenic_uart_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	data->clk_module = devm_clk_get(&pdev->dev, "module");
+-	if (IS_ERR(data->clk_module)) {
+-		err = PTR_ERR(data->clk_module);
+-		if (err != -EPROBE_DEFER)
+-			dev_err(&pdev->dev,
+-				"unable to get module clock: %d\n", err);
+-		return err;
+-	}
++	if (IS_ERR(data->clk_module))
++		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk_module),
++				     "unable to get module clock\n");
+ 
+ 	data->clk_baud = devm_clk_get(&pdev->dev, "baud");
+-	if (IS_ERR(data->clk_baud)) {
+-		err = PTR_ERR(data->clk_baud);
+-		if (err != -EPROBE_DEFER)
+-			dev_err(&pdev->dev,
+-				"unable to get baud clock: %d\n", err);
+-		return err;
+-	}
++	if (IS_ERR(data->clk_baud))
++		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk_baud),
++				     "unable to get baud clock\n");
+ 
+ 	err = clk_prepare_enable(data->clk_module);
+ 	if (err) {
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
