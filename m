@@ -2,112 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE51259B2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA3B259C63
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732438AbgIAQ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729681AbgIAQ54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:57:56 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A3DC061244;
-        Tue,  1 Sep 2020 09:57:55 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id r13so2425655ljm.0;
-        Tue, 01 Sep 2020 09:57:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fLX5J20+fA4410d7uA+LwglBCTxFJG7EYBTgn15oCgQ=;
-        b=lJHiAw/ipnb9qghfOnZr7yNwUUoq5LxZ9Kbk8xp5SQ7UyP2mBuTCNUaDjcpV0cX3jc
-         hDDcYQpqUtb6H+p7z93EWF9by0zOFnAT99VMnubt6SixxOLDzjKizqBlmeXEi16XO6wt
-         FlnmJ3gdOuGNI4l+QWmPTQgzhWR43Rm8jghVHciIOB6E4VXDvqTYhRNyVEfNff+gf34m
-         9TQIvbLO5XkuDFwAjjwCpGxH3GYJxGoLR7gjDVXZpr28f8tnkVF8txcdrHMgmDfOPnPt
-         X7xrjc92zbKpLtv8802fOv6XUnBwAZ4X6zxwyks4ERzjLsD1TnbttHua0NQBB2IP9u1F
-         Tv4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fLX5J20+fA4410d7uA+LwglBCTxFJG7EYBTgn15oCgQ=;
-        b=RqrG8yBCvsLyZYgwUj0dfLXwgYeqy1Yg6OxQguxtW1lT90i9RBrslFis9wgFU9bAox
-         wiza/GLPDP0XpFVgVQZgzp/+tGsMcEFf9dh9f/Oaj/0tfAEu3rNblpkO7QQXfgBE6tPx
-         6akUdVybXYrQDKXFzF4HCrF+ydbd+cLvK49v+brups1pahom98vbnq8UoJgVvAa3QjZh
-         J863y6EG3C442VJTDTj2RNagrooUJ8Z79nj//V9+jt7QKWHSRT8c4+WeQjgWSrpjf4Gi
-         deXM6QUaHY2PfOam7pG1af/fAcDGqHv5eGRPpt6RShojIIlzzgaeigRrHH1JmltVUH5E
-         Fo1g==
-X-Gm-Message-State: AOAM532W7vaqggTk480Ji2uJF3K0VoCNQOWH+puaxwqZy/9um1EHEcoA
-        vnE80zguZhPc+XVm/iJHPKk=
-X-Google-Smtp-Source: ABdhPJxZJE2aBF4ceMoFtqVOqM6n27rzp7Z3S4vNx4JoTv4gqCZKDM7k4RmbSy+BkC9WeotC0mHyUg==
-X-Received: by 2002:a2e:9e43:: with SMTP id g3mr1046893ljk.122.1598979474275;
-        Tue, 01 Sep 2020 09:57:54 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id t5sm378771ljg.111.2020.09.01.09.57.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 09:57:53 -0700 (PDT)
-Subject: Re: [PATCH] memory: tegra: Remove GPU from DRM IOMMU group
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matias Zuniga <matias.nicolas.zc@gmail.com>
-References: <20200901153248.1831263-1-thierry.reding@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <09d7d396-fcb6-634c-f9d4-9c8ac34c7e71@gmail.com>
-Date:   Tue, 1 Sep 2020 19:57:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1731498AbgIAROk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 13:14:40 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:64957 "EHLO mx.metalurgs.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731227AbgIAROK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:14:10 -0400
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 4F70471155
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 20:03:01 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id BDB67B10
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 19:43:11 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id 0964B32905; Tue,  1 Sep 2020 18:42:21 +0300 (EEST)
+Received: from [192.168.8.10] (ip168-243-231-195.intercom.com.sv [168.243.231.195])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id 0997E71A19
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 18:02:09 +0300 (EEST)
 MIME-Version: 1.0
-In-Reply-To: <20200901153248.1831263-1-thierry.reding@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Description: Mail message body
+To:     linux-kernel@vger.kernel.org
+From:   "Angel Investors" <info@unituscapital.com>
+Date:   Tue, 01 Sep 2020 09:02:03 -0600
+Reply-To: andrewmacklin12@gmail.com
+X-SpamTest-Envelope-From: info@unituscapital.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {RECEIVED: dynamic ip detected}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 35
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20200901160810.0964B32905@mx.metalurgs.lv>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Subject: GREETINGS!!!
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20200901 notchecked
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.09.2020 18:32, Thierry Reding пишет:
-> From: Thierry Reding <treding@nvidia.com>
-> 
-> Commit 63a613fdb16c ("memory: tegra: Add gr2d and gr3d to DRM IOMMU
-> group") added the GPU to the DRM IOMMU group, which doesn't make any
-> sense. This causes problems when Nouveau tries to attach to the SMMU
-> and causes it to fall back to using the DMA API.
-> 
-> Remove the GPU from the DRM groups to restore the old behaviour. The
-> GPU should always have its own IOMMU domain to make sure it can map
-> buffers into contiguous chunks (for big page support) without getting
-> in the way of mappings from the DRM group.
-> 
-> Fixes: 63a613fdb16c ("memory: tegra: Add gr2d and gr3d to DRM IOMMU group")
-> Reported-by: Matias Zuniga <matias.nicolas.zc@gmail.com>
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/memory/tegra/tegra124.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/memory/tegra/tegra124.c b/drivers/memory/tegra/tegra124.c
-> index 493b5dc3a4b3..0cede24479bf 100644
-> --- a/drivers/memory/tegra/tegra124.c
-> +++ b/drivers/memory/tegra/tegra124.c
-> @@ -957,7 +957,6 @@ static const struct tegra_smmu_swgroup tegra124_swgroups[] = {
->  static const unsigned int tegra124_group_drm[] = {
->  	TEGRA_SWGROUP_DC,
->  	TEGRA_SWGROUP_DCB,
-> -	TEGRA_SWGROUP_GPU,
->  	TEGRA_SWGROUP_VIC,
->  };
->  
-> 
-
-Technically a stable tag is needed for this patch, but I guess the bot
-will recognize that this patch is useful for older kernels.
-
-Otherwise looks good!
-
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Attention To Email : linux-kernel@vger.kernel.org
+Good Day Sir,
+Our Group have the financial capability to finance any investment portfolio as far as is genuine, all we need is a capable business partner that possesses investment strategies for profitable business information for good turn over within 10-30years. Our Partners are willing to invest 10million — 5billon USD. We can provide proof of funds on demand, after certification of your documents/details. Please write me back if you can work with me on this project. Thank You,
+Best Regards
+Andrew Macklin
