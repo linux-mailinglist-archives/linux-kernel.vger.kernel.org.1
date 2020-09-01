@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 437EF2594EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC8A2594EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731791AbgIAPo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:44:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54274 "EHLO mail.kernel.org"
+        id S1726446AbgIAPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:44:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728446AbgIAPlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:49 -0400
+        id S1730653AbgIAPlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:41:52 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86D442078B;
-        Tue,  1 Sep 2020 15:41:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26CD92064B;
+        Tue,  1 Sep 2020 15:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974909;
-        bh=AAuVh8NhIbqqWMMFxEOADh7bUSWjy+xTniY3cUJ+4Rk=;
+        s=default; t=1598974911;
+        bh=MCxPakGL9ABd29OvlEbGaratiOtRqPYeKeb2GiLmDas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vAhVWlnHPHa9CDx0/oVwX8zAYS2EENJECX5ODG+gHHo0allEnBWIQTR5pW+d+ncNP
-         zjx4xSBxk0ovJF0gbQ0gUfWIdtOr0+D3adyhW7HPbOll2iQNapX5RBCJYgvKHBLXRW
-         pL3Ty0hHzKS9MaHrpBpW9sIZBSsAMUHa8B1YIpbE=
+        b=utSV06jOcicgv2IKHL9+mnVL13cNhTykQZJd2MPdpUeYyJs6lrmZxjpGOsy8iE4WN
+         /IhjI1ntU29VRsb9XaeRBU6LT2KgphHoeE/xcs1rB2B4m6lPMZjgkKt+8zOb1M3fTe
+         W9Jq1WDjYgxmRNbCrxQ30RsWfeAlk64d+IsEIk4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 136/255] dma-pool: Only allocate from CMA when in same memory zone
-Date:   Tue,  1 Sep 2020 17:09:52 +0200
-Message-Id: <20200901151007.230785391@linuxfoundation.org>
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Andrew Hendry <andrew.hendry@gmail.com>,
+        Xie He <xie.he.0141@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.8 137/255] drivers/net/wan/hdlc_x25: Added needed_headroom and a skb->len check
+Date:   Tue,  1 Sep 2020 17:09:53 +0200
+Message-Id: <20200901151007.275354466@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
 References: <20200901151000.800754757@linuxfoundation.org>
@@ -44,79 +48,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+From: Xie He <xie.he.0141@gmail.com>
 
-[ Upstream commit d7e673ec2c8e0ea39c4c70fc490d67d7fbda869d ]
+[ Upstream commit 77b981c82c1df7c7ad32a046f17f007450b46954 ]
 
-There is no guarantee to CMA's placement, so allocating a zone specific
-atomic pool from CMA might return memory from a completely different
-memory zone. To get around this double check CMA's placement before
-allocating from it.
+1. Added a skb->len check
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+This driver expects upper layers to include a pseudo header of 1 byte
+when passing down a skb for transmission. This driver will read this
+1-byte header. This patch added a skb->len check before reading the
+header to make sure the header exists.
+
+2. Added needed_headroom and set hard_header_len to 0
+
+When this driver transmits data,
+  first this driver will remove a pseudo header of 1 byte,
+  then the lapb module will prepend the LAPB header of 2 or 3 bytes.
+So the value of needed_headroom in this driver should be 3 - 1.
+
+Because this driver has no header_ops, according to the logic of
+af_packet.c, the value of hard_header_len should be 0.
+
+Reason of setting needed_headroom and hard_header_len at this place:
+
+This driver is written using the API of the hdlc module, the hdlc
+module enables this driver (the protocol driver) to run on any hardware
+that has a driver (the hardware driver) written using the API of the
+hdlc module.
+
+Two other hdlc protocol drivers - hdlc_ppp and hdlc_raw_eth, also set
+things like hard_header_len at this place. In hdlc_ppp, it sets
+hard_header_len after attach_hdlc_protocol and before setting dev->type.
+In hdlc_raw_eth, it sets hard_header_len by calling ether_setup after
+attach_hdlc_protocol and after memcpy the settings.
+
+3. Reset needed_headroom when detaching protocols (in hdlc.c)
+
+When detaching a protocol from a hardware device, the hdlc module will
+reset various parameters of the device (including hard_header_len) to
+the default values. We add needed_headroom here so that needed_headroom
+will also be reset.
+
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Martin Schiller <ms@dev.tdt.de>
+Cc: Andrew Hendry <andrew.hendry@gmail.com>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/dma/pool.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+ drivers/net/wan/hdlc.c     |  1 +
+ drivers/net/wan/hdlc_x25.c | 17 ++++++++++++++++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 5d071d4a3cbaa..06582b488e317 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -3,7 +3,9 @@
-  * Copyright (C) 2012 ARM Ltd.
-  * Copyright (C) 2020 Google LLC
-  */
-+#include <linux/cma.h>
- #include <linux/debugfs.h>
-+#include <linux/dma-contiguous.h>
- #include <linux/dma-direct.h>
- #include <linux/dma-noncoherent.h>
- #include <linux/init.h>
-@@ -55,6 +57,29 @@ static void dma_atomic_pool_size_add(gfp_t gfp, size_t size)
- 		pool_size_kernel += size;
+diff --git a/drivers/net/wan/hdlc.c b/drivers/net/wan/hdlc.c
+index dfc16770458d8..386ed2aa31fd9 100644
+--- a/drivers/net/wan/hdlc.c
++++ b/drivers/net/wan/hdlc.c
+@@ -230,6 +230,7 @@ static void hdlc_setup_dev(struct net_device *dev)
+ 	dev->max_mtu		 = HDLC_MAX_MTU;
+ 	dev->type		 = ARPHRD_RAWHDLC;
+ 	dev->hard_header_len	 = 16;
++	dev->needed_headroom	 = 0;
+ 	dev->addr_len		 = 0;
+ 	dev->header_ops		 = &hdlc_null_ops;
  }
- 
-+static bool cma_in_zone(gfp_t gfp)
-+{
-+	unsigned long size;
-+	phys_addr_t end;
-+	struct cma *cma;
-+
-+	cma = dev_get_cma_area(NULL);
-+	if (!cma)
-+		return false;
-+
-+	size = cma_get_size(cma);
-+	if (!size)
-+		return false;
-+
-+	/* CMA can't cross zone boundaries, see cma_activate_area() */
-+	end = cma_get_base(cma) + size - 1;
-+	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp & GFP_DMA))
-+		return end <= DMA_BIT_MASK(zone_dma_bits);
-+	if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp & GFP_DMA32))
-+		return end <= DMA_BIT_MASK(32);
-+	return true;
-+}
-+
- static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
- 			      gfp_t gfp)
+diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
+index f70336bb6f524..f52b9fed05931 100644
+--- a/drivers/net/wan/hdlc_x25.c
++++ b/drivers/net/wan/hdlc_x25.c
+@@ -107,8 +107,14 @@ static netdev_tx_t x25_xmit(struct sk_buff *skb, struct net_device *dev)
  {
-@@ -68,7 +93,11 @@ static int atomic_pool_expand(struct gen_pool *pool, size_t pool_size,
+ 	int result;
  
- 	do {
- 		pool_size = 1 << (PAGE_SHIFT + order);
--		page = alloc_pages(gfp, order);
-+		if (cma_in_zone(gfp))
-+			page = dma_alloc_from_contiguous(NULL, 1 << order,
-+							 order, false);
-+		if (!page)
-+			page = alloc_pages(gfp, order);
- 	} while (!page && order-- > 0);
- 	if (!page)
- 		goto out;
++	/* There should be a pseudo header of 1 byte added by upper layers.
++	 * Check to make sure it is there before reading it.
++	 */
++	if (skb->len < 1) {
++		kfree_skb(skb);
++		return NETDEV_TX_OK;
++	}
+ 
+-	/* X.25 to LAPB */
+ 	switch (skb->data[0]) {
+ 	case X25_IFACE_DATA:	/* Data to be transmitted */
+ 		skb_pull(skb, 1);
+@@ -294,6 +300,15 @@ static int x25_ioctl(struct net_device *dev, struct ifreq *ifr)
+ 			return result;
+ 
+ 		memcpy(&state(hdlc)->settings, &new_settings, size);
++
++		/* There's no header_ops so hard_header_len should be 0. */
++		dev->hard_header_len = 0;
++		/* When transmitting data:
++		 * first we'll remove a pseudo header of 1 byte,
++		 * then we'll prepend an LAPB header of at most 3 bytes.
++		 */
++		dev->needed_headroom = 3 - 1;
++
+ 		dev->type = ARPHRD_X25;
+ 		call_netdevice_notifiers(NETDEV_POST_TYPE_CHANGE, dev);
+ 		netif_dormant_off(dev);
 -- 
 2.25.1
 
