@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F203259661
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E25259802
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731528AbgIAPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:43:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53158 "EHLO mail.kernel.org"
+        id S1731033AbgIAPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:32:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731419AbgIAPlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:41:15 -0400
+        id S1730672AbgIAPbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:31:11 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 833C320767;
-        Tue,  1 Sep 2020 15:41:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54AC72078B;
+        Tue,  1 Sep 2020 15:31:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974875;
-        bh=bcv8a7aUYMp16+rL7DKkOjjRhxFK6QVJCj1xeSXR4ts=;
+        s=default; t=1598974270;
+        bh=fSPWza8l+zESXd86vjXQT1c6kprk0xJPXAcbNaimApE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GSqjBjZkukGrkmK0iZhcZhK8a8EXyO5ElezGlnqSsFDFjEcqdg+Jrspp92+YYoryn
-         KBFS9vgA62Nu+09oqsW6+VgiJXjbqxPtWDcfxeaVq0JeVDlic7n6cDNNtv+gXADhzP
-         2Xtm6SfUQubkA8OMQqMDrBwrSyZKoEvkkRQL1bvM=
+        b=x+IYwjENkjwOT06XQGYS5QKCP9J3SzYawsoLfCADOduyPHRLq9iTVUERrKcmWSyS5
+         rOcbVsqn5gaNd3lGrGEj5pswYhwxRSanw96OV1gqwrXWesi7Zeo0VzTZU7hPjld90V
+         rIuQKbkPezF85WD69WPB7yB3OGTH5fLAM9m+kpIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Czerner <lczerner@redhat.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        stable@vger.kernel.org, Abhishek Sahu <absahu@codeaurora.org>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.8 116/255] ext4: correctly restore system zone info when remount fails
-Date:   Tue,  1 Sep 2020 17:09:32 +0200
-Message-Id: <20200901151006.287088129@linuxfoundation.org>
+Subject: [PATCH 5.4 094/214] PCI: qcom: Change duplicate PCI reset to phy reset
+Date:   Tue,  1 Sep 2020 17:09:34 +0200
+Message-Id: <20200901150957.496498826@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,108 +47,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Abhishek Sahu <absahu@codeaurora.org>
 
-[ Upstream commit 0f5bde1db174f6c471f0bd27198575719dabe3e5 ]
+[ Upstream commit dd58318c019f10bc94db36df66af6c55d4c0cbba ]
 
-When remounting filesystem fails late during remount handling and
-block_validity mount option is also changed during the remount, we fail
-to restore system zone information to a state matching the mount option.
-This is mostly harmless, just the block validity checking will not match
-the situation described by the mount option. Make sure these two are always
-consistent.
+The deinit issues reset_control_assert for PCI twice and does not contain
+phy reset.
 
-Reported-by: Lukas Czerner <lczerner@redhat.com>
-Reviewed-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200728130437.7804-7-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20200615210608.21469-4-ansuelsmth@gmail.com
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/block_validity.c |  8 --------
- fs/ext4/super.c          | 29 +++++++++++++++++++++--------
- 2 files changed, 21 insertions(+), 16 deletions(-)
+ drivers/pci/controller/dwc/pcie-qcom.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index e830a9d4e10d3..11aa37693e436 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -254,14 +254,6 @@ int ext4_setup_system_zone(struct super_block *sb)
- 	int flex_size = ext4_flex_bg_size(sbi);
- 	int ret;
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 380a77a914fa0..9cf7599a198c4 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -287,14 +287,14 @@ static void qcom_pcie_deinit_2_1_0(struct qcom_pcie *pcie)
+ {
+ 	struct qcom_pcie_resources_2_1_0 *res = &pcie->res.v2_1_0;
  
--	if (!test_opt(sb, BLOCK_VALIDITY)) {
--		if (sbi->system_blks)
--			ext4_release_system_zone(sb);
--		return 0;
++	clk_disable_unprepare(res->phy_clk);
+ 	reset_control_assert(res->pci_reset);
+ 	reset_control_assert(res->axi_reset);
+ 	reset_control_assert(res->ahb_reset);
+ 	reset_control_assert(res->por_reset);
+-	reset_control_assert(res->pci_reset);
++	reset_control_assert(res->phy_reset);
+ 	clk_disable_unprepare(res->iface_clk);
+ 	clk_disable_unprepare(res->core_clk);
+-	clk_disable_unprepare(res->phy_clk);
+ 	clk_disable_unprepare(res->aux_clk);
+ 	clk_disable_unprepare(res->ref_clk);
+ 	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
+@@ -333,12 +333,6 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+ 		goto err_clk_core;
+ 	}
+ 
+-	ret = clk_prepare_enable(res->phy_clk);
+-	if (ret) {
+-		dev_err(dev, "cannot prepare/enable phy clock\n");
+-		goto err_clk_phy;
 -	}
--	if (sbi->system_blks)
--		return 0;
 -
- 	system_blks = kzalloc(sizeof(*system_blks), GFP_KERNEL);
- 	if (!system_blks)
- 		return -ENOMEM;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 54d1c09329e55..4c8253188d8df 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4698,11 +4698,13 @@ no_journal:
- 
- 	ext4_set_resv_clusters(sb);
- 
--	err = ext4_setup_system_zone(sb);
--	if (err) {
--		ext4_msg(sb, KERN_ERR, "failed to initialize system "
--			 "zone (%d)", err);
--		goto failed_mount4a;
-+	if (test_opt(sb, BLOCK_VALIDITY)) {
-+		err = ext4_setup_system_zone(sb);
-+		if (err) {
-+			ext4_msg(sb, KERN_ERR, "failed to initialize system "
-+				 "zone (%d)", err);
-+			goto failed_mount4a;
-+		}
+ 	ret = clk_prepare_enable(res->aux_clk);
+ 	if (ret) {
+ 		dev_err(dev, "cannot prepare/enable aux clock\n");
+@@ -411,6 +405,12 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+ 		return ret;
  	}
  
- 	ext4_ext_init(sb);
-@@ -5716,9 +5718,16 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 		ext4_register_li_request(sb, first_not_zeroed);
- 	}
- 
--	err = ext4_setup_system_zone(sb);
--	if (err)
--		goto restore_opts;
-+	/*
-+	 * Handle creation of system zone data early because it can fail.
-+	 * Releasing of existing data is done when we are sure remount will
-+	 * succeed.
-+	 */
-+	if (test_opt(sb, BLOCK_VALIDITY) && !sbi->system_blks) {
-+		err = ext4_setup_system_zone(sb);
-+		if (err)
-+			goto restore_opts;
++	ret = clk_prepare_enable(res->phy_clk);
++	if (ret) {
++		dev_err(dev, "cannot prepare/enable phy clock\n");
++		goto err_deassert_ahb;
 +	}
++
+ 	/* wait for clock acquisition */
+ 	usleep_range(1000, 1500);
  
- 	if (sbi->s_journal == NULL && !(old_sb_flags & SB_RDONLY)) {
- 		err = ext4_commit_super(sb, 1);
-@@ -5740,6 +5749,8 @@ static int ext4_remount(struct super_block *sb, int *flags, char *data)
- 		}
- 	}
- #endif
-+	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->system_blks)
-+		ext4_release_system_zone(sb);
- 
- 	/*
- 	 * Some options can be enabled by ext4 and/or by VFS mount flag
-@@ -5761,6 +5772,8 @@ restore_opts:
- 	sbi->s_commit_interval = old_opts.s_commit_interval;
- 	sbi->s_min_batch_time = old_opts.s_min_batch_time;
- 	sbi->s_max_batch_time = old_opts.s_max_batch_time;
-+	if (!test_opt(sb, BLOCK_VALIDITY) && sbi->system_blks)
-+		ext4_release_system_zone(sb);
- #ifdef CONFIG_QUOTA
- 	sbi->s_jquota_fmt = old_opts.s_jquota_fmt;
- 	for (i = 0; i < EXT4_MAXQUOTAS; i++) {
+@@ -428,8 +428,6 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+ err_clk_ref:
+ 	clk_disable_unprepare(res->aux_clk);
+ err_clk_aux:
+-	clk_disable_unprepare(res->phy_clk);
+-err_clk_phy:
+ 	clk_disable_unprepare(res->core_clk);
+ err_clk_core:
+ 	clk_disable_unprepare(res->iface_clk);
 -- 
 2.25.1
 
