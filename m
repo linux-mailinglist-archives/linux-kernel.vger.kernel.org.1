@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CDB259C34
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59789259C4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729353AbgIARMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:12:46 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:49664 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730242AbgIARMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:12:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598980351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6tq9XbBkkctfISvu/8JAip4aOF6DG++oXbCP77hju3Y=;
-        b=Nc5W8jjHYz3TEc8a2EyIdmPuFOTGztX3Fkv8vjGWzm8pB20RSsn2zz0YtjmE2k11pxtZPD
-        1yHtl36fby/j2d1PxS9WISPI6OfX/Mb781KPLv9XGFntzAKB1WKiwenLrKIBM0llcDc3WQ
-        rTduzCi3x51+mbUcUvQYBUj0mLkrsCY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-gfbAtqhlPbKr-7JAzqN6xw-1; Tue, 01 Sep 2020 13:12:27 -0400
-X-MC-Unique: gfbAtqhlPbKr-7JAzqN6xw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 344B11006708;
-        Tue,  1 Sep 2020 17:12:26 +0000 (UTC)
-Received: from treble (ovpn-113-168.rdu2.redhat.com [10.10.113.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B1BD1002D60;
-        Tue,  1 Sep 2020 17:12:22 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 12:12:20 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Joe Lawrence <joe.lawrence@redhat.com>
-Cc:     Petr Mladek <pmladek@suse.com>, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: refactoring livepatch documentation was Re: [PATCH 1/2]
- docs/livepatch: Add new compiler considerations doc
-Message-ID: <20200901171220.pgepj3hxrfwy37rj@treble>
-References: <20200721161407.26806-1-joe.lawrence@redhat.com>
- <20200721161407.26806-2-joe.lawrence@redhat.com>
- <20200721230442.5v6ah7bpjx4puqva@treble>
- <de3672ef-8779-245f-943d-3d5a4b875446@redhat.com>
- <20200722205139.hwbej2atk2ejq27n@treble>
- <20200806120336.GP24529@alley>
- <3842fe65-332e-9f90-fe75-7cd80b34b75e@redhat.com>
+        id S1729837AbgIARN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:13:29 -0400
+Received: from elvis.franken.de ([193.175.24.41]:46009 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729705AbgIARNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:13:11 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kD9qC-0004aY-00; Tue, 01 Sep 2020 19:13:04 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id A3E0EC0E68; Tue,  1 Sep 2020 19:12:41 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 19:12:41 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
+        linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        linux-scsi@vger.kernel.org,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        linux-media@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pawel Osciak <pawel@osciak.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        netdev@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 22/28] sgiseeq: convert from dma_cache_sync to
+ dma_sync_single_for_device
+Message-ID: <20200901171241.GA20685@alpha.franken.de>
+References: <20200819065555.1802761-1-hch@lst.de>
+ <20200819065555.1802761-23-hch@lst.de>
+ <20200901152209.GA14288@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3842fe65-332e-9f90-fe75-7cd80b34b75e@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200901152209.GA14288@alpha.franken.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 10, 2020 at 03:46:46PM -0400, Joe Lawrence wrote:
-> > > > > I'm thinking a newcomer reading this might be lost.  It's not
-> > > > > necessarily clear that there are currently two completely different
-> > > > > approaches to creating a livepatch module, each with their own quirks
-> > > > > and benefits/drawbacks.  There is one mention of a "source-based
-> > > > > livepatch author" but no explanation of what that means.
-> > > > > 
-> > > > 
-> > > > Yes, the initial draft was light on source-based patching since I only
-> > > > really tinker with it for samples/kselftests.  The doc was the result of an
-> > > > experienced livepatch developer and Sunday afternoon w/the compiler. I'm
-> > > > sure it reads as such. :)
-> > > 
-> > > Are experienced livepatch developers the intended audience?  If so I
-> > > question what value this document has in its current form.  Presumably
-> > > experienced livepatch developers would already know this stuff.
+On Tue, Sep 01, 2020 at 05:22:09PM +0200, Thomas Bogendoerfer wrote:
+> On Wed, Aug 19, 2020 at 08:55:49AM +0200, Christoph Hellwig wrote:
+> > Use the proper modern API to transfer cache ownership for incoherent DMA.
 > > 
-> > IMHO, this document is useful even for newbies. They might at
-> > least get a clue about these catches. It is better than nothing.
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  drivers/net/ethernet/seeq/sgiseeq.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
 > > 
-> > I do not want to discourage Joe from creating even better
-> > documentation. But if he does not have interest or time
-> > to work on it, I am happy even for this piece.
-
-Agreed.  Joe, sorry for instigating and then disappearing :-)
-
-I know we're all busy and I didn't intend to block the patch until we
-reach Documentation Nirvana.  Though it would be _really_ nice to get
-more input from those who have more experience with the subject matter
-(source-based patch generation).
-
-It's part of my job as a maintainer to push back, question, and
-sometimes even complain.  I was just wondering where this is heading,
-because as our documentation grows (a good thing), the overall state is
-getting less cohesive (a bad thing).
-
-Anyway, ACK to the original patch.
-
-> 1. Provide a better index page to connect the other files/docs, like
-> https://www.kernel.org/doc/html/latest/core-api/index.html but obviously not
-> that extensive.  Right now we have only a Table of Contents tree without any
-> commentary.
+> > diff --git a/drivers/net/ethernet/seeq/sgiseeq.c b/drivers/net/ethernet/seeq/sgiseeq.c
+> > index 39599bbb5d45b6..f91dae16d69a19 100644
+> > --- a/drivers/net/ethernet/seeq/sgiseeq.c
+> > +++ b/drivers/net/ethernet/seeq/sgiseeq.c
+> > @@ -112,14 +112,18 @@ struct sgiseeq_private {
+> >  
+> >  static inline void dma_sync_desc_cpu(struct net_device *dev, void *addr)
+> >  {
+> > -	dma_cache_sync(dev->dev.parent, addr, sizeof(struct sgiseeq_rx_desc),
+> > -		       DMA_FROM_DEVICE);
+> > +	struct sgiseeq_private *sp = netdev_priv(dev);
+> > +
+> > +	dma_sync_single_for_cpu(dev->dev.parent, VIRT_TO_DMA(sp, addr),
+> > +			sizeof(struct sgiseeq_rx_desc), DMA_BIDIRECTIONAL);
+> >  }
+> >  
+> >  static inline void dma_sync_desc_dev(struct net_device *dev, void *addr)
+> >  {
+> > -	dma_cache_sync(dev->dev.parent, addr, sizeof(struct sgiseeq_rx_desc),
+> > -		       DMA_TO_DEVICE);
+> > +	struct sgiseeq_private *sp = netdev_priv(dev);
+> > +
+> > +	dma_sync_single_for_device(dev->dev.parent, VIRT_TO_DMA(sp, addr),
+> > +			sizeof(struct sgiseeq_rx_desc), DMA_BIDIRECTIONAL);
+> >  }
 > 
-> 2. Rearrange and refactor sections:
-> 
-> livepatch.rst
->   Keep just about everything
->   Add a history section to explain ksplice, kgraft, kpatch for the
->     uninitiated?
->   Add a section on source based vs. binary diff livepatch creation,
->     this may be worth its own top-level section
-> 
-> Livepatch API
->   Basic API
->   Callbacks
->   Shadow variables
->   Cumulative patches
->   System state
-> 
-> KLP Relocations
->   Right now this is a bit academic AFAIK kpatch is the only tool
->   currently making use of them.  So maybe this document becomes a
->   more general purpose doc explaining how to reference unexported
->   symbols?  (ie, how does kgraft currently do it, particularly
->   w/kallsyms going unexported?)
-> 
->   Eventually this could contain klp-convert howto if it ever gets
->   merged.
-> 
-> Compiler considerations
->   TBD
+> this breaks ethernet on IP22 completely, but I haven't figured out why, yet.
 
-This is certainly a logical way to organize things.  But again I would
-wonder, who's the audience?
+the problem is that dma_sync_single_for_cpu() doesn't flush anything
+for IP22, because it only flushes for CPUs which do speculation. So
+either MIPS arch_sync_dma_for_cpu() should always flush or sgiseeq
+needs to use a different sync funktion, when it wants to re-read descriptors
+from memory.
 
-> I suppose this doesn't create a "Livepatching creation for dummies" guide,
-> but my feeling is that there are so many potential (hidden) pitfalls that
-> such guide would be dangerous.
-
-I disagree that a live patching creation guide would be dangerous.  I
-think it would be less dangerous than *not* having one.  There are
-several companies now delivering (hopefully reliable) livepatches to
-customers, and they're all presumably following processes.  We just need
-to agree on best practices and document the resulting process.  Over
-time I believe that will create much more good than harm.
-
-Sure, there are pitfalls, but the known ones can be highlighted in the
-guide.  No document is perfect but it hopefully improves and becomes
-more useful over time.
+Thomas.
 
 -- 
-Josh
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
