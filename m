@@ -2,311 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7FB2590DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802652590F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728562AbgIAOlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:41:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728379AbgIAOjg (ORCPT
+        id S1728451AbgIAOm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728242AbgIAOl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:39:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598971170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xviRaSMSVZe8zJaI7fD9AffLHOUbfdDTjZvjuaSE+1w=;
-        b=KNxpQfLyo2nOhuoCp7Ir9Ktd2R74DbvemYQRjWuqqfcUom6hzZdqz6022tZK07QJPtAj2l
-        n3z/bGMezOP7Tly6TxbU2OPcsNBHOZzlhwe8u+9v7Ae4VvnFhxVmfhOwyjETKxoArh7cy3
-        uFj7wMpBVJNFHK+tusLc6EJzp7YOPqI=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-kChsnK9KMjOD49RMygnDRg-1; Tue, 01 Sep 2020 10:39:29 -0400
-X-MC-Unique: kChsnK9KMjOD49RMygnDRg-1
-Received: by mail-wr1-f71.google.com with SMTP id r16so179097wrm.18
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:39:28 -0700 (PDT)
+        Tue, 1 Sep 2020 10:41:28 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE52BC061244;
+        Tue,  1 Sep 2020 07:41:27 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j21so1336537oii.10;
+        Tue, 01 Sep 2020 07:41:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=sZhvalbA03rUwegYGv+Cay08wKnFHq0gcapj8Z9U2kk=;
+        b=Y/SqwzUN1T5jUMi6cZ2ZuDXFCwQ9pIW40bV/unURxBXPwk7DRwOLaHDwtTXPzup9gL
+         cEFKY7SCHTeJimhPAs3bFuPsn0kDmnDHqJqlzU9FZmxXnMBjVPM//99pbmwwqN6oIWte
+         cPVMbo+bJSoElNYuopQ8bm3qvB88PXV5tK4HvcEMtbO3qu1BW8WHnx9BmeYzDwOW94IC
+         ce00MEsUDYw8friyEmXWOpscVEu6BASNFxHjNF7w/Je9hjg36WLddNLUiz4ApumVkjXB
+         JCgKn4rBc2l++lCHpIQKhu6u/KNpjBU6MIMXDIe6asHbk3XQ6DA03spR28BYEr5LsOT7
+         Vn1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xviRaSMSVZe8zJaI7fD9AffLHOUbfdDTjZvjuaSE+1w=;
-        b=GMTdcHNLaMhqpXJTp6+TA0MgFkIG/QhAdMyGDVjbhV0ys29JI3OfktG7LKVu+qWEID
-         c+8X5LotkDSykU7JbnSUlY9Cvj76JwrA6mXK1jbRIIPa9Gwq9NbjqpRutPPEHS6x2Ii1
-         iK86yaLeK4Pq3oVM8CkwRymr6GFDDf2fsbWAg6o5n3HPj39Tpq7SBDZ+EgQnbaDuPKQv
-         NPbyKz+VFP6cbzOE07n0dQtu9dj73zmYz8YS5Zcg+SyMiPweDJDYH131Wvx8BvHpzDJS
-         OgBvgjzQrUdhzAAnYTY9ZrzMIvj1at81ZwVhO26NbbA07n2MtwOWyoiOpI+ekjtNsjRQ
-         3FHw==
-X-Gm-Message-State: AOAM530/q+GKlvYIFMJhONX9WFFwSk3qeVX2WUO/yAYJ3CTTavt6kpXT
-        t2pSnnlfR5zX/nwT3nQvg3+EHlfVap5GmuJE0ObvTwK9hD89kAwTV/lSnEuCBbCFI0ndJKYuyuA
-        5XCt8CSHau4Z8Z+LLHnPpcBys
-X-Received: by 2002:adf:b306:: with SMTP id j6mr2125772wrd.279.1598971165380;
-        Tue, 01 Sep 2020 07:39:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdOfB3h+jilehjL6/rSP1GbkLF0K8thNVH3yGwtjp0zLFE+GXCKCTNGiErlWHmbfPK2cwGAg==
-X-Received: by 2002:adf:b306:: with SMTP id j6mr2125736wrd.279.1598971165000;
-        Tue, 01 Sep 2020 07:39:25 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n4sm2513707wrv.8.2020.09.01.07.39.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 07:39:23 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] KVM: x86: introduce KVM_MEM_PCI_HOLE memory
-In-Reply-To: <20200814023139.GB4845@linux.intel.com>
-References: <20200807141232.402895-1-vkuznets@redhat.com> <20200807141232.402895-3-vkuznets@redhat.com> <20200814023139.GB4845@linux.intel.com>
-Date:   Tue, 01 Sep 2020 16:39:22 +0200
-Message-ID: <87h7shwoh1.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=sZhvalbA03rUwegYGv+Cay08wKnFHq0gcapj8Z9U2kk=;
+        b=iWSNWnBFYOKBddw/tSz7QbMmjI3FiAZAfTBljY5JkN2rMNP4lzxmgnEu0fmGm51YxI
+         B5723LYRGFerK1n4bszVMYsb906SpdGa6TduhAnM/iHp7douK7d8pyDMEu1uaH6xTliY
+         tnTlk1HRTlnitzdEM9XAKHRvbl+73FEP1uZUujzXbxzvVCwJZRlU3zJDopVGGitGwKTO
+         C+oO/HDs9N/G5ybi9qyrgz/cH5vXZc/4scLBbtHhMcbPtKiDhsDE2IIcicRzvhThY+QG
+         o6o2cOCvBT7rwhxwj6k1oQFtavqgK0ImIIgiHSEmL6zkRpdmH/6bwUfCfR+KS0jnFV1w
+         lrpw==
+X-Gm-Message-State: AOAM531QHxhHXjvu7r+nYInNKQ9B3m6Z1H3FqOh/4YY/WLI/1J495FME
+        9krJuJ9kFmcPc/fvqc/VjcpoyUS/E//KCnjgBKVNg8HMbL0FtQ==
+X-Google-Smtp-Source: ABdhPJy3jGYbnV0erw5CDV78wbHykPio/a1ecP5Cmr4JMTFhJXSUqBMYPpa4dn07GhhqNIJgtM5NUmjuAwVvejaykGs=
+X-Received: by 2002:aca:d409:: with SMTP id l9mr1255941oig.70.1598971287129;
+ Tue, 01 Sep 2020 07:41:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200901064302.849-1-w@1wt.eu>
+In-Reply-To: <20200901064302.849-1-w@1wt.eu>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 1 Sep 2020 16:41:13 +0200
+Message-ID: <CA+icZUVvOArpuR=PJBg288pJmLmYxtgZxJOHnjk943e9M22WOQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] prandom_u32: make output less predictable
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        George Spelvin <lkml@sdf.org>,
+        Amit Klein <aksecurity@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+        Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
-
-> On Fri, Aug 07, 2020 at 04:12:31PM +0200, Vitaly Kuznetsov wrote:
->> PCIe config space can (depending on the configuration) be quite big but
->> usually is sparsely populated. Guest may scan it by accessing individual
->> device's page which, when device is missing, is supposed to have 'pci
->> hole' semantics: reads return '0xff' and writes get discarded. Compared
->> to the already existing KVM_MEM_READONLY, VMM doesn't need to allocate
->> real memory and stuff it with '0xff'.
->> 
->> Suggested-by: Michael S. Tsirkin <mst@redhat.com>
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  Documentation/virt/kvm/api.rst  | 18 ++++++++++-----
->>  arch/x86/include/uapi/asm/kvm.h |  1 +
->>  arch/x86/kvm/mmu/mmu.c          |  5 ++++-
->>  arch/x86/kvm/mmu/paging_tmpl.h  |  3 +++
->>  arch/x86/kvm/x86.c              | 10 ++++++---
->>  include/linux/kvm_host.h        |  3 +++
->>  include/uapi/linux/kvm.h        |  2 ++
->>  virt/kvm/kvm_main.c             | 39 +++++++++++++++++++++++++++------
->>  8 files changed, 64 insertions(+), 17 deletions(-)
->> 
->> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
->> index 644e5326aa50..dc4172352635 100644
->> --- a/Documentation/virt/kvm/api.rst
->> +++ b/Documentation/virt/kvm/api.rst
->> @@ -1241,6 +1241,7 @@ yet and must be cleared on entry.
->>    /* for kvm_memory_region::flags */
->>    #define KVM_MEM_LOG_DIRTY_PAGES	(1UL << 0)
->>    #define KVM_MEM_READONLY	(1UL << 1)
->> +  #define KVM_MEM_PCI_HOLE		(1UL << 2)
->>  
->>  This ioctl allows the user to create, modify or delete a guest physical
->>  memory slot.  Bits 0-15 of "slot" specify the slot id and this value
->> @@ -1268,12 +1269,17 @@ It is recommended that the lower 21 bits of guest_phys_addr and userspace_addr
->>  be identical.  This allows large pages in the guest to be backed by large
->>  pages in the host.
->>  
->> -The flags field supports two flags: KVM_MEM_LOG_DIRTY_PAGES and
->> -KVM_MEM_READONLY.  The former can be set to instruct KVM to keep track of
->> -writes to memory within the slot.  See KVM_GET_DIRTY_LOG ioctl to know how to
->> -use it.  The latter can be set, if KVM_CAP_READONLY_MEM capability allows it,
->> -to make a new slot read-only.  In this case, writes to this memory will be
->> -posted to userspace as KVM_EXIT_MMIO exits.
->> +The flags field supports the following flags: KVM_MEM_LOG_DIRTY_PAGES,
->> +KVM_MEM_READONLY, KVM_MEM_PCI_HOLE:
->> +- KVM_MEM_LOG_DIRTY_PAGES: log writes.  Use KVM_GET_DIRTY_LOG to retreive
->> +  the log.
->> +- KVM_MEM_READONLY: exit to userspace with KVM_EXIT_MMIO on writes.  Only
->> +  available when KVM_CAP_READONLY_MEM is present.
->> +- KVM_MEM_PCI_HOLE: always return 0xff on reads, exit to userspace with
->> +  KVM_EXIT_MMIO on writes.  Only available when KVM_CAP_PCI_HOLE_MEM is
->> +  present.  When setting the memory region 'userspace_addr' must be NULL.
->> +  This flag is mutually exclusive with KVM_MEM_LOG_DIRTY_PAGES and with
->> +  KVM_MEM_READONLY.
->>  
->>  When the KVM_CAP_SYNC_MMU capability is available, changes in the backing of
->>  the memory region are automatically reflected into the guest.  For example, an
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index 17c5a038f42d..cf80a26d74f5 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -48,6 +48,7 @@
->>  #define __KVM_HAVE_XSAVE
->>  #define __KVM_HAVE_XCRS
->>  #define __KVM_HAVE_READONLY_MEM
->> +#define __KVM_HAVE_PCI_HOLE_MEM
->>  
->>  /* Architectural interrupt line count. */
->>  #define KVM_NR_INTERRUPTS 256
->> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->> index fef6956393f7..4a2a7fface1e 100644
->> --- a/arch/x86/kvm/mmu/mmu.c
->> +++ b/arch/x86/kvm/mmu/mmu.c
->> @@ -3254,7 +3254,7 @@ static int kvm_mmu_hugepage_adjust(struct kvm_vcpu *vcpu, gfn_t gfn,
->>  		return PG_LEVEL_4K;
->>  
->>  	slot = gfn_to_memslot_dirty_bitmap(vcpu, gfn, true);
->> -	if (!slot)
->> +	if (!slot || (slot->flags & KVM_MEM_PCI_HOLE))
+On Tue, Sep 1, 2020 at 8:43 AM Willy Tarreau <w@1wt.eu> wrote:
 >
-> This is unnecessary since you're setting disallow_lpage in
-> kvm_alloc_memslot_metadata().
+> This is the cleanup of the latest series of prandom_u32 experimentations
+> consisting in using SipHash instead of Tausworthe to produce the randoms
+> used by the network stack. The changes to the files were kept minimal,
+> and the controversial commit that used to take noise from the fast_pool
+> (f227e3ec3b5c) was reverted. Instead, a dedicated "net_rand_noise" per_cpu
+> variable is fed from various sources of activities (networking, scheduling)
+> to perturb the SipHash state using fast, non-trivially predictable data,
+> instead of keeping it fully deterministic. The goal is essentially to make
+> any occasional memory leakage or brute-force attempt useless.
+>
+> The resulting code was verified to be very slightly faster on x86_64 than
+> what is was with the controversial commit above, though this remains barely
+> above measurement noise. It was only build-tested on arm & arm64.
+>
+> George Spelvin (1):
+>   random32: make prandom_u32() output unpredictable
+>
+> Willy Tarreau (1):
+>   random32: add noise from network and scheduling activity
+>
+>  drivers/char/random.c   |   1 -
+>  include/linux/prandom.h |  55 ++++-
+>  kernel/time/timer.c     |   9 +-
+>  lib/random32.c          | 438 ++++++++++++++++++++++++----------------
+>  net/core/dev.c          |   4 +
+>  5 files changed, 326 insertions(+), 181 deletions(-)
+>
+> Cc: George Spelvin <lkml@sdf.org>
+> Cc: Amit Klein <aksecurity@gmail.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: tytso@mit.edu
+> Cc: Florian Westphal <fw@strlen.de>
+> Cc: Marc Plumb <lkml.mplumb@gmail.com>
+> Cc: Sedat Dilek <sedat.dilek@gmail.com>
 >
 
-Yea, redundant precaution, can be dropped.
+I have tested with the patchset from [1].
+( Later I saw, you dropped "WIP: tcp: reuse incoming skb hash in
+tcp_conn_request()". )
 
->>  		return PG_LEVEL_4K;
->>  
->>  	max_level = min(max_level, max_huge_page_level);
->> @@ -4105,6 +4105,9 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
->>  
->>  	slot = kvm_vcpu_gfn_to_memslot(vcpu, gfn);
->>  
->> +	if (!write && slot && (slot->flags & KVM_MEM_PCI_HOLE))
->
-> I'm confused.  Why does this short circuit reads but not writes?
->
+- Sedat -
 
-The idea was that guests shouldn't normally write to these regions and
-we may want to catch them if they do. We can short circuit writes too by
-simply ignoring them.
+https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git/log/?h=20200901-siphash-noise
 
->> +		return RET_PF_EMULATE;
->> +
->>  	if (try_async_pf(vcpu, slot, prefault, gfn, gpa, &pfn, write,
->>  			 &map_writable))
->>  		return RET_PF_RETRY;
->> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
->> index 5c6a895f67c3..27abd69e69f6 100644
->> --- a/arch/x86/kvm/mmu/paging_tmpl.h
->> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
->> @@ -836,6 +836,9 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
->>  
->>  	slot = kvm_vcpu_gfn_to_memslot(vcpu, walker.gfn);
->>  
->> +	if (!write_fault && slot && (slot->flags & KVM_MEM_PCI_HOLE))
->> +		return RET_PF_EMULATE;
->> +
->>  	if (try_async_pf(vcpu, slot, prefault, walker.gfn, addr, &pfn,
->>  			 write_fault, &map_writable))
->>  		return RET_PF_RETRY;
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index dc4370394ab8..538bc58a22db 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -3515,6 +3515,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->>  	case KVM_CAP_EXCEPTION_PAYLOAD:
->>  	case KVM_CAP_SET_GUEST_DEBUG:
->>  	case KVM_CAP_LAST_CPU:
->> +	case KVM_CAP_PCI_HOLE_MEM:
->>  		r = 1;
->>  		break;
->>  	case KVM_CAP_SYNC_REGS:
->> @@ -10114,9 +10115,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->>  		ugfn = slot->userspace_addr >> PAGE_SHIFT;
->>  		/*
->>  		 * If the gfn and userspace address are not aligned wrt each
->> -		 * other, disable large page support for this slot.
->> +		 * other, disable large page support for this slot. Also,
->> +		 * disable large page support for KVM_MEM_PCI_HOLE slots.
->>  		 */
->> -		if ((slot->base_gfn ^ ugfn) & (KVM_PAGES_PER_HPAGE(level) - 1)) {
->> +		if ((slot->flags & KVM_MEM_PCI_HOLE) || ((slot->base_gfn ^ ugfn) &
->> +				      (KVM_PAGES_PER_HPAGE(level) - 1))) {
->>  			unsigned long j;
->>  
->>  			for (j = 0; j < lpages; ++j)
->> @@ -10178,7 +10181,8 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
->>  	 * Nothing to do for RO slots or CREATE/MOVE/DELETE of a slot.
->>  	 * See comments below.
->>  	 */
->> -	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY))
->> +	if ((change != KVM_MR_FLAGS_ONLY) ||
->> +	    (new->flags & (KVM_MEM_READONLY | KVM_MEM_PCI_HOLE)))
->>  		return;
->>  
->>  	/*
->> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->> index 989afcbe642f..de1faa64a8ef 100644
->> --- a/include/linux/kvm_host.h
->> +++ b/include/linux/kvm_host.h
->> @@ -1081,6 +1081,9 @@ __gfn_to_memslot(struct kvm_memslots *slots, gfn_t gfn)
->>  static inline unsigned long
->>  __gfn_to_hva_memslot(struct kvm_memory_slot *slot, gfn_t gfn)
->>  {
->> +	/* Should never be called with a KVM_MEM_PCI_HOLE slot */
->> +	BUG_ON(!slot->userspace_addr);
->
-> So _technically_, userspace can hit this by allowing virtual address 0,
-> which is very much non-standard, but theoretically legal.  It'd probably be
-> better to use a value that can't possibly be a valid userspace_addr, e.g. a
-> non-canonical value.
->
 
-I think I had '!(slot->flags & KVM_MEM_PCI_HOLE)' check in a previous
-version, we can restore it (if needed) or drop the thing completely.
-
->> +
->>  	return slot->userspace_addr + (gfn - slot->base_gfn) * PAGE_SIZE;
->>  }
->>  
->
-> ...
->
->> @@ -2318,6 +2338,11 @@ static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
->>  	int r;
->>  	unsigned long addr;
->>  
->> +	if (unlikely(slot && (slot->flags & KVM_MEM_PCI_HOLE))) {
->> +		memset(data, 0xff, len);
->> +		return 0;
->> +	}
->
-> This feels wrong, shouldn't we be treating PCI_HOLE as MMIO?  Given that
-> this is performance oriented, I would think we'd want to leverage the
-> GPA from the VMCS instead of doing a full translation.
->
-> That brings up a potential alternative to adding a memslot flag.  What if
-> we instead add a KVM_MMIO_BUS device similar to coalesced MMIO?  I think
-> it'd be about the same amount of KVM code, and it would provide userspace
-> with more flexibility, e.g. I assume it would allow handling even writes
-> wholly within the kernel for certain ranges and/or use cases, and it'd
-> allow stuffing a value other than 0xff (though I have no idea if there is
-> a use case for this).
-
-I was thinking about making this a bit more generic, like 'immutable'
-memory with a userspace-supplied values, e.g. userspace would be
-providing a region (e.g. a single page which will be mapped to by all
-pages of the slot) but then I failed to find a use-case for that. The
-PCI hole semantics seems to be the only one we actually need in the real
-life.
-
-Overall, makeing these PCI holes 'special' memory regions (slots) and
-sticking to KVM_SET_USER_MEMORY_REGION feels natural to me. I also think
-it would be much easier to consume from QEMU side as we won't need to
-use a 'special' API when things change (e.g. a device gets added and we
-need to [un]punch a hole in the 'PCI hole' space).
-
->
-> Speaking of which, why do writes go to userspace in this series?
->
-
-No particular reason actually, if there is no need to catch such
-(stray?) writes we can simply short-circuit them to nop.  
-
->> +
->>  	addr = gfn_to_hva_memslot_prot(slot, gfn, NULL);
->>  	if (kvm_is_error_hva(addr))
->>  		return -EFAULT;
->> -- 
->> 2.25.4
->> 
->
-
--- 
-Vitaly
-
+> --
+> 2.28.0
