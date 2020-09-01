@@ -2,65 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE151259D97
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F43259D9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbgIARs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:48:56 -0400
-Received: from sonic314-13.consmr.mail.bf2.yahoo.com ([74.6.132.123]:42057
-        "EHLO sonic314-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726140AbgIARst (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:48:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1598982528; bh=V09D8a1N75lUFkJxVR9aVpVPFU2IfPbM8afoyzXI9EQ=; h=Date:From:Reply-To:Subject:References:From:Subject; b=A4ZG/mXSKY10caoltvoznEQ6dZASKszUfa2hFKdtFPJbR5TAmUVkjyqnn8UrRMyCgSt1Pf8imajE+Hx1dGU8bnNoxVtgzuswfxoqZXHWhDNg94RCO+H0UdCAf3i6Y3qMZazcXDNHseK8ym/b4x8etbP1apMaM8VT0aRY7sHzeSJR+XHnMYXRIlbzbB6/gYmIcZ/Cl5kgnMWJFa/c/TUIpVxro13PvNCGRq3Y1vRv7nkkb30u4rORBaqXHtSdIg5AF9EP5JsZpR6p6WWIRChY2EYdXEIgqefhuNAo1dEPEpaWjPcrZfFPSPDYdS7dSPEfK8x5UlyMMmHIZqYf1RlDLA==
-X-YMail-OSG: Czl.pb4VM1nNRWFudDN5ephyKrkR7xDjq4OD0QquwM_0PgNtFXZ6nJq3EXssiAP
- jY2hS1RItmpnPxun8ruGXy6Kk_tS2yxTDp9rRpCF5kxhe2JvuzK4IVpiB1Gctdz87OnYZaNkUHMG
- 5YKKE5uV7EpkwONBujp.BrYdjrJ0MsqjOn9gfZVvsxBQL.OCcp3cnWy1Yz.pjIfKyRC1IKIzp2YD
- cLXSo2pkZla.8aDyaC05vAoKr6KYTN2QWVQCbdxgGIvuvVgQP5_.fwZNMOGUkVF8ZLPzVazU1zDg
- c4nfScoEjy18jiD7KlDFfK2yuUa7I6SPMi6u2hGKR_Ro5SFWchb7NKD283DcTt01EP6UbEOo5orO
- g.LBKjVfESg2Co94O_T9ZmREdDg3XuQMRbczne6mOVRhF23yZPJPzFr6b23qxE0fddoMYeJvZhRX
- DIBEzKIp0CTA65rs8vlFE4zdxTF7s8PCYukNubj01uUZX9x4bllKouI4ypCN3XKQYp2tC8ZYKwCz
- asMEU_C7NVaFDv9rawX2KhU1E1iCiaegfM55N_y_AVajW3RhFIrphPhvdAOHH02fEY9_JvaNcMH_
- x10emjxtF50pzxKkV8otK5b9lvxRUJnUAQAe4XGHsaiAxMlZntwlLR35kvbaIdrgHl0gDdcpqNZt
- cqUmHXdUtjdIsYby5yxfAUWwW8Q5V3oAZbuqOF2GWK.INp.YKbJSP02OZUaADyY3PLll77U9iJlI
- kA9YuSddxCgU2gewKe4aQGu1XXgQObeuiEU.S1XjI_hcHNgf7x75pHsf6KKbAfnoYsCHHqt0fu8b
- psEQbpzxBneJJF6cNgZXqizQTwkXLV6JJxyN0avlDP5go6.mj2zTTt8h5Hz7WyIkf5pYl1n8P5Aa
- KZvpRVeAMLPt.Z1vJlqYiggLGM3Q.PneX9gCqAeXarJHXrTrOz6WVbZrUrAQ5oJzf3xn0H85DI09
- .lOS9JQhjP7U0fEekcVbHDjNajK7jRucOi8g9la9TIKf_1GnrzwDBJhFZ1oerrliWnxnLvqdOJaV
- wqIQjsYTVTYUI4Aq_.SltmN2VUzH8BfoEJYOSgRG67ht0IzRARV8PejLupIqzmmPXmZFk2RtQ6Ue
- M0.m0U_MudB3Bn.GMNQZI1rc9ZqH.styvFQsVg1281aCHs.ql5alDhAJIUCVhQDV1ZsJn6yB.dsr
- 3pYiJeFxp8Bs6PMIFzv79HKSgsavctTlfQ4TSPoD7mFFmsGUzeH_14IqTIxTmeQEOc273o6yBDbj
- loTzMbY7V4DtJ9SkJgz9WM_ygChHRz7q.FFxtDpnQ14B7WtrGoZmNYqTQBoaytiWs79anLRqZlcv
- BHnYF6Lsxy9ckAIA6VdlJuGJCsJcVXhpURvkQmiyZSpw8wqXchraHaxopGz5DK47hIP7HhHF5E9r
- z_Uw5wQ61FQwlILAXicxVoF.FjScZ4Z.m8P5nylKSaEAj71ahay4-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic314.consmr.mail.bf2.yahoo.com with HTTP; Tue, 1 Sep 2020 17:48:48 +0000
-Date:   Tue, 1 Sep 2020 17:48:44 +0000 (UTC)
-From:   Ahmed <mrahmedoue@gmail.com>
-Reply-To: ouedraogoahmed@outlook.com
-Message-ID: <1828172015.1193889.1598982524974@mail.yahoo.com>
-Subject: With due respect.
+        id S1728278AbgIARtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:49:09 -0400
+Received: from mga01.intel.com ([192.55.52.88]:25772 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726102AbgIARtF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:49:05 -0400
+IronPort-SDR: 8xYUkwzS5RGQxRNpzA4TfvXqpHFnHkKLean5tJoO5sRxZnFGn4UFyrIEqJvjS6r++DOKZszxTU
+ O0uiuVpY2hsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175279019"
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="175279019"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 10:49:04 -0700
+IronPort-SDR: r00JZG/t68wMPpNfXe75+DLGZCVTowqwBSk2AwAfB6zDiW3JoLhHW2vWrhS7SndNyloTjPKNse
+ 74BX/suNlhDg==
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="477291046"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.241.30]) ([10.212.241.30])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 10:49:02 -0700
+Subject: Re: [PATCH v11 25/25] x86/cet/shstk: Add arch_prctl functions for
+ shadow stack
+To:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>
+Cc:     Dave Martin <Dave.Martin@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <20200825002540.3351-1-yu-cheng.yu@intel.com>
+ <20200825002540.3351-26-yu-cheng.yu@intel.com>
+ <CALCETrVpLnZGfWWLpJO+aZ9aBbx5KGaCskejXiCXF1GtsFFoPg@mail.gmail.com>
+ <2d253891-9393-44d0-35e0-4b9a2da23cec@intel.com>
+ <086c73d8-9b06-f074-e315-9964eb666db9@intel.com>
+ <73c2211f-8811-2d9f-1930-1c5035e6129c@intel.com>
+ <af258a0e-56e9-3747-f765-dfe45ce76bba@intel.com>
+ <ef7f9e24-f952-d78c-373e-85435f742688@intel.com>
+ <20200826164604.GW6642@arm.com> <87ft892vvf.fsf@oldenburg2.str.redhat.com>
+ <20200826170841.GX6642@arm.com> <87tuwow7kg.fsf@oldenburg2.str.redhat.com>
+ <CAMe9rOrhjLSaMNABnzd=Kp5UeVot1Qkx0_PnMng=sT+wd9Xubw@mail.gmail.com>
+ <873648w6qr.fsf@oldenburg2.str.redhat.com>
+ <CAMe9rOqpLyWR+Ek7aBiRY+Kr6sRxkSHAo2Sc6h0YCv3X3-3TuQ@mail.gmail.com>
+ <CAMe9rOpuwZesJqY_2wYhdRXMhd7g0a+MRqPtXKh7wX5B5-OSbA@mail.gmail.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <3c12b6ee-7c93-dcf4-fbf7-2698003386dd@intel.com>
+Date:   Tue, 1 Sep 2020 10:49:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <CAMe9rOpuwZesJqY_2wYhdRXMhd7g0a+MRqPtXKh7wX5B5-OSbA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-References: <1828172015.1193889.1598982524974.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/27/2020 7:08 AM, H.J. Lu wrote:
+> On Thu, Aug 27, 2020 at 7:07 AM H.J. Lu <hjl.tools@gmail.com> wrote:
+>>
+>> On Thu, Aug 27, 2020 at 6:36 AM Florian Weimer <fweimer@redhat.com> wrote:
+>>>
+>>> * H. J. Lu:
+>>>
+>>>> On Thu, Aug 27, 2020 at 6:19 AM Florian Weimer <fweimer@redhat.com> wrote:
+>>>>>
+>>>>> * Dave Martin:
+>>>>>
+>>>>>> You're right that this has implications: for i386, libc probably pulls
+>>>>>> more arguments off the stack than are really there in some situations.
+>>>>>> This isn't a new problem though.  There are already generic prctls with
+>>>>>> fewer than 4 args that are used on x86.
+>>>>>
+>>>>> As originally posted, glibc prctl would have to know that it has to pull
+>>>>> an u64 argument off the argument list for ARCH_X86_CET_DISABLE.  But
+>>>>> then the u64 argument is a problem for arch_prctl as well.
+>>>>>
+>>>>
+>>>> Argument of ARCH_X86_CET_DISABLE is int and passed in register.
+>>>
+>>> The commit message and the C source say otherwise, I think (not sure
+>>> about the C source, not a kernel hacker).
+>>
+>> It should read:
+>>
+>> arch_prctl(ARCH_X86_CET_DISABLE, unsigned long features)
+>>
+> 
+> Or
+> 
+> arch_prctl(ARCH_X86_CET_DISABLE, unsigned int features)
+> 
 
+Like other arch_prctl()'s, this parameter was 'unsigned long' earlier. 
+The idea was, since this arch_prctl is only implemented for the 64-bit 
+kernel, we wanted it to look as 64-bit only.  I will change it back to 
+'unsigned long'.
 
-Dear Friend,
-
-I know that this mail will come to you as a surprise as we have never met before, but need not to worry as I am contacting you independently of my investigation and no one is informed of this communication. I need your urgent assistance in transferring the sum of $11.3million immediately to your private account.The money has been here in our Bank lying dormant for years now without anybody coming for the claim of it.
-
-I want to release the money to you as the relative to our deceased customer (the account owner) who died a long with his supposed Next Of Kin since 16th October 2005. The Banking laws here does not allow such money to stay more than 15 years, because the money will be recalled to the Bank treasury account as unclaimed fund.
-
-By indicating your interest I will send you the full details on how the business will be executed.
-
-Please respond urgently and delete if you are not interested.
-
-Best Regards,
-Ahmed Ouedraogo.
+Yu-cheng
