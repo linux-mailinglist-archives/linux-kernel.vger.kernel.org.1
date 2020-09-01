@@ -2,102 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59789259C4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F89259C5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 19:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729837AbgIARN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 13:13:29 -0400
-Received: from elvis.franken.de ([193.175.24.41]:46009 "EHLO elvis.franken.de"
+        id S1729468AbgIAROD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 13:14:03 -0400
+Received: from mga07.intel.com ([134.134.136.100]:2209 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729705AbgIARNL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 13:13:11 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kD9qC-0004aY-00; Tue, 01 Sep 2020 19:13:04 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A3E0EC0E68; Tue,  1 Sep 2020 19:12:41 +0200 (CEST)
-Date:   Tue, 1 Sep 2020 19:12:41 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org,
-        linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        linux-mm@kvack.org, Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-samsung-soc@vger.kernel.org,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        linux-scsi@vger.kernel.org,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        linux-media@vger.kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-        netdev@vger.kernel.org, Seung-Woo Kim <sw0312.kim@samsung.com>,
-        linux-mips@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 22/28] sgiseeq: convert from dma_cache_sync to
- dma_sync_single_for_device
-Message-ID: <20200901171241.GA20685@alpha.franken.de>
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-23-hch@lst.de>
- <20200901152209.GA14288@alpha.franken.de>
+        id S1729563AbgIARNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 13:13:04 -0400
+IronPort-SDR: 88nGYQL07Hd1sx4NtXJDw60T2FomUt8SFBAqQ5Outng1DYs6VDXJFSwYHJcD1DP8nmCYjvTJ4a
+ AMHjMEA4+/YA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="221439686"
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="221439686"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 10:13:02 -0700
+IronPort-SDR: IPJiBrBum7jSbBMjjnUnRTLc3uregRJqv4MEVLmYVVfOppTr0opOuRhR1Rggi52AQGhVbjTY48
+ m7ntPozknbkg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,379,1592895600"; 
+   d="scan'208";a="477278477"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.209.2.157]) ([10.209.2.157])
+  by orsmga005.jf.intel.com with ESMTP; 01 Sep 2020 10:13:01 -0700
+Subject: Re: [PATCH 5.8 070/255] dmaengine: idxd: fix PCI_MSI build errors
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+References: <20200901151000.800754757@linuxfoundation.org>
+ <20200901151004.086401987@linuxfoundation.org>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <3ed5a847-981a-6520-add9-dc1e3792e703@intel.com>
+Date:   Tue, 1 Sep 2020 10:13:00 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901152209.GA14288@alpha.franken.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200901151004.086401987@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:22:09PM +0200, Thomas Bogendoerfer wrote:
-> On Wed, Aug 19, 2020 at 08:55:49AM +0200, Christoph Hellwig wrote:
-> > Use the proper modern API to transfer cache ownership for incoherent DMA.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  drivers/net/ethernet/seeq/sgiseeq.c | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/seeq/sgiseeq.c b/drivers/net/ethernet/seeq/sgiseeq.c
-> > index 39599bbb5d45b6..f91dae16d69a19 100644
-> > --- a/drivers/net/ethernet/seeq/sgiseeq.c
-> > +++ b/drivers/net/ethernet/seeq/sgiseeq.c
-> > @@ -112,14 +112,18 @@ struct sgiseeq_private {
-> >  
-> >  static inline void dma_sync_desc_cpu(struct net_device *dev, void *addr)
-> >  {
-> > -	dma_cache_sync(dev->dev.parent, addr, sizeof(struct sgiseeq_rx_desc),
-> > -		       DMA_FROM_DEVICE);
-> > +	struct sgiseeq_private *sp = netdev_priv(dev);
-> > +
-> > +	dma_sync_single_for_cpu(dev->dev.parent, VIRT_TO_DMA(sp, addr),
-> > +			sizeof(struct sgiseeq_rx_desc), DMA_BIDIRECTIONAL);
-> >  }
-> >  
-> >  static inline void dma_sync_desc_dev(struct net_device *dev, void *addr)
-> >  {
-> > -	dma_cache_sync(dev->dev.parent, addr, sizeof(struct sgiseeq_rx_desc),
-> > -		       DMA_TO_DEVICE);
-> > +	struct sgiseeq_private *sp = netdev_priv(dev);
-> > +
-> > +	dma_sync_single_for_device(dev->dev.parent, VIRT_TO_DMA(sp, addr),
-> > +			sizeof(struct sgiseeq_rx_desc), DMA_BIDIRECTIONAL);
-> >  }
+
+
+On 9/1/2020 8:08 AM, Greg Kroah-Hartman wrote:
+> [ Upstream commit d6a7bb869dd8a516901591136a9a895fd829d6c6 ]
 > 
-> this breaks ethernet on IP22 completely, but I haven't figured out why, yet.
+> Fix build errors when CONFIG_PCI_MSI is not enabled by making the
+> driver depend on PCI_MSI:
+> 
+> ld: drivers/dma/idxd/device.o: in function `idxd_mask_msix_vector':
+> device.c:(.text+0x26f): undefined reference to `pci_msi_mask_irq'
+> ld: drivers/dma/idxd/device.o: in function `idxd_unmask_msix_vector':
+> device.c:(.text+0x2af): undefined reference to `pci_msi_unmask_irq'
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: dmaengine@vger.kernel.org
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Link: https://lore.kernel.org/r/9dee3f46-70d9-ea75-10cb-5527ab297d1d@infradead.org
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-the problem is that dma_sync_single_for_cpu() doesn't flush anything
-for IP22, because it only flushes for CPUs which do speculation. So
-either MIPS arch_sync_dma_for_cpu() should always flush or sgiseeq
-needs to use a different sync funktion, when it wants to re-read descriptors
-from memory.
+Acked-by: Dave Jiang <dave.jiang@intel.com>
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> ---
+>   drivers/dma/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index de41d7928bff2..984354ca877de 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -285,6 +285,7 @@ config INTEL_IDMA64
+>   config INTEL_IDXD
+>   	tristate "Intel Data Accelerators support"
+>   	depends on PCI && X86_64
+> +	depends on PCI_MSI
+>   	select DMA_ENGINE
+>   	select SBITMAP
+>   	help
+> 
