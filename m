@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAB62593CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB812593D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730692AbgIAPbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55748 "EHLO mail.kernel.org"
+        id S1730715AbgIAPbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:31:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730316AbgIAP17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:27:59 -0400
+        id S1730376AbgIAP2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:28:21 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CD7C2100A;
-        Tue,  1 Sep 2020 15:27:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B17B20684;
+        Tue,  1 Sep 2020 15:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974078;
-        bh=lQCnpE+h3F7ldlhOlP/LmTgLkwRbrAWwyY8D9fia1fg=;
+        s=default; t=1598974100;
+        bh=ZWHMnQM/CURbA1JIRAEZIvphDU5D8wae4PWN5Vo15i0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m9ezrBcITeM03VLnUcB2yHSUbMGl07t9SG4iL8L9fX6fmWiJrm1m6eDlk21/simjC
-         0r3hzUvihtAn8zL1j8ci9rCw7Wu/SLrupJCv41/pUe0YYviRov8xg1VHyDzvQ1J2Ug
-         amglPELe1Gp4Zcjic1dsxW/C4IcJs/RIpR3/V0iQ=
+        b=fSGtfZeZCm3TiMylfkCI5P8pCwDKJys94RBEilJ2Sih8/T9FzFNb6CP+fOzBgYWO7
+         5P6A9z0uDBLqmNUh0iBzomdRI7o7WhsTuXSz9O2Ld9mB9RTBh3yZU3wq9cQ03ouo9i
+         M2bAn5PBFZm4gbj8jQc+xWxqa/6K9c/qXY6AuULU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         Mark Brown <broonie@kernel.org>,
@@ -52,9 +52,9 @@ To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-tegra@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 05/11] spi: cadence-quadspi: Simplify with dev_err_probe()
-Date:   Tue,  1 Sep 2020 17:27:07 +0200
-Message-Id: <20200901152713.18629-5-krzk@kernel.org>
+Subject: [PATCH 08/11] spi: stm32: Simplify with dev_err_probe()
+Date:   Tue,  1 Sep 2020 17:27:10 +0200
+Message-Id: <20200901152713.18629-8-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200901152713.18629-1-krzk@kernel.org>
 References: <20200901152713.18629-1-krzk@kernel.org>
@@ -68,26 +68,24 @@ dev_err_probe().  Less code and the error value gets printed.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/spi/spi-cadence-quadspi.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/spi/spi-stm32.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 508b219eabf8..cec4e89ab9b2 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1117,11 +1117,8 @@ static int cqspi_request_mmap_dma(struct cqspi_st *cqspi)
- 	cqspi->rx_chan = dma_request_chan_by_mask(&mask);
- 	if (IS_ERR(cqspi->rx_chan)) {
- 		int ret = PTR_ERR(cqspi->rx_chan);
--
--		if (ret != -EPROBE_DEFER)
--			dev_err(&cqspi->pdev->dev, "No Rx DMA available\n");
- 		cqspi->rx_chan = NULL;
--		return ret;
-+		return dev_err_probe(&cqspi->pdev->dev, ret, "No Rx DMA available\n");
- 	}
- 	init_completion(&cqspi->rx_dma_complete);
+diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
+index d4b33b358a31..f0e594b2fee4 100644
+--- a/drivers/spi/spi-stm32.c
++++ b/drivers/spi/spi-stm32.c
+@@ -1857,9 +1857,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
  
+ 	spi->irq = platform_get_irq(pdev, 0);
+ 	if (spi->irq <= 0) {
+-		ret = spi->irq;
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "failed to get irq: %d\n", ret);
++		ret = dev_err_probe(&pdev->dev, spi->irq, "failed to get irq\n");
+ 		goto err_master_put;
+ 	}
+ 	ret = devm_request_threaded_irq(&pdev->dev, spi->irq,
 -- 
 2.17.1
 
