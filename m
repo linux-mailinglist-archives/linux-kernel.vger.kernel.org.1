@@ -2,114 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0299259080
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60B425908D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgIAOce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45332 "EHLO mail.kernel.org"
+        id S1728400AbgIAOe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:34:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48842 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728324AbgIAObn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:31:43 -0400
-Received: from localhost (unknown [70.37.104.77])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3F4720767;
-        Tue,  1 Sep 2020 14:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598970702;
-        bh=w8876BCZ23jR3JgqwFoAHXPZLMwDI/nNkGuNSx7HoVI=;
-        h=Date:From:To:To:To:Cc:Cc:Subject:In-Reply-To:References:From;
-        b=uItXSD5YZLavSJYvs1N4Qa/cui2uEKRdSrj+dsmyL0F98V7ehl/5q4w8XmKf7DtLc
-         8okNb4kiqhbr9o346dIYwRKnJel7KhAJUJv7Xh6zPqXLbuTXgEErN7SeUnVJk3xICs
-         sa5d/OcrdhlKLFeYVkxGtOGoq7iE84x/r9vXoNU0=
-Date:   Tue, 01 Sep 2020 14:31:42 +0000
-From:   Sasha Levin <sashal@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Cc:     stable@vger.kernel.org
-Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during memory offline
-In-Reply-To: <20200901124615.137200-1-pasha.tatashin@soleen.com>
-References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
-Message-Id: <20200901143142.B3F4720767@mail.kernel.org>
+        id S1727996AbgIAOdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:33:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B7455B16B;
+        Tue,  1 Sep 2020 14:33:07 +0000 (UTC)
+Date:   Tue, 1 Sep 2020 16:33:06 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH next v3 5/8] printk: ringbuffer: clear initial reserved
+ fields
+Message-ID: <20200901143306.GQ4928@alley>
+References: <20200831011058.6286-1-john.ogness@linutronix.de>
+ <20200831011058.6286-6-john.ogness@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831011058.6286-6-john.ogness@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Mon 2020-08-31 03:16:55, John Ogness wrote:
+> prb_reserve() will set some meta data values and leave others
+> uninitialized (or rather, containing the values of the previous
+> wrap). Simplify the API by always clearing out all the fields.
+> Only the sequence number is filled in. The caller is now
+> responsible for filling in the rest of the meta data fields.
+> In particular, for correctly filling in text and dict lengths.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+>
+> ---
+>  kernel/printk/printk.c            |  7 ++++++-
+>  kernel/printk/printk_ringbuffer.c | 29 +++++++++++++++++++----------
+>  2 files changed, 25 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index ad8d1dfe5fbe..7e7d596c8878 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -520,8 +520,11 @@ static int log_store(u32 caller_id, int facility, int level,
+>  	memcpy(&r.text_buf[0], text, text_len);
+>  	if (trunc_msg_len)
+>  		memcpy(&r.text_buf[text_len], trunc_msg, trunc_msg_len);
+> -	if (r.dict_buf)
+> +	r.info->text_len = text_len + trunc_msg_len;
+> +	if (r.dict_buf) {
+>  		memcpy(&r.dict_buf[0], dict, dict_len);
+> +		r.info->dict_len = dict_len;
+> +	}
+>  	r.info->facility = facility;
+>  	r.info->level = level & 7;
+>  	r.info->flags = flags & 0x1f;
+> @@ -1078,9 +1081,11 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
+>  		return 0;
+>  
+>  	memcpy(&dest_r.text_buf[0], &r->text_buf[0], dest_r.text_buf_size);
+> +	dest_r.info->text_len = r->info->text_len;
 
-[This is an automated email]
+It looks a bit non-consistent that memcpy() copies text_buf_size but valid data
+are defined by text_len.
 
-This commit has been processed because it contains a -stable tag.
-The stable tag indicates that it's relevant for the following trees: all
+I would prefer to be on the safe size and copy only text_len.
 
-The bot has tested the following trees: v5.8.5, v5.4.61, v4.19.142, v4.14.195, v4.9.234, v4.4.234.
+I could imagine some later optimization that will make buf_size bigger
+by alignment or something like that. The reason might be preparation
+for continuous lines or so. Then the size of the original buffer and
+the destination one might differ.
 
-v5.8.5: Build OK!
-v5.4.61: Build OK!
-v4.19.142: Failed to apply! Possible dependencies:
-    2932c8b05056 ("mm, memory_hotplug: be more verbose for memory offline failures")
-    5557c766abad ("mm, memory_hotplug: cleanup memory offline path")
-    7960509329c2 ("mm, memory_hotplug: print reason for the offlining failure")
-    7c2ee349cf79 ("memblock: rename __free_pages_bootmem to memblock_free_pages")
-    9b7ea46a82b3 ("mm/hotplug: fix offline undo_isolate_page_range()")
-    a9cd410a3d29 ("mm/page_alloc.c: memory hotplug: free pages as higher order")
-    bb8965bd82fd ("mm, memory_hotplug: deobfuscate migration part of offlining")
-    d381c54760dc ("mm: only report isolation failures when offlining memory")
-
-v4.14.195: Failed to apply! Possible dependencies:
-    1b7176aea0a9 ("memory hotplug: fix comments when adding section")
-    24e6d5a59ac7 ("mm: pass the vmem_altmap to arch_add_memory and __add_pages")
-    2f47a91f4dab ("mm: deferred_init_memmap improvements")
-    381eab4a6ee8 ("mm/memory_hotplug: fix online/offline_pages called w.o. mem_hotplug_lock")
-    7960509329c2 ("mm, memory_hotplug: print reason for the offlining failure")
-    7b73d978a5d0 ("mm: pass the vmem_altmap to vmemmap_populate")
-    80b1f41c0957 ("mm: split deferred_init_range into initializing and freeing parts")
-    9bb5a391f9a5 ("mm, memory_hotplug: fix memmap initialization")
-    b9ff036082cd ("mm/memory_hotplug.c: make add_memory_resource use __try_online_node")
-    bb8965bd82fd ("mm, memory_hotplug: deobfuscate migration part of offlining")
-    d0dc12e86b31 ("mm/memory_hotplug: optimize memory hotplug")
-    e8b098fc5747 ("mm: kernel-doc: add missing parameter descriptions")
-    f7f99100d8d9 ("mm: stop zeroing memory during allocation in vmemmap")
-
-v4.9.234: Failed to apply! Possible dependencies:
-    1b862aecfbd4 ("mm, memory_hotplug: get rid of is_zone_device_section")
-    381eab4a6ee8 ("mm/memory_hotplug: fix online/offline_pages called w.o. mem_hotplug_lock")
-    385386cff4c6 ("mm: vmstat: move slab statistics from zone to node counters")
-    438cc81a41e8 ("powerpc/pseries: Automatically resize HPT for memory hot add/remove")
-    72675e131eb4 ("mm, memory_hotplug: drop zone from build_all_zonelists")
-    7960509329c2 ("mm, memory_hotplug: print reason for the offlining failure")
-    88ed365ea227 ("mm: don't steal highatomic pageblock")
-    a6ffdc07847e ("mm: use is_migrate_highatomic() to simplify the code")
-    b93e0f329e24 ("mm, memory_hotplug: get rid of zonelists_mutex")
-    bb8965bd82fd ("mm, memory_hotplug: deobfuscate migration part of offlining")
-    c8f9565716e3 ("mm, memory_hotplug: use node instead of zone in can_online_high_movable")
-    f1dd2cd13c4b ("mm, memory_hotplug: do not associate hotadded memory to zones until online")
-
-v4.4.234: Failed to apply! Possible dependencies:
-    0caeef63e6d2 ("libnvdimm: Add a poison list and export badblocks")
-    0e749e54244e ("dax: increase granularity of dax_clear_blocks() operations")
-    1b862aecfbd4 ("mm, memory_hotplug: get rid of is_zone_device_section")
-    260ae3f7db61 ("mm: skip memory block registration for ZONE_DEVICE")
-    34c0fd540e79 ("mm, dax, pmem: introduce pfn_t")
-    381eab4a6ee8 ("mm/memory_hotplug: fix online/offline_pages called w.o. mem_hotplug_lock")
-    4a65429457a5 ("s390/mm: fix zone calculation in arch_add_memory()")
-    4b94ffdc4163 ("x86, mm: introduce vmem_altmap to augment vmemmap_populate()")
-    7960509329c2 ("mm, memory_hotplug: print reason for the offlining failure")
-    87ba05dff351 ("libnvdimm: don't fail init for full badblocks list")
-    ad9a8bde2cb1 ("libnvdimm, pmem: move definition of nvdimm_namespace_add_poison to nd.h")
-    b95f5f4391fa ("libnvdimm: convert to statically allocated badblocks")
-    bb8965bd82fd ("mm, memory_hotplug: deobfuscate migration part of offlining")
-    f1dd2cd13c4b ("mm, memory_hotplug: do not associate hotadded memory to zones until online")
+It is unrelated to this patch. I would solve it by a preparation
+or followup one.
 
 
-NOTE: The patch will not be queued to stable trees until it is upstream.
+>  	if (dest_r.dict_buf) {
 
-How should we proceed with this patch?
+>  		memcpy(&dest_r.dict_buf[0], &r->dict_buf[0],
+>  		       dest_r.dict_buf_size);
+> +		dest_r.info->dict_len = r->info->dict_len;
 
--- 
-Thanks
-Sasha
+Same here.
+
+>  	}
+>  	dest_r.info->facility = r->info->facility;
+>  	dest_r.info->level = r->info->level;
+> diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+> index d66718e74aae..da54d4fadf96 100644
+> --- a/kernel/printk/printk_ringbuffer.c
+> +++ b/kernel/printk/printk_ringbuffer.c
+> @@ -1159,6 +1162,18 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
+>  
+>  	d = to_desc(desc_ring, id);
+>  
+> +	/*
+> +	 * Clear all @info fields except for @seq, which is used to determine
+> +	 * the new sequence number. The writer must fill in new values.
+> +	 */
+> +	d->info.ts_nsec = 0;
+> +	d->info.text_len = 0;
+> +	d->info.dict_len = 0;
+> +	d->info.facility = 0;
+> +	d->info.flags = 0;
+> +	d->info.level = 0;
+> +	d->info.caller_id = 0;
+
+This will be easy to miss when a new field is added in the future.
+
+I would prefer to store @seq into temporary variable and clear
+the entire structure by memset(). The new sequence number is
+calculated few lines below anyway.
+
+
+Otherwise, it looks good to me.
+
+Best Regards,
+Petr
