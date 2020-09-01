@@ -2,207 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A91B2595D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FC82595E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732158AbgIAP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731364AbgIAP4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:56:10 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA18C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:56:09 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id h4so1781223ioe.5
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oHdmPIGc1UdLCwtabNwKXST8Nzwlla5YL4eeacWsu1I=;
-        b=VjpnOp9aiJY52BxZcXb5yoPB+72grngZXFAn26nQt3o/kKNTnIsM6KrnhoR6TBZkTg
-         vlJE0PnpGzxHNm+6P1X4lb/icYWyjWECoREVf2ZC/0K0TllbhsO+lezjS2KhTXzkTxBj
-         857RTtmyDVDVMwivWe2zJNURHoHUQw0Vzdb/2Z+uIPMNVbHd934j3CKuY29v7NnGkvQU
-         raRMjz5hUsSQxy6eW9JCyUlEP6yIlfHymMrYtOgJDEkfbGog3aEIRpL/xgwaQIbFklmA
-         cSHmoBEQ8MkaTUShsR/X6D/9XkAqzAxPr8eTFjaK9tHn5iAIkrJtMpgmRSslV85MkONp
-         OeOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oHdmPIGc1UdLCwtabNwKXST8Nzwlla5YL4eeacWsu1I=;
-        b=F94STGtRiihjYhz+XizaM4PUFjUxC1VCsMTKdDnlDeCgYsG03Hdj+XzY9XOOIn5IXs
-         6wbwYzdc2PnWYCqelvw1ea8nXfcY8jYKQrlsx1bZ50PPaJ1mGntnFcS2ZmDskrbsJZwK
-         /mN8u24sMBIrautDlssOlTqepsPzqy13iU6rca23AkNdBIhH7fz3wwcTw75JPtuMHSGX
-         u0d2pBDnL89SLmnrsxWuf8pvSdLCb0Ys+vrEnJLsqNQtRq7kNDMV1sioMgNqYjlT0vNu
-         aVc7LGEJ+mGScXci9wQA3FSX09VaUKROOFoSOwzYD0EIPOBvbGmCp6jt4FIVk58iTl3d
-         rqIw==
-X-Gm-Message-State: AOAM5307mB7jAtSWQYTvQwNu9E6t7EC+Pug9eNJDiBFJsfq7Ubng966/
-        n5r70qrfPimrceA01JkznagLUlR6nO4N13Vne5OP0A==
-X-Google-Smtp-Source: ABdhPJwOgUG5A07Ta8oCpswEaPxY7uCJEZSgebz2RNdW9MRNH9XiIPZYoLCjAPI5+e9ZqFNFFNsi+Y+yaNvyiEPwUrM=
-X-Received: by 2002:a5d:80c9:: with SMTP id h9mr1999593ior.73.1598975769024;
- Tue, 01 Sep 2020 08:56:09 -0700 (PDT)
+        id S1731843AbgIAP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:56:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:44610 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731364AbgIAP4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:56:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFAE91045;
+        Tue,  1 Sep 2020 08:56:34 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17F3C3F71F;
+        Tue,  1 Sep 2020 08:56:31 -0700 (PDT)
+Subject: Re: [PATCH 00/10] dt-bindings: Convert SP805 to Json-schema (and fix
+ users)
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        LINUX-WATCHDOG <linux-watchdog@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chanho Min <chanho.min@lge.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Wei Xu <xuwei5@hisilicon.com>
+References: <20200828130602.42203-1-andre.przywara@arm.com>
+ <19c6a67e-48f0-c0b6-3653-32a5a1f09e07@gmail.com>
+ <CAL_JsqKvcGAotS6xL7pu+wM8X33PLCQCuoaXYmWrA3j3OdoR5A@mail.gmail.com>
+ <bbba0345-f1e3-a240-eaca-d67fa5f8259b@gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ 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
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <5fc1f463-7d48-e1e1-e316-3083becf8c34@arm.com>
+Date:   Tue, 1 Sep 2020 16:56:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <1597824397-29894-1-git-send-email-liuqi115@huawei.com>
- <20200831221308.GB207013@xps15> <fae22c97-489b-0312-4357-973a4969780c@huawei.com>
-In-Reply-To: <fae22c97-489b-0312-4357-973a4969780c@huawei.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Tue, 1 Sep 2020 09:55:58 -0600
-Message-ID: <CANLsYkwkUnTWzWk7RLrRc3WH3AmY3M9z9PE2Yu2tr4_U4J7=vA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] coresight: etm4x: Modify core-commit of cpu to
- avoid the overflow of HiSilicon ETM
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxarm@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bbba0345-f1e3-a240-eaca-d67fa5f8259b@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020 at 19:57, Qi Liu <liuqi115@huawei.com> wrote:
->
-> Hi Mathieu,
->
-> Thanks for your review.
->
-> On 2020/9/1 6:13, Mathieu Poirier wrote:
-> > Following Al's comment I have the following recommendations...
-> >
-> > On Wed, Aug 19, 2020 at 04:06:37PM +0800, Qi Liu wrote:
-> >> When too much trace information is generated on-chip, the ETM will
-> >> overflow, and cause data loss. This is a common phenomenon on ETM
-> >> devices.
-> >>
-> >> But sometimes we do not want to lose performance trace data, so we
-> >> suppress the speed of instructions sent from CPU core to ETM to
-> >> avoid the overflow of ETM.
-> >>
-> >> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> >> ---
-> >>
-> >> Changes since v1:
-> >> - ETM on HiSilicon Hip09 platform supports backpressure, so does
-> >> not need to modify core commit.
-> >>
-> >>  drivers/hwtracing/coresight/coresight-etm4x.c | 43 +++++++++++++++++++++++++++
-> >>  1 file changed, 43 insertions(+)
-> >>
-> >> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-> >> index 7797a57..7641f89 100644
-> >> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
-> >> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-> >> @@ -43,6 +43,10 @@ MODULE_PARM_DESC(boot_enable, "Enable tracing on boot");
-> >>  #define PARAM_PM_SAVE_NEVER   1 /* never save any state */
-> >>  #define PARAM_PM_SAVE_SELF_HOSTED 2 /* save self-hosted state only */
-> >>
-> >> +#define CORE_COMMIT_CLEAR   0x3000
-> >> +#define CORE_COMMIT_SHIFT   12
-> >> +#define HISI_ETM_AMBA_ID_V1 0x000b6d01
-> > Do you have a name for the SoC that can be added so that other HiSilicon SoC can
-> > be added?  I suggest something like:
-> >
-> > #define HISI_NAME_CORE_COMMIT_CLEAR
-> > #define HISI_NAME_CORE_COMMIT_SHIFT
-> > #define HISI_NAME_ETM_ID
-> Will fix this next version.
-> > Moreover I don't see an entry for 0x000b6d01 in the amba id table - is your
-> > devices upstream?  Needless to day that is mandatory in order to move forward
-> > with this work.
-> A patch has been applied to add this ETM id and here is the link:
-> https://lore.kernel.org/linux-arm-kernel/20200813210000.GO3393195@xps15/
->
+On 28/08/2020 22:32, Florian Fainelli wrote:
 
-Ah yes - my tree was on the wrong baseline when I reviewed your patch.
-You can forget about this comment.
+Hi,
+
+Florian, thanks for queueing the Broadcom specific patches!
+
+> On 8/28/20 2:28 PM, Rob Herring wrote:
+>> On Fri, Aug 28, 2020 at 1:34 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>>
+>>> On 8/28/20 6:05 AM, Andre Przywara wrote:
+>>>> This is an attempt to convert the SP805 watchdog DT binding to yaml.
+>>>> This is done in the first patch, the remaining nine fix some DT users.
+>>>>
+>>>> I couldn't test any of those DT files on actual machines, but tried
+>>>> to make the changes in a way that would be transparent to at least the
+>>>> Linux driver. The only other SP805 DT user I could find is U-Boot, which
+>>>> seems to only use a very minimal subset of the binding (just the first
+>>>> clock).
+>>>> I only tried to fix those DTs that were easily and reliably fixable.
+>>>> AFAICT, a missing primecell compatible string, for instance, would
+>>>> prevent the Linux driver from probing the device at all, so I didn't
+>>>> dare to touch those DTs at all. Missing clocks are equally fatal.
+>>>
+>>> What is the plan for merging this series? Should Rob pick up all changes
+>>> or since those are non critical changes, should we just leave it to the
+>>> SoC maintainers to pick up the changes in their tree?
+>>
+>> I don't take .dts files. Either subarch maintainers can pick up
+>> individual patches or send a PR to SoC maintainers.
+> 
+> OK, so we are fine, to say make sure this all lands in v5.10-rc1 at some
+> point and the warnings should no longer exist by then?
+
+So yes, I would be very grateful if subsystem maintainers take this at
+their discretion.
+For once, I didn't actually change anything in the binding, so most
+things were already slightly wrong according to the .txt binding, just
+nobody realised or cared. So those .dts files changes are actually
+independent and justified even without patch 01/10.
+
+Secondly, there are already so many warnings in many .dts files at the
+moment, that (in the worst case) a few more - for a brief period of time
+- do not really matter. But at the end it will improve the situation.
+
+Rob, if you are fine with the actual binding, I would try to pursue the
+remaining subsystem maintainers to get the .dts changes merged.
 
 Thanks,
-Mathieu
-
-> >> +
-> >>  static int pm_save_enable = PARAM_PM_SAVE_FIRMWARE;
-> >>  module_param(pm_save_enable, int, 0444);
-> >>  MODULE_PARM_DESC(pm_save_enable,
-> >> @@ -104,11 +108,40 @@ struct etm4_enable_arg {
-> >>      int rc;
-> >>  };
-> >>
-> >> +static void etm4_cpu_actlr1_cfg(void *info)
-> >> +{
-> >> +    struct etm4_enable_arg *arg = (struct etm4_enable_arg *)info;
-> >> +    u64 val;
-> >> +
-> >> +    asm volatile("mrs %0,s3_1_c15_c2_5" : "=r"(val));
-> >> +    val &= ~CORE_COMMIT_CLEAR;
-> >> +    val |= arg->rc << CORE_COMMIT_SHIFT;
-> >> +    asm volatile("msr s3_1_c15_c2_5,%0" : : "r"(val));
-> >> +}
-> >> +
-> >> +static void etm4_config_core_commit(int cpu, int val)
-> >> +{
-> >> +    struct etm4_enable_arg arg = {0};
-> >> +
-> >> +    arg.rc = val;
-> >> +    smp_call_function_single(cpu, etm4_cpu_actlr1_cfg, &arg, 1);
-> >> +}
-> >> +
-> >>  static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
-> >>  {
-> >>      int i, rc;
-> >> +    struct amba_device *adev;
-> >>      struct etmv4_config *config = &drvdata->config;
-> >>      struct device *etm_dev = &drvdata->csdev->dev;
-> >> +    struct device *dev = drvdata->csdev->dev.parent;
-> >> +
-> >> +    adev = container_of(dev, struct amba_device, dev);
-> >> +    /*
-> >> +     * If ETM device is HiSilicon ETM device, reduce the
-> >> +     * core-commit to avoid ETM overflow.
-> >> +     */
-> >> +    if (adev->periphid == HISI_ETM_AMBA_ID_V1)
-> >> +            etm4_config_core_commit(drvdata->cpu, 1);
-> > I susggest to add a function like etm4_enable_arch_specific() and do the above
-> > in there.  The same goes for the disable path.
-> >
-> > Thanks,
-> > Mathieu
-> Thanks, I'll fix this next version : )
->
-> Qi
-> >
-> >>      CS_UNLOCK(drvdata->base);
-> >>
-> >> @@ -472,10 +505,20 @@ static void etm4_disable_hw(void *info)
-> >>  {
-> >>      u32 control;
-> >>      struct etmv4_drvdata *drvdata = info;
-> >> +    struct device *dev = drvdata->csdev->dev.parent;
-> >>      struct etmv4_config *config = &drvdata->config;
-> >>      struct device *etm_dev = &drvdata->csdev->dev;
-> >> +    struct amba_device *adev;
-> >>      int i;
-> >>
-> >> +    adev = container_of(dev, struct amba_device, dev);
-> >> +    /*
-> >> +     * If ETM device is HiSilicon ETM device, resume the
-> >> +     * core-commit after ETM trace is complete.
-> >> +     */
-> >> +    if (adev->periphid == HISI_ETM_AMBA_ID_V1)
-> >> +            etm4_config_core_commit(drvdata->cpu, 0);
-> >> +
-> >>      CS_UNLOCK(drvdata->base);
-> >>
-> >>      if (!drvdata->skip_power_up) {
-> >> --
-> >> 2.8.1
-> >>
-> > .
-> >
->
->
+Andre.
