@@ -2,114 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFB525994E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D79D2598C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730430AbgIAP24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:28:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730052AbgIAPZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:25:37 -0400
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02D64206FA;
-        Tue,  1 Sep 2020 15:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598973936;
-        bh=dt0uPCgqA2UkzByRpvH836C/HijSVdlozfTi2rrAOao=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C7uOrhsVqPRlHMAta5eV8ksbBFNCUpIBGOOrdMg7foI7teaTc1REKWNu5TxY3Es0S
-         e6lOqcIlrvmJToIoMes2VDNaHEZjlMpxy29Jma4MlAk0c72oK1cl9LoPBjQcrjLxOI
-         cCjvgm2xS9BjFEOYNSVYWDzOwFwvWS5MHeBnvW3M=
-Received: by mail-ej1-f53.google.com with SMTP id d26so2276846ejr.1;
-        Tue, 01 Sep 2020 08:25:35 -0700 (PDT)
-X-Gm-Message-State: AOAM531FcbFJvbC9qYlWLcLIsQGPEPf1ZlCIOas2rX/18AIq1+86lLu2
-        KEXcGNFGpHeRmJUejmenw7AyQ/fliVpl/sE8a3g=
-X-Google-Smtp-Source: ABdhPJzh1hNetH5rZ60C9AUx80r4SPqL6nutQWfXz6QlHt16bwsP6Lk4YkuJbUpSKMu3AEV2K/P421eyp+7Rtv3kzNc=
-X-Received: by 2002:a17:906:9356:: with SMTP id p22mr1858821ejw.119.1598973934455;
- Tue, 01 Sep 2020 08:25:34 -0700 (PDT)
+        id S1730745AbgIAPbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:31:49 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:32775 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729950AbgIAP1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:27:13 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 2B700F6C;
+        Tue,  1 Sep 2020 11:26:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 01 Sep 2020 11:26:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=GuDHQ4jVsuyrASuXaWUaz8DMdSW
+        QZztw33zChk93mxE=; b=kyzLsvsdDcacF8pFU86UmtFvk0MSWiTnlGA2qrn9RRJ
+        zZNK8kyeZnU/mNCHRMCmKaQRGhs3/sv3CHWcnID2qv4wkgTeUidPTyhASJlx2+xV
+        5zHYQq7NFT6mnLyO5Rqu6+4xI3w2aMdMebw9bSVA4WOklUqHIJnjrNJ9SQ0rUSxL
+        LnTRsDm3mZxUBmJBE6/S6zersMgGr+d8e/NwBbTCcQss5+jWeU1JgfRVCZ2woVwO
+        4w26sgIe1ZZvQcHF4A0mAB4OmJq9ITzi0h9wzlC65ESLIJs+HxnflGWloc7YVq95
+        JR77/ENyhu9Q2VT8xHt4JGOyIOImTuBO2Elk3+HkS2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=GuDHQ4
+        jVsuyrASuXaWUaz8DMdSWQZztw33zChk93mxE=; b=kwL7+qsYEGxJwMW3FdiHYY
+        FXysChSQsgFK0Ntfy8NwvfRLP2sSqzwBG/n8eOpaTuzMeWuq+bU/nR5laLgw1wYq
+        BKeOC4iMYJaPnWmEg/oMzN3zm64Rm4Y/H9E5nixgcRi84JmiH1VmsTTB/9vfNUmF
+        /mAbe2t9iwJA6RAjS6GIoSIDysTB4Bwd3KvoEszpQ8H9sxNx3onuZDs+MVNsz1w/
+        RnGE83NdwCHAa16FbLNmCIEeXztlziX2yaL7jcOn55UriOa7kQ/d0po4nEpcNoGT
+        zZF+hP1jPUM8kXIo8lcgEhfz8VCGl2DQQoE8ySTyBSIgWStPtzViCBedf+e7Ar5w
+        ==
+X-ME-Sender: <xms:HWhOXwRXCfPFydy2HDYAjRIHz6QD7yrytrI5WYUinAlpejr1oxaMCQ>
+    <xme:HWhOX9zAzdaATr6c5sbJEJLRS6DiwkzKOe6kOixbR--alw0zj_Dmet1gMgW1oJYRT
+    a7CPyLDkjQjs56pZ1c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefjedgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    goufhushhpvggtthffohhmrghinhculdegledmnecujfgurhepfffhvffukfhfgggtuggj
+    sehttdertddttddvnecuhfhrohhmpefvhigthhhoucetnhguvghrshgvnhcuoehthigthh
+    hosehthigthhhordhpihiiiigrqeenucggtffrrghtthgvrhhnpeffieegtdfhudeiveef
+    iedtveevgeevhfejfeduieeivedvveetgfeuveejkeffudenucffohhmrghinheprghpph
+    hsphhothdrtghomhenucfkphepuddvkedruddtjedrvdeguddrudejtdenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthh
+    hordhpihiiiigr
+X-ME-Proxy: <xmx:HWhOX90dEdvrJlff7A1MJXbguOWUbdn_T0dgHlqkld9T-LTE94v5TQ>
+    <xmx:HWhOX0CxvRna2WuaZexG6M5eK367_FCMJnzFDuWkEPlHhN_nzMxjEw>
+    <xmx:HWhOX5i8R4Z3BygA_mepAW7D78HEqBQ7msDoEjrQB15XDaBzm4_dmg>
+    <xmx:HmhOX5e25I7IPFW8tpQkckqA_Plycmdzn56F3h7iKyBxdv_DRQLFG3j_zHrbmkYj>
+Received: from cisco (unknown [128.107.241.170])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E8D82328005A;
+        Tue,  1 Sep 2020 11:26:19 -0400 (EDT)
+Date:   Tue, 1 Sep 2020 09:26:17 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Christian Brauner <christian@brauner.io>,
+        linux-kernel@vger.kernel.org, luto@amacapital.net,
+        syzbot <syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com, wad@chromium.org
+Subject: Re: memory leak in do_seccomp
+Message-ID: <20200901152617.GB583718@cisco>
+References: <000000000000e5ea9e05ac9d16c1@google.com>
+ <000000000000df80ae05ae244c2b@google.com>
+ <202008311620.AC4A7047D@keescook>
+ <20200901000915.GA564594@cisco>
+ <20200901011459.GA583718@cisco>
+ <202008311921.3D64C23D@keescook>
 MIME-Version: 1.0
-References: <267a81e550a0b5d479c82b5908e2a2caa4c9c874.1597061474.git.guillaume.tucker@collabora.com>
- <c0509b5f-a064-2e73-7e04-51f41a56d222@collabora.com> <CAJKOXPczS_RpSFpjGygZ_1MCYxJ_cUDRjriZvrHd6+zhmq=c8Q@mail.gmail.com>
- <CAJKOXPfT7LvHVpTdaQ1voVi=OtC4aV6hbyzcekmrPMkb+5ebNg@mail.gmail.com> <fd1a34c4-dcc1-1480-1e96-8bd94ada9846@collabora.com>
-In-Reply-To: <fd1a34c4-dcc1-1480-1e96-8bd94ada9846@collabora.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 1 Sep 2020 17:25:23 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPdQiXc3zVRK25AsfYPBwL1Rm6y1niFt5wxkC5gH5baiZA@mail.gmail.com>
-Message-ID: <CAJKOXPdQiXc3zVRK25AsfYPBwL1Rm6y1niFt5wxkC5gH5baiZA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ARM: exynos: clear L310_AUX_CTRL_NS_LOCKDOWN in
- default l2c_aux_val
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, kernel@collabora.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202008311921.3D64C23D@keescook>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Sep 2020 at 16:42, Guillaume Tucker
-<guillaume.tucker@collabora.com> wrote:
->
-> On 01/09/2020 14:51, Krzysztof Kozlowski wrote:
-> > On Tue, 1 Sep 2020 at 15:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >>
-> >> On Tue, 1 Sep 2020 at 15:34, Guillaume Tucker
-> >> <guillaume.tucker@collabora.com> wrote:
-> >>>
-> >>> Hi Krzysztof, Russell,
-> >>>
-> >>> On 10/08/2020 13:22, Guillaume Tucker wrote:
-> >>>> The L310_AUX_CTRL_NS_LOCKDOWN flag is set during the L2C enable
-> >>>> sequence.  There is no need to set it in the default register value,
-> >>>> this was done before support for it was implemented in the code.  It
-> >>>> is not set in the hardware initial value either.
-> >>>>
-> >>>> Clean this up by removing this flag from the default l2c_aux_val, and
-> >>>> add it to the l2c_aux_mask to print an alert message if it was already
-> >>>> set before the kernel initialisation.
-> >>>>
-> >>>> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-> >>>> ---
-> >>>>
-> >>>> Notes:
-> >>>>     v2: fix flag name L310_AUX_CTRL_NS_LOCKDOWN
-> >>>>
-> >>>>  arch/arm/mach-exynos/exynos.c | 4 ++--
-> >>>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>
-> >>> I believe this v2 series has addressed all previous comments and
-> >>> you were waiting for the 5.9 merge window to end.  The patches
-> >>> all still apply cleanly on v5.9-rc3.  Do you want me to resend
-> >>> the series anyway or is there anything else needed at this point?
-> >>>
-> >>> Maybe one thing that wasn't completely clear in v1 was whether
-> >>> patch 2/4 was the right approach.  I've explained the reason
-> >>> behind it but didn't get a final reply from Russell[1].
-> >>
-> >> I am sorry, my bad. I already applied this one and 3/4 (dts).
-> >> Apparently I forgot to reply with confirmation and Patchwork did not
-> >> notify you for some reason.
->
-> No problem, I see them in linux-next now.  Thanks!
->
-> >> Patch 2/4 does not look like one for me so I would need ack from
-> >> Russell to take. Did you submit it to the ARM patches queue?
->
-> I've CC-ed linux-arm-kernel@lists.infradead.org on the whole
-> series.  Did you mean anything else by the ARM patches queue?
+On Tue, Sep 01, 2020 at 08:08:13AM -0700, Kees Cook wrote:
+> On Mon, Aug 31, 2020 at 07:14:59PM -0600, Tycho Andersen wrote:
+> > On Mon, Aug 31, 2020 at 06:09:15PM -0600, Tycho Andersen wrote:
+> > > On Mon, Aug 31, 2020 at 04:25:35PM -0700, Kees Cook wrote:
+> > > > On Sun, Aug 30, 2020 at 08:50:15PM -0700, syzbot wrote:
+> > > > > syzbot has found a reproducer for the following issue on:
+> > > > > 
+> > > > > HEAD commit:    dcc5c6f0 Merge tag 'x86-urgent-2020-08-30' of git://git.ke..
+> > > > > git tree:       upstream
+> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10b297d5900000
+> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=903b9fecc3c6d231
+> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3ad9614a12f80994c32e
+> > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14649561900000
+> > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118aacc1900000
+> > > > > 
+> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+> > > > > 
+> > > > > executing program
+> > > > > executing program
+> > > > > executing program
+> > > > > executing program
+> > > > > executing program
+> > > > > BUG: memory leak
+> > > > > unreferenced object 0xffff88811ba93600 (size 64):
+> > > > >   comm "syz-executor680", pid 6503, jiffies 4294951104 (age 21.940s)
+> > > > >   hex dump (first 32 bytes):
+> > > > >     00 00 00 00 00 00 00 00 08 36 a9 1b 81 88 ff ff  .........6......
+> > > > >     08 36 a9 1b 81 88 ff ff 11 ce 98 89 3a d5 b4 8f  .6..........:...
+> > > > >   backtrace:
+> > > > >     [<00000000896418b0>] kmalloc include/linux/slab.h:554 [inline]
+> > > > >     [<00000000896418b0>] kzalloc include/linux/slab.h:666 [inline]
+> > > > >     [<00000000896418b0>] init_listener kernel/seccomp.c:1473 [inline]
+> > > > >     [<00000000896418b0>] seccomp_set_mode_filter kernel/seccomp.c:1546 [inline]
+> > > > >     [<00000000896418b0>] do_seccomp+0x8ce/0xd40 kernel/seccomp.c:1649
+> > > > >     [<000000002b04976c>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > > > >     [<00000000322b4126>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > > 
+> > > > I haven't narrowed this down yet (and it *might* be a false positive),
+> > > > but it looks like this is filter->notif. The only way that's possible is
+> > > > if seccomp_notify_release() was never called *and* seccomp_filter_free()
+> > > > got called... which would imply a reference counting problem. The way
+> > > > there doesn't jump out at me yet, but I haven't yet decoded the C
+> > > > reproducer into the actual seccomp arguments, etc.
+> > > 
+> > > Looks like it's just a bunch of threads in the same thread group
+> > > trying to install a filter with TSYNC and NEW_LISTENER turned on. Does
+> > > the patch below look reasonable?
+> > > 
+> > > I didn't send it separately since I'm in the process of switching my
+> > > e-mail address to tycho@tycho.pizza; let this e-mail serve as proof
+> > > that that e-mail really is me too :). I can send it the normal way if
+> > > it looks good.
+> > > 
+> > > 
+> > > From d497e787e8e1b3e8b9230fdc4c9802616709c920 Mon Sep 17 00:00:00 2001
+> > > From: Tycho Andersen <tycho@tycho.pizza>
+> > > Date: Mon, 31 Aug 2020 17:55:07 -0600
+> > > Subject: [PATCH] seccomp: don't leak memory when filter install races
+> > > 
+> > > In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
+> > > the listener fd, then check to see if we can actually use it later in
+> > > seccomp_may_assign_mode(), which can fail if anyone else in our thread
+> > > group has installed a filter and caused some divergence. If we can't, we
+> > > partially clean up the newly allocated file: we put the fd, put the file,
+> > > but don't actually clean up the *memory* that was allocated at
+> > > filter->notif. Let's clean that up too.
+> > > 
+> > > Fixes: 51891498f2da ("seccomp: allow TSYNC and USER_NOTIF together")
+> > > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+> > > Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
+> > > ---
+> > >  kernel/seccomp.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > > index 3ee59ce0a323..21a76127833f 100644
+> > > --- a/kernel/seccomp.c
+> > > +++ b/kernel/seccomp.c
+> > > @@ -1581,6 +1581,8 @@ static long seccomp_set_mode_filter(unsigned int flags,
+> > >  			listener_f->private_data = NULL;
+> > >  			fput(listener_f);
+> > >  			put_unused_fd(listener);
+> > > +			kfree(filter->notif);
+> > > +			filter->notif = NULL;
+> > 
+> > Oof, actually this isn't quite right. It should be s/filter/prepared/g.
+> > I can fix that and send out a real patch that's actually tested at
+> > some point tomorrow.
+> 
+> Ah! Yes, nice catch. I was staring at the wrong failure path. :)
+> 
+> I'm thinking the free/NULL pattern, since it's repeated in a few places,
+> should likely be a short helper. I'll stare at this some more...
 
-Unless anything changed, so far all ARM-core related patches had to be
-submitted to Russell's system. I didn't submit anything for 3 years so
-maybe something changed...
-https://www.arm.linux.org.uk/developer/patches/
+I think (?) it's just two, one here and one in
+seccomp_notify_release() but agreed. Maybe something like (untested):
 
-Best regards,
-Krzysztof
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 3b593b4caaa5..bb0dd9ae699a 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1109,13 +1109,12 @@ static long seccomp_set_mode_strict(void)
+ }
+ 
+ #ifdef CONFIG_SECCOMP_FILTER
+-static int seccomp_notify_release(struct inode *inode, struct file *file)
++static void seccomp_notify_detach(struct seccomp_filter *filter)
+ {
+-	struct seccomp_filter *filter = file->private_data;
+ 	struct seccomp_knotif *knotif;
+ 
+ 	if (!filter)
+-		return 0;
++		return;
+ 
+ 	mutex_lock(&filter->notify_lock);
+ 
+@@ -1142,6 +1141,13 @@ static int seccomp_notify_release(struct inode *inode, struct file *file)
+ 	kfree(filter->notif);
+ 	filter->notif = NULL;
+ 	mutex_unlock(&filter->notify_lock);
++}
++
++static int seccomp_notify_release(struct inode *inode, struct file *file)
++{
++	struct seccomp_filter *filter = file->private_data;
++
++	seccomp_notify_detach(filter);
+ 	__put_seccomp_filter(filter);
+ 	return 0;
+ }
+@@ -1581,8 +1587,7 @@ static long seccomp_set_mode_filter(unsigned int flags,
+ 			listener_f->private_data = NULL;
+ 			fput(listener_f);
+ 			put_unused_fd(listener);
+-			kfree(prepared->notif);
+-			filter->notif = NULL;
++			seccomp_notify_detach(prepared);
+ 		} else {
+ 			fd_install(listener, listener_f);
+ 			ret = listener;
