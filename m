@@ -2,70 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3BCB258E67
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAC2258E84
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 14:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbgIAMQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 08:16:27 -0400
-Received: from mx4.wp.pl ([212.77.101.12]:55054 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728054AbgIAMGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 08:06:33 -0400
-Received: (wp-smtpd smtp.wp.pl 16579 invoked from network); 1 Sep 2020 14:06:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1598961984; bh=3huBavgT4ySq87VOuq/vV16pJjwKJIO2mPQe6DkFArk=;
-          h=Subject:To:From;
-          b=ulJCHIZzbqTaf7Nrq0fSSwY1A/u/o+MEC31Yw73+O4/jXjUrB4j0LgL/NKm+907pr
-           PXBYn3SZhaNbilaYkxTeefodZUu0dCTG6fL2FMeeFKl0LLTjV1Ze6y94RWHtBeG7f5
-           2NRmgdtCt2JJqKV0htUPTzZvC+9gPGCQwmMaa5jA=
-Received: from 188.146.234.2.nat.umts.dynamic.t-mobile.pl (HELO [192.168.1.110]) (antoni.przybylik@wp.pl@[188.146.234.2])
-          (envelope-sender <antoni.przybylik@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <devel@driverdev.osuosl.org>; 1 Sep 2020 14:06:24 +0200
-Subject: Fwd: Re: [PATCH] staging: gdm724x: gdm_tty: corrected macro by adding
- brackets
-References: <e11b8f5e-1b85-fe24-36d5-c8d707ce4e66@wp.pl>
-To:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-From:   "antoni.przybylik@wp.pl" <antoni.przybylik@wp.pl>
-X-Forwarded-Message-Id: <e11b8f5e-1b85-fe24-36d5-c8d707ce4e66@wp.pl>
-Message-ID: <15764d01-0602-18c6-e2b1-089b71a2061d@wp.pl>
-Date:   Tue, 1 Sep 2020 14:06:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728115AbgIAMsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 08:48:50 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3496 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727991AbgIAMKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 08:10:13 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.53])
+        by Forcepoint Email with ESMTP id 89EA5ACF72CEEA37BECC;
+        Tue,  1 Sep 2020 20:10:06 +0800 (CST)
+Received: from DGGEML524-MBX.china.huawei.com ([169.254.1.71]) by
+ dggeml406-hub.china.huawei.com ([10.3.17.50]) with mapi id 14.03.0487.000;
+ Tue, 1 Sep 2020 20:09:58 +0800
+From:   "Maoming (maoming, Cloud Infrastructure Service Product Dept.)" 
+        <maoming.maoming@huawei.com>
+To:     Hugh Dickins <hughd@google.com>
+CC:     Matthew Wilcox <willy@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "Zhoujian (jay)" <jianjay.zhou@huawei.com>,
+        "Huangweidong (C)" <weidong.huang@huawei.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "aarcange@redhat.com" <aarcange@redhat.com>,
+        wangyunjian <wangyunjian@huawei.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIIFYzXSB2ZmlvIGRtYV9tYXAvdW5tYXA6IG9wdGltaXpl?=
+ =?gb2312?Q?d_for_hugetlbfs_pages?=
+Thread-Topic: [PATCH V3] vfio dma_map/unmap: optimized for hugetlbfs pages
+Thread-Index: AQHWfR1kmRi9Q8RQ4keHVlEcbZc2qalRRsGAgAIMtzA=
+Date:   Tue, 1 Sep 2020 12:09:58 +0000
+Message-ID: <8B561EC9A4D13649A62CF60D3A8E8CB28C2DC466@dggeml524-mbx.china.huawei.com>
+References: <20200828092649.853-1-maoming.maoming@huawei.com>
+ <alpine.LSU.2.11.2008302332330.2382@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2008302332330.2382@eggly.anvils>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.151.129]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <e11b8f5e-1b85-fe24-36d5-c8d707ce4e66@wp.pl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-WP-MailID: 612e0fd7c75c72b6c399a159ae2e4411
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [oYPU]                               
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.2020 13:08, Greg KH wrote:
-> On Tue, Sep 01, 2020 at 12:43:11PM +0200, antoniprzybylik wrote:
->> Such macros are dangerous. Consider following example:
->> 	#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
->> 	GDM_TTY_READY(a + b)
->> This macro will be expanded in such a way:
->> 	(a + b && a + b->tty_dev && a + b->port.count)
->> And it will lead to errors.
-> This is for a pointer, no one would ever do that :)
-
-Nobody adds a pointer to a pointer, but it's common to add to it some 
-value like that:
-
-GDM_TTY_READY(myptr + 0x1000)
-
-> But, if you really worry about this, turn it into an inline function,
-> that way you get the proper typedef safety, which is what something like
-> this should really be, not a macro.
-
-How to do it? Do I need to send another patch?
-
-Antoni Przybylik
-
+DQo+IA0KPiA+IEluIHRoZSBvcmlnaW5hbCBwcm9jZXNzIG9mIGRtYV9tYXAvdW5tYXAgcGFnZXMg
+Zm9yIFZGSU8tZGV2aWNlcywgdG8NCj4gPiBtYWtlIHN1cmUgdGhlIHBhZ2VzIGFyZSBjb250aWd1
+b3VzLCB3ZSBoYXZlIHRvIGNoZWNrIHRoZW0gb25lIGJ5IG9uZS4NCj4gPiBBcyBhIHJlc3VsdCwg
+ZG1hX21hcC91bm1hcCBjb3VsZCBzcGVuZCBhIGxvbmcgdGltZS4NCj4gPiBVc2luZyB0aGUgaHVn
+ZXRsYiBwYWdlcywgd2UgY2FuIGF2b2lkIHRoaXMgcHJvYmxlbS4NCj4gPiBBbGwgcGFnZXMgaW4g
+aHVnZXRsYiBwYWdlcyBhcmUgY29udGlndW91cy5BbmQgdGhlIGh1Z2V0bGIgcGFnZSBzaG91bGQN
+Cj4gPiBub3QgYmUgc3BsaXQuU28gd2UgY2FuIGRlbGV0ZSB0aGUgZm9yIGxvb3BzLg0KPiANCj4g
+SSBrbm93IG5vdGhpbmcgYWJvdXQgVkZJTywgYnV0IEknbSBzdXJwcmlzZWQgdGhhdCB5b3UncmUg
+cGF5aW5nIHN1Y2ggYXR0ZW50aW9uDQo+IHRvIFBhZ2VIdWdlIGh1Z2V0bGJmcyBwYWdlcywgcmF0
+aGVyIHRoYW4gdG8gUGFnZUNvbXBvdW5kDQo+IHBhZ2VzOiB3aGljaCB3b3VsZCBhbHNvIGluY2x1
+ZGUgVHJhbnNwYXJlbnQgSHVnZSBQYWdlcywgb2YgdGhlIHRyYWRpdGlvbmFsDQo+IGFub255bW91
+cyBraW5kLCBvciB0aGUgaHVnZSB0bXBmcyBraW5kLCBvciB0aGUgbW9yZSBnZW5lcmFsIChub3Qg
+bmVjZXNzYXJpbHkNCj4gcG1kLXNpemVkKSBraW5kIHRoYXQgTWF0dGhldyBXaWxjb3ggaXMgY3Vy
+cmVudGx5IHdvcmtpbmcgb24uDQo+IA0KPiBJdCdzIHRydWUgdGhhdCBodWdldGxiZnMgaXMgcGVj
+dWxpYXIgZW5vdWdoIHRoYXQgd2hhdGV2ZXIgeW91IHdyaXRlIGZvciBpdCBtYXkNCj4gbmVlZCBz
+b21lIHR3ZWFrcyB0byBjb3ZlciB0aGUgVEhQIGNhc2UgdG9vLCBvciB2aWNlIHZlcnNhOyBidXQg
+d291bGRuJ3QgeW91cg0KPiBwYXRjaCBiZSBhIGxvdCBiZXR0ZXIgZm9yIGNvdmVyaW5nIGFsbCBj
+YXNlcz8NCj4gDQo+IFlvdSBtZW50aW9uIGFib3ZlIHRoYXQgInRoZSBodWdldGxiIHBhZ2Ugc2hv
+dWxkIG5vdCBiZSBzcGxpdCI6DQo+IHBlcmhhcHMgeW91IGhhdmUgYmVlbiB3b3JyaWVkIHRoYXQg
+YSBUSFAgY291bGQgYmUgc3BsaXQgYmVuZWF0aCB5b3U/DQo+IFRoYXQgdXNlZCB0byBiZSBhIHBv
+c3NpYmlsaXR5IHNvbWUgeWVhcnMgYWdvLCBidXQgbm93YWRheXMgYSBUSFAgY2Fubm90IGJlDQo+
+IHNwbGl0IHdoaWxlIGFueW9uZSBpcyBwaW5uaW5nIGl0IHdpdGggYW4gZXh0cmEgcmVmZXJlbmNl
+Lg0KPiANCj4gSHVnaA0KPiANCg0KDQpUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbnMuDQpZb3Ug
+bWVudGlvbiB0aGF0IGEgVEhQIGNhbm5vdCBiZSBzcGxpdCB3aGlsZSBhbnlvbmUgaXMgcGlubmlu
+ZyBpdC4NCkRvIHlvdSBtZWFuIHRoZSBjaGVjayBvZiBjYW5fc3BsaXRfaHVnZV9wYWdlKCkoaW4g
+c3BsaXRfaHVnZV9wYWdlX3RvX2xpc3QoKSk/DQpXaGVuIHdlIHdhbnQgdG8gcGluIHBhZ2VzLCB2
+ZmlvX3Bpbl9wYWdlc19yZW1vdGUoKSBhbHdheXMgZ2V0cyBhIG5vcm1hbCBwYWdlIGZpcnN0Lg0K
+SW4gdGhpcyBjYXNlLCBhIFRIUCBjYW5ub3QgYmUgc3BsaXQgYmVjYXVzZSBvZiB0aGUgaW5jcmVh
+c2VkIHJlZmVyZW5jZS4NCklzIHRoaXMgcmlnaHQ/DQoNCk1heWJlIEkgY2FuIG9wdGltaXplIGZv
+ciBodWdldGxiIHBhZ2VzIGFzIGEgZmlyc3Qgc3RlcCwgYW5kIHRoZW4gY292ZXIgYWxsIGNvbXBv
+dW5kIHBhZ2VzLg0KDQoNCg0KDQoNCg==
