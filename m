@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2222590F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99F8259105
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgIAOmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:42:42 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55886 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbgIAOme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:42:34 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id 46FC8299AB2
-Subject: Re: [PATCH v2 1/4] ARM: exynos: clear L310_AUX_CTRL_NS_LOCKDOWN in
- default l2c_aux_val
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        kernel@collabora.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <267a81e550a0b5d479c82b5908e2a2caa4c9c874.1597061474.git.guillaume.tucker@collabora.com>
- <c0509b5f-a064-2e73-7e04-51f41a56d222@collabora.com>
- <CAJKOXPczS_RpSFpjGygZ_1MCYxJ_cUDRjriZvrHd6+zhmq=c8Q@mail.gmail.com>
- <CAJKOXPfT7LvHVpTdaQ1voVi=OtC4aV6hbyzcekmrPMkb+5ebNg@mail.gmail.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <fd1a34c4-dcc1-1480-1e96-8bd94ada9846@collabora.com>
-Date:   Tue, 1 Sep 2020 15:42:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728343AbgIAOno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:43:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728310AbgIAOna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 10:43:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D08F4206EB;
+        Tue,  1 Sep 2020 14:43:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598971410;
+        bh=GHG8Q5LGBd/C87oXVQh9+PpSYGYMCoE7jrDiu2FaKCI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aKYNGwPX5beYzRHU1P28m+loKhvDs9jL8wUyf/QDaLeZK/iFj9NllUfoyVSQdB8ZT
+         7ZEFTATUtFMGri7nhESL4aljhdXeu1AJYUY+HGpHswdBWeHYBJX31OcihTLhm/EVVC
+         4M6ZPySIR0NH9bFwUZ5XCbaOs9zWU6vBZl9VNCUA=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kD7VQ-008IQP-5n; Tue, 01 Sep 2020 15:43:28 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Saravana Kannan <saravanak@google.com>, kernel-team@android.com
+Subject: [PATCH v3 00/16] arm/arm64: Turning IPIs into normal interrupts
+Date:   Tue,  1 Sep 2020 15:43:08 +0100
+Message-Id: <20200901144324.1071694-1-maz@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <CAJKOXPfT7LvHVpTdaQ1voVi=OtC4aV6hbyzcekmrPMkb+5ebNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, saravanak@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2020 14:51, Krzysztof Kozlowski wrote:
-> On Tue, 1 Sep 2020 at 15:45, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>
->> On Tue, 1 Sep 2020 at 15:34, Guillaume Tucker
->> <guillaume.tucker@collabora.com> wrote:
->>>
->>> Hi Krzysztof, Russell,
->>>
->>> On 10/08/2020 13:22, Guillaume Tucker wrote:
->>>> The L310_AUX_CTRL_NS_LOCKDOWN flag is set during the L2C enable
->>>> sequence.  There is no need to set it in the default register value,
->>>> this was done before support for it was implemented in the code.  It
->>>> is not set in the hardware initial value either.
->>>>
->>>> Clean this up by removing this flag from the default l2c_aux_val, and
->>>> add it to the l2c_aux_mask to print an alert message if it was already
->>>> set before the kernel initialisation.
->>>>
->>>> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->>>> ---
->>>>
->>>> Notes:
->>>>     v2: fix flag name L310_AUX_CTRL_NS_LOCKDOWN
->>>>
->>>>  arch/arm/mach-exynos/exynos.c | 4 ++--
->>>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> I believe this v2 series has addressed all previous comments and
->>> you were waiting for the 5.9 merge window to end.  The patches
->>> all still apply cleanly on v5.9-rc3.  Do you want me to resend
->>> the series anyway or is there anything else needed at this point?
->>>
->>> Maybe one thing that wasn't completely clear in v1 was whether
->>> patch 2/4 was the right approach.  I've explained the reason
->>> behind it but didn't get a final reply from Russell[1].
->>
->> I am sorry, my bad. I already applied this one and 3/4 (dts).
->> Apparently I forgot to reply with confirmation and Patchwork did not
->> notify you for some reason.
+For as long as SMP ARM has existed, IPIs have been handled as
+something special. The arch code and the interrupt controller exchange
+a couple of hooks (one to generate an IPI, another to handle it).
 
-No problem, I see them in linux-next now.  Thanks!
+Although this is perfectly manageable, it prevents the use of features
+that we could use if IPIs were Linux IRQs (such as pseudo-NMIs). It
+also means that each interrupt controller driver has to follow an
+architecture-specific interface instead of just implementing the base
+irqchip functionalities. The arch code also duplicates a number of
+things that the core irq code already does (such as calling
+set_irq_regs(), irq_enter()...).
 
->> Patch 2/4 does not look like one for me so I would need ack from
->> Russell to take. Did you submit it to the ARM patches queue?
+This series tries to remedy this on arm/arm64 by offering a new
+registration interface where the irqchip gives the arch code a range
+of interrupts to use for IPIs. The arch code requests these as normal
+per-cpu interrupts.
 
-I've CC-ed linux-arm-kernel@lists.infradead.org on the whole
-series.  Did you mean anything else by the ARM patches queue?
+The bulk of the work is at the interrupt controller level, where all 5
+irqchips used on arm+SMP/arm64 get converted.
 
->> Patch 4/4 will wait for v5.10-rc1 as it depends on 1/4 and it is DTS patch.
-> 
-> Correct: Patch 4/4 will wait for v5.10 because it depends on the DTS patch.
+Finally, we drop the legacy registration interface as well as the
+custom statistics accounting.
 
-Sure, in fact patch 4/4 depends on the DTS one (3/4) and also on
-the l2c fix (2/4) as otherwise prefetch would actually not be
-enabled.  So it sounds like both remaining ones 2/4 and 4/4 are
-actually now pending Russell's ack.
+Note that I have had a look at providing a "generic" interface by
+expanding the kernel/irq/ipi.c bag of helpers, but so far all
+irqchips have very different requirements, so there is hardly anything
+to consolidate for now. Maybe some as hip04 and the Marvell horror get
+cleaned up (the latter certainly could do with a good dusting).
 
-Best wishes,
-Guillaume
+This has been tested on a bunch of 32 and 64bit guests (GICv2, GICv3),
+as well as 64bit bare metal (GICv3). The RPi part has only been tested
+in QEMU as a 64bit guest, while the HiSi and Marvell parts have only
+been compile-tested.
 
+I'm aiming for 5.10 for this, so any comment would be appreciated.
 
-[1] https://lore.kernel.org/lkml/46fa1159-fcd6-b528-b8e8-2fba048236b2@collabora.com/
+* From v2:
+  - Tidied up the arch code (__read_mostly for the IPI handling data,
+    WARN_ON_ONCE on setup and teardown), dropped spurious prototype
+    on 32bit
+  - Prevent IPIs from being forwarded to VCPUs
+  - Merged the GIC affinity fix, hence one less patch
+  - Added RBs from Valentin
+
+* From v1:
+  - Clarified the effect of nesting irq_enter/exit (Russell)
+  - Changed the point where we tear IPIs down on (Valentin)
+  - IPIs are no longer accessible from DT
+  - HIP04 and Armada 370-XP have been converted, but are untested
+  - arch-specific kstat accounting is removed
+  - ARM's legacy interface is dropped
+
+Marc Zyngier (16):
+  genirq: Add fasteoi IPI flow
+  genirq: Allow interrupts to be excluded from /proc/interrupts
+  arm64: Allow IPIs to be handled as normal interrupts
+  ARM: Allow IPIs to be handled as normal interrupts
+  irqchip/gic-v3: Describe the SGI range
+  irqchip/gic-v3: Configure SGIs as standard interrupts
+  irqchip/gic: Refactor SMP configuration
+  irqchip/gic: Configure SGIs as standard interrupts
+  irqchip/gic-common: Don't enable SGIs by default
+  irqchip/bcm2836: Configure mailbox interrupts as standard interrupts
+  irqchip/hip04: Configure IPIs as standard interrupts
+  irqchip/armada-370-xp: Configure IPIs as standard interrupts
+  arm64: Kill __smp_cross_call and co
+  arm64: Remove custom IRQ stat accounting
+  ARM: Kill __smp_cross_call and co
+  ARM: Remove custom IRQ stat accounting
+
+ arch/arm/Kconfig                    |   1 +
+ arch/arm/include/asm/hardirq.h      |  17 --
+ arch/arm/include/asm/smp.h          |   5 +-
+ arch/arm/kernel/smp.c               | 135 +++++++++-----
+ arch/arm64/Kconfig                  |   1 +
+ arch/arm64/include/asm/hardirq.h    |   9 -
+ arch/arm64/include/asm/irq_work.h   |   4 +-
+ arch/arm64/include/asm/smp.h        |   6 +-
+ arch/arm64/kernel/smp.c             | 121 ++++++++-----
+ drivers/irqchip/irq-armada-370-xp.c | 262 +++++++++++++++++++---------
+ drivers/irqchip/irq-bcm2836.c       | 151 +++++++++++++---
+ drivers/irqchip/irq-gic-common.c    |   3 -
+ drivers/irqchip/irq-gic-v3.c        | 104 ++++++-----
+ drivers/irqchip/irq-gic.c           | 177 +++++++++++--------
+ drivers/irqchip/irq-hip04.c         |  89 +++++-----
+ include/linux/irq.h                 |   5 +-
+ kernel/irq/chip.c                   |  27 +++
+ kernel/irq/debugfs.c                |   1 +
+ kernel/irq/proc.c                   |   2 +-
+ kernel/irq/settings.h               |   7 +
+ 20 files changed, 720 insertions(+), 407 deletions(-)
+
+-- 
+2.27.0
+
