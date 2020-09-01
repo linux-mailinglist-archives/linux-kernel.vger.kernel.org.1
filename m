@@ -2,108 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A88259115
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564D3259124
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 16:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbgIAOo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 10:44:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21140 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728591AbgIAOnc (ORCPT
+        id S1728328AbgIAOqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 10:46:46 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:38160 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728220AbgIAOpw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 10:43:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598971411;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GPbP04lPt1v0iZ449hyOji4fcc1kzdBh1pIqDA8zHp0=;
-        b=ATRqzzRklr3EHlpf8qRXvCiX+RiMq8U7B5RoXM4y7UY0x3MR0DANBAiVnT9O2sJSfbbpG7
-        RUUpfcWM3avs4mAgyAP7J+J4vp1VGf8jESztr8Ap3NgTAVW6EVLTTuT1SQGzQkXXdh1Q6f
-        2NNpkF8sf67zBUucg0Oi0b99i1Hn/oU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-483-hexgGdO1MiSP2Lk88VGIPw-1; Tue, 01 Sep 2020 10:43:28 -0400
-X-MC-Unique: hexgGdO1MiSP2Lk88VGIPw-1
-Received: by mail-wr1-f72.google.com with SMTP id k11so668606wrw.16
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 07:43:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=GPbP04lPt1v0iZ449hyOji4fcc1kzdBh1pIqDA8zHp0=;
-        b=Ja3LUs0FQnBSUa3N0zz5yIljckVU1RFK2ubYLd8ITTnsgqrQDMmoFgbQbgRDsC4vwd
-         zIL+/XOBVBddCSXKxMdvk+xrVVLdB37KstcgOWFTsIAKZ058TyUhSs8yfDbElsxKOsd4
-         xTbQdrI1b6lYS5C5CLq2IXjAV4vAJ52kgzVCGLloqxGKExbVa4IhpWtzPa/ir7+PF3wa
-         Oqdi9Yns2EeruyPDDQg/HG0NbQP1UZOxMe+JIP7CDMnRWzaE2zvFPxNy8203yVAIlmVD
-         rIMqfVX0Ia8y3xAaHJnsIgQLkifbYu4ThQyFg7HEfMTdMlOVUwjlPeDRymmxMzxGJ4cU
-         RqyA==
-X-Gm-Message-State: AOAM531fqL/7FucUeCeSpxBdDwGvLGWNFQyz6mrbYld4iyLXa7VBWoYc
-        M0k0nzb+YlY/bQ5BrC43H0sCjRzsSHp1GGYN17tWWtwQ5f/gbFIpWv0ImO/zfvKOWsrPhCH9OIp
-        ZUGQVPo4f9J5m43WT5fC1mcmq
-X-Received: by 2002:adf:db52:: with SMTP id f18mr2217332wrj.397.1598971406999;
-        Tue, 01 Sep 2020 07:43:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJzKR8a+SsyTI8zecqTgZ0D4P1NUMXQNbFg4Z1fpLhaO9xme/Gd1HwibnnhuJcxZ1jjgroFg==
-X-Received: by 2002:adf:db52:: with SMTP id f18mr2217303wrj.397.1598971406756;
-        Tue, 01 Sep 2020 07:43:26 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id p16sm2574255wro.71.2020.09.01.07.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 07:43:26 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Michael Tsirkin <mst@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-In-Reply-To: <20200825212526.GC8235@xz-x1>
-References: <20200807141232.402895-1-vkuznets@redhat.com> <20200825212526.GC8235@xz-x1>
-Date:   Tue, 01 Sep 2020 16:43:25 +0200
-Message-ID: <87eenlwoaa.fsf@vitty.brq.redhat.com>
+        Tue, 1 Sep 2020 10:45:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1598971551;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JdnTGG+FGAeYr/CaqX7nq47kV+5WzzeAxfnDtVerGyo=;
+  b=HCecrnuZ4z1/6sEl869RqjL9gGOdm0MHKr1EU2L1KnuoCQFMuJgglesM
+   Z7jVuxwR+McdV55WpQpnFJ8xgK1XgYu98sgBeGYZLy/IxoLfrvWo/UR8X
+   DHe0oudkybP8mdyK9zKtbhZVF2og8Z1ObI837jvVRWnD5YltVmVEmrz38
+   0=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: Fx1CBO5kj/E1oAMz1SNj/x+W2f0hG4uH49vCOwacHjqiEVjH7W+Z6ZuJZjjum/02jE8xubVska
+ 3sIRr0yzCkV4UFYdAcAEcQc4GhV+gB8w1o75XW1D5ExaZvi5cN6ZLmCer9O+ksnWJQiP2Sgj10
+ qB4qwe6YKfcng8UZr3n0SOQ5PpIFcJuHhd74YlTayszxMAsS0OrjOzM8z+nks1IfNFppYINasU
+ Ro6lhbOIuB5NwPtFeaSBPdzODMC3WqFYJrILMML41cyYE6RwfKjxRUW9A0yz27uqJzHVG1uKB9
+ Dt4=
+X-SBRS: 2.7
+X-MesageID: 26701517
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.76,379,1592884800"; 
+   d="scan'208";a="26701517"
+Date:   Tue, 1 Sep 2020 16:45:39 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        "Stefano Stabellini" <sstabellini@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>, Wei Liu <wl@xen.org>,
+        Yan Yankovskyi <yyankovskyi@gmail.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <xen-devel@lists.xenproject.org>, <linux-mm@kvack.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v5 3/3] xen: add helpers to allocate unpopulated memory
+Message-ID: <20200901144539.GI753@Air-de-Roger>
+References: <20200901083326.21264-1-roger.pau@citrix.com>
+ <20200901083326.21264-4-roger.pau@citrix.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200901083326.21264-4-roger.pau@citrix.com>
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ FTLPEX02CL06.citrite.net (10.13.108.179)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Xu <peterx@redhat.com> writes:
+On Tue, Sep 01, 2020 at 10:33:26AM +0200, Roger Pau Monne wrote:
+> +static int fill_list(unsigned int nr_pages)
+> +{
+> +	struct dev_pagemap *pgmap;
+> +	void *vaddr;
+> +	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+> +	int nid, ret;
+> +
+> +	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+> +	if (!pgmap)
+> +		return -ENOMEM;
+> +
+> +	pgmap->type = MEMORY_DEVICE_GENERIC;
+> +	pgmap->res.name = "Xen scratch";
+> +	pgmap->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
+> +
+> +	ret = allocate_resource(&iomem_resource, &pgmap->res,
+> +				alloc_pages * PAGE_SIZE, 0, -1,
+> +				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
+> +	if (ret < 0) {
+> +		pr_err("Cannot allocate new IOMEM resource\n");
+> +		kfree(pgmap);
+> +		return ret;
+> +	}
+> +
+> +	nid = memory_add_physaddr_to_nid(pgmap->res.start);
 
-> On Fri, Aug 07, 2020 at 04:12:29PM +0200, Vitaly Kuznetsov wrote:
->> When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
->> I observed 8193 accesses to PCI hole memory. When such exit is handled
->> in KVM without exiting to userspace, it takes roughly 0.000001 sec.
->> Handling the same exit in userspace is six times slower (0.000006 sec) so
->> the overal; difference is 0.04 sec. This may be significant for 'microvm'
->> ideas.
->
-> Sorry to comment so late, but just curious... have you looked at what's those
-> 8000+ accesses to PCI holes and what they're used for?  What I can think of are
-> some port IO reads (e.g. upon vendor ID field) during BIOS to scan the devices
-> attached.  Though those should be far less than 8000+, and those should also be
-> pio rather than mmio.
+I think this is not needed ...
 
-And sorry for replying late)
+> +
+> +#ifdef CONFIG_XEN_HAVE_PVMMU
+> +        /*
+> +         * memremap will build page tables for the new memory so
+> +         * the p2m must contain invalid entries so the correct
+> +         * non-present PTEs will be written.
+> +         *
+> +         * If a failure occurs, the original (identity) p2m entries
+> +         * are not restored since this region is now known not to
+> +         * conflict with any devices.
+> +         */
+> +	if (!xen_feature(XENFEAT_auto_translated_physmap)) {
+> +		xen_pfn_t pfn = PFN_DOWN(pgmap->res.start);
+> +
+> +		for (i = 0; i < alloc_pages; i++) {
+> +			if (!set_phys_to_machine(pfn + i, INVALID_P2M_ENTRY)) {
+> +				pr_warn("set_phys_to_machine() failed, no memory added\n");
+> +				release_resource(&pgmap->res);
+> +				kfree(pgmap);
+> +				return -ENOMEM;
+> +			}
+> +                }
+> +	}
+> +#endif
+> +
+> +	vaddr = memremap_pages(pgmap, nid);
 
-We explicitly want MMIO instead of PIO to speed things up, afaiu PIO
-requires two exits per device (and we exit all the way to
-QEMU). Julia/Michael know better about the size of the space.
+... and NUMA_NO_NODE should be used here instead, as this memory is just
+fictitious space to map foreign memory, and shouldn't be related to
+any NUMA node.
 
->
-> If this is only an overhead for virt (since baremetal mmios should be fast),
-> I'm also thinking whether we can make it even better to skip those pci hole
-> reads.  Because we know we're virt, so it also gives us possibility that we may
-> provide those information in a better way than reading PCI holes in the guest?
+The following chunk should be folded in, or I can resend.
 
-This means let's invent a PV interface and if we decide to go down this
-road, I'd even argue for abandoning PCI completely. E.g. we can do
-something similar to Hyper-V's Vmbus.
-
--- 
-Vitaly
+Thanks, Roger.
+---8<---
+diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
+index 1b5d157c6977..3b98dc921426 100644
+--- a/drivers/xen/unpopulated-alloc.c
++++ b/drivers/xen/unpopulated-alloc.c
+@@ -20,7 +20,7 @@ static int fill_list(unsigned int nr_pages)
+ 	struct dev_pagemap *pgmap;
+ 	void *vaddr;
+ 	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
+-	int nid, ret;
++	int ret;
+ 
+ 	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
+ 	if (!pgmap)
+@@ -39,8 +39,6 @@ static int fill_list(unsigned int nr_pages)
+ 		return ret;
+ 	}
+ 
+-	nid = memory_add_physaddr_to_nid(pgmap->res.start);
+-
+ #ifdef CONFIG_XEN_HAVE_PVMMU
+         /*
+          * memremap will build page tables for the new memory so
+@@ -65,7 +63,7 @@ static int fill_list(unsigned int nr_pages)
+ 	}
+ #endif
+ 
+-	vaddr = memremap_pages(pgmap, nid);
++	vaddr = memremap_pages(pgmap, NUMA_NO_NODE);
+ 	if (IS_ERR(vaddr)) {
+ 		pr_err("Cannot remap memory range\n");
+ 		release_resource(&pgmap->res);
 
