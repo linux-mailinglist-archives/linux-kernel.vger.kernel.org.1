@@ -2,65 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD2A2594F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABE9259611
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731842AbgIAPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:44:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:44150 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730108AbgIAPmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:42:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F1521045;
-        Tue,  1 Sep 2020 08:42:21 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.10.252])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E9E23F71F;
-        Tue,  1 Sep 2020 08:42:19 -0700 (PDT)
-Date:   Tue, 1 Sep 2020 16:42:17 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org
-Subject: Re: [PATCH v1 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200901154217.GD95447@C02TD0UTHF1T.local>
-References: <aefc85852ea518982e74b233e11e16d2e707bc32>
- <20200728131050.24443-1-madvenka@linux.microsoft.com>
- <20200731180955.GC67415@C02TD0UTHF1T.local>
- <6236adf7-4bed-534e-0956-fddab4fd96b6@linux.microsoft.com>
- <20200804143018.GB7440@C02TD0UTHF1T.local>
- <b3368692-afe6-89b5-d634-12f4f0a601f8@linux.microsoft.com>
- <20200812100650.GB28154@C02TD0UTHF1T.local>
- <41c4de64-68d0-6fcb-e5c3-63ebd459262e@digikod.net>
+        id S1730067AbgIAP6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731763AbgIAPn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:43:59 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD70BC061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 08:43:58 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id j10so714427qvk.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 08:43:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oSyU4rbRCx7oJC6Q+h2Vq9u8C2zTFP5KkB72aQOvBJ8=;
+        b=MuQINPXdDrFew7Qa+o4Y65wC8+8poRZ475eqCEsF/tyACMmEKt7Q5v4ZlrFecQMipm
+         vVDiPRVj7HRGUHkQLsqTUb4IB8G8UP8gkMK2qm8/b7i0tAGTme3VryVogvWj5mRTigYZ
+         wYgXh7ZcJTvneS+FXmHjn+1/UErf/NgIMlLBtHzW8OLg3TKv4gRu+6/CWuRHzc33vMWV
+         tWkb2f/EW/3IxM7aNuN+j56JHX3vIiMZbu/bE9hqUkImhHivX/pQBvrJ734Lkc304JLO
+         6KVhTFRHoU1cCiCKMJcV0aDWsyTHecGyYE1aqjQAVhFJNeQYDjAc9Fveve6DHr1MO30L
+         LrXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oSyU4rbRCx7oJC6Q+h2Vq9u8C2zTFP5KkB72aQOvBJ8=;
+        b=uW+6QoNqBLds2Xh7wtZv5PqzYTZ10wu/hPjEz9qAgayoJI1phS3pwswbWPBhXT/T7l
+         +89Rnkpvfy7bjeqjU4ysGK8pgxdzfQY1BaFfCPosyIuyDO394zNZ7dVBYT2VQb0U1CpC
+         3YUB4bGVG5OcPdyQiCJzVjxyGabcuD5jsB0IBYp8TyDo/GGDTd6Vn0ax3PegIyklso/2
+         gZX61tYZnU2RKndf1z4RcHhyTQgFk8LNUPDKUYoKaTdSvS82SOCMqE/moRiQry32IZ1X
+         pKfTs1UxjZo1w7Le4q0aBiBe2eyHHJylQBaeVJylxyGQki31BBfLX5j8cQaWvH6iVtg5
+         GDrQ==
+X-Gm-Message-State: AOAM5324MsiXzzK7HUmYFlzNQdyucKwCG1xI0l468ohNUIvzIZNVjShe
+        RfQ752aIeuLcZ+IJ2KcMX8jbsKXxz5TbrsiJ+/CGMUT1y0SbWprA
+X-Google-Smtp-Source: ABdhPJwgiFnNCRyjJL2gdJhEDxZjGFoJ0pKaCYS2kn20L8UThitNkhwxTJMrUqll5FICEWInU7erhnYSdFpLJ8/7sNU=
+X-Received: by 2002:a0c:de0e:: with SMTP id t14mr2468615qvk.57.1598975037745;
+ Tue, 01 Sep 2020 08:43:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <41c4de64-68d0-6fcb-e5c3-63ebd459262e@digikod.net>
+References: <20200901065758.1141786-1-brianvv@google.com> <CANn89iL+C5QWxbqKbxcdAa=BtDkEg-tm5dNnvrvXJrMRXQb=mg@mail.gmail.com>
+In-Reply-To: <CANn89iL+C5QWxbqKbxcdAa=BtDkEg-tm5dNnvrvXJrMRXQb=mg@mail.gmail.com>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Tue, 1 Sep 2020 08:43:45 -0700
+Message-ID: <CAMzD94TF+q5600oVTMbYNSng=ZCwNdz2RCybSgeW4O5g3nCzeg@mail.gmail.com>
+Subject: Re: [PATCH] net: ipv6: fix __rt6_purge_dflt_routers when forwarding
+ is not set on all ifaces
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        David Ahern <dsa@cumulusnetworks.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 08:53:42PM +0200, Mickaël Salaün wrote:
-> On 12/08/2020 12:06, Mark Rutland wrote:
-> > Contemporary W^X means that a given virtual alias cannot be writeable
-> > and executeable simultaneously, permitting (a) and (b). If you read the
-> > references on the Wikipedia page for W^X you'll see the OpenBSD 3.3
-> > release notes and related presentation make this clear, and further they
-> > expect (b) to occur with JITS flipping W/X with mprotect().
-> 
-> W^X (with "permanent" mprotect restrictions [1]) goes back to 2000 with
-> PaX [2] (which predates partial OpenBSD implementation from 2003).
-> 
-> [1] https://pax.grsecurity.net/docs/mprotect.txt
-> [2] https://undeadly.org/cgi?action=article;sid=20030417082752
+On Tue, Sep 1, 2020 at 1:20 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Tue, Sep 1, 2020 at 8:58 AM Brian Vazquez <brianvv@google.com> wrote:
+> >
+> > The problem is exposed when the system has multiple ifaces and
+> > forwarding is enabled on a subset of them, __rt6_purge_dflt_routers will
+> > clean the default route on all the ifaces which is not desired.
+>
+> What is the exact problem you want to fix ?
+Imagine you have a host with 2 interfaces. 1 is using SLAAC, the other
+one it isn't.
+On your main routing table you have the default SLAAC route for iface A
 
-Thanks for the pointers!
+Then you're setting a second interface B and you enable forwarding
+only on this iface:
+echo 1 > /proc/sys/net/ipv6/conf/B/forwarding. Changing the sysctl
+which call the rt6_purge_dflt_routers
+which would delete your default route on iface A, so effectively you
+will lose connection via iface A, until the default
+entry is added again which would happen because that iface has
+accept_ra = 1 and forwarding = 0, but it would take some time.
+It feels weird that modifying interface B deletes default route A
+which would be added back anyway, but you lose connection on A for
+some minutes.
 
-Mark.
+>
+> >
+> > This patches fixes that by cleaning only the routes where the iface has
+> > forwarding enabled.
+>
+> This seems like a new feature, and this might break some setups.
+
+Fair enough, the main issue here is that the behaviour of a host in a
+mixed environment is not well defined.
+
+>
+> linux always had removed any IPv6 address and default route it learnt via SLAAC.
+> (this might be to conform to one RFC or known security rule).
+> It would be nice to add a nice comment giving references.
+>
+> >
+> > Fixes: 830218c1add1 ("net: ipv6: Fix processing of RAs in presence of VRF")
+>
+> Please provide a test, or a better commit message ?
+>
+> If your patch targets the net tree, then it should only fix a bug.
+>
+> Thanks.
