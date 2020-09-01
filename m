@@ -2,97 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE932584D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 02:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C48B2584DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 02:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbgIAA0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Aug 2020 20:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        id S1726085AbgIAAeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Aug 2020 20:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgIAA0g (ORCPT
+        with ESMTP id S1725872AbgIAAeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Aug 2020 20:26:36 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80EC8C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:26:36 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id di5so3224098qvb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:26:36 -0700 (PDT)
+        Mon, 31 Aug 2020 20:34:13 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74354C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:34:13 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id d20so5211637qka.5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Aug 2020 17:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=25EP6lDyA/VCn85jeEaspBr9VnHNH+CoU2Es2Lg6BDE=;
-        b=VzVNnOpB/iZRtjs0/1dL+nyroS8pJ/JR/teYVPRC7ehg6J0uj6p4zAJr6eqtSZ2zcS
-         rmxMytC4VbsLpe5JIp8JF1WcWZZLy3GlDY23qNPj+/ABik90fsRKa+S4ki9e8FJ+CvoR
-         A8xblUuWz+yRHu4JwqhUE2Jzdun6FWJ0Ytx+/0mAeJ82Y47xkJ8nvg184gjVdiyrxAaG
-         inDzKjNxRp63B1/Nooabo6cFApB3xKxZYphB4eN1imAT6tQO1SDWWLNoFEJBZhszfD6c
-         TAQeF0yEsXqa9+LFUvUvXi6GNT7UNIUO7yWizAYb4Bk2vSaH40Cb9pvN+ZD6T4uhR0yt
-         buKg==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jLafwiC2xQNKUVCHdLUQQvDtsC6khh4yCLYOGaMsDWc=;
+        b=h4hzz+LL2wmWO8VdqfAqx/UHSd1YE5o9wpRi/+hRRkQTNduf7/9zNCMExEk8b+xamH
+         bZ7M0RuVDaXOFnhujxEqPr7ZD8EG5xtzl/rMkN4+dDTj9NVbWTY4ag5ddyL/fwtmFCZM
+         OERDDO7JFtLGWeSx9VPlC+Fw+GrJzDeb5eG4JNPFtTEgPh0U4bBUGkjQBMmR8GctTMrL
+         lbdUAVUQDlQ0xy5SxNeY41orwXKRCy4fRzvXiXV4ggd9t4X8DVIm1LOwtzTdNKv0HPdq
+         QQ9B4CN+uoau2pc5Qpdie8o0F4DpQR8Zx9EwPGQ2+Gr+/h3XT9OiLKod/fc0C2+8mRGm
+         Vmrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=25EP6lDyA/VCn85jeEaspBr9VnHNH+CoU2Es2Lg6BDE=;
-        b=CUeOKZLfqiAo2K5I/Mqk41n/qP6TTv2ceNxcURzpw4vVuS6mM6LtYK8Ihf/mAHzvoV
-         Exoe5+PwnZj2tg2LihA+k1XLe+vBQOiD3yre9mpf9lfHmmz4LVcPxzIyHJXxCDQ4zUmr
-         tRWt81oEzBelr9BDM8V/jLwQvmHQOvCemMcr1QFmJ4kSyd5uRO09DBFffcuhjO1b1kBC
-         V635kD5QRdBHKQJjFgBttTyyBphud845a9pct9hMp+3Hfgh26BK7+qQqjZkD2ZkvCByB
-         mv4I7vQ4OXSZrO75hzBqLvLH5P5VerG+SL4wUuvAgp16WlsbbLhrXegw+aKcPTqOaTk4
-         LUkw==
-X-Gm-Message-State: AOAM533s6yb5p9IjieGewM+Y6+wBCXJzRcRtBRLDDXtypfirj2Jo1uWO
-        clB0Gi9MuorV5azs8I1SsL65wg==
-X-Google-Smtp-Source: ABdhPJzJhMCsv9DIr2p50bKrzX+/ZhDja6UADS9AoiMBVU3C3F/pJwgZhRS+rIVYPK+5D15jnq+I8A==
-X-Received: by 2002:a05:6214:5c8:: with SMTP id t8mr3683557qvz.86.1598919995600;
-        Mon, 31 Aug 2020 17:26:35 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id d15sm10918024qka.91.2020.08.31.17.26.34
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jLafwiC2xQNKUVCHdLUQQvDtsC6khh4yCLYOGaMsDWc=;
+        b=sNh8MRrDC193N0Lb/i4/vrjBhgaRePVCl0cOa6pYudvziaIbazyhuuWu2R8/B48Qgn
+         xmS2hSz/DsCiUSDL/PR/MBud/kkUbVIsQxXFAkIBIQiiXvh4B94AhMpf8mH9Uf21WpDx
+         t9F7pj8fudh8Pv6JWrHDuJ2n0kBC24doP/3VCFT2FLoDwanMzs9ibM8HB7ZYmha0eJHO
+         qvWYr3NXI3RlhHihqh/O/G82L2/O6/HbgDoBVTn2F9Xqo9dCKFlVAn8HTC1rWQ8uywku
+         eHymnNCPQyW+vD+r8gMF5rURalRAmx2IMHh32zomMcgGeXqThp8YDaFDpw2XZZyJHSkB
+         Df8A==
+X-Gm-Message-State: AOAM530Pen96aT/f17MLSK5fyUhF1ferk4O2aLa6Wg2BfInTdD2SN7g1
+        JnY6EYgTaAZ3hJnm9IUx10I4PA==
+X-Google-Smtp-Source: ABdhPJw9tUjyIucH5cZED4lzBJee/JgSOGBP0NzmRVA3Y7tmYxKdfrwyxqGClPCje078VfJuMEc6uA==
+X-Received: by 2002:a37:9b8f:: with SMTP id d137mr3922530qke.459.1598920452229;
+        Mon, 31 Aug 2020 17:34:12 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id i14sm12189491qkn.53.2020.08.31.17.34.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Aug 2020 17:26:35 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kCu8A-003WwX-Ad; Mon, 31 Aug 2020 21:26:34 -0300
-Date:   Mon, 31 Aug 2020 21:26:34 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Subject: Re: [PATCH] mm/mmu_notifier: Fix mmget() assert in
- __mmu_interval_notifier_insert
-Message-ID: <20200901002634.GD24045@ziepe.ca>
-References: <20200901000143.207585-1-jannh@google.com>
+        Mon, 31 Aug 2020 17:34:11 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] misc: fastrpc: add ioctl for attaching to sensors pd
+Date:   Mon, 31 Aug 2020 20:32:59 -0400
+Message-Id: <20200901003300.11985-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901000143.207585-1-jannh@google.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 02:01:43AM +0200, Jann Horn wrote:
-> The comment talks about having to hold mmget() (which means mm_users), but
-> the actual check is on mm_count (which would be mmgrab()).
-> 
-> Given that MMU notifiers are torn down in
-> mmput() -> __mmput() -> exit_mmap() -> mmu_notifier_release(),
-> I believe that the comment is correct and the check should be on
-> mm->mm_users. Fix it up accordingly.
-> 
-> Fixes: 99cb252f5e68 ("mm/mmu_notifier: add an interval tree notifier")
-> Signed-off-by: Jann Horn <jannh@google.com>
-> ---
-> Can someone please double-check this? I'm like 90% sure that I fixed
-> this the right way around, but it'd be good if someone more familiar
-> with mmu notifiers could confirm.
+Initializing sensors requires attaching to pd 2. Add an ioctl for that.
 
-Hmm.. I added the comment but copied the expression from older code.
+This corresponds to FASTRPC_INIT_ATTACH_SENSORS in the downstream driver.
 
-The intent is certainly that the caller must have a mmget, this
-function must not race with __mmu_notifier_release() and the mmget is
-what prevents that.
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+---
+ drivers/misc/fastrpc.c      | 9 ++++++---
+ include/uapi/misc/fastrpc.h | 5 +++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 7939c55daceb..ea5e9ca0d705 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -1276,7 +1276,7 @@ static int fastrpc_dmabuf_alloc(struct fastrpc_user *fl, char __user *argp)
+ 	return 0;
+ }
+ 
+-static int fastrpc_init_attach(struct fastrpc_user *fl)
++static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+ {
+ 	struct fastrpc_invoke_args args[1];
+ 	int tgid = fl->tgid;
+@@ -1287,7 +1287,7 @@ static int fastrpc_init_attach(struct fastrpc_user *fl)
+ 	args[0].fd = -1;
+ 	args[0].reserved = 0;
+ 	sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_ATTACH, 1, 0);
+-	fl->pd = 0;
++	fl->pd = pd;
+ 
+ 	return fastrpc_internal_invoke(fl, true, FASTRPC_INIT_HANDLE,
+ 				       sc, &args[0]);
+@@ -1477,7 +1477,10 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
+ 		err = fastrpc_invoke(fl, argp);
+ 		break;
+ 	case FASTRPC_IOCTL_INIT_ATTACH:
+-		err = fastrpc_init_attach(fl);
++		err = fastrpc_init_attach(fl, 0);
++		break;
++	case FASTRPC_IOCTL_INIT_ATTACH_SNS:
++		err = fastrpc_init_attach(fl, 2);
+ 		break;
+ 	case FASTRPC_IOCTL_INIT_CREATE:
+ 		err = fastrpc_init_create_process(fl, argp);
+diff --git a/include/uapi/misc/fastrpc.h b/include/uapi/misc/fastrpc.h
+index 07de2b7aac85..0a89f95463f6 100644
+--- a/include/uapi/misc/fastrpc.h
++++ b/include/uapi/misc/fastrpc.h
+@@ -10,8 +10,9 @@
+ #define FASTRPC_IOCTL_INVOKE		_IOWR('R', 3, struct fastrpc_invoke)
+ #define FASTRPC_IOCTL_INIT_ATTACH	_IO('R', 4)
+ #define FASTRPC_IOCTL_INIT_CREATE	_IOWR('R', 5, struct fastrpc_init_create)
+-#define FASTRPC_IOCTL_MMAP              _IOWR('R', 6, struct fastrpc_req_mmap)
+-#define FASTRPC_IOCTL_MUNMAP            _IOWR('R', 7, struct fastrpc_req_munmap)
++#define FASTRPC_IOCTL_MMAP		_IOWR('R', 6, struct fastrpc_req_mmap)
++#define FASTRPC_IOCTL_MUNMAP		_IOWR('R', 7, struct fastrpc_req_munmap)
++#define FASTRPC_IOCTL_INIT_ATTACH_SNS	_IO('R', 8)
+ 
+ struct fastrpc_invoke_args {
+ 	__u64 ptr;
+-- 
+2.26.1
 
-Jason
