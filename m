@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5518D259AC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFA0259ABE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732485AbgIAQyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:54:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730228AbgIAQxf (ORCPT
+        id S1730001AbgIAQxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:53:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60744 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732332AbgIAQx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:53:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B89C061244;
-        Tue,  1 Sep 2020 09:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mr+spIm0j102sxFcc3WXz2mCLWqWkBrKAQyNQoZhMH4=; b=Qp7cO1c6obl/HbURjQhpBiYPQG
-        zMVpdHyURqSWTczQUMKFJAjOy/TiFuPuIO99chev9Opx0LZ/TLT95QaNoVyb4m6rgj02rzNms21bD
-        l/OJj+Pn3H4e3Mzua6ZOGdf7TbV7b19zK1HK8PwPz1sPjHOWtXsWoQGxS7DBoTJGYTbRtUYGJqxI7
-        8CsalzSoTglaLhiOvz2SYPVRp3wWJsHM/wtbu2DlirQcXKmjLD+1CJIvyaMBTnf2S3HPWyMsavtNt
-        3tJ7WFYYYteWuJLPBqd7P2w3N7flwqDEkXxZ8pD/Jd3z/6ksKCRHFQo9SY2r/QQ5XzKyjmUUHgPI3
-        osL/2N3Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kD9Wy-0001ZZ-0r; Tue, 01 Sep 2020 16:53:12 +0000
-Date:   Tue, 1 Sep 2020 17:53:11 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Helge Deller <deller@gmx.de>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Pawel Osciak <pawel@osciak.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
-        linux-mm@kvack.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 07/28] 53c700: improve non-coherent DMA handling
-Message-ID: <20200901165311.GS14765@casper.infradead.org>
-References: <20200819065555.1802761-1-hch@lst.de>
- <20200819065555.1802761-8-hch@lst.de>
- <1598971960.4238.5.camel@HansenPartnership.com>
- <20200901150554.GN14765@casper.infradead.org>
- <1598973776.4238.11.camel@HansenPartnership.com>
- <3369218e-eea4-14e9-15f1-870269e4649d@gmx.de>
- <77c9b2b6-bedc-d090-8b23-6ac664df1d1f@gmx.de>
+        Tue, 1 Sep 2020 12:53:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598979206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=avbleNGUb+J89GYGqB+uFJ1WJDboHCvs4T7vUTWniQ8=;
+        b=TcVTXNKwvy8WXucWGP4mJkUQdVx4bYP9jCQpD6JqLie2KEfkHdjIij1Axa6kuUczVTSiw7
+        JJA4wrMGPnOfqMK5+sldOalIFDQAOo/Oid1/ZviL50OWQh7VkadSOnboS3AEfiWrCae+IG
+        aGuv00ZtUKwFqcO3pSWTQ66AZlYwmTw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-168-Aag7nKneMkuxngkgxQu7uA-1; Tue, 01 Sep 2020 12:53:22 -0400
+X-MC-Unique: Aag7nKneMkuxngkgxQu7uA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A8BD10ABDA7;
+        Tue,  1 Sep 2020 16:53:20 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 283C87C558;
+        Tue,  1 Sep 2020 16:53:16 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  1 Sep 2020 18:53:20 +0200 (CEST)
+Date:   Tue, 1 Sep 2020 18:53:16 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org
+Subject: Re: [PATCH 1/4] pidfd: support PIDFD_NONBLOCK in pidfd_open()
+Message-ID: <20200901165315.GD4386@redhat.com>
+References: <20200831134551.1599689-1-christian.brauner@ubuntu.com>
+ <20200831134551.1599689-2-christian.brauner@ubuntu.com>
+ <20200901162309.GB4386@redhat.com>
+ <20200901163308.mwd334y462fmml6s@wittgenstein>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <77c9b2b6-bedc-d090-8b23-6ac664df1d1f@gmx.de>
+In-Reply-To: <20200901163308.mwd334y462fmml6s@wittgenstein>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 06:41:12PM +0200, Helge Deller wrote:
-> > I still have a zoo of machines running for such testing, including a
-> > 715/64 and two 730.
-> > I'm going to test this git tree on the 715/64:
+On 09/01, Christian Brauner wrote:
+>
+> On Tue, Sep 01, 2020 at 06:23:10PM +0200, Oleg Nesterov wrote:
+> > On 08/31, Christian Brauner wrote:
+> > >
+> > > --- /dev/null
+> > > +++ b/include/uapi/linux/pidfd.h
+> > > @@ -0,0 +1,12 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > +
+> > > +#ifndef _UAPI_LINUX_PIDFD_H
+> > > +#define _UAPI_LINUX_PIDFD_H
+> > > +
+> > > +#include <linux/types.h>
+> > > +#include <linux/fcntl.h>
+> > > +
+> > > +/* Flags for pidfd_open().  */
+> > > +#define PIDFD_NONBLOCK O_NONBLOCK
+> > > +
+> > > +#endif /* _UAPI_LINUX_PIDFD_H */
+> >
+> > Why? Can't we simply use O_NONBLOCK ?
+>
+> It's the same thing we seem to do for any other (anon inode) fds:
+>
+> include/linux/eventfd.h:#define		EFD_NONBLOCK O_NONBLOCK
+> include/uapi/linux/inotify.h:#define	IN_NONBLOCK O_NONBLOCK
+> include/uapi/linux/signalfd.h:#define	SFD_NONBLOCK O_NONBLOCK
+> include/uapi/linux/timerfd.h:#define	TFD_NONBLOCK O_NONBLOCK
+>
+> also for O_CLOEXEC:
+>
+> include/linux/eventfd.h:#define		EFD_CLOEXEC O_CLOEXEC
+> include/linux/userfaultfd_k.h:#define	UFFD_CLOEXEC O_CLOEXEC
+> include/uapi/linux/eventpoll.h:#define	EPOLL_CLOEXEC O_CLOEXEC
+> include/uapi/linux/mount.h:#define	OPEN_TREE_CLOEXEC    O_CLOEXEC
+> include/uapi/linux/perf_event.h:#define PERF_FLAG_FD_CLOEXEC (1UL << 3) /* O_CLOEXEC */
+> include/uapi/linux/signalfd.h:#define	SFD_CLOEXEC O_CLOEXEC
+> include/uapi/linux/timerfd.h:#define	TFD_CLOEXEC O_CLOEXEC
+>
+> So I think we should just do the same.
 
-The 715/64 is a 7100LC machine though.  I think you need to boot on
-the 730 to test the non-coherent path.
+Hmm, OK, then I have to agree.
+
+> A clean flag namespace seems
+> nicer to me too tbh.
+
+Disagree but this doesn't matter ;)
+
+Oleg.
 
