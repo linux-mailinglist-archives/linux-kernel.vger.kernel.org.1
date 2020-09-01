@@ -2,329 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1263259F20
+	by mail.lfdr.de (Postfix) with ESMTP id 2C446259F1F
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 21:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731993AbgIATWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 15:22:09 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53436 "EHLO mga06.intel.com"
+        id S1731941AbgIATWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 15:22:07 -0400
+Received: from mga06.intel.com ([134.134.136.31]:53433 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728021AbgIATVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 15:21:39 -0400
-IronPort-SDR: 27ad20Qi73CMdag9zkpT1SBCSB6U7PRuqaYg6nG/64IR4nbqxQOOj24omrPkFM4YgmIahVH1Pz
- fNTuESbRkdrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="218807319"
+        id S1727993AbgIATVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 15:21:36 -0400
+IronPort-SDR: BuYiWUNVyVwK8BiScuJRC4ifIShA7YqwHMRJmXgBVz6yg4fDIWtpFspJyPwgxvmtFaI/F1Xysp
+ siPPO4bX/HZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="218807323"
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="218807319"
+   d="scan'208";a="218807323"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 12:21:31 -0700
-IronPort-SDR: 8+7Qb9Yh7fmLnbRgL4J/O8VM4eW8Jxw68vKv3cWt4dkHh4f90BX9IUSDR1fLFGGRz4yk3ENWSu
- AFZW1IiboFKw==
+IronPort-SDR: 5drdpCQH11pzMAqYaYC77s4WelUuDTLDz3gv/u1ux1YTm4wMUZj2BGkOmdZ8qQDtuisaEoMWTI
+ uhO4Ugw6CQhQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,380,1592895600"; 
-   d="scan'208";a="325480466"
+   d="scan'208";a="325480471"
 Received: from txasoft-yocto.an.intel.com ([10.123.72.192])
   by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2020 12:21:30 -0700
 From:   Gage Eads <gage.eads@intel.com>
 To:     linux-kernel@vger.kernel.org, arnd@arndb.de,
         gregkh@linuxfoundation.org
 Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com
-Subject: [PATCH v3 07/19] dlb2: add queue create and queue-depth-get ioctls
-Date:   Tue,  1 Sep 2020 14:15:36 -0500
-Message-Id: <20200901191548.31646-8-gage.eads@intel.com>
+Subject: [PATCH v3 08/19] dlb2: add ioctl to configure ports, query poll mode
+Date:   Tue,  1 Sep 2020 14:15:37 -0500
+Message-Id: <20200901191548.31646-9-gage.eads@intel.com>
 X-Mailer: git-send-email 2.13.6
 In-Reply-To: <20200901191548.31646-1-gage.eads@intel.com>
 References: <20200901191548.31646-1-gage.eads@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a CPU enqueues a queue entry (QE) to DLB 2.0, the QE entry is sent to
-a DLB 2.0 queue. These queues hold queue entries (QEs) that have not yet
-been scheduled to a destination port. The queue's depth is the number of
-QEs residing in a queue.
+The port is a core's interface to the DLB, and it consists of an MMIO page
+(the "producer port" (PP)) through which the core enqueues a queue entry
+and an in-memory queue (the "consumer queue" (CQ)) to which the device
+schedules QEs. The driver allocates DMA memory for each port's CQ, and
+frees this memory during domain reset or driver removal. A subsequent
+commit will add the mmap interface for an application to directly access
+the PP and CQ regions.
 
-Each queue supports multiple priority levels, and while a directed queue
-has a 1:1 mapping with a directed port, load-balanced queues can be
-configured with a set of load-balanced ports that software desires the
-queue's QEs to be scheduled to.
+The device supports two formats ("standard" and "sparse") for CQ entries,
+dubbed the "poll mode". This (device-wide) mode is selected by the driver;
+to determine the mode at run time, the driver provides an ioctl for
+user-space software to query which mode the driver has configured. In this
+way, the policy of which mode to use is decoupled from user-space software.
 
 Signed-off-by: Gage Eads <gage.eads@intel.com>
 Reviewed-by: Magnus Karlsson <magnus.karlsson@intel.com>
 ---
- drivers/misc/dlb2/dlb2_ioctl.c    |  61 ++++
- drivers/misc/dlb2/dlb2_ioctl.h    |   2 +
- drivers/misc/dlb2/dlb2_main.c     |   2 +
- drivers/misc/dlb2/dlb2_main.h     |  16 +
- drivers/misc/dlb2/dlb2_pf_ops.c   |  40 +++
- drivers/misc/dlb2/dlb2_resource.c | 732 ++++++++++++++++++++++++++++++++++++++
- drivers/misc/dlb2/dlb2_resource.h | 125 +++++++
- include/uapi/linux/dlb2_user.h    | 138 +++++++
- 8 files changed, 1116 insertions(+)
+ drivers/misc/dlb2/dlb2_hw_types.h |   1 +
+ drivers/misc/dlb2/dlb2_ioctl.c    | 150 +++++++
+ drivers/misc/dlb2/dlb2_main.c     |  70 +++
+ drivers/misc/dlb2/dlb2_main.h     |  23 +
+ drivers/misc/dlb2/dlb2_pf_ops.c   |  46 ++
+ drivers/misc/dlb2/dlb2_resource.c | 922 ++++++++++++++++++++++++++++++++++++++
+ drivers/misc/dlb2/dlb2_resource.h |  89 ++++
+ include/uapi/linux/dlb2_user.h    |  99 ++++
+ 8 files changed, 1400 insertions(+)
 
+diff --git a/drivers/misc/dlb2/dlb2_hw_types.h b/drivers/misc/dlb2/dlb2_hw_types.h
+index e43860a215ff..7db59157da15 100644
+--- a/drivers/misc/dlb2/dlb2_hw_types.h
++++ b/drivers/misc/dlb2/dlb2_hw_types.h
+@@ -317,6 +317,7 @@ struct dlb2_hw {
+ 
+ 	/* Virtualization */
+ 	int virt_mode;
++	unsigned int pasid[DLB2_MAX_NUM_VDEVS];
+ };
+ 
+ #endif /* __DLB2_HW_TYPES_H */
 diff --git a/drivers/misc/dlb2/dlb2_ioctl.c b/drivers/misc/dlb2/dlb2_ioctl.c
-index 56ebd9387e31..f787fd19689f 100644
+index f787fd19689f..7a3fea60c302 100644
 --- a/drivers/misc/dlb2/dlb2_ioctl.c
 +++ b/drivers/misc/dlb2/dlb2_ioctl.c
-@@ -9,6 +9,67 @@
- #include "dlb2_ioctl.h"
- #include "dlb2_main.h"
+@@ -51,6 +51,126 @@ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(create_dir_queue)
+ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(get_ldb_queue_depth)
+ DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(get_dir_queue_depth)
  
 +/*
-+ * The DLB domain ioctl callback template minimizes replication of boilerplate
-+ * code to copy arguments, acquire and release the resource lock, and execute
-+ * the command.  The arguments and response structure name should have the
-+ * format dlb2_<lower_name>_args.
++ * Port creation ioctls don't use the callback template macro because they have
++ * a number of OS-dependent memory operations.
 + */
-+#define DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(lower_name)			   \
-+static int dlb2_domain_ioctl_##lower_name(struct dlb2_dev *dev,		   \
-+					  struct dlb2_domain *domain,	   \
-+					  unsigned long user_arg)	   \
-+{									   \
-+	struct dlb2_cmd_response response = {0};			   \
-+	struct dlb2_##lower_name##_args arg;				   \
-+	int ret;							   \
-+									   \
-+	if (copy_from_user(&arg, (void __user *)user_arg, sizeof(arg)))	   \
-+		return -EFAULT;						   \
-+									   \
-+	mutex_lock(&dev->resource_mutex);				   \
-+									   \
-+	ret = dev->ops->lower_name(&dev->hw,				   \
-+				   domain->id,				   \
-+				   &arg,				   \
-+				   &response);				   \
-+									   \
-+	mutex_unlock(&dev->resource_mutex);				   \
-+									   \
-+	BUILD_BUG_ON(offsetof(typeof(arg), response) != 0);		   \
-+									   \
-+	if (copy_to_user((void __user *)user_arg,			   \
-+			 &response,					   \
-+			 sizeof(response)))				   \
-+		return -EFAULT;						   \
-+									   \
-+	return ret;							   \
++static int dlb2_domain_ioctl_create_ldb_port(struct dlb2_dev *dev,
++					     struct dlb2_domain *domain,
++					     unsigned long user_arg)
++{
++	struct dlb2_cmd_response response = {0};
++	struct dlb2_create_ldb_port_args arg;
++	dma_addr_t cq_dma_base = 0;
++	void *cq_base = NULL;
++	int ret;
++
++	if (copy_from_user(&arg, (void __user *)user_arg, sizeof(arg)))
++		return -EFAULT;
++
++	mutex_lock(&dev->resource_mutex);
++
++	cq_base = dma_alloc_coherent(&dev->pdev->dev,
++				     DLB2_CQ_SIZE,
++				     &cq_dma_base,
++				     GFP_KERNEL);
++	if (!cq_base) {
++		response.status = DLB2_ST_NO_MEMORY;
++		ret = -ENOMEM;
++		goto unlock;
++	}
++
++	ret = dev->ops->create_ldb_port(&dev->hw,
++					domain->id,
++					&arg,
++					(uintptr_t)cq_dma_base,
++					&response);
++	if (ret)
++		goto unlock;
++
++	/* Fill out the per-port data structure */
++	dev->ldb_port[response.id].id = response.id;
++	dev->ldb_port[response.id].is_ldb = true;
++	dev->ldb_port[response.id].domain = domain;
++	dev->ldb_port[response.id].cq_base = cq_base;
++	dev->ldb_port[response.id].cq_dma_base = cq_dma_base;
++	dev->ldb_port[response.id].valid = true;
++
++unlock:
++	if (ret && cq_dma_base)
++		dma_free_coherent(&dev->pdev->dev,
++				  DLB2_CQ_SIZE,
++				  cq_base,
++				  cq_dma_base);
++
++	mutex_unlock(&dev->resource_mutex);
++
++	BUILD_BUG_ON(offsetof(typeof(arg), response) != 0);
++
++	if (copy_to_user((void __user *)user_arg, &response, sizeof(response)))
++		return -EFAULT;
++
++	return ret;
 +}
 +
-+DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(create_ldb_queue)
-+DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(create_dir_queue)
-+DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(get_ldb_queue_depth)
-+DLB2_DOMAIN_IOCTL_CALLBACK_TEMPLATE(get_dir_queue_depth)
-+
-+long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
++static int dlb2_domain_ioctl_create_dir_port(struct dlb2_dev *dev,
++					     struct dlb2_domain *domain,
++					     unsigned long user_arg)
 +{
-+	struct dlb2_domain *dom = f->private_data;
-+	struct dlb2_dev *dev = dom->dlb2_dev;
++	struct dlb2_cmd_response response = {0};
++	struct dlb2_create_dir_port_args arg;
++	dma_addr_t cq_dma_base = 0;
++	void *cq_base = NULL;
++	int ret;
 +
-+	switch (cmd) {
-+	case DLB2_IOC_CREATE_LDB_QUEUE:
-+		return dlb2_domain_ioctl_create_ldb_queue(dev, dom, arg);
-+	case DLB2_IOC_CREATE_DIR_QUEUE:
-+		return dlb2_domain_ioctl_create_dir_queue(dev, dom, arg);
-+	case DLB2_IOC_GET_LDB_QUEUE_DEPTH:
-+		return dlb2_domain_ioctl_get_ldb_queue_depth(dev, dom, arg);
-+	case DLB2_IOC_GET_DIR_QUEUE_DEPTH:
-+		return dlb2_domain_ioctl_get_dir_queue_depth(dev, dom, arg);
-+	default:
-+		return -ENOTTY;
++	if (copy_from_user(&arg, (void __user *)user_arg, sizeof(arg)))
++		return -EFAULT;
++
++	mutex_lock(&dev->resource_mutex);
++
++	cq_base = dma_alloc_coherent(&dev->pdev->dev,
++				     DLB2_CQ_SIZE,
++				     &cq_dma_base,
++				     GFP_KERNEL);
++	if (!cq_base) {
++		response.status = DLB2_ST_NO_MEMORY;
++		ret = -ENOMEM;
++		goto unlock;
++	}
++
++	ret = dev->ops->create_dir_port(&dev->hw,
++					domain->id,
++					&arg,
++					(uintptr_t)cq_dma_base,
++					&response);
++	if (ret)
++		goto unlock;
++
++	/* Fill out the per-port data structure */
++	dev->dir_port[response.id].id = response.id;
++	dev->dir_port[response.id].is_ldb = false;
++	dev->dir_port[response.id].domain = domain;
++	dev->dir_port[response.id].cq_base = cq_base;
++	dev->dir_port[response.id].cq_dma_base = cq_dma_base;
++	dev->dir_port[response.id].valid = true;
++
++unlock:
++	if (ret && cq_dma_base)
++		dma_free_coherent(&dev->pdev->dev,
++				  DLB2_CQ_SIZE,
++				  cq_base,
++				  cq_dma_base);
++
++	mutex_unlock(&dev->resource_mutex);
++
++	BUILD_BUG_ON(offsetof(typeof(arg), response) != 0);
++
++	if (copy_to_user((void __user *)user_arg, &response, sizeof(response)))
++		return -EFAULT;
++
++	return ret;
++}
++
+ long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ {
+ 	struct dlb2_domain *dom = f->private_data;
+@@ -65,6 +185,10 @@ long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 		return dlb2_domain_ioctl_get_ldb_queue_depth(dev, dom, arg);
+ 	case DLB2_IOC_GET_DIR_QUEUE_DEPTH:
+ 		return dlb2_domain_ioctl_get_dir_queue_depth(dev, dom, arg);
++	case DLB2_IOC_CREATE_LDB_PORT:
++		return dlb2_domain_ioctl_create_ldb_port(dev, dom, arg);
++	case DLB2_IOC_CREATE_DIR_PORT:
++		return dlb2_domain_ioctl_create_dir_port(dev, dom, arg);
+ 	default:
+ 		return -ENOTTY;
+ 	}
+@@ -168,6 +292,30 @@ static int dlb2_ioctl_get_num_resources(struct dlb2_dev *dev,
+ 	return ret;
+ }
+ 
++static int dlb2_ioctl_query_cq_poll_mode(struct dlb2_dev *dev,
++					 unsigned long user_arg)
++{
++	struct dlb2_query_cq_poll_mode_args arg;
++	struct dlb2_cmd_response response = {0};
++	int ret;
++
++	if (copy_from_user(&arg, (void __user *)user_arg, sizeof(arg)))
++		return -EFAULT;
++
++	mutex_lock(&dev->resource_mutex);
++
++	ret = dev->ops->query_cq_poll_mode(dev, &response);
++
++	mutex_unlock(&dev->resource_mutex);
++
++	BUILD_BUG_ON(offsetof(typeof(arg), response) != 0);
++
++	if (copy_to_user((void __user *)user_arg, &response, sizeof(response)))
++		return -EFAULT;
++
++	return ret;
++}
++
+ long dlb2_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ {
+ 	struct dlb2_dev *dev;
+@@ -181,6 +329,8 @@ long dlb2_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+ 		return dlb2_ioctl_create_sched_domain(dev, arg);
+ 	case DLB2_IOC_GET_NUM_RESOURCES:
+ 		return dlb2_ioctl_get_num_resources(dev, arg);
++	case DLB2_IOC_QUERY_CQ_POLL_MODE:
++		return dlb2_ioctl_query_cq_poll_mode(dev, arg);
+ 	default:
+ 		return -ENOTTY;
+ 	}
+diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
+index b331e096d206..a7512832fc1c 100644
+--- a/drivers/misc/dlb2/dlb2_main.c
++++ b/drivers/misc/dlb2/dlb2_main.c
+@@ -107,11 +107,79 @@ int dlb2_init_domain(struct dlb2_dev *dlb2_dev, u32 domain_id)
+ 	return 0;
+ }
+ 
++static void dlb2_release_domain_memory(struct dlb2_dev *dev, u32 domain_id)
++{
++	struct dlb2_port *port;
++	int i;
++
++	for (i = 0; i < DLB2_MAX_NUM_LDB_PORTS; i++) {
++		port = &dev->ldb_port[i];
++
++		if (port->valid && port->domain->id == domain_id) {
++			dma_free_coherent(&dev->pdev->dev,
++					  DLB2_CQ_SIZE,
++					  port->cq_base,
++					  port->cq_dma_base);
++
++			port->valid = false;
++		}
++	}
++
++	for (i = 0; i < DLB2_MAX_NUM_DIR_PORTS; i++) {
++		port = &dev->dir_port[i];
++
++		if (port->valid && port->domain->id == domain_id) {
++			dma_free_coherent(&dev->pdev->dev,
++					  DLB2_CQ_SIZE,
++					  port->cq_base,
++					  port->cq_dma_base);
++
++			port->valid = false;
++		}
 +	}
 +}
 +
- /* [7:0]: device revision, [15:8]: device version */
- #define DLB2_SET_DEVICE_VERSION(ver, rev) (((ver) << 8) | (rev))
- 
-diff --git a/drivers/misc/dlb2/dlb2_ioctl.h b/drivers/misc/dlb2/dlb2_ioctl.h
-index 367c93b98414..548cff477cf5 100644
---- a/drivers/misc/dlb2/dlb2_ioctl.h
-+++ b/drivers/misc/dlb2/dlb2_ioctl.h
-@@ -9,4 +9,6 @@
- 
- long dlb2_ioctl(struct file *f, unsigned int cmd, unsigned long arg);
- 
-+long dlb2_domain_ioctl(struct file *f, unsigned int cmd, unsigned long arg);
++static void dlb2_release_device_memory(struct dlb2_dev *dev)
++{
++	struct dlb2_port *port;
++	int i;
 +
- #endif /* __DLB2_IOCTL_H */
-diff --git a/drivers/misc/dlb2/dlb2_main.c b/drivers/misc/dlb2/dlb2_main.c
-index 17a26e6856d1..b331e096d206 100644
---- a/drivers/misc/dlb2/dlb2_main.c
-+++ b/drivers/misc/dlb2/dlb2_main.c
-@@ -154,6 +154,8 @@ static int dlb2_domain_close(struct inode *i, struct file *f)
- const struct file_operations dlb2_domain_fops = {
- 	.owner   = THIS_MODULE,
- 	.release = dlb2_domain_close,
-+	.unlocked_ioctl = dlb2_domain_ioctl,
-+	.compat_ioctl = compat_ptr_ioctl,
- };
++	for (i = 0; i < DLB2_MAX_NUM_LDB_PORTS; i++) {
++		port = &dev->ldb_port[i];
++
++		if (port->valid) {
++			dma_free_coherent(&dev->pdev->dev,
++					  DLB2_CQ_SIZE,
++					  port->cq_base,
++					  port->cq_dma_base);
++
++			port->valid = false;
++		}
++	}
++
++	for (i = 0; i < DLB2_MAX_NUM_DIR_PORTS; i++) {
++		port = &dev->dir_port[i];
++
++		if (port->valid) {
++			dma_free_coherent(&dev->pdev->dev,
++					  DLB2_CQ_SIZE,
++					  port->cq_base,
++					  port->cq_dma_base);
++
++			port->valid = false;
++		}
++	}
++}
++
+ static int __dlb2_free_domain(struct dlb2_dev *dev, struct dlb2_domain *domain)
+ {
+ 	int ret = 0;
  
- /**********************************/
+ 	ret = dev->ops->reset_domain(&dev->hw, domain->id);
++
++	/* Unpin and free all memory pages associated with the domain */
++	dlb2_release_domain_memory(dev, domain->id);
++
+ 	if (ret) {
+ 		dev->domain_reset_failed = true;
+ 		dev_err(dev->dlb2_device,
+@@ -329,6 +397,8 @@ static void dlb2_remove(struct pci_dev *pdev)
+ 
+ 	dlb2_resource_free(&dlb2_dev->hw);
+ 
++	dlb2_release_device_memory(dlb2_dev);
++
+ 	dlb2_dev->ops->device_destroy(dlb2_dev, dlb2_class);
+ 
+ 	dlb2_dev->ops->cdev_del(dlb2_dev);
 diff --git a/drivers/misc/dlb2/dlb2_main.h b/drivers/misc/dlb2/dlb2_main.h
-index 86344f223649..41a3254a78ac 100644
+index 41a3254a78ac..ceb5512a104c 100644
 --- a/drivers/misc/dlb2/dlb2_main.h
 +++ b/drivers/misc/dlb2/dlb2_main.h
-@@ -60,9 +60,25 @@ struct dlb2_device_ops {
- 	int (*create_sched_domain)(struct dlb2_hw *hw,
- 				   struct dlb2_create_sched_domain_args *args,
- 				   struct dlb2_cmd_response *resp);
-+	int (*create_ldb_queue)(struct dlb2_hw *hw,
-+				u32 domain_id,
-+				struct dlb2_create_ldb_queue_args *args,
-+				struct dlb2_cmd_response *resp);
-+	int (*create_dir_queue)(struct dlb2_hw *hw,
-+				u32 domain_id,
-+				struct dlb2_create_dir_queue_args *args,
-+				struct dlb2_cmd_response *resp);
+@@ -68,6 +68,16 @@ struct dlb2_device_ops {
+ 				u32 domain_id,
+ 				struct dlb2_create_dir_queue_args *args,
+ 				struct dlb2_cmd_response *resp);
++	int (*create_ldb_port)(struct dlb2_hw *hw,
++			       u32 domain_id,
++			       struct dlb2_create_ldb_port_args *args,
++			       uintptr_t cq_dma_base,
++			       struct dlb2_cmd_response *resp);
++	int (*create_dir_port)(struct dlb2_hw *hw,
++			       u32 domain_id,
++			       struct dlb2_create_dir_port_args *args,
++			       uintptr_t cq_dma_base,
++			       struct dlb2_cmd_response *resp);
  	int (*get_num_resources)(struct dlb2_hw *hw,
  				 struct dlb2_get_num_resources_args *args);
  	int (*reset_domain)(struct dlb2_hw *hw, u32 domain_id);
-+	int (*get_ldb_queue_depth)(struct dlb2_hw *hw,
-+				   u32 domain_id,
-+				   struct dlb2_get_ldb_queue_depth_args *args,
-+				   struct dlb2_cmd_response *resp);
-+	int (*get_dir_queue_depth)(struct dlb2_hw *hw,
-+				   u32 domain_id,
-+				   struct dlb2_get_dir_queue_depth_args *args,
-+				   struct dlb2_cmd_response *resp);
+@@ -80,11 +90,22 @@ struct dlb2_device_ops {
+ 				   struct dlb2_get_dir_queue_depth_args *args,
+ 				   struct dlb2_cmd_response *resp);
  	void (*init_hardware)(struct dlb2_dev *dev);
++	int (*query_cq_poll_mode)(struct dlb2_dev *dev,
++				  struct dlb2_cmd_response *user_resp);
  };
  
+ extern struct dlb2_device_ops dlb2_pf_ops;
+ extern const struct file_operations dlb2_domain_fops;
+ 
++struct dlb2_port {
++	void *cq_base;
++	dma_addr_t cq_dma_base;
++	struct dlb2_domain *domain;
++	int id;
++	u8 is_ldb;
++	u8 valid;
++};
++
+ struct dlb2_domain {
+ 	struct dlb2_dev *dlb2_dev;
+ 	struct kref refcnt;
+@@ -99,6 +120,8 @@ struct dlb2_dev {
+ 	struct list_head list;
+ 	struct device *dlb2_device;
+ 	struct dlb2_domain *sched_domains[DLB2_MAX_NUM_DOMAINS];
++	struct dlb2_port ldb_port[DLB2_MAX_NUM_LDB_PORTS];
++	struct dlb2_port dir_port[DLB2_MAX_NUM_DIR_PORTS];
+ 	/*
+ 	 * The resource mutex serializes access to driver data structures and
+ 	 * hardware registers.
 diff --git a/drivers/misc/dlb2/dlb2_pf_ops.c b/drivers/misc/dlb2/dlb2_pf_ops.c
-index 6ca06406b0f2..89c0e66b3c6b 100644
+index 89c0e66b3c6b..8556dcdff8c4 100644
 --- a/drivers/misc/dlb2/dlb2_pf_ops.c
 +++ b/drivers/misc/dlb2/dlb2_pf_ops.c
-@@ -216,6 +216,24 @@ dlb2_pf_create_sched_domain(struct dlb2_hw *hw,
+@@ -198,9 +198,16 @@ dlb2_pf_wait_for_device_ready(struct dlb2_dev *dlb2_dev,
+ 	return 0;
+ }
+ 
++static bool dlb2_sparse_cq_enabled = true;
++
+ static void
+ dlb2_pf_init_hardware(struct dlb2_dev *dlb2_dev)
+ {
++	if (dlb2_sparse_cq_enabled) {
++		dlb2_hw_enable_sparse_ldb_cq_mode(&dlb2_dev->hw);
++
++		dlb2_hw_enable_sparse_dir_cq_mode(&dlb2_dev->hw);
++	}
+ }
+ 
+ /*****************************/
+@@ -234,6 +241,28 @@ dlb2_pf_create_dir_queue(struct dlb2_hw *hw,
  }
  
  static int
-+dlb2_pf_create_ldb_queue(struct dlb2_hw *hw,
-+			 u32 id,
-+			 struct dlb2_create_ldb_queue_args *args,
-+			 struct dlb2_cmd_response *resp)
++dlb2_pf_create_ldb_port(struct dlb2_hw *hw,
++			u32 id,
++			struct dlb2_create_ldb_port_args *args,
++			uintptr_t cq_dma_base,
++			struct dlb2_cmd_response *resp)
 +{
-+	return dlb2_hw_create_ldb_queue(hw, id, args, resp, false, 0);
++	return dlb2_hw_create_ldb_port(hw, id, args, cq_dma_base,
++				       resp, false, 0);
 +}
 +
 +static int
-+dlb2_pf_create_dir_queue(struct dlb2_hw *hw,
-+			 u32 id,
-+			 struct dlb2_create_dir_queue_args *args,
-+			 struct dlb2_cmd_response *resp)
++dlb2_pf_create_dir_port(struct dlb2_hw *hw,
++			u32 id,
++			struct dlb2_create_dir_port_args *args,
++			uintptr_t cq_dma_base,
++			struct dlb2_cmd_response *resp)
 +{
-+	return dlb2_hw_create_dir_queue(hw, id, args, resp, false, 0);
++	return dlb2_hw_create_dir_port(hw, id, args, cq_dma_base,
++				       resp, false, 0);
 +}
 +
 +static int
  dlb2_pf_get_num_resources(struct dlb2_hw *hw,
  			  struct dlb2_get_num_resources_args *args)
  {
-@@ -228,6 +246,24 @@ dlb2_pf_reset_domain(struct dlb2_hw *hw, u32 id)
- 	return dlb2_reset_domain(hw, id, false, 0);
+@@ -264,6 +293,20 @@ dlb2_pf_get_dir_queue_depth(struct dlb2_hw *hw,
+ 	return dlb2_hw_get_dir_queue_depth(hw, id, args, resp, false, 0);
  }
  
 +static int
-+dlb2_pf_get_ldb_queue_depth(struct dlb2_hw *hw,
-+			    u32 id,
-+			    struct dlb2_get_ldb_queue_depth_args *args,
-+			    struct dlb2_cmd_response *resp)
++dlb2_pf_query_cq_poll_mode(struct dlb2_dev *dlb2_dev,
++			   struct dlb2_cmd_response *user_resp)
 +{
-+	return dlb2_hw_get_ldb_queue_depth(hw, id, args, resp, false, 0);
-+}
++	user_resp->status = 0;
 +
-+static int
-+dlb2_pf_get_dir_queue_depth(struct dlb2_hw *hw,
-+			    u32 id,
-+			    struct dlb2_get_dir_queue_depth_args *args,
-+			    struct dlb2_cmd_response *resp)
-+{
-+	return dlb2_hw_get_dir_queue_depth(hw, id, args, resp, false, 0);
++	if (dlb2_sparse_cq_enabled)
++		user_resp->id = DLB2_CQ_POLL_MODE_SPARSE;
++	else
++		user_resp->id = DLB2_CQ_POLL_MODE_STD;
++
++	return 0;
 +}
 +
  /********************************/
  /****** DLB2 PF Device Ops ******/
  /********************************/
-@@ -246,7 +282,11 @@ struct dlb2_device_ops dlb2_pf_ops = {
- 	.enable_pm = dlb2_pf_enable_pm,
- 	.wait_for_device_ready = dlb2_pf_wait_for_device_ready,
+@@ -284,9 +327,12 @@ struct dlb2_device_ops dlb2_pf_ops = {
  	.create_sched_domain = dlb2_pf_create_sched_domain,
-+	.create_ldb_queue = dlb2_pf_create_ldb_queue,
-+	.create_dir_queue = dlb2_pf_create_dir_queue,
+ 	.create_ldb_queue = dlb2_pf_create_ldb_queue,
+ 	.create_dir_queue = dlb2_pf_create_dir_queue,
++	.create_ldb_port = dlb2_pf_create_ldb_port,
++	.create_dir_port = dlb2_pf_create_dir_port,
  	.get_num_resources = dlb2_pf_get_num_resources,
  	.reset_domain = dlb2_pf_reset_domain,
-+	.get_ldb_queue_depth = dlb2_pf_get_ldb_queue_depth,
-+	.get_dir_queue_depth = dlb2_pf_get_dir_queue_depth,
+ 	.get_ldb_queue_depth = dlb2_pf_get_ldb_queue_depth,
+ 	.get_dir_queue_depth = dlb2_pf_get_dir_queue_depth,
  	.init_hardware = dlb2_pf_init_hardware,
++	.query_cq_poll_mode = dlb2_pf_query_cq_poll_mode,
  };
 diff --git a/drivers/misc/dlb2/dlb2_resource.c b/drivers/misc/dlb2/dlb2_resource.c
-index 2cc744cea2d5..2531c6508994 100644
+index 2531c6508994..03824fd48f60 100644
 --- a/drivers/misc/dlb2/dlb2_resource.c
 +++ b/drivers/misc/dlb2/dlb2_resource.c
-@@ -237,6 +237,24 @@ static struct dlb2_hw_domain *dlb2_get_domain_from_id(struct dlb2_hw *hw,
- 	return NULL;
- }
- 
-+static struct dlb2_dir_pq_pair *
-+dlb2_get_domain_used_dir_pq(u32 id,
-+			    bool vdev_req,
-+			    struct dlb2_hw_domain *domain)
-+{
-+	struct dlb2_dir_pq_pair *port;
-+
-+	if (id >= DLB2_MAX_NUM_DIR_PORTS)
-+		return NULL;
-+
-+	DLB2_DOM_LIST_FOR(domain->used_dir_pq_pairs, port)
-+		if ((!vdev_req && port->id.phys_id == id) ||
-+		    (vdev_req && port->id.virt_id == id))
-+			return port;
-+
-+	return NULL;
-+}
-+
- static struct dlb2_ldb_queue *
- dlb2_get_ldb_queue_from_id(struct dlb2_hw *hw,
- 			   u32 id,
-@@ -268,6 +286,24 @@ dlb2_get_ldb_queue_from_id(struct dlb2_hw *hw,
- 	return NULL;
- }
- 
-+static struct dlb2_ldb_queue *
-+dlb2_get_domain_ldb_queue(u32 id,
-+			  bool vdev_req,
-+			  struct dlb2_hw_domain *domain)
-+{
-+	struct dlb2_ldb_queue *queue;
-+
-+	if (id >= DLB2_MAX_NUM_LDB_QUEUES)
-+		return NULL;
-+
-+	DLB2_DOM_LIST_FOR(domain->used_ldb_queues, queue)
-+		if ((!vdev_req && queue->id.phys_id == id) ||
-+		    (vdev_req && queue->id.virt_id == id))
-+			return queue;
-+
-+	return NULL;
-+}
-+
- static int dlb2_attach_ldb_queues(struct dlb2_hw *hw,
- 				  struct dlb2_function_resources *rsrcs,
- 				  struct dlb2_hw_domain *domain,
-@@ -707,6 +743,352 @@ dlb2_verify_create_sched_dom_args(struct dlb2_function_resources *rsrcs,
- 	return 0;
+@@ -1089,6 +1089,171 @@ static void dlb2_configure_dir_queue(struct dlb2_hw *hw,
+ 	queue->queue_configured = true;
  }
  
 +static int
-+dlb2_verify_create_ldb_queue_args(struct dlb2_hw *hw,
-+				  u32 domain_id,
-+				  struct dlb2_create_ldb_queue_args *args,
-+				  struct dlb2_cmd_response *resp,
-+				  bool vdev_req,
-+				  unsigned int vdev_id)
++dlb2_verify_create_ldb_port_args(struct dlb2_hw *hw,
++				 u32 domain_id,
++				 uintptr_t cq_dma_base,
++				 struct dlb2_create_ldb_port_args *args,
++				 struct dlb2_cmd_response *resp,
++				 bool vdev_req,
++				 unsigned int vdev_id)
 +{
 +	struct dlb2_hw_domain *domain;
 +	int i;
@@ -346,55 +530,57 @@ index 2cc744cea2d5..2531c6508994 100644
 +		return -EINVAL;
 +	}
 +
-+	if (list_empty(&domain->avail_ldb_queues)) {
-+		resp->status = DLB2_ST_LDB_QUEUES_UNAVAILABLE;
++	if (args->cos_id >= DLB2_NUM_COS_DOMAINS) {
++		resp->status = DLB2_ST_INVALID_COS_ID;
 +		return -EINVAL;
 +	}
 +
-+	if (args->num_sequence_numbers) {
-+		for (i = 0; i < DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS; i++) {
-+			struct dlb2_sn_group *group = &hw->rsrcs.sn_groups[i];
-+
-+			if (group->sequence_numbers_per_queue ==
-+			    args->num_sequence_numbers &&
-+			    !dlb2_sn_group_full(group))
++	if (args->cos_strict) {
++		if (list_empty(&domain->avail_ldb_ports[args->cos_id])) {
++			resp->status = DLB2_ST_LDB_PORTS_UNAVAILABLE;
++			return -EINVAL;
++		}
++	} else {
++		for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++) {
++			if (!list_empty(&domain->avail_ldb_ports[i]))
 +				break;
 +		}
 +
-+		if (i == DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS) {
-+			resp->status = DLB2_ST_SEQUENCE_NUMBERS_UNAVAILABLE;
++		if (i == DLB2_NUM_COS_DOMAINS) {
++			resp->status = DLB2_ST_LDB_PORTS_UNAVAILABLE;
 +			return -EINVAL;
 +		}
 +	}
 +
-+	if (args->num_qid_inflights > 4096) {
-+		resp->status = DLB2_ST_INVALID_QID_INFLIGHT_ALLOCATION;
++	/* Check cache-line alignment */
++	if ((cq_dma_base & 0x3F) != 0) {
++		resp->status = DLB2_ST_INVALID_CQ_VIRT_ADDR;
 +		return -EINVAL;
 +	}
 +
-+	/* Inflights must be <= number of sequence numbers if ordered */
-+	if (args->num_sequence_numbers != 0 &&
-+	    args->num_qid_inflights > args->num_sequence_numbers) {
-+		resp->status = DLB2_ST_INVALID_QID_INFLIGHT_ALLOCATION;
++	if (args->cq_depth != 1 &&
++	    args->cq_depth != 2 &&
++	    args->cq_depth != 4 &&
++	    args->cq_depth != 8 &&
++	    args->cq_depth != 16 &&
++	    args->cq_depth != 32 &&
++	    args->cq_depth != 64 &&
++	    args->cq_depth != 128 &&
++	    args->cq_depth != 256 &&
++	    args->cq_depth != 512 &&
++	    args->cq_depth != 1024) {
++		resp->status = DLB2_ST_INVALID_CQ_DEPTH;
 +		return -EINVAL;
 +	}
 +
-+	if (domain->num_avail_aqed_entries < args->num_atomic_inflights) {
-+		resp->status = DLB2_ST_ATOMIC_INFLIGHTS_UNAVAILABLE;
++	/* The history list size must be >= 1 */
++	if (!args->cq_history_list_size) {
++		resp->status = DLB2_ST_INVALID_HIST_LIST_DEPTH;
 +		return -EINVAL;
 +	}
 +
-+	if (args->num_atomic_inflights &&
-+	    args->lock_id_comp_level != 0 &&
-+	    args->lock_id_comp_level != 64 &&
-+	    args->lock_id_comp_level != 128 &&
-+	    args->lock_id_comp_level != 256 &&
-+	    args->lock_id_comp_level != 512 &&
-+	    args->lock_id_comp_level != 1024 &&
-+	    args->lock_id_comp_level != 2048 &&
-+	    args->lock_id_comp_level != 4096 &&
-+	    args->lock_id_comp_level != 65536) {
-+		resp->status = DLB2_ST_INVALID_LOCK_ID_COMP_LEVEL;
++	if (args->cq_history_list_size > domain->avail_hist_list_entries) {
++		resp->status = DLB2_ST_HIST_LIST_ENTRIES_UNAVAILABLE;
 +		return -EINVAL;
 +	}
 +
@@ -402,12 +588,13 @@ index 2cc744cea2d5..2531c6508994 100644
 +}
 +
 +static int
-+dlb2_verify_create_dir_queue_args(struct dlb2_hw *hw,
-+				  u32 domain_id,
-+				  struct dlb2_create_dir_queue_args *args,
-+				  struct dlb2_cmd_response *resp,
-+				  bool vdev_req,
-+				  unsigned int vdev_id)
++dlb2_verify_create_dir_port_args(struct dlb2_hw *hw,
++				 u32 domain_id,
++				 uintptr_t cq_dma_base,
++				 struct dlb2_create_dir_port_args *args,
++				 struct dlb2_cmd_response *resp,
++				 bool vdev_req,
++				 unsigned int vdev_id)
 +{
 +	struct dlb2_hw_domain *domain;
 +
@@ -429,341 +616,589 @@ index 2cc744cea2d5..2531c6508994 100644
 +	}
 +
 +	/*
-+	 * If the user claims the port is already configured, validate the port
-+	 * ID, its domain, and whether the port is configured.
++	 * If the user claims the queue is already configured, validate
++	 * the queue ID, its domain, and whether the queue is configured.
 +	 */
-+	if (args->port_id != -1) {
-+		struct dlb2_dir_pq_pair *port;
++	if (args->queue_id != -1) {
++		struct dlb2_dir_pq_pair *queue;
 +
-+		port = dlb2_get_domain_used_dir_pq(args->port_id,
-+						   vdev_req,
-+						   domain);
++		queue = dlb2_get_domain_used_dir_pq(args->queue_id,
++						    vdev_req,
++						    domain);
 +
-+		if (!port || port->domain_id.phys_id != domain->id.phys_id ||
-+		    !port->port_configured) {
-+			resp->status = DLB2_ST_INVALID_PORT_ID;
++		if (!queue || queue->domain_id.phys_id != domain->id.phys_id ||
++		    !queue->queue_configured) {
++			resp->status = DLB2_ST_INVALID_DIR_QUEUE_ID;
 +			return -EINVAL;
 +		}
 +	}
 +
 +	/*
-+	 * If the queue's port is not configured, validate that a free
++	 * If the port's queue is not configured, validate that a free
 +	 * port-queue pair is available.
 +	 */
-+	if (args->port_id == -1 && list_empty(&domain->avail_dir_pq_pairs)) {
-+		resp->status = DLB2_ST_DIR_QUEUES_UNAVAILABLE;
++	if (args->queue_id == -1 && list_empty(&domain->avail_dir_pq_pairs)) {
++		resp->status = DLB2_ST_DIR_PORTS_UNAVAILABLE;
++		return -EINVAL;
++	}
++
++	/* Check cache-line alignment */
++	if ((cq_dma_base & 0x3F) != 0) {
++		resp->status = DLB2_ST_INVALID_CQ_VIRT_ADDR;
++		return -EINVAL;
++	}
++
++	if (args->cq_depth != 1 &&
++	    args->cq_depth != 2 &&
++	    args->cq_depth != 4 &&
++	    args->cq_depth != 8 &&
++	    args->cq_depth != 16 &&
++	    args->cq_depth != 32 &&
++	    args->cq_depth != 64 &&
++	    args->cq_depth != 128 &&
++	    args->cq_depth != 256 &&
++	    args->cq_depth != 512 &&
++	    args->cq_depth != 1024) {
++		resp->status = DLB2_ST_INVALID_CQ_DEPTH;
 +		return -EINVAL;
 +	}
 +
 +	return 0;
-+}
-+
-+static void dlb2_configure_ldb_queue(struct dlb2_hw *hw,
-+				     struct dlb2_hw_domain *domain,
-+				     struct dlb2_ldb_queue *queue,
-+				     struct dlb2_create_ldb_queue_args *args,
-+				     bool vdev_req,
-+				     unsigned int vdev_id)
-+{
-+	union dlb2_sys_vf_ldb_vqid_v r0 = { {0} };
-+	union dlb2_sys_vf_ldb_vqid2qid r1 = { {0} };
-+	union dlb2_sys_ldb_qid2vqid r2 = { {0} };
-+	union dlb2_sys_ldb_vasqid_v r3 = { {0} };
-+	union dlb2_lsp_qid_ldb_infl_lim r4 = { {0} };
-+	union dlb2_lsp_qid_aqed_active_lim r5 = { {0} };
-+	union dlb2_aqed_pipe_qid_hid_width r6 = { {0} };
-+	union dlb2_sys_ldb_qid_its r7 = { {0} };
-+	union dlb2_lsp_qid_atm_depth_thrsh r8 = { {0} };
-+	union dlb2_lsp_qid_naldb_depth_thrsh r9 = { {0} };
-+	union dlb2_aqed_pipe_qid_fid_lim r10 = { {0} };
-+	union dlb2_chp_ord_qid_sn_map r11 = { {0} };
-+	union dlb2_sys_ldb_qid_cfg_v r12 = { {0} };
-+	union dlb2_sys_ldb_qid_v r13 = { {0} };
-+
-+	struct dlb2_sn_group *sn_group;
-+	unsigned int offs;
-+
-+	/* QID write permissions are turned on when the domain is started */
-+	r3.field.vasqid_v = 0;
-+
-+	offs = domain->id.phys_id * DLB2_MAX_NUM_LDB_QUEUES +
-+		queue->id.phys_id;
-+
-+	DLB2_CSR_WR(hw, DLB2_SYS_LDB_VASQID_V(offs), r3.val);
-+
-+	/*
-+	 * Unordered QIDs get 4K inflights, ordered get as many as the number
-+	 * of sequence numbers.
-+	 */
-+	r4.field.limit = args->num_qid_inflights;
-+
-+	DLB2_CSR_WR(hw, DLB2_LSP_QID_LDB_INFL_LIM(queue->id.phys_id), r4.val);
-+
-+	r5.field.limit = queue->aqed_limit;
-+
-+	if (r5.field.limit > DLB2_MAX_NUM_AQED_ENTRIES)
-+		r5.field.limit = DLB2_MAX_NUM_AQED_ENTRIES;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_LSP_QID_AQED_ACTIVE_LIM(queue->id.phys_id),
-+		    r5.val);
-+
-+	switch (args->lock_id_comp_level) {
-+	case 64:
-+		r6.field.compress_code = 1;
-+		break;
-+	case 128:
-+		r6.field.compress_code = 2;
-+		break;
-+	case 256:
-+		r6.field.compress_code = 3;
-+		break;
-+	case 512:
-+		r6.field.compress_code = 4;
-+		break;
-+	case 1024:
-+		r6.field.compress_code = 5;
-+		break;
-+	case 2048:
-+		r6.field.compress_code = 6;
-+		break;
-+	case 4096:
-+		r6.field.compress_code = 7;
-+		break;
-+	case 0:
-+	case 65536:
-+		r6.field.compress_code = 0;
-+	}
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_AQED_PIPE_QID_HID_WIDTH(queue->id.phys_id),
-+		    r6.val);
-+
-+	/* Don't timestamp QEs that pass through this queue */
-+	r7.field.qid_its = 0;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_SYS_LDB_QID_ITS(queue->id.phys_id),
-+		    r7.val);
-+
-+	r8.field.thresh = args->depth_threshold;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_LSP_QID_ATM_DEPTH_THRSH(queue->id.phys_id),
-+		    r8.val);
-+
-+	r9.field.thresh = args->depth_threshold;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_LSP_QID_NALDB_DEPTH_THRSH(queue->id.phys_id),
-+		    r9.val);
-+
-+	/*
-+	 * This register limits the number of inflight flows a queue can have
-+	 * at one time.  It has an upper bound of 2048, but can be
-+	 * over-subscribed. 512 is chosen so that a single queue doesn't use
-+	 * the entire atomic storage, but can use a substantial portion if
-+	 * needed.
-+	 */
-+	r10.field.qid_fid_limit = 512;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_AQED_PIPE_QID_FID_LIM(queue->id.phys_id),
-+		    r10.val);
-+
-+	/* Configure SNs */
-+	sn_group = &hw->rsrcs.sn_groups[queue->sn_group];
-+	r11.field.mode = sn_group->mode;
-+	r11.field.slot = queue->sn_slot;
-+	r11.field.grp  = sn_group->id;
-+
-+	DLB2_CSR_WR(hw, DLB2_CHP_ORD_QID_SN_MAP(queue->id.phys_id), r11.val);
-+
-+	r12.field.sn_cfg_v = (args->num_sequence_numbers != 0);
-+	r12.field.fid_cfg_v = (args->num_atomic_inflights != 0);
-+
-+	DLB2_CSR_WR(hw, DLB2_SYS_LDB_QID_CFG_V(queue->id.phys_id), r12.val);
-+
-+	if (vdev_req) {
-+		offs = vdev_id * DLB2_MAX_NUM_LDB_QUEUES + queue->id.virt_id;
-+
-+		r0.field.vqid_v = 1;
-+
-+		DLB2_CSR_WR(hw, DLB2_SYS_VF_LDB_VQID_V(offs), r0.val);
-+
-+		r1.field.qid = queue->id.phys_id;
-+
-+		DLB2_CSR_WR(hw, DLB2_SYS_VF_LDB_VQID2QID(offs), r1.val);
-+
-+		r2.field.vqid = queue->id.virt_id;
-+
-+		DLB2_CSR_WR(hw,
-+			    DLB2_SYS_LDB_QID2VQID(queue->id.phys_id),
-+			    r2.val);
-+	}
-+
-+	r13.field.qid_v = 1;
-+
-+	DLB2_CSR_WR(hw, DLB2_SYS_LDB_QID_V(queue->id.phys_id), r13.val);
-+}
-+
-+static void dlb2_configure_dir_queue(struct dlb2_hw *hw,
-+				     struct dlb2_hw_domain *domain,
-+				     struct dlb2_dir_pq_pair *queue,
-+				     struct dlb2_create_dir_queue_args *args,
-+				     bool vdev_req,
-+				     unsigned int vdev_id)
-+{
-+	union dlb2_sys_dir_vasqid_v r0 = { {0} };
-+	union dlb2_sys_dir_qid_its r1 = { {0} };
-+	union dlb2_lsp_qid_dir_depth_thrsh r2 = { {0} };
-+	union dlb2_sys_dir_qid_v r5 = { {0} };
-+
-+	unsigned int offs;
-+
-+	/* QID write permissions are turned on when the domain is started */
-+	r0.field.vasqid_v = 0;
-+
-+	offs = domain->id.phys_id * DLB2_MAX_NUM_DIR_QUEUES +
-+		queue->id.phys_id;
-+
-+	DLB2_CSR_WR(hw, DLB2_SYS_DIR_VASQID_V(offs), r0.val);
-+
-+	/* Don't timestamp QEs that pass through this queue */
-+	r1.field.qid_its = 0;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_SYS_DIR_QID_ITS(queue->id.phys_id),
-+		    r1.val);
-+
-+	r2.field.thresh = args->depth_threshold;
-+
-+	DLB2_CSR_WR(hw,
-+		    DLB2_LSP_QID_DIR_DEPTH_THRSH(queue->id.phys_id),
-+		    r2.val);
-+
-+	if (vdev_req) {
-+		union dlb2_sys_vf_dir_vqid_v r3 = { {0} };
-+		union dlb2_sys_vf_dir_vqid2qid r4 = { {0} };
-+
-+		offs = vdev_id * DLB2_MAX_NUM_DIR_QUEUES + queue->id.virt_id;
-+
-+		r3.field.vqid_v = 1;
-+
-+		DLB2_CSR_WR(hw, DLB2_SYS_VF_DIR_VQID_V(offs), r3.val);
-+
-+		r4.field.qid = queue->id.phys_id;
-+
-+		DLB2_CSR_WR(hw, DLB2_SYS_VF_DIR_VQID2QID(offs), r4.val);
-+	}
-+
-+	r5.field.qid_v = 1;
-+
-+	DLB2_CSR_WR(hw, DLB2_SYS_DIR_QID_V(queue->id.phys_id), r5.val);
-+
-+	queue->queue_configured = true;
 +}
 +
  static bool dlb2_port_find_slot(struct dlb2_ldb_port *port,
  				enum dlb2_qid_map_state state,
  				int *slot)
-@@ -955,6 +1337,68 @@ dlb2_domain_attach_resources(struct dlb2_hw *hw,
- 	return 0;
+@@ -1455,6 +1620,495 @@ static void dlb2_dir_port_cq_disable(struct dlb2_hw *hw,
+ 	dlb2_flush_csr(hw);
  }
  
-+static int
-+dlb2_ldb_queue_attach_to_sn_group(struct dlb2_hw *hw,
-+				  struct dlb2_ldb_queue *queue,
-+				  struct dlb2_create_ldb_queue_args *args)
++static void dlb2_ldb_port_configure_pp(struct dlb2_hw *hw,
++				       struct dlb2_hw_domain *domain,
++				       struct dlb2_ldb_port *port,
++				       bool vdev_req,
++				       unsigned int vdev_id)
 +{
-+	int slot = -1;
-+	int i;
++	union dlb2_sys_ldb_pp2vas r0 = { {0} };
++	union dlb2_sys_ldb_pp_v r4 = { {0} };
 +
-+	queue->sn_cfg_valid = false;
++	r0.field.vas = domain->id.phys_id;
 +
-+	if (args->num_sequence_numbers == 0)
-+		return 0;
++	DLB2_CSR_WR(hw, DLB2_SYS_LDB_PP2VAS(port->id.phys_id), r0.val);
 +
-+	for (i = 0; i < DLB2_MAX_NUM_SEQUENCE_NUMBER_GROUPS; i++) {
-+		struct dlb2_sn_group *group = &hw->rsrcs.sn_groups[i];
++	if (vdev_req) {
++		union dlb2_sys_vf_ldb_vpp2pp r1 = { {0} };
++		union dlb2_sys_ldb_pp2vdev r2 = { {0} };
++		union dlb2_sys_vf_ldb_vpp_v r3 = { {0} };
++		unsigned int offs;
++		u32 virt_id;
 +
-+		if (group->sequence_numbers_per_queue ==
-+		    args->num_sequence_numbers &&
-+		    !dlb2_sn_group_full(group)) {
-+			slot = dlb2_sn_group_alloc_slot(group);
-+			if (slot >= 0)
-+				break;
-+		}
++		/*
++		 * DLB uses producer port address bits 17:12 to determine the
++		 * producer port ID. In Scalable IOV mode, PP accesses come
++		 * through the PF MMIO window for the physical producer port,
++		 * so for translation purposes the virtual and physical port
++		 * IDs are equal.
++		 */
++		if (hw->virt_mode == DLB2_VIRT_SRIOV)
++			virt_id = port->id.virt_id;
++		else
++			virt_id = port->id.phys_id;
++
++		r1.field.pp = port->id.phys_id;
++
++		offs = vdev_id * DLB2_MAX_NUM_LDB_PORTS + virt_id;
++
++		DLB2_CSR_WR(hw, DLB2_SYS_VF_LDB_VPP2PP(offs), r1.val);
++
++		r2.field.vdev = vdev_id;
++
++		DLB2_CSR_WR(hw,
++			    DLB2_SYS_LDB_PP2VDEV(port->id.phys_id),
++			    r2.val);
++
++		r3.field.vpp_v = 1;
++
++		DLB2_CSR_WR(hw, DLB2_SYS_VF_LDB_VPP_V(offs), r3.val);
 +	}
 +
-+	if (slot == -1) {
++	r4.field.pp_v = 1;
++
++	DLB2_CSR_WR(hw,
++		    DLB2_SYS_LDB_PP_V(port->id.phys_id),
++		    r4.val);
++}
++
++static int dlb2_ldb_port_configure_cq(struct dlb2_hw *hw,
++				      struct dlb2_hw_domain *domain,
++				      struct dlb2_ldb_port *port,
++				      uintptr_t cq_dma_base,
++				      struct dlb2_create_ldb_port_args *args,
++				      bool vdev_req,
++				      unsigned int vdev_id)
++{
++	union dlb2_sys_ldb_cq_addr_l r0 = { {0} };
++	union dlb2_sys_ldb_cq_addr_u r1 = { {0} };
++	union dlb2_sys_ldb_cq2vf_pf_ro r2 = { {0} };
++	union dlb2_chp_ldb_cq_tkn_depth_sel r3 = { {0} };
++	union dlb2_lsp_cq_ldb_tkn_depth_sel r4 = { {0} };
++	union dlb2_chp_hist_list_lim r5 = { {0} };
++	union dlb2_chp_hist_list_base r6 = { {0} };
++	union dlb2_lsp_cq_ldb_infl_lim r7 = { {0} };
++	union dlb2_chp_hist_list_push_ptr r8 = { {0} };
++	union dlb2_chp_hist_list_pop_ptr r9 = { {0} };
++	union dlb2_sys_ldb_cq_at r10 = { {0} };
++	union dlb2_sys_ldb_cq_pasid r11 = { {0} };
++	union dlb2_chp_ldb_cq2vas r12 = { {0} };
++	union dlb2_lsp_cq2priov r13 = { {0} };
++
++	/* The CQ address is 64B-aligned, and the DLB only wants bits [63:6] */
++	r0.field.addr_l = cq_dma_base >> 6;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_LDB_CQ_ADDR_L(port->id.phys_id), r0.val);
++
++	r1.field.addr_u = cq_dma_base >> 32;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_LDB_CQ_ADDR_U(port->id.phys_id), r1.val);
++
++	/*
++	 * 'ro' == relaxed ordering. This setting allows DLB2 to write
++	 * cache lines out-of-order (but QEs within a cache line are always
++	 * updated in-order).
++	 */
++	r2.field.vf = vdev_id;
++	r2.field.is_pf = !vdev_req && (hw->virt_mode != DLB2_VIRT_SIOV);
++	r2.field.ro = 1;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_LDB_CQ2VF_PF_RO(port->id.phys_id), r2.val);
++
++	if (args->cq_depth <= 8) {
++		r3.field.token_depth_select = 1;
++	} else if (args->cq_depth == 16) {
++		r3.field.token_depth_select = 2;
++	} else if (args->cq_depth == 32) {
++		r3.field.token_depth_select = 3;
++	} else if (args->cq_depth == 64) {
++		r3.field.token_depth_select = 4;
++	} else if (args->cq_depth == 128) {
++		r3.field.token_depth_select = 5;
++	} else if (args->cq_depth == 256) {
++		r3.field.token_depth_select = 6;
++	} else if (args->cq_depth == 512) {
++		r3.field.token_depth_select = 7;
++	} else if (args->cq_depth == 1024) {
++		r3.field.token_depth_select = 8;
++	} else {
 +		DLB2_HW_ERR(hw,
-+			    "[%s():%d] Internal error: no sequence number slots available\n",
++			    "[%s():%d] Internal error: invalid CQ depth\n",
 +			    __func__, __LINE__);
 +		return -EFAULT;
 +	}
 +
-+	queue->sn_cfg_valid = true;
-+	queue->sn_group = i;
-+	queue->sn_slot = slot;
++	DLB2_CSR_WR(hw,
++		    DLB2_CHP_LDB_CQ_TKN_DEPTH_SEL(port->id.phys_id),
++		    r3.val);
++
++	/*
++	 * To support CQs with depth less than 8, program the token count
++	 * register with a non-zero initial value. Operations such as domain
++	 * reset must take this initial value into account when quiescing the
++	 * CQ.
++	 */
++	port->init_tkn_cnt = 0;
++
++	if (args->cq_depth < 8) {
++		union dlb2_lsp_cq_ldb_tkn_cnt r14 = { {0} };
++
++		port->init_tkn_cnt = 8 - args->cq_depth;
++
++		r14.field.token_count = port->init_tkn_cnt;
++
++		DLB2_CSR_WR(hw,
++			    DLB2_LSP_CQ_LDB_TKN_CNT(port->id.phys_id),
++			    r14.val);
++	} else {
++		DLB2_CSR_WR(hw,
++			    DLB2_LSP_CQ_LDB_TKN_CNT(port->id.phys_id),
++			    DLB2_LSP_CQ_LDB_TKN_CNT_RST);
++	}
++
++	r4.field.token_depth_select = r3.field.token_depth_select;
++	r4.field.ignore_depth = 0;
++
++	DLB2_CSR_WR(hw,
++		    DLB2_LSP_CQ_LDB_TKN_DEPTH_SEL(port->id.phys_id),
++		    r4.val);
++
++	/* Reset the CQ write pointer */
++	DLB2_CSR_WR(hw,
++		    DLB2_CHP_LDB_CQ_WPTR(port->id.phys_id),
++		    DLB2_CHP_LDB_CQ_WPTR_RST);
++
++	r5.field.limit = port->hist_list_entry_limit - 1;
++
++	DLB2_CSR_WR(hw, DLB2_CHP_HIST_LIST_LIM(port->id.phys_id), r5.val);
++
++	r6.field.base = port->hist_list_entry_base;
++
++	DLB2_CSR_WR(hw, DLB2_CHP_HIST_LIST_BASE(port->id.phys_id), r6.val);
++
++	/*
++	 * The inflight limit sets a cap on the number of QEs for which this CQ
++	 * can owe completions at one time.
++	 */
++	r7.field.limit = args->cq_history_list_size;
++
++	DLB2_CSR_WR(hw, DLB2_LSP_CQ_LDB_INFL_LIM(port->id.phys_id), r7.val);
++
++	r8.field.push_ptr = r6.field.base;
++	r8.field.generation = 0;
++
++	DLB2_CSR_WR(hw,
++		    DLB2_CHP_HIST_LIST_PUSH_PTR(port->id.phys_id),
++		    r8.val);
++
++	r9.field.pop_ptr = r6.field.base;
++	r9.field.generation = 0;
++
++	DLB2_CSR_WR(hw, DLB2_CHP_HIST_LIST_POP_PTR(port->id.phys_id), r9.val);
++
++	/*
++	 * Address translation (AT) settings: 0: untranslated, 2: translated
++	 * (see ATS spec regarding Address Type field for more details)
++	 */
++	r10.field.cq_at = 0;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_LDB_CQ_AT(port->id.phys_id), r10.val);
++
++	if (vdev_req && hw->virt_mode == DLB2_VIRT_SIOV) {
++		r11.field.pasid = hw->pasid[vdev_id];
++		r11.field.fmt2 = 1;
++	}
++
++	DLB2_CSR_WR(hw,
++		    DLB2_SYS_LDB_CQ_PASID(port->id.phys_id),
++		    r11.val);
++
++	r12.field.cq2vas = domain->id.phys_id;
++
++	DLB2_CSR_WR(hw, DLB2_CHP_LDB_CQ2VAS(port->id.phys_id), r12.val);
++
++	/* Disable the port's QID mappings */
++	r13.field.v = 0;
++
++	DLB2_CSR_WR(hw, DLB2_LSP_CQ2PRIOV(port->id.phys_id), r13.val);
++
 +	return 0;
 +}
 +
-+static int
-+dlb2_ldb_queue_attach_resources(struct dlb2_hw *hw,
-+				struct dlb2_hw_domain *domain,
-+				struct dlb2_ldb_queue *queue,
-+				struct dlb2_create_ldb_queue_args *args)
++static int dlb2_configure_ldb_port(struct dlb2_hw *hw,
++				   struct dlb2_hw_domain *domain,
++				   struct dlb2_ldb_port *port,
++				   uintptr_t cq_dma_base,
++				   struct dlb2_create_ldb_port_args *args,
++				   bool vdev_req,
++				   unsigned int vdev_id)
++{
++	int ret, i;
++
++	port->hist_list_entry_base = domain->hist_list_entry_base +
++				     domain->hist_list_entry_offset;
++	port->hist_list_entry_limit = port->hist_list_entry_base +
++				      args->cq_history_list_size;
++
++	domain->hist_list_entry_offset += args->cq_history_list_size;
++	domain->avail_hist_list_entries -= args->cq_history_list_size;
++
++	ret = dlb2_ldb_port_configure_cq(hw,
++					 domain,
++					 port,
++					 cq_dma_base,
++					 args,
++					 vdev_req,
++					 vdev_id);
++	if (ret < 0)
++		return ret;
++
++	dlb2_ldb_port_configure_pp(hw,
++				   domain,
++				   port,
++				   vdev_req,
++				   vdev_id);
++
++	dlb2_ldb_port_cq_enable(hw, port);
++
++	for (i = 0; i < DLB2_MAX_NUM_QIDS_PER_LDB_CQ; i++)
++		port->qid_map[i].state = DLB2_QUEUE_UNMAPPED;
++	port->num_mappings = 0;
++
++	port->enabled = true;
++
++	port->configured = true;
++
++	return 0;
++}
++
++static void dlb2_dir_port_configure_pp(struct dlb2_hw *hw,
++				       struct dlb2_hw_domain *domain,
++				       struct dlb2_dir_pq_pair *port,
++				       bool vdev_req,
++				       unsigned int vdev_id)
++{
++	union dlb2_sys_dir_pp2vas r0 = { {0} };
++	union dlb2_sys_dir_pp_v r4 = { {0} };
++
++	r0.field.vas = domain->id.phys_id;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_DIR_PP2VAS(port->id.phys_id), r0.val);
++
++	if (vdev_req) {
++		union dlb2_sys_vf_dir_vpp2pp r1 = { {0} };
++		union dlb2_sys_dir_pp2vdev r2 = { {0} };
++		union dlb2_sys_vf_dir_vpp_v r3 = { {0} };
++		unsigned int offs;
++		u32 virt_id;
++
++		/*
++		 * DLB uses producer port address bits 17:12 to determine the
++		 * producer port ID. In Scalable IOV mode, PP accesses come
++		 * through the PF MMIO window for the physical producer port,
++		 * so for translation purposes the virtual and physical port
++		 * IDs are equal.
++		 */
++		if (hw->virt_mode == DLB2_VIRT_SRIOV)
++			virt_id = port->id.virt_id;
++		else
++			virt_id = port->id.phys_id;
++
++		r1.field.pp = port->id.phys_id;
++
++		offs = vdev_id * DLB2_MAX_NUM_DIR_PORTS + virt_id;
++
++		DLB2_CSR_WR(hw, DLB2_SYS_VF_DIR_VPP2PP(offs), r1.val);
++
++		r2.field.vdev = vdev_id;
++
++		DLB2_CSR_WR(hw,
++			    DLB2_SYS_DIR_PP2VDEV(port->id.phys_id),
++			    r2.val);
++
++		r3.field.vpp_v = 1;
++
++		DLB2_CSR_WR(hw, DLB2_SYS_VF_DIR_VPP_V(offs), r3.val);
++	}
++
++	r4.field.pp_v = 1;
++
++	DLB2_CSR_WR(hw,
++		    DLB2_SYS_DIR_PP_V(port->id.phys_id),
++		    r4.val);
++}
++
++static int dlb2_dir_port_configure_cq(struct dlb2_hw *hw,
++				      struct dlb2_hw_domain *domain,
++				      struct dlb2_dir_pq_pair *port,
++				      uintptr_t cq_dma_base,
++				      struct dlb2_create_dir_port_args *args,
++				      bool vdev_req,
++				      unsigned int vdev_id)
++{
++	union dlb2_sys_dir_cq_addr_l r0 = { {0} };
++	union dlb2_sys_dir_cq_addr_u r1 = { {0} };
++	union dlb2_sys_dir_cq2vf_pf_ro r2 = { {0} };
++	union dlb2_chp_dir_cq_tkn_depth_sel r3 = { {0} };
++	union dlb2_lsp_cq_dir_tkn_depth_sel_dsi r4 = { {0} };
++	union dlb2_sys_dir_cq_fmt r9 = { {0} };
++	union dlb2_sys_dir_cq_at r10 = { {0} };
++	union dlb2_sys_dir_cq_pasid r11 = { {0} };
++	union dlb2_chp_dir_cq2vas r12 = { {0} };
++
++	/* The CQ address is 64B-aligned, and the DLB only wants bits [63:6] */
++	r0.field.addr_l = cq_dma_base >> 6;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_DIR_CQ_ADDR_L(port->id.phys_id), r0.val);
++
++	r1.field.addr_u = cq_dma_base >> 32;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_DIR_CQ_ADDR_U(port->id.phys_id), r1.val);
++
++	/*
++	 * 'ro' == relaxed ordering. This setting allows DLB2 to write
++	 * cache lines out-of-order (but QEs within a cache line are always
++	 * updated in-order).
++	 */
++	r2.field.vf = vdev_id;
++	r2.field.is_pf = !vdev_req && (hw->virt_mode != DLB2_VIRT_SIOV);
++	r2.field.ro = 1;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_DIR_CQ2VF_PF_RO(port->id.phys_id), r2.val);
++
++	if (args->cq_depth <= 8) {
++		r3.field.token_depth_select = 1;
++	} else if (args->cq_depth == 16) {
++		r3.field.token_depth_select = 2;
++	} else if (args->cq_depth == 32) {
++		r3.field.token_depth_select = 3;
++	} else if (args->cq_depth == 64) {
++		r3.field.token_depth_select = 4;
++	} else if (args->cq_depth == 128) {
++		r3.field.token_depth_select = 5;
++	} else if (args->cq_depth == 256) {
++		r3.field.token_depth_select = 6;
++	} else if (args->cq_depth == 512) {
++		r3.field.token_depth_select = 7;
++	} else if (args->cq_depth == 1024) {
++		r3.field.token_depth_select = 8;
++	} else {
++		DLB2_HW_ERR(hw,
++			    "[%s():%d] Internal error: invalid CQ depth\n",
++			    __func__, __LINE__);
++		return -EFAULT;
++	}
++
++	DLB2_CSR_WR(hw,
++		    DLB2_CHP_DIR_CQ_TKN_DEPTH_SEL(port->id.phys_id),
++		    r3.val);
++
++	/*
++	 * To support CQs with depth less than 8, program the token count
++	 * register with a non-zero initial value. Operations such as domain
++	 * reset must take this initial value into account when quiescing the
++	 * CQ.
++	 */
++	port->init_tkn_cnt = 0;
++
++	if (args->cq_depth < 8) {
++		union dlb2_lsp_cq_dir_tkn_cnt r13 = { {0} };
++
++		port->init_tkn_cnt = 8 - args->cq_depth;
++
++		r13.field.count = port->init_tkn_cnt;
++
++		DLB2_CSR_WR(hw,
++			    DLB2_LSP_CQ_DIR_TKN_CNT(port->id.phys_id),
++			    r13.val);
++	} else {
++		DLB2_CSR_WR(hw,
++			    DLB2_LSP_CQ_DIR_TKN_CNT(port->id.phys_id),
++			    DLB2_LSP_CQ_DIR_TKN_CNT_RST);
++	}
++
++	r4.field.token_depth_select = r3.field.token_depth_select;
++	r4.field.disable_wb_opt = 0;
++	r4.field.ignore_depth = 0;
++
++	DLB2_CSR_WR(hw,
++		    DLB2_LSP_CQ_DIR_TKN_DEPTH_SEL_DSI(port->id.phys_id),
++		    r4.val);
++
++	/* Reset the CQ write pointer */
++	DLB2_CSR_WR(hw,
++		    DLB2_CHP_DIR_CQ_WPTR(port->id.phys_id),
++		    DLB2_CHP_DIR_CQ_WPTR_RST);
++
++	/* Virtualize the PPID */
++	r9.field.keep_pf_ppid = 0;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_DIR_CQ_FMT(port->id.phys_id), r9.val);
++
++	/*
++	 * Address translation (AT) settings: 0: untranslated, 2: translated
++	 * (see ATS spec regarding Address Type field for more details)
++	 */
++	r10.field.cq_at = 0;
++
++	DLB2_CSR_WR(hw, DLB2_SYS_DIR_CQ_AT(port->id.phys_id), r10.val);
++
++	if (vdev_req && hw->virt_mode == DLB2_VIRT_SIOV) {
++		r11.field.pasid = hw->pasid[vdev_id];
++		r11.field.fmt2 = 1;
++	}
++
++	DLB2_CSR_WR(hw,
++		    DLB2_SYS_DIR_CQ_PASID(port->id.phys_id),
++		    r11.val);
++
++	r12.field.cq2vas = domain->id.phys_id;
++
++	DLB2_CSR_WR(hw, DLB2_CHP_DIR_CQ2VAS(port->id.phys_id), r12.val);
++
++	return 0;
++}
++
++static int dlb2_configure_dir_port(struct dlb2_hw *hw,
++				   struct dlb2_hw_domain *domain,
++				   struct dlb2_dir_pq_pair *port,
++				   uintptr_t cq_dma_base,
++				   struct dlb2_create_dir_port_args *args,
++				   bool vdev_req,
++				   unsigned int vdev_id)
 +{
 +	int ret;
 +
-+	ret = dlb2_ldb_queue_attach_to_sn_group(hw, queue, args);
-+	if (ret)
++	ret = dlb2_dir_port_configure_cq(hw,
++					 domain,
++					 port,
++					 cq_dma_base,
++					 args,
++					 vdev_req,
++					 vdev_id);
++
++	if (ret < 0)
 +		return ret;
 +
-+	/* Attach QID inflights */
-+	queue->num_qid_inflights = args->num_qid_inflights;
++	dlb2_dir_port_configure_pp(hw,
++				   domain,
++				   port,
++				   vdev_req,
++				   vdev_id);
 +
-+	/* Attach atomic inflights */
-+	queue->aqed_limit = args->num_atomic_inflights;
++	dlb2_dir_port_cq_enable(hw, port);
 +
-+	domain->num_avail_aqed_entries -= args->num_atomic_inflights;
-+	domain->num_used_aqed_entries += args->num_atomic_inflights;
++	port->enabled = true;
++
++	port->port_configured = true;
 +
 +	return 0;
 +}
 +
- static void dlb2_ldb_port_cq_enable(struct dlb2_hw *hw,
- 				    struct dlb2_ldb_port *port)
- {
-@@ -1670,6 +2114,203 @@ int dlb2_hw_create_sched_domain(struct dlb2_hw *hw,
+ static int dlb2_ldb_port_map_qid_static(struct dlb2_hw *hw,
+ 					struct dlb2_ldb_port *p,
+ 					struct dlb2_ldb_queue *q,
+@@ -2311,6 +2965,252 @@ int dlb2_hw_create_dir_queue(struct dlb2_hw *hw,
  }
  
  static void
-+dlb2_log_create_ldb_queue_args(struct dlb2_hw *hw,
-+			       u32 domain_id,
-+			       struct dlb2_create_ldb_queue_args *args,
-+			       bool vdev_req,
-+			       unsigned int vdev_id)
++dlb2_log_create_ldb_port_args(struct dlb2_hw *hw,
++			      u32 domain_id,
++			      uintptr_t cq_dma_base,
++			      struct dlb2_create_ldb_port_args *args,
++			      bool vdev_req,
++			      unsigned int vdev_id)
 +{
-+	DLB2_HW_DBG(hw, "DLB2 create load-balanced queue arguments:\n");
++	DLB2_HW_DBG(hw, "DLB2 create load-balanced port arguments:\n");
 +	if (vdev_req)
 +		DLB2_HW_DBG(hw, "(Request from vdev %d)\n", vdev_id);
-+	DLB2_HW_DBG(hw, "\tDomain ID:                  %d\n",
++	DLB2_HW_DBG(hw, "\tDomain ID:                 %d\n",
 +		    domain_id);
-+	DLB2_HW_DBG(hw, "\tNumber of sequence numbers: %d\n",
-+		    args->num_sequence_numbers);
-+	DLB2_HW_DBG(hw, "\tNumber of QID inflights:    %d\n",
-+		    args->num_qid_inflights);
-+	DLB2_HW_DBG(hw, "\tNumber of ATM inflights:    %d\n",
-+		    args->num_atomic_inflights);
++	DLB2_HW_DBG(hw, "\tCQ depth:                  %d\n",
++		    args->cq_depth);
++	DLB2_HW_DBG(hw, "\tCQ hist list size:         %d\n",
++		    args->cq_history_list_size);
++	DLB2_HW_DBG(hw, "\tCQ base address:           0x%lx\n",
++		    cq_dma_base);
++	DLB2_HW_DBG(hw, "\tCoS ID:                    %u\n", args->cos_id);
++	DLB2_HW_DBG(hw, "\tStrict CoS allocation:     %u\n",
++		    args->cos_strict);
 +}
 +
 +/**
-+ * dlb2_hw_create_ldb_queue() - Allocate and initialize a DLB LDB queue.
++ * dlb2_hw_create_ldb_port() - Allocate and initialize a load-balanced port and
++ *	its resources.
 + * @hw:	Contains the current state of the DLB2 hardware.
 + * @domain_id: Domain ID
 + * @args: User-provided arguments.
++ * @cq_dma_base: Base DMA address for consumer queue memory
 + * @resp: Response to user.
 + * @vdev_req: Request came from a virtual device.
 + * @vdev_id: If vdev_req is true, this contains the virtual device's ID.
@@ -771,29 +1206,36 @@ index 2cc744cea2d5..2531c6508994 100644
 + * Return: returns < 0 on error, 0 otherwise. If the driver is unable to
 + * satisfy a request, resp->status will be set accordingly.
 + */
-+int dlb2_hw_create_ldb_queue(struct dlb2_hw *hw,
-+			     u32 domain_id,
-+			     struct dlb2_create_ldb_queue_args *args,
-+			     struct dlb2_cmd_response *resp,
-+			     bool vdev_req,
-+			     unsigned int vdev_id)
++int dlb2_hw_create_ldb_port(struct dlb2_hw *hw,
++			    u32 domain_id,
++			    struct dlb2_create_ldb_port_args *args,
++			    uintptr_t cq_dma_base,
++			    struct dlb2_cmd_response *resp,
++			    bool vdev_req,
++			    unsigned int vdev_id)
 +{
 +	struct dlb2_hw_domain *domain;
-+	struct dlb2_ldb_queue *queue;
-+	int ret;
++	struct dlb2_ldb_port *port;
++	int ret, cos_id, i;
 +
-+	dlb2_log_create_ldb_queue_args(hw, domain_id, args, vdev_req, vdev_id);
++	dlb2_log_create_ldb_port_args(hw,
++				      domain_id,
++				      cq_dma_base,
++				      args,
++				      vdev_req,
++				      vdev_id);
 +
 +	/*
 +	 * Verify that hardware resources are available before attempting to
 +	 * satisfy the request. This simplifies the error unwinding code.
 +	 */
-+	ret = dlb2_verify_create_ldb_queue_args(hw,
-+						domain_id,
-+						args,
-+						resp,
-+						vdev_req,
-+						vdev_id);
++	ret = dlb2_verify_create_ldb_port_args(hw,
++					       domain_id,
++					       cq_dma_base,
++					       args,
++					       resp,
++					       vdev_req,
++					       vdev_id);
 +	if (ret)
 +		return ret;
 +
@@ -805,62 +1247,90 @@ index 2cc744cea2d5..2531c6508994 100644
 +		return -EFAULT;
 +	}
 +
-+	queue = DLB2_DOM_LIST_HEAD(domain->avail_ldb_queues, typeof(*queue));
++	if (args->cos_strict) {
++		cos_id = args->cos_id;
 +
-+	if (!queue) {
++		port = DLB2_DOM_LIST_HEAD(domain->avail_ldb_ports[cos_id],
++					  typeof(*port));
++	} else {
++		int idx;
++
++		for (i = 0; i < DLB2_NUM_COS_DOMAINS; i++) {
++			idx = (args->cos_id + i) % DLB2_NUM_COS_DOMAINS;
++
++			port = DLB2_DOM_LIST_HEAD(domain->avail_ldb_ports[idx],
++						  typeof(*port));
++			if (port)
++				break;
++		}
++
++		cos_id = idx;
++	}
++
++	if (!port) {
 +		DLB2_HW_ERR(hw,
-+			    "[%s():%d] Internal error: no available ldb queues\n",
++			    "[%s():%d] Internal error: no available ldb ports\n",
 +			    __func__, __LINE__);
 +		return -EFAULT;
 +	}
 +
-+	ret = dlb2_ldb_queue_attach_resources(hw, domain, queue, args);
-+	if (ret < 0) {
++	if (port->configured) {
 +		DLB2_HW_ERR(hw,
-+			    "[%s():%d] Internal error: failed to attach the ldb queue resources\n",
-+			    __func__, __LINE__);
-+		return ret;
++			    "[%s()] Internal error: avail_ldb_ports contains configured ports.\n",
++			    __func__);
++		return -EFAULT;
 +	}
 +
-+	dlb2_configure_ldb_queue(hw, domain, queue, args, vdev_req, vdev_id);
-+
-+	queue->num_mappings = 0;
-+
-+	queue->configured = true;
++	ret = dlb2_configure_ldb_port(hw,
++				      domain,
++				      port,
++				      cq_dma_base,
++				      args,
++				      vdev_req,
++				      vdev_id);
++	if (ret < 0)
++		return ret;
 +
 +	/*
 +	 * Configuration succeeded, so move the resource from the 'avail' to
 +	 * the 'used' list.
 +	 */
-+	list_del(&queue->domain_list);
++	list_del(&port->domain_list);
 +
-+	list_add(&queue->domain_list, &domain->used_ldb_queues);
++	list_add(&port->domain_list, &domain->used_ldb_ports[cos_id]);
 +
 +	resp->status = 0;
-+	resp->id = (vdev_req) ? queue->id.virt_id : queue->id.phys_id;
++	resp->id = (vdev_req) ? port->id.virt_id : port->id.phys_id;
 +
 +	return 0;
 +}
 +
 +static void
-+dlb2_log_create_dir_queue_args(struct dlb2_hw *hw,
-+			       u32 domain_id,
-+			       struct dlb2_create_dir_queue_args *args,
-+			       bool vdev_req,
-+			       unsigned int vdev_id)
++dlb2_log_create_dir_port_args(struct dlb2_hw *hw,
++			      u32 domain_id,
++			      uintptr_t cq_dma_base,
++			      struct dlb2_create_dir_port_args *args,
++			      bool vdev_req,
++			      unsigned int vdev_id)
 +{
-+	DLB2_HW_DBG(hw, "DLB2 create directed queue arguments:\n");
++	DLB2_HW_DBG(hw, "DLB2 create directed port arguments:\n");
 +	if (vdev_req)
 +		DLB2_HW_DBG(hw, "(Request from vdev %d)\n", vdev_id);
-+	DLB2_HW_DBG(hw, "\tDomain ID: %d\n", domain_id);
-+	DLB2_HW_DBG(hw, "\tPort ID:   %d\n", args->port_id);
++	DLB2_HW_DBG(hw, "\tDomain ID:                 %d\n",
++		    domain_id);
++	DLB2_HW_DBG(hw, "\tCQ depth:                  %d\n",
++		    args->cq_depth);
++	DLB2_HW_DBG(hw, "\tCQ base address:           0x%lx\n",
++		    cq_dma_base);
 +}
 +
 +/**
-+ * dlb2_hw_create_dir_queue() - Allocate and initialize a DLB DIR queue.
++ * dlb2_hw_create_dir_port() - Allocate and initialize a DLB directed port
++ *	and queue. The port/queue pair have the same ID and name.
 + * @hw:	Contains the current state of the DLB2 hardware.
 + * @domain_id: Domain ID
 + * @args: User-provided arguments.
++ * @cq_dma_base: Base DMA address for consumer queue memory
 + * @resp: Response to user.
 + * @vdev_req: Request came from a virtual device.
 + * @vdev_id: If vdev_req is true, this contains the virtual device's ID.
@@ -868,70 +1338,78 @@ index 2cc744cea2d5..2531c6508994 100644
 + * Return: returns < 0 on error, 0 otherwise. If the driver is unable to
 + * satisfy a request, resp->status will be set accordingly.
 + */
-+int dlb2_hw_create_dir_queue(struct dlb2_hw *hw,
-+			     u32 domain_id,
-+			     struct dlb2_create_dir_queue_args *args,
-+			     struct dlb2_cmd_response *resp,
-+			     bool vdev_req,
-+			     unsigned int vdev_id)
++int dlb2_hw_create_dir_port(struct dlb2_hw *hw,
++			    u32 domain_id,
++			    struct dlb2_create_dir_port_args *args,
++			    uintptr_t cq_dma_base,
++			    struct dlb2_cmd_response *resp,
++			    bool vdev_req,
++			    unsigned int vdev_id)
 +{
-+	struct dlb2_dir_pq_pair *queue;
++	struct dlb2_dir_pq_pair *port;
 +	struct dlb2_hw_domain *domain;
 +	int ret;
 +
-+	dlb2_log_create_dir_queue_args(hw, domain_id, args, vdev_req, vdev_id);
++	dlb2_log_create_dir_port_args(hw,
++				      domain_id,
++				      cq_dma_base,
++				      args,
++				      vdev_req,
++				      vdev_id);
 +
 +	/*
 +	 * Verify that hardware resources are available before attempting to
 +	 * satisfy the request. This simplifies the error unwinding code.
 +	 */
-+	ret = dlb2_verify_create_dir_queue_args(hw,
-+						domain_id,
-+						args,
-+						resp,
-+						vdev_req,
-+						vdev_id);
++	ret = dlb2_verify_create_dir_port_args(hw,
++					       domain_id,
++					       cq_dma_base,
++					       args,
++					       resp,
++					       vdev_req,
++					       vdev_id);
 +	if (ret)
 +		return ret;
 +
 +	domain = dlb2_get_domain_from_id(hw, domain_id, vdev_req, vdev_id);
-+	if (!domain) {
-+		DLB2_HW_ERR(hw,
-+			    "[%s():%d] Internal error: domain not found\n",
-+			    __func__, __LINE__);
-+		return -EFAULT;
-+	}
 +
-+	if (args->port_id != -1)
-+		queue = dlb2_get_domain_used_dir_pq(args->port_id,
-+						    vdev_req,
-+						    domain);
++	if (args->queue_id != -1)
++		port = dlb2_get_domain_used_dir_pq(args->queue_id,
++						   vdev_req,
++						   domain);
 +	else
-+		queue = DLB2_DOM_LIST_HEAD(domain->avail_dir_pq_pairs,
-+					   typeof(*queue));
++		port = DLB2_DOM_LIST_HEAD(domain->avail_dir_pq_pairs,
++					  typeof(*port));
 +
-+	if (!queue) {
++	if (!port) {
 +		DLB2_HW_ERR(hw,
-+			    "[%s():%d] Internal error: no available dir queues\n",
++			    "[%s():%d] Internal error: no available dir ports\n",
 +			    __func__, __LINE__);
 +		return -EFAULT;
 +	}
 +
-+	dlb2_configure_dir_queue(hw, domain, queue, args, vdev_req, vdev_id);
++	ret = dlb2_configure_dir_port(hw,
++				      domain,
++				      port,
++				      cq_dma_base,
++				      args,
++				      vdev_req,
++				      vdev_id);
++	if (ret < 0)
++		return ret;
 +
 +	/*
 +	 * Configuration succeeded, so move the resource from the 'avail' to
 +	 * the 'used' list (if it's not already there).
 +	 */
-+	if (args->port_id == -1) {
-+		list_del(&queue->domain_list);
++	if (args->queue_id == -1) {
++		list_del(&port->domain_list);
 +
-+		list_add(&queue->domain_list, &domain->used_dir_pq_pairs);
++		list_add(&port->domain_list, &domain->used_dir_pq_pairs);
 +	}
 +
 +	resp->status = 0;
-+
-+	resp->id = (vdev_req) ? queue->id.virt_id : queue->id.phys_id;
++	resp->id = (vdev_req) ? port->id.virt_id : port->id.phys_id;
 +
 +	return 0;
 +}
@@ -940,128 +1418,50 @@ index 2cc744cea2d5..2531c6508994 100644
  dlb2_domain_finish_unmap_port_slot(struct dlb2_hw *hw,
  				   struct dlb2_hw_domain *domain,
  				   struct dlb2_ldb_port *port,
-@@ -2132,6 +2773,54 @@ static bool dlb2_dir_queue_is_empty(struct dlb2_hw *hw,
- 	return dlb2_dir_queue_depth(hw, queue) == 0;
- }
+@@ -4105,3 +5005,25 @@ void dlb2_clr_pmcsr_disable(struct dlb2_hw *hw)
  
-+static void dlb2_log_get_dir_queue_depth(struct dlb2_hw *hw,
-+					 u32 domain_id,
-+					 u32 queue_id,
-+					 bool vdev_req,
-+					 unsigned int vf_id)
-+{
-+	DLB2_HW_DBG(hw, "DLB get directed queue depth:\n");
-+	if (vdev_req)
-+		DLB2_HW_DBG(hw, "(Request from VF %d)\n", vf_id);
-+	DLB2_HW_DBG(hw, "\tDomain ID: %d\n", domain_id);
-+	DLB2_HW_DBG(hw, "\tQueue ID: %d\n", queue_id);
-+}
-+
-+int dlb2_hw_get_dir_queue_depth(struct dlb2_hw *hw,
-+				u32 domain_id,
-+				struct dlb2_get_dir_queue_depth_args *args,
-+				struct dlb2_cmd_response *resp,
-+				bool vdev_req,
-+				unsigned int vdev_id)
-+{
-+	struct dlb2_dir_pq_pair *queue;
-+	struct dlb2_hw_domain *domain;
-+	int id;
-+
-+	id = domain_id;
-+
-+	dlb2_log_get_dir_queue_depth(hw, domain_id, args->queue_id,
-+				     vdev_req, vdev_id);
-+
-+	domain = dlb2_get_domain_from_id(hw, id, vdev_req, vdev_id);
-+	if (!domain) {
-+		resp->status = DLB2_ST_INVALID_DOMAIN_ID;
-+		return -EINVAL;
-+	}
-+
-+	id = args->queue_id;
-+
-+	queue = dlb2_get_domain_used_dir_pq(id, vdev_req, domain);
-+	if (!queue) {
-+		resp->status = DLB2_ST_INVALID_QID;
-+		return -EINVAL;
-+	}
-+
-+	resp->id = dlb2_dir_queue_depth(hw, queue);
-+
-+	return 0;
-+}
-+
- static u32 dlb2_ldb_queue_depth(struct dlb2_hw *hw,
- 				struct dlb2_ldb_queue *queue)
- {
-@@ -2156,6 +2845,49 @@ static bool dlb2_ldb_queue_is_empty(struct dlb2_hw *hw,
- 	return dlb2_ldb_queue_depth(hw, queue) == 0;
+ 	DLB2_CSR_WR(hw, DLB2_CFG_MSTR_CFG_PM_PMCSR_DISABLE, r0.val);
  }
- 
-+static void dlb2_log_get_ldb_queue_depth(struct dlb2_hw *hw,
-+					 u32 domain_id,
-+					 u32 queue_id,
-+					 bool vdev_req,
-+					 unsigned int vf_id)
++
++void dlb2_hw_enable_sparse_ldb_cq_mode(struct dlb2_hw *hw)
 +{
-+	DLB2_HW_DBG(hw, "DLB get load-balanced queue depth:\n");
-+	if (vdev_req)
-+		DLB2_HW_DBG(hw, "(Request from VF %d)\n", vf_id);
-+	DLB2_HW_DBG(hw, "\tDomain ID: %d\n", domain_id);
-+	DLB2_HW_DBG(hw, "\tQueue ID: %d\n", queue_id);
++	union dlb2_chp_cfg_chp_csr_ctrl r0;
++
++	r0.val = DLB2_CSR_RD(hw, DLB2_CHP_CFG_CHP_CSR_CTRL);
++
++	r0.field.cfg_64bytes_qe_ldb_cq_mode = 1;
++
++	DLB2_CSR_WR(hw, DLB2_CHP_CFG_CHP_CSR_CTRL, r0.val);
 +}
 +
-+int dlb2_hw_get_ldb_queue_depth(struct dlb2_hw *hw,
-+				u32 domain_id,
-+				struct dlb2_get_ldb_queue_depth_args *args,
-+				struct dlb2_cmd_response *resp,
-+				bool vdev_req,
-+				unsigned int vdev_id)
++void dlb2_hw_enable_sparse_dir_cq_mode(struct dlb2_hw *hw)
 +{
-+	struct dlb2_hw_domain *domain;
-+	struct dlb2_ldb_queue *queue;
++	union dlb2_chp_cfg_chp_csr_ctrl r0;
 +
-+	dlb2_log_get_ldb_queue_depth(hw, domain_id, args->queue_id,
-+				     vdev_req, vdev_id);
++	r0.val = DLB2_CSR_RD(hw, DLB2_CHP_CFG_CHP_CSR_CTRL);
 +
-+	domain = dlb2_get_domain_from_id(hw, domain_id, vdev_req, vdev_id);
-+	if (!domain) {
-+		resp->status = DLB2_ST_INVALID_DOMAIN_ID;
-+		return -EINVAL;
-+	}
++	r0.field.cfg_64bytes_qe_dir_cq_mode = 1;
 +
-+	queue = dlb2_get_domain_ldb_queue(args->queue_id, vdev_req, domain);
-+	if (!queue) {
-+		resp->status = DLB2_ST_INVALID_QID;
-+		return -EINVAL;
-+	}
-+
-+	resp->id = dlb2_ldb_queue_depth(hw, queue);
-+
-+	return 0;
++	DLB2_CSR_WR(hw, DLB2_CHP_CFG_CHP_CSR_CTRL, r0.val);
 +}
-+
- static void __dlb2_domain_reset_ldb_port_registers(struct dlb2_hw *hw,
- 						   struct dlb2_ldb_port *port)
- {
 diff --git a/drivers/misc/dlb2/dlb2_resource.h b/drivers/misc/dlb2/dlb2_resource.h
-index 7dc50865681b..dfb42e0e13de 100644
+index dfb42e0e13de..d355bc1a8f08 100644
 --- a/drivers/misc/dlb2/dlb2_resource.h
 +++ b/drivers/misc/dlb2/dlb2_resource.h
-@@ -70,6 +70,73 @@ int dlb2_hw_create_sched_domain(struct dlb2_hw *hw,
- 				unsigned int vdev_id);
+@@ -137,6 +137,78 @@ int dlb2_hw_create_dir_queue(struct dlb2_hw *hw,
+ 			     unsigned int vdev_id);
  
  /**
-+ * dlb2_hw_create_ldb_queue() - create a load-balanced queue
++ * dlb2_hw_create_dir_port() - create a directed port
 + * @hw: dlb2_hw handle for a particular device.
 + * @domain_id: domain ID.
-+ * @args: queue creation arguments.
++ * @args: port creation arguments.
++ * @cq_dma_base: base address of the CQ memory. This can be a PA or an IOVA.
 + * @resp: response structure.
 + * @vdev_request: indicates whether this request came from a vdev.
 + * @vdev_id: If vdev_request is true, this contains the vdev's ID.
 + *
-+ * This function creates a load-balanced queue.
++ * This function creates a directed port.
 + *
 + * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
 + * device.
@@ -1069,33 +1469,35 @@ index 7dc50865681b..dfb42e0e13de 100644
 + * Return:
 + * Returns 0 upon success, < 0 otherwise. If an error occurs, resp->status is
 + * assigned a detailed error code from enum dlb2_error. If successful, resp->id
-+ * contains the queue ID.
++ * contains the port ID.
 + *
 + * resp->id contains a virtual ID if vdev_request is true.
 + *
 + * Errors:
-+ * EINVAL - A requested resource is unavailable, the domain is not configured,
-+ *	    the domain has already been started, or the requested queue name is
-+ *	    already in use.
++ * EINVAL - A requested resource is unavailable, a credit setting is invalid, a
++ *	    pointer address is not properly aligned, the domain is not
++ *	    configured, or the domain has already been started.
 + * EFAULT - Internal error (resp->status not set).
 + */
-+int dlb2_hw_create_ldb_queue(struct dlb2_hw *hw,
-+			     u32 domain_id,
-+			     struct dlb2_create_ldb_queue_args *args,
-+			     struct dlb2_cmd_response *resp,
-+			     bool vdev_request,
-+			     unsigned int vdev_id);
++int dlb2_hw_create_dir_port(struct dlb2_hw *hw,
++			    u32 domain_id,
++			    struct dlb2_create_dir_port_args *args,
++			    uintptr_t cq_dma_base,
++			    struct dlb2_cmd_response *resp,
++			    bool vdev_request,
++			    unsigned int vdev_id);
 +
 +/**
-+ * dlb2_hw_create_dir_queue() - create a directed queue
++ * dlb2_hw_create_ldb_port() - create a load-balanced port
 + * @hw: dlb2_hw handle for a particular device.
 + * @domain_id: domain ID.
-+ * @args: queue creation arguments.
++ * @args: port creation arguments.
++ * @cq_dma_base: base address of the CQ memory. This can be a PA or an IOVA.
 + * @resp: response structure.
 + * @vdev_request: indicates whether this request came from a vdev.
 + * @vdev_id: If vdev_request is true, this contains the vdev's ID.
 + *
-+ * This function creates a directed queue.
++ * This function creates a load-balanced port.
 + *
 + * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
 + * device.
@@ -1103,244 +1505,192 @@ index 7dc50865681b..dfb42e0e13de 100644
 + * Return:
 + * Returns 0 upon success, < 0 otherwise. If an error occurs, resp->status is
 + * assigned a detailed error code from enum dlb2_error. If successful, resp->id
-+ * contains the queue ID.
++ * contains the port ID.
 + *
 + * resp->id contains a virtual ID if vdev_request is true.
 + *
 + * Errors:
-+ * EINVAL - A requested resource is unavailable, the domain is not configured,
-+ *	    or the domain has already been started.
++ * EINVAL - A requested resource is unavailable, a credit setting is invalid, a
++ *	    pointer address is not properly aligned, the domain is not
++ *	    configured, or the domain has already been started.
 + * EFAULT - Internal error (resp->status not set).
 + */
-+int dlb2_hw_create_dir_queue(struct dlb2_hw *hw,
-+			     u32 domain_id,
-+			     struct dlb2_create_dir_queue_args *args,
-+			     struct dlb2_cmd_response *resp,
-+			     bool vdev_request,
-+			     unsigned int vdev_id);
++int dlb2_hw_create_ldb_port(struct dlb2_hw *hw,
++			    u32 domain_id,
++			    struct dlb2_create_ldb_port_args *args,
++			    uintptr_t cq_dma_base,
++			    struct dlb2_cmd_response *resp,
++			    bool vdev_request,
++			    unsigned int vdev_id);
 +
 +/**
   * dlb2_reset_domain() - reset a scheduling domain
   * @hw: dlb2_hw handle for a particular device.
   * @domain_id: domain ID.
-@@ -130,6 +197,64 @@ int dlb2_hw_get_num_resources(struct dlb2_hw *hw,
-  */
- void dlb2_clr_pmcsr_disable(struct dlb2_hw *hw);
- 
-+/**
-+ * dlb2_hw_get_ldb_queue_depth() - returns the depth of a load-balanced queue
-+ * @hw: dlb2_hw handle for a particular device.
-+ * @domain_id: domain ID.
-+ * @args: queue depth args
-+ * @resp: response structure.
-+ * @vdev_request: indicates whether this request came from a vdev.
-+ * @vdev_id: If vdev_request is true, this contains the vdev's ID.
-+ *
-+ * This function returns the depth of a load-balanced queue.
-+ *
-+ * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
-+ * device.
-+ *
-+ * Return:
-+ * Returns 0 upon success, < 0 otherwise. If an error occurs, resp->status is
-+ * assigned a detailed error code from enum dlb2_error. If successful, resp->id
-+ * contains the depth.
-+ *
-+ * Errors:
-+ * EINVAL - Invalid domain ID or queue ID.
-+ */
-+int dlb2_hw_get_ldb_queue_depth(struct dlb2_hw *hw,
-+				u32 domain_id,
-+				struct dlb2_get_ldb_queue_depth_args *args,
-+				struct dlb2_cmd_response *resp,
-+				bool vdev_request,
-+				unsigned int vdev_id);
-+
-+/**
-+ * dlb2_hw_get_dir_queue_depth() - returns the depth of a directed queue
-+ * @hw: dlb2_hw handle for a particular device.
-+ * @domain_id: domain ID.
-+ * @args: queue depth args
-+ * @resp: response structure.
-+ * @vdev_request: indicates whether this request came from a vdev.
-+ * @vdev_id: If vdev_request is true, this contains the vdev's ID.
-+ *
-+ * This function returns the depth of a directed queue.
-+ *
-+ * A vdev can be either an SR-IOV virtual function or a Scalable IOV virtual
-+ * device.
-+ *
-+ * Return:
-+ * Returns 0 upon success, < 0 otherwise. If an error occurs, resp->status is
-+ * assigned a detailed error code from enum dlb2_error. If successful, resp->id
-+ * contains the depth.
-+ *
-+ * Errors:
-+ * EINVAL - Invalid domain ID or queue ID.
-+ */
-+int dlb2_hw_get_dir_queue_depth(struct dlb2_hw *hw,
-+				u32 domain_id,
-+				struct dlb2_get_dir_queue_depth_args *args,
-+				struct dlb2_cmd_response *resp,
-+				bool vdev_request,
-+				unsigned int vdev_id);
-+
- enum dlb2_virt_mode {
- 	DLB2_VIRT_NONE,
- 	DLB2_VIRT_SRIOV,
-diff --git a/include/uapi/linux/dlb2_user.h b/include/uapi/linux/dlb2_user.h
-index 02d380b51c2c..ee8f5a970065 100644
---- a/include/uapi/linux/dlb2_user.h
-+++ b/include/uapi/linux/dlb2_user.h
-@@ -227,6 +227,128 @@ enum dlb2_user_interface_commands {
- 	NUM_DLB2_CMD,
+@@ -264,4 +336,21 @@ enum dlb2_virt_mode {
+ 	NUM_DLB2_VIRT_MODES,
  };
  
-+/*********************************/
-+/* 'domain' device file commands */
-+/*********************************/
++/**
++ * dlb2_hw_enable_sparse_ldb_cq_mode() - enable sparse mode for load-balanced
++ *	ports.
++ * @hw: dlb2_hw handle for a particular device.
++ *
++ * This function must be called prior to configuring scheduling domains.
++ */
++void dlb2_hw_enable_sparse_ldb_cq_mode(struct dlb2_hw *hw);
++
++/**
++ * dlb2_hw_enable_sparse_dir_cq_mode() - enable sparse mode for directed ports.
++ * @hw: dlb2_hw handle for a particular device.
++ *
++ * This function must be called prior to configuring scheduling domains.
++ */
++void dlb2_hw_enable_sparse_dir_cq_mode(struct dlb2_hw *hw);
++
+ #endif /* __DLB2_RESOURCE_H */
+diff --git a/include/uapi/linux/dlb2_user.h b/include/uapi/linux/dlb2_user.h
+index ee8f5a970065..df7bb72096cd 100644
+--- a/include/uapi/linux/dlb2_user.h
++++ b/include/uapi/linux/dlb2_user.h
+@@ -218,10 +218,32 @@ struct dlb2_get_num_resources_args {
+ 	__u32 num_dir_credits;
+ };
+ 
++enum dlb2_cq_poll_modes {
++	DLB2_CQ_POLL_MODE_STD,
++	DLB2_CQ_POLL_MODE_SPARSE,
++
++	/* NUM_DLB2_CQ_POLL_MODE must be last */
++	NUM_DLB2_CQ_POLL_MODE,
++};
 +
 +/*
-+ * DLB2_DOMAIN_CMD_CREATE_LDB_QUEUE: Configure a load-balanced queue.
++ * DLB2_CMD_QUERY_CQ_POLL_MODE: Query the CQ poll mode setting
++ *
++ * Output parameters:
++ * - response.status: Detailed error code. In certain cases, such as if the
++ *	ioctl request arg is invalid, the driver won't set status.
++ * - response.id: CQ poll mode (see enum dlb2_cq_poll_modes).
++ */
++struct dlb2_query_cq_poll_mode_args {
++	/* Output parameters */
++	struct dlb2_cmd_response response;
++};
++
+ enum dlb2_user_interface_commands {
+ 	DLB2_CMD_GET_DEVICE_VERSION,
+ 	DLB2_CMD_CREATE_SCHED_DOMAIN,
+ 	DLB2_CMD_GET_NUM_RESOURCES,
++	DLB2_CMD_QUERY_CQ_POLL_MODE,
+ 
+ 	/* NUM_DLB2_CMD must be last */
+ 	NUM_DLB2_CMD,
+@@ -339,16 +361,81 @@ struct dlb2_get_dir_queue_depth_args {
+ 	__u32 padding0;
+ };
+ 
++/*
++ * DLB2_DOMAIN_CMD_CREATE_LDB_PORT: Configure a load-balanced port.
 + * Input parameters:
-+ * - num_atomic_inflights: This specifies the amount of temporary atomic QE
-+ *	storage for this queue. If zero, the queue will not support atomic
-+ *	scheduling.
-+ * - num_sequence_numbers: This specifies the number of sequence numbers used
-+ *	by this queue. If zero, the queue will not support ordered scheduling.
-+ *	If non-zero, the queue will not support unordered scheduling.
-+ * - num_qid_inflights: The maximum number of QEs that can be inflight
-+ *	(scheduled to a CQ but not completed) at any time. If
-+ *	num_sequence_numbers is non-zero, num_qid_inflights must be set equal
-+ *	to num_sequence_numbers.
-+ * - lock_id_comp_level: Lock ID compression level. Specifies the number of
-+ *	unique lock IDs the queue should compress down to. Valid compression
-+ *	levels: 0, 64, 128, 256, 512, 1k, 2k, 4k, 64k. If lock_id_comp_level is
-+ *	0, the queue won't compress its lock IDs.
-+ * - depth_threshold: DLB sets two bits in the received QE to indicate the
-+ *	depth of the queue relative to the threshold before scheduling the
-+ *	QE to a CQ:
-+ *	- 2’b11: depth > threshold
-+ *	- 2’b10: threshold >= depth > 0.75 * threshold
-+ *	- 2’b01: 0.75 * threshold >= depth > 0.5 * threshold
-+ *	- 2’b00: depth <= 0.5 * threshold
++ * - cq_depth: Depth of the port's CQ. Must be a power-of-two between 8 and
++ *	1024, inclusive.
++ * - cq_depth_threshold: CQ depth interrupt threshold. A value of N means that
++ *	the CQ interrupt won't fire until there are N or more outstanding CQ
++ *	tokens.
++ * - num_hist_list_entries: Number of history list entries. This must be
++ *	greater than or equal cq_depth.
++ * - cos_id: class-of-service to allocate this port from. Must be between 0 and
++ *	3, inclusive.
++ * - cos_strict: If set, return an error if there are no available ports in the
++ *	requested class-of-service. Else, allocate the port from a different
++ *	class-of-service if the requested class has no available ports.
++ *
 + * - padding0: Reserved for future use.
 + *
 + * Output parameters:
 + * - response.status: Detailed error code. In certain cases, such as if the
 + *	ioctl request arg is invalid, the driver won't set status.
-+ * - response.id: Queue ID.
++ * - response.id: port ID.
 + */
-+struct dlb2_create_ldb_queue_args {
++
++struct dlb2_create_ldb_port_args {
 +	/* Output parameters */
 +	struct dlb2_cmd_response response;
 +	/* Input parameters */
-+	__u32 num_sequence_numbers;
-+	__u32 num_qid_inflights;
-+	__u32 num_atomic_inflights;
-+	__u32 lock_id_comp_level;
-+	__u32 depth_threshold;
-+	__u32 padding0;
++	__u16 cq_depth;
++	__u16 cq_depth_threshold;
++	__u16 cq_history_list_size;
++	__u8 cos_id;
++	__u8 cos_strict;
 +};
 +
 +/*
-+ * DLB2_DOMAIN_CMD_CREATE_DIR_QUEUE: Configure a directed queue.
++ * DLB2_DOMAIN_CMD_CREATE_DIR_PORT: Configure a directed port.
 + * Input parameters:
-+ * - port_id: Port ID. If the corresponding directed port is already created,
++ * - cq_depth: Depth of the port's CQ. Must be a power-of-two between 8 and
++ *	1024, inclusive.
++ * - cq_depth_threshold: CQ depth interrupt threshold. A value of N means that
++ *	the CQ interrupt won't fire until there are N or more outstanding CQ
++ *	tokens.
++ * - qid: Queue ID. If the corresponding directed queue is already created,
 + *	specify its ID here. Else this argument must be 0xFFFFFFFF to indicate
-+ *	that the queue is being created before the port.
-+ * - depth_threshold: DLB sets two bits in the received QE to indicate the
-+ *	depth of the queue relative to the threshold before scheduling the
-+ *	QE to a CQ:
-+ *	- 2’b11: depth > threshold
-+ *	- 2’b10: threshold >= depth > 0.75 * threshold
-+ *	- 2’b01: 0.75 * threshold >= depth > 0.5 * threshold
-+ *	- 2’b00: depth <= 0.5 * threshold
++ *	that the port is being created before the queue.
 + *
 + * Output parameters:
 + * - response.status: Detailed error code. In certain cases, such as if the
 + *	ioctl request arg is invalid, the driver won't set status.
-+ * - response.id: Queue ID.
++ * - response.id: Port ID.
 + */
-+struct dlb2_create_dir_queue_args {
++struct dlb2_create_dir_port_args {
 +	/* Output parameters */
 +	struct dlb2_cmd_response response;
 +	/* Input parameters */
-+	__s32 port_id;
-+	__u32 depth_threshold;
++	__u16 cq_depth;
++	__u16 cq_depth_threshold;
++	__s32 queue_id;
 +};
 +
-+/*
-+ * DLB2_DOMAIN_CMD_GET_LDB_QUEUE_DEPTH: Get a load-balanced queue's depth.
-+ * Input parameters:
-+ * - queue_id: The load-balanced queue ID.
-+ * - padding0: Reserved for future use.
-+ *
-+ * Output parameters:
-+ * - response.status: Detailed error code. In certain cases, such as if the
-+ *	ioctl request arg is invalid, the driver won't set status.
-+ * - response.id: queue depth.
-+ */
-+struct dlb2_get_ldb_queue_depth_args {
-+	/* Output parameters */
-+	struct dlb2_cmd_response response;
-+	/* Input parameters */
-+	__u32 queue_id;
-+	__u32 padding0;
-+};
-+
-+/*
-+ * DLB2_DOMAIN_CMD_DIR_QUEUE_DEPTH: Get a directed queue's depth.
-+ * Input parameters:
-+ * - queue_id: The directed queue ID.
-+ * - padding0: Reserved for future use.
-+ *
-+ * Output parameters:
-+ * - response.status: Detailed error code. In certain cases, such as if the
-+ *	ioctl request arg is invalid, the driver won't set status.
-+ * - response.id: queue depth.
-+ */
-+struct dlb2_get_dir_queue_depth_args {
-+	/* Output parameters */
-+	struct dlb2_cmd_response response;
-+	/* Input parameters */
-+	__u32 queue_id;
-+	__u32 padding0;
-+};
-+
-+enum dlb2_domain_user_interface_commands {
-+	DLB2_DOMAIN_CMD_CREATE_LDB_QUEUE,
-+	DLB2_DOMAIN_CMD_CREATE_DIR_QUEUE,
-+	DLB2_DOMAIN_CMD_GET_LDB_QUEUE_DEPTH,
-+	DLB2_DOMAIN_CMD_GET_DIR_QUEUE_DEPTH,
-+
-+	/* NUM_DLB2_DOMAIN_CMD must be last */
-+	NUM_DLB2_DOMAIN_CMD,
-+};
+ enum dlb2_domain_user_interface_commands {
+ 	DLB2_DOMAIN_CMD_CREATE_LDB_QUEUE,
+ 	DLB2_DOMAIN_CMD_CREATE_DIR_QUEUE,
+ 	DLB2_DOMAIN_CMD_GET_LDB_QUEUE_DEPTH,
+ 	DLB2_DOMAIN_CMD_GET_DIR_QUEUE_DEPTH,
++	DLB2_DOMAIN_CMD_CREATE_LDB_PORT,
++	DLB2_DOMAIN_CMD_CREATE_DIR_PORT,
+ 
+ 	/* NUM_DLB2_DOMAIN_CMD must be last */
+ 	NUM_DLB2_DOMAIN_CMD,
+ };
+ 
++#define DLB2_CQ_SIZE 65536
 +
  /********************/
  /* dlb2 ioctl codes */
  /********************/
-@@ -245,5 +367,21 @@ enum dlb2_user_interface_commands {
+@@ -367,6 +454,10 @@ enum dlb2_domain_user_interface_commands {
  		_IOR(DLB2_IOC_MAGIC,				\
  		     DLB2_CMD_GET_NUM_RESOURCES,		\
  		     struct dlb2_get_num_resources_args)
-+#define DLB2_IOC_CREATE_LDB_QUEUE				\
++#define DLB2_IOC_QUERY_CQ_POLL_MODE				\
++		_IOR(DLB2_IOC_MAGIC,				\
++		     DLB2_CMD_QUERY_CQ_POLL_MODE,		\
++		     struct dlb2_query_cq_poll_mode_args)
+ #define DLB2_IOC_CREATE_LDB_QUEUE				\
+ 		_IOWR(DLB2_IOC_MAGIC,				\
+ 		      DLB2_DOMAIN_CMD_CREATE_LDB_QUEUE,		\
+@@ -383,5 +474,13 @@ enum dlb2_domain_user_interface_commands {
+ 		_IOWR(DLB2_IOC_MAGIC,				\
+ 		      DLB2_DOMAIN_CMD_GET_DIR_QUEUE_DEPTH,	\
+ 		      struct dlb2_get_dir_queue_depth_args)
++#define DLB2_IOC_CREATE_LDB_PORT				\
 +		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_CREATE_LDB_QUEUE,		\
-+		      struct dlb2_create_ldb_queue_args)
-+#define DLB2_IOC_CREATE_DIR_QUEUE				\
++		      DLB2_DOMAIN_CMD_CREATE_LDB_PORT,		\
++		      struct dlb2_create_ldb_port_args)
++#define DLB2_IOC_CREATE_DIR_PORT				\
 +		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_CREATE_DIR_QUEUE,		\
-+		      struct dlb2_create_dir_queue_args)
-+#define DLB2_IOC_GET_LDB_QUEUE_DEPTH				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_GET_LDB_QUEUE_DEPTH,	\
-+		      struct dlb2_get_ldb_queue_depth_args)
-+#define DLB2_IOC_GET_DIR_QUEUE_DEPTH				\
-+		_IOWR(DLB2_IOC_MAGIC,				\
-+		      DLB2_DOMAIN_CMD_GET_DIR_QUEUE_DEPTH,	\
-+		      struct dlb2_get_dir_queue_depth_args)
++		      DLB2_DOMAIN_CMD_CREATE_DIR_PORT,		\
++		      struct dlb2_create_dir_port_args)
  
  #endif /* __DLB2_USER_H */
 -- 
