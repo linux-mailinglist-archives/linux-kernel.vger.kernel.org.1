@@ -2,278 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787392586F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD8625870A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 06:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgIAEc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 00:32:56 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:62517 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbgIAEcx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 00:32:53 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200901043249epoutp01f8ca59c57b4c33778574d601aa76a0e2~wjrOE0_Me2654426544epoutp01R
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 04:32:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200901043249epoutp01f8ca59c57b4c33778574d601aa76a0e2~wjrOE0_Me2654426544epoutp01R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1598934769;
-        bh=WWEnX/WU8nabFgB1ALb/K0Y8k8pzzwAuMe9CZeMsv4Y=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=O6oqnZOlGhlywQ8vbSkDsV5LVyubs1IpP0GesWNXxMRPuIZB42DMhx1VJfVNCUBxY
-         qeQxetxKc+cJj3BLGPDoHaE4qLXiBm0ev+C0xloj9FypIJXGdq9eicJbDuFsDELVyT
-         UeRxom8dtov8VaGcVRy+GQMSjt8Nz74pSwpv11es=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200901043248epcas1p172dee8c8d4b5010df850acd841a745c4~wjrNn-T2w3152731527epcas1p1K;
-        Tue,  1 Sep 2020 04:32:48 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4BgZ1T1x15zMqYkw; Tue,  1 Sep
-        2020 04:32:45 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D0.D6.28578.7EECD4F5; Tue,  1 Sep 2020 13:32:39 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200901043239epcas1p45492888686a41403019bf6487705af31~wjrEfQsgh2108421084epcas1p4P;
-        Tue,  1 Sep 2020 04:32:39 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200901043239epsmtrp20f77135dd77d51a3e5ef8e3f95359e31~wjrEebijR3147731477epsmtrp2c;
-        Tue,  1 Sep 2020 04:32:39 +0000 (GMT)
-X-AuditID: b6c32a39-8c9ff70000006fa2-5b-5f4dcee79ffe
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        49.D5.08382.6EECD4F5; Tue,  1 Sep 2020 13:32:38 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200901043238epsmtip24209c50ae0545e0895c388cf852a620f~wjrEKDz952786627866epsmtip2P;
-        Tue,  1 Sep 2020 04:32:38 +0000 (GMT)
-Subject: Re: [PATCH v4 75/78] dt-bindings: display: vc4: hdmi: Add BCM2711
- HDMI controllers bindings
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Rob Herring <robh@kernel.org>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <94c5b8e4-a168-690d-2d60-93462585bef9@samsung.com>
-Date:   Tue, 1 Sep 2020 13:45:07 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
-MIME-Version: 1.0
-In-Reply-To: <a174517d1f57b7a75eabd0361aef5365894d7c1a.1594230107.git-series.maxime@cerno.tech>
+        id S1726107AbgIAEty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 00:49:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47357 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725930AbgIAEtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 00:49:53 -0400
+IronPort-SDR: ww/a0pG0504si7PYb812+nYb2y3QalE7TteIYWTLkHJiq/Or1DCs45SafOHz6MACnot6g/m2gE
+ 2DdTwUOvCNGw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9730"; a="218658241"
+X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
+   d="scan'208";a="218658241"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2020 21:49:52 -0700
+IronPort-SDR: DFV3ri+NETpGNt+y003w/cL+Zx2O/7HPU8ecgTLFqqsiiLsE2eSKsp2jdcqIidv7Go0rTnWItC
+ EFrcsP+W0YGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,378,1592895600"; 
+   d="scan'208";a="325196879"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga004.fm.intel.com with ESMTP; 31 Aug 2020 21:49:52 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 31 Aug 2020 21:49:29 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 31 Aug 2020 21:49:29 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.36.53) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 31 Aug 2020 21:49:27 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=T3BB4fFT10NKk7QJKPjBJuHitywIVJXuDOgBCAR8r4Yq2KP8DcotwI9zosscMoXUU8axC46oNHJGZjqZz+NCKdVVVy8/EbaFEELvXYbFA7fBC80k41aEJ/SxEBTrW1kTw1jdyHMi/ALTcwYyu3axxksYzJVFPUFDoGD8X13o0LUTMZkC0BIxV1En8K9gxQKQCXqPUe2nlXIRuyI8ireg5+pzJeBbVolysqme7MPrS3v9QwGVku4QG60fXgn+PW+Ui47EOROJ5ohleHomctWCLGhof2zPg/f+pIqKvUD/a7Tki4cJYTjO8D7oZpF70y0IHlmW97YmgDf2Hkb5Rtp4gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nt2q0w+Ue6Uj5BuuTYXkdLCLTf8PCTMmdeZy/CleXKs=;
+ b=G50UPPGTvRNgnAViJ+4vrtX/JO2OSlC2PMrKPbClRp7pTvq262wB/Q8MqO4rg6XQGC6BIJCwwneMcY+M+rc+Zcd9NyPumbhaESwgRbo/ncXr2p0/tjAGTwZLJ6gfCSn8zXh/sssAS41TpF5I3d/rnFi3nBss0p1aE+0CS4GMyCcX+9PBYOVRb881XhtVvPPKP5cIrOKiroGeFg1lpFc/JHd54ObwBSd18VigqMKFEWaDrd3igy/d8Jbgw1jTEp5+/KTWGsfH0ZnrRjr4bifYQxSbp833otYJM5/m1QLia2hLxEGB5pKYpQF0FjY3haEVu0/9bF+r1DVHcKoz9JqWvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nt2q0w+Ue6Uj5BuuTYXkdLCLTf8PCTMmdeZy/CleXKs=;
+ b=Fx87Y38BYXCE7YkNUbTPYp/7hT8/rdSynkoqWgT4qbJWZMnRcUXo44er78EeXiHrMyMvQ7BdQSV08TTdtOyBwP0HCC1Nl7yi0PwaJNnKejxcWo0Gi6W1jIaXwmv2ZlLfuYF2VDhHRQIF50hdgTCtDS6uvTfZWcRxaErlmuV2gVs=
+Received: from DM6PR11MB3721.namprd11.prod.outlook.com (2603:10b6:5:142::10)
+ by DM6PR11MB4628.namprd11.prod.outlook.com (2603:10b6:5:28f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.21; Tue, 1 Sep
+ 2020 04:49:25 +0000
+Received: from DM6PR11MB3721.namprd11.prod.outlook.com
+ ([fe80::7883:72bf:ad85:5166]) by DM6PR11MB3721.namprd11.prod.outlook.com
+ ([fe80::7883:72bf:ad85:5166%6]) with mapi id 15.20.3326.025; Tue, 1 Sep 2020
+ 04:49:25 +0000
+From:   "Wan Mohamad, Wan Ahmad Zainie" 
+        <wan.ahmad.zainie.wan.mohamad@intel.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     "kishon@ti.com" <kishon@ti.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "eswara.kota@linux.intel.com" <eswara.kota@linux.intel.com>,
+        "vadivel.muruganx.ramuthevar@linux.intel.com" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v7 3/3] phy: intel: Add Keem Bay eMMC PHY support
+Thread-Topic: [PATCH v7 3/3] phy: intel: Add Keem Bay eMMC PHY support
+Thread-Index: AQHWf3fYgpT7j7ykyEyv+5f3vsznaKlTNxFw
+Date:   Tue, 1 Sep 2020 04:49:25 +0000
+Message-ID: <DM6PR11MB37212B71B26A9642CDEBC320DD2E0@DM6PR11MB3721.namprd11.prod.outlook.com>
+References: <20200821113747.2912-1-wan.ahmad.zainie.wan.mohamad@intel.com>
+ <20200821113747.2912-4-wan.ahmad.zainie.wan.mohamad@intel.com>
+ <20200831091936.GM2639@vkoul-mobl>
+In-Reply-To: <20200831091936.GM2639@vkoul-mobl>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCJsWRmVeSWpSXmKPExsWy7bCmge7zc77xBhveKVqs7T3KYvF27mIW
-        iytf37NZHGi8zGix6fE1VovLu+awWUy8vYHdYsaPf4wW22YtZ7NYd+s1m8X/PTvYLR5Nvc/o
-        wOPR9P4Ym8es+2fZPO6cO8/msWlVJ5vH/e7jTB6bl9R7tB79xeKx+XS1x+dNcgGcUdk2GamJ
-        KalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUAXKymUJeaUAoUC
-        EouLlfTtbIryS0tSFTLyi0tslVILUnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyM45dOslS
-        0KRS8WtpL1sD42vJLkZODgkBE4lfc54ydzFycQgJ7GCUmHL4JBuE84lRYsOD+1CZb4wSZ8+1
-        sMC0tC/byQiR2Mso8f7pRKiW94wSy+89YQapEhZIkzj16ycriC0iUC7R3rkfbBSzwHUmiebZ
-        XxlBEmwCWhL7X9xgA7H5BRQlrv54DBbnFbCTWHX3LVicRUBF4tDdM2BxUYEwiZPbWqBqBCVO
-        znwCdBIHB6dAvMSGpdUgYWYBcYlbT+YzQdjyEtvfzgHbKyFwh0Ni0c3HzBAvuEhsmruMEcIW
-        lnh1fAs7hC0l8fndXjYIu1pi5ckjbBDNHYwSW/ZfYIVIGEvsXzqZCWQxs4CmxPpd+hBhRYmd
-        v+cyQizmk3j3tYcVpERCgFeio00IokRZ4vKDu0wQtqTE4vZOtgmMSrOQfDMLyQuzkLwwC2HZ
-        AkaWVYxiqQXFuempxYYFpsjRvYkRnJy1LHcwTn/7Qe8QIxMH4yFGCQ5mJRHeA7u844V4UxIr
-        q1KL8uOLSnNSiw8xmgLDdyKzlGhyPjA/5JXEG5oaGRsbW5gYmpkaGiqJ8z68pRAvJJCeWJKa
-        nZpakFoE08fEwSnVwGQbe23Wr/KGJSF7eezncDEvCqy4wR2eYn9t93SWv0vKHDx2Vn3LtfwS
-        frzhm1TTEzm9C1v1p5dOWc8gX7XFZn5ZwteZP9tf6ezJiCxSP62455jZ7B9Bvhc880+EXH+/
-        v3iVVYJSEePni0XX174/4PtayZBn/a7rVkbcbJOKApR+6eWULTrneJnjW7B90+d/s6Z/DCs8
-        f8XzcYyw3uflH1KKKlpWHFrI9a5A9JKh3Ry/lQ8apq6NaHXc5K/ebOPEvLqup4q9oD3h43em
-        ff3Rfc53v93x/LUpInnGm/MnrPtm6PZOlq7p0TBvf5ZwVPuyzj/hRlbNZ8sVD4jov+41XJO/
-        60GgMcsM61vef1udLJVYijMSDbWYi4oTAawaIHhXBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDIsWRmVeSWpSXmKPExsWy7bCSvO6zc77xBv1PLC3W9h5lsXg7dzGL
-        xZWv79ksDjReZrTY9Pgaq8XlXXPYLCbe3sBuMePHP0aLbbOWs1msu/WazeL/nh3sFo+m3md0
-        4PFoen+MzWPW/bNsHnfOnWfz2LSqk83jfvdxJo/NS+o9Wo/+YvHYfLra4/MmuQDOKC6blNSc
-        zLLUIn27BK6MY5dOshQ0qVT8WtrL1sD4WrKLkZNDQsBEon3ZTsYuRi4OIYHdjBI3/u5mg0hI
-        Sky7eJS5i5EDyBaWOHy4GCQsJPCWUWLmGnkQW1ggTeLUr5+sILaIQKXE5zm7mEFsZoHrTBIz
-        ttVBzOxlkji7eStYgk1AS2L/ixtg8/kFFCWu/njMCGLzCthJrLr7FizOIqAicejuGbC4qECY
-        xM4lj5kgagQlTs58wgJyD6dAvMSGpdUQu9Ql/sy7BLVXXOLWk/lMELa8xPa3c5gnMArPQtI9
-        C0nLLCQts5C0LGBkWcUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERyhWpo7GLev+qB3
-        iJGJg/EQowQHs5II74Fd3vFCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeW8ULowTEkhPLEnNTk0t
-        SC2CyTJxcEo1MJXM6f5qIbT9/0FTV7GTN1+/XnegzvzDpv97L7rNTv0efULY9J4K75aTUbrH
-        3hp0c/MFrLmxPunZ9a2qKZdO2YVMWsKh5Mn6LKGiOEPgXUGLZsizlnMFugpzjqTv0fduiL/g
-        zZYxY5kQx9+wX+vvXH3+87uekuC974mOEsyb5szaaCm3+9H7yjNOa293hal5/DqnLriCOy3b
-        nOeN/aywdwUrVxo+yJ55pOikfZbulfnpFw8dv3bFZsFbJebPU/jT7a/KbPV5f2kPe/3hX5aS
-        Zicuv51W78TEcPLkp7KLjNOlWP3ua9QHZsYX/Nvo4STJfX+LWMUe3e/7ubY/ctD7aCLE+vS9
-        n3n6kzPPT7xb23tLiaU4I9FQi7moOBEA+/SlDD8DAAA=
-X-CMS-MailID: 20200901043239epcas1p45492888686a41403019bf6487705af31
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200708174447epcas1p3c9582567617196b61495ee281b443b91
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
-        <CGME20200708174447epcas1p3c9582567617196b61495ee281b443b91@epcas1p3.samsung.com>
-        <a174517d1f57b7a75eabd0361aef5365894d7c1a.1594230107.git-series.maxime@cerno.tech>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [14.1.227.224]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2048ddd3-5dce-45d1-8326-08d84e3266c1
+x-ms-traffictypediagnostic: DM6PR11MB4628:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR11MB4628D888EA4C51CC355617FFDD2E0@DM6PR11MB4628.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dNvkbn/wFbIMPoW3CJUH6isbuxevezPIdKOJx9YFzg3rdCjQ2S7wEKSVdvn3NoN1KNCd3JNqmogJl2hMSK6+QG5Kr4Dp7FDFYLCiY4Bg5NW1mfvbu8crEelS1DJqZ0lthx0FA3cHIqYu1aWrhUgftynoFSTbkNdS97fRw9rJzaSAZcvneVe+A1uMqe5xR+KdMaF586LpqT8ruairR5TCnTb9iXraRqPG17hS+DmjkkPzC6Ou5hgqiw2OOPQrqrf8DleTyn8e1KrW1fNo3+WR41tLw2i3sdx3Wvo9zOUkZxZA5hN3YYpZ8ZEXjIlSk3AqUYwJ6guW1fm3ZaF9kf6f9w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3721.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(366004)(136003)(6506007)(5660300002)(83380400001)(66946007)(66476007)(7696005)(33656002)(8936002)(19627235002)(9686003)(76116006)(64756008)(52536014)(53546011)(2906002)(316002)(86362001)(8676002)(66556008)(26005)(6916009)(55016002)(4326008)(71200400001)(186003)(478600001)(66446008)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: CBdG48IyveYLZRigj4dp+8oAaXPo804ZOm/tAgvkrZmDz9QDJiw5Jmj5puCG9gmARWJADsCdeM7kQbaIt6LnvPuAFl2YbftOo9NWDPiCrSiO0NeLfz5cHcZ5MMOyUuPughSEwA+tTwslT4PwlbfrgvG01uJp6eYl7X6nPd3XCuUn4KUgrPgyArRo7L8g0zfXvAeh+NJHqT8nXQEWbT4lg4cAr4+JnM+go2aDFlPusAoG9ZH2GxuXGrImLhTuiZn//8HNRQbiJ64qzVxpGpHFnYIBWwi77ri+ME4gocBZ5q2OTq+UcHJYtyOOdeQmjKyVWA9ocK66JhqyekBSwi4Fae1JVY0iWSP6Oz+tWz7TsGUrwTdeB0Gn8cIzJCQ9y1dD2Z6MTtP/sPBqKkjSttBFLDzmzxZIhp2YbmvyEQynIm+n71JWMtV3ejrMKQ48lqBsu3NWkVCjJFYGt22GNUzAAMRNJSXKoeUwvfrlzwttNJgBSpd7+wl2PlBImqA5vufOEmMRRC7DLZDfPuNNzeSP+8+411tpEjStn4Mf4ckECkuVQgl3o12NfgyODFARbvtkOsILXRHlILheMdrIvXOZaESNwb6b0W9nq8RX1XfdgWy8OWWIWZbtLoitZ73D/21UArUoageRObLLQuqg0W8WVg==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3721.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2048ddd3-5dce-45d1-8326-08d84e3266c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2020 04:49:25.1105
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AFoV/6r88SWeDOVgns0TdPMg5vqvlaYs2JyhiMLHkMrNRuiSsaq5wgxIdYudiWfLp7t8ME6yFCtmVKsJ+MASU5pOOK3GdTN+H+Xq82tFELu+A22Q0AWdtTJmrpVi6x/d
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4628
+X-OriginatorOrg: intel.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+Hi Vinod.
 
-On 7/9/20 2:42 AM, Maxime Ripard wrote:
-> The HDMI controllers found in the BCM2711 SoC need some adjustments to the
-> bindings, especially since the registers have been shuffled around in more
-> register ranges.
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml | 109 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 109 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
-> new file mode 100644
-> index 000000000000..6091fe3d315b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
-> @@ -0,0 +1,109 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: https://protect2.fireeye.com/url?k=556aeb05-08b8fda0-556b604a-0cc47a31bee8-c3a0ebd1d22c3183&q=1&u=http%3A%2F%2Fdevicetree.org%2Fschemas%2Fdisplay%2Fbrcm%2Cbcm2711-hdmi.yaml%23
-> +$schema: https://protect2.fireeye.com/url?k=24fa660c-792870a9-24fbed43-0cc47a31bee8-0bf16f4fd60f0ab4&q=1&u=http%3A%2F%2Fdevicetree.org%2Fmeta-schemas%2Fcore.yaml%23
-> +
-> +title: Broadcom BCM2711 HDMI Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Eric Anholt <eric@anholt.net>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - brcm,bcm2711-hdmi0
-> +      - brcm,bcm2711-hdmi1
-> +
-> +  reg:
-> +    items:
-> +      - description: HDMI controller register range
-> +      - description: DVP register range
-> +      - description: HDMI PHY register range
-> +      - description: Rate Manager register range
-> +      - description: Packet RAM register range
-> +      - description: Metadata RAM register range
-> +      - description: CSC register range
-> +      - description: CEC register range
-> +      - description: HD register range
-> +
-> +  reg-names:
-> +    items:
-> +      - const: hdmi
-> +      - const: dvp
-> +      - const: phy
-> +      - const: rm
-> +      - const: packet
-> +      - const: metadata
-> +      - const: csc
-> +      - const: cec
-> +      - const: hd
-> +
-> +  clocks:
-> +    description: The HDMI state machine clock
+Thanks for the review.
 
-I'm not sure the following description is correct.
-But, this description doesn't contain the information of audio clock.
+> -----Original Message-----
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: Monday, August 31, 2020 5:20 PM
+> To: Wan Mohamad, Wan Ahmad Zainie
+> <wan.ahmad.zainie.wan.mohamad@intel.com>
+> Cc: kishon@ti.com; robh+dt@kernel.org; Shevchenko, Andriy
+> <andriy.shevchenko@intel.com>; eswara.kota@linux.intel.com;
+> vadivel.muruganx.ramuthevar@linux.intel.com; Raja Subramanian, Lakshmi
+> Bai <lakshmi.bai.raja.subramanian@intel.com>; linux-
+> kernel@vger.kernel.org; devicetree@vger.kernel.org
+> Subject: Re: [PATCH v7 3/3] phy: intel: Add Keem Bay eMMC PHY support
+>=20
+> On 21-08-20, 19:37, Wan Ahmad Zainie wrote:
+>=20
+> > +/* From ACS_eMMC51_16nFFC_RO1100_Userguide_v1p0.pdf p17 */
+> > +#define FREQSEL_200M_170M	0x0
+> > +#define FREQSEL_170M_140M	0x1
+> > +#define FREQSEL_140M_110M	0x2
+> > +#define FREQSEL_110M_80M	0x3
+> > +#define FREQSEL_80M_50M		0x4
+> > +
+> > +#define maskval(mask, val)	(((val) << (ffs(mask) - 1)) & mask)
+>=20
+> Kernel has a macro do this for you, please use FIELD_PREP instead of
 
-	description: The HDMI state machine and audio clock
+I have updated to v8, to remove this macro and use FIELD_PREP.
+I also add changes based on Andy's comments.
 
-> +
-> +  clock-names:
-> +    const: hdmi
+>=20
+> your own macro
+> --
+> ~Vinod
 
-This patch is missing the following clock information for audio clock.
-
-	const: clk-108M
-
-> +
-> +  ddc:
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: >
-> +      Phandle of the I2C controller used for DDC EDID probing
-> +
-> +  hpd-gpios:
-> +    description: >
-> +      The GPIO pin for the HDMI hotplug detect (if it doesn't appear
-> +      as an interrupt/status bit in the HDMI controller itself)
-> +
-> +  dmas:
-> +    maxItems: 1
-> +    description: >
-> +      Should contain one entry pointing to the DMA channel used to
-> +      transfer audio data.
-> +
-> +  dma-names:
-> +    const: audio-rx
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - resets
-> +  - ddc
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    hdmi0: hdmi@7ef00700 {
-> +        compatible = "brcm,bcm2711-hdmi0";
-> +        reg = <0x7ef00700 0x300>,
-> +              <0x7ef00300 0x200>,
-> +              <0x7ef00f00 0x80>,
-> +              <0x7ef00f80 0x80>,
-> +              <0x7ef01b00 0x200>,
-> +              <0x7ef01f00 0x400>,
-> +              <0x7ef00200 0x80>,
-> +              <0x7ef04300 0x100>,
-> +              <0x7ef20000 0x100>;
-> +        reg-names = "hdmi",
-> +                    "dvp",
-> +                    "phy",
-> +                    "rm",
-> +                    "packet",
-> +                    "metadata",
-> +                    "csc",
-> +                    "cec",
-> +                    "hd";
-> +        clocks = <&firmware_clocks 13>;
-> +        clock-names = "hdmi";
-
-Also, this example doesn't include the instance of audio clock.
-Need to edit them as following:
-
-	clock-names = "hdmi", "clk-108M";
-	clocks = <&firmware_clocks 13>, <&dvp 0>;
-
-
-> +        resets = <&dvp 0>;
-> +        ddc = <&ddc0>;
-> +    };
-> +
-> +...
-> 
-
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Best regards,
+Zainie
