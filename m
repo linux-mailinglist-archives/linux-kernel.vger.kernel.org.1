@@ -2,145 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADD325887B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFDE258867
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 08:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgIAGtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 02:49:33 -0400
-Received: from mx.blih.net ([212.83.155.74]:46689 "EHLO mx.blih.net"
+        id S1726594AbgIAGoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 02:44:19 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:41148 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726006AbgIAGtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 02:49:32 -0400
-X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Sep 2020 02:49:31 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bidouilliste.com;
-        s=mx; t=1598942569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nZvkdgfEsx8IUABfhx71Dpoxee70fmEUTqE8AA7jJGE=;
-        b=YrKuyRgS7QNfdF7qc4hPTROgfFajA7Fk9Ph+iwvL4aPMHfAkWgKP6nOnmArJ1pn+u1TWq2
-        Cd91ByVr7E2rDIilyqYa/3Zyd/93ANKbFJxeHCP+m8YDm64qxE65dqaI+MukDy6JM7NyRu
-        rCmQsqbvJSUHjiMTKOj+S6geJCxe3A0=
-Received: from amy.home (lfbn-idf2-1-1138-237.w90-92.abo.wanadoo.fr [90.92.20.237])
-        by mx.blih.net (OpenSMTPD) with ESMTPSA id 8cb32919 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Tue, 1 Sep 2020 06:42:49 +0000 (UTC)
-Date:   Tue, 1 Sep 2020 08:42:49 +0200
-From:   Emmanuel Vadot <manu@bidouilliste.com>
-To:     =?ISO-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>, Chanho Min <chanho.min@lge.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        id S1726044AbgIAGoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 02:44:17 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 0816h5ik000896;
+        Tue, 1 Sep 2020 08:43:05 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>, George Spelvin <lkml@sdf.org>,
+        Amit Klein <aksecurity@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v2 0/6] dt-bindings: Convert SP804 to Json-schema (and
- fix users)
-Message-Id: <20200901084249.b72bb69d617cc32733432da1@bidouilliste.com>
-In-Reply-To: <28acf821-fa6f-7259-ec1b-4810ca1ff48f@arm.com>
-References: <20200828142018.43298-1-andre.przywara@arm.com>
-        <CACRpkdZUrPeUbpNeCZcw8kq5k3egijAuh7R1_3TkbPz5wN+=Lw@mail.gmail.com>
-        <28acf821-fa6f-7259-ec1b-4810ca1ff48f@arm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; amd64-portbld-freebsd13.0)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>, tytso@mit.edu,
+        Florian Westphal <fw@strlen.de>,
+        Marc Plumb <lkml.mplumb@gmail.com>
+Subject: [PATCH 0/2] prandom_u32: make output less predictable
+Date:   Tue,  1 Sep 2020 08:43:00 +0200
+Message-Id: <20200901064302.849-1-w@1wt.eu>
+X-Mailer: git-send-email 2.9.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Aug 2020 16:44:28 +0100
-Andr=E9 Przywara <andre.przywara@arm.com> wrote:
+This is the cleanup of the latest series of prandom_u32 experimentations
+consisting in using SipHash instead of Tausworthe to produce the randoms
+used by the network stack. The changes to the files were kept minimal,
+and the controversial commit that used to take noise from the fast_pool
+(f227e3ec3b5c) was reverted. Instead, a dedicated "net_rand_noise" per_cpu
+variable is fed from various sources of activities (networking, scheduling)
+to perturb the SipHash state using fast, non-trivially predictable data,
+instead of keeping it fully deterministic. The goal is essentially to make
+any occasional memory leakage or brute-force attempt useless.
 
-> On 28/08/2020 15:54, Linus Walleij wrote:
->=20
-> Hi,
->=20
-> > On Fri, Aug 28, 2020 at 4:20 PM Andre Przywara <andre.przywara@arm.com>=
- wrote:
-> >=20
-> >> This is the second attempt at converting the SP804 timer binding to ya=
-ml.
-> >> Compared to v1, I forbid additional properties, and included the prime=
-cell
-> >> binding. Also the clock-names property is now listed, although without
-> >> further requirements on the names. Changelog below.
-> >=20
-> > The series:
-> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> >=20
-> >> I couldn't test any of those DT files on actual machines, but tried
-> >> to make the changes in a way that would be transparent to at least the
-> >> Linux driver. The only other SP804 DT user I could find is FreeBSD,
-> >> but they seem to use a different binding (no clocks, but a
-> >> clock-frequency property).
-> >=20
-> > That's annoying. I suppose FreeBSD just made that up and doesn't
-> > even have a binding document for it?
->=20
-> I couldn't find bindings at all in their git tree.
+The resulting code was verified to be very slightly faster on x86_64 than
+what is was with the controversial commit above, though this remains barely
+above measurement noise. It was only build-tested on arm & arm64.
 
- That's because I don't merge the bindings in the main branch.
+George Spelvin (1):
+  random32: make prandom_u32() output unpredictable
 
-> I don't think they
-> treat this very formally, it seems to be more use-case driven.
-> Their SP804 driver does not know how to handle clock properties, so most
-> of the DTs (in sys/gnu/dts, so apparently copied from Linux) would not
-> work really well, because the driver assumes a hardcoded frequency of
-> 1MHz by default.
+Willy Tarreau (1):
+  random32: add noise from network and scheduling activity
 
- In addition to sys/gnu/dts we also have sys/dts/ which are our own DTs
-before we used the Linux ones (a long time ago but some platform
-weren't converted, they will just die sometime in the futur if nobody
-takes care of them I guess).
+ drivers/char/random.c   |   1 -
+ include/linux/prandom.h |  55 ++++-
+ kernel/time/timer.c     |   9 +-
+ lib/random32.c          | 438 ++++++++++++++++++++++++----------------
+ net/core/dev.c          |   4 +
+ 5 files changed, 326 insertions(+), 181 deletions(-)
 
-> There is only one DT (Annapurna Alpine with Cortex-A15) that provides
-> this clock-frequency property. The Linux DT does not mention the SP804
-> in there at all, interestingly.
+Cc: George Spelvin <lkml@sdf.org>
+Cc: Amit Klein <aksecurity@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: tytso@mit.edu
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Marc Plumb <lkml.mplumb@gmail.com>
+Cc: Sedat Dilek <sedat.dilek@gmail.com>
 
- I'm not familiar with this platform at all, it was done under
-contract by Semihalf and I'm sure that if something fails and their
-client starts to complain they will fix it.
-
-> > In an ideal world I suppose we should go and fix FreeBSD but I have
-> > no idea how easy or hard that is.
->=20
-> It seems to be messy, at least in this case, and I guess unifying DTs
-> means some work on drivers as well.
-
- I wouldn't worry about us on this case, this binding requirements
-seems to have be done a long time ago before we had any clock framework
-and if our drivers needs to be updated we will do it when we imports
-DTS from whatever Linux version this will be merged in.
-
-> But AFAIK most of the more modern platforms copy the DTs (and thus
-> implicitly the bindings) from Linux, so there is probably much less
-> deviation for many more relevant boards.
-
- Yes, I (and others) insist on using the DTs from Linux and not doing
-any patches to it without sending them to the Linux ML.
-
-> Cheers,
-> Andre
-
- Cheers,
-
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-
---=20
-Emmanuel Vadot <manu@bidouilliste.com>
+-- 
+2.28.0
