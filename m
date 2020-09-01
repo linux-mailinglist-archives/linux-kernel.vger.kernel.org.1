@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4710E2598B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB1C2596DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730821AbgIAPb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:31:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58912 "EHLO mail.kernel.org"
+        id S1729103AbgIAQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730526AbgIAP3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:29:33 -0400
+        id S1728043AbgIAPkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:40:07 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9961E20684;
-        Tue,  1 Sep 2020 15:29:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9106F20866;
+        Tue,  1 Sep 2020 15:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598974172;
-        bh=Zn5iuplSmikrE6kXcerU2XXERhdllL1cvIoyTaS5vW8=;
+        s=default; t=1598974806;
+        bh=3EnFM1EqhxlGEIjlFAWWwx+otHaDaxoJh5K+xDYKgPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jOhnLvxQo0+QvhUrhhc13l4QbUSyv7HBVYSdheEfN80uSDzYErBIdr7CIh9t881f4
-         R5lPquPZypIeTkyp/E3E7/Y7lo/PhOXe+s1vDtlcTlUkqp86K8otXDO784Zzv7Wl7E
-         6OTvuGMUyqhbwFxnLe2+P09Jbt4k7lI21Mv97PXk=
+        b=EfwEXppeD+zvq/a9LFS7P2Wm+jrgWjeudHtdiVW3XP3+se80GzuRF1EfTjvjMuZ8v
+         6mo2VXr6KxxQIymjKefRBa0UTskY6Uh8z4WgIE3Khc/oBIJ5T5ECkzi0mzaeLMa0Q9
+         3u4inttmmRVIO/KdZy9QwqJ74zJobMtJV/bDYuZs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 073/214] PM / devfreq: rk3399_dmc: Fix kernel oops when rockchip,pmu is absent
-Date:   Tue,  1 Sep 2020 17:09:13 +0200
-Message-Id: <20200901150956.473202802@linuxfoundation.org>
+Subject: [PATCH 5.8 098/255] habanalabs: Fix memory corruption in debugfs
+Date:   Tue,  1 Sep 2020 17:09:14 +0200
+Message-Id: <20200901151005.418565007@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
-References: <20200901150952.963606936@linuxfoundation.org>
+In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
+References: <20200901151000.800754757@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,99 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 63ef91f24f9bfc70b6446319f6cabfd094481372 ]
+[ Upstream commit eeec23cd325ad4d83927b8ee162693579cf3813f ]
 
-Booting a recent kernel on a rk3399-based system (nanopc-t4),
-equipped with a recent u-boot and ATF results in an Oops due
-to a NULL pointer dereference.
+This has to be a long instead of a u32 because we write a long value.
+On 64 bit systems, this will cause memory corruption.
 
-This turns out to be due to the rk3399-dmc driver looking for
-an *undocumented* property (rockchip,pmu), and happily using
-a NULL pointer when the property isn't there.
-
-Instead, make most of what was brought in with 9173c5ceb035
-("PM / devfreq: rk3399_dmc: Pass ODT and auto power down parameters
-to TF-A.") conditioned on finding this property in the device-tree,
-preventing the driver from exploding.
-
-Cc: stable@vger.kernel.org
-Fixes: 9173c5ceb035 ("PM / devfreq: rk3399_dmc: Pass ODT and auto power down parameters to TF-A.")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Fixes: c216477363a3 ("habanalabs: add debugfs support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/devfreq/rk3399_dmc.c | 42 ++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 19 deletions(-)
+ drivers/misc/habanalabs/debugfs.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
-index 24f04f78285b7..027769e39f9b8 100644
---- a/drivers/devfreq/rk3399_dmc.c
-+++ b/drivers/devfreq/rk3399_dmc.c
-@@ -95,18 +95,20 @@ static int rk3399_dmcfreq_target(struct device *dev, unsigned long *freq,
+diff --git a/drivers/misc/habanalabs/debugfs.c b/drivers/misc/habanalabs/debugfs.c
+index 0bc036e01ee8d..6c2b9cf45e831 100644
+--- a/drivers/misc/habanalabs/debugfs.c
++++ b/drivers/misc/habanalabs/debugfs.c
+@@ -19,7 +19,7 @@
+ static struct dentry *hl_debug_root;
  
- 	mutex_lock(&dmcfreq->lock);
+ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+-				u8 i2c_reg, u32 *val)
++				u8 i2c_reg, long *val)
+ {
+ 	struct armcp_packet pkt;
+ 	int rc;
+@@ -36,7 +36,7 @@ static int hl_debugfs_i2c_read(struct hl_device *hdev, u8 i2c_bus, u8 i2c_addr,
+ 	pkt.i2c_reg = i2c_reg;
  
--	if (target_rate >= dmcfreq->odt_dis_freq)
--		odt_enable = true;
--
--	/*
--	 * This makes a SMC call to the TF-A to set the DDR PD (power-down)
--	 * timings and to enable or disable the ODT (on-die termination)
--	 * resistors.
--	 */
--	arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, dmcfreq->odt_pd_arg0,
--		      dmcfreq->odt_pd_arg1,
--		      ROCKCHIP_SIP_CONFIG_DRAM_SET_ODT_PD,
--		      odt_enable, 0, 0, 0, &res);
-+	if (dmcfreq->regmap_pmu) {
-+		if (target_rate >= dmcfreq->odt_dis_freq)
-+			odt_enable = true;
-+
-+		/*
-+		 * This makes a SMC call to the TF-A to set the DDR PD
-+		 * (power-down) timings and to enable or disable the
-+		 * ODT (on-die termination) resistors.
-+		 */
-+		arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, dmcfreq->odt_pd_arg0,
-+			      dmcfreq->odt_pd_arg1,
-+			      ROCKCHIP_SIP_CONFIG_DRAM_SET_ODT_PD,
-+			      odt_enable, 0, 0, 0, &res);
-+	}
+ 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
+-						0, (long *) val);
++						0, val);
  
- 	/*
- 	 * If frequency scaling from low to high, adjust voltage first.
-@@ -371,13 +373,14 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
+ 	if (rc)
+ 		dev_err(hdev->dev, "Failed to read from I2C, error %d\n", rc);
+@@ -827,7 +827,7 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
+ 	struct hl_dbg_device_entry *entry = file_inode(f)->i_private;
+ 	struct hl_device *hdev = entry->hdev;
+ 	char tmp_buf[32];
+-	u32 val;
++	long val;
+ 	ssize_t rc;
+ 
+ 	if (*ppos)
+@@ -842,7 +842,7 @@ static ssize_t hl_i2c_data_read(struct file *f, char __user *buf,
+ 		return rc;
  	}
  
- 	node = of_parse_phandle(np, "rockchip,pmu", 0);
--	if (node) {
--		data->regmap_pmu = syscon_node_to_regmap(node);
--		of_node_put(node);
--		if (IS_ERR(data->regmap_pmu)) {
--			ret = PTR_ERR(data->regmap_pmu);
--			goto err_edev;
--		}
-+	if (!node)
-+		goto no_pmu;
-+
-+	data->regmap_pmu = syscon_node_to_regmap(node);
-+	of_node_put(node);
-+	if (IS_ERR(data->regmap_pmu)) {
-+		ret = PTR_ERR(data->regmap_pmu);
-+		goto err_edev;
- 	}
+-	sprintf(tmp_buf, "0x%02x\n", val);
++	sprintf(tmp_buf, "0x%02lx\n", val);
+ 	rc = simple_read_from_buffer(buf, count, ppos, tmp_buf,
+ 			strlen(tmp_buf));
  
- 	regmap_read(data->regmap_pmu, RK3399_PMUGRF_OS_REG2, &val);
-@@ -399,6 +402,7 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
- 		goto err_edev;
- 	};
- 
-+no_pmu:
- 	arm_smccc_smc(ROCKCHIP_SIP_DRAM_FREQ, 0, 0,
- 		      ROCKCHIP_SIP_CONFIG_DRAM_INIT,
- 		      0, 0, 0, 0, &res);
 -- 
 2.25.1
 
