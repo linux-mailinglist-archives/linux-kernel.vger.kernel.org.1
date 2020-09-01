@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89652595BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004CD25942A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 17:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbgIAPzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 11:55:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
+        id S1731268AbgIAPgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 11:36:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731894AbgIAPpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 11:45:44 -0400
+        id S1729607AbgIAPfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:35:06 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A266206EB;
-        Tue,  1 Sep 2020 15:45:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7059920866;
+        Tue,  1 Sep 2020 15:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1598975144;
-        bh=ZtBz4H4zHKmKdeBV2j6B7ls2H3PJ6PDwFiAz16xd6zc=;
+        s=default; t=1598974506;
+        bh=Kic1QFBMmfsiLLqVcXRF13eeR/kpQuM9+nAq1RLFgjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o/yZKWglR8tAGrpgr1WBhUXjooiQfbyueKwoUqMSm/01wOLiCOCr6kKSvPxw3ebyL
-         2fup59/e7SJn58Vn38Ac09Bz4gHPGZg60CiYWVaz7nK7va3WpLQJpIPLZjL/JVQ9Oi
-         czyTBGiiixC+JxZTrPdYyQhihwKUrht+apXyiCR0=
+        b=sVF7wlikKYpnMrxRq/NqDpGXBKdl3T8uRSGX4OJJBdqAj/ezpqabiInaFqFjfLXfD
+         aUYXFCZgySWOY2Y1Tlhh2Z54PY8oUeIE+Lp2WGukHBreHyRjaoXzkAclUCf62+cyJg
+         ltVWpID0c7NpAhwE5EthCle/yyz4HHxOtR5XKOIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 5.8 227/255] usb: host: ohci-exynos: Fix error handling in exynos_ohci_probe()
+        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 203/214] usb: dwc3: gadget: Handle ZLP for sg requests
 Date:   Tue,  1 Sep 2020 17:11:23 +0200
-Message-Id: <20200901151011.636914994@linuxfoundation.org>
+Message-Id: <20200901151002.657404941@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200901151000.800754757@linuxfoundation.org>
-References: <20200901151000.800754757@linuxfoundation.org>
+In-Reply-To: <20200901150952.963606936@linuxfoundation.org>
+References: <20200901150952.963606936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tang Bin <tangbin@cmss.chinamobile.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit 1d4169834628d18b2392a2da92b7fbf5e8e2ce89 upstream.
+[ Upstream commit bc9a2e226ea95e1699f7590845554de095308b75 ]
 
-If the function platform_get_irq() failed, the negative value
-returned will not be detected here. So fix error handling in
-exynos_ohci_probe(). And when get irq failed, the function
-platform_get_irq() logs an error message, so remove redundant
-message here.
+Currently dwc3 doesn't handle usb_request->zero for SG requests. This
+change checks and prepares extra TRBs for the ZLP for SG requests.
 
-Fixes: 62194244cf87 ("USB: Add Samsung Exynos OHCI diver")
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20200826144931.1828-1-tangbin@cmss.chinamobile.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: <stable@vger.kernel.org> # v4.5+
+Fixes: 04c03d10e507 ("usb: dwc3: gadget: handle request->zero")
+Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ohci-exynos.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/usb/dwc3/gadget.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
---- a/drivers/usb/host/ohci-exynos.c
-+++ b/drivers/usb/host/ohci-exynos.c
-@@ -171,9 +171,8 @@ static int exynos_ohci_probe(struct plat
- 	hcd->rsrc_len = resource_size(res);
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (!irq) {
--		dev_err(&pdev->dev, "Failed to get IRQ\n");
--		err = -ENODEV;
-+	if (irq < 0) {
-+		err = irq;
- 		goto fail_io;
- 	}
- 
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 8e67591df76be..4225544342519 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1104,6 +1104,35 @@ static void dwc3_prepare_one_trb_sg(struct dwc3_ep *dep,
+ 					req->request.stream_id,
+ 					req->request.short_not_ok,
+ 					req->request.no_interrupt);
++		} else if (req->request.zero && req->request.length &&
++			   !usb_endpoint_xfer_isoc(dep->endpoint.desc) &&
++			   !rem && !chain) {
++			struct dwc3	*dwc = dep->dwc;
++			struct dwc3_trb	*trb;
++
++			req->needs_extra_trb = true;
++
++			/* Prepare normal TRB */
++			dwc3_prepare_one_trb(dep, req, trb_length, true, i);
++
++			/* Prepare one extra TRB to handle ZLP */
++			trb = &dep->trb_pool[dep->trb_enqueue];
++			req->num_trbs++;
++			__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, 0,
++					       !req->direction, 1,
++					       req->request.stream_id,
++					       req->request.short_not_ok,
++					       req->request.no_interrupt);
++
++			/* Prepare one more TRB to handle MPS alignment */
++			if (!req->direction) {
++				trb = &dep->trb_pool[dep->trb_enqueue];
++				req->num_trbs++;
++				__dwc3_prepare_one_trb(dep, trb, dwc->bounce_addr, maxp,
++						       false, 1, req->request.stream_id,
++						       req->request.short_not_ok,
++						       req->request.no_interrupt);
++			}
+ 		} else {
+ 			dwc3_prepare_one_trb(dep, req, trb_length, chain, i);
+ 		}
+-- 
+2.25.1
+
 
 
