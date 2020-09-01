@@ -2,126 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289F02598A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC489259A99
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Sep 2020 18:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730946AbgIAQ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 12:29:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27035 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730936AbgIAQ3N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 12:29:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1598977752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EKeTQTlHEH1DvrHRoJ98xax44gVFHErnwIJFKqA+kZE=;
-        b=FSqYBgSGvi/Beco3sU89gD4Jlxm5hfh5G+oALUn28C5HKhL32Nz2kpCmFn/X1xCoYczskO
-        n1jybJF3evkdMhZQPmj/6bw8TsKtr8YCHv8uhxtrlpFkGNjJqk0g0EZtukd9y1IA29hPDq
-        1G3kqhokGBdOZWSrW90NVB4kpoXnYzQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-zK7EKLIlO6u-8mZrVFZPSQ-1; Tue, 01 Sep 2020 12:29:10 -0400
-X-MC-Unique: zK7EKLIlO6u-8mZrVFZPSQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1732220AbgIAQvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 12:51:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730068AbgIAPZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 11:25:59 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABA9680572E;
-        Tue,  1 Sep 2020 16:29:08 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-113-231.rdu2.redhat.com [10.10.113.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC1915D9CC;
-        Tue,  1 Sep 2020 16:29:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 7/7] mm: Pass a file_ra_state struct into
- force_page_cache_readahead()
-From:   David Howells <dhowells@redhat.com>
-To:     willy@infradead.org
-Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date:   Tue, 01 Sep 2020 17:29:06 +0100
-Message-ID: <159897774687.405783.6157146299031279302.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
-References: <159897769535.405783.17587409235571100774.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        by mail.kernel.org (Postfix) with ESMTPSA id 904D620BED;
+        Tue,  1 Sep 2020 15:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1598973959;
+        bh=iZRokT/LvXKNu2UX1Yb/TKfow/L5EMf/GiV8BC/Qzd4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=B+rmydmoDRrQML/RdSKE568dtNtwlYkX47MCkTwC1WwxV3RyIRMaMUYIQBmn426PA
+         fZbb36fPUQn29OkEmMkOmoYYdWCA4abcNOWWx5vkolnzIUbSv6cshrN7mL6QufCw1R
+         jSHLBjWdVwBCqvyjYreyYuG5ackDdKuVVVhLA5Cc=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Kyungmin Park <kyungmin.park@samsung.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Han Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/6] mtd: onenand: Simplify with dev_err_probe()
+Date:   Tue,  1 Sep 2020 16:25:30 +0200
+Message-Id: <20200901142535.12819-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass a file_ra_state struct into force_page_cache_readahead().  One caller
-has one that should be passed in and the other doesn't, but the former
-needs to pass its in.
+Common pattern of handling deferred probe can be simplified with
+dev_err_probe().  Less code and the error value gets printed.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
+ drivers/mtd/nand/onenand/onenand_omap2.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
- mm/fadvise.c   |    2 +-
- mm/internal.h  |    2 +-
- mm/readahead.c |    6 +++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/mm/fadvise.c b/mm/fadvise.c
-index b68d2f2959d5..2f1550279757 100644
---- a/mm/fadvise.c
-+++ b/mm/fadvise.c
-@@ -107,7 +107,7 @@ int generic_fadvise(struct file *file, loff_t offset, loff_t len, int advice)
- 		{
- 			DEFINE_READAHEAD(rac, file, mapping, start_index);
- 			rac._nr_pages = nrpages;
--			force_page_cache_readahead(&rac);
-+			force_page_cache_readahead(&rac, &rac.file->f_ra);
- 		}
- 		break;
- 	case POSIX_FADV_NOREUSE:
-diff --git a/mm/internal.h b/mm/internal.h
-index de3b2ce2743a..977ad7d81b1b 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -49,7 +49,7 @@ void unmap_page_range(struct mmu_gather *tlb,
- 			     unsigned long addr, unsigned long end,
- 			     struct zap_details *details);
+diff --git a/drivers/mtd/nand/onenand/onenand_omap2.c b/drivers/mtd/nand/onenand/onenand_omap2.c
+index aa9368bf7a0c..d8c0bd002c2b 100644
+--- a/drivers/mtd/nand/onenand/onenand_omap2.c
++++ b/drivers/mtd/nand/onenand/onenand_omap2.c
+@@ -494,11 +494,8 @@ static int omap2_onenand_probe(struct platform_device *pdev)
  
--void force_page_cache_readahead(struct readahead_control *);
-+void force_page_cache_readahead(struct readahead_control *, struct file_ra_state *);
- void __do_page_cache_readahead(struct readahead_control *, unsigned long);
- 
- /**
-diff --git a/mm/readahead.c b/mm/readahead.c
-index 28ff80304a21..b001720c13aa 100644
---- a/mm/readahead.c
-+++ b/mm/readahead.c
-@@ -273,11 +273,11 @@ void __do_page_cache_readahead(struct readahead_control *rac,
-  * Chunk the readahead into 2 megabyte units, so that we don't pin too much
-  * memory at once.
-  */
--void force_page_cache_readahead(struct readahead_control *rac)
-+void force_page_cache_readahead(struct readahead_control *rac,
-+				struct file_ra_state *ra)
- {
- 	struct address_space *mapping = rac->mapping;
- 	struct backing_dev_info *bdi = inode_to_bdi(mapping->host);
--	struct file_ra_state *ra = &rac->file->f_ra;
- 	unsigned long max_pages, index, nr_to_read;
- 
- 	if (unlikely(!mapping->a_ops->readpage && !mapping->a_ops->readpages &&
-@@ -657,7 +657,7 @@ void page_cache_sync_readahead(struct readahead_control *rac,
- 
- 	/* be dumb */
- 	if (rac->file && (rac->file->f_mode & FMODE_RANDOM)) {
--		force_page_cache_readahead(rac);
-+		force_page_cache_readahead(rac, ra);
- 		return;
+ 	c->int_gpiod = devm_gpiod_get_optional(dev, "int", GPIOD_IN);
+ 	if (IS_ERR(c->int_gpiod)) {
+-		r = PTR_ERR(c->int_gpiod);
+ 		/* Just try again if this happens */
+-		if (r != -EPROBE_DEFER)
+-			dev_err(dev, "error getting gpio: %d\n", r);
+-		return r;
++		return dev_err_probe(dev, PTR_ERR(c->int_gpiod), "error getting gpio\n");
  	}
  
-
+ 	if (c->int_gpiod) {
+-- 
+2.17.1
 
