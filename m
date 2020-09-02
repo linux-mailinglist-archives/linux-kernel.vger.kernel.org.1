@@ -2,136 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88E225A90F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725B725A913
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgIBKEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 06:04:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:34764 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgIBKEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 06:04:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3FECD6E;
-        Wed,  2 Sep 2020 03:04:31 -0700 (PDT)
-Received: from bogus (unknown [10.57.4.218])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22F113F66F;
-        Wed,  2 Sep 2020 03:04:30 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 11:04:22 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jeremy Linton <Jeremy.Linton@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>
-Subject: Re: [PATCH] arm64: topology: Stop using MPIDR for topology
- information
-Message-ID: <20200902100422.GA25462@bogus>
-References: <20200829130016.26106-1-valentin.schneider@arm.com>
+        id S1726528AbgIBKG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 06:06:26 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45400 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgIBKGZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 06:06:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5A51B1C0B7F; Wed,  2 Sep 2020 12:06:22 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 12:06:21 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 000/125] 4.19.143-rc1 review
+Message-ID: <20200902100621.GA3765@duo.ucw.cz>
+References: <20200901150934.576210879@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="fUYQa+Pmc3FrFX/N"
 Content-Disposition: inline
-In-Reply-To: <20200829130016.26106-1-valentin.schneider@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200901150934.576210879@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 02:00:16PM +0100, Valentin Schneider wrote:
-> In the absence of ACPI or DT topology data, we fallback to haphazardly
-> decoding *something* out of MPIDR. Sadly, the contents of that register are
-> mostly unusable due to the implementation leniancy and things like Aff0
-> having to be capped to 15 (despite being encoded on 8 bits).
->
-> Consider a simple system with a single package of 32 cores, all under the
-> same LLC. We ought to be shoving them in the same core_sibling mask, but
-> MPIDR is going to look like:
->
->   | CPU  | 0 | ... | 15 | 16 | ... | 31 |
->   |------+---+-----+----+----+-----+----+
->   | Aff0 | 0 | ... | 15 |  0 | ... | 15 |
->   | Aff1 | 0 | ... |  0 |  1 | ... |  1 |
->   | Aff2 | 0 | ... |  0 |  0 | ... |  0 |
->
-> Which will eventually yield
->
->   core_sibling(0-15)  == 0-15
->   core_sibling(16-31) == 16-31
->
-> NUMA woes
-> =========
->
-> If we try to play games with this and set up NUMA boundaries within those
-> groups of 16 cores via e.g. QEMU:
->
->   # Node0: 0-9; Node1: 10-19
->   $ qemu-system-aarch64 <blah> \
->     -smp 20 -numa node,cpus=0-9,nodeid=0 -numa node,cpus=10-19,nodeid=1
->
-> The scheduler's MC domain (all CPUs with same LLC) is going to be built via
->
->   arch_topology.c::cpu_coregroup_mask()
->
-> In there we try to figure out a sensible mask out of the topology
-> information we have. In short, here we'll pick the smallest of NUMA or
-> core sibling mask.
->
->   node_mask(CPU9)    == 0-9
->   core_sibling(CPU9) == 0-15
->
-> MC mask for CPU9 will thus be 0-9, not a problem.
->
->   node_mask(CPU10)    == 10-19
->   core_sibling(CPU10) == 0-15
->
-> MC mask for CPU10 will thus be 10-19, not a problem.
->
->   node_mask(CPU16)    == 10-19
->   core_sibling(CPU16) == 16-19
->
-> MC mask for CPU16 will thus be 16-19... Uh oh. CPUs 16-19 are in two
-> different unique MC spans, and the scheduler has no idea what to make of
-> that. That triggers the WARN_ON() added by commit
->
->   ccf74128d66c ("sched/topology: Assert non-NUMA topology masks don't (partially) overlap")
->
-> Fixing MPIDR-derived topology
-> =============================
->
-> We could try to come up with some cleverer scheme to figure out which of
-> the available masks to pick, but really if one of those masks resulted from
-> MPIDR then it should be discarded because it's bound to be bogus.
->
-> I was hoping to give MPIDR a chance for SMT, to figure out which threads are
-> in the same core using Aff1-3 as core ID, but Sudeep and Robin pointed out
-> to me that there are systems out there where *all* cores have non-zero
-> values in their higher affinity fields (e.g. RK3288 has "5" in all of its
-> cores' MPIDR.Aff1), which would expose a bogus core ID to userspace.
->
-> Stop using MPIDR for topology information. When no other source of topology
-> information is available, mark each CPU as its own core and its NUMA node
-> as its LLC domain.
->
 
-Looks good to me, so:
+--fUYQa+Pmc3FrFX/N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Hi!
 
-However, we need to get it tested on some systems with *weird* MPIDR
-values and don't have topology described in DT cpu-maps and somehow
-(wrongly) relied on below logic. Also though these affect user ABI via
-sysfs topology, I expect systems w/o DT cpu-maps and weird MPIDR are
-broken either way.
+> This is the start of the stable review cycle for the 4.19.143 release.
+> There are 125 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Thu, 03 Sep 2020 15:09:01 +0000.
+> Anything received after that time might be too late.
 
-Luckily found only one such mpidr in arm64 DTS files:
-arch/arm64/boot/dts/sprd/sc9860.dtsi
+CIP testing did not find any problems (test:x86_siemens failure is
+because those boards are offline).
 
---
-Regards,
-Sudeep
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1=
+84417281
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--fUYQa+Pmc3FrFX/N
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX09unQAKCRAw5/Bqldv6
+8uwDAJ94+FOoyrW/2r1HEeD/3MO6GLKSGgCfR69oxpgEIHb2nPL4gfsjwJvlFx8=
+=fGY7
+-----END PGP SIGNATURE-----
+
+--fUYQa+Pmc3FrFX/N--
