@@ -2,55 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF3325B29B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80F825B28B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgIBRDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 13:03:25 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2743 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726293AbgIBRDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 13:03:24 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id C6A1D96CF0A6AB45DB8C;
-        Wed,  2 Sep 2020 18:03:21 +0100 (IST)
-Received: from [127.0.0.1] (10.47.4.206) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 2 Sep 2020
- 18:03:20 +0100
-Subject: Re: [PATCH v7 1/5] perf/jevents: Remove jevents.h file
-To:     Kajol Jain <kjain@linux.ibm.com>, <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <pc@us.ibm.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <ak@linux.intel.com>,
-        <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
-        <maddy@linux.ibm.com>, <ravi.bangoria@linux.ibm.com>
-References: <20200902160439.335232-1-kjain@linux.ibm.com>
- <20200902160439.335232-2-kjain@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <d2394fae-a124-7988-acd0-99bd42595074@huawei.com>
-Date:   Wed, 2 Sep 2020 18:00:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1728328AbgIBRBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:01:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:42792 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728428AbgIBRA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 13:00:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 003021045;
+        Wed,  2 Sep 2020 10:00:57 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4BFD3F66F;
+        Wed,  2 Sep 2020 10:00:55 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 18:00:53 +0100
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Boyan Karatotev <boyan.karatotev@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, boian4o1@gmail.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        amit.kachhap@arm.com, vincenzo.frascino@arm.com,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH 3/4] kselftests/arm64: add PAuth test for whether exec()
+ changes keys
+Message-ID: <20200902170052.GJ6642@arm.com>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-4-boyan.karatotev@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200902160439.335232-2-kjain@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.4.206]
-X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200828131606.7946-4-boyan.karatotev@arm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/09/2020 17:04, Kajol Jain wrote:
-> This patch removes jevents.h file.
+On Fri, Aug 28, 2020 at 02:16:05PM +0100, Boyan Karatotev wrote:
+> Kernel documentation states that it will change PAuth keys on exec() calls.
 > 
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> Verify that all keys are correctly switched to new ones.
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+> ---
+>  tools/testing/selftests/arm64/pauth/Makefile  |   4 +
+>  .../selftests/arm64/pauth/exec_target.c       |  35 +++++
+>  tools/testing/selftests/arm64/pauth/helper.h  |  10 ++
+>  tools/testing/selftests/arm64/pauth/pac.c     | 148 ++++++++++++++++++
+>  4 files changed, 197 insertions(+)
+>  create mode 100644 tools/testing/selftests/arm64/pauth/exec_target.c
+> 
+> diff --git a/tools/testing/selftests/arm64/pauth/Makefile b/tools/testing/selftests/arm64/pauth/Makefile
+> index a017d1c8dd58..2e237b21ccf6 100644
+> --- a/tools/testing/selftests/arm64/pauth/Makefile
+> +++ b/tools/testing/selftests/arm64/pauth/Makefile
+> @@ -5,6 +5,7 @@ CFLAGS += -mbranch-protection=pac-ret
+>  
+>  TEST_GEN_PROGS := pac
+>  TEST_GEN_FILES := pac_corruptor.o helper.o
+> +TEST_GEN_PROGS_EXTENDED := exec_target
+>  
+>  include ../../lib.mk
+>  
+> @@ -20,6 +21,9 @@ $(OUTPUT)/helper.o: helper.c
+>  # greater, gcc emits pac* instructions which are not in HINT NOP space,
+>  # preventing the tests from occurring at all. Compile for ARMv8.2 so tests can
+>  # run on earlier targets and print a meaningful error messages
+> +$(OUTPUT)/exec_target: exec_target.c $(OUTPUT)/helper.o
+> +	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
+> +
+>  $(OUTPUT)/pac: pac.c $(OUTPUT)/pac_corruptor.o $(OUTPUT)/helper.o
+>  	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
+>  
+> diff --git a/tools/testing/selftests/arm64/pauth/exec_target.c b/tools/testing/selftests/arm64/pauth/exec_target.c
+> new file mode 100644
+> index 000000000000..07addef5a1d7
+> --- /dev/null
+> +++ b/tools/testing/selftests/arm64/pauth/exec_target.c
+> @@ -0,0 +1,35 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (C) 2020 ARM Limited
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/auxv.h>
+> +
+> +#include "helper.h"
+> +
+> +
+> +int main(void)
+> +{
+> +	struct signatures signed_vals;
+> +	unsigned long hwcaps;
+> +	size_t val;
+> +
+> +	fread(&val, sizeof(size_t), 1, stdin);
+> +
+> +	/* don't try to execute illegal (unimplemented) instructions) caller
+> +	 * should have checked this and keep worker simple
+> +	 */
+> +	hwcaps = getauxval(AT_HWCAP);
+> +
+> +	if (hwcaps & HWCAP_PACA) {
+> +		signed_vals.keyia = keyia_sign(val);
+> +		signed_vals.keyib = keyib_sign(val);
+> +		signed_vals.keyda = keyda_sign(val);
+> +		signed_vals.keydb = keydb_sign(val);
+> +	}
+> +	signed_vals.keyg = (hwcaps & HWCAP_PACG) ?  keyg_sign(val) : 0;
+> +
+> +	fwrite(&signed_vals, sizeof(struct signatures), 1, stdout);
+> +
+> +	return 0;
+> +}
+> diff --git a/tools/testing/selftests/arm64/pauth/helper.h b/tools/testing/selftests/arm64/pauth/helper.h
+> index b3cf709e249d..fceaa1e4824a 100644
+> --- a/tools/testing/selftests/arm64/pauth/helper.h
+> +++ b/tools/testing/selftests/arm64/pauth/helper.h
+> @@ -6,6 +6,16 @@
+>  
+>  #include <stdlib.h>
+>  
+> +#define NKEYS 5
+> +
+> +
+> +struct signatures {
+> +	size_t keyia;
+> +	size_t keyib;
+> +	size_t keyda;
+> +	size_t keydb;
+> +	size_t keyg;
+> +};
+>  
+>  void pac_corruptor(void);
+>  
+> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+> index cdbffa8bf61e..16dea47b11c7 100644
+> --- a/tools/testing/selftests/arm64/pauth/pac.c
+> +++ b/tools/testing/selftests/arm64/pauth/pac.c
+> @@ -2,6 +2,8 @@
+>  // Copyright (C) 2020 ARM Limited
+>  
+>  #include <sys/auxv.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+>  #include <signal.h>
+>  
+>  #include "../../kselftest_harness.h"
+> @@ -33,6 +35,117 @@ do { \
+>  } while (0)
+>  
+>  
+> +void sign_specific(struct signatures *sign, size_t val)
+> +{
+> +	sign->keyia = keyia_sign(val);
+> +	sign->keyib = keyib_sign(val);
+> +	sign->keyda = keyda_sign(val);
+> +	sign->keydb = keydb_sign(val);
+> +}
+> +
+> +void sign_all(struct signatures *sign, size_t val)
+> +{
+> +	sign->keyia = keyia_sign(val);
+> +	sign->keyib = keyib_sign(val);
+> +	sign->keyda = keyda_sign(val);
+> +	sign->keydb = keydb_sign(val);
+> +	sign->keyg  = keyg_sign(val);
+> +}
+> +
+> +int are_same(struct signatures *old, struct signatures *new, int nkeys)
+> +{
+> +	int res = 0;
+> +
+> +	res |= old->keyia == new->keyia;
+> +	res |= old->keyib == new->keyib;
+> +	res |= old->keyda == new->keyda;
+> +	res |= old->keydb == new->keydb;
+> +	if (nkeys == NKEYS)
+> +		res |= old->keyg  == new->keyg;
+> +
+> +	return res;
+> +}
+> +
+> +int exec_sign_all(struct signatures *signed_vals, size_t val)
+> +{
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+Could popen(3) be used here?
 
+Fork-and-exec is notoriously fiddly, so it's preferable to use a library
+function to do it where applicable.
+
+[...]
+
+Cheers
+---Dave
