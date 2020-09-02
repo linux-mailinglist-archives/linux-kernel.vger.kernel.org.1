@@ -2,200 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4574225ADDE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7027725AE1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgIBODT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:03:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38264 "EHLO mail.kernel.org"
+        id S1728033AbgIBO7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:59:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727058AbgIBNrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:47:55 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        id S1727037AbgIBNwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:52:03 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2E6D20767;
-        Wed,  2 Sep 2020 13:47:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D3F020767;
+        Wed,  2 Sep 2020 13:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599054475;
-        bh=uvUbQn+zPa6GmQMc01NIJf6I8X4tGInPjCL0PlU0YcY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YztK9w2jpWc4zx/O1KiMFUtvX815yAjSQAftWN/MsAlc9krspSt33pWBQRGc/c+Sb
-         1u7VkVvp/6rajG9B3QMP6FRNW/5D5W7g9qVqUaAgosIyA6WUgP9hrFa3rivuh3JNic
-         iy/yw9Tkc4J4En/F2VrEVlJbbY4A+0wh1a14OmvE=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 38CDD40D3D; Wed,  2 Sep 2020 10:47:52 -0300 (-03)
-Date:   Wed, 2 Sep 2020 10:47:52 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Al Grant <al.grant@foss.arm.com>
-Cc:     Joe Mario <jmario@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf c2c report: count remote loads correctly
-Message-ID: <20200902134752.GC1464000@kernel.org>
-References: <6282053a-d813-8638-531d-56e852d582a2@foss.arm.com>
- <20200901201717.GA656443@krava>
- <20200901204614.GC656443@krava>
- <be482330-5532-6c34-ed0a-1c6f79e365fc@redhat.com>
- <0ffdeb34-6fa7-380e-3183-8ce1022ed21c@foss.arm.com>
+        s=default; t=1599054722;
+        bh=s6nqfBIuq3dFoDRkLqgA8cQMjG1yVZ4UtRlISUFc8VE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=IbeQzyFkL0L1Xx0MynJJM3KNt2ZzKm747XMqTTSZrHK5HGG1gK3K6+OcBg5Zpw390
+         8UBtwQJ/QuRKdnq6FdcKrsbpA98aFmiAnH7wlT2JxLVtma/p5+Ma9v005KFEEZT76T
+         Q6zZtSxr2fDTjJhybaShUyWoecF+njvfmRhpJL3M=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0D17F3520DED; Wed,  2 Sep 2020 06:52:02 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 06:52:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        madhuparnabhowmik10@gmail.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        peterz@infrdead.org, Lina Iyer <ilina@codeaurora.org>
+Subject: Re: WARNING: suspicious RCU usage - sdhci-pltfm: SDHCI platform and
+ OF driver helper
+Message-ID: <20200902135202.GG29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CA+G9fYuiJwN1ad955Xw4ShamX2=373r+56KsbpeverEs+i_NAg@mail.gmail.com>
+ <20200831194402.GD2855@paulmck-ThinkPad-P72>
+ <CAPDyKFq7KWo=4VmPhgrt7vEEQ_P6NdVgQp+MO_1cg1dtoVR_Fw@mail.gmail.com>
+ <20200901150047.GB29330@paulmck-ThinkPad-P72>
+ <CAPDyKFptZK-OqnAuJYGnpfPbZ1qw-iSd4t5SuE7SmWic=ms48Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0ffdeb34-6fa7-380e-3183-8ce1022ed21c@foss.arm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAPDyKFptZK-OqnAuJYGnpfPbZ1qw-iSd4t5SuE7SmWic=ms48Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 02, 2020 at 01:09:42PM +0100, Al Grant escreveu:
-> On 01/09/2020 22:26, Joe Mario wrote:
-> > On 9/1/20 4:46 PM, Jiri Olsa wrote:
-> > > On Tue, Sep 01, 2020 at 10:17:19PM +0200, Jiri Olsa wrote:
-> > > > On Thu, Aug 20, 2020 at 02:48:58PM +0100, Al Grant wrote:
-> > > > I'm getting following when trying to apply the patch:
+On Wed, Sep 02, 2020 at 08:49:11AM +0200, Ulf Hansson wrote:
+> On Tue, 1 Sep 2020 at 17:00, Paul E. McKenney <paulmck@kernel.org> wrote:
 
-> > > > patching file util/mem-events.c
-> > > > patch: **** malformed patch at line 83: struct mem_info *mi)
+[ . . . ]
 
-> > > > > "perf c2c report" can show load counts for cache lines, which
-> > > > > don't match the actual number of load samples, e.g. as
-> > > > > displayed by "perf script". This is specific to "Remote Any
-> > > > > cache hit" loads. Firstly, these loads are counted twice,
-> > > > > because if the "remote" flag is set, rmt_dram is always
-> > > > > incremented, and then rmt_hitm or rmt_hit may also be
-> > > > > incremented. These are then totalled in the overall load
-> > > > > count, causing double-counting. "Remote Any cache hit" should
-> > > > > not increment rmt_dram. Instead, use LVLNUM to discriminate
-> > > > > between remote cache and remote DRAM. Also, non-HITM loads to
-> > > > > remote cache are not being counted as hits (the last column in
-> > > > > the cache line report is zero), when the SNOOP field is unset.
-> > > > > This causes under-reporting of the load count. The code
-> > > > > currently only increments counters if the SNOOP field is set
-> > > > > to either HIT or HITM. Instead, for access to remote cache (as
-> > > > > indicated by LVLNUM), increment rmt_hitm if SNOOP=HITM,
-> > > > > increment rmt_hit otherwise.
+> > Here is the list, though it is early in the morning here:
+> >
+> > 1.      RCU_NONIDLE().
+> >
+> > 2.      Peter's patch, if it turns out to hoist your code out of what
+> >         RCU considers to be the idle loop.
+> >
+> > 3.      If the problem is trace events, use the _rcuidle() variant of the
+> >         trace event.  Instead of trace_blah(), use trace_blah_rcuidle().
+> >
+> > 4.      Switch from RCU (as in rcu_read_lock()) to SRCU (as in
+> >         srcu_read_lock()).
+> >
+> > 5.      Take Peter's patch a step further, moving the rcu_idle_enter()
+> >         and rcu_idle_exit() calls as needed.  But please keep in mind
+> >         that these two functions require that irqs be disabled by their
+> >         callers.
+> >
+> > 6.      If RCU_NONIDLE() in inconvenient due to early exits and such,
+> >         you could use the rcu_irq_enter_irqson() and rcu_irq_exit_irqson()
+> >         functions that it calls.
+> >
+> > Do any of those help?
+> 
+> Yes, they will, in one way or the other. Thanks for providing me with
+> all the available options.
+> 
+> BTW, I still don't get what good rcu_idle_enter|exit() does, but I am
+> assuming those need to be called at some point before the CPU goes to
+> sleep.
 
-> > > > seems like you described more issues in here,
-> > > > could you please put them in separate patches,
-> > > > so it's easier to review?
+These functions allow RCU to leave idle CPUs undisturbed.  If they
+were not invoked, RCU would periodically IPI idle CPUs to verify that
+there were no RCU readers running on them.  This would be quite bad for
+battery lifetime, among other things.  So the call to rcu_idle_enter()
+tells RCU that it may safely completely ignore this CPU until its next
+call to rcu_idle_exit().
 
-> > > > Andi, Joe,
-> > > > any idea about changes described above?
-
-> > Hi Al:
-> > Can you provide a simple reproducer for this?
-> > When I try it, the "perf c2c report" shows the same counts for the load samples as the "perf script" output does.
-> > 
-> > For example:
-> > Here's the output from the "perf c2c report"
-> > # head -6 c2c.out
-> >     =================================================
-> >                 Trace Event Information
-> >     =================================================
-> >       Total records                     :      32923
-> >       Locked Load/Store Operations      :        306
-> >       Load Operations                   :       5392
-> > 
-> > And here's the grep count from the "perf script" output:
-> >     # egrep -c 'mem-stores|mem-loads' script.out
-> >     32923
-> >     # egrep -c "LCK Yes" script.out
-> >     306
-> >     # grep -c mem-loads script.out
-> >     5392
-
-> "Load Operations" is correct, the problem is with some of the
-> counts of more specific load types. E.g. in this output:
-
->   Load Operations                   :        782
->   Loads - uncacheable               :          0
->   Loads - IO                        :          0
->   Loads - Miss                      :         18
->   Loads - no mapping                :          0
->   Load Fill Buffer Hit              :         85
->   Load L1D hit                      :        171
->   Load L2D hit                      :         16
->   Load LLC hit                      :         86
->   Load Local HITM                   :          0
->   Load Remote HITM                  :        110
->   Load Remote HIT                   :          0
->   Load Local DRAM                   :         86
->   Load Remote DRAM                  :        320
-
-> LFB, L1D, L2D, LLC, local DRAM, remote HIT/HITM and remote DRAM are
-> distinct places so their individual counts should total up to no more
-> than the total load count. But 85+171+16+86+110+86+320 is 874 which
-> exceeds the total load count by 92. If you add in "Loads - Miss"
-> (which is "L3 Miss" in perf script - it's not specific about where
-> it hit) the excess is 110.
-
-> # grep -c "Remote Any cache hit" script.out
-> 111
-
-> # grep -c "Remote Any cache hit|SNP HitM" script.out
-> 110
-
-> # grep -c "Remote RAM" script.out
-> 209
-
-> # grep -c "Remote" script.out
-> 320
-
-> Loads which hit remote cache are being counted as both remote HIT/HITM
-> and remote DRAM. perf c2c is reporting 320 "Load Remote DRAM" but this
-> is the count of all remote loads, including "Remote Any cache hit".
-> "Load Remote DRAM" should match "grep -c "Remote RAM" i.e. 209 not
-> 320.  The 110 excess in the total matches the count of "Remote Any
-> cache hit|SNP HitM" as it is these which are counted twice. (There is
-> one "SNP N/A" which isn't counted, that's the other issue I mentioned)
-
-> There are knock-on effects in the detailed cache line reporting, but I
-> believe it's all due to the same root cause where we have some records
-> triggering two counts which should be mutually exclusive.
-
-Would you consider adding a tools/perf/tests/ entry to do these checks,
-i.e. run some synthetic workload, record some of these events, then do
-this math, to check that perf is doing the right thing?
-
-The starting point is something like:
-
-  $ ls -la tools/perf/tests/sw-clock.c 
-  -rw-rw-r--. 1 acme acme 3326 Aug 14 09:00 tools/perf/tests/sw-clock.c
-  $ 
-  $ wc -l tools/perf/tests/sw-clock.c 
-  149 tools/perf/tests/sw-clock.c
-  $ 
-  $ perf test clock
-  25: Software clock events period values                   : Ok
-  $ perf test -v clock
-  Couldn't bump rlimit(MEMLOCK), failures may take place when creating BPF maps, etc
-  25: Software clock events period values                   :
-  --- start ---
-  test child forked, pid 3455348
-  mmap size 528384B
-  mmap size 528384B
-  test child finished with 0
-  ---- end ----
-  Software clock events period values: Ok
-  $
-
-This way, everytime we go sending patches upstream and do:
-
-  # perf test
-
-We make sure the changes in the current batch of patches being submitted
-don't regress,
-
-Thanks for your consideration and for your patches and detailed
-discussion,
-
-Regards,
-
-- Arnaldo
-
-P.S.: The SNOOPX fix for tools/ is already in Linus tree, he even
-noticed that now the kernel UAPI header is out of sync and needs that
-fix :-)
-
-https://lore.kernel.org/lkml/CAHk-=wifL-04oOF3RAbX9Odyfgz4zc4dE=pq-QL+2C-aTxUmqw@mail.gmail.com/
+							Thanx, Paul
