@@ -2,79 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DA525ADA4
+	by mail.lfdr.de (Postfix) with ESMTP id 6612B25ADA3
 	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728029AbgIBOqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
+        id S1728009AbgIBOpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726979AbgIBOpi (ORCPT
+        with ESMTP id S1727992AbgIBOph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:45:38 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D9CC061246
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:45:38 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id o21so4858491wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:45:37 -0700 (PDT)
+        Wed, 2 Sep 2020 10:45:37 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6888DC061244;
+        Wed,  2 Sep 2020 07:45:36 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u18so4679134wmc.3;
+        Wed, 02 Sep 2020 07:45:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:date:from:to:cc:message-id;
-        bh=trC+40amJNG14lv80NaTqEGrWJguvBTuJIKnt0HFTWo=;
-        b=UuUvb1ZQJouxwRU/HXqW9dHiS30iASaxqJjgk+w1tpi4HyUUIX2fNzwPMnWJHzalpe
-         J7WcK1U5ItiNENw048BbwT7TDVzFVxU9jfX9UYaTBNAjSKerOPx7XzSCm1Q068p4G76F
-         9mCHwzsBwdiPTwdh2EvzG65kFQNAb1gwG36hIA9i8xJI4joIJcS8TqF+VZAzQgF4u5m8
-         XdnJSd8bfwZgCDfiDJ8DEq52ELnLljPVUTuG36yrTRmiqI1uNZfAC0ID/IL/D2BnlQy8
-         FJG337atTlQ7NVITyreqN840FO9EsYfXk4XE91gFALELbWgGpUwtZRRDgz3PYK/BPrMo
-         G1UA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/dvle3j9y6O7Ujf2ahiU0ShW9hGye771vvDoEz/F4PY=;
+        b=JwH0hkrutiCbJKZ/aZB4ztxSuEKXc/RHIh5DLGmAPyF8Znq4pnnDq6HnIVd3Ok4oTh
+         YU2/xlVVNV+y/dpU4t0M0hxJtAIdfjRJ2IINlhhuD1mr5UTpxPRjXG5ER1+86kCAJBE2
+         XnsmOi2L7b56QYT0cx7Vq1BWNH5nuurqO18jQkMXr2EtF9547IJz2WqLUAUZCKANG13Z
+         9AyqoCsWAVtYDOyx/jG9NRJDYNT7Sn8Ae/0jUYoDShmWtEGzFn4tQVq70ajo4xNzKXhq
+         s2jQOWKwLgTjC2TFqY9ubnOwFj6UdOFNVNs199snMCdpWB+NGQRSIXh36wk4CvwioGWz
+         RRFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:from:to:cc:message-id;
-        bh=trC+40amJNG14lv80NaTqEGrWJguvBTuJIKnt0HFTWo=;
-        b=Knqk4mGtTHl/v73DH2FlkO5OVYZzrNTTsTqy+aZaffvHhVusANi+53G7/ft4m6VEjV
-         3MVYcbA33v3cBk8iCaJaalkM11hB4h48/2+PL1osJVrz2MH+gM32Pc/2AqMipMbI2Z7E
-         S2bi70rYpBc79GNcE7FbwoRB/X+cEAnUG4149d29pUrOJWjh/xAHmZ5JqsZRtYR+x5MS
-         T7XZ4gy8XeaO5q2/kJiQDu7a0x3vmMwt5JwwbpsRxBYWsXhxc5HocaSIIzrSqPsbPj/1
-         ELuFWICA+QFuHatv9e1wTC0RK/tDJtdPpoJ3Om9/RrrgvdODIMUkyLVezkhPcOC2csiD
-         557w==
-X-Gm-Message-State: AOAM532j2ebVgPLAuBaw4oMBeBPKfrZVC6oucs70qgAwFc5M7YlK2N2e
-        GBCJyYakZzJkx1kgEdo34NM=
-X-Google-Smtp-Source: ABdhPJx94O6MeIlkVwYmIRsWeilEwSrrQgV4ldM0qKrQu3yGGZ99pQxkt6aNAwHqm43x5VuFtGtPVw==
-X-Received: by 2002:a7b:c011:: with SMTP id c17mr988200wmb.63.1599057936242;
-        Wed, 02 Sep 2020 07:45:36 -0700 (PDT)
-Received: from gmail.com (254.68.10.185.ro.ovo.sc. [185.10.68.254])
-        by smtp.gmail.com with ESMTPSA id v6sm7740106wrt.90.2020.09.02.07.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 07:45:35 -0700 (PDT)
-Subject: [PATCH] trivial: docs: Section number should be "8.2"
-Date:   Wed, 2 Sep 2020 14:45:00 -0000
-From:   Michael Witten <mfwitten@gmail.com>
-To:     Jiri Kosina <trivial@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Message-ID: <19f80e640076482fac86f57b41211faa@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/dvle3j9y6O7Ujf2ahiU0ShW9hGye771vvDoEz/F4PY=;
+        b=f6K53+UDMH+BMl9t3jkOmHkNeUu6p9ERdnsedhpxIatWfOGN6WiWPw73Mi9rdwNRNt
+         LfMLZ4OoBfVsk6Fx6Y6eoKnmf1sxywg/4eaGTNUT9VvI5ODs/5mKARJDQ0ixqRc0P66N
+         WuVrCCYn4e0uL7yrQv7vSJLMNy4OHoOLiEcktpK1jga9nQ6xmZsoulfMdYdAWDEqA5ya
+         KGbG3ddCRQhSnIm0NJF+2/lS5uCYwBDWMfofhoUg2L2dQsaPU/eZwsTC5P6jVdS5//Sn
+         6xlo2fklTWwU3hfBiCu15pWXmNKHd7a9nUiQJ8n4YnrSb0+27XIp1+pE6R+OHJDao4Yt
+         7+9Q==
+X-Gm-Message-State: AOAM530wfVvqfAR3bYUNgb7LF90/viv5HM80PqpZ4hhvCBmbrJjCvF/h
+        eA2I7i4ZRn+nXpDwJr2tO5IsvH/csE8DL26Bolc=
+X-Google-Smtp-Source: ABdhPJxFnw2lIf6slElWW65nhFlI//yhOScWTQotPkmugwDQjQbmeTokKjX3zGLgqH+Z8ODw4ZvDqCRkh4/oranUikw=
+X-Received: by 2002:a1c:2dcb:: with SMTP id t194mr998824wmt.94.1599057934946;
+ Wed, 02 Sep 2020 07:45:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200901154200.2451899-1-robdclark@gmail.com> <CAAObsKD2uXmRD7Qw+kWzKcz5o96adczdaTGkPA_1fR=UZcR=cA@mail.gmail.com>
+In-Reply-To: <CAAObsKD2uXmRD7Qw+kWzKcz5o96adczdaTGkPA_1fR=UZcR=cA@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 2 Sep 2020 07:45:23 -0700
+Message-ID: <CAF6AEGtTkbK-W_4bjJ9mmFuzu4NbSHztM0+yaOWaeT8U-_RWRw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm/msm: More GPU tracepoints
+To:     Tomeu Vizoso <tomeu.vizoso@collabora.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Michael Witten <mfwitten@gmail.com>
----
- Documentation/kbuild/makefiles.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The cat is somewhat out of the bag already.. so I took the approach of
+making the more useful of the traces for visualization (freq_change
+trace) identical to the i915 one in units and format, so userspace
+just has to add another event name to a list, and not have to add more
+parsing code.
 
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index b81b8913a5a3..da6a708164c4 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -1411,7 +1411,7 @@ When kbuild executes, the following steps are followed (roughly):
- 	that may be shared between individual architectures.
- 	The recommended approach how to use a generic header file is
- 	to list the file in the Kbuild file.
--	See "7.2 generic-y" for further info on syntax etc.
-+	See "8.2 generic-y" for further info on syntax etc.
- 
- 7.11 Post-link pass
- -------------------
--- 
-2.22.0
+But the bigger problem is that it doesn't seem possible to #include
+multiple foo_trace.h's in a single C file, so I'm not seeing how it is
+possible to have both generic and driver specific traces.
 
+BR,
+-R
+
+On Tue, Sep 1, 2020 at 11:52 PM Tomeu Vizoso <tomeu.vizoso@collabora.com> wrote:
+>
+> Hi Rob,
+>
+> Do you think we could make all these generic? Visualization tools will need to do some processing so these can be neatly presented and it could be far more convenient if people wouldn't need to add code for each GPU driver.
+>
+> Maybe we could put all these tracepoints in DRM core as they seem useful to all drivers?
+>
+> Thanks,
+>
+> Tomeu
+>
+> On Tue, 1 Sep 2020 at 17:41, Rob Clark <robdclark@gmail.com> wrote:
+>>
+>> From: Rob Clark <robdclark@chromium.org>
+>>
+>> Various extra tracepoints that I've been collecting.
+>>
+>> Rob Clark (3):
+>>   drm/msm/gpu: Add GPU freq_change traces
+>>   drm/msm: Convert shrinker msgs to tracepoints
+>>   drm/msm/gpu: Add suspend/resume tracepoints
+>>
+>>  drivers/gpu/drm/msm/adreno/a6xx_gmu.c  |  3 +
+>>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c  |  4 ++
+>>  drivers/gpu/drm/msm/msm_gem_shrinker.c |  5 +-
+>>  drivers/gpu/drm/msm/msm_gpu.c          |  4 ++
+>>  drivers/gpu/drm/msm/msm_gpu_trace.h    | 83 ++++++++++++++++++++++++++
+>>  5 files changed, 97 insertions(+), 2 deletions(-)
+>>
+>> --
+>> 2.26.2
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
