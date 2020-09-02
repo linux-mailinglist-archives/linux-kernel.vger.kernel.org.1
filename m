@@ -2,161 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41FC25AFA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FD225AFF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgIBNnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
+        id S1727949AbgIBPrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727776AbgIBNbz (ORCPT
+        with ESMTP id S1727783AbgIBNbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Sep 2020 09:31:55 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63671C06124F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:51 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a17so5212803wrn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:51 -0700 (PDT)
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6696CC061245
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:32 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id n3so2182791pjq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
-        b=ytqZ4y29xTnSd7/M8QIfrLrv+ntI+urbxFwppfojEpqWHImU071sJu9kbIIfp2y1Jy
-         4+KUCuv9tQmAG4PVtbUUxIqD5p3em/2bkFX349NK0N5gq83Dwbyg/4IxqFtMYCjsxV35
-         VfOl48VEHJIvfPHAGw/VpM7DM+1ybRDH1aHZN6BGyrMx5yTijqWPB/K7R2gbbLywc6xL
-         YuvDSui2me5MQrMhNRdUY+QF+R5v5C0aWucAf7PBVoNRSa4kgmlOmZrhxmNpg7/xJMlM
-         H/Ay2RbRY4H7xd0HKEhRr8otlmXH/sgcKqSRsnKqFbVkLiG3DPRUPETFSLkKulcneinH
-         s7Vw==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QqnE1mjS+I4FTToYrCF01Tknyh8nbuS0HjQ3DvAj0xw=;
+        b=ZXiCD4p1lUsT0bZRCCEYoZGItvSknNp0exOkzELJmz1TIQjcZmqGjB4j7wiVKc0SH6
+         0yEKtD874m9oFGzsu4s/HTOpURwgUIx6t1RJqbT+7TBc9hSFHpFjPDrJLpRo06izCRar
+         DL9j5wQZbsm9HHFr4eeHFLXi8V4vJ/+HfnuFdOykaqBuFLykHPLmL1cYjqHpFIDz2t22
+         ygMnszhybso7OvuDOMSfgctqy/UO1LrW+YQt5RXyp9Lf6bErZ2rdRSW82RN0Vt0Nwb5k
+         e4B1jTK+8GgWLspb39iRfUFzoyBgzz0PSCq+pK3fHMucY0kP1O/nAmZadowB6vSkGaHN
+         NIQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
-        b=P388Gq/0rwcQnObS2pzwaGf3dbB5aITqNj7hCfIMeWiwGyI/PpGtQdPs7QpS2WpRPZ
-         njx9zXpAB8BOhu18QWJNpDRvvzHaHAE//xExG5Nf3kyQsrG6gj2N04z0p/ACtxdwqe2b
-         Nf2utZwZYzK7dx3nUNOMxsxRoOGAwfJAwJWvMFlr7Cx54j/2H71U2TxHIMeUJN2rAClF
-         r9sRnAzhU14zj4mT3QoqQr3RDKsb+1Pve+x6LG/TyBTD2volIdp39XFssLc8vlJZARdw
-         0gHqRK1rdlwTRvBh2dzH+3o2wtDTRcZVCxSYtPW1nOs9yjLrL5eVlATbiI4B21GiI30x
-         ZqWg==
-X-Gm-Message-State: AOAM530frOxZ4m0cb9ojJVqAwmP+GUtK+T7NT8E9dvXWEA9ieNfWnAW+
-        s2jwoCUXcM56PbdHVaYBrEqNvA==
-X-Google-Smtp-Source: ABdhPJynIUHdhvQpdCfDpFCjzUD2VnFzN/yfu1ibZGD8WSzgabVRPQs6/dACjMzv0GQWC/jlUmC8/w==
-X-Received: by 2002:adf:eecb:: with SMTP id a11mr1201605wrp.356.1599052910032;
-        Wed, 02 Sep 2020 06:21:50 -0700 (PDT)
-Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id q4sm2520403wru.65.2020.09.02.06.21.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 06:21:49 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Wei Li <liwei391@huawei.com>,
-        Al Grant <al.grant@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kemeng Shi <shikemeng@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Stephane Eranian <eranian@google.com>,
-        Nick Gasson <nick.gasson@arm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Steve MacLean <Steve.MacLean@Microsoft.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 3/6] perf tsc: Calculate timestamp with cap_user_time_short
-Date:   Wed,  2 Sep 2020 14:21:28 +0100
-Message-Id: <20200902132131.36304-4-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200902132131.36304-1-leo.yan@linaro.org>
-References: <20200902132131.36304-1-leo.yan@linaro.org>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=QqnE1mjS+I4FTToYrCF01Tknyh8nbuS0HjQ3DvAj0xw=;
+        b=WAq4Raf9CI3CaJm9fL+XjEkfVlc0zXWOcKkTCnM/OE913w5rSQenXZcTLhWCyvwjeC
+         b55SnBc5Rbvd5EQZJf9DD1FUf4qTSSEhhcLLO8sQ0PIXjPFFoQ/m+6dFujHCPwrO5YfX
+         U00/3Cr/grD2NJu7Sotc9WDEW/BfZgeTkoMxl8BY3Ctss1nozFi6rUceDhCOTsPoNWYj
+         cAiwxr2Ad5mz/L7VS6zGyWaALbQrHUeOZv750UtWw3UWmdDUUZQpKaAc9f90NnAYiAQR
+         nzO5sifW3M4dfi0B99sxj0Tz9ANGqEKjtr3VMEUgmMVadaKmqA2u4wxH7BD4QgimvKCo
+         XzjQ==
+X-Gm-Message-State: AOAM530NQnjXOTPZvXeAVzuG2E4uoJorbUFDnRQcK/c9grb9DBnfqa0a
+        CGBRojVwgxhf6NU1PPEkKqpV9KiGvto=
+X-Google-Smtp-Source: ABdhPJwu9F6G1e7nNgGx3JhPwduWrQzLJUG0NDK0txYyjtnvOQizMo+j1yn2yJDI8yO9Y30EouT70A==
+X-Received: by 2002:a17:902:8203:: with SMTP id x3mr2059327pln.166.1599052891941;
+        Wed, 02 Sep 2020 06:21:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u22sm5203555pgi.85.2020.09.02.06.21.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 06:21:31 -0700 (PDT)
+Subject: Re: [PATCH v2 11/11] lockdep,trace: Expose tracepoints
+To:     peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org,
+        npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de
+References: <20200821084738.508092956@infradead.org>
+ <20200821085348.782688941@infradead.org>
+ <20200902035146.GA45826@roeck-us.net>
+ <20200902072432.GI2674@hirez.programming.kicks-ass.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <44e1d3a7-3cd5-8fa8-7fb2-f82b83a019d7@roeck-us.net>
+Date:   Wed, 2 Sep 2020 06:21:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200902072432.GI2674@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The perf mmap'ed buffer contains the flag 'cap_user_time_short' and two
-extra fields 'time_cycles' and 'time_mask', perf tool needs to know
-them for handling the counter wrapping case.
+On 9/2/20 12:24 AM, peterz@infradead.org wrote:
+> On Tue, Sep 01, 2020 at 08:51:46PM -0700, Guenter Roeck wrote:
+>> On Fri, Aug 21, 2020 at 10:47:49AM +0200, Peter Zijlstra wrote:
+>>> The lockdep tracepoints are under the lockdep recursion counter, this
+>>> has a bunch of nasty side effects:
+>>>
+>>>  - TRACE_IRQFLAGS doesn't work across the entire tracepoint
+>>>
+>>>  - RCU-lockdep doesn't see the tracepoints either, hiding numerous
+>>>    "suspicious RCU usage" warnings.
+>>>
+>>> Pull the trace_lock_*() tracepoints completely out from under the
+>>> lockdep recursion handling and completely rely on the trace level
+>>> recusion handling -- also, tracing *SHOULD* not be taking locks in any
+>>> case.
+>>>
+>>
+>> Wonder what is worse - the problem or its fix. This patch results in
+>> a number of WARNING backtraces for several archtectures/platforms.
+>> Reverting it fixes the problems.
+> 
+> Without all this there was a recursion that could crash. But yes,
+> tedious.
+> 
+> OTOH the warnings are about real bugs that were pre-existing, we now see
+> them and can fix them.
+> 
+> I'll reply to ARM separately, but let's have a peek at s390.
+> 
+>> s390:
+>>
+>> [   19.490586] =============================
+>> [   19.490752] WARNING: suspicious RCU usage
+>> [   19.490921] 5.9.0-rc3 #1 Not tainted
+>> [   19.491086] -----------------------------
+>> [   19.491253] include/trace/events/lock.h:37 suspicious rcu_dereference_check() usage!
+> 
+>> [   19.493147]  [<00000000001d5de2>] lock_acquire+0x41a/0x498
+>> [   19.493320]  [<0000000000103b72>] enabled_wait+0xca/0x198
+>> [   19.493493]  [<0000000000103f80>] arch_cpu_idle+0x20/0x38
+> 
+> Does this help?
+> 
+> ---
+> 
+> diff --git a/arch/s390/kernel/idle.c b/arch/s390/kernel/idle.c
+> index c73f50649e7e..f7f1e64e0d98 100644
+> --- a/arch/s390/kernel/idle.c
+> +++ b/arch/s390/kernel/idle.c
+> @@ -39,14 +39,13 @@ void enabled_wait(void)
+>  	local_irq_restore(flags);
+>  
+>  	/* Account time spent with enabled wait psw loaded as idle time. */
+> -	/* XXX seqcount has tracepoints that require RCU */
+> -	write_seqcount_begin(&idle->seqcount);
+> +	raw_write_seqcount_begin(&idle->seqcount);
+>  	idle_time = idle->clock_idle_exit - idle->clock_idle_enter;
+>  	idle->clock_idle_enter = idle->clock_idle_exit = 0ULL;
+>  	idle->idle_time += idle_time;
+>  	idle->idle_count++;
+>  	account_idle_time(cputime_to_nsecs(idle_time));
+> -	write_seqcount_end(&idle->seqcount);
+> +	raw_write_seqcount_end(&idle->seqcount);
+>  }
+>  NOKPROBE_SYMBOL(enabled_wait);
+>  
 
-This patch is to reads out the relevant parameters from the head of the
-first mmap'ed page and stores into the structure 'perf_tsc_conversion',
-if the flag 'cap_user_time_short' has been set, it will firstly
-calibrate cycle value for timestamp calculation.
+Yes, it does.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/util/tsc.c | 12 +++++++++---
- tools/perf/util/tsc.h |  5 +++++
- 2 files changed, 14 insertions(+), 3 deletions(-)
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
-index 9e3f04ddddf8..c0ca40204649 100644
---- a/tools/perf/util/tsc.c
-+++ b/tools/perf/util/tsc.c
-@@ -28,6 +28,10 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
- {
- 	u64 quot, rem;
- 
-+	if (tc->cap_user_time_short)
-+		cyc = tc->time_cycles +
-+			((cyc - tc->time_cycles) & tc->time_mask);
-+
- 	quot = cyc >> tc->time_shift;
- 	rem  = cyc & (((u64)1 << tc->time_shift) - 1);
- 	return tc->time_zero + quot * tc->time_mult +
-@@ -37,7 +41,6 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
- int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
- 			     struct perf_tsc_conversion *tc)
- {
--	bool cap_user_time_zero;
- 	u32 seq;
- 	int i = 0;
- 
-@@ -47,7 +50,10 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
- 		tc->time_mult = pc->time_mult;
- 		tc->time_shift = pc->time_shift;
- 		tc->time_zero = pc->time_zero;
--		cap_user_time_zero = pc->cap_user_time_zero;
-+		tc->time_cycles = pc->time_cycles;
-+		tc->time_mask = pc->time_mask;
-+		tc->cap_user_time_zero = pc->cap_user_time_zero;
-+		tc->cap_user_time_short	= pc->cap_user_time_short;
- 		rmb();
- 		if (pc->lock == seq && !(seq & 1))
- 			break;
-@@ -57,7 +63,7 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
- 		}
- 	}
- 
--	if (!cap_user_time_zero)
-+	if (!tc->cap_user_time_zero)
- 		return -EOPNOTSUPP;
- 
- 	return 0;
-diff --git a/tools/perf/util/tsc.h b/tools/perf/util/tsc.h
-index 3c5a632ee57c..72a15419f3b3 100644
---- a/tools/perf/util/tsc.h
-+++ b/tools/perf/util/tsc.h
-@@ -8,6 +8,11 @@ struct perf_tsc_conversion {
- 	u16 time_shift;
- 	u32 time_mult;
- 	u64 time_zero;
-+	u64 time_cycles;
-+	u64 time_mask;
-+
-+	bool cap_user_time_zero;
-+	bool cap_user_time_short;
- };
- 
- struct perf_event_mmap_page;
--- 
-2.17.1
-
+Guenter
