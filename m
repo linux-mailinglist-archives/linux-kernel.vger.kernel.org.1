@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCE525B1D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F38925B1ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgIBQhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:37:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726173AbgIBQhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:37:33 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00E87206E7;
-        Wed,  2 Sep 2020 16:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599064652;
-        bh=Wni3x+GYLltlmuMdPoBYORxVVeiXa3j+1KYJ4MzXN9M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VCqXUbtn8+j07T3SZla2H1AsOoHroyVvb//SzsI9m+cc21OlcAttpbm1t3jLtbgl8
-         4YggRDJ6lvhZ4riGctIq6GUbyY3ncSoW3ny/T3BG7oRb0Wnfk1YlgkfsRefZ7xQ4ks
-         ucrwKYsyDVqpArW9sIVvT8vj6aKq36VQqf8CdRlY=
-Date:   Wed, 2 Sep 2020 11:43:44 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonghwa Lee <jonghwa3.lee@samsung.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH v2] power: supply: charger-manager: Fix info message in
- check_charging_duration()
-Message-ID: <20200902164344.GC31464@embeddedor>
-References: <20200902162315.GA11384@embeddedor>
- <f93c0fa0-51a1-291f-feda-fbd8d7397e88@infradead.org>
+        id S1726942AbgIBQpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726323AbgIBQpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:45:34 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD82C061244;
+        Wed,  2 Sep 2020 09:45:33 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 17so3143427pfw.9;
+        Wed, 02 Sep 2020 09:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0UDEVAHajfbqypCXRgF4PLGaRT1iGfKnGyOygyMVhqM=;
+        b=fsDekpw2L0HR4O9D/tVKWBfauK6eluZbwDEz2NV3HYEqF9LuO2A7Hr8zkpeAGuHo9r
+         B+5tKNzWA1DxG6kNkJK49gugayN36/x7CJhHMDEX0yVL9uLGimQekXDfMeyUe9lSKs3o
+         s77H6y03yQm+vl6X5pbM5AyVXAdxMoQ/9Qa8AftUZEwut92SGrH8t082Gadrlx1bobx3
+         0faeDzckb9hO29v+qcZZis4PYBu6b9KNSAkfxFpLcggyAIPS49AcQWn5fuUMmk39eGVP
+         ipegYhPzIEVmz9ejvu2tGMrSkUeOxDkeJ0Trai0VJDI6TX26ConUdiZcHGb5M4dpLor6
+         SvZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0UDEVAHajfbqypCXRgF4PLGaRT1iGfKnGyOygyMVhqM=;
+        b=kWHXa7oY44fQRDdGSmLHU87+K/4Aq1d423Jy4TJR/GU+nT8ihyHC3anMe8W5pQIjtv
+         FrH92J6zy9lLlU7GUWJRDvOLAByXrj+Agas2cLzZSYGqozZn6ukY2nHtYl01AgpIBBHe
+         r1DbBRqfsJT5K4xshN9rDXpg67yw0qeq/X2whCdsqjEz7q6FTnbagAJzhuKNFLjd39xe
+         N2fzZn4xLwYuV8uc2Nuwzacl0YJRttukKh9vL5pkWf1I3MvNkJNTp0PaETqVq5EBvSZm
+         zqDK/hP2OuyutZBy1ACamLXHJWWdLEGYSlAmSPmPkfi3okBaQzMSnwvKXw/s77UBZwe1
+         4M0Q==
+X-Gm-Message-State: AOAM531kkKjw5y84Jkud/8EFopxlh4r+vaKIqVG+Yh3oT6i+65cY5eTz
+        KEM+yvjy+q+fiGYRGE53FqY=
+X-Google-Smtp-Source: ABdhPJyRGQuWtK05ewIakPQU7ULhLE5j9sbkQvs274KSV8pEY/FQlJOlTYHk0JhuS/ASq4MsFV2wiw==
+X-Received: by 2002:a65:49c7:: with SMTP id t7mr2611449pgs.131.1599065133334;
+        Wed, 02 Sep 2020 09:45:33 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j10sm6014345pff.171.2020.09.02.09.45.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 02 Sep 2020 09:45:32 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 09:45:31 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/61] 4.4.235-rc2 review
+Message-ID: <20200902164531.GA56237@roeck-us.net>
+References: <20200902074814.459749499@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f93c0fa0-51a1-291f-feda-fbd8d7397e88@infradead.org>
+In-Reply-To: <20200902074814.459749499@linuxfoundation.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 09:29:31AM -0700, Randy Dunlap wrote:
-> On 9/2/20 9:23 AM, Gustavo A. R. Silva wrote:
-> > A few months ago, commit e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
-> > changed the expression in the if statement from "duration > desc->discharging_max_duration_ms"
-> > to "duration > desc->charging_max_duration_ms", but the arguments for dev_info() were left unchanged.
-> > Apparently, due to a copy-paste error.
-> > 
-> > Fix this by using the proper arguments for dev_info().
-> > 
-> > Also, while there, replace "exceed" with "exceeds", for both messages.
-> > 
-> > Addresses-Coverity-ID: 1496803 ("Copy-paste error")
-> > Fixes: e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > ---
-> > Changes in v2:
-> >  -  Replace "exceed" with "exceeds"
-> > 
-> >  drivers/power/supply/charger-manager.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-> > index 07992821e252..a6d5dbd55e37 100644
-> > --- a/drivers/power/supply/charger-manager.c
-> > +++ b/drivers/power/supply/charger-manager.c
-> > @@ -464,7 +464,7 @@ static int check_charging_duration(struct charger_manager *cm)
-> >  		duration = curr - cm->charging_start_time;
-> >  
-> >  		if (duration > desc->charging_max_duration_ms) {
-> > -			dev_info(cm->dev, "Charging duration exceed %ums\n",
-> > +			dev_info(cm->dev, "Charging duration exceeds %ums\n",
-> >  				 desc->charging_max_duration_ms);
-> >  			ret = true;
-> >  		}
-> > @@ -472,8 +472,8 @@ static int check_charging_duration(struct charger_manager *cm)
-> >  		duration = curr - cm->charging_end_time;
-> >  
-> >  		if (duration > desc->charging_max_duration_ms) {
-> > -			dev_info(cm->dev, "Discharging duration exceed %ums\n",
-> > -				 desc->discharging_max_duration_ms);
-> > +			dev_info(cm->dev, "Charging duration exceeds %ums\n",
-> > +				 desc->charging_max_duration_ms);
-> >  			ret = true;
-> >  		}
-> >  	}
-> > 
+On Wed, Sep 02, 2020 at 09:48:35AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.235 release.
+> There are 61 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Hi,
+> Responses should be made by Fri, 04 Sep 2020 07:47:57 +0000.
+> Anything received after that time might be too late.
 > 
-> It looks to me like the second block (else if) should be about discharging,
-> not charging, more like Colin King's patch had it:
->
 
-I had the same impression for a moment, but what makes me think this is
-more about charging than discharging, is this line:
+Build results:
+	total: 169 pass: 169 fail: 0
+Qemu test results:
+	total: 332 pass: 332 fail: 0
 
-471         } else if (cm->battery_status == POWER_SUPPLY_STATUS_NOT_CHARGING) {
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-which was introduced by the same commit:
-
-e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
-
-let's find out... :)
-
-Thanks
---
-Gustavo
+Guenter
