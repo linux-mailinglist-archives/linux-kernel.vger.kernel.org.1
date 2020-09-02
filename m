@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58D525B4F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798E525B4FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgIBUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 16:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
+        id S1726928AbgIBUBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 16:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgIBUBV (ORCPT
+        with ESMTP id S1726269AbgIBUB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 16:01:21 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425DFC061245
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 13:01:21 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id n10so178766qtv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 13:01:21 -0700 (PDT)
+        Wed, 2 Sep 2020 16:01:26 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C00DC061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 13:01:24 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id f142so871624qke.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 13:01:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :in-reply-to:references;
-        bh=vXJzHQSiPEjxLjmmiXf2/SYXLzuLuNI6bAhwXQSBPgs=;
-        b=QNoYpFCtQqdTNUYoop/dWiIX/oJtGGTgb8xUcONSLuzyZj6E5O/R1TK/m+9oEgMwOg
-         APbIK4ym4iaTMbH/kuGi5NnuHkk/qEDiiVLE033jXR3OyMvjJ2FZksQLr+VRb/ZX9sjc
-         7M7zWE4ADoqgikRSR4MmfrUQke9v6SS8Fe/kPfN6VNK20XtIk2drdTZnnTai47HVQJaU
-         98yBoCvL6tthD3GDL2o/BpspYVVttdVKDuzhVDVw4VPV6lNzqL/X015oanT8U5ZauZHn
-         s5B5iXYRn7eMfZVvPS11t6P0B2KUCIkOqjBwEllo++0TMEljZVGAM4PLLeeT5OpEE2+Q
-         2LOw==
+        bh=mw5fsjCKEi+9JjHAjgqb+NR1m500PQED3nnDZnS2XVY=;
+        b=JYBcMk35IQgEdnRIJ+bkm/MpNr5/ZZVgt0cbxzs7e/OR2RPfOLO/IDo8SjrJN0xEBC
+         MdXU5TWsPrP9pqN9Zgugewz8aRXi5/9+7j3m1oc7I0xw0mp2rz4rgx/YeJsqxr+4zD/Y
+         LEkkOw9OUzj3uydTAi6tDlQZnWaxi2QFT8Er1dQEC04KD69nSK2GNL7L3cobMWIHV8Sy
+         OnBLkNKQs4KwRTdNtNQ3WXgG5W9T2Up/fpkOHPE3KaA4yGWD/PjJhMBcBkhAOk6h8jIw
+         ppiKbUOFUxdSTi1kwk6skN1hKoS5wVgh76nlP4WP9cwoOTsv9QkyTgl4BA2cZ0w9o4yr
+         0sNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=vXJzHQSiPEjxLjmmiXf2/SYXLzuLuNI6bAhwXQSBPgs=;
-        b=gYrhkC8uMa4HwOEKAlOPSme4Ap/yJlrpT2opc7toPiqUnfjoHXp9zzF/9mzivyb35n
-         0++jty3h3a7U8DT/AFHYDMJsGcaDM6TqGXcfznNN+w6NKIxEDULk5i3FCWpQWSWQNkBk
-         WV92h7VjKXO4uylFRXjKTLUoJPM7hftkDarCv9srLqJHWfwLHdUiAGYQwrCP3s8IMQ8/
-         WJQyd2vBLm3je+SnhX9OOKfv+LZGlOTl7ljg75oxzZE9Kz92Sqacg5bGM1iqEtcAxjyn
-         wQNJF9NXmCxeru+jMsz/R/PFFPz+330Ayobrv6NOGJnNPQ02F7ME/wEaQ32cKiFKIDA1
-         8YZw==
-X-Gm-Message-State: AOAM5323gub2ZyvEyOXZXLjDxphceMDWJp8yzhxjILA5MR4r2y64bHD1
-        Td2x0DptgZ/H57nsUjcTq0E=
-X-Google-Smtp-Source: ABdhPJyIDhkEuDWM/f3C1+ijuCMVUQfBeojQukm63jNLS1CelkphME6Z1W42SJnyMAnUF0jDm/7Wuw==
-X-Received: by 2002:ac8:3fdd:: with SMTP id v29mr8297710qtk.383.1599076880374;
-        Wed, 02 Sep 2020 13:01:20 -0700 (PDT)
+        bh=mw5fsjCKEi+9JjHAjgqb+NR1m500PQED3nnDZnS2XVY=;
+        b=YJEgG84eDC+XelrmiU04hk3Ua6g6mwAV/EC6zbMZ0z1UVbp4jymYMNPz1paaHHgbvr
+         iiDq5tX2zuXDD29sIlpn9ML9Rdmq1PlUHrCOv2KpkmDFhhX5BRH7j4IrXBlmAP66H+R7
+         U+/707CCVhJPZpSyvNHCd4bot8040Hquw5llhCwQROr6myilF3dzBKohzYH0e5Z+dnQJ
+         o3Bws+IZkhJ5DRB7Ux352fyXZKfBdnCUHehja9w1kPzc95ABpbsg+ZTXTunYomjYnRDr
+         /8vzoTmstXWb5+ayKU1DSTTAYdZzCxNt+7PXGeX0Xgqea8TcYkQ1HGvgU/I3jDXND5bS
+         2aiQ==
+X-Gm-Message-State: AOAM532M2QZ3k0uxSzD6X1rIgFhxua8dibps4rP8WSWQO9Y+IPBjJhNM
+        7DHOdF7bLwLWI41ftTIKKuk=
+X-Google-Smtp-Source: ABdhPJxYc/oGpgTnNsWvud/DA1DIi8hl71W8hYofgkkP2MrN8qPw21pz8LT6ALFlutVt/Y3xz+WqxA==
+X-Received: by 2002:a37:a443:: with SMTP id n64mr8573241qke.288.1599076883384;
+        Wed, 02 Sep 2020 13:01:23 -0700 (PDT)
 Received: from ubuntu (69-220-158-6.lightspeed.rlghnc.sbcglobal.net. [69.220.158.6])
-        by smtp.gmail.com with ESMTPSA id g8sm552278qkl.28.2020.09.02.13.01.19
+        by smtp.gmail.com with ESMTPSA id g4sm347552qth.30.2020.09.02.13.01.22
         (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 02 Sep 2020 13:01:19 -0700 (PDT)
+        Wed, 02 Sep 2020 13:01:22 -0700 (PDT)
 From:   Nachammai Karuppiah <nachukannan@gmail.com>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -59,9 +59,9 @@ To:     Steven Rostedt <rostedt@goodmis.org>,
         Tony Luck <tony.luck@intel.com>
 Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
         Nachammai Karuppiah <nachukannan@gmail.com>
-Subject: [RFC PATCH 1/7] tracing: Add support to allocate pages from persistent memory
-Date:   Wed,  2 Sep 2020 13:00:16 -0700
-Message-Id: <071107ae4f422057a2689d97867326169fa32112.1599072725.git.nachukannan@gmail.com>
+Subject: [RFC PATCH 2/7] pstore: Support a new backend, ramtrace
+Date:   Wed,  2 Sep 2020 13:00:17 -0700
+Message-Id: <e4fd9eb693a7959721cf83a6b2ad882f99c98de2.1599072725.git.nachukannan@gmail.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <cover.1599072725.git.nachukannan@gmail.com>
 References: <cover.1599072725.git.nachukannan@gmail.com>
@@ -72,395 +72,452 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support in ring buffer to allocate pages from persistent RAM
-buffer. This feature supports switching to persistent memory and vice-versa.
-A new option 'persist' has been added and once this is enabled, the pages in
-ring buffer are freed up and new pages are allocated from persistent
-memory.
+ramtrace provides persistent RAM storage for trace, so they can be
+recovered after a reboot. This is a child-node of "/reserved-memory",
+and is named "ramtrace" after the backend.
+
+ramtrace supports allocation and deallocation of page-sized memory
+This functionality is used by ring buffer in trace when the user switches to
+persistent storage. The ring buffer writes directly to the persistent RAM and doesn't use
+the write API provided by pstore. For these reasons, a new backend is
+needed.
+
+Required properties:
+
+- compatible: must be "ramtrace"
+
+- reg: region of memory that is preserved between reboots
+
+Also, can be enabled on kernel command line as,
+ramtrace.mem_address=0x100000000 ramtrace.mem_size=0x7ffffff
 
 Signed-off-by: Nachammai Karuppiah <nachukannan@gmail.com>
 ---
- kernel/trace/Kconfig       |  10 ++
- kernel/trace/ring_buffer.c | 257 ++++++++++++++++++++++++++++++++++++++++++++-
- kernel/trace/trace.c       |  12 ++-
- kernel/trace/trace.h       |   3 +-
- 4 files changed, 279 insertions(+), 3 deletions(-)
+ drivers/of/platform.c    |   1 +
+ fs/pstore/Makefile       |   2 +
+ fs/pstore/ramtrace.c     | 346 +++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/pstore.h   |   3 +
+ include/linux/ramtrace.h |  15 ++
+ 5 files changed, 367 insertions(+)
+ create mode 100644 fs/pstore/ramtrace.c
+ create mode 100644 include/linux/ramtrace.h
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index a4020c0..f72a9df 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -739,6 +739,16 @@ config GCOV_PROFILE_FTRACE
- 	  Note that on a kernel compiled with this config, ftrace will
- 	  run significantly slower.
- 
-+config TRACE_EVENTS_TO_PSTORE
-+	bool "Enable users to store trace records in persistent storage"
-+	default n
-+	help
-+	  This option enables users to store trace records in a
-+	  persistent RAM buffer so that they can be retrieved after
-+	  system reboot.
-+
-+	  If unsure, say N.
-+
- config FTRACE_SELFTEST
- 	bool
- 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index f15471c..60b587a 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -25,7 +25,7 @@
- #include <linux/list.h>
- #include <linux/cpu.h>
- #include <linux/oom.h>
--
-+#include <linux/ramtrace.h>
- #include <asm/local.h>
- 
- static void update_pages_handler(struct work_struct *work);
-@@ -479,6 +479,9 @@ struct ring_buffer_per_cpu {
- 	struct completion		update_done;
- 
- 	struct rb_irq_work		irq_work;
-+#ifdef CONFIG_TRACE_EVENTS_TO_PSTORE
-+	bool				use_pstore;
-+#endif
+diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+index 071f04d..1a11f54 100644
+--- a/drivers/of/platform.c
++++ b/drivers/of/platform.c
+@@ -511,6 +511,7 @@ static const struct of_device_id reserved_mem_matches[] = {
+ 	{ .compatible = "qcom,rmtfs-mem" },
+ 	{ .compatible = "qcom,cmd-db" },
+ 	{ .compatible = "ramoops" },
++	{ .compatile = "ramtrace" },
+ 	{}
  };
  
- struct trace_buffer {
-@@ -513,6 +516,15 @@ struct ring_buffer_iter {
- 	int				missed_events;
- };
+diff --git a/fs/pstore/Makefile b/fs/pstore/Makefile
+index c270467..4cee2f0 100644
+--- a/fs/pstore/Makefile
++++ b/fs/pstore/Makefile
+@@ -18,3 +18,5 @@ obj-$(CONFIG_PSTORE_ZONE)	+= pstore_zone.o
  
-+#ifdef CONFIG_TRACE_EVENTS_TO_PSTORE
-+/* This semaphore is being used to ensure that buffer_data_page memory
-+ * is not switched to persistent storage or vice versa while a reader page
-+ * is swapped out. All consuming reads need to be finished before memory
-+ * switch happens.
-+ */
-+DECLARE_RWSEM(trace_read_sem);
-+#endif
+ pstore_blk-objs += blk.o
+ obj-$(CONFIG_PSTORE_BLK)	+= pstore_blk.o
 +
- /**
-  * ring_buffer_nr_pages - get the number of buffer pages in the ring buffer
-  * @buffer: The ring_buffer to get the number of pages from
-@@ -1705,6 +1717,247 @@ static void update_pages_handler(struct work_struct *work)
- 	complete(&cpu_buffer->update_done);
- }
- 
-+#ifdef CONFIG_TRACE_EVENTS_TO_PSTORE
-+static void free_buffer_data_page(struct buffer_data_page *page, int cpu,
-+				  bool persist)
-+{
-+	if (persist)
-+		ramtrace_free_page(page, cpu);
-+	else
-+		free_page((unsigned long)page);
-+
-+}
-+
-+static int rb_allocate_persistent_pages(struct buffer_data_page **pages,
-+					int nr_pages, int cpu)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		void *address = ramtrace_alloc_page(cpu);
-+
-+		if (!address)
-+			goto free_pages;
-+		pages[i] = address;
-+	}
-+	return 0;
-+
-+free_pages:
-+	for (i = 0; i < nr_pages; i++)
-+		ramtrace_free_page(pages[i], cpu);
-+
-+	return -ENOMEM;
-+}
-+
-+static int
-+rb_allocate_buffer_data_pages(struct buffer_data_page **pages, int nr_pages,
-+			      int cpu)
-+{
-+	bool user_thread = current->mm != NULL;
-+	gfp_t mflags;
-+	long i;
-+
-+	/*
-+	 * Check if the available memory is there first.
-+	 * Note, si_mem_available() only gives us a rough estimate of available
-+	 * memory. It may not be accurate. But we don't care, we just want
-+	 * to prevent doing any allocation when it is obvious that it is
-+	 * not going to succeed.
-+	 */
-+	i = si_mem_available();
-+	if (i < nr_pages)
-+		return -ENOMEM;
-+
-+	/*
-+	 * __GFP_RETRY_MAYFAIL flag makes sure that the allocation fails
-+	 * gracefully without invoking oom-killer and the system is not
-+	 * destabilized.
-+	 */
-+	mflags = GFP_KERNEL | __GFP_RETRY_MAYFAIL;
-+
-+	/*
-+	 * If a user thread allocates too much, and si_mem_available()
-+	 * reports there's enough memory, even though there is not.
-+	 * Make sure the OOM killer kills this thread. This can happen
-+	 * even with RETRY_MAYFAIL because another task may be doing
-+	 * an allocation after this task has taken all memory.
-+	 * This is the task the OOM killer needs to take out during this
-+	 * loop, even if it was triggered by an allocation somewhere else.
-+	 */
-+	if (user_thread)
-+		set_current_oom_origin();
-+	for (i = 0; i < nr_pages; i++) {
-+		struct page *page;
-+
-+		page = alloc_pages_node(cpu_to_node(cpu), mflags, 0);
-+		if (!page)
-+			goto free_pages;
-+		pages[i] = page_address(page);
-+		rb_init_page(pages[i]);
-+
-+		if (user_thread && fatal_signal_pending(current))
-+			goto free_pages;
-+	}
-+
-+	if (user_thread)
-+		clear_current_oom_origin();
-+	return 0;
-+free_pages:
-+	for (i = 0; i < nr_pages; i++)
-+		free_page((unsigned long)pages[i]);
-+
-+	return -ENOMEM;
-+}
-+
-+static void rb_switch_memory(struct trace_buffer *buffer, bool persist)
-+{
-+	struct ring_buffer_per_cpu *cpu_buffer;
-+	struct list_head *head;
-+	struct buffer_page *bpage;
-+	struct buffer_data_page ***new_pages;
-+	unsigned long flags;
-+	int cpu, nr_pages;
-+
-+	new_pages = kmalloc_array(buffer->cpus, sizeof(void *), GFP_KERNEL);
-+
-+	for_each_buffer_cpu(buffer, cpu) {
-+		cpu_buffer = buffer->buffers[cpu];
-+		nr_pages = cpu_buffer->nr_pages;
-+		/* Include the reader page */
-+		new_pages[cpu] = kmalloc_array(nr_pages + 1, sizeof(void *), GFP_KERNEL);
-+		if (persist) {
-+			if (rb_allocate_persistent_pages(new_pages[cpu],
-+						nr_pages + 1, cpu) < 0)
-+			goto out;
-+		} else {
-+			if (rb_allocate_buffer_data_pages(new_pages[cpu],
-+					nr_pages + 1, cpu) < 0)
-+				goto out;
-+		}
-+	}
-+
-+	for_each_buffer_cpu(buffer, cpu) {
-+		int i = 0;
-+
-+		cpu_buffer = buffer->buffers[cpu];
-+		nr_pages = cpu_buffer->nr_pages;
-+		/* Acquire the reader lock to ensure reading is disabled.*/
-+		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
-+
-+		if (RB_WARN_ON(cpu_buffer, local_read(&cpu_buffer->committing)))
-+			goto out;
-+		/* Prevent another thread from grabbing free_page. */
-+		arch_spin_lock(&cpu_buffer->lock);
-+
-+		free_buffer_data_page(cpu_buffer->reader_page->page,
-+				      cpu, cpu_buffer->use_pstore);
-+		cpu_buffer->reader_page->page = new_pages[cpu][i++];
-+		rb_head_page_deactivate(cpu_buffer);
-+
-+		head = cpu_buffer->pages;
-+		if (head) {
-+			list_for_each_entry(bpage, head, list) {
-+				free_buffer_data_page(bpage->page, cpu,
-+						      cpu_buffer->use_pstore);
-+				bpage->page = new_pages[cpu][i++];
-+				rb_init_page(bpage->page);
-+			}
-+			bpage = list_entry(head, struct buffer_page, list);
-+			free_buffer_data_page(bpage->page, cpu,
-+					      cpu_buffer->use_pstore);
-+			bpage->page = new_pages[cpu][nr_pages];
-+			rb_init_page(bpage->page);
-+		}
-+		kfree(new_pages[cpu]);
-+
-+		if (cpu_buffer->free_page) {
-+			free_buffer_data_page(cpu_buffer->free_page, cpu,
-+					      cpu_buffer->use_pstore);
-+			cpu_buffer->free_page = 0;
-+		}
-+
-+		cpu_buffer->use_pstore = persist;
-+
-+		rb_reset_cpu(cpu_buffer);
-+		arch_spin_unlock(&cpu_buffer->lock);
-+		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
-+	}
-+
-+	kfree(new_pages);
-+	return;
-+out:
-+	for_each_buffer_cpu(buffer, cpu) {
-+		int i = 0;
-+
-+		cpu_buffer = buffer->buffers[cpu];
-+		for (i = 0; i < cpu_buffer->nr_pages + 1; i++) {
-+			if (new_pages[cpu][i])
-+				free_buffer_data_page(new_pages[cpu][i], cpu,
-+						      persist);
-+		}
-+		kfree(new_pages[cpu]);
-+	}
-+	kfree(new_pages);
-+}
-+
-+void pstore_tracing_off(void);
-+
-+/**
-+ * ring_buffer_switch_memory - If boolean argument 'persist' is true, switch
-+ * to persistent memory and if false, switch to non persistent memory.
-+ */
-+int
-+ring_buffer_switch_memory(struct trace_buffer *buffer, const char *tracer_name,
-+			  int clock_id, bool persist)
-+{
-+	int cpu;
-+	int online_cpu = 0;
-+	int nr_pages_total = 0;
-+
-+	if (RB_WARN_ON(buffer, !down_write_trylock(&trace_read_sem)))
-+		return -EBUSY;
-+
-+	if (persist) {
-+		/* Quit if there is no reserved ramtrace region available */
-+		if (!is_ramtrace_available())
-+			return -ENOMEM;
-+
-+		/* Disable pstore_trace buffers which are used for reading
-+		 * previous boot data pages.
-+		 */
-+		pstore_tracing_off();
-+
-+		/* Estimate the number of pages needed. */
-+		for_each_buffer_cpu(buffer, cpu) {
-+			online_cpu++;
-+			/* count the reader page as well */
-+			nr_pages_total += buffer->buffers[cpu]->nr_pages + 1;
-+		}
-+		/* Initialize ramtrace pages */
-+		if (init_ramtrace_pages(online_cpu, nr_pages_total, tracer_name, clock_id))
-+			return -ENOMEM;
-+	}
-+
-+
-+	ring_buffer_record_disable(buffer);
-+
-+	/* Make sure all pending commits have finished */
-+	synchronize_rcu();
-+
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
-+
-+	rb_switch_memory(buffer, persist);
-+
-+	mutex_unlock(&buffer->mutex);
-+
-+	ring_buffer_record_enable(buffer);
-+	up_write(&trace_read_sem);
-+	return 0;
-+
-+}
-+#endif
-+
- /**
-  * ring_buffer_resize - resize the ring buffer
-  * @buffer: the buffer to resize.
-@@ -4716,6 +4969,7 @@ void *ring_buffer_alloc_read_page(struct trace_buffer *buffer, int cpu)
- 
-  out:
- 	rb_init_page(bpage);
-+	down_read(&trace_read_sem);
- 
- 	return bpage;
- }
-@@ -4753,6 +5007,7 @@ void ring_buffer_free_read_page(struct trace_buffer *buffer, int cpu, void *data
- 
-  out:
- 	free_page((unsigned long)bpage);
-+	up_read(&trace_read_sem);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_free_read_page);
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index bb62269..2b3d8e9 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -48,6 +48,7 @@
- #include <linux/fsnotify.h>
- #include <linux/irq_work.h>
- #include <linux/workqueue.h>
++obj-$(CONFIG_TRACE_EVENTS_TO_PSTORE) += ramtrace.o
+diff --git a/fs/pstore/ramtrace.c b/fs/pstore/ramtrace.c
+new file mode 100644
+index 0000000..57f59e0
+--- /dev/null
++++ b/fs/pstore/ramtrace.c
+@@ -0,0 +1,346 @@
++#include <linux/ring_buffer.h>
++#include <linux/err.h>
++#include <linux/spinlock.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/seq_file.h>
 +#include <linux/ramtrace.h>
- 
- #include "trace.h"
- #include "trace_output.h"
-@@ -265,7 +266,8 @@ unsigned long long ns2usecs(u64 nsec)
- 
- /* trace_flags that are default zero for instances */
- #define ZEROED_TRACE_FLAGS \
--	(TRACE_ITER_EVENT_FORK | TRACE_ITER_FUNC_FORK)
-+	(TRACE_ITER_EVENT_FORK | TRACE_ITER_FUNC_FORK |			\
-+	 TRACE_ITER_PERSIST)
- 
- /*
-  * The global_trace is the descriptor that holds the top-level tracing
-@@ -4851,6 +4853,14 @@ int set_tracer_flag(struct trace_array *tr, unsigned int mask, int enabled)
- 		trace_printk_control(enabled);
- 	}
- 
-+#ifdef CONFIG_TRACE_EVENTS_TO_PSTORE
-+	if (mask == TRACE_ITER_PERSIST) {
-+		ring_buffer_switch_memory(tr->array_buffer.buffer,
-+					  tr->current_trace->name,
-+					  tr->clock_id, enabled);
-+	}
-+#endif
++#include <generated/utsrelease.h>
++#include <linux/of.h>
++#include <linux/vmalloc.h>
 +
- 	return 0;
- }
++static unsigned long long mem_address;
++module_param_hw(mem_address, ullong, other, 0400);
++MODULE_PARM_DESC(mem_address,
++		"start of reserved RAM used to store trace data");
++
++static ulong mem_size;
++module_param(mem_size, ulong, 0400);
++MODULE_PARM_DESC(mem_size,
++		"size of reserved RAM used to store trace data");
++
++
++struct ramtrace_context {
++	phys_addr_t phys_addr;	/* Physical address of the persistent memory */
++	unsigned long size;     /* size of the persistent memory */
++	void *vaddr;	/* Virtual address of the first page i.e metadata page */
++	int *clock_id;  /* Pointer to clock id in metadata page */
++	char *tracer_name; /* Pointer to tracer name in metadata page. */
++	spinlock_t lock;
++	struct ramtrace_pagelist *freelist;	/* Linked list of free pages */
++	void **bitmap_pages;	/* Array of bitmap pages per CPU */
++	struct tr_persistent_info *persist_info;
++	struct pstore_info pstore;
++	void *base_address;     /* First page available for allocation */
++	int num_bitmap_per_cpu, cpu;
++	int pages_available;
++	int read_buffer_status;
++};
++
++static int ramtrace_pstore_open(struct pstore_info *psi);
++static ssize_t ramtrace_pstore_read(struct pstore_record *record);
++static int ramtrace_pstore_erase(struct pstore_record *record);
++
++static int ramtrace_pstore_write(struct pstore_record *record)
++{
++	return 0;
++}
++
++static void free_persist_info(void);
++
++static struct ramtrace_context trace_ctx = {
++	.size = 0,
++	.pstore = {
++		.owner	= THIS_MODULE,
++		.name	= "ramtrace",
++		.open	= ramtrace_pstore_open,
++		.read	= ramtrace_pstore_read,
++		.write	= ramtrace_pstore_write,
++		.erase	= ramtrace_pstore_erase,
++	},
++	.read_buffer_status = -1,
++};
++
++static int ramtrace_pstore_open(struct pstore_info *psi)
++{
++	/*
++	 * If there is any data to be read from previous boot, turn
++	 * read_buffer_status to 0, to indicate that data is available to be
++	 * read
++	 */
++	if (trace_ctx.persist_info)
++		trace_ctx.read_buffer_status = 0;
++	return 0;
++}
++
++static ssize_t ramtrace_pstore_read(struct pstore_record *record)
++{
++	if (trace_ctx.read_buffer_status)
++		return 0;
++
++	trace_ctx.read_buffer_status = 1;
++
++	record->time.tv_sec = 0;
++	record->time.tv_nsec = 0;
++	record->compressed = false;
++
++	/*
++	 * Set size as non-zero. This is a place holder value since pstore
++	 * doesn't accept zero-sized buffer. The actual buffer size is unknown.
++	 */
++	record->size = PAGE_SIZE;
++	record->id = 0;
++	record->type = PSTORE_TYPE_TRACE;
++	/*
++	 * Since the buffer used by trace isn't contigous, do not provide
++	 * pstore with a buffer. Instead, the data field in pstore_record
++	 * contains a pointer to pstore_trace_seq_ops structure which provides
++	 * the required interface to iterate through the ramtrace pages.
++	 */
++	record->buf = NULL;
++
++	return record->size;
++}
++
++static int ramtrace_pstore_erase(struct pstore_record *record)
++{
++	pstore_tracing_erase();
++	free_persist_info();
++}
++
++static struct platform_device *dummy;
++
++static int ramtrace_parse_dt(struct platform_device *pdev,
++			    struct ramtrace_platform_data *pdata)
++{
++	struct resource *res;
++
++
++	dev_dbg(&pdev->dev, "using Device Tree\n");
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev,
++			"failed to locate DT /reserved-memory resource\n");
++		return -EINVAL;
++	}
++
++	pdata->mem_size = resource_size(res);
++	pdata->mem_address = res->start;
++
++	return 0;
++}
++
++static int ramtrace_init_mem(struct ramtrace_context *ctx)
++{
++
++	struct page **pages;
++	unsigned int page_count;
++	pgprot_t prot;
++	unsigned int i;
++	struct ramtrace_pagelist *freelist;
++
++	page_count = DIV_ROUND_UP(ctx->size, PAGE_SIZE);
++
++	prot = pgprot_noncached(PAGE_KERNEL);
++
++	pages = kmalloc_array(page_count, sizeof(struct page *), GFP_KERNEL);
++	if (!pages) {
++		pr_err("%s: Failed to allocate array for %u pages\n",
++		       __func__, page_count);
++		return 0;
++	}
++	freelist = kzalloc(sizeof(struct ramtrace_pagelist), GFP_KERNEL);
++	INIT_LIST_HEAD(&freelist->list);
++	trace_ctx.freelist = freelist;
++	for (i = 0; i < page_count; i++) {
++		phys_addr_t addr = ctx->phys_addr + i * PAGE_SIZE;
++
++		pages[i] = pfn_to_page(addr >> PAGE_SHIFT);
++	}
++
++	ctx->vaddr = vmap(pages, page_count, VM_MAP, prot);
++
++	/* Initialize the freelist - free page pool.
++	 * Note - This doesn't initialize the page.
++	 */
++	for (i = 0; i < page_count; i++) {
++		struct ramtrace_pagelist *freelist_node;
++		void *addr = ctx->vaddr + i * PAGE_SIZE;
++
++		freelist_node = kmalloc(sizeof(*freelist_node), GFP_KERNEL);
++		freelist_node->page = addr;
++		list_add_tail(&freelist_node->list, &freelist->list);
++	}
++	spin_lock_init(&ctx->lock);
++
++	/* Read the data from previous boot, if any */
++	ramtrace_read_pages();
++	kfree(pages);
++	return 1;
++}
++
++static int ramtrace_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct ramtrace_platform_data *pdata = dev->platform_data;
++	struct ramtrace_platform_data pdata_local;
++	struct ramtrace_context *cxt = &trace_ctx;
++	int err = -EINVAL;
++
++	/*
++	 * Only a single ramtrace area allowed at a time, so fail extra
++	 * probes.
++	 */
++	if (cxt->size) {
++		pr_err("already initialized\n");
++		goto fail_out;
++	}
++
++	if (dev_of_node(dev) && !pdata) {
++		pdata = &pdata_local;
++		memset(pdata, 0, sizeof(*pdata));
++
++		err = ramtrace_parse_dt(pdev, pdata);
++		if (err < 0)
++			goto fail_out;
++	}
++
++	/* Make sure we didn't get bogus platform data pointer. */
++	if (!pdata) {
++		pr_err("NULL platform data\n");
++		goto fail_out;
++	}
++
++	if (!pdata->mem_size) {
++		pr_err("The memory size must be non-zero\n");
++		goto fail_out;
++	}
++
++	cxt->size = pdata->mem_size;
++	cxt->phys_addr = pdata->mem_address;
++
++	err = ramtrace_init_mem(cxt);
++
++	/*
++	 * Update the module parameter variables as well so they are visible
++	 * through /sys/module/ramtrace/parameters/
++	 */
++	mem_size = pdata->mem_size;
++	mem_address = pdata->mem_address;
++
++	pr_info("using 0x%lx@0x%llx\n",
++		cxt->size, (unsigned long long)cxt->phys_addr);
++
++	/* Initialize struct pstore_info and register with pstore */
++	cxt->pstore.flags = PSTORE_FLAGS_TRACE;
++	cxt->pstore.data = &pstore_trace_seq_ops;
++	err = pstore_register(&cxt->pstore);
++	if (err) {
++		pr_err("registering with pstore failed\n");
++		goto fail_out;
++	}
++
++	return 0;
++
++fail_out:
++	return err;
++
++}
++
++static int ramtrace_remove(struct platform_device *pdev)
++{
++	struct ramtrace_context *cxt = &trace_ctx;
++	struct ramtrace_pagelist *freelist = cxt->freelist;
++
++	pstore_unregister(&cxt->pstore);
++
++	cxt->pstore.bufsize = 0;
++
++	pstore_tracing_erase();
++	free_persist_info();
++
++	if (!list_empty(&freelist->list)) {
++		struct ramtrace_pagelist *node, *tmp;
++
++		list_for_each_entry_safe(node, tmp, &freelist->list, list) {
++			list_del(&node->list);
++			kfree(node);
++		}
++	}
++	cxt->size = 0;
++	return 0;
++}
++
++static const struct of_device_id dt_match[] = {
++	{ .compatible = "ramtrace" },
++	{}
++};
++
++static struct platform_driver ramtrace_driver = {
++	.probe		= ramtrace_probe,
++	.remove		= ramtrace_remove,
++	.driver		= {
++		.name		= "ramtrace",
++		.of_match_table	= dt_match,
++	},
++};
++
++static inline void ramtrace_unregister_dummy(void)
++{
++	platform_device_unregister(dummy);
++	dummy = NULL;
++}
++
++static void __init ramtrace_register_dummy(void)
++{
++	struct ramtrace_platform_data pdata;
++
++	/*
++	 * Prepare a dummy platform data structure to carry the module
++	 * parameters. If mem_size isn't set, then there are no module
++	 * parameters, and we can skip this.
++	 */
++	if (!mem_size)
++		return;
++
++	pr_info("using module parameters\n");
++
++	memset(&pdata, 0, sizeof(pdata));
++	pdata.mem_size = mem_size;
++	pdata.mem_address = mem_address;
++
++
++	dummy = platform_device_register_data(NULL, "ramtrace", -1,
++			&pdata, sizeof(pdata));
++	if (IS_ERR(dummy)) {
++		pr_info("could not create platform device: %ld\n",
++			PTR_ERR(dummy));
++		dummy = NULL;
++		ramtrace_unregister_dummy();
++	}
++}
++
++static int __init ramtrace_init(void)
++{
++	int ret;
++
++	ramtrace_register_dummy();
++	ret = platform_driver_register(&ramtrace_driver);
++	if (ret != 0)
++		ramtrace_unregister_dummy();
++
++	return ret;
++}
++postcore_initcall(ramtrace_init);
++
++static void __exit ramtrace_exit(void)
++{
++	platform_driver_unregister(&ramtrace_driver);
++	ramtrace_unregister_dummy();
++}
++module_exit(ramtrace_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Nachammai Karuppiah nachukannan@gmail.com");
++MODULE_DESCRIPTION("RAM trace buffer manager/driver");
+diff --git a/include/linux/pstore.h b/include/linux/pstore.h
+index eb93a54..20bae10 100644
+--- a/include/linux/pstore.h
++++ b/include/linux/pstore.h
+@@ -39,6 +39,8 @@ enum pstore_type_id {
+ 	PSTORE_TYPE_PMSG	= 7,
+ 	PSTORE_TYPE_PPC_OPAL	= 8,
  
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 13db400..2a4ab72 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1336,7 +1336,8 @@ extern int trace_get_user(struct trace_parser *parser, const char __user *ubuf,
- 		FUNCTION_FLAGS					\
- 		FGRAPH_FLAGS					\
- 		STACK_FLAGS					\
--		BRANCH_FLAGS
-+		BRANCH_FLAGS					\
-+		C(PERSIST,		"persist"),
++	PSTORE_TYPE_TRACE	= 9,
++
+ 	/* End of the list */
+ 	PSTORE_TYPE_MAX
+ };
+@@ -202,6 +204,7 @@ struct pstore_info {
+ #define PSTORE_FLAGS_CONSOLE	BIT(1)
+ #define PSTORE_FLAGS_FTRACE	BIT(2)
+ #define PSTORE_FLAGS_PMSG	BIT(3)
++#define PSTORE_FLAGS_TRACE	BIT(4)
  
- /*
-  * By defining C, we can make TRACE_FLAGS a list of bit names
+ extern int pstore_register(struct pstore_info *);
+ extern void pstore_unregister(struct pstore_info *);
+diff --git a/include/linux/ramtrace.h b/include/linux/ramtrace.h
+new file mode 100644
+index 0000000..faf459f
+--- /dev/null
++++ b/include/linux/ramtrace.h
+@@ -0,0 +1,15 @@
++#include <linux/list.h>
++#include <linux/trace.h>
++#include <linux/trace_events.h>
++#include <linux/pstore.h>
++
++/*
++ * Ramoops platform data
++ * @mem_size	memory size for ramtrace
++ * @mem_address	physical memory address to contain ramtrace
++ */
++
++struct ramtrace_platform_data {
++	unsigned long	mem_size;
++	phys_addr_t	mem_address;
++};
 -- 
 2.7.4
 
