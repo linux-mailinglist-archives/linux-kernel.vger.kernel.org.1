@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F16725A6E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0C725A6E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgIBHhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 03:37:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44660 "EHLO mail.kernel.org"
+        id S1726678AbgIBHg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 03:36:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgIBHhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:37:09 -0400
-Received: from localhost.localdomain (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726144AbgIBHg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 03:36:57 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 272C3208DB;
-        Wed,  2 Sep 2020 07:37:07 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Will Deacon <will@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH] arm64: Remove exporting cpu_logical_map symbol
-Date:   Wed,  2 Sep 2020 08:37:03 +0100
-Message-Id: <159903220030.29783.7186911071188549924.b4-ty@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200901095229.56793-1-sudeep.holla@arm.com>
-References: <20200901095229.56793-1-sudeep.holla@arm.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DDF3207EA;
+        Wed,  2 Sep 2020 07:36:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599032216;
+        bh=UDYaPWY1oS3KWoU/8ARko6bgUSNf6ai7JxlKBzaoMlA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L5R/Ho1E6MREUe5fjYWmIoFjRcgGtDcdecaBREcVjCqXcBsJ1lLHkzAYcNutGZ4SD
+         dTls0LY/Tne61QllzoY5Or+ugKESsyQzi7WtbtQbwW5jNN3AEIiQRbKg/Tq0R6gaiB
+         jut2t1ndFZISC8r7+oQi+BUpTyfW1XhkLJzWpEOY=
+Date:   Wed, 2 Sep 2020 09:37:22 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/62] 4.4.235-rc1 review
+Message-ID: <20200902073722.GD1610179@kroah.com>
+References: <20200901150920.697676718@linuxfoundation.org>
+ <76622586-3742-692a-c9de-994ac21c5257@roeck-us.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <76622586-3742-692a-c9de-994ac21c5257@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Sep 2020 10:52:29 +0100, Sudeep Holla wrote:
-> Commit eaecca9e7710 ("arm64: Fix __cpu_logical_map undefined issue")
-> exported cpu_logical_map in order to fix tegra194-cpufreq module build
-> failure.
+On Tue, Sep 01, 2020 at 11:58:21AM -0700, Guenter Roeck wrote:
+> On 9/1/20 8:09 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.4.235 release.
+> > There are 62 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Thu, 03 Sep 2020 15:09:01 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> As this might potentially cause problem while supporting physical CPU
-> hotplug, tegra194-cpufreq module was reworded to avoid use of
-> cpu_logical_map() via the commit 93d0c1ab2328 ("cpufreq: replace
-> cpu_logical_map() with read_cpuid_mpir()")
+> Building powerpc:defconfig ... failed
+> --------------
+> Error log:
+> arch/powerpc/perf/core-book3s.c: In function ‘record_and_restart’:
+> arch/powerpc/perf/core-book3s.c:2045:7: error: implicit declaration of function ‘perf_event_account_interrupt’; did you mean ‘perf_event_interrupt’? [-Werror=implicit-function-declaration]
+>    if (perf_event_account_interrupt(event))
 > 
-> [...]
+> Caused by commit 91d6f90ac6d5 ("powerpc/perf: Fix soft lockups due
+> to missed interrupt accounting"). perf_event_account_interrupt()
+> does not exist in v4.4.y.
 
-Applied to arm64 (for-next/fixes), thanks!
+Ah, good catch.  Sasha, I thought your builder would have got this one?
 
-[1/1] arm64: Remove exporting cpu_logical_map symbol
-      https://git.kernel.org/arm64/c/60295d50958e
+Anyway, now dropped, I'll push out a -rc2 for this as well soon.
 
--- 
-Catalin
+thanks,
 
+greg k-h
