@@ -2,155 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2AB25B19D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1557225B16E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgIBQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728313AbgIBQ0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:26:47 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F49C061251;
-        Wed,  2 Sep 2020 09:26:47 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 23F6A9CC;
-        Wed,  2 Sep 2020 18:26:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1599063994;
-        bh=dSqMUpaG7AZd72yHZ7rra4x5/rnP+cdxisE4rS3WLF4=;
+        id S1728474AbgIBQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:20:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726814AbgIBQUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:20:02 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DA8A208B3;
+        Wed,  2 Sep 2020 16:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599063601;
+        bh=4ntTsfwJyBJsBW/1yKbNCcQAmv4C8p9X7jLoU6Hnuo8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R/H9/zNKRLV1P/im2JUQebtvSib8OJGz2Bah5T8TVlj54JF/xpDAlGXs3WREGe3mV
-         Wrjl/89a8N+W/4v6xcGrOiiBV9eSVUGx9cXsj62t70tPPMbI1THtRBLrTZgSMzcreP
-         qoY6zlud8WJmN/H73ANWh0WIV4eK+qhzGf/KdIOY=
-Date:   Wed, 2 Sep 2020 19:26:12 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vandana BN <bnvandana@gmail.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/38] media: v4l2-ioctl: avoid memory leaks on some
- time32 compat functions
-Message-ID: <20200902162612.GB16811@pendragon.ideasonboard.com>
-References: <cover.1599062230.git.mchehab+huawei@kernel.org>
- <27254f9780e7ec8502761826c2888dbd51a536a8.1599062230.git.mchehab+huawei@kernel.org>
+        b=BOY8U3iPghuQxwE3y0jQ6b7QlcoRNKN2TpJ9cBHK4BrUoUSrYP/CDg8RhMJT5gesa
+         ZmRulHjspOaleiQY3Y4wg68/vgrreAn4rcw3Le3vq/SmwL4mJjJR8nSAcuLctYpnM/
+         ih8hXsRD8z0UI7DGP1ZdwV1Q3ggq4mS2fDt3o7G4=
+Date:   Wed, 2 Sep 2020 11:26:13 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] xsk: Fix null check on error return path
+Message-ID: <20200902162613.GB31464@embeddedor>
+References: <20200902150750.GA7257@embeddedor>
+ <7b3d5e02-852e-189b-7c0e-9f9827fca730@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <27254f9780e7ec8502761826c2888dbd51a536a8.1599062230.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7b3d5e02-852e-189b-7c0e-9f9827fca730@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
-
-Thank you for the patch.
-
-On Wed, Sep 02, 2020 at 06:10:05PM +0200, Mauro Carvalho Chehab wrote:
-> There are some reports about possible memory leaks:
+On Wed, Sep 02, 2020 at 05:12:51PM +0200, Björn Töpel wrote:
+> On 2020-09-02 17:07, Gustavo A. R. Silva wrote:
+> > Currently, dma_map is being checked, when the right object identifier
+> > to be null-checked is dma_map->dma_pages, instead.
+> > 
+> > Fix this by null-checking dma_map->dma_pages.
+> > 
+> > Addresses-Coverity-ID: 1496811 ("Logically dead code")
+> > Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
-> 	drivers/media/v4l2-core//v4l2-ioctl.c:3203 video_put_user() warn: check that 'ev32' doesn't leak information (struct has a hole after 'type')
-> 	drivers/media/v4l2-core//v4l2-ioctl.c:3230 video_put_user() warn: check that 'vb32' doesn't leak information (struct has a hole after 'memory')
+> Nice catch!
 > 
-> While smatch seems to be reporting a false positive (line 3203),
-> there's indeed a possible leak with reserved2 at vb32.
+> Acked-by: Björn Töpel <bjorn.topel@intel.com>
 > 
-> We might have fixed just that one, but smatch checks won't
-> be able to check leaks at ev32. So, re-work the code in a way
-> that will ensure that the var contents will be zeroed before
-> filling it.
-> 
-> With that, we don't need anymore to touch reserved fields.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/v4l2-core/v4l2-ioctl.c | 48 ++++++++++++++--------------
->  1 file changed, 24 insertions(+), 24 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-> index a556880f225a..6f3fe9c4b64a 100644
-> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
-> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-> @@ -3189,17 +3189,16 @@ static int video_put_user(void __user *arg, void *parg, unsigned int cmd)
->  #ifdef CONFIG_COMPAT_32BIT_TIME
->  	case VIDIOC_DQEVENT_TIME32: {
->  		struct v4l2_event *ev = parg;
-> -		struct v4l2_event_time32 ev32 = {
-> -			.type		= ev->type,
-> -			.pending	= ev->pending,
-> -			.sequence	= ev->sequence,
-> -			.timestamp.tv_sec  = ev->timestamp.tv_sec,
-> -			.timestamp.tv_nsec = ev->timestamp.tv_nsec,
-> -			.id		= ev->id,
-> -		};
-> +		struct v4l2_event_time32 ev32;
->  
-> +		memset(&ev32, 0, sizeof(ev32));
-> +		ev32.type		= ev->type,
 
-The lines should end with ';', not ','.
+Thanks, Björn.
 
-With this fixed,
+--
+Gustavo
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +		ev32.pending		= ev->pending,
-> +		ev32.sequence		= ev->sequence,
-> +		ev32.timestamp.tv_sec	= ev->timestamp.tv_sec,
-> +		ev32.timestamp.tv_nsec	= ev->timestamp.tv_nsec,
-> +		ev32.id			= ev->id,
->  		memcpy(&ev32.u, &ev->u, sizeof(ev->u));
-> -		memcpy(&ev32.reserved, &ev->reserved, sizeof(ev->reserved));
->  
->  		if (copy_to_user(arg, &ev32, sizeof(ev32)))
->  			return -EFAULT;
-> @@ -3210,21 +3209,22 @@ static int video_put_user(void __user *arg, void *parg, unsigned int cmd)
->  	case VIDIOC_DQBUF_TIME32:
->  	case VIDIOC_PREPARE_BUF_TIME32: {
->  		struct v4l2_buffer *vb = parg;
-> -		struct v4l2_buffer_time32 vb32 = {
-> -			.index		= vb->index,
-> -			.type		= vb->type,
-> -			.bytesused	= vb->bytesused,
-> -			.flags		= vb->flags,
-> -			.field		= vb->field,
-> -			.timestamp.tv_sec	= vb->timestamp.tv_sec,
-> -			.timestamp.tv_usec	= vb->timestamp.tv_usec,
-> -			.timecode	= vb->timecode,
-> -			.sequence	= vb->sequence,
-> -			.memory		= vb->memory,
-> -			.m.userptr	= vb->m.userptr,
-> -			.length		= vb->length,
-> -			.request_fd	= vb->request_fd,
-> -		};
-> +		struct v4l2_buffer_time32 vb32;
-> +
-> +		memset(&vb32, 0, sizeof(vb32));
-> +		vb32.index		= vb->index,
-> +		vb32.type		= vb->type,
-> +		vb32.bytesused		= vb->bytesused,
-> +		vb32.flags		= vb->flags,
-> +		vb32.field		= vb->field,
-> +		vb32.timestamp.tv_sec	= vb->timestamp.tv_sec,
-> +		vb32.timestamp.tv_usec	= vb->timestamp.tv_usec,
-> +		vb32.timecode		= vb->timecode,
-> +		vb32.sequence		= vb->sequence,
-> +		vb32.memory		= vb->memory,
-> +		vb32.length		= vb->length,
-> +		vb32.request_fd		= vb->request_fd,
-> +		memcpy(&vb32.m, &vb->m, sizeof(vb->m));
->  
->  		if (copy_to_user(arg, &vb32, sizeof(vb32)))
->  			return -EFAULT;
-
--- 
-Regards,
-
-Laurent Pinchart
+> > ---
+> >   net/xdp/xsk_buff_pool.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> > index 795d7c81c0ca..5b00bc5707f2 100644
+> > --- a/net/xdp/xsk_buff_pool.c
+> > +++ b/net/xdp/xsk_buff_pool.c
+> > @@ -287,7 +287,7 @@ static struct xsk_dma_map *xp_create_dma_map(struct device *dev, struct net_devi
+> >   		return NULL;
+> >   	dma_map->dma_pages = kvcalloc(nr_pages, sizeof(*dma_map->dma_pages), GFP_KERNEL);
+> > -	if (!dma_map) {
+> > +	if (!dma_map->dma_pages) {
+> >   		kfree(dma_map);
+> >   		return NULL;
+> >   	}
+> > 
