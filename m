@@ -2,82 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AFC25AF95
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0095925AF90
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728431AbgIBPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:41:40 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:48900 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727861AbgIBNoU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:44:20 -0400
-Date:   Wed, 2 Sep 2020 09:44:18 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when
- CONFIG_HAS_DMA is unset
-Message-ID: <20200902134418.GR3265@brightrain.aerifal.cx>
-References: <20200901150438.228887-1-ulf.hansson@linaro.org>
- <20200901150654.GB30034@lst.de>
- <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
- <20200901154049.GA376@lst.de>
- <CAPDyKFqDKUG3RC241hv535CLFGEQc4b-vv0e3bexzGkDSY82Jg@mail.gmail.com>
+        id S1728343AbgIBPlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:41:24 -0400
+Received: from verein.lst.de ([213.95.11.211]:60153 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727872AbgIBNpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:45:00 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AEAE168B02; Wed,  2 Sep 2020 15:44:56 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 15:44:56 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH V2 2/2] block: move 'q_usage_counter' into front of
+ 'request_queue'
+Message-ID: <20200902134456.GB32502@lst.de>
+References: <20200902122643.634143-1-ming.lei@redhat.com> <20200902122643.634143-3-ming.lei@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFqDKUG3RC241hv535CLFGEQc4b-vv0e3bexzGkDSY82Jg@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200902122643.634143-3-ming.lei@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 10:31:47AM +0200, Ulf Hansson wrote:
-> On Tue, 1 Sep 2020 at 17:40, Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > On Tue, Sep 01, 2020 at 05:36:17PM +0200, Ulf Hansson wrote:
-> > > > I still don't think this makes sense, as the dma_mask should always
-> > > > be non-NULL here.
-> > >
-> > > If that is the case, I wonder how the driver could even have worked without DMA.
-> > >
-> > > Because in the existing code, host->dma_dev gets assigned to
-> > > spi->master->dev.parent->dma_mask - which seems to turn on the DMA
-> > > usage in the driver.
-> > >
-> > > What am I missing?
-> >
-> > Do you know of other non-DMA users?  For SH nommu it probably worked
-> 
-> I don't know of other non-DMA users. As I said, I wish someone could
-> step in and take better care of mmc_spi - as I know it's being used a
-> lot.
-> 
-> > because SH nommu used to provide a DMA implementation that worked
-> > fine for streaming maps, but was completely broken for coherent
-> > allocation.  And this driver appears to only use the former.
-> 
-> Alright, so you are saying the DMA support may potentially never have
-> been optional to this driver. In any case, I can remove the check in
-> $subject patch, as it shouldn't matter.
+On Wed, Sep 02, 2020 at 08:26:43PM +0800, Ming Lei wrote:
+> The field of 'q_usage_counter' is always fetched in fast path of every
+> block driver, and move it into front of 'request_queue', so it can be
+> fetched into 1st cacheline of 'request_queue' instance.
 
-DMA support was always optional, because even on systems where DMA is
-present, it doesn't necessarily mean the SPI controller uses DMA. In
-particular, pure bit-banged SPI via GPIOs doesn't have DMA, but has
-always worked. See my previous reply to Christoph about host->dma_dev
-for my current-best understanding of what's going on here.
+Looks good,
 
-> Anyway, let's see what Rich thinks of this. I am curious to see if the
-> patch works on his SH boards - as I haven't been able to test it.
-
-I'll rebuild and retest just to confirm, but I already tested a
-functionally equivalent patch that just did the #ifdef inline (rather
-than moving the logic out to separate functions) and it worked fine.
-
-Rich
+Reviewed-by: Christoph Hellwig <hch@lst.de>
