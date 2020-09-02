@@ -2,95 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A38025B4CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 21:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAF125B4D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 21:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgIBTz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 15:55:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIBTz0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 15:55:26 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04544C061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 12:55:26 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id 92so146861qtb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 12:55:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=zededa.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fgPZcNvT9XisUEbS+1Ao8QDv+2ALILbug++l9nLUnEc=;
-        b=eDmdY0vjzVfcFNl+EMsQE7ZqH4oRZejSxSYWEoWWA0LEdXjBPBIYZ6CIsMOWOxGjre
-         aBQ48+3bOVD8NsPa5zTC0V3LvdY7JTigVAGlNWdDDhyLOSLDRHqvX6bHJcCqOAD2JjBt
-         Id0FOFZeYHGG1YX7QJRMv2hT3NNRju9/l+AAjpD3G9ARYo2LX9epD472g4knNpz9tXRY
-         QIv8rjCWzc/9YstUFPMY/iJgPN6OkAs4plT5GpUmNOLHooN2SAnE4b94q7LW91GUs0/9
-         1g5J0HWNcf1NiBHzYqIMtHP287gAFviB3+0k1iay05db9SxaajuERUn5e4bpDNGaxeZg
-         avuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fgPZcNvT9XisUEbS+1Ao8QDv+2ALILbug++l9nLUnEc=;
-        b=H3X+GJrNlzFn3NiLy7cnsjqWxIIYtNSBu/QB25zeEBpyiO3ECpRvsclZCb3YwYn33k
-         qFGjnHgO2GWZKfDg6yN+DvXUg6uP3r7SxDVQWxOdagAkoUXKpp39rG57GWR/DlsDpXRD
-         r6tloXsYrm/gUbzXlnnyTLEWZ1hP/4pIs71vB8IoxFoCLvmxdffgFBrT+KCFo1nG+hfh
-         VXF2mdX4sSOeuXdmt44bjHSNESX3qMIlagXGIgocx0i1Eptfe+jJsoyPF1ZlOg6XVnW4
-         rzBS7Xt98LZBUyU6IU2z3PRg6PmKgBox8g6HCLBxwtE4fZHxYZY863k9s4vkNDlCwa4v
-         a37w==
-X-Gm-Message-State: AOAM532O+/n1VZDw/nK1e/wJrrovcBeXiOTEqPa/hAcOLfCDsx7Qmnbq
-        xsOkCsFtSSNvsWvIhcI2sPM/mfLqK7fzpOkNaN/Ieg==
-X-Google-Smtp-Source: ABdhPJxH9r1RSltOF8T2/Z4xLh8CcWvsQpot7UP0gaqiZUBPftNT/cydeaBKOK6TZ0ETBxF8utLKbo/eFODKcZlSras=
-X-Received: by 2002:ac8:76cb:: with SMTP id q11mr2050699qtr.63.1599076524368;
- Wed, 02 Sep 2020 12:55:24 -0700 (PDT)
+        id S1726936AbgIBTzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 15:55:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:5081 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgIBTzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 15:55:40 -0400
+IronPort-SDR: dWtrcEGzZjGMK2p8m73Iz5I6Dpd+IY21AwSkSM77ZgtBjpJtNIq8R3ByO5cWcuLbsOGs4LmH4h
+ 0bJxCm8NdN1Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="158459595"
+X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
+   d="scan'208";a="158459595"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 12:55:39 -0700
+IronPort-SDR: pyACf0hifdEriOosAyegyYaYTLM8kHn2njOpPgzYmvUE749X8COgSfAmo0b3idH6BreFaZTkBl
+ p3fzGslT3ZYg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
+   d="scan'208";a="446636116"
+Received: from lkp-server02.sh.intel.com (HELO eb469fda2af7) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 02 Sep 2020 12:55:38 -0700
+Received: from kbuild by eb469fda2af7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kDYr3-0000EH-GC; Wed, 02 Sep 2020 19:55:37 +0000
+Date:   Thu, 03 Sep 2020 03:55:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 10690df7fc4a529605c4d72508567ad25a93d406
+Message-ID: <5f4ff8a8.IGuE+lG3UlH5Z+ct%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <CA+1FSihpq_i-poiihdF0srE3fGXnncGtCMYqAGmNZu7fjNcY=w@mail.gmail.com>
- <CY4PR11MB15594EC5255084B8AE509068F02E0@CY4PR11MB1559.namprd11.prod.outlook.com>
- <1093525083.1169948.1598979998646@mail.yahoo.com> <559F4617-9633-4B40-BA55-E79305E20530@intel.com>
-In-Reply-To: <559F4617-9633-4B40-BA55-E79305E20530@intel.com>
-From:   Roman Shaposhnik <roman@zededa.com>
-Date:   Wed, 2 Sep 2020 12:55:13 -0700
-Message-ID: <CAMmSBy8vor1GBqNUSRjj=gNRBwDjzRWFcxuAU0EYkRDgwQ4K+g@mail.gmail.com>
-Subject: Re: Various problems for the Xen for XenGT code and guide.
-To:     "Lv, Zhiyuan" <zhiyuan.lv@intel.com>
-Cc:     Jason Long <hack3rcon@yahoo.com>,
-        Mario Marietto <marietto2008@gmail.com>,
-        "igvt-g@lists.01.org" <igvt-g@lists.01.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "xen-devel@lists.xen.org" <xen-devel@lists.xen.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Li, Susie" <susie.li@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Li, Weinan Z" <weinan.z.li@intel.com>,
-        "Downs, Mike" <mike.downs@intel.com>,
-        "Xu, Terrence" <terrence.xu@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 5:48 AM Lv, Zhiyuan <zhiyuan.lv@intel.com> wrote:
->
-> Hi,
->
-> It is mainly due to the business priority change. XenGT project was origi=
-nally created for data center usages with XEON E3 servers which have integr=
-ated processor graphics. After SkyLake E3, there are no new servers capable=
- of running GVT-g, and Intel future graphics for data center will have diff=
-erent approaches for GPU sharing. Another reason is the XenGT upstream diff=
-iculty. Different from KVMGT which has been fully merged to upstream, Xen p=
-art of GVT-g still has technical opens that are hard to close quickly.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 10690df7fc4a529605c4d72508567ad25a93d406  Merge branch 'linus'
 
-This is extremely useful -- thanks for sharing. Any chance you can
-elaborate on the later part "and Intel future graphics for data center
-will have different approaches for GPU sharing"?
+elapsed time: 720m
 
-IOW, is there anything that Intel is cooking up that may help Xen in
-that department?
+configs tested: 149
+configs skipped: 13
 
-Thanks,
-Roman.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                     davinci_all_defconfig
+arm                      pxa255-idp_defconfig
+sh                           sh2007_defconfig
+mips                           ci20_defconfig
+mips                         rt305x_defconfig
+nios2                            alldefconfig
+sh                          polaris_defconfig
+arm                          gemini_defconfig
+arc                        nsim_700_defconfig
+sh                             sh03_defconfig
+arm                       imx_v6_v7_defconfig
+arm                         s3c2410_defconfig
+sh                          lboxre2_defconfig
+arm                           h5000_defconfig
+arm                           sunxi_defconfig
+sh                           se7721_defconfig
+mips                 pnx8335_stb225_defconfig
+ia64                        generic_defconfig
+mips                        qi_lb60_defconfig
+m68k                         amcore_defconfig
+mips                         tb0287_defconfig
+mips                     cu1000-neo_defconfig
+mips                          malta_defconfig
+powerpc                    gamecube_defconfig
+mips                           ip28_defconfig
+openrisc                         alldefconfig
+arm                          iop32x_defconfig
+sh                        sh7785lcr_defconfig
+m68k                             alldefconfig
+mips                      malta_kvm_defconfig
+m68k                       m5249evb_defconfig
+i386                             allyesconfig
+arm                             mxs_defconfig
+sh                   sh7770_generic_defconfig
+mips                      loongson3_defconfig
+arm                     eseries_pxa_defconfig
+arm                           sama5_defconfig
+sparc64                             defconfig
+powerpc                      pmac32_defconfig
+nds32                            alldefconfig
+mips                    maltaup_xpa_defconfig
+powerpc                  mpc866_ads_defconfig
+arm                          moxart_defconfig
+arm                       netwinder_defconfig
+sh                            hp6xx_defconfig
+mips                            gpr_defconfig
+sh                      rts7751r2d1_defconfig
+mips                     cu1830-neo_defconfig
+mips                        omega2p_defconfig
+mips                        nlm_xlp_defconfig
+sh                           se7724_defconfig
+arm                         mv78xx0_defconfig
+microblaze                      mmu_defconfig
+riscv                          rv32_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                             defconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20200901
+x86_64               randconfig-a006-20200901
+x86_64               randconfig-a003-20200901
+x86_64               randconfig-a005-20200901
+x86_64               randconfig-a001-20200901
+x86_64               randconfig-a002-20200901
+i386                 randconfig-a004-20200901
+i386                 randconfig-a005-20200901
+i386                 randconfig-a006-20200901
+i386                 randconfig-a002-20200901
+i386                 randconfig-a001-20200901
+i386                 randconfig-a003-20200901
+i386                 randconfig-a004-20200902
+i386                 randconfig-a005-20200902
+i386                 randconfig-a006-20200902
+i386                 randconfig-a002-20200902
+i386                 randconfig-a001-20200902
+i386                 randconfig-a003-20200902
+i386                 randconfig-a016-20200902
+i386                 randconfig-a015-20200902
+i386                 randconfig-a011-20200902
+i386                 randconfig-a013-20200902
+i386                 randconfig-a014-20200902
+i386                 randconfig-a012-20200902
+i386                 randconfig-a016-20200901
+i386                 randconfig-a015-20200901
+i386                 randconfig-a011-20200901
+i386                 randconfig-a013-20200901
+i386                 randconfig-a014-20200901
+i386                 randconfig-a012-20200901
+i386                 randconfig-a016-20200903
+i386                 randconfig-a015-20200903
+i386                 randconfig-a011-20200903
+i386                 randconfig-a013-20200903
+i386                 randconfig-a014-20200903
+i386                 randconfig-a012-20200903
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20200901
+x86_64               randconfig-a016-20200901
+x86_64               randconfig-a011-20200901
+x86_64               randconfig-a012-20200901
+x86_64               randconfig-a015-20200901
+x86_64               randconfig-a014-20200901
+x86_64               randconfig-a004-20200902
+x86_64               randconfig-a006-20200902
+x86_64               randconfig-a003-20200902
+x86_64               randconfig-a005-20200902
+x86_64               randconfig-a001-20200902
+x86_64               randconfig-a002-20200902
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
