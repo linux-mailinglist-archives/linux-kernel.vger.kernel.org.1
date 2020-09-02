@@ -2,62 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A9B25A310
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3252C25A31A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgIBCdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 22:33:07 -0400
-Received: from ozlabs.org ([203.11.71.1]:34405 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgIBCdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 22:33:05 -0400
-Received: by ozlabs.org (Postfix, from userid 1003)
-        id 4Bh7Jt5XNMz9sV7; Wed,  2 Sep 2020 12:33:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1599013982; bh=3HN/3EBvdb78tsfY8PadQdQ5z7NAekpcsOqrCfMPQqs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lLNGBfO0pcebXNzR5mgwARaiB1s+uIQiGmmFYc+0Lnr9idyC1Cz3ht9OXTavvioxD
-         l/WmNcValHRjmPwU+6yrqWmZy0PRWaxb/bnGUXCFGxitEfYpGlPwSTvMDcJNg0eoHr
-         GQkvS4T3A6tDoH+kgz4/yND883xW/0cN/kjg9WHBkEw22OZUKNATt7P53rQJwekFKi
-         wYCjUZO+TuBTjl5wR09qJ6l+7qqa0HpYuy4O9NlCeNndrLJgSd30u8JHb3f/qi4m3Q
-         uOxtuuIwqCzYO03yU0nPpyZH8WNoLVNwltJJBb9y13T8GZ7aP7AxgfTSS56mv3nY6a
-         DEcR1PurA6cpQ==
-Date:   Wed, 2 Sep 2020 12:32:59 +1000
-From:   Paul Mackerras <paulus@ozlabs.org>
-To:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-Cc:     mpe@ellerman.id.au, mikey@neuling.org, npiggin@gmail.com,
-        pbonzini@redhat.com, christophe.leroy@c-s.fr, jniethe5@gmail.com,
-        pedromfc@br.ibm.com, rogealve@br.ibm.com, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 0/7] powerpc/watchpoint: 2nd DAWR kvm enablement +
- selftests
-Message-ID: <20200902023259.GC272502@thinks.paulus.ozlabs.org>
-References: <20200723102058.312282-1-ravi.bangoria@linux.ibm.com>
+        id S1726285AbgIBCn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 22:43:28 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:41666 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726122AbgIBCn0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 22:43:26 -0400
+Received: by mail-pf1-f193.google.com with SMTP id t9so1999190pfq.8;
+        Tue, 01 Sep 2020 19:43:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GmGOgTocY/ucDNb9A9eFMAHlTcsCKWY8HYB7MCccFoc=;
+        b=Ipsn3MRCoUGfmJWAwNyZ8/MIw+xoI4NG8KjyPdY9BzuT2b6OHTbHCn1+Lui1P3n90w
+         qV63+TfGEJBGPFTMH1KKRuAO/0/mKbAkDL9TuaKyhhgoCcznnakX9GQ8H9nPI/9lD2Uz
+         7bdpr0540jyy2JfYR4O8mVoZyv9yu2BY1YCGM2zb62iZ0jU/aYpkN/awtZNFKrpzh75Y
+         FHTVQGvwcAvufFJPAvVUgsEGublQXYeCe0VAXAY2sHp0Zw+6/qM6aG1+mqwGgmTKT6/+
+         Q4uFhvYh/hqFkVUpCMPSEJNAyr/HcNiaj7hEOnYI5/IYJrPflu8l0Z5StEagcMqSmVYd
+         tv4g==
+X-Gm-Message-State: AOAM5324zd7W0ko58Vl6VZypvDiod4TYCem71WlubVAD8Q3qU3iVT96w
+        WLHjcTPEFi4YchQdtymu4gk=
+X-Google-Smtp-Source: ABdhPJwbvu6lpMb5tbEI7rNE5dr2z7U30mgncQm7KYJT1gSvLmRpZyhwNvVe0tCQqY3FFANr8bFiTA==
+X-Received: by 2002:a63:338b:: with SMTP id z133mr205155pgz.226.1599014605094;
+        Tue, 01 Sep 2020 19:43:25 -0700 (PDT)
+Received: from [192.168.3.218] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id 65sm857981pfg.7.2020.09.01.19.43.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 19:43:24 -0700 (PDT)
+Subject: Re: [PATCH V10 2/4] scsi: ufs: Introduce HPB feature
+To:     daejun7.park@samsung.com,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>
+References: <231786897.01598943181634.JavaMail.epsvc@epcpadp2>
+ <CGME20200901043152epcms2p55ba1891c12bd8002dff38a1214aace72@epcms2p6>
+ <231786897.01598943781742.JavaMail.epsvc@epcpadp2>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <36970d82-3ece-f9ec-e627-e84a7e4c79c6@acm.org>
+Date:   Tue, 1 Sep 2020 19:43:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200723102058.312282-1-ravi.bangoria@linux.ibm.com>
+In-Reply-To: <231786897.01598943781742.JavaMail.epsvc@epcpadp2>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 23, 2020 at 03:50:51PM +0530, Ravi Bangoria wrote:
-> Patch #1, #2 and #3 enables p10 2nd DAWR feature for Book3S kvm guest. DAWR
-> is a hypervisor resource and thus H_SET_MODE hcall is used to set/unset it.
-> A new case H_SET_MODE_RESOURCE_SET_DAWR1 is introduced in H_SET_MODE hcall
-> for setting/unsetting 2nd DAWR. Also, new capability KVM_CAP_PPC_DAWR1 has
-> been added to query 2nd DAWR support via kvm ioctl.
-> 
-> This feature also needs to be enabled in Qemu to really use it. I'll reply
-> link to qemu patches once I post them in qemu-devel mailing list.
-> 
-> Patch #4, #5, #6 and #7 adds selftests to test 2nd DAWR.
+On 2020-08-31 23:54, Daejun Park wrote:
+> This is a patch for the HPB feature.
+> This patch adds HPB function calls to UFS core driver.
 
-If/when you resubmit these patches, please split the KVM patches into
-a separate series, since the KVM patches would go via my tree whereas
-I expect the selftests/powerpc patches would go through Michael
-Ellerman's tree.
+[ ... ]
 
-Paul.
+> +config SCSI_UFS_HPB
+> +	bool "Support UFS Host Performance Booster"
+> +	depends on SCSI_UFSHCD
+> +	help
+> +	  The UFS HPB feature improves random read performance. It caches
+> +	  L2P (logical to physical) map of UFS to host DRAM. The driver uses HPB
+> +	  read command by piggybacking physical page number for bypassing FTL (flash
+> +	  translation layer)'s L2P address translation.
+> \ No newline at end of file
+
+Please end the last line with a newline.
+
+Anyway:
+
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+
