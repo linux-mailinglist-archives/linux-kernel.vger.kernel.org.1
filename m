@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806C125ABEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4650625ABD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgIBNQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:16:33 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58275 "EHLO m43-7.mailgun.net"
+        id S1726726AbgIBNMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:12:12 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:34711 "EHLO smtp2.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727019AbgIBNKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:10:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599052207; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=wBdcPQ/YNiU+WDkJLplCJsZAXQvmVTWpdtx6qvH+ZwA=; b=MWQsoGHWHhFRclmdDj6qIWS2PfvKzai1FcI0B0ZTbrTDh0lKSL/RxPe9lGNJDbVMRyOgYc7V
- 8WmsLA0yB54D/51GFsc+jVHK4HJ/UjXSmDxAgJdmOUbXjuXfklPcIaMuQvxZRRWUr8nwxUlS
- Vpn4r78JQOxsAI/Sp5rNBkSY848=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f4f99964f13e63f04e63665 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Sep 2020 13:09:42
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B9C55C43395; Wed,  2 Sep 2020 13:09:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10DB5C433C9;
-        Wed,  2 Sep 2020 13:09:41 +0000 (UTC)
+        id S1726310AbgIBNKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:10:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=1591; q=dns/txt; s=axis-central1;
+  t=1599052203; x=1630588203;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jmdOtuNubT1ZEKtREuMAQ5TNemzYAnItJGf7EFlP8x8=;
+  b=g8lfdQuvUerJqC9IzOHCEscuOoAbSHZ11frgAPVHS0RHfAUI2DKXnZj5
+   sm0F/hzbEiNUtlTjh17X+VSVGY0wDOVSHeOp2yxuGKO1b7e8rF0a0BHga
+   HeFDZ6lDUIEB9gW29A8eLu567tQxBCbrpXScNMB9tmR/NHNk07eT/d3yO
+   tGwIk6N8KkkFyV5VTQHcJYpY/sz1TYA7IK7SwKK5exfYIy6AI7yBalb0i
+   DMm4PueZJpBJCHT5woxvyXRe0Itms7d64p4ouJAlCd19LQU5iUYZ1kCud
+   dLyMoSKJomoGpo8YOGbXejglA+xo0FjTibLtxRO86LiQxdyDwV8C7dSox
+   g==;
+IronPort-SDR: CDuK86HC4X1sC726NKZHv8n0Q+wDH+mgg6XjolL0dJERNbsymLjbXSyHoje8zuoOQDC8oitN5Q
+ kJG5b8Zha2IEFIbAsgdpvd9wkI6HsZYrBjA5UyjpOs714vDIHmi8PvlkNshinQcqiCGPmYUJcm
+ gNPT9d5gy1fNbBGPN3VDJc9QEbEuSZBY9mKrxCxjodSpkm3Q9bITzUI+GEwOEW9skF6uyODIL/
+ XVS2MGXonD6S3WO47PB1cDhDtzxt4i41MdRj2JLlUzDltEUiTxbr6N/5qVJ5D31EOzgSWkZuf1
+ c3c=
+X-IronPort-AV: E=Sophos;i="5.76,383,1592863200"; 
+   d="scan'208";a="12127323"
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+CC:     <kernel@axis.com>, <linux-kernel@vger.kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [PATCH] regulator: pwm: Fix machine constraints application
+Date:   Wed, 2 Sep 2020 15:09:52 +0200
+Message-ID: <20200902130952.24880-1-vincent.whitchurch@axis.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 02 Sep 2020 18:39:41 +0530
-From:   skakit@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
-        rojay@codeaurora.org, msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V3 1/3] arm64: dts: sc7180: Add wakeup support over UART
- RX
-Message-ID: <e073ccd4fe47ab7e1a61fb201c9f5d84@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
+If the zero duty cycle doesn't correspond to any voltage in the voltage
+table, the PWM regulator returns an -EINVAL from get_voltage_sel() which
+results in the core erroring out with a "failed to get the current
+voltage" and ending up not applying the machine constraints.
 
-On 2020-08-21 21:56, Matthias Kaehlcke wrote:
-> On Thu, Aug 20, 2020 at 07:21:05PM +0530, satya priya wrote:
->> Add the necessary pinctrl and interrupts to make UART
->> wakeup capable.
->> 
->> Signed-off-by: satya priya <skakit@codeaurora.org>
->> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
->> ---
->> Changes in V2:
->>  - As per Matthias's comment added wakeup support for all the UARTs
->>    of SC7180.
->> 
->> Changes in V3:
->>  - No change.
->> 
->>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 98 
->> ++++++++++++++++++++++++++++++------
->>  1 file changed, 84 insertions(+), 14 deletions(-)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> index d46b383..855b13e 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> 
->> ...
->> 
->> +			qup_uart0_sleep: qup-uart0-sleep {
->> +				pinmux {
->> +					pins = "gpio34", "gpio35",
->> +					       "gpio36", "gpio37";
->> +					function = "gpio";
-> 
-> What is the reason that the GPIO function needs to be selected in sleep 
-> mode
-> to support wakeup?
-> 
-> This should be explained in the commit message unless it is evident.
+Instead, return -ENOTRECOVERABLE which makes the core set the voltage
+since it's at an unknown value.
 
-When QUP function is selected in sleep state, RTS/RFR is pulled high as 
-soon as we enter suspend and not receiving wakeup bytes from BT SoC to 
-wakeup device. Whereas in GPIO mode it is staying low and receiving 
-data.
+For example, with this device tree:
 
-Thanks,
-Satya Priya
+	fooregulator {
+		compatible = "pwm-regulator";
+		pwms = <&foopwm 0 100000>;
+		regulator-min-microvolt = <2250000>;
+		regulator-max-microvolt = <2250000>;
+		regulator-name = "fooregulator";
+		regulator-always-on;
+		regulator-boot-on;
+		voltage-table = <2250000 30>;
+	};
+
+Before this patch:
+
+  fooregulator: failed to get the current voltage(-22)
+
+After this patch:
+
+  fooregulator: Setting 2250000-2250000uV
+  fooregulator: 2250 mV
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ drivers/regulator/pwm-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
+index 3234b118b53e..990bd50771d8 100644
+--- a/drivers/regulator/pwm-regulator.c
++++ b/drivers/regulator/pwm-regulator.c
+@@ -279,7 +279,7 @@ static int pwm_regulator_init_table(struct platform_device *pdev,
+ 		return ret;
+ 	}
+ 
+-	drvdata->state			= -EINVAL;
++	drvdata->state			= -ENOTRECOVERABLE;
+ 	drvdata->duty_cycle_table	= duty_cycle_table;
+ 	drvdata->desc.ops = &pwm_regulator_voltage_table_ops;
+ 	drvdata->desc.n_voltages	= length / sizeof(*duty_cycle_table);
+-- 
+2.28.0
+
