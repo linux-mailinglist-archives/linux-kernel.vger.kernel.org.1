@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1A725B216
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FBB25B1FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgIBQvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:51:12 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:54248 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgIBQvK (ORCPT
+        id S1728180AbgIBQqu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Sep 2020 12:46:50 -0400
+Received: from mailoutvs19.siol.net ([185.57.226.210]:44758 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727776AbgIBQqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:51:10 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 082Gp5Pi033319;
-        Wed, 2 Sep 2020 11:51:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599065465;
-        bh=dDTC0gpdXie8DL9+hkg/Fiz8VsxEy70PtTPaF9NGk88=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=MbZXF4kHAWsQrSOmCIKVq4M7gPmwVSHjYUy0LvUa0K1wiYX8R+md9/hnxngJrx/im
-         q5371/6H3GfnClaIE2TUPU5Zl8O10v6Mc7NcxK9UxW9DjlEd3Rxwn0MkxZ3pYwnltx
-         VO2LyhJUciRtsGOWOtSKDP2PKL2/9s1z7C4igTAE=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 082Gp4eq095150
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Sep 2020 11:51:05 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 2 Sep
- 2020 11:51:04 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 2 Sep 2020 11:51:04 -0500
-Received: from [10.250.34.112] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 082Gp4rc046690;
-        Wed, 2 Sep 2020 11:51:04 -0500
-Subject: Re: [PATCH 6/7] arm64: dts: ti: k3-*: Use generic adc for node names
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <lokeshvutla@ti.com>,
-        <grygorii.strashko@ti.com>, <nsekhar@ti.com>
-References: <20200901223059.14801-1-nm@ti.com>
- <20200901223059.14801-7-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <60e6b790-360a-6eaf-03a3-5bb256adf215@ti.com>
-Date:   Wed, 2 Sep 2020 11:51:03 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 2 Sep 2020 12:46:46 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 5D25E52676B;
+        Wed,  2 Sep 2020 18:46:43 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ORtNQRatnqJ9; Wed,  2 Sep 2020 18:46:43 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id E90D752676F;
+        Wed,  2 Sep 2020 18:46:42 +0200 (CEST)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id DB01552676B;
+        Wed,  2 Sep 2020 18:46:40 +0200 (CEST)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     Roman Stratiienko <r.stratiienko@gmail.com>
+Cc:     mripard@kernel.org, wens@csie.org, irlied@linux.ie,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/sun4i: Fix DE2 YVU handling
+Date:   Wed, 02 Sep 2020 18:51:15 +0200
+Message-ID: <10671571.W45mMbEh4O@kista>
+In-Reply-To: <CAGphcdnT4U8AztL_B_B2HYskQSAYKRgCQcnO3Q8Qj+UFO082hQ@mail.gmail.com>
+References: <20200901220305.6809-1-jernej.skrabec@siol.net> <CAGphcdnT4U8AztL_B_B2HYskQSAYKRgCQcnO3Q8Qj+UFO082hQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200901223059.14801-7-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 5:30 PM, Nishanth Menon wrote:
-> Use adc@ naming for nodes following standard conventions of device
-> tree (section 2.2.2 Generic Names recommendation in [1]).
+Dne sreda, 02. september 2020 ob 09:01:17 CEST je Roman Stratiienko 
+napisal(a):
+> ср, 2 сент. 2020 г. в 00:58, Jernej Skrabec <jernej.skrabec@siol.net>:
+> > Function sun8i_vi_layer_get_csc_mode() is supposed to return CSC mode
+> > but due to inproper return type (bool instead of u32) it returns just 0
+> > or 1. Colors are wrong for YVU formats because of that.
+> > 
+> > Fixes: daab3d0e8e2b ("drm/sun4i: de2: csc_mode in de2 format struct is
+> > mostly redundant") Reported-by: Roman Stratiienko
+> > <r.stratiienko@gmail.com>
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > ---
+> > 
+> >  drivers/gpu/drm/sun4i/sun8i_vi_layer.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+> > b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c index 22c8c5375d0d..c0147af6a840
+> > 100644
+> > --- a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+> > +++ b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
+> > @@ -211,7 +211,7 @@ static int sun8i_vi_layer_update_coord(struct
+> > sun8i_mixer *mixer, int channel,> 
+> >         return 0;
+> >  
+> >  }
+> > 
+> > -static bool sun8i_vi_layer_get_csc_mode(const struct drm_format_info
+> > *format) +static u32 sun8i_vi_layer_get_csc_mode(const struct
+> > drm_format_info *format)> 
+> >  {
+> >  
+> >         if (!format->is_yuv)
+> >         
+> >                 return SUN8I_CSC_MODE_OFF;
+> > 
+> > --
+> > 2.28.0
 > 
-> [1] https://github.com/devicetree-org/devicetree-specification/tree/v0.3
+> Hi Jernej,
 > 
-> Suggested-by: Suman Anna <s-anna@ti.com>
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi         | 4 ++--
->  arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> index 51ca4b4d4c21..6dfec68ac865 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
-> @@ -80,7 +80,7 @@
->  		#size-cells = <0>;
->  	};
->  
-> -	tscadc0: tscadc@40200000 {
-> +	tscadc0: adc@40200000 {
+> Thank you for the fix.
+> I can confirm this patch fixes the issue with wrong colors.
 
-OK with these changes, since these seem to be only have the adc child nodes.
-This node is essentially a parent node for touchscreen and adc child nodes. The
-driver is currently looking for "tsc" on touchscreen child nodes, but none of
-the K3 SoCs have them atm.
+Thanks! Can I assume that this means your Tested-by tag can be added?
 
-regards
-Suman
-
->  		compatible = "ti,am654-tscadc", "ti,am3359-tscadc";
->  		reg = <0x0 0x40200000 0x0 0x1000>;
->  		interrupts = <GIC_SPI 580 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -98,7 +98,7 @@
->  		};
->  	};
->  
-> -	tscadc1: tscadc@40210000 {
-> +	tscadc1: adc@40210000 {
->  		compatible = "ti,am654-tscadc", "ti,am3359-tscadc";
->  		reg = <0x0 0x40210000 0x0 0x1000>;
->  		interrupts = <GIC_SPI 581 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-> index 9ad0266598ad..81801f519a61 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
-> @@ -211,7 +211,7 @@
->  		};
->  	};
->  
-> -	tscadc0: tscadc@40200000 {
-> +	tscadc0: adc@40200000 {
->  		compatible = "ti,am3359-tscadc";
->  		reg = <0x0 0x40200000 0x0 0x1000>;
->  		interrupts = <GIC_SPI 860 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -230,7 +230,7 @@
->  		};
->  	};
->  
-> -	tscadc1: tscadc@40210000 {
-> +	tscadc1: adc@40210000 {
->  		compatible = "ti,am3359-tscadc";
->  		reg = <0x0 0x40210000 0x0 0x1000>;
->  		interrupts = <GIC_SPI 861 IRQ_TYPE_LEVEL_HIGH>;
 > 
+> Let me share my thoughts:
+> I've looked into csc code, and it seems to me reordering U, V offsets
+> should be a much simpler solution than applying
+> color transformation matrices.It should also simplify adding more
+> color encodings in the future.
+
+Switching offsets assumes that you have separate planes for U and V which may 
+not be true in the future. I agree that CSC matrices are needlessly duplicated 
+for handling U/V switch. I have a patch which reorganize matrix on the fly when 
+coefficients are written in registers but since it's a part of a bigger, 
+unfinished series, I didn't sent it out yet. Only difference in YUV and YVU CSC 
+matrices are switched 2nd and 3rd column.
+
+Best regards,
+Jernej
+
+> 
+> Regards,
+> Roman
+
+
+
 
