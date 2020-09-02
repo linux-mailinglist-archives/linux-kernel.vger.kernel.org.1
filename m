@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA6625AC96
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5CC25AC7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727972AbgIBOJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:09:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47348 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727776AbgIBNxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:53:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C90BDB5B9;
-        Wed,  2 Sep 2020 13:38:16 +0000 (UTC)
-Date:   Wed, 2 Sep 2020 15:38:12 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v3 7/8] printk: reimplement log_cont using record
- extension
-Message-ID: <20200902133811.GC15764@alley>
-References: <20200831011058.6286-1-john.ogness@linutronix.de>
- <20200831011058.6286-8-john.ogness@linutronix.de>
+        id S1727867AbgIBODT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726979AbgIBNrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:47:47 -0400
+Received: from caffeine.csclub.uwaterloo.ca (caffeine.csclub.uwaterloo.ca [IPv6:2620:101:f000:4901:c5c:0:caff:e12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFF7C061245;
+        Wed,  2 Sep 2020 06:47:42 -0700 (PDT)
+Received: by caffeine.csclub.uwaterloo.ca (Postfix, from userid 20367)
+        id E12B2460FF9; Wed,  2 Sep 2020 09:47:34 -0400 (EDT)
+Date:   Wed, 2 Sep 2020 09:47:34 -0400
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [Intel-wired-lan] VRRP not working on i40e X722 S2600WFT
+Message-ID: <20200902134734.fvtyn5tbhpyssrbq@csclub.uwaterloo.ca>
+References: <20200827183039.hrfnb63cxq3pmv4z@csclub.uwaterloo.ca>
+ <20200828155616.3sd2ivrml2gpcvod@csclub.uwaterloo.ca>
+ <20200831103512.00001fab@intel.com>
+ <20200901013519.rfmavd4763gdzw4r@csclub.uwaterloo.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200831011058.6286-8-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200901013519.rfmavd4763gdzw4r@csclub.uwaterloo.ca>
+User-Agent: NeoMutt/20170113 (1.7.2)
+From:   lsorense@csclub.uwaterloo.ca (Lennart Sorensen)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-08-31 03:16:57, John Ogness wrote:
-> Use the record extending feature of the ringbuffer to implement
-> continuous messages. This preserves the existing continuous message
-> behavior.
+On Mon, Aug 31, 2020 at 09:35:19PM -0400,  wrote:
+> On Mon, Aug 31, 2020 at 10:35:12AM -0700, Jesse Brandeburg wrote:
+> > Thanks for the report Lennart, I understand your frustration, as this
+> > should probably work without user configuration.
+> > 
+> > However, please give this command a try:
+> > ethtool --set-priv-flags ethX disable-source-pruning on
 > 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  kernel/printk/printk.c | 98 +++++++++---------------------------------
->  1 file changed, 20 insertions(+), 78 deletions(-)
+> Hmm, our 4.9 kernel is just a touch too old to support that.  And yes
+> that really should not require a flag to be set, given the card has no
+> reason to ever do that pruning.  There is no justification you could
+> have for doing it in the first place.
 
-It looks simple from the printk() side ;-)
+So backporting the patch that enabled that flag does allow it to work.
+Of course there isn't a particularly good place to put an ethtool command
+in the boot up to make sure it runs before vrrp is started.  This has to
+be the default. I know I wasted about a week trying things to get this to
+work, and clearly lots of other people have wasted a ton of time on this
+"feature" too (calling it a feature is clearly wrong, it is a bug).
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+By default the NIC should work as expected.  Any weird questionable
+optimizations have to be turned on by the user explicitly when they
+understand the consequences.  I can't find any use case documented
+anywhere for this bug, I can only find things it has broken (like
+apparently arp monitoring on bonding, and vrrp).
 
-Best Regards,
-Petr
+So who should make the patch to change this to be the default?  Clearly
+the current behaviour is harming and confusing more people than could
+possibly be impacted by changing the current default setting for the flag
+(in fact I would just about be willing to bet there are no people that
+want the current behaviour.  After all no other NIC does this, so clearly
+there is no need for it to be done).
+
+-- 
+Len Sorensen
