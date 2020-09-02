@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF9C25AFA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41FC25AFA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726226AbgIBNjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S1726493AbgIBNnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727119AbgIBNbz (ORCPT
+        with ESMTP id S1727776AbgIBNbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Sep 2020 09:31:55 -0400
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FBCC061246
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:47 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id e16so5227978wrm.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63671C06124F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:51 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id a17so5212803wrn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=XZEfogzRpgCv9d/7XYID16SU6ICZPv6xVqL1vYFO3Tc=;
-        b=M3yNcFchCRn+amiZRIxVhI/m1a4StXppeLIzXd9A0CaEudpAr94t4g/UKh0GzWbyi6
-         2KiQoYBsNwDfMf8ZJ3jWSF/OfOFnM9C+y7F3xR7D5wA0q1LC36Etlv8cCDzvUDvDVWkW
-         GxIypWMCm5EMmYYy0rNv1MnGIpSv0qnhWGJzzY3u7FTv3KOeTs1VS43VjJB5uzsvc5Oc
-         qBZOxWSEz3gKB6dWjdQRpshnmH9LwTA42fab2LiVNoPPFZ4/bvyGUukpFA/Aw/mq4LJs
-         hs8fssTsCH9MncGSODGZwffdDuYLjuufLKqvTqP35j/6tz93K5wGoFPXTghAZvvmv5hR
-         h1Ng==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
+        b=ytqZ4y29xTnSd7/M8QIfrLrv+ntI+urbxFwppfojEpqWHImU071sJu9kbIIfp2y1Jy
+         4+KUCuv9tQmAG4PVtbUUxIqD5p3em/2bkFX349NK0N5gq83Dwbyg/4IxqFtMYCjsxV35
+         VfOl48VEHJIvfPHAGw/VpM7DM+1ybRDH1aHZN6BGyrMx5yTijqWPB/K7R2gbbLywc6xL
+         YuvDSui2me5MQrMhNRdUY+QF+R5v5C0aWucAf7PBVoNRSa4kgmlOmZrhxmNpg7/xJMlM
+         H/Ay2RbRY4H7xd0HKEhRr8otlmXH/sgcKqSRsnKqFbVkLiG3DPRUPETFSLkKulcneinH
+         s7Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XZEfogzRpgCv9d/7XYID16SU6ICZPv6xVqL1vYFO3Tc=;
-        b=QExP81fUtxRbOwLUMJ3Dz3VX6x4mJcCCASwc5NxyrBa/yWZzkU35Vr/H77Ck+Qsmyb
-         rEtNqbMYyU+jM0k8GooMycLmhcO7+DP9XRMm4xGfAfEDTV6i6Shm/nTl7L9uSEAIT+jM
-         q9Wg9sfReRkayLYRHgP3w/JhG8UmHGG0otaDlHulIChTFqsPntQl2pTfl7j/o5KgsGKy
-         Ygg+Rglx/gPqAPKR6Z3nZhlUi4wcsELXaYwsrfUy1ObdX6/Z4zT/WFkBgd395A9rm3k6
-         lZrDRHqENAP1rJNWyPfYsfKuCNbth2CoJ5Zu/tV/b3e3lJb491qTqWq3DAySTmWg0nH1
-         HySg==
-X-Gm-Message-State: AOAM5318WiQLDNcq4lWbbVFppIGU0xRm8ptcPUSYbFhgPSI2wFtyhpuP
-        /67qeTIV2kDtVguywp7RhGRdxg==
-X-Google-Smtp-Source: ABdhPJyvesWhfkjmOOGpBBJhN/yTcWagUaLz+fSVDWZHqSZgIJyhDOy2wigZyKaWVreGNRGll9MxRw==
-X-Received: by 2002:adf:ed12:: with SMTP id a18mr6552172wro.178.1599052905847;
-        Wed, 02 Sep 2020 06:21:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=oTMUwLGNRNQB4ie8SSya+jnVAbwSw8hpqt0lrhaUPZU=;
+        b=P388Gq/0rwcQnObS2pzwaGf3dbB5aITqNj7hCfIMeWiwGyI/PpGtQdPs7QpS2WpRPZ
+         njx9zXpAB8BOhu18QWJNpDRvvzHaHAE//xExG5Nf3kyQsrG6gj2N04z0p/ACtxdwqe2b
+         Nf2utZwZYzK7dx3nUNOMxsxRoOGAwfJAwJWvMFlr7Cx54j/2H71U2TxHIMeUJN2rAClF
+         r9sRnAzhU14zj4mT3QoqQr3RDKsb+1Pve+x6LG/TyBTD2volIdp39XFssLc8vlJZARdw
+         0gHqRK1rdlwTRvBh2dzH+3o2wtDTRcZVCxSYtPW1nOs9yjLrL5eVlATbiI4B21GiI30x
+         ZqWg==
+X-Gm-Message-State: AOAM530frOxZ4m0cb9ojJVqAwmP+GUtK+T7NT8E9dvXWEA9ieNfWnAW+
+        s2jwoCUXcM56PbdHVaYBrEqNvA==
+X-Google-Smtp-Source: ABdhPJynIUHdhvQpdCfDpFCjzUD2VnFzN/yfu1ibZGD8WSzgabVRPQs6/dACjMzv0GQWC/jlUmC8/w==
+X-Received: by 2002:adf:eecb:: with SMTP id a11mr1201605wrp.356.1599052910032;
+        Wed, 02 Sep 2020 06:21:50 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id q4sm2520403wru.65.2020.09.02.06.21.44
+        by smtp.gmail.com with ESMTPSA id q4sm2520403wru.65.2020.09.02.06.21.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 06:21:45 -0700 (PDT)
+        Wed, 02 Sep 2020 06:21:49 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -70,86 +71,92 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Will Deacon <will@kernel.org>,
         James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 0/6] Perf tool: Support TSC for Arm64
-Date:   Wed,  2 Sep 2020 14:21:25 +0100
-Message-Id: <20200902132131.36304-1-leo.yan@linaro.org>
+Subject: [PATCH v3 3/6] perf tsc: Calculate timestamp with cap_user_time_short
+Date:   Wed,  2 Sep 2020 14:21:28 +0100
+Message-Id: <20200902132131.36304-4-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200902132131.36304-1-leo.yan@linaro.org>
+References: <20200902132131.36304-1-leo.yan@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set is to refactor the changes for the old patch set 'Perf
-tool: Enable Arm arch timer counter and arm-spe's timestamp' [1].
+The perf mmap'ed buffer contains the flag 'cap_user_time_short' and two
+extra fields 'time_cycles' and 'time_mask', perf tool needs to know
+them for handling the counter wrapping case.
 
-After reviewed the old patch sets (thanks Wei Li and Al Grant), we
-think it's right way to consolidate TSC code and extend the TSC
-implementation to common code which can support both x86 and Arm64;
-so far, for x86 it needs to support cap_user_time_zero and for Arm64
-it needs to support cap_user_time_short.  For architecture specific
-code, every arch only needs to implement its own rdtsc() to read out
-timer's counter.
+This patch is to reads out the relevant parameters from the head of the
+first mmap'ed page and stores into the structure 'perf_tsc_conversion',
+if the flag 'cap_user_time_short' has been set, it will firstly
+calibrate cycle value for timestamp calculation.
 
-This patch set is to refactor TSC implementation and move TSC code from
-x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
-alse move the TSC testing from x86 folder to tests so can work as a
-common testing.
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ tools/perf/util/tsc.c | 12 +++++++++---
+ tools/perf/util/tsc.h |  5 +++++
+ 2 files changed, 14 insertions(+), 3 deletions(-)
 
-This patch set has been tested on Arm64 (DB410c) and x86_64.  Both can
-pass the testing:
-
-  $ perf test list
-    [...]
-    68: Convert perf time to TSC
-    [...]
-
-  $ perf test 68 -v
-    68: Convert perf time to TSC
-    --- start ---
-    test child forked, pid 10961
-    mmap size 528384B
-    1st event perf time 35715036563417 tsc 686221770989
-    rdtsc          time 35715036649719 tsc 686221772647
-    2nd event perf time 35715036660448 tsc 686221772852
-    test child finished with 0
-    ---- end ----
-    Convert perf time to TSC: Ok
-
-Changes from v2:
-* Refactored patch set to move TSC common code to util/tsc.c (Wei/Al);
-* Moved TSC testing to perf/tests (Wei);
-* Dropped Arm SPE timestamp patch so can have clear purpose and easier
-  reviewing; will send Arm SPE timestamp as separate patch.
-
-[1] https://lore.kernel.org/patchwork/cover/1285130/
-
-Leo Yan (6):
-  perf tsc: Move out common functions from x86
-  perf tsc: Add rdtsc() for Arm64
-  perf tsc: Calculate timestamp with cap_user_time_short
-  perf tsc: Support cap_user_time_short for event TIME_CONV
-  perf tests tsc: Make tsc testing as a common testing
-  perf tests tsc: Add checking helper is_supported()
-
- tools/lib/perf/include/perf/event.h           |  4 +
- tools/perf/arch/arm64/util/Build              |  1 +
- tools/perf/arch/arm64/util/tsc.c              | 14 ++++
- tools/perf/arch/x86/include/arch-tests.h      |  1 -
- tools/perf/arch/x86/tests/Build               |  1 -
- tools/perf/arch/x86/tests/arch-tests.c        |  4 -
- tools/perf/arch/x86/util/tsc.c                | 73 +----------------
- tools/perf/tests/Build                        |  1 +
- tools/perf/tests/builtin-test.c               |  5 ++
- .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 13 +++
- tools/perf/tests/tests.h                      |  2 +
- tools/perf/util/jitdump.c                     | 14 ++--
- tools/perf/util/synthetic-events.c            |  8 --
- tools/perf/util/tsc.c                         | 81 +++++++++++++++++++
- tools/perf/util/tsc.h                         |  5 ++
- 15 files changed, 136 insertions(+), 91 deletions(-)
- create mode 100644 tools/perf/arch/arm64/util/tsc.c
- rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (93%)
-
+diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
+index 9e3f04ddddf8..c0ca40204649 100644
+--- a/tools/perf/util/tsc.c
++++ b/tools/perf/util/tsc.c
+@@ -28,6 +28,10 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
+ {
+ 	u64 quot, rem;
+ 
++	if (tc->cap_user_time_short)
++		cyc = tc->time_cycles +
++			((cyc - tc->time_cycles) & tc->time_mask);
++
+ 	quot = cyc >> tc->time_shift;
+ 	rem  = cyc & (((u64)1 << tc->time_shift) - 1);
+ 	return tc->time_zero + quot * tc->time_mult +
+@@ -37,7 +41,6 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
+ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
+ 			     struct perf_tsc_conversion *tc)
+ {
+-	bool cap_user_time_zero;
+ 	u32 seq;
+ 	int i = 0;
+ 
+@@ -47,7 +50,10 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
+ 		tc->time_mult = pc->time_mult;
+ 		tc->time_shift = pc->time_shift;
+ 		tc->time_zero = pc->time_zero;
+-		cap_user_time_zero = pc->cap_user_time_zero;
++		tc->time_cycles = pc->time_cycles;
++		tc->time_mask = pc->time_mask;
++		tc->cap_user_time_zero = pc->cap_user_time_zero;
++		tc->cap_user_time_short	= pc->cap_user_time_short;
+ 		rmb();
+ 		if (pc->lock == seq && !(seq & 1))
+ 			break;
+@@ -57,7 +63,7 @@ int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
+ 		}
+ 	}
+ 
+-	if (!cap_user_time_zero)
++	if (!tc->cap_user_time_zero)
+ 		return -EOPNOTSUPP;
+ 
+ 	return 0;
+diff --git a/tools/perf/util/tsc.h b/tools/perf/util/tsc.h
+index 3c5a632ee57c..72a15419f3b3 100644
+--- a/tools/perf/util/tsc.h
++++ b/tools/perf/util/tsc.h
+@@ -8,6 +8,11 @@ struct perf_tsc_conversion {
+ 	u16 time_shift;
+ 	u32 time_mult;
+ 	u64 time_zero;
++	u64 time_cycles;
++	u64 time_mask;
++
++	bool cap_user_time_zero;
++	bool cap_user_time_short;
+ };
+ 
+ struct perf_event_mmap_page;
 -- 
 2.17.1
 
