@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883A925ACF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9D925ACF7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgIBOZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727935AbgIBOPF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:15:05 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13B9C061244;
-        Wed,  2 Sep 2020 07:15:03 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 31so2592433pgy.13;
-        Wed, 02 Sep 2020 07:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cFLb4ALCE9PWhj/xokRnuSTEiqPwTe35SqHGat4xPp0=;
-        b=MjpScwUdFE3fRuo4tpJ8mThAprEUlU5sAZ1fVxRkhEKDEURdoxqeTfLUqAUtptSn8P
-         hzdbKjDUgDMFzmTJUr8SNWxWrI+zjb2opOoq/sBVmg0ylKz2tanz4eaOEIhP2BGT7Oeg
-         lP7tVRFb9tcRF3AczoMazWas5btp3qBuN2ZH/vDBKkG2gEdT2GARmAXtAcP3ZrBAmdfN
-         RpEfYzDo1gSUMee6dByOJcejSVRuvpkxwDV6CepIjeQboDVRT8j7b27eaZmyNDYG+dD8
-         ZqkPCotHQlenkafHjlsisWb+KFV54K/qW01lNY56EaK1rLhSdy8k7EUI1mwkk8V298li
-         5A6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cFLb4ALCE9PWhj/xokRnuSTEiqPwTe35SqHGat4xPp0=;
-        b=YfH3EQKGF9b2nmctQtntAIvoTujPkvAhxtnKNwhkhri/1MSQX6G+vce7RNkW7ubuLE
-         0V2NFpDjmhFcqK1h5UQX6SCEPHUQQySycctexL73btvwx8dmcDtx/nazZSzJMtfxyhz7
-         SALvRoV2rYE/MHaFl8yfCt7UhrIUvTfIUlTmrk7MWse5UP0xPxror0u7i5NtlP7gomFe
-         qmSS0/AHrtdC64ijgAKz6vjZ8hK8MuynHry9OA049FqM9f+/AykpmeYOjAqtfNwPIfjI
-         Z4iC4A9EvZSY9+el7IBGQHO7dJ/YoD5xqz9MzRmVvfngTXONSt9sJeuYKZLGazB2oM7A
-         xCEw==
-X-Gm-Message-State: AOAM532AeRZz+KJDJF/y8TQweV2uKLGxuXvSANjti5SQ4NZVBPyKh2u2
-        4mWebWyEqPJn6U1PonUlZ/1ezicdaCH4Mg==
-X-Google-Smtp-Source: ABdhPJwW4Z0ynOopYuaSrZSMqfN7YG8EJohAI7fTxnN0I+NmXgGNZWynN/Psc6pizc9um0Rvsagvpg==
-X-Received: by 2002:aa7:80d3:: with SMTP id a19mr3338479pfn.102.1599056103443;
-        Wed, 02 Sep 2020 07:15:03 -0700 (PDT)
-Received: from gmail.com ([223.190.81.142])
-        by smtp.gmail.com with ESMTPSA id u8sm5751415pfm.133.2020.09.02.07.15.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 07:15:02 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 19:43:12 +0530
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the pci tree
-Message-ID: <20200902141312.GA50412@gmail.com>
-References: <20200902110743.0519779d@canb.auug.org.au>
- <20200902123312.GA242674@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1726521AbgIBOZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:25:59 -0400
+Received: from gate.crashing.org ([63.228.1.57]:33580 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726762AbgIBOQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:16:37 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 082EEWYN031070;
+        Wed, 2 Sep 2020 09:14:32 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 082EEVOd031069;
+        Wed, 2 Sep 2020 09:14:31 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Wed, 2 Sep 2020 09:14:31 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 2/2] powerpc/vdso32: link vdso64 with linker
+Message-ID: <20200902141431.GV28786@gate.crashing.org>
+References: <20200901222523.1941988-1-ndesaulniers@google.com> <20200901222523.1941988-3-ndesaulniers@google.com> <b2066ccd-2b81-6032-08e3-41105b400f75@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200902123312.GA242674@bjorn-Precision-5520>
+In-Reply-To: <b2066ccd-2b81-6032-08e3-41105b400f75@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 07:33:12AM -0500, Bjorn Helgaas wrote:
-> On Wed, Sep 02, 2020 at 11:07:43AM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
-> > produced this warning:
-> > 
-> > drivers/pci/pci-driver.c: In function 'pci_pm_thaw_noirq':
-> > drivers/pci/pci-driver.c:1037:6: warning: unused variable 'error' [-Wunused-variable]
-> >  1037 |  int error;
-> >       |      ^~~~~
-> > drivers/pci/pci-driver.c: In function 'pci_pm_restore_noirq':
-> > drivers/pci/pci-driver.c:1169:6: warning: unused variable 'error' [-Wunused-variable]
-> >  1169 |  int error;
-> >       |      ^~~~~
-> > 
-> > Introduced by commit
-> > 
-> >   89a8561c63d3 ("PCI: Remove unused pcibios_pm_ops")
-Hello, I did compile test it with W=1 flag. I am sorry, I must have missed it.
+Hi!
+
+On Wed, Sep 02, 2020 at 06:46:45AM +0000, Christophe Leroy wrote:
+> ld crashes:
 > 
-> Fixed, thanks!
-Thanks for the fix.
+>   LD      arch/powerpc/kernel/vdso32/vdso32.so.dbg
+> /bin/sh: line 1: 23780 Segmentation fault      (core dumped) 
+> ppc-linux-ld -EB -m elf32ppc -shared -soname linux-vdso32.so.1 
+> --eh-frame-hdr --orphan-handling=warn -T 
+> arch/powerpc/kernel/vdso32/vdso32.lds 
+> arch/powerpc/kernel/vdso32/sigtramp.o 
+> arch/powerpc/kernel/vdso32/gettimeofday.o 
+> arch/powerpc/kernel/vdso32/datapage.o 
+> arch/powerpc/kernel/vdso32/cacheflush.o 
+> arch/powerpc/kernel/vdso32/note.o arch/powerpc/kernel/vdso32/getcpu.o -o 
+> arch/powerpc/kernel/vdso32/vdso32.so.dbg
+> make[4]: *** [arch/powerpc/kernel/vdso32/vdso32.so.dbg] Error 139
+> 
+> 
+> [root@localhost linux-powerpc]# ppc-linux-ld --version
+> GNU ld (GNU Binutils) 2.26.20160125
+
+[ Don't build as root :-P ]
+
+Try with a newer ld?  If it still happens with current versions, please
+open a bug report?  https://sourceware.org/bugzilla
+
+
+Segher
