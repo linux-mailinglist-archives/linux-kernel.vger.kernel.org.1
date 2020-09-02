@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3234E25A2BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF6725A2C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbgIBBtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 21:49:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726122AbgIBBr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 21:47:57 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6A082068F;
-        Wed,  2 Sep 2020 01:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599011277;
-        bh=ACnmUo/q7wikQNAqquuTw1JPZJIlINIYP3A9vIHgDXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k8MK8Bb0dxIQrH34HVR3KRioFlzw+N1SwWNUtWAmeBX6n+8opBmc0BC6I1FFlBEhR
-         BH782NR2rCXX9vt0S8wRrxs7CMih5usB70/pYKsuv/qgwlmy2Y/nNcR6eOqFVizbJP
-         pmzS9vF3SmhyUWJxWmIUwB+YfkpH/M74pPp8lJlQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8860440D3D; Tue,  1 Sep 2020 22:47:54 -0300 (-03)
-Date:   Tue, 1 Sep 2020 22:47:54 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Al Grant <al.grant@arm.com>
-Subject: Re: [PATCH 1/2] perf cs-etm: Fix corrupt data after perf inject from
-Message-ID: <20200902014754.GA3444345@kernel.org>
-References: <20200819084751.17686-1-leo.yan@linaro.org>
- <20200827205354.GE22307@xps15>
- <20200831000432.GA4715@leoy-ThinkPad-X240s>
- <20200901145432.GB1422817@kernel.org>
- <20200902003931.GA3306@leoy-ThinkPad-X240s>
+        id S1726623AbgIBBtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 21:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgIBBsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 21:48:39 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB414C061245
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 18:48:38 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id m5so1705781pgj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 18:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/4wFGOq+jdmgy1C521XX4TvVkHBzuungWmQOOE8oXAU=;
+        b=Uu0lVg9vFfx3JT+T6IDM8UHNmL25OLD/ZKO4RC4DSbuETuyl+GzyBituX3nR45XVUV
+         lfxEWap/HgXd++RLWHxHJ6JYfGtq+sfddAlusDOA3k2+IHIP5+t8j+n7y7mmrr8tiCYy
+         XDApwAPsgXE9/jVaskoJz0lj/SWR8le+m4Fm5GxbHCSJQlMV3R8vJNmwZ5fD/5epi4ZH
+         q0TOryMPEmORi2PVBRTHeuUxDOeJ0RldNhg7uSWe0WnvTykFUI0N9J4jC8euLJjicRDI
+         lutuu2r25FHQ71Vg10CCetZtVpmGyvBlMm3edQbsVTerjDmeWtMDKhbWX01rx2o2/5dx
+         X2Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/4wFGOq+jdmgy1C521XX4TvVkHBzuungWmQOOE8oXAU=;
+        b=DyX1nNHqAm/lUrCGcAxx46Y2Og1+MIy5V/Wng4RE1r0X4NFrFD0apTsVj3Hse9ML96
+         Ld0Ee8qz+VtUVKIcfKVgVEWqFaDJLXzTACcEVDJEae0k/az0evEYJ8l7UD4Qec8ZCBkq
+         Ef+7hm3g0dc/JH3CARpaxbJMhQQT56kpBmH8D1RauP5j/sX+m6+OhexW9iW1PzWDudXA
+         s/s3THNIVSIgQrI31nc51yaFnzx/RX6aQz3pUOuY5qvVo70toQxQa7joF+7RxhYpgwDK
+         xMrFJP4t9zoq7ZlnHzmUfkh7rH2OoM9aGohWfF/XyTdHJ+NVkwyFoGDLnQGxwWkX6kc7
+         EvNQ==
+X-Gm-Message-State: AOAM533VEXF5njgzL88G+FEXIu9giggiMjboadfqZ/P6t97CcG9L1YnT
+        eKu7iqEhCd5RAObH7yf6eXGMAzdCHAFyTMs/
+X-Google-Smtp-Source: ABdhPJzstt3Y+NIGaVASxgMQnKIge9jkmIm0jVEsu/fdwg0w5mqQN0NhN70byC7Cx6+aJfmINScDfA==
+X-Received: by 2002:a63:d003:: with SMTP id z3mr45293pgf.424.1599011317885;
+        Tue, 01 Sep 2020 18:48:37 -0700 (PDT)
+Received: from [192.168.1.187] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id e7sm3468231pfm.43.2020.09.01.18.48.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 18:48:36 -0700 (PDT)
+Subject: Re: [PATCH] block: Remove a duplicative condition
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang7@gmail.com,
+        dan.carpenter@oracle.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <24364e6dfe7905d4f823ab932f927e2d30858c5c.1599010968.git.baolin.wang@linux.alibaba.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <64043cf0-09c1-cbb4-ce2c-30dfd5ff02ee@kernel.dk>
+Date:   Tue, 1 Sep 2020 19:48:35 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902003931.GA3306@leoy-ThinkPad-X240s>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <24364e6dfe7905d4f823ab932f927e2d30858c5c.1599010968.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 02, 2020 at 08:39:32AM +0800, Leo Yan escreveu:
-> On Tue, Sep 01, 2020 at 11:54:32AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Aug 31, 2020 at 08:04:32AM +0800, Leo Yan escreveu:
-> > > On Thu, Aug 27, 2020 at 02:53:54PM -0600, Mathieu Poirier wrote:
-> > > > On Wed, Aug 19, 2020 at 04:47:50PM +0800, Leo Yan wrote:
-> > > > I've see this patch before...  I thought it had been merged - what happened?
+On 9/1/20 7:45 PM, Baolin Wang wrote:
+> Remove a duplicative condition to remove below cppcheck warnings:
 
-> > > This patch before has been sent by Al to CoreSight mailing list but has
-> > > not sent to LKML, this is why I resent it to LKML in case it's missed.
+Thanks, applied.
 
-> > So, was it Acked on the CoreSight mailing list? Are we missing any
-> > Acked-by or Reviewed-by for this 1/2 patch as we got for 2/2?
- 
-> The CoreSight mailing list has some discussion for this patch set,
-> when respin this patch set, I confirmed we don't miss any 'Acked' or
-> 'Reviewed' tags.
+-- 
+Jens Axboe
 
-So, this patch was included in today's
-perf-tools-fixes-for-v5.9-2020-09-01 signed tag sent to Linus in a pull
-req, please update your perf/urgent branch, and go on from there, I'll
-merge that into my perf/core branch as soon as Linus merges it.
-
-- Arnaldo
