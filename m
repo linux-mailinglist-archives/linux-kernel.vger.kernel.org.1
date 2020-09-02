@@ -2,248 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934B725AC49
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBC425AC15
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgIBNtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        id S1727058AbgIBNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726966AbgIBNlC (ORCPT
+        with ESMTP id S1726654AbgIBN2e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:41:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57CDC06123A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=Jm5W6Bhlyz+QD3Dt1kXcPyaSnX+tRmS5JwK1bk3RLus=; b=nMlEKVdOu2x71VESBUn5Z3AZh9
-        rqPhu0HmWs67yrnWyYzZzhWNBBjYDQAOrv6yiPVeOOwH5sE88759e8i10HizuHJNmQ7e2NjVFhyQA
-        yAHn3B+LNkcrPQERid5M7o4EDRL8IFW2dz/PSnO6ki+bt9gSGukrZ7Sj7EVK442gy+sDYABEzEZEY
-        P1N+iwoJxIYG6JT+nAMIVUOy7b+eNfxw/JCuKA3jS8uL0a3z3Cuww3w8xTtIRAGiTmDMUeXf/Usg/
-        lx7oUXYserxzmDpEpBhWcQYcw3oaMwyLARe3gTga+Mk1vUtbdeMjl34WL/WJ5LTlgfktmPy3jkDlS
-        iJXwcPAw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDSxr-0003Zh-JY; Wed, 02 Sep 2020 13:38:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AA3263077E1;
-        Wed,  2 Sep 2020 15:38:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E60ED29A82C28; Wed,  2 Sep 2020 15:38:11 +0200 (CEST)
-Message-ID: <20200902133201.415372940@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 02 Sep 2020 15:26:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC][PATCH 13/13] x86/debug: Change thread.debugreg6 to thread.virtual_dr6
-References: <20200902132549.496605622@infradead.org>
+        Wed, 2 Sep 2020 09:28:34 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E62C06125F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:28:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id c18so5229595wrm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uIp6VDRg64f9Y6M9nC/GlDS6MEA5JCUpqgsb4/MPt3o=;
+        b=mgwLkognKuIAKnWCCfSlM7yPbF2hjfW3lrpvsVtLqikNxdc1g8HRBRf+01OXL/0zM+
+         Yc6BzQvEuMQRW7++14zWZOQO4knzah3KyyQ06HqnP1kT26c4eu2HhXDw6xjpsvyOBvJO
+         JV7FxoqgcOsqsOECxm1Ii2GSYqR+rsZjUvyU1qhZutIEaVHRUux09hU8RfDH++383AL9
+         v79u6pcKn27u3TQfCcPbGMlvG6m1i92pkA0/KxauSZpmbTRybKqnRjvFurUDQBZuHkyH
+         7f8onN4/qVEYBJtFbcL/H9HKukRRV/+pArF9jLsJUlb0halFaAvNesLNJTZWkf+PxENN
+         48PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uIp6VDRg64f9Y6M9nC/GlDS6MEA5JCUpqgsb4/MPt3o=;
+        b=Wf71/5Fbh8ReXPP1RP0w2RyJtaNDver3mUbQEc08sp7ljNvYWSI5xkJeXYoUY52pSp
+         7GD4kOwg4fq1tpxdI+jbXXcDIDD0umZPLzyaCdeV7thz/Pac8t0ZHj4bSYPitvRXtKhw
+         7muel1CxW78Fy+Lpr83aPHyzF7gAyN3nS4q5UHgD8++CeFnzo3s41mvbT3tUxXZkh8aQ
+         wI7t5oTyR2HtwiPKXLrPHcjm5VcV/uMl+DSdA4/zanIwRki2WwtbRJIT+3IExkNxDlb4
+         29XZn0DOvwWrMUKgYZoTuHzK9MIqQv6O6NaMlDgeCPQIz/JCjBjQM4nU8z0z6ZFkH8iu
+         wJ+Q==
+X-Gm-Message-State: AOAM531wMBmlQDKWrQObbzSId240ZLot6Zr89mBxLLPGGiQqgoqWyyxF
+        Q7mmfodiuC92et0Ee+JDaTi2o85Wktsea7Nv6mAZUA==
+X-Google-Smtp-Source: ABdhPJymK6Binf3WPLODjrgoJ6lBMTNu0Ae96FbxstIYyWCNWxkbX6MBAI5dCNSBkDIrRwTR22Uv4qhDZlkb5G8e5nE=
+X-Received: by 2002:adf:c64d:: with SMTP id u13mr7583312wrg.114.1599053304932;
+ Wed, 02 Sep 2020 06:28:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <1598851448-5493-1-git-send-email-amit.pundir@linaro.org>
+ <CAMi1Hd3n2rfr+k09L8WO1S1Tn1s3xJencmr1q3a6e-FOgXr5Qg@mail.gmail.com> <CAMS8qEXcANkb-HoTk8zrXQEzkQO4cnFw4hj5tMp82UEVKd+eHQ@mail.gmail.com>
+In-Reply-To: <CAMS8qEXcANkb-HoTk8zrXQEzkQO4cnFw4hj5tMp82UEVKd+eHQ@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Wed, 2 Sep 2020 18:57:48 +0530
+Message-ID: <CAMi1Hd2ZakhXm+qNh-VMF_OndqCaQxxY3CC+UfQ6x2PyL_5sPQ@mail.gmail.com>
+Subject: Re: [PATCH v6] arm64: dts: qcom: Add support for Xiaomi Poco F1 (Beryllium)
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dt <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current usage of thread.debugreg6 is convoluted at best. It starts
-life as a copy of the hardware DR6 value, but then we clear and set
-various bits.
+On Mon, 31 Aug 2020 at 13:28, Konrad Dybcio <konradybcio@gmail.com> wrote:
+>
+> > Hi Konrad,
+> >
+> > I couldn't find answer to your question around missing
+> > (regulatorname)-supply properties. Need help in figuring out that
+> > part.
+>
+> When the phone boots up and RPM(H) kicks in, you should see regulators
+> probing like "s1 supplied by foo". Without the *-supply stuff, you
+> will likely get "supplied by regulator-dummy". This happens here [1]
+> and to my knowledge it is the "eletrical wiring" for Linux, as in it
+> makes Linux aware of which regulators are connected electrically to
+> the same supply (so that kernel knows when the supply is on and what
+> voltage it's at). For qcom platforms, this is common per-pmic (afaik,
+> please check if you are able to!), so you can likely just copy-paste
+> that part from msm8998-mtp.dtsi, which also uses pm(i)8998.
 
-Replace this with a new variable thread.virtual_dr6 that is
-initialized to 0 when we read DR6 and only gains bits, at the same
-time the actual (on stack) dr6 value we read from the hardware only
-gets bits cleared.
+Thank you for the pointer. I dug around the vph_pwr fixed-regulator
+node used by fellow sdm845 devices. I assume it is safe to copy it
+from sdm845-mtp but I couldn't verify it in the downstream
+device-tree, so I'm a bit hesitant. My main concern is that I don't
+want to burn down my only device :)
 
-Again, I'm not sure what the expected effect of
-ptrace_{set,get}debugreg(6) would be.
+I did find a few regulator nodes downstream which matches with
+upstream sdm845-mtp but since I'm not using any of them in my
+beryllium dts, I'm going to skip them for now.
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/processor.h |    2 +-
- arch/x86/kernel/hw_breakpoint.c  |   12 +++---------
- arch/x86/kernel/kgdb.c           |    5 +++--
- arch/x86/kernel/ptrace.c         |    6 +++---
- arch/x86/kernel/traps.c          |   25 ++++++++++++++++---------
- 5 files changed, 26 insertions(+), 24 deletions(-)
+As you pointed out, in case of regulator lookup failure Linux will
+fall back to dummy regulators, which is working fine for me so far.
+Also I see that vdd-*-supply properties are optional according to
+Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt,
+so I assume it is safe to skip them?
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -517,7 +517,7 @@ struct thread_struct {
- 	/* Save middle states of ptrace breakpoints */
- 	struct perf_event	*ptrace_bps[HBP_NUM];
- 	/* Debug status used for traps, single steps, etc... */
--	unsigned long           debugreg6;
-+	unsigned long           virtual_dr6;
- 	/* Keep track of the exact dr7 value set by the user */
- 	unsigned long           ptrace_dr7;
- 	/* Fault info: */
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -454,7 +454,7 @@ void flush_ptrace_hw_breakpoint(struct t
- 		t->ptrace_bps[i] = NULL;
- 	}
- 
--	t->debugreg6 = 0;
-+	t->virtual_dr6 = 0;
- 	t->ptrace_dr7 = 0;
- }
- 
-@@ -489,8 +489,8 @@ static int hw_breakpoint_handler(struct
- {
- 	int i, rc = NOTIFY_STOP;
- 	struct perf_event *bp;
--	unsigned long dr6;
- 	unsigned long *dr6_p;
-+	unsigned long dr6;
- 
- 	/* The DR6 value is pointed by args->err */
- 	dr6_p = (unsigned long *)ERR_PTR(args->err);
-@@ -504,12 +504,6 @@ static int hw_breakpoint_handler(struct
- 	if ((dr6 & DR_TRAP_BITS) == 0)
- 		return NOTIFY_DONE;
- 
--	/*
--	 * Reset the DRn bits in the virtualized register value.
--	 * The ptrace trigger routine will add in whatever is needed.
--	 */
--	current->thread.debugreg6 &= ~DR_TRAP_BITS;
--
- 	/* Handle all the breakpoints that were triggered */
- 	for (i = 0; i < HBP_NUM; ++i) {
- 		if (likely(!(dr6 & (DR_TRAP0 << i))))
-@@ -554,7 +548,7 @@ static int hw_breakpoint_handler(struct
- 	 * breakpoints (to generate signals) and b) when the system has
- 	 * taken exception due to multiple causes
- 	 */
--	if ((current->thread.debugreg6 & DR_TRAP_BITS) ||
-+	if ((current->thread.virtual_dr6 & DR_TRAP_BITS) ||
- 	    (dr6 & (~DR_TRAP_BITS)))
- 		rc = NOTIFY_DONE;
- 
---- a/arch/x86/kernel/kgdb.c
-+++ b/arch/x86/kernel/kgdb.c
-@@ -629,9 +629,10 @@ static void kgdb_hw_overflow_handler(str
- 	struct task_struct *tsk = current;
- 	int i;
- 
--	for (i = 0; i < 4; i++)
-+	for (i = 0; i < 4; i++) {
- 		if (breakinfo[i].enabled)
--			tsk->thread.debugreg6 |= (DR_TRAP0 << i);
-+			tsk->thread.virtual_dr6 |= (DR_TRAP0 << i);
-+	}
- }
- 
- void kgdb_arch_late(void)
---- a/arch/x86/kernel/ptrace.c
-+++ b/arch/x86/kernel/ptrace.c
-@@ -465,7 +465,7 @@ static void ptrace_triggered(struct perf
- 			break;
- 	}
- 
--	thread->debugreg6 |= (DR_TRAP0 << i);
-+	thread->virtual_dr6 |= (DR_TRAP0 << i);
- }
- 
- /*
-@@ -601,7 +601,7 @@ static unsigned long ptrace_get_debugreg
- 		if (bp)
- 			val = bp->hw.info.address;
- 	} else if (n == 6) {
--		val = thread->debugreg6 ^ DR6_RESERVED; /* Flip back to arch polarity */
-+		val = thread->virtual_dr6 ^ DR6_RESERVED; /* Flip back to arch polarity */
- 	} else if (n == 7) {
- 		val = thread->ptrace_dr7;
- 	}
-@@ -657,7 +657,7 @@ static int ptrace_set_debugreg(struct ta
- 	if (n < HBP_NUM) {
- 		rc = ptrace_set_breakpoint_addr(tsk, n, val);
- 	} else if (n == 6) {
--		thread->debugreg6 = val ^ DR6_RESERVED; /* Flip to positive polarity */
-+		thread->virtual_dr6 = val ^ DR6_RESERVED; /* Flip to positive polarity */
- 		rc = 0;
- 	} else if (n == 7) {
- 		rc = ptrace_write_dr7(tsk, val);
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -749,6 +749,12 @@ static __always_inline unsigned long deb
- 	dr6 ^= DR6_RESERVED; /* Flip to positive polarity */
- 
- 	/*
-+	 * Clear the virtual DR6 value, ptrace routines will set bits here for
-+	 * things we want signals for.
-+	 */
-+	current->thread.virtual_dr6 = 0;
-+
-+	/*
- 	 * The SDM says "The processor clears the BTF flag when it
- 	 * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
- 	 * TIF_BLOCKSTEP in sync with the hardware BTF flag.
-@@ -785,17 +791,16 @@ static __always_inline unsigned long deb
- 
- static bool notify_debug(struct pt_regs *regs, unsigned long *dr6)
- {
--	struct task_struct *tsk = current;
--
--	/* Store the virtualized DR6 value */
--	tsk->thread.debugreg6 = *dr6;
--
-+	/*
-+	 * Notifiers will clear bits in @dr6 to indicate the event has been
-+	 * consumed - hw_breakpoint_handler(), single_stop_cont().
-+	 *
-+	 * Notifiers will set bits in @virtual_dr6 to indicate the desire
-+	 * for signals - ptrace_triggered(), kgdb_hw_overflow_handler().
-+	 */
- 	if (notify_die(DIE_DEBUG, "debug", regs, (long)dr6, 0, SIGTRAP) == NOTIFY_STOP)
- 		return true;
- 
--	/* Reload the DR6 value, the notifier might have changed it */
--	*dr6 = tsk->thread.debugreg6;
--
- 	return false;
- }
- 
-@@ -853,7 +858,7 @@ static __always_inline void exc_debug_ke
- 	 * A known way to trigger this is through QEMU's GDB stub,
- 	 * which leaks #DB into the guest and causes IST recursion.
- 	 */
--	if (WARN_ON_ONCE(current->thread.debugreg6 & DR_STEP))
-+	if (WARN_ON_ONCE(dr6 & DR_STEP))
- 		regs->flags &= ~X86_EFLAGS_TF;
- out:
- 	instrumentation_end();
-@@ -903,6 +908,8 @@ static __always_inline void exc_debug_us
- 		goto out_irq;
- 	}
- 
-+	/* Add the virtual_dr6 bits for signals. */
-+	dr6 |= current->thread.virtual_dr6;
- 	if (dr6 & (DR_STEP | DR_TRAP_BITS) || icebp)
- 		send_sigtrap(regs, 0, get_si_code(dr6));
- 
+Regards,
+Amit Pundir
 
-
+>
+> Konrad
