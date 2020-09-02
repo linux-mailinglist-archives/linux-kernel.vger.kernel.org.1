@@ -2,68 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5221725AEEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B9925AEE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgIBPcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:32:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726625AbgIBPa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:30:27 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC1CA207D3;
-        Wed,  2 Sep 2020 15:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599060627;
-        bh=1yFSuoH/C7lnmRudCqwmn4PxNv6Wotrb39IdIF3mqF8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TAkKjmUb9ADt8b940JXfKW/NzoXeUaE+tXnHyz8gTVCnQnnYi8VhCJhM5wRuLPsx2
-         ATM94eUjJrL5KbjR4uCcpIA/HAIdo6LP49EFLukgREoCjZd/RYIhfPR5fZ1jiMfKcj
-         Hc5NT8QqrG3gkz7q8j7GGRUrLq2ZXVzoHffW3KDs=
-Date:   Wed, 2 Sep 2020 08:30:25 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     Moshe Shemesh <moshe@nvidia.com>,
-        Moshe Shemesh <moshe@mellanox.com>,
+        id S1728254AbgIBPbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728324AbgIBPbT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:31:19 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ECFC061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 08:31:17 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a9so5013853wmm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 08:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MRzTXOeTGeZAyaIQ1e/ex4zUgkS94k274JL7swyOwLU=;
+        b=n3thLXKYL8UCpmS6P7xcRU/DJXJUDnk8aYygxAO8urgHvALVBB7anUMPuOdfx6L6FL
+         DFWTY6fdgsiThCKCKQ9BZhYT7je3gARNBiJl8e16I2zxO4YBTBqJwaW2Dpfd1PVlYlZ2
+         4gMUf2BVVo9Hq1PcccnAaoDzNhroAexNnhslqEnjnzMwXtYbtpzSXb7HjeM55GvzZlyB
+         eiBKxf4vyYsliXxqPikXFOUpc5Nz88zpnUN3nH9di9BxBEP/9vrFY9ehkHQHhTFRLSlB
+         iCwllHPuNAxqIWRZGLbsVg94r+4I8ywcyZbZLnpZdVgC3pCtFBmEETr9TgrIqog9K/AR
+         LB3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MRzTXOeTGeZAyaIQ1e/ex4zUgkS94k274JL7swyOwLU=;
+        b=knUDTGMpZ97Oz/lLAyFnMa9ZFFZETRSjVwNdnXC6t3ytRJtts2c7TcFaeUQYCrYwvi
+         QtncsgOZ0errmFjs8L1k+aq5Ul2kG+KZG6wW2xYlPy4oUiNwG7E4ubxaApUvGWUdV4W8
+         A6L0PLTFKoI/LYl5Mko+7ejMUaVtCOR11XF/xrgwuuKjevcIBsv5wY8a/cnuuISdB6Z6
+         TzlNTBXx77L+bzkWPDk+K47/tokyhvC8ClO06WTyiS3Y5uWVCp753NxMnCk628p73MOb
+         dQVs4pIk0R3YCzwrdTdUDxCBcKJKsBuQliN/hPM8rBokEuVVIC6U/6haNoBtjvRIAFSq
+         WWQw==
+X-Gm-Message-State: AOAM5336V/ozOyFLptw8aCBMHTA/7uPijIpKbTpudu6/8ClgdB9otKvz
+        sy5wgJoP5F0p5W0Ck7uCGis=
+X-Google-Smtp-Source: ABdhPJygBY0ZfZMgSZivvz2qHn0ore0KK2NLR2pC9rvy2RL8UM3CGtVZXaIYKNHJe8xi9caJogXndQ==
+X-Received: by 2002:a1c:b60b:: with SMTP id g11mr1271474wmf.48.1599060676417;
+        Wed, 02 Sep 2020 08:31:16 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id z9sm74349wma.4.2020.09.02.08.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 08:31:15 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Wed, 2 Sep 2020 16:31:13 +0100
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v3 01/14] devlink: Add reload action option
- to devlink reload command
-Message-ID: <20200902083025.43407d8f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200902094627.GB2568@nanopsycho>
-References: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
-        <1598801254-27764-2-git-send-email-moshe@mellanox.com>
-        <20200831121501.GD3794@nanopsycho.orion>
-        <9fffbe80-9a2a-33de-2e11-24be34648686@nvidia.com>
-        <20200902094627.GB2568@nanopsycho>
+Subject: Re: [PATCH RFC 2/2] sysfs: add helper macro for showing simple
+ integer values
+Message-ID: <20200902153113.qxqkpm2o6a6pgoka@medion>
+References: <20200829233720.42640-1-alex.dewar90@gmail.com>
+ <20200829233720.42640-3-alex.dewar90@gmail.com>
+ <20200830091353.GA119062@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200830091353.GA119062@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 11:46:27 +0200 Jiri Pirko wrote:
-> >? Do we need such change there too or keep it as is, each action by itself
-> >and return what was performed ?  
+On Sun, Aug 30, 2020 at 11:13:53AM +0200, Greg Kroah-Hartman wrote:
+> On Sun, Aug 30, 2020 at 12:37:17AM +0100, Alex Dewar wrote:
+> > sysfs attributes are supposed to be only single values, which are
+> > printed into a buffer of PAGE_SIZE. Accordingly, for many simple
+> > attributes, sprintf() can be used like so:
+> > 	static ssize_t my_show(..., char *buf)
+> > 	{
+> > 		...
+> > 		return sprintf("%d\n", my_integer);
+> > 	}
+> > 
+> > The problem is that whilst this use of sprintf() is memory safe, other
+> > cases where e.g. a possibly unterminated string is passed as input, are
+> > not and so use of sprintf() here might make it more difficult to
+> > identify these problematic cases.
+> > 
+> > Define a macro, sysfs_sprinti(), which outputs the value of a single
+> > integer to a buffer (with terminating "\n\0") and returns the size written.
+> > This way, we can convert over the some of the trivially correct users of
+> > sprintf() and decrease its usage in the kernel source tree.
+> > 
+> > Another advantage of this approach is that we can now statically check
+> > the type of the integer so that e.g. an unsigned long long will be
+> > formatted as %llu. This will fix cases where the wrong format string has
+> > been passed to sprintf().
+> > 
+> > Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> > ---
+> >  include/linux/sysfs.h | 31 +++++++++++++++++++++++++++++++
+> >  1 file changed, 31 insertions(+)
 > 
-> Well, I don't know. User asks for X, X should be performed, not Y or Z.
-> So perhaps the return value is not needed.
-> Just driver advertizes it supports X, Y, Z and the users says:
-> 1) do X, driver does X
-> 2) do Y, driver does Y
-> 3) do Z, driver does Z
-> [
-> I think this kindof circles back to the original proposal...
+> Did you try this out?  Don't you need to return the number of bytes
+> written?
 
-Why? User does not care if you activate new devlink params when
-activating new firmware. Trust me. So why make the user figure out
-which of all possible reset option they should select? If there is 
-a legitimate use case to limit what is reset - it should be handled
-by a separate negative attribute, like --live which says don't reset
-anything.
+I tried it out, but maybe not thoroughly enough ;-)
+
+> 
+> I like Joe's patches better, this feels like more work...
+
+Fair enough. As Joe's pointed out, even for single numbers the
+formatting is sometimes more complicated, so his approach does seem
+best. Thanks for looking though :-)
+
+> 
+> thanks,
+> 
+> greg k-h
