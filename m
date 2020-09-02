@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4F025AF85
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D7B25AF6D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgIBPk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:40:27 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:29488 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728072AbgIBPCc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:02:32 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-288-m2mOhcL7OFeLx9bWhCsspw-1; Wed, 02 Sep 2020 16:02:01 +0100
-X-MC-Unique: m2mOhcL7OFeLx9bWhCsspw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 2 Sep 2020 16:02:00 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 2 Sep 2020 16:02:00 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christophe Leroy' <christophe.leroy@csgroup.eu>,
-        'Christoph Hellwig' <hch@lst.de>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 10/10] powerpc: remove address space overrides using
- set_fs()
-Thread-Topic: [PATCH 10/10] powerpc: remove address space overrides using
- set_fs()
-Thread-Index: AQHWgSXGxcHfrrTX9UCmYjSyVg3SwKlVUsKA///zAICAABMqAP//+kwAgAAcsTA=
-Date:   Wed, 2 Sep 2020 15:02:00 +0000
-Message-ID: <1599b80426ec4759b5c1beb9d9543fdc@AcuMS.aculab.com>
-References: <20200827150030.282762-1-hch@lst.de>
- <20200827150030.282762-11-hch@lst.de>
- <8974838a-a0b1-1806-4a3a-e983deda67ca@csgroup.eu>
- <20200902123646.GA31184@lst.de>
- <61b9a880a6424a34b841cf3dddb463ad@AcuMS.aculab.com>
- <8de54fe0-4be9-5624-dd1d-d95d792e933d@csgroup.eu>
- <0c298e0d972a48bd9ee178225e404b12@AcuMS.aculab.com>
- <6e88048a-8b30-400e-11c6-8d91ba77cbb0@csgroup.eu>
-In-Reply-To: <6e88048a-8b30-400e-11c6-8d91ba77cbb0@csgroup.eu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0.001
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+        id S1728408AbgIBPi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726173AbgIBPC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:02:57 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7BCC620773;
+        Wed,  2 Sep 2020 15:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599058974;
+        bh=T6Yn3tddYjoK53UIen+h42dRX/nUCLrBYpMRIo/p/jg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mQl7IDeluJ5si0Krf40peleU/p5DkqAdXabeJfq4UXZPZwSy48Z41gWvswjYvSbx5
+         aCnXwidGvUsRyRp1ZAYL9ne3hMwdL855PygrXIQImnJbPLmSvEDr5qoT6m0s53XQR9
+         keKYV1/Tm/01ybiTAwuDEnp7WfqNPlBD9B1dVyhU=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/3] clk: imx: Declare clock init functions in header acessible from mach
+Date:   Wed,  2 Sep 2020 17:02:42 +0200
+Message-Id: <20200902150244.14347-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hyaXN0b3BoZSBMZXJveQ0KPiBTZW50OiAwMiBTZXB0ZW1iZXIgMjAyMCAxNToxMw0K
-PiANCj4gDQo+IExlIDAyLzA5LzIwMjAgw6AgMTU6NTEsIERhdmlkIExhaWdodCBhIMOpY3JpdMKg
-Og0KPiA+IEZyb206IENocmlzdG9waGUgTGVyb3kNCj4gPj4gU2VudDogMDIgU2VwdGVtYmVyIDIw
-MjAgMTQ6MjUNCj4gPj4gTGUgMDIvMDkvMjAyMCDDoCAxNToxMywgRGF2aWQgTGFpZ2h0IGEgw6lj
-cml0wqA6DQo+ID4+PiBGcm9tOiBDaHJpc3RvcGggSGVsbHdpZw0KPiA+Pj4+IFNlbnQ6IDAyIFNl
-cHRlbWJlciAyMDIwIDEzOjM3DQo+ID4+Pj4NCj4gPj4+PiBPbiBXZWQsIFNlcCAwMiwgMjAyMCBh
-dCAwODoxNToxMkFNICswMjAwLCBDaHJpc3RvcGhlIExlcm95IHdyb3RlOg0KPiA+Pj4+Pj4gLQkJ
-cmV0dXJuIDA7DQo+ID4+Pj4+PiAtCXJldHVybiAoc2l6ZSA9PSAwIHx8IHNpemUgLSAxIDw9IHNl
-Zy5zZWcgLSBhZGRyKTsNCj4gPj4+Pj4+ICsJaWYgKGFkZHIgPj0gVEFTS19TSVpFX01BWCkNCj4g
-Pj4+Pj4+ICsJCXJldHVybiBmYWxzZTsNCj4gPj4+Pj4+ICsJaWYgKHNpemUgPT0gMCkNCj4gPj4+
-Pj4+ICsJCXJldHVybiBmYWxzZTsNCj4gPj4+Pj4NCj4gPj4+Pj4gX19hY2Nlc3Nfb2soKSB3YXMg
-cmV0dXJuaW5nIHRydWUgd2hlbiBzaXplID09IDAgdXAgdG8gbm93LiBBbnkgcmVhc29uIHRvDQo+
-ID4+Pj4+IHJldHVybiBmYWxzZSBub3cgPw0KPiA+Pj4+DQo+ID4+Pj4gTm8sIHRoaXMgaXMgYWNj
-aWRlbnRhbCBhbmQgYnJva2VuLiAgQ2FuIHlvdSByZS1ydW4geW91ciBiZW5jaG1hcmsgd2l0aA0K
-PiA+Pj4+IHRoaXMgZml4ZWQ/DQo+ID4+Pg0KPiA+Pj4gSXMgVEFTS19TSVpFX01BU0sgZGVmaW5l
-ZCBzdWNoIHRoYXQgeW91IGNhbiBkbzoNCj4gPj4+DQo+ID4+PiAJcmV0dXJuIChhZGRyIHwgc2l6
-ZSkgPCBUQVNLX1NJWkVfTUFYKSB8fCAhc2l6ZTsNCj4gPj4NCj4gPj4gVEFTS19TSVpFX01BWCB3
-aWxsIHVzdWFsbHkgYmUgMHhjMDAwMDAwMA0KPiA+Pg0KPiA+PiBXaXRoOg0KPiA+PiBhZGRyID0g
-MHg4MDAwMDAwMDsNCj4gPj4gc2l6ZSA9IDB4ODAwMDAwMDA7DQo+ID4+DQo+ID4+IEkgZXhwZWN0
-IGl0IHRvIGZhaWwgLi4uLg0KPiA+Pg0KPiA+PiBXaXRoIHRoZSBmb3JtdWxhIHlvdSBwcm9wb3Nl
-IGl0IHdpbGwgc3VjY2VlZCwgd29uJ3QgaXQgPw0KPiA+DQo+ID4gSG1tbS4uLiBXYXMgaSBnZXR0
-aW5nIGNvbmZ1c2VkIGFib3V0IHNvbWUgY29tbWVudHMgZm9yIDY0Yml0DQo+ID4gYWJvdXQgdGhl
-cmUgYmVpbmcgc3VjaCBhIGJpZyBob2xlIGJldHdlZW4gdmFsaWQgdXNlciBhbmQga2VybmVsDQo+
-ID4gYWRkcmVzc2VzIHRoYXQgaXQgd2FzIGVub3VnaCB0byBjaGVjayB0aGF0ICdzaXplIDwgVEFT
-S19TSVpFX01BWCcuDQo+ID4NCj4gPiBUaGF0IHdvdWxkIGJlIHRydWUgZm9yIDY0Yml0IHg4NiAo
-YW5kIHByb2JhYmx5IHBwYyAoJiBhcm0/PykpDQo+ID4gaWYgVEFTS19TSVpFX01BWCB3ZXJlIDB4
-NCA8PCA2MC4NCj4gPiBJSVVDIHRoZSBoaWdoZXN0IHVzZXIgYWRkcmVzcyBpcyAobXVjaCkgbGVz
-cyB0aGFuIDB4MCA8PCA2MA0KPiA+IGFuZCB0aGUgbG93ZXN0IGtlcm5lbCBhZGRyZXNzIChtdWNo
-KSBncmVhdGVyIHRoYW4gMHhmIDw8IDYwDQo+ID4gb24gYWxsIHRoZXNlIDY0Yml0IHBsYXRmb3Jt
-cy4NCj4gPg0KPiA+IEFjdHVhbGx5IGlmIGRvaW5nIGFjY2Vzc19vaygpIGluc2lkZSBnZXRfdXNl
-cigpIHlvdSBkb24ndA0KPiA+IG5lZWQgdG8gY2hlY2sgdGhlIHNpemUgYXQgYWxsLg0KPiANCj4g
-WW91IG1lYW4gb24gNjQgYml0IG9yIG9uIGFueSBwbGF0Zm9ybSA/DQoNCjY0Yml0IGFuZCAzMmJp
-dA0KDQo+IFdoYXQgYWJvdXQgYSB3b3JkIHdyaXRlIHRvIDB4YmZmZmZmZmUsIHdvbid0IGl0IG92
-ZXJ3cml0ZSAweGMwMDAwMDAwID8NCj4gDQo+ID4gWW91IGRvbid0IGV2ZW4gbmVlZCB0byBpbiBj
-b3B5X3RvL2Zyb21fdXNlcigpIHByb3ZpZGVkDQo+ID4gaXQgYWx3YXlzIGRvZXMgYSBmb3J3YXJk
-cyBjb3B5Lg0KPiANCj4gRG8geW91IG1lYW4gZHVlIHRvIHRoZSBnYXAgPw0KPiBJcyBpdCBnYXJh
-bnRpZWQgdG8gYmUgYSBnYXAgPyBFdmVuIG9uIGEgMzIgYml0cyBoYXZpbmcgVEFTS19TSVpFIHNl
-dCB0bw0KPiAweGMwMDAwMDAwIGFuZCBQQUdFX09GRlNFVCBzZXQgdG8gdGhlIHNhbWUgPw0KDQpJ
-IHJlYWQgc29tZXdoZXJlIChJIHdvbid0IGZpbmQgaXQgYWdhaW4pIHRoYXQgdGhlIGxhc3QgNGsg
-cGFnZQ0KKGJlbG93IDB4YzAwMDAwMDApIG11c3Qgbm90IGJlIGFsbG9jYXRlZCBvbiBpMzg2IGJl
-Y2F1c2Ugc29tZQ0KY3B1IChib3RoIGludGVsIGFuZCBhbWQpIGRvICdob3JyaWQgdGhpbmdzJyBp
-ZiB0aGV5IHRyeSB0bw0KKElJUkMpIGRvIGluc3RydWN0aW9uIHByZWZldGNoZXMgYWNyb3NzIHRo
-ZSBib3VuZGFyeS4NClNvIHRoZSBhY2Nlc3NlcyB0byAweGJmZmZmZmZlIHdpbGwgZmF1bHQgYW5k
-IHRoZSBvbmUgdG8gMHhjMDAwMDAwMA0Kd29uJ3QgaGFwcGVuIChpbiBhbnkgdXNlZnVsIHdheSBh
-dCBsZWFzdCkuDQoNCkknZCBzdXNwZWN0IHRoYXQgbm90IGFsbG9jYXRpbmcgdGhlIDNHLTRrIHBh
-Z2Ugd291bGQgYmUgYSBzYWZlDQpiZXQgb24gYWxsIGFyY2hpdGVjdHVyZXMgLSBldmVuIDY4ay4N
-Cg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2Fk
-LCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5v
-OiAxMzk3Mzg2IChXYWxlcykNCg==
+Multiple files from arch/arm/mach-imx/ use clock init functions which
+are defined in the IMX clock drivers.  Declare them in globally
+accessible header to fix GCC warnings:
+
+  drivers/clk/imx/clk-imx21.c:122:74: warning: no previous prototype for 'mx21_clocks_init' [-Wmissing-prototypes]
+
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/clk/imx/clk-imx21.c |  1 +
+ drivers/clk/imx/clk-imx27.c |  1 +
+ drivers/clk/imx/clk-imx31.c |  1 +
+ drivers/clk/imx/clk-imx35.c |  1 +
+ include/linux/clk/imx.h     | 11 +++++++++++
+ 5 files changed, 15 insertions(+)
+ create mode 100644 include/linux/clk/imx.h
+
+diff --git a/drivers/clk/imx/clk-imx21.c b/drivers/clk/imx/clk-imx21.c
+index 077b4a7123ce..2105ef57b6bc 100644
+--- a/drivers/clk/imx/clk-imx21.c
++++ b/drivers/clk/imx/clk-imx21.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/clk-provider.h>
+ #include <linux/clkdev.h>
++#include <linux/clk/imx.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+diff --git a/drivers/clk/imx/clk-imx27.c b/drivers/clk/imx/clk-imx27.c
+index a3753067fc12..c0d8bcdf0719 100644
+--- a/drivers/clk/imx/clk-imx27.c
++++ b/drivers/clk/imx/clk-imx27.c
+@@ -2,6 +2,7 @@
+ #include <linux/clk.h>
+ #include <linux/clk-provider.h>
+ #include <linux/clkdev.h>
++#include <linux/clk/imx.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+diff --git a/drivers/clk/imx/clk-imx31.c b/drivers/clk/imx/clk-imx31.c
+index 4bb05e440cdd..25be4c292e44 100644
+--- a/drivers/clk/imx/clk-imx31.c
++++ b/drivers/clk/imx/clk-imx31.c
+@@ -6,6 +6,7 @@
+ #include <linux/module.h>
+ #include <linux/clk.h>
+ #include <linux/clkdev.h>
++#include <linux/clk/imx.h>
+ #include <linux/io.h>
+ #include <linux/err.h>
+ #include <linux/of.h>
+diff --git a/drivers/clk/imx/clk-imx35.c b/drivers/clk/imx/clk-imx35.c
+index e595f559907f..baf8d236d6ef 100644
+--- a/drivers/clk/imx/clk-imx35.c
++++ b/drivers/clk/imx/clk-imx35.c
+@@ -5,6 +5,7 @@
+ #include <linux/mm.h>
+ #include <linux/delay.h>
+ #include <linux/clk.h>
++#include <linux/clk/imx.h>
+ #include <linux/io.h>
+ #include <linux/clkdev.h>
+ #include <linux/of.h>
+diff --git a/include/linux/clk/imx.h b/include/linux/clk/imx.h
+new file mode 100644
+index 000000000000..f6394d1b0a94
+--- /dev/null
++++ b/include/linux/clk/imx.h
+@@ -0,0 +1,11 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __LINUX_CLK_IMX_H
++#define __LINUX_CLK_IMX_H
++
++int mx21_clocks_init(unsigned long lref, unsigned long href);
++int mx27_clocks_init(unsigned long fref);
++int mx31_clocks_init(unsigned long fref);
++int mx35_clocks_init(void);
++
++#endif /* __LINUX_CLK_IMX_H */
+-- 
+2.17.1
 
