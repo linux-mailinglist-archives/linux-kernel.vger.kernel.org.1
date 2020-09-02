@@ -2,193 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA4C25A375
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A57C25A316
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgIBDAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 23:00:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:24029 "EHLO mga06.intel.com"
+        id S1726247AbgIBCiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 22:38:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:35819 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726966AbgIBDAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 23:00:21 -0400
-IronPort-SDR: uwnbqLgIRCpWWQFuNRkglyB1cirRp51lOnmXDqJJZG7sqQsYY4uE4vTRvALmaOPKLpqb+g57d+
- Jf/OmoxIAeiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="218860157"
+        id S1726140AbgIBCiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 22:38:24 -0400
+IronPort-SDR: EAynJOmDnpIVl6KuB8Bw+/lxGmGPYQNwUlhOaEhyCNPCi2Zep1EQEdeVF7FVvJztBANyVXvHZq
+ 64OaFB/zN0fw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="242130223"
 X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="218860157"
+   d="scan'208";a="242130223"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 20:00:18 -0700
-IronPort-SDR: trsBgqnVY6Pv7wRnW6OJ7NaOEQqGaLZFqcK0tCR278Unvo6FHTEtr7ZWh75jb73MzQGLyXTj8X
- mRw+AFIxarAA==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 19:38:16 -0700
+IronPort-SDR: aZSU+ZLQz0ENjg6NjK4o25JwGrOEraIT0ITp8QCaAVPhTQwSC5/TRZwV68MqlLvHALBCLk2wAZ
+ sgOICUlTUBvA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="283588268"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 20:00:15 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        mengdong.lin@intel.com, bard.liao@intel.com
-Subject: [PATCH v2 10/10] soundwire: intel: don't manage link power individually
-Date:   Tue,  1 Sep 2020 23:05:56 +0800
-Message-Id: <20200901150556.19432-11-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
-References: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
+   d="scan'208";a="325600112"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2020 19:38:13 -0700
+Cc:     baolu.lu@linux.intel.com, CobeChen-oc <CobeChen-oc@zhaoxin.com>,
+        RaymondPang-oc <RaymondPang-oc@zhaoxin.com>,
+        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIIHYzIDIvMl0gaW9tbXUvdnQtZDpBZGQg?=
+ =?UTF-8?Q?support_for_probing_ACPI_device_in_RMRR?=
+To:     FelixCui-oc <FelixCui-oc@zhaoxin.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "kbuild@lists.01.org" <kbuild@lists.01.org>
+References: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
+ <20200827100217.21324-3-FelixCui-oc@zhaoxin.com>
+ <e5b1daaf-f073-94c9-714c-832b10d284f4@linux.intel.com>
+ <cde22f0f02f94efcae8bf044e2cd9441@zhaoxin.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <7e5f2c33-c6c3-f344-9014-1f6a306c55aa@linux.intel.com>
+Date:   Wed, 2 Sep 2020 10:32:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <cde22f0f02f94efcae8bf044e2cd9441@zhaoxin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 9/1/20 5:13 PM, FelixCui-oc wrote:
+> hi  baolu ,
+> 
+>                     These ACPI devices can be retrieved from the kernel 
+> and there is no bound device driver .
 
-Each link has separate power controls, but experimental results show
-we need to use an all-or-none approach to the link power management.
+So you have a hidden device (invisible to host kernel). But you need to
+setup some identity mappings for this device, so that the firmware
+could keep working, right?
 
-This change has marginal power impacts, the DSP needs to be powered
-anyways before SoundWire links can be powered, and even when powered a
-link can be in clock-stopped mode.
+The platform designs this by putting that range in the RMRR table and
+expecting the OS kernel to setup identity mappings during boot.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel.c | 70 +++++++++++++++++++++++++--------------
- 1 file changed, 46 insertions(+), 24 deletions(-)
+Do I understand it right?
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 97c8cfc54ddd..710f5eba936b 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -63,7 +63,9 @@ MODULE_PARM_DESC(sdw_md_flags, "SoundWire Intel Master device flags (0x0 all off
- #define SDW_SHIM_WAKESTS		0x192
- 
- #define SDW_SHIM_LCTL_SPA		BIT(0)
-+#define SDW_SHIM_LCTL_SPA_MASK		GENMASK(3, 0)
- #define SDW_SHIM_LCTL_CPA		BIT(8)
-+#define SDW_SHIM_LCTL_CPA_MASK		GENMASK(11, 8)
- 
- #define SDW_SHIM_SYNC_SYNCPRD_VAL_24	(24000 / SDW_CADENCE_GSYNC_KHZ - 1)
- #define SDW_SHIM_SYNC_SYNCPRD_VAL_38_4	(38400 / SDW_CADENCE_GSYNC_KHZ - 1)
-@@ -295,8 +297,8 @@ static int intel_link_power_up(struct sdw_intel *sdw)
- 	u32 *shim_mask = sdw->link_res->shim_mask;
- 	struct sdw_bus *bus = &sdw->cdns.bus;
- 	struct sdw_master_prop *prop = &bus->prop;
--	int spa_mask, cpa_mask;
--	int link_control;
-+	u32 spa_mask, cpa_mask;
-+	u32 link_control;
- 	int ret = 0;
- 	u32 syncprd;
- 	u32 sync_reg;
-@@ -319,6 +321,8 @@ static int intel_link_power_up(struct sdw_intel *sdw)
- 		syncprd = SDW_SHIM_SYNC_SYNCPRD_VAL_24;
- 
- 	if (!*shim_mask) {
-+		dev_dbg(sdw->cdns.dev, "%s: powering up all links\n", __func__);
-+
- 		/* we first need to program the SyncPRD/CPU registers */
- 		dev_dbg(sdw->cdns.dev,
- 			"%s: first link up, programming SYNCPRD\n", __func__);
-@@ -331,21 +335,24 @@ static int intel_link_power_up(struct sdw_intel *sdw)
- 		/* Set SyncCPU bit */
- 		sync_reg |= SDW_SHIM_SYNC_SYNCCPU;
- 		intel_writel(shim, SDW_SHIM_SYNC, sync_reg);
--	}
- 
--	/* Link power up sequence */
--	link_control = intel_readl(shim, SDW_SHIM_LCTL);
--	spa_mask = (SDW_SHIM_LCTL_SPA << link_id);
--	cpa_mask = (SDW_SHIM_LCTL_CPA << link_id);
--	link_control |=  spa_mask;
-+		/* Link power up sequence */
-+		link_control = intel_readl(shim, SDW_SHIM_LCTL);
- 
--	ret = intel_set_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
--	if (ret < 0) {
--		dev_err(sdw->cdns.dev, "Failed to power up link: %d\n", ret);
--		goto out;
--	}
-+		/* only power-up enabled links */
-+		spa_mask = sdw->link_res->link_mask <<
-+			SDW_REG_SHIFT(SDW_SHIM_LCTL_SPA_MASK);
-+		cpa_mask = sdw->link_res->link_mask <<
-+			SDW_REG_SHIFT(SDW_SHIM_LCTL_CPA_MASK);
-+
-+		link_control |=  spa_mask;
-+
-+		ret = intel_set_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
-+		if (ret < 0) {
-+			dev_err(sdw->cdns.dev, "Failed to power up link: %d\n", ret);
-+			goto out;
-+		}
- 
--	if (!*shim_mask) {
- 		/* SyncCPU will change once link is active */
- 		ret = intel_wait_bit(shim, SDW_SHIM_SYNC,
- 				     SDW_SHIM_SYNC_SYNCCPU, 0);
-@@ -483,7 +490,7 @@ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
- 
- static int intel_link_power_down(struct sdw_intel *sdw)
- {
--	int link_control, spa_mask, cpa_mask;
-+	u32 link_control, spa_mask, cpa_mask;
- 	unsigned int link_id = sdw->instance;
- 	void __iomem *shim = sdw->link_res->shim;
- 	u32 *shim_mask = sdw->link_res->shim_mask;
-@@ -493,24 +500,39 @@ static int intel_link_power_down(struct sdw_intel *sdw)
- 
- 	intel_shim_master_ip_to_glue(sdw);
- 
--	/* Link power down sequence */
--	link_control = intel_readl(shim, SDW_SHIM_LCTL);
--	spa_mask = ~(SDW_SHIM_LCTL_SPA << link_id);
--	cpa_mask = (SDW_SHIM_LCTL_CPA << link_id);
--	link_control &=  spa_mask;
--
--	ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
--
- 	if (!(*shim_mask & BIT(link_id)))
- 		dev_err(sdw->cdns.dev,
- 			"%s: Unbalanced power-up/down calls\n", __func__);
- 
- 	*shim_mask &= ~BIT(link_id);
- 
-+	if (!*shim_mask) {
-+
-+		dev_dbg(sdw->cdns.dev, "%s: powering down all links\n", __func__);
-+
-+		/* Link power down sequence */
-+		link_control = intel_readl(shim, SDW_SHIM_LCTL);
-+
-+		/* only power-down enabled links */
-+		spa_mask = (~sdw->link_res->link_mask) <<
-+			SDW_REG_SHIFT(SDW_SHIM_LCTL_SPA_MASK);
-+		cpa_mask = sdw->link_res->link_mask <<
-+			SDW_REG_SHIFT(SDW_SHIM_LCTL_CPA_MASK);
-+
-+		link_control &=  spa_mask;
-+
-+		ret = intel_clear_bit(shim, SDW_SHIM_LCTL, link_control, cpa_mask);
-+	}
-+
-+	link_control = intel_readl(shim, SDW_SHIM_LCTL);
-+
- 	mutex_unlock(sdw->link_res->shim_lock);
- 
--	if (ret < 0)
-+	if (ret < 0) {
-+		dev_err(sdw->cdns.dev, "%s: could not power down link\n", __func__);
-+
- 		return ret;
-+	}
- 
- 	sdw->cdns.link_up = false;
- 	return 0;
--- 
-2.17.1
+Best regards,
+baolu
 
+> 
+> 
+> Best regards
+> 
+> Felixcui-oc
+> 
+> ------------------------------------------------------------------------
+> *发件人:* Lu Baolu <baolu.lu@linux.intel.com>
+> *发送时间:* 2020年9月1日 14:12:34
+> *收件人:* FelixCui-oc; Joerg Roedel; iommu@lists.linux-foundation.org; 
+> linux-kernel@vger.kernel.org; David Woodhouse; Dan Carpenter; 
+> kbuild@lists.01.org
+> *抄送:* baolu.lu@linux.intel.com; CobeChen-oc; RaymondPang-oc; Tony W 
+> Wang-oc
+> *主题:* Re: [PATCH v3 2/2] iommu/vt-d:Add support for probing ACPI 
+> device in RMRR
+> Hi Felix,
+> 
+> On 8/27/20 6:02 PM, FelixCuioc wrote:
+>> After acpi device in RMRR is detected,it is necessary
+>> to establish a mapping for these devices.
+>> In acpi_device_create_direct_mappings(),create a mapping
+>> for the acpi device in RMRR.
+>> Add a helper to achieve the acpi namespace device can
+>> access the RMRR region.
+> 
+> Are those ACPI devices visible to kernel? If so, any device driver bound
+> for it?
+> 
+> Best regards,
+> baolu
+> 
+>> 
+>> Signed-off-by: FelixCuioc <FelixCui-oc@zhaoxin.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
+>>   drivers/iommu/iommu.c       |  6 ++++++
+>>   include/linux/iommu.h       |  3 +++
+>>   3 files changed, 38 insertions(+)
+>> 
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index 208a91605288..51d7a5b18f41 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -4799,6 +4799,21 @@ static int __init platform_optin_force_iommu(void)
+>>        return 1;
+>>   }
+>>   
+>> +static int acpi_device_create_direct_mappings(struct device *pn_dev, struct device *acpi_device)
+>> +{
+>> +     struct iommu_group *group;
+>> +
+>> +     acpi_device->bus->iommu_ops = &intel_iommu_ops;
+>> +     group = iommu_group_get(pn_dev);
+>> +     if (!group) {
+>> +             pr_warn("ACPI name space devices create direct mappings wrong!\n");
+>> +             return -EINVAL;
+>> +     }
+>> +     __acpi_device_create_direct_mappings(group, acpi_device);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>>   static int __init probe_acpi_namespace_devices(void)
+>>   {
+>>        struct dmar_drhd_unit *drhd;
+>> @@ -4813,6 +4828,7 @@ static int __init probe_acpi_namespace_devices(void)
+>>                        struct acpi_device_physical_node *pn;
+>>                        struct iommu_group *group;
+>>                        struct acpi_device *adev;
+>> +                     struct device *pn_dev = NULL;
+>>   
+>>                        if (dev->bus != &acpi_bus_type)
+>>                                continue;
+>> @@ -4823,6 +4839,7 @@ static int __init probe_acpi_namespace_devices(void)
+>>                                            &adev->physical_node_list, node) {
+>>                                group = iommu_group_get(pn->dev);
+>>                                if (group) {
+>> +                                     pn_dev = pn->dev;
+>>                                        iommu_group_put(group);
+>>                                        continue;
+>>                                }
+>> @@ -4831,7 +4848,19 @@ static int __init probe_acpi_namespace_devices(void)
+>>                                ret = iommu_probe_device(pn->dev);
+>>                                if (ret)
+>>                                        break;
+>> +                             pn_dev = pn->dev;
+>> +                     }
+>> +                     if (!pn_dev) {
+>> +                             dev->bus->iommu_ops = &intel_iommu_ops;
+>> +                             ret = iommu_probe_device(dev);
+>> +                             if (ret) {
+>> +                                     pr_err("acpi_device probe fail! ret:%d\n", ret);
+>> +                                     goto unlock;
+>> +                             }
+>> +                             goto unlock;
+>>                        }
+>> +                     ret = acpi_device_create_direct_mappings(pn_dev, dev);
+>> +unlock:
+>>                        mutex_unlock(&adev->physical_node_lock);
+>>   
+>>                        if (ret)
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 609bd25bf154..4f714a2d5ef7 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -779,6 +779,12 @@ static bool iommu_is_attach_deferred(struct iommu_domain *domain,
+>>        return false;
+>>   }
+>>   
+>> +void  __acpi_device_create_direct_mappings(struct iommu_group *group, struct device *acpi_device)
+>> +{
+>> +     iommu_create_device_direct_mappings(group, acpi_device);
+>> +}
+>> +EXPORT_SYMBOL_GPL(__acpi_device_create_direct_mappings);
+>> +
+>>   /**
+>>    * iommu_group_add_device - add a device to an iommu group
+>>    * @group: the group into which to add the device (reference should be held)
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index fee209efb756..9be134775886 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -514,6 +514,9 @@ extern void iommu_domain_window_disable(struct iommu_domain *domain, u32 wnd_nr)
+>>   extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
+>>                              unsigned long iova, int flags);
+>>   
+>> +extern void __acpi_device_create_direct_mappings(struct iommu_group *group,
+>> +                                             struct device *acpi_device);
+>> +
+>>   static inline void iommu_flush_tlb_all(struct iommu_domain *domain)
+>>   {
+>>        if (domain->ops->flush_iotlb_all)
+>> 
