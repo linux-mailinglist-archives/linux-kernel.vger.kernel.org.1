@@ -2,183 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FCB25B0EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2777D25B0DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgIBQMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:12:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728358AbgIBQLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:11:01 -0400
-Received: from mail.kernel.org (ip5f5ad5c3.dynamic.kabel-deutschland.de [95.90.213.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC9EF221EF;
-        Wed,  2 Sep 2020 16:10:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599063046;
-        bh=J4JeDFYvwI7/t1R2PxhAwt3okUEpHkNnAbNmW1c47hA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K9QP46W0wA2chHgniI6PTlNOKaxlUNhqnuFbzy8KfjuQIjFLWPnvAQVBhEFx2Grko
-         JIv1YedwyWgOvWD600mc4Is4h4cgQnneDkHS4w4YF2tEQO219/wDIgvXKG3xGoCnS5
-         xT4/BxTXJhZU/2yryqoa2P6VqHPuh/CR/2n+b5q4=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kDVLQ-000tBR-Tb; Wed, 02 Sep 2020 18:10:44 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 38/38] media: atomisp: cleanup isys_irq headers
-Date:   Wed,  2 Sep 2020 18:10:41 +0200
-Message-Id: <652f59eef30ccd3dc12d8c3c61c632f24100d607.1599062230.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1599062230.git.mchehab+huawei@kernel.org>
-References: <cover.1599062230.git.mchehab+huawei@kernel.org>
+        id S1728494AbgIBQMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:12:01 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:51819 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728430AbgIBQLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:11:37 -0400
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 082GBKCw025833;
+        Thu, 3 Sep 2020 01:11:21 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 082GBKCw025833
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1599063081;
+        bh=pmpNm0w+p5nlVYLPePodcVS+2N4Uzz6SNAcWSFoTljw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=tBHyVFJzVx/oMfZevwZjdAxfAj4dnC48HGlQznfHvJTNjKRd73poWwY7U1q6ZJm4X
+         GBmPjbGTMOxDzjIRTNM491keqtrTsA9SmD3FtQzNJpDMUoRF+XLbd0gy68HCnbufyi
+         fn0RglKGtqhM1qpajMjBnNE0hbVKDcf5oZ/1GaXs+c1p7B1ImUyWi19M8yDYRXl7iT
+         ryp5bKa0VWModKZYQx+TiVsefLN2xJ5Gvvbbqj9YgwMPMXI9iqhlUzmJor02EX+mdX
+         FvcrbfyMU/OXpfFIVOw57JIkRcOn8sJx4cRWDD7bCkS1hauB66kvWXFMkLbIu6QXP1
+         e7GFkK6M2DSLw==
+X-Nifty-SrcIP: [209.85.214.174]
+Received: by mail-pl1-f174.google.com with SMTP id z15so2508376plo.7;
+        Wed, 02 Sep 2020 09:11:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530odV6eY69qrp4T0IJ+zmdYNTl0viUXDgDVkSsdv4p0JNzu9XUd
+        f7MzfhQiVGwHSfAgq8Rrg5R8awXItThlrTms7o0=
+X-Google-Smtp-Source: ABdhPJyCqJK+5kgvvUd1wa6DSBhxAKsQe2h8sXywOVBayNFFwCj2zJHSi27A2mbZFv8H2iekRZne3+oyj3XaIJEoNvE=
+X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr2755492pjb.198.1599063080458;
+ Wed, 02 Sep 2020 09:11:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200805102550.GO2674@hirez.programming.kicks-ass.net>
+ <20200806120438.GG35926@hirez.programming.kicks-ass.net> <CAK7LNAQE2jPUQJUa1yi7+=w--Jj-wwnGVR2hyPQZxR7Yp9odBA@mail.gmail.com>
+In-Reply-To: <CAK7LNAQE2jPUQJUa1yi7+=w--Jj-wwnGVR2hyPQZxR7Yp9odBA@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 3 Sep 2020 01:10:42 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASLtE-vuZD6ZAnUGT2zxn72e_-NWg3kD=DigLMQ4-ZDTw@mail.gmail.com>
+Message-ID: <CAK7LNASLtE-vuZD6ZAnUGT2zxn72e_-NWg3kD=DigLMQ4-ZDTw@mail.gmail.com>
+Subject: Re: [PATCH -v2] scipts/tags.sh: Add custom sort order
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't need to declare those functions with extern:
-	drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h:51:35:  warning: function 'isys_irqc_state_dump' with external linkage has definition
-	drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h:68:35:  warning: function 'isys_irqc_reg_store' with external linkage has definition
-	drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h:85:39:  warning: function 'isys_irqc_reg_load' with external linkage has definition
-	drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq.c:31:35:  warning: function 'isys_irqc_status_enable' with external linkage has definition
+On Thu, Sep 3, 2020 at 12:58 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Aug 7, 2020 at 2:28 AM <peterz@infradead.org> wrote:
+> >
+> >
+> > One long standing annoyance I have with using vim-tags is that our tags
+> > file is not properly sorted. That is, the sorting exhuberant Ctags does
+> > is only on the tag itself.
+> >
+> > The problem with that is that, for example, the tag 'mutex' appears a
+> > mere 505 times, 492 of those are structure members. However it is _far_
+> > more likely that someone wants the struct definition when looking for
+> > the mutex tag than any of those members. However, due to the nature of
+> > the sorting, the struct definition will not be first.
+> >
+> > So add a script that does a custom sort of the tags file, taking the tag
+> > kind into account.
+> >
+> > The kind ordering is roughly: 'type', 'function', 'macro', 'enum', rest.
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> > Changes since v1:
+> >  - removed the need for tags.unsorted by using a pipe
+> >
+> > Due to this change 'make tags' is now actually faster than it was before
+> > due to less sorting.
+> >
+> >  scripts/sort-tags.awk | 79 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  scripts/tags.sh       | 11 +++++--
+> >  2 files changed, 87 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/scripts/sort-tags.awk b/scripts/sort-tags.awk
+> > new file mode 100755
+> > index 000000000000..1eb50406c9d3
+> > --- /dev/null
+> > +++ b/scripts/sort-tags.awk
+> > @@ -0,0 +1,79 @@
+> > +#!/usr/bin/awk -f
+> > +
+> > +# $ ctags --list-kinds
+> > +# C
+> > +#   c  classes
+> > +#   s  structure names
+> > +#   t  typedefs
+> > +#   g  enumeration names
+> > +#   u  union names
+> > +#   n  namespaces
+> > +
+> > +#   f  function definitions
+> > +#   p  function prototypes [off]
+> > +#   d  macro definitions
+> > +
+> > +#   e  enumerators (values inside an enumeration)
+> > +#   m  class, struct, and union members
+> > +#   v  variable definitions
+> > +
+> > +#   l  local variables [off]
+> > +#   x  external and forward variable declarations [off]
+> > +
+> > +BEGIN {
+> > +       FS = "\t"
+> > +
+> > +       sort = "LC_ALL=C sort"
+> > +
+> > +       # our sort order for C kinds:
+> > +       order["c"] = "A"
+> > +       order["s"] = "B"
+> > +       order["t"] = "C"
+> > +       order["g"] = "D"
+> > +       order["u"] = "E"
+> > +       order["n"] = "F"
+> > +       order["f"] = "G"
+> > +       order["p"] = "H"
+> > +       order["d"] = "I"
+> > +       order["e"] = "J"
+> > +       order["m"] = "K"
+> > +       order["v"] = "L"
+> > +       order["l"] = "M"
+> > +       order["x"] = "N"
+> > +}
+> > +
+> > +# pass through header
+> > +/^!_TAG/ {
+> > +       print $0
+> > +       next
+> > +}
+> > +
+> > +{
+> > +       # find 'kinds'
+> > +       for (i = 1; i <= NF; i++) {
+> > +               if ($i ~ /;"$/) {
+> > +                       kind = $(i+1)
+> > +                       break;
+> > +               }
+> > +       }
+> > +
+> > +       # create sort key
+> > +       if (order[kind])
+> > +               key = $1 order[kind];
+> > +       else
+> > +               key = $1 "Z";
+> > +
+> > +       # get it sorted
+> > +       print key "\t" $0 |& sort
+> > +}
+> > +
+> > +END {
+> > +       close(sort, "to")
+> > +       while ((sort |& getline) > 0) {
+> > +               # strip key
+> > +               sub(/[^[:space:]]*[[:space:]]*/, "")
+> > +               print $0
+> > +       }
+> > +       close(sort)
+> > +}
+> > +
+> > diff --git a/scripts/tags.sh b/scripts/tags.sh
+> > index 4e18ae5282a6..51087c3d8b1e 100755
+> > --- a/scripts/tags.sh
+> > +++ b/scripts/tags.sh
+> > @@ -251,8 +251,10 @@ setup_regex()
+> >
+> >  exuberant()
+> >  {
+> > +       (
+> > +
+> >         setup_regex exuberant asm c
+> > -       all_target_sources | xargs $1 -a                        \
+> > +       all_target_sources | xargs $1                           \
+> >         -I __initdata,__exitdata,__initconst,__ro_after_init    \
+> >         -I __initdata_memblock                                  \
+> >         -I __refdata,__attribute,__maybe_unused,__always_unused \
+> > @@ -266,12 +268,15 @@ exuberant()
+> >         -I DEFINE_TRACE,EXPORT_TRACEPOINT_SYMBOL,EXPORT_TRACEPOINT_SYMBOL_GPL \
+> >         -I static,const                                         \
+> >         --extra=+fq --c-kinds=+px --fields=+iaS --langmap=c:+.h \
+> > +       --sort=no -o -                                          \
+> >         "${regex[@]}"
+> >
+> >         setup_regex exuberant kconfig
+> > -       all_kconfigs | xargs $1 -a                              \
+> > -       --langdef=kconfig --language-force=kconfig "${regex[@]}"
+> > +       all_kconfigs | xargs $1                                 \
+> > +       --langdef=kconfig --language-force=kconfig --sort=no    \
+> > +       -o - "${regex[@]}"
+> >
+> > +       ) | scripts/sort-tags.awk > tags
+> >  }
+> >
+> >  emacs()
+>
+>
+> Sorry for the long delay.
+>
+> First, this patch breaks 'make TAGS'
+> if 'etags' is a symlink to exuberant ctags.
+>
+>
+> masahiro@oscar:~/ref/linux$ etags --version
+> Exuberant Ctags 5.9~svn20110310, Copyright (C) 1996-2009 Darren Hiebert
+>   Addresses: <dhiebert@users.sourceforge.net>, http://ctags.sourceforge.net
+>   Optional compiled features: +wildcards, +regex
+>
+> masahiro@oscar:~/ref/linux$ make TAGS
+>   GEN     TAGS
+> etags: Warning: include/linux/seqlock.h:738: null expansion of name pattern "\2"
+> sed: can't read TAGS: No such file or directory
+> make: *** [Makefile:1820: TAGS] Error 2
+>
+>
+>
+>
+> The reason is the hard-coded ' > tags',
+> and easy to fix.
+>
+>
+>
+> But, honestly, I am not super happy about this patch.
+>
+> Reason 1
+>   In my understanding, sorting by the tag kind only works
+>   for ctags. My favorite editor is emacs.
+>   (Do not get me wrong. I do not intend emacs vs vi war).
+>   So, I rather do 'make TAGS' instead of 'make tags',
+>   but this solution would not work for etags because
+>   etags has a different format.
+>   So, I'd rather want to see a more general solution.
+>
+> Reason 2
+>   We would have more messy code, mixing two files/languages
+>
+>
+>
+> When is it useful to tag structure members?
+>
+> If they are really annoying, why don't we delete them
+> instead of moving them to the bottom of the tag file?
+>
+>
+>
+> I attached an alternative solution,
+> and wrote up my thoughts in the log.
+>
+> What do you think?
+>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../pci/css_2401_system/host/isys_irq.c       |  3 +--
- .../css_2401_system/host/isys_irq_private.h   |  8 +++---
- .../host/isys_irq_public.h                    | 25 ++++++++-----------
- .../pci/hive_isp_css_include/isys_irq.h       | 12 ---------
- 4 files changed, 15 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq.c b/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq.c
-index 99576af4713c..b6135c4b6eea 100644
---- a/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq.c
-+++ b/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq.c
-@@ -28,8 +28,7 @@
- #endif
- 
- /* Public interface */
--STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_status_enable(
--    const isys_irq_ID_t	isys_irqc_id)
-+void isys_irqc_status_enable(const isys_irq_ID_t	isys_irqc_id)
- {
- 	assert(isys_irqc_id < N_ISYS_IRQ_ID);
- 
-diff --git a/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h b/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h
-index 1e96f0267ac0..fb168c25bdfc 100644
---- a/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h
-+++ b/drivers/staging/media/atomisp/pci/css_2401_system/host/isys_irq_private.h
-@@ -29,7 +29,7 @@
- * @brief Get the isys irq status.
- * Refer to "isys_irq.h" for details.
- */
--STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_state_get(
-+void isys_irqc_state_get(
-     const isys_irq_ID_t	isys_irqc_id,
-     isys_irqc_state_t *state)
- {
-@@ -48,7 +48,7 @@ STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_state_get(
- * @brief Dump the isys irq status.
- * Refer to "isys_irq.h" for details.
- */
--STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_state_dump(
-+void isys_irqc_state_dump(
-     const isys_irq_ID_t	isys_irqc_id,
-     const isys_irqc_state_t *state)
- {
-@@ -65,7 +65,7 @@ STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_state_dump(
-  + -------------------------------------------------------*/
- 
- /* Support functions */
--STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_reg_store(
-+void isys_irqc_reg_store(
-     const isys_irq_ID_t	isys_irqc_id,
-     const unsigned int	reg_idx,
-     const hrt_data	value)
-@@ -82,7 +82,7 @@ STORAGE_CLASS_ISYS2401_IRQ_C void isys_irqc_reg_store(
- 	ia_css_device_store_uint32(reg_addr, value);
- }
- 
--STORAGE_CLASS_ISYS2401_IRQ_C hrt_data isys_irqc_reg_load(
-+hrt_data isys_irqc_reg_load(
-     const isys_irq_ID_t	isys_irqc_id,
-     const unsigned int	reg_idx)
- {
-diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/isys_irq_public.h b/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/isys_irq_public.h
-index cd738f4b65a0..736cbc4e3705 100644
---- a/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/isys_irq_public.h
-+++ b/drivers/staging/media/atomisp/pci/hive_isp_css_include/host/isys_irq_public.h
-@@ -21,25 +21,20 @@
- 
- #if defined(ISP2401)
- 
--STORAGE_CLASS_ISYS2401_IRQ_H void isys_irqc_state_get(
--    const isys_irq_ID_t	isys_irqc_id,
--    isys_irqc_state_t	*state);
-+void isys_irqc_state_get(const isys_irq_ID_t	isys_irqc_id,
-+			 isys_irqc_state_t	*state);
- 
--STORAGE_CLASS_ISYS2401_IRQ_H void isys_irqc_state_dump(
--    const isys_irq_ID_t	isys_irqc_id,
--    const isys_irqc_state_t *state);
-+void isys_irqc_state_dump(const isys_irq_ID_t	isys_irqc_id,
-+			  const isys_irqc_state_t *state);
- 
--STORAGE_CLASS_ISYS2401_IRQ_H void isys_irqc_reg_store(
--    const isys_irq_ID_t	isys_irqc_id,
--    const unsigned int	reg_idx,
--    const hrt_data		value);
-+void isys_irqc_reg_store(const isys_irq_ID_t	isys_irqc_id,
-+			 const unsigned int	reg_idx,
-+			 const hrt_data		value);
- 
--STORAGE_CLASS_ISYS2401_IRQ_H hrt_data isys_irqc_reg_load(
--    const isys_irq_ID_t	isys_irqc_id,
--    const unsigned int	reg_idx);
-+hrt_data isys_irqc_reg_load(const isys_irq_ID_t	isys_irqc_id,
-+			    const unsigned int	reg_idx);
- 
--STORAGE_CLASS_ISYS2401_IRQ_H void isys_irqc_status_enable(
--    const isys_irq_ID_t	isys_irqc_id);
-+void isys_irqc_status_enable(const isys_irq_ID_t isys_irqc_id);
- 
- #endif /* defined(ISP2401) */
- 
-diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_include/isys_irq.h b/drivers/staging/media/atomisp/pci/hive_isp_css_include/isys_irq.h
-index 06bc9e1450ec..001c55ea970b 100644
---- a/drivers/staging/media/atomisp/pci/hive_isp_css_include/isys_irq.h
-+++ b/drivers/staging/media/atomisp/pci/hive_isp_css_include/isys_irq.h
-@@ -21,20 +21,8 @@
- 
- #if defined(ISP2401)
- 
--#ifndef __INLINE_ISYS2401_IRQ__
--
--#define STORAGE_CLASS_ISYS2401_IRQ_H extern
--#define STORAGE_CLASS_ISYS2401_IRQ_C extern
- #include "isys_irq_public.h"
- 
--#else  /* __INLINE_ISYS2401_IRQ__ */
--
--#define STORAGE_CLASS_ISYS2401_IRQ_H static inline
--#define STORAGE_CLASS_ISYS2401_IRQ_C static inline
--#include "isys_irq_private.h"
--
--#endif /* __INLINE_ISYS2401_IRQ__ */
--
- #endif /* defined(ISP2401) */
- 
- #endif	/* __IA_CSS_ISYS_IRQ_H__ */
+
+Sorry, the commit log of the attachment was wrong.
+
+The correct sentence is:
+
+"OK, [3] clearly explained why 'p' is useful, but turned --c-kinds=-px
+into --c-kinds=+px. So, 'x' was also (accidentally?) enabled."
+
+
+
 -- 
-2.26.2
-
+Best Regards
+Masahiro Yamada
