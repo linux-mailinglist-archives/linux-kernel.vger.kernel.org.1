@@ -2,92 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9298625AF33
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3393625AF3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgIBPfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S1728521AbgIBPf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:35:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728276AbgIBPez (ORCPT
+        with ESMTP id S1728244AbgIBPfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:34:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92216C061244;
-        Wed,  2 Sep 2020 08:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=cq7bXXRcLzbBq/NxnwB+6LP/PEJbfLvvVskEHmvDFfw=; b=joGcDM7PwydTjV3jNF6ZNuYqy3
-        idZOQCy8FTBjrOxeVSjYgjnErqBoWPc10FGKem/5RZ1k3SVfAvHIm2Vdi/HGZkA/ePUlZ4rWrhoYl
-        m8hd5stiW+6Rzw7VfhxuvxRhZ0YLCosoRTvDz0LxtWaGU1H4d0UVksCXz7PdD2jf/hnDpyU9LqtsM
-        WdDvZDY6MLOd6IpOIbxi+dMTdaUzxfPgCG2LM3LuIDTye9dzLMrom7B69PFfv1oeTISGpcf1gGgF1
-        fMH31FUtrAWKDtuVBYAVLxfJKGzgdEsp6qC8vuxER4at/A5SP88enk71tPFYx025NngwjrYkdebSm
-        yN0HFQtw==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDUmg-0002me-MA; Wed, 02 Sep 2020 15:34:50 +0000
-Subject: Re: [PATCH] power: supply: charger-manager: Fix info message in
- check_charging_duration()
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Jonghwa Lee <jonghwa3.lee@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jonathan Bakker <xc-racer2@live.ca>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200902153846.GA10327@embeddedor>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8d7be08f-fa20-d217-a606-738d79e36259@infradead.org>
-Date:   Wed, 2 Sep 2020 08:34:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 2 Sep 2020 11:35:53 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D277C061245;
+        Wed,  2 Sep 2020 08:35:53 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDUnK-009LqU-QO; Wed, 02 Sep 2020 15:35:30 +0000
+Date:   Wed, 2 Sep 2020 16:35:30 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     maz@kernel.org, alsa-devel@alsa-project.org,
+        dan.carpenter@oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp,
+        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Subject: Re: general protection fault in snd_ctl_release
+Message-ID: <20200902153530.GK1236603@ZenIV.linux.org.uk>
+References: <000000000000c15ee205ae4f2531@google.com>
+ <s5h36409pbb.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20200902153846.GA10327@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5h36409pbb.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 8:38 AM, Gustavo A. R. Silva wrote:
-> A few months ago, commit e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
-> changed the expression in the if statement from "duration > desc->discharging_max_duration_ms"
-> to "duration > desc->charging_max_duration_ms", but the arguments for dev_info() were left unchanged.
-> Apparently, due to a copy-paste error.
-> 
-> Fix this by using the proper arguments for dev_info().
-> 
-> Addresses-Coverity-ID: 1496803 ("Copy-paste error")
-> Fixes: e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/power/supply/charger-manager.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-> index 07992821e252..6117018e89df 100644
-> --- a/drivers/power/supply/charger-manager.c
-> +++ b/drivers/power/supply/charger-manager.c
-> @@ -472,8 +472,8 @@ static int check_charging_duration(struct charger_manager *cm)
->  		duration = curr - cm->charging_end_time;
->  
->  		if (duration > desc->charging_max_duration_ms) {
-> -			dev_info(cm->dev, "Discharging duration exceed %ums\n",
-> -				 desc->discharging_max_duration_ms);
-> +			dev_info(cm->dev, "Charging duration exceed %ums\n",
+On Wed, Sep 02, 2020 at 05:22:00PM +0200, Takashi Iwai wrote:
 
-preferably		                                     exceeds
+> Marc, Al, could you guys check this bug?
 
-> +				 desc->charging_max_duration_ms);
->  			ret = true;
->  		}
->  	}
-> 
-
-thanks.
--- 
-~Randy
-
+That's racy; the first one should be get_file_rcu() instead of
+file_count()+get_file(), the second is not needed at all (we
+have the file pinned down by the caller).  See vfs.git#work.epoll
+for fix
