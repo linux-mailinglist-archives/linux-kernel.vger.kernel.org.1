@@ -2,59 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4963125C29C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C817225C3C3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgICOae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:30:34 -0400
-Received: from verein.lst.de ([213.95.11.211]:38062 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729217AbgICOaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:30:12 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A8FCA67357; Thu,  3 Sep 2020 16:30:04 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 16:30:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: remove the last set_fs() in common code, and remove it for x86
- and powerpc v3
-Message-ID: <20200903143003.GA17260@lst.de>
-References: <20200903142242.925828-1-hch@lst.de> <20200903142803.GM1236603@ZenIV.linux.org.uk>
+        id S1729394AbgICO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:58:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729083AbgICOJR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:09:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599142150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AsDU97yPtXUIgx3X3eSsp3sqqPMSM2dtQaXgynJpGX8=;
+        b=Dckr91+/2we/Y94xJgypUfDGcI7AmWZXGKYkfKdi8BowdfS/Dq1848M2KpMDh0bq7Z7RlK
+        l0GiRwrVRjskh7VJkVuen/EBx2zZzeIf0Yw+o1caL1/mig6dqqlD4sqLFXpJ9D6sgItig9
+        GTWFunrYQjA58ZaxyKxbFPCuk0dimYE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-IrTADZdnNQq1I3hpiR1V-Q-1; Thu, 03 Sep 2020 09:27:50 -0400
+X-MC-Unique: IrTADZdnNQq1I3hpiR1V-Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC4EE10199A6;
+        Thu,  3 Sep 2020 13:27:49 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A8F0105DFA1;
+        Thu,  3 Sep 2020 13:27:49 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id C55A74168BB3; Wed,  2 Sep 2020 16:42:40 -0300 (-03)
+Date:   Wed, 2 Sep 2020 16:42:40 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [patch 1/2] nohz: try to avoid IPI when configuring per-CPU
+ posix timer
+Message-ID: <20200902194240.GA986833@fuller.cnet>
+References: <20200825184147.948670309@fuller.cnet>
+ <20200825184414.442457749@fuller.cnet>
+ <20200901233858.GA9322@lenoir>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200903142803.GM1236603@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200901233858.GA9322@lenoir>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 03:28:03PM +0100, Al Viro wrote:
-> On Thu, Sep 03, 2020 at 04:22:28PM +0200, Christoph Hellwig wrote:
-> 
-> > Besides x86 and powerpc I plan to eventually convert all other
-> > architectures, although this will be a slow process, starting with the
-> > easier ones once the infrastructure is merged.  The process to convert
-> > architectures is roughtly:
+On Wed, Sep 02, 2020 at 01:38:59AM +0200, Frederic Weisbecker wrote:
+> On Tue, Aug 25, 2020 at 03:41:48PM -0300, Marcelo Tosatti wrote:
+> > When enabling per-CPU posix timers, an IPI to nohz_full CPUs might be
+> > performed (to re-read the dependencies and possibly not re-enter
+> > nohz_full on a given CPU).
 > > 
-> >  (1) ensure there is no set_fs(KERNEL_DS) left in arch specific code
-> >  (2) implement __get_kernel_nofault and __put_kernel_nofault
-> >  (3) remove the arch specific address limitation functionality
+> > A common case is for applications that run on nohz_full= CPUs 
+> > to not use POSIX timers (eg DPDK). This patch skips the IPI 
+> > in case the task allowed mask does not intersect with nohz_full= CPU mask,
+> > when going through tick_nohz_dep_set_signal.
+> > 
+> > This reduces interruptions to nohz_full= CPUs.
+> > 
+> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+> [...]
+> >  /*
+> > + * Set bit on nohz full dependency, kicking all cpus
+> > + * only if task can run on nohz full CPUs.
+> > + */
+> > +static void tick_nohz_dep_set_all_cond(struct task_struct *tsk,
+> > +				       atomic_t *dep,
+> > +				       enum tick_dep_bits bit)
+> > +{
+> > +	int prev;
+> > +	unsigned long flags;
+> > +
+> > +	prev = atomic_fetch_or(BIT(bit), dep);
+> > +	if (prev)
+> > +		return;
+> > +
+> > +	raw_spin_lock_irqsave(&tsk->pi_lock, flags);
+> > +	if (cpumask_intersects(&tsk->cpus_mask, tick_nohz_full_mask))
+> > +		tick_nohz_full_kick_all();
 > 
-> The one to really watch out for is sparc; I have something in that
-> direction, will resurrect as soon as I'm done with eventpoll analysis...
-> 
-> I can live with this series; do you want that in vfs.git#for-next?
+> So that's for one task but what about the other threads in that
+> process? We are setting the tick dependency on all tasks sharing that
+> struct signal.
 
-Either that or a separate tree is fine with me.  It would be good to
-eventually have a non-rebased stable tree so that other arch trees
-can work from it, though.
+Hi Frederic,
+
+Yep, fixing in -v2, thanks.
+
+
