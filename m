@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BB725AE0E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D00225AE28
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgIBO6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:58:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37842 "EHLO mail.kernel.org"
+        id S1727901AbgIBPAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726895AbgIBO60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:58:26 -0400
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+        id S1726967AbgIBPAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:00:07 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AACE20BED
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 14:58:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 40BC62087D;
+        Wed,  2 Sep 2020 15:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599058705;
-        bh=gBVOTaKneMMxgCAgGNfhmmESJjJgjZ9QwPp7zryvhx8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Vvv9VrQO6bAgn8luFm9R9vLPl4jT3Er12xrknUnKuH7s0mLDQU2npW7WpfS3lp9fT
-         d4sqZlLyfPThi4M21T8Mknx+giVMK0V51cautJcqGVba+1gB1kezmgapcdeaLP+crj
-         1IKtYbNzd2j7sKL0PTIIGPxoHh9JGIq6q3e3rk2g=
-Received: by mail-ed1-f48.google.com with SMTP id q21so5252394edv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:58:25 -0700 (PDT)
-X-Gm-Message-State: AOAM533Suz58SEWMAdEoKA9gt0yFYfOows0e3Toeyjde6sOVlI9UTNfE
-        p5lAASLtOIaSTMPGoMNuTKGhQYSKN5YuDAuOXg==
-X-Google-Smtp-Source: ABdhPJxiUKeT463CKXMbKNOTTXvuh8ChtIWwveqT19sIFc5GWW6eJtVKFAP6EJWl77VhTt3QaOUa/DVGqW+rN6PfNI0=
-X-Received: by 2002:a50:ef15:: with SMTP id m21mr474435eds.300.1599058704159;
- Wed, 02 Sep 2020 07:58:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200823014830.15962-1-chunkuang.hu@kernel.org>
-In-Reply-To: <20200823014830.15962-1-chunkuang.hu@kernel.org>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Wed, 2 Sep 2020 22:58:12 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9ELMBK7zPeeBQ39QjJ9g4PsOhpHXsTBHgcq=kNk8bRxA@mail.gmail.com>
-Message-ID: <CAAOTY_9ELMBK7zPeeBQ39QjJ9g4PsOhpHXsTBHgcq=kNk8bRxA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] Move Mediatek HDMI PHY driver from DRM folder to
- PHY folder
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        s=default; t=1599058807;
+        bh=FUElcGoCh8MVrhlx2sOneakaehau9/YLSKtASFYEWlA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oNHPIuSjx+nnAho8lk7xpWj45550wq0k7g3ePG1VBb15VJGXwZeXvlUDXArhZuV57
+         W0Xdcbj7YioscD6Ke6vAYOgplWCDCOhAA8Li0r1vD6OjHzrlTfXHVi8vXMv+C1muhT
+         7ojgbpHVP7ZP2Qv6Vnh0z53AYshayuysllEzCaQ4=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH v2 2/2] MAINTAINERS: Move Hartmut Knaack to Credits
+Date:   Wed,  2 Sep 2020 16:59:57 +0200
+Message-Id: <20200902145957.13861-2-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200902145957.13861-1-krzk@kernel.org>
+References: <20200902145957.13861-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B48=E6=9C=8823=
-=E6=97=A5 =E9=80=B1=E6=97=A5 =E4=B8=8A=E5=8D=889:48=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> mtk_hdmi_phy is currently placed inside mediatek drm driver, but it's
-> more suitable to place a phy driver into phy driver folder, so move
-> mtk_hdmi_phy driver into phy driver folder.
+Hartmut Knaack was an active reviewer and contributor to the IIO
+subsystem and drivers.  However his last message on LKML is from
+October 2015.
 
-For this series, applied to mediatek-drm-next [1].
+In thanks for Hartmut's effort, move him name to the Credits.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: linux-iio <linux-iio@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Regards,
-Chun-Kuang.
+---
 
->
-> Changes in v5:
-> - Fixup indent in Kconfig.
-> - Refine config help message.
-> - Refine Makefile.
->
-> Changes in v4:
-> - Rebase onto 5.9-rc1
-> - Remove mtk_hdmi_conf_mt8173.
->
-> Changes in v3:
-> - Modify [PATCH v2 3/4] prefix.
->
-> Changes in v2:
-> - include module.h in mtk_hdmi.c
->
-> CK Hu (3):
->   drm/mediatek: Move tz_disabled from mtk_hdmi_phy to mtk_hdmi driver
->   drm/mediatek: Separate mtk_hdmi_phy to an independent module
->   phy: mediatek: Move mtk_hdmi_phy driver into drivers/phy/mediatek
->     folder
->
-> Chun-Kuang Hu (1):
->   MAINTAINERS: add files for Mediatek DRM drivers
->
->  MAINTAINERS                                   |  1 +
->  drivers/gpu/drm/mediatek/Kconfig              |  2 +-
->  drivers/gpu/drm/mediatek/Makefile             |  5 +----
->  drivers/gpu/drm/mediatek/mtk_hdmi.c           | 21 +++++++++++++++----
->  drivers/gpu/drm/mediatek/mtk_hdmi.h           |  1 -
->  drivers/phy/mediatek/Kconfig                  |  7 +++++++
->  drivers/phy/mediatek/Makefile                 |  5 +++++
->  .../mediatek/phy-mtk-hdmi-mt2701.c}           |  3 +--
->  .../mediatek/phy-mtk-hdmi-mt8173.c}           |  2 +-
->  .../mediatek/phy-mtk-hdmi.c}                  |  3 ++-
->  .../mediatek/phy-mtk-hdmi.h}                  |  2 --
->  11 files changed, 36 insertions(+), 16 deletions(-)
->  rename drivers/{gpu/drm/mediatek/mtk_mt2701_hdmi_phy.c =3D> phy/mediatek=
-/phy-mtk-hdmi-mt2701.c} (99%)
->  rename drivers/{gpu/drm/mediatek/mtk_mt8173_hdmi_phy.c =3D> phy/mediatek=
-/phy-mtk-hdmi-mt8173.c} (99%)
->  rename drivers/{gpu/drm/mediatek/mtk_hdmi_phy.c =3D> phy/mediatek/phy-mt=
-k-hdmi.c} (98%)
->  rename drivers/{gpu/drm/mediatek/mtk_hdmi_phy.h =3D> phy/mediatek/phy-mt=
-k-hdmi.h} (95%)
->
-> --
-> 2.17.1
->
+Changes since v1:
+1. Fix order in CREDITS
+---
+ CREDITS     | 4 ++++
+ MAINTAINERS | 1 -
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/CREDITS b/CREDITS
+index 32ee70a7562e..c741455498a4 100644
+--- a/CREDITS
++++ b/CREDITS
+@@ -1942,6 +1942,10 @@ S: Post Office Box 611311
+ S: San Jose, California 95161-1311
+ S: USA
+ 
++N: Hartmut Knaack
++E: knaack.h@gmx.de
++D: IIO subsystem and drivers
++
+ N: Thorsten Knabe
+ E: Thorsten Knabe <tek@rbg.informatik.tu-darmstadt.de>
+ E: Thorsten Knabe <tek01@hrzpub.tu-darmstadt.de>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index facffcf7b1d1..94dda8ae202c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8489,7 +8489,6 @@ F:	drivers/iio/multiplexer/iio-mux.c
+ 
+ IIO SUBSYSTEM AND DRIVERS
+ M:	Jonathan Cameron <jic23@kernel.org>
+-R:	Hartmut Knaack <knaack.h@gmx.de>
+ R:	Lars-Peter Clausen <lars@metafoo.de>
+ R:	Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+ L:	linux-iio@vger.kernel.org
+-- 
+2.17.1
+
