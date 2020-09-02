@@ -2,120 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE0E25A7E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475D425A81E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbgIBImq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 04:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgIBImp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:42:45 -0400
-Received: from forward501p.mail.yandex.net (forward501p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E27D0C061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 01:42:44 -0700 (PDT)
-Received: from mxback3o.mail.yandex.net (mxback3o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::1d])
-        by forward501p.mail.yandex.net (Yandex) with ESMTP id CDFE63500850;
-        Wed,  2 Sep 2020 11:42:34 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback3o.mail.yandex.net (mxback/Yandex) with ESMTP id tfaQAmOB7l-gX7uZfml;
-        Wed, 02 Sep 2020 11:42:34 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1599036154;
-        bh=ieL5eBZSKw/yFnrrPl/MqoxzrUjdZ7Hy9Kkk8GjSLdc=;
-        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
-        b=hchu6LZ4iqmfYa3Xt2FP/q1hd8hoSTICzDNiwd1rHFphhQKGChGcM4HftcZ+vTL7S
-         wXhPdK0lyLNrWyDeHq0A1IVzKKe0yYjTk2xl92dgwdmTCKRdqu1mj8dShXy/aOKfb0
-         o3DFUJsdmExtBVa5eZREKydFxnihxTd/mvQBPQQo=
-Authentication-Results: mxback3o.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by sas1-ffdbcd5f1d77.qloud-c.yandex.net with HTTP;
-        Wed, 02 Sep 2020 11:42:33 +0300
-From:   Evgeny Novikov <novikov@ispras.ru>
-Envelope-From: eugenenovikov@yandex.ru
-To:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-In-Reply-To: <20200901183912.GA5295@duo.ucw.cz>
-References: <20200901150934.576210879@linuxfoundation.org>
-         <20200901150936.857115610@linuxfoundation.org> <20200901183912.GA5295@duo.ucw.cz>
-Subject: Re: [PATCH 4.19 047/125] media: davinci: vpif_capture: fix potential double free
+        id S1726892AbgIBI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:57:11 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11316 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726269AbgIBI5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:57:10 -0400
+IronPort-SDR: //IncEz/xVSvxx6XkGN6kLNPyg1pdUcrg2fuB2xQO06fIJ5D8kvbroQ+4aJVWuD9a1WyP9JVTn
+ oSIbxY1Nq7TA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="158345951"
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
+   d="scan'208";a="158345951"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 01:57:07 -0700
+IronPort-SDR: n82aL5bSEOkonVTgcp4RE1Oa5ra55eIXdGE64YFUA41NOQGuv2rZz5lmZPec3Kl1ff3j2eWPiN
+ ibAd5bugHZiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
+   d="scan'208";a="331360814"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 02 Sep 2020 01:57:04 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kDON2-00DfRB-B6; Wed, 02 Sep 2020 11:43:56 +0300
+Date:   Wed, 2 Sep 2020 11:43:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Cc:     wsa@kernel.org, jarkko.nikula@linux.intel.com, jdelvare@suse.de,
+        chris.packham@alliedtelesis.co.nz, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] i2c: algo-pca: Reapply i2c bus settings after
+ reset
+Message-ID: <20200902084356.GX1891694@smile.fi.intel.com>
+References: <20200901211747.20649-1-evan.nimmo@alliedtelesis.co.nz>
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Wed, 02 Sep 2020 11:42:33 +0300
-Message-Id: <1304121599035106@mail.yandex.ru>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901211747.20649-1-evan.nimmo@alliedtelesis.co.nz>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Wed, Sep 02, 2020 at 09:17:47AM +1200, Evan Nimmo wrote:
+> If something goes wrong (such as the SCL being stuck low) then we need
+> to reset the PCA chip. The issue with this is that on reset we lose all
+> config settings and the chip ends up in a disabled state which results
+> in a lock up/high cpu usage. We need to re-apply any configuration that
 
-Maybe I miss something, but it seems that in 4.19 vpif_probe() ignores
-error codes from vpif_probe_complete() and returns 0 even if it fails.
-That was fixed by commit 64f883cd98c6, but it was not backported to 4.19.
-In addition, this commit contains a fix of one more bug.
+cpu -> CPU (I guess Wolfram can decide with this when applying)
 
-Regarding your second note. I investigated other drivers that use the same
-mechanism and did not find out any driver that performs clean up in the
-complete handler. In particular, this is the case for very similar driver
-vpif_display.c. I am not an expert in this subsystem, so, I can not reason
-why this is so.
+> had previously been set and re-enable the chip.
 
--- 
-Best regards,
-Evgeny Novikov
+FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+> Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+> ---
+> changes in v2:
+> - changed lowercase "pca to uppercase "PCA".
+> - reworded and reformatted the multiline comment.
+> - moved the clock frequency KERN_INFO closer to the call that sets this.
+> - moved the i2c_bus_settings struct to the more generic i2c.h and removed
+> - the comments indicating this as being for the pca chip.
+> 
+>  drivers/i2c/algos/i2c-algo-pca.c | 36 +++++++++++++++++++++-----------
+>  include/linux/i2c-algo-pca.h     |  1 +
+>  include/linux/i2c.h              | 14 +++++++++++++
+>  3 files changed, 39 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
+> index 710fbef9a9c2..8b98b737b499 100644
+> --- a/drivers/i2c/algos/i2c-algo-pca.c
+> +++ b/drivers/i2c/algos/i2c-algo-pca.c
+> @@ -41,8 +41,22 @@ static void pca_reset(struct i2c_algo_pca_data *adap)
+>  		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IPRESET);
+>  		pca_outw(adap, I2C_PCA_IND, 0xA5);
+>  		pca_outw(adap, I2C_PCA_IND, 0x5A);
+> +
+> +		/*
+> +		 * After a reset we need to re-apply any configuration
+> +		 * (calculated in pca_init) to get the bus in a working state.
+> +		 */
+> +		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_IMODE);
+> +		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.mode);
+> +		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
+> +		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.tlow);
+> +		pca_outw(adap, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
+> +		pca_outw(adap, I2C_PCA_IND, adap->bus_settings.thi);
+> +
+> +		pca_set_con(adap, I2C_PCA_CON_ENSIO);
+>  	} else {
+>  		adap->reset_chip(adap->data);
+> +		pca_set_con(adap, I2C_PCA_CON_ENSIO | adap->bus_settings.clock_freq);
+>  	}
+>  }
+>  
+> @@ -423,13 +437,15 @@ static int pca_init(struct i2c_adapter *adap)
+>  				" Use the nominal frequency.\n", adap->name);
+>  		}
+>  
+> -		pca_reset(pca_data);
+> -
+>  		clock = pca_clock(pca_data);
+> +
+>  		printk(KERN_INFO "%s: Clock frequency is %dkHz\n",
+>  		     adap->name, freqs[clock]);
+>  
+> -		pca_set_con(pca_data, I2C_PCA_CON_ENSIO | clock);
+> +		/* Store settings as these will be needed when the PCA chip is reset */
+> +		pca_data->bus_settings.clock_freq = clock;
+> +
+> +		pca_reset(pca_data);
+>  	} else {
+>  		int clock;
+>  		int mode;
+> @@ -496,19 +512,15 @@ static int pca_init(struct i2c_adapter *adap)
+>  			thi = tlow * min_thi / min_tlow;
+>  		}
+>  
+> +		/* Store settings as these will be needed when the PCA chip is reset */
+> +		pca_data->bus_settings.mode = mode;
+> +		pca_data->bus_settings.tlow = tlow;
+> +		pca_data->bus_settings.thi = thi;
+> +
+>  		pca_reset(pca_data);
+>  
+>  		printk(KERN_INFO
+>  		     "%s: Clock frequency is %dHz\n", adap->name, clock * 100);
+> -
+> -		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_IMODE);
+> -		pca_outw(pca_data, I2C_PCA_IND, mode);
+> -		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLL);
+> -		pca_outw(pca_data, I2C_PCA_IND, tlow);
+> -		pca_outw(pca_data, I2C_PCA_INDPTR, I2C_PCA_ISCLH);
+> -		pca_outw(pca_data, I2C_PCA_IND, thi);
+> -
+> -		pca_set_con(pca_data, I2C_PCA_CON_ENSIO);
+>  	}
+>  	udelay(500); /* 500 us for oscillator to stabilise */
+>  
+> diff --git a/include/linux/i2c-algo-pca.h b/include/linux/i2c-algo-pca.h
+> index d03071732db4..97d1f4cd8e56 100644
+> --- a/include/linux/i2c-algo-pca.h
+> +++ b/include/linux/i2c-algo-pca.h
+> @@ -64,6 +64,7 @@ struct i2c_algo_pca_data {
+>  	 * For PCA9665, use the frequency you want here. */
+>  	unsigned int			i2c_clock;
+>  	unsigned int			chip;
+> +	struct i2c_bus_settings		bus_settings;
+>  };
+>  
+>  int i2c_pca_add_bus(struct i2c_adapter *);
+> diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+> index fc55ea41d323..8c5138fbe532 100644
+> --- a/include/linux/i2c.h
+> +++ b/include/linux/i2c.h
+> @@ -724,6 +724,20 @@ struct i2c_adapter {
+>  };
+>  #define to_i2c_adapter(d) container_of(d, struct i2c_adapter, dev)
+>  
+> +/**
+> + * struct i2c_bus_settings - The configured i2c bus settings
+> + * @mode: Configured i2c bus mode
+> + * @tlow: Configured SCL LOW period
+> + * @thi: Configured SCL HIGH period
+> + * @clock_freq: The configured clock frequency
+> + */
+> +struct i2c_bus_settings {
+> +	int mode;
+> +	int tlow;
+> +	int thi;
+> +	int clock_freq;
+> +};
+> +
+>  static inline void *i2c_get_adapdata(const struct i2c_adapter *adap)
+>  {
+>  	return dev_get_drvdata(&adap->dev);
+> -- 
+> 2.27.0
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-
-01.09.2020, 21:43, "Pavel Machek" <pavel@denx.de>:
-> Hi!
->
->>  [ Upstream commit 602649eadaa0c977e362e641f51ec306bc1d365d ]
->>
->>  In case of errors vpif_probe_complete() releases memory for vpif_obj.sd
->>  and unregisters the V4L2 device. But then this is done again by
->>  vpif_probe() itself. The patch removes the cleaning from
->>  vpif_probe_complete().
->
->>  Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
->>  Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->>  Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>  Signed-off-by: Sasha Levin <sashal@kernel.org>
->>  ---
->>   drivers/media/platform/davinci/vpif_capture.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->>  diff --git a/drivers/media/platform/davinci/vpif_capture.c b/drivers/media/platform/davinci/vpif_capture.c
->>  index a96f53ce80886..cf1d11e6dd8c4 100644
->>  --- a/drivers/media/platform/davinci/vpif_capture.c
->>  +++ b/drivers/media/platform/davinci/vpif_capture.c
->>  @@ -1489,8 +1489,6 @@ probe_out:
->>                   /* Unregister video device */
->>                   video_unregister_device(&ch->video_dev);
->>           }
->>  - kfree(vpif_obj.sd);
->>  - v4l2_device_unregister(&vpif_obj.v4l2_dev);
->>
->>           return err;
->>   }
->
-> This one is wrong. Unlike mainline, 4.19 does check return value of
-> vpif_probe_complete(), and thus it will lead to memory leak in 4.19.
->
-> Furthermore, I believe mainline still has a problems after this
-> patch. There is sync and async path where vpif_probe_complete(), and
-> while this fixes the sync path in mainline, I believe it will cause
-> memory leak on the async path.
->
-> Best regards,
->                                                                         Pavel
->
-> --
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
