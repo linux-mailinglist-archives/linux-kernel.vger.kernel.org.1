@@ -2,167 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7592625AAF6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E020A25AB00
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgIBMQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:16:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:51129 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgIBMQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:16:21 -0400
-IronPort-SDR: 9WPcXOVf/sTOVpikZXmAF/IcGqGmHLnGJBQ6KDDq88qqZddJmMyEaupgir/Tk6dJVpYFLu+HO0
- MsBTlWBCiugA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175422605"
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="175422605"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 05:16:02 -0700
-IronPort-SDR: pspqLU6uUyCZdY21hCqcoUInLXyiutak527JmOpps1krIW+QPM7/aaRKvYhBZRLPA31MEQfhQj
- 8VH2YTpTzKfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="325762393"
-Received: from lkp-server02.sh.intel.com (HELO eb469fda2af7) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Sep 2020 05:16:01 -0700
-Received: from kbuild by eb469fda2af7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kDRgG-00004W-W8; Wed, 02 Sep 2020 12:16:01 +0000
-Date:   Wed, 02 Sep 2020 20:15:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:kcsan] BUILD SUCCESS
- cd290ec24633f51029dab0d25505fae7da0e1eda
-Message-ID: <5f4f8cca./VLxVcd9e1Q2CsmS%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726966AbgIBMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 08:17:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10755 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726124AbgIBMRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 08:17:47 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B7128A0EF572202E4E5B;
+        Wed,  2 Sep 2020 20:17:43 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Sep 2020 20:17:37 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [RFC net-next] udp: add a GSO type for UDPv6
+Date:   Wed, 2 Sep 2020 20:15:11 +0800
+Message-ID: <1599048911-7923-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  kcsan
-branch HEAD: cd290ec24633f51029dab0d25505fae7da0e1eda  kcsan: Use tracing-safe version of prandom
+In some cases, for UDP GSO, UDPv4 and UDPv6 need to be handled
+separately, for example, checksum offload, so add new GSO type
+SKB_GSO_UDPV6_L4 for UDPv6, and the old SKB_GSO_UDP_L4 stands
+for UDPv4.
 
-elapsed time: 725m
-
-configs tested: 102
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                           se7206_defconfig
-mips                 pnx8335_stb225_defconfig
-arm                            mmp2_defconfig
-sh                           sh2007_defconfig
-sh                        edosk7705_defconfig
-arm                         shannon_defconfig
-arm                     eseries_pxa_defconfig
-arm                      footbridge_defconfig
-riscv                             allnoconfig
-sh                            migor_defconfig
-h8300                       h8s-sim_defconfig
-powerpc                  storcenter_defconfig
-arm                   milbeaut_m10v_defconfig
-mips                            e55_defconfig
-arm                        clps711x_defconfig
-powerpc                    mvme5100_defconfig
-sh                   sh7770_generic_defconfig
-sh                           se7343_defconfig
-arm                            lart_defconfig
-arm                      pxa255-idp_defconfig
-arm                         mv78xx0_defconfig
-arm                         s3c2410_defconfig
-arm                              alldefconfig
-sh                          kfr2r09_defconfig
-c6x                                 defconfig
-arm                       aspeed_g5_defconfig
-m68k                        stmark2_defconfig
-x86_64                              defconfig
-mips                           ip28_defconfig
-sh                          polaris_defconfig
-m68k                            q40_defconfig
-sparc                            allyesconfig
-mips                 decstation_r4k_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20200901
-i386                 randconfig-a005-20200901
-i386                 randconfig-a006-20200901
-i386                 randconfig-a002-20200901
-i386                 randconfig-a001-20200901
-i386                 randconfig-a003-20200901
-i386                 randconfig-a016-20200901
-i386                 randconfig-a015-20200901
-i386                 randconfig-a011-20200901
-i386                 randconfig-a013-20200901
-i386                 randconfig-a014-20200901
-i386                 randconfig-a012-20200901
-x86_64               randconfig-a004-20200901
-x86_64               randconfig-a006-20200901
-x86_64               randconfig-a003-20200901
-x86_64               randconfig-a005-20200901
-x86_64               randconfig-a001-20200901
-x86_64               randconfig-a002-20200901
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20200901
-x86_64               randconfig-a016-20200901
-x86_64               randconfig-a011-20200901
-x86_64               randconfig-a012-20200901
-x86_64               randconfig-a015-20200901
-x86_64               randconfig-a014-20200901
-
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/net/ethernet/chelsio/cxgb4/sge.c                | 17 ++++++++---------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c             |  2 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c               |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c               |  4 ++--
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c           |  4 ++--
+ .../net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h |  2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c         |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c       |  8 +++++---
+ include/linux/netdev_features.h                         |  2 ++
+ include/linux/netdevice.h                               |  1 +
+ include/linux/skbuff.h                                  |  8 ++++++++
+ include/linux/udp.h                                     |  4 ++--
+ net/core/filter.c                                       |  6 ++----
+ net/core/skbuff.c                                       |  2 +-
+ net/ipv6/udp.c                                          |  2 +-
+ net/ipv6/udp_offload.c                                  |  6 +++---
+ 16 files changed, 41 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index fddd70e..c96a0af 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -735,7 +735,7 @@ static inline int is_eth_imm(const struct sk_buff *skb, unsigned int chip_ver)
+ 	    chip_ver > CHELSIO_T5) {
+ 		hdrlen = sizeof(struct cpl_tx_tnl_lso);
+ 		hdrlen += sizeof(struct cpl_tx_pkt_core);
+-	} else if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++	} else if (skb_is_gso_udp(skb)) {
+ 		return 0;
+ 	} else {
+ 		hdrlen = skb_shinfo(skb)->gso_size ?
+@@ -782,7 +782,7 @@ static inline unsigned int calc_tx_flits(const struct sk_buff *skb,
+ 		if (skb->encapsulation && chip_ver > CHELSIO_T5) {
+ 			hdrlen = sizeof(struct fw_eth_tx_pkt_wr) +
+ 				 sizeof(struct cpl_tx_tnl_lso);
+-		} else if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++		} else if (skb_is_gso_udp(skb)) {
+ 			u32 pkt_hdrlen;
+ 
+ 			pkt_hdrlen = eth_get_headlen(skb->dev, skb->data,
+@@ -1498,14 +1498,15 @@ static netdev_tx_t cxgb4_eth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	eowr = (void *)&q->q.desc[q->q.pidx];
+ 	wr->equiq_to_len16 = htonl(wr_mid);
+ 	wr->r3 = cpu_to_be64(0);
+-	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
++	if (skb_is_gso_udp(skb))
+ 		end = (u64 *)eowr + flits;
+ 	else
+ 		end = (u64 *)wr + flits;
+ 
+ 	len = immediate ? skb->len : 0;
+ 	len += sizeof(*cpl);
+-	if (ssi->gso_size && !(ssi->gso_type & SKB_GSO_UDP_L4)) {
++	if (ssi->gso_size &&
++	    !(ssi->gso_type & (SKB_GSO_UDP_L4 | SKB_GSO_UDPV6_L4))) {
+ 		struct cpl_tx_pkt_lso_core *lso = (void *)(wr + 1);
+ 		struct cpl_tx_tnl_lso *tnl_lso = (void *)(wr + 1);
+ 
+@@ -2061,8 +2062,7 @@ static inline u8 ethofld_calc_tx_flits(struct adapter *adap,
+ 	u32 wrlen;
+ 
+ 	wrlen = sizeof(struct fw_eth_tx_eo_wr) + sizeof(struct cpl_tx_pkt_core);
+-	if (skb_shinfo(skb)->gso_size &&
+-	    !(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4))
++	if (skb_shinfo(skb)->gso_size && !skb_is_gso_udp(skb))
+ 		wrlen += sizeof(struct cpl_tx_pkt_lso_core);
+ 
+ 	wrlen += roundup(hdr_len, 16);
+@@ -2097,8 +2097,7 @@ static void *write_eo_wr(struct adapter *adap, struct sge_eosw_txq *eosw_txq,
+ 
+ 	wrlen16 = DIV_ROUND_UP(wrlen, 16);
+ 	immd_len = sizeof(struct cpl_tx_pkt_core);
+-	if (skb_shinfo(skb)->gso_size &&
+-	    !(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4))
++	if (skb_shinfo(skb)->gso_size && !skb_is_gso_udp(skb))
+ 		immd_len += sizeof(struct cpl_tx_pkt_lso_core);
+ 	immd_len += hdr_len;
+ 
+@@ -2259,7 +2258,7 @@ static int ethofld_hard_xmit(struct net_device *dev,
+ 	}
+ 
+ 	if (skb_shinfo(skb)->gso_size) {
+-		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
++		if (skb_is_gso_udp(skb))
+ 			eohw_txq->uso++;
+ 		else
+ 			eohw_txq->tso++;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 91ab824..1c5b621 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2957,7 +2957,7 @@ static int i40e_tso(struct i40e_tx_buffer *first, u8 *hdr_len,
+ 	/* remove payload length from inner checksum */
+ 	paylen = skb->len - l4_offset;
+ 
+-	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++	if (skb_shinfo(skb)->gso_type & skb_is_gso_udp(skb)) {
+ 		csum_replace_by_diff(&l4.udp->check, (__force __wsum)htonl(paylen));
+ 		/* compute length of segmentation header */
+ 		*hdr_len = sizeof(*l4.udp) + l4_offset;
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index eae7526..f8b6471 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -2153,7 +2153,7 @@ int ice_tso(struct ice_tx_buf *first, struct ice_tx_offload_params *off)
+ 	/* remove payload length from checksum */
+ 	paylen = skb->len - l4_start;
+ 
+-	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++	if (skb_shinfo(skb)->gso_type & skb_is_gso_udp(skb)) {
+ 		csum_replace_by_diff(&l4.udp->check,
+ 				     (__force __wsum)htonl(paylen));
+ 		/* compute length of UDP segmentation header */
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 698bb6a..86953b7 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -5728,8 +5728,8 @@ static int igb_tso(struct igb_ring *tx_ring,
+ 	l4.hdr = skb_checksum_start(skb);
+ 
+ 	/* ADV DTYP TUCMD MKRLOC/ISCSIHEDLEN */
+-	type_tucmd = (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ?
+-		      E1000_ADVTXD_TUCMD_L4T_UDP : E1000_ADVTXD_TUCMD_L4T_TCP;
++	type_tucmd = skb_is_gso_udp(skb) ?
++		     E1000_ADVTXD_TUCMD_L4T_UDP : E1000_ADVTXD_TUCMD_L4T_TCP;
+ 
+ 	/* initialize outer IP header fields */
+ 	if (ip.v4->version == 4) {
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 0b675c3..83e17a6 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -7957,8 +7957,8 @@ static int ixgbe_tso(struct ixgbe_ring *tx_ring,
+ 	l4.hdr = skb_checksum_start(skb);
+ 
+ 	/* ADV DTYP TUCMD MKRLOC/ISCSIHEDLEN */
+-	type_tucmd = (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ?
+-		      IXGBE_ADVTXD_TUCMD_L4T_UDP : IXGBE_ADVTXD_TUCMD_L4T_TCP;
++	type_tucmd = skb_is_gso_udp(skb) ?
++		     IXGBE_ADVTXD_TUCMD_L4T_UDP : IXGBE_ADVTXD_TUCMD_L4T_TCP;
+ 
+ 	/* initialize outer IP header fields */
+ 	if (ip.v4->version == 4) {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+index 110476b..e6f098d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h
+@@ -114,7 +114,7 @@ static inline bool mlx5e_accel_tx_begin(struct net_device *dev,
+ 					struct sk_buff *skb,
+ 					struct mlx5e_accel_tx_state *state)
+ {
+-	if (skb_is_gso(skb) && skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
++	if (skb_is_gso(skb) && skb_is_gso_udp(skb))
+ 		mlx5e_udp_gso_handle_tx_skb(skb);
+ 
+ #ifdef CONFIG_MLX5_EN_TLS
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+index da596de..0a17ce9 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -172,7 +172,7 @@ mlx5e_tx_get_gso_ihs(struct mlx5e_txqsq *sq, struct sk_buff *skb)
+ 		stats->tso_inner_packets++;
+ 		stats->tso_inner_bytes += skb->len - ihs;
+ 	} else {
+-		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
++		if (skb_is_gso_udp(skb))
+ 			ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
+ 		else
+ 			ihs = skb_transport_offset(skb) + tcp_hdrlen(skb);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 89b2b34..d683cd6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3061,7 +3061,7 @@ static netdev_tx_t stmmac_tso_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	first_tx = tx_q->cur_tx;
+ 
+ 	/* Compute header lengths */
+-	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++	if (skb_is_gso_udp(skb)) {
+ 		proto_hdr_len = skb_transport_offset(skb) + sizeof(struct udphdr);
+ 		hdr = sizeof(struct udphdr);
+ 	} else {
+@@ -3313,7 +3313,8 @@ static netdev_tx_t stmmac_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (skb_is_gso(skb) && priv->tso) {
+ 		if (gso & (SKB_GSO_TCPV4 | SKB_GSO_TCPV6))
+ 			return stmmac_tso_xmit(skb, dev);
+-		if (priv->plat->has_gmac4 && (gso & SKB_GSO_UDP_L4))
++		if (priv->plat->has_gmac4 &&
++		    (gso & (SKB_GSO_UDP_L4 | SKB_GSO_UDPV6_L4)))
+ 			return stmmac_tso_xmit(skb, dev);
+ 	}
+ 
+@@ -4236,7 +4237,8 @@ static u16 stmmac_select_queue(struct net_device *dev, struct sk_buff *skb,
+ {
+ 	int gso = skb_shinfo(skb)->gso_type;
+ 
+-	if (gso & (SKB_GSO_TCPV4 | SKB_GSO_TCPV6 | SKB_GSO_UDP_L4)) {
++	if (gso & (SKB_GSO_TCPV4 | SKB_GSO_TCPV6 | SKB_GSO_UDP_L4 |
++		   SKB_GSO_UDPV6_L4)) {
+ 		/*
+ 		 * There is no way to determine the number of TSO/USO
+ 		 * capable Queues. Let's use always the Queue 0
+diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+index 2cc3cf8..b7c1a76 100644
+--- a/include/linux/netdev_features.h
++++ b/include/linux/netdev_features.h
+@@ -54,6 +54,7 @@ enum {
+ 	NETIF_F_GSO_UDP_BIT,		/* ... UFO, deprecated except tuntap */
+ 	NETIF_F_GSO_UDP_L4_BIT,		/* ... UDP payload GSO (not UFO) */
+ 	NETIF_F_GSO_FRAGLIST_BIT,		/* ... Fraglist GSO */
++	NETIF_F_GSO_UDPV6_L4_BIT,	/* ... UDPv6 payload GSO (not UFO) */
+ 	/**/NETIF_F_GSO_LAST =		/* last bit, see GSO_MASK */
+ 		NETIF_F_GSO_FRAGLIST_BIT,
+ 
+@@ -157,6 +158,7 @@ enum {
+ #define NETIF_F_GRO_FRAGLIST	__NETIF_F(GRO_FRAGLIST)
+ #define NETIF_F_GSO_FRAGLIST	__NETIF_F(GSO_FRAGLIST)
+ #define NETIF_F_HW_MACSEC	__NETIF_F(HW_MACSEC)
++#define NETIF_F_GSO_UDPV6_L4	__NETIF_F(GSO_UDPV6_L4)
+ 
+ /* Finds the next feature with the highest number of the range of start till 0.
+  */
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 7f9fcfd..7ad7f6e 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -4760,6 +4760,7 @@ static inline bool net_gso_ok(netdev_features_t features, int gso_type)
+ 	BUILD_BUG_ON(SKB_GSO_UDP != (NETIF_F_GSO_UDP >> NETIF_F_GSO_SHIFT));
+ 	BUILD_BUG_ON(SKB_GSO_UDP_L4 != (NETIF_F_GSO_UDP_L4 >> NETIF_F_GSO_SHIFT));
+ 	BUILD_BUG_ON(SKB_GSO_FRAGLIST != (NETIF_F_GSO_FRAGLIST >> NETIF_F_GSO_SHIFT));
++	BUILD_BUG_ON(SKB_GSO_UDPV6_L4 != (NETIF_F_GSO_UDPV6_L4 >> NETIF_F_GSO_SHIFT));
+ 
+ 	return (features & feature) == feature;
+ }
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 46881d9..10b3264 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -596,6 +596,8 @@ enum {
+ 	SKB_GSO_UDP_L4 = 1 << 17,
+ 
+ 	SKB_GSO_FRAGLIST = 1 << 18,
++
++	SKB_GSO_UDPV6_L4 = 1 << 19,
+ };
+ 
+ #if BITS_PER_LONG > 32
+@@ -4454,6 +4456,12 @@ static inline bool skb_is_gso_tcp(const struct sk_buff *skb)
+ 	return skb_shinfo(skb)->gso_type & (SKB_GSO_TCPV4 | SKB_GSO_TCPV6);
+ }
+ 
++/* Note: Should be called only if skb_is_gso(skb) is true */
++static inline bool skb_is_gso_udp(const struct sk_buff *skb)
++{
++	return skb_shinfo(skb)->gso_type & (SKB_GSO_UDP_L4 | SKB_GSO_UDPV6_L4);
++}
++
+ static inline void skb_gso_reset(struct sk_buff *skb)
+ {
+ 	skb_shinfo(skb)->gso_size = 0;
+diff --git a/include/linux/udp.h b/include/linux/udp.h
+index aa84597..b151804 100644
+--- a/include/linux/udp.h
++++ b/include/linux/udp.h
+@@ -123,7 +123,7 @@ static inline void udp_cmsg_recv(struct msghdr *msg, struct sock *sk,
+ {
+ 	int gso_size;
+ 
+-	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
++	if (skb_is_gso_udp(skb)) {
+ 		gso_size = skb_shinfo(skb)->gso_size;
+ 		put_cmsg(msg, SOL_UDP, UDP_GRO, sizeof(gso_size), &gso_size);
+ 	}
+@@ -132,7 +132,7 @@ static inline void udp_cmsg_recv(struct msghdr *msg, struct sock *sk,
+ static inline bool udp_unexpected_gso(struct sock *sk, struct sk_buff *skb)
+ {
+ 	return !udp_sk(sk)->gro_enabled && skb_is_gso(skb) &&
+-	       skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4;
++	       skb_is_gso_udp(skb);
+ }
+ 
+ #define udp_portaddr_for_each_entry(__sk, list) \
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 47eef9a..a68f178 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3083,8 +3083,7 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 
+ 	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
+ 		/* udp gso_size delineates datagrams, only allow if fixed */
+-		if (!(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ||
+-		    !(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
++		if (!skb_is_gso_udp(skb) || !(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+ 			return -ENOTSUPP;
+ 	}
+ 
+@@ -3181,8 +3180,7 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+ 
+ 	if (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) {
+ 		/* udp gso_size delineates datagrams, only allow if fixed */
+-		if (!(skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) ||
+-		    !(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
++		if (!skb_is_gso_udp(skb) || !(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+ 			return -ENOTSUPP;
+ 	}
+ 
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index a5c11aa..f233567 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5263,7 +5263,7 @@ static unsigned int skb_gso_transport_seglen(const struct sk_buff *skb)
+ 		thlen = tcp_hdrlen(skb);
+ 	} else if (unlikely(skb_is_gso_sctp(skb))) {
+ 		thlen = sizeof(struct sctphdr);
+-	} else if (shinfo->gso_type & SKB_GSO_UDP_L4) {
++	} else if (shinfo->gso_type & (SKB_GSO_UDP_L4 | SKB_GSO_UDPV6_L4)) {
+ 		thlen = sizeof(struct udphdr);
+ 	}
+ 	/* UFO sets gso_size to the size of the fragmentation
+diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
+index 29d9691..df5cc92 100644
+--- a/net/ipv6/udp.c
++++ b/net/ipv6/udp.c
+@@ -1204,7 +1204,7 @@ static int udp_v6_send_skb(struct sk_buff *skb, struct flowi6 *fl6,
+ 
+ 		if (datalen > cork->gso_size) {
+ 			skb_shinfo(skb)->gso_size = cork->gso_size;
+-			skb_shinfo(skb)->gso_type = SKB_GSO_UDP_L4;
++			skb_shinfo(skb)->gso_type = SKB_GSO_UDPV6_L4;
+ 			skb_shinfo(skb)->gso_segs = DIV_ROUND_UP(datalen,
+ 								 cork->gso_size);
+ 		}
+diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+index 584157a..a02c9c3 100644
+--- a/net/ipv6/udp_offload.c
++++ b/net/ipv6/udp_offload.c
+@@ -39,13 +39,13 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
+ 		const struct ipv6hdr *ipv6h;
+ 		struct udphdr *uh;
+ 
+-		if (!(skb_shinfo(skb)->gso_type & (SKB_GSO_UDP | SKB_GSO_UDP_L4)))
++		if (!(skb_shinfo(skb)->gso_type & (SKB_GSO_UDP | SKB_GSO_UDPV6_L4)))
+ 			goto out;
+ 
+ 		if (!pskb_may_pull(skb, sizeof(struct udphdr)))
+ 			goto out;
+ 
+-		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
++		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDPV6_L4)
+ 			return __udp_gso_segment(skb, features);
+ 
+ 		/* Do software UFO. Complete and fill in the UDP checksum as HW cannot
+@@ -153,7 +153,7 @@ INDIRECT_CALLABLE_SCOPE int udp6_gro_complete(struct sk_buff *skb, int nhoff)
+ 	if (NAPI_GRO_CB(skb)->is_flist) {
+ 		uh->len = htons(skb->len - nhoff);
+ 
+-		skb_shinfo(skb)->gso_type |= (SKB_GSO_FRAGLIST|SKB_GSO_UDP_L4);
++		skb_shinfo(skb)->gso_type |= (SKB_GSO_FRAGLIST | SKB_GSO_UDPV6_L4);
+ 		skb_shinfo(skb)->gso_segs = NAPI_GRO_CB(skb)->count;
+ 
+ 		if (skb->ip_summed == CHECKSUM_UNNECESSARY) {
+-- 
+2.7.4
+
