@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D7B25AF6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686BC25AF66
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728408AbgIBPi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:38:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40780 "EHLO mail.kernel.org"
+        id S1728309AbgIBPil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726173AbgIBPC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:02:57 -0400
+        id S1727998AbgIBPC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:02:58 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BCC620773;
-        Wed,  2 Sep 2020 15:02:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5B83208DB;
+        Wed,  2 Sep 2020 15:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599058974;
-        bh=T6Yn3tddYjoK53UIen+h42dRX/nUCLrBYpMRIo/p/jg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mQl7IDeluJ5si0Krf40peleU/p5DkqAdXabeJfq4UXZPZwSy48Z41gWvswjYvSbx5
-         aCnXwidGvUsRyRp1ZAYL9ne3hMwdL855PygrXIQImnJbPLmSvEDr5qoT6m0s53XQR9
-         keKYV1/Tm/01ybiTAwuDEnp7WfqNPlBD9B1dVyhU=
+        s=default; t=1599058977;
+        bh=o1+f1VE6GmaJGLFVxsn/LXv0486ZWZM/lSBDhI/DcQ4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Zg+6VwVGKf4mF2qRwQjz9VYm5W+DTbCkyv+71FnEQMjt9Szaox0c8IVC1UvO5Keyh
+         l9619t/V8TjSfvztxcHQlmegZbzL74BrDRS/IMEIaq+DNhGyAH4KUGlG9GVkydlddt
+         vls4Q4zQKB/L5RZC9MLuXjb0lILiFsew+khx83A0=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Russell King <linux@armlinux.org.uk>,
         Shawn Guo <shawnguo@kernel.org>,
@@ -35,96 +35,274 @@ To:     Russell King <linux@armlinux.org.uk>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 1/3] clk: imx: Declare clock init functions in header acessible from mach
-Date:   Wed,  2 Sep 2020 17:02:42 +0200
-Message-Id: <20200902150244.14347-1-krzk@kernel.org>
+Subject: [PATCH 2/3] ARM: imx: Include global clock header
+Date:   Wed,  2 Sep 2020 17:02:43 +0200
+Message-Id: <20200902150244.14347-2-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200902150244.14347-1-krzk@kernel.org>
+References: <20200902150244.14347-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multiple files from arch/arm/mach-imx/ use clock init functions which
-are defined in the IMX clock drivers.  Declare them in globally
-accessible header to fix GCC warnings:
-
-  drivers/clk/imx/clk-imx21.c:122:74: warning: no previous prototype for 'mx21_clocks_init' [-Wmissing-prototypes]
+Do not declare in mach-imx functions defined in clock drivers but
+include the respective header.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/clk/imx/clk-imx21.c |  1 +
- drivers/clk/imx/clk-imx27.c |  1 +
- drivers/clk/imx/clk-imx31.c |  1 +
- drivers/clk/imx/clk-imx35.c |  1 +
- include/linux/clk/imx.h     | 11 +++++++++++
- 5 files changed, 15 insertions(+)
- create mode 100644 include/linux/clk/imx.h
+ arch/arm/mach-imx/common.h                  | 4 ----
+ arch/arm/mach-imx/mach-armadillo5x0.c       | 1 +
+ arch/arm/mach-imx/mach-bug.c                | 1 +
+ arch/arm/mach-imx/mach-imx27_visstrim_m10.c | 1 +
+ arch/arm/mach-imx/mach-kzm_arm11_01.c       | 1 +
+ arch/arm/mach-imx/mach-mx21ads.c            | 1 +
+ arch/arm/mach-imx/mach-mx27_3ds.c           | 1 +
+ arch/arm/mach-imx/mach-mx27ads.c            | 1 +
+ arch/arm/mach-imx/mach-mx31_3ds.c           | 1 +
+ arch/arm/mach-imx/mach-mx31ads.c            | 1 +
+ arch/arm/mach-imx/mach-mx31lilly.c          | 1 +
+ arch/arm/mach-imx/mach-mx31lite.c           | 1 +
+ arch/arm/mach-imx/mach-mx31moboard.c        | 1 +
+ arch/arm/mach-imx/mach-mx35_3ds.c           | 1 +
+ arch/arm/mach-imx/mach-pca100.c             | 1 +
+ arch/arm/mach-imx/mach-pcm037.c             | 1 +
+ arch/arm/mach-imx/mach-pcm043.c             | 1 +
+ arch/arm/mach-imx/mach-qong.c               | 1 +
+ arch/arm/mach-imx/mach-vpr200.c             | 1 +
+ 19 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-imx21.c b/drivers/clk/imx/clk-imx21.c
-index 077b4a7123ce..2105ef57b6bc 100644
---- a/drivers/clk/imx/clk-imx21.c
-+++ b/drivers/clk/imx/clk-imx21.c
-@@ -7,6 +7,7 @@
- 
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
-+#include <linux/clk/imx.h>
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
-diff --git a/drivers/clk/imx/clk-imx27.c b/drivers/clk/imx/clk-imx27.c
-index a3753067fc12..c0d8bcdf0719 100644
---- a/drivers/clk/imx/clk-imx27.c
-+++ b/drivers/clk/imx/clk-imx27.c
-@@ -2,6 +2,7 @@
+diff --git a/arch/arm/mach-imx/common.h b/arch/arm/mach-imx/common.h
+index 72c3fcc32910..fd80cdc9a479 100644
+--- a/arch/arm/mach-imx/common.h
++++ b/arch/arm/mach-imx/common.h
+@@ -34,10 +34,6 @@ void imx21_soc_init(void);
+ void imx27_soc_init(void);
+ void imx31_soc_init(void);
+ void imx35_soc_init(void);
+-int mx21_clocks_init(unsigned long lref, unsigned long fref);
+-int mx27_clocks_init(unsigned long fref);
+-int mx31_clocks_init(unsigned long fref);
+-int mx35_clocks_init(void);
+ struct platform_device *mxc_register_gpio(char *name, int id,
+ 	resource_size_t iobase, resource_size_t iosize, int irq, int irq_high);
+ void mxc_set_cpu_type(unsigned int type);
+diff --git a/arch/arm/mach-imx/mach-armadillo5x0.c b/arch/arm/mach-imx/mach-armadillo5x0.c
+index 4d9a56fb6989..e01411d4c53e 100644
+--- a/arch/arm/mach-imx/mach-armadillo5x0.c
++++ b/arch/arm/mach-imx/mach-armadillo5x0.c
+@@ -12,6 +12,7 @@
+ #include <linux/types.h>
+ #include <linux/init.h>
  #include <linux/clk.h>
- #include <linux/clk-provider.h>
- #include <linux/clkdev.h>
 +#include <linux/clk/imx.h>
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/of.h>
-diff --git a/drivers/clk/imx/clk-imx31.c b/drivers/clk/imx/clk-imx31.c
-index 4bb05e440cdd..25be4c292e44 100644
---- a/drivers/clk/imx/clk-imx31.c
-+++ b/drivers/clk/imx/clk-imx31.c
+ #include <linux/platform_device.h>
+ #include <linux/gpio.h>
+ #include <linux/smsc911x.h>
+diff --git a/arch/arm/mach-imx/mach-bug.c b/arch/arm/mach-imx/mach-bug.c
+index 3929208600f2..acd333245c04 100644
+--- a/arch/arm/mach-imx/mach-bug.c
++++ b/arch/arm/mach-imx/mach-bug.c
 @@ -6,6 +6,7 @@
- #include <linux/module.h>
- #include <linux/clk.h>
- #include <linux/clkdev.h>
+  * Copyright 2011 Denis 'GNUtoo' Carikli <GNUtoo@no-log.org>
+  */
+ 
 +#include <linux/clk/imx.h>
- #include <linux/io.h>
- #include <linux/err.h>
- #include <linux/of.h>
-diff --git a/drivers/clk/imx/clk-imx35.c b/drivers/clk/imx/clk-imx35.c
-index e595f559907f..baf8d236d6ef 100644
---- a/drivers/clk/imx/clk-imx35.c
-+++ b/drivers/clk/imx/clk-imx35.c
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+diff --git a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
+index 3da4c0920198..a334d2908b17 100644
+--- a/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
++++ b/arch/arm/mach-imx/mach-imx27_visstrim_m10.c
+@@ -9,6 +9,7 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <linux/clk/imx.h>
+ #include <linux/platform_device.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/i2c.h>
+diff --git a/arch/arm/mach-imx/mach-kzm_arm11_01.c b/arch/arm/mach-imx/mach-kzm_arm11_01.c
+index 63f7f78a77af..1835f6edd9b4 100644
+--- a/arch/arm/mach-imx/mach-kzm_arm11_01.c
++++ b/arch/arm/mach-imx/mach-kzm_arm11_01.c
+@@ -9,6 +9,7 @@
+  *  Copyright 2005-2007 Freescale Semiconductor, Inc. All Rights Reserved.
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/gpio.h>
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+diff --git a/arch/arm/mach-imx/mach-mx21ads.c b/arch/arm/mach-imx/mach-mx21ads.c
+index ec011e89eb9e..f77efe2b1de7 100644
+--- a/arch/arm/mach-imx/mach-mx21ads.c
++++ b/arch/arm/mach-imx/mach-mx21ads.c
 @@ -5,6 +5,7 @@
- #include <linux/mm.h>
+  *  Copyright 2006-2007 Freescale Semiconductor, Inc. All Rights Reserved.
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/platform_device.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/physmap.h>
+diff --git a/arch/arm/mach-imx/mach-mx27_3ds.c b/arch/arm/mach-imx/mach-mx27_3ds.c
+index 2db4475b7f85..c64c4dddbdce 100644
+--- a/arch/arm/mach-imx/mach-mx27_3ds.c
++++ b/arch/arm/mach-imx/mach-mx27_3ds.c
+@@ -11,6 +11,7 @@
+  *  - i.MX27 Platform Development Kit (i.MX27 PDK)
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/platform_device.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio/machine.h>
+diff --git a/arch/arm/mach-imx/mach-mx27ads.c b/arch/arm/mach-imx/mach-mx27ads.c
+index ba202f95bcdf..8a1fc8c23c48 100644
+--- a/arch/arm/mach-imx/mach-mx27ads.c
++++ b/arch/arm/mach-imx/mach-mx27ads.c
+@@ -4,6 +4,7 @@
+  *  Copyright (C) 2002 Shane Nay (shane@minirl.com)
+  *  Copyright 2006-2007 Freescale Semiconductor, Inc. All Rights Reserved.
+  */
++#include <linux/clk/imx.h>
+ #include <linux/gpio/driver.h>
+ /* Needed for gpio_to_irq() */
+ #include <linux/gpio.h>
+diff --git a/arch/arm/mach-imx/mach-mx31_3ds.c b/arch/arm/mach-imx/mach-mx31_3ds.c
+index 23e63d3b4c6a..13739a474e5e 100644
+--- a/arch/arm/mach-imx/mach-mx31_3ds.c
++++ b/arch/arm/mach-imx/mach-mx31_3ds.c
+@@ -3,6 +3,7 @@
+  *  Copyright 2008 Freescale Semiconductor, Inc. All Rights Reserved.
+  */
+ 
++#include <linux/clk/imx.h>
  #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/types.h>
+diff --git a/arch/arm/mach-imx/mach-mx31ads.c b/arch/arm/mach-imx/mach-mx31ads.c
+index 49783385bccf..5b1cde2b25e1 100644
+--- a/arch/arm/mach-imx/mach-mx31ads.c
++++ b/arch/arm/mach-imx/mach-mx31ads.c
+@@ -8,6 +8,7 @@
+ #include <linux/types.h>
+ #include <linux/init.h>
  #include <linux/clk.h>
 +#include <linux/clk/imx.h>
+ #include <linux/serial_8250.h>
+ #include <linux/gpio.h>
+ #include <linux/i2c.h>
+diff --git a/arch/arm/mach-imx/mach-mx31lilly.c b/arch/arm/mach-imx/mach-mx31lilly.c
+index 4b955ccc92cd..211564e332fb 100644
+--- a/arch/arm/mach-imx/mach-mx31lilly.c
++++ b/arch/arm/mach-imx/mach-mx31lilly.c
+@@ -14,6 +14,7 @@
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/clk.h>
++#include <linux/clk/imx.h>
+ #include <linux/gpio.h>
+ #include <linux/delay.h>
+ #include <linux/platform_device.h>
+diff --git a/arch/arm/mach-imx/mach-mx31lite.c b/arch/arm/mach-imx/mach-mx31lite.c
+index aaccf52f7ac1..fa58eff1dbff 100644
+--- a/arch/arm/mach-imx/mach-mx31lite.c
++++ b/arch/arm/mach-imx/mach-mx31lite.c
+@@ -6,6 +6,7 @@
+  *  Copyright (C) 2009 Daniel Mack <daniel@caiaq.de>
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+diff --git a/arch/arm/mach-imx/mach-mx31moboard.c b/arch/arm/mach-imx/mach-mx31moboard.c
+index 96845a4eaf57..f32173bb15ee 100644
+--- a/arch/arm/mach-imx/mach-mx31moboard.c
++++ b/arch/arm/mach-imx/mach-mx31moboard.c
+@@ -3,6 +3,7 @@
+  *  Copyright (C) 2008 Valentin Longchamp, EPFL Mobots group
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/gfp.h>
+diff --git a/arch/arm/mach-imx/mach-mx35_3ds.c b/arch/arm/mach-imx/mach-mx35_3ds.c
+index 802e0abe4568..2d369e1b5123 100644
+--- a/arch/arm/mach-imx/mach-mx35_3ds.c
++++ b/arch/arm/mach-imx/mach-mx35_3ds.c
+@@ -17,6 +17,7 @@
+  *  - i.MX35 Platform Development Kit (i.MX35 PDK)
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+diff --git a/arch/arm/mach-imx/mach-pca100.c b/arch/arm/mach-imx/mach-pca100.c
+index 27a3678e0658..5c90b11fe554 100644
+--- a/arch/arm/mach-imx/mach-pca100.c
++++ b/arch/arm/mach-imx/mach-pca100.c
+@@ -4,6 +4,7 @@
+  * Copyright (C) 2009 Sascha Hauer (kernel@pengutronix.de)
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/platform_device.h>
  #include <linux/io.h>
- #include <linux/clkdev.h>
- #include <linux/of.h>
-diff --git a/include/linux/clk/imx.h b/include/linux/clk/imx.h
-new file mode 100644
-index 000000000000..f6394d1b0a94
---- /dev/null
-+++ b/include/linux/clk/imx.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __LINUX_CLK_IMX_H
-+#define __LINUX_CLK_IMX_H
-+
-+int mx21_clocks_init(unsigned long lref, unsigned long href);
-+int mx27_clocks_init(unsigned long fref);
-+int mx31_clocks_init(unsigned long fref);
-+int mx35_clocks_init(void);
-+
-+#endif /* __LINUX_CLK_IMX_H */
+ #include <linux/i2c.h>
+diff --git a/arch/arm/mach-imx/mach-pcm037.c b/arch/arm/mach-imx/mach-pcm037.c
+index c7d23e9d4f8b..924052e52fc7 100644
+--- a/arch/arm/mach-imx/mach-pcm037.c
++++ b/arch/arm/mach-imx/mach-pcm037.c
+@@ -3,6 +3,7 @@
+  *  Copyright (C) 2008 Sascha Hauer, Pengutronix
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/dma-mapping.h>
+diff --git a/arch/arm/mach-imx/mach-pcm043.c b/arch/arm/mach-imx/mach-pcm043.c
+index 017a50113005..6bff62566ed6 100644
+--- a/arch/arm/mach-imx/mach-pcm043.c
++++ b/arch/arm/mach-imx/mach-pcm043.c
+@@ -6,6 +6,7 @@
+ #include <linux/types.h>
+ #include <linux/init.h>
+ 
++#include <linux/clk/imx.h>
+ #include <linux/platform_device.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/mtd/plat-ram.h>
+diff --git a/arch/arm/mach-imx/mach-qong.c b/arch/arm/mach-imx/mach-qong.c
+index 5b362da2dc09..d2a607ced1ce 100644
+--- a/arch/arm/mach-imx/mach-qong.c
++++ b/arch/arm/mach-imx/mach-qong.c
+@@ -3,6 +3,7 @@
+  *  Copyright (C) 2009 Ilya Yanok, Emcraft Systems Ltd, <yanok@emcraft.com>
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+diff --git a/arch/arm/mach-imx/mach-vpr200.c b/arch/arm/mach-imx/mach-vpr200.c
+index fae5a41b5f6c..2218d66b947e 100644
+--- a/arch/arm/mach-imx/mach-vpr200.c
++++ b/arch/arm/mach-imx/mach-vpr200.c
+@@ -8,6 +8,7 @@
+  * Original author: Fabio Estevam <fabio.estevam@freescale.com>
+  */
+ 
++#include <linux/clk/imx.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
 -- 
 2.17.1
 
