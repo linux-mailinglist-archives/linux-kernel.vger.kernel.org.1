@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AE125B121
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 535D625B133
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728809AbgIBQPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728525AbgIBQP3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:15:29 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC547C061245;
-        Wed,  2 Sep 2020 09:15:25 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id v12so6618391ljc.10;
-        Wed, 02 Sep 2020 09:15:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oSoo64G5hqYEcive3ArcdyG7UB+PlyeDXjvjpnqBKaM=;
-        b=ILZaHQFY0vCR6OfnekcdU650PGVAhhQKOY3NZeb4hb959Nnl7c4NCS70UaFQglHtg0
-         tmw8YQf7MSCpoNWKWXYyVbxXx9HEbddIZHaKYUV9Pzx4wU1LrUWxGrd51edl2xYBvMT/
-         jV86uJPe75MGE/bhTy838ASYBEy5+j5Wg8P4CflJrvO3zRqw4jTLUJG1wfuqZPtdqnZt
-         NfNvkNB0iKgTx14KotvME+b5EMO7YOPW0D31V87qwpP72GntFnRqcSSHyQXGMm+olhLS
-         zomK00J95pH7SXJEszpp2JCMRXLHU/8LeQ03Z317zOc43yNJHfFczmNAEWiEkbvO964m
-         zbTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oSoo64G5hqYEcive3ArcdyG7UB+PlyeDXjvjpnqBKaM=;
-        b=rrDGu+CDLTa8aqTE5yLzThYrkxM+iqw7Pgo1yLZjVxH1H4DfOOti+iQ71E2m0DuXaC
-         p2hI3mEHwTsi8SSjhJsQWU+WvnOenDR+lKLtzrAYFx6A0Ika/QdbibJC00loKLlnGWLJ
-         r+bMpnjCA0yCNflN/Q09ZK32UZALCysOj0+8AW4sU1iJsR/d+jqInCLdumwNEdwt4OQL
-         w/WX9pPaGZ5cSFry/1S1//tHzyESUXs0Lbzm82lQdO5LHIbK9gw36eizqxezqns+GE5E
-         YyF7U9uiB+N+TAdHTye7gT6s1/wg1JFKrmnE0iUumzBT3GAc8Rm28d8Fr9rybp2yplxo
-         RFWg==
-X-Gm-Message-State: AOAM533oN3yMA7NlxdNxTUjvsYibMASJpHwVClyOHI97GZ9mPIiKvv4o
-        PMedSQpnCZHQJ/VT+z2Lqz/XODj0tHnYKA==
-X-Google-Smtp-Source: ABdhPJxX1B1/iONuwBe8+9sI0WLVxdf/t3sGvls9Y/bh7JuyIHkc7shlyvSDR+KPPKhzMu2+2jeY+Q==
-X-Received: by 2002:a2e:4942:: with SMTP id b2mr3604841ljd.382.1599063322504;
-        Wed, 02 Sep 2020 09:15:22 -0700 (PDT)
-Received: from wasted.omprussia.ru ([2a00:1fa0:44ba:bd37:6990:9f35:8864:71b0])
-        by smtp.gmail.com with ESMTPSA id u14sm15245ljg.55.2020.09.02.09.15.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 09:15:21 -0700 (PDT)
-Subject: Re: [PATCH 15/19] md: use bdev_check_media_change
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <20200902141218.212614-1-hch@lst.de>
- <20200902141218.212614-16-hch@lst.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <566f5ca3-ec7b-b659-daff-f68699346010@gmail.com>
-Date:   Wed, 2 Sep 2020 19:15:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728847AbgIBQQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:16:40 -0400
+Received: from mx3.wp.pl ([212.77.101.9]:46386 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728825AbgIBQQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:16:25 -0400
+Received: (wp-smtpd smtp.wp.pl 12462 invoked from network); 2 Sep 2020 18:16:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1599063380; bh=TtJS+HIXNquG/4RotPjKkCWhjDhR7eI0A8TOlVPI5TE=;
+          h=From:To:Cc:Subject;
+          b=nQ4KIhzmDDfe4a/FvrHXxX3BvSkcD1f0JOrSU2NzeRDhYMzWYtozjemW9vO+aF26X
+           NYOsP0Ovy5kM6pPXCagjhWLy7AFu4C4yW7MK9SoHc0M35Zl+QFTe+jWeDqP5rCfOok
+           Tj2dW2HGeJQFpTCGFM/4g+M5bqg2yHHaH3rG6Y74=
+Received: from 188.146.102.178.nat.umts.dynamic.t-mobile.pl (HELO localhost) (antoni.przybylik@wp.pl@[188.146.102.178])
+          (envelope-sender <antoni.przybylik@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <gregkh@linuxfoundation.org>; 2 Sep 2020 18:16:20 +0200
+From:   Antoni Przybylik <antoni.przybylik@wp.pl>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Antoni Przybylik <antoni.przybylik@wp.pl>
+Subject: [PATCH v2 1/2] staging: gdm724x: gdm_tty: replaced macro with a function
+Date:   Wed,  2 Sep 2020 18:16:16 +0200
+Message-Id: <20200902161616.64638-1-antoni.przybylik@wp.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200902141218.212614-16-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: a67d8e816817753c22be7aa74a62fbd1
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0100004 [sdei]                               
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+This approach is more elegant and prevents some problems related to
+macros such as operator precedence in expanded expression.
 
-On 9/2/20 5:12 PM, Christoph Hellwig wrote:
+Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
+---
+ drivers/staging/gdm724x/gdm_tty.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> The pcd driver does not have a ->revalidate_disk method, so it can just
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index 6e813693a766..34a13d98c029 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -27,8 +27,6 @@
+ 
+ #define MUX_TX_MAX_SIZE 2048
+ 
+-#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
+-
+ static struct tty_driver *gdm_driver[TTY_MAX_COUNT];
+ static struct gdm *gdm_table[TTY_MAX_COUNT][GDM_TTY_MINOR];
+ static DEFINE_MUTEX(gdm_table_lock);
+@@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
+ static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
+ static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
+ 
++inline int gdm_tty_ready(struct gdm *gdm)
++{
++	return (gdm && gdm->tty_dev && gdm->port.count);
++}
++
+ static void gdm_port_destruct(struct tty_port *port)
+ {
+ 	struct gdm *gdm = container_of(port, struct gdm, port);
+@@ -119,7 +122,7 @@ static int gdm_tty_recv_complete(void *data,
+ {
+ 	struct gdm *gdm = tty_dev->gdm[index];
+ 
+-	if (!GDM_TTY_READY(gdm)) {
++	if (!gdm_tty_ready(gdm)) {
+ 		if (complete == RECV_PACKET_PROCESS_COMPLETE)
+ 			gdm->tty_dev->recv_func(gdm->tty_dev->priv_dev,
+ 						gdm_tty_recv_complete);
+@@ -146,7 +149,7 @@ static void gdm_tty_send_complete(void *arg)
+ {
+ 	struct gdm *gdm = arg;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return;
+ 
+ 	tty_port_tty_wakeup(&gdm->port);
+@@ -160,7 +163,7 @@ static int gdm_tty_write(struct tty_struct *tty, const unsigned char *buf,
+ 	int sent_len = 0;
+ 	int sending_len = 0;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	if (!len)
+@@ -187,7 +190,7 @@ static int gdm_tty_write_room(struct tty_struct *tty)
+ {
+ 	struct gdm *gdm = tty->driver_data;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	return WRITE_SIZE;
+-- 
+2.28.0
 
-   s/pcd/md/?
-
-> use bdev_check_media_change without any additional changes.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/md/md.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-[...]
-
-MBR, Sergei
