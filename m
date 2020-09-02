@@ -2,164 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED1425A502
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 07:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FAB25A4F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 07:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgIBFYK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Sep 2020 01:24:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42153 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgIBFYJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 01:24:09 -0400
-Received: from mail-pf1-f199.google.com ([209.85.210.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kDLE4-0005iX-RO
-        for linux-kernel@vger.kernel.org; Wed, 02 Sep 2020 05:22:29 +0000
-Received: by mail-pf1-f199.google.com with SMTP id 196so2021969pfx.21
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 22:22:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=wMqbe9fjKIQ0LZl5FhPinVHwgKbnNs2WDnA3NP2bLUs=;
-        b=leg6xCZX1xCDBMLoJEP7EC19edblew6HU4goWWacS+dVEPqPtpIUaIldB1sMBcJ0nu
-         +kegXQ2KIFeh5Uf50pBzsW8ZxXfBbyDmh5/Nppzpgs9HMkSFLu9zLN8NHO9wTCZmB5uY
-         f2/aOK6hoo5b8a+oIErM9Yaf9mITQcznPqk62nMNijstgy6C56FcHYFO/MyWqjk1nsuq
-         GpQfmuKWQctSLy66fQ4RlNwJAUnEuxumQBfyhxC/Vmd+0ungJsRK8owPOjNS6OaczItY
-         tFtBCYuUCdV+Q2wWWqL92TKLP4FKhXxuSw1Mji7eOvaOKGptwe75BNwjej83/Yah7Rjw
-         BF0w==
-X-Gm-Message-State: AOAM5311l+ZPJPVGdC33wg1Q342VMq63SiBjnMSTFVTFFX0QmgZ2/GVC
-        tjU3MRkUMi3XxonBlE3mbCJ6wvzNCmz21xYLM/k9VPj8jIYQNu5Pb+quxacsLNHjvCtQXUbyqER
-        TLOw7cIBGRhMme9qlwWaf7281jbbGZ+GM10AH0A2Axg==
-X-Received: by 2002:a17:90a:af82:: with SMTP id w2mr722038pjq.185.1599024146760;
-        Tue, 01 Sep 2020 22:22:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwViL3221ms+ijBjNKHR4OA2XAP9LtY9zANzX6D+Esz/RzAKY2p2wPTcMpDjCcWoSdimi1SAg==
-X-Received: by 2002:a17:90a:af82:: with SMTP id w2mr722004pjq.185.1599024146154;
-        Tue, 01 Sep 2020 22:22:26 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id t11sm3826352pfe.165.2020.09.01.22.22.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Sep 2020 22:22:25 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] drm/i915/lspcon: Limits to 8 bpc for RGB/YCbCr444
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20200831194820.GB6112@intel.com>
-Date:   Wed, 2 Sep 2020 13:22:22 +0800
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <F51DEE39-6D93-41A2-9EA4-C7FE94F04E72@canonical.com>
-References: <20200826052143.17607-1-kai.heng.feng@canonical.com>
- <20200826162458.GP6112@intel.com>
- <6D40F1E0-AFF6-4D38-BB9B-C52B43F83266@canonical.com>
- <20200831194820.GB6112@intel.com>
-To:     =?utf-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1726479AbgIBFWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 01:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgIBFWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 01:22:47 -0400
+Received: from sol.localdomain (ip-99-203-42-15.pools.spcsdns.net [99.203.42.15])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0CA6207DE;
+        Wed,  2 Sep 2020 05:22:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599024167;
+        bh=JJKHJkRpz5eKVERVhR4zQ6Eas6o1cq/9/J34GT56Fqk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A17oZHeIy21xMqGO3QQ4fvcFLKgGBBOwH3BSfU5U9Rpcg3olgTK6IkPnHGG5hBs6K
+         seRxozOR50jMVJ4GVC+aMz7Xgwv6CA0ffRj48F1iOiG39+KWS1A1eJkg4LHWOPIeLO
+         7ibo2ig52HIkpwAszEq/uh6L4xOTf7OoFskqEI/U=
+Date:   Tue, 1 Sep 2020 22:22:44 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linmiaohe <linmiaohe@huawei.com>
+Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "satyat@google.com" <satyat@google.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] block: Fix potential NULL pointer dereference in
+ __bio_crypt_clone()
+Message-ID: <20200902052244.GA54052@sol.localdomain>
+References: <1a8ac4099d274d2b994a417c034fa3c6@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a8ac4099d274d2b994a417c034fa3c6@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Sep 1, 2020, at 03:48, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
+On Wed, Sep 02, 2020 at 01:56:53AM +0000, linmiaohe wrote:
+> Eric Biggers <ebiggers@kernel.org> wrote:
+> >On Tue, Sep 01, 2020 at 07:59:21AM -0400, Miaohe Lin wrote:
+> >> mempool_alloc() may return NULL if __GFP_DIRECT_RECLAIM is not set in 
+> >> gfp_mask under memory pressure. So we should check the return value of
+> >> mempool_alloc() against NULL before dereference.
+> >> 
+> >> Fixes: a892c8d52c02 ("block: Inline encryption support for blk-mq")
+> >> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >
+> >It's intended that __GFP_DIRECT_RECLAIM always be set here.
+> >Do you have an example where it isn't set here?
 > 
-> On Thu, Aug 27, 2020 at 01:04:54PM +0800, Kai Heng Feng wrote:
->> Hi Ville,
->> 
->>> On Aug 27, 2020, at 12:24 AM, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
->>> 
->>> On Wed, Aug 26, 2020 at 01:21:15PM +0800, Kai-Heng Feng wrote:
->>>> LSPCON only supports 8 bpc for RGB/YCbCr444.
->>>> 
->>>> Set the correct bpp otherwise it renders blank screen.
->>> 
->>> Hmm. Does 
->>> git://github.com/vsyrjala/linux.git dp_downstream_ports_5
->>> work?
->>> 
->>> Actually better make that dp_downstream_ports_5^^^^^^^^^^^ aka.
->>> 54d846ce62a2 ("drm/i915: Do YCbCr 444->420 conversion via DP protocol
->>> converters") to avoid the experiments and hacks I have sitting on top.
->> 
->> Can you please rebase it to mainline master or drm-tip?
+> map_request() only pass GFP_ATOMIC to gfp_mask, though bio crypt is not used yet.
 > 
-> git://github.com/vsyrjala/linux.git dp_downstream_ports_6
-
-Yes this solves the issue. Thanks a lot!
-
-Any timeline this will get merged?
-
-Kai-Heng 
-
+> >Also, if this can indeed happen, then we need to make __bio_crypt_clone() (and bio_crypt_clone()) return a bool (or an error code) to indicate whether it succeeded or failed.  We can't just ignore the allocation failure.
+> >
+> >- Eric
 > 
-> I threw out the hacks/experimental stuff.
+> IMO, just the allocation failure is ok or we would break KABI.
+> Many thanks.
 > 
->> 
->> I am getting errors on the branch:
->> 
->>  DESCEND  objtool
->>  CALL    scripts/atomic/check-atomics.sh
->>  CALL    scripts/checksyscalls.sh
->>  CHK     include/generated/compile.h
->>  Building modules, stage 2.
->>  MODPOST 166 modules
->>  LD      arch/x86/boot/compressed/vmlinux
->> ld: arch/x86/boot/compressed/pgtable_64.o:(.bss+0x0): multiple definition of `__force_order'; arch/x86/boot/compressed/kaslr_64.o:(.bss+0x0): first defined here
->> ld: arch/x86/boot/compressed/head_64.o: warning: relocation in read-only section `.head.text'
->> ld: warning: creating DT_TEXTREL in a PIE
->> make[2]: *** [arch/x86/boot/compressed/Makefile:119: arch/x86/boot/compressed/vmlinux] Error 1
->> make[1]: *** [arch/x86/boot/Makefile:113: arch/x86/boot/compressed/vmlinux] Error 2
->> make: *** [arch/x86/Makefile:284: bzImage] Error 2
->> make: *** Waiting for unfinished jobs....
->> 
->> Kai-Heng
->> 
->>> 
->>>> 
->>>> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/2195
->>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->>>> ---
->>>> drivers/gpu/drm/i915/display/intel_lspcon.c | 3 ++-
->>>> 1 file changed, 2 insertions(+), 1 deletion(-)
->>>> 
->>>> diff --git a/drivers/gpu/drm/i915/display/intel_lspcon.c b/drivers/gpu/drm/i915/display/intel_lspcon.c
->>>> index b781bf469644..c7a44fcaade8 100644
->>>> --- a/drivers/gpu/drm/i915/display/intel_lspcon.c
->>>> +++ b/drivers/gpu/drm/i915/display/intel_lspcon.c
->>>> @@ -196,7 +196,8 @@ void lspcon_ycbcr420_config(struct drm_connector *connector,
->>>> 		crtc_state->port_clock /= 2;
->>>> 		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR444;
->>>> 		crtc_state->lspcon_downsampling = true;
->>>> -	}
->>>> +	} else
->>>> +		crtc_state->pipe_bpp = 24;
->>>> }
->>>> 
->>>> static bool lspcon_probe(struct intel_lspcon *lspcon)
->>>> -- 
->>>> 2.17.1
->>> 
->>> -- 
->>> Ville Syrjälä
->>> Intel
-> 
-> -- 
-> Ville Syrjälä
-> Intel
 
+Ignoring the allocation failure isn't okay, since it would cause encrypted I/O
+to fall back to unencrypted I/O, which would cause data corruption.
+
+Also, upstream doesn't have a stable KABI.
+
+I sent out a patch with what I have in mind; can you take a look?
+https://lkml.kernel.org/r/20200902051511.79821-1-ebiggers@kernel.org
+
+- Eric
