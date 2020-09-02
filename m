@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3A725AC2E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CDF25AC48
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgIBNnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
+        id S1727122AbgIBNsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgIBNbz (ORCPT
+        with ESMTP id S1727800AbgIBNcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:31:55 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AA3C061247
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:48 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id s13so4388212wmh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:48 -0700 (PDT)
+        Wed, 2 Sep 2020 09:32:39 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A796C061249
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:50 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m6so5243240wrn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=j/6HwVpyTsA7z9Vl2wmHYe3cw1hSDvl7Zz8h5YgOZds=;
-        b=LyuCjdHibhK+0g4JwLQQC6maDrtpPyPg/SI0nRi5aHeSeNN15mJJ/yZahBcCK5nisE
-         L1H9bET8yY/9jpbnUld3VVtC7cMedGjqSIrT0XoSJc72w1+iUZv9LJARI3dAS19DYBxG
-         Feo4JMfzzk9irfIIud1MSy/KIC0KkttNforlY2Ue4ODv4iuKsMEn1RxtLDLJgZvheVtp
-         cYPM+YuRiR9dWKqeVfEjlTMkL5kaw9Dt5Ik0f9mFtGoewTIcvUEh2zA0M757pK0h1c09
-         nT4eLgK7sxE3hXq/WzWek522Vv5AHuiKqx0VoJmloD96h61lIljGHj96iIFhgPqUBCrC
-         FB7Q==
+        bh=Dp9RzDfRoyGirVF9rnp5ThGeOxcnpzQ3a8srsa+1lUU=;
+        b=WeC0rKuBWXZP6A+4Id+ZPil00at0EmiJ4asfA+iD1ym96Gmxa0/Y0qhsBm+FdBdlUn
+         I/xdOfz9reyrToCMyI3WxdDTo+86BXSslEzXCcUOQmxb1ANwsi4RGHBNC6vR+Fo00v2y
+         PjE8FBFLFVZ0fQuUwdrtFFTxXikhxXKMR337+049gbCmKlkcbG7gZ3o4WUbm0UHWlcrA
+         FsJmSnjhUDiSHqCEIUrAQImVSOJ+vKGzZwD1joOAZ1q513bxLYpfp4xjyTQ6CattV+ya
+         svr8A4brwcRTktNZU+4K5FHmCzih3HsVm8uM966wqmuZVBrE8ixA0TzN3CGRHJr8FdhD
+         rFOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=j/6HwVpyTsA7z9Vl2wmHYe3cw1hSDvl7Zz8h5YgOZds=;
-        b=Pw6gGSA5IFlPHzLj5SAAn5c8llhuZd4x1OzbwTeYoDwgnJ6Nt1SD8qwUpRYf5vyM0b
-         3O2OexaVsn5YgJacIcSHyvgCT7cEPq7I29CTp+TL3HxSs4PIYMdmLWdSvxJtBAdHe2CZ
-         NvqnEm5Qh+0wnjOmWrGrnrD4NIusV5EKETL7SlFKDvPwbP1Ig9yDMCL0yM+CNUU2lPyb
-         4stQiF+Y8eWoxuFqFEabXPbqWuVtDJUgRnCJZoc9NMTZadqTkX0f+0JUuSvfZ48VH1qS
-         HxUTjOEuDbo8QRGyj/BmYm7TzrU7FnrSFjTDc6V9+OAnwqgj0HXWEy2hjCoAAI0wiOK3
-         jUrQ==
-X-Gm-Message-State: AOAM531DMtZQnG+N5gyf367c7krVNVHOWPEkVQFCOBybnu454J4e/2TB
-        l9w+A7T6fs8IpzwQr/KuKpjTnA==
-X-Google-Smtp-Source: ABdhPJxv1j236lvJcF+3Katowk9V9FtO/exIB7YHfzvekKndmDJpWZfyEeKGENDvsbOfw8GiAgUViA==
-X-Received: by 2002:a7b:c00c:: with SMTP id c12mr724107wmb.54.1599052907420;
-        Wed, 02 Sep 2020 06:21:47 -0700 (PDT)
+        bh=Dp9RzDfRoyGirVF9rnp5ThGeOxcnpzQ3a8srsa+1lUU=;
+        b=px25B1UvXZ9fh+rCw5hL8f7Reid15Lj3ZcjUJ5eNv7mZRVIOxTlxicQXOR/iVupgmM
+         htbb1u2CexYQem7hIzHDterlfvrxsIy/MJRv41v3IT6cDuoqhKj2ASRMwszKmny361WA
+         kqmwQxLMi48V6xKBvOS/eA+gg4QGB5cPn47V9e3i0vUAmFWnu2p0Qr/5OzWJSBOD4NGU
+         vUiavocniM+4CabH/q1ll+9hJqB2XHzRB1NJRWDJMwAjYLSJZGVlmcVnwxY0gOwUqPdq
+         A10eeP4Mx5ukfD40rVlrHXko6LCx9DEAQINVOCHHfXk5YiQX/d30g3xct8lFbDJ1kHgs
+         6FPQ==
+X-Gm-Message-State: AOAM532RZIDo/yGfSOyOzskjN7lZbeuNHwMg97OPit67uBc1/VnNAGaD
+        8dV1gM6VfIKHmT4ae+t2lUQJ0g==
+X-Google-Smtp-Source: ABdhPJytVOjNeECBJYodcv/4duI7Vpy8B8hgJ6H1Lzi3VUv+p+Z3EMBVFamYkAYQMk4LAlvEEcFt/A==
+X-Received: by 2002:adf:80c7:: with SMTP id 65mr7008202wrl.35.1599052908669;
+        Wed, 02 Sep 2020 06:21:48 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id q4sm2520403wru.65.2020.09.02.06.21.45
+        by smtp.gmail.com with ESMTPSA id q4sm2520403wru.65.2020.09.02.06.21.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 06:21:46 -0700 (PDT)
+        Wed, 02 Sep 2020 06:21:48 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -71,9 +71,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Will Deacon <will@kernel.org>,
         James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 1/6] perf tsc: Move out common functions from x86
-Date:   Wed,  2 Sep 2020 14:21:26 +0100
-Message-Id: <20200902132131.36304-2-leo.yan@linaro.org>
+Subject: [PATCH v3 2/6] perf tsc: Add rdtsc() for Arm64
+Date:   Wed,  2 Sep 2020 14:21:27 +0100
+Message-Id: <20200902132131.36304-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200902132131.36304-1-leo.yan@linaro.org>
 References: <20200902132131.36304-1-leo.yan@linaro.org>
@@ -82,217 +82,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Functions perf_read_tsc_conversion() and perf_event__synth_time_conv()
-should work as common functions rather than x86 specific, so move these
-two functions out from arch/x86 folder and place them into util/tsc.c.
-
-Since the function perf_event__synth_time_conv() will be linked in
-util/tsc.c, remove its weak version.
+The system register CNTVCT_EL0 can be used to retrieve the counter from
+user space.  Add rdtsc() for Arm64.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/arch/x86/util/tsc.c     | 73 +-----------------------------
- tools/perf/util/synthetic-events.c |  8 ----
- tools/perf/util/tsc.c              | 71 +++++++++++++++++++++++++++++
- 3 files changed, 72 insertions(+), 80 deletions(-)
+ tools/perf/arch/arm64/util/Build |  1 +
+ tools/perf/arch/arm64/util/tsc.c | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
+ create mode 100644 tools/perf/arch/arm64/util/tsc.c
 
-diff --git a/tools/perf/arch/x86/util/tsc.c b/tools/perf/arch/x86/util/tsc.c
-index 2f55afb14e1f..559365f8fe52 100644
---- a/tools/perf/arch/x86/util/tsc.c
-+++ b/tools/perf/arch/x86/util/tsc.c
-@@ -1,45 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <stdbool.h>
--#include <errno.h>
--
--#include <linux/stddef.h>
--#include <linux/perf_event.h>
--
- #include <linux/types.h>
--#include <asm/barrier.h>
--#include "../../../util/debug.h"
--#include "../../../util/event.h"
--#include "../../../util/synthetic-events.h"
--#include "../../../util/tsc.h"
--
--int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
--			     struct perf_tsc_conversion *tc)
--{
--	bool cap_user_time_zero;
--	u32 seq;
--	int i = 0;
--
--	while (1) {
--		seq = pc->lock;
--		rmb();
--		tc->time_mult = pc->time_mult;
--		tc->time_shift = pc->time_shift;
--		tc->time_zero = pc->time_zero;
--		cap_user_time_zero = pc->cap_user_time_zero;
--		rmb();
--		if (pc->lock == seq && !(seq & 1))
--			break;
--		if (++i > 10000) {
--			pr_debug("failed to get perf_event_mmap_page lock\n");
--			return -EINVAL;
--		}
--	}
- 
--	if (!cap_user_time_zero)
--		return -EOPNOTSUPP;
--
--	return 0;
--}
+diff --git a/tools/perf/arch/arm64/util/Build b/tools/perf/arch/arm64/util/Build
+index 5c13438c7bd4..b53294d74b01 100644
+--- a/tools/perf/arch/arm64/util/Build
++++ b/tools/perf/arch/arm64/util/Build
+@@ -1,6 +1,7 @@
+ perf-y += header.o
+ perf-y += machine.o
+ perf-y += perf_regs.o
++perf-y += tsc.o
+ perf-$(CONFIG_DWARF)     += dwarf-regs.o
+ perf-$(CONFIG_LOCAL_LIBUNWIND) += unwind-libunwind.o
+ perf-$(CONFIG_LIBDW_DWARF_UNWIND) += unwind-libdw.o
+diff --git a/tools/perf/arch/arm64/util/tsc.c b/tools/perf/arch/arm64/util/tsc.c
+new file mode 100644
+index 000000000000..53c6adf8ea6e
+--- /dev/null
++++ b/tools/perf/arch/arm64/util/tsc.c
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/types.h>
++
 +#include "../../../util/tsc.h"
- 
- u64 rdtsc(void)
- {
-@@ -49,36 +11,3 @@ u64 rdtsc(void)
- 
- 	return low | ((u64)high) << 32;
- }
--
--int perf_event__synth_time_conv(const struct perf_event_mmap_page *pc,
--				struct perf_tool *tool,
--				perf_event__handler_t process,
--				struct machine *machine)
--{
--	union perf_event event = {
--		.time_conv = {
--			.header = {
--				.type = PERF_RECORD_TIME_CONV,
--				.size = sizeof(struct perf_record_time_conv),
--			},
--		},
--	};
--	struct perf_tsc_conversion tc;
--	int err;
--
--	if (!pc)
--		return 0;
--	err = perf_read_tsc_conversion(pc, &tc);
--	if (err == -EOPNOTSUPP)
--		return 0;
--	if (err)
--		return err;
--
--	pr_debug2("Synthesizing TSC conversion information\n");
--
--	event.time_conv.time_mult  = tc.time_mult;
--	event.time_conv.time_shift = tc.time_shift;
--	event.time_conv.time_zero  = tc.time_zero;
--
--	return process(tool, &event, NULL, machine);
--}
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 89b390623b63..3ca5d9399680 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -2006,14 +2006,6 @@ int perf_event__synthesize_stat_events(struct perf_stat_config *config, struct p
- 	return 0;
- }
- 
--int __weak perf_event__synth_time_conv(const struct perf_event_mmap_page *pc __maybe_unused,
--				       struct perf_tool *tool __maybe_unused,
--				       perf_event__handler_t process __maybe_unused,
--				       struct machine *machine __maybe_unused)
--{
--	return 0;
--}
--
- extern const struct perf_header_feature_ops feat_ops[HEADER_LAST_FEATURE];
- 
- int perf_event__synthesize_features(struct perf_tool *tool, struct perf_session *session,
-diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
-index bfa782421cbd..9e3f04ddddf8 100644
---- a/tools/perf/util/tsc.c
-+++ b/tools/perf/util/tsc.c
-@@ -1,7 +1,16 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <errno.h>
 +
- #include <linux/compiler.h>
-+#include <linux/perf_event.h>
-+#include <linux/stddef.h>
- #include <linux/types.h>
- 
-+#include <asm/barrier.h>
-+
-+#include "event.h"
-+#include "synthetic-events.h"
-+#include "debug.h"
- #include "tsc.h"
- 
- u64 perf_time_to_tsc(u64 ns, struct perf_tsc_conversion *tc)
-@@ -25,6 +34,68 @@ u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc)
- 	       ((rem * tc->time_mult) >> tc->time_shift);
- }
- 
-+int perf_read_tsc_conversion(const struct perf_event_mmap_page *pc,
-+			     struct perf_tsc_conversion *tc)
++u64 rdtsc(void)
 +{
-+	bool cap_user_time_zero;
-+	u32 seq;
-+	int i = 0;
++	u64 val;
 +
-+	while (1) {
-+		seq = pc->lock;
-+		rmb();
-+		tc->time_mult = pc->time_mult;
-+		tc->time_shift = pc->time_shift;
-+		tc->time_zero = pc->time_zero;
-+		cap_user_time_zero = pc->cap_user_time_zero;
-+		rmb();
-+		if (pc->lock == seq && !(seq & 1))
-+			break;
-+		if (++i > 10000) {
-+			pr_debug("failed to get perf_event_mmap_page lock\n");
-+			return -EINVAL;
-+		}
-+	}
++	asm volatile("mrs %0, cntvct_el0" : "=r" (val));
 +
-+	if (!cap_user_time_zero)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
++	return val;
 +}
-+
-+int perf_event__synth_time_conv(const struct perf_event_mmap_page *pc,
-+				struct perf_tool *tool,
-+				perf_event__handler_t process,
-+				struct machine *machine)
-+{
-+	union perf_event event = {
-+		.time_conv = {
-+			.header = {
-+				.type = PERF_RECORD_TIME_CONV,
-+				.size = sizeof(struct perf_record_time_conv),
-+			},
-+		},
-+	};
-+	struct perf_tsc_conversion tc;
-+	int err;
-+
-+	if (!pc)
-+		return 0;
-+	err = perf_read_tsc_conversion(pc, &tc);
-+	if (err == -EOPNOTSUPP)
-+		return 0;
-+	if (err)
-+		return err;
-+
-+	pr_debug2("Synthesizing TSC conversion information\n");
-+
-+	event.time_conv.time_mult  = tc.time_mult;
-+	event.time_conv.time_shift = tc.time_shift;
-+	event.time_conv.time_zero  = tc.time_zero;
-+
-+	return process(tool, &event, NULL, machine);
-+}
-+
- u64 __weak rdtsc(void)
- {
- 	return 0;
 -- 
 2.17.1
 
