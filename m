@@ -2,63 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C0E25AFA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5147925AFFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728192AbgIBPnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:43:00 -0400
-Received: from m176150.mail.qiye.163.com ([59.111.176.150]:6807 "EHLO
-        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727804AbgIBNl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:41:28 -0400
-Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
-        by m176150.mail.qiye.163.com (Hmail) with ESMTP id AA9431A31B7;
-        Wed,  2 Sep 2020 21:17:02 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ADIABQBNDXyW8X9QUmo2xaoL.1.1599052622252.Hmail.bernard@vivo.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: =?UTF-8?B?W1JlLXNlbmRdW1BBVENIXSBncHUvZHJtOiByZW1vdmUgZHJtX21vZGVzZXRfbG9jayBwcm90ZWN0aW9uIGZvciBkcm1fZXJyb3I=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.124
-MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 2 Sep 2020 21:17:02 +0800 (GMT+08:00)
-From:   Bernard <bernard@vivo.com>
-Date:   Wed, 2 Sep 2020 21:17:02 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTUweSx0ZT0gZT0lLVkpOQkJLTklNSUlMT0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS09ISFVKS0tZBg++
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo*Mjo5Kjk1PyMCLEMjQiouFhRJ
-        AxoUN1VKVUpOQkJLTklNSUhKT09VMxYaEhdVGR4JFRoJHzsNEg0UVRgUFkVZV1kSC1lBWUpOTFVL
-        VUhKVUpJT1lXWQgBWUFIS0xNNwY+
-X-HM-Tid: 0a744ef6ab6f93b4kuwsaa9431a31b7
+        id S1728648AbgIBPsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726821AbgIBNa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:30:27 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEB8F20767;
+        Wed,  2 Sep 2020 13:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599052772;
+        bh=4nBXQMAOX8blqbEXUEK70S72k3vG/C/3WXxmVFWBar4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GDugYxKxMVWwExNCyjSt5NxZo2b+BOn20T2fVJ2yxRdYdrN6hepJZtB/s2/MXTW0s
+         r76jarj7gquPqJPY1fqrxk/hfsee9aJEAZWSNXMJklfkYIynP6Pbg0v3ImtCT4yjvt
+         FQV9h3RqWmVwUwCUZXWdYndzN4wtozFTyS1Tos+E=
+Date:   Wed, 2 Sep 2020 22:19:26 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     peterz@infradead.org
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Eddy_Wu@trendmicro.com, x86@kernel.org, davem@davemloft.net,
+        rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
+        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers
+ and make kretprobe lockless
+Message-Id: <20200902221926.f5cae5b4ad00b8d8f9ad99c7@kernel.org>
+In-Reply-To: <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+        <20200901190808.GK29142@worktop.programming.kicks-ass.net>
+        <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
+        <20200902070226.GG2674@hirez.programming.kicks-ass.net>
+        <20200902171755.b126672093a3c5d1b3a62a4f@kernel.org>
+        <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SW4gZnVuY3Rpb24gZHJtX2F0b21pY19oZWxwZXJfc2h1dGRvd24sIG1heWJlIHRoZXJlIGlzIG5v
-IG5lZWQKdG8gcHJvdGVjdCBEUk1fRVJST1IgbG9nIGluIERSTV9NT0RFU0VUX0xPQ0tfQUxMX0JF
-R0lOICYKRFJNX01PREVTRVRfTE9DS19BTExfRU5ELiBUaGlzIGNoYW5nZSBpcyB0byBtYWtlIGNv
-ZGUgcnVuIGEgYml0CmZhc3QuCgpTaWduZWQtb2ZmLWJ5OiBCZXJuYXJkIFpoYW8gPGJlcm5hcmRA
-dml2by5jb20+Ci0tLQogZHJpdmVycy9ncHUvZHJtL2RybV9hdG9taWNfaGVscGVyLmMgfCA0ICst
-LS0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2F0b21pY19oZWxwZXIuYyBiL2RyaXZlcnMvZ3B1
-L2RybS9kcm1fYXRvbWljX2hlbHBlci5jCmluZGV4IDg1ZDE2M2YxNjgwMS4uODkwMmZkNjMxNmZj
-IDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2F0b21pY19oZWxwZXIuYworKysgYi9k
-cml2ZXJzL2dwdS9kcm0vZHJtX2F0b21pY19oZWxwZXIuYwpAQCAtMzEwMCwxMiArMzEwMCwxMCBA
-QCB2b2lkIGRybV9hdG9taWNfaGVscGVyX3NodXRkb3duKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYp
-CiAJaW50IHJldDsKIAogCURSTV9NT0RFU0VUX0xPQ0tfQUxMX0JFR0lOKGRldiwgY3R4LCAwLCBy
-ZXQpOwotCiAJcmV0ID0gZHJtX2F0b21pY19oZWxwZXJfZGlzYWJsZV9hbGwoZGV2LCAmY3R4KTsK
-KwlEUk1fTU9ERVNFVF9MT0NLX0FMTF9FTkQoY3R4LCByZXQpOwogCWlmIChyZXQpCiAJCURSTV9F
-UlJPUigiRGlzYWJsaW5nIGFsbCBjcnRjJ3MgZHVyaW5nIHVubG9hZCBmYWlsZWQgd2l0aCAlaVxu
-IiwgcmV0KTsKLQotCURSTV9NT0RFU0VUX0xPQ0tfQUxMX0VORChjdHgsIHJldCk7CiB9CiBFWFBP
-UlRfU1lNQk9MKGRybV9hdG9taWNfaGVscGVyX3NodXRkb3duKTsKIAotLSAKMi4xNy4xCgoNCg0K
+On Wed, 2 Sep 2020 11:36:13 +0200
+peterz@infradead.org wrote:
+
+> On Wed, Sep 02, 2020 at 05:17:55PM +0900, Masami Hiramatsu wrote:
+> 
+> > > Ok, but then lockdep will yell at you if you have that enabled and run
+> > > the unoptimized things.
+> > 
+> > Oh, does it warn for all spinlock things in kprobes if it is unoptimized?
+> > Hmm, it has to be noted in the documentation.
+> 
+> Lockdep will warn about spinlocks used in NMI context that are also used
+> outside NMI context.
+
+OK, but raw_spin_lock_irqsave() will not involve lockdep, correct?
+
+> Now, for the kretprobe that kprobe_busy flag prevents the actual
+> recursion self-deadlock, but lockdep isn't smart enough to see that.
+> 
+> One way around this might be to use SINGLE_DEPTH_NESTING for locks when
+> we use them from INT3 context. That way they'll have a different class
+> and lockdep will not see the recursion.
+
+Hmm, so lockdep warns only when it detects the spinlock in NMI context,
+and int3 is now always NMI, thus all spinlock (except raw_spinlock?)
+in kprobe handlers should get warned, right?
+I have tested this series up to [16/21] with optprobe disabled, but
+I haven't see the lockdep warnings.
+
+> 
+> pre_handler_kretprobe() is always called from INT3, right?
+
+No, not always, it can be called from optprobe (same as original code
+context) or ftrace handler.
+But if you set 0 to /proc/sys/debug/kprobe_optimization, and compile
+the kernel without function tracer, it should always be called from
+INT3.
+
+> 
+> Something like the below might then work...
+
+OK, but I would like to reproduce the lockdep warning on this for
+confirmation.
+
+Thank you,
+
+> 
+> ---
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 287b263c9cb9..b78f4fe08e86 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1255,11 +1255,11 @@ __acquires(hlist_lock)
+>  NOKPROBE_SYMBOL(kretprobe_hash_lock);
+>  
+>  static void kretprobe_table_lock(unsigned long hash,
+> -				 unsigned long *flags)
+> +				 unsigned long *flags, int nesting)
+>  __acquires(hlist_lock)
+>  {
+>  	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
+> -	raw_spin_lock_irqsave(hlist_lock, *flags);
+> +	raw_spin_lock_irqsave_nested(hlist_lock, *flags, nesting);
+>  }
+>  NOKPROBE_SYMBOL(kretprobe_table_lock);
+>  
+> @@ -1326,7 +1326,7 @@ void kprobe_flush_task(struct task_struct *tk)
+>  	INIT_HLIST_HEAD(&empty_rp);
+>  	hash = hash_ptr(tk, KPROBE_HASH_BITS);
+>  	head = &kretprobe_inst_table[hash];
+> -	kretprobe_table_lock(hash, &flags);
+> +	kretprobe_table_lock(hash, &flags, 0);
+>  	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>  		if (ri->task == tk)
+>  			recycle_rp_inst(ri, &empty_rp);
+> @@ -1361,7 +1361,7 @@ static void cleanup_rp_inst(struct kretprobe *rp)
+>  
+>  	/* No race here */
+>  	for (hash = 0; hash < KPROBE_TABLE_SIZE; hash++) {
+> -		kretprobe_table_lock(hash, &flags);
+> +		kretprobe_table_lock(hash, &flags, 0);
+>  		head = &kretprobe_inst_table[hash];
+>  		hlist_for_each_entry_safe(ri, next, head, hlist) {
+>  			if (ri->rp == rp)
+> @@ -1950,7 +1950,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>  
+>  	/* TODO: consider to only swap the RA after the last pre_handler fired */
+>  	hash = hash_ptr(current, KPROBE_HASH_BITS);
+> -	raw_spin_lock_irqsave(&rp->lock, flags);
+> +	raw_spin_lock_irqsave_nested(&rp->lock, flags, SINGLE_DEPTH_NESTING);
+>  	if (!hlist_empty(&rp->free_instances)) {
+>  		ri = hlist_entry(rp->free_instances.first,
+>  				struct kretprobe_instance, hlist);
+> @@ -1961,7 +1961,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>  		ri->task = current;
+>  
+>  		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
+> -			raw_spin_lock_irqsave(&rp->lock, flags);
+> +			raw_spin_lock_irqsave_nested(&rp->lock, flags, SINGLE_DEPTH_NESTING);
+>  			hlist_add_head(&ri->hlist, &rp->free_instances);
+>  			raw_spin_unlock_irqrestore(&rp->lock, flags);
+>  			return 0;
+> @@ -1971,7 +1971,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+>  
+>  		/* XXX(hch): why is there no hlist_move_head? */
+>  		INIT_HLIST_NODE(&ri->hlist);
+> -		kretprobe_table_lock(hash, &flags);
+> +		kretprobe_table_lock(hash, &flags, SINGLE_DEPTH_NESTING);
+>  		hlist_add_head(&ri->hlist, &kretprobe_inst_table[hash]);
+>  		kretprobe_table_unlock(hash, &flags);
+>  	} else {
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
