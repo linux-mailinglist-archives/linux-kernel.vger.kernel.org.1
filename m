@@ -2,190 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C0E25AE6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E850E25AE77
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgIBPJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:09:19 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:46063 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727999AbgIBPIU (ORCPT
+        id S1727923AbgIBPKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:10:51 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59602 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727907AbgIBPKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:08:20 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 7C661D60;
-        Wed,  2 Sep 2020 11:08:18 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 02 Sep 2020 11:08:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=4N199FQkobK337JX6NaJjdNJ1Tw
-        KdtxIk6GC3btyUAo=; b=SrtOi2z2ChvWDa5tfPeHqVKrp4mbVQpRikdJdgBfpOz
-        o0YaLxKUyDs1BIzNFBguzce7mRb94WVHA1yC/MZ3LsaxstPiOr89MogRkE/s3DOs
-        vkTSgdxq/RrP/2H3N4EEGFl4SqAG6PxC7oHkdepfrl8rEkS6Y4cGZfBotCPIwFzM
-        EHGILdmS5wl7H/a75BVLRLUuEqRMdL9+iCltpqDdqVuxkJalXizEsX18siL4aoxk
-        o5xXZkSLPBpoHZ3M8u9gGhRPRhUeeg2bfehXJE6ay6r0sZJcEbS8WeFyTVkNhkEO
-        hO9QsnheUtvinvBx1w1FN77YreldZTmsJ2ek0QF05Nw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4N199F
-        QkobK337JX6NaJjdNJ1TwKdtxIk6GC3btyUAo=; b=N1VBIZ8P6SLnobJU5o2z+L
-        /gBzJFAGdFyxD8WbjLE47L5YubPdoEGOMccvcUDsCEqb/6sZOdhrOqbdbdE8lEIk
-        gvNPqygOfMGKrIXSoDC1dCvcjj9Gc4/jAGbeyYwjDrJ5D0tLfEbdkJE3UzbYz4vE
-        ODCiOUPgFied2mUnwMpa8sRhf6jg9zgq47CUw5S2Om7F6Ftqe98spSNwnOzuld6f
-        Ebrzo+QMFGYzHeTeNH3vCXZSVlmF7FHtoMJxnFxiXd36EQqKLi8mqC83bksMSlWc
-        7RlJhw168GIEQNtavO/sN5rFX/68GpCylawSRY2e+hmZi1PqUELicQKDsgooU54Q
-        ==
-X-ME-Sender: <xms:YbVPX0tn4g273BTUULQRHkn4ufmZ9zN1ANfhUmNPzGbbe3GRgExqaQ>
-    <xme:YbVPXxd5Td1Ed0ywekAPmQC60Lj17zbgphkyEimtk37fQRx-YFy4RQkcpZSXkp9ym
-    iUo_-fWi1UbAsFswo8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefledgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:YbVPX_yQW1-15_0K8tyEzjx330qF6-uu8ZvJFugV1yLpSVGk1reRJw>
-    <xmx:YbVPX3OPclOrPEhqAFU-I3rm-fyZO944RbCYAS2pucHfuq-s75GgjQ>
-    <xmx:YbVPX08q8Kg0jZpFQN7eUVBz2o5SKVfjZMoFISVu9BOt99fB0Pjl4A>
-    <xmx:YrVPX4SwQFfQ9HT7BLtIKCd5cCJDGeVb91P3GWNky8hHM3UkPwfNoFsOF_8>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DC828328005E;
-        Wed,  2 Sep 2020 11:08:16 -0400 (EDT)
-Date:   Wed, 2 Sep 2020 17:08:15 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     Tim Gover <tim.gover@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Wed, 2 Sep 2020 11:10:14 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 082F2gkI099692;
+        Wed, 2 Sep 2020 11:10:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=idFinTFt53LnBLvBNw1JCHMSrI/TFogzCHjKFuTZk7w=;
+ b=fHwgFWQe4VRFJtY3lLw2/Gx3mIZkKhdJ2OAHVHG+OQ/C6YEOLjhjClMXttv5EOPFJx9j
+ tZwvyT85dnEgULjJ3YYSSDOy7tzbkJfYHNyOyeMQHdA2jcPXj+eQtsaBKAHfYbUI8xva
+ miaUz49cOt5Rr8maAgHW1XQMa7ZuxqTp0MuKGUfPe6rv83mTzoI7mXnzqJko+K+9eILe
+ 8lVBmfkCG4o7Rkeumgk9cTr504HFUUS9JObkPxBXTZqsHQcHGbUVeOGvdiBxaFC9daMn
+ 8tYmMLBuu522NrXBabqJTgn4Ba5kFaxV4H4GjxJVaz0NtRxK678lnFQbZtSJxOjiQQXF xQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33adk58h5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Sep 2020 11:10:06 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 082F7M88031536;
+        Wed, 2 Sep 2020 15:10:03 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 337en8cuk0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Sep 2020 15:10:03 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 082FA0BO30409090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Sep 2020 15:10:00 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A18952052;
+        Wed,  2 Sep 2020 15:10:00 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.44.120])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 284C05204F;
+        Wed,  2 Sep 2020 15:10:00 +0000 (GMT)
+Date:   Wed, 2 Sep 2020 17:09:58 +0200
+From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eric Anholt <eric@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 29/78] drm/vc4: crtc: Add a delay after disabling the
- PixelValve output
-Message-ID: <20200902150815.kw3nynnlvgrrcygc@gilmour.lan>
-References: <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
- <a1f22aadc60a2f32022831a6348c8bbd6e1954c3.1594230107.git-series.maxime@cerno.tech>
- <CAPY8ntBLWrfagZ5-kQz+5Mkw4_KaaTP63_L3D4owJAfA5kFpzw@mail.gmail.com>
- <20200729144251.us6a2pgkjjmm53ov@gilmour.lan>
- <ff6eca99-d98e-5b50-8b74-bba82928dda2@i2se.com>
- <20200825150606.utlynhzo664bwksy@gilmour.lan>
- <b41b066a-2d23-8ac3-be0a-c686f3954284@i2se.com>
- <20200901095829.64a5hjghf3mlsyvo@gilmour.lan>
- <27a549fe-e38d-f9a2-2677-ae5b5dc1aa45@i2se.com>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        <linux-s390@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [RFC PATCH 0/2] mm/gup: fix gup_fast with dynamic page table
+ folding
+Message-ID: <20200902170958.09be0c3e@thinkpad>
+In-Reply-To: <20200902142437.5f39b4bb@thinkpad>
+References: <20200828140314.8556-1-gerald.schaefer@linux.ibm.com>
+        <9071c9fa-ba6a-90dc-2d7a-8b155141d890@de.ibm.com>
+        <20200831121553.8be5dcdbdbc5256846ac513e@linux-foundation.org>
+        <20200901194020.418da486@thinkpad>
+        <91988792-069c-31a6-7840-0122357538c7@nvidia.com>
+        <20200902142437.5f39b4bb@thinkpad>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cdchspgt6i3o3s2q"
-Content-Disposition: inline
-In-Reply-To: <27a549fe-e38d-f9a2-2677-ae5b5dc1aa45@i2se.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-02_09:2020-09-02,2020-09-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0 suspectscore=0
+ spamscore=0 phishscore=0 adultscore=0 priorityscore=1501 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020144
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2 Sep 2020 14:24:37 +0200
+Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
 
---cdchspgt6i3o3s2q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Tue, 1 Sep 2020 16:22:22 -0700
+> John Hubbard <jhubbard@nvidia.com> wrote:
+> 
+> > On 9/1/20 10:40 AM, Gerald Schaefer wrote:
+> > > On Mon, 31 Aug 2020 12:15:53 -0700
+> > > Andrew Morton <akpm@linux-foundation.org> wrote:
+> > ...
+> > > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> > > index e8cbc2e795d5..43dacbce823f 100644
+> > > --- a/include/linux/pgtable.h
+> > > +++ b/include/linux/pgtable.h
+> > > @@ -681,6 +681,38 @@ static inline int arch_unmap_one(struct mm_struct *mm,
+> > >   })
+> > >   #endif
+> > >   
+> > > +/*
+> > > + * With dynamic page table levels on s390, the static pXd_addr_end() functions
+> > > + * will not return corresponding dynamic boundaries. This is no problem as long
+> > > + * as only pXd pointers are passed down during page table walk, because
+> > > + * pXd_offset() will simply return the given pointer for folded levels, and the
+> > > + * pointer iteration over a range simply happens at the correct page table
+> > > + * level.
+> > > + * It is however a problem with gup_fast, or other places walking the page
+> > > + * tables w/o locks using READ_ONCE(), and passing down the pXd values instead
+> > > + * of pointers. In this case, the pointer given to pXd_offset() is a pointer to
+> > > + * a stack variable, which cannot be used for pointer iteration at the correct
+> > > + * level. Instead, the iteration then has to happen by going up to pgd level
+> > > + * again. To allow this, provide pXd_addr_end_folded() functions with an
+> > > + * additional pXd value parameter, which can be used on s390 to determine the
+> > > + * folding level and return the corresponding boundary.
+> > 
+> > Ah OK, I finally see what you have in mind. And as Jason noted, if we just
+> > pass an additional parameter to pXd_addr_end() that's going to be
+> > cleaner. And doing so puts this in line with other page table
+> > abstractions that also carry more information than some architectures
+> > need. For example, on x86, set_pte_at() ignores the first two
+> > parameters:
+> > 
+> > #define set_pte_at(mm, addr, ptep, pte)	native_set_pte_at(mm, addr, ptep, pte)
+> > 
+> > static inline void native_set_pte_at(struct mm_struct *mm, unsigned long addr,
+> > 				     pte_t *ptep , pte_t pte)
+> > {
+> > 	native_set_pte(ptep, pte);
+> > }
+> > 
+> > This type of abstraction has worked out very well, IMHO.
+> 
+> Yes, it certainly feels like the right way to do it, and it would
+> not affect other archs in a functional way. It would however introduce
+> a subtle change for s390 behavior on _all_ page table walkers, not
+> just the READ_ONCE gup_fast path, i.e. it changes the level at which
+> the pointer iteration is done. Of course, that *should* not have any
+> functional issues, or else it would also be broken in gup_fast, but
+> in this area we often were wrong with should / could assumptions...
 
-On Tue, Sep 01, 2020 at 06:31:07PM +0200, Stefan Wahren wrote:
-> Hi Maxime,
->=20
-> Am 01.09.20 um 11:58 schrieb Maxime Ripard:
-> > Hi Stefan
-> >
-> > On Tue, Aug 25, 2020 at 11:30:58PM +0200, Stefan Wahren wrote:
-> >> Am 25.08.20 um 17:06 schrieb Maxime Ripard:
-> >>> Hi Stefan,
-> >>>
-> >>> On Wed, Jul 29, 2020 at 05:50:31PM +0200, Stefan Wahren wrote:
-> >>>> Am 29.07.20 um 16:42 schrieb Maxime Ripard:
-> >>>>> Hi,
-> >>>>>
-> >>>>> On Wed, Jul 29, 2020 at 03:09:21PM +0100, Dave Stevenson wrote:
-> >>>>>> On Wed, 8 Jul 2020 at 18:43, Maxime Ripard <maxime@cerno.tech> wro=
-te:
-> >>>>>>> In order to avoid pixels getting stuck in the (unflushable) FIFO =
-between
-> >>>>>>> the HVS and the PV, we need to add some delay after disabling the=
- PV output
-> >>>>>>> and before disabling the HDMI controller. 20ms seems to be good e=
-nough so
-> >>>>>>> let's use that.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> >>>>>>> ---
-> >>>>>>>  drivers/gpu/drm/vc4/vc4_crtc.c | 2 ++
-> >>>>>>>  1 file changed, 2 insertions(+)
-> >>>>>>>
-> >>>>>>> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4=
-/vc4_crtc.c
-> >>>>>>> index d0b326e1df0a..7b178d67187f 100644
-> >>>>>>> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
-> >>>>>>> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> >>>>>>> @@ -403,6 +403,8 @@ static void vc4_crtc_atomic_disable(struct dr=
-m_crtc *crtc,
-> >>>>>>>         ret =3D wait_for(!(CRTC_READ(PV_V_CONTROL) & PV_VCONTROL_=
-VIDEN), 1);
-> >>>>>>>         WARN_ONCE(ret, "Timeout waiting for !PV_VCONTROL_VIDEN\n"=
-);
-> >>>>>>>
-> >>>>>>> +       mdelay(20);
-> >>>>>> mdelay for 20ms seems a touch unfriendly as it's a busy wait. Can =
-we
-> >>>>>> not msleep instead?
-> >>>>> Since the timing was fairly critical, sleeping didn't seem like a g=
-ood
-> >>>>> solution since there's definitely some chance you overshoot and end=
- up
-> >>>>> with a higher time than the one you targeted.
-> >>>> usleep_range(min, max) isn't a solution?
-> >>> My understanding of usleep_range was that you can still overshoot, ev=
-en
-> >>> though it's backed by an HR timer so the resolution is not a jiffy. A=
-re
-> >>> we certain that we're going to be in that range?
-> >> you are right there is no guarantee about the upper wake up time.
-> >>
-> >> And it's not worth the effort to poll the FIFO state until its empty
-> >> (using 20 ms as timeout)?
-> > I know this isn't really a great argument there, but getting this to
-> > work has been quite painful, and the timing is very sensitive. If we
-> > fail to wait for enough time, there's going to be a pixel shift that we
-> > can't get rid of unless we reboot, which is pretty bad (and would fail
-> > any CI test that checks for the output integrity).
-> >
-> > I know busy-looping for 20ms isn't ideal, but it's not really in a
-> > hot-path (it's only done when changing a mode), with the sync time of
-> > the display likely to be much more than that, and if it can avoid having
-> > to look into it ever again or avoid random failures, I'd say it's worth
-> > it.
->=20
-> i don't want to delay this series.
->=20
-> Could you please add a small comment to the delay to clarify the timing
-> is very sensitive?
+Hmm, not so sure about that "not affect other archs", that might also
+be one of those *should*s. Consider this change to mm/mlock.c from
+our current internal generalization work, for example:
 
-I will, thanks!
-Maxime
+diff --git a/mm/mlock.c b/mm/mlock.c
+index 93ca2bf30b4f..dbde97f317d4 100644
+--- a/mm/mlock.c
++++ b/mm/mlock.c
+@@ -374,8 +374,12 @@ static unsigned long __munlock_pagevec_fill(struct pagevec *pvec,
+ 			struct vm_area_struct *vma, struct zone *zone,
+ 			unsigned long start, unsigned long end)
+ {
+-	pte_t *pte;
+ 	spinlock_t *ptl;
++	pte_t *pte;
++	pmd_t *pmd;
++	pud_t *pud;
++	p4d_t *p4d;
++	pgd_t *pgd;
+ 
+ 	/*
+ 	 * Initialize pte walk starting at the already pinned page where we
+@@ -384,10 +388,14 @@ static unsigned long __munlock_pagevec_fill(struct pagevec *pvec,
+ 	 */
+ 	pte = get_locked_pte(vma->vm_mm, start,	&ptl);
+ 	/* Make sure we do not cross the page table boundary */
+-	end = pgd_addr_end(start, end);
+-	end = p4d_addr_end(start, end);
+-	end = pud_addr_end(start, end);
+-	end = pmd_addr_end(start, end);
++	pgd = pgd_offset(vma->vm_mm, start);
++	end = pgd_addr_end(*pgd, start, end);
++	p4d = p4d_offset(pgd, start);
++	end = p4d_addr_end(*p4d, start, end);
++	pud = pud_offset(p4d, start);
++	end = pud_addr_end(*pud, start, end);
++	pmd = pmd_offset(pud, start);
++	end = pmd_addr_end(*pmd, start, end);
+ 
+ 	/* The page next to the pinned page is the first we will try to get */
+ 	start += PAGE_SIZE;
 
---cdchspgt6i3o3s2q
-Content-Type: application/pgp-signature; name="signature.asc"
+I guess we *could* assume that all the extra pXd_offset() calls and
+also the de-referencing would be optimized out by the compiler for other
+archs, but it is one example where my gut tells me that this might not
+be so trivial and w/o unwanted effects after all.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0+1XwAKCRDj7w1vZxhR
-xTExAQDs1BYdGeS/lvk546x1sgn6AifEwOlrVxDSeMO/QWhu3wD/RfIhHhh1s1j1
-DfqNBjaatkPCQAZkursDakHjOFFOYQI=
-=bDzq
------END PGP SIGNATURE-----
-
---cdchspgt6i3o3s2q--
+Anyway, stay tuned, we will send a v2 of this RFC with going the
+"modify pXd_addr_end" approach, including the minimal gup-specific
+patch plus on top the generalization work. Then we might get a better
+picture of this.
