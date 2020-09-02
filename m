@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CBF25A693
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:24:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867FA25A6A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgIBHYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 03:24:38 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:33840 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgIBHYf (ORCPT
+        id S1726285AbgIBHZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 03:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727796AbgIBHZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:24:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1599031475; x=1630567475;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=jcMPqePsqFywPxqGwbexg78RKYFYgoEg3HY/S0kRKg9YeiJUZFB4SgdD
-   cQkzIv1pCyR02NgOwPoRfMwBp8EeBg8h9C72xod9X//47yGHQ8alsEviW
-   XXdopUD+mhWZ0g0sSMe8zErmDreLRJxiETCC6h+T0CqXCP7DsRVDuFvTu
-   lOXNSUdRXO2ONxP0dqZEfG3ozpnbvYJbmYMfMh5Nq473beMaYPSmxApzz
-   lUhuuWV+LDH2l9qZI5H1k1MkUuVYNoUGEMR8K7qxgC+Ghne6/R8uZ/bQk
-   m/BDajcFJi0RD0AN0Kc+hSovftwPS9542Xe5ejhbmpiBHpnddsIk/T1kQ
-   Q==;
-IronPort-SDR: e+2NK0Rm0H8+t7/xXqCbp5NIzKL7O1JPSAZ+enQuzI638BywQZI80hoAZ37K8Jgai+smuvel3+
- YC6Y10oS3T8y4O5HylgnrSXPHMpL5+k4hZrWa7NBgW99lMBZJW3gkIbB0zDZMVY3/sN0+0fLYF
- mSMT0CX5c2gc45MtBkOaFzt2B89kdet5mrVSr8/oV47Or52EAu1q30qEDHam0adgIPFGvxwzyY
- 314f2pKMiljuQdiComLJqG7D8THr+VbWjHfDR1hLn4LjwLNK9kXY6heVb+TF263V/Y9iCN4IHH
- qpo=
-X-IronPort-AV: E=Sophos;i="5.76,381,1592841600"; 
-   d="scan'208";a="150728245"
-Received: from mail-mw2nam10lp2103.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.103])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Sep 2020 15:24:33 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HqPhMKNs3dQTZin6FULjMOXpyYQyT1wYJbdIb0qekPcD42I5nNM6N45/COA2nJHqjpE2laANdEIykB+zMqGmcNntjsdkFNpDaUBa98xsEDq0p4SEj9mmwFZFSIl9jmea5K4+wVj7NUFmj03r7yKcW1DQY24RnK2pQl0E6gapXeFuO6FjpSva5bGXn+zOvTLIDFAq0Nrfe6QUhH3B/vo9ztu/YvgYDEtmqIvBEzkHQqRyW36d3SFKIVBJ2cV9rAPLfcsoMBLPe5vpPqeij5RhyFY0nhS9tSGBKdmwjkpoucx/Bq93iCgvFt8wpHFNSrIvBchRjA3fTeYYYh+ImqU7Tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=XSWcGXdxawjgKRiW0S0B+3gfWZgqrtiCw8SQGmNA1o8e8ZS7rjpAb0Y916lYbdLyrASgoGtG8wWFOKbQR0C7JbRK4oZcMF4n9Tj1V1NOT2kJs9zJpQDB0UwTaFCSOLMNR+M3EFRDjcmylHWjNAu6RJG4CGpjDs8n4LMnYXK6dpiIxk1aWqO1iKFJhufPvcDdIeZd32GPBOTbclXntkt9eBIffEPJ3g8GEftWegP2qhk99l1OxBxuv/1vtjWG51ggwtDAFq6JIo3yN9qiuAvcVmg5rkMwrvN/0cARHOoWbKwjBETj4xHmbHEYou30OTCqPs7tSBzCBX7TKZEc1My0gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=iyPaOVGQQEHDkSC5loJyypyAazcLmXECdlt11aPNkgkt0Be7vJOcibCTSEx5iXJ0CFQJYnX6lJuahvLGNt+uKTf7oJTVvafLiwwLSMDWBdTvWmn2fUP/5Ssd6iyYuKQuKAyPI206OrZ7dTcMNdqngvFcsMhpEC+SMqCCfcrl/8Y=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4238.namprd04.prod.outlook.com
- (2603:10b6:805:2c::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19; Wed, 2 Sep
- 2020 07:24:30 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3326.023; Wed, 2 Sep 2020
- 07:24:30 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-CC:     Josef Bacik <josef@toxicpanda.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "nbd@other.debian.org" <nbd@other.debian.org>,
-        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 7/9] sd: open code revalidate_disk
-Thread-Topic: [PATCH 7/9] sd: open code revalidate_disk
-Thread-Index: AQHWgHi9+D0vRxf7MUaqbL81EAOZ+A==
-Date:   Wed, 2 Sep 2020 07:24:30 +0000
-Message-ID: <SN4PR0401MB3598270C537F0E7A3ED538049B2F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200901155748.2884-1-hch@lst.de>
- <20200901155748.2884-8-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1590:f101:bd07:d1f9:7e6b:2014]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f12e4383-fcd1-41a8-ec18-08d84f113b95
-x-ms-traffictypediagnostic: SN6PR04MB4238:
-x-microsoft-antispam-prvs: <SN6PR04MB4238C6E35A3E8051FB5A3C5A9B2F0@SN6PR04MB4238.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bMjGwrvH49VG+SFumlAzF3c4O31aq6r0kIkCIOkw6SFfhFSnzrDt01M2WOR+Ek/f1JURBf5dlcJBqUxLuovzqS3Uc+BonFqSC094i2UpFonDCFaWi+TvgIqvc8VpM5wrtra5xWM1vzdGMkFLcPpzHCfkKK0BlyWblj4peSxPyVMc7gZtv3r+jum4RM5z4pIr95h1zNGlACxlZ5AG67OyGNbd4ADWi+vefuqz0qnVCKGk/grP4GvcdJ5fHVoRjDo3EIlOEBIIJG1JJinxgalfMzHs55RsYenkduPUoAVhBps5YE456bMOzcoH2uyLYnv8WkZJoo8p15iFkLWBufd0lQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(136003)(366004)(346002)(7416002)(2906002)(19618925003)(76116006)(8936002)(5660300002)(558084003)(66946007)(33656002)(91956017)(86362001)(66556008)(7696005)(64756008)(66446008)(66476007)(316002)(52536014)(8676002)(9686003)(71200400001)(186003)(6506007)(54906003)(478600001)(4270600006)(4326008)(55016002)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: ngkVHmW3/Bt+G5u+vylrG+VmQWBrwJdyMKVQ6lc7NsWLaz34Wky7qCz4D+3YBInqlWVwEtDiPb3fLXIwkFzvrPAa9j+N5y1BrwHvK5XeCSzCi0KeaaIOcIu5fbWTvPLfN/eHsaw7soQCL2pxUA/+YmuKFgbiT671ff+2SlQptf7Sa2/PschaqWGElfPuCYYz9iucV1V6ZiM6IEYAUU4fdjQnldVWApVOyoSQORvnAXdXS7mm48wFeBSR+w2qPZAnZ2OtZVBtFCGP82AySy06LCtAXSrdP18fiTq7UKG5ZWfj7tA5snniLmp/GKlvkn7GJGgSp6gFmna5clwcbRXAvO2RQdFHZhAdhkU3KseXOW6PKXl4zCMpO3QGTb64BD6kidLAWkWdX5VRAJYidQGqI1btlc8aiR6aeKh+DLHlEjPd8ekISZe1FySLjN025nhVn+v+NkR61SyDx4k7utXDrMlugXPpGPNavOomIX+noV8/mJw0f1DhkW2jpnd2fCBflToEO6PrRWTEstzYoqrGOxPOo109IeSopbemWPZ0AhuDrNLzzUzFRcoAy4cInX8JDP8VolFu1gHdRu78grWtjqoqDGMP42F7aSvE+8f6HRyoJw/cWSTBckfWokesve6Jshvi3Lt52g4KCAwwI8p3AoO58aHzH7Xo/rjjwAGGfIx21owcdNyx2LW94gEZCbPz97U5gbswioOcZ7G4BhrtlQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 2 Sep 2020 03:25:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6458C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 00:25:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N/P10E2Wq6OV5XqWEJzhBkCnrFtL19WUaqQQLyurF0A=; b=hleKzprA/bNnE462tnxN2wX4B4
+        QV2H0OQCmz/sD96hmU0tkZn4WYcfe62w/aIW2t3gmWQi3+UkE7sq6j4E/S0xOBcfDoVXjL9QX6Mzn
+        Le+mtrkUNlrzsJDKbeUQh7oDondJuj8vMLAi8GA1Fy7/lwryBXAl84Q8/Q3+kKyobghJFCBhKSx31
+        VpYfVuvh4uA2xWUZpp2lKsnnuvN3e26uHKy/gGr1DWoftmoRiGv/gKzwm1cNqtcgDqH9uJrSDWfZr
+        DnqzpYOFJs75MYlyQ1WFsEqKEarbZSge6ecG6ElmsVWz7qhZ5X6m3zlvmS21RZdlPz8DMu0H/0DUL
+        mAh9XZ1A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDN8D-00078B-Jb; Wed, 02 Sep 2020 07:24:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AA7B73003E5;
+        Wed,  2 Sep 2020 09:24:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 993BE2B774669; Wed,  2 Sep 2020 09:24:32 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 09:24:32 +0200
+From:   peterz@infradead.org
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org,
+        npiggin@gmail.com, elver@google.com, jgross@suse.com,
+        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
+        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de
+Subject: Re: [PATCH v2 11/11] lockdep,trace: Expose tracepoints
+Message-ID: <20200902072432.GI2674@hirez.programming.kicks-ass.net>
+References: <20200821084738.508092956@infradead.org>
+ <20200821085348.782688941@infradead.org>
+ <20200902035146.GA45826@roeck-us.net>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f12e4383-fcd1-41a8-ec18-08d84f113b95
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 07:24:30.4715
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Hod2R3pvj6h3UjZbl9iEN/uDfqHDePJ6WU4fywwecOvUVJ9vFBEPV7QuGvYcjiZFqcxIf3o1RrzCzjPbkOVIU+3/vIZ9wRscUvOVOwlMoRg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4238
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902035146.GA45826@roeck-us.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+On Tue, Sep 01, 2020 at 08:51:46PM -0700, Guenter Roeck wrote:
+> On Fri, Aug 21, 2020 at 10:47:49AM +0200, Peter Zijlstra wrote:
+> > The lockdep tracepoints are under the lockdep recursion counter, this
+> > has a bunch of nasty side effects:
+> > 
+> >  - TRACE_IRQFLAGS doesn't work across the entire tracepoint
+> > 
+> >  - RCU-lockdep doesn't see the tracepoints either, hiding numerous
+> >    "suspicious RCU usage" warnings.
+> > 
+> > Pull the trace_lock_*() tracepoints completely out from under the
+> > lockdep recursion handling and completely rely on the trace level
+> > recusion handling -- also, tracing *SHOULD* not be taking locks in any
+> > case.
+> > 
+> 
+> Wonder what is worse - the problem or its fix. This patch results in
+> a number of WARNING backtraces for several archtectures/platforms.
+> Reverting it fixes the problems.
+
+Without all this there was a recursion that could crash. But yes,
+tedious.
+
+OTOH the warnings are about real bugs that were pre-existing, we now see
+them and can fix them.
+
+I'll reply to ARM separately, but let's have a peek at s390.
+
+> s390:
+> 
+> [   19.490586] =============================
+> [   19.490752] WARNING: suspicious RCU usage
+> [   19.490921] 5.9.0-rc3 #1 Not tainted
+> [   19.491086] -----------------------------
+> [   19.491253] include/trace/events/lock.h:37 suspicious rcu_dereference_check() usage!
+
+> [   19.493147]  [<00000000001d5de2>] lock_acquire+0x41a/0x498
+> [   19.493320]  [<0000000000103b72>] enabled_wait+0xca/0x198
+> [   19.493493]  [<0000000000103f80>] arch_cpu_idle+0x20/0x38
+
+Does this help?
+
+---
+
+diff --git a/arch/s390/kernel/idle.c b/arch/s390/kernel/idle.c
+index c73f50649e7e..f7f1e64e0d98 100644
+--- a/arch/s390/kernel/idle.c
++++ b/arch/s390/kernel/idle.c
+@@ -39,14 +39,13 @@ void enabled_wait(void)
+ 	local_irq_restore(flags);
+ 
+ 	/* Account time spent with enabled wait psw loaded as idle time. */
+-	/* XXX seqcount has tracepoints that require RCU */
+-	write_seqcount_begin(&idle->seqcount);
++	raw_write_seqcount_begin(&idle->seqcount);
+ 	idle_time = idle->clock_idle_exit - idle->clock_idle_enter;
+ 	idle->clock_idle_enter = idle->clock_idle_exit = 0ULL;
+ 	idle->idle_time += idle_time;
+ 	idle->idle_count++;
+ 	account_idle_time(cputime_to_nsecs(idle_time));
+-	write_seqcount_end(&idle->seqcount);
++	raw_write_seqcount_end(&idle->seqcount);
+ }
+ NOKPROBE_SYMBOL(enabled_wait);
+ 
