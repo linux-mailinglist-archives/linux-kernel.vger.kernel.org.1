@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA8125B6DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 00:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343ED25B6E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 01:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727019AbgIBW7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 18:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        id S1727838AbgIBXAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 19:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgIBW7X (ORCPT
+        with ESMTP id S1726933AbgIBW70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 18:59:23 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D33FC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 15:59:23 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id p20so763992qvl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 15:59:23 -0700 (PDT)
+        Wed, 2 Sep 2020 18:59:26 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EC8C061245
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 15:59:25 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id k12so512149pfu.19
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 15:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=DEB6TvuVII/idft8ojQbZbBbLRj/1UgvcgJGiXc75DA=;
-        b=LywCHlL4O+6VwnFigc/9CULmKPvOxHgK8BrhVH1f5ogLcujoakUmDuTrNs9OZ6N+SD
-         h7E5Xk2GRr7a5bcVmRtDkBZDcTB5AkYIdpIbZtqaYWeszbAcypKwa2i0VDbbYX327Gzf
-         PY7BmAsuU0/mT+YVDZCX7IoiMNyre9s/CkXo1PkHlrRTpIBc6ZPrk6EI5z8NSGmza4VJ
-         4JlqRHC4yA5dqNEAV5Zr9wLP1Nw50rRgTPx9+fN5dPfxJmYG23gab5qlMifc3ZVfBxwD
-         zBJ3Zn1/20hnoEJ+Mn6inXjv9Dofrl5E9hC631YE8jpARM0nJuvgEuXU57dCAfYNDwSF
-         G5hQ==
+        bh=DRVYiI0z9PXOKl07Ogbr3lid1f40nOD0HDkD/1XOSXY=;
+        b=Ep/td8sY3naRjvHEhKklgmTTzTFQjUX86VjwOsSgihq/62NRhZeY1SqcuGcmy6Vol+
+         lKX3eGWsnxhNSG1NJ0LVMhnK8hPdMkDoCRMqNjVa6lp9FqhQpiKj+5dHlejctuGa1zKT
+         nuq9g2Rc/8hAL6ah/mNRNobPF+tLIw8F6z43Pc7fS2Vo2R9544aRP/zkc0D7k0gP/NT7
+         O5lzIxmi+Ir2AtRfNvtfiWdSHIbbQIYNgeHJda9RZnI96FNhjeZqo67mhakoiZYoY8gA
+         cGZiILWB+CZUjIJQwPd+O6bowjMlX15fEf0jShNCwhmiLp1KgQ3lAIiigHPOkWk6VziN
+         vCLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=DEB6TvuVII/idft8ojQbZbBbLRj/1UgvcgJGiXc75DA=;
-        b=c07+Mswas5YhU3O6/8zm1mpCbPYH76hTF+A5U5WHsNWZFmGT0n16Xvn1d2qoG06Kf7
-         9KCTkK0pqM1+KOjYVuBgsKeuh7h8VvgO5C1HS2zKsF8uWz4vPmyDEK3Ce48q+UGr6TLc
-         SCXKiMivxBC/MRWZXpn9lMuJOS0FcUAHz51qngvadAwWBhNk1x7jjU06sfytE+ivxayL
-         UCq1xc9RUSyNQFBAGAFYALAIZT9Z8PWctAYYTGjt7/ENftPzXnSpUsz8xEcdVwDJbaAs
-         5vil9hZQw67z3aQvVbuCg4JXa4xqGQDvznWWlNh6Vqyk2gQRko+vIYxWRqdyJhhDDnvC
-         9D/Q==
-X-Gm-Message-State: AOAM532EIvJTiJqHaRfd/nBWfXTZuoMzRl97eo0E/XmEEDboblFGh5Ey
-        K78rPg4O96KYKEZ45ixso6rN9Lm0u77mZB87JS8=
-X-Google-Smtp-Source: ABdhPJzXdwfL/Ab/m1JDmQHIJPs7f0xUTVMOsOO5/Y/GVHSp7Nn75c2TGyacSDW5eFv7gNGGQWiff3uCFBgeOtKV+nA=
+        bh=DRVYiI0z9PXOKl07Ogbr3lid1f40nOD0HDkD/1XOSXY=;
+        b=uOjlBwkhTwZViRZD6xRqxKNRK0LRnoGSZTwC9H34SKfAC8EEQ25NGf60RxEqbi8pGg
+         Ke1oZTg/SfooUeG1Cjot7ZqcdCcUwRWKV9sbZRQyP/GJSLjK+rHkjJ7ecA3YESGwiZbu
+         fTGNGdbHHxXtFMcnE3fEpp4OSxrFVVaOVGMTEXI6fMvrmYaxv4MDBjLQCcJcTM58AGbu
+         Tu2SUWlEaF+otCPyWxAUuZwITnPaHqwcFRGgVxkmjOqUSXK66Mz8Fd/PCrf+hPliwzn9
+         s4ZnprjroA8OmxqpTumqM3BahCbzlAGXN+nRD7OxkxnNWGe4qv17+89uKqSGyksucvem
+         LPPA==
+X-Gm-Message-State: AOAM530+8X2d5qZ6rWUHwVQ/CeJ6AaSRmm3YF9YohFyBr+CWum5vwQkL
+        Pw782g8XK2rcjZobbwJ6eQiNj/i+U5IjUhFFlOM=
+X-Google-Smtp-Source: ABdhPJxRfhvoHEIgZxcKiGseIUwf/wvGmcDIyEPP5HQG+qy/Aee+r6gkvNVms/ZEE4RqpuALVWmjgJRtDT7P3hrgnzM=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a0c:c98d:: with SMTP id
- b13mr761758qvk.1.1599087562611; Wed, 02 Sep 2020 15:59:22 -0700 (PDT)
-Date:   Wed,  2 Sep 2020 15:59:05 -0700
+ (user=ndesaulniers job=sendgmr) by 2002:a62:4c5:0:b029:138:413e:3e65 with
+ SMTP id 188-20020a6204c50000b0290138413e3e65mr672301pfe.3.1599087564581; Wed,
+ 02 Sep 2020 15:59:24 -0700 (PDT)
+Date:   Wed,  2 Sep 2020 15:59:06 -0700
 In-Reply-To: <20200902225911.209899-1-ndesaulniers@google.com>
-Message-Id: <20200902225911.209899-2-ndesaulniers@google.com>
+Message-Id: <20200902225911.209899-3-ndesaulniers@google.com>
 Mime-Version: 1.0
 References: <20200902225911.209899-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-Subject: [PATCH v3 1/7] compiler-clang: add build check for clang 10.0.1
+Subject: [PATCH v3 2/7] Revert "kbuild: disable clang's default use of -fmerge-all-constants"
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -67,55 +68,52 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Will Deacon <will@kernel.org>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
         linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During Plumbers 2020, we voted to just support the latest release of
-Clang for now.  Add a compile time check for this.
+This reverts commit 87e0d4f0f37fb0c8c4aeeac46fff5e957738df79.
 
-We plan to remove workarounds for older versions now, which will break
-in subtle and not so subtle ways.
+-fno-merge-all-constants has been the default since clang-6; the minimum
+supported version of clang in the kernel is clang-10 (10.0.1).
 
-Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
 Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
-Acked-by: Marco Elver <elver@google.com>
-Acked-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Sedat Dilek <sedat.dilek@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Link: https://reviews.llvm.org/rL329300.
 Link: https://github.com/ClangBuiltLinux/linux/issues/9
-Link: https://github.com/ClangBuiltLinux/linux/issues/941
 ---
- include/linux/compiler-clang.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Makefile | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-index cee0c728d39a..230604e7f057 100644
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -3,6 +3,14 @@
- #error "Please don't include <linux/compiler-clang.h> directly, include <linux/compiler.h> instead."
- #endif
+diff --git a/Makefile b/Makefile
+index 1cfa5029fd2f..e475650c9599 100644
+--- a/Makefile
++++ b/Makefile
+@@ -932,15 +932,6 @@ KBUILD_CFLAGS += $(call cc-disable-warning, maybe-uninitialized)
+ # disable invalid "can't wrap" optimizations for signed / pointers
+ KBUILD_CFLAGS	+= $(call cc-option,-fno-strict-overflow)
  
-+#define CLANG_VERSION (__clang_major__ * 10000	\
-+		     + __clang_minor__ * 100	\
-+		     + __clang_patchlevel__)
-+
-+#if CLANG_VERSION < 100001
-+# error Sorry, your version of Clang is too old - please use 10.0.1 or newer.
-+#endif
-+
- /* Compiler specific definitions for Clang compiler */
+-# clang sets -fmerge-all-constants by default as optimization, but this
+-# is non-conforming behavior for C and in fact breaks the kernel, so we
+-# need to disable it here generally.
+-KBUILD_CFLAGS	+= $(call cc-option,-fno-merge-all-constants)
+-
+-# for gcc -fno-merge-all-constants disables everything, but it is fine
+-# to have actual conforming behavior enabled.
+-KBUILD_CFLAGS	+= $(call cc-option,-fmerge-constants)
+-
+ # Make sure -fstack-check isn't enabled (like gentoo apparently did)
+ KBUILD_CFLAGS  += $(call cc-option,-fno-stack-check,)
  
- /* same as gcc, this was present in clang-2.6 so we can assume it works
 -- 
 2.28.0.402.g5ffc5be6b7-goog
 
