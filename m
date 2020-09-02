@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B1C25AC4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED83C25AC1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgIBNuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:50:05 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2739 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727119AbgIBNnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:43:21 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 999C6AA511B62DBBBB06;
-        Wed,  2 Sep 2020 14:25:06 +0100 (IST)
-Received: from localhost (10.52.121.91) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 2 Sep 2020
- 14:25:06 +0100
-Date:   Wed, 2 Sep 2020 14:23:33 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
-        William Sung <william.sung@advantech.com.tw>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Campion Kang <Campion.Kang@advantech.com.tw>
-Subject: Re: [PATCH] iio: dac: ad5593r: Dynamically set AD5593R channel
- modes
-Message-ID: <20200902142333.00005b71@Huawei.com>
-In-Reply-To: <CAHp75VcXLyw40JaU42jQ3fSL7mtHPv++xqcka-oTKUbsW4erpg@mail.gmail.com>
-References: <20200824054347.3805-1-william.sung@advantech.com.tw>
-        <CAHp75VeZLPR02xB2XRzec5mSBvq93XYZg56OOODxpFTPva6cXw@mail.gmail.com>
-        <CAFv23QmDwcrdxEndH=mKMAomzt9kxG_f1Z6=Fd8iuuvCoY92SA@mail.gmail.com>
-        <CAHp75Vcup9LUk0fgjW9T2FK-K5GD3=3ycPHi74Oykc8rq_tJqA@mail.gmail.com>
-        <BN6PR03MB25968259EBEAD55E040367308E2F0@BN6PR03MB2596.namprd03.prod.outlook.com>
-        <CAHp75VdvnUsEf=fsRQRmyxQO=1m09M5U19GBtSPkjxSGA5cRBA@mail.gmail.com>
-        <BN6PR03MB259650CEEEC9647AB5C9D8338E2F0@BN6PR03MB2596.namprd03.prod.outlook.com>
-        <CAHp75VcXLyw40JaU42jQ3fSL7mtHPv++xqcka-oTKUbsW4erpg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726942AbgIBNeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:34:50 -0400
+Received: from mx4.wp.pl ([212.77.101.12]:45071 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726871AbgIBNbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:31:35 -0400
+Received: (wp-smtpd smtp.wp.pl 20456 invoked from network); 2 Sep 2020 15:24:21 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1599053061; bh=G8wT2xsxFQGcxLMSyMItSjCCDSZ7QEW2M+j2fLIpSHo=;
+          h=From:To:Cc:Subject;
+          b=eLO3vgAU2BsU7IjAtRnGmfcvY97FVSmHO9siIRejPiMKmoKoMB6tDWFUIGIeHOStP
+           WGpdbdyi4OJQuJhJudyjs03ruwMfaFN1nOIXZUPilIcwvnpj7p/Dirl399MgvIS8Ml
+           9ixh/iECJhYRO44kySY9HJtI3V6Ghc5WJWyOwOF4=
+Received: from nat-0.staszic.waw.pl (HELO localhost) (antoni.przybylik@wp.pl@[94.240.45.201])
+          (envelope-sender <antoni.przybylik@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <gregkh@linuxfoundation.org>; 2 Sep 2020 15:24:21 +0200
+From:   Antoni Przybylik <antoni.przybylik@wp.pl>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Antoni Przybylik <antoni.przybylik@wp.pl>
+Subject: [PATCH] staging: gdm724x: gdm_tty: replaced macro with a function
+Date:   Wed,  2 Sep 2020 15:24:19 +0200
+Message-Id: <20200902132419.61220-1-antoni.przybylik@wp.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.121.91]
-X-ClientProxiedBy: lhreml732-chm.china.huawei.com (10.201.108.83) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: d17dd52168d66c6852a2c5cf02c92270
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [gbO8]                               
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 12:28:02 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+This approach is more elegant and prevents some problems related to
+macros such as operator precedence in expanded expression.
+-------------------------------------------------------------------
+Changed return type to bool and removed inline sepcifier.
 
-> On Wed, Sep 2, 2020 at 12:12 PM Hennerich, Michael
-> <Michael.Hennerich@analog.com> wrote:
-> > > From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > Sent: Mittwoch, 2. September 2020 10:52
-> > > On Wed, Sep 2, 2020 at 11:09 AM Hennerich, Michael
-> > > <Michael.Hennerich@analog.com> wrote:  
-> 
-> ...
-> 
-> > > I see. Can we consider this email as the official answer from AD that this ID is
-> > > being allocated for this certain component?  
-> >
-> > To my knowledge only PNP/ACPI vendor IDs need to be registered with the UEFI
-> > ACPI working group.  
-> 
-> Correct.
-> 
-> >  AD part numbers are unique. The ID chosen uses the
-> > part number prefixed with the PNP Vendor ID. ADxxxx->ADSxxxx
-> > Please consider this as allocated.  
-> 
-> Thank you for confirming this!
-> 
+Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
+---
+ drivers/staging/gdm724x/gdm_tty.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-Great to clear this particular one up.
-
-One side note on this for anyone who might find this email thread.
-If we do have an ACPI ID that doesn't use an official
-PNP or ACPI ID, but there are boards shipping with it, then we can't
-drop the ID.   We can however add a note to the driver making the
-point that it is not an official ID and so we may remove it if
-all known boards that used it are now considered obsolete.
-Even better to list a product it does occur in so we avoid
-having the conversation again!
-
-A lot of these got through my reviews due to lack of knowledge of how
-ACPI IDs worked until a few years ago.  Still like all ABI we are
-stuck with it until we can remove it without anyone noticing :(
-
-Jonathan
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index 6e813693a766..179fc9b9400b 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -27,8 +27,6 @@
+ 
+ #define MUX_TX_MAX_SIZE 2048
+ 
+-#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
+-
+ static struct tty_driver *gdm_driver[TTY_MAX_COUNT];
+ static struct gdm *gdm_table[TTY_MAX_COUNT][GDM_TTY_MINOR];
+ static DEFINE_MUTEX(gdm_table_lock);
+@@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
+ static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
+ static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
+ 
++static bool gdm_tty_ready(struct gdm *gdm)
++{
++	return (gdm && gdm->tty_dev && gdm->port.count);
++}
++
+ static void gdm_port_destruct(struct tty_port *port)
+ {
+ 	struct gdm *gdm = container_of(port, struct gdm, port);
+@@ -119,7 +122,7 @@ static int gdm_tty_recv_complete(void *data,
+ {
+ 	struct gdm *gdm = tty_dev->gdm[index];
+ 
+-	if (!GDM_TTY_READY(gdm)) {
++	if (!gdm_tty_ready(gdm)) {
+ 		if (complete == RECV_PACKET_PROCESS_COMPLETE)
+ 			gdm->tty_dev->recv_func(gdm->tty_dev->priv_dev,
+ 						gdm_tty_recv_complete);
+@@ -146,7 +149,7 @@ static void gdm_tty_send_complete(void *arg)
+ {
+ 	struct gdm *gdm = arg;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return;
+ 
+ 	tty_port_tty_wakeup(&gdm->port);
+@@ -160,7 +163,7 @@ static int gdm_tty_write(struct tty_struct *tty, const unsigned char *buf,
+ 	int sent_len = 0;
+ 	int sending_len = 0;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	if (!len)
+@@ -187,7 +190,7 @@ static int gdm_tty_write_room(struct tty_struct *tty)
+ {
+ 	struct gdm *gdm = tty->driver_data;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	return WRITE_SIZE;
+-- 
+2.28.0
 
