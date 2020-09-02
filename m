@@ -2,90 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1557225B16E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE64D25B197
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgIBQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:20:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726814AbgIBQUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:20:02 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DA8A208B3;
-        Wed,  2 Sep 2020 16:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599063601;
-        bh=4ntTsfwJyBJsBW/1yKbNCcQAmv4C8p9X7jLoU6Hnuo8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BOY8U3iPghuQxwE3y0jQ6b7QlcoRNKN2TpJ9cBHK4BrUoUSrYP/CDg8RhMJT5gesa
-         ZmRulHjspOaleiQY3Y4wg68/vgrreAn4rcw3Le3vq/SmwL4mJjJR8nSAcuLctYpnM/
-         ih8hXsRD8z0UI7DGP1ZdwV1Q3ggq4mS2fDt3o7G4=
-Date:   Wed, 2 Sep 2020 11:26:13 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] xsk: Fix null check on error return path
-Message-ID: <20200902162613.GB31464@embeddedor>
-References: <20200902150750.GA7257@embeddedor>
- <7b3d5e02-852e-189b-7c0e-9f9827fca730@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7b3d5e02-852e-189b-7c0e-9f9827fca730@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728451AbgIBQ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbgIBQ0m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:26:42 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F55C061245
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 09:26:41 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id 12so105279lfb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 09:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=unikie-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=47YQwNjkGGbbE3i7sa2Kuqbb7Myc36HPrhccYNPndjE=;
+        b=GYEgzlLRF5E9KClXQ6VQiRgCtaXfKiCps7bAj9IPVI/YNpT6Vn//aRZd1/RQxSgEvO
+         I1q5GYysfVrZylmChEVF80N3SfIgI/aEwFdmJpyIsv9hrWYpeEPgr6r4Y6qEGxTAhT/1
+         Qgv5kvnMZ203jNnivOkAcNR68XUH/qf8g0oAPMdel0xQuLLhRgeCOa33Rnr6g9GQm+Vh
+         4mubMIp2bvVbd6kPmcKjKTlFPjxCNOORselo27s1wmts5zZC/XOZkKnIW0/r1cr8oULj
+         8A9MGmY3YXxpBDwhXfxgCQxMxx5Dw0suEBDT0MZKbuaQiu1OeqlmnJ7oTg6oZ/zAS2rm
+         HwEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=47YQwNjkGGbbE3i7sa2Kuqbb7Myc36HPrhccYNPndjE=;
+        b=ovCxOp4HWyVOIWIW1j0m0TvbflXkd/lC4z4+3aNcQ3aIYF9r6ubk9lalwvvEYVvMps
+         vuim4xOhHncqnTqm000yh12dpeyKUngzMnhTIaKzNOWR84kA2gkzlziQEAZYKHr/M7Jp
+         U8mxcw9CwH4Gc/PCy5PpDRQrk24zbPwj/SjiJ5iYoCjTfflKAFnd+zuwri9Zq42t0mZT
+         eyx+O0k0bd8DZxvZcW4WXloqo+RrYfQqXlX/uO1zbxagdPCkWx9tMKUVLI72NRcAdcc3
+         pWajs+gzwbOCa4S/5mQhWo21wfeGqkbIZGiyG317kab1E/k5QYki4MSGqTZKSF8vOi1/
+         Prhg==
+X-Gm-Message-State: AOAM531miiJDkyfgNf8mKPMV9mLtinStUPo78X8LHes1Jxg5nx8X1Dmt
+        i5KCyNfASySkUIyZDSbRjfIWWQ==
+X-Google-Smtp-Source: ABdhPJxIhQZqLm3VDDnqmQv14PZqsN3hQCeJl6ul2i5e9pvdHaq07YSfKCVjqHBO2X03/oZ4bh5/NA==
+X-Received: by 2002:a05:6512:3087:: with SMTP id z7mr3709857lfd.52.1599063999463;
+        Wed, 02 Sep 2020 09:26:39 -0700 (PDT)
+Received: from localhost.localdomain ([109.204.235.119])
+        by smtp.googlemail.com with ESMTPSA id y24sm1191887lfg.75.2020.09.02.09.26.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 09:26:39 -0700 (PDT)
+From:   John Mathew <john.mathew@unikie.com>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, corbet@lwn.net, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, tsbogend@alpha.franken.de,
+        lukas.bulwahn@gmail.com, x86@kernel.org,
+        linux-mips@vger.kernel.org, tglx@linutronix.de,
+        willy@infradead.org, valentin.schneider@arm.com,
+        John Mathew <john.mathew@unikie.com>
+Subject: [RFC PATCH v8 0/3] Add scheduler overview documentation
+Date:   Wed,  2 Sep 2020 19:26:28 +0300
+Message-Id: <20200902162632.10271-1-john.mathew@unikie.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 05:12:51PM +0200, Björn Töpel wrote:
-> On 2020-09-02 17:07, Gustavo A. R. Silva wrote:
-> > Currently, dma_map is being checked, when the right object identifier
-> > to be null-checked is dma_map->dma_pages, instead.
-> > 
-> > Fix this by null-checking dma_map->dma_pages.
-> > 
-> > Addresses-Coverity-ID: 1496811 ("Logically dead code")
-> > Fixes: 921b68692abb ("xsk: Enable sharing of dma mappings")
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Nice catch!
-> 
-> Acked-by: Björn Töpel <bjorn.topel@intel.com>
-> 
+This patch series updates the scheduler documentation to add more topics
+wrt to scheduler overview. New sections are added to provide a brief
+overview of the kernel structs used by the scheduler, scheduler invocation,
+and context switch. Previous version of the patch was reviewed at:
+https://lore.kernel.org/lkml/20200527084421.4673-1-John.Mathew@unikie.com/
 
-Thanks, Björn.
+version 8:
+ - Rebase
 
---
-Gustavo
+version 7:
+ -Fix overview description
+ -Removed rst headers
+ -Removed kernel-doc for struct rq and meged it as struct
+  member comments
 
-> > ---
-> >   net/xdp/xsk_buff_pool.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> > index 795d7c81c0ca..5b00bc5707f2 100644
-> > --- a/net/xdp/xsk_buff_pool.c
-> > +++ b/net/xdp/xsk_buff_pool.c
-> > @@ -287,7 +287,7 @@ static struct xsk_dma_map *xp_create_dma_map(struct device *dev, struct net_devi
-> >   		return NULL;
-> >   	dma_map->dma_pages = kvcalloc(nr_pages, sizeof(*dma_map->dma_pages), GFP_KERNEL);
-> > -	if (!dma_map) {
-> > +	if (!dma_map->dma_pages) {
-> >   		kfree(dma_map);
-> >   		return NULL;
-> >   	}
-> > 
+version 6:
+ -Fix typos.
+
+version 5:
+ -Fix description error on CAS
+
+version 4:
+ -Added section on Capacity-Aware Scheduling
+ -Reworded CFS recently added features.
+ -Removed vruntime description from scheduler structs
+ -Added description of idle and stopper sched classses
+
+version 3:
+ -Fix spelling, spacing and typo errors.
+
+version 2:
+- Remove :c:func: directive as it was redundant
+- Limit document width (line symbol count) to 75
+- Replace dot file with ASCII art
+- Describe prepare_task_switch(), ASID use, 
+  kernel/user transtion, MIPS FPU affinity correctly
+- Add missing references to files
+- Removed internal APIs from scheduler API reference
+- Described rq struct member as kernel-doc comments
+- Replaced CFS history with CFS current status
+- Added documentation for sched_class fields
+- Refined explanation of context swtich functionality
+- Replace CFS history with recent changes
+- Added kernel-doc comments for struct rq
+
+John Mathew (3):
+  docs: scheduler: Restructure scheduler documentation.
+  docs: scheduler: Add scheduler overview  documentation
+  docs: scheduler: Add introduction to scheduler context-switch
+
+ Documentation/scheduler/arch-specific.rst     |  14 +
+ Documentation/scheduler/cfs-overview.rst      |  59 ++++
+ Documentation/scheduler/context-switching.rst | 126 ++++++++
+ Documentation/scheduler/index.rst             |  34 +-
+ .../scheduler/mips-context-switch.rst         |  89 ++++++
+ Documentation/scheduler/overview.rst          | 297 ++++++++++++++++++
+ .../scheduler/sched-data-structs.rst          | 176 +++++++++++
+ Documentation/scheduler/sched-debugging.rst   |  14 +
+ Documentation/scheduler/sched-features.rst    |  25 ++
+ Documentation/scheduler/scheduler-api.rst     |  24 ++
+ .../scheduler/x86-context-switch.rst          |  55 ++++
+ kernel/sched/core.c                           |  21 +-
+ kernel/sched/sched.h                          |  63 +++-
+ 13 files changed, 978 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/scheduler/arch-specific.rst
+ create mode 100644 Documentation/scheduler/cfs-overview.rst
+ create mode 100644 Documentation/scheduler/context-switching.rst
+ create mode 100644 Documentation/scheduler/mips-context-switch.rst
+ create mode 100644 Documentation/scheduler/overview.rst
+ create mode 100644 Documentation/scheduler/sched-data-structs.rst
+ create mode 100644 Documentation/scheduler/sched-debugging.rst
+ create mode 100644 Documentation/scheduler/sched-features.rst
+ create mode 100644 Documentation/scheduler/scheduler-api.rst
+ create mode 100644 Documentation/scheduler/x86-context-switch.rst
+
+-- 
+2.17.1
+
