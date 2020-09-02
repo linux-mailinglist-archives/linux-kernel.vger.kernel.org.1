@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB8925A456
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B41725A43D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgIBEQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 00:16:39 -0400
-Received: from winds.org ([68.75.195.9]:54128 "EHLO winds.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726193AbgIBEQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 00:16:37 -0400
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Sep 2020 00:16:36 EDT
-Received: by winds.org (Postfix, from userid 0)
-        id 4775C13BC8FD; Tue,  1 Sep 2020 23:58:21 -0400 (EDT)
-From:   Byron Stanoszek <gandalf@winds.org>
-To:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        id S1726384AbgIBEFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 00:05:05 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:52274 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726247AbgIBEFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 00:05:05 -0400
+Received: from [10.130.0.80] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT92iGE9fsg8QAA--.593S3;
+        Wed, 02 Sep 2020 11:59:31 +0800 (CST)
+Subject: Re: [PATCH v5 00/14] irqchip: Fix potential resource leaks
+To:     Marc Zyngier <maz@kernel.org>
+References: <1593998365-25910-1-git-send-email-yangtiezhu@loongson.cn>
+ <ab1cd9280c7892a0230945ef5ff0880c@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
         linux-kernel@vger.kernel.org
-Cc:     Byron Stanoszek <gandalf@winds.org>,
-        Chris Down <chris@chrisdown.name>
-Subject: [PATCH] tmpfs: Restore functionality of nr_inodes=0
-Date:   Tue,  1 Sep 2020 23:57:15 -0400
-Message-Id: <20200902035715.16414-1-gandalf@winds.org>
-X-Mailer: git-send-email 2.28.0
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <02e077df-7c4e-24a7-1640-5f17894bd252@loongson.cn>
+Date:   Wed, 2 Sep 2020 11:59:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ab1cd9280c7892a0230945ef5ff0880c@kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxT92iGE9fsg8QAA--.593S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jry7CFWxJw45JFyDGw4DArb_yoWkJFc_GF
+        Wqvrn7G34UtrnrAan2gFn8XanFgrn2gw1rJryrXa17tr1fZw15WrWqvrWIkw1rtrW0qFZx
+        Gr4jqF47trn2kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIAYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Cr0_Gr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
+        MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
+        uYvjxU4fMaUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e809d5f0b5c9 ("tmpfs: per-superblock i_ino support") made changes to
-shmem_reserve_inode() in mm/shmem.c, however the original test for
-(sbinfo->max_inodes) got dropped. This causes mounting tmpfs with option
-nr_inodes=0 to fail:
+On 07/06/2020 03:30 PM, Marc Zyngier wrote:
+> On 2020-07-06 02:19, Tiezhu Yang wrote:
+>> When I test the irqchip code of Loongson, I read the related code of 
+>> other
+>> chips in drivers/irqchip and I find some potential resource leaks in the
+>> error path, I think it is better to fix them.
+>>
+>> v2:
+>>   - Split the first patch into a new patch series which
+>>     includes small patches and add "Fixes" tag
+>>   - Use "goto" label to handle error path in some patches
+>>
+>> v3:
+>>   - Add missed variable "ret" in the patch #5 and #13
+>>
+>> v4:
+>>   - Modify the commit message of each patch suggested by Markus Elfring
+>>   - Make "irq_domain_remove(root_domain)" under CONFIG_SMP in patch #3
+>>   - Add a return statement before goto label in patch #4
+>>
+>> v5:
+>>   - Modify the commit messages and do some code cleanups
+>
+> Please stop replying to Markus Elfring, and give people who actually
+> care a chance to review this code. Elfring will keep asking you to make
+> absolutely pointless changes until you are blue in the face
 
-  # mount -ttmpfs -onr_inodes=0 none /ext0
-  mount: /ext0: mount(2) system call failed: Cannot allocate memory.
+Hi Marc,
 
-This patch restores the nr_inodes=0 functionality.
+Any comments?
+Could you please apply this patch series?
 
-Fixes: e809d5f0b5c9 ("tmpfs: per-superblock i_ino support")
-Cc: Chris Down <chris@chrisdown.name>
-Signed-off-by: Byron Stanoszek <gandalf@winds.org>
----
- mm/shmem.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Thanks,
+Tiezhu
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 271548ca20f3..8e2b35ba93ad 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -279,11 +279,13 @@ static int shmem_reserve_inode(struct super_block *sb, ino_t *inop)
- 
- 	if (!(sb->s_flags & SB_KERNMOUNT)) {
- 		spin_lock(&sbinfo->stat_lock);
--		if (!sbinfo->free_inodes) {
--			spin_unlock(&sbinfo->stat_lock);
--			return -ENOSPC;
-+		if (sbinfo->max_inodes) {
-+			if (!sbinfo->free_inodes) {
-+				spin_unlock(&sbinfo->stat_lock);
-+				return -ENOSPC;
-+			}
-+			sbinfo->free_inodes--;
- 		}
--		sbinfo->free_inodes--;
- 		if (inop) {
- 			ino = sbinfo->next_ino++;
- 			if (unlikely(is_zero_ino(ino)))
--- 
-2.28.0
+>
+>
+> Thanks,
+>
+>         M.
 
