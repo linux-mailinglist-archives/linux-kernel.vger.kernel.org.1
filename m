@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B2E25A727
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6337A25A742
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbgIBH5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 03:57:52 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:57350 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726247AbgIBH5m (ORCPT
+        id S1726913AbgIBIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgIBIA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:57:42 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0827lcs9002916;
-        Wed, 2 Sep 2020 09:57:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=FGikXq79p5Y8btYVduvO///H5c8pB4Dlzyj0CzpovCE=;
- b=xykQxtOU7oPklgLCFdnVh+xirPYkknZgr/LBvwq2dVNUQBy9Qr1fTST5bB+GCMtEEPk6
- sThZyez200pZfpzLx7tqrfp5JMMmxxc+mLJLljeBAMpphkrLZ9zgfmUivcMHfnkh1mG1
- zZN+zsIEgbtn4dJ18FtURfjx0rULgk40m+E85zXJ0DGmeQSjYyZdptIxkWa7bd3Mw3wt
- ZdMsxNxjJdpxC/EO3XvzkbOpF8e1m9gYjve9c00WOej1Ajur6VS3e8YdHZkwYkyT1wjn
- yOXEPyBSI510NxjA7K5OOB82EpSotVrPN3jXx3iUglloON88i+jwewTvaQQKq7sLJX+T lA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 337csvv4tq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 09:57:23 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3784A10002A;
-        Wed,  2 Sep 2020 09:57:23 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 24C05212FBA;
-        Wed,  2 Sep 2020 09:57:23 +0200 (CEST)
-Received: from localhost (10.75.127.44) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep 2020 09:57:22
- +0200
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Subject: [RESEND PATCH v2 6/6] ARM: multi_v7_defconfig: enable STUSB160X Type-C port controller support
-Date:   Wed, 2 Sep 2020 09:57:07 +0200
-Message-ID: <20200902075707.9052-7-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200902075707.9052-1-amelie.delaunay@st.com>
-References: <20200902075707.9052-1-amelie.delaunay@st.com>
+        Wed, 2 Sep 2020 04:00:26 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E312C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 01:00:26 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id s62so240365vsc.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 01:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K3qiLLTJ163ZezFQOxUyBEfpH7dZSEHY07BrmQjwQ10=;
+        b=J2dRUJAPRKJNZ6kjeClaDcg8FKQISjKTsyV0IqNvkvm8oIXRMKwc6++nEInJ+FAveJ
+         71m9Ez4u84ucU7qpERks04v46tmMbHTLPozpbT0X1FYShE717LQb2XUaJx5pLPymeaDh
+         wZsH/7JEcwOgoVL0+ZrQGK4jckM20x7KUn3D1um4VzuPTLMDV+zyuHBGvre0Q+eaibo+
+         mgHGmsLsHLFV7+9b16jZfSsq4tTpPrYz8G79xrbkelHwwBcVYoibDuMUMFrVQAXFYEW1
+         BWiBE4mX+i++2+ffjaWlxMLNoXSxV19jB3Q+/wNp7nAB+ESwG6ys85d/DVJNrhZkRcnw
+         7XTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K3qiLLTJ163ZezFQOxUyBEfpH7dZSEHY07BrmQjwQ10=;
+        b=hmw/oGCQXAumtkQIajLqOO3GOLq+S/lVLuf47QhsYFH7fgjI6GnzUlhg7dHAQwkYJ/
+         Aolw/d8wknog1bNlSQCTuiDjezs5dlFJt4tJ8swyasGN6jH2E5iU0928LM0E3HtSwzC6
+         Y9b3YuToX7BL6va4e2w/09TRhrL+G6Ray2926+synlghA5L9c9U60rF/PJKIQBaVFOhd
+         c9kh28+/hIXflTX/dMEQBVdKsAcgKCnyAvB//KJLWn6Vj+aPQKK95lkENtJbY44O8hmZ
+         TOtXkAq6Nk0dxSt+CGqqqG920ZCKkZKNl+3Kh4muAAKe9BgihsfL5KL7UXNBdmnkNgrA
+         DYxw==
+X-Gm-Message-State: AOAM530OpRMlj8aR0xvtPMK3wlNyyGgJC1k2pI17XLNQB944bPuEd7lW
+        EYM/gZCZDqISj27RDpjOItof2Kj3ozyhbavJqqqHgg==
+X-Google-Smtp-Source: ABdhPJw4pxYBoyAjPOpy9jjnp1tb5bFMcMQ31LSjfmXEH97ZZKGyzx6vQNEQypQldO3MGSOSxfvwRaddzBysnkXFvP4=
+X-Received: by 2002:a05:6102:3105:: with SMTP id e5mr4594053vsh.87.1599033625321;
+ Wed, 02 Sep 2020 01:00:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-02_03:2020-09-02,2020-09-02 signatures=0
+References: <20200902040623.17509-1-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20200902040623.17509-1-chris.packham@alliedtelesis.co.nz>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 2 Sep 2020 09:59:49 +0200
+Message-ID: <CAPDyKFpbK72utA0O1gTR30NzKzmtGCFbAKL6BJA+rUVdDhOstQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-of-esdhc: Don't walk device-tree on every interrupt
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "yinbo.zhu" <yinbo.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable support for the STMicroelectronics STUSB160X USB Type-C port
-controller driver by turning on CONFIG_TYPEC and CONFIG_TYPEC_STUSB160X as
-modules.
++ Yinbo Zhu
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
----
-No changes in v2.
----
- arch/arm/configs/multi_v7_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+On Wed, 2 Sep 2020 at 06:06, Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
+>
+> Commit b214fe592ab7 ("mmc: sdhci-of-esdhc: add erratum eSDHC7 support")
+> added code to check for a specific compatible string in the device-tree
+> on every esdhc interrupt. We know that if it's present the compatible
+> string will be found on the sdhc host. Instead of walking the
+> device-tree, go directly to the sdhc host's device and use
+> of_device_is_compatible().
+>
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index e9e76e32f10f..d90fba19fcdb 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -826,6 +826,8 @@ CONFIG_USB_CONFIGFS_F_HID=y
- CONFIG_USB_CONFIGFS_F_UVC=y
- CONFIG_USB_CONFIGFS_F_PRINTER=y
- CONFIG_USB_ETH=m
-+CONFIG_TYPEC=m
-+CONFIG_TYPEC_STUSB160X=m
- CONFIG_MMC=y
- CONFIG_MMC_BLOCK_MINORS=16
- CONFIG_MMC_ARMMMCI=y
--- 
-2.17.1
+Thanks for the patch. Indeed, this isn't the way we should implement quirks.
 
+However, could you perhaps do the OF parsing in esdhc_init() and
+assign a quirk flag that you check in esdhc_irq() instead?
+
+Along the lines of how we do it for "quirk_delay_before_data_reset".
+
+Kind regards
+Uffe
+
+> ---
+>
+> I found this in passing while trying to track down another issue using ftrace.
+> I found it odd that I was seeing a lot of calls to __of_device_is_compatible()
+> coming from esdhc_irq() (the fact that this interrupt is going off on my board
+> is also odd, but that's a different story).
+>
+>  drivers/mmc/host/sdhci-of-esdhc.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-of-esdhc.c
+> index 7c73d243dc6c..11c8c522d623 100644
+> --- a/drivers/mmc/host/sdhci-of-esdhc.c
+> +++ b/drivers/mmc/host/sdhci-of-esdhc.c
+> @@ -1177,10 +1177,11 @@ static void esdhc_set_uhs_signaling(struct sdhci_host *host,
+>
+>  static u32 esdhc_irq(struct sdhci_host *host, u32 intmask)
+>  {
+> +       struct device *dev = mmc_dev(host->mmc);
+> +       struct device_node *np = dev->of_node;
+>         u32 command;
+>
+> -       if (of_find_compatible_node(NULL, NULL,
+> -                               "fsl,p2020-esdhc")) {
+> +       if (of_device_is_compatible(np, "fsl,p2020-esdhc")) {
+>                 command = SDHCI_GET_CMD(sdhci_readw(host,
+>                                         SDHCI_COMMAND));
+>                 if (command == MMC_WRITE_MULTIPLE_BLOCK &&
+> --
+> 2.28.0
+>
