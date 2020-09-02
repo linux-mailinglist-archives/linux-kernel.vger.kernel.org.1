@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC3825A2E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CD425A2F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbgIBCMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 22:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        id S1726536AbgIBCMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 22:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgIBCML (ORCPT
+        with ESMTP id S1726446AbgIBCMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 22:12:11 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23D1C061244
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 19:12:11 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id j11so1524804plk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 19:12:11 -0700 (PDT)
+        Tue, 1 Sep 2020 22:12:34 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67986C061246
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 19:12:34 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h12so1737265pgm.7
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 19:12:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZIQg3hGOGZDEbnEgKN9rno53rGgVoGKdA4lvwe81pyI=;
-        b=JeJietJoUP+3hUqO2AK3vMds6kzEX3khbyD1sYrdfdXcnTJ6Y0jLM8Yg5NuhrQU4el
-         9uFxo1HcHpJOTJaQMmKHHhkrXXd72QHxz2LC64tIf0RAze1oIWyusImdHWohckMFaZpJ
-         /nD9VQ1aNOibQA/8NX/nQ788eEtGTgMen3zCE7QL612ft+8xV2D4bh3JgEZ+qW2V89kK
-         RMy4gQ/LKNB/ge86yYSRbJalUVo9r4hJPHJczLVZI1dSxgRkHwduC0FbmEvTIRgAM1H0
-         2o7oinr7RsgHj1M9KbQj0XGJAzAarVpP4GEMSZzv4irq3QCiaSxelVBGDkvvAdI4FAn9
-         jpfw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eDn4H8C3rvbkfT2QTNfX9/NNgOmpWWzhsOOAvMq08G0=;
+        b=nm2odj8d9USAWrDN0g+bHXzNG/RcPcWRX7VnJYkhvFC3aw2I0bzjfDViTVS8ODRYUA
+         fLd8SEAnfNgAT4J7OV5fy1vq1dFtpwcEcZrSmM8swQO2qdRMxBrqTZpsuhSmyxWgo8Ch
+         pjzsQ7BIFq5DOVeNcrGoPoJqUyAYu3xeaMhaJNH/V05Pe9gh9FN1P5LXGjNTHYVJCx3a
+         aNMpWu1BTNTCKTfDvKmVSpVs54K+LWOnSZWhFxLzS9bJMlzy5T8/QXtR1chxEDBpqjZE
+         4sU0BicGDTKLHrJCseGnWW2FJCv9YJjkLdPgzJGfTBrLrVDnQkEx8HE4iGYoCdsdjpxr
+         ++Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZIQg3hGOGZDEbnEgKN9rno53rGgVoGKdA4lvwe81pyI=;
-        b=X3f5Ve/zuacAaVBo9JOE4oxlykoncwdfYKQw27IvSi6bIrEnnUC5MXYLYz5kivkHMd
-         HpsvULEy4GT/obdrJyebCfQ2SsFlK8czKjxh2YOUrXPtsc2Lm1nkFMZMO0cybtd+c3C4
-         m5O0VhBREBUO8nDpEzHWyAZLyhm2J9NMvxROmiS/29A2ppiNZhnfk14qWxZ2chOXBWyx
-         3hyKTs5fOJAxeLFd9CmxzgotGYfugsuMk5UB43LHQdgn6mbbkQCuEbZ22YXfknes8xcW
-         IN92EKKbT39faUjWzdS3uxiDHH5oRkiKoASWyWzGl51WWjG6KgP4csNPbUmoi9aUFxBv
-         tsDg==
-X-Gm-Message-State: AOAM531OGrEfC4jMKZN8mYauRziZr+KjoPKi9fGTqQtT5WIWA/5kN/IR
-        57l10RCY3UAfLqx3JS0VZY7QFQ==
-X-Google-Smtp-Source: ABdhPJyD4eKW2dczy1RzDAGyNeS7fnA2FQwwtccz6/0MCkJ+yYFTle6wtIkVqxaCPjxtGGBVx/Focg==
-X-Received: by 2002:a17:902:b289:: with SMTP id u9mr119988plr.226.1599012730862;
-        Tue, 01 Sep 2020 19:12:10 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id 143sm3408230pfc.66.2020.09.01.19.12.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 01 Sep 2020 19:12:10 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 10:12:03 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Al Grant <al.grant@arm.com>
-Subject: Re: [PATCH 1/2] perf cs-etm: Fix corrupt data after perf inject from
-Message-ID: <20200902021203.GC3306@leoy-ThinkPad-X240s>
-References: <20200819084751.17686-1-leo.yan@linaro.org>
- <20200827205354.GE22307@xps15>
- <20200831000432.GA4715@leoy-ThinkPad-X240s>
- <20200901145432.GB1422817@kernel.org>
- <20200902003931.GA3306@leoy-ThinkPad-X240s>
- <20200902014754.GA3444345@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eDn4H8C3rvbkfT2QTNfX9/NNgOmpWWzhsOOAvMq08G0=;
+        b=GASqdjeV6bPMX394s//k+VYWWiLdOFkrVI3jrK9bTiiGb5qRvK1ZggGeTeyjjH2/TR
+         z6tP9d6y0ChJUlRNRZakDAO3D4Bo+RDx6kuydZ2rkBmzdJotbuUCNnNuA6+iTgs8mMeC
+         j0jNffc0+hqmqUBUUh+8lpFIMZiY7yKqplHdsowZJLrJXy/AQkpfRiLFj83kV9+g9roZ
+         +zp5tVR54t4Yzt0ZYqEQt9395PsOabhHJG8PlzlPsL9SkVeDiHDHz4bJ96jfCZ3wOSw2
+         23ICZG61l+7dMA856EttFg7bRHWTwy+jtz8EZojI4EQ6kAVKnt2WpVksZjSDSfOa8AlY
+         jTMw==
+X-Gm-Message-State: AOAM530qeiGb7XvNT/5pyBxlph+Kn0tW9XT3YSNXYDaZTS0zjFLJmFLc
+        nb9VhyJU7KEAJniItKwyM05oeWOTjb6xMmah
+X-Google-Smtp-Source: ABdhPJxRN5Q1ePyU37A3TlwCXtmce0zhsFRZjYXGpiehBCiXkA2V5nB0n9WaHKiS5nHgJ2MzwAb31w==
+X-Received: by 2002:aa7:9584:: with SMTP id z4mr1063657pfj.271.1599012753395;
+        Tue, 01 Sep 2020 19:12:33 -0700 (PDT)
+Received: from [192.168.1.187] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id q2sm3552880pgs.90.2020.09.01.19.12.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Sep 2020 19:12:32 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: Fix NULL pointer dereference in
+ io_sq_wq_submit_work()
+To:     Xin Yin <yinxin_1989@aliyun.com>, viro@zeniv.linux.org.uk
+Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200902015948.109580-1-yinxin_1989@aliyun.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1c1ae234-0084-bddd-990f-5fd92c4e6430@kernel.dk>
+Date:   Tue, 1 Sep 2020 20:12:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902014754.GA3444345@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200902015948.109580-1-yinxin_1989@aliyun.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 10:47:54PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Sep 02, 2020 at 08:39:32AM +0800, Leo Yan escreveu:
-> > On Tue, Sep 01, 2020 at 11:54:32AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Mon, Aug 31, 2020 at 08:04:32AM +0800, Leo Yan escreveu:
-> > > > On Thu, Aug 27, 2020 at 02:53:54PM -0600, Mathieu Poirier wrote:
-> > > > > On Wed, Aug 19, 2020 at 04:47:50PM +0800, Leo Yan wrote:
-> > > > > I've see this patch before...  I thought it had been merged - what happened?
+On 9/1/20 7:59 PM, Xin Yin wrote:
+> the commit <1c4404efcf2c0> ("<io_uring: make sure async workqueue
+> is canceled on exit>") caused a crash in io_sq_wq_submit_work().
+> when io_ring-wq get a req form async_list, which not have been
+> added to task_list. Then try to delete the req from task_list will caused
+> a "NULL pointer dereference".
 > 
-> > > > This patch before has been sent by Al to CoreSight mailing list but has
-> > > > not sent to LKML, this is why I resent it to LKML in case it's missed.
+> Ensure add req to async_list and task_list at the sametime.
 > 
-> > > So, was it Acked on the CoreSight mailing list? Are we missing any
-> > > Acked-by or Reviewed-by for this 1/2 patch as we got for 2/2?
->  
-> > The CoreSight mailing list has some discussion for this patch set,
-> > when respin this patch set, I confirmed we don't miss any 'Acked' or
-> > 'Reviewed' tags.
-> 
-> So, this patch was included in today's
-> perf-tools-fixes-for-v5.9-2020-09-01 signed tag sent to Linus in a pull
-> req, please update your perf/urgent branch, and go on from there, I'll
-> merge that into my perf/core branch as soon as Linus merges it.
+> The crash log looks like this:
+> [95995.973638] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> [95995.979123] pgd = c20c8964
+> [95995.981803] [00000000] *pgd=1c72d831, *pte=00000000, *ppte=00000000
+> [95995.988043] Internal error: Oops: 817 [#1] SMP ARM
+> [95995.992814] Modules linked in: bpfilter(-)
+> [95995.996898] CPU: 1 PID: 15661 Comm: kworker/u8:5 Not tainted 5.4.56 #2
+> [95996.003406] Hardware name: Amlogic Meson platform
+> [95996.008108] Workqueue: io_ring-wq io_sq_wq_submit_work
+> [95996.013224] PC is at io_sq_wq_submit_work+0x1f4/0x5c4
+> [95996.018261] LR is at walk_stackframe+0x24/0x40
+> [95996.022685] pc : [<c059b898>]    lr : [<c030da7c>]    psr: 600f0093
+> [95996.028936] sp : dc6f7e88  ip : dc6f7df0  fp : dc6f7ef4
+> [95996.034148] r10: deff9800  r9 : dc1d1694  r8 : dda58b80
+> [95996.039358] r7 : dc6f6000  r6 : dc6f7ebc  r5 : dc1d1600  r4 : deff99c0
+> [95996.045871] r3 : 0000cb5d  r2 : 00000000  r1 : ef6b9b80  r0 : c059b88c
+> [95996.052385] Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+> [95996.059593] Control: 10c5387d  Table: 22be804a  DAC: 00000055
+> [95996.065325] Process kworker/u8:5 (pid: 15661, stack limit = 0x78013c69)
+> [95996.071923] Stack: (0xdc6f7e88 to 0xdc6f8000)
+> [95996.076268] 7e80:                   dc6f7ecc dc6f7e98 00000000 c1f06c08 de9dc800 deff9a04
+> [95996.084431] 7ea0: 00000000 dc6f7f7c 00000000 c1f65808 0000080c dc677a00 c1ee9bd0 dc6f7ebc
+> [95996.092594] 7ec0: dc6f7ebc d085c8f6 c0445a90 dc1d1e00 e008f300 c0288400 e4ef7100 00000000
+> [95996.100757] 7ee0: c20d45b0 e4ef7115 dc6f7f34 dc6f7ef8 c03725f0 c059b6b0 c0288400 c0288400
+> [95996.108921] 7f00: c0288400 00000001 c0288418 e008f300 c0288400 e008f314 00000088 c0288418
+> [95996.117083] 7f20: c1f03d00 dc6f6038 dc6f7f7c dc6f7f38 c0372df8 c037246c dc6f7f5c 00000000
+> [95996.125245] 7f40: c1f03d00 c1f03d00 c20d3cbe c0288400 dc6f7f7c e1c43880 e4fa7980 00000000
+> [95996.133409] 7f60: e008f300 c0372d9c e48bbe74 e1c4389c dc6f7fac dc6f7f80 c0379244 c0372da8
+> [95996.141570] 7f80: 600f0093 e4fa7980 c0379108 00000000 00000000 00000000 00000000 00000000
+> [95996.149734] 7fa0: 00000000 dc6f7fb0 c03010ac c0379114 00000000 00000000 00000000 00000000
+> [95996.157897] 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [95996.166060] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+> [95996.174217] Backtrace:
+> [95996.176662] [<c059b6a4>] (io_sq_wq_submit_work) from [<c03725f0>] (process_one_work+0x190/0x4c0)
+> [95996.185425]  r10:e4ef7115 r9:c20d45b0 r8:00000000 r7:e4ef7100 r6:c0288400 r5:e008f300
+> [95996.193237]  r4:dc1d1e00
+> [95996.195760] [<c0372460>] (process_one_work) from [<c0372df8>] (worker_thread+0x5c/0x5bc)
+> [95996.203836]  r10:dc6f6038 r9:c1f03d00 r8:c0288418 r7:00000088 r6:e008f314 r5:c0288400
+> [95996.211647]  r4:e008f300
+> [95996.214173] [<c0372d9c>] (worker_thread) from [<c0379244>] (kthread+0x13c/0x168)
+> [95996.221554]  r10:e1c4389c r9:e48bbe74 r8:c0372d9c r7:e008f300 r6:00000000 r5:e4fa7980
+> [95996.229363]  r4:e1c43880
+> [95996.231888] [<c0379108>] (kthread) from [<c03010ac>] (ret_from_fork+0x14/0x28)
+> [95996.239088] Exception stack(0xdc6f7fb0 to 0xdc6f7ff8)
+> [95996.244127] 7fa0:                                     00000000 00000000 00000000 00000000
+> [95996.252291] 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [95996.260453] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> [95996.267054]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:c0379108
+> [95996.274866]  r4:e4fa7980 r3:600f0093
+> [95996.278430] Code: eb3a59e1 e5952098 e5951094 e5812004 (e5821000)
 
-Thanks for the info!
+Thanks for catching this, I'll get it queued for stable.
 
-Leo
+-- 
+Jens Axboe
+
