@@ -2,129 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8680625B0C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6101025B15B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgIBQKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:10:19 -0400
-Received: from mga12.intel.com ([192.55.52.136]:54567 "EHLO mga12.intel.com"
+        id S1728748AbgIBQSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:18:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbgIBQKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:10:15 -0400
-IronPort-SDR: pTlYTrPte78yWv7EsbcamGLtbomhEQ2xXyX5iiWnQIWxxhMOdGy/FMWOfD/0dIAWwOGio6rBqp
- udCDY098iAeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="136936699"
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="136936699"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:10:14 -0700
-IronPort-SDR: z7oVRryQh/ClvKbs+i9o24T4ivjV7OmRQjFOvPMU7sRVdfGLKDdgp/Ru5lhwJWC/pV1wW0GNPE
- p6CXSVkxosHg==
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="446576484"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:10:14 -0700
-Date:   Wed, 2 Sep 2020 09:10:12 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Haitao Huang <haitao.huang@linux.intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Chunyang Hui <sanqian.hcy@antfin.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Seth Moore <sethmo@google.com>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, josh@joshtriplett.org,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com
-Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
-Message-ID: <20200902161012.GD11695@sjchrist-ice>
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
- <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
- <20200702035902.GC1819@linux.intel.com>
- <20200704033025.GA144756@linux.intel.com>
- <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+        id S1727963AbgIBQKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:10:48 -0400
+Received: from mail.kernel.org (ip5f5ad5c3.dynamic.kabel-deutschland.de [95.90.213.195])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D59CD20773;
+        Wed,  2 Sep 2020 16:10:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599063046;
+        bh=TNOI/VLtApvB6yPQmCUZBBC5lN9M1DLUltQ/CvohjAk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ulejFWlemy/ELe8wIxriEGQ+0t4Le5mwgc8X6SsTuH5DSfSTZx3GZS4LpUjSuPjE+
+         QsPQDUtQyPNDEl72XFYmGWVeEyv9GhUXQdZWYEbv5ic4bpyEgd8hUBGpw0wcViIbaW
+         UiDvY4++Z2Qjmkk9O8RhG/BYzZmxqwbaN+5Gf4uA=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kDVLP-000tA4-T2; Wed, 02 Sep 2020 18:10:43 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 10/38] media: vivid: place the logic which disables ioctl on a separate function
+Date:   Wed,  2 Sep 2020 18:10:13 +0200
+Message-Id: <04bdd5013c20f0a623039d0bb65eb722bfd7f497.1599062230.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1599062230.git.mchehab+huawei@kernel.org>
+References: <cover.1599062230.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 10:06:32PM -0500, Haitao Huang wrote:
-> On Fri, 03 Jul 2020 22:31:10 -0500, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> 
-> > On Wed, Jul 01, 2020 at 08:59:02PM -0700, Sean Christopherson wrote:
-> > > On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
-> > > > +static int sgx_validate_secs(const struct sgx_secs *secs,
-> > > > +			     unsigned long ssaframesize)
-> > > > +{
-> > > > +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (secs->base & (secs->size - 1))
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (secs->miscselect & sgx_misc_reserved_mask ||
-> > > > +	    secs->attributes & sgx_attributes_reserved_mask ||
-> > > > +	    secs->xfrm & sgx_xfrm_reserved_mask)
-> > > > +		return -EINVAL;
-> > > > +
-> > > > +	if (secs->attributes & SGX_ATTR_MODE64BIT) {
-> > > > +		if (secs->size > sgx_encl_size_max_64)
-> > > > +			return -EINVAL;
-> > > > +	} else if (secs->size > sgx_encl_size_max_32)
-> > > > +		return -EINVAL;
-> > > 
-> > > These should be >=, not >, the SDM uses one of those fancy ≥ ligatures.
-> > > 
-> > > Internal versions use more obvious pseudocode, e.g.:
-> > > 
-> > >     if ((DS:TMP_SECS.ATTRIBUTES.MODE64BIT = 1) AND
-> > >         (DS:TMP_SECS.SIZE AND (~((1 << CPUID.18.0:EDX[15:8]) – 1)))
-> > >     {
-> > >         #GP(0);
-> > 
-> > Updated as:
-> > 
-> > static int sgx_validate_secs(const struct sgx_secs *secs)
-> > {
-> > 	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
-> > 		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
-> > 
-> > 	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> > 		return -EINVAL;
-> > 
-> > 	if (secs->base & (secs->size - 1))
-> > 		return -EINVAL;
-> > 
-> > 	if (secs->miscselect & sgx_misc_reserved_mask ||
-> > 	    secs->attributes & sgx_attributes_reserved_mask ||
-> > 	    secs->xfrm & sgx_xfrm_reserved_mask)
-> > 		return -EINVAL;
-> > 
-> > 	if (secs->size >= max_size)
-> > 		return -EINVAL;
-> > 
-> 
-> This should be > not >=. Issue raised and fixed by Fábio Silva for ported
-> patches for OOT SGX support:
-> https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/123
-> 
-> I tested and verified with Intel arch, the comparison indeed should be >.
+Move this code out of the long vivid_create_instance() function.
 
-And this is a confirmed SDM bug, correct?
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/test-drivers/vivid/vivid-core.c | 182 +++++++++---------
+ 1 file changed, 96 insertions(+), 86 deletions(-)
+
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index d4785da440d9..f8cb4133e1ce 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -1001,6 +1001,100 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
+ 	return 0;
+ }
+ 
++static void vivid_disable_unused_ioctls(struct vivid_dev *dev,
++					bool has_tuner,
++					bool has_modulator,
++					unsigned in_type_counter[4],
++					unsigned out_type_counter[4])
++{
++	/* disable invalid ioctls based on the feature set */
++	if (!dev->has_audio_inputs) {
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_AUDIO);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_AUDIO);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_ENUMAUDIO);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_AUDIO);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_G_AUDIO);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_ENUMAUDIO);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_AUDIO);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_G_AUDIO);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_ENUMAUDIO);
++	}
++	if (!dev->has_audio_outputs) {
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_AUDOUT);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_AUDOUT);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUMAUDOUT);
++		v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_S_AUDOUT);
++		v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_G_AUDOUT);
++		v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_ENUMAUDOUT);
++		v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_S_AUDOUT);
++		v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_G_AUDOUT);
++		v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_ENUMAUDOUT);
++	}
++	if (!in_type_counter[TV] && !in_type_counter[SVID]) {
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_STD);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_STD);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_ENUMSTD);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_QUERYSTD);
++	}
++	if (!out_type_counter[SVID]) {
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_STD);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_STD);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUMSTD);
++	}
++	if (!has_tuner && !has_modulator) {
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_FREQUENCY);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_FREQUENCY);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_FREQUENCY);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_G_FREQUENCY);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_FREQUENCY);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_G_FREQUENCY);
++	}
++	if (!has_tuner) {
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_TUNER);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_TUNER);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_TUNER);
++		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_G_TUNER);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_TUNER);
++		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_G_TUNER);
++	}
++	if (in_type_counter[HDMI] == 0) {
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_EDID);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_EDID);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_DV_TIMINGS_CAP);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_DV_TIMINGS);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_DV_TIMINGS);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_ENUM_DV_TIMINGS);
++		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_QUERY_DV_TIMINGS);
++	}
++	if (out_type_counter[HDMI] == 0) {
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_EDID);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_DV_TIMINGS_CAP);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_DV_TIMINGS);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_DV_TIMINGS);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUM_DV_TIMINGS);
++	}
++	if (!dev->has_fb) {
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_FBUF);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_FBUF);
++		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_OVERLAY);
++	}
++	v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
++	v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
++	v4l2_disable_ioctl(&dev->sdr_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
++	v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
++	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_FREQUENCY);
++	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_FREQUENCY);
++	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUM_FRAMESIZES);
++	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUM_FRAMEINTERVALS);
++	v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_S_FREQUENCY);
++	v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_G_FREQUENCY);
++	v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_S_FREQUENCY);
++	v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_G_FREQUENCY);
++	v4l2_disable_ioctl(&dev->touch_cap_dev, VIDIOC_S_PARM);
++	v4l2_disable_ioctl(&dev->touch_cap_dev, VIDIOC_ENUM_FRAMESIZES);
++	v4l2_disable_ioctl(&dev->touch_cap_dev, VIDIOC_ENUM_FRAMEINTERVALS);
++}
++
+ static int vivid_create_instance(struct platform_device *pdev, int inst)
+ {
+ 	static const struct v4l2_dv_timings def_dv_timings =
+@@ -1189,92 +1283,8 @@ static int vivid_create_instance(struct platform_device *pdev, int inst)
+ 			(u32)bt->pixelclock / (htot * vtot));
+ 	}
+ 
+-	/* disable invalid ioctls based on the feature set */
+-	if (!dev->has_audio_inputs) {
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_AUDIO);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_AUDIO);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_ENUMAUDIO);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_AUDIO);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_G_AUDIO);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_ENUMAUDIO);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_AUDIO);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_G_AUDIO);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_ENUMAUDIO);
+-	}
+-	if (!dev->has_audio_outputs) {
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_AUDOUT);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_AUDOUT);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUMAUDOUT);
+-		v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_S_AUDOUT);
+-		v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_G_AUDOUT);
+-		v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_ENUMAUDOUT);
+-		v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_S_AUDOUT);
+-		v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_G_AUDOUT);
+-		v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_ENUMAUDOUT);
+-	}
+-	if (!in_type_counter[TV] && !in_type_counter[SVID]) {
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_STD);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_STD);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_ENUMSTD);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_QUERYSTD);
+-	}
+-	if (!out_type_counter[SVID]) {
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_STD);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_STD);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUMSTD);
+-	}
+-	if (!has_tuner && !has_modulator) {
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_FREQUENCY);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_FREQUENCY);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_FREQUENCY);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_G_FREQUENCY);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_FREQUENCY);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_G_FREQUENCY);
+-	}
+-	if (!has_tuner) {
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_TUNER);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_TUNER);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_TUNER);
+-		v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_G_TUNER);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_TUNER);
+-		v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_G_TUNER);
+-	}
+-	if (in_type_counter[HDMI] == 0) {
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_EDID);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_EDID);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_DV_TIMINGS_CAP);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_G_DV_TIMINGS);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_DV_TIMINGS);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_ENUM_DV_TIMINGS);
+-		v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_QUERY_DV_TIMINGS);
+-	}
+-	if (out_type_counter[HDMI] == 0) {
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_EDID);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_DV_TIMINGS_CAP);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_DV_TIMINGS);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_DV_TIMINGS);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUM_DV_TIMINGS);
+-	}
+-	if (!dev->has_fb) {
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_FBUF);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_FBUF);
+-		v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_OVERLAY);
+-	}
+-	v4l2_disable_ioctl(&dev->vid_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
+-	v4l2_disable_ioctl(&dev->vbi_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
+-	v4l2_disable_ioctl(&dev->sdr_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
+-	v4l2_disable_ioctl(&dev->meta_cap_dev, VIDIOC_S_HW_FREQ_SEEK);
+-	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_S_FREQUENCY);
+-	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_G_FREQUENCY);
+-	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUM_FRAMESIZES);
+-	v4l2_disable_ioctl(&dev->vid_out_dev, VIDIOC_ENUM_FRAMEINTERVALS);
+-	v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_S_FREQUENCY);
+-	v4l2_disable_ioctl(&dev->vbi_out_dev, VIDIOC_G_FREQUENCY);
+-	v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_S_FREQUENCY);
+-	v4l2_disable_ioctl(&dev->meta_out_dev, VIDIOC_G_FREQUENCY);
+-	v4l2_disable_ioctl(&dev->touch_cap_dev, VIDIOC_S_PARM);
+-	v4l2_disable_ioctl(&dev->touch_cap_dev, VIDIOC_ENUM_FRAMESIZES);
+-	v4l2_disable_ioctl(&dev->touch_cap_dev, VIDIOC_ENUM_FRAMEINTERVALS);
++	vivid_disable_unused_ioctls(dev, has_tuner, has_modulator,
++				    in_type_counter, out_type_counter);
+ 
+ 	/* configure internal data */
+ 	dev->fmt_cap = &vivid_formats[0];
+-- 
+2.26.2
+
