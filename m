@@ -2,145 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAE325AFE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D33F25B010
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgIBPqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727041AbgIBNj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:39:29 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2F2C06125F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=/Oowka1+4HYHH/M2f74f3FfCfCIjB94/ju74cCoLjd0=; b=Zke8VF7uLsaMj/PYECiOBSSFvx
-        H2sjuKM4vy4ESU9+EBXJmoBD3INTmxkO22LgyRbJy3XGaGiDc1c7NJ5Nf1uYo09Aufh7zIxfWZWEV
-        3gW3xO6vmhkvQ+CL65ZwbEWsrrZTi7CH+qnRotbRdH8VTd7ZDf1w8w3IAPm+xdI/ZDTbm93OrO1aR
-        JtoVSMaYM9RrOaFJDe7p71yQYsB8NN+ZAkHQe5HFla6vPjXbK9uz1ZeWsRy4gXHXyiCyprdbyk+UB
-        GN6evDmF/s1hssbSrL8CklkQusl9WZcyh0BwihIxbafiyU9gu5KkGLa3t6cJsAk8DT2AWmFjNtBf0
-        do3L5JTg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDSxs-0002dn-7k; Wed, 02 Sep 2020 13:38:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7256307697;
-        Wed,  2 Sep 2020 15:38:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id E2A4E29A82C29; Wed,  2 Sep 2020 15:38:11 +0200 (CEST)
-Message-ID: <20200902133201.354220797@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 02 Sep 2020 15:26:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>
-Subject: [RFC][PATCH 12/13] x86/debug: Support negative polarity DR6 bits
-References: <20200902132549.496605622@infradead.org>
+        id S1727001AbgIBPso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:48:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:38028 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgIBN2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:28:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B637711B3;
+        Wed,  2 Sep 2020 06:28:43 -0700 (PDT)
+Received: from bogus (unknown [10.57.4.218])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B95723F68F;
+        Wed,  2 Sep 2020 06:28:41 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 14:28:38 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        dietmar.eggemann@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/5] cpufreq: report whether cpufreq supports
+ Frequency Invariance (FI)
+Message-ID: <20200902132838.GF25462@bogus>
+References: <20200901205549.30096-1-ionela.voinescu@arm.com>
+ <20200901205549.30096-4-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901205549.30096-4-ionela.voinescu@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DR6 has a whole bunch of bits that have negative polarity; they were
-architecturally reserved and defined to be 1 and are now getting used.
-Since they're 1 by default, 0 becomes the signal value.
+On Tue, Sep 01, 2020 at 09:55:47PM +0100, Ionela Voinescu wrote:
+> Now that the update of the FI scale factor is done in cpufreq core for
+> selected functions - target(), target_index() and fast_switch(),
+> we can provide feedback to the task scheduler and architecture code
+> on whether cpufreq supports FI.
+> 
+> For this purpose provide an external function to expose whether the
+> cpufreq drivers support FI, by using a static key.
+> 
+> The logic behind the enablement of cpufreq-based invariance is as
+> follows:
+>  - cpufreq-based invariance is disabled by default
+>  - cpufreq-based invariance is enabled if any of the callbacks
+>    above is implemented while the unsupported setpolicy() is not
+> 
+> The cpufreq_supports_freq_invariance() function only returns whether
+> cpufreq is instrumented with the arch_set_freq_scale() calls that
+> result in support for frequency invariance. Due to the lack of knowledge
+> on whether the implementation of arch_set_freq_scale() actually results
+> in the setting of a scale factor based on cpufreq information, it is up
+> to the architecture code to ensure the setting and provision of the
+> scale factor to the scheduler.
+> 
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/cpufreq/cpufreq.c | 16 ++++++++++++++++
+>  include/linux/cpufreq.h   |  5 +++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 4d5fe777184a..570bf2ebe9d4 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -61,6 +61,12 @@ static struct cpufreq_driver *cpufreq_driver;
+>  static DEFINE_PER_CPU(struct cpufreq_policy *, cpufreq_cpu_data);
+>  static DEFINE_RWLOCK(cpufreq_driver_lock);
+>  
+> +static DEFINE_STATIC_KEY_FALSE(cpufreq_freq_invariance);
+> +bool cpufreq_supports_freq_invariance(void)
+> +{
+> +	return static_branch_likely(&cpufreq_freq_invariance);
+> +}
+> +
+>  /* Flag to suspend/resume CPUFreq governors */
+>  static bool cpufreq_suspended;
+>  
+> @@ -2720,6 +2726,15 @@ int cpufreq_register_driver(struct cpufreq_driver *driver_data)
+>  	cpufreq_driver = driver_data;
+>  	write_unlock_irqrestore(&cpufreq_driver_lock, flags);
+>  
+> +	/*
+> +	 * Mark support for the scheduler's frequency invariance engine for
+> +	 * drivers that implement target(), target_index() or fast_switch().
+> +	 */
+> +	if (!cpufreq_driver->setpolicy) {
+> +		static_branch_enable_cpuslocked(&cpufreq_freq_invariance);
+> +		pr_debug("supports frequency invariance");
+> +	}
+> +
+>  	if (driver_data->setpolicy)
 
-Handle this by xor'ing the read DR6 value by the reserved mask, this
-will flip them around such that 1 is the signal value (positive
-polarity).
+[super nit] while I understand cpufreq_driver = driver_data, it looks odd
+if 2 consecutive statements refer it with different variables. Or am I
+confusing myself hugely.
 
-Current Linux doesn't yet support any of these bits, but there's two
-defined:
-
- - DR6[11] Bus Lock Debug Exception		(ISEr39)
- - DR6[16] Restricted Transactional Memory	(SDM)
-
-Update ptrace_{set,get}_debugreg() to provide/consume the value in
-architectural polarity. Although afaict ptrace_set_debugreg(6) is
-pointless, the value is not consumed anywhere.
-
-Change hw_breakpoint_restore() to alway write the DR6_RESERVED value
-to DR6, again, no consumer for that write.
-
-Suggested-by: Andrew Cooper <Andrew.Cooper3@citrix.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/hw_breakpoint.c |    2 +-
- arch/x86/kernel/ptrace.c        |    4 ++--
- arch/x86/kernel/traps.c         |    5 ++---
- 3 files changed, 5 insertions(+), 6 deletions(-)
-
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -500,7 +500,7 @@ void hw_breakpoint_restore(void)
- 	set_debugreg(__this_cpu_read(cpu_debugreg[1]), 1);
- 	set_debugreg(__this_cpu_read(cpu_debugreg[2]), 2);
- 	set_debugreg(__this_cpu_read(cpu_debugreg[3]), 3);
--	set_debugreg(current->thread.debugreg6, 6);
-+	set_debugreg(DR6_RESERVED, 6);
- 	set_debugreg(__this_cpu_read(cpu_dr7), 7);
- }
- EXPORT_SYMBOL_GPL(hw_breakpoint_restore);
---- a/arch/x86/kernel/ptrace.c
-+++ b/arch/x86/kernel/ptrace.c
-@@ -601,7 +601,7 @@ static unsigned long ptrace_get_debugreg
- 		if (bp)
- 			val = bp->hw.info.address;
- 	} else if (n == 6) {
--		val = thread->debugreg6;
-+		val = thread->debugreg6 ^ DR6_RESERVED; /* Flip back to arch polarity */
- 	} else if (n == 7) {
- 		val = thread->ptrace_dr7;
- 	}
-@@ -657,7 +657,7 @@ static int ptrace_set_debugreg(struct ta
- 	if (n < HBP_NUM) {
- 		rc = ptrace_set_breakpoint_addr(tsk, n, val);
- 	} else if (n == 6) {
--		thread->debugreg6 = val;
-+		thread->debugreg6 = val ^ DR6_RESERVED; /* Flip to positive polarity */
- 		rc = 0;
- 	} else if (n == 7) {
- 		rc = ptrace_write_dr7(tsk, val);
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -745,9 +745,8 @@ static __always_inline unsigned long deb
- 	 * Keep it simple: clear DR6 immediately.
- 	 */
- 	get_debugreg(dr6, 6);
--	set_debugreg(0, 6);
--	/* Filter out all the reserved bits which are preset to 1 */
--	dr6 &= ~DR6_RESERVED;
-+	set_debugreg(DR6_RESERVED, 6);
-+	dr6 ^= DR6_RESERVED; /* Flip to positive polarity */
- 
- 	/*
- 	 * The SDM says "The processor clears the BTF flag when it
-
-
+-- 
+Regards,
+Sudeep
