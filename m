@@ -2,180 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E13E25ABA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF63425ABC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgIBNEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:04:00 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:24755 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727853AbgIBNDn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:03:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599051823; x=1630587823;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=QLxPQFBP46++2i4owKYOXHmzCOmdzFmbWEdIhpGKEOY=;
-  b=JVNF5sON2MeCJ+NeMaIexpbEtNk7TnkqBbzcO/nlK5xsDBF3Cvy4EeYj
-   0nAzvou+OSkGXewRf9GOT9KolJYJsdkgbhZmeSVO8QKc6fB9p0f3z05n7
-   w0339TgpJzf5P4wSBhnfm5Am6TE6D7k6mF4BzZQmLfcI/w1O85bTBt0mZ
-   M=;
-X-IronPort-AV: E=Sophos;i="5.76,383,1592870400"; 
-   d="scan'208";a="51552217"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 02 Sep 2020 13:01:35 +0000
-Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com (Postfix) with ESMTPS id 7AA74A2A12;
-        Wed,  2 Sep 2020 13:01:33 +0000 (UTC)
-Received: from EX13D20UWC002.ant.amazon.com (10.43.162.163) by
- EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 2 Sep 2020 13:01:33 +0000
-Received: from Alexanders-MacBook-Air.local (10.43.161.85) by
- EX13D20UWC002.ant.amazon.com (10.43.162.163) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 2 Sep 2020 13:01:29 +0000
-Subject: Re: [PATCH v6 0/7] Allow user space to restrict and augment MSR
- emulation
-To:     Aaron Lewis <aaronlewis@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kvm list <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200901201517.29086-1-graf@amazon.com>
- <CAAAPnDFChjpK=nF=CGhLM9JJHcmW-6STJ5Am41CBjVei9-s4ow@mail.gmail.com>
-From:   Alexander Graf <graf@amazon.com>
-Message-ID: <a4700ac2-fd92-44b4-70c5-4a3690c02269@amazon.com>
-Date:   Wed, 2 Sep 2020 15:01:27 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.0
+        id S1726446AbgIBNJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:09:56 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:41982 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726310AbgIBNJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:09:30 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 0F011574E9;
+        Wed,  2 Sep 2020 13:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:date:date:from:from:subject:subject
+        :message-id:received:received:received; s=mta-01; t=1599051709;
+         x=1600866110; bh=dxrkS/aX5yeChGiqu1IMF0Fne/EsfHUnIkOcp1B4TN8=; b=
+        hIB8qVeU9aSDbCq8oo0SIymw3RagNFW6M8y0CevJWdj6qJHNFbfjvYoItoHAPotU
+        jwQvYfbRuBxCR6gk2jAaTvdkXK9vSFRsCE1qV2pdvieXQKYXdU9jqtRbWac8E0TI
+        hmghWAjnIL2ldcv2/HAn45mNx2kaAzFCh4qVSkg13cg=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 9t_TD-qV_gA5; Wed,  2 Sep 2020 16:01:49 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 65A6B574FE;
+        Wed,  2 Sep 2020 15:59:33 +0300 (MSK)
+Received: from localhost.localdomain (10.199.3.6) by T-EXCH-02.corp.yadro.com
+ (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Wed, 2 Sep
+ 2020 15:59:32 +0300
+Message-ID: <d2343032814705f33cd81f18f45630bf327c0ff8.camel@yadro.com>
+Subject: watchdog start on restart
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Date:   Wed, 2 Sep 2020 16:02:53 +0300
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <CAAAPnDFChjpK=nF=CGhLM9JJHcmW-6STJ5Am41CBjVei9-s4ow@mail.gmail.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.161.85]
-X-ClientProxiedBy: EX13D04UWA001.ant.amazon.com (10.43.160.47) To
- EX13D20UWC002.ant.amazon.com (10.43.162.163)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.199.3.6]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwMi4wOS4yMCAwMDozMiwgQWFyb24gTGV3aXMgd3JvdGU6Cj4gCj4gT24gVHVlLCBTZXAg
-MSwgMjAyMCBhdCAxOjE1IFBNIEFsZXhhbmRlciBHcmFmIDxncmFmQGFtYXpvbi5jb20+IHdyb3Rl
-Ogo+Pgo+PiBXaGlsZSB0eWluZyB0byBhZGQgc3VwcG9ydCBmb3IgdGhlIE1TUl9DT1JFX1RIUkVB
-RF9DT1VOVCBNU1IgaW4gS1ZNLAo+PiBJIHJlYWxpemVkIHRoYXQgd2Ugd2VyZSBzdGlsbCBpbiBh
-IHdvcmxkIHdoZXJlIHVzZXIgc3BhY2UgaGFzIG5vIGNvbnRyb2wKPj4gb3ZlciB3aGF0IGhhcHBl
-bnMgd2l0aCBNU1IgZW11bGF0aW9uIGluIEtWTS4KPj4KPj4gVGhhdCBpcyBiYWQgZm9yIG11bHRp
-cGxlIHJlYXNvbnMuIEluIG15IGNhc2UsIEkgd2FudGVkIHRvIGVtdWxhdGUgdGhlCj4+IE1TUiBp
-biB1c2VyIHNwYWNlLCBiZWNhdXNlIGl0J3MgYSBDUFUgc3BlY2lmaWMgcmVnaXN0ZXIgdGhhdCBk
-b2VzIG5vdAo+PiBleGlzdCBvbiBvbGRlciBDUFVzIGFuZCB0aGF0IHJlYWxseSBvbmx5IGNvbnRh
-aW5zIGluZm9ybWF0aW9uYWwgZGF0YSB0aGF0Cj4+IGlzIG9uIHRoZSBwYWNrYWdlIGxldmVsLCBz
-byBpdCdzIGEgbmF0dXJhbCBmaXQgZm9yIHVzZXIgc3BhY2UgdG8gcHJvdmlkZQo+PiBpdC4KPj4K
-Pj4gSG93ZXZlciwgaXQgaXMgYWxzbyBiYWQgb24gYSBwbGF0Zm9ybSBjb21wYXRpYmlsaXR5IGxl
-dmVsLiBDdXJycmVudGx5LAo+PiBLVk0gaGFzIG5vIHdheSB0byBleHBvc2UgZGlmZmVyZW50IE1T
-UnMgYmFzZWQgb24gdGhlIHNlbGVjdGVkIHRhcmdldCBDUFUKPj4gdHlwZS4KPj4KPj4gVGhpcyBw
-YXRjaCBzZXQgaW50cm9kdWNlcyBhIHdheSBmb3IgdXNlciBzcGFjZSB0byBpbmRpY2F0ZSB0byBL
-Vk0gd2hpY2gKPj4gTVNScyBzaG91bGQgYmUgaGFuZGxlZCBpbiBrZXJuZWwgc3BhY2UuIFdpdGgg
-dGhhdCwgd2UgY2FuIHNvbHZlIHBhcnQgb2YKPj4gdGhlIHBsYXRmb3JtIGNvbXBhdGliaWxpdHkg
-c3RvcnkuIE9yIGF0IGxlYXN0IHdlIGNhbiBub3QgaGFuZGxlIEFNRCBzcGVjaWZpYwo+PiBNU1Jz
-IG9uIGFuIEludGVsIHBsYXRmb3JtIGFuZCB2aWNlIHZlcnNhLgo+Pgo+PiBJbiBhZGRpdGlvbiwg
-aXQgaW50cm9kdWNlcyBhIHdheSBmb3IgdXNlciBzcGFjZSB0byBnZXQgaW50byB0aGUgbG9vcAo+
-PiB3aGVuIGFuIE1TUiBhY2Nlc3Mgd291bGQgZ2VuZXJhdGUgYSAjR1AgZmF1bHQsIHN1Y2ggYXMg
-d2hlbiBLVk0gZmluZHMgYW4KPj4gTVNSIHRoYXQgaXMgbm90IGhhbmRsZWQgYnkgdGhlIGluLWtl
-cm5lbCBNU1IgZW11bGF0aW9uIG9yIHdoZW4gdGhlIGd1ZXN0Cj4+IGlzIHRyeWluZyB0byBhY2Nl
-c3MgcmVzZXJ2ZWQgcmVnaXN0ZXJzLgo+Pgo+PiBJbiBjb21iaW5hdGlvbiB3aXRoIGZpbHRlcmlu
-ZywgdXNlciBzcGFjZSB0cmFwcGluZyBhbGxvd3MgdXMgdG8gZW11bGF0ZQo+PiBhcmJpdHJhcnkg
-TVNScyBpbiB1c2VyIHNwYWNlLCBwYXZpbmcgdGhlIHdheSBmb3IgdGFyZ2V0IENQVSBzcGVjaWZp
-YyBNU1IKPj4gaW1wbGVtZW50YXRpb25zIGZyb20gdXNlciBzcGFjZS4KPj4KPj4gdjEgLT4gdjI6
-Cj4+Cj4+ICAgIC0gcy9FVFJBUF9UT19VU0VSX1NQQUNFL0VOT0VOVC9nCj4+ICAgIC0gZGVmbGVj
-dCBhbGwgI0dQIGluamVjdGlvbiBldmVudHMgdG8gdXNlciBzcGFjZSwgbm90IGp1c3QgdW5rbm93
-biBNU1JzLgo+PiAgICAgIFRoYXQgd2FzIHdlIGNhbiBhbHNvIGRlZmxlY3QgYWxsb3dsaXN0IGVy
-cm9ycyBsYXRlcgo+PiAgICAtIGZpeCBlbXVsYXRvciBjYXNlCj4+ICAgIC0gbmV3IHBhdGNoOiBL
-Vk06IHg4NjogSW50cm9kdWNlIGFsbG93IGxpc3QgZm9yIE1TUiBlbXVsYXRpb24KPj4gICAgLSBu
-ZXcgcGF0Y2g6IEtWTTogc2VsZnRlc3RzOiBBZGQgdGVzdCBmb3IgdXNlciBzcGFjZSBNU1IgaGFu
-ZGxpbmcKPj4KPj4gdjIgLT4gdjM6Cj4+Cj4+ICAgIC0gcmV0dXJuIHIgaWYgciA9PSBYODZFTVVM
-X0lPX05FRURFRAo+PiAgICAtIHMvS1ZNX0VYSVRfUkRNU1IvS1ZNX0VYSVRfWDg2X1JETVNSL2cK
-Pj4gICAgLSBzL0tWTV9FWElUX1dSTVNSL0tWTV9FWElUX1g4Nl9XUk1TUi9nCj4+ICAgIC0gVXNl
-IGNvbXBsZXRlX3VzZXJzcGFjZV9pbyBsb2dpYyBpbnN0ZWFkIG9mIHJlcGx5IGZpZWxkCj4+ICAg
-IC0gU2ltcGxpZnkgdHJhcHBpbmcgY29kZQo+PiAgICAtIGRvY3VtZW50IGZsYWdzIGZvciBLVk1f
-WDg2X0FERF9NU1JfQUxMT1dMSVNUCj4+ICAgIC0gZ2VuZXJhbGl6ZSBleGl0IHBhdGgsIGFsd2F5
-cyB1bmxvY2sgd2hlbiByZXR1cm5pbmcKPj4gICAgLSBzL0tWTV9DQVBfQUREX01TUl9BTExPV0xJ
-U1QvS1ZNX0NBUF9YODZfTVNSX0FMTE9XTElTVC9nCj4+ICAgIC0gQWRkIEtWTV9YODZfQ0xFQVJf
-TVNSX0FMTE9XTElTVAo+PiAgICAtIEFkZCB0ZXN0IHRvIGNsZWFyIHdoaXRlbGlzdAo+PiAgICAt
-IEFkanVzdCB0byByZXBseS1sZXNzIEFQSQo+PiAgICAtIEZpeCBhc3NlcnRzCj4+ICAgIC0gQWN0
-dWFsbHkgdHJhcCBvbiBNU1JfSUEzMl9QT1dFUl9DVEwgd3JpdGVzCj4+Cj4+IHYzIC0+IHY0Ogo+
-Pgo+PiAgICAtIE1lbnRpb24gZXhpdCByZWFzb25zIGluIHJlLWVudGVyIG1hbmRhdG9yeSBzZWN0
-aW9uIG9mIEFQSSBkb2N1bWVudGF0aW9uCj4+ICAgIC0gQ2xlYXIgcGFkZGluZyBieXRlcwo+PiAg
-ICAtIEdlbmVyYWxpemUgZ2V0L3NldCBkZWZsZWN0IGZ1bmN0aW9ucwo+PiAgICAtIFJlbW92ZSBy
-ZWR1bmRhbnQgcGVuZGluZ191c2VyX21zciBmaWVsZAo+PiAgICAtIGxvY2sgYWxsb3cgY2hlY2sg
-YW5kIGNsZWFyaW5nCj4+ICAgIC0gZnJlZSBiaXRtYXBzIG9uIGNsZWFyCj4+Cj4+IHY0IC0+IHY1
-Ogo+Pgo+PiAgICAtIHVzZSBzcmN1Cj4+Cj4+IHY1IC0+IHY2Ogo+Pgo+PiAgICAtIFN3aXRjaCBm
-cm9tIGFsbG93IGxpc3QgdG8gZmlsdGVyaW5nIEFQSSB3aXRoIGV4cGxpY2l0IGZhbGxiYWNrIG9w
-dGlvbgo+PiAgICAtIFN1cHBvcnQgYW5kIHRlc3QgcGFzc3Rocm91Z2ggTVNSIGZpbHRlcmluZwo+
-PiAgICAtIENoZWNrIGZvciBmaWx0ZXIgZXhpdCByZWFzb24KPj4gICAgLSBBZGQgLmdpdGlnbm9y
-ZQo+PiAgICAtIHNlbmQgZmlsdGVyIGNoYW5nZSBub3RpZmljYXRpb24KPj4gICAgLSBjaGFuZ2Ug
-dG8gYXRvbWljIHNldF9tc3JfZmlsdGVyIGlvY3RsIHdpdGggZmFsbGJhY2sgZmxhZwo+PiAgICAt
-IHVzZSBFUEVSTSBmb3IgZmlsdGVyIGJsb2Nrcwo+PiAgICAtIGFkZCBiaXQgZm9yIE1TUiB1c2Vy
-IHNwYWNlIGRlZmxlY3Rpb24KPj4gICAgLSBjaGVjayBmb3Igb3ZlcmZsb3cgb2YgQklUU19UT19M
-T05HUyAodGhhbmtzIERhbiBDYXJwZW50ZXIhKQo+PiAgICAtIHMvaW50IGk7L3UzMiBpOy8KPj4g
-ICAgLSByZW1vdmUgb3ZlcmxhcCBjaGVjawo+PiAgICAtIEludHJvZHVjZSBleGl0IHJlYXNvbiBt
-YXNrIHRvIGFsbG93IGZvciBmdXR1cmUgZXhwYW5zaW9uIGFuZCBmaWx0ZXJpbmcKPj4gICAgLSBz
-L2VtdWxfdG9fdmNwdShjdHh0KS92Y3B1Lwo+PiAgICAtIGltcG9ydGVkIHBhdGNoOiBLVk06IHg4
-NjogUHJlcGFyZSBNU1IgYml0bWFwcyBmb3IgdXNlcnNwYWNlIHRyYWNrZWQgTVNScwo+PiAgICAt
-IG5ldyBwYXRjaDogS1ZNOiB4ODY6IEFkZCBpbmZyYXN0cnVjdHVyZSBmb3IgTVNSIGZpbHRlcmlu
-Zwo+PiAgICAtIG5ldyBwYXRjaDogS1ZNOiB4ODY6IFNWTTogUHJldmVudCBNU1IgcGFzc3Rocm91
-Z2ggd2hlbiBNU1IgYWNjZXNzIGlzIGRlbmllZAo+PiAgICAtIG5ldyBwYXRjaDogS1ZNOiB4ODY6
-IFZNWDogUHJldmVudCBNU1IgcGFzc3Rocm91Z2ggd2hlbiBNU1IgYWNjZXNzIGlzIGRlbmllZAo+
-Pgo+PiBBYXJvbiBMZXdpcyAoMSk6Cj4+ICAgIEtWTTogeDg2OiBQcmVwYXJlIE1TUiBiaXRtYXBz
-IGZvciB1c2Vyc3BhY2UgdHJhY2tlZCBNU1JzCj4+Cj4+IEFsZXhhbmRlciBHcmFmICg2KToKPj4g
-ICAgS1ZNOiB4ODY6IERlZmxlY3QgdW5rbm93biBNU1IgYWNjZXNzZXMgdG8gdXNlciBzcGFjZQo+
-PiAgICBLVk06IHg4NjogQWRkIGluZnJhc3RydWN0dXJlIGZvciBNU1IgZmlsdGVyaW5nCj4+ICAg
-IEtWTTogeDg2OiBTVk06IFByZXZlbnQgTVNSIHBhc3N0aHJvdWdoIHdoZW4gTVNSIGFjY2VzcyBp
-cyBkZW5pZWQKPj4gICAgS1ZNOiB4ODY6IFZNWDogUHJldmVudCBNU1IgcGFzc3Rocm91Z2ggd2hl
-biBNU1IgYWNjZXNzIGlzIGRlbmllZAo+PiAgICBLVk06IHg4NjogSW50cm9kdWNlIE1TUiBmaWx0
-ZXJpbmcKPj4gICAgS1ZNOiBzZWxmdGVzdHM6IEFkZCB0ZXN0IGZvciB1c2VyIHNwYWNlIE1TUiBo
-YW5kbGluZwo+Pgo+PiAgIERvY3VtZW50YXRpb24vdmlydC9rdm0vYXBpLnJzdCAgICAgICAgICAg
-ICAgICB8IDE3NiArKysrKysrKystCj4+ICAgYXJjaC94ODYvaW5jbHVkZS9hc20va3ZtX2hvc3Qu
-aCAgICAgICAgICAgICAgIHwgIDE4ICsrCj4+ICAgYXJjaC94ODYvaW5jbHVkZS91YXBpL2FzbS9r
-dm0uaCAgICAgICAgICAgICAgIHwgIDE5ICsrCj4+ICAgYXJjaC94ODYva3ZtL2VtdWxhdGUuYyAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDE4ICstCj4+ICAgYXJjaC94ODYva3ZtL3N2bS9zdm0u
-YyAgICAgICAgICAgICAgICAgICAgICAgIHwgMTIyICsrKysrLS0KPj4gICBhcmNoL3g4Ni9rdm0v
-c3ZtL3N2bS5oICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDcgKwo+PiAgIGFyY2gveDg2L2t2
-bS92bXgvbmVzdGVkLmMgICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQo+PiAgIGFyY2gveDg2
-L2t2bS92bXgvdm14LmMgICAgICAgICAgICAgICAgICAgICAgICB8IDMwMyArKysrKysrKysrKyst
-LS0tLS0KPj4gICBhcmNoL3g4Ni9rdm0vdm14L3ZteC5oICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgIDkgKy0KPj4gICBhcmNoL3g4Ni9rdm0veDg2LmMgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgfCAyNjcgKysrKysrKysrKysrKystCj4+ICAgYXJjaC94ODYva3ZtL3g4Ni5oICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHwgICAxICsKPj4gICBpbmNsdWRlL3RyYWNlL2V2ZW50cy9rdm0u
-aCAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0KPj4gICBpbmNsdWRlL3VhcGkvbGludXgva3Zt
-LmggICAgICAgICAgICAgICAgICAgICAgfCAgMTcgKwo+PiAgIHRvb2xzL3Rlc3Rpbmcvc2VsZnRl
-c3RzL2t2bS8uZ2l0aWdub3JlICAgICAgICB8ICAgMSArCj4+ICAgdG9vbHMvdGVzdGluZy9zZWxm
-dGVzdHMva3ZtL01ha2VmaWxlICAgICAgICAgIHwgICAxICsKPj4gICAuLi4vc2VsZnRlc3RzL2t2
-bS94ODZfNjQvdXNlcl9tc3JfdGVzdC5jICAgICAgfCAyMjQgKysrKysrKysrKysrKwo+PiAgIDE2
-IGZpbGVzIGNoYW5nZWQsIDEwNTUgaW5zZXJ0aW9ucygrKSwgMTMyIGRlbGV0aW9ucygtKQo+PiAg
-IGNyZWF0ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9rdm0veDg2XzY0L3Vz
-ZXJfbXNyX3Rlc3QuYwo+Pgo+PiAtLQo+PiAyLjE3LjEKPj4KPj4KPj4KPj4KPj4gQW1hem9uIERl
-dmVsb3BtZW50IENlbnRlciBHZXJtYW55IEdtYkgKPj4gS3JhdXNlbnN0ci4gMzgKPj4gMTAxMTcg
-QmVybGluCj4+IEdlc2NoYWVmdHNmdWVocnVuZzogQ2hyaXN0aWFuIFNjaGxhZWdlciwgSm9uYXRo
-YW4gV2Vpc3MKPj4gRWluZ2V0cmFnZW4gYW0gQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmcgdW50
-ZXIgSFJCIDE0OTE3MyBCCj4+IFNpdHo6IEJlcmxpbgo+PiBVc3QtSUQ6IERFIDI4OSAyMzcgODc5
-Cj4+Cj4+Cj4+Cj4gCj4gSGkgQWxleCwKPiAKPiBJJ20gb25seSBzZWVpbmcgNCBjb21taXRzLiAg
-QXJlIHlvdSBwbGFubmluZyBvbiBzZW5kaW5nIHRoZSByZW1haW5pbmcgMz8KCkhtbSwgbG9va3Mg
-bGlrZSBhIGNvbWJpbmF0aW9uIG9mIGJhZCBlbWFpbCBzZXJ2ZXIgYW5kIGJ1Z2d5IGdpdCBicm9r
-ZSBteSAKbmVjayBoZXJlLiBJIGZvdW5kIGEgc21hbGwgYnVnIGluIHRoZSBzZXJpZXMsIHNvIEkn
-dmUganVzdCBzZW50IHRoZSBmdWxsIApzZXQgb3V0IGFnYWluLCBob3BlZnVsbHkgY29tcGxldGVs
-eSB0aGlzIHRpbWUgOikuCgoKQWxleAoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1h
-bnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBD
-aHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2Vy
-aWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1J
-RDogREUgMjg5IDIzNyA4NzkKCgo=
+Hello everyone. Currently, the watchdog interface only has "stop watchdog on
+restart" but lacks a "start watchdog on restart" one. Is there a way to achieve
+such functionality?
+
+I'd like to know why "stop watchdog on restart" wasn't implemented via ioctl
+interface? It would be more convenient from user perspective and you can
+control that behavior whenever you want from application layer.
+
+I have some thoughts on this problem that solve the aforementioned
+issue with "start watchdog on restart" but I don't think that my solution is
+correct.
+
+Looking forward for your feedback.
+
+Thanks.
 
