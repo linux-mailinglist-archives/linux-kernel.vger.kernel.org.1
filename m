@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7676925AC18
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAF225AC44
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgIBNbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:31:34 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35864 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgIBN2z (ORCPT
+        id S1726968AbgIBNrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:47:31 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:58045 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727796AbgIBNcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:28:55 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 082DSZUE026423;
-        Wed, 2 Sep 2020 08:28:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599053315;
-        bh=vQI22dfT496+KMI35oF7DTRni+ONmCVmidN8Fb1B6+0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=o6XRI5IHSlSq6IaNK6ejdynXOQ4iGHZeZdFOzKOYghxXfXBoyXag8B2B21u4ZY0zm
-         ork3hupljrMbFs8CAklrPjWxvbn1wxgtIb8LrDJ9aq6pv/t9N3+QWTN2qAcXrmcby4
-         jvBqMn5CRpgIYbfPVbPLwhwR6fwkX9vgUMXbTkoU=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 082DSZRN095336
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Sep 2020 08:28:35 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 2 Sep
- 2020 08:28:34 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 2 Sep 2020 08:28:34 -0500
-Received: from [192.168.2.14] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 082DSW0D080726;
-        Wed, 2 Sep 2020 08:28:32 -0500
-Subject: Re: [PATCH 2/3] dt-bindings: usb: cdns,usb3: Add cdns,phyrst-a-enable
- property
-To:     Peter Chen <peter.chen@nxp.com>
-CC:     "balbi@kernel.org" <balbi@kernel.org>,
-        "pawell@cadence.com" <pawell@cadence.com>,
-        "kurahul@cadence.com" <kurahul@cadence.com>,
-        "nsekhar@ti.com" <nsekhar@ti.com>,
-        "vigneshr@ti.com" <vigneshr@ti.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <20200825120059.12436-1-rogerq@ti.com>
- <20200825120059.12436-3-rogerq@ti.com> <20200827111343.GB5983@b29397-desktop>
-From:   Roger Quadros <rogerq@ti.com>
-Message-ID: <08a7533f-b09e-f044-64e5-d709ae220599@ti.com>
-Date:   Wed, 2 Sep 2020 16:28:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 2 Sep 2020 09:32:39 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 9C5C6E96;
+        Wed,  2 Sep 2020 09:32:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 02 Sep 2020 09:32:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=y4ddWAdtJRtlQaf00kaReh39twe
+        7Zr1EjOVYFP+ScYo=; b=je3R8F/N9IrxQXtWq/Z22fFeLkYOOBe4P2Z/qkoUrZK
+        1sUpau9WJpMNd5SPQEvrUDKuGIvk3vIgDX7TIxJG0GspwoQJuO/Dv9PLDVt3hGwh
+        3/teGTHbzJJ7AFiM9wtVNcu1VcwllFhE7bls/1bWkArQEULRWThpM/++6v6aujpt
+        WAg839Qe9+hUtDUSjgM+l6JutxHh9MinPPVJ6oDJKgFm9cttTXOPdSyW5Jw4OpWO
+        dN4vv0A+Q53lWOGHbACp+SdNSOJe6oReyuA51dFerEusZIk4CqLKapWR573OmO8/
+        WEcbasZZ8a7BmKp9RMnRiWi8z+jl7epKnt4od88MOpA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=y4ddWA
+        dtJRtlQaf00kaReh39twe7Zr1EjOVYFP+ScYo=; b=lQbFkQ4H2MnmJI23oXWQ9P
+        RX+NyCbMmiOt9zkN+aA4zt1pl/ghgzJvApoGpVFIG5ZF2SczjofRFPPUr0ESgSwl
+        BWk7s70xOgfTS/oP0SnDCdkPMDYhQw77E8Cpp886hLO+d/aurmwv5rPgolFSj3QB
+        5MWbPh/UAGZaZJDX/U5Hjcp8yy8R4s+yO19J4NvA1mqrkH0AMKhjpI3bNIpnUmga
+        a1Wraq/nzWVm2lSELDck37SzFxGSscE/ES1/Ay8SI7/Lw8G/0AgTjq0ywlFyvzX1
+        HDdDxH0mdvRVdOdcmOamzAWhNrGAiMbCdHWLrAWj6lpz4FUTf5mcySrL3KGl9hlQ
+        ==
+X-ME-Sender: <xms:5Z5PX8gKFSRpYuzEvSBaxN7XGSFBX2nRZODNr-E7PPSqDGoOySobtA>
+    <xme:5Z5PX1Bj--xlWu-xQx01wtIrHRwr2kHBSdtmMQOoqrpJoUO1qrRT9856sqcV4hcs7
+    REx95fmfIhka9S_iOw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefledgieeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:5Z5PX0GBY6dwnhdFyJPru3PMm3WkCz7dPtPnCTB0-39rYjKh4CFqPw>
+    <xmx:5Z5PX9TaTXaseCkiyeUSKOqrIWnrxffQIq3kcMQkjPmgLqbv0vUDnA>
+    <xmx:5Z5PX5xodCGa1NWCbBVuehMOSqBeA9tNGQ0OAhve471IBFjmC8HLmw>
+    <xmx:555PX-JxpMUQeawDrYfvmh9UoqEsXNKKZvQvtrbFREkXg-k9HYRWewTXY8o>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A56B23280060;
+        Wed,  2 Sep 2020 09:32:21 -0400 (EDT)
+Date:   Wed, 2 Sep 2020 15:32:20 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>, devicetree@vger.kernel.org,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-clk@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 00/78] drm/vc4: Support BCM2711 Display Pipeline
+Message-ID: <20200902133220.avp6dhfv2fhpiyf3@gilmour.lan>
+References: <CGME20200709070649epcas1p13664bacc66a0f73443bf4d3e8940f933@epcas1p1.samsung.com>
+ <cover.7a1aa1784976093af26cb31fd283cf5b3ed568bb.1594230107.git-series.maxime@cerno.tech>
+ <1a39aedf-b708-e490-6acb-9a07e1b73300@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20200827111343.GB5983@b29397-desktop>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ptnwrc5vhcz5nwzs"
+Content-Disposition: inline
+In-Reply-To: <1a39aedf-b708-e490-6acb-9a07e1b73300@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter,
 
-On 27/08/2020 14:14, Peter Chen wrote:
-> On 20-08-25 15:00:58, Roger Quadros wrote:
->> Controller version 0x0002450D has USB2 PHY RX sensitivity issues
->> that needs to be worked around by enabling phyrst-a-enable bit
->> in PHYRST_CFG register.
->>
->> There is no way to distinguish between the controller version
->> before the device controller is started so we need to add this
->> DT property.
-> 
-> Maybe you should say "There is no way to know controller version
-> at host mode, but this workaround needs for both host and device
-> mode, so we have to add this DT property", the same for the comments
-> of your driver code patch.
+--ptnwrc5vhcz5nwzs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will reword it to
+Hi Hoegeun
 
-"There is no way to know controller version before device controller
-is started and the workaround needs to be applied for both host and
-device modes, so we add this DT property"
+On Fri, Aug 21, 2020 at 04:18:34PM +0900, Hoegeun Kwon wrote:
+> Hi Maxime,
+>=20
+> Thank you for your version 4 patch.
+> I tested all 78 patches based on the next-20200708.
+>=20
+>=20
+> Dual HDMI opearation does not work normally.
+> flip_done timed out occurs and doesn't work.
+> Could you check please it.
+>=20
+> [=A0 105.694541] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=20
+> [CRTC:64:crtc-3] flip_done timed out
+> [=A0 115.934994] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=20
+> [CONNECTOR:32:HDMI-A-1] flip_done timed out
+> [=A0 126.174545] [drm:drm_atomic_helper_wait_for_dependencies] *ERROR*=20
+> [PLANE:60:plane-3] flip_done timed out
 
-cheers,
--roger
+Thanks for testing and reporting this. I've been looking into it, and it
+seems that it's not just the dual output that's broken, but HDMI1
+entirely (so even a single display connected to HDMI1 doesn't work).
 
-> 
-> Peter
->>
->> Signed-off-by: Roger Quadros <rogerq@ti.com>
->> ---
->>   Documentation/devicetree/bindings/usb/cdns,usb3.yaml | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/cdns,usb3.yaml b/Documentation/devicetree/bindings/usb/cdns,usb3.yaml
->> index 7bc0263accee..e670adc955e1 100644
->> --- a/Documentation/devicetree/bindings/usb/cdns,usb3.yaml
->> +++ b/Documentation/devicetree/bindings/usb/cdns,usb3.yaml
->> @@ -58,6 +58,10 @@ properties:
->>         buffers expressed in KB
->>       $ref: /schemas/types.yaml#/definitions/uint32
->>   
->> +  cdns,phyrst-a-enable:
->> +    description: Enable resetting of PHY if Rx fail is detected
->> +    type: boolean
->> +
->>   required:
->>     - compatible
->>     - reg
->> -- 
->> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
->> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
->>
-> 
+Is it happening for you as well?
 
--- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Maxime
+
+--ptnwrc5vhcz5nwzs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX0+e5AAKCRDj7w1vZxhR
+xR+5APoDUUTLzhy0qxhPFbilcNUaS2gepejJLqHbcQU3isBUBQEAzxjkL4IbaWNw
+oW7yn9VBzDQ8y/JSlGuj5y3LEiaGzgs=
+=L5e7
+-----END PGP SIGNATURE-----
+
+--ptnwrc5vhcz5nwzs--
