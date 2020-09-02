@@ -2,196 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E850E25AE77
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A1F25AE91
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgIBPKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:10:51 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59602 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727907AbgIBPKO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:10:14 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 082F2gkI099692;
-        Wed, 2 Sep 2020 11:10:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=idFinTFt53LnBLvBNw1JCHMSrI/TFogzCHjKFuTZk7w=;
- b=fHwgFWQe4VRFJtY3lLw2/Gx3mIZkKhdJ2OAHVHG+OQ/C6YEOLjhjClMXttv5EOPFJx9j
- tZwvyT85dnEgULjJ3YYSSDOy7tzbkJfYHNyOyeMQHdA2jcPXj+eQtsaBKAHfYbUI8xva
- miaUz49cOt5Rr8maAgHW1XQMa7ZuxqTp0MuKGUfPe6rv83mTzoI7mXnzqJko+K+9eILe
- 8lVBmfkCG4o7Rkeumgk9cTr504HFUUS9JObkPxBXTZqsHQcHGbUVeOGvdiBxaFC9daMn
- 8tYmMLBuu522NrXBabqJTgn4Ba5kFaxV4H4GjxJVaz0NtRxK678lnFQbZtSJxOjiQQXF xQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33adk58h5k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 11:10:06 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 082F7M88031536;
-        Wed, 2 Sep 2020 15:10:03 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 337en8cuk0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 15:10:03 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 082FA0BO30409090
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Sep 2020 15:10:00 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A18952052;
-        Wed,  2 Sep 2020 15:10:00 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.44.120])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 284C05204F;
-        Wed,  2 Sep 2020 15:10:00 +0000 (GMT)
-Date:   Wed, 2 Sep 2020 17:09:58 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        <linux-s390@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [RFC PATCH 0/2] mm/gup: fix gup_fast with dynamic page table
- folding
-Message-ID: <20200902170958.09be0c3e@thinkpad>
-In-Reply-To: <20200902142437.5f39b4bb@thinkpad>
-References: <20200828140314.8556-1-gerald.schaefer@linux.ibm.com>
-        <9071c9fa-ba6a-90dc-2d7a-8b155141d890@de.ibm.com>
-        <20200831121553.8be5dcdbdbc5256846ac513e@linux-foundation.org>
-        <20200901194020.418da486@thinkpad>
-        <91988792-069c-31a6-7840-0122357538c7@nvidia.com>
-        <20200902142437.5f39b4bb@thinkpad>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726406AbgIBPQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:16:34 -0400
+Received: from verein.lst.de ([213.95.11.211]:60870 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgIBPLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:11:49 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4285B68B05; Wed,  2 Sep 2020 17:11:44 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 17:11:44 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Song Liu <song@kernel.org>, dm-devel@redhat.com,
+        linux-mtd@lists.infradead.org, cgroups@vger.kernel.org,
+        drbd-dev@tron.linbit.com, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, martin.petersen@oracle.com
+Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
+ block layer
+Message-ID: <20200902151144.GA1738@lst.de>
+References: <20200726150333.305527-1-hch@lst.de> <20200726150333.305527-7-hch@lst.de> <20200826220737.GA25613@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-02_09:2020-09-02,2020-09-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0 suspectscore=0
- spamscore=0 phishscore=0 adultscore=0 priorityscore=1501 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009020144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826220737.GA25613@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 14:24:37 +0200
-Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
-
-> On Tue, 1 Sep 2020 16:22:22 -0700
-> John Hubbard <jhubbard@nvidia.com> wrote:
+On Wed, Aug 26, 2020 at 06:07:38PM -0400, Mike Snitzer wrote:
+> On Sun, Jul 26 2020 at 11:03am -0400,
+> Christoph Hellwig <hch@lst.de> wrote:
 > 
-> > On 9/1/20 10:40 AM, Gerald Schaefer wrote:
-> > > On Mon, 31 Aug 2020 12:15:53 -0700
-> > > Andrew Morton <akpm@linux-foundation.org> wrote:
-> > ...
-> > > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > > index e8cbc2e795d5..43dacbce823f 100644
-> > > --- a/include/linux/pgtable.h
-> > > +++ b/include/linux/pgtable.h
-> > > @@ -681,6 +681,38 @@ static inline int arch_unmap_one(struct mm_struct *mm,
-> > >   })
-> > >   #endif
-> > >   
-> > > +/*
-> > > + * With dynamic page table levels on s390, the static pXd_addr_end() functions
-> > > + * will not return corresponding dynamic boundaries. This is no problem as long
-> > > + * as only pXd pointers are passed down during page table walk, because
-> > > + * pXd_offset() will simply return the given pointer for folded levels, and the
-> > > + * pointer iteration over a range simply happens at the correct page table
-> > > + * level.
-> > > + * It is however a problem with gup_fast, or other places walking the page
-> > > + * tables w/o locks using READ_ONCE(), and passing down the pXd values instead
-> > > + * of pointers. In this case, the pointer given to pXd_offset() is a pointer to
-> > > + * a stack variable, which cannot be used for pointer iteration at the correct
-> > > + * level. Instead, the iteration then has to happen by going up to pgd level
-> > > + * again. To allow this, provide pXd_addr_end_folded() functions with an
-> > > + * additional pXd value parameter, which can be used on s390 to determine the
-> > > + * folding level and return the corresponding boundary.
+> > Drivers shouldn't really mess with the readahead size, as that is a VM
+> > concept.  Instead set it based on the optimal I/O size by lifting the
+> > algorithm from the md driver when registering the disk.  Also set
+> > bdi->io_pages there as well by applying the same scheme based on
+> > max_sectors.
 > > 
-> > Ah OK, I finally see what you have in mind. And as Jason noted, if we just
-> > pass an additional parameter to pXd_addr_end() that's going to be
-> > cleaner. And doing so puts this in line with other page table
-> > abstractions that also carry more information than some architectures
-> > need. For example, on x86, set_pte_at() ignores the first two
-> > parameters:
-> > 
-> > #define set_pte_at(mm, addr, ptep, pte)	native_set_pte_at(mm, addr, ptep, pte)
-> > 
-> > static inline void native_set_pte_at(struct mm_struct *mm, unsigned long addr,
-> > 				     pte_t *ptep , pte_t pte)
-> > {
-> > 	native_set_pte(ptep, pte);
-> > }
-> > 
-> > This type of abstraction has worked out very well, IMHO.
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  block/blk-settings.c         |  5 ++---
+> >  block/blk-sysfs.c            |  1 -
+> >  block/genhd.c                | 13 +++++++++++--
+> >  drivers/block/aoe/aoeblk.c   |  2 --
+> >  drivers/block/drbd/drbd_nl.c | 12 +-----------
+> >  drivers/md/bcache/super.c    |  4 ----
+> >  drivers/md/dm-table.c        |  3 ---
+> >  drivers/md/raid0.c           | 16 ----------------
+> >  drivers/md/raid10.c          | 24 +-----------------------
+> >  drivers/md/raid5.c           | 13 +------------
+> >  10 files changed, 16 insertions(+), 77 deletions(-)
 > 
-> Yes, it certainly feels like the right way to do it, and it would
-> not affect other archs in a functional way. It would however introduce
-> a subtle change for s390 behavior on _all_ page table walkers, not
-> just the READ_ONCE gup_fast path, i.e. it changes the level at which
-> the pointer iteration is done. Of course, that *should* not have any
-> functional issues, or else it would also be broken in gup_fast, but
-> in this area we often were wrong with should / could assumptions...
+> 
+> In general these changes need a solid audit relative to stacking
+> drivers.  That is, the limits stacking methods (blk_stack_limits)
+> vs lower level allocation methods (__device_add_disk).
+> 
+> You optimized for lowlevel __device_add_disk establishing the bdi's
+> ra_pages and io_pages.  That is at the beginning of disk allocation,
+> well before any build up of stacking driver's queue_io_opt() -- which
+> was previously done in disk_stack_limits or driver specific methods
+> (e.g. dm_table_set_restrictions) that are called _after_ all the limits
+> stacking occurs.
+> 
+> By inverting the setting of the bdi's ra_pages and io_pages to be done
+> so early in __device_add_disk it'll break properly setting these values
+> for at least DM afaict.
 
-Hmm, not so sure about that "not affect other archs", that might also
-be one of those *should*s. Consider this change to mm/mlock.c from
-our current internal generalization work, for example:
+ra_pages never got inherited by stacking drivers, check it by modifying
+it on an underlying device and then creating a trivial dm or md one.
+And I think that is a good thing - in general we shouldn't really mess
+with this thing from drivers if we can avoid it.  I've kept the legacy
+aoe and md parity raid cases, out of which the first looks pretty weird
+and the md one at least remotely sensible.
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 93ca2bf30b4f..dbde97f317d4 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -374,8 +374,12 @@ static unsigned long __munlock_pagevec_fill(struct pagevec *pvec,
- 			struct vm_area_struct *vma, struct zone *zone,
- 			unsigned long start, unsigned long end)
- {
--	pte_t *pte;
- 	spinlock_t *ptl;
-+	pte_t *pte;
-+	pmd_t *pmd;
-+	pud_t *pud;
-+	p4d_t *p4d;
-+	pgd_t *pgd;
- 
- 	/*
- 	 * Initialize pte walk starting at the already pinned page where we
-@@ -384,10 +388,14 @@ static unsigned long __munlock_pagevec_fill(struct pagevec *pvec,
- 	 */
- 	pte = get_locked_pte(vma->vm_mm, start,	&ptl);
- 	/* Make sure we do not cross the page table boundary */
--	end = pgd_addr_end(start, end);
--	end = p4d_addr_end(start, end);
--	end = pud_addr_end(start, end);
--	end = pmd_addr_end(start, end);
-+	pgd = pgd_offset(vma->vm_mm, start);
-+	end = pgd_addr_end(*pgd, start, end);
-+	p4d = p4d_offset(pgd, start);
-+	end = p4d_addr_end(*p4d, start, end);
-+	pud = pud_offset(p4d, start);
-+	end = pud_addr_end(*pud, start, end);
-+	pmd = pmd_offset(pud, start);
-+	end = pmd_addr_end(*pmd, start, end);
- 
- 	/* The page next to the pinned page is the first we will try to get */
- 	start += PAGE_SIZE;
-
-I guess we *could* assume that all the extra pXd_offset() calls and
-also the de-referencing would be optimized out by the compiler for other
-archs, but it is one example where my gut tells me that this might not
-be so trivial and w/o unwanted effects after all.
-
-Anyway, stay tuned, we will send a v2 of this RFC with going the
-"modify pXd_addr_end" approach, including the minimal gup-specific
-patch plus on top the generalization work. Then we might get a better
-picture of this.
+->io_pages is still inherited in disk_stack_limits, just like before
+so no change either.
