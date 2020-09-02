@@ -2,163 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6611525A436
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0ED25A43F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgIBEEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 00:04:21 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:29968 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725791AbgIBEEU (ORCPT
+        id S1726426AbgIBEGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 00:06:39 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:39744 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgIBEGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 00:04:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599019459; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=D/v2+5o8QeDQqJpVgc8PAhNMYlKjB1Kp896axpESimk=; b=l8T0YacL7LaMvd4qHg8n4EtGT5GPG/T63zcnr4YkgE/jc2Ag3Wt+7yYL6LbU1eVAcX+1sF3q
- lbCzOAr0hrPFXKTRNlTeKWxYlC+PEd8qHrK0FLH7SFB3MgGJdCn0m4pYuCWreF1Pq6MyoQs+
- gBdYBbTTdjzJKfezbfWrxrWySlI=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f4f19c3252c522440555896 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Sep 2020 04:04:19
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 31C08C433CA; Wed,  2 Sep 2020 04:04:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F24BC433C9;
-        Wed,  2 Sep 2020 04:04:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F24BC433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     Ajit Pandey <ajitp@codeaurora.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v2] arm64: dts: qcom: sc7180: Add lpass cpu node for I2S driver
-Date:   Wed,  2 Sep 2020 09:34:01 +0530
-Message-Id: <1599019441-29308-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Wed, 2 Sep 2020 00:06:38 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3F9A3806B5;
+        Wed,  2 Sep 2020 16:06:34 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1599019594;
+        bh=3JxEo6eTNBffOXernCImWkcLf0bwrfPKkskdwQJ2GQU=;
+        h=From:To:Cc:Subject:Date;
+        b=uqyTCtGbTgbN0aD5X5aILm0y1BRT8VLE67aIkwDSRu85zh1km/rBKEbsL/KkhWAEe
+         YJVb1gslU8Lz8VkJmvnqYwOHLzyJsPMg8dSFBj8xjHEbMS5JSfLwekyzXSApjkiYT1
+         3G3T9I8/7+mUAUf/8QyoJkqGaDc7gKfVdsNn/yCQB6P9RF3DOZ8UfmeKjk2iauxH2H
+         rzttQYLc5wXfwk08zQZMihajuSh0D229g5fJYKfGynfq+ur0Zu2NVhX3CnT4jljjf1
+         kGUYREvcquO2QJB23d11BZ4Tw6wkrj6q5dHAwxi+P8fARb0lamYJIU/EQw+RVAHYiO
+         +LAGWZ+tcPd+A==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f4f1a480000>; Wed, 02 Sep 2020 16:06:34 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 704EF13EEBA;
+        Wed,  2 Sep 2020 16:06:31 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id BCC59280060; Wed,  2 Sep 2020 16:06:31 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH] mmc: sdhci-of-esdhc: Don't walk device-tree on every interrupt
+Date:   Wed,  2 Sep 2020 16:06:23 +1200
+Message-Id: <20200902040623.17509-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajit Pandey <ajitp@codeaurora.org>
+Commit b214fe592ab7 ("mmc: sdhci-of-esdhc: add erratum eSDHC7 support")
+added code to check for a specific compatible string in the device-tree
+on every esdhc interrupt. We know that if it's present the compatible
+string will be found on the sdhc host. Instead of walking the
+device-tree, go directly to the sdhc host's device and use
+of_device_is_compatible().
 
-Add the I2S controller node to sc7180 dtsi.
-Add pinmux for primary and secondary I2S.
-
-Signed-off-by: Ajit Pandey <ajitp@codeaurora.org>
-Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
 
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 69 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+I found this in passing while trying to track down another issue using ft=
+race.
+I found it odd that I was seeing a lot of calls to __of_device_is_compati=
+ble()
+coming from esdhc_irq() (the fact that this interrupt is going off on my =
+board
+is also odd, but that's a different story).
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d46b383..db60ca5 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -676,6 +676,36 @@
- 			};
- 		};
- 
-+		lpass_cpu: lpass@62f00000 {
-+			compatible = "qcom,sc7180-lpass-cpu";
-+
-+			reg = <0 0x62f00000 0 0x29000>;
-+			reg-names = "lpass-lpaif";
-+
-+			iommus = <&apps_smmu 0x1020 0>;
-+
-+			power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
-+
-+			clocks = <&gcc GCC_LPASS_CFG_NOC_SWAY_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_CORE_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_EXT_MCLK0_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_SYSNOC_MPORT_CORE_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_LPAIF_PRI_IBIT_CLK>,
-+				 <&lpasscc LPASS_AUDIO_CORE_LPAIF_SEC_IBIT_CLK>;
-+
-+			clock-names = "pcnoc-sway-clk", "audio-core",
-+					"mclk0", "pcnoc-mport-clk",
-+					"mi2s-bit-clk0", "mi2s-bit-clk1";
-+
-+
-+			#sound-dai-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "lpass-irq-lpaif";
-+		};
-+
- 		sdhc_1: sdhci@7c4000 {
- 			compatible = "qcom,sc7180-sdhci", "qcom,sdhci-msm-v5";
- 			reg = <0 0x7c4000 0 0x1000>,
-@@ -1721,6 +1751,45 @@
- 				};
- 			};
- 
-+			sec_mi2s_active: sec-mi2s-active {
-+				pinmux {
-+					pins = "gpio49", "gpio50", "gpio51";
-+					function = "mi2s_1";
-+				};
-+
-+				pinconf {
-+					pins = "gpio49", "gpio50", "gpio51";;
-+					drive-strength = <8>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			pri_mi2s_active: pri-mi2s-active {
-+				pinmux {
-+					pins = "gpio53", "gpio54", "gpio55", "gpio56";
-+					function = "mi2s_0";
-+				};
-+
-+				pinconf {
-+					pins = "gpio53", "gpio54", "gpio55", "gpio56";
-+					drive-strength = <8>;
-+					bias-pull-up;
-+				};
-+			};
-+
-+			pri_mi2s_mclk_active: pri-mi2s-mclk-active {
-+				pinmux {
-+					pins = "gpio57";
-+					function = "lpass_ext";
-+				};
-+
-+				pinconf {
-+					pins = "gpio57";
-+					drive-strength = <8>;
-+					bias-pull-up;
-+				};
-+			};
-+
- 			sdc1_on: sdc1-on {
- 				pinconf-clk {
- 					pins = "sdc1_clk";
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+ drivers/mmc/host/sdhci-of-esdhc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-o=
+f-esdhc.c
+index 7c73d243dc6c..11c8c522d623 100644
+--- a/drivers/mmc/host/sdhci-of-esdhc.c
++++ b/drivers/mmc/host/sdhci-of-esdhc.c
+@@ -1177,10 +1177,11 @@ static void esdhc_set_uhs_signaling(struct sdhci_=
+host *host,
+=20
+ static u32 esdhc_irq(struct sdhci_host *host, u32 intmask)
+ {
++	struct device *dev =3D mmc_dev(host->mmc);
++	struct device_node *np =3D dev->of_node;
+ 	u32 command;
+=20
+-	if (of_find_compatible_node(NULL, NULL,
+-				"fsl,p2020-esdhc")) {
++	if (of_device_is_compatible(np, "fsl,p2020-esdhc")) {
+ 		command =3D SDHCI_GET_CMD(sdhci_readw(host,
+ 					SDHCI_COMMAND));
+ 		if (command =3D=3D MMC_WRITE_MULTIPLE_BLOCK &&
+--=20
+2.28.0
 
