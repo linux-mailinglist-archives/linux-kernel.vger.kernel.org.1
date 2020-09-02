@@ -2,256 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F29A25AF04
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D4925AF1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgIBPcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:32:50 -0400
-Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52308 "EHLO
-        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728375AbgIBPci (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:32:38 -0400
-Received: from Internal Mail-Server by MTLPINE1 (envelope-from ayal@mellanox.com)
-        with SMTP; 2 Sep 2020 18:32:29 +0300
-Received: from dev-l-vrt-210.mtl.labs.mlnx (dev-l-vrt-210.mtl.labs.mlnx [10.234.210.1])
-        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 082FWTlq014707;
-        Wed, 2 Sep 2020 18:32:29 +0300
-Received: from dev-l-vrt-210.mtl.labs.mlnx (localhost [127.0.0.1])
-        by dev-l-vrt-210.mtl.labs.mlnx (8.15.2/8.15.2/Debian-8ubuntu1) with ESMTP id 082FWTDo026695;
-        Wed, 2 Sep 2020 18:32:29 +0300
-Received: (from ayal@localhost)
-        by dev-l-vrt-210.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 082FWTjE026694;
-        Wed, 2 Sep 2020 18:32:29 +0300
-From:   Aya Levin <ayal@mellanox.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        linux-kernel@vger.kernel.org, Aya Levin <ayal@mellanox.com>
-Subject: [PATCH net-next RFC v1 4/4] net/mlx5e: Add devlink trap to catch oversize packets
-Date:   Wed,  2 Sep 2020 18:32:14 +0300
-Message-Id: <1599060734-26617-5-git-send-email-ayal@mellanox.com>
-X-Mailer: git-send-email 1.8.4.3
-In-Reply-To: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
-References: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
+        id S1728480AbgIBPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:34:01 -0400
+Received: from mail-dm6nam11on2061.outbound.protection.outlook.com ([40.107.223.61]:51681
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727866AbgIBPcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:32:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cTHsNYct2oJhVdL/Va2ZFcNZSJPf883cJDLBZkD5kmQnm7Bte7VhJRlkwUIO6q4Do0GHOBA8s1cqstsKd14ZNMyRa9upOxRDg6KodLjKqePlyfSnb5rpc5z74nrkr8thTdV1UxuGEi1WWDNYpg8Kvao2C4wxifYphrplp3IFoYHNxxuO4inqNqutlcaNb/rtxfs55fYSZstdmZ23fv0YXT20tg5tiJBY5NvclD98BFcBkLsM8cDdwpR9jQy3eeBXd934O+o3tsmKtgl1aACZx21KhvBUvJpLz9fhdg8ApnWry1B1c/QmkCp54JmOJfJTgQDnPNqK6gelaohVGsD81A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xx8xFzZCXrr0sIX4WOxybu8mmPEpK6ptGa3uMn4cTkQ=;
+ b=GNDrJMQtw59lYAQgoQnZsZ5KyS+h0L1VT8d4RLZ3P7PC6cmkjgPU7X3dM17awi/nMuxHIQcraPhyM7gEPviu8hgTfcrfB5c4gJiPpF/HfngICEwnr6zVr8uLa7XbliS9xuhoogMiapfQJGyOfkrb9mBy6mpg+0Lp2HPWBKMOoAE6mv3yDyPrO0Q7ALwTevAJLmle5tnKSyPsMGFDBAxGPTJSrVn+SvGi07eKyzxXz784/BL5TKhhT+dayX7vZsnE3PTpV+BQuvWDQeVGArw3MeXKYoDrwnQKbwJaC37OoVRyW8IqXuIq3JhhtH4InBzIXQFE8dxWrc0wAcjr4TBBAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xx8xFzZCXrr0sIX4WOxybu8mmPEpK6ptGa3uMn4cTkQ=;
+ b=0noPyYcSmaETfD3H1zGvwPsHm+IzHG+o+c3OV21TQI4PRCOT26D1+WoK4wo6fyRiOmoyJztRfMSgxPHViqv7et3Sch/p7S1OaciEf4iP95cS4E8N1HX2b+U0n5dgmjQ9sYWjG3eZW/+eB5IaDxBKhmIOO4e/yQEJ94uPZ0sy3ek=
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
+ by BYAPR05MB6037.namprd05.prod.outlook.com (2603:10b6:a03:d9::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.7; Wed, 2 Sep
+ 2020 15:32:18 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::9cef:3341:6ae9:a2c5]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::9cef:3341:6ae9:a2c5%7]) with mapi id 15.20.3348.014; Wed, 2 Sep 2020
+ 15:32:18 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86 <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] x86/special_insn: reverse __force_order logic
+Thread-Topic: [PATCH] x86/special_insn: reverse __force_order logic
+Thread-Index: AQHWgSgoL1dmFxhMRECqVhfYnO9uuKlVeiqA
+Date:   Wed, 2 Sep 2020 15:32:18 +0000
+Message-ID: <1E3FD845-E71A-4518-A0BF-FAD31CBC3E28@vmware.com>
+References: <20200901161857.566142-1-namit@vmware.com>
+ <20200902125402.GG1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200902125402.GG1362448@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [2601:647:4700:9b2:4945:3524:19f7:23e9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a0172435-1b0f-444e-924c-08d84f556068
+x-ms-traffictypediagnostic: BYAPR05MB6037:
+x-microsoft-antispam-prvs: <BYAPR05MB6037134E5FF80994510554C9D02F0@BYAPR05MB6037.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yRcrxjzyUdM2GrDU12LhGDcZFLgNqhTrk+HcoQyEP5weeB/nER9GHGKMPeQE+V6WTLhASJodxw/jwnsEUrY6VYludDPjxQd4ka/n4JIYAVGgqoHlVAEajHXupLnRhT6IDeasoVbc/79tF+DNlMDyrJeuoAiW5lXO1WuL9NVFYpvNBdX9vOqBLY/oGiJ6cvopWrYBkHpHDI29gdO9S5K/Qj75sETPtDVkx/dMfZdSgIe5soatZCx2X1aTVi/X5eJ9D0TPAEfct2GaxmJNb7ns+fXHhE7x0n/+2LuMN1OxFzuDt8QAHpbAtx+vLFDEIgbYnKuQzKXkhyGO/bMPOhHcCsI3QVjyomjVjMhnTvF6Pg9EVIlI//Bo92EvT+3he13DbVIrVI04h8ugeMUjmPmluQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(366004)(376002)(45080400002)(83380400001)(8676002)(316002)(478600001)(36756003)(71200400001)(64756008)(54906003)(8936002)(186003)(66556008)(86362001)(66946007)(66476007)(66446008)(6486002)(76116006)(2906002)(5660300002)(53546011)(6506007)(4326008)(33656002)(6512007)(2616005)(966005)(7416002)(6916009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: Oy7G0rTgQDjVOLIHY1axlCtDgIhj0ZIUFnEUZGNZlQif3zXdGinITUhu99MOduxE4L48FGxO87xnq9VoUGNjtV0tygb4rsIfBolsPKmrEXiZwsX5AxjLYLz/BsBDp7nFWJGUDOAbUy2RPGK3iJ4L3Ur+AUVFLGfh56vTwLTbKLxmZo7l/P3t0aEqy0rzMWsCLA2LFCsdFcciGHK7aNaAoYqK4BcT8vN6i5FVyphmKN/eLUg4P8a3NTxWiMSbdaXTDlOpniy7++pcZbHKGhPv3EWvlI3xV03DoMtMEah45AmyGs4jxrCFqySXdDlmyZ7cIPu1c4snrHnofMe9Q7N/jJT+6lBoYeOWPsEqaXkU3URQ+68EcjP4r30owrGRoddyEMN2t1hmHFBd/1IjTMuPH9Ud+aU2l214203Y36Dqfoc/3X0At2AD7P8gyjjMImSXGn2W5nGS/p/8GINkwT/jPasHR1gj+Vs8Lg/+znnmmRBM7bGkXbU3Sx3CVTa+4otZ9T8glGXROYUGc5V3qrL8cDZ3SqSAhJ1Xhh0qMtKEMVx82/necsWKFDd3PCjP7VTcqZnd71AAQowQ3WsfadIQvJ1bxr28E5wVdJ0cdQeSA/KOmtStB/H5AC0w028LlO9lxJOjC8L29BkR10xWXm/YLgGJCyy1rGm3btMylIJ1LS3czhKYrFcsghNt9UMp48LMv6EUmoE+N/dPnn1oSrsI2Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B86B4DB3C2D38C40A447546E77C04369@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0172435-1b0f-444e-924c-08d84f556068
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 15:32:18.0266
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Rtd0IMv/5LcI4hgmJjzFT68lCGolWthg5Wp8Wxl1pn2zADtnZJ6d5S4fHqCJw9OXgA2itWAPCoMI8UO4HoFGgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6037
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register MTU error trap to allow visibility of oversize packets. Display
-a naive use of devlink trap in devlink port context.
+> On Sep 2, 2020, at 5:54 AM, peterz@infradead.org wrote:
+>=20
+> On Tue, Sep 01, 2020 at 09:18:57AM -0700, Nadav Amit wrote:
+>=20
+>> Unless I misunderstand the logic, __force_order should also be used by
+>> rdpkru() and wrpkru() which do not have dependency on __force_order. I
+>> also did not understand why native_write_cr0() has R/W dependency on
+>> __force_order, and why native_write_cr4() no longer has any dependency
+>> on __force_order.
+>=20
+> There was a fairly large thread about this thing here:
+>=20
+>  https://nam04.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flkml=
+.kernel.org%2Fr%2F20200527135329.1172644-1-arnd%40arndb.de&amp;data=3D02%7C=
+01%7Cnamit%40vmware.com%7C387b68745a984454d50708d84f3f499c%7Cb39138ca3cee4b=
+4aa4d6cd83d9dd62f0%7C0%7C0%7C637346480527901622&amp;sdata=3DPR%2BCUy%2FYNKz=
+a6he78coaDR3x1G7BYuzFfS9SGfWZ9p8%3D&amp;reserved=3D0
+>=20
+> I didn't keep up, but I think the general concensus was that it's
+> indeed a bit naf.
 
-Signed-off-by: Aya Levin <ayal@mellanox.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/Makefile   |  2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en.h       |  2 ++
- drivers/net/ethernet/mellanox/mlx5/core/en/traps.c | 32 +++++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/en/traps.h | 13 +++++++
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  | 41 ++++++++++++++++++++++
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    | 11 ++++--
- 6 files changed, 98 insertions(+), 3 deletions(-)
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
- create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
+Thanks for pointer. I did not see the discussion, and embarrassingly, I hav=
+e
+also never figured out how to reply on lkml emails without registering to
+lkml.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Makefile b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-index 94268a697e1c..78e2e9107986 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/Makefile
-@@ -25,7 +25,7 @@ mlx5_core-$(CONFIG_MLX5_CORE_EN) += en_main.o en_common.o en_fs.o en_ethtool.o \
- 		en_tx.o en_rx.o en_dim.o en_txrx.o en/xdp.o en_stats.o \
- 		en_selftest.o en/port.o en/monitor_stats.o en/health.o \
- 		en/reporter_tx.o en/reporter_rx.o en/params.o en/xsk/umem.o \
--		en/xsk/setup.o en/xsk/rx.o en/xsk/tx.o en/devlink.o
-+		en/xsk/setup.o en/xsk/rx.o en/xsk/tx.o en/devlink.o en/traps.o
- 
- #
- # Netdev extra
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 0cc2080fd847..7e5581ed9311 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -814,6 +814,8 @@ struct mlx5e_priv {
- 	struct mlx5e_hv_vhca_stats_agent stats_agent;
- #endif
- 	struct mlx5e_scratchpad    scratchpad;
-+	void *trap_mtu;
-+	bool trap_oversize;
- };
- 
- struct mlx5e_rx_handlers {
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/traps.c b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
-new file mode 100644
-index 000000000000..e365e8dbd6ff
---- /dev/null
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2020 Mellanox Technologies.
-+#include "en.h"
-+#include "traps.h"
-+#include <linux/kernel.h>
-+#include <uapi/linux/devlink.h>
-+
-+#define MLX5E_TRAP(_id, _group_id)                                      \
-+	DEVLINK_TRAP_GENERIC(DROP, DROP, _id,                           \
-+			     DEVLINK_TRAP_GROUP_GENERIC_ID_##_group_id, \
-+			     DEVLINK_TRAP_METADATA_TYPE_F_IN_PORT)
-+static struct devlink_trap mlx5e_traps_arr[] = {
-+	MLX5E_TRAP(MTU_ERROR, L2_DROPS),
-+};
-+
-+int mlx5e_devlink_traps_create(struct mlx5e_priv *priv)
-+{
-+	struct devlink_port *dl_port = &priv->dl_port;
-+
-+	return devlink_port_traps_register(dl_port, mlx5e_traps_arr,
-+					   ARRAY_SIZE(mlx5e_traps_arr),
-+					   priv);
-+}
-+
-+void mlx5e_devlink_traps_destroy(struct mlx5e_priv *priv)
-+{
-+	struct devlink_port *dl_port = &priv->dl_port;
-+
-+	devlink_port_traps_unregister(dl_port, mlx5e_traps_arr,
-+				      ARRAY_SIZE(mlx5e_traps_arr));
-+}
-+
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/traps.h b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
-new file mode 100644
-index 000000000000..14a32b6968ee
---- /dev/null
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
-@@ -0,0 +1,13 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Copyright (c) 2020 Mellanox Technologies.*/
-+
-+#ifndef __MLX5E_EN_TRAPS_H
-+#define __MLX5E_EN_TRAPS_H
-+
-+#include "en.h"
-+
-+int mlx5e_devlink_traps_create(struct mlx5e_priv *priv);
-+void mlx5e_devlink_traps_destroy(struct mlx5e_priv *priv);
-+
-+#endif
-+
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index aebcf73f8546..056f34326b3d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -64,6 +64,7 @@
- #include "en/hv_vhca_stats.h"
- #include "en/devlink.h"
- #include "lib/mlx5.h"
-+#include "en/traps.h"
- 
- bool mlx5e_check_fragmented_striding_rq_cap(struct mlx5_core_dev *mdev)
- {
-@@ -4976,6 +4977,43 @@ void mlx5e_destroy_q_counters(struct mlx5e_priv *priv)
- 	}
- }
- 
-+static int mlx5e_devlink_trap_init(struct devlink *devlink,
-+				   const struct devlink_trap *trap,
-+				   void *trap_ctx)
-+{
-+	struct mlx5e_priv *priv = (struct mlx5e_priv *)devlink_trap_ctx_priv(trap_ctx);
-+
-+	priv->trap_mtu = trap_ctx;
-+	return 0;
-+}
-+
-+static void mlx5e_devlink_trap_fini(struct devlink *devlink,
-+				    const struct devlink_trap *trap,
-+				    void *trap_ctx)
-+{
-+	struct mlx5e_priv *priv = (struct mlx5e_priv *)devlink_trap_ctx_priv(trap_ctx);
-+
-+	priv->trap_mtu = NULL;
-+}
-+
-+static int mlx5e_devlink_trap_action_set(struct devlink *devlink,
-+					 const struct devlink_trap *trap,
-+					 enum devlink_trap_action action,
-+					 void *trap_ctx,
-+					 struct netlink_ext_ack *extack)
-+{
-+	struct mlx5e_priv *priv = (struct mlx5e_priv *)devlink_trap_ctx_priv(trap_ctx);
-+
-+	priv->trap_oversize = !!action;
-+	return 0;
-+}
-+
-+static const struct devlink_trap_ops mlx5e_devlink_traps_ops = {
-+	.trap_init		= mlx5e_devlink_trap_init,
-+	.trap_fini		= mlx5e_devlink_trap_fini,
-+	.trap_action_set	= mlx5e_devlink_trap_action_set,
-+};
-+
- static int mlx5e_nic_init(struct mlx5_core_dev *mdev,
- 			  struct net_device *netdev,
- 			  const struct mlx5e_profile *profile,
-@@ -5005,12 +5043,15 @@ static int mlx5e_nic_init(struct mlx5_core_dev *mdev,
- 	if (err)
- 		mlx5_core_err(mdev, "mlx5e_devlink_port_register failed, %d\n", err);
- 	mlx5e_health_create_reporters(priv);
-+	devlink_port_traps_ops(&priv->dl_port, &mlx5e_devlink_traps_ops);
-+	mlx5e_devlink_traps_create(priv);
- 
- 	return 0;
- }
- 
- static void mlx5e_nic_cleanup(struct mlx5e_priv *priv)
- {
-+	mlx5e_devlink_traps_destroy(priv);
- 	mlx5e_health_destroy_reporters(priv);
- 	mlx5e_devlink_port_unregister(priv);
- 	mlx5e_tls_cleanup(priv);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 1e42e27eae26..4fe20a6e6d6d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1437,6 +1437,7 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 				u16 cqe_bcnt, u32 head_offset, u32 page_idx)
- {
- 	struct mlx5e_dma_info *di = &wi->umr.dma_info[page_idx];
-+	struct mlx5e_priv *priv = rq->channel->priv;
- 	u16 rx_headroom = rq->buff.headroom;
- 	u32 cqe_bcnt32 = cqe_bcnt;
- 	struct xdp_buff xdp;
-@@ -1444,11 +1445,14 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 	void *va, *data;
- 	u32 frag_size;
- 	bool consumed;
-+	bool trap;
- 
- 	/* Check packet size. Note LRO doesn't use linear SKB */
- 	if (unlikely(cqe_bcnt > rq->hw_mtu)) {
- 		rq->stats->oversize_pkts_sw_drop++;
--		return NULL;
-+		if (!priv->trap_oversize)
-+			return NULL;
-+		trap = true;
- 	}
- 
- 	va             = page_address(di->page) + head_offset;
-@@ -1475,7 +1479,10 @@ mlx5e_skb_from_cqe_mpwrq_linear(struct mlx5e_rq *rq, struct mlx5e_mpw_info *wi,
- 	skb = mlx5e_build_linear_skb(rq, va, frag_size, rx_headroom, cqe_bcnt32);
- 	if (unlikely(!skb))
- 		return NULL;
--
-+	if (trap) {
-+		devlink_port_trap_report(&priv->dl_port, skb, priv->trap_mtu, NULL);
-+		return NULL;
-+	}
- 	/* queue up for recycling/reuse */
- 	page_ref_inc(di->page);
- 
--- 
-2.14.1
+Anyhow, indeed, the patch that Arvind provided seems to address this issue.
 
