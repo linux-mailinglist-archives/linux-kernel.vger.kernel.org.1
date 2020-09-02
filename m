@@ -2,400 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7304C25B10F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1919525B118
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728501AbgIBQOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:14:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:41766 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728459AbgIBQO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:14:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A4FA101E;
-        Wed,  2 Sep 2020 09:14:25 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E41353F66F;
-        Wed,  2 Sep 2020 09:14:24 -0700 (PDT)
-Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
-        id 9D543682B9C; Wed,  2 Sep 2020 17:14:23 +0100 (BST)
-Date:   Wed, 2 Sep 2020 17:14:23 +0100
-From:   Liviu Dudau <liviu.dudau@arm.com>
-To:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        melissa.srw@gmail.com, Brian Starkey <brian.starkey@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>,
-        Leandro Ribeiro <leandro.ribeiro@collabora.com>,
-        daniels@collabora.com, Emil Velikov <emil.l.velikov@gmail.com>
-Subject: Re: [PATCH v6 3/3] drm/vkms: Add support for writeback
-Message-ID: <20200902161423.GJ159988@e110455-lin.cambridge.arm.com>
-References: <20200830142000.146706-1-rodrigosiqueiramelo@gmail.com>
- <20200830142000.146706-4-rodrigosiqueiramelo@gmail.com>
+        id S1728790AbgIBQPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:15:12 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:58366 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728787AbgIBQOa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:14:30 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 082GEPQr073331;
+        Wed, 2 Sep 2020 11:14:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599063265;
+        bh=4U7Tu8S2YkBMp3KG+c8+MCT2MzCWjUpLKKMSrOYYYxM=;
+        h=Subject:From:To:References:Date:In-Reply-To;
+        b=QTo5QbZDftQm6jP/nsTVN6ecuOH/jU5c7msRq3f8CHmxu7ImZHH/9hxWYMmHxP2nO
+         MSa3rts5Pg8HV+/3xzzmUzshu41/d/9VcwAG63IVoMY/OwxGGuZ+2WONZXgmXD7602
+         KTBArZFsQw64bNvTHb7ic4UFemiOdmcty6kqY1Qk=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 082GEOT0004597;
+        Wed, 2 Sep 2020 11:14:25 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 2 Sep
+ 2020 11:14:24 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 2 Sep 2020 11:14:24 -0500
+Received: from [10.250.53.226] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 082GENJk010402;
+        Wed, 2 Sep 2020 11:14:23 -0500
+Subject: Re: [PATCH net-next 0/1] Support for VLAN interface over HSR/PRP
+From:   Murali Karicheri <m-karicheri2@ti.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <nsekhar@ti.com>,
+        <grygorii.strashko@ti.com>
+References: <20200901195415.4840-1-m-karicheri2@ti.com>
+Message-ID: <d93fbc54-1721-ebec-39ca-dc8b45e6e534@ti.com>
+Date:   Wed, 2 Sep 2020 12:14:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200830142000.146706-4-rodrigosiqueiramelo@gmail.com>
+In-Reply-To: <20200901195415.4840-1-m-karicheri2@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 10:20:00AM -0400, Rodrigo Siqueira wrote:
-> This patch implements the necessary functions to add writeback support
-> for vkms. This feature is useful for testing compositors if you don't
-> have hardware with writeback support.
-> 
-> Change in V4 (Emil and Melissa):
-> - Move signal completion above drm_crtc_add_crc_entry()
-> - Make writeback always available
-> - Use appropriate namespace
-> - Drop fb check in vkms_wb_atomic_commit
-> - Make vkms_set_composer visible for writeback code
-> - Enable composer operation on prepare_job and disable it on cleanup_job
-> - Drop extra space at the end of the file
-> - Rebase
-> 
-> Change in V3 (Daniel):
-> - If writeback is enabled, compose everything into the writeback buffer
-> instead of CRC private buffer
-> - Guarantees that the CRC will match exactly what we have in the
-> writeback buffer.
-> 
-> Change in V2:
-> - Rework signal completion (Brian)
-> - Integrates writeback with active_planes (Daniel)
-> - Compose cursor (Daniel)
-> 
-> Signed-off-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> ---
->  drivers/gpu/drm/vkms/Makefile         |   9 +-
->  drivers/gpu/drm/vkms/vkms_composer.c  |  21 +++-
->  drivers/gpu/drm/vkms/vkms_drv.h       |  11 +-
->  drivers/gpu/drm/vkms/vkms_output.c    |   4 +
->  drivers/gpu/drm/vkms/vkms_writeback.c | 142 ++++++++++++++++++++++++++
->  5 files changed, 180 insertions(+), 7 deletions(-)
->  create mode 100644 drivers/gpu/drm/vkms/vkms_writeback.c
-> 
-> diff --git a/drivers/gpu/drm/vkms/Makefile b/drivers/gpu/drm/vkms/Makefile
-> index 0b767d7efa24..333d3cead0e3 100644
-> --- a/drivers/gpu/drm/vkms/Makefile
-> +++ b/drivers/gpu/drm/vkms/Makefile
-> @@ -1,4 +1,11 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> -vkms-y := vkms_drv.o vkms_plane.o vkms_output.o vkms_crtc.o vkms_gem.o vkms_composer.o
-> +vkms-y := \
-> +	vkms_drv.o \
-> +	vkms_plane.o \
-> +	vkms_output.o \
-> +	vkms_crtc.o \
-> +	vkms_gem.o \
-> +	vkms_composer.o \
-> +	vkms_writeback.o
->  
->  obj-$(CONFIG_DRM_VKMS) += vkms.o
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
-> index c5b32fe5870f..33c031f27c2c 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -186,16 +186,17 @@ void vkms_composer_worker(struct work_struct *work)
->  	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
->  	struct vkms_composer *primary_composer = NULL;
->  	struct vkms_composer *cursor_composer = NULL;
-> +	bool crc_pending, wb_pending;
->  	void *vaddr_out = NULL;
->  	u32 crc32 = 0;
->  	u64 frame_start, frame_end;
-> -	bool crc_pending;
->  	int ret;
->  
->  	spin_lock_irq(&out->composer_lock);
->  	frame_start = crtc_state->frame_start;
->  	frame_end = crtc_state->frame_end;
->  	crc_pending = crtc_state->crc_pending;
-> +	wb_pending = crtc_state->wb_pending;
->  	crtc_state->frame_start = 0;
->  	crtc_state->frame_end = 0;
->  	crtc_state->crc_pending = false;
-> @@ -217,22 +218,32 @@ void vkms_composer_worker(struct work_struct *work)
->  	if (!primary_composer)
->  		return;
->  
-> +	if (wb_pending)
-> +		vaddr_out = crtc_state->active_writeback;
-> +
->  	ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
->  	if (ret) {
-> -		if (ret == -EINVAL)
-> +		if (ret == -EINVAL && !wb_pending)
->  			kfree(vaddr_out);
->  		return;
->  	}
->  
->  	crc32 = compute_crc(vaddr_out, primary_composer);
->  
-> +	if (wb_pending) {
-> +		drm_writeback_signal_completion(&out->wb_connector, 0);
-> +		spin_lock_irq(&out->composer_lock);
-> +		crtc_state->wb_pending = false;
-> +		spin_unlock_irq(&out->composer_lock);
-> +	} else {
-> +		kfree(vaddr_out);
-> +	}
-> +
->  	/*
->  	 * The worker can fall behind the vblank hrtimer, make sure we catch up.
->  	 */
->  	while (frame_start <= frame_end)
->  		drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
-> -
-> -	kfree(vaddr_out);
->  }
->  
->  static const char * const pipe_crc_sources[] = {"auto"};
-> @@ -275,7 +286,7 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *src_name,
->  	return 0;
->  }
->  
-> -static void vkms_set_composer(struct vkms_output *out, bool enabled)
-> +void vkms_set_composer(struct vkms_output *out, bool enabled)
->  {
->  	bool old_enabled;
->  
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-> index f4036bb0b9a8..641d8bc52a3a 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -8,6 +8,7 @@
->  #include <drm/drm.h>
->  #include <drm/drm_gem.h>
->  #include <drm/drm_encoder.h>
-> +#include <drm/drm_writeback.h>
->  
->  #define XRES_MIN    20
->  #define YRES_MIN    20
-> @@ -19,6 +20,7 @@
->  #define YRES_MAX  8192
->  
->  extern bool enable_cursor;
-> +extern bool enable_writeback;
->  
->  struct vkms_composer {
->  	struct drm_framebuffer fb;
-> @@ -52,9 +54,11 @@ struct vkms_crtc_state {
->  	int num_active_planes;
->  	/* stack of active planes for crc computation, should be in z order */
->  	struct vkms_plane_state **active_planes;
-> +	void *active_writeback;
->  
-> -	/* below three are protected by vkms_output.composer_lock */
-> +	/* below four are protected by vkms_output.composer_lock */
->  	bool crc_pending;
-> +	bool wb_pending;
->  	u64 frame_start;
->  	u64 frame_end;
->  };
-> @@ -63,6 +67,7 @@ struct vkms_output {
->  	struct drm_crtc crtc;
->  	struct drm_encoder encoder;
->  	struct drm_connector connector;
-> +	struct drm_writeback_connector wb_connector;
->  	struct hrtimer vblank_hrtimer;
->  	ktime_t period_ns;
->  	struct drm_pending_vblank_event *event;
-> @@ -143,5 +148,9 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
->  
->  /* Composer Support */
->  void vkms_composer_worker(struct work_struct *work);
-> +void vkms_set_composer(struct vkms_output *out, bool enabled);
-> +
-> +/* Writeback */
-> +int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
->  
->  #endif /* _VKMS_DRV_H_ */
-> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
-> index 85afb77e97f0..4a1848b0318f 100644
-> --- a/drivers/gpu/drm/vkms/vkms_output.c
-> +++ b/drivers/gpu/drm/vkms/vkms_output.c
-> @@ -80,6 +80,10 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
->  		goto err_attach;
->  	}
->  
-> +	ret = vkms_enable_writeback_connector(vkmsdev);
-> +	if (ret)
-> +		DRM_ERROR("Failed to init writeback connector\n");
-> +
->  	drm_mode_config_reset(dev);
->  
->  	return 0;
-> diff --git a/drivers/gpu/drm/vkms/vkms_writeback.c b/drivers/gpu/drm/vkms/vkms_writeback.c
-> new file mode 100644
-> index 000000000000..094fa4aa061d
-> --- /dev/null
-> +++ b/drivers/gpu/drm/vkms/vkms_writeback.c
-> @@ -0,0 +1,142 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
-> +#include "vkms_drv.h"
-> +#include <drm/drm_fourcc.h>
-> +#include <drm/drm_writeback.h>
-> +#include <drm/drm_probe_helper.h>
-> +#include <drm/drm_atomic_helper.h>
-> +#include <drm/drm_gem_framebuffer_helper.h>
-> +
-> +static const u32 vkms_wb_formats[] = {
-> +	DRM_FORMAT_XRGB8888,
-> +};
-> +
-> +static const struct drm_connector_funcs vkms_wb_connector_funcs = {
-> +	.fill_modes = drm_helper_probe_single_connector_modes,
-> +	.destroy = drm_connector_cleanup,
-> +	.reset = drm_atomic_helper_connector_reset,
-> +	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-> +	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-> +};
-> +
-> +static int vkms_wb_encoder_atomic_check(struct drm_encoder *encoder,
-> +					struct drm_crtc_state *crtc_state,
-> +					struct drm_connector_state *conn_state)
-> +{
-> +	struct drm_framebuffer *fb;
-> +	const struct drm_display_mode *mode = &crtc_state->mode;
-> +
-> +	if (!conn_state->writeback_job || !conn_state->writeback_job->fb)
+All,
 
-drm_writeback.c pretty much guarantees that you're not going to have a NULL fb,
-unless your driver specifically calls drm_writeback_set_fb() with a NULL fb pointer.
-
-> +		return 0;
-> +
-> +	fb = conn_state->writeback_job->fb;
-> +	if (fb->width != mode->hdisplay || fb->height != mode->vdisplay) {
-> +		DRM_DEBUG_KMS("Invalid framebuffer size %ux%u\n",
-> +			      fb->width, fb->height);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (fb->format->format != vkms_wb_formats[0]) {
-> +		struct drm_format_name_buf format_name;
-> +
-> +		DRM_DEBUG_KMS("Invalid pixel format %s\n",
-> +			      drm_get_format_name(fb->format->format,
-> +						  &format_name));
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_encoder_helper_funcs vkms_wb_encoder_helper_funcs = {
-> +	.atomic_check = vkms_wb_encoder_atomic_check,
-> +};
-> +
-> +static int vkms_wb_connector_get_modes(struct drm_connector *connector)
-> +{
-> +	struct drm_device *dev = connector->dev;
-> +
-> +	return drm_add_modes_noedid(connector, dev->mode_config.max_width,
-> +				    dev->mode_config.max_height);
-> +}
-> +
-> +static int vkms_wb_prepare_job(struct drm_writeback_connector *wb_connector,
-> +			       struct drm_writeback_job *job)
-> +{
-> +	struct vkms_gem_object *vkms_obj;
-> +	struct drm_gem_object *gem_obj;
-> +	int ret;
-> +
-> +	if (!job->fb)
-> +		return 0;
-> +
-> +	gem_obj = drm_gem_fb_get_obj(job->fb, 0);
-> +	ret = vkms_gem_vmap(gem_obj);
-> +	if (ret) {
-> +		DRM_ERROR("vmap failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	vkms_obj = drm_gem_to_vkms_gem(gem_obj);
-> +	job->priv = vkms_obj->vaddr;
-> +
-> +	return 0;
-> +}
-> +
-> +static void vkms_wb_cleanup_job(struct drm_writeback_connector *connector,
-> +				struct drm_writeback_job *job)
-> +{
-> +	struct drm_gem_object *gem_obj;
-> +	struct vkms_device *vkmsdev;
-> +
-> +	if (!job->fb)
-> +		return;
-> +
-> +	gem_obj = drm_gem_fb_get_obj(job->fb, 0);
-> +	vkms_gem_vunmap(gem_obj);
-> +
-> +	vkmsdev = drm_device_to_vkms_device(gem_obj->dev);
-> +	vkms_set_composer(&vkmsdev->output, false);
-> +}
-> +
-> +static void vkms_wb_atomic_commit(struct drm_connector *conn,
-> +				  struct drm_connector_state *state)
-> +{
-> +	struct vkms_device *vkmsdev = drm_device_to_vkms_device(conn->dev);
-> +	struct vkms_output *output = &vkmsdev->output;
-> +	struct drm_writeback_connector *wb_conn = &output->wb_connector;
-> +	struct drm_connector_state *conn_state = wb_conn->base.state;
-> +	struct vkms_crtc_state *crtc_state = output->composer_state;
-> +
-> +	if (!conn_state)
-> +		return;
-> +
-> +	vkms_set_composer(&vkmsdev->output, true);
-> +
-> +	spin_lock_irq(&output->composer_lock);
-> +	crtc_state->active_writeback = conn_state->writeback_job->priv;
-> +	crtc_state->wb_pending = true;
-> +	spin_unlock_irq(&output->composer_lock);
-> +	drm_writeback_queue_job(wb_conn, state);
-> +}
-> +
-> +static const struct drm_connector_helper_funcs vkms_wb_conn_helper_funcs = {
-> +	.get_modes = vkms_wb_connector_get_modes,
-> +	.prepare_writeback_job = vkms_wb_prepare_job,
-> +	.cleanup_writeback_job = vkms_wb_cleanup_job,
-> +	.atomic_commit = vkms_wb_atomic_commit,
-> +};
-> +
-> +int vkms_enable_writeback_connector(struct vkms_device *vkmsdev)
-> +{
-> +	struct drm_writeback_connector *wb = &vkmsdev->output.wb_connector;
-> +
-> +	vkmsdev->output.wb_connector.encoder.possible_crtcs = 1;
-> +	drm_connector_helper_add(&wb->base, &vkms_wb_conn_helper_funcs);
-> +
-> +	return drm_writeback_connector_init(&vkmsdev->drm, wb,
-> +					    &vkms_wb_connector_funcs,
-> +					    &vkms_wb_encoder_helper_funcs,
-> +					    vkms_wb_formats,
-> +					    ARRAY_SIZE(vkms_wb_formats));
-> +}
-> -- 
-> 2.28.0
+On 9/1/20 3:54 PM, Murali Karicheri wrote:
+> This series add support for creating VLAN interface over HSR or
+> PRP interface. Typically industrial networks uses VLAN in
+> deployment and this capability is needed to support these
+> networks.
 > 
+> This is tested using two TI AM572x IDK boards connected back
+> to back over CPSW  ports (eth0 and eth1).
+> 
+> Following is the setup
+> 
+>                  Physical Setup
+>                  ++++++++++++++
+>                        
+>   _______________    (CPSW)     _______________
+>   |              |----eth0-----|               |
+>   |TI AM572x IDK1|             | TI AM572x IDK2|
+>   |______________|----eth1-----|_______________|
+> 
+> 
+>                  Network Topolgy
+>                  +++++++++++++++
+> 
+>                         TI AM571x IDK  TI AM572x IDK
+> 
+>                                    
+> 192.168.100.10                 CPSW ports                 192.168.100.20
+>               IDK-1                                        IDK-2
+> hsr0/prp0.100--| 192.168.2.10  |--eth0--| 192.168.2.20 |--hsr0/prp0.100
+>                 |----hsr0/prp0--|        |---hsr0/prp0--|
+> hsr0/prp0.101--|               |--eth1--|              |--hsr0/prp0/101
+> 
+> 192.168.101.10                                            192.168.101.20
+> 
+> Following tests:-
+>   - create hsr or prp interface and ping the interface IP address
+>     and verify ping is successful.
+>   - Create 2 VLANs over hsr or prp interface on both IDKs (VID 100 and
+>     101). Ping between the IP address of the VLAN interfaces
+>   - Do iperf UDP traffic test with server on one IDK and client on the
+>     other. Do this using 100 and 101 subnet IP addresses
+>   - Dump /proc/net/vlan/{hsr|prp}0.100 and verify frames are transmitted
+>     and received at these interfaces.
+>   - Delete the vlan and hsr/prp interface and verify interfaces are
+>     removed cleanly.
+> 
+> Logs for IDK-1 at https://pastebin.ubuntu.com/p/NxF83yZFDX/
+> Logs for IDK-2 at https://pastebin.ubuntu.com/p/YBXBcsPgVK/
+> 
+> Murali Karicheri (1):
+>    net: hsr/prp: add vlan support
+> 
+>   net/hsr/hsr_device.c  |  4 ----
+>   net/hsr/hsr_forward.c | 16 +++++++++++++---
+>   2 files changed, 13 insertions(+), 7 deletions(-)
+> 
+I am not sure if the packet flow is right for this?
 
-Reviewed-by: Liviu Dudau <liviu.dudau@arm.com>
+VLAN over HSR frame format is like this.
 
-Best regards,
-Liviu
+<Start of Frame><VLAN tag><HSR Tag><IP><CRC>
+
+My ifconfig stats shows both hsr and hsr0.100 interfaces receiving
+frames.
+
+So I did a WARN_ON() in HSR driver before frame is forwarded to upper
+layer.
+
+a0868495local@uda0868495:~/Projects/upstream-kernel$ git diff
+diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+index de21df30b0d9..545a3cd8c71b 100644
+--- a/net/hsr/hsr_forward.c
++++ b/net/hsr/hsr_forward.c
+@@ -415,9 +415,11 @@ static void hsr_forward_do(struct hsr_frame_info 
+*frame)
+                 }
+
+                 skb->dev = port->dev;
+-               if (port->type == HSR_PT_MASTER)
++               if (port->type == HSR_PT_MASTER) {
++                       if (skb_vlan_tag_present(skb))
++                               WARN_ON(1);
+                         hsr_deliver_master(skb, port->dev, 
+frame->node_src);
+-               else
++               } else
+                         hsr_xmit(skb, port, frame);
+         }
+  }
+
+And I get the trace shown below.
+
+[  275.125431] WARNING: CPU: 0 PID: 0 at net/hsr/hsr_forward.c:420 
+hsr_forward_skb+0x460/0x564
+[  275.133822] Modules linked in: snd_soc_omap_hdmi snd_soc_ti_sdma 
+snd_soc_core snd_pcm_dmaengine snd_pcm snd_time4
+[  275.199705] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W 
+5.9.0-rc1-00658-g473e463812c2-dirty #8
+[  275.209573] Hardware name: Generic DRA74X (Flattened Device Tree)
+[  275.215703] [<c011177c>] (unwind_backtrace) from [<c010b6f0>] 
+(show_stack+0x10/0x14)
+[  275.223487] [<c010b6f0>] (show_stack) from [<c055690c>] 
+(dump_stack+0xc4/0xe4)
+[  275.230747] [<c055690c>] (dump_stack) from [<c01386ac>] 
+(__warn+0xc0/0xf4)
+[  275.237656] [<c01386ac>] (__warn) from [<c0138a3c>] 
+(warn_slowpath_fmt+0x58/0xb8)
+[  275.245177] [<c0138a3c>] (warn_slowpath_fmt) from [<c09564bc>] 
+(hsr_forward_skb+0x460/0x564)
+[  275.253657] [<c09564bc>] (hsr_forward_skb) from [<c0955534>] 
+(hsr_handle_frame+0x15c/0x190)
+[  275.262047] [<c0955534>] (hsr_handle_frame) from [<c07c6704>] 
+(__netif_receive_skb_core+0x23c/0xc88)
+[  275.271223] [<c07c6704>] (__netif_receive_skb_core) from [<c07c7180>] 
+(__netif_receive_skb_one_core+0x30/0x74)
+[  275.281266] [<c07c7180>] (__netif_receive_skb_one_core) from 
+[<c07c72a4>] (netif_receive_skb+0x50/0x1c4)
+[  275.290793] [<c07c72a4>] (netif_receive_skb) from [<c071a55c>] 
+(cpsw_rx_handler+0x230/0x308)
+[  275.299272] [<c071a55c>] (cpsw_rx_handler) from [<c0715ee8>] 
+(__cpdma_chan_process+0xf4/0x188)
+[  275.307925] [<c0715ee8>] (__cpdma_chan_process) from [<c0717294>] 
+(cpdma_chan_process+0x3c/0x5c)
+[  275.316754] [<c0717294>] (cpdma_chan_process) from [<c071dd14>] 
+(cpsw_rx_mq_poll+0x44/0x98)
+[  275.325145] [<c071dd14>] (cpsw_rx_mq_poll) from [<c07c8ae0>] 
+(net_rx_action+0xf0/0x400)
+[  275.333185] [<c07c8ae0>] (net_rx_action) from [<c0101370>] 
+(__do_softirq+0xf0/0x3ac)
+[  275.340965] [<c0101370>] (__do_softirq) from [<c013f5ec>] 
+(irq_exit+0xa8/0xe4)
+[  275.348224] [<c013f5ec>] (irq_exit) from [<c0199344>] 
+(__handle_domain_irq+0x6c/0xe0)
+[  275.356093] [<c0199344>] (__handle_domain_irq) from [<c056f8fc>] 
+(gic_handle_irq+0x4c/0xa8)
+[  275.364481] [<c056f8fc>] (gic_handle_irq) from [<c0100b6c>] 
+(__irq_svc+0x6c/0x90)
+[  275.371996] Exception stack(0xc0e01f18 to 0xc0e01f60)
+
+Shouldn't it show vlan_do_receive() ?
+
+	if (skb_vlan_tag_present(skb)) {
+		if (pt_prev) {
+			ret = deliver_skb(skb, pt_prev, orig_dev);
+			pt_prev = NULL;
+		}
+		if (vlan_do_receive(&skb))
+			goto another_round;
+		else if (unlikely(!skb))
+			goto out;
+	}
+
+Thanks
 
 -- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+Murali Karicheri
+Texas Instruments
