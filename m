@@ -2,66 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D0525B2AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2869025B2A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgIBRHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 13:07:45 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2744 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726285AbgIBRHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 13:07:43 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 7E02F3E6D6C22741041D;
-        Wed,  2 Sep 2020 18:07:42 +0100 (IST)
-Received: from [127.0.0.1] (10.47.4.206) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 2 Sep 2020
- 18:07:41 +0100
-Subject: Re: [PATCH v7 2/5] perf/jevents: Add new structure to pass json
- fields.
-To:     Kajol Jain <kjain@linux.ibm.com>, <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <pc@us.ibm.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <ak@linux.intel.com>,
-        <yao.jin@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <irogers@google.com>,
-        <maddy@linux.ibm.com>, <ravi.bangoria@linux.ibm.com>
-References: <20200902160439.335232-1-kjain@linux.ibm.com>
- <20200902160439.335232-3-kjain@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <34566244-88ba-562b-71cf-414a0ba307f4@huawei.com>
-Date:   Wed, 2 Sep 2020 18:05:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1727048AbgIBRF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:05:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726312AbgIBRF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 13:05:28 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 602D220709;
+        Wed,  2 Sep 2020 17:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599066327;
+        bh=Ejn1rK35gdtDaSRIW2e8y9RuTwb7J/O+r5vI8fVSakY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jjuWRhqrFg6LXVMz50q6G03zbMqUwL3ZU9vcjlxkGTLyxzFWxVorUvUkMq/fxAogG
+         /Mq7R1HGgt61+byfHF+nsyVsmtD9000UFJ+wCvkkNTWazGZxMYTzCCgcy+6dAd006C
+         GKVgDjGuHpar5EVfAmLQVdGWX0R9UxCCxj6FxCKM=
+Received: by pali.im (Postfix)
+        id 5D0B77BF; Wed,  2 Sep 2020 19:05:25 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 19:05:25 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] phy: marvell: comphy: Convert internal SMCC firmware
+ return codes to errno
+Message-ID: <20200902170525.ksovu7ah3wbotkim@pali>
+References: <20200902144344.16684-1-pali@kernel.org>
+ <20200902144344.16684-2-pali@kernel.org>
+ <20200902161328.GE3050651@lunn.ch>
+ <20200902165652.cvb74kgxx5uejpta@pali>
+ <20200902170010.GF3050651@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <20200902160439.335232-3-kjain@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.4.206]
-X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902170010.GF3050651@lunn.ch>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/09/2020 17:04, Kajol Jain wrote:
-> This patch adds new structure called 'json_event' inside jevents.h
-> file to improve the callback prototype inside jevent files.
-> Initially, whenever user want to add new field, they need to update
-> in all function callback which make it more and more complex with
-> increased number of parmeters.
-> With this change, we just need to add it in new structure 'json_event'.
+On Wednesday 02 September 2020 19:00:10 Andrew Lunn wrote:
+> > > > +	switch (ret) {
+> > > > +	case SMCCC_RET_SUCCESS:
+> > > > +		return 0;
+> > > > +	case SMCCC_RET_NOT_SUPPORTED:
+> > > > +		return -EOPNOTSUPP;
+> > > > +	default:
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > >  }
+> > > 
+> > > Hi Pali
+> > > 
+> > > Maybe this should be a global helper translating SMCCC_RET_* into a
+> > > standard errno value?
+> > > 
+> > > 	 Andrew
+> > 
+> > Hello Andrew!
+> > 
+> > Well, I'm not sure if some standard global helper is the correct way for
+> > marvell comphy handler. It returns 0 for success and -1 on error when
+> > handler is not supported.
 > 
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> No, i was meaning just 
+> 
+> switch (ret) {
+> case SMCCC_RET_SUCCESS:
+> 	return 0;
+> case SMCCC_RET_NOT_SUPPORTED:
+> 	return -EOPNOTSUPP;
+> default:
+> 	return -EINVAL;
+> }
 
-Reviewed-by: John Garry <john.garry@huawei.com>
-
-> +static int json_events
-
-Adding 'static' should have really been in the previous patch ...
-
+But this is not a complete generic helper. There are more generic SMCC
+return codes and generic helper should define and translate all of them.
