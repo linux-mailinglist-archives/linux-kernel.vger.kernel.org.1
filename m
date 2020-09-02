@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AFE25ACDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C98625ACD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbgIBOUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:20:52 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:60938 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726928AbgIBOJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:09:16 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 167854F4ABFBBC0CE5F6;
-        Wed,  2 Sep 2020 22:09:03 +0800 (CST)
-Received: from localhost (10.174.179.108) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Wed, 2 Sep 2020
- 22:08:53 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <amitkarwar@gmail.com>, <ganapathi.bhat@nxp.com>,
-        <huxinming820@gmail.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <yuehaibing@huawei.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mwifiex: wmm: Fix -Wunused-const-variable warnings
-Date:   Wed, 2 Sep 2020 22:08:46 +0800
-Message-ID: <20200902140846.29024-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S1727951AbgIBOTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:19:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726657AbgIBOIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:08:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4ECA7AEFA;
+        Wed,  2 Sep 2020 14:08:53 +0000 (UTC)
+Date:   Wed, 2 Sep 2020 16:08:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
+ memory offline
+Message-ID: <20200902140851.GJ4617@dhcp22.suse.cz>
+References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901124615.137200-1-pasha.tatashin@soleen.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In file included from drivers/net/wireless/marvell/mwifiex//cmdevt.c:26:0:
-drivers/net/wireless/marvell/mwifiex//wmm.h:41:17: warning: ‘tos_to_tid_inv’ defined but not used [-Wunused-const-variable=]
- static const u8 tos_to_tid_inv[] = {
-                 ^~~~~~~~~~~~~~
-drivers/net/wireless/marvell/mwifiex//wmm.h:34:18: warning: ‘mwifiex_1d_to_wmm_queue’ defined but not used [-Wunused-const-variable=]
- static const u16 mwifiex_1d_to_wmm_queue[8] = { 1, 0, 0, 1, 2, 2, 3, 3 };
-                  ^~~~~~~~~~~~~~~~~~~~~~~
+On Tue 01-09-20 08:46:15, Pavel Tatashin wrote:
+> There is a race during page offline that can lead to infinite loop:
+> a page never ends up on a buddy list and __offline_pages() keeps
+> retrying infinitely or until a termination signal is received.
+> 
+> Thread#1 - a new process:
+> 
+> load_elf_binary
+>  begin_new_exec
+>   exec_mmap
+>    mmput
+>     exit_mmap
+>      tlb_finish_mmu
+>       tlb_flush_mmu
+>        release_pages
+>         free_unref_page_list
+>          free_unref_page_prepare
+>           set_pcppage_migratetype(page, migratetype);
+>              // Set page->index migration type below  MIGRATE_PCPTYPES
+> 
+> Thread#2 - hot-removes memory
+> __offline_pages
+>   start_isolate_page_range
+>     set_migratetype_isolate
+>       set_pageblock_migratetype(page, MIGRATE_ISOLATE);
+>         Set migration type to MIGRATE_ISOLATE-> set
+>         drain_all_pages(zone);
+>              // drain per-cpu page lists to buddy allocator.
 
-move the variables definition to .c file, and leave declarations
-in the header file to fix these warnings.
+It is not really clear to me how we could have passed
+has_unmovable_pages at this stage when the page is not PageBuddy. Is
+this because you are using Movable Zones?
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/wireless/marvell/mwifiex/main.c |  2 ++
- drivers/net/wireless/marvell/mwifiex/wmm.c  | 15 +++++++++++++++
- drivers/net/wireless/marvell/mwifiex/wmm.h  | 18 ++----------------
- 3 files changed, 19 insertions(+), 16 deletions(-)
+> 
+> Thread#1 - continue
+>          free_unref_page_commit
+>            migratetype = get_pcppage_migratetype(page);
+>               // get old migration type
+>            list_add(&page->lru, &pcp->lists[migratetype]);
+>               // add new page to already drained pcp list
+> 
+> Thread#2
+> Never drains pcp again, and therefore gets stuck in the loop.
+> 
+> The fix is to try to drain per-cpu lists again after
+> check_pages_isolated_cb() fails.
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 9ee5600351a7..9ba8a8f64976 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -48,6 +48,8 @@ bool aggr_ctrl;
- module_param(aggr_ctrl, bool, 0000);
- MODULE_PARM_DESC(aggr_ctrl, "usb tx aggregation enable:1, disable:0");
+But this means that the page is not isolated and so it could be reused
+for something else. No?
  
-+const u16 mwifiex_1d_to_wmm_queue[8] = { 1, 0, 0, 1, 2, 2, 3, 3 };
-+
- /*
-  * This function registers the device and performs all the necessary
-  * initializations.
-diff --git a/drivers/net/wireless/marvell/mwifiex/wmm.c b/drivers/net/wireless/marvell/mwifiex/wmm.c
-index a06fff199ea3..b8f19ca73414 100644
---- a/drivers/net/wireless/marvell/mwifiex/wmm.c
-+++ b/drivers/net/wireless/marvell/mwifiex/wmm.c
-@@ -40,6 +40,21 @@
- static bool disable_tx_amsdu;
- module_param(disable_tx_amsdu, bool, 0644);
- 
-+/* This table inverses the tos_to_tid operation to get a priority
-+ * which is in sequential order, and can be compared.
-+ * Use this to compare the priority of two different TIDs.
-+ */
-+const u8 tos_to_tid_inv[] = {
-+	0x02,  /* from tos_to_tid[2] = 0 */
-+	0x00,  /* from tos_to_tid[0] = 1 */
-+	0x01,  /* from tos_to_tid[1] = 2 */
-+	0x03,
-+	0x04,
-+	0x05,
-+	0x06,
-+	0x07
-+};
-+
- /* WMM information IE */
- static const u8 wmm_info_ie[] = { WLAN_EID_VENDOR_SPECIFIC, 0x07,
- 	0x00, 0x50, 0xf2, 0x02,
-diff --git a/drivers/net/wireless/marvell/mwifiex/wmm.h b/drivers/net/wireless/marvell/mwifiex/wmm.h
-index 04d7da95e307..1cb3d1804758 100644
---- a/drivers/net/wireless/marvell/mwifiex/wmm.h
-+++ b/drivers/net/wireless/marvell/mwifiex/wmm.h
-@@ -31,22 +31,8 @@ enum ieee_types_wmm_ecw_bitmasks {
- 	MWIFIEX_ECW_MAX = (BIT(4) | BIT(5) | BIT(6) | BIT(7)),
- };
- 
--static const u16 mwifiex_1d_to_wmm_queue[8] = { 1, 0, 0, 1, 2, 2, 3, 3 };
--
--/*
-- * This table inverses the tos_to_tid operation to get a priority
-- * which is in sequential order, and can be compared.
-- * Use this to compare the priority of two different TIDs.
-- */
--static const u8 tos_to_tid_inv[] = {
--	0x02,  /* from tos_to_tid[2] = 0 */
--	0x00,  /* from tos_to_tid[0] = 1 */
--	0x01,  /* from tos_to_tid[1] = 2 */
--	0x03,
--	0x04,
--	0x05,
--	0x06,
--	0x07};
-+extern const u16 mwifiex_1d_to_wmm_queue[];
-+extern const u8 tos_to_tid_inv[];
- 
- /*
-  * This function retrieves the TID of the given RA list.
+> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  mm/memory_hotplug.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index e9d5ab5d3ca0..d6d54922bfce 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1575,6 +1575,15 @@ static int __ref __offline_pages(unsigned long start_pfn,
+>  		/* check again */
+>  		ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
+>  					    NULL, check_pages_isolated_cb);
+> +		/*
+> +		 * per-cpu pages are drained in start_isolate_page_range, but if
+> +		 * there are still pages that are not free, make sure that we
+> +		 * drain again, because when we isolated range we might
+> +		 * have raced with another thread that was adding pages to
+> +		 * pcp list.
+> +		 */
+> +		if (ret)
+> +			drain_all_pages(zone);
+>  	} while (ret);
+>  
+>  	/* Ok, all of our target is isolated.
+> -- 
+> 2.25.1
+> 
+
 -- 
-2.17.1
-
-
+Michal Hocko
+SUSE Labs
