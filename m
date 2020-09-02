@@ -2,209 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E5E25A493
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AF225A495
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgIBEao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 00:30:44 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46990 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726770AbgIBEaf (ORCPT
+        id S1727001AbgIBEbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 00:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgIBEbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 00:30:35 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0824DSIw084335;
-        Wed, 2 Sep 2020 00:30:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=cXJ1hb+rxB2SKxqD4eqkp6G4YrcNWaRqf6p7TUeDxs0=;
- b=W3Sevns+gNxse1raWcKRAyjBi8BsYNgCOp0GRpz5DIK7k4iKBcfSRzf3bBuheVoa4Php
- gGdpQfvElEskZmnH4tKg0SFTiQ36P79HfgAFH6n4msP890KRGRSODhXzh+aYWE8krHv6
- m0EbbmWsEBLX7RPXBs1fc1oExdtY7clenC0tZlVCkT4vfmvyv9idszcCny0gm8ZbMHLw
- mzcunEbkaXxkWtAqFdvWgHH5/8Qao0SUx/XbAz9bcCNAWtnSFXCRy+nofPQRoVZFF002
- LTGdiKenQnOwHYya/8Mx8croN3dZYPK+YTzfl4YjFZ0HP1DKLW0e10wX0AknsbNCFM9+ qQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33a462gakj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 00:30:20 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0824NTtt103773;
-        Wed, 2 Sep 2020 00:30:20 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33a462gajp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 00:30:20 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0824RNpV008587;
-        Wed, 2 Sep 2020 04:30:17 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 337en8c80m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 04:30:17 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0824UE1259572530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Sep 2020 04:30:15 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 44AE4A4062;
-        Wed,  2 Sep 2020 04:30:14 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5A39A405B;
-        Wed,  2 Sep 2020 04:30:11 +0000 (GMT)
-Received: from bangoria.ibmuc.com (unknown [9.199.37.120])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Sep 2020 04:30:11 +0000 (GMT)
-From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
-To:     mpe@ellerman.id.au, christophe.leroy@c-s.fr
-Cc:     ravi.bangoria@linux.ibm.com, mikey@neuling.org, paulus@samba.org,
-        naveen.n.rao@linux.vnet.ibm.com, pedromfc@linux.ibm.com,
-        rogealve@linux.ibm.com, jniethe5@gmail.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 8/8] powerpc/watchpoint/selftests: Tests for kernel accessing user memory
-Date:   Wed,  2 Sep 2020 09:59:45 +0530
-Message-Id: <20200902042945.129369-9-ravi.bangoria@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
-References: <20200902042945.129369-1-ravi.bangoria@linux.ibm.com>
+        Wed, 2 Sep 2020 00:31:08 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45887C061244;
+        Tue,  1 Sep 2020 21:31:08 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bh9x26YwLz9sVM;
+        Wed,  2 Sep 2020 14:31:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599021064;
+        bh=LYXE/eRHSYQwf1yYG1qPpZSA6Bga2Hru1cXsS3OFbrA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U0dn4rqn/9o/qT8zpjzh1Cx0eeDJ/58nxLhM4zRtOs93q8RuTGZX46OPtJL7jvfe6
+         sLV+qw0X9l4bvBJHZR9G3U0xitBNVx3uxbqeuCaZJQEx8Fgtt5aOaDfpKnmDfqoH/U
+         0AYbQo7xmDgHiYvAcv9dQxFws0Gvf2/SOvbzC5N5EutEn6CpxX43OS76s1zIFqtlZA
+         856n2Z0xbz16XvUX4sRWB72nqTb+DmiaYZBxx6QvSgsp/HMnGTA3NoLrCUIhYbzAJ9
+         aT/pQ1/7Sgkl8Dr3lHWY24AOP5+8dpqkhxeBs7++aM5FhaNVPeKJS4ECASmc4wuvye
+         kiipVNEMYwy9g==
+Date:   Wed, 2 Sep 2020 14:31:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     SeongJae Park <sjpark@amazon.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the rcu tree with the jc_docs tree
+Message-ID: <20200902143101.4ea59943@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-02_02:2020-09-01,2020-09-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- suspectscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- malwarescore=0 mlxlogscore=999 impostorscore=0 adultscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2006250000 definitions=main-2009020037
+Content-Type: multipart/signed; boundary="Sig_/SHXcAPSjBpQylasw0XSay3G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce tests to cover simple scenarios where user is watching
-memory which can be accessed by kernel as well. We also support
-_MODE_EXACT with _SETHWDEBUG interface. Move those testcases out-
-side of _BP_RANGE condition. This will help to test _MODE_EXACT
-scenarios when CONFIG_HAVE_HW_BREAKPOINT is not set, eg:
+--Sig_/SHXcAPSjBpQylasw0XSay3G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-  $ ./ptrace-hwbreak
-  ...
-  PTRACE_SET_DEBUGREG, Kernel Access Userspace, len: 8: Ok
-  PPC_PTRACE_SETHWDEBUG, MODE_EXACT, WO, len: 1: Ok
-  PPC_PTRACE_SETHWDEBUG, MODE_EXACT, RO, len: 1: Ok
-  PPC_PTRACE_SETHWDEBUG, MODE_EXACT, RW, len: 1: Ok
-  PPC_PTRACE_SETHWDEBUG, MODE_EXACT, Kernel Access Userspace, len: 1: Ok
-  success: ptrace-hwbreak
+Hi all,
 
-Suggested-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
----
- .../selftests/powerpc/ptrace/ptrace-hwbreak.c | 48 ++++++++++++++++++-
- 1 file changed, 46 insertions(+), 2 deletions(-)
+Today's linux-next merge of the rcu tree got a conflict in:
 
-diff --git a/tools/testing/selftests/powerpc/ptrace/ptrace-hwbreak.c b/tools/testing/selftests/powerpc/ptrace/ptrace-hwbreak.c
-index fc477dfe86a2..2e0d86e0687e 100644
---- a/tools/testing/selftests/powerpc/ptrace/ptrace-hwbreak.c
-+++ b/tools/testing/selftests/powerpc/ptrace/ptrace-hwbreak.c
-@@ -20,6 +20,8 @@
- #include <signal.h>
- #include <sys/types.h>
- #include <sys/wait.h>
-+#include <sys/syscall.h>
-+#include <linux/limits.h>
- #include "ptrace.h"
- 
- #define SPRN_PVR	0x11F
-@@ -44,6 +46,7 @@ struct gstruct {
- };
- static volatile struct gstruct gstruct __attribute__((aligned(512)));
- 
-+static volatile char cwd[PATH_MAX] __attribute__((aligned(8)));
- 
- static void get_dbginfo(pid_t child_pid, struct ppc_debug_info *dbginfo)
- {
-@@ -138,6 +141,9 @@ static void test_workload(void)
- 			write_var(len);
- 	}
- 
-+	/* PTRACE_SET_DEBUGREG, Kernel Access Userspace test */
-+	syscall(__NR_getcwd, &cwd, PATH_MAX);
-+
- 	/* PPC_PTRACE_SETHWDEBUG, MODE_EXACT, WO test */
- 	write_var(1);
- 
-@@ -150,6 +156,9 @@ static void test_workload(void)
- 	else
- 		read_var(1);
- 
-+	/* PPC_PTRACE_SETHWDEBUG, MODE_EXACT, Kernel Access Userspace test */
-+	syscall(__NR_getcwd, &cwd, PATH_MAX);
-+
- 	/* PPC_PTRACE_SETHWDEBUG, MODE_RANGE, DW ALIGNED, WO test */
- 	gstruct.a[rand() % A_LEN] = 'a';
- 
-@@ -293,6 +302,24 @@ static int test_set_debugreg(pid_t child_pid)
- 	return 0;
- }
- 
-+static int test_set_debugreg_kernel_userspace(pid_t child_pid)
-+{
-+	unsigned long wp_addr = (unsigned long)cwd;
-+	char *name = "PTRACE_SET_DEBUGREG";
-+
-+	/* PTRACE_SET_DEBUGREG, Kernel Access Userspace test */
-+	wp_addr &= ~0x7UL;
-+	wp_addr |= (1Ul << DABR_READ_SHIFT);
-+	wp_addr |= (1UL << DABR_WRITE_SHIFT);
-+	wp_addr |= (1UL << DABR_TRANSLATION_SHIFT);
-+	ptrace_set_debugreg(child_pid, wp_addr);
-+	ptrace(PTRACE_CONT, child_pid, NULL, 0);
-+	check_success(child_pid, name, "Kernel Access Userspace", wp_addr, 8);
-+
-+	ptrace_set_debugreg(child_pid, 0);
-+	return 0;
-+}
-+
- static void get_ppc_hw_breakpoint(struct ppc_hw_breakpoint *info, int type,
- 				  unsigned long addr, int len)
- {
-@@ -338,6 +365,22 @@ static void test_sethwdebug_exact(pid_t child_pid)
- 	ptrace_delhwdebug(child_pid, wh);
- }
- 
-+static void test_sethwdebug_exact_kernel_userspace(pid_t child_pid)
-+{
-+	struct ppc_hw_breakpoint info;
-+	unsigned long wp_addr = (unsigned long)&cwd;
-+	char *name = "PPC_PTRACE_SETHWDEBUG, MODE_EXACT";
-+	int len = 1; /* hardcoded in kernel */
-+	int wh;
-+
-+	/* PPC_PTRACE_SETHWDEBUG, MODE_EXACT, Kernel Access Userspace test */
-+	get_ppc_hw_breakpoint(&info, PPC_BREAKPOINT_TRIGGER_WRITE, wp_addr, 0);
-+	wh = ptrace_sethwdebug(child_pid, &info);
-+	ptrace(PTRACE_CONT, child_pid, NULL, 0);
-+	check_success(child_pid, name, "Kernel Access Userspace", wp_addr, len);
-+	ptrace_delhwdebug(child_pid, wh);
-+}
-+
- static void test_sethwdebug_range_aligned(pid_t child_pid)
- {
- 	struct ppc_hw_breakpoint info;
-@@ -452,9 +495,10 @@ static void
- run_tests(pid_t child_pid, struct ppc_debug_info *dbginfo, bool dawr)
- {
- 	test_set_debugreg(child_pid);
-+	test_set_debugreg_kernel_userspace(child_pid);
-+	test_sethwdebug_exact(child_pid);
-+	test_sethwdebug_exact_kernel_userspace(child_pid);
- 	if (dbginfo->features & PPC_DEBUG_FEATURE_DATA_BP_RANGE) {
--		test_sethwdebug_exact(child_pid);
--
- 		test_sethwdebug_range_aligned(child_pid);
- 		if (dawr || is_8xx) {
- 			test_sethwdebug_range_unaligned(child_pid);
--- 
-2.26.2
+  Documentation/memory-barriers.txt
 
+between commit:
+
+  537f3a7cf48e ("docs/memory-barriers.txt: Fix references for DMA*.txt file=
+s")
+
+from the jc_docs tree and commit:
+
+  6f6705147bab ("docs: fix references for DMA*.txt files")
+
+from the rcu tree.
+
+I fixed it up (they are preety much the same - I used the former) and
+can carry the fix as necessary. This is now fixed as far as linux-next
+is concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/SHXcAPSjBpQylasw0XSay3G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9PIAUACgkQAVBC80lX
+0GyYDwf9HL0CcBNj2gvncc6m0Td7K6AuLEUlshix/SsSejxwRVv/YPnuQ/qfMPi9
+u8XEQFalv9tr10J0XElsRP+x3+58aDRv3yzO70j6m2cKhGEgtABX8Q/wf1wtJVEv
+VxzazvAnbyuR1eLthvDi3WncwGbgFFygUcN6meto24JyW7s5R6DsxonSSBImI0rR
+8jECC50nwg2da4aWHHgVSjDyYEtw6G6HC/dReLt4VUYDp2Cwa1ZI7dXfHJJeD7Vt
+xfthCT5RJQAmIbys4CJr//SvBM+JkUCOqgQVpT/SeNZW7ivuBkhRlny1nfwCKLpT
+DdWwL98ZwYCggVPIh+E4u7S9DHnj9Q==
+=ouqH
+-----END PGP SIGNATURE-----
+
+--Sig_/SHXcAPSjBpQylasw0XSay3G--
