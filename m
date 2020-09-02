@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DF325A9DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FB125A9F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgIBLDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 07:03:11 -0400
-Received: from aclms1.advantech.com.tw ([61.58.41.199]:42462 "EHLO
-        ACLMS1.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgIBLDE (ORCPT
+        id S1726406AbgIBLEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 07:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbgIBLEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 07:03:04 -0400
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS1.advantech.com.tw
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te15c9c306fac14014b1cfc@ACLMS1.advantech.com.tw>;
- Wed, 2 Sep 2020 19:03:01 +0800
-Received: from localhost (172.16.12.96) by taipei09.ADVANTECH.CORP
- (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 2 Sep
- 2020 19:03:01 +0800
-From:   William Sung <william.sung@advantech.com.tw>
-To:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        AceLan Kao <acelan.kao@canonical.com>,
-        Campion Kang <campion.kang@advantech.com.tw>,
-        William Sung <william.sung@advantech.com.tw>
-Subject: [PATCH v2] usb: serial: option: Fix the lackage for Quectel EG95 LTE modem support
-Date:   Wed, 2 Sep 2020 19:03:01 +0800
-Message-ID: <20200902110301.21936-1-william.sung@advantech.com.tw>
-X-Mailer: git-send-email 2.17.1
+        Wed, 2 Sep 2020 07:04:41 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F69C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 04:04:40 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id y15so1429236uan.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 04:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Hf0PIlZBH2f6tZjqIqPKdTSDxg4ey5IHqqV7o7zs3fA=;
+        b=jvktss2wubUFAj/XGva63/p+i21EmUocT+VKMGriS4nO/cV/LZCl8IS0SS4RAI5I1B
+         PGSRGdX07J/2Y9ObU8kQKYXMoS2CyQ51/SiA8HmfDEN9bG6zj5ZUQSltN4eQYx5vC305
+         jUIYB6t85WIce/eXD6+90KH03m60MDMZHE6SI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hf0PIlZBH2f6tZjqIqPKdTSDxg4ey5IHqqV7o7zs3fA=;
+        b=G1h2IOcWOqBIIz5+kgTAaHNtKZem2a3VsA4df5ejQAOBFEvQDUWpic/Lo5W7nQif67
+         3dC9qj19zlLKCP02HO0y+r/9UNLXXfBNZkuFLIaGjxStT0XB6r919sgGUYYL6gwk3s+k
+         IFnmv7W2c+WuFY3STPqqsxfHBhyi6hLusuySLFcTbvLGsnWKgZxerl0MJLOYq9TQP6KE
+         vnCfJaY/DMHKK2CegRimTYZlP/8NL0tHOSYmSJHXXCH5aJs69SVNgbNo+UDi2QmnDBoi
+         vgP7zUAfdKojUeqsF9jLEdlIpoeIt88KbvXe/WL3F4soR2n8lB8W+v5sI4b4RAo+o0uY
+         4YAw==
+X-Gm-Message-State: AOAM531LH1ZqBjmEXZy5A8LmwW0s40FeE2ro428bzIx9QGw8MHDdANAi
+        bSAUUFoGeKP83hV3TTjvZo6ITuRtXj0dwUA6h7Ndpg==
+X-Google-Smtp-Source: ABdhPJwTAJmdVSE4G5yw+xOM510eJCrk4CeFZ0EVNnIfqJUjO0bPMVj4+uBwlLwieWiC9A5BtacoHnsFLK6H+cR9mhI=
+X-Received: by 2002:ab0:1e84:: with SMTP id o4mr4725479uak.74.1599044678604;
+ Wed, 02 Sep 2020 04:04:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.12.96]
-X-ClientProxiedBy: ACLDAG.ADVANTECH.CORP (172.20.2.88) To
- taipei09.ADVANTECH.CORP (172.20.0.236)
-X-StopIT: No
+References: <9f4fb922-4aa3-0b63-6d81-c83daefd13b9@web.de>
+In-Reply-To: <9f4fb922-4aa3-0b63-6d81-c83daefd13b9@web.de>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 2 Sep 2020 19:04:27 +0800
+Message-ID: <CANMq1KBJTpnYG59B1V=y_emqD3dtMZQAPY9bWJOC8FW2fNRgsA@mail.gmail.com>
+Subject: Re: [PATCH] rpmsg: Avoid double-free in mtk_rpmsg_register_device()
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Pi-Hsun Shih <pihsun@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Add reset-resume callback for resetting USB devices after MCU exits
-from suspend/sleep mode.
+On Wed, Sep 2, 2020 at 5:33 PM Markus Elfring <Markus.Elfring@web.de> wrote=
+:
+>
+> > If rpmsg_register_device fails, it will call
+> > mtk_rpmsg_release_device which already frees mdev.
+>
+> Can another imperative wording become helpful for the change description?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?id=3D9c7d619be5a002ea29c172df5e=
+3c1227c22cbb41#n151
 
-* Add zero packet support
+Looking at your posting history, I'll leave it up to the maintainer.
 
-Fixes: da6902e5b6db ("USB: serial: option: add Quectel EG95 LTE modem"
+> =E2=80=A6
+> > +++ b/drivers/rpmsg/mtk_rpmsg.c
+> > @@ -220,10 +220,8 @@  static int mtk_rpmsg_register_device(struct mtk_r=
+pmsg_rproc_subdev *mtk_subdev,
+> >       rpdev->dev.release =3D mtk_rpmsg_release_device;
+> >
+> >       ret =3D rpmsg_register_device(rpdev);
+> > -     if (ret) {
+> > -             kfree(mdev);
+> > +     if (ret)
+> >               return ret;
+> > -     }
+> >
+> >       return 0;
+> >  }
+>
+>
+> * How do you think about to use the following code variant instead?
+>
+>         return rpmsg_register_device(rpdev);
+>
+> * Would you like to omit the variable =E2=80=9Cret=E2=80=9D for this func=
+tion implementation?
 
-Signed-off-by: William Sung <william.sung@advantech.com.tw>
----
+That's a good suggestion, I'll update and send a v2.
 
- v2: * Add ZLP support
-     * Remove redundant code for reserving interface number 4
-
- drivers/usb/serial/option.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-index 89b3192af326..ba4dc67dab2f 100644
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1099,7 +1099,7 @@ static const struct usb_device_id option_ids[] = {
- 	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC25),
- 	  .driver_info = RSVD(4) },
- 	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EG95),
--	  .driver_info = RSVD(4) },
-+	  .driver_info = RSVD(4) | ZLP },
- 	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_BG96),
- 	  .driver_info = RSVD(4) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EP06, 0xff, 0xff, 0xff),
-@@ -2069,6 +2069,7 @@ static struct usb_serial_driver option_1port_device = {
- #ifdef CONFIG_PM
- 	.suspend           = usb_wwan_suspend,
- 	.resume            = usb_wwan_resume,
-+	.reset_resume      = usb_wwan_resume,
- #endif
- };
- 
--- 
-2.17.1
-
+>
+> Regards,
+> Markus
