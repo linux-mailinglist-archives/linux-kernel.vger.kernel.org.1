@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E598725B303
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA89325B30D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgIBRhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 13:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgIBRhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 13:37:01 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA77CC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 10:36:59 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id cr8so2596016qvb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 10:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vgaKAzdGE8hK8jX5VIAMg2rIsFKjVZ+G64RGVHPspFk=;
-        b=lisUJLL2WukHfkTnc5Q5MLvsfNQo3NRV7V1bKtu/7/1+zzIpFACD4j0K0w1MVuVGjL
-         TzO9kHzuh9SUWXYJsu7bWUre/gCLdfapig834pwjTwWShvYRN7q1FGWwkts4Hr3ey0Q2
-         8vC9qioheml5zBF0ENAMozGKejPeLRIeH5r0do8bh0nEL6B4VVZlystOjWHuVBec6DkP
-         JPpnmadxpWnNNzZoGRzgbuhomEUO7Xi/4mJvBjlsUJ9LbrGtIvLPFaX7FLjeiQKWufPd
-         E+sZBqVpOIUxssjpQOetHy512+lLj1bfBw8fToUPlBdUIWHrBDQGFgwmBY7+utZOgqYX
-         xWFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=vgaKAzdGE8hK8jX5VIAMg2rIsFKjVZ+G64RGVHPspFk=;
-        b=B3hiAGCTTDQMcUfYKo7nAqOB3h77RRQMAsqIfuT9HUPI5g1AScAI3q7vzMYJ25g8zC
-         pGhuCF9eQ2s6UKlr0XeHEN/cDy47yAd0J3nB34VDDN1Y/8I8sXY72wVoK2r6fgRRID/g
-         ihj7gygDUNslQ+rHgddRh/0WPiUPm4JHiAkWLBPgNfz+RwMyMR2kFxdC/D4ldT/DVuu+
-         WRfnL2jCb+FefmzMvUnGZoPqIwx0R0tMaNT1+IRDnyHktj++gFonPQgZv8Lvh4gd0hrk
-         U+VGAYcUwSFEJWmhJ8hIkiYBmN5dYZZrTNWPUYtMdY060Xk4g4c2d0W9p5AE3695t7SF
-         vxKA==
-X-Gm-Message-State: AOAM530G4Vz3dWHlCRU+2c4JOEJ/+L+Z+H7BuqcRrd4fXOBRmK8iOd1M
-        9j8Q9Y0ucMZkkdcPJFaqyIk=
-X-Google-Smtp-Source: ABdhPJwt2RKyrYQUbm1s63bYhaah8JToYSP8XiIC9AsuTQ96utJqr3oTknK4v/7NdbXy/k1wuLrTMw==
-X-Received: by 2002:ad4:4ae1:: with SMTP id cp1mr7825524qvb.216.1599068218772;
-        Wed, 02 Sep 2020 10:36:58 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id y9sm260036qka.0.2020.09.02.10.36.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 10:36:57 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Wed, 2 Sep 2020 13:36:55 -0400
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        id S1726853AbgIBRiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:38:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgIBRip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 13:38:45 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86587207EA;
+        Wed,  2 Sep 2020 17:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599068324;
+        bh=892k+dIylN07Z0BoztCYZcV5Ytx97ziH7oUUHRgPXqo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YPzU8gtmGBeTUanqpXk7UJRNk6O69/FSTFV8yQVQKfTwJ3X1RGCVRYfU9wkciD2qF
+         oYtTBnekZnRir41Ch1d5oIwLQ4e46jxgMlQXFwagw7ttAfw2RxYwtsttkENJr5geDp
+         O/e7vzV/ldyN8zGyd0/SMs35pcCpruT4H9gowlpk=
+Date:   Wed, 2 Sep 2020 18:38:03 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
         Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Will Deacon <will@kernel.org>, nadav.amit@gmail.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: [PATCH v2] x86/asm: Replace __force_order with memory clobber
-Message-ID: <20200902173655.GA3469316@rani.riverdale.lan>
-References: <20200823212550.3377591-1-nivedita@alum.mit.edu>
- <20200902153346.3296117-1-nivedita@alum.mit.edu>
- <20200902171624.GX28786@gate.crashing.org>
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH v2 0/3] arm64: Convert to ARCH_STACKWALK
+Message-ID: <20200902173803.GE6162@sirena.org.uk>
+References: <20200819124913.37261-1-broonie@kernel.org>
+ <20200901160626.GE95447@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jTMWTj4UTAEmbWeb"
 Content-Disposition: inline
-In-Reply-To: <20200902171624.GX28786@gate.crashing.org>
+In-Reply-To: <20200901160626.GE95447@C02TD0UTHF1T.local>
+X-Cookie: Prices higher in Alaska and Hawaii.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 12:16:24PM -0500, Segher Boessenkool wrote:
-> On Wed, Sep 02, 2020 at 11:33:46AM -0400, Arvind Sankar wrote:
-> > The CRn accessor functions use __force_order as a dummy operand to
-> > prevent the compiler from reordering the inline asm.
-> > 
-> > The fact that the asm is volatile should be enough to prevent this
-> > already, however older versions of GCC had a bug that could sometimes
-> > result in reordering. This was fixed in 8.1, 7.3 and 6.5. Versions prior
-> > to these, including 5.x and 4.9.x, may reorder volatile asm.
-> 
-> Reordering them amongst themselves.  Yes, that is bad.  Reordering them
-> with "random" code is Just Fine.
 
-Right, that's what I meant, but the text isn't clear. I will edit to clarify.
+--jTMWTj4UTAEmbWeb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Volatile asm should be executed on the real machine exactly as often as
-> on the C abstract machine, and in the same order.  That is all.
-> 
-> > + * The compiler should not reorder volatile asm,
-> 
-> So, this comment needs work.  And perhaps the rest of the patch as well?
-> 
-> 
-> Segher
+On Tue, Sep 01, 2020 at 05:06:26PM +0100, Mark Rutland wrote:
 
-I think the patch itself is ok, we do only want to avoid reordering
-volatile asm vs volatile asm. But the comment needs clarification.
+> Just to check, has the skipping logic been tested to work equivalently
+> to what we had before? By inspection I think it should, but since it
+> relies on function call boundaries it always strikes me as fragile.
 
-Thanks.
+> If you could confirm that (e.g. with LKDTM perhaps?)=A0that'd be great.
+> Assuming that looks right, for the series:
+
+I've tested this with LKDTM and otherwise and didn't spot any issues
+(and just did a bit of retesting) but it is a pretty manual process so
+it's possible I missed something.
+
+--jTMWTj4UTAEmbWeb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9P2HoACgkQJNaLcl1U
+h9BFyAf/WmL+czCJwJk4VCBeI8Qs2/FFr8HfxOjvcihHhHLoo47xrAWoGVeJcoGB
+B0KxiGvi/sgW230Q8vgawFwzN5pte2FFt8RoXRKNste1aMWTVp2d66nHXg4T3Xa+
+1tzhUh1MBWkQCDW2lKroA6RFs4UIX8b0ulYz26VFwpE/is4vcAv77AnCYNIMfqa1
+cC/FbZO4VJfSu5vgdtrMSmt0NAczKRI5OpO056olErHtnSmBxagekOrMyDofUwjz
+TKcOHNMwH/BdiQFL7BjqDZykxwV1MKNcaXSEd/HTsnCurMbMTCfAsakolqbDDDiL
+DG06jT7beQldWH9+cTAb45lPf08ifQ==
+=knFg
+-----END PGP SIGNATURE-----
+
+--jTMWTj4UTAEmbWeb--
