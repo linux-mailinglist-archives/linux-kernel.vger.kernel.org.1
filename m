@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEAD25AE6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53A925AE71
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgIBPJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728081AbgIBPHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:07:41 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 168832145D;
-        Wed,  2 Sep 2020 15:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599059261;
-        bh=T2xuNDe/mQvJNEoHtYHkEv7VKzb9pmqoEh8NDwVB0KA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cy4I1bg6mFyZCwbFGVjTQLZBoAzSaYbEpWNkFwDU4ONqghQ/Hy87a/INzvBR8Dom9
-         sQB2OJA+Ux8Fcqd3TY/kqt9KuqjIcKETNePqmwQScIGQSLbAVVO+30eM1QrdBSchjT
-         dr66gUrD76qnWkcWACPmmwMsCGGEQxuWuzF7PXDU=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Michal Simek <michal.simek@xilinx.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
-        linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 9/9] i2c: mux: reg: Simplify with dev_err_probe()
-Date:   Wed,  2 Sep 2020 17:06:43 +0200
-Message-Id: <20200902150643.14839-9-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200902150643.14839-1-krzk@kernel.org>
-References: <20200902150643.14839-1-krzk@kernel.org>
+        id S1728012AbgIBPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:09:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727866AbgIBPIH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:08:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF13C061246
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 08:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=XD2Pbkht1TP+bkfwkdAAR9D4au0gw0hidG3GmkiAzhs=; b=WRXCxz8t5I24XFrC3hXjClgbzS
+        vGrIZ57FYbavTXPtpZ5n56/6gBdzEUxMxZAEhHGPdQYeL1aOtBYa6IZM1NqTbpsQDuJr2kUCyVYZ2
+        2NczeL1B9i29spRmoU4tcxaUu8xy9xKz56R95AIKcCz9ZHcpbUYM3aa14SBJTsJ7K9koDVF1VqOb2
+        uzUTYR1Xf/cDa8zGPPcvf+NeFdN0f9twKglZUgpNbKpZ7dMJEmEPw1m3XUC44qhbCR2somJpR06mt
+        iPxHM8KbdFHo79e33MJjBdgs8jFyYRec2PG783gdw4LE0Yxnhr09aY/Xd7aS5DK8+ttXx8py9jpnX
+        /X0yx1Rg==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDUMm-00012t-MI; Wed, 02 Sep 2020 15:08:04 +0000
+Subject: Re: [PATCH] trivial: docs: Section number should be "8.2"
+To:     Michael Witten <mfwitten@gmail.com>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <19f80e640076482fac86f57b41211faa@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c0366b17-94bc-0935-971e-fb079ba578f1@infradead.org>
+Date:   Wed, 2 Sep 2020 08:08:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <19f80e640076482fac86f57b41211faa@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and the error value gets printed.
+On 9/2/20 7:45 AM, Michael Witten wrote:
+> Signed-off-by: Michael Witten <mfwitten@gmail.com>
+> ---
+>  Documentation/kbuild/makefiles.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+> index b81b8913a5a3..da6a708164c4 100644
+> --- a/Documentation/kbuild/makefiles.rst
+> +++ b/Documentation/kbuild/makefiles.rst
+> @@ -1411,7 +1411,7 @@ When kbuild executes, the following steps are followed (roughly):
+>  	that may be shared between individual architectures.
+>  	The recommended approach how to use a generic header file is
+>  	to list the file in the Kbuild file.
+> -	See "7.2 generic-y" for further info on syntax etc.
+> +	See "8.2 generic-y" for further info on syntax etc.
+>  
+>  7.11 Post-link pass
+>  -------------------
+> 
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/i2c/muxes/i2c-mux-reg.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+Already fixed and merged:
 
-diff --git a/drivers/i2c/muxes/i2c-mux-reg.c b/drivers/i2c/muxes/i2c-mux-reg.c
-index b59a62f8d7a6..0e0679f65cf7 100644
---- a/drivers/i2c/muxes/i2c-mux-reg.c
-+++ b/drivers/i2c/muxes/i2c-mux-reg.c
-@@ -171,13 +171,9 @@ static int i2c_mux_reg_probe(struct platform_device *pdev)
- 			sizeof(mux->data));
- 	} else {
- 		ret = i2c_mux_reg_probe_dt(mux, pdev);
--		if (ret == -EPROBE_DEFER)
--			return ret;
--
--		if (ret < 0) {
--			dev_err(&pdev->dev, "Error parsing device tree");
--			return ret;
--		}
-+		if (ret < 0)
-+			return dev_err_probe(&pdev->dev, ret,
-+					     "Error parsing device tree");
- 	}
- 
- 	parent = i2c_get_adapter(mux->data.parent);
+from Masahiro Yamada <masahiroy@kernel.org>:
+Applied to linux-kbuild/fixes.
+Thanks.
+
 -- 
-2.17.1
+~Randy
 
