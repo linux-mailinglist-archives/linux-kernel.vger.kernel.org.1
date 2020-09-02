@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BFA25A334
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE41C25A338
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 04:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbgIBCyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 22:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
+        id S1726686AbgIBCyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 22:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgIBCxz (ORCPT
+        with ESMTP id S1726311AbgIBCx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 22:53:55 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F808C061251
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 19:53:53 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so1639036pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 19:53:53 -0700 (PDT)
+        Tue, 1 Sep 2020 22:53:59 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5934BC06125F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 19:53:54 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id o20so2008022pfp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 19:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mqktUKjWMSHZ7i2u+s16x0sbSP9VPDjkmXRnw4GPeg4=;
-        b=RHjhmExyg+rpKyv5Nc9ZaYdn2DDJqjk8uDuYweNqZFU1j+qj3H0V4lh98xtDwrZCOQ
-         v535m4lYwgRAkju+Q23kPxEFj0WUXNg/5bty5jvMQrEg8y9c7PPEG+wW8D0rM+8L60/H
-         hDYiteu/ngFeVisaqnjEhGrnjlZIlr1hy/6d8=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=HVX5iGApWsA6cOcKpocM02MsLs3Cms0hUFmAcEqMm6M=;
+        b=Mmg3k909Im5tPr616qMO7eR07LAJFZClo5qultGvx7lHP5OI+oj6Z0PZ+3rp3MvDA3
+         EKIdRq33UoHLNu/CJNmyG2b1rFixQhYPrXAA7dqL2iwb7efBZBRwDdWCR5SgWF4hYhHi
+         lpG+N67GmcyXWCsOwQrq7S6QnuK7PbTqvLQO8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mqktUKjWMSHZ7i2u+s16x0sbSP9VPDjkmXRnw4GPeg4=;
-        b=Poq2ziJQG9Jh7BOCVU4KhDUqTd1VDYMvov+28alzchaIwGbZoX46bEvi8eDlf7Hz0P
-         eBzGZxopkl6EngqjKsEYLn4Tz1ZQXgdQVh0FOW7xviSnO2j8rK8YlQReP5I/pHFHHX2w
-         ISGpxd8OyAWNH2gGa6y8Cn1Lv+vaop5HixVkh/+E5+Tt1MPuyK9j/PmMW8Ic1LcStnoy
-         plR5N+4eIyCHA5MK1kN+RDxlAjNNlYYp2deEqEbJZ/cJXElaKN+p8BGTB8HhC5nupMjc
-         A/9xb2EFvjv3GgzCKDIjZ3ErkT9KVQWFyyKYSzhO3hFdZCFZybsnVmymZIH4IR2rz0bB
-         UqhQ==
-X-Gm-Message-State: AOAM532Zac7Opt56MuLvDwZmCYmCT62yxQfrPCO8ElgQLF8pctHy/6/Y
-        j9CXezyYOnlWKAuQNLNy7Nv07g==
-X-Google-Smtp-Source: ABdhPJwag7uthri0Mn2pyA9vD0vrAX4zwO2oNYtPUmO8FPFRZu7rxMxErll80vPwkn1YAidGcFN4NA==
-X-Received: by 2002:a17:90a:17e8:: with SMTP id q95mr220525pja.161.1599015233232;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=HVX5iGApWsA6cOcKpocM02MsLs3Cms0hUFmAcEqMm6M=;
+        b=OlhaV4gkUmYR/LmzoPYtXdwEi593QSt3baVb706PA3tRrxMmC9sDgL84vNG+Bpbz/R
+         +KWslfo9m9C/evZ1OIZFEWB84NA+lMPPTxBL5xW23b5hO1EfI95VwQ+ijnXvzH3aD8eZ
+         Q2IzF/EPUg00YG8rK9ZHPmHlNK8Po75SH1lMf5Izz871pm6brc3h9tdLLuG5w26lHaeU
+         K/+nVXlRgo7Nrx7poWDPoHvttaXUcmQm0knd4/j/Hd0RddKBlUI575yg3BK0jgiCThgi
+         2aeTu/Zcu7b2S2J03h+6ZesvzCpTI4y36SwzyWY9eSBoozCVkXqBLbn2UfRnBwCBNzZn
+         yvTQ==
+X-Gm-Message-State: AOAM5301uVOMBxZXXa8NCK+/K0SqB1+ocJItVptPKjaI2aUS5PZFdEHl
+        Vl5wcda8ADx2iSV3mdYXOs6WAQ==
+X-Google-Smtp-Source: ABdhPJxr15UxFlZO57N08QLgROI0XgkvScTspshNJ0zdFmYYhSNaiyEAMbuocRhYqDliU1QV3ZPnLQ==
+X-Received: by 2002:a63:6d41:: with SMTP id i62mr199101pgc.279.1599015233901;
         Tue, 01 Sep 2020 19:53:53 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k88sm2949999pjk.19.2020.09.01.19.53.50
+        by smtp.gmail.com with ESMTPSA id q7sm3438860pgg.10.2020.09.01.19.53.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 01 Sep 2020 19:53:50 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@suse.de>,
+Cc:     Kees Cook <keescook@chromium.org>, Will Deacon <will@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Ard Biesheuvel <ardb@kernel.org>,
@@ -63,10 +64,12 @@ Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@suse.de>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v7 0/5] Warn on orphan section placement
-Date:   Tue,  1 Sep 2020 19:53:42 -0700
-Message-Id: <20200902025347.2504702-1-keescook@chromium.org>
+Subject: [PATCH v7 1/5] arm64/build: Warn on orphan section placement
+Date:   Tue,  1 Sep 2020 19:53:43 -0700
+Message-Id: <20200902025347.2504702-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200902025347.2504702-1-keescook@chromium.org>
+References: <20200902025347.2504702-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -74,37 +77,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ingo,
+We don't want to depend on the linker's orphan section placement
+heuristics as these can vary between linkers, and may change between
+versions. All sections need to be explicitly handled in the linker
+script.
 
-The ever-shortening series. ;) Here is "v7", which is just the remaining
-Makefile changes to enable orphan section warnings, now updated to
-include ld-option calls.
+With all sections now handled, enable orphan section warnings.
 
-Thanks for getting this all into -tip!
+Acked-by: Will Deacon <will@kernel.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/arm64/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
 
--Kees
-
-v6: https://lore.kernel.org/lkml/20200821194310.3089815-1-keescook@chromium.org/
-v5: https://lore.kernel.org/lkml/20200731230820.1742553-1-keescook@chromium.org/
-v4: https://lore.kernel.org/lkml/20200629061840.4065483-1-keescook@chromium.org/
-v3: https://lore.kernel.org/lkml/20200624014940.1204448-1-keescook@chromium.org/
-v2: https://lore.kernel.org/lkml/20200622205815.2988115-1-keescook@chromium.org/
-v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
-
-Kees Cook (5):
-  arm64/build: Warn on orphan section placement
-  arm/build: Warn on orphan section placement
-  arm/boot: Warn on orphan section placement
-  x86/build: Warn on orphan section placement
-  x86/boot/compressed: Warn on orphan section placement
-
- arch/arm/Makefile                 | 4 ++++
- arch/arm/boot/compressed/Makefile | 2 ++
- arch/arm64/Makefile               | 4 ++++
- arch/x86/Makefile                 | 4 ++++
- arch/x86/boot/compressed/Makefile | 1 +
- 5 files changed, 15 insertions(+)
-
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 6de7f551b821..081144fcc3da 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -29,6 +29,10 @@ LDFLAGS_vmlinux	+= --fix-cortex-a53-843419
+   endif
+ endif
+ 
++# We never want expected sections to be placed heuristically by the
++# linker. All sections should be explicitly named in the linker script.
++LDFLAGS_vmlinux += $(call ld-option, --orphan-handling=warn)
++
+ ifeq ($(CONFIG_ARM64_USE_LSE_ATOMICS), y)
+   ifneq ($(CONFIG_ARM64_LSE_ATOMICS), y)
+ $(warning LSE atomics not supported by binutils)
 -- 
 2.25.1
 
