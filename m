@@ -2,163 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA2525B6E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 01:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829F825B6EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 01:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgIBW77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 18:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        id S1727861AbgIBXBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 19:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIBW7o (ORCPT
+        with ESMTP id S1726400AbgIBXBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 18:59:44 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E99BC061245
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 15:59:44 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id j11so1073214ejk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 15:59:44 -0700 (PDT)
+        Wed, 2 Sep 2020 19:01:08 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8A4C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 16:01:08 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so513396pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 16:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K6cGerCxO46Qm24iFA5aZEL6UdjUDW3jjNLe5Ls8bmw=;
-        b=jGdZtAdc7CvPt+P2PuAbn91E6yyatAb+8jgjU+0k3SbWdjhBWYOEa+KKGF/DNvtW66
-         en6JA8kGE7oWpnaCF9TivIQ7+3Wq0KMsx0qHCQo9Z0s+0Hp789sEBg4fQNaaLg2TRPun
-         LHR6LIHcTsZo10OmpUpN2XpJpF5YaKSPfVhv0=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rckbD9u1Jvs+TO4H1QTBgAqxZmJHaw52NI12SCf1ONE=;
+        b=ZHQCfge9W0rq1an4zjkDijL2d94hOEcsp54D7D1XkAj+MpNlBj3TQqpLnSitIdXXv1
+         hdS7rRtTpLagXWGJvssRy511yVf2YiGxvh3k6UnOGOr72OCURZmG9PDAxHiOkc3L/FaV
+         cYE+BvmQntdfWGfxc3njqOhjaxw4yxOaPLZIQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K6cGerCxO46Qm24iFA5aZEL6UdjUDW3jjNLe5Ls8bmw=;
-        b=ijVnDaKyQTVXD7YFHkuEYy2dAeB6dq0uUWGgczUJzMTQRONcZ2uAGk+n9z4J5kY1he
-         mZ0Nd8wwEBi3qRcjE2Rkp2JV6O24hLdA3RO7WiTceWZznq6QTDZomvlbAYfBSZPXSRoA
-         d8+eAmZqVem19nfN5K+ZmNFjVZhrzvhAGRaWWCMgvAGIxoliL6xYLpKJTY18tNMTszHT
-         NbxToqiazDAsLGrTaFk8ErtOSAmKMvN3u9EqMTQM5UbYCf9nz0iZRVy3/JOQ7lKkoUhI
-         QruI9OLGIlKzknzF4OuW83x16Ye6ow77cY1SKdmNuzQFYZuKKVcKEUBHNwMCV1naxLno
-         1BOQ==
-X-Gm-Message-State: AOAM532y70rcJs5+q//2kKvFmICDHEIeNxNgULt/Cw480u4IVZQpNj/e
-        YPBYqj32Zdb3nvqMtZgL0s5qHsuTB0wVAQ==
-X-Google-Smtp-Source: ABdhPJzBHzOyofc+K541iOIjbw62KXAws5uEA0pDh4+MB5CqBk6Ng3mLhAxlVJ/kcX5xB+m7g92aqA==
-X-Received: by 2002:a17:906:2618:: with SMTP id h24mr408773ejc.198.1599087582493;
-        Wed, 02 Sep 2020 15:59:42 -0700 (PDT)
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
-        by smtp.gmail.com with ESMTPSA id n20sm1008033ejg.65.2020.09.02.15.59.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 15:59:41 -0700 (PDT)
-Received: by mail-wr1-f50.google.com with SMTP id t10so1092953wrv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 15:59:41 -0700 (PDT)
-X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr416596wrt.32.1599087580861;
- Wed, 02 Sep 2020 15:59:40 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rckbD9u1Jvs+TO4H1QTBgAqxZmJHaw52NI12SCf1ONE=;
+        b=MoqokPHa8AKmvrygADt8ZysWPr6E5NGMXkWOHILnSQH9yxPEluX4Usm3if5UvckBMS
+         mlioGxnsNfPKyBtrMU6AEScvsBrkEQ8nnJHXQpMs70fwJlBLeST3kmMFgDg6Ykofmp/+
+         Qf83gL4f8QKzY0QJtjYA4b8SQA34v6hQVk+ktKwCqEkbpFdHTOOJY9jZusm7Gz8lPSOy
+         XRUDBFOAB4tdFq+FzPOfAy3GMjQZYODUMoPdpqOlqYWAVp3eV/q4qbF8NAwrUEv6LuJ3
+         d8WkUhbtpOjBefw76zykER2Ib1q1rqpcx+pEKqH1kJv+voB2o8csW/irKji8S7k0D1SM
+         kPuQ==
+X-Gm-Message-State: AOAM531KQVE/KyfACbYBolrJLEsTovhIAch2fum6OokO/SqpW6oPf5ce
+        Y9be8A4/RzyOtNS3qiXqCKIjA59GHLHGnA==
+X-Google-Smtp-Source: ABdhPJyszZg/1OfgGHuppP5KPcJIiYoOULZVJ8PzQ7DlaVyEphP0+9pGBgoilk2OjPsVI+o7GUdnrA==
+X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr44063pjb.198.1599087667564;
+        Wed, 02 Sep 2020 16:01:07 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id z1sm419825pjn.34.2020.09.02.16.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 16:01:06 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: spi-nor: Prefer asynchronous probe
+Date:   Wed,  2 Sep 2020 16:00:40 -0700
+Message-Id: <20200902160002.1.I658d1c0db9adfeb9a59bc55e96a19e192c959e55@changeid>
+X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
 MIME-Version: 1.0
-References: <1597380295-6297-1-git-send-email-wuxy@bitland.com.cn>
- <1597380295-6297-5-git-send-email-wuxy@bitland.com.cn> <20200831174057.GO31019@paasikivi.fi.intel.com>
-In-Reply-To: <20200831174057.GO31019@paasikivi.fi.intel.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Thu, 3 Sep 2020 00:59:20 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5ARYNVMjScuk5-w_z5Pt6jD=CPkCYG+rM2Znvt9j1Od6g@mail.gmail.com>
-Message-ID: <CAAFQd5ARYNVMjScuk5-w_z5Pt6jD=CPkCYG+rM2Znvt9j1Od6g@mail.gmail.com>
-Subject: Re: [PATCH V3 3/3] media: i2c: gc5035: Add GC5035 image sensor driver
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Xingyu Wu <wuxy@bitland.com.cn>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "shawnx.tu" <shawnx.tu@intel.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "dave.stevenson" <dave.stevenson@raspberrypi.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Cao Bing Bu <bingbu.cao@intel.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Sj Huang <sj.huang@mediatek.com>,
-        darfur_liu <darfur_liu@gcoreinc.com>,
-        "hao.he7" <hao.he7@gmail.com>,
-        =?UTF-8?B?5L2V5rWpQjAzMjA1?= <hao.he@bitland.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+On my system the spi_nor_probe() took ~6 ms at bootup.  That's not a
+lot, but every little bit adds up to a slow bootup.  While we can get
+this out of the boot path by making it a module, there are times where
+it is convenient (or even required) for this to be builtin the kernel.
+Let's set that we prefer async probe so that we don't block other
+drivers from probing while we are probing.
 
-On Mon, Aug 31, 2020 at 7:41 PM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Xingyu,
->
-> Thanks for the update. I've got a few more comments below.
->
-> Do you happen to have some insight on what the OTP data contains and what
-> does the driver do with it?
->
-> At least in principle the OTP data may be programmed for the customer so
-> the same sensor could contain something else what the driver expects to
-> find there.
->
+This is a tiny little change that is almost guaranteed to be safe for
+anything that is able to run as a module, which SPI_NOR is.
+Specifically modules are already probed asynchronously.  Also: since
+other things in the system may have enabled asynchronous probe the
+system may already be doing other things during our probe.
 
-Thanks for the review. For anything without my reply, assume fixed. :)
+There is a small possibility that some other driver that was a client
+of SPI_NOR didn't handle -EPROBE_DEFER and was relying on probe
+ordering and only worked when the SPI_NOR and the SPI bus were
+builtin.  In that case the other driver has a bug that's waiting to
+hit and the other driver should be fixed.
 
-As far as I can see, the data is being read from an area that is
-supposed to be reserved for Galaxycore, so I'd assume it doesn't
-depend on the customer.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-[snip]
-> > diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-> > index da11036..aeaf594 100644
-> > --- a/drivers/media/i2c/Kconfig
-> > +++ b/drivers/media/i2c/Kconfig
-> > @@ -712,6 +712,18 @@ config VIDEO_APTINA_PLL
-> >  config VIDEO_SMIAPP_PLL
-> >       tristate
-> >
-> > +config VIDEO_GC5035
-> > +     tristate "Galaxycore GC5035 sensor support"
-> > +     depends on I2C && VIDEO_V4L2
-> > +     select MEDIA_CONTROLLER
-> > +     select VIDEO_V4L2_SUBDEV_API
->
-> Add:
->
->         V4L2_FWNODE
->         OF
+ drivers/mtd/spi-nor/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-This driver doesn't depend on OF. It uses the firmware-independent
-property access API. (v4 I sent actually uses device_property_*()).
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 65eff4ce6ab1..756da93f0f16 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3470,6 +3470,7 @@ static struct spi_mem_driver spi_nor_driver = {
+ 		.driver = {
+ 			.name = "spi-nor",
+ 			.of_match_table = spi_nor_of_table,
++			.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 		},
+ 		.id_table = spi_nor_dev_ids,
+ 	},
+-- 
+2.28.0.402.g5ffc5be6b7-goog
 
-[snip]
-> > +static int __gc5035_power_on(struct gc5035 *gc5035)
-> > +{
-> > +     struct device *dev = &gc5035->client->dev;
-> > +     int i, ret;
-> > +
-> > +     ret = clk_prepare_enable(gc5035->xvclk);
-> > +     if (ret < 0) {
-> > +             dev_err(dev, "Failed to enable xvclk\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     gpiod_set_value_cansleep(gc5035->reset_gpio, 1);
-> > +
-> > +     for (i = 0; i < GC5035_NUM_SUPPLIES; i++) {
-> > +             ret = regulator_enable(gc5035->supplies[i].consumer);
-> > +             if (ret) {
-> > +                     dev_err(dev, "Failed to enable %s: %d\n",
-> > +                             gc5035->supplies[i].supply, ret);
-> > +                     goto disable_reg_clk;
->
-> Please use regulator_bulk_enable() here, and regulator_bulk_disable()
-> below.
->
-
-This actually needs to have one of the regulators (iovdd) enabled
-before the other ones, but regulator_bulk_enable() is async. In v4 I
-used regulator_enable() for iovdd and regulator_bulk_enable() for the
-other two for optimal sequencing.
-
-Best regards,
-Tomasz
