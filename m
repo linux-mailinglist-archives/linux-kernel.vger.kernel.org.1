@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923F625AA06
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A06025AA10
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgIBLHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 07:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgIBLHv (ORCPT
+        id S1726722AbgIBLLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 07:11:35 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:54864 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbgIBLL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 07:07:51 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23049C061245
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 04:07:51 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bh1so2115798plb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 04:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lRbPBiajhyZAHFvs+KY/rfMq5G+YigmViKEtUETUpvU=;
-        b=FA9jJNgxjJvc9qlnqShwrPZn3AEONW5P4dh7YWPvhcMQXHUhYKjBtiz3kMOeuGCATx
-         Fy2XOfBQo6n6bix1+nBZec3g6ou+954h1o+5cfOJzwZUNJHfWktY+cMSeDA8TgrPe3YS
-         rHMF0UnGCJcoP9bav+/CLE+5Ymz2ejyJTM0JY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lRbPBiajhyZAHFvs+KY/rfMq5G+YigmViKEtUETUpvU=;
-        b=bWhG8/zRSX/0SlUncrMu5o8czC/gpIm9XNMPLq4WO3Qn9lq4pg5mKl2Za2rviDmgY0
-         7VH8t5ED/0/pEWcvaYQMi7MhrjkSHgRSVaxaZHHngTT5CltDiLB0ov8x5eNAO9/AvvIg
-         BVtiXXbiW+8W3leiAc5yL+D9ge1FijtW4ADtkV8UuFJQ/Ns/BH8LGdBzalXENb4CbY8z
-         ipe+uOnD/+KJZ0QCcNH01NUlXJxDUWNyQBfYgH13M/xsm2OL5wh54xYOXwBs08jSY5pd
-         odcokkZkGmXQwbbkMo5z/ljsmshQEDECUEKZeM7e0J2ChEbSrb6OWxKLlkUxkYrKeOlq
-         QgJw==
-X-Gm-Message-State: AOAM532BbdVaDKwIsh2Bdg2/sPEwtKaka/Uh7b3dns43oFA87ln9E7bu
-        twEZYxv24B3ePu/MWS2nYIhj+A==
-X-Google-Smtp-Source: ABdhPJz6nufpjZkKMfLCKDxGwZCBogTUned6t9PlQr+Oz/xkKLuHnC2Bj9IhrBEVpB0uYV1lm1f3LQ==
-X-Received: by 2002:a17:902:fe91:b029:d0:5d99:c1a2 with SMTP id x17-20020a170902fe91b02900d05d99c1a2mr6013188plm.0.1599044870566;
-        Wed, 02 Sep 2020 04:07:50 -0700 (PDT)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id l13sm5523144pgq.33.2020.09.02.04.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 04:07:49 -0700 (PDT)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-remoteproc@vger.kernel.org
-Subject: [PATCH v2] rpmsg: Avoid double-free in mtk_rpmsg_register_device
-Date:   Wed,  2 Sep 2020 19:07:15 +0800
-Message-Id: <20200902190709.v2.1.I56cf27cd59f4013bd074dc622c8b8248b034a4cc@changeid>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
+        Wed, 2 Sep 2020 07:11:26 -0400
+Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 082B9xWe021165;
+        Wed, 2 Sep 2020 20:09:59 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
+ Wed, 02 Sep 2020 20:09:59 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 082B9tPc021145
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Wed, 2 Sep 2020 20:09:59 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Subject: [PATCH] tipc: fix shutdown() of connectionless socket
+To:     syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>,
+        Jon Maloy <jmaloy@redhat.com>,
+        Ying Xue <ying.xue@windriver.com>
+References: <0000000000003feb9805a9c77128@google.com>
+Cc:     syzkaller-bugs@googlegroups.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Message-ID: <1eb799fb-c6e0-3eb5-f6fe-718cd2f62e92@I-love.SAKURA.ne.jp>
+Date:   Wed, 2 Sep 2020 20:09:54 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0000000000003feb9805a9c77128@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If rpmsg_register_device fails, it will call
-mtk_rpmsg_release_device which already frees mdev.
+syzbot is reporting hung task at nbd_ioctl() [1], for there are two
+problems regarding TIPC's connectionless socket's shutdown() operation.
+I found C reproducer for this problem (shown below) from "no output from
+test machine (2)" report.
 
-Fixes: 7017996951fde84 ("rpmsg: add rpmsg support for mt8183 SCP.")
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+----------
+
+int main(int argc, char *argv[])
+{
+        const int fd = open("/dev/nbd0", 3);
+        ioctl(fd, NBD_SET_SOCK, socket(PF_TIPC, SOCK_DGRAM, 0));
+        ioctl(fd, NBD_DO_IT, 0);
+        return 0;
+}
+----------
+
+One problem is that wait_for_completion() from flush_workqueue() from
+nbd_start_device_ioctl() from nbd_ioctl() cannot be completed when
+nbd_start_device_ioctl() received a signal at wait_event_interruptible(),
+for tipc_shutdown() from kernel_sock_shutdown(SHUT_RDWR) from
+nbd_mark_nsock_dead() from sock_shutdown() from nbd_start_device_ioctl()
+is failing to wake up a WQ thread sleeping at wait_woken() from
+tipc_wait_for_rcvmsg() from sock_recvmsg() from sock_xmit() from
+nbd_read_stat() from recv_work() scheduled by nbd_start_device() from
+nbd_start_device_ioctl(). Fix this problem by always invoking
+sk->sk_state_change() (like inet_shutdown() does) when tipc_shutdown() is
+called.
+
+The other problem is that tipc_wait_for_rcvmsg() cannot return when
+tipc_shutdown() is called, for tipc_shutdown() sets sk->sk_shutdown to
+SEND_SHUTDOWN (despite "how" is SHUT_RDWR) while tipc_wait_for_rcvmsg()
+needs sk->sk_shutdown set to RCV_SHUTDOWN or SHUTDOWN_MASK. Fix this
+problem by setting sk->sk_shutdown to SHUTDOWN_MASK (like inet_shutdown()
+does) when the socket is connectionless.
+
+[1] https://syzkaller.appspot.com/bug?id=3fe51d307c1f0a845485cf1798aa059d12bf18b2
+
+Reported-by: syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
+ net/tipc/socket.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Changes in v2:
- - Drop useless if and ret variable (Markus Elfring)
-
- drivers/rpmsg/mtk_rpmsg.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/drivers/rpmsg/mtk_rpmsg.c b/drivers/rpmsg/mtk_rpmsg.c
-index 83f2b8804ee989d..96a17ec2914011d 100644
---- a/drivers/rpmsg/mtk_rpmsg.c
-+++ b/drivers/rpmsg/mtk_rpmsg.c
-@@ -200,7 +200,6 @@ static int mtk_rpmsg_register_device(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
- 	struct rpmsg_device *rpdev;
- 	struct mtk_rpmsg_device *mdev;
- 	struct platform_device *pdev = mtk_subdev->pdev;
--	int ret;
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 2679e97e0389..ebd280e767bd 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -2771,18 +2771,21 @@ static int tipc_shutdown(struct socket *sock, int how)
  
- 	mdev = kzalloc(sizeof(*mdev), GFP_KERNEL);
- 	if (!mdev)
-@@ -219,13 +218,7 @@ static int mtk_rpmsg_register_device(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
- 	rpdev->dev.parent = &pdev->dev;
- 	rpdev->dev.release = mtk_rpmsg_release_device;
+ 	trace_tipc_sk_shutdown(sk, NULL, TIPC_DUMP_ALL, " ");
+ 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
+-	sk->sk_shutdown = SEND_SHUTDOWN;
++	if (tipc_sk_type_connectionless(sk))
++		sk->sk_shutdown = SHUTDOWN_MASK;
++	else
++		sk->sk_shutdown = SEND_SHUTDOWN;
  
--	ret = rpmsg_register_device(rpdev);
--	if (ret) {
--		kfree(mdev);
--		return ret;
--	}
--
--	return 0;
-+	return rpmsg_register_device(rpdev);
- }
+ 	if (sk->sk_state == TIPC_DISCONNECTING) {
+ 		/* Discard any unreceived messages */
+ 		__skb_queue_purge(&sk->sk_receive_queue);
  
- static void mtk_register_device_work_function(struct work_struct *register_work)
+-		/* Wake up anyone sleeping in poll */
+-		sk->sk_state_change(sk);
+ 		res = 0;
+ 	} else {
+ 		res = -ENOTCONN;
+ 	}
++	/* Wake up anyone sleeping in poll. */
++	sk->sk_state_change(sk);
+ 
+ 	release_sock(sk);
+ 	return res;
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.18.4
+
 
