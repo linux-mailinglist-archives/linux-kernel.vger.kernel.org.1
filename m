@@ -2,138 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5429425AF08
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4449025AF17
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgIBPc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728367AbgIBPcl (ORCPT
+        id S1728452AbgIBPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:33:38 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:18543 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728379AbgIBPdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:32:41 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98477C061246
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 08:32:41 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id c25so20002vkm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 08:32:41 -0700 (PDT)
+        Wed, 2 Sep 2020 11:33:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1599060803; x=1630596803;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=6Qftzrl0VPw56qZqskhW8istca3MlMJ1x9GrYWocgfg=;
+  b=DoXrzKyJEU8SU3yzgGI5DOiDcIylKnHeY8WNZaA2XHYM9xp3owGktSFw
+   hnTNoCAhM9Pq08mfN+/mwhwWbTb/bo3my3VEy4wLLMvAumAJzWCJYLWQR
+   VCxT3mnTVTtn7uU/JXrS06DEUpOYZon3PfmgT03V3IgfDOb1rGTXaTVfQ
+   Ur1+qpzt7H7D+BYJt/bS1KAR3leIXwlSTWpOOS4MG53wA0GNxUwbhBtm4
+   oIXy0mIUo5ksd8nELxrvKANFRa+5LIxNSGR/2cjCvf1jiVckuyVJMh11T
+   OxtRTvnCfPHi0H5N9uk7QWL84jN/AZGHBom+aRRj1ZuQbZ4ie6QQez60n
+   A==;
+IronPort-SDR: KJhOtYNZKdrxb9b7I4pQl2bSmRui31Em0SxQ6CsOWkg2kdM4YhdlftUQ0b8vsK9tptfMIPqMex
+ YqOgi0mR1l1U0TNfwPRsDCOZNVgpQmENUpDuMa5U/OuNGwoBWT0U+aDv67kZ/KLppa6ixEDDHT
+ 0SCFDlpGA6RenN4Jl+vE7tXBLG2jGdYg5O+A05HS7U0uorTMNUb2WJJ/7TYYMgEpC0Qu+zPS/o
+ UHyy6sOfPB6+7YQgluscn5xCh2UjddzvtmG+vBSjphhXmmRmGncIiI7F0IEK8cI9NkXBcLGRL1
+ P/Y=
+X-IronPort-AV: E=Sophos;i="5.76,383,1592841600"; 
+   d="scan'208";a="249682091"
+Received: from mail-bn7nam10lp2109.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.109])
+  by ob1.hgst.iphmx.com with ESMTP; 02 Sep 2020 23:33:19 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DA6ga4JEk5HvwfdpaOgL/jJ1PEfqkQm70/omqTofxa6efxFQ39czthtW6zZLxbZ7fs4lzfsS9wck6omDRw3FHw/ZBhWsLdh/VWey94l51fz3k0/mWhFb5r6+3+Sy6t5ArYZbVbep9dEdWDOWUPCn6N/JRz26y1ysnKEgAwrWq3P58Q43QxMRqHB6gy+9FvzwMggL8zZU9vPTRswfweowzJm3DJgsA+J0J9CNXF9t8IocZcHBHs0rZLUu5CYEYX3gpsMvelT0Xl8+VLLXcZ1F/LRviKYPDJHPhqoGE/ZOQ6y1dSBWVIlh/bGMRXuqtffuDI6xMQNG6Lws41UzFvFauQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Qftzrl0VPw56qZqskhW8istca3MlMJ1x9GrYWocgfg=;
+ b=Dh7xTb5dNZYgF/f6IOcJMGnSc+92g4W+g5L8TfhoYln3o4NNN0oqXdBNCxu2S9Q83lTZxj/eeKuJCDGAJMGRzNbaFr8f8Bi9USUuvVXf8MeXUhilqqJmkbL82vdIWNjZ4kMq+O8w0zckm0dYJQ3wVz/PpDeurucC6L8UKB0qQeLxDadDHeGaAlKaIOkJ18HNOmTiZg7vyiKD3sYbtJLjEB5fZUYYbQL7kiPwGOHYcYrkvh4/pJTpE4BscZKBPU7AGh7IHh4pfnOmLtUYpKc9Hg5k3BetJzX1pdn0oRHHDM/GMAwHNHaFCA6TW7o7OsOin2DJeFdd8kIadtgYebqwCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CaZwArJVDsGm3BuqCJoaQAv1/h87JxXOYIV/nwkJsOI=;
-        b=apW9O2U7VXpHx2cVUs09CAp1uF3w9aOpWk4Vb8yGApJGh1qjt3XA6PXXFw13jrgzgR
-         tI4O/e8yuhAbTWTBy6q9Jl+S7v3R9/w5G9705tGiktUvp3rpntBNYZwBkxXKqpXfoU6x
-         lULIGWY9qLRpCNLvcGgymqDpj+A/tHo4j3Ca4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CaZwArJVDsGm3BuqCJoaQAv1/h87JxXOYIV/nwkJsOI=;
-        b=LwnU6NafraDwahL091SQYoYTghFYnZMKXyZ7WGnyKbddElnQ9EI5tJtYAwO8TSIBoV
-         BvzRCOxlj0vUawuZynSZeG06shY44PfKvBzkQY/+PL3+LPMmTzw7qgeDY1ceRkf9XgXv
-         2UW1ldHhc0JEzSK7C1D0D0FHcFwETTIUThU2vLRGZIAPmrBTwx0s0x4M7IIxb5tQfPK8
-         yOPFh+RsQy2qfY2dojsOeHUK7CYwiGqcazy2EGqXRURu8IkkiacU6XufKF7ha2RdP7kS
-         SJFfQuYXYn/dzr3Qb7dDh3D5skm2uWOqhpi52sEaDm7/veUXbNnYid6zbiu04+Jt267w
-         0rTw==
-X-Gm-Message-State: AOAM532HG4LziM0b6oL0TpQhO5CwurWkrMGcEToFQRnLA7kCTLFNq1DM
-        2J3CPZtd1wPVKrxOy1HTrrGGsdrVIraFzw==
-X-Google-Smtp-Source: ABdhPJwtV4tnDIHO3VjKT5zn6XCAE4kUgidJR96x8eXzrqVfFPPwuD8xfR3193kRIboh3Sg655PvLw==
-X-Received: by 2002:a1f:1f0d:: with SMTP id f13mr3226644vkf.1.1599060760613;
-        Wed, 02 Sep 2020 08:32:40 -0700 (PDT)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id k12sm8700vke.4.2020.09.02.08.32.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 08:32:40 -0700 (PDT)
-Received: by mail-ua1-f49.google.com with SMTP id s29so1708852uae.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 08:32:38 -0700 (PDT)
-X-Received: by 2002:ab0:623:: with SMTP id f32mr5391415uaf.121.1599060757775;
- Wed, 02 Sep 2020 08:32:37 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Qftzrl0VPw56qZqskhW8istca3MlMJ1x9GrYWocgfg=;
+ b=WDFg8wNvhWP3XFYhAbQJMoVcuCslwwrJVrew9ER7vUJkjaFaAgUBQZVOuDTjDpx9EcBNyNQ+m9Fnz1Cst0Otl3b2jbUEt9msBIyw0LOX3G2lIkv8gkqY+6fyfYs4TFZIPxh6qo9u03Olm1bUkL76UEbCt8FqNU7l6N+h646KMl8=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4542.namprd04.prod.outlook.com
+ (2603:10b6:805:ae::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.24; Wed, 2 Sep
+ 2020 15:33:16 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3326.023; Wed, 2 Sep 2020
+ 15:33:16 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+CC:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 06/19] swim: simplify media change handling
+Thread-Topic: [PATCH 06/19] swim: simplify media change handling
+Thread-Index: AQHWgTgbhkHKD00fr0avvZS9oQWYVQ==
+Date:   Wed, 2 Sep 2020 15:33:16 +0000
+Message-ID: <SN4PR0401MB35984A7C3154CF8BD0CFFC3E9B2F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20200902141218.212614-1-hch@lst.de>
+ <20200902141218.212614-7-hch@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:1590:f101:1584:4722:fd5f:b30e]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 149e8721-7124-4e6c-1b52-08d84f558301
+x-ms-traffictypediagnostic: SN6PR04MB4542:
+x-microsoft-antispam-prvs: <SN6PR04MB45420C647F87531F891E4B2C9B2F0@SN6PR04MB4542.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1728;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 5ULllPZU1Y6PL8rAXfHCiYuXBgpGC5KqV8MOOo94Mxnunn7ctjvVKJPw29lc5UXq5O28r1N2rsiylaFmXhNIOHlOag7nbPhYneUCTcp0Mhq0rjrJ7JWoo1d2wBST4NDIFTH5tgXmHaPNaDN24ZftnocobVX2m12kVROamSb8uMqtDK4zhYhZTa/pOj9EXlmP777XdlGIHbg+Ww15NXEwUciIXGruP1fQRp6/3spcN0WZCGRg0cCwnaiux4Z/6TVQ9u7pVQbSZ8cOzc8wuAOzZsbXabAmmu3rS0NDUeE/U5cHCcUhIidGM7Z4qsv80/5Voa/JxK6yuHWNxrbQWLw5Vw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39850400004)(9686003)(86362001)(54906003)(316002)(186003)(4326008)(2906002)(71200400001)(478600001)(110136005)(52536014)(5660300002)(66556008)(33656002)(4270600006)(66476007)(55016002)(64756008)(76116006)(8936002)(66446008)(91956017)(558084003)(8676002)(6506007)(7416002)(66946007)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: Wh/LQi/W+XIBOAS/0dUoccaf7zlPqSEcap624k0kJYWsEUydUd5a7mnrvTz0RpaoGP6AgmABK3RKaqME5UR59eIE9X1CHICNAQVYFZ7/hOTb4x+u7TMr+/DYOsz8+zcdwaP8VJby2JesHGJzXhJ48GwrGurQVGgmHRTL9dwUXBmzWTahW4USekX2ZnXvPhxR5txRhp7PKPhh6+rSzc2uKUXbDgOi2qgHIhqoxKoiNQZ9BU0oNWzYuzOTACCIDD9jBJu32D+j43qhbhue7KG2JJvl5AG1uzJsP+a4cX6NfeooTrxjbmCrqCrqOKewI2Dt2MNf0epWNIe/BtYX+VydT9ma1o6fZHX+zEJ0J2VZ77KhvRJ2nTUnRFI4CA3y1mNf4bG92HkuzFBPdo10F0jf4O6CnbolfL2LZYEpa4OAkrkwz/qBLqQe0HWm/PblWCJXrBE43GnLDBIJRiUYgrSsZBYmNh1Jz8wr29kdBPkAOE7WyTD3wLhwcYzestj4/3WhH6OW4DjZLGgVY6+e4USaCuhIcrecAZLAJ+w8rA3/tiQo/VbB5ZbWcjgTMCvsw92wT4nhSAE75NONf6c3hLzWKBOC7lUseny2WTFlFd8syKNykRCKZv32GCzN6XGCmzoPN29MsSX5SXHNDIuZo6fB8558uHnSq4tFgvUoCbwsYqtqZ2LSsx7esA6w90WpJ9/tjwpMM68J6m8NBicgNvViYA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
- <20200901170745.GA3419728@google.com> <CAD=FV=Xv0FLtWWcQcRy7p2LPNdDtSjdarsvNHRHaLkWwABnwJw@mail.gmail.com>
- <8ad0589e-102d-7523-899f-0ebe85b7d2b8@codeaurora.org>
-In-Reply-To: <8ad0589e-102d-7523-899f-0ebe85b7d2b8@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 2 Sep 2020 08:32:26 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XKUEQP3gyE8E2UOE12qKYwzgMp0eNeYjCp0DxPDACSMQ@mail.gmail.com>
-Message-ID: <CAD=FV=XKUEQP3gyE8E2UOE12qKYwzgMp0eNeYjCp0DxPDACSMQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add 'sustainable_power' for CPU
- thermal zones
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 149e8721-7124-4e6c-1b52-08d84f558301
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 15:33:16.0518
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: quxTftNwprJkztVIDXHxQLpAEjWie3PTl+s5FQF26b7taCEvhXLz3TAmVXGB4kJnRRV+/bxK/rAl3V6gRNxR9so9YspLiHKGMDwjKTbf5yk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4542
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Sep 1, 2020 at 10:36 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->
->
-> > * In terms of the numbers here, I believe that you're claiming that we
-> > can dissipate 768 mW * 6 + 1202 mW * 2 = ~7 Watts of power.  My memory
-> > of how much power we could dissipate in previous laptops I worked on
-> > is a little fuzzy, but that doesn't seem insane for a passively-cooled
-> > laptop.  However, I think someone could conceivably put this chip in a
-> > smaller form factor.  In such a case, it seems like we'd want these
-> > things to sum up to ~2000 (if it would ever make sense for someone to
-> > put this chip in a phone) or ~4000 (if it would ever make sense for
-> > someone to put this chip in a small tablet).  It seems possible that,
-> > to achieve this, we might have to tweak the
-> > "dynamic-power-coefficient".
->
-> DPC values are calculated (at a SoC) by actually measuring max power at various
-> frequency/voltage combinations by running things like dhrystone.
-> How would the max power a SoC can generate depend on form factors?
-> How much it can dissipate sure is, but then I am not super familiar how
-> thermal frameworks end up using DPC for calculating power dissipated,
-> I am guessing they don't.
->
-> > I don't know how much thought was put
-> > into those numbers, but the fact that the little cores have a super
-> > round 100 for their dynamic-power-coefficient makes me feel like they
-> > might have been more schwags than anything.  Rajendra maybe knows?
->
-> FWIK, the values are always scaled and normalized to 100 for silver and
-> then used to derive the relative DPC number for gold. If you see the DPC
-> for silver cores even on sdm845 is a 100.
-> Again these are not estimations but based on actual power measurements.
-
-The scaling to 100 doesn't seem to match how the thermal framework is
-using them.  Take a look at of_cpufreq_cooling_register().  It takes
-the "dynamic-power-coefficient" and passes it as "capacitance" into
-__cpufreq_cooling_register().  That's eventually used to compute
-power, which is documented in the code to be in mW.
-
-power = (u64)capacitance * freq_mhz * voltage_mv * voltage_mv;
-do_div(power, 1000000000);
-
-/* power is stored in mW */
-freq_table[i].power = power;
-
-That's used together with "sustainable-power", which is the attribute
-that Matthias is trying to set.  That value is documented to be in mW
-as well.
-
-...so if the silver cores are always scaled to 100 regardless of how
-much power they actually draw then it'll be impossible to actually
-think about "sustainable-power" as a mW value.  Presumably we either
-need to accept that fact (and ideally document it) or we need to
-change the values for silver / gold cores (we could still keep the
-relative values the same and just scale them).
-
--Doug
+And down by one,=0A=
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
