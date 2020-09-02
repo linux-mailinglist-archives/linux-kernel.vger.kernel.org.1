@@ -2,83 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E5C25B3D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE32C25B3E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgIBSi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 14:38:56 -0400
-Received: from sonic316-20.consmr.mail.ne1.yahoo.com ([66.163.187.146]:46471
-        "EHLO sonic316-20.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726567AbgIBSi4 (ORCPT
+        id S1728244AbgIBSki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 14:40:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25170 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728192AbgIBSkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 14:38:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1599071935; bh=4mWY6N2pvhoYteLll3TsJcj/b3lxDL9fu4mR9DmIf4o=; h=Date:From:Reply-To:Subject:References:From:Subject; b=D+vHZGQed+YWj0npe61PlK9oJ6LV2+Wzpg8WUoHJRxsfNUBxI2CWvcTD1euM4xWgN1mIJzCbkYSI1CZ3ZRakYy0X9ZnLKFaiPneFmRKQwtY2lCOUcJdRt+Amg46pJ8bXt04PEXXCzM7qQY8gOOkfZOSzgGIqWaKOH+A7XfIonXm+AtMyr1wlCK5GvNgt7P5RAvR+GJyzyvG72oLsuc97KbrZDvjW0l8wsO1eXu7G+jMcIy0uvIpTV9p9KYkEl19yt/H9WroyLj9Z8Yp51GsFuhclLq8tWJ//69QGazjiT7k4N+o5mtSIZGHjtAu27FhRtpyWYLbmaAErP/FA/RvNkg==
-X-YMail-OSG: 7sETHXoVM1kjTIEvsmxIik9QgzdqDWU.0_6zsPuXmHPWMW1wQ494StdcEHEOLrz
- 4Jqu0eCETjf2m9DwDHBgFXgPJYMK2fKJCHG4DrEC5ktxfEsOzlahnWLasPZmd2qPu1L3AR5Am5h7
- Itd1qpbBbzDwKxR3DhLQs054t1S8e27XhOEUkzkqHby9EPCtn1_pVuEM5dAo.D9CcU2xOH7xDCuB
- k7S7Mfgg_acohMeLhkEzLKO.XDlJhbQiJyeNYPAeH.7gkHpD5hVdaqdPz60NHx2hwsoKSYfAYm1u
- uudYoiNno407pg2Ix4LE9rjK8x9.5j1WOu9rJfjAZT3a5MOL2wISLUxJCa6wm7DQqgPrD_Go3zkA
- S5WuOqPillab8.zYZwi2ScdHcl3FlIiiMtZCCp2TcVCH1KGjzfZOKnY6Z3m8tV3.tFaq3USay1Qg
- .xInJice4RlPinAnE_HW4Ik1cHq4RiNeun9Bt7s_XovO5bGSgrwEOMe5YIsP2uqbYnvsmll3tgpd
- XP.mqcCbrHcVgHhdypnMMpWGGDXhcbEoTxJanYytndiqklydvZCAnGb3HNFoeNQTfNDAXJYuWOl9
- y5nHwf9wLNYEuQkpyGuqeDkn4Vs8Vu1S.dxAH8FePplNSgPfaa95bdVyENUA9XWA8b3i0kt4hTsn
- RwVJbYO7ggtwMhQntZxo.SkXh7qpQS5Tltv9hqZkZUN8Kg3W7zJ122kOHk1c9Imh1KOkIG6F7ar.
- TmbFziCJSTXQKhtuvaV3N515gWhqgUaa.7n5EzMlrZp2AhbmO1RyRkbVKiQTkQlEZT_YG4xZOLJz
- kF5WEHuDhxk0rNat.3vIINfAovMyhn4X4dvCRquLG55u1gtXJVgP1R51HadDiKElwfJQ.Hk9FNeW
- in9sW4JQW.ww0PxUU6O1t36Mi4v5EBdBhezLCeRpVZF5MzFcAURF1FjzlCCpWYu63W298rFEA3zA
- fjzEv5ydHIN0qGsLruUUnSQ5_lDHOsPJ0D6xQyfaXdUuGOBCx8toKe__KevUjfJE4FUpJ1zpIov.
- TAMqnS4SzxR0nd9FrrCAzdbwVQARpkXJc3j4VS5ZX_1PRe.cZZOHVWgYrQQEnlPVYJPaaKM0lhfL
- rMh7M6MnycnrZrlFHieTtu6R2E7zXR7FhzwTjR0g9bvBFU0LtGX8Bm1YllqLd0gxnsW8NfiVe_vF
- ZSLeROoklOQ9lpXveqYPAKGIYsz.ADlk.IPVbeHHXR6aBZKexO7VtknHLOA6KjP.S2LTSpegh8Go
- 0ckVR71HksQqTJiOFFunNG8.uPFIQm53xLkToz6b5cazgs7yQ93jqIEEkWOmft_bbsb1kWdAqUB9
- D8xVyxMp.tgIKjkJtcahFY9nm._Me0QdhUsrFNmEikYUkcqGua_7Jioe3xEoo6YDEnh1tv95ZGfT
- Ta24UK4H_kRVKezbVb_Q2v7uAW1Sh7Ey716LonDA2QlaOUXCsJSP3pFhUgClTguX3X_avcIkrHBX
- Qmw--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Wed, 2 Sep 2020 18:38:55 +0000
-Date:   Wed, 2 Sep 2020 18:38:52 +0000 (UTC)
-From:   "Mr. Milla" <millasth804@gmail.com>
-Reply-To: millasmith7010@gmail.com
-Message-ID: <499098389.2273025.1599071932260@mail.yahoo.com>
-Subject: compensation
+        Wed, 2 Sep 2020 14:40:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599072015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j0uPPhC3zXrQ09ZOMV6+TGvbzv6S3EaGNYNTJu5Zubg=;
+        b=TUiuF9VCljYBjTFutieG2Dcwn41oxt0iqjEmYY4TtbILyhTbf9EaY7qAtaQF7F/vifDREk
+        IQsjjHMCgFH7oOjwP09NoAZN8q2IEAfkIDTln3xJbWKz5+AAPuHCLr96TPCVmexHExp9F3
+        EIAlEgkWs5cCX5KE2P+D1Z6KNT9k8ys=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-451-1B1nMp4QNcuCUYcY_KeN8Q-1; Wed, 02 Sep 2020 14:40:13 -0400
+X-MC-Unique: 1B1nMp4QNcuCUYcY_KeN8Q-1
+Received: by mail-il1-f197.google.com with SMTP id 2so424578ill.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 11:40:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=j0uPPhC3zXrQ09ZOMV6+TGvbzv6S3EaGNYNTJu5Zubg=;
+        b=ekkfVp1V+4iKxOxTjipATsZh5KtdGhHEegcbNZAsyBlP8N1P1jvEPx6aNOPCAXjkfa
+         PXPi9+3ZmxFVmCYdF4MHeeixYmf31RhMBUi2g93Um2s28pxYR7Fz/CwQoWh0sBnFZ805
+         4/r2RXipd6hJfWrRNu/pQQTrj6C/StfHFirDfklNk3qRmq4r/sLOqTv6mDU5+IsKYt4g
+         gm1LVIbItQe8efcPQ2xBFIFfSj+O82RDj4pZvp2+qeD47c5eyKhZhw4QUKt5UeugXPuu
+         9LgeK+hOU+KLoNyWGRO4KrBIIQIDi5GMu9xSQx4A+wnLERhdhpIShVzrMz2TmnIh0JvR
+         ojEw==
+X-Gm-Message-State: AOAM531+v52TCMnD00lYwVwtas3pxS5Y9Sr0tA8NvMX978mqivR+o7ri
+        s4Xw/PDNmovPIGWTckPGOvYi/tciP41c+T4uUKkIuOxetvC0yBrzPK/xp1/xn5kCHzyky+ly9QR
+        JfzcLB7Mol6uYsAdRz9p2jgzM
+X-Received: by 2002:a6b:ec17:: with SMTP id c23mr4629243ioh.186.1599072012699;
+        Wed, 02 Sep 2020 11:40:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZtLCzpJ4UK29gX+Y0AYBy64NrsA5WDVyrB09mtmKEQIp2UsYMvd2RPnoUL0lxE9o89yAuGQ==
+X-Received: by 2002:a6b:ec17:: with SMTP id c23mr4629228ioh.186.1599072012548;
+        Wed, 02 Sep 2020 11:40:12 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id o1sm191736ils.1.2020.09.02.11.40.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 11:40:12 -0700 (PDT)
+Subject: Re: [PATCH v2] net: openvswitch: pass NULL for unused parameters
+To:     David Miller <davem@davemloft.net>
+Cc:     pshelar@ovn.org, kuba@kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, netdev@vger.kernel.org,
+        dev@openvswitch.org, linux-kernel@vger.kernel.org
+References: <20200830212630.32241-1-trix@redhat.com>
+ <20200901.131111.186993526997490086.davem@davemloft.net>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <7b82468b-bc67-df62-1816-1f510888fc39@redhat.com>
+Date:   Wed, 2 Sep 2020 11:40:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <499098389.2273025.1599071932260.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16565 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:80.0) Gecko/20100101 Firefox/80.0
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20200901.131111.186993526997490086.davem@davemloft.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 9/1/20 1:11 PM, David Miller wrote:
+> From: trix@redhat.com
+> Date: Sun, 30 Aug 2020 14:26:30 -0700
+>
+>> Passing unused parameters is a waste.
+> Poorly predicted branches are an even bigger waste.
+>
+> I'm not a big fan of this change and others have asked for performance
+> analysis to be performed.
+>
+> So I'm not applying this as-is, sorry.
 
-Dear Friend,
+no worries.
 
-I'm sorry but happy to inform you about my success in getting those funds t=
-ransferred under the cooperation of a new partner from Vietnam, though I tr=
-ied my best to involve you in the business but God decided the whole situat=
-ions. Presently I=E2=80=99m in Vietnam for investment projects with my own =
-share of the total sum. Meanwhile, I didn't forget your past efforts and at=
-tempts to assist me in transferring those funds despite that it failed us s=
-ome how.
+I think these functions need a larger working over so the stats collecting are not in the core functions.
 
-Now contact my secretary in Burkina Faso her name is Mr. Milla Smith on her=
- e-mail address below millasmith7010@gmail.com ask her to send you the tota=
-l of $450,000.00 which I kept for your compensation for all the past effort=
-s and attempts to assist me in this matter. I appreciated your efforts at t=
-hat time very much. So feel free and get in touched with my secretary Mr. M=
-illa Smith and instruct her where to send the amount to you. Please do let =
-me know immediately you receive it so that we can share joy after all the s=
-ufferness at that time.
+Thanks for giving it a look,
 
-In the moment, I=E2=80=99m very busy here because of the investment project=
-s which I and the new partner are having at hand, finally, remember that I =
-had forwarded instruction to the secretary on your behalf to receive that m=
-oney, so feel free to get in touch with Mr. Milla Smith she will send the a=
-mount to you without any delay OK. Extend my greetings to your family.
+Tom
 
-My Best regards
-Yours brother
-Mr. Abu Salam
-Greetings from Vietnam
+>
+> It's also not great to see that CLANG can't make use of the caller's
+> __always_unused directive to guide these warnings.
+
