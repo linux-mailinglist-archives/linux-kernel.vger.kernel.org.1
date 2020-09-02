@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BA425A4BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF8B25A4C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 07:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgIBEv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 00:51:26 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52265 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725808AbgIBEvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 00:51:25 -0400
-Received: by ozlabs.org (Postfix, from userid 1003)
-        id 4BhBNW4Sxsz9sV8; Wed,  2 Sep 2020 14:51:23 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1599022283; bh=WOfp9otDnweaCa9QqM2OIoG8iDSDoTlcwj+EuEhBVJA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DTR+woOO6qeYDsljobUQVGIbaihDCn3rXPf03LnF7I6kLqQhgbaMpLTeQ07etO+c5
-         xwZ67OX3DnhiFTAEQwIUQdLGKkFbf9xj4HGPbZl6RdlOrL7gpXntDESOju2lESBUdC
-         aGv0ZsYaPG3y1E3dKV47QPQe79W26HvGEhs977pmdWQOfcRXS1yyg0yIQ/qFjATM7d
-         TkXtzQyKya6L3YWtB1VOLoOFaGD8KOED50c1V1ps4UETTC8BooW5uZYnI3wHZrlJ8M
-         QO5+R5GfyNTFzk7NRVkMM94NZdgZoSHl6M0lf8GZ4tJMBtRK4qCPXEI7WtewThoGTz
-         NdJMOilWIYc2A==
-Date:   Wed, 2 Sep 2020 14:51:18 +1000
-From:   Paul Mackerras <paulus@ozlabs.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] powerpc: Convert to DEFINE_SHOW_ATTRIBUTE
-Message-ID: <20200902045118.GD272502@thinks.paulus.ozlabs.org>
-References: <20200716090712.14375-1-miaoqinglang@huawei.com>
+        id S1726386AbgIBFAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 01:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725808AbgIBFAF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 01:00:05 -0400
+X-Greylist: delayed 443 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 01 Sep 2020 22:00:04 PDT
+Received: from outbound5.mail.transip.nl (outbound5.mail.transip.nl [IPv6:2a01:7c8:7c9:ca11:136:144:136:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8940FC061244;
+        Tue,  1 Sep 2020 22:00:04 -0700 (PDT)
+Received: from submission2.mail.transip.nl (unknown [10.100.4.71])
+        by outbound5.mail.transip.nl (Postfix) with ESMTP id 4BhBPv2YpgzGnth;
+        Wed,  2 Sep 2020 06:52:35 +0200 (CEST)
+Received: from barney.ruun.network (unknown [IPv6:2a01:7c8:aabd:3e::1])
+        by submission2.mail.transip.nl (Postfix) with ESMTPSA id 4BhBPt54c3z18GZb;
+        Wed,  2 Sep 2020 06:52:34 +0200 (CEST)
+Received: from cpe-98-14-166-248.nyc.res.rr.com ([98.14.166.248] helo=localhost.localdomain)
+        by barney.ruun.network with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <jeffrey@icurse.nl>)
+        id 1kDKl6-007yQx-U9; Wed, 02 Sep 2020 06:52:33 +0200
+From:   Jeffrey Lin <jeffrey@icurse.nl>
+To:     jeffrey@icurse.nl
+Cc:     jdelvare@suse.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.de>
+Subject: [PATCH v2] i2c: i801: Register lis3lv02d I2C device on Dell Latitude 5480
+Date:   Wed,  2 Sep 2020 00:51:37 -0400
+Message-Id: <20200902045136.527776-1-jeffrey@icurse.nl>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200616234130.814499-1-jeffrey@icurse.nl>
+References: <20200616234130.814499-1-jeffrey@icurse.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716090712.14375-1-miaoqinglang@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: ClueGetter at submission2.mail.transip.nl
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=transip-a; d=icurse.nl; t=1599022354; h=from:subject:to:cc:
+ references:in-reply-to:date:mime-version;
+ bh=5JEWEx3Qke6aF+s01WxEPtBWHgZEy/95n0ms41kGazc=;
+ b=W2wjWynmPYEzwjIrwFknEcsB2E/d+4SbwHSmz9pfHu3cT/YMaG6ZQw1Gp9/zqKmiVx72NU
+ D1HvNjv6FWVpqPYCA7oRtj73gFJU2XdmsT/zHdzDDN56VUpbPgQLKPXad1+mS52kL0gbOW
+ Ked7gpiIE7B8r56yUG07N4/izxmq3kN5iaOVhwbghkCQQq9pfUDo+pNQ6mdP3Rf+4qaG5a
+ G12Oc1xC0itqiohvXiHGVCwl621+O1nmK5Jfw0F6WpcTgSCQ1LxKKiPhFdjSo/r1mvWBK5
+ cOC2eSaucc6/Vy9LXemARCz5U8JeFZP9di/UvsCQ3nOw9t7di/cd3vjowYRROA==
+X-Report-Abuse-To: abuse@transip.nl
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 05:07:12PM +0800, Qinglang Miao wrote:
-> From: Chen Huang <chenhuang5@huawei.com>
-> 
-> Use DEFINE_SHOW_ATTRIBUTE macro to simplify the code.
-> 
-> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+Value of /sys/devices/platform/lis3lv02d/position when
+    Horizontal:     (36,-108,-1152)
+    Left elevated:  (-432,-126,-1062)
+    Front elevated: (36,594,-936)
+    Upside down:    (-126,-252,1098)
 
-For the arch/powerpc/kvm part:
+Signed-off-by: Jeffrey Lin <jeffrey@icurse.nl>
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
+---
 
-Acked-by: Paul Mackerras <paulus@ozlabs.org>
+Changes in v2:
+- Added Jean's Reviewed-by
 
-I expect Michael Ellerman will take the patch through his tree.
+ drivers/i2c/busses/i2c-i801.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Paul.
+diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+index e32ef3f01fe8..efab1e71ad6a 100644
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -1274,6 +1274,7 @@ static const struct {
+ 	/*
+ 	 * Additional individual entries were added after verification.
+ 	 */
++	{ "Latitude 5480",      0x29 },
+ 	{ "Vostro V131",        0x1d },
+ };
+ 
+-- 
+2.28.0
+
