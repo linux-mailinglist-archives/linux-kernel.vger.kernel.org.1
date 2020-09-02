@@ -2,49 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604A525A766
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A28E25A76C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgIBIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 04:10:19 -0400
-Received: from verein.lst.de ([213.95.11.211]:58232 "EHLO verein.lst.de"
+        id S1726927AbgIBIL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:11:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgIBIKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:10:18 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 3CF9067373; Wed,  2 Sep 2020 10:10:04 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 10:10:03 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: remove the last set_fs() in common code, and remove it for x86
- and powerpc v2
-Message-ID: <20200902081003.GB26677@lst.de>
-References: <20200827150030.282762-1-hch@lst.de> <a8bb0319-0928-4687-9e9c-777c5860dbdd@csgroup.eu> <20200901172512.GI1236603@ZenIV.linux.org.uk>
+        id S1726140AbgIBIL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:11:28 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA2BF2072A;
+        Wed,  2 Sep 2020 08:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599034287;
+        bh=/kbh7IvQHNBhwATreOI8CPiuQC2q08fvANf2M+lhQxw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cf6rR8SDpzuSHCX5L+kKdOEY94dO3oh9d2rIXfm+HWULp4L0pWw9WhAmJKQ6wQJE8
+         zkuadQfl4aO1T8yMb/fz2v0WK4Sr1O+70ZTQU/S0N9hBZHfYHYPfbey++VEg4zXcwp
+         XBOMvK4P0NRusNDTECU4aorLOitadPjWU/dHP4o0=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Eli Cohen <eli@dev.mellanox.co.il>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Roland Dreier <rolandd@cisco.com>
+Subject: [PATCH rdma-next 0/8] Cleanup and fix the CMA state machine
+Date:   Wed,  2 Sep 2020 11:11:14 +0300
+Message-Id: <20200902081122.745412-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901172512.GI1236603@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 06:25:12PM +0100, Al Viro wrote:
-> On Tue, Sep 01, 2020 at 07:13:00PM +0200, Christophe Leroy wrote:
-> 
-> >     10.92%  dd       [kernel.kallsyms]  [k] iov_iter_zero
-> 
-> Interesting...  Could you get an instruction-level profile inside iov_iter_zero(),
-> along with the disassembly of that sucker?
+From: Leon Romanovsky <leonro@nvidia.com>
 
-So the interesting thing here is with that none of these code paths
-should have changed at all, and the biggest items on the profile look
-the same modulo some minor reordering.
+From Jason:
+
+The RDMA CMA continues to attract syzkaller bugs due to its somewhat loose
+operation of its FSM. Audit and scrub the whole thing to follow modern
+expectations.
+
+Overall the design elements are broadly:
+
+- The ULP entry points MUST NOT run in parallel with each other. The ULP
+  is solely responsible for preventing this.
+
+- If the ULP returns !0 from it's event callback it MUST guarentee that no
+  other ULP threads are touching the cm_id or calling into any RDMA CM
+  entry point.
+
+- ULP entry points can sometimes run conurrently with handler callbacks,
+  although it is tricky because there are many entry points that exist
+  in the flow before the handler is registered.
+
+- Some ULP entry points are called from the ULP event handler callback,
+  under the handler_mutex. (however ucma never does this)
+
+- state uses a weird double locking scheme, in most cases one should hold
+  the handler_mutex. (It is somewhat unclear what exactly the spinlock is
+  for)
+
+- Reading the state without holding the spinlock should use READ_ONCE,
+  even if the handler_mutex is held.
+
+- There are certain states which are 'stable' under the handler_mutex,
+  exit from that state requires also holding the handler_mutex. This
+  explains why testing the test under only the handler_mutex makes sense.
+
+Thanks
+
+Jason Gunthorpe (8):
+  RDMA/cma: Fix locking for the RDMA_CM_CONNECT state
+  RDMA/cma: Make the locking for automatic state transition more clear
+  RDMA/cma: Fix locking for the RDMA_CM_LISTEN state
+  RDMA/cma: Remove cma_comp()
+  RDMA/cma: Combine cma_ndev_work with cma_work
+  RDMA/cma: Remove dead code for kernel rdmacm multicast
+  RDMA/cma: Consolidate the destruction of a cma_multicast in one place
+  RDMA/cma: Fix use after free race in roce multicast join
+
+ drivers/infiniband/core/cma.c | 466 ++++++++++++++++------------------
+ 1 file changed, 218 insertions(+), 248 deletions(-)
+
+--
+2.26.2
+
