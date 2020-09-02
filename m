@@ -2,86 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0499F25A86B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 11:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E3425A875
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 11:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgIBJNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 05:13:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
+        id S1726293AbgIBJRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 05:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726400AbgIBJNO (ORCPT
+        with ESMTP id S1726140AbgIBJR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 05:13:14 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C9BC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 02:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R+Dz6+yPeRJshWdLjlrkwrAzjAyFiHGgu5x76jfQzpw=; b=BT0T0lbWlsVoGNWFA+qVTj+sMy
-        NKgB0jtxxZg/Iv9G8/u+lGT/D1H0ox+UKsg1BPqz5lXGm3pNZQJGCJ3r/lk7S3iPdMQilYBlOcH5u
-        WUgRYswZUUuuzPnDg3E59Axflvv/lKD0zm3KOg+IspKVjeg0bgfxILX5ZAHfzt3q8OAR8dRduD9UH
-        X6n3GCWbJU2idutlAJkXUCNTlJAq4LGdTA+kPNiN855SUEOeVUTKaAGoItp3e9+r61LC01E0d8PYn
-        4+q30G8zxtiTd+VO0LKxXiQTMyWCh5u8NbL3BtIX2x/dIDNMtXIeGDh+WOvIUt2eflt36/GkhUQTi
-        ocPsrxIA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDOoz-0007Tm-5s; Wed, 02 Sep 2020 09:12:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 95142304B92;
-        Wed,  2 Sep 2020 11:12:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4B877203C0A77; Wed,  2 Sep 2020 11:12:47 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 11:12:47 +0200
-From:   peterz@infradead.org
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, mingo@kernel.org, will@kernel.org,
-        npiggin@gmail.com, elver@google.com, jgross@suse.com,
-        paulmck@kernel.org, rostedt@goodmis.org, rjw@rjwysocki.net,
-        joel@joelfernandes.org, svens@linux.ibm.com, tglx@linutronix.de,
-        davem@davemloft.net
-Subject: Re: [PATCH v2 10/11] lockdep: Only trace IRQ edges
-Message-ID: <20200902091247.GX35926@hirez.programming.kicks-ass.net>
-References: <20200821084738.508092956@infradead.org>
- <20200821085348.723775490@infradead.org>
- <20200902042137.GA163925@roeck-us.net>
- <20200902090935.GW1362448@hirez.programming.kicks-ass.net>
+        Wed, 2 Sep 2020 05:17:27 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651CAC061244;
+        Wed,  2 Sep 2020 02:17:26 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g4so3929508wrs.5;
+        Wed, 02 Sep 2020 02:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K4YsaDFC3Pt4ZknV5E5TYlw0op731bQlj4z6J8XbD9o=;
+        b=e56ChxsFl3Oaxk5No/V0xghZwXJmc+Hu0yfeeV/sfFexFl+dFaZfJxj5nphuqu1i/I
+         VV5c2zFcWDhpLikL1qEWkynHM16+wtMH/OC71fKvOewVluFVyzshMchZWXKntFb1nvEB
+         LdUDNQ3tbrUtI/dLC4lqj3tOks4XjlNIEnml9CET6Z7Pag4pAMv431PEd43yBaU4Y/TH
+         TAVdYqHNOtSguDXUpY/At+QUanwVnBbJrsfIJyYuq8p0USVNq1t3R3VptI/r5cm6Us0T
+         LIC+EWXEpyqd2I3TtIqn/fiCjrL/yyF83aVQEJA5V+oDnkjXyxm3aRS22ZplEuTWJ6yg
+         PX4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K4YsaDFC3Pt4ZknV5E5TYlw0op731bQlj4z6J8XbD9o=;
+        b=ZQAgDjh5aXiRtGlBFaeliyY8osM6olD/nJ1omA/0fP1R0Lufh0FgcKFAAmkwc8wxl8
+         jfTQsE+Xotszmu2vH51h9XSA86W+i4UjrA2Zm2FvJcQa8dN+sGIceA96DcIKj7+9erS8
+         l4aJaP+emXOwfH/phoihjD5Po2mmBJXWcHuLksD20Uu8oQnsMRJ9sKKctQgLjhTIoKS1
+         uXHtZi42jNm6luBVjf/eeLTHzdiWBg8v9sMWh71/Bill6usQP8D6CjsCGiq5mpwUF8Mk
+         AzSiY/I1csK7fapcFdKs8zj0cg3hS4ge4mcSbZ3ZwbN6haaMp4OX1637+7vF4k5Sg43y
+         HfHg==
+X-Gm-Message-State: AOAM532wP25PK3efALeqoC7iJx1aEsegDxPZk5at8SXZ9mq1PUABecJI
+        nbmbtFadf7RRZEFhrnyqXH8=
+X-Google-Smtp-Source: ABdhPJziga6cVnGwqodUAGTuzDSoW5dwcnCBj0weg4cfDUXNmX8rvlXqTeMVVRIW4jd65+tmx+jdFw==
+X-Received: by 2002:adf:eb0a:: with SMTP id s10mr6214329wrn.83.1599038245240;
+        Wed, 02 Sep 2020 02:17:25 -0700 (PDT)
+Received: from Red.localdomain ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id j7sm6335778wrw.35.2020.09.02.02.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 02:17:24 -0700 (PDT)
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, robh+dt@kernel.org, robh@kernel.org,
+        wens@csie.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, m.cerveny@computer.org,
+        Corentin Labbe <clabbe.montjoie@gmail.com>
+Subject: [PATCH] dt-bindings: crypto: Specify that allwinner,sun8i-a33-crypto needs reset
+Date:   Wed,  2 Sep 2020 11:17:16 +0200
+Message-Id: <20200902091716.22650-1-clabbe.montjoie@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902090935.GW1362448@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 11:09:35AM +0200, peterz@infradead.org wrote:
-> On Tue, Sep 01, 2020 at 09:21:37PM -0700, Guenter Roeck wrote:
-> > [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/locking/lockdep.c:4875 check_flags.part.39+0x280/0x2a0
-> > [    0.000000] DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())
-> 
-> > [    0.000000] [<00000000004cff18>] lock_acquire+0x218/0x4e0
-> > [    0.000000] [<0000000000d740c8>] _raw_spin_lock+0x28/0x40
-> > [    0.000000] [<00000000009870f4>] p1275_cmd_direct+0x14/0x60
-> 
-> Lol! yes, I can see that going side-ways... let me poke at that.
+When adding allwinner,sun8i-a33-crypto, I forgot to add that it needs reset.
+Furthermore, there are no need to use items to list only one compatible
+in compatible list.
 
-I suspect this will do.
+Fixes: f81547ba7a98 ("dt-bindings: crypto: add new compatible for A33 SS")
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml        | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/sparc/prom/p1275.c b/arch/sparc/prom/p1275.c
-index 889aa602f8d8..7cfe88e30b52 100644
---- a/arch/sparc/prom/p1275.c
-+++ b/arch/sparc/prom/p1275.c
-@@ -38,7 +38,7 @@ void p1275_cmd_direct(unsigned long *args)
- 	unsigned long flags;
-
- 	local_save_flags(flags);
--	local_irq_restore((unsigned long)PIL_NMI);
-+	arch_local_irq_restore((unsigned long)PIL_NMI);
- 	raw_spin_lock(&prom_entry_lock);
-
- 	prom_world(1);
+diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+index fc823572bcff..1075f0e75368 100644
+--- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
++++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+@@ -23,8 +23,7 @@ properties:
+       - items:
+           - const: allwinner,sun7i-a20-crypto
+           - const: allwinner,sun4i-a10-crypto
+-      - items:
+-          - const: allwinner,sun8i-a33-crypto
++      - const: allwinner,sun8i-a33-crypto
+ 
+   reg:
+     maxItems: 1
+@@ -59,7 +58,9 @@ if:
+   properties:
+     compatible:
+       contains:
+-        const: allwinner,sun6i-a31-crypto
++        oneOf:
++          - const: allwinner,sun6i-a31-crypto
++          - const: allwinner,sun8i-a33-crypto
+ 
+ then:
+   required:
+-- 
+2.26.2
 
