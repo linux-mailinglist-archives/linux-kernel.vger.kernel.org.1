@@ -2,81 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E73A25A78F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B499825A796
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgIBIQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 04:16:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37908 "EHLO mail.kernel.org"
+        id S1726994AbgIBIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:16:42 -0400
+Received: from mga01.intel.com ([192.55.52.88]:32868 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgIBIQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:16:28 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 690C72078B;
-        Wed,  2 Sep 2020 08:16:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599034588;
-        bh=yj8OOvccQaiqRmK7MEwY/O2yYzeTUJvINFDbg0Sp4MY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jx1VMYiSeVCXrKeyGWzDEvFGbHSye35GO05OD1KsR+olJt9aLpzHqW/OpfmF4deUd
-         4auo8dC+INy4LGHfTRfNB1wPsjhkfUB290m/u2UYTKiFT952tB/jjKavkQJg/4rrHq
-         rDj5DMQb5CGEiEAvOFeExgjXWDGHQKjQpJlH8WYc=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Weihang Li <liweihang@huawei.com>,
-        "Wei Hu(Xavier)" <huwei87@hisilicon.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: [PATCH rdma-next 0/2] Convert RWQ and MW to general allocation scheme
-Date:   Wed,  2 Sep 2020 11:16:21 +0300
-Message-Id: <20200902081623.746359-1-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726292AbgIBIQi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:16:38 -0400
+IronPort-SDR: DY5HX/HTcZm+fI9WkCCQCjeGgJR5pGbYEJXrmTiwsZgPtLZ6BFxyPt8/qe+7i2aKwFQZzwaTDM
+ qPA2ibGNvOBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="175396498"
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
+   d="scan'208";a="175396498"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 01:16:35 -0700
+IronPort-SDR: IIlqs/v6PqqVFitMyFBmf/xu0UN4uc6GVbAfxWWzKibDDr1iq/bVDtrsMu8qhTFjXStImqeqAl
+ 1NGoW8cQHwBA==
+X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
+   d="scan'208";a="477542604"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.5.239]) ([10.238.5.239])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 01:16:32 -0700
+Subject: Re: [PATCH v4 1/7] perf util: Create streams
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20200824233513.16930-1-yao.jin@linux.intel.com>
+ <20200824233513.16930-2-yao.jin@linux.intel.com>
+ <20200831135609.GE406859@krava>
+ <4cef1f08-e1c1-3227-24f2-be3108ea4d99@linux.intel.com>
+ <20200901200912.GD470123@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <2334220f-22b5-c7eb-f9ec-ee70f41e96cb@linux.intel.com>
+Date:   Wed, 2 Sep 2020 16:16:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200901200912.GD470123@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi Jiri,
 
-Continue with allocation patches.
+On 9/2/2020 4:09 AM, Jiri Olsa wrote:
+> On Tue, Sep 01, 2020 at 10:26:25AM +0800, Jin, Yao wrote:
+>> Hi Jiri,
+>>
+>> On 8/31/2020 9:56 PM, Jiri Olsa wrote:
+>>> On Tue, Aug 25, 2020 at 07:35:07AM +0800, Jin Yao wrote:
+>>>
+>>> SNIP
+>>>
+>>>> +						  int nr_streams_max,
+>>>> +						  enum stream_type type)
+>>>> +{
+>>>> +	struct evsel_streams *es;
+>>>> +	int nr_evsel = evlist->core.nr_entries, ret = -1;
+>>>> +
+>>>> +	es = create_evsel_streams(nr_evsel, nr_streams_max);
+>>>> +	if (!es)
+>>>> +		return NULL;
+>>>> +
+>>>> +	if (type == STREAM_CALLCHAIN)
+>>>> +		ret = evlist_init_callchain_streams(evlist, es, nr_evsel);
+>>>> +
+>>>> +	if (ret) {
+>>>> +		free_evsel_streams(es, nr_evsel);
+>>>> +		return NULL;
+>>>> +	}
+>>>> +
+>>>> +	return es;
+>>>> +}
+>>>> diff --git a/tools/perf/util/stream.h b/tools/perf/util/stream.h
+>>>> new file mode 100644
+>>>> index 000000000000..a8a0172b4d13
+>>>> --- /dev/null
+>>>> +++ b/tools/perf/util/stream.h
+>>>> @@ -0,0 +1,30 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef __PERF_STREAM_H
+>>>> +#define __PERF_STREAM_H
+>>>> +
+>>>> +#include "callchain.h"
+>>>> +
+>>>> +enum stream_type {
+>>>> +	STREAM_NONE = 0,
+>>>> +	STREAM_CALLCHAIN
+>>>
+>>> do you plan to add more types?
+>>>
+>>> jirka
+>>>
+>>
+>> Thanks for looking at this patch series.
+>>
+>> So far, no more types in plan. :)
+> 
+> I was wondering what's the enum for then, it could
+> be hardcoded and ease up the code maybe? but it's
+> jus a thought, I don't follow the change deeply
+> 
+> jirka
+> 
 
-Leon Romanovsky (2):
-  RDMA: Clean MW allocation and free flows
-  RDMA: Convert RWQ table logic to ib_core allocation scheme
+Hmm, I've ever thought to add a new type such as stream_block in the future. But in order to let the 
+patchset be simple and clear, I'm OK to remove this enum.
 
- drivers/infiniband/core/device.c            |  2 +
- drivers/infiniband/core/uverbs_cmd.c        | 45 +++++++++++++--------
- drivers/infiniband/core/uverbs_main.c       |  7 +++-
- drivers/infiniband/core/uverbs_std_types.c  | 12 +++++-
- drivers/infiniband/core/verbs.c             | 23 -----------
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h      |  3 +-
- drivers/infiniband/hw/cxgb4/mem.c           | 32 +++++----------
- drivers/infiniband/hw/cxgb4/provider.c      |  4 +-
- drivers/infiniband/hw/hns/hns_roce_device.h |  3 +-
- drivers/infiniband/hw/hns/hns_roce_main.c   |  2 +
- drivers/infiniband/hw/hns/hns_roce_mr.c     | 28 ++++---------
- drivers/infiniband/hw/mlx4/main.c           |  5 +++
- drivers/infiniband/hw/mlx4/mlx4_ib.h        | 20 +++++----
- drivers/infiniband/hw/mlx4/mr.c             | 30 +++++---------
- drivers/infiniband/hw/mlx4/qp.c             | 40 +++++-------------
- drivers/infiniband/hw/mlx5/cmd.c            |  4 +-
- drivers/infiniband/hw/mlx5/cmd.h            |  2 +-
- drivers/infiniband/hw/mlx5/main.c           |  5 +++
- drivers/infiniband/hw/mlx5/mlx5_ib.h        |  9 ++---
- drivers/infiniband/hw/mlx5/mr.c             | 40 +++++++-----------
- drivers/infiniband/hw/mlx5/qp.c             | 41 +++++++------------
- include/rdma/ib_verbs.h                     | 13 +++---
- 22 files changed, 158 insertions(+), 212 deletions(-)
+Thanks
+Jin Yao
 
---
-2.26.2
+
 
