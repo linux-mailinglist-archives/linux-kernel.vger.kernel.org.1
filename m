@@ -2,206 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821D825B0AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D21E25B0B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbgIBQGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbgIBQGL (ORCPT
+        id S1728292AbgIBQGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:06:37 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:39537 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728022AbgIBQGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:06:11 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8161C061244;
-        Wed,  2 Sep 2020 09:06:10 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z9so5118409wmk.1;
-        Wed, 02 Sep 2020 09:06:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0O4dQf9ijqc3DJHTRqGfgFX/txsOCHtKdPYLLD83pqA=;
-        b=hviSWVzBIYj8FNGXfXWECTBNPGc00bdNjjr2aNz5Ks38vUJmN1Xf2Ktai2CSbcmP2S
-         VvVfkEJVTeeT8V5676PV1cEYtiupuQd2cmCPoDWsb8O45qWpgYCDj5hmBmTUf+yaYQj2
-         ho0JukZbw5l6AthWRtrRgKEaUdei8Yvv8JGta1uPTbu0y4mNdP58YOjK0zHReNBkYfUw
-         cyHjeulLy9QARdE0qADfPB4+xI7aklJAj5ZTPNJWR9gvncijU+56BV9RF7pOkf4q1h+x
-         N9xBb3+Y5ci4a1WR9dBxtbUOf37eGOdWZXhCXrFZjHssMLzFh6A1MoB+6BxbazbPY/bB
-         CjGA==
+        Wed, 2 Sep 2020 12:06:15 -0400
+Received: by mail-ed1-f67.google.com with SMTP id c10so5465089edk.6;
+        Wed, 02 Sep 2020 09:06:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0O4dQf9ijqc3DJHTRqGfgFX/txsOCHtKdPYLLD83pqA=;
-        b=O0uVaBHiNzTi1y0+w/GxKZvLY5RbBWGG6MxloAis5Nty0NPSKdvoCT1B+MXCReBj+9
-         ncmNeICb4rgqEHkhjoKPUmXZhw+E6aNNY9jfWJyXEFtl9/ApUCKEEhyDNjILgKh3q3/0
-         ZAw+L6G4sm4ee5aYr/+WflFa+K9PFq8h6uEI0dxePwHqVFaCbe6w+Q0H4QCPuTVmbSC/
-         APuutOUZmi4ItZlPKi9vUeTit8XHZFyGBup1Fb28LYRxvTq9oQLObmGJaQVK/PtW6Flj
-         JF9J2Od5Vd9N14jEFTt9lkZkPCMmub7+/mHcLMCCN0CeqDSUHZhhQByF9ixYrPkCX/7e
-         Rsgg==
-X-Gm-Message-State: AOAM53171q7ZybyUnqTg7XG7Zg6/qzXmYFF4ORsdukJ7ztydx8ghUmWI
-        kFOKkwATvQuDGGRIj+QLZ2h8c/3yaijD3GG6KIY=
-X-Google-Smtp-Source: ABdhPJxdfC3mgIvbt6wua8mzM+KmTyM8048m+AYjGnIYLBeF9SqkT0az/f0O5TPKGpss8BXufe9V77wBncKPW7hIYZ4=
-X-Received: by 2002:a1c:f605:: with SMTP id w5mr1358007wmc.26.1599062769544;
- Wed, 02 Sep 2020 09:06:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o/k/jl8kCbC36+2FeLOHphrZjREiZCdM+WriURHXorE=;
+        b=tslD+Vj+VwfqxW/voVbBn65F0Utb4fM3Kj4pnMb9z0F6/Q+Ryy5Xu0TSaXKJ1lQntY
+         JoFOj2phZYMbhzE48Y1LKge1S2x4seCBVKYIWUVjKQpRnOJs2/FgjDVy3hTBgZEAr97y
+         BwtX5rtB7x+k0HQEzPwRWXkRL6bG3gnTnG5IYjfs4wARLwckRyf6jVZZsIc6v1ixK7jR
+         6f9TTW1IoYn9O/c2xdw6M/b0BWYUcGjiX8dkOb7xwCqZLQomjhSTQZOjD6fkBVx/0Xob
+         LMOq5CuJKymfKos9h4Q5tosCgrUDogQJLOctFsdZnhoZmh+dp87v6OD0v1/BvNObe5S8
+         fWPg==
+X-Gm-Message-State: AOAM532XvBwUyNq65zpZv2PAqRkvvLZnF+mcawUuT8ssjlow96478v8V
+        uNaK+uka8X8nlBe/nBQyU10=
+X-Google-Smtp-Source: ABdhPJwJuyNgxyGPCkUCKgxVeWeN3ahgf+XnMGbzf/ZL2QQEUetIvvJw1gbkJlFGZoRrBdx+Cq2i1g==
+X-Received: by 2002:a50:d7d0:: with SMTP id m16mr772218edj.105.1599062772890;
+        Wed, 02 Sep 2020 09:06:12 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.106])
+        by smtp.googlemail.com with ESMTPSA id z5sm4657068ejm.111.2020.09.02.09.06.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 02 Sep 2020 09:06:12 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 18:06:09 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Kukjin Kim <kgene@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sangbeom Kim <sbkim73@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        alsa-devel@alsa-project.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Inki Dae <inki.dae@samsung.com>
+Subject: Re: [PATCH 04/10] dt-bindings: mfd: syscon: Document Samsung Exynos
+ compatibles
+Message-ID: <20200902160609.GA21555@kozik-lap>
+References: <20200829142501.31478-1-krzk@kernel.org>
+ <20200829142501.31478-4-krzk@kernel.org>
 MIME-Version: 1.0
-References: <20200707171515.110818-1-izabela.bakollari@gmail.com>
- <20200804160908.46193-1-izabela.bakollari@gmail.com> <e971a990-4c92-9d64-8bc6-61516d874370@redhat.com>
-In-Reply-To: <e971a990-4c92-9d64-8bc6-61516d874370@redhat.com>
-From:   Izabela Bakollari <izabela.bakollari@gmail.com>
-Date:   Wed, 2 Sep 2020 18:05:58 +0200
-Message-ID: <CAC8tkWD03qhxqB2G06f4e_-xiuXBYc4GsrKftx30MnUuFtNnJg@mail.gmail.com>
-Subject: Re: [PATCHv2 net-next] dropwatch: Support monitoring of dropped frames
-To:     Michal Schmidt <mschmidt@redhat.com>
-Cc:     nhorman@tuxdriver.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200829142501.31478-4-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your review. I am working on a patch v3 and will apply
-your suggestions where possible.
+On Sat, Aug 29, 2020 at 04:24:55PM +0200, Krzysztof Kozlowski wrote:
+> Samsung Exynos SoCs use syscon for system registers so document its
+> compatibles.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 
-Best,
-Izabela
+As pointed by Sylwester, I will send a follow up to remove other YAML
+file. This patch could be dropped.
 
-On Mon, Aug 31, 2020 at 3:18 PM Michal Schmidt <mschmidt@redhat.com> wrote:
->
-> Dne 04. 08. 20 v 18:09 izabela.bakollari@gmail.com napsala:
-> > From: Izabela Bakollari <izabela.bakollari@gmail.com>
-> >
-> > Dropwatch is a utility that monitors dropped frames by having userspace
-> > record them over the dropwatch protocol over a file. This augument
-> > allows live monitoring of dropped frames using tools like tcpdump.
-> >
-> > With this feature, dropwatch allows two additional commands (start and
-> > stop interface) which allows the assignment of a net_device to the
-> > dropwatch protocol. When assinged, dropwatch will clone dropped frames,
-> > and receive them on the assigned interface, allowing tools like tcpdump
-> > to monitor for them.
-> >
-> > With this feature, create a dummy ethernet interface (ip link add dev
-> > dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
-> > these new commands, and then monitor dropped frames in real time by
-> > running tcpdump -i dummy0.
-> >
-> > Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
-> > ---
-> > Changes in v2:
-> > - protect the dummy ethernet interface from being changed by another
-> > thread/cpu
-> > ---
-> >   include/uapi/linux/net_dropmon.h |  3 ++
-> >   net/core/drop_monitor.c          | 84 ++++++++++++++++++++++++++++++++
-> >   2 files changed, 87 insertions(+)
-> [...]
-> > @@ -255,6 +259,21 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
-> >
-> >   out:
-> >       spin_unlock_irqrestore(&data->lock, flags);
-> > +     spin_lock_irqsave(&interface_lock, flags);
-> > +     if (interface && interface != skb->dev) {
-> > +             skb = skb_clone(skb, GFP_ATOMIC);
->
-> I suggest naming the cloned skb "nskb". Less potential for confusion
-> that way.
->
-> > +             if (skb) {
-> > +                     skb->dev = interface;
-> > +                     spin_unlock_irqrestore(&interface_lock, flags);
-> > +                     netif_receive_skb(skb);
-> > +             } else {
-> > +                     spin_unlock_irqrestore(&interface_lock, flags);
-> > +                     pr_err("dropwatch: Not enough memory to clone dropped skb\n");
->
-> Maybe avoid logging the error here. In NET_DM_ALERT_MODE_PACKET mode,
-> drop monitor does not log about the skb_clone() failure either.
-> We don't want to open the possibility to flood the logs in case this
-> somehow gets triggered by every packet.
->
-> A coding style suggestion - can you rearrange it so that the error path
-> code is spelled out first? Then the regular path does not have to be
-> indented further:
->
->        nskb = skb_clone(skb, GFP_ATOMIC);
->        if (!nskb) {
->                spin_unlock_irqrestore(&interface_lock, flags);
->                return;
->        }
->
->        /* ... implicit else ... Proceed normally ... */
->
-> > +                     return;
-> > +             }
-> > +     } else {
-> > +             spin_unlock_irqrestore(&interface_lock, flags);
-> > +     }
-> >   }
-> >
-> >   static void trace_kfree_skb_hit(void *ignore, struct sk_buff *skb, void *location)
-> > @@ -1315,6 +1334,53 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
-> >       return -EOPNOTSUPP;
-> >   }
-> >
-> > +static int net_dm_interface_start(struct net *net, const char *ifname)
-> > +{
-> > +     struct net_device *nd = dev_get_by_name(net, ifname);
-> > +
-> > +     if (nd)
-> > +             interface = nd;
-> > +     else
-> > +             return -ENODEV;
-> > +
-> > +     return 0;
->
-> Similarly here, consider:
->
->    if (!nd)
->            return -ENODEV;
->
->    interface = nd;
->    return 0;
->
-> But maybe I'm nitpicking ...
->
-> > +}
-> > +
-> > +static int net_dm_interface_stop(struct net *net, const char *ifname)
-> > +{
-> > +     dev_put(interface);
-> > +     interface = NULL;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int net_dm_cmd_ifc_trace(struct sk_buff *skb, struct genl_info *info)
-> > +{
-> > +     struct net *net = sock_net(skb->sk);
-> > +     char ifname[IFNAMSIZ];
-> > +
-> > +     if (net_dm_is_monitoring())
-> > +             return -EBUSY;
-> > +
-> > +     memset(ifname, 0, IFNAMSIZ);
-> > +     nla_strlcpy(ifname, info->attrs[NET_DM_ATTR_IFNAME], IFNAMSIZ - 1);
-> > +
-> > +     switch (info->genlhdr->cmd) {
-> > +     case NET_DM_CMD_START_IFC:
-> > +             if (!interface)
-> > +                     return net_dm_interface_start(net, ifname);
-> > +             else
-> > +                     return -EBUSY;
-> > +     case NET_DM_CMD_STOP_IFC:
-> > +             if (interface)
-> > +                     return net_dm_interface_stop(net, interface->name);
-> > +             else
-> > +                     return -ENODEV;
->
-> ... and here too.
->
-> Best regards,
-> Michal
->
+Best regards,
+Krzysztof
+
