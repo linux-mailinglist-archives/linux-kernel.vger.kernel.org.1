@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350D725B239
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D766D25B249
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgIBQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:57:37 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:58150 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728273AbgIBQ51 (ORCPT
+        id S1728348AbgIBQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727026AbgIBQ6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:57:27 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200902165725euoutp027ad19ea4c9bdeaa1b2c6036783c1f2a2~xBeoIk-zV0151201512euoutp020
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 16:57:25 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200902165725euoutp027ad19ea4c9bdeaa1b2c6036783c1f2a2~xBeoIk-zV0151201512euoutp020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599065845;
-        bh=NjBtOjueZPE7WIqPORdhtfK1zhnr+7FiHhqNHLfy2pk=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=WNtpZLEbBoH9dMtM40AItlpMtNupS40LUvtKUmpfTUEisW4biowXe5c5A/9WK883z
-         Z7zGA6rwY71v64jTlz7RCTDpbD0dv/xW8lhlAiCNFPpQooTNGINjUs0HlY2/so0c0R
-         nYGNxdCW3KlWcfapyqJGJvicsIA6jGBNhQ8I50+4=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200902165725eucas1p29b36213bd319c229948fc9d88bef5a67~xBen8PcX43028030280eucas1p2o;
-        Wed,  2 Sep 2020 16:57:25 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id B3.24.06318.5FECF4F5; Wed,  2
-        Sep 2020 17:57:25 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200902165724eucas1p1efd279e5a23855d584eb45303f328a1c~xBenpUDsw2666226662eucas1p1C;
-        Wed,  2 Sep 2020 16:57:24 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200902165724eusmtrp1d89f324adbe55d8e4369d1992624bd04~xBenoq3mn1598215982eusmtrp1G;
-        Wed,  2 Sep 2020 16:57:24 +0000 (GMT)
-X-AuditID: cbfec7f5-38bff700000018ae-bf-5f4fcef5a60c
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 0D.38.06017.4FECF4F5; Wed,  2
-        Sep 2020 17:57:24 +0100 (BST)
-Received: from [106.210.123.115] (unknown [106.210.123.115]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200902165723eusmtip280d8bbb20646dd9b06ba610be4cdb55b~xBemVKXsV1258012580eusmtip2h;
-        Wed,  2 Sep 2020 16:57:23 +0000 (GMT)
-Subject: Re: [PATCH v2 1/2] dt-bindings: mfd: syscon: Merge Samsung Exynos
- Sysreg bindings
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        Wed, 2 Sep 2020 12:58:23 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464A4C061244;
+        Wed,  2 Sep 2020 09:58:22 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so178144wrt.3;
+        Wed, 02 Sep 2020 09:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JcXQvmAkY/k2J1p9we4yfCScXrpnX5eBNUZhNJtw/Hk=;
+        b=jaDoR8zHGWv18DZ+k2xRN07EgfAnZ+2OtQTUEsDgS2Nvtiwv4dbl7FdLnw+v8ogXKP
+         IMQQbEAkaVY21jp4yPHkzkdnmeSKvw2i7L+6m+oITeHfBtrLGKyWUByU2JIh7fgnkQbp
+         bbg99vBEaeAYHE0xgr/9QZi1zx5d+2cnSbNhKc+IA804dttxHFV2YRdv5EMjr9DoY/qb
+         Yi2lVRfBCAutj3gUwyx5hQY+957XlH6H+Zix/qZuAs6QtD/SpLwRYbLNCFgmjk0N9QTw
+         0o4y6hpEJ1zIl7Wfl09nMZpS0hLGJ5Ae+VOfnr4xFTvFEz6ispXooDBEzykBeCcR9384
+         cDfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JcXQvmAkY/k2J1p9we4yfCScXrpnX5eBNUZhNJtw/Hk=;
+        b=KIZV47ZKQNePAhyQYW/F2G5xTRqjhwLmaryX/4jZXR+n/gfbPURF/37lKU0Eeyk7lg
+         j15do3nLMTcAQTjcavoq/uYUIUzOdGcPkohj4bVqG6H+5lcS76fNSfSSq3/IF6rlkbvW
+         ybguXjZjaTVgeCj9hda8VvGGYyWK5qIlK/b000m9xyWh2iX7GQLTSiJkRO437n3Jlgry
+         WCFLRY+emba9WOoaE8SDGtcEawxz+eXPkTKxwhoEJNaPckSlqU+sM1myGDpSPDJb4gYS
+         MaIlDJ4zMPA5qcklBWNw8LY6r+LEF/ml7viw+EK6VF/AYQjfhP4IsPmyMfjQKYp1Fmqf
+         YNqQ==
+X-Gm-Message-State: AOAM532XNCBO1o6fSVWTDpeR0TVR2wo80wPnb/xUVVn54quWOwxJejYK
+        4TCXEAGY2zTeV8aj+6FR24g=
+X-Google-Smtp-Source: ABdhPJyGog7lMzfBNy5rF2ditlUSIh4T71Lu/c3ROK2tC/kiQgMwPGZcTxRdjEoeV/4SjVJlTa4jew==
+X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr7711127wrt.13.1599065900919;
+        Wed, 02 Sep 2020 09:58:20 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id c205sm369795wmd.33.2020.09.02.09.58.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 09:58:20 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <031fb8bc-b9f5-4306-b0c7-7be2b5416fba@samsung.com>
-Date:   Wed, 2 Sep 2020 18:57:22 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.11.0
+Subject: [PATCH] power: supply: charger-manager: Tidy function
+Date:   Wed,  2 Sep 2020 17:58:16 +0100
+Message-Id: <20200902165816.401213-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200902161452.28832-1-krzk@kernel.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTURzn7N7dXa0r16n4RyNrGVGQJhrcHtpDgxGkfehT+Fp5mZKbtqmp
-        EAlSPtI5kpouSxNTGVbiq3QluHxk1iRtvs1IiVKkcpql5nKeHn77vf7n/P6HQxPiGqEHHadM
-        4lVKWbyEciSbOn+a9y6Yw6L2PbBRXGm7WcgVTM4QXG9vrYibWOhAXN3kgJDrbymhuKLeVgF3
-        9Vm76CgtrTPkUNKxgaeUtL7iitRat/U0edbxcAwfH5fCq3yDoh1jNYPDZOJDItWo1RMZaEaQ
-        ixxoYAPgVpZWlIscaTFbjUCn/YIwmUfwSd9GYGJFYNaZ/428/aqhsFGF4FezTYjJNwQ/Op9T
-        9pQLGw4ZmYWk3XBlbwqgvLtm3aBYP8jv0CA7ZtggaB8tJeyYZL2hz1JB2rEbGwmNXRYBzjhD
-        d/HUuu7A7ocig05kxwTrDiNTpQKMveDxbMl6V2ArRWAYvk/hriFwe7SSwNgFprsaRBhvgZ7C
-        PBIPZCLIM46KMNEimOgqQzh1CMbMS2sn0WtX7IZHLb5YPgaWhgGhXQbWCYZmnXEJJ7jRpCOw
-        zED2NTFOe8OyQffn6Tzg+pSNxFgKluE2pEXb9RvW1G9YTb9hNf3/DmWINCB3PlmtkPNqfyV/
-        yUctU6iTlXKf8wmKOrT2h3pWuxaeoNaVcybE0kiymXnRGBYlFspS1GkKEwKakLgyx1/3RIqZ
-        GFlaOq9KiFIlx/NqE/KkSYk741/+OULMymVJ/AWeT+RVf10B7eCRgfyji8eTh45wjO/ymWCi
-        Wxivz6u0tmwrGFlpuBw6txg6Q6X3eb4K94kIrmDebSLnhky7Ti5Ffx/xcmZCy+4M5lh3nFIM
-        ZDPypZV7FxWrtcv15rs70/yqqg9+TGuazjpgXIYUzYkAg1u/zTiVGmhQ5lvHA7lFnw/zzcb3
-        IVUv30hIdazMbw+hUst+A0hsPRk/AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsVy+t/xe7pfzvnHGxyZbmwx/8g5Vov+x6+Z
-        Lc6f38Bucf/rUUaLTY+vsVpc3jWHzWLG+X1MFq17j7A7cHhsWtXJ5nHn2h42j81L6j0+b5IL
-        YInSsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3St0vQy+i7
-        fpOlYB1zxe4Js5gbGF8zdTFyckgImEhc+dDH1sXIxSEksJRR4uP6k8xdjBxACSmJ+S1KEDXC
-        En+udUHVvGeU+LRtNSNIQlggRqKheTILiC0iMJVJ4vgNZ4iiDkaJQ9Nvgm1gEzCU6D3aB9bA
-        K2AnceT2fGYQm0VAReLS1SVgzaICcRKPe/8zQ9QISpyc+QQszilgKjFj1XR2EJtZQF3iz7xL
-        zBC2uMStJ/OZIGx5ie1v5zBPYBSchaR9FpKWWUhaZiFpWcDIsopRJLW0ODc9t9hIrzgxt7g0
-        L10vOT93EyMwtrYd+7llB2PXu+BDjAIcjEo8vCe2+scLsSaWFVfmHmKU4GBWEuF1Ons6Tog3
-        JbGyKrUoP76oNCe1+BCjKdBzE5mlRJPzgXGfVxJvaGpobmFpaG5sbmxmoSTO2yFwMEZIID2x
-        JDU7NbUgtQimj4mDU6qBkTMxSCpU4ZpY6Yyyc5ZdK64oxL47eVliX0aer/MtyQln+tfNCth4
-        hutFbYFBseRX9lu/tE8cnHz+bNwskZwmm8+r8g880A3/tPLCNrYDpze2dn+POn/ki0W/hM8b
-        e/3JU+RWy3dNrKqeu+BmB/ch3aT43/lNtpVzvQ7czrFuT4+eOjnv/BW5LCWW4oxEQy3mouJE
-        AAvUZJ7DAgAA
-X-CMS-MailID: 20200902165724eucas1p1efd279e5a23855d584eb45303f328a1c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200902161506eucas1p1f0e9d2b5bd2388c347c7a564904ecd2a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200902161506eucas1p1f0e9d2b5bd2388c347c7a564904ecd2a
-References: <CGME20200902161506eucas1p1f0e9d2b5bd2388c347c7a564904ecd2a@eucas1p1.samsung.com>
-        <20200902161452.28832-1-krzk@kernel.org>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.09.2020 18:14, Krzysztof Kozlowski wrote:
-> The Samsung Exynos System Registers (Sysreg) bindings are quite simple -
-> just additional compatible to the syscon.  They do not have any value so
-> merge them into generic MFD syscon bindings.
-> 
-> Suggested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+check_charging_duration() contains some copy-pasted code, which makes it
+less readable. Refactor the function to be a bit tidier.
 
-Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+I've also fixed a couple of typos.
+
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/power/supply/charger-manager.c | 39 +++++++++-----------------
+ 1 file changed, 14 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+index 07992821e252..67c7b1fb6601 100644
+--- a/drivers/power/supply/charger-manager.c
++++ b/drivers/power/supply/charger-manager.c
+@@ -443,42 +443,31 @@ static int try_charger_enable(struct charger_manager *cm, bool enable)
+  * check_charging_duration - Monitor charging/discharging duration
+  * @cm: the Charger Manager representing the battery.
+  *
+- * If whole charging duration exceed 'charging_max_duration_ms',
++ * If whole charging duration exceeds 'charging_max_duration_ms',
+  * cm stop charging to prevent overcharge/overheat. If discharging
+- * duration exceed 'discharging _max_duration_ms', charger cable is
++ * duration exceeds 'discharging _max_duration_ms', charger cable is
+  * attached, after full-batt, cm start charging to maintain fully
+  * charged state for battery.
+  */
+ static int check_charging_duration(struct charger_manager *cm)
+ {
+ 	struct charger_desc *desc = cm->desc;
+-	u64 curr = ktime_to_ms(ktime_get());
+ 	u64 duration;
+-	int ret = false;
+ 
+-	if (!desc->charging_max_duration_ms &&
+-			!desc->discharging_max_duration_ms)
+-		return ret;
+-
+-	if (cm->charger_enabled) {
+-		duration = curr - cm->charging_start_time;
+-
+-		if (duration > desc->charging_max_duration_ms) {
+-			dev_info(cm->dev, "Charging duration exceed %ums\n",
+-				 desc->charging_max_duration_ms);
+-			ret = true;
+-		}
+-	} else if (cm->battery_status == POWER_SUPPLY_STATUS_NOT_CHARGING) {
+-		duration = curr - cm->charging_end_time;
++	if ((desc->charging_max_duration_ms == 0 &&
++			desc->discharging_max_duration_ms == 0))
++		return false;
++	if (!cm->charger_enabled &&
++			cm->battery_status != POWER_SUPPLY_STATUS_NOT_CHARGING)
++		return false;
+ 
+-		if (duration > desc->charging_max_duration_ms) {
+-			dev_info(cm->dev, "Discharging duration exceed %ums\n",
+-				 desc->discharging_max_duration_ms);
+-			ret = true;
+-		}
++	duration = ktime_to_ms(ktime_get()) - cm->charging_start_time;
++	if (duration > desc->charging_max_duration_ms) {
++		dev_info(cm->dev, "Charging duration exceeds %ums\n",
++				desc->charging_max_duration_ms);
++		return true;
+ 	}
+-
+-	return ret;
++	return false;
+ }
+ 
+ static int cm_get_battery_temperature_by_psy(struct charger_manager *cm,
+-- 
+2.28.0
+
