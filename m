@@ -2,209 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0725AD8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9013325AD8A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbgIBOow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727949AbgIBOlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:41:02 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 585BAC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:41:02 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id q67so2665097vsd.5
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B/zlgCI9QrJNPU4JJlp1UP/IMi9j+4O0vRWsFWmv0KI=;
-        b=VLaaxBL3UFPDYVUJ5u3qnhXXYiWouCcUpbGhcl8mkRK7KVGFsfz0SiYYjhEZeqM6ev
-         kLwMmuI2R1ybRDGdb62aq4/OF0wCpEegWeULD0pDxvQvQOYdsqWMqsQeAS2Reo9i5x5/
-         q3Pj+eXZKms7JnqjKxS3W+KSojCcZudHAlWt9N4kJIusQD/NA3fN6BjnG+ZzVxveCxP0
-         fjiTplf6t9cfgtQFRLmsTZPxJBxWO0rDplJuR+eYWn/uJvMpbzs4bqoGe1znbGzedqNS
-         6Div+I9dOBnHLRefDLL+pXF2AJyMinxm8k5BWY7L7wyVghBHL/1XrzKok+a9FLkC8/x9
-         EIyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B/zlgCI9QrJNPU4JJlp1UP/IMi9j+4O0vRWsFWmv0KI=;
-        b=X1DimKxJp/hhvS34J7dATKQuPT1FHJ7/665x5j1DP7gMTVYGMHDlyc7K0LYG5/JKRQ
-         XQs35WEyPXH+T8jaVxfNRQHXDiB6Ug03wFkUFJpMPVgCrthRNYJSCymfIz8ZZtu183yF
-         8Prwj7d7gAeY3uWeujmrUUoMK7kRMJbpGLYTP4JNwUe7W5k8D4hadiTp7m2Ch7v74uhB
-         w0j6MxAW8KIcupMlAMXcWgCF/ha3VW1t6DM7B4Y2VPXHBSUdVKZ+4bZfqc7/XjhaqVjh
-         73K3s2FrBmeMiKifVLNVtqygyZsO4AXP75l0tHq7x1C7+US/dTds2o3ru/OqO53S7+zq
-         f4dw==
-X-Gm-Message-State: AOAM5335DOp+wh6Lh1V9EaMbr+TkJgRG7xNl1WXSGQZHGsZqHwGr+2VC
-        KjyX/SV/h1ClPy/g5BKNiRnlbKNhh99VLHqW9K2a5g==
-X-Google-Smtp-Source: ABdhPJzlxTPaTI8JwFZQXPJBSSUSFEsHPrWt06u3qPZOY9J3wJyukGwQHEqGAZWmHxk7I65dz6qnkslKhZ6rX4tFp/8=
-X-Received: by 2002:a67:e9d4:: with SMTP id q20mr5209551vso.83.1599057661252;
- Wed, 02 Sep 2020 07:41:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191112110330.179649-1-pihsun@chromium.org> <20191112110330.179649-5-pihsun@chromium.org>
- <2abf8fdd-7b7c-73b0-beea-9c9ac56869dc@gmail.com>
-In-Reply-To: <2abf8fdd-7b7c-73b0-beea-9c9ac56869dc@gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 2 Sep 2020 20:10:49 +0530
-Message-ID: <CA+G9fYt9AujG6gyfeV5AaAv0EgggUfGT1jow8DJjVfetVWV3EA@mail.gmail.com>
-Subject: Re: [PATCH v21 4/4] arm64: dts: mt8183: add scp node
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>, Erin Lo <erin.lo@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726928AbgIBOnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:43:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34328 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728070AbgIBOlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:41:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9BAEDB1C0;
+        Wed,  2 Sep 2020 14:41:30 +0000 (UTC)
+Date:   Wed, 02 Sep 2020 16:41:29 +0200
+Message-ID: <s5ha6y89r6u.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
+        stern@rowland.harvard.ed, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com,
+        linux-bluetooth@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 7/9] sound: line6: convert to use new usb control function...
+In-Reply-To: <20200902110115.1994491-9-gregkh@linuxfoundation.org>
+References: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
+        <20200902110115.1994491-9-gregkh@linuxfoundation.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 15:44, Matthias Brugger <matthias.bgg@gmail.com> wrote:
->
->
->
-> On 12/11/2019 12:03, Pi-Hsun Shih wrote:
-> > From: Eddie Huang <eddie.huang@mediatek.com>
-> >
-> > Add scp node to mt8183 and mt8183-evb
-> >
-> > Signed-off-by: Erin Lo <erin.lo@mediatek.com>
-> > Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-> > Signed-off-by: Eddie Huang <eddie.huang@mediatek.com>
->
-> Sorry I somehow oversaw this. Next time please don't doubt to ping me.
->
-> Bjorn, do I understand correctly that you don't send emails to the list
-> informing of the inclusion of a patch/series in your tree?
->
-> Anyway applied now to v5.9-next/dts64 :)
+On Wed, 02 Sep 2020 13:01:10 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-arm64 build dtbs failed on linux next 20200902.
-
-mt8183.dtsi:342.21-352.5: ERROR (phandle_references):
-/soc/scp@10500000: Reference to non-existent node or label
-"scp_mem_reserved"
-
-build log,
-
-make -sk KBUILD_BUILD_USER=TuxBuild -C/linux ARCH=arm64
-CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=gcc CC="sccache
-aarch64-linux-gnu-gcc" O=build dtbs
-#
-../arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14:
-Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges"
-property but its #address-cells (1) differs from / (2)
-../arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14:
-Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges"
-property but its #size-cells (1) differs from / (2)
-../arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14:
-Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges"
-property but its #address-cells (1) differs from / (2)
-../arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14:
-Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges"
-property but its #size-cells (1) differs from / (2)
-../arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14:
-Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges"
-property but its #address-cells (1) differs from / (2)
-../arch/arm64/boot/dts/broadcom/stingray/stingray-usb.dtsi:7.3-14:
-Warning (dma_ranges_format): /usb:dma-ranges: empty "dma-ranges"
-property but its #size-cells (1) differs from / (2)
-../arch/arm64/boot/dts/mediatek/mt8183.dtsi:342.21-352.5: ERROR
-(phandle_references): /soc/scp@10500000: Reference to non-existent
-node or label "scp_mem_reserved"
+I guess this and a few others with (x/9) are stale patches, right?
 
 
->
-> Thanks!
->
-> > ---
-> > Changes from v20 ... v14:
-> >   - No change.
-> >
-> > Changes from v13:
-> >   - Change the size of the cfg register region.
-> >
-> > Changes from v12 ... v10:
-> >   - No change.
-> >
-> > Changes from v9:
-> >   - Remove extra reserve-memory-vpu_share node.
-> >
-> > Changes from v8:
-> >   - New patch.
-> > ---
-> >   arch/arm64/boot/dts/mediatek/mt8183-evb.dts | 11 +++++++++++
-> >   arch/arm64/boot/dts/mediatek/mt8183.dtsi    | 12 ++++++++++++
-> >   2 files changed, 23 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> > index 1fb195c683c3..ddb7a7ac9655 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
-> > @@ -24,6 +24,17 @@ memory@40000000 {
-> >       chosen {
-> >               stdout-path = "serial0:921600n8";
-> >       };
-> > +
-> > +     reserved-memory {
-> > +             #address-cells = <2>;
-> > +             #size-cells = <2>;
-> > +             ranges;
-> > +             scp_mem_reserved: scp_mem_region {
-> > +                     compatible = "shared-dma-pool";
-> > +                     reg = <0 0x50000000 0 0x2900000>;
-> > +                     no-map;
-> > +             };
-> > +     };
-> >   };
-> >
-> >   &auxadc {
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> > index 10b32471bc7b..e582f5e6691d 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> > @@ -269,6 +269,18 @@ pwrap: pwrap@1000d000 {
-> >                       clock-names = "spi", "wrap";
-> >               };
-> >
-> > +             scp: scp@10500000 {
-> > +                     compatible = "mediatek,mt8183-scp";
-> > +                     reg = <0 0x10500000 0 0x80000>,
-> > +                           <0 0x105c0000 0 0x19080>;
-> > +                     reg-names = "sram", "cfg";
-> > +                     interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> > +                     clocks = <&infracfg CLK_INFRA_SCPSYS>;
-> > +                     clock-names = "main";
-> > +                     memory-region = <&scp_mem_reserved>;
-> > +                     status = "disabled";
-> > +             };
-> > +
-> >               systimer: timer@10017000 {
-> >                       compatible = "mediatek,mt8183-timer",
-> >                                    "mediatek,mt6765-timer";
-> >
+thanks,
 
-full build log,
-https://builds.tuxbuild.com/_IfeLhOWMWxIkRkmAtAwOQ/build.log
+Takashi
 
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> ---
+>  sound/usb/line6/driver.c   | 69 +++++++++++++++-----------------------
+>  sound/usb/line6/podhd.c    | 17 ++++------
+>  sound/usb/line6/toneport.c |  8 ++---
+>  3 files changed, 37 insertions(+), 57 deletions(-)
+> 
+> diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
+> index 60674ce4879b..601292c51491 100644
+> --- a/sound/usb/line6/driver.c
+> +++ b/sound/usb/line6/driver.c
+> @@ -337,23 +337,18 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
+>  {
+>  	struct usb_device *usbdev = line6->usbdev;
+>  	int ret;
+> -	unsigned char *len;
+> +	u8 len;
+>  	unsigned count;
+>  
+>  	if (address > 0xffff || datalen > 0xff)
+>  		return -EINVAL;
+>  
+> -	len = kmalloc(1, GFP_KERNEL);
+> -	if (!len)
+> -		return -ENOMEM;
+> -
+>  	/* query the serial number: */
+> -	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+> -			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> -			      (datalen << 8) | 0x21, address,
+> -			      NULL, 0, LINE6_TIMEOUT * HZ);
+> -
+> -	if (ret < 0) {
+> +	ret = usb_control_msg_send(usbdev, 0, 0x67,
+> +				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> +				   (datalen << 8) | 0x21, address, NULL, 0,
+> +				   LINE6_TIMEOUT * HZ);
+> +	if (ret) {
+>  		dev_err(line6->ifcdev, "read request failed (error %d)\n", ret);
+>  		goto exit;
+>  	}
+> @@ -362,45 +357,41 @@ int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
+>  	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+>  		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
+>  
+> -		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+> -				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+> -				      USB_DIR_IN,
+> -				      0x0012, 0x0000, len, 1,
+> -				      LINE6_TIMEOUT * HZ);
+> -		if (ret < 0) {
+> +		ret = usb_control_msg_recv(usbdev, 0, 0x67,
+> +					   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> +					   0x0012, 0x0000, &len, 1,
+> +					   LINE6_TIMEOUT * HZ);
+> +		if (ret) {
+>  			dev_err(line6->ifcdev,
+>  				"receive length failed (error %d)\n", ret);
+>  			goto exit;
+>  		}
+>  
+> -		if (*len != 0xff)
+> +		if (len != 0xff)
+>  			break;
+>  	}
+>  
+>  	ret = -EIO;
+> -	if (*len == 0xff) {
+> +	if (len == 0xff) {
+>  		dev_err(line6->ifcdev, "read failed after %d retries\n",
+>  			count);
+>  		goto exit;
+> -	} else if (*len != datalen) {
+> +	} else if (len != datalen) {
+>  		/* should be equal or something went wrong */
+>  		dev_err(line6->ifcdev,
+>  			"length mismatch (expected %d, got %d)\n",
+> -			(int)datalen, (int)*len);
+> +			(int)datalen, len);
+>  		goto exit;
+>  	}
+>  
+>  	/* receive the result: */
+> -	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+> -			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> -			      0x0013, 0x0000, data, datalen,
+> -			      LINE6_TIMEOUT * HZ);
+> -
+> -	if (ret < 0)
+> +	ret = usb_control_msg_recv(usbdev, 0, 0x67,
+> +				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> +				   0x0013, 0x0000, data, datalen, LINE6_TIMEOUT * HZ);
+> +	if (ret)
+>  		dev_err(line6->ifcdev, "read failed (error %d)\n", ret);
+>  
+>  exit:
+> -	kfree(len);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(line6_read_data);
+> @@ -423,12 +414,10 @@ int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
+>  	if (!status)
+>  		return -ENOMEM;
+>  
+> -	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+> -			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> -			      0x0022, address, data, datalen,
+> -			      LINE6_TIMEOUT * HZ);
+> -
+> -	if (ret < 0) {
+> +	ret = usb_control_msg_send(usbdev, 0, 0x67,
+> +				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> +				   0x0022, address, data, datalen, LINE6_TIMEOUT * HZ);
+> +	if (ret) {
+>  		dev_err(line6->ifcdev,
+>  			"write request failed (error %d)\n", ret);
+>  		goto exit;
+> @@ -437,14 +426,10 @@ int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
+>  	for (count = 0; count < LINE6_READ_WRITE_MAX_RETRIES; count++) {
+>  		mdelay(LINE6_READ_WRITE_STATUS_DELAY);
+>  
+> -		ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0),
+> -				      0x67,
+> -				      USB_TYPE_VENDOR | USB_RECIP_DEVICE |
+> -				      USB_DIR_IN,
+> -				      0x0012, 0x0000,
+> -				      status, 1, LINE6_TIMEOUT * HZ);
+> -
+> -		if (ret < 0) {
+> +		ret = usb_control_msg_recv(usbdev, 0, 0x67,
+> +					   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+> +					   0x0012, 0x0000, status, 1, LINE6_TIMEOUT * HZ);
+> +		if (ret) {
+>  			dev_err(line6->ifcdev,
+>  				"receiving status failed (error %d)\n", ret);
+>  			goto exit;
+> diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
+> index eef45f7fef0d..a1261f55d62b 100644
+> --- a/sound/usb/line6/podhd.c
+> +++ b/sound/usb/line6/podhd.c
+> @@ -183,29 +183,25 @@ static const struct attribute_group podhd_dev_attr_group = {
+>  static int podhd_dev_start(struct usb_line6_podhd *pod)
+>  {
+>  	int ret;
+> -	u8 *init_bytes;
+> +	u8 init_bytes[8];
+>  	int i;
+>  	struct usb_device *usbdev = pod->line6.usbdev;
+>  
+> -	init_bytes = kmalloc(8, GFP_KERNEL);
+> -	if (!init_bytes)
+> -		return -ENOMEM;
+> -
+> -	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
+> +	ret = usb_control_msg_send(usbdev, 0,
+>  					0x67, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+>  					0x11, 0,
+>  					NULL, 0, LINE6_TIMEOUT * HZ);
+> -	if (ret < 0) {
+> +	if (ret) {
+>  		dev_err(pod->line6.ifcdev, "read request failed (error %d)\n", ret);
+>  		goto exit;
+>  	}
+>  
+>  	/* NOTE: looks like some kind of ping message */
+> -	ret = usb_control_msg(usbdev, usb_rcvctrlpipe(usbdev, 0), 0x67,
+> +	ret = usb_control_msg_recv(usbdev, 0, 0x67,
+>  					USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_IN,
+>  					0x11, 0x0,
+>  					init_bytes, 3, LINE6_TIMEOUT * HZ);
+> -	if (ret < 0) {
+> +	if (ret) {
+>  		dev_err(pod->line6.ifcdev,
+>  			"receive length failed (error %d)\n", ret);
+>  		goto exit;
+> @@ -220,13 +216,12 @@ static int podhd_dev_start(struct usb_line6_podhd *pod)
+>  			goto exit;
+>  	}
+>  
+> -	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0),
+> +	ret = usb_control_msg_send(usbdev, 0,
+>  					USB_REQ_SET_FEATURE,
+>  					USB_TYPE_STANDARD | USB_RECIP_DEVICE | USB_DIR_OUT,
+>  					1, 0,
+>  					NULL, 0, LINE6_TIMEOUT * HZ);
+>  exit:
+> -	kfree(init_bytes);
+>  	return ret;
+>  }
+>  
+> diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
+> index 94dd5e7ab2e6..a9b56085b76a 100644
+> --- a/sound/usb/line6/toneport.c
+> +++ b/sound/usb/line6/toneport.c
+> @@ -126,11 +126,11 @@ static int toneport_send_cmd(struct usb_device *usbdev, int cmd1, int cmd2)
+>  {
+>  	int ret;
+>  
+> -	ret = usb_control_msg(usbdev, usb_sndctrlpipe(usbdev, 0), 0x67,
+> -			      USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> -			      cmd1, cmd2, NULL, 0, LINE6_TIMEOUT * HZ);
+> +	ret = usb_control_msg_send(usbdev, 0, 0x67,
+> +				   USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_DIR_OUT,
+> +				   cmd1, cmd2, NULL, 0, LINE6_TIMEOUT * HZ);
+>  
+> -	if (ret < 0) {
+> +	if (ret) {
+>  		dev_err(&usbdev->dev, "send failed (error %d)\n", ret);
+>  		return ret;
+>  	}
+> -- 
+> 2.28.0
+> 
