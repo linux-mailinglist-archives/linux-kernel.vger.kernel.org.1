@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA7B25B69C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 00:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBA825B6A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 00:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgIBWsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 18:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
+        id S1727094AbgIBWsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 18:48:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726771AbgIBWsV (ORCPT
+        with ESMTP id S1726828AbgIBWsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 18:48:21 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24295C061249
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 15:48:19 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id w2so928901wmi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 15:48:19 -0700 (PDT)
+        Wed, 2 Sep 2020 18:48:22 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2794C061251
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 15:48:20 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id e16so1061384wrm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 15:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kRjzeLTTvVC/pVywMMSpoqYXBJa0RCC6WlbXQw/96II=;
-        b=mLrY3jTP/5wNY8i0NagH3fWy6lgHvpgKHYpBuGGMdbwENbv1YBF9yOBXt4v3K4+5EK
-         1Hmt5HCy9KKOK4VP36X6UMOb3L1o73zL9v7fhKaq9FGDvs/cjxC0eAZtiC0WCZBZ6I4H
-         khHkoOsE/jTlxOIP/AFwsakeRFIOIDaYIcVsY=
+        bh=DSUUqflNM89hjEoS2I4y9vcCANSdclOkuUNrQ1yjm0A=;
+        b=YnRGeZlOf5WRkMrLiwxfOTIOZrblf+8LvustYSwJjGwoiV+xkhkgZ5vR0vqd/E7tNU
+         iLDk3apR1rm6cpIjFAWF8NUj54FDdNyfSCJWfXZ8EA2E/ESYqqgRoewLqBHMxXHBI6dj
+         TfMbS6nXDV2vNL7LP7RgPwIacTPAGkkbZniHs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kRjzeLTTvVC/pVywMMSpoqYXBJa0RCC6WlbXQw/96II=;
-        b=MNh65lVhm57s7XwqQWOUaFePaZlZo6sMtuiewnwtk4IqbgphqBYLKTcX2k9faKlUDU
-         wh7vZ5S94RO4HtPOKQtCcVXGLi3gysAFiJxAFw6xp1yFr419zsAkp5xNRM5/SfROB7gi
-         d8oJsjZwBb+WAAtT+Pe2+jqDBU/RTwO1BxjRLFgkppmLmuUemrpad2dDvxngOkKOLNB0
-         KUZHdrcKX7YRTKLN4CgEdInpokK1jWHYEDnfFuV6UwA25eNeoVGssou3xEvYoHoMnQA5
-         jAUlTOalhG5db0x6zOLLr2lx01oeTzqOEDf9iyXqIQu5zwslu0PFuSKvM0rhoicAN5FL
-         Xhpg==
-X-Gm-Message-State: AOAM532f3HweUpwcH0m7dt9r5vGVVi4NXpEEN+BfHeSFU/ASkMipS/qc
-        HZsJX2IhjtKxouZ3hDCTqyAsgw==
-X-Google-Smtp-Source: ABdhPJzLymc0ZD48sjZ2JI71lePzK3yN5KdMnrHePIvBbh0HexVtldeyJXMn/U5OqkLgKlG3R8eQFQ==
-X-Received: by 2002:a7b:cbd4:: with SMTP id n20mr342473wmi.105.1599086898285;
+        bh=DSUUqflNM89hjEoS2I4y9vcCANSdclOkuUNrQ1yjm0A=;
+        b=s/NaHdjyN6LRAS5n9Kqde406j+qLN0RzUhIg8gers2pl3nLx/YjZ8G74MfwPyZL2VM
+         cMFPl7K1vRisC+B2A2/GCGrNulxrsyIy/AZsvSzFToS6jJ/b+DEd3ePnMO6HXQHm7xL0
+         CYC38X3mO2g07DMLJ2thP9xfj/LmXMQferjcQ4oRXCz+ZhSYqmI/xsj8lkSVvQNZ000K
+         FH6iUM6+FqLIzChLzJT2ndC1oI1s4D5V28ltx+2NLVNsxEGGsSRRSHceAcArOUMGhBQ2
+         IRHaZ+ZFb60z2yGq4r29vYjyj5CL2VEIPdEtZynybdKw+AxTKCIRJopU4qVQC7/tmFLm
+         byeA==
+X-Gm-Message-State: AOAM530t6busg1835pHIO22Ael0nWCKNqLtwZlePqKpXhvn0BvfNBnAL
+        LW8PYJTSqlqxmZemEoOvbp7iB3XD3pPQrw==
+X-Google-Smtp-Source: ABdhPJyl45V678eQ5ZC9Fv+EL/uZUE+NbzZKSZ3FYEDQoVT7GWMVpVHMyTNFuHDK4E7yfFBiMp/0wQ==
+X-Received: by 2002:a5d:522d:: with SMTP id i13mr405043wra.296.1599086898980;
         Wed, 02 Sep 2020 15:48:18 -0700 (PDT)
 Received: from tfiga.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id m125sm1557568wme.35.2020.09.02.15.48.17
+        by smtp.gmail.com with ESMTPSA id m125sm1557568wme.35.2020.09.02.15.48.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 15:48:17 -0700 (PDT)
+        Wed, 02 Sep 2020 15:48:18 -0700 (PDT)
 From:   Tomasz Figa <tfiga@chromium.org>
 To:     linux-media@vger.kernel.org
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -55,9 +55,9 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         Xingyu Wu <wuxy@bitland.com.cn>, dongchun.zhu@mediatek.com,
         sj.huang@mediatek.com, darfur_liu@gcoreinc.com, hao.he7@gmail.com,
         Tomasz Figa <tfiga@chromium.org>
-Subject: [PATCH v4 1/4] dt-bindings: Add a vendor prefix for Galaxycore Inc.
-Date:   Wed,  2 Sep 2020 22:48:10 +0000
-Message-Id: <20200902224813.14283-2-tfiga@chromium.org>
+Subject: [PATCH v4 2/4] media: dt-bindings: media: i2c: Add bindings for GC5035
+Date:   Wed,  2 Sep 2020 22:48:11 +0000
+Message-Id: <20200902224813.14283-3-tfiga@chromium.org>
 X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
 In-Reply-To: <20200902224813.14283-1-tfiga@chromium.org>
 References: <20200902224813.14283-1-tfiga@chromium.org>
@@ -68,31 +68,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao He <hao.he@bitland.com.cn>
+Add YAML device tree bindings for Galaxycore Inc. GC5035 imaging sensor.
 
-Add a vendor prefix for Galaxycore Inc. as a prerequisite for adding
-bindings for a new imaging sensor.
-
-Signed-off-by: Hao He <hao.he@bitland.com.cn>
-Signed-off-by: Xingyu Wu <wuxy@bitland.com.cn>
 Signed-off-by: Tomasz Figa <tfiga@chromium.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/media/i2c/gc5035.yaml | 142 ++++++++++++++++++
+ 1 file changed, 142 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/gc5035.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 450630092296..07cd3b69b512 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -385,6 +385,8 @@ patternProperties:
-     description: Freescale Semiconductor
-   "^fujitsu,.*":
-     description: Fujitsu Ltd.
-+  "^galaxycore,.*":
-+    description: GalaxyCore, Inc.
-   "^gardena,.*":
-     description: GARDENA GmbH
-   "^gateworks,.*":
+diff --git a/Documentation/devicetree/bindings/media/i2c/gc5035.yaml b/Documentation/devicetree/bindings/media/i2c/gc5035.yaml
+new file mode 100644
+index 000000000000..cf8cc3b581cf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/gc5035.yaml
+@@ -0,0 +1,142 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright (c) 2019 MediaTek Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/gc5035.yaml
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Galaxycore Inc. GC5035 CMOS Sensor Device Tree Bindings
++
++maintainers:
++  - Tomasz Figa <tfiga@chromium.org>
++
++description: |-
++  The Galaxycore Inc. GC5035 is a 5 megapixel, 1/5 inch CMOS 10-bit Bayer image
++  sensor that delivers 2592x1944 at 30fps. This chip is programmable through
++  an I2C interface. The image output is available via a MIPI CSI-2 interface.
++
++properties:
++  compatible:
++    const: galaxycore,gc5035
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    description:
++      Input clock for the sensor.
++    items:
++      - const: inclk
++
++  clock-frequency:
++    description:
++      Frequency of the inclk clock in Hz.
++
++  iovdd-supply:
++    description:
++      Regulator driving the I/O power rail.
++
++  avdd28-supply:
++    description:
++      Regulator driving the analog power rail.
++
++  dvdd12-supply:
++    description:
++      Regulator driving the digital power rail.
++
++  resetb-gpios:
++    description:
++      The GPIO pin that drives the RESETB signal, controlling sensor reset.
++      The RESETB signal must be driven low to activate the reset, so the
++      GPIO_ACTIVE_LOW flag should be given by default.
++
++  pwdn-gpios:
++    description:
++      The GPIO pin that drives the PWDN signal, controlling sensor power-down
++      mode. The PWDN signal must be driven low to activate the power-down
++      mode, so the GPIO_ACTIVE_LOW flag should be given by default.
++
++  port:
++    type: object
++    additionalProperties: false
++    description:
++      A node containing an output port node with an endpoint definition
++      as documented in
++      Documentation/devicetree/bindings/media/video-interfaces.txt
++
++    properties:
++      endpoint:
++        type: object
++        additionalProperties: false
++
++        properties:
++          data-lanes:
++            items:
++              - const: 1
++              - const: 2
++
++          link-frequencies: true
++          remote-endpoint: true
++
++        required:
++          - data-lanes
++          - link-frequencies
++          - remote-endpoint
++
++    required:
++      - endpoint
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - clock-frequency
++  - iovdd-supply
++  - avdd28-supply
++  - dvdd12-supply
++  - resetb-gpios
++  - pwdn-gpios
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        gc5035: camera@10 {
++            compatible = "galaxycore,gc5035";
++            reg = <0x10>;
++
++            reset-gpios = <&pio 111 GPIO_ACTIVE_LOW>;
++            pwdn-gpios = <&pio 112 GPIO_ACTIVE_LOW>;
++            pinctrl-names = "default";
++            pinctrl-0 = <&clk_24m_cam>;
++
++            clocks = <&cam_osc>;
++            clock-names = "inclk";
++            clock-frequency = <24000000>;
++
++            avdd28-supply = <&mt6358_vcama2_reg>;
++            dvdd12-supply = <&mt6358_vcamd_reg>;
++            iovdd-supply = <&mt6358_vcamio_reg>;
++
++            port {
++                wcam_out: endpoint {
++                    remote-endpoint = <&mipi_in_wcam>;
++                    data-lanes = <1 2>;
++                    link-frequencies = /bits/ 64 <438000000>;
++                };
++            };
++        };
++    };
++...
++
 -- 
 2.28.0.402.g5ffc5be6b7-goog
 
