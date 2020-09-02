@@ -2,122 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227E625ACE3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE37225AD02
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgIBOW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:22:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33372 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727095AbgIBOLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:11:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 91439B64A;
-        Wed,  2 Sep 2020 14:10:59 +0000 (UTC)
-Date:   Wed, 2 Sep 2020 16:10:57 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
- memory offline
-Message-ID: <20200902141057.GK4617@dhcp22.suse.cz>
-References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
- <20200902140116.GI4617@dhcp22.suse.cz>
+        id S1727877AbgIBO1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727931AbgIBONl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:13:41 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C458AC061265;
+        Wed,  2 Sep 2020 07:12:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=loS36YfO2qDSFRDtfhX92YEoXynWvQPkbrbjbgtkbWo=; b=JOtqTM13brS3TXvp4xmcyXjbtd
+        0Gvxs46T8Bu7SM1BPnihOz9Lfpc4SEkd0bFm5HDi10YnpCkjUeXPuKqZqjtGa6fHLVGYcmsEQjZTx
+        Ta6w+ZxKAVl1i/jgi0wT2G++CyqJYVDXzJ3ulvMXb2g8jR6zG4S93T357xfeyghWEl8g14sw3rfjc
+        YFQ0IUNNGATUs+w9n2Nozg4I5runwPGbVNLdNp20Jq45b4JPlMF0AbsUgRFSVpuJaqIOOSZrUU8Cu
+        tEe59NU1h7cux0ruAq3Lq+828QQl8CYSEhFdRct2e6DaOaOh29sH1y3uk2D7veh7GEjq2s5Mubh1P
+        1bDcmCbw==;
+Received: from [2001:4bb8:184:af1:6a63:7fdb:a80e:3b0b] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDTUs-0005co-QD; Wed, 02 Sep 2020 14:12:23 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Denis Efremov <efremov@linux.com>, Tim Waugh <tim@cyberelk.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-m68k@lists.linux-m68k.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH 02/19] amiflop: use bdev_check_media_change
+Date:   Wed,  2 Sep 2020 16:12:01 +0200
+Message-Id: <20200902141218.212614-3-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200902141218.212614-1-hch@lst.de>
+References: <20200902141218.212614-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902140116.GI4617@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-09-20 16:01:17, Michal Hocko wrote:
-> [Cc Mel and Vlastimil - I am still rummaging]
-> 
-> On Tue 01-09-20 08:46:15, Pavel Tatashin wrote:
-> > There is a race during page offline that can lead to infinite loop:
-> > a page never ends up on a buddy list and __offline_pages() keeps
-> > retrying infinitely or until a termination signal is received.
-> > 
-> > Thread#1 - a new process:
-> > 
-> > load_elf_binary
-> >  begin_new_exec
-> >   exec_mmap
-> >    mmput
-> >     exit_mmap
-> >      tlb_finish_mmu
-> >       tlb_flush_mmu
-> >        release_pages
-> >         free_unref_page_list
-> >          free_unref_page_prepare
-> >           set_pcppage_migratetype(page, migratetype);
-> >              // Set page->index migration type below  MIGRATE_PCPTYPES
-> > 
-> > Thread#2 - hot-removes memory
-> > __offline_pages
-> >   start_isolate_page_range
-> >     set_migratetype_isolate
-> >       set_pageblock_migratetype(page, MIGRATE_ISOLATE);
-> >         Set migration type to MIGRATE_ISOLATE-> set
-> >         drain_all_pages(zone);
-> >              // drain per-cpu page lists to buddy allocator.
-> > 
-> > Thread#1 - continue
-> >          free_unref_page_commit
-> >            migratetype = get_pcppage_migratetype(page);
-> >               // get old migration type
-> >            list_add(&page->lru, &pcp->lists[migratetype]);
-> >               // add new page to already drained pcp list
-> > 
-> > Thread#2
-> > Never drains pcp again, and therefore gets stuck in the loop.
-> > 
-> > The fix is to try to drain per-cpu lists again after
-> > check_pages_isolated_cb() fails.
+The Amiga floppy driver does not have a ->revalidate_disk method, so it
+can just use bdev_check_media_change without any additional changes.
 
-Still trying to wrap my head around this but I think this is not a
-proper fix. It should be the page isolation to make sure no races are
-possible with the page freeing path.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/block/amiflop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  mm/memory_hotplug.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> > index e9d5ab5d3ca0..d6d54922bfce 100644
-> > --- a/mm/memory_hotplug.c
-> > +++ b/mm/memory_hotplug.c
-> > @@ -1575,6 +1575,15 @@ static int __ref __offline_pages(unsigned long start_pfn,
-> >  		/* check again */
-> >  		ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
-> >  					    NULL, check_pages_isolated_cb);
-> > +		/*
-> > +		 * per-cpu pages are drained in start_isolate_page_range, but if
-> > +		 * there are still pages that are not free, make sure that we
-> > +		 * drain again, because when we isolated range we might
-> > +		 * have raced with another thread that was adding pages to
-> > +		 * pcp list.
-> > +		 */
-> > +		if (ret)
-> > +			drain_all_pages(zone);
-> >  	} while (ret);
-> >  
-> >  	/* Ok, all of our target is isolated.
-> > -- 
-> > 2.25.1
-> > 
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
-
+diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
+index 226219da3da6a7..71c2b156455860 100644
+--- a/drivers/block/amiflop.c
++++ b/drivers/block/amiflop.c
+@@ -1670,7 +1670,7 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
+ 	}
+ 
+ 	if (mode & (FMODE_READ|FMODE_WRITE)) {
+-		check_disk_change(bdev);
++		bdev_check_media_change(bdev);
+ 		if (mode & FMODE_WRITE) {
+ 			int wrprot;
+ 
 -- 
-Michal Hocko
-SUSE Labs
+2.28.0
+
