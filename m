@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE58725B260
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B8125B298
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728622AbgIBQ7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728422AbgIBQ7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:59:07 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94002C061245
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 09:59:07 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 5so2842997pgl.4
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 09:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PGH19IhlY3wzI+Xgt/jFHbPIkqhJBb7tq7WhHAYr9NE=;
-        b=N5so/Ky16b2e29g8iaId2ApITYVADR1eFlQHSFvgrkpveRZ3Javht1yaDfC5rCqRkU
-         DZhM0/9FEWl8zKvxNL717MNA66SfEDZRf4MAyFHa0sdtEd9tTx5reLGov0+Wvekr2FBG
-         ayxZY09KBpe2z+1kdFFpSD3Wza6J5tpBY81erBr8FPF0uy29rm4ZzSPSd1J9ClEdGxzs
-         DOwAkN28gkVtROzagPJqxl7maaWFD5DxZyDyCJTBU3/hg5GrIz9SoVi9aeVT5h+bkI0n
-         1MhtO0rFlvVMOPg+MUti/5EPp6paNK+RWt2Hf1iokCDaN2Mm1OxmLSe9JE7YB5p+qwOb
-         9RBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PGH19IhlY3wzI+Xgt/jFHbPIkqhJBb7tq7WhHAYr9NE=;
-        b=WpsQM+rZvolDLmrdQWaCHr5Cm0k7E57B3iHK3vR1S5c1IES0h2YskshBdLzt415ipe
-         JD22hMACNKdVr814O6CEdqN2WRGWJQgqmGePZI/ofIb296EzyyXmilpaY9l22bcvssjM
-         XK2SodZ8j97oz3U7hccClS2VXFxQBXJJMhSZPWAOjIKRBRQt+8ujDyDIwte4hKlL/fIZ
-         U1z1c1k54iFIBmI7YvFQ4ozPr3Q39Fhy4Si9Uej7MnerWaNaN13+O1KFmBnZ7bAS0pzn
-         sg0z14grfgKRa0IZ31aLcScaxlv37SrmXWhz5jFDBx/bHQBzax8s3eiLFssQhl7ndqEb
-         sW0g==
-X-Gm-Message-State: AOAM5317Zugw9t/wUy6wCoWRnDGrSE3txuYG1RmJCh+PPLRRDKsRhbHY
-        QZkdHzoeV1K0NgT1DoJ3k3RP8g==
-X-Google-Smtp-Source: ABdhPJyXfv4cFcte0R82BjGRUtCJHKE80U68pHoAMSRu7S8eTKQiB2OEzLmb+kQOMtsFKVO6AtWF8w==
-X-Received: by 2002:a63:31d2:: with SMTP id x201mr2678709pgx.263.1599065946942;
-        Wed, 02 Sep 2020 09:59:06 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id mw8sm4848823pjb.47.2020.09.02.09.59.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 09:59:06 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 10:59:04 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, s-anna@ti.com,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] remoteproc: k3-dsp: Fix return value check in
- k3_dsp_rproc_of_get_memories()
-Message-ID: <20200902165904.GB280378@xps15>
-References: <20200902140614.28636-1-yuehaibing@huawei.com>
+        id S1728804AbgIBRCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:02:07 -0400
+Received: from mail-co1nam11on2066.outbound.protection.outlook.com ([40.107.220.66]:11893
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726293AbgIBQ6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:58:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N/1HVMMSb3342qizsJmnDsV220chwTLlE7+M0QHACwL/83nCIErInsxGYwa+9PkjT8QlE+CYvB7LPMRL1QUo/vCE02HremS1H5mUFOyKepz2vDWCRQk6fnE8zCTtvKvoNKIXG6rvc2maEMyJZUIZQF1QhZ2uC+BKBt1fUZgIWdGCURPzeN+b7nAXNEJpSpkQZ/4arnvi1IqItNVKpLWevIrSrJNqusIbFC899JOO2gJZoFMb8DWfUnsNp736B4Uo6igLJeTgJok/J+AN/9ENjU2vVMhre5YrM3Wct0/W78CR9M9BkQGhwdVqwLrr0jwmagKnrEn3kzwJJ4K2LhkTmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zSlXYCsry2CVxm8M1GpGYo7MbziIJcFay8NwyKA0UrU=;
+ b=OdzZw9hoFoOcg198utGHJgWjmRf5HIb7kyo/pXE6BdDkSGCuNqOoAPx90kQhvHd2OOP/+dcs879Bg57JVuvXOt/TtQuNRKGLcgvqmj8NUs4NZG833PHdAdNCbW37HRzhPrYwaHGD8wJLKFF85l5PnGvHgv5nitHDYGXONFvpx+ItkN1iGiBMAbjRyhe38KEZyJsw/njWeSP1dOIbsGu+LMIihsAsGcNDyBwcM561w3rfMvdGN8wBQsBL6tPU/n01EGOMki+yS9pvbK/H9CE4OxNQei7I0Tz8QudEwHC4zlNfSsZhkefxjxJn+dCedUujA9vwivnlH3T/zrFa0a4HYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zSlXYCsry2CVxm8M1GpGYo7MbziIJcFay8NwyKA0UrU=;
+ b=Katv3Er1eb8Of2KlJjsMSe2rhzj3DnwrD2PSK2uPiF5psgwKMlKbxhzIdGpmkcoj46MKuar4fHdOp7JPS6Wv3YDJ1Q4hDAP8iLqw5Tvd4kapDzrFwPqVJ0o5bCn3t6aU40P8RC4cKOOkU1WCgjoaD3JlUpI33YVOKUn2XA45y70=
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
+ by BYAPR05MB4070.namprd05.prod.outlook.com (2603:10b6:a02:88::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.5; Wed, 2 Sep
+ 2020 16:58:16 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::9cef:3341:6ae9:a2c5]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::9cef:3341:6ae9:a2c5%7]) with mapi id 15.20.3348.014; Wed, 2 Sep 2020
+ 16:58:16 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86 <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] x86/special_insn: reverse __force_order logic
+Thread-Topic: [PATCH] x86/special_insn: reverse __force_order logic
+Thread-Index: AQHWgSgoL1dmFxhMRECqVhfYnO9uuKlVeiqAgAAXogCAAABjgA==
+Date:   Wed, 2 Sep 2020 16:58:16 +0000
+Message-ID: <1678A071-A4D7-4BE6-A768-0985E3F10444@vmware.com>
+References: <20200901161857.566142-1-namit@vmware.com>
+ <20200902125402.GG1362448@hirez.programming.kicks-ass.net>
+ <1E3FD845-E71A-4518-A0BF-FAD31CBC3E28@vmware.com>
+ <20200902165652.GO1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200902165652.GO1362448@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [2601:647:4700:9b2:4945:3524:19f7:23e9]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f1cea981-c015-4d08-e34c-08d84f6162d7
+x-ms-traffictypediagnostic: BYAPR05MB4070:
+x-microsoft-antispam-prvs: <BYAPR05MB407082A07D3BE2E56AA9B532D02F0@BYAPR05MB4070.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uwbClMklO+ofyL1egIfhB9esJfsvrODcm236RFsFRtbb6s8LC7GiKMRGuQ6bCctY2BZbJR421hw3T1yLswXxcL/gw/xOQbDLRTWHA4cXARZQbzZ3JcdPczlxB170Iu8HHwxbBq3G2tFR/nwmt3w/3t/EvxU3deFvnh1j6HATxAiI6Yc+RwgLlmyduZUGNVC/vC2cYCzfFc5tI8NOA+tl2IAjsyCREUVUZxUaagTcNjXOiNcaSBF2EHzhqECFsZ+u1sRiwCv05Q0aGEaaLiJyszh+x+vxHyJjiv/OjNz5lYfS/fR8KxK61yyvSXClLA325pqm1kAGirckwfQabT6ISw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(39860400002)(366004)(6486002)(83380400001)(76116006)(316002)(2906002)(86362001)(6506007)(66946007)(478600001)(33656002)(66556008)(6512007)(54906003)(36756003)(64756008)(2616005)(6916009)(66476007)(66446008)(186003)(7416002)(4326008)(8936002)(4744005)(5660300002)(71200400001)(8676002)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: V+PcX61a3nCIowl0PI0DT61ZQbKO9AUSor+KIxrto/Yf00faLcW2zpTBTfiYgVocGdF4E+rs39fryalTXUvSPgIB4gru8g1DZwd8/ANGmLTHgrrLnj1/xl2J6EyHABrpSViPLs5F5VyCV0P/utz/4YY/jJcBY/xbCzFSslFfNYtggKiQm9dTUI4s3Oe/srBCf7EUkM6MuNrjh3nW+PDKoRiRFaBMi5vpilayJkBhPXi7ItdefvLqHZtqhSAPnYTf7k04rw2CA7Wbgw+yrWE2+HoLxy13Y7fvqSnx7BxFb0rq1JOKFBDfkKkYISeQGivzTIf1B7pYfb1Atx9MZU/9qbyKsgKGap1SVEMZyFYAzH6jjANbvEUMqDB4gVIxRTSL0JLCnfTfFYnW/gu9pvZQJQdU6bwUiXO6B1KxnT/yncSzTb6rH4JLZTV+yUCdV078s2XvpGg1TMGH9zIZqeLaLRhMqP9PB26AT+bIz1XGTBNCdG+JI5TkMz35iXEUv2NngxjTzVFHAw9GdPqB7qJzPvTxjvsgvg5GBY3gtr9m/8aTHK5vXz7eKyuLwsNomYjOKw5wIrHJRDQmz/IXsC4VXAwGtt6PD0sAI86d0/bV3jdDJpxpLavsYLlhndyyP5kRvkrvCXa5Ru83wjLEPMe+5qKXrkMrW4Srhq4sQjrqYma8aRdX+DlVpEpU6hxmFsUiDvB+MCcjBxV66JStjpMNCA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <EDF969D98B8F3147811B860589CA9521@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902140614.28636-1-yuehaibing@huawei.com>
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1cea981-c015-4d08-e34c-08d84f6162d7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 16:58:16.0313
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1oUNrkGvpL7mTDDi4mxD6RHyKOQ98gGE/qGByz53QlDbt7LqpJ61tLl0+oEIX40BeoxIv2alM6/HCKRG6XC8Eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4070
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 10:06:14PM +0800, YueHaibing wrote:
-> In case of error, the function devm_ioremap_wc() returns NULL pointer
-> not ERR_PTR(). The IS_ERR() test in the return value check should be
-> replaced with NULL test.
-> 
-> Fixes: 87218f96c21a ("remoteproc: k3-dsp: Add support for C71x DSPs")
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> index 9011e477290c..f373df35d7d0 100644
-> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
-> @@ -445,10 +445,10 @@ static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
->  
->  		kproc->mem[i].cpu_addr = devm_ioremap_wc(dev, res->start,
->  							 resource_size(res));
-> -		if (IS_ERR(kproc->mem[i].cpu_addr)) {
-> +		if (!kproc->mem[i].cpu_addr) {
->  			dev_err(dev, "failed to map %s memory\n",
->  				data->mems[i].name);
-> -			return PTR_ERR(kproc->mem[i].cpu_addr);
-> +			return -EBUSY;
+> On Sep 2, 2020, at 9:56 AM, peterz@infradead.org wrote:
+>=20
+> On Wed, Sep 02, 2020 at 03:32:18PM +0000, Nadav Amit wrote:
+>=20
+>> Thanks for pointer. I did not see the discussion, and embarrassingly, I =
+have
+>> also never figured out how to reply on lkml emails without registering t=
+o
+>> lkml.
+>=20
+> The lore.kernel.org thing I pointed you to allows you to download an
+> mbox with the email in (see the very bottom of the page). Use your
+> favorite MUA to open it and reply :-)
 
-Shouldn't this be -ENOMEM?
-
->  		}
->  		kproc->mem[i].bus_addr = res->start;
->  		kproc->mem[i].dev_addr = data->mems[i].dev_addr;
-> -- 
-> 2.17.1
-> 
-> 
+Thanks!=
