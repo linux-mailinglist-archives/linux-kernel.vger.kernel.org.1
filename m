@@ -2,54 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B0825AED6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C0E25AFA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgIBP3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:29:44 -0400
-Received: from k17.unixstorm.org ([91.227.123.100]:34185 "EHLO
-        k17.unixstorm.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgIBP3G (ORCPT
+        id S1728192AbgIBPnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:43:00 -0400
+Received: from m176150.mail.qiye.163.com ([59.111.176.150]:6807 "EHLO
+        m176150.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727804AbgIBNl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:29:06 -0400
-Received: from [127.0.0.1] (helo=k17.unixstorm.org)
-        by k17.unixstorm.org with esmtpa (Exim 4.92.3)
-        (envelope-from <kamil@re-ws.pl>)
-        id 1kDUgy-0003B6-1o; Wed, 02 Sep 2020 17:28:56 +0200
+        Wed, 2 Sep 2020 09:41:28 -0400
+Received: from vivo.com (wm-10.qy.internal [127.0.0.1])
+        by m176150.mail.qiye.163.com (Hmail) with ESMTP id AA9431A31B7;
+        Wed,  2 Sep 2020 21:17:02 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ADIABQBNDXyW8X9QUmo2xaoL.1.1599052622252.Hmail.bernard@vivo.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: =?UTF-8?B?W1JlLXNlbmRdW1BBVENIXSBncHUvZHJtOiByZW1vdmUgZHJtX21vZGVzZXRfbG9jayBwcm90ZWN0aW9uIGZvciBkcm1fZXJyb3I=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 157.0.31.124
 MIME-Version: 1.0
-Date:   Wed, 02 Sep 2020 17:28:55 +0200
-From:   Kamil Lorenc <kamil@re-ws.pl>
-To:     David Miller <davem@davemloft.net>
-Cc:     jacmet@sunsite.dk, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kamil@re-ws.pl
-Subject: Re: [PATCH] net: usb: dm9601: Add USB ID of Keenetic Plus DSL
-In-Reply-To: <20200901.154053.2048405039114618360.davem@davemloft.net>
-References: <GENERATED-WASMISSING-1kDBz9-0002Lq-5x@k17.unixstorm.org>
- <20200901.154053.2048405039114618360.davem@davemloft.net>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <d5a70ede70581fe61fc093e8c6b9d8ea@re-ws.pl>
-X-Sender: kamil@re-ws.pl
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Id: kamil@re-ws.pl
+Received: from bernard@vivo.com( [157.0.31.124) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 2 Sep 2020 21:17:02 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Wed, 2 Sep 2020 21:17:02 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTUweSx0ZT0gZT0lLVkpOQkJLTklNSUlMT0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVKS0tZBg++
+X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo*Mjo5Kjk1PyMCLEMjQiouFhRJ
+        AxoUN1VKVUpOQkJLTklNSUhKT09VMxYaEhdVGR4JFRoJHzsNEg0UVRgUFkVZV1kSC1lBWUpOTFVL
+        VUhKVUpJT1lXWQgBWUFIS0xNNwY+
+X-HM-Tid: 0a744ef6ab6f93b4kuwsaa9431a31b7
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 2020-09-02 00:40, David Miller napisał(a):
-> From: Kamil Lorenc <kamil@re-ws.pl>
-> Date:
-> 
->> I received an error from Peter Korsgaard's mailserver informing that 
->> his
->> email address does not exist. Should I do something with that fact?
-> 
-> Probably need a MAINTAINERS update.  Is there any other email address 
-> by
-> which Peter can be reached?
-
-Github pointed me to peter@korsgaard.com, but I haven't tried to reach 
-him there.
+SW4gZnVuY3Rpb24gZHJtX2F0b21pY19oZWxwZXJfc2h1dGRvd24sIG1heWJlIHRoZXJlIGlzIG5v
+IG5lZWQKdG8gcHJvdGVjdCBEUk1fRVJST1IgbG9nIGluIERSTV9NT0RFU0VUX0xPQ0tfQUxMX0JF
+R0lOICYKRFJNX01PREVTRVRfTE9DS19BTExfRU5ELiBUaGlzIGNoYW5nZSBpcyB0byBtYWtlIGNv
+ZGUgcnVuIGEgYml0CmZhc3QuCgpTaWduZWQtb2ZmLWJ5OiBCZXJuYXJkIFpoYW8gPGJlcm5hcmRA
+dml2by5jb20+Ci0tLQogZHJpdmVycy9ncHUvZHJtL2RybV9hdG9taWNfaGVscGVyLmMgfCA0ICst
+LS0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYg
+LS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2F0b21pY19oZWxwZXIuYyBiL2RyaXZlcnMvZ3B1
+L2RybS9kcm1fYXRvbWljX2hlbHBlci5jCmluZGV4IDg1ZDE2M2YxNjgwMS4uODkwMmZkNjMxNmZj
+IDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2F0b21pY19oZWxwZXIuYworKysgYi9k
+cml2ZXJzL2dwdS9kcm0vZHJtX2F0b21pY19oZWxwZXIuYwpAQCAtMzEwMCwxMiArMzEwMCwxMCBA
+QCB2b2lkIGRybV9hdG9taWNfaGVscGVyX3NodXRkb3duKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYp
+CiAJaW50IHJldDsKIAogCURSTV9NT0RFU0VUX0xPQ0tfQUxMX0JFR0lOKGRldiwgY3R4LCAwLCBy
+ZXQpOwotCiAJcmV0ID0gZHJtX2F0b21pY19oZWxwZXJfZGlzYWJsZV9hbGwoZGV2LCAmY3R4KTsK
+KwlEUk1fTU9ERVNFVF9MT0NLX0FMTF9FTkQoY3R4LCByZXQpOwogCWlmIChyZXQpCiAJCURSTV9F
+UlJPUigiRGlzYWJsaW5nIGFsbCBjcnRjJ3MgZHVyaW5nIHVubG9hZCBmYWlsZWQgd2l0aCAlaVxu
+IiwgcmV0KTsKLQotCURSTV9NT0RFU0VUX0xPQ0tfQUxMX0VORChjdHgsIHJldCk7CiB9CiBFWFBP
+UlRfU1lNQk9MKGRybV9hdG9taWNfaGVscGVyX3NodXRkb3duKTsKIAotLSAKMi4xNy4xCgoNCg0K
