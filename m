@@ -2,153 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412C725A4AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93CC25A4B9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 06:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgIBElO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 00:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgIBElN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 00:41:13 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA10AC061244;
-        Tue,  1 Sep 2020 21:41:13 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id p13so3861390ils.3;
-        Tue, 01 Sep 2020 21:41:13 -0700 (PDT)
+        id S1726467AbgIBEuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 00:50:01 -0400
+Received: from mail-dm6nam10on2061.outbound.protection.outlook.com ([40.107.93.61]:3904
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726144AbgIBEt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 00:49:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kMPv11IlkoQvfXZ82Z/GkiMh2khqKSOtXi7GVA9y6VzOSGBBENdAjMNIKhnB5tkCW925Rl21FQBW+hBbzgf01S/8Vz1i0c4sFavddP9fc2Iai0iE+zz63UwcwZffcx7wsSrRI24CbxrPV/kwrtK8bCQqujtP+Dbc+1vdThsuCSXl+ZxNPjMtBNQzo1Raafy58GBJAsQv52Hc/38MdHsWmzp3tVcPfZH+2/LbF7xL6vvF13TyhiMytPBDpx985vrMSndfnm6a8a2CWpnsByhhS9cCj6UNkGUPKdhjp6wguJNrpDW/v+znCdTU+ItY0tb5UiofpZfNaLaklvlhhwYmTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VaGkcZzHqPvl2U+JcPXmfVtH2Cww0YaKnBZ7Z2/wDg0=;
+ b=ZMwSynQFUtIYJRuH9UVsmmXrmtqDwMiw5UGoJK6K0Kn8xsxRE6iHULR2dTpLpDyvujF+X008XTnGgXDpg/cRdKc6rQk5gcnsFPe/A0t1EEVHbyh9sT+hzfQp+TKGRoecQuqDHMTVTyiKmxzM/T29d0oJ5R4RY04pUtBiCu0XR5ob+ereNiQGbqI8qFJPHbHbBwlpTUb8CdyrmG2w/x+LF+QCgjXVQZ1bUx37Y8LomSFPfWRp52vQi0f9fv0lyUhNX62OaIhToxMSSbpDHgv3ebdxCHdMTKW0VaHSOhnsfCDsm+XbDT3mheC52P0Q2fm8vfK7xfUAqw6dya64UuguWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NoUssg8K6LT6ANgsFFz5OTHDN1mgwkLG8uhxUiPJzAM=;
-        b=uy0LQ06Y1uqJ7i7iq6BXHfEjLJffm1JjMuYaIbUUmnWgY3ST+iXQuMyHjT1ifBe8ws
-         jJFMgdcX+lIoMws9xGe4YJ3y8xd/LzVW3djf/+foTY/yrEV8z4ILAvF/L92p1C3ZApUM
-         AJ7nVA2CemlgGrwyVweXAZtQybOVO6PMlOgKfvKZiRp/7S91ql532i6lt5yyl2YWvUD9
-         xf3CNFd3/genH2+K6Zionh7pgx4I2dXge3l/0V29nMlUTanwK9kuWAK0qccJUk7sj0xB
-         Ex2OdcBtqJWm8mBRPJxmRFXaPCnuqgD6aYdHO7PKAogGZB3JjlLLnmeKX4qJHMvF1Mep
-         DKgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NoUssg8K6LT6ANgsFFz5OTHDN1mgwkLG8uhxUiPJzAM=;
-        b=sCDq3AqwcdDrQSvQnI5QhF93L7dS1EgVXU5xusn/1udqbUmnc0Z1sb9YLBWLrbeA7A
-         1OLeK0DCejSJz9j2gf3zQVjfcP03OnBlLM/+c/13j+biL+P7eJUFBFU1nL8vX7wFh/cd
-         V41kwGppIAihCHqu+9oK+QLGLNWUWBUDsaZemTPs90Qm44dKWxS2PCfulyKE05h1I7xD
-         4CPljysr9S9DXpaGYZC8O1ewdS6Ey3aAp4I7EIXtMLKIf8s/44e5vEWyMQvtRPtEPusS
-         GjpsEQdA2bQ39Mcw+PsksOpJfLiWdD2wcJK2zKNppW3tlen3uWqgiiO5Czdg+d1Znyl0
-         9Elg==
-X-Gm-Message-State: AOAM5315zKUbQ/QRgYlhU3Vcp/b0vVP9DVBbIlJkzynX3WXSWl5bALIW
-        shO2YBy2AQNfWwoAbikArOTrt+zwy4X+VZ5aWwI=
-X-Google-Smtp-Source: ABdhPJxST+MY6Y9TedWIDBJx3cuSZVDAhg+e0wqaIPk1rEmHxTEDF+qO6JlYOOxOr5BsdRafZw47r4JzDJuZx0gPCHg=
-X-Received: by 2002:a92:9145:: with SMTP id t66mr2181458ild.305.1599021672869;
- Tue, 01 Sep 2020 21:41:12 -0700 (PDT)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VaGkcZzHqPvl2U+JcPXmfVtH2Cww0YaKnBZ7Z2/wDg0=;
+ b=JTpZYrbl8dJ1mFxsANEhYhsiJY+UJOsE5I/HJTFv04By04pDczbhRC5UZM7J1rkt7jUobhvFOUKgJMRyQrN/eGelIcEe8BUE5BdCFoXNq95af25WsWoof6H/XUA+LOe25LjxEBERGSgrb87YHk5wpntftI7TAicpO/SQs4YgrCY=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
+ DM6PR12MB2795.namprd12.prod.outlook.com (2603:10b6:5:41::32) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3348.15; Wed, 2 Sep 2020 04:49:47 +0000
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::cc8d:7537:ec56:108e]) by DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::cc8d:7537:ec56:108e%11]) with mapi id 15.20.3326.025; Wed, 2 Sep 2020
+ 04:49:47 +0000
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, sean.m.osborne@oracle.com,
+        james.puthukattukaran@oracle.com, joao.m.martins@oracle.com,
+        boris.ostrovsky@oracle.com, jon.grimm@amd.com,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Subject: [PATCH 0/2] iommu: amd: Fix intremap IO_PAGE_FAULT for VMs
+Date:   Wed,  2 Sep 2020 04:51:08 +0000
+Message-Id: <20200902045110.4679-1-suravee.suthikulpanit@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SN1PR12CA0093.namprd12.prod.outlook.com
+ (2603:10b6:802:21::28) To DM5PR12MB1163.namprd12.prod.outlook.com
+ (2603:10b6:3:7a::18)
 MIME-Version: 1.0
-References: <1598921718-79505-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpVtb3Cks-LacZ865=C8r-_8ek1cy=n3SxELYGxvNgkPtw@mail.gmail.com> <511bcb5c-b089-ab4e-4424-a83c6e718bfa@huawei.com>
-In-Reply-To: <511bcb5c-b089-ab4e-4424-a83c6e718bfa@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 1 Sep 2020 21:41:01 -0700
-Message-ID: <CAM_iQpW1c1TOKWLxm4uGvCUzK0mKKeDg1Y+3dGAC04pZXeCXcw@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from 255.255.255.255 (255.255.255.255) by SN1PR12CA0093.namprd12.prod.outlook.com (2603:10b6:802:21::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend Transport; Wed, 2 Sep 2020 04:49:46 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.78.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 018f5fb0-f49f-4ed2-bdcf-08d84efb9e40
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2795:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB279527E667B4F7AB490BB744F32F0@DM6PR12MB2795.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U3w1vuW3zY9ecjCYwdDrXyyk8xCJa3fGM8HWvFKd79+9J06fpbCr57lllDJGqVQb6pvxUneRZfR0ntxZNZZ4JGM3OThwr72IjO/r8eg/jpsCRFAqfAsSOLxbHjiXZVZo1Rv0AiYUJN7lTzBvlXFew6V17WcvJyFdRGmrmbjRCzcv355lOh2lxHHAxq5whsyIigCzc/RZazivkiQVg3e8o5LiUgdOFc0rbT2Ae/irTfT19ttif0HvB5HMjcG0vcBzDHrDt+PPRGtQGigay6eUdOc4JhYSk6b0JEBtM0x73cJ/iQ/D6eZsKT8bxLXadb9i
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(376002)(136003)(346002)(83380400001)(4326008)(8936002)(2616005)(956004)(86362001)(478600001)(26005)(16576012)(44832011)(8676002)(2906002)(5660300002)(36756003)(66556008)(316002)(66476007)(66946007)(186003)(6666004)(1076003)(6486002)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: /6zPGhZAlGhrZxT2NcTBK2a2xwuNof/H7+0nxDSUpL4uL+ho5Sp4hwbW/AhO7IsBAs0IXVbiGvQLQPtB7cL3FoB4MT9firAIWHw1USeNNRhZDAXBGJXpk80jIjiGmP8uK1P4x4nooEehZeaU94VJHmLkdVmheWM19OZGxG1Vh3cDRq8Kn0GLnLSgatxR/nXaX5mhsLdEMzj5rELCdFQW6r0zIC2xGNHW5bOAJfG+GfkSSg0S4IZNiKDJ5d4QmJLezYJzimTofvjmmffj/Blx3mcWZYGhWEp0SJSdIedGgzhtVg61B+JqujY6LDU7H9zJYpvbMe3E1e9JKQ7f8Z5ECBod2xnVqXH2/WwU3lqCFEzRkoViEOrky6dcuChtlI6HPdVcSlz/hKOa7sdpZbUcX7h5T1WuRSj3rWJqRCMQ6w5Q/i167uBGX2Xn4ABvkVhzYyBSAB2sdnYpmbOZKeuvDfaiocK0l3shh7PCAeUhk9PXjguugfI6tQ5aocqtWhXRfyvwqDZz3k3JkYGtg1EnH3GE1D/1XwBZjcS0SB4aCOg+EbZrqu+zG0RSiNFk7oR3QSTGGTr6vd5ALHKrmjk7UPgPnECY+pSOap0RguBqW/VraY5Bor7PipnU/Hgq37f6Ca556sswEfZqmK9ED6K2aA==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 018f5fb0-f49f-4ed2-bdcf-08d84efb9e40
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2020 04:49:47.4374
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bMazvi3mGjGxuvcwp52ACBEyFyNo268banjAHAIlzbPDhXei+VZVTlsn/3fQLrWUSw7paaLA1SGHf3ZTIERNnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2795
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 1, 2020 at 6:42 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2020/9/2 2:24, Cong Wang wrote:
-> > On Mon, Aug 31, 2020 at 5:59 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >>
-> >> Currently there is concurrent reset and enqueue operation for the
-> >> same lockless qdisc when there is no lock to synchronize the
-> >> q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
-> >> qdisc_deactivate() called by dev_deactivate_queue(), which may cause
-> >> out-of-bounds access for priv->ring[] in hns3 driver if user has
-> >> requested a smaller queue num when __dev_xmit_skb() still enqueue a
-> >> skb with a larger queue_mapping after the corresponding qdisc is
-> >> reset, and call hns3_nic_net_xmit() with that skb later.
-> >
-> > Can you be more specific here? Which call path requests a smaller
-> > tx queue num? If you mean netif_set_real_num_tx_queues(), clearly
-> > we already have a synchronize_net() there.
->
-> When the netdevice is in active state, the synchronize_net() seems to
-> do the correct work, as below:
->
-> CPU 0:                                       CPU1:
-> __dev_queue_xmit()                       netif_set_real_num_tx_queues()
-> rcu_read_lock_bh();
-> netdev_core_pick_tx(dev, skb, sb_dev);
->         .
->         .                               dev->real_num_tx_queues = txq;
->         .                                       .
->         .                                       .
->         .                               synchronize_net();
->         .                                       .
-> q->enqueue()                                    .
->         .                                       .
-> rcu_read_unlock_bh()                            .
->                                         qdisc_reset_all_tx_gt
->
->
+Interrupt remapping IO_PAGE_FAULT has been observed under system w/
+large number of VMs w/ pass-through devices. This can be reproduced with
+64 VMs + 64 pass-through VFs of Mellanox MT28800 Family [ConnectX-5 Ex],
+where each VM runs small-packet netperf test via the pass-through device
+to the netserver running on the host. All VMs are running in reboot loop,
+to trigger IRTE updates.
 
-Right.
+In addition, to accelerate the failure, irqbalance is triggered periodically
+(e.g. 1-5 sec), which should generate large amount of updates to IRTE.
+This setup generally triggers IO_PAGE_FAULT within 3-4 hours.
 
+Investigation has shown that the issue is in the code to update IRTE
+while remapping is enabled. Please see patch 2/2 for detail discussion.
 
-> but dev->real_num_tx_queues is not RCU-protected, maybe that is a problem
-> too.
->
-> The problem we hit is as below:
-> In hns3_set_channels(), hns3_reset_notify(h, HNAE3_DOWN_CLIENT) is called
-> to deactive the netdevice when user requested a smaller queue num, and
-> txq->qdisc is already changed to noop_qdisc when calling
-> netif_set_real_num_tx_queues(), so the synchronize_net() in the function
-> netif_set_real_num_tx_queues() does not help here.
+This serires has been tested running in the setup mentioned above
+upto 96 hours w/o seeing issues.
 
-How could qdisc still be running after deactivating the device?
+Thanks,
+Suravee
 
+Suravee Suthikulpanit (2):
+  iommu: amd: Restore IRTE.RemapEn bit after programming IRTE
+  iommu: amd: Use cmpxchg_double() when updating 128-bit IRTE
 
->
-> >
-> >>
-> >> Avoid the above concurrent op by calling synchronize_rcu_tasks()
-> >> after assigning new qdisc to dev_queue->qdisc and before calling
-> >> qdisc_deactivate() to make sure skb with larger queue_mapping
-> >> enqueued to old qdisc will always be reset when qdisc_deactivate()
-> >> is called.
-> >
-> > Like Eric said, it is not nice to call such a blocking function when
-> > we have a large number of TX queues. Possibly we just need to
-> > add a synchronize_net() as in netif_set_real_num_tx_queues(),
-> > if it is missing.
->
-> As above, the synchronize_net() in netif_set_real_num_tx_queues() seems
-> to work when netdevice is in active state, but does not work when in
-> deactive.
+ drivers/iommu/amd/Kconfig |  2 +-
+ drivers/iommu/amd/init.c  | 21 +++++++++++++++++++--
+ drivers/iommu/amd/iommu.c | 19 +++++++++++++++----
+ 3 files changed, 35 insertions(+), 7 deletions(-)
 
-Please explain why deactivated device still has qdisc running?
+-- 
+2.17.1
 
-At least before commit 379349e9bc3b4, we always test deactivate
-bit before enqueueing. Are you complaining about that commit?
-That commit is indeed suspicious, at least it does not precisely revert
-commit ba27b4cdaaa66561aaedb21 as it claims.
-
-
->
-> And we do not want skb left in the old qdisc when netdevice is deactived,
-> right?
-
-Yes, and more importantly, qdisc should not be running after deactivation.
-
-Thanks.
