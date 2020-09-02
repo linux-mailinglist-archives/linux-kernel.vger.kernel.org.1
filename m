@@ -2,64 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A29E25A5EE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215BE25A5F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgIBHB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 03:01:59 -0400
-Received: from smtprelay0015.hostedemail.com ([216.40.44.15]:47256 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726130AbgIBHB7 (ORCPT
+        id S1726637AbgIBHDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 03:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgIBHDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:01:59 -0400
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id 621328007616
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:01:58 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 859B5100E7B46;
-        Wed,  2 Sep 2020 07:01:57 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3867:3868:3870:3871:4321:5007:6119:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: fowl93_5c072b42709f
-X-Filterd-Recvd-Size: 1483
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  2 Sep 2020 07:01:56 +0000 (UTC)
-Message-ID: <7a1a2f554c567577a63d5658e8f48d5b4b103df8.camel@perches.com>
-Subject: Re: [PATCH] staging: gdm724x: gdm_tty: replaced macro with a
- function
-From:   Joe Perches <joe@perches.com>
-To:     Antoni Przybylik <antoni.przybylik@wp.pl>,
-        gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Wed, 02 Sep 2020 00:01:55 -0700
-In-Reply-To: <20200901201626.75405-1-antoni.przybylik@wp.pl>
-References: <20200901201626.75405-1-antoni.przybylik@wp.pl>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 2 Sep 2020 03:03:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1181C061244;
+        Wed,  2 Sep 2020 00:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wETnSd18KmVdHGiQrOod3fMaukGGVo26iGV8/eRIszM=; b=CLBKV4PGA/m9rvGdAFkFNGKZjc
+        lyqcoXfM+nT2VZltV4ENPo/Wbd66EiRaInTSiAHgTc3YpYFkpzJo79C8gXhwNgWjKmUMfdWL2st7/
+        CiwzilPZ3XU5h7ZktGAdRFFpU5FHY0Noq8TOskFZDyLMKW8rXGZ3sw8/IHhg1Xd6EG2y4vvQEFSQC
+        CdurELo2ykFBaUROmKYFFzGWMlVcCdHp2+ULoyTNsEQLCXooNQ9dJrZ4kdzbuqMgQhfD1CEGX2DMN
+        HtrWjfaV2ImjScJ6JuOyqAkgUCY9pczdm709LqLVd/ZLsFx+ewG3jMKD7iaj78+WR9ece9/IQ0RQA
+        doMVzapQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDMmr-0005hv-IF; Wed, 02 Sep 2020 07:02:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4D6703012DF;
+        Wed,  2 Sep 2020 09:02:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0D12B2B774673; Wed,  2 Sep 2020 09:02:26 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 09:02:26 +0200
+From:   peterz@infradead.org
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Eddy_Wu@trendmicro.com, x86@kernel.org, davem@davemloft.net,
+        rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
+        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
+        paulmck@kernel.org
+Subject: Re: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers
+ and make kretprobe lockless
+Message-ID: <20200902070226.GG2674@hirez.programming.kicks-ass.net>
+References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
+ <20200901190808.GK29142@worktop.programming.kicks-ass.net>
+ <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-01 at 22:16 +0200, Antoni Przybylik wrote:
-> This approach is more elegant and prevents some problems related to
-> macros such as operator precedence in expanded expression.
-[]
-> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-[]
-> @@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
->  static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
->  static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
->  
-> +static int gdm_tty_ready(struct gdm *gdm)
-> +{
-> +	return (gdm && gdm->tty_dev && gdm->port.count);
-> +}
+On Wed, Sep 02, 2020 at 09:37:39AM +0900, Masami Hiramatsu wrote:
+> On Tue, 1 Sep 2020 21:08:08 +0200
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > On Sat, Aug 29, 2020 at 09:59:49PM +0900, Masami Hiramatsu wrote:
+> > > Masami Hiramatsu (16):
+> > >       kprobes: Add generic kretprobe trampoline handler
+> > >       x86/kprobes: Use generic kretprobe trampoline handler
+> > >       arm: kprobes: Use generic kretprobe trampoline handler
+> > >       arm64: kprobes: Use generic kretprobe trampoline handler
+> > >       arc: kprobes: Use generic kretprobe trampoline handler
+> > >       csky: kprobes: Use generic kretprobe trampoline handler
+> > >       ia64: kprobes: Use generic kretprobe trampoline handler
+> > >       mips: kprobes: Use generic kretprobe trampoline handler
+> > >       parisc: kprobes: Use generic kretprobe trampoline handler
+> > >       powerpc: kprobes: Use generic kretprobe trampoline handler
+> > >       s390: kprobes: Use generic kretprobe trampoline handler
+> > >       sh: kprobes: Use generic kretprobe trampoline handler
+> > >       sparc: kprobes: Use generic kretprobe trampoline handler
+> > >       kprobes: Remove NMI context check
+> > >       kprobes: Free kretprobe_instance with rcu callback
+> > >       kprobes: Make local used functions static
+> > > 
+> > > Peter Zijlstra (5):
+> > >       llist: Add nonatomic __llist_add() and __llist_dell_all()
+> > >       kprobes: Remove kretprobe hash
+> > >       asm-generic/atomic: Add try_cmpxchg() fallbacks
+> > >       freelist: Lock less freelist
+> > >       kprobes: Replace rp->free_instance with freelist
+> > 
+> > This looks good to me, do you want me to merge them through -tip? If so,
+> > do we want to try and get them in this release still?
+> 
+> Yes, thanks. For the kretprobe missing issue, we will need the first half
+> (up to "kprobes: Remove NMI context check"), so we can split the series
+> if someone think the lockless is still immature.
 
-static bool  gdm_tty_ready might be better.
+Ok, but then lockdep will yell at you if you have that enabled and run
+the unoptimized things.
 
+> > Ingo, opinions? This basically fixes a regression cauesd by
+> > 
+> >   0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()")
+> > 
+> 
+> Oops, I missed Ingo in CC. 
 
+You had x86@, he'll have a copy :-)
