@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A728B25A2BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3234E25A2BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgIBBri convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 21:47:38 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:38226 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726131AbgIBBqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 21:46:34 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id D79D9F063F2F68CEF4D7;
-        Wed,  2 Sep 2020 09:46:32 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 2 Sep 2020 09:46:32 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Wed, 2 Sep 2020 09:46:32 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] block: Fix potential page reference leak in
- __bio_iov_iter_get_pages()
-Thread-Topic: [PATCH] block: Fix potential page reference leak in
- __bio_iov_iter_get_pages()
-Thread-Index: AdaAytm+sluc9YAIwkeuWIOV/GEP+w==
-Date:   Wed, 2 Sep 2020 01:46:32 +0000
-Message-ID: <7fa19b78076e400f8f51c563746d697d@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.178.74]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726800AbgIBBtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 21:49:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726122AbgIBBr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 21:47:57 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6A082068F;
+        Wed,  2 Sep 2020 01:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599011277;
+        bh=ACnmUo/q7wikQNAqquuTw1JPZJIlINIYP3A9vIHgDXw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k8MK8Bb0dxIQrH34HVR3KRioFlzw+N1SwWNUtWAmeBX6n+8opBmc0BC6I1FFlBEhR
+         BH782NR2rCXX9vt0S8wRrxs7CMih5usB70/pYKsuv/qgwlmy2Y/nNcR6eOqFVizbJP
+         pmzS9vF3SmhyUWJxWmIUwB+YfkpH/M74pPp8lJlQ=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8860440D3D; Tue,  1 Sep 2020 22:47:54 -0300 (-03)
+Date:   Tue, 1 Sep 2020 22:47:54 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Al Grant <al.grant@arm.com>
+Subject: Re: [PATCH 1/2] perf cs-etm: Fix corrupt data after perf inject from
+Message-ID: <20200902014754.GA3444345@kernel.org>
+References: <20200819084751.17686-1-leo.yan@linaro.org>
+ <20200827205354.GE22307@xps15>
+ <20200831000432.GA4715@leoy-ThinkPad-X240s>
+ <20200901145432.GB1422817@kernel.org>
+ <20200902003931.GA3306@leoy-ThinkPad-X240s>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902003931.GA3306@leoy-ThinkPad-X240s>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@infradead.org> wrote:
->On Tue, Sep 01, 2020 at 08:00:06AM -0400, Miaohe Lin wrote:
->> When bio is full, __bio_iov_iter_get_pages() would return error 
->> directly while left page reference still held in pages. Release these references.
->> Also advance the iov_iter according to what we have done successfully.
->> 
->> Fixes: 576ed9135489 ("block: use bio_add_page in 
->> bio_iov_iter_get_pages")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->
->The WARN_ON means something is fundamentally wrong here.  I think a few leaked pages are the least of our problems in this case.
+Em Wed, Sep 02, 2020 at 08:39:32AM +0800, Leo Yan escreveu:
+> On Tue, Sep 01, 2020 at 11:54:32AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Mon, Aug 31, 2020 at 08:04:32AM +0800, Leo Yan escreveu:
+> > > On Thu, Aug 27, 2020 at 02:53:54PM -0600, Mathieu Poirier wrote:
+> > > > On Wed, Aug 19, 2020 at 04:47:50PM +0800, Leo Yan wrote:
+> > > > I've see this patch before...  I thought it had been merged - what happened?
 
-Yes, WARN_ON means something is fundamentally wrong here. But IMO it's not really a big problem when bio is full.
-We should not simply rely on this WARN_ON and we can handle this gracefully.
-Thanks.
+> > > This patch before has been sent by Al to CoreSight mailing list but has
+> > > not sent to LKML, this is why I resent it to LKML in case it's missed.
 
+> > So, was it Acked on the CoreSight mailing list? Are we missing any
+> > Acked-by or Reviewed-by for this 1/2 patch as we got for 2/2?
+ 
+> The CoreSight mailing list has some discussion for this patch set,
+> when respin this patch set, I confirmed we don't miss any 'Acked' or
+> 'Reviewed' tags.
+
+So, this patch was included in today's
+perf-tools-fixes-for-v5.9-2020-09-01 signed tag sent to Linus in a pull
+req, please update your perf/urgent branch, and go on from there, I'll
+merge that into my perf/core branch as soon as Linus merges it.
+
+- Arnaldo
