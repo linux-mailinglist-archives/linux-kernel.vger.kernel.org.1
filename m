@@ -2,46 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3393625AF3F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA19B25AF3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgIBPf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        id S1728445AbgIBPf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728244AbgIBPfx (ORCPT
+        with ESMTP id S1728312AbgIBPfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:35:53 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D277C061245;
-        Wed,  2 Sep 2020 08:35:53 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDUnK-009LqU-QO; Wed, 02 Sep 2020 15:35:30 +0000
-Date:   Wed, 2 Sep 2020 16:35:30 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     maz@kernel.org, alsa-devel@alsa-project.org,
-        dan.carpenter@oracle.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Subject: Re: general protection fault in snd_ctl_release
-Message-ID: <20200902153530.GK1236603@ZenIV.linux.org.uk>
-References: <000000000000c15ee205ae4f2531@google.com>
- <s5h36409pbb.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5h36409pbb.wl-tiwai@suse.de>
+        Wed, 2 Sep 2020 11:35:47 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDEDC061244;
+        Wed,  2 Sep 2020 08:35:45 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k15so3033008pfc.12;
+        Wed, 02 Sep 2020 08:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=HEqwK4t3Jbhbn9WZdb3oUG7FILqb8kl/CCgidI15uDY=;
+        b=kHDTXriPodcCimTodp4iPeVr/AekjfXT50p2ukyjZp6e16RJa0u708YWek45zszv3C
+         Fp/vea5VhkArLmNoriItDE91gvIqPHZqGRqPoqHdCstr8iMz+E4qo/0PmUCarHxcTZNk
+         D3fUssP5yY2hYcM3XuyVinhVsdzjSf2puMyTiHDZFxyHRbDEveX0UqmxAA9xsBU/I0W9
+         OTNVmSrDeEy26aw3cdSrEfzEsR8QuM4li2SKqNmzDgMqvBwdoN6n45bZlV8kADcH7Nai
+         NVI4/vnFlm8Kwwl0g/Rl28VIKAF5XpuVcG70+0X5LKFhMqsakOHeOL6TUHBms+IqOKgh
+         akTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HEqwK4t3Jbhbn9WZdb3oUG7FILqb8kl/CCgidI15uDY=;
+        b=LMRGay1Jo0UkPqbCq0Ekes8MZGMy1S9hsyFf9OaBCn9on3BTJd9LB3O676BW/Y8LlU
+         Pt1iIOL4PqAexliK166L5DZZ/BhOfcku9jZBPZopsiHHwfqVSNhpG7NF3aIAxid2l0lx
+         wVWDkKEVvTxXZIBwf/wht1FJQIAWEHdX36SB8nr6GR3zwcfcv5gP4FujF9F0/X6jCXVK
+         RamFzXXX4Hloxm1d42vY9QYoWgz7sy3ZaX06bi8fz4OHUExBIHKKTCd/QOfbc8VR25eK
+         lN+m7OJ6Er0jbwaU7Xl8oGaGdWpy1GPJ3V3lz2xYjZSg37CWdqpRoBVRJk+AQFU3+Dhi
+         2OYQ==
+X-Gm-Message-State: AOAM533Xlovo6igmRtMbwlBamcDQ3m7Bql+JTxxQm0l5G7o6oHBF4WVF
+        ca27zG9GXhbdWAbujgDCz+Y=
+X-Google-Smtp-Source: ABdhPJxHJXPfvXBk6OiHcYKsndf2R7W1LPm3hgGc5pDEcgNbal5oYmhxvi2HRzhZgeA3KaOaKDJWiw==
+X-Received: by 2002:a63:f804:: with SMTP id n4mr2278378pgh.155.1599060944940;
+        Wed, 02 Sep 2020 08:35:44 -0700 (PDT)
+Received: from localhost.localdomain ([123.241.84.106])
+        by smtp.gmail.com with ESMTPSA id m3sm4835402pjn.28.2020.09.02.08.35.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Sep 2020 08:35:43 -0700 (PDT)
+From:   cy_huang <u0084500@gmail.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cy_huang@richtek.com
+Subject: [PATCH] usb: typec: tcpm: Fix if vbus before cc, hard_reset_count not reset issue
+Date:   Wed,  2 Sep 2020 23:35:33 +0800
+Message-Id: <1599060933-8092-1-git-send-email-u0084500@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 05:22:00PM +0200, Takashi Iwai wrote:
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-> Marc, Al, could you guys check this bug?
+Fix: If vbus event is before cc_event trigger, hard_reset_count
+won't bt reset for some case.
 
-That's racy; the first one should be get_file_rcu() instead of
-file_count()+get_file(), the second is not needed at all (we
-have the file pinned down by the caller).  See vfs.git#work.epoll
-for fix
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+Below's the flow.
+
+_tcpm_pd_vbus_off() -> run_state_machine to change state to SNK_UNATTACHED
+call tcpm_snk_detach() -> tcpm_snk_detach() -> tcpm_detach()
+tcpm_port_is_disconnected() will be called.
+But port->attached is still true and port->cc1=open and port->cc2=open
+
+It cause tcpm_port_is_disconnected return false, then hard_reset_count won't be reset.
+After that, tcpm_reset_port() is called.
+port->attached become false.
+
+After that, cc now trigger cc_change event, the hard_reset_count will be kept.
+Even tcpm_detach will be called, due to port->attached is false, tcpm_detach()
+will directly return.
+
+CC_EVENT will only trigger drp toggling again.
+---
+ drivers/usb/typec/tcpm/tcpm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index a48e3f90..5c73e1d 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -2797,8 +2797,7 @@ static void tcpm_detach(struct tcpm_port *port)
+ 		port->tcpc->set_bist_data(port->tcpc, false);
+ 	}
+ 
+-	if (tcpm_port_is_disconnected(port))
+-		port->hard_reset_count = 0;
++	port->hard_reset_count = 0;
+ 
+ 	tcpm_reset_port(port);
+ }
+-- 
+2.7.4
+
