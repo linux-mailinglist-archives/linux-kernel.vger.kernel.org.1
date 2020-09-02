@@ -2,130 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06C925A3C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 281E725A3D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726771AbgIBDHB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Sep 2020 23:07:01 -0400
-Received: from mga03.intel.com ([134.134.136.65]:62774 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgIBDHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 23:07:00 -0400
-IronPort-SDR: unM1avL+8Bv4KDKX5LdlKNNHpvgTp8c/uGlUQQAeULU62FTFHVjLXJQ0HJQijyEEGKvu0xFcMZ
- Nk+ChD4fgRIg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="157314554"
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="157314554"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2020 20:07:00 -0700
-IronPort-SDR: dLeqMVa6k07q6GfWLy1bB+3vOfmMnoTP2rO/Z3OhbuYRKqvNNOSecXkZNbJOFaa/e5W5oPifUo
- wxSBJ2F+iiIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="502498257"
-Received: from hhuan26-mobl1.amr.corp.intel.com ([10.255.35.33])
-  by fmsmga005.fm.intel.com with ESMTP; 01 Sep 2020 20:06:36 -0700
-Content-Type: text/plain; charset=utf-8; format=flowed; delsp=yes
-To:     "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        "Jethro Beekman" <jethro@fortanix.com>,
-        "Chunyang Hui" <sanqian.hcy@antfin.com>,
-        "Jordan Hand" <jorhand@linux.microsoft.com>,
-        "Nathaniel McCallum" <npmccallum@redhat.com>,
-        "Seth Moore" <sethmo@google.com>,
-        "Suresh Siddha" <suresh.b.siddha@intel.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, josh@joshtriplett.org,
-        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
-        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
-        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
-        yaozhangx@google.com
-Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
-References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
- <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
- <20200702035902.GC1819@linux.intel.com>
- <20200704033025.GA144756@linux.intel.com>
-Date:   Tue, 01 Sep 2020 22:06:32 -0500
+        id S1726352AbgIBDLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 23:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgIBDLW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 23:11:22 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952B0C061244;
+        Tue,  1 Sep 2020 20:11:21 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bh8915lcfz9sV7;
+        Wed,  2 Sep 2020 13:11:17 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1599016278;
+        bh=fMqQBM/WSVxCFrgE4f9I7KOjhhp1KYxGJKwaQlaQgxg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ms9sZ7/h81j0dqSoC4IWiudG/R69XosP+PQZtVPtFo6dn50GXhQi0vrAP7F+yu1Og
+         spqjdKdxGXaw5hsFlze9fA8PuiB5se7H80ROXJIGxYpTfHkQIq7XlHVY+HdOFUgZk7
+         ggkD7q3N9zsMme+vPwC+DXJOijBkPGZuq+pOwQgws5JU3t394B+Cycr/G+hYodgb71
+         usX/i9vhqcJCI+I5mImq6ivT/20elSyTzf39bYxtERKE2//FG0hoD4g4F8OLo83OjT
+         07zqSlZWPQogXsuTbtIPKdCGr/PPYIJ4GYxpyHvs7LTyh8RGE1itvIzmqEeOBm2JH2
+         FPBK0qmvI6dCg==
+Date:   Wed, 2 Sep 2020 13:11:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: Re: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20200902131116.053cefe5@canb.auug.org.au>
+In-Reply-To: <20200826100113.6126afad@canb.auug.org.au>
+References: <20200826100113.6126afad@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel Corp
-Message-ID: <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
-In-Reply-To: <20200704033025.GA144756@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: multipart/signed; boundary="Sig_/EqPDh0qhb+x1GhuW/Hz6reS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Jul 2020 22:31:10 -0500, Jarkko Sakkinen  
-<jarkko.sakkinen@linux.intel.com> wrote:
+--Sig_/EqPDh0qhb+x1GhuW/Hz6reS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Wed, Jul 01, 2020 at 08:59:02PM -0700, Sean Christopherson wrote:
->> On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
->> > +static int sgx_validate_secs(const struct sgx_secs *secs,
->> > +			     unsigned long ssaframesize)
->> > +{
->> > +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
->> > +		return -EINVAL;
->> > +
->> > +	if (secs->base & (secs->size - 1))
->> > +		return -EINVAL;
->> > +
->> > +	if (secs->miscselect & sgx_misc_reserved_mask ||
->> > +	    secs->attributes & sgx_attributes_reserved_mask ||
->> > +	    secs->xfrm & sgx_xfrm_reserved_mask)
->> > +		return -EINVAL;
->> > +
->> > +	if (secs->attributes & SGX_ATTR_MODE64BIT) {
->> > +		if (secs->size > sgx_encl_size_max_64)
->> > +			return -EINVAL;
->> > +	} else if (secs->size > sgx_encl_size_max_32)
->> > +		return -EINVAL;
->>
->> These should be >=, not >, the SDM uses one of those fancy ≥ ligatures.
->>
->> Internal versions use more obvious pseudocode, e.g.:
->>
->>     if ((DS:TMP_SECS.ATTRIBUTES.MODE64BIT = 1) AND
->>         (DS:TMP_SECS.SIZE AND (~((1 << CPUID.18.0:EDX[15:8]) – 1)))
->>     {
->>         #GP(0);
->
-> Updated as:
->
-> static int sgx_validate_secs(const struct sgx_secs *secs)
-> {
-> 	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
-> 		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
->
-> 	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
-> 		return -EINVAL;
->
-> 	if (secs->base & (secs->size - 1))
-> 		return -EINVAL;
->
-> 	if (secs->miscselect & sgx_misc_reserved_mask ||
-> 	    secs->attributes & sgx_attributes_reserved_mask ||
-> 	    secs->xfrm & sgx_xfrm_reserved_mask)
-> 		return -EINVAL;
->
-> 	if (secs->size >= max_size)
-> 		return -EINVAL;
->
+Hi all,
 
-This should be > not >=. Issue raised and fixed by Fábio Silva for ported  
-patches for OOT SGX support:  
-https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/123
+On Wed, 26 Aug 2020 10:01:13 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> Today's linux-next merge of the drm-misc tree got conflicts in:
+>=20
+>   drivers/video/fbdev/arcfb.c
+>   drivers/video/fbdev/atmel_lcdfb.c
+>   drivers/video/fbdev/savage/savagefb_driver.c
+>=20
+> between commit:
+>=20
+>   df561f6688fe ("treewide: Use fallthrough pseudo-keyword")
+>=20
+> from Linus' tree and commit:
+>=20
+>   ad04fae0de07 ("fbdev: Use fallthrough pseudo-keyword")
+>=20
+> from the drm-misc tree.
+>=20
+> I fixed it up (they are much the same, I just used the version from Linus'
+> tree) and can carry the fix as necessary. This is now fixed as far as
+> linux-next is concerned, but any non trivial conflicts should be mentioned
+> to your upstream maintainer when your tree is submitted for merging.
+> You may also want to consider cooperating with the maintainer of the
+> conflicting tree to minimise any particularly complex conflicts.
 
-I tested and verified with Intel arch, the comparison indeed should be >.
+These conflicts now appear in the merge between the drm tree and Linus'
+tree.
 
-Thanks
-Haitao
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/EqPDh0qhb+x1GhuW/Hz6reS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9PDVQACgkQAVBC80lX
+0GxfrQgAiYy2Uvk9WIuGe6Uh3xcidT6fayH+7qRRtkb6lJwiiHpIUfhE+GP9daT1
+OGAQJluwvmxI+PnKrZFNdiWSeiiMhsQaDdjPsDfmIu1lOjw08iKv+Nt0JLQN7pV0
+vNm4iLLEPaA3loIK7wEltXdO+BblFJqn6CLKx9xM8EQsQqblyENeaBaedSwBcihz
+dmhHANdpk2nkekqy0Y/tciHCBg3W0+mEHKRck0sHbCqX0Hf1GqRyNmX4fY/acNCa
+xitQIeiLdi1brjG3AUylzaEhkICsJbKZIK6JJwwxwjcj7V+Hsjju9qfhDA60vAo7
+x8amUFStU3kPS8fbZv3nnEDH0TKgcA==
+=a3CS
+-----END PGP SIGNATURE-----
+
+--Sig_/EqPDh0qhb+x1GhuW/Hz6reS--
