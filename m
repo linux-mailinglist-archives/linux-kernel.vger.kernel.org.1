@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C40C25A7FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB5525A80C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgIBIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 04:48:26 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37915 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726446AbgIBIsY (ORCPT
+        id S1726298AbgIBIwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgIBIwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:48:24 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0828lxdr005740;
-        Wed, 2 Sep 2020 10:48:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=bsrtrM02fgWv2bRv4Bhe+o5W+4DzyVAwKGr6eUnXvqA=;
- b=IqU0htvZikfnFJyrcTNf3wI9NrajXvq7CIFzK5I4g2CBL/5xdG1pcO1MsCy+6j3a4vPp
- tYsqEjVyXAHqVT9n35yK8lp+yC6kMlfE4JCPTXQ/oBauVr3Lci+9UbU4bHN+IQoksHqh
- 5krdDcD0xE31fPJj+1+wm+zZZdlB0pBsrohZXH3IQbZ4fTtaLIm+KuHSjW+XWi6KWrx+
- ri3CkTSNC6RrCiSIOK4VmHxh5+jPmxmczjZleBVdJ3wjm2yaEeTtFokyyR+9R4F61c8s
- JVjoAfIByuQJDJIko7IfeKER9jGLgbfLGeLHxeuMtH+TEmdQLAhw7FQpPqRVZrV8+zs6 CQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 337cg1mg4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Sep 2020 10:48:06 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9EF4010003E;
-        Wed,  2 Sep 2020 10:48:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8F2E12A7D62;
-        Wed,  2 Sep 2020 10:48:05 +0200 (CEST)
-Received: from localhost (10.75.127.47) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep 2020 10:48:05
- +0200
-From:   Amelie Delaunay <amelie.delaunay@st.com>
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [RESEND PATCH v5 3/3] usb: dwc2: don't use ID/Vbus detection if usb-role-switch on STM32MP15 SoCs
-Date:   Wed, 2 Sep 2020 10:48:00 +0200
-Message-ID: <20200902084800.12105-4-amelie.delaunay@st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200902084800.12105-1-amelie.delaunay@st.com>
-References: <20200902084800.12105-1-amelie.delaunay@st.com>
+        Wed, 2 Sep 2020 04:52:21 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7308C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 01:52:20 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id a8so1985519plm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 01:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w3VbD7LbrSIV+AJhlX9wGvBGH7WMn863FXViRRDiMM4=;
+        b=bCBFH+rVPID9ii0sH5CtTpsTmP3uO1pnii5mbbyYZCsdeRY9cVTRSgJ2SDfFbmBeFv
+         VoQ2HIF0sinQ2qjlxZCckhUePRL+hIUe0W0ZAqBqKC35HETCBYZTpFBasWVjYJMSll5y
+         Jik6wgaxs4frbjmWajns1AmZYL0HBhZpC9v2U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w3VbD7LbrSIV+AJhlX9wGvBGH7WMn863FXViRRDiMM4=;
+        b=Ijr/NKXDdxhb6+S3jtX5ysptBjNa4bfsy4G6Lv1hckDqQlo0W+ebZ1rQPH9/wYqDgf
+         4VBlMvjCqMIGHALYhp+6LLklo/JK5Pwun1CfbKt/8Sr0yt+o9miMhbBEyvUakr4cgUhF
+         06jZy45AYb2HjdZGu25xThOUgFOZUvvLyTCHxTUsRZ3rXR3ZTGMEQ54MRhoIKnFj2IpF
+         YVhF8ffcviMnzy8yZbNZCdEsofpah3TB6gl3v8KOhsPiaqUdjOtEdsGZK2gEy0SfiiDG
+         i1Rujy4LHIfsVRb7Bsi2YdEPc2r0K8J35dlpo61QAcANfnKgIn2Fv7YO/zvKcRKPHhXN
+         dcUQ==
+X-Gm-Message-State: AOAM53239YutjO8VjV2QjJg8XtsQLfJQRix0LAWfHngyUeEQcY3UQqnV
+        vrXo9KN/uQv/fZlTJJnN6ZTbqg==
+X-Google-Smtp-Source: ABdhPJxKqtFkU/U9HA+gDoFaweJo/+5PSsuycPrw6yluyFQdgQr0IsbJb68L4DRa/jf4kZLEuEiISw==
+X-Received: by 2002:a17:90b:796:: with SMTP id l22mr1381398pjz.199.1599036740488;
+        Wed, 02 Sep 2020 01:52:20 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
+        by smtp.gmail.com with ESMTPSA id x22sm4698693pfn.41.2020.09.02.01.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 01:52:19 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH RESEND] remoteproc: scp: add COMPILE_TEST dependency
+Date:   Wed,  2 Sep 2020 17:51:59 +0900
+Message-Id: <20200902085159.1392703-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG5NODE3.st.com (10.75.127.15) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-02_03:2020-09-02,2020-09-02 signatures=0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If usb-role-switch is present in the device tree, it means that ID and Vbus
-signals are not connected to the OTG controller but to an external
-component (GPIOs, Type-C controller). In this configuration, usb role
-switch is used to force valid sessions on STM32MP15 SoCs.
+This will improve this driver's build coverage.
 
-Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Amelie Delaunay <amelie.delaunay@st.com>
+Reported-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
-Changes in v5:
-- Use device_property_read_bool instead of of_read_property_bool
----
- drivers/usb/dwc2/params.c | 2 +-
+Hi Ohad, Bjorn,
+
+As explained in
+https://www.spinics.net/lists/linux-media/msg175991.html, we need this
+patch in order to merge a driver series in the media tree. If that looks
+ok to you, can we pull it in the media tree along with the series that
+depends on it?
+
+ drivers/remoteproc/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index a3611cdd1dea..50df72f32b4c 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -185,7 +185,7 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
- 	struct dwc2_core_params *p = &hsotg->params;
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index c6659dfea7c7..d1fcada71017 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -43,7 +43,7 @@ config INGENIC_VPU_RPROC
  
- 	p->otg_cap = DWC2_CAP_PARAM_NO_HNP_SRP_CAPABLE;
--	p->activate_stm_id_vb_detection = true;
-+	p->activate_stm_id_vb_detection = !device_property_read_bool(hsotg->dev, "usb-role-switch");
- 	p->host_rx_fifo_size = 440;
- 	p->host_nperio_tx_fifo_size = 256;
- 	p->host_perio_tx_fifo_size = 256;
+ config MTK_SCP
+ 	tristate "Mediatek SCP support"
+-	depends on ARCH_MEDIATEK
++	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	select RPMSG_MTK_SCP
+ 	help
+ 	  Say y here to support Mediatek's System Companion Processor (SCP) via
 -- 
-2.17.1
+2.28.0.526.ge36021eeef-goog
 
