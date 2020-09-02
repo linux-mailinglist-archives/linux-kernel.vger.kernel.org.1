@@ -2,193 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D2425A71C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B4025A73B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgIBH43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 03:56:29 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:32260 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgIBH43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:56:29 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BhGV10PBXzB09Zc;
-        Wed,  2 Sep 2020 09:56:25 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id X4dnrfZE-x6l; Wed,  2 Sep 2020 09:56:24 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BhGV05Xz7zB09Zb;
-        Wed,  2 Sep 2020 09:56:24 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B79728B7A4;
-        Wed,  2 Sep 2020 09:56:25 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NtV84Jj5A1jP; Wed,  2 Sep 2020 09:56:25 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [10.25.210.31])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 42EF18B784;
-        Wed,  2 Sep 2020 09:56:25 +0200 (CEST)
-Subject: Re: [PATCH 2/2] powerpc/vdso32: link vdso64 with linker
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Kees Cook <keescook@chromium.org>,
-        Fangrui Song <maskray@google.com>
-References: <20200901222523.1941988-1-ndesaulniers@google.com>
- <20200901222523.1941988-3-ndesaulniers@google.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <371fd179-7d25-1393-f878-10eeb6ad12cc@csgroup.eu>
-Date:   Wed, 2 Sep 2020 07:56:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727024AbgIBH7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 03:59:20 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58048 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726586AbgIBH6w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 03:58:52 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0827ldTA002930;
+        Wed, 2 Sep 2020 09:57:17 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=STMicroelectronics;
+ bh=zt14ziy4OTTPyQeA+zhrodnOKfhhzc5gP1zGODBiazA=;
+ b=uUUYzTOVb8DO2xvv/x53D7ok3TQpAJbCsuUq3N1NkRQZbf0mkq1s4pAWFj5LBhc6Jvme
+ SnHRBhvzcDdl+ls3TlbKaLa2WZh6FHNqK8oohJi2p/aQ+VEF7SElcfz4wM5/vS9b7mSu
+ RNHLP6q96wScOGAWHrGIX1pfFFOIaYQHuHc4TsgIMjvryM7UZJeZ9ZeZlHYyHtOnupgh
+ iYBtIBe6KzPi0cGaLSQWcrakSV1n95AduNjcduG2VZh1dlASGK7LV6fVHsApkcGlA/zv
+ 3lrog+CUB4UgKFzKkbyKmKTtn+oTJdLkYfQf+DPlMhT7Vuwa4yS5fKbiERQ3zxMgdJWI uw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 337csvv4t7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Sep 2020 09:57:17 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2BA2F10002A;
+        Wed,  2 Sep 2020 09:57:15 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 080F5212FB9;
+        Wed,  2 Sep 2020 09:57:15 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG3NODE2.st.com (10.75.127.8)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep 2020 09:57:14
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@st.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Amelie Delaunay <amelie.delaunay@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>
+Subject: [RESEND PATCH v2 0/6] Add STUSB160x Type-C port controller support
+Date:   Wed, 2 Sep 2020 09:57:01 +0200
+Message-ID: <20200902075707.9052-1-amelie.delaunay@st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200901222523.1941988-3-ndesaulniers@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-02_03:2020-09-02,2020-09-02 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for STMicroelectronics STUSB160x Type-C port
+controllers [1].
+STUSB160x driver requires to get power operation mode via device tree,
+that's why this series also adds the optional DT property power-opmode
+for usb-c-connector to select the power operation mode capability and
+a function to convert the power operation mode string into power
+operation mode value.
+This driver has been tested on stm32mp157c-dk2 [2], which has a Type-C
+connector managed by STUSB1600, and connected to USB OTG controller. 
 
+[1] https://www.st.com/en/interfaces-and-transceivers/usb-type-c-and-power-delivery-controllers.html
+[2] https://www.st.com/en/evaluation-tools/stm32mp157c-dk2.html
 
-On 9/1/20 10:25 PM, Nick Desaulniers wrote:
-> Rather than invoke the compiler as the driver, use the linker. That way
-> we can check --orphan-handling=warn support correctly, as cc-ldoption
-> was removed in
-> commit 055efab3120b ("kbuild: drop support for cc-ldoption").
-> 
-> Requires dropping the .got section.  I couldn't find how it was used in
-> the vdso32.
-> 
-> Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for orphan sections")
-> Link: https://lore.kernel.org/lkml/CAKwvOdnn3wxYdJomvnveyD_njwRku3fABWT_bS92duihhywLJQ@mail.gmail.com/
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
-> Not sure removing .got is a good idea or not.  Otherwise I observe the
-> following link error:
-> powerpc-linux-gnu-ld: warning: orphan section `.got' from `arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.got'
-> powerpc-linux-gnu-ld: _GLOBAL_OFFSET_TABLE_ not defined in linker created .got
-> powerpc-linux-gnu-ld: final link failed: bad value
-> 
-> sigtramp.c doesn't mention anything from the GOT AFAICT, and doesn't
-> look like it contains relocations that do, so I'm not sure where
-> references to _GLOBAL_OFFSET_TABLE_ are coming from.
+Amelie Delaunay (6):
+  dt-bindings: connector: add power-opmode optional property to
+    usb-connector
+  usb: typec: add typec_find_pwr_opmode
+  dt-bindings: usb: Add DT bindings for STUSB160x Type-C controller
+  usb: typec: add support for STUSB160x Type-C controller family
+  ARM: dts: stm32: add STUSB1600 Type-C using I2C4 on stm32mp15xx-dkx
+  ARM: multi_v7_defconfig: enable STUSB160X Type-C port controller
+    support
+---
+Changes in v2:
+- power-opmode DT property description updated.
+---
+ .../bindings/connector/usb-connector.yaml     |  20 +
+ .../devicetree/bindings/usb/st,stusb160x.yaml |  85 ++
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi      |   7 +
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi        |  38 +
+ arch/arm/configs/multi_v7_defconfig           |   2 +
+ drivers/usb/typec/Kconfig                     |  12 +
+ drivers/usb/typec/Makefile                    |   1 +
+ drivers/usb/typec/class.c                     |  15 +
+ drivers/usb/typec/stusb160x.c                 | 875 ++++++++++++++++++
+ include/linux/usb/typec.h                     |   1 +
+ 10 files changed, 1056 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/usb/st,stusb160x.yaml
+ create mode 100644 drivers/usb/typec/stusb160x.c
 
-I'm getting the same but only when building for PPC64.
-I don't get any reference to sigtramp.o though:
+-- 
+2.17.1
 
-   CALL    scripts/checksyscalls.sh
-   CALL    scripts/atomic/check-atomics.sh
-   VDSO32A arch/powerpc/kernel/vdso32/sigtramp.o
-   VDSO32A arch/powerpc/kernel/vdso32/gettimeofday.o
-   VDSO32A arch/powerpc/kernel/vdso32/datapage.o
-   VDSO32A arch/powerpc/kernel/vdso32/cacheflush.o
-   VDSO32A arch/powerpc/kernel/vdso32/note.o
-   VDSO32A arch/powerpc/kernel/vdso32/getcpu.o
-   LD      arch/powerpc/kernel/vdso32/vdso32.so.dbg
-powerpc64-linux-ld: _GLOBAL_OFFSET_TABLE_ not defined in linker created .got
-powerpc64-linux-ld: final link failed: Bad value
-
-(GCC 8.1, Binutils 2.30)
-
-So it seems that the got section is being created by the linker. Don't 
-know why though.
-
-
-With GCC 10.1, binutils 2.34 I get:
-
-   LDS     arch/powerpc/kernel/vdso32/vdso32.lds
-   VDSO32A arch/powerpc/kernel/vdso32/sigtramp.o
-   VDSO32A arch/powerpc/kernel/vdso32/gettimeofday.o
-   VDSO32A arch/powerpc/kernel/vdso32/datapage.o
-   VDSO32A arch/powerpc/kernel/vdso32/cacheflush.o
-   VDSO32A arch/powerpc/kernel/vdso32/note.o
-   VDSO32A arch/powerpc/kernel/vdso32/getcpu.o
-   LD      arch/powerpc/kernel/vdso32/vdso32.so.dbg
-powerpc64-linux-ld: warning: orphan section `.branch_lt' from 
-`arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.branch_lt'
-powerpc64-linux-ld: _GLOBAL_OFFSET_TABLE_ not defined in linker created .got
-powerpc64-linux-ld: final link failed: bad value
-
-I can't see any .branch_lt section when objdumping sigtramp.o or any 
-other .o
-
-When I move sigtramp.o at the end of the definition of obj-vdso32 in 
-Makefile, I then get:
-
-powerpc64-linux-ld: warning: orphan section `.branch_lt' from 
-`arch/powerpc/kernel/vdso32/gettimeofday.o' being placed in section 
-`.branch_lt'
-powerpc64-linux-ld: _GLOBAL_OFFSET_TABLE_ not defined in linker created .got
-powerpc64-linux-ld: final link failed: bad value
-
-
-gettimeofday.o now being the first object in obj-vdso32
-
-
-Christophe
-
-> 
->   arch/powerpc/kernel/vdso32/Makefile     | 7 +++++--
->   arch/powerpc/kernel/vdso32/vdso32.lds.S | 3 ++-
->   2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
-> index 87ab1152d5ce..611a5951945a 100644
-> --- a/arch/powerpc/kernel/vdso32/Makefile
-> +++ b/arch/powerpc/kernel/vdso32/Makefile
-> @@ -27,6 +27,9 @@ UBSAN_SANITIZE := n
->   ccflags-y := -shared -fno-common -fno-builtin -nostdlib \
->   	-Wl,-soname=linux-vdso32.so.1 -Wl,--hash-style=both
->   asflags-y := -D__VDSO32__ -s
-> +ldflags-y := -shared -soname linux-vdso32.so.1 \
-> +	$(call ld-option, --eh-frame-hdr) \
-> +	$(call ld-option, --orphan-handling=warn) -T
->   
->   obj-y += vdso32_wrapper.o
->   extra-y += vdso32.lds
-> @@ -49,8 +52,8 @@ $(obj-vdso32): %.o: %.S FORCE
->   	$(call if_changed_dep,vdso32as)
->   
->   # actual build commands
-> -quiet_cmd_vdso32ld = VDSO32L $@
-> -      cmd_vdso32ld = $(VDSOCC) $(c_flags) $(CC32FLAGS) -o $@ $(call cc-ldoption, -Wl$(comma)--orphan-handling=warn) -Wl,-T$(filter %.lds,$^) $(filter %.o,$^)
-> +quiet_cmd_vdso32ld = LD      $@
-> +      cmd_vdso32ld = $(cmd_ld)
->   quiet_cmd_vdso32as = VDSO32A $@
->         cmd_vdso32as = $(VDSOCC) $(a_flags) $(CC32FLAGS) -c -o $@ $<
->   
-> diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-> index 4c985467a668..0ccdebad18b8 100644
-> --- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
-> +++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-> @@ -61,7 +61,6 @@ SECTIONS
->   	.fixup		: { *(.fixup) }
->   
->   	.dynamic	: { *(.dynamic) }		:text	:dynamic
-> -	.got		: { *(.got) }			:text
->   	.plt		: { *(.plt) }
->   
->   	_end = .;
-> @@ -108,7 +107,9 @@ SECTIONS
->   	.debug_varnames  0 : { *(.debug_varnames) }
->   
->   	/DISCARD/	: {
-> +		*(.got)
->   		*(.note.GNU-stack)
-> +		*(.branch_lt)
->   		*(.data .data.* .gnu.linkonce.d.* .sdata*)
->   		*(.bss .sbss .dynbss .dynsbss)
->   		*(.glink .iplt .plt .rela*)
-> 
