@@ -2,85 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2871A25A937
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F8E25A93E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbgIBKP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 06:15:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56542 "EHLO mx2.suse.de"
+        id S1726528AbgIBKRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 06:17:01 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:26845 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgIBKP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 06:15:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D97A3AC61;
-        Wed,  2 Sep 2020 10:15:26 +0000 (UTC)
-Subject: Re: [PATCH v1 4/5] xen/balloon: try to merge system ram resources
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        Julien Grall <julien@xen.org>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Wei Yang <richardw.yang@linux.intel.com>
-References: <20200821103431.13481-1-david@redhat.com>
- <20200821103431.13481-5-david@redhat.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <226413fc-ef25-59bd-772f-79012fda0ee3@suse.com>
-Date:   Wed, 2 Sep 2020 12:15:25 +0200
+        id S1726167AbgIBKQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 06:16:55 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4BhKc21349z9vG2L;
+        Wed,  2 Sep 2020 12:16:50 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id QGu27BKWDP8Y; Wed,  2 Sep 2020 12:16:50 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4BhKc14zNyz9vG2K;
+        Wed,  2 Sep 2020 12:16:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 522338B7A5;
+        Wed,  2 Sep 2020 12:16:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 1Rd4fa65cdvD; Wed,  2 Sep 2020 12:16:47 +0200 (CEST)
+Received: from po17688vm.idsi0.si.c-s.fr (unknown [10.25.210.31])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4C7088B784;
+        Wed,  2 Sep 2020 12:16:46 +0200 (CEST)
+Subject: Re: [PATCH 2/2] powerpc/vdso32: link vdso64 with linker
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Kees Cook <keescook@chromium.org>,
+        Fangrui Song <maskray@google.com>
+References: <20200901222523.1941988-1-ndesaulniers@google.com>
+ <20200901222523.1941988-3-ndesaulniers@google.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <dea7ef74-821f-0a1c-07dc-54e0c0d739aa@csgroup.eu>
+Date:   Wed, 2 Sep 2020 10:16:35 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200821103431.13481-5-david@redhat.com>
+In-Reply-To: <20200901222523.1941988-3-ndesaulniers@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.08.20 12:34, David Hildenbrand wrote:
-> Let's reuse the new mechanism to merge system ram resources below the
-> root. We are the only one hotplugging system ram (e.g., DIMMs don't apply),
-> so this is safe to be used.
+
+
+On 9/1/20 10:25 PM, Nick Desaulniers wrote:
+> Rather than invoke the compiler as the driver, use the linker. That way
+> we can check --orphan-handling=warn support correctly, as cc-ldoption
+> was removed in
+> commit 055efab3120b ("kbuild: drop support for cc-ldoption").
 > 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Cc: Juergen Gross <jgross@suse.com>
-> Cc: Stefano Stabellini <sstabellini@kernel.org>
-> Cc: Roger Pau Monné <roger.pau@citrix.com>
-> Cc: Julien Grall <julien@xen.org>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Wei Yang <richardw.yang@linux.intel.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Requires dropping the .got section.  I couldn't find how it was used in
+> the vdso32.
+> 
+> Fixes: commit f2af201002a8 ("powerpc/build: vdso linker warning for orphan sections")
+> Link: https://lore.kernel.org/lkml/CAKwvOdnn3wxYdJomvnveyD_njwRku3fABWT_bS92duihhywLJQ@mail.gmail.com/
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
->   drivers/xen/balloon.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/xen/balloon.c b/drivers/xen/balloon.c
-> index 37ffccda8bb87..5ec73f752b8a7 100644
-> --- a/drivers/xen/balloon.c
-> +++ b/drivers/xen/balloon.c
-> @@ -338,6 +338,10 @@ static enum bp_state reserve_additional_memory(void)
->   	if (rc) {
->   		pr_warn("Cannot add additional memory (%i)\n", rc);
->   		goto err;
-> +	} else {
-> +		resource = NULL;
-> +		/* Try to reduce the number of system ram resources. */
-> +		merge_system_ram_resources(&iomem_resource);
->   	}
+> Not sure removing .got is a good idea or not.  Otherwise I observe the
+> following link error:
+> powerpc-linux-gnu-ld: warning: orphan section `.got' from `arch/powerpc/kernel/vdso32/sigtramp.o' being placed in section `.got'
+> powerpc-linux-gnu-ld: _GLOBAL_OFFSET_TABLE_ not defined in linker created .got
+> powerpc-linux-gnu-ld: final link failed: bad value
 
-I don't see the need for setting resource to NULL and to use an "else"
-clause here.
+Finally I spotted it I think:
+
+	make arch/powerpc/kernel/vdso32/ V=1
+
+powerpc64-linux-ld  -EB -m elf64ppc -shared -soname linux-vdso32.so.1 
+--eh-frame-hdr  --orphan-handling=warn -T 
+arch/powerpc/kernel/vdso32/vdso32.lds 
+arch/powerpc/kernel/vdso32/sigtramp.o 
+arch/powerpc/kernel/vdso32/gettimeofday.o 
+arch/powerpc/kernel/vdso32/datapage.o 
+arch/powerpc/kernel/vdso32/cacheflush.o 
+arch/powerpc/kernel/vdso32/note.o arch/powerpc/kernel/vdso32/getcpu.o -o 
+arch/powerpc/kernel/vdso32/vdso32.so.dbg
 
 
-Juergen
+
+If I do the same manually but with -m elf32ppc instead of -m elf64ppc, 
+there is no failure.
+
+Adding -m elf32ppc to ldflags-y also works, allthough I don't like too 
+much having "-m elf64ppc -m elf32ppc" on the line.
+
+Christophe
