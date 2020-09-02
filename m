@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C1825AF3B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1923F25AF51
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgIBPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbgIBPEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:04:45 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4671020C56;
-        Wed,  2 Sep 2020 15:04:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599059084;
-        bh=rzLiuiSlLOuxKErOauqJfTN+XyIehXm1NzPwskDBWjM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ykwWEDs6yPvxy55dDnB8JEZyplbILRaN2+rvpu6MelQ/wDaWk6oO042IwEwvSErY6
-         4p91tNKEDaIDfkyuLKdXZiUDF8M52k7J+oJAuJFPqmrjSx5/HmVtNFqW0BDx8UfTVy
-         ySSis45XicQVLxXRyy+uVFZpRpr4xhi69Y5/7s1o=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 10/10] clk: davinci: Simplify with dev_err_probe()
-Date:   Wed,  2 Sep 2020 17:03:48 +0200
-Message-Id: <20200902150348.14465-10-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200902150348.14465-1-krzk@kernel.org>
-References: <20200902150348.14465-1-krzk@kernel.org>
+        id S1728087AbgIBPgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726966AbgIBPEL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:04:11 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19C4C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 08:04:10 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id u27so3002819lfm.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 08:04:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HiRuvEqiDybiJUKnUKiZbLHW27tCpis/5RkIzrkHyvo=;
+        b=Au1hdPOdNIbnCYpc+FLW9mZRqKSHvtM+vgh+N4KBowy5CcPX/wQUuP+eje+4rBDV97
+         KLY8Kl0WTPfeSKKVoG/1cEjdeulfTk5gAubbP8GjeQdR6EUdkrw2/u3vjqVv6HYHYyaG
+         WSLEehcUXt3DyHr3q/aW5DXqOEx7vfpub51115femkpKFHwLy9ilrHZqsmX1mCCzGqn8
+         VTsd3YgRZHT7z5a7xKFOfIwEN6K7sq97i2EIJ/jKTqQjxEfSXbuTjtIuby3QJlwAIU57
+         46larQEoVCARsd8r0SZGoHjbROrK0RTqOutlxzjXqd86ChXEC6q2B7y6y6uQ2vmt5bcb
+         /XKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HiRuvEqiDybiJUKnUKiZbLHW27tCpis/5RkIzrkHyvo=;
+        b=Lav9ltkTDO+4HZ93Wu1psVNTxRWvHzf29a5ZGCE5wRkgosfLYfz31T5FiRel1rgxiW
+         s7UDstvKVbNd2nNWbKcx0FbdYKck1fWGIHqBOoXpnWaUoctNqbAyPygItAS/Jt8OjiVO
+         JbfM0dY3wCxEljtySSxvsEBoGzz3lGFO4Llm39B1IlAdf+PqRlfYq2VkSUdErvrrbnUR
+         vJaSFQUaiG4cmlnRX9PUgW+S0ASXtWIX40+vXv5CQ158lEoqC4NGpKHRO0uynuOL4nzq
+         yZf9rJa4RvWH4s1GZOKRfWgFznJcMJCi2ab24lXBLjjeW5PbAsN2nWaLQH8GvqaIdAH5
+         3rpw==
+X-Gm-Message-State: AOAM530B+gYNCkaBMPMBqGPfVn+waVxskPnHv51piwqSbaOZz2M2RTdK
+        Py/lYEU3rkd780+R2XpqDc73KXagf6M=
+X-Google-Smtp-Source: ABdhPJx8ndplM70w/fPRT5dyH8UCnjgErnKyqRBblhHDssYwRQAzG/NJAjHCxq/73tuRAqw/oVgIHQ==
+X-Received: by 2002:a19:e57:: with SMTP id 84mr3257500lfo.161.1599059048792;
+        Wed, 02 Sep 2020 08:04:08 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id a21sm1027224ljh.114.2020.09.02.08.04.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 08:04:08 -0700 (PDT)
+Subject: Re: [PATCH v1] regmap: Add can_sleep configuration option
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <CGME20200902142057eucas1p245e94459d5adcd9cc4c38617da1abfc8@eucas1p2.samsung.com>
+ <20200902141843.6591-1-digetx@gmail.com>
+ <8dfcf671-d76a-4833-3fe9-2d0505d1b0d3@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <81c91dbe-312e-5394-da1d-a6965e8fcb56@gmail.com>
+Date:   Wed, 2 Sep 2020 18:04:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <8dfcf671-d76a-4833-3fe9-2d0505d1b0d3@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and the error value gets printed.
+02.09.2020 17:53, Marek Szyprowski пишет:
+> Hi Dmitry,
+> 
+> On 02.09.2020 16:18, Dmitry Osipenko wrote:
+>> Regmap can't sleep if spinlock is used for the locking protection.
+>> This patch fixes regression caused by a previous commit that switched
+>> regmap to use fsleep() and this broke Amlogic S922X platform.
+>>
+>> This patch adds new configuration option for regmap users, allowing to
+>> specify whether regmap operations can sleep and assuming that sleep is
+>> allowed if mutex is used for the regmap locking protection.
+>>
+>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Fixes: 2b32d2f7ce0a ("regmap: Use flexible sleep")
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> 
+> This fixes the issue I've reported. Thanks!
+> 
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/clk/davinci/da8xx-cfgchip.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/clk/davinci/da8xx-cfgchip.c b/drivers/clk/davinci/da8xx-cfgchip.c
-index 77d18276bfe8..4103d605e804 100644
---- a/drivers/clk/davinci/da8xx-cfgchip.c
-+++ b/drivers/clk/davinci/da8xx-cfgchip.c
-@@ -510,8 +510,7 @@ da8xx_cfgchip_register_usb0_clk48(struct device *dev,
- 
- 	fck_clk = devm_clk_get(dev, "fck");
- 	if (IS_ERR(fck_clk)) {
--		if (PTR_ERR(fck_clk) != -EPROBE_DEFER)
--			dev_err(dev, "Missing fck clock\n");
-+		dev_err_probe(dev, PTR_ERR(fck_clk), "Missing fck clock\n");
- 		return ERR_CAST(fck_clk);
- 	}
- 
--- 
-2.17.1
-
+Awesome! Thank you!
