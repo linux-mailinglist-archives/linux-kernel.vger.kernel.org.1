@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2171825B0F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9827F25B12D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgIBQMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:12:54 -0400
-Received: from mga02.intel.com ([134.134.136.20]:53087 "EHLO mga02.intel.com"
+        id S1728614AbgIBQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:15:58 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:38396 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727048AbgIBQMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:12:46 -0400
-IronPort-SDR: x9lGR0DWSHNB9BG2vun+L522HWfQsr/yY+pFhR4SHuIkHpezshzgoy3CvG077fu7yiJxDl6mwQ
- EQSMnR19K4Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="145155728"
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="145155728"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:12:45 -0700
-IronPort-SDR: uJk2Q26O0qhF/+1loWfKT4Q5vkoQFUR2eii9kjk8dCIrr0zDie2Z7CPdnidW5Sqe/+ijLx1C1X
- TxX6MiwMYoRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="315164870"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 02 Sep 2020 09:12:45 -0700
-Received: from [10.249.227.213] (abudanko-mobl.ccr.corp.intel.com [10.249.227.213])
-        by linux.intel.com (Postfix) with ESMTP id 4CF7758041C;
-        Wed,  2 Sep 2020 09:12:44 -0700 (PDT)
-Subject: Re: [PATCH V2 3/6] perf tools: Use AsciiDoc formatting for --control
- option documentation
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20200901093758.32293-1-adrian.hunter@intel.com>
- <20200901093758.32293-4-adrian.hunter@intel.com>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <00c35eb4-ed31-d5b0-eec7-f72ddd642b66@linux.intel.com>
-Date:   Wed, 2 Sep 2020 19:12:43 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727943AbgIBQNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:13:40 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kDVO4-00Cud1-AA; Wed, 02 Sep 2020 18:13:28 +0200
+Date:   Wed, 2 Sep 2020 18:13:28 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] phy: marvell: comphy: Convert internal SMCC firmware
+ return codes to errno
+Message-ID: <20200902161328.GE3050651@lunn.ch>
+References: <20200902144344.16684-1-pali@kernel.org>
+ <20200902144344.16684-2-pali@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200901093758.32293-4-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200902144344.16684-2-pali@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 01.09.2020 12:37, Adrian Hunter wrote:
-> The --control option does not display well in man pages unless AsciiDoc
-> formatting is used.
+On Wed, Sep 02, 2020 at 04:43:43PM +0200, Pali Rohár wrote:
+> Driver ->power_on and ->power_off callbacks leaks internal SMCC firmware
+> return codes to phy caller. This patch converts SMCC error codes to
+> standard linux errno codes. Include file linux/arm-smccc.h already provides
+> defines for SMCC error codes, so use them instead of custom driver defines.
+> Note that return value is signed 32bit, but stored in unsigned long type
+> with zero padding.
 > 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 > ---
->  tools/perf/Documentation/perf-record.txt | 46 ++++++++++++------------
->  tools/perf/Documentation/perf-stat.txt   | 46 ++++++++++++------------
->  2 files changed, 46 insertions(+), 46 deletions(-)
+>  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
+>  drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
+>  2 files changed, 22 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
+> index 1a138be8bd6a..810f25a47632 100644
+> --- a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
+> +++ b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
+> @@ -26,7 +26,6 @@
+>  #define COMPHY_SIP_POWER_ON			0x82000001
+>  #define COMPHY_SIP_POWER_OFF			0x82000002
+>  #define COMPHY_SIP_PLL_LOCK			0x82000003
+> -#define COMPHY_FW_NOT_SUPPORTED			(-1)
+>  
+>  #define COMPHY_FW_MODE_SATA			0x1
+>  #define COMPHY_FW_MODE_SGMII			0x2
+> @@ -112,10 +111,19 @@ static int mvebu_a3700_comphy_smc(unsigned long function, unsigned long lane,
+>  				  unsigned long mode)
+>  {
+>  	struct arm_smccc_res res;
+> +	s32 ret;
+>  
+>  	arm_smccc_smc(function, lane, mode, 0, 0, 0, 0, 0, &res);
+> +	ret = res.a0;
+>  
+> -	return res.a0;
 
-Thanks Adrian for all the formating corrections.
+> +	switch (ret) {
+> +	case SMCCC_RET_SUCCESS:
+> +		return 0;
+> +	case SMCCC_RET_NOT_SUPPORTED:
+> +		return -EOPNOTSUPP;
+> +	default:
+> +		return -EINVAL;
+> +	}
+>  }
 
-Acked-by: Alexei Budankov <alexey.budankov@linux.intel.com>
+Hi Pali
 
-Regards,
-Alexei
+Maybe this should be a global helper translating SMCCC_RET_* into a
+standard errno value?
+
+	 Andrew
