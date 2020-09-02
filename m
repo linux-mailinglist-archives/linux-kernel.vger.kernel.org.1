@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363B225ACB0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0C625ACCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgIBONn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:13:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53814 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727801AbgIBOBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:01:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 75600AEFA;
-        Wed,  2 Sep 2020 14:01:18 +0000 (UTC)
-Date:   Wed, 2 Sep 2020 16:01:16 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
- memory offline
-Message-ID: <20200902140116.GI4617@dhcp22.suse.cz>
-References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
+        id S1727797AbgIBOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727924AbgIBOFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:05:37 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06977C061246
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:05:36 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id b12so5042167edz.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dgidSd24Zz8hlurLEhIlaHA9MiqL30gKJkyfF1ZIoik=;
+        b=StgYX6WEyNguJD78wKYoIc6Bzw+h1h27+/lHbg8EEcbJLQWRdtTLBBo2MvJLB0JA0t
+         2caDPPZvN2//8XqW34Pr9rzgXIq2uZf4ppROnvkJ/9k0I/WQUEfjInuFmYgrPh8h4QGu
+         /qGTVuI7qoYn8+VkcBDVd4cR5QATBjsET5R/+G6lI4HFHqjjSFwWHf0uTBBazCX+5H1P
+         iqOv/FiQAUevHmNdZuiGuiualTDluCi9wv2rGAF3vs8tAlUzL/sMiay2Uw2AH0dzClta
+         f264i5ORJ8UI/S6kL9tKAZE8KikP0FsnYFeEd4Jze8N6N+fdp5ucJic2l80+hiXHC8LT
+         HuXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dgidSd24Zz8hlurLEhIlaHA9MiqL30gKJkyfF1ZIoik=;
+        b=hUEdMAuJAETQbTZ/5AVCB38rOYsYu7Ej6eFBYaLmiPN72fB1vbLoDdP51AjypLjerH
+         2Q16Gd3XP6IzKMOGDMs6ILyCmAkmGzCKH45jshS1IgEsODNUvDPh5YbFFkDPCxe7UHa2
+         b3D4qTmNQ5wo9cSXFTkfoj58PRO3ZSH5ER9FkiPxjS5QWKvFxKxoV2WzBIPFgVD3MwO7
+         OAlIEwogM3EFCYkDGHLtzSmSyRcYO/0xg5iJvloeqRhR0ulC4BfsBSKQYIyXEH1slJSP
+         7A8qXifO4dLZLN9Ymhr8ahlmTkSKKOWmjrvGrWt/9SSs6piSDSXUO+JwCfU7c6TqfRem
+         3oZw==
+X-Gm-Message-State: AOAM53361bff7qQ9TsOGhVd69YCMu4vCUwgJe3g2QnBkWibDjpvwr2XC
+        sEMkrZ7Wdkij50xglBe4WpUUMfAm2AUBZb99
+X-Google-Smtp-Source: ABdhPJztMFzXGv+nvq1KeuMgIijPAhD16TI+0vCZRXdeRoRtJ+KR5eRiK0oQrCc5mxuqp+TRU0lkYg==
+X-Received: by 2002:a05:6402:489:: with SMTP id k9mr192758edv.287.1599055534860;
+        Wed, 02 Sep 2020 07:05:34 -0700 (PDT)
+Received: from tim.froidcoeur.net (ptr-7tznw14oqa3w7cibjsc.18120a2.ip6.access.telenet.be. [2a02:1811:50e:f0f0:8cba:3abe:17e1:aaec])
+        by smtp.gmail.com with ESMTPSA id os15sm4354775ejb.61.2020.09.02.07.05.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 07:05:34 -0700 (PDT)
+From:   Tim Froidcoeur <tim.froidcoeur@tessares.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        matthieu.baerts@tessares.net, davem@davemloft.net,
+        Tim Froidcoeur <tim.froidcoeur@tessares.net>
+Subject: [PATCH 4.4 0/2] net: initialize fastreuse on inet_inherit_port
+Date:   Wed,  2 Sep 2020 16:05:11 +0200
+Message-Id: <20200902140513.866712-1-tim.froidcoeur@tessares.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901124615.137200-1-pasha.tatashin@soleen.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc Mel and Vlastimil - I am still rummaging]
+Fix for TPROXY initialization of fastreuse flag.
+upstream patch was backported by Greg K-H to 4.14 and higher stable version.
 
-On Tue 01-09-20 08:46:15, Pavel Tatashin wrote:
-> There is a race during page offline that can lead to infinite loop:
-> a page never ends up on a buddy list and __offline_pages() keeps
-> retrying infinitely or until a termination signal is received.
-> 
-> Thread#1 - a new process:
-> 
-> load_elf_binary
->  begin_new_exec
->   exec_mmap
->    mmput
->     exit_mmap
->      tlb_finish_mmu
->       tlb_flush_mmu
->        release_pages
->         free_unref_page_list
->          free_unref_page_prepare
->           set_pcppage_migratetype(page, migratetype);
->              // Set page->index migration type below  MIGRATE_PCPTYPES
-> 
-> Thread#2 - hot-removes memory
-> __offline_pages
->   start_isolate_page_range
->     set_migratetype_isolate
->       set_pageblock_migratetype(page, MIGRATE_ISOLATE);
->         Set migration type to MIGRATE_ISOLATE-> set
->         drain_all_pages(zone);
->              // drain per-cpu page lists to buddy allocator.
-> 
-> Thread#1 - continue
->          free_unref_page_commit
->            migratetype = get_pcppage_migratetype(page);
->               // get old migration type
->            list_add(&page->lru, &pcp->lists[migratetype]);
->               // add new page to already drained pcp list
-> 
-> Thread#2
-> Never drains pcp again, and therefore gets stuck in the loop.
-> 
-> The fix is to try to drain per-cpu lists again after
-> check_pages_isolated_cb() fails.
-> 
-> Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> Cc: stable@vger.kernel.org
-> ---
->  mm/memory_hotplug.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index e9d5ab5d3ca0..d6d54922bfce 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1575,6 +1575,15 @@ static int __ref __offline_pages(unsigned long start_pfn,
->  		/* check again */
->  		ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
->  					    NULL, check_pages_isolated_cb);
-> +		/*
-> +		 * per-cpu pages are drained in start_isolate_page_range, but if
-> +		 * there are still pages that are not free, make sure that we
-> +		 * drain again, because when we isolated range we might
-> +		 * have raced with another thread that was adding pages to
-> +		 * pcp list.
-> +		 */
-> +		if (ret)
-> +			drain_all_pages(zone);
->  	} while (ret);
->  
->  	/* Ok, all of our target is isolated.
-> -- 
-> 2.25.1
-> 
+see also https://lore.kernel.org/stable/20200818072007.GA9254@kroah.com
 
--- 
-Michal Hocko
-SUSE Labs
+code in inet_csk_get_port for 4.4 (and 4.9) is different from
+the upstream version, so these backports had to be adapted (a bit)
+
+Tim Froidcoeur (2):
+  net: refactor bind_bucket fastreuse into helper
+  net: initialize fastreuse on inet_inherit_port
+
+ include/net/inet_connection_sock.h |  4 +++
+ net/ipv4/inet_connection_sock.c    | 46 ++++++++++++++++++------------
+ net/ipv4/inet_hashtables.c         |  1 +
+ 3 files changed, 33 insertions(+), 18 deletions(-)
+
+--
+2.25.1
