@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8B225B178
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D254A25B144
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:18:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbgIBQVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726446AbgIBQVQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:21:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3418AC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 09:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=g7CwtEKfB8taAJKHOl+B6Vy77KBez7Wj8qfNT2rp9Q8=; b=icEHl0iwQMQYNoukIz5Ou1aSLu
-        cIXyBjtpqAND+i1q+6USzF61JoghiwGPI1sXjsx2XZgtc3DqBNrAgZqsWeDiVP4MqZq/tWvtvWkHA
-        fRImhcbj1e8OJB5uT3Sb/jppb92jUTTRYmXoXgIY1f/UPMz8h7z/g6+lbUxYsiPc9e7YmjRkHpfK/
-        6zpw2RSeST1hgiMoxYxS0GeuWcwGIpqdoguHgeAH23e+Ys8oMJ9/EqpzaX0Dw2Ytl9GYW8DZa9NKL
-        eHuH7HEgil7yPzifbQ3D06FxGGVL8fSe1GVuFHcdJ2brhvdoTA3r1Rvu21A4S/h+alq1k2xgKfk5s
-        EShTcTEg==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDVVY-0006fb-ST; Wed, 02 Sep 2020 16:21:13 +0000
-Subject: Re: [PATCH v2 2/2] staging: gdm724x: gdm_tty: replaced macro with a
- function
-To:     Antoni Przybylik <antoni.przybylik@wp.pl>,
-        gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200902161627.64686-1-antoni.przybylik@wp.pl>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <14c3b5c1-a5d8-3843-6538-5f76c4b8d6df@infradead.org>
-Date:   Wed, 2 Sep 2020 09:21:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728855AbgIBQRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:17:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728756AbgIBQRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:17:04 -0400
+Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 607D220639;
+        Wed,  2 Sep 2020 16:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599063424;
+        bh=737eL5OJnps+Fgda6I/02laUfr4yPyternnQSNU90a0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ai+8YXn0v79UX78y4IXY2HWQ5Bt6T6zyzZQlahXCcyiagM/Z9NIXdZY7Fm3rms1xl
+         hpgsXBGEVeTa09MJcILzKm9XOjrsX1qUOQcq2GiAScX+HtZHzLMJkmAdLayUo4e6IR
+         EV67gJrXzXM3MbDr4TCpX5V1mgs/HXSVGLutSoxI=
+Date:   Wed, 2 Sep 2020 11:23:15 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jonghwa Lee <jonghwa3.lee@samsung.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH v2] power: supply: charger-manager: Fix info message in
+ check_charging_duration()
+Message-ID: <20200902162315.GA11384@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20200902161627.64686-1-antoni.przybylik@wp.pl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 9:16 AM, Antoni Przybylik wrote:
-> Changed return type to bool and removed inline specifier. Also added
->  static specifier.
+A few months ago, commit e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
+changed the expression in the if statement from "duration > desc->discharging_max_duration_ms"
+to "duration > desc->charging_max_duration_ms", but the arguments for dev_info() were left unchanged.
+Apparently, due to a copy-paste error.
 
-why remove the inline specifier?
-thanks.
+Fix this by using the proper arguments for dev_info().
 
-> Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
-> ---
->  drivers/staging/gdm724x/gdm_tty.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-> index 34a13d98c029..179fc9b9400b 100644
-> --- a/drivers/staging/gdm724x/gdm_tty.c
-> +++ b/drivers/staging/gdm724x/gdm_tty.c
-> @@ -34,7 +34,7 @@ static DEFINE_MUTEX(gdm_table_lock);
->  static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
->  static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
->  
-> -inline int gdm_tty_ready(struct gdm *gdm)
-> +static bool gdm_tty_ready(struct gdm *gdm)
->  {
->  	return (gdm && gdm->tty_dev && gdm->port.count);
->  }
-> 
+Also, while there, replace "exceed" with "exceeds", for both messages.
 
+Addresses-Coverity-ID: 1496803 ("Copy-paste error")
+Fixes: e132fc6bb89b ("power: supply: charger-manager: Make decisions focussed on battery status")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ -  Replace "exceed" with "exceeds"
 
+ drivers/power/supply/charger-manager.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+index 07992821e252..a6d5dbd55e37 100644
+--- a/drivers/power/supply/charger-manager.c
++++ b/drivers/power/supply/charger-manager.c
+@@ -464,7 +464,7 @@ static int check_charging_duration(struct charger_manager *cm)
+ 		duration = curr - cm->charging_start_time;
+ 
+ 		if (duration > desc->charging_max_duration_ms) {
+-			dev_info(cm->dev, "Charging duration exceed %ums\n",
++			dev_info(cm->dev, "Charging duration exceeds %ums\n",
+ 				 desc->charging_max_duration_ms);
+ 			ret = true;
+ 		}
+@@ -472,8 +472,8 @@ static int check_charging_duration(struct charger_manager *cm)
+ 		duration = curr - cm->charging_end_time;
+ 
+ 		if (duration > desc->charging_max_duration_ms) {
+-			dev_info(cm->dev, "Discharging duration exceed %ums\n",
+-				 desc->discharging_max_duration_ms);
++			dev_info(cm->dev, "Charging duration exceeds %ums\n",
++				 desc->charging_max_duration_ms);
+ 			ret = true;
+ 		}
+ 	}
 -- 
-~Randy
+2.27.0
 
