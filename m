@@ -2,205 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9917625A39A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312C225A3C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgIBDCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 23:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726384AbgIBDBl (ORCPT
+        id S1726386AbgIBDFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 23:05:34 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:56280 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726174AbgIBDFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 23:01:41 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389C5C061244;
-        Tue,  1 Sep 2020 20:01:41 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id n10so2622969qtv.3;
-        Tue, 01 Sep 2020 20:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WGcFYnsjK23fcOf7m3ThWWICMlTjqTdhEG1f75QZ+OA=;
-        b=YOo4unJu5nOav+nG6jqFvE2CVTE52u4HHe8TAmEbidyyHvCjKMHf8kg2IPT387b3/d
-         8rv8ytbGmq2gwSl/bwPQEFKMHgnW9cbYif3iwEp0JgVhOQVsQVr/doFlev0BWN2gjwyi
-         haN5+/CdQ8UCE8I1J330gZjibQ31DzV4tJJ+ibvoGURqMwMtMOib6qjLpIMFMrhGcCj0
-         QpkuJccByYOI8ujsJ9x57fVPY36+RT+7ROmJFZiJ8iwlKJhb1lUSo2iVTQE3zOL6GdBe
-         DAQVYVq1ps3w6OBGbRCK1j7POrr70xPI6ZkVFsPP+hBOGvl0R0R80i/eYVuvnezzjVq3
-         z4rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WGcFYnsjK23fcOf7m3ThWWICMlTjqTdhEG1f75QZ+OA=;
-        b=VDQMLiLek/Aea0sa0oT92pHUMgDg7g3s0ffM1y2IPOx5pCSwqzT1wfbZFsusjvEIH2
-         FzdicL/4rmp6kpLlh66bUnv+DGvYLgaOXzYbtsbj8y7+GXRMuqpLUmk8RH6Thh/yBNG0
-         L+dWKvYmi3fRwU/CGbfqjrVgxRrhxSbvLFnE9mAIX8Z/vB9CT4FOBo+T+2OQpsV+1BR6
-         rSI7o0XDQ/4Zmj4AF29sguMCLQxnmWHoFpiqGwTfNKxwpC/LNNrQZxXp2f2Gnf3t7N8d
-         KD75ERjAeKNLbj6RktIabWCp+4xhc/GeeufrMfk6ZGN0jNiwEbiVRtJBYudmEcsvwaol
-         2A4Q==
-X-Gm-Message-State: AOAM530erg5VPkQ1EFLqPBNJcacpRxorh434hZgWfgJmTLrPwtFXvcPI
-        u1CCRI9vZjE2qW0cb3Ouzr8=
-X-Google-Smtp-Source: ABdhPJxf40ejt0XqIHKsnoLsul4FO9P/HNNpomn1KLUTMI/rj8pVyeuQZvCM6sjg+f8ACaU0jUz/Jg==
-X-Received: by 2002:ac8:3876:: with SMTP id r51mr5090876qtb.181.1599015700524;
-        Tue, 01 Sep 2020 20:01:40 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id x124sm3448976qkd.72.2020.09.01.20.01.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Sep 2020 20:01:40 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id D936227C005A;
-        Tue,  1 Sep 2020 23:01:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 01 Sep 2020 23:01:38 -0400
-X-ME-Sender: <xms:EgtPXzEfCdt9QhqfckN5ckH2wp9FA1_w-AqW7Zve__o8GD0W_HR7vw>
-    <xme:EgtPXwVqCvxmDwU3jLuIHjvl9Vd4f_vmypBKOiMon_U7abqu5kjfIw70MfMdFnM7g
-    bqYlWXCzuj3ABv1xA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefkedgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    goufhorhhtvggutfgvtghiphdvucdlgedtmdenucfjughrpefhvffufffkofgjfhgggfes
-    tdekredtredttdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnh
-    hgsehgmhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpeehvdevteefgfeiudettdef
-    vedvvdelkeejueffffelgeeuhffhjeetkeeiueeuleenucfkphephedvrdduheehrdduud
-    durdejudenucevlhhushhtvghrufhiiigvpedutdenucfrrghrrghmpehmrghilhhfrhho
-    mhepsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghe
-    dtieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhes
-    fhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:EgtPX1L6q7X2nuOBedI_REu_jdXpNn47XBCTDQWPwG-z-j0gDqn1gg>
-    <xmx:EgtPXxGtmgEvm1_Q2Aml0ddk9EtdMf7PVk_1-fYESar5vmVO10AjZg>
-    <xmx:EgtPX5W6SCwRBdh1dGkYIzTYogkcJDmljTCFGAqE_BhbD27amF7Kzw>
-    <xmx:EgtPX6WaqnIvcQw8njO3gteJZ4HqY3vxS2V-88H1plioE_yArTUgmdRtWwU>
-Received: from localhost (unknown [52.155.111.71])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4CEAD3280065;
-        Tue,  1 Sep 2020 23:01:38 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     linux-hyperv@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [RFC v2 11/11] scsi: storvsc: Support PAGE_SIZE larger than 4K
-Date:   Wed,  2 Sep 2020 11:01:07 +0800
-Message-Id: <20200902030107.33380-12-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200902030107.33380-1-boqun.feng@gmail.com>
-References: <20200902030107.33380-1-boqun.feng@gmail.com>
+        Tue, 1 Sep 2020 23:05:31 -0400
+X-UUID: 112333ac71ac4379aae85c4ceb33100c-20200902
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jfIIm6tENvdGpct6biW2eJvqIKrDoiDyyQ/L8G7febQ=;
+        b=sI9UiaMFAQPk/hDkzx6OoBhhmTyvH3FkyKIfJlhYYx0raHtlUOHOHSE1avsyeK2uxM9fyGDrnA8gz37fJtT9mIjxNiJ+wm0HOCRnNO0+okMvZaB7y0+zP70sgwAnfb4GndH5e3b4Uid+a8g1GmORs3g8DsIbKvJ49921yPxRKno=;
+X-UUID: 112333ac71ac4379aae85c4ceb33100c-20200902
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1352025062; Wed, 02 Sep 2020 11:05:26 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 2 Sep
+ 2020 11:05:25 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 2 Sep 2020 11:05:24 +0800
+Message-ID: <1599015827.30048.22.camel@mhfsdcap03>
+Subject: Re: [v4,0/4] introduce TI reset controller for MT8192 SoC
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     Rob Herring <robh@kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "s-anna@ti.com" <s-anna@ti.com>, "afd@ti.com" <afd@ti.com>
+CC:     srv_heupstream <srv_heupstream@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
+        <seiya.wang@mediatek.com>,
+        Stanley Chu =?UTF-8?Q?=28=E6=9C=B1=E5=8E=9F=E9=99=9E=29?= 
+        <stanley.chu@mediatek.com>,
+        Yingjoe Chen =?UTF-8?Q?=28=E9=99=B3=E8=8B=B1=E6=B4=B2=29?= 
+        <Yingjoe.Chen@mediatek.com>,
+        Fan Chen =?UTF-8?Q?=28=E9=99=B3=E5=87=A1=29?= 
+        <fan.chen@mediatek.com>,
+        "Yong Liang =?UTF-8?Q?=28=E6=A2=81=E5=8B=87=29?=" 
+        <Yong.Liang@mediatek.com>
+Date:   Wed, 2 Sep 2020 11:03:47 +0800
+In-Reply-To: <5065a23627a34212aa62df646dbf00ee@mtkmbs05n1.mediatek.inc>
+References: <20200817030324.5690-1-crystal.guo@mediatek.com>
+         <5065a23627a34212aa62df646dbf00ee@mtkmbs05n1.mediatek.inc>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 8812CB25358BC3F220BEE59098E36044C2C506DE8C77D12AA6E5A2061D7E66462000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hyper-V always use 4k page size (HV_HYP_PAGE_SIZE), so when
-communicating with Hyper-V, a guest should always use HV_HYP_PAGE_SIZE
-as the unit for page related data. For storvsc, the data is
-vmbus_packet_mpb_array. And since in scsi_cmnd, sglist of pages (in unit
-of PAGE_SIZE) is used, we need convert pages in the sglist of scsi_cmnd
-into Hyper-V pages in vmbus_packet_mpb_array.
-
-This patch does the conversion by dividing pages in sglist into Hyper-V
-pages, offset and indexes in vmbus_packet_mpb_array are recalculated
-accordingly.
-
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- drivers/scsi/storvsc_drv.c | 60 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 54 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 8f5f5dc863a4..3f6610717d4e 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1739,23 +1739,71 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	payload_sz = sizeof(cmd_request->mpb);
- 
- 	if (sg_count) {
--		if (sg_count > MAX_PAGE_BUFFER_COUNT) {
-+		unsigned int hvpg_idx = 0;
-+		unsigned int j = 0;
-+		unsigned long hvpg_offset = sgl->offset & ~HV_HYP_PAGE_MASK;
-+		unsigned int hvpg_count = HVPFN_UP(hvpg_offset + length);
- 
--			payload_sz = (sg_count * sizeof(u64) +
-+		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
-+
-+			payload_sz = (hvpg_count * sizeof(u64) +
- 				      sizeof(struct vmbus_packet_mpb_array));
- 			payload = kzalloc(payload_sz, GFP_ATOMIC);
- 			if (!payload)
- 				return SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 
-+		/*
-+		 * sgl is a list of PAGEs, and payload->range.pfn_array
-+		 * expects the page number in the unit of HV_HYP_PAGE_SIZE (the
-+		 * page size that Hyper-V uses, so here we need to divide PAGEs
-+		 * into HV_HYP_PAGE in case that PAGE_SIZE > HV_HYP_PAGE_SIZE.
-+		 */
- 		payload->range.len = length;
--		payload->range.offset = sgl[0].offset;
-+		payload->range.offset = sgl[0].offset & ~HV_HYP_PAGE_MASK;
-+		hvpg_idx = sgl[0].offset >> HV_HYP_PAGE_SHIFT;
- 
- 		cur_sgl = sgl;
--		for (i = 0; i < sg_count; i++) {
--			payload->range.pfn_array[i] =
--				page_to_pfn(sg_page((cur_sgl)));
-+		for (i = 0, j = 0; i < sg_count; i++) {
-+			/*
-+			 * "PAGE_SIZE / HV_HYP_PAGE_SIZE - hvpg_idx" is the #
-+			 * of HV_HYP_PAGEs in the current PAGE.
-+			 *
-+			 * "hvpg_count - j" is the # of unhandled HV_HYP_PAGEs.
-+			 *
-+			 * As shown in the following, the minimal of both is
-+			 * the # of HV_HYP_PAGEs, we need to handle in this
-+			 * PAGE.
-+			 *
-+			 * |------------------ PAGE ----------------------|
-+			 * |   PAGE_SIZE / HV_HYP_PAGE_SIZE in total      |
-+			 * |hvpg|hvpg| ...                 |hvpg|... |hvpg|
-+			 *           ^                     ^
-+			 *         hvpg_idx                |
-+			 *           ^                     |
-+			 *           +---(hvpg_count - j)--+
-+			 *
-+			 * or
-+			 *
-+			 * |------------------ PAGE ----------------------|
-+			 * |   PAGE_SIZE / HV_HYP_PAGE_SIZE in total      |
-+			 * |hvpg|hvpg| ...                 |hvpg|... |hvpg|
-+			 *           ^                                           ^
-+			 *         hvpg_idx                                      |
-+			 *           ^                                           |
-+			 *           +---(hvpg_count - j)------------------------+
-+			 */
-+			unsigned int nr_hvpg = min((unsigned int)(PAGE_SIZE / HV_HYP_PAGE_SIZE) - hvpg_idx,
-+						   hvpg_count - j);
-+			unsigned int k;
-+
-+			for (k = 0; k < nr_hvpg; k++) {
-+				payload->range.pfn_array[j] =
-+					page_to_hvpfn(sg_page((cur_sgl))) + hvpg_idx + k;
-+				j++;
-+			}
- 			cur_sgl = sg_next(cur_sgl);
-+			hvpg_idx = 0;
- 		}
- 	}
- 
--- 
-2.28.0
+SGkgUm9iLCBQaGlsaXBwLCBNYXR0aGlhcyBhbmQgYWxsDQoNCkdlbnRsZSBwaW5nIGZvciB0aGlz
+IHBhdGNoIHNldC4NCg0KVGhhbmtzDQpDcnlzdGFsDQoNCj4gDQo+IC0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tDQo+IEZyb206IENyeXN0YWwgR3VvIFttYWlsdG86Y3J5c3RhbC5ndW9AbWVkaWF0
+ZWsuY29tXQ0KPiBTZW50OiBNb25kYXksIEF1Z3VzdCAxNywgMjAyMCAxMTowMyBBTQ0KPiBUbzog
+cC56YWJlbEBwZW5ndXRyb25peC5kZTsgcm9iaCtkdEBrZXJuZWwub3JnOyBtYXR0aGlhcy5iZ2dA
+Z21haWwuY29tDQo+IENjOiBzcnZfaGV1cHN0cmVhbTsgbGludXgtbWVkaWF0ZWtAbGlzdHMuaW5m
+cmFkZWFkLm9yZzsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgcy1hbm5h
+QHRpLmNvbTsgYWZkQHRpLmNvbTsgU2VpeWEgV2FuZyAo546L6L+65ZCbKTsgU3RhbmxleSBDaHUg
+KOacseWOn+mZnik7IFlpbmdqb2UgQ2hlbiAo6Zmz6Iux5rSyKTsgRmFuIENoZW4gKOmZs+WHoSk7
+IFlvbmcgTGlhbmcgKOaigeWLhykNCj4gU3ViamVjdDogW3Y0LDAvNF0gaW50cm9kdWNlIFRJIHJl
+c2V0IGNvbnRyb2xsZXIgZm9yIE1UODE5MiBTb0MNCj4gDQo+IHY0Og0KPiBmaXggdHlwb3Mgb24g
+djMgY29tbWl0IG1lc3NhZ2UuDQo+IA0KPiB2MzoNCj4gMS4gcmV2ZXJ0IHYyIGNoYW5nZXMuDQo+
+IDIuIGFkZCAncmVzZXQtZHVyYXRpb24tdXMnIHByb3BlcnR5IHRvIGRlY2xhcmUgYSBtaW5pbXVt
+IGRlbGF5LCB3aGljaCBuZWVkcyB0byBiZSB3YWl0ZWQgYmV0d2VlbiBhc3NlcnQgYW5kIGRlYXNz
+ZXJ0Lg0KPiAzLiBhZGQgJ21lZGlhdGVrLGluZnJhLXJlc2V0JyB0byBjb21wYXRpYmxlLg0KPiAN
+Cj4gDQo+IHYyIGNoYW5nZXM6DQo+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gv
+MTE2OTczNzEvDQo+IDEuIGFkZCAnYXNzZXJ0LWRlYXNzZXJ0LXRvZ2V0aGVyJyBwcm9wZXJ0eSB0
+byBpbnRyb2R1Y2UgYSBuZXcgcmVzZXQgaGFuZGxlciwgd2hpY2ggYWxsb3dzIGRldmljZSB0byBk
+byBzZXJpYWxpemVkIGFzc2VydCBhbmQgZGVhc3NlcnQgb3BlcmF0aW9ucyBpbiBhIHNpbmdsZSBz
+dGVwIGJ5ICdyZXNldCcgbWV0aG9kLg0KPiAyLiBhZGQgJ3VwZGF0ZS1mb3JjZScgcHJvcGVydHkg
+dG8gaW50cm9kdWNlIGZvcmNlLXVwZGF0ZSBtZXRob2QsIHdoaWNoIGZvcmNlcyB0aGUgd3JpdGUg
+b3BlcmF0aW9uIGluIGNhc2UgdGhlIHJlYWQgYWxyZWFkeSBoYXBwZW5zIHRvIHJldHVybiB0aGUg
+Y29ycmVjdCB2YWx1ZS4NCj4gMy4gYWRkICdnZW5lcmljLXJlc2V0JyB0byBjb21wYXRpYmxlDQo+
+IA0KPiB2MSBjaGFuZ2VzOg0KPiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzEx
+NjkwNTIzLw0KPiBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzExNjkwNTI3Lw0K
+PiANCj4gQ3J5c3RhbCBHdW8gKDQpOg0KPiAgIGR0LWJpbmRpbmc6IHJlc2V0LWNvbnRyb2xsZXI6
+IHRpOiBhZGQgcmVzZXQtZHVyYXRpb24tdXMgcHJvcGVydHkNCj4gICBkdC1iaW5kaW5nOiByZXNl
+dC1jb250cm9sbGVyOiB0aTogYWRkICdtZWRpYXRlayxpbmZyYS1yZXNldCcgdG8NCj4gICAgIGNv
+bXBhdGlibGUNCj4gICByZXNldC1jb250cm9sbGVyOiB0aTogaW50cm9kdWNlIGEgbmV3IHJlc2V0
+IGhhbmRsZXINCj4gICBhcm02NDogZHRzOiBtdDgxOTI6IGFkZCBpbmZyYWNmZ19yc3Qgbm9kZQ0K
+PiANCj4gIC4uLi9iaW5kaW5ncy9yZXNldC90aS1zeXNjb24tcmVzZXQudHh0ICAgICAgICB8ICA2
+ICsrKysrDQo+ICBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpICAgICAg
+fCAxMSArKysrKysrLQ0KPiAgZHJpdmVycy9yZXNldC9yZXNldC10aS1zeXNjb24uYyAgICAgICAg
+ICAgICAgIHwgMjYgKysrKysrKysrKysrKysrKystLQ0KPiAgMyBmaWxlcyBjaGFuZ2VkLCA0MCBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiANCj4gDQo+ICoqKioqKioqKioqKioqKioq
+KioqKk1FRElBVEVLIENvbmZpZGVudGlhbC9JbnRlcm5hbCBVc2UqKioqKioqKioqKioqKioqKioq
+KioNCg0K
 
