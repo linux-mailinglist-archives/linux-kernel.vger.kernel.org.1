@@ -2,93 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6451225B608
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 23:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2411625B61B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 23:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgIBVkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 17:40:01 -0400
-Received: from mga01.intel.com ([192.55.52.88]:39576 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726226AbgIBVkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 17:40:00 -0400
-IronPort-SDR: 9xUbG0934/O4+mvBeZ3XtwGC2wcZzXFbdvheTEPYPVXlG4rqP7lw0KeQqA13LYOmC+vzDMVKkC
- GtymY9lQPjWw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="175532402"
-X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
-   d="scan'208";a="175532402"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 14:39:59 -0700
-IronPort-SDR: 3aN1bVBGjYGTxOItKGjSaxdAAnK0XFpwLvwn33eSYR7d579dGO4MNdI00YPL/2qu7AkYJRhHaH
- WB2X0WmURgiQ==
-X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
-   d="scan'208";a="331572226"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 14:39:59 -0700
-Date:   Wed, 2 Sep 2020 14:47:06 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jacob Pan <jacob.pan.linux@gmail.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Wu Hao <hao.wu@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v2 3/9] iommu/ioasid: Introduce ioasid_set APIs
-Message-ID: <20200902144706.331e1032@jacob-builder>
-In-Reply-To: <1be98989-fab3-f9e4-cbd6-cf72a67dc5f1@infradead.org>
-References: <1598070918-21321-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1598070918-21321-4-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200824182848.GB3210689@myrica>
-        <1be98989-fab3-f9e4-cbd6-cf72a67dc5f1@infradead.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726674AbgIBVrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 17:47:17 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4103 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgIBVrP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 17:47:15 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f5012630000>; Wed, 02 Sep 2020 14:45:07 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 02 Sep 2020 14:47:15 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 02 Sep 2020 14:47:15 -0700
+Received: from [10.2.161.253] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep
+ 2020 21:47:13 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Alistair Popple" <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <stable@vger.kernel.org>
+Subject: Re: [PATCH v2 1/7] mm/thp: fix __split_huge_pmd_locked() for
+ migration PMD
+Date:   Wed, 2 Sep 2020 17:47:10 -0400
+X-Mailer: MailMate (1.13.1r5705)
+Message-ID: <78B69571-13C6-4BF5-8478-6AAA4AB2C287@nvidia.com>
+In-Reply-To: <20200902165830.5367-2-rcampbell@nvidia.com>
+References: <20200902165830.5367-1-rcampbell@nvidia.com>
+ <20200902165830.5367-2-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_73631622-91D5-4F7B-9B08-2022739FCA8C_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599083107; bh=SZek1ZYQANXJT4VXlmp7MHjIQWueJPTMM8g01GnOGfQ=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=Sxs0HfRXu2g3r8QL5KmEF7wT2mHFg/ypmWRuBkArGct5jJkkS5WzYJrumWzk7nc4c
+         b55YSPGbQhBBwE/77G9wVGG7YNr8dGfe6PdFMrcDIyb4yK7o/TZ2Xlc93rXbKFhg9r
+         EQRO9BhOZgZCtMaf5rXnzP2C2j6gOJeElK4waNbd19aGTpfRLgSAOHSUhJJ/EitGZ5
+         LZVRadQNUj6VLmDXM1g5DCHaeMgTEYFjq9Wm1PaDeGB42HfvH3goVfzlyFOQHmf6JQ
+         28ncSFI/lCOE/B47LXbsfq//gd4rP0Hs3PZUkmofJhtMJ0cBOF72amG6cZUYwQ4l0l
+         Mb1+X4w/lDC5Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Aug 2020 11:34:29 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+--=_MailMate_73631622-91D5-4F7B-9B08-2022739FCA8C_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> On 8/24/20 11:28 AM, Jean-Philippe Brucker wrote:
-> >> +/**
-> >> + * struct ioasid_set - Meta data about ioasid_set
-> >> + * @type:	Token types and other features  
-> > nit: doesn't follow struct order
-> >   
-> >> + * @token:	Unique to identify an IOASID set
-> >> + * @xa:		XArray to store ioasid_set private IDs, can be used for
-> >> + *		guest-host IOASID mapping, or just a private IOASID namespace.
-> >> + * @quota:	Max number of IOASIDs can be allocated within the set
-> >> + * @nr_ioasids	Number of IOASIDs currently allocated in the set  
-> 
->  * @nr_ioasids: Number of IOASIDs currently allocated in the set
-> 
-got it. thanks!
+On 2 Sep 2020, at 12:58, Ralph Campbell wrote:
 
-> >> + * @sid:	ID of the set
-> >> + * @ref:	Reference count of the users
-> >> + */
-> >>  struct ioasid_set {
-> >> -	int dummy;
-> >> +	void *token;
-> >> +	struct xarray xa;
-> >> +	int type;
-> >> +	int quota;
-> >> +	int nr_ioasids;
-> >> +	int sid;
-> >> +	refcount_t ref;
-> >> +	struct rcu_head rcu;
-> >>  };  
-> 
-> 
+> A migrating transparent huge page has to already be unmapped. Otherwise=
+,
+> the page could be modified while it is being copied to a new page and
+> data could be lost. The function __split_huge_pmd() checks for a PMD
+> migration entry before calling __split_huge_pmd_locked() leading one to=
 
-[Jacob Pan]
+> think that __split_huge_pmd_locked() can handle splitting a migrating P=
+MD.
+> However, the code always increments the page->_mapcount and adjusts the=
+
+> memory control group accounting assuming the page is mapped.
+> Also, if the PMD entry is a migration PMD entry, the call to
+> is_huge_zero_pmd(*pmd) is incorrect because it calls pmd_pfn(pmd) inste=
+ad
+> of migration_entry_to_pfn(pmd_to_swp_entry(pmd)).
+> Fix these problems by checking for a PMD migration entry.
+>
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+
+Thanks for the fix. You can add Reviewed-by: Zi Yan <ziy@nvidia.com>
+
+I think you also want to add the Fixes tag and cc stable.
+
+Fixes 84c3fc4e9c56 (=E2=80=9Cmm: thp: check pmd migration entry in common=
+ path=E2=80=9D)
+cc: stable@vger.kernel.org # 4.14+
+
+> ---
+>  mm/huge_memory.c | 42 +++++++++++++++++++++++-------------------
+>  1 file changed, 23 insertions(+), 19 deletions(-)
+>
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 2a468a4acb0a..606d712d9505 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2023,7 +2023,7 @@ static void __split_huge_pmd_locked(struct vm_are=
+a_struct *vma, pmd_t *pmd,
+>  		put_page(page);
+>  		add_mm_counter(mm, mm_counter_file(page), -HPAGE_PMD_NR);
+>  		return;
+> -	} else if (is_huge_zero_pmd(*pmd)) {
+> +	} else if (pmd_trans_huge(*pmd) && is_huge_zero_pmd(*pmd)) {
+>  		/*
+>  		 * FIXME: Do we want to invalidate secondary mmu by calling
+>  		 * mmu_notifier_invalidate_range() see comments below inside
+> @@ -2117,30 +2117,34 @@ static void __split_huge_pmd_locked(struct vm_a=
+rea_struct *vma, pmd_t *pmd,
+>  		pte =3D pte_offset_map(&_pmd, addr);
+>  		BUG_ON(!pte_none(*pte));
+>  		set_pte_at(mm, addr, pte, entry);
+> -		atomic_inc(&page[i]._mapcount);
+> -		pte_unmap(pte);
+> -	}
+> -
+> -	/*
+> -	 * Set PG_double_map before dropping compound_mapcount to avoid
+> -	 * false-negative page_mapped().
+> -	 */
+> -	if (compound_mapcount(page) > 1 && !TestSetPageDoubleMap(page)) {
+> -		for (i =3D 0; i < HPAGE_PMD_NR; i++)
+> +		if (!pmd_migration)
+>  			atomic_inc(&page[i]._mapcount);
+> +		pte_unmap(pte);
+>  	}
+>
+> -	lock_page_memcg(page);
+> -	if (atomic_add_negative(-1, compound_mapcount_ptr(page))) {
+> -		/* Last compound_mapcount is gone. */
+> -		__dec_lruvec_page_state(page, NR_ANON_THPS);
+> -		if (TestClearPageDoubleMap(page)) {
+> -			/* No need in mapcount reference anymore */
+> +	if (!pmd_migration) {
+> +		/*
+> +		 * Set PG_double_map before dropping compound_mapcount to avoid
+> +		 * false-negative page_mapped().
+> +		 */
+> +		if (compound_mapcount(page) > 1 &&
+> +		    !TestSetPageDoubleMap(page)) {
+>  			for (i =3D 0; i < HPAGE_PMD_NR; i++)
+> -				atomic_dec(&page[i]._mapcount);
+> +				atomic_inc(&page[i]._mapcount);
+> +		}
+> +
+> +		lock_page_memcg(page);
+> +		if (atomic_add_negative(-1, compound_mapcount_ptr(page))) {
+> +			/* Last compound_mapcount is gone. */
+> +			__dec_lruvec_page_state(page, NR_ANON_THPS);
+> +			if (TestClearPageDoubleMap(page)) {
+> +				/* No need in mapcount reference anymore */
+> +				for (i =3D 0; i < HPAGE_PMD_NR; i++)
+> +					atomic_dec(&page[i]._mapcount);
+> +			}
+>  		}
+> +		unlock_page_memcg(page);
+>  	}
+> -	unlock_page_memcg(page);
+>
+>  	smp_wmb(); /* make pte visible before pmd */
+>  	pmd_populate(mm, pmd, pgtable);
+> -- =
+
+> 2.20.1
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_73631622-91D5-4F7B-9B08-2022739FCA8C_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl9QEt4PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqK2RAP/jZpNOlzIVAWu/HetcUk0JekLJU2qVRUKD7w
++vSoB3QfAzbbHrEr44ZKzWHGYIADV2eun8GOlaY4U9I+V9d8VTJ7X6rPF4/P3Mj9
+quvN3yVi9/GJnqYpBDD15L+p90SylE5lGwe+4zje5AYbq6BIj5l3fB6m3rNR0D9G
+0Wx9BdnmPs6cMPkCz4Aj9nXX6LOVu7zlKb3FJPBO2NUoZnkQpda3wRzpd/0DVrj8
+rGVNw+QtnjAcKZtH2St005dB/qb0Z1ng83dgmN3KNJRZWYRYetN3lF79vUU59iGn
+Kwcc+T4vDX8ZkzldCILIYi4qsWH7oqqTkoOT8oqHFzj4u3ZXttnvdeiE+cavZrUr
+QbgubSF9I7Sm4zheJ+LJEC53Wn8up8jbfdsbyzPXEFJbfozmTr8hK4gODmtAUNz9
+KevDlttqqrf/BBGHoV94RnLt2wMMt9RyUwlpu6t1ETzRhO+vPKknji0h4DyX3o2v
+T7n3dbRN8uPNOEBabzrXeGDwlsqXbnzYdVEZTojuD5Umer3+36832TAOndjj4Zep
+pJEM3YCeoG4INtDDv0HlzNugZ9bwEaz1Hm4zicAlxqeiw7g19auPlNBvt3bsBALE
+LwW82R2jQGTNn7OtuMz5d7WVNAjtCnmGndupISnL1VI1lPcS+g933m4KRGGgDytN
+zdwgbnGP
+=A3iO
+-----END PGP SIGNATURE-----
+
+--=_MailMate_73631622-91D5-4F7B-9B08-2022739FCA8C_=--
