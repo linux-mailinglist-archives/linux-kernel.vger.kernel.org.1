@@ -2,81 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41F325B2AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5AAD25B2B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:08:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgIBRHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 13:07:20 -0400
-Received: from mx4.wp.pl ([212.77.101.11]:19387 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgIBRHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 13:07:19 -0400
-Received: (wp-smtpd smtp.wp.pl 26334 invoked from network); 2 Sep 2020 19:07:15 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1599066435; bh=xLtgJOPrL3YCDxm2GC4sjGv1t6OcXxeRsL5vC9/BygE=;
-          h=Subject:To:Cc:From;
-          b=aMnt9GgTmjxjQ055lVFx4ljD8w3szBanRD+4tgF+j5h/xuyEZmEQeAK5JR4LGIEPd
-           8vUC47ZduHt0I9C6YYEeZLI0VwglgyHcbuBIa0LLq0BE9jqeSStO32tHpJJAJKA82i
-           msxD3ye6EV/H0FZHJtRsM+QAHkUnNtZHi/Sf1a3U=
-Received: from 188.146.102.178.nat.umts.dynamic.t-mobile.pl (HELO [192.168.1.110]) (antoni.przybylik@wp.pl@[188.146.102.178])
-          (envelope-sender <antoni.przybylik@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <linux-kernel@vger.kernel.org>; 2 Sep 2020 19:07:15 +0200
-Subject: Re: [PATCH v2 2/2] staging: gdm724x: gdm_tty: replaced macro with a
- function
-To:     Randy Dunlap <rdunlap@infradead.org>
-References: <20200902161627.64686-1-antoni.przybylik@wp.pl>
- <14c3b5c1-a5d8-3843-6538-5f76c4b8d6df@infradead.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-From:   "antoni.przybylik@wp.pl" <antoni.przybylik@wp.pl>
-Message-ID: <eb24f7d2-0460-dd3b-1ab3-a9748fa193fe@wp.pl>
-Date:   Wed, 2 Sep 2020 19:07:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728101AbgIBRIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:08:11 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35844 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726285AbgIBRIL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 13:08:11 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082H4FSb145311;
+        Wed, 2 Sep 2020 17:08:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=OwoqzT+xZqntsl1tMm1voSTpLuS3ETzRtHPm7Fje0T8=;
+ b=CV+8cHspsEBhVy54xWeBBvXQUICGL5x6UZMbteqzRboYCF5IIIi44F+zdnzf+Db58RjD
+ tInRnlq3VnBSNgi2dR8p1jYGFH9eMWyQzp9cHu09J9nhv68iJFzxU8KGzIiOpxELPEvA
+ BwHC9C7E1BKnxdRJmPCdsRh94U1Hmey1/WpJCc4qEbPYy0L7wbyQDKFQzlSlZs1FKH/i
+ 7R9jTyHuY4M2vS6u1caNcgraONeLQoHXOUA0ouWg4Wa5rMliBxTBJz1eZ6ic2E1yxXMo
+ t5HYRItMMDvKB3smPD0lTM7sxHx1kf29vsfPVQn/bVZvLWHOZJvviYH9+eiTfVsbNIGU eQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 337eymbwu2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 02 Sep 2020 17:08:03 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 082H55th131744;
+        Wed, 2 Sep 2020 17:08:02 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 3380sub3t3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 02 Sep 2020 17:08:02 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 082H80E8027580;
+        Wed, 2 Sep 2020 17:08:01 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 02 Sep 2020 10:08:00 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH] padata: fix possible padata_works_lock deadlock
+Date:   Wed,  2 Sep 2020 13:07:56 -0400
+Message-Id: <20200902170756.332491-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <14c3b5c1-a5d8-3843-6538-5f76c4b8d6df@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-WP-MailID: 1a2205470018b49782a34339a2a5f8d5
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 000000B [gRN0]                               
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020163
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9732 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 spamscore=0 bulkscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009020163
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.09.2020 18:21, Randy Dunlap wrote:
-> On 9/2/20 9:16 AM, Antoni Przybylik wrote:
->> Changed return type to bool and removed inline specifier. Also added
->>   static specifier.
-> why remove the inline specifier?
+syzbot reports,
 
-Greg KH wrote to me:
+  WARNING: inconsistent lock state
+  5.9.0-rc2-syzkaller #0 Not tainted
+  --------------------------------
+  inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
+  syz-executor.0/26715 takes:
+  (padata_works_lock){+.?.}-{2:2}, at: padata_do_parallel kernel/padata.c:220
+  {IN-SOFTIRQ-W} state was registered at:
+    spin_lock include/linux/spinlock.h:354 [inline]
+    padata_do_parallel kernel/padata.c:220
+    ...
+    __do_softirq kernel/softirq.c:298
+    ...
+    sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1091
+    asm_sysvec_apic_timer_interrupt arch/x86/include/asm/idtentry.h:581
 
-And really, no need to make it inline, just make it a normal function
-and the compiler will inline it if needed.
+   Possible unsafe locking scenario:
 
-> thanks.
->
->> Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
->> ---
->>   drivers/staging/gdm724x/gdm_tty.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
->> index 34a13d98c029..179fc9b9400b 100644
->> --- a/drivers/staging/gdm724x/gdm_tty.c
->> +++ b/drivers/staging/gdm724x/gdm_tty.c
->> @@ -34,7 +34,7 @@ static DEFINE_MUTEX(gdm_table_lock);
->>   static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
->>   static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
->>   
->> -inline int gdm_tty_ready(struct gdm *gdm)
->> +static bool gdm_tty_ready(struct gdm *gdm)
->>   {
->>   	return (gdm && gdm->tty_dev && gdm->port.count);
->>   }
->>
->
-Antoni Przybylik
+         CPU0
+         ----
+    lock(padata_works_lock);
+    <Interrupt>
+      lock(padata_works_lock);
+
+padata_do_parallel() takes padata_works_lock with softirqs enabled, so a
+deadlock is possible if, on the same CPU, the lock is acquired in
+process context and then softirq handling done in an interrupt leads to
+the same path.
+
+Fix by leaving softirqs disabled while do_parallel holds
+padata_works_lock.
+
+Reported-by: syzbot+f4b9f49e38e25eb4ef52@syzkaller.appspotmail.com
+Fixes: 4611ce2246889 ("padata: allocate work structures for parallel jobs from a pool")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ kernel/padata.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 16cb894dc272..d4d3ba6e1728 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -215,12 +215,13 @@ int padata_do_parallel(struct padata_shell *ps,
+ 	padata->pd = pd;
+ 	padata->cb_cpu = *cb_cpu;
+ 
+-	rcu_read_unlock_bh();
+-
+ 	spin_lock(&padata_works_lock);
+ 	padata->seq_nr = ++pd->seq_nr;
+ 	pw = padata_work_alloc();
+ 	spin_unlock(&padata_works_lock);
++
++	rcu_read_unlock_bh();
++
+ 	if (pw) {
+ 		padata_work_init(pw, padata_parallel_worker, padata, 0);
+ 		queue_work(pinst->parallel_wq, &pw->pw_work);
+
+base-commit: 9c7d619be5a002ea29c172df5e3c1227c22cbb41
+-- 
+2.28.0
+
