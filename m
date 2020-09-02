@@ -2,138 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD58225ADAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4BF25AD42
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgIBOqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:46:34 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:28211 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727825AbgIBONF (ORCPT
+        id S1727819AbgIBOfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:35:54 -0400
+Received: from gateway30.websitewelcome.com ([192.185.193.11]:41233 "EHLO
+        gateway30.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727895AbgIBOf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:13:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599055984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+SlazSrbBYVrkGDDfctr1NZcX102DoU/4jHmOlehDKs=;
-        b=RJQFkPYMngzToFxfIY1SDGKxZzpWr/4wZvECnO0SVz7qr+xU0rEtVtz5GaI42Eqz3/PU6r
-        +RvOxQgVqLiQPQLOGU9/4k0Q1WPLFZTAByjOkeLrwg4fMAmal1v2zhi5Ukxo5VNXai/dcG
-        IAyqMHYO7BCFTwjtR0kYiowzB1SEoZI=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-ZfMNzrg2P9qQbMr8YoamTQ-1; Wed, 02 Sep 2020 10:12:59 -0400
-X-MC-Unique: ZfMNzrg2P9qQbMr8YoamTQ-1
-Received: by mail-wr1-f70.google.com with SMTP id v5so2086669wrs.17
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:12:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=+SlazSrbBYVrkGDDfctr1NZcX102DoU/4jHmOlehDKs=;
-        b=VqXsJR07XqwNb3AKNzpBSFg4bpKnEMvsGAyLpYLFgadvzTEUz4Snc9UNoVbmxoVfKL
-         EXRYFVI5e1h6L76Of1Ksg8B8Rs1N4qV6ZPmHdYU9j81B6RX1fO2HBCy6HGkrAsONzjqG
-         f3zYaZ6EPI6mi+jY4J/orMSd/CdCVZlN0Os0NH76bsw0JOOnCzqoX7YZmQuAzqdoAzpB
-         yDDPjRxmct0Arf8KtchNYT+62VZxXH1Ijm9AcgKOESuZsyW4slI6PH8j+K5fPRKiRwdG
-         4+o5WE5bhyBZQzHAys5ru6OThtBq24Qio8ss1g9Z+VgruGxh7ZiKVsG2IJ16LABoyu22
-         xMPA==
-X-Gm-Message-State: AOAM532SpZn2YZ2b3NFfHCEAiaGkoFw0jQvf6va35WJmzgTU7pZGm0pW
-        y44oR+a08VMkNfRm1HFnkUEI+354HwukDQCOmJuCpAcaCRJTpMinjTzKUZws3BK+Pl42pgLOQCk
-        YTjdduzdU+839PJkJg5dv/Bbg
-X-Received: by 2002:adf:e610:: with SMTP id p16mr7928647wrm.71.1599055978754;
-        Wed, 02 Sep 2020 07:12:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxxXtyvuCzBi/izdiadlCE9hj/SCj7ZzU6crCLAPok8THyns5DedtXVkwYAbCi73bOsWypnPw==
-X-Received: by 2002:adf:e610:: with SMTP id p16mr7928622wrm.71.1599055978525;
-        Wed, 02 Sep 2020 07:12:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id a85sm7218993wmd.26.2020.09.02.07.12.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 07:12:57 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wed, 2 Sep 2020 10:35:29 -0400
+X-Greylist: delayed 1275 seconds by postgrey-1.27 at vger.kernel.org; Wed, 02 Sep 2020 10:35:28 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway30.websitewelcome.com (Postfix) with ESMTP id 223FA4718
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 09:14:07 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id DTWZkQS9bOIGpDTWZkwUx9; Wed, 02 Sep 2020 09:14:07 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=VfJ4a1TS1d2GvTG5jmxmBPb/Aevm1zxN6E7ujp5j+A8=; b=kvAX7gx5C9K0XM1Ryu373oOKpw
+        E0NaF4mn9DWrfJ1UQZLJRtCKgAK7q4wf6NLuGew17iBMPN6qev8Hp7SO9s17OV8UwPDuWjoDLA1Sm
+        lLZX33byeO4id3zQhorfp+j13HwT7fiKb4l/84pzF02Hs6NikU/+y2lgjr6SB0S6JCqJBfmCN5nhc
+        SQmoz2zofdeMPzPQXwyPn38vsmsyd6qjyU6KrkfCiZMsvLsMLhABqkl/zVi5NuFXWohL6SVQwtZAS
+        EVJ1flVGKa5f7L8b0bNo45HaEO67KpEGgrCYGYbf+sF/EvKzH7AuZYHCj47RKS6VNdtztS+R8D6cG
+        UG5drKZQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:47548 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kDTWY-002Q8v-Lf; Wed, 02 Sep 2020 09:14:06 -0500
+Subject: Re: [PATCH] rt2x00: Use fallthrough pseudo-keyword macro
+To:     Leesoo Ahn <dev@ooseel.net>
+Cc:     Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH V2] kvm x86/mmu: use KVM_REQ_MMU_SYNC to sync when needed
-In-Reply-To: <20200902135421.31158-1-jiangshanlai@gmail.com>
-References: <87y2ltx6gl.fsf@vitty.brq.redhat.com> <20200902135421.31158-1-jiangshanlai@gmail.com>
-Date:   Wed, 02 Sep 2020 16:12:55 +0200
-Message-ID: <871rjkp8rc.fsf@vitty.brq.redhat.com>
+References: <20200902130507.227611-1-dev@ooseel.net>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
+ 2Pm4wnOyEgYUyJd5tRWcIbsURAgei918mck3tugT7AQiTUN3/5aAzqe/4ApDUC+uWNkpNnSV
+ tjOx1hBpla0ifywy4bvFobwSh5/I3qohxDx+c1obd8Bp/B/iaOtnq0inli/8rlvKO9hp6Z4e
+ DXL3PlD0QsLSc27AkwzLEc/D3ZaqBq7ItvT9Pyg0z3Q+2dtLF00f9+663HVC2EUgP25J3xDd
+ 496SIeYDTkEgbJ7WYR0HYm9uirSET3lDqOVh1xPqoy+U9zTtuA9NQHVGk+hPcoazSqEtLGBk
+ YE2mm2wzX5q2uoyptseSNceJ+HE9L+z1KlWW63HhddgtRGhbP8pj42bKaUSrrfDUsicfeJf6
+ m1iJRu0SXYVlMruGUB1PvZQ3O7TsVfAGCv85pFipdgk8KQnlRFkYhUjLft0u7CL1rDGZWDDr
+ NaNj54q2CX9zuSxBn9XDXvGKyzKEZ4NY1Jfw+TAMPCp4buawuOsjONi2X0DfivFY+ZsjAIcx
+ qQMglPtKk/wBs7q2lvJ+pHpgvLhLZyGqzAvKM1sVtRJ5j+ARKA0w4pYs5a5ufqcfT7dN6TBk
+ LXZeD9xlVic93Ju08JSUx2ozlcfxq+BVNyA+dtv7elXUZ2DrYwARAQABzStHdXN0YXZvIEEu
+ IFIuIFNpbHZhIDxndXN0YXZvYXJzQGtlcm5lbC5vcmc+wsGrBBMBCAA+FiEEkmRahXBSurMI
+ g1YvRwW0y0cG2zEFAl6zFvQCGyMFCQlmAYAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AAIQkQ
+ RwW0y0cG2zEWIQSSZFqFcFK6swiDVi9HBbTLRwbbMZsEEACWjJyXLjtTAF21Vuf1VDoGzitP
+ oE69rq9UhXIGR+e0KACyIFoB9ibG/1j/ESMa0RPSwLpJDLgfvi/I18H/9cKtdo2uz0XNbDT8
+ i3llIu0b43nzGIDzRudINBXC8Coeob+hrp/MMZueyzt0CUoAnY4XqpHQbQsTfTrpFeHT02Qz
+ ITw6kTSmK7dNbJj2naH2vSrU11qGdU7aFzI7jnVvGgv4NVQLPxm/t4jTG1o+P1Xk4N6vKafP
+ zqzkxj99JrUAPt+LyPS2VpNvmbSNq85PkQ9gpeTHpkio/D9SKsMW62njITPgy6M8TFAmx8JF
+ ZAI6k8l1eU29F274WnlQ6ZokkJoNctwHa+88euWKHWUDolCmQpegJJ8932www83GLn1mdUZn
+ NsymjFSdMWE+y8apWaV9QsDOKWf7pY2uBuE6GMPRhX7e7h5oQwa1lYeO2L9LTDeXkEOJe+hE
+ qQdEEvkC/nok0eoRlBlZh433DQlv4+IvSsfN/uWld2TuQFyjDCLIm1CPRfe7z0TwiCM27F+O
+ lHnUspCFSgpnrxqNH6CM4aj1EF4fEX+ZyknTSrKL9BGZ/qRz7Xe9ikU2/7M1ov6rOXCI4NR9
+ THsNax6etxCBMzZs2bdMHMcajP5XdRsOIARuN08ytRjDolR2r8SkTN2YMwxodxNWWDC3V8X2
+ RHZ4UwQw487BTQRbLBwMARAAsHCE31Ffrm6uig1BQplxMV8WnRBiZqbbsVJBH1AAh8tq2ULl
+ 7udfQo1bsPLGGQboJSVN9rckQQNahvHAIK8ZGfU4Qj8+CER+fYPp/MDZj+t0DbnWSOrG7z9H
+ IZo6PR9z4JZza3Hn/35jFggaqBtuydHwwBANZ7A6DVY+W0COEU4of7CAahQo5NwYiwS0lGis
+ LTqks5R0Vh+QpvDVfuaF6I8LUgQR/cSgLkR//V1uCEQYzhsoiJ3zc1HSRyOPotJTApqGBq80
+ X0aCVj1LOiOF4rrdvQnj6iIlXQssdb+WhSYHeuJj1wD0ZlC7ds5zovXh+FfFl5qH5RFY/qVn
+ 3mNIVxeO987WSF0jh+T5ZlvUNdhedGndRmwFTxq2Li6GNMaolgnpO/CPcFpDjKxY/HBUSmaE
+ 9rNdAa1fCd4RsKLlhXda+IWpJZMHlmIKY8dlUybP+2qDzP2lY7kdFgPZRU+ezS/pzC/YTzAv
+ CWM3tDgwoSl17vnZCr8wn2/1rKkcLvTDgiJLPCevqpTb6KFtZosQ02EGMuHQI6Zk91jbx96n
+ rdsSdBLGH3hbvLvjZm3C+fNlVb9uvWbdznObqcJxSH3SGOZ7kCHuVmXUcqozol6ioMHMb+In
+ rHPP16aVDTBTPEGwgxXI38f7SUEn+NpbizWdLNz2hc907DvoPm6HEGCanpcAEQEAAcLBZQQY
+ AQgADwUCWywcDAIbDAUJCWYBgAAKCRBHBbTLRwbbMdsZEACUjmsJx2CAY+QSUMebQRFjKavw
+ XB/xE7fTt2ahuhHT8qQ/lWuRQedg4baInw9nhoPE+VenOzhGeGlsJ0Ys52sdXvUjUocKgUQq
+ 6ekOHbcw919nO5L9J2ejMf/VC/quN3r3xijgRtmuuwZjmmi8ct24TpGeoBK4WrZGh/1hAYw4
+ ieARvKvgjXRstcEqM5thUNkOOIheud/VpY+48QcccPKbngy//zNJWKbRbeVnimua0OpqRXhC
+ rEVm/xomeOvl1WK1BVO7z8DjSdEBGzbV76sPDJb/fw+y+VWrkEiddD/9CSfgfBNOb1p1jVnT
+ 2mFgGneIWbU0zdDGhleI9UoQTr0e0b/7TU+Jo6TqwosP9nbk5hXw6uR5k5PF8ieyHVq3qatJ
+ 9K1jPkBr8YWtI5uNwJJjTKIA1jHlj8McROroxMdI6qZ/wZ1ImuylpJuJwCDCORYf5kW61fcr
+ HEDlIvGc371OOvw6ejF8ksX5+L2zwh43l/pKkSVGFpxtMV6d6J3eqwTafL86YJWH93PN+ZUh
+ 6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9ehGZEO3+gCDFmK
+ rjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrSVtSixD1uOgyt
+ AP7RWS474w==
+Message-ID: <88a62415-5859-efb6-f608-db7dcb84ad9b@embeddedor.com>
+Date:   Wed, 2 Sep 2020 09:20:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200902130507.227611-1-dev@ooseel.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kDTWY-002Q8v-Lf
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:47548
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lai Jiangshan <jiangshanlai@gmail.com> writes:
 
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
->
-> When kvm_mmu_get_page() gets a page with unsynced children, the spt
-> pagetable is unsynchronized with the guest pagetable. But the
-> guest might not issue a "flush" operation on it when the pagetable
-> entry is changed from zero or other cases. The hypervisor has the 
-> responsibility to synchronize the pagetables.
->
-> The linux kernel behaves as above for many years, But
-> 8c8560b83390("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes)
 
-Nit: checkpatch.pl complains here with 
+On 9/2/20 08:05, Leesoo Ahn wrote:
+> Replace all '/* fall through */' comments with the macro[1].
+> 
+> [1]: https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> 
 
-ERROR: Please use git commit description style 'commit <12+ chars of
-sha1> ("<title line>")' - ie: 'commit 8c8560b83390 ("KVM: x86/mmu: Use
-KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes")'
-#118: 
-8c8560b83390("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes)
+This looks familiar...
 
-> inadvertently included a line of code to change it without giving any
-> reason in the changelog. It is clear that the commit's intention was to
-> change KVM_REQ_TLB_FLUSH -> KVM_REQ_TLB_FLUSH_CURRENT, so we don't
-> unneedlesly flush other contexts but one of the hunks changed
-> nearby KVM_REQ_MMU_SYNC instead.
->
-> The this patch changes it back.
->
-> Link: https://lore.kernel.org/lkml/20200320212833.3507-26-sean.j.christopherson@intel.com/
-> Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
-> Changed from v1:
-> 	update patch description
->
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 4e03841f053d..9a93de921f2b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2468,7 +2468,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
->  		}
->  
->  		if (sp->unsync_children)
-> -			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-> +			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
->  
->  		__clear_sp_write_flooding_count(sp);
+https://lore.kernel.org/lkml/20200821062052.GA8618@embeddedor/
 
-FWIW, 
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
-but it'd be great to hear from Sean).
-
--- 
-Vitaly
-
+Thanks
+--
+Gustavo
