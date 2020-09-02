@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7EB25AE16
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B7625ADDC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgIBO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:59:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46544 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbgIBNxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:53:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 77D7EB630;
-        Wed,  2 Sep 2020 13:53:00 +0000 (UTC)
-Date:   Wed, 2 Sep 2020 15:52:58 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v2 00/28] The new cgroup slab memory controller
-Message-ID: <20200902135258.GH4617@dhcp22.suse.cz>
-References: <20200127173453.2089565-1-guro@fb.com>
- <20200130020626.GA21973@in.ibm.com>
- <20200130024135.GA14994@xps.DHCP.thefacebook.com>
- <CA+CK2bCQcnTpzq2wGFa3D50PtKwBoWbDBm56S9y8c+j+pD+KSw@mail.gmail.com>
- <20200813000416.GA1592467@carbon.dhcp.thefacebook.com>
- <CA+CK2bDDToW=Q5RgeWkoN3_rUr3pyWGVb9MraTzM+DM3OZ+tdg@mail.gmail.com>
- <CA+CK2bBEHFuLLg79_h6bv4Vey+B0B2YXyBxTBa=Le12OKbNdwA@mail.gmail.com>
- <6469324e-afa2-18b4-81fb-9e96466c1bf3@suse.cz>
- <20200902113204.GD4617@dhcp22.suse.cz>
- <CA+CK2bA6EpfSMZD6egysFqdw0tZFuPAxEJc-rQbJTnjf+u2TGA@mail.gmail.com>
+        id S1727989AbgIBOK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:10:28 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59536 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727845AbgIBNy3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:54:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599054864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=khHWBwp27MCsDubL2xJ27QUZt+RhTFOMCjX1dXeN/NI=;
+        b=Sh/HlCyhYz0MxdSzsZ8qCJABRXvB0wA9LzSRD16xi8Bme7N7kTG1rXk2y5OyS4I0GqGBJI
+        eDQmvsVlQVQJUVW2oU3mk4E0JuXQ9ruljvJGaSKhA21/YpD0HMyXvjAJ2Eyn0/Vli95AV/
+        N0IAgu5X7/PnBitcorZYn2KzK+zs9pI=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-t00NSusWN1O6N_p8YLxEaQ-1; Wed, 02 Sep 2020 09:54:22 -0400
+X-MC-Unique: t00NSusWN1O6N_p8YLxEaQ-1
+Received: by mail-il1-f198.google.com with SMTP id v6so3550536ili.13
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:54:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=khHWBwp27MCsDubL2xJ27QUZt+RhTFOMCjX1dXeN/NI=;
+        b=MtrdnDzY5xhPNacKvLqb3i3YfYVkYhe8fc7tubt7svhN/uxaORbKmY4JbbdFA5t7D+
+         vlaIhmVIEUhRYJGZ7SWBkQIoLkX5m93RGQvRMyahtmjVBMeY89xyUEptQg3+yBkTHGnx
+         WrJfa0bJfpiuzQzJebyYpRRrZGHqKK6/B96e9QyAJoKb9fd3osJQ6uWdb1RYbAx4LOHa
+         j812MMk4teucpPKr+Pf79oBxi8+/+10gsC4TU99hR2v6Q5QMNTuoG8Y0DMpZrXPMVLyF
+         ssU8Wo/A4apvRL/nGkq+R4v+fvrA9LV1jkeV2DP1zIzlAIkyxX04SiebKo9CsI/jjzwW
+         qz2Q==
+X-Gm-Message-State: AOAM532VYYfgUxC76rp51r1O1IbRhfL8i59vS7ghaHke40s4cEC0Jtx0
+        JFuB1oBoUkiQhHYFdj4ddrjhUEsg4+mpJffI2BvkrOsfAtu+V5+qGK9JpLxaBDy8k3Kv+Wqbzq7
+        s6gV/flN5vao0apCEb5h1rAM1
+X-Received: by 2002:a05:6638:144:: with SMTP id y4mr3278101jao.61.1599054861763;
+        Wed, 02 Sep 2020 06:54:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyeD2EUIkJh6TIy2+yZpYkZPNXyrjZKyqORwp6a/S9dENeA/0Rke6kCSnDOJiOYPCEl37GvZA==
+X-Received: by 2002:a05:6638:144:: with SMTP id y4mr3278076jao.61.1599054861531;
+        Wed, 02 Sep 2020 06:54:21 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id z4sm2255690ilh.45.2020.09.02.06.54.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 06:54:21 -0700 (PDT)
+Subject: Re: [PATCH] media: tc358743: initialize variable
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     matrandg@cisco.com, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        p.zabel@pengutronix.de, Hans Verkuil <hans.verkuil@cisco.com>,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <20200830163043.10317-1-trix@redhat.com>
+ <CAKwvOdkvY62xVKQcVHxMTpskO=bB2sxwiOQb+TGF0-oU2Q6unA@mail.gmail.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <99da6454-2f40-1def-bfae-f82ae8ec0379@redhat.com>
+Date:   Wed, 2 Sep 2020 06:54:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bA6EpfSMZD6egysFqdw0tZFuPAxEJc-rQbJTnjf+u2TGA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkvY62xVKQcVHxMTpskO=bB2sxwiOQb+TGF0-oU2Q6unA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-09-20 08:53:49, Pavel Tatashin wrote:
-> On Wed, Sep 2, 2020 at 7:32 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 02-09-20 11:53:00, Vlastimil Babka wrote:
-> > > >> > > Thread #2: ccs killer kthread
-> > > >> > >    css_killed_work_fn
-> > > >> > >      cgroup_mutex  <- Grab this Mutex
-> > > >> > >      mem_cgroup_css_offline
-> > > >> > >        memcg_offline_kmem.part
-> > > >> > >           memcg_deactivate_kmem_caches
-> > > >> > >             get_online_mems
-> > > >> > >               mem_hotplug_lock <- waits for Thread#1 to get read access
-> >
-> > And one more thing. THis has been brought up several times already.
-> > Maybe I have forgoten but why do we take hotplug locks in this path in
-> > the first place? Memory hotplug notifier takes slab_mutex so this
-> > shouldn't be really needed.
-> 
-> Good point, it seems this lock can be completely removed from
-> memcg_deactivate_kmem_caches
 
-I am pretty sure we have discussed that in the past. But I do not
-remember the outcome. Either we have concluded that this is indeed the
-case but nobody came up with a patch or we have hit some obscure
-issue... Maybe David/Roman rememeber more than I do.
+On 8/31/20 10:31 AM, Nick Desaulniers wrote:
+> On Sun, Aug 30, 2020 at 9:30 AM <trix@redhat.com> wrote:
+>> From: Tom Rix <trix@redhat.com>
+>>
+>> clang static analysis flags this error
+>>
+>> tc358743.c:1468:9: warning: Branch condition evaluates
+>>   to a garbage value
+>>         return handled ? IRQ_HANDLED : IRQ_NONE;
+>>                ^~~~~~~
+>> handled should be initialized to false.
+>>
+>> Fixes: d747b806abf4 ("[media] tc358743: add direct interrupt handling")
+>> Signed-off-by: Tom Rix <trix@redhat.com>
+> I'm guessing there was more to the report that says that `handled`
+> isn't necessarily initialized along any of the paths within
+> tc358743_isr()?  But you should fix this for all callers of
+> tc358743_isr(), such as tc358743_work_i2c_poll(), not just
+> tc358743_irq_handler().
 
--- 
-Michal Hocko
-SUSE Labs
+tc358743_work_i2c_poll does not use handled, so in theory it could pass a null, however at least one of the subhandler, tc358743_cec_isr, does not check if null is passed in.
+
+so i think that covers the callers.
+
+i think initializing handler in tc358743_work_i2c_poll is a not needed since it is unused.  but the null check in tc358743_cec_isr needs to be done. i'll post that as a separate patch once this one settles.
+
+Tom
+
+>> ---
+>>  drivers/media/i2c/tc358743.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/media/i2c/tc358743.c b/drivers/media/i2c/tc358743.c
+>> index a03dcab5ce61..c724bd1591de 100644
+>> --- a/drivers/media/i2c/tc358743.c
+>> +++ b/drivers/media/i2c/tc358743.c
+>> @@ -1461,7 +1461,7 @@ static int tc358743_isr(struct v4l2_subdev *sd, u32 status, bool *handled)
+>>  static irqreturn_t tc358743_irq_handler(int irq, void *dev_id)
+>>  {
+>>         struct tc358743_state *state = dev_id;
+>> -       bool handled;
+>> +       bool handled = false;
+>>
+>>         tc358743_isr(&state->sd, 0, &handled);
+>>
+>> --
+>> 2.18.1
+>>
+>
+
