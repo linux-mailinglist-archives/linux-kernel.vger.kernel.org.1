@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEB925B421
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E6F25B429
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbgIBSyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 14:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgIBSyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 14:54:44 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C674C061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 11:54:44 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id r9so60317ioa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 11:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HF56mZMJ2WsC21vuD8YlR44aW/J9Nv1kdlXNn6+0Jmc=;
-        b=NQnxgMfX9wCh2os1ZOmAHNWgN8zzEMfrZbO5AEPVjZv0XdJnxNppuiYPUOTdW6mg5a
-         XHcrItkgB5FofTpctF3wGtgUhhpulJNTzJBbNdasn6xB2F0Z67jLO0I6iDmbYJfWPnk0
-         hF/lbJnKwbBzFrWro3omc+6I4k9XqEHHo7Hkvd7/yUN17rMq9R6vXjp9xu3ogKcPbQmA
-         azNzJyXtRcaJsFMHhh+K2Hwp1r9z1DJ9pELY+PS5qBVS7s+IxSm3p1Swdb65cIwG5bGR
-         DISjcfloDr7oVm9mTR2t+3ZrTG+Ap+F7lJYGaoxLrHnbXB4RHCOwlWTf/OSFriKgbiKa
-         IbCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HF56mZMJ2WsC21vuD8YlR44aW/J9Nv1kdlXNn6+0Jmc=;
-        b=MUhJ8wt1I4rAeAPfkDir9JJ57GD5udpjb97/qVOBxPFFGMA1J0dflutTWAYXxa9fXQ
-         3F3PUc1m9H1HaaEbvlPKM3am11pvT8PihfhoK//xkQ7pnGJD4EAVYk7w/6f/iW8h0D/g
-         1zYw9LXLeqbVFMuea0t6hnIodwORidsJfciVEKhoQYnF0s+XqEnFLiEGh2PylsJFz07D
-         IUnH6/DBk/G1eBJmTSImx1cIlUtM9BZ3hsZOSFbA0oMPdcTGklH1XMtKNEyaV0UntSYH
-         41jV/JKGs4ka4wqaaN2m0AXAeiBbvBueGp4y6EEUWOnNfHzrrMYWDNNVrDSQdFIqZUx1
-         SdJA==
-X-Gm-Message-State: AOAM530BCH1NuA+vOqZ0G1iqQXoD3evr8i0DU4q6en3DVFM4/J2yAyxL
-        evq9rcIbLoQKCCPMPWIKuEKGvbIU1r74nvKFed0=
-X-Google-Smtp-Source: ABdhPJymnhlrdDdnHN9QbXZ8plCeo5oARAUu45klg6LMfnATgzaisqhmYVn2br9fNybt7R3g58duVGwp2lt3slZWmNw=
-X-Received: by 2002:a05:6638:1607:: with SMTP id x7mr4419966jas.109.1599072883749;
- Wed, 02 Sep 2020 11:54:43 -0700 (PDT)
+        id S1727989AbgIBS6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 14:58:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726124AbgIBS6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 14:58:17 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2986208C7;
+        Wed,  2 Sep 2020 18:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599073096;
+        bh=jZpDF9NPKu9cn/SUdzlY3qKfPGe/l8VUeZcIKi8NeZs=;
+        h=Date:From:To:cc:Subject:From;
+        b=bP+p3D9AhDjjeUFMCkbX7XbTTWP6Ldq6jsdijeCra+sh1NwzyMfITP9D134cyFDbN
+         f81OCPP7KtWjMB1gS7u3a1PLAX0nm1KYIrwhU8V7FG747e5uQnRDUL+OVr7ywegw8+
+         +1BWM5rpnSmN1wz7fEfpTzK6imkkFT/kImVV3lAg=
+Date:   Wed, 2 Sep 2020 20:58:13 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] HID fixes
+Message-ID: <nycvar.YFH.7.76.2009022051130.4671@cbobk.fhfr.pm>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <159905616280.521200.12444250032673650063.stgit@warthog.procyon.org.uk>
-In-Reply-To: <159905616280.521200.12444250032673650063.stgit@warthog.procyon.org.uk>
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Date:   Wed, 2 Sep 2020 20:54:32 +0200
-Message-ID: <CAM9Jb+gU3KS5QV9EKfxBz6qhf+eZJ0zT+DL6Lw2K3+8qkLYPPA@mail.gmail.com>
-Subject: Re: [PATCH] Fix khugepaged's request size in collapse_file()
-To:     David Howells <dhowells@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Song Liu <songliubraving@fb.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> collapse_file() in khugepaged passes PAGE_SIZE as the number of pages to be
-> read ahead to page_cache_sync_readahead().  It seems this was expressed as a
-> number of bytes rather than a number of pages.
->
-> Fix it to use the number of pages to the end of the window instead.
->
-> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->
->  mm/khugepaged.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 6d199c353281..f2d243077b74 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -1706,7 +1706,7 @@ static void collapse_file(struct mm_struct *mm,
->                                 xas_unlock_irq(&xas);
->                                 page_cache_sync_readahead(mapping, &file->f_ra,
->                                                           file, index,
-> -                                                         PAGE_SIZE);
-> +                                                         end - index);
->                                 /* drain pagevecs to help isolate_lru_page() */
->                                 lru_add_drain();
->                                 page = find_lock_page(mapping, index);
->
+Linus,
 
-Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+please pull from
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-linus
+
+to receive HID subsystem fixes. Most importantly:
+
+=====
+- Data sanitization and validtion fixes for report descriptor parser from 
+  Marc Zyngier
+- memory leak fix for hid-elan driver from Dinghao Liu
+- two device-specific quirks
+=====
+
+Thanks.
+
+----------------------------------------------------------------
+Dinghao Liu (1):
+      HID: elan: Fix memleak in elan_input_configured
+
+Marc Zyngier (2):
+      HID: core: Correctly handle ReportSize being zero
+      HID: core: Sanitize event code and type when mapping input
+
+Nicholas Miell (1):
+      HID: microsoft: Add rumble support for the 8bitdo SN30 Pro+ controller
+
+Nirenjan Krishnan (1):
+      HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for all Saitek X52 devices
+
+ drivers/hid/hid-core.c       | 15 +++++++++++++--
+ drivers/hid/hid-elan.c       |  2 ++
+ drivers/hid/hid-ids.h        |  3 +++
+ drivers/hid/hid-input.c      |  4 ++++
+ drivers/hid/hid-microsoft.c  |  2 ++
+ drivers/hid/hid-multitouch.c |  2 ++
+ drivers/hid/hid-quirks.c     |  2 ++
+ include/linux/hid.h          | 42 +++++++++++++++++++++++++++++-------------
+ 8 files changed, 57 insertions(+), 15 deletions(-)
+
+-- 
+Jiri Kosina
+SUSE Labs
+
