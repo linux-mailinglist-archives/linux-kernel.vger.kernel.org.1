@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E661F25AD34
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885BD25AD3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgIBOcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S1726384AbgIBOeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgIBOc0 (ORCPT
+        with ESMTP id S1727951AbgIBOdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:32:26 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39EAC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:32:25 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n13so5140155edo.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:32:25 -0700 (PDT)
+        Wed, 2 Sep 2020 10:33:55 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D73C061245
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:33:55 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id t189so1260079vka.10
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bItmxO/box4xkUA8NKzf+RG/lZQ2k+Z9iLxIKAdl3rg=;
-        b=aVOjgIghf/LEOqFr9f4cUaGIB9aNDSyALYlLsC+VQPNplfPqFtVW5Qz+ox/xFwMdpG
-         jB7beowphCRkU5QDzWrb1EIupdF/v2r4RrLTeTNLFjTKFbZT7NXvgjlyT110in7Hx4dz
-         8GpNde4P1H361ikv41rISWFetQY8pv60aCfHVotYKc+9S1z/8/DbWq6/tv6WzUJv8SKX
-         DCirYhdgoK+EpYuOQ8MlWhfwnFl74/BPW+p0nPJCl193hT7+N0RKmg2ztMkUn5l5Z0Bb
-         UWhbiXJwo5yKScy0+CLjd2d6INwPCv6lmQoNSeG44B0Q2AYK8pFHtFdXOrkgqZyeW7eD
-         VTmQ==
+        bh=GTgJ8jRvYHfsaCYMvrvH0r8WVjN4146hJg98Kfc6e3E=;
+        b=GqX9sYheDnvfIvKTFK/YljPYXr+3kQcZ5oeuEyfjrmPv9ynxsoVZe1l347TGAbC+Rp
+         rEvI0xz61c68O22SRUFr+GZTyhQ+UdS7P+IDlWIamL7aM5WBSJmp8LD3ICvXd6fYhJOj
+         21cSc2kz+u10AgNpfA9qcMnUMYrAYW86iQI6sUoPi7zjVTcTR2jigazQAZ25eq21E/WF
+         mjDqeDGhHfwiALlh1OkrVcNqZMcpZOqRDelWt04/+Em4OXmFpgWfbFaT1nKFsS6o8CXX
+         F7DQO15/wvL/9NZF7GjQ4HKldIVHxa7y2XhS3m6tk3zyNHM3vlL5gkmrgOhY1ubPQYu4
+         nKHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bItmxO/box4xkUA8NKzf+RG/lZQ2k+Z9iLxIKAdl3rg=;
-        b=iS6WuH0FSb+mp7WEIf44wQ9NQAXtjQ88E2rf384OmQH3QxXIsuQE+ObkptmPFGxDpz
-         I8DxLwXLNzXSPTkOGK3gaGzNvRAzt+Bih67jnQNzVztR0ImD8aFILcMIpjA+fOpuPXu6
-         +d3i0Q8m8A2E6UNh419GWVdtmWmTYVQuKf6Kqv4vFlGqThyV3wh/vQ0NtZlOYuDPBsSr
-         foyZAbZ3PCEO1yGkedgA0HXfUwbz5vd5zeUVDCsj0d9XbgdfZFJdptKvV6qzCDshl7OC
-         uehkXZw62f2OiD34OsSCP3OdIRDd5MEvdIK1UNBOsLPOCRu8tuNHdvFMaBxUrD3auvLi
-         RYvg==
-X-Gm-Message-State: AOAM531tjlJXYnwn0osShMVxbIXyMPIj3hzI/SKFTC4YnEoOjotXgN9W
-        sniVXP3rGewAcEGXy/RMZTk4gD+A8p8Y0cMd5sgZew==
-X-Google-Smtp-Source: ABdhPJz7LBVE9G0FklzTLP3uMK+8ho+lPEAer2aH2x2P88+WwHOIvwpcKHpNBVp5M80nq++1xfgz3t4mbQjP3lzHp+s=
-X-Received: by 2002:aa7:de91:: with SMTP id j17mr345344edv.85.1599057144195;
- Wed, 02 Sep 2020 07:32:24 -0700 (PDT)
+        bh=GTgJ8jRvYHfsaCYMvrvH0r8WVjN4146hJg98Kfc6e3E=;
+        b=hXl5Stm3EiJL38/xOuhE2l1zpfEJb4o9zUYhS0l8S+4cHbYmJVSO/R+uA77/YDnJaS
+         uGvsCJXQEchJvjNqOuNk/FFC6n5FQ3fTES8iTai/kjIezmTK4RgrYl3emRntPEtOP3aj
+         W0oKN3Q30gKVg+zZlVu8ukKqE9jm8kl6NX1gH9pjSIvAeG8kuTfm3cbTc/dF58iZjVAi
+         pFlHYLBqudq22iJ+7be95gULIDD/Ek2j6LRCgUhPYzVyCwDlc6K7cwYxun3dQ0bPyITP
+         /Layd8YbxLoLGUlZ9/L2vlqVgJVnVQfxL2FpFFbx5AH2YsW0+oPEQzY3YSYtooVKRI7c
+         VG+Q==
+X-Gm-Message-State: AOAM532Eiw7E3gob8Z0Icl1LiB1Mg17h2Q54PzMgk8deG4s3BUSgNMYZ
+        VtW+E7DppQ7JcEQ8SItEcBz6+/y4MHfUhw==
+X-Google-Smtp-Source: ABdhPJyges5I9Vf40gyBUf53h8e1zVIrwWHbelkPigorcl2HS2A2vUsE2Wl8vYzB+1fUu+9DSME7Dw==
+X-Received: by 2002:a1f:2444:: with SMTP id k65mr5461792vkk.33.1599057233315;
+        Wed, 02 Sep 2020 07:33:53 -0700 (PDT)
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
+        by smtp.gmail.com with ESMTPSA id h27sm791621vko.38.2020.09.02.07.33.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 07:33:52 -0700 (PDT)
+Received: by mail-ua1-f48.google.com with SMTP id g16so1156714uan.5
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:33:51 -0700 (PDT)
+X-Received: by 2002:a9f:2237:: with SMTP id 52mr1270900uad.141.1599057231345;
+ Wed, 02 Sep 2020 07:33:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
- <20200902140116.GI4617@dhcp22.suse.cz> <20200902141057.GK4617@dhcp22.suse.cz>
-In-Reply-To: <20200902141057.GK4617@dhcp22.suse.cz>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 2 Sep 2020 10:31:48 -0400
-Message-ID: <CA+CK2bChfLLDikSzaD0kCkchxiRd0fzpyDEEpbzEh_7MEqhNgw@mail.gmail.com>
-Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
- memory offline
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@suse.de>
+References: <1599048911-7923-1-git-send-email-tanhuazhong@huawei.com>
+In-Reply-To: <1599048911-7923-1-git-send-email-tanhuazhong@huawei.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 2 Sep 2020 16:33:13 +0200
+X-Gmail-Original-Message-ID: <CA+FuTSc_KOZRTdh34Vw3gTCzGMmi5XvDZKjpWMOXw7aby53wqw@mail.gmail.com>
+Message-ID: <CA+FuTSc_KOZRTdh34Vw3gTCzGMmi5XvDZKjpWMOXw7aby53wqw@mail.gmail.com>
+Subject: Re: [RFC net-next] udp: add a GSO type for UDPv6
+To:     Huazhong Tan <tanhuazhong@huawei.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
+        linuxarm@huawei.com, Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > The fix is to try to drain per-cpu lists again after
-> > > check_pages_isolated_cb() fails.
+On Wed, Sep 2, 2020 at 2:18 PM Huazhong Tan <tanhuazhong@huawei.com> wrote:
 >
-> Still trying to wrap my head around this but I think this is not a
-> proper fix. It should be the page isolation to make sure no races are
-> possible with the page freeing path.
->
+> In some cases, for UDP GSO, UDPv4 and UDPv6 need to be handled
+> separately, for example, checksum offload, so add new GSO type
+> SKB_GSO_UDPV6_L4 for UDPv6, and the old SKB_GSO_UDP_L4 stands
+> for UDPv4.
 
-As Bharata B Rao found in another thread, the problem was introduced
-by this change:
-c52e75935f8d: mm: remove extra drain pages on pcp list
+This is in preparation for hardware you have that actually cares about
+this distinction, I guess?
 
-So, the drain used to be tried every time with lru_add_drain_all();
-Which, I think is excessive, as we start a thread per cpu to try to
-drain and catch a rare race condition. With the proposed change we
-drain again only when we find such a condition. Fixing it in
-start_isolate_page_range means that we must somehow synchronize it
-with the release_pages() which adds costs to runtime code, instead of
-to hot-remove code.
 
-Pasha
+> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+> index 2cc3cf8..b7c1a76 100644
+> --- a/include/linux/netdev_features.h
+> +++ b/include/linux/netdev_features.h
+> @@ -54,6 +54,7 @@ enum {
+>         NETIF_F_GSO_UDP_BIT,            /* ... UFO, deprecated except tuntap */
+>         NETIF_F_GSO_UDP_L4_BIT,         /* ... UDP payload GSO (not UFO) */
+>         NETIF_F_GSO_FRAGLIST_BIT,               /* ... Fraglist GSO */
+> +       NETIF_F_GSO_UDPV6_L4_BIT,       /* ... UDPv6 payload GSO (not UFO) */
+>         /**/NETIF_F_GSO_LAST =          /* last bit, see GSO_MASK */
+>                 NETIF_F_GSO_FRAGLIST_BIT,
+
+Need to update NETIF_F_GSO_LAST then, too.
