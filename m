@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DECF25B18C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABEA25B181
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgIBQY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:24:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:36840 "EHLO m43-7.mailgun.net"
+        id S1727821AbgIBQYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:24:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49004 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgIBQYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:24:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599063893; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=B4n9r+xdCvV52+OhcuwhLgh4BajiH4rVAxbO9eD/Pok=; b=lpJrVPMgLq3984g2icvZHBQi1OZ3bKlu/mWsOK0I6EfUo4Pv8IsZmBGoqYDEGZHonDb7kz9w
- kSYidCZHbdFPUOVMxuYeKVIK6WmyO9vQ7qOHgQitzLv6WyK4hMqfmR35c6q2YwdqwZwNo1SF
- Izzt0sFS0lW6Etk7l9aogMx8WZg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f4fc7434ba82a82fd98d650 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Sep 2020 16:24:35
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E3F00C433CA; Wed,  2 Sep 2020 16:24:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E86CFC433CB;
-        Wed,  2 Sep 2020 16:24:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E86CFC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=deesin@codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
-        mathieu.poirier@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Arun Kumar Neelakantam <aneela@codeaurora.org>,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Subject: [PATCH V7 4/4] rpmsg: char: Add signal callback and POLLPRI support
-Date:   Wed,  2 Sep 2020 21:54:07 +0530
-Message-Id: <1599063847-2347-5-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1599063847-2347-1-git-send-email-deesin@codeaurora.org>
-References: <1599063847-2347-1-git-send-email-deesin@codeaurora.org>
+        id S1726310AbgIBQYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:24:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BD49CAD03;
+        Wed,  2 Sep 2020 16:24:29 +0000 (UTC)
+Subject: Re: [PATCH 01/13] x86/entry: Fix AC assertion
+To:     Brian Gerst <brgerst@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>
+References: <20200902132549.496605622@infradead.org>
+ <20200902133200.666781610@infradead.org>
+ <CAMzpN2i9C5Sj-M0b9Y7VtOphDJs2Z9NPux9Dg347PSeNBaXRMQ@mail.gmail.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <c6915915-1c94-70cf-453d-861a4ca2da4c@suse.com>
+Date:   Wed, 2 Sep 2020 18:24:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAMzpN2i9C5Sj-M0b9Y7VtOphDJs2Z9NPux9Dg347PSeNBaXRMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arun Kumar Neelakantam <aneela@codeaurora.org>
+On 02.09.20 17:58, Brian Gerst wrote:
+> On Wed, Sep 2, 2020 at 9:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>>
+>> From: Peter Zijlstra <peterz@infradead.org>
+>>
+>> The WARN added in commit 3c73b81a9164 ("x86/entry, selftests: Further
+>> improve user entry sanity checks") unconditionally triggers on my IVB
+>> machine because it does not support SMAP.
+>>
+>> For !SMAP hardware we patch out CLAC/STAC instructions and thus if
+>> userspace sets AC, we'll still have it set after entry.
+>>
+>> Fixes: 3c73b81a9164 ("x86/entry, selftests: Further improve user entry sanity checks")
+>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> Acked-by: Andy Lutomirski <luto@kernel.org>
+>> ---
+>>   arch/x86/include/asm/entry-common.h |   11 +++++++++--
+>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> --- a/arch/x86/include/asm/entry-common.h
+>> +++ b/arch/x86/include/asm/entry-common.h
+>> @@ -18,8 +18,16 @@ static __always_inline void arch_check_u
+>>                   * state, not the interrupt state as imagined by Xen.
+>>                   */
+>>                  unsigned long flags = native_save_fl();
+>> -               WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
+>> -                                     X86_EFLAGS_NT));
+>> +               unsigned long mask = X86_EFLAGS_DF | X86_EFLAGS_NT;
+>> +
+>> +               /*
+>> +                * For !SMAP hardware we patch out CLAC on entry.
+>> +                */
+>> +               if (boot_cpu_has(X86_FEATURE_SMAP) ||
+>> +                   (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
+>> +                       mask |= X86_EFLAGS_AC;
+> 
+> Is the explicit Xen check necessary?  IIRC the Xen hypervisor will
+> filter out the SMAP bit in the cpuid pvop.
 
-Register a callback to get the signal notifications from rpmsg and
-send POLLPRI mask to indicate the signal change in POLL system call.
+Right, and this test will nevertheless result in setting AC in the mask.
+IIRC this was the main objective here.
 
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
----
- drivers/rpmsg/rpmsg_char.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 43ceac0..64506ca 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -64,6 +64,7 @@ struct rpmsg_ctrldev {
-  * @queue_lock:	synchronization of @queue operations
-  * @queue:	incoming message queue
-  * @readq:	wait object for incoming queue
-+ * @sig_pending:state of signal notification
-  */
- struct rpmsg_eptdev {
- 	struct device dev;
-@@ -78,6 +79,8 @@ struct rpmsg_eptdev {
- 	spinlock_t queue_lock;
- 	struct sk_buff_head queue;
- 	wait_queue_head_t readq;
-+
-+	bool sig_pending;
- };
- 
- static int rpmsg_eptdev_destroy(struct device *dev, void *data)
-@@ -122,6 +125,19 @@ static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
- 	return 0;
- }
- 
-+static int rpmsg_sigs_cb(struct rpmsg_device *rpdev, void *priv,
-+			 u32 old, u32 new)
-+{
-+	struct rpmsg_eptdev *eptdev = priv;
-+
-+	eptdev->sig_pending = true;
-+
-+	/* wake up any blocking processes, waiting for signal notification */
-+	wake_up_interruptible(&eptdev->readq);
-+	return 0;
-+}
-+
-+
- static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- {
- 	struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
-@@ -138,6 +154,7 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- 		return -EINVAL;
- 	}
- 
-+	ept->sig_cb = rpmsg_sigs_cb;
- 	eptdev->ept = ept;
- 	filp->private_data = eptdev;
- 
-@@ -156,6 +173,7 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
- 		eptdev->ept = NULL;
- 	}
- 	mutex_unlock(&eptdev->ept_lock);
-+	eptdev->sig_pending = false;
- 
- 	/* Discard all SKBs */
- 	skb_queue_purge(&eptdev->queue);
-@@ -266,6 +284,9 @@ static __poll_t rpmsg_eptdev_poll(struct file *filp, poll_table *wait)
- 	if (!skb_queue_empty(&eptdev->queue))
- 		mask |= EPOLLIN | EPOLLRDNORM;
- 
-+	if (eptdev->sig_pending)
-+		mask |= EPOLLPRI;
-+
- 	mask |= rpmsg_poll(eptdev->ept, filp, wait);
- 
- 	return mask;
-@@ -309,6 +330,7 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
- 
- 	switch (cmd) {
- 	case TIOCMGET:
-+		eptdev->sig_pending = false;
- 		ret = rpmsg_get_signals(eptdev->ept);
- 		if (ret >= 0)
- 			ret = put_user(ret, (int __user *)arg);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Juergen
 
