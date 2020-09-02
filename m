@@ -2,79 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0650B25B4BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 21:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0107125B4C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 21:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726895AbgIBTs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 15:48:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:35112 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726140AbgIBTsX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 15:48:23 -0400
-IronPort-SDR: 6lG2wBFsSbBz5Afwdm72SDj8NoLjougRo+WktULhobQHfF5coLcOgsPep12g055gz5vqlJyelz
- 9LLdDuTdEqvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="154871634"
-X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
-   d="scan'208";a="154871634"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 12:48:21 -0700
-IronPort-SDR: tVkddLVBeA3qWBhyGUc42GmgoU+ag6G++7iuZV21E5H52fVVDP3Vtow3ADwut0XYyTuy6DSASJ
- 64O/boPgzHAA==
-X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
-   d="scan'208";a="477769014"
-Received: from unknown (HELO dwf-u18040) ([10.232.115.11])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 12:48:20 -0700
-Message-ID: <c19782e36c9b4a8319f2f16102e1823dc6a33d3c.camel@linux.intel.com>
-Subject: Re: [PATCH] PCI/ASPM: Enable ASPM for links under VMD domain
-From:   David Fugate <david.fugate@linux.intel.com>
-Reply-To: david.fugate@linux.intel.com
-To:     Christoph Hellwig <hch@infradead.org>,
-        Kai Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, jonathan.derrick@intel.com,
-        Mario.Limonciello@dell.com, Heiner Kallweit <hkallweit1@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Huffman, Amber" <amber.huffman@intel.com>, david.fugate@intel.com
-Date:   Wed, 02 Sep 2020 13:48:19 -0600
-In-Reply-To: <20200825065634.GA2691@infradead.org>
-References: <20200821123222.32093-1-kai.heng.feng@canonical.com>
-         <20200825062320.GA27116@infradead.org>
-         <08080FC7-861B-472A-BD7D-02D33926677F@canonical.com>
-         <20200825065634.GA2691@infradead.org>
-Organization: Intel
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+        id S1726733AbgIBTw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 15:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgIBTw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 15:52:58 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAF2CC061244;
+        Wed,  2 Sep 2020 12:52:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5DCE715633C18;
+        Wed,  2 Sep 2020 12:36:11 -0700 (PDT)
+Date:   Wed, 02 Sep 2020 12:52:57 -0700 (PDT)
+Message-Id: <20200902.125257.1961904187228004830.davem@davemloft.net>
+To:     luobin9@huawei.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        luoxianjun@huawei.com, yin.yinshi@huawei.com,
+        cloud.wangxiaoyun@huawei.com, chiqijun@huawei.com
+Subject: Re: [PATCH net 3/3] hinic: fix bug of send pkts while setting
+ channels
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200902094145.12216-4-luobin9@huawei.com>
+References: <20200902094145.12216-1-luobin9@huawei.com>
+        <20200902094145.12216-4-luobin9@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
 Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 02 Sep 2020 12:36:11 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-08-25 at 07:56 +0100, Christoph Hellwig wrote:
-> while adding absolutely no value.  Basically we have to add a large
-> chunk of kernel code just to undo silicone/firmware Intel added to
-> their
-> platform to make things complicated.  I mean it is their platform and
-> if
-> they want a "make things complicated" option that is fine, but it
-> should
-> not be on by default.
+From: Luo bin <luobin9@huawei.com>
+Date: Wed, 2 Sep 2020 17:41:45 +0800
 
+> @@ -531,6 +531,11 @@ netdev_tx_t hinic_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
+>  	struct hinic_txq *txq;
+>  	struct hinic_qp *qp;
+>  
+> +	if (unlikely(!netif_carrier_ok(netdev))) {
+> +		dev_kfree_skb_any(skb);
+> +		return NETDEV_TX_OK;
+> +	}
 
-Thanks for your feedback.
+As Eric said, these kinds of tests should not be placed in the fast path
+of the driver.
 
-Over the years, I've been forwarded numerous emails from VMD customers 
-praising it's ability to prevent Linux kernel panics upon hot-removals
-and inserts of U.2 NVMe drives. Many were migrating from SATA drives,
-which didn't have this issue, and considered it a showstopper to NVMe
-adoption. I hope we can all agree reliable and robust hot-plug support
-adds value.
-
+If you invoke close and the core networking still sends packets to the
+driver, that's a bug that needs to be fixed in the core networking.
