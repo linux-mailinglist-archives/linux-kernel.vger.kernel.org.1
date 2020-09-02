@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6BA25AC65
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BEE25AC3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgIBNy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727020AbgIBNqs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:46:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96DB8C061261
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=cK0SzLUGgTPud8Bio5a951X67ujynxVhPO2GV7yRpvc=; b=s55dRaaDX+O2Kt2tSD0EOZ0scv
-        HwHGaZp0iwNUWm8dO8SzZpz0TW6eryFJpG2dE05FMT/sYuqtlJx1GIFWk/TOdcXy9aYrwdekRNvXX
-        Zbm5HR0ogduXY0yAStqQgHGdB/E8YU3rFQelJpYbAnuCCScjOojyPb7bOwJyJrKvIRcMx9BzksX0t
-        HJGDLAknv4mxCYXD42B16N2qp9a+InJd9p9zNiObEUVrpmaJBqb38bgcHyIdrF/XJAvPtfvCXxl+p
-        s9O1mE/ZaTxPlmo1SOPKNyiM5xRkT40B4MrxyeXPfw9zWdznfj0qH00lCQKhWW+oAlnlXl878mOYd
-        EUNRfbKQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDSxq-0003Za-SQ; Wed, 02 Sep 2020 13:38:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A05DA30767C;
-        Wed,  2 Sep 2020 15:38:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id DB60E29A82C21; Wed,  2 Sep 2020 15:38:11 +0200 (CEST)
-Message-ID: <20200902133201.233022474@infradead.org>
-User-Agent: quilt/0.66
-Date:   Wed, 02 Sep 2020 15:25:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 10/13] x86/debug: Remove aout_dump_debugregs()
-References: <20200902132549.496605622@infradead.org>
+        id S1726871AbgIBNq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:46:26 -0400
+Received: from mx3.wp.pl ([212.77.101.10]:13150 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727107AbgIBNcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:32:55 -0400
+Received: (wp-smtpd smtp.wp.pl 8483 invoked from network); 2 Sep 2020 15:26:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1599053162; bh=G8wT2xsxFQGcxLMSyMItSjCCDSZ7QEW2M+j2fLIpSHo=;
+          h=From:To:Cc:Subject;
+          b=JrKrG23XjJoc6fW4cUSvVpwXNasE4sA+N90o06VGjSWcy5AEKYJkelbd9VYWxPaDv
+           V71VQrik1zEztPjlxCwb90ns3RSmKLd2ibeCpd4XAZpq78WWYNxPILojB/C4MofG6F
+           1Rc53D2z1YxqRbtSnkosThDYH79upB4DWCrzR+Mk=
+Received: from nat-0.staszic.waw.pl (HELO localhost) (antoni.przybylik@wp.pl@[94.240.45.201])
+          (envelope-sender <antoni.przybylik@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <gregkh@linuxfoundation.org>; 2 Sep 2020 15:26:02 +0200
+From:   Antoni Przybylik <antoni.przybylik@wp.pl>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Antoni Przybylik <antoni.przybylik@wp.pl>
+Subject: [PATCH] staging: gdm724x: gdm_tty: replaced macro with a function v2
+Date:   Wed,  2 Sep 2020 15:25:59 +0200
+Message-Id: <20200902132559.61310-1-antoni.przybylik@wp.pl>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: 47a5ca789b2995cc12aa8608524a4baa
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [wcOM]                               
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unused remnants for the bit-bucket.
+This approach is more elegant and prevents some problems related to
+macros such as operator precedence in expanded expression.
+-------------------------------------------------------------------
+Changed return type to bool and removed inline sepcifier.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
 ---
- arch/x86/include/asm/debugreg.h |    2 --
- arch/x86/kernel/hw_breakpoint.c |   36 ------------------------------------
- 2 files changed, 38 deletions(-)
+ drivers/staging/gdm724x/gdm_tty.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
---- a/arch/x86/include/asm/debugreg.h
-+++ b/arch/x86/include/asm/debugreg.h
-@@ -90,8 +90,6 @@ static __always_inline bool hw_breakpoin
- 	return __this_cpu_read(cpu_dr7) & DR_GLOBAL_ENABLE_MASK;
- }
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index 6e813693a766..179fc9b9400b 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -27,8 +27,6 @@
  
--extern void aout_dump_debugregs(struct user *dump);
--
- extern void hw_breakpoint_restore(void);
+ #define MUX_TX_MAX_SIZE 2048
  
- static __always_inline unsigned long local_db_save(void)
---- a/arch/x86/kernel/hw_breakpoint.c
-+++ b/arch/x86/kernel/hw_breakpoint.c
-@@ -442,42 +442,6 @@ int hw_breakpoint_arch_parse(struct perf
- }
+-#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
+-
+ static struct tty_driver *gdm_driver[TTY_MAX_COUNT];
+ static struct gdm *gdm_table[TTY_MAX_COUNT][GDM_TTY_MINOR];
+ static DEFINE_MUTEX(gdm_table_lock);
+@@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
+ static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
+ static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
  
- /*
-- * Dump the debug register contents to the user.
-- * We can't dump our per cpu values because it
-- * may contain cpu wide breakpoint, something that
-- * doesn't belong to the current task.
-- *
-- * TODO: include non-ptrace user breakpoints (perf)
-- */
--void aout_dump_debugregs(struct user *dump)
--{
--	int i;
--	int dr7 = 0;
--	struct perf_event *bp;
--	struct arch_hw_breakpoint *info;
--	struct thread_struct *thread = &current->thread;
--
--	for (i = 0; i < HBP_NUM; i++) {
--		bp = thread->ptrace_bps[i];
--
--		if (bp && !bp->attr.disabled) {
--			dump->u_debugreg[i] = bp->attr.bp_addr;
--			info = counter_arch_bp(bp);
--			dr7 |= encode_dr7(i, info->len, info->type);
--		} else {
--			dump->u_debugreg[i] = 0;
--		}
--	}
--
--	dump->u_debugreg[4] = 0;
--	dump->u_debugreg[5] = 0;
--	dump->u_debugreg[6] = current->thread.debugreg6;
--
--	dump->u_debugreg[7] = dr7;
--}
--EXPORT_SYMBOL_GPL(aout_dump_debugregs);
--
--/*
-  * Release the user breakpoints used by ptrace
-  */
- void flush_ptrace_hw_breakpoint(struct task_struct *tsk)
-
++static bool gdm_tty_ready(struct gdm *gdm)
++{
++	return (gdm && gdm->tty_dev && gdm->port.count);
++}
++
+ static void gdm_port_destruct(struct tty_port *port)
+ {
+ 	struct gdm *gdm = container_of(port, struct gdm, port);
+@@ -119,7 +122,7 @@ static int gdm_tty_recv_complete(void *data,
+ {
+ 	struct gdm *gdm = tty_dev->gdm[index];
+ 
+-	if (!GDM_TTY_READY(gdm)) {
++	if (!gdm_tty_ready(gdm)) {
+ 		if (complete == RECV_PACKET_PROCESS_COMPLETE)
+ 			gdm->tty_dev->recv_func(gdm->tty_dev->priv_dev,
+ 						gdm_tty_recv_complete);
+@@ -146,7 +149,7 @@ static void gdm_tty_send_complete(void *arg)
+ {
+ 	struct gdm *gdm = arg;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return;
+ 
+ 	tty_port_tty_wakeup(&gdm->port);
+@@ -160,7 +163,7 @@ static int gdm_tty_write(struct tty_struct *tty, const unsigned char *buf,
+ 	int sent_len = 0;
+ 	int sending_len = 0;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	if (!len)
+@@ -187,7 +190,7 @@ static int gdm_tty_write_room(struct tty_struct *tty)
+ {
+ 	struct gdm *gdm = tty->driver_data;
+ 
+-	if (!GDM_TTY_READY(gdm))
++	if (!gdm_tty_ready(gdm))
+ 		return -ENODEV;
+ 
+ 	return WRITE_SIZE;
+-- 
+2.28.0
 
