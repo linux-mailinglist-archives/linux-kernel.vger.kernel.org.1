@@ -2,76 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC2125A820
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DBC25A827
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgIBI5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 04:57:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726269AbgIBI5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:57:24 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C6E52078B;
-        Wed,  2 Sep 2020 08:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599037043;
-        bh=erLxW7j5o7FSd5rj0NxqCWgy7aHZnjT+0Hthxz+0GSs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2C2LDLZM6uC4k8iSv3Mz8/3quiEVc3q0umMdFmNtQqrnya7FWr16ikqavSfC+T3nt
-         dbPBlHZNobA/Jax+WjT66d0sa/2QJTnZKbSh5cRslrhmeQVGDZN/i9pTzihIQtj+CL
-         UdkO08lDzzCs7wMkNo64+gRYPs4aDUon7HvDE/qw=
-Date:   Wed, 2 Sep 2020 09:57:18 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Clint Sbisa <csbisa@amazon.com>, linux-pci@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: Enable PCI write-combine resources under sysfs
-Message-ID: <20200902085717.GA5409@willie-the-truck>
-References: <20200901183702.GA196025@bjorn-Precision-5520>
- <658051b1ba6533fef92648eba08dfdf240af7a18.camel@kernel.crashing.org>
+        id S1726521AbgIBI7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:59:31 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:44647 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726400AbgIBI72 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:59:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599037165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ix8N6RQtX+ddzBGK9BdRX1rdzssF3CmlZhDLO9SMtGM=;
+        b=b9l+xXpd+F65EVf0Z/i3vo6vjpuVw5Ao9e5hHdX6vakZGazxq9C86hzZqeF9WRCrI2Vlp2
+        woRpit85edeueVJCjAtGrTAwcFlIQhYSm2A4M7iIBrdpNMgtk7ECUoraMLz3tDxqalmS9k
+        upxjpjkptnbtFovfXqqFm9H5w23vyeg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-yd_GSq-aMGqXDge_3Szz8Q-1; Wed, 02 Sep 2020 04:59:23 -0400
+X-MC-Unique: yd_GSq-aMGqXDge_3Szz8Q-1
+Received: by mail-ej1-f70.google.com with SMTP id y10so1850172ejd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 01:59:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Ix8N6RQtX+ddzBGK9BdRX1rdzssF3CmlZhDLO9SMtGM=;
+        b=JdCNon9SDl66rcSARcs5L+i+ng2IxLV7JRtqBa53BswsiQvGmhtUB46kt7zyoc+NnA
+         Z2zk5QxanFw2+b0GvtzcdKYIZdQPsQz58jOI2K0MakNx4i2bdV83ZgiXknjUu9Z0Mftx
+         0zLIKB05GdWlHkIM4WUQW7hg+u490qDKbSPug3avUtUN1rOm6pYGx4crcePzYtnZI5o5
+         CPtc5aKKqWx2jE6Pe8v2hAGQIOv3m5UFtuRbo2hDnKik1JaYWghA7KujOayV0Rm90Ofn
+         /4fX2jiuwr+Noj11IJJ8oCF3acefUf5WCl0t7A3pK8tlnOQOtVmIhVWulURuIvGsBw6o
+         o6tQ==
+X-Gm-Message-State: AOAM531+rSBaTyE8ewFuvDEXOvwzr8LE2j8sHEN4HqXUhzcgrw9YbU23
+        tIRkLTVY1OKQHn9TFByOnmBypS+zt10kETO9Y+gOk5H2tjL/52rUqsiHdWmR1prC4r8bgdJ9xqU
+        2Phmuz9j/gnV/5MmaTaIqveA4
+X-Received: by 2002:a17:906:95d1:: with SMTP id n17mr5566898ejy.324.1599037162128;
+        Wed, 02 Sep 2020 01:59:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzZ9uG5VoGFj8piU2aeDijZCJLsDj+NsJcm8DJsdt2rZ7X63rZbNnDbaKrAnU8VY81o7E9eaQ==
+X-Received: by 2002:a17:906:95d1:: with SMTP id n17mr5566871ejy.324.1599037161896;
+        Wed, 02 Sep 2020 01:59:21 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id f13sm3735188ejb.81.2020.09.02.01.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 01:59:21 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
+In-Reply-To: <20200901200021.GB3053@xz-x1>
+References: <20200807141232.402895-1-vkuznets@redhat.com> <20200825212526.GC8235@xz-x1> <87eenlwoaa.fsf@vitty.brq.redhat.com> <20200901200021.GB3053@xz-x1>
+Date:   Wed, 02 Sep 2020 10:59:20 +0200
+Message-ID: <877dtcpn9z.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <658051b1ba6533fef92648eba08dfdf240af7a18.camel@kernel.crashing.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 09:22:53AM +1000, Benjamin Herrenschmidt wrote:
-> On Tue, 2020-09-01 at 13:37 -0500, Bjorn Helgaas wrote:
-> > On Mon, Aug 31, 2020 at 03:18:27PM +0000, Clint Sbisa wrote:
-> > > Using write-combine is crucial for performance of PCI devices where
-> > > significant amounts of transactions go over PCI BARs.
-> > > 
-> > > arm64 supports write-combine PCI mappings, so the appropriate
-> > > define
-> > > has been added which will expose write-combine mappings under sysfs
-> > > for prefetchable PCI resources.
-> > > 
-> > > Signed-off-by: Clint Sbisa <csbisa@amazon.com>
-> > 
-> > Fine with me, I assume Will or Catalin will apply this.
-> 
-> Haha ! Client had sent it to them originally and I told him to resend
-> it to linux-pci, yourself and Lorenzo :-)
-> 
-> So the confusion is on me.
-> 
-> Will, Catalin, it's all yours. You should have the original patch in
-> your mbox already, otherwise:
-> 
-> https://patchwork.kernel.org/patch/11729875/
+Peter Xu <peterx@redhat.com> writes:
 
-Yup, it's not the radar. We don't usually start queuing stuff until -rc3, so
-I'm working through the backlog this week. Would like an Ack from Lorenzo,
-though.
+> On Tue, Sep 01, 2020 at 04:43:25PM +0200, Vitaly Kuznetsov wrote:
+>> Peter Xu <peterx@redhat.com> writes:
+>> 
+>> > On Fri, Aug 07, 2020 at 04:12:29PM +0200, Vitaly Kuznetsov wrote:
+>> >> When testing Linux kernel boot with QEMU q35 VM and direct kernel boot
+>> >> I observed 8193 accesses to PCI hole memory. When such exit is handled
+>> >> in KVM without exiting to userspace, it takes roughly 0.000001 sec.
+>> >> Handling the same exit in userspace is six times slower (0.000006 sec) so
+>> >> the overal; difference is 0.04 sec. This may be significant for 'microvm'
+>> >> ideas.
+>> >
+>> > Sorry to comment so late, but just curious... have you looked at what's those
+>> > 8000+ accesses to PCI holes and what they're used for?  What I can think of are
+>> > some port IO reads (e.g. upon vendor ID field) during BIOS to scan the devices
+>> > attached.  Though those should be far less than 8000+, and those should also be
+>> > pio rather than mmio.
+>> 
+>> And sorry for replying late)
+>> 
+>> We explicitly want MMIO instead of PIO to speed things up, afaiu PIO
+>> requires two exits per device (and we exit all the way to
+>> QEMU). Julia/Michael know better about the size of the space.
+>> 
+>> >
+>> > If this is only an overhead for virt (since baremetal mmios should be fast),
+>> > I'm also thinking whether we can make it even better to skip those pci hole
+>> > reads.  Because we know we're virt, so it also gives us possibility that we may
+>> > provide those information in a better way than reading PCI holes in the guest?
+>> 
+>> This means let's invent a PV interface and if we decide to go down this
+>> road, I'd even argue for abandoning PCI completely. E.g. we can do
+>> something similar to Hyper-V's Vmbus.
+>
+> My whole point was more about trying to understand the problem behind.
+> Providing a fast path for reading pci holes seems to be reasonable as is,
+> however it's just that I'm confused on why there're so many reads on the pci
+> holes after all.  Another important question is I'm wondering how this series
+> will finally help the use case of microvm.  I'm not sure I get the whole point
+> of it, but... if microvm is the major use case of this, it would be good to
+> provide some quick numbers on those if possible.
+>
+> For example, IIUC microvm uses qboot (as a better alternative than seabios) for
+> fast boot, and qboot has:
+>
+> https://github.com/bonzini/qboot/blob/master/pci.c#L20
+>
+> I'm kind of curious whether qboot will still be used when this series is used
+> with microvm VMs?  Since those are still at least PIO based.
 
-Will
+I'm afraid there is no 'grand plan' for everything at this moment :-(
+For traditional VMs 0.04 sec per boot is negligible and definitely not
+worth adding a feature, memory requirements are also very
+different. When it comes to microvm-style usage things change.
+
+'8193' PCI hole accesses I mention in the PATCH0 blurb are just from
+Linux as I was doing direct kernel boot, we can't get better than that
+(if PCI is in the game of course). Firmware (qboot, seabios,...) can
+only add more. I *think* the plan is to eventually switch them all to
+MMCFG, at least for KVM guests, by default but we need something to put
+to the advertisement. 
+
+We can, in theory, short circuit PIO in KVM instead but:
+- We will need a complete different API
+- We will never be able to reach the speed of the exit-less 'single 0xff
+page' solution (see my RFC).
+
+-- 
+Vitaly
+
