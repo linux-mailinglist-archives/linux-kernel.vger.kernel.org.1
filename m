@@ -2,248 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712EF25AB0A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FC525AB12
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgIBMVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:21:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45296 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgIBMVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:21:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3760FAD68;
-        Wed,  2 Sep 2020 12:21:30 +0000 (UTC)
-Date:   Wed, 2 Sep 2020 14:21:28 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: misc: was: [PATCH next v3 6/8] printk: ringbuffer: add
- finalization/extension support
-Message-ID: <20200902122125.GB9496@alley>
-References: <20200831011058.6286-1-john.ogness@linutronix.de>
- <20200831011058.6286-7-john.ogness@linutronix.de>
+        id S1727024AbgIBMXl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Sep 2020 08:23:41 -0400
+Received: from mail-oln040092072093.outbound.protection.outlook.com ([40.92.72.93]:15425
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726654AbgIBMXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 08:23:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lo1T2UJ8c6vfGIEboKxoKKtLGxyfTwlo1CNo/k0V4IuqZpCZ11QK5c4bWc43ajtAdt1TEyICyp3vw6ZYNPOAS64RmgCV1Xq/8I5TyoFqT6+KPaEMMCdWByaUOWp19Yu8D5iB+0Tl8s1kzbTHMyCztIJ2i6S8mt5AQeTjf7XjVwV5kbGHjevKPUYn7uvlnbTrK/KziuXDoZb6pp8EbrvjGYpNme6ePc1byLCzfGGt94Ys8pDNMDB3leVXxnQlh9r1e1dVOP4na0eV1ZLw/qKQZSIpNlEmRpwwuDhYDvmoUUDk1CucSrnKANXYGHJz4P9TnxF1dRGEtA2/W7Fb9ghEdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+6X9htJyq1/r/tMo+KBMXvV9D/OEyqtiRU3WUh8zUAw=;
+ b=SY+NuSgJJs2wNeRwjrPIu2KQ2NFWxU/8VbIWlrmc4O4o7rdeAmQ/TJ3DdrcC7NtCjkdiEHW8+IwVpv5ZojhAQ6aXyX5KSRx9lhEDD5z8wI1bwdvCoe/BK2bz113YlxQ+EDYLSqMox8tFz1+1q5oEs4SfvF8retuHvc1pNfyYoPCUindVa8B3LIzfr2qfp54qiYDd/PG92NKZqtenhc9OIscFFVMPqVDzV779uJ0Qk0uYTCCkCukNuIqUfyxq1gSFCjHKlLh+baaEAHR4S9RuUMpc4RjSDMIqLWsrez+5fP+3EQfTG/vjnZcyZcOcM8Eu0eaUKafusPBlNz/Ghj0GNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DB5EUR03FT034.eop-EUR03.prod.protection.outlook.com
+ (2a01:111:e400:7e0a::53) by
+ DB5EUR03HT098.eop-EUR03.prod.protection.outlook.com (2a01:111:e400:7e0a::203)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.21; Wed, 2 Sep
+ 2020 12:23:10 +0000
+Received: from DB3PR0202MB3387.eurprd02.prod.outlook.com
+ (2a01:111:e400:7e0a::50) by DB5EUR03FT034.mail.protection.outlook.com
+ (2a01:111:e400:7e0a::87) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
+ Transport; Wed, 2 Sep 2020 12:23:10 +0000
+Received: from DB3PR0202MB3387.eurprd02.prod.outlook.com
+ ([fe80::810f:b93:e0bf:f67c]) by DB3PR0202MB3387.eurprd02.prod.outlook.com
+ ([fe80::810f:b93:e0bf:f67c%6]) with mapi id 15.20.3326.025; Wed, 2 Sep 2020
+ 12:23:10 +0000
+From:   Harley Paterson <harley.paterson@hotmail.co.nz>
+To:     "christian@brauner.io" <christian@brauner.io>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] kernel/pid: Rename `find_ge_pid` to `find_get_vpid`.
+Thread-Topic: [PATCH] kernel/pid: Rename `find_ge_pid` to `find_get_vpid`.
+Thread-Index: AQHWgSOnDXzg6hoG0E2ayBn4/b/BhQ==
+Date:   Wed, 2 Sep 2020 12:23:10 +0000
+Message-ID: <DB3PR0202MB3387446FE969A6D39819D879F92F0@DB3PR0202MB3387.eurprd02.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-incomingtopheadermarker: OriginalChecksum:0955B82F9ED8C9D1B3B86CEFC892FE911F81573FF63303D559D986ED2884921F;UpperCasedChecksum:3C9F602A39D3ED403D6F32C871A70591B8D6EAE1BBB4C2599BC4942B68159465;SizeAsReceived:6803;Count:43
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [LbUlvp4qr9E82WZNJmM46LhZBIEvw82D]
+x-ms-publictraffictype: Email
+x-incomingheadercount: 43
+x-eopattributedmessage: 0
+x-ms-office365-filtering-correlation-id: ed830178-5e1f-4f28-f16b-08d84f3af4e5
+x-ms-traffictypediagnostic: DB5EUR03HT098:
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VJ3zQLDD0ezvzcDduWuAdubS4uHxGDs8Ud0kE1dvMEukBMhQ6gc3+Bcb3+TkQ65c2UFuheVWXZ+b6Sm+5xjFLX7026xlZL7hEsPTHw+aQvT2Ig+n8vwsLiKG7koar+rc7xCeh0f+nh/bgFLKpjVK+cO53f+4sgPW8FfEbjMUVdjuojvq7SFemJTvTzw5aX8cp1apa6qPP6kgiasOmFy9wg==
+x-ms-exchange-antispam-messagedata: BLG1C72kHx0JlQ+qM8ITOqUhmifFYiyY+QaTwVn32Du05KYhrlEIb0UQoZZKex7g3gmZeCyCvbaDLV79/eoNZ07TFyPABVF4QoZ0QkQZWQAkxNv6GYxaBDvjnkh+VlIFb54NjmP0wB7sB7FlrxBilg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831011058.6286-7-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-AuthSource: DB5EUR03FT034.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed830178-5e1f-4f28-f16b-08d84f3af4e5
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2020 12:23:10.7273
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Internet
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5EUR03HT098
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-08-31 03:16:56, John Ogness wrote:
-> Add support for extending the newest data block. For this, introduce
-> a new finalization state flag (DESC_FINAL_MASK) that denotes when a
-> descriptor may not be extended, i.e. is finalized.
-> 
-> Three new memory barrier pairs are introduced. Two of them are not
-> significant because they are alternate path memory barriers that
-> exactly correspond to existing memory barriers.
->
-> But the third (_prb_commit:B / desc_reserve:D) is new and guarantees
-> that descriptors will always be finalized, either because a
-> descriptor setting DESC_COMMIT_MASK sees that there is a newer
-> descriptor and so finalizes itself or because a new descriptor being
-> reserved sees that the previous descriptor has DESC_COMMIT_MASK set
-> and finalizes that descriptor.
+Most PID functions in `kernel/pid.c` are named in the format
+[do_something]_pid, and functions with a VPID counterpart have
+the corresponding name [do_something]_vpid.
 
-Just for record. All the barriers look good to me.
+`find_get_pid` and its VPID counterpart, `find_ge_pid` do not share
+this convention.
 
-There are always full barriers when we change DESC_COMMIT_MASK.
-It guarantees consistency of the descriptor and data rings.
+This patch renames `find_ge_pid` to `find_get_vpid` to conform to the
+existing PID function naming idioms. I believe the proposed name
+makes the purpose of the function clearer.
 
-The only relaxed modification is adding DESC_FINAL_MASK. It is OK.
-It can be done only when DESC_COMMIT_MASK has been set before
-using a full barrier. It means that all changes of the rings
-has already been since before.
+I have built and tested this patch on an x64 virtual machine, running
+Ubuntu 20.04 LTS. My tests involved building the modified kernel,
+installing it, and booting into a Ubuntu GUI session.
 
+This patch is applied on top of the linux-5.9-rc3 kernel
 
-> --- a/kernel/printk/printk_ringbuffer.c
-> +++ b/kernel/printk/printk_ringbuffer.c
-> +
-> +/**
-> + * prb_reserve_in_last() - Re-reserve and extend the space in the ringbuffer
-> + *                         used by the newest record.
-> + *
-> + * @e:         The entry structure to setup.
-> + * @rb:        The ringbuffer to re-reserve and extend data in.
-> + * @r:         The record structure to allocate buffers for.
-> + * @caller_id: The caller ID of the caller (reserving writer).
-> + *
-> + * This is the public function available to writers to re-reserve and extend
-> + * data.
-> + *
-> + * The writer specifies the text size to extend (not the new total size) by
-> + * setting the @text_buf_size field of @r. Dictionaries cannot be extended so
+This patch effects four lines, one in each of four files.
 
-Better might be to say that extending dictionaries is not
-supported.
+Signed-off-by: H Paterson <harley.paterson@hotmail.co.nz>
+---
+ fs/proc/base.c         | 2 +-
+ include/linux/pid.h    | 2 +-
+ kernel/bpf/task_iter.c | 2 +-
+ kernel/pid.c           | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-> + * @dict_buf_size of @r should be set to 0. To ensure proper initialization of
-> + * @r, prb_rec_init_wr() should be used.
-> + *
-> + * This function will fail if @caller_id does not match the caller ID of the
-> + * newest record. In that case the caller must reserve new data using
-> + * prb_reserve().
-> + *
-> + * Context: Any context. Disables local interrupts on success.
-> + * Return: true if text data could be extended, otherwise false.
-> + *
-> + * On success:
-> + *
-> + *   - @r->text_buf points to the beginning of the entire text buffer.
-> + *
-> + *   - @r->text_buf_len is set to the new total size of the buffer.
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 617db4e0f..e2ff20311 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3390,7 +3390,7 @@ static struct tgid_iter next_tgid(struct pid_namespace *ns, struct tgid_iter ite
+ 	rcu_read_lock();
+ retry:
+ 	iter.task = NULL;
+-	pid = find_ge_pid(iter.tgid, ns);
++	pid = find_get_vpid(iter.tgid, ns);
+ 	if (pid) {
+ 		iter.tgid = pid_nr_ns(pid, ns);
+ 		iter.task = pid_task(pid, PIDTYPE_TGID);
+diff --git a/include/linux/pid.h b/include/linux/pid.h
+index 176d6cf80..2875b4189 100644
+--- a/include/linux/pid.h
++++ b/include/linux/pid.h
+@@ -128,7 +128,7 @@ extern struct pid *find_vpid(int nr);
+  * Lookup a PID in the hash table, and return with it's count elevated.
+  */
+ extern struct pid *find_get_pid(int nr);
+-extern struct pid *find_ge_pid(int nr, struct pid_namespace *);
++extern struct pid *find_get_vpid(int nr, struct pid_namespace *);
+ 
+ extern struct pid *alloc_pid(struct pid_namespace *ns, pid_t *set_tid,
+ 			     size_t set_tid_size);
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 99af4cea1..334cb8831 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -29,7 +29,7 @@ static struct task_struct *task_seq_get_next(struct pid_namespace *ns,
+ 
+ 	rcu_read_lock();
+ retry:
+-	pid = find_ge_pid(*tid, ns);
++	pid = find_get_vpid(*tid, ns);
+ 	if (pid) {
+ 		*tid = pid_nr_ns(pid, ns);
+ 		task = get_pid_task(pid, PIDTYPE_PID);
+diff --git a/kernel/pid.c b/kernel/pid.c
+index b2562a7ce..0c77fef72 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -514,7 +514,7 @@ EXPORT_SYMBOL_GPL(task_active_pid_ns);
+  *
+  * If there is a pid at nr this function is exactly the same as find_pid_ns.
+  */
+-struct pid *find_ge_pid(int nr, struct pid_namespace *ns)
++struct pid *find_get_vpid(int nr, struct pid_namespace *ns)
+ {
+ 	return idr_get_next(&ns->idr, &nr);
+ }
+-- 
+2.25.1
 
-s/buf_len/buf_size/
-
-> + *   - @r->dict_buf and @r->dict_buf_len are cleared because extending
-> + *     the dict buffer is not supported.
-
-Same here.
-
-> + *
-> + *   - @r->info is not touched so that @r->info->text_len could be used
-> + *     to append the text.
-> + *
-> + *   - prb_record_text_space() can be used on @e to query the new
-> + *     actually used space.
-> + *
-> + * Important: All @r->info fields will already be set with the current values
-> + *            for the record. I.e. @r->info->text_len will be less than
-> + *            @text_buf_size and @r->info->dict_len may be set, even though
-> + *            @dict_buf_size is 0. Writers can use @r->info->text_len to know
-> + *            where concatenation begins and writers should update
-> + *            @r->info->text_len after concatenating.
-> + */
-> +bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
-> +			 struct printk_record *r, u32 caller_id)
-> +{
-> +	unsigned int data_size;
-> +	struct prb_desc *d;
-> +	unsigned long id;
-> +
-> +	local_irq_save(e->irqflags);
-> +
-> +	/* Transition the newest descriptor back to the reserved state. */
-> +	d = desc_reopen_last(&rb->desc_ring, caller_id, &id);
-> +	if (!d) {
-> +		local_irq_restore(e->irqflags);
-> +		goto fail_reopen;
-> +	}
-> +
-> +	/* Now the writer has exclusive access: LMM(prb_reserve_in_last:A) */
-> +
-> +	/*
-> +	 * Set the @e fields here so that prb_commit() can be used if
-> +	 * anything fails from now on.
-> +	 */
-> +	e->rb = rb;
-> +	e->id = id;
-> +
-> +	/*
-> +	 * desc_reopen_last() checked the caller_id, but there was no
-> +	 * exclusive access at that point. The descriptor may have
-> +	 * changed since then.
-> +	 */
-> +	if (caller_id != d->info.caller_id)
-> +		goto fail;
-> +
-> +	if (BLK_DATALESS(&d->text_blk_lpos)) {
-
-We do not clear d->info when reopening the descriptor. I would at
-least add here a consistency check similar to the one below:
-
-		if (WARN_ON_ONCE(d->info.text_len)) {
-			pr_warn_once("wrong data size (%u, expecting 0) for data\n",
-				     d->info.text_len);
-			d->info.text_len = 0;
-		}
-
-> +		r->text_buf = data_alloc(rb, &rb->text_data_ring, r->text_buf_size,
-> +					 &d->text_blk_lpos, id);
-> +	} else {
-> +		if (!get_data(&rb->text_data_ring, &d->text_blk_lpos, &data_size))
-> +			goto fail;
-> +
-> +		/*
-> +		 * Increase the buffer size to include the original size. If
-> +		 * the meta data (@text_len) is not sane, use the full data
-> +		 * block size.
-> +		 */
-> +		if (WARN_ON_ONCE(d->info.text_len > data_size)) {
-> +			pr_warn_once("wrong data size (%u, expecting >=%hu) for data\n",
-> +				     data_size, d->info.text_len);
-> +			d->info.text_len = data_size;
-> +		}
-> +		r->text_buf_size += d->info.text_len;
-> +
-> +		if (!data_check_size(&rb->text_data_ring, r->text_buf_size))
-> +			goto fail;
-> +
-> +		r->text_buf = data_realloc(rb, &rb->text_data_ring, r->text_buf_size,
-> +					   &d->text_blk_lpos, id);
-> +	}
-> +	if (r->text_buf_size && !r->text_buf)
-> +		goto fail;
-
-[...]
-
-> @@ -1261,6 +1615,59 @@ void prb_commit(struct prb_reserved_entry *e)
->  	local_irq_restore(e->irqflags);
->  }
->  
-> +/**
-> + * prb_commit() - Commit (previously reserved) data to the ringbuffer.
-> + *
-> + * @e: The entry containing the reserved data information.
-> + *
-> + * This is the public function available to writers to commit data.
-> + *
-> + * Note that the data is not yet available to readers until it is finalized.
-> + * Finalizing happens automatically when space for the next record is
-> + * reserved.
-> + *
-> + * See prb_final_commit() for a version of this function that finalizes
-> + * immediately.
-> + *
-> + * Context: Any context. Enables local interrupts.
-> + */
-> +void prb_commit(struct prb_reserved_entry *e)
-> +{
-> +	struct prb_desc_ring *desc_ring = &e->rb->desc_ring;
-> +	unsigned long head_id;
-> +
-> +	_prb_commit(e, 0);
-> +
-> +	/*
-> +	 * If this descriptor is no longer the head (i.e. a new record has
-> +	 * been allocated), extending the data for this record is no longer
-> +	 * allowed and therefore it must be finalized.
-> +	 */
-> +	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(prb_commit:A) */
-> +	if (head_id != e->id)
-> +		desc_make_final(desc_ring, e->id);
-
-Nice trick! I wonder why I suggested to do it the complicated
-way via desc_state.
-
-> +}
-> +
-
-I finished review of this patch.
-
-Best Regards,
-Petr
