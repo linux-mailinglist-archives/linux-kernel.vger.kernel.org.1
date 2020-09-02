@@ -2,116 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BD825AC92
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B2525AC7E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgIBOI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:08:58 -0400
-Received: from mx4.wp.pl ([212.77.101.12]:15066 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727030AbgIBNwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:52:45 -0400
-Received: (wp-smtpd smtp.wp.pl 8483 invoked from network); 2 Sep 2020 15:26:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1599053162; bh=G8wT2xsxFQGcxLMSyMItSjCCDSZ7QEW2M+j2fLIpSHo=;
-          h=From:To:Cc:Subject;
-          b=JrKrG23XjJoc6fW4cUSvVpwXNasE4sA+N90o06VGjSWcy5AEKYJkelbd9VYWxPaDv
-           V71VQrik1zEztPjlxCwb90ns3RSmKLd2ibeCpd4XAZpq78WWYNxPILojB/C4MofG6F
-           1Rc53D2z1YxqRbtSnkosThDYH79upB4DWCrzR+Mk=
-Received: from nat-0.staszic.waw.pl (HELO localhost) (antoni.przybylik@wp.pl@[94.240.45.201])
-          (envelope-sender <antoni.przybylik@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <gregkh@linuxfoundation.org>; 2 Sep 2020 15:26:02 +0200
-From:   Antoni Przybylik <antoni.przybylik@wp.pl>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Antoni Przybylik <antoni.przybylik@wp.pl>
-Subject: [PATCH] staging: gdm724x: gdm_tty: replaced macro with a function v2
-Date:   Wed,  2 Sep 2020 15:25:59 +0200
-Message-Id: <20200902132559.61310-1-antoni.przybylik@wp.pl>
-X-Mailer: git-send-email 2.28.0
+        id S1727883AbgIBOEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:04:07 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:48914 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727838AbgIBNtk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:49:40 -0400
+Date:   Wed, 2 Sep 2020 09:34:07 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when
+ CONFIG_HAS_DMA is unset
+Message-ID: <20200902133400.GQ3265@brightrain.aerifal.cx>
+References: <20200901150438.228887-1-ulf.hansson@linaro.org>
+ <20200901150654.GB30034@lst.de>
+ <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
+ <20200901154049.GA376@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: 47a5ca789b2995cc12aa8608524a4baa
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [wcOM]                               
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901154049.GA376@lst.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This approach is more elegant and prevents some problems related to
-macros such as operator precedence in expanded expression.
--------------------------------------------------------------------
-Changed return type to bool and removed inline sepcifier.
+On Tue, Sep 01, 2020 at 05:40:49PM +0200, Christoph Hellwig wrote:
+> On Tue, Sep 01, 2020 at 05:36:17PM +0200, Ulf Hansson wrote:
+> > > I still don't think this makes sense, as the dma_mask should always
+> > > be non-NULL here.
+> > 
+> > If that is the case, I wonder how the driver could even have worked without DMA.
+> > 
+> > Because in the existing code, host->dma_dev gets assigned to
+> > spi->master->dev.parent->dma_mask - which seems to turn on the DMA
+> > usage in the driver.
+> > 
+> > What am I missing?
+> 
+> Do you know of other non-DMA users?  For SH nommu it probably worked
+> because SH nommu used to provide a DMA implementation that worked
+> fine for streaming maps, but was completely broken for coherent
+> allocation.  And this driver appears to only use the former.
 
-Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
----
- drivers/staging/gdm724x/gdm_tty.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+On the system we're using it on, there's no DMA whatsoever. It just
+used to allow memory allocations suitable for DMA (which any
+allocation vacuuously is when there's no DMA) but now it doesn't, due
+to your change.
 
-diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-index 6e813693a766..179fc9b9400b 100644
---- a/drivers/staging/gdm724x/gdm_tty.c
-+++ b/drivers/staging/gdm724x/gdm_tty.c
-@@ -27,8 +27,6 @@
- 
- #define MUX_TX_MAX_SIZE 2048
- 
--#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
--
- static struct tty_driver *gdm_driver[TTY_MAX_COUNT];
- static struct gdm *gdm_table[TTY_MAX_COUNT][GDM_TTY_MINOR];
- static DEFINE_MUTEX(gdm_table_lock);
-@@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
- static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
- static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
- 
-+static bool gdm_tty_ready(struct gdm *gdm)
-+{
-+	return (gdm && gdm->tty_dev && gdm->port.count);
-+}
-+
- static void gdm_port_destruct(struct tty_port *port)
- {
- 	struct gdm *gdm = container_of(port, struct gdm, port);
-@@ -119,7 +122,7 @@ static int gdm_tty_recv_complete(void *data,
- {
- 	struct gdm *gdm = tty_dev->gdm[index];
- 
--	if (!GDM_TTY_READY(gdm)) {
-+	if (!gdm_tty_ready(gdm)) {
- 		if (complete == RECV_PACKET_PROCESS_COMPLETE)
- 			gdm->tty_dev->recv_func(gdm->tty_dev->priv_dev,
- 						gdm_tty_recv_complete);
-@@ -146,7 +149,7 @@ static void gdm_tty_send_complete(void *arg)
- {
- 	struct gdm *gdm = arg;
- 
--	if (!GDM_TTY_READY(gdm))
-+	if (!gdm_tty_ready(gdm))
- 		return;
- 
- 	tty_port_tty_wakeup(&gdm->port);
-@@ -160,7 +163,7 @@ static int gdm_tty_write(struct tty_struct *tty, const unsigned char *buf,
- 	int sent_len = 0;
- 	int sending_len = 0;
- 
--	if (!GDM_TTY_READY(gdm))
-+	if (!gdm_tty_ready(gdm))
- 		return -ENODEV;
- 
- 	if (!len)
-@@ -187,7 +190,7 @@ static int gdm_tty_write_room(struct tty_struct *tty)
- {
- 	struct gdm *gdm = tty->driver_data;
- 
--	if (!GDM_TTY_READY(gdm))
-+	if (!gdm_tty_ready(gdm))
- 		return -ENODEV;
- 
- 	return WRITE_SIZE;
--- 
-2.28.0
+Just below the if block in question in this thread is:
 
+	host->readback.is_dma_mapped = (host->dma_dev != NULL);
+
+and similar conditions appear elsewhere all over the file in the form
+of if (host->dma_dev). Of course doing DMA requires a link to a DMA
+controller device, and plenty SPI devices (most obviously bit-banged
+ones) lack DMA.
+
+The right condition for the block in question here is probably just
+checking dma_dev instead of dma_mask or CONFIG_HAS_DMA, but it seems
+useful to optimize out the code if CONFIG_HAS_DMA is false, anyway.
+
+Rich
