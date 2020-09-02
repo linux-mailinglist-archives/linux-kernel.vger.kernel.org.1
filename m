@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF4925AED5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CD625AECA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727993AbgIBP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:29:25 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:38019 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728203AbgIBPZB (ORCPT
+        id S1728262AbgIBP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728220AbgIBPZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:25:01 -0400
-Received: by mail-ej1-f65.google.com with SMTP id i22so7224882eja.5;
-        Wed, 02 Sep 2020 08:24:59 -0700 (PDT)
+        Wed, 2 Sep 2020 11:25:02 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85431C061245;
+        Wed,  2 Sep 2020 08:25:02 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h12so2707574pgm.7;
+        Wed, 02 Sep 2020 08:25:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=9egEgwHbell+Vp+FzaRF5HQxPX8jduHhbTufKmGyrCM=;
+        b=mxVwxBdbeCaRpCy8dMALx19AWZCNbqDvFiqlOKHGsaWAFlLLVNCLuBJyoOt/Pq4a4B
+         kPrBcUCY1S3D1P1/0v9mtR63ullGPIoZ7ui2JsClIAmwOpZXebJuwzoKld7esZVgwIHd
+         Tz3vUTXvsoSQDGGXLj9VV1hm11tx7pCxRJn+c15Cm0gP4WaLBKJ7OjWyZPxejLY6ti2a
+         qFwsx6f1R2QO0s7IYqexyjIbbxhUjjEoY71vM8HcLVxAF8/hgfW4bOut19EgDQKd54zf
+         a/y++XOFDSFm037j4fqvFuNUP1yPvs7wPsuszb+JYI7vpqaxeTWrQSOMCxrM8eILYHno
+         SWfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UJ9n3qNyQuhj+fGUbdBaOi3y34ToqX2Hqy8tvCxMKDc=;
-        b=aayEh8vHYH20+ZN3NOKRxM2dZV6ssb7c3Svw9X2XWJWQdvkp+/nFtwyYr/TiKho8Fq
-         5iHvKw3wKHrXC6M0eunkOMSYFqkme8UYdfbEu2AsQUHPcbDDe8gxwYHpjNKnQo9HyqPY
-         uMmx2B2THSFlZVhne5ievMn3DvmbmKV9A9BC3j6lK+iMINgwMdVnblJa0XQrRR5Gn/RM
-         nLnCpXgsawmkjJOO/iTTQRxcjwseSca8reVChYFrt80Q1NuyLj5QfIwUT8IcXaCd4mqE
-         4Y7eEyiOLVIYBlORw+0dC2QiozoS1DoGQRUHHv1JwfxycVVPCw/szNsfNcLQSrehVwFF
-         +n/Q==
-X-Gm-Message-State: AOAM530AD0R+NBlIdJ/0lTP+bULPIqfMvL27NoW6mxZyIJJYBD1lasn0
-        t2UNyvdbdwielsQvE5+ox8o=
-X-Google-Smtp-Source: ABdhPJzjhRcIR1+NH6ZKBA2pU0EGtyRmfrLlAfcMCCO9MAZmByfyWzB2zLsG84k0q9hqBs2oA8ECLg==
-X-Received: by 2002:a17:906:26d9:: with SMTP id u25mr569271ejc.318.1599060298987;
-        Wed, 02 Sep 2020 08:24:58 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.106])
-        by smtp.googlemail.com with ESMTPSA id bc18sm4270609edb.66.2020.09.02.08.24.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Sep 2020 08:24:58 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 17:24:55 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matias Zuniga <matias.nicolas.zc@gmail.com>
-Subject: Re: [PATCH] memory: tegra: Remove GPU from DRM IOMMU group
-Message-ID: <20200902152455.GC19659@kozik-lap>
-References: <20200901153248.1831263-1-thierry.reding@gmail.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9egEgwHbell+Vp+FzaRF5HQxPX8jduHhbTufKmGyrCM=;
+        b=q5SKhLB3iW8D7UosvtRn65UK8csTDZQ9/6jv5m97DQ/N/IK+oYDljTEmjKTOMuMXf2
+         B6yDRj1Ktaei5Cxhxm6pRaiG0kYC4k8xawOqih/vQMEczQwi2TM6Kc3M5iG2JA+noGpE
+         r5rfnbHQ4QjJ1ZDOmZpp10419FWy7kMjtGM89UQCWU4QFRG6Q80TzPr5NS0/uHJBL3TB
+         Udva2s51xxFcdNMACv3gauWctVqdOUxscVE6QlAuHmFPEb8RpD62iY6+GKE/JVCYz+uu
+         N/0IpO4XRJhbpYJuGS9HD2o+hFWzdvGyfmcSMibYOz4TDM4Hvof954IUMrIVTELx9fp/
+         V0Jg==
+X-Gm-Message-State: AOAM5324fkb3UTHaGZ1uny7yxhuYusKmlO+JA5To1lrKZeCkFsCTxCst
+        7kP4n8qaocC+pmM/FoUJ06A=
+X-Google-Smtp-Source: ABdhPJwpzMqqhegc92irnbmZ7DqXPb2X+KXRPw2ICETQlHugEduxoNrNbfoVAN6znE19G8LcmHVMag==
+X-Received: by 2002:aa7:9427:: with SMTP id y7mr3705007pfo.12.1599060301995;
+        Wed, 02 Sep 2020 08:25:01 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id p68sm6147744pfb.40.2020.09.02.08.24.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 08:25:00 -0700 (PDT)
+Subject: Re: [PATCH 3/9] i2c: bcm2835: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Michal Simek <michal.simek@xilinx.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>,
+        linux-i2c@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20200902150643.14839-1-krzk@kernel.org>
+ <20200902150643.14839-3-krzk@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7867b520-950d-aa8e-a7a1-f3590abb98c6@gmail.com>
+Date:   Wed, 2 Sep 2020 08:24:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200901153248.1831263-1-thierry.reding@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200902150643.14839-3-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:32:48PM +0200, Thierry Reding wrote:
-> From: Thierry Reding <treding@nvidia.com>
-> 
-> Commit 63a613fdb16c ("memory: tegra: Add gr2d and gr3d to DRM IOMMU
-> group") added the GPU to the DRM IOMMU group, which doesn't make any
-> sense. This causes problems when Nouveau tries to attach to the SMMU
-> and causes it to fall back to using the DMA API.
-> 
-> Remove the GPU from the DRM groups to restore the old behaviour. The
-> GPU should always have its own IOMMU domain to make sure it can map
-> buffers into contiguous chunks (for big page support) without getting
-> in the way of mappings from the DRM group.
-> 
-> Fixes: 63a613fdb16c ("memory: tegra: Add gr2d and gr3d to DRM IOMMU group")
-> Reported-by: Matias Zuniga <matias.nicolas.zc@gmail.com>
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-> ---
->  drivers/memory/tegra/tegra124.c | 1 -
 
-Thanks, applied.
 
-Best regards,
-Krzysztof
+On 9/2/2020 8:06 AM, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and the error value gets printed.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
