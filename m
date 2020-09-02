@@ -2,78 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FAE25AFC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87A325AFEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728379AbgIBPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:45:30 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:45321 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728479AbgIBPpU (ORCPT
+        id S1728375AbgIBPrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728550AbgIBPrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:45:20 -0400
-Received: by mail-ej1-f68.google.com with SMTP id i26so7289020ejb.12;
-        Wed, 02 Sep 2020 08:45:07 -0700 (PDT)
+        Wed, 2 Sep 2020 11:47:07 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79540C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 08:47:06 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t10so4923077wrv.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 08:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9H7/mF6ZryP92cYZg0TAhb3a8scGXiZh0eOQGOZfLVY=;
+        b=EWrjEeNYJHzpFyynRv1Tm36aYF5UDXud2Bzh/c1N/PCCgF3DRzgeHshxPGu+2ui6Zp
+         pzZzccyDBYjqSzS+kjbbHDm2/osM2b9qg9vxfCAGk4WGU4NuBoI65yajrriCk5naVRSt
+         l24inn9h11hreISFMmkgPUtrldM7v8NyZPsdWKYHGCvJuMIasLwos6u5TvDHgu1rKROx
+         j6GUj7uyMoBdVcvJFn4QS55FAtFBC+qOVc/QG9MMhouCPIabQ+9hbCHCEKwtFqmmceWl
+         +BgebIXIcsRoMRzq89VauVrHFo2u+wsS9vpU5Nkn/8jrsoePM4r/OZAojtwGNZhWbLrl
+         mT1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CbjBKHsNFYbmhkSKiXfeqKeTOD9op4yW4EQUpwppWSE=;
-        b=QnYSLrjJY9sFpJ+dixZx5uad8EIIplx8kvVmC/kz41Bls/j8v8YYwwwtbPu6JPUqkL
-         eGgmpDZMShpK/7/ncnj5c3qIYkapyAWeabF0FC4uoakUpuErBR18Mul9esXML6eoJoh+
-         cWhe2TAn/MYy37XsCZRDZCKN2hl6BmjPdhP/LiOArMiCxLVq+/k8CMJIL614HksVgOcD
-         oKAjZM1GDwii9sqEKYdFwNVH7wHBlkLrpZuD4amUY+ntaS/sfczCiUlDaANwLpMKsuju
-         Z4ss+ewNPQFnvcYeWKqyJ/stMSNsf24IrGFkyEfvYg1dE88ahKrWA0THPA4gWUAsUb4K
-         C7bQ==
-X-Gm-Message-State: AOAM531yeXwkqUfNrVyXfDEkYtWY+D3oyh8P2bRo01bVtvJ1sHVqCKTk
-        bJ+WVj4jx/wWNJdwCUcYFek=
-X-Google-Smtp-Source: ABdhPJxbrSCvE1jscskVpGAgJwHs/4bDMu2P/ON+hkWK12T/tM8tjNPSmxTEbAY2t2HS35m9Q9iDnA==
-X-Received: by 2002:a17:906:a242:: with SMTP id bi2mr639084ejb.122.1599061506936;
-        Wed, 02 Sep 2020 08:45:06 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.106])
-        by smtp.googlemail.com with ESMTPSA id l10sm4551399edr.12.2020.09.02.08.45.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Sep 2020 08:45:06 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 17:45:03 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Denis GNUtoo Carikli <GNUtoo@cyberdimension.org>,
-        Simon Shields <simon@lineageos.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH 22/33] ARM: dts: exynos: Align MHL GPIO pin configuration
- with dtschema on Galaxy I9100
-Message-ID: <20200902154503.GD21503@kozik-lap>
-References: <20200830135200.24304-1-krzk@kernel.org>
- <20200830135200.24304-22-krzk@kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9H7/mF6ZryP92cYZg0TAhb3a8scGXiZh0eOQGOZfLVY=;
+        b=fihAtTObqd9mPGwfBrZcftPMdrMHREwfAvWuABrXMpteORe99dEAu40BqS5OFKO75W
+         1GWHFc4C75HR+qt0gcQB8qRcnE9U/EIFcZKw4feqF6vFaJhCmkfBc50sQDINL+ftaMa6
+         MNHYiy6TXRJTDOH93MyFi1+94K5rEeRAJuk70p+htwk6G5l/LutsD6KZkROXdQFhhmBP
+         CqLUJR9jZWB9FxpD/FCknU+lpWgRWASulB77eQFArLXu76Ev0Fdg62FcIKgAflUkUbgV
+         Z4uoYZVKIuMZ30I4b2Fvbda75sd9ZnEg4mrqk4pohFSCasW+kpzmgHvh4gi/EG5Cl/+c
+         YxTQ==
+X-Gm-Message-State: AOAM5314+7GuoXkyncANix3fH9uChoGKBLt2cMg2mQPHdmwc0qLBZLnx
+        G9ZTYuhJRifNVkJ4vPQuuMA=
+X-Google-Smtp-Source: ABdhPJyzJK7Qdfa4BBx3/Wpjhp0NtuTOCeKSPzQYT4+st3PI6LlQymsTvuTjEnv5IAqB/Qa9VKY+SQ==
+X-Received: by 2002:a5d:444b:: with SMTP id x11mr7733827wrr.402.1599061625113;
+        Wed, 02 Sep 2020 08:47:05 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id b76sm44507wme.45.2020.09.02.08.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 08:47:04 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     lkp@intel.com, Alex Dewar <alex.dewar90@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Javier F. Arias" <jarias.linux@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>,
+        Saiyam Doshi <saiyamdoshi.in@gmail.com>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Magnus Damm <damm+renesas@opensource.se>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging/emxx_udc: Remove pointless variable assignments
+Date:   Wed,  2 Sep 2020 16:46:24 +0100
+Message-Id: <20200902154628.283453-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <202009021127.uodVMaSJ%lkp@intel.com>
+References: <202009021127.uodVMaSJ%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200830135200.24304-22-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 03:51:49PM +0200, Krzysztof Kozlowski wrote:
-> Align the name of mag-mhl-gpio node to avoid dtschema confusion and
-> dtbs_check warning:
-> 
->   arch/arm/boot/dts/exynos4210-i9100.dt.yaml: pinctrl@11000000: mag-mhl-gpio:
->     {'samsung,pins': ['gpd0-2'], 'samsung,pin-function': [[3]], 'samsung,pin-pud': [[0]]} is not of type 'array'
->     From schema: dtschema/schemas/gpio/gpio-consumer.yaml
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/exynos4210-i9100.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+In a number of places in emxx_udc.c, there are variables which are
+assigned to without that value ever being used. Remove these pointless
+assignments.
 
-Applied 13-22.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 33aa8d45a4fe ("staging: emxx_udc: Add Emma Mobile USB Gadget driver")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/staging/emxx_udc/emxx_udc.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
+index d0725bc8b48a..4ceaf1ead123 100644
+--- a/drivers/staging/emxx_udc/emxx_udc.c
++++ b/drivers/staging/emxx_udc/emxx_udc.c
+@@ -793,7 +793,7 @@ static int _nbu2ss_out_dma(struct nbu2ss_udc *udc, struct nbu2ss_req *req,
+ 	u32		dmacnt;
+ 	u32		burst = 1;
+ 	u32		data;
+-	int		result = -EINVAL;
++	int		result;
+ 	struct fc_regs __iomem *preg = udc->p_regs;
+ 
+ 	if (req->dma_flag)
+@@ -1288,8 +1288,6 @@ static void _nbu2ss_set_endpoint_stall(struct nbu2ss_udc *udc,
+ 
+ 			_nbu2ss_bitset(&preg->EP_REGS[num].EP_CONTROL, data);
+ 		} else {
+-			/* Clear STALL */
+-			ep->stalled = false;
+ 			if (ep_adrs & USB_DIR_IN) {
+ 				_nbu2ss_bitclr(&preg->EP_REGS[num].EP_CONTROL
+ 						, EPN_ISTL);
+@@ -1304,6 +1302,7 @@ static void _nbu2ss_set_endpoint_stall(struct nbu2ss_udc *udc,
+ 						, data);
+ 			}
+ 
++			/* Clear STALL */
+ 			ep->stalled = false;
+ 			if (ep->halted) {
+ 				ep->halted = false;
+@@ -3073,8 +3072,8 @@ static int nbu2ss_drv_contest_init(struct platform_device *pdev,
+  */
+ static int nbu2ss_drv_probe(struct platform_device *pdev)
+ {
+-	int	status = -ENODEV;
+-	struct nbu2ss_udc	*udc;
++	int status;
++	struct nbu2ss_udc *udc;
+ 	int irq;
+ 	void __iomem *mmio_base;
+ 
+-- 
+2.28.0
 
