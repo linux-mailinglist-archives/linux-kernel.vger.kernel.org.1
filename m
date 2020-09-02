@@ -2,57 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942B725AFE7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C64F25AF5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728526AbgIBPrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:47:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:38114 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727089AbgIBNcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:32:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 872E811B3;
-        Wed,  2 Sep 2020 06:32:05 -0700 (PDT)
-Received: from bogus (unknown [10.57.4.218])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 12E373F68F;
-        Wed,  2 Sep 2020 06:32:02 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 14:32:00 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        dietmar.eggemann@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] arch_topology: validate input frequencies to
- arch_set_freq_scale()
-Message-ID: <20200902133200.GH25462@bogus>
-References: <20200901205549.30096-1-ionela.voinescu@arm.com>
- <20200901205549.30096-2-ionela.voinescu@arm.com>
+        id S1726968AbgIBPDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:03:46 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:40851 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727001AbgIBNvx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:51:53 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C4C125804AD;
+        Wed,  2 Sep 2020 09:40:10 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 02 Sep 2020 09:40:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=2yjs51SuYlYSUilMgak7DQa/qGy
+        KL3VPzrK0/NXEgZ4=; b=Ob4KSGs+ScX2RMUcN1Qibmw5cQESFwSC0pFbE8wqKZc
+        m5nkQb5Y2tBPaY2Hz9hTFztGlMtfc5PBr4edZG7ArA19QeES6fI8f4tV+vcoWRKb
+        m2g7HYoUnxZrR+0C3Ki6vvw94NOPDmcXnkqDCaysVH4qu/Pi2+AJwho7v6XAT4OZ
+        SRnLcNr7R7UtNDsyRi0caPt0apEOiJvxJSow/EQIq5otI0xryNh2cBOrJDDrteFk
+        ibs0GanyXN0aqwQ+GYaP0zRg9x+zU3pLNDpjMgTUG2ahnoZxOkRago6wszquLQIv
+        IrdvvxgI2W+DFnqG6nhQkblqKEG27OkbyvBHweS18nQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=2yjs51
+        SuYlYSUilMgak7DQa/qGyKL3VPzrK0/NXEgZ4=; b=G5760nFNMyXQWhN5KyukMM
+        udReu9QsqR0W2kjd5/SUQGJVmj9jAnwSbsX3I+DmIQyLCXsNB6liY37QJrpdjlB9
+        XkDlwGlWTutRdGU3DvxCBFTBxrqJyjSejKL5S+8b+ngaii1nxoUJXUvwfTyccjzF
+        43JLzQrA4dnl0xY/ahOSjQc+L9oUL00UXWq2lQQjZ9rTlP42sTU9EAmv/7Ae7Ro8
+        bN+g8udv64RJsoY+YzzlsRdWgECs4ve6TB4VAATFfdhIs8gutmUHQeXQwebTd9qN
+        pZX1z4j0ZUcowakUaKNg3yEH3KmGLEubfHX7hdwr5E+aQV8UB8bFsY+1IxpcgzDA
+        ==
+X-ME-Sender: <xms:uaBPX-eV7nXPZJGjSJt1bHcJTOnSMBht08hKYbjIKtXV4tlpN6AXvA>
+    <xme:uaBPX4N5LVwYS626MpVzK3aiGWdnb2c49h3MVSrZ43tJZOZmD9rjzelzS85uJWQyU
+    Kg_vOu8Yc_wAijE9cQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefledgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
+    gfethfenucfkphepuddvkedruddtjedrvdeguddrudejkeenucfuphgrmhfkphfpvghtfi
+    horhhkpeduvdekrddutdejrddvgedurddujeeknecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:uaBPX_jGrLA5Y2alrz3ER7XaSjV4eGI0TIrj5UsuOThsw2QJo1LOMg>
+    <xmx:uaBPX7_z1jVK__ais8ONw8-vqr7VRJfhamNUdhQxu-btV4KiRAUUHA>
+    <xmx:uaBPX6sm2516Td2w0p4xZ3jyDg0KA-rwvzEgpndpLi_fn8Xy7U0zJA>
+    <xmx:uqBPX-I9e8oFLm-tMzgkKO3PDIU5kakpsjf4WojxltWyu5CapHu7c4XNrkE>
+Received: from cisco (unknown [128.107.241.178])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 25B2F30600A6;
+        Wed,  2 Sep 2020 09:40:08 -0400 (EDT)
+Date:   Wed, 2 Sep 2020 07:39:56 -0600
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        "Tobin C . Harding" <me@tobin.cc>,
+        Christian Brauner <christian@brauner.io>,
+        syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/2] seccomp: don't leak memory when filter install races
+Message-ID: <20200902133956.GB1136703@cisco>
+References: <20200902014017.934315-1-tycho@tycho.pizza>
+ <20200902090849.bvevcuhtae73pplm@wittgenstein>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200901205549.30096-2-ionela.voinescu@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200902090849.bvevcuhtae73pplm@wittgenstein>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 09:55:45PM +0100, Ionela Voinescu wrote:
-> The current frequency passed to arch_set_freq_scale() could end up
-> being 0, signaling an error in setting a new frequency. Also, if the
-> maximum frequency in 0, this will result in a division by 0 error.
->
-> Therefore, validate these input values before using them for the
-> setting of the frequency scale factor.
->
-> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
+On Wed, Sep 02, 2020 at 11:08:49AM +0200, Christian Brauner wrote:
+> On Tue, Sep 01, 2020 at 07:40:16PM -0600, Tycho Andersen wrote:
+> > In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
+> > the listener fd, then check to see if we can actually use it later in
+> > seccomp_may_assign_mode(), which can fail if anyone else in our thread
+> > group has installed a filter and caused some divergence. If we can't, we
+> > partially clean up the newly allocated file: we put the fd, put the file,
+> > but don't actually clean up the *memory* that was allocated at
+> > filter->notif. Let's clean that up too.
+> > 
+> > To accomplish this, let's hoist the actual "detach a notifier from a
+> > filter" code to its own helper out of seccomp_notify_release(), so that in
+> > case anyone adds stuff to init_listener(), they only have to add the
+> > cleanup code in one spot. This does a bit of extra locking and such on the
+> > failure path when the filter is not attached, but it's a slow failure path
+> > anyway.
+> > 
+> > Fixes: 51891498f2da ("seccomp: allow TSYNC and USER_NOTIF together")
+> > Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+> > Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
+> > ---
+> 
+> This looks sane to me!
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+> 
+> One thing I noticed when checking the failure paths. In init_listener we
+> allocate the notifier by directly storing it into filter->notif and if
+> anon_inode_getfile() fails we simply kfree(filter->notif) but don't NULL
+> it and leave filter->notif pointing to freed memory.
+> Since we have a few places where we check filter->notif whether it is
+> initialized or not maybe we should NULL filter->notif if init_listener()
+> fails or alloc the notifier into a tmp variable and only assign it to
+> filter->notif after we can't fail anymore in init_listener().
+> 
+> Just a thought since the error path in seccomp_set_mode_filter() is a
+> little more complex. :)
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Yeah it seems like we definitely should, and maybe this is what Kees
+was talking about and I missed it.
 
---
-Regards,
-Sudeep
+I'll send a patch on top of this shortly.
+
+Tycho
