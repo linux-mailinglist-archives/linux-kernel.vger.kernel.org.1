@@ -2,81 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C049C25A2AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:39:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A517725A2B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgIBBjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 21:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726131AbgIBBja (ORCPT
+        id S1726526AbgIBBmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 21:42:50 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:34919 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726131AbgIBBlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 21:39:30 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2791C061245
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 18:39:29 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id m5so1695998pgj.9
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 18:39:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xac0up/E+0dt+kqvaJFEykC0qib3GWqZnuHU1zuntaQ=;
-        b=DW38DBkIyDXDIC1LfOSyJndXvgCNtBDf480T6W9zRSykRYiuGpi5ax0WKr6XdQR4OS
-         SCW8aP1BCO2jmi7ye/8AW7amm70var1nMzTU4C4gJS7I8Csi9CyNUz4tgcClFxDMv4EN
-         VW8gvPtr//38CNX1uDn0s2Xn7lRD8GuogjTzf3P7wTcEbiTBsdQjHcRzT7XKt6XED23r
-         RpaW8i9oVGw+SLUbtTnXUkjuTEkopU/UE4FimcH/LZgRenCOwOF84IKHHkxMANV2iBjt
-         KTageWCVt1O4DTOFLY3DFRw6auUcDCF1rbX9wX5tmr4x7C/x7QNqikbkKdDKx7+MnouL
-         pdkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Xac0up/E+0dt+kqvaJFEykC0qib3GWqZnuHU1zuntaQ=;
-        b=gtBAnbcrLiuB18bfYTbbPoQtMrv1+EWTgNz3O0uZAlrd9CvsIkrrsYY0BXFdxxSXvQ
-         M8Ml4gptOixK/hjrSIW8Lx9oUtHE7YSFrBSLXVEm8V54pYymiqGG1VHcwvJUdtXB1c5m
-         yL/4ZkDnbMlMZbW8HO3tYE/OsCzHa/qWRgfjk5wfmhY7S8i+WtLq48Y0In3QJvphMydI
-         y1S5E22VfKvUowjjULpYasOXwa/1RU3eRBeX5ccKSaAP8lzSqeGJqtBUq4avLO/I8dQD
-         onfegCqJqOk+/fyUyrDABJQjcXIqvJIiylh0wYNq5H92xwFW34AEwF+qN4QuxaffsxUl
-         eouw==
-X-Gm-Message-State: AOAM532t15fh849r76WciMyKtFi06hKMnTV5QipYjMUvSLtdIL13jix7
-        ZCaa0EchHQ29aWuuREcNN1MNxEhMiGL5KG8o
-X-Google-Smtp-Source: ABdhPJzRReyKRlFMDVO+CKfJQstUA8ZxyxM4fg+VgfeARmLkMvnW1ZFERkgXTvcJL6c92Uueg5Qz9A==
-X-Received: by 2002:a63:f00a:: with SMTP id k10mr43881pgh.76.1599010769179;
-        Tue, 01 Sep 2020 18:39:29 -0700 (PDT)
-Received: from [192.168.1.187] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id y65sm3225600pfb.155.2020.09.01.18.39.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Sep 2020 18:39:28 -0700 (PDT)
-Subject: Re: [PATCH] block: Fix building error
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     ming.lei@redhat.com, hch@lst.de, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <b5d0ed52eeeac60906d36cb17b5344063cfa4197.1599010452.git.baolin.wang@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <60a9cdca-e752-15db-9b7c-f25be14b0ddf@kernel.dk>
-Date:   Tue, 1 Sep 2020 19:39:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 1 Sep 2020 21:41:17 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4C737580484;
+        Tue,  1 Sep 2020 21:40:27 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 01 Sep 2020 21:40:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=vG7EGPCMURsU6YIqYApkqDbWEJ
+        OYbtmOBmlzGtk2y0E=; b=HL4tuH9+RNv7SeEMAxQSrMfTxLgnNdqAEc2LEmNq6b
+        natCdi47sIirh5yTc8NJ1rb7YDMT+qwGYbiCHOJVAl9uYFthyaeU4KmmKTm5BpWo
+        S7aEbyyUkaMRTAdAqNRSTtIrK7U4jlf09xIbaiGjF1UiuHZOLayadnui3K3q8KKQ
+        HVu+p867SVr2shZFlm3tkXTmiFWtrbe2waqPiCnc37NIjMRk+sm4lKL7hdqGJBkK
+        N42vFVj5h4PLmU/1zVUthB2vnzGUE3loBLgBwXVgc/Fa+ZOcc/GdrPBTEV15MoZs
+        GQ1Y7A4z2ObNNnBXbIe3HrOKNbcXreT1J9GhV6QciFKg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vG7EGPCMURsU6YIqY
+        ApkqDbWEJOYbtmOBmlzGtk2y0E=; b=FEwcU1tYOQay6qYjyqiJ6mOJI/oK58p9d
+        jMkCFTZ1RrFsZ4J4N890iQxOOy2YCPeMT0Piyk+xc0QY9mGdpPXosJsHHTKQil92
+        xSglExQYEXmsCBelaJNtqQ/+5M+r06njBdaNZdWxZylbC92f2uaflJldXG/tusjW
+        9kNlIKTBKC2595gKop0PK4ktwMHidOSoliELr585I6QlSfxYSvZW2V4AX3WH2D6K
+        lxCKweA9rDNf4YeuFOgtz23a6aw76DRgYJ9VFK1P6DtAhcyp6IcvG38z+0ENi1p+
+        V38UIAY/8sJpyU3n5mDWTyS3k8ZelBxKUWNZljOji2Psiai+wrs5g==
+X-ME-Sender: <xms:CvhOX8VqWgozBV58uK2MpTHl9e84pnwmZsiv7er8aUqEsyBN_jkWMA>
+    <xme:CvhOXwmQ_i9Eojm9kgqwiU5OME_MQMHrjZs498gLu6PdaooI7KoQaDRYOiehFSo04
+    _t6dAOTbXaHUyqPe0I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefkedggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefvhigthhhoucet
+    nhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrghtth
+    gvrhhnpeelveehveejgefgkedttedvteffgfelfeeuveduteelvdduhefhjeetjeehheel
+    keenucfkphepjeefrddvudejrddutddriedtnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:CvhOXwbCd7LmSodjAcqGE0cqPrwlWEhvFiG0L-DHkOSlFWnAOCUiKQ>
+    <xmx:CvhOX7VsuuuX4wy6lGLpYllUgu4GTdcXbWqk7I7OUayiyniZhy-jMA>
+    <xmx:CvhOX2mrKkWKOd8WXfZBkbY7284fp0sHQV3BDOpYhe-eZDZtL77h9w>
+    <xmx:C_hOX4htHXUPZzNmSV4PYy9uE-cbt8f8zIvK4wfKMlIQ_lM_WiVbmtDFAh8>
+Received: from cisco.hsd1.co.comcast.net (c-73-217-10-60.hsd1.co.comcast.net [73.217.10.60])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7886F328005E;
+        Tue,  1 Sep 2020 21:40:25 -0400 (EDT)
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, "Tobin C . Harding" <me@tobin.cc>,
+        Christian Brauner <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+Subject: [PATCH 1/2] seccomp: don't leak memory when filter install races
+Date:   Tue,  1 Sep 2020 19:40:16 -0600
+Message-Id: <20200902014017.934315-1-tycho@tycho.pizza>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <b5d0ed52eeeac60906d36cb17b5344063cfa4197.1599010452.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/20 7:36 PM, Baolin Wang wrote:
-> The disk argument has been removed by commit 3b843c0bda28
-> ("block: remove the disk argument to delete_partition"), thus
-> fix a building error caused by an incorrect argument.
+In seccomp_set_mode_filter() with TSYNC | NEW_LISTENER, we first initialize
+the listener fd, then check to see if we can actually use it later in
+seccomp_may_assign_mode(), which can fail if anyone else in our thread
+group has installed a filter and caused some divergence. If we can't, we
+partially clean up the newly allocated file: we put the fd, put the file,
+but don't actually clean up the *memory* that was allocated at
+filter->notif. Let's clean that up too.
 
-That's my fault, after shuffling things around a bit. I've fixed it up,
-thanks for letting me know!
+To accomplish this, let's hoist the actual "detach a notifier from a
+filter" code to its own helper out of seccomp_notify_release(), so that in
+case anyone adds stuff to init_listener(), they only have to add the
+cleanup code in one spot. This does a bit of extra locking and such on the
+failure path when the filter is not attached, but it's a slow failure path
+anyway.
 
+Fixes: 51891498f2da ("seccomp: allow TSYNC and USER_NOTIF together")
+Reported-by: syzbot+3ad9614a12f80994c32e@syzkaller.appspotmail.com
+Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
+---
+ kernel/seccomp.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 3ee59ce0a323..bb0dd9ae699a 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1109,13 +1109,12 @@ static long seccomp_set_mode_strict(void)
+ }
+ 
+ #ifdef CONFIG_SECCOMP_FILTER
+-static int seccomp_notify_release(struct inode *inode, struct file *file)
++static void seccomp_notify_detach(struct seccomp_filter *filter)
+ {
+-	struct seccomp_filter *filter = file->private_data;
+ 	struct seccomp_knotif *knotif;
+ 
+ 	if (!filter)
+-		return 0;
++		return;
+ 
+ 	mutex_lock(&filter->notify_lock);
+ 
+@@ -1142,6 +1141,13 @@ static int seccomp_notify_release(struct inode *inode, struct file *file)
+ 	kfree(filter->notif);
+ 	filter->notif = NULL;
+ 	mutex_unlock(&filter->notify_lock);
++}
++
++static int seccomp_notify_release(struct inode *inode, struct file *file)
++{
++	struct seccomp_filter *filter = file->private_data;
++
++	seccomp_notify_detach(filter);
+ 	__put_seccomp_filter(filter);
+ 	return 0;
+ }
+@@ -1581,6 +1587,7 @@ static long seccomp_set_mode_filter(unsigned int flags,
+ 			listener_f->private_data = NULL;
+ 			fput(listener_f);
+ 			put_unused_fd(listener);
++			seccomp_notify_detach(prepared);
+ 		} else {
+ 			fd_install(listener, listener_f);
+ 			ret = listener;
+
+base-commit: f75aef392f869018f78cfedf3c320a6b3fcfda6b
 -- 
-Jens Axboe
+2.25.1
 
