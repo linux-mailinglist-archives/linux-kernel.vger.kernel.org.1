@@ -2,160 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0523025A9BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C773B25A9C8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgIBK6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 06:58:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55574 "EHLO mx2.suse.de"
+        id S1726984AbgIBLCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 07:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbgIBK63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 06:58:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2EA8AAD49;
-        Wed,  2 Sep 2020 10:58:28 +0000 (UTC)
-Date:   Wed, 2 Sep 2020 12:58:26 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Paul McKenney <paulmck@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH next v3 6/8] printk: ringbuffer: add
- finalization/extension support
-Message-ID: <20200902105826.GB15764@alley>
-References: <20200831011058.6286-1-john.ogness@linutronix.de>
- <20200831011058.6286-7-john.ogness@linutronix.de>
+        id S1726183AbgIBLA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 07:00:58 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B4462098B;
+        Wed,  2 Sep 2020 11:00:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599044458;
+        bh=j4+uze57jaKSPdl86kFYD2e9uQbKV5r15/uY12dIyTg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KQUO8aM0q8lsyoUUjY1fm6YU4t2DKhsqnX34r/3z+mUnF/A0LAw4CpM+HoGp5C8jE
+         ALIP8QBgkZVfrtSQC+aqQvkiNcSo74O8YlA/2qydObCgkoRhhadHuwtgZFMwm+W+Pt
+         XNZGfKbfo3XL74KKdqVUQNqBunRG7kfSVX5o+8Uo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     himadrispandya@gmail.com, dvyukov@google.com,
+        linux-usb@vger.kernel.org
+Cc:     perex@perex.cz, tiwai@suse.com, stern@rowland.harvard.ed,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 00/10] USB: new USB control message helper functions
+Date:   Wed,  2 Sep 2020 13:01:02 +0200
+Message-Id: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831011058.6286-7-john.ogness@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2020-08-31 03:16:56, John Ogness wrote:
-> Add support for extending the newest data block. For this, introduce
-> a new finalization state flag (DESC_FINAL_MASK) that denotes when a
-> descriptor may not be extended, i.e. is finalized.
-> 
-> --- a/kernel/printk/printk_ringbuffer.c
-> +++ b/kernel/printk/printk_ringbuffer.c
-> +/*
-> + * Try to resize an existing data block associated with the descriptor
-> + * specified by @id. If the resized datablock should become wrapped, it
-> + * copies the old data to the new data block.
-> + *
-> + * Fail if this is not the last allocated data block or if there is not
-> + * enough space or it is not possible make enough space.
-> + *
-> + * Return a pointer to the beginning of the entire data buffer or NULL on
-> + * failure.
-> + */
-> +static char *data_realloc(struct printk_ringbuffer *rb,
-> +			  struct prb_data_ring *data_ring, unsigned int size,
-> +			  struct prb_data_blk_lpos *blk_lpos, unsigned long id)
-> +{
-> +	struct prb_data_block *blk;
-> +	unsigned long head_lpos;
-> +	unsigned long next_lpos;
-> +	bool wrapped;
-> +
-> +	/* Reallocation only works if @blk_lpos is the newest data block. */
-> +	head_lpos = atomic_long_read(&data_ring->head_lpos);
-> +	if (head_lpos != blk_lpos->next)
-> +		return NULL;
-> +
-> +	/* Keep track if @blk_lpos was a wrapping data block. */
-> +	wrapped = (DATA_WRAPS(data_ring, blk_lpos->begin) != DATA_WRAPS(data_ring, blk_lpos->next));
-> +
-> +	size = to_blk_size(size);
-> +
-> +	next_lpos = get_next_lpos(data_ring, blk_lpos->begin, size);
-> +
-> +	/* If the data block does not increase, there is nothing to do. */
-> +	if (next_lpos == head_lpos) {
-> +		blk = to_block(data_ring, blk_lpos->begin);
-> +		return &blk->data[0];
-> +	}
+In a recent discussion about a USB networking bug found by syzbot, and
+fixed by Himadri Pandya, the design of the existing usb_control_msg()
+call was brought up as not being the "nicest" thing to use by Dmitry
+Vyukov:
+	https://lore.kernel.org/r/CACT4Y+YbDODLRFn8M5QcY4CazhpeCaunJnP_udXtAs0rYoASSg@mail.gmail.com
 
-We might be here even when the data are shrinked but the code below
-is not fully ready for this.
+The function makes it hard to get right, in that it will return the
+number of bytes sent/received, but almost no one checks to see if a
+short read/write happens.  With a malicious, or broken, USB device, this
+can cause drivers to act on data that they did not anticipate, and
+sometimes copy internal kernel data out to userspace.
 
-> +	if (!data_push_tail(rb, data_ring, next_lpos - DATA_SIZE(data_ring)))
-> +		return NULL;
-> +
-> +	/* The memory barrier involvement is the same as data_alloc:A. */
-> +	if (!atomic_long_try_cmpxchg(&data_ring->head_lpos, &head_lpos,
-> +				     next_lpos)) { /* LMM(data_realloc:A) */
-> +		return NULL;
-> +	}
-> +
-> +	blk = to_block(data_ring, blk_lpos->begin);
-> +
-> +	if (DATA_WRAPS(data_ring, blk_lpos->begin) != DATA_WRAPS(data_ring, next_lpos)) {
-> +		struct prb_data_block *old_blk = blk;
-> +
-> +		/* Wrapping data blocks store their data at the beginning. */
-> +		blk = to_block(data_ring, 0);
-> +
-> +		/*
-> +		 * Store the ID on the wrapped block for consistency.
-> +		 * The printk_ringbuffer does not actually use it.
-> +		 */
-> +		blk->id = id;
-> +
-> +		if (!wrapped) {
-> +			/*
-> +			 * Since the allocated space is now in the newly
-> +			 * created wrapping data block, copy the content
-> +			 * from the old data block.
-> +			 */
-> +			memcpy(&blk->data[0], &old_blk->data[0],
-> +			       (blk_lpos->next - blk_lpos->begin) - sizeof(blk->id));
+So let's fix this up by creating two new functions,
+usb_control_msg_send() and usb_control_msg_recv().  These functions
+either complete the full transation, or they return an error, a short
+send/recv is now an error.
 
-It took me quite some time to check whether this code is correct or not.
+They also accept data off of the stack, saving individual drivers the
+pain of having to constantly allocate memory on their own for tiny
+messages, thereby saving overall kernel code space.
 
-First, I wondered whether the size was correctly calculated.
-It is because the original block was not wrapped, so
-lpos->next - lpos->beging defines the real data buffer size.
+The api also does not require a raw USB "pipe" to be sent to the
+function, as we know the direction, so just pass in the endpoint number
+instead, again making it easier on the USB driver author to use.
 
-Second, I wondered whether the target block might be smaller
-than the original (the above check allows shrinking). It can't
-be smaller because then the new block won't be wrapped as well.
+This series first takes a helper function out of the sound core for
+verifying USB endpoints to be able to use internally, and then adds the
+new functions, converts over some internal USB code to use them, and
+then starts to clean up some drivers using these new functions, as an
+example of the savings that can happen by using these functions.
 
-Sigh, it is a bit tricky. And there is 3rd possibility that
-is not handled. The original block might be wrapped but
-the new shrunken one might not longer be wrapped.
-Then we would need to copy the data the other way.
+Thanks to Dmitry and Himadri for the idea on how to do all of this.
 
+greg k-h
 
-I know that this function is not currently used for shrinking.
-But I would prefer to be on the safe side. Either make
-the copying generic, e.g. by calculating the real data size
-using the code from get_data(). Or simply comletely
-refuse shrinking by the above check.
+Greg Kroah-Hartman (10):
+  USB: move snd_usb_pipe_sanity_check into the USB core
+  USB: add usb_control_msg_send() and usb_control_msg_recv()
+  USB: core: message.c: use usb_control_msg_send() in a few places
+  USB: core: hub.c: use usb_control_msg_send() in a few places
+  USB: legousbtower: use usb_control_msg_recv()
+  sound: usx2y: move to use usb_control_msg_send()
+  sound: 6fire: move to use usb_control_msg_send() and
+    usb_control_msg_recv()
+  sound: line6: move to use usb_control_msg_send() and
+    usb_control_msg_recv()
+  sound: hiface: move to use usb_control_msg_send()
+  Bluetooth: ath3k: use usb_control_msg_send() and
+    usb_control_msg_recv()
 
-Best Regards,
-Petr
+ drivers/bluetooth/ath3k.c       |  90 +++++------------
+ drivers/usb/core/hub.c          | 128 +++++++++---------------
+ drivers/usb/core/message.c      | 171 ++++++++++++++++++++++++++++----
+ drivers/usb/core/urb.c          |  29 ++++--
+ drivers/usb/misc/legousbtower.c |  60 ++++-------
+ include/linux/usb.h             |   7 ++
+ sound/usb/6fire/firmware.c      |  38 +++----
+ sound/usb/helper.c              |  16 +--
+ sound/usb/helper.h              |   1 -
+ sound/usb/hiface/pcm.c          |  14 ++-
+ sound/usb/line6/driver.c        |  69 +++++--------
+ sound/usb/line6/podhd.c         |  17 ++--
+ sound/usb/line6/toneport.c      |   8 +-
+ sound/usb/mixer_scarlett_gen2.c |   2 +-
+ sound/usb/quirks.c              |  12 +--
+ sound/usb/usx2y/us122l.c        |  42 ++------
+ 16 files changed, 345 insertions(+), 359 deletions(-)
 
-> +		}
-> +	}
-> +
-> +	blk_lpos->next = next_lpos;
-> +
-> +	return &blk->data[0];
-> +}
-> +
->  /* Return the number of bytes used by a data block. */
->  static unsigned int space_used(struct prb_data_ring *data_ring,
->  			       struct prb_data_blk_lpos *blk_lpos)
+-- 
+2.28.0
+
