@@ -2,125 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6D725ACC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4E225ACB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgIBOQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727932AbgIBOGP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:06:15 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2B5C061251
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:05:39 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id q21so5065004edv.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ms87tpPV92xBIrK+FIwRr75+U/FSoHz11mIuiBxrPvY=;
-        b=DNH5AltgSY8a9qXUpBqw27brBXKQscc7pNvF5CWeZVI0Vgl0/fE7HqiUWPKXiw2VtB
-         ZQ57MjmmwHbTeGIR6/0BLzFjS7wXwcF7TrjJjjUV1hNYGnEHz4eaYGGiwFaKfFSgaeoe
-         4cKBZBB9sE24DiD0f5VjoffAKhLzfOLMgPrEPDjxMX+M+0wPZ5G/gPoy4qBfULEPO9uY
-         yrV0DWSQhqEuNfHXT8fyfMQ8/KOmooSAqNujpWcN2LcMW7x02Y8hVbYcJ229yTkXLVue
-         xi3hDDv7FvrXzM7E3S7fKB3CkcymDqZ/IMyBd02et+w8rtI1if8qxZfFs0uJhyZOJjK9
-         dbCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ms87tpPV92xBIrK+FIwRr75+U/FSoHz11mIuiBxrPvY=;
-        b=YJU7Oeopj1Ubupdt9K4o3ydaFjlphcIhUzBrjwKzIxs/ySnq+foVFzvFL4MFxy1Z27
-         j8CrMNAL7bbgTu8HmeZeRTHPhX0eQJhV9u/ynrIZD2CAEe8Vs3uGavvFpgF+eckcg2+Y
-         quV0kLDVP35cjWSR+nTwfz5uWXMdQW+ZnPM12xXwO21dBsk0pafQ67aNw2KUfMeLi7BK
-         Z0jDguWcvCN5+6AywPdOEKE87yldy98cV97DRSklV8d7+fNUmmChBbAPuLV6dWHJFgF5
-         wweTKL5BYjRkjzvc8GG7iY3w3cCcOFMGsPElINJbzsP1YruRfRf6bEQfAS35OXfhlX3M
-         5OIQ==
-X-Gm-Message-State: AOAM531OWxZgHCCJ7t7uLPyy0s5QsC1226QXlNq9ARMt0yGWEquDE/rp
-        V+pUpFltHO+gOcNRxulxfpZjtDNYf7zB00v4
-X-Google-Smtp-Source: ABdhPJwU4/RFcwCT/6MW8VqKMPUyd1Q4rfOckVO1M7ldoyPYS00f319cNKXtA1SMP5UWcJ74nHoNxw==
-X-Received: by 2002:a50:fb18:: with SMTP id d24mr211480edq.149.1599055537868;
-        Wed, 02 Sep 2020 07:05:37 -0700 (PDT)
-Received: from tim.froidcoeur.net (ptr-7tznw14oqa3w7cibjsc.18120a2.ip6.access.telenet.be. [2a02:1811:50e:f0f0:8cba:3abe:17e1:aaec])
-        by smtp.gmail.com with ESMTPSA id os15sm4354775ejb.61.2020.09.02.07.05.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 07:05:36 -0700 (PDT)
-From:   Tim Froidcoeur <tim.froidcoeur@tessares.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
-        matthieu.baerts@tessares.net, davem@davemloft.net,
-        Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Subject: [PATCH 4.4 2/2] net: initialize fastreuse on inet_inherit_port
-Date:   Wed,  2 Sep 2020 16:05:13 +0200
-Message-Id: <20200902140513.866712-3-tim.froidcoeur@tessares.net>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200902140513.866712-1-tim.froidcoeur@tessares.net>
-References: <20200902140513.866712-1-tim.froidcoeur@tessares.net>
+        id S1727952AbgIBOOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:14:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10798 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727929AbgIBOGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:06:16 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5C9FB6ECADA063E1451C;
+        Wed,  2 Sep 2020 22:05:39 +0800 (CST)
+Received: from localhost (10.174.179.108) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 2 Sep 2020
+ 22:05:30 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <irogers@google.com>
+CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] perf bench: fix return value check in do_run_multi_threaded()
+Date:   Wed, 2 Sep 2020 22:05:26 +0800
+Message-ID: <20200902140526.26916-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit d76f3351cea2d927fdf70dd7c06898235035e84e ]
+In case of error, the function perf_session__new() returns ERR_PTR()
+and never returns NULL. The NULL test in the return value check
+should be replaced with IS_ERR()
 
-In the case of TPROXY, bind_conflict optimizations for SO_REUSEADDR or
-SO_REUSEPORT are broken, possibly resulting in O(n) instead of O(1) bind
-behaviour or in the incorrect reuse of a bind.
-
-the kernel keeps track for each bind_bucket if all sockets in the
-bind_bucket support SO_REUSEADDR or SO_REUSEPORT in two fastreuse flags.
-These flags allow skipping the costly bind_conflict check when possible
-(meaning when all sockets have the proper SO_REUSE option).
-
-For every socket added to a bind_bucket, these flags need to be updated.
-As soon as a socket that does not support reuse is added, the flag is
-set to false and will never go back to true, unless the bind_bucket is
-deleted.
-
-Note that there is no mechanism to re-evaluate these flags when a socket
-is removed (this might make sense when removing a socket that would not
-allow reuse; this leaves room for a future patch).
-
-For this optimization to work, it is mandatory that these flags are
-properly initialized and updated.
-
-When a child socket is created from a listen socket in
-__inet_inherit_port, the TPROXY case could create a new bind bucket
-without properly initializing these flags, thus preventing the
-optimization to work. Alternatively, a socket not allowing reuse could
-be added to an existing bind bucket without updating the flags, causing
-bind_conflict to never be called as it should.
-
-Call inet_csk_update_fastreuse when __inet_inherit_port decides to create
-a new bind_bucket or use a different bind_bucket than the one of the
-listen socket.
-
-Fixes: 093d282321da ("tproxy: fix hash locking issue when using port redirection in __inet_inherit_port()")
-Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Tim Froidcoeur <tim.froidcoeur@tessares.net>
+Fixes: 13edc237200c ("perf bench: Add a multi-threaded synthesize benchmark")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- net/ipv4/inet_hashtables.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/bench/synthesize.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/ipv4/inet_hashtables.c b/net/ipv4/inet_hashtables.c
-index ccc5980797fc..738cd5c822b1 100644
---- a/net/ipv4/inet_hashtables.c
-+++ b/net/ipv4/inet_hashtables.c
-@@ -160,6 +160,7 @@ int __inet_inherit_port(const struct sock *sk, struct sock *child)
- 				return -ENOMEM;
- 			}
- 		}
-+		inet_csk_update_fastreuse(tb, child);
- 	}
- 	inet_bind_hash(child, tb, port);
- 	spin_unlock(&head->lock);
+diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+index 8d624aea1c5e..e39daa609db2 100644
+--- a/tools/perf/bench/synthesize.c
++++ b/tools/perf/bench/synthesize.c
+@@ -162,8 +162,8 @@ static int do_run_multi_threaded(struct target *target,
+ 	init_stats(&event_stats);
+ 	for (i = 0; i < multi_iterations; i++) {
+ 		session = perf_session__new(NULL, false, NULL);
+-		if (!session)
+-			return -ENOMEM;
++		if (IS_ERR(session)) {
++			return PTR_ERR(session);
+ 
+ 		atomic_set(&event_count, 0);
+ 		gettimeofday(&start, NULL);
 -- 
-2.25.1
+2.17.1
+
 
