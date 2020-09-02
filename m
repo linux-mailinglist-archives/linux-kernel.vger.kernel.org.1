@@ -2,307 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE5625B55C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B8325B562
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgIBUfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 16:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726247AbgIBUfF (ORCPT
+        id S1726523AbgIBUkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 16:40:43 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:40845 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgIBUkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 16:35:05 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D5EC061244;
-        Wed,  2 Sep 2020 13:35:04 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v4so669691wmj.5;
-        Wed, 02 Sep 2020 13:35:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HIxWngPr+sR5zV2PQU9/b6GK/O7pBr4xcIJNAOB++EE=;
-        b=UkXei5RIwuT7P869JaZz0aPmRfdwyZgc3exQJoyGoQbcS2BRfO1aHWcpBPlHHZSbvB
-         CcXd9M61OaTXzV9/55jABkdzV2S6SSuuNmlKLn8ctTNz4+Nah/6hqdfdbgWhBOSFkOp2
-         POPbt0ODgeqNnG/gEvoceMpkHONf30EbnT89fj68grdnI9EpkIDsdM4cDn2jRFxoBcJM
-         5M8ZZP4x3uHgnKrN5+JYtzUmQpW/WesWlY2hXHE79FzF6ujQenDhWn2LL4MTk8jlEib2
-         OiG0nkfOLXk/ypJOItTd3cF6ZxYXm4ndTo3QGaHlInYyNkaJlR9AieT7ZwSmemqnmmZ5
-         3V9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HIxWngPr+sR5zV2PQU9/b6GK/O7pBr4xcIJNAOB++EE=;
-        b=YIovXwYVQAC0hp8Qw4H7mEb1hJtmDVNZxFCBSmafNeoGPPhr1Cs5Vwo843arhWGuX6
-         aEgzOQb+3VAstu3rnxGbpSAX2OkQHQA6SDtgi0zGhqJXmWzoJnB3RPaSUmy7mpGQQt/f
-         hvocbG06qqKryNnf7DT3h6gfnFUYJ0Siuu9efqfesmbFD2NMLyYDopdloAVh1Pf1w7p0
-         yp/4QHM+IyyrgeL1b5rOKRFlitLNDeaU2gwqEmVAvPdG5TMlD5eiRii7KpnpIZLVOFWs
-         RwQiAkU7Hefc4l/3puHy3AIpF3Fsw3Ro1MdyyFPPiOa57ePDJkAveX9CqOPS5+z3A22X
-         oqiw==
-X-Gm-Message-State: AOAM530bV/tnytloNvChbm7NImLJd7OL47cQTGCjCUbS7rzGOarSblTc
-        0cjuCdNWYZZhxSNFl4BGrTvDgzPXO0A=
-X-Google-Smtp-Source: ABdhPJxVc66FmTb2h7qoW8xOK78Hvnc2OJIxFP0wblEH8E56zZE45GVoHbq53auIN5dCgQa+3DCadg==
-X-Received: by 2002:a1c:988d:: with SMTP id a135mr2318472wme.8.1599078903279;
-        Wed, 02 Sep 2020 13:35:03 -0700 (PDT)
-Received: from [192.168.8.147] ([37.171.70.17])
-        by smtp.gmail.com with ESMTPSA id b76sm1034586wme.45.2020.09.02.13.35.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 13:35:02 -0700 (PDT)
-Subject: Re: [PATCHv3 net-next] dropwatch: Support monitoring of dropped
- frames
-To:     izabela.bakollari@gmail.com, nhorman@tuxdriver.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20200707171515.110818-1-izabela.bakollari@gmail.com>
- <20200902171604.109864-1-izabela.bakollari@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0b27311f-6836-45e8-6bb3-d741d37d135b@gmail.com>
-Date:   Wed, 2 Sep 2020 22:35:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 2 Sep 2020 16:40:43 -0400
+Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1M5gAG-1kBwjT27Cc-007H15 for <linux-kernel@vger.kernel.org>; Wed, 02 Sep
+ 2020 22:40:41 +0200
+Received: by mail-qk1-f169.google.com with SMTP id p25so1082461qkp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 13:40:40 -0700 (PDT)
+X-Gm-Message-State: AOAM533ti2wpuJkJg6+9FH7kQM99tCbVxx6uoWVPr9fmO7Q7BQgzXrIz
+        i5M/pLn8rjyX/+Z6Q48JHScZSiUSQkA6KMGFqkE=
+X-Google-Smtp-Source: ABdhPJzodmejhJAtMKThbQWlJFz80SFiO54mmYtjDdiM3ONaN1YOToVfF3hqMeVTv6Cz4OnXxE/L/LZUnPhskl7a0Ug=
+X-Received: by 2002:ae9:f106:: with SMTP id k6mr8135941qkg.3.1599079239381;
+ Wed, 02 Sep 2020 13:40:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200902171604.109864-1-izabela.bakollari@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <b7719680-e451-5687-1fb7-c8c059a880d4@acm.org> <2C755628-1426-4BA4-B2A3-AD059BB0F605@exactcode.com>
+ <c7daea00-410d-2073-bf52-2abda9acdf8e@acm.org> <20200827.230128.2175364115734830909.rene@exactcode.com>
+In-Reply-To: <20200827.230128.2175364115734830909.rene@exactcode.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 2 Sep 2020 22:40:23 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0XByLZGCMirzQfwBS_1HLzA9s8h3-JPQM171XGTycohg@mail.gmail.com>
+Message-ID: <CAK8P3a0XByLZGCMirzQfwBS_1HLzA9s8h3-JPQM171XGTycohg@mail.gmail.com>
+Subject: Re: [PATCH] use cpu_to_le{16,32} instead of __constant_cpu_to_
+To:     Rene Rebe <rene@exactcode.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:WFS9Gwp/vvhBs+3BN0hPtw42MfmCggOSKiHUd6r956gkSP1SCAs
+ 7Axg5qTjSRPaoeWQH2AmhW45YdrVydYj+lP0lcLWU7hgfUAyiTn5a+rb0Aa/aB1pyxdHX60
+ xsWRCfNytoVaQn7iTVWxtDT80fwftT69z5KALt+nOs9rNBvcgOd3yb0m2q/I0fypqdpuHyW
+ vF+5FAwWA2qOC3a8804dg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1vtooSoJDT4=:KR/MCF9WUIACsKL7/bGtKK
+ CqKtRyI7axyGNC98zcaCxlItjxHdTwEojRdfR+qW1SdTucFoPLtfncc3WO+S+wG5g43KmSi9N
+ NY79IfwBPYYOaf+2YXqyAvOIYxok+9HPCmer0vwoKW4cQ49N2Cwdox+4gBOc84IP3Xva7z5Uz
+ id25T2SIx9/waFob+sKJuLZDa9o2xmm0dxBubuduGLIPyn32Uh75VtDdGO8EJL+G0Go+MWyP+
+ T2aa0F62rmRKAPEceGhpMxnrkgWpf5Z0cYLvzAOQVsPBSsyIq/a/SGUmeHFZqgBu+Gf3KrehV
+ g0yWtcr62wbOD32FyIw6X2BgnxwVOENx77QXt63Xa+cVCHyFWtWqoZg7WdeIkqH5kEbiOyTx5
+ m1o5VO8/xkTS3/gOLZV99DI+qulw7+JLuHkpn/OYDGH0bFdZYbJFIJA4cqBDoIkVMEwDJW+KI
+ x5WvJsw73vEwIgLljnhif0KChK5+bhHXKmYM8RslGMgSXbjUB+vmyB38vXpnF+Ifg6Arhpn06
+ D5LODp1WoTSzGUf85ik+my5Dubc5KKxR1O2t7x61ttzNdZmkcRHRQ1EKSXrXurCxqTl5A1dwI
+ AVYUskf9gY/wE358dlu92tzPRdsezLPa9JT1d97QDqvP/lTLyv6h8dWLdOBF78iQ2DQ10aRZ2
+ bJvtS6amkzaCz0v+wgcrElznJrOVdAAgi/ywBDq/pF5CQ4MqqqGLKMTMePzUqJQjs0kpdicxT
+ yFsYJGEoV9jgo+aPKXNOZHJ1GZSXb3dCgFxFZ7aKFoTAYAY1FmAfGAqym73pjzTa3vtPL4Yuu
+ 2tkXSOOvA9Y3jKywWB2UY1uoVg+DoniwAWvOuWecmTfVGkT0WaV59sT9BfNJ2J0O+mWMph9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 27, 2020 at 11:06 PM Rene Rebe <rene@exactcode.com> wrote:
+>
+> diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+> index fbb80a043b4f..3de6bf94ccc0 100644
+> --- a/drivers/scsi/qla2xxx/qla_target.c
+> +++ b/drivers/scsi/qla2xxx/qla_target.c
 
+The qla2xxx and qla4xxx changes all look good.
 
-On 9/2/20 10:16 AM, izabela.bakollari@gmail.com wrote:
-> From: Izabela Bakollari <izabela.bakollari@gmail.com>
-> 
-> Dropwatch is a utility that monitors dropped frames by having userspace
-> record them over the dropwatch protocol over a file. This augument
-> allows live monitoring of dropped frames using tools like tcpdump.
-> 
-> With this feature, dropwatch allows two additional commands (start and
-> stop interface) which allows the assignment of a net_device to the
-> dropwatch protocol. When assinged, dropwatch will clone dropped frames,
-> and receive them on the assigned interface, allowing tools like tcpdump
-> to monitor for them.
-> 
-> With this feature, create a dummy ethernet interface (ip link add dev
-> dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
-> these new commands, and then monitor dropped frames in real time by
-> running tcpdump -i dummy0.
-> 
-> Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
-> ---
-> Changes in v3:
-> - Name the cloned skb "nskb"
-> - Remove the error log
-> - Change coding style in some if statements
-> ---
->  include/uapi/linux/net_dropmon.h |  3 ++
->  net/core/drop_monitor.c          | 80 ++++++++++++++++++++++++++++++++
->  2 files changed, 83 insertions(+)
-> 
-> diff --git a/include/uapi/linux/net_dropmon.h b/include/uapi/linux/net_dropmon.h
-> index 67e31f329190..e8e861e03a8a 100644
-> --- a/include/uapi/linux/net_dropmon.h
-> +++ b/include/uapi/linux/net_dropmon.h
-> @@ -58,6 +58,8 @@ enum {
->  	NET_DM_CMD_CONFIG_NEW,
->  	NET_DM_CMD_STATS_GET,
->  	NET_DM_CMD_STATS_NEW,
-> +	NET_DM_CMD_START_IFC,
-> +	NET_DM_CMD_STOP_IFC,
->  	_NET_DM_CMD_MAX,
->  };
->  
-> @@ -93,6 +95,7 @@ enum net_dm_attr {
->  	NET_DM_ATTR_SW_DROPS,			/* flag */
->  	NET_DM_ATTR_HW_DROPS,			/* flag */
->  	NET_DM_ATTR_FLOW_ACTION_COOKIE,		/* binary */
-> +	NET_DM_ATTR_IFNAME,			/* string */
->  
->  	__NET_DM_ATTR_MAX,
->  	NET_DM_ATTR_MAX = __NET_DM_ATTR_MAX - 1
-> diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
-> index 8e33cec9fc4e..ae5ed70b6b2a 100644
-> --- a/net/core/drop_monitor.c
-> +++ b/net/core/drop_monitor.c
-> @@ -30,6 +30,7 @@
->  #include <net/genetlink.h>
->  #include <net/netevent.h>
->  #include <net/flow_offload.h>
-> +#include <net/sock.h>
->  
->  #include <trace/events/skb.h>
->  #include <trace/events/napi.h>
-> @@ -46,6 +47,7 @@
+> diff --git a/fs/cifs/smb2status.h b/fs/cifs/smb2status.h
+> index 7505056e9580..3d5ef02f1416 100644
+> --- a/fs/cifs/smb2status.h
+> +++ b/fs/cifs/smb2status.h
+> @@ -29,7 +29,7 @@
+>   *  C is set if "customer defined" error, N bit is reserved and MBZ
 >   */
->  static int trace_state = TRACE_OFF;
->  static bool monitor_hw;
-> +struct net_device *interface;
->  
->  /* net_dm_mutex
->   *
-> @@ -54,6 +56,8 @@ static bool monitor_hw;
->   */
->  static DEFINE_MUTEX(net_dm_mutex);
->  
-> +static DEFINE_SPINLOCK(interface_lock);
-> +
->  struct net_dm_stats {
->  	u64 dropped;
->  	struct u64_stats_sync syncp;
-> @@ -217,6 +221,7 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
->  	struct nlattr *nla;
->  	int i;
->  	struct sk_buff *dskb;
-> +	struct sk_buff *nskb;
->  	struct per_cpu_dm_data *data;
->  	unsigned long flags;
->  
-> @@ -255,6 +260,18 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
->  
->  out:
->  	spin_unlock_irqrestore(&data->lock, flags);
-> +	spin_lock_irqsave(&interface_lock, flags);
-> +	nskb = skb_clone(skb, GFP_ATOMIC);
+>
+> -#define STATUS_SEVERITY_SUCCESS __constant_cpu_to_le32(0x0000)
+> +#define STATUS_SEVERITY_SUCCESS cpu_to_le32(0x0000)
+>  #define STATUS_SEVERITY_INFORMATIONAL cpu_to_le32(0x0001)
+>  #define STATUS_SEVERITY_WARNING cpu_to_le32(0x0002)
+>  #define STATUS_SEVERITY_ERROR cpu_to_le32(0x0003)
 
-1) Why calling skb_clone() if @interface is NULL ?
+This was apparently left over in f5307104e757 ("cifs: don't use
+__constant_cpu_to_le32()").
 
+> diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+> index 8ff4d1a1e774..230a5a7fdafa 100644
+> --- a/fs/jffs2/nodelist.h
+> +++ b/fs/jffs2/nodelist.h
+> @@ -59,8 +59,8 @@
+>  #define cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
+>  #define cpu_to_jemode(x) ((jmode_t){cpu_to_le32(os_to_jffs2_mode(x))})
+>
+> -#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_le16(x)})
+> -#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_le32(x)})
+> +#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_le16(x)})
+> +#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
 
-> +	if (!nskb) {
-> +		spin_unlock_irqrestore(&interface_lock, flags);
-> +		return;
-> +	} else if (interface && interface != nskb->dev) {
+This one would break the build, as these have to be constant expressions,
+whereas cpu_to_le32() is a compiler builtin or an inline function on some
+architectures.
 
-2) Since there is no check about @interface being a dummy device,
-it seems possible for a malicious user to set up another virtual
-device (like bonding) so that the "interface != nskb->dev"  test
-wont be able to detect a loop.
-
-We could therefore have an infinite loop.
-
-
-> +		nskb->dev = interface;
-> +		spin_unlock_irqrestore(&interface_lock, flags);
-> +		netif_receive_skb(nskb);
-
-
-
-> +	} else {
-
- 3)  nskb seems to be leaked here ? See point 1)
-
-> +		spin_unlock_irqrestore(&interface_lock, flags);
-> +	}
->  }
->  
->  static void trace_kfree_skb_hit(void *ignore, struct sk_buff *skb, void *location)
-> @@ -1315,6 +1332,51 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
->  	return -EOPNOTSUPP;
->  }
->  
-> +static int net_dm_interface_start(struct net *net, const char *ifname)
-> +{
-> +	struct net_device *nd = dev_get_by_name(net, ifname);
-> +
-> +	if (!nd)
-> +		return -ENODEV;
-> +
-> +	interface = nd;
-> +
-> +	return 0;
-> +}
-> +
-> +static int net_dm_interface_stop(struct net *net, const char *ifname)
-> +{
-> +	dev_put(interface);
-> +	interface = NULL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int net_dm_cmd_ifc_trace(struct sk_buff *skb, struct genl_info *info)
-> +{
-> +	struct net *net = sock_net(skb->sk);
-> +	char ifname[IFNAMSIZ];
-> +
-> +	if (net_dm_is_monitoring())
-> +		return -EBUSY;
-> +
-> +	memset(ifname, 0, IFNAMSIZ);
-> +	nla_strlcpy(ifname, info->attrs[NET_DM_ATTR_IFNAME], IFNAMSIZ - 1);
-
-4) info->attrs[NET_DM_ATTR_IFNAME] could be NULL at this point.
-
-> +
-> +	switch (info->genlhdr->cmd) {
-> +	case NET_DM_CMD_START_IFC:
-
-5) interface_lock is not held, this seems racy.
-
-> +		if (interface)
-> +			return -EBUSY;
-> +		return net_dm_interface_start(net, ifname);
-> +	case NET_DM_CMD_STOP_IFC:
-
-6) interface_lock is not held, this seems racy.
-> +		if (!interface)
-> +			return -ENODEV;
-> +		return net_dm_interface_stop(net, interface->name);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int net_dm_config_fill(struct sk_buff *msg, struct genl_info *info)
->  {
->  	void *hdr;
-> @@ -1503,6 +1565,7 @@ static int dropmon_net_event(struct notifier_block *ev_block,
->  	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
->  	struct dm_hw_stat_delta *new_stat = NULL;
->  	struct dm_hw_stat_delta *tmp;
-> +	unsigned long flags;
->  
->  	switch (event) {
->  	case NETDEV_REGISTER:
-> @@ -1529,6 +1592,12 @@ static int dropmon_net_event(struct notifier_block *ev_block,
->  				}
->  			}
->  		}
-> +		spin_lock_irqsave(&interface_lock, flags);
-> +		if (interface && interface == dev) {
-> +			dev_put(interface);
-> +			interface = NULL;
-> +		}
-> +		spin_unlock_irqrestore(&interface_lock, flags);
->  		mutex_unlock(&net_dm_mutex);
->  		break;
->  	}
-> @@ -1543,6 +1612,7 @@ static const struct nla_policy net_dm_nl_policy[NET_DM_ATTR_MAX + 1] = {
->  	[NET_DM_ATTR_QUEUE_LEN] = { .type = NLA_U32 },
->  	[NET_DM_ATTR_SW_DROPS]	= {. type = NLA_FLAG },
->  	[NET_DM_ATTR_HW_DROPS]	= {. type = NLA_FLAG },
-> +	[NET_DM_ATTR_IFNAME] = {. type = NLA_STRING, .len = IFNAMSIZ },
->  };
->  
->  static const struct genl_ops dropmon_ops[] = {
-> @@ -1570,6 +1640,16 @@ static const struct genl_ops dropmon_ops[] = {
->  		.cmd = NET_DM_CMD_STATS_GET,
->  		.doit = net_dm_cmd_stats_get,
->  	},
-> +	{
-> +		.cmd = NET_DM_CMD_START_IFC,
-> +		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-> +		.doit = net_dm_cmd_ifc_trace,
-> +	},
-> +	{
-> +		.cmd = NET_DM_CMD_STOP_IFC,
-> +		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
-> +		.doit = net_dm_cmd_ifc_trace,
-> +	},
->  };
->  
->  static int net_dm_nl_pre_doit(const struct genl_ops *ops,
-> 
+       Arnd
