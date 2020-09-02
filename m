@@ -2,639 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCC625A3E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BB325A3F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 05:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgIBDPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 23:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
+        id S1727783AbgIBDQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 23:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726212AbgIBDPC (ORCPT
+        with ESMTP id S1726312AbgIBDQD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 23:15:02 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F53C061246
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 20:15:01 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id cy2so1598693qvb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 20:15:01 -0700 (PDT)
+        Tue, 1 Sep 2020 23:16:03 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2084AC061244
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Sep 2020 20:16:03 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ls14so1654030pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Sep 2020 20:16:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Cg0OjluGmrvlA0ToHyqwYplHDQ7mEtsmb4qb2ONLtBc=;
-        b=RW5CxYCvXnkhNB7/KpkragMWHyfcBPtNT+08Fl1VyqA57ZP/xVdf6Vc7gl5NzeAla6
-         gcZJLrYcI5hofg9nL2KxJ9rbXKHr51xkDvtPlzVIvQ7Elv8puOzVXNjFI7ChbyQe+h9N
-         wjw9FmQNzlCi7LHUnD934DAYN3G1FgeTqmG6k90aZ3ChyMhE2NdSZM4CoKo8yV2WsW+V
-         oasFtN73E5W94lUPAmBxX+up0+4YSnwE9oft2PkgkPpO01vWygFvbDFsQ8h9xdVkyncu
-         etEzzmKgizbGbaeWDkgbyvo6yaQ1+byPwCaLtY8KHY7FhPlXLjJv9b4zZRdPq6mmRbaz
-         eJQw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pLKC7+jaSN5ZBuCD5TIaeGbr36POSkJnb3G6NUVYvBA=;
+        b=LP1qr1xSGAO4kCcQ/P0xBe/1/wk7IJYlJb12vHtI4F72pwTNRJX0bN3jgkiyBrPDEH
+         gcy/U0Jkn7QVYLwetuH61+z/ki6MaOTJr3IYTkae8KZLr4Y4IiCACsos6tmgmtrCQ1uK
+         ULJnmLb+vF9yfmZSSFcmou2PLu1qmw25JaqFAoqdQmonC/I9YbfVWf74NJL/8+NxNCye
+         kklP02G3ACt5pD35MG/5TdKCnJoXu4VwGr0npmTC2AhakY0GT68esaGnxO3mon3G6lF4
+         Y9LDNE5qLVZN5x4qTkaFOpdrcaXyf59dYK3MXuat+P2FCA5WciiE44V5l4oIGqiEp/2F
+         7twA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Cg0OjluGmrvlA0ToHyqwYplHDQ7mEtsmb4qb2ONLtBc=;
-        b=kIeXXQtrDT++jQ9pv2+IDswsOM7J7M41SviA182OA29IxbEz8rA7JeUInD/uj8LFuk
-         jnRBWVmHOB2Fx6CLl2Y119xpN1hkB+D7sQ6reLAnXJ/ePpwem03SjIbbgOFrBctn7uOm
-         vM9w18GlWpm0G5JwXaepjN8lMGjyaQ26Rr/QWMCI0S3qHkYfdrEtTrgR7BPEpEsvvFiN
-         /EVK7NmtAxCq64I5JJxLBmHrSlCDqB3UGTry79QOxUSEcdpbRxRrisbcV4mLtgGm31WV
-         sETzKgmOwKSNnCV8/pvSv6B0dNwX/U0q/wUuIbcvSVApqU2Z7hWYv/UZ0s9Uxv+OR1xZ
-         /x8w==
-X-Gm-Message-State: AOAM533VRIhr2U+IGF78VYBTWC8KeCv/4NtRiYRf1hk2n2QyVU++GYjM
-        7cQwS7CYvs5Mo2JF8/5RChH9SsaHWmtvY7V83Xs=
-X-Google-Smtp-Source: ABdhPJzhNUQssOkSMDNLKhQol8U6GdEt6q8mrjclbrlW37uHMa53hwT/CJIhDRpv3Ova5jx9oHC7dg==
-X-Received: by 2002:ad4:5364:: with SMTP id e4mr602140qvv.155.1599016500775;
-        Tue, 01 Sep 2020 20:15:00 -0700 (PDT)
-Received: from localhost.localdomain ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id q35sm3755649qtd.75.2020.09.01.20.14.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 20:15:00 -0700 (PDT)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK)
-Subject: [PATCH 5/5] clk: qcom: add video clock controller driver for SM8250
-Date:   Tue,  1 Sep 2020 23:13:55 -0400
-Message-Id: <20200902031359.6703-6-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200902031359.6703-1-jonathan@marek.ca>
-References: <20200902031359.6703-1-jonathan@marek.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pLKC7+jaSN5ZBuCD5TIaeGbr36POSkJnb3G6NUVYvBA=;
+        b=YAoNnzcKJuQp4Sg+ouptepFQ3Pdif2u5vBymM395wX2s33g4PqsdO9/3ZtThWfihMN
+         AVtjEe4Hq5mRmh8ilBJ83xLNpilj30ebIW9KDqhvI4h8xBwkSySwhf5cnhM6WN6VRzJE
+         ZMuOsyIRzmP7K0l+nGxKE/f7L3dKX16AQ+gObbZrddLSfkaqiit7BjvFCIudJAxlvWsa
+         V7pncz9wo5zIVNQe7jtGA6KU07dnHIA69PaJmd7JXWM21t1tvkSXc23M68YiAPPvO3Ym
+         icQg0k7tWYEBC02YErrGR6bSKlSlFluToKbARzYF071bjkYUOlwp2d7CofO7OSgzur7g
+         ge2w==
+X-Gm-Message-State: AOAM5319bdnyZ8L1BymPi1XP28CW25ogps/414/7/L+5ZgKOHCRHu0I4
+        LElPGkT2dWx9OeSLAz3q12DXxGyu+pBjyrCG7T9LXQ==
+X-Google-Smtp-Source: ABdhPJxU9t2/jRG3bOAX50PgF1H2d4Mis+lVnVhkJX43vr8Td+vQ2wXtBUpPN74e2jKTAQcFq+dWjHTsrygJx6VltQ0=
+X-Received: by 2002:a17:90a:fa94:: with SMTP id cu20mr312873pjb.147.1599016562619;
+ Tue, 01 Sep 2020 20:16:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200822030055.32383-1-songmuchun@bytedance.com>
+ <CAMZfGtVTTZ1XZ2sLERpjevGmSO+8ex4PdfPaWLFh7Ro2r5oYYA@mail.gmail.com> <20200902120544.d839e3a9236696978ca87723@kernel.org>
+In-Reply-To: <20200902120544.d839e3a9236696978ca87723@kernel.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 2 Sep 2020 11:15:26 +0800
+Message-ID: <CAMZfGtVZMdNc5uosnzDws=xsYebYdgKqtnBZeLmBRHLPgg04tQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] kprobes: Fix kill kprobe which has been
+ marked as gone
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, naveen.n.rao@linux.ibm.com,
+        anil.s.keshavamurthy@intel.com, davem@davemloft.net,
+        songliubraving@fb.com, LKML <linux-kernel@vger.kernel.org>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the video clock controller found on SM8250 based devices.
+Hi Masami,
 
-Derived from the downstream driver.
+On Wed, Sep 2, 2020 at 11:05 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hi Ingo,
+>
+> Could you merge this fix to -tip?
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/clk/qcom/Kconfig          |   9 +
- drivers/clk/qcom/Makefile         |   1 +
- drivers/clk/qcom/videocc-sm8250.c | 516 ++++++++++++++++++++++++++++++
- 3 files changed, 526 insertions(+)
- create mode 100644 drivers/clk/qcom/videocc-sm8250.c
+This patch has been merged into Andrew's mm tree.
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 40d7ee9886c9..95efa38211d5 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -453,6 +453,15 @@ config SM_VIDEOCC_8150
- 	  Say Y if you want to support video devices and functionality such as
- 	  video encode and decode.
- 
-+config SM_VIDEOCC_8250
-+	tristate "SM8250 Video Clock Controller"
-+	select SDM_GCC_8250
-+	select QCOM_GDSC
-+	help
-+	  Support for the video clock controller on SM8250 devices.
-+	  Say Y if you want to support video devices and functionality such as
-+	  video encode and decode.
-+
- config SPMI_PMIC_CLKDIV
- 	tristate "SPMI PMIC clkdiv Support"
- 	depends on SPMI || COMPILE_TEST
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index 6f4c580d2728..55fb20800b66 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -69,6 +69,7 @@ obj-$(CONFIG_SM_GCC_8250) += gcc-sm8250.o
- obj-$(CONFIG_SM_GPUCC_8150) += gpucc-sm8150.o
- obj-$(CONFIG_SM_GPUCC_8250) += gpucc-sm8250.o
- obj-$(CONFIG_SM_VIDEOCC_8150) += videocc-sm8150.o
-+obj-$(CONFIG_SM_VIDEOCC_8250) += videocc-sm8250.o
- obj-$(CONFIG_SPMI_PMIC_CLKDIV) += clk-spmi-pmic-div.o
- obj-$(CONFIG_KPSS_XCC) += kpss-xcc.o
- obj-$(CONFIG_QCOM_HFPLL) += hfpll.o
-diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-new file mode 100644
-index 000000000000..9fa3bd0b359b
---- /dev/null
-+++ b/drivers/clk/qcom/videocc-sm8250.c
-@@ -0,0 +1,516 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#include <dt-bindings/clock/qcom,videocc-sm8250.h>
-+
-+#include "clk-alpha-pll.h"
-+#include "clk-branch.h"
-+#include "clk-rcg.h"
-+#include "clk-regmap.h"
-+#include "clk-regmap-divider.h"
-+#include "common.h"
-+#include "reset.h"
-+#include "gdsc.h"
-+
-+enum {
-+	P_BI_TCXO,
-+	P_CHIP_SLEEP_CLK,
-+	P_CORE_BI_PLL_TEST_SE,
-+	P_VIDEO_PLL0_OUT_MAIN,
-+	P_VIDEO_PLL1_OUT_MAIN,
-+};
-+
-+static const struct parent_map video_cc_parent_map_0[] = {
-+	{ P_BI_TCXO, 0 },
-+};
-+
-+static const struct clk_parent_data video_cc_parent_data_0[] = {
-+	{ .fw_name = "bi_tcxo_ao" },
-+};
-+
-+static struct pll_vco lucid_vco[] = {
-+	{ 249600000, 2000000000, 0 },
-+};
-+
-+static const struct alpha_pll_config video_pll0_config = {
-+	.l = 0x25,
-+	.alpha = 0x8000,
-+	.config_ctl_val = 0x20485699,
-+	.config_ctl_hi_val = 0x00002261,
-+	.config_ctl_hi1_val = 0x329A699C,
-+	.user_ctl_val = 0x00000000,
-+	.user_ctl_hi_val = 0x00000805,
-+	.user_ctl_hi1_val = 0x00000000,
-+};
-+
-+static struct clk_alpha_pll video_pll0 = {
-+	.offset = 0x42c,
-+	.vco_table = lucid_vco,
-+	.num_vco = ARRAY_SIZE(lucid_vco),
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
-+	.clkr = {
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_pll0",
-+			.parent_data = &(const struct clk_parent_data){
-+				.fw_name = "bi_tcxo",
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_alpha_pll_lucid_ops,
-+		},
-+	},
-+};
-+
-+static const struct alpha_pll_config video_pll1_config = {
-+	.l = 0x2B,
-+	.alpha = 0xC000,
-+	.config_ctl_val = 0x20485699,
-+	.config_ctl_hi_val = 0x00002261,
-+	.config_ctl_hi1_val = 0x329A699C,
-+	.user_ctl_val = 0x00000000,
-+	.user_ctl_hi_val = 0x00000805,
-+	.user_ctl_hi1_val = 0x00000000,
-+};
-+
-+static struct clk_alpha_pll video_pll1 = {
-+	.offset = 0x7d0,
-+	.vco_table = lucid_vco,
-+	.num_vco = ARRAY_SIZE(lucid_vco),
-+	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_LUCID],
-+	.clkr = {
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_pll1",
-+			.parent_data = &(const struct clk_parent_data){
-+				.fw_name = "bi_tcxo",
-+			},
-+			.num_parents = 1,
-+			.ops = &clk_alpha_pll_lucid_ops,
-+		},
-+	},
-+};
-+
-+static const struct parent_map video_cc_parent_map_1[] = {
-+	{ P_BI_TCXO, 0 },
-+	{ P_VIDEO_PLL0_OUT_MAIN, 1 },
-+};
-+
-+static const struct clk_parent_data video_cc_parent_data_1[] = {
-+	{ .fw_name = "bi_tcxo" },
-+	{ .hw = &video_pll0.clkr.hw },
-+};
-+
-+static const struct parent_map video_cc_parent_map_2[] = {
-+	{ P_BI_TCXO, 0 },
-+	{ P_VIDEO_PLL1_OUT_MAIN, 1 },
-+};
-+
-+static const struct clk_parent_data video_cc_parent_data_2[] = {
-+	{ .fw_name = "bi_tcxo" },
-+	{ .hw = &video_pll1.clkr.hw },
-+};
-+
-+static const struct freq_tbl ftbl_video_cc_mvs0_clk_src[] = {
-+	F(720000000, P_VIDEO_PLL0_OUT_MAIN, 1, 0, 0),
-+	F(1014000000, P_VIDEO_PLL0_OUT_MAIN, 1, 0, 0),
-+	F(1098000000, P_VIDEO_PLL0_OUT_MAIN, 1, 0, 0),
-+	F(1332000000, P_VIDEO_PLL0_OUT_MAIN, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 video_cc_mvs0_clk_src = {
-+	.cmd_rcgr = 0xb94,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_1,
-+	.freq_tbl = ftbl_video_cc_mvs0_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_mvs0_clk_src",
-+		.parent_data = video_cc_parent_data_1,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_1),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_shared_ops,
-+	},
-+};
-+
-+static const struct freq_tbl ftbl_video_cc_mvs1_clk_src[] = {
-+	F(840000000, P_VIDEO_PLL1_OUT_MAIN, 1, 0, 0),
-+	F(1098000000, P_VIDEO_PLL1_OUT_MAIN, 1, 0, 0),
-+	F(1332000000, P_VIDEO_PLL1_OUT_MAIN, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 video_cc_mvs1_clk_src = {
-+	.cmd_rcgr = 0xbb4,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_2,
-+	.freq_tbl = ftbl_video_cc_mvs1_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_mvs1_clk_src",
-+		.parent_data = video_cc_parent_data_2,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_2),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_shared_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div video_cc_mvs0_div_clk_src = {
-+	.reg = 0xd54,
-+	.shift = 0,
-+	.width = 2,
-+	.clkr.hw.init = &(struct clk_init_data) {
-+		.name = "video_cc_mvs0_div_clk_src",
-+		.parent_data = &(const struct clk_parent_data){
-+			.hw = &video_cc_mvs0_clk_src.clkr.hw,
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_regmap_div_ro_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div video_cc_mvs0c_div2_div_clk_src = {
-+	.reg = 0xc54,
-+	.shift = 0,
-+	.width = 2,
-+	.clkr.hw.init = &(struct clk_init_data) {
-+		.name = "video_cc_mvs0c_div2_div_clk_src",
-+		.parent_data = &(const struct clk_parent_data){
-+			.hw = &video_cc_mvs0_clk_src.clkr.hw,
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_regmap_div_ro_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div video_cc_mvs1_div_clk_src = {
-+	.reg = 0xdd4,
-+	.shift = 0,
-+	.width = 2,
-+	.clkr.hw.init = &(struct clk_init_data) {
-+		.name = "video_cc_mvs1_div_clk_src",
-+		.parent_data = &(const struct clk_parent_data){
-+			.hw = &video_cc_mvs1_clk_src.clkr.hw,
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_regmap_div_ro_ops,
-+	},
-+};
-+
-+static struct clk_regmap_div video_cc_mvs1c_div2_div_clk_src = {
-+	.reg = 0xcf4,
-+	.shift = 0,
-+	.width = 2,
-+	.clkr.hw.init = &(struct clk_init_data) {
-+		.name = "video_cc_mvs1c_div2_div_clk_src",
-+		.parent_data = &(const struct clk_parent_data){
-+			.hw = &video_cc_mvs1_clk_src.clkr.hw,
-+		},
-+		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_regmap_div_ro_ops,
-+	},
-+};
-+
-+static const struct freq_tbl ftbl_video_cc_ahb_clk_src[] = {
-+	F(19200000, P_BI_TCXO, 1, 0, 0),
-+	{ }
-+};
-+
-+static struct clk_rcg2 video_cc_ahb_clk_src = {
-+	.cmd_rcgr = 0xbd4,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_0,
-+	.freq_tbl = ftbl_video_cc_ahb_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_ahb_clk_src",
-+		.parent_data = video_cc_parent_data_0,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_0),
-+		.flags = CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_shared_ops,
-+	},
-+};
-+
-+static struct clk_rcg2 video_cc_xo_clk_src = {
-+	.cmd_rcgr = 0xecc,
-+	.mnd_width = 0,
-+	.hid_width = 5,
-+	.parent_map = video_cc_parent_map_0,
-+	.freq_tbl = ftbl_video_cc_ahb_clk_src,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "video_cc_xo_clk_src",
-+		.parent_data = video_cc_parent_data_0,
-+		.num_parents = ARRAY_SIZE(video_cc_parent_data_0),
-+		.flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-+		.ops = &clk_rcg2_ops,
-+	},
-+};
-+
-+static struct clk_branch video_cc_ahb_clk = {
-+	.halt_reg = 0xe58,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xe58,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_ahb_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_ahb_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs0_clk = {
-+	.halt_reg = 0xd34,
-+	.halt_check = BRANCH_HALT_SKIP, /* TODO: hw gated ? */
-+	.clkr = {
-+		.enable_reg = 0xd34,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs0_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_mvs0_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs0c_clk = {
-+	.halt_reg = 0xc34,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xc34,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs0c_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_mvs0c_div2_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs1_clk = {
-+	.halt_reg = 0xdb4,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0xdb4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs1_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_mvs1_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs1_div2_clk = {
-+	.halt_reg = 0xdf4,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0xdf4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs1_div2_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_mvs1c_div2_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_mvs1c_clk = {
-+	.halt_reg = 0xcd4,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0xcd4,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_mvs1c_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_mvs1c_div2_div_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch video_cc_xo_clk = {
-+	.halt_reg = 0xeec,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0xeec,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "video_cc_xo_clk",
-+			.parent_data = &(const struct clk_parent_data){
-+				.hw = &video_cc_xo_clk_src.clkr.hw,
-+			},
-+			.num_parents = 1,
-+			.flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct gdsc mvs0c_gdsc = {
-+	.gdscr = 0xbf8,
-+	.pd = {
-+		.name = "mvs0c_gdsc",
-+	},
-+	.flags = 0,
-+	.pwrsts = PWRSTS_OFF_ON,
-+};
-+
-+static struct gdsc mvs1c_gdsc = {
-+	.gdscr = 0xc98,
-+	.pd = {
-+		.name = "mvs1c_gdsc",
-+	},
-+	.flags = 0,
-+	.pwrsts = PWRSTS_OFF_ON,
-+};
-+
-+static struct gdsc mvs0_gdsc = {
-+	.gdscr = 0xd18,
-+	.pd = {
-+		.name = "mvs0_gdsc",
-+	},
-+	.flags = HW_CTRL,
-+	.pwrsts = PWRSTS_OFF_ON,
-+};
-+
-+static struct gdsc mvs1_gdsc = {
-+	.gdscr = 0xd98,
-+	.pd = {
-+		.name = "mvs1_gdsc",
-+	},
-+	.flags = HW_CTRL,
-+	.pwrsts = PWRSTS_OFF_ON,
-+};
-+
-+static struct clk_regmap *video_cc_sm8250_clocks[] = {
-+	[VIDEO_CC_AHB_CLK] = &video_cc_ahb_clk.clkr,
-+	[VIDEO_CC_AHB_CLK_SRC] = &video_cc_ahb_clk_src.clkr,
-+	[VIDEO_CC_MVS0_CLK] = &video_cc_mvs0_clk.clkr,
-+	[VIDEO_CC_MVS0_CLK_SRC] = &video_cc_mvs0_clk_src.clkr,
-+	[VIDEO_CC_MVS0_DIV_CLK_SRC] = &video_cc_mvs0_div_clk_src.clkr,
-+	[VIDEO_CC_MVS0C_CLK] = &video_cc_mvs0c_clk.clkr,
-+	[VIDEO_CC_MVS0C_DIV2_DIV_CLK_SRC] = &video_cc_mvs0c_div2_div_clk_src.clkr,
-+	[VIDEO_CC_MVS1_CLK] = &video_cc_mvs1_clk.clkr,
-+	[VIDEO_CC_MVS1_CLK_SRC] = &video_cc_mvs1_clk_src.clkr,
-+	[VIDEO_CC_MVS1_DIV2_CLK] = &video_cc_mvs1_div2_clk.clkr,
-+	[VIDEO_CC_MVS1_DIV_CLK_SRC] = &video_cc_mvs1_div_clk_src.clkr,
-+	[VIDEO_CC_MVS1C_CLK] = &video_cc_mvs1c_clk.clkr,
-+	[VIDEO_CC_MVS1C_DIV2_DIV_CLK_SRC] = &video_cc_mvs1c_div2_div_clk_src.clkr,
-+	[VIDEO_CC_XO_CLK] = &video_cc_xo_clk.clkr,
-+	[VIDEO_CC_XO_CLK_SRC] = &video_cc_xo_clk_src.clkr,
-+	[VIDEO_CC_PLL0] = &video_pll0.clkr,
-+	[VIDEO_CC_PLL1] = &video_pll1.clkr,
-+};
-+
-+static const struct qcom_reset_map video_cc_sm8250_resets[] = {
-+	[VIDEO_CC_CVP_INTERFACE_BCR] = { 0xe54 },
-+	[VIDEO_CC_CVP_MVS0_BCR] = { 0xd14 },
-+	[VIDEO_CC_MVS0C_CLK_ARES] = { 0xc34, 2 },
-+	[VIDEO_CC_CVP_MVS0C_BCR] = { 0xbf4 },
-+	[VIDEO_CC_CVP_MVS1_BCR] = { 0xd94 },
-+	[VIDEO_CC_MVS1C_CLK_ARES] = { 0xcd4, 2 },
-+	[VIDEO_CC_CVP_MVS1C_BCR] = { 0xc94 },
-+};
-+
-+static struct gdsc *video_cc_sm8250_gdscs[] = {
-+	[MVS0C_GDSC] = &mvs0c_gdsc,
-+	[MVS1C_GDSC] = &mvs1c_gdsc,
-+	[MVS0_GDSC] = &mvs0_gdsc,
-+	[MVS1_GDSC] = &mvs1_gdsc,
-+};
-+
-+static const struct regmap_config video_cc_sm8250_regmap_config = {
-+	.reg_bits = 32,
-+	.reg_stride = 4,
-+	.val_bits = 32,
-+	.max_register = 0xf4c,
-+	.fast_io = true,
-+};
-+
-+static const struct qcom_cc_desc video_cc_sm8250_desc = {
-+	.config = &video_cc_sm8250_regmap_config,
-+	.clks = video_cc_sm8250_clocks,
-+	.num_clks = ARRAY_SIZE(video_cc_sm8250_clocks),
-+	.resets = video_cc_sm8250_resets,
-+	.num_resets = ARRAY_SIZE(video_cc_sm8250_resets),
-+	.gdscs = video_cc_sm8250_gdscs,
-+	.num_gdscs = ARRAY_SIZE(video_cc_sm8250_gdscs),
-+};
-+
-+static const struct of_device_id video_cc_sm8250_match_table[] = {
-+	{ .compatible = "qcom,sm8250-videocc" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, video_cc_sm8250_match_table);
-+
-+static int video_cc_sm8250_probe(struct platform_device *pdev)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = qcom_cc_map(pdev, &video_cc_sm8250_desc);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	clk_lucid_pll_configure(&video_pll0, regmap, &video_pll0_config);
-+	clk_lucid_pll_configure(&video_pll1, regmap, &video_pll1_config);
-+
-+	return qcom_cc_really_probe(pdev, &video_cc_sm8250_desc, regmap);
-+}
-+
-+static struct platform_driver video_cc_sm8250_driver = {
-+	.probe	= video_cc_sm8250_probe,
-+	.driver	= {
-+		.name = "sm8250-videocc",
-+		.of_match_table = video_cc_sm8250_match_table,
-+	},
-+};
-+
-+static int __init video_cc_sm8250_init(void)
-+{
-+	return platform_driver_register(&video_cc_sm8250_driver);
-+}
-+subsys_initcall(video_cc_sm8250_init);
-+
-+static void __exit video_cc_sm8250_exit(void)
-+{
-+	platform_driver_unregister(&video_cc_sm8250_driver);
-+}
-+module_exit(video_cc_sm8250_exit);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("QTI VIDEOCC SM8250 Driver");
+>
+> I can resend it with other kprobes fixes.
+>
+> Hi Muchun,
+>
+> We also need;
+>
+> Cc: stable@vger.kernel.org
+>
+> for bugfix so that the patch can be backported correctly after merged to upstream.
+
+Yeah, I got it. Thanks.
+
+>
+> Thank you,
+>
+> On Mon, 31 Aug 2020 10:59:19 +0800
+> Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> > Cc Andrew and Steven.
+> >
+> > Any other comments or someone can add this to the queue for the
+> > merge window? It's worth fixing it.
+> >
+> > On Sat, Aug 22, 2020 at 11:01 AM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > If a kprobe is marked as gone, we should not kill it again. Otherwise,
+> > > we can disarm the kprobe more than once. In that case, the statistics
+> > > of kprobe_ftrace_enabled can unbalance which can lead to that kprobe
+> > > do not work.
+> > >
+> > > Fixes: e8386a0cb22f ("kprobes: support probing module __exit function")
+> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > > Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > > ---
+> > > changelogs in v2:
+> > >  1. Add a WARN_ON_ONCE in the kill_kprobe() to catch incorrect use of it.
+> > >  2. Update 'Fixes' tag in the commmit log.
+> > >
+> > >  kernel/kprobes.c | 9 ++++++++-
+> > >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > > index d36e2b017588..9348b0c36ae0 100644
+> > > --- a/kernel/kprobes.c
+> > > +++ b/kernel/kprobes.c
+> > > @@ -2143,6 +2143,9 @@ static void kill_kprobe(struct kprobe *p)
+> > >
+> > >         lockdep_assert_held(&kprobe_mutex);
+> > >
+> > > +       if (WARN_ON_ONCE(kprobe_gone(p)))
+> > > +               return;
+> > > +
+> > >         p->flags |= KPROBE_FLAG_GONE;
+> > >         if (kprobe_aggrprobe(p)) {
+> > >                 /*
+> > > @@ -2422,7 +2425,10 @@ static int kprobes_module_callback(struct notifier_block *nb,
+> > >         mutex_lock(&kprobe_mutex);
+> > >         for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
+> > >                 head = &kprobe_table[i];
+> > > -               hlist_for_each_entry(p, head, hlist)
+> > > +               hlist_for_each_entry(p, head, hlist) {
+> > > +                       if (kprobe_gone(p))
+> > > +                               continue;
+> > > +
+> > >                         if (within_module_init((unsigned long)p->addr, mod) ||
+> > >                             (checkcore &&
+> > >                              within_module_core((unsigned long)p->addr, mod))) {
+> > > @@ -2439,6 +2445,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
+> > >                                  */
+> > >                                 kill_kprobe(p);
+> > >                         }
+> > > +               }
+> > >         }
+> > >         if (val == MODULE_STATE_GOING)
+> > >                 remove_module_kprobe_blacklist(mod);
+> > > --
+> > > 2.11.0
+> > >
+> >
+> >
+> > --
+> > Yours,
+> > Muchun
+>
+>
+> --
+> Masami Hiramatsu <mhiramat@kernel.org>
+
+
+
 -- 
-2.26.1
-
+Yours,
+Muchun
