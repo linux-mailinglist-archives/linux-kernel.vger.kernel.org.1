@@ -2,139 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D657D25B194
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2AB25B19D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgIBQZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:25:33 -0400
-Received: from mga02.intel.com ([134.134.136.20]:54387 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726853AbgIBQZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:25:31 -0400
-IronPort-SDR: 8GIx+CL7iEOgUnM71MweN3A8QlYTvWhkhL8mg9cyUQVk41wtvgYMRDpO7HIGU0UyK0P09kJfmn
- GeZEgx78Qr1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="145160037"
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="145160037"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:25:18 -0700
-IronPort-SDR: zPnzrBu+24c+ME5OHCdbwbv8/4cCH/bE3zw4cNCwLfzxDFJsf8HfGXHrgFZDZ3YTfup0+jy3tp
- LwxC9nz8mKzQ==
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="301893674"
-Received: from smutinda-mobl.amr.corp.intel.com (HELO [10.209.22.190]) ([10.209.22.190])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:25:17 -0700
-Subject: Re: [RFC PATCH] tools/x86: add kcpuid tool to show raw CPU features
-To:     Borislav Petkov <bp@alien8.de>, Feng Tang <feng.tang@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1598514543-90152-1-git-send-email-feng.tang@intel.com>
- <20200902154018.GA21537@zn.tnic>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <5ef17179-7557-b609-2e72-20caa1369d46@intel.com>
-Date:   Wed, 2 Sep 2020 09:25:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726446AbgIBQ1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728313AbgIBQ0r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:26:47 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F49C061251;
+        Wed,  2 Sep 2020 09:26:47 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 23F6A9CC;
+        Wed,  2 Sep 2020 18:26:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1599063994;
+        bh=dSqMUpaG7AZd72yHZ7rra4x5/rnP+cdxisE4rS3WLF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R/H9/zNKRLV1P/im2JUQebtvSib8OJGz2Bah5T8TVlj54JF/xpDAlGXs3WREGe3mV
+         Wrjl/89a8N+W/4v6xcGrOiiBV9eSVUGx9cXsj62t70tPPMbI1THtRBLrTZgSMzcreP
+         qoY6zlud8WJmN/H73ANWh0WIV4eK+qhzGf/KdIOY=
+Date:   Wed, 2 Sep 2020 19:26:12 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vandana BN <bnvandana@gmail.com>,
+        Niklas =?utf-8?Q?S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/38] media: v4l2-ioctl: avoid memory leaks on some
+ time32 compat functions
+Message-ID: <20200902162612.GB16811@pendragon.ideasonboard.com>
+References: <cover.1599062230.git.mchehab+huawei@kernel.org>
+ <27254f9780e7ec8502761826c2888dbd51a536a8.1599062230.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200902154018.GA21537@zn.tnic>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <27254f9780e7ec8502761826c2888dbd51a536a8.1599062230.git.mchehab+huawei@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 8:40 AM, Borislav Petkov wrote:
-> When you need to add a new leaf, you simply extend the text file and the
-> tool parses it anew and has its all CPUID info uptodate. This way you
-> won't even have to recompile it. Adding new CPUID leafs would be adding new
-> lines to the file.
+Hi Mauro,
+
+Thank you for the patch.
+
+On Wed, Sep 02, 2020 at 06:10:05PM +0200, Mauro Carvalho Chehab wrote:
+> There are some reports about possible memory leaks:
 > 
-> For example:
+> 	drivers/media/v4l2-core//v4l2-ioctl.c:3203 video_put_user() warn: check that 'ev32' doesn't leak information (struct has a hole after 'type')
+> 	drivers/media/v4l2-core//v4l2-ioctl.c:3230 video_put_user() warn: check that 'vb32' doesn't leak information (struct has a hole after 'memory')
 > 
-> LEAF<num>,SUBLEAF<num>,[EAX,EBX,ECX,EDX]{[width]<Mnemonic>|<Long text>,...}
+> While smatch seems to be reporting a false positive (line 3203),
+> there's indeed a possible leak with reserved2 at vb32.
 > 
-> LEAF07,SUBLEAF00,EAX{[31:0]max_value|Max input value for supported subleafs}
-> LEAF07,SUBLEAF00,EBX{[0]FSGSBASE|RDFSBASE/RDGSBASE/WRFSBASE/WRGSBASE if 1.,
-> 		     [1]TSC_ADJUST|IA32_TSC_ADJUST MSR is supported if 1.,
-> 		     [2]SGX|Supports Intel® Software Guard Extensions (Intel® SGX Extensions) if 1.,
-> 		     ...
-> }
-> LEAF07,SUBLEAF00,ECX{[0]PREFETCHWT1|(Intel® Xeon PhiTM only.),
-> 		     [1]AVX512_VBMI|,
-> 		     ...
+> We might have fixed just that one, but smatch checks won't
+> be able to check leaks at ev32. So, re-work the code in a way
+> that will ensure that the var contents will be zeroed before
+> filling it.
 > 
-> This is just a dumb attempt but I hope it comes across where I'm getting
-> with this.
+> With that, we don't need anymore to touch reserved fields.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/v4l2-core/v4l2-ioctl.c | 48 ++++++++++++++--------------
+>  1 file changed, 24 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index a556880f225a..6f3fe9c4b64a 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -3189,17 +3189,16 @@ static int video_put_user(void __user *arg, void *parg, unsigned int cmd)
+>  #ifdef CONFIG_COMPAT_32BIT_TIME
+>  	case VIDIOC_DQEVENT_TIME32: {
+>  		struct v4l2_event *ev = parg;
+> -		struct v4l2_event_time32 ev32 = {
+> -			.type		= ev->type,
+> -			.pending	= ev->pending,
+> -			.sequence	= ev->sequence,
+> -			.timestamp.tv_sec  = ev->timestamp.tv_sec,
+> -			.timestamp.tv_nsec = ev->timestamp.tv_nsec,
+> -			.id		= ev->id,
+> -		};
+> +		struct v4l2_event_time32 ev32;
+>  
+> +		memset(&ev32, 0, sizeof(ev32));
+> +		ev32.type		= ev->type,
 
-Ugh.  I hate text parsers.  But, I do see what you're getting at.
+The lines should end with ';', not ','.
 
-If we do this, I bet having each value on its own line, I bet this would
-be a bit less painful to parse.  It'll be a _bit_ harder to read, but
-not really.  Maybe:
+With this fixed,
 
-LEAF[07],SUBLEAF[00],EAX[31:0],max_value,	Max input value for supported
-subleafs
-LEAF[07],SUBLEAF[00],EBX[   0],FSGSBASE,
-RDFSBASE/RDGSBASE/WRFSBASE/WRGSBASE if 1.
-LEAF[07],SUBLEAF[00],EBX[   1],TSC_ADJUST,	IA32_TSC_ADJUST MSR is
-supported if 1.
-LEAF[07],SUBLEAF[00],EBX[   2],SGX,		Supports Intel® Software Guard
-Extensions (Intel® SGX Extensions) if 1.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-I was *really* hoping that we could eventually feed kcpuid and the
-X86_FEATURE_* bits from the same source.  Does this take us away from
-that?  Is that a worthy long-term goal?
+> +		ev32.pending		= ev->pending,
+> +		ev32.sequence		= ev->sequence,
+> +		ev32.timestamp.tv_sec	= ev->timestamp.tv_sec,
+> +		ev32.timestamp.tv_nsec	= ev->timestamp.tv_nsec,
+> +		ev32.id			= ev->id,
+>  		memcpy(&ev32.u, &ev->u, sizeof(ev->u));
+> -		memcpy(&ev32.reserved, &ev->reserved, sizeof(ev->reserved));
+>  
+>  		if (copy_to_user(arg, &ev32, sizeof(ev32)))
+>  			return -EFAULT;
+> @@ -3210,21 +3209,22 @@ static int video_put_user(void __user *arg, void *parg, unsigned int cmd)
+>  	case VIDIOC_DQBUF_TIME32:
+>  	case VIDIOC_PREPARE_BUF_TIME32: {
+>  		struct v4l2_buffer *vb = parg;
+> -		struct v4l2_buffer_time32 vb32 = {
+> -			.index		= vb->index,
+> -			.type		= vb->type,
+> -			.bytesused	= vb->bytesused,
+> -			.flags		= vb->flags,
+> -			.field		= vb->field,
+> -			.timestamp.tv_sec	= vb->timestamp.tv_sec,
+> -			.timestamp.tv_usec	= vb->timestamp.tv_usec,
+> -			.timecode	= vb->timecode,
+> -			.sequence	= vb->sequence,
+> -			.memory		= vb->memory,
+> -			.m.userptr	= vb->m.userptr,
+> -			.length		= vb->length,
+> -			.request_fd	= vb->request_fd,
+> -		};
+> +		struct v4l2_buffer_time32 vb32;
+> +
+> +		memset(&vb32, 0, sizeof(vb32));
+> +		vb32.index		= vb->index,
+> +		vb32.type		= vb->type,
+> +		vb32.bytesused		= vb->bytesused,
+> +		vb32.flags		= vb->flags,
+> +		vb32.field		= vb->field,
+> +		vb32.timestamp.tv_sec	= vb->timestamp.tv_sec,
+> +		vb32.timestamp.tv_usec	= vb->timestamp.tv_usec,
+> +		vb32.timecode		= vb->timecode,
+> +		vb32.sequence		= vb->sequence,
+> +		vb32.memory		= vb->memory,
+> +		vb32.length		= vb->length,
+> +		vb32.request_fd		= vb->request_fd,
+> +		memcpy(&vb32.m, &vb->m, sizeof(vb->m));
+>  
+>  		if (copy_to_user(arg, &vb32, sizeof(vb32)))
+>  			return -EFAULT;
 
-Maybe we'd be better off reusing the parser for cpufeatures.h.  The
-majority of the same information is there, except for the mapping from
-word to CPUID leaf, and multi-bit values.
+-- 
+Regards,
+
+Laurent Pinchart
