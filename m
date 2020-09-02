@@ -2,166 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E855825AE2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E08825AE43
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgIBPAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:00:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39242 "EHLO mail.kernel.org"
+        id S1727037AbgIBPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgIBPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:00:05 -0400
+        id S1727801AbgIBPEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:04:21 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60B432078E;
-        Wed,  2 Sep 2020 15:00:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2363214D8;
+        Wed,  2 Sep 2020 15:04:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599058804;
-        bh=NFFcFfcgR6lW5+zjEHMMHql6rarIPzttaDhwjZoAU6s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DQfkiby/xygiMhv1NB8PiP/R/7ozpMbu5hGsDwHNq1vcaTtCAG8S5YAKbp++uuyaw
-         d3zC0ML1W5o87gv3wy858QtzS5TX74Y44tJmCbGuqb5B20f3pP+OWnzRzEDPeX8gFH
-         YcH0ILkxrDRnot2og1JW2D/VkOEHq01YJhcBPuTE=
+        s=default; t=1599059060;
+        bh=qZbRz7vHhRuDtj+mxfFu/caG8U7KILHwDenzvK1SHbY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=eNX+dwL77fegbOMgYPi65jD3MevMqzWzD66pOUe/teuPLLkkOp08Y+AaJ6dIaUNbb
+         A6BjfJR8rh/kbmfihtaKPRZD7lSCBlCAv5SE4qDDhGMafSCk4QaprlcY1G26otG/FM
+         nPeBT9UTfjguJrQ6TNr1TE92NHwXQJFlXazVBBUA=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        David Lechner <david@lechnology.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v2 1/2] MAINTAINERS: Consolidate Analog Devices IIO entries and remove Beniamin Bia
-Date:   Wed,  2 Sep 2020 16:59:56 +0200
-Message-Id: <20200902145957.13861-1-krzk@kernel.org>
+Subject: [PATCH 05/10] clk: sunxi-ng: Simplify with dev_err_probe()
+Date:   Wed,  2 Sep 2020 17:03:43 +0200
+Message-Id: <20200902150348.14465-5-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200902150348.14465-1-krzk@kernel.org>
+References: <20200902150348.14465-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Emails to Beniamin Bia bounce with no such address so remove him from
-maintainers.  After this removal, many entries for Analog Devices Inc
-IIO drivers look exactly the same so consolidate them.
+Common pattern of handling deferred probe can be simplified with
+dev_err_probe().  Less code and the error value gets printed.
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-iio <linux-iio@vger.kernel.org>
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-
 ---
+ drivers/clk/sunxi-ng/ccu-sun8i-de2.c     | 28 ++++++++----------------
+ drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c  | 19 +++++-----------
+ drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c |  9 +++-----
+ 3 files changed, 18 insertions(+), 38 deletions(-)
 
-Changes since v1:
-1. Consolidate IIO entries
----
- MAINTAINERS | 56 ++++-------------------------------------------------
- 1 file changed, 4 insertions(+), 52 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8107b3d5d6df..facffcf7b1d1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -950,38 +950,6 @@ S:	Supported
- F:	arch/arm64/boot/dts/amd/amd-seattle-xgbe*.dtsi
- F:	drivers/net/ethernet/amd/xgbe/
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-de2.c b/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
+index 524f33275bc7..0de024d3e466 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-de2.c
+@@ -297,29 +297,19 @@ static int sunxi_de2_clk_probe(struct platform_device *pdev)
+ 		return PTR_ERR(reg);
  
--ANALOG DEVICES INC AD5686 DRIVER
--M:	Michael Hennerich <Michael.Hennerich@analog.com>
--L:	linux-pm@vger.kernel.org
--S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
--F:	drivers/iio/dac/ad5686*
--F:	drivers/iio/dac/ad5696*
--
--ANALOG DEVICES INC AD5758 DRIVER
--M:	Michael Hennerich <Michael.Hennerich@analog.com>
--L:	linux-iio@vger.kernel.org
--S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
--F:	Documentation/devicetree/bindings/iio/dac/ad5758.txt
--F:	drivers/iio/dac/ad5758.c
--
--ANALOG DEVICES INC AD7091R5 DRIVER
--M:	Beniamin Bia <beniamin.bia@analog.com>
--L:	linux-iio@vger.kernel.org
--S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
--F:	Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
--F:	drivers/iio/adc/ad7091r5.c
--
--ANALOG DEVICES INC AD7124 DRIVER
--M:	Michael Hennerich <Michael.Hennerich@analog.com>
--L:	linux-iio@vger.kernel.org
--S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
--F:	Documentation/devicetree/bindings/iio/adc/adi,ad7124.yaml
--F:	drivers/iio/adc/ad7124.c
--
- ANALOG DEVICES INC AD7192 DRIVER
- M:	Alexandru Tachici <alexandru.tachici@analog.com>
- L:	linux-iio@vger.kernel.org
-@@ -998,15 +966,6 @@ W:	http://ez.analog.com/community/linux-device-drivers
- F:	Documentation/devicetree/bindings/iio/adc/adi,ad7292.yaml
- F:	drivers/iio/adc/ad7292.c
+ 	bus_clk = devm_clk_get(&pdev->dev, "bus");
+-	if (IS_ERR(bus_clk)) {
+-		ret = PTR_ERR(bus_clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Couldn't get bus clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(bus_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(bus_clk),
++				     "Couldn't get bus clk\n");
  
--ANALOG DEVICES INC AD7606 DRIVER
--M:	Michael Hennerich <Michael.Hennerich@analog.com>
--M:	Beniamin Bia <beniamin.bia@analog.com>
--L:	linux-iio@vger.kernel.org
--S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
--F:	Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml
--F:	drivers/iio/adc/ad7606.c
--
- ANALOG DEVICES INC AD7768-1 DRIVER
- M:	Michael Hennerich <Michael.Hennerich@analog.com>
- L:	linux-iio@vger.kernel.org
-@@ -1068,7 +1027,6 @@ F:	drivers/iio/imu/adis16475.c
- F:	Documentation/devicetree/bindings/iio/imu/adi,adis16475.yaml
+ 	mod_clk = devm_clk_get(&pdev->dev, "mod");
+-	if (IS_ERR(mod_clk)) {
+-		ret = PTR_ERR(mod_clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Couldn't get mod clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(mod_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(mod_clk),
++				     "Couldn't get mod clk\n");
  
- ANALOG DEVICES INC ADM1177 DRIVER
--M:	Beniamin Bia <beniamin.bia@analog.com>
- M:	Michael Hennerich <Michael.Hennerich@analog.com>
- L:	linux-hwmon@vger.kernel.org
- S:	Supported
-@@ -1135,15 +1093,6 @@ S:	Supported
- W:	http://ez.analog.com/community/linux-device-drivers
- F:	drivers/dma/dma-axi-dmac.c
+ 	rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+-	if (IS_ERR(rstc)) {
+-		ret = PTR_ERR(rstc);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev,
+-				"Couldn't get reset control: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(rstc))
++		return dev_err_probe(&pdev->dev, PTR_ERR(rstc),
++				     "Couldn't get reset control\n");
  
--ANALOG DEVICES INC HMC425A DRIVER
--M:	Beniamin Bia <beniamin.bia@analog.com>
--M:	Michael Hennerich <michael.hennerich@analog.com>
--L:	linux-iio@vger.kernel.org
--S:	Supported
--W:	http://ez.analog.com/community/linux-device-drivers
--F:	Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
--F:	drivers/iio/amplifiers/hmc425a.c
--
- ANALOG DEVICES INC IIO DRIVERS
- M:	Lars-Peter Clausen <lars@metafoo.de>
- M:	Michael Hennerich <Michael.Hennerich@analog.com>
-@@ -1152,8 +1101,12 @@ W:	http://wiki.analog.com/
- W:	http://ez.analog.com/community/linux-device-drivers
- F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-ad9523
- F:	Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4350
-+F:	Documentation/devicetree/bindings/iio/adc/adi*
-+F:	Documentation/devicetree/bindings/iio/amplifiers/adi*
-+F:	Documentation/devicetree/bindings/iio/dac/ad5758.txt
- F:	drivers/iio/*/ad*
- F:	drivers/iio/adc/ltc249*
-+F:	drivers/iio/amplifiers/hmc425a.c
- F:	drivers/staging/iio/*/ad*
- X:	drivers/iio/*/adjd*
+ 	/* The clocks need to be enabled for us to access the registers */
+ 	ret = clk_prepare_enable(bus_clk);
+diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
+index 6616e8114f62..541c3d32b93e 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
++++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80-de.c
+@@ -215,21 +215,14 @@ static int sun9i_a80_de_clk_probe(struct platform_device *pdev)
+ 		return PTR_ERR(reg);
  
-@@ -16537,7 +16490,6 @@ F:	drivers/staging/rtl8712/
+ 	bus_clk = devm_clk_get(&pdev->dev, "bus");
+-	if (IS_ERR(bus_clk)) {
+-		ret = PTR_ERR(bus_clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Couldn't get bus clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(bus_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(bus_clk),
++				     "Couldn't get bus clk\n");
  
- STAGING - SEPS525 LCD CONTROLLER DRIVERS
- M:	Michael Hennerich <michael.hennerich@analog.com>
--M:	Beniamin Bia <beniamin.bia@analog.com>
- L:	linux-fbdev@vger.kernel.org
- S:	Supported
- F:	Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml
+ 	rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+-	if (IS_ERR(rstc)) {
+-		ret = PTR_ERR(rstc);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev,
+-				"Couldn't get reset control: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(rstc))
++		return dev_err_probe(&pdev->dev, PTR_ERR(rstc),
++				     "Couldn't get reset control\n");
+ 
+ 	/* The bus clock needs to be enabled for us to access the registers */
+ 	ret = clk_prepare_enable(bus_clk);
+diff --git a/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c b/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
+index 4b4a507d04ed..f6a3989fea36 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
++++ b/drivers/clk/sunxi-ng/ccu-sun9i-a80-usb.c
+@@ -103,12 +103,9 @@ static int sun9i_a80_usb_clk_probe(struct platform_device *pdev)
+ 		return PTR_ERR(reg);
+ 
+ 	bus_clk = devm_clk_get(&pdev->dev, "bus");
+-	if (IS_ERR(bus_clk)) {
+-		ret = PTR_ERR(bus_clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Couldn't get bus clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(bus_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(bus_clk),
++				     "Couldn't get bus clk\n");
+ 
+ 	/* The bus clock needs to be enabled for us to access the registers */
+ 	ret = clk_prepare_enable(bus_clk);
 -- 
 2.17.1
 
