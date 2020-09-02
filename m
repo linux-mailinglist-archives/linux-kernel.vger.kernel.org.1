@@ -2,240 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B36E25A8D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 11:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA1D25A8E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 11:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgIBJqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 05:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgIBJqb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 05:46:31 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C508DC061245
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 02:46:30 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id l9so3827216wme.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 02:46:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jX2ecA2PJy/6cJDE/ynYXDewujYCxQrA9LGe6p7fwa0=;
-        b=s+tFWIJVIBL61p7DDHaqPAy9Y1On3xF+O5zL/CRvF1TShz2kOVXGa0BfN+4C08nZLe
-         FSleXSBrFmWZSt8tJw3nm3UPjrvaW2QGxylwvCLqLRc6q01cfw9J/FXwy/gpahD+1Nu/
-         eW1lgtOJD37BSpZxfm/TiaddOWbPmD95FHak3Xdf8EI2RLQPdCSa5EVbubyubg/xilUJ
-         reN4hcojOON3o+u4tA3r1+6iv3b2Z4WszZr/oZd0iN6FiQWSa1bSgSLEVLVkvOsHoU3M
-         Jx9lkoZv7VH4Tsxj3yJpbsPwI8TbO61B12Ar7mrvrZTbc03O5My6ek8ALq4moGm5Yvll
-         tJEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jX2ecA2PJy/6cJDE/ynYXDewujYCxQrA9LGe6p7fwa0=;
-        b=aanwv6ivgiPMAmRBd4fmrrGXG5ps75OCJstIyaXNhcD+QNTQ0tlPz+Jb9IdYd48utW
-         n6tbFqi+1qr0CcR3PTPLzbNUZZ8x/aO5wr8p2TmWy/3eVMCriRgwYTBBe1ZVS4Whi0HO
-         PcxBKZa6FXD1bBiTudfVMVreJ6ees43Xq44irq0E7uuDZ/oQ9hb+gn4tivAOvoVPVhCG
-         R0FAn3n+SDqJ7/xMkqArQbywAkw1/ZHy+wAmxRCwmdW24nKexmfA9rmJlyM27BDel5h+
-         KzQ6GxVAV60k0efWrr758mpLMJNCnDZ2cNnLefMAkbsbm00lmjYwR1iSR0txxVSnhy7t
-         HKlA==
-X-Gm-Message-State: AOAM533xsCzkZKkGVnMl3MgTXMTBhGOivPKh3eGGwPZulLV4F4B/Xd+2
-        igHZiApXyLLv0dOGlwf4K4egGw==
-X-Google-Smtp-Source: ABdhPJyRzryUcwqo75TyJ2PL+JQ/4k6riaj+13wMpTRayJKeAUcGGy58JS/hO44sgWLczW38eGZI7w==
-X-Received: by 2002:a1c:c906:: with SMTP id f6mr6291735wmb.5.1599039989403;
-        Wed, 02 Sep 2020 02:46:29 -0700 (PDT)
-Received: from localhost ([85.163.43.78])
-        by smtp.gmail.com with ESMTPSA id t203sm5786576wmg.43.2020.09.02.02.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 02:46:28 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 11:46:27 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Moshe Shemesh <moshe@nvidia.com>
-Cc:     Moshe Shemesh <moshe@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v3 01/14] devlink: Add reload action option
- to devlink reload command 
-Message-ID: <20200902094627.GB2568@nanopsycho>
-References: <1598801254-27764-1-git-send-email-moshe@mellanox.com>
- <1598801254-27764-2-git-send-email-moshe@mellanox.com>
- <20200831121501.GD3794@nanopsycho.orion>
- <9fffbe80-9a2a-33de-2e11-24be34648686@nvidia.com>
+        id S1726967AbgIBJsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 05:48:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726268AbgIBJsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 05:48:11 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2E49204FD;
+        Wed,  2 Sep 2020 09:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599040091;
+        bh=Fvp6GtErygK3d+qTR+zVYuca+8Xt8w10C5RDoh0HRUQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=maGZNk/FRrK/iNABWG4A6gb9SkEbUHXF3FFmsaaYPFpxJABAmKx0bRSsL9LeVS2iI
+         s03ND2pH+cVTVgW9sYzzsjV70C9JRUIJ13tOBIRIprXZMTfGd/dlhtP4Dw+PpKkH7V
+         bU7C5LoRHv/+gqvWVj6vSY5xb4fpDLTwN4oe3ayU=
+Date:   Wed, 2 Sep 2020 10:48:06 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Hanjun Guo <guohanjun@huawei.com>
+Cc:     Zenghui Yu <yuzenghui@huawei.com>, lorenzo.pieralisi@arm.com,
+        sudeep.holla@arm.com, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        wanghaibin.wang@huawei.com
+Subject: Re: [PATCH v2 0/2] ACPI/IORT: Code cleanups
+Message-ID: <20200902094806.GA5567@willie-the-truck>
+References: <3142b38e-fef0-a7cf-319e-96c5da04967c@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <9fffbe80-9a2a-33de-2e11-24be34648686@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3142b38e-fef0-a7cf-319e-96c5da04967c@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Sep 01, 2020 at 09:43:00PM CEST, moshe@nvidia.com wrote:
->
->On 8/31/2020 3:15 PM, Jiri Pirko wrote:
->> Sun, Aug 30, 2020 at 05:27:21PM CEST, moshe@mellanox.com wrote:
->> > Add devlink reload action to allow the user to request a specific reload
->> > action. The action parameter is optional, if not specified then devlink
->> > driver re-init action is used (backward compatible).
->> > Note that when required to do firmware activation some drivers may need
->> > to reload the driver. On the other hand some drivers may need to reset
->> > the firmware to reinitialize the driver entities. Therefore, the devlink
->> > reload command returns the actions which were actually done.
->> > However, in case fw_activate_no_reset action is selected, then no other
->> > reload action is allowed.
->> > Reload actions supported are:
->> > driver_reinit: driver entities re-initialization, applying devlink-param
->> >                and devlink-resource values.
->> > fw_activate: firmware activate.
->> > fw_activate_no_reset: Activate new firmware image without any reset.
->> >                       (also known as: firmware live patching).
->> > 
->> > command examples:
->> > $devlink dev reload pci/0000:82:00.0 action driver_reinit
->> > reload_actions_done:
->> >   driver_reinit
->> > 
->> > $devlink dev reload pci/0000:82:00.0 action fw_activate
->> > reload_actions_done:
->> >   driver_reinit fw_activate
->> > 
->> > Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
->> > ---
->> > v2 -> v3:
->> > - Replace fw_live_patch action by fw_activate_no_reset
->> > - Devlink reload returns the actions done over netlink reply
->> > v1 -> v2:
->> > - Instead of reload levels driver,fw_reset,fw_live_patch have reload
->> >   actions driver_reinit,fw_activate,fw_live_patch
->> > - Remove driver default level, the action driver_reinit is the default
->> >   action for all drivers
->> > ---
->> [...]
->> 
->> 
->> > diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
->> > index 08d101138fbe..c42b66d88884 100644
->> > --- a/drivers/net/ethernet/mellanox/mlxsw/core.c
->> > +++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
->> > @@ -1113,7 +1113,7 @@ mlxsw_devlink_info_get(struct devlink *devlink, struct devlink_info_req *req,
->> > 
->> > static int
->> > mlxsw_devlink_core_bus_device_reload_down(struct devlink *devlink,
->> > -					  bool netns_change,
->> > +					  bool netns_change, enum devlink_reload_action action,
->> > 					  struct netlink_ext_ack *extack)
->> > {
->> > 	struct mlxsw_core *mlxsw_core = devlink_priv(devlink);
->> > @@ -1126,15 +1126,23 @@ mlxsw_devlink_core_bus_device_reload_down(struct devlink *devlink,
->> > }
->> > 
->> > static int
->> > -mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink,
->> > -					struct netlink_ext_ack *extack)
->> > +mlxsw_devlink_core_bus_device_reload_up(struct devlink *devlink, enum devlink_reload_action action,
->> > +					struct netlink_ext_ack *extack, unsigned long *actions_done)
->> > {
->> > 	struct mlxsw_core *mlxsw_core = devlink_priv(devlink);
->> > +	int err;
->> > 
->> > -	return mlxsw_core_bus_device_register(mlxsw_core->bus_info,
->> > -					      mlxsw_core->bus,
->> > -					      mlxsw_core->bus_priv, true,
->> > -					      devlink, extack);
->> > +	err = mlxsw_core_bus_device_register(mlxsw_core->bus_info,
->> > +					     mlxsw_core->bus,
->> > +					     mlxsw_core->bus_priv, true,
->> > +					     devlink, extack);
->> > +	if (err)
->> > +		return err;
->> > +	if (actions_done)
->> > +		*actions_done = BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
->> > +				BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE);
->> > +
->> > +	return 0;
->> > }
->> > 
->> > static int mlxsw_devlink_flash_update(struct devlink *devlink,
->> > @@ -1268,6 +1276,8 @@ mlxsw_devlink_trap_policer_counter_get(struct devlink *devlink,
->> > }
->> > 
->> > static const struct devlink_ops mlxsw_devlink_ops = {
->> > +	.supported_reload_actions	= BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
->> > +					  BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE),
->> This is confusing and open to interpretation. Does this mean that the
->> driver supports:
->> 1) REINIT && FW_ACTIVATE
->> 2) REINIT || FW_ACTIVATE
->> ?
->> 
->> Because mlxsw supports only 1. I guess that mlx5 supports both. This
->> needs to be distinguished.
->
->Mlxsw supports 1, so it supports fw_activation and performs also reinit and
->vice versa.
+On Wed, Sep 02, 2020 at 05:17:43PM +0800, Hanjun Guo wrote:
+> +Cc Will
+> 
+> On 2020/8/18 17:16, Hanjun Guo wrote:
+> > On 2020/8/18 14:36, Zenghui Yu wrote:
+> > > * From v1 [1]:
+> > >    - As pointed out by Hanjun, remove two now unused inline functions.
+> > >      Compile tested with CONFIG_IOMMU_API is not selected.
+> > > 
+> > > [1] https://lore.kernel.org/r/20200817105946.1511-1-yuzenghui@huawei.com
+> > > 
+> > > Zenghui Yu (2):
+> > >    ACPI/IORT: Drop the unused @ops of iort_add_device_replay()
+> > >    ACPI/IORT: Remove the unused inline functions
+> > > 
+> > >   drivers/acpi/arm64/iort.c | 10 ++--------
+> > >   1 file changed, 2 insertions(+), 8 deletions(-)
+> > 
+> > Nice cleanup.
+> > 
+> > Acked-by: Hanjun Guo <guohanjun@huawei.com>
+> 
+> Will, would you mind taking this patch set via ARM64 tree?
 
-My point is, your bitfield does not exactly tell what the driver
-supports or not.
+Sure, no problem. I'll queue this for 5.10 later this week.
 
-
->
->Mlx5 supports fw_activate and performs also reinit. However, it supports
->reinit without performing fw_activate.
->
->> I think you need an array of combinations. Or perhaps rather to extend
->> the enum with combinations. You kind of have it already with
->> DEVLINK_RELOAD_ACTION_FW_ACTIVATE_NO_RESET
->> 
->> Maybe we can have something like:
->> DEVLINK_RELOAD_ACTION_DRIVER_REINIT
->> DEVLINK_RELOAD_ACTION_DRIVER_REINIT_FW_ACTIVATE_RESET
->> DEVLINK_RELOAD_ACTION_FW_ACTIVATE_RESET
->> DEVLINK_RELOAD_ACTION_FW_ACTIVATE (this is the original FW_ACTIVATE_NO_RESET)
->
->The FW_ACTIVATE_NO_RESET meant also to emphasize that driver implementation
->for this one should not do any reset.
->
->So maybe we can have
->
->DEVLINK_RELOAD_ACTION_FW_ACTIVATE_RESET
->DEVLINK_RELOAD_ACTION_FW_ACTIVATE_NO_RESET
-
-Okay.
-
-
->
->> Each has very clear meaning.
->
->
->Yes, it the driver support here is more clear.
->
->> Also, then the "actions_done" would be a simple enum, directly returned
->> to the user. No bitfield needed.
->
->
->I agree it is more clear on the driver support side, but what about the uAPI
-
-As I said, there would be one enum value returned to the user. Clear and
-simple.
-
-
->? Do we need such change there too or keep it as is, each action by itself
->and return what was performed ?
-
-Well, I don't know. User asks for X, X should be performed, not Y or Z.
-So perhaps the return value is not needed.
-Just driver advertizes it supports X, Y, Z and the users says:
-1) do X, driver does X
-2) do Y, driver does Y
-3) do Z, driver does Z
-[
-I think this kindof circles back to the original proposal...
-
->
->> 
->> > 	.reload_down		= mlxsw_devlink_core_bus_device_reload_down,
->> > 	.reload_up		= mlxsw_devlink_core_bus_device_reload_up,
->> > 	.port_type_set			= mlxsw_devlink_port_type_set,
->> [...]
+Will
