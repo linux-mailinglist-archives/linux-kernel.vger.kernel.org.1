@@ -2,93 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD45A25A6D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BD525A6E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 09:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgIBHc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 03:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726674AbgIBHcv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 03:32:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536C5C061244;
-        Wed,  2 Sep 2020 00:32:51 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z1so4098230wrt.3;
-        Wed, 02 Sep 2020 00:32:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fu3rhVbErwAPlE8HPpQ0/XopyDhWlhtlly/dcplP9TY=;
-        b=asYSOntcpTHbiaWRo5xy57HdA7Q4MiRosi3KKd0vtdcHs+yGUqusZnzNGmOqfZ8UVf
-         6kXz4tuOY+SGEyqddBhVB4MTxerGCGnYNQ4pbeUgOB4tH8z4AkWrJLXk0X0EN5ZZhVRo
-         4FDBQOgCK53ePYGEpP9fkEcsJgQz09Qhhe0ICcbGr2BTa6+7lkVvbqfSI85YfPloxlPB
-         MnbtLSAaY/14jtW1WzmLFfFA1FC/5T3E3nJX59YQXHQJx5YDx9edz8T/m6e2T1eW9LGJ
-         ESkRcp6s9ttPE3lesTIMVIQhbRD2noNFyNERbpTZjSiMDnGIc6oz8waJE994SiJRS67p
-         LyYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fu3rhVbErwAPlE8HPpQ0/XopyDhWlhtlly/dcplP9TY=;
-        b=oZEy4LJqdaWDk7JPEzzZ3ZVhPKkucOgaxWcZr5xfNqVi7b60zJO+HElz2Y7dLDGTTl
-         TZ5xF0zuHoDqlMfnhkhvjiBheTWS4I8Q0E6F+9pIZ9B5ZCc3qOSxMYC2MnHWaa4fR0rL
-         jOcBaJdtS1TRSdWingl8cxW4Zux9vqYRkvAqx8BXfv1zLP2ZKT6EUzVRSBrqVMDtvG4w
-         HLO+VoplBlToRcWsgHVi7r4ERfqsd2ikkOguTh5v3xsrdv5fOSG0bynasyztFYibKcfI
-         r+rdR0IFSGJ9MWDvpD+LMh5V3Eicl3B45DDWnMmhUCPZ2MOb0lutb52CYB5/T922sOKu
-         fmeA==
-X-Gm-Message-State: AOAM531bJQJxYaeYI1UYWJfLVWiwrjCX1Om+Bi6f/Rww3KSaT8UTRTKG
-        ERJ1eydHHAb2Rjc+Wx+LVDsg0EkuHEU=
-X-Google-Smtp-Source: ABdhPJyDz94/oQIHXyFLv2/XsyDNLzEbN5UnuHyknZu35SS+jOuC0ccqA4JyJdQA1JXBl/6NlmYMaQ==
-X-Received: by 2002:adf:91c2:: with SMTP id 60mr1633124wri.292.1599031970119;
-        Wed, 02 Sep 2020 00:32:50 -0700 (PDT)
-Received: from [192.168.8.147] ([37.170.201.185])
-        by smtp.gmail.com with ESMTPSA id n124sm5126104wmn.29.2020.09.02.00.32.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 00:32:49 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
-References: <1598921718-79505-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpVtb3Cks-LacZ865=C8r-_8ek1cy=n3SxELYGxvNgkPtw@mail.gmail.com>
- <511bcb5c-b089-ab4e-4424-a83c6e718bfa@huawei.com>
- <CAM_iQpW1c1TOKWLxm4uGvCUzK0mKKeDg1Y+3dGAC04pZXeCXcw@mail.gmail.com>
- <f81b534a-5845-ae7d-b103-434232c0f5ff@huawei.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <1f7208e6-8667-e542-88dd-bd80a6c59fd2@gmail.com>
-Date:   Wed, 2 Sep 2020 09:32:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1726714AbgIBHhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 03:37:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgIBHhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 03:37:07 -0400
+Received: from localhost.localdomain (unknown [46.69.195.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02F3E20826;
+        Wed,  2 Sep 2020 07:37:04 +0000 (UTC)
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Jessica Yu <jeyu@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     Will Deacon <will@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] arm64/module: set trampoline section flags regardless of CONFIG_DYNAMIC_FTRACE
+Date:   Wed,  2 Sep 2020 08:37:02 +0100
+Message-Id: <159903220030.29783.15985807326722906910.b4-ty@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200901160016.3646-1-jeyu@kernel.org>
+References: <20200901160016.3646-1-jeyu@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f81b534a-5845-ae7d-b103-434232c0f5ff@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/1/20 11:34 PM, Yunsheng Lin wrote:
-
+On Tue, 1 Sep 2020 18:00:16 +0200, Jessica Yu wrote:
+> In the arm64 module linker script, the section .text.ftrace_trampoline
+> is specified unconditionally regardless of whether CONFIG_DYNAMIC_FTRACE
+> is enabled (this is simply due to the limitation that module linker
+> scripts are not preprocessed like the vmlinux one).
 > 
-> I am not familiar with TCQ_F_CAN_BYPASS.
-> From my understanding, the problem is that there is no order between
-> qdisc enqueuing and qdisc reset.
+> Normally, for .plt and .text.ftrace_trampoline, the section flags
+> present in the module binary wouldn't matter since module_frob_arch_sections()
+> would assign them manually anyway. However, the arm64 module loader only
+> sets the section flags for .text.ftrace_trampoline when CONFIG_DYNAMIC_FTRACE=y.
+> That's only become problematic recently due to a recent change in
+> binutils-2.35, where the .text.ftrace_trampoline section (along with the
+> .plt section) is now marked writable and executable (WAX).
+> 
+> [...]
 
-Thw qdisc_reset() should be done after rcu grace period, when there is guarantee no enqueue is in progress.
+Applied to arm64 (for-next/fixes), thanks!
 
-qdisc_destroy() already has a qdisc_reset() call, I am not sure why qdisc_deactivate() is also calling qdisc_reset()
+[1/1] arm64/module: set trampoline section flags regardless of CONFIG_DYNAMIC_FTRACE
+      https://git.kernel.org/arm64/c/e0328feda79d
 
+-- 
+Catalin
 
