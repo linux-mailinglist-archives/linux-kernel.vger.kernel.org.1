@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA80825AB78
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C901525AB80
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgIBMwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:52:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        id S1726821AbgIBMzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 08:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbgIBMwb (ORCPT
+        with ESMTP id S1726654AbgIBMy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:52:31 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16741C061246
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 05:52:31 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id x12so3406928qtp.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 05:52:31 -0700 (PDT)
+        Wed, 2 Sep 2020 08:54:27 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA4EC061245
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 05:54:26 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l63so4797880edl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 05:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Pvl3SWJ9e5sce/rNKaSduyhhxTz1BgiMnI37NgwAhUY=;
-        b=pIMqb6bVqWYzxtZFWJSmWNZTz/EKtlBYMVpJ1K3XEhvzHRG+pUoB71bDqhI9uFBunZ
-         0ELFd1MpKzQV7R7HqrjpoygMTptfUS3x9DM9irg13KRTLIwpsXzY08GHwgEhIHcK+JG3
-         5dF9VrfpoF6k+pqSgyuqE7WXB8lmuNVHJfO1SyLKglUoE1+u1A2KVu8DI+woV91/Rq5l
-         VvS69IgnUJmomuB85Tj2Tovhgf+DLbtjQ6aPDI1VO+d6Igxe+o1Z6Yx9cNfB6EtRMf3w
-         hvPdpp04eEOxT9aVpqI4jjroa4TIBvpK7unQsS+nvWg3hdKGrgCHZndy7EMCrad54QkP
-         OtlQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jguf1LcpzdLbnb6m9J0BP0vWI/LKfE1Jts6BiXQTOXA=;
+        b=HVouhgUe0h/dT/d25fmAt8+AdYkGMgTHsNTj5v0ofRuKkDS632pxM+ScRs+0Hy3nLB
+         DQg3t5tY2PHuwD4M3USyJMU5+lCGOBjBvWIRfCYDvR1uXAoRV/weUz2gSAW/YzaPNURa
+         bdfxgPpU+zKvGI07WPyDNuiDG/hb9hQI2afHwcrREBe+XMU2rqLo+5ZmdyRNMNgtNnAq
+         bemfPQgUfLIOfyN9sCqvTNSP6TbOhP7odrcAnsvG82RdBk1oU7lD2QZd7LfgMPMz485Z
+         Vgnwbx9hyLy6RbBIBo2AtdkOVIvPpzojlLk71ifI/7XXL+r1pLdsrmvR7tu76psXNaoT
+         1e8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Pvl3SWJ9e5sce/rNKaSduyhhxTz1BgiMnI37NgwAhUY=;
-        b=AsgI+Kt9TdndwWeJ9RNd59d8m2l6NRbdsj54wHDHFtrvE67A1TspM9THRQI7qyESVx
-         DkXLGCWpXhB/Z1jUJOsEo/DL1puekeJ3AB7J0THC+6PyIa/hBaTvzi7Yidh9PVckmP+c
-         OzFc5NG+J/m2DOZvjZsWf7oM24maIMqrTSGTctR82L27vkMBgo6FQUAdxIQC+f/l5Lw1
-         Gzv0KWmk/BYf1rTY0mgVfVeZNdz/1PhKdgd8Xq+0aVDMFc2iOnbOussgAUQvXhKGpQNW
-         6wh2ADYsWz5RkLiVbRm1rs6MQ/G712L7+NmSZO8knD96GW8ImWvvdcwXPxmgWiIck0v1
-         pcbw==
-X-Gm-Message-State: AOAM533jyYZG0g5LDsniA1NEY+kimy0QKX+JC/qU5k8FqAboUXqg0a27
-        G+35aocoeaKamU+UdusjSDDd7A==
-X-Google-Smtp-Source: ABdhPJzbj9HoMDTrZSIHvhNE2C9Cwm3ZM61DpTVhFH/mNvlJbuBbLY7DbYz1/PBcCkRU6zj6OTP/9Q==
-X-Received: by 2002:aed:27dd:: with SMTP id m29mr6853784qtg.165.1599051150238;
-        Wed, 02 Sep 2020 05:52:30 -0700 (PDT)
-Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id 184sm4731438qkl.104.2020.09.02.05.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 05:52:29 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 08:52:24 -0400
-From:   Qian Cai <cai@lca.pw>
-To:     Uriel Guajardo <urielguajardojr@gmail.com>
-Cc:     brendanhiggins@google.com, urielguajardo@google.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, sfr@canb.auug.org.au,
-        linux-next@vger.kernel.org
-Subject: Re: [PATCH 2/2] kunit: ubsan integration
-Message-ID: <20200902125223.GA5676@lca.pw>
-References: <20200806174326.3577537-1-urielguajardojr@gmail.com>
- <20200806174326.3577537-2-urielguajardojr@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jguf1LcpzdLbnb6m9J0BP0vWI/LKfE1Jts6BiXQTOXA=;
+        b=rRPg/DDGBMWv6uAWf/PDGAOKw8gw4yx6IOd6/e5+B1aKuI29ZxIRH8tbuPZRP5g4A2
+         /dNXnnP/fjeZ26WV12NZImdTw8TuoxcI4MyD96xaFsCyYrGFL3eHJ9kvAIgvJxEEWcxJ
+         3tZ8pFIYbhpWnHQn9JV2JRPLLbBEB3VwiFeU9lpsV0H3RIKFYfzr3LLxRixio8clXy4F
+         420b/ESTJgYpIGwAXpwaeWm0oSdaUdOs/4fwOC3g2RyJJKYo/XVc9NqBHomA1WyrYJYg
+         XvMqktzTw5CDaNZDJNApf/t2nFKIpfFiVlaqckO1rg9w2x54Zq4l8Y6NzblwrfrOSiVh
+         X8Gw==
+X-Gm-Message-State: AOAM533FQYk9OYStaAN+UHS5UoH0vNRDR9eHy6n/9zRQ8HL+M7x6Nmmz
+        keC6Xn+axw4nlIhTB5MJ8ULV6MrJKQdmlg0NtSsuRA==
+X-Google-Smtp-Source: ABdhPJyaN78gS/ZUa0KTrLX84zGJiMFwqPH7s7EsAhv3YTCXunsjJ0gi6JjMwMbqDGXOC126EP7OpX0Pk8dwY/z8JZ4=
+X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr6629378edb.342.1599051265010;
+ Wed, 02 Sep 2020 05:54:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200806174326.3577537-2-urielguajardojr@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200127173453.2089565-1-guro@fb.com> <20200130020626.GA21973@in.ibm.com>
+ <20200130024135.GA14994@xps.DHCP.thefacebook.com> <CA+CK2bCQcnTpzq2wGFa3D50PtKwBoWbDBm56S9y8c+j+pD+KSw@mail.gmail.com>
+ <20200813000416.GA1592467@carbon.dhcp.thefacebook.com> <CA+CK2bDDToW=Q5RgeWkoN3_rUr3pyWGVb9MraTzM+DM3OZ+tdg@mail.gmail.com>
+ <CA+CK2bBEHFuLLg79_h6bv4Vey+B0B2YXyBxTBa=Le12OKbNdwA@mail.gmail.com>
+ <6469324e-afa2-18b4-81fb-9e96466c1bf3@suse.cz> <20200902113204.GD4617@dhcp22.suse.cz>
+In-Reply-To: <20200902113204.GD4617@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 2 Sep 2020 08:53:49 -0400
+Message-ID: <CA+CK2bA6EpfSMZD6egysFqdw0tZFuPAxEJc-rQbJTnjf+u2TGA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/28] The new cgroup slab memory controller
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        stable <stable@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 06, 2020 at 05:43:26PM +0000, Uriel Guajardo wrote:
-> Integrates UBSAN into the KUnit testing framework. It fails KUnit tests
-> whenever it reports undefined behavior.
-> 
-> Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
+On Wed, Sep 2, 2020 at 7:32 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Wed 02-09-20 11:53:00, Vlastimil Babka wrote:
+> > >> > > Thread #2: ccs killer kthread
+> > >> > >    css_killed_work_fn
+> > >> > >      cgroup_mutex  <- Grab this Mutex
+> > >> > >      mem_cgroup_css_offline
+> > >> > >        memcg_offline_kmem.part
+> > >> > >           memcg_deactivate_kmem_caches
+> > >> > >             get_online_mems
+> > >> > >               mem_hotplug_lock <- waits for Thread#1 to get read access
+>
+> And one more thing. THis has been brought up several times already.
+> Maybe I have forgoten but why do we take hotplug locks in this path in
+> the first place? Memory hotplug notifier takes slab_mutex so this
+> shouldn't be really needed.
 
-It looks like this patch had been merged into linux-next but the "[PATCH 1/2]
-kunit: support failure from dynamic analysis tools" did not. Hence, it caused a
-compiling failure.
+Good point, it seems this lock can be completely removed from
+memcg_deactivate_kmem_caches
 
-lib/ubsan.c: In function ‘ubsan_prologue’:
-lib/ubsan.c:141:2: error: implicit declaration of function ‘kunit_fail_current_test’; did you mean ‘kunit_init_test’? [-Werror=implicit-function-declaration]
-  kunit_fail_current_test();
-  ^~~~~~~~~~~~~~~~~~~~~~~
-  kunit_init_test
-cc1: some warnings being treated as errors
+Pasha
 
-> ---
->  lib/ubsan.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/lib/ubsan.c b/lib/ubsan.c
-> index cb9af3f6b77e..1460e2c828c8 100644
-> --- a/lib/ubsan.c
-> +++ b/lib/ubsan.c
-> @@ -14,6 +14,7 @@
->  #include <linux/types.h>
->  #include <linux/sched.h>
->  #include <linux/uaccess.h>
-> +#include <kunit/test.h>
->  
->  #include "ubsan.h"
->  
-> @@ -137,6 +138,7 @@ static void ubsan_prologue(struct source_location *loc, const char *reason)
->  {
->  	current->in_ubsan++;
->  
-> +	kunit_fail_current_test();
->  	pr_err("========================================"
->  		"========================================\n");
->  	pr_err("UBSAN: %s in %s:%d:%d\n", reason, loc->file_name,
-> -- 
-> 2.28.0.163.g6104cc2f0b6-goog
-> 
+> --
+> Michal Hocko
+> SUSE Labs
