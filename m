@@ -2,66 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF4F25B136
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C9925B191
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgIBQQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:16:45 -0400
-Received: from mx3.wp.pl ([212.77.101.10]:17861 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728844AbgIBQQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:16:40 -0400
-Received: (wp-smtpd smtp.wp.pl 628 invoked from network); 2 Sep 2020 18:16:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1599063396; bh=fCRMYNQmfFvrAJR8Oni60wZOyAz0/8t7DxsWGn6A+RU=;
-          h=From:To:Cc:Subject;
-          b=l/NCsyz62EM4EDtcZZXnEXJt+wOYXEZRm40mwglleSzpJGKSpos8xbj6g1hi7ZnAS
-           1BL5g0Vn2XguZjdaqj0T9h216rUDA0pV16KKYKaVPQE5V3egVHE9ppzq2cjGS6DHoh
-           H2J5bbmL3WUecKqFxndvtEFk4e+W4vjbYNuMo5WQ=
-Received: from 188.146.102.178.nat.umts.dynamic.t-mobile.pl (HELO localhost) (antoni.przybylik@wp.pl@[188.146.102.178])
-          (envelope-sender <antoni.przybylik@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <gregkh@linuxfoundation.org>; 2 Sep 2020 18:16:36 +0200
-From:   Antoni Przybylik <antoni.przybylik@wp.pl>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Antoni Przybylik <antoni.przybylik@wp.pl>
-Subject: [PATCH v2 2/2] staging: gdm724x: gdm_tty: replaced macro with a function
-Date:   Wed,  2 Sep 2020 18:16:27 +0200
-Message-Id: <20200902161627.64686-1-antoni.przybylik@wp.pl>
-X-Mailer: git-send-email 2.28.0
+        id S1728330AbgIBQZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727035AbgIBQZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:25:07 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01992C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 09:25:06 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id w11so140760lfn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 09:25:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=p+VjSP7tWh9A7Uo1/vh88a9JUwYsjFZ9oMpqJyM2gdY=;
+        b=MPFeFxv4rz28exekZb65X+RzUZbSJI6wj3xc5X+1ubXwzX2F32DFftTcr+fFuEvoHn
+         3h3ncpRSXJUD9WxPpbJs29Zh2PBe9OGw4RV80EEL4sJsfWNjwnrM80cUbv4MXaEt+yLn
+         +/arP/dsNH9bw+n5vMFzeXJsdQBr+gJdw7KZk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p+VjSP7tWh9A7Uo1/vh88a9JUwYsjFZ9oMpqJyM2gdY=;
+        b=e+YkntI77JnErC9lY4SBlrQXj8CGmOojfXAkEs1JIfzRgID3MZtCetdB1Sy8OUPaSU
+         5wEcjMikzn2nTAODWhddNFUCBUM0Iy2ty5XoyFaQBS8nM4t5r6KLmIR/RJ7+hnmthUOv
+         qyDbtJ8JOK9DMeUdnG0AB0EfdTdj6M8qiyU2Vh/oOOgBqp7ErbaA/ynWtEFTlIMswKt0
+         k10QAq+D0myvh9idKjU45G9qsi7lKoxlA6O15uKHWmiaJ7lOexDzdPkIS7IOo9dHSoAb
+         1TtPZR0Sy+1e/VOWSAnd+ygfsPaqvmLbs6HeUtdVuyGhYK6PU8ZvrLtWbF3dyeZUsz0d
+         agVw==
+X-Gm-Message-State: AOAM532u/M1SmXV3aVR6LMYIwOEKeJ0gwdFdjHj+HT6PlcwzBL+RNfLs
+        9gzgfB27ebQZ2sG4YOzs3A9U5GFTokKU2Q==
+X-Google-Smtp-Source: ABdhPJxM7kti4+8R8ABR5jiDlR0WH54FFzm3nrzV6i8gWd1Fezy6Ok7ZtgSz+mByB19GJfVuPvPUfQ==
+X-Received: by 2002:a19:c157:: with SMTP id r84mr3747804lff.34.1599063904930;
+        Wed, 02 Sep 2020 09:25:04 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id z24sm1217145lfe.54.2020.09.02.09.25.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 09:25:04 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id v23so6685010ljd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 09:25:04 -0700 (PDT)
+X-Received: by 2002:adf:d0cb:: with SMTP id z11mr6506581wrh.192.1599063439238;
+ Wed, 02 Sep 2020 09:17:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: bd263fd383ace842bc314464e6a3863f
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000002 [UTGx]                               
+References: <1597380295-6297-1-git-send-email-wuxy@bitland.com.cn>
+ <20200831180211.GQ31019@paasikivi.fi.intel.com> <tencent_0189E021005C2124231E353A@qq.com>
+In-Reply-To: <tencent_0189E021005C2124231E353A@qq.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Wed, 2 Sep 2020 18:17:00 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5AQ7nmOqTrGOtmqAk9PHGdypzBb3woG1QS45bO8yfaVJQ@mail.gmail.com>
+Message-ID: <CAAFQd5AQ7nmOqTrGOtmqAk9PHGdypzBb3woG1QS45bO8yfaVJQ@mail.gmail.com>
+Subject: Re: [PATCH V3] Add GalaxyCore image sensor driver
+To:     =?UTF-8?B?5ZC05YW06IKyQjAxNzc5?= <wuxy@bitland.com.cn>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        mchehab <mchehab@kernel.org>, "robh+dt" <robh+dt@kernel.org>,
+        davem <davem@davemloft.net>, "shawnx.tu" <shawnx.tu@intel.com>,
+        hverkuil-cisco <hverkuil-cisco@xs4all.nl>,
+        "dave.stevenson" <dave.stevenson@raspberrypi.com>,
+        "manivannan.sadhasivam" <manivannan.sadhasivam@linaro.org>,
+        "bingbu.cao" <bingbu.cao@intel.com>,
+        drinkcat <drinkcat@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "dongchun.zhu" <dongchun.zhu@mediatek.com>,
+        "sj.huang" <sj.huang@mediatek.com>,
+        darfur_liu <darfur_liu@gcoreinc.com>,
+        "hao.he7" <hao.he7@gmail.com>, "hao.he" <hao.he@bitland.com.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changed return type to bool and removed inline specifier. Also added
- static specifier.
+Hi everyone,
 
-Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
----
- drivers/staging/gdm724x/gdm_tty.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Sep 1, 2020 at 7:19 AM =E5=90=B4=E5=85=B4=E8=82=B2B01779 <wuxy@bitl=
+and.com.cn> wrote:
+>
+> Hi Sakari,
+>
+> It seems the e-mails you're sending do not end up to LMML nor kernel.org
+> Patchwork.
+>  =3D=3D=3D>It looks like we need to fix this before patch can land in pat=
+chwork.
+>
 
-diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-index 34a13d98c029..179fc9b9400b 100644
---- a/drivers/staging/gdm724x/gdm_tty.c
-+++ b/drivers/staging/gdm724x/gdm_tty.c
-@@ -34,7 +34,7 @@ static DEFINE_MUTEX(gdm_table_lock);
- static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
- static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
- 
--inline int gdm_tty_ready(struct gdm *gdm)
-+static bool gdm_tty_ready(struct gdm *gdm)
- {
- 	return (gdm && gdm->tty_dev && gdm->port.count);
- }
--- 
-2.28.0
+FYI, I'll take care of addressing the comments to v3 and posting v4 to the =
+list.
 
+PS. Please use plain text only messages when communicating with the
+mailing lists as HTML emails are often blocked. Please also use bottom
+posting. More guidance can be found at [1] (the specific question the
+link points to and other questions too).
+
+[1] http://vger.kernel.org/lkml/#s3-9
+
+Best regards,
+Tomasz
+
+> Thanks.
+>
+> ------------------ Original ------------------
+> From:  "Sakari Ailus"<sakari.ailus@linux.intel.com>;
+> Date:  Tue, Sep 1, 2020 02:02 AM
+> To:  "Xingyu Wu"<wuxy@bitland.com.cn>;
+> Cc:  "mchehab"<mchehab@kernel.org>; "robh+dt"<robh+dt@kernel.org>; "davem=
+"<davem@davemloft.net>; "shawnx.tu"<shawnx.tu@intel.com>; "hverkuil-cisco"<=
+hverkuil-cisco@xs4all.nl>; "dave.stevenson"<dave.stevenson@raspberrypi.com>=
+; "manivannan.sadhasivam"<manivannan.sadhasivam@linaro.org>; "bingbu.cao"<b=
+ingbu.cao@intel.com>; "tfiga"<tfiga@chromium.org>; "drinkcat"<drinkcat@chro=
+mium.org>; "linux-media"<linux-media@vger.kernel.org>; "linux-kernel"<linux=
+-kernel@vger.kernel.org>; "devicetree"<devicetree@vger.kernel.org>; "dongch=
+un.zhu"<dongchun.zhu@mediatek.com>; "sj.huang"<sj.huang@mediatek.com>; "dar=
+fur_liu"<darfur_liu@gcoreinc.com>; "hao.he7"<hao.he7@gmail.com>; "hao.he"<h=
+ao.he@bitland.com.cn>;
+> Subject:  Re: [PATCH V3] Add GalaxyCore image sensor driver
+>
+> Hi Xingyu,
+>
+> On Fri, Aug 14, 2020 at 12:44:51PM +0800, Xingyu Wu wrote:
+> > This patch series add GalaxyCore GC5035 image sensor driver.
+> >
+> > Change in v3:
+> > 1.Optimize gc5035 driver.
+> > 2.Redescibe reset-gpio in documentation.
+>
+> It seems the e-mails you're sending do not end up to LMML nor kernel.org
+> Patchwork.
+>
+> I'm not sure why, but that needs to be fixed.
+>
+> --
+> Kind regards,
+>
+> Sakari Ailus
