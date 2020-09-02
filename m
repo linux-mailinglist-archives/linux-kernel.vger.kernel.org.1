@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBF925A53B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 07:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B591725A546
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 08:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgIBF5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 01:57:12 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:48966 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgIBF5L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 01:57:11 -0400
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 01 Sep 2020 22:57:08 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 01 Sep 2020 22:57:07 -0700
-Received: from parashar-linux.qualcomm.com ([10.206.13.63])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 02 Sep 2020 11:26:54 +0530
-Received: by parashar-linux.qualcomm.com (Postfix, from userid 2363307)
-        id 880842157D; Wed,  2 Sep 2020 11:26:53 +0530 (IST)
-From:   Paras Sharma <parashar@codeaurora.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-msm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akashast@codeaurora.org, Paras Sharma <parashar@codeaurora.org>
-Subject: [PATCH] serial: qcom_geni_serial: To correct QUP Version detection logic
-Date:   Wed,  2 Sep 2020 11:26:51 +0530
-Message-Id: <1599026211-12800-1-git-send-email-parashar@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726537AbgIBGAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 02:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725774AbgIBGAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 02:00:06 -0400
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D2C02087E;
+        Wed,  2 Sep 2020 06:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599026406;
+        bh=qB+hJ64dFeZRc55gn05GV3vmMdd4XqXGRfV9RvpoPjM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JqU9YnsiEoVREgjZ71Q/lL0R6o0EvweniYCjQHmZvalUDy3rvHQkm4LnV7xm516+5
+         i44auPRkW5t9zHw3YFDMX19Y5N+9rzXm6bs4PkFlebDybJZjXbsCNTY5eGBV0puiMy
+         sNpdFMjzaKtGyGvelhK6a9BVR4FwsrpX1LzGiNrc=
+Received: by mail-lj1-f182.google.com with SMTP id a15so4414528ljk.2;
+        Tue, 01 Sep 2020 23:00:05 -0700 (PDT)
+X-Gm-Message-State: AOAM531bVAVA21EgyfFZ2F0YXnyAilIZkSylt5ZyrDrWVXFnOSNNCwJz
+        /xVvVJOeTVOM13pbmsgYgEewvwkgSlr9lBPvIHs=
+X-Google-Smtp-Source: ABdhPJwf3HULiufgbpwKVoPwmf+LkIKFmte7J3KnU2uOXqQt3v5M5F/QoyNcLdziLtm9PrTb/1L0NAY4kWOOlCFV810=
+X-Received: by 2002:a2e:8597:: with SMTP id b23mr2427127lji.41.1599026403505;
+ Tue, 01 Sep 2020 23:00:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200901155748.2884-1-hch@lst.de> <20200901155748.2884-10-hch@lst.de>
+In-Reply-To: <20200901155748.2884-10-hch@lst.de>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 1 Sep 2020 22:59:52 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7YKTHsWnqv22gq6VEz29=abYk7ADsxcQr9q3_kGZuiXw@mail.gmail.com>
+Message-ID: <CAPhsuW7YKTHsWnqv22gq6VEz29=abYk7ADsxcQr9q3_kGZuiXw@mail.gmail.com>
+Subject: Re: [PATCH 9/9] block: remove revalidate_disk()
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+        Dan Williams <dan.j.williams@intel.com>, dm-devel@redhat.com,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, nbd@other.debian.org,
+        ceph-devel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-raid <linux-raid@vger.kernel.org>,
+        linux-nvdimm@lists.01.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current implementation reduces the sampling rate by half
-if qup HW version is  greater is than 2.5 by checking if the
-geni SE major version is greater than 2 and geni SE minor version
-is greater than 5.
+On Tue, Sep 1, 2020 at 9:00 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Remove the now unused helper.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-This implementation fails when the version is 3 or greater.
-
-Hence new implementation checks if version is greater than or equal
-to 0x20050000 which would work for any future version.
-
-Signed-off-by: Paras Sharma <parashar@codeaurora.org>
----
- drivers/tty/serial/qcom_geni_serial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-index f0b1b47..e18b431 100644
---- a/drivers/tty/serial/qcom_geni_serial.c
-+++ b/drivers/tty/serial/qcom_geni_serial.c
-@@ -1000,7 +1000,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
- 	sampling_rate = UART_OVERSAMPLING;
- 	/* Sampling rate is halved for IP versions >= 2.5 */
- 	ver = geni_se_get_qup_hw_version(&port->se);
--	if (GENI_SE_VERSION_MAJOR(ver) >= 2 && GENI_SE_VERSION_MINOR(ver) >= 5)
-+	if (ver >= 0x20050000)
- 		sampling_rate /= 2;
- 
- 	clk_rate = get_clk_div_rate(baud, sampling_rate, &clk_div);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Acked-by: Song Liu <song@kernel.org>
