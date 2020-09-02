@@ -2,138 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A4D25AFF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6928D25AFF2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgIBPrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:47:36 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:55958 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727115AbgIBNb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:31:56 -0400
-IronPort-SDR: ynhBwUvpTDAdxSmhtK0/tq1se06C30r7rSzdg+m1Dczrxvhg6XmwcqpywYWKHseuZyuwsGLGcR
- /NlMEV59mcXRomai5W34hck4enUyq1HQNOTBa63VpRqUvksGnCVhVz5hOsuPYx8XKwrUGVkmk+
- CzcYtsGqAK17X2hO+72ulHQSUy8ycgCoF9CdbSjbgRZO+A8yw3F0/+a+2dGKOt+BOdZFOGWaqA
- 69eQOY+2frKVsx8W9tim6HbdhsUTebtWQamrh+30j/7lhwNB8bAdAogIQBh1f5ZsNNcP6FgtEl
- 04c=
-X-IronPort-AV: E=Sophos;i="5.76,383,1592863200"; 
-   d="scan'208";a="13702691"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 02 Sep 2020 15:30:59 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Wed, 02 Sep 2020 15:30:59 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Wed, 02 Sep 2020 15:30:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1599053459; x=1630589459;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=PAWy/HPTCyiBJJXehMsiFyv52ASflEFQdfpXpet28Os=;
-  b=NqUyei0uz8oLf9ls68yFwPth03LLEbAkbI3FiUA02HLIOz+TiKPj5r3i
-   FbWMYFnPm/ory+OGOZpVLoSKMV6TnUEErbpnI6GM9+IRiNBrcL4/MKgwh
-   g0D9+I/NiMyfoPbr/KdrQ2Fl9+ibCfnGulYJ26gkJGuTl40zHaCUDK1xX
-   FHmb7xdFQ4K+U1LdDfmzWy5ToI1ddNGcHcJDruuul0YXBJHgNr+siVUH5
-   NiNhUzl0I4YsMUwVRIvi2GNnVx7EOcl6BMsnkxhP0IXOMY371mHLBt4/B
-   9SwlcPHnVf1kxw8AT2cRmrLbqbI2PZWtddhfteW8o2WPlTtp/t4YoUgYr
-   g==;
-IronPort-SDR: rWvoANrAZeIWQdiwCcblue0yI4e69UUmziRI7o7snFdUsgH1nSIycvETIf39GW6hBfLsZ3qlVQ
- bVYBQFfU5xw/f/ahP82HTYq8rzXJwzcRixKrMTUQ87/OL3gydHh/koOuM32nDiMKD6szZQjoja
- F1TbeFqK63RGbC76gImMYscHjVR1qXygpoJb3MPG8MssHpSQTwmSOmC3WDf0ISIXIy1ZqmgINS
- pZ7gKl1UbSVw7NIn/XKHZAic8C28AbaJUht0hvoq1CBXHx5ybGKlElLXcgqAl40sdOv8JJSg20
- m0E=
-X-IronPort-AV: E=Sophos;i="5.76,383,1592863200"; 
-   d="scan'208";a="13702689"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 02 Sep 2020 15:30:59 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 2FB3D280070;
-        Wed,  2 Sep 2020 15:30:59 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH 2/2] ASoC: codec: tlv320aic32x4: do software reset before clock registration
-Date:   Wed,  2 Sep 2020 15:30:43 +0200
-Message-Id: <20200902133043.19504-2-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200902133043.19504-1-matthias.schiffer@ew.tq-group.com>
-References: <20200902133043.19504-1-matthias.schiffer@ew.tq-group.com>
+        id S1728584AbgIBPrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:47:39 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54363 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727088AbgIBNbh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:31:37 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kDSr7-00023z-S9; Wed, 02 Sep 2020 13:31:17 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Myungjoo Ham <myungjoo.ham@samsung.com>,
+        Anton Vorontsov <anton.vorontsov@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] charger-manager: fix incorrect check on charging_duration_ms
+Date:   Wed,  2 Sep 2020 14:31:17 +0100
+Message-Id: <20200902133117.108025-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid the actual PLL settings to differ from the state expected by
-the clock driver, the codec should only be fully reset before the clocks
-are registered. But we also need to ensure that the software reset
-happens at all before clock registration, as not all boards have a reset
-GPIO.
+From: Colin Ian King <colin.king@canonical.com>
 
-Move the software reset from aic32x4_component_probe() to
-aic32x4_probe() and reorder the reset and registration sequence:
+Currently the duration check on the discharging duration setting is
+checking the charging duration rather than the discharging duration
+due to a cut-n-paste coding error. Fix this by checking the value
+desc->charging_max_duration_ms.
 
-1. Reset via GPIO (if available)
-2. Reset via software
-3. Register component
-4. Register clocks
-
-Note that aic32x4_component_probe() is only called after aic32x4_probe()
-has finished, so the reset in aic32x4_component_probe() was happening too
-late.
-
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Addresses-Coverity: ("Copy-paste-error")
+Fixes: 8fcfe088e21a ("charger-manager: Support limit of maximum possible")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/codecs/tlv320aic32x4.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/power/supply/charger-manager.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index a45fb496082c..470dc0ef0359 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -981,8 +981,6 @@ static int aic32x4_component_probe(struct snd_soc_component *component)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+index 07992821e252..44d919954e9e 100644
+--- a/drivers/power/supply/charger-manager.c
++++ b/drivers/power/supply/charger-manager.c
+@@ -471,7 +471,7 @@ static int check_charging_duration(struct charger_manager *cm)
+ 	} else if (cm->battery_status == POWER_SUPPLY_STATUS_NOT_CHARGING) {
+ 		duration = curr - cm->charging_end_time;
  
--	snd_soc_component_write(component, AIC32X4_RESET, 0x01);
--
- 	if (aic32x4->setup)
- 		aic32x4_setup_gpios(component);
- 
-@@ -1226,6 +1224,16 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		return ret;
- 	}
- 
-+	if (gpio_is_valid(aic32x4->rstn_gpio)) {
-+		ndelay(10);
-+		gpio_set_value_cansleep(aic32x4->rstn_gpio, 1);
-+		mdelay(1);
-+	}
-+
-+	ret = regmap_write(regmap, AIC32X4_RESET, 0x01);
-+	if (ret)
-+		goto err_disable_regulators;
-+
- 	ret = devm_snd_soc_register_component(dev,
- 			&soc_component_dev_aic32x4, &aic32x4_dai, 1);
- 	if (ret) {
-@@ -1233,12 +1241,6 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		goto err_disable_regulators;
- 	}
- 
--	if (gpio_is_valid(aic32x4->rstn_gpio)) {
--		ndelay(10);
--		gpio_set_value_cansleep(aic32x4->rstn_gpio, 1);
--		mdelay(1);
--	}
--
- 	ret = aic32x4_register_clocks(dev, aic32x4->mclk_name);
- 	if (ret)
- 		goto err_disable_regulators;
+-		if (duration > desc->charging_max_duration_ms) {
++		if (duration > desc->discharging_max_duration_ms) {
+ 			dev_info(cm->dev, "Discharging duration exceed %ums\n",
+ 				 desc->discharging_max_duration_ms);
+ 			ret = true;
 -- 
-2.17.1
+2.27.0
 
