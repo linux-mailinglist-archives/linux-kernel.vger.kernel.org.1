@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA89325B30D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00A025B30B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgIBRiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 13:38:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgIBRip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 13:38:45 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 86587207EA;
-        Wed,  2 Sep 2020 17:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599068324;
-        bh=892k+dIylN07Z0BoztCYZcV5Ytx97ziH7oUUHRgPXqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YPzU8gtmGBeTUanqpXk7UJRNk6O69/FSTFV8yQVQKfTwJ3X1RGCVRYfU9wkciD2qF
-         oYtTBnekZnRir41Ch1d5oIwLQ4e46jxgMlQXFwagw7ttAfw2RxYwtsttkENJr5geDp
-         O/e7vzV/ldyN8zGyd0/SMs35pcCpruT4H9gowlpk=
-Date:   Wed, 2 Sep 2020 18:38:03 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH v2 0/3] arm64: Convert to ARCH_STACKWALK
-Message-ID: <20200902173803.GE6162@sirena.org.uk>
-References: <20200819124913.37261-1-broonie@kernel.org>
- <20200901160626.GE95447@C02TD0UTHF1T.local>
+        id S1727035AbgIBRim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgIBRik (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 13:38:40 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283B3C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 10:38:40 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a15so172638ljk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 10:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bAvdft8+S1rZVb+XWy3BCqgxnHRNNa2SDfjHvpH4oWM=;
+        b=A3VsMK5sVlaPbroGUMy0HC1Urc/X3LNKds2FtWEhJmFKYfhGz6/jva069NPpmlKRl+
+         IcL/zalYcCFdZEGiS9JJ/qFBvcNfPk9LP5FvWE8w0TYOpAUzyr4eeRk19c0ahMW4KZmM
+         NS405TTlkh3+F1YpyKnRnGkamw0XOxqS/vAyo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bAvdft8+S1rZVb+XWy3BCqgxnHRNNa2SDfjHvpH4oWM=;
+        b=eT//QMbE5aUTSIMUYZBPaMlqIMln6BiLTaTNvSSNQD9dIlUzpP9AjlvAlWU9vmbya1
+         MTSVEqH9CWABKPb870lkBnnXsXhghiMv0VLJYnGhvGW9G8Fz2+NfEblwLvm8sYwM41p/
+         EItBYvUt1ec41wROIw6fnB+RFp3qI1NY1EHGPBMb0S1zEaQLg1iu4hW3Vd9eA0yUFVwG
+         lFp+xfVToHz1wqHCbhWoqtYifLCbdeqDnCAh8Rz8O85Zc5Meqy83fPlF/DM9Grrx3p/Z
+         irRu1w4mfKy7FxPH7nYqRiJCLyMWBt6G4+83toE//scqg4pDRqEr5haGOdPXtZoIKP49
+         oTTw==
+X-Gm-Message-State: AOAM533yWAKzwhdDXWQPIwT7rnQiWQbfnx99Mhb/rWUOx1l5SE10F8Y3
+        pmmas3GVnh1QLTCTFKKSo/wjNHYCfyg+qw==
+X-Google-Smtp-Source: ABdhPJxqQc+f2m3rXKZn4JNaElDEWf4x4vhCpr4xzFJURBeTi8ViYlpPoGZVr7GwOBfDiQhe/uNFCw==
+X-Received: by 2002:a05:651c:1392:: with SMTP id k18mr1573665ljb.445.1599068318199;
+        Wed, 02 Sep 2020 10:38:38 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id 25sm53277lji.130.2020.09.02.10.38.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 10:38:36 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id w11so271870lfn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 10:38:36 -0700 (PDT)
+X-Received: by 2002:a19:7904:: with SMTP id u4mr3838509lfc.152.1599068316104;
+ Wed, 02 Sep 2020 10:38:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jTMWTj4UTAEmbWeb"
-Content-Disposition: inline
-In-Reply-To: <20200901160626.GE95447@C02TD0UTHF1T.local>
-X-Cookie: Prices higher in Alaska and Hawaii.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200902085513.748149-1-leon@kernel.org> <20200902085513.748149-2-leon@kernel.org>
+In-Reply-To: <20200902085513.748149-2-leon@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 2 Sep 2020 10:38:20 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiOJ4H=YFO8+EumOcrciQgeKXY1Z92jdqY8OQdprPXkbg@mail.gmail.com>
+Message-ID: <CAHk-=wiOJ4H=YFO8+EumOcrciQgeKXY1Z92jdqY8OQdprPXkbg@mail.gmail.com>
+Subject: Re: [PATCH rdma-next 1/4] gcov: Open-code kmemdup() to work correctly
+ with kernel and user space pointers
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 2, 2020 at 1:55 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> The kernel with KASAN and GCOV enabled generates the following splat
+> due to the situation that gcov_info can be both user and kernel pointer.
 
---jTMWTj4UTAEmbWeb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I can't parse the above explanation..
 
-On Tue, Sep 01, 2020 at 05:06:26PM +0100, Mark Rutland wrote:
+> It is triggered by the memcpy() inside kmemdup(), so as a possible solution
+> let's copy fields manually.
 
-> Just to check, has the skipping logic been tested to work equivalently
-> to what we had before? By inspection I think it should, but since it
-> relies on function call boundaries it always strikes me as fragile.
+.. and I don't see why copying the fields manually makes a difference.
 
-> If you could confirm that (e.g. with LKDTM perhaps?)=A0that'd be great.
-> Assuming that looks right, for the series:
+Can you explain more?
 
-I've tested this with LKDTM and otherwise and didn't spot any issues
-(and just did a bit of retesting) but it is a pretty manual process so
-it's possible I missed something.
-
---jTMWTj4UTAEmbWeb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9P2HoACgkQJNaLcl1U
-h9BFyAf/WmL+czCJwJk4VCBeI8Qs2/FFr8HfxOjvcihHhHLoo47xrAWoGVeJcoGB
-B0KxiGvi/sgW230Q8vgawFwzN5pte2FFt8RoXRKNste1aMWTVp2d66nHXg4T3Xa+
-1tzhUh1MBWkQCDW2lKroA6RFs4UIX8b0ulYz26VFwpE/is4vcAv77AnCYNIMfqa1
-cC/FbZO4VJfSu5vgdtrMSmt0NAczKRI5OpO056olErHtnSmBxagekOrMyDofUwjz
-TKcOHNMwH/BdiQFL7BjqDZykxwV1MKNcaXSEd/HTsnCurMbMTCfAsakolqbDDDiL
-DG06jT7beQldWH9+cTAb45lPf08ifQ==
-=knFg
------END PGP SIGNATURE-----
-
---jTMWTj4UTAEmbWeb--
+             Linus
