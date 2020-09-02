@@ -2,127 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A06025AA10
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 135C925AA18
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 13:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgIBLLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 07:11:35 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54864 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgIBLL0 (ORCPT
+        id S1726559AbgIBLO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 07:14:59 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:31780 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726657AbgIBLNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 07:11:26 -0400
-Received: from fsav106.sakura.ne.jp (fsav106.sakura.ne.jp [27.133.134.233])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 082B9xWe021165;
-        Wed, 2 Sep 2020 20:09:59 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav106.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp);
- Wed, 02 Sep 2020 20:09:59 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav106.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 082B9tPc021145
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Wed, 2 Sep 2020 20:09:59 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Subject: [PATCH] tipc: fix shutdown() of connectionless socket
-To:     syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>,
-        Jon Maloy <jmaloy@redhat.com>,
-        Ying Xue <ying.xue@windriver.com>
-References: <0000000000003feb9805a9c77128@google.com>
-Cc:     syzkaller-bugs@googlegroups.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Message-ID: <1eb799fb-c6e0-3eb5-f6fe-718cd2f62e92@I-love.SAKURA.ne.jp>
-Date:   Wed, 2 Sep 2020 20:09:54 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Wed, 2 Sep 2020 07:13:43 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-264-vYAVe1aDPQ2U4EAg7n6GQg-1; Wed, 02 Sep 2020 12:13:39 +0100
+X-MC-Unique: vYAVe1aDPQ2U4EAg7n6GQg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 2 Sep 2020 12:13:38 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 2 Sep 2020 12:13:38 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Colin Ian King' <colin.king@canonical.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+CC:     Len Brown <lenb@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH] ACPI: sysfs: copy ACPI data using io memory copying
+Thread-Topic: [PATCH] ACPI: sysfs: copy ACPI data using io memory copying
+Thread-Index: AQHWgROr7agM3y/cj06L4ZPs9JoiwalVMaYA
+Date:   Wed, 2 Sep 2020 11:13:38 +0000
+Message-ID: <e94b289c3dfb4ac0b05a7134f9ae8bb3@AcuMS.aculab.com>
+References: <20200312111345.1057569-1-colin.king@canonical.com>
+ <2440284.4js2fAD822@kreacher>
+ <65817d75-7272-2ef3-33a5-f390b5b0ec30@canonical.com>
+In-Reply-To: <65817d75-7272-2ef3-33a5-f390b5b0ec30@canonical.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <0000000000003feb9805a9c77128@google.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.002
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot is reporting hung task at nbd_ioctl() [1], for there are two
-problems regarding TIPC's connectionless socket's shutdown() operation.
-I found C reproducer for this problem (shown below) from "no output from
-test machine (2)" report.
-
-----------
-
-int main(int argc, char *argv[])
-{
-        const int fd = open("/dev/nbd0", 3);
-        ioctl(fd, NBD_SET_SOCK, socket(PF_TIPC, SOCK_DGRAM, 0));
-        ioctl(fd, NBD_DO_IT, 0);
-        return 0;
-}
-----------
-
-One problem is that wait_for_completion() from flush_workqueue() from
-nbd_start_device_ioctl() from nbd_ioctl() cannot be completed when
-nbd_start_device_ioctl() received a signal at wait_event_interruptible(),
-for tipc_shutdown() from kernel_sock_shutdown(SHUT_RDWR) from
-nbd_mark_nsock_dead() from sock_shutdown() from nbd_start_device_ioctl()
-is failing to wake up a WQ thread sleeping at wait_woken() from
-tipc_wait_for_rcvmsg() from sock_recvmsg() from sock_xmit() from
-nbd_read_stat() from recv_work() scheduled by nbd_start_device() from
-nbd_start_device_ioctl(). Fix this problem by always invoking
-sk->sk_state_change() (like inet_shutdown() does) when tipc_shutdown() is
-called.
-
-The other problem is that tipc_wait_for_rcvmsg() cannot return when
-tipc_shutdown() is called, for tipc_shutdown() sets sk->sk_shutdown to
-SEND_SHUTDOWN (despite "how" is SHUT_RDWR) while tipc_wait_for_rcvmsg()
-needs sk->sk_shutdown set to RCV_SHUTDOWN or SHUTDOWN_MASK. Fix this
-problem by setting sk->sk_shutdown to SHUTDOWN_MASK (like inet_shutdown()
-does) when the socket is connectionless.
-
-[1] https://syzkaller.appspot.com/bug?id=3fe51d307c1f0a845485cf1798aa059d12bf18b2
-
-Reported-by: syzbot <syzbot+e36f41d207137b5d12f7@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- net/tipc/socket.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 2679e97e0389..ebd280e767bd 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2771,18 +2771,21 @@ static int tipc_shutdown(struct socket *sock, int how)
- 
- 	trace_tipc_sk_shutdown(sk, NULL, TIPC_DUMP_ALL, " ");
- 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
--	sk->sk_shutdown = SEND_SHUTDOWN;
-+	if (tipc_sk_type_connectionless(sk))
-+		sk->sk_shutdown = SHUTDOWN_MASK;
-+	else
-+		sk->sk_shutdown = SEND_SHUTDOWN;
- 
- 	if (sk->sk_state == TIPC_DISCONNECTING) {
- 		/* Discard any unreceived messages */
- 		__skb_queue_purge(&sk->sk_receive_queue);
- 
--		/* Wake up anyone sleeping in poll */
--		sk->sk_state_change(sk);
- 		res = 0;
- 	} else {
- 		res = -ENOTCONN;
- 	}
-+	/* Wake up anyone sleeping in poll. */
-+	sk->sk_state_change(sk);
- 
- 	release_sock(sk);
- 	return res;
--- 
-2.18.4
-
+RnJvbTogQ29saW4gSWFuIEtpbmcNCj4gU2VudDogMDIgU2VwdGVtYmVyIDIwMjAgMTE6MjcNCj4g
+DQo+IE9uIDE0LzAzLzIwMjAgMTA6MjMsIFJhZmFlbCBKLiBXeXNvY2tpIHdyb3RlOg0KPiA+IE9u
+IFRodXJzZGF5LCBNYXJjaCAxMiwgMjAyMCAxMjoxMzo0NSBQTSBDRVQgQ29saW4gS2luZyB3cm90
+ZToNCj4gPj4gRnJvbTogQ29saW4gSWFuIEtpbmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4N
+Cj4gPj4NCj4gPj4gUmVhZGluZyBBQ1BJIGRhdGEgb24gQVJNNjQgYXQgYSBub24tYWxpZ25lZCBv
+ZmZzZXQgZnJvbQ0KPiA+PiAvc3lzL2Zpcm13YXJlL2FjcGkvdGFibGVzL2RhdGEvQkVSVCB3aWxs
+IGNhdXNlIGEgc3BsYXQgYmVjYXVzZQ0KPiA+PiB0aGUgZGF0YSBpcyBJL08gbWVtb3J5IG1hcHBl
+ZCBhbmQgYmVpbmcgcmVhZCB3aXRoIGp1c3QgYSBtZW1jcHkuDQo+ID4+IEZpeCB0aGlzIGJ5IGlu
+dHJvZHVjaW5nIGFuIEkvTyB2YXJpYW50IG9mIG1lbW9yeV9yZWFkX2Zyb21fYnVmZmVyDQo+ID4+
+IGFuZCB1c2luZyBJL08gbWVtb3J5IG1hcHBlZCBjb3BpZXMgaW5zdGVhZC4NCi4uDQo+ID4+ICsv
+KioNCj4gPj4gKyAqIG1lbW9yeV9yZWFkX2Zyb21faW9fYnVmZmVyIC0gY29weSBkYXRhIGZyb20g
+YSBpbyBtZW1vcnkgbWFwcGVkIGJ1ZmZlcg0KPiA+PiArICogQHRvOiB0aGUga2VybmVsIHNwYWNl
+IGJ1ZmZlciB0byByZWFkIHRvDQo+ID4+ICsgKiBAY291bnQ6IHRoZSBtYXhpbXVtIG51bWJlciBv
+ZiBieXRlcyB0byByZWFkDQo+ID4+ICsgKiBAcHBvczogdGhlIGN1cnJlbnQgcG9zaXRpb24gaW4g
+dGhlIGJ1ZmZlcg0KPiA+PiArICogQGZyb206IHRoZSBidWZmZXIgdG8gcmVhZCBmcm9tDQo+ID4+
+ICsgKiBAYXZhaWxhYmxlOiB0aGUgc2l6ZSBvZiB0aGUgYnVmZmVyDQo+ID4+ICsgKg0KPiA+PiAr
+ICogVGhlIG1lbW9yeV9yZWFkX2Zyb21fYnVmZmVyKCkgZnVuY3Rpb24gcmVhZHMgdXAgdG8gQGNv
+dW50IGJ5dGVzIGZyb20gdGhlDQo+ID4+ICsgKiBpbyBtZW1vcnkgbWFwcHkgYnVmZmVyIEBmcm9t
+IGF0IG9mZnNldCBAcHBvcyBpbnRvIHRoZSBrZXJuZWwgc3BhY2UgYWRkcmVzcw0KPiA+PiArICog
+c3RhcnRpbmcgYXQgQHRvLg0KPiA+PiArICoNCj4gPj4gKyAqIE9uIHN1Y2Nlc3MsIHRoZSBudW1i
+ZXIgb2YgYnl0ZXMgcmVhZCBpcyByZXR1cm5lZCBhbmQgdGhlIG9mZnNldCBAcHBvcyBpcw0KPiA+
+PiArICogYWR2YW5jZWQgYnkgdGhpcyBudW1iZXIsIG9yIG5lZ2F0aXZlIHZhbHVlIGlzIHJldHVy
+bmVkIG9uIGVycm9yLg0KPiA+PiArICoqLw0KDQpBcGFydCBmcm9tIHRoZSByZXR1cm4gdmFsdWUg
+aG93IGlzIHRoaXMgZGlmZmVyZW50IGZyb20gdGhlIGdlbmVyaWMNCm1lbWNweV9mcm9tX2lvKCkg
+Pw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJv
+YWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24g
+Tm86IDEzOTczODYgKFdhbGVzKQ0K
 
