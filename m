@@ -2,80 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA56925AF70
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56D625AF89
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728454AbgIBPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:39:08 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44620 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbgIBPjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:39:04 -0400
-Received: by mail-ed1-f68.google.com with SMTP id b12so5374991edz.11;
-        Wed, 02 Sep 2020 08:39:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f9RVe5a3WOs0Z8G5noGYlG05SPy10EgM9kuZ1XKP0v8=;
-        b=l8Nag+P9r223wmyFr7qY8X+gw9l20G0BT44BgdIUfxEp7DzHrV4cco97OGvCxB2V4n
-         SlK9FoakxZyC8iV/hqTGXoaIpQu82IQtisM7pAE9qFf/KDpjSnRokDQI/pM6SWFG7puY
-         sZJvq9dzyqopW8gpe/rJYSRozGR8T1YhcIFGOQp20ze2khb5Pu0smdrNFjGizwILEjnM
-         e7k6uKlvB2r7F6jby/PC8DeE9ulweHBzXRi0H6z80/A1yhmC8PZ8EVXjzVBTBFMEmJ7C
-         fAQ+4AIUw6eZ04MK8QKvjNfV5G/B5aH23pYaaWReEjLvxWxP3iKv6fRbeX5LnxyShKjc
-         ma8A==
-X-Gm-Message-State: AOAM532a+/1hTroe6rXnhZCRUUFbwzCmXV1iqFpO/8WkBY+mASeGjxqx
-        15MrDdObXKIUklFBozKpCWs=
-X-Google-Smtp-Source: ABdhPJzKmSdWZbHw7WTs7nAsmR+RbtPdB69nq6cY5TRzrRXgEYKypAGDu5XWn+Um1XF7iPrL71nPNw==
-X-Received: by 2002:a50:d2d1:: with SMTP id q17mr636013edg.167.1599061141702;
-        Wed, 02 Sep 2020 08:39:01 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.106])
-        by smtp.googlemail.com with ESMTPSA id w11sm4370550edx.81.2020.09.02.08.39.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Sep 2020 08:39:01 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 17:38:58 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Denis GNUtoo Carikli <GNUtoo@cyberdimension.org>,
-        Simon Shields <simon@lineageos.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH 01/33] ARM: dts: exynos: Silence i2c-gpio dtschema
- warning in Galaxy I9100
-Message-ID: <20200902153858.GB21503@kozik-lap>
-References: <20200830135200.24304-1-krzk@kernel.org>
+        id S1728113AbgIBPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:40:43 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43942 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726526AbgIBPkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:40:24 -0400
+Received: from zn.tnic (p200300ec2f0d7a00acdede37bac547d6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:7a00:acde:de37:bac5:47d6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 470581EC0246;
+        Wed,  2 Sep 2020 17:40:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1599061221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J2ZtrCLLChAY/AVO02S7bV94bTES+irZ+l2Kh5Mnf50=;
+        b=YO7kP1OV0x0zu4OiuDp2CMuP+xSsyUTCMPKm6cC1+d0SfXMjJQpJMFsHEhkhXjoj3eMbbi
+        AMuf+zQuu1dSOS4828rhouHWMdZ7UVQ/hHGPI7BKMwarA9PvbZSXt2rE4rU/kaPifOELbA
+        IcoHEJbe+CHKazqbLJ8Ghz20rgTeZFI=
+Date:   Wed, 2 Sep 2020 17:40:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] tools/x86: add kcpuid tool to show raw CPU features
+Message-ID: <20200902154018.GA21537@zn.tnic>
+References: <1598514543-90152-1-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200830135200.24304-1-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1598514543-90152-1-git-send-email-feng.tang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 03:51:28PM +0200, Krzysztof Kozlowski wrote:
-> The name of I2C controller over GPIO lines node ends with '-gpio' which
-> confuses dtschema:
+On Thu, Aug 27, 2020 at 03:49:03PM +0800, Feng Tang wrote:
+> output of the tool
+> ------------------
 > 
->   /arch/arm/boot/dts/exynos4210-i9100.dt.yaml: /: i2c-gpio:
->     {'compatible': ['i2c-gpio'], ...  'maxim,over-volt': [[4500]]}} is not of type 'array'
->     From schema: lib/python3.6/site-packages/dtschema/schemas/gpio/gpio-consumer.yaml
+> 	CPUID leafs total: 28
 > 
-> Add a '-0' suffix to silence it.  This pattern on naming i2c-gpio is
-> already present in many other dts.  No functional change.
+> 	cpu family	: 6
+> 	model		: 13
+> 	stepping	: 7
+
+Yeah, this should dump model etc and those numbers should be in hex and
+additionally in dec if people prefer them.
+
+> 	CPU features
+> 	------------
+> 	 sse3
+> 	 pclmlqdq
+> 	 dtes64
+> 	 mwait
+> 	 ds_cpl
+> 	 vmx
+> 	 smx
+> 	 eist
+> 	 tm2
+> 	 ssse3
+> 	 cx16
+> 	 pctxid
+> 	 dca
+> 	 sse4_1
+> 	 sse4_2
+> 	 x2apic
+> 	 tsc_deadline_timer
+> 	 aes
+> 	 xsave
+> 	 osxsave
+> 	 avx
+> 	 fpu
+> 	 ...
+
+I guess that's good for grepping. With a lot of leafs, leaf output
+should probably be controlled by cmdline opts.
+
+> [1] http://sr71.net/~dave/intel/stupid-cpuid.c
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Originally-by: Borislav Petkov <bp@alien8.de>
+> Suggested-by: Dave Hansen <dave.hansen@intel.com>
+> Signed-off-by: Feng Tang <feng.tang@intel.com>
 > ---
->  arch/arm/boot/dts/exynos4210-i9100.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  tools/arch/x86/tools/kcpuid/Makefile |  21 ++
+>  tools/arch/x86/tools/kcpuid/kcpuid.c | 422 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 443 insertions(+)
+>  create mode 100644 tools/arch/x86/tools/kcpuid/Makefile
+>  create mode 100644 tools/arch/x86/tools/kcpuid/kcpuid.c
 
-Applied.
+Let's drop the second "tools" from the path:
 
-Best regards,
-Krzysztof
+tools/arch/x86/kcpuid/Makefile
+tools/arch/x86/kcpuid/kcpuid.c
 
+> +struct reg_01_a {
+> +	u32 stepping: 4;	/* bit 0 */
+> +	u32 model: 4;
+> +	u32 family: 4;
+> +	u32 type: 2;
+> +	u32 pad1: 2;
+> +	u32 model_ext: 4;	/* bit 16 */
+> +	u32 family_ext: 8;
+> +};
+
+Yeah, instead of defining a separate struct for each leaf I think it
+would be smarter/better to have a text file in a machine parseable
+format which defines your leafs.
+
+When you need to add a new leaf, you simply extend the text file and the
+tool parses it anew and has its all CPUID info uptodate. This way you
+won't even have to recompile it. Adding new CPUID leafs would be adding new
+lines to the file.
+
+For example:
+
+LEAF<num>,SUBLEAF<num>,[EAX,EBX,ECX,EDX]{[width]<Mnemonic>|<Long text>,...}
+
+LEAF07,SUBLEAF00,EAX{[31:0]max_value|Max input value for supported subleafs}
+LEAF07,SUBLEAF00,EBX{[0]FSGSBASE|RDFSBASE/RDGSBASE/WRFSBASE/WRGSBASE if 1.,
+		     [1]TSC_ADJUST|IA32_TSC_ADJUST MSR is supported if 1.,
+		     [2]SGX|Supports Intel® Software Guard Extensions (Intel® SGX Extensions) if 1.,
+		     ...
+}
+LEAF07,SUBLEAF00,ECX{[0]PREFETCHWT1|(Intel® Xeon PhiTM only.),
+		     [1]AVX512_VBMI|,
+		     ...
+
+This is just a dumb attempt but I hope it comes across where I'm getting
+with this.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
