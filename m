@@ -2,53 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10D525A917
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD10A25A91A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgIBKHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 06:07:23 -0400
-Received: from bmailout1.hostsharing.net ([83.223.95.100]:47909 "EHLO
-        bmailout1.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726140AbgIBKHW (ORCPT
+        id S1726678AbgIBKHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 06:07:55 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45512 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbgIBKHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 06:07:22 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "COMODO RSA Domain Validation Secure Server CA" (not verified))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 8249230037B89;
-        Wed,  2 Sep 2020 12:07:21 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 61FB14C769; Wed,  2 Sep 2020 12:07:21 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 12:07:21 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        linux-serial@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] serial: 8250: Simplify with dev_err_probe()
-Message-ID: <20200902100721.GB4277@wunner.de>
-References: <20200901153100.18827-1-krzk@kernel.org>
+        Wed, 2 Sep 2020 06:07:52 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E205B1C0B7F; Wed,  2 Sep 2020 12:07:49 +0200 (CEST)
+Date:   Wed, 2 Sep 2020 12:07:48 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, ben.hutchings@codethink.co.uk,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/61] 4.4.235-rc2 review
+Message-ID: <20200902100748.GB3765@duo.ucw.cz>
+References: <20200902074814.459749499@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="V0207lvV8h4k8FAm"
 Content-Disposition: inline
-In-Reply-To: <20200901153100.18827-1-krzk@kernel.org>
+In-Reply-To: <20200902074814.459749499@linuxfoundation.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 05:30:59PM +0200, Krzysztof Kozlowski wrote:
-> Common pattern of handling deferred probe can be simplified with
-> dev_err_probe().  Less code and the error value gets printed.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Reviewed-by: Lukas Wunner <lukas@wunner.de>
+--V0207lvV8h4k8FAm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This is the start of the stable review cycle for the 4.4.235 release.
+> There are 61 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Fri, 04 Sep 2020 07:47:57 +0000.
+> Anything received after that time might be too late.
+
+CIP testing did not find any problems.
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1=
+84683545
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--V0207lvV8h4k8FAm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX09u9AAKCRAw5/Bqldv6
+8k8XAKC9SFLASD4DclvwZTPgwQpd5l8YWwCfVpcwWAwQJTE91Secfch5Ph11i/U=
+=srbG
+-----END PGP SIGNATURE-----
+
+--V0207lvV8h4k8FAm--
