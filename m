@@ -2,136 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18FF25AD2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8275A25AD23
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728153AbgIBO3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:29:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:39018 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727867AbgIBOZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:25:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9D82101E;
-        Wed,  2 Sep 2020 07:25:30 -0700 (PDT)
-Received: from [10.57.40.122] (unknown [10.57.40.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E31933F71F;
-        Wed,  2 Sep 2020 07:25:28 -0700 (PDT)
-Subject: Re: [PATCH] media: mtk-vcodec: set dma max segment size
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        linux-mediatek@lists.infradead.org
-Cc:     Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-kernel@vger.kernel.org,
-        Anand K Mistry <amistry@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20200821041414.1560707-1-hsinyi@chromium.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f8c5b7e0-66a2-7ec6-041f-82679a863758@arm.com>
-Date:   Wed, 2 Sep 2020 15:25:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728239AbgIBO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727927AbgIBO1W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 10:27:22 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5669FC061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 07:27:22 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id ba12so5139711edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 07:27:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6OOrr3ankKVwxGGNXToxy8jZJ4HxhbpceY6NaN50tLo=;
+        b=MnyrJeZWxNanxx+EeVE/LB7iSafmhLfk8zHRAK7voOONuaQFQEp8FWuNryGn4WlrvK
+         YiaPAiGMbL43ABgId2yZdBMutBWeYG80LAvLktNAUeReCRCAZKhDQWdZkH1TmA9HM64N
+         97zfvWaoPMpVrPbgWPW1wqg0HWi1CpGicWQ3wAt15K5BXPdJSkrWz8XKHqA6CzYunlJJ
+         Ku9rD8Q0Iw5rjGvtQN99M3OpzxqqRu/OB1JoIRpo8DeZHDJ+oSIz3AjII/VHvkAxOYtx
+         6GwaI7NjueIhnz9V2rhOZmvj6CETY7E8dvX0Gzl7zMZbpyVd2hEnFU55UESMBey8sU0O
+         dHtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6OOrr3ankKVwxGGNXToxy8jZJ4HxhbpceY6NaN50tLo=;
+        b=uXWeYotZ3DPGLnA9eQFCjuHbGiclLGFyO34CMVokelj0Y5paaNzdpBeK+f9LQrkIpq
+         FxuxxLKeQLPB80AnSkppXtsHA88dvjGUL8E2d6mRVDp9o+zkJY0mw7eqwRDad/r4Lduc
+         9uE6QeQEwrxHWF8YJvRq/YFLV1QPkBO+Ug8a7EVO1QwIW6X6g+1SwDHulQgwaNY5R5uo
+         rkeW178cwylEC54Lk5rhmARD/kHTverBxqlc7+naZaGq9sE6FkRrigH0cHxZVmbHerIx
+         F33Tr9UqUfs9IOtsH/vm9vCi/5j6KlmCKbbj97sMw6AjuCO1Y5JkWuTC6p6mMklNRzwV
+         OCYA==
+X-Gm-Message-State: AOAM530nG7ug/khQCIF0sf4WOQ168fmwC3/RwhUpRDSmvEbCxnHuMPce
+        4LLXrJxYD5WDrFO3EmQNK9M9ewtbLlEMYey1xEApkQ==
+X-Google-Smtp-Source: ABdhPJzNVkeIY5bugg1hnssT2HP/1orWqIA4ATC5qddKjKxgYam+9CmN4LlIuehn0Ap7B63fkyLj5KnhXd2jZIkpPrM=
+X-Received: by 2002:a05:6402:1d0f:: with SMTP id dg15mr352913edb.342.1599056840905;
+ Wed, 02 Sep 2020 07:27:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200821041414.1560707-1-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200901124615.137200-1-pasha.tatashin@soleen.com> <20200902140851.GJ4617@dhcp22.suse.cz>
+In-Reply-To: <20200902140851.GJ4617@dhcp22.suse.cz>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 2 Sep 2020 10:26:44 -0400
+Message-ID: <CA+CK2bBZdN56fmsC2jyY_ju8rQfG2-9hForf1CEdcUVL1+wrrA@mail.gmail.com>
+Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
+ memory offline
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-21 05:14, Hsin-Yi Wang wrote:
-> Set dma max segment size for encoder and decoder driver.
-> 
-> Fix following warning with CONFIG_DMA_API_DEBUG_SG=y
-> 
-> [   75.147825] ------------[ cut here ]------------
-> [   75.147844] mtk-vcodec-enc 19002000.vcodec: DMA-API: mapping sg segment longer than device claims to support [len=983040] [max=65536]
-> [   75.147876] WARNING: CPU: 2 PID: 4069 at kernel/dma/debug.c:1302 debug_dma_map_sg+0x1a8/0x2c4
-> ...
-> [   75.148139] Call trace:
-> [   75.148149]  debug_dma_map_sg+0x1a8/0x2c4
-> [   75.148165]  vb2_dc_get_userptr+0x228/0x364 [videobuf2_dma_contig]
-> [   75.148178]  __buf_prepare+0x3ac/0x8c0 [videobuf2_common]
-> [   75.148188]  vb2_core_qbuf+0xa4/0x58c [videobuf2_common]
-> [   75.148199]  vb2_qbuf+0x88/0xe4 [videobuf2_v4l2]
-> [   75.148211]  v4l2_m2m_qbuf+0x80/0xf8 [v4l2_mem2mem]
-> [   75.148221]  vidioc_venc_qbuf+0x3c/0x70 [mtk_vcodec_enc]
-> [   75.148234]  v4l_qbuf+0x48/0x58
-> [   75.148242]  __video_do_ioctl+0x200/0x37c
-> [   75.148250]  video_usercopy+0x360/0x834
-> [   75.148259]  video_ioctl2+0x38/0x48
-> [   75.148267]  v4l2_ioctl+0x6c/0x80
-> [   75.148276]  do_video_ioctl+0xefc/0x4b70
-> [   75.148284]  v4l2_compat_ioctl32+0x5c/0xcc
-> [   75.148294]  __arm64_compat_sys_ioctl+0xf4/0x240
-> [   75.148304]  el0_svc_common+0xac/0x198
-> [   75.148312]  el0_svc_compat_handler+0x2c/0x40
-> [   75.148321]  el0_svc_compat+0x8/0x18
-> [   75.148328] irq event stamp: 0
-> [   75.148337] hardirqs last  enabled at (0): [<0000000000000000>]           (null)
-> [   75.148347] hardirqs last disabled at (0): [<ffffff90080e65c0>] copy_process+0x380/0x115c
-> [   75.148356] softirqs last  enabled at (0): [<ffffff90080e65d8>] copy_process+0x398/0x115c
-> [   75.148364] softirqs last disabled at (0): [<0000000000000000>]           (null)
-> [   75.148372] ---[ end trace 588bf529451e3531 ]---
-> 
-> Reported-by: Anand K Mistry <amistry@chromium.org>
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->   drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c | 8 ++++++++
->   drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 8 ++++++++
->   2 files changed, 16 insertions(+)
-> 
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> index 97a1b6664c20..3bbd0bac56d6 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_drv.c
-> @@ -242,6 +242,14 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->   		mtk_v4l2_err("[VPU] vpu device in not ready");
->   		return -EPROBE_DEFER;
->   	}
-> +	if (!pdev->dev.dma_parms) {
-> +		pdev->dev.dma_parms = devm_kzalloc(&pdev->dev,
-> +						sizeof(*pdev->dev.dma_parms),
-> +						GFP_KERNEL);
-> +		if (!pdev->dev.dma_parms)
-> +			return -ENOMEM;
-> +	}
+On Wed, Sep 2, 2020 at 10:08 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 01-09-20 08:46:15, Pavel Tatashin wrote:
+> > There is a race during page offline that can lead to infinite loop:
+> > a page never ends up on a buddy list and __offline_pages() keeps
+> > retrying infinitely or until a termination signal is received.
+> >
+> > Thread#1 - a new process:
+> >
+> > load_elf_binary
+> >  begin_new_exec
+> >   exec_mmap
+> >    mmput
+> >     exit_mmap
+> >      tlb_finish_mmu
+> >       tlb_flush_mmu
+> >        release_pages
+> >         free_unref_page_list
+> >          free_unref_page_prepare
+> >           set_pcppage_migratetype(page, migratetype);
+> >              // Set page->index migration type below  MIGRATE_PCPTYPES
+> >
+> > Thread#2 - hot-removes memory
+> > __offline_pages
+> >   start_isolate_page_range
+> >     set_migratetype_isolate
+> >       set_pageblock_migratetype(page, MIGRATE_ISOLATE);
+> >         Set migration type to MIGRATE_ISOLATE-> set
+> >         drain_all_pages(zone);
+> >              // drain per-cpu page lists to buddy allocator.
+>
+> It is not really clear to me how we could have passed
+> has_unmovable_pages at this stage when the page is not PageBuddy. Is
+> this because you are using Movable Zones?
 
-Since 9495b7e92f71, dma_parms is included in the platform_device itself 
-and always set, so you can drop these allocation paths.
+Yes, we hot-remove memory from the movable zone.
 
-> +	dma_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
+>
+> >
+> > Thread#1 - continue
+> >          free_unref_page_commit
+> >            migratetype = get_pcppage_migratetype(page);
+> >               // get old migration type
+> >            list_add(&page->lru, &pcp->lists[migratetype]);
+> >               // add new page to already drained pcp list
+> >
+> > Thread#2
+> > Never drains pcp again, and therefore gets stuck in the loop.
+> >
+> > The fix is to try to drain per-cpu lists again after
+> > check_pages_isolated_cb() fails.
+>
+> But this means that the page is not isolated and so it could be reused
+> for something else. No?
 
-The segment size is simply a size, not a bitmask, so UINT_MAX would be 
-more semantically appropriate.
+The page is in a movable zone, has zero references, and the section is
+isolated (i.e. set_pageblock_migratetype(page, MIGRATE_ISOLATE);) is
+set. The page should be offlinable, but it is lost in a pcp list as
+that list is never drained again after the first failure to migrate
+all pages in the range.
 
-Robin.
-
->   	vpu_wdt_reg_handler(dev->vpu_plat_dev, mtk_vcodec_dec_reset_handler,
->   			dev, VPU_RST_DEC);
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> index 4d31f1ed113f..ff4a87485d69 100644
-> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
-> @@ -249,6 +249,14 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
->   		mtk_v4l2_err("[VPU] vpu device in not ready");
->   		return -EPROBE_DEFER;
->   	}
-> +	if (!pdev->dev.dma_parms) {
-> +		pdev->dev.dma_parms = devm_kzalloc(&pdev->dev,
-> +						sizeof(*pdev->dev.dma_parms),
-> +						GFP_KERNEL);
-> +		if (!pdev->dev.dma_parms)
-> +			return -ENOMEM;
-> +	}
-> +	dma_set_max_seg_size(&pdev->dev, DMA_BIT_MASK(32));
->   
->   	vpu_wdt_reg_handler(dev->vpu_plat_dev, mtk_vcodec_enc_reset_handler,
->   				dev, VPU_RST_ENC);
-> 
+>
+> > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  mm/memory_hotplug.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> > index e9d5ab5d3ca0..d6d54922bfce 100644
+> > --- a/mm/memory_hotplug.c
+> > +++ b/mm/memory_hotplug.c
+> > @@ -1575,6 +1575,15 @@ static int __ref __offline_pages(unsigned long start_pfn,
+> >               /* check again */
+> >               ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
+> >                                           NULL, check_pages_isolated_cb);
+> > +             /*
+> > +              * per-cpu pages are drained in start_isolate_page_range, but if
+> > +              * there are still pages that are not free, make sure that we
+> > +              * drain again, because when we isolated range we might
+> > +              * have raced with another thread that was adding pages to
+> > +              * pcp list.
+> > +              */
+> > +             if (ret)
+> > +                     drain_all_pages(zone);
+> >       } while (ret);
+> >
+> >       /* Ok, all of our target is isolated.
+> > --
+> > 2.25.1
+> >
+>
+> --
+> Michal Hocko
+> SUSE Labs
