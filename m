@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07C125B35A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234CC25B35C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgIBSHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 14:07:03 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:34171 "EHLO
+        id S1728015AbgIBSHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 14:07:19 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:57639 "EHLO
         out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727923AbgIBSGf (ORCPT
+        by vger.kernel.org with ESMTP id S1727924AbgIBSGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 14:06:35 -0400
+        Wed, 2 Sep 2020 14:06:38 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 86FAE5C01A9;
+        by mailout.nyi.internal (Postfix) with ESMTP id C87BE5C01D8;
         Wed,  2 Sep 2020 14:06:32 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute4.internal (MEProxy); Wed, 02 Sep 2020 14:06:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=clFcHF8RSMWnt
-        gVxpYKMJOSLAdjV1uGHbUSJNEeaPm0=; b=JoTG8PpHCt6+MSuCBazIZdfaAO886
-        st903/gbM04E2nYNv8727gPF9HMBh/oqKFgx1YmRs84dnUSNs/omDvdmPpX4gwG/
-        Ew4Uh4RGJ0fETazGEuI+cM5vbwgnGSYkQfET8StsjilICk/J9PlJqpnRBjLtuuwE
-        BCjfUSEVtbYMUTkrSm7bH16yPjuMvxGTwmXYtm5EAtYmepVM+02YKgqljUtZYV/Z
-        yCKbbHDoLDZtWTWFygbC3/hMzadv+COQfC05AqSECv1sTi8svldpXn5SCRxW9m8i
-        CPUxH9XwY78LZ1QuX76yuy7LK31PFU1lsLazJv3gxOMPBvFGmEAJNSahg==
+        :mime-version:content-transfer-encoding; s=fm1; bh=ws1j/mKPYHXFd
+        qyNwo3xjFGDqqtwldYO4m1W2BzXBgU=; b=cP6uhp21LZjEK3HPsSfdk3nRply0h
+        woG1gTdXGPQbDfCEYGO6Hhb10dFnSp8VVRKe9+1IVV5V7bhLhF1PPK792xs36ZUt
+        L8E3joubwWsCF++JHZSGekQRv+9IrgJ/ioygr3uIGpJPuseNqP9ZJa3MnU8k9bVX
+        CQgI35Z03RXq4oLm+FjkyQc+5B84fccBeknsbX0hNy24xWg+5a1mgDsz+Bt1fB2R
+        0VtdIPdZ0eJJNMhK2sO8B/SGs5oFWo4c9aP/+LQ9MuSLOs3Q225GIlqBOtAFj97P
+        7Mp+sLPOuu8B9w/8y0k61iJlueJwx/1tPA1IsaXMq0KicxURdmxidpT0Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=clFcHF8RSMWntgVxpYKMJOSLAdjV1uGHbUSJNEeaPm0=; b=jFA2qhOu
-        FrMd+jy72pdOO8/f5IEk4cde1d2AYkQ/c0RGD5QBuAQAEfkgFXD9EYoQR5jIDK0l
-        gC9JNi8W/jE3TB1bZrrB8IP2rYmkvfRmzTiOmdNIlOXYWOkWUBqokj1mR/9tmd/e
-        jarC8xIX9RSNkaryI9WsfbMxB0CwmtQ9iI7CN6p1QaSFpyG85Rp3AQp5+cyqOwBL
-        1fMvaiT+jdoEfsX86CLN7DCiqpE3zVy3tfd2ziuXMHB0TQymw3s3TCd/c2cn77N7
-        FvXfmOZrGyL3qy+TTU5XfX4OicNdx+GB7kc3CvO+/qFowjEZFJN24LBRfZws0VrX
-        43aIJ6WAOuqCKA==
-X-ME-Sender: <xms:J99PX9ozFgcMZGAntC_Quo1Xi32HYB3lyYo1yrDv24b_ihBEtqZa9g>
-    <xme:J99PX_oL-BfKtv6QjZ5a7C_xQNXf_QJbsjjBFxXYyYggswGRm2PwV8kyiAfTe_KkQ
-    kAM6_5AWEYUAgiK7Q>
+        fm3; bh=ws1j/mKPYHXFdqyNwo3xjFGDqqtwldYO4m1W2BzXBgU=; b=VOjyCc0p
+        eT9nNtSZ0qxyKFx3RSDvo+copPgeDQitDQBqeXndq3dt9cigisVB2HU2cHG/QyvJ
+        /d0/wf8Oed8TnJJtHMnix3eQqKi7IbkXMKj9ShSTbuFAV0anLPIGU0E5PJQC3ebV
+        W1BvW0y7DFLYdArzDLjDBwh307KyNw1G0rPUyaRu+N9C6VadKVgzuCZh5c1Qc2p/
+        gQwySLUjhFrEZbFjwm+d1+yOuaeZQwCvHkmbEHQmGY7uGuvT0/vp0Dg4fvV/eGkg
+        cWA+j8Lpi4iotTKfSCsejg+4bCjIX28hHYTIBsNvkEX4ALPQb6JuzdUuzUxbZQaC
+        IfpXdivBEOBLmA==
+X-ME-Sender: <xms:KN9PX7Rg8zkI6G9n1sThRT9GggTBNH3qlYl65eieMNP1KTro5ezGNw>
+    <xme:KN9PX8wAaNvvBYeWYLlVxA_72oGVQxhbXDoMfx3N0cUa1IDvgq2sUEo9408R2r6Kk
+    jmksTMY9WDvgPiBlA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefledguddvudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -48,12 +48,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefledguddvudcutefuodetgg
     ffveektdduhfdutdfgtdekkedvhfetuedufedtgffgvdevleehheevjefgtdenucfkphep
     uddvrdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
     epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:KN9PX6MNON3H1iJHzH8MryWY7LB22bxWlIryR5bjsv92JT2nxAX3zA>
-    <xmx:KN9PX46sRb5iWMBvM34wD4mN3ueUj8wRwZ8mID8B3ubCZREWxc8dyg>
-    <xmx:KN9PX87Q3Q_eDPz_I2y33rpRkkQPPVKnZOOb35nfv-MTG_QozFOb7A>
-    <xmx:KN9PX7aIxCViBYh5mGLOxIBMtG_q3IZVa0EZChh0iGidXFYUkC06pg>
+X-ME-Proxy: <xmx:KN9PXw33b3cu7Zxzkola4xVgtoX2aID56FJmF4F67-bc9HI161lLLw>
+    <xmx:KN9PX7BKgb2RWn9LoFrQ06_h6CHqnOeg2Fqt59ttYkXa60tNp_FQYQ>
+    <xmx:KN9PX0ixqo_8sTtbc-ZnANwLYW4MvDwWy5FMoUsnv9hpfTr3emhyIA>
+    <xmx:KN9PXwhWQ1T0azYYnMShbh0MW3ZSPQQwmQnibK5up4k0R1hYcr8trA>
 Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A7D5C3060067;
+        by mail.messagingengine.com (Postfix) with ESMTPA id E1AA130600A6;
         Wed,  2 Sep 2020 14:06:31 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org, Roman Gushchin <guro@fb.com>
@@ -64,9 +64,9 @@ Cc:     Rik van Riel <riel@surriel.com>,
         Yang Shi <yang.shi@linux.alibaba.com>,
         David Nellans <dnellans@nvidia.com>,
         linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH 04/16] mm: thp: 1GB THP copy on write implementation.
-Date:   Wed,  2 Sep 2020 14:06:16 -0400
-Message-Id: <20200902180628.4052244-5-zi.yan@sent.com>
+Subject: [RFC PATCH 05/16] mm: thp: handling 1GB THP reference bit.
+Date:   Wed,  2 Sep 2020 14:06:17 -0400
+Message-Id: <20200902180628.4052244-6-zi.yan@sent.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200902180628.4052244-1-zi.yan@sent.com>
 References: <20200902180628.4052244-1-zi.yan@sent.com>
@@ -80,153 +80,203 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-COW on 1GB THPs will fall back to 2MB THPs if 1GB THP is not available.
+Add PUD-level TLB flush ops and teach page_vma_mapped_talk about 1GB
+THPs.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 ---
- arch/x86/include/asm/pgalloc.h |  9 ++++++
- include/linux/huge_mm.h        |  5 ++++
- mm/huge_memory.c               | 54 ++++++++++++++++++++++++++++++++++
- mm/memory.c                    |  2 +-
- mm/swapfile.c                  |  4 ++-
- 5 files changed, 72 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/pgtable.h |  3 +++
+ arch/x86/mm/pgtable.c          | 13 +++++++++++++
+ include/linux/mmu_notifier.h   | 13 +++++++++++++
+ include/linux/pgtable.h        | 14 ++++++++++++++
+ include/linux/rmap.h           |  1 +
+ mm/page_vma_mapped.c           | 33 +++++++++++++++++++++++++++++----
+ mm/rmap.c                      | 12 +++++++++---
+ 7 files changed, 82 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
-index fae13467d3e1..31221269c387 100644
---- a/arch/x86/include/asm/pgalloc.h
-+++ b/arch/x86/include/asm/pgalloc.h
-@@ -98,6 +98,15 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index 26255cac78c0..15334f5ba172 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -1127,6 +1127,9 @@ extern int pudp_test_and_clear_young(struct vm_area_struct *vma,
+ extern int pmdp_clear_flush_young(struct vm_area_struct *vma,
+ 				  unsigned long address, pmd_t *pmdp);
  
- #define pmd_pgtable(pmd) pmd_page(pmd)
++#define __HAVE_ARCH_PUDP_CLEAR_YOUNG_FLUSH
++extern int pudp_clear_flush_young(struct vm_area_struct *vma,
++				  unsigned long address, pud_t *pudp);
  
-+static inline void pud_populate_with_pgtable(struct mm_struct *mm, pud_t *pud,
-+				struct page *pte)
-+{
-+	unsigned long pfn = page_to_pfn(pte);
-+
-+	paravirt_alloc_pmd(mm, pfn);
-+	set_pud(pud, __pud(((pteval_t)pfn << PAGE_SHIFT) | _PAGE_TABLE));
-+}
-+
- #if CONFIG_PGTABLE_LEVELS > 2
- static inline pmd_t *pmd_alloc_one_page_with_ptes(struct mm_struct *mm, unsigned long addr)
- {
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 7528652400e4..0c20a8ea6911 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -19,6 +19,7 @@ extern int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
- extern void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud);
- extern int do_huge_pud_anonymous_page(struct vm_fault *vmf);
-+extern vm_fault_t do_huge_pud_wp_page(struct vm_fault *vmf, pud_t orig_pud);
- #else
- static inline void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud)
- {
-@@ -27,6 +28,10 @@ extern int do_huge_pud_anonymous_page(struct vm_fault *vmf)
- {
- 	return VM_FAULT_FALLBACK;
+ #define pmd_write pmd_write
+ static inline int pmd_write(pmd_t pmd)
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 7be73aee6183..e4a2dffcc418 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -633,6 +633,19 @@ int pmdp_clear_flush_young(struct vm_area_struct *vma,
+ 
+ 	return young;
  }
-+extern vm_fault_t do_huge_pud_wp_page(struct vm_fault *vmf, pud_t orig_pud)
++int pudp_clear_flush_young(struct vm_area_struct *vma,
++			   unsigned long address, pud_t *pudp)
 +{
-+	return VM_FAULT_FALLBACK;
++	int young;
++
++	VM_BUG_ON(address & ~HPAGE_PUD_MASK);
++
++	young = pudp_test_and_clear_young(vma, address, pudp);
++	if (young)
++		flush_tlb_range(vma, address, address + HPAGE_PUD_SIZE);
++
++	return young;
 +}
  #endif
  
- extern vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd);
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index ec3847392208..6da9b02501b7 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1334,6 +1334,60 @@ void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud)
- unlock:
- 	spin_unlock(vmf->ptl);
- }
-+
-+vm_fault_t do_huge_pud_wp_page(struct vm_fault *vmf, pud_t orig_pud)
-+{
-+	struct vm_area_struct *vma = vmf->vma;
-+	struct page *page = NULL;
-+	unsigned long haddr = vmf->address & HPAGE_PUD_MASK;
-+
-+	vmf->ptl = pud_lockptr(vma->vm_mm, vmf->pud);
-+	VM_BUG_ON_VMA(!vma->anon_vma, vma);
-+
-+	if (is_huge_zero_pud(orig_pud))
-+		goto fallback;
-+
-+	spin_lock(vmf->ptl);
-+
-+	if (unlikely(!pud_same(*vmf->pud, orig_pud))) {
-+		spin_unlock(vmf->ptl);
-+		return 0;
-+	}
-+
-+	page = pud_page(orig_pud);
-+	VM_BUG_ON_PAGE(!PageCompound(page) || !PageHead(page), page);
-+
-+	/* Lock page for reuse_swap_page() */
-+	if (!trylock_page(page)) {
-+		get_page(page);
-+		spin_unlock(vmf->ptl);
-+		lock_page(page);
-+		spin_lock(vmf->ptl);
-+		if (unlikely(!pud_same(*vmf->pud, orig_pud))) {
-+			unlock_page(page);
-+			put_page(page);
-+			return 0;
-+		}
-+		put_page(page);
-+	}
-+	if (reuse_swap_page(page, NULL)) {
-+		pud_t entry;
-+
-+		entry = pud_mkyoung(orig_pud);
-+		entry = maybe_pud_mkwrite(pud_mkdirty(entry), vma);
-+		if (pudp_set_access_flags(vma, haddr, vmf->pud, entry,  1))
-+			update_mmu_cache_pud(vma, vmf->address, vmf->pud);
-+		unlock_page(page);
-+		spin_unlock(vmf->ptl);
-+		return VM_FAULT_WRITE;
-+	}
-+	unlock_page(page);
-+	spin_unlock(vmf->ptl);
-+fallback:
-+	__split_huge_pud(vma, vmf->pud, vmf->address);
-+	return VM_FAULT_FALLBACK;
-+}
-+
- #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+ /**
+diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+index b8200782dede..4ffa179e654f 100644
+--- a/include/linux/mmu_notifier.h
++++ b/include/linux/mmu_notifier.h
+@@ -557,6 +557,19 @@ static inline void mmu_notifier_range_init_migrate(
+ 	__young;							\
+ })
  
- void huge_pmd_set_accessed(struct vm_fault *vmf, pmd_t orig_pmd)
-diff --git a/mm/memory.c b/mm/memory.c
-index 6f86294438fd..b88587256bc1 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4165,7 +4165,7 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	/* No support for anonymous transparent PUD pages yet */
- 	if (vma_is_anonymous(vmf->vma))
--		return VM_FAULT_FALLBACK;
-+		return do_huge_pud_wp_page(vmf, orig_pud);
- 	if (vmf->vma->vm_ops->huge_fault)
- 		return vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PUD);
++#define pudp_clear_flush_young_notify(__vma, __address, __pudp)		\
++({									\
++	int __young;							\
++	struct vm_area_struct *___vma = __vma;				\
++	unsigned long ___address = __address;				\
++	__young = pudp_clear_flush_young(___vma, ___address, __pudp);	\
++	__young |= mmu_notifier_clear_flush_young(___vma->vm_mm,	\
++						  ___address,		\
++						  ___address +		\
++							PUD_SIZE);	\
++	__young;							\
++})
++
+ #define ptep_clear_young_notify(__vma, __address, __ptep)		\
+ ({									\
+ 	int __young;							\
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 255275d5b73e..8ef358c386af 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -240,6 +240,20 @@ static inline int pmdp_clear_flush_young(struct vm_area_struct *vma,
  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 20012c0c0252..e3f771c2ad83 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1635,7 +1635,9 @@ static int page_trans_huge_map_swapcount(struct page *page, int *total_mapcount,
- 	/* hugetlbfs shouldn't call it */
- 	VM_BUG_ON_PAGE(PageHuge(page), page);
+ #endif
  
--	if (!IS_ENABLED(CONFIG_THP_SWAP) || likely(!PageTransCompound(page))) {
-+	if (!IS_ENABLED(CONFIG_THP_SWAP) ||
-+	    unlikely(compound_order(compound_head(page)) == HPAGE_PUD_ORDER) ||
-+	    likely(!PageTransCompound(page))) {
- 		mapcount = page_trans_huge_mapcount(page, total_mapcount);
- 		if (PageSwapCache(page))
- 			swapcount = page_swapcount(page);
++#ifndef __HAVE_ARCH_PUDP_CLEAR_YOUNG_FLUSH
++#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
++extern int pudp_clear_flush_young(struct vm_area_struct *vma,
++				  unsigned long address, pud_t *pudp);
++#else
++int pudp_clear_flush_young(struct vm_area_struct *vma,
++				  unsigned long address, pud_t *pudp)
++{
++	BUILD_BUG();
++	return 0;
++}
++#endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD  */
++#endif
++
+ #ifndef __HAVE_ARCH_PTEP_GET_AND_CLEAR
+ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+ 				       unsigned long address,
+diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+index 3a6adfa70fb0..0af61dd193d2 100644
+--- a/include/linux/rmap.h
++++ b/include/linux/rmap.h
+@@ -206,6 +206,7 @@ struct page_vma_mapped_walk {
+ 	struct page *page;
+ 	struct vm_area_struct *vma;
+ 	unsigned long address;
++	pud_t *pud;
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	spinlock_t *ptl;
+diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+index 5e77b269c330..d9d39ec06e21 100644
+--- a/mm/page_vma_mapped.c
++++ b/mm/page_vma_mapped.c
+@@ -145,9 +145,12 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 	struct page *page = pvmw->page;
+ 	pgd_t *pgd;
+ 	p4d_t *p4d;
+-	pud_t *pud;
++	pud_t pude;
+ 	pmd_t pmde;
+ 
++	if (!pvmw->pte && !pvmw->pmd && pvmw->pud)
++		return not_found(pvmw);
++
+ 	/* The only possible pmd mapping has been handled on last iteration */
+ 	if (pvmw->pmd && !pvmw->pte)
+ 		return not_found(pvmw);
+@@ -174,10 +177,31 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 	p4d = p4d_offset(pgd, pvmw->address);
+ 	if (!p4d_present(*p4d))
+ 		return false;
+-	pud = pud_offset(p4d, pvmw->address);
+-	if (!pud_present(*pud))
++	pvmw->pud = pud_offset(p4d, pvmw->address);
++
++	/*
++	 * Make sure the pud value isn't cached in a register by the
++	 * compiler and used as a stale value after we've observed a
++	 * subsequent update.
++	 */
++	pude = READ_ONCE(*pvmw->pud);
++	if (pud_trans_huge(pude)) {
++		pvmw->ptl = pud_lock(mm, pvmw->pud);
++		if (likely(pud_trans_huge(*pvmw->pud))) {
++			if (pvmw->flags & PVMW_MIGRATION)
++				return not_found(pvmw);
++			if (pud_page(*pvmw->pud) != page)
++				return not_found(pvmw);
++			return true;
++		} else {
++			/* THP pud was split under us: handle on pmd level */
++			spin_unlock(pvmw->ptl);
++			pvmw->ptl = NULL;
++		}
++	} else if (!pud_present(pude))
+ 		return false;
+-	pvmw->pmd = pmd_offset(pud, pvmw->address);
++
++	pvmw->pmd = pmd_offset(pvmw->pud, pvmw->address);
+ 	/*
+ 	 * Make sure the pmd value isn't cached in a register by the
+ 	 * compiler and used as a stale value after we've observed a
+@@ -213,6 +237,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk *pvmw)
+ 	} else if (!pmd_present(pmde)) {
+ 		return false;
+ 	}
++
+ 	if (!map_pte(pvmw))
+ 		goto next_pte;
+ 	while (1) {
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 10195a2421cf..77cec0658b76 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -803,9 +803,15 @@ static bool page_referenced_one(struct page *page, struct vm_area_struct *vma,
+ 					referenced++;
+ 			}
+ 		} else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+-			if (pmdp_clear_flush_young_notify(vma, address,
+-						pvmw.pmd))
+-				referenced++;
++			if (pvmw.pmd) {
++				if (pmdp_clear_flush_young_notify(vma, address,
++							pvmw.pmd))
++					referenced++;
++			} else if (pvmw.pud) {
++				if (pudp_clear_flush_young_notify(vma, address,
++							pvmw.pud))
++					referenced++;
++			}
+ 		} else {
+ 			/* unexpected pmd-mapped page? */
+ 			WARN_ON_ONCE(1);
 -- 
 2.28.0
 
