@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DD025AD38
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2693325AD21
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbgIBO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:29:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55939 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727970AbgIBOXD (ORCPT
+        id S1728198AbgIBO3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:29:52 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:46818 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728031AbgIBOYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 10:23:03 -0400
-Received: from ip5f5af70b.dynamic.kabel-deutschland.de ([95.90.247.11] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1kDTen-0005ou-ND; Wed, 02 Sep 2020 14:22:37 +0000
-Date:   Wed, 2 Sep 2020 16:22:37 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH] seccomp: don't leave dangling ->notif if file allocation
- fails
-Message-ID: <20200902142237.s5l5pd54nfbjes6p@wittgenstein>
-References: <20200902140953.1201956-1-tycho@tycho.pizza>
+        Wed, 2 Sep 2020 10:24:09 -0400
+Received: from [88.147.20.154] (port=49114 helo=melee.dev.aim)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kDTfP-0002rt-BY; Wed, 02 Sep 2020 16:23:17 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>, Keerthy <j-keerthy@ti.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] mfd: lp87565: convert DT to yaml and add LP87524-Q1
+Date:   Wed,  2 Sep 2020 16:22:56 +0200
+Message-Id: <20200902142259.28349-1-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200902140953.1201956-1-tycho@tycho.pizza>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 08:09:53AM -0600, Tycho Andersen wrote:
-> Christian and Kees both pointed out that this is a bit sloppy to open-code
-> both places, and Christian points out that we leave a dangling pointer to
-> ->notif if file allocation fails. Since we check ->notif for null in order
-> to determine if it's ok to install a filter, this means people won't be
-> able to install a filter if the file allocation fails for some reason, even
-> if they subsequently should be able to.
-> 
-> To fix this, let's hoist this free+null into its own little helper and use
-> it.
-> 
-> Reported-by: Kees Cook <keescook@chromium.org>
-> Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Signed-off-by: Tycho Andersen <tycho@tycho.pizza>
-> ---
+Hi,
 
-Thanks for the patch, Tycho! Looks simple enough to me:
+the following patches are a fairly straightforward addition of a new chip
+variant along with DT bindings conversion to yaml.
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+v5 adds the description of the "regulators" DT node and has smaller
+improvements to the bindings. No changes to the driver since v2.
 
->  kernel/seccomp.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index bb0dd9ae699a..676d4af62103 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -1109,6 +1109,12 @@ static long seccomp_set_mode_strict(void)
->  }
->  
->  #ifdef CONFIG_SECCOMP_FILTER
-> +static void seccomp_notify_free(struct seccomp_filter *filter)
+RFC,v1: https://lkml.org/lkml/2020/6/3/908
+v2: https://lkml.org/lkml/2020/6/17/492
+v3: https://lkml.org/lkml/2020/6/22/1139
+v4: https://lkml.org/lkml/2020/8/17/830
 
-I think an explicit "inline" coldn't hurt but it's fine either way and
-no need to resend imho. Probably Kees can just add this when applying if
-we reall cared.
+Luca
 
-> +{
-> +	kfree(filter->notif);
-> +	filter->notif = NULL;
-> +}
-> +
->  static void seccomp_notify_detach(struct seccomp_filter *filter)
->  {
->  	struct seccomp_knotif *knotif;
-> @@ -1138,8 +1144,7 @@ static void seccomp_notify_detach(struct seccomp_filter *filter)
->  		complete(&knotif->ready);
->  	}
->  
-> -	kfree(filter->notif);
-> -	filter->notif = NULL;
-> +	seccomp_notify_free(filter);
->  	mutex_unlock(&filter->notify_lock);
->  }
->  
-> @@ -1494,7 +1499,7 @@ static struct file *init_listener(struct seccomp_filter *filter)
->  
->  out_notif:
->  	if (IS_ERR(ret))
-> -		kfree(filter->notif);
-> +		seccomp_notify_free(filter);
->  out:
->  	return ret;
->  }
-> 
-> base-commit: 7b6aa0bb62fd6fd50f2d14136136262d28fb2dfe
-> -- 
-> 2.25.1
-> 
+Luca Ceresoli (3):
+  dt-bindings: mfd: lp87565: convert to yaml
+  dt-bindings: mfd: add LP87524-Q1
+  mfd: lp87565: add LP87524-Q1 variant
+
+ .../devicetree/bindings/mfd/lp87565.txt       |  79 ------------
+ .../bindings/mfd/ti,lp87524-q1.yaml           | 112 ++++++++++++++++++
+ .../bindings/mfd/ti,lp87561-q1.yaml           |  83 +++++++++++++
+ .../bindings/mfd/ti,lp87565-q1.yaml           | 101 ++++++++++++++++
+ drivers/mfd/lp87565.c                         |   4 +
+ include/linux/mfd/lp87565.h                   |   1 +
+ 6 files changed, 301 insertions(+), 79 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mfd/lp87565.txt
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87561-q1.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87565-q1.yaml
+
+-- 
+2.28.0
+
