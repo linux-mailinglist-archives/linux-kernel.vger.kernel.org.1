@@ -2,103 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6937125B4FC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B186525B505
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgIBUBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 16:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
+        id S1726853AbgIBUEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 16:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbgIBUBh (ORCPT
+        with ESMTP id S1726448AbgIBUEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 16:01:37 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA08C06124F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 13:01:35 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id w186so966106qkd.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 13:01:35 -0700 (PDT)
+        Wed, 2 Sep 2020 16:04:02 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45774C061246
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 13:04:01 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id a15so399530ejf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 13:04:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=5PQwohRRxjQaQChGN57VL8dJoHWO/Os9V4h+vF4YaHg=;
-        b=u3XCGmVT0bTToU6qRHpbvhcuB7v5sgvTlUXVAlxzPqBJhV+WDoLFMukHBDIErEaoTu
-         7WjgCYwMtRo91InzMmLzi5ZX6FyimBjEOhnCigxDzjq8mrarfmVQ+6aHsWzTxGAsPu4V
-         VkHcd8OZv4zPUGREtDMOTnwPd9ZzkFaRD1PnInOAyZoyjf1q7R8XqXgCMTehEfBHd8Ol
-         iTohoMysSEOGJZ8/le2mDnuGhJB9JDyi88yhkvEZWm/P5UfY9F7U/Z4UI9vCRdKMRoaL
-         5T3A3jlVuDKOGRjUTghdHyWg4LL6Lmc+26bpc95G5i6tzJ0LItOBPcQgtIJZy6sfVWT8
-         STIg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F516FSLG1Fg8AtLKWaugsZmUz1NztosX6XlYqbdsuWY=;
+        b=f6Y2z+4eUCL25q5+1hV+JdNT5QdsgtJQm4tYO85DSSJSP6ZbhVl0Pu/DGRtriAVW+b
+         WfP1t1YBGF9QBZamybjj9qIxqSYyBtWhFH+UNdEsL5i46u/W/nO3/DaUVi8nknD45c6h
+         dQmMY6/P3s7DaNBO12JbCBxZsP/wuCG5/ZPos3Yi4GFKwWHFNFcBd24JwwQsnu+v+meI
+         WccDRMkKFTcytzbZsyNJYl4UWpZa3uO5ENrpsL8JMWimpV6NgRkETZKsp6Je7IDQx/14
+         ZrGlSRPKBZHel/NtVFdQkQrr+l9Bnc9XSYPUtsdV77DkGFS9r+kfiSpO/cYOf/QQxkZV
+         3PIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=5PQwohRRxjQaQChGN57VL8dJoHWO/Os9V4h+vF4YaHg=;
-        b=pjtW+ggysgT72pi+vXeM1DWs+yRj5r699JeT2PP4UQEbMV2DAgcNc+c0HQZY/x32TM
-         ODeMjJiB/DrYzhOt4ygCc+r1cwlYRiWq2XL1PYyNXuY/pEA9QQTefcbF0GWoTeboK8mn
-         GhkATE+i4oQdtZix0QuOHmUqXUwWBnBWqvAY012FLfOB9vx6yFH3+QkhbYzMfKG0pjNx
-         KE7GdxDqgFdZtlOLhZNFuKf/Y/9hH8caZy+0EZ+KjjoRqvYJXlTEiiACAla78q/41V6x
-         NfK26aw9SXMYsYxIUCZe6L0s8fFXeNusIAG1s4HSmrGmBeeV8NqOfc/T9gw+KKucgcmo
-         6AmQ==
-X-Gm-Message-State: AOAM532FYhTd0lBgI8QJo0yHbVJwWzEVFUJS6WsF3u+AyCWbdWv2A8Dc
-        li3zG3wrs8fS2+h+gemG+Z0=
-X-Google-Smtp-Source: ABdhPJxWZKDD/hIcVtnfH6gmE27LuTkJ9+pyAZX9JDWJny0knA4LKTk7W/nXorfWQxVTjHdhyanoFQ==
-X-Received: by 2002:a37:5646:: with SMTP id k67mr8603049qkb.476.1599076894997;
-        Wed, 02 Sep 2020 13:01:34 -0700 (PDT)
-Received: from ubuntu (69-220-158-6.lightspeed.rlghnc.sbcglobal.net. [69.220.158.6])
-        by smtp.gmail.com with ESMTPSA id p68sm562541qka.78.2020.09.02.13.01.34
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 02 Sep 2020 13:01:34 -0700 (PDT)
-From:   Nachammai Karuppiah <nachukannan@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F516FSLG1Fg8AtLKWaugsZmUz1NztosX6XlYqbdsuWY=;
+        b=IAGntn00Z1ScyJ1TJiIjZLNf3xhrzgwFnpJKxB7JpEJL+9H+hb++/SYqqfJ5WmkKei
+         VzoNsshJXv/sQA+petkDHoUpowMW9UM3/yk1GgKulETrqt1nnKV+dBSR7mq04sELu+5/
+         xWFZQbtcNCb/mlYQCE5fbSnnFt9/G3s6oH3+Rg3mU9nbUOcJfZM1i4cKA4H/KA5qJu/q
+         68b2mD1daFOOyV1qZ948zK7ho8G7QG92IHEb0Dxq8YtIzeiQDM8mf6lUWNWr9AyQJbuG
+         AByYnKqezqKrE/yO5xn5tfQPIhCOX9gW6f/gzXHSl3kPapqGuTJKurW8/M94IZ30u8Lz
+         X5yg==
+X-Gm-Message-State: AOAM5331KrjHndZvK66s9W0Zf3anJinYvSxC/SnUmYm72bksyoz1shj0
+        bmbC+d6hzBlsUe0MJ0FFBa9QnYjPjdUSpZwCBLFWuw==
+X-Google-Smtp-Source: ABdhPJwnWyiUGJ5BXUL9kg40H50dxwEYKvN25v96OuWjX6DKbErT05o6VXF3YX5pYXjmTfRVQSjnap/k1SenzliIvsE=
+X-Received: by 2002:a17:906:4088:: with SMTP id u8mr1814815ejj.184.1599077039554;
+ Wed, 02 Sep 2020 13:03:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200825002645.3658-1-yu-cheng.yu@intel.com> <20200825002645.3658-7-yu-cheng.yu@intel.com>
+In-Reply-To: <20200825002645.3658-7-yu-cheng.yu@intel.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 2 Sep 2020 22:03:33 +0200
+Message-ID: <CAG48ez21a_afHJrRQeweuHu8c+fxJ+VN1dezD18UOtZA5q-Shg@mail.gmail.com>
+Subject: Re: [PATCH v11 6/9] x86/cet: Add PTRACE interface for CET
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
         Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        Nachammai Karuppiah <nachukannan@gmail.com>
-Subject: [RFC PATCH 7/7] dt-bindings: ramtrace: Add ramtrace DT node
-Date:   Wed,  2 Sep 2020 13:00:22 -0700
-Message-Id: <b65b3116d90e7e5969ad6c1509a24e04f39ee4e9.1599072725.git.nachukannan@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1599072725.git.nachukannan@gmail.com>
-References: <cover.1599072725.git.nachukannan@gmail.com>
-In-Reply-To: <cover.1599072725.git.nachukannan@gmail.com>
-References: <cover.1599072725.git.nachukannan@gmail.com>
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ramtrace as child node of /reserved-memory.
+On Tue, Aug 25, 2020 at 2:30 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+> Add REGSET_CET64/REGSET_CET32 to get/set CET MSRs:
+>
+>     IA32_U_CET (user-mode CET settings) and
+>     IA32_PL3_SSP (user-mode Shadow Stack)
+[...]
+> diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+[...]
+> +int cetregs_get(struct task_struct *target, const struct user_regset *regset,
+> +               struct membuf to)
+> +{
+> +       struct fpu *fpu = &target->thread.fpu;
+> +       struct cet_user_state *cetregs;
+> +
+> +       if (!boot_cpu_has(X86_FEATURE_SHSTK))
+> +               return -ENODEV;
+> +
+> +       fpu__prepare_read(fpu);
+> +       cetregs = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+> +       if (!cetregs)
+> +               return -EFAULT;
 
-Signed-off-by: Nachammai Karuppiah <nachukannan@gmail.com>
----
- .../devicetree/bindings/reserved-memory/ramtrace.txt        | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/reserved-memory/ramtrace.txt
+Can this branch ever be hit without a kernel bug? If yes, I think
+-EFAULT is probably a weird error code to choose here. If no, this
+should probably use WARN_ON(). Same thing in cetregs_set().
 
-diff --git a/Documentation/devicetree/bindings/reserved-memory/ramtrace.txt b/Documentation/devicetree/bindings/reserved-memory/ramtrace.txt
-new file mode 100644
-index 0000000..0a8515c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/reserved-memory/ramtrace.txt
-@@ -0,0 +1,13 @@
-+Ramtrace trace events logger
-+============================
-+
-+ramtrace provides persistent RAM storage for ring buffer in which the trace
-+events are recorded, so they can be recovered after a reboot. This is a
-+child-node of "/reserved-memory", and is named "ramtrace" after the backend,
-+rather than "pstore" which is the subsystem.
-+
-+Required properties:
-+
-+- compatible: must be "ramtrace"
-+
-+- reg: region of memory that is preserved between reboots
--- 
-2.7.4
+> +       return membuf_write(&to, cetregs, sizeof(struct cet_user_state));
+> +}
+[...]
+> diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+[...]
+> @@ -52,7 +52,9 @@ enum x86_regset {
+>         REGSET_IOPERM64 = REGSET_XFP,
+>         REGSET_XSTATE,
+>         REGSET_TLS,
+> +       REGSET_CET64 = REGSET_TLS,
+>         REGSET_IOPERM32,
+> +       REGSET_CET32,
+>  };
+[...]
+> @@ -1229,6 +1231,13 @@ static struct user_regset x86_64_regsets[] __ro_after_init = {
+[...]
+> +       [REGSET_CET64] = {
+> +               .core_note_type = NT_X86_CET,
+> +               .n = sizeof(struct cet_user_state) / sizeof(u64),
+> +               .size = sizeof(u64), .align = sizeof(u64),
+> +               .active = cetregs_active, .regset_get = cetregs_get,
+> +               .set = cetregs_set
+> +       },
+>  };
+[...]
+> @@ -1284,6 +1293,13 @@ static struct user_regset x86_32_regsets[] __ro_after_init = {
+[...]
+> +       [REGSET_CET32] = {
+> +               .core_note_type = NT_X86_CET,
+> +               .n = sizeof(struct cet_user_state) / sizeof(u64),
+> +               .size = sizeof(u64), .align = sizeof(u64),
+> +               .active = cetregs_active, .regset_get = cetregs_get,
+> +               .set = cetregs_set
+> +       },
+>  };
 
+Why are there different identifiers for 32-bit CET and 64-bit CET when
+they operate on the same structs and have the same handlers? If
+there's a good reason for that, the commit message should probably
+point that out.
