@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A871A25AB7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C50225AB87
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgIBMyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
+        id S1726724AbgIBM4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 08:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727028AbgIBMyM (ORCPT
+        with ESMTP id S1726183AbgIBM4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:54:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BD2C061245;
-        Wed,  2 Sep 2020 05:54:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=isrzndUDYiz7AVFuWayAZA6ecBCJ63M610eK0GJhjus=; b=CJFTE95KS0gBy1UFDjdzh0P6Zl
-        vDTCAlAnnxWW+J6nr0RwUn6VRG66ylaYFPPlvlH8rhBCX30JAYid8uFSWuD69AtxC76S30Nr9yXsl
-        H9eSsb8jb691xbcuFWqBvs8VP94SA83/8/9kYBol3nd+u6Kw5IwsV0Hk7tHlS+sSfBM/nIW8oe1Ld
-        NuJu5EM1RRyv7zitERugqVYenzVQi7IoEjJFh8U4MGebZbpucb8EHJA9shCLT3QeAcitanIwf1GXL
-        hStgfJKmdVxowB0QR8dps2hyFpcFWoP2BEp4/AhKrNEmBmnuKbo2ZTE+mBMXLgyJG+bQq8WDwt5/L
-        6ggoxK7Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDSH5-00015w-UD; Wed, 02 Sep 2020 12:54:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F0D3E3011C6;
-        Wed,  2 Sep 2020 14:54:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DE4C423D3D75E; Wed,  2 Sep 2020 14:54:02 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 14:54:02 +0200
-From:   peterz@infradead.org
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Nadav Amit <namit@vmware.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/special_insn: reverse __force_order logic
-Message-ID: <20200902125402.GG1362448@hirez.programming.kicks-ass.net>
-References: <20200901161857.566142-1-namit@vmware.com>
+        Wed, 2 Sep 2020 08:56:31 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE13C061244;
+        Wed,  2 Sep 2020 05:56:30 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id w11so2768213lfn.2;
+        Wed, 02 Sep 2020 05:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZT5x+31ffQ1fSGTC6fc7HGVTmxRKwze1JkUzuev76fo=;
+        b=MVYKoUM3Qi3G4CUp4xP5XqgQvWvDo6PsrlPp55IW6273Lw81QISusbtPEsERRcR/3B
+         6Q9V3XlFUJX+GYIBnGeYqwwR874ISHS4jNWHMhiw3Xd9Cbj+/LCRCeKnA3PoLxkiV7/7
+         5Mv8uiLha6QtMHB1bcvZCBV/dmLOudMDK5KPo4gr3+uw85cQhRqjrrrRXXs3v5vfarZi
+         M3XO57ETyI3ba5lFOH2B1nqQ8sa5cAotWHZ3E4SjTQugzfR2BZbwQJXdi7G32HSxhpWZ
+         mxSgzvdo1Bwy2Jq/MPnxHYcDW70oYBulKZ2KTwNLhjhGYttHxAJ7+h9Y2O0+j8aOxN0r
+         EipA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZT5x+31ffQ1fSGTC6fc7HGVTmxRKwze1JkUzuev76fo=;
+        b=R+s2Ri2as/Tiz9gkSkzG/ygagfWJLu549zSORD09nwtEFbcdoEGuJoYWnE6AyKvT2O
+         FBXhkZk/KIH9aBtM96ykXypZxra548xW9IthsxlzomOfQlYnjPdqsf2ftRMXqRY4vbp9
+         BIizcQa0Q5neNAgVRv8qtAY7PkZBbgtt99Kq0JMJPdn8cbPprgh0jiMVMC9W5Q+c1OZR
+         cURczM74HWOsAHX5HTOTwOJqc2QbdAPS9gaHs9WjLsytPwUKdzsRQZVaRH14P4onEwfO
+         o/5KCONHK/YR3ISUBNVZRJzgMMb8B34qRUqTrmrAmAQtjmnEWQ9ryPe8jhsmnI0hH+lc
+         xpSQ==
+X-Gm-Message-State: AOAM533DGlnTdOBo1B1QkBYwRsBPgSsTLoCNBlNQ3tWkmCfbZsVRXqah
+        vE7Aov1p15i1F+JEBYgN7VE=
+X-Google-Smtp-Source: ABdhPJxTy7FYR0Pg0Sm71v/FU6NwzEy2QsoacvE/ywzrQ6k+5uGvuu7pKbD5nySOHsJOa5oGFo3R7A==
+X-Received: by 2002:ac2:44b7:: with SMTP id c23mr3315115lfm.128.1599051388556;
+        Wed, 02 Sep 2020 05:56:28 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id b13sm1064037lfa.92.2020.09.02.05.56.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Sep 2020 05:56:27 -0700 (PDT)
+Subject: Re: [PATCH v2 2/6] regmap: Use flexible sleep
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+References: <20200830185356.5365-1-digetx@gmail.com>
+ <20200830185356.5365-3-digetx@gmail.com>
+ <CGME20200902124731eucas1p13716070977dbef39d09147bb71e050f6@eucas1p1.samsung.com>
+ <d936a2fc-8890-eec1-015c-d919e10d1dc5@samsung.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b580524a-d476-adbe-59b9-4ae7d62626b1@gmail.com>
+Date:   Wed, 2 Sep 2020 15:56:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901161857.566142-1-namit@vmware.com>
+In-Reply-To: <d936a2fc-8890-eec1-015c-d919e10d1dc5@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 09:18:57AM -0700, Nadav Amit wrote:
+02.09.2020 15:47, Marek Szyprowski пишет:
+> Hi Dmitry,
+> 
+> On 30.08.2020 20:53, Dmitry Osipenko wrote:
+>> The multi-reg write function uses udelay(), which is a busy-loop based
+>> delaying function that is not suitable for a long delays. Hence let's
+>> replace the udelay() with fsleep(), which is flexible sleep function that
+>> selects best delay function based on the delay-time.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> 
+> This patch landed in today's linux-next (20200902) as commit 
+> 2b32d2f7ce0a. Sadly it breaks booting of ARM 64bit Amlogic S922X based 
+> Odroid N2 board. Here is the log:
 
-> Unless I misunderstand the logic, __force_order should also be used by
-> rdpkru() and wrpkru() which do not have dependency on __force_order. I
-> also did not understand why native_write_cr0() has R/W dependency on
-> __force_order, and why native_write_cr4() no longer has any dependency
-> on __force_order.
-
-There was a fairly large thread about this thing here:
-
-  https://lkml.kernel.org/r/20200527135329.1172644-1-arnd@arndb.de
-
-I didn't keep up, but I think the general concensus was that it's
-indeed a bit naf.
+Hello, Marek! Thank you for the feedback! I missed that remap supports
+different types of locking, I'll make a another patch to fix this problem.
