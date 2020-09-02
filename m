@@ -2,74 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1644F25A823
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B5225A7F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 10:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726311AbgIBI6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 04:58:51 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28395 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgIBI6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 04:58:51 -0400
-IronPort-SDR: cOLo8EOE4vTVNq9EjbZul+UXQyilz/e4KhF7nEa+OFRiHviiVWUidgi86tTeN0BwW/hDCUBvVv
- gm61WFbsajeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9731"; a="145039202"
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="145039202"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 01:58:47 -0700
-IronPort-SDR: 2CJGKaIlw/C2SVozeZwg1xN512nRjfKZQ7PytBv7Jg4gKlgIhwwX/EcPX2K5ZdHnnB0eUe0I2s
- 7GQXpBiZKF9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,381,1592895600"; 
-   d="scan'208";a="331361247"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 02 Sep 2020 01:58:45 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kDOOg-00DfSo-2Y; Wed, 02 Sep 2020 11:45:38 +0300
-Date:   Wed, 2 Sep 2020 11:45:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Cc:     wsa@kernel.org, jarkko.nikula@linux.intel.com, jdelvare@suse.de,
-        chris.packham@alliedtelesis.co.nz, linux-i2c@vger.kernel.org,
+        id S1726298AbgIBIrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 04:47:31 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:58649 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726140AbgIBIra (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 04:47:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1599036450; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=4h0ipg5/aFd2L0oIgKn9tOzzlf38TDXmZZeE/iyY8Lw=; b=UwzHBnTwQtcj+ajTAiixFuZGrSAoVEvjaV9Pk6YAK2zoaiDKD+O3LK9cs8igIoTqMb1gcSsP
+ 0UJkb+AlQbptMvCJs6qFBwebRdsTWLEvoLtbxQxsnA5hiMNGt2+lRZ87kLu13yjCEC/plZe2
+ Jek/GugBJPQNZWrIFIEocYA4tu0=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f4f5c19885efaea0a59bf38 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Sep 2020 08:47:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 544F5C433C9; Wed,  2 Sep 2020 08:47:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: *
+X-Spam-Status: No, score=1.7 required=2.0 tests=ALL_TRUSTED,
+        GUARANTEED_100_PERCENT,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9A1A7C433C6;
+        Wed,  2 Sep 2020 08:47:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9A1A7C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Rakesh Pillai <pillair@codeaurora.org>
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] i2c: algo-pca: Reapply i2c bus settings after
- reset
-Message-ID: <20200902084538.GY1891694@smile.fi.intel.com>
-References: <20200901211747.20649-1-evan.nimmo@alliedtelesis.co.nz>
- <20200902084356.GX1891694@smile.fi.intel.com>
+Subject: Re: [PATCH] ath10k: Use bdf calibration variant for snoc targets
+References: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>
+Date:   Wed, 02 Sep 2020 11:47:16 +0300
+In-Reply-To: <1593193990-30366-1-git-send-email-pillair@codeaurora.org>
+        (Rakesh Pillai's message of "Fri, 26 Jun 2020 23:23:10 +0530")
+Message-ID: <87y2ls4lbf.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902084356.GX1891694@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 11:43:56AM +0300, Andy Shevchenko wrote:
-> On Wed, Sep 02, 2020 at 09:17:47AM +1200, Evan Nimmo wrote:
-> > If something goes wrong (such as the SCL being stuck low) then we need
-> > to reset the PCA chip. The issue with this is that on reset we lose all
-> > config settings and the chip ends up in a disabled state which results
-> > in a lock up/high cpu usage. We need to re-apply any configuration that
-> 
-> cpu -> CPU (I guess Wolfram can decide with this when applying)
-> 
-> > had previously been set and re-enable the chip.
-> 
-> FWIW,
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Rakesh Pillai <pillair@codeaurora.org> writes:
 
-And actually you forgot Chris' tag... But I dunno if the moving struct
-definition is something that Chris might not like.
+> Board Data File (BDF) is loaded upon driver boot-up procedure.
+> The right board data file is identified using bus and qmi-board-id.
+>
+> The problem, however, can occur when the (default) board data
+> file cannot fulfill with the vendor requirements and it is
+> necessary to use a different board data file.
+>
+> Add the support to get the variant field from DTSI and
+> use tht information to load the vendor specific BDF.
+>
+> The device tree requires addition strings to define the variant name
+>
+>     wifi@a000000 {
+>             status = "okay";
+>             qcom,ath10k-calibration-variant = "xyz-v2";
+>     };
+>
+>     wifi@a800000 {
+>             status = "okay";
+>             qcom,ath10k-calibration-variant = "xyz-v1";
+>     };
+>
+> This would create the boarddata identifiers for the board-2.bin search
+>
+>  *  bus=snoc,qmi-board-id=16,qmi-chip-id=0,variant=xyz-v1
+>  *  bus=snoc,qmi-board-id=17,qmi-chip-id=0,variant=xyz-v2
+
+You mention nothing about qmi-chip-id in the commit log. Please document
+what it is and also give some examples what kind of values there can be.
+
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -576,6 +576,8 @@ static int ath10k_qmi_cap_send_sync_msg(struct ath10k_qmi *qmi)
+>  	if (resp->chip_info_valid) {
+>  		qmi->chip_info.chip_id = resp->chip_info.chip_id;
+>  		qmi->chip_info.chip_family = resp->chip_info.chip_family;
+> +	} else {
+> +		qmi->chip_info.chip_id = 0xFF;
+>  	}
+
+So you hard code chip_id to 0xff if it's not valid. Is it 100%
+guaranteed that there never will be a chip id with 0xff?
+
+>  
+>  	if (resp->board_info_valid)
+> @@ -817,12 +819,18 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+>  static int ath10k_qmi_fetch_board_file(struct ath10k_qmi *qmi)
+>  {
+>  	struct ath10k *ar = qmi->ar;
+> +	int ret;
+>  
+>  	ar->hif.bus = ATH10K_BUS_SNOC;
+>  	ar->id.qmi_ids_valid = true;
+>  	ar->id.qmi_board_id = qmi->board_info.board_id;
+> +	ar->id.qmi_chip_id = qmi->chip_info.chip_id;
+
+To me a safer, and cleaner, option would be to have
+ar->id.qmi_chip_id_valid, and only add qmi-chip-id=%x to the board id if
+qmi_chip_id_valid is true. That way there's not this magic 0xff value
+hardcoded anywhere.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
