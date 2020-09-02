@@ -2,617 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347AF25B25B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2F825B25D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728261AbgIBQ7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:59:20 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10788 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728434AbgIBQ6j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:58:39 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f4fcebc0004>; Wed, 02 Sep 2020 09:56:28 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 02 Sep 2020 09:58:36 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 02 Sep 2020 09:58:36 -0700
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 2 Sep
- 2020 16:58:36 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 2 Sep 2020 16:58:36 +0000
-Received: from rcampbell-dev.nvidia.com (Not Verified[10.110.48.66]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5f4fcf3c0002>; Wed, 02 Sep 2020 09:58:36 -0700
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ralph Campbell <rcampbell@nvidia.com>
-Subject: [PATCH v2 7/7] nouveau: support THP migration to private memory
-Date:   Wed, 2 Sep 2020 09:58:30 -0700
-Message-ID: <20200902165830.5367-8-rcampbell@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200902165830.5367-1-rcampbell@nvidia.com>
-References: <20200902165830.5367-1-rcampbell@nvidia.com>
+        id S1726937AbgIBQ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:59:31 -0400
+Received: from mail-dm6nam12on2066.outbound.protection.outlook.com ([40.107.243.66]:9664
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728498AbgIBQ6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:58:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QxuFYuIUzkuICm7DmkiuiP0gFbW29aftTMDAV1xGor/QRdaHsc+AdSGmARQjCh8BpjlQRfVBJte6sbFDZtrn646Zh27SAJKqWdD1HlohxCsXC/Cs5V6C+JpRktKwsdfx2qE/oGJ8WsqvGHGjSpfDLfUqrvWbm06znYQYTO6Qom6jzdXBJoAJv/3VI5E5cndT4RU8j+9U9lgCpf0xhpIRE0o961c6YFbshGUk3UbN9aBJc8By7wFx8ycwbZq+b1ZsILqmDMaaCylByMztb/cjMC5V7cxlVRzx7HCsY7V7QPmMIHf/tPR2KkLqL6WxRXYthmCMmuXrg+BGBKjy8ccpKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yFu3WzMIziHiZ8y0z+ruSh+23SNKG5YNeGDocyU9P04=;
+ b=FiPodsIi6MRjlQ/KTb+kHp38RiH0WCgrEuUQMupkeNRmWgihQacjpijV+QjsHIhRskQ91laSU691JGMO4AKFO2jCrFvHODzF4r/NtcfDqAt5vxWGNQemnSkSKWRVDe3YL6IYRnQi1HHkI/8iuhHdvzD+G0f90pqqFZCrG7OvACAS794IShQoxMK3F1jizZvdFtB7P/a3FYdlvqHjfEmzGg0jhGUTJStFJZ3NZ3tB7xFSk1Xuepw1Ri7lu2dbz79IA+5nrkAQiGQNX+6e4ABRBkPkS9bknFds4XVPJvmq1m9EnrUpxDrzUZueTRkwk2EC7PTQTgrXUQqLlCah+MrqJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yFu3WzMIziHiZ8y0z+ruSh+23SNKG5YNeGDocyU9P04=;
+ b=QwIdredj6egyiaoZiv6oNA5gLssRa09IHW3FosZFFawdSoaTWgeA4Hw7IlOWZJk1y+sXVar5uVloxpCOdlksTYxRQD0WRL0m4km9TXaKekWSt40fwigZkIx/ai3atcAGlYllGXY1eicEaDU2QHehvkhYs0QuY8EjpRtRQQs+7FQ=
+Received: from DM5PR07CA0151.namprd07.prod.outlook.com (2603:10b6:3:ee::17) by
+ DM5PR0201MB3494.namprd02.prod.outlook.com (2603:10b6:4:78::26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3326.19; Wed, 2 Sep 2020 16:58:50 +0000
+Received: from CY1NAM02FT039.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:3:ee:cafe::d9) by DM5PR07CA0151.outlook.office365.com
+ (2603:10b6:3:ee::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.19 via Frontend
+ Transport; Wed, 2 Sep 2020 16:58:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ CY1NAM02FT039.mail.protection.outlook.com (10.152.75.140) with Microsoft SMTP
+ Server id 15.20.3326.19 via Frontend Transport; Wed, 2 Sep 2020 16:58:50
+ +0000
+Received: from [149.199.38.66] (port=52898 helo=smtp.xilinx.com)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kDW5t-0004kT-Ph; Wed, 02 Sep 2020 09:58:45 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by smtp.xilinx.com with smtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kDW5y-0004Hg-Bm; Wed, 02 Sep 2020 09:58:50 -0700
+Received: from xsj-pvapsmtp01 (smtp3.xilinx.com [149.199.38.66])
+        by xsj-smtp-dlp1.xlnx.xilinx.com (8.13.8/8.13.1) with ESMTP id 082GwkgO032478;
+        Wed, 2 Sep 2020 09:58:46 -0700
+Received: from [172.19.2.206] (helo=xsjblevinsk50.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kDW5u-0004H9-8H; Wed, 02 Sep 2020 09:58:46 -0700
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     stefanos@xilinx.com, michals@xilinx.com, michael.auchter@ni.com
+Cc:     devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
+        emooring@xilinx.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jliang@xilinx.com,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v11 0/5] Provide basic driver to control Arm R5 co-processor found on Xilinx ZynqMP
+Date:   Wed,  2 Sep 2020 09:58:41 -0700
+Message-Id: <20200902165846.3366-1-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.17.1
+X-RCIS-Action: ALLOW
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599065789; bh=AJUp5oJSVkG5/knqs/F6FOPXqf6dVM42k+QNkVPqYoQ=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=V4qQ5W7Yfy+dJJx8g9499OfOPQFPJYgd1WoacoZfSNhRqH7SEMUo3h3prF92m6+Yr
-         TtbHPryo7ZXfDN2XagrcMqxpl0AHW8ewAPmGBLVZAbrfQx9ycJxuTx3QCmn/TAYOPB
-         4/UbYpM6zSkwx57XSCPOdvrCwFkPiAjnAkB2eSN8ZhxPPJ+O66/Nir+3/KRJlOEgZw
-         WpeIJoPXHsXB6GbdhNORfgFmxkBDjlu7gd6+zkecgxLA5zIGhyaGK5AGqgu0w0meUT
-         5PwAXOT9V0skRJHUVdF2f2rnhtgggz1q9s+YYISMgUOb44tpRLZRvYY7qmqKBTEELA
-         rF4pZOwvr9D8w==
+X-MS-Office365-Filtering-Correlation-Id: 1c5f613a-d3e4-4a3e-956c-08d84f617763
+X-MS-TrafficTypeDiagnostic: DM5PR0201MB3494:
+X-Microsoft-Antispam-PRVS: <DM5PR0201MB3494A514334A68E45A2D9055B52F0@DM5PR0201MB3494.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: D3zptoJLI16dlocfqfg4YgFWIOYkcL8r0f41W6VkiL8FB48aUGt+w6TN083VIFwheMfxcxYf2waYd1DL6XKJT6MQaDkbEndg3s29H0iwNgObKF2U8wGMq7QIHuK/luH+Pupq1g5lC++cN3m/KE7M0BxV1AStTZPLVCzAtIAYf/JDBtgJpK1f4fjALkGLSt7y5j/q64rBGaMsiVB0WrqU4b3mMsjYiUIey0U7/ZlR+Ok8gVB9utNmNwgyl6jzAQJAt660yRznLL2OH/gDmvnxuA6/Gr/+Qj9dKHuC5hlbfeySatr8/ekgDMg9KHQaKzl2f/uCl1NGUdvKqTFGqztNByQWexiB5QxAHKASE/x4paoyCNjLGNVSp4zOVj1DCZWZAeV6v8Xs+3YiqwvP9g/5wg==
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFS:(376002)(39860400002)(346002)(136003)(396003)(46966005)(6666004)(1076003)(83380400001)(8676002)(82310400003)(70206006)(186003)(70586007)(336012)(44832011)(2906002)(426003)(26005)(7696005)(47076004)(316002)(5660300002)(478600001)(9786002)(82740400003)(8936002)(4326008)(356005)(2616005)(36756003)(81166007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2020 16:58:50.6262
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c5f613a-d3e4-4a3e-956c-08d84f617763
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT039.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0201MB3494
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for migrating transparent huge pages to and from device
-private memory.
+The driver was tested on Xilinx ZynqMP QEMU
 
-Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
----
- drivers/gpu/drm/nouveau/nouveau_dmem.c | 289 ++++++++++++++++++-------
- drivers/gpu/drm/nouveau/nouveau_svm.c  |  11 +-
- drivers/gpu/drm/nouveau/nouveau_svm.h  |   3 +-
- 3 files changed, 215 insertions(+), 88 deletions(-)
+For sake of ease of review, only support ZynqMP. Once accepted, then
+add support for Versal platform and R5 loading onto OCM.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouve=
-au/nouveau_dmem.c
-index a13c6215bba8..78ad0ee77b3d 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-@@ -82,6 +82,7 @@ struct nouveau_dmem {
- 	struct list_head chunks;
- 	struct mutex mutex;
- 	struct page *free_pages;
-+	struct page *free_huge_pages;
- 	spinlock_t lock;
- };
-=20
-@@ -112,8 +113,13 @@ static void nouveau_dmem_page_free(struct page *page)
- 	struct nouveau_dmem *dmem =3D chunk->drm->dmem;
-=20
- 	spin_lock(&dmem->lock);
--	page->zone_device_data =3D dmem->free_pages;
--	dmem->free_pages =3D page;
-+	if (PageHead(page)) {
-+		page->zone_device_data =3D dmem->free_huge_pages;
-+		dmem->free_huge_pages =3D page;
-+	} else {
-+		page->zone_device_data =3D dmem->free_pages;
-+		dmem->free_pages =3D page;
-+	}
-=20
- 	WARN_ON(!chunk->callocated);
- 	chunk->callocated--;
-@@ -139,51 +145,100 @@ static void nouveau_dmem_fence_done(struct nouveau_f=
-ence **fence)
-=20
- static vm_fault_t nouveau_dmem_fault_copy_one(struct nouveau_drm *drm,
- 		struct vm_fault *vmf, struct migrate_vma *args,
--		dma_addr_t *dma_addr)
-+		struct page *spage, bool is_huge, dma_addr_t *dma_addr)
- {
-+	struct nouveau_svmm *svmm =3D spage->zone_device_data;
- 	struct device *dev =3D drm->dev->dev;
--	struct page *dpage, *spage;
--	struct nouveau_svmm *svmm;
--
--	spage =3D migrate_pfn_to_page(args->src[0]);
--	if (!spage || !(args->src[0] & MIGRATE_PFN_MIGRATE))
--		return 0;
-+	struct page *dpage;
-+	unsigned int i;
-=20
--	dpage =3D alloc_page_vma(GFP_HIGHUSER, vmf->vma, vmf->address);
-+	if (is_huge)
-+		dpage =3D alloc_transhugepage(vmf->vma, args->start);
-+	else
-+		dpage =3D alloc_page_vma(GFP_HIGHUSER, vmf->vma, vmf->address);
- 	if (!dpage)
--		return VM_FAULT_SIGBUS;
--	lock_page(dpage);
-+		return VM_FAULT_OOM;
-+	WARN_ON_ONCE(compound_order(spage) !=3D compound_order(dpage));
-=20
--	*dma_addr =3D dma_map_page(dev, dpage, 0, PAGE_SIZE, DMA_BIDIRECTIONAL);
-+	*dma_addr =3D dma_map_page(dev, dpage, 0, page_size(dpage),
-+				 DMA_BIDIRECTIONAL);
- 	if (dma_mapping_error(dev, *dma_addr))
- 		goto error_free_page;
-=20
--	svmm =3D spage->zone_device_data;
-+	lock_page(dpage);
-+	i =3D (vmf->address - args->start) >> PAGE_SHIFT;
-+	spage +=3D i;
- 	mutex_lock(&svmm->mutex);
- 	nouveau_svmm_invalidate(svmm, args->start, args->end);
--	if (drm->dmem->migrate.copy_func(drm, 1, NOUVEAU_APER_HOST, *dma_addr,
--			NOUVEAU_APER_VRAM, nouveau_dmem_page_addr(spage)))
-+	if (drm->dmem->migrate.copy_func(drm, compound_nr(dpage),
-+			NOUVEAU_APER_HOST, *dma_addr, NOUVEAU_APER_VRAM,
-+			nouveau_dmem_page_addr(spage)))
- 		goto error_dma_unmap;
- 	mutex_unlock(&svmm->mutex);
-=20
--	args->dst[0] =3D migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
-+	args->dst[i] =3D migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
-+	if (is_huge)
-+		args->dst[i] |=3D MIGRATE_PFN_COMPOUND;
- 	return 0;
-=20
- error_dma_unmap:
- 	mutex_unlock(&svmm->mutex);
--	dma_unmap_page(dev, *dma_addr, PAGE_SIZE, DMA_BIDIRECTIONAL);
-+	unlock_page(dpage);
-+	dma_unmap_page(dev, *dma_addr, page_size(dpage), DMA_BIDIRECTIONAL);
- error_free_page:
- 	__free_page(dpage);
- 	return VM_FAULT_SIGBUS;
- }
-=20
-+static vm_fault_t nouveau_dmem_fault_chunk(struct nouveau_drm *drm,
-+		struct vm_fault *vmf, struct migrate_vma *args)
-+{
-+	struct device *dev =3D drm->dev->dev;
-+	struct nouveau_fence *fence;
-+	struct page *spage;
-+	unsigned long src =3D args->src[0];
-+	bool is_huge =3D (src & (MIGRATE_PFN_MIGRATE | MIGRATE_PFN_COMPOUND)) =3D=
-=3D
-+		(MIGRATE_PFN_MIGRATE | MIGRATE_PFN_COMPOUND);
-+	unsigned long dma_page_size;
-+	dma_addr_t dma_addr;
-+	vm_fault_t ret =3D 0;
-+
-+	spage =3D migrate_pfn_to_page(src);
-+	if (!spage) {
-+		ret =3D VM_FAULT_SIGBUS;
-+		goto out;
-+	}
-+	if (is_huge) {
-+		dma_page_size =3D PMD_SIZE;
-+		ret =3D nouveau_dmem_fault_copy_one(drm, vmf, args, spage, true,
-+						  &dma_addr);
-+		if (!ret)
-+			goto fence;
-+		/*
-+		 * If we couldn't allocate a huge page, fallback to migrating
-+		 * a single page.
-+		 */
-+	}
-+	dma_page_size =3D PAGE_SIZE;
-+	ret =3D nouveau_dmem_fault_copy_one(drm, vmf, args, spage, false,
-+					  &dma_addr);
-+	if (ret)
-+		goto out;
-+fence:
-+	nouveau_fence_new(drm->dmem->migrate.chan, false, &fence);
-+	migrate_vma_pages(args);
-+	nouveau_dmem_fence_done(&fence);
-+	dma_unmap_page(dev, dma_addr, dma_page_size, DMA_BIDIRECTIONAL);
-+out:
-+	migrate_vma_finalize(args);
-+	return ret;
-+}
-+
- static vm_fault_t nouveau_dmem_migrate_to_ram(struct vm_fault *vmf)
- {
- 	struct nouveau_drm *drm =3D page_to_drm(vmf->page);
--	struct nouveau_dmem *dmem =3D drm->dmem;
--	struct nouveau_fence *fence;
- 	unsigned long src =3D 0, dst =3D 0;
--	dma_addr_t dma_addr =3D 0;
-+	struct page *page;
- 	vm_fault_t ret;
- 	struct migrate_vma args =3D {
- 		.vma		=3D vmf->vma,
-@@ -192,39 +247,64 @@ static vm_fault_t nouveau_dmem_migrate_to_ram(struct =
-vm_fault *vmf)
- 		.src		=3D &src,
- 		.dst		=3D &dst,
- 		.pgmap_owner	=3D drm->dev,
--		.flags		=3D MIGRATE_VMA_SELECT_DEVICE_PRIVATE,
-+		.flags		=3D MIGRATE_VMA_SELECT_DEVICE_PRIVATE |
-+				  MIGRATE_VMA_SELECT_COMPOUND,
- 	};
-=20
-+	/*
-+	 * If the page was migrated to the GPU as a huge page, try to
-+	 * migrate it back the same way.
-+	 */
-+	page =3D compound_head(vmf->page);
-+	if (PageHead(page)) {
-+		unsigned int order =3D compound_order(page);
-+		unsigned int nr_pages =3D 1U << order;
-+
-+		args.start &=3D PAGE_MASK << order;
-+		args.end =3D args.start + (PAGE_SIZE << order);
-+		args.src =3D kmalloc_array(nr_pages, sizeof(*args.src),
-+					 GFP_KERNEL);
-+		if (!args.src)
-+			return VM_FAULT_OOM;
-+		args.dst =3D kmalloc_array(nr_pages, sizeof(*args.dst),
-+					 GFP_KERNEL);
-+		if (!args.dst) {
-+			ret =3D VM_FAULT_OOM;
-+			goto error_src;
-+		}
-+	}
-+
- 	/*
- 	 * FIXME what we really want is to find some heuristic to migrate more
- 	 * than just one page on CPU fault. When such fault happens it is very
- 	 * likely that more surrounding page will CPU fault too.
- 	 */
--	if (migrate_vma_setup(&args) < 0)
--		return VM_FAULT_SIGBUS;
--	if (!args.cpages)
--		return 0;
--
--	ret =3D nouveau_dmem_fault_copy_one(drm, vmf, &args, &dma_addr);
--	if (ret || dst =3D=3D 0)
--		goto done;
--
--	nouveau_fence_new(dmem->migrate.chan, false, &fence);
--	migrate_vma_pages(&args);
--	nouveau_dmem_fence_done(&fence);
--	dma_unmap_page(drm->dev->dev, dma_addr, PAGE_SIZE, DMA_BIDIRECTIONAL);
--done:
--	migrate_vma_finalize(&args);
-+	if (migrate_vma_setup(&args))
-+		ret =3D VM_FAULT_SIGBUS;
-+	else
-+		ret =3D nouveau_dmem_fault_chunk(drm, vmf, &args);
-+	if (args.dst !=3D &dst)
-+		kfree(args.dst);
-+error_src:
-+	if (args.src !=3D &src)
-+		kfree(args.src);
- 	return ret;
- }
-=20
-+static void nouveau_page_split(struct page *head, struct page *page)
-+{
-+	page->pgmap =3D head->pgmap;
-+	page->zone_device_data =3D head->zone_device_data;
-+}
-+
- static const struct dev_pagemap_ops nouveau_dmem_pagemap_ops =3D {
- 	.page_free		=3D nouveau_dmem_page_free,
- 	.migrate_to_ram		=3D nouveau_dmem_migrate_to_ram,
-+	.page_split		=3D nouveau_page_split,
- };
-=20
--static int
--nouveau_dmem_chunk_alloc(struct nouveau_drm *drm, struct page **ppage)
-+static int nouveau_dmem_chunk_alloc(struct nouveau_drm *drm, bool is_huge,
-+				    struct page **ppage)
- {
- 	struct nouveau_dmem_chunk *chunk;
- 	struct resource *res;
-@@ -278,16 +358,20 @@ nouveau_dmem_chunk_alloc(struct nouveau_drm *drm, str=
-uct page **ppage)
- 	pfn_first =3D chunk->pagemap.range.start >> PAGE_SHIFT;
- 	page =3D pfn_to_page(pfn_first);
- 	spin_lock(&drm->dmem->lock);
--	for (i =3D 0; i < DMEM_CHUNK_NPAGES - 1; ++i, ++page) {
--		page->zone_device_data =3D drm->dmem->free_pages;
--		drm->dmem->free_pages =3D page;
--	}
-+	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) && is_huge)
-+		prep_transhuge_device_private_page(page);
-+	else
-+		for (i =3D 0; i < DMEM_CHUNK_NPAGES - 1; ++i, ++page) {
-+			page->zone_device_data =3D drm->dmem->free_pages;
-+			drm->dmem->free_pages =3D page;
-+		}
- 	*ppage =3D page;
- 	chunk->callocated++;
- 	spin_unlock(&drm->dmem->lock);
-=20
--	NV_INFO(drm, "DMEM: registered %ldMB of device memory\n",
--		DMEM_CHUNK_SIZE >> 20);
-+	NV_INFO(drm, "DMEM: registered %ldMB of %sdevice memory %lx %lx\n",
-+		DMEM_CHUNK_SIZE >> 20, is_huge ? "huge " : "", pfn_first,
-+		nouveau_dmem_page_addr(page));
-=20
- 	return 0;
-=20
-@@ -304,14 +388,20 @@ nouveau_dmem_chunk_alloc(struct nouveau_drm *drm, str=
-uct page **ppage)
- }
-=20
- static struct page *
--nouveau_dmem_page_alloc_locked(struct nouveau_drm *drm)
-+nouveau_dmem_page_alloc_locked(struct nouveau_drm *drm, bool is_huge)
- {
- 	struct nouveau_dmem_chunk *chunk;
- 	struct page *page =3D NULL;
- 	int ret;
-=20
- 	spin_lock(&drm->dmem->lock);
--	if (drm->dmem->free_pages) {
-+	if (is_huge && drm->dmem->free_huge_pages) {
-+		page =3D drm->dmem->free_huge_pages;
-+		drm->dmem->free_huge_pages =3D page->zone_device_data;
-+		chunk =3D nouveau_page_to_chunk(page);
-+		chunk->callocated++;
-+		spin_unlock(&drm->dmem->lock);
-+	} else if (!is_huge && drm->dmem->free_pages) {
- 		page =3D drm->dmem->free_pages;
- 		drm->dmem->free_pages =3D page->zone_device_data;
- 		chunk =3D nouveau_page_to_chunk(page);
-@@ -319,7 +409,7 @@ nouveau_dmem_page_alloc_locked(struct nouveau_drm *drm)
- 		spin_unlock(&drm->dmem->lock);
- 	} else {
- 		spin_unlock(&drm->dmem->lock);
--		ret =3D nouveau_dmem_chunk_alloc(drm, &page);
-+		ret =3D nouveau_dmem_chunk_alloc(drm, is_huge, &page);
- 		if (ret)
- 			return NULL;
- 	}
-@@ -567,31 +657,22 @@ nouveau_dmem_init(struct nouveau_drm *drm)
-=20
- static unsigned long nouveau_dmem_migrate_copy_one(struct nouveau_drm *drm=
-,
- 		struct nouveau_svmm *svmm, unsigned long src,
--		dma_addr_t *dma_addr, u64 *pfn)
-+		struct page *spage, bool is_huge, dma_addr_t dma_addr, u64 *pfn)
- {
--	struct device *dev =3D drm->dev->dev;
--	struct page *dpage, *spage;
-+	struct page *dpage;
- 	unsigned long paddr;
-+	unsigned long dst;
-=20
--	spage =3D migrate_pfn_to_page(src);
--	if (!(src & MIGRATE_PFN_MIGRATE))
--		goto out;
--
--	dpage =3D nouveau_dmem_page_alloc_locked(drm);
-+	dpage =3D nouveau_dmem_page_alloc_locked(drm, is_huge);
- 	if (!dpage)
- 		goto out;
-=20
- 	paddr =3D nouveau_dmem_page_addr(dpage);
- 	if (spage) {
--		*dma_addr =3D dma_map_page(dev, spage, 0, page_size(spage),
--					 DMA_BIDIRECTIONAL);
--		if (dma_mapping_error(dev, *dma_addr))
-+		if (drm->dmem->migrate.copy_func(drm, compound_nr(dpage),
-+			NOUVEAU_APER_VRAM, paddr, NOUVEAU_APER_HOST, dma_addr))
- 			goto out_free_page;
--		if (drm->dmem->migrate.copy_func(drm, 1,
--			NOUVEAU_APER_VRAM, paddr, NOUVEAU_APER_HOST, *dma_addr))
--			goto out_dma_unmap;
- 	} else {
--		*dma_addr =3D DMA_MAPPING_ERROR;
- 		if (drm->dmem->migrate.clear_func(drm, page_size(dpage),
- 			NOUVEAU_APER_VRAM, paddr))
- 			goto out_free_page;
-@@ -602,10 +683,11 @@ static unsigned long nouveau_dmem_migrate_copy_one(st=
-ruct nouveau_drm *drm,
- 		((paddr >> PAGE_SHIFT) << NVIF_VMM_PFNMAP_V0_ADDR_SHIFT);
- 	if (src & MIGRATE_PFN_WRITE)
- 		*pfn |=3D NVIF_VMM_PFNMAP_V0_W;
--	return migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
-+	dst =3D migrate_pfn(page_to_pfn(dpage)) | MIGRATE_PFN_LOCKED;
-+	if (PageHead(dpage))
-+		dst |=3D MIGRATE_PFN_COMPOUND;
-+	return dst;
-=20
--out_dma_unmap:
--	dma_unmap_page(dev, *dma_addr, PAGE_SIZE, DMA_BIDIRECTIONAL);
- out_free_page:
- 	nouveau_dmem_page_free_locked(drm, dpage);
- out:
-@@ -617,26 +699,64 @@ static void nouveau_dmem_migrate_chunk(struct nouveau=
-_drm *drm,
- 		struct nouveau_svmm *svmm, struct migrate_vma *args,
- 		dma_addr_t *dma_addrs, u64 *pfns)
- {
-+	struct device *dev =3D drm->dev->dev;
- 	struct nouveau_fence *fence;
- 	unsigned long addr =3D args->start, nr_dma =3D 0, i;
-+	unsigned int page_shift =3D PAGE_SHIFT;
-+	struct page *spage;
-+	unsigned long src =3D args->src[0];
-+	bool is_huge =3D (src & (MIGRATE_PFN_MIGRATE | MIGRATE_PFN_COMPOUND)) =3D=
-=3D
-+		(MIGRATE_PFN_MIGRATE | MIGRATE_PFN_COMPOUND);
-+	unsigned long dma_page_size =3D is_huge ? PMD_SIZE : PAGE_SIZE;
-+
-+	if (is_huge) {
-+		spage =3D migrate_pfn_to_page(src);
-+		if (spage) {
-+			dma_addrs[nr_dma] =3D dma_map_page(dev, spage, 0,
-+							 page_size(spage),
-+							 DMA_BIDIRECTIONAL);
-+			if (dma_mapping_error(dev, dma_addrs[nr_dma]))
-+				goto out;
-+			nr_dma++;
-+		}
-+		args->dst[0] =3D nouveau_dmem_migrate_copy_one(drm, svmm, src,
-+				spage, true, *dma_addrs, pfns);
-+		if (args->dst[0] & MIGRATE_PFN_COMPOUND) {
-+			page_shift =3D PMD_SHIFT;
-+			i =3D 1;
-+			goto fence;
-+		}
-+	}
-=20
--	for (i =3D 0; addr < args->end; i++) {
--		args->dst[i] =3D nouveau_dmem_migrate_copy_one(drm, svmm,
--				args->src[i], dma_addrs + nr_dma, pfns + i);
--		if (!dma_mapping_error(drm->dev->dev, dma_addrs[nr_dma]))
-+	for (i =3D 0; addr < args->end; i++, addr +=3D PAGE_SIZE) {
-+		src =3D args->src[i];
-+		if (!(src & MIGRATE_PFN_MIGRATE))
-+			continue;
-+		spage =3D migrate_pfn_to_page(src);
-+		if (spage && !is_huge) {
-+			dma_addrs[i] =3D dma_map_page(dev, spage, 0,
-+						    page_size(spage),
-+						    DMA_BIDIRECTIONAL);
-+			if (dma_mapping_error(dev, dma_addrs[i]))
-+				break;
- 			nr_dma++;
--		addr +=3D PAGE_SIZE;
-+		} else if (spage && is_huge && i !=3D 0)
-+			dma_addrs[i] =3D dma_addrs[i - 1] + PAGE_SIZE;
-+		args->dst[i] =3D nouveau_dmem_migrate_copy_one(drm, svmm, src,
-+				spage, false, dma_addrs[i], pfns + i);
- 	}
-=20
-+fence:
- 	nouveau_fence_new(drm->dmem->migrate.chan, false, &fence);
- 	migrate_vma_pages(args);
- 	nouveau_dmem_fence_done(&fence);
--	nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i);
-+	nouveau_pfns_map(svmm, args->vma->vm_mm, args->start, pfns, i,
-+			 page_shift);
-=20
--	while (nr_dma--) {
--		dma_unmap_page(drm->dev->dev, dma_addrs[nr_dma], PAGE_SIZE,
--				DMA_BIDIRECTIONAL);
--	}
-+	while (nr_dma)
-+		dma_unmap_page(drm->dev->dev, dma_addrs[--nr_dma],
-+				dma_page_size, DMA_BIDIRECTIONAL);
-+out:
- 	migrate_vma_finalize(args);
- }
-=20
-@@ -648,25 +768,25 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
- 			 unsigned long end)
- {
- 	unsigned long npages =3D (end - start) >> PAGE_SHIFT;
--	unsigned long max =3D min(SG_MAX_SINGLE_ALLOC, npages);
-+	unsigned long max =3D min(1UL << (PMD_SHIFT - PAGE_SHIFT), npages);
- 	dma_addr_t *dma_addrs;
- 	struct migrate_vma args =3D {
- 		.vma		=3D vma,
- 		.start		=3D start,
- 		.pgmap_owner	=3D drm->dev,
--		.flags		=3D MIGRATE_VMA_SELECT_SYSTEM,
-+		.flags		=3D MIGRATE_VMA_SELECT_SYSTEM |
-+				  MIGRATE_VMA_SELECT_COMPOUND,
- 	};
--	unsigned long i;
- 	u64 *pfns;
- 	int ret =3D -ENOMEM;
-=20
- 	if (drm->dmem =3D=3D NULL)
- 		return -ENODEV;
-=20
--	args.src =3D kcalloc(max, sizeof(*args.src), GFP_KERNEL);
-+	args.src =3D kmalloc_array(max, sizeof(*args.src), GFP_KERNEL);
- 	if (!args.src)
- 		goto out;
--	args.dst =3D kcalloc(max, sizeof(*args.dst), GFP_KERNEL);
-+	args.dst =3D kmalloc_array(max, sizeof(*args.dst), GFP_KERNEL);
- 	if (!args.dst)
- 		goto out_free_src;
-=20
-@@ -678,8 +798,10 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
- 	if (!pfns)
- 		goto out_free_dma;
-=20
--	for (i =3D 0; i < npages; i +=3D max) {
--		args.end =3D start + (max << PAGE_SHIFT);
-+	for (; args.start < end; args.start =3D args.end) {
-+		args.end =3D min(end, ALIGN(args.start, PMD_SIZE));
-+		if (args.start =3D=3D args.end)
-+			args.end =3D min(end, args.start + PMD_SIZE);
- 		ret =3D migrate_vma_setup(&args);
- 		if (ret)
- 			goto out_free_pfns;
-@@ -687,7 +809,6 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
- 		if (args.cpages)
- 			nouveau_dmem_migrate_chunk(drm, svmm, &args, dma_addrs,
- 						   pfns);
--		args.start =3D args.end;
- 	}
-=20
- 	ret =3D 0;
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouvea=
-u/nouveau_svm.c
-index 4f69e4c3dafd..3db0997f21b5 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-@@ -681,7 +681,6 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 			nouveau_svm_fault_cancel_fault(svm, buffer->fault[fi]);
- 			continue;
- 		}
--		SVMM_DBG(svmm, "addr %016llx", buffer->fault[fi]->addr);
-=20
- 		/* We try and group handling of faults within a small
- 		 * window into a single update.
-@@ -733,6 +732,10 @@ nouveau_svm_fault(struct nvif_notify *notify)
- 		}
- 		mmput(mm);
-=20
-+		SVMM_DBG(svmm, "addr %llx %s %c", buffer->fault[fi]->addr,
-+			args.phys[0] & NVIF_VMM_PFNMAP_V0_VRAM ?
-+			"vram" : "sysmem",
-+			args.i.p.size > PAGE_SIZE ? 'H' : 'N');
- 		limit =3D args.i.p.addr + args.i.p.size;
- 		for (fn =3D fi; ++fn < buffer->fault_nr; ) {
- 			/* It's okay to skip over duplicate addresses from the
-@@ -804,13 +807,15 @@ nouveau_pfns_free(u64 *pfns)
-=20
- void
- nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
--		 unsigned long addr, u64 *pfns, unsigned long npages)
-+		 unsigned long addr, u64 *pfns, unsigned long npages,
-+		 unsigned int page_shift)
- {
- 	struct nouveau_pfnmap_args *args =3D nouveau_pfns_to_args(pfns);
- 	int ret;
-=20
- 	args->p.addr =3D addr;
--	args->p.size =3D npages << PAGE_SHIFT;
-+	args->p.page =3D page_shift;
-+	args->p.size =3D npages << args->p.page;
-=20
- 	mutex_lock(&svmm->mutex);
-=20
-diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.h b/drivers/gpu/drm/nouvea=
-u/nouveau_svm.h
-index e7d63d7f0c2d..3fd78662f17e 100644
---- a/drivers/gpu/drm/nouveau/nouveau_svm.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_svm.h
-@@ -33,7 +33,8 @@ void nouveau_svmm_invalidate(struct nouveau_svmm *svmm, u=
-64 start, u64 limit);
- u64 *nouveau_pfns_alloc(unsigned long npages);
- void nouveau_pfns_free(u64 *pfns);
- void nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm_struct *mm,
--		      unsigned long addr, u64 *pfns, unsigned long npages);
-+		      unsigned long addr, u64 *pfns, unsigned long npages,
-+		      unsigned int page_shift);
- #else /* IS_ENABLED(CONFIG_DRM_NOUVEAU_SVM) */
- static inline void nouveau_svm_init(struct nouveau_drm *drm) {}
- static inline void nouveau_svm_fini(struct nouveau_drm *drm) {}
---=20
-2.20.1
+v2:
+- remove domain struct
+v3:
+- add xilinx-related platform mgmt fn's instead of wrapping around
+  function pointer in xilinx eemi ops struct
+- update zynqmp_r5 yaml parsing to not raise warnings for extra
+  information in children of R5 node. The warning "node has a unit
+  name, but no reg or ranges property" will still be raised though 
+  as this particular node is needed to describe the
+  '#address-cells' and '#size-cells' information.
+v4:
+- add default values for enums
+- fix formatting as per checkpatch.pl --strict. Note that 1 warning and
+  1 check are still raised as each is due to fixing the warning
+  results in that particular line going over 80 characters.
+- remove warning '/example-0/rpu@ff9a0000/r5@0: 
+  node has a unit name, but no reg or ranges property'
+  by adding reg to r5 node.
+v5:
+- update device tree sample and yaml parsing to not raise any warnings
+- description for memory-region in yaml parsing
+- compatible string in yaml parsing for TCM
+- parse_fw change from use of rproc_of_resm_mem_entry_init to
+  rproc_mem_entry_init and use of alloc/release
+- var's of type zynqmp_r5_pdata all have same local variable name
+- use dev_dbg instead of dev_info
+v6:
+- adding memory carveouts is handled much more similarly.
+  All mem carveouts are now described in reserved memory as needed.
+  That is, TCM nodes are not coupled to remoteproc anymore.
+  This is reflected in the remoteproc R5 driver and the device tree
+  binding.
+- remove mailbox from device tree binding as it is not necessary for elf
+  loading 
+v7:
+- remove unused headers
+- zynqmp_r5_remoteproc_probe:lockstep_mode from u32* to u32
+- device-tree binding "lockstep-mode"  to "xlnx,cluster-mode"
+- remove zynqmp_r5_mem_probe and loop to Probe R5 memory devices at
+  probe()
+- remove is_r5_mode_set from  zynqmp rpu remote processor private data
+- do not error out if no mailbox is provided since mailboxes are optional
+- remove zynqmp_r5_remoteproc_probe call of platform_set_drvdata as pdata
+  is handled in zynqmp_r5_remoteproc_remove
+v8:
+- remove old acks, reviewed-by's in commit message
+v9:
+- if zynqmp_r5_remoteproc.c pdata->tx_mc_skbs not initialized, then do not
+  call skb_queue_empty
+- update arguments and documentation for zynqmp_pm_set_rpu_mode
+- in fn zynqmp_pm_force_powerdown, change arg 'target' to 'node'
+- zynqmp_pm_request_wakeup update code style
+- edit 3/5 patch commit message
+- document zynqmp_pm_set_tcm_config and zynqmp_pm_get_rpu_mode
+  documentation to include expected return val
+- remove unused fn zynqmp_pm_get_node_status
+- update 5/5 patch commit message to document supported configurations
+  and how they are booted by the driver.
+- remove copyrights other than SPDX from zynqmp_r5_remoteproc.c
+- compilation warnings no longer raised
+- remove unused includes from zynqmp_r5_remoteproc.c
+- remove unused  var autoboot from zynqmp_r5_remoteproc.c
+- reorder zynqmp_r5_pdata fpr small mem savings due to alignment
+- zynqmp_pm_set_tcm_config and zynqmp_pm_set_rpu_mode uses second arg
+- zynqmp_r5_remoteproc.c use of zynqmp_pm_set_tcm_config now does not
+  have output arg
+- in tcm handling, unconditionally use &= 0x000fffff mask since all nodes
+  in this fn are for tcm
+- update comments for translating dma field in tcm handling to device
+  address
+- update calls to rproc_mem_entry_init in parse_mem_regions so that there
+  are only 2 cases for types of carveouts instead of 3
+- in parse_mem_regions, check if device tree node is null before using it
+- add example device tree nodes used in parse_mem_regions and tcm parsing
+- add comment for vring id node length
+- add check for string length so that vring id is at least min length
+- move tcm nodes from reserved mem to instead own device tree nodes
+   and only use them if enabled in device tree
+- add comment for explaining handling of rproc_elf_load_rsc_table
+- remove obsolete check for "if (vqid < 0)" in zynqmp_r5_rproc_kick
+- remove unused field mems in struct zynqmp_r5_pdata
+- remove call to zynqmp_r5_mem_probe and the fn itself as tcm handling
+  is done by zyqmp_r5_pm_request_tcm
+- remove obsolete setting of dma_ops and parent device dma_mask
+- remove obsolete use of of_dma_configure
+- add comment for call to r5_set_mode fn
+- make mbox usage optional and gracefully inform user via dev_dbg if not
+  present
+- change lockstep_mode from u32* to u32
+- update zynqmp_pm_set_rpu_mode and zynqmp_pm_set_rpu_mode documentation
+  and remove unused args
+v10:
+- add include types.h to xlnx-zynqmp.h for compilation
+v11:
+- update usage of zynqmp_pm_get_rpu_mode to return rpu mode in enum
+- update zynqmp_pm_set_tcm_config and zynqmp_pm_set_rpu_mode arguments to
+  remove unused args
+- use enums instead of u32 where possible in zynqmp_r5_remoteproc
+- zynqmp_r5_remoteproc: update prints to not use carriage return, just newline
+- zynqmp_r5_remoteproc: look up tcm banks via property instead of string name
+- print device tree nodes with %pOF instead of %s with node name field
+- update tcm release to unmap VA
+- handle r5-1 use case
+- device tree binding r5 node to have link to TCMs via meta-memory-regions
+  property
+- fix device tree binding so no warnings from 'make dt_binding_check'
+
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
+
+ .../xilinx,zynqmp-r5-remoteproc.yaml          | 123 +++
+ drivers/firmware/xilinx/zynqmp.c              |  94 ++
+ drivers/remoteproc/Kconfig                    |  10 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c     | 898 ++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |  60 ++
+ 6 files changed, 1186 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
+
+-- 
+2.17.1
 
