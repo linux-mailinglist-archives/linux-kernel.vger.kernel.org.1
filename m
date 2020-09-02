@@ -2,117 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D519225B753
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 01:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BE725B748
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 01:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgIBX3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 19:29:53 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:38112 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgIBX3w (ORCPT
+        id S1726927AbgIBX2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 19:28:04 -0400
+Received: from gateway22.websitewelcome.com ([192.185.47.179]:21156 "EHLO
+        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726523AbgIBX2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 19:29:52 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 082NTg7N023002;
-        Wed, 2 Sep 2020 18:29:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599089382;
-        bh=5ismlKMcchJg6W6QoumUCgvbzAC8BXk4SjpAViJ4qts=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=T+if4hZPcBLlHYJ6RddogpPBKvM+LOIs76Kcmmi5a7euud7ZIX0A3u6rSz+Q0MYxS
-         YM/ns7UgKhc+OZkWjq/7VBP9DQWEV3HfnHpCfXbL6+pCLX8c5R4IcFRKpfGNdXiDVm
-         9f5vBGDdAgy/4z7sSoVAQ7yzdxWYcHk29EUV/kTo=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 082NTgES068502
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Sep 2020 18:29:42 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 2 Sep
- 2020 18:29:42 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 2 Sep 2020 18:29:42 -0500
-Received: from [10.250.34.112] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 082NTfUQ128253;
-        Wed, 2 Sep 2020 18:29:41 -0500
-Subject: Re: [v4,4/4] arm64: dts: mt8192: add infracfg_rst node
-To:     Crystal Guo <crystal.guo@mediatek.com>, <p.zabel@pengutronix.de>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <seiya.wang@mediatek.com>, <stanley.chu@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <fan.chen@mediatek.com>,
-        <yong.liang@mediatek.com>
-References: <20200817030324.5690-1-crystal.guo@mediatek.com>
- <20200817030324.5690-5-crystal.guo@mediatek.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <211bd78f-3b70-1e65-eea9-75cc73a3dfdd@ti.com>
-Date:   Wed, 2 Sep 2020 18:29:41 -0500
+        Wed, 2 Sep 2020 19:28:02 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id C319F8E1F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 18:27:58 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id DcAXkdzOjn9FWDcAXk9keu; Wed, 02 Sep 2020 18:27:57 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=EW4k99M30Q/VptgdhFNBNYLBmFfFhol9OJvKWzARbcQ=; b=kZTxuF5A91oIy3nOmIxYCErVO6
+        GOmTFy7yqzcQm8GjxP7Y1LqBk1lcfpM8Axtug2qgfO+TsZphRj7839DScU5kgG7Ibk/wWJ5eKhL4f
+        0v//jR8VABQoI249k1A7wJ/QbhkroUKjpVqA7uXSCevWAij2IheBMV94lmcRii4lvmZSMFXIdZW2d
+        T/K0bymLL0fhqSumNPFuBRJ8YFreStwUJyevji/587MYQ/d53v/5v5ka3J096zGo5nQCy+dG8ttwq
+        jgQB1jiKeBTuRmvyxValGgAlu8J6yaLNsrvbAh0BGlgbk8HSkSkHdY6CAw9WmzfhhjTUOkaX5hZnv
+        8HyJzaMw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:57632 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1kDcAX-003TtA-LT; Wed, 02 Sep 2020 18:27:57 -0500
+To:     Rustam Kovhaev <rkovhaev@gmail.com>, pbonzini@redhat.com,
+        vkuznets@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+References: <20200902225718.675314-1-rkovhaev@gmail.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ AP7RWS474w==
+Subject: Re: [PATCH v2] KVM: fix memory leak in kvm_io_bus_unregister_dev()
+Message-ID: <c5990c86-ab01-d748-5505-375f50a4ed7d@embeddedor.com>
+Date:   Wed, 2 Sep 2020 18:34:11 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200817030324.5690-5-crystal.guo@mediatek.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20200902225718.675314-1-rkovhaev@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1kDcAX-003TtA-LT
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:57632
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Crystal,
+Hi,
 
-On 8/16/20 10:03 PM, Crystal Guo wrote:
-> add infracfg_rst node which is for MT8192 platform
+On 9/2/20 17:57, Rustam Kovhaev wrote:
+> when kmalloc() fails in kvm_io_bus_unregister_dev(), before removing
+> the bus, we should iterate over all other devices linked to it and call
+> kvm_iodevice_destructor() for them
 > 
-> Signed-off-by: Crystal Guo <crystal.guo@mediatek.com>
+> Reported-and-tested-by: syzbot+f196caa45793d6374707@syzkaller.appspotmail.com
+> Link: https://syzkaller.appspot.com/bug?extid=f196caa45793d6374707
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-I understand you are posting these together for complete reference, but driver
-subsystem maintainers typically don't pick dts patches. In anycase, can you
-clarify if your registers are self-clearing registers?
+I think it's worthwhile to add a Fixes tag for this, too.
 
-regards
-Suman
+Please, see more comments below...
 
 > ---
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+> v2:
+> - remove redundant whitespace
+> - remove goto statement and use if/else
+> ---
+>  virt/kvm/kvm_main.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index 931e1ca17220..a0cb9904706b 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -10,6 +10,7 @@
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
->  #include <dt-bindings/power/mt8192-power.h>
-> +#include <dt-bindings/reset/ti-syscon.h>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 67cd0b88a6b6..cf88233b819a 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4332,7 +4332,7 @@ int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus bus_idx, gpa_t addr,
+>  void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
+>  			       struct kvm_io_device *dev)
+>  {
+> -	int i;
+> +	int i, j;
+>  	struct kvm_io_bus *new_bus, *bus;
 >  
->  / {
->  	compatible = "mediatek,mt8192";
-> @@ -219,9 +220,17 @@
->  		};
+>  	bus = kvm_get_bus(kvm, bus_idx);
+> @@ -4349,17 +4349,20 @@ void kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
 >  
->  		infracfg: infracfg@10001000 {
-> -			compatible = "mediatek,mt8192-infracfg", "syscon";
-> +			compatible = "mediatek,mt8192-infracfg", "syscon", "simple-mfd";
->  			reg = <0 0x10001000 0 0x1000>;
->  			#clock-cells = <1>;
-> +
-> +			infracfg_rst: reset-controller {
-> +				compatible = "mediatek,infra-reset", "ti,syscon-reset";
-> +				#reset-cells = <1>;
-> +				ti,reset-bits = <
-> +					0x140 15 0x144 15 0 0 (ASSERT_SET | DEASSERT_SET | STATUS_NONE) /* 0: pcie */
-> +				>;
-> +			};
->  		};
->  
->  		pericfg: pericfg@10003000 {
-> 
+>  	new_bus = kmalloc(struct_size(bus, range, bus->dev_count - 1),
+>  			  GFP_KERNEL_ACCOUNT);
+> -	if (!new_bus)  {
+> +	if (new_bus) {
+> +		memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
 
+				    ^^^
+It seems that you can use struct_size() here (see the allocation code above)...
+
+> +		new_bus->dev_count--;
+> +		memcpy(new_bus->range + i, bus->range + i + 1,
+> +		       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
+
+					   ^^^
+...and, if possible, you can also use flex_array_size() here.
+
+Thanks
+--
+Gustavo
+
+> +	} else {
+>  		pr_err("kvm: failed to shrink bus, removing it completely\n");
+> -		goto broken;
+> +		for (j = 0; j < bus->dev_count; j++) {
+> +			if (j == i)
+> +				continue;
+> +			kvm_iodevice_destructor(bus->range[j].dev);
+> +		}
+>  	}
+>  
+> -	memcpy(new_bus, bus, sizeof(*bus) + i * sizeof(struct kvm_io_range));
+> -	new_bus->dev_count--;
+> -	memcpy(new_bus->range + i, bus->range + i + 1,
+> -	       (new_bus->dev_count - i) * sizeof(struct kvm_io_range));
+> -
+> -broken:
+>  	rcu_assign_pointer(kvm->buses[bus_idx], new_bus);
+>  	synchronize_srcu_expedited(&kvm->srcu);
+>  	kfree(bus);
+> 
