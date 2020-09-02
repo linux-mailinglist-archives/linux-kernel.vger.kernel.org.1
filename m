@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6480925AB49
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9AF25AB4D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgIBMnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbgIBMnB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:43:01 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC52C061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 05:42:51 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id d26so6475948ejr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 05:42:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SccKNTt3YC7XbTuW2H30Zmdads/idBqIfZTM94c1dTk=;
-        b=V8U7jhgODsB8A//a8e72+JnBkGzNrjWlf+cOescmbiJ3DdRRPUNnX7AH0GN4CKTzGQ
-         +/DnJnNFfFFBJdJNHpWGYydROSt6ust0nCR9krxGx1RYNVxs3B9Vt6pXMrhZ8ezZilSg
-         5iMLITForaLMdJBbuQ8/D4kKbKs5exxbDRNVJo9rsu4teVNsFhLVlefNJLDkf5vnWjK6
-         zCRx5PQacyjnr2low+ElUA4KMRIwH64tKzzsty1u/A5yrzKTSqH1Y5b+yFxgftrNkQrZ
-         nsrBzKgtGopGLoDGEl4qx5f3eYHngO7vqpj+i4F57egPLI66c960+Mpld71TPJl37vP/
-         c1sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SccKNTt3YC7XbTuW2H30Zmdads/idBqIfZTM94c1dTk=;
-        b=oencepJrrcELnjiFuES+/Eoa1HrIalgBgFyJ3+TfOoPMmLVa1RZUJtwPwNGK01Whld
-         RXQMtu6Qy7uvSrDHuQ7UvFqXjwuUJ26CmayBkkj0PlSZJiKGP7vhJFm+b9Bu7rmjG1ZQ
-         QhG193lq5uU+iy6ziLPzWEVeDzm5e/ZE08arQviRT432uSfacp2fBZxuTvmcd7xJnPUV
-         D6HIkNO2wTM1c3HtECobvSk+T+V5TPlKWQMJmgI3wF94XL1ktfJoQ7NxY1xpzhVTnZM3
-         NpRhU3BcsrY+xtdka/hqOKkL1HClqHDdiW/DLeHTOJ5X+O9i82gLrHFC+5VhchuNg+G6
-         J/iQ==
-X-Gm-Message-State: AOAM530O7QiMfmFatn+ebTAyV8DC16uKDDIGfIvMVulz/OsYqULpXOlK
-        tnhTh7UPMaLw09iZlFN7uc+q2hkedd+uD5WqiTXByg==
-X-Google-Smtp-Source: ABdhPJx66UO5GHi9sHXGjEoebE3qu+qT1iXTpFKwiHny0D+6C+OPmtHNdkot7yilBnEj0otgEXsEp/WbFvPk7azEl3E=
-X-Received: by 2002:a17:906:715b:: with SMTP id z27mr2767202ejj.166.1599050569831;
- Wed, 02 Sep 2020 05:42:49 -0700 (PDT)
+        id S1727024AbgIBMoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 08:44:14 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:37960 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgIBMnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 08:43:42 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kDS6x-00CtCS-4e; Wed, 02 Sep 2020 14:43:35 +0200
+Date:   Wed, 2 Sep 2020 14:43:35 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: Document Broadcom SF2
+ switch clocks
+Message-ID: <20200902124335.GB3071395@lunn.ch>
+References: <20200901225913.1587628-1-f.fainelli@gmail.com>
+ <20200901225913.1587628-2-f.fainelli@gmail.com>
 MIME-Version: 1.0
-References: <6469324e-afa2-18b4-81fb-9e96466c1bf3@suse.cz> <A8A8D5FE-86C3-40B4-919C-5FF2A134F366@redhat.com>
-In-Reply-To: <A8A8D5FE-86C3-40B4-919C-5FF2A134F366@redhat.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 2 Sep 2020 08:42:13 -0400
-Message-ID: <CA+CK2bAebg4PALh3_-49MXGJ-FNP3hE98wHZd5uEC-q7wG6Vmg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/28] The new cgroup slab memory controller
-To:     David Hildenbrand <dhildenb@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        stable <stable@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901225913.1587628-2-f.fainelli@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Am 02.09.2020 um 11:53 schrieb Vlastimil Babka <vbabka@suse.cz>:
-> >
-> > =EF=BB=BFOn 8/28/20 6:47 PM, Pavel Tatashin wrote:
-> >> There appears to be another problem that is related to the
-> >> cgroup_mutex -> mem_hotplug_lock deadlock described above.
-> >>
-> >> In the original deadlock that I described, the workaround is to
-> >> replace crash dump from piping to Linux traditional save to files
-> >> method. However, after trying this workaround, I still observed
-> >> hardware watchdog resets during machine  shutdown.
-> >>
-> >> The new problem occurs for the following reason: upon shutdown systemd
-> >> calls a service that hot-removes memory, and if hot-removing fails for
-> >
-> > Why is that hotremove even needed if we're shutting down? Are there any
-> > (virtualization?) platforms where it makes some difference over plain
-> > shutdown/restart?
->
-> If all it=E2=80=98s doing is offlining random memory that sounds unnecess=
-ary and dangerous. Any pointers to this service so we can figure out what i=
-t=E2=80=98s doing and why? (Arch? Hypervisor?)
+On Tue, Sep 01, 2020 at 03:59:11PM -0700, Florian Fainelli wrote:
+> Describe the two possible clocks feeding into the Broadcom SF2
+> integrated Ethernet switch. BCM7445 systems have two clocks, one for the
+> main switch core clock, and another for controlling the switch clock
+> divider whereas BCM7278 systems only have the first kind.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  .../devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt   | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt b/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt
+> index 88b57b0ca1f4..97ca62b0e14d 100644
+> --- a/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt
+> +++ b/Documentation/devicetree/bindings/net/brcm,bcm7445-switch-v4.0.txt
+> @@ -50,6 +50,13 @@ Optional properties:
+>  - reset-names: If the "reset" property is specified, this property should have
+>    the value "switch" to denote the switch reset line.
+>  
+> +- clocks: when provided, the first phandle is to the switch's main clock and
+> +  is valid for both BCM7445 and BCM7278. The second phandle is only applicable
+> +  to BCM7445 and is to support dividing the switch core clock.
+> +
+> +- clock-names: when provided, the first phandle must be "sw_switch", and the
+> +  second must be named "sw_switch_mdiv".
 
-Hi David,
+Hi Florian
 
-This is how we are using it at Microsoft: there is  a very large
-number of small memory machines (8G each) with low downtime
-requirements (reboot must be under a second). There is also a large
-state ~2G of memory that we need to transfer during reboot, otherwise
-it is very expensive to recreate the state. We have 2G of system
-memory memory reserved as a pmem in the device tree, and use it to
-pass information across reboots. Once the information is not needed we
-hot-add that memory and use it during runtime, before shutdown we
-hot-remove the 2G, save the program state on it, and do the reboot.
+Since you look clocks up by name, i don't think the order matters.
 
-Pasha
+Otherwise:
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
