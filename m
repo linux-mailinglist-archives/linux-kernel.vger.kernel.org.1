@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29CF25AFF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD72C25AFF3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbgIBPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:47:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60616 "EHLO mail.kernel.org"
+        id S1728597AbgIBPrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:47:41 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:55958 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbgIBNav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:30:51 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4CF820709;
-        Wed,  2 Sep 2020 13:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599053437;
-        bh=KiXG3vPSX3QQONiOmnVN3l5DWGomJL+un/AUZiudI40=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=awKCJrmYIm5cDtXSBdmG87lZohTxj1yU2UyDGarMm5xwy6EL8HmJ2uIGOLNeW97yC
-         KMtXqMRsyxFqGsSG9523gOfAQUgRA5Cj7J412u9FAF8YsoxnygtxOV0ESBHeaN4X/L
-         iKfjVTcVCnXsGTU4DEACxGX0GUVuUd8PcggUm7aY=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E60CE40D3D; Wed,  2 Sep 2020 10:30:34 -0300 (-03)
-Date:   Wed, 2 Sep 2020 10:30:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org, Al Grant <al.grant@arm.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Ahern <dsahern@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Like Xu <like.xu@linux.intel.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Wei Li <liwei391@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [GIT PULL] perf tools fixes for v5.9
-Message-ID: <20200902133034.GB3444345@kernel.org>
-References: <20200901224154.3436175-1-acme@kernel.org>
- <CAHk-=wifL-04oOF3RAbX9Odyfgz4zc4dE=pq-QL+2C-aTxUmqw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wifL-04oOF3RAbX9Odyfgz4zc4dE=pq-QL+2C-aTxUmqw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+        id S1726686AbgIBNbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:31:34 -0400
+IronPort-SDR: d0lp3rNJvvGbqLTQHTgs5N75l5D8szcOauSqLAcK2eHMB6yeOrT3QZKzwGvRtyhhgPZKQ4bLHq
+ ULNlUd5siJwveh/9eNJIo9GNvSWpPU2RfBr90oP+QEeVrrvgwx5VZdrPVRQaccxIuL9NslTW4Y
+ HwSmRvNZRZQRzvU0Ta4/fztT63g+ZdNjdO1cxAMdNzFo6/q1GvbC6Qonoy9jSIYr//q/tJHOX4
+ zbMfgebHJ8rwPUcsSKer9TdeTZ/LQtBj4ULSlNNvBci0c6F/tNElWentlIRC9NrjOFVgvsjOPE
+ JsU=
+X-IronPort-AV: E=Sophos;i="5.76,383,1592863200"; 
+   d="scan'208";a="13702688"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 02 Sep 2020 15:30:59 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 02 Sep 2020 15:30:59 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 02 Sep 2020 15:30:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1599053459; x=1630589459;
+  h=from:to:cc:subject:date:message-id;
+  bh=ORYe7avErwu4WFEAorhEscGnFHXvdNg4+jfB80re9o0=;
+  b=TpsnR5WcfjtNwbxceig1HrB0dl9w2sYCHFdhYJrxiQ9nwuzPBIyGjqcs
+   k4Ybi6Ev6qBFy33aYuuw6pms4dkW3RyDl/vP27zI7uw9TKRZyyQjX7rgV
+   vngYfYVu93WZwNj1n0lQ6jeZk6OlZwGcaTs4pNd3qUKJ9HdGwWIAA4FHH
+   ep6M33Yuyt2xnCm/o7bBIlr6YvotY2o1ED7blYUJsrwTZ5hn0lQOaKjFH
+   DIEwcfosdjE89hhjqz4wd0XttpIArP/GqBTl0SwnWRpj8qXJPIcSQ5VMl
+   reZ08T0l/uAj6HGaRIA3+RS2F7VogJPxHTA1ounRfXVGaLX8wLDjFyeNO
+   g==;
+IronPort-SDR: VLEY4cbyc3i8spDisESikz/mri5KDL/ihYpJyEaiioQkDYSXhUSroCWlQ+fz+Bbi2dy2jnz+sx
+ MP3srgBnXC6JlbwPyGd6mqBOx0EOcUyFF4uN449l8zyTrFNWjgfxViiXRx8IsCvdWmvK7lJmZx
+ IO9YYH0RcbuaEBR7gjWd4OsL9qtBP4Dd0pGFsWZzJAhWsURcFIABCZyXYNbIRSwwW4/SAMR3Yv
+ 69vuKjbmO/w4ZRYrOMFEFX5PT542Hz3nhUrlxXBcTgDBVLvmhxbKPzmPWhJbTsGQ0aYwNA1P/0
+ AEM=
+X-IronPort-AV: E=Sophos;i="5.76,383,1592863200"; 
+   d="scan'208";a="13702687"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 02 Sep 2020 15:30:59 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id F14ED280065;
+        Wed,  2 Sep 2020 15:30:58 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH 1/2] ASoC: codec: tlv320aic32x4: fix missing aic32x4_disable_regulators() in error path
+Date:   Wed,  2 Sep 2020 15:30:42 +0200
+Message-Id: <20200902133043.19504-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 01, 2020 at 07:43:33PM -0700, Linus Torvalds escreveu:
-> On Tue, Sep 1, 2020 at 3:42 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > - The SNOOPX and REMOTE offsets in the data_src bitmask in perf records were
-> >   were both 37, SNOOPX is 38, fix it.
-> 
-> The kernel uapi side thinks it's 37. What's up?
-> 
->   $ git grep PERF_MEM_SNOOPX_SHIFT
-> 
-> results in
-> 
->   include/uapi/linux/perf_event.h:#define PERF_MEM_SNOOPX_SHIFT   37
->   tools/include/uapi/linux/perf_event.h:#define PERF_MEM_SNOOPX_SHIFT     38
+The regulators need to be disabled in the aic32x4_register_clocks()
+failure case as well.
 
-Its going in a separate patch, via PeterZ/Ingo,
+Fixes: 9d4befff5a95 ("ASoC: codec: tlv3204: Moving GPIO reset and add ADC
+reset")
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+---
+ sound/soc/codecs/tlv320aic32x4.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-- Arnaldo
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index 8dcea566b375..a45fb496082c 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -1230,8 +1230,7 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 			&soc_component_dev_aic32x4, &aic32x4_dai, 1);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to register component\n");
+-		aic32x4_disable_regulators(aic32x4);
+-		return ret;
++		goto err_disable_regulators;
+ 	}
+ 
+ 	if (gpio_is_valid(aic32x4->rstn_gpio)) {
+@@ -1242,9 +1241,14 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
+ 
+ 	ret = aic32x4_register_clocks(dev, aic32x4->mclk_name);
+ 	if (ret)
+-		return ret;
++		goto err_disable_regulators;
+ 
+ 	return 0;
++
++err_disable_regulators:
++	aic32x4_disable_regulators(aic32x4);
++
++	return ret;
+ }
+ EXPORT_SYMBOL(aic32x4_probe);
+ 
+-- 
+2.17.1
+
