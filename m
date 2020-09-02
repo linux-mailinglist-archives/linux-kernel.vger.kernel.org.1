@@ -2,116 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED83C25AC1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516EC25AC4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 15:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgIBNeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 09:34:50 -0400
-Received: from mx4.wp.pl ([212.77.101.12]:45071 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726871AbgIBNbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:31:35 -0400
-Received: (wp-smtpd smtp.wp.pl 20456 invoked from network); 2 Sep 2020 15:24:21 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1599053061; bh=G8wT2xsxFQGcxLMSyMItSjCCDSZ7QEW2M+j2fLIpSHo=;
-          h=From:To:Cc:Subject;
-          b=eLO3vgAU2BsU7IjAtRnGmfcvY97FVSmHO9siIRejPiMKmoKoMB6tDWFUIGIeHOStP
-           WGpdbdyi4OJQuJhJudyjs03ruwMfaFN1nOIXZUPilIcwvnpj7p/Dirl399MgvIS8Ml
-           9ixh/iECJhYRO44kySY9HJtI3V6Ghc5WJWyOwOF4=
-Received: from nat-0.staszic.waw.pl (HELO localhost) (antoni.przybylik@wp.pl@[94.240.45.201])
-          (envelope-sender <antoni.przybylik@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <gregkh@linuxfoundation.org>; 2 Sep 2020 15:24:21 +0200
-From:   Antoni Przybylik <antoni.przybylik@wp.pl>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Antoni Przybylik <antoni.przybylik@wp.pl>
-Subject: [PATCH] staging: gdm724x: gdm_tty: replaced macro with a function
-Date:   Wed,  2 Sep 2020 15:24:19 +0200
-Message-Id: <20200902132419.61220-1-antoni.przybylik@wp.pl>
-X-Mailer: git-send-email 2.28.0
+        id S1726400AbgIBNtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbgIBNlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:41:02 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1789BC06123B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To;
+        bh=HLJQCZHx6poAziNUgEdGRzGFUk3q15Hg/3SXsnWe/Zo=; b=MfWWEdwYq0knADT+MsiPZXiJub
+        7eVu6bk577u/zpj5cOmG3zltjwUbJO183eW3qS0VHaAH5HkC0vDxFLnUisfgBBCpmN1lRZjCgkylB
+        0NHToSfJNVc+ma2vGWtSQG8BErKFtRC2HeV6kUMl9oc4VXB/zhM2Ufg45Uv2vmheufbXj2olW0cev
+        KVBkNHsNFvhNMLaUXmTR1reyY2UxvP7zScZ9MpYB9D4gmu6szvwkv5rmynLp5j5CBCdXY/nS1JD6R
+        qIDals+GBf7qhGWVxp8BsQioPeFrF8of8qoMsVDU3HYrphlnqSOMUhxvVkxNI0ezXXesXwAsiZbf8
+        4bTn5PVA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDSxr-0002dd-EB; Wed, 02 Sep 2020 13:38:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D3D203062BA;
+        Wed,  2 Sep 2020 15:38:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id AE88020104617; Wed,  2 Sep 2020 15:38:11 +0200 (CEST)
+Message-ID: <20200902133200.666781610@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 02 Sep 2020 15:25:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Kyle Huey <me@kylehuey.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Cooper <Andrew.Cooper3@citrix.com>
+Subject: [PATCH 01/13] x86/entry: Fix AC assertion
+References: <20200902132549.496605622@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: d17dd52168d66c6852a2c5cf02c92270
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [gbO8]                               
+Content-Type: text/plain; charset=UTF-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This approach is more elegant and prevents some problems related to
-macros such as operator precedence in expanded expression.
--------------------------------------------------------------------
-Changed return type to bool and removed inline sepcifier.
+From: Peter Zijlstra <peterz@infradead.org>
 
-Signed-off-by: Antoni Przybylik <antoni.przybylik@wp.pl>
+The WARN added in commit 3c73b81a9164 ("x86/entry, selftests: Further
+improve user entry sanity checks") unconditionally triggers on my IVB
+machine because it does not support SMAP.
+
+For !SMAP hardware we patch out CLAC/STAC instructions and thus if
+userspace sets AC, we'll still have it set after entry.
+
+Fixes: 3c73b81a9164 ("x86/entry, selftests: Further improve user entry sanity checks")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Andy Lutomirski <luto@kernel.org>
 ---
- drivers/staging/gdm724x/gdm_tty.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ arch/x86/include/asm/entry-common.h |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-index 6e813693a766..179fc9b9400b 100644
---- a/drivers/staging/gdm724x/gdm_tty.c
-+++ b/drivers/staging/gdm724x/gdm_tty.c
-@@ -27,8 +27,6 @@
- 
- #define MUX_TX_MAX_SIZE 2048
- 
--#define GDM_TTY_READY(gdm) (gdm && gdm->tty_dev && gdm->port.count)
--
- static struct tty_driver *gdm_driver[TTY_MAX_COUNT];
- static struct gdm *gdm_table[TTY_MAX_COUNT][GDM_TTY_MINOR];
- static DEFINE_MUTEX(gdm_table_lock);
-@@ -36,6 +34,11 @@ static DEFINE_MUTEX(gdm_table_lock);
- static const char *DRIVER_STRING[TTY_MAX_COUNT] = {"GCTATC", "GCTDM"};
- static char *DEVICE_STRING[TTY_MAX_COUNT] = {"GCT-ATC", "GCT-DM"};
- 
-+static bool gdm_tty_ready(struct gdm *gdm)
-+{
-+	return (gdm && gdm->tty_dev && gdm->port.count);
-+}
+--- a/arch/x86/include/asm/entry-common.h
++++ b/arch/x86/include/asm/entry-common.h
+@@ -18,8 +18,16 @@ static __always_inline void arch_check_u
+ 		 * state, not the interrupt state as imagined by Xen.
+ 		 */
+ 		unsigned long flags = native_save_fl();
+-		WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
+-				      X86_EFLAGS_NT));
++		unsigned long mask = X86_EFLAGS_DF | X86_EFLAGS_NT;
 +
- static void gdm_port_destruct(struct tty_port *port)
- {
- 	struct gdm *gdm = container_of(port, struct gdm, port);
-@@ -119,7 +122,7 @@ static int gdm_tty_recv_complete(void *data,
- {
- 	struct gdm *gdm = tty_dev->gdm[index];
++		/*
++		 * For !SMAP hardware we patch out CLAC on entry.
++		 */
++		if (boot_cpu_has(X86_FEATURE_SMAP) ||
++		    (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
++			mask |= X86_EFLAGS_AC;
++
++		WARN_ON_ONCE(flags & mask);
  
--	if (!GDM_TTY_READY(gdm)) {
-+	if (!gdm_tty_ready(gdm)) {
- 		if (complete == RECV_PACKET_PROCESS_COMPLETE)
- 			gdm->tty_dev->recv_func(gdm->tty_dev->priv_dev,
- 						gdm_tty_recv_complete);
-@@ -146,7 +149,7 @@ static void gdm_tty_send_complete(void *arg)
- {
- 	struct gdm *gdm = arg;
- 
--	if (!GDM_TTY_READY(gdm))
-+	if (!gdm_tty_ready(gdm))
- 		return;
- 
- 	tty_port_tty_wakeup(&gdm->port);
-@@ -160,7 +163,7 @@ static int gdm_tty_write(struct tty_struct *tty, const unsigned char *buf,
- 	int sent_len = 0;
- 	int sending_len = 0;
- 
--	if (!GDM_TTY_READY(gdm))
-+	if (!gdm_tty_ready(gdm))
- 		return -ENODEV;
- 
- 	if (!len)
-@@ -187,7 +190,7 @@ static int gdm_tty_write_room(struct tty_struct *tty)
- {
- 	struct gdm *gdm = tty->driver_data;
- 
--	if (!GDM_TTY_READY(gdm))
-+	if (!gdm_tty_ready(gdm))
- 		return -ENODEV;
- 
- 	return WRITE_SIZE;
--- 
-2.28.0
+ 		/* We think we came from user mode. Make sure pt_regs agrees. */
+ 		WARN_ON_ONCE(!user_mode(regs));
+
 
