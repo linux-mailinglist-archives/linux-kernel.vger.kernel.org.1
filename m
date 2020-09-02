@@ -2,138 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4A925B4F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 21:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B9225B4F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 22:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgIBT7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 15:59:46 -0400
-Received: from mga11.intel.com ([192.55.52.93]:59337 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgIBT7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 15:59:45 -0400
-IronPort-SDR: TNrL2OULHNquJpE5XtUKJwv069sSP6qfjhqmiHlDEtmnCg1MmvXd/XCQ68sQsTjZDidWlsk/Iq
- U22QHDu5hjFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="154979343"
-X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
-   d="scan'208";a="154979343"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 12:59:44 -0700
-IronPort-SDR: Qb+TmmiGe+/w1Cy++Hd5ueLANvX6LvRs9O5Xd2VRZ0PWeiY1F7Vzo41yM86iEqgd12BaxfuEJW
- /4BktnFHU+BA==
-X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
-   d="scan'208";a="477772867"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 12:59:41 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 502932071B; Wed,  2 Sep 2020 22:59:39 +0300 (EEST)
-Date:   Wed, 2 Sep 2020 22:59:39 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v7 6/6] Documentation: ACPI: Document
- allow-low-power-probe _DSD property
-Message-ID: <20200902195939.GG32646@paasikivi.fi.intel.com>
-References: <20200901210333.8462-1-sakari.ailus@linux.intel.com>
- <20200901210333.8462-7-sakari.ailus@linux.intel.com>
- <CAJZ5v0jFceTFRTD55cz3ZHRZpuNRK_z9=_DxWexc8ArsGU3cog@mail.gmail.com>
- <20200902163121.GE32646@paasikivi.fi.intel.com>
- <CAJZ5v0jmetD2N0-ZrNh8C8oOCFwdwwH9s6FqHOQApMdFa_AZ1A@mail.gmail.com>
+        id S1726493AbgIBUBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 16:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726247AbgIBUBU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 16:01:20 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AAFC061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 13:01:19 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o5so883955qke.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 13:01:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9JdQwkuLYEyAFaAMN7JnHeEmf9KqMuiS3LAxUb4gzvY=;
+        b=ZSoTHvoqM3YQj7xkHNSUHZeV/ZS5A7V2pD16ARz2BXKyep1ueJXJ7bosq7XSbS0H03
+         8XU302L6I5ojWh9L9fE4QZbESVY4pkA7SFMIp7FnD3xaPvMJcvvT+L2nwRtzG54yvgfI
+         bVwa1xP65NA1oY7cfRigZnchJfOXPinaNniCCoXfILVIWezMpWzd9iqO3pFgv1dPgHjP
+         4yL6GcYIOIXPDDXiWoIF+qRpMczg22kY+sgaIvfCYay1Y757pueoD5HcOHYbMMGjVFU4
+         kvnhUZ03sXhqL0jPY87zwtmsF7+OJz6mEo2RFQchBPc43XFJx/L8Xi3lRAXlStAYsqUr
+         lhbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9JdQwkuLYEyAFaAMN7JnHeEmf9KqMuiS3LAxUb4gzvY=;
+        b=BfL59D7uWcPQo9RU/a8Wnzxt8Jb/J+1j31pGqYII2zHUMU8cWkIZ3d/unqegqZIgep
+         wXSp7e3tgUMHvel2WoEIxmNuBQKqBpbU249JIWBHVH65eCvn3tvxiK85wF9TDbLNH1ot
+         ehQBeFQUmBXmVR4x6oEn7gliGj+lPW7L1WBldBaA7lZ1m9XIp+OMw47Qv885Y/Aj9C4S
+         EvMJC6XCKKsbroyrod/Xct1DEBKgxBIwVKoDFUa7c9W5hvn7YEByOdjlS1GzrOsriN5H
+         IlHFACLlnUEwZo0aCxY8dc0pn99/pSgSyNNRaHCSTYGQ38iJ47CHB5gizDCWjbpcU2CC
+         ssMg==
+X-Gm-Message-State: AOAM531NuwQmZum4G2E6ThUoHQHubamaHt70Sws302Qp5XT3c/scUcPm
+        V03nP/RCTU8CBv/25R8uOqo=
+X-Google-Smtp-Source: ABdhPJxbqqwpZTrRGBCTwYsuBDZvh5BCCxLcImcoyUAYC1vPX6bJy9TTNPQrgaP6+MXcckotyNxHcg==
+X-Received: by 2002:a05:620a:a52:: with SMTP id j18mr8060706qka.445.1599076878970;
+        Wed, 02 Sep 2020 13:01:18 -0700 (PDT)
+Received: from ubuntu (69-220-158-6.lightspeed.rlghnc.sbcglobal.net. [69.220.158.6])
+        by smtp.gmail.com with ESMTPSA id d12sm472481qka.34.2020.09.02.13.01.18
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 02 Sep 2020 13:01:18 -0700 (PDT)
+From:   Nachammai Karuppiah <nachukannan@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        Nachammai Karuppiah <nachukannan@gmail.com>
+Subject: [RFC PATCH 0/7] Trace events to pstore
+Date:   Wed,  2 Sep 2020 13:00:15 -0700
+Message-Id: <cover.1599072725.git.nachukannan@gmail.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jmetD2N0-ZrNh8C8oOCFwdwwH9s6FqHOQApMdFa_AZ1A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 06:34:30PM +0200, Rafael J. Wysocki wrote:
-> On Wed, Sep 2, 2020 at 6:31 PM Sakari Ailus
-> <sakari.ailus@linux.intel.com> wrote:
-> >
-> > Hi Rafael,
-> >
-> > Thank you for the review.
-> >
-> > On Wed, Sep 02, 2020 at 05:57:01PM +0200, Rafael J. Wysocki wrote:
-> > > On Tue, Sep 1, 2020 at 11:03 PM Sakari Ailus
-> > > <sakari.ailus@linux.intel.com> wrote:
-> > > >
-> > > > Document the probe-low-power _DSD property and how it is used with I²C
-> > > > drivers.
-> > >
-> > > I would reorder the series to make this go right after the [1/6] or
-> > > maybe even fold it into that patch.
-> > >
-> > > The point is that the changes in [1/6] clearly depend on the property
-> > > defined here.
-> >
-> > Ack.
-> >
-> > >
-> > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > > ---
-> > > >  .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++++++++++++++
-> > > >  Documentation/firmware-guide/acpi/index.rst   |  1 +
-> > > >  2 files changed, 29 insertions(+)
-> > > >  create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > > >
-> > > > diff --git a/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > > > new file mode 100644
-> > > > index 0000000000000..6fcc89162b898
-> > > > --- /dev/null
-> > > > +++ b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > > > @@ -0,0 +1,28 @@
-> > > > +.. SPDX-License-Identifier: GPL-2.0
-> > > > +
-> > > > +======================================
-> > > > +Probing I²C devices in low power state
-> > > > +======================================
-> > > > +
-> > > > +Introduction
-> > > > +============
-> > > > +
-> > > > +In some cases it may be preferred to leave certain devices powered off for the
-> > > > +entire system bootup if powering on these devices has adverse side effects,
-> > > > +beyond just powering on the said device. Linux recognizes the _DSD property
-> > > > +"allow-low-power-probe" that can be used for this purpose.
-> > >
-> > > It would be good to refer to the document defining the generic _DSD
-> > > properties mechanism and the GUID used for that from here.
-> >
-> > I'll add a reference to the device properties UUID for _DSD spec.
-> >
-> > >
-> > > The meaning of  "_DSD property" may not be entirely clear to the
-> > > reader as it stands.
-> > >
-> > > And maybe call the property "i2c-allow-low-power-probe" or similar, to
-> > > indicate that it is specific to i2c.
-> >
-> > The bus determines that already, and it's only defined for I²C here. Should
-> > we need this in the future for e.g. I3C, there would be no need to think of
-> > renaming it, just changing the documentation and implementation.
-> >
-> > I don't have a strong opinion on that though.
-> 
-> The point is that the property is not going to be recognized beyond i2c.
+Hi,
 
-Not right now, that is true. Sure, I can change it for v8.
+This patch series adds support to store trace events in pstore.
+
+Storing trace entries in persistent RAM would help in understanding what 
+happened just before the system went down. The trace events that led to the 
+crash can be retrieved from the pstore after a warm reboot. This will help 
+debug what happened before machineâ€™s last breath. This has to be done in a 
+scalable way so that tracing a live system does not impact the performance 
+of the system.
+
+This requires a new backend - ramtrace that allocates pages from 
+persistent storage for the tracing utility. This feature can be enabled
+using TRACE_EVENTS_TO_PSTORE.
+In this feature, the new backend is used only as a page allocator and 
+once the  users chooses to use pstore to record trace entries, the ring 
+buffer pages are freed and allocated in pstore. Once this switch is done,
+ring_buffer continues to operate just as before without much overhead.
+Since the ring buffer uses the persistent RAM buffer directly to record 
+trace entries, all tracers would also persist across reboot.
+
+To test this feature, I used a simple module that would call panic during 
+a write operation to file in tracefs directory. Before writing to the file, 
+the ring buffer is moved to persistent RAM buffer through command line 
+as shown below,
+
+$echo 1 > /sys/kernel/tracing/options/persist 
+
+Writing to the file,
+$echo 1 > /sys/kernel/tracing/crash/panic_on_write
+
+The above write operation results in system crash. After reboot, once the
+pstore is mounted, the trace entries from previous boot are available in file,
+/sys/fs/pstore/trace-ramtrace-0
+
+Looking through this file, gives us the stack trace that led to the crash. 
+
+           <...>-1     [001] ....    49.083909: __vfs_write <-vfs_write                         
+           <...>-1     [001] ....    49.083933: panic <-panic_on_write                   
+           <...>-1     [001] d...    49.084195: printk <-panic                                 
+           <...>-1     [001] d...    49.084201: vprintk_func <-printk                          
+           <...>-1     [001] d...    49.084207: vprintk_default <-printk                          
+           <...>-1     [001] d...    49.084211: vprintk_emit <-printk                          
+           <...>-1     [001] d...    49.084216: __printk_safe_enter <-vprintk_emit         
+           <...>-1     [001] d...    49.084219: _raw_spin_lock <-vprintk_emit       
+           <...>-1     [001] d...    49.084223: vprintk_store <-vprintk_emit                    
+
+Patchwise oneline description is given below:
+
+Patch 1 adds support to allocate ring buffer pages from persistent RAM buffer.
+
+Patch 2 introduces a new backend, ramtrace.
+
+Patch 3 adds methods to read previous boot pages from pstore.
+
+Patch 4 adds the functionality to allocate page-sized memory from pstore.
+
+Patch 5 adds the seq_operation methods to iterate through trace entries.
+
+Patch 6 modifies ring_buffer to allocate from ramtrace when pstore is used.
+
+Patch 7 adds ramtrace DT node as child-node of /reserved-memory. 
+
+Nachammai Karuppiah (7):
+  tracing: Add support to allocate pages from persistent memory
+  pstore: Support a new backend, ramtrace
+  pstore: Read and iterate through trace entries in PSTORE
+  pstore: Allocate and free page-sized memory in persistent RAM buffer
+  tracing: Add support to iterate through pages retrieved from pstore
+  tracing: Use ramtrace alloc and free methods while using persistent
+    RAM
+  dt-bindings: ramtrace: Add ramtrace DT node
+
+ .../bindings/reserved-memory/ramtrace.txt          |  13 +
+ drivers/of/platform.c                              |   1 +
+ fs/pstore/Makefile                                 |   2 +
+ fs/pstore/inode.c                                  |  46 +-
+ fs/pstore/platform.c                               |   1 +
+ fs/pstore/ramtrace.c                               | 821 +++++++++++++++++++++
+ include/linux/pstore.h                             |   3 +
+ include/linux/ramtrace.h                           |  28 +
+ include/linux/ring_buffer.h                        |  19 +
+ include/linux/trace.h                              |  13 +
+ kernel/trace/Kconfig                               |  10 +
+ kernel/trace/ring_buffer.c                         | 663 ++++++++++++++++-
+ kernel/trace/trace.c                               | 312 +++++++-
+ kernel/trace/trace.h                               |   5 +-
+ 14 files changed, 1924 insertions(+), 13 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/reserved-memory/ramtrace.txt
+ create mode 100644 fs/pstore/ramtrace.c
+ create mode 100644 include/linux/ramtrace.h
 
 -- 
-Sakari Ailus
+2.7.4
+
