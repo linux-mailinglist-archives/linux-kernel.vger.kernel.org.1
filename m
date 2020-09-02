@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F9525B278
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A963825B280
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 19:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgIBRAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 13:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728505AbgIBRAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 13:00:03 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1ACC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 10:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1ijinwDURNcT23LgdlcDu1vqMoWk9wcCno9jomFWSjM=; b=zThraQshEWVgRCPPWW4vYT1nbm
-        ymy3s/vfxvTFQJhj7glM0m7i0r3bakOZGBU/cOK3pYnt56ig+8wnMr7aTRMObuNq5EaYUDp8qp7aL
-        mUFovg1J7oJuQo/VNskZ2zskwA/gtmizKP/cl8SG9n4DJuz2s5/RkiQFIUzUjYP93xhHQTXgIKA5B
-        N7F2G7LrlBaYC85eAZC75NQJE8qxOAk6JiwQuZLUIkmN4+Pb8yyClRoxZn8Ka9qm5gIcJefXbUxDQ
-        xVFk5UTwfxcOhKAvDf/lr+EV1baMNCnXODpfIzhdPmePIxIQdrkNhHeOHEwCmwS2S8oqDNKOTMUkr
-        /va3Z9zw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDW6z-0003uO-Lq; Wed, 02 Sep 2020 16:59:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D26903056DE;
-        Wed,  2 Sep 2020 18:59:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BBE4D2B997097; Wed,  2 Sep 2020 18:59:50 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 18:59:50 +0200
-From:   peterz@infradead.org
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] tools/x86: add kcpuid tool to show raw CPU features
-Message-ID: <20200902165950.GP1362448@hirez.programming.kicks-ass.net>
-References: <1598514543-90152-1-git-send-email-feng.tang@intel.com>
- <20200902164538.GN1362448@hirez.programming.kicks-ass.net>
- <6afa8f68-4e88-ade1-fbe9-7cc7a0d2e42c@intel.com>
+        id S1728047AbgIBRAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 13:00:48 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:38522 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728512AbgIBRAX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 13:00:23 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kDW7G-00Cuv8-BK; Wed, 02 Sep 2020 19:00:10 +0200
+Date:   Wed, 2 Sep 2020 19:00:10 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] phy: marvell: comphy: Convert internal SMCC firmware
+ return codes to errno
+Message-ID: <20200902170010.GF3050651@lunn.ch>
+References: <20200902144344.16684-1-pali@kernel.org>
+ <20200902144344.16684-2-pali@kernel.org>
+ <20200902161328.GE3050651@lunn.ch>
+ <20200902165652.cvb74kgxx5uejpta@pali>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6afa8f68-4e88-ade1-fbe9-7cc7a0d2e42c@intel.com>
+In-Reply-To: <20200902165652.cvb74kgxx5uejpta@pali>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 09:52:33AM -0700, Dave Hansen wrote:
-> On 9/2/20 9:45 AM, peterz@infradead.org wrote:
-> > On Thu, Aug 27, 2020 at 03:49:03PM +0800, Feng Tang wrote:
-> >> End users frequently want to know what features their processor
-> >> supports, independent of what the kernel supports.
-> >>
-> >> /proc/cpuinfo is great. It is omnipresent and since it is provided by
-> >> the kernel it is always as up to date as the kernel. But, it can be
-> >> ambiguous about processor features which can be disabled by the kernel
-> >> at boot-time or compile-time.
+> > > +	switch (ret) {
+> > > +	case SMCCC_RET_SUCCESS:
+> > > +		return 0;
+> > > +	case SMCCC_RET_NOT_SUPPORTED:
+> > > +		return -EOPNOTSUPP;
+> > > +	default:
+> > > +		return -EINVAL;
+> > > +	}
+> > >  }
 > > 
-> > Let me once again suggest we use CPUID faulting to 'fix' this.
+> > Hi Pali
 > > 
-> > We really should clear the CPUID bits when the kernel explicitly
-> > disables things.
+> > Maybe this should be a global helper translating SMCCC_RET_* into a
+> > standard errno value?
 > > 
-> > https://lkml.kernel.org/r/1552431636-31511-18-git-send-email-fenghua.yu@intel.com
+> > 	 Andrew
 > 
-> Wouldn't we also have to turn on faulting for all the bits that are
-> enumerated, but of which the kernel is unaware?
+> Hello Andrew!
 > 
-> Right now, a bit that we clearcpuid= and one about which the kernel is
-> totally unaware look the same.
+> Well, I'm not sure if some standard global helper is the correct way for
+> marvell comphy handler. It returns 0 for success and -1 on error when
+> handler is not supported.
 
-I mostly care about the things the kernel disables (and thus knows
-about), the rest is a pass-through IIRC.
+No, i was meaning just 
+
+switch (ret) {
+case SMCCC_RET_SUCCESS:
+	return 0;
+case SMCCC_RET_NOT_SUPPORTED:
+	return -EOPNOTSUPP;
+default:
+	return -EINVAL;
+}
+
+There is nothing Marvell specific here.
+
+      Andrew
