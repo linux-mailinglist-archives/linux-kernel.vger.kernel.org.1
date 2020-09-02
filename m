@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7E925AEEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2BC25AF00
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgIBPby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:31:54 -0400
-Received: from verein.lst.de ([213.95.11.211]:32841 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728329AbgIBPbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:31:35 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4B24C68B05; Wed,  2 Sep 2020 17:31:30 +0200 (CEST)
-Date:   Wed, 2 Sep 2020 17:31:29 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Denis Efremov <efremov@linux.com>,
-        Tim Waugh <tim@cyberelk.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 05/19] swim: use bdev_check_media_change
-Message-ID: <20200902153129.GA2304@lst.de>
-References: <20200902141218.212614-1-hch@lst.de> <20200902141218.212614-6-hch@lst.de> <SN4PR0401MB359876A023673111737EB7BE9B2F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN4PR0401MB359876A023673111737EB7BE9B2F0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1728388AbgIBPcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:32:46 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:52307 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728381AbgIBPcg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:32:36 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from ayal@mellanox.com)
+        with SMTP; 2 Sep 2020 18:32:28 +0300
+Received: from dev-l-vrt-210.mtl.labs.mlnx (dev-l-vrt-210.mtl.labs.mlnx [10.234.210.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 082FWSaN014692;
+        Wed, 2 Sep 2020 18:32:28 +0300
+Received: from dev-l-vrt-210.mtl.labs.mlnx (localhost [127.0.0.1])
+        by dev-l-vrt-210.mtl.labs.mlnx (8.15.2/8.15.2/Debian-8ubuntu1) with ESMTP id 082FWSrs026687;
+        Wed, 2 Sep 2020 18:32:28 +0300
+Received: (from ayal@localhost)
+        by dev-l-vrt-210.mtl.labs.mlnx (8.15.2/8.15.2/Submit) id 082FWPW4026686;
+        Wed, 2 Sep 2020 18:32:25 +0300
+From:   Aya Levin <ayal@mellanox.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>, netdev@vger.kernel.org
+Cc:     Moshe Shemesh <moshe@mellanox.com>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        linux-kernel@vger.kernel.org, Aya Levin <ayal@mellanox.com>
+Subject: [PATCH net-next RFC v1 0/4] Add devlink traps in devlink port context
+Date:   Wed,  2 Sep 2020 18:32:10 +0300
+Message-Id: <1599060734-26617-1-git-send-email-ayal@mellanox.com>
+X-Mailer: git-send-email 1.8.4.3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 03:30:14PM +0000, Johannes Thumshirn wrote:
-> Looks good,
-> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> 
-> > +static int floppy_revalidate(struct gendisk *disk);
-> 
-> Completely unrelated to this series but, this is the 3rd floppy 
-> driver in the series defining it's own floppy_revalidate() and 
-> naming it floppy_revalidate().
-> 
-> This makes grepping and reviewing a pain.
+Implement support for devlink traps on per-port basis.
+Dropped packets in the RX flow are related to the Ethernet port and
+thus should be in port context. Traps per device should trap global
+configuration which can cause drops. On top of that, enabling a trap
+on a device level should trigger this trap on its siblings ports.
+In addition, when devlink traps is enabled, it may cause a degradation
+in performance. Hence devlink traps should be regard as a debug mode.
+Considering that, it is preferred to encapsulate the debug mode as
+much as possible and not to effect all the device.
 
-Yes, I noticed it as well.  They also use the floppy_ prefix for
-various other methods.
+Patchset:
+Patch 1: Refactors devlink trap for easier code re-use in the coming
+patches
+Patch 2: Adds devlink traps under devlink port context
+Patch 3: Adds a relation between traps in device context and traps in
+ports context. In a nutshell it allows enable/disable of a trap on
+all related ports which registered this trap.
+Patch 4: Display a use in devlink traps in port context in mlx5
+ethernet driver.
 
-> 
----end quoted text---
+Aya Levin (4):
+  devlink: Wrap trap related lists and ops in trap_mngr
+  devlink: Add devlink traps under devlink_ports context
+  devlink: Add hiererchy between traps in device level and port level
+  net/mlx5e: Add devlink trap to catch oversize packets
+
+ drivers/net/ethernet/mellanox/mlx5/core/Makefile   |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en.h       |   2 +
+ drivers/net/ethernet/mellanox/mlx5/core/en/traps.c |  32 ++
+ drivers/net/ethernet/mellanox/mlx5/core/en/traps.h |  13 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  41 ++
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    |  11 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c         |   5 +
+ include/net/devlink.h                              |  84 ++-
+ net/core/devlink.c                                 | 616 +++++++++++++++++----
+ 9 files changed, 665 insertions(+), 141 deletions(-)
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/traps.c
+ create mode 100644 drivers/net/ethernet/mellanox/mlx5/core/en/traps.h
+
+-- 
+2.14.1
+
