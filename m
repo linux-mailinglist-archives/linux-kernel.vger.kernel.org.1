@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0120925B17B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A1125B18B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgIBQXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:23:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgIBQXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:23:34 -0400
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727977AbgIBQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:24:41 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:43437 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727852AbgIBQYh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:24:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1599063876; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9ZiHvRjb2d9MQ1k+GNhy2aEJ5FomGrZtX8cr1c2a++U=; b=no8aKN77dbDChtUmm/NWQjpn55e9RNqnh9TWYZvMs2fUENEVlf3quS91dLZZiAI6cFRXhG5Z
+ T2rehlGOCActl11gs//HMYlRVtjAXWOXbQF7wVLjW+Y7mEju3097N302MErcZB5frt+Ioc96
+ o1bsHathwoBjTrXscygfX3yZ1yM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f4fc735be06707b34fed67e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 02 Sep 2020 16:24:21
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92929C433CB; Wed,  2 Sep 2020 16:24:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 039A420FC3;
-        Wed,  2 Sep 2020 16:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599063814;
-        bh=RJITFA13mQCqYxoOB5UPOQVnK4Vx480+dtACmh6ut/o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=X2W8hvQFB4ALK9iv68uHX+G1jHVkBtqL72qdB3KH1GQfSk07N39TEWUrf4X+EKoU7
-         vu4w/Sn1BNuBJK+hmrEdjtCqAt7dJpo5MAGOixqbkc2tzltTA1OAapRjqDJAvDV/px
-         o99CjILlylsFoibtHn/r1/fMRVKFXhQuJuBaKSUc=
-Received: by mail-ed1-f42.google.com with SMTP id q21so5546558edv.1;
-        Wed, 02 Sep 2020 09:23:33 -0700 (PDT)
-X-Gm-Message-State: AOAM532+4TGw+XwAnoNyqF9GzoYjiE9qvpMog7s/c+GCcS0IZM46hTht
-        Qw9+08O18yZWjHBqmi213QXXsN/79YPVN6xtBRU=
-X-Google-Smtp-Source: ABdhPJzUU8aJWJbuyjEWTDBzeTSsYZUP7N9/p6dhBdP07EBrMjqVyaYzkDcmRbTXkPN8IbfThl9NYXrG39SJOGiVlIE=
-X-Received: by 2002:a05:6402:180a:: with SMTP id g10mr878676edy.18.1599063812518;
- Wed, 02 Sep 2020 09:23:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191112110330.179649-1-pihsun@chromium.org> <20191112110330.179649-5-pihsun@chromium.org>
- <2abf8fdd-7b7c-73b0-beea-9c9ac56869dc@gmail.com> <CA+G9fYt9AujG6gyfeV5AaAv0EgggUfGT1jow8DJjVfetVWV3EA@mail.gmail.com>
-In-Reply-To: <CA+G9fYt9AujG6gyfeV5AaAv0EgggUfGT1jow8DJjVfetVWV3EA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Wed, 2 Sep 2020 18:23:20 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPeV9zCg4v0kBfToGdJSxswbKtT16LVYADALpYRHqWXBOg@mail.gmail.com>
-Message-ID: <CAJKOXPeV9zCg4v0kBfToGdJSxswbKtT16LVYADALpYRHqWXBOg@mail.gmail.com>
-Subject: Re: [PATCH v21 4/4] arm64: dts: mt8183: add scp node
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Eddie Huang <eddie.huang@mediatek.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Erin Lo <erin.lo@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        lkft-triage@lists.linaro.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 10AD7C433C6;
+        Wed,  2 Sep 2020 16:24:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 10AD7C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=deesin@codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        mathieu.poirier@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>
+Subject: [PATCH V7 0/4] Signaling api support in glink/rpmsg clients
+Date:   Wed,  2 Sep 2020 21:54:03 +0530
+Message-Id: <1599063847-2347-1-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 at 16:45, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Thu, 27 Aug 2020 at 15:44, Matthias Brugger <matthias.bgg@gmail.com> wrote:
-> >
-> >
-> >
-> > On 12/11/2019 12:03, Pi-Hsun Shih wrote:
-> > > From: Eddie Huang <eddie.huang@mediatek.com>
-> > >
-> > > Add scp node to mt8183 and mt8183-evb
-> > >
-> > > Signed-off-by: Erin Lo <erin.lo@mediatek.com>
-> > > Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-> > > Signed-off-by: Eddie Huang <eddie.huang@mediatek.com>
-> >
-> > Sorry I somehow oversaw this. Next time please don't doubt to ping me.
-> >
-> > Bjorn, do I understand correctly that you don't send emails to the list
-> > informing of the inclusion of a patch/series in your tree?
-> >
-> > Anyway applied now to v5.9-next/dts64 :)
->
-> arm64 build dtbs failed on linux next 20200902.
+Change from version 6
+In last series(v6) i had put wrong version(v5) for cover note.
+Which led to confusion for patch set series.
 
-I just hit it as well... I wish the kernel was built after applying
-patches... it would make the next a better place.
+In this series i have updated the label for cover letter(v7).
+There is no change in patches. Only cover note label is updated.
 
-Best regards,
-Krzysztof
+Change from version 5
+[V6,4/4] rpmsg: char: Add signal callback and POLLPRI support
+Updated for sparse warning. Replaced POLLPRI => EPOLLPRI to fix
+warning.
+
+Change from version 4
+I am taking over these patches from aneela@codeaurora.org
+Fixed all the trivial review comments.
+
+Signal conversion to and from native signal as done in patch V4,2/4
+is intentional.
+
+Arun Kumar Neelakantam (3):
+  rpmsg: glink: Add support to handle signals command
+  rpmsg: char: Add TIOCMGET/TIOCMSET ioctl support
+  rpmsg: char: Add signal callback and POLLPRI support
+
+Deepak Kumar Singh (1):
+  rpmsg: core: Add signal API support
+
+ drivers/rpmsg/qcom_glink_native.c | 125 ++++++++++++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_char.c        |  76 ++++++++++++++++++++++-
+ drivers/rpmsg/rpmsg_core.c        |  40 ++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |   5 ++
+ include/linux/rpmsg.h             |  27 ++++++++
+ 5 files changed, 270 insertions(+), 3 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
