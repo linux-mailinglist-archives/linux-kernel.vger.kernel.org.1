@@ -2,100 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABEA25B181
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699F525B193
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbgIBQYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:24:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49004 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726310AbgIBQYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:24:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BD49CAD03;
-        Wed,  2 Sep 2020 16:24:29 +0000 (UTC)
-Subject: Re: [PATCH 01/13] x86/entry: Fix AC assertion
-To:     Brian Gerst <brgerst@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Andrew Cooper <Andrew.Cooper3@citrix.com>
-References: <20200902132549.496605622@infradead.org>
- <20200902133200.666781610@infradead.org>
- <CAMzpN2i9C5Sj-M0b9Y7VtOphDJs2Z9NPux9Dg347PSeNBaXRMQ@mail.gmail.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <c6915915-1c94-70cf-453d-861a4ca2da4c@suse.com>
-Date:   Wed, 2 Sep 2020 18:24:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1728414AbgIBQZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727019AbgIBQZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:25:17 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CECC061244;
+        Wed,  2 Sep 2020 09:25:15 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so9903wmm.2;
+        Wed, 02 Sep 2020 09:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IM8g9T+1paRJIrOJC76fHo0IpLaUyt8i4HL4OIdzFuc=;
+        b=B2+GQz00nIQZOtBPEZoLKRASyI8CwIfL6it7dkhK5H4BAaxeqjpmswv5wfu8j3X6te
+         2Okl7N5w3cpyjLmEqD0GVdtWw3zczf0Bo1qz6FDl0BhIXsERo8Lu0vlZBmTaLIMm5UkF
+         tpO//JFMYSPB+ZT/CaOBYhrSnT+Bch9WDYQDnTC49CfHqBW/jUrbJzkLbJcpWS6EGjR2
+         b9VmW38Us0m/V+PGDFvqJxPt0QFwkBvzOuI1nt7LPRbDafgGkK8N7VtxhhYK6q8UAKUD
+         +/ArC/pCnz6X00D3RAK8v2qw6DQZ2zuBpLx+j8Vk4o7uBILBlmqIP7f56qnj/Vho7zkT
+         hqIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IM8g9T+1paRJIrOJC76fHo0IpLaUyt8i4HL4OIdzFuc=;
+        b=Z1GEJgn8kj+Sk7oZsEjIdFqHL6tHN6F4r8OeY8tpxIFJVOZeBcbXvLsYni05IxxMXl
+         AP97P3VC4Uap/RMfnkZO5qOiW5RWpuoWnPtTZZ3oh0ukBVzimPPP333K8pysdBHz+qXr
+         EgGFZnlcyzB3xsqiTW57SfugjLwAw+CPZG1+2wM8OcQ2E+YwQT5WIyvZFmVVNS3d+uz8
+         LILPXGRUwBfF6BcLYu3bbGCJX4n4tbZlUYz210rPjQs+331kg6t0IVtg8fUe26BNxmdF
+         hWDdpY9YjffIURznXbArUoKUzmJ/1FAcXx24naxiMeY8iGKxaRdMsX8nagvxWnpWoYAU
+         vqeg==
+X-Gm-Message-State: AOAM532Z4HhGL18sK1gRzl/PASuzS33TGVGyYCnzpnT3ShEsqp66VTA+
+        ttc6hhfUM2oTHBD/e/qCNsE=
+X-Google-Smtp-Source: ABdhPJzJiXUwTBLVaQlzQfXxywxTActdtTjuZnc5B7izvhRc3Q7JcYCaGG/bMYaa8N9VfBA/iJagUQ==
+X-Received: by 2002:a1c:f20e:: with SMTP id s14mr1372933wmc.23.1599063913866;
+        Wed, 02 Sep 2020 09:25:13 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id y6sm206120wrt.80.2020.09.02.09.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 09:25:13 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/ucma: Fix resource leak on error path
+Date:   Wed,  2 Sep 2020 17:24:51 +0100
+Message-Id: <20200902162454.332828-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <CAMzpN2i9C5Sj-M0b9Y7VtOphDJs2Z9NPux9Dg347PSeNBaXRMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.09.20 17:58, Brian Gerst wrote:
-> On Wed, Sep 2, 2020 at 9:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
->>
->> From: Peter Zijlstra <peterz@infradead.org>
->>
->> The WARN added in commit 3c73b81a9164 ("x86/entry, selftests: Further
->> improve user entry sanity checks") unconditionally triggers on my IVB
->> machine because it does not support SMAP.
->>
->> For !SMAP hardware we patch out CLAC/STAC instructions and thus if
->> userspace sets AC, we'll still have it set after entry.
->>
->> Fixes: 3c73b81a9164 ("x86/entry, selftests: Further improve user entry sanity checks")
->> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Acked-by: Andy Lutomirski <luto@kernel.org>
->> ---
->>   arch/x86/include/asm/entry-common.h |   11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> --- a/arch/x86/include/asm/entry-common.h
->> +++ b/arch/x86/include/asm/entry-common.h
->> @@ -18,8 +18,16 @@ static __always_inline void arch_check_u
->>                   * state, not the interrupt state as imagined by Xen.
->>                   */
->>                  unsigned long flags = native_save_fl();
->> -               WARN_ON_ONCE(flags & (X86_EFLAGS_AC | X86_EFLAGS_DF |
->> -                                     X86_EFLAGS_NT));
->> +               unsigned long mask = X86_EFLAGS_DF | X86_EFLAGS_NT;
->> +
->> +               /*
->> +                * For !SMAP hardware we patch out CLAC on entry.
->> +                */
->> +               if (boot_cpu_has(X86_FEATURE_SMAP) ||
->> +                   (IS_ENABLED(CONFIG_64_BIT) && boot_cpu_has(X86_FEATURE_XENPV)))
->> +                       mask |= X86_EFLAGS_AC;
-> 
-> Is the explicit Xen check necessary?  IIRC the Xen hypervisor will
-> filter out the SMAP bit in the cpuid pvop.
+In ucma_process_join(), if the call to xa_alloc() fails, the function
+will return without freeing mc. Fix this by jumping to the correct line.
 
-Right, and this test will nevertheless result in setting AC in the mask.
-IIRC this was the main objective here.
+In the process I renamed the jump labels to something more memorable for
+extra clarity.
 
+Addresses-Coverity: ("Resource leak")
+Fixes: 95fe51096b7a ("RDMA/ucma: Remove mc_list and rely on xarray")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/infiniband/core/ucma.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-Juergen
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index f2c9ef6ae481..a5595bd489b0 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -1453,7 +1453,7 @@ static ssize_t ucma_process_join(struct ucma_file *file,
+ 	mc = kzalloc(sizeof(*mc), GFP_KERNEL);
+ 	if (!mc) {
+ 		ret = -ENOMEM;
+-		goto err1;
++		goto err_put_ctx;
+ 	}
+ 
+ 	mc->ctx = ctx;
+@@ -1464,7 +1464,7 @@ static ssize_t ucma_process_join(struct ucma_file *file,
+ 	if (xa_alloc(&multicast_table, &mc->id, NULL, xa_limit_32b,
+ 		     GFP_KERNEL)) {
+ 		ret = -ENOMEM;
+-		goto err1;
++		goto err_free_mc;
+ 	}
+ 
+ 	mutex_lock(&ctx->mutex);
+@@ -1472,13 +1472,13 @@ static ssize_t ucma_process_join(struct ucma_file *file,
+ 				  join_state, mc);
+ 	mutex_unlock(&ctx->mutex);
+ 	if (ret)
+-		goto err2;
++		goto err_xa_erase;
+ 
+ 	resp.id = mc->id;
+ 	if (copy_to_user(u64_to_user_ptr(cmd->response),
+ 			 &resp, sizeof(resp))) {
+ 		ret = -EFAULT;
+-		goto err3;
++		goto err_leave_multicast;
+ 	}
+ 
+ 	xa_store(&multicast_table, mc->id, mc, 0);
+@@ -1486,15 +1486,16 @@ static ssize_t ucma_process_join(struct ucma_file *file,
+ 	ucma_put_ctx(ctx);
+ 	return 0;
+ 
+-err3:
++err_leave_multicast:
+ 	mutex_lock(&ctx->mutex);
+ 	rdma_leave_multicast(ctx->cm_id, (struct sockaddr *) &mc->addr);
+ 	mutex_unlock(&ctx->mutex);
+ 	ucma_cleanup_mc_events(mc);
+-err2:
++err_xa_erase:
+ 	xa_erase(&multicast_table, mc->id);
++err_free_mc:
+ 	kfree(mc);
+-err1:
++err_put_ctx:
+ 	ucma_put_ctx(ctx);
+ 	return ret;
+ }
+-- 
+2.28.0
 
