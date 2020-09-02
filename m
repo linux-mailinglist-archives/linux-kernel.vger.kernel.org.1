@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F0D25AE42
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B59025AE40
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgIBPEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:04:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41758 "EHLO mail.kernel.org"
+        id S1727052AbgIBPEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 11:04:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726927AbgIBPEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 11:04:25 -0400
+        id S1727818AbgIBPEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 11:04:30 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9506721527;
-        Wed,  2 Sep 2020 15:04:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C637214F1;
+        Wed,  2 Sep 2020 15:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599059065;
-        bh=UZsEqgnFpRCIfv/X8lhKedsjXG7tPysKFsM4O+5c1og=;
+        s=default; t=1599059069;
+        bh=FNfm1tmiP1SHAfynJEL7ATFOXsx4dnDu44NKhojfEPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pFq+pQYc6BCe2NtK7+Ig4Fdw+9S38KkYFXn8TIkEETbiabdtq0tgVHZ/k9Pw74Cqx
-         PCf4+yC0vOzAjjqQrsEfJLtXDD9AgYzuRNQPSlXc2O+fJyET6GDcxzxobEXRbpeY3Y
-         5jVIIsyW/+qgVU+p/Ns2ZuirTc5iI7Zhou59OcVo=
+        b=nQQX60L2h/dw5HVupUkQlD1zgBiZVmY6Sewdlbk4yzSvBYGknX6upVlBsPtmbqrRZ
+         jYdpNiDqbblahHoEMcAbKX1i+FaDn89u0TwxJUpqxr9gmf0BrxEqDntza3h6uxJtpX
+         xImEZhMVLadjoDGFhceFvcH+ssVbmoKBO7PFUxuU=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -43,9 +43,9 @@ To:     Michael Turquette <mturquette@baylibre.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 06/10] clk: keystone: Simplify with dev_err_probe()
-Date:   Wed,  2 Sep 2020 17:03:44 +0200
-Message-Id: <20200902150348.14465-6-krzk@kernel.org>
+Subject: [PATCH 07/10] clk: meson: Simplify with dev_err_probe()
+Date:   Wed,  2 Sep 2020 17:03:45 +0200
+Message-Id: <20200902150348.14465-7-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200902150348.14465-1-krzk@kernel.org>
 References: <20200902150348.14465-1-krzk@kernel.org>
@@ -59,29 +59,28 @@ dev_err_probe().  Less code and the error value gets printed.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/clk/keystone/syscon-clk.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/clk/meson/axg-audio.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/clk/keystone/syscon-clk.c b/drivers/clk/keystone/syscon-clk.c
-index 5b3d36462174..12ddcbed00e4 100644
---- a/drivers/clk/keystone/syscon-clk.c
-+++ b/drivers/clk/keystone/syscon-clk.c
-@@ -102,12 +102,9 @@ static int ti_syscon_gate_clk_probe(struct platform_device *pdev)
- 		return -EINVAL;
+diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
+index 53715e36326c..dc22b0c45743 100644
+--- a/drivers/clk/meson/axg-audio.c
++++ b/drivers/clk/meson/axg-audio.c
+@@ -1509,12 +1509,8 @@ static int devm_clk_get_enable(struct device *dev, char *id)
+ 	int ret;
  
- 	regmap = syscon_node_to_regmap(dev->of_node);
--	if (IS_ERR(regmap)) {
--		if (PTR_ERR(regmap) == -EPROBE_DEFER)
--			return -EPROBE_DEFER;
--		dev_err(dev, "failed to find parent regmap\n");
--		return PTR_ERR(regmap);
+ 	clk = devm_clk_get(dev, id);
+-	if (IS_ERR(clk)) {
+-		ret = PTR_ERR(clk);
+-		if (ret != -EPROBE_DEFER)
+-			dev_err(dev, "failed to get %s", id);
+-		return ret;
 -	}
-+	if (IS_ERR(regmap))
-+		return dev_err_probe(dev, PTR_ERR(regmap),
-+				     "failed to find parent regmap\n");
++	if (IS_ERR(clk))
++		return dev_err_probe(dev, PTR_ERR(clk), "failed to get %s", id);
  
- 	num_clks = 0;
- 	for (p = data; p->name; p++)
+ 	ret = clk_prepare_enable(clk);
+ 	if (ret) {
 -- 
 2.17.1
 
