@@ -2,96 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B502525AAFD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88E925AB03
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 14:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgIBMR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 08:17:26 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:61410 "EHLO smtp1.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbgIBMRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 08:17:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=1710; q=dns/txt; s=axis-central1;
-  t=1599049041; x=1630585041;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/y6Use5/oT/VRDvJxU4PwCfmGC6ZvPkLgQE9J9EIwGE=;
-  b=HeY9gr8Rropn0Q+HXF2uNgva/xIdWIXvx/CKhbnGrZ1IS48QDstzxQp/
-   ho9yG3/UkOmlxYt/8Lr8aQ0wqBPmNjONpCLUAfpp7bVepj0sXjN/h+S8N
-   kk9HngZ5i7YeLDNRRXJx+qQLhMOKKMa5DCgJwRmfrtOdH2CV2JE1IzxQx
-   2JljWXfNREEyrhFW9p7yY89LF5QTcngAD51Qx8i6XPnFCoIJnA+AalNkL
-   Y6VaGVOqjo5J/6Ea/GjCuzthwzeNxtuHzApX9x0ahu3W7vpi4toGyPoRh
-   gEMF0jUSMXSoR3lAxnoHpvWG/galSusYT+m/ojAqz7KXWi190Qn0mq7iG
-   Q==;
-IronPort-SDR: 7tGnxBlU7jHCgbF40LrJI+4NjhysGgIf4Ph2563VWwnWsxbLqm1Xc3HSljX1Tztp/0RHIn3++C
- EXDH9zmv1a6fEAkTqmUi6OPkjDSlLR7w0nFjnQo1p+1L5Xt0EK10+XLLstVJoIgLBwRPQteHzX
- 4TZo39it1vhE3hE/km7VywXsA3hXXorAZ3lx02WPyCgJUNP/P7lOgd+naATTdcP4zDfTGm448X
- 8S00fZz7sHJ/JlCyYki9Jg168zKGcRk1Fj5L18YsLftUESZSo5V5U73kgp8x8eR1AOSGdbsLr1
- b8g=
-X-IronPort-AV: E=Sophos;i="5.76,383,1592863200"; 
-   d="scan'208";a="12474975"
-Date:   Wed, 2 Sep 2020 14:17:19 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Joe Perches <joe@perches.com>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        "jbaron@akamai.com" <jbaron@akamai.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        kernel <kernel@axis.com>, "corbet@lwn.net" <corbet@lwn.net>,
-        "pmladek@suse.com" <pmladek@suse.com>,
-        "sergey.senozhatsky@gmail.com" <sergey.senozhatsky@gmail.com>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] dynamic debug: allow printing to trace event
-Message-ID: <20200902121719.ppj7nyzk2qic5dnq@axis.com>
-References: <20200825153338.17061-1-vincent.whitchurch@axis.com>
- <20200825153338.17061-3-vincent.whitchurch@axis.com>
- <651f7ec449dfb28006bbc0b018d4f6e506bcda80.camel@perches.com>
- <20200826153203.1a65c35d@oasis.local.home>
- <9bfb4c4bd1415a8ce527a913730672508a8e8330.camel@perches.com>
+        id S1726994AbgIBMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 08:18:54 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42170 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726927AbgIBMRw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 08:17:52 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 646589CC;
+        Wed,  2 Sep 2020 14:17:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1599049067;
+        bh=CAysycQjBAG8FFPdgBPgW9RzoPqP0mNlHgugOAceGoI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GGkUcQvN9VDwoiv1MZunEeee06DCQPZvGwjsqBDMP6hxCBB1GN3regmNK1PqCaF7g
+         gUlDlRzmQ+NaH+2Fbf33jtWgQTnfcV95EliUYnXhLUpW+QdDNmw5YagA8OCbNqRRKu
+         QgzFCDGYxOOE4KoEOILF41BQ4atpeE1tqJX+2jIY=
+Date:   Wed, 2 Sep 2020 15:17:22 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>
+Cc:     "vkoul@kernel.org" <vkoul@kernel.org>,
+        "kishon@ti.com" <kishon@ti.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "maxime@cerno.tech" <maxime@cerno.tech>,
+        Milind Parab <mparab@cadence.com>,
+        Yuti Suresh Amonkar <yamonkar@cadence.com>,
+        "nsekhar@ti.com" <nsekhar@ti.com>,
+        "tomi.valkeinen@ti.com" <tomi.valkeinen@ti.com>,
+        "jsarha@ti.com" <jsarha@ti.com>,
+        "praneeth@ti.com" <praneeth@ti.com>
+Subject: Re: [PATCH v5 2/2] phy: cadence-torrent: Use kernel PHY API to set
+ PHY attributes
+Message-ID: <20200902121722.GA16811@pendragon.ideasonboard.com>
+References: <1598293711-23362-1-git-send-email-sjakhade@cadence.com>
+ <1598293711-23362-3-git-send-email-sjakhade@cadence.com>
+ <20200902002956.GE14351@pendragon.ideasonboard.com>
+ <DM6PR07MB6154CC4A67BC3568A7339CC9C52F0@DM6PR07MB6154.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9bfb4c4bd1415a8ce527a913730672508a8e8330.camel@perches.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <DM6PR07MB6154CC4A67BC3568A7339CC9C52F0@DM6PR07MB6154.namprd07.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 26, 2020 at 09:53:57PM +0200, Joe Perches wrote:
-> On Wed, 2020-08-26 at 15:32 -0400, Steven Rostedt wrote:
-> > On Tue, 25 Aug 2020 08:53:25 -0700
-> > Joe Perches <joe@perches.com> wrote:
+Hi Swapnil,
+
+On Wed, Sep 02, 2020 at 07:09:21AM +0000, Swapnil Kashinath Jakhade wrote:
+> On Wednesday, September 2, 2020 6:00 AM Laurent Pinchart wrote:
+> > On Mon, Aug 24, 2020 at 08:28:31PM +0200, Swapnil Jakhade wrote:
+> > > Use generic PHY framework function phy_set_attrs() to set number of
+> > > lanes and maximum link rate supported by PHY.
+> > >
+> > > Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+> > > Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
+> > > ---
+> > >  drivers/phy/cadence/phy-cadence-torrent.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/drivers/phy/cadence/phy-cadence-torrent.c
+> > > b/drivers/phy/cadence/phy-cadence-torrent.c
+> > > index 7116127358ee..eca71467c4a8 100644
+> > > --- a/drivers/phy/cadence/phy-cadence-torrent.c
+> > > +++ b/drivers/phy/cadence/phy-cadence-torrent.c
+> > > @@ -1710,6 +1710,7 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+> > >  	struct cdns_torrent_phy *cdns_phy;
+> > >  	struct device *dev = &pdev->dev;
+> > >  	struct phy_provider *phy_provider;
+> > > +	struct phy_attrs torrent_attr;
+> > >  	const struct of_device_id *match;
+> > >  	struct cdns_torrent_data *data;
+> > >  	struct device_node *child;
+> > > @@ -1852,6 +1853,12 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+> > >  				 cdns_phy->phys[node].num_lanes,
+> > >  				 cdns_phy->max_bit_rate / 1000,
+> > >  				 cdns_phy->max_bit_rate % 1000);
+> > > +
+> > > +			torrent_attr.bus_width = cdns_phy- >phys[node].num_lanes;
+> > > +			torrent_attr.max_link_rate = cdns_phy->max_bit_rate;
+> > > +			torrent_attr.mode = PHY_MODE_DP;
+> > > +
+> > > +			phy_set_attrs(gphy, &torrent_attr);
 > > 
-> > > > The print buffer is statically allocated and managed using code borrowed
-> > > > from __ftrace_trace_stack() and is limited to 256 bytes (four of these
-> > > > are allocated per CPU to handle the various contexts); anything larger
-> > > > will be truncated.  
-> > > 
-> > > There is an effort to avoid using trace_printk and the like
-> > > so perhaps this feature should have the same compile time
-> > > guard.
+> > Why is this better than accessing the attributes manually as follows ?
 > > 
-> > No, this is fine for being in a production kernel. Basically, these are
-> > simply debug printk()s that can also be put into the trace buffer. The
-> > key difference to trace_printk() is that they are an event that needs
-> > to be enabled to write into the buffer.
+> > 			gphy->attrs.bus_width = cdns_phy->phys[node].num_lanes;
+> > 			gphy->attrs.max_link_rate = cdns_phy->max_bit_rate;
+> > 			gphy->attrs.mode = PHY_MODE_DP;
+> > 
+> > This is called in cdns_torrent_phy_probe(), before the PHY provider is
+> > registered, so nothing can access the PHY yet. What race condition are you
+> > trying to protect against with usage of phy_set_attrs() ?
 > 
-> It just seems like a backdoor way to convert various pr_debug functions
-> (dev_dbg/netdev_dbg, et al) into tracing.
+> I agree that for Cadence DP bridge driver and Torrent PHY driver use case, it
+> would not matter even if we set the attributes in Torrent PHY driver in a way
+> you suggested above.
+> But as per the discussion in [1], phy_set_attrs/phy_get_attrs APIs in future could
+> maybe used by other drivers replacing existing individual functions for attributes
+> bus_width and mode which are phy_set_bus_width/phy_get_bus_width and
+> phy_set_mode/phy_get_mode. So this usage in Torrent PHY driver is an example
+> implementation of the API.
 > 
-> What's the real value?  Timing data?  Something else?
+> [1] https://lkml.org/lkml/2020/5/18/472
 
-I mentioned my use case for this in the commit message and why it works
-much better than printk() for that, please let me know if it is unclear:
+This doesn't seem a very good API to me :-S It will require callers to
+always call phy_get_attrs() first, modify the attributes they want to
+set, and then call phy_set_attrs(). Not only will be copy the whole
+phy_attrs structure needlessly, it will also not be an atomic operation
+as someone else could modify attributes between the get and set calls.
+The lack of atomicity may not be an issue in practice if there's a
+single user of the PHY at all times, but in that case no mutex is
+needed.
 
- When debugging device drivers, I've found it very useful to be able to
- redirect existing pr_debug()/dev_dbg() prints to the trace buffer
- instead of dmesg.  Among the many advantages of the trace buffer is that
- it can be dynamically resized, allows these prints to combined with
- other trace events, and doesn't fill up system logs.
+I think this series tries to fix a problem that doesn't exist.
 
-This is my only use case for this, and I've used it very very often
-during the years I've been carrying this patch locally.
+> > >  		} else {
+> > >  			dev_err(dev, "Driver supports only PHY_TYPE_DP\n");
+> > >  			ret = -ENOTSUPP;
+
+-- 
+Regards,
+
+Laurent Pinchart
