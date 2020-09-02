@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B74625A98C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA5F25A9A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 12:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgIBKgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 06:36:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:35256 "EHLO foss.arm.com"
+        id S1726285AbgIBKow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 06:44:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:35416 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgIBKgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 06:36:36 -0400
+        id S1726124AbgIBKov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 06:44:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD2ADD6E;
-        Wed,  2 Sep 2020 03:36:35 -0700 (PDT)
-Received: from [10.37.8.67] (unknown [10.37.8.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5681D3F66F;
-        Wed,  2 Sep 2020 03:36:25 -0700 (PDT)
-Subject: Re: [RFC PATCH v2] coresight: etm4x: Modify core-commit of cpu to
- avoid the overflow of HiSilicon ETM
-To:     mathieu.poirier@linaro.org, liuqi115@huawei.com
-Cc:     gregkh@linuxfoundation.org, mike.leach@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, coresight@lists.linaro.org
-References: <1597824397-29894-1-git-send-email-liuqi115@huawei.com>
- <20200827204426.GD22307@xps15>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <548c973d-6964-ca5c-4c8d-fbc2386f3349@arm.com>
-Date:   Wed, 2 Sep 2020 11:41:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 294B6D6E;
+        Wed,  2 Sep 2020 03:44:50 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D01D3F66F;
+        Wed,  2 Sep 2020 03:44:43 -0700 (PDT)
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     vincent.donnefort@arm.com, mingo@redhat.com, peterz@infradead.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, Phil Auld <pauld@redhat.com>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+ <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+ <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
+ <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
+Date:   Wed, 2 Sep 2020 12:44:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200827204426.GD22307@xps15>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -40,122 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/27/2020 09:44 PM, Mathieu Poirier wrote:
-> Hi Liu,
++ Phil Auld <pauld@redhat.com>
+
+On 28/08/2020 19:26, Qais Yousef wrote:
+> On 08/28/20 19:10, Dietmar Eggemann wrote:
+>> On 28/08/2020 12:27, Qais Yousef wrote:
+>>> On 08/28/20 10:00, vincent.donnefort@arm.com wrote:
+>>>> From: Vincent Donnefort <vincent.donnefort@arm.com>
+
+[...]
+
+>> Can you remind me why we have all these helper functions like
+>> sched_trace_rq_cpu_capacity?
 > 
-> On Wed, Aug 19, 2020 at 04:06:37PM +0800, Qi Liu wrote:
->> When too much trace information is generated on-chip, the ETM will
->> overflow, and cause data loss. This is a common phenomenon on ETM
->> devices.
->>
->> But sometimes we do not want to lose performance trace data, so we
->> suppress the speed of instructions sent from CPU core to ETM to
->> avoid the overflow of ETM.
->>
->> Signed-off-by: Qi Liu <liuqi115@huawei.com>
->> ---
->>
->> Changes since v1:
->> - ETM on HiSilicon Hip09 platform supports backpressure, so does
->> not need to modify core commit.
->>
->>   drivers/hwtracing/coresight/coresight-etm4x.c | 43 +++++++++++++++++++++++++++
->>   1 file changed, 43 insertions(+)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
->> index 7797a57..7641f89 100644
->> --- a/drivers/hwtracing/coresight/coresight-etm4x.c
->> +++ b/drivers/hwtracing/coresight/coresight-etm4x.c
->> @@ -43,6 +43,10 @@ MODULE_PARM_DESC(boot_enable, "Enable tracing on boot");
->>   #define PARAM_PM_SAVE_NEVER	  1 /* never save any state */
->>   #define PARAM_PM_SAVE_SELF_HOSTED 2 /* save self-hosted state only */
->>
->> +#define CORE_COMMIT_CLEAR	0x3000
->> +#define CORE_COMMIT_SHIFT	12
->> +#define HISI_ETM_AMBA_ID_V1	0x000b6d01
->> +
->>   static int pm_save_enable = PARAM_PM_SAVE_FIRMWARE;
->>   module_param(pm_save_enable, int, 0444);
->>   MODULE_PARM_DESC(pm_save_enable,
->> @@ -104,11 +108,40 @@ struct etm4_enable_arg {
->>   	int rc;
->>   };
->>
->> +static void etm4_cpu_actlr1_cfg(void *info)
->> +{
->> +	struct etm4_enable_arg *arg = (struct etm4_enable_arg *)info;
->> +	u64 val;
->> +
->> +	asm volatile("mrs %0,s3_1_c15_c2_5" : "=r"(val));
+> struct rq is defined in kernel/sched/sched.h. It's not exported. Exporting
+> these helper functions was the agreement to help modules trace internal info.
+> By passing generic info you decouple the tracepoint from giving specific info
+> and allow the modules to extract all the info they need from the same
+> tracepoint. IE: if you need more than just cpu_capacity from this tracepoint,
+> you can get that without having to continuously add extra arguments everytime
+> you need an extra piece of info. Unless this info is not in the rq of course.
 
+I think this decoupling is not necessary. The natural place for those
+scheduler trace_event based on trace_points extension files is
+kernel/sched/ and here the internal sched.h can just be included.
 
-The ID register (S3_1_C15_c2_5) falls into implementation defined space.
-See Arm ARM DDI 0487F.a, section "D12.3.2  Reserved encodings for 
-IMPLEMENTATION DEFINED registers".
+If someone really wants to build this as an out-of-tree module there is
+an easy way to make kernel/sched/sched.h visible.
 
-So, please stop calling this "etm4_cpu_actlr1_cfg". Since,
-1) actlr1 is not an architected name for the said encoding
-2) The id register could mean something else on another CPU.
+CFLAGS_sched_tp.o := -I$KERNEL_SRC/kernel/sched
 
-Rather this should indicate platform/CPU specific. e.g,
+all:
+    make -C $KERNEL_SRC M=$(PWD) modules
 
-etm4_cpu_hisilicon_config_core_commit()
+This allowed me to build our trace_event extension module (sched_tp.c,
+sched_events.h) out-of-tree and I was able to get rid of all the
+sched_trace_foo() functions (in fair.c, include/linux/sched.h) and code
+there content directly in foo.c
 
+There are two things we would need exported from the kernel:
 
->> +	val &= ~CORE_COMMIT_CLEAR;
->> +	val |= arg->rc << CORE_COMMIT_SHIFT;
->> +	asm volatile("msr s3_1_c15_c2_5,%0" : : "r"(val));
->> +}
->> +
->> +static void etm4_config_core_commit(int cpu, int val)
->> +{
->> +	struct etm4_enable_arg arg = {0};
->> +
->> +	arg.rc = val;
->> +	smp_call_function_single(cpu, etm4_cpu_actlr1_cfg, &arg, 1);
+(1) cfs_rq_tg_path() to print the path of a taskgroup cfs_rq or se.
+
+(2) sched_uclamp_used so uclamp_rq_util_with() can be used in
+    sched_events.h.
+
+I put Phil Auld on cc because of his trace_point
+sched_update_nr_running_tp. I think Phil was using sched_tp as a base so
+I can't see an issue why we can't also remove sched_trace_rq_nr_running().
+
+>> In case we would let the extra code (which transforms trace points into
+>> trace events) know the internals of struct rq we could handle those
+>> things in the TRACE_EVENT and/or the register_trace_##name(void
+>> (*probe)(data_proto), void *data) thing.
+>> We always said when the internal things will change this extra code will
+>> break. So that's not an issue.
 > 
-> Function etm4_enable/disable_hw() are already running on the CPU they are
-> supposed to so no need to call smp_call_function_single().
-> 
->> +}
->> +
->>   static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
->>   {
->>   	int i, rc;
->> +	struct amba_device *adev;
->>   	struct etmv4_config *config = &drvdata->config;
->>   	struct device *etm_dev = &drvdata->csdev->dev;
->> +	struct device *dev = drvdata->csdev->dev.parent;
->> +
->> +	adev = container_of(dev, struct amba_device, dev);
->> +	/*
->> +	 * If ETM device is HiSilicon ETM device, reduce the
->> +	 * core-commit to avoid ETM overflow.
->> +	 */
->> +	if (adev->periphid == HISI_ETM_AMBA_ID_V1)
+> The problem is that you need to export struct rq in a public header. Which we
+> don't want to do. I have been trying to find out how to use BTF so we can
+> remove these functions. Haven't gotten far away yet - but it should be doable
+> and it's a question of me finding enough time to understand what was currently
+> done and if I can re-use something or need to come up with extra infrastructure
+> first.
 
-Please could you move this check to the function above ?
-Ideally, it would be good to have something like :
+Let's keep the footprint of these trace points as small as possible in
+the scheduler code.
 
-	etm4_config_impdef_features();
-
-And :
-
-	etm4_config_impdef_features(struct etm4_drvdata *drvdata)
-	{
-		etm4_cpu_hisilicon_config_core_commit(drvdata);
-	}
-
-> 
-> Do you have any documentation on this back pressure feature?  I doubt this is
-> specific to Hip09 platform and as such would prefer to have a more generic
-> approach that works on any platform that supports it.
-> 
-> Anyone on the CS mailing list that knows what this is about?
-
-I believe this is hisilicon specific. May be same across their CPUs, may
-be a specific one. There is no architectural guarantee.
-
-
-Cheers
-Suzuki
+I'm putting the changes I described above in our monthly EAS integration
+right now and when this worked out nicely I will share the patches on lkml.
