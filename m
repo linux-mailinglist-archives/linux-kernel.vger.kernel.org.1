@@ -2,167 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5147925AFFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF9C25AFA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 17:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgIBPsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 11:48:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726821AbgIBNa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:30:27 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEB8F20767;
-        Wed,  2 Sep 2020 13:19:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599052772;
-        bh=4nBXQMAOX8blqbEXUEK70S72k3vG/C/3WXxmVFWBar4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GDugYxKxMVWwExNCyjSt5NxZo2b+BOn20T2fVJ2yxRdYdrN6hepJZtB/s2/MXTW0s
-         r76jarj7gquPqJPY1fqrxk/hfsee9aJEAZWSNXMJklfkYIynP6Pbg0v3ImtCT4yjvt
-         FQV9h3RqWmVwUwCUZXWdYndzN4wtozFTyS1Tos+E=
-Date:   Wed, 2 Sep 2020 22:19:26 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     peterz@infradead.org
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        Eddy_Wu@trendmicro.com, x86@kernel.org, davem@davemloft.net,
-        rostedt@goodmis.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, linux-arch@vger.kernel.org,
-        cameron@moodycamel.com, oleg@redhat.com, will@kernel.org,
-        paulmck@kernel.org
-Subject: Re: [PATCH v5 00/21] kprobes: Unify kretprobe trampoline handlers
- and make kretprobe lockless
-Message-Id: <20200902221926.f5cae5b4ad00b8d8f9ad99c7@kernel.org>
-In-Reply-To: <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
-References: <159870598914.1229682.15230803449082078353.stgit@devnote2>
-        <20200901190808.GK29142@worktop.programming.kicks-ass.net>
-        <20200902093739.8bd13603380951eaddbcd8a5@kernel.org>
-        <20200902070226.GG2674@hirez.programming.kicks-ass.net>
-        <20200902171755.b126672093a3c5d1b3a62a4f@kernel.org>
-        <20200902093613.GY1362448@hirez.programming.kicks-ass.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726226AbgIBNjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 09:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727119AbgIBNbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:31:55 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FBCC061246
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 06:21:47 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id e16so5227978wrm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 06:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=XZEfogzRpgCv9d/7XYID16SU6ICZPv6xVqL1vYFO3Tc=;
+        b=M3yNcFchCRn+amiZRIxVhI/m1a4StXppeLIzXd9A0CaEudpAr94t4g/UKh0GzWbyi6
+         2KiQoYBsNwDfMf8ZJ3jWSF/OfOFnM9C+y7F3xR7D5wA0q1LC36Etlv8cCDzvUDvDVWkW
+         GxIypWMCm5EMmYYy0rNv1MnGIpSv0qnhWGJzzY3u7FTv3KOeTs1VS43VjJB5uzsvc5Oc
+         qBZOxWSEz3gKB6dWjdQRpshnmH9LwTA42fab2LiVNoPPFZ4/bvyGUukpFA/Aw/mq4LJs
+         hs8fssTsCH9MncGSODGZwffdDuYLjuufLKqvTqP35j/6tz93K5wGoFPXTghAZvvmv5hR
+         h1Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XZEfogzRpgCv9d/7XYID16SU6ICZPv6xVqL1vYFO3Tc=;
+        b=QExP81fUtxRbOwLUMJ3Dz3VX6x4mJcCCASwc5NxyrBa/yWZzkU35Vr/H77Ck+Qsmyb
+         rEtNqbMYyU+jM0k8GooMycLmhcO7+DP9XRMm4xGfAfEDTV6i6Shm/nTl7L9uSEAIT+jM
+         q9Wg9sfReRkayLYRHgP3w/JhG8UmHGG0otaDlHulIChTFqsPntQl2pTfl7j/o5KgsGKy
+         Ygg+Rglx/gPqAPKR6Z3nZhlUi4wcsELXaYwsrfUy1ObdX6/Z4zT/WFkBgd395A9rm3k6
+         lZrDRHqENAP1rJNWyPfYsfKuCNbth2CoJ5Zu/tV/b3e3lJb491qTqWq3DAySTmWg0nH1
+         HySg==
+X-Gm-Message-State: AOAM5318WiQLDNcq4lWbbVFppIGU0xRm8ptcPUSYbFhgPSI2wFtyhpuP
+        /67qeTIV2kDtVguywp7RhGRdxg==
+X-Google-Smtp-Source: ABdhPJyvesWhfkjmOOGpBBJhN/yTcWagUaLz+fSVDWZHqSZgIJyhDOy2wigZyKaWVreGNRGll9MxRw==
+X-Received: by 2002:adf:ed12:: with SMTP id a18mr6552172wro.178.1599052905847;
+        Wed, 02 Sep 2020 06:21:45 -0700 (PDT)
+Received: from hackbox2.linaro.org ([81.128.185.34])
+        by smtp.gmail.com with ESMTPSA id q4sm2520403wru.65.2020.09.02.06.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 06:21:45 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Wei Li <liwei391@huawei.com>,
+        Al Grant <al.grant@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Stephane Eranian <eranian@google.com>,
+        Nick Gasson <nick.gasson@arm.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Steve MacLean <Steve.MacLean@Microsoft.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v3 0/6] Perf tool: Support TSC for Arm64
+Date:   Wed,  2 Sep 2020 14:21:25 +0100
+Message-Id: <20200902132131.36304-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Sep 2020 11:36:13 +0200
-peterz@infradead.org wrote:
+This patch set is to refactor the changes for the old patch set 'Perf
+tool: Enable Arm arch timer counter and arm-spe's timestamp' [1].
 
-> On Wed, Sep 02, 2020 at 05:17:55PM +0900, Masami Hiramatsu wrote:
-> 
-> > > Ok, but then lockdep will yell at you if you have that enabled and run
-> > > the unoptimized things.
-> > 
-> > Oh, does it warn for all spinlock things in kprobes if it is unoptimized?
-> > Hmm, it has to be noted in the documentation.
-> 
-> Lockdep will warn about spinlocks used in NMI context that are also used
-> outside NMI context.
+After reviewed the old patch sets (thanks Wei Li and Al Grant), we
+think it's right way to consolidate TSC code and extend the TSC
+implementation to common code which can support both x86 and Arm64;
+so far, for x86 it needs to support cap_user_time_zero and for Arm64
+it needs to support cap_user_time_short.  For architecture specific
+code, every arch only needs to implement its own rdtsc() to read out
+timer's counter.
 
-OK, but raw_spin_lock_irqsave() will not involve lockdep, correct?
+This patch set is to refactor TSC implementation and move TSC code from
+x86 folder to util/tsc.c, this allows all archs to reuse the code.  And
+alse move the TSC testing from x86 folder to tests so can work as a
+common testing.
 
-> Now, for the kretprobe that kprobe_busy flag prevents the actual
-> recursion self-deadlock, but lockdep isn't smart enough to see that.
-> 
-> One way around this might be to use SINGLE_DEPTH_NESTING for locks when
-> we use them from INT3 context. That way they'll have a different class
-> and lockdep will not see the recursion.
+This patch set has been tested on Arm64 (DB410c) and x86_64.  Both can
+pass the testing:
 
-Hmm, so lockdep warns only when it detects the spinlock in NMI context,
-and int3 is now always NMI, thus all spinlock (except raw_spinlock?)
-in kprobe handlers should get warned, right?
-I have tested this series up to [16/21] with optprobe disabled, but
-I haven't see the lockdep warnings.
+  $ perf test list
+    [...]
+    68: Convert perf time to TSC
+    [...]
 
-> 
-> pre_handler_kretprobe() is always called from INT3, right?
+  $ perf test 68 -v
+    68: Convert perf time to TSC
+    --- start ---
+    test child forked, pid 10961
+    mmap size 528384B
+    1st event perf time 35715036563417 tsc 686221770989
+    rdtsc          time 35715036649719 tsc 686221772647
+    2nd event perf time 35715036660448 tsc 686221772852
+    test child finished with 0
+    ---- end ----
+    Convert perf time to TSC: Ok
 
-No, not always, it can be called from optprobe (same as original code
-context) or ftrace handler.
-But if you set 0 to /proc/sys/debug/kprobe_optimization, and compile
-the kernel without function tracer, it should always be called from
-INT3.
+Changes from v2:
+* Refactored patch set to move TSC common code to util/tsc.c (Wei/Al);
+* Moved TSC testing to perf/tests (Wei);
+* Dropped Arm SPE timestamp patch so can have clear purpose and easier
+  reviewing; will send Arm SPE timestamp as separate patch.
 
-> 
-> Something like the below might then work...
+[1] https://lore.kernel.org/patchwork/cover/1285130/
 
-OK, but I would like to reproduce the lockdep warning on this for
-confirmation.
+Leo Yan (6):
+  perf tsc: Move out common functions from x86
+  perf tsc: Add rdtsc() for Arm64
+  perf tsc: Calculate timestamp with cap_user_time_short
+  perf tsc: Support cap_user_time_short for event TIME_CONV
+  perf tests tsc: Make tsc testing as a common testing
+  perf tests tsc: Add checking helper is_supported()
 
-Thank you,
-
-> 
-> ---
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 287b263c9cb9..b78f4fe08e86 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1255,11 +1255,11 @@ __acquires(hlist_lock)
->  NOKPROBE_SYMBOL(kretprobe_hash_lock);
->  
->  static void kretprobe_table_lock(unsigned long hash,
-> -				 unsigned long *flags)
-> +				 unsigned long *flags, int nesting)
->  __acquires(hlist_lock)
->  {
->  	raw_spinlock_t *hlist_lock = kretprobe_table_lock_ptr(hash);
-> -	raw_spin_lock_irqsave(hlist_lock, *flags);
-> +	raw_spin_lock_irqsave_nested(hlist_lock, *flags, nesting);
->  }
->  NOKPROBE_SYMBOL(kretprobe_table_lock);
->  
-> @@ -1326,7 +1326,7 @@ void kprobe_flush_task(struct task_struct *tk)
->  	INIT_HLIST_HEAD(&empty_rp);
->  	hash = hash_ptr(tk, KPROBE_HASH_BITS);
->  	head = &kretprobe_inst_table[hash];
-> -	kretprobe_table_lock(hash, &flags);
-> +	kretprobe_table_lock(hash, &flags, 0);
->  	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
->  		if (ri->task == tk)
->  			recycle_rp_inst(ri, &empty_rp);
-> @@ -1361,7 +1361,7 @@ static void cleanup_rp_inst(struct kretprobe *rp)
->  
->  	/* No race here */
->  	for (hash = 0; hash < KPROBE_TABLE_SIZE; hash++) {
-> -		kretprobe_table_lock(hash, &flags);
-> +		kretprobe_table_lock(hash, &flags, 0);
->  		head = &kretprobe_inst_table[hash];
->  		hlist_for_each_entry_safe(ri, next, head, hlist) {
->  			if (ri->rp == rp)
-> @@ -1950,7 +1950,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
->  
->  	/* TODO: consider to only swap the RA after the last pre_handler fired */
->  	hash = hash_ptr(current, KPROBE_HASH_BITS);
-> -	raw_spin_lock_irqsave(&rp->lock, flags);
-> +	raw_spin_lock_irqsave_nested(&rp->lock, flags, SINGLE_DEPTH_NESTING);
->  	if (!hlist_empty(&rp->free_instances)) {
->  		ri = hlist_entry(rp->free_instances.first,
->  				struct kretprobe_instance, hlist);
-> @@ -1961,7 +1961,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
->  		ri->task = current;
->  
->  		if (rp->entry_handler && rp->entry_handler(ri, regs)) {
-> -			raw_spin_lock_irqsave(&rp->lock, flags);
-> +			raw_spin_lock_irqsave_nested(&rp->lock, flags, SINGLE_DEPTH_NESTING);
->  			hlist_add_head(&ri->hlist, &rp->free_instances);
->  			raw_spin_unlock_irqrestore(&rp->lock, flags);
->  			return 0;
-> @@ -1971,7 +1971,7 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
->  
->  		/* XXX(hch): why is there no hlist_move_head? */
->  		INIT_HLIST_NODE(&ri->hlist);
-> -		kretprobe_table_lock(hash, &flags);
-> +		kretprobe_table_lock(hash, &flags, SINGLE_DEPTH_NESTING);
->  		hlist_add_head(&ri->hlist, &kretprobe_inst_table[hash]);
->  		kretprobe_table_unlock(hash, &flags);
->  	} else {
-
+ tools/lib/perf/include/perf/event.h           |  4 +
+ tools/perf/arch/arm64/util/Build              |  1 +
+ tools/perf/arch/arm64/util/tsc.c              | 14 ++++
+ tools/perf/arch/x86/include/arch-tests.h      |  1 -
+ tools/perf/arch/x86/tests/Build               |  1 -
+ tools/perf/arch/x86/tests/arch-tests.c        |  4 -
+ tools/perf/arch/x86/util/tsc.c                | 73 +----------------
+ tools/perf/tests/Build                        |  1 +
+ tools/perf/tests/builtin-test.c               |  5 ++
+ .../{arch/x86 => }/tests/perf-time-to-tsc.c   | 13 +++
+ tools/perf/tests/tests.h                      |  2 +
+ tools/perf/util/jitdump.c                     | 14 ++--
+ tools/perf/util/synthetic-events.c            |  8 --
+ tools/perf/util/tsc.c                         | 81 +++++++++++++++++++
+ tools/perf/util/tsc.h                         |  5 ++
+ 15 files changed, 136 insertions(+), 91 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/util/tsc.c
+ rename tools/perf/{arch/x86 => }/tests/perf-time-to-tsc.c (93%)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
