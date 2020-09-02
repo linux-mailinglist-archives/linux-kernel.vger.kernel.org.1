@@ -2,80 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE9125AC8F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AB725AC81
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 16:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgIBOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 10:07:42 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:21160 "EHLO pegase1.c-s.fr"
+        id S1726994AbgIBOEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 10:04:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:38380 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727919AbgIBNvM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 09:51:12 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BhPgP6btKz9txSj;
-        Wed,  2 Sep 2020 15:20:01 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 13JB8Zw2mRHx; Wed,  2 Sep 2020 15:20:01 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BhPgP5Fxbz9txSG;
-        Wed,  2 Sep 2020 15:20:01 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 224D08B7EA;
-        Wed,  2 Sep 2020 15:20:03 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id LzA1l6PiP3U8; Wed,  2 Sep 2020 15:20:03 +0200 (CEST)
-Received: from [10.25.210.31] (po15451.idsi0.si.c-s.fr [10.25.210.31])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E8F728B7E9;
-        Wed,  2 Sep 2020 15:20:02 +0200 (CEST)
-Subject: Re: watchdog start on restart
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <d2343032814705f33cd81f18f45630bf327c0ff8.camel@yadro.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <e04bc12d-4520-89db-699c-ad89fcdbf76e@csgroup.eu>
-Date:   Wed, 2 Sep 2020 15:19:56 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727852AbgIBNtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 09:49:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 888AED6E;
+        Wed,  2 Sep 2020 06:24:32 -0700 (PDT)
+Received: from bogus (unknown [10.57.4.218])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F2923F885;
+        Wed,  2 Sep 2020 06:24:31 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 14:24:28 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        dietmar.eggemann@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 5/5] arch_topology, arm, arm64: define
+ arch_scale_freq_invariant()
+Message-ID: <20200902132428.GD25462@bogus>
+References: <20200901205549.30096-1-ionela.voinescu@arm.com>
+ <20200901205549.30096-6-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <d2343032814705f33cd81f18f45630bf327c0ff8.camel@yadro.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901205549.30096-6-ionela.voinescu@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 02/09/2020 à 15:02, Ivan Mikhaylov a écrit :
-> Hello everyone. Currently, the watchdog interface only has "stop watchdog on
-> restart" but lacks a "start watchdog on restart" one. Is there a way to achieve
-> such functionality?
+On Tue, Sep 01, 2020 at 09:55:49PM +0100, Ionela Voinescu wrote:
+> From: Valentin Schneider <valentin.schneider@arm.com>
 > 
-> I'd like to know why "stop watchdog on restart" wasn't implemented via ioctl
-> interface? It would be more convenient from user perspective and you can
-> control that behavior whenever you want from application layer.
+> arch_scale_freq_invariant() is used by schedutil to determine whether
+> the scheduler's load-tracking signals are frequency invariant. Its
+> definition is overridable, though by default it is hardcoded to 'true'
+> if arch_scale_freq_capacity() is defined ('false' otherwise).
 > 
-> I have some thoughts on this problem that solve the aforementioned
-> issue with "start watchdog on restart" but I don't think that my solution is
-> correct.
+> This behaviour is not overridden on arm, arm64 and other users of the
+> generic arch topology driver, which is somewhat precarious:
+> arch_scale_freq_capacity() will always be defined, yet not all cpufreq
+> drivers are guaranteed to drive the frequency invariance scale factor
+> setting. In other words, the load-tracking signals may very well *not*
+> be frequency invariant.
 > 
+> Now that cpufreq can be queried on whether the current driver is driving
+> the Frequency Invariance (FI) scale setting, the current situation can
+> be improved. This combines the query of whether cpufreq supports the
+> setting of the frequency scale factor, with whether all online CPUs are
+> counter-based FI enabled.
+> 
+> While cpufreq FI enablement applies at system level, for all CPUs,
+> counter-based FI support could also be used for only a subset of CPUs to
+> set the invariance scale factor. Therefore, if cpufreq-based FI support
+> is present, we consider the system to be invariant. If missing, we
+> require all online CPUs to be counter-based FI enabled in order for the
+> full system to be considered invariant.
+> 
+> If the system ends up not being invariant, a new condition is needed in
+> the counter initialization code that disables all scale factor setting
+> based on counters.
+> 
+> Precedence of counters over cpufreq use is not important here. The
+> invariant status is only given to the system if all CPUs have at least
+> one method of setting the frequency scale factor.
+> 
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
 
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
 
-I don't understand why a "start watchdog on restart" would be needed. 
-Isn't it the default expected behaviour for a watchdog ?
-
-"stop watchdog on restart" is there to keep things under control during 
-a wanted machine reboot/restart, while still having the watchdog do its 
-job on an unexpected restart.
-
-What would be the advantage of an ioctl() compared to the existing way ?
-
-Christophe
+-- 
+Regards,
+Sudeep
