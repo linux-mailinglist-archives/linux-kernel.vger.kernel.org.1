@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE32C25B3E0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0191925B3E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 20:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgIBSki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 14:40:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25170 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728192AbgIBSkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 14:40:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599072015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=j0uPPhC3zXrQ09ZOMV6+TGvbzv6S3EaGNYNTJu5Zubg=;
-        b=TUiuF9VCljYBjTFutieG2Dcwn41oxt0iqjEmYY4TtbILyhTbf9EaY7qAtaQF7F/vifDREk
-        IQsjjHMCgFH7oOjwP09NoAZN8q2IEAfkIDTln3xJbWKz5+AAPuHCLr96TPCVmexHExp9F3
-        EIAlEgkWs5cCX5KE2P+D1Z6KNT9k8ys=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-1B1nMp4QNcuCUYcY_KeN8Q-1; Wed, 02 Sep 2020 14:40:13 -0400
-X-MC-Unique: 1B1nMp4QNcuCUYcY_KeN8Q-1
-Received: by mail-il1-f197.google.com with SMTP id 2so424578ill.10
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 11:40:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=j0uPPhC3zXrQ09ZOMV6+TGvbzv6S3EaGNYNTJu5Zubg=;
-        b=ekkfVp1V+4iKxOxTjipATsZh5KtdGhHEegcbNZAsyBlP8N1P1jvEPx6aNOPCAXjkfa
-         PXPi9+3ZmxFVmCYdF4MHeeixYmf31RhMBUi2g93Um2s28pxYR7Fz/CwQoWh0sBnFZ805
-         4/r2RXipd6hJfWrRNu/pQQTrj6C/StfHFirDfklNk3qRmq4r/sLOqTv6mDU5+IsKYt4g
-         gm1LVIbItQe8efcPQ2xBFIFfSj+O82RDj4pZvp2+qeD47c5eyKhZhw4QUKt5UeugXPuu
-         9LgeK+hOU+KLoNyWGRO4KrBIIQIDi5GMu9xSQx4A+wnLERhdhpIShVzrMz2TmnIh0JvR
-         ojEw==
-X-Gm-Message-State: AOAM531+v52TCMnD00lYwVwtas3pxS5Y9Sr0tA8NvMX978mqivR+o7ri
-        s4Xw/PDNmovPIGWTckPGOvYi/tciP41c+T4uUKkIuOxetvC0yBrzPK/xp1/xn5kCHzyky+ly9QR
-        JfzcLB7Mol6uYsAdRz9p2jgzM
-X-Received: by 2002:a6b:ec17:: with SMTP id c23mr4629243ioh.186.1599072012699;
-        Wed, 02 Sep 2020 11:40:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZtLCzpJ4UK29gX+Y0AYBy64NrsA5WDVyrB09mtmKEQIp2UsYMvd2RPnoUL0lxE9o89yAuGQ==
-X-Received: by 2002:a6b:ec17:: with SMTP id c23mr4629228ioh.186.1599072012548;
-        Wed, 02 Sep 2020 11:40:12 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o1sm191736ils.1.2020.09.02.11.40.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Sep 2020 11:40:12 -0700 (PDT)
-Subject: Re: [PATCH v2] net: openvswitch: pass NULL for unused parameters
-To:     David Miller <davem@davemloft.net>
-Cc:     pshelar@ovn.org, kuba@kernel.org, natechancellor@gmail.com,
-        ndesaulniers@google.com, netdev@vger.kernel.org,
-        dev@openvswitch.org, linux-kernel@vger.kernel.org
-References: <20200830212630.32241-1-trix@redhat.com>
- <20200901.131111.186993526997490086.davem@davemloft.net>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <7b82468b-bc67-df62-1816-1f510888fc39@redhat.com>
-Date:   Wed, 2 Sep 2020 11:40:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728283AbgIBSk6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Sep 2020 14:40:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:17072 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726567AbgIBSky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 14:40:54 -0400
+IronPort-SDR: tKAYgg1zYv4AUuuI/LWak6KL/a4DCSATuhu1aXx/v2EX2FyzYWFPPoS2BQfzB/7AFmitdb0V5a
+ dEiz4fCJvdMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="221674238"
+X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
+   d="scan'208";a="221674238"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 11:40:52 -0700
+IronPort-SDR: P4YeBPN8mp1qKmIrafAtjmZm4807Q/A2J7qZUuipcGX0UCptRPoHbegSotuQlM/6nSqA5dL+kN
+ EMMI3WIakq6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
+   d="scan'208";a="502231194"
+Received: from hhuan26-mobl1.amr.corp.intel.com ([10.255.38.180])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Sep 2020 11:40:48 -0700
+Content-Type: text/plain; charset=utf-8; format=flowed; delsp=yes
+To:     "Sean Christopherson" <sean.j.christopherson@intel.com>
+Cc:     "Jarkko Sakkinen" <jarkko.sakkinen@linux.intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        "Jethro Beekman" <jethro@fortanix.com>,
+        "Chunyang Hui" <sanqian.hcy@antfin.com>,
+        "Jordan Hand" <jorhand@linux.microsoft.com>,
+        "Nathaniel McCallum" <npmccallum@redhat.com>,
+        "Seth Moore" <sethmo@google.com>,
+        "Suresh Siddha" <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200702035902.GC1819@linux.intel.com>
+ <20200704033025.GA144756@linux.intel.com>
+ <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+ <20200902161012.GD11695@sjchrist-ice>
+Date:   Wed, 02 Sep 2020 13:40:47 -0500
 MIME-Version: 1.0
-In-Reply-To: <20200901.131111.186993526997490086.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0qbx59v2wjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+In-Reply-To: <20200902161012.GD11695@sjchrist-ice>
+User-Agent: Opera Mail/1.0 (Win32)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 02 Sep 2020 11:10:12 -0500, Sean Christopherson  
+<sean.j.christopherson@intel.com> wrote:
 
-On 9/1/20 1:11 PM, David Miller wrote:
-> From: trix@redhat.com
-> Date: Sun, 30 Aug 2020 14:26:30 -0700
+> On Tue, Sep 01, 2020 at 10:06:32PM -0500, Haitao Huang wrote:
+>> On Fri, 03 Jul 2020 22:31:10 -0500, Jarkko Sakkinen
+>> <jarkko.sakkinen@linux.intel.com> wrote:
+>>
+>> > On Wed, Jul 01, 2020 at 08:59:02PM -0700, Sean Christopherson wrote:
+>> > > On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
+>> > > > +static int sgx_validate_secs(const struct sgx_secs *secs,
+>> > > > +			     unsigned long ssaframesize)
+>> > > > +{
+>> > > > +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
+>> > > > +		return -EINVAL;
+>> > > > +
+>> > > > +	if (secs->base & (secs->size - 1))
+>> > > > +		return -EINVAL;
+>> > > > +
+>> > > > +	if (secs->miscselect & sgx_misc_reserved_mask ||
+>> > > > +	    secs->attributes & sgx_attributes_reserved_mask ||
+>> > > > +	    secs->xfrm & sgx_xfrm_reserved_mask)
+>> > > > +		return -EINVAL;
+>> > > > +
+>> > > > +	if (secs->attributes & SGX_ATTR_MODE64BIT) {
+>> > > > +		if (secs->size > sgx_encl_size_max_64)
+>> > > > +			return -EINVAL;
+>> > > > +	} else if (secs->size > sgx_encl_size_max_32)
+>> > > > +		return -EINVAL;
+>> > >
+>> > > These should be >=, not >, the SDM uses one of those fancy ≥  
+>> ligatures.
+>> > >
+>> > > Internal versions use more obvious pseudocode, e.g.:
+>> > >
+>> > >     if ((DS:TMP_SECS.ATTRIBUTES.MODE64BIT = 1) AND
+>> > >         (DS:TMP_SECS.SIZE AND (~((1 << CPUID.18.0:EDX[15:8]) – 1)))
+>> > >     {
+>> > >         #GP(0);
+>> >
+>> > Updated as:
+>> >
+>> > static int sgx_validate_secs(const struct sgx_secs *secs)
+>> > {
+>> > 	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
+>> > 		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
+>> >
+>> > 	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
+>> > 		return -EINVAL;
+>> >
+>> > 	if (secs->base & (secs->size - 1))
+>> > 		return -EINVAL;
+>> >
+>> > 	if (secs->miscselect & sgx_misc_reserved_mask ||
+>> > 	    secs->attributes & sgx_attributes_reserved_mask ||
+>> > 	    secs->xfrm & sgx_xfrm_reserved_mask)
+>> > 		return -EINVAL;
+>> >
+>> > 	if (secs->size >= max_size)
+>> > 		return -EINVAL;
+>> >
+>>
+>> This should be > not >=. Issue raised and fixed by Fábio Silva for  
+>> ported
+>> patches for OOT SGX support:
+>> https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/123
+>>
+>> I tested and verified with Intel arch, the comparison indeed should be  
+>> >.
 >
->> Passing unused parameters is a waste.
-> Poorly predicted branches are an even bigger waste.
->
-> I'm not a big fan of this change and others have asked for performance
-> analysis to be performed.
->
-> So I'm not applying this as-is, sorry.
+> And this is a confirmed SDM bug, correct?
 
-no worries.
-
-I think these functions need a larger working over so the stats collecting are not in the core functions.
-
-Thanks for giving it a look,
-
-Tom
-
->
-> It's also not great to see that CLANG can't make use of the caller's
-> __always_unused directive to guide these warnings.
-
+yes, the pseudo code for ECREATE is inaccurate and inconsistent with the  
+CPUID spec. The latter is correct.
+Haitao
