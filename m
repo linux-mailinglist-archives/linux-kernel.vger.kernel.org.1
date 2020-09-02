@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B4925A83E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 11:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB8C25A84F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 11:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgIBJEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 05:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        id S1727049AbgIBJEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 05:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgIBJDj (ORCPT
+        with ESMTP id S1726657AbgIBJDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 05:03:39 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8193EC061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 02:03:39 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id z46so1334546uac.13
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 02:03:39 -0700 (PDT)
+        Wed, 2 Sep 2020 05:03:47 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B036C061246
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 02:03:47 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id l1so1338104uai.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 02:03:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=upktra/6N5emKh7zvhc7gnHBaffqMLEbCV10tmOPScE=;
-        b=ccyj7iwV1I8JjY1UHxeji0yJ0pPCBmQh8EC8+5I+78EMJ9CJTqGDgzaHKVJGcpJGUL
-         hN/9an7B8iC9RUmg2KYdm3DT1NQjzLHOhZdZzmiOWNfSIO4AtpSo8XFy+Nv81tpUbOgi
-         xtUNNIXTRFi/ir0DDVeTakmrL/ktIE7C9ruWEnSo7RQw9vytDoJIQto9IHkd8NgzSSua
-         HELp1r21BKjxocLn6wedYf4i5s2I7HlGoXQzcuCbbHY2lZtvhg40gFv4d0xC1bBUzeAi
-         Ey+JweUb4u3rDmoX4NS3Y6z864knovorET27+g1K4ysBlA5wfSwI+z1sFEoICVsd55Uz
-         8Deg==
+        bh=G7z93t1Etv3+Y7YRGqoitCZfELcgVcpVmZuSYiiuAMc=;
+        b=ZNr7dTiMyg6AJhHsdVCwXw5CQaH02wnOnH42Zr5wVBHqxb0354fDvNOiMNx6Lmc0hE
+         QvUDEGEWKwtU63Sv5gfBy3asdk4Xo6wqAh6SE5d/9t3h1Fxsg32wfjXT/7xiodD5G5pZ
+         0EKEDKEi/A7o5IvEbPeol4SFl6PQFNNTja+vjlcRop0AWOnZ6JXzH6BbUGiJylF0O1Lx
+         PgOOwKbmHa4RJS0q13zHAf5qCeEB1iseAEndTs3QjRUXhEGIRfelydA6FGU1BnRoV/bw
+         KjsQoPeNLOw3BNLzdxNjYZpjA3Mq+Ou8H87Ud5PLEAhDNMXtemEaevQudQWIQhnvouuq
+         3ypg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=upktra/6N5emKh7zvhc7gnHBaffqMLEbCV10tmOPScE=;
-        b=e5zAK5S7Uxqhvh2PQ2gBwcno3IzJh1GpN9/qWWOGaw0+rWFaa/pPHhP7JNdXHp7kr/
-         NDcVE7aJyB1MuB0eBzPIWByPL4gYw/DVqLWSAK+lF0oUy8nFD+PdhCpGztWCdtPrPT8d
-         Cy3/dMgNWgG4coU14nN59c761cB7JmmN2NaXk1ID9tt7WLiEexV9gxtcQEVHszc0bZlt
-         ySi2MP8aoO/6q+4LfB8oXPBGVEK8+1qqgZE/30HCetAXgK2RzdZqcqQbLKsHf/bHYlW9
-         QSWjBuqciUSsfZD6hYIpYliaS+fS53zhtG4XiVYxqWTK4W0jHdh51//uaJr9OPUk79YH
-         Ic3w==
-X-Gm-Message-State: AOAM530oTsHSC1Hd3wsKrsNB605zTNzwujQbW55ISXbP0bVuwPpEGXWz
-        QASHpfg/GK8YiTPLcaE7j79iJ0HMchWcSWZl7BfN+A==
-X-Google-Smtp-Source: ABdhPJzpbY3N1DOxGoSiFAa5u53PceFM0ve5E9HnO0kFcgXs6+5D1tRc8VeQ0iGX/g4t/gGuGWsUVm/lRGJnL+dPCkw=
-X-Received: by 2002:a9f:2431:: with SMTP id 46mr3660526uaq.129.1599037418663;
- Wed, 02 Sep 2020 02:03:38 -0700 (PDT)
+        bh=G7z93t1Etv3+Y7YRGqoitCZfELcgVcpVmZuSYiiuAMc=;
+        b=c//H+06rOxChstn+SU7FO2SL7Zm37mOTPPDaU2ad2asJW+G6FZr+TDwv84h8T46ZQ8
+         CgFPbUg45ZQCFHFn2q+4THpCIjyTmZ+hMRiu16cwkCSbu9N9+csDGJ4mPdlvB0rR8ol0
+         wQ7QO2/pm36UZU6khHF+zwvbVQZGfHT0FUI4xeITQi7/v28QbwPyKn4zW53DoRS6Pl1F
+         tCYc/YCdVDH5VnpNTeLy6yWrg+N+TVH74Dl2qTV1e/U1oGDMvKj6qV7/7rNEB6f4VlvN
+         H4AFQ43xUF9w+0ivL1wW3eHMY4n0z00t0EdBKdzsGQuJjfHOzPeTSDD0MfravXLHZhOj
+         x16w==
+X-Gm-Message-State: AOAM532gM7RGWIIW2EaMpaPK+tseRzQ3EwuuYK9Sqp+2P6A9RkZ2ymSW
+        s5G48pQX1CxkYsILKnoRMwiIx8Q2UjYbN3VvsvBBqebsIZYgKQ==
+X-Google-Smtp-Source: ABdhPJyTJjkE0DbQ9blDWav98w+X2eEv5Ao+aqHbo6v8vW6kAJ3iH1xM8Vn6niOHiZAqARCskMhgKTsCoqH+TsHxDac=
+X-Received: by 2002:a9f:2722:: with SMTP id a31mr4520715uaa.100.1599037426432;
+ Wed, 02 Sep 2020 02:03:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid>
-In-Reply-To: <20200827075809.1.If179abf5ecb67c963494db79c3bc4247d987419b@changeid>
+References: <20200829062505.4642-1-krzk@kernel.org>
+In-Reply-To: <20200829062505.4642-1-krzk@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 2 Sep 2020 11:03:02 +0200
-Message-ID: <CAPDyKFobQqtjjvTQbZ+MTex2A--5HcTsNT5MGhaLRA52cXuUMg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-msm: Add retries when all tuning phases are
- found valid
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Chris Ball <chris@printf.net>,
-        Georgi Djakov <gdjakov@mm-sol.com>,
-        Venkat Gopalakrishnan <venkatg@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+Date:   Wed, 2 Sep 2020 11:03:09 +0200
+Message-ID: <CAPDyKFrVLZUXEV6pCa6aPJFtFsZ4xv9mtcycUQ1-XHyGOqKi+A@mail.gmail.com>
+Subject: Re: [PATCH v4] dt-bindings: mmc: fsl-imx-esdhc: Fix i.MX 8 compatible matching
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -70,76 +72,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 Aug 2020 at 16:59, Douglas Anderson <dianders@chromium.org> wrote:
+On Sat, 29 Aug 2020 at 08:25, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> As the comments in this patch say, if we tune and find all phases are
-> valid it's _almost_ as bad as no phases being found valid.  Probably
-> all phases are not really reliable but we didn't detect where the
-> unreliable place is.  That means we'll essentially be guessing and
-> hoping we get a good phase.
+> The i.MX 8 DTSes use two compatibles so update the binding to fix
+> dtbs_check warnings like:
 >
-> This is not just a problem in theory.  It was causing real problems on
-> a real board.  On that board, most often phase 10 is found as the only
-> invalid phase, though sometimes 10 and 11 are invalid and sometimes
-> just 11.  Some percentage of the time, however, all phases are found
-> to be valid.  When this happens, the current logic will decide to use
-> phase 11.  Since phase 11 is sometimes found to be invalid, this is a
-> bad choice.  Sure enough, when phase 11 is picked we often get mmc
-> errors later in boot.
+>   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+>     compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+>     From schema: Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
 >
-> I have seen cases where all phases were found to be valid 3 times in a
-> row, so increase the retry count to 10 just to be extra sure.
+>   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: mmc@30b40000:
+>     compatible: Additional items are not allowed ('fsl,imx7d-usdhc' was unexpected)
 >
-> Fixes: 415b5a75da43 ("mmc: sdhci-msm: Add platform_execute_tuning implementation")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>   arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dt.yaml: mmc@30b40000:
+>     compatible: ['fsl,imx8mn-usdhc', 'fsl,imx7d-usdhc'] is too long
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Applied for fixes and by adding a stable tag, thanks!
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
+>
 > ---
 >
->  drivers/mmc/host/sdhci-msm.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
+> Changes since v3:
+> 1. Fix also example in Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
 >
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index b7e47107a31a..1b78106681e0 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -1165,7 +1165,7 @@ static void sdhci_msm_set_cdr(struct sdhci_host *host, bool enable)
->  static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
->  {
->         struct sdhci_host *host = mmc_priv(mmc);
-> -       int tuning_seq_cnt = 3;
-> +       int tuning_seq_cnt = 10;
->         u8 phase, tuned_phases[16], tuned_phase_cnt = 0;
->         int rc;
->         struct mmc_ios ios = host->mmc->ios;
-> @@ -1221,6 +1221,22 @@ static int sdhci_msm_execute_tuning(struct mmc_host *mmc, u32 opcode)
->         } while (++phase < ARRAY_SIZE(tuned_phases));
+> Changes since v2:
+> 1. Remove moved compatibles.
 >
->         if (tuned_phase_cnt) {
-> +               if (tuned_phase_cnt == ARRAY_SIZE(tuned_phases)) {
-> +                       /*
-> +                        * All phases valid is _almost_ as bad as no phases
-> +                        * valid.  Probably all phases are not really reliable
-> +                        * but we didn't detect where the unreliable place is.
-> +                        * That means we'll essentially be guessing and hoping
-> +                        * we get a good phase.  Better to try a few times.
-> +                        */
-> +                       dev_dbg(mmc_dev(mmc), "%s: All phases valid; try again\n",
-> +                               mmc_hostname(mmc));
-> +                       if (--tuning_seq_cnt) {
-> +                               tuned_phase_cnt = 0;
-> +                               goto retry;
-> +                       }
-> +               }
-> +
->                 rc = msm_find_most_appropriate_phase(host, tuned_phases,
->                                                      tuned_phase_cnt);
->                 if (rc < 0)
+> Changes since v1:
+> 1. Handle also fsl,imx8mm-usdhc and fsl,imx8qxp-usdhc
+> ---
+>  .../bindings/clock/imx8qxp-lpcg.yaml          |  2 +-
+>  .../bindings/mmc/fsl-imx-esdhc.yaml           | 37 ++++++++++---------
+>  2 files changed, 21 insertions(+), 18 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml b/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+> index 1d5e9bcce4c8..33f3010f48c3 100644
+> --- a/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+> +++ b/Documentation/devicetree/bindings/clock/imx8qxp-lpcg.yaml
+> @@ -62,7 +62,7 @@ examples:
+>      };
+>
+>      mmc@5b010000 {
+> -        compatible = "fsl,imx8qxp-usdhc";
+> +        compatible = "fsl,imx8qxp-usdhc", "fsl,imx7d-usdhc";
+>          interrupts = <GIC_SPI 232 IRQ_TYPE_LEVEL_HIGH>;
+>          reg = <0x5b010000 0x10000>;
+>          clocks = <&conn_lpcg IMX_CONN_LPCG_SDHC0_IPG_CLK>,
+> diff --git a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> index 10b45966f1b8..e71d13c2d109 100644
+> --- a/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/fsl-imx-esdhc.yaml
+> @@ -21,23 +21,26 @@ description: |
+>
+>  properties:
+>    compatible:
+> -    enum:
+> -      - fsl,imx25-esdhc
+> -      - fsl,imx35-esdhc
+> -      - fsl,imx51-esdhc
+> -      - fsl,imx53-esdhc
+> -      - fsl,imx6q-usdhc
+> -      - fsl,imx6sl-usdhc
+> -      - fsl,imx6sx-usdhc
+> -      - fsl,imx6ull-usdhc
+> -      - fsl,imx7d-usdhc
+> -      - fsl,imx7ulp-usdhc
+> -      - fsl,imx8mq-usdhc
+> -      - fsl,imx8mm-usdhc
+> -      - fsl,imx8mn-usdhc
+> -      - fsl,imx8mp-usdhc
+> -      - fsl,imx8qm-usdhc
+> -      - fsl,imx8qxp-usdhc
+> +    oneOf:
+> +      - enum:
+> +          - fsl,imx25-esdhc
+> +          - fsl,imx35-esdhc
+> +          - fsl,imx51-esdhc
+> +          - fsl,imx53-esdhc
+> +          - fsl,imx6q-usdhc
+> +          - fsl,imx6sl-usdhc
+> +          - fsl,imx6sx-usdhc
+> +          - fsl,imx6ull-usdhc
+> +          - fsl,imx7d-usdhc
+> +          - fsl,imx7ulp-usdhc
+> +      - items:
+> +          - enum:
+> +              - fsl,imx8mm-usdhc
+> +              - fsl,imx8mn-usdhc
+> +              - fsl,imx8mp-usdhc
+> +              - fsl,imx8mq-usdhc
+> +              - fsl,imx8qxp-usdhc
+> +          - const: fsl,imx7d-usdhc
+>
+>    reg:
+>      maxItems: 1
 > --
-> 2.28.0.297.g1956fa8f8d-goog
+> 2.17.1
 >
