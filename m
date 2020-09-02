@@ -2,173 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC7825B1B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCA425B1BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 18:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbgIBQbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 12:31:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:63503 "EHLO mga14.intel.com"
+        id S1727951AbgIBQco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 12:32:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgIBQbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 12:31:36 -0400
-IronPort-SDR: qYXaaLftrUZI2NfJT6GyCR8UK7pHF4hSiHgcNqGuyVha73YbKuUK5I2IqIxK2Vze/A4S5TNEzx
- F6eCSomTF9Ig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="156690331"
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="156690331"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:31:31 -0700
-IronPort-SDR: oKo8s8s3uyIVvMOH0uxsebFxZ0LHUmVVq7s/nKCpDe1twQxZV3ZWWyK0neQTHr3LAP+OCrvEdN
- 9DaLdvTzMhew==
-X-IronPort-AV: E=Sophos;i="5.76,383,1592895600"; 
-   d="scan'208";a="297727627"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 09:31:27 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 1E8192071B; Wed,  2 Sep 2020 19:31:22 +0300 (EEST)
-Date:   Wed, 2 Sep 2020 19:31:22 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v7 6/6] Documentation: ACPI: Document
- allow-low-power-probe _DSD property
-Message-ID: <20200902163121.GE32646@paasikivi.fi.intel.com>
-References: <20200901210333.8462-1-sakari.ailus@linux.intel.com>
- <20200901210333.8462-7-sakari.ailus@linux.intel.com>
- <CAJZ5v0jFceTFRTD55cz3ZHRZpuNRK_z9=_DxWexc8ArsGU3cog@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jFceTFRTD55cz3ZHRZpuNRK_z9=_DxWexc8ArsGU3cog@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726247AbgIBQcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 12:32:43 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 446D420758;
+        Wed,  2 Sep 2020 16:32:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599064363;
+        bh=yCZ82wEQrcGfe6X5PNectLGO+bsmwuVhlJTUr6FnevA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pNQOe7N6kEGzUzeNy/aBiwiLLg08GkywQ3zNqjWxeh94oya0il2et8wGxmZVAjGhZ
+         CzirKd/Q4jS1/95OuRk3BYnfaHFCmC+HlTMk/r2FGG8VFVF2rwRoNPGrZT51YbkYwZ
+         OO+i+zyhE5MTi86q8As86xeJAmW/AqTLgnOPWVsA=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] arm64: dts: imx8mm-var-som: Add 32.768 kHz clock to PMIC
+Date:   Wed,  2 Sep 2020 18:32:23 +0200
+Message-Id: <20200902163223.17784-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+The ROHM BD71847 PMIC has a 32.768 kHz clock.  Adding necessary parent
+allows to probe the bd718x7 clock driver fixing boot errors:
 
-Thank you for the review.
+    bd718xx-clk bd71847-clk.1.auto: No parent clk found
+    bd718xx-clk: probe of bd71847-clk.1.auto failed with error -22
 
-On Wed, Sep 02, 2020 at 05:57:01PM +0200, Rafael J. Wysocki wrote:
-> On Tue, Sep 1, 2020 at 11:03 PM Sakari Ailus
-> <sakari.ailus@linux.intel.com> wrote:
-> >
-> > Document the probe-low-power _DSD property and how it is used with I²C
-> > drivers.
-> 
-> I would reorder the series to make this go right after the [1/6] or
-> maybe even fold it into that patch.
-> 
-> The point is that the changes in [1/6] clearly depend on the property
-> defined here.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Ack.
-
-> 
-> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > ---
-> >  .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++++++++++++++
-> >  Documentation/firmware-guide/acpi/index.rst   |  1 +
-> >  2 files changed, 29 insertions(+)
-> >  create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> >
-> > diff --git a/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > new file mode 100644
-> > index 0000000000000..6fcc89162b898
-> > --- /dev/null
-> > +++ b/Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
-> > @@ -0,0 +1,28 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +======================================
-> > +Probing I²C devices in low power state
-> > +======================================
-> > +
-> > +Introduction
-> > +============
-> > +
-> > +In some cases it may be preferred to leave certain devices powered off for the
-> > +entire system bootup if powering on these devices has adverse side effects,
-> > +beyond just powering on the said device. Linux recognizes the _DSD property
-> > +"allow-low-power-probe" that can be used for this purpose.
-> 
-> It would be good to refer to the document defining the generic _DSD
-> properties mechanism and the GUID used for that from here.
-
-I'll add a reference to the device properties UUID for _DSD spec.
-
-> 
-> The meaning of  "_DSD property" may not be entirely clear to the
-> reader as it stands.
-> 
-> And maybe call the property "i2c-allow-low-power-probe" or similar, to
-> indicate that it is specific to i2c.
-
-The bus determines that already, and it's only defined for I²C here. Should
-we need this in the future for e.g. I3C, there would be no need to think of
-renaming it, just changing the documentation and implementation.
-
-I don't have a strong opinion on that though. 
-
-> 
-> > +
-> > +How it works
-> > +============
-> > +
-> > +The property "allow-low-power-probe" boolean property may be used to tell Linux
-> 
-> "boolean device property" ?
-
-Oops. The other "property" was supposed to be removed by now. But yes, I
-agree with the suggestion.
-
-> 
-> > +that the I²C framework should instruct the kernel ACPI framework to leave the
-> > +device in the low power state. If the driver indicates its support for this by
-> > +setting the I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag in struct i2c_driver.flags
-> > +field and the "allow-low-power-probe" property is present, the device will not
-> > +be powered on for probe.
-> > +
-> > +The downside is that as the device is not powered on, even if there's a problem
-> > +with the device, the driver likely probes just fine but the first user will
-> > +find out the device doesn't work, instead of a failure at probe time. This
-> > +feature should thus be used sparingly.
-> 
-> It would be good to give an ASL example with this property provided.
-
-I'll add that for v8.
-
-> 
-> > diff --git a/Documentation/firmware-guide/acpi/index.rst b/Documentation/firmware-guide/acpi/index.rst
-> > index ad3b5afdae77e..0070fcde9e669 100644
-> > --- a/Documentation/firmware-guide/acpi/index.rst
-> > +++ b/Documentation/firmware-guide/acpi/index.rst
-> > @@ -11,6 +11,7 @@ ACPI Support
-> >     dsd/graph
-> >     dsd/data-node-references
-> >     dsd/leds
-> > +   dsd/allow-low-power-probe
-> >     enumeration
-> >     osi
-> >     method-customizing
-> > --
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
+index baef13d67554..7f74fba58aeb 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
+@@ -175,6 +175,10 @@
+ 		interrupts = <8 GPIO_ACTIVE_LOW>;
+ 		rohm,reset-snvs-powered;
+ 
++		#clock-cells = <0>;
++		clocks = <&osc_32k 0>;
++		clock-output-names = "clk-32k-out";
++
+ 		regulators {
+ 			buck1_reg: BUCK1 {
+ 				regulator-name = "buck1";
 -- 
-Kind regards,
+2.17.1
 
-Sakari Ailus
