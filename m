@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB7C25A2CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253A625A2C5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Sep 2020 03:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgIBBy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Sep 2020 21:54:28 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:49163 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726193AbgIBBwR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Sep 2020 21:52:17 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 87F8B5804D5;
-        Tue,  1 Sep 2020 21:40:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 01 Sep 2020 21:40:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=DFTb+WrDls2Qe7YvWg6Ss2kLmQy
-        ImV5+mMvFZSh1DVE=; b=qJTBuiJKgjwAX+LcSaDJBFxd7DzdJ7tCShkyXxvLGbY
-        xVTxFK4G20VdTFVyeQZ4nXxdewZuZqYT2xVCYc4/IuMh2P5wIqbZrKnYuCD0EWV4
-        waL97TGaTkFDiIOARjFPCGirBcZ7HC8WM8mFqrKJo2ECrWk3YVocfNcugnL0oCUa
-        wivhYSBSFc065rh2Gx/S1D+u+cydSy31arTvUyo2jIKtlTPk5SyA/DZV3hg9V6Di
-        1lYVZIMt3tbA8jNtjcacb3H2ipOMIMYdWesby0phC52uqbUkocPZuaeoKnMxqWvU
-        kXEjZl8SVrT/Jy7GXFegxA/iXFjOl2WWYBcG6DkI/WQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=DFTb+W
-        rDls2Qe7YvWg6Ss2kLmQyImV5+mMvFZSh1DVE=; b=Fbp/KElP5mE4T+XJs08iB+
-        rCUSHNC25QUPqOcfobBV7RioX2cJXXqb9PxbwEJ9mzmrujvtcKqw4Oh8vF4neVpd
-        7MEoisAWRozK+GGH/0LOaiX1X7bLKht59zR+EG7evlh/lWcWnP31+Pi+KmR811w+
-        lrCYg14HCMUxhtiQQc8pwriW1fANHxw4RP5M1RhaFe6TSBygkSj19AbmdkDrlXk4
-        ouxbIqq/gNp8umJD3r+njDLmirtA9XS5oADcPYZUbKAA/V8EU8nqnRago+dTknrF
-        uLimBKKOFfTxRIL4zHrXatjNaDhGKCbzyvLYPaO/nWuJEhGxPy1jJ9nUiyl8aM4g
-        ==
-X-ME-Sender: <xms:J_hOXymKe527WBOutnK5fHMGJMgs4E7zTtI9MMlEM8Yy7kHO7qvGxw>
-    <xme:J_hOX53FfD83G5tFA8Mr2Q6pfzNpH-Np03fTK6Q5yaH7gOuzkgRCLcZGdRz8x7uzh
-    AGjPJA2yiKAlMyxG2A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudefkedggeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpeegkeefjeegkedtjefgfeduleekueetjeeghffhuefgffefleehgeeifedv
-    gfethfenucfkphepjeefrddvudejrddutddriedtnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:J_hOXwqKx2t5Gq5qiZOusWgGTrHUVXAYKZAz5d_fwjd_NilkASt1wQ>
-    <xmx:J_hOX2kuFlyB9W3HNvhYdrlQYgW22g9cWIyDUm4cSbgcVkNndwxwpQ>
-    <xmx:J_hOXw3dMzb1xnAD8mdOQ2b_SuiJaZNSACUCXqqx8ySc--mHLqWA9A>
-    <xmx:J_hOX989M629DIRJmGYr2Ey4vsNf-jm84X-XNOd_qgxNRble080Ine1uxO0>
-Received: from cisco (c-73-217-10-60.hsd1.co.comcast.net [73.217.10.60])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E73DD328005A;
-        Tue,  1 Sep 2020 21:40:54 -0400 (EDT)
-Date:   Tue, 1 Sep 2020 19:40:54 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, "Tobin C . Harding" <me@tobin.cc>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH 2/2] mailmap, MAINTAINERS: move to tycho.pizza
-Message-ID: <20200902014054.GC583718@cisco>
-References: <20200902014017.934315-1-tycho@tycho.pizza>
- <20200902014017.934315-2-tycho@tycho.pizza>
+        id S1726446AbgIBBmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Sep 2020 21:42:49 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54076 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726193AbgIBBmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 1 Sep 2020 21:42:18 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9808AA0F37ABB56A2A8D;
+        Wed,  2 Sep 2020 09:42:16 +0800 (CST)
+Received: from [10.74.191.121] (10.74.191.121) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 2 Sep 2020 09:42:10 +0800
+Subject: Re: [PATCH net-next] net: sch_generic: aviod concurrent reset and
+ enqueue op for lockless qdisc
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+        "David Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1598921718-79505-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpVtb3Cks-LacZ865=C8r-_8ek1cy=n3SxELYGxvNgkPtw@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <511bcb5c-b089-ab4e-4424-a83c6e718bfa@huawei.com>
+Date:   Wed, 2 Sep 2020 09:42:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902014017.934315-2-tycho@tycho.pizza>
+In-Reply-To: <CAM_iQpVtb3Cks-LacZ865=C8r-_8ek1cy=n3SxELYGxvNgkPtw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.74.191.121]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On 2020/9/2 2:24, Cong Wang wrote:
+> On Mon, Aug 31, 2020 at 5:59 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> Currently there is concurrent reset and enqueue operation for the
+>> same lockless qdisc when there is no lock to synchronize the
+>> q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
+>> qdisc_deactivate() called by dev_deactivate_queue(), which may cause
+>> out-of-bounds access for priv->ring[] in hns3 driver if user has
+>> requested a smaller queue num when __dev_xmit_skb() still enqueue a
+>> skb with a larger queue_mapping after the corresponding qdisc is
+>> reset, and call hns3_nic_net_xmit() with that skb later.
+> 
+> Can you be more specific here? Which call path requests a smaller
+> tx queue num? If you mean netif_set_real_num_tx_queues(), clearly
+> we already have a synchronize_net() there.
 
-On Tue, Sep 01, 2020 at 07:40:17PM -0600, Tycho Andersen wrote:
-> I've changed my e-mail address to tycho.pizza, so let's reflect that in
-> these files.
+When the netdevice is in active state, the synchronize_net() seems to
+do the correct work, as below:
 
-Hopefully you can pick this one up too? :D
+CPU 0:                                       CPU1:
+__dev_queue_xmit()                       netif_set_real_num_tx_queues()
+rcu_read_lock_bh();
+netdev_core_pick_tx(dev, skb, sb_dev);
+	.
+	.				dev->real_num_tx_queues = txq;
+	.					.
+	.				    	.
+        .                               synchronize_net();
+	.					.
+q->enqueue()					.
+	.					.
+rcu_read_unlock_bh()				.
+					qdisc_reset_all_tx_gt
 
-Thanks,
 
-Tycho
+but dev->real_num_tx_queues is not RCU-protected, maybe that is a problem
+too.
+
+The problem we hit is as below:
+In hns3_set_channels(), hns3_reset_notify(h, HNAE3_DOWN_CLIENT) is called
+to deactive the netdevice when user requested a smaller queue num, and
+txq->qdisc is already changed to noop_qdisc when calling
+netif_set_real_num_tx_queues(), so the synchronize_net() in the function
+netif_set_real_num_tx_queues() does not help here.
+
+> 
+>>
+>> Avoid the above concurrent op by calling synchronize_rcu_tasks()
+>> after assigning new qdisc to dev_queue->qdisc and before calling
+>> qdisc_deactivate() to make sure skb with larger queue_mapping
+>> enqueued to old qdisc will always be reset when qdisc_deactivate()
+>> is called.
+> 
+> Like Eric said, it is not nice to call such a blocking function when
+> we have a large number of TX queues. Possibly we just need to
+> add a synchronize_net() as in netif_set_real_num_tx_queues(),
+> if it is missing.
+
+As above, the synchronize_net() in netif_set_real_num_tx_queues() seems
+to work when netdevice is in active state, but does not work when in
+deactive.
+
+And we do not want skb left in the old qdisc when netdevice is deactived,
+right?
+
+As reply to Eric, maybe the existing synchronize_net() in dev_deactivate_many()
+can be reused to order the qdisc assignment and qdisc reset?
+
+> 
+> Thanks.
+> .
+> 
