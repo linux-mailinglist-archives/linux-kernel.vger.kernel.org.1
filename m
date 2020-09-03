@@ -2,114 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF79C25C363
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F88925C36B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729282AbgICOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:50:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:58808 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729221AbgICOua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:50:30 -0400
-IronPort-SDR: 6Sz4wc/NfUDnUKmYLIKE3ehT6FTSAK8RQN8MaQmqjtIT7BnyqH6lAczhzd/iKRcXq4DjjBpPZu
- ACJx+DChaFqw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="145321772"
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="145321772"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 07:50:29 -0700
-IronPort-SDR: BwfK41eGLvTp+sj057B+tx268htgpgChICs9sUe69HpeljkYMvFuz5O4Phxc8mh3C6kWui8ZDp
- jglQq2nL/hvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="375890461"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP; 03 Sep 2020 07:50:29 -0700
-Received: from abityuts-desk1.ger.corp.intel.com (abityuts-desk1.ger.corp.intel.com [10.237.72.186])
-        by linux.intel.com (Postfix) with ESMTP id 586515807B5;
-        Thu,  3 Sep 2020 07:50:26 -0700 (PDT)
-Message-ID: <9c5156274a86573ad592e6e431f3cbee8135b736.camel@gmail.com>
-Subject: Re: [RFC v4 1/1] selftests/cpuidle: Add support for cpuidle latency
- measurement
-From:   Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To:     Pratik Sampat <psampat@linux.ibm.com>, rjw@rjwysocki.net,
-        daniel.lezcano@linaro.org, srivatsa@csail.mit.edu,
-        shuah@kernel.org, npiggin@gmail.com, ego@linux.vnet.ibm.com,
-        svaidy@linux.ibm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        pratik.r.sampat@gmail.com
-Date:   Thu, 03 Sep 2020 17:50:25 +0300
-In-Reply-To: <fa616fed-66be-bcad-83b8-b1173a3a444f@linux.ibm.com>
-References: <20200902114506.45809-1-psampat@linux.ibm.com>
-         <20200902114506.45809-2-psampat@linux.ibm.com>
-         <b59481655c29d081eea4f34c00166517738000e5.camel@gmail.com>
-         <fa616fed-66be-bcad-83b8-b1173a3a444f@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729216AbgICOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:51:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729235AbgICOvC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:51:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599144652;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=1FPRhJoWjqG8+gQHE9bU9UzjjoLvgSrA9NVzRzJ0CRg=;
+        b=bwZHjocMavLi9635e/4H2ZjfWApHbYtQf11fLMJFXBO3Y9pNHihcq1wPxdRp5lQfUjsjXs
+        VjH+RQMSjGkL6sx7IcJFh2rA3bWl4LfIbiV+3ah67WBDGldlv5ssxgcnoliYkK2aT2rcSB
+        sxD733l5Vbym583cJJ/V6LLOOnruFPE=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-2RS48A1dNlSrJRLMPFoWYg-1; Thu, 03 Sep 2020 10:50:48 -0400
+X-MC-Unique: 2RS48A1dNlSrJRLMPFoWYg-1
+Received: by mail-il1-f198.google.com with SMTP id f132so2466820ilh.16
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:50:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=1FPRhJoWjqG8+gQHE9bU9UzjjoLvgSrA9NVzRzJ0CRg=;
+        b=fjZ8FF1Pw0ud1QImOyi5vuM4X/jpJUsMr6vqt5oYaTbb9iPWroX7qT4pYVF0r6nXOY
+         BbPOAec58vZhD5YpxxXnU63DBcKEDl+INtx7aCHyJ0/+FW5qZ+b78jIotT6KXFoFg+HU
+         cfSWQB/zPJxk8qcxtRH9SzPMJoLLdcARS9L7JEaBXe7o0eAmcFescvY0dVijXVOJPTer
+         pI9CgGUAbARqQE+gUNTdrgHcZ9eRF10Fx0zGbvnUXPUU74OFalGtAfEBu5srHaWu5/Oi
+         +eKgpw/NyyufLw/gy9L0O3QjSxrKdiMxHr+zmM4LwPMJbPZ/em4VxI/3RCY14E0JvPUd
+         IaIA==
+X-Gm-Message-State: AOAM531BNCCMCLJM7cPfhlGbWig2VYMdxkfUbEKeg/G2etmyB3+kJlEx
+        x/HsJb/AF45G22uioZywJJzvJZWAy3PfRJ/sVqVI309DXWDub2BWzlphprRxvMyAlUqy/amkjCt
+        DYi2o8CxhkOi2v1+Uv3sZSAkL
+X-Received: by 2002:a5d:8042:: with SMTP id b2mr3475470ior.60.1599144648123;
+        Thu, 03 Sep 2020 07:50:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+uZWD7pr5mF1kBXgGw1mBpqel5ly9hQlNTFP+qQtdH6x+qIPuwZN8Jg8WqaLHCyom8VtKoQ==
+X-Received: by 2002:a5d:8042:: with SMTP id b2mr3475460ior.60.1599144647939;
+        Thu, 03 Sep 2020 07:50:47 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id c7sm1515541ilk.49.2020.09.03.07.50.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 07:50:47 -0700 (PDT)
+From:   trix@redhat.com
+To:     mchehab@kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, brad@nextdimension.cc, mkrufky@linuxtv.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
+Subject: [PATCH] media: em28xx: fix function pointer check
+Date:   Thu,  3 Sep 2020 07:50:38 -0700
+Message-Id: <20200903145038.20076-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-03 at 17:30 +0530, Pratik Sampat wrote:
-> I certainly did not know about that the Intel architecture being aware
-> of timers and pre-wakes the CPUs which makes the timer experiment
-> observations void.
+From: Tom Rix <trix@redhat.com>
 
-Well, things depend on platform, it is really "void", it is just
-different and it measures an optimized case. The result may be smaller
-observed latency. And things depend on the platform.
+clang static analyzer reports this problem
 
-> However, we are also collecting a baseline measurement wherein we run
-> the same test on a 100% busy CPU and the measurement of latency from
-> that could be considered to the kernel-userspace overhead.
-> The rest of the measurements would be considered keeping this baseline
-> in mind.
+em28xx-core.c:1162:4: warning: Called function pointer
+  is null (null dereference)
+        ops->suspend(dev->dev_next);
+        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Yes, this should give the idea of the overhead, but still, at least for
-many Intel platforms I would not be comfortable using the resulting
-number (measured latency - baseline) for a cpuidle driver, because
-there are just too many variables there. I am not sure I could assume
-the baseline measured this way is an invariant - it could be noticeably
-different depending on whether you use C-states or not.
+This is the problem block
 
-> > At least on Intel platforms, this will mean that the IPI method won't
-> > cover deep C-states like, say, PC6, because one CPU is busy. Again, not
-> > saying this is not interesting, just pointing out the limitation.
-> 
-> That's a valid point. We have similar deep idle states in POWER too.
-> The idea here is that this test should be run on an already idle
-> system, of course there will be kernel jitters along the way
-> which can cause little skewness in observations across some CPUs but I
-> believe the observations overall should be stable.
+	if (ops->suspend)
+		ops->suspend(dev);
+	if (dev->dev_next)
+		ops->suspend(dev->dev_next);
 
-If baseline and cpuidle latency are numbers of same order of magnitude,
-and you are measuring in a controlled lab system, may be yes. But if
-baseline is, say, in milliseconds, and you are measuring a 10
-microseconds C-state, then probably no.
+The check for ops->suspend only covers one statement.
+So fix the check consistent with other similar in
+the file.
 
-> Another solution to this could be using isolcpus, but that just
-> increases the complexity all the more.
-> If you have any suggestions of any other way that could guarantee
-> idleness that would be great.
+Change a similar check in em28xx_resume_extension()
+to use consistent logic as its siblings.
 
-Well, I did not try to guarantee idleness. I just use timers and
-external device (the network card), so no CPUs needs to be busy and the
-system can enter deep C-states. Then I just look at median, 99%-th
-percentile, etc.
+Fixes: be7fd3c3a8c5 ("media: em28xx: Hauppauge DualHD second tuner functionality")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/media/usb/em28xx/em28xx-core.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-But by all means IPI is also a very interesting experiment. Just covers
-a different usage scenario.
-
-When I started experimenting in this area, one of my main early
-takeaways was realization that C-state latency really depends on the
-event source.
-
-HTH,
-Artem.
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index e6088b5d1b80..d60f4c2a661d 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -1156,10 +1156,11 @@ int em28xx_suspend_extension(struct em28xx *dev)
+ 	dev_info(&dev->intf->dev, "Suspending extensions\n");
+ 	mutex_lock(&em28xx_devlist_mutex);
+ 	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
+-		if (ops->suspend)
++		if (ops->suspend) {
+ 			ops->suspend(dev);
+-		if (dev->dev_next)
+-			ops->suspend(dev->dev_next);
++			if (dev->dev_next)
++				ops->suspend(dev->dev_next);
++		}
+ 	}
+ 	mutex_unlock(&em28xx_devlist_mutex);
+ 	return 0;
+@@ -1172,11 +1173,11 @@ int em28xx_resume_extension(struct em28xx *dev)
+ 	dev_info(&dev->intf->dev, "Resuming extensions\n");
+ 	mutex_lock(&em28xx_devlist_mutex);
+ 	list_for_each_entry(ops, &em28xx_extension_devlist, next) {
+-		if (!ops->resume)
+-			continue;
+-		ops->resume(dev);
+-		if (dev->dev_next)
+-			ops->resume(dev->dev_next);
++		if (ops->resume) {
++			ops->resume(dev);
++			if (dev->dev_next)
++				ops->resume(dev->dev_next);
++		}
+ 	}
+ 	mutex_unlock(&em28xx_devlist_mutex);
+ 	return 0;
+-- 
+2.18.1
 
