@@ -2,213 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42D925BD6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5360F25BD70
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgICIiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgICIh7 (ORCPT
+        id S1728249AbgICIiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:38:20 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:34973 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728027AbgICIiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:37:59 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43405C061244;
-        Thu,  3 Sep 2020 01:37:57 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ls14so1124393pjb.3;
-        Thu, 03 Sep 2020 01:37:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CnW3xjdqvYym8ybjUdu602OWF4Ej8k4Dv8bhPrl1pe8=;
-        b=HxkzVaMorxDYSKEwQMqccGUvpw5q6Q+KoP/dnUD1uRlKWi0ba90OBTOzklSRZkXshc
-         8q51CSULZM0om6cbMve3gn79E4vUvUPaZjoY9W00WBwSM64I8x1T/5KMnpRj18HgicGA
-         TsRNOIAbwMmwDga8rBgE0FzN2s2TkTAHDdotU8bNATjJOBuFCnmsMFKNP0Qm6sga9tw7
-         6evuxcWi5V/kfSrp9HavBiBX3OAUJ5DgZcT/jHKJjLZEI5TB9eOzhX8Xg+C0CcLE4ROx
-         +dOdL9DIsDUBR2htycVFioI+GfHCwidMal/nMdVpIUsa+lXCJXbPWA2CEtTiAyS9BMMO
-         Z3uA==
+        Thu, 3 Sep 2020 04:38:17 -0400
+Received: by mail-io1-f69.google.com with SMTP id k20so1566080iog.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:38:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CnW3xjdqvYym8ybjUdu602OWF4Ej8k4Dv8bhPrl1pe8=;
-        b=Ke+cmGcFWdV0P15d26d6gOJcxOebIkrQwWlIc9BZMa/g+J3zqOa+qjfZXeleImC49Z
-         cSGkk/ffjDAaXTWPdUOyG5gtbPa4p7Yc6FIdDZxPpuCv6Mp6n/UpgrozqthasTFzEMPG
-         FIygyZfEaf18br40AeT8XSRLM7BQcmbbPIOsK1GvellYfObE9clOfFnxGhQxK+CqCB9F
-         9JFv/p3AcH0dJhqCXBDO0vskNSaGhfCL8zF7iijPFQwc0koOYt63S4r2czEhkXkQtETj
-         0b7xcXZk5rIQuQCjSvalr5T2jX33K/7MhuafLVeXKu73qJoMvBiCcKK0ZROf1gSlKnTr
-         wkuw==
-X-Gm-Message-State: AOAM533WZdc6rITW/0XbVKH4360p+2NVwu0WuJ798e+tzBfuHgTk7Y7G
-        +qsjcr0L0iDxnkDpwR5p5Sc=
-X-Google-Smtp-Source: ABdhPJzeCb2dVOInw/LE0MkDqm1WmUPlWLFs2YQn19Ci7VEMlfpfpKfolgt73QIaJxMZ+rwzoEb1JA==
-X-Received: by 2002:a17:90b:1046:: with SMTP id gq6mr2225705pjb.231.1599122276001;
-        Thu, 03 Sep 2020 01:37:56 -0700 (PDT)
-Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id g129sm2215648pfb.33.2020.09.03.01.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 01:37:55 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 16:37:50 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v6 00/20] gpio: cdev: add uAPI v2
-Message-ID: <20200903083750.GA17445@sol>
-References: <20200831032006.1019978-1-warthog618@gmail.com>
- <CAMpxmJUETJgmxzWzHumOVr+vWFQ27P71MtcdSdf_=jvtrSfRPg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5yw+y/EAY0aiRQYm9hBim6HKvGmLNcAx4clfWQsIHgE=;
+        b=nbEeHftYeHpwLLGvLpzwosZkmDCyf+3Yff9BiqmWPF3s7ZoaSsXJ5z6DdfK5W1lD88
+         cW+HfFTyUjujL8oyklrfmR+zuaXIrY8ta71haMZCc/tJZum0sFyK3C8Dxi2TdSrGqlnr
+         FRovWE8qmgnk9cxtjgFL6jsJ0mrWgLRycjfqTLuOdWUk+mjWOsRUvyIy4XtjWaj4L4qD
+         5Ggt6/8HarbMwxUqWKxTEwn1ZBuxUuq+IiwFVgbhL+tgc2vMVfXoEwRms4Y2ASDjFIFK
+         EdD/Lyb8PLh84cre5zVsDOgORGREhqYjNzr7Zyn1iUqmw2pKFUBmxOBlIFKUIiM92y5q
+         1SYg==
+X-Gm-Message-State: AOAM531RWXI37pPlQjTbLg0r3sf0q4P68y2XZbP5LYtCY3CpmsIrS+sl
+        AjkloPqK/mR66By7LZxiin5lUO8xupKMLuFTfwUgOwicUNDx
+X-Google-Smtp-Source: ABdhPJw6WQeufeQh83+sV6fGkHpyJB8wn8PnwvD6to4WUJfFBFLpsQtw4s+3wcdJpx0YDy0dc+1e6CrZpHLMUk+v5WYOreBCOlKc
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJUETJgmxzWzHumOVr+vWFQ27P71MtcdSdf_=jvtrSfRPg@mail.gmail.com>
+X-Received: by 2002:a6b:f301:: with SMTP id m1mr2102963ioh.162.1599122295497;
+ Thu, 03 Sep 2020 01:38:15 -0700 (PDT)
+Date:   Thu, 03 Sep 2020 01:38:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000602d0405ae64aca3@google.com>
+Subject: INFO: task hung in io_uring_setup
+From:   syzbot <syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sgarzare@redhat.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 10:02:04AM +0200, Bartosz Golaszewski wrote:
-> On Mon, Aug 31, 2020 at 5:21 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > This patchset defines and implements a new version of the
-> > GPIO CDEV uAPI to address existing 32/64-bit alignment issues, add
-> > support for debounce, event sequence numbers, and allow for requested
-> > lines with different configurations.
-> > It provides some future proofing by adding optional configuration fields
-> > and padding reserved for future use.
-> >
-> > The series can be partitioned into three blocks; the first two patches
-> > are minor fixes that impact later patches, the next eleven contain the
-> > v2 uAPI definition and implementation, and the final seven port the GPIO
-> > tools to the v2 uAPI and extend them to use new uAPI features.
-> >
-> > The more complicated patches include their own commentary where
-> > appropriate.
-> >
-> > Cheers,
-> > Kent.
-> >
-> > Changes for v6:
-> >  - flags variable in linereq_create() should be u64 not unsigned long
-> >    (patch 07)
-> >  - remove restrictions on configuration changes - any change from one
-> >    valid state to another valid state is allowed. (patches 09, 10, 12)
-> >
-> > Changes for v5:
-> >
-> > All changes for v5 fix issues with the gpiolib-cdev.c implementation,
-> > in patches 07-12.
-> > The uAPI is unchanged from v4, as is the port of the tools.
-> >
-> >  - use IS_ALIGNED in BUILD_BUG_ON checks (patch 07)
-> >  - relocate BUILD_BUG_ON checks to gpiolib_cdev_register (patch 07)
-> >  - s/requies/requires/ (patch 07)
-> >  - use unsigned int for variables that are never negative
-> >  - change lineinfo_get() parameter from cmd to bool watch (patch 08)
-> >  - flagsv2 in gpio_v2_line_info_to_v1() should be u64, not int (patch 08)
-> >  - change "_locked" suffixed function names to "_unlocked" (patch 10 and
-> >    11)
-> >  - be less eager breaking long lines
-> >  - move commentary into checkin comment where appropriate - particularly
-> >    patch 12
-> >  - restructure the request/line split - rename struct line to
-> >    struct linereq, and struct edge_detector to struct line, and relocate
-> >    the desc field from linereq to line.  The linereq name was selected
-> >    over line_request as function names such as linereq_set_values() are
-> >    more clearly associated with requests than line_request_set_values(),
-> >    particularly as there is also a struct line.  And linereq is as
-> >    informative as linerequest, so I went with the shortened form.
-> >
-> > Changes for v4:
-> >  - bitmap width clarification in gpiod.h (patch 04)
-> >  - fix info offset initialisation bug (patch 08 and inserting patch 01)
-> >  - replace strncpy with strscpy to remove compiler warnings
-> >    (patch 08 and inserting patch 02)
-> >  - fix mask handling in line_get_values (patch 07)
-> >
-> > Changes for v3:
-> >  - disabling the character device from the build requires EXPERT
-> >  - uAPI revisions (see patch 02)
-> >  - replace padding_not_zeroed with calls to memchr_inv
-> >  - don't use bitops on 64-bit flags as that doesn't work on BE-32
-> >  - accept first attribute matching a line in gpio_v2_line_config.attrs
-> >    rather than the last
-> >  - rework lsgpio port to uAPI v2 as flags reverted to v1 like layout
-> >    (since patch v2)
-> >  - swapped patches 17 and 18 to apply debounce to multiple monitored
-> >    lines
-> >
-> > Changes for v2:
-> >  - split out cleanup patches into a separate series.
-> >  - split implementation patch into a patch for each ioctl or major feature.
-> >  - split tool port patch into a patch per tool.
-> >  - rework uAPI to allow requested lines with different configurations.
-> >
-> > Kent Gibson (20):
-> >   gpiolib: cdev: desc_to_lineinfo should set info offset
-> >   gpiolib: cdev: replace strncpy with strscpy
-> >   gpio: uapi: define GPIO_MAX_NAME_SIZE for array sizes
-> >   gpio: uapi: define uAPI v2
-> >   gpiolib: make cdev a build option
-> >   gpiolib: add build option for CDEV v1 ABI
-> >   gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and
-> >     GPIO_V2_LINE_GET_VALUES_IOCTL
-> >   gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
-> >     GPIO_V2_GET_LINEINFO_WATCH_IOCTL
-> >   gpiolib: cdev: support edge detection for uAPI v2
-> >   gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
-> >   gpiolib: cdev: support GPIO_V2_LINE_SET_VALUES_IOCTL
-> >   gpiolib: cdev: support setting debounce
-> >   gpio: uapi: document uAPI v1 as deprecated
-> >   tools: gpio: port lsgpio to v2 uAPI
-> >   tools: gpio: port gpio-watch to v2 uAPI
-> >   tools: gpio: rename nlines to num_lines
-> >   tools: gpio: port gpio-hammer to v2 uAPI
-> >   tools: gpio: port gpio-event-mon to v2 uAPI
-> >   tools: gpio: add multi-line monitoring to gpio-event-mon
-> >   tools: gpio: add debounce support to gpio-event-mon
-> >
-> >  drivers/gpio/Kconfig        |   29 +-
-> >  drivers/gpio/Makefile       |    2 +-
-> >  drivers/gpio/gpiolib-cdev.c | 1273 +++++++++++++++++++++++++++++++++--
-> >  drivers/gpio/gpiolib-cdev.h |   15 +
-> >  drivers/gpio/gpiolib.c      |    5 +
-> >  drivers/gpio/gpiolib.h      |    6 +
-> >  include/uapi/linux/gpio.h   |  316 ++++++++-
-> >  tools/gpio/gpio-event-mon.c |  146 ++--
-> >  tools/gpio/gpio-hammer.c    |   56 +-
-> >  tools/gpio/gpio-utils.c     |  127 ++--
-> >  tools/gpio/gpio-utils.h     |   50 +-
-> >  tools/gpio/gpio-watch.c     |   16 +-
-> >  tools/gpio/lsgpio.c         |   60 +-
-> >  13 files changed, 1871 insertions(+), 230 deletions(-)
-> >
-> >
-> > base-commit: feeaefd378cae2f6840f879d6123ef265f8aee79
-> > --
-> > 2.28.0
-> >
-> 
-> To me it looks good, just a couple nits here and there and some questions.
-> 
-> I think it's worth deciding whether we want to keep the selftests in
-> tools/testing/selftests/gpio/ and then maybe consider porting
-> gpio-mockup-chardev.c to V2 or simply outsource it entirely to
-> libgpiod.
-> 
+Hello,
 
-Ooops - I wasn't even aware they existed - though it had crossed my mind
-that the kernel should have some selftests somewhere - I use the libgpiod
-tests, from my libgpiod port, and my own Go based test suite for my testing,
-as well as some smoke tests with the tools/gpio.
+syzbot found the following issue on:
 
-The libgpiod tests only cover v1 equivalent functionality, while my Go
-tests cover the complete uAPI, and both v1 and v2.
+HEAD commit:    4442749a Add linux-next specific files for 20200902
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f9e915900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=39134fcec6c78e33
+dashboard link: https://syzkaller.appspot.com/bug?extid=107dd59d1efcaf3ffca4
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11594671900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111ca835900000
 
-It would be good for the kernel to at least have some smoke tests to
-confirm basic functionality, even thorough testing is left to a
-userspace library.  So the existing tests should be ported to v2, though
-should also retain the v1 tests if v1 is still compiled in.
+The issue was bisected to:
 
-Cheers,
-Kent.
+commit dfe127799f8e663c7e3e48b5275ca538b278177b
+Author: Stefano Garzarella <sgarzare@redhat.com>
+Date:   Thu Aug 27 14:58:31 2020 +0000
+
+    io_uring: allow disabling rings during the creation
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11bc66c1900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13bc66c1900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15bc66c1900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+107dd59d1efcaf3ffca4@syzkaller.appspotmail.com
+Fixes: dfe127799f8e ("io_uring: allow disabling rings during the creation")
+
+INFO: task syz-executor047:6853 blocked for more than 143 seconds.
+      Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor047 state:D stack:28104 pid: 6853 ppid:  6847 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:3777 [inline]
+ __schedule+0xea9/0x2230 kernel/sched/core.c:4526
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4601
+ schedule_timeout+0x1d8/0x250 kernel/time/timer.c:1855
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x163/0x260 kernel/sched/completion.c:138
+ io_sq_thread_stop fs/io_uring.c:6906 [inline]
+ io_finish_async fs/io_uring.c:6920 [inline]
+ io_sq_offload_create fs/io_uring.c:7595 [inline]
+ io_uring_create fs/io_uring.c:8671 [inline]
+ io_uring_setup+0x1495/0x29a0 fs/io_uring.c:8744
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440299
+Code: Bad RIP value.
+RSP: 002b:00007ffc57cff668 EFLAGS: 00000246 ORIG_RAX: 00000000000001a9
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440299
+RDX: 0000000000400b40 RSI: 0000000020000100 RDI: 0000000000003ffe
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401aa0
+R13: 0000000000401b30 R14: 0000000000000000 R15: 0000000000000000
+INFO: task io_uring-sq:6854 blocked for more than 143 seconds.
+      Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:io_uring-sq     state:D stack:31200 pid: 6854 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:3777 [inline]
+ __schedule+0xea9/0x2230 kernel/sched/core.c:4526
+ schedule+0xd0/0x2a0 kernel/sched/core.c:4601
+ schedule_preempt_disabled+0xf/0x20 kernel/sched/core.c:4660
+ kthread+0x2ac/0x4a0 kernel/kthread.c:285
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1174:
+ #0: ffffffff89c67980 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:5829
+3 locks held by in:imklog/6525:
+ #0: ffff8880a3de2df0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+ #1: ffff8880907d8968 (&mm->mmap_lock#2){++++}-{3:3}, at: rq_lock kernel/sched/sched.h:1292 [inline]
+ #1: ffff8880907d8968 (&mm->mmap_lock#2){++++}-{3:3}, at: ttwu_queue kernel/sched/core.c:2698 [inline]
+ #1: ffff8880907d8968 (&mm->mmap_lock#2){++++}-{3:3}, at: try_to_wake_up+0x52b/0x12b0 kernel/sched/core.c:2978
+ #2: ffff8880ae620ec8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x2fb/0x400 kernel/sched/psi.c:833
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1174 Comm: khungtaskd Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x223 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:147 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd89/0xf30 kernel/hung_task.c:339
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 3901 Comm: systemd-journal Not tainted 5.9.0-rc3-next-20200902-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:unwind_next_frame+0x139a/0x1f90 arch/x86/kernel/unwind_orc.c:607
+Code: 49 39 47 28 0f 85 3e f0 ff ff 80 3d df 2c 84 09 00 0f 85 31 f0 ff ff e9 06 18 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 14 24 <48> c1 ea 03 80 3c 02 00 0f 85 02 08 00 00 49 8d 7f 08 49 8b 6f 38
+RSP: 0018:ffffc900040475f8 EFLAGS: 00000246
+RAX: dffffc0000000000 RBX: 1ffff92000808ec7 RCX: 1ffff92000808ee2
+RDX: ffffc90004047708 RSI: ffffc90004047aa8 RDI: ffffc90004047aa8
+RBP: 0000000000000001 R08: ffffffff8b32a670 R09: 0000000000000001
+R10: 000000000007201e R11: 0000000000000001 R12: ffffc90004047ac8
+R13: ffffc90004047705 R14: ffffc90004047720 R15: ffffc900040476d0
+FS:  00007efc659ac8c0(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007efc62d51000 CR3: 0000000093d6a000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
+ stack_trace_save+0x8c/0xc0 kernel/stacktrace.c:123
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ slab_post_alloc_hook mm/slab.h:517 [inline]
+ slab_alloc mm/slab.c:3312 [inline]
+ kmem_cache_alloc+0x13a/0x3a0 mm/slab.c:3482
+ kmem_cache_zalloc include/linux/slab.h:656 [inline]
+ __alloc_file+0x21/0x350 fs/file_table.c:101
+ alloc_empty_file+0x6d/0x170 fs/file_table.c:151
+ path_openat+0xe3/0x2730 fs/namei.c:3354
+ do_filp_open+0x17e/0x3c0 fs/namei.c:3395
+ do_sys_openat2+0x16d/0x420 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_open fs/open.c:1192 [inline]
+ __se_sys_open fs/open.c:1188 [inline]
+ __x64_sys_open+0x119/0x1c0 fs/open.c:1188
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x7efc64f3c840
+Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
+RSP: 002b:00007ffc45e60f18 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007ffc45e61220 RCX: 00007efc64f3c840
+RDX: 00000000000001a0 RSI: 0000000000080042 RDI: 00005626d683e6d0
+RBP: 000000000000000d R08: 000000000000c0ff R09: 00000000ffffffff
+R10: 0000000000000069 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00005626d6831040 R14: 00007ffc45e611e0 R15: 00005626d683e720
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
