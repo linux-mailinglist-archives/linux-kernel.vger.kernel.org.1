@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2486B25C412
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0596A25C470
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729494AbgICPDg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Sep 2020 11:03:36 -0400
-Received: from mga14.intel.com ([192.55.52.115]:38263 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729035AbgICN6v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:58:51 -0400
-IronPort-SDR: YAhaW+RyLQepdox+9fTVQYjSZtPcCQjixBgP7Klj5NzQUqinJnqDcxle2o5XqL1mmg/049l9Kh
- aJY8kdcG+s5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="156839375"
-X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
-   d="scan'208";a="156839375"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 06:30:00 -0700
-IronPort-SDR: Ii80nP53OMhKu3YPQanI2V3JEHYHtL7FOqbXWnBxegPkQJnHeLe8iGmOnrNuw5ZytWdFKHt8+v
- PmIgzgzmD4iA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
-   d="scan'208";a="282676539"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Sep 2020 06:30:00 -0700
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 3 Sep 2020 06:29:59 -0700
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 3 Sep 2020 21:29:57 +0800
-Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
- SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.1713.004;
- Thu, 3 Sep 2020 21:29:57 +0800
-From:   "Sang, Oliver" <oliver.sang@intel.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Goldwyn Rodrigues <rgoldwyn@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>, lkp <lkp@intel.com>,
-        "ltp@lists.linux.it" <ltp@lists.linux.it>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
-Thread-Topic: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
-Thread-Index: AQHWgdJgTz1eQ6GVAE+fMaKAQV67JalW6OSQ
-Date:   Thu, 3 Sep 2020 13:29:57 +0000
-Message-ID: <06668b52b9ac4d4e81f945e06223d9b7@intel.com>
-References: <20200903062837.GA3654@xsang-OptiPlex-9020>
- <20200903091123.GO28318@suse.cz>
-In-Reply-To: <20200903091123.GO28318@suse.cz>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729439AbgICPKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728988AbgICN5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 09:57:54 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2A7C0619E8
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 06:31:40 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id a17so3240347wrn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4v7riCkWqOW12WqwNbdYgi3MhtDbA8fxMcLkKxaVn1Q=;
+        b=FxSMag+QeOzVZzZ+W/d4wUZ228qXnTc22tAxz97IrORD8jZ1HYcP+sq2f2Lx6LfZL3
+         hCQmI3l6sISeNn78F6Z3VYf7cXFECd9N8RKUZSKARukgkj2KPTDjIQ10GSUQZ2e4kU1i
+         5lq3epDjkN01sN0gOs9C3LbtQ6sDJ/49NDuxEpQXTerjREMHIdAX7obuKgHhjQb7KXWQ
+         Z2+WlBaT30YpbYgKs+NkWSUG4DKGwNe0EF60dRWyW7HFlwDhxELhqAmCvLa6/kBrW/87
+         TrIVqzw/5wBYmDyhC465Zn9R9K5WBAHLQZxAy/QZRgflKb/yJcaMeT2obJzIRa5fJ54F
+         x3YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4v7riCkWqOW12WqwNbdYgi3MhtDbA8fxMcLkKxaVn1Q=;
+        b=J/80YWjYARKyIKgKy/ppAHxjBMIBRZNMCDlCVd1BeZvAkAPPg9/eT//ftJl1c3xaw3
+         N720Slf3WzAfrqpVYfWSXJHAmL5x2NOwUuNDRE2KQOSgnUiuO3ia38JsV49afijNPsU0
+         bbgG34tSlx8M6K25fIev6r8wNk5qMqQR/5iJCZLY6Ju1Oq/DqbsQhyIQgTbiISzzA8Tu
+         dEZUhPl1c/HibqLzpeG/WojJwRkhOgPBSGNqcqYpMXdshD2ML2gVxapt+OF8zDNT56Z6
+         rPN/5S7u64C/K3xI9CNczS2o4sNNo93VUaf9CqTsai+PAhveIupu2ghprIGaU3Hk+94c
+         JVew==
+X-Gm-Message-State: AOAM532wor5MKrf6OVipME6TJCK90r/Va90EpgakENwzWcpCaFDu1yw0
+        r0RpJuUmPnIkZqLiixbSuur8Og==
+X-Google-Smtp-Source: ABdhPJy2mm+MBBMVkV5XJikd7HS9L+iWlSQLCxuxQL9VOQRGQ/LByHjHzHNmXzyk4i662snmvdW6GA==
+X-Received: by 2002:a5d:514e:: with SMTP id u14mr2485171wrt.211.1599139899481;
+        Thu, 03 Sep 2020 06:31:39 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id b2sm4310768wmh.47.2020.09.03.06.31.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Sep 2020 06:31:38 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     linux-pm@vger.kernel.org, bjorn.andersson@linaro.org
+Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
+        sibis@codeaurora.org, mka@chromium.org, dianders@chromium.org,
+        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 2/7] dt-bindings: interconnect: Document the support of optional path tag
+Date:   Thu,  3 Sep 2020 16:31:29 +0300
+Message-Id: <20200903133134.17201-3-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200903133134.17201-1-georgi.djakov@linaro.org>
+References: <20200903133134.17201-1-georgi.djakov@linaro.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: David Sterba <dsterba@suse.cz>
-> Sent: Thursday, September 3, 2020 5:11 PM
-> To: Sang, Oliver <oliver.sang@intel.com>
-> Cc: Goldwyn Rodrigues <rgoldwyn@suse.com>; David Sterba
-> <dsterba@suse.com>; LKML <linux-kernel@vger.kernel.org>; lkp@lists.01.org;
-> lkp <lkp@intel.com>; ltp@lists.linux.it; linux-btrfs@vger.kernel.org
-> Subject: Re: [btrfs] c0aaf9b7a1: ltp: stuck at diotest4
-> 
-> On Thu, Sep 03, 2020 at 02:28:37PM +0800, kernel test robot wrote:
-> > Greeting,
-> >
-> > FYI, we noticed the following commit (built with gcc-9):
-> >
-> > commit: c0aaf9b7a114f6b75e0da97be7d99c102347a751 ("btrfs: switch to
-> > iomap_dio_rw() for dio")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git
-> > master
-> 
-> That's probably the O_DIRECT + O_(D)SYNC deadlock that was found recently.
-> One of the cases in diotest4 does
-> 
-> 	open(filename, O_DIRECT | O_RDWR | O_SYNC)
-> 
-> Fix is work in progress, thanks for the report.
+Let's document that we now support specifying path tag information in the
+arg cells of the 'interconnects' DT property. This information would be
+populated when the xlate_extended() callback is used.
 
-Thanks a lot for information!
+Specifying the tag in DT will allow the interconnect framework to do the
+aggregation based on the tag automatically. The users can still use the
+icc_set_tag() API if/when needed.
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ .../bindings/interconnect/interconnect.txt    | 24 ++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/interconnect/interconnect.txt b/Documentation/devicetree/bindings/interconnect/interconnect.txt
+index 6f5d23a605b7..138c544c8c8c 100644
+--- a/Documentation/devicetree/bindings/interconnect/interconnect.txt
++++ b/Documentation/devicetree/bindings/interconnect/interconnect.txt
+@@ -19,7 +19,8 @@ directly.
+ Required properties:
+ - compatible : contains the interconnect provider compatible string
+ - #interconnect-cells : number of cells in a interconnect specifier needed to
+-			encode the interconnect node id
++			encode the interconnect node id and optionally add a
++			path tag
+ 
+ Example:
+ 
+@@ -44,6 +45,10 @@ components it has to interact with.
+ Required properties:
+ interconnects : Pairs of phandles and interconnect provider specifier to denote
+ 	        the edge source and destination ports of the interconnect path.
++		An optional path tag value could specified as additional argument
++		to both endpoints and in such cases, this information will be passed
++		to the interconnect framework to do aggregation based on the attached
++		tag.
+ 
+ Optional properties:
+ interconnect-names : List of interconnect path name strings sorted in the same
+@@ -62,3 +67,20 @@ Example:
+ 		interconnects = <&pnoc MASTER_SDCC_1 &bimc SLAVE_EBI_CH0>;
+ 		interconnect-names = "sdhc-mem";
+ 	};
++
++Example with path tags:
++
++	gnoc: interconnect@17900000 {
++		...
++		interconnect-cells = <2>;
++	};
++
++	mnoc: interconnect@1380000 {
++		...
++		interconnect-cells = <2>;
++	};
++
++	cpu@0 {
++		...
++		interconnects = <&gnoc MASTER_APPSS_PROC 3 &mnoc SLAVE_EBI1 3>;
++	}
