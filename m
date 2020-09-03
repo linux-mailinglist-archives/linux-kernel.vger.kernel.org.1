@@ -2,84 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F3C25C397
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:54:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8158B25C3A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729338AbgICOyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729296AbgICOyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:54:45 -0400
-Received: from kernel.org (unknown [77.127.89.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8D952072A;
-        Thu,  3 Sep 2020 14:54:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599144884;
-        bh=v33Xb9X9GvxmPN3+NOHcqHGJjgQqmZYSA04xdjzeNUQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=nsU7mWRmhR/Pfl4Z4+2/xdN0yMWkKeMDLx6U+5rYeeuL0CrLRaCprjNkhF8mHEYv9
-         52vD0bWQeoz+j7GgbkZSg1U0OoMY5/Y2gnwvTMaaSgryB6zAjoYwm8Zd5Q/muX3eIe
-         WmLBizF+TvgLJfs43bVRd6eCDeQdUL7H6JrMb1zU=
-Date:   Thu, 3 Sep 2020 17:54:38 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tony Luck <tony.luck@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [GIT PULL] Fix min_low_pfn/max_low_pfn build errors on ia64 and
- microblaze
-Message-ID: <20200903145438.GA1781636@kernel.org>
+        id S1729072AbgICOzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729272AbgICOzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:55:07 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09737C061244;
+        Thu,  3 Sep 2020 07:55:04 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id z9so3214666wmk.1;
+        Thu, 03 Sep 2020 07:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qe0IUMor49oE5XMAhnvv6mSoLAEeSax8zKoliUVr2L0=;
+        b=gi+okfXZCeX/IlzkMiCpZlg//ifHFRP21IdCT++z0wG14P5iGcFqn7N8v7NoUbSfOj
+         0tdSg6dbh5QAllC9EGec1pc7B/9FgTuraemtgTRnFf+4tTch2YhAKIi4AaoCdrkMGHUI
+         vtZiL8FY/zNy00AWcclqs/KmK4dauPB3Xo+R2RSXE6STv35I00R7K2tTlJ7hxXccITUs
+         7DlcgbQ1xpJDGNM8xywp06F0rPGou/oUqllkktUpn481sIWoZgMGmwGbuNZXXCKmo6/Y
+         c9rZ8SABVtYrhgbttUHtmrgS6QFCitd0Gkg//8buqscEJJdLWCSSjn29g5mXQtE5xe2n
+         iOdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qe0IUMor49oE5XMAhnvv6mSoLAEeSax8zKoliUVr2L0=;
+        b=qmdXksnIQsqLy64i+weItKbYF5QJjr3W3zIqvZYV80uw47K7leVTUqIiD06OoicH8Z
+         9tY/ZsjtBqTyc61K9NLij+jAesbDDY5S0exHdBWViVVb5Ix0isHTgI/coDyFh8gj+Ay/
+         n7AZvC39NrTJQIrU0aZUR4VxOAm1YdnMqsz7akR+NhC8n9f3tTSdCJRDDNv9DIy4Ydeq
+         Iiz1iEZ50ePwo7IauJp4zukDE4zy9XLQLmnqrJe5qcHTrGeY2vq8DoYRFx/pNegvW/o5
+         UMYbzYuEjJKw+bZeFuoUGcbpGVniit/FBe0xd/cJFVd1w5/lYISSIGhGxjR9kybIivhd
+         B0og==
+X-Gm-Message-State: AOAM533+kMh4IYIP+qv4KXHPkLG7jgh5lci7q3vkmFtliYlCyCkbVcUv
+        uBEt30V3cU0QK2UcQbH3TOQ=
+X-Google-Smtp-Source: ABdhPJzp7FadRwfFn2uumKx32iCq68f9e/8XCNGw/dcsrbaamHNjyN/I4Ew0UOBPtpUZdHtUwQk7ig==
+X-Received: by 2002:a1c:2983:: with SMTP id p125mr2887798wmp.21.1599144900930;
+        Thu, 03 Sep 2020 07:55:00 -0700 (PDT)
+Received: from Red.localdomain ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id l8sm5124266wrx.22.2020.09.03.07.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 07:55:00 -0700 (PDT)
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        mripard@kernel.org, robh+dt@kernel.org, robh@kernel.org,
+        wens@csie.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, m.cerveny@computer.org,
+        Corentin Labbe <clabbe.montjoie@gmail.com>
+Subject: [PATCH v2] dt-bindings: crypto: Specify that allwinner,sun8i-a33-crypto needs reset
+Date:   Thu,  3 Sep 2020 16:54:45 +0200
+Message-Id: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+When adding allwinner,sun8i-a33-crypto, I forgot to add that it needs reset.
+Furthermore, there are no need to use items to list only one compatible
+in compatible list.
 
-The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+Fixes: f81547ba7a98 ("dt-bindings: crypto: add new compatible for A33 SS")
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+Change since v1:
+- use an enum for adding allwinner,sun8i-a33-crypto to "reset list"
 
-  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+ .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml        | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2020-09-03
-
-for you to fetch changes up to 5f7b81c18366c38446f6eedab570b98dbdc07cff:
-
-  ia64: fix min_low_pfn/max_low_pfn build errors (2020-09-01 19:34:11 +0300)
-
-----------------------------------------------------------------
-Fix min_low_pfn/max_low_pfn build errors on ia64 and microblaze
-
-Some configurations of ia64 and microblaze use min_low_pfn and
-max_low_pfn in pfn_valid(). This causes build failures for modules that
-use pfn_valid().
-
-The fix is to add EXPORT_SYMBOL() for these variables on ia64 and
-microblaze.
-
-----------------------------------------------------------------
-Randy Dunlap (2):
-      microblaze: fix min_low_pfn/max_low_pfn build errors
-      ia64: fix min_low_pfn/max_low_pfn build errors
-
- arch/ia64/kernel/ia64_ksyms.c | 2 +-
- arch/microblaze/mm/init.c     | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
-
+diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+index fc823572bcff..279f4a2e1dd7 100644
+--- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
++++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto.yaml
+@@ -23,8 +23,7 @@ properties:
+       - items:
+           - const: allwinner,sun7i-a20-crypto
+           - const: allwinner,sun4i-a10-crypto
+-      - items:
+-          - const: allwinner,sun8i-a33-crypto
++      - const: allwinner,sun8i-a33-crypto
+ 
+   reg:
+     maxItems: 1
+@@ -59,7 +58,9 @@ if:
+   properties:
+     compatible:
+       contains:
+-        const: allwinner,sun6i-a31-crypto
++        enum:
++          - const: allwinner,sun6i-a31-crypto
++          - const: allwinner,sun8i-a33-crypto
+ 
+ then:
+   required:
 -- 
-Sincerely yours,
-Mike.
+2.26.2
+
