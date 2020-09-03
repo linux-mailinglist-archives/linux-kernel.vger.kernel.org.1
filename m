@@ -2,74 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B4C25BF2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B5F25BF2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgICKi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:38:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37598 "EHLO mail.kernel.org"
+        id S1728352AbgICKjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:39:15 -0400
+Received: from mga11.intel.com ([192.55.52.93]:65401 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgICKiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:38:24 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FBDD20716;
-        Thu,  3 Sep 2020 10:38:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599129504;
-        bh=LAXgYKBZSgHnpP3vkKbhWFMU0X4+abqBQN6jvUOWbqY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ld1Q2yf2X4ppe6E/1c7dmW3CA+UkvzGxs9ys4JpwdZiYXo2bHei/hIwZyyuZvtNzA
-         NKuGMmyikL5JlRlBn0fZ7UrAPjRMCZkyEhihJyUD+GoBP1BGBrGS9RZn0lCaUA7VmV
-         YRiU01bnSfLZSu9kHl482I7piLbAX2hS/lbCXO2I=
-Date:   Thu, 3 Sep 2020 13:38:19 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH rdma-next 2/4] gcov: Use proper duplication routine for
- const pointer
-Message-ID: <20200903103819.GA1137836@unreal>
-References: <20200902085513.748149-1-leon@kernel.org>
- <20200902085513.748149-3-leon@kernel.org>
- <eb874b37-3e3f-6819-78f7-bba3e684ae27@rasmusvillemoes.dk>
+        id S1728330AbgICKjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 06:39:06 -0400
+IronPort-SDR: tn69zof3GGvi35nNUDH4Tmln+WqAHYg+ATxhbqKdySVP5m0BBKFI9ntPFkwHcFrGn4MjAD58tf
+ E9htVmQw5RTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="155057343"
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="155057343"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 03:38:49 -0700
+IronPort-SDR: eDreDYwUlX7ot5PIlJMA2Mzq4sqcYaSeQHEzkoepfjZNWXdgogNIW6UZnnYSrFPtfkE2DlRP8p
+ OLwcvMWuE6dQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="339238144"
+Received: from slisovsk-lenovo-ideapad-720s-13ikb.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Sep 2020 03:38:46 -0700
+Subject: Re: [PATCH V3 4/6] perf tools: Add FIFO file names as alternative
+ options to --control
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20200901200655.GC470123@krava>
+ <20200902105707.11491-1-adrian.hunter@intel.com>
+ <97818947-ed04-1b53-c71a-f00732141ca7@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <e4d294a9-9d97-2cb0-c43d-926fbf90b819@intel.com>
+Date:   Thu, 3 Sep 2020 13:38:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb874b37-3e3f-6819-78f7-bba3e684ae27@rasmusvillemoes.dk>
+In-Reply-To: <97818947-ed04-1b53-c71a-f00732141ca7@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 10:56:38AM +0200, Rasmus Villemoes wrote:
-> On 02/09/2020 10.55, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> >
-> > The filename is a const pointer, so use the proper string duplication
-> > routine that takes into account const identifier.
->
-> This commit log makes no sense at all.
->
-> kstrdup_const is merely an optimization that can be used when there's a
-> good chance that the passed string lives in vmlinux' .rodata, in which
-> case it is known to be immortal, and we can avoid allocating heap memory
-> to contain a duplicate. [It also requires that the caller has no
-> intention of modifying the returned string.]
->
-> In the case of something called ->filename, I assume it's initialized
-> with __FILE__ somewhere, making the above true for built-in stuff but
-> not for modules. So if the gcov_info can live longer than the module,
-> it's of course necessary to duplicate the string, but OTOH making an
-> optimization for the built-in stuff makes sense. So this is certainly
-> one of the places where kstrdup_const() seems applicable. But it has
-> nothing whatsoever to do with the C-level qualifiers the argument may have.
+On 2/09/20 8:03 pm, Alexey Budankov wrote:
+> 
+> On 02.09.2020 13:57, Adrian Hunter wrote:
+>> Enable the --control option to accept file names as an alternative to
+>> file descriptors.
+>>
+>> Example:
+>>
+>>  $ mkfifo perf.control
+>>  $ mkfifo perf.ack
+>>  $ cat perf.ack &
+>>  [1] 6808
+>>  $ perf record --control fifo:perf.control,perf.ack -- sleep 300 &
+>>  [2] 6810
+>>  $ echo disable > perf.control
+>>  $ Events disabled
+>>  ack
+>>
+>>  $ echo enable > perf.control
+>>  $ Events enabled
+>>  ack
+>>
+>>  $ echo disable > perf.control
+>>  $ Events disabled
+>>  ack
+>>
+>>  $ kill %2
+>>  [ perf record: Woken up 4 times to write data ]
+>>  $ [ perf record: Captured and wrote 0.018 MB perf.data (7 samples) ]
+>>
+>>  [1]-  Done                    cat perf.ack
+>>  [2]+  Terminated              perf record --control fifo:perf.control,perf.ack -- sleep 300
+>>  $
+>>
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>> ---
+>>
+>>
+>> Changes in V3:
+>>
+>> 	Rename evlist__parse_control_names to evlist__parse_control_fifo
+>> 	Explicitly initialize *ctl_fd_close = false
+>>
+>>
+>>  tools/perf/Documentation/perf-record.txt |  2 +
+>>  tools/perf/Documentation/perf-stat.txt   |  2 +
+>>  tools/perf/builtin-record.c              | 34 +++++++++++----
+>>  tools/perf/builtin-stat.c                | 18 ++++++--
+>>  tools/perf/util/evlist.c                 | 55 +++++++++++++++++++++++-
+>>  tools/perf/util/evlist.h                 |  2 +-
+>>  tools/perf/util/record.h                 |  1 +
+>>  tools/perf/util/stat.h                   |  1 +
+>>  8 files changed, 101 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+>> index 07c4734f1c7a..2ffc1196d2b8 100644
+>> --- a/tools/perf/Documentation/perf-record.txt
+>> +++ b/tools/perf/Documentation/perf-record.txt
+>> @@ -627,7 +627,9 @@ option. The -e option and this one can be mixed and matched.  Events
+>>  can be grouped using the {} notation.
+>>  endif::HAVE_LIBPFM[]
+>>  
+>> +--control=fifo:ctl-fifo[,ack-fifo]::
+>>  --control=fd:ctl-fd[,ack-fd]::
+>> +ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
+>>  Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
+>>  'disable': disable events). Measurements can be started with events disabled using
+>>  --delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
+>> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+>> index 7fb7368cc2d9..d33ffd11bb85 100644
+>> --- a/tools/perf/Documentation/perf-stat.txt
+>> +++ b/tools/perf/Documentation/perf-stat.txt
+>> @@ -176,7 +176,9 @@ with it.  --append may be used here.  Examples:
+>>       3>results  perf stat --log-fd 3          -- $cmd
+>>       3>>results perf stat --log-fd 3 --append -- $cmd
+>>  
+>> +--control=fifo:ctl-fifo[,ack-fifo]::
+>>  --control=fd:ctl-fd[,ack-fd]::
+>> +ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
+>>  Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
+>>  'disable': disable events). Measurements can be started with events disabled using
+>>  --delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index f2ab5bd7e2ba..117dd180f780 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -2236,7 +2236,17 @@ static int parse_control_option(const struct option *opt,
+>>  {
+>>  	struct record_opts *opts = opt->value;
+>>  
+>> -	return evlist__parse_control(str, &opts->ctl_fd, &opts->ctl_fd_ack);
+>> +	return evlist__parse_control(str, &opts->ctl_fd, &opts->ctl_fd_ack, &opts->ctl_fd_close);
+>> +}
+>> +
+>> +static void close_control_option(struct record_opts *opts)
+> 
+> This function above and the same one for stat mode below look duplicating.
+> It could possibly be combined.
 
-Thanks, GCOV can't be built as module.
+Good idea.  I will send a separate patch for that though.
 
->
-> Rasmus
+> 
+> Acked-by: Alexei Budankov <alexey.budankov@linux.intel.com>
+> 
+> Regards,
+> Alexei
+> 
+>> +{
+>> +	if (opts->ctl_fd_close) {
+>> +		opts->ctl_fd_close = false;
+>> +		close(opts->ctl_fd);
+>> +		if (opts->ctl_fd_ack >= 0)
+>> +			close(opts->ctl_fd_ack);
+>> +	}
+>>  }
+>>  
+>>  static void switch_output_size_warn(struct record *rec)
+>> @@ -2578,9 +2588,10 @@ static struct option __record_options[] = {
+>>  		"libpfm4 event selector. use 'perf list' to list available events",
+>>  		parse_libpfm_events_option),
+>>  #endif
+>> -	OPT_CALLBACK(0, "control", &record.opts, "fd:ctl-fd[,ack-fd]",
+>> +	OPT_CALLBACK(0, "control", &record.opts, "fd:ctl-fd[,ack-fd] or fifo:ctl-fifo[,ack-fifo]",
+>>  		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events).\n"
+>> -		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.",
+>> +		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
+>> +		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
+>>  		      parse_control_option),
+>>  	OPT_END()
+>>  };
+>> @@ -2653,12 +2664,14 @@ int cmd_record(int argc, const char **argv)
+>>  	    !perf_can_record_switch_events()) {
+>>  		ui__error("kernel does not support recording context switch events\n");
+>>  		parse_options_usage(record_usage, record_options, "switch-events", 0);
+>> -		return -EINVAL;
+>> +		err = -EINVAL;
+>> +		goto out_opts;
+>>  	}
+>>  
+>>  	if (switch_output_setup(rec)) {
+>>  		parse_options_usage(record_usage, record_options, "switch-output", 0);
+>> -		return -EINVAL;
+>> +		err = -EINVAL;
+>> +		goto out_opts;
+>>  	}
+>>  
+>>  	if (rec->switch_output.time) {
+>> @@ -2669,8 +2682,10 @@ int cmd_record(int argc, const char **argv)
+>>  	if (rec->switch_output.num_files) {
+>>  		rec->switch_output.filenames = calloc(sizeof(char *),
+>>  						      rec->switch_output.num_files);
+>> -		if (!rec->switch_output.filenames)
+>> -			return -EINVAL;
+>> +		if (!rec->switch_output.filenames) {
+>> +			err = -EINVAL;
+>> +			goto out_opts;
+>> +		}
+>>  	}
+>>  
+>>  	/*
+>> @@ -2686,7 +2701,8 @@ int cmd_record(int argc, const char **argv)
+>>  		rec->affinity_mask.bits = bitmap_alloc(rec->affinity_mask.nbits);
+>>  		if (!rec->affinity_mask.bits) {
+>>  			pr_err("Failed to allocate thread mask for %zd cpus\n", rec->affinity_mask.nbits);
+>> -			return -ENOMEM;
+>> +			err = -ENOMEM;
+>> +			goto out_opts;
+>>  		}
+>>  		pr_debug2("thread mask[%zd]: empty\n", rec->affinity_mask.nbits);
+>>  	}
+>> @@ -2817,6 +2833,8 @@ int cmd_record(int argc, const char **argv)
+>>  	evlist__delete(rec->evlist);
+>>  	symbol__exit();
+>>  	auxtrace_record__free(rec->itr);
+>> +out_opts:
+>> +	close_control_option(&rec->opts);
+>>  	return err;
+>>  }
+>>  
+>> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+>> index 12ce5cf2b10e..6170226d44f9 100644
+>> --- a/tools/perf/builtin-stat.c
+>> +++ b/tools/perf/builtin-stat.c
+>> @@ -1047,7 +1047,17 @@ static int parse_control_option(const struct option *opt,
+>>  {
+>>  	struct perf_stat_config *config = opt->value;
+>>  
+>> -	return evlist__parse_control(str, &config->ctl_fd, &config->ctl_fd_ack);
+>> +	return evlist__parse_control(str, &config->ctl_fd, &config->ctl_fd_ack, &config->ctl_fd_close);
+>> +}
+>> +
+>> +static void close_control_option(struct perf_stat_config *config)
+>> +{
+>> +	if (config->ctl_fd_close) {
+>> +		config->ctl_fd_close = false;
+>> +		close(config->ctl_fd);
+>> +		if (config->ctl_fd_ack >= 0)
+>> +			close(config->ctl_fd_ack);
+>> +	}
+>>  }
+>>  
+>>  static struct option stat_options[] = {
+>> @@ -1151,9 +1161,10 @@ static struct option stat_options[] = {
+>>  		"libpfm4 event selector. use 'perf list' to list available events",
+>>  		parse_libpfm_events_option),
+>>  #endif
+>> -	OPT_CALLBACK(0, "control", &stat_config, "fd:ctl-fd[,ack-fd]",
+>> +	OPT_CALLBACK(0, "control", &stat_config, "fd:ctl-fd[,ack-fd] or fifo:ctl-fifo[,ack-fifo]",
+>>  		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events).\n"
+>> -		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.",
+>> +		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
+>> +		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
+>>  		      parse_control_option),
+>>  	OPT_END()
+>>  };
+>> @@ -2396,6 +2407,7 @@ int cmd_stat(int argc, const char **argv)
+>>  
+>>  	metricgroup__rblist_exit(&stat_config.metric_events);
+>>  	runtime_stat_delete(&stat_config);
+>> +	close_control_option(&stat_config);
+>>  
+>>  	return status;
+>>  }
+>> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+>> index 47d1045a19af..00593e5f2a9d 100644
+>> --- a/tools/perf/util/evlist.c
+>> +++ b/tools/perf/util/evlist.c
+>> @@ -1727,12 +1727,63 @@ struct evsel *perf_evlist__reset_weak_group(struct evlist *evsel_list,
+>>  	return leader;
+>>  }
+>>  
+>> -int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack)
+>> +static int evlist__parse_control_fifo(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close)
+>> +{
+>> +	char *s, *p;
+>> +	int ret = 0, fd;
+>> +
+>> +	if (strncmp(str, "fifo:", 5))
+>> +		return -EINVAL;
+>> +
+>> +	str += 5;
+>> +	if (!*str || *str == ',')
+>> +		return -EINVAL;
+>> +
+>> +	s = strdup(str);
+>> +	if (!s)
+>> +		return -ENOMEM;
+>> +
+>> +	p = strchr(s, ',');
+>> +	if (p)
+>> +		*p = '\0';
+>> +
+>> +	/*
+>> +	 * O_RDWR avoids POLLHUPs which is necessary to allow the other
+>> +	 * end of a FIFO to be repeatedly opened and closed.
+>> +	 */
+>> +	fd = open(s, O_RDWR | O_NONBLOCK | O_CLOEXEC);
+>> +	if (fd < 0) {
+>> +		pr_err("Failed to open '%s'\n", s);
+>> +		ret = -errno;
+>> +		goto out_free;
+>> +	}
+>> +	*ctl_fd = fd;
+>> +	*ctl_fd_close = true;
+>> +
+>> +	if (p && *++p) {
+>> +		/* O_RDWR | O_NONBLOCK means the other end need not be open */
+>> +		fd = open(p, O_RDWR | O_NONBLOCK | O_CLOEXEC);
+>> +		if (fd < 0) {
+>> +			pr_err("Failed to open '%s'\n", p);
+>> +			ret = -errno;
+>> +			goto out_free;
+>> +		}
+>> +		*ctl_fd_ack = fd;
+>> +	}
+>> +
+>> +out_free:
+>> +	free(s);
+>> +	return ret;
+>> +}
+>> +
+>> +int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close)
+>>  {
+>>  	char *comma = NULL, *endptr = NULL;
+>>  
+>> +	*ctl_fd_close = false;
+>> +
+>>  	if (strncmp(str, "fd:", 3))
+>> -		return -EINVAL;
+>> +		return evlist__parse_control_fifo(str, ctl_fd, ctl_fd_ack, ctl_fd_close);
+>>  
+>>  	*ctl_fd = strtoul(&str[3], &endptr, 0);
+>>  	if (endptr == &str[3])
+>> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+>> index a5a5a07d5c55..a5678eb5ee60 100644
+>> --- a/tools/perf/util/evlist.h
+>> +++ b/tools/perf/util/evlist.h
+>> @@ -373,7 +373,7 @@ enum evlist_ctl_cmd {
+>>  	EVLIST_CTL_CMD_ACK
+>>  };
+>>  
+>> -int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack);
+>> +int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
+>>  int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+>>  int evlist__finalize_ctlfd(struct evlist *evlist);
+>>  bool evlist__ctlfd_initialized(struct evlist *evlist);
+>> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+>> index 03678ff25539..266760ac9143 100644
+>> --- a/tools/perf/util/record.h
+>> +++ b/tools/perf/util/record.h
+>> @@ -73,6 +73,7 @@ struct record_opts {
+>>  	unsigned int  nr_threads_synthesize;
+>>  	int	      ctl_fd;
+>>  	int	      ctl_fd_ack;
+>> +	bool	      ctl_fd_close;
+>>  };
+>>  
+>>  extern const char * const *record_usage;
+>> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+>> index f8778cffd941..65402e13b704 100644
+>> --- a/tools/perf/util/stat.h
+>> +++ b/tools/perf/util/stat.h
+>> @@ -135,6 +135,7 @@ struct perf_stat_config {
+>>  	struct rblist		 metric_events;
+>>  	int			 ctl_fd;
+>>  	int			 ctl_fd_ack;
+>> +	bool			 ctl_fd_close;
+>>  };
+>>  
+>>  void perf_stat__set_big_num(int set);
+>>
+
