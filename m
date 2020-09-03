@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF8425B8D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6382F25B8DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbgICCnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 22:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgICCnQ (ORCPT
+        id S1726947AbgICCsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 22:48:21 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:56371 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbgICCsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 22:43:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89FCC061244;
-        Wed,  2 Sep 2020 19:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=R9wsgh5OhpmeQRbKxOY/dzd+1XG9pkbfv3w+MHt05O0=; b=Q0d/Y/mgV4RO/6ooAH/2LXQB85
-        ZikQYl7DEhJw0JBCVSjXGIcMbVl6zsAqiApPOSzVrO1y8bK3bKKyj9OTWEA+5qMAYhsU3JZXS2eK5
-        9a7hRAU2SIdQMGbq9DDRom0iyJUHoYGUhZXS/YeZca/sFcJ73/1tB8KnKA+zc3rpv8y4UMgXfcnBK
-        jvx39XdFtkReY7yBDOHTu6qi5cjTUROqvV3hq6TweDxWDjVMfByghE+0yJm/Vyw0iKbPXUGwXR6FK
-        Bugf06xfP81L7EWL2gpauc3So1OuivWqjC4vIEy8FaELOqdfi3+mqrqmLR+WmxnGW+45sGf2H3t+I
-        m5W0id0g==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDfDT-0007N5-CZ; Thu, 03 Sep 2020 02:43:11 +0000
-Subject: Re: [PATCH 0/2] docs: Add automatic cross-reference for C types
-To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@protonmail.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-References: <20200903005747.3900333-1-nfraprado@protonmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1a03c65e-6fbc-25f9-e553-61259a310f29@infradead.org>
-Date:   Wed, 2 Sep 2020 19:43:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Wed, 2 Sep 2020 22:48:21 -0400
+Received: by mail-il1-f199.google.com with SMTP id w82so1219925ila.23
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 19:48:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=rBL3bWJ770w5+rKgjWbVHAlekloDjKTJ10BiBusqwbo=;
+        b=m2JJJUpyIhcmI+XdU/xFV6UZGFBdIIb7GGkZi0nmaYhNXyrdzAAKn4Uw6h2Uq3pWxa
+         D3kmZnjU2lCy1I6/zlMUDQhmFenvqSK39mwbZDy3roprGU+zne9QmGX4A+G6wtMomgNN
+         JjSGquhbxfEJCr+BRZBxictSUtDsLUEqaxYJjvC4YzE1LGiMsiwSMV6zpsWm4DBOcuPH
+         qfR3n/juwyRm1YKxmUn1ZGlTq2fj4D0IIWi8L2tzGzcI5yjQRn5ZLe3qVdP+YxdvsmwS
+         KUJDEz7Wf2Yv7L4ODLZXpCl/6RCBry6KCfHV5t16YtcmSwO+nKwFP66JpxSvAsGaGweE
+         QZ5Q==
+X-Gm-Message-State: AOAM532lja8/SRLXfhqVrnL3PY7a0SsvXm0gsjiYjxYTEJG+shP96uKm
+        AhGbSNRuX8XIhon8iSvdDhTEZOi3bF85i3XNHzvzUEcs/3cB
+X-Google-Smtp-Source: ABdhPJzv10QtaoXFC2pn0QjjJfPKlYbXOBRcDbo4j7/EvDxgGM6HQSc52V4ftq3hKOFQBxkXXmU8ogkFRSouOku7TBZJm9F6H6cB
 MIME-Version: 1.0
-In-Reply-To: <20200903005747.3900333-1-nfraprado@protonmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:9051:: with SMTP id v17mr1198574ioq.88.1599101299894;
+ Wed, 02 Sep 2020 19:48:19 -0700 (PDT)
+Date:   Wed, 02 Sep 2020 19:48:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f0ae3005ae5fc85e@google.com>
+Subject: BUG: sleeping function called from invalid context in vdso_join_timens
+From:   syzbot <syzbot+49f84b6782afe2a2b20e@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 5:58 PM, Nícolas F. R. A. Prado wrote:
-> In order to cross-reference C types in the documentation, Sphinx
-> requires the syntax :c:type:`type_name`, or even :c:type:`struct
-> type_name <type_name>` in order to have the link text different from the
-> target text.
-> This patch series removes the need for that markup.
-> 
-> The first commit extends the automarkup script to enable automatic
-> cross-reference of C types by matching any "struct|union|enum|typedef type_name"
-> expression.
-> This makes the documentation's plain text cleaner and adds cross-reference to
-> types without any additional effort by the author.
-> 
-> The second commit updates the "Cross-referencing from
-> reStructuredText" section in Documentation/doc-guide/kernel-doc.rst
-> to reflect that no additional syntax is needed when cross-referencing both types
-> and functions anymore.
-> 
-> When testing this, I did find an edge-case from the output of
-> Documentation/output/scsi/scsi_mid_low_api.rst on the "typedef struct scsi_cmnd
-> Scsi_Cmnd;", where 'typedef struct' is being identified as a reference, but
-> there isn't any named 'struct', so it renders bold.
+Hello,
 
-There also isn't any file name scsi_typedefs.h any longer,
-so maybe we can update scsi_mid_low_api.rst as well.
+syzbot found the following issue on:
 
-Thanks.
+HEAD commit:    4d41ead6 Merge tag 'block-5.9-2020-08-28' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=174adf49900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
+dashboard link: https://syzkaller.appspot.com/bug?extid=49f84b6782afe2a2b20e
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-> I thought of adding an ignore_names list just like there is one for functions,
-> with 'struct' in it, to workaround this edge case, but since it was the only
-> one I found, and also because it was unclear what the desired output was
-> (cross-reference 'struct scsi_cmnd' or leave the whole expression as plain text)
-> I wanted to get some feedback beforehand.
-> 
-> After getting this merged I intend to start removing the occurrences of :c:type.
-> 
-> Thanks,
-> Nícolas
-> 
-> Nícolas F. R. A. Prado (2):
->   docs: Add automatic cross-reference for C types
->   kernel-doc: Update "cross-referencing from rST" section to use
->     automarkup
-> 
->  Documentation/doc-guide/kernel-doc.rst | 33 ++++++++++++-----------
->  Documentation/sphinx/automarkup.py     | 37 +++++++++++++++++---------
->  2 files changed, 41 insertions(+), 29 deletions(-)
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+49f84b6782afe2a2b20e@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at kernel/locking/rwsem.c:1491
+in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 479, name: syz-executor.3
+INFO: lockdep is turned off.
+irq event stamp: 845
+hardirqs last  enabled at (845): [<ffffffff882cebdf>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (845): [<ffffffff882cebdf>] _raw_spin_unlock_irqrestore+0x6f/0xd0 kernel/locking/spinlock.c:191
+hardirqs last disabled at (844): [<ffffffff882cea28>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (844): [<ffffffff882cea28>] _raw_spin_lock_irqsave+0x78/0xc0 kernel/locking/spinlock.c:159
+softirqs last  enabled at (662): [<ffffffff88400f2f>] asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+softirqs last disabled at (653): [<ffffffff88400f2f>] asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+Preemption disabled at:
+[<ffffffff882c3253>] preempt_schedule_irq+0x93/0x150 kernel/sched/core.c:4783
+CPU: 1 PID: 479 Comm: syz-executor.3 Tainted: G      D           5.9.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1f0/0x31e lib/dump_stack.c:118
+ ___might_sleep+0x3c0/0x570 kernel/sched/core.c:7299
+ down_read+0x17/0x50 kernel/locking/rwsem.c:1491
+ mmap_read_lock include/linux/mmap_lock.h:46 [inline]
+ vdso_join_timens+0x46/0x120 arch/x86/entry/vdso/vma.c:147
+kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
+BUG: unable to handle page fault for address: ffff8880ae936310
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0011) - permissions violation
+PGD c401067 P4D c401067 PUD 21ffff067 PMD 80000000ae8001e3 
+Oops: 0011 [#2] PREEMPT SMP KASAN
+CPU: 1 PID: 479 Comm: syz-executor.3 Tainted: G      D W         5.9.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 
 
--- 
-~Randy
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
