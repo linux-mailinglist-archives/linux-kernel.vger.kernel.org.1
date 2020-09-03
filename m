@@ -2,137 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB5025C157
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD32D25C16D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgICMvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728908AbgICMmR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:42:17 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40E20C061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:42:01 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id 19so239051qtp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:42:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jBJ3+UyiPoqroyu1zjiAGjOZlBSROfuJYS4dUaf28y4=;
-        b=RP2QIgV9av5cfW4E0jEqmA7mDTpzMBwskor1FkPmpDSAFax6n63uP0gHagAKUBoLXo
-         Fb5ct+hksrD6IpdtMufs3DNRrXJocexBW5s+D7hhM320VYplwMb2gIZdEpRcomM/lCth
-         3xQa56eJUsxBsQjTtaLonw7TE+A4uMkw/gduUfRH9Z7vNXQiSdaHQkJhCxDJgb9MZqzU
-         N3AiS1VwOo/Xrbbco3rCcp7li+dxP25ZUK3tEWdlRxjbmKSHpsuP7nIWa9VoIXYg9ifc
-         KmPOt4KLx8zuhtSUs856BF8M2ysnqatk4Gctlv4MSrbnjkbHK9uCK2Q0iHSoE3zcMUfT
-         prAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jBJ3+UyiPoqroyu1zjiAGjOZlBSROfuJYS4dUaf28y4=;
-        b=D7e7YoU4cFEC4hFALJDWcJsht05WJQEeBxqWooWeOFPGC9Dusn8iI5s/q4iPuAR/6I
-         GnHvv+MuRJPJbCeGBkU0UWVG6d8K31uOZOvoDeoXvW+iQkqeR8109BMlheIeBaclpWcw
-         nnRcO6dtQVmLjbpDU8K7JPSWJHWZHK8jYtWmfTLFvltKoJNL4H9otx7ZjMYno6IYb7K5
-         M/Y46gHgNqK98dzhJ5s6pBtG3/h0WitxZF/+BrXXqlhL9GmZXO11LKWOkRDVKgjUxftt
-         HikXQPvF1PbuodRPlhkqV2UagRkoYrdKSYeJbYaHuwot/bAKAZF2PeL2HpduzAOa9PPS
-         dprQ==
-X-Gm-Message-State: AOAM532sVccwSk2P8JtoG/W4pMAsYjIO27Ih+sByzGLglgOIICYAu4yQ
-        /PZVOszurokby5K0SwZsGtbW7w==
-X-Google-Smtp-Source: ABdhPJyrJaxeh5GDMtMW9PrexCisLze+QfvJ8U+Z3y3lDDgeB//UFbLK+IEHeSxO627oS4hC+B38Ow==
-X-Received: by 2002:ac8:4e0b:: with SMTP id c11mr3199200qtw.37.1599136919515;
-        Thu, 03 Sep 2020 05:41:59 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id w59sm1941201qtd.1.2020.09.03.05.41.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 05:41:58 -0700 (PDT)
-Subject: Re: [PATCH v1 6/9] phy: qcom-qmp: Add support for DP in USB3+DP combo
- phy
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Clark <robdclark@chromium.org>
-References: <20200826024711.220080-1-swboyd@chromium.org>
- <20200826024711.220080-7-swboyd@chromium.org>
- <335a0660-40e1-0c1e-3f7d-87f7024de18a@linaro.org>
- <159900847014.334488.14041376759905055412@swboyd.mtv.corp.google.com>
- <62bdac87-b886-58c1-f071-095ec9945f68@linaro.org>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <4165cdc6-dfa6-1ff2-f317-753292a068c2@marek.ca>
-Date:   Thu, 3 Sep 2020 08:41:15 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1728963AbgICM5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:57:08 -0400
+Received: from mga17.intel.com ([192.55.52.151]:56435 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728912AbgICMpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:45:19 -0400
+IronPort-SDR: BBeuoNvJ9w02R9djUDDMzpwA3UUAxJt3eOatGhZdc7V0Kfpa/bhTjYOTrFMbdlLbSfIWeE90lq
+ ICDO6cHr/tnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="137616398"
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="137616398"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 05:42:20 -0700
+IronPort-SDR: jgWU5ydLFjw/qHedpQ12bp/VP+JAvUC1loUhjM+8g5wrPQd8UEI2yPGXOnjF1pgkYUbH/HADoL
+ ifXa9ksU7aHA==
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="446890819"
+Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.135])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 05:42:15 -0700
+From:   shuo.a.liu@intel.com
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuo Liu <shuo.a.liu@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: [PATCH v2 01/17] docs: acrn: Introduce ACRN
+Date:   Thu,  3 Sep 2020 20:41:45 +0800
+Message-Id: <20200903124201.17275-2-shuo.a.liu@intel.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903124201.17275-1-shuo.a.liu@intel.com>
+References: <20200903124201.17275-1-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <62bdac87-b886-58c1-f071-095ec9945f68@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 8:37 AM, Dmitry Baryshkov wrote:
-> On 02/09/2020 04:01, Stephen Boyd wrote:
->> Quoting Dmitry Baryshkov (2020-09-01 06:36:34)
->>> With these functions I'm struggling between introducing
->>> PHY_TYPE_DP_V3/V4 and introducing callbacks into qmp_phy_cfg. What would
->>> you prefer?
->>>
->>> What about the following struct?
->>>
->>> struct qmp_phy_dp_opts {
->>>          void (*dp_aux_init)(struct qmp_phy *qphy);
->>>          void (*dp_configure_tx)(struct qmp_phy *qphy);
->>>          void (*dp_configure_lanes)(struct qmp_phy *qphy);
->>> };
->>>
->>> I'm not sure about dp_calibrate().
->>>
->>
->> Is there v4 code somewhere that I can see? Another level of indirection
->> is always a solution, so it is probably fine. This driver is currently
->> written with many conditionals instead of function tables so I'm not
->> sure it fits in with the style of how things are done though. The
->> alternative is to use an enum and call different functions?
-> 
-> Downstream DP driver sources can be found here:
-> https://source.codeaurora.org/quic/la/platform/vendor/opensource/display-drivers/tree/msm/dp/dp_catalog_v420.c?h=LA.UM.8.12.r1-13900-sm8250.0 
-> 
-> 
-> https://source.codeaurora.org/quic/la/platform/vendor/opensource/display-drivers/tree/pll/dp_pll_7nm_util.c?h=LA.UM.8.12.r1-13900-sm8250.0 
-> 
-> 
->>
->> The calibrate call is there to "turn the crank" on the aux settings.  I
->> need to cycle through the different values for that aux register so that
->> aux can be tuned properly. The AUX channel really has another phy that
->> needs tuning so we're sort of combining the aux and DP link phy together
->> here by letting the calibrate call tune the AUX phy and the configure
->> call tune the DP phy. I don't see any sort of concept of an AUX phy
->> though so this seemed ok. Does v4 need to tune more registers?
-> 
-> 
-> It looks like four values are written to AUX_CFG1:
-> 0x20, 0x13, 0x23, 0x1d
-> 
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-AFAICT, it only writes 0x13 to AUX_CFG1, in dp_pll_7nm_util.c, and the 
-qcom,aux-cfg1-settings in dts only has 0x13. Same for all other 
-AUX_CFGn, which only have one value written. Am I missing something?
+Add documentation on the following aspects of ACRN:
+
+  1) A brief introduction on the architecture of ACRN.
+  2) I/O request handling in ACRN.
+
+To learn more about ACRN, please go to ACRN project website
+https://projectacrn.org, or the documentation page
+https://projectacrn.github.io/.
+
+Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
+Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Sen Christopherson <sean.j.christopherson@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Fengwei Yin <fengwei.yin@intel.com>
+Cc: Zhi Wang <zhi.a.wang@intel.com>
+Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc: Yu Wang <yu1.wang@intel.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/virt/acrn/index.rst        | 11 +++
+ Documentation/virt/acrn/introduction.rst | 40 ++++++++++
+ Documentation/virt/acrn/io-request.rst   | 97 ++++++++++++++++++++++++
+ Documentation/virt/index.rst             |  1 +
+ MAINTAINERS                              |  7 ++
+ 5 files changed, 156 insertions(+)
+ create mode 100644 Documentation/virt/acrn/index.rst
+ create mode 100644 Documentation/virt/acrn/introduction.rst
+ create mode 100644 Documentation/virt/acrn/io-request.rst
+
+diff --git a/Documentation/virt/acrn/index.rst b/Documentation/virt/acrn/index.rst
+new file mode 100644
+index 000000000000..e3cf99033bdb
+--- /dev/null
++++ b/Documentation/virt/acrn/index.rst
+@@ -0,0 +1,11 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++===============
++ACRN Hypervisor
++===============
++
++.. toctree::
++   :maxdepth: 1
++
++   introduction
++   io-request
+diff --git a/Documentation/virt/acrn/introduction.rst b/Documentation/virt/acrn/introduction.rst
+new file mode 100644
+index 000000000000..6b44924d5c0e
+--- /dev/null
++++ b/Documentation/virt/acrn/introduction.rst
+@@ -0,0 +1,40 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++ACRN Hypervisor Introduction
++============================
++
++The ACRN Hypervisor is a Type 1 hypervisor, running directly on the bare-metal
++hardware. It has a privileged management VM, called Service VM, to manage User
++VMs and do I/O emulation.
++
++ACRN userspace is an application running in the Service VM that emulates
++devices for a User VM based on command line configurations. ACRN Hypervisor
++Service Module (HSM) is a kernel module in the Service VM which provides
++hypervisor services to the ACRN userspace.
++
++Below figure shows the architecture.
++
++::
++
++                Service VM                    User VM
++      +----------------------------+  |  +------------------+
++      |        +--------------+    |  |  |                  |
++      |        |ACRN userspace|    |  |  |                  |
++      |        +--------------+    |  |  |                  |
++      |-----------------ioctl------|  |  |                  |   ...
++      |kernel space   +----------+ |  |  |                  |
++      |               |   HSM    | |  |  | Drivers          |
++      |               +----------+ |  |  |                  |
++      +--------------------|-------+  |  +------------------+
++  +---------------------hypercall----------------------------------------+
++  |                         ACRN Hypervisor                              |
++  +----------------------------------------------------------------------+
++  |                          Hardware                                    |
++  +----------------------------------------------------------------------+
++
++ACRN userspace allocates memory for the User VM, configures and initializes the
++devices used by the User VM, loads the virtual bootloader, initializes the
++virtual CPU state and handles I/O request accesses from the User VM. It uses
++ioctls to communicate with the HSM. HSM implements hypervisor services by
++interacting with the ACRN Hypervisor via hypercalls. HSM exports a char device
++interface (/dev/acrn_hsm) to userspace.
+diff --git a/Documentation/virt/acrn/io-request.rst b/Documentation/virt/acrn/io-request.rst
+new file mode 100644
+index 000000000000..019dc5978f7c
+--- /dev/null
++++ b/Documentation/virt/acrn/io-request.rst
+@@ -0,0 +1,97 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++I/O request handling
++====================
++
++An I/O request of a User VM, which is constructed by the hypervisor, is
++distributed by the ACRN Hypervisor Service Module to an I/O client
++corresponding to the address range of the I/O request. Details of I/O request
++handling are described in the following sections.
++
++1. I/O request
++--------------
++
++For each User VM, there is a shared 4-KByte memory region used for I/O requests
++communication between the hypervisor and Service VM. An I/O request is a
++256-byte structure buffer, which is 'struct acrn_io_request', that is filled by
++an I/O handler of the hypervisor when a trapped I/O access happens in a User
++VM. ACRN userspace in the Service VM first allocates a 4-KByte page and passes
++the GPA (Guest Physical Address) of the buffer to the hypervisor. The buffer is
++used as an array of 16 I/O request slots with each I/O request slot being 256
++bytes. This array is indexed by vCPU ID.
++
++2. I/O clients
++--------------
++
++An I/O client is responsible for handling User VM I/O requests whose accessed
++GPA falls in a certain range. Multiple I/O clients can be associated with each
++User VM. There is a special client associated with each User VM, called the
++default client, that handles all I/O requests that do not fit into the range of
++any other clients. The ACRN userspace acts as the default client for each User
++VM.
++
++Below illustration shows the relationship between I/O requests shared buffer,
++I/O requests and I/O clients.
++
++::
++
++     +------------------------------------------------------+
++     |                                       Service VM     |
++     |+--------------------------------------------------+  |
++     ||      +----------------------------------------+  |  |
++     ||      | shared page            ACRN userspace  |  |  |
++     ||      |    +-----------------+  +------------+ |  |  |
++     ||   +----+->| acrn_io_request |<-+  default   | |  |  |
++     ||   |  | |  +-----------------+  | I/O client | |  |  |
++     ||   |  | |  |       ...       |  +------------+ |  |  |
++     ||   |  | |  +-----------------+                 |  |  |
++     ||   |  +-|--------------------------------------+  |  |
++     ||---|----|-----------------------------------------|  |
++     ||   |    |                             kernel      |  |
++     ||   |    |            +----------------------+     |  |
++     ||   |    |            | +-------------+  HSM |     |  |
++     ||   |    +--------------+             |      |     |  |
++     ||   |                 | | I/O clients |      |     |  |
++     ||   |                 | |             |      |     |  |
++     ||   |                 | +-------------+      |     |  |
++     ||   |                 +----------------------+     |  |
++     |+---|----------------------------------------------+  |
++     +----|-------------------------------------------------+
++          |
++     +----|-------------------------------------------------+
++     |  +-+-----------+                                     |
++     |  | I/O handler |              ACRN Hypervisor        |
++     |  +-------------+                                     |
++     +------------------------------------------------------+
++
++3. I/O request state transition
++-------------------------------
++
++The state transitions of a ACRN I/O request are as follows.
++
++::
++
++   FREE -> PENDING -> PROCESSING -> COMPLETE -> FREE -> ...
++
++- FREE: this I/O request slot is empty
++- PENDING: a valid I/O request is pending in this slot
++- PROCESSING: the I/O request is being processed
++- COMPLETE: the I/O request has been processed
++
++An I/O request in COMPLETE or FREE state is owned by the hypervisor. HSM and
++ACRN userspace are in charge of processing the others.
++
++4. Processing flow of I/O requests
++-------------------------------
++
++a. The I/O handler of the hypervisor will fill an I/O request with PENDING
++   state when a trapped I/O access happens in a User VM.
++b. The hypervisor makes an upcall, which is a notification interrupt, to
++   the Service VM.
++c. The upcall handler schedules a tasklet to dispatch I/O requests.
++d. The tasklet looks for the PENDING I/O requests, assigns them to different
++   registered clients based on the address of the I/O accesses, updates
++   their state to PROCESSING, and notifies the corresponding client to handle.
++e. The notified client handles the assigned I/O requests.
++f. The HSM updates I/O requests states to COMPLETE and notifies the hypervisor
++   of the completion via hypercalls.
+diff --git a/Documentation/virt/index.rst b/Documentation/virt/index.rst
+index de1ab81df958..c10b519507f5 100644
+--- a/Documentation/virt/index.rst
++++ b/Documentation/virt/index.rst
+@@ -11,6 +11,7 @@ Linux Virtualization Support
+    uml/user_mode_linux
+    paravirt_ops
+    guest-halt-polling
++   acrn/index
+ 
+ .. only:: html and subproject
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index deaafb617361..e0fea5e464b4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -436,6 +436,13 @@ S:	Orphan
+ F:	drivers/platform/x86/wmi.c
+ F:	include/uapi/linux/wmi.h
+ 
++ACRN HYPERVISOR SERVICE MODULE
++M:	Shuo Liu <shuo.a.liu@intel.com>
++L:	acrn-dev@lists.projectacrn.org
++S:	Supported
++W:	https://projectacrn.org
++F:	Documentation/virt/acrn/
++
+ AD1889 ALSA SOUND DRIVER
+ L:	linux-parisc@vger.kernel.org
+ S:	Maintained
+-- 
+2.28.0
 
