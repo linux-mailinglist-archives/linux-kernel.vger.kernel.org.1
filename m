@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2427525B872
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 03:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E08325B874
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 03:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgICBvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 21:51:15 -0400
-Received: from crapouillou.net ([89.234.176.41]:47810 "EHLO crapouillou.net"
+        id S1727961AbgICBvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 21:51:23 -0400
+Received: from crapouillou.net ([89.234.176.41]:47938 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgICBvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 21:51:14 -0400
+        id S1726177AbgICBvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 21:51:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599097858; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599097859; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2yfd2xBfeCTBCbxJYFYKFlCLlxYijXGe2ZvjIsbsAzU=;
-        b=JPdHB4YjDZRJqmUKLx5vIPHYk5LT7dGggJGhdGMLM1WU/lCIBgMttj+7lCMnkIZJJqJEdI
-        EgSgkOvTA85iQZLWgV+pQX5+HF3orHfWw9uTifE+fuwpTLsTqAcyvJFHK73tZEuBsrvtDP
-        HuGhNqYwgBEO+YPkaTSXuqwDDVGhOsg=
+        bh=aJiJklocasIc6J5kOikYu2s2q4dlO3I37o2u+17tEl4=;
+        b=yiPWvnkNMeeaC0df5QWltkTSLeR7f08S3ehUikCIPMW1W5KAvjhSnEo9hzezHmugdA8dsz
+        p1o7McQHHqgxfTWzjt8jgCj19QBGKXdtcBpmhVSF8A47qy3Wrm6W4Sd9wAZoRSBGSABD3s
+        LWIRKVhkS49w1esP72W27JIfdpEhWvk=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>
 Cc:     od@zcrc.me, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 3/5] clk: ingenic: Don't use CLK_SET_RATE_GATE for PLL
-Date:   Thu,  3 Sep 2020 03:50:46 +0200
-Message-Id: <20200903015048.3091523-3-paul@crapouillou.net>
+Subject: [PATCH 4/5] clk: ingenic: Don't tag custom clocks with CLK_SET_RATE_PARENT
+Date:   Thu,  3 Sep 2020 03:50:47 +0200
+Message-Id: <20200903015048.3091523-4-paul@crapouillou.net>
 In-Reply-To: <20200903015048.3091523-1-paul@crapouillou.net>
 References: <20200903015048.3091523-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -37,50 +37,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CLK_SET_RATE_GATE means that the clock must be gated when being
-reclocked. This is not the case for the PLLs in Ingenic SoCs.
+The custom clocks have custom functions to round, get or set their rate.
+Therefore, we can't assume that they need the CLK_SET_RATE_PARENT flag.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/clk/ingenic/cgu.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/clk/ingenic/cgu.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
-index 6bb5dedf0252..521a40dfcb72 100644
+index 521a40dfcb72..a1a4f1adaa3a 100644
 --- a/drivers/clk/ingenic/cgu.c
 +++ b/drivers/clk/ingenic/cgu.c
-@@ -182,6 +182,7 @@ ingenic_pll_set_rate(struct clk_hw *hw, unsigned long req_rate,
- 	const struct ingenic_cgu_pll_info *pll_info = &clk_info->pll;
- 	unsigned long rate, flags;
- 	unsigned int m, n, od;
-+	int ret = 0;
- 	u32 ctl;
+@@ -629,6 +629,13 @@ static int ingenic_register_clock(struct ingenic_cgu *cgu, unsigned idx)
  
- 	rate = ingenic_pll_calc(clk_info, req_rate, parent_rate,
-@@ -203,9 +204,14 @@ ingenic_pll_set_rate(struct clk_hw *hw, unsigned long req_rate,
- 	ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
+ 	caps = clk_info->type;
  
- 	writel(ctl, cgu->base + pll_info->reg);
++	if (caps & CGU_CLK_DIV) {
++		caps &= ~CGU_CLK_DIV;
++	} else if (!(caps & CGU_CLK_CUSTOM)) {
++		/* pass rate changes to the parent clock */
++		clk_init.flags |= CLK_SET_RATE_PARENT;
++	}
 +
-+	/* If the PLL is enabled, verify that it's stable */
-+	if (ctl & BIT(pll_info->enable_bit))
-+		ret = ingenic_pll_check_stable(cgu, pll_info);
-+
- 	spin_unlock_irqrestore(&cgu->lock, flags);
+ 	if (caps & (CGU_CLK_MUX | CGU_CLK_CUSTOM)) {
+ 		clk_init.num_parents = 0;
  
--	return 0;
-+	return ret;
- }
+@@ -690,13 +697,6 @@ static int ingenic_register_clock(struct ingenic_cgu *cgu, unsigned idx)
+ 		caps &= ~(CGU_CLK_MUX | CGU_CLK_MUX_GLITCHFREE);
+ 	}
  
- static int ingenic_pll_enable(struct clk_hw *hw)
-@@ -662,7 +668,6 @@ static int ingenic_register_clock(struct ingenic_cgu *cgu, unsigned idx)
- 		}
- 	} else if (caps & CGU_CLK_PLL) {
- 		clk_init.ops = &ingenic_pll_ops;
--		clk_init.flags |= CLK_SET_RATE_GATE;
- 
- 		caps &= ~CGU_CLK_PLL;
- 
+-	if (caps & CGU_CLK_DIV) {
+-		caps &= ~CGU_CLK_DIV;
+-	} else {
+-		/* pass rate changes to the parent clock */
+-		clk_init.flags |= CLK_SET_RATE_PARENT;
+-	}
+-
+ 	if (caps) {
+ 		pr_err("%s: unknown clock type 0x%x\n", __func__, caps);
+ 		goto out;
 -- 
 2.28.0
 
