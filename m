@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF8725C6D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7506225C6FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgICQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:31:47 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:33289 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgICQbp (ORCPT
+        id S1728709AbgICQfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726292AbgICQfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:31:45 -0400
-X-Originating-IP: 2.224.242.101
-Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id BC3CD60002;
-        Thu,  3 Sep 2020 16:31:39 +0000 (UTC)
-Date:   Thu, 3 Sep 2020 18:35:25 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
-        sakari.ailus@iki.fi, hverkuil@xs4all.nl, jacopo+renesas@jmondi.org,
-        luca@lucaceresoli.net, leonl@leopardimaging.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] dt-bindings: media: imx274: Add optional input
- clock and supplies
-Message-ID: <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
-References: <1599012278-10203-1-git-send-email-skomatineni@nvidia.com>
- <1599012278-10203-3-git-send-email-skomatineni@nvidia.com>
- <20200903125542.nxiafnysatoexken@uno.localdomain>
- <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
+        Thu, 3 Sep 2020 12:35:42 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E64C061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 09:35:42 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id o64so3608889qkb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 09:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=eclypsium.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xR8p6OfMm3Vs9CxLP71zg4PadItST95qCvRFBxxCgYQ=;
+        b=WWKLmOR9QI9lvl9BcKFPwsSWwpOegtwY0d5VffiK4Bs+Z+3SKYGMwH4JIPimrn/285
+         WT2CvBW4MJTH6BDFAvFdFbKWS4+oZ3xzkPVW+hZ6sCeBUXoa1umMCAYd6rx70ds2ITvX
+         PUsD0YIBBIYS8jlrKycGQFe9kTc5m7JxKNW2RbNqP3uyrosKb1yCdQ7gXmRGxUBpuINH
+         8rdZ7E99Sg3HmZ6jpIF42fo5G1UWXDaAcu0dybHd+X/twasB8LgImJQsd4ikLhUT1G87
+         G4jQj8wVS9IKLMzzgQSXBLeSnyMwEjXgXJnWqSf7EWTb6aY0ZtOiGmePgLYwJy8klVoF
+         116Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xR8p6OfMm3Vs9CxLP71zg4PadItST95qCvRFBxxCgYQ=;
+        b=aUM48UAhAwhJYwGSFJHdrH8PtiVLRrhoIOmtPBQd2+gHM2YwgEY0AxO7Bs8mdgc1bb
+         /ydOpxKR9d6JgCopw63uzFELIoQRQKmCKn4YNe9UKQs1a38Z5uH0UPOI6Wh6dOb84pah
+         4q5exT0zlszVzwNbR5JfnEGvRbskW8LREEru8+74gmqc9Lo8nnqphX3ltxn00i8DVc/a
+         5Yq0q9pto3idjaHFe5dWSPp49kSlKhLJsY614i0MkxHFFuAz06wYoiDKILHFCsD6FuVz
+         AZZW11TTZF26N5YNvuFLVPVFYZ8IIk17Cx4kRZAjAr2MzTgXsOykRgoDFv4bXK9SE/tb
+         dL1w==
+X-Gm-Message-State: AOAM532yYoCXheKdhsKXBErCAujhxHOcA8pOnRQQEBJI60VjnX0zj2Mm
+        8WoQEZqNzC0XLD3KFvgJS4krBskNVL3wHxOumVbCUA==
+X-Google-Smtp-Source: ABdhPJwqI/chCMYWI1PNmMb5qEVWU+xL9Q//JT/T3ku1g2EPBx4P5yHfZ8wIKjpJ9fWPJKe4GLziaQ6ljwOytlicmRw=
+X-Received: by 2002:a37:de17:: with SMTP id h23mr4206586qkj.368.1599150941506;
+ Thu, 03 Sep 2020 09:35:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
+References: <20200903161804.403299-1-daniel.gutson@eclypsium.com> <20200903162756.GB406278@kroah.com>
+In-Reply-To: <20200903162756.GB406278@kroah.com>
+From:   Daniel Gutson <daniel@eclypsium.com>
+Date:   Thu, 3 Sep 2020 13:35:30 -0300
+Message-ID: <CAFmMkTFXaU64JzWoc2cFYE9i8hXjfAwRy8Ct0_9EWV_PSJPi6w@mail.gmail.com>
+Subject: Re: [PATCH] Platform integrity information in sysfs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sowjanya,
-
-On Thu, Sep 03, 2020 at 09:05:27AM -0700, Sowjanya Komatineni wrote:
+On Thu, Sep 3, 2020 at 1:27 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On 9/3/20 5:55 AM, Jacopo Mondi wrote:
-> > Hello Sowjanya,
+> On Thu, Sep 03, 2020 at 01:18:04PM -0300, Daniel Gutson wrote:
+> > This patch exports information about the platform integrity
+> > firmware configuration in the sysfs filesystem.
+> > In this initial patch, I include some configuration attributes
+> > for the system SPI chip.
 > >
-> > On Tue, Sep 01, 2020 at 07:04:37PM -0700, Sowjanya Komatineni wrote:
-> > > This patch adds IMX274 optional external clock input and voltage
-> > > supplies to device tree bindings.
-> > >
-> > > Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-> > > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
-> > > ---
-> > >   .../devicetree/bindings/media/i2c/sony,imx274.yaml  | 21 +++++++++++++++++++++
-> > >   1 file changed, 21 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-> > > index 7ae47a6..57e7176 100644
-> > > --- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-> > > @@ -25,6 +25,27 @@ properties:
-> > >     reset-gpios:
-> > >       maxItems: 1
-> > >
-> > I just sent an update to my json-schema conversion of this bindings
-> > document (not yet on patchwork, sorry) and Sakari pointed me to the
-> > fact in between my v2 and my v4 this patch from you went in:
-> > 4ea3273d24b ("dt-bindings: media: imx274: Add optional input clock and supplies")
+> > This initial version exports the BIOS Write Enable (bioswe),
+> > BIOS Lock Enable (ble), and the SMM BIOS Write Protect (SMM_BWP)
+> > fields of the BIOS Control register. The idea is to keep adding more
+> > flags, not only from the BC but also from other registers in following
+> > versions.
 > >
-> > I should probably now update my bindings conversion patch, basically
-> > taking in what you've done here, but I would have one question.
+> > The goal is that the attributes are avilable to fwupd when SecureBoot
+> > is turned on.
 > >
-> > > +  clocks:
-> > > +    maxItems: 1
-> > > +    description: Reference to the sensor input clock
-> > > +
-> > > +  clock-names:
-> > > +    maxItems: 1
-> > > +    items:
-> > > +      - const: inck
-> > > +
-> > > +  vana-supply:
-> > > +    description:
-> > > +      Analog voltage supply, 2.8 volts
-> > > +
-> > > +  vdig-supply:
-> > > +    description:
-> > > +      Digital IO voltage supply, 1.8 volts
-> > > +
-> > > +  vddl-supply:
-> > > +    description:
-> > > +      Digital core voltage supply, 1.2 volts
-> > 4ea3273d24b introduced these regulators as VANA-supply, VDIG-supply
-> > and VDDL-supply (please note the upper-case names). This version uses
-> > lower-case ones instead. Is this intentional ? The driver currently
-> > does not parse any of these if I'm not mistaken, but as the bindings
-> > in textual form defines an ABI which should be preserved during the
-> > conversion to json-schema, should these be kept in upper-case ?
+> > The patch provides a new misc driver, as proposed in the previous patch,
+> > that provides a registration function for HW Driver devices to register
+> > class_attributes.
+> > In this case, the intel SPI flash chip (intel-spi) registers three
+> > class_attributes corresponding to the fields mentioned above.
 > >
-> > Thanks
-> >     j
+> > This version of the patch provides a new API supporting regular
+> > device attributes rather than custom attributes, and also avoids
+> > a race condition when exporting the driver sysfs dir and the
+> > attributes files inside it.
+> > Also, this patch renames 'platform lockdown' by 'platform integrity'.
+> >
+> > Signed-off-by: Daniel Gutson <daniel.gutson@eclypsium.com>
+> > ---
 >
-> Yes, based on feedback lower case was recommended. So, changed to use
-> lower-case names.
+> Always version your patches, there's no way this is "v1", right?
+
+Sorry, I thought the version was reseted after the title changed.
+
 >
-> These properties were not used by driver currently and from my prior series
-> only dt-binding got merged as  no feedback was received on it for all prior
-> versions.
->
-> So, should be ok to change to lower-case as there properties are introduced
-> now and driver update using these properties is under review
->
+> greg k-h
 
-Well, I see that patch went in v5.9-rc1, so it will be part of v5.9.
 
-If the bindings update goes in in v5.10 (or whatever comes after v5.9)
-then we have a problem, as the DTB created for v5.9 won't work anymore
-on any later version, and that should not happen. Alternatively, a fix
-for the next -rc release could be fast-tracked, but you would
-need to synchronize with the dt maintainers for that and make a patch
-for the existing .txt bindings file.
 
-If the name change happens in the yaml file and one release is made
-with the old names, then we're stuck with those forever and ever, if I
-got the situation right.
+-- 
+Daniel Gutson
+Argentina Site Director
+Enginieering Director
+Eclypsium
 
-Please check with the dt and media maintainers, or they can comment
-here if they glance through these lines.
-
-Thanks
-  j
-
-> > > +
-> > >     port:
-> > >       type: object
-> > >       description: |
-> > > --
-> > > 2.7.4
-> > >
+Below The Surface: Get the latest threat research and insights on
+firmware and supply chain threats from the research team at Eclypsium.
+https://eclypsium.com/research/#threatreport
