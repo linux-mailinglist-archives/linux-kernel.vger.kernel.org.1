@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C9025C8C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8303025C8C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgICSc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:32:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45500 "EHLO mail.kernel.org"
+        id S1729214AbgICScj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728989AbgICSc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:32:28 -0400
+        id S1729169AbgICSc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 14:32:29 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7B7120709;
-        Thu,  3 Sep 2020 18:32:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0851208CA;
+        Thu,  3 Sep 2020 18:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599157948;
-        bh=Xk7ANwQEUDdVwcEafwZ17QaNZ9ncSLQF0MOCl+r1vEQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Zb6qS+jEMpKgcKdRy8YKYY+BW1jGpQMAx6pjWraBl5y2+vYOvm9W71bYEiS7peFNP
-         1z3gKnGCWHORRXUrpRzzdbS1JBsUGQ3fh9zPootJRdxYQyA2i6XtTeCdWq84/MpZhd
-         86X47MPsX+qWERHcAqDTQk1uRYRXJo5C2pZSnNoo=
+        bh=KjzQo3s4NSxmm7KztdtA2PGL3W2R+mEIjOYhxHvZr1E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QaPa7mVtZeENp1aOBZCK/RHEyumNjKPU32TtAsKt5ZJR2S5Gj53h1w7GvlN+jK79x
+         opGAIw5m+nkNI4eSa6tftq5SvTmC88O6CSW6QaJKNOGUgBkctBpqmkczpkxHoaKDAm
+         fss4/r4gQpLAOXRETrrgSPXXZDqYPj/mTZVYnlS0=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1kDu25-008xrJ-WA; Thu, 03 Sep 2020 19:32:26 +0100
+        id 1kDu26-008xrJ-Jj; Thu, 03 Sep 2020 19:32:26 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Jason Cooper <jason@lakedaemon.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Valentin Schneider <valentin.schneider@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v2 0/4] irqchip/gic: Generalize use of HW-based retriggering
-Date:   Thu,  3 Sep 2020 19:32:02 +0100
-Message-Id: <20200903183206.104838-1-maz@kernel.org>
+Subject: [PATCH v2 1/4] genirq: Walk the irq_data hierarchy when resending an interrupt
+Date:   Thu,  3 Sep 2020 19:32:03 +0100
+Message-Id: <20200903183206.104838-2-maz@kernel.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903183206.104838-1-maz@kernel.org>
+References: <20200903183206.104838-1-maz@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 62.31.163.78
@@ -49,38 +51,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valentin recently pointed out that that relying on SW-based retrigger
-with any of the GIC interrupt controllers is both inefficient and
-slightly broken, as it messes the GIC's own state machine.
+On resending an interrupt, we only check the topmost irqchip for
+a irq_retrigger callback. However, this callback could be implemented
+at a lower level. Use irq_chip_retrigger_hierarchy() in this case.
 
-For this to work with the hierarchical irqchip model that the GIC
-uses, we need check_irq_resend grow an understanding of hierarchies,
-something it has been lacking for some time.
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ kernel/irq/resend.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-The 3 other patches simply implement the HW resend callbacks, and
-finally prevent any SW resend for the GICs.
-
-Unless anyone objects, I plan to take this into 5.10.
-
-* From v1:
-  - Dropped most of the patches in favour of a teaching the core
-    kernel to use irq_chip_retriger_hierarchy()
-
-Marc Zyngier (2):
-  genirq: Walk the irq_data hierarchy when resending an interrupt
-  irqchip/git-v3-its: Implement irq_retrigger callback for
-    device-triggered LPIs
-
-Valentin Schneider (2):
-  irqchip/gic-v2, v3: Implement irq_chip->irq_retrigger()
-  irqchip/gic-v2, v3: Prevent SW resends entirely
-
- drivers/irqchip/irq-gic-v3-its.c |  6 ++++++
- drivers/irqchip/irq-gic-v3.c     | 12 +++++++++++-
- drivers/irqchip/irq-gic.c        | 12 +++++++++++-
- kernel/irq/resend.c              | 15 +++++++++++++--
- 4 files changed, 41 insertions(+), 4 deletions(-)
-
+diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
+index c48ce19a257f..8ccd32a0cc80 100644
+--- a/kernel/irq/resend.c
++++ b/kernel/irq/resend.c
+@@ -86,6 +86,18 @@ static int irq_sw_resend(struct irq_desc *desc)
+ }
+ #endif
+ 
++static int try_retrigger(struct irq_desc *desc)
++{
++	if (desc->irq_data.chip->irq_retrigger)
++		return desc->irq_data.chip->irq_retrigger(&desc->irq_data);
++
++#ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
++	return irq_chip_retrigger_hierarchy(&desc->irq_data);
++#else
++	return 0;
++#endif
++}
++
+ /*
+  * IRQ resend
+  *
+@@ -113,8 +125,7 @@ int check_irq_resend(struct irq_desc *desc, bool inject)
+ 
+ 	desc->istate &= ~IRQS_PENDING;
+ 
+-	if (!desc->irq_data.chip->irq_retrigger ||
+-	    !desc->irq_data.chip->irq_retrigger(&desc->irq_data))
++	if (!try_retrigger(desc))
+ 		err = irq_sw_resend(desc);
+ 
+ 	/* If the retrigger was successfull, mark it with the REPLAY bit */
 -- 
 2.28.0
 
