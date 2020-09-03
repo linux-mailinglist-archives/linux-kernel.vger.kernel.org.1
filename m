@@ -2,123 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E46B25C772
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB46325C774
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728372AbgICQvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgICQvB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:51:01 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C38A0C061246
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 09:51:00 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u20so2811752pfn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 09:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tYswq0INUnCXDjKxKIlArRe/7d70YANql2ROlnI+buo=;
-        b=DRgHK2RbTx2vSGyzMiXUH8rTd9nawtq6hdIIwJ2t1AS6MXHt7VP+6oUKf/aKWykrqR
-         XX5W9+4UVu4miJ0qlbYZW7EcwoIPRQv/2p/TB1S00FYjdceD6gf5sTjQOIFGjKuj70JP
-         WbeefPKTvlM1bhI2uvoiH9s5zgp0U+zHxPiLg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tYswq0INUnCXDjKxKIlArRe/7d70YANql2ROlnI+buo=;
-        b=oAqrKY1bVSEYjnpq5NxaqKceIxLx0fAQLKHM7o005aJduBHk7xJ74kU18GRVuYIeq4
-         v8Ryp1vfpyDMGEwBtXMiMv9im5I+e3A4LTX7BKO2ykQ3r/bPcSOKj7Q2HJIu5q/qXKxJ
-         ObfzalZnactVaeut9SclnWHpj260i4H500lhn0+Jf5QFnnEQthubO2qHVySQ0fB/FHue
-         sGHHEuw3JNxosbZf2X1A58pKlYxkwPer/pkxuCyMvujBpuACh/0ZNj87W9ZlCHWoLu9w
-         Rbdr5iE3fjWwyE1A0dPqvsh6K1B0kdLliH+vxevLep4/JAYiz7u4XWw5Av20i6kpYaLZ
-         KDKA==
-X-Gm-Message-State: AOAM531yrQGS7WY2gVHDuSFNgpb71rkw3cl51jykxe6D8qFI0KuZoxGS
-        007AUr0722eYkXsUFZ+k7/LlDQ==
-X-Google-Smtp-Source: ABdhPJxe0+f43E5C2y6BmpiWR2I624iFFvdWU7omKgeAVYClcZCTt7hfqW1mcf1BOPFfo071tiYWLQ==
-X-Received: by 2002:a63:500e:: with SMTP id e14mr3701731pgb.36.1599151859998;
-        Thu, 03 Sep 2020 09:50:59 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id gx5sm2966059pjb.57.2020.09.03.09.50.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 09:50:59 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 09:50:58 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        gregkh@linuxfoundation.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akashast@codeaurora.org,
-        rojay@codeaurora.org, msavaliy@qti.qualcomm.com
-Subject: Re: [PATCH V4 4/4] tty: serial: qcom_geni_serial: Fix the UART
- wakeup issue
-Message-ID: <20200903165058.GK3419728@google.com>
-References: <1599145498-20707-1-git-send-email-skakit@codeaurora.org>
- <1599145498-20707-5-git-send-email-skakit@codeaurora.org>
+        id S1728480AbgICQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbgICQvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 12:51:36 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1B56206A5;
+        Thu,  3 Sep 2020 16:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599151895;
+        bh=9nuBsOJQA9e13A76CrPt0VR9k4EIoQQntYC/v7VbZec=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KmzC/r9W98mk1/1tE1v/N+bQC5PpPgZTwlYElmLe+iSwIamwDT0GI6BJKvjH2ZYhM
+         M9JwWv/HZjldCvZr+4Y2zRYP9CuP5BeomXA+bA/dG2QCfs3kOlLCkj/eJu7Ceo5WmW
+         Tkv2hHOjP79C7p99A+UPP+Py/AqWRCvJDnRNeJuM=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D07B040D3D; Thu,  3 Sep 2020 13:51:32 -0300 (-03)
+Date:   Thu, 3 Sep 2020 13:51:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Remi Bernon <rbernon@codeweavers.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jacek Caban <jacek@codeweavers.com>
+Subject: Re: [PATCH v3 1/3] perf dso: Use libbfd to read build_id and
+ .gnu_debuglink section
+Message-ID: <20200903165132.GA3495158@kernel.org>
+References: <20200821165238.1340315-1-rbernon@codeweavers.com>
+ <20200903002519.GA3487700@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1599145498-20707-5-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <20200903002519.GA3487700@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 08:34:58PM +0530, satya priya wrote:
-> As a part of system suspend uart_port_suspend is called from the
-> Serial driver, which calls set_mctrl passing mctrl as NULL. This
+Em Wed, Sep 02, 2020 at 09:25:19PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon escreveu:
+> > Wine generates PE binaries for most of its modules and perf is unable
+> > to parse these files to get build_id or .gnu_debuglink section.
+> > 
+> > Using libbfd when available, instead of libelf, makes it possible to
+> > resolve debug file location regardless of the dso binary format.
+> > 
+> > Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
+> > Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> > Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Jacek Caban <jacek@codeweavers.com>
+> > ---
+> > 
+> > v3: Rebase and small changes to PATCH 2/3 and and PATCH 3/3.
+> > 
+> >  tools/perf/util/symbol-elf.c | 80 ++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 77 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> > index 8cc4b0059fb0..f7432c4a4154 100644
+> > --- a/tools/perf/util/symbol-elf.c
+> > +++ b/tools/perf/util/symbol-elf.c
+> > @@ -50,6 +50,10 @@ typedef Elf64_Nhdr GElf_Nhdr;
+> >  #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
+> >  #endif
+> >  
+> > +#ifdef HAVE_LIBBFD_SUPPORT
+> 
+> So, the feature test should also test for the buildid struct field, see
+> below:
+> 
+> > +#define PACKAGE 'perf'
+> > +#include <bfd.h>
+> > +#else
+> >  #ifdef HAVE_CPLUS_DEMANGLE_SUPPORT
+> >  extern char *cplus_demangle(const char *, int);
+> >  
+> > @@ -65,9 +69,7 @@ static inline char *bfd_demangle(void __maybe_unused *v,
+> >  {
+> >  	return NULL;
+> >  }
+> > -#else
+> > -#define PACKAGE 'perf'
+> > -#include <bfd.h>
+> > +#endif
+> >  #endif
+> >  #endif
+> >  
+> > @@ -530,6 +532,36 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+> >  	return err;
+> >  }
+> >  
+> > +#ifdef HAVE_LIBBFD_SUPPORT
+> > +
+> > +int filename__read_build_id(const char *filename, void *bf, size_t size)
+> > +{
+> > +	int err = -1;
+> > +	bfd *abfd;
+> > +
+> > +	abfd = bfd_openr(filename, NULL);
+> > +	if (!abfd)
+> > +		return -1;
+> > +
+> > +	if (!bfd_check_format(abfd, bfd_object)) {
+> > +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
+> > +		goto out_close;
+> > +	}
+> > +
+> > +	if (!abfd->build_id || abfd->build_id->size > size)
+> > +		goto out_close;
+> 
+> amazonlinux:1, centos:6, debian:8, mageia:5, oraclelinux:6, ubuntu:14.04
+> fail, its all old stuff, but adding a reference to abfd->build_id to the
+> feature test that ends up defining HAVE_LIBBFD_SUPPORT will solve that,
+> I'll do it tomorrow morning if you don't beat me to it.
+> 
+> util/symbol-elf.c: In function 'filename__read_build_id':
+> util/symbol-elf.c:551:11: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   if (!abfd->build_id || abfd->build_id->size > size)
+>            ^~
+> util/symbol-elf.c:551:29: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   if (!abfd->build_id || abfd->build_id->size > size)
+>                              ^~
+> util/symbol-elf.c:554:17: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   memcpy(bf, abfd->build_id->data, abfd->build_id->size);
+>                  ^~
+> util/symbol-elf.c:554:39: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   memcpy(bf, abfd->build_id->data, abfd->build_id->size);
+>                                        ^~
+> util/symbol-elf.c:555:18: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
+>                   ^~
+> util/symbol-elf.c:555:50: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
+>                                                   ^~
+> util/symbol-elf.c:556:12: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>   err = abfd->build_id->size;
+>             ^~
+>   CC       /tmp/build/perf/util/cap.o
+> make[4]: *** [/tmp/build/perf/util/symbol-elf.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+>   LD       /tmp/build/perf/util/scripting-engines/perf-in.o
+>   LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
+> make[3]: *** [util] Error 2
+> make[2]: *** [/tmp/build/perf/perf-in.o] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [sub-make] Error 2
+> make: *** [all] Error 2
+> make: Leaving directory `/git/linux/tools/perf'
+> + exit 1
+> [perfbuilder@five ~]$
 
-nit: s/NULL/0/
+So, I have the cset at the end of this message in front of your series +
+the following patch applied to your patch, the debuglink part seems ok
+and can continue depending on just libbfd, having or not abfd->buildid.
 
-> makes RFR high(NOT_READY) during suspend.
-> 
-> Due to this BT SoC is not able to send wakeup bytes to UART during
-> suspend. Include if check for non-suspend case to keep RFR low
-> during suspend.
+- Arnaldo
 
-Is this patch actually needed?
-
-With the other patches in this series the UART doesn't control RFR
-on IDP, and I suppose corresponding pinconf changes should also be
-done on other devices that want to support wakeup. Effectively,
-I see Bluetooth wakeup working without this patch on a sc7180
-device.
-
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
-> ---
-> Changes in V2:
->  - This patch fixes the UART flow control issue during suspend.
->    Newly added in V2.
-> 
-> Changes in V3:
->  - As per Matthias's comment removed the extra parentheses.
-> 
-> Changes in V4:
->  - No change.
-> 
->  drivers/tty/serial/qcom_geni_serial.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index 07b7b6b..2aad9d7 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -242,7 +242,7 @@ static void qcom_geni_serial_set_mctrl(struct uart_port *uport,
->  	if (mctrl & TIOCM_LOOP)
->  		port->loopback = RX_TX_CTS_RTS_SORTED;
->  
-> -	if (!(mctrl & TIOCM_RTS))
-> +	if (!(mctrl & TIOCM_RTS) && !uport->suspended)
->  		uart_manual_rfr = UART_MANUAL_RFR_EN | UART_RFR_NOT_READY;
->  	writel(uart_manual_rfr, uport->membase + SE_UART_MANUAL_RFR);
->  }
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+index f7432c4a4154a149..94a156df22d5a8d3 100644
+--- a/tools/perf/util/symbol-elf.c
++++ b/tools/perf/util/symbol-elf.c
+@@ -532,7 +532,7 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+ 	return err;
+ }
+ 
+-#ifdef HAVE_LIBBFD_SUPPORT
++#ifdef HAVE_LIBBFD_BUILDID_SUPPORT
+ 
+ int filename__read_build_id(const char *filename, void *bf, size_t size)
+ {
+@@ -560,7 +560,7 @@ int filename__read_build_id(const char *filename, void *bf, size_t size)
+ 	return err;
+ }
+ 
+-#else
++#else // HAVE_LIBBFD_BUILDID_SUPPORT
+ 
+ int filename__read_build_id(const char *filename, void *bf, size_t size)
+ {
+@@ -589,7 +589,7 @@ int filename__read_build_id(const char *filename, void *bf, size_t size)
+ 	return err;
+ }
+ 
+-#endif
++#endif // HAVE_LIBBFD_BUILDID_SUPPORT
+ 
+ int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
+ {
