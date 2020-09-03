@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0793E25C75B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BC025C760
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbgICQrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:47:17 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:36885 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728458AbgICQrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:47:16 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4Bj6D12XTXz6R;
-        Thu,  3 Sep 2020 18:47:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1599151633; bh=aW3vviD3X6zwOHneikrU8nTQgniWlnIKgJxxeVIHhJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FbzJpLnIa630aI8y1RwLW6KhJfwv1iwu+6hA0QRMlp0ZEJJmHLVSjEfMNteG8X0pl
-         EqDLn5s12AOv0XmkWGmMTHkPQsiOfwD6nMkVKshDWu+/WGzO/BW34JsPh8mVDIIAvL
-         869P6DJQhM2mRbDuH6Xdvssmue6J7OTw7+u/9t6p+O0TAvmPtxbn0Lss7Umv7Ngu+Q
-         gvEinYFM/r4d/3r2n+V2pP3RpESDyyYeJyueGVzixZocEcRoluB8xYcH7CJtRWD+/6
-         iDIWsJGPVA6lSPu6dvxqiEV0aUf6DrgyOI69eF5zdi9t120zv14TV99kQJj/H7pA57
-         daEzCQdcOWfGw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Thu, 3 Sep 2020 18:47:09 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 00/12] Improvements for Tegra I2C driver
-Message-ID: <20200903164709.GA7406@qmqm.qmqm.pl>
-References: <20200831202303.15391-1-digetx@gmail.com>
- <20200902212026.GD1624@qmqm.qmqm.pl>
- <04aae642-80f9-d22e-1d80-bb206bb27a8b@gmail.com>
+        id S1728902AbgICQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:47:42 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:38691 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgICQrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 12:47:40 -0400
+Received: by mail-il1-f195.google.com with SMTP id w3so3328486ilh.5;
+        Thu, 03 Sep 2020 09:47:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cpkYtO3goB70S5Zk4sLb1vXO3uhYcLt8YvepwZ1oACw=;
+        b=YhOvgh9GUlJ31ev23FwHMOSkG5sMDgKj173r4dK1BpcU7BlAXM9NZQjEUupL/zfgXT
+         Oc0/0NK/6FGUX9Nd/twieRzVjjoMpPREzNLPIZ9cWNXTuozWZJUV7nwE2ZQOxYrD0x2p
+         X8LKdjGtZXV1TgknlrJIsxCCPV9hD5d7VY9eMoSRBSUimVx5KoLerDd+wVvuYRu47XWU
+         dDrBHF+b0R94CROFFPpMItWmI0laIywY/+DkNKC/V91njpa8q+jkcjFWmjXKmGy5E4to
+         4LBwcnbv9ChFR3HS3RpzZTk+79jd1o6X9pXGxhQ5z1ZtK8Lnm3eV/7vkVyJXJQz/FbCq
+         BhFw==
+X-Gm-Message-State: AOAM533KiD/kqumW8kz2uzDZKFrSfty2M9Mg1eHHqp9he0XZFyXQIssA
+        AeqiojjGvR8kywvf7TPRYA==
+X-Google-Smtp-Source: ABdhPJzm0dZgqusi1IwGj/t8TXXA2VCoB4/ojBoVS5J1+GJ8RiWXpDpcvKXVi0SJpK3PWvduyYrVUA==
+X-Received: by 2002:a92:60b:: with SMTP id x11mr3795331ilg.179.1599151659642;
+        Thu, 03 Sep 2020 09:47:39 -0700 (PDT)
+Received: from xps15 ([64.188.179.249])
+        by smtp.gmail.com with ESMTPSA id h15sm1614283ils.74.2020.09.03.09.47.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 09:47:39 -0700 (PDT)
+Received: (nullmailer pid 2931399 invoked by uid 1000);
+        Thu, 03 Sep 2020 16:47:38 -0000
+Date:   Thu, 3 Sep 2020 10:47:38 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: sound: midas-audio: Correct parsing
+ sound-dai phandles
+Message-ID: <20200903164738.GA2929052@bogus>
+References: <20200830112633.6732-1-krzk@kernel.org>
+ <159897179515.47719.6003518135515395142.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <04aae642-80f9-d22e-1d80-bb206bb27a8b@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <159897179515.47719.6003518135515395142.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 04:12:13AM +0300, Dmitry Osipenko wrote:
-> 03.09.2020 00:20, Michał Mirosław пишет:
-> > BTW, I wonder if you could expose i2c_in_atomic_xfer_mode() and use it
-> > to differentiate atomic_xfer from normal and get rid of the internal
-> > flag and .master_xfer_atomic callback.
+On Tue, Sep 01, 2020 at 03:50:05PM +0100, Mark Brown wrote:
+> On Sun, 30 Aug 2020 13:26:32 +0200, Krzysztof Kozlowski wrote:
+> > The "sound-dai" property has cells therefore phandle-array should be
+> > used, even if it is just one phandle.  This fixes dtbs_check warnings
+> > like:
+> > 
+> >   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0:1: missing phandle tag in 0
+> >   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0: [158, 0] is too long
 > 
-> The atomic transfer uses 90% of the code path that a non-atomic transfer
-> uses. I don't see how it could be exposed without duplicated lots of the
-> code, unless I'm not missing what you're suggesting.
+> Applied to
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> 
+> Thanks!
+> 
+> [1/2] ASoC: midas-audio: Correct parsing sound-dai phandles
+>       commit: 3e7ba1c0432ef9a792b9c77d36f78037626303b0
+> [2/2] ASoC: odroid: Use unevaluatedProperties
+>       commit: a57307ca6b661e16f9435a25f376ac277c3de697
 
-The I2C core falls back to .master_xfer even in atomic mode if
-.master_xfer_atomic is NULL, so what I'm suggesting is to make
-i2c_in_atomic_xfer_mode() public (from i2c-core.h) and use it in
-normal .master_xfer to choose atomic wait variants.
+This one should be reverted/dropped too. Patch 1 is fine.
 
-Best Regards,
-Michał Mirosław
