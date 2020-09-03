@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8765C25B90C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 05:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B2525B912
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 05:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbgICDE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 23:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgICDE4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 23:04:56 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0DFC061245
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 20:04:55 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id o68so1058960pfg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 20:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=j6ZbavePedjhnfU79o3iQRLIDz1F7LpY5/tY3kRYH2I=;
-        b=ZOK4yYlBIO8Z0jgxrFvwOCT/sjcNTC39bYH6ajJhH9WN8TBngwyJVUB27jctJ4Kvok
-         va0DKBExk4lXAXHlId6x0RrPy4dya1A8Eg62cS211NLG4W+Zc8j6BbbeS8WsMCInVNA0
-         1RuxtjONt7HjtlqEy1GaBxfkvGWqArrkpvI+M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=j6ZbavePedjhnfU79o3iQRLIDz1F7LpY5/tY3kRYH2I=;
-        b=LfompwMXgw0z1EKqtWXIuLvGuLNN7jirwOQkiVQTadvGbh/qWPQUGx6juR48EMplv0
-         VPkpo/CqP0NFLkD2cbEBHb7UQOXhgc/wJ/MDa/03zLIv4xpfiWOquIkDAFL19s9nqo0+
-         kEGoRiDAPwk2uuRb/uefTrUpm/VCjxTv7EvYr3c1mqezP2Kprz/qsakAI+lR0p11dzbT
-         2OP1uxZw6Uujd80wJ59vQe1kTR94UYRawwg8i4GwB9YFTpa1Ko7p09MKeaq0AFbHJz9T
-         d/u1JD2KREwlL3RooWHVLKo1jCxy/R0dliMy5simY/ByvM4FuIFXGa0DYpufWzT0IKj3
-         dYBw==
-X-Gm-Message-State: AOAM5328DpzWZnowyPk6uhai6ZICtEljPLWnAvyRiCDvCm6Tijpalxmf
-        0K4mqZbKtG/MhQ5rEXLehvOP5Q==
-X-Google-Smtp-Source: ABdhPJwdWm3XvRRulvRARovi0fdDDyEZakdEq37nM+b/0BRaKbYUMSCt7KjLe+/u59Y7pOIGeuPyPQ==
-X-Received: by 2002:a17:902:6f01:: with SMTP id w1mr1529786plk.49.1599102294791;
-        Wed, 02 Sep 2020 20:04:54 -0700 (PDT)
-Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id b203sm955960pfb.205.2020.09.02.20.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 20:04:54 -0700 (PDT)
-From:   Ikjoon Jang <ikjn@chromium.org>
-To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, drinkcat@chromium.org,
-        dianders@chromium.org, briannorris@chromium.org,
-        Ikjoon Jang <ikjn@chromium.org>
-Subject: [PATCH] power: supply: sbs-battery: keep error code when get_property() fails
-Date:   Thu,  3 Sep 2020 11:04:40 +0800
-Message-Id: <20200903030440.2505496-1-ikjn@chromium.org>
-X-Mailer: git-send-email 2.28.0.402.g5ffc5be6b7-goog
-In-Reply-To: <20200828155843.33xb2ig2gpawigsw@earth.universe>
-References: <20200828155843.33xb2ig2gpawigsw@earth.universe>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728064AbgICDP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 23:15:27 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:37950 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726528AbgICDP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 23:15:27 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B02C91A028C;
+        Thu,  3 Sep 2020 05:15:25 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 321811A028B;
+        Thu,  3 Sep 2020 05:15:21 +0200 (CEST)
+Received: from 10.192.242.69 (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 56C2840249;
+        Thu,  3 Sep 2020 05:15:15 +0200 (CEST)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_sai: Set SAI Channel Mode to Output Mode
+Date:   Thu,  3 Sep 2020 11:09:15 +0800
+Message-Id: <1599102555-17178-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c4f382930145 (power: supply: sbs-battery: don't assume
-i2c errors as battery disconnect) overwrites the original error code
-returned from internal functions. On such a sporadic i2c error,
-a user will get a wrong value without errors.
+Transmit data pins will output zero when slots are masked or channels
+are disabled. In CHMOD TDM mode, transmit data pins are tri-stated when
+slots are masked or channels are disabled. When data pins are tri-stated,
+there is noise on some channels when FS clock value is high and data is
+read while fsclk is transitioning from high to low.
 
-Fixes: c4f382930145 (power: supply: sbs-battery: don't assume i2c errors as battery disconnect)
-
-Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
-Sorry, I missed an case with present state unchanged.
-Sebastian, if you're okay with this patch,
-I think this could be squashed into original commit c4f382930145 in your
-branch.
----
- drivers/power/supply/sbs-battery.c | 24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 12 ++++++++++--
+ sound/soc/fsl/fsl_sai.h |  2 ++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/sbs-battery.c b/drivers/power/supply/sbs-battery.c
-index dacc4bc1c013..13192cbcce71 100644
---- a/drivers/power/supply/sbs-battery.c
-+++ b/drivers/power/supply/sbs-battery.c
-@@ -962,11 +962,10 @@ static int sbs_get_property(struct power_supply *psy,
- 	if (!chip->gpio_detect && chip->is_present != (ret >= 0)) {
- 		bool old_present = chip->is_present;
- 		union power_supply_propval val;
--
--		ret = sbs_get_battery_presence_and_health(
-+		int err = sbs_get_battery_presence_and_health(
- 				client, POWER_SUPPLY_PROP_PRESENT, &val);
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 62c5fdb678fc..33b194a5c1dc 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -486,6 +486,12 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
  
--		sbs_update_presence(chip, !ret && val.intval);
-+		sbs_update_presence(chip, !err && val.intval);
+ 	val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
  
- 		if (old_present != chip->is_present)
- 			power_supply_changed(chip->power_supply);
-@@ -976,19 +975,14 @@ static int sbs_get_property(struct power_supply *psy,
- 	if (!ret) {
- 		/* Convert units to match requirements for power supply class */
- 		sbs_unit_adjustment(client, psp, val);
-+		dev_dbg(&client->dev,
-+			"%s: property = %d, value = %x\n", __func__,
-+			psp, val->intval);
-+	} else if (!chip->is_present)  {
-+		/* battery not present, so return NODATA for properties */
-+		ret = -ENODATA;
++	/* Output Mode - data pins transmit 0 when slots are masked
++	 * or channels are disabled
++	 */
++	if (tx)
++		val_cr4 |= FSL_SAI_CR4_CHMOD;
++
+ 	/*
+ 	 * For SAI master mode, when Tx(Rx) sync with Rx(Tx) clock, Rx(Tx) will
+ 	 * generate bclk and frame clock for Tx(Rx), we should set RCR4(TCR4),
+@@ -494,7 +500,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (!sai->is_slave_mode && fsl_sai_dir_is_synced(sai, adir)) {
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(!tx, ofs),
+-				   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++				   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
++				   FSL_SAI_CR4_CHMOD_MASK,
+ 				   val_cr4);
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCR5(!tx, ofs),
+ 				   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
+@@ -502,7 +509,8 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
  	}
--
--	dev_dbg(&client->dev,
--		"%s: property = %d, value = %x\n", __func__, psp, val->intval);
--
--	if (ret && chip->is_present)
--		return ret;
--
--	/* battery not present, so return NODATA for properties */
--	if (ret)
--		return -ENODATA;
--
--	return 0;
-+	return ret;
- }
  
- static void sbs_supply_changed(struct sbs_info *chip)
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
+-			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK,
++			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
++			   FSL_SAI_CR4_CHMOD_MASK,
+ 			   val_cr4);
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR5(tx, ofs),
+ 			   FSL_SAI_CR5_WNW_MASK | FSL_SAI_CR5_W0W_MASK |
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index 6aba7d28f5f3..19cd4e1bbff9 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -119,6 +119,8 @@
+ #define FSL_SAI_CR4_FRSZ_MASK	(0x1f << 16)
+ #define FSL_SAI_CR4_SYWD(x)	(((x) - 1) << 8)
+ #define FSL_SAI_CR4_SYWD_MASK	(0x1f << 8)
++#define FSL_SAI_CR4_CHMOD       BIT(5)
++#define FSL_SAI_CR4_CHMOD_MASK  BIT(5)
+ #define FSL_SAI_CR4_MF		BIT(4)
+ #define FSL_SAI_CR4_FSE		BIT(3)
+ #define FSL_SAI_CR4_FSP		BIT(1)
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.27.0
 
