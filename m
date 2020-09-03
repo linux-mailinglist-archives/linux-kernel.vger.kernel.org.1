@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A5E25C41F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698C125C410
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbgICPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:04:19 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:9827 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728924AbgICN6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:58:20 -0400
-IronPort-SDR: PwSSrpM7beoRNGtbZuYVQYarDacF81+BP6yekLAu15x7XInnZ+j5yvbR+RmcJR4SgQGfMy3QxF
- +W1I13/hf7uv7PgjkRcXItnriXG56d2qnPNvuMDwP5TT2rKbRL87qo0YrJWVdCrbqnXg6xRfzf
- doKCClYldLzMX+mQPBcJnZA6Dvz+zQ5Lr1GCrroAPKS8Mx4cGGhMgKw87yxskV3KabPuiYNNeU
- HK/iHvecc8tGVcNFPfxJ45nNmcCZWPMtDaZYSvhFb43LTmeJBpaYKI6cYWI22gusuFIG8S9n+2
- A1k=
-X-IronPort-AV: E=Sophos;i="5.76,386,1592863200"; 
-   d="scan'208";a="13721334"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 03 Sep 2020 15:40:44 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 03 Sep 2020 15:40:44 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 03 Sep 2020 15:40:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1599140444; x=1630676444;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PSRtsYjMIeQn6kkIpSqi/xNdAKBtKRUGER2IFcNijQk=;
-  b=N8JPB2+7SiBeJrScJn+KM0GUbsfIXmUgpzkMlhWMhmo/yN4YxwRQf3cI
-   HTBh2bWXK+2czsdjHkI4rSjEsXwlqaboxcmdup/N/drxkqC902yTb+js2
-   PzhqWK+fPzszJlEd0Wg6Q/zcY2gguuBaQxmEhVUJUyyT27Xe6fsWd5nu/
-   9NajEiQBmfnR/TSAaDJ020PyEaO5xl7rKZ8DkteUnsQBqF6Ic7ETDyavR
-   ZnFZwsOBGLjv2K17N+0YrJTYmf0gJTj828ci3wlmlHqctSn7GAKCwkZoT
-   Pkei9rNfLTeZ6hNJG2GAZEBNxq9lm/6C4hygxryfJbFqRpQykxDmuuwAo
-   Q==;
-IronPort-SDR: zDp6qokfh+UZ5a3ETjcvlv4kekHz7nAQLLDIdpowFcBTrgZGK7bVWsZawcpM6af3jkn2ZirSL+
- xiYF4B0FjTeQEOaqUrbDsjYDlp5zzNTt8x6A2qaU9TbnTj+m+d4F507FtMUS8rYhkK0r0FcaZ2
- 3R3juBoV0vLvMpOzGa/ATiyM1uMEndtaz8TpDz+FLFU2/ic8Szsk318uheKdvVFW6bqVK1t0m7
- S++Z/We4I3MD7SRVT8cjBv34z3oZ3hm9NGMIgVKwU7J9voCKjrdHBBdawFMa00QeAu3dx5F4qY
- xn8=
-X-IronPort-AV: E=Sophos;i="5.76,386,1592863200"; 
-   d="scan'208";a="13721333"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 03 Sep 2020 15:40:43 +0200
-Received: from schifferm-ubuntu4 (unknown [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id C88BD280065;
-        Thu,  3 Sep 2020 15:40:43 +0200 (CEST)
-Message-ID: <ce08696b6bf2b3eaa84d6f056f47a8240c7479f4.camel@ew.tq-group.com>
-Subject: Re: spi-imx: correct interpretation of num-cs DT property?
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 03 Sep 2020 15:40:43 +0200
-In-Reply-To: <20200903132241.GB4771@sirena.org.uk>
-References: <ecfa135b7b83a31bed821ec0740ab3cf1d39da15.camel@ew.tq-group.com>
-         <20200903132241.GB4771@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1729412AbgICPDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728927AbgICN66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 09:58:58 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE529C061A17;
+        Thu,  3 Sep 2020 06:44:42 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k25so3729746ljg.9;
+        Thu, 03 Sep 2020 06:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LLcfLa3jT9VCX7RwE0dDUcAeziaCYPyIo1qnxZ7SIOw=;
+        b=GkmzOxWiAOcSoEKeOaq7PHvTvKu0i0MK1dDNNjyPgwybZgb2UXACJiPvcc2jz0oyzk
+         0lcYO2+V2fy36TNsxrXdx/5px2LKO6+5q2+Rm8WVBpzfxw04qQJ+OCscZYg84bWU1fz7
+         ldaYQ8xsy6RqXXHtvLyQG1Az2juEdwWD7D+neZp7oMkN4CJ1ADEpdwnlXLwRVD1JhIui
+         Go4ZKcXXtPGvXRlvtmC1kOCSHiG3CU2UY00/6+Nnw1wWqOl5yH2vbNIPOSmKgkbdc2Nd
+         mSDZj8hHj2AQOYiPRF9l8VL+kQGYx4QUt4kXmGAHhlIXoTcpiKXwezhKY0CVtHBFVrpW
+         M82g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LLcfLa3jT9VCX7RwE0dDUcAeziaCYPyIo1qnxZ7SIOw=;
+        b=c5zi5/wquh/NjMKVUvIL6kOkNFtHpqXHx/ff1KoN/l4wdzH2dK2OURVp9UKu2OtsK1
+         PHFToQOj20x87PZSinKU2MFyjj6phBPBlLGBhMt1sbhOMVIBXAD7QAjX+TFzgWI68zjP
+         0I/5MT6jD5EvuiJbe3m/TtCP9JLMNMdySF+fm7ChYYDdSyWR2mOiX2bAXk2xL9SN/+rt
+         d6PoV75YaDLV8M6I0HgbxoUiUmnd27JuaVN84XljusIgoELUieb94bOPuuJW1BFaJDOd
+         fzILjKnd6GBSfx0LzL2CmI1CECR1j1ICPLGliWIyntycxQOu5vg8sAPFbEx5zeT4jnu1
+         2ctw==
+X-Gm-Message-State: AOAM533Kgc3tn0cSVU1ELyyVp+7U3DWdEJuhpPpGZY9EyVtq7QdCMxf2
+        ZzB+loVxv0uACzqnFflNHjiU//TKWOA=
+X-Google-Smtp-Source: ABdhPJxGmrB2gV5oToqqcL2Lc1GBuuGegYSbf4toI7NGmoFajWRCUk17/vK/Z5QBgbrJ2TEEcYanWw==
+X-Received: by 2002:a2e:b81a:: with SMTP id u26mr1422295ljo.241.1599140680897;
+        Thu, 03 Sep 2020 06:44:40 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id y17sm630318ljc.18.2020.09.03.06.44.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 06:44:40 -0700 (PDT)
+Subject: Re: [PATCH v3 03/22] i2c: tegra: Clean up messages in the code
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200903005300.7894-1-digetx@gmail.com>
+ <20200903005300.7894-4-digetx@gmail.com>
+ <CAHp75VfFZ2bgEqS7cbTfYzxtXk3T5VaoJpum5aiNMpfvhfbuqw@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <2b6d99a0-0913-6c55-7c13-8a2a1524488d@gmail.com>
+Date:   Thu, 3 Sep 2020 16:44:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VfFZ2bgEqS7cbTfYzxtXk3T5VaoJpum5aiNMpfvhfbuqw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-03 at 14:22 +0100, Mark Brown wrote:
-> * PGP Signed by an unknown key
+03.09.2020 14:06, Andy Shevchenko пишет:
+> On Thu, Sep 3, 2020 at 3:53 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> This patch unifies style of all messages in the driver by starting them
+>> with a lowercase letter and using consistent capitalization and wording
+>> for all messages.
 > 
-> On Thu, Sep 03, 2020 at 11:22:20AM +0200, Matthias Schiffer wrote:
+> I didn't look at the rest (yet) but this series has a patch ordering issue.
+> Why do we first do some little, non-critical clean ups?
 > 
-> > - If num-cs is set, use that
-> > - If num-cs is unset, use the number of cs-gpios
-> > - If num-cs is unset and no cs-gpios are defined, use a driver-
-> > provided 
-> > default (which is 3 for spi-imx; this matches the number of native
-> > CS
-> > pins in older implementations of this SPI controller; i.MX6 and
-> > newer
-> > support up to 4)
+> The preferred way is to arrange like:
+>  - fixes that may be backported
+>  - fixes that are likely not going to be backported
+>  - features
+>  - cleanups
 > 
-> That sounds like what's expected, though we coould just skip the
-> first
-> step.
+> In its turn cleanups go by severity:
+>  - code affected ones (and maybe logical changers)
+>  - ...
+>  - commentary / indentation fixes
 > 
-> > Also, would it make sense to add num-cs to all DTS files for boards
-> > that actually use fewer than 3 CS pins?
-> 
-> No, it was never a good idea to have that property in the first place
-> and there should be no case where it helps anything.
 
+That's a good suggestion! All patches in this version are ordered by the
+time they were created ans since none of these patches should be
+worthwhile to backport (IMO) and because majority of patches do minor
+changes, it appeared to me that it should be okay as-is.
 
-Oh, thank you for the clarification.
-
-As currently no in-tree DTs use the num-cs property for spi-imx and
-it's not documented, should support for it be dropped from the driver
-altogether?
-
-
-> 
-> > At the moment, the num-cs property is not explicitly documented for
-> > the
-> > spi-imx driver, although the driver understands it. I also
-> > suggested to
-> > add this to the docs, which Fabio didn't deem a good idea (I don't
-> > quite understand the reasoning here - isn't num-cs generally a
-> > useful
-> > property to have?)
-> 
-> Could you explain what benefit you would expect having num-cs to
-> offer?
-> 
-> * Unknown Key
-> * 0x5D5487D0
-
+I agree that it should be worthwhile to reorder the patches now, after
+the series grew up a tad in regards to amount of patches. I'll change
+the order in the next version, thanks!
