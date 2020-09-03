@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE9B25B791
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 02:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FF225B792
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 02:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgICARw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 20:17:52 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:33955 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726377AbgICARs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 20:17:48 -0400
+        id S1727853AbgICASE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 20:18:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:58089 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbgICASA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 20:18:00 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599092267; h=Content-Transfer-Encoding: MIME-Version:
+ s=smtp; t=1599092279; h=Content-Transfer-Encoding: MIME-Version:
  References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=J+GkYlJeue+xhm0JgHaodonblQjXsPYjEk8/Vc2LCdw=; b=gk1aQ7JiUiJGLX3vSzzvpZi4ssBC86BCdi2LoAWZFTbi2kiMpoOr2qJa0tmR4Y6lf+azo3JS
- wMIFmQPtAF9XlSnHhup0qroZVjwYg79ljC2Ny5RMm4DR7Ayu0t9+4OiHOY/5Hdel+K0JsshP
- N97oKphTtKF5u8hKgPQK6Gu4/M0=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ Sender; bh=/cPhb+gGOs1DePmkbBXbDUkj/+DPAUVO3PMNwpoHWUU=; b=EJ1pjQzpJYxV6uaB4KD7WqPfGkIos/wvWnYlgmwXqTNQQhue8p2WNz3LvzAdt9X8ZkwDFbhZ
+ 0BYy+nnOAYXF56QNu9vcYGLCJV6qD7jXsiWj+ztIsvvf8Ves36fE+vmCQo4sPfSSRMoPMyRR
+ HjZ6ZfTgikkDEtoMu+8sQheNZ5I=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f50362b9f3347551f28739b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Sep 2020 00:17:47
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f50363232925f96e1c49fce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Sep 2020 00:17:54
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CA28DC433A0; Thu,  3 Sep 2020 00:17:46 +0000 (UTC)
+        id 1F821C433AF; Thu,  3 Sep 2020 00:17:54 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +36,9 @@ Received: from tingweiz-gv.qualcomm.com (unknown [180.166.53.21])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A74CC433C9;
-        Thu,  3 Sep 2020 00:17:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2A74CC433C9
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 80541C433C9;
+        Thu,  3 Sep 2020 00:17:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 80541C433C9
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=tingwei@codeaurora.org
 From:   Tingwei Zhang <tingwei@codeaurora.org>
@@ -57,9 +56,9 @@ Cc:     Tingwei Zhang <tingwei@codeaurora.org>,
         linux-kernel@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 4/6] tracing: add trace_export support for trace_marker
-Date:   Thu,  3 Sep 2020 08:17:04 +0800
-Message-Id: <20200903001706.28147-5-tingwei@codeaurora.org>
+Subject: [PATCH v3 5/6] stm class: ftrace: enable supported trace export flag
+Date:   Thu,  3 Sep 2020 08:17:05 +0800
+Message-Id: <20200903001706.28147-6-tingwei@codeaurora.org>
 X-Mailer: git-send-email 2.20.0
 In-Reply-To: <20200903001706.28147-1-tingwei@codeaurora.org>
 References: <20200903001706.28147-1-tingwei@codeaurora.org>
@@ -70,69 +69,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the support to route trace_marker buffer to other destination
-via trace_export.
+Set flags for trace_export. Export function trace, event trace
+and trace marker to stm.
 
 Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
 Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- include/linux/trace.h | 1 +
- kernel/trace/trace.c  | 9 +++++++++
- 2 files changed, 10 insertions(+)
+ drivers/hwtracing/stm/ftrace.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/trace.h b/include/linux/trace.h
-index 5a01eeffb254..80b7df68bc0f 100644
---- a/include/linux/trace.h
-+++ b/include/linux/trace.h
-@@ -6,6 +6,7 @@
+diff --git a/drivers/hwtracing/stm/ftrace.c b/drivers/hwtracing/stm/ftrace.c
+index ce868e095410..c694a6e692d1 100644
+--- a/drivers/hwtracing/stm/ftrace.c
++++ b/drivers/hwtracing/stm/ftrace.c
+@@ -46,6 +46,8 @@ static int stm_ftrace_link(struct stm_source_data *data)
+ 	struct stm_ftrace *sf = container_of(data, struct stm_ftrace, data);
  
- #define TRACE_EXPORT_FUNCTION	BIT(0)
- #define TRACE_EXPORT_EVENT	BIT(1)
-+#define TRACE_EXPORT_MARKER	BIT(2)
+ 	sf->ftrace.write = stm_ftrace_write;
++	sf->ftrace.flags = TRACE_EXPORT_FUNCTION | TRACE_EXPORT_EVENT
++			| TRACE_EXPORT_MARKER;
  
- /*
-  * The trace export - an export of Ftrace output. The trace_export
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2f9302a8b322..67993abda394 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -271,6 +271,7 @@ static struct trace_export __rcu *ftrace_exports_list __read_mostly;
- 
- static DEFINE_STATIC_KEY_FALSE(trace_function_exports_enabled);
- static DEFINE_STATIC_KEY_FALSE(trace_event_exports_enabled);
-+static DEFINE_STATIC_KEY_FALSE(trace_marker_exports_enabled);
- 
- static inline void ftrace_exports_enable(struct trace_export *export)
- {
-@@ -279,6 +280,9 @@ static inline void ftrace_exports_enable(struct trace_export *export)
- 
- 	if (export->flags & TRACE_EXPORT_EVENT)
- 		static_branch_inc(&trace_event_exports_enabled);
-+
-+	if (export->flags & TRACE_EXPORT_MARKER)
-+		static_branch_inc(&trace_marker_exports_enabled);
+ 	return register_ftrace_export(&sf->ftrace);
  }
- 
- static inline void ftrace_exports_disable(struct trace_export *export)
-@@ -288,6 +292,9 @@ static inline void ftrace_exports_disable(struct trace_export *export)
- 
- 	if (export->flags & TRACE_EXPORT_EVENT)
- 		static_branch_dec(&trace_event_exports_enabled);
-+
-+	if (export->flags & TRACE_EXPORT_MARKER)
-+		static_branch_dec(&trace_marker_exports_enabled);
- }
- 
- static void ftrace_exports(struct ring_buffer_event *event, int flag)
-@@ -6648,6 +6655,8 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	} else
- 		entry->buf[cnt] = '\0';
- 
-+	if (static_branch_unlikely(&trace_marker_exports_enabled))
-+		ftrace_exports(event, TRACE_EXPORT_MARKER);
- 	__buffer_unlock_commit(buffer, event);
- 
- 	if (tt)
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
