@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A184B25C847
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 19:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A59225C851
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 19:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgICR6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 13:58:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728312AbgICR6M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 13:58:12 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EB8C061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 10:58:11 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id i4so3550508ota.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 10:58:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R7ZL8pTZbj4JiHniG1B9lUVGN1DSqomiXYlNdiGH0zI=;
-        b=VJ/LoYWgjxcPKdh3qVWyDDMIR2oPoCRxoVXtgB2kLRI3RdpBQrAHXT2TM0WA0Y+ns6
-         hy7M151o0a/Z2WK5PFoc+5HzHc1J7u2M7jMZC3m1875Ew02+6wBINxncBe1uv8gpCKNs
-         u8aXYBf1U91KlLHKBCkSdNIPPFFavY9fr3P6vVNGI936lxJxwLkLZ7oVbaplpMZmoRTD
-         mGp4xT6Me1FA0RLIIOhaeoNYp6P3eYaU2366hHzgrmgM63DuZKcUmYp05uyWulSe7HYo
-         usQnnU23yce9b8IwnyCODAnkJaeI/1o+khG9cN4rghPQtk5tZigaOLFWG6lbqaUhLF4u
-         00kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R7ZL8pTZbj4JiHniG1B9lUVGN1DSqomiXYlNdiGH0zI=;
-        b=s9Xwj6Gsaf6jgV/rYaQa2rvaDoeO2u5mv4ZPJaMtQnCcJUQsbkeHbBw7m10SYtue9m
-         XevKY60c3VbUVaJJ9vB6N5CEJNZN7cgRtRdzbVaUiyo8qug1PRhT2pPZ8LjQfPs2+Xak
-         a18v5h3dYWqRHiC0jPAfVEtGNq8qlDP691EyvxxzShHDtNMPgDQFksPGilERa6UA2rB5
-         SqdHRqBxh+4VNZZDO0G5wgmw7kLKc0lsmqdvUvM8SH8HIjc4woUjaOVWJfV3IzIQaz4j
-         h7N+IeuayHX6dmTYhVRdnFp21Oj+3N3tP6X+x95oduRjLs06tfxgevD6IKmoZBGFRyml
-         B3RQ==
-X-Gm-Message-State: AOAM531zpHqmVZS5PIITCDxSJh+i+BiNx3afdpM2bkBY3okswVbjbR0n
-        FBzY3EhG6+lldEOGyN3KO1OCd1b7czXHFF6h14Ttng==
-X-Google-Smtp-Source: ABdhPJyFWBT9j5hFf9r5pcOgceu17AyR9gOLouFVVzWPvUtc/tAKFK4iiifRwJDL0FxA8g7h7oZ+5bsvB9YSHNT9BCU=
-X-Received: by 2002:a05:6830:18ca:: with SMTP id v10mr2589170ote.295.1599155890126;
- Thu, 03 Sep 2020 10:58:10 -0700 (PDT)
+        id S1728972AbgICR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 13:59:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:1301 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726327AbgICR7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 13:59:17 -0400
+IronPort-SDR: Zey8bhnXoWmUpAaat3pVpAK6f3SZOPQBi8xZwhy83WX+eZ99nSpcrQVUuI5IJ8uZmy+pQ3cntM
+ 26sdud4xUmZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="145329662"
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
+   d="scan'208";a="145329662"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 10:59:16 -0700
+IronPort-SDR: X6hOgUBXuT53zGBETVRIl8Y3udPYgeOjMvy4EgfTvR+oR8iOyOvL0gprGjnPMNJMYyxw+50upa
+ fFrRD+sU+TdQ==
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
+   d="scan'208";a="334548855"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.173.133]) ([10.209.173.133])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 10:59:15 -0700
+Subject: Re: [PATCH v11 6/9] x86/cet: Add PTRACE interface for CET
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Jann Horn <jannh@google.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+References: <46e42e5e-0bca-5f3f-efc9-5ab15827cc0b@intel.com>
+ <40BC093A-F430-4DCC-8DC0-2BA90A6FC3FA@amacapital.net>
+ <b3809dd7-8566-0517-2389-8089475135b7@intel.com>
+ <88261152-2de1-fe8d-7ab0-acb108e97e04@intel.com>
+ <1b51d89c-c7de-2032-df23-e138d1369ffa@intel.com>
+ <CALCETrUq3xiHV2xOZV-FD_de_P_TL-Bs91XT+F+79psBfigCSg@mail.gmail.com>
+ <21491d05-6306-0a6f-58a7-8bf29feae8c7@intel.com>
+ <CALCETrXJkXXDF=tdu3KBHgzDO+E-HhqMk9Ttixgk4WX_PLPDJw@mail.gmail.com>
+ <8fcde9bb-284f-f089-96d3-702f501a6258@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <2a58982b-8a69-1280-86ec-d0b70ede4453@intel.com>
+Date:   Thu, 3 Sep 2020 10:59:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200903141122.72908-1-mgamal@redhat.com>
-In-Reply-To: <20200903141122.72908-1-mgamal@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 3 Sep 2020 10:57:58 -0700
-Message-ID: <CALMp9eTrc8_z3pKBtLVmbnMvC+KtzXMYbYTXZPPz5F0UWW8oNQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
- support user-configurable
-To:     Mohammed Gamal <mgamal@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8fcde9bb-284f-f089-96d3-702f501a6258@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 7:12 AM Mohammed Gamal <mgamal@redhat.com> wrote:
->
-> This patch exposes allow_smaller_maxphyaddr to the user as a module parameter.
->
-> Since smaller physical address spaces are only supported on VMX, the parameter
-> is only exposed in the kvm_intel module.
-> Modifications to VMX page fault and EPT violation handling will depend on whether
-> that parameter is enabled.
->
-> Also disable support by default, and let the user decide if they want to enable
-> it.
->
-> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+On 9/3/2020 9:42 AM, Dave Hansen wrote:
+> On 9/3/20 9:32 AM, Andy Lutomirski wrote:
+>>> Taking the config register out of the init state is illogical, as is
+>>> writing to SSP while the config register is in its init state.
+>> What's so special about the INIT state?  It's optimized by XSAVES, but
+>> it's just a number, right?  So taking the register out of the INIT
+>> state is kind of like saying "gdb wanted to set xmm0 to (0,0,0,1), but
+>> it was in the INIT state to begin with", right?
+> 
+> Yeah, that's a good point.  The init state shouldn't be special, as the
+> hardware is within its right to choose not to use the init optimization
+> at any time.
+> 
+Then, I would suggest changing get_xsave_addr() to return non-null for 
+the INIT state case.  For the other two cases, it still returns NULL. 
+But this also requires any write to INIT states to set xstate_bv bits 
+properly.  This would be a pitfall for any code addition later on.
 
-I think a smaller guest physical address width *should* be allowed.
-However, perhaps the pedantic adherence to the architectural
-specification could be turned on or off per-VM? And, if we're going to
-be pedantic, I think we should go all the way and get MOV-to-CR3
-correct.
-
-Does the typical guest care about whether or not setting any of the
-bits 51:46 in a PFN results in a fault?
+Looking at this another way.  Would it be better for the debugger to get 
+an error and then to set the MSR directly first (vs. changing the XSAVES 
+INIT state first)?
