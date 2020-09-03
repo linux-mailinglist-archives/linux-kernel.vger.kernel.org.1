@@ -2,714 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71A925C466
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBDD625C3F9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729277AbgICPKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728969AbgICN5y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:57:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953F0C061A0C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 06:31:47 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id s13so2897792wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XRvpe7PzFyq1DShY2dULOFSm0oGxR6/UVsj0il+srEc=;
-        b=IN5GaxFPRDx7b36byOHI33GaWymAiillen3XxsLHkFqwa6YRRJ3ND+KktmMOiaWw1X
-         2dYcPLte5/jlOOchGAn2kV6QCGeooRwzsQ1JSV7mIUCqxMwWNjbtjUI06bt054sQStK4
-         DG+HooWUdSj33fQOi6OydwqP+kJoQUxy5xdbAScmR3Ud88/U457WZ5syGCHTg6mlODoY
-         6AWmiwn25hW6Ze7+aNnQbvbBBBbG1D83p0q4E+16UcO4Xw/I941OYYiMQPNHFO3CqHDn
-         T8O6KHHYdni3GXlk2woWP8wWfuEl3qIJPsdYMIGKBct36/rVRIy33bhTNpEeFKhHVU7A
-         mQMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XRvpe7PzFyq1DShY2dULOFSm0oGxR6/UVsj0il+srEc=;
-        b=dnUJfgpclx22M30c402YvNHw6NLgYlh+E9qcJx79LLzjk0dnLXVrgP5SOYQfjwrg8C
-         VmKvP0gn7ftAVTCn23riHBaiIHH5h5PysCIjFqkRqbMn+Dwc+WRxCgy7T7CXIh+FL5Iq
-         wmCsrquuzIOk3+8yMV9yU5aVUcENJ7UJ2PsjtUDVe5AgtZdPPrpBXBe5EAEKMROQJOcA
-         xT+lFSNIv4tK7QTV0rHgwiE+vd3DvIjnEpyy+r27sg8C7CxgvTKhHkYxd1PK8qsr+kQN
-         rRVnCvYvvQTLhdR1218//Seezlhi1AWr1Z2pfATUcIMpupqTQOR7zjzGdcqjmwBwsL3t
-         lCpw==
-X-Gm-Message-State: AOAM530v2WFT7LPNQ7IPZTZjIGjRoaKTlmik58088v2T34dyx5X2SAwV
-        nwARXI8MTh45/WWcKsKyCZ0xoQ==
-X-Google-Smtp-Source: ABdhPJy+UVym/DaIzn2zJfvZeSFRLZwYVUrViXoNhvM5fAFA4T4Gh6clv12WlrB3/q+G+SpBbYvfHw==
-X-Received: by 2002:a7b:c397:: with SMTP id s23mr2641816wmj.174.1599139906064;
-        Thu, 03 Sep 2020 06:31:46 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id b2sm4310768wmh.47.2020.09.03.06.31.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Sep 2020 06:31:45 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     linux-pm@vger.kernel.org, bjorn.andersson@linaro.org
-Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
-        sibis@codeaurora.org, mka@chromium.org, dianders@chromium.org,
-        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/7] arm64: dts: qcom: sc7180: Increase the number of interconnect cells
-Date:   Thu,  3 Sep 2020 16:31:34 +0300
-Message-Id: <20200903133134.17201-8-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200903133134.17201-1-georgi.djakov@linaro.org>
-References: <20200903133134.17201-1-georgi.djakov@linaro.org>
+        id S1728917AbgICPBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:01:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:34346 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728942AbgICOFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:05:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 953441045;
+        Thu,  3 Sep 2020 06:32:05 -0700 (PDT)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 363963F66F;
+        Thu,  3 Sep 2020 06:32:05 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 14:32:03 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        dietmar.eggemann@arm.com, catalin.marinas@arm.com,
+        sudeep.holla@arm.com, will@kernel.org, valentin.schneider@arm.com
+Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/5] cpufreq: improve frequency invariance support
+Message-ID: <20200903133203.GA29370@arm.com>
+References: <20200901205549.30096-1-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901205549.30096-1-ionela.voinescu@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sibi Sankar <sibis@codeaurora.org>
+Hi Rafael, Viresh,
 
-Increase the number of interconnect-cells, as now we can include
-the tag information. The consumers can specify the path tag as an
-additional argument to the endpoints.
+Would it be okay for you to apply this series, as the majority of
+changes are in cpufreq? For arch_topology and arm64 changes, they have
+been reviewed and acked-by Catalin and Sudeep.
 
-Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-Tested-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 218 +++++++++++++--------------
- 1 file changed, 109 insertions(+), 109 deletions(-)
+Also, please let me know if I should send v6 with Sudeep's Reviewed-by/s
+applied.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index d3e6008cf3fb..d5007e61e6cc 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -132,7 +132,7 @@ &LITTLE_CPU_SLEEP_1
- 			capacity-dmips-mhz = <1024>;
- 			dynamic-power-coefficient = <100>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			next-level-cache = <&L2_0>;
- 			#cooling-cells = <2>;
-@@ -158,7 +158,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_100>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -180,7 +180,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_200>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -202,7 +202,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_300>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -224,7 +224,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_400>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -246,7 +246,7 @@ &LITTLE_CPU_SLEEP_1
- 			dynamic-power-coefficient = <100>;
- 			next-level-cache = <&L2_500>;
- 			operating-points-v2 = <&cpu0_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -268,7 +268,7 @@ &BIG_CPU_SLEEP_1
- 			dynamic-power-coefficient = <405>;
- 			next-level-cache = <&L2_600>;
- 			operating-points-v2 = <&cpu6_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-@@ -290,7 +290,7 @@ &BIG_CPU_SLEEP_1
- 			dynamic-power-coefficient = <405>;
- 			next-level-cache = <&L2_700>;
- 			operating-points-v2 = <&cpu6_opp_table>;
--			interconnects = <&gem_noc MASTER_APPSS_PROC &mc_virt SLAVE_EBI1>,
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&osm_l3 MASTER_OSM_L3_APPS &osm_l3 SLAVE_OSM_L3>;
- 			#cooling-cells = <2>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-@@ -748,7 +748,7 @@ qupv3_id_0: geniqup@8c0000 {
- 			#size-cells = <2>;
- 			ranges;
- 			iommus = <&apps_smmu 0x43 0x0>;
--			interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>;
-+			interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>;
- 			interconnect-names = "qup-core";
- 			status = "disabled";
- 
-@@ -762,9 +762,9 @@ i2c0: i2c@880000 {
- 				interrupts = <GIC_SPI 601 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>,
--						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
-+						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -782,8 +782,8 @@ spi0: spi@880000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -798,8 +798,8 @@ uart0: serial@880000 {
- 				interrupts = <GIC_SPI 601 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -814,9 +814,9 @@ i2c1: i2c@884000 {
- 				interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>,
--						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
-+						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -834,8 +834,8 @@ spi1: spi@884000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -850,8 +850,8 @@ uart1: serial@884000 {
- 				interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -866,9 +866,9 @@ i2c2: i2c@888000 {
- 				interrupts = <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>,
--						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
-+						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -884,8 +884,8 @@ uart2: serial@888000 {
- 				interrupts = <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -900,9 +900,9 @@ i2c3: i2c@88c000 {
- 				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>,
--						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
-+						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -920,8 +920,8 @@ spi3: spi@88c000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -936,8 +936,8 @@ uart3: serial@88c000 {
- 				interrupts = <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -952,9 +952,9 @@ i2c4: i2c@890000 {
- 				interrupts = <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>,
--						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
-+						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -970,8 +970,8 @@ uart4: serial@890000 {
- 				interrupts = <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -986,9 +986,9 @@ i2c5: i2c@894000 {
- 				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>,
--						<&aggre1_noc MASTER_QUP_0 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>,
-+						<&aggre1_noc MASTER_QUP_0 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1006,8 +1006,8 @@ spi5: spi@894000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1022,8 +1022,8 @@ uart5: serial@894000 {
- 				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_0 &qup_virt SLAVE_QUP_CORE_0>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_0>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_0 0 &qup_virt SLAVE_QUP_CORE_0 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_0 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1039,7 +1039,7 @@ qupv3_id_1: geniqup@ac0000 {
- 			#size-cells = <2>;
- 			ranges;
- 			iommus = <&apps_smmu 0x4c3 0x0>;
--			interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>;
-+			interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>;
- 			interconnect-names = "qup-core";
- 			status = "disabled";
- 
-@@ -1053,9 +1053,9 @@ i2c6: i2c@a80000 {
- 				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>,
--						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
-+						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1073,8 +1073,8 @@ spi6: spi@a80000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1089,8 +1089,8 @@ uart6: serial@a80000 {
- 				interrupts = <GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1105,9 +1105,9 @@ i2c7: i2c@a84000 {
- 				interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>,
--						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
-+						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1123,8 +1123,8 @@ uart7: serial@a84000 {
- 				interrupts = <GIC_SPI 354 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1139,9 +1139,9 @@ i2c8: i2c@a88000 {
- 				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>,
--						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
-+						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1159,8 +1159,8 @@ spi8: spi@a88000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1175,8 +1175,8 @@ uart8: serial@a88000 {
- 				interrupts = <GIC_SPI 355 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1191,9 +1191,9 @@ i2c9: i2c@a8c000 {
- 				interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>,
--						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
-+						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1209,8 +1209,8 @@ uart9: serial@a8c000 {
- 				interrupts = <GIC_SPI 356 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1225,9 +1225,9 @@ i2c10: i2c@a90000 {
- 				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>,
--						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
-+						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1245,8 +1245,8 @@ spi10: spi@a90000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1261,8 +1261,8 @@ uart10: serial@a90000 {
- 				interrupts = <GIC_SPI 357 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1277,9 +1277,9 @@ i2c11: i2c@a94000 {
- 				interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
- 				#address-cells = <1>;
- 				#size-cells = <0>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>,
--						<&aggre2_noc MASTER_QUP_1 &mc_virt SLAVE_EBI1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>,
-+						<&aggre2_noc MASTER_QUP_1 0 &mc_virt SLAVE_EBI1 0>;
- 				interconnect-names = "qup-core", "qup-config",
- 							"qup-memory";
- 				status = "disabled";
-@@ -1297,8 +1297,8 @@ spi11: spi@a94000 {
- 				#size-cells = <0>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1313,8 +1313,8 @@ uart11: serial@a94000 {
- 				interrupts = <GIC_SPI 358 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&rpmhpd SC7180_CX>;
- 				operating-points-v2 = <&qup_opp_table>;
--				interconnects = <&qup_virt MASTER_QUP_CORE_1 &qup_virt SLAVE_QUP_CORE_1>,
--						<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_QUP_1>;
-+				interconnects = <&qup_virt MASTER_QUP_CORE_1 0 &qup_virt SLAVE_QUP_CORE_1 0>,
-+						<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_QUP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
- 				status = "disabled";
- 			};
-@@ -1323,63 +1323,63 @@ uart11: serial@a94000 {
- 		config_noc: interconnect@1500000 {
- 			compatible = "qcom,sc7180-config-noc";
- 			reg = <0 0x01500000 0 0x28000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		system_noc: interconnect@1620000 {
- 			compatible = "qcom,sc7180-system-noc";
- 			reg = <0 0x01620000 0 0x17080>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		mc_virt: interconnect@1638000 {
- 			compatible = "qcom,sc7180-mc-virt";
- 			reg = <0 0x01638000 0 0x1000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		qup_virt: interconnect@1650000 {
- 			compatible = "qcom,sc7180-qup-virt";
- 			reg = <0 0x01650000 0 0x1000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		aggre1_noc: interconnect@16e0000 {
- 			compatible = "qcom,sc7180-aggre1-noc";
- 			reg = <0 0x016e0000 0 0x15080>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		aggre2_noc: interconnect@1705000 {
- 			compatible = "qcom,sc7180-aggre2-noc";
- 			reg = <0 0x01705000 0 0x9000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		compute_noc: interconnect@170e000 {
- 			compatible = "qcom,sc7180-compute-noc";
- 			reg = <0 0x0170e000 0 0x6000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		mmss_noc: interconnect@1740000 {
- 			compatible = "qcom,sc7180-mmss-noc";
- 			reg = <0 0x01740000 0 0x1c100>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		ipa_virt: interconnect@1e00000 {
- 			compatible = "qcom,sc7180-ipa-virt";
- 			reg = <0 0x01e00000 0 0x1000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
-@@ -1406,9 +1406,9 @@ ipa: ipa@1e40000 {
- 			clocks = <&rpmhcc RPMH_IPA_CLK>;
- 			clock-names = "core";
- 
--			interconnects = <&aggre2_noc MASTER_IPA &mc_virt SLAVE_EBI1>,
--				        <&aggre2_noc MASTER_IPA &system_noc SLAVE_IMEM>,
--					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_IPA_CFG>;
-+			interconnects = <&aggre2_noc MASTER_IPA 0 &mc_virt SLAVE_EBI1 0>,
-+					<&aggre2_noc MASTER_IPA 0 &system_noc SLAVE_IMEM 0>,
-+					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_IPA_CFG 0>;
- 			interconnect-names = "memory",
- 					     "imem",
- 					     "config";
-@@ -1899,7 +1899,7 @@ gpu: gpu@5000000 {
- 			operating-points-v2 = <&gpu_opp_table>;
- 			qcom,gmu = <&gmu>;
- 
--			interconnects = <&gem_noc MASTER_GFX3D &mc_virt SLAVE_EBI1>;
-+			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
- 			interconnect-names = "gfx-mem";
- 
- 			gpu_opp_table: opp-table {
-@@ -2565,8 +2565,8 @@ qspi: spi@88dc000 {
- 			clocks = <&gcc GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
- 				 <&gcc GCC_QSPI_CORE_CLK>;
- 			clock-names = "iface", "core";
--			interconnects = <&gem_noc MASTER_APPSS_PROC
--					&config_noc SLAVE_QSPI_0>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC 0
-+					&config_noc SLAVE_QSPI_0 0>;
- 			interconnect-names = "qspi-config";
- 			power-domains = <&rpmhpd SC7180_CX>;
- 			operating-points-v2 = <&qspi_opp_table>;
-@@ -2625,7 +2625,7 @@ usb_1_ssphy: phy@88e9200 {
- 		dc_noc: interconnect@9160000 {
- 			compatible = "qcom,sc7180-dc-noc";
- 			reg = <0 0x09160000 0 0x03200>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
-@@ -2639,14 +2639,14 @@ system-cache-controller@9200000 {
- 		gem_noc: interconnect@9680000 {
- 			compatible = "qcom,sc7180-gem-noc";
- 			reg = <0 0x09680000 0 0x3e200>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
- 		npu_noc: interconnect@9990000 {
- 			compatible = "qcom,sc7180-npu-noc";
- 			reg = <0 0x09990000 0 0x1600>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
-@@ -2682,8 +2682,8 @@ usb_1: usb@a6f8800 {
- 
- 			resets = <&gcc GCC_USB30_PRIM_BCR>;
- 
--			interconnects = <&aggre2_noc MASTER_USB3 &mc_virt SLAVE_EBI1>,
--					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_USB3>;
-+			interconnects = <&aggre2_noc MASTER_USB3 0 &mc_virt SLAVE_EBI1 0>,
-+					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
- 			usb_1_dwc3: dwc3@a600000 {
-@@ -2715,8 +2715,8 @@ venus: video-codec@aa00000 {
- 				      "vcodec0_core", "vcodec0_bus";
- 			iommus = <&apps_smmu 0x0c00 0x60>;
- 			memory-region = <&venus_mem>;
--			interconnects = <&mmss_noc MASTER_VIDEO_P0 &mc_virt SLAVE_EBI1>,
--					<&gem_noc MASTER_APPSS_PROC &config_noc SLAVE_VENUS_CFG>;
-+			interconnects = <&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>,
-+					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_VENUS_CFG 0>;
- 			interconnect-names = "video-mem", "cpu-cfg";
- 
- 			video-decoder {
-@@ -2741,7 +2741,7 @@ videocc: clock-controller@ab00000 {
- 		camnoc_virt: interconnect@ac00000 {
- 			compatible = "qcom,sc7180-camnoc-virt";
- 			reg = <0 0x0ac00000 0 0x1000>;
--			#interconnect-cells = <1>;
-+			#interconnect-cells = <2>;
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
- 
+Thank you,
+Ionela.
+
+
+On Tuesday 01 Sep 2020 at 21:55:44 (+0100), Ionela Voinescu wrote:
+> Hi,
+> 
+> v4->v5
+>  - I've applied Viresh's remaining suggestion and Acked-by/s
+>  - v4 can be found at [4]
+>  - v5 is based on linux-next 20200828
+> 
+> Thank you,
+> Ionela.
+> 
+> ---
+> v3->v4:
+>  - addressing Viresh's comments on patches 1/5 and 3/5, and
+>  - with his Acked-by applied for the rest of the patches;
+>  - v3 can be found at [3], and
+>  - this is based on linux-next 20200827.
+> 
+> v2->v3
+>  - v2 can be found at [2]
+>  - 1/5 was introduced to check input frequencies to
+>    arch_set_freq_scale() as recommended by Rafael
+>  - The previous 2/7 was squashed into 1/7 - now 2/5, with additions to
+>    the changelog as suggested by Rafael.
+>  - The previous 3/7 (BL_SWITCHER handling) was dropped to be handled
+>    in a separate patch. This does not change the current functionality.
+>  - The previous 4/7 - now 3/5 is simplified as suggested by Viresh.
+>  - 3/5 - cpufreq_supports_freq_invariance() replaces
+>    cpufreq_sets_freq_scale(). The meaning chosen for
+>    cpufreq_supports_freq_invariance() is whether it can set the frequency
+>    scale factor, not whether arch_set_freq_scale() actually does.
+>  - 4/5 - Change after Catalin's Ack: The changes to
+>    arch_set_thermal_pressure() were dropped as they were done in a separate
+>    patch. Therefore this patch now has a subset of the previous changes
+>    at 5/7
+>  - 5/5 - Change after Catalin's Ack:
+>    s/cpufreq_sets_freq_scale/cpufreq_supports_freq_invariance
+>  - v3 is based on linux-next 20200814
+> 
+> 
+> v1 -> v2:
+>  - v1 can be found at [1]
+>  - No cpufreq flags are introduced
+>  - Previous patches 2/8 and 3/8 were squashed in this series under 1/7,
+>    to ensure bisection.
+>  - 2/7 was introduced as a proposal for Viresh's suggestion to use
+>    policy->cur in the call to arch_set_freq_scale() and is extended to
+>    support drivers that implement the target() callback as well
+>  - Additional commit message changes are added to 1/7 and 2/7, to
+>    clarify that the definition of arch_set_freq_scale() will filter 
+>    settings of the scale factor, if unwanted
+>  - 3/7 disables setting of the scale factor for
+>    CONFIG_BL_SWITCHER, as Dietmar suggested
+>  - Small change introduced in 4/7 to disable cpufreq-based frequency
+>    invariance for the users of the default arch_set_freq_scale() call
+>    which will not actually set a scale factor
+>  - build issue solved (reported by 0day test)
+>  - v2 is based on linux-next 20200716
+>  - all functional tests in v1 were repeated for v2
+> 
+> 
+> [1] https://lore.kernel.org/lkml/20200701090751.7543-1-ionela.voinescu@arm.com/
+> [2] https://lore.kernel.org/lkml/20200722093732.14297-1-ionela.voinescu@arm.com/
+> [3] https://lore.kernel.org/lkml/20200824210252.27486-1-ionela.voinescu@arm.com/
+> [4] https://lore.kernel.org/lkml/20200828173303.11939-1-ionela.voinescu@arm.com/
+> 
+> Ionela Voinescu (3):
+>   arch_topology: validate input frequencies to arch_set_freq_scale()
+>   cpufreq: move invariance setter calls in cpufreq core
+>   cpufreq: report whether cpufreq supports Frequency Invariance (FI)
+> 
+> Valentin Schneider (2):
+>   arch_topology, cpufreq: constify arch_* cpumasks
+>   arch_topology, arm, arm64: define arch_scale_freq_invariant()
+> 
+>  arch/arm/include/asm/topology.h        |  1 +
+>  arch/arm64/include/asm/topology.h      |  1 +
+>  arch/arm64/kernel/topology.c           |  9 ++++++-
+>  drivers/base/arch_topology.c           | 13 ++++++++--
+>  drivers/cpufreq/cpufreq-dt.c           | 10 +-------
+>  drivers/cpufreq/cpufreq.c              | 33 +++++++++++++++++++++++---
+>  drivers/cpufreq/qcom-cpufreq-hw.c      |  9 +------
+>  drivers/cpufreq/scmi-cpufreq.c         | 12 ++--------
+>  drivers/cpufreq/scpi-cpufreq.c         |  6 +----
+>  drivers/cpufreq/vexpress-spc-cpufreq.c | 12 ++--------
+>  include/linux/arch_topology.h          |  4 +++-
+>  include/linux/cpufreq.h                |  8 ++++++-
+>  12 files changed, 68 insertions(+), 50 deletions(-)
+> 
+> 
+> base-commit: b36c969764ab12faebb74711c942fa3e6eaf1e96
+> -- 
+> 2.17.1
+> 
