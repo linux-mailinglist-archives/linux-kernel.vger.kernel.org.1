@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F65725BC25
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFB325BC87
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgICIEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:04:16 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:39287 "EHLO
+        id S1728953AbgICIMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:12:19 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:33675 "EHLO
         wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728378AbgICICS (ORCPT
+        by vger.kernel.org with ESMTP id S1728382AbgICICS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Sep 2020 04:02:18 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id ECA8DC0D;
-        Thu,  3 Sep 2020 04:02:15 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:16 -0400
+        by mailnew.west.internal (Postfix) with ESMTP id 5198FC36;
+        Thu,  3 Sep 2020 04:02:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=kYgRAIEAWPga7
-        1O8AXBxP/ke4GXBvyR2dgdMwlSF3UY=; b=BOaqwQzhm9GK7RTNm4LA75F85tPB2
-        o1kHIoyfH2ONP6gxpBm1ZjzpKEWf2BhOxGShezU1inUS5SgWfZF2pPvLlJ6gi23Q
-        Pu0K7EWNu38IM0OSUqYOD4LlxOlzJxZEEr/ilbw6u0hUckC2SU/QmlUpu+IhkGC0
-        QmoEKHn1vwOgkdP849xepAKtjdPSGkxFcbK1GB2Cj97hnTcAfSQ9lX9elzPslNaG
-        7Fti4e3ogb0XVtO96vafMdlTcZbj4vOUb9C7CpK3D5PvyMJWQqcun4Abcp8nQgDU
-        qgX7GtJ+NVu8yKY6O/o2UdiBcGIeys3XPSK5v4kyDx3EQ+VYRkvhOCcTw==
+        :mime-version:content-transfer-encoding; s=fm3; bh=xK2MetNErdPQO
+        5rSYXalb4u/ihHJbpifMF7P6V5hHg4=; b=Fg3azKAE+TJP9DhWrr9oQGMxGLNDG
+        T/TPEE6oMIM2POCo4etF6z4y34prkss0elX0lT8V3jEROhGtRlgonygmaR6IVFUF
+        J+/BcVfpfPsnasZidcC5tPHw2b2IiOPjktq+jr9aqT5j4cSPtAvyO1oh/hjF2qxx
+        IzTy2DbgUpWpj2sBznwFTnWnhvFmgrsPtQ9S/r1MVvUr3PfCKWrf2XDDUyiDor4Z
+        Dex0Id2BdoltI7llByQREOcbsC/7fzWAI4053Pyi9kk/AiZBkdOKTA2M6tEfIZJ+
+        gbfeEv6Pwxxt9nwYU0jluLwHL2ysSGMKpWMgOhUaHZRP7PvJuXA7sQn0A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=kYgRAIEAWPga71O8AXBxP/ke4GXBvyR2dgdMwlSF3UY=; b=ewSOpWK/
-        ijS2h8dptssCR06jkv6G/O6Nek/KS/6wJq23eKNRLcOgo/pP16Xx/ju1EGaYRd7D
-        7XWIFw/i1CYTJ0mGI4/ym6eAARqHAP8chwq+y28MILPERXxgdj8ABs4cUJdtevcu
-        rnxGjq+Cu9gZr64CDHDM7iVy8tQICUIq4MvRi1JQAvGpYWI/6r3rGn+I1mG7j00m
-        krD4hn5WtEYdGvJFdRQEzvnp26r9yyTBJGkfL7Jzeba6enMBgvsHnMz7HSScnsmy
-        PuTY4Z7ggLIMlaZoC3eVRC0k3M8n5enrFn6XlX/lzEfW4qW1mA/vnkqxBL6dM8QP
-        AgkI0M8DDfbaXg==
-X-ME-Sender: <xms:B6NQX9781rvuefYO-NKJ_usmKi6RrBjz28ogusKqHXhddr01Tqtylg>
-    <xme:B6NQX646Vwqrdu63ojkRVBif5myWfcd-JUljahhd3ZQ6SeGzRztfRidj-56lra4lN
-    7iMcKuU8yJYFcPue6A>
+        fm3; bh=xK2MetNErdPQO5rSYXalb4u/ihHJbpifMF7P6V5hHg4=; b=HqgYAkot
+        rGiw/kAr6bwPpSj0aZEHud1vdT1lCPqLhE81GmEZn8RoFM5ID2kM7KH5jTJp8FLx
+        5BZ5KW4dcWrfGU3hScJuo2ye8s3KNjyN6zzSAdtPvQWPPvBJGnx+p0ahZDmPfTeu
+        vIH4ejQUjLC4Ukew4Itx4Aqdk8TBbp2osp2WyV02W83gBnFyk+K5RKk8+S04yhC2
+        46GvKcvkswsNrG2m6gGx2tCsVDZHuTNH3ytp015hyAi2TW7iNSFtDeELK/6oxR6M
+        82htXSf4Lo8s6btC7pB48l0/0K02FkL8hoS/k/y/81gEJWgDbMtjfzQ+KnGHKgro
+        uD0LNszSsCjuqQ==
+X-ME-Sender: <xms:CKNQX_pMH8aOkRTpsq0LlAR_i3bvl1cjljGSi0RGC-E6pDmwpNAQow>
+    <xme:CKNQX5p-6oT59HbxA9zwpo82yCqSpQWEiyV-mdJ5aef0UYbeRfIw38_EYvBz_93lI
+    pcu8Q--KyFqm6Xm6_8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -48,13 +48,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetgg
     htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
     heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeduge
     enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:B6NQX0eopLk0ySINxL5CvHRy8FN31LXyNfIJ2qeC_wJdheWoI8bYMQ>
-    <xmx:B6NQX2LcovL30-rHIT5I6TRJ5YF7fVJ31NxcVQjiTnr_5nWqreBk8A>
-    <xmx:B6NQXxKm8wM2DSWrJO4wJVisQawJswsCQsmikglxQV8TyP3Z-LcA1A>
-    <xmx:B6NQX7wHUl0xV2dWHObIYy-P1VHTrggtdF3PvjNv0x0p3Zn5_zlfjFwHwks>
+X-ME-Proxy: <xmx:CKNQX8Ob7n4QoPeMTkvuP8p4VQ3qKCCqqEBLNi1V_wvXYSQkoR-6jQ>
+    <xmx:CKNQXy7wMGJIVzGBYIg5LBigY4d42Ea6YrSoIeWeiOpftvMRMQ21Hg>
+    <xmx:CKNQX-5bS1HdGRueBUOAYsL9qFK_qJ63pQgwnpdbblG7GWxA0Br8XA>
+    <xmx:CKNQX2ghAQnaKhUFKjcwevh0SrLTzBASSZsSgYG3SKS97kLkJtTQ4dIlV_g>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2D0F9306005E;
-        Thu,  3 Sep 2020 04:02:15 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 89C24328005A;
+        Thu,  3 Sep 2020 04:02:16 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
         Eric Anholt <eric@anholt.net>
@@ -69,9 +69,9 @@ Cc:     dri-devel@lists.freedesktop.org,
         Chanwoo Choi <cw00.choi@samsung.com>,
         Hoegeun Kwon <hoegeun.kwon@samsung.com>,
         Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH v5 15/80] drm/vc4: crtc: Add FIFO depth to vc4_crtc_data
-Date:   Thu,  3 Sep 2020 10:00:47 +0200
-Message-Id: <7df3549c1bea9b0a27c784dc416bb9a831e4e18f.1599120059.git-series.maxime@cerno.tech>
+Subject: [PATCH v5 16/80] drm/vc4: crtc: Add function to compute FIFO level bits
+Date:   Thu,  3 Sep 2020 10:00:48 +0200
+Message-Id: <e46a3823128af50c1c833de8fa9b95e9b86c2f66.1599120059.git-series.maxime@cerno.tech>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
@@ -82,9 +82,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all pixelvalve FIFOs in vc5 have the same depth, so we need to add that
-to our vc4_crtc_data structure to be able to compute the fill level
-properly later on.
+The longer FIFOs in vc5 pixelvalves means that the FIFO full level
+doesn't fit in the original register field and that we also have a
+secondary field. In order to prepare for this, let's move the registers
+fill part to a helper function.
 
 Reviewed-by: Eric Anholt <eric@anholt.net>
 Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
@@ -92,84 +93,39 @@ Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
 Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c | 20 +++++++++++++++++---
- drivers/gpu/drm/vc4/vc4_drv.h  |  3 +++
- 2 files changed, 20 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/vc4/vc4_crtc.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index b7e47ce1476c..2c64efd2d3d9 100644
+index 2c64efd2d3d9..1d9e3658ae59 100644
 --- a/drivers/gpu/drm/vc4/vc4_crtc.c
 +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -206,10 +206,21 @@ void vc4_crtc_destroy(struct drm_crtc *crtc)
- 	drm_crtc_cleanup(crtc);
+@@ -234,6 +234,15 @@ static u32 vc4_get_fifo_full_level(struct vc4_crtc *vc4_crtc, u32 format)
+ 	}
  }
  
--static u32 vc4_get_fifo_full_level(u32 format)
-+static u32 vc4_get_fifo_full_level(struct vc4_crtc *vc4_crtc, u32 format)
- {
--	static const u32 fifo_len_bytes = 64;
-+	const struct vc4_pv_data *pv_data = vc4_crtc_to_vc4_pv_data(vc4_crtc);
-+	u32 fifo_len_bytes = pv_data->fifo_depth;
- 
-+	/*
-+	 * Pixels are pulled from the HVS if the number of bytes is
-+	 * lower than the FIFO full level.
-+	 *
-+	 * The latency of the pixel fetch mechanism is 6 pixels, so we
-+	 * need to convert those 6 pixels in bytes, depending on the
-+	 * format, and then subtract that from the length of the FIFO
-+	 * to make sure we never end up in a situation where the FIFO
-+	 * is full.
-+	 */
- 	switch (format) {
- 	case PV_CONTROL_FORMAT_DSIV_16:
- 	case PV_CONTROL_FORMAT_DSIC_16:
-@@ -326,7 +337,7 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc)
++static u32 vc4_crtc_get_fifo_full_level_bits(struct vc4_crtc *vc4_crtc,
++					     u32 format)
++{
++	u32 level = vc4_get_fifo_full_level(vc4_crtc, format);
++
++	return VC4_SET_FIELD(level & 0x3f,
++			     PV_CONTROL_FIFO_LEVEL);
++}
++
+ /*
+  * Returns the encoder attached to the CRTC.
+  *
+@@ -336,9 +345,8 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc)
+ 		CRTC_WRITE(PV_HACT_ACT, mode->hdisplay * pixel_rep);
  
  	CRTC_WRITE(PV_CONTROL,
++		   vc4_crtc_get_fifo_full_level_bits(vc4_crtc, format) |
  		   VC4_SET_FIELD(format, PV_CONTROL_FORMAT) |
--		   VC4_SET_FIELD(vc4_get_fifo_full_level(format),
-+		   VC4_SET_FIELD(vc4_get_fifo_full_level(vc4_crtc, format),
- 				 PV_CONTROL_FIFO_LEVEL) |
+-		   VC4_SET_FIELD(vc4_get_fifo_full_level(vc4_crtc, format),
+-				 PV_CONTROL_FIFO_LEVEL) |
  		   VC4_SET_FIELD(pixel_rep - 1, PV_CONTROL_PIXEL_REP) |
  		   PV_CONTROL_CLR_AT_START |
-@@ -785,6 +796,7 @@ static const struct vc4_pv_data bcm2835_pv0_data = {
- 		.hvs_output = 0,
- 	},
- 	.debugfs_name = "crtc0_regs",
-+	.fifo_depth = 64,
- 	.pixels_per_clock = 1,
- 	.encoder_types = {
- 		[PV_CONTROL_CLK_SELECT_DSI] = VC4_ENCODER_TYPE_DSI0,
-@@ -798,6 +810,7 @@ static const struct vc4_pv_data bcm2835_pv1_data = {
- 		.hvs_output = 2,
- 	},
- 	.debugfs_name = "crtc1_regs",
-+	.fifo_depth = 64,
- 	.pixels_per_clock = 1,
- 	.encoder_types = {
- 		[PV_CONTROL_CLK_SELECT_DSI] = VC4_ENCODER_TYPE_DSI1,
-@@ -811,6 +824,7 @@ static const struct vc4_pv_data bcm2835_pv2_data = {
- 		.hvs_output = 1,
- 	},
- 	.debugfs_name = "crtc2_regs",
-+	.fifo_depth = 64,
- 	.pixels_per_clock = 1,
- 	.encoder_types = {
- 		[PV_CONTROL_CLK_SELECT_DPI_SMI_HDMI] = VC4_ENCODER_TYPE_HDMI,
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-index 9e81ad8331f1..179010b9a010 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.h
-+++ b/drivers/gpu/drm/vc4/vc4_drv.h
-@@ -457,6 +457,9 @@ struct vc4_crtc_data {
- struct vc4_pv_data {
- 	struct vc4_crtc_data	base;
- 
-+	/* Depth of the PixelValve FIFO in bytes */
-+	unsigned int fifo_depth;
-+
- 	/* Number of pixels output per clock period */
- 	u8 pixels_per_clock;
- 
+ 		   PV_CONTROL_TRIGGER_UNDERFLOW |
 -- 
 git-series 0.9.1
