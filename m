@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2364E25C52E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF67F25C4EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729070AbgICPXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:23:48 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44894 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgICLFn (ORCPT
+        id S1728434AbgICL0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:26:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728344AbgICLHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:05:43 -0400
-Received: from [192.168.86.25] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A9C0F20B7178;
-        Thu,  3 Sep 2020 04:05:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A9C0F20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1599131130;
-        bh=cbjbEQfoAakgc2muysuZiPWyav4mT84ZZodemAfC4zI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GBB4giyYtQEuUoTxO/8p7uHh1HkfSLGpxbXzwchvFrWy5h7AXqmuFKECH1RWTEN5n
-         p2Qcn+jCHdZFlPlBcliGBu2gLA625T41T5pxSUE7filKZ1akuGtyZT7UIq/Z3keBD3
-         NTkBcXWChwByY4JofiLJatHzLMsED1O8RAND1LjI=
-Subject: Re: [RFC PATCH v7 17/23] kernel/entry: Add support for core-wide
- protection of kernel-mode
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Dario Faggioli <dfaggioli@suse.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Ingo Molnar <mingo@kernel.org>, Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
- <2a4398b55fe258ea53fb1fbc727063298f7eea8f.1598643276.git.jdesfossez@digitalocean.com>
- <87y2lth4qa.fsf@nanos.tec.linutronix.de>
- <20200901165052.GA1662854@google.com>
- <875z8xl0zh.fsf@nanos.tec.linutronix.de>
- <20200902012905.GB1703315@google.com>
- <87h7sgk41y.fsf@nanos.tec.linutronix.de>
- <a80babf130a45841e166fa155f84afc19b4257d3.camel@suse.com>
- <CAEXW_YRQiC_0edO5L2vVmL0NcfeZaRt4WYoyrcKmzbFcQP3PvA@mail.gmail.com>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <9471f752-1a30-d46f-be75-d3d433980385@linux.microsoft.com>
-Date:   Thu, 3 Sep 2020 07:05:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Sep 2020 07:07:36 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFE5C06125C;
+        Thu,  3 Sep 2020 04:07:07 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 17so2036396pfw.9;
+        Thu, 03 Sep 2020 04:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eaRhsZ5TWpfGSPdWSz1VTVO/mX4t+F5UcIQtgVoahy0=;
+        b=pOAISEGLGapqlDNpjEyrYBaAWWHCLZskiXqlh+HTkbAlUtPGW03AZqfOZ3hYuFyLbk
+         lVD/q/IhrFnVi8CGt4+6D+XTK0NJl39HWm95D36dIPjI28fEOhMxhzxAT7rHsQQPAZrt
+         smLXj7Pyz+w2tOkyJGqF/AcVBPEadWdkY3CFpTjA4+Fqi6lTgJ/diuVMUl9wZ1mPKrPo
+         e3lplG7jjPGbp/idOhPr16vxd7cMzWkeIanwZSbiZ8hUgXr+M92KcbYeOuq18bU9M/A6
+         j/sR/JAP8mfnkqspbu7n6oanpUB387x/uLQJ8eq//8xolL9L/CEXsshXX91FvOmzdlQi
+         Iqzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eaRhsZ5TWpfGSPdWSz1VTVO/mX4t+F5UcIQtgVoahy0=;
+        b=kRXRzaoRUuwZmCRJ8VZaAGZV0pexjtmnIeY/YRoE6Fmy6X3t8H7B27BZ4R377bg84j
+         WJt7p6q0dAAVa1sDrRDoEvdTUo8PnonwWaocEaKaK9JQHPl3l9ooC4QJSb9tYIWFq1Rh
+         tDVA5dQu2BovPG0ZqHj/TG4+l+gx3l1in0qnJaT/JyGDpoy+Ge4YafL+LCbH6pEvM/Ke
+         fRi5DDlS6dOs2aB5PnxR9cv6BrWZ4bAjwQqgSRutsLY8hOfeHVmnF0qLgyWkQnbO5Bqv
+         22YE4Is01+JK9942PzSoEdIJ0Zu+t/dXRBPXtXB9NOGxcmXX66LhCRH3xPI4AQ44iB5v
+         m2KA==
+X-Gm-Message-State: AOAM533sBkYheN4TYSGJBIZ0HwUJfjYRbhyg/QNwbNDk0G6vBckvrhw7
+        /voV8x6rz7xHQp8GycjD03xkxYocUUBpAFo375s=
+X-Google-Smtp-Source: ABdhPJwuGc2+bCg2ErG6/q6jf3bKJSgb0rbju4qg8koUw0SNPYEPIhl4iKY40gX8AZ3+BDdHmV3pB+52drdFpLjXWtA=
+X-Received: by 2002:a17:902:ea86:: with SMTP id x6mr3360111plb.131.1599131226890;
+ Thu, 03 Sep 2020 04:07:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEXW_YRQiC_0edO5L2vVmL0NcfeZaRt4WYoyrcKmzbFcQP3PvA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20200903005300.7894-1-digetx@gmail.com> <20200903005300.7894-4-digetx@gmail.com>
+In-Reply-To: <20200903005300.7894-4-digetx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Sep 2020 14:06:49 +0300
+Message-ID: <CAHp75VfFZ2bgEqS7cbTfYzxtXk3T5VaoJpum5aiNMpfvhfbuqw@mail.gmail.com>
+Subject: Re: [PATCH v3 03/22] i2c: tegra: Clean up messages in the code
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 3, 2020 at 3:53 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> This patch unifies style of all messages in the driver by starting them
+> with a lowercase letter and using consistent capitalization and wording
+> for all messages.
 
+I didn't look at the rest (yet) but this series has a patch ordering issue.
+Why do we first do some little, non-critical clean ups?
 
-On 9/3/20 12:34 AM, Joel Fernandes wrote:
->>
->> Indeed! For at least two reasons, IMO:
->>
->> 1) what Thomas is saying already. I.e., even on a CPU which has HT but
->> is not affected by any of the (known!) speculation issues, one may want
->> to use Core Scheduling _as_a_feature_. For instance, for avoiding
->> threads from different processes, or vCPUs from different VMs, sharing
->> cores (e.g., for better managing their behavior/performance, or for
->> improved fairness of billing/accounting). And in this case, this
->> mechanism for protecting the kernel from the userspace on the other
->> thread may not be necessary or interesting;
-> Agreed. So then I should really make this configurable and behind a
-> sysctl then. I'll do that.
-We already have the patch to wrap this feature in a build time and
-boot time option:
-https://lwn.net/ml/linux-kernel/9cd9abad06ad8c3f35228afd07c74c7d9533c412.1598643276.git.jdesfossez@digitalocean.com/
+The preferred way is to arrange like:
+ - fixes that may be backported
+ - fixes that are likely not going to be backported
+ - features
+ - cleanups
 
-I could not get to a safe way to make it a runtime tunable at the time
-of posting this series, but I think it should also be possible.
+In its turn cleanups go by severity:
+ - code affected ones (and maybe logical changers)
+ - ...
+ - commentary / indentation fixes
 
-Thanks,
-Vineeth
-
+-- 
+With Best Regards,
+Andy Shevchenko
