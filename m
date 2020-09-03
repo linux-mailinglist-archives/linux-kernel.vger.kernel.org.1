@@ -2,207 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE5B25B7B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 02:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A427525B7C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 02:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgICApz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 20:45:55 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:45713 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726654AbgICApy (ORCPT
+        id S1727855AbgICAyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 20:54:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbgICAxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 20:45:54 -0400
-Received: (qmail 643241 invoked by uid 1000); 2 Sep 2020 20:45:53 -0400
-Date:   Wed, 2 Sep 2020 20:45:53 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     himadrispandya@gmail.com, dvyukov@google.com,
-        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Eli Billauer <eli.billauer@gmail.com>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        "Geoffrey D. Bennett" <g@b4.vu>, Jussi Laako <jussi@sonarnerd.net>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Dmitry Panchenko <dmitry@d-systems.ee>,
-        Chris Wulff <crwulff@gmail.com>,
-        Jesus Ramos <jesus-ramos@live.com>
-Subject: Re: [PATCH 01/10] USB: move snd_usb_pipe_sanity_check into the USB
- core
-Message-ID: <20200903004553.GA642955@rowland.harvard.edu>
-References: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
- <20200902110115.1994491-2-gregkh@linuxfoundation.org>
+        Wed, 2 Sep 2020 20:53:54 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99866C061244;
+        Wed,  2 Sep 2020 17:53:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y4so1389518ljk.8;
+        Wed, 02 Sep 2020 17:53:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qylbbxDeujcNpZUTYAjA2yZlUNQWDGVnkYFR/BCLA8E=;
+        b=aDfGKi273R2hdEUH5U08izM8jrgDxe+4nXW0/YxP8seZbeemJsKDm6MJ6Y8etuOyoZ
+         89L0CeDv+diO/PPoHv2X6dNnKCqHt7MUNTZgdiAfPa/mPBkx7HM1hcO6DrUjFqFr1szj
+         70OiGIQb8/2/OrNrnd4YznCI2XcIxnSsAcz9MrSrXbSz8o2z4DD8cLcboxd6+KDXEd6b
+         uEj1ehP7T9nI6AKOCpW5jaSpyexpO/8Zf3Iw2kuL9i2vKJSbQtk8+QrbUf8SbguEAWXp
+         +ZCPOSEYgmUCfcN5g6PXxfD+1g6LtiMQLmYiObdOxdEt3LUEohnJJ5nJRJaDCpFUyb5E
+         C5+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qylbbxDeujcNpZUTYAjA2yZlUNQWDGVnkYFR/BCLA8E=;
+        b=RHeUuhvtCK7aeemT6tS34uMFKa1RzZ/UfTrVVJaIx8M/x/k+KXDjHjxvwTMkDGKl/D
+         1+TdPnbINhcJ8Vz1NgwRAh0dgHaKmzzaxFGwEZQpJ2nAlNPIWDuZdODBVlvCVB/ThaFY
+         7LxEIKyfYyQEvnXdUVl8pGvIkBtXh9SSGRTzfbtcprPQGsTMkk6CLCffvGurbIxtFg/G
+         09Soxdsau7WFN0foY4nwZIjDWoIzjI7xGD6encF5CdQCk9JWa9rl9OwgFE4Mbl156KqD
+         9J02xO9xUb3QFMFxFFSL7X5WG5F7+9n2lj87Nw/1fKSw9bhlCEBOqVUEhBnoTghEtAZe
+         H/Yw==
+X-Gm-Message-State: AOAM533sfMqouQSIqiCQBuDOTM6jZqZN6LjQ3BedaZIsfiN1sqNplNrH
+        I/fimw5bOJvGBgwTnqdzOKY=
+X-Google-Smtp-Source: ABdhPJzqcI+SEmxok8UGThkgXfQR0Kd6Eu2hoPFU41SGTwuYvYs/ZO4TkJ3aiBd7hAc6pV4llYNLWg==
+X-Received: by 2002:a2e:b0e3:: with SMTP id h3mr283482ljl.426.1599094430437;
+        Wed, 02 Sep 2020 17:53:50 -0700 (PDT)
+Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.gmail.com with ESMTPSA id g1sm250321ljj.56.2020.09.02.17.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 17:53:49 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/22] Improvements for Tegra I2C driver
+Date:   Thu,  3 Sep 2020 03:52:38 +0300
+Message-Id: <20200903005300.7894-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902110115.1994491-2-gregkh@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 01:01:03PM +0200, Greg Kroah-Hartman wrote:
-> snd_usb_pipe_sanity_check() is a great function, so let's move it into
-> the USB core so that other parts of the kernel, including the USB core,
-> can call it.
-> 
-> Name it usb_pipe_type_check() to match the existing
-> usb_urb_ep_type_check() call, which now uses this function.
-> 
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: Eli Billauer <eli.billauer@gmail.com>
-> Cc: Emiliano Ingrassia <ingrassia@epigenesys.com>
-> Cc: Alan Stern <stern@rowland.harvard.edu>
-> Cc: Alexander Tsoy <alexander@tsoy.me>
-> Cc: "Geoffrey D. Bennett" <g@b4.vu>
-> Cc: Jussi Laako <jussi@sonarnerd.net>
-> Cc: Nick Kossifidis <mickflemm@gmail.com>
-> Cc: Dmitry Panchenko <dmitry@d-systems.ee>
-> Cc: Chris Wulff <crwulff@gmail.com>
-> Cc: Jesus Ramos <jesus-ramos@live.com>
-> Cc: linux-usb@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
+Hello!
 
-> diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
-> index 27e83e55a590..45bc2914c1ba 100644
-> --- a/drivers/usb/core/urb.c
-> +++ b/drivers/usb/core/urb.c
-> @@ -192,24 +192,39 @@ static const int pipetypes[4] = {
->  };
->  
->  /**
-> - * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-> - * @urb: urb to be checked
-> + * usb_pipe_type_check - sanity check of a specific pipe for a usb device
-> + * @dev: struct usb_device to be checked
-> + * @pipe: pipe to check
->   *
->   * This performs a light-weight sanity check for the endpoint in the
-> - * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-> - * a negative error code.
-> + * given usb device.  It returns 0 if the pipe is a valid for the specific usb
------------------------------------------------------^
-Typo.
+This series performs a small refactoring of the Tegra I2C driver code and
+hardens the atomic-transfer mode.
 
-> + * device, otherwise a negative error code.
->   */
-> -int usb_urb_ep_type_check(const struct urb *urb)
-> +int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe)
->  {
->  	const struct usb_host_endpoint *ep;
->  
-> -	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-> +	ep = usb_pipe_endpoint(dev, pipe);
->  	if (!ep)
->  		return -EINVAL;
-> -	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-> +	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
->  		return -EINVAL;
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(usb_pipe_type_check);
-> +
-> +/**
-> + * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-> + * @urb: urb to be checked
-> + *
-> + * This performs a light-weight sanity check for the endpoint in the
-> + * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-> + * a negative error code.
-> + */
-> +int usb_urb_ep_type_check(const struct urb *urb)
-> +{
-> +	return usb_pipe_type_check(urb->dev, urb->pipe);
-> +}
->  EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
+Changelog:
 
-Since this routine is used in only one place in the entire kernel, you 
-might as well inline the code there and get rid of the function 
-entirely.
+v3: - Optimized "Make tegra_i2c_flush_fifos() usable in atomic transfer"
+      patch by pre-checking FIFO state before starting to poll using
+      ktime API, which may be expensive under some circumstances.
 
-> diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> index abf99b814a0f..fc3aab04a0bc 100644
-> --- a/sound/usb/quirks.c
-> +++ b/sound/usb/quirks.c
-> @@ -846,7 +846,7 @@ static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
->  	static const u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 };
->  	void *buf;
->  
-> -	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x05)))
-> +	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x05)))
->  		return -EINVAL;
->  	buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
->  	if (!buf)
-> @@ -875,7 +875,7 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
->  {
->  	int ret;
->  
-> -	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-> +	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
->  		return -EINVAL;
+    - The "Clean up messages in the code" patch now makes all messages
+      to use proper capitalization of abbreviations. Thanks to Andy Shevchenko
+      and Michał Mirosław for the suggestion.
 
-In a few places here this check is completely unnecessary.  All it does 
-is verify that the device does have an endpoint 0 and the the type of 
-the endpoint matches the type of the pipe.  Well, every USB device 
-always has an endpoint 0, and it is always a bidirectional control 
-endpoint.  Therefore a simple static check is all you need: There's no 
-point calling usb_pipe_type_check() when the pipe is of the form 
-usb_{snd|rcv}ctrlpipe(dev, 0).
+    - The "Remove unnecessary whitespaces and newlines" patch is transformed
+      into "Clean up whitespaces and newlines", it now also adds missing
+      newlines and spaces.
 
-In short, this check should be removed completely; it does nothing.
+    - Reworked the "Clean up probe function" patch in accordance to
+      suggestion from Michał Mirosław by factoring out only parts of
+      the code that make error unwinding cleaner.
 
->  	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
->  				  0xaf, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-> @@ -984,7 +984,7 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
->  
->  	dev_dbg(&dev->dev, "Waiting for Axe-Fx III to boot up...\n");
->  
-> -	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-> +	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
+    - Added r-b from Michał Mirosław.
 
-Same for this check.
+    - Added more patches:
 
->  		return -EINVAL;
->  	/* If the Axe-Fx III has not fully booted, it will timeout when trying
->  	 * to enable the audio streaming interface. A more generous timeout is
-> @@ -1018,7 +1018,7 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
->  {
->  	int err, actual_length;
->  
-> -	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x01)))
-> +	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x01)))
->  		return -EINVAL;
->  	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x01), buf, *length,
->  				&actual_length, 1000);
-> @@ -1030,7 +1030,7 @@ static int snd_usb_motu_microbookii_communicate(struct usb_device *dev, u8 *buf,
->  
->  	memset(buf, 0, buf_size);
->  
-> -	if (snd_usb_pipe_sanity_check(dev, usb_rcvintpipe(dev, 0x82)))
-> +	if (usb_pipe_type_check(dev, usb_rcvintpipe(dev, 0x82)))
->  		return -EINVAL;
->  	err = usb_interrupt_msg(dev, usb_rcvintpipe(dev, 0x82), buf, buf_size,
->  				&actual_length, 1000);
-> @@ -1117,7 +1117,7 @@ static int snd_usb_motu_m_series_boot_quirk(struct usb_device *dev)
->  {
->  	int ret;
->  
-> -	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-> +	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
+        i2c: tegra: Reorder location of functions in the code
+        i2c: tegra: Factor out packet header setup from tegra_i2c_xfer_msg()
+        i2c: tegra: Remove "dma" variable
+        i2c: tegra: Initialization div-clk rate unconditionally
+        i2c: tegra: Remove i2c_dev.clk_divisor_non_hs_mode member
 
-And this one.
+v2: - Cleaned more messages in the "Clean up messages in the code" patch.
 
->  		return -EINVAL;
->  	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
->  			      1, USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+    - The error code of reset_control_reset() is checked now.
 
-Alan Stern
+    - Added these new patches to clean up couple more things:
+
+        i2c: tegra: Check errors for both positive and negative values
+        i2c: tegra: Improve coding style of tegra_i2c_wait_for_config_load()
+        i2c: tegra: Remove unnecessary whitespaces and newlines
+        i2c: tegra: Rename variable in tegra_i2c_issue_bus_clear()
+        i2c: tegra: Improve driver module description
+
+Dmitry Osipenko (22):
+  i2c: tegra: Make tegra_i2c_flush_fifos() usable in atomic transfer
+  i2c: tegra: Add missing newline before returns
+  i2c: tegra: Clean up messages in the code
+  i2c: tegra: Don't ignore tegra_i2c_flush_fifos() error
+  i2c: tegra: Use reset_control_reset()
+  i2c: tegra: Improve formatting of function variables
+  i2c: tegra: Use dev_err_probe()
+  i2c: tegra: Runtime PM always available on Tegra
+  i2c: tegra: Clean up probe function
+  i2c: tegra: Drop '_timeout' from wait/poll function names
+  i2c: tegra: Remove likely/unlikely from the code
+  i2c: tegra: Factor out error recovery from tegra_i2c_xfer_msg()
+  i2c: tegra: Check errors for both positive and negative values
+  i2c: tegra: Improve coding style of tegra_i2c_wait_for_config_load()
+  i2c: tegra: Clean up whitespaces and newlines
+  i2c: tegra: Rename variable in tegra_i2c_issue_bus_clear()
+  i2c: tegra: Improve driver module description
+  i2c: tegra: Reorder location of functions in the code
+  i2c: tegra: Factor out packet header setup from tegra_i2c_xfer_msg()
+  i2c: tegra: Remove "dma" variable
+  i2c: tegra: Initialization div-clk rate unconditionally
+  i2c: tegra: Remove i2c_dev.clk_divisor_non_hs_mode member
+
+ drivers/i2c/busses/i2c-tegra.c | 1327 ++++++++++++++++----------------
+ 1 file changed, 684 insertions(+), 643 deletions(-)
+
+-- 
+2.27.0
+
