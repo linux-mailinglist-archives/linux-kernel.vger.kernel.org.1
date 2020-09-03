@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9632C25BE0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5A925BE1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgICJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:05:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgICJFO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:05:14 -0400
-Received: from coco.lan (ip5f5ad5c3.dynamic.kabel-deutschland.de [95.90.213.195])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A9A420709;
-        Thu,  3 Sep 2020 09:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599123913;
-        bh=5msA1CmDUNZg69tLz8pFJJct70UtAz65Z8gc9Hz522Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vARd3doWYponZSo39/iKi+4VNVuDBqVDqZHKfZxm5KnfH9q2yzQouuWtjDwBwv3Mo
-         5R6Uf76TdoB+PDWYTLMsEShH6G2r5QTgBUIE7ozJoZfJjQl16Uz4gsg/MTWv8fsdfa
-         2N6X43s9q5DFrh91F3VVW/0Nmlw0ADX1eTcVu9Ao=
-Date:   Thu, 3 Sep 2020 11:05:09 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] staging: media: atomisp: fix memory leak of
- object flash
-Message-ID: <20200903110509.4542cdad@coco.lan>
-In-Reply-To: <CAHp75Vda5jRqmgsCV=Z5e5NdwHiebBy_Xdb6dq2D7L-mqqsC_g@mail.gmail.com>
-References: <20200902165852.201155-1-colin.king@canonical.com>
-        <CAHp75Vda5jRqmgsCV=Z5e5NdwHiebBy_Xdb6dq2D7L-mqqsC_g@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1728216AbgICJJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:09:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10807 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726109AbgICJJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 05:09:12 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 747EB56EFF00A9C363B0;
+        Thu,  3 Sep 2020 17:09:09 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Sep 2020 17:09:01 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+To:     <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>
+CC:     <xuwei5@hisilicon.com>, <linuxarm@huawei.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <john.garry@huawei.com>,
+        <salil.mehta@huawei.com>, <shiju.jose@huawei.com>,
+        <jinying@hisilicon.com>, <zhangyi.ac@huawei.com>,
+        <liguozhu@hisilicon.com>, <tangkunshan@huawei.com>,
+        <huangdaode@hisilicon.com>, Jingoo Han <jingoohan1@gmail.com>,
+        Rob Herring <robh@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] PCI: exynos: simplify with PTR_ERR_OR_ZERO
+Date:   Thu, 3 Sep 2020 17:05:16 +0800
+Message-ID: <1599123916-65530-1-git-send-email-xuwei5@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 2 Sep 2020 21:15:31 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
+Use PTR_ERR_OR_ZERO to make the code a little bit simpler.
+This code was detected with the help of Coccinelle.
 
-> On Wed, Sep 2, 2020 at 8:02 PM Colin King <colin.king@canonical.com> wrote:
-> >
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > In the case where the call to lm3554_platform_data_func returns an
-> > error there is a memory leak on the error return path of object
-> > flash.  Fix this by adding an error return path that will free
-> > flash and rename labels fail2 to fail3 and fail1 to fail2.
-> >  
-> 
-> Wouldn't be proper fix to move to devm_kmalloc() and return
-> dev_err_probe() where appropriate?
+Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
+---
+ drivers/pci/controller/dwc/pci-exynos.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Actually, we prefer not using devm_*() at media subsystem.
+diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
+index 8d82c43..f59f027 100644
+--- a/drivers/pci/controller/dwc/pci-exynos.c
++++ b/drivers/pci/controller/dwc/pci-exynos.c
+@@ -90,10 +90,7 @@ static int exynos5440_pcie_get_mem_resources(struct platform_device *pdev,
+ 		return -ENOMEM;
+ 
+ 	ep->mem_res->elbi_base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(ep->mem_res->elbi_base))
+-		return PTR_ERR(ep->mem_res->elbi_base);
+-
+-	return 0;
++	return PTR_ERR_OR_ZERO(ep->mem_res->elbi_base);
+ }
+ 
+ static int exynos5440_pcie_get_clk_resources(struct exynos_pcie *ep)
+-- 
+2.8.1
 
-Once we started migrating alloc stuff to use it. We end needing
-to revert those, as it caused side effects related to lifecycle
-management: some object were de-allocating too late. Others
-with multiple interfaces (USB, pci) had even worse troubles.
-
-Thanks,
-Mauro
