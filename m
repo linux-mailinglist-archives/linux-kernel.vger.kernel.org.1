@@ -2,123 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6010625C3C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E2925C3E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgICO63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:58:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31688 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729131AbgICO6W (ORCPT
+        id S1729465AbgICPA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:00:28 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:57387 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729090AbgICPAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:58:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599145100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bAzDqUsZ3/S0Arl+SG6AfwuZzD/9UqKF/7Kwa7yb0iM=;
-        b=JH8nJ1JqvIkb7jX0gzc8nZdJUEDYRRL5VFehv8S2cdv0BMgKPIuWZa7Iy1O6eUiIqg0NYk
-        izX1IjuJUbXWYGEDT2deim2Qh1nB4nQNZAUbaMn6yfWq0nsbQDTaom7TJXb9ui9vtG5VCs
-        usFstHZg9fRgr/mfm1jZ/b57+NzQMXM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-QvP6zRKEMW6q3GiEMxQAfg-1; Thu, 03 Sep 2020 10:58:16 -0400
-X-MC-Unique: QvP6zRKEMW6q3GiEMxQAfg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5F18CF9BB;
-        Thu,  3 Sep 2020 14:58:14 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CE33186580;
-        Thu,  3 Sep 2020 14:58:10 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  3 Sep 2020 16:58:14 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 16:58:09 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] pidfd: support PIDFD_NONBLOCK in pidfd_open()
-Message-ID: <20200903145808.GK4386@redhat.com>
-References: <20200902102130.147672-1-christian.brauner@ubuntu.com>
- <20200902102130.147672-2-christian.brauner@ubuntu.com>
+        Thu, 3 Sep 2020 11:00:18 -0400
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 260EE200003;
+        Thu,  3 Sep 2020 15:00:07 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 17:03:53 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        sakari.ailus@iki.fi, hverkuil@xs4all.nl, jacopo+renesas@jmondi.org,
+        luca@lucaceresoli.net, leonl@leopardimaging.com,
+        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] media: i2c: imx274: Add IMX274 power on and off
+ sequence
+Message-ID: <20200903144713.fyhmhs2bfcz5br6d@uno.localdomain>
+References: <1599012278-10203-1-git-send-email-skomatineni@nvidia.com>
+ <1599012278-10203-4-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200902102130.147672-2-christian.brauner@ubuntu.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <1599012278-10203-4-git-send-email-skomatineni@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian, off-topic question...
+Hello,
 
-On 09/02, Christian Brauner wrote:
+On Tue, Sep 01, 2020 at 07:04:38PM -0700, Sowjanya Komatineni wrote:
+> IMX274 has VANA analog 2.8V supply, VDIG digital core 1.8V supply,
+> and VDDL digital io 1.2V supply which are optional based on camera
+> module design.
 >
-> -static int pidfd_create(struct pid *pid)
-> +static int pidfd_create(struct pid *pid, unsigned int flags)
->  {
->  	int fd;
+> IMX274 also need external 24Mhz clock and is optional based on
+> camera module design.
 >
->  	fd = anon_inode_getfd("[pidfd]", &pidfd_fops, get_pid(pid),
-> -			      O_RDWR | O_CLOEXEC);
-> +			      flags | O_RDWR | O_CLOEXEC);
+> This patch adds support for IMX274 power on and off to enable and
+> disable these supplies and external clock.
+>
+> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/media/i2c/imx274.c | 134 ++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 131 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/media/i2c/imx274.c b/drivers/media/i2c/imx274.c
+> index a4b9dfd..79bfac3c6 100644
+> --- a/drivers/media/i2c/imx274.c
+> +++ b/drivers/media/i2c/imx274.c
+> @@ -18,7 +18,9 @@
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/of_gpio.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/slab.h>
+>  #include <linux/v4l2-mediabus.h>
+>  #include <linux/videodev2.h>
+> @@ -131,6 +133,15 @@
+>  #define IMX274_TABLE_WAIT_MS			0
+>  #define IMX274_TABLE_END			1
+>
+> +/* regulator supplies */
+> +static const char * const imx274_supply_names[] = {
+> +	"vddl",  /* IF (1.2V) supply */
+> +	"vdig",  /* Digital Core (1.8V) supply */
+> +	"vana",  /* Analog (2.8V) supply */
+> +};
+> +
+> +#define IMX274_NUM_SUPPLIES ARRAY_SIZE(imx274_supply_names)
+> +
+>  /*
+>   * imx274 I2C operation related structure
+>   */
+> @@ -501,6 +512,8 @@ struct imx274_ctrls {
+>   * @frame_rate: V4L2 frame rate structure
+>   * @regmap: Pointer to regmap structure
+>   * @reset_gpio: Pointer to reset gpio
+> + * @supplies: List of analog and digital supply regulators
+> + * @inck: Pointer to sensor input clock
+>   * @lock: Mutex structure
+>   * @mode: Parameters for the selected readout mode
+>   */
+> @@ -514,6 +527,8 @@ struct stimx274 {
+>  	struct v4l2_fract frame_interval;
+>  	struct regmap *regmap;
+>  	struct gpio_desc *reset_gpio;
+> +	struct regulator_bulk_data supplies[IMX274_NUM_SUPPLIES];
+> +	struct clk *inck;
+>  	struct mutex lock; /* mutex lock for operations */
+>  	const struct imx274_mode *mode;
+>  };
+> @@ -767,6 +782,75 @@ static void imx274_reset(struct stimx274 *priv, int rst)
+>  	usleep_range(IMX274_RESET_DELAY1, IMX274_RESET_DELAY2);
+>  }
+>
+> +/*
+> + * imx274_power_on - Function called to power on the sensor
+> + * @imx274: Pointer to device structure
+> + */
 
-I just noticed this comment above pidfd_create:
+Can I say this does not bring much value ? :)
+Also the parameter name is wrong
 
-	 * Note, that this function can only be called after the fd table has
-	 * been unshared to avoid leaking the pidfd to the new process.
+> +static int imx274_power_on(struct device *dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(dev);
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct stimx274 *imx274 = to_imx274(sd);
+> +	int ret;
+> +
+> +	/* keep sensor in reset before power on */
+> +	imx274_reset(imx274, 0);
+> +
+> +	ret = clk_prepare_enable(imx274->inck);
+> +	if (ret) {
+> +		dev_err(&imx274->client->dev,
+> +			"Failed to enable input clock: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = regulator_bulk_enable(IMX274_NUM_SUPPLIES, imx274->supplies);
+> +	if (ret) {
+> +		dev_err(&imx274->client->dev,
+> +			"Failed to enable regulators: %d\n", ret);
+> +		goto fail_reg;
+> +	}
+> +
+> +	usleep_range(1, 2);
 
-what does it mean?
+usleep_range() allows you to provide an interval in which your timeout
+can be coalesced with others. Giving a [1usec, 2usec] range kind of
+defeat the purpose. And most than everything, does sleeping for 2usec
+serve any real purpose ?
 
-Of course, if fd table is shared then pidfd can "leak" to another process,
-but this is true for any file and sys_pidfd_open() doesn't do any check?
 
+> +	imx274_reset(imx274, 1);
+> +
+> +	return 0;
+> +
+> +fail_reg:
+> +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
 
+regulator_bulk_enable() disables all the regulators that were enabled
+before the one that failed, so I don't think you need this one here
 
-In fact I think this helper buys nothing but adds the unnecessary get/put_pid,
-we can kill it and change pidfd_open() to do
+> +	clk_disable_unprepare(imx274->inck);
+> +	return ret;
+> +}
+> +
+> +/*
+> + * imx274_power_off - Function called to power off the sensor
+> + * @imx274: Pointer to device structure
+> + */
 
-	SYSCALL_DEFINE2(pidfd_open, pid_t, pid, unsigned int, flags)
-	{
-		int fd;
-		struct pid *p;
+Same as the above one
 
-		if (flags & ~PIDFD_NONBLOCK)
-			return -EINVAL;
+> +static int imx274_power_off(struct device *dev)
+> +{
+> +	struct i2c_client *client = to_i2c_client(dev);
+> +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> +	struct stimx274 *imx274 = to_imx274(sd);
+> +
+> +	imx274_reset(imx274, 0);
+> +
 
-		if (pid <= 0)
-			return -EINVAL;
+Is reset before power-off necessary ?
 
-		p = find_get_pid(pid);
-		if (!p)
-			return -ESRCH;
+> +	regulator_bulk_disable(IMX274_NUM_SUPPLIES, imx274->supplies);
+> +
+> +	clk_disable_unprepare(imx274->inck);
+> +
+> +	return 0;
+> +}
+> +
+> +static int imx274_get_regulators(struct device *dev, struct stimx274 *imx274)
 
-		fd = -EINVAL;
-		if (pid_has_task(p, PIDTYPE_TGID)) {
-			fd = anon_inode_getfd("[pidfd]", &pidfd_fops, pid,
-						flags | O_RDWR | O_CLOEXEC);
-		}
-		if (fd < 0)
-			put_pid(p);
-		return fd;
-	}
+For symmetry with the regulators API I would call this
+imx274_regulators_get(). Up to you :)
 
-but this is cosmetic and off-topic too.
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < IMX274_NUM_SUPPLIES; i++)
+> +		imx274->supplies[i].supply = imx274_supply_names[i];
+> +
+> +	return devm_regulator_bulk_get(dev, IMX274_NUM_SUPPLIES,
+> +					imx274->supplies);
+                                       ^ not sure if it's my email
+                                       client but you might have a
+                                       wrong indent here
 
-Oleg.
+Also, the regulators are optional in the bindings, how do the
+regulators API cope with that ? I had a look around and they seems to
+assume regulators are provided. I might be mistaken though
 
+> +}
+> +
+>  /**
+>   * imx274_s_ctrl - This is used to set the imx274 V4L2 controls
+>   * @ctrl: V4L2 control to be set
+> @@ -781,6 +865,9 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
+>  	struct stimx274 *imx274 = to_imx274(sd);
+>  	int ret = -EINVAL;
+>
+> +	if (!pm_runtime_get_if_in_use(&imx274->client->dev))
+> +		return 0;
+> +
+
+Right, but then you should call __v4l2_ctrl_handler_setup() in the
+s_stream(1) call path to have controls updated (after
+pm_runtime_get_sync() call for power on). I had a look at it seems
+only exposure is updated.
+
+>  	dev_dbg(&imx274->client->dev,
+>  		"%s : s_ctrl: %s, value: %d\n", __func__,
+>  		ctrl->name, ctrl->val);
+> @@ -811,6 +898,8 @@ static int imx274_s_ctrl(struct v4l2_ctrl *ctrl)
+>  		break;
+>  	}
+>
+> +	pm_runtime_put(&imx274->client->dev);
+> +
+>  	return ret;
+>  }
+>
+> @@ -1327,6 +1416,13 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
+>  	mutex_lock(&imx274->lock);
+>
+>  	if (on) {
+> +		ret = pm_runtime_get_sync(&imx274->client->dev);
+> +		if (ret < 0) {
+> +			pm_runtime_put_noidle(&imx274->client->dev);
+> +			mutex_unlock(&imx274->lock);
+> +			return ret;
+> +		}
+> +
+>  		/* load mode registers */
+>  		ret = imx274_mode_regs(imx274);
+>  		if (ret)
+> @@ -1362,6 +1458,7 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
+>  		ret = imx274_write_table(imx274, imx274_stop);
+>  		if (ret)
+>  			goto fail;
+> +		pm_runtime_put(&imx274->client->dev);
+>  	}
+>
+>  	mutex_unlock(&imx274->lock);
+> @@ -1369,6 +1466,7 @@ static int imx274_s_stream(struct v4l2_subdev *sd, int on)
+>  	return 0;
+>
+>  fail:
+> +	pm_runtime_put(&imx274->client->dev);
+>  	mutex_unlock(&imx274->lock);
+>  	dev_err(&imx274->client->dev, "s_stream failed\n");
+>  	return ret;
+> @@ -1834,6 +1932,14 @@ static int imx274_probe(struct i2c_client *client)
+>
+>  	mutex_init(&imx274->lock);
+>
+> +	imx274->inck = devm_clk_get_optional(&client->dev, "inck");
+
+clk_get_optional() might return error. I would check this with IS_ERR
+
+> +	ret = imx274_get_regulators(&client->dev, imx274);
+> +	if (ret) {
+> +		dev_err(&client->dev,
+> +			"Failed to get power regulators, err: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+>  	/* initialize format */
+>  	imx274->mode = &imx274_modes[IMX274_DEFAULT_BINNING];
+>  	imx274->crop.width = IMX274_MAX_WIDTH;
+> @@ -1881,15 +1987,23 @@ static int imx274_probe(struct i2c_client *client)
+>  		goto err_me;
+>  	}
+>
+> -	/* pull sensor out of reset */
+> -	imx274_reset(imx274, 1);
+> +	/* power on the sensor */
+> +	ret = imx274_power_on(&client->dev);
+> +	if (ret < 0) {
+> +		dev_err(&client->dev,
+> +			"%s : imx274 power on failed\n", __func__);
+> +		goto err_me;
+> +	}
+
+Doesn't pm_runtime_get calls the poweron function for you ?
+
+But anyway, I don't see the device being probed for, in example,
+querying it's VID/PID for identification during the driver's probe
+routine. Do you need to power on ?
+
+> +
+> +	pm_runtime_set_active(&client->dev);
+> +	pm_runtime_enable(&client->dev);
+>
+>  	/* initialize controls */
+>  	ret = v4l2_ctrl_handler_init(&imx274->ctrls.handler, 4);
+>  	if (ret < 0) {
+>  		dev_err(&client->dev,
+>  			"%s : ctrl handler init Failed\n", __func__);
+> -		goto err_me;
+> +		goto err_disable_rpm;
+>  	}
+>
+>  	imx274->ctrls.handler.lock = &imx274->lock;
+> @@ -1951,11 +2065,16 @@ static int imx274_probe(struct i2c_client *client)
+>  		goto err_ctrls;
+>  	}
+>
+> +	pm_runtime_idle(&client->dev);
+> +
+>  	dev_info(&client->dev, "imx274 : imx274 probe success !\n");
+>  	return 0;
+>
+>  err_ctrls:
+>  	v4l2_ctrl_handler_free(&imx274->ctrls.handler);
+> +err_disable_rpm:
+> +	pm_runtime_disable(&client->dev);
+> +	pm_runtime_set_suspended(&client->dev);
+>  err_me:
+>  	media_entity_cleanup(&sd->entity);
+>  err_regmap:
+> @@ -1973,14 +2092,23 @@ static int imx274_remove(struct i2c_client *client)
+>
+>  	v4l2_async_unregister_subdev(sd);
+>  	v4l2_ctrl_handler_free(&imx274->ctrls.handler);
+> +
+> +	pm_runtime_disable(&client->dev);
+> +	pm_runtime_set_suspended(&client->dev);
+> +
+>  	media_entity_cleanup(&sd->entity);
+>  	mutex_destroy(&imx274->lock);
+>  	return 0;
+>  }
+>
+> +static const struct dev_pm_ops imx274_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(imx274_power_off, imx274_power_on, NULL)
+> +};
+> +
+>  static struct i2c_driver imx274_i2c_driver = {
+>  	.driver = {
+>  		.name	= DRIVER_NAME,
+> +		.pm = &imx274_pm_ops,
+>  		.of_match_table	= imx274_of_id_table,
+>  	},
+>  	.probe_new	= imx274_probe,
+> --
+> 2.7.4
+>
