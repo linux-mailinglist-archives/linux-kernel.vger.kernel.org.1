@@ -2,90 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBA6825C6AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7594725C6B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgICQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:25:55 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:35917 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgICQZx (ORCPT
+        id S1728618AbgICQ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgICQ0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:25:53 -0400
-Received: by mail-io1-f67.google.com with SMTP id d190so3543242iof.3;
-        Thu, 03 Sep 2020 09:25:52 -0700 (PDT)
+        Thu, 3 Sep 2020 12:26:06 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7918FC061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 09:26:05 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x14so3854918wrl.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 09:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SX2M8ZjNOBomakJPHx/eAoRjiYE0E7vCrIP8X7wqwrE=;
+        b=oDD0Gux34thJnmZ1p9GU8/6kkTWx5e4QqShXwMd2NzdUka1D68oV585mq/L3jRJuu0
+         w0CSzkCCoemSUbbJ8xwFmr5CuDop+bx66FGABsb7OMciJYlYF598/kVCyzUOgEKZ6zl1
+         dJhzpIT78obpMOtyOQjJjAaeqiAJQhE1/6HIKz05PonttlZTZ2femjibqz5sE61+jsRU
+         I3UGgJtnMU/bozY9Bs4Qa/anS5uwD/JAZSk1k65nv9i0c1yBndXHbXDLXLR2zmwsvmp8
+         C9np4SMmG6PqdfSrCNaiH9JEU2oOeHPRfT0tNA1yVhssHn+9/w/tSyzAnqTgqKR+Lf01
+         Zyxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8jt+cUDaZci8tpRGrJa6zJYHwfmbG1TGKRsV7gB184I=;
-        b=deBZDbGxrtjDy+wOcfY8MFN86v4U3gVW+NEL+e9mX+l3KrdKzgd95JoAQFjfjZC8FR
-         8psIm3pvZEQL5ESjzomyT6+I8+ADyx8ffdY/rW2PnCcb0qZmEflnuwy2vtUlEGwOjS6v
-         5iqGUb5FQ1jDl0f8m8sPBU41Kcy6NJ1RGTpusl+HhbKVV1kKc+abby7cRGjbldZg9CEi
-         keBP5y9H87UFDQ5bmBsL0PvXJImbFIvYa2BTr1GYteq4/Tn9h7QX4cO+0afmVlA++OHb
-         1mBsFkEyMgBQDWW640vs5x/bFV1+GV4IHWO2WHsxBzsY5l2K3rTx8IHdnh68utmiI7rY
-         UASA==
-X-Gm-Message-State: AOAM531HxiFHgyqyGqw3tQQSRe/9Y2KZqEr0EgZOq4HNQlN7QjMTUMxf
-        yEJGCtixXbiS5KLu1HcIOA==
-X-Google-Smtp-Source: ABdhPJx2GD67DiFTiJR2VCPdhrfyE0nzINKBHCeWwYhpSGJBofkBOU8blidOuSPf6Wo3XJBSEbwcLw==
-X-Received: by 2002:a05:6602:3cb:: with SMTP id g11mr3815840iov.70.1599150352443;
-        Thu, 03 Sep 2020 09:25:52 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id o1sm1733260ils.1.2020.09.03.09.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 09:25:51 -0700 (PDT)
-Received: (nullmailer pid 2896293 invoked by uid 1000);
-        Thu, 03 Sep 2020 16:25:50 -0000
-Date:   Thu, 3 Sep 2020 10:25:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Michael Trimarchi <michael@amarulasolutions.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH v3 5/7] dt-bindings: arm: rockchip: Add Engicam PX30.Core
- C.TOUCH 2.0
-Message-ID: <20200903162550.GA2896127@bogus>
-References: <20200831082917.17117-1-jagan@amarulasolutions.com>
- <20200831082917.17117-6-jagan@amarulasolutions.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SX2M8ZjNOBomakJPHx/eAoRjiYE0E7vCrIP8X7wqwrE=;
+        b=XLsfr9u+9XVswVZg6fpc1C9bjEpI4SVM3OIzZ5XxynXHMVUu2fzne0FBsAYUE4pKSx
+         Q7JVPDSfqZq/XVSEbwy8PAm/7ISqbt65ldZtkHFOFj1WpiVoAEc5tadAUC4FLfBy84AP
+         PFIUPG9pZe+gNwbIxqJrek4z5fQgtUTEPGgdi8F4bg1D7XPMJKPnd552s5nrl+q/SR8R
+         Km2cNPN1t5gx0eCyumj7eoNLfvTbvmyKzUASZTiQ7ByKoyrAnTQ/4tp1cnoAIQ9gLlPE
+         +9H+h6W0hdlFm+rt621aAHrD5ceeY80iPNKg+9VT3G0pYzUelNaG1OYE2kr4z/wXlOAF
+         1FzA==
+X-Gm-Message-State: AOAM533kh7NIU5SeP8gzocF6vNsfQai+0iVNPGIexS3Sz7zKQxGvECGt
+        ndfjbQFONuWzKnS30WO/WrEWXAWYZkhly1cqAMp5Bw==
+X-Google-Smtp-Source: ABdhPJxcnMUlkP3dZ2TKybhF8a+O8Sm1srU3BtKK/jrCHsVYh3QnJ0h434G4rO8gv9hbnVUhv5ZzuuQkLwxiCBqscSc=
+X-Received: by 2002:a5d:6a47:: with SMTP id t7mr3256984wrw.75.1599150364012;
+ Thu, 03 Sep 2020 09:26:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831082917.17117-6-jagan@amarulasolutions.com>
+References: <46e42e5e-0bca-5f3f-efc9-5ab15827cc0b@intel.com>
+ <40BC093A-F430-4DCC-8DC0-2BA90A6FC3FA@amacapital.net> <b3809dd7-8566-0517-2389-8089475135b7@intel.com>
+ <88261152-2de1-fe8d-7ab0-acb108e97e04@intel.com> <1b51d89c-c7de-2032-df23-e138d1369ffa@intel.com>
+ <3967f126-f7ea-36fd-bec0-dfbbc46ef221@intel.com>
+In-Reply-To: <3967f126-f7ea-36fd-bec0-dfbbc46ef221@intel.com>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Thu, 3 Sep 2020 09:25:51 -0700
+Message-ID: <CALCETrXnzOwLSHWOtKTLuybCTZ=w+cBVMhs2uCzd+LSdbijQ3g@mail.gmail.com>
+Subject: Re: [PATCH v11 6/9] x86/cet: Add PTRACE interface for CET
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>, Jann Horn <jannh@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Aug 2020 13:59:15 +0530, Jagan Teki wrote:
-> PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
-> 
-> C.TOUCH 2.0 is a general purpose carrier board with capacitive
-> touch interface support.
-> 
-> PX30.Core needs to mount on top of this Carrier board for creating
-> complete PX30.Core C.TOUCH 2.0 board.
-> 
-> Add bindings for it.
-> 
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
-> Changes for v3:
-> - none
-> Changes for v2:
-> - new patch
-> 
->  Documentation/devicetree/bindings/arm/rockchip.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
+On Thu, Sep 3, 2020 at 9:21 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>
+> On 9/3/2020 9:11 AM, Dave Hansen wrote:
+> > On 9/3/20 9:09 AM, Yu, Yu-cheng wrote:
+> >> If the debugger is going to write an MSR, only in the third case would
+> >> this make a slight sense.  For example, if the system has CET enabled,
+> >> but the task does not have CET enabled, and GDB is writing to a CET MSR.
+> >>   But still, this is strange to me.
+> >
+> > If this is strange, then why do we even _implement_ writes?
+> >
+>
+> For example, if the task has CET enabled, and it is in a control
+> protection fault, the debugger can clear the task's IBT state, or unwind
+> the shadow stack, etc.  But if the task does not have CET enabled (its
+> CET MSRs are in INIT state), it would make sense for the PTRACE call to
+> return failure than doing something else, right?
 
+What do you mean "something else"?  I assume that, if GDB tells
+ptrace() to write some value to the CET MSR, then it should get that
+value.  If GDB writes to it on a task that is not currently using CET,
+I don't see why it should fail.
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
+--Andy
