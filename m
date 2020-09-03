@@ -2,121 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8D025BB8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F78225BB91
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgICHXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 03:23:37 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19279 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgICHXf (ORCPT
+        id S1728160AbgICHYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 03:24:15 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:40594 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726054AbgICHYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 03:23:35 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f5099740000>; Thu, 03 Sep 2020 00:21:24 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 03 Sep 2020 00:23:33 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 03 Sep 2020 00:23:33 -0700
-Received: from [10.2.53.12] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Sep
- 2020 07:23:24 +0000
-Subject: Re: [PATCH] mm/gup: don't permit users to call get_user_pages with
- FOLL_LONGTERM
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-CC:     Barry Song <song.bao.hua@hisilicon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, Jan Kara <jack@suse.cz>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michal Hocko" <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>, Vlastimil Babka <vbabka@suse.cz>
-References: <20200819110100.23504-1-song.bao.hua@hisilicon.com>
- <e4265ac0-793d-053b-81b1-15e57c04b830@nvidia.com>
- <CAFqt6zb2GjO9KOVdKT1P0P-Wn+isnArous5gpw-AJ3va+fi9rw@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <14e62718-a8fc-f41d-7c4a-2767cbd65c7b@nvidia.com>
-Date:   Thu, 3 Sep 2020 00:23:24 -0700
+        Thu, 3 Sep 2020 03:24:10 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0837NiCe018361;
+        Thu, 3 Sep 2020 02:23:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599117824;
+        bh=BdMcfk7mKlIUdjEAq+VRlXKBmSbVXPDgc1l6pkmOA7o=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hW/IwaIAdNdnDU+v9/vyXaVafOVA6mmWSPNAnOsbLJTpPOjr1PIN6w9d1AY/I+cWK
+         xCJFRnE4Llr/SRmaBAyQrObTLjVNM3Atvvq23zGVy6BDtpXBkIaEve2lhZN7vzy8sf
+         P9plX1XlNEr6VGHh+TmH3jhq+ly8CfrPVu34CIto=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0837Ni3x117709
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 02:23:44 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 02:23:43 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 02:23:43 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0837NenZ011328;
+        Thu, 3 Sep 2020 02:23:40 -0500
+Subject: Re: [PATCH v9 2/3] drm: bridge: Add support for Cadence MHDP8546
+ DPI/DP bridge
+To:     Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "a.hajda@samsung.com" <a.hajda@samsung.com>,
+        "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "jernej.skrabec@siol.net" <jernej.skrabec@siol.net>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Yuti Suresh Amonkar <yamonkar@cadence.com>,
+        "jsarha@ti.com" <jsarha@ti.com>, "nsekhar@ti.com" <nsekhar@ti.com>,
+        "praneeth@ti.com" <praneeth@ti.com>,
+        "nikhil.nd@ti.com" <nikhil.nd@ti.com>
+References: <1598862215-10222-1-git-send-email-sjakhade@cadence.com>
+ <1598862215-10222-3-git-send-email-sjakhade@cadence.com>
+ <e53e87b0-7e0a-763f-8b8b-0dc278e1f225@ti.com>
+ <DM6PR07MB5531DF749C993423B0A3E746D32C0@DM6PR07MB5531.namprd07.prod.outlook.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <4a0d1e85-0db6-af62-a1ea-e8f0c684b4a6@ti.com>
+Date:   Thu, 3 Sep 2020 10:23:39 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAFqt6zb2GjO9KOVdKT1P0P-Wn+isnArous5gpw-AJ3va+fi9rw@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <DM6PR07MB5531DF749C993423B0A3E746D32C0@DM6PR07MB5531.namprd07.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599117684; bh=jUExDbKjqVqcLv5dEUKCzQYjKag+aQT+X4HUSyIZ59Y=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=CCWZt9gQTcL+N+ivitisGhKJUdlkj/dUkQ8rWWwJecO2vZw4RUHdwbxS7+FGai+pr
-         RetiQgJNalU/IEYNdhyfJazILE3UvbU8M5OiwImK/WM1dqTq58SB1o/9EyrAzdvJcp
-         MuK9xqXBmY2LYEzH9njFrAEw3CAj1jYnkhnu7G7/fRbXw3OVSLkBP0Vt8Dil7FRsnf
-         So24/WkIVnBFtgLZw2MBbXjK0sGytFmNoeC10dGfAhcOxjKghcoUrK6k0H9gDaGibi
-         OI+pNDesCV5UxwnU0UXci+H/pBkfqPGrZYWtB4CCVOsaH48vY3j1bUvZIe4BeJe1BH
-         Lut0/zwgDU7lA==
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 12:12 AM, Souptick Joarder wrote:
-> On Wed, Aug 19, 2020 at 11:45 PM John Hubbard <jhubbard@nvidia.com> wrote:
->>
->> On 8/19/20 4:01 AM, Barry Song wrote:
->>> gug prohibits users from calling get_user_pages() with FOLL_PIN. But it
->>
->> Maybe Andrew can fix the typo above: gug --> gup.
->>
->>
->>> allows users to call get_user_pages() with FOLL_LONGTERM only. It seems
->>> insensible.
->>>
->>> since FOLL_LONGTERM is a stricter case of FOLL_PIN, we should prohibit
->>> users from calling get_user_pages() with FOLL_LONGTERM while not with
->>> FOLL_PIN.
->>>
->>> mm/gup_benchmark.c used to be the only user who did this improperly.
->>> But it has been fixed by moving to use pin_user_pages().
->>
->> For future patches, you don't have to write everything in the
->> commit log. Some things are better placed in a cover letter or after
->> the "---" line, because they don't need to be recorded forever.
->>
->> Anyway, the diffs seem fine, assuming that you've audited the call sites.
+Hi Milind,
+
+On 03/09/2020 09:22, Milind Parab wrote:
+
+> Also, note that CDNS MHDP implements DP_FRAMER_TU_p where bits 5:0 is tu_valid_symbols. So max programmable value is 63.
+> Register document gives following explanation 
+> "Number of valid symbols per Transfer Unit (TU). Rounded down to lower integer value (Allowed values are 1 to (TU_size-1)"
 > 
-> We can use is_valid_gup_flags() inside ->
-> get_user_pages_locked(),
-> get_user_pages_unlocked(),
-> pin_user_pages_locked() as well.
+> So, it says in case vs calculates to 64 (where Avail BW and Req BW are same) we program tu_valid_symbols = 63
 
-Probably it's best to discern between valid pup flags, and valid gup flags.
-As in: separate functions for those. Maybe one is a subset of the other, but
-still.
+Hmm, so "Rounded down to lower integer value" means
 
+floor(x) - 1 ?
+
+If that's the case, we need to subtract 1 in all cases, not only when req bw == avail bw.
+
+> Third, is about the line_threshold calculation
+> Unlike TU_SIZE and Valid_Symbols, line_threshold is implementation dependent
 > 
-> Are you planning to add it in future patches ?
+> CDNS MHDP register specs gives the definition as " Video FIFO latency threshold" 
+> Bits 5:0, Name "cfg_active_line_tresh", Description "Video Fifo Latency threshold. Defines the number of FIFO rows before reading starts. This setting depends on the transmitted video format and link rate."
 > 
+> This parameter is the Threshold of the FIFO. For optimal performance (considering equal write and read clock) we normally put the threshold in the mid of the FIFO.
+> Hence the reset value is fixed as 32.
+> Since symbol FIFO is accessed by Pxl clock and Symbol Link Clock the Threshold is set to a value which is dependent on the ratio of these clocks
+> 
+> line_threshold = full_fifo - fifo_ratio_due_to_clock_diff + 2
+> where,
+> full_fifo = (vs+1) * (8/bpp)
+> fifo_ratio_due_to_clock_diff = ((vs+1) * pxlclock/mhdp->link.rate - 1) / mhdp->link.num_lanes 
+> 
+> Note that line_threshold can take a max value of 63
 
-It's not on my list. I don't see anything wrong with doing so, other
-than avoiding the minor pitfall I called out above. So if you want to
-do that, then feel free...
+That doesn't result in anything sensible. 8/bpp is always 0.
 
+ Tomi
 
-thanks,
 -- 
-John Hubbard
-NVIDIA
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
