@@ -2,108 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9916325BA19
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C71D25BA26
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgICF3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 01:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgICF3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:29:07 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55433C061244;
-        Wed,  2 Sep 2020 22:29:07 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id s92so1333342ybi.2;
-        Wed, 02 Sep 2020 22:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aqSzJ+G6e3sItDAMEGO8323I5vOUOvMlVHBhDl0yekQ=;
-        b=Uk2NZA9Y6bbWDzHmEYkTzTD/xekG9voY1J+n9mxwJ4+ALoTFqBDICwWpq6/R+8d+vI
-         yKCWrlEc+RcRxR3jzOIM+5iVImoeONAuAtwQ886mTRXRSKLTxi72QVmk+Z2XiPbs5h1h
-         VXZv6V43lZAjfsmo6SLg07Ny7wUmdid/vL6t1QPmvUUb+WxS6lAYMrBZ13TanFWpqCvb
-         5xJzdmSdqh4ImXo7ktkMBsD0h+baSJC807sNKiYPjnq0MpaEO61VfpQf63jxb5Ay2D8e
-         D16buykU7kxpt9LOprHiTIn4btydJJnTm+gVRCjI9YGkhQHG2r5PzJD3oDZAa3earEbs
-         V4gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aqSzJ+G6e3sItDAMEGO8323I5vOUOvMlVHBhDl0yekQ=;
-        b=Dh7lL/axoK5opqXooztNcw6KbnAQavckdRF3StNaMHzrV7qgGliFvE/N/Kz0LjbkCK
-         gKDHVWsR+Ri5UuOIFvlREzxT2LaKdPn13efzoVAFuws/Y4yk4c81ndrllhaWqn+5BUcu
-         3JSgmLDdqN+9bA6/qlV+uSo8QrixFqbVdPfX/w4Hg9d7BTi5WPL4CTM6PH3Z/9Ee62QP
-         lSVHWuw7YegQtjfEOCgiZSrte6Y8r9UHQPgS/GoZPxDbhsKktVYlyUBBjD8cTIMndWrI
-         jzBOzPX1iwj6VazuMJ4cG8gQPJORPFb/go50c39rFJ9N90So2AbpDxOtq9AE8fvwIY/k
-         4dFg==
-X-Gm-Message-State: AOAM530R0u3kvkeHoRbk6uCFNAhbuPCkPl5q14YO3Ntl4f+2H9XcWwod
-        lZIJRBcT1q6hZW5UJ91XEP5lQidHEEQ1f9NX0Uw=
-X-Google-Smtp-Source: ABdhPJwyqZJvbDAyTq+F1ByuHXoZFOv7/Zgl1IH0ZUPttHP9J3S/Wq8QCE9p5aRb7dcXCiRDjcSSkakeTBxoLKQ0Ma8=
-X-Received: by 2002:a25:824a:: with SMTP id d10mr442313ybn.260.1599110946446;
- Wed, 02 Sep 2020 22:29:06 -0700 (PDT)
+        id S1727801AbgICFfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 01:35:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:31483 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725851AbgICFft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 01:35:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1599111347; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
+ Subject: Sender; bh=QxLbEY4fPM95K18HKZ88A52NMY5/8p3x1bABMOpDSXY=; b=fTwMEAEyTS/BR9dnLuZlamx+XwRNaySM3WDsbv44JVtORCXLJTewO91Fvn6xUCiizYk3xWlf
+ /OikTG1C4wWLuEu6leVRJThD8p0b6yJ5hfaIzW4p7Na57WPEsrQsTBkro4tKJH5qbQ0Lt+a4
+ qNqVLcYNgG2BnI0nlnpjKTX7xmM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5f507f94be06707b345a92da (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Sep 2020 05:31:00
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EF05CC4339C; Thu,  3 Sep 2020 05:30:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.4 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.16] (unknown [61.3.23.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D24E1C433C6;
+        Thu,  3 Sep 2020 05:30:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D24E1C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add 'sustainable_power' for CPU
+ thermal zones
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+References: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
+ <20200901170745.GA3419728@google.com>
+ <CAD=FV=Xv0FLtWWcQcRy7p2LPNdDtSjdarsvNHRHaLkWwABnwJw@mail.gmail.com>
+ <8ad0589e-102d-7523-899f-0ebe85b7d2b8@codeaurora.org>
+ <CAD=FV=XKUEQP3gyE8E2UOE12qKYwzgMp0eNeYjCp0DxPDACSMQ@mail.gmail.com>
+ <6693eed6-9a6b-48c8-e56e-acdde9cf9ffe@codeaurora.org>
+Message-ID: <f77d9b24-dbca-cea0-2ef8-3c5cf0c2f2dd@codeaurora.org>
+Date:   Thu, 3 Sep 2020 11:00:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200831224933.2129891-1-brho@google.com>
-In-Reply-To: <20200831224933.2129891-1-brho@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Sep 2020 22:28:55 -0700
-Message-ID: <CAEf4BzauvG-1ED3jtgsYdjNULq5O3pVbO7GCakZR9tP5_6zUzQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] libbpf: Support setting map max_entries at runtime
-To:     Barret Rhoden <brho@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6693eed6-9a6b-48c8-e56e-acdde9cf9ffe@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 4:03 PM Barret Rhoden <brho@google.com> wrote:
->
-> The max_entries for a BPF map may depend on runtime parameters.
-> Currently, we need to know the maximum value at BPF compile time.  For
-> instance, if you want an array map with NR_CPUS entries, you would hard
-> code your architecture's largest value for CONFIG_NR_CPUS.  This wastes
-> memory at runtime.
->
-> For the NR_CPU case, one could use a PERCPU map type, but those maps are
-> limited in functionality.  For instance, BPF programs can only access
-> their own PERCPU part of the map, and the maps are not mmappable.
->
-> This commit allows the use of sentinel values in BPF map definitions,
-> which libbpf patches at runtime.
->
-> For starters, we support NUM_POSSIBLE_CPUS: e.g.
->
-> struct {
->         __uint(type, BPF_MAP_TYPE_ARRAY);
->         __uint(max_entries, NUM_POSSIBLE_CPUS);
->         __type(key, u32);
->         __type(value, struct cpu_data);
-> } cpu_blobs SEC(".maps");
->
-> This can be extended to other runtime dependent values, such as the
-> maximum number of threads (/proc/sys/kernel/threads-max).
->
-> Signed-off-by: Barret Rhoden <brho@google.com>
-> ---
 
-libbpf provides bpf_map__set_max_entries() API exactly for such use
-cases, please use that.
+On 9/3/2020 10:14 AM, Rajendra Nayak wrote:
+> 
+> On 9/2/2020 9:02 PM, Doug Anderson wrote:
+>> Hi,
+>>
+>> On Tue, Sep 1, 2020 at 10:36 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>>
+>>>
+>>>> * In terms of the numbers here, I believe that you're claiming that we
+>>>> can dissipate 768 mW * 6 + 1202 mW * 2 = ~7 Watts of power.  My memory
+>>>> of how much power we could dissipate in previous laptops I worked on
+>>>> is a little fuzzy, but that doesn't seem insane for a passively-cooled
+>>>> laptop.  However, I think someone could conceivably put this chip in a
+>>>> smaller form factor.  In such a case, it seems like we'd want these
+>>>> things to sum up to ~2000 (if it would ever make sense for someone to
+>>>> put this chip in a phone) or ~4000 (if it would ever make sense for
+>>>> someone to put this chip in a small tablet).  It seems possible that,
+>>>> to achieve this, we might have to tweak the
+>>>> "dynamic-power-coefficient".
+>>>
+>>> DPC values are calculated (at a SoC) by actually measuring max power at various
+>>> frequency/voltage combinations by running things like dhrystone.
+>>> How would the max power a SoC can generate depend on form factors?
+>>> How much it can dissipate sure is, but then I am not super familiar how
+>>> thermal frameworks end up using DPC for calculating power dissipated,
+>>> I am guessing they don't.
+>>>
+>>>> I don't know how much thought was put
+>>>> into those numbers, but the fact that the little cores have a super
+>>>> round 100 for their dynamic-power-coefficient makes me feel like they
+>>>> might have been more schwags than anything.  Rajendra maybe knows?
+>>>
+>>> FWIK, the values are always scaled and normalized to 100 for silver and
+>>> then used to derive the relative DPC number for gold. If you see the DPC
+>>> for silver cores even on sdm845 is a 100.
+>>> Again these are not estimations but based on actual power measurements.
+>>
+>> The scaling to 100 doesn't seem to match how the thermal framework is
+>> using them.  Take a look at of_cpufreq_cooling_register().  It takes
+>> the "dynamic-power-coefficient" and passes it as "capacitance" into
+>> __cpufreq_cooling_register().  That's eventually used to compute
+>> power, which is documented in the code to be in mW.
+>>
+>> power = (u64)capacitance * freq_mhz * voltage_mv * voltage_mv;
+>> do_div(power, 1000000000);
+>>
+>> /* power is stored in mW */
+>> freq_table[i].power = power;
+>>
+>> That's used together with "sustainable-power", which is the attribute
+>> that Matthias is trying to set.  That value is documented to be in mW
+>> as well.
+>>
+>> ...so if the silver cores are always scaled to 100 regardless of how
+>> much power they actually draw then it'll be impossible to actually
+>> think about "sustainable-power" as a mW value.  Presumably we either
+>> need to accept that fact (and ideally document it) or we need to
+>> change the values for silver / gold cores (we could still keep the
+>> relative values the same and just scale them).
+> 
+> That sounds reasonable (still keep the relative values and scale them)
+> I'll get back on what those scaled numbers would look like, and try to
+> get some sense of why this scaling to 100 was done (like you said
+> I don't see any documentation on this), but I see atleast a few other non-qcom
+> SoCs doing this too in mainline (like rockchip/rk3399)
 
->  tools/lib/bpf/bpf_helpers.h |  4 ++++
->  tools/lib/bpf/libbpf.c      | 40 ++++++++++++++++++++++++++++++-------
->  tools/lib/bpf/libbpf.h      |  4 ++++
->  3 files changed, 41 insertions(+), 7 deletions(-)
->
+On second thoughts, why wouldn't a relative 'sustainable-power' value work?
+On every device, one would need to do the exercise that Matthias did to come
+up with the OPP at which we can sustain max CPU/GPU loads anyway.
+I mean even if we do change the DPC values to match actual power, Matthias would
+still observe that we can sustain at the very same OPP and not any different.
+Its just that the mW values that are passed to kernel are relative and not
+absolute. My worry is that perhaps no SoC vendor wants to put these absolute numbers
+out.
 
-[...]
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
