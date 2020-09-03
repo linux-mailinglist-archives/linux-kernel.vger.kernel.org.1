@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E38D25BD6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F7325BD50
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728140AbgICIiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:38:14 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:56340 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728027AbgICIiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:38:11 -0400
-Received: from localhost.localdomain (unknown [159.226.5.100])
-        by APP-05 (Coremail) with SMTP id zQCowADHqSLpqFBfX2UMAQ--.23934S2;
-        Thu, 03 Sep 2020 16:27:21 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: hci_qca: remove redundant null check
-Date:   Thu,  3 Sep 2020 08:27:19 +0000
-Message-Id: <20200903082719.85027-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: zQCowADHqSLpqFBfX2UMAQ--.23934S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF4UZF47GF1UCF17KF47twb_yoW3tFc_u3
-        Wkua4xGF4UWr1fAw1jgFs5urWvyFn5uF4v9rn2v34rGryDXr9xZr1qqr98Zr47Ww4xKFnx
-        Aw1UWFy0yr1xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r43MxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j27KsUUUUU=
-X-Originating-IP: [159.226.5.100]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCwYIA1z4jaK62gAAst
+        id S1727815AbgICIa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:30:59 -0400
+Received: from muru.com ([72.249.23.125]:41858 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726025AbgICIa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:30:58 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 988F880F1;
+        Thu,  3 Sep 2020 08:30:54 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 11:31:29 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Stefan Agner <stefan@agner.ch>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org
+Subject: Re: [PATCH 3/6] ARM: dts: am335x: lxm: Fix PCA9539 GPIO expander
+ properties
+Message-ID: <20200903083129.GA2782@atomide.com>
+References: <20200829094024.31842-1-krzk@kernel.org>
+ <20200829094024.31842-3-krzk@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200829094024.31842-3-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because clk_disable_unprepare already checked
-NULL clock parameter, so the additional check is
-unnecessary, just remove it.
+* Krzysztof Kozlowski <krzk@kernel.org> [200829 09:40]:
+> The PCA9539 GPIO expander requires GPIO controller properties to operate
+> properly.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/bluetooth/hci_qca.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Best to merge this with the rest of the series:
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 20e1dedbc58c..6577356d849b 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -2007,8 +2007,7 @@ static int qca_serdev_probe(struct serdev_device *serdev)
- 		err = hci_uart_register_device(&qcadev->serdev_hu, &qca_proto);
- 		if (err) {
- 			BT_ERR("Rome serdev registration failed");
--			if (qcadev->susclk)
--				clk_disable_unprepare(qcadev->susclk);
-+			clk_disable_unprepare(qcadev->susclk);
- 			return err;
- 		}
- 	}
--- 
-2.17.1
-
+Acked-by: Tony Lindgren <tony@atomide.com>
