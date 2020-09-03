@@ -2,205 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D7D25C48C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A8A25C481
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729484AbgICPMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:12:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728785AbgICMTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:19:15 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA2A6208B3;
-        Thu,  3 Sep 2020 12:19:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599135554;
-        bh=+cqm82p4iiF8vpY35ibkg76jII4BWrBq5/GuWJZ1IY8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bwCTh40/5BUeuPBBaAzgC30W1HQqKwjiFtuI5MCC7hpuPTX+kDNC40GGdxQirpsin
-         2NDOBw7C6gIRBXTj2ZtTXlTOLAn9j3Qsy/YxJ9naYPS/JETR8ZmvrjJEzwdmEwu3Gk
-         y18rdwP3q8d2qGhezN6ufFsw8gkNX7wll0V4+pig=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next 4/4] RDMA/umem: Move to allocate SG table from pages
-Date:   Thu,  3 Sep 2020 15:18:53 +0300
-Message-Id: <20200903121853.1145976-5-leon@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200903121853.1145976-1-leon@kernel.org>
-References: <20200903121853.1145976-1-leon@kernel.org>
+        id S1729443AbgICPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728846AbgICM1b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:27:31 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B4DC06125C
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:22:13 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y4so3398526ljk.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AmASOpjxirKUPe5KF2kTy+958y5fGEm2GLzYZrAWmY0=;
+        b=i0y2uYMmTvexrD5BT2Rg+2fR0wxA2Yuw2kq4ZFSIPgBWPk+zTIRox7tLo/V7J1IDcg
+         /zGL+yZo0kczuHH1lpR6RfLpnpsjbK1Xp0ad2DHuWiTiwIFLLDyXSUCe+EHEXlAi3p/e
+         pUr+iDCt5+xuvOEFlzj81oBsxg91JWPrhoQrh/NEf6k/eN5Qg/a80myuftRM/DW9XmNC
+         ipV330QqlNcjkmijfbJW8+o9rHOfLN3FmFatTgkTg9EzG5KQ3wG5MwH0rOaFzRGEbvkH
+         hEhTtGPWREF3ecaEB8e8krjUDxI3vOI+oVG2I+4TqSvovZEv6c27pjXJC4dege2SgzxD
+         u2CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AmASOpjxirKUPe5KF2kTy+958y5fGEm2GLzYZrAWmY0=;
+        b=nPj1BNHWlT8CUAJM3Qp6PWV3XnKmlqTAzpVrUelj3flHnxjmFCjaePxQ1s1ADuJWDu
+         fFoo65qDFis2A681vqQqTdSKmmjrqOQzkmYElsYlx2i0bI6BCCO78xb16qTDT7aDVIxi
+         beJw3WLNB7guyM2tFVy7FlOU6aoaRdoapIwaBfPGI+IaU3534urPHVtoOUumEZ/sgg/4
+         SKUKQNgcE/Oro2elRid5OuPhashxeyfs+JBNq3lOUgsekKGMxwRzuHb8WJ9IIYn8/YyO
+         dwVXWjLpgNf/w5wnMuTIinx/JIJu+WNs/ad6upMbUQF5WhmJsQD5Nun+1TNYO14b0k2P
+         io3g==
+X-Gm-Message-State: AOAM533ZwC/pAI2B9yWYrAywon4My8H0KmsPnU+IK2aG4MMPoyUOVTH8
+        +1s8KDa6GIL42bCuuAEXQa/jr4YVgAbFDyXhEoX8Kw==
+X-Google-Smtp-Source: ABdhPJwQ0KpxtLPZAseSnphNEoFuICKHObdYRxY2PW9uBsaYw3EIqCfxJnx9Lxv1GfE40giqNWLH6sOOChl2QA2RQ2I=
+X-Received: by 2002:a2e:b892:: with SMTP id r18mr1073176ljp.249.1599135731427;
+ Thu, 03 Sep 2020 05:22:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1598331148.git.joe@perches.com> <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
+ <d5ea3bc7-bff2-c702-51ed-cb85767824a7@amd.com>
+In-Reply-To: <d5ea3bc7-bff2-c702-51ed-cb85767824a7@amd.com>
+From:   Sumit Semwal <sumit.semwal@linaro.org>
+Date:   Thu, 3 Sep 2020 17:51:59 +0530
+Message-ID: <CAO_48GGeXrDe9F1S64pf4qeF-2vMMiwOTZXOXDctAdPO5Pn04w@mail.gmail.com>
+Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+Hello Joe,
 
-Remove the implementation of ib_umem_add_sg_table and instead
-call to sg_alloc_table_append which already has the logic to
-merge contiguous pages.
+On Wed, 26 Aug 2020 at 20:38, Christian K=C3=B6nig <christian.koenig@amd.co=
+m> wrote:
+>
+> Am 25.08.20 um 06:56 schrieb Joe Perches:
+> > Use semicolons and braces.
+> >
+> > Signed-off-by: Joe Perches <joe@perches.com>
+>
+> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+FWIW,
+Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
 
-Besides that it removes duplicated functionality, it reduces the
-memory consumption of the SG table significantly. Prior to this
-patch, the SG table was allocated in advance regardless consideration
-of contiguous pages.
-
-In huge pages system of 2MB page size, without this change, the SG table
-would contain x512 SG entries.
-E.g. for 100GB memory registration:
-
-	 Number of entries	Size
-Before 	      26214400          600.0MB
-After            51200		  1.2MB
-
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/umem.c | 93 +++++-----------------------------
- 1 file changed, 14 insertions(+), 79 deletions(-)
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index be889e99cfac..9eb946f665ec 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -62,73 +62,6 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	sg_free_table(&umem->sg_head);
- }
-
--/* ib_umem_add_sg_table - Add N contiguous pages to scatter table
-- *
-- * sg: current scatterlist entry
-- * page_list: array of npage struct page pointers
-- * npages: number of pages in page_list
-- * max_seg_sz: maximum segment size in bytes
-- * nents: [out] number of entries in the scatterlist
-- *
-- * Return new end of scatterlist
-- */
--static struct scatterlist *ib_umem_add_sg_table(struct scatterlist *sg,
--						struct page **page_list,
--						unsigned long npages,
--						unsigned int max_seg_sz,
--						int *nents)
--{
--	unsigned long first_pfn;
--	unsigned long i = 0;
--	bool update_cur_sg = false;
--	bool first = !sg_page(sg);
--
--	/* Check if new page_list is contiguous with end of previous page_list.
--	 * sg->length here is a multiple of PAGE_SIZE and sg->offset is 0.
--	 */
--	if (!first && (page_to_pfn(sg_page(sg)) + (sg->length >> PAGE_SHIFT) ==
--		       page_to_pfn(page_list[0])))
--		update_cur_sg = true;
--
--	while (i != npages) {
--		unsigned long len;
--		struct page *first_page = page_list[i];
--
--		first_pfn = page_to_pfn(first_page);
--
--		/* Compute the number of contiguous pages we have starting
--		 * at i
--		 */
--		for (len = 0; i != npages &&
--			      first_pfn + len == page_to_pfn(page_list[i]) &&
--			      len < (max_seg_sz >> PAGE_SHIFT);
--		     len++)
--			i++;
--
--		/* Squash N contiguous pages from page_list into current sge */
--		if (update_cur_sg) {
--			if ((max_seg_sz - sg->length) >= (len << PAGE_SHIFT)) {
--				sg_set_page(sg, sg_page(sg),
--					    sg->length + (len << PAGE_SHIFT),
--					    0);
--				update_cur_sg = false;
--				continue;
--			}
--			update_cur_sg = false;
--		}
--
--		/* Squash N contiguous pages into next sge or first sge */
--		if (!first)
--			sg = sg_next(sg);
--
--		(*nents)++;
--		sg_set_page(sg, first_page, len << PAGE_SHIFT, 0);
--		first = false;
--	}
--
--	return sg;
--}
--
- /**
-  * ib_umem_find_best_pgsz - Find best HW page size to use for this MR
-  *
-@@ -205,7 +138,8 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
- 	struct mm_struct *mm;
- 	unsigned long npages;
- 	int ret;
--	struct scatterlist *sg;
-+	struct scatterlist *sg = NULL;
-+	struct sg_append append = {};
- 	unsigned int gup_flags = FOLL_WRITE;
-
- 	/*
-@@ -255,15 +189,9 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- 	cur_base = addr & PAGE_MASK;
-
--	ret = sg_alloc_table(&umem->sg_head, npages, GFP_KERNEL);
--	if (ret)
--		goto vma;
--
- 	if (!umem->writable)
- 		gup_flags |= FOLL_FORCE;
-
--	sg = umem->sg_head.sgl;
--
- 	while (npages) {
- 		cond_resched();
- 		ret = pin_user_pages_fast(cur_base,
-@@ -276,10 +204,18 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- 		cur_base += ret * PAGE_SIZE;
- 		npages   -= ret;
--
--		sg = ib_umem_add_sg_table(sg, page_list, ret,
--			dma_get_max_seg_size(device->dma_device),
--			&umem->sg_nents);
-+		append.left_pages = npages;
-+		append.prv = sg;
-+		sg = sg_alloc_table_append(&umem->sg_head, page_list, ret, 0,
-+					   ret << PAGE_SHIFT,
-+					   dma_get_max_seg_size(device->dma_device),
-+					   GFP_KERNEL, &append);
-+		umem->sg_nents = umem->sg_head.nents;
-+		if (IS_ERR(sg)) {
-+			unpin_user_pages_dirty_lock(page_list, ret, 0);
-+			ret = PTR_ERR(sg);
-+			goto umem_release;
-+		}
- 	}
-
- 	sg_mark_end(sg);
-@@ -301,7 +237,6 @@ static struct ib_umem *__ib_umem_get(struct ib_device *device,
-
- umem_release:
- 	__ib_umem_release(device, umem, 0);
--vma:
- 	atomic64_sub(ib_umem_num_pages(umem), &mm->pinned_vm);
- out:
- 	free_page((unsigned long) page_list);
---
-2.26.2
-
+>
+> > ---
+> >   drivers/dma-buf/st-dma-fence.c | 7 +++++--
+> >   1 file changed, 5 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fe=
+nce.c
+> > index e593064341c8..c8a12d7ad71a 100644
+> > --- a/drivers/dma-buf/st-dma-fence.c
+> > +++ b/drivers/dma-buf/st-dma-fence.c
+> > @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
+> >                       dma_fence_signal(f1);
+> >
+> >               smp_store_mb(cb.seen, false);
+> > -             if (!f2 || dma_fence_add_callback(f2, &cb.cb, simple_call=
+back))
+> > -                     miss++, cb.seen =3D true;
+> > +             if (!f2 ||
+> > +                 dma_fence_add_callback(f2, &cb.cb, simple_callback)) =
+{
+> > +                     miss++;
+> > +                     cb.seen =3D true;
+> > +             }
+> >
+> >               if (!t->before)
+> >                       dma_fence_signal(f1);
+>
