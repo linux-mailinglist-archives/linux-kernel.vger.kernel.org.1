@@ -2,119 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A118E25C0A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD2825C096
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgICLyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:54:41 -0400
-Received: from crapouillou.net ([89.234.176.41]:52110 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728731AbgICLiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:38:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132416; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d/usum2lMn5S572mPjualJXpI8Hb8PYrLN5qLjcBg/E=;
-        b=uyPH2gOXuLKzSt6R9ogD6oYnN48BacMq2YCnxfq+SGRV9cExif4lnLNhWfRYfiVN93vpTU
-        iNEmJHYhwhvBHbRXKzQno5TLuA3CiRE064g8znLpMhPwYtZ6Op5Vc612zeV2FlJUHU6NF7
-        kv1P84KdA4TY9WoGREISDXYqyfPPtow=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Tony Prisk <linux@prisktech.co.nz>, Bin Liu <b-liu@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 20/20] usb/gadget/udc: snps: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:54 +0200
-Message-Id: <20200903112554.34263-21-paul@crapouillou.net>
-In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
-References: <20200903112554.34263-1-paul@crapouillou.net>
+        id S1728647AbgICLto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:49:44 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40212 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728716AbgICLhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:37:36 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 0AF79D883C5C254F01E4;
+        Thu,  3 Sep 2020 19:37:03 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Sep 2020 19:36:54 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wangxiongfeng2@huawei.com>
+Subject: [PATCH] scsi: target: tcmu: add a missing newline when printing parameters
+Date:   Thu, 3 Sep 2020 19:29:33 +0800
+Message-ID: <1599132573-33818-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the newly introduced pm_ptr() macro, and mark the suspend/resume
-functions __maybe_unused. These functions can then be moved outside the
-CONFIG_PM_SUSPEND block, and the compiler can then process them and
-detect build failures independently of the config. If unused, they will
-simply be discarded by the compiler.
+When I cat module paramter 'global_max_data_area_mb' by sysfs, it
+displays as follows. It's better to add a newline for easy reading.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+root@(none):/# cat /sys/module/target_core_user/parameters/global_max_data_area_mb
+2048noneroot@(none):/#
+
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 ---
- drivers/usb/gadget/udc/snps_udc_plat.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/target/target_core_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/snps_udc_plat.c b/drivers/usb/gadget/udc/snps_udc_plat.c
-index 32f1d3e90c26..6b8f08287c84 100644
---- a/drivers/usb/gadget/udc/snps_udc_plat.c
-+++ b/drivers/usb/gadget/udc/snps_udc_plat.c
-@@ -257,8 +257,7 @@ static int udc_plat_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int udc_plat_suspend(struct device *dev)
-+static int __maybe_unused udc_plat_suspend(struct device *dev)
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 9b75923..9775670 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -242,7 +242,7 @@ static int tcmu_set_global_max_data_area(const char *str,
+ static int tcmu_get_global_max_data_area(char *buffer,
+ 					 const struct kernel_param *kp)
  {
- 	struct udc *udc;
- 
-@@ -275,7 +274,7 @@ static int udc_plat_suspend(struct device *dev)
- 	return 0;
+-	return sprintf(buffer, "%d", TCMU_BLOCKS_TO_MBS(tcmu_global_max_blocks));
++	return sprintf(buffer, "%d\n", TCMU_BLOCKS_TO_MBS(tcmu_global_max_blocks));
  }
  
--static int udc_plat_resume(struct device *dev)
-+static int __maybe_unused udc_plat_resume(struct device *dev)
- {
- 	struct udc *udc;
- 	int ret;
-@@ -302,11 +301,8 @@ static int udc_plat_resume(struct device *dev)
- 
- 	return 0;
- }
--static const struct dev_pm_ops udc_plat_pm_ops = {
--	.suspend	= udc_plat_suspend,
--	.resume		= udc_plat_resume,
--};
--#endif
-+
-+static SIMPLE_DEV_PM_OPS(plat_pm_ops, udc_plat_suspend, udc_plat_resume);
- 
- #if defined(CONFIG_OF)
- static const struct of_device_id of_udc_match[] = {
-@@ -324,9 +320,7 @@ static struct platform_driver udc_plat_driver = {
- 	.driver		= {
- 		.name	= "snps-udc-plat",
- 		.of_match_table = of_match_ptr(of_udc_match),
--#ifdef CONFIG_PM_SLEEP
--		.pm	= &udc_plat_pm_ops,
--#endif
-+		.pm	= pm_ptr(&udc_plat_pm_ops),
- 	},
- };
- module_platform_driver(udc_plat_driver);
+ static const struct kernel_param_ops tcmu_global_max_data_area_op = {
 -- 
-2.28.0
+1.7.12.4
 
