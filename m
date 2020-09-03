@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DEC25BC6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B2125BC70
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgICILP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S1728693AbgICIL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbgICILH (ORCPT
+        with ESMTP id S1728379AbgICILJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:11:07 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF55C061258
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 01:10:55 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id y3so1268552vsn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:10:55 -0700 (PDT)
+        Thu, 3 Sep 2020 04:11:09 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A11BC061245
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 01:11:07 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id j185so1256331vsc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:11:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2vKxy+BrmTM4erbpnPuK1egVjffH6omXH5GzoO/2vE8=;
-        b=BGahHi6rbzLUYAczxpoLOJeX76V5ePq6YWfzkIwa5saJL7xUSVSICFCjkHep3epSJu
-         rj+jUuLnHYK32M8oSkW8+gX+3ldm76XAHBm8ucUvrdnKGglYNa8HHMNqFlbogIUcaI5C
-         Z6mB9DQo/5HjX8TIrJ2syEftgA4yQiLeMWsrlVPiSP5j/0WyJ8PymoCJ9t4j6+cIPlZa
-         3WUJJDOAAlQlq/jZGMpLJM7nkpB29yPtyG5zqbB9yGNGQp3bHkZbUs9sosiPXKECiMiv
-         qf9fXJiTMt+Pk0ox4OVvfUoSGijk9thIg1ULv6G0vF1x9q5e3mhfcikygDNoODWOpTxC
-         sEHw==
+        bh=EbOZznoyRPyqU6PnrSaB5jo0mTGED46o3I4A422iJoA=;
+        b=EMAZ0Z4psDBBdPWzZh1kA5hCaz9bbeRQRfwZHQuYBTBmdGilyg0EXZgogvYILPoL76
+         h5dulTcOt/ZXzHOyGoMB4zF3pXoO67O1F5Rt6FNZ5mM1FBgF9dQmQaiktM6Iwu4r2d0z
+         js4rOxGv3zLMN4Z+EDQ/V71B0Z44TVWVM9INqklVTtdDkUr53AwAPlsWfN6DHNhIXb1h
+         T+o07G7dZFRhJkItMKMnMDWK916bntLv7TNRWQYUFVTvhkndlqsWvrunk/l9N5VDrbWx
+         lQCSM8mOxkal8J1cJUogqa9qSWO0xjcIFoI3HSKEFe5ocieaMjc21BLNP+Az4nU3W0mI
+         ULGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2vKxy+BrmTM4erbpnPuK1egVjffH6omXH5GzoO/2vE8=;
-        b=ip1QBULBs/0SSqUZAgWNNX1RMougcCCpKYIbgxOeKm6X99nm7WPT8sTN52XvCVFrpe
-         jZiYgwd46sQE32tNfiGCGc5tYsGXOPX8L1SDxa+O2eEo3+yt9EARKkCdu0m9TkqQGobQ
-         0pzXJincaJ+guQnDZOq3xkamOO1wYzBVS1rGhgCbsr1PSgYz0x665JESyJTsRUhDHwfP
-         qPZaqw/14tqHKMCnwPVA6JwDHuRA68Af3JPWT48tssA3PWMMb8AOZ3IU4rDB+lzOffOG
-         ifOyX1hywth6TbrdgKbn7FeOBiTrVDRjgDEy9xg75mG8OiVVs85EL2Xmd/PU6LAxYLSc
-         JiDA==
-X-Gm-Message-State: AOAM530VmexX1+o49x6zjwjnrZbknpC9qTPVx1bcqycHwVV70+r/o2Cb
-        sap3tB/3n4IZT3t3ZUS32UrrRdrkRtbWknrI6EVRGw==
-X-Google-Smtp-Source: ABdhPJxfYTnSYJGxu7eCAxgLLa9ss8++NvwiXEVkjxbE5o6nKhbHft/MCQxM3aY3B+PhB/1QvL5Twv2LkkutkBBczpQ=
-X-Received: by 2002:a67:f947:: with SMTP id u7mr841916vsq.135.1599120654486;
- Thu, 03 Sep 2020 01:10:54 -0700 (PDT)
+        bh=EbOZznoyRPyqU6PnrSaB5jo0mTGED46o3I4A422iJoA=;
+        b=GPH+7s9HUhm8zNLWOHFMbR0+V95KWZNYLgONPG9AB9mqoi9xp2rBXPh7HgGplJXEp6
+         tAR5RPNaEf5UWYvGyBY3D4S+8MP3/Ys63TGRZSViobE2LRaBLyIY19w1XScxnrQ4i5mg
+         JI3y3tlHM2lLfJF8Ssm68fRwHxwvNpnWXHNXvsx2qPSmsY/tTKmU8dy3jjMEUgGkQMfX
+         RLmo3SqoW5dRFzRzpgEtFusEVLtt1Ce6vG3qM3ZnmZY54T8qiqvyhuiD+pr/V/tXJeVu
+         AxivqGGbOf6QAjGCw3z1eZ5eiJPxojzk3c82H7kImACFtjhbkwxnOmjOh3u80EdySLIz
+         XWVw==
+X-Gm-Message-State: AOAM530ZhWXPOfrENgs8Ipqq3U4riqqULlgJUligfH+stGuifcL03foK
+        x7hU0aW2aqM/nGvB8JlYLjfr5RQygre0Rh0wGn3dOA==
+X-Google-Smtp-Source: ABdhPJy/lUWIwq0MTEX0/xDsUbaBwYL1Hpa6s0IrnU5Lo8CRHnV2xO8ZyqtzzzDZhQHNh1yZqp4fDZRDw4AI0bjjwXY=
+X-Received: by 2002:a67:e45:: with SMTP id 66mr854515vso.191.1599120666254;
+ Thu, 03 Sep 2020 01:11:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902164303.1.I5e598a25222b4534c0083b61dbfa4e0e76f66171@changeid>
-In-Reply-To: <20200902164303.1.I5e598a25222b4534c0083b61dbfa4e0e76f66171@changeid>
+References: <20200901150438.228887-1-ulf.hansson@linaro.org>
+ <20200901150654.GB30034@lst.de> <CAPDyKFqZXdtVokrDQvJAh-NzN0T2ayPD6MepemLEaDt1TRPduw@mail.gmail.com>
+ <20200901154049.GA376@lst.de> <CAPDyKFqDKUG3RC241hv535CLFGEQc4b-vv0e3bexzGkDSY82Jg@mail.gmail.com>
+ <20200902134418.GR3265@brightrain.aerifal.cx> <CAMuHMdUiPhHtkQfcpMSA6HMvmcFyg__rSGUoHRKQfQf2N5QTYA@mail.gmail.com>
+ <20200903004135.GT3265@brightrain.aerifal.cx>
+In-Reply-To: <20200903004135.GT3265@brightrain.aerifal.cx>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Sep 2020 10:10:17 +0200
-Message-ID: <CAPDyKFoyKjKhwKGtLMtEyDSeSiBU6wasc=jt6c=sHnhN8jqqjg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-msm: Prefer asynchronous probe
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Date:   Thu, 3 Sep 2020 10:10:30 +0200
+Message-ID: <CAPDyKFongKHXianvz0T7spcV8jHff_usagO1xM9-60ya=KW6zg@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: mmc_spi: Allow the driver to be built when
+ CONFIG_HAS_DMA is unset
+To:     Rich Felker <dalias@libc.org>, Christoph Hellwig <hch@lst.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Sep 2020 at 01:43, Douglas Anderson <dianders@chromium.org> wrote:
+On Thu, 3 Sep 2020 at 02:41, Rich Felker <dalias@libc.org> wrote:
 >
-> Turning on initcall debug on one system showed this:
->   initcall sdhci_msm_driver_init+0x0/0x28 returned 0 after 34782 usecs
+> On Wed, Sep 02, 2020 at 05:51:16PM +0200, Geert Uytterhoeven wrote:
+> > Hi Rich,
+> >
+> > On Wed, Sep 2, 2020 at 5:43 PM Rich Felker <dalias@libc.org> wrote:
+> > > On Wed, Sep 02, 2020 at 10:31:47AM +0200, Ulf Hansson wrote:
+> > > > On Tue, 1 Sep 2020 at 17:40, Christoph Hellwig <hch@lst.de> wrote:
+> > > > > On Tue, Sep 01, 2020 at 05:36:17PM +0200, Ulf Hansson wrote:
+> > > > > > > I still don't think this makes sense, as the dma_mask should always
+> > > > > > > be non-NULL here.
+> > > > > >
+> > > > > > If that is the case, I wonder how the driver could even have worked without DMA.
+> > > > > >
+> > > > > > Because in the existing code, host->dma_dev gets assigned to
+> > > > > > spi->master->dev.parent->dma_mask - which seems to turn on the DMA
+> > > > > > usage in the driver.
+> > > > > >
+> > > > > > What am I missing?
+> > > > >
+> > > > > Do you know of other non-DMA users?  For SH nommu it probably worked
+> > > >
+> > > > I don't know of other non-DMA users. As I said, I wish someone could
+> > > > step in and take better care of mmc_spi - as I know it's being used a
+> > > > lot.
+> > > >
+> > > > > because SH nommu used to provide a DMA implementation that worked
+> > > > > fine for streaming maps, but was completely broken for coherent
+> > > > > allocation.  And this driver appears to only use the former.
+> > > >
+> > > > Alright, so you are saying the DMA support may potentially never have
+> > > > been optional to this driver. In any case, I can remove the check in
+> > > > $subject patch, as it shouldn't matter.
+> > >
+> > > DMA support was always optional, because even on systems where DMA is
+> > > present, it doesn't necessarily mean the SPI controller uses DMA. In
+> > > particular, pure bit-banged SPI via GPIOs doesn't have DMA, but has
+> > > always worked. See my previous reply to Christoph about host->dma_dev
+> > > for my current-best understanding of what's going on here.
+> > >
+> > > > Anyway, let's see what Rich thinks of this. I am curious to see if the
+> > > > patch works on his SH boards - as I haven't been able to test it.
+> > >
+> > > I'll rebuild and retest just to confirm, but I already tested a
+> > > functionally equivalent patch that just did the #ifdef inline (rather
+> > > than moving the logic out to separate functions) and it worked fine.
+> >
+> > Hence, Tested-by? ;-)
 >
-> The lion's share of this time (~33 ms) was in mmc_power_up().  This
-> shouldn't be terribly surprising since there are a few calls to delay
-> based on "power_delay_ms" and the default delay there is 10 ms.
+> Confirmed that this version of the patch works too. Thus,
 >
-> Because we haven't specified that we'd prefer asynchronous probe for
-> this driver then we'll wait for this driver to finish before we start
-> probes for more drivers.  While 33 ms doesn't sound like tons, every
-> little bit counts.
->
-> There should be little problem with turning on asynchronous probe for
-> this driver.  It's already possible that previous drivers may have
-> turned on asynchronous probe so we might already have other things
-> (that probed before us) probing at the same time we are anyway.  This
-> driver isn't really providing resources (clocks, regulators, etc) that
-> other drivers need to probe and even if it was they should be handling
-> -EPROBE_DEFER.
->
-> Let's turn this on and get a bit of boot speed back.
+> Tested-by: Rich Felker <dalias@libc.org>
 
-Thanks for a very well written commit message!
+I have applied the patch for fixes, thanks for testing!
 
-Indeed, I am sure many mmc host drivers could benefit from a similar
-change. At least regular platform drivers and amba drivers are pretty
-sure to work, but who knows.
-
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-
-Applied for next, thanks!
+Christoph, when it comes to the check of
+"spi->master->dev.parent->dma_mask", I am keeping it for now. I am
+simply not sure that all spi masters assign the pointer (even if most
+are platform drivers). I think it's better that we remove that check
+in a separate patch - to get it tested.
 
 Kind regards
 Uffe
-
-
-> ---
->
->  drivers/mmc/host/sdhci-msm.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-> index d4c02884cca8..9dd0dbb65382 100644
-> --- a/drivers/mmc/host/sdhci-msm.c
-> +++ b/drivers/mmc/host/sdhci-msm.c
-> @@ -2542,6 +2542,7 @@ static struct platform_driver sdhci_msm_driver = {
->                    .name = "sdhci_msm",
->                    .of_match_table = sdhci_msm_dt_match,
->                    .pm = &sdhci_msm_pm_ops,
-> +                  .probe_type = PROBE_PREFER_ASYNCHRONOUS,
->         },
->  };
->
-> --
-> 2.28.0.402.g5ffc5be6b7-goog
->
