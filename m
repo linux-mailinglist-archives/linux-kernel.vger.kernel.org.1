@@ -2,213 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D234025C1B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 15:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A178E25C1CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 15:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbgICNHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 09:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728972AbgICMxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:53:37 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ECB082072A;
-        Thu,  3 Sep 2020 12:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599137615;
-        bh=tfzu/ZWIp8d2WAZNm1IHe6S3/MEpEsZM5VlFwOuIU00=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rp6LONV/3+Siygj3rKc8zUqJMYY285dZqy9PfeYyddjBT9olzZ8t8SkWA10rrKuuR
-         1aDh78ixCTcYCMPLYS0NH3ZHfk8Hl5iaGX/ikbf/Y8T7BWcgLi8moiWnTAmc+vimA4
-         cGSWZpdXXhR90EIumCcTu1670kIbptuw36hPiSiQ=
-Date:   Thu, 3 Sep 2020 14:53:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v2 05/17] virt: acrn: Introduce ACRN HSM basic driver
-Message-ID: <20200903125359.GA2778029@kroah.com>
-References: <20200903124201.17275-1-shuo.a.liu@intel.com>
- <20200903124201.17275-6-shuo.a.liu@intel.com>
+        id S1729016AbgICNn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 09:43:26 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37658 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728936AbgICNB5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 09:01:57 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083D0M4v043852;
+        Thu, 3 Sep 2020 08:00:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599138022;
+        bh=3ErMb7axqI3TRtkdw9SxX8yrDCtno5nBT9qvPSppG10=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=clqUkEe8SXi5s6LjKV4o0ChllNf9eJp401BE5S7ZGUveFe7UylPpFTOjV/n5b/0DC
+         dwVZydUpxh78M54s3BaHOwsyu2tL90QFHlZ6glRLCnK/AqdwnkjGffa0h92mmEgxYD
+         PRe8BsZE+KBOlSrZJbU41Dqw92ZtiHACy0htC69k=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083D0MNw097462
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 08:00:22 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 08:00:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 08:00:21 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083D0LgZ084897;
+        Thu, 3 Sep 2020 08:00:21 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>, Tero Kristo <t-kristo@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Suman Anna <s-anna@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <lokeshvutla@ti.com>,
+        <grygorii.strashko@ti.com>, <nsekhar@ti.com>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH V2 0/8] arm64: dts: ti: k3-*: Squash up node_name_chars_strict warnings + hex usage
+Date:   Thu, 3 Sep 2020 08:00:07 -0500
+Message-ID: <20200903130015.21361-1-nm@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200901223059.14801-1-nm@ti.com>
+References: <20200901223059.14801-1-nm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903124201.17275-6-shuo.a.liu@intel.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 08:41:49PM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
-> 
-> ACRN Hypervisor Service Module (HSM) is a kernel module in Service VM
-> which communicates with ACRN userspace through ioctls and talks to ACRN
-> Hypervisor through hypercalls.
-> 
-> Add a basic HSM driver which allows Service VM userspace to communicate
-> with ACRN. The following patches will add more ioctls, guest VM memory
-> mapping caching, I/O request processing, ioeventfd and irqfd into this
-> module. HSM exports a char device interface (/dev/acrn_hsm) to userspace.
-> 
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Zhi Wang <zhi.a.wang@intel.com>
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Cc: Yu Wang <yu1.wang@intel.com>
-> Cc: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
->  MAINTAINERS                                   |  2 +
->  drivers/virt/Kconfig                          |  2 +
->  drivers/virt/Makefile                         |  1 +
->  drivers/virt/acrn/Kconfig                     | 14 +++
->  drivers/virt/acrn/Makefile                    |  3 +
->  drivers/virt/acrn/acrn_drv.h                  | 19 ++++
->  drivers/virt/acrn/hsm.c                       | 98 +++++++++++++++++++
->  include/uapi/linux/acrn.h                     | 17 ++++
->  9 files changed, 157 insertions(+)
->  create mode 100644 drivers/virt/acrn/Kconfig
->  create mode 100644 drivers/virt/acrn/Makefile
->  create mode 100644 drivers/virt/acrn/acrn_drv.h
->  create mode 100644 drivers/virt/acrn/hsm.c
->  create mode 100644 include/uapi/linux/acrn.h
-> 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index 2a198838fca9..ac60efedb104 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -319,6 +319,7 @@ Code  Seq#    Include File                                           Comments
->  0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
->                                                                       <mailto:kenji@bitgate.com>
->  0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
-> +0xA2  all    uapi/linux/acrn.h                                       ACRN hypervisor
+Hi,
 
-You don't have any ioctls in this patch, so why add this documentation
-here?
+This is a respin of v2 of the series posted as [1].
 
->  0xA3  80-8F                                                          Port ACL  in development:
->                                                                       <mailto:tlewis@mindspring.com>
->  0xA3  90-9F  linux/dtlk.h
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e0fea5e464b4..d4c1ef303c2d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -442,6 +442,8 @@ L:	acrn-dev@lists.projectacrn.org
->  S:	Supported
->  W:	https://projectacrn.org
->  F:	Documentation/virt/acrn/
-> +F:	drivers/virt/acrn/
-> +F:	include/uapi/linux/acrn.h
+As part of this cleanup, I ran a cross check of nodes that are
+part of K3 as of right now, Vs what is "generic" definition as per 0.3
+dt specification [2].
 
-This uapi file is not used in this patch, please add it in a later
-patch.
+Changes in v2:
+- Based off 20200903
+- Picked up Acks and reviewed-by from previous versions (please comment
+  if you disagree).
+- Dropped tsadc rename [3] based on review
+- Added 2 patches to fixup hexadecimal usage caught as part of review
+- few additional fixups.
 
-> +static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
-> +			   unsigned long ioctl_param)
-> +{
-> +	return 0;
-> +}
 
-As your ioctl does nothing, no need to include it here, add it in a
-later patch.
+Nishanth Menon (8):
+  arm64: dts: ti: k3-j721e: Use lower case hexadecimal
+  arm64: dts: ti: k3-am65-main: Use lower case hexadecimal
+  arm64: dts: ti: k3-am65*: Use generic gpio for node names
+  arm64: dts: ti: k3-am65*: Use generic clock for syscon clock names
+  arm64: dts: ti: k3-*: Use generic pinctrl for node names
+  arm64: dts: ti: k3-am65-base-board Use generic camera for node name
+    instead of ov5640
+  arm64: dts: ti: k3-am65-wakeup: Use generic temperature-sensor for
+    node name
+  arm64: dts: ti: k3-*: Fix up node_name_chars_strict warnings
 
-> +
-> +static int acrn_dev_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct acrn_vm *vm = filp->private_data;
-> +
-> +	kfree(vm);
-> +	return 0;
-> +}
-> +
-> +static const struct file_operations acrn_fops = {
-> +	.owner		= THIS_MODULE,
-> +	.open		= acrn_dev_open,
-> +	.release	= acrn_dev_release,
-> +	.unlocked_ioctl	= acrn_dev_ioctl,
-> +};
-> +
-> +static struct miscdevice acrn_dev = {
-> +	.minor	= MISC_DYNAMIC_MINOR,
-> +	.name	= "acrn_hsm",
-> +	.fops	= &acrn_fops,
-> +};
-> +
-> +static int __init hsm_init(void)
-> +{
-> +	int ret;
-> +
-> +	if (x86_hyper_type != X86_HYPER_ACRN)
-> +		return -ENODEV;
-> +
-> +	if (!acrn_is_privileged_vm())
-> +		return -EPERM;
-> +
-> +	ret = misc_register(&acrn_dev);
-> +	if (ret) {
-> +		pr_err("Create misc dev failed!\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi      | 22 +++++++++----------
+ arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi       |  4 ++--
+ arch/arm64/boot/dts/ti/k3-am65-wakeup.dtsi    |  6 ++---
+ .../arm64/boot/dts/ti/k3-am654-base-board.dts | 18 +++++++--------
+ .../dts/ti/k3-am654-industrial-thermal.dtsi   | 12 +++++-----
+ .../dts/ti/k3-j721e-common-proc-board.dts     | 18 +++++++--------
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     |  8 +++----
+ .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      |  4 ++--
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi   |  2 +-
+ arch/arm64/boot/dts/ti/k3-j721e.dtsi          |  2 +-
+ 10 files changed, 48 insertions(+), 48 deletions(-)
 
-Tiny tiny nit, these lines can be rewritten as:
-	if (ret)
-		pr_err("Create misc dev failed!\n");
+[1] v1: https://lore.kernel.org/linux-arm-kernel/20200901223059.14801-1-nm@ti.com/
+[2] https://pastebin.ubuntu.com/p/Z5zGQydH3G/
+[3] https://lore.kernel.org/linux-arm-kernel/9fb2f8f4-5eeb-6190-9cbf-b28084c58a8f@ti.com/
 
-	return ret;
+-- 
+2.17.1
 
-:)
-
-> +}
-> +
-> +static void __exit hsm_exit(void)
-> +{
-> +	misc_deregister(&acrn_dev);
-> +}
-> +module_init(hsm_init);
-> +module_exit(hsm_exit);
-> +
-> +MODULE_AUTHOR("Intel Corporation");
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("ACRN Hypervisor Service Module (HSM)");
-> diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-> new file mode 100644
-> index 000000000000..4ae34f86e2be
-> --- /dev/null
-> +++ b/include/uapi/linux/acrn.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Userspace interface for /dev/acrn_hsm - ACRN Hypervisor Service Module
-> + *
-> + * This file can be used by applications that need to communicate with the HSM
-> + * via the ioctl interface.
-> + */
-> +
-> +#ifndef _UAPI_ACRN_H
-> +#define _UAPI_ACRN_H
-> +
-> +#include <linux/types.h>
-> +
-> +/* The ioctl type, documented in ioctl-number.rst */
-> +#define ACRN_IOCTL_TYPE			0xA2
-
-This isn't used in this patch, so save it for a later one please.
-
-thanks,
-
-greg k-h
