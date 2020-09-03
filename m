@@ -2,122 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5135725B8D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A733A25B8D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgICCgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 22:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgICCgB (ORCPT
+        id S1728016AbgICCnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 22:43:49 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:17934 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbgICCns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 22:36:01 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7485AC061244;
-        Wed,  2 Sep 2020 19:36:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BhlKj1VkPz9sTS;
-        Thu,  3 Sep 2020 12:35:53 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1599100555;
-        bh=cURnmHEF5OCE3wHPfmuJVfdtp3KvF7NBHs8Is7up7Zk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mQIlxUyooEDyVEpcYWVDhFtPALw5w5iWn9aA72HM118NKtN1nmuVZ7FhDQ4dUphE1
-         woXpSSFpfwwZKWWLcqbkFXruMuGYi2rsXemsBdadidOSJSgTlq54GTRJLHoTLs7CUz
-         BzKU9kmlPPV2dtD1qyFZMt91ZY78bmGNujWVSXG43kY+cw1diZm0WRofq3c3WaAWsw
-         bvJPE8lV+B9AGgESU7rbdxY6fphkOZJ11ZrU2vzbAlD+HWoJHweh8fEGoYdZqcx14n
-         b0KPXprnwWzKbQ8QaEg2+qCF5h6EokkybRhmo1Mt9jSWGLSYPcrnGFWaJFqxIkjlMM
-         U1JK85kAz6SLw==
-Date:   Thu, 3 Sep 2020 12:35:52 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Borislav Petkov <bp@suse.de>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the tip tree
-Message-ID: <20200903123552.0c5d1277@canb.auug.org.au>
+        Wed, 2 Sep 2020 22:43:48 -0400
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 0832hHWY027036;
+        Thu, 3 Sep 2020 11:43:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 0832hHWY027036
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1599100998;
+        bh=T86p3R1UH15ZPoKGCOPyksmepZB9QQB30q3jQAGkwRE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fV/JumyRvG8kodg5McCAZLsnkb1n5nP8xONCgYzdUr4ntano6BjPuu52cRhTcnJuN
+         1XFb0Kc1u5NqxbCunIveZs4wmdICx+N351PtrxPDUhkCBBsIq/1Mh39yCfVfVnTCfd
+         g+ZIYGRci3JLMsyAEZPU7aR7n/82eWXLsGCspzKdIv9nQXR1PmRY5LkIXTpPUm5C1P
+         GTZaxBpSarQ+0NXqiDLFQXdFpNqz56bAaQxW1Y96r6ncl4JwFSgRmVnsUjP7Tj6D8L
+         4ICJu4fa+15yMxo1w33F7s3kPMkNkLeFRZAJz5/cEZwG+jmkewwrSiswOjtoTCfufP
+         cOHFIHLalgdrg==
+X-Nifty-SrcIP: [209.85.215.177]
+Received: by mail-pg1-f177.google.com with SMTP id d19so860558pgl.10;
+        Wed, 02 Sep 2020 19:43:18 -0700 (PDT)
+X-Gm-Message-State: AOAM530OXpBLsYE0b8s7QRVhXxFx+MKfOuJ/u9KSryuAqm9BkG35cqgZ
+        odJE3HGJGty9698b1yMSGJMp4FxhYUDm7Abz4BA=
+X-Google-Smtp-Source: ABdhPJzWZumYo+YwOqw2M5VZl8AaHtf7nEfOU3fo5VFC0j5NrdhFt1CSGIFbvlah7dSMPqXRlDT8nfl8QHu77ZME7Iw=
+X-Received: by 2002:a63:541e:: with SMTP id i30mr937750pgb.47.1599100997560;
+ Wed, 02 Sep 2020 19:43:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iK+q8_5r/YfNVEVLof7b3+d";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <be80ceda-596b-03aa-394f-166cc6388aa0@infradead.org>
+ <CAK7LNAQekh08D6=+CqRWiB7F4KCLOgSK9oof8ArVUvMc7B1YXQ@mail.gmail.com>
+ <CALaQ_hq01BCA7=sVJjm6LQrjjBFy1V79uUXcRXeLBB5g3k9M1Q@mail.gmail.com>
+ <CAK7LNARp41EXMmT+ghGVw0Ew8wgHND+Ufn_uCevaVk+OP2-UFQ@mail.gmail.com> <CALaQ_hrs8piRh2-JacEkmrHZQ=rM7yvZUStWfO0YPhNRRYiSBw@mail.gmail.com>
+In-Reply-To: <CALaQ_hrs8piRh2-JacEkmrHZQ=rM7yvZUStWfO0YPhNRRYiSBw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 3 Sep 2020 11:42:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQWLbH2+01_-Z6ts899FbA0SWndXAc4mjzNT7_BNT_Uwg@mail.gmail.com>
+Message-ID: <CAK7LNAQWLbH2+01_-Z6ts899FbA0SWndXAc4mjzNT7_BNT_Uwg@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: streamline_config.pl: check defined(ENV
+ variable) before using it
+To:     Nathan Royce <nroycea+kernel@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Changbin Du <changbin.du@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iK+q8_5r/YfNVEVLof7b3+d
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 3, 2020 at 11:18 AM Nathan Royce <nroycea+kernel@gmail.com> wrote:
+>
+> Heard, but all the same if it isn't important (which I'm assuming),
+> I'd just as soon be left out of it. That's just the way I am in
+> general, not wanting to be seen unless I have to be seen. Thanks
+> though.
 
-Hi all,
-
-After merging the tip tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+OK, I will drop your tag.
 
 
-Caused by commit
-
-  f670269a42bf ("x86: Fix early boot crash on gcc-10, next try")
-
-interacting with commit
-
-  a9a3ed1eff36 ("x86: Fix early boot crash on gcc-10, third try")
-
-from Linus' tree (v5.7-rc6) - the automatic merge did not go well.
-
-I have added this patch for today (it removes the older version).
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Thu, 3 Sep 2020 12:31:13 +1000
-Subject: [PATCH] merge fix for compiler.h
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- include/linux/compiler.h | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index d60365d4fb56..b78233fb1af7 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -223,12 +223,6 @@ static inline void *offset_to_ptr(const int *off)
- /* &a[0] degrades to a pointer: a different type from an array */
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
-=20
--/*
-- * This is needed in functions which generate the stack canary, see
-- * arch/x86/kernel/smpboot.c::start_secondary() for an example.
-- */
--#define prevent_tail_call_optimization()	mb()
--
- #include <asm/rwonce.h>
-=20
- /*
---=20
-2.28.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iK+q8_5r/YfNVEVLof7b3+d
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9QVogACgkQAVBC80lX
-0GwbcQf+KAZjlj5H/RiH7Q4R8SgiK/xfVy0ZD/LKtJviMmP8XhZRsdy3XvkGf8Sa
-mhTUpRxvD3ofrQUZN+p/qW+E1gX6stvgiQWGbhDDsNG6yT9Nvdvf9aavH4iASgPT
-IjylyJfGOhlj5iRWU1YzD5dFi7b4kP7nUHeRtrfWjUw37kqGCJQCYS1/0v2O1moO
-xiQufp91APpPfHoS3ZDf3iadIVFjIHVlR/CezuqbwGktNzVJJlPEAVWcUPKtPopW
-GmawLPUXbMtiTvADTbyYLgYa7WPxoUUD5soYsuGpXpo1Lw2PzjKhzIIpzYguyhwr
-z5OfdhlUIYocLMKOY5HW/K4v3A1pdw==
-=7RH1
------END PGP SIGNATURE-----
-
---Sig_/iK+q8_5r/YfNVEVLof7b3+d--
+-- 
+Best Regards
+Masahiro Yamada
