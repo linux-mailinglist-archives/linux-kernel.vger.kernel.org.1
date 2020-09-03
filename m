@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BB25C8A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3518125C8AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgICSVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S1729033AbgICSYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgICSVf (ORCPT
+        with ESMTP id S1726543AbgICSYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:21:35 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5FFDC061244;
-        Thu,  3 Sep 2020 11:21:34 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u18so3809072wmc.3;
-        Thu, 03 Sep 2020 11:21:34 -0700 (PDT)
+        Thu, 3 Sep 2020 14:24:36 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2CBC061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 11:24:36 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id l63so3635108edl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 11:24:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xnj90cQeIAUzM8X1DU7D3qe+cvr4mKrVyMj9gojTDnU=;
-        b=lit6mD8ojmWLJpH5VgviiSew4e1h6g7UkWjSaHP2CMmto+VctmLLpfonu9y5YYszfh
-         4HRUqwK2/QZPAE91f/cYntJYJujunP9AklTQdkbAJXKuaiO7xjgYxb8H6R4aTa0qcUSS
-         kXoWkAKPcrnhAAHCVxFz97xvJEP3nDFDuRdOmN3MPxonghZxLFZubUP+1z/jrNV/fhUe
-         yCd34Pa8JvrlXfS5+6xaO3PTMZNHagjUGlR7MCRI5BfOcEalbG+gh8ajfxAXT7qzpcSG
-         fCnPdtfiDLfGitPPfP1HdBgQrCB3aDRa4xnfHPZTPQUmIIsUxDaAU8tDy1c0dXSDQ5f4
-         OjvQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pYzegE1TrUesOvgJj7wxlo2/SZ1cjWBeZ/7cromDBhA=;
+        b=Vgjn0x5T8wExJqnxkReGGH31IpzXLF6ysqaefBcSuMhV/mIdF7PRQFF/AqqPzMGOlP
+         EzZH0fS1XK/waHqNfDMfNMDcTwMDfp+RTTU3Z/TLpMJ0rzOoCwnsAX6UYMVVSSjhqw2u
+         FdlqQ00dFrco23zHwXpzUd1/tFhMTtV6Xr/5LCDKrbxbt8tlyy9Zwcmk/NVrj+jbGYw5
+         LeV/her4znhNS3ydJT2iQEcK5u03GxW8PD7miV17SGFwrz8JhEShGkZDkn+hdMYQorAu
+         7zjMzQC5xE8zhQxeZOwzcG41eS7HZBvZLv50TvhP9mUsRjSFwSkJUdHS+djt12oBM8Z4
+         jjmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Xnj90cQeIAUzM8X1DU7D3qe+cvr4mKrVyMj9gojTDnU=;
-        b=MGMTlwv647S+orPH09Zlu85in9QqmXL659MJTYG1uzmHAcWDQF+BNdjhtIfntoKeCw
-         PVFR+78UI/cgu7KgJraUIqXigrODFN1KQdi4vE8yKJpV90mEhUJ3dMc9OIYHj7mA7u6F
-         cseu7Il5MwbhSFao4CXzacgnY017d8DIqOs4q0NNv+YN9KcJHuoeu4EDYCO4KEsETPHn
-         7WF279QCjPiDtcbMztdjqhqByMk5pSUhIKCmxUVEOA6vjnyy6gszOvRt/pdyTESZ+4R9
-         tyqFEp004SkWjUao1QYJHt0HKv8o84fLE5jeoXi8JxmXEa7LwPQzti/ff9WJS5JCMQ4v
-         La2Q==
-X-Gm-Message-State: AOAM531pySLFr8MCFIpINtTnXt11FY6jBbvQ6+QmDMAIXB7Zs+ntoVqZ
-        4eXy7JXR0qLSwUEgUcaIzYo=
-X-Google-Smtp-Source: ABdhPJwuvVasdL+HnKler9zAB3ZWl1DtRzxQYr6hcc4+i0MKXr+7UH36ZTM5rxPOl+5QOzlcwous4w==
-X-Received: by 2002:a1c:bdc4:: with SMTP id n187mr3707848wmf.109.1599157293356;
-        Thu, 03 Sep 2020 11:21:33 -0700 (PDT)
-Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id p11sm5302865wma.11.2020.09.03.11.21.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 11:21:32 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Thu, 3 Sep 2020 19:21:30 +0100
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>, devel@driverdev.osuosl.org,
-        Alan Cox <alan@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] staging: media: atomisp: Fix error path in lm3554_probe()
-Message-ID: <20200903182130.ugsbzjyq3yc56mdv@medion>
-References: <20200902184207.479525-1-alex.dewar90@gmail.com>
- <20200903121134.GB8299@kadam>
- <20200903154841.w5rppm325jobimud@medion>
- <20200903173843.GF8299@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pYzegE1TrUesOvgJj7wxlo2/SZ1cjWBeZ/7cromDBhA=;
+        b=mNZpW+CL+NOTQSiA2Z+7aKTZhvZc2Dq3bdPnEABuf6bUvQ6CSruZeBq0fbr5zyKvNs
+         YFO8a3P9rFi3OvWNkQ22pndrIjV5sqXC/lqZviPHemLts0k7BE9gL4gWJR995d44ev5w
+         DjreFYph03dBrS9gJqsBFZRC2UKMq5Iv2g6Vq6xEwqbsrtCw99zVlvQETApuAKyDH5WP
+         kzCTX9+50ukkq8Y1BxH8X0RifxITDOfVYdILrNvIyS5riNnEpAbwlG00MSEmIWfB4McA
+         1/cDbQoAYTv+MEZBTwx+b96Dy6+ZAUnrPJ67S5IZMQ7D1T1rqalSRQlh/fPrsEs21ikt
+         SIIA==
+X-Gm-Message-State: AOAM532iOsokhp1Oj4I+vcmcfT6c0f8S7bKCRRl5k7rmjaH1M4eM7uMQ
+        FQDDdBiob2bcbajl6uqBG3z4ejJJT15rVK5ju6biOeuu0To=
+X-Google-Smtp-Source: ABdhPJw2cQ3MBveaBD7gbuOQHuRjWaMGjxlS/z1Wdd/NoipdoD4nd0B491pBg6dl98yFPkiu1jgocEMfy1isesqINhU=
+X-Received: by 2002:aa7:de91:: with SMTP id j17mr4508531edv.85.1599157474741;
+ Thu, 03 Sep 2020 11:24:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903173843.GF8299@kadam>
+References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
+ <20200902140851.GJ4617@dhcp22.suse.cz> <CA+CK2bBZdN56fmsC2jyY_ju8rQfG2-9hForf1CEdcUVL1+wrrA@mail.gmail.com>
+ <74f2341a-7834-3e37-0346-7fbc48d74df3@suse.cz> <20200902151306.GL4617@dhcp22.suse.cz>
+ <e6bf05cb-044c-47a9-3c65-e41b1e42b702@suse.cz> <20200903063806.GM4617@dhcp22.suse.cz>
+ <c6b11905-2456-52a0-3b15-d4ceae6e7f54@redhat.com>
+In-Reply-To: <c6b11905-2456-52a0-3b15-d4ceae6e7f54@redhat.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 3 Sep 2020 14:23:58 -0400
+Message-ID: <CA+CK2bBTfmhTWNRrxnVKi=iknqq-iZxNZSnwNA9C9tWAJzRxmw@mail.gmail.com>
+Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
+ memory offline
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> You're right.  I wonder if there is really any need for the
-> lm3554_gpio_uninit() function at all?  It's basically the same as
-> lm3554_gpio_init() except for the order of function calls.  Probably
-> we could just rename lm3554_gpio_init() to something like
-> lm3554_gpio_set_default() and use it in both the probe() and remove
-> functions()...
+On Thu, Sep 3, 2020 at 2:20 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 03.09.20 08:38, Michal Hocko wrote:
+> > On Wed 02-09-20 19:51:45, Vlastimil Babka wrote:
+> >> On 9/2/20 5:13 PM, Michal Hocko wrote:
+> >>> On Wed 02-09-20 16:55:05, Vlastimil Babka wrote:
+> >>>> On 9/2/20 4:26 PM, Pavel Tatashin wrote:
+> >>>>> On Wed, Sep 2, 2020 at 10:08 AM Michal Hocko <mhocko@suse.com> wrote:
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Thread#1 - continue
+> >>>>>>>          free_unref_page_commit
+> >>>>>>>            migratetype = get_pcppage_migratetype(page);
+> >>>>>>>               // get old migration type
+> >>>>>>>            list_add(&page->lru, &pcp->lists[migratetype]);
+> >>>>>>>               // add new page to already drained pcp list
+> >>>>>>>
+> >>>>>>> Thread#2
+> >>>>>>> Never drains pcp again, and therefore gets stuck in the loop.
+> >>>>>>>
+> >>>>>>> The fix is to try to drain per-cpu lists again after
+> >>>>>>> check_pages_isolated_cb() fails.
+> >>>>>>
+> >>>>>> But this means that the page is not isolated and so it could be reused
+> >>>>>> for something else. No?
+> >>>>>
+> >>>>> The page is in a movable zone, has zero references, and the section is
+> >>>>> isolated (i.e. set_pageblock_migratetype(page, MIGRATE_ISOLATE);) is
+> >>>>> set. The page should be offlinable, but it is lost in a pcp list as
+> >>>>> that list is never drained again after the first failure to migrate
+> >>>>> all pages in the range.
+> >>>>
+> >>>> Yeah. To answer Michal's "it could be reused for something else" - yes, somebody
+> >>>> could allocate it from the pcplist before we do the extra drain. But then it
+> >>>> becomes "visible again" and the loop in __offline_pages() should catch it by
+> >>>> scan_movable_pages() - do_migrate_range(). And this time the pageblock is
+> >>>> already marked as isolated, so the page (freed by migration) won't end up on the
+> >>>> pcplist again.
+> >>>
+> >>> So the page block is marked MIGRATE_ISOLATE but the allocation itself
+> >>> could be used for non migrateable objects. Or does anything prevent that
+> >>> from happening?
+> >>
+> >> In a movable zone, the allocation should not be used for non migrateable
+> >> objects. E.g. if the zone was not ZONE_MOVABLE, the offlining could fail
+> >> regardless of this race (analogically for migrating away from CMA pageblocks).
+> >>
+> >>> We really do depend on isolation to not allow reuse when offlining.
+> >>
+> >> This is not really different than if the page on pcplist was allocated just a
+> >> moment before the offlining, thus isolation started. We ultimately rely on being
+> >> able to migrate any allocated pages away during the isolation. This "freeing to
+> >> pcplists" race doesn't fundamentally change anything in this regard. We just
+> >> have to guarantee that pages on pcplists will be eventually flushed, to make
+> >> forward progress, and there was a bug in this aspect.
+> >
+> > You are right. I managed to confuse myself yesterday. The race is
+> > impossible for !ZONE_MOVABLE because we do PageBuddy check there. And on
+> > the movable zone we are not losing the migrateability property.
+> >
+> > Pavel I think this will be a useful information to add to the changelog.
+> > We should also document this in the code to prevent from further
+> > confusion. I would suggest something like the following:
+> >
+> > diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> > index 242c03121d73..56d4892bceb8 100644
+> > --- a/mm/page_isolation.c
+> > +++ b/mm/page_isolation.c
+> > @@ -170,6 +170,14 @@ __first_valid_page(unsigned long pfn, unsigned long nr_pages)
+> >   * pageblocks we may have modified and return -EBUSY to caller. This
+> >   * prevents two threads from simultaneously working on overlapping ranges.
+> >   *
+> > + * Please note that there is no strong synchronization with the page allocator
+> > + * either. Pages might be freed while their page blocks are marked ISOLATED.
+> > + * In some cases pages might still end up on pcp lists and that would allow
+> > + * for their allocation even when they are in fact isolated already. Depending on
+> > + * how strong of a guarantee the caller needs drain_all_pages might be needed
+> > + * (e.g. __offline_pages will need to call it after check for isolated range for
+> > + * a next retry).
+> > + *
+>
+> As expressed in reply to v2, I dislike this hack. There is strong
+> synchronization, just PCP is special. Allocating from MIGRATE_ISOLATE is
+> just plain ugly.
+>
+> Can't we temporarily disable PCP (while some pageblock in the zone is
+> isolated, which we know e.g., due to the counter), so no new pages get
+> put into PCP lists after draining, and re-enable after no pageblocks are
+> isolated again? We keep draining the PCP, so it doesn't seem to be of a
+> lot of use during that period, no? It's a performance hit already.
+>
+> Then, we would only need exactly one drain. And we would only have to
+> check on the free path whether PCP is temporarily disabled.
 
-I think you probably also don't want to return error values from
-lm3554_gpio_uninit() as it is only called on module removal, so it'd
-probably make more sense to just print a warning and carry on. I'll do
-this as a separate patch and send it to the list, though.
+Hm, we could use a static branches to disable it, that would keep
+release code just as fast, but I am worried it will make code even
+uglier. Let's see what others in this thread think about this idea.
 
-v2 to follow...
-
-> 
-> But I don't know the code and can't test it so let's leave that for
-> another day.
-> 
-> We still do need to clean up if atomisp_register_i2c_module() fails
-> though, and the timer as well so could you resend a v2?
-> 
-> regards,
-> dan carpenter
-> 
+Thank you,
+Pasha
