@@ -2,207 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F34E25BD0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9864725BC27
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728987AbgICIRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:17:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgICIBe (ORCPT
+        id S1728564AbgICIEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:04:38 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:38391 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728424AbgICICk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA9EC061249;
-        Thu,  3 Sep 2020 01:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=heIsT8/SplQXU4w72h1M+LwpZvzUpp0QALjc6RNl7zw=; b=PJTestiPNaHQ4NuHebfydyrEWB
-        nCiCAtdUz3eJLxq8KY9/S/xSlwUrEjqZK4eF4+fbUXvMMIC9DreUObnDmn4JhDMU9/5HAF8XBk5Gq
-        madT5qC5ReZdHeg8qVcWB44DoSB5OUgt7zAX4QK4Ptsh9LPyChjoPIr2uwmTBVKGcl4JCpPQc4rZx
-        huRcZeYK/88mJpcGFRGdXObvfs5YhZLg/cCBwDSTH/hmV1F9Eh2hOI/95cW5pdnMigN03LtlIjT5m
-        gxeTTDqRzD4iSakHMKD9FHAwl1DT4Np18YNvLVn0C5yT+ncropdeV8EIl0QTwjOi+WiXiUKjP3SPv
-        +9U7GLVg==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBR-0006aU-RV; Thu, 03 Sep 2020 08:01:27 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 04/19] block: split block_class_lock
+        Thu, 3 Sep 2020 04:02:40 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id F196AC12;
+        Thu,  3 Sep 2020 04:02:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=2cnyUKVTc9vD/
+        03BQF9KhDjcFGmV0tTe2xC3x8EBalQ=; b=gswgacHBfDHCYrxEieM6XVjsfcHNn
+        kq8T/+FlqMhbkziWfIk0eoNEN8bMwj+itHjTrVegs92oa5lH9fmm4sychECdiEtV
+        LpMk0YWNtE7jts+RY9yJi6XT8zN7zL6lJYb0cT54O+3qLql1fEkpJD6oeiAhg6OS
+        ZXehpldOt2lZtGPZya9CfEtAT+xiAOr1vXqmvdZDgBpCnS3g7+d74fALknLssq/i
+        4HPpKR+M+igq0oz7ZB2TI6IxSvJNjhPMOLauKB3TUCP1m2fYVKzHNS3X0EQtJmWo
+        cuVcQN7qRXmB4RdPMXR+biro+zMSFk2jgbKASgM60+rObEXAYTZ6od3Wg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=2cnyUKVTc9vD/03BQF9KhDjcFGmV0tTe2xC3x8EBalQ=; b=UhKj7b3v
+        hT/KqTBheneVi/SjN4PlD/fGNjLNBzlvmYxxbfK3ul1FEhf9Eh6uz6rLnvKN3Cvr
+        Lw/GA+h+HB52vrOl0QsrC8jK/fmIq4q3JOuXSexm3m/6ncq7XytcaJduG5T4Sgrn
+        1no8WOSHvG/LUzD874U3izoDbCZah1otOgvDu7kngwNwYwbpFcZaMixQj2x40X9X
+        fwUzLpTJABiYdF6BIPld71ctqdmQeUVHjo8vUhVcoCigbOVw4MZC+msBOkz57aQt
+        kQMs5fpg5dFlGSPjAH+kWNek70J0C2fd4BQjr+HUR97LJG51XMW0Bqdc/y12H6zR
+        tPEnDNaRpPFUDA==
+X-ME-Sender: <xms:HqNQX-CTFBu_5VFudCAMIckNZn8eENjjMhldqw5aevGpGuJGCn9OGA>
+    <xme:HqNQX4hSFN89iH6ABzrUeNKs7SXgn5dX17Na6fTrpl3U0ErKNf8TSH0hLs1OkxNy8
+    4-jAzSNeH3zCI2Mysg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvje
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:HqNQXxmsjTrIIoe3VLxIx7eI65EWjFS86cZYMcvYoR3pVr697zTDxA>
+    <xmx:HqNQX8wo4NCCaE1cVLcqZZwI2ZGARAAMtIj92RJ3Hr0Y4XMzu83ieg>
+    <xmx:HqNQXzRrbBRato9myjQZP0oX6LBAcBinVY6_sfpdv9SNCAuJq6os9w>
+    <xmx:HqNQX7ZVkIVXfw9MtBFw5nWd10xKBVAXBOFN7KZH6cWxkmoDv61l0y4gsEo>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 3B116328005E;
+        Thu,  3 Sep 2020 04:02:38 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 32/80] drm/vc4: hvs: Make the stop_channel function public
 Date:   Thu,  3 Sep 2020 10:01:04 +0200
-Message-Id: <20200903080119.441674-5-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903080119.441674-1-hch@lst.de>
-References: <20200903080119.441674-1-hch@lst.de>
+Message-Id: <a9d5f0891c3bc1deb6b16d56ca6994ed912ec7c7.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split the block_class_lock mutex into one each to protect bdev_map
-and major_names.
+During the transition from the firmware to the KMS driver, we need to pay
+particular attention to how we deal with the pixelvalves that have already
+been enabled, otherwise either timeouts or stuck pixels can occur. We'll
+thus need to call the function to stop an HVS channel at boot.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- block/genhd.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ drivers/gpu/drm/vc4/vc4_drv.h | 1 +
+ drivers/gpu/drm/vc4/vc4_hvs.c | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index ec9b64207d9c2e..034e9089965a82 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -25,7 +25,6 @@
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index 251fcc35530c..554c2e29b23d 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -907,6 +907,7 @@ void vc4_irq_reset(struct drm_device *dev);
  
- #include "blk.h"
+ /* vc4_hvs.c */
+ extern struct platform_driver vc4_hvs_driver;
++void vc4_hvs_stop_channel(struct drm_device *dev, unsigned int output);
+ int vc4_hvs_atomic_check(struct drm_crtc *crtc, struct drm_crtc_state *state);
+ void vc4_hvs_atomic_enable(struct drm_crtc *crtc, struct drm_crtc_state *old_state);
+ void vc4_hvs_atomic_disable(struct drm_crtc *crtc, struct drm_crtc_state *old_state);
+diff --git a/drivers/gpu/drm/vc4/vc4_hvs.c b/drivers/gpu/drm/vc4/vc4_hvs.c
+index 0f56a7b57916..b5ee9556e821 100644
+--- a/drivers/gpu/drm/vc4/vc4_hvs.c
++++ b/drivers/gpu/drm/vc4/vc4_hvs.c
+@@ -248,7 +248,7 @@ static int vc4_hvs_init_channel(struct vc4_dev *vc4, struct drm_crtc *crtc,
+ 	return 0;
+ }
  
--static DEFINE_MUTEX(block_class_lock);
- static struct kobject *block_depr;
- 
- struct bdev_map {
-@@ -37,6 +36,7 @@ struct bdev_map {
- 	int (*lock)(dev_t, void *);
- 	void *data;
- } *bdev_map[255];
-+static DEFINE_MUTEX(bdev_map_lock);
- 
- /* for extended dynamic devt allocation, currently only one major is used */
- #define NR_EXT_DEVT		(1 << MINORBITS)
-@@ -400,6 +400,7 @@ static struct blk_major_name {
- 	int major;
- 	char name[16];
- } *major_names[BLKDEV_MAJOR_HASH_SIZE];
-+static DEFINE_MUTEX(major_names_lock);
- 
- /* index in the above - for now: assume no multimajor ranges */
- static inline int major_to_index(unsigned major)
-@@ -412,11 +413,11 @@ void blkdev_show(struct seq_file *seqf, off_t offset)
+-static void vc4_hvs_stop_channel(struct drm_device *dev, unsigned int chan)
++void vc4_hvs_stop_channel(struct drm_device *dev, unsigned int chan)
  {
- 	struct blk_major_name *dp;
- 
--	mutex_lock(&block_class_lock);
-+	mutex_lock(&major_names_lock);
- 	for (dp = major_names[major_to_index(offset)]; dp; dp = dp->next)
- 		if (dp->major == offset)
- 			seq_printf(seqf, "%3d %s\n", dp->major, dp->name);
--	mutex_unlock(&block_class_lock);
-+	mutex_unlock(&major_names_lock);
- }
- #endif /* CONFIG_PROC_FS */
- 
-@@ -445,7 +446,7 @@ int register_blkdev(unsigned int major, const char *name)
- 	struct blk_major_name **n, *p;
- 	int index, ret = 0;
- 
--	mutex_lock(&block_class_lock);
-+	mutex_lock(&major_names_lock);
- 
- 	/* temporary */
- 	if (major == 0) {
-@@ -498,7 +499,7 @@ int register_blkdev(unsigned int major, const char *name)
- 		kfree(p);
- 	}
- out:
--	mutex_unlock(&block_class_lock);
-+	mutex_unlock(&major_names_lock);
- 	return ret;
- }
- 
-@@ -510,7 +511,7 @@ void unregister_blkdev(unsigned int major, const char *name)
- 	struct blk_major_name *p = NULL;
- 	int index = major_to_index(major);
- 
--	mutex_lock(&block_class_lock);
-+	mutex_lock(&major_names_lock);
- 	for (n = &major_names[index]; *n; n = &(*n)->next)
- 		if ((*n)->major == major)
- 			break;
-@@ -520,7 +521,7 @@ void unregister_blkdev(unsigned int major, const char *name)
- 		p = *n;
- 		*n = p->next;
- 	}
--	mutex_unlock(&block_class_lock);
-+	mutex_unlock(&major_names_lock);
- 	kfree(p);
- }
- 
-@@ -671,7 +672,7 @@ void blk_register_region(dev_t devt, unsigned long range, struct module *module,
- 		p->data = data;
- 	}
- 
--	mutex_lock(&block_class_lock);
-+	mutex_lock(&bdev_map_lock);
- 	for (i = 0, p -= n; i < n; i++, p++, index++) {
- 		struct bdev_map **s = &bdev_map[index % 255];
- 		while (*s && (*s)->range < range)
-@@ -679,7 +680,7 @@ void blk_register_region(dev_t devt, unsigned long range, struct module *module,
- 		p->next = *s;
- 		*s = p;
- 	}
--	mutex_unlock(&block_class_lock);
-+	mutex_unlock(&bdev_map_lock);
- }
- EXPORT_SYMBOL(blk_register_region);
- 
-@@ -690,7 +691,7 @@ void blk_unregister_region(dev_t devt, unsigned long range)
- 	unsigned i;
- 	struct bdev_map *found = NULL;
- 
--	mutex_lock(&block_class_lock);
-+	mutex_lock(&bdev_map_lock);
- 	for (i = 0; i < min(n, 255u); i++, index++) {
- 		struct bdev_map **s;
- 		for (s = &bdev_map[index % 255]; *s; s = &(*s)->next) {
-@@ -703,7 +704,7 @@ void blk_unregister_region(dev_t devt, unsigned long range)
- 			}
- 		}
- 	}
--	mutex_unlock(&block_class_lock);
-+	mutex_unlock(&bdev_map_lock);
- 	kfree(found);
- }
- EXPORT_SYMBOL(blk_unregister_region);
-@@ -1039,7 +1040,7 @@ static struct gendisk *lookup_gendisk(dev_t dev, int *partno)
- 	unsigned long best = ~0UL;
- 
- retry:
--	mutex_lock(&block_class_lock);
-+	mutex_lock(&bdev_map_lock);
- 	for (p = bdev_map[MAJOR(dev) % 255]; p; p = p->next) {
- 		struct kobject *(*probe)(dev_t, int *, void *);
- 		struct module *owner;
-@@ -1060,7 +1061,7 @@ static struct gendisk *lookup_gendisk(dev_t dev, int *partno)
- 			module_put(owner);
- 			continue;
- 		}
--		mutex_unlock(&block_class_lock);
-+		mutex_unlock(&bdev_map_lock);
- 		kobj = probe(dev, partno, data);
- 		/* Currently ->owner protects _only_ ->probe() itself. */
- 		module_put(owner);
-@@ -1068,7 +1069,7 @@ static struct gendisk *lookup_gendisk(dev_t dev, int *partno)
- 			return dev_to_disk(kobj_to_dev(kobj));
- 		goto retry;
- 	}
--	mutex_unlock(&block_class_lock);
-+	mutex_unlock(&bdev_map_lock);
- 	return NULL;
- }
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
  
 -- 
-2.28.0
-
+git-series 0.9.1
