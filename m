@@ -2,81 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCE825C17B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 15:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D9425C1A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 15:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728994AbgICNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 09:04:53 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:46272 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728875AbgICMud (ORCPT
+        id S1728970AbgICNTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 09:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728874AbgICMyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:50:33 -0400
-Received: by mail-oo1-f67.google.com with SMTP id r6so726857oon.13;
-        Thu, 03 Sep 2020 05:50:32 -0700 (PDT)
+        Thu, 3 Sep 2020 08:54:43 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DC8C061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:54:43 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m5so935685lfp.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:54:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=onLl8rTDQyvNpKgJJE9dFmq94UrkQmRn/zbTPNdul+w=;
+        b=kyWZd6uSWtnkPJPjNC9/5GmYksI/3zvd739yEGMNVYRRPQ+obtq6kc0P1lySF1wLna
+         /9pVxkncaXRcO2tuJq3pvnexLY4/WEYs6tUJiejalUKE87aVDxTtE8HGZioi56/HtvGW
+         yphbM/vIdOQS1E8H5tT9vqdWIBrlZSJthYKw99V3Br+Jb4Wy1/Z14Ngc4JlLjaNb+iBN
+         xdzS5/4L9tad8h/PIo9T2VsXCmgBMNtPZPjyG+MR2avtJUVy/CwEcgRJqvxxJyZ5cc+b
+         kVEFsNzOzEK2uw81sjvtX00wvqAEmpeahxzGvmJf2FDEtGdxJK92HT48bXtJyIME/kON
+         QHxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1yBWyc30bteRaNTbWi/EHvxP4KqoZ2tFWWNTbRmlkVg=;
-        b=LBQe1SCYwo2RDdltUNQaSMxBfC+8NEmVEbLDKnf9raanYm12UtLTQcxzibdr1M5Zq2
-         hDjw3yGtAaKFPgL1+Jr5oLXT/cOnln2rTpIIPpFB7i5J9ZIR+jiwNTYjSTqoXE+dsjK0
-         7EifohrWpnTeRfrm9JbqsLvzkE502g0lKvSJxRQA+Dj0LvzzaUpsleNrxmGqcX9ny7Xf
-         Vom9FwrDh3zL+QM60bF2ud8UdJ18EzQOdDrTwoZMEpYUUlf9X08UaB2PN2u/KSK/LIgR
-         OSEPDF4Vb9vOEnBhJ+GkcQM7Fob1dXwvRup9o1lYo7Fvz2pURSESM4edFGwK9sZLrrnc
-         EOlA==
-X-Gm-Message-State: AOAM530uCZoi+7Pd260eGG0XXN/uVoJvBLMgNcpE09g3ICnf9Zkn5XO1
-        dTaR/ifPaWN9FEb1gjlQymRpeBr5uZuNTZJ9eRg=
-X-Google-Smtp-Source: ABdhPJwgUA8/9dTAUlU6cdfP4MyPR6AGrwuHJomj48EOQHbXLlXOR6xpU06maOKGZ+lkXERSWteneVva1v5pLewTTtE=
-X-Received: by 2002:a4a:5403:: with SMTP id t3mr1634127ooa.11.1599137432385;
- Thu, 03 Sep 2020 05:50:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=onLl8rTDQyvNpKgJJE9dFmq94UrkQmRn/zbTPNdul+w=;
+        b=uavog567IatFqpcP/oXG3VYq8YXiNYAypEBZb6X44YQrizrWeah7+MIHL8on2In4aC
+         c9Athof+pJzdvn/T/1GyChYRjIGcYiLqO5Rk02DNE4Xq+XtDreD3LHNAtPtFPedRag2y
+         Jvcu6DpX8k9rKtLUF3UwPC2mXSwGFazOi1hhOQkT0GA/xNIFB24rF8VZcuiyffqES4s1
+         t8HZBDF6u5DSoVo8jLO5WJ94N812L2bCmhDEr+7JZteuy1+KTEjCrdwAWMCYzhprRjEe
+         1nwCMg9fyIXMx5hZzBP3An8RuxQ5c5kuny6USejp1wRdzTGYtKBLSrX6NsAWPGXe8J78
+         xLDQ==
+X-Gm-Message-State: AOAM531ipbrGAwbaEZ+cMimhYFy2ZpNdXrWIqkTbOUThPJerexpgcsnf
+        wa0ZcgdaDIHCKDbYZRW6JQkw0g==
+X-Google-Smtp-Source: ABdhPJxLwRZ25xqjpghlAiLuT8OszHqy2R0uqqhz3VeP7cshAVmBhDNDZKmnWNKpKHq5Fjz6I8h+WA==
+X-Received: by 2002:a19:40c8:: with SMTP id n191mr1267052lfa.29.1599137681414;
+        Thu, 03 Sep 2020 05:54:41 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id l16sm595692ljb.72.2020.09.03.05.54.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 05:54:40 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 321BC102212; Thu,  3 Sep 2020 15:54:42 +0300 (+03)
+Date:   Thu, 3 Sep 2020 15:54:42 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Ben Skeggs <bskeggs@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 1/7] mm/thp: fix __split_huge_pmd_locked() for
+ migration PMD
+Message-ID: <20200903125442.4no5dq7mzcdllery@box>
+References: <20200902165830.5367-1-rcampbell@nvidia.com>
+ <20200902165830.5367-2-rcampbell@nvidia.com>
 MIME-Version: 1.0
-References: <20200831183722.8165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200831183722.8165-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 3 Sep 2020 14:50:21 +0200
-Message-ID: <CAMuHMdUnOuEppcU5XYeD0inMErPErrWZ7Ufrno4fg=VBYtc76w@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: cpg-mssr: Rename vsp1-(sy|rt) clocks to vsp(s|r)
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902165830.5367-2-rcampbell@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 8:37 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> VSP1 instances VSPS (which stands for "VSP Standard") and VSPR (which
-> stands for "VSP for Resizing") were wrongly named as "vsp1-sy" and
-> "vsp1-rt". The clock section in the SoC datasheets misunderstood the
-> abbreviations as meaning VSP System and VSP Realtime, and named the
-> corresponding clocks VSP1(SY) and VSP1(RT). This mistake has been
-> carried over to the kernel code.
->
-> This patch fixes this by renaming the clock names to "vsps" and "vspr".
->
-> Inspired from commit 79ea9934b8df ("ARM: shmobile: r8a7790: Rename
-> VSP1_(SY|RT) clocks to VSP1_(S|R)")
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, Sep 02, 2020 at 09:58:24AM -0700, Ralph Campbell wrote:
+> A migrating transparent huge page has to already be unmapped. Otherwise,
+> the page could be modified while it is being copied to a new page and
+> data could be lost. The function __split_huge_pmd() checks for a PMD
+> migration entry before calling __split_huge_pmd_locked() leading one to
+> think that __split_huge_pmd_locked() can handle splitting a migrating PMD.
+> However, the code always increments the page->_mapcount and adjusts the
+> memory control group accounting assuming the page is mapped.
+> Also, if the PMD entry is a migration PMD entry, the call to
+> is_huge_zero_pmd(*pmd) is incorrect because it calls pmd_pfn(pmd) instead
+> of migration_entry_to_pfn(pmd_to_swp_entry(pmd)).
+> Fix these problems by checking for a PMD migration entry.
+> 
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Hm. Could you remind me what codepath splits migration PMD? Maybe it
+should wait until migration is complete? We could avoid a lot of
+complexity this way.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+ Kirill A. Shutemov
