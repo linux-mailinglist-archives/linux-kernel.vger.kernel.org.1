@@ -2,108 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E469A25C3B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BF225C2B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729463AbgICO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:56:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10764 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729175AbgICOKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:10:54 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C91757B51C7D80ACF500;
-        Thu,  3 Sep 2020 21:18:59 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Sep 2020
- 21:18:53 +0800
-Subject: Re: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
-To:     Catalin Marinas <catalin.marinas@arm.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
- <20200801130856.86625-4-chenzhou10@huawei.com> <20200902170910.GB16673@gaia>
- <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
-CC:     <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
-        <bhsharma@redhat.com>, <huawei.libin@huawei.com>,
-        <guohanjun@huawei.com>, <will@kernel.org>, <bhe@redhat.com>,
-        <corbet@lwn.net>, <mingo@redhat.com>, <dyoung@redhat.com>,
-        <John.P.donnelly@oracle.com>, <arnd@arndb.de>,
-        <xiexiuqi@huawei.com>, <horms@verge.net.au>, <tglx@linutronix.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <robh+dt@kernel.org>, <james.morse@arm.com>,
-        <prabhakar.pkin@gmail.com>, <nsaenzjulienne@suse.de>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <779fd86d-4d1a-c2ac-ffc8-79f05526a00c@huawei.com>
-Date:   Thu, 3 Sep 2020 21:18:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1729335AbgICOdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729343AbgICOcH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:32:07 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A18C061244;
+        Thu,  3 Sep 2020 06:20:24 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u128so2318381pfb.6;
+        Thu, 03 Sep 2020 06:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tAstEE7xW6ixGXMVKxjeyJUh3HVzf2XVOU1fodROD9k=;
+        b=sp5V/JNxeuZwW41J3Nt/ItaHN+ymHSD1609wWjH35AIvOnMn3Q8XyuVjRXF/qWZHVc
+         Bf7sNg7i0ZlTYb2w8bzz8kq6c17Y8EaLnxvitxVeibBQpYuBybZyI1u1NtbYFCMuSr6A
+         dWYBMdpRR9jkLQGMsKFOC34Q1F/Ga8JtdKqAHOcwhHWZbnLO1PWhI/zzKfOEH/39UKCW
+         YEuVE+M+fl1hk9KbNh5pIuqrx385OMMdoETaHbg460CYMaf0ruom85rn+CF1t+jKtV3I
+         NLYh0uTVIXDPBXoNSDTBPE8ZtwewdFaBNY8TxbTDmDlUCMhlvkiHA5z9xz4IQTvuQm4A
+         9Q6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tAstEE7xW6ixGXMVKxjeyJUh3HVzf2XVOU1fodROD9k=;
+        b=S+XHPbtgOb78Y7f3syZrq5eHaqAyMXiBBY138nwRo0q/k2LHcImF3hEHAlkFnrySHi
+         M38qyKIRoMpUf/IRo3FSRxYO9VJh05pPvKFwSYs2EXM4JtR3b97Chr2grFKh25C3aDyC
+         Y+RhRzXQZUjXCQ+p7oWzrj+qiH0KiM8EJrNl/FDfuS0T0pTRsD9kHMrRPSz1n9VxxIp9
+         QDV/tP6Z08UKLbmi+hpcLsc1bKcpwtgNy6JUqzHuN8I8KQTHC2qrcDW4z0Joj5Du4LA6
+         v9AqVfFOlthe11UBFQxaLbygYH8GTOOoQsnFJ419UBP9UkWD0UtMepW2uwlpJnSW5R7c
+         6MFA==
+X-Gm-Message-State: AOAM5339uWcwevlh5sdCggm5p9b+fHBaVr/vgTQ9XPpWZEe9pVZmBClN
+        cekRyAu1RElzsHHx2qGf1t6LOiYKReAbGkJMORs=
+X-Google-Smtp-Source: ABdhPJxvCqZfPwguDJuOSLvVm0bhXx1T/QU/L/L588R/Ui4F94yMIF1O6k3OR5G7YZqzuWcFAitepuvit4LisR6/978=
+X-Received: by 2002:aa7:942a:: with SMTP id y10mr2786604pfo.68.1599139221898;
+ Thu, 03 Sep 2020 06:20:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+References: <20200903130950.6274-1-nish.malpani25@gmail.com> <20200903130950.6274-2-nish.malpani25@gmail.com>
+In-Reply-To: <20200903130950.6274-2-nish.malpani25@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Sep 2020 16:20:04 +0300
+Message-ID: <CAHp75Vc4hgvgoHrPaxDikqmAoqjpfOwPFTM-AvNvR3Ep=dQEfg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] iio: gyro: adxrs290: Add triggered buffer support
+To:     Nishant Malpani <nish.malpani25@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        darius.berghe@analog.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 3, 2020 at 4:10 PM Nishant Malpani <nish.malpani25@gmail.com> wrote:
+>
+> Provide a way for continuous data capture by setting up buffer support. The
+> data ready signal exposed at the SYNC pin of the ADXRS290 is exploited as
+> a hardware interrupt which triggers to fill the buffer.
+>
+> Triggered buffer setup was tested with both hardware trigger (DATA_RDY) and
+> software triggers (sysfs-trig & hrtimer).
+
+...
+
+> +static int adxrs290_set_mode(struct iio_dev *indio_dev, enum adxrs290_mode mode)
+> +{
+> +       struct adxrs290_state *st = iio_priv(indio_dev);
+> +       int val, ret;
+> +
+> +       if (st->mode == mode) {
+
+> +               ret = 0;
+> +               goto done;
+
+Unlocking the not locked mutex is not good. Have you followed the
+Submitting Patches Checklist? It in particular suggests few debug
+options, like LOCKDEP, to be enabled.
+
+> +       }
+> +
+> +       mutex_lock(&st->lock);
+> +
+> +       ret = spi_w8r8(st->spi, ADXRS290_READ_REG(ADXRS290_REG_POWER_CTL));
+> +       if (ret < 0)
+> +               goto done;
+> +
+> +       val = ret;
+> +
+> +       switch (mode) {
+> +       case ADXRS290_MODE_STANDBY:
+> +               val &= ~ADXRS290_MEASUREMENT;
+> +               break;
+> +       case ADXRS290_MODE_MEASUREMENT:
+> +               val |= ADXRS290_MEASUREMENT;
+> +               break;
+> +       default:
+> +               ret = -EINVAL;
+> +               goto done;
+> +       }
+> +
+> +       ret = adxrs290_spi_write_reg(st->spi,
+> +                                    ADXRS290_REG_POWER_CTL,
+> +                                    val);
+> +       if (ret < 0) {
+> +               dev_err(&st->spi->dev, "unable to set mode: %d\n", ret);
+> +               goto done;
+> +       }
+> +
+> +       /* update cached mode */
+> +       st->mode = mode;
+> +
+
+> +done:
+
+Much better to call it out_unlock. It will help eliminate the mistakes
+like above.
+
+> +       mutex_unlock(&st->lock);
+> +       return ret;
+> +}
+
+...
 
 
-On 2020/9/3 19:26, chenzhou wrote:
-> Hi Catalin,
->
->
-> On 2020/9/3 1:09, Catalin Marinas wrote:
->> On Sat, Aug 01, 2020 at 09:08:54PM +0800, Chen Zhou wrote:
->>> There are following issues in arm64 kdump:
->>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
->>> will fail when there is no enough low memory.
->>> 2. If reserving crashkernel above 4G, in this case, crash dump
->>> kernel will boot failure because there is no low memory available
->>> for allocation.
->>> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
->>> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
->>> the devices in crash dump kernel need to use ZONE_DMA will alloc
->>> fail.
->>>
->>> To solve these issues, change the behavior of crashkernel=X.
->>> crashkernel=X tries low allocation in ZONE_DMA, and fall back to
->>> high allocation if it fails.
->>>
->>> If requized size X is too large and leads to very little free memory
->>> in ZONE_DMA after low allocation, the system may not work normally.
->>> So add a threshold and go for high allocation directly if the required
->>> size is too large. The value of threshold is set as the half of
->>> the low memory.
->>>
->>> If crash_base is outside ZONE_DMA, try to allocate at least 256M in
->>> ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
->>> specified size low memory.
->> Except for the threshold to keep zone ZONE_DMA memory,
->> reserve_crashkernel() looks very close to the x86 version. Shall we try
->> to make this generic as well? In the first instance, you could avoid the
->> threshold check if it takes an explicit ",high" option.
-> Ok, i will try to do this.
->
-> I look into the function reserve_crashkernel() of x86 and found the start address is
-> CRASH_ALIGN in function memblock_find_in_range(), which is different with arm64.
->
-> I don't figure out why is CRASH_ALIGN in x86, is there any specific reason?
-Besides, in function reserve_crashkernel_low() of x86, the start address is 0.
+What about
 
->
-> Thanks,
-> Chen Zhou
->
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->
-> .
->
+  ret = -EINVAL;
 
+>         switch (mask) {
+>         case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
+>                 lpf_idx = adxrs290_find_match(adxrs290_lpf_3db_freq_hz_table,
+>                                               ARRAY_SIZE(adxrs290_lpf_3db_freq_hz_table),
+>                                               val, val2);
+> -               if (lpf_idx < 0)
+> -                       return -EINVAL;
 
+> +               if (lpf_idx < 0) {
+
+> +                       ret = -EINVAL;
+> +                       break;
+> +               }
+
+Simple
+  break;
+
+and so on?
+
+> +
+>                 /* caching the updated state of the low-pass filter */
+>                 st->lpf_3db_freq_idx = lpf_idx;
+>                 /* retrieving the current state of the high-pass filter */
+>                 hpf_idx = st->hpf_3db_freq_idx;
+> -               return adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> +               ret = adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> +               break;
+> +
+>         case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+>                 hpf_idx = adxrs290_find_match(adxrs290_hpf_3db_freq_hz_table,
+>                                               ARRAY_SIZE(adxrs290_hpf_3db_freq_hz_table),
+>                                               val, val2);
+> -               if (hpf_idx < 0)
+> -                       return -EINVAL;
+> +               if (hpf_idx < 0) {
+> +                       ret = -EINVAL;
+> +                       break;
+> +               }
+> +
+>                 /* caching the updated state of the high-pass filter */
+>                 st->hpf_3db_freq_idx = hpf_idx;
+>                 /* retrieving the current state of the low-pass filter */
+>                 lpf_idx = st->lpf_3db_freq_idx;
+> -               return adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> +               ret = adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> +               break;
+> +
+> +       default:
+> +               ret = -EINVAL;
+> +               break;
+>         }
+>
+> -       return -EINVAL;
+> +       iio_device_release_direct_mode(indio_dev);
+> +       return ret;
+>  }
+
+...
+
+> +static irqreturn_t adxrs290_trigger_handler(int irq, void *p)
+> +{
+
+> +       /* exercise a bulk data capture starting from reg DATAX0... */
+> +       ret = spi_write_then_read(st->spi, &tx, sizeof(tx), st->buffer.channels,
+> +                                 sizeof(st->buffer.channels));
+> +       if (ret < 0)
+> +               goto done;
+> +
+> +       iio_push_to_buffers_with_timestamp(indio_dev, &st->buffer,
+> +                                          pf->timestamp);
+> +
+> +done:
+
+out_unlock_notify:
+
+> +       mutex_unlock(&st->lock);
+> +       iio_trigger_notify_done(indio_dev->trig);
+> +
+> +       return IRQ_HANDLED;
+> +}
+
+...
+
+> +static int adxrs290_probe_trigger(struct iio_dev *indio_dev)
+> +{
+> +       struct adxrs290_state *st = iio_priv(indio_dev);
+> +       int ret;
+
+> +       if (!st->spi->irq) {
+> +               dev_info(&st->spi->dev, "no irq, using polling\n");
+> +               return 0;
+> +       }
+
+Wouldn't it be better to have this check outside of the function?
+And taking this into account...
+
+> +}
+
+...
+
+> +       ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
+> +                                             &iio_pollfunc_store_time,
+> +                                             &adxrs290_trigger_handler, NULL);
+> +       if (ret < 0)
+> +               return dev_err_probe(&spi->dev, ret,
+> +                                    "iio triggered buffer setup failed\n");
+
+...do you really have to set up a trigger buffer w/o trigger being probed?
+
+> +       ret = adxrs290_probe_trigger(indio_dev);
+> +       if (ret < 0)
+> +               return ret;
+
+-- 
+With Best Regards,
+Andy Shevchenko
