@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E56C25C31E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF79C25C363
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729425AbgICOpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:45:01 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:28704 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728918AbgICOoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:44:37 -0400
-IronPort-SDR: nkWVAQKqUCXjXdJVF0KOn7X/P8AH4A4+9wI69zWZU3zIGWV2djriaGGB0WigwaZqbiCLCE7dFL
- XP+9lmAashYfp4IYGIWQM0YFqSb8T5YfbDx/HxOkAc7p91myExBIjyf67GfCpM/Nwe9g0jI9s4
- d9EOGdlvTuy0EhALv78khIxewiGgYsgt7HB5ep7XnErOEVNbBRNWLsHPgaJF0ZE3w9iuf89WSd
- SuRxstOlvEPNeLdn7J0LEtGXWPV6OgGP96xeGQud1OlwLP9A3q+fGA2vj4qhyh8VIFPBckKpwi
- 1U0=
-X-IronPort-AV: E=Sophos;i="5.76,387,1592899200"; 
-   d="scan'208";a="54728480"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa1.mentor.iphmx.com with ESMTP; 03 Sep 2020 06:44:30 -0800
-IronPort-SDR: Mgmi2Sj3+nlxK/9a28nix/exYFJLpu41rF0jAUMoQX66CtMvBMjTmsnuGDZIH9HRErM/sP7K7+
- VNrT6TbfxCSjcs1cAPcnfdJIdiJgb7dYpNvV7RUKcW15t+QmT17xWc6bog6HJK2tvx8V3fAnpD
- i0JiUYuqpIp9gdxK4puu4tq9wMkN+tD1rW7qR7imz/74ynJGTDlG2Bg3YJ0LXVHHrnHKtVS2rL
- nGDp3E4LRGP12zUXOG/9ySxhvGBn6etQMM2KZrb1s1+xI9o43Khe/06Dpzll8tZ+pn9v3rGBsg
- pV4=
-Subject: Re: [PATCH 1/1] Input: atmel_mxt_ts - implement I2C retries
-To:     Dmitry Osipenko <digetx@gmail.com>, <nick@shmanahar.org>,
-        <dmitry.torokhov@gmail.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>
-References: <20200821082254.16661-1-jiada_wang@mentor.com>
- <64c77ff9-6d20-abcf-f549-7d5c85fba28d@gmail.com>
-From:   "Wang, Jiada" <jiada_wang@mentor.com>
-Message-ID: <2c8ed5c8-f95b-dce4-f964-ac16f12c3f20@mentor.com>
-Date:   Thu, 3 Sep 2020 23:44:21 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729282AbgICOuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:50:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:58808 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729221AbgICOua (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:50:30 -0400
+IronPort-SDR: 6Sz4wc/NfUDnUKmYLIKE3ehT6FTSAK8RQN8MaQmqjtIT7BnyqH6lAczhzd/iKRcXq4DjjBpPZu
+ ACJx+DChaFqw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="145321772"
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
+   d="scan'208";a="145321772"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 07:50:29 -0700
+IronPort-SDR: BwfK41eGLvTp+sj057B+tx268htgpgChICs9sUe69HpeljkYMvFuz5O4Phxc8mh3C6kWui8ZDp
+ jglQq2nL/hvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
+   d="scan'208";a="375890461"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga001.jf.intel.com with ESMTP; 03 Sep 2020 07:50:29 -0700
+Received: from abityuts-desk1.ger.corp.intel.com (abityuts-desk1.ger.corp.intel.com [10.237.72.186])
+        by linux.intel.com (Postfix) with ESMTP id 586515807B5;
+        Thu,  3 Sep 2020 07:50:26 -0700 (PDT)
+Message-ID: <9c5156274a86573ad592e6e431f3cbee8135b736.camel@gmail.com>
+Subject: Re: [RFC v4 1/1] selftests/cpuidle: Add support for cpuidle latency
+ measurement
+From:   Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To:     Pratik Sampat <psampat@linux.ibm.com>, rjw@rjwysocki.net,
+        daniel.lezcano@linaro.org, srivatsa@csail.mit.edu,
+        shuah@kernel.org, npiggin@gmail.com, ego@linux.vnet.ibm.com,
+        svaidy@linux.ibm.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        pratik.r.sampat@gmail.com
+Date:   Thu, 03 Sep 2020 17:50:25 +0300
+In-Reply-To: <fa616fed-66be-bcad-83b8-b1173a3a444f@linux.ibm.com>
+References: <20200902114506.45809-1-psampat@linux.ibm.com>
+         <20200902114506.45809-2-psampat@linux.ibm.com>
+         <b59481655c29d081eea4f34c00166517738000e5.camel@gmail.com>
+         <fa616fed-66be-bcad-83b8-b1173a3a444f@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <64c77ff9-6d20-abcf-f549-7d5c85fba28d@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SVR-ORW-MBX-07.mgc.mentorg.com (147.34.90.207) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry
+On Thu, 2020-09-03 at 17:30 +0530, Pratik Sampat wrote:
+> I certainly did not know about that the Intel architecture being aware
+> of timers and pre-wakes the CPUs which makes the timer experiment
+> observations void.
 
-On 2020/08/28 17:19, Dmitry Osipenko wrote:
-> 21.08.2020 11:22, Jiada Wang пишет:
->> From: Nick Dyer <nick.dyer@itdev.co.uk>
->>
->> Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
->> when they are in a sleep state. It must be retried after a delay for the
->> chip to wake up.
->>
->> Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
->> Acked-by: Yufeng Shen <miletus@chromium.org>
->> (cherry picked from ndyer/linux/for-upstream commit 63fd7a2cd03c3a572a5db39c52f4856819e1835d)
->> [gdavis: Forward port and fix conflicts.]
->> Signed-off-by: George G. Davis <george_davis@mentor.com>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
->>   drivers/input/touchscreen/atmel_mxt_ts.c | 45 ++++++++++++++++--------
->>   1 file changed, 30 insertions(+), 15 deletions(-)
-> 
-> Hello, Jiada!
-> 
-> I tested this patch on Acer A500 that has mXT1386 controller which
-> requires the I2C retrying and everything working good, no problems
-> spotted! Touchscreen doesn't work without this patch!
-> 
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
-> 
-> I have one minor comment, please see it below!
-> 
->> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
->> index a2189739e30f..e93eda1f3d59 100644
->> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
->> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
->> @@ -196,6 +196,7 @@ enum t100_type {
->>   #define MXT_CRC_TIMEOUT		1000	/* msec */
->>   #define MXT_FW_RESET_TIME	3000	/* msec */
->>   #define MXT_FW_CHG_TIMEOUT	300	/* msec */
->> +#define MXT_WAKEUP_TIME		25	/* msec */
->>   
->>   /* Command to unlock bootloader */
->>   #define MXT_UNLOCK_CMD_MSB	0xaa
->> @@ -626,6 +627,7 @@ static int __mxt_read_reg(struct i2c_client *client,
->>   	struct i2c_msg xfer[2];
->>   	u8 buf[2];
->>   	int ret;
->> +	bool retry = false;
->>   
->>   	buf[0] = reg & 0xff;
->>   	buf[1] = (reg >> 8) & 0xff;
->> @@ -642,17 +644,22 @@ static int __mxt_read_reg(struct i2c_client *client,
->>   	xfer[1].len = len;
->>   	xfer[1].buf = val;
->>   
->> -	ret = i2c_transfer(client->adapter, xfer, 2);
->> -	if (ret == 2) {
->> -		ret = 0;
->> -	} else {
->> -		if (ret >= 0)
->> -			ret = -EIO;
->> -		dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
->> -			__func__, ret);
->> +retry_read:
->> +	ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
->> +	if (ret != ARRAY_SIZE(xfer)) {
-> 
-> Is it really possible to get a positive ret != 2 from i2c_transfer()?
-> 
-> Maybe it's better to keep the old code behaviour by returning the "ret"
-> value directly if it's not equal to ARRAY_SIZE(xfer)?
-> 
-I think, theoretically i2c_transfer() may return positive value but != 
-number to transfer,
-original behavior is,
-when ret >= 0, it returns -EIO, when ret < 0, it just returns ret,
+Well, things depend on platform, it is really "void", it is just
+different and it measures an optimized case. The result may be smaller
+observed latency. And things depend on the platform.
 
-current behavior is, when ret != 2, it returns -EIO, after retry.
+> However, we are also collecting a baseline measurement wherein we run
+> the same test on a 100% busy CPU and the measurement of latency from
+> that could be considered to the kernel-userspace overhead.
+> The rest of the measurements would be considered keeping this baseline
+> in mind.
 
-I am OK to change the behavior exactly as same original one.
+Yes, this should give the idea of the overhead, but still, at least for
+many Intel platforms I would not be comfortable using the resulting
+number (measured latency - baseline) for a cpuidle driver, because
+there are just too many variables there. I am not sure I could assume
+the baseline measured this way is an invariant - it could be noticeably
+different depending on whether you use C-states or not.
 
-Thanks,
-Jiada
+> > At least on Intel platforms, this will mean that the IPI method won't
+> > cover deep C-states like, say, PC6, because one CPU is busy. Again, not
+> > saying this is not interesting, just pointing out the limitation.
+> 
+> That's a valid point. We have similar deep idle states in POWER too.
+> The idea here is that this test should be run on an already idle
+> system, of course there will be kernel jitters along the way
+> which can cause little skewness in observations across some CPUs but I
+> believe the observations overall should be stable.
+
+If baseline and cpuidle latency are numbers of same order of magnitude,
+and you are measuring in a controlled lab system, may be yes. But if
+baseline is, say, in milliseconds, and you are measuring a 10
+microseconds C-state, then probably no.
+
+> Another solution to this could be using isolcpus, but that just
+> increases the complexity all the more.
+> If you have any suggestions of any other way that could guarantee
+> idleness that would be great.
+
+Well, I did not try to guarantee idleness. I just use timers and
+external device (the network card), so no CPUs needs to be busy and the
+system can enter deep C-states. Then I just look at median, 99%-th
+percentile, etc.
+
+But by all means IPI is also a very interesting experiment. Just covers
+a different usage scenario.
+
+When I started experimenting in this area, one of my main early
+takeaways was realization that C-state latency really depends on the
+event source.
+
+HTH,
+Artem.
+
