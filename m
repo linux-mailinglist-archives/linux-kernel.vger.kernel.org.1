@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A49F25C081
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3A525C08B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgICLnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:43:06 -0400
-Received: from crapouillou.net ([89.234.176.41]:51930 "EHLO crapouillou.net"
+        id S1726479AbgICLrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:47:51 -0400
+Received: from crapouillou.net ([89.234.176.41]:51944 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728670AbgICLew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:34:52 -0400
+        id S1728646AbgICLfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:35:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132400; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599132402; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=kBW+nkOsYyeAelK/KG7Nm9NdYHdCT7/Y8hAy7PO36OI=;
-        b=u9xFXq2EP+7d+LmlwYPr2PlDeGx8LofH5vlp6CbMdTA7PVyuq7p56wjFh7Kr3Iz/7YZUHh
-        6PAiCm4bE5jSsLrmXg3T1mnmLyfJvsTxHh36tbIvQn2EKg4aNICx1RVLaBCkornN3obBEM
-        cDJ9dheuf5Xxpis21nnQ1SKic7lnxyY=
+        bh=hcIYdvuHgCnX105VYCMzaNdLpnwL2oejz7eq3kv/QCg=;
+        b=l7TbgxzpKLSy0f6XLh5qi4mNX+GQCUAKmtU+E1nWIeS96sZKn1LB6jiycJjFMuiwsFy0TA
+        2zCaaa2m6gE/ximHchPnzqKmlRw6nu45OsdT97mINoU/Tc4nlNTa9NBZg0Qq7wHf0VUs87
+        vUj9NR0sMCrRUu/irsY+vlaud1PF1Ls=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Chen <Peter.Chen@nxp.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 14/20] usb/phy: mxs-usb: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:48 +0200
-Message-Id: <20200903112554.34263-15-paul@crapouillou.net>
+Subject: [PATCH 15/20] usb/gadget/udc: atmel: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:49 +0200
+Message-Id: <20200903112554.34263-16-paul@crapouillou.net>
 In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
 References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -64,59 +64,49 @@ simply be discarded by the compiler.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/usb/phy/phy-mxs-usb.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/usb/gadget/udc/atmel_usba_udc.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/phy/phy-mxs-usb.c b/drivers/usb/phy/phy-mxs-usb.c
-index 67b39dc62b37..c5e32d51563f 100644
---- a/drivers/usb/phy/phy-mxs-usb.c
-+++ b/drivers/usb/phy/phy-mxs-usb.c
-@@ -815,8 +815,8 @@ static int mxs_phy_remove(struct platform_device *pdev)
+diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
+index a6426dd1cfef..38da3f3ebde7 100644
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -2359,8 +2359,7 @@ static int usba_udc_remove(struct platform_device *pdev)
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
--static void mxs_phy_enable_ldo_in_suspend(struct mxs_phy *mxs_phy, bool on)
-+static void __maybe_unused
-+mxs_phy_enable_ldo_in_suspend(struct mxs_phy *mxs_phy, bool on)
+-static int usba_udc_suspend(struct device *dev)
++static int __maybe_unused usba_udc_suspend(struct device *dev)
  {
- 	unsigned int reg = on ? ANADIG_ANA_MISC0_SET : ANADIG_ANA_MISC0_CLR;
+ 	struct usba_udc *udc = dev_get_drvdata(dev);
  
-@@ -832,7 +832,7 @@ static void mxs_phy_enable_ldo_in_suspend(struct mxs_phy *mxs_phy, bool on)
- 			reg, BM_ANADIG_ANA_MISC0_STOP_MODE_CONFIG_SL);
- }
- 
--static int mxs_phy_system_suspend(struct device *dev)
-+static int __maybe_unused mxs_phy_system_suspend(struct device *dev)
- {
- 	struct mxs_phy *mxs_phy = dev_get_drvdata(dev);
- 
-@@ -842,7 +842,7 @@ static int mxs_phy_system_suspend(struct device *dev)
+@@ -2393,7 +2392,7 @@ static int usba_udc_suspend(struct device *dev)
  	return 0;
  }
  
--static int mxs_phy_system_resume(struct device *dev)
-+static int __maybe_unused mxs_phy_system_resume(struct device *dev)
+-static int usba_udc_resume(struct device *dev)
++static int __maybe_unused usba_udc_resume(struct device *dev)
  {
- 	struct mxs_phy *mxs_phy = dev_get_drvdata(dev);
+ 	struct usba_udc *udc = dev_get_drvdata(dev);
  
-@@ -851,7 +851,6 @@ static int mxs_phy_system_resume(struct device *dev)
+@@ -2417,7 +2416,6 @@ static int usba_udc_resume(struct device *dev)
  
  	return 0;
  }
--#endif /* CONFIG_PM_SLEEP */
+-#endif
  
- static SIMPLE_DEV_PM_OPS(mxs_phy_pm, mxs_phy_system_suspend,
- 		mxs_phy_system_resume);
-@@ -862,7 +861,7 @@ static struct platform_driver mxs_phy_driver = {
- 	.driver = {
- 		.name = DRIVER_NAME,
- 		.of_match_table = mxs_phy_dt_ids,
--		.pm = &mxs_phy_pm,
-+		.pm = pm_ptr(&mxs_phy_pm),
- 	 },
+ static SIMPLE_DEV_PM_OPS(usba_udc_pm_ops, usba_udc_suspend, usba_udc_resume);
+ 
+@@ -2425,7 +2423,7 @@ static struct platform_driver udc_driver = {
+ 	.remove		= usba_udc_remove,
+ 	.driver		= {
+ 		.name		= "atmel_usba_udc",
+-		.pm		= &usba_udc_pm_ops,
++		.pm		= pm_ptr(&usba_udc_pm_ops),
+ 		.of_match_table	= atmel_udc_dt_ids,
+ 	},
  };
- 
 -- 
 2.28.0
 
