@@ -2,269 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1ED25BC2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82FF25BC18
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728590AbgICIE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:04:59 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:33675 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726397AbgICICv (ORCPT
+        id S1728381AbgICICS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728294AbgICIBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:02:51 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 36F3AB19;
-        Thu,  3 Sep 2020 04:02:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=2sv6uQU0wC4GF
-        RuTG5bPvOFLJbxdN3V3lHFUxyUM0Z8=; b=jg6gjvSCqqAylKH2CrHMqQYew48zt
-        t6aN36ueZ2fEBayIMXZMShZ6z98crJZaOP15LRxPx0IhmKFW8VAuv1Q+rsZI3yCM
-        9J6RiOr2LS08eMgnKuX7KjUuyZvyu1kd1szneo/kwS/eOw6DFnpUNrto35X7VsOY
-        aLhhhorBT2DIVx9b2/jBF9/azsgzIbnP0iwZIaPqRdzpTd7eXzZr/lNciYU7m2nl
-        aq7Ud8jw7Yt9Pm+uz4Ywd4N5KqQsv1hZDzQa3oPz7Ch6cRQbUZ3gS7u3sfU9TRyo
-        R4eRq1PciHZ8V1kcE2OXIvq8d1nR6nlV2WsELj5spxcwz6GPE18IYFW4w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=2sv6uQU0wC4GFRuTG5bPvOFLJbxdN3V3lHFUxyUM0Z8=; b=pYZV82cu
-        aSDg6i3i60R9Hq/72xEBmAf1gkHJL3kG/9o7c7AHLWjMFJbl5xqIN+smLPcbYM7F
-        FHiRjomGAi92GMDZQKJfTXvVNNDGAwcAdphdltIYUI1m0/0AZmLr/z6m/OGeaCiI
-        64qch9VyYfqlfg2y70Ijv8B4F8SfRLyPhKaroP31lTChWYUnsyuNiS1vABkYCVUz
-        HZyzQS6QIWby5+41tLTj7Mepkc5FccDYajfJ5/1Tqn9Kh1wRk6MvdiSKI60Qc69o
-        HPOh/J4goKy8eAuDIoMA7mN+w4VXnj4KyV0hb6uOwnWOdvGFHUqxID+X0vOazRMf
-        O2AuBIsMEcK2ag==
-X-ME-Sender: <xms:JaNQX8S-6-yleoF2zCefW2ngWVZLLgs1pNJcmODi2X5hUqAPglZskw>
-    <xme:JaNQX5xtasou2Vkdmv-KLLFpJSj3eznaCEWWMki2SQebPEd3hiDpd-pXUICKY7i5c
-    NDz5wf2esDKsLTfL30>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
-    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefie
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:JaNQX50r-xh1YH4e8EW_GwXSqeWTGKWgKeolUZf2GTCbU0iJoJB_mg>
-    <xmx:JaNQXwAMwOsmU9r9vJ2Atu-UUP2L8F_wodotCtmyNQ5DyaFnJNHbAg>
-    <xmx:JaNQX1jg0DeVtiAFEFfnn2cI6eAhs1CytjI3EYRlbWFpkWuT0cSc8g>
-    <xmx:JaNQXwpLU4kFWpv5dYYD6UToTuJQZU334kka0HMSjw7bH35yNUqyhdbmMZk>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4B957306005B;
-        Thu,  3 Sep 2020 04:02:45 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH v5 37/80] drm/vc4: crtc: Add BCM2711 pixelvalves
-Date:   Thu,  3 Sep 2020 10:01:09 +0200
-Message-Id: <2553ec9ece0d8a0e5299ff74ed932a38703c5db9.1599120059.git-series.maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+        Thu, 3 Sep 2020 04:01:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0353C061246;
+        Thu,  3 Sep 2020 01:01:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=zPuO1RiCFtAaXcTW9QuEi3RCIZQfS8nNc4ZkqYoXzUI=; b=OybH/lrHyX1+dbtv0WrEcWc+aG
+        1MuvfFAfkttbX55tfceZuqfYNAgxJHcF8TDSuW8YUgn7dEIhh2pGsEKLooh4MPTIPaXltHv5C0dQE
+        c7nLX7zVV4Q3F95j4/6o2F4HkO69gRucFgTJI+TTyX6oKi9mkBhESW2QetbFJ1y0wA2/x75KSzc2/
+        b0cnGhbUlTSj6Wo/J19DkRbLKPvrLwQJZKnv6Cagm3yuzK4U31H71SeK7OWgPQvvMHYrPpSg/cU3m
+        zhgQIoIEoB7rqCjkBV90bSQlKfJYySXeIAargCkRp/XchTvhTM8x9djb/KQiZEyFUdFc93HvFft3D
+        dagEO6Rg==;
+Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDkBa-0006bs-VH; Thu, 03 Sep 2020 08:01:35 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 10/19] brd: use __register_blkdev to allocate devices on demand
+Date:   Thu,  3 Sep 2020 10:01:10 +0200
+Message-Id: <20200903080119.441674-11-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903080119.441674-1-hch@lst.de>
+References: <20200903080119.441674-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BCM2711 has 5 pixelvalves, so now that our driver is ready, let's add
-support for them.
+Use the simpler mechanism attached to major_name to allocate a brd device
+when a currently unregistered minor is accessed.
 
-Reviewed-by: Eric Anholt <eric@anholt.net>
-Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c | 95 ++++++++++++++++++++++++++++++++++-
- drivers/gpu/drm/vc4/vc4_regs.h |  7 +++-
- 2 files changed, 100 insertions(+), 2 deletions(-)
+ drivers/block/brd.c | 39 +++++++++++----------------------------
+ 1 file changed, 11 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index dfac304fe2b0..a393f93390a2 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -208,6 +208,7 @@ void vc4_crtc_destroy(struct drm_crtc *crtc)
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 2723a70eb85593..c8ac36351115ef 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -427,14 +427,15 @@ static void brd_free(struct brd_device *brd)
+ 	kfree(brd);
+ }
  
- static u32 vc4_get_fifo_full_level(struct vc4_crtc *vc4_crtc, u32 format)
+-static struct brd_device *brd_init_one(int i, bool *new)
++static void brd_probe(dev_t dev)
  {
-+	const struct vc4_crtc_data *crtc_data = vc4_crtc_to_vc4_crtc_data(vc4_crtc);
- 	const struct vc4_pv_data *pv_data = vc4_crtc_to_vc4_pv_data(vc4_crtc);
- 	u32 fifo_len_bytes = pv_data->fifo_depth;
+ 	struct brd_device *brd;
++	int i = MINOR(dev) / max_part;
  
-@@ -230,6 +231,13 @@ static u32 vc4_get_fifo_full_level(struct vc4_crtc *vc4_crtc, u32 format)
- 	case PV_CONTROL_FORMAT_24:
- 	case PV_CONTROL_FORMAT_DSIV_24:
- 	default:
-+		/*
-+		 * For some reason, the pixelvalve4 doesn't work with
-+		 * the usual formula and will only work with 32.
-+		 */
-+		if (crtc_data->hvs_output == 5)
-+			return 32;
-+
- 		return fifo_len_bytes - 3 * HVS_FIFO_LATENCY_PIX;
+-	*new = false;
++	mutex_lock(&brd_devices_mutex);
+ 	list_for_each_entry(brd, &brd_devices, brd_list) {
+ 		if (brd->brd_number == i)
+-			goto out;
++			goto out_unlock;
  	}
- }
-@@ -238,9 +246,13 @@ static u32 vc4_crtc_get_fifo_full_level_bits(struct vc4_crtc *vc4_crtc,
- 					     u32 format)
- {
- 	u32 level = vc4_get_fifo_full_level(vc4_crtc, format);
-+	u32 ret = 0;
-+
-+	ret |= VC4_SET_FIELD((level >> 6),
-+			     PV5_CONTROL_FIFO_LEVEL_HIGH);
  
--	return VC4_SET_FIELD(level & 0x3f,
--			     PV_CONTROL_FIFO_LEVEL);
-+	return ret | VC4_SET_FIELD(level & 0x3f,
-+				   PV_CONTROL_FIFO_LEVEL);
+ 	brd = brd_alloc(i);
+@@ -443,9 +444,9 @@ static struct brd_device *brd_init_one(int i, bool *new)
+ 		add_disk(brd->brd_disk);
+ 		list_add_tail(&brd->brd_list, &brd_devices);
+ 	}
+-	*new = true;
+-out:
+-	return brd;
++
++out_unlock:
++	mutex_unlock(&brd_devices_mutex);
  }
  
- /*
-@@ -278,6 +290,8 @@ static void vc4_crtc_pixelvalve_reset(struct drm_crtc *crtc)
+ static void brd_del_one(struct brd_device *brd)
+@@ -455,23 +456,6 @@ static void brd_del_one(struct brd_device *brd)
+ 	brd_free(brd);
+ }
  
- static void vc4_crtc_config_pv(struct drm_crtc *crtc)
+-static struct kobject *brd_probe(dev_t dev, int *part, void *data)
+-{
+-	struct brd_device *brd;
+-	struct kobject *kobj;
+-	bool new;
+-
+-	mutex_lock(&brd_devices_mutex);
+-	brd = brd_init_one(MINOR(dev) / max_part, &new);
+-	kobj = brd ? get_disk_and_module(brd->brd_disk) : NULL;
+-	mutex_unlock(&brd_devices_mutex);
+-
+-	if (new)
+-		*part = 0;
+-
+-	return kobj;
+-}
+-
+ static inline void brd_check_and_reset_par(void)
  {
-+	struct drm_device *dev = crtc->dev;
-+	struct vc4_dev *vc4 = to_vc4_dev(dev);
- 	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
- 	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
- 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
-@@ -358,6 +372,11 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc)
- 	if (is_dsi)
- 		CRTC_WRITE(PV_HACT_ACT, mode->hdisplay * pixel_rep);
+ 	if (unlikely(!max_part))
+@@ -511,11 +495,12 @@ static int __init brd_init(void)
+ 	 *	dynamically.
+ 	 */
  
-+	if (vc4->hvs->hvs5)
-+		CRTC_WRITE(PV_MUX_CFG,
-+			   VC4_SET_FIELD(PV_MUX_CFG_RGB_PIXEL_MUX_MODE_NO_SWAP,
-+					 PV_MUX_CFG_RGB_PIXEL_MUX_MODE));
-+
- 	CRTC_WRITE(PV_CONTROL, PV_CONTROL_FIFO_CLR |
- 		   vc4_crtc_get_fifo_full_level_bits(vc4_crtc, format) |
- 		   VC4_SET_FIELD(format, PV_CONTROL_FORMAT) |
-@@ -907,10 +926,82 @@ static const struct vc4_pv_data bcm2835_pv2_data = {
- 	},
- };
+-	if (register_blkdev(RAMDISK_MAJOR, "ramdisk"))
++	if (__register_blkdev(RAMDISK_MAJOR, "ramdisk", brd_probe))
+ 		return -EIO;
  
-+static const struct vc4_pv_data bcm2711_pv0_data = {
-+	.base = {
-+		.hvs_available_channels = BIT(0),
-+		.hvs_output = 0,
-+	},
-+	.debugfs_name = "crtc0_regs",
-+	.fifo_depth = 64,
-+	.pixels_per_clock = 1,
-+	.encoder_types = {
-+		[0] = VC4_ENCODER_TYPE_DSI0,
-+		[1] = VC4_ENCODER_TYPE_DPI,
-+	},
-+};
-+
-+static const struct vc4_pv_data bcm2711_pv1_data = {
-+	.base = {
-+		.hvs_available_channels = BIT(0) | BIT(1) | BIT(2),
-+		.hvs_output = 3,
-+	},
-+	.debugfs_name = "crtc1_regs",
-+	.fifo_depth = 64,
-+	.pixels_per_clock = 1,
-+	.encoder_types = {
-+		[0] = VC4_ENCODER_TYPE_DSI1,
-+		[1] = VC4_ENCODER_TYPE_SMI,
-+	},
-+};
-+
-+static const struct vc4_pv_data bcm2711_pv2_data = {
-+	.base = {
-+		.hvs_available_channels = BIT(0) | BIT(1) | BIT(2),
-+		.hvs_output = 4,
-+	},
-+	.debugfs_name = "crtc2_regs",
-+	.fifo_depth = 256,
-+	.pixels_per_clock = 2,
-+	.encoder_types = {
-+		[0] = VC4_ENCODER_TYPE_HDMI0,
-+	},
-+};
-+
-+static const struct vc4_pv_data bcm2711_pv3_data = {
-+	.base = {
-+		.hvs_available_channels = BIT(1),
-+		.hvs_output = 1,
-+	},
-+	.debugfs_name = "crtc3_regs",
-+	.fifo_depth = 64,
-+	.pixels_per_clock = 1,
-+	.encoder_types = {
-+		[0] = VC4_ENCODER_TYPE_VEC,
-+	},
-+};
-+
-+static const struct vc4_pv_data bcm2711_pv4_data = {
-+	.base = {
-+		.hvs_available_channels = BIT(0) | BIT(1) | BIT(2),
-+		.hvs_output = 5,
-+	},
-+	.debugfs_name = "crtc4_regs",
-+	.fifo_depth = 64,
-+	.pixels_per_clock = 2,
-+	.encoder_types = {
-+		[0] = VC4_ENCODER_TYPE_HDMI1,
-+	},
-+};
-+
- static const struct of_device_id vc4_crtc_dt_match[] = {
- 	{ .compatible = "brcm,bcm2835-pixelvalve0", .data = &bcm2835_pv0_data },
- 	{ .compatible = "brcm,bcm2835-pixelvalve1", .data = &bcm2835_pv1_data },
- 	{ .compatible = "brcm,bcm2835-pixelvalve2", .data = &bcm2835_pv2_data },
-+	{ .compatible = "brcm,bcm2711-pixelvalve0", .data = &bcm2711_pv0_data },
-+	{ .compatible = "brcm,bcm2711-pixelvalve1", .data = &bcm2711_pv1_data },
-+	{ .compatible = "brcm,bcm2711-pixelvalve2", .data = &bcm2711_pv2_data },
-+	{ .compatible = "brcm,bcm2711-pixelvalve3", .data = &bcm2711_pv3_data },
-+	{ .compatible = "brcm,bcm2711-pixelvalve4", .data = &bcm2711_pv4_data },
- 	{}
- };
+ 	brd_check_and_reset_par();
  
-diff --git a/drivers/gpu/drm/vc4/vc4_regs.h b/drivers/gpu/drm/vc4/vc4_regs.h
-index 7fbac68b6fe1..c0031ab19689 100644
---- a/drivers/gpu/drm/vc4/vc4_regs.h
-+++ b/drivers/gpu/drm/vc4/vc4_regs.h
-@@ -129,6 +129,8 @@
- #define V3D_ERRSTAT  0x00f20
++	mutex_lock(&brd_devices_mutex);
+ 	for (i = 0; i < rd_nr; i++) {
+ 		brd = brd_alloc(i);
+ 		if (!brd)
+@@ -533,9 +518,7 @@ static int __init brd_init(void)
+ 		brd->brd_disk->queue = brd->brd_queue;
+ 		add_disk(brd->brd_disk);
+ 	}
+-
+-	blk_register_region(MKDEV(RAMDISK_MAJOR, 0), 1UL << MINORBITS,
+-				  THIS_MODULE, brd_probe, NULL, NULL);
++	mutex_unlock(&brd_devices_mutex);
  
- #define PV_CONTROL				0x00
-+# define PV5_CONTROL_FIFO_LEVEL_HIGH_MASK	VC4_MASK(26, 25)
-+# define PV5_CONTROL_FIFO_LEVEL_HIGH_SHIFT	25
- # define PV_CONTROL_FORMAT_MASK			VC4_MASK(23, 21)
- # define PV_CONTROL_FORMAT_SHIFT		21
- # define PV_CONTROL_FORMAT_24			0
-@@ -208,6 +210,11 @@
+ 	pr_info("brd: module loaded\n");
+ 	return 0;
+@@ -545,6 +528,7 @@ static int __init brd_init(void)
+ 		list_del(&brd->brd_list);
+ 		brd_free(brd);
+ 	}
++	mutex_unlock(&brd_devices_mutex);
+ 	unregister_blkdev(RAMDISK_MAJOR, "ramdisk");
  
- #define PV_HACT_ACT				0x30
+ 	pr_info("brd: module NOT loaded !!!\n");
+@@ -558,7 +542,6 @@ static void __exit brd_exit(void)
+ 	list_for_each_entry_safe(brd, next, &brd_devices, brd_list)
+ 		brd_del_one(brd);
  
-+#define PV_MUX_CFG				0x34
-+# define PV_MUX_CFG_RGB_PIXEL_MUX_MODE_MASK	VC4_MASK(5, 2)
-+# define PV_MUX_CFG_RGB_PIXEL_MUX_MODE_SHIFT	2
-+# define PV_MUX_CFG_RGB_PIXEL_MUX_MODE_NO_SWAP	8
-+
- #define SCALER_CHANNELS_COUNT			3
+-	blk_unregister_region(MKDEV(RAMDISK_MAJOR, 0), 1UL << MINORBITS);
+ 	unregister_blkdev(RAMDISK_MAJOR, "ramdisk");
  
- #define SCALER_DISPCTRL                         0x00000000
+ 	pr_info("brd: module unloaded\n");
 -- 
-git-series 0.9.1
+2.28.0
+
