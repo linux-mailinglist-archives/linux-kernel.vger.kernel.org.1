@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BF025C486
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C4B25C484
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgICPMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
+        id S1728819AbgICPMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728827AbgICM0r (ORCPT
+        with ESMTP id S1728833AbgICM0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Sep 2020 08:26:47 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 720B4C061247
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:05:56 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o68so2173857pfg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:05:56 -0700 (PDT)
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306EFC061249
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:06:04 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id e33so1982471pgm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:06:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kqVh90gZA+Jv+sQxaZ1mzbNqmtA+iD77lIe6xdCdvDA=;
-        b=ZrKBu1JhDqa2E6DWCiORaYi2MHc650K/DlmYKis/qZYjWXXy6O+yn0bP6TzIzsFBSm
-         euxbxOw6IhVyzcAW8Vg3CiZLCvCk3y+3OPvMHWw5RBKjrPdfM6xu/rqNc8R2NLafIsih
-         PAvlVMhgYWUB6A0ZSUT/CM7hHt+s3sfhx0dBkWYjvktZgVl+5nkLfmMY8VKHP4DnGpQ2
-         sK/R6N2wlyYaKb/BxxT0IkjO9QEoKIQ4C72kgiwS2cWKnj7odSv2/WeCxtlsxpyaiDih
-         3IrOJGvYyomi7nArQs1weOdsUN/13cCauS5AEJoB5Sximm3RWvnsUGOUrGAHd+Zh0Mc7
-         9wNw==
+        bh=l42Sw4hGC87WjooQg2VTZSFCehZO9m9AdkULNCdGfhY=;
+        b=QQ94vAR9C6a51GpTGkrB1+xPpXfRafgvPa3tu6a+3G75SJXaTYLuJc+aYbErLcWfPr
+         CucHQhF5l4BWTgM4UZBaXdBwO+8s55QNcM+2DJ92B86SADz7QZakpwkUXnwFHnL04xJR
+         smJhScLAnqI38oNpr05jXEP03UuXB94dw1B1goqFZLPlwmWeZNgTVbv0kittkb9EuS61
+         9Vu4GMgFj1p3zoMvDwBo1EDUY8JFsb2AScBfwOSCR32qSiq76EQjJYR4WmTCu5a6kdrG
+         qcqRr57lm9R51EqFelU2ta3IbNgwRf2dWKoJDqzGSpKc0QH4zoncfhXeUayjhlOKr2CQ
+         2Y7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=kqVh90gZA+Jv+sQxaZ1mzbNqmtA+iD77lIe6xdCdvDA=;
-        b=KVVdX4jedEi44PZcUvkH9O0qjAKpW2Nz6ND9zAAWYw0bDfJplitRxLjyZQUWR32cxf
-         8e9ZWYE6ZDOBAqb94P/mAE98Y8CeZeBoinFLAYqPSBX3wxFzQ1oqfejS8rB5d3PaSAXe
-         +MSO4GsAeY8pJXcVGO7YDFhUpbHCIyf2FLNy4S/TnSh8cBR77QOI2AsZq0vJQWFnep7o
-         YsVdyPPkVB8JVLkNfbQCPEss8xK55Y4CH6E9D6w5vFx0q5yq/AD8SbSRMifiV6P3dlkr
-         d2XBSXDRUTcjxZ311yS3+3GThYukogY2ElaJMXIlHBFOPM5qsc76t5WffU+52d8qXyko
-         VciQ==
-X-Gm-Message-State: AOAM530bJP7ZY3X459gBvWKaZT/9qr2Mxdun1+IcxRuQjiTmbWYZY70r
-        J9XA6T+f7wN4kGwiTF91mBkz8A==
-X-Google-Smtp-Source: ABdhPJxdTtirKYDBW9CeUl6CQDwTBIH7Lx0gi0PsvFrbdxpYkigdH3s+GR3erecKM5HMZcA9+JJmag==
-X-Received: by 2002:aa7:90c4:: with SMTP id k4mr3398751pfk.79.1599134755991;
-        Thu, 03 Sep 2020 05:05:55 -0700 (PDT)
+        bh=l42Sw4hGC87WjooQg2VTZSFCehZO9m9AdkULNCdGfhY=;
+        b=ay2rxkgJkdQY7KSreXmID1OX1xbCz+MTG9W+evPlM9bQKlLdmtpLVpWrcYl5sgXSLZ
+         7Z6mKrHPX0x3fwu8PQo6Uz0mOVB1+prxfqvkZJCg++sGF3eu8917ZqesOlT/ZwKfimjh
+         nOdGS1heOky+gQIR8PIX8jsHpUqlr+QSm6lBmsKH/yMPUgqTm3qSR0QncY5Mu4gvzrzP
+         SiNfxr5SJ1LIC5VQl8LEmxYZ+UO14JFcjlWdBBlD+zrVXdu/1f0N3fydKDl6KDYyuH2p
+         cpgyAK5N//M68bVCnpepTUWgo3tO+evIVN2MpjNK75Mw9iet26DKyCsTgIZYbuNutSQL
+         /LMA==
+X-Gm-Message-State: AOAM531Zt2eS3Svxki6TLDE273OOv7TRCaaYTJnQoSTx3D5TVSP+HSt0
+        W/Y8d1vKl+AwDJJa+Xit27Lhxg==
+X-Google-Smtp-Source: ABdhPJwA8w/V9i9vrKKv3vQBxhzDj1BOn4fq9KGcKRyand8nMjBomLB0bAwwW8ejG7VaZ6lBdtyH9Q==
+X-Received: by 2002:a63:ce56:: with SMTP id r22mr2749565pgi.141.1599134763468;
+        Thu, 03 Sep 2020 05:06:03 -0700 (PDT)
 Received: from localhost.localdomain ([117.210.209.248])
-        by smtp.gmail.com with ESMTPSA id s1sm2922022pgh.47.2020.09.03.05.05.48
+        by smtp.gmail.com with ESMTPSA id s1sm2922022pgh.47.2020.09.03.05.05.56
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Sep 2020 05:05:55 -0700 (PDT)
+        Thu, 03 Sep 2020 05:06:02 -0700 (PDT)
 From:   Sumit Garg <sumit.garg@linaro.org>
 To:     maz@kernel.org, catalin.marinas@arm.com, will@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
@@ -54,9 +54,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, tglx@linutronix.de,
         dianders@chromium.org, daniel.thompson@linaro.org,
         jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net,
         linux-kernel@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>
-Subject: [PATCH v3 2/4] irqchip/gic-v3: Enable support for SGIs to act as NMIs
-Date:   Thu,  3 Sep 2020 17:35:10 +0530
-Message-Id: <1599134712-30923-3-git-send-email-sumit.garg@linaro.org>
+Subject: [PATCH v3 3/4] arm64: smp: Setup IPI_CALL_NMI_FUNC as a pseudo NMI
+Date:   Thu,  3 Sep 2020 17:35:11 +0530
+Message-Id: <1599134712-30923-4-git-send-email-sumit.garg@linaro.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1599134712-30923-1-git-send-email-sumit.garg@linaro.org>
 References: <1599134712-30923-1-git-send-email-sumit.garg@linaro.org>
@@ -65,63 +65,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to handle SGIs as regular NMIs. As SGIs or IPIs defaults to a
-special flow handler: handle_percpu_devid_fasteoi_ipi(), so skip NMI
-handler update in case of SGIs.
-
-Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
-as IRQs/NMIs happen as part of this routine.
+Setup IPI_CALL_NMI_FUNC as a pseudo NMI using generic interrupt framework
+APIs. In case a plarform doesn't provide support for pseudo NMIs, switch
+back to IPI_CALL_NMI_FUNC being a normal interrupt.
 
 Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 ---
- drivers/irqchip/irq-gic-v3.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/smp.c | 38 ++++++++++++++++++++++++++++----------
+ 1 file changed, 28 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-index 7170645..dfd8e03 100644
---- a/drivers/irqchip/irq-gic-v3.c
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -476,6 +476,11 @@ static int gic_irq_nmi_setup(struct irq_data *d)
- 	if (WARN_ON(gic_irq(d) >= 8192))
- 		return -EINVAL;
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 1b4c07c..572f8f5 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -81,6 +81,7 @@ enum ipi_msg_type {
+ static int ipi_irq_base __read_mostly;
+ static int nr_ipi __read_mostly = NR_IPI;
+ static struct irq_desc *ipi_desc[NR_IPI] __read_mostly;
++static int ipi_nmi = -1;
  
-+	if (get_intid_range(d) == SGI_RANGE) {
-+		gic_irq_set_prio(d, GICD_INT_NMI_PRI);
-+		return 0;
-+	}
-+
- 	/* desc lock should already be held */
- 	if (gic_irq_in_rdist(d)) {
- 		u32 idx = gic_get_ppi_index(d);
-@@ -513,6 +518,11 @@ static void gic_irq_nmi_teardown(struct irq_data *d)
- 	if (WARN_ON(gic_irq(d) >= 8192))
+ static void ipi_setup(int cpu);
+ static void ipi_teardown(int cpu);
+@@ -971,8 +972,14 @@ static void ipi_setup(int cpu)
+ 	if (WARN_ON_ONCE(!ipi_irq_base))
  		return;
  
-+	if (get_intid_range(d) == SGI_RANGE) {
-+		gic_irq_set_prio(d, GICD_INT_DEF_PRI);
-+		return;
+-	for (i = 0; i < nr_ipi; i++)
+-		enable_percpu_irq(ipi_irq_base + i, 0);
++	for (i = 0; i < nr_ipi; i++) {
++		if (ipi_nmi == ipi_irq_base + i) {
++			if (!prepare_percpu_nmi(ipi_nmi))
++				enable_percpu_nmi(ipi_nmi, 0);
++		} else {
++			enable_percpu_irq(ipi_irq_base + i, 0);
++		}
 +	}
-+
- 	/* desc lock should already be held */
- 	if (gic_irq_in_rdist(d)) {
- 		u32 idx = gic_get_ppi_index(d);
-@@ -1666,6 +1676,7 @@ static int __init gic_init_bases(void __iomem *dist_base,
+ }
  
- 	gic_dist_init();
- 	gic_cpu_init();
-+	gic_enable_nmi_support();
- 	gic_smp_init();
- 	gic_cpu_pm_init();
+ static void ipi_teardown(int cpu)
+@@ -982,23 +989,34 @@ static void ipi_teardown(int cpu)
+ 	if (WARN_ON_ONCE(!ipi_irq_base))
+ 		return;
  
-@@ -1677,8 +1688,6 @@ static int __init gic_init_bases(void __iomem *dist_base,
- 			gicv2m_init(handle, gic_data.domain);
- 	}
+-	for (i = 0; i < nr_ipi; i++)
+-		disable_percpu_irq(ipi_irq_base + i);
++	for (i = 0; i < nr_ipi; i++) {
++		if (ipi_nmi == ipi_irq_base + i) {
++			disable_percpu_nmi(ipi_nmi);
++			teardown_percpu_nmi(ipi_nmi);
++		} else {
++			disable_percpu_irq(ipi_irq_base + i);
++		}
++	}
+ }
  
--	gic_enable_nmi_support();
--
- 	return 0;
+ void __init set_smp_ipi_range(int ipi_base, int n)
+ {
+-	int i;
++	int i, err;
  
- out_free:
+ 	WARN_ON(n < NR_IPI);
+ 	nr_ipi = min(n, NR_IPI);
+ 
+-	for (i = 0; i < nr_ipi; i++) {
+-		int err;
++	err = request_percpu_nmi(ipi_base + IPI_CALL_NMI_FUNC,
++				 ipi_handler, "IPI", &cpu_number);
++	if (!err)
++		ipi_nmi = ipi_base + IPI_CALL_NMI_FUNC;
+ 
+-		err = request_percpu_irq(ipi_base + i, ipi_handler,
+-					 "IPI", &cpu_number);
+-		WARN_ON(err);
++	for (i = 0; i < nr_ipi; i++) {
++		if (ipi_base + i != ipi_nmi) {
++			err = request_percpu_irq(ipi_base + i, ipi_handler,
++						 "IPI", &cpu_number);
++			WARN_ON(err);
++		}
+ 
+ 		ipi_desc[i] = irq_to_desc(ipi_base + i);
+ 		irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
 -- 
 2.7.4
 
