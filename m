@@ -2,136 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AAA25C5CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6E425C5FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbgICPzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:55:22 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:64095 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728483AbgICPzW (ORCPT
+        id S1728776AbgICP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:59:12 -0400
+Received: from esa1.mentor.iphmx.com ([68.232.129.153]:32257 "EHLO
+        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728210AbgICP7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:55:22 -0400
-X-Originating-IP: 2.224.242.101
-Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 95975240011;
-        Thu,  3 Sep 2020 15:55:16 +0000 (UTC)
-Date:   Thu, 3 Sep 2020 17:59:02 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v3 1/2] media: i2c: ov772x: Add support for BT656 mode
-Message-ID: <20200903155902.3opuzv52jdpiszuw@uno.localdomain>
-References: <20200824190406.27478-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200824190406.27478-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Thu, 3 Sep 2020 11:59:08 -0400
+IronPort-SDR: sQuBkVyHqn/Ig2AcWPmZw4NPMF5YIpMiFd9eh+DCF5gSxavyUk7Ij8sQRm8JabM9oD+n2iPbus
+ Va2nNkmWngDJLytdKZonUWsUTAaYSDYmp1YuElkiaAY5ITFB0dy6CESo1aMZl0dS737tUimu4b
+ 4s5d9CT8U7MLWPkCNMl6nOqBdohDsaBEbi93ADVO0pa5URhbcKaZC8oBSjeTxoCVv87F/kUf/h
+ aisqRvz57yMWtHT47KHJY6ZSC1NBL/1F2vyTka8gbWwZXsKa7tolnoWk93As7d2u0nTM+7mOWT
+ ypk=
+X-IronPort-AV: E=Sophos;i="5.76,387,1592899200"; 
+   d="scan'208";a="54733292"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa1.mentor.iphmx.com with ESMTP; 03 Sep 2020 07:59:07 -0800
+IronPort-SDR: tmMqlO4tN+aNPQnDfhjouRSCXhR9zxcoA5+Cd7M7kEk8lv7ZoHl5jjrxtWO8u0ZE9xGAyt5K+I
+ bEEk2UzTNOMIzw23ULrJDgjZIKn6pPP2/0pVkbIRqgRzBFBYUlQ5T0JExpSt9X5s6Yv9WlalVz
+ /FJa2B9Qyv4++JqDNI/xnxGddm4ybkPr7zhEXxsPenCE0glOo1ipsTAKvnQMf1KYTwu8ViMaQF
+ llfotMJLS9BDBmFRe6wU+48deTY3yqeHu+ygbD+MMsDE6Ocp/7Kqer6H4JdsBPjf2x9u/zhj5G
+ 18I=
+From:   Jiada Wang <jiada_wang@mentor.com>
+To:     <nick@shmanahar.org>, <dmitry.torokhov@gmail.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <Andrew_Gabbasov@mentor.com>, <erosca@de.adit-jv.com>,
+        <digetx@gmail.com>, <jiada_wang@mentor.com>
+Subject: [PATCH v2 1/1] Input: atmel_mxt_ts - implement I2C retries
+Date:   Fri, 4 Sep 2020 00:59:04 +0900
+Message-ID: <20200903155904.17454-1-jiada_wang@mentor.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200824190406.27478-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+From: Nick Dyer <nick.dyer@itdev.co.uk>
 
-On Mon, Aug 24, 2020 at 08:04:05PM +0100, Lad Prabhakar wrote:
-> Add support to read the bus-type and enable BT656 mode if needed.
->
-> Also fail probe if unsupported bus_type is detected.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+Some maXTouch chips (eg mXT1386) will not respond on the first I2C request
+when they are in a sleep state. It must be retried after a delay for the
+chip to wake up.
 
-Looks good to me
-Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+Signed-off-by: Nick Dyer <nick.dyer@itdev.co.uk>
+Acked-by: Yufeng Shen <miletus@chromium.org>
+(cherry picked from ndyer/linux/for-upstream commit 63fd7a2cd03c3a572a5db39c52f4856819e1835d)
+[gdavis: Forward port and fix conflicts.]
+Signed-off-by: George G. Davis <george_davis@mentor.com>
+[jiada: return exact errno when i2c_transfer & i2c_master_send fails]
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ drivers/input/touchscreen/atmel_mxt_ts.c | 45 ++++++++++++++++--------
+ 1 file changed, 30 insertions(+), 15 deletions(-)
 
-Thanks
-  j
+diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
+index a2189739e30f..5d4cb15d21dc 100644
+--- a/drivers/input/touchscreen/atmel_mxt_ts.c
++++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+@@ -196,6 +196,7 @@ enum t100_type {
+ #define MXT_CRC_TIMEOUT		1000	/* msec */
+ #define MXT_FW_RESET_TIME	3000	/* msec */
+ #define MXT_FW_CHG_TIMEOUT	300	/* msec */
++#define MXT_WAKEUP_TIME		25	/* msec */
+ 
+ /* Command to unlock bootloader */
+ #define MXT_UNLOCK_CMD_MSB	0xaa
+@@ -626,6 +627,7 @@ static int __mxt_read_reg(struct i2c_client *client,
+ 	struct i2c_msg xfer[2];
+ 	u8 buf[2];
+ 	int ret;
++	bool retry = false;
+ 
+ 	buf[0] = reg & 0xff;
+ 	buf[1] = (reg >> 8) & 0xff;
+@@ -642,17 +644,22 @@ static int __mxt_read_reg(struct i2c_client *client,
+ 	xfer[1].len = len;
+ 	xfer[1].buf = val;
+ 
+-	ret = i2c_transfer(client->adapter, xfer, 2);
+-	if (ret == 2) {
+-		ret = 0;
+-	} else {
+-		if (ret >= 0)
+-			ret = -EIO;
+-		dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
+-			__func__, ret);
++retry_read:
++	ret = i2c_transfer(client->adapter, xfer, ARRAY_SIZE(xfer));
++	if (ret != ARRAY_SIZE(xfer)) {
++		if (!retry) {
++			dev_dbg(&client->dev, "%s: i2c retry\n", __func__);
++			msleep(MXT_WAKEUP_TIME);
++			retry = true;
++			goto retry_read;
++		} else {
++			dev_err(&client->dev, "%s: i2c transfer failed (%d)\n",
++				__func__, ret);
++			return ret < 0 ? ret : -EIO;
++		}
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
+@@ -661,6 +668,7 @@ static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
+ 	u8 *buf;
+ 	size_t count;
+ 	int ret;
++	bool retry = false;
+ 
+ 	count = len + 2;
+ 	buf = kmalloc(count, GFP_KERNEL);
+@@ -671,14 +679,21 @@ static int __mxt_write_reg(struct i2c_client *client, u16 reg, u16 len,
+ 	buf[1] = (reg >> 8) & 0xff;
+ 	memcpy(&buf[2], val, len);
+ 
++retry_write:
+ 	ret = i2c_master_send(client, buf, count);
+-	if (ret == count) {
+-		ret = 0;
++	if (ret != count) {
++		if (!retry) {
++			dev_dbg(&client->dev, "%s: i2c retry\n", __func__);
++			msleep(MXT_WAKEUP_TIME);
++			retry = true;
++			goto retry_write;
++		} else {
++			dev_err(&client->dev, "%s: i2c send failed (%d)\n",
++				__func__, ret);
++			ret = ret < 0 ? ret : -EIO;
++		}
+ 	} else {
+-		if (ret >= 0)
+-			ret = -EIO;
+-		dev_err(&client->dev, "%s: i2c send failed (%d)\n",
+-			__func__, ret);
++		ret = 0;
+ 	}
+ 
+ 	kfree(buf);
+-- 
+2.17.1
 
-> ---
->  drivers/media/i2c/ov772x.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
->
-> diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> index 2cc6a678069a..67764d647526 100644
-> --- a/drivers/media/i2c/ov772x.c
-> +++ b/drivers/media/i2c/ov772x.c
-> @@ -31,6 +31,7 @@
->  #include <media/v4l2-ctrls.h>
->  #include <media/v4l2-device.h>
->  #include <media/v4l2-event.h>
-> +#include <media/v4l2-fwnode.h>
->  #include <media/v4l2-image-sizes.h>
->  #include <media/v4l2-subdev.h>
->
-> @@ -434,6 +435,7 @@ struct ov772x_priv {
->  #ifdef CONFIG_MEDIA_CONTROLLER
->  	struct media_pad pad;
->  #endif
-> +	struct v4l2_fwnode_endpoint ep;
->  };
->
->  /*
-> @@ -581,6 +583,13 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
->  	if (priv->streaming == enable)
->  		goto done;
->
-> +	if (priv->ep.bus_type == V4L2_MBUS_BT656) {
-> +		ret = regmap_update_bits(priv->regmap, COM7, ITU656_ON_OFF,
-> +					 enable ? ITU656_ON_OFF : ~ITU656_ON_OFF);
-> +		if (ret)
-> +			goto done;
-> +	}
-> +
->  	ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
->  				 enable ? 0 : SOFT_SLEEP_MODE);
->  	if (ret)
-> @@ -1354,6 +1363,7 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
->
->  static int ov772x_probe(struct i2c_client *client)
->  {
-> +	struct fwnode_handle *endpoint;
->  	struct ov772x_priv	*priv;
->  	int			ret;
->  	static const struct regmap_config ov772x_regmap_config = {
-> @@ -1415,6 +1425,28 @@ static int ov772x_probe(struct i2c_client *client)
->  		goto error_clk_put;
->  	}
->
-> +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
-> +						  NULL);
-> +	if (!endpoint) {
-> +		dev_err(&client->dev, "endpoint node not found\n");
-> +		ret = -EINVAL;
-> +		goto error_clk_put;
-> +	}
-> +
-> +	ret = v4l2_fwnode_endpoint_parse(endpoint, &priv->ep);
-> +	fwnode_handle_put(endpoint);
-> +	if (ret) {
-> +		dev_err(&client->dev, "Could not parse endpoint\n");
-> +		goto error_clk_put;
-> +	}
-> +
-> +	if (priv->ep.bus_type != V4L2_MBUS_PARALLEL &&
-> +	    priv->ep.bus_type != V4L2_MBUS_BT656) {
-> +		dev_err(&client->dev, "Unsupported bus type %d\n",
-> +			priv->ep.bus_type);
-> +		goto error_clk_put;
-> +	}
-> +
->  	ret = ov772x_video_probe(priv);
->  	if (ret < 0)
->  		goto error_gpio_put;
-> --
-> 2.17.1
->
