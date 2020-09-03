@@ -2,117 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4E225C6FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF8725C6D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728583AbgICQfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:35:22 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45216 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726292AbgICQfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:35:21 -0400
-IronPort-SDR: zJ7A4drycomACfX8t+3H0QGwvmbHvmN8ENE1T/eCp1ACLow9IR3Wpqk0LlCk9+wQ5KEsilcL4v
- SDswZI3eDxYQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="137134895"
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="137134895"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 09:35:21 -0700
-IronPort-SDR: fpm2EUkci2oTbjGtopGBquDwwKng+PMe+foZPSI3HK+bv08KmruAxr7wF/55ACFaKSLBoUxQVH
- vLRGOXY9BheA==
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="503124720"
-Received: from araj-mobl1.jf.intel.com ([10.254.124.120])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 09:35:18 -0700
-Date:   Thu, 3 Sep 2020 09:35:16 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Megha Dey <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device
- MSI
-Message-ID: <20200903163516.GA23129@araj-mobl1.jf.intel.com>
-References: <20200826111628.794979401@linutronix.de>
+        id S1728746AbgICQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:31:47 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:33289 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726292AbgICQbp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 12:31:45 -0400
+X-Originating-IP: 2.224.242.101
+Received: from uno.localdomain (2-224-242-101.ip172.fastwebnet.it [2.224.242.101])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id BC3CD60002;
+        Thu,  3 Sep 2020 16:31:39 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 18:35:25 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        sakari.ailus@iki.fi, hverkuil@xs4all.nl, jacopo+renesas@jmondi.org,
+        luca@lucaceresoli.net, leonl@leopardimaging.com,
+        robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] dt-bindings: media: imx274: Add optional input
+ clock and supplies
+Message-ID: <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
+References: <1599012278-10203-1-git-send-email-skomatineni@nvidia.com>
+ <1599012278-10203-3-git-send-email-skomatineni@nvidia.com>
+ <20200903125542.nxiafnysatoexken@uno.localdomain>
+ <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200826111628.794979401@linutronix.de>
-User-Agent: Mutt/1.9.1 (2017-09-22)
+In-Reply-To: <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi Sowjanya,
 
-Thanks a ton for jumping in helping on straightening it for IMS!!!
+On Thu, Sep 03, 2020 at 09:05:27AM -0700, Sowjanya Komatineni wrote:
+>
+> On 9/3/20 5:55 AM, Jacopo Mondi wrote:
+> > Hello Sowjanya,
+> >
+> > On Tue, Sep 01, 2020 at 07:04:37PM -0700, Sowjanya Komatineni wrote:
+> > > This patch adds IMX274 optional external clock input and voltage
+> > > supplies to device tree bindings.
+> > >
+> > > Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+> > > Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> > > ---
+> > >   .../devicetree/bindings/media/i2c/sony,imx274.yaml  | 21 +++++++++++++++++++++
+> > >   1 file changed, 21 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+> > > index 7ae47a6..57e7176 100644
+> > > --- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+> > > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+> > > @@ -25,6 +25,27 @@ properties:
+> > >     reset-gpios:
+> > >       maxItems: 1
+> > >
+> > I just sent an update to my json-schema conversion of this bindings
+> > document (not yet on patchwork, sorry) and Sakari pointed me to the
+> > fact in between my v2 and my v4 this patch from you went in:
+> > 4ea3273d24b ("dt-bindings: media: imx274: Add optional input clock and supplies")
+> >
+> > I should probably now update my bindings conversion patch, basically
+> > taking in what you've done here, but I would have one question.
+> >
+> > > +  clocks:
+> > > +    maxItems: 1
+> > > +    description: Reference to the sensor input clock
+> > > +
+> > > +  clock-names:
+> > > +    maxItems: 1
+> > > +    items:
+> > > +      - const: inck
+> > > +
+> > > +  vana-supply:
+> > > +    description:
+> > > +      Analog voltage supply, 2.8 volts
+> > > +
+> > > +  vdig-supply:
+> > > +    description:
+> > > +      Digital IO voltage supply, 1.8 volts
+> > > +
+> > > +  vddl-supply:
+> > > +    description:
+> > > +      Digital core voltage supply, 1.2 volts
+> > 4ea3273d24b introduced these regulators as VANA-supply, VDIG-supply
+> > and VDDL-supply (please note the upper-case names). This version uses
+> > lower-case ones instead. Is this intentional ? The driver currently
+> > does not parse any of these if I'm not mistaken, but as the bindings
+> > in textual form defines an ABI which should be preserved during the
+> > conversion to json-schema, should these be kept in upper-case ?
+> >
+> > Thanks
+> >     j
+>
+> Yes, based on feedback lower case was recommended. So, changed to use
+> lower-case names.
+>
+> These properties were not used by driver currently and from my prior series
+> only dt-binding got merged asÂ  no feedback was received on it for all prior
+> versions.
+>
+> So, should be ok to change to lower-case as there properties are introduced
+> now and driver update using these properties is under review
+>
 
+Well, I see that patch went in v5.9-rc1, so it will be part of v5.9.
 
-On Wed, Aug 26, 2020 at 01:16:28PM +0200, Thomas Gleixner wrote:
-> This is the second version of providing a base to support device MSI (non
-> PCI based) and on top of that support for IMS (Interrupt Message Storm)
+If the bindings update goes in in v5.10 (or whatever comes after v5.9)
+then we have a problem, as the DTB created for v5.9 won't work anymore
+on any later version, and that should not happen. Alternatively, a fix
+for the next -rc release could be fast-tracked, but you would
+need to synchronize with the dt maintainers for that and make a patch
+for the existing .txt bindings file.
 
-s/Storm/Store
+If the name change happens in the yaml file and one release is made
+with the old names, then we're stuck with those forever and ever, if I
+got the situation right.
 
-maybe pun intended :-)
+Please check with the dt and media maintainers, or they can comment
+here if they glance through these lines.
 
-> based devices in a halfways architecture independent way.
+Thanks
+  j
 
-You mean "halfways" because the message addr and data follow guidelines
-per arch (x86 or such), but the location of the storage isn't dictated
-by architecture? or did you have something else in mind? 
-
-> 
-> The first version can be found here:
-> 
->     https://lore.kernel.org/r/20200821002424.119492231@linutronix.de
-> 
-
-[snip]
-
-> 
-> Changes vs. V1:
-> 
->    - Addressed various review comments and addressed the 0day fallout.
->      - Corrected the XEN logic (Jürgen)
->      - Make the arch fallback in PCI/MSI opt-in not opt-out (Bjorn)
-> 
->    - Fixed the compose MSI message inconsistency
-> 
->    - Ensure that the necessary flags are set for device SMI
-
-is that supposed to be MSI? 
-
-Cheers,
-Ashok
+> > > +
+> > >     port:
+> > >       type: object
+> > >       description: |
+> > > --
+> > > 2.7.4
+> > >
