@@ -2,109 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5BD25C0F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D7125C110
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbgICM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:28:44 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:60812 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728771AbgICM0k (ORCPT
+        id S1728228AbgICMdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:33:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728663AbgICM1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:26:40 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083CQTM5033898;
-        Thu, 3 Sep 2020 07:26:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599135989;
-        bh=C49cVGMfysASvBZN8YfOnPiHqifti4v0fpFLtpuvDFo=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=keDETmcGnT3787siHhYTvjmFIuGTIwrvkyy99J2Nzz5opdLU/qfvdMgdttMdj1C+B
-         J9iL3nvcFRw084oHqm/2EXmCra4YBrRsF/65ylCQZxrtFOd1XPyTRajpWxZwtRbQx4
-         Fa8Y7QldEhSsm7TcFZ8OdXXh3xR8jQeleVJ/RB4o=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083CQTZf106490
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Sep 2020 07:26:29 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
- 2020 07:26:28 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 3 Sep 2020 07:26:28 -0500
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083CQOpb038856;
-        Thu, 3 Sep 2020 07:26:26 -0500
-Subject: Re: drivers/irqchip/irq-ti-sci-intr.c:148
- ti_sci_intr_alloc_parent_irq() warn: impossible condition '(p_hwirq < 0) =>
- (0-u16max < 0)'
-To:     Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>
-CC:     <lkp@intel.com>, Dan Carpenter <error27@gmail.com>,
-        <kbuild-all@lists.01.org>, <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-References: <20200903122159.GE8299@kadam>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <ed83e54c-1216-5c02-6f1f-a3c94e67bb68@ti.com>
-Date:   Thu, 3 Sep 2020 17:56:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 3 Sep 2020 08:27:55 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD54BC061258
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:17:12 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mm21so1438977pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=/BKi2i04xBQBPBh/3OfYq0JRpU2M+He5BM3tljwdBCM=;
+        b=CFa0qij2VAf/49RV/zrVX3ncNvnawUqzeGRhAyqR73uvVwsZ6hAeWDUGsG1iks33Yw
+         qw1Yl03RYYHbFFHCzQ0PRzupwQJvkCqZwMICNDOSfgLGE/O4ELoNyjbaPL1hw8vg5FA8
+         8yW4KCkJAbe23y5BhusonlRTSxbSsaG+8h7/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=/BKi2i04xBQBPBh/3OfYq0JRpU2M+He5BM3tljwdBCM=;
+        b=eekU9Zayxse4CVbBtbB4UcFJk8U4t5embDtST0B52mHIIe0+J0lSQye13EPPEFszp+
+         En4Qj8tVCFjeWbAMuaozJqaB3Kr3t5bTb49mP3rrTtcZQn1ltx7aaWIimlUIdaImIYM7
+         7DqFi9zBMWS/GNhbCbvwqgkqljjhyxD/4lvUFrGrBvGAwYIuUGqvWriud9Z4GjHxHPtw
+         nzhxLCjAQkCMq+DlNvlZKMRNpuvou9Eb+ZuLWKzZfF7QrhRvIRQ7Gkv6A/mp2PYVuPQT
+         aqrlFiySaEq+LIWI9Ag/kAsroqMdpHCFegqAW3hhK31Z3LtXJxzVLbmnB9uZ4HWdzF/5
+         JGfA==
+X-Gm-Message-State: AOAM530qxN5Yj1SCaF0c/cyGjiPHPpXPH8W1KD/TpZHD90sADN2TQ123
+        C6PtxApUWLS+ppIlJ/rpWicIHQ==
+X-Google-Smtp-Source: ABdhPJyRNKcBgEX/LHFE+6DRGovh0X2K5LHGwdLni0au93gA95eaRzC4WEulWXQDvMWRqPJEHgWOjA==
+X-Received: by 2002:a17:90a:858a:: with SMTP id m10mr2854307pjn.185.1599135431975;
+        Thu, 03 Sep 2020 05:17:11 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id q201sm3130842pfq.80.2020.09.03.05.17.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 05:17:11 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 05:17:10 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add 'sustainable_power' for
+ CPU thermal zones
+Message-ID: <20200903121710.GG3419728@google.com>
+References: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
+ <20200901170745.GA3419728@google.com>
+ <CAD=FV=Xv0FLtWWcQcRy7p2LPNdDtSjdarsvNHRHaLkWwABnwJw@mail.gmail.com>
+ <8ad0589e-102d-7523-899f-0ebe85b7d2b8@codeaurora.org>
+ <CAD=FV=XKUEQP3gyE8E2UOE12qKYwzgMp0eNeYjCp0DxPDACSMQ@mail.gmail.com>
+ <6693eed6-9a6b-48c8-e56e-acdde9cf9ffe@codeaurora.org>
+ <f77d9b24-dbca-cea0-2ef8-3c5cf0c2f2dd@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20200903122159.GE8299@kadam>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f77d9b24-dbca-cea0-2ef8-3c5cf0c2f2dd@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+Hi Rajendra,
 
-On 03/09/20 5:51 pm, Dan Carpenter wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   fc3abb53250a90ba2150eebd182137c136f4d25a
-> commit: a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49 irqchip/ti-sci-intr: Add support for INTR being a parent to INTR
-> config: arm64-randconfig-m031-20200902 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
+On Thu, Sep 03, 2020 at 11:00:52AM +0530, Rajendra Nayak wrote:
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> On 9/3/2020 10:14 AM, Rajendra Nayak wrote:
+> > 
+> > On 9/2/2020 9:02 PM, Doug Anderson wrote:
+> > > Hi,
+> > > 
+> > > On Tue, Sep 1, 2020 at 10:36 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
+> > > > 
+> > > > 
+> > > > > * In terms of the numbers here, I believe that you're claiming that we
+> > > > > can dissipate 768 mW * 6 + 1202 mW * 2 = ~7 Watts of power.  My memory
+> > > > > of how much power we could dissipate in previous laptops I worked on
+> > > > > is a little fuzzy, but that doesn't seem insane for a passively-cooled
+> > > > > laptop.  However, I think someone could conceivably put this chip in a
+> > > > > smaller form factor.  In such a case, it seems like we'd want these
+> > > > > things to sum up to ~2000 (if it would ever make sense for someone to
+> > > > > put this chip in a phone) or ~4000 (if it would ever make sense for
+> > > > > someone to put this chip in a small tablet).  It seems possible that,
+> > > > > to achieve this, we might have to tweak the
+> > > > > "dynamic-power-coefficient".
+> > > > 
+> > > > DPC values are calculated (at a SoC) by actually measuring max power at various
+> > > > frequency/voltage combinations by running things like dhrystone.
+> > > > How would the max power a SoC can generate depend on form factors?
+> > > > How much it can dissipate sure is, but then I am not super familiar how
+> > > > thermal frameworks end up using DPC for calculating power dissipated,
+> > > > I am guessing they don't.
+> > > > 
+> > > > > I don't know how much thought was put
+> > > > > into those numbers, but the fact that the little cores have a super
+> > > > > round 100 for their dynamic-power-coefficient makes me feel like they
+> > > > > might have been more schwags than anything.  Rajendra maybe knows?
+> > > > 
+> > > > FWIK, the values are always scaled and normalized to 100 for silver and
+> > > > then used to derive the relative DPC number for gold. If you see the DPC
+> > > > for silver cores even on sdm845 is a 100.
+> > > > Again these are not estimations but based on actual power measurements.
+> > > 
+> > > The scaling to 100 doesn't seem to match how the thermal framework is
+> > > using them.  Take a look at of_cpufreq_cooling_register().  It takes
+> > > the "dynamic-power-coefficient" and passes it as "capacitance" into
+> > > __cpufreq_cooling_register().  That's eventually used to compute
+> > > power, which is documented in the code to be in mW.
+> > > 
+> > > power = (u64)capacitance * freq_mhz * voltage_mv * voltage_mv;
+> > > do_div(power, 1000000000);
+> > > 
+> > > /* power is stored in mW */
+> > > freq_table[i].power = power;
+> > > 
+> > > That's used together with "sustainable-power", which is the attribute
+> > > that Matthias is trying to set.  That value is documented to be in mW
+> > > as well.
+> > > 
+> > > ...so if the silver cores are always scaled to 100 regardless of how
+> > > much power they actually draw then it'll be impossible to actually
+> > > think about "sustainable-power" as a mW value.  Presumably we either
+> > > need to accept that fact (and ideally document it) or we need to
+> > > change the values for silver / gold cores (we could still keep the
+> > > relative values the same and just scale them).
+> > 
+> > That sounds reasonable (still keep the relative values and scale them)
+> > I'll get back on what those scaled numbers would look like, and try to
+> > get some sense of why this scaling to 100 was done (like you said
+> > I don't see any documentation on this), but I see atleast a few other non-qcom
+> > SoCs doing this too in mainline (like rockchip/rk3399)
 > 
-> smatch warnings:
-> drivers/irqchip/irq-ti-sci-intr.c:148 ti_sci_intr_alloc_parent_irq() warn: impossible condition '(p_hwirq < 0) => (0-u16max < 0)'
-> 
-> # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49
-> git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> git fetch --no-tags linus master
-> git checkout a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49
-> vim +148 drivers/irqchip/irq-ti-sci-intr.c
-> 
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  134  static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
-> cd844b0715ceda Lokesh Vutla 2019-04-30  135  					unsigned int virq, u32 hwirq)
-> cd844b0715ceda Lokesh Vutla 2019-04-30  136  {
-> cd844b0715ceda Lokesh Vutla 2019-04-30  137  	struct ti_sci_intr_irq_domain *intr = domain->host_data;
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  138  	struct device_node *parent_node;
-> cd844b0715ceda Lokesh Vutla 2019-04-30  139  	struct irq_fwspec fwspec;
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  140  	u16 out_irq, p_hwirq;
->                                                 ^^^          ^^^^^^^
-> 
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  141  	int err = 0;
-> cd844b0715ceda Lokesh Vutla 2019-04-30  142  
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  143  	out_irq = ti_sci_get_free_resource(intr->out_irqs);
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  144  	if (out_irq == TI_SCI_RESOURCE_NULL)
-> cd844b0715ceda Lokesh Vutla 2019-04-30  145  		return -EINVAL;
-> cd844b0715ceda Lokesh Vutla 2019-04-30  146  
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06  147  	p_hwirq = ti_sci_intr_xlate_irq(intr, out_irq);
-> a5b659bd4bc751 Lokesh Vutla 2020-08-06 @148  	if (p_hwirq < 0)
->                                                     ^^^^^^^^^^^
-> Impossible
+> On second thoughts, why wouldn't a relative 'sustainable-power' value work?
+> On every device, one would need to do the exercise that Matthias did to come
+> up with the OPP at which we can sustain max CPU/GPU loads anyway.
 
-This is already fixed by https://patchwork.kernel.org/patch/11737169/
+You assume that a thermal zone only has cooling devices of a the same type (or
+with the same fake unit for power consumption). This falls apart when multiple
+types are used, which is common.
 
-Thanks and regards,
-Lokesh
+Also sustainable power is only a derived value, the lying already starts in
+the energy model, which is used by EAS, so a fake unit could cause further
+problems.
 
+> I mean even if we do change the DPC values to match actual power, Matthias would
+> still observe that we can sustain at the very same OPP and not any different.
+> Its just that the mW values that are passed to kernel are relative and not
+> absolute. My worry is that perhaps no SoC vendor wants to put these absolute numbers
+> out.
+
+This is pretty much 'security' by obscurity. It would be relatively easy to
+measure actual power consumption at different CPU speeds and derive the DPC
+values from that.
