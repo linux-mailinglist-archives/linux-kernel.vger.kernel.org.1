@@ -2,110 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D38825BA33
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B7E25BA37
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgICFjP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Sep 2020 01:39:15 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:43331 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbgICFjN (ORCPT
+        id S1727915AbgICFkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 01:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgICFku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:39:13 -0400
-Received: by mail-wr1-f68.google.com with SMTP id k15so1688051wrn.10;
-        Wed, 02 Sep 2020 22:39:11 -0700 (PDT)
+        Thu, 3 Sep 2020 01:40:50 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1916DC061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 22:40:48 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j2so1711233wrx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 22:40:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gY3MI41vEU1NMjzHm+Y/kv/+1eo4t7vouQCNTLaH8tw=;
+        b=P9O9ojK9SN4DainuCnqGEkkLw7c5IFDodPBOdOgzK+Qxwb3dd2JbPa5pie0pU6EWGY
+         6aqd8Tvnb0DaCmCfOHc0j+eVU3LQWj9I/WdXj/xiz+oB8SZ0pDSsikXx6claCGG1F6OH
+         NMtN9sCXIml8rgVj6vW6eAF2d8ai35zOWun29dkU8xvq6zxmmxC0CPFuDCWUeEbTelCh
+         WKqTIZXomFbb623MncUfm6CSk4h6Si/AR9JjpHIo49Vg2Z87BnnPzb7FTG0fHKpzOly5
+         uKMab0vlcNvYC06NKzcx0k9UGMSdi8tOeNttQCEb1tamPTt8s2da+L6xBV01VzpnBBP7
+         +6Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=cjA1SpxFdTarFmkqi5x6o7EpaRfJ1ZdEWfLV8+qCoTw=;
-        b=V+e64THtvZwl6wLV93JIn1EdEkTh1VPnryR3TOQEGt4WzvLsbO6inJ2oX8a++/xoEy
-         mNQLte6fMa4OOU0yWQ63y+L1FGV7ADlhiy5IVpoQwAH4fnxrF7P4WtilxOOF3w9erxSa
-         wb7CZa03p4kCv8k/jgSTo6BB2cRFhEpYY17BoIUUuFVyCBzAiqLRmwSHhiOabh82891e
-         0mWvMOuaBv0okUxmvrllL7oOPA+yYpMbIENJv+3XtNsjL/WkRPs4FPv88ZEVxWibEDI3
-         WykMIli6GsR1VRkmAGvI0oyvmfm++ufZ4+oG93qhxnIE8Ucbr/Kwfb/go5swpALo48bY
-         sM0g==
-X-Gm-Message-State: AOAM530qPh+JIhfbPsfh7QeR38Otae1sa9q18ODD68wMuSLigSOH/cwK
-        Ar2kRi1Z7nUdfdKu3lhc/yg=
-X-Google-Smtp-Source: ABdhPJzzxouJj0AiVAoYVXd6GYxpjH3humJ0K6tdJJ+HM3g/hLmKJVkO4jJwfiALZiApJbZ3FqXwiw==
-X-Received: by 2002:a5d:540a:: with SMTP id g10mr377991wrv.138.1599111550768;
-        Wed, 02 Sep 2020 22:39:10 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.106])
-        by smtp.googlemail.com with ESMTPSA id q8sm2590564wrx.79.2020.09.02.22.39.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Sep 2020 22:39:09 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 07:39:05 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?B?TWljaGHFgsKgTWlyb3PFgmF3?= <mirq-linux@rere.qmqm.pl>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 11/11] mmc: host: Enable compile testing of multiple
- drivers
-Message-ID: <20200903053905.GA14577@kozik-lap>
-References: <20200902193658.20539-1-krzk@kernel.org>
- <20200902193658.20539-12-krzk@kernel.org>
- <20200902213227.GE1624@qmqm.qmqm.pl>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gY3MI41vEU1NMjzHm+Y/kv/+1eo4t7vouQCNTLaH8tw=;
+        b=I8vE7CLcb5qQVGcVZ90PdGpaI+5n7uL5LGRdkDML+qgP56dllc/1ufpW0ulpwqULpU
+         UPxo0NPy+tw7d40l1leLOffbxNA+QG8l6EpwwckFOZSFu7iX6JhrPgUn19M/DNARmaNm
+         1b807d1pGVyHg9hvFbVNilaA0mgyPsYqTlQNRs3f4Amozye4++aOu3kvY+yLil/t+WyS
+         iioAuvxGqkM5PE1UbNkLbN4ar0OjtfbutckbSrUcFwhd3gmEQxAH8A1Yempv8PCByJW/
+         GJq9eGo30hZj2Y8VrSb9ENoVf5HhHwVgvLHOd9njeF+FBB0vKRyFqY9gOGxKw7kRj5kg
+         s4aA==
+X-Gm-Message-State: AOAM530d1H/aYIRAWfuLe34jRHbTXc97/mhiIZRs4cyGQbO+KiQhbpT1
+        MjFo6RXN/sSnka1DfOBvIuq3H8cvoBU75cXR6sAkng==
+X-Google-Smtp-Source: ABdhPJx57OEmu3nFJ6L+W1wyfPe96PkYaQ4mvT6GUNK8/UGkwQBG35cuXucn+daqE40Lw5jNPPgSOrxCQsHPLLVxJho=
+X-Received: by 2002:adf:fb01:: with SMTP id c1mr369410wrr.119.1599111647233;
+ Wed, 02 Sep 2020 22:40:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200902213227.GE1624@qmqm.qmqm.pl>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200901220944.277505-1-kim.phillips@amd.com>
+In-Reply-To: <20200901220944.277505-1-kim.phillips@amd.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 2 Sep 2020 22:40:35 -0700
+Message-ID: <CAP-5=fXE3SC8Lj1K30ooA1kJJqFyAA0AzSyMRh4VG+480tupZQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] perf vendor events amd: Add L2 Prefetch events for zen1
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>,
+        Borislav Petkov <bp@suse.de>, Jon Grimm <jon.grimm@amd.com>,
+        Martin Jambor <mjambor@suse.cz>,
+        Michael Petlan <mpetlan@redhat.com>,
+        William Cohen <wcohen@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 11:32:27PM +0200, Michał Mirosław wrote:
-> On Wed, Sep 02, 2020 at 09:36:58PM +0200, Krzysztof Kozlowski wrote:
-> > Multiple MMC host controller driver can be compile tested as they do not
-> > depend on architecture specific headers.
-> [...]
-> > --- a/drivers/mmc/host/Kconfig
-> > +++ b/drivers/mmc/host/Kconfig
-> > @@ -178,7 +178,7 @@ config MMC_SDHCI_OF_AT91
-> [...]
-> >  config MMC_MESON_GX
-> >  	tristate "Amlogic S905/GX*/AXG SD/MMC Host Controller support"
-> > -	depends on ARCH_MESON && MMC
-> > +	depends on MMC
-> > +	depends on ARCH_MESON|| COMPILE_TEST
-> [...]
-> >  config MMC_MOXART
-> >  	tristate "MOXART SD/MMC Host Controller support"
-> > -	depends on ARCH_MOXART && MMC
-> > +	depends on MMC
-> > +	depends on ARCH_MOXART || COMPILE_TEST
-> [...]
-> 
-> You can drop 'MMC' from depends as the whole tree is under 'if MMC' already.
+On Tue, Sep 1, 2020 at 3:10 PM Kim Phillips <kim.phillips@amd.com> wrote:
+>
+> Later revisions of PPRs that post-date the original Family 17h events
+> submission patch add these events.
+>
+> Specifically, they were not in this 2017 revision of the F17h PPR:
+>
+> Processor Programming Reference (PPR) for AMD Family 17h Model 01h, Revis=
+ion B1 Processors Rev 1.14 - April 15, 2017
+>
+> But e.g., are included in this 2019 version of the PPR:
+>
+> Processor Programming Reference (PPR) for AMD Family 17h Model 18h, Revis=
+ion B1 Processors Rev. 3.14 - Sep 26, 2019
+>
+> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
 
-Right, thanks for feedback.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Best regards,
-Krzysztof
+Sanity checked manual and ran tests. Thanks,
+Ian
 
+> Fixes: 98c07a8f74f8 ("perf vendor events amd: perf PMU events for AMD Fam=
+ily 17h")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D206537
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Vijay Thakkar <vijaythakkar@me.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: John Garry <john.garry@huawei.com>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Yunfeng Ye <yeyunfeng@huawei.com>
+> Cc: Jin Yao <yao.jin@linux.intel.com>
+> Cc: "Martin Li=C5=A1ka" <mliska@suse.cz>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Jon Grimm <jon.grimm@amd.com>
+> Cc: Martin Jambor <mjambor@suse.cz>
+> Cc: Michael Petlan <mpetlan@redhat.com>
+> Cc: William Cohen <wcohen@redhat.com>
+> Cc: Stephane Eranian <eranian@google.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: linux-perf-users@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> ---
+>  .../pmu-events/arch/x86/amdzen1/cache.json     | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen1/cache.json b/tools/pe=
+rf/pmu-events/arch/x86/amdzen1/cache.json
+> index 404d4c569c01..695ed3ffa3a6 100644
+> --- a/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+> @@ -249,6 +249,24 @@
+>      "BriefDescription": "Cycles with fill pending from L2. Total cycles =
+spent with one or more fill requests in flight from L2.",
+>      "UMask": "0x1"
+>    },
+> +  {
+> +    "EventName": "l2_pf_hit_l2",
+> +    "EventCode": "0x70",
+> +    "BriefDescription": "L2 prefetch hit in L2.",
+> +    "UMask": "0xff"
+> +  },
+> +  {
+> +    "EventName": "l2_pf_miss_l2_hit_l3",
+> +    "EventCode": "0x71",
+> +    "BriefDescription": "L2 prefetcher hits in L3. Counts all L2 prefetc=
+hes accepted by the L2 pipeline which miss the L2 cache and hit the L3.",
+> +    "UMask": "0xff"
+> +  },
+> +  {
+> +    "EventName": "l2_pf_miss_l2_l3",
+> +    "EventCode": "0x72",
+> +    "BriefDescription": "L2 prefetcher misses in L3. All L2 prefetches a=
+ccepted by the L2 pipeline which miss the L2 and the L3 caches.",
+> +    "UMask": "0xff"
+> +  },
+>    {
+>      "EventName": "l3_request_g1.caching_l3_cache_accesses",
+>      "EventCode": "0x01",
+> --
+> 2.27.0
+>
