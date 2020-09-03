@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5F125BF3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E512125BF44
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbgICKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgICKnc (ORCPT
+        id S1728363AbgICKok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:44:40 -0400
+Received: from mo-csw1115.securemx.jp ([210.130.202.157]:60316 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725984AbgICKoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:43:32 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63077C061244;
-        Thu,  3 Sep 2020 03:43:32 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id n13so2141353edo.10;
-        Thu, 03 Sep 2020 03:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fVf69sgjmQCrEKYoeM+/1FVWXC87ayDjMXhE8nmIQDI=;
-        b=CmAlHIxkVGkcogMiRH95dFIDi8MtypkT4KAhVSJXxMvL9CkkOPaW5Edo9JJotPudcN
-         G7v1ptqRXr4yiAXhs7VJli2ZSxelJPRJkFhu+bmNiGz0uDo7GLq7iVqHkz80auQh4EyM
-         x3clYrpTOEjC0Bx1UDW5KibmT2l/RvmwCmjcGs9QvmU3jQZxsBaJfd8y8HIpb1P2I1a2
-         1jpLyXGn5QZj9ClFdKSUfAuiElucNXBnEKl0H1OuqJef+T4Fuqsu+TWn5iHI2aG6aqDo
-         CoLFt4btdZAM5SeuHuTyz98kjzqg6oexbkAFefI/Q+bnCwEGwq49JBQ9dYWABiocQ+X/
-         XetA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fVf69sgjmQCrEKYoeM+/1FVWXC87ayDjMXhE8nmIQDI=;
-        b=IpwUZA53ea9GBkpfEseMDosoMKnGHXPp27CVw1WzTDRBbCmADrfdK49x63iIcY9tKa
-         287rBOxzPp3huQoivaQs04+K4ro8BD1RcUVQbdkXDnWB2mZb8f5/aWyiQ+NueiMPOtdx
-         oiIAuSo0GaDIuWBkUXErlQQk3JfKnpqaaN4oCB4Dap7+Iyt/7CgzoApb7ui9CIaFgxAH
-         EPybj6FXN39dxpgCnTCRqFu2ik8GLln3X+vCYoYkWq0kfD38fdfcpyK9Y274CK+JenGk
-         ngWud/rMrvOPqdRMo5W4s3gvciwqMcweLwmegfjl54KMxxuyK5fL3dq1ohBif384A9Kg
-         mwPA==
-X-Gm-Message-State: AOAM530vPT5H9g2+aXl/hCW2cJxgUwDht/1iwBbSx1m8CnjQZI64wn1Z
-        GveuhbFZuQK7bLtxG/JrRcfukYMuqblj5YgUujY=
-X-Google-Smtp-Source: ABdhPJyu8Qa+G8WqE5A1ihixIYP1N10xyh0oXqPvS5rhQyYINqD323MbTNZuZq9TzrQXm+MwLfErIORRLYTSFNa2n+Q=
-X-Received: by 2002:a05:6402:220d:: with SMTP id cq13mr2326156edb.260.1599129811091;
- Thu, 03 Sep 2020 03:43:31 -0700 (PDT)
+        Thu, 3 Sep 2020 06:44:37 -0400
+X-Greylist: delayed 446 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Sep 2020 06:44:36 EDT
+Received: by mo-csw.securemx.jp (mx-mo-csw1115) id 083AiKb0018512; Thu, 3 Sep 2020 19:44:21 +0900
+X-Iguazu-Qid: 2wGr7dZaSIQ3izezc8
+X-Iguazu-QSIG: v=2; s=0; t=1599129860; q=2wGr7dZaSIQ3izezc8; m=rClWSIHtHIcYHMenNimffmgBtp0sivHSc26ZxuLMey8=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1111) id 083AiJTb024969;
+        Thu, 3 Sep 2020 19:44:19 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 083AiILn020387;
+        Thu, 3 Sep 2020 19:44:18 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 083AiIIa030126;
+        Thu, 3 Sep 2020 19:44:18 +0900
+From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+To:     Ben Levinsky <ben.levinsky@xilinx.com>
+Cc:     stefanos@xilinx.com, michals@xilinx.com, michael.auchter@ni.com,
+        devicetree@vger.kernel.org, emooring@xilinx.com,
+        mathieu.poirier@linaro.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jliang@xilinx.com,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v11 5/5] remoteproc: Add initial zynqmp R5 remoteproc driver
+References: <20200902165846.3366-1-ben.levinsky@xilinx.com>
+        <20200902165846.3366-6-ben.levinsky@xilinx.com>
+Date:   Thu, 03 Sep 2020 19:44:12 +0900
+In-Reply-To: <20200902165846.3366-6-ben.levinsky@xilinx.com> (Ben Levinsky's
+        message of "Wed, 2 Sep 2020 09:58:46 -0700")
+X-TSB-HOP: ON
+Message-ID: <87tuwfp2bn.fsf@kokedama.swc.toshiba.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20200831061013.4327-1-avolmat@me.com>
-In-Reply-To: <20200831061013.4327-1-avolmat@me.com>
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Thu, 3 Sep 2020 16:13:19 +0530
-Message-ID: <CAOh2x=ksVwnmqS_9dUukBKPBD26Tv5Yd0G_pXW1C6zhzfv2o1g@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Enable CPUFreq for STi stih418 SoC.
-To:     Alain Volmat <avolmat@me.com>
-Cc:     Patrice Chotard <patrice.chotard@st.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 11:42 AM Alain Volmat <avolmat@me.com> wrote:
+Ben Levinsky <ben.levinsky@xilinx.com> writes:
+
+> R5 is included in Xilinx Zynq UltraScale MPSoC so by adding this
+> remotproc driver, we can boot the R5 sub-system in different 2
+> configurations: split or lock-step.
 >
-> This serie enables cpufreq for the STi stih418 SoC.
+> The Xilinx R5 Remoteproc Driver boots the R5's via calls to the Xilinx
+> Platform Management Unit that handles the R5 configuration, memory access
+> and R5 lifecycle management. The interface to this manager is done in this
+> driver via zynqmp_pm_* function calls.
+>
+> Signed-off-by: Ben Levinsky <ben.levinsky@xilinx.com>
+> Signed-off-by: Wendy Liang <wendy.liang@xilinx.com>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Ed Mooring <ed.mooring@xilinx.com>
+> Signed-off-by: Jason Wu <j.wu@xilinx.com>
 
-Please cc the maintainers directly for patches. I almost missed these,
-just found during
-random screening of the list.
+The Signed-off-by chain looks wrong here. As the submitter, your tag
+should be last in the chain.
 
-Applied all.
+See Documentation/process/submitting-patches.rst for more details.
 
---
-viresh
+Thanks,
+Punit
+
+
+[...]
+
