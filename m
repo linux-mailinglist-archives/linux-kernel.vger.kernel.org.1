@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8803F25C39A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE95025C39D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729227AbgICOyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:54:40 -0400
+        id S1729178AbgICOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:55:09 -0400
 Received: from mx1.tq-group.com ([62.157.118.193]:28900 "EHLO mx1.tq-group.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729438AbgICOyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:54:35 -0400
-IronPort-SDR: sVEDqzfl0w0g4Q/DM5sgqLfNBoYtaF6yAhlSOV/Ff6L2ml0FRRMXMFtkY4R5or3fBKMMy7O8Sg
- l/aKu+E5kr3F3Ot78thJpPIAHYCWTocqWuINEmbY+CyiJ8LMwFTApSVEJdbyALEOtNnxYtLijx
- YRlmAp1mMXz7MYzXQeHKtwGx8ZslIjdPRoOi+NcBLGkP7K69XAQjq6TSWR781K72u+So9GmOJi
- 3paVqsrVO9WcHP8J980608fG1Gs7f+9xTsbIcdUiZmbNiims4S+wSeOgTciPQKAICmV2adUgvk
- 38Y=
+        id S1729118AbgICOyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:54:39 -0400
+IronPort-SDR: BIradT9Qo+od6tGaIa22PAcKzvAEnKXDtbHHR7H9Uuz8lswDBip6wQ5QCWPLvg6HyquPIdcijE
+ lvKut1gnlRXjc/ktN7y92Yez6qNZxBqrJpetDigwNqlQz8gKYSRB3Q11C1zHOOM205ukeyBI+0
+ 9uvK/+fR6hNf6ALQ6rYyO3lqnmWnebjRzNUzd4YH2XT8MCLI8Ux+dkj91onOK4m0uP0rXkfSF6
+ Gv15jyTk8fRiubuKyNGdQ/wgXyB6lagu8il1packGdSMQJG7fH7Tx+mt6CH4DAzckxVeTKzEA1
+ WQA=
 X-IronPort-AV: E=Sophos;i="5.76,387,1592863200"; 
-   d="scan'208";a="13722702"
+   d="scan'208";a="13722704"
 Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
   by mx1-pgp.tq-group.com with ESMTP; 03 Sep 2020 16:54:28 +0200
 Received: from mx1.tq-group.com ([192.168.6.7])
@@ -28,26 +28,27 @@ X-PGP-Universal: processed;
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
   t=1599144868; x=1630680868;
-  h=from:to:cc:subject:date:message-id;
-  bh=c6CREVq+CJypLfkfehiTiKALj8q9n1fuSRM/zOS0M3Q=;
-  b=YD/eG8h/lH+qAq5E6t6SQIA0ZQMHq5rgM+4Qz1lmVfIiUduGZ0jclTqE
-   YktPNbZtMayhHrPkCQ0sSR8V75G9VBNPKSAnIvBEk03Ba6xjycCUU6oQ/
-   jsHoUTgg1FcMMDVE8k7HvOsYBDWnyPGPWEU8iecY28Hzj2R/7aDNEbvZh
-   lWU1eBTJmDDwIM5WMfBEdQGzr/9XrNNfTL2naSwnPe9BUalsFwS5HIlvD
-   RC9PxTWfkRCyarrGySm6rBOAGwrYigdaCC6lF2Uadov2TyEqcqSjxXp8u
-   AZA+caBoKezEbeBpmOhnUGicG5B7n7zxucJhsKgCbl+2e1gFwY9Bkg4aq
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=xAvjU3K53qOiucID1PuAA01N0+IW04yAdBoQr5C/F9U=;
+  b=j4UX5hi0kUCWhCWFX+cMABYSRk4zW9DHyK5FSNL/FrC/wANFvx+FlH40
+   T8O+NGY4flQByDBO2zstA5XdbVikXvDOv2O1Uxv9W5uXg1+7WxSn+jfQK
+   MOcFcbMSOE1WtBAhv9SajbD31z2dsjiaqP4aVaizXVTespaLc2RtU8rt+
+   SryL988+DaswLhAfDucxlgrwfjuWpuJ26ttVvsFmdpCjAkwctPYWjU++h
+   PdsDbCs0ADJVaeIPjcXjdzCyNEH10TZgbdNFw1ar0WM8cymFzHAPF/gqJ
+   pqgpwatw9orohcDvgEhxPt1dyRhiAT0t9AFzw++6A2VzWT9oVW5J1/OXX
    A==;
-IronPort-SDR: HwNqwT3/Z4+PQ2C9chM6hcXnNJqES7qLluH+GZj98Ndv00vv9NfP1Ltesyg2Miuat+qoQUblqo
- b7SDL8WaazH6MatSQ/I2VWVUjjGzir8+kQptkjRjweMBR0g03w8VUoCQSXORRF7OGHnDJ7NTMB
- XBzS+uXI+2JBA0rSpfo2zcyW7g5S8nWt5hrb6mTz+zuhAKlEPPVzR/4+ji+4MWMVb313dskCbu
- jDJjRC78sJxbl0yVtyiw7esYaugfOV4OTpOZ02ynxWb4p8tNexzJtrbbr9qyqtOzqlsW28M+mK
- Img=
+IronPort-SDR: veAbufCOmfUm3O71ekAsgPN+Ls+7N3vOd7T9U7JE1vwmqRG8jx0gO1Jt8tKgBKPbWeoeVt8po0
+ Bpd3gg4G28BJBUapZ1cwdtQjY9v8HiLmOm+uir1yZQtkElzUvmy0k+R1673LZ10hpR0KTCBYhM
+ cF/pdYg5uAIB+XnIB4samkBJ4Al4U8PuZl6VHh4N2oUw48LZHsrmlpyZg3u9JIY4CV1BBIi7Sc
+ Uw5My9MI9F9I2z9CdDJUHGHSa8vBPPOBIX5LKDEwad6TpBRghf7JwX09IbtLB8FgdFTuBnZvEC
+ Y0Q=
 X-IronPort-AV: E=Sophos;i="5.76,387,1592863200"; 
-   d="scan'208";a="13722701"
+   d="scan'208";a="13722703"
 Received: from vtuxmail01.tq-net.de ([10.115.0.20])
   by mx1.tq-group.com with ESMTP; 03 Sep 2020 16:54:28 +0200
 Received: from schifferm-ubuntu4.tq-net.de (unknown [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 649D9280065;
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 8B449280070;
         Thu,  3 Sep 2020 16:54:28 +0200 (CEST)
 From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 To:     Shawn Guo <shawnguo@kernel.org>,
@@ -57,224 +58,69 @@ Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
         NXP Linux Team <linux-imx@nxp.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 1/2] ARM: dts: imx6qdl: tqma6: fix indentation
-Date:   Thu,  3 Sep 2020 16:53:46 +0200
-Message-Id: <20200903145347.17830-1-matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v2 2/2] ARM: dts: imx6qdl: tqma6: minor fixes
+Date:   Thu,  3 Sep 2020 16:53:47 +0200
+Message-Id: <20200903145347.17830-2-matthias.schiffer@ew.tq-group.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200903145347.17830-1-matthias.schiffer@ew.tq-group.com>
+References: <20200903145347.17830-1-matthias.schiffer@ew.tq-group.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+- Fix national,lm75 compatible string
+- Remove obsolete fsl,spi-num-chipselects
+
 Fixes: cac849e9bbc8 ("ARM: dts: imx6qdl: add TQMa6{S,Q,QP} SoM")
 Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
 
-v2: no changes
+v2: drop fsl,spi-num-chipselects instead of replacing with num-cs
 
- arch/arm/boot/dts/imx6qdl-tqma6.dtsi | 188 +++++++++++++--------------
- 1 file changed, 94 insertions(+), 94 deletions(-)
+ arch/arm/boot/dts/imx6qdl-tqma6.dtsi  | 1 -
+ arch/arm/boot/dts/imx6qdl-tqma6a.dtsi | 2 +-
+ arch/arm/boot/dts/imx6qdl-tqma6b.dtsi | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm/boot/dts/imx6qdl-tqma6.dtsi b/arch/arm/boot/dts/imx6qdl-tqma6.dtsi
-index 29bcce20f5f3..9513020ddd1a 100644
+index 9513020ddd1a..b18b83ac6aee 100644
 --- a/arch/arm/boot/dts/imx6qdl-tqma6.dtsi
 +++ b/arch/arm/boot/dts/imx6qdl-tqma6.dtsi
-@@ -83,101 +83,101 @@
- };
+@@ -20,7 +20,6 @@
+ &ecspi1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_ecspi1>;
+-	fsl,spi-num-chipselects = <1>;
+ 	cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+ 	status = "okay";
  
- &pmic {
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_pmic>;
--		interrupt-parent = <&gpio6>;
--		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
--
--		regulators {
--			reg_vddcore: sw1ab {
--				regulator-min-microvolt = <300000>;
--				regulator-max-microvolt = <1875000>;
--				regulator-always-on;
--			};
--
--			reg_vddsoc: sw1c {
--				regulator-min-microvolt = <300000>;
--				regulator-max-microvolt = <1875000>;
--				regulator-always-on;
--			};
--
--			reg_gen_3v3: sw2 {
--				regulator-min-microvolt = <800000>;
--				regulator-max-microvolt = <3300000>;
--				regulator-always-on;
--			};
--
--			reg_ddr_1v5a: sw3a {
--				regulator-min-microvolt = <400000>;
--				regulator-max-microvolt = <1975000>;
--				regulator-always-on;
--			};
--
--			reg_ddr_1v5b: sw3b {
--				regulator-min-microvolt = <400000>;
--				regulator-max-microvolt = <1975000>;
--				regulator-always-on;
--			};
--
--			sw4_reg: sw4 {
--				regulator-min-microvolt = <800000>;
--				regulator-max-microvolt = <3300000>;
--				regulator-always-on;
--			};
--
--			reg_5v_600mA: swbst {
--				regulator-min-microvolt = <5000000>;
--				regulator-max-microvolt = <5150000>;
--				regulator-always-on;
--			};
--
--			reg_snvs_3v: vsnvs {
--				regulator-min-microvolt = <1500000>;
--				regulator-max-microvolt = <3000000>;
--				regulator-always-on;
--			};
--
--			reg_vrefddr: vrefddr {
--				regulator-boot-on;
--				regulator-always-on;
--			};
--
--			reg_vgen1_1v5: vgen1 {
--				regulator-min-microvolt = <800000>;
--				regulator-max-microvolt = <1550000>;
--				/* not used */
--			};
--
--			reg_vgen2_1v2_eth: vgen2 {
--				regulator-min-microvolt = <800000>;
--				regulator-max-microvolt = <1550000>;
--				regulator-always-on;
--			};
--
--			reg_vgen3_2v8: vgen3 {
--				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt = <3300000>;
--				regulator-always-on;
--			};
--
--			reg_vgen4_1v8: vgen4 {
--				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt = <3300000>;
--				regulator-always-on;
--			};
--
--			reg_vgen5_1v8_eth: vgen5 {
--				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt = <3300000>;
--				regulator-always-on;
--			};
--
--			reg_vgen6_3v3: vgen6 {
--				regulator-min-microvolt = <1800000>;
--				regulator-max-microvolt = <3300000>;
--				regulator-always-on;
--			};
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pmic>;
-+	interrupt-parent = <&gpio6>;
-+	interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
-+
-+	regulators {
-+		reg_vddcore: sw1ab {
-+			regulator-min-microvolt = <300000>;
-+			regulator-max-microvolt = <1875000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_vddsoc: sw1c {
-+			regulator-min-microvolt = <300000>;
-+			regulator-max-microvolt = <1875000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_gen_3v3: sw2 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_ddr_1v5a: sw3a {
-+			regulator-min-microvolt = <400000>;
-+			regulator-max-microvolt = <1975000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_ddr_1v5b: sw3b {
-+			regulator-min-microvolt = <400000>;
-+			regulator-max-microvolt = <1975000>;
-+			regulator-always-on;
-+		};
-+
-+		sw4_reg: sw4 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_5v_600mA: swbst {
-+			regulator-min-microvolt = <5000000>;
-+			regulator-max-microvolt = <5150000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_snvs_3v: vsnvs {
-+			regulator-min-microvolt = <1500000>;
-+			regulator-max-microvolt = <3000000>;
-+			regulator-always-on;
- 		};
-+
-+		reg_vrefddr: vrefddr {
-+			regulator-boot-on;
-+			regulator-always-on;
-+		};
-+
-+		reg_vgen1_1v5: vgen1 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <1550000>;
-+			/* not used */
-+		};
-+
-+		reg_vgen2_1v2_eth: vgen2 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <1550000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_vgen3_2v8: vgen3 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_vgen4_1v8: vgen4 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_vgen5_1v8_eth: vgen5 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+
-+		reg_vgen6_3v3: vgen6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-always-on;
-+		};
-+	};
- };
+diff --git a/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi b/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi
+index c18a06cf7929..b679bec78e6c 100644
+--- a/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi
+@@ -16,7 +16,7 @@
+ 	};
  
- /* eMMC */
+ 	sensor@48 {
+-		compatible = "lm75";
++		compatible = "national,lm75";
+ 		reg = <0x48>;
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi b/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi
+index a7460075f517..49c472285c06 100644
+--- a/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi
+@@ -16,7 +16,7 @@
+ 	};
+ 
+ 	sensor@48 {
+-		compatible = "lm75";
++		compatible = "national,lm75";
+ 		reg = <0x48>;
+ 	};
+ 
 -- 
 2.17.1
 
