@@ -2,173 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6E325C4BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBA425C50C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728656AbgICLeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:34:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:59500 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728501AbgICL3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:29:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4A14101E;
-        Thu,  3 Sep 2020 04:20:51 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EC4E23F66F;
-        Thu,  3 Sep 2020 04:20:50 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, sudeep.holla@arm.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com
-Subject: [PATCH] cpufreq,cppc: fix issue when hotplugging out policy->cpu
-Date:   Thu,  3 Sep 2020 12:19:55 +0100
-Message-Id: <20200903111955.31029-1-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728865AbgICPVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:21:47 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:57382 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728454AbgICLYX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:24:23 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083BNmZu073910;
+        Thu, 3 Sep 2020 06:23:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599132228;
+        bh=NQo7vUhMynuWKGR7nysjqjeboPuk+AK5YMlGBnTcHWU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Zu9icTeSjqIxCdXj+48f6EVVaFLF196A1IfPMbjhblFy+GXWToUbLUJPfEzvd+NH6
+         P1XILBLc96enbD1fCX07hha5ybwgfWgiI07TPFTw7a1Mpy6AKvv9ZauqwbIEmlbxwv
+         WHWPNuJ0ID7eKlyzAnVDxV9h/xrAb8YQrrXHf/uQ=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083BNmth100340;
+        Thu, 3 Sep 2020 06:23:48 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 06:23:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 06:23:48 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083BNmhR079007;
+        Thu, 3 Sep 2020 06:23:48 -0500
+Date:   Thu, 3 Sep 2020 06:23:48 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Suman Anna <s-anna@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <lokeshvutla@ti.com>,
+        <grygorii.strashko@ti.com>, <nsekhar@ti.com>
+Subject: Re: [PATCH 6/7] arm64: dts: ti: k3-*: Use generic adc for node names
+Message-ID: <20200903112348.dcj7b7zytgdt6pjv@akan>
+References: <20200901223059.14801-1-nm@ti.com>
+ <20200901223059.14801-7-nm@ti.com>
+ <60e6b790-360a-6eaf-03a3-5bb256adf215@ti.com>
+ <20200902181820.nlvl3pfzeh4agzzi@akan>
+ <9fb2f8f4-5eeb-6190-9cbf-b28084c58a8f@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9fb2f8f4-5eeb-6190-9cbf-b28084c58a8f@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An issue is observed in the cpufreq CPPC driver when having dependency
-domains (PSD) and the policy->cpu is hotplugged out.
-
-Considering a platform with 4 CPUs and 2 PSD domains (CPUs 0 and 1 in
-PSD-1, CPUs 2 and 3 in PSD-2), cppc_cpufreq_cpu_init() will be called
-for the two cpufreq policies that are created and it will set
-all_cpu_data[policy->cpu]->cpu = policy->cpu.
-
-Therefore all_cpu_data[0]->cpu=0, and all_cpu_data[2]->cpu=2. But for
-CPUs 1 and 3, all_cpu_data[{1,3}]->cpu will remain 0 from the structure
-allocation.
-
-If CPU 2 is hotplugged out, CPU 3 will become policy->cpu. But its
-all_cpu_data[3]->cpu will remain 0. Later, when the .target() function
-is called for policy2, the cpu argument to cppc_set_perf() will be 0 and
-therefore it will use the performance controls of CPU 0, which will
-result in a performance level change for the wrong domain.
-
-While the possibility of setting a correct CPU value in the per-cpu
-cppc_cpudata structure is available, it can be noticed that this cpu value
-is not used at all outside the .target() function, where it's not actually
-necessary. Therefore, remove the cpu variable from the cppc_cpudata
-structure and use policy->cpu in the .target() function as done for the
-other CPPC cpufreq functions.
-
-Fixes: 5477fb3bd1e8  ("ACPI / CPPC: Add a CPUFreq driver for use with CPPC")
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-Cc: Viresh Kumar <viresh.kumar@linaro.org>
----
-
-Testing was done on a Juno R2 platform (with the proper ACPI/CPPC setup):
-CPUs 0, 1, 2, 3 are in PSD-0 (policy0), CPUs 4 and 5 are in PSD-4
-(policy4).
-
-Before the fix:
-
-root@sqwt-ubuntu:~# dmesg | grep address
-[    2.165177] ACPI CPPC: ACPI desired perf address 0: - ffff80001004d200
-[    2.174226] ACPI CPPC: ACPI desired perf address 1: - ffff800010055200
-[    2.183231] ACPI CPPC: ACPI desired perf address 2: - ffff80001005d200
-[    2.192234] ACPI CPPC: ACPI desired perf address 3: - ffff800010065200
-[    2.201245] ACPI CPPC: ACPI desired perf address 4: - ffff80001006d218
-[    2.210256] ACPI CPPC: ACPI desired perf address 5: - ffff800011ff1218
-[..]
-[    2.801940] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 38300
-[    2.835286] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 102400
-[..]
-root@sqwt-ubuntu:~# cd /sys/devices/system/cpu/cpufreq/
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
-[   72.098758] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 51200
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
-[   85.430645] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 102400
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 0 > ../cpu4/online
-[  102.606380] CPPC Cpufreq:CPPC: Calculate: (6285/261)*4266=102727.
-[  102.612491] CPPC Cpufreq:CPPC: Core rate = 1203832, arch timer rate: 50000000
-[  102.619659] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 102400
-[  102.626898] CPU4: shutdown
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
-[  141.116882] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 51200
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
-[  159.288273] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 102400
+On 10:55-20200903, Vignesh Raghavendra wrote:
+> Hi Nishanth,
+> 
+> On 9/2/20 11:48 PM, Nishanth Menon wrote:
+> > On 11:51-20200902, Suman Anna wrote:
+> >> On 9/1/20 5:30 PM, Nishanth Menon wrote:
+> >>> Use adc@ naming for nodes following standard conventions of device
+> >>> tree (section 2.2.2 Generic Names recommendation in [1]).
+> >>>
+> >>> [1] https://github.com/devicetree-org/devicetree-specification/tree/v0.3
+> >>>
+> >>> Suggested-by: Suman Anna <s-anna@ti.com>
+> >>> Signed-off-by: Nishanth Menon <nm@ti.com>
+> >>> ---
+> >>>  arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi         | 4 ++--
+> >>>  arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 4 ++--
+> >>>  2 files changed, 4 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> >>> index 51ca4b4d4c21..6dfec68ac865 100644
+> >>> --- a/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> >>> +++ b/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi
+> >>> @@ -80,7 +80,7 @@
+> >>>  		#size-cells = <0>;
+> >>>  	};
+> >>>  
+> >>> -	tscadc0: tscadc@40200000 {
+> >>> +	tscadc0: adc@40200000 {
+> >>
+> >> OK with these changes, since these seem to be only have the adc child nodes.
+> >> This node is essentially a parent node for touchscreen and adc child nodes. The
+> >> driver is currently looking for "tsc" on touchscreen child nodes, but none of
+> >> the K3 SoCs have them atm.
+> >>
+> > 
+> > 
+> > Vignesh: are you ok with this, care to comment?
+> > 
+> 
+> On K3 SoCs, ADC IP is reuse from AM335x but just lacks resistive
+> touchscreen interfaces. So, existing AM335x ADC driver is being reused
+> for K3 devices as well. Unfortunately, ADC driver cannot be used as
+> standalone and is dependent on MFD parent to be present...
+> Above node represents the MFD parent and ADC itself is the child node
+> (see arch/arm64/boot/dts/ti/k3-am654-base-board.dts). So, I recommend
+> that we keep this node's name as tscadc in order to avoid having same
+> name for parent and child node which will be quite confusing.
 
 
-After the fix:
-
-root@sqwt-ubuntu:~# cd /sys/devices/system/cpu/cpufreq/
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
-[  139.903322] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 51200
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
-[  147.279040] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 102400
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 0 > ../cpu4/online
-[  153.598686] CPPC Cpufreq:CPPC: Calculate: (6171/253)*4266=104053.
-[  153.604797] CPPC Cpufreq:CPPC: Core rate = 1219371, arch timer rate: 50000000
-[  153.611960] ACPI CPPC: Writing to address for CPU 5:ffff800011ff1218: 102400
-[  153.619190] CPU4: shutdown
-[  153.621911] psci: CPU4 killed (polled 0 ms)
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
-[  170.122495] ACPI CPPC: Writing to address for CPU 5:ffff800011ff1218: 51200
-root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
-[  177.206342] ACPI CPPC: Writing to address for CPU 5:ffff800011ff1218: 102400
-
-Thanks,
-Ionela.
-
- drivers/cpufreq/cppc_cpufreq.c | 8 ++++----
- include/acpi/cppc_acpi.h       | 1 -
- 2 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index f29e8d0553a8..54457f5fe49e 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -149,8 +149,9 @@ static int cppc_cpufreq_set_target(struct cpufreq_policy *policy,
- 		unsigned int target_freq,
- 		unsigned int relation)
- {
--	struct cppc_cpudata *cpu;
- 	struct cpufreq_freqs freqs;
-+	int cpu_num = policy->cpu;
-+	struct cppc_cpudata *cpu;
- 	u32 desired_perf;
- 	int ret = 0;
- 
-@@ -166,12 +167,12 @@ static int cppc_cpufreq_set_target(struct cpufreq_policy *policy,
- 	freqs.new = target_freq;
- 
- 	cpufreq_freq_transition_begin(policy, &freqs);
--	ret = cppc_set_perf(cpu->cpu, &cpu->perf_ctrls);
-+	ret = cppc_set_perf(cpu_num, &cpu->perf_ctrls);
- 	cpufreq_freq_transition_end(policy, &freqs, ret != 0);
- 
- 	if (ret)
- 		pr_debug("Failed to set target on CPU:%d. ret:%d\n",
--				cpu->cpu, ret);
-+				cpu_num, ret);
- 
- 	return ret;
- }
-@@ -247,7 +248,6 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 
- 	cpu = all_cpu_data[policy->cpu];
- 
--	cpu->cpu = cpu_num;
- 	ret = cppc_get_perf_caps(policy->cpu, &cpu->perf_caps);
- 
- 	if (ret) {
-diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
-index a6a9373ab863..451132ec83c9 100644
---- a/include/acpi/cppc_acpi.h
-+++ b/include/acpi/cppc_acpi.h
-@@ -124,7 +124,6 @@ struct cppc_perf_fb_ctrs {
- 
- /* Per CPU container for runtime CPPC management. */
- struct cppc_cpudata {
--	int cpu;
- 	struct cppc_perf_caps perf_caps;
- 	struct cppc_perf_ctrls perf_ctrls;
- 	struct cppc_perf_fb_ctrs perf_fb_ctrs;
+Thanks for your feedback. I will drop this patch.
 -- 
-2.17.1
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
