@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2E125CB47
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E17125CB51
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729750AbgICUkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
+        id S1729758AbgICUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729369AbgICUbG (ORCPT
+        with ESMTP id S1729356AbgICUbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:06 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894BEC061265;
-        Thu,  3 Sep 2020 13:30:58 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m6so4619323wrn.0;
-        Thu, 03 Sep 2020 13:30:58 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:03 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7314CC061261
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:30:57 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id q4so2502969qvr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WQf32lRefYlvWpNqVHDN0Q4olqQ7nkdPDH05d5Mwk20=;
-        b=mNB7LFuLunsa59ryEWxxPyempqYxfpwPFhvUy2WMjgyrvy+hAVWipxmu70QL6d0l5L
-         5U0RC71ib7EWr2tCGMvXAL73SjOOJgsvX7ZwiKaPtXmgmS/AT/8bZr5OyFVX5jlzpANp
-         v6GbgeFbYfMDLT2RYz4PSMIcx9l8spVWX8QWgvKXF77emPd+rjdvAIXpeQIojnuFlnQF
-         T8w3IJow0iwOPLTa8vhnvuodhrZyfAVtcrb/hdW3MrX7nS6AuUuGp4+GSnyv4fxBDxHe
-         8FKou8Pjy7PLpNCJ7OPPbBdLjvBC4xWGXgX4S4CprZdrYF2vQWVo2DWKd8ViHemZIINr
-         JGKg==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=mDVvkNnwHRt+Li8nefuHvmgwU3VCsthhxmclA+Biet0=;
+        b=BAqToBhePk+irZIVVLAwecMp1XW9+Ks/f/sHbDKoGAGhsn6UE+3DQRUDeqOb8say/o
+         QxpBeEZ6aAX0zEfibyHBFmhzl0Vw+o0mHntVCknw3JFLb1KRs5PinJ6tHxAOk5MN5EYA
+         AfgwLGhevAbhgMH2td9x/PyO+G3DTP7s1GxaKtrd39cb0JzoBHskqiAq/LJEw/gMn8iA
+         XT4V4BL0iYhatzNnu1bXuTQZJGInDJpEfjNk2sRcKcORI1v3DBYhfh8RDI2LHTVrDtsI
+         V29No/TKC195kYLq9pmO7w16CLGuBlaDY8z5c/lcwnflHFClTnlapgui3DYxttVqDUEE
+         tSLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WQf32lRefYlvWpNqVHDN0Q4olqQ7nkdPDH05d5Mwk20=;
-        b=r17xeFZbUTh8qynxzT66WGdX7Arb2Gk0AtLlNqQD7ohhx1kBnsM+cqVcPooSaA5Xky
-         7L7UyA7mFjWGhwg3PleeN0qT7aXD8Vsko1SdKEz3oObyqN3LjVeYTuO7pNQS2O04X9sA
-         eLC6KaeS+sQGrlIOWm9+S56z7WeZRBqveFfRwtGFCCg0U0F+yJl2C85DzaLjaMfXt6Cw
-         7qYQGnOQlXKydXu7mlj11ABXRMzfowfKxhaBwlR3d3VpH+uLUAmRRf6bGGCS9Id3P12E
-         ZDiNolqQgQVqRwiUPOiUgta0+T+ACqXApl3MWjNfIaJiG3XkaaVLm5MkWO8CzSSDPdQu
-         Smbw==
-X-Gm-Message-State: AOAM5313QiLZZ8m7sFudI+TCmy+c+96uHDzYWONSB0IAn3DYqnuu08w2
-        IeGrlNSugZDtYWA9k7yQ+7M=
-X-Google-Smtp-Source: ABdhPJwV/D5vEOt7HiGayfYHGwvmD+WzmO5fqpG1aehEipiDZFdrGd3VaUCsTXMp0iDFlDyazWYq2Q==
-X-Received: by 2002:adf:dd0b:: with SMTP id a11mr4159015wrm.422.1599165057172;
-        Thu, 03 Sep 2020 13:30:57 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:30:56 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 12/20] arm64: dts: allwinner: a64: Add DAI node for HDMI
-Date:   Thu,  3 Sep 2020 22:30:26 +0200
-Message-Id: <20200903203034.1057334-13-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
-References: <20200903203034.1057334-1-peron.clem@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=mDVvkNnwHRt+Li8nefuHvmgwU3VCsthhxmclA+Biet0=;
+        b=Z9a6d9SmohNL6/hAVnEwFwhLAPksGdDmtus2SMgDSvQ+YJVQVXSKQlJuylW3LV4SQ2
+         swxIos5lKLRHmlEvOkeLrItQ6rl1/4xJBB8UVszP8qDy4QOh1FU2wE1+3kimKDkRdZUs
+         uEu+7rU+RS34GcjZPDJ+29498tMLo0zkrVkNh0PTrFWSVLbbsVUIr/fTpV7MuuvQpUUX
+         u3531onBVZLV1hze3A6MjatUuwZTtdn0hV2wFAg5/tWNZRMZIxPeBkDGN6gj6ykev3NH
+         ikMbOZqu0yRWQUyg8zIjUiHafZ13M3qj0rRUONsh/y4swukeMRYcRXw4fUEa11yioJJU
+         HwTw==
+X-Gm-Message-State: AOAM533B7l1wP2iNvoL1XOWYLFUb8ZN3Nl/ZY1pNI5/UAVf0sFJwni5o
+        6GUuPEgpgelWTNX3Ff/78/DK5nW3mu7pQ1BmCQ8=
+X-Google-Smtp-Source: ABdhPJyUnW2qSfmEzLjPskwcMhWUurVS5skiaBz/vWVhXl7N7pyUdqZoSu6Ssyc74PFkWqrXo2ggCEF9Y0h+Jfi/JHo=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a05:6214:292:: with SMTP id
+ l18mr3616010qvv.3.1599165056576; Thu, 03 Sep 2020 13:30:56 -0700 (PDT)
+Date:   Thu,  3 Sep 2020 13:30:26 -0700
+In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
+Message-Id: <20200903203053.3411268-2-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20200624203200.78870-1-samitolvanen@google.com> <20200903203053.3411268-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v2 01/28] x86/boot/compressed: Disable relocation relaxation
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-Add the new DAI block for I2S2 which is used for HDMI audio.
+The x86-64 psABI [0] specifies special relocation types
+(R_X86_64_[REX_]GOTPCRELX) for indirection through the Global Offset
+Table, semantically equivalent to R_X86_64_GOTPCREL, which the linker
+can take advantage of for optimization (relaxation) at link time. This
+is supported by LLD and binutils versions 2.26 onwards.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+The compressed kernel is position-independent code, however, when using
+LLD or binutils versions before 2.27, it must be linked without the -pie
+option. In this case, the linker may optimize certain instructions into
+a non-position-independent form, by converting foo@GOTPCREL(%rip) to $foo.
+
+This potential issue has been present with LLD and binutils-2.26 for a
+long time, but it has never manifested itself before now:
+- LLD and binutils-2.26 only relax
+	movq	foo@GOTPCREL(%rip), %reg
+  to
+	leaq	foo(%rip), %reg
+  which is still position-independent, rather than
+	mov	$foo, %reg
+  which is permitted by the psABI when -pie is not enabled.
+- gcc happens to only generate GOTPCREL relocations on mov instructions.
+- clang does generate GOTPCREL relocations on non-mov instructions, but
+  when building the compressed kernel, it uses its integrated assembler
+  (due to the redefinition of KBUILD_CFLAGS dropping -no-integrated-as),
+  which has so far defaulted to not generating the GOTPCRELX
+  relocations.
+
+Nick Desaulniers reports [1,2]:
+  A recent change [3] to a default value of configuration variable
+  (ENABLE_X86_RELAX_RELOCATIONS OFF -> ON) in LLVM now causes Clang's
+  integrated assembler to emit R_X86_64_GOTPCRELX/R_X86_64_REX_GOTPCRELX
+  relocations. LLD will relax instructions with these relocations based
+  on whether the image is being linked as position independent or not.
+  When not, then LLD will relax these instructions to use absolute
+  addressing mode (R_RELAX_GOT_PC_NOPIC). This causes kernels built with
+  Clang and linked with LLD to fail to boot.
+
+Patch series [4] is a solution to allow the compressed kernel to be
+linked with -pie unconditionally, but even if merged is unlikely to be
+backported. As a simple solution that can be applied to stable as well,
+prevent the assembler from generating the relaxed relocation types using
+the -mrelax-relocations=no option. For ease of backporting, do this
+unconditionally.
+
+[0] https://gitlab.com/x86-psABIs/x86-64-ABI/-/blob/master/x86-64-ABI/linker-optimization.tex#L65
+[1] https://lore.kernel.org/lkml/20200807194100.3570838-1-ndesaulniers@google.com/
+[2] https://github.com/ClangBuiltLinux/linux/issues/1121
+[3] https://reviews.llvm.org/rGc41a18cf61790fc898dcda1055c3efbf442c14c0
+[4] https://lore.kernel.org/lkml/20200731202738.2577854-1-nivedita@alum.mit.edu/
+
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: stable@vger.kernel.org
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/x86/boot/compressed/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 8dfbcd144072..bcf808459edf 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -845,6 +845,20 @@ i2s1: i2s@1c22400 {
- 			status = "disabled";
- 		};
+diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
+index 3962f592633d..ff7894f39e0e 100644
+--- a/arch/x86/boot/compressed/Makefile
++++ b/arch/x86/boot/compressed/Makefile
+@@ -43,6 +43,8 @@ KBUILD_CFLAGS += -Wno-pointer-sign
+ KBUILD_CFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+ KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
+ KBUILD_CFLAGS += -D__DISABLE_EXPORTS
++# Disable relocation relaxation in case the link is not PIE.
++KBUILD_CFLAGS += $(call as-option,-Wa$(comma)-mrelax-relocations=no)
  
-+		i2s2: i2s@1c22800 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-a64-i2s",
-+				     "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "rx", "tx";
-+			dmas = <&dma 27>, <&dma 27>;
-+			status = "disabled";
-+		};
-+
- 		dai: dai@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-a64-codec-i2s";
+ KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
+ GCOV_PROFILE := n
 -- 
-2.25.1
+2.28.0.402.g5ffc5be6b7-goog
 
