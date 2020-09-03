@@ -2,157 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBACC25CA3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605CA25CB74
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729209AbgICUac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgICUa3 (ORCPT
+        id S1729341AbgICUp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:45:59 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54676 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728397AbgICUp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:30:29 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF072C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:30:28 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id r9so4855882ioa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:30:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ff1mKe8wkbtuvA1xwHqfQ9HoajECOpK14bs/Jse4OK8=;
-        b=FRufedUAqVKfHS6SBEXPpcQ5dN7ppLSyR5Q/GSkrsjd9dxcVKisj2eq7PBEUEvzbRw
-         hl8bUWtm6P6lXExDyRQ96cWkQP0wa+WzPIBsVm1Gi9VrGwNR6RFOHoqGIYD/nN2wF/+l
-         GuZ87I9hl7nvEEOx/lNGUuqXfGwARJmHn+ykw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ff1mKe8wkbtuvA1xwHqfQ9HoajECOpK14bs/Jse4OK8=;
-        b=g+gey107izkgFq9FHZt/QBdrz6BmKneU3HrfIAJdmUGiN+kCK76vxCYUFQTgGbPMFh
-         4i0cdHjYfJlD/O61jeXzVv20s2q+k5ANIP50/K05UpHOtSXvSBcESoTn7Ea8OeCsz0IY
-         /+hd6On5S5o3xl8fvxoaaLgvg3ke0owpvw1J3O8XrsXNEYwm+XDEc8GHgXU+ohpigwbr
-         gk2tcMETmdaAYbtz1ZcLacoZuiKuUVvmv5Hcm5K8D3vqEDJEAkMqlWsm24sR85h/tfRB
-         QeUZdlcO0ylKv7uK3A5Nj5+oPMQD6/ifSydXsLkceU07aJ3EipzI+LFZE/zsYuc3iHYW
-         OMdA==
-X-Gm-Message-State: AOAM530AXEZvYJso37Lybn3c7VIchGo1IEu1r5O/L/WsDXmRDS9PXJCP
-        3BUhNNtNeqcqj7UU8fKFjXMRM9cx4kE1bZ9Fv2wG2A==
-X-Google-Smtp-Source: ABdhPJwwX7WWSuXXLh6VsWo8yrbQKo6gN2faSS9yV3/MWxif323AtnCct2XXvrYRUskJkoVrKcajUf2CXT2GbTya3C8=
-X-Received: by 2002:a6b:6a01:: with SMTP id x1mr4759201iog.1.1599165027835;
- Thu, 03 Sep 2020 13:30:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1598643276.git.jdesfossez@digitalocean.com>
- <2a4398b55fe258ea53fb1fbc727063298f7eea8f.1598643276.git.jdesfossez@digitalocean.com>
- <87y2lth4qa.fsf@nanos.tec.linutronix.de> <20200901165052.GA1662854@google.com>
- <875z8xl0zh.fsf@nanos.tec.linutronix.de> <20200902012905.GB1703315@google.com>
- <87h7sgk41y.fsf@nanos.tec.linutronix.de> <a80babf130a45841e166fa155f84afc19b4257d3.camel@suse.com>
- <CAEXW_YRQiC_0edO5L2vVmL0NcfeZaRt4WYoyrcKmzbFcQP3PvA@mail.gmail.com> <87wo1buhcs.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87wo1buhcs.fsf@nanos.tec.linutronix.de>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 3 Sep 2020 16:30:14 -0400
-Message-ID: <CAEXW_YRJt_W0NNWaj4ejRjyHSOYbsSp8RPJsHL47Dw5x5ndgmA@mail.gmail.com>
-Subject: Re: [RFC PATCH v7 17/23] kernel/entry: Add support for core-wide
- protection of kernel-mode
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Dario Faggioli <dfaggioli@suse.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Thu, 3 Sep 2020 16:45:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599165956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o5hVxkqGdg+psOvlIfXAU4TmERsy4dVZC0Gsf884zyc=;
+        b=G6gFOsbnvON+O97R26wkhQFLJ5hwkvL4AJ74NYOwj32yoLm2PjHPuWBvGNpeUKFfbSKd4m
+        cvYBbzzedKHSlvhLc13P5LTx+TRjs+U2KaIWKdKN79L5dSn/8DZsRcyfoltf0NunfwFoN5
+        3BFGc6t6E8HS7hKddHWheNC9JP7kWqI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-258-6aiBpulQOTGANZAHBa-ycA-1; Thu, 03 Sep 2020 16:45:53 -0400
+X-MC-Unique: 6aiBpulQOTGANZAHBa-ycA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D12631DE0E;
+        Thu,  3 Sep 2020 20:45:51 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8E3936198B;
+        Thu,  3 Sep 2020 20:45:50 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id C03F54168BB3; Thu,  3 Sep 2020 15:52:00 -0300 (-03)
+Date:   Thu, 3 Sep 2020 15:52:00 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Ingo Molnar <mingo@kernel.org>, Paul Turner <pjt@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>,
-        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Requirements to control kernel isolation/nohz_full at runtime
+Message-ID: <20200903185200.GA1029791@fuller.cnet>
+References: <20200901104640.GA13814@lenoir>
+ <20200903182359.GA1016174@fuller.cnet>
+ <20200903183015.GA1027417@fuller.cnet>
+ <20200903183636.GB99697@lorien.usersys.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903183636.GB99697@lorien.usersys.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 9:20 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Thu, Sep 03 2020 at 00:34, Joel Fernandes wrote:
-> > On Wed, Sep 2, 2020 at 12:57 PM Dario Faggioli <dfaggioli@suse.com> wrote:
-> >> 2) protection of the kernel from the other thread running in userspace
-> >> may be achieved in different ways. This is one, sure. ASI will probably
-> >> be another. Hence if/when we'll have both, this and ASI, it would be
-> >> cool to be able to configure the system in such a way that there is
-> >> only one active, to avoid paying the price of both! :-)
-> >
-> > Actually, no. Part of ASI will involve exactly what this patch does -
-> > IPI-pausing siblings but ASI does so when they have no choice but to
-> > switch away from the "limited kernel" mapping, into the full host
-> > kernel mapping. I am not sure if they have yet implemented that part
-> > but they do talk of it in [1] and in their pretty LPC slides.  It is
-> > just that ASI tries to avoid that scenario of kicking all siblings out
-> > of guest mode.  So, maybe this patch can be a stepping stone to ASI.
-> > At least I got the entry hooks right, and the algorithm is efficient
-> > IMO (useless IPIs are avoided).  ASI can then come in and avoid
-> > sending IPIs even more by doing their limited-kernel-mapping things if
-> > needed. So, it does not need to be this vs ASI, both may be needed.
->
-> Right. There are different parts which are seperate:
->
-> 1) Core scheduling as a best effort feature (performance for certain use
->    cases)
->
-> 2) Enforced core scheduling (utilizes #1 basics)
->
-> 3) ASI
->
-> 4) Kick sibling out of guest/host and wait mechanics
->
-> #1, #2, #3 can be used stand alone. #4 is a utility
->
-> Then you get combos:
->
-> A) #2 + #4:
->
->    core wide protection. i.e. what this series tries to achieve.  #3
->    triggers the kick at the low level VMEXIT or entry from user mode
->    boundary. The wait happens at the same level
->
-> B) #3 + #4:
->
->    ASI plus kicking the sibling/wait mechanics independent of what's
->    scheduled. #3 triggers the kick at the ASI switch to full host
->    mapping boundary and the wait is probably the same as in #A
->
-> C) #2 + #3 + #4:
->
->    The full concert, but trigger/wait wise the same as #B
->
-> So we really want to make at least #4 an independent utility.
+On Thu, Sep 03, 2020 at 02:36:36PM -0400, Phil Auld wrote:
+> On Thu, Sep 03, 2020 at 03:30:15PM -0300 Marcelo Tosatti wrote:
+> > On Thu, Sep 03, 2020 at 03:23:59PM -0300, Marcelo Tosatti wrote:
+> > > On Tue, Sep 01, 2020 at 12:46:41PM +0200, Frederic Weisbecker wrote:
+> > > > Hi,
+> > > 
+> > > Hi Frederic,
+> > > 
+> > > Thanks for the summary! Looking forward to your comments...
+> > > 
+> > > > I'm currently working on making nohz_full/nohz_idle runtime toggable
+> > > > and some other people seem to be interested as well. So I've dumped
+> > > > a few thoughts about some pre-requirements to achieve that for those
+> > > > interested.
+> > > > 
+> > > > As you can see, there is a bit of hard work in the way. I'm iterating
+> > > > that in https://pad.kernel.org/p/isolation, feel free to edit:
+> > > > 
+> > > > 
+> > > > == RCU nocb ==
+> > > > 
+> > > > Currently controllable with "rcu_nocbs=" boot parameter and/or through nohz_full=/isolcpus=nohz
+> > > > We need to make it toggeable at runtime. Currently handling that:
+> > > > v1: https://lwn.net/Articles/820544/
+> > > > v2: coming soon
+> > > 
+> > > Nice.
+> > > 
+> > > > == TIF_NOHZ ==
+> > > > 
+> > > > Need to get rid of that in order not to trigger syscall slowpath on CPUs that don't want nohz_full.
+> > > > Also we don't want to iterate all threads and clear the flag when the last nohz_full CPU exits nohz_full
+> > > > mode. Prefer static keys to call context tracking on archs. x86 does that well.
+> > > > 
+> > > > == Proper entry code ==
+> > > > 
+> > > > We must make sure that a given arch never calls exception_enter() / exception_exit().
+> > > > This saves the previous state of context tracking and switch to kernel mode (from context tracking POV)
+> > > > temporarily. Since this state is saved on the stack, this prevents us from turning off context tracking
+> > > > entirely on a CPU: The tracking must be done on all CPUs and that takes some cycles.
+> > > > 
+> > > > This means that, considering early entry code (before the call to context tracking upon kernel entry,
+> > > > and after the call to context tracking upon kernel exit), we must take care of few things:
+> > > > 
+> > > > 1) Make sure early entry code can't trigger exceptions. Or if it does, the given exception can't schedule
+> > > > or use RCU (unless it calls rcu_nmi_enter()). Otherwise the exception must call exception_enter()/exception_exit()
+> > > > which we don't want.
+> > > > 
+> > > > 2) No call to schedule_user().
+> > > > 
+> > > > 3) Make sure early entry code is not interruptible or preempt_schedule_irq() would rely on
+> > > > exception_entry()/exception_exit()
+> > > > 
+> > > > 4) Make sure early entry code can't be traced (no call to preempt_schedule_notrace()), or if it does it
+> > > > can't schedule
+> > > > 
+> > > > I believe x86 does most of that well. In the end we should remove exception_enter()/exit implementations
+> > > > in x86 and replace it with a check that makes sure context_tracking state is not in USER. An arch meeting
+> > > > all the above conditions would earn a CONFIG_ARCH_HAS_SANE_CONTEXT_TRACKING. Being able to toggle nohz_full
+> > > > at runtime would depend on that.
+> > > > 
+> > > > 
+> > > > == Cputime accounting ==
+> > > > 
+> > > > Both write and read side must switch to tick based accounting and drop the use of seqlock in task_cputime(),
+> > > > task_gtime(), kcpustat_field(), kcpustat_cpu_fetch(). Special ordering/state machine is required to make that without races.
+> > > > 
+> > > > == Nohz ==
+> > > > 
+> > > > Switch from nohz_full to nohz_idle. Mind a few details:
+> > > >     
+> > > >     1) Turn off 1Hz offlined tick handled in housekeeping
+> > > >     2) Handle tick dependencies, take care of racing CPUs setting/clearing tick dependency. It's much trickier when
+> > > >     we switch from nohz_idle to nohz_full
+> > > >     
+> > > > == Unbound affinity ==
+> > > > 
+> > > > Restore kernel threads, workqueue, timers, etc... wide affinity. But take care of cpumasks that have been set through other
+> > > > interfaces: sysfs, procfs, etc...
+> > > 
+> > > We were looking at a userspace interface: what would be a proper
+> > > (unified, similar to isolcpus= interface) and its implementation:
+> > > 
+> > > The simplest idea for interface seemed to be exposing the integer list of
+> > > CPUs and isolation flags to userspace (probably via sysfs).
+> > > 
+> > > The scheme would allow flags to be separately enabled/disabled, 
+> > > with not all flags being necessary toggable (could for example
+> > > disallow nohz_full= toggling until it is implemented, but allow for
+> > > other isolation features to be toggable).
+> > > 
+> > > This would require per flag housekeeping_masks (instead of a single).
+> > > 
+> > > Back to the userspace interface, you mentioned earlier that cpusets
+> > > was a possibility for it. However:
+> > > 
+> > > "Cpusets provide a Linux kernel mechanism to constrain which CPUs and
+> > > Memory Nodes are used by a process or set of processes.
+> > > 
+> > > The Linux kernel already has a pair of mechanisms to specify on which
+> > > CPUs a task may be scheduled (sched_setaffinity) and on which Memory
+> > > Nodes it may obtain memory (mbind, set_mempolicy).
+> > > 
+> > > Cpusets extends these two mechanisms as follows:"
+> > > 
+> > > The isolation flags do not necessarily have anything to do with
+> > > tasks, but with CPUs: a given feature is disabled or enabled on a
+> > > given CPU. 
+> > > No?
+> > 
+> > One cpumask per feature, implemented separately in sysfs, also 
+> > seems OK (modulo documentation about the RCU update and users
+> > of the previous versions).
+> > 
+> > This is what is being done for rcu_nocbs= already...
+> > 
+> 
+> exclusive cpusets is used now to control scheduler load balancing on
+> a group of cpus.  It seems to me that this is the same idea and is part
+> of the isolation concept.  Having a toggle for each subsystem/feature in
+> cpusets could provide the needed userspace api. 
+> 
+> Under the covers it might be implemented as twiddling various cpumasks.
+> 
+> We need to be shifting to managing load balancing with cpusets anyway.
 
-Agreed! Thanks for enlisting all the cases so well. I believe this
-could be achieved by moving the calls to unsafe_enter() and
-unsafe_exit() to when ASI decides it is time to enter the unsafe
-kernel context.  I will keep it in mind when sending the next revision
-as well.
+OK, adding a new file per isolation feature:
 
-thanks,
+	- cpuset.isolation_nohz_full
+	- cpuset.isolation_kthread
+	- cpuset.isolation_time
 
-- Joel
+With a bool value per file, is an option.
+
