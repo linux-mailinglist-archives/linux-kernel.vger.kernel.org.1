@@ -2,103 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FB225BC64
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BFD25BC81
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgICIKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
+        id S1728772AbgICIMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728422AbgICIJS (ORCPT
+        with ESMTP id S1728254AbgICIK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:09:18 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE47FC061244;
-        Thu,  3 Sep 2020 01:09:16 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id 2so1130781pjx.5;
-        Thu, 03 Sep 2020 01:09:16 -0700 (PDT)
+        Thu, 3 Sep 2020 04:10:28 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AEBC061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 01:10:27 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id v5so395711uau.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:10:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RURXhoSNO6UVA5+14oGQ42BXO9M7ZTHBpyDbq8ci7Tg=;
-        b=R1eQSNdV+yfRPHbTWeXz/dsE6R/9h6TUKo2Z03c0RW6y6977qwabfy86+Nh3D9hUlL
-         kf1Rvy/bzV2Y2ALXtVxHKDaFWw84VmflJ1F+212osnpMZnbFijnvuRUFVaJn0E/mKpne
-         I/n9iVHXiCeOArxYDCeHxWnkhaJfbmNGAwiTM/w0I4ZKXmeCqKjX52/HPrOfj4vpSWPr
-         JWYWbmKdggCKRXbfhOXUoQmpaWU9T+45cpKLCXa8CPQWrnJk/Z+SjlxN3NcjPQd+6jWY
-         1uSfuDjQUJ+L+5PKGEs2XlARLQ25x2s5dYCRnpTtMipm4Fx4mA+LNryb6j0iMxQ067xD
-         98Qg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LrOjlA1x52Sx3PNdexN+2X/ozkPpzSng8Vccaxs54Zw=;
+        b=LNj9s0VDa9drWeLKU2VtX/B9wbQgZmQkc6JpKMfK3e9C+15ObehWeink4X7oCMDirp
+         WPafqIvq9t4fj1FDRMiaapi9ohjzXf41O7a5YaafCVZPvVQ9M2pyoTOBkhB2a+84EXOK
+         AiANcRalw5n97ufIUIOei9DTEGLrtbKe/WatzVK99QTXRF7K/qYw86pIst4ltUDzOJQd
+         Gn04+W0cxdaZGW5nD0qXPij/7pKctDdjpM60SGN4pobi5xXjPsFhZ71Edv4qO8JPESdz
+         B5NaqGd/yzgyFw8wRa5dCrYP9Mm74fIRm4/AmfvKAjITRKgEyNhX9nL3RBTyIQ0ByLE0
+         bmzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RURXhoSNO6UVA5+14oGQ42BXO9M7ZTHBpyDbq8ci7Tg=;
-        b=TmO7HfthLwwxlo4Nf8Bq1WJbSt427pfGXei8ZBuvYv13TKlzzgD0n0RbZPWAJwupSz
-         7/58bLkSKUf9zd3LHfL2jVpArnocbtQz5c52M5UIaE0DCE4DIWCGco1dJbFevgFrVWfE
-         QYa+Pgcb0JvttkYpuaYKuViYXbQhaU+OEW27AhmwM6PxnIp/1mr+GPco5wWt60j5oWcD
-         uyMXs2chAKRe4+9Ok2c6ou6o8oZkUv0kptuvvNv9c5crk6S2IfKjGcZ1AhJ/uv47KR6G
-         6oxZyToHQQbRVw2OghCvEGj1WojopGBQaQT1/JuAg0MlOgEbm6OIPtjBuzuv84rl9F6A
-         8glQ==
-X-Gm-Message-State: AOAM530N2Guws2Yz3Vx2HP+FS6BPPnR3O4dAkVyN9VKWQiCyrhd9+oZK
-        b8yqG9vlNVEoQ+Qdi/DooJEXUHEGzk4=
-X-Google-Smtp-Source: ABdhPJxdYvZCbYJdIIz3QXLwk+zuevQELWKIUEfKDi0B96Qfd92l/lXvPdjI+RVvFqNZzzz4wN7Q5A==
-X-Received: by 2002:a17:90a:384c:: with SMTP id l12mr2066227pjf.27.1599120555112;
-        Thu, 03 Sep 2020 01:09:15 -0700 (PDT)
-Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
-        by smtp.gmail.com with ESMTPSA id q2sm1799248pgs.90.2020.09.03.01.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 01:09:14 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 16:09:09 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v6 09/20] gpiolib: cdev: support edge detection for uAPI
- v2
-Message-ID: <20200903080909.GA17108@sol>
-References: <20200831032006.1019978-1-warthog618@gmail.com>
- <20200831032006.1019978-10-warthog618@gmail.com>
- <CAMpxmJW9EC_ocs8dA3j+QPu8sW4Na9WEvPYEUZjfxk4-ojf+kA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LrOjlA1x52Sx3PNdexN+2X/ozkPpzSng8Vccaxs54Zw=;
+        b=EmogsQwkB/Lw947tq7nYf2POOSCKeK0w9AxSfkd/jMdt8x7YnJmd/NoDvBrc6ULDpr
+         d/ORmnk2apfxSGihWCfWPADaz9r8C3hama2Qw+KxL2ICXZOEYC4EYcgD8dKa1qjQ7tfU
+         j/FavPyj37xAnHpNW5IMF3B5WUOX1U23bbUuUJgTG9wl5qQFrYtFFrj7nFS615ND/lI0
+         P7TIuAk8HzqByyK4kkc5b8QEbSf3yhfHdmr5jUPooCDd7LoA7N5jHo1SiFZ5eguliJn7
+         bhhfGqMHhONiAMwxhYUQFNFUjXAcXYasccz+kG7P/SlFNfMD42GX68rQNu+cMBfIZqN7
+         e83A==
+X-Gm-Message-State: AOAM530xUK1mMaYmVA99f+kJ5M2R0NpRN7OB2ILtkIOxubhwEkXoptZN
+        DXqOj6SKRtmwRExtxv0p2lPtbBRLAbxSTM6PJ/3TxQ==
+X-Google-Smtp-Source: ABdhPJw7qVTiuZksAFcWPUutKJ0zYg2tpTJGwRa2BumR3h5BzwPXYQoKG7VAuSHc8ImsX3M25x7A+yZZGSSWhcaYqhE=
+X-Received: by 2002:ab0:6f91:: with SMTP id f17mr357139uav.129.1599120626145;
+ Thu, 03 Sep 2020 01:10:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMpxmJW9EC_ocs8dA3j+QPu8sW4Na9WEvPYEUZjfxk4-ojf+kA@mail.gmail.com>
+References: <20200902193658.20539-1-krzk@kernel.org>
+In-Reply-To: <20200902193658.20539-1-krzk@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 3 Sep 2020 10:09:49 +0200
+Message-ID: <CAPDyKFqBS-ws6fkirDQL8EEqh9At88K2vrG5fc8K5_JiXsmfyg@mail.gmail.com>
+Subject: Re: [PATCH 00/11] mmc: Minor cleanups and compile test
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 09:55:22AM +0200, Bartosz Golaszewski wrote:
-> On Mon, Aug 31, 2020 at 5:22 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Add support for edge detection to lines requested using
-> > GPIO_V2_GET_LINE_IOCTL.
-> >
-> > The edge_detector implementation is based on the v1 lineevent
-> > implementation.
-> >
+On Wed, 2 Sep 2020 at 21:37, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> Hi,
+>
+> Set of minor cleanups.  Patches requiring more attention:
+>  - 6/11: Testing and review would be appreciated,
+>  - 11/11: I build tested multiple architectures but not all and
+>    definitely no all possible configs. This one could sit on the lists
+>    for few days so 0-day would try it.
+>
+> Best regards,
+> Krzysztof
+>
+> Krzysztof Kozlowski (11):
+>   mmc: bcm2835: Simplify with dev_err_probe()
+>   mmc: davinci: Simplify with dev_err_probe()
+>   mmc: dw_mmc-zx: Simplify with dev_err_probe()
+>   mmc: jz4740: Simplify with dev_err_probe()
+>   mmc: meson: Simplify with dev_err_probe()
+>   mmc: sdhci-brcmstb: Simplify with optional clock and dev_err_probe()
+>   mmc: sdhci-of-arasan: Simplify with dev_err_probe()
+>   mmc: sdhci-tegra: Simplify with dev_err_probe()
+>   mmc: dw_mmc: Simplify with dev_err_probe()
+>   mmc: sdhci-of-sparx5: Use proper printk format for dma_addr_t
+>   mmc: host: Enable compile testing of multiple drivers
+>
+>  drivers/mmc/host/Kconfig           | 42 ++++++++++++++++--------------
+>  drivers/mmc/host/bcm2835.c         |  4 +--
+>  drivers/mmc/host/davinci_mmc.c     |  5 ++--
+>  drivers/mmc/host/dw_mmc-zx.c       | 11 +++-----
+>  drivers/mmc/host/dw_mmc.c          |  9 +++----
+>  drivers/mmc/host/jz4740_mmc.c      |  5 ++--
+>  drivers/mmc/host/meson-gx-mmc.c    | 16 ++++--------
+>  drivers/mmc/host/sdhci-brcmstb.c   | 12 ++++-----
+>  drivers/mmc/host/sdhci-of-arasan.c |  7 +++--
+>  drivers/mmc/host/sdhci-of-sparx5.c |  4 +--
+>  drivers/mmc/host/sdhci-tegra.c     |  7 ++---
+>  11 files changed, 51 insertions(+), 71 deletions(-)
+>
+> --
+> 2.17.1
+>
 
-[snip]
+Series applied for next, except 11, thanks!
 
-> > +        * close in time as possible to the actual event.
-> > +        */
-> > +       line->timestamp = ktime_get_ns();
-> > +
-> > +       if (lr->num_lines != 1)
-> > +               line->req_seqno = atomic_inc_return(&lr->seqno);
-> 
-> Do we never increase req_seqno for a single line?
-> 
-
-For a single line we just use line_seqno for both to avoid the
-atomic_inc here and so reduce the time spent in the ISR and any
-SMP sync overheads.
-
-As per the comment in struct linereq:
- * @seqno: the sequence number for edge events generated on all lines in
- * this line request.  Note that this is not used when @num_lines is 1, as
- * the line_seqno is then the same and is cheaper to calculate.
-
-Cheers,
-Kent.
+Kind regards
+Uffe
