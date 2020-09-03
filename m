@@ -2,118 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8836F25BE28
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94EC25BE35
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728020AbgICJPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:15:14 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55682 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726770AbgICJPO (ORCPT
+        id S1728148AbgICJRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbgICJRj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:15:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U7nf1cO_1599124504;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7nf1cO_1599124504)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Sep 2020 17:15:05 +0800
-Subject: Re: [PATCH v4 1/4] mm/pageblock: mitigation cmpxchg false sharing in
- pageblock flags
-To:     David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1599116482-7410-1-git-send-email-alex.shi@linux.alibaba.com>
- <fb8ae5e8-1480-fe22-6872-f2484bcadbed@redhat.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <7b68847f-89c2-5470-5cf0-fc2e225176bc@linux.alibaba.com>
-Date:   Thu, 3 Sep 2020 17:14:57 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Thu, 3 Sep 2020 05:17:39 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5B9C061245
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 02:17:37 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id i26so2770511ejb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 02:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ybBiP+e417RFA7nMR4Bu7V33eb9o8gA61OetpUfftkQ=;
+        b=APLmMrE9eEbfLFqGCI1U6UkzQSGgJVYT4fP69U8vY4IlnhXbOnr9RQuoxMki8HmaZ2
+         hKKQGLreepg4yFdemEkt4tTzSK31vCuqaa+W9k2u/u9b4F7KVEas6PBuxUVrrIHd7zV/
+         83k8qYFhmmAueuH8UbIKhI4d0y51jhHFNYF7MZibLhrowrX7RKs0qA4jpeEV+fLRSHa3
+         LAkXEcSV6ctzyXlOPMd8Fc3wo9JJkJ6bwRk4wjYBhBa2pCVPkGdRYlRATOUWBEXYu1ud
+         il6iZjUzLeM46Wwbgu3Qmmqltj3yRYqjHzSmkJyqufbPD/tdNc6KSK7+lqX0f2abBSob
+         J2DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ybBiP+e417RFA7nMR4Bu7V33eb9o8gA61OetpUfftkQ=;
+        b=X7eZTxGpc/86Zou7oNeonky83TfiM4ta4+hVCM7zcCpwDLRfKbqGxDgvmaBMWuXpRT
+         1Z4kV4y241kA9vaVvIs/szugDQlZw5CEF7SYGetdwQJRs5s6JwlPqN63jPHa3gjzrVy+
+         2fCuqJmNbHZqwEqS6VH3t21HcH06HuACCUkD10DboQBzuCpMj1bDuv1THbvZ8uBuKj+e
+         TjprzbRu7jiwRq4zvCzBYVdLjDVbDZeImvRHaluEzWHGSWBQ0lQgita/AlLLR9kZUddO
+         SFZ7NvcQgeI40GcWKNRgKEqwtmlFjcozXRwP4sjcEIQM05H6OrCFQdD8LpqxCSfhlwzh
+         9mZg==
+X-Gm-Message-State: AOAM533qdSiwxHWUmNAUplmX3zTbggCv3yz7hejj70tzhEpr3V2uI8H0
+        eExq1FbeJpIs0ZIBWiaaC06wEw==
+X-Google-Smtp-Source: ABdhPJys1SWvJYPNpq0WObC+uy+nfuWZtybUHYnPbVexD1i1iV/lX+1rXLt1ldV/IBiG+6LOepfP3w==
+X-Received: by 2002:a17:906:a116:: with SMTP id t22mr1160350ejy.353.1599124654241;
+        Thu, 03 Sep 2020 02:17:34 -0700 (PDT)
+Received: from localhost (dynamic-2a00-1028-919a-a06e-64ac-0036-822c-68d3.ipv6.broadband.iol.cz. [2a00:1028:919a:a06e:64ac:36:822c:68d3])
+        by smtp.gmail.com with ESMTPSA id x10sm2414585eds.21.2020.09.03.02.17.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 02:17:33 -0700 (PDT)
+From:   David Brazdil <dbrazdil@google.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
+        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
+Subject: [PATCH v2 00/10] Independent per-CPU data section for nVHE
+Date:   Thu,  3 Sep 2020 11:17:02 +0200
+Message-Id: <20200903091712.46456-1-dbrazdil@google.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <fb8ae5e8-1480-fe22-6872-f2484bcadbed@redhat.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Introduce '.hyp.data..percpu' as part of ongoing effort to make nVHE
+hyp code self-contained and independent of the rest of the kernel.
 
+The series builds on top of the "Split off nVHE hyp code" series which
+used objcopy to rename '.text' to '.hyp.text' and prefix all ELF
+symbols with '__kvm_nvhe' for all object files under kvm/hyp/nvhe.
 
-在 2020/9/3 下午4:19, David Hildenbrand 写道:
-> On 03.09.20 09:01, Alex Shi wrote:
->> pageblock_flags is used as long, since every pageblock_flags is just 4
->> bits, 'long' size will include 8(32bit machine) or 16 pageblocks' flags,
->> that flag setting has to sync in cmpxchg with 7 or 15 other pageblock
->> flags. It would cause long waiting for sync.
->>
->> If we could change the pageblock_flags variable as char, we could use
->> char size cmpxchg, which just sync up with 2 pageblock flags. it could
->> relief the false sharing in cmpxchg.
->>
->> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Mel Gorman <mgorman@techsingularity.net>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
-> 
-> Could you please
-> 
-> 1. Send a cover letter and indicate the changees between versions. I
-> cannot find any in my mailbox or on -mm - is there any? (also, is there
-> a patch 4 ?)
+The series is structured as follows:
 
-Hi David,
+ - patch 1: Modify generic PERCPU_* linker script macros to make it
+     possible to define multiple per-CPU ELF sections with prefixed
+     section and symbol names.
 
-Thanks for comments!
-I thought a short patchset don't need a cover. Here it's:
+ - patch 2: Improve existing hyp build rules. This could be sent and merged
+    independently of per-CPU but this series builds on it.
 
-cmpxchg is a lockless way to update data by check and compare the target
-data after updated and retry if target data is changed during that action.
+ - patches 3-4: Replace hyp helpers for accessing per-CPU variables
+     with common helpers modified to work correctly in hyp. Per-CPU
+     variables can now be accessed with one API anywhere.
 
-So we should just compare the exact size of target data. If the data is only
-byte, but cmpxchg compare a long word, that leads to a cmpxchg level flase
-sharing, cause more try which lock memory more times. That's a clearly
-logical error and should be fixed.
+ - patches 5-7: Where VHE and nVHE use per-CPU variables defined in
+     kernel proper, move their definitions to hyp/ where they are
+     duplicated and owned by VHE/nVHE, respectively. Non-VHE hyp code
+     now refers only to per-CPU variables defined in its source files.
+     Helpers are added so that kernel proper can continue to access
+     nVHE hyp variables, same way as it does with other nVHE symbols.
 
-v1, the initial version
-v2, fix the armv6 cmpxchgb missing issue.
-v3, fix more arch cmpxchg missing issue on armv6, sh2, sparc32, xtensa
-v4, redo cmpxchgb fix by NO_CMPXCHG_BYTE into arch/Kconfig 
+ - patches 8-10: Introduce '.hyp.data..percpu' ELF section and allocate
+     memory for every CPU core during KVM init. All nVHE per-CPU state
+     is now grouped together in ELF and in memory. Introducing a new
+     per-CPU variable does not require adding new memory mappings any
+     more. nVHE hyp code cannot accidentally refer to kernel-proper
+     per-CPU data as it only has the pointer to its own per-CPU memory.
 
-> 
-> 2. Report proper performance numbers as requested, especially, over
-> multiple runs. This should go into patch 1/2. Are they buried somewhere?
+Patches are rebased on v5.9-rc3 and available in branch 'topic/percpu-v2' at:
+    https://android-kvm.googlesource.com/linux
 
-There are some result sent on
-https://lkml.org/lkml/2020/8/30/95
+Changes v1 -> v2:
+  * 5.9-rc3 base
+  * partially link hyp code, add linker script
 
-> 
-> 3. Clarify what patch 3 does: Do we actually waste 8*sizeof(long) where
-> we only need 4 bits?
+David Brazdil (10):
+  Macros to override naming of percpu symbols and sections
+  kvm: arm64: Partially link nVHE hyp code, simplify HYPCOPY
+  kvm: arm64: Remove __hyp_this_cpu_read
+  kvm: arm64: Remove hyp_adr/ldr_this_cpu
+  kvm: arm64: Add helpers for accessing nVHE hyp per-cpu vars
+  kvm: arm64: Duplicate arm64_ssbd_callback_required for nVHE hyp
+  kvm: arm64: Create separate instances of kvm_host_data for VHE/nVHE
+  kvm: arm64: Mark hyp stack pages reserved
+  kvm: arm64: Set up hyp percpu data for nVHE
+  kvm: arm64: Remove unnecessary hyp mappings
 
-No, no waste, current kernel pack the 4 bits into long, that cause cmpxchg
-compare 8 pageblock flags which 7 of them are not needed.
+ arch/arm64/include/asm/assembler.h        |  27 ++++--
+ arch/arm64/include/asm/kvm_asm.h          |  74 ++++++++-------
+ arch/arm64/include/asm/kvm_host.h         |   2 +-
+ arch/arm64/include/asm/kvm_mmu.h          |  23 ++---
+ arch/arm64/include/asm/percpu.h           |  33 ++++++-
+ arch/arm64/include/asm/sections.h         |   1 +
+ arch/arm64/kernel/image-vars.h            |   2 -
+ arch/arm64/kernel/vmlinux.lds.S           |  10 ++
+ arch/arm64/kvm/arm.c                      | 110 ++++++++++++++++++----
+ arch/arm64/kvm/hyp/hyp-entry.S            |   2 +-
+ arch/arm64/kvm/hyp/include/hyp/debug-sr.h |   4 +-
+ arch/arm64/kvm/hyp/include/hyp/switch.h   |   8 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile          |  56 +++++------
+ arch/arm64/kvm/hyp/nvhe/hyp.lds.S         |  19 ++++
+ arch/arm64/kvm/hyp/nvhe/switch.c          |   8 +-
+ arch/arm64/kvm/hyp/vhe/switch.c           |   5 +-
+ arch/arm64/kvm/hyp/vhe/sysreg-sr.c        |   4 +-
+ arch/arm64/kvm/pmu.c                      |  13 ++-
+ include/asm-generic/vmlinux.lds.h         |  40 +++++---
+ 19 files changed, 304 insertions(+), 137 deletions(-)
+ create mode 100644 arch/arm64/kvm/hyp/nvhe/hyp.lds.S
 
-> 
-> Also, breaking stuff in patch 1 and fixing it in patch 3 is not
-> acceptable. This breaks git bisect. Skimming over the patches I think
-> this is the case.
-
-Got it, thanks!
-> 
-> I am not convinced yet that we need and want this. As Alex mentioned, we
-> touch pageblock flags while holding the zone lock already in most cases
-> -  and as Mel mentiones, updates should be rare.
-> 
-
-yes, not too much, but there are still a few. and cmpxchg retry will lock memory
- which I believe the less the better.
-
-Thanks
-Alex
+--
+2.28.0.402.g5ffc5be6b7-goog
 
