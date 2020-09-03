@@ -2,139 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EC425CD2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 00:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369CD25CD47
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 00:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbgICWJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 18:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgICWJC (ORCPT
+        id S1729430AbgICWMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 18:12:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22708 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728309AbgICWMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 18:09:02 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B89C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 15:09:01 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id w186so3206015pgb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 15:09:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1TFkAeGi9KR3Vg+6dLLM1QKXoNn5coQYzJIjZ0tVjI0=;
-        b=RMbQl2aWLhRmRg/xlWTquty6EAETDxVrOPrJsvxj3D3ziQggwm1LR9Z+7lvF/RBSAh
-         rdDSpm9JIeEpDa886F9HHLV4dstrmldnU0gSRqvqiZwoQrPW2lTBh5oU/X/4TrS8pCra
-         DV/jID9deoswwRtNn+Jy77/ci1g1OxqByrPxs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1TFkAeGi9KR3Vg+6dLLM1QKXoNn5coQYzJIjZ0tVjI0=;
-        b=lD1CthY+L5WGInpIEA6/oSn4MwPULPqJlajcwywbxw49ME6viJXrdktxy2gTUVKzX3
-         Pp2K9LbIqDJdx0wWIg3iVfH55/CnnkCcdv3jcmOOgkxCfIvKSjizHCjHa4OsqjjWIWOp
-         iRmItLJC5bzq86Ht5w2FAzPOWEflJkM5CCGDdi8m1u0swhK1nFf/bFF5alYXbU9s8czG
-         y7OQXk6/MgDDjHXrIt9rTPsoLJRKp1itVDmf8PgKPnsVMFlftI5n0kBzD+6hFE+nWBf9
-         fiS4yryWk+MJTiYW18y36kmSQ/TXZ4jRuopcJ6JTl05Xd1bMl0JvV4iiDjRxhJgnPnFP
-         KPHA==
-X-Gm-Message-State: AOAM531AmhENzv8L0sGQk1EDZ9Up7XfeRJzZYtetTQGXAbqOsyUdy8Ac
-        YZhhvQ+diVTeLctY/SzR4Leq9w==
-X-Google-Smtp-Source: ABdhPJxtv6qZk8AFQNSEBhXOHhLxWmSvOpKmtDAl4TWDKr3eiSBk8TPdIQLGddmagxPcGUhPAwGmGg==
-X-Received: by 2002:aa7:925a:: with SMTP id 26mr5953492pfp.6.1599170941115;
-        Thu, 03 Sep 2020 15:09:01 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t11sm4160655pfe.165.2020.09.03.15.08.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 15:09:00 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 15:08:59 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 09/28] kbuild: add support for Clang LTO
-Message-ID: <202009031504.07098D6F8@keescook>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200903203053.3411268-1-samitolvanen@google.com>
- <20200903203053.3411268-10-samitolvanen@google.com>
+        Thu, 3 Sep 2020 18:12:54 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 083M2I4g088162;
+        Thu, 3 Sep 2020 18:12:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=vfAxjaSURqVQkdPQBM6+/IzRa+Uk6OykdgGVzRffals=;
+ b=ByB0e8PBQLcON3bXwl5sX4lNJG76MDoMxpAGwYXt94MSuRVtHeYezYCwDwJV6hcoq4yi
+ rwJFqRrHIc9n9u5NBUwmtXNwz80TS4pnVyhJLiBvj14kFOMu+qZD9drJ/RqG7s79sJ/H
+ AZilOvUMjJCGGXTVGMcrMJZ2QQCCw7a6TBW9fZD0guQ/x+9jpJDcRZvTlsCIqj0bzacm
+ eTE2LfUfK6Fuvom08bTrrdSjtJMy9K1RN2X/j98vAymPtqwM2u7mfg6s2BfDeNyrBtlY
+ rvotHgOKnVi6w/fBIGXh99EKFWf65SV/veSSFbwG2FoHoXYeMRkhLKpUmgmOewuBd7FW ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33b8n60m1a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 18:12:01 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 083M2kT7090455;
+        Thu, 3 Sep 2020 18:12:00 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33b8n60m0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 18:12:00 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 083MBYkK028762;
+        Thu, 3 Sep 2020 22:12:00 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma02wdc.us.ibm.com with ESMTP id 337ena2xht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 22:11:59 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 083MBtXH30671564
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Sep 2020 22:11:55 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E322A78086;
+        Thu,  3 Sep 2020 22:11:58 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D95378083;
+        Thu,  3 Sep 2020 22:11:51 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.211.155.22])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Thu,  3 Sep 2020 22:11:51 +0000 (GMT)
+References: <20200901195029.30039-1-nramas@linux.microsoft.com>
+ <20200901195029.30039-4-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [PATCH v5 3/3] arm64: Add IMA kexec buffer to DTB
+In-reply-to: <20200901195029.30039-4-nramas@linux.microsoft.com>
+Date:   Thu, 03 Sep 2020 19:11:48 -0300
+Message-ID: <87sgbyy0gr.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903203053.3411268-10-samitolvanen@google.com>
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-03_14:2020-09-03,2020-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 malwarescore=0 impostorscore=0 spamscore=0 suspectscore=0
+ mlxscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030189
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 01:30:34PM -0700, Sami Tolvanen wrote:
-> This change adds build system support for Clang's Link Time
-> Optimization (LTO). With -flto, instead of ELF object files, Clang
-> produces LLVM bitcode, which is compiled into native code at link
-> time, allowing the final binary to be optimized globally. For more
-> details, see:
-> 
->   https://llvm.org/docs/LinkTimeOptimization.html
-> 
-> The Kconfig option CONFIG_LTO_CLANG is implemented as a choice,
-> which defaults to LTO being disabled. To use LTO, the architecture
-> must select ARCH_SUPPORTS_LTO_CLANG and support:
-> 
->   - compiling with Clang,
->   - compiling inline assembly with Clang's integrated assembler,
->   - and linking with LLD.
-> 
-> While using full LTO results in the best runtime performance, the
-> compilation is not scalable in time or memory. CONFIG_THINLTO
-> enables ThinLTO, which allows parallel optimization and faster
-> incremental builds. ThinLTO is used by default if the architecture
-> also selects ARCH_SUPPORTS_THINLTO:
-> 
->   https://clang.llvm.org/docs/ThinLTO.html
-> 
-> To enable LTO, LLVM tools must be used to handle bitcode files. The
-> easiest way is to pass the LLVM=1 option to make:
-> 
->   $ make LLVM=1 defconfig
->   $ scripts/config -e LTO_CLANG
->   $ make LLVM=1
-> 
-> Alternatively, at least the following LLVM tools must be used:
-> 
->   CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm
-> 
-> To prepare for LTO support with other compilers, common parts are
-> gated behind the CONFIG_LTO option, and LTO can be disabled for
-> specific files by filtering out CC_FLAGS_LTO.
-> 
-> Note that support for DYNAMIC_FTRACE and MODVERSIONS are added in
-> follow-up patches.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-I remain crazy excited about being able to use this in upstream. :)
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-The only suggestion I have here, if it might help with clarity, would be
-to remove DISABLE_LTO globally as a separate patch, since it's entirely
-unused in the kernel right now. This series removes it as it goes, which
-I think is fine, but it might cause some reviewers to ponder "what's
-this DISABLE_LTO thing? Don't we need that?" without realizing currently
-unused in the kernel.
+> The address and size of the current kernel's IMA measurement log
+> need to be added to the device tree's IMA kexec buffer node for
+> the log to be carried over to the next kernel on the kexec call.
+>
+> Add the IMA measurement log buffer properties to the device tree for
+> ARM64 and reserve the memory for storing the IMA log.
+> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to
+> indicate that the IMA measurement log information is present in
+> the device tree.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/arm64/Kconfig                     |  1 +
+>  arch/arm64/kernel/machine_kexec_file.c | 15 +++++++++++++++
+>  2 files changed, 16 insertions(+)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d232837cbee..9f03c8245e5b 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1077,6 +1077,7 @@ config KEXEC
+>  config KEXEC_FILE
+>  	bool "kexec file based system call"
+>  	select KEXEC_CORE
+> +	select HAVE_IMA_KEXEC
+>  	help
+>  	  This is new version of kexec system call. This system call is
+>  	  file based and takes file descriptors as system call argument
+> diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
+> index 361a1143e09e..0fe3d629eefe 100644
+> --- a/arch/arm64/kernel/machine_kexec_file.c
+> +++ b/arch/arm64/kernel/machine_kexec_file.c
+> @@ -136,6 +136,21 @@ static int setup_dtb(struct kimage *image,
+>  				FDT_PROP_KASLR_SEED);
+>  	}
+>  
+> +	/* add ima-kexec-buffer */
+> +	if (image->arch.ima_buffer_size > 0) {
+> +		ret = fdt_appendprop_addrrange(dtb, 0, off,
+> +				FDT_PROP_IMA_KEXEC_BUFFER,
+> +				image->arch.ima_buffer_addr,
+> +				image->arch.ima_buffer_size);
+> +		if (ret)
+> +			return (ret == -FDT_ERR_NOSPACE ? -ENOMEM : -EINVAL);
+> +
+> +		ret = fdt_add_mem_rsv(dtb, image->arch.ima_buffer_addr,
+> +				      image->arch.ima_buffer_size);
+> +		if (ret)
+> +			goto out;
+> +	}
+> +
+>  	/* add rng-seed */
+>  	if (rng_is_initialized()) {
+>  		void *rng_seed;
 
-I'm glad to see the general CONFIG_LTO, as I think it should be easy for
-GCC LTO support to get added when someone steps up to do it. The bulk of
-the changed needed to support GCC LTO are part of this series already,
-since the build problems involving non-ELF .o files and init ordering
-are shared by Clang and GCC AFAICT.
+I just noticed one more thing this code isn't doing compared to the
+powerpc version (sorry to bring these issues piecemeal, I didn't realize
+this before):
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+You're not checking whether there already is a device tree property and
+corresponding memory reservation for an IMA kexec buffer that the
+currently running kernel might have received from a previous kernel. In
+that case, this code will do the wrong thing because
+fdt_appendprop_addrrange() will append the range to the existing
+property, which is not what you want. You'll also have a memory
+reservation entry for a stale IMA kexec buffer, which just wastes
+memory.
+
+So one thing you need to do, whether or not there's an IMA kexec buffer
+to be passed to the next kernel, is to remove any existing
+FDT_PROP_IMA_KEXEC_BUFFER property and also its corresponding memory
+reservation, so that you avoid accumulating stale memory reservations
+for non-existing IMA kexec buffers from previous kexecs.
 
 -- 
-Kees Cook
+Thiago Jung Bauermann
+IBM Linux Technology Center
