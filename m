@@ -2,137 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F0B25C09F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CC525C0A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728721AbgICLxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:53:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41226 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728737AbgICLi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:38:27 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 034C48D1C9FB848B0584;
-        Thu,  3 Sep 2020 19:38:26 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Sep 2020 19:38:17 +0800
-From:   Qi Liu <liuqi115@huawei.com>
-To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
-        <Al.Grant@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH] coresight: etm4x: Modify core-commit of cpu to avoid the overflow of HiSilicon ETM
-Date:   Thu, 3 Sep 2020 19:37:14 +0800
-Message-ID: <1599133034-38747-1-git-send-email-liuqi115@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1728451AbgICLzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:55:50 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55744 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728691AbgICLnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:43:23 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083Bh1VY022598;
+        Thu, 3 Sep 2020 06:43:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599133381;
+        bh=ITLmzJNklqPWyaUG5IRajwAgMq3MP+y3uTnPXojVyv4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=SagqXAYjqu8VQwG6yGogW+LQpRX107s/bXCzZbgpjCVkH0GhbftyfSvQDV6SbnC/a
+         wNdKX1MYjnELzV8QZvLL3pwELMTGuezPpWQba8Yn3dK+EyhLRkhtGlUHigTajSDk+R
+         iK0YzRYt1ehwl5PObZ2HzgxgBxCephjpCQkcMrYs=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083Bh1px047309
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 06:43:01 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 06:43:01 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 06:43:01 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083Bh1C1075415;
+        Thu, 3 Sep 2020 06:43:01 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <davem@davemloft.net>, <andrew@lunn.ch>, <f.fainelli@gmail.com>,
+        <hkallweit1@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v3 3/3] net: dp83869: Add speed optimization feature
+Date:   Thu, 3 Sep 2020 06:42:59 -0500
+Message-ID: <20200903114259.14013-4-dmurphy@ti.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200903114259.14013-1-dmurphy@ti.com>
+References: <20200903114259.14013-1-dmurphy@ti.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ETM device can't keep up with the core pipeline when cpu core
-is at full speed. This may cause overflow within core and its ETM.
-This is a common phenomenon on ETM devices.
+Set the speed optimization bit on the DP83869 PHY.
 
-On HiSilicon Hip08 platform, a specific feature is added to set
-core pipeline. So commit rate can be reduced manually to avoid ETM
-overflow.
+Speed optimization, also known as link downshift, enables fallback to 100M
+operation after multiple consecutive failed attempts at Gigabit link
+establishment. Such a case could occur if cabling with only four wires
+(two twisted pairs) were connected instead of the standard cabling with
+eight wires (four twisted pairs).
 
-Signed-off-by: Qi Liu <liuqi115@huawei.com>
+The number of failed link attempts before falling back to 100M operation is
+configurable. By default, four failed link attempts are required before
+falling back to 100M.
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
-link of the RFC patch:
-https://lore.kernel.org/linux-arm-kernel/1597824397-29894-1-git-send-email-liuqi115@huawei.com/
 
-drivers/hwtracing/coresight/coresight-etm4x.c | 46 +++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+v3 - Fixed checkpatch format issues
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.c b/drivers/hwtracing/coresight/coresight-etm4x.c
-index 7bcac88..5833be1 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.c
-@@ -45,6 +45,10 @@ static int etm4_set_event_filters(struct etmv4_drvdata *drvdata,
+ drivers/net/phy/dp83869.c | 116 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
- static enum cpuhp_state hp_online;
-
-+#define HISI_HIP08_CORE_COMMIT_CLEAR	0x3000
-+#define HISI_HIP08_CORE_COMMIT_SHIFT	12
-+#define HISI_HIP08_ETM_ID		0x000b6d01
+diff --git a/drivers/net/phy/dp83869.c b/drivers/net/phy/dp83869.c
+index 5045df9515a5..5d0130cf5a44 100644
+--- a/drivers/net/phy/dp83869.c
++++ b/drivers/net/phy/dp83869.c
+@@ -11,6 +11,7 @@
+ #include <linux/of.h>
+ #include <linux/phy.h>
+ #include <linux/delay.h>
++#include <linux/bitfield.h>
+ 
+ #include <dt-bindings/net/ti-dp83869.h>
+ 
+@@ -20,6 +21,7 @@
+ #define MII_DP83869_PHYCTRL	0x10
+ #define MII_DP83869_MICR	0x12
+ #define MII_DP83869_ISR		0x13
++#define DP83869_CFG2		0x14
+ #define DP83869_CTRL		0x1f
+ #define DP83869_CFG4		0x1e
+ 
+@@ -121,6 +123,18 @@
+ #define DP83869_WOL_SEC_EN		BIT(5)
+ #define DP83869_WOL_ENH_MAC		BIT(7)
+ 
++/* CFG2 bits */
++#define DP83869_DOWNSHIFT_EN		(BIT(8) | BIT(9))
++#define DP83869_DOWNSHIFT_ATTEMPT_MASK	(BIT(10) | BIT(11))
++#define DP83869_DOWNSHIFT_1_COUNT_VAL	0
++#define DP83869_DOWNSHIFT_2_COUNT_VAL	1
++#define DP83869_DOWNSHIFT_4_COUNT_VAL	2
++#define DP83869_DOWNSHIFT_8_COUNT_VAL	3
++#define DP83869_DOWNSHIFT_1_COUNT	1
++#define DP83869_DOWNSHIFT_2_COUNT	2
++#define DP83869_DOWNSHIFT_4_COUNT	4
++#define DP83869_DOWNSHIFT_8_COUNT	8
 +
- static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
- {
- 	/* Writing any value to ETMOSLAR unlocks the trace registers */
-@@ -84,12 +88,38 @@ struct etm4_enable_arg {
- 	int rc;
- };
-
-+static void etm4_hisi_config_core_commit(int flag)
-+{
-+	u64 val;
-+
-+	asm volatile("mrs %0,s3_1_c15_c2_5" : "=r"(val));
-+	val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
-+	val |= flag << HISI_HIP08_CORE_COMMIT_SHIFT;
-+	asm volatile("msr s3_1_c15_c2_5,%0" : : "r"(val));
-+}
-+
-+static void etm4_enable_arch_specific(struct etmv4_drvdata *drvdata)
-+{
-+	struct device *dev = drvdata->csdev->dev.parent;
-+	struct amba_device *adev;
-+
-+	adev = container_of(dev, struct amba_device, dev);
-+
-+	/*
-+	 * If ETM device is HiSilicon ETM device, reduce the
-+	 * core-commit to avoid ETM overflow.
-+	 */
-+	if (adev->periphid == HISI_HIP08_ETM_ID)
-+		etm4_hisi_config_core_commit(1);
-+}
-+
- static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- {
- 	int i, rc;
- 	struct etmv4_config *config = &drvdata->config;
- 	struct device *etm_dev = &drvdata->csdev->dev;
-
-+	etm4_enable_arch_specific(drvdata);
- 	CS_UNLOCK(drvdata->base);
-
- 	etm4_os_unlock(drvdata);
-@@ -436,11 +466,27 @@ static int etm4_enable(struct coresight_device *csdev,
- 	return ret;
+ enum {
+ 	DP83869_PORT_MIRRORING_KEEP,
+ 	DP83869_PORT_MIRRORING_EN,
+@@ -281,6 +295,99 @@ static void dp83869_get_wol(struct phy_device *phydev,
+ 		wol->wolopts = 0;
  }
-
-+static void etm4_disable_arch_specific(struct etmv4_drvdata *drvdata)
+ 
++static int dp83869_get_downshift(struct phy_device *phydev, u8 *data)
 +{
-+	struct device *dev = drvdata->csdev->dev.parent;
-+	struct amba_device *adev;
++	int val, cnt, enable, count;
 +
-+	adev = container_of(dev, struct amba_device, dev);
++	val = phy_read(phydev, DP83869_CFG2);
++	if (val < 0)
++		return val;
 +
-+	/*
-+	 * If ETM device is HiSilicon ETM device, resume the
-+	 * core-commit after ETM trace is complete.
-+	 */
-+	if (adev->periphid == HISI_HIP08_ETM_ID)
-+		etm4_hisi_config_core_commit(0);
++	enable = FIELD_GET(DP83869_DOWNSHIFT_EN, val);
++	cnt = FIELD_GET(DP83869_DOWNSHIFT_ATTEMPT_MASK, val);
++
++	switch (cnt) {
++	case DP83869_DOWNSHIFT_1_COUNT_VAL:
++		count = DP83869_DOWNSHIFT_1_COUNT;
++		break;
++	case DP83869_DOWNSHIFT_2_COUNT_VAL:
++		count = DP83869_DOWNSHIFT_2_COUNT;
++		break;
++	case DP83869_DOWNSHIFT_4_COUNT_VAL:
++		count = DP83869_DOWNSHIFT_4_COUNT;
++		break;
++	case DP83869_DOWNSHIFT_8_COUNT_VAL:
++		count = DP83869_DOWNSHIFT_8_COUNT;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	*data = enable ? count : DOWNSHIFT_DEV_DISABLE;
++
++	return 0;
 +}
 +
- static void etm4_disable_hw(void *info)
++static int dp83869_set_downshift(struct phy_device *phydev, u8 cnt)
++{
++	int val, count;
++
++	if (cnt > DP83869_DOWNSHIFT_8_COUNT)
++		return -E2BIG;
++
++	if (!cnt)
++		return phy_clear_bits(phydev, DP83869_CFG2,
++				      DP83869_DOWNSHIFT_EN);
++
++	switch (cnt) {
++	case DP83869_DOWNSHIFT_1_COUNT:
++		count = DP83869_DOWNSHIFT_1_COUNT_VAL;
++		break;
++	case DP83869_DOWNSHIFT_2_COUNT:
++		count = DP83869_DOWNSHIFT_2_COUNT_VAL;
++		break;
++	case DP83869_DOWNSHIFT_4_COUNT:
++		count = DP83869_DOWNSHIFT_4_COUNT_VAL;
++		break;
++	case DP83869_DOWNSHIFT_8_COUNT:
++		count = DP83869_DOWNSHIFT_8_COUNT_VAL;
++		break;
++	default:
++		phydev_err(phydev,
++			   "Downshift count must be 1, 2, 4 or 8\n");
++		return -EINVAL;
++	}
++
++	val = DP83869_DOWNSHIFT_EN;
++	val |= FIELD_PREP(DP83869_DOWNSHIFT_ATTEMPT_MASK, count);
++
++	return phy_modify(phydev, DP83869_CFG2,
++			  DP83869_DOWNSHIFT_EN | DP83869_DOWNSHIFT_ATTEMPT_MASK,
++			  val);
++}
++
++static int dp83869_get_tunable(struct phy_device *phydev,
++			       struct ethtool_tunable *tuna, void *data)
++{
++	switch (tuna->id) {
++	case ETHTOOL_PHY_DOWNSHIFT:
++		return dp83869_get_downshift(phydev, data);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int dp83869_set_tunable(struct phy_device *phydev,
++			       struct ethtool_tunable *tuna, const void *data)
++{
++	switch (tuna->id) {
++	case ETHTOOL_PHY_DOWNSHIFT:
++		return dp83869_set_downshift(phydev, *(const u8 *)data);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
+ static int dp83869_config_port_mirroring(struct phy_device *phydev)
  {
- 	u32 control;
- 	struct etmv4_drvdata *drvdata = info;
-
-+	etm4_disable_arch_specific(drvdata);
- 	CS_UNLOCK(drvdata->base);
-
- 	/* power can be removed from the trace unit now */
---
-2.8.1
+ 	struct dp83869_private *dp83869 = phydev->priv;
+@@ -558,6 +665,12 @@ static int dp83869_config_init(struct phy_device *phydev)
+ 	struct dp83869_private *dp83869 = phydev->priv;
+ 	int ret, val;
+ 
++	/* Force speed optimization for the PHY even if it strapped */
++	ret = phy_modify(phydev, DP83869_CFG2, DP83869_DOWNSHIFT_EN,
++			 DP83869_DOWNSHIFT_EN);
++	if (ret)
++		return ret;
++
+ 	ret = dp83869_configure_mode(phydev, dp83869);
+ 	if (ret)
+ 		return ret;
+@@ -656,6 +769,9 @@ static struct phy_driver dp83869_driver[] = {
+ 		.ack_interrupt	= dp83869_ack_interrupt,
+ 		.config_intr	= dp83869_config_intr,
+ 
++		.get_tunable	= dp83869_get_tunable,
++		.set_tunable	= dp83869_set_tunable,
++
+ 		.get_wol	= dp83869_get_wol,
+ 		.set_wol	= dp83869_set_wol,
+ 
+-- 
+2.28.0
 
