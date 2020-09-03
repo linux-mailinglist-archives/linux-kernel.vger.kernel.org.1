@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3088B25CB20
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304F025CB29
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgICUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
+        id S1729721AbgICUi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729405AbgICUbj (ORCPT
+        with ESMTP id S1729447AbgICUbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:39 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108BEC0619C5
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:31:12 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id h15so2717410pfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:31:12 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:20 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD70C061258;
+        Thu,  3 Sep 2020 13:31:07 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l9so4132585wme.3;
+        Thu, 03 Sep 2020 13:31:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=WN8mpXa+HsW9fsZYTOAsBdC0BrDsnoqsIhb4CRQsjoA=;
-        b=ILcqyCFUuMNmm3B95VxDju+nky8Uu+qmaPpzDRj3rzSs7wdq56m1nXOOYGQRh5j+ez
-         GoI90TA6FVXFOlD755AmSb4/FNzaT0VP8lOAy6uMYZFFLJuqFJVL9bJwWTH9E0GqtOEo
-         al6TkePRlfFId/wWeLeyYEgNYfWQP0oNFVpXgW52difahcSd5ZTRotEOB0pRrOx1IZXM
-         Cnhj1xtZcbRHwGgTBVkZm/DFy5pa62h5HdpA7rjM4Z4R2IFE8nWpVFD1OTUXwGK6Fy0y
-         CR+ahjyBXSSb5EJ1ofWh2xFjBel7zKuiBnOe86gBc07OTZ6uirMoAkpdrWgxZ4RTDhON
-         LYRQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=JRfXBGFiqY7c/El7z89zWfrRGF9fF+u62x7PKZnaUzI=;
+        b=K5vk9jAuMg+7u4ZOKCzRhzqDjr3f7Qc8HprHbYh4Y+5TVknoECOVpj0q2LEw4rSYUw
+         NFp9jVoFOx/WNltsI3+i5YlWvLBV5wYXhf9KTrXPITe4lMKTvJRHCEoXF2NPPlEbF/LN
+         RNK3E3jc5Tcqp5tp7CrGybxG7OuPpGXQXBB1pkmzjHGxrsDQuFSMAXn61NxGqKLHdWIv
+         TU46VFL1X19Tg4phIRMZIDRBn6jO5c5QrlSuLDcFt5wH7GEBcVHIGEXO1rKRMTht4F39
+         16CfA5wDD3fdRhnmckByJn3bRx2LocdtnnVDmxB68FD2p/VVXhAFZnolcAZuqngmEziB
+         pcIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WN8mpXa+HsW9fsZYTOAsBdC0BrDsnoqsIhb4CRQsjoA=;
-        b=EW300dTDm0KjnEuCqQiuBmGnGEn++8cun2i13V3AOwrwMk+84n3MokcJ7yfv/5t0EL
-         GMVAsD8ioBuZs3iJ79X3oQa2qr1hfChk2A7jhBpELVL9yKjJdC31WlTYsKWIcj8aAvXo
-         uJDBAulyZr2Ipcn1rYdd/clmcnSvaT5Ai3RKuoXO8ArAyu+/guTo/E677IceTwlE90Aw
-         2WA+2wxNSyC4c2rCJ33BRRfNjZ1ZMOM1apSnwW6JzL3FNna7PLJnF7JvVy9IaYa5iSJf
-         KybbndQ5fUdIA8fC9/ufDNyLc+aDDaVTZqYaB0kymJ0y2PwY7/JAIACv9apRV7eSWc03
-         ivlg==
-X-Gm-Message-State: AOAM533dB5SRjXhpyCf3yMQaCUIKJUM8dvhBa496KBkM6M5yrLe1fBov
-        ixzy1Ikf0YNfPyR7kiFtiQ5qoBx0v+CsZeXtij4=
-X-Google-Smtp-Source: ABdhPJyGVWrrLe9OiHn6gBlDgaN9mhbz1XtS93UGhLaXNK12eKqdd07FdIpOk9xvfDGTdAf7XwfZllDsHPKhawlMPg4=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a17:90a:d512:: with SMTP id
- t18mr1126739pju.106.1599165071359; Thu, 03 Sep 2020 13:31:11 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 13:30:33 -0700
-In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
-Message-Id: <20200903203053.3411268-9-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com> <20200903203053.3411268-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v2 08/28] x86, build: use objtool mcount
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=JRfXBGFiqY7c/El7z89zWfrRGF9fF+u62x7PKZnaUzI=;
+        b=HxOTFdUzCZzSRqdlLC69OXT/PxcWHOLZbO2qwrIjoJ/8oE/pDljtzmetr1GxbIykV7
+         xtmTkBfmZSzkSU/8kms+KlZKvZc0yXBv51o27zMtO1AFEkcWqT69RoQ7RWe97/YaeIsJ
+         um/dVUGAKQjjE1218TNxBq3iJrbKv4R2nLDswTjpSd64pJ6vMRYFz1f+aWqTkS1K7Rum
+         bjjiq/u7qwRR21DF9O2GoS50bzaBip7IybEF04D9/DgOn3r5Ji6laaCBN5sHi0rkx7ya
+         p5EmcUTmcwkOnBVjsIB6QKAQGm6Y8t2iIv9mwcKCqqPtJM/7CJ+2M5cUh79X6IvckEJN
+         Xdqg==
+X-Gm-Message-State: AOAM5319hUw5QIqe+9nKXdm/oGsnvJFjtpOkEL03REfatjHffNHI2GWE
+        WigpxArfeKavt3G7aD+cGCw=
+X-Google-Smtp-Source: ABdhPJxs+lMWm9287ep2HEvwgo5E2HLax3EG19m3cXREGOmgBv7K/F0wW+lCpLavoAx8uLTvvIBc2g==
+X-Received: by 2002:a1c:bcd4:: with SMTP id m203mr4202979wmf.75.1599165065932;
+        Thu, 03 Sep 2020 13:31:05 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 13:31:05 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        Ondrej Jirman <megous@megous.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v2 19/20] arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+Date:   Thu,  3 Sep 2020 22:30:33 +0200
+Message-Id: <20200903203034.1057334-20-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
+References: <20200903203034.1057334-1-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Select HAVE_OBJTOOL_MCOUNT if STACK_VALIDATION is selected to use
-objtool to generate __mcount_loc sections for dynamic ftrace with
-Clang and gcc <5.
+From: Ondrej Jirman <megous@megous.com>
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+The board has HDMI output, enable audio on it.
+
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 7101ac64bb20..6de2e5c0bdba 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -163,6 +163,7 @@ config X86
- 	select HAVE_CMPXCHG_LOCAL
- 	select HAVE_CONTEXT_TRACKING		if X86_64
- 	select HAVE_C_RECORDMCOUNT
-+	select HAVE_OBJTOOL_MCOUNT		if STACK_VALIDATION
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
+index 15c9dd8c4479..193587e78031 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
+@@ -128,6 +128,14 @@ hdmi_out_con: endpoint {
+ 	};
+ };
+ 
++&hdmi_sound {
++	status = "okay";
++};
++
++&i2s1 {
++	status = "okay";
++};
++
+ &mmc0 {
+ 	vmmc-supply = <&reg_cldo1>;
+ 	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.25.1
 
