@@ -2,126 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7F925CB50
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9E025CB5B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729559AbgICUkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
+        id S1729618AbgICUlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729312AbgICUbE (ORCPT
+        with ESMTP id S1729317AbgICUa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:04 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983BAC061264;
-        Thu,  3 Sep 2020 13:30:57 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id w2so4134286wmi.1;
-        Thu, 03 Sep 2020 13:30:57 -0700 (PDT)
+        Thu, 3 Sep 2020 16:30:56 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD54C061258
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:30:55 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id z190so2315043qkc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:30:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I49qX4p3R5f0D/cfuMt37KBf23v3/L+E2eSH2MZxqyM=;
-        b=CSzV1aYjyXMA+ThlgRn7cci8rIEX5STM39i8LXl6eAR1hk+g6v2+sjurymyzXj24DW
-         DAlAXhSTKhhRfJzIiXxpCm3+liwUA9WU2Hlt0wgo8zpCJuHYz0CMp6A1zdqNttc8/hxP
-         TC7NSVfH/eC07z5O8fcYwYCHDth71yq4Rna0Mr43QWesC6z/jxHcThvh8ZNOfPHdFBxm
-         f3ZtZO+ZMLeaJXgLwePVuL3xqfrGlU5MrexfNI/5uUylzH4svGhmVzCGJ8jVSalB4UDJ
-         koiSWTLUhBf6IWMBM5kMUiZtolpSDuhuk1nBMCgU5CaLLCfktoxw7ShE0dGCNGvLZ9Dk
-         cpqw==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=nGr4msUS0dEW75ogQM/nhSlm97UUOCMWXorkodmMp40=;
+        b=h0+Pz1CszWOumbWEcLmAC3O2sDpreVbpYTU/LLeX71N9riUhico9+tp5lrxUEUaJUq
+         9/9jya3977ohpQ/UFatz+tG09iq0m7MVC3DPVvg75x+pJc1eEY0ZcnS0k1+FD0W4xfb0
+         0s+GpFY0ECMdosU7iEgPv+ytcGRd+QAMRWGomwTGMAF/oKYGdOMzrdSAXUCcyTbSDzPs
+         dbV5UeBXLgGB51pRx1q2svY0VUeB76G3YYFH4HGDmwpMrISfVfQK8Ou5NlhZ+ph++gno
+         1f2227PbyNuZ6U1XezgTQhhRcqLNB/aPe/L1HXGAltrVeTWBZQOgom9iMWye5PZNH9er
+         DUZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I49qX4p3R5f0D/cfuMt37KBf23v3/L+E2eSH2MZxqyM=;
-        b=NkMl+JxuF0uAUlxMr1gP9jAAOuZaFdK5Qmy+qKVJ08MOX98Oo9a8+RgjvheO+7PQFM
-         Bg/YKVnszP3mAwfjLUOS+UBv07T+cRUi52MCYD5B00ABp9sz8kSsAtv5zJZQj8b7J1gy
-         v/MQ/UXuZGxEBq7omVUUTpU7P3DaTMJ1E0rRBR44QNL9fiGXf2SvXbM1Or9wPXDM8KWt
-         wROUcZYvXrDST4EaYU2uN61hst+FnKJvbO3xDc7bNJBf5eyC622MrEh8IlQScA9aklVM
-         dBlUWWYMJS2W4MoP0VqcagX3Picx7vv/j7tAJGg9Tn+ozFI4+8IZho5VLp7ublmYtFNG
-         se1g==
-X-Gm-Message-State: AOAM531HM9IdIZRUEflUVFoPqfcXLtMo66nGI9OSvpPiYOvNhUq5k2FM
-        PMcTg6Grrz2WVjYMVU+ja74=
-X-Google-Smtp-Source: ABdhPJy5CGi5+Z8rjupOyEJsdtu5n4tI7FD43iDEcopKLSxFhEJ+qzOIV5ZHmtekurdvtvJycDajQw==
-X-Received: by 2002:a05:600c:2053:: with SMTP id p19mr4214447wmg.50.1599165056187;
-        Thu, 03 Sep 2020 13:30:56 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:30:55 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 11/20] arm: dts: sunxi: h3/h5: Add HDMI audio
-Date:   Thu,  3 Sep 2020 22:30:25 +0200
-Message-Id: <20200903203034.1057334-12-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
-References: <20200903203034.1057334-1-peron.clem@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=nGr4msUS0dEW75ogQM/nhSlm97UUOCMWXorkodmMp40=;
+        b=BNnL/5X8pDzc4Y92WyufhNcMmy804pSAL8ByZ99DM8B6LXujxCfxoCc9SRDB7/cBD4
+         OHMjavZLdpTLj+uSEwe6He9LUgzQCn/Is0UxPIfMRdUEIDGEA8xN2Cw1dTYgAoO/flIE
+         pvyzMqqyfB1kgw3QaCzoKc8aABiyCPmMG6OyW6myj9DtTLmi4BipOP0CslHZ50jSso1A
+         Oe6xpTQWVSaq1cIm0YYV7qHIb4Re1Bh4ykqPDWSUApvjPhfpx68B9i/sZbsmR81n4JPT
+         Yz3iJJevhesH4g64xr4qC6+PVkM3Xg29Wu0XWxpHBhTNNNDV0AJdKEyvz3DnTOcdKVba
+         4OpA==
+X-Gm-Message-State: AOAM530fepBf2ns3LAbBENV2NeGDZ6ypcdN32QROdS/RWNcUu1bAXSEs
+        zP+trEtYadOnzbh/P/snjqPkk64EYK0U0GSRuEs=
+X-Google-Smtp-Source: ABdhPJxH0RX0szKuHKPur3enUKVPJmiZ5UDvXRtv8sxJrR42cHWJcizyyc12gG2V+M5Plv1Dslq7MnG2DtQcSDaz1iU=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a0c:d803:: with SMTP id
+ h3mr3572282qvj.0.1599165054814; Thu, 03 Sep 2020 13:30:54 -0700 (PDT)
+Date:   Thu,  3 Sep 2020 13:30:25 -0700
+In-Reply-To: <20200624203200.78870-1-samitolvanen@google.com>
+Message-Id: <20200903203053.3411268-1-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20200624203200.78870-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v2 00/28] Add support for Clang LTO
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+This patch series adds support for building x86_64 and arm64 kernels
+with Clang's Link Time Optimization (LTO).
 
-Add a simple-soundcard to link audio between HDMI and I2S.
+In addition to performance, the primary motivation for LTO is
+to allow Clang's Control-Flow Integrity (CFI) to be used in the
+kernel. Google has shipped millions of Pixel devices running three
+major kernel versions with LTO+CFI since 2018.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Most of the patches are build system changes for handling LLVM
+bitcode, which Clang produces with LTO instead of ELF object files,
+postponing ELF processing until a later stage, and ensuring initcall
+ordering.
+
+Note that patches 1-4 are not directly related to LTO, but are
+needed to compile LTO kernels with ToT Clang, so I'm including them
+in the series for your convenience:
+
+ - Patches 1-3 are required for building the kernel with ToT Clang,
+   and IAS, and patch 4 is needed to build allmodconfig with LTO.
+
+ - Patches 3-4 are already in linux-next, but not yet in 5.9-rc.
+
 ---
- arch/arm/boot/dts/sunxi-h3-h5.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Changes in v2:
 
-diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 3dca6d89cab9..ebb109c828d9 100644
---- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-+++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-@@ -105,6 +105,24 @@ de: display-engine {
- 		status = "disabled";
- 	};
- 
-+	hdmi_sound: hdmi-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "sun8i-h3-hdmi";
-+		simple-audio-card,mclk-fs = <128>;
-+		status = "disabled";
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s2>;
-+			dai-tdm-slot-num = <2>;
-+			dai-tdm-slot-width = <32>;
-+		};
-+	};
-+
- 	soc {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
-@@ -806,6 +824,7 @@ csi: camera@1cb0000 {
- 		};
- 
- 		hdmi: hdmi@1ee0000 {
-+			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun8i-h3-dw-hdmi",
- 				     "allwinner,sun8i-a83t-dw-hdmi";
- 			reg = <0x01ee0000 0x10000>;
+  - Fixed -Wmissing-prototypes warnings with W=1.
+
+  - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
+    scrubbing to make distclean.
+
+  - Added a comment about Clang >=11 being required.
+
+  - Added a patch to disable LTO for the arm64 KVM nVHE code.
+
+  - Disabled objtool's noinstr validation with LTO unless enabled.
+
+  - Included Peter's proposed objtool mcount patch in the series
+    and replaced recordmcount with the objtool pass to avoid
+    whitelisting relocations that are not calls.
+
+  - Updated several commit messages with better explanations.
+
+
+Arvind Sankar (2):
+  x86/boot/compressed: Disable relocation relaxation
+  x86/asm: Replace __force_order with memory clobber
+
+Luca Stefani (1):
+  RAS/CEC: Fix cec_init() prototype
+
+Nick Desaulniers (1):
+  lib/string.c: implement stpcpy
+
+Peter Zijlstra (1):
+  objtool: Add a pass for generating __mcount_loc
+
+Sami Tolvanen (23):
+  objtool: Don't autodetect vmlinux.o
+  kbuild: add support for objtool mcount
+  x86, build: use objtool mcount
+  kbuild: add support for Clang LTO
+  kbuild: lto: fix module versioning
+  kbuild: lto: postpone objtool
+  kbuild: lto: limit inlining
+  kbuild: lto: merge module sections
+  kbuild: lto: remove duplicate dependencies from .mod files
+  init: lto: ensure initcall ordering
+  init: lto: fix PREL32 relocations
+  PCI: Fix PREL32 relocations for LTO
+  modpost: lto: strip .lto from module names
+  scripts/mod: disable LTO for empty.c
+  efi/libstub: disable LTO
+  drivers/misc/lkdtm: disable LTO for rodata.o
+  arm64: export CC_USING_PATCHABLE_FUNCTION_ENTRY
+  arm64: vdso: disable LTO
+  KVM: arm64: disable LTO for the nVHE directory
+  arm64: allow LTO_CLANG and THINLTO to be selected
+  x86, vdso: disable LTO only for vDSO
+  x86, relocs: Ignore L4_PAGE_OFFSET relocations
+  x86, build: allow LTO_CLANG and THINLTO to be selected
+
+ .gitignore                            |   1 +
+ Makefile                              |  65 ++++++-
+ arch/Kconfig                          |  67 +++++++
+ arch/arm64/Kconfig                    |   2 +
+ arch/arm64/Makefile                   |   1 +
+ arch/arm64/kernel/vdso/Makefile       |   4 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile      |   4 +-
+ arch/x86/Kconfig                      |   3 +
+ arch/x86/Makefile                     |   5 +
+ arch/x86/boot/compressed/Makefile     |   2 +
+ arch/x86/boot/compressed/pgtable_64.c |   9 -
+ arch/x86/entry/vdso/Makefile          |   5 +-
+ arch/x86/include/asm/special_insns.h  |  28 +--
+ arch/x86/kernel/cpu/common.c          |   4 +-
+ arch/x86/tools/relocs.c               |   1 +
+ drivers/firmware/efi/libstub/Makefile |   2 +
+ drivers/misc/lkdtm/Makefile           |   1 +
+ drivers/ras/cec.c                     |   9 +-
+ include/asm-generic/vmlinux.lds.h     |  11 +-
+ include/linux/init.h                  |  79 +++++++-
+ include/linux/pci.h                   |  19 +-
+ kernel/trace/Kconfig                  |   5 +
+ lib/string.c                          |  24 +++
+ scripts/Makefile.build                |  55 +++++-
+ scripts/Makefile.lib                  |   6 +-
+ scripts/Makefile.modfinal             |  31 ++-
+ scripts/Makefile.modpost              |  26 ++-
+ scripts/generate_initcall_order.pl    | 270 ++++++++++++++++++++++++++
+ scripts/link-vmlinux.sh               |  94 ++++++++-
+ scripts/mod/Makefile                  |   1 +
+ scripts/mod/modpost.c                 |  16 +-
+ scripts/mod/modpost.h                 |   9 +
+ scripts/mod/sumversion.c              |   6 +-
+ scripts/module-lto.lds                |  26 +++
+ tools/objtool/builtin-check.c         |  13 +-
+ tools/objtool/builtin.h               |   2 +-
+ tools/objtool/check.c                 |  83 ++++++++
+ tools/objtool/check.h                 |   1 +
+ tools/objtool/objtool.h               |   1 +
+ 39 files changed, 883 insertions(+), 108 deletions(-)
+ create mode 100755 scripts/generate_initcall_order.pl
+ create mode 100644 scripts/module-lto.lds
+
+
+base-commit: e28f0104343d0c132fa37f479870c9e43355fee4
 -- 
-2.25.1
+2.28.0.402.g5ffc5be6b7-goog
 
