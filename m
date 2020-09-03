@@ -2,79 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7713525BE75
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59BE25BE83
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728222AbgICJaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:30:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgICJaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:30:16 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9C92206A5;
-        Thu,  3 Sep 2020 09:30:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599125415;
-        bh=KosBvZ2ZTa7Xg9GtfSbx7BaPsKV8Kkp0Wu8B3hg74m8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WBDDNk12GzaLnUvYawbRTJAmHR5wg9Ld1tqFFIdVQS2c0aQ8Ai8Cas+fjfaLbGzOS
-         +fQEjC5Yx0gIHeybH2OVb7ut1axJSke7K9mnfuSMNhrGdpT6m3oscSUWLNaDzALdve
-         B/hIhxF3oB3lFpdzqJvpthvwb5VcKSlID+rc5Xvs=
-Date:   Thu, 3 Sep 2020 11:30:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.8 000/253] 5.8.6-rc2 review
-Message-ID: <20200903093039.GE2220117@kroah.com>
-References: <20200902074837.329205434@linuxfoundation.org>
- <CA+G9fYv0oEqJQPJUhLAHX5wWrfZbhS6-cQOL8_Ex=d4tWAcHsQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYv0oEqJQPJUhLAHX5wWrfZbhS6-cQOL8_Ex=d4tWAcHsQ@mail.gmail.com>
+        id S1728224AbgICJf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:35:28 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22710 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726109AbgICJf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 05:35:27 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0839WPsr005957;
+        Thu, 3 Sep 2020 05:35:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=AA1gFtAyaxygtrYTd+c/verju5XPl8nITJZZ/eIZWUE=;
+ b=DNTNzVVy6ZffwNRsO2npK3xeXI7itKkc56BYiSdJ3XjOQuBW6Sp0PbpcNe5Pn2etoFku
+ IKzGXIaWUMRwWq6YpO/1p75jZAwGvQA98UkngZc+iYQJZEoxmnuUlqkTps2hXRwUU9aH
+ tioFoEI8n8NL57G8q74OqLjrZLishGntfyX1nbQbQONyPHwvj3ih0BOqG/Ijr/cmtt9t
+ QvyyXdq7+cBUU7jUEQ8WiG1lYkAyOlxL9IZcsgbQSapQVJgD+G+60NL1SdXHj+xlFRHe
+ RW+kmwxa1vThqJbeD22NMIllTQYl1oD2oKeBuYds613I0WzbeJ7/ueTiL8c0NmhGHvPp 0A== 
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33awrp0bv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 05:35:11 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0839VRK5031343;
+        Thu, 3 Sep 2020 09:35:10 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma02wdc.us.ibm.com with ESMTP id 337en9xk5b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 09:35:10 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0839Z9ZR19661198
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Sep 2020 09:35:09 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B14626A054;
+        Thu,  3 Sep 2020 09:35:09 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 500AE6A04F;
+        Thu,  3 Sep 2020 09:35:09 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.75.144])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Sep 2020 09:35:09 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 970602E2FE5; Thu,  3 Sep 2020 14:57:34 +0530 (IST)
+From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        Joel Stanley <joel@jms.id.au>
+Cc:     linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+Subject: [PATCH v2] cpuidle-pseries: Fix CEDE latency conversion from tb to us
+Date:   Thu,  3 Sep 2020 14:57:27 +0530
+Message-Id: <1599125247-28488-1-git-send-email-ego@linux.vnet.ibm.com>
+X-Mailer: git-send-email 1.8.3.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-03_04:2020-09-03,2020-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=952 phishscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 mlxscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 09:58:45PM +0530, Naresh Kamboju wrote:
-> On Wed, 2 Sep 2020 at 13:18, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.8.6 release.
-> > There are 253 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 04 Sep 2020 07:47:48 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.6-rc2.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> >
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
-> 
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 
-Thanks for testing all of these and letting me know.
+commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
+CEDE(0)") sets the exit latency of CEDE(0) based on the latency values
+of the Extended CEDE states advertised by the platform. The values
+advertised by the platform are in timebase ticks. However the cpuidle
+framework requires the latency values in microseconds.
 
-greg k-h
+If the tb-ticks value advertised by the platform correspond to a value
+smaller than 1us, during the conversion from tb-ticks to microseconds,
+in the current code, the result becomes zero. This is incorrect as it
+puts a CEDE state on par with the snooze state.
+
+This patch fixes this by rounding up the result obtained while
+converting the latency value from tb-ticks to microseconds. It also
+prints a warning in case we discover an extended-cede state with
+wakeup latency to be 0. In such a case, ensure that CEDE(0) has a
+non-zero wakeup latency.
+
+Fixes: commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
+CEDE(0)")
+
+Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+---
+v1-->v2: Added a warning if a CEDE state has 0 wakeup latency (Suggested by Joel Stanley)
+         Also added code to ensure that CEDE(0) has a non-zero wakeup latency.	 
+ drivers/cpuidle/cpuidle-pseries.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
+index ff6d99e..a2b5c6f 100644
+--- a/drivers/cpuidle/cpuidle-pseries.c
++++ b/drivers/cpuidle/cpuidle-pseries.c
+@@ -361,7 +361,10 @@ static void __init fixup_cede0_latency(void)
+ 	for (i = 0; i < nr_xcede_records; i++) {
+ 		struct xcede_latency_record *record = &payload->records[i];
+ 		u64 latency_tb = be64_to_cpu(record->latency_ticks);
+-		u64 latency_us = tb_to_ns(latency_tb) / NSEC_PER_USEC;
++		u64 latency_us = DIV_ROUND_UP_ULL(tb_to_ns(latency_tb), NSEC_PER_USEC);
++
++		if (latency_us == 0)
++			pr_warn("cpuidle: xcede record %d has an unrealistic latency of 0us.\n", i);
+ 
+ 		if (latency_us < min_latency_us)
+ 			min_latency_us = latency_us;
+@@ -378,10 +381,14 @@ static void __init fixup_cede0_latency(void)
+ 	 * Perform the fix-up.
+ 	 */
+ 	if (min_latency_us < dedicated_states[1].exit_latency) {
+-		u64 cede0_latency = min_latency_us - 1;
++		/*
++		 * We set a minimum of 1us wakeup latency for cede0 to
++		 * distinguish it from snooze
++		 */
++		u64 cede0_latency = 1;
+ 
+-		if (cede0_latency <= 0)
+-			cede0_latency = min_latency_us;
++		if (min_latency_us > cede0_latency)
++			cede0_latency = min_latency_us - 1;
+ 
+ 		dedicated_states[1].exit_latency = cede0_latency;
+ 		dedicated_states[1].target_residency = 10 * (cede0_latency);
+-- 
+1.9.4
+
