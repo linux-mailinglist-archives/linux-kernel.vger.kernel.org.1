@@ -2,109 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4533225BFFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A4825C00C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbgICLQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
+        id S1728479AbgICLU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728409AbgICLLx (ORCPT
+        with ESMTP id S1728444AbgICLRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:11:53 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F5CC061249;
-        Thu,  3 Sep 2020 04:01:26 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id h12so1836308pgm.7;
-        Thu, 03 Sep 2020 04:01:25 -0700 (PDT)
+        Thu, 3 Sep 2020 07:17:18 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5BFC061251;
+        Thu,  3 Sep 2020 04:03:05 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id v196so2053454pfc.1;
+        Thu, 03 Sep 2020 04:03:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+DEgrL1WqdyDp96QHpOBjswHW12HsyAvByI+w5af+1I=;
-        b=DgUFp7W4BHAzcm7/LgTX2Fc1BO1sq9gKqpjsC2I/9qSrQExgNfPuGBXIRSxOWXozme
-         ySmh3YYVU5QFZ+VFFuwoxF+P/k05Jt9mgxmmSzEyV3mwl8+8ylfaSmCuw0YLLeYDRI32
-         9GdussqBn8kHj8gNLSZKL132p4vck8rhSER4R+KEFSlBzNv5ARgwyKd0oB8iBIT8eq+R
-         JzEDWHPbo8ar9HvrRF1xogLTK0hfmYFd1EBtgKuRVl2WexthE/y40zYBqrdoAK2sOZKG
-         C7Hkkp9W4d4CgY8K0MX8qvn77cDs5WBmHPfkB3ukSITD+gbjDKNZTWxCY/Q0FteWNhXz
-         cOfQ==
+        bh=Yc4wkCo7MeYrmmnwisSRarxaaBJAo1GNuY3VsM322Kg=;
+        b=V+NLN2f/oumXmYED9CGhvzHg1A3k7uzbduXR5eZhQX9/LB452xGmGWatlhugioh3fn
+         C2jDtT6Rc46kWS8I2VMaaQ0YJ2cUJ0sW+0WJexHovLKoPUHB35BiDayz+5LOPKPRh7jN
+         LDbNcnYH6pS9mK4fFj6e+3Ohv0X/OBTORciTRAxc+4tQXi6M5vmL49DLqUTh1O7Zc1gZ
+         TShC6BYGRuSfGHezFoj+FzbZQ7DRptRhuSXsAOWIOYn9IzCI1Vi1paFBp6LrQFxA8AKs
+         j6lwADHrIN66e/OyJTVsiNNhAn6Y0D5eGSoKsL2bPAWMUbdWHdvzKfkOF+cewY9GN8/b
+         pdTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+DEgrL1WqdyDp96QHpOBjswHW12HsyAvByI+w5af+1I=;
-        b=QjghZg8F4JHoa/rs4KQFwLC6mTbhIyZNXbbisCZuYdmAN9WR8tQrXRLbsvxkwJCk5z
-         mWk74A9+VzTnCAYGk3HposoYmK7A2USUMJGd4BKCs1pbhxjjIJrE07K3yyVRuIpe/rRb
-         adcdq2wVqY8n89REdnnNRvO6fmxk2WQ3zhBZU2b4ZFVNOzN1b2wLU4pCMsXvRkczzMuG
-         vX4BU7QZAcI9P/vF/dUO8hhjjhGSU108BRCvfPT1Lcen9pmBZmAA218xF8+PVe8Hqx95
-         wevBQ1VmaB/CuOq7Xk+8D6u+R+Kl56Lm9Wk7RI4NmW0l3gc/rHEUDvFrEZ3RsC8VCeMG
-         yK5A==
-X-Gm-Message-State: AOAM533Mw8xpwH3l9WFD5NnPo0rI4b6ndX43M4K+wqgqbvLbcFBgUCin
-        M5YpfhumBik2e4ZRAsriGpPpZI2vCvJoZ93Zfs4=
-X-Google-Smtp-Source: ABdhPJzWB8HoVy5iFsB5Op5vyLrnbRcI/Ap8Gp+5ZFJ0NzzhtqGslGDMIN9czc9ATfqg7sEcE+oUtEC2yQtpuLRRVv8=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr2507713pgj.4.1599130885521;
- Thu, 03 Sep 2020 04:01:25 -0700 (PDT)
+        bh=Yc4wkCo7MeYrmmnwisSRarxaaBJAo1GNuY3VsM322Kg=;
+        b=X9EbEKKDQ7SKr3hFldkD+96BSiInMEBHd4MdeRZ14RnTstUIJ4NfcM5Y6PNBmBKyIU
+         O4EGi5hLLaCDFxjyR0FHsea/D2JeCkMwokcoBBjybz6Qm5FMpmuVOMO+Oe3RjuhwvIR9
+         /YEKSriqSn/e270yD0GvE9tZMSH03QFL/tVV2QbqcbGgtj6I2jpZBdhSGgeCJQ/Gdfze
+         PtaM3RkaYib82tbNM2Mewz+CW6jEC+MOfSLf5Wzfdp9EsCoHwdfPx3VgzyjNfSWrkrno
+         7tdUYBtBeZP5XNyCDCfHwtlrROV1oqV/X4+LcVeSqWaEYS3+G+YTp6tkZPx91MNtoyPr
+         UtxA==
+X-Gm-Message-State: AOAM530mWtu7OGKgKaLUAcg6aJTuBA2jOjorX+29sIpQ9LOhCBB7ejXc
+        1NDsQcxKzTcej4UyqihzrdoC9thx9I4DrMUO5II=
+X-Google-Smtp-Source: ABdhPJwDzelAtXwzu1AP2Sck+DOJdO2HFfZJWEguZGryUdrzqFlNyIe50UOUdMIYN72Gvo8JpjKeqGFXAeY1JyeFBFc=
+X-Received: by 2002:a63:d648:: with SMTP id d8mr2513798pgj.4.1599130985426;
+ Thu, 03 Sep 2020 04:03:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200831212606.1718-1-shiju.jose@huawei.com> <20200831212606.1718-3-shiju.jose@huawei.com>
- <20200901082607.GP1891694@smile.fi.intel.com> <7f5146dba8ac4ac0a258742551f204fb@huawei.com>
-In-Reply-To: <7f5146dba8ac4ac0a258742551f204fb@huawei.com>
+References: <20200903005300.7894-1-digetx@gmail.com> <20200903005300.7894-2-digetx@gmail.com>
+In-Reply-To: <20200903005300.7894-2-digetx@gmail.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Sep 2020 14:01:08 +0300
-Message-ID: <CAHp75Vd3wjNHdYC_A1EVV+kzN=6SGqP2qQ0Wb6pdZWWt9qMMLw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v14 2/2] PCI: hip: Add handling of HiSilicon HIP
- PCIe controller errors
-To:     Shiju Jose <shiju.jose@huawei.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>,
-        yangyicong <yangyicong@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        tanxiaofei <tanxiaofei@huawei.com>,
-        Linuxarm <linuxarm@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
+Date:   Thu, 3 Sep 2020 14:02:48 +0300
+Message-ID: <CAHp75VcLk9pVRefA7cTgVQcX3-9EgcW6c-VUSpSOut0Y1B7J5Q@mail.gmail.com>
+Subject: Re: [PATCH v3 01/22] i2c: tegra: Make tegra_i2c_flush_fifos() usable
+ in atomic transfer
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 1:43 PM Shiju Jose <shiju.jose@huawei.com> wrote:
-> >From: Andy Shevchenko [mailto:andriy.shevchenko@linux.intel.com]
-> >Sent: 01 September 2020 09:26
-> >On Mon, Aug 31, 2020 at 10:26:06PM +0100, Shiju Jose wrote:
-> >> From: Yicong Yang <yangyicong@hisilicon.com>
-
-...
-
-> >> +config PCIE_HISI_ERR
-> >> +    depends on ACPI_APEI_GHES && (ARM64 || COMPILE_TEST)
-> >
-> >> +    depends on ACPI
-> >
-> >Isn't this implied by
-> >       drivers/acpi/Kconfig:45:if ACPI
-> >?
+On Thu, Sep 3, 2020 at 3:53 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> This can be removed as  ACPI_APEI_GHES depends on ACPI.
->
-> Do you have any other comments on this patch?
+> The tegra_i2c_flush_fifos() shouldn't sleep in atomic transfer and jiffies
+> are not updating if interrupts are disabled. Hence let's use proper delay
+> functions and use ktime API in order not to hang atomic transfer. Note
+> that this patch doesn't fix any known problem because normally FIFO is
+> flushed at the time of starting a new transfer.
 
-Nope. The rest is fine to me.
+> +       /*
+> +        * ktime_get() may take up to couple milliseconds in a worst case
+> +        * and normally FIFOs are flushed, hence let's check the state before
+> +        * proceeding to polling.
+> +        */
 
-> >> +    bool "HiSilicon HIP PCIe controller error handling driver"
-> >> +    help
-> >> +      Say Y here if you want error handling support
-> >> +      for the PCIe controller's errors on HiSilicon HIP SoCs
+Everything, including above can be done by using macros from iopoll.h. Why not?
+
+> +       if (!(i2c_readl(i2c_dev, offset) & mask))
+> +               return 0;
+> +
+> +       ktime = ktime_get();
+> +       ktimeout = ktime_add_ms(ktime, 1000);
+> +
+>         while (i2c_readl(i2c_dev, offset) & mask) {
+> -               if (time_after(jiffies, timeout)) {
+> -                       dev_warn(i2c_dev->dev, "timeout waiting for fifo flush\n");
+> -                       return -ETIMEDOUT;
+> -               }
+> -               usleep_range(1000, 2000);
+> +               if (ktime_after(ktime, ktimeout))
+> +                       goto err_timeout;
+> +
+> +               if (i2c_dev->is_curr_atomic_xfer)
+> +                       mdelay(1);
+> +               else
+> +                       fsleep(1000);
+> +
+> +               ktime = ktime_get();
+>         }
+>         return 0;
+> +
+> +err_timeout:
+> +       dev_err(i2c_dev->dev, "FIFO flushing timed out\n");
+> +
+> +       return -ETIMEDOUT;
+>  }
+
 
 -- 
 With Best Regards,
