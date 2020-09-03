@@ -2,68 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B296B25C2A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3662125C2B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729254AbgICObI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:31:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:54668 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgICO23 (ORCPT
+        id S1729363AbgICOd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:33:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729337AbgICObg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:28:29 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: dafna)
-        with ESMTPSA id 9F6EC29AB6D
-From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        matthias.bgg@gmail.com, robh+dt@kernel.org
-Cc:     enric.balletbo@collabora.com, kernel@collabora.com,
-        dafna3@gmail.com, Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Subject: [PATCH] arm64: dts: mt8173-elm: fix supported values for regulator-allowed-modes of da9211
-Date:   Thu,  3 Sep 2020 16:28:19 +0200
-Message-Id: <20200903142819.24487-1-dafna.hirschfeld@collabora.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 3 Sep 2020 10:31:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599143495;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H7bJQ7h2myCkqnHq7O24s1ZUYNalRzEYrGJNorlqx6s=;
+        b=AUQSdRQH4PcxdN9PdwZG90owQKwPJdYPuqvLCDhROwZiIx7r8b+du7e3yYN/9U8SGiNvQB
+        OpOVwCVZfMKTSZMKXALpY2EKYv7Hr/9KvhisrFBIiQPLypIJ5J3P3e+hDZYpJHYCOOoXhP
+        qcjJGMQfimR7Xh8FWxk9FmEB5TvQ/V8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-nWV_P8BGM4aUcJJCqxZSZw-1; Thu, 03 Sep 2020 10:31:33 -0400
+X-MC-Unique: nWV_P8BGM4aUcJJCqxZSZw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6248C425E8;
+        Thu,  3 Sep 2020 14:31:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 14BDB1055803;
+        Thu,  3 Sep 2020 14:31:26 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu,  3 Sep 2020 16:31:31 +0200 (CEST)
+Date:   Thu, 3 Sep 2020 16:31:25 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] pidfd: support PIDFD_NONBLOCK in pidfd_open()
+Message-ID: <20200903143124.GJ4386@redhat.com>
+References: <20200902102130.147672-1-christian.brauner@ubuntu.com>
+ <20200902102130.147672-2-christian.brauner@ubuntu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902102130.147672-2-christian.brauner@ubuntu.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the datasheet the allowed modes for the da9211
-regulator are sync and auto mode. This should be changed in the
-devicetree. This also fix an error message
-'BUCKA: invalid regulator-allowed-modes element 0'
-since value 0 is invalid.
+On 09/02, Christian Brauner wrote:
+>
+> -static int pidfd_create(struct pid *pid)
+> +static int pidfd_create(struct pid *pid, unsigned int flags)
+>  {
+>  	int fd;
+>  
+>  	fd = anon_inode_getfd("[pidfd]", &pidfd_fops, get_pid(pid),
+> -			      O_RDWR | O_CLOEXEC);
+> +			      flags | O_RDWR | O_CLOEXEC);
+>  	if (fd < 0)
+>  		put_pid(pid);
+>  
+> @@ -565,7 +567,7 @@ SYSCALL_DEFINE2(pidfd_open, pid_t, pid, unsigned int, flags)
+>  	int fd;
+>  	struct pid *p;
+>  
+> -	if (flags)
+> +	if (flags & ~PIDFD_NONBLOCK)
+>  		return -EINVAL;
+>  
+>  	if (pid <= 0)
+> @@ -576,7 +578,7 @@ SYSCALL_DEFINE2(pidfd_open, pid_t, pid, unsigned int, flags)
+>  		return -ESRCH;
+>  
+>  	if (pid_has_task(p, PIDTYPE_TGID))
+> -		fd = pidfd_create(p);
+> +		fd = pidfd_create(p, flags);
+>  	else
+>  		fd = -EINVAL;
+>  
 
-Fixes: 689b937beddeb ("arm64: dts: mediatek: add mt8173 elm and hana board")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
----
- arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-index 1fe5dac24ba1..1a51879d5c6f 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
-@@ -5,6 +5,7 @@
- 
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/input/linux-event-codes.h>
-+#include <dt-bindings/regulator/dlg,da9211-regulator.h>
- #include <dt-bindings/gpio/gpio.h>
- #include "mt8173.dtsi"
- 
-@@ -293,7 +294,8 @@
- 				regulator-max-microamp  = <4400000>;
- 				regulator-ramp-delay = <10000>;
- 				regulator-always-on;
--				regulator-allowed-modes = <0 1>;
-+				regulator-allowed-modes = <DA9211_BUCK_MODE_SYNC
-+							   DA9211_BUCK_MODE_AUTO>;
- 			};
- 
- 			da9211_vgpu_reg: BUCKB {
--- 
-2.17.1
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
