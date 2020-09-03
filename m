@@ -2,145 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70ECE25BCD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6C625BC29
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgICIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbgICIBh (ORCPT
+        id S1728581AbgICIEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:04:47 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:39287 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728430AbgICICv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2ECC061245;
-        Thu,  3 Sep 2020 01:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=GAh0vVFEhCXA70kAe0Y+yEC9hZCV2ibXINKGKfT3XfY=; b=OeSUI7+01Hk0fPdyWoHh1ve1/8
-        T4bqVIdsMN4WlAytBfIwpWMCsadyDFmkkqkaggRNNVC8TOH61LbRnYsCwndKj955Z8iHLr6+HqlOt
-        z5fMTSuZ2YijCOtTDQUZ4kHpQEeqQZsc465afsQUcLUVpAIOPeQgoGTX9/lK5EWRPsj6om2T0NXfu
-        z8ZF+LqrI69uIHLdJo2i0GLCPONoiFD9RdmKRGcXUPCLSZYg/y3kWmbRFd4IkKWmn1MNqeK+Uk6X0
-        esb2Rqe2Zx7O43y4reLYAw9yfc8DCS3ztjnJfHGaKEWTtttNw5qITLSfuE1VI/GO/68JW8ugP2j7x
-        cISEboJg==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBV-0006aw-Jj; Thu, 03 Sep 2020 08:01:29 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 06/19] block: add an optional probe callback to major_names
+        Thu, 3 Sep 2020 04:02:51 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id B0086B84;
+        Thu,  3 Sep 2020 04:02:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=8CjhO/oufe9mi
+        iuIeroM+ywrY892Ab6UeAx03HtursY=; b=APVIBb0kwprBJkq9p21ofQoKMiAJl
+        0VwIv7fJAav6M3/Pc8GgyLENntY1d4Z+amaQC58PYKauOPrD33T1MhdwD25t5iOc
+        Rv5V1dy2oIh/11FOMTNa7TSRNhQneF0LYB9UQiNcUe21wELTjbrXatsVZC0JDbeY
+        NAQ9+s68rOrA40pHqi0wZUFOK9ZItC0kEPx1WLO18RnABfqWk3B5T/v8zx93Zv4r
+        VqxL7uP3m5IYc+FgoVpi+mkoxjGHuR8l4FTqlNADfbEyG/ClApv+1ll25ZzuwqCk
+        jY+pFTOO/7DWiyNFNw7oSG3k0QTpFVUDd/S7L9pup2fvdye2NKH0nY5Ew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=8CjhO/oufe9miiuIeroM+ywrY892Ab6UeAx03HtursY=; b=Ms44j6wG
+        5I7E8/myrnjYOX1HJ/t2J9B0bQCu4U2iSIYJx22UBWyIsNR+nYrvddENox9eXJn8
+        xoxe/twpRoiCtTY1wTv9yhr/vnINzubsE1yya5ujHH16BrAHBrpnvOU60mqVoRBq
+        inqjSw58Vvt5CiF9szElzkomsNfn574vlvTimgwt1xpjyW31fK235wIE06RJJrLO
+        GAeoJcSUMBoTHs+UhRlVS2aEAgpbM3J4OZ/YgpdhKUJhQqJAtEIPJJlkRZaeKIvT
+        tj5uV4vMbknZu3u0W4JUfTQrY9eMXgpYwacN1x6DpA1bnSAYRolja7AguDZuVTTR
+        ykN9n0UZC6gERA==
+X-ME-Sender: <xms:IaNQXzRso1Bc5g08hSCge7vt7EaoAJ4Tipf1J-P-l5UsgJp1_OWEeA>
+    <xme:IaNQX0zmsUgU_KtBVpQ5QZfoux5vRQmUuiDBgetN1NLPGqVzrV9Se6MeVmMNs_Rqi
+    9OWy9YWcB244jUkIPI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefvd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:IaNQX42uF_Y-2dFUO35aQIVH_jRbZjtmijM0W_6eVTXsxroW5vi8GA>
+    <xmx:IaNQXzBsx4ME8ovjDEwqW2achlCOCtRLxWZVGF6xVPI-g8U9bVjUXg>
+    <xmx:IaNQX8j0n9-uZ_NpcQhDf6XUvpDhZ0u76Ap613YGhX9a5B7SEqN7lQ>
+    <xmx:IaNQX7rqly4r12R4joof_dvBZixz1SKRoK3l8TEmnLakanDfZ8QfsjkZByE>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EA5AD3280064;
+        Thu,  3 Sep 2020 04:02:40 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 34/80] drm/vc4: crtc: Move the CRTC disable out
 Date:   Thu,  3 Sep 2020 10:01:06 +0200
-Message-Id: <20200903080119.441674-7-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903080119.441674-1-hch@lst.de>
-References: <20200903080119.441674-1-hch@lst.de>
+Message-Id: <5288fb72ed2da643085dce1bc7f6d6f656bf176e.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a callback to the major_names array that allows a driver to override
-how to probe for dev_t that doesn't currently have a gendisk registered.
-This will help separating the lookup of the gendisk by dev_t vs probe
-action for a not currently registered dev_t.
+We'll need to reuse the part that disables the HVS and PixelValve during
+boot too, so let's create a separate function.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- block/genhd.c         | 21 ++++++++++++++++++---
- include/linux/genhd.h |  5 ++++-
- 2 files changed, 22 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/vc4/vc4_crtc.c | 34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index d9ecc751fc956c..3abd764443a6af 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -399,6 +399,7 @@ static struct blk_major_name {
- 	struct blk_major_name *next;
- 	int major;
- 	char name[16];
-+	void (*probe)(dev_t devt);
- } *major_names[BLKDEV_MAJOR_HASH_SIZE];
- static DEFINE_MUTEX(major_names_lock);
- 
-@@ -441,7 +442,8 @@ void blkdev_show(struct seq_file *seqf, off_t offset)
-  * See Documentation/admin-guide/devices.txt for the list of allocated
-  * major numbers.
-  */
--int register_blkdev(unsigned int major, const char *name)
-+int __register_blkdev(unsigned int major, const char *name,
-+		void (*probe)(dev_t devt))
- {
- 	struct blk_major_name **n, *p;
- 	int index, ret = 0;
-@@ -480,6 +482,7 @@ int register_blkdev(unsigned int major, const char *name)
- 	}
- 
- 	p->major = major;
-+	p->probe = probe;
- 	strlcpy(p->name, name, sizeof(p->name));
- 	p->next = NULL;
- 	index = major_to_index(major);
-@@ -502,8 +505,7 @@ int register_blkdev(unsigned int major, const char *name)
- 	mutex_unlock(&major_names_lock);
- 	return ret;
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index 00b2c2b011d1..4156c5f66877 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -384,20 +384,14 @@ static void require_hvs_enabled(struct drm_device *dev)
+ 		     SCALER_DISPCTRL_ENABLE);
  }
+ 
+-static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
+-				    struct drm_crtc_state *old_state)
++static int vc4_crtc_disable(struct drm_crtc *crtc, unsigned int channel)
+ {
+-	struct drm_device *dev = crtc->dev;
+-	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
+ 	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
+ 	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
++	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
++	struct drm_device *dev = crtc->dev;
+ 	int ret;
+ 
+-	require_hvs_enabled(dev);
 -
--EXPORT_SYMBOL(register_blkdev);
-+EXPORT_SYMBOL(__register_blkdev);
+-	/* Disable vblank irq handling before crtc is disabled. */
+-	drm_crtc_vblank_off(crtc);
+-
+ 	CRTC_WRITE(PV_V_CONTROL,
+ 		   CRTC_READ(PV_V_CONTROL) & ~PV_VCONTROL_VIDEN);
+ 	ret = wait_for(!(CRTC_READ(PV_V_CONTROL) & PV_VCONTROL_VIDEN), 1);
+@@ -421,15 +415,31 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	 */
+ 	mdelay(20);
  
- void unregister_blkdev(unsigned int major, const char *name)
- {
-@@ -1035,6 +1037,19 @@ static ssize_t disk_badblocks_store(struct device *dev,
+-	if (vc4_encoder->post_crtc_disable)
++	if (vc4_encoder && vc4_encoder->post_crtc_disable)
+ 		vc4_encoder->post_crtc_disable(encoder);
  
- static void request_gendisk_module(dev_t devt)
- {
-+	unsigned int major = MAJOR(devt);
-+	struct blk_major_name **n;
+ 	vc4_crtc_pixelvalve_reset(crtc);
+-	vc4_hvs_atomic_disable(crtc, old_state);
++	vc4_hvs_stop_channel(dev, channel);
+ 
+-	if (vc4_encoder->post_crtc_powerdown)
++	if (vc4_encoder && vc4_encoder->post_crtc_powerdown)
+ 		vc4_encoder->post_crtc_powerdown(encoder);
+ 
++	return 0;
++}
 +
-+	mutex_lock(&major_names_lock);
-+	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
-+		if ((*n)->major == major && (*n)->probe) {
-+			(*n)->probe(devt);
-+			mutex_unlock(&major_names_lock);
-+			return;
-+		}
-+	}
-+	mutex_unlock(&major_names_lock);
++static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
++				    struct drm_crtc_state *old_state)
++{
++	struct vc4_crtc_state *old_vc4_state = to_vc4_crtc_state(old_state);
++	struct drm_device *dev = crtc->dev;
 +
- 	if (request_module("block-major-%d-%d", MAJOR(devt), MINOR(devt)) > 0)
- 		/* Make old-style 2.4 aliases work */
- 		request_module("block-major-%d", MAJOR(devt));
-diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-index c618b27292fcc8..a808afe80a4fec 100644
---- a/include/linux/genhd.h
-+++ b/include/linux/genhd.h
-@@ -367,7 +367,10 @@ extern void blk_unregister_region(dev_t devt, unsigned long range);
- 
- #define alloc_disk(minors) alloc_disk_node(minors, NUMA_NO_NODE)
- 
--int register_blkdev(unsigned int major, const char *name);
-+int __register_blkdev(unsigned int major, const char *name,
-+		void (*probe)(dev_t devt));
-+#define register_blkdev(major, name) \
-+	__register_blkdev(major, name, NULL)
- void unregister_blkdev(unsigned int major, const char *name);
- 
- void revalidate_disk_size(struct gendisk *disk, bool verbose);
++	require_hvs_enabled(dev);
++
++	/* Disable vblank irq handling before crtc is disabled. */
++	drm_crtc_vblank_off(crtc);
++
++	vc4_crtc_disable(crtc, old_vc4_state->assigned_channel);
++
+ 	/*
+ 	 * Make sure we issue a vblank event after disabling the CRTC if
+ 	 * someone was waiting it.
 -- 
-2.28.0
-
+git-series 0.9.1
