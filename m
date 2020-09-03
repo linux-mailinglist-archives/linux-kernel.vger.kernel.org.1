@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8999025BC73
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8425F25BC6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgICILb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728616AbgICILG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:11:06 -0400
-Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6CBCC06124F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 01:10:54 -0700 (PDT)
-Received: by mail-vk1-xa41.google.com with SMTP id q200so586167vke.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:10:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zIKaB5S0qzt1j0qrP3RfGo4Ng5m6tD5YBvW+p6cBWpo=;
-        b=VSkCGrMZk9uqiovnuB3gCxlXpkc7tTawunYl4GuvwlwGaTWeRnkpX7DC8IgCu+aIK7
-         quL7hVQZ0FJ8ccYYng/AUAgBPBeJulmZg6wiq2nLWIXRbeTiOMfIkPtNOiu+UPUYehnl
-         wM4L/kWPhjBjy/2lgY5aYsl/LVJWPLHBzOYqb3V6l2AcG27k5Ho9tDPCZsCXLCR3NyhV
-         YV1llI8naBDHt585QE2OFKGdyi6zmOwfUcyYKTKRZyywRMHXca2hUUZ8RqP+XicOaD83
-         Gj3GPCHq0iXlVm4H9pappL+i2GtA3oo11nLBC7Rq+Fa2OJQ/TUIzy0FYmmmKkyStXTil
-         Mnlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zIKaB5S0qzt1j0qrP3RfGo4Ng5m6tD5YBvW+p6cBWpo=;
-        b=W63tTuxIlVxqgsod+5Xg3KzHlbM5ck4VEVas3MkZb3BKrDM5QG6YILHW3ZZT7jqdFo
-         iRmt/31l7/DekkI8KUMtL/3vAWzXDSqShIZgmpEH4D66mukEfJfZ5Pv1CkVP5r0QSOoZ
-         +/liQkvpp795qruSCInvoa6OTCWhJbEyj/o6hCX14Vft9t3BDrmW9hIe4agZWxk8oXoS
-         lv9RqYzpIaXD9nGRc/DkDHTSuQXak33WXXa2e1l8WLE5JJsae3LRgQSFsJ6ZM5a/aeAx
-         mLiMKdzIZQGRLpbwH84Wodb0DBQyktC9P0S/mn5UfHHDdUrbXdeVzWvCTsI5ZdAikiPr
-         ZCwQ==
-X-Gm-Message-State: AOAM530JRd9XHEcXr24QIIR7RVxfahh5yHfffoiJf34oJ5RhREs9RW+l
-        Axg4I5n0ppjiU4e8E4VUvhmUO2hbGc7DKLe9hsfY4qxZ3zDABw==
-X-Google-Smtp-Source: ABdhPJxfAPAkxGsAxNbyrIBprTd99bTvdjLzQF9t7lNgAVPgtFBvQhAsLzJxujDDxAJ7NOa99qGNjuKVubA2UYhu8rE=
-X-Received: by 2002:a05:6122:10ca:: with SMTP id l10mr868318vko.15.1599120651296;
- Thu, 03 Sep 2020 01:10:51 -0700 (PDT)
+        id S1728789AbgICILO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:11:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728718AbgICIKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:10:19 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0612A206C0;
+        Thu,  3 Sep 2020 08:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599120619;
+        bh=rJxGAzsygQT4RNJ8/7eqK5SedYsnLFAZPBmD/dAfqfY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0BGrv3PLDaa+QK2PDuDfal9bNknNJggPGAdJVKr2IdzelOIszG1+gyl/oCkri07ik
+         WO9AJUCDpZG0yN9t920xkrBs1Rz8aS+E3zW4h5gpLDJYCko4T6LYrxFNEe86NpmYu+
+         o20F2NjvMBpEKd39CupSny3jKDhl+9l+aBsDQNJo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kDkK1-008pUu-1u; Thu, 03 Sep 2020 09:10:17 +0100
 MIME-Version: 1.0
-References: <20200903012029.25673-1-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20200903012029.25673-1-chris.packham@alliedtelesis.co.nz>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Sep 2020 10:10:13 +0200
-Message-ID: <CAPDyKFpMOKs9t4O73XWZiZhb+6wNh=BL5t-jhej7nxCocbq7NA@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: sdhci-of-esdhc: Don't walk device-tree on every interrupt
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "yinbo.zhu" <yinbo.zhu@nxp.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 03 Sep 2020 09:10:16 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     tglx@linutronix.de, jason@lakedaemon.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqchip/tango: Fix possible null ptr reference in
+ tangox_irq_init
+In-Reply-To: <20200903015952.308888-1-yebin10@huawei.com>
+References: <20200903015952.308888-1-yebin10@huawei.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <25ddba499eaec2db3a70343c82669635@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: yebin10@huawei.com, tglx@linutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Sep 2020 at 03:20, Chris Packham
-<chris.packham@alliedtelesis.co.nz> wrote:
->
-> Commit b214fe592ab7 ("mmc: sdhci-of-esdhc: add erratum eSDHC7 support")
-> added code to check for a specific compatible string in the device-tree
-> on every esdhc interrupat. Instead of doing this record the quirk in
-> struct sdhci_esdhc and lookup the struct in esdhc_irq.
->
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-
-Applied for fixes, and by adding a stable tag, thanks!
-
-Kind regards
-Uffe
-
-
+On 2020-09-03 02:59, Ye Bin wrote:
+> In tangox_irq_init allocate chip but not test.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
-> I found this in passing while trying to track down another issue using ftrace.
-> I found it odd that I was seeing a lot of calls to __of_device_is_compatible()
-> coming from esdhc_irq() (the fact that this interrupt is going off on my board
-> is also odd, but that's a different story).
->
-> Changes in v2:
-> - add quirk_trans_complete_erratum to struct sdhci_esdhc so all the dt handling
->   is taken care of in esdhc_init.
->
->  drivers/mmc/host/sdhci-of-esdhc.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-of-esdhc.c
-> index 7c73d243dc6c..45881b309956 100644
-> --- a/drivers/mmc/host/sdhci-of-esdhc.c
-> +++ b/drivers/mmc/host/sdhci-of-esdhc.c
-> @@ -81,6 +81,7 @@ struct sdhci_esdhc {
->         bool quirk_tuning_erratum_type2;
->         bool quirk_ignore_data_inhibit;
->         bool quirk_delay_before_data_reset;
-> +       bool quirk_trans_complete_erratum;
->         bool in_sw_tuning;
->         unsigned int peripheral_clock;
->         const struct esdhc_clk_fixup *clk_fixup;
-> @@ -1177,10 +1178,11 @@ static void esdhc_set_uhs_signaling(struct sdhci_host *host,
->
->  static u32 esdhc_irq(struct sdhci_host *host, u32 intmask)
->  {
-> +       struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +       struct sdhci_esdhc *esdhc = sdhci_pltfm_priv(pltfm_host);
->         u32 command;
->
-> -       if (of_find_compatible_node(NULL, NULL,
-> -                               "fsl,p2020-esdhc")) {
-> +       if (esdhc->quirk_trans_complete_erratum) {
->                 command = SDHCI_GET_CMD(sdhci_readw(host,
->                                         SDHCI_COMMAND));
->                 if (command == MMC_WRITE_MULTIPLE_BLOCK &&
-> @@ -1334,8 +1336,10 @@ static void esdhc_init(struct platform_device *pdev, struct sdhci_host *host)
->                 esdhc->clk_fixup = match->data;
->         np = pdev->dev.of_node;
->
-> -       if (of_device_is_compatible(np, "fsl,p2020-esdhc"))
-> +       if (of_device_is_compatible(np, "fsl,p2020-esdhc")) {
->                 esdhc->quirk_delay_before_data_reset = true;
-> +               esdhc->quirk_trans_complete_erratum = true;
-> +       }
->
->         clk = of_clk_get(np, 0);
->         if (!IS_ERR(clk)) {
-> --
-> 2.28.0
->
+>  drivers/irqchip/irq-tango.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/irqchip/irq-tango.c b/drivers/irqchip/irq-tango.c
+> index 34290f09b853..25da120230ad 100644
+> --- a/drivers/irqchip/irq-tango.c
+> +++ b/drivers/irqchip/irq-tango.c
+> @@ -187,6 +187,8 @@ static int __init tangox_irq_init(void __iomem
+> *base, struct resource *baseres,
+>  		panic("%pOFn: failed to get address", node);
+> 
+>  	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+> +	if (!chip)
+> +		panic("%pOFn: failed to get chip", node);
+>  	chip->ctl = res.start - baseres->start;
+>  	chip->base = base;
+
+So you are trading a panic for a panic? What is the point?
+A failing kzalloc already gives you all the information you may
+need.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
