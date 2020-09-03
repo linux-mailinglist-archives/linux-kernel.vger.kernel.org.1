@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8303025C8C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C330025C8C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgICScj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45554 "EHLO mail.kernel.org"
+        id S1728343AbgICSct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:32:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729169AbgICSc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729172AbgICSc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Sep 2020 14:32:29 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0851208CA;
+        by mail.kernel.org (Postfix) with ESMTPSA id BED70208C7;
         Thu,  3 Sep 2020 18:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1599157948;
-        bh=KjzQo3s4NSxmm7KztdtA2PGL3W2R+mEIjOYhxHvZr1E=;
+        bh=mVFpvmgbL9aHM0kUg80E2fSvuXkLZwtJPuuYUdX/F3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QaPa7mVtZeENp1aOBZCK/RHEyumNjKPU32TtAsKt5ZJR2S5Gj53h1w7GvlN+jK79x
-         opGAIw5m+nkNI4eSa6tftq5SvTmC88O6CSW6QaJKNOGUgBkctBpqmkczpkxHoaKDAm
-         fss4/r4gQpLAOXRETrrgSPXXZDqYPj/mTZVYnlS0=
+        b=T9xQhkthPp4XX1sCPcQtzZb4P9lPpzJy92vaBrzI/3ZcekzT6RxInICfA7cig8e7W
+         vVlyqfeUzuFRIopmPX4E4dOItd0DpaDg7PrBlfQB77yFCm03xgIQ+tKXWafZSK6rKV
+         RBCAxjuHPSDT8hfm2dyZZcU9do8eM2SFip8PeWJw=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1kDu26-008xrJ-Jj; Thu, 03 Sep 2020 19:32:26 +0100
+        id 1kDu27-008xrJ-4I; Thu, 03 Sep 2020 19:32:27 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Jason Cooper <jason@lakedaemon.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Valentin Schneider <valentin.schneider@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v2 1/4] genirq: Walk the irq_data hierarchy when resending an interrupt
-Date:   Thu,  3 Sep 2020 19:32:03 +0100
-Message-Id: <20200903183206.104838-2-maz@kernel.org>
+Subject: [PATCH v2 2/4] irqchip/gic-v2, v3: Implement irq_chip->irq_retrigger()
+Date:   Thu,  3 Sep 2020 19:32:04 +0100
+Message-Id: <20200903183206.104838-3-maz@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200903183206.104838-1-maz@kernel.org>
 References: <20200903183206.104838-1-maz@kernel.org>
@@ -51,48 +51,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On resending an interrupt, we only check the topmost irqchip for
-a irq_retrigger callback. However, this callback could be implemented
-at a lower level. Use irq_chip_retrigger_hierarchy() in this case.
+From: Valentin Schneider <valentin.schneider@arm.com>
 
+While digging around IRQCHIP_EOI_IF_HANDLED and irq/resend.c, it has come
+to my attention that the IRQ resend situation seems a bit precarious for
+the GIC(s).
+
+When marking an IRQ with IRQS_PENDING, handle_fasteoi_irq() will bail out
+and issue an irq_eoi(). Should the IRQ in question be re-enabled,
+check_irq_resend() will trigger a SW resend, which will go through the flow
+handler again and issue *another* irq_eoi() on the *same* IRQ
+activation. This is something the GIC spec clearly describes as a bad idea:
+any EOI must match a previous ACK.
+
+Implement irq_chip.irq_retrigger() for the GIC chips by setting the GIC
+pending bit of the relevant IRQ. After being called by check_irq_resend(),
+this will eventually trigger a *new* interrupt which we will handle as usual.
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200730170321.31228-2-valentin.schneider@arm.com
 ---
- kernel/irq/resend.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-gic-v3.c | 7 +++++++
+ drivers/irqchip/irq-gic.c    | 6 ++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/kernel/irq/resend.c b/kernel/irq/resend.c
-index c48ce19a257f..8ccd32a0cc80 100644
---- a/kernel/irq/resend.c
-+++ b/kernel/irq/resend.c
-@@ -86,6 +86,18 @@ static int irq_sw_resend(struct irq_desc *desc)
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 324f280ff606..b507bc7c5cda 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -1207,6 +1207,11 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+ #define gic_smp_init()		do { } while(0)
+ #endif
+ 
++static int gic_retrigger(struct irq_data *data)
++{
++	return !gic_irq_set_irqchip_state(data, IRQCHIP_STATE_PENDING, true);
++}
++
+ #ifdef CONFIG_CPU_PM
+ static int gic_cpu_pm_notifier(struct notifier_block *self,
+ 			       unsigned long cmd, void *v)
+@@ -1242,6 +1247,7 @@ static struct irq_chip gic_chip = {
+ 	.irq_eoi		= gic_eoi_irq,
+ 	.irq_set_type		= gic_set_type,
+ 	.irq_set_affinity	= gic_set_affinity,
++	.irq_retrigger          = gic_retrigger,
+ 	.irq_get_irqchip_state	= gic_irq_get_irqchip_state,
+ 	.irq_set_irqchip_state	= gic_irq_set_irqchip_state,
+ 	.irq_nmi_setup		= gic_irq_nmi_setup,
+@@ -1258,6 +1264,7 @@ static struct irq_chip gic_eoimode1_chip = {
+ 	.irq_eoi		= gic_eoimode1_eoi_irq,
+ 	.irq_set_type		= gic_set_type,
+ 	.irq_set_affinity	= gic_set_affinity,
++	.irq_retrigger          = gic_retrigger,
+ 	.irq_get_irqchip_state	= gic_irq_get_irqchip_state,
+ 	.irq_set_irqchip_state	= gic_irq_set_irqchip_state,
+ 	.irq_set_vcpu_affinity	= gic_irq_set_vcpu_affinity,
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index a27ba2cc1dce..e92ee2b6d7a5 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -347,6 +347,11 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
  }
  #endif
  
-+static int try_retrigger(struct irq_desc *desc)
++static int gic_retrigger(struct irq_data *data)
 +{
-+	if (desc->irq_data.chip->irq_retrigger)
-+		return desc->irq_data.chip->irq_retrigger(&desc->irq_data);
-+
-+#ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
-+	return irq_chip_retrigger_hierarchy(&desc->irq_data);
-+#else
-+	return 0;
-+#endif
++	return !gic_irq_set_irqchip_state(data, IRQCHIP_STATE_PENDING, true);
 +}
 +
- /*
-  * IRQ resend
-  *
-@@ -113,8 +125,7 @@ int check_irq_resend(struct irq_desc *desc, bool inject)
- 
- 	desc->istate &= ~IRQS_PENDING;
- 
--	if (!desc->irq_data.chip->irq_retrigger ||
--	    !desc->irq_data.chip->irq_retrigger(&desc->irq_data))
-+	if (!try_retrigger(desc))
- 		err = irq_sw_resend(desc);
- 
- 	/* If the retrigger was successfull, mark it with the REPLAY bit */
+ static void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
+ {
+ 	u32 irqstat, irqnr;
+@@ -417,6 +422,7 @@ static const struct irq_chip gic_chip = {
+ 	.irq_unmask		= gic_unmask_irq,
+ 	.irq_eoi		= gic_eoi_irq,
+ 	.irq_set_type		= gic_set_type,
++	.irq_retrigger          = gic_retrigger,
+ 	.irq_get_irqchip_state	= gic_irq_get_irqchip_state,
+ 	.irq_set_irqchip_state	= gic_irq_set_irqchip_state,
+ 	.flags			= IRQCHIP_SET_TYPE_MASKED |
 -- 
 2.28.0
 
