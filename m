@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B34525CA65
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E3C25CB35
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729492AbgICUbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
+        id S1729736AbgICUjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgICUbM (ORCPT
+        with ESMTP id S1729418AbgICUbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:12 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EF2C061244;
-        Thu,  3 Sep 2020 13:31:03 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id w2so4134457wmi.1;
-        Thu, 03 Sep 2020 13:31:03 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:14 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF073C061249;
+        Thu,  3 Sep 2020 13:31:04 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id z4so4590122wrr.4;
+        Thu, 03 Sep 2020 13:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=s1wxiSXb6FjGblsvKrZYztMSCVGGVQHB+0DmuQ/lyxA=;
-        b=OL+plDQh20KZVwoejg2KN9X8Hq8GnRM55YHAPi2BYf4c8ALvLa7S3EudTejkposcwT
-         eMojv4lnaCgJ+oxKEaQQPQ5jdKhnHG6ScRtydzpzxok6b3Y70tWKSpHJ5rdil5Av/p1L
-         CWnagXRlwS4nPowKltK66LMVDCtEa/1CgxCuC09qMce/jwOohzIoJLXv/gy284vD6YE4
-         9rK+KuZMkHvR8yKRw7UpNyZAeyiBFpzF5tFtJCSNKcBvW4Zj843GrYfySVwBOwdqT3Q/
-         GSdSHcBx698Y6NltRrlmRAeCZzY0Jcpnl07q8IS9WvnXb4Xg8OLk5HRSTarBW1pRgpOI
-         i2ZQ==
+        bh=7kdiKWYhgrXc/dLuy4QmJOJzV5nCR1FMn7KxcL86B2g=;
+        b=BEfs4xSHwizz77U6lZSX3/6eX7M1nJLZidrzep+rfN5H0CTn46/t6zj/VgByNR5PVq
+         NqvQCsx6atSOtJDMg+oEghtNF/7K4Al6FoAntExLKy3rkLHNunpNVRWQutA29C6lhA74
+         mW3aeEbg+BzC1eUyR6eAUMkbaWBqx9k1rCnaGBCu+i+x08o7rF8awZ3Xk6BbhUuOQnA8
+         xSdq+8MxZSHZV5P3dY0baUdTucgnGBh1gC1q0T2UdJsCnCBV7fKjwj9ju6je6To/zL4q
+         ZEUWDsTUgpad2o+tvBjkqJR30pPm+UFhFcNxKxCA83M/U8tkEOxFetw5Y6zxcGK95V8/
+         s4vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=s1wxiSXb6FjGblsvKrZYztMSCVGGVQHB+0DmuQ/lyxA=;
-        b=IeD9Lshkejhskn2Gk6w1pMHniKOLCrt5wJ2m0bxGk2I0zKomKIWtGXC3u8y7if/2/A
-         un1bZoiPHGsdzT0vu/MtmJyLX0/PCNtZO0OENOOp+8MmV6bfi/+/FpqP8JbaHtamT/Cs
-         iP8NFDtp2VUt4SExKLDc0UuQQehL6i5G8ZoHif62kLT5xva8ii8wTVTPmEDN9CP15As8
-         GqqNu67ygK/+4st/KiZfmZ1hRfg3NNziMe/FVE8vUXdOFj+YjECvTYdMDF2vJYTr2M4s
-         Psv+HU3t5AZqyo5CaLPRzRQokQA71UKc5bbz5pf7dcTAKtq8GsVC8Gvriino8mzDEf+f
-         tN1Q==
-X-Gm-Message-State: AOAM532zXtPZVDXhKbPLyYeVd26TktxOaTOfQzbq2CyYIyeqPuOb6Ai7
-        liNrqjiDidFlfpHdmPWYXSM=
-X-Google-Smtp-Source: ABdhPJzkXCUBILkMkPYop6qSrxQHWedhn7UttMrdppk/1h8lrO7MVqPiA9PFSyj4oQrk9Zgvnb+jzw==
-X-Received: by 2002:a1c:f30f:: with SMTP id q15mr4187654wmq.60.1599165062201;
-        Thu, 03 Sep 2020 13:31:02 -0700 (PDT)
+        bh=7kdiKWYhgrXc/dLuy4QmJOJzV5nCR1FMn7KxcL86B2g=;
+        b=B6Q4S8xz19VyJ/r6fjU532i5GOLjZF/H+b0FNjMlev4qSnmrRA1yCL5lERPp3IMY77
+         cA9PFaIR7cfXIAjDovJw4HPOCLBN8mgwI5NlHDDIsEO5pPJmmqR9u02KyU4viONXK7N3
+         burEz3Kjzb6sHZT/RtYuOHR3fOeKNJByD6JGjT+aBgpprrsOzI3EMFy5dzBj3Gf5WmgQ
+         vV55q3tIjdbgDTS86lUeAHLDlUgJZhn3MfbxMl1FmErri18QyH6KrTYmCo1sG0GV8WaN
+         wiyaqAzxyGb0/11IvAxutKdHETRu7I7InvgkPjka5Q/Rbe53uV3pky/mbu9oFpU/kfba
+         CoLg==
+X-Gm-Message-State: AOAM531uK5GFcsOW3NcpkSog51CBTt903GkwOvLKGFBWm4xm2dbA5BlO
+        x98/ZuxTOvlXkB/fMynqj+4=
+X-Google-Smtp-Source: ABdhPJyHugEjh1cQ8tGklBO7HKq6sQdT5S677ENDwIMCGD+BQJiogorF4mbzeAz92BSVsCqAUPChIw==
+X-Received: by 2002:a5d:69cd:: with SMTP id s13mr4084522wrw.379.1599165063464;
+        Thu, 03 Sep 2020 13:31:03 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.31.01
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.31.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:31:01 -0700 (PDT)
+        Thu, 03 Sep 2020 13:31:02 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -59,10 +59,11 @@ Cc:     devicetree@vger.kernel.org,
         Takashi Iwai <tiwai@suse.com>,
         Marcus Cooper <codekipper@gmail.com>,
         linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        Ondrej Jirman <megous@megous.com>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 16/20] arm64: dts: allwinner: a64: Add HDMI audio to Pine64
-Date:   Thu,  3 Sep 2020 22:30:30 +0200
-Message-Id: <20200903203034.1057334-17-peron.clem@gmail.com>
+Subject: [PATCH v2 17/20] arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
+Date:   Thu,  3 Sep 2020 22:30:31 +0200
+Message-Id: <20200903203034.1057334-18-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
 References: <20200903203034.1057334-1-peron.clem@gmail.com>
@@ -74,21 +75,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Ondrej Jirman <megous@megous.com>
 
-Enable HDMI audio on Pine64.
+The board has HDMI output, enable audio on it.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts | 8 ++++++++
+ arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index 2165f238af13..c5939ba52f19 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -99,6 +99,10 @@ hdmi_out_con: endpoint {
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
+index 7d7aad18f078..e6ed8774a17f 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
+@@ -144,6 +144,14 @@ hdmi_out_con: endpoint {
  	};
  };
  
@@ -96,20 +97,13 @@ index 2165f238af13..c5939ba52f19 100644
 +	status = "okay";
 +};
 +
- &i2c1 {
- 	status = "okay";
- };
-@@ -107,6 +111,10 @@ &i2c1_pins {
- 	bias-pull-up;
- };
- 
 +&i2s2 {
 +	status = "okay";
 +};
 +
- &mdio {
- 	ext_rmii_phy1: ethernet-phy@1 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
+ &ir {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&r_ir_rx_pin>;
 -- 
 2.25.1
 
