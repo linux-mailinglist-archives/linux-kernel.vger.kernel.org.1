@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2651225C05B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB58D25C06C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgICLbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:31:50 -0400
-Received: from crapouillou.net ([89.234.176.41]:51138 "EHLO crapouillou.net"
+        id S1728681AbgICLf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:35:29 -0400
+Received: from crapouillou.net ([89.234.176.41]:51336 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728562AbgICL3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:29:06 -0400
+        id S1728589AbgICLaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:30:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132370; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599132376; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ruSiYGMYEYwNR6DS0j0tVkBt7LK6N4xlExna60GJosA=;
-        b=FxZYS6z3pPyZLRrUjh2dW2tB5f2tjvTCsiK/chiWBa/qXenSG+eYjMmtI66CraPCt3V2Ar
-        fu+8Mhe20Q9WGLKBy/kMAeqWTuvZ1iEf8F9CITOWigjXBmDiXsNDu9Vn6QAjG47KG6l3T6
-        VqobcZ0NBnJeO4Bg5XZ946SGd9K0G7Y=
+        bh=LJlqqFXg/MOSyVPsBSEVTxCBPa0T4MkeyfIM49qM1g0=;
+        b=b+pvUnRtEmJmpiSgtZPGUBj4jbeHQi4WsVy7CavoSjIUC28Cc4MpspoqZpIKRfwIrkBLBs
+        RZkLN2dTM0yjA5rbk4otHIJt/lwY0is9oymHiRp5Mtl0pDgiVY5erZzlOwmsrH4ojxsLZ8
+        ct0D39tVUdLlv8sq6t7DbOx5TANfc3Q=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Chen <Peter.Chen@nxp.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 03/20] usb/host: ehci-npcm7xx: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:37 +0200
-Message-Id: <20200903112554.34263-4-paul@crapouillou.net>
+Subject: [PATCH 05/20] usb/cdns3: core: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:39 +0200
+Message-Id: <20200903112554.34263-6-paul@crapouillou.net>
 In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
 References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -64,48 +64,55 @@ simply be discarded by the compiler.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/usb/host/ehci-npcm7xx.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/usb/cdns3/core.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-npcm7xx.c b/drivers/usb/host/ehci-npcm7xx.c
-index adaf8fb4b459..6b5a7a873e01 100644
---- a/drivers/usb/host/ehci-npcm7xx.c
-+++ b/drivers/usb/host/ehci-npcm7xx.c
-@@ -37,8 +37,7 @@ static const char hcd_name[] = "npcm7xx-ehci";
- 
- static struct hc_driver __read_mostly ehci_npcm7xx_hc_driver;
- 
--#ifdef CONFIG_PM_SLEEP
--static int ehci_npcm7xx_drv_suspend(struct device *dev)
-+static int __maybe_unused ehci_npcm7xx_drv_suspend(struct device *dev)
- {
- 	struct usb_hcd *hcd = dev_get_drvdata(dev);
- 	bool do_wakeup = device_may_wakeup(dev);
-@@ -46,14 +45,13 @@ static int ehci_npcm7xx_drv_suspend(struct device *dev)
- 	return ehci_suspend(hcd, do_wakeup);
- }
- 
--static int ehci_npcm7xx_drv_resume(struct device *dev)
-+static int __maybe_unused ehci_npcm7xx_drv_resume(struct device *dev)
- {
- 	struct usb_hcd *hcd = dev_get_drvdata(dev);
- 
- 	ehci_resume(hcd, false);
+diff --git a/drivers/usb/cdns3/core.c b/drivers/usb/cdns3/core.c
+index 5c1586ec7824..dacab9e9ef92 100644
+--- a/drivers/usb/cdns3/core.c
++++ b/drivers/usb/cdns3/core.c
+@@ -546,9 +546,7 @@ static int cdns3_remove(struct platform_device *pdev)
  	return 0;
  }
--#endif /* CONFIG_PM_SLEEP */
  
- static SIMPLE_DEV_PM_OPS(ehci_npcm7xx_pm_ops, ehci_npcm7xx_drv_suspend,
- 		ehci_npcm7xx_drv_resume);
-@@ -183,7 +181,7 @@ static struct platform_driver npcm7xx_ehci_hcd_driver = {
+-#ifdef CONFIG_PM_SLEEP
+-
+-static int cdns3_suspend(struct device *dev)
++static int __maybe_unused cdns3_suspend(struct device *dev)
+ {
+ 	struct cdns3 *cdns = dev_get_drvdata(dev);
+ 	unsigned long flags;
+@@ -568,7 +566,7 @@ static int cdns3_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int cdns3_resume(struct device *dev)
++static int __maybe_unused cdns3_resume(struct device *dev)
+ {
+ 	struct cdns3 *cdns = dev_get_drvdata(dev);
+ 	unsigned long flags;
+@@ -588,11 +586,8 @@ static int cdns3_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-#endif
+ 
+-static const struct dev_pm_ops cdns3_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(cdns3_suspend, cdns3_resume)
+-};
++static SIMPLE_DEV_PM_OPS(cdns3_pm_ops, cdns3_suspend, cdns3_resume);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id of_cdns3_match[] = {
+@@ -608,7 +603,7 @@ static struct platform_driver cdns3_driver = {
  	.driver		= {
- 		.name = "npcm7xx-ehci",
- 		.bus = &platform_bus_type,
--		.pm = &ehci_npcm7xx_pm_ops,
-+		.pm = pm_ptr(&ehci_npcm7xx_pm_ops),
- 		.of_match_table = npcm7xx_ehci_id_table,
- 	}
+ 		.name	= "cdns-usb3",
+ 		.of_match_table	= of_match_ptr(of_cdns3_match),
+-		.pm	= &cdns3_pm_ops,
++		.pm	= pm_ptr(&cdns3_pm_ops),
+ 	},
  };
+ 
 -- 
 2.28.0
 
