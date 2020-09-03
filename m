@@ -2,148 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B961E25CC9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA95825CCA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgICVr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 17:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgICVr0 (ORCPT
+        id S1729408AbgICVsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 17:48:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31394 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729212AbgICVsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 17:47:26 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB35C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 14:47:26 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 17so3396714pfw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 14:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sW3+i9jb9GQGw/rihL3rmHov3DBg+oJBsubVzV/94sk=;
-        b=dNJhSL8+ekFbBcMLYdOiVh2ALsNUoTTm1VSxi4CeqOTnyYIMwnEHHJ7S/BtXgtuNOk
-         9HqSyGbwVU8WVdgO3Jvvq84XO+8XGzQl7x2oGWzDQCtlULUhdTtXclp3ZyOgcr4wIXRy
-         ix3S72ob+JcdrTSNj6CS0A74L/1LVWKFX9qdU=
+        Thu, 3 Sep 2020 17:48:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599169679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oBrynNccaVwKMAHtYaWvrpJ0iV4f205Vo+3SkjyLb1M=;
+        b=WkeyVDi3uPoTBtLXVFs6s5fI46CSwjklz/r91HEZwaxiNm2bd3WYUorsEhLsgfE9/od9Zz
+        1/BorK/dQYWgCxlajJE3fc703HQLVyFyKMFTWb8MksHup35m+u4U5AQgyRn4nBhxj/q+YB
+        MglUjzR188eK8RA0vTq5GVvJvoEzGpY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-AryxePWNPjW_21-GRIyMdA-1; Thu, 03 Sep 2020 17:47:57 -0400
+X-MC-Unique: AryxePWNPjW_21-GRIyMdA-1
+Received: by mail-wm1-f72.google.com with SMTP id x6so1429225wmb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 14:47:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sW3+i9jb9GQGw/rihL3rmHov3DBg+oJBsubVzV/94sk=;
-        b=DUXuG8Sl7Pkfh5J5yI32wm9KFjquA4BhQIPJQT40/qXvgPu8BrmQ+RkSgoef+7MgQp
-         uITF8W7wrXpRrExqk6HLFzRKk1dJi4uMJnhlPVvNyJcVH+99k99aEvEfAQ08ctdBL+6R
-         Q2Q/8i8r0U6WwZnTVoSdg6GeRNCWfauwT/DL4NZ8U6j/njOj30EwD5At/gk50Pk4cEmO
-         5AMwdxUHfmCoU5G1gWsoBU8rvyu5Qlf2pq9jHChr32dFPICWTzxKZjT+kIGOvIZwSbus
-         76tmbmbP77wmeVy5uERZTo0LWmFnhPV0A998fOjlg7Bp2uNx+gMaSarQDOL76KqAgmaZ
-         2gTg==
-X-Gm-Message-State: AOAM533AuOVrszvNrL5nYYAvQY3ED1/47WKpHn2Yd7x3NFhTVmCoW+fb
-        yiWthkTKIOIzvivbZA/gD0+yGg==
-X-Google-Smtp-Source: ABdhPJxA6AeZszGsabAFYmE7VAtam1/8zONcRaynFdaMlGHOxLgKqDQnRgIOet6kCjwYkvC+MGEMtQ==
-X-Received: by 2002:a63:e157:: with SMTP id h23mr4839131pgk.239.1599169646252;
-        Thu, 03 Sep 2020 14:47:26 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e1sm3391485pjv.17.2020.09.03.14.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 14:47:25 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 14:47:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 03/28] lib/string.c: implement stpcpy
-Message-ID: <202009031446.3865FE82B@keescook>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200903203053.3411268-1-samitolvanen@google.com>
- <20200903203053.3411268-4-samitolvanen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oBrynNccaVwKMAHtYaWvrpJ0iV4f205Vo+3SkjyLb1M=;
+        b=ZdWqylqJlcO6QOyBH5zw19JvvFcLzKCDWkzOglEbiG/3pBbToB9u0Vpy/pOBVFuWS8
+         bjPWP7shYUh8KB3WK0YD3TLMewmI24xYXJ962gBcOBscTDdl7vIvQCHCUGeq/zz91sEo
+         erWzOgi8ymDwhNGgCpUFk7p7vrNfIhuVSyPEKCkX6lsooKKRvaxDZd17pn/Bybvtf1Qu
+         gdg5GuVrEYt5mpYa0lC+WkwXTwlfHYCf1S1lKB8GjsSFXOd0YRov1r+wYjGXvYSeX+Ps
+         DSO5y0o4vV19ZHGDUBZ8IURKso85d4RMguJnZYuG8yBPa5smxU4rVLIXX2SBWpTcZmXM
+         PorA==
+X-Gm-Message-State: AOAM532HZrDlxmnDctbm7cqZIwkzJc72BPGp/Jyi/StCog6aLxM9lCXN
+        QxJCMJ1FrpQ7g7VyhheSkBQuNuOVqTwTxupzGGXsuwscACPfuRYAqy5jvbbAumFijFVgelvyTCJ
+        p0zQFiEWT8T1JC0ecnC7EtdeDzItmTJs9csXkza6S
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4395616wmh.152.1599169676209;
+        Thu, 03 Sep 2020 14:47:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzfurQNCgokDtRoLPRuHgAybZLnKZ8B+2PgntmWzIP1k1DncX3kyUDbDZW6vrGvGz+eL5DynJVwhOUzgUE9+X8=
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4395604wmh.152.1599169676019;
+ Thu, 03 Sep 2020 14:47:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903203053.3411268-4-samitolvanen@google.com>
+References: <20200903165632.1338996-1-agruenba@redhat.com> <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
+In-Reply-To: <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Thu, 3 Sep 2020 23:47:44 +0200
+Message-ID: <CAHc6FU5zwQTBaGVban6tCH7kNwr+NiW-_oKC1j0vmqbWAWx50g@mail.gmail.com>
+Subject: Re: [PATCH] iomap: Fix direct I/O write consistency check
+To:     Eric Sandeen <sandeen@sandeen.net>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-ext4 <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 01:30:28PM -0700, Sami Tolvanen wrote:
-> From: Nick Desaulniers <ndesaulniers@google.com>
-> 
-> LLVM implemented a recent "libcall optimization" that lowers calls to
-> `sprintf(dest, "%s", str)` where the return value is used to
-> `stpcpy(dest, str) - dest`. This generally avoids the machinery involved
-> in parsing format strings.  `stpcpy` is just like `strcpy` except it
-> returns the pointer to the new tail of `dest`.  This optimization was
-> introduced into clang-12.
-> 
-> Implement this so that we don't observe linkage failures due to missing
-> symbol definitions for `stpcpy`.
-> 
-> Similar to last year's fire drill with:
-> commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
-> 
-> The kernel is somewhere between a "freestanding" environment (no full libc)
-> and "hosted" environment (many symbols from libc exist with the same
-> type, function signature, and semantics).
-> 
-> As H. Peter Anvin notes, there's not really a great way to inform the
-> compiler that you're targeting a freestanding environment but would like
-> to opt-in to some libcall optimizations (see pr/47280 below), rather than
-> opt-out.
-> 
-> Arvind notes, -fno-builtin-* behaves slightly differently between GCC
-> and Clang, and Clang is missing many __builtin_* definitions, which I
-> consider a bug in Clang and am working on fixing.
-> 
-> Masahiro summarizes the subtle distinction between compilers justly:
->   To prevent transformation from foo() into bar(), there are two ways in
->   Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
->   only one in GCC; -fno-buitin-foo.
-> 
-> (Any difference in that behavior in Clang is likely a bug from a missing
-> __builtin_* definition.)
-> 
-> Masahiro also notes:
->   We want to disable optimization from foo() to bar(),
->   but we may still benefit from the optimization from
->   foo() into something else. If GCC implements the same transform, we
->   would run into a problem because it is not -fno-builtin-bar, but
->   -fno-builtin-foo that disables that optimization.
-> 
->   In this regard, -fno-builtin-foo would be more future-proof than
->   -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
->   may want to prevent calls from foo() being optimized into calls to
->   bar(), but we still may want other optimization on calls to foo().
-> 
-> It seems that compilers today don't quite provide the fine grain control
-> over which libcall optimizations pseudo-freestanding environments would
-> prefer.
-> 
-> Finally, Kees notes that this interface is unsafe, so we should not
-> encourage its use.  As such, I've removed the declaration from any
-> header, but it still needs to be exported to avoid linkage errors in
-> modules.
-> 
-> Reported-by: Sami Tolvanen <samitolvanen@google.com>
-> Suggested-by: Andy Lavr <andy.lavr@gmail.com>
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Joe Perches <joe@perches.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Thu, Sep 3, 2020 at 11:12 PM Eric Sandeen <sandeen@sandeen.net> wrote:
+> On 9/3/20 11:56 AM, Andreas Gruenbacher wrote:
+> > When a direct I/O write falls back to buffered I/O entirely, dio->size
+> > will be 0 in iomap_dio_complete.  Function invalidate_inode_pages2_range
+> > will try to invalidate the rest of the address space.
+>
+> (Because if ->size == 0 and offset == 0, then invalidating up to (0+0-1) will
+> invalidate the entire range.)
+>
+>
+>                 err = invalidate_inode_pages2_range(inode->i_mapping,
+>                                 offset >> PAGE_SHIFT,
+>                                 (offset + dio->size - 1) >> PAGE_SHIFT);
+>
+> so I guess this behavior is unique to writing to a hole at offset 0?
+>
+> FWIW, this same test yields the same results on ext3 when it falls back to
+> buffered.
 
-As you mentioned, this is in -next already (via -mm). I think I sent a
-tag for this before, but maybe akpm missed it, so for good measure:
+That's interesting. An ext3 formatted filesystem will invoke
+dio_warn_stale_pagecache and thus log the error message, but the error
+isn't immediately reported by the "pwrite 0 4k". It takes adding '-c
+"fsync"' to the xfs_io command or similar to make it fail.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+An ext4 formatted filesystem doesn't show any of these problems.
 
--- 
-Kees Cook
+Thanks,
+Andreas
+
+> -Eric
+>
+> > If there are any
+> > dirty pages in that range, the write will fail and a "Page cache
+> > invalidation failure on direct I/O" error will be logged.
+> >
+> > On gfs2, this can be reproduced as follows:
+> >
+> >   xfs_io \
+> >     -c "open -ft foo" -c "pwrite 4k 4k" -c "close" \
+> >     -c "open -d foo" -c "pwrite 0 4k"
+> >
+> > Fix this by recognizing 0-length writes.
+> >
+> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > ---
+> >  fs/iomap/direct-io.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > index c1aafb2ab990..c9d6b4eecdb7 100644
+> > --- a/fs/iomap/direct-io.c
+> > +++ b/fs/iomap/direct-io.c
+> > @@ -108,7 +108,7 @@ static ssize_t iomap_dio_complete(struct iomap_dio *dio)
+> >        * ->end_io() when necessary, otherwise a racing buffer read would cache
+> >        * zeros from unwritten extents.
+> >        */
+> > -     if (!dio->error &&
+> > +     if (!dio->error && dio->size &&
+> >           (dio->flags & IOMAP_DIO_WRITE) && inode->i_mapping->nrpages) {
+> >               int err;
+> >               err = invalidate_inode_pages2_range(inode->i_mapping,
+> >
+>
+
