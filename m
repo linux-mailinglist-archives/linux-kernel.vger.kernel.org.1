@@ -2,211 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C36125C3D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6674325C3D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbgICO7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60768 "EHLO
+        id S1729487AbgICO7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729101AbgICOHH (ORCPT
+        with ESMTP id S1729102AbgICOHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:07:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4685C0610E3;
-        Thu,  3 Sep 2020 06:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HMKdcBAh3Qfsb0YqV9KE1AdBeTa9W/Y2t3RJ7FugT60=; b=j+QW6nUzroNn72HmxKzqjWDO5S
-        NWwyKermXl6fL1UShM1HWUPvHIV2VIC61NK+tJPlQRgbUknfX0vL45DhVcnFsWSUHk8HyK/8ECR1j
-        8+8hm8yUaQRdj6wv2p+8RHIZ28gNkNG1iXSl0/vv0liO/UhJx2SDdQnywRYDUxMehPBrvx+dElVDu
-        +G3fDh/zuuQs1ELn9WRIGouAYkJXP2cZI3UadK89ovYuIhezQzpPZp5Ik3CKgqCxrX0hXW08muef1
-        0tTDaI96K+tEE1jjCVH5g6SluGC4xrhyijttNv08u4guRe3iaUCPcfKe47q1uJ6mgOrT/0lKotz6o
-        4x4yk5pg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDpgU-0002gF-IL; Thu, 03 Sep 2020 13:53:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B8EFE300F7A;
-        Thu,  3 Sep 2020 15:53:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9ABEA2BB8B563; Thu,  3 Sep 2020 15:53:47 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 15:53:47 +0200
-From:   peterz@infradead.org
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Saravana Kannan <saravanak@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        madhuparnabhowmik10@gmail.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [RFC][PATCH] cpu_pm: Remove RCU abuse
-Message-ID: <20200903135347.GC1362448@hirez.programming.kicks-ass.net>
-References: <20200901104206.GU1362448@hirez.programming.kicks-ass.net>
- <CAPDyKFo0VkW-cgRSkvPQ0whpuJCo4OKcL1nmH7nz1tDEChOtVg@mail.gmail.com>
- <CAPDyKFrv+DTF8=twZZk_tenB-sLg6H-CFn9HVDVA5S2kK2=U5Q@mail.gmail.com>
- <20200901154417.GD20303@codeaurora.org>
- <20200901155014.GF2674@hirez.programming.kicks-ass.net>
- <20200901161340.GC29330@paulmck-ThinkPad-P72>
- <20200901174216.GJ29142@worktop.programming.kicks-ass.net>
- <CAPDyKFqPh7bg16AsitGv2QQHgwOPnWx9DiPPCMuD1EGA5TFFdg@mail.gmail.com>
- <20200902121355.GE1362448@hirez.programming.kicks-ass.net>
- <CAPDyKFrGj+8hOXi7sWxWNv2QP0=mx9pFKLG0JM-L5VNKUPDgeA@mail.gmail.com>
+        Thu, 3 Sep 2020 10:07:52 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E46C0610E4;
+        Thu,  3 Sep 2020 06:54:53 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y4so3790261ljk.8;
+        Thu, 03 Sep 2020 06:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vZF87zSk1oleEIGJMMtf9vb52AVAs8bIBPfRdsKpf5Q=;
+        b=qbBhVlVNvPmvqPx5v6F58TSakj6W9nFXHWjRE5NqtqVKAmw1K0JWbEqfA+/gd42S91
+         JXUVEaLb+Qfzk7NxCRl2cx+HjSOJu+vak0Cgh8OfdcWhhjCfgpekxBq+wRNMHQePEi8h
+         8ZwypTxHgr1tfi6Dy39W4aPoapfsvFO4PJ0dcdZlUCshhuNTCxFoTIg7Lzc//2PyTOnp
+         FKi1mTlOqecL8AFYe1fwhDp/o3pRJoPSjqrIwn/ymFoeklQRoHTQIyLu4Bql28tB2alb
+         MOodx4J/fpQLZWLDd97dtmOxL9uEb556nMBT5Yw8dgDd/R56+juVdP5ltP/5ASdyHBwT
+         ej6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vZF87zSk1oleEIGJMMtf9vb52AVAs8bIBPfRdsKpf5Q=;
+        b=raicgMClrd22+iH5Mo574nTj558eGHzEYvzAxyY4okrOAbUVwmf65ToIQTLtSop8e1
+         NAI61/2JM7o5U/c2rG/rI9uE//49LrZcN0xvKuKopzrO6+URUVmhKYS12/X2pD8aYSkq
+         r1wcJxs/ev5OPFCDK3IfxQrSrb9qu5WrvpcCWxqC5rnujpt88WB4UunhIRj0bnHbxmEv
+         OvNmjVMgVT+b07JLgvRgA1mrLSf3K0ikoJTTlqAuDXzitnwanFfL9Q0sKVdQASLFoX9Q
+         WaKsvWqqPwMIU2CpGhunX17GYP8psBMowLXdCGLhjx1LPCu049PnBDNHgafDuuTEfqNF
+         eQYA==
+X-Gm-Message-State: AOAM533mKuVPbLRmP5evj1nC/N9t31HGX89RgAuA+Ol2qiSxeE+5E/uq
+        tXUZkzq/mhlii8lWcKYRoTwrqhlfpG0=
+X-Google-Smtp-Source: ABdhPJxttIN1R0lpLrPnWhXTqIN++Y7J5bfgO+/vIsXA2S2Frc33+/pts+ZC/vmRHdqA6RYrchDvSA==
+X-Received: by 2002:a2e:911:: with SMTP id 17mr1452833ljj.207.1599141291562;
+        Thu, 03 Sep 2020 06:54:51 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id t16sm637505ljo.27.2020.09.03.06.54.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 06:54:50 -0700 (PDT)
+Subject: Re: [PATCH v3 04/22] i2c: tegra: Don't ignore tegra_i2c_flush_fifos()
+ error
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200903005300.7894-1-digetx@gmail.com>
+ <20200903005300.7894-5-digetx@gmail.com>
+ <CAHp75Vf9P9L1uM+he63D5H+-V3Zwv3jRiKTrXmtB4Sxuk9SC9A@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <60b6b0c7-48fe-4cfa-2408-17b2182e1cc2@gmail.com>
+Date:   Thu, 3 Sep 2020 16:54:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFrGj+8hOXi7sWxWNv2QP0=mx9pFKLG0JM-L5VNKUPDgeA@mail.gmail.com>
+In-Reply-To: <CAHp75Vf9P9L1uM+he63D5H+-V3Zwv3jRiKTrXmtB4Sxuk9SC9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 05:58:55PM +0200, Ulf Hansson wrote:
-> On Wed, 2 Sep 2020 at 14:14, <peterz@infradead.org> wrote:
-> >
-> > On Wed, Sep 02, 2020 at 09:03:37AM +0200, Ulf Hansson wrote:
-> > > Lots of cpuidle drivers are using CPU_PM notifiers (grep for
-> > > cpu_pm_enter and you will see) from their idlestates ->enter()
-> > > callbacks. And for those we are already calling
-> > > rcu_irq_enter_irqson|off() in cpu_pm_notify() when firing them.
-> >
-> > Yeah, that particular trainwreck is on my todo list already ... then
-> > again, that list is forever overflowing.
-> >
-> > I'm thinking cpu_pm_unregister_notifier() is not a common thing? The few
-> > I looked at seem to suggest 'never' is a good approximation.
+03.09.2020 14:09, Andy Shevchenko пишет:
+> On Thu, Sep 3, 2020 at 3:53 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> The tegra_i2c_flush_fifos() may fail and transfer should be aborted in
+>> this case.
 > 
-> The trend is that drivers are turning into regular modules that may
-> also need to manage "->remove()", which may mean unregistering the
-> notifier. Of course, I don't know for sure whether that becomes a
-> problem, but it seems quite limiting.
+> Sounds like a fix. To add to previous comment, fixes that are likely
+> to be backported should have Fixes: tags.
 
-You can pin modules, once they're loaded they can never be removed
-again.
-
-Anyway, the below should 'work', I think.
-
----
-diff --git a/kernel/cpu_pm.c b/kernel/cpu_pm.c
-index f7e1d0eccdbc..72804e0883d5 100644
---- a/kernel/cpu_pm.c
-+++ b/kernel/cpu_pm.c
-@@ -12,21 +12,18 @@
- #include <linux/notifier.h>
- #include <linux/spinlock.h>
- #include <linux/syscore_ops.h>
-+#include <linux/cpu.h>
-+#include <linux/smp.h>
- 
--static ATOMIC_NOTIFIER_HEAD(cpu_pm_notifier_chain);
-+static RAW_NOTIFIER_HEAD(cpu_pm_notifier_chain);
-+static DEFINE_SPINLOCK(cpu_pm_lock);
- 
- static int cpu_pm_notify(enum cpu_pm_event event)
- {
- 	int ret;
- 
--	/*
--	 * atomic_notifier_call_chain has a RCU read critical section, which
--	 * could be disfunctional in cpu idle. Copy RCU_NONIDLE code to let
--	 * RCU know this.
--	 */
--	rcu_irq_enter_irqson();
--	ret = atomic_notifier_call_chain(&cpu_pm_notifier_chain, event, NULL);
--	rcu_irq_exit_irqson();
-+	lockdep_assert_irqs_disabled();
-+	ret = raw_notifier_call_chain(&cpu_pm_notifier_chain, event, NULL);
- 
- 	return notifier_to_errno(ret);
- }
-@@ -35,9 +32,8 @@ static int cpu_pm_notify_robust(enum cpu_pm_event event_up, enum cpu_pm_event ev
- {
- 	int ret;
- 
--	rcu_irq_enter_irqson();
--	ret = atomic_notifier_call_chain_robust(&cpu_pm_notifier_chain, event_up, event_down, NULL);
--	rcu_irq_exit_irqson();
-+	lockdep_assert_irqs_disabled();
-+	ret = raw_notifier_call_chain_robust(&cpu_pm_notifier_chain, event_up, event_down, NULL);
- 
- 	return notifier_to_errno(ret);
- }
-@@ -54,10 +50,28 @@ static int cpu_pm_notify_robust(enum cpu_pm_event event_up, enum cpu_pm_event ev
-  */
- int cpu_pm_register_notifier(struct notifier_block *nb)
- {
--	return atomic_notifier_chain_register(&cpu_pm_notifier_chain, nb);
-+	unsigned long flags;
-+	int ret;
-+
-+	spin_lock_irqsave(&cpu_pm_lock, flags);
-+	ret = raw_notifier_chain_register(&cpu_pm_notifier_chain, nb);
-+	spin_unlock_irqrestore(&cpu_pm_lock, flags);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(cpu_pm_register_notifier);
- 
-+static bool __is_idle_cpu(int cpu, void *info)
-+{
-+	/*
-+	 * Racy as heck, however if we fail to see an idle task, it must be
-+	 * after we removed our element, so all is fine.
-+	 */
-+	return is_idle_task(curr_task(cpu));
-+}
-+
-+static void __nop_func(void *arg) { }
-+
- /**
-  * cpu_pm_unregister_notifier - unregister a driver with cpu_pm
-  * @nb: notifier block to be unregistered
-@@ -69,7 +83,30 @@ EXPORT_SYMBOL_GPL(cpu_pm_register_notifier);
-  */
- int cpu_pm_unregister_notifier(struct notifier_block *nb)
- {
--	return atomic_notifier_chain_unregister(&cpu_pm_notifier_chain, nb);
-+	unsigned long flags;
-+	int ret, cpu;
-+
-+	spin_lock_irqsave(&cpu_pm_lock, flags);
-+	ret = raw_notifier_chain_unregister(&cpu_pm_notifier_chain, nb);
-+	spin_unlock_irqrestore(&cpu_pm_lock, flags);
-+
-+	/*
-+	 * Orders the removal above vs the __is_idle_cpu() test below. Matches
-+	 * schedule() switching to the idle task.
-+	 *
-+	 * Ensures that if we miss an idle task, it must be after the removal.
-+	 */
-+	smp_mb();
-+
-+	/*
-+	 * IPI all idle CPUs, this guarantees that no CPU is currently
-+	 * iterating the notifier list.
-+	 */
-+	cpus_read_lock();
-+	on_each_cpu_cond(__is_idle_cpu, __nop_func, NULL, 1);
-+	cpus_read_unlock();
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(cpu_pm_unregister_notifier);
- 
+I'll reword the commit title and message in order to make it not to
+sound like this is a bug fix. Thanks!
