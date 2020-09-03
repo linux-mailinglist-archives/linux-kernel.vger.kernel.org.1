@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC70B25C241
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A3625C24F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729143AbgICOLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:11:09 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:35514 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728878AbgICOJr (ORCPT
+        id S1728954AbgICOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728731AbgICOMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:09:47 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083DNn7s114942;
-        Thu, 3 Sep 2020 08:23:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599139429;
-        bh=Sv1rjptrB/D2VFs2GCeWi3Odnsbw5rU6WNrwMZKxhHs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=v+6dHNu8LnhbD273WhVSkGuVpfpGe72WGQvK3jqyxZGTrLOZTw6HpUJbBg9gFtjJC
-         L15FaEd+2TOZxGO3cgyQk3R9C07r2pUrCp71Ghq7tT/Gc3nPtz/NWQOk+VDMhZFVsU
-         gA1KZsPu96NDaitpF0SOs1px9DPBzGkyQJQy9Y8k=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083DNnsT012472;
-        Thu, 3 Sep 2020 08:23:49 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
- 2020 08:23:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 3 Sep 2020 08:23:49 -0500
-Received: from [10.250.71.39] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083DNnMN023770;
-        Thu, 3 Sep 2020 08:23:49 -0500
-Subject: Re: [PATCH V2 1/8] arm64: dts: ti: k3-j721e: Use lower case
- hexadecimal
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <lokeshvutla@ti.com>,
-        <grygorii.strashko@ti.com>, <nsekhar@ti.com>
-References: <20200901223059.14801-1-nm@ti.com>
- <20200903130015.21361-2-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <39ebf70b-6ecb-3586-8786-fd2ce43c2e00@ti.com>
-Date:   Thu, 3 Sep 2020 08:23:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Sep 2020 10:12:38 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC627C0619CC;
+        Thu,  3 Sep 2020 06:25:26 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id h12so2132105pgm.7;
+        Thu, 03 Sep 2020 06:25:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8rBLHCW+xCPafeIkvVVQSL44AW9YIX51FOu10BKIiLw=;
+        b=OgiACbcbQ1ItN0Rs6SHierX23wZ3W0QcSSP6eHDn26H6ndV6FVvyAPfzddT63ATKJ0
+         j20K6Qun/pU/eTF15WCngzAcNZekk0cCrl5XV9cAScvAwA3M4JQrrdmh/0/XXJ1yYzc5
+         auls8Zngp7jLOtlmd6vlb/AQMblOo/0eoaP8Aft9XRyijNkiG/93XP9jlW8+HoTG5zTz
+         PgcXNTaXhjb+IOHaAL8TNTXE3sWpQ7gRKc3BTt9YcoactbZeouPK/MwojZhbkY3Ql8M6
+         5zc1xe4CjGj7XXJNE8lt/Rl2LsQnSUcXJdm6g69l1qbRYwnpzYqmwhMD3ifUehAFGv0J
+         spMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8rBLHCW+xCPafeIkvVVQSL44AW9YIX51FOu10BKIiLw=;
+        b=qdsjSrmKdsiukpSqogdso7HbbarUYCZd/pRFi8BO+0GCeBGilxM1XhR76oybwQ2pp4
+         SCgGtW+Nig6ueAUw+9Ecv3uVtw1ew0u9j2nZyn+qrpIJlX2C6SBOJ842XBYimxZ1wNbT
+         JJ3lw5kVXrMkPK5TZoTjUdMvMkV5pHRKxZQxE3SXtG1TB0q/g2KDGfRcsyhAybxdJo9y
+         QCcvRNdSmbmGpU6czpzOaOgoNHvfIrg51hsyEQK8ftbW+gAg+bvhPBXBwXEXCSJECScl
+         koZ3I6DkmRv05ATf2i3wH5QF4mUGqwjjrYeFhNyyQ3T7s6B0xHwfmwsgdv4r6mgBiTQS
+         I8yQ==
+X-Gm-Message-State: AOAM532jcwYqEBeNY+0IxlTXNK0F3DNkx6IpiCxB8SIPMehDtVr5q/He
+        UNjRqjmNIdpMnbBNU2LifFxKgTi1yX3cLk4fcR3ds1OcsbkFwEb/
+X-Google-Smtp-Source: ABdhPJzimILiNCSgnKp/qJ9/9071OtoXwPPCV8ZOTnov1Okg3uUJ9PSdnnWUgfLq+tSjngGf5i/NlRBPuXDUiWzdlSE=
+X-Received: by 2002:a17:902:b289:: with SMTP id u9mr3949007plr.226.1599139525682;
+ Thu, 03 Sep 2020 06:25:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200903130015.21361-2-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200903130950.6274-1-nish.malpani25@gmail.com> <20200903130950.6274-4-nish.malpani25@gmail.com>
+In-Reply-To: <20200903130950.6274-4-nish.malpani25@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Sep 2020 16:25:08 +0300
+Message-ID: <CAHp75VfReT-EjCV=cW8mV1MmoMPPdY9q1scoPwbD_DEHpQHd3g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] iio: gyro: adxrs290: Add debugfs register access support
+To:     Nishant Malpani <nish.malpani25@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        darius.berghe@analog.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<<< No Message Collected >>>
+On Thu, Sep 3, 2020 at 4:10 PM Nishant Malpani <nish.malpani25@gmail.com> wrote:
+>
+> Extend support to read/write byte data from/to the device using
+> debugfs iio interface.
+
+...
+
+> +static int adxrs290_reg_access(struct iio_dev *indio_dev, unsigned int reg,
+> +                              unsigned int writeval, unsigned int *readval)
+> +{
+> +       struct adxrs290_state *st = iio_priv(indio_dev);
+> +       int ret;
+> +
+> +       if (!readval)
+> +               return adxrs290_spi_write_reg(st->spi, reg, writeval);
+> +
+> +       ret = spi_w8r8(st->spi, ADXRS290_READ_REG(reg));
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       *readval = ret;
+> +
+> +       return 0;
+> +}
+
+Hmm... I would suggest to have it like
+
+adxrs290_reg_access_rw()
+{
+ ...
+ return 0;
+}
+
+adxrs290_reg_access()
+{
+ if (readval)
+  return adxrs290_reg_access_rw();
+ else // it's redundant, but someone can use for better formatting
+  return adxrs290_spi_write_reg();
+}
+
+-- 
+With Best Regards,
+Andy Shevchenko
