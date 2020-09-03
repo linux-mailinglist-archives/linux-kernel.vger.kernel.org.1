@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EA325C34F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C503E25C3B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgICOs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729283AbgICOWR (ORCPT
+        id S1729485AbgICO4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:56:40 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:46044 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728897AbgICOKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:22:17 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2DCC061A15
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 06:44:05 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n22so2734996edt.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XsPnpLathKjXprbkqY+YKBNSJFUri0XqOdwMusVjvXU=;
-        b=gT/XthbVd8CL1/XQCWf2oVysDBfnhEQ2b93QTis/AEooCJw9Ac3pkjj2Sl/rWyMgvZ
-         0Vyf1iHaeFVj7xVcqYSEEn8LH0GUDNm81bHwVAf011MvPvb34vUAm7476fTz41Ks6r4g
-         c04+FoDx3Zi5UjAxseKWfeLBnfMFmr3gw5/4SIlQYeY1/oMpkdtEL+M1Btf6Plsp3xz0
-         SaSm3YxrDJPpuG8IwiX1Iw5nkerOknoezzUiLAPOLfCEm6WVBV5NvEvKIdmRFf709593
-         GlIt9Ut4aXS5TKdKulFyXU1mdTegLQQJc3JXQ4D/KkbT+LOw5OmA5y+BzIFClqeSZMK8
-         8ljQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XsPnpLathKjXprbkqY+YKBNSJFUri0XqOdwMusVjvXU=;
-        b=MYS5qXPUgwyxf9hQhu1WWN0KJLiZ4IEOY+qMCh8TKnevKDQwRKPYIaorEjfk0VEIQV
-         RyIB9upi5xr6s3g2JVaZ9tbVPkARwVQJQSTg6qF0WLJsz4TfVyUHPAR7841d9ZwyNZHQ
-         Tw+ktajnD/+NJOTjyhcnTNq0v6T3ADKQFf9oh6k1dYNonKQypSsano6//QrUmrkFip75
-         TjbxOFgFEMg3iBNo9iM9+HRaC9eXd5VERTzVGHYWBoEP1MOoEzoUfzO5Q7+U4VPvRM9f
-         yeOa9H9ddxTxrxxJ9tfuL0OxxjrPMQPFrhKFJjFhXNNuMHNkGI3buOnOYv/Cr1O3TG2I
-         AtCg==
-X-Gm-Message-State: AOAM532jwG+7XJFHZ8WR+B+ZVVulp6YEUBw1Ofeyf+aVP3wMrc3rf0Va
-        YEYYFFisjxe10Ufeh1sPmXxX0W2R8WjB0VBK1JAx+w==
-X-Google-Smtp-Source: ABdhPJwHLlMV4LeAnjwm5fA6g1O/lUEdcG7wQTFuZXrfgiz8luar5x9cBzY0V1waO35RDKFjCV2vi/FHzdtLgzYO5tg=
-X-Received: by 2002:a05:6402:1544:: with SMTP id p4mr2917778edx.346.1599140643210;
- Thu, 03 Sep 2020 06:44:03 -0700 (PDT)
+        Thu, 3 Sep 2020 10:10:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1599142230; x=1630678230;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=yAlQCfI87sxPe78LUN486EmZ8/vrFT3DkpttqgEbkLI=;
+  b=ijyPN0EPSe3TjOeYckG3ElMMsev/2BkEozYMr/k1jgEf3eOJVflQnT0o
+   MHe6PkPAZn+58+BYWaCicpn7Ox/qm1QCLQSPak/vQZ+d04SjYnXeFrwdi
+   TOKIX2NpPhrs/zHCt+8xmqVBtJC7FQRdowzGiU9kxY41RttxCQ8g2Hp3g
+   Kr+geJOCrZKNALEbyO2E2r8iukpwl7IJJMwe+ldVnniaB9Ykrq2aM8QGz
+   omU2MkSbXCmjOcBI+MgZRazLOwB5A/FZdKhui1SEUIyjAhkhXZRXOtLcU
+   +rWeHW8qkgzR/+TjH+Bzmi6D0PHrsNo8FiPHcC+/DiQEIhg2sFF1bgHh2
+   w==;
+IronPort-SDR: fg+MNFt/hACS4QNbg/H6mQOCtEp4dzqSAZUSVAvmahPMw5Qyd0tkbuTD8auWo12N6Helz72fXD
+ cvf0wTwnnYCBBIAaJvsAHb83XO/9jwSjDEYSrrA9jJh4TYKkRaY6DihEyqAHPfVtKq0l8gU4Mn
+ UlIFHeICeyPaoVSqMySs/ZwYZFQssTBXHEsI38n8gQ1Gp1es9jZyUsE7QTgEZREIxJ1vFs814/
+ ITTqronlWeJLAXiBsulEHiSJJabTct4sTB2qHvuxLJqqjYOI5n6Wh4+QqMGLM56YqPXIDSA8aL
+ 2dk=
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="87817699"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Sep 2020 06:47:16 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 3 Sep 2020 06:46:32 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 3 Sep 2020 06:47:10 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-hwmon@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] hwmon: sparx5: Fix initial reading of temperature
+Date:   Thu, 3 Sep 2020 15:47:04 +0200
+Message-ID: <20200903134704.8949-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200901124615.137200-1-pasha.tatashin@soleen.com> <20200903070733.GO4617@dhcp22.suse.cz>
-In-Reply-To: <20200903070733.GO4617@dhcp22.suse.cz>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Thu, 3 Sep 2020 09:43:27 -0400
-Message-ID: <CA+CK2bDqwFoeq_-Eji3oW4EycZkg-NorDCCi4Q4MeyagqVbPEQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
- memory offline
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Michal, I will add your comments.
+If the temperature is read before the internal calibration is
+completed, the driver returns -EIO. Instead it should return -EAGAIN
+to encourage repeating the operation.
 
-Pasha
+Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+---
+ drivers/hwmon/sparx5-temp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, Sep 3, 2020 at 3:07 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 01-09-20 08:46:15, Pavel Tatashin wrote:
-> [...]
-> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> > index e9d5ab5d3ca0..d6d54922bfce 100644
-> > --- a/mm/memory_hotplug.c
-> > +++ b/mm/memory_hotplug.c
-> > @@ -1575,6 +1575,15 @@ static int __ref __offline_pages(unsigned long start_pfn,
-> >               /* check again */
-> >               ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
-> >                                           NULL, check_pages_isolated_cb);
-> > +             /*
-> > +              * per-cpu pages are drained in start_isolate_page_range, but if
-> > +              * there are still pages that are not free, make sure that we
-> > +              * drain again, because when we isolated range we might
-> > +              * have raced with another thread that was adding pages to
-> > +              * pcp list.
->
-> I would also add
->                  * Forward progress should be still guaranteed because
->                  * pages on the pcp list can only belong to MOVABLE_ZONE
->                  * because has_unmovable_pages explicitly checks for
->                  * PageBuddy on freed pages on other zones.
-> > +              */
-> > +             if (ret)
-> > +                     drain_all_pages(zone);
-> >       } while (ret);
-> >
-> >       /* Ok, all of our target is isolated.
-> > --
-> > 2.25.1
-> >
->
-> --
-> Michal Hocko
-> SUSE Labs
+diff --git a/drivers/hwmon/sparx5-temp.c b/drivers/hwmon/sparx5-temp.c
+index 1a2b1026b026..98be48e3a22a 100644
+--- a/drivers/hwmon/sparx5-temp.c
++++ b/drivers/hwmon/sparx5-temp.c
+@@ -56,7 +56,7 @@ static int s5_read(struct device *dev, enum hwmon_sensor_types type,
+ 	case hwmon_temp_input:
+ 		stat = readl_relaxed(hwmon->base + TEMP_STAT);
+ 		if (!(stat & TEMP_STAT_VALID))
+-			return -EIO;
++			return -EAGAIN;
+ 		value = stat & TEMP_STAT_TEMP;
+ 		/*
+ 		 * From register documentation:
+--
+2.27.0
