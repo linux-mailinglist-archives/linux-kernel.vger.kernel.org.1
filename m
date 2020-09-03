@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9242625C4D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD3B25C4CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgICPTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:19:21 -0400
-Received: from crapouillou.net ([89.234.176.41]:51236 "EHLO crapouillou.net"
+        id S1729194AbgICPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:18:34 -0400
+Received: from crapouillou.net ([89.234.176.41]:51512 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728085AbgICL3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:29:40 -0400
+        id S1728376AbgICLb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:31:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132373; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599132381; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7SglRxexWR02Jo1xu/7HEB4Hand1VF9eBKwwkPhycx4=;
-        b=n/sywxZY3LJtrLFp8PyB9RN3P2+He4kBjU2FJO06S1MBNfZGpYeWilBBTEMOjlEaFWtiZ7
-        7+Ib+m2BtC4kB4qLGttVnuTJ2wEP39qmEVeu84HaiZS2RzTpmQqeZVA4iC5i+7XqqEHHpF
-        Nx7ZrNzJXJg0TMCBkuHfpsdNb/Cp408=
+        bh=Q++myQyFVGc5viHm1my4fERz4BkgXBYuJlPFvw347zc=;
+        b=jYQYUggTNuQ1S6/3AD+ZmojFJNLvAFPZAu3nlpl+R3Zxjg7o0i+1ZV9A/w9OncyVirf37r
+        RDUjJo7sVHvcVRBsCymTMBSH3cp4BYuaJq2KJjp3ncoaZ+8635HCMWW3Twt/Oy+vizidMX
+        QmnPSvEHoqj0+1aIe8xKa3yGbcwpIp0=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Chen <Peter.Chen@nxp.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 04/20] usb/host: ehci-platform: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:38 +0200
-Message-Id: <20200903112554.34263-5-paul@crapouillou.net>
+Subject: [PATCH 07/20] usb/misc: usb3503: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:41 +0200
+Message-Id: <20200903112554.34263-8-paul@crapouillou.net>
 In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
 References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -64,49 +64,85 @@ simply be discarded by the compiler.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/usb/host/ehci-platform.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/usb/misc/usb3503.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
-index 006c4f6188a5..4585a3a24678 100644
---- a/drivers/usb/host/ehci-platform.c
-+++ b/drivers/usb/host/ehci-platform.c
-@@ -410,8 +410,7 @@ static int ehci_platform_remove(struct platform_device *dev)
+diff --git a/drivers/usb/misc/usb3503.c b/drivers/usb/misc/usb3503.c
+index 116bd789e568..48099c6bf04c 100644
+--- a/drivers/usb/misc/usb3503.c
++++ b/drivers/usb/misc/usb3503.c
+@@ -322,8 +322,7 @@ static int usb3503_platform_remove(struct platform_device *pdev)
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
--static int ehci_platform_suspend(struct device *dev)
-+static int __maybe_unused ehci_platform_suspend(struct device *dev)
+-static int usb3503_suspend(struct usb3503 *hub)
++static int __maybe_unused usb3503_suspend(struct usb3503 *hub)
  {
- 	struct usb_hcd *hcd = dev_get_drvdata(dev);
- 	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
-@@ -433,7 +432,7 @@ static int ehci_platform_suspend(struct device *dev)
- 	return ret;
- }
- 
--static int ehci_platform_resume(struct device *dev)
-+static int __maybe_unused ehci_platform_resume(struct device *dev)
- {
- 	struct usb_hcd *hcd = dev_get_drvdata(dev);
- 	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
-@@ -464,7 +463,6 @@ static int ehci_platform_resume(struct device *dev)
- 
+ 	usb3503_switch_mode(hub, USB3503_MODE_STANDBY);
+ 	clk_disable_unprepare(hub->clk);
+@@ -331,7 +330,7 @@ static int usb3503_suspend(struct usb3503 *hub)
  	return 0;
  }
--#endif /* CONFIG_PM_SLEEP */
  
- static const struct of_device_id vt8500_ehci_ids[] = {
- 	{ .compatible = "via,vt8500-ehci", },
-@@ -499,7 +497,7 @@ static struct platform_driver ehci_platform_driver = {
- 	.shutdown	= usb_hcd_platform_shutdown,
- 	.driver		= {
- 		.name	= "ehci-platform",
--		.pm	= &ehci_platform_pm_ops,
-+		.pm	= pm_ptr(&ehci_platform_pm_ops),
- 		.of_match_table = vt8500_ehci_ids,
- 		.acpi_match_table = ACPI_PTR(ehci_acpi_match),
- 	}
+-static int usb3503_resume(struct usb3503 *hub)
++static int __maybe_unused usb3503_resume(struct usb3503 *hub)
+ {
+ 	clk_prepare_enable(hub->clk);
+ 	usb3503_switch_mode(hub, hub->mode);
+@@ -339,30 +338,29 @@ static int usb3503_resume(struct usb3503 *hub)
+ 	return 0;
+ }
+ 
+-static int usb3503_i2c_suspend(struct device *dev)
++static int __maybe_unused usb3503_i2c_suspend(struct device *dev)
+ {
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 
+ 	return usb3503_suspend(i2c_get_clientdata(client));
+ }
+ 
+-static int usb3503_i2c_resume(struct device *dev)
++static int __maybe_unused usb3503_i2c_resume(struct device *dev)
+ {
+ 	struct i2c_client *client = to_i2c_client(dev);
+ 
+ 	return usb3503_resume(i2c_get_clientdata(client));
+ }
+ 
+-static int usb3503_platform_suspend(struct device *dev)
++static int __maybe_unused usb3503_platform_suspend(struct device *dev)
+ {
+ 	return usb3503_suspend(dev_get_drvdata(dev));
+ }
+ 
+-static int usb3503_platform_resume(struct device *dev)
++static int __maybe_unused usb3503_platform_resume(struct device *dev)
+ {
+ 	return usb3503_resume(dev_get_drvdata(dev));
+ }
+-#endif
+ 
+ static SIMPLE_DEV_PM_OPS(usb3503_i2c_pm_ops, usb3503_i2c_suspend,
+ 		usb3503_i2c_resume);
+@@ -388,7 +386,7 @@ MODULE_DEVICE_TABLE(of, usb3503_of_match);
+ static struct i2c_driver usb3503_i2c_driver = {
+ 	.driver = {
+ 		.name = USB3503_I2C_NAME,
+-		.pm = &usb3503_i2c_pm_ops,
++		.pm = pm_ptr(&usb3503_i2c_pm_ops),
+ 		.of_match_table = of_match_ptr(usb3503_of_match),
+ 	},
+ 	.probe		= usb3503_i2c_probe,
+@@ -400,7 +398,7 @@ static struct platform_driver usb3503_platform_driver = {
+ 	.driver = {
+ 		.name = USB3503_I2C_NAME,
+ 		.of_match_table = of_match_ptr(usb3503_of_match),
+-		.pm = &usb3503_platform_pm_ops,
++		.pm = pm_ptr(&usb3503_platform_pm_ops),
+ 	},
+ 	.probe		= usb3503_platform_probe,
+ 	.remove		= usb3503_platform_remove,
 -- 
 2.28.0
 
