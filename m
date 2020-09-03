@@ -2,148 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A0825C5AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3136525C5AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728522AbgICPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:47:49 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:34535 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728461AbgICPrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:47:42 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599148061; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=LIjty3I+rui9Xy7iMwG3DDP6McLv5hVPeKQBSlzDndI=;
- b=P1a/YlH8CyffCbyQYgFTbFnb5rSVUF8dth4uoyBKtISFvaIqil2YcSgSrJwcWIdQ5cpGmvxj
- H3XXf1hB7zyeavJVheFdPXrIqZpFQlbPMP3nkjOCNWiWNIZ+XbGc2vaV/xQ5/deKkjuKcU11
- ZlbFhl3huyZhpynsJJ/HdOUrRBA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5f5110184ba82a82fdab3a9f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Sep 2020 15:47:36
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D878C43391; Thu,  3 Sep 2020 15:47:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70D96C433C8;
-        Thu,  3 Sep 2020 15:47:35 +0000 (UTC)
+        id S1728637AbgICPsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbgICPsp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 11:48:45 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20549C061244;
+        Thu,  3 Sep 2020 08:48:45 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w5so3761098wrp.8;
+        Thu, 03 Sep 2020 08:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OPj9d30CAARqGx+bikPSsEnUWXOcRX7Mxe5aMa8ahCE=;
+        b=Fv+ELy+K8p1TzkuFzHURU8ULrabjLy/GA+gzrVslyT9VOYD/zzcxlCRarBUx24WKrr
+         j5Zr67a5zMLy7bfYFOfwlVMhz0E9e2ZT1vbriU7KZwnmIfrI+Vvgk/eBjxqJ5U60a7n8
+         8qXKrhUyNu+W5a3GLvwkqwPEcZoFmGBsfTsLAVqsgZS0j4L2k9ovbYqObZHMpPMoDAYG
+         bxUfk47jrPQJXDXj//x4zgv++hYgtm05jEFuPueuVK4kNvaM8ywNZyeWHHhRnP7ji5oW
+         Gy4tjKcYBr1v93ZJTIKinzVU8XXLMKlP2jGlJ2JLd3wPZMjg1lyL3vvEmGRB9/0ZM7C2
+         5w3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OPj9d30CAARqGx+bikPSsEnUWXOcRX7Mxe5aMa8ahCE=;
+        b=pyMrYsylGaximgyfSuMKHOn0tuQubyOhOTd8Cj+UV1UkMTgqZuNZugeko+v7q7nr7e
+         W0Sehy9DP8gqkZwp1ui9EAI1/OlAMBb++lUqaOGG80sDY62fdo4LNzsLDFZiDY5g58AW
+         OZaR4hA+6xqZQ9qBiYSUam055fQQxPx2Vqhf0gpcoMwO+5aEiHdsj7qJJ1Em7mFOQwDz
+         ujRWKJEw4QiObvFsYh5YhDb9C97ZMtmwc8KN4lQJyvKLG7InRwMYI+cV37nF3OXMeDEM
+         72ZIZ9RMtu0PilRiyx4rCBAkN8i6T3YkOEwnnmaUEpvXBtq+rzM/QFJ/D8wEdY+yePAt
+         o9vQ==
+X-Gm-Message-State: AOAM532IGRibxczIFO6RSQ7JnptE4SP+eSm6DHaaasL2Rzh672/y57CR
+        J6ACyea/j168Qxdvgng6Tc0=
+X-Google-Smtp-Source: ABdhPJzoUWMY/x3nAOJw9Pgg2IVnTKHb2nEiyUuAELHzrPUZ4WLFr/xkMOPobcmcW7xqeTvOZwlHsA==
+X-Received: by 2002:adf:f78c:: with SMTP id q12mr3157273wrp.6.1599148123691;
+        Thu, 03 Sep 2020 08:48:43 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id x24sm5546173wrd.53.2020.09.03.08.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 08:48:42 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Thu, 3 Sep 2020 16:48:41 +0100
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>, devel@driverdev.osuosl.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alan Cox <alan@linux.intel.com>
+Subject: Re: [PATCH] staging: media: atomisp: Fix error path in lm3554_probe()
+Message-ID: <20200903154841.w5rppm325jobimud@medion>
+References: <20200902184207.479525-1-alex.dewar90@gmail.com>
+ <20200903121134.GB8299@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Thu, 03 Sep 2020 21:17:35 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCHv2] soc: qcom: llcc: Support chipsets that can write to
- llcc registers
-In-Reply-To: <CAD=FV=Xt0NTNjCEJ2USfyd2qZ+FfBz9xwctbpv+hSWvvCoAZFg@mail.gmail.com>
-References: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
- <CAD=FV=VE6vCPjDvvP0e73tnd8u5rPuMUa-mwvDazrfUpXP+bKQ@mail.gmail.com>
- <2a0c5fa189dbb2e810ba88f59621b65c@codeaurora.org>
- <CAD=FV=X8yS1gUNhhVNyfuRPzDUheG2Rco2g16KMegCG6fKJw7Q@mail.gmail.com>
- <d949bdfa15b133f74a47727401553c76@codeaurora.org>
- <7714ee57f75542839d5c33b28f232aa6@codeaurora.org>
- <CAD=FV=Xt0NTNjCEJ2USfyd2qZ+FfBz9xwctbpv+hSWvvCoAZFg@mail.gmail.com>
-Message-ID: <dd60dafcea8b75b10516bf2bc4952abb@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903121134.GB8299@kadam>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-03 19:16, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Sep 3, 2020 at 2:58 AM Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> Hi,
->> 
->> On 2020-08-18 21:07, Sai Prakash Ranjan wrote:
->> > Hi Doug,
->> >
->> >>
->> >> I guess to start, it wasn't obvious (to me) that there were two
->> >> choices and we were picking one.  Mentioning that the other
->> >> alternative was way-based allocation would help a lot.  Even if you
->> >> can't fully explain the differences between the two, adding something
->> >> to the commit message indicating that this is a policy decision (in
->> >> other words, both work but each have their tradeoffs) would help.
->> >> Something like this, if it's correct:
->> >>
->> >> In general we try to enable capacity based allocation (instead of the
->> >> default way based allocation) since that gives us better performance
->> >> with the current software / hardware configuration.
->> >>
->> >
->> > Thanks, I will add it for next version. Let me also go poke some arch
->> > teams
->> > to understand if we actually do gain something with this selection, who
->> > knows
->> > we might get some additional details as well.
->> >
->> 
->> I got some information from arch team today, to quote them exactly:
->> 
->> 1) What benefits capacity based allocation brings over the default way
->> based allocation?
->> 
->> "Capacity based allows finer grain partition. It is not about improved
->> performance but more flexibility in configuration."
->> 
->> 2) Retain through power collapse, doesn’t it burn more power?
->> 
->> "This feature is similar to the standard feature of retention. Yes, 
->> when
->> we
->> have cache in retention mode it burns more power but it keeps the 
->> values
->> so
->> that when we wake up we can get more cache hits."
->> 
->> 
->> If its good enough, then I will add this info to the commit msg and 
->> post
->> next version.
-> 
-> Sounds fine to me.  I was mostly looking for a high level idea of what
-> was happening here.  I am at least a little curious about the
-> retention bit.  Is that retention during S3, or during some sort of
-> Runtime PM?  Any idea how much power is burned?  Unless the power is
-> miniscule it seems hard to believe that it would be a net win to keep
-> a cache powered up during S3 unless you're planning on waking up a
-> lot.
-> 
+Good point about the timer!
 
-The retention setting is based on sub cache id(SCID), so I think its for
-runtime pm, the power numbers weren't provided. But I believe these
-decisions are made after solid testing and not some random 
-approximations.
+> >  
+> > -	err = lm3554_gpio_init(client);
+> > -	if (err) {
+> > +	ret = lm3554_gpio_init(client);
+> > +	if (ret) {
+> >  		dev_err(&client->dev, "gpio request/direction_output fail");
+> > -		goto fail2;
+> > +		goto err_cleanup_entity;
+> >  	}
+> >  	return atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
+> 
+> If atomisp_register_i2c_module() fails then we need to call
+> lm3554_gpio_uninit(client) and do other cleanup.
 
-Thanks,
-Sai
+I'm probably showing my ignorance here, but I can't see what cleanup we
+need. Inside lm3554_gpio_init we have:
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+	ret = gpiod_direction_output(pdata->gpio_reset, 0);
+	if (ret < 0)
+		return ret;
+	dev_info(&client->dev, "flash led reset successfully\n");
+
+	if (!pdata->gpio_strobe)
+		return -EINVAL;
+
+	ret = gpiod_direction_output(pdata->gpio_strobe, 0);
+	if (ret < 0)
+		return ret;
+
+I'm not sure how you "undo" a call to gpiod_direction_output, but I'm
+thinking you won't need to do anything because it should be ok to leave
+a gpio to output 0... right?
+
+Alex
+
+> 
+> > -fail2:
+> > +
+> > +err_cleanup_entity:
+> >  	media_entity_cleanup(&flash->sd.entity);
+> > +err_free_ctrl_handler:
+> >  	v4l2_ctrl_handler_free(&flash->ctrl_handler);
+> 
+> regards,
+> dan carpenter
+> 
