@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59BE25BE83
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE12C25BE7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728224AbgICJf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:35:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22710 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726109AbgICJf1 (ORCPT
+        id S1728299AbgICJb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726268AbgICJb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:35:27 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0839WPsr005957;
-        Thu, 3 Sep 2020 05:35:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id; s=pp1;
- bh=AA1gFtAyaxygtrYTd+c/verju5XPl8nITJZZ/eIZWUE=;
- b=DNTNzVVy6ZffwNRsO2npK3xeXI7itKkc56BYiSdJ3XjOQuBW6Sp0PbpcNe5Pn2etoFku
- IKzGXIaWUMRwWq6YpO/1p75jZAwGvQA98UkngZc+iYQJZEoxmnuUlqkTps2hXRwUU9aH
- tioFoEI8n8NL57G8q74OqLjrZLishGntfyX1nbQbQONyPHwvj3ih0BOqG/Ijr/cmtt9t
- QvyyXdq7+cBUU7jUEQ8WiG1lYkAyOlxL9IZcsgbQSapQVJgD+G+60NL1SdXHj+xlFRHe
- RW+kmwxa1vThqJbeD22NMIllTQYl1oD2oKeBuYds613I0WzbeJ7/ueTiL8c0NmhGHvPp 0A== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33awrp0bv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Sep 2020 05:35:11 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0839VRK5031343;
-        Thu, 3 Sep 2020 09:35:10 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02wdc.us.ibm.com with ESMTP id 337en9xk5b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Sep 2020 09:35:10 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0839Z9ZR19661198
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 3 Sep 2020 09:35:09 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B14626A054;
-        Thu,  3 Sep 2020 09:35:09 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 500AE6A04F;
-        Thu,  3 Sep 2020 09:35:09 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.75.144])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  3 Sep 2020 09:35:09 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 970602E2FE5; Thu,  3 Sep 2020 14:57:34 +0530 (IST)
-From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Joel Stanley <joel@jms.id.au>
-Cc:     linux-pm@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Subject: [PATCH v2] cpuidle-pseries: Fix CEDE latency conversion from tb to us
-Date:   Thu,  3 Sep 2020 14:57:27 +0530
-Message-Id: <1599125247-28488-1-git-send-email-ego@linux.vnet.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-03_04:2020-09-03,2020-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=952 phishscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 adultscore=0
- clxscore=1015 spamscore=0 bulkscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009030084
+        Thu, 3 Sep 2020 05:31:26 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D73BC061244;
+        Thu,  3 Sep 2020 02:31:26 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id u20so1874336pfn.0;
+        Thu, 03 Sep 2020 02:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+sd9erymWD13Cu188GljsOgb+/pwjw6f4RPyPst8OkY=;
+        b=J/OxbLk24+mWs+zAdfKaJvLOQ/2cBymrYF8hpD4EbkzEsMAD5eZQv6+g2I1UcC4tjL
+         OQtWr/BkAtnRpcx2YvcbZcdYMP3Q4vQgJ7Vt9CN8G4h93rqrprc16hutf82PaTl9SPpC
+         MDw7cdmI2V4dV6SD11qKcESfhzmc5Ae4OGqiWqD6wied1AG9KPcTxoLFvZm6jM1jJQA+
+         qhpcJEvTOjOttnuLxEBKPnEL2KPS9lieYo3PsREIP3SoN2EcS2nH9RrhSwkZNJ6MD6hv
+         hpk9kIIVPwGdrjluOubDR4X7yWL4JNxOGutUSXOfo8mWYlpJzVXShrXGFHRlPygpm8Td
+         E+vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+sd9erymWD13Cu188GljsOgb+/pwjw6f4RPyPst8OkY=;
+        b=sRii/9jz8v1GQITUS9qtXsUxBXkoBLTOItQt8liKYodf8XdtR1lEeDymGFv1eMh7lH
+         JnJFU1NkXeM6LfWxAVdMHUnDwRnvaa4kdCocWl5u0+U6doA2wEx6Qctl5OfLbLu6jep2
+         pY620OnKQzityVVqZd5je1B7XbGvx4EYq84mQdhoTZb2BJcdDPeH//X4IsfeJvJ0cP17
+         bgrgoNu20NRmonhFzk/+ntZeEXMpw2DA6ku/rluAZ3XPvOoHtTq7dm/vSdfL4smbKC17
+         tdgmBfK/SW/IOy0Yr2NOOnbRftTUPl5r7OjBEIM7jlf3lJNlSONT1Pay+iZmWUKj/nv3
+         dgkg==
+X-Gm-Message-State: AOAM530u/Djv34h+D+7Bplx83INfcZ3salDYOinYlhoxxQXZ7xa1CEsR
+        gqbD6kqHbqqBhhO4P2NmbK9kOn1bISo=
+X-Google-Smtp-Source: ABdhPJwgnRZElPmZmJR5LdkBVJrAiBtK8Op8FIRVjeAuifsDebTsFbK6LvC4WS6a/BKY9P8woy4Rwg==
+X-Received: by 2002:a62:7fd1:: with SMTP id a200mr2964557pfd.175.1599125485626;
+        Thu, 03 Sep 2020 02:31:25 -0700 (PDT)
+Received: from sol (106-69-184-100.dyn.iinet.net.au. [106.69.184.100])
+        by smtp.gmail.com with ESMTPSA id d1sm1873301pjs.17.2020.09.03.02.31.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 02:31:24 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 17:31:20 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v6 11/20] gpiolib: cdev: support
+ GPIO_V2_LINE_SET_VALUES_IOCTL
+Message-ID: <20200903093120.GA160697@sol>
+References: <20200831032006.1019978-1-warthog618@gmail.com>
+ <20200831032006.1019978-12-warthog618@gmail.com>
+ <CAMpxmJWYpDQsvKCsNudb6p3zAey=6EuNpb3wQ3dpCJVCTjjBsg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJWYpDQsvKCsNudb6p3zAey=6EuNpb3wQ3dpCJVCTjjBsg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
+On Thu, Sep 03, 2020 at 09:59:17AM +0200, Bartosz Golaszewski wrote:
+> On Mon, Aug 31, 2020 at 5:23 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > Add support for the GPIO_V2_LINE_SET_VALUES_IOCTL.
+> >
+> > Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> > ---
+> >  drivers/gpio/gpiolib-cdev.c | 59 +++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 59 insertions(+)
+> >
+> > diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> > index 936b8c9958dd..9f05bbd2161e 100644
+> > --- a/drivers/gpio/gpiolib-cdev.c
+> > +++ b/drivers/gpio/gpiolib-cdev.c
+> > @@ -777,6 +777,63 @@ static long linereq_get_values(struct linereq *lr, void __user *ip)
+> >         return 0;
+> >  }
+> >
+> > +static long linereq_set_values_unlocked(struct linereq *lr,
+> > +                                       struct gpio_v2_line_values *lv)
+> > +{
+> > +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
+> > +       struct gpio_desc **descs;
+> > +       unsigned int i, didx, num_set;
+> > +       int ret;
+> > +
+> > +       bitmap_zero(vals, GPIO_V2_LINES_MAX);
+> > +       for (num_set = 0, i = 0; i < lr->num_lines; i++) {
+> > +               if (lv->mask & BIT_ULL(i)) {
+> > +                       if (!test_bit(FLAG_IS_OUT, &lr->lines[i].desc->flags))
+> > +                               return -EPERM;
+> > +                       if (lv->bits & BIT_ULL(i))
+> > +                               __set_bit(num_set, vals);
+> > +                       num_set++;
+> > +                       descs = &lr->lines[i].desc;
+> > +               }
+> > +       }
+> > +       if (num_set == 0)
+> > +               return -EINVAL;
+> > +
+> > +       if (num_set != 1) {
+> > +               /* build compacted desc array and values */
+> > +               descs = kmalloc_array(num_set, sizeof(*descs), GFP_KERNEL);
+> 
+> Missing retval check.
+> 
 
-commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
-CEDE(0)") sets the exit latency of CEDE(0) based on the latency values
-of the Extended CEDE states advertised by the platform. The values
-advertised by the platform are in timebase ticks. However the cpuidle
-framework requires the latency values in microseconds.
+Arrgh, that has been there since PATCH v2!
+And subsequently got propagated into patch 07 :-(.
 
-If the tb-ticks value advertised by the platform correspond to a value
-smaller than 1us, during the conversion from tb-ticks to microseconds,
-in the current code, the result becomes zero. This is incorrect as it
-puts a CEDE state on par with the snooze state.
-
-This patch fixes this by rounding up the result obtained while
-converting the latency value from tb-ticks to microseconds. It also
-prints a warning in case we discover an extended-cede state with
-wakeup latency to be 0. In such a case, ensure that CEDE(0) has a
-non-zero wakeup latency.
-
-Fixes: commit d947fb4c965c ("cpuidle: pseries: Fixup exit latency for
-CEDE(0)")
-
-Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
----
-v1-->v2: Added a warning if a CEDE state has 0 wakeup latency (Suggested by Joel Stanley)
-         Also added code to ensure that CEDE(0) has a non-zero wakeup latency.	 
- drivers/cpuidle/cpuidle-pseries.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/cpuidle/cpuidle-pseries.c b/drivers/cpuidle/cpuidle-pseries.c
-index ff6d99e..a2b5c6f 100644
---- a/drivers/cpuidle/cpuidle-pseries.c
-+++ b/drivers/cpuidle/cpuidle-pseries.c
-@@ -361,7 +361,10 @@ static void __init fixup_cede0_latency(void)
- 	for (i = 0; i < nr_xcede_records; i++) {
- 		struct xcede_latency_record *record = &payload->records[i];
- 		u64 latency_tb = be64_to_cpu(record->latency_ticks);
--		u64 latency_us = tb_to_ns(latency_tb) / NSEC_PER_USEC;
-+		u64 latency_us = DIV_ROUND_UP_ULL(tb_to_ns(latency_tb), NSEC_PER_USEC);
-+
-+		if (latency_us == 0)
-+			pr_warn("cpuidle: xcede record %d has an unrealistic latency of 0us.\n", i);
- 
- 		if (latency_us < min_latency_us)
- 			min_latency_us = latency_us;
-@@ -378,10 +381,14 @@ static void __init fixup_cede0_latency(void)
- 	 * Perform the fix-up.
- 	 */
- 	if (min_latency_us < dedicated_states[1].exit_latency) {
--		u64 cede0_latency = min_latency_us - 1;
-+		/*
-+		 * We set a minimum of 1us wakeup latency for cede0 to
-+		 * distinguish it from snooze
-+		 */
-+		u64 cede0_latency = 1;
- 
--		if (cede0_latency <= 0)
--			cede0_latency = min_latency_us;
-+		if (min_latency_us > cede0_latency)
-+			cede0_latency = min_latency_us - 1;
- 
- 		dedicated_states[1].exit_latency = cede0_latency;
- 		dedicated_states[1].target_residency = 10 * (cede0_latency);
--- 
-1.9.4
-
+Kent.
