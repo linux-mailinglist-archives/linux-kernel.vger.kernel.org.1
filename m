@@ -2,132 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA95825CCA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7343125CCBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgICVsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 17:48:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31394 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729212AbgICVsB (ORCPT
+        id S1729406AbgICVus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 17:50:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36804 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726397AbgICVur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 17:48:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599169679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oBrynNccaVwKMAHtYaWvrpJ0iV4f205Vo+3SkjyLb1M=;
-        b=WkeyVDi3uPoTBtLXVFs6s5fI46CSwjklz/r91HEZwaxiNm2bd3WYUorsEhLsgfE9/od9Zz
-        1/BorK/dQYWgCxlajJE3fc703HQLVyFyKMFTWb8MksHup35m+u4U5AQgyRn4nBhxj/q+YB
-        MglUjzR188eK8RA0vTq5GVvJvoEzGpY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-162-AryxePWNPjW_21-GRIyMdA-1; Thu, 03 Sep 2020 17:47:57 -0400
-X-MC-Unique: AryxePWNPjW_21-GRIyMdA-1
-Received: by mail-wm1-f72.google.com with SMTP id x6so1429225wmb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 14:47:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oBrynNccaVwKMAHtYaWvrpJ0iV4f205Vo+3SkjyLb1M=;
-        b=ZdWqylqJlcO6QOyBH5zw19JvvFcLzKCDWkzOglEbiG/3pBbToB9u0Vpy/pOBVFuWS8
-         bjPWP7shYUh8KB3WK0YD3TLMewmI24xYXJ962gBcOBscTDdl7vIvQCHCUGeq/zz91sEo
-         erWzOgi8ymDwhNGgCpUFk7p7vrNfIhuVSyPEKCkX6lsooKKRvaxDZd17pn/Bybvtf1Qu
-         gdg5GuVrEYt5mpYa0lC+WkwXTwlfHYCf1S1lKB8GjsSFXOd0YRov1r+wYjGXvYSeX+Ps
-         DSO5y0o4vV19ZHGDUBZ8IURKso85d4RMguJnZYuG8yBPa5smxU4rVLIXX2SBWpTcZmXM
-         PorA==
-X-Gm-Message-State: AOAM532HZrDlxmnDctbm7cqZIwkzJc72BPGp/Jyi/StCog6aLxM9lCXN
-        QxJCMJ1FrpQ7g7VyhheSkBQuNuOVqTwTxupzGGXsuwscACPfuRYAqy5jvbbAumFijFVgelvyTCJ
-        p0zQFiEWT8T1JC0ecnC7EtdeDzItmTJs9csXkza6S
-X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4395616wmh.152.1599169676209;
-        Thu, 03 Sep 2020 14:47:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfurQNCgokDtRoLPRuHgAybZLnKZ8B+2PgntmWzIP1k1DncX3kyUDbDZW6vrGvGz+eL5DynJVwhOUzgUE9+X8=
-X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4395604wmh.152.1599169676019;
- Thu, 03 Sep 2020 14:47:56 -0700 (PDT)
+        Thu, 3 Sep 2020 17:50:47 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 083LWoJv082071;
+        Thu, 3 Sep 2020 17:50:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=cjkaZttb2w3H/rGwt9YR9Ok/v2RDmTY8uBKhTtcgvf8=;
+ b=BFnnjKPkWcf0MwUvuY69O4iOrHafazQ5JEnpGXXxrampiGmP8661HO4reWhgbVhi+sbN
+ rHyRTctCr9yp4CRAEcoyuMTfnUu1CFo+Dh2m+PC1sB5kcsbl2Uc/CwT3Whc/H951cyBV
+ BGKigKA8NMAb+GHxO3I0l7a1Io38vi3FwXVOIdqX7kWVMgDMRBDZziUn6e3WLL6EExkq
+ PSzEIdl+7ip10LMwWQGaRfLQ3J/N28msekZnJ63LzPx1063J91+HpKf74AbJPCRzo8Ds
+ 6z+FPdc7SW7Pk2FvQKAbNAL2MnRX2YZ1rrEnoTG7Jk/OO+LdOPce/rZoUOEwH79Pd/zl +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33b7cft33c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 17:50:16 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 083LZR35086960;
+        Thu, 3 Sep 2020 17:50:15 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33b7cft32n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 17:50:14 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 083Llwvc002343;
+        Thu, 3 Sep 2020 21:50:13 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04dal.us.ibm.com with ESMTP id 339tmvdfft-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 21:50:13 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 083LoCDm38142216
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Sep 2020 21:50:12 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28C5FC6055;
+        Thu,  3 Sep 2020 21:50:12 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 48AD6C6057;
+        Thu,  3 Sep 2020 21:50:05 +0000 (GMT)
+Received: from morokweng.localdomain (unknown [9.211.155.22])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Thu,  3 Sep 2020 21:50:04 +0000 (GMT)
+References: <20200901195029.30039-1-nramas@linux.microsoft.com>
+ <20200901195029.30039-3-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, gregkh@linuxfoundation.org,
+        james.morse@arm.com, catalin.marinas@arm.com, sashal@kernel.org,
+        will@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [PATCH v5 2/3] arm64: Store IMA log information in kimage used
+ for kexec
+In-reply-to: <20200901195029.30039-3-nramas@linux.microsoft.com>
+Date:   Thu, 03 Sep 2020 18:50:02 -0300
+Message-ID: <87v9guy1h1.fsf@morokweng.localdomain>
 MIME-Version: 1.0
-References: <20200903165632.1338996-1-agruenba@redhat.com> <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
-In-Reply-To: <695a418c-ba6d-d3e9-f521-7dfa059764db@sandeen.net>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 3 Sep 2020 23:47:44 +0200
-Message-ID: <CAHc6FU5zwQTBaGVban6tCH7kNwr+NiW-_oKC1j0vmqbWAWx50g@mail.gmail.com>
-Subject: Re: [PATCH] iomap: Fix direct I/O write consistency check
-To:     Eric Sandeen <sandeen@sandeen.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-ext4 <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-03_14:2020-09-03,2020-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=781 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030189
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:12 PM Eric Sandeen <sandeen@sandeen.net> wrote:
-> On 9/3/20 11:56 AM, Andreas Gruenbacher wrote:
-> > When a direct I/O write falls back to buffered I/O entirely, dio->size
-> > will be 0 in iomap_dio_complete.  Function invalidate_inode_pages2_range
-> > will try to invalidate the rest of the address space.
->
-> (Because if ->size == 0 and offset == 0, then invalidating up to (0+0-1) will
-> invalidate the entire range.)
->
->
->                 err = invalidate_inode_pages2_range(inode->i_mapping,
->                                 offset >> PAGE_SHIFT,
->                                 (offset + dio->size - 1) >> PAGE_SHIFT);
->
-> so I guess this behavior is unique to writing to a hole at offset 0?
->
-> FWIW, this same test yields the same results on ext3 when it falls back to
-> buffered.
 
-That's interesting. An ext3 formatted filesystem will invoke
-dio_warn_stale_pagecache and thus log the error message, but the error
-isn't immediately reported by the "pwrite 0 4k". It takes adding '-c
-"fsync"' to the xfs_io command or similar to make it fail.
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-An ext4 formatted filesystem doesn't show any of these problems.
-
-Thanks,
-Andreas
-
-> -Eric
+> Address and size of the buffer containing the IMA measurement log need
+> to be passed from the current kernel to the next kernel on kexec.
 >
-> > If there are any
-> > dirty pages in that range, the write will fail and a "Page cache
-> > invalidation failure on direct I/O" error will be logged.
-> >
-> > On gfs2, this can be reproduced as follows:
-> >
-> >   xfs_io \
-> >     -c "open -ft foo" -c "pwrite 4k 4k" -c "close" \
-> >     -c "open -d foo" -c "pwrite 0 4k"
-> >
-> > Fix this by recognizing 0-length writes.
-> >
-> > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > ---
-> >  fs/iomap/direct-io.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index c1aafb2ab990..c9d6b4eecdb7 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -108,7 +108,7 @@ static ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> >        * ->end_io() when necessary, otherwise a racing buffer read would cache
-> >        * zeros from unwritten extents.
-> >        */
-> > -     if (!dio->error &&
-> > +     if (!dio->error && dio->size &&
-> >           (dio->flags & IOMAP_DIO_WRITE) && inode->i_mapping->nrpages) {
-> >               int err;
-> >               err = invalidate_inode_pages2_range(inode->i_mapping,
-> >
+> Add address and size fields to "struct kimage_arch" for ARM64 platform
+> to hold the address and size of the IMA measurement log buffer.
+> Define an architecture specific function for ARM64 namely
+> arch_ima_add_kexec_buffer() that will set the address and size of
+> the current kernel's IMA buffer to be passed to the next kernel on kexec.
 >
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Reported-by: kernel test robot <lkp@intel.com> warning: no previous prototype for 'arch_ima_add_kexec_buffer' [-Wmissing-prototypes]
 
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
