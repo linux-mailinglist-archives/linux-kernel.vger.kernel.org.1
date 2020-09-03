@@ -2,69 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8729125BE7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9E725BE80
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgICJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        id S1728082AbgICJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgICJdx (ORCPT
+        with ESMTP id S1726268AbgICJfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:33:53 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E591AC061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 02:33:52 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id j188so1372963vsd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 02:33:52 -0700 (PDT)
+        Thu, 3 Sep 2020 05:35:09 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC01EC061244;
+        Thu,  3 Sep 2020 02:35:08 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id v4so2163118wmj.5;
+        Thu, 03 Sep 2020 02:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=w7TYmLU+SvdMHDRnaCekzVvYkpBSXdiuIXAhhoVo/qg=;
-        b=Ek9viDKtfn10kyYjAgInrYxoN0mm91ITVxeJcP7ojzcajl7MP/b6TyIp49lDGkY6nd
-         fV7Pvy88Ms/+aKkc3eAa+zRSEbLD69oPg5M0Wtu6BQllQM2prUqnJj/jgaGArkeZ4NnZ
-         GkrNKttDFPBpHkuFQTttOG+RXZAFvpzOTUWV5x14DXGECtp05S+pbCBqrEKfdUC/47NM
-         wsj4VGVuvFOpXMtUorCkkvd9lSAPgzwZ61p7pOhEv0mebpcIt7ZHIvFAnNCtu81jXwXk
-         oI11WtjSDone7r8EPM738R/2EG0HyZGPVbxz7n+CDpaA+DYxezv2jQg5zMA3UegsAZCJ
-         AhYw==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YmN6TYlQSwbm/wl1f5Jflst3Mjgwzhs4CRceNi7GnDQ=;
+        b=ohCM+ip22BVbqXf47OCWm47Nucq2P7yWHYLgqXl6cWN4Ap17kV1B9BwEojfKVQUD3c
+         lbtr+AwWpMYU9NFOcwzSLKlFeWU51tPiCfkWTUaXuMykeDkyeYjylbLGK1W4R6I9Bo/F
+         EW8UUJcWYcF3ioXQgbhTG2tTnJweTqvwZ3x1EpGp0Fkfn/rbYLl5+5wmPGxX6br9f/pI
+         x64CmyHNRo4yZRKk1eKKy1hRoXaV/H/hjwKkUJZH/uMJsRW1EKrBh2qjFMvayxlT44l8
+         Z0FTg393wkWA6oU6rHsBI4AkSFLLf1Hv6dmsaxxnKyWiMuGehk2Gn/nkBLlQOTlvimsk
+         pzNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=w7TYmLU+SvdMHDRnaCekzVvYkpBSXdiuIXAhhoVo/qg=;
-        b=tObsy2jPRSJt4QKAs5ihuWj+V1qy+mHckWLtjr9GVJesogPgRCpXmnpXlbbZbsI1aN
-         iXNkntl+h/9cCLrJVvRmBSS37bhtzOalj4RM4yAO8mMCRgwfKcObzJyXoZK5RwpxjBUS
-         yDvxMe3DhmSSYijCPkFr10JSrhKNWP8BtBOET1OP4qyR5k5h2mwkw8cJst7OsvswWubG
-         1IIVGlFrWGdrEC0pUtRGLYegBSUrKUiTJ1pM8GjcjTN3bwcfdSqKaFspmEYjjLmWO+m8
-         9rdCGvcLn5E+4sEzhdRsFCPDZo21aeJE9bwONPcF/iq7FsLZcwzHQ3FyhOnrnMxmmLOd
-         E7gQ==
-X-Gm-Message-State: AOAM530nsLXTvVKDaW2vgtj771Un0xbXiW4uyBaUGn2KynWmrZyKl+Bo
-        bYezGs/w3x9AYCoVYXhzVLNHRgViPvTcI5FpesY=
-X-Google-Smtp-Source: ABdhPJwcUSGi1vB3A8gBlRAdiViBmQqWC2A1CiX9U/+4P6vGSIU61zwcooVAMaAg5voSRfAQEGfX30o4PW9VKCmRqd4=
-X-Received: by 2002:a67:7c4e:: with SMTP id x75mr1031185vsc.60.1599125631934;
- Thu, 03 Sep 2020 02:33:51 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YmN6TYlQSwbm/wl1f5Jflst3Mjgwzhs4CRceNi7GnDQ=;
+        b=Zt1tMkWxisdKwLMudiGVN9EriYeGzyz+JdS4Tn8Zrw7DfnPPGfYYIt6PSwnALT2ZI6
+         wWBOGniFCPz5nzkj4984jjPdDsWLZGhNgLkzgW7Jt26AmNASAWQ79wVDPwbNbDAyB7VP
+         OO0j70Fd8DVSrosL46odar8X89RtG22oh/kFTpx3JxvCdlZc7S61NWCJejBneOCarfbH
+         vzrewjHSSYeCmpnJLMvFBxeoZ4wWcJc3w3R6CFPH8bhS+Jh7HzS27zIQdaAhNUJDYwfH
+         S/20IGxrTSOaEAVfOEGc79rSlwUA7GLU5S5mXvanNSYy5iZ8FTVTqPwkUkj0h+gxg9qL
+         Ixaw==
+X-Gm-Message-State: AOAM533Uddisa8GEU3WEkxBIVTk3SA8llzJA1bKUU90vKzu8fLPw3veQ
+        swrfuT5TueBxDDhDP17YYDI=
+X-Google-Smtp-Source: ABdhPJzdYF4jAWN0nANFY3nmh0Og5LZpu/SJBN4ONUwY/Hts0Uuj+rxmZuzWvbLPoOHu782HW5ZUmA==
+X-Received: by 2002:a7b:c38f:: with SMTP id s15mr521509wmj.16.1599125707468;
+        Thu, 03 Sep 2020 02:35:07 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id e18sm3515525wrx.50.2020.09.03.02.35.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 02:35:06 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Thu, 3 Sep 2020 10:35:04 +0100
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/ucma: Fix resource leak on error path
+Message-ID: <20200903093504.ita7taa67a6x6k7p@medion>
+References: <20200902162454.332828-1-alex.dewar90@gmail.com>
+ <83132be0-a33b-ab7a-0da9-cc5c9398d0d4@embeddedor.com>
 MIME-Version: 1.0
-Received: by 2002:a9f:24f4:0:0:0:0:0 with HTTP; Thu, 3 Sep 2020 02:33:50 -0700 (PDT)
-Reply-To: cynthiamatanga60@gmail.com
-From:   cynthia <cynthiamatanga05@gmail.com>
-Date:   Thu, 3 Sep 2020 10:33:50 +0100
-Message-ID: <CABrhofigBOqApDgH6z-NO7L2m5mzJjvv=_N6A21f_9ZKmmY5pQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <83132be0-a33b-ab7a-0da9-cc5c9398d0d4@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am Cynthia Matanga,
-My Father was Top Politician Before he died in auto Motor Accident
-Last years 2019,
-Before his death he told me that he deposited $4.500.000.00, in one of
-The Bank Here,
-Please i Will Need your  Assistance for investing the money in hotel
-Business or estate management in your country if you are willing towork with me
-reply back, for more details,
-Thanks
-Cynthia
-Reply to cynthiamatanga1@gmail.com
+On Wed, Sep 02, 2020 at 07:34:26PM -0500, Gustavo A. R. Silva wrote:
+> Hi Alex,
+> 
+> On 9/2/20 11:24, Alex Dewar wrote:
+> > In ucma_process_join(), if the call to xa_alloc() fails, the function
+> > will return without freeing mc. Fix this by jumping to the correct line.
+> > 
+> > In the process I renamed the jump labels to something more memorable for
+> > extra clarity.
+> > 
+> > Addresses-Coverity: ("Resource leak")
+> 
+> If you are using a public Coverity scan, please also include the Coverity ID.
+> In this case ID 1496814, something like:
+> 
+> Addresses-Coverity-ID: 1496814 ("Resource leak")
+
+Ahh ok. Thanks for the pointer :)
+> 
+> People that don't include an CID is because they are using a private Coverity
+> scan, so it doesn't make sense for them to add an ID because no one but
+> them have access to that scan report.
+> 
+> Thanks
+> --
+> Gustavo
+> 
