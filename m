@@ -2,200 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A69525CB28
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23C925CB36
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729673AbgICUiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
+        id S1728850AbgICUjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728525AbgICUbc (ORCPT
+        with ESMTP id S1729430AbgICUbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:32 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D915C0619C3
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:31:10 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id x20so2284427qki.20
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:31:10 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:18 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A39C06123E;
+        Thu,  3 Sep 2020 13:31:06 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so4139585wmm.2;
+        Thu, 03 Sep 2020 13:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=/qNzjrcyr5XKcvklD+GZQa7NZ7u6sAXpUN3H65DCv0U=;
-        b=Zsq/hG7XAc4mwLU8SBGtWoXCI16CctA7+BH9jQ5VxbO2BJLbC+6FgawBmmjPDrNYD8
-         kYLK4S5KB9WCwaWGEcaOIDi92B0t9YROgAR/TDbV9fyw9yUJywcMexGdaF/1Iwzs87ZN
-         NRQu9/IzlFlx6ERBgUteP3jl1xRfP2aHL3vambh4FSyiWOPQ6kASPXKbYhq6mT/8+sQT
-         7HGqm6vlRwjCG/BIjNDm/J4yDrq8EuBzLQ4kU3eF1t1Td0NzBQonQSn7fXs/MlQq/w9q
-         bJE+U0yfjLtcw9rAdKYYQuiPZeaAtpfle/Ztssg3jka5z8KkzkRqxF5j/+zMpJAKxxfR
-         InPQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rtKn0+o2ojoOITB0B8/ryvpv4K4vTdQg90PI/damrA4=;
+        b=NvhWJaDbv/CVT9H6S29IsQSZxL5ZweScApFazMPHWLRFiJH07CfnQWVipSJp0FmtUE
+         c03kRCzyLeMaYSSW7xh88tK0WE0f0Ainzb0Zf0NGSPH+P5sAHS5NIkXRZuDG5gNusfzT
+         y1lxM3ngFNEYJ5J2CZMvQ4w+QpC4tZjAMrO9iIWDrYVt+0QBU1Bx4H5VYJApJyoTkecd
+         1aEuWZL15F6x0irX5hYs5FxvJ2nGY5gkntUET07x0KdepGdP/wAkehcEi40dhNsv95pk
+         ++yJde9mhM34UMD9S+wydpdyqcyPDyIde9D71FBDkDq74l6ljB4K0DDjeJTGVo5G5dhV
+         8sIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/qNzjrcyr5XKcvklD+GZQa7NZ7u6sAXpUN3H65DCv0U=;
-        b=kOFNvhF2+C4x5aJ+XZlIaK1Oel5AE4xngbjY30NNkn7c4yAgNIdElpksNZyFwxleII
-         IjI2FL0i8aUIld+fFDYGbnEd6lHC2UjloXPfjsVZGj1hOWTJ1wH6rJdoxfuUb2fxePl1
-         tKU5Abz0lHyUar7rSFhDUa0XB2DBNBXgoi0+N6OdHltgEbrrFlw0Z/6Fph8tJR/uoQcG
-         O3Dk6uEbaOEP1SknNrgjG55P2iufLTntNdzvWy0rM3cPOVim6i/jmu+eyu7oEMNgQsDj
-         d1/dgeFGWxhcxmEFab9zL1XpGEzNooCJFraK/oj2PtbgylJjm0LVMj3XuH1EQgNC5Glg
-         +yHw==
-X-Gm-Message-State: AOAM531NzDjmN5FrxHcaFGpYRRF2LGD+A6ToViDTVT3kEI60BLkCUrUp
-        K2SX23ERzdYmKtFKvXa9FTO9Z0WN6c5Qsqo/oGM=
-X-Google-Smtp-Source: ABdhPJyLRS5zhOlsTPIghggsBo02eHCvGWDIp2OJgb326kojzCylZPPrFhxZrtPlMoRBECX9OwEwfr6KBZ+bjrldyC0=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a0c:ca87:: with SMTP id
- a7mr4619179qvk.17.1599165069140; Thu, 03 Sep 2020 13:31:09 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 13:30:32 -0700
-In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
-Message-Id: <20200903203053.3411268-8-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com> <20200903203053.3411268-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v2 07/28] kbuild: add support for objtool mcount
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rtKn0+o2ojoOITB0B8/ryvpv4K4vTdQg90PI/damrA4=;
+        b=B+skvCtmzUPJpUT+eWrez3vSXjvvjD7hP8Od2Z3BBtO03Zk3PH/X2aHUOoM3+K8H+K
+         3oYzNhr9dG5tvGpD9h5t6b6/8okiP/JuCv2HwZlmnESMTNqohTsajbBEDD0yghiUrhz9
+         nzDPGbNewH+k9M/yxtiCsz9oToiGI4zo3zIykFpi4uI5lssve1G3wEwheLYtKkuqF3b+
+         xDUI7vKlipN/B2S9vvoBm/M2p1OHwxgfwvNWcdmgwP0inmqhbcKemqOahsTVzNeuYkAM
+         81Sz3TG9mpOBXXhq4UN5mewRSVk1rwop1cI/ISCaJw9pWl+YKAwBfMLeLYLoR4LfQR9H
+         VZMg==
+X-Gm-Message-State: AOAM532/oExG40/bhZOMQt1u2G2uOOeZC0fzRnaY/JBZuWvxPJYFov8T
+        pnZJSPD1dKYPOAHKS3gE6so=
+X-Google-Smtp-Source: ABdhPJzrI2TFNBVGeQt56vIBniKFdjFqYjQTb+7a/xKeOi2G2IH0IgIrLV+8r2IOyg1V2Aoaghdcug==
+X-Received: by 2002:a7b:c775:: with SMTP id x21mr4080239wmk.47.1599165064542;
+        Thu, 03 Sep 2020 13:31:04 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.31.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 13:31:03 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        Ondrej Jirman <megous@megous.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v2 18/20] ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
+Date:   Thu,  3 Sep 2020 22:30:32 +0200
+Message-Id: <20200903203034.1057334-19-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
+References: <20200903203034.1057334-1-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds build support for using objtool to generate
-__mcount_loc sections.
+From: Ondrej Jirman <megous@megous.com>
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+The board has HDMI output, enable audio on it.
+
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- Makefile               | 38 ++++++++++++++++++++++++++++++--------
- kernel/trace/Kconfig   |  5 +++++
- scripts/Makefile.build |  9 +++++----
- 3 files changed, 40 insertions(+), 12 deletions(-)
+ arch/arm/boot/dts/sun8i-h3-orangepi-one.dts | 8 ++++++++
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts  | 8 ++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index ff5e0731d26d..a9dae26c93b5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -859,17 +859,34 @@ ifdef CONFIG_HAVE_FENTRY
-   ifeq ($(call cc-option-yn, -mfentry),y)
-     CC_FLAGS_FTRACE	+= -mfentry
-     CC_FLAGS_USING	+= -DCC_USING_FENTRY
-+    export CC_USING_FENTRY := 1
-   endif
- endif
- export CC_FLAGS_FTRACE
--KBUILD_CFLAGS	+= $(CC_FLAGS_FTRACE) $(CC_FLAGS_USING)
--KBUILD_AFLAGS	+= $(CC_FLAGS_USING)
- ifdef CONFIG_DYNAMIC_FTRACE
--	ifdef CONFIG_HAVE_C_RECORDMCOUNT
--		BUILD_C_RECORDMCOUNT := y
--		export BUILD_C_RECORDMCOUNT
--	endif
-+  ifndef CC_USING_RECORD_MCOUNT
-+  ifndef CC_USING_PATCHABLE_FUNCTION_ENTRY
-+    # use objtool or recordmcount to generate mcount tables
-+    ifdef CONFIG_HAVE_OBJTOOL_MCOUNT
-+      ifdef CC_USING_FENTRY
-+        USE_OBJTOOL_MCOUNT := y
-+        CC_FLAGS_USING += -DCC_USING_NOP_MCOUNT
-+        export USE_OBJTOOL_MCOUNT
-+      endif
-+    endif
-+    ifndef USE_OBJTOOL_MCOUNT
-+      USE_RECORDMCOUNT := y
-+      export USE_RECORDMCOUNT
-+      ifdef CONFIG_HAVE_C_RECORDMCOUNT
-+        BUILD_C_RECORDMCOUNT := y
-+        export BUILD_C_RECORDMCOUNT
-+      endif
-+    endif
-+  endif
-+  endif
- endif
-+KBUILD_CFLAGS	+= $(CC_FLAGS_FTRACE) $(CC_FLAGS_USING)
-+KBUILD_AFLAGS	+= $(CC_FLAGS_USING)
- endif
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
+index 4759ba3f2986..a5b45655fcf6 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
+@@ -146,6 +146,14 @@ hdmi_out_con: endpoint {
+ 	};
+ };
  
- # We trigger additional mismatches with less inlining
-@@ -1218,11 +1235,16 @@ uapi-asm-generic:
- PHONY += prepare-objtool prepare-resolve_btfids
- prepare-objtool: $(objtool_target)
- ifeq ($(SKIP_STACK_VALIDATION),1)
-+objtool-lib-prompt := "please install libelf-dev, libelf-devel or elfutils-libelf-devel"
-+ifdef USE_OBJTOOL_MCOUNT
-+	@echo "error: Cannot generate __mcount_loc for CONFIG_DYNAMIC_FTRACE=y, $(objtool-lib-prompt)" >&2
-+	@false
-+endif
- ifdef CONFIG_UNWINDER_ORC
--	@echo "error: Cannot generate ORC metadata for CONFIG_UNWINDER_ORC=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
-+	@echo "error: Cannot generate ORC metadata for CONFIG_UNWINDER_ORC=y, $(objtool-lib-prompt)" >&2
- 	@false
- else
--	@echo "warning: Cannot use CONFIG_STACK_VALIDATION=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
-+	@echo "warning: Cannot use CONFIG_STACK_VALIDATION=y, $(objtool-lib-prompt)" >&2
- endif
- endif
- 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index a4020c0b4508..b510af5b216c 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -56,6 +56,11 @@ config HAVE_C_RECORDMCOUNT
- 	help
- 	  C version of recordmcount available?
- 
-+config HAVE_OBJTOOL_MCOUNT
-+	bool
-+	help
-+	  Arch supports objtool --mcount
++&hdmi_sound {
++	status = "okay";
++};
 +
- config TRACER_MAX_TRACE
- 	bool
++&i2s2 {
++	status = "okay";
++};
++
+ &mmc0 {
+ 	vmmc-supply = <&reg_vcc3v3>;
+ 	bus-width = <4>;
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
+index 5aff8ecc66cb..ebb12a6f3a9f 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
+@@ -146,6 +146,14 @@ hdmi_out_con: endpoint {
+ 	};
+ };
  
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index a467b9323442..6ecf30c70ced 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -178,8 +178,7 @@ cmd_modversions_c =								\
- 	fi
- endif
- 
--ifdef CONFIG_FTRACE_MCOUNT_RECORD
--ifndef CC_USING_RECORD_MCOUNT
-+ifdef USE_RECORDMCOUNT
- # compiler will not generate __mcount_loc use recordmcount or recordmcount.pl
- ifdef BUILD_C_RECORDMCOUNT
- ifeq ("$(origin RECORDMCOUNT_WARN)", "command line")
-@@ -206,8 +205,7 @@ recordmcount_source := $(srctree)/scripts/recordmcount.pl
- endif # BUILD_C_RECORDMCOUNT
- cmd_record_mcount = $(if $(findstring $(strip $(CC_FLAGS_FTRACE)),$(_c_flags)),	\
- 	$(sub_cmd_record_mcount))
--endif # CC_USING_RECORD_MCOUNT
--endif # CONFIG_FTRACE_MCOUNT_RECORD
-+endif # USE_RECORDMCOUNT
- 
- ifdef CONFIG_STACK_VALIDATION
- ifneq ($(SKIP_STACK_VALIDATION),1)
-@@ -230,6 +228,9 @@ endif
- ifdef CONFIG_X86_SMAP
-   objtool_args += --uaccess
- endif
-+ifdef USE_OBJTOOL_MCOUNT
-+  objtool_args += --mcount
-+endif
- 
- # 'OBJECT_FILES_NON_STANDARD := y': skip objtool checking for a directory
- # 'OBJECT_FILES_NON_STANDARD_foo.o := 'y': skip objtool checking for a file
++&hdmi_sound {
++	status = "okay";
++};
++
++&i2s2 {
++	status = "okay";
++};
++
+ &ir {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&r_ir_rx_pin>;
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.25.1
 
