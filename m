@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0808D25C34A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81E925C358
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbgICOsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:48:46 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:41268 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728871AbgICOse (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:48:34 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083DNn7s114942;
-        Thu, 3 Sep 2020 08:23:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599139429;
-        bh=Sv1rjptrB/D2VFs2GCeWi3Odnsbw5rU6WNrwMZKxhHs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=v+6dHNu8LnhbD273WhVSkGuVpfpGe72WGQvK3jqyxZGTrLOZTw6HpUJbBg9gFtjJC
-         L15FaEd+2TOZxGO3cgyQk3R9C07r2pUrCp71Ghq7tT/Gc3nPtz/NWQOk+VDMhZFVsU
-         gA1KZsPu96NDaitpF0SOs1px9DPBzGkyQJQy9Y8k=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083DNnsT012472;
-        Thu, 3 Sep 2020 08:23:49 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
- 2020 08:23:49 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 3 Sep 2020 08:23:49 -0500
-Received: from [10.250.71.39] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083DNnMN023770;
-        Thu, 3 Sep 2020 08:23:49 -0500
-Subject: Re: [PATCH V2 1/8] arm64: dts: ti: k3-j721e: Use lower case
- hexadecimal
-To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Tero Kristo <t-kristo@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>, <lokeshvutla@ti.com>,
-        <grygorii.strashko@ti.com>, <nsekhar@ti.com>
-References: <20200901223059.14801-1-nm@ti.com>
- <20200903130015.21361-2-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <39ebf70b-6ecb-3586-8786-fd2ce43c2e00@ti.com>
-Date:   Thu, 3 Sep 2020 08:23:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729395AbgICOtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:49:49 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:49518 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729081AbgICOtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:49:32 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id EEB8E52195;
+        Thu,  3 Sep 2020 13:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1599139370; x=1600953771; bh=maYMfRPvJLxeRFZ0FdSIdjuGM
+        4Bq3KUCafttH82y2bE=; b=QJK0LQ9v4Ikk9Epnuzf4HAoEjyr7yY5rGvshmE63J
+        X/hzFwVZy3h57HSJ0jEMzNFfghfXldG5qo9zm8Kahd/vPS7i7DabhfMZOIpr+Lm5
+        TJr5gEOWpvSdIRFMscOV9p8G/wYFU2kNaH45ez42TAKwlnfYb5nKHPeDR6h8J8Ri
+        L8=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id OWFpNQ-Y-vQ3; Thu,  3 Sep 2020 16:22:50 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id DA97E5141E;
+        Thu,  3 Sep 2020 16:22:50 +0300 (MSK)
+Received: from localhost.localdomain (10.199.2.130) by
+ T-EXCH-02.corp.yadro.com (172.17.10.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.669.32; Thu, 3 Sep 2020 16:22:50 +0300
+Message-ID: <7a58bc3f80783170ecc38371aad7addc04397787.camel@yadro.com>
+Subject: Re: watchdog start on restart
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guenter Roeck <linux@roeck-us.net>
+CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Thu, 3 Sep 2020 16:26:18 +0300
+In-Reply-To: <d6aa46c5-a1ac-c32e-5cc6-bf9a15a53b65@csgroup.eu>
+References: <d2343032814705f33cd81f18f45630bf327c0ff8.camel@yadro.com>
+         <1721f170-95df-2451-e3af-6369e830afad@roeck-us.net>
+         <2b14920abf9f430731ec11c1df6c0253185c7ce7.camel@yadro.com>
+         <d6aa46c5-a1ac-c32e-5cc6-bf9a15a53b65@csgroup.eu>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
 MIME-Version: 1.0
-In-Reply-To: <20200903130015.21361-2-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.199.2.130]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 8:00 AM, Nishanth Menon wrote:
-> Device tree convention uses lower case a-f for hexadecimals. Fix the
-> same.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+On Thu, 2020-09-03 at 13:13 +0200, Christophe Leroy wrote:
 
-Acked-by: Suman Anna <s-anna@ti.com>
+> You want to start the watchdog just before calling 'reboot' but want to 
+> make sure that the watchdog will not reset the board before all 
+> userspace has shut down correctly ?
 
-> ---
-> Change:
-> v2: - new
-> 
->  arch/arm64/boot/dts/ti/k3-j721e.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e.dtsi b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> index f787aa73aaae..1bb8235d9ffb 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e.dtsi
-> @@ -127,7 +127,7 @@
->  		ranges = <0x00 0x00100000 0x00 0x00100000 0x00 0x00020000>, /* ctrl mmr */
->  			 <0x00 0x00600000 0x00 0x00600000 0x00 0x00031100>, /* GPIO */
->  			 <0x00 0x00900000 0x00 0x00900000 0x00 0x00012000>, /* serdes */
-> -			 <0x00 0x00A40000 0x00 0x00A40000 0x00 0x00000800>, /* timesync router */
-> +			 <0x00 0x00a40000 0x00 0x00a40000 0x00 0x00000800>, /* timesync router */
->  			 <0x00 0x06000000 0x00 0x06000000 0x00 0x00400000>, /* USBSS0 */
->  			 <0x00 0x06400000 0x00 0x06400000 0x00 0x00400000>, /* USBSS1 */
->  			 <0x00 0x01000000 0x00 0x01000000 0x00 0x0af02400>, /* Most peripherals */
-> 
+Yes, just for an example, in the nature exists some aspeed2400/2500 board which
+has 2 watchdog devices and 2 spi flash memories. By default it starts from 1 spi
+flash. When watchdog triggers, on next boot, it's automatically starts from 2
+flash, also you can manually switch from 1 spi flash to 2 with 2 watchdog device
+by trigger of it, like transparent reload from 1 spi flash side to 2.
+
+> But what is the purpose of the watchdog then, isn't it there to make 
+> sure that the machine gets reboot within a given timeout anyway in case 
+> some userspace takes too long to shut down ?
+
+Usually, yes.
+
+Thanks.
 
