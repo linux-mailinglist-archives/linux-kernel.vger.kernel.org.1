@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F69125C4BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D9125C4B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbgICPQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:16:40 -0400
-Received: from crapouillou.net ([89.234.176.41]:51966 "EHLO crapouillou.net"
+        id S1728912AbgICPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:15:43 -0400
+Received: from crapouillou.net ([89.234.176.41]:52000 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728697AbgICLfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:35:50 -0400
+        id S1728654AbgICLhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:37:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132408; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599132411; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zOk90+M51eZ5tI9ivTHZKHwy00IhaQlS+1+ArcDDDCo=;
-        b=Vx2UPtjtliAswHBk8SZCaP2DvtJN/jS6azp/jPeSUY3YkmCg1BzYIeaJpaw714tuYK6Qx+
-        0klYFlkQoHxQb+65paN2wu1ttyLFHuygxhLsf0p7lfhCwwhL2+WeAod4Kqkx5M4WFpPvhz
-        M5pLVSy7NtvEdOvBNIZc0rt4QQ/FUAI=
+        bh=RNukebu5FJc21AaatW8pIDM/jN+mPnsQcQWuh8bpr7A=;
+        b=htUjP8MOznKj63TiyERDMqJINFETb7XOkyxP8ClwaFkoSfOGrFLr+VLzUvyD3xNeQSswbg
+        p7LZQ5cWe25wPNMfmzaec40O/ElUOkQRnNQGhJbuEk9+6OaARXOMTpUdcXLUSy2DnephH1
+        XwmA8yVt8pDGFouQrnH2pvmVwN+h2mo=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Chen <Peter.Chen@nxp.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 17/20] usb/gadget/udc: mv-u3d: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:51 +0200
-Message-Id: <20200903112554.34263-18-paul@crapouillou.net>
+Subject: [PATCH 18/20] usb/gadget/udc: pch: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:52 +0200
+Message-Id: <20200903112554.34263-19-paul@crapouillou.net>
 In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
 References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -64,46 +64,47 @@ simply be discarded by the compiler.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/usb/gadget/udc/mv_u3d_core.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/usb/gadget/udc/pch_udc.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/mv_u3d_core.c b/drivers/usb/gadget/udc/mv_u3d_core.c
-index 5486f5a70868..a7e3736fd0c1 100644
---- a/drivers/usb/gadget/udc/mv_u3d_core.c
-+++ b/drivers/usb/gadget/udc/mv_u3d_core.c
-@@ -1988,8 +1988,7 @@ static int mv_u3d_probe(struct platform_device *dev)
- 	return retval;
+diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
+index 8afc31d94b0e..9e26b5ab3058 100644
+--- a/drivers/usb/gadget/udc/pch_udc.c
++++ b/drivers/usb/gadget/udc/pch_udc.c
+@@ -3042,8 +3042,7 @@ static void pch_udc_remove(struct pci_dev *pdev)
+ 	pch_udc_exit(dev);
  }
  
 -#ifdef CONFIG_PM_SLEEP
--static int mv_u3d_suspend(struct device *dev)
-+static int __maybe_unused mv_u3d_suspend(struct device *dev)
+-static int pch_udc_suspend(struct device *d)
++static int __maybe_unused pch_udc_suspend(struct device *d)
  {
- 	struct mv_u3d *u3d = dev_get_drvdata(dev);
+ 	struct pch_udc_dev *dev = dev_get_drvdata(d);
  
-@@ -2012,7 +2011,7 @@ static int mv_u3d_suspend(struct device *dev)
+@@ -3053,16 +3052,12 @@ static int pch_udc_suspend(struct device *d)
  	return 0;
  }
  
--static int mv_u3d_resume(struct device *dev)
-+static int __maybe_unused mv_u3d_resume(struct device *dev)
+-static int pch_udc_resume(struct device *d)
++static int __maybe_unused pch_udc_resume(struct device *d)
  {
- 	struct mv_u3d *u3d = dev_get_drvdata(dev);
- 	int retval;
-@@ -2031,7 +2030,6 @@ static int mv_u3d_resume(struct device *dev)
- 
  	return 0;
  }
--#endif
  
- static SIMPLE_DEV_PM_OPS(mv_u3d_pm_ops, mv_u3d_suspend, mv_u3d_resume);
+ static SIMPLE_DEV_PM_OPS(pch_udc_pm, pch_udc_suspend, pch_udc_resume);
+-#define PCH_UDC_PM_OPS		(&pch_udc_pm)
+-#else
+-#define PCH_UDC_PM_OPS		NULL
+-#endif /* CONFIG_PM_SLEEP */
  
-@@ -2051,7 +2049,7 @@ static struct platform_driver mv_u3d_driver = {
- 	.shutdown	= mv_u3d_shutdown,
- 	.driver		= {
- 		.name	= "mv-u3d",
--		.pm	= &mv_u3d_pm_ops,
-+		.pm	= pm_ptr(&mv_u3d_pm_ops),
+ static int pch_udc_probe(struct pci_dev *pdev,
+ 			  const struct pci_device_id *id)
+@@ -3171,7 +3166,7 @@ static struct pci_driver pch_udc_driver = {
+ 	.remove =	pch_udc_remove,
+ 	.shutdown =	pch_udc_shutdown,
+ 	.driver = {
+-		.pm = PCH_UDC_PM_OPS,
++		.pm = pm_ptr(&pch_udc_pm),
  	},
  };
  
