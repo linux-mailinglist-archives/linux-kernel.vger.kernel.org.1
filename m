@@ -2,201 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4DE25C727
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C42F25C721
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728985AbgICQlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:41:52 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1455 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgICQlu (ORCPT
+        id S1728913AbgICQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:41:25 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:55516 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgICQlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:41:50 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5f511cc00004>; Thu, 03 Sep 2020 09:41:36 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 03 Sep 2020 09:41:50 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 03 Sep 2020 09:41:50 -0700
-Received: from [10.2.173.243] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Sep
- 2020 16:41:48 +0000
-Subject: Re: [PATCH v5 2/3] dt-bindings: media: imx274: Add optional input
- clock and supplies
-To:     Jacopo Mondi <jacopo@jmondi.org>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <sakari.ailus@iki.fi>, <hverkuil@xs4all.nl>,
-        <jacopo+renesas@jmondi.org>, <luca@lucaceresoli.net>,
-        <leonl@leopardimaging.com>, <robh+dt@kernel.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1599012278-10203-1-git-send-email-skomatineni@nvidia.com>
- <1599012278-10203-3-git-send-email-skomatineni@nvidia.com>
- <20200903125542.nxiafnysatoexken@uno.localdomain>
- <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
- <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <f38bb328-b282-783b-3ac5-5441001d10b6@nvidia.com>
-Date:   Thu, 3 Sep 2020 09:40:57 -0700
+        Thu, 3 Sep 2020 12:41:23 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083GfGwf039935;
+        Thu, 3 Sep 2020 11:41:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599151276;
+        bh=X9QPS3a/ZCaAKG2uXIKrOUiVQHzUJ66YvXo6YsH9ZL8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=R8L3ioD+HoPVkdB1rjJnkKJrBqEImULcZjQkm5JhGEmQu2akqeA2JYZodzmzJCyJW
+         rTEIHYre8tEbf725ap1JhM13wAIj2Pw9Hu886BraPqG9RIxTNb1kORD3nnqETBwnXd
+         Sri0nr4K8NydYdEjxk6pfJ+Q2hNWQA3R1TMcWML4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083GfGpW116922
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 11:41:16 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 11:41:16 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 11:41:16 -0500
+Received: from [10.250.38.37] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083GfF3K096927;
+        Thu, 3 Sep 2020 11:41:15 -0500
+Subject: Re: [PATCH net] net: phy: dp83867: Fix various styling and space
+ issues
+To:     Florian Fainelli <f.fainelli@gmail.com>, <davem@davemloft.net>,
+        <andrew@lunn.ch>, <hkallweit1@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200903141510.20212-1-dmurphy@ti.com>
+ <76046e32-a17d-b87c-26c7-6f48f4257916@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <4d38ac31-8646-2c4f-616c-1a1341721819@ti.com>
+Date:   Thu, 3 Sep 2020 11:41:15 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <76046e32-a17d-b87c-26c7-6f48f4257916@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1599151296; bh=CnYJnTb5gUW/km6HHe78zwtqcAzkqtsBbu0if592DP0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=VOJgr0NfpC8kqZGSqQEtRhIfXoxqzQLgwysBhjlDnLkyWeSH5URQRp1ISYIm3Rwv9
-         dHL+pdjT6/or/qW9BGE1KDClgl/hEnfPQ9Kv3stxMJXV7vdms1EjwDnDkhnOQAMTss
-         zt0SemTvgLdnHvMnfU9ciVxsrbaSCNJQaMX2dkQp31HRzUcvG8cg23SIfZGV18+JGa
-         inMVSg7fRYCRiqLaYu87F3nzZSPy7C+e7cUfzh6bADG0T7Yh7NMi4Kd6By16tCST/B
-         izSfBj+Ck+xs8G+wb4tipO5UBugFLnVieOtre7JCO+lLacAXbpokSEv6S7qfFwWbrE
-         51x4onW0s1dpQ==
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Florian
 
-On 9/3/20 9:35 AM, Jacopo Mondi wrote:
-> Hi Sowjanya,
+On 9/3/20 11:34 AM, Florian Fainelli wrote:
 >
-> On Thu, Sep 03, 2020 at 09:05:27AM -0700, Sowjanya Komatineni wrote:
->> On 9/3/20 5:55 AM, Jacopo Mondi wrote:
->>> Hello Sowjanya,
->>>
->>> On Tue, Sep 01, 2020 at 07:04:37PM -0700, Sowjanya Komatineni wrote:
->>>> This patch adds IMX274 optional external clock input and voltage
->>>> supplies to device tree bindings.
->>>>
->>>> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
->>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>>> ---
->>>>    .../devicetree/bindings/media/i2c/sony,imx274.yaml  | 21 ++++++++++=
-+++++++++++
->>>>    1 file changed, 21 insertions(+)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.y=
-aml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
->>>> index 7ae47a6..57e7176 100644
->>>> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
->>>> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
->>>> @@ -25,6 +25,27 @@ properties:
->>>>      reset-gpios:
->>>>        maxItems: 1
->>>>
->>> I just sent an update to my json-schema conversion of this bindings
->>> document (not yet on patchwork, sorry) and Sakari pointed me to the
->>> fact in between my v2 and my v4 this patch from you went in:
->>> 4ea3273d24b ("dt-bindings: media: imx274: Add optional input clock and =
-supplies")
->>>
->>> I should probably now update my bindings conversion patch, basically
->>> taking in what you've done here, but I would have one question.
->>>
->>>> +  clocks:
->>>> +    maxItems: 1
->>>> +    description: Reference to the sensor input clock
->>>> +
->>>> +  clock-names:
->>>> +    maxItems: 1
->>>> +    items:
->>>> +      - const: inck
->>>> +
->>>> +  vana-supply:
->>>> +    description:
->>>> +      Analog voltage supply, 2.8 volts
->>>> +
->>>> +  vdig-supply:
->>>> +    description:
->>>> +      Digital IO voltage supply, 1.8 volts
->>>> +
->>>> +  vddl-supply:
->>>> +    description:
->>>> +      Digital core voltage supply, 1.2 volts
->>> 4ea3273d24b introduced these regulators as VANA-supply, VDIG-supply
->>> and VDDL-supply (please note the upper-case names). This version uses
->>> lower-case ones instead. Is this intentional ? The driver currently
->>> does not parse any of these if I'm not mistaken, but as the bindings
->>> in textual form defines an ABI which should be preserved during the
->>> conversion to json-schema, should these be kept in upper-case ?
->>>
->>> Thanks
->>>      j
->> Yes, based on feedback lower case was recommended. So, changed to use
->> lower-case names.
+>
+> On 9/3/2020 7:15 AM, Dan Murphy wrote:
+>> Fix spacing issues reported for misaligned switch..case and extra new
+>> lines.
 >>
->> These properties were not used by driver currently and from my prior ser=
-ies
->> only dt-binding got merged as=C2=A0 no feedback was received on it for a=
-ll prior
->> versions.
+>> Also updated the file header to comply with networking commet style.
 >>
->> So, should be ok to change to lower-case as there properties are introdu=
-ced
->> now and driver update using these properties is under review
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   drivers/net/phy/dp83867.c | 47 ++++++++++++++++++---------------------
+>>   1 file changed, 22 insertions(+), 25 deletions(-)
 >>
-> Well, I see that patch went in v5.9-rc1, so it will be part of v5.9.
+>> diff --git a/drivers/net/phy/dp83867.c b/drivers/net/phy/dp83867.c
+>> index cd7032628a28..f182a8d767c6 100644
+>> --- a/drivers/net/phy/dp83867.c
+>> +++ b/drivers/net/phy/dp83867.c
+>> @@ -1,6 +1,5 @@
+>>   // SPDX-License-Identifier: GPL-2.0
+>> -/*
+>> - * Driver for the Texas Instruments DP83867 PHY
+>> +/* Driver for the Texas Instruments DP83867 PHY
+>>    *
+>>    * Copyright (C) 2015 Texas Instruments Inc.
+>>    */
+>> @@ -35,7 +34,7 @@
+>>   #define DP83867_CFG4_SGMII_ANEG_MASK (BIT(5) | BIT(6))
+>>   #define DP83867_CFG4_SGMII_ANEG_TIMER_11MS   (3 << 5)
+>>   #define DP83867_CFG4_SGMII_ANEG_TIMER_800US  (2 << 5)
+>> -#define DP83867_CFG4_SGMII_ANEG_TIMER_2US    (1 << 5)
+>> +#define DP83867_CFG4_SGMII_ANEG_TIMER_2US    BIT(5)
 >
-> If the bindings update goes in in v5.10 (or whatever comes after v5.9)
-> then we have a problem, as the DTB created for v5.9 won't work anymore
-> on any later version, and that should not happen. Alternatively, a fix
-> for the next -rc release could be fast-tracked, but you would
-> need to synchronize with the dt maintainers for that and make a patch
-> for the existing .txt bindings file.
+> Now the definitions are inconsistent, you would want to drop this one 
+> and stick to the existing style.
+
+OK I was a little conflicted making that change due to the reasons you 
+mentioned.  But if that is an acceptable warning I am ok with it.
+
+
 >
-> If the name change happens in the yaml file and one release is made
-> with the old names, then we're stuck with those forever and ever, if I
-> got the situation right.
+> The rest of the changes look good, so with that fixed, and the subject 
+> correct to "net-next" (this is no bug fix material), you can add:
 >
-> Please check with the dt and media maintainers, or they can comment
-> here if they glance through these lines.
->
-> Thanks
->    j
+I will have to reapply this to the net-next to make sure it applies 
+cleanly there.  But not an issue.
 
-Hi Leon Luo,
-
-I used upper case for regulator supply names in all prior 4 versions of=20
-IMX274 patch series as I see some other media i2c drivers doing it and=20
-dt-binding patch from v3 got merged in 5.9-rc1 which was using upper-case.
-
-Later received feedback from Sakari requesting to use lower-case names=20
-so updated to use lower case name now in v5.
-
-Not sure if we have timeline to squeeze in patch to change names to=20
-lower-case before they get into 5.10.
-
-Can you please comment?
-
-Sakari,
-
-Can you also help understand why can't we keep upper case for regulator=20
-supplies?
-
-I see some other media i2c drivers using upper case as well.
-
-Thanks
-
-Sowjanya
+Dan
 
 
-
-
->>>> +
->>>>      port:
->>>>        type: object
->>>>        description: |
->>>> --
->>>> 2.7.4
->>>>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
