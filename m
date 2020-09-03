@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFF025C7C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 19:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D450F25C7E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 19:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgICRCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 13:02:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgICRCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 13:02:50 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728785AbgICRQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 13:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727786AbgICRQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 13:16:34 -0400
+X-Greylist: delayed 586 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Sep 2020 10:16:33 PDT
+Received: from mail.buslov.dev (mail.buslov.dev [IPv6:2001:19f0:5001:2e3f:5400:1ff:feed:a259])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93AAC061244;
+        Thu,  3 Sep 2020 10:16:33 -0700 (PDT)
+Received: from vlad-x1g6 (unknown [IPv6:2a01:d0:40b3:9801:fec2:781d:de90:e768])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36C0D20758;
-        Thu,  3 Sep 2020 17:02:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599152570;
-        bh=S5GznL+HUXa0px3F6rIqo1KWGR2wrWuJLt1BiGDgm88=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZdUnKKoSXP+4UtxOZdbtj62/VBQszlhNCH0MfC2Zq/JoMjqRSZ4S79z5O1JJW2hPv
-         wOP0RG9nEr7AsjeE4+dUvcd99GSO321F26NUES+27OboMW/sdid5lHjVvK8+cjoXQW
-         2yF6huEV98u1b0T8/Wf1wVFkRwbejy856K7QhBcw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 172B4352300A; Thu,  3 Sep 2020 10:02:50 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 10:02:50 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sjpark@amazon.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the rcu tree with the jc_docs tree
-Message-ID: <20200903170250.GQ29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200902143101.4ea59943@canb.auug.org.au>
+        by mail.buslov.dev (Postfix) with ESMTPSA id 166AC1F899;
+        Thu,  3 Sep 2020 20:06:42 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=buslov.dev; s=2019;
+        t=1599152802;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cYNnDoJ2SqlCA9nFNN49olKHiWCFYIXnAJSiUk0aIBM=;
+        b=o+yStLzcfvZNIJO6NNb9dvjI+5O3MhqRLR3OFTuTxow1TKMp5g7TPcIPxwLPNsZ9eYE16n
+        RTxfgBicNm3PWsYaxdfm/gOTu/IBdiN7uAvb2T5Dfj7N/tYkROsPaFtukCJHK+dPYqkbhF
+        WNq4uPsDA19MlOhFFcqiUFiPE0DRpg5jFMyRha7yg6Jm76Ce4CZdfxGAtfWNJcHERtGY/5
+        +hDFhvX57Qms43rg1MhTD7pNTzxqPxCOHNpoN5TvznezApbqp8v+o8yWQwfZCOkH+FktQ3
+        tCW7ntfmdJyUDhE3p5U09e+mBEnScYR3HbR8g8b24j5jhSoqChg4dGLd09+xBg==
+References: <00000000000014fd1405ae64d01f@google.com> <000000000000fcd01005ae6a77e7@google.com>
+User-agent: mu4e 1.4.10; emacs 26.3
+From:   Vlad Buslov <vlad@buslov.dev>
+To:     syzbot <syzbot+80e32b5d1f9923f8ace6@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, eric.dumazet@gmail.com, jhs@mojatatu.com,
+        jiri@mellanox.com, jiri@resnulli.us, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, marcelo.leitner@gmail.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        vladbu@mellanox.com, xiyou.wangcong@gmail.com
+Subject: Re: INFO: task hung in tcf_ife_init
+In-reply-to: <000000000000fcd01005ae6a77e7@google.com>
+Date:   Thu, 03 Sep 2020 20:08:23 +0300
+Message-ID: <878sdqg54o.fsf@buslov.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902143101.4ea59943@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=vlad@buslov.dev smtp.mailfrom=vlad@buslov.dev
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 02:31:01PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the rcu tree got a conflict in:
-> 
->   Documentation/memory-barriers.txt
-> 
-> between commit:
-> 
->   537f3a7cf48e ("docs/memory-barriers.txt: Fix references for DMA*.txt files")
-> 
-> from the jc_docs tree and commit:
-> 
->   6f6705147bab ("docs: fix references for DMA*.txt files")
-> 
-> from the rcu tree.
-> 
-> I fixed it up (they are preety much the same - I used the former) and
-> can carry the fix as necessary. This is now fixed as far as linux-next
-> is concerned, but any non trivial conflicts should be mentioned to your
-> upstream maintainer when your tree is submitted for merging.  You may
-> also want to consider cooperating with the maintainer of the conflicting
-> tree to minimise any particularly complex conflicts.
+On Thu 03 Sep 2020 at 18:33, syzbot <syzbot+80e32b5d1f9923f8ace6@syzkaller.appspotmail.com> wrote:
+> syzbot has bisected this issue to:
+>
+> commit 4e8ddd7f1758ca4ddd0c1f7cf3e66fce736241d2
+> Author: Vlad Buslov <vladbu@mellanox.com>
+> Date:   Thu Jul 5 14:24:30 2018 +0000
+>
+>     net: sched: don't release reference on action overwrite
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14ae08e9900000
+> start commit:   1996cf46 net: bcmgenet: fix mask check in bcmgenet_validat..
+> git tree:       net
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16ae08e9900000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12ae08e9900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a0437fdd630bee11
+> dashboard link: https://syzkaller.appspot.com/bug?extid=80e32b5d1f9923f8ace6
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=161678e1900000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f826d1900000
+>
+> Reported-by: syzbot+80e32b5d1f9923f8ace6@syzkaller.appspotmail.com
+> Fixes: 4e8ddd7f1758 ("net: sched: don't release reference on action overwrite")
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-I removed my copy, and if testing goes well, it should get to you in a
-few hours.
-
-							Thanx, Paul
+The trace in bisection result doesn't seem to be related to the original
+report and is fixed by 32039eac4c48 ("net: sched: act_ife: always
+release ife action on init error").
