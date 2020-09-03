@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23C925CB36
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3088B25CB20
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgICUjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
+        id S1729681AbgICUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729430AbgICUbS (ORCPT
+        with ESMTP id S1729405AbgICUbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:18 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A39C06123E;
-        Thu,  3 Sep 2020 13:31:06 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a9so4139585wmm.2;
-        Thu, 03 Sep 2020 13:31:05 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:39 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108BEC0619C5
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:31:12 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id h15so2717410pfr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rtKn0+o2ojoOITB0B8/ryvpv4K4vTdQg90PI/damrA4=;
-        b=NvhWJaDbv/CVT9H6S29IsQSZxL5ZweScApFazMPHWLRFiJH07CfnQWVipSJp0FmtUE
-         c03kRCzyLeMaYSSW7xh88tK0WE0f0Ainzb0Zf0NGSPH+P5sAHS5NIkXRZuDG5gNusfzT
-         y1lxM3ngFNEYJ5J2CZMvQ4w+QpC4tZjAMrO9iIWDrYVt+0QBU1Bx4H5VYJApJyoTkecd
-         1aEuWZL15F6x0irX5hYs5FxvJ2nGY5gkntUET07x0KdepGdP/wAkehcEi40dhNsv95pk
-         ++yJde9mhM34UMD9S+wydpdyqcyPDyIde9D71FBDkDq74l6ljB4K0DDjeJTGVo5G5dhV
-         8sIw==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=WN8mpXa+HsW9fsZYTOAsBdC0BrDsnoqsIhb4CRQsjoA=;
+        b=ILcqyCFUuMNmm3B95VxDju+nky8Uu+qmaPpzDRj3rzSs7wdq56m1nXOOYGQRh5j+ez
+         GoI90TA6FVXFOlD755AmSb4/FNzaT0VP8lOAy6uMYZFFLJuqFJVL9bJwWTH9E0GqtOEo
+         al6TkePRlfFId/wWeLeyYEgNYfWQP0oNFVpXgW52difahcSd5ZTRotEOB0pRrOx1IZXM
+         Cnhj1xtZcbRHwGgTBVkZm/DFy5pa62h5HdpA7rjM4Z4R2IFE8nWpVFD1OTUXwGK6Fy0y
+         CR+ahjyBXSSb5EJ1ofWh2xFjBel7zKuiBnOe86gBc07OTZ6uirMoAkpdrWgxZ4RTDhON
+         LYRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rtKn0+o2ojoOITB0B8/ryvpv4K4vTdQg90PI/damrA4=;
-        b=B+skvCtmzUPJpUT+eWrez3vSXjvvjD7hP8Od2Z3BBtO03Zk3PH/X2aHUOoM3+K8H+K
-         3oYzNhr9dG5tvGpD9h5t6b6/8okiP/JuCv2HwZlmnESMTNqohTsajbBEDD0yghiUrhz9
-         nzDPGbNewH+k9M/yxtiCsz9oToiGI4zo3zIykFpi4uI5lssve1G3wEwheLYtKkuqF3b+
-         xDUI7vKlipN/B2S9vvoBm/M2p1OHwxgfwvNWcdmgwP0inmqhbcKemqOahsTVzNeuYkAM
-         81Sz3TG9mpOBXXhq4UN5mewRSVk1rwop1cI/ISCaJw9pWl+YKAwBfMLeLYLoR4LfQR9H
-         VZMg==
-X-Gm-Message-State: AOAM532/oExG40/bhZOMQt1u2G2uOOeZC0fzRnaY/JBZuWvxPJYFov8T
-        pnZJSPD1dKYPOAHKS3gE6so=
-X-Google-Smtp-Source: ABdhPJzrI2TFNBVGeQt56vIBniKFdjFqYjQTb+7a/xKeOi2G2IH0IgIrLV+8r2IOyg1V2Aoaghdcug==
-X-Received: by 2002:a7b:c775:: with SMTP id x21mr4080239wmk.47.1599165064542;
-        Thu, 03 Sep 2020 13:31:04 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:31:03 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        Ondrej Jirman <megous@megous.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 18/20] ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
-Date:   Thu,  3 Sep 2020 22:30:32 +0200
-Message-Id: <20200903203034.1057334-19-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
-References: <20200903203034.1057334-1-peron.clem@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=WN8mpXa+HsW9fsZYTOAsBdC0BrDsnoqsIhb4CRQsjoA=;
+        b=EW300dTDm0KjnEuCqQiuBmGnGEn++8cun2i13V3AOwrwMk+84n3MokcJ7yfv/5t0EL
+         GMVAsD8ioBuZs3iJ79X3oQa2qr1hfChk2A7jhBpELVL9yKjJdC31WlTYsKWIcj8aAvXo
+         uJDBAulyZr2Ipcn1rYdd/clmcnSvaT5Ai3RKuoXO8ArAyu+/guTo/E677IceTwlE90Aw
+         2WA+2wxNSyC4c2rCJ33BRRfNjZ1ZMOM1apSnwW6JzL3FNna7PLJnF7JvVy9IaYa5iSJf
+         KybbndQ5fUdIA8fC9/ufDNyLc+aDDaVTZqYaB0kymJ0y2PwY7/JAIACv9apRV7eSWc03
+         ivlg==
+X-Gm-Message-State: AOAM533dB5SRjXhpyCf3yMQaCUIKJUM8dvhBa496KBkM6M5yrLe1fBov
+        ixzy1Ikf0YNfPyR7kiFtiQ5qoBx0v+CsZeXtij4=
+X-Google-Smtp-Source: ABdhPJyGVWrrLe9OiHn6gBlDgaN9mhbz1XtS93UGhLaXNK12eKqdd07FdIpOk9xvfDGTdAf7XwfZllDsHPKhawlMPg4=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a17:90a:d512:: with SMTP id
+ t18mr1126739pju.106.1599165071359; Thu, 03 Sep 2020 13:31:11 -0700 (PDT)
+Date:   Thu,  3 Sep 2020 13:30:33 -0700
+In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
+Message-Id: <20200903203053.3411268-9-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20200624203200.78870-1-samitolvanen@google.com> <20200903203053.3411268-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v2 08/28] x86, build: use objtool mcount
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megous@megous.com>
+Select HAVE_OBJTOOL_MCOUNT if STACK_VALIDATION is selected to use
+objtool to generate __mcount_loc sections for dynamic ftrace with
+Clang and gcc <5.
 
-The board has HDMI output, enable audio on it.
-
-Signed-off-by: Ondrej Jirman <megous@megous.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- arch/arm/boot/dts/sun8i-h3-orangepi-one.dts | 8 ++++++++
- arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts  | 8 ++++++++
- 2 files changed, 16 insertions(+)
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-index 4759ba3f2986..a5b45655fcf6 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-@@ -146,6 +146,14 @@ hdmi_out_con: endpoint {
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2s2 {
-+	status = "okay";
-+};
-+
- &mmc0 {
- 	vmmc-supply = <&reg_vcc3v3>;
- 	bus-width = <4>;
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-index 5aff8ecc66cb..ebb12a6f3a9f 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-@@ -146,6 +146,14 @@ hdmi_out_con: endpoint {
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
-+&i2s2 {
-+	status = "okay";
-+};
-+
- &ir {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&r_ir_rx_pin>;
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7101ac64bb20..6de2e5c0bdba 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -163,6 +163,7 @@ config X86
+ 	select HAVE_CMPXCHG_LOCAL
+ 	select HAVE_CONTEXT_TRACKING		if X86_64
+ 	select HAVE_C_RECORDMCOUNT
++	select HAVE_OBJTOOL_MCOUNT		if STACK_VALIDATION
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_DYNAMIC_FTRACE
 -- 
-2.25.1
+2.28.0.402.g5ffc5be6b7-goog
 
