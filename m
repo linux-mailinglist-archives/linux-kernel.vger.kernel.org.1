@@ -2,164 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060F425C2F9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9ED25C322
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgICOl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:41:57 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59448 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728918AbgICOlh (ORCPT
+        id S1729314AbgICOpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729430AbgICOoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:41:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599144094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dlXSpmpAiY7YS5kYtaeWA3wo80DV7Gum6Jwj3vtpgjg=;
-        b=Tb4u650/EhrjifM8zHaSmMqai3pNgctiuE+sArtWYkPv0tXJjq8Q+5tYaNpfgFkYkhi9av
-        Mz2zf0Uva5qADVd4ap88wtfgYy1GKeLvNccz2lrVxOwXsYzEVeBdvBEOVP9LPucO9UrFV8
-        q0UNh5Ab8R55tjnoHjXDYJNC3mcQeIY=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-uT69CP2lMYKvBuRTGEBTJw-1; Thu, 03 Sep 2020 10:41:31 -0400
-X-MC-Unique: uT69CP2lMYKvBuRTGEBTJw-1
-Received: by mail-io1-f70.google.com with SMTP id j4so2169786iob.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:41:31 -0700 (PDT)
+        Thu, 3 Sep 2020 10:44:39 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF60EC061245
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 07:44:38 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id q13so1839040vsj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XR70+EUXVIRU3zQfQqSwfmIgUCJ1T/jLwDVLHaYTwdA=;
+        b=q+YmVJhrr3u/P/vNMvD3sirXji3jW45KNikG/MThND5oLQo4pQW2QSRSpsgrg2SE06
+         QU8V7NYTyO4FoFdz1mbouIlCT6/21Y1Hi+M8++sF4oCJfenetCOhmLch+K019oNdL22D
+         9KuQl536/+Wai/tFatgvxtjabLird/zbZVW12C/iR8IwUDCty1QA/9/Mp1OgctvOVI33
+         kIqrcbKwZXW1x2LTgHVGgNfff9vof6HpPLfOyvVLJGDFl91tsZIyiGZo8u9RdQn3CG9J
+         eZHvGAOP+iN+EvL6dnCFj0IkT78aQfQ+KBaavUjNF/Bxh3/LZoxYntDNTxbUdorOADY3
+         JRjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dlXSpmpAiY7YS5kYtaeWA3wo80DV7Gum6Jwj3vtpgjg=;
-        b=SwpJYeHdZ9o9RdPhiRIPLMbCK/3LbcCKZ1J/pSrEZ4VRcUggWYPyeArZNRIipkJa2q
-         lJYqPF6UlD/zEdpDRInUJzNyeX5w7qsPPdWAlujV+i4UFDejFxR8bfJFz2N/VjuFVIh6
-         YLDjB4WKwZgp1TgqegfuyeESbVPFWqucmE2faPfovDjp/X9Aa54WApVz27Ymq6rLzH9X
-         2YtAbHLqu1x/M9vBV+SYL/av7zZBPcr0+UoN5FnMQZKt6lrs5DzXR03t7fIrMBEyXi8F
-         K1VpaYfXmF8rGrZiwsKT5koddfHt+8zVO3Gvet+PKg4ysUaCKFmHO2MwypQaLhE27kO4
-         oMZQ==
-X-Gm-Message-State: AOAM530qz/N7p2voBbujHhVZeg29OfPlxA8H5deMr2vCYYdSJjnU4vr+
-        bbbsbhnO2STn/O5mcFQCn9SooVnaZlSDkeCN8L99rVPOlpcurivEXCZZdE1WLfYGbmx/ye2iEjj
-        5VS2maQNCuR/VkOu4oy2RZtN6
-X-Received: by 2002:a92:c78e:: with SMTP id c14mr3385275ilk.3.1599144090427;
-        Thu, 03 Sep 2020 07:41:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCAl5Mf+O6dLNF91Wu0iMCa8KPqD4EBuQd+O1BKyeEB3KAYW3jsrXGYwXNu2cuFkUA/BFcLw==
-X-Received: by 2002:a92:c78e:: with SMTP id c14mr3385251ilk.3.1599144090118;
-        Thu, 03 Sep 2020 07:41:30 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s16sm1403323iow.47.2020.09.03.07.41.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 07:41:29 -0700 (PDT)
-Subject: Re: [PATCH] media: dvb-frontends/cxd2099: report errors
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     jasmin@anw.at, o.endriss@gmx.de, rjkm@metzlerbros.de,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200722134126.31191-1-trix@redhat.com>
- <20200903161328.62378992@coco.lan>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <b274b6b1-e2ac-2b68-9fb8-502255ca6982@redhat.com>
-Date:   Thu, 3 Sep 2020 07:41:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XR70+EUXVIRU3zQfQqSwfmIgUCJ1T/jLwDVLHaYTwdA=;
+        b=Yj1S2menZf1lczDnqVQochN1YSHrt1ynUIhqkJC6Xwo0HTl+iST/22it/n9ZXRs7GK
+         Fh7p2J9K/tWS1Gk/6dVaHrvGPvNOvyLIDN+EBSIMVPJDkoUeQZpdgI3RZwNHEVwv5wFN
+         nJ7Y2B7cGbZGd0H/rsNv9xzGtNsm/4gedaPIYHcDz9ATD73FGhe4hTKPNsFklQIx1/9U
+         jBaLyBZgJnHinoG4R3+CMFn3zwHWTnb8kvyL/pz5BkNziiN3jW6QvOXsHoIupKYvRDnL
+         4mruwEjLf7o24RU/U3wJCN+KMuGArh9/2Yctxl9usZdd0JaRWRNgZpHShkHE3zWVa8gb
+         DVIA==
+X-Gm-Message-State: AOAM532hpl7q98YysbCmCzTaVvYCKSGspmJZdG8Uwud8dtUTrn2WLhCa
+        C7TjhiyfhdOMDNyBX8h3ttZsgNV6a3DuGIiqhhwvHA==
+X-Google-Smtp-Source: ABdhPJz53TmR5rRF/V50sMeRUYI4APGHmXZws5YFjaDRWUVJAeLr3zEflEDUQfV/gVl2WeV7nmD9xv03OA62d2Xvm1w=
+X-Received: by 2002:a67:e45:: with SMTP id 66mr2085958vso.191.1599144277973;
+ Thu, 03 Sep 2020 07:44:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200903161328.62378992@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200902164303.1.I5e598a25222b4534c0083b61dbfa4e0e76f66171@changeid>
+ <CAPDyKFoyKjKhwKGtLMtEyDSeSiBU6wasc=jt6c=sHnhN8jqqjg@mail.gmail.com> <CAD=FV=WaWwJnquPy+9aB89-1OwKmYKJv2PpfOkgo94Z6J8uRUg@mail.gmail.com>
+In-Reply-To: <CAD=FV=WaWwJnquPy+9aB89-1OwKmYKJv2PpfOkgo94Z6J8uRUg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 3 Sep 2020 16:44:01 +0200
+Message-ID: <CAPDyKFq31bucJhP9hp1HSqh-qM2uNGHgDoyQpmbJf00nEf_T4Q@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-msm: Prefer asynchronous probe
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/3/20 7:13 AM, Mauro Carvalho Chehab wrote:
-> Em Wed, 22 Jul 2020 06:41:26 -0700
-> trix@redhat.com escreveu:
+On Thu, 3 Sep 2020 at 16:35, Doug Anderson <dianders@chromium.org> wrote:
 >
->> From: Tom Rix <trix@redhat.com>
->>
->> Clang static analysis reports this error
->>
->> drivers/media/dvb-frontends/cxd2099.c:420:2: warning: Undefined
->>   or garbage value returned to caller
->>         return val;
->>         ^~~~~~~~~~
->>
->> In read_cam_control, the call to read_io can fail.
->> When it fails val is not set.
->>
->> The failure status should be returned to the caller,
->> not the unset val.
->>
->> Similar problem with read_attribute_mem
->>
->> Fixes: 0f0b270f905b ("[media] ngene: CXD2099AR Common Interface driver")
->>
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/media/dvb-frontends/cxd2099.c | 14 ++++++++++----
->>  1 file changed, 10 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/media/dvb-frontends/cxd2099.c b/drivers/media/dvb-frontends/cxd2099.c
->> index f88b5355493e..9dfaf18fc4b4 100644
->> --- a/drivers/media/dvb-frontends/cxd2099.c
->> +++ b/drivers/media/dvb-frontends/cxd2099.c
->> @@ -387,12 +387,15 @@ static int read_attribute_mem(struct dvb_ca_en50221 *ca,
->>  {
->>  	struct cxd *ci = ca->data;
->>  	u8 val;
->> +	int ret;
->>  
->>  	mutex_lock(&ci->lock);
->>  	set_mode(ci, 1);
->> -	read_pccard(ci, address, &val, 1);
->> +	ret = read_pccard(ci, address, &val, 1);
->> +	if (!ret)
->> +		ret = val;
->>  	mutex_unlock(&ci->lock);
->> -	return val;
->> +	return ret;
->>  }
->>  
->>  static int write_attribute_mem(struct dvb_ca_en50221 *ca, int slot,
->> @@ -412,12 +415,15 @@ static int read_cam_control(struct dvb_ca_en50221 *ca,
->>  {
->>  	struct cxd *ci = ca->data;
->>  	unsigned int val;
->> +	int ret;
->>  
->>  	mutex_lock(&ci->lock);
->>  	set_mode(ci, 0);
->> -	read_io(ci, address, &val);
->> +	ret = read_io(ci, address, &val);
->> +	if (!ret)
->> +		ret = val;
->>  	mutex_unlock(&ci->lock);
->> -	return val;
->> +	return ret;
->>  }
->>  
->>  static int write_cam_control(struct dvb_ca_en50221 *ca, int slot,
-> Hmm... Had you test this one on a real hardware? It is not
-> uncommon to have some DVB devices that would fail reading
-> when the firmware is on cold state.
+> Hi,
 >
-> Without testing a patch like that at a real hardware, there's
-> no way to know if this is intentional or if the original
-> developer forgot to add a check for the error.
+> On Thu, Sep 3, 2020 at 1:10 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> >
+> > On Thu, 3 Sep 2020 at 01:43, Douglas Anderson <dianders@chromium.org> wrote:
+> > >
+> > > Turning on initcall debug on one system showed this:
+> > >   initcall sdhci_msm_driver_init+0x0/0x28 returned 0 after 34782 usecs
+> > >
+> > > The lion's share of this time (~33 ms) was in mmc_power_up().  This
+> > > shouldn't be terribly surprising since there are a few calls to delay
+> > > based on "power_delay_ms" and the default delay there is 10 ms.
+> > >
+> > > Because we haven't specified that we'd prefer asynchronous probe for
+> > > this driver then we'll wait for this driver to finish before we start
+> > > probes for more drivers.  While 33 ms doesn't sound like tons, every
+> > > little bit counts.
+> > >
+> > > There should be little problem with turning on asynchronous probe for
+> > > this driver.  It's already possible that previous drivers may have
+> > > turned on asynchronous probe so we might already have other things
+> > > (that probed before us) probing at the same time we are anyway.  This
+> > > driver isn't really providing resources (clocks, regulators, etc) that
+> > > other drivers need to probe and even if it was they should be handling
+> > > -EPROBE_DEFER.
+> > >
+> > > Let's turn this on and get a bit of boot speed back.
+> >
+> > Thanks for a very well written commit message!
+> >
+> > Indeed, I am sure many mmc host drivers could benefit from a similar
+> > change. At least regular platform drivers and amba drivers are pretty
+> > sure to work, but who knows.
+>
+> Yeah, and many non-mmc drivers can benefit too, which is why I've been
+> sending several of these patches recently as I optimize boot perf on
+> the device that's sitting in front of me.  ;-)  I think the idea was
+> that eventually we'd want the kernel to just turn on async by default
+> everywhere, but at the time the flag was introduced there were too
+> many subtle bugs everywhere.  It feels like one way to get to the
+> point where we'd be confident that this is OK to turn on everywhere is
+> to just start turning it on in lots of places.  Once enough places
+> have it on then perhaps that will give folks confidence that it's OK
+> to turn on by default across the board.
 
-No, I do not have hw.  I understand your concerns, it is ok if you want to drop this patch, else i'll beef up the warnings.
-
-Tom
+Yeah, I guess this is the only way forward at this point.
 
 >
-> So, at most, it could print some warning message for
-> non-zero return codes.
->
->
-> Thanks,
-> Mauro
->
+> If you'd like, I can post patches to update some other set of MMC host
+> drivers, either as one giant patch (hard to backport, but not as
+> spammy) or as a large pile of patches.  I've never played with
+> coccinelle so I'd probably fall back to doing this by hand.  I could
+> probably only test on a small handful (I think I have easy access to
+> dw-mmc-rockchip and sdhci-of-arasan besides the msm one I already
+> posted), so another option is that I could also just post for those
+> devices...  ...or we can just hope others will notice and start
+> posting similar patches themselves after testing.  Let me know what
+> you'd prefer.  ;-)
 
+Honestly, I don't know. You go ahead with the option you prefer - then
+I will have a look. :-)
+
+Don't worry if we break some, as it should be rather easy to fix - as
+long as we keep an eye on it.
+
+Kind regards
+Uffe
