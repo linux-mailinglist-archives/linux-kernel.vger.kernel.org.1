@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBA825CB54
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7F925CB50
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729588AbgICUkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S1729559AbgICUkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729348AbgICUbD (ORCPT
+        with ESMTP id S1729312AbgICUbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:03 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD81C06125F;
-        Thu,  3 Sep 2020 13:30:56 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id a9so4139242wmm.2;
-        Thu, 03 Sep 2020 13:30:56 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:04 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983BAC061264;
+        Thu,  3 Sep 2020 13:30:57 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id w2so4134286wmi.1;
+        Thu, 03 Sep 2020 13:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=enpKzUiBmoSBJ4eITLO8PaawwyRhwbwKqDOCyrD6nZM=;
-        b=q65xxxebQ5o0CGBL7V0pXVWRuuEQJXqkTJ4fvQTtbbZtdVPp1+1K1jDEF74acvpUba
-         AQ5Hx9JAdLnM4rGo9B0DlcNSdUdUk4BaleSAIK190wD+JRW2XEpzGjoSr4VeKBJ/8GLw
-         3vDbrFNbL/AVczZaL/iB4NeNmxme+z5ET5q+bakPEvtFAROuvh5NrdwbxTX/0sI8wRSm
-         KRxOWPsMz4qfLu8dnCp5oN9MZqqt2/AsJWiS4SKXWfyzqYSDkIbj+h2rcYNJHAzFvSn1
-         KurPOpAP+ArNQAlvPJlol6XH6TK7Omo608AD8RXHRcgUC2BzZ1YMJliWNK5BKECnHJuR
-         UdQw==
+        bh=I49qX4p3R5f0D/cfuMt37KBf23v3/L+E2eSH2MZxqyM=;
+        b=CSzV1aYjyXMA+ThlgRn7cci8rIEX5STM39i8LXl6eAR1hk+g6v2+sjurymyzXj24DW
+         DAlAXhSTKhhRfJzIiXxpCm3+liwUA9WU2Hlt0wgo8zpCJuHYz0CMp6A1zdqNttc8/hxP
+         TC7NSVfH/eC07z5O8fcYwYCHDth71yq4Rna0Mr43QWesC6z/jxHcThvh8ZNOfPHdFBxm
+         f3ZtZO+ZMLeaJXgLwePVuL3xqfrGlU5MrexfNI/5uUylzH4svGhmVzCGJ8jVSalB4UDJ
+         koiSWTLUhBf6IWMBM5kMUiZtolpSDuhuk1nBMCgU5CaLLCfktoxw7ShE0dGCNGvLZ9Dk
+         cpqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=enpKzUiBmoSBJ4eITLO8PaawwyRhwbwKqDOCyrD6nZM=;
-        b=jCCUr+KHgnTV73EMTPO7wOO8TuXY3a8VpAb0Pp51CmcsnCqPS0LSwydPW1OE8N1dCh
-         07zFoPNKDw+jLg0Rlr17MrbobQxc726CVjWENqDT5KdYxu1iIFw2SLPcWRGEJAr/MjCr
-         P773Unrsb0deQUmLmzeBNFAPIg8mtMporfaom31gwWqqvGvojVE+IgKYAagAJVGzcSzz
-         tEQ5UXMK7CPYy9QOJKNdiGmZDqLoyXMrNKGihQrxHro8RKlJfEZuuxIDRIhqf9j8JGCr
-         MMOW4hBmVm5//78w9Z+1YfeNQ+66GjAk8hHu5cmDoj9AvOdVXQvesQ0G0KQ5GmmY5H4x
-         AK5Q==
-X-Gm-Message-State: AOAM531GciKPQIw3ZNdIv58Ob3fGKr56YkyJVgmfaUvUUnqd0c5a2qLb
-        TQIw5YIfrygsJ+BkJR0373U=
-X-Google-Smtp-Source: ABdhPJxkFH2OLYuxAHxFrqCP+1QlNdTrnstdo4sIsV5Hxm1M+fvSoQbG7ckceLE1d4Lijogw88crTw==
-X-Received: by 2002:a05:600c:414e:: with SMTP id h14mr4115503wmm.2.1599165055122;
-        Thu, 03 Sep 2020 13:30:55 -0700 (PDT)
+        bh=I49qX4p3R5f0D/cfuMt37KBf23v3/L+E2eSH2MZxqyM=;
+        b=NkMl+JxuF0uAUlxMr1gP9jAAOuZaFdK5Qmy+qKVJ08MOX98Oo9a8+RgjvheO+7PQFM
+         Bg/YKVnszP3mAwfjLUOS+UBv07T+cRUi52MCYD5B00ABp9sz8kSsAtv5zJZQj8b7J1gy
+         v/MQ/UXuZGxEBq7omVUUTpU7P3DaTMJ1E0rRBR44QNL9fiGXf2SvXbM1Or9wPXDM8KWt
+         wROUcZYvXrDST4EaYU2uN61hst+FnKJvbO3xDc7bNJBf5eyC622MrEh8IlQScA9aklVM
+         dBlUWWYMJS2W4MoP0VqcagX3Picx7vv/j7tAJGg9Tn+ozFI4+8IZho5VLp7ublmYtFNG
+         se1g==
+X-Gm-Message-State: AOAM531HM9IdIZRUEflUVFoPqfcXLtMo66nGI9OSvpPiYOvNhUq5k2FM
+        PMcTg6Grrz2WVjYMVU+ja74=
+X-Google-Smtp-Source: ABdhPJy5CGi5+Z8rjupOyEJsdtu5n4tI7FD43iDEcopKLSxFhEJ+qzOIV5ZHmtekurdvtvJycDajQw==
+X-Received: by 2002:a05:600c:2053:: with SMTP id p19mr4214447wmg.50.1599165056187;
+        Thu, 03 Sep 2020 13:30:56 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.54
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:30:54 -0700 (PDT)
+        Thu, 03 Sep 2020 13:30:55 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     devicetree@vger.kernel.org,
         Marcus Cooper <codekipper@gmail.com>,
         linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 10/20] arm: dts: sunxi: h3/h5: Add DAI node for HDMI
-Date:   Thu,  3 Sep 2020 22:30:24 +0200
-Message-Id: <20200903203034.1057334-11-peron.clem@gmail.com>
+Subject: [PATCH v2 11/20] arm: dts: sunxi: h3/h5: Add HDMI audio
+Date:   Thu,  3 Sep 2020 22:30:25 +0200
+Message-Id: <20200903203034.1057334-12-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
 References: <20200903203034.1057334-1-peron.clem@gmail.com>
@@ -76,38 +76,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-Add the new DAI block for I2S2 which is used for HDMI audio.
+Add a simple-soundcard to link audio between HDMI and I2S.
 
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm/boot/dts/sunxi-h3-h5.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 22d533d18992..3dca6d89cab9 100644
+index 3dca6d89cab9..ebb109c828d9 100644
 --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
 +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-@@ -662,6 +662,19 @@ i2s1: i2s@1c22400 {
- 			status = "disabled";
- 		};
+@@ -105,6 +105,24 @@ de: display-engine {
+ 		status = "disabled";
+ 	};
  
-+		i2s2: i2s@1c22800 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 27>, <&dma 27>;
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
++	hdmi_sound: hdmi-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,name = "sun8i-h3-hdmi";
++		simple-audio-card,mclk-fs = <128>;
++		status = "disabled";
++
++		simple-audio-card,codec {
++			sound-dai = <&hdmi>;
 +		};
 +
- 		codec: codec@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun8i-h3-codec";
++		simple-audio-card,cpu {
++			sound-dai = <&i2s2>;
++			dai-tdm-slot-num = <2>;
++			dai-tdm-slot-width = <32>;
++		};
++	};
++
+ 	soc {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -806,6 +824,7 @@ csi: camera@1cb0000 {
+ 		};
+ 
+ 		hdmi: hdmi@1ee0000 {
++			#sound-dai-cells = <0>;
+ 			compatible = "allwinner,sun8i-h3-dw-hdmi",
+ 				     "allwinner,sun8i-a83t-dw-hdmi";
+ 			reg = <0x01ee0000 0x10000>;
 -- 
 2.25.1
 
