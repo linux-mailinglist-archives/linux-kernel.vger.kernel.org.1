@@ -2,224 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAC025C0D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D6025C0D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728800AbgICMPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:15:38 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:37488 "EHLO huawei.com"
+        id S1728787AbgICMTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:19:18 -0400
+Received: from mail-db8eur05on2066.outbound.protection.outlook.com ([40.107.20.66]:13409
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728812AbgICMFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:05:52 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 680E1DE6978487D84FB4;
-        Thu,  3 Sep 2020 20:05:27 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Sep 2020 20:05:20 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 2/2] irqchip: add Hisilicon SD5203 vector interrupt controller
-Date:   Thu, 3 Sep 2020 20:05:04 +0800
-Message-ID: <20200903120504.2308-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200903120504.2308-1-thunder.leizhen@huawei.com>
-References: <20200903120504.2308-1-thunder.leizhen@huawei.com>
+        id S1728409AbgICMI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:08:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ekkeQc+IcR6blKHVszStk7bHVgH0XFlIpkv0MX3TdcyCad65xVZmx+2M25XRa5bLdYImtr0IwaSomu9zUomp3VutlDTd7/12n+5izKNHc89Gm4hm9e51Ocpxxuoo0HrF59K0L5CBlueUcPLzmI8rCC9DEQ3cTZbkWiIAKhbqxEI7sCeXOcvimTfhACmoKISnYCC5rsP8WnhqZOWbUp+5G2BAc2CSGyUDmiXiXDICaLk8DrPDUwrQPG9TUIRmA5m9ogeiatoj8dYZ0/Oq5uErawKG5IrOrwskJWP1Gfeta0PjlJvUN/zJ/3l9tN/gZ38bO8kH/Wg+DPNuDiTCx48+9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o7wDynfUjSwaCwO8ODwF+RczjlJu+liDEdlOxyzs3Wo=;
+ b=LGZV8IyURXrjEYq5ybTk8cxVDE/UdCAxqWYUR0ZTnxB7PoEzWotAXFC6JCzByJ6DfMAFmtqnOS1FBha3bKYxWflhN+Z/LMal2aR9XG40oPUnVLEtzoljAaWLUXT37OPeCmVOP7HrpqnCmO1ymRUfaoqFfma4sAyaJfmj5J5TOzIKRmbZ1idmbQo6xzctCkK7cWAgMJnE1bGW9LxjCh9X60RB0MN9bnqwu5jZnNvVed+ZqoN3hPTu/s07OwkwT/tRCekMlQfj+Bqfe6t0TlwLUECJDjpHDZGfGTnU6JfEHrnihcNmpRpD1qUWWkFYgO3jzgMKZcuHJ6AMUMXP7+Ghig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o7wDynfUjSwaCwO8ODwF+RczjlJu+liDEdlOxyzs3Wo=;
+ b=CSDDAxuyQVcybWHswsPYmXwtkDKRlrSsyCO1ZXXwO8HM8wWyTw46yWVzsgZ2YwraEVgNUqHGu/GAGTeSgUm6TtU6X7lHQVuGCImq4mt/5CYYw36NG7lKSjoj8izeaIUKCGkrs43QOenHWuV2bMrI5RJDVE73Ftx8P6EhIJ8byMM=
+Authentication-Results: st-md-mailman.stormreply.com; dkim=none (message not
+ signed) header.d=none;st-md-mailman.stormreply.com; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25) by VI1PR04MB6944.eurprd04.prod.outlook.com
+ (2603:10a6:803:133::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 3 Sep
+ 2020 12:08:52 +0000
+Received: from VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::2951:31f4:4e49:9895]) by VI1PR0402MB3712.eurprd04.prod.outlook.com
+ ([fe80::2951:31f4:4e49:9895%5]) with mapi id 15.20.3326.025; Thu, 3 Sep 2020
+ 12:08:52 +0000
+Subject: Re: [PATCH 1/4] crypto: caam - Fix kerneldoc
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Chen Zhou <chenzhou10@huawei.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20200902150530.14640-1-krzk@kernel.org>
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+Message-ID: <a273f81f-cdf9-70ae-3691-816fa24be0a9@nxp.com>
+Date:   Thu, 3 Sep 2020 15:08:48 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+In-Reply-To: <20200902150530.14640-1-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR07CA0025.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::38) To VI1PR0402MB3712.eurprd04.prod.outlook.com
+ (2603:10a6:803:1c::25)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.13] (86.127.128.228) by AM0PR07CA0025.eurprd07.prod.outlook.com (2603:10a6:208:ac::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.9 via Frontend Transport; Thu, 3 Sep 2020 12:08:50 +0000
+X-Originating-IP: [86.127.128.228]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9f76def2-573b-4a5d-dfef-08d850021f8c
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6944:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6944A45A128722D6911D03AF8C2C0@VI1PR04MB6944.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Rd3vyxIL1zvlOWNKijG+iTQLuicmJlPuvLkxY1Y4n+IU4zlK9XrnZ7hY8yOAOblHgJPRa4UwXSjn/PH3DpMr5DlqudZYa/zuBF+TR17pQU2vdvz0Cnq6oRITyzMxFTFmzBCWn3jTvFw52ybMN0Ap+lpA8dSX6ezBiAoiyozbV0cU8xd4XF9nKay2ylrggNP0wRJ3K+EoRB5DuMoLY4lOg21IDdva+1V9556P2K9NEoh7xqo5baqJDpj9t5GQ2T0RhgiyrF1HpSt0fR5F/Q15kFxIXIp58ozOppiyzy9Evoq6s6G432K1vfodt7hrv9BBShx4XFjXpG+/H6l92Qz+5UDB9gglKiz+71D5iDw8hcQ41TGfV04s7Qy0HQowHGSLH1c2xe+ZV+1J5rSjFjE+9A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3712.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(346002)(376002)(396003)(478600001)(36756003)(2616005)(6486002)(31686004)(86362001)(110136005)(16576012)(316002)(31696002)(83380400001)(52116002)(956004)(7416002)(2906002)(16526019)(186003)(66946007)(53546011)(26005)(5660300002)(8936002)(66556008)(8676002)(66476007)(44832011)(921003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: Srti5ts1LX46sV+V9GrfO6Veegg5VVH4VrOKFqH2AKhLDfI1Dj1a4W43nbf8AD3u8gGbMowP5j1AcsGsJI97Lnk9oGaDdrGA8uyTUFvjIG7Da0ypspwA8TSmND92lxYZfHLGYX5gDddZ8KmV75E5xLFAAw2M1BoC8s88rKJgPXC8XhsgT+AwX+m0jEz7gFPmgAaSOt56VKrPonyzIkPnhdMmoqdqBxGZjTr8P4P0Hxp0BjHuQTquC9UjKANK9+eVAO7vtUUUI/A3um3+m+RqAdSjHbPl8QmNS1eeOyxhrTVn0icMEX47jzTjn7EGC7b3Y8ayOEd8Rb1/lH8ndKmFNM5Wl9u3Kk95RmRn3oNm7mlju2gHCiErLBtRSYBTlHpaQs6afLw7/i7pRm0YKUM9z28xG1Y+rNagAMnOCRoBhJ1MN5jW6nhNll6z17VT+Yh2Frq5ohtAYlcmoD2nCEYbN7xNavWj1bbbIPO/Utek5KMnIub/1qjyXkvNsZRxCVIQ/F6B5QEwkAtILO7DWZmUEPd+fHAZv3g9EbFybOHMkU/ykM+vM6ni+iC7DghjsoYpTHnNANrhZo9yRKGmjHmfBon+olc1t0kYC1O/kAzpO0sBdah6iyW+zo3kIwhCy1E5wmulJDzNqyl9aXJuvMueTA==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f76def2-573b-4a5d-dfef-08d850021f8c
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3712.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2020 12:08:52.6125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 82FeqdZUHVfB3Nuw0T+owvSmEFkckEYEk7Va2HTxkCwnivy7HBVzdfnEGVhi9ZXLQHqKlll9PSAGNgn76MKaeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6944
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+On 9/2/2020 6:05 PM, Krzysztof Kozlowski wrote:
+> Fix kerneldoc warnings:
+> 
+>    drivers/crypto/caam/caamalg_qi2.c:73: warning: cannot understand function prototype: 'struct caam_ctx '
+>    drivers/crypto/caam/caamalg_qi2.c:2962: warning: cannot understand function prototype: 'struct caam_hash_ctx '
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+This LGTM, but, while here, can you, please, check the other kernel-doc 
+warnings:
+drivers/crypto/caam/ctrl.c:449: warning: Function parameter or member 
+'ctrl' not described in 'caam_get_era'
+drivers/crypto/caam/jr.c:331: warning: Function parameter or member 
+'rdev' not described in 'caam_jr_free'
+drivers/crypto/caam/jr.c:369: warning: Excess function parameter 
+'status' description in 'caam_jr_enqueue'
+drivers/crypto/caam/caamalg_desc.c:387: warning: Function parameter or 
+member 'geniv' not described in 'cnstr_shdsc_aead_decap'
 
-This adds an irqchip driver and corresponding devicetree binding for the
-primary interrupt controller based on Hisilicon SD5203 VIC(vector
-interrupt controller).
+Thanks,
+Iulia
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/irqchip/Kconfig          |   5 ++
- drivers/irqchip/Makefile         |   1 +
- drivers/irqchip/irq-sd5203-vic.c | 128 +++++++++++++++++++++++++++++++
- 3 files changed, 134 insertions(+)
- create mode 100644 drivers/irqchip/irq-sd5203-vic.c
-
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index bfc9719dbcdc..f64611a47cf2 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -156,6 +156,11 @@ config FARADAY_FTINTC010
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select SPARSE_IRQ
- 
-+config HISILICON_SD5203_VIC
-+	bool
-+	select GENERIC_IRQ_CHIP
-+	select IRQ_DOMAIN_HIERARCHY
-+
- config HISILICON_IRQ_MBIGEN
- 	bool
- 	select ARM_GIC_V3
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 133f9c45744a..94b98f881940 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -35,6 +35,7 @@ obj-$(CONFIG_ARM_GIC_V3_ITS)		+= irq-gic-v3-its.o irq-gic-v3-its-platform-msi.o
- obj-$(CONFIG_ARM_GIC_V3_ITS_PCI)	+= irq-gic-v3-its-pci-msi.o
- obj-$(CONFIG_ARM_GIC_V3_ITS_FSL_MC)	+= irq-gic-v3-its-fsl-mc-msi.o
- obj-$(CONFIG_PARTITION_PERCPU)		+= irq-partition-percpu.o
-+obj-$(CONFIG_HISILICON_SD5203_VIC)	+= irq-sd5203-vic.o
- obj-$(CONFIG_HISILICON_IRQ_MBIGEN)	+= irq-mbigen.o
- obj-$(CONFIG_ARM_NVIC)			+= irq-nvic.o
- obj-$(CONFIG_ARM_VIC)			+= irq-vic.o
-diff --git a/drivers/irqchip/irq-sd5203-vic.c b/drivers/irqchip/irq-sd5203-vic.c
-new file mode 100644
-index 000000000000..f6f8fd75f1ab
---- /dev/null
-+++ b/drivers/irqchip/irq-sd5203-vic.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Hisilicon SD5203 irqchip driver.
-+ * Based on Synopsys DW APB ICTL irqchip driver.
-+ *
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <asm/exception.h>
-+
-+#define HISI_VIC_INT_ENABLE		0x00
-+#define HISI_VIC_INT_MASK		0x08
-+#define HISI_VIC_INT_FINALSTATUS	0x30
-+#define HISI_VIC_MAX_IRQ		32
-+
-+static struct irq_domain *hisi_vic_irq_domain;
-+static void __iomem *hisi_vic_iobase;
-+
-+static void __exception_irq_entry hisi_vic_handle_irq(struct pt_regs *regs)
-+{
-+	u32 stat = readl_relaxed(hisi_vic_iobase + HISI_VIC_INT_FINALSTATUS);
-+	u32 hwirq;
-+
-+	while (stat) {
-+		hwirq = fls(stat) - 1;
-+		handle_domain_irq(hisi_vic_irq_domain, hwirq, regs);
-+		stat &= ~BIT(hwirq);
-+	}
-+}
-+
-+static int hisi_vic_irq_domain_translate(struct irq_domain *d,
-+					 struct irq_fwspec *fwspec,
-+					 unsigned long *hwirq,
-+					 unsigned int *type)
-+{
-+	if (WARN_ON(fwspec->param_count < 1))
-+		return -EINVAL;
-+
-+	*hwirq = fwspec->param[0];
-+	*type = IRQ_TYPE_NONE;
-+
-+	return 0;
-+}
-+
-+static int hisi_vic_irq_domain_alloc(struct irq_domain *domain,
-+				     unsigned int virq,
-+				     unsigned int nr_irqs, void *arg)
-+{
-+	int i, ret;
-+	irq_hw_number_t hwirq;
-+	unsigned int type = IRQ_TYPE_NONE;
-+	struct irq_fwspec *fwspec = arg;
-+
-+	ret = hisi_vic_irq_domain_translate(domain, fwspec, &hwirq, &type);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < nr_irqs; i++)
-+		irq_map_generic_chip(domain, virq + i, hwirq + i);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops hisi_vic_irq_domain_ops = {
-+	.translate = hisi_vic_irq_domain_translate,
-+	.alloc = hisi_vic_irq_domain_alloc,
-+	.free = irq_domain_free_irqs_top,
-+};
-+
-+static int __init hisi_sd5203_vic_init(struct device_node *np,
-+					struct device_node *parent)
-+{
-+	unsigned int clr = IRQ_NOREQUEST | IRQ_NOPROBE | IRQ_NOAUTOEN;
-+	struct irq_chip_generic *gc;
-+	int ret;
-+
-+	if (hisi_vic_iobase) {
-+		pr_err("%pOF: the irqchip has been registered.\n", np);
-+		return -EBUSY;
-+	}
-+
-+	hisi_vic_iobase = of_iomap(np, 0);
-+	if (!hisi_vic_iobase) {
-+		pr_err("%pOF: unable to map resource\n", np);
-+		return -ENOMEM;
-+	}
-+
-+	hisi_vic_irq_domain = irq_domain_add_linear(np, HISI_VIC_MAX_IRQ,
-+				       &hisi_vic_irq_domain_ops, NULL);
-+	if (!hisi_vic_irq_domain) {
-+		pr_err("%pOF: unable to add irq domain\n", np);
-+		ret = -ENOMEM;
-+		goto err_unmap;
-+	}
-+
-+	ret = irq_alloc_domain_generic_chips(hisi_vic_irq_domain,
-+					     HISI_VIC_MAX_IRQ, 1,
-+					     np->name, handle_fasteoi_irq,
-+					     clr, 0, IRQ_GC_INIT_MASK_CACHE);
-+	if (ret) {
-+		pr_err("%pOF: unable to alloc irq domain gc\n", np);
-+		goto err_unmap;
-+	}
-+
-+	/* mask and enable all interrupts */
-+	writel_relaxed(~0, hisi_vic_iobase + HISI_VIC_INT_MASK);
-+	writel_relaxed(~0, hisi_vic_iobase + HISI_VIC_INT_ENABLE);
-+
-+	gc = irq_get_domain_generic_chip(hisi_vic_irq_domain, 0);
-+	gc->reg_base = hisi_vic_iobase;
-+	gc->chip_types[0].regs.mask = HISI_VIC_INT_MASK;
-+	gc->chip_types[0].regs.enable = HISI_VIC_INT_ENABLE;
-+	gc->chip_types[0].chip.irq_mask = irq_gc_mask_set_bit;
-+	gc->chip_types[0].chip.irq_unmask = irq_gc_mask_clr_bit;
-+	gc->chip_types[0].chip.irq_eoi = irq_gc_noop;
-+
-+	set_handle_irq(hisi_vic_handle_irq);
-+	return 0;
-+
-+err_unmap:
-+	iounmap(hisi_vic_iobase);
-+	return ret;
-+}
-+IRQCHIP_DECLARE(hisi_sd5203_vic, "hisilicon,sd5203-vic", hisi_sd5203_vic_init);
--- 
-2.26.0.106.g9fadedd
-
-
+>   drivers/crypto/caam/caamalg_qi2.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
+> index 66ae1d581168..0441e4ff2df2 100644
+> --- a/drivers/crypto/caam/caamalg_qi2.c
+> +++ b/drivers/crypto/caam/caamalg_qi2.c
+> @@ -59,7 +59,7 @@ struct caam_skcipher_alg {
+>   };
+>   
+>   /**
+> - * caam_ctx - per-session context
+> + * struct caam_ctx - per-session context
+>    * @flc: Flow Contexts array
+>    * @key:  [authentication key], encryption key
+>    * @flc_dma: I/O virtual addresses of the Flow Contexts
+> @@ -2951,7 +2951,7 @@ enum hash_optype {
+>   };
+>   
+>   /**
+> - * caam_hash_ctx - ahash per-session context
+> + * struct caam_hash_ctx - ahash per-session context
+>    * @flc: Flow Contexts array
+>    * @key: authentication key
+>    * @flc_dma: I/O virtual addresses of the Flow Contexts
+> 
