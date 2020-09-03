@@ -2,145 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E414025BB1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 08:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC59425BB22
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 08:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgICGeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 02:34:22 -0400
-Received: from mo-csw1114.securemx.jp ([210.130.202.156]:52200 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgICGeW (ORCPT
+        id S1727818AbgICGiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 02:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgICGiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 02:34:22 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 0836XqkV026096; Thu, 3 Sep 2020 15:33:52 +0900
-X-Iguazu-Qid: 2wGqimZzpdodzp3qKb
-X-Iguazu-QSIG: v=2; s=0; t=1599114831; q=2wGqimZzpdodzp3qKb; m=3lD5yTuNA9UipE4IT4HqtHJpMosJZhyi/NRwtDEowSQ=
-Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
-        by relay.securemx.jp (mx-mr1111) id 0836Xnhn027327;
-        Thu, 3 Sep 2020 15:33:49 +0900
-Received: from enc02.toshiba.co.jp ([61.202.160.51])
-        by imx12.toshiba.co.jp  with ESMTP id 0836XnKm019408;
-        Thu, 3 Sep 2020 15:33:49 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 0836XmiJ027896;
-        Thu, 3 Sep 2020 15:33:48 +0900
-From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
-To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
-Cc:     <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-edac@vger.kernel.org>,
-        <linux-efi@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <devel@acpica.org>, Borislav Petkov <bp@alien8.de>,
-        Tony Luck <tony.luck@intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH v2 1/2] cper, apei, mce: Pass x86 CPER through the MCA handling chain
-References: <20200828203332.11129-1-Smita.KoralahalliChannabasappa@amd.com>
-        <20200828203332.11129-2-Smita.KoralahalliChannabasappa@amd.com>
-        <878sdvv20h.fsf@kokedama.swc.toshiba.co.jp>
-        <102d0c75-d642-8f8b-68c7-792499c2a62a@amd.com>
-Date:   Thu, 03 Sep 2020 15:33:47 +0900
-In-Reply-To: <102d0c75-d642-8f8b-68c7-792499c2a62a@amd.com> (Smita Koralahalli
-        Channabasappa's message of "Wed, 2 Sep 2020 14:29:28 -0500")
-X-TSB-HOP: ON
-Message-ID: <87a6y7qshg.fsf@kokedama.swc.toshiba.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 3 Sep 2020 02:38:18 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA0BC061244;
+        Wed,  2 Sep 2020 23:38:18 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id e33so1325018pgm.0;
+        Wed, 02 Sep 2020 23:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JzV2OCqdKiJejSLxD4j9h8uaxc1ywBPDynMdu8MGQD4=;
+        b=DjWvBbFYKTwUUrwMgdbDVts6nrIF8n3LkmmGUcaTH6wk12ytUSDtsZbPyPNZ7KhN0f
+         BrB1VJ4PEHIvsRS6C9N2moXz/bDtABmEyI3AN4Nt6Yp91seZ5xzZmjU/cfyK4x26Dsw+
+         bU7Zwt6alhzP2UPw44N2BYQugdPZtbIw1HkAhXu50B+589L36cVRG9L/zQQEoVlH1hH8
+         sD7UCa+ohys2MGiDwRKvy/xmF54NLOiSwGmHaKLi8NmK0zKrXjKe6iAn85M4ELq4CwM1
+         gdCLz/M2tozNB8PHn8c+Krhkcve81QtjPMp8JNJ/NAURYpCDvdkLGY/Fk/THyWnsJe/z
+         NieQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JzV2OCqdKiJejSLxD4j9h8uaxc1ywBPDynMdu8MGQD4=;
+        b=T3V+1MFICDl3q1+So/L9ZxAdPAecFlG3MZT102YlrmPuUg8a5CSc+8mVw10o9CIiYA
+         tQ15Tx5DPHuV7L1QUPnIY9G+h9fu5StUcO4PvoMFkAfQW2LgpREfteTU0CAuEAV+3DCz
+         xyOoYy7xNzfc4b+yZLC6DaO0zTxjumZ1/E/v8nJYVtn3GkZkYQSTLggXRtHNu4PGxkIS
+         mhvIugZnAHs+YeiAWm0xpo9vGwLqINWLxgqF2lnlv8BGCiMt2HnuGrkhnVk29HaMf/Gl
+         q2ClVyu0QLQ3PzkcRAgtdqUT7ffCq0E9JFnHxsVpioMBK69LC054shMspLnuoZQwuO+z
+         VI0w==
+X-Gm-Message-State: AOAM532Xp0sry40UI5ZnORG14FYJviQY9zh20p9U4EbOBMSoyWdDOsdz
+        jzSnkCOnkYjAfSSJHsUI2yI=
+X-Google-Smtp-Source: ABdhPJwvJwxeHbddcSMcrw6WNHCMlw8KxZuhNo8a0SYjKuYQMzszVqwi+fMa7X3GuTG5ROpaCUGtqQ==
+X-Received: by 2002:a63:8448:: with SMTP id k69mr1697129pgd.69.1599115097868;
+        Wed, 02 Sep 2020 23:38:17 -0700 (PDT)
+Received: from localhost.localdomain ([218.247.215.252])
+        by smtp.gmail.com with ESMTPSA id e123sm1754835pfh.167.2020.09.02.23.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 23:38:17 -0700 (PDT)
+From:   Xiaoliang Pang <dawning.pang@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        matthias.bgg@gmail.com, swboyd@chromium.org, yuehaibing@huawei.com,
+        tianjia.zhang@linux.alibaba.com, ryder.lee@mediatek.com
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dawning.pang@gmail.com
+Subject: [PATCH] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
+Date:   Thu,  3 Sep 2020 14:38:00 +0800
+Message-Id: <20200903063800.27288-1-dawning.pang@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Smita,
+In the init loop, if an error occurs in function 'dma_alloc_coherent',
+then goto the err_cleanup section,
+in the cleanup loop, after run i--, 
+the struct mtk_ring rising[i] will not be released,
+causing a memory leak
 
-Smita Koralahalli Channabasappa <skoralah@amd.com> writes:
+Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
+---
+ drivers/crypto/mediatek/mtk-platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On 8/31/20 12:05 AM, Punit Agrawal wrote:
->
->> Hi Smita,
->>
->> A couple of comments below -
->>
->> Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com> writes:
->>
->> [...]
->>
->>
->>> diff --git a/drivers/firmware/efi/cper-x86.c b/drivers/firmware/efi/cper-x86.c
->>> index 2531de49f56c..374b8e18552a 100644
->>> --- a/drivers/firmware/efi/cper-x86.c
->>> +++ b/drivers/firmware/efi/cper-x86.c
->>> @@ -1,7 +1,7 @@
->>>   // SPDX-License-Identifier: GPL-2.0
->>>   // Copyright (C) 2018, Advanced Micro Devices, Inc.
->>>   -#include <linux/cper.h>
->> Why is the include dropped? AFAICT, the definitions from there are still
->> being used after this patch.
->
-> Dropped because <acpi/apei.h> already includes <linux/cper.h>
+diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
+index 7e3ad085b5bd..05d341e4a696 100644
+--- a/drivers/crypto/mediatek/mtk-platform.c
++++ b/drivers/crypto/mediatek/mtk-platform.c
+@@ -469,7 +469,7 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
+ 	return 0;
+ 
+ err_cleanup:
+-	for (; i--; ) {
++	for (; i >= 0; --i) {
+ 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
+ 				  ring[i]->res_base, ring[i]->res_dma);
+ 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
+-- 
+2.17.1
 
-Generally, you want to follow the rule that if a declaration from a
-header file is being used, it should show up in the includes. The same
-applies to both source as well as header files.
-
-It doesn't matter if another include in the source file in turn ends up
-including the same header again; the #ifdef guards are there to prevent
-duplicate declarations.
-
-The rationale is that if future changes remove the usage of
-<acpi/apei.h>, the C file can still be compiled after dropping the
-include; there should be no need to then re-introduce <linux/cper.h> at
-that point.
-
-Hope that makes sense.
-
-Thanks,
-Punit
-
->>> +#include <acpi/apei.h>
->
-> [...]
->
->>> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
->>> index 680f80960c3d..44d4d08acce0 100644
->>> --- a/include/acpi/apei.h
->>> +++ b/include/acpi/apei.h
->>> @@ -33,8 +33,15 @@ extern bool ghes_disable;
->>>     #ifdef CONFIG_ACPI_APEI
->>>   void __init acpi_hest_init(void);
->>> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
->>> +			       u64 lapic_id);
->>>   #else
->>>   static inline void acpi_hest_init(void) { return; }
->>> +static inline int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
->>> +					     u64 lapic_id)
->>> +{
->>> +	return -EINVAL;
->>> +}
->>>   #endif
->> Adding the declaration to this include violates the separation of
->> generic and architecture specific code.
->>
->> Can this be moved to the appropriate architecture specific header?
->> Perhaps arch/x86/include/asm/apei.h.
->
-> Yes, I have fixed this and moved into arch/x86/include/asm/acpi.h.
->
->>>   typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
->>> @@ -51,6 +58,8 @@ int erst_clear(u64 record_id);
->>>     int arch_apei_enable_cmcff(struct acpi_hest_header *hest_hdr,
->>> void *data);
->>>   void arch_apei_report_mem_error(int sev, struct cper_sec_mem_err *mem_err);
->>> +int arch_apei_report_x86_error(struct cper_ia_proc_ctx *ctx_info,
->>> +			       u64 lapic_id);
->>
->> Why is the additional declaration needed?
->
-> Will fix in the next revision.
->
-> Thanks,
-> Smita
->
-> [...]
