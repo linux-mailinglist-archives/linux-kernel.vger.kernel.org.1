@@ -2,172 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D7125C110
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA39B25C136
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgICMdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728663AbgICM1z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:27:55 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD54BC061258
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:17:12 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so1438977pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/BKi2i04xBQBPBh/3OfYq0JRpU2M+He5BM3tljwdBCM=;
-        b=CFa0qij2VAf/49RV/zrVX3ncNvnawUqzeGRhAyqR73uvVwsZ6hAeWDUGsG1iks33Yw
-         qw1Yl03RYYHbFFHCzQ0PRzupwQJvkCqZwMICNDOSfgLGE/O4ELoNyjbaPL1hw8vg5FA8
-         8yW4KCkJAbe23y5BhusonlRTSxbSsaG+8h7/E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/BKi2i04xBQBPBh/3OfYq0JRpU2M+He5BM3tljwdBCM=;
-        b=eekU9Zayxse4CVbBtbB4UcFJk8U4t5embDtST0B52mHIIe0+J0lSQye13EPPEFszp+
-         En4Qj8tVCFjeWbAMuaozJqaB3Kr3t5bTb49mP3rrTtcZQn1ltx7aaWIimlUIdaImIYM7
-         7DqFi9zBMWS/GNhbCbvwqgkqljjhyxD/4lvUFrGrBvGAwYIuUGqvWriud9Z4GjHxHPtw
-         nzhxLCjAQkCMq+DlNvlZKMRNpuvou9Eb+ZuLWKzZfF7QrhRvIRQ7Gkv6A/mp2PYVuPQT
-         aqrlFiySaEq+LIWI9Ag/kAsroqMdpHCFegqAW3hhK31Z3LtXJxzVLbmnB9uZ4HWdzF/5
-         JGfA==
-X-Gm-Message-State: AOAM530qxN5Yj1SCaF0c/cyGjiPHPpXPH8W1KD/TpZHD90sADN2TQ123
-        C6PtxApUWLS+ppIlJ/rpWicIHQ==
-X-Google-Smtp-Source: ABdhPJyRNKcBgEX/LHFE+6DRGovh0X2K5LHGwdLni0au93gA95eaRzC4WEulWXQDvMWRqPJEHgWOjA==
-X-Received: by 2002:a17:90a:858a:: with SMTP id m10mr2854307pjn.185.1599135431975;
-        Thu, 03 Sep 2020 05:17:11 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
-        by smtp.gmail.com with ESMTPSA id q201sm3130842pfq.80.2020.09.03.05.17.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 05:17:11 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 05:17:10 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add 'sustainable_power' for
- CPU thermal zones
-Message-ID: <20200903121710.GG3419728@google.com>
-References: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
- <20200901170745.GA3419728@google.com>
- <CAD=FV=Xv0FLtWWcQcRy7p2LPNdDtSjdarsvNHRHaLkWwABnwJw@mail.gmail.com>
- <8ad0589e-102d-7523-899f-0ebe85b7d2b8@codeaurora.org>
- <CAD=FV=XKUEQP3gyE8E2UOE12qKYwzgMp0eNeYjCp0DxPDACSMQ@mail.gmail.com>
- <6693eed6-9a6b-48c8-e56e-acdde9cf9ffe@codeaurora.org>
- <f77d9b24-dbca-cea0-2ef8-3c5cf0c2f2dd@codeaurora.org>
+        id S1728663AbgICMoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:44:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728875AbgICMbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:31:02 -0400
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8BB820786;
+        Thu,  3 Sep 2020 12:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599135689;
+        bh=yWbf0IQWQYG8GUApvqXEYmzQbtffQP1dqs9sWRRBJYc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=v0u/xa9UJLUXrcWTZZoUMemPv+zBd3CSMpgN589Suv8VQ1s2XkrmOvk0DKpCHcV9h
+         +dtPze1EGoTag6uBqgmM+xje7iv1HeWIjYXOV4pZBnBR+pLeQTXu8+AmpBUgAkJix7
+         vqYjvd43z1HisoswK7ROdFWnV2NJDW/HlftwNars=
+Received: by mail-ej1-f47.google.com with SMTP id a15so3512473ejf.11;
+        Thu, 03 Sep 2020 05:21:28 -0700 (PDT)
+X-Gm-Message-State: AOAM530KlP1INTDQ8mPvZZVj5n5n3Xuef0kalsZD7CN4dDXQOlhu9tQJ
+        psvHJTA1iLWj8YmEaok0ptAJ1jI6IAuWlFuUt08=
+X-Google-Smtp-Source: ABdhPJzJRFulG1b/WDsGvl2hfP2WPQAa7GdutvEhBtO7QHdWlTs5d/drIeB5SLH6d3FMPswoRFOciAGFyokm39RWT10=
+X-Received: by 2002:a17:907:724f:: with SMTP id ds15mr1405794ejc.119.1599135687298;
+ Thu, 03 Sep 2020 05:21:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f77d9b24-dbca-cea0-2ef8-3c5cf0c2f2dd@codeaurora.org>
+References: <20200902150530.14640-1-krzk@kernel.org> <a273f81f-cdf9-70ae-3691-816fa24be0a9@nxp.com>
+In-Reply-To: <a273f81f-cdf9-70ae-3691-816fa24be0a9@nxp.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Thu, 3 Sep 2020 14:21:16 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfpvnMr9UnyQ3vSJOmNdNqAXdVnCDJ8W9OF=rH_amaOvQ@mail.gmail.com>
+Message-ID: <CAJKOXPfpvnMr9UnyQ3vSJOmNdNqAXdVnCDJ8W9OF=rH_amaOvQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] crypto: caam - Fix kerneldoc
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Chen Zhou <chenzhou10@huawei.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajendra,
+On Thu, 3 Sep 2020 at 14:08, Iuliana Prodan <iuliana.prodan@nxp.com> wrote:
+>
+> On 9/2/2020 6:05 PM, Krzysztof Kozlowski wrote:
+> > Fix kerneldoc warnings:
+> >
+> >    drivers/crypto/caam/caamalg_qi2.c:73: warning: cannot understand function prototype: 'struct caam_ctx '
+> >    drivers/crypto/caam/caamalg_qi2.c:2962: warning: cannot understand function prototype: 'struct caam_hash_ctx '
+> >
+> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > ---
+> This LGTM, but, while here, can you, please, check the other kernel-doc
+> warnings:
+> drivers/crypto/caam/ctrl.c:449: warning: Function parameter or member
+> 'ctrl' not described in 'caam_get_era'
+> drivers/crypto/caam/jr.c:331: warning: Function parameter or member
+> 'rdev' not described in 'caam_jr_free'
+> drivers/crypto/caam/jr.c:369: warning: Excess function parameter
+> 'status' description in 'caam_jr_enqueue'
+> drivers/crypto/caam/caamalg_desc.c:387: warning: Function parameter or
+> member 'geniv' not described in 'cnstr_shdsc_aead_decap'
 
-On Thu, Sep 03, 2020 at 11:00:52AM +0530, Rajendra Nayak wrote:
-> 
-> On 9/3/2020 10:14 AM, Rajendra Nayak wrote:
-> > 
-> > On 9/2/2020 9:02 PM, Doug Anderson wrote:
-> > > Hi,
-> > > 
-> > > On Tue, Sep 1, 2020 at 10:36 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
-> > > > 
-> > > > 
-> > > > > * In terms of the numbers here, I believe that you're claiming that we
-> > > > > can dissipate 768 mW * 6 + 1202 mW * 2 = ~7 Watts of power.  My memory
-> > > > > of how much power we could dissipate in previous laptops I worked on
-> > > > > is a little fuzzy, but that doesn't seem insane for a passively-cooled
-> > > > > laptop.  However, I think someone could conceivably put this chip in a
-> > > > > smaller form factor.  In such a case, it seems like we'd want these
-> > > > > things to sum up to ~2000 (if it would ever make sense for someone to
-> > > > > put this chip in a phone) or ~4000 (if it would ever make sense for
-> > > > > someone to put this chip in a small tablet).  It seems possible that,
-> > > > > to achieve this, we might have to tweak the
-> > > > > "dynamic-power-coefficient".
-> > > > 
-> > > > DPC values are calculated (at a SoC) by actually measuring max power at various
-> > > > frequency/voltage combinations by running things like dhrystone.
-> > > > How would the max power a SoC can generate depend on form factors?
-> > > > How much it can dissipate sure is, but then I am not super familiar how
-> > > > thermal frameworks end up using DPC for calculating power dissipated,
-> > > > I am guessing they don't.
-> > > > 
-> > > > > I don't know how much thought was put
-> > > > > into those numbers, but the fact that the little cores have a super
-> > > > > round 100 for their dynamic-power-coefficient makes me feel like they
-> > > > > might have been more schwags than anything.  Rajendra maybe knows?
-> > > > 
-> > > > FWIK, the values are always scaled and normalized to 100 for silver and
-> > > > then used to derive the relative DPC number for gold. If you see the DPC
-> > > > for silver cores even on sdm845 is a 100.
-> > > > Again these are not estimations but based on actual power measurements.
-> > > 
-> > > The scaling to 100 doesn't seem to match how the thermal framework is
-> > > using them.  Take a look at of_cpufreq_cooling_register().  It takes
-> > > the "dynamic-power-coefficient" and passes it as "capacitance" into
-> > > __cpufreq_cooling_register().  That's eventually used to compute
-> > > power, which is documented in the code to be in mW.
-> > > 
-> > > power = (u64)capacitance * freq_mhz * voltage_mv * voltage_mv;
-> > > do_div(power, 1000000000);
-> > > 
-> > > /* power is stored in mW */
-> > > freq_table[i].power = power;
-> > > 
-> > > That's used together with "sustainable-power", which is the attribute
-> > > that Matthias is trying to set.  That value is documented to be in mW
-> > > as well.
-> > > 
-> > > ...so if the silver cores are always scaled to 100 regardless of how
-> > > much power they actually draw then it'll be impossible to actually
-> > > think about "sustainable-power" as a mW value.  Presumably we either
-> > > need to accept that fact (and ideally document it) or we need to
-> > > change the values for silver / gold cores (we could still keep the
-> > > relative values the same and just scale them).
-> > 
-> > That sounds reasonable (still keep the relative values and scale them)
-> > I'll get back on what those scaled numbers would look like, and try to
-> > get some sense of why this scaling to 100 was done (like you said
-> > I don't see any documentation on this), but I see atleast a few other non-qcom
-> > SoCs doing this too in mainline (like rockchip/rk3399)
-> 
-> On second thoughts, why wouldn't a relative 'sustainable-power' value work?
-> On every device, one would need to do the exercise that Matthias did to come
-> up with the OPP at which we can sustain max CPU/GPU loads anyway.
+Sure, I'll take a look.
 
-You assume that a thermal zone only has cooling devices of a the same type (or
-with the same fake unit for power consumption). This falls apart when multiple
-types are used, which is common.
-
-Also sustainable power is only a derived value, the lying already starts in
-the energy model, which is used by EAS, so a fake unit could cause further
-problems.
-
-> I mean even if we do change the DPC values to match actual power, Matthias would
-> still observe that we can sustain at the very same OPP and not any different.
-> Its just that the mW values that are passed to kernel are relative and not
-> absolute. My worry is that perhaps no SoC vendor wants to put these absolute numbers
-> out.
-
-This is pretty much 'security' by obscurity. It would be relatively easy to
-measure actual power consumption at different CPU speeds and derive the DPC
-values from that.
+Best regards,
+Krzysztof
