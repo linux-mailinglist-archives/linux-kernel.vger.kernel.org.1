@@ -2,122 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB1925BEC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DA725BEDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgICKBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726268AbgICKBv (ORCPT
+        id S1728346AbgICKKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:10:19 -0400
+Received: from regular1.263xmail.com ([211.150.70.197]:45428 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726479AbgICKKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:01:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E41C061244;
-        Thu,  3 Sep 2020 03:01:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z1so2552935wrt.3;
-        Thu, 03 Sep 2020 03:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PVT3ygOcuFe0LWyBz2DhihSeRm+lXNm0vzdkiRVpYsk=;
-        b=Gd/xGVYI9n7IwNRt6fMphB2oiARF7ZaKP7+pcG/wHTe5GLhbZQ111XwaZWIDVdQMZS
-         Nw++OT232hRTt4xRYOitzQV+uVVranejsOGEE65UKM1S1ETUjh7CljuZ6x9nJhpVmluT
-         XaXOS+iKy4ZPoPOlv8Sbhn2FPKLaJWJuV7y1nFM5atU50eKl/gAtlAsFxfcxHwgqdZe4
-         ZyaRD5YZDotXHdvSq0cBw4L6DWNnmTP6Huu1FUOD4EFCGgJtSn8OV/D6PxxUdwFkVXyc
-         yUD24OfQ+8u64jRMMgnFtlZzKg+ugSWbEpJAzR3PljIuSRit02wVR6Cf/woUBGepHM4k
-         G/gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PVT3ygOcuFe0LWyBz2DhihSeRm+lXNm0vzdkiRVpYsk=;
-        b=jo9B8aedduMxXCaVdahbyZRIJwXfXAJdLde6evWPAJFOJHJMrZMKM/ZqfLsXybS2nx
-         OBm/aq8S6nuLSsJ8t4qy7oGxiT98BrJ7R3JXnJVGDQgTKQV2cqLd4M6YZ3e+DAdti6Wf
-         wvX3FVtB7HcSXnyIoniy3LZX5F0ZdPzFM9q8iKiifQffpPcrCMWCrZ7hQpeKbMMqi4Tn
-         IcOwb5thO8KINuUhWDgO07cluyvfbjnJFzAARBthH9tVZmpxMFbhOVCWYAJr2s1JwTho
-         KJNoV7PVhowZiInE82Wtlr82LaysfYhL/TVMWa9SnemA++VntPQrzlkWL3/69h0OegHk
-         mTqw==
-X-Gm-Message-State: AOAM531UMxjrx0KQiu+c24+DhfjUjNKKwlR88JtPDEqLJyJxjITR+rtT
-        ISHqBcxyK/OKENg8l48qRBQ=
-X-Google-Smtp-Source: ABdhPJy7BnsjGdfd2QUKqJ8X4zF9U3qlAGkBS5H5ShHh+J5C67lXOew+hI1JpzzuZufYYJpJVEodKg==
-X-Received: by 2002:adf:e4cf:: with SMTP id v15mr1581975wrm.174.1599127307905;
-        Thu, 03 Sep 2020 03:01:47 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id u126sm4487724wmu.9.2020.09.03.03.01.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 03:01:47 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] remoteproc: core: Free rvdev on error path
-Date:   Thu,  3 Sep 2020 11:01:42 +0100
-Message-Id: <20200903100142.57117-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 3 Sep 2020 06:10:05 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id 0C342CDE;
+        Thu,  3 Sep 2020 18:02:13 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.120] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P22906T140609283335936S1599127332451858_;
+        Thu, 03 Sep 2020 18:02:13 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <acb947cc9ab6943b38928a7b5e18ddf0>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: huangtao@rock-chips.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v2 1/6] clk: rockchip: Use clk_hw_register_composite
+ instead of clk_register_composite calls
+To:     Elaine Zhang <zhangqing@rock-chips.com>, heiko@sntech.de
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, xxx@rock-chips.com,
+        xf@rock-chips.com, huangtao@rock-chips.com
+References: <20200903063147.10237-1-zhangqing@rock-chips.com>
+ <20200903063147.10237-2-zhangqing@rock-chips.com>
+From:   Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <6cf65d7c-adff-5a56-f836-0affd68fbfe2@rock-chips.com>
+Date:   Thu, 3 Sep 2020 18:02:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200903063147.10237-2-zhangqing@rock-chips.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rpoc_handle_vdev(), rvdev is not freed properly on the error path and
-one of the labels is misnamed. Fix this up.
+Hi Elaine,
 
-Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/remoteproc/remoteproc_core.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On 2020/9/3 下午2:31, Elaine Zhang wrote:
+> clk_hw_register_composite it's already exported.
+> Preparation for compilation of rK common clock drivers into modules.
+>
+> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+> ---
+>   drivers/clk/rockchip/clk-half-divider.c | 18 ++++----
+>   drivers/clk/rockchip/clk.c              | 58 ++++++++++++-------------
+>   2 files changed, 38 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/clk/rockchip/clk-half-divider.c b/drivers/clk/rockchip/clk-half-divider.c
+> index b333fc28c94b..e97fd3dfbae7 100644
+> --- a/drivers/clk/rockchip/clk-half-divider.c
+> +++ b/drivers/clk/rockchip/clk-half-divider.c
+> @@ -166,7 +166,7 @@ struct clk *rockchip_clk_register_halfdiv(const char *name,
+>   					  unsigned long flags,
+>   					  spinlock_t *lock)
+>   {
+> -	struct clk *clk;
+> +	struct clk_hw *hw;
+>   	struct clk_mux *mux = NULL;
+>   	struct clk_gate *gate = NULL;
+>   	struct clk_divider *div = NULL;
+> @@ -212,16 +212,18 @@ struct clk *rockchip_clk_register_halfdiv(const char *name,
+>   		div_ops = &clk_half_divider_ops;
+>   	}
+>   
+> -	clk = clk_register_composite(NULL, name, parent_names, num_parents,
+> -				     mux ? &mux->hw : NULL, mux_ops,
+> -				     div ? &div->hw : NULL, div_ops,
+> -				     gate ? &gate->hw : NULL, gate_ops,
+> -				     flags);
+> +	hw = clk_hw_register_composite(NULL, name, parent_names, num_parents,
+> +				       mux ? &mux->hw : NULL, mux_ops,
+> +				       div ? &div->hw : NULL, div_ops,
+> +				       gate ? &gate->hw : NULL, gate_ops,
+> +				       flags);
+> +	if (IS_ERR(hw))
+> +		goto err_div;
+>   
+> -	return clk;
+> +	return hw->clk;
+>   err_div:
+>   	kfree(gate);
+>   err_gate:
+>   	kfree(mux);
+> -	return ERR_PTR(-ENOMEM);
+> +	return ERR_CAST(hw);
+>   }
+> diff --git a/drivers/clk/rockchip/clk.c b/drivers/clk/rockchip/clk.c
+> index 546e810c3560..b51f320e5733 100644
+> --- a/drivers/clk/rockchip/clk.c
+> +++ b/drivers/clk/rockchip/clk.c
+> @@ -43,7 +43,7 @@ static struct clk *rockchip_clk_register_branch(const char *name,
+>   		u8 gate_shift, u8 gate_flags, unsigned long flags,
+>   		spinlock_t *lock)
+>   {
+> -	struct clk *clk;
+> +	struct clk_hw *hw;
+>   	struct clk_mux *mux = NULL;
+>   	struct clk_gate *gate = NULL;
+>   	struct clk_divider *div = NULL;
+> @@ -100,25 +100,22 @@ static struct clk *rockchip_clk_register_branch(const char *name,
+>   						: &clk_divider_ops;
+>   	}
+>   
+> -	clk = clk_register_composite(NULL, name, parent_names, num_parents,
+> -				     mux ? &mux->hw : NULL, mux_ops,
+> -				     div ? &div->hw : NULL, div_ops,
+> -				     gate ? &gate->hw : NULL, gate_ops,
+> -				     flags);
+> -
+> -	if (IS_ERR(clk)) {
+> -		ret = PTR_ERR(clk);
+> +	hw = clk_hw_register_composite(NULL, name, parent_names, num_parents,
+> +				       mux ? &mux->hw : NULL, mux_ops,
+> +				       div ? &div->hw : NULL, div_ops,
+> +				       gate ? &gate->hw : NULL, gate_ops,
+> +				       flags);
+> +	if (IS_ERR(hw))
+>   		goto err_composite;
+> -	}
+>   
+> -	return clk;
+> +	return hw->clk;
+>   err_composite:
+>   	kfree(div);
+>   err_div:
+>   	kfree(gate);
+>   err_gate:
+>   	kfree(mux);
+> -	return ERR_PTR(ret);
+> +	return ERR_CAST(hw);
+>   }
+>   
+>   struct rockchip_clk_frac {
+> @@ -214,8 +211,8 @@ static struct clk *rockchip_clk_register_frac_branch(
+>   		unsigned long flags, struct rockchip_clk_branch *child,
+>   		spinlock_t *lock)
+>   {
+> +	struct clk_hw *hw;
+>   	struct rockchip_clk_frac *frac;
+> -	struct clk *clk;
+>   	struct clk_gate *gate = NULL;
+>   	struct clk_fractional_divider *div = NULL;
+>   	const struct clk_ops *div_ops = NULL, *gate_ops = NULL;
+> @@ -255,14 +252,14 @@ static struct clk *rockchip_clk_register_frac_branch(
+>   	div->approximation = rockchip_fractional_approximation;
+>   	div_ops = &clk_fractional_divider_ops;
+>   
+> -	clk = clk_register_composite(NULL, name, parent_names, num_parents,
+> -				     NULL, NULL,
+> -				     &div->hw, div_ops,
+> -				     gate ? &gate->hw : NULL, gate_ops,
+> -				     flags | CLK_SET_RATE_UNGATE);
+> -	if (IS_ERR(clk)) {
+> +	hw = clk_hw_register_composite(NULL, name, parent_names, num_parents,
+> +				       NULL, NULL,
+> +				       &div->hw, div_ops,
+> +				       gate ? &gate->hw : NULL, gate_ops,
+> +				       flags | CLK_SET_RATE_UNGATE);
+> +	if (IS_ERR(hw)) {
+>   		kfree(frac);
+> -		return clk;
+> +		return ERR_CAST(hw);
+>   	}
+>   
+>   	if (child) {
+> @@ -292,7 +289,7 @@ static struct clk *rockchip_clk_register_frac_branch(
+>   		mux_clk = clk_register(NULL, &frac_mux->hw);
+>   		if (IS_ERR(mux_clk)) {
+>   			kfree(frac);
+> -			return clk;
+> +			return mux_clk;
+>   		}
+>   
+>   		rockchip_clk_add_lookup(ctx, mux_clk, child->id);
+> @@ -301,7 +298,7 @@ static struct clk *rockchip_clk_register_frac_branch(
+>   		if (frac->mux_frac_idx >= 0) {
+>   			pr_debug("%s: found fractional parent in mux at pos %d\n",
+>   				 __func__, frac->mux_frac_idx);
+> -			ret = clk_notifier_register(clk, &frac->clk_nb);
+> +			ret = clk_notifier_register(hw->clk, &frac->clk_nb);
+>   			if (ret)
+>   				pr_err("%s: failed to register clock notifier for %s\n",
+>   						__func__, name);
+> @@ -311,7 +308,7 @@ static struct clk *rockchip_clk_register_frac_branch(
+>   		}
+>   	}
+>   
+> -	return clk;
+> +	return hw->clk;
+>   }
+>   
+>   static struct clk *rockchip_clk_register_factor_branch(const char *name,
+> @@ -320,7 +317,7 @@ static struct clk *rockchip_clk_register_factor_branch(const char *name,
+>   		int gate_offset, u8 gate_shift, u8 gate_flags,
+>   		unsigned long flags, spinlock_t *lock)
+>   {
+> -	struct clk *clk;
+> +	struct clk_hw *hw;
+>   	struct clk_gate *gate = NULL;
+>   	struct clk_fixed_factor *fix = NULL;
+>   
+> @@ -349,16 +346,17 @@ static struct clk *rockchip_clk_register_factor_branch(const char *name,
+>   	fix->mult = mult;
+>   	fix->div = div;
+>   
+> -	clk = clk_register_composite(NULL, name, parent_names, num_parents,
+> -				     NULL, NULL,
+> -				     &fix->hw, &clk_fixed_factor_ops,
+> -				     &gate->hw, &clk_gate_ops, flags);
+> -	if (IS_ERR(clk)) {
+> +	hw = clk_hw_register_composite(NULL, name, parent_names, num_parents,
+> +				       NULL, NULL,
+> +				       &fix->hw, &clk_fixed_factor_ops,
+> +				       &gate->hw, &clk_gate_ops, flags);
+> +	if (IS_ERR(hw)) {
+>   		kfree(fix);
+>   		kfree(gate);
+> +		return ERR_CAST(hw);
+>   	}
+>   
+> -	return clk;
+> +	return hw->clk;
+>   }
+>   
+>   struct rockchip_clk_provider * __init rockchip_clk_init(struct device_node *np,
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index d4bd71f87b03..84dea43d196e 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -531,7 +531,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
- 	rvdev->dev.parent = &rproc->dev;
- 	ret = dma_copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
- 	if (ret)
--		return ret;
-+		goto free_rvdev;
- 	rvdev->dev.release = rproc_rvdev_release;
- 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
- 	dev_set_drvdata(&rvdev->dev, rvdev);
-@@ -539,7 +539,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
- 	ret = device_register(&rvdev->dev);
- 	if (ret) {
- 		put_device(&rvdev->dev);
--		return ret;
-+		goto free_rvdev;
- 	}
- 	/* Make device dma capable by inheriting from parent's capabilities */
- 	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
-@@ -556,7 +556,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
- 	for (i = 0; i < rsc->num_of_vrings; i++) {
- 		ret = rproc_parse_vring(rvdev, rsc, i);
- 		if (ret)
--			goto free_rvdev;
-+			goto unregister_dev;
- 	}
- 
- 	/* remember the resource offset*/
-@@ -581,8 +581,10 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
- unwind_vring_allocations:
- 	for (i--; i >= 0; i--)
- 		rproc_free_vring(&rvdev->vring[i]);
--free_rvdev:
-+unregister_dev:
- 	device_unregister(&rvdev->dev);
-+free_rvdev:
-+	kfree(rvdev);
- 	return ret;
- }
- 
--- 
-2.28.0
+This looks good to me, so
+
+Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
+
+Thanks,
+
+- Kever
+
+
 
