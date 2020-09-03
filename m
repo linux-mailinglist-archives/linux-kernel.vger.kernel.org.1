@@ -2,62 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3730325BF18
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4DF25BF19
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgICKcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgICKcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:32:50 -0400
-Received: from localhost (unknown [122.171.179.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1955620716;
-        Thu,  3 Sep 2020 10:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599129170;
-        bh=YFlDB95nKM1SZdLZ0MVDpqJ2y3FZn9MeGhr5mbp3gf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qwh8y8ytLoTAHVmF7uqlnAd3WyC269LWUxpGiMxKRwYJWWf5B3/YBRg8rJJ167vIy
-         bQCvE1vwI+T+En1RkkDNq6+HsGL75r8dpgvUqumsasX1gtdbWGy7w34rjOpUwrMTtH
-         PBHMX3GCv/oh9OCQ71h97poKERTrnnVJU/4bSeXA=
-Date:   Thu, 3 Sep 2020 16:02:45 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
-        jank@cadence.com, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
-        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH v4 0/3] ASoC: soundwire: fix port_ready[] dynamic
- allocation
-Message-ID: <20200903103245.GO2639@vkoul-mobl>
-References: <20200831134318.11443-1-yung-chuan.liao@linux.intel.com>
+        id S1726047AbgICKdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:33:05 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52707 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726025AbgICKc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 06:32:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599129175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2EBz+XNEZDprNAc71MY7Cc8HkN8faZ2EKOlhwmah+a0=;
+        b=Io2c99vzF4YN54tuF9IZEV04DHs0VFpuvZM3VbHyyAv89ELKOCKDGB3s7sG0UiWE1/NKuw
+        T+1TBNd3pRJUDVAuJfvAszLmt6AJDaRA7Ww8HMUHCpgdxKqgfB5DoYvvdPfCKAdgGUnM3f
+        DfT4B8TYn5rFvhzMR4Do6oznOJdyGGQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-3PDtpEmrNjaHIKh7XHMXyQ-1; Thu, 03 Sep 2020 06:32:54 -0400
+X-MC-Unique: 3PDtpEmrNjaHIKh7XHMXyQ-1
+Received: by mail-ed1-f72.google.com with SMTP id bm14so1121033edb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 03:32:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2EBz+XNEZDprNAc71MY7Cc8HkN8faZ2EKOlhwmah+a0=;
+        b=CjgiUaXc7KJPr8ytuDMc9yxRttnrfybm+wzYBftOS5RPsTK7mj6X+aaTy0ABNywV8C
+         Lo4kK2YEvGM/hYzzEM+gEWzZnwtzozNPewDFqMB3hPWlXJN7v4tgK5z6/0ybzjR6Pa5i
+         SgWRR13SL0Un0pvg9Cw76B4hFowOBd1KO+oYGum2BNFtfYL5Nwj9689NbwCpiLP0ufKw
+         fpTb8u2Jn6brzhdm4EELDvzdvl6zdlxvZSYu/IYgMkBNb8YVvJTK9OIoWnH0Z1hXI2/i
+         OqrU3pnFcdl9PNO4AgWOO5a1aUXjtD4HqxBoRrdC561liRPGlvVmi4YtvpGNPx5IrvRZ
+         vjEg==
+X-Gm-Message-State: AOAM533TuOvgSTzcwHLOqdDSDgABOE4T5zu1wKvLmp6FqpKWBSaVGDJz
+        z2tAQBpVrW5ghIYubTFOHZlL4wgeFBNMJHCVOg+nTZrJrMWUo64qtzdQmuvETKS5PIEiBbcm//o
+        MpmMfs1G7mZ3kxWGHfn7CzEU1
+X-Received: by 2002:a17:906:4d4d:: with SMTP id b13mr1343024ejv.221.1599129172878;
+        Thu, 03 Sep 2020 03:32:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKOOQit71KDUj1vlagmzzxdVBIYpRE6M2EIk+DSgSKDROQ5nL1jX9o7MvYH4+PhPmTGlii7Q==
+X-Received: by 2002:a17:906:4d4d:: with SMTP id b13mr1343004ejv.221.1599129172669;
+        Thu, 03 Sep 2020 03:32:52 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id re10sm2899834ejb.68.2020.09.03.03.32.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 03:32:52 -0700 (PDT)
+Subject: Re: [PATCH] HID: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for
+ BYD zhaoxin notebook
+To:     Penghao <penghao@uniontech.com>, gregkh@linuxfoundation.org
+Cc:     johan@kernel.org, dlaz@chromium.org, stern@rowland.harvard.edu,
+        kerneldev@karsmulder.nl, jonathan@jdcox.net, tomasz@meresinski.eu,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200903100326.5327-1-penghao@uniontech.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e9b10ea4-1f7d-4edc-daa6-32af833fea67@redhat.com>
+Date:   Thu, 3 Sep 2020 12:32:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831134318.11443-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20200903100326.5327-1-penghao@uniontech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-08-20, 21:43, Bard Liao wrote:
-> The existing code allocates memory for the total number of ports.
-> This only works if the ports are contiguous, but will break if e.g. a
-> Devices uses port0, 1, and 14. The port_ready[] array would contain 3
-> elements, which would lead to an out-of-bounds access. Conversely in
-> other cases, the wrong port index would be used leading to timeouts on
-> prepare.
-> 
-> This can be fixed by allocating for the worst-case of 15
-> ports (DP0..DP14). In addition since the number is now fixed, we can
-> use an array instead of a dynamic allocation.
+Hi,
 
-Applied all, thanks
--- 
-~Vinod
+On 9/3/20 12:03 PM, Penghao wrote:
+> Add a USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for the BYD zhaoxin notebook.
+> This notebook come with usb touchpad. And we would like to disable touchpad
+> wakeup on this notebook by default.
+
+2 questions:
+
+1. Why do you want to enable remote wakeup by default ?
+2. Is this a HID multi-touch touchpad?
+
+Regards,
+
+Hans
+
+
+> 
+> Signed-off-by: Penghao <penghao@uniontech.com>
+> ---
+>   drivers/usb/core/quirks.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 7c1198f80c23..5fa3f2416967 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -387,6 +387,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+>   	{ USB_DEVICE(0x0b05, 0x17e0), .driver_info =
+>   			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+>   
+> +	/* SONiX USB DEVICE Touchpad */
+> +	{ USB_DEVICE(0x0c45, 0x7056), .driver_info =
+> +			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+> +
+>   	/* Realtek hub in Dell WD19 (Type-C) */
+>   	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
+>   
+> 
+
