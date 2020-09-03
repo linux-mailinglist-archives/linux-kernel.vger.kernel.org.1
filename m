@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A40F25C394
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F3C25C397
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729432AbgICOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:54:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52036 "EHLO mail.kernel.org"
+        id S1729338AbgICOyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:54:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729308AbgICOyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:54:19 -0400
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1729296AbgICOyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:54:45 -0400
+Received: from kernel.org (unknown [77.127.89.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49DEC208C7
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 14:54:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8D952072A;
+        Thu,  3 Sep 2020 14:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599144858;
-        bh=mriIatmtdubimfxx6F+KYhhAQsXMp4Zfj9n/rnqEnYg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MfmZFBjT64s2kj82dccACMNfccL3q/EDxxTceknRnn5UC3AImrGOzEffZCZJBQLHb
-         xsY0ha/O5YBHgCotpGQ0WDdqXQ8tT675l0QXQ1Xgz+E+lw7gbhM7WmZIOITJodOcZN
-         IMv6xVYpajk0/OrPonK7qnFLO3OuTIBZUFe3Lv/M=
-Received: by mail-wm1-f44.google.com with SMTP id b79so3188047wmb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:54:18 -0700 (PDT)
-X-Gm-Message-State: AOAM53228dX+Bg74con9Uxwyswl5RifygYalon0THJhILGW6TAyHAiDV
-        3zJZqs/jiJx2Ia8xcWXWRup2TffjduLFthErGma18g==
-X-Google-Smtp-Source: ABdhPJwZWPiuPxsfeWv1J/1dfx0Phx0Z+CR6jZc6Vth7ClO5Nnnsw9BnQ2BG0ronnM+rSbGLQcOzQkjyBYwFKrdO6uM=
-X-Received: by 2002:a1c:740c:: with SMTP id p12mr2909254wmc.176.1599144856798;
- Thu, 03 Sep 2020 07:54:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <46e42e5e-0bca-5f3f-efc9-5ab15827cc0b@intel.com>
- <40BC093A-F430-4DCC-8DC0-2BA90A6FC3FA@amacapital.net> <b3809dd7-8566-0517-2389-8089475135b7@intel.com>
-In-Reply-To: <b3809dd7-8566-0517-2389-8089475135b7@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 3 Sep 2020 07:54:05 -0700
-X-Gmail-Original-Message-ID: <CALCETrVY6XXUkePL0D0gmGEkq_oB2Ly_uXo6QQUz1v0H7sf_-g@mail.gmail.com>
-Message-ID: <CALCETrVY6XXUkePL0D0gmGEkq_oB2Ly_uXo6QQUz1v0H7sf_-g@mail.gmail.com>
-Subject: Re: [PATCH v11 6/9] x86/cet: Add PTRACE interface for CET
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Jann Horn <jannh@google.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
+        s=default; t=1599144884;
+        bh=v33Xb9X9GvxmPN3+NOHcqHGJjgQqmZYSA04xdjzeNUQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nsU7mWRmhR/Pfl4Z4+2/xdN0yMWkKeMDLx6U+5rYeeuL0CrLRaCprjNkhF8mHEYv9
+         52vD0bWQeoz+j7GgbkZSg1U0OoMY5/Y2gnwvTMaaSgryB6zAjoYwm8Zd5Q/muX3eIe
+         WmLBizF+TvgLJfs43bVRd6eCDeQdUL7H6JrMb1zU=
+Date:   Thu, 3 Sep 2020 17:54:38 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Michal Simek <monstr@monstr.eu>,
         Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Tony Luck <tony.luck@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [GIT PULL] Fix min_low_pfn/max_low_pfn build errors on ia64 and
+ microblaze
+Message-ID: <20200903145438.GA1781636@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 7:27 AM Dave Hansen <dave.hansen@intel.com> wrote:
->
-> On 9/2/20 9:35 PM, Andy Lutomirski wrote:
-> >>>>>> +       fpu__prepare_read(fpu);
-> >>>>>> +       cetregs =3D get_xsave_addr(&fpu->state.xsave, XFEATURE_CET=
-_USER);
-> >>>>>> +       if (!cetregs)
-> >>>>>> +               return -EFAULT;
-> >>>>> Can this branch ever be hit without a kernel bug? If yes, I think
-> >>>>> -EFAULT is probably a weird error code to choose here. If no, this
-> >>>>> should probably use WARN_ON(). Same thing in cetregs_set().
-> >>>> When a thread is not CET-enabled, its CET state does not exist.  I l=
-ooked at EFAULT, and it means "Bad address".  Maybe this can be ENODEV, whi=
-ch means "No such device"?
-> > Having read the code, I=E2=80=99m unconvinced. It looks like a get_xsav=
-e_addr() failure means =E2=80=9Cstate not saved; task sees INIT state=E2=80=
-=9D.  So *maybe* it=E2=80=99s reasonable -ENODEV this, but I=E2=80=99m not =
-really convinced. I tend to think we should return the actual INIT state an=
-d that we should permit writes and handle them correctly.
->
-> PTRACE is asking for access to the values in the *registers*, not for
-> the value in the kernel XSAVE buffer.  We just happen to only have the
-> kernel XSAVE buffer around.
->
-> If we want to really support PTRACE we have to allow the registers to be
-> get/set, regardless of what state they are in, INIT state or not.  So,
-> yeah I agree with Andy.
+Hi Linus,
 
-I think the core dump code gets here, too, so the values might be in
-registers as well.  I hope that fpu__prepare_read() does the right
-thing in this case.
+The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
 
---Andy
+  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock.git tags/fixes-2020-09-03
+
+for you to fetch changes up to 5f7b81c18366c38446f6eedab570b98dbdc07cff:
+
+  ia64: fix min_low_pfn/max_low_pfn build errors (2020-09-01 19:34:11 +0300)
+
+----------------------------------------------------------------
+Fix min_low_pfn/max_low_pfn build errors on ia64 and microblaze
+
+Some configurations of ia64 and microblaze use min_low_pfn and
+max_low_pfn in pfn_valid(). This causes build failures for modules that
+use pfn_valid().
+
+The fix is to add EXPORT_SYMBOL() for these variables on ia64 and
+microblaze.
+
+----------------------------------------------------------------
+Randy Dunlap (2):
+      microblaze: fix min_low_pfn/max_low_pfn build errors
+      ia64: fix min_low_pfn/max_low_pfn build errors
+
+ arch/ia64/kernel/ia64_ksyms.c | 2 +-
+ arch/microblaze/mm/init.c     | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+-- 
+Sincerely yours,
+Mike.
