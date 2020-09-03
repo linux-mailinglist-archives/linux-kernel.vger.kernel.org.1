@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B011125C515
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FB225C4DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728855AbgICPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:22:08 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:43169 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728431AbgICLXw (ORCPT
+        id S1728812AbgICPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728561AbgICL1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:23:52 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200903111301epoutp02d35e33356e1b941da3304bd9da4eaf87~xQbNexIHV3114731147epoutp02J
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 11:13:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200903111301epoutp02d35e33356e1b941da3304bd9da4eaf87~xQbNexIHV3114731147epoutp02J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599131581;
-        bh=ciQYrD3Tn+9WjZa6amZbj5BAhCek31MGMXV8HcEB6Dk=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=QVRg6ZG3UDKjyF1t4nYZv3TRRgzXPulY5OfgzfNU+XC/u2AUxA2pB4mT+eCw4AdXn
-         p7aN1zvIrBdamKS4Nq8/2hV4B+NdJ4ZlW8TEJOBce/J9jFrqj3QGYu1efV1CqIGwZI
-         FyL5FevFLznUP4DJy8Xm9pUYtws6gh2dGlvwKUEU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200903111300epcas1p4d2a6b5e162679cb00ee0d5a282243d02~xQbM1EBXR0956509565epcas1p4H;
-        Thu,  3 Sep 2020 11:13:00 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4BhypM4tcGzMqYkf; Thu,  3 Sep
-        2020 11:12:59 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        99.C7.19033.BBFC05F5; Thu,  3 Sep 2020 20:12:59 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200903111259epcas1p2564a6a8f400eea1390d1cf2e344dd4a5~xQbLV-X8f1369513695epcas1p2T;
-        Thu,  3 Sep 2020 11:12:59 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200903111259epsmtrp2f93c85e5e351761e763754501f9e1ade~xQbLVS9Bq2006820068epsmtrp2q;
-        Thu,  3 Sep 2020 11:12:59 +0000 (GMT)
-X-AuditID: b6c32a36-16fff70000004a59-7d-5f50cfbbf41d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DB.6E.08382.ABFC05F5; Thu,  3 Sep 2020 20:12:58 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200903111258epsmtip112ea102f652e62b79d1a8f01c5c7fed4~xQbLH37AA1455414554epsmtip1J;
-        Thu,  3 Sep 2020 11:12:58 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200902075306.8439-1-kohada.t2@gmail.com>
-Subject: RE: [PATCH] exfat: eliminate dead code in exfat_find()
-Date:   Thu, 3 Sep 2020 20:12:57 +0900
-Message-ID: <000001d681e3$2da33bc0$88e9b340$@samsung.com>
+        Thu, 3 Sep 2020 07:27:31 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A597C061245;
+        Thu,  3 Sep 2020 04:18:11 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w7so2075460pfi.4;
+        Thu, 03 Sep 2020 04:18:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dYHgOYFkdCbGZWuPZrhfEhLKQCW87nGOndt8XY8lTCE=;
+        b=YTmj5Nx/rxPJZhk7d9yLcM2eIv4s0d3h/2ZR84Em9iBxXXU+6fm3Z5kcFOSLY+Gsu+
+         rnb+mSPFr38Rfgetp+MVqEa0Y5Z88781pr3jGwxI9aW9uIc2OIfhdOiAuEMz8ZwWRwrv
+         Xtky8ninIqNZ1+nE5/RIr2SDFhktx6FZoCwZ/+NltoqGD8aKYsjsqajhIyssbPj2x/+N
+         cNlWAUKA1jars5Ol/hlBfegnT3XpElC5fPQaZ/dSLZTKwBcP23I4SpXHLO0gD4BDMDd4
+         TOjqdW4p/n2T6IddPecArk4zZSzmYuWcymqQTKaBEo+10kylkPek6mgPXylU1suF/uhb
+         Dt2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dYHgOYFkdCbGZWuPZrhfEhLKQCW87nGOndt8XY8lTCE=;
+        b=I3u4r+FcqjlHj7nPPkNEwEWzHmvcf8EjDtN304Quv9b4+WZ/ITteW9LgnX+XcAi6SQ
+         v86HrdHW4Xxf7sLS8cYb8wwmG2AsQT26IjJfL9mrk0XQcyIdTaBiO6bEyesrubXaR5tL
+         x2dG2118VIj6nHVxqfm6NaqjCvaYO8Eh6Tepkuz4ft6lWMYZPhgOxAuuUss25IUB04/c
+         NgSLaPVRN+coCYviqo2XdrxgPHd6SRVfIorG2QyIL6Nj3P7DXmFJg0X3pzi1piA30muN
+         6p/iKzX4Oxe4/rxsGE8PG4jjCT7yJ6gUrYzaJ2Zjo7+bYHTPRWQGssnJcZUYHqpVPOAp
+         KdCA==
+X-Gm-Message-State: AOAM532V1JSvji1X/vvCNY1hzml2LzMOi8IE78Ui7eLiF3Ubmf6j+X+a
+        nT0uj65eLsHwZQqkltWgLM3mT+NR74GB01HoBLKxrtJGX34=
+X-Google-Smtp-Source: ABdhPJwb3eyvijxdRfrW78iIFLm79zpgRsDNv/ojUM5mIhB1AodbO4N0A4ueSIU1v6GyeE3AMG04UUsRMgbbuwovn94=
+X-Received: by 2002:a17:902:56a:: with SMTP id 97mr3479518plf.130.1599131890968;
+ Thu, 03 Sep 2020 04:18:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQHi/AdGy7WFjhE0CTAe/r6eZnJXbwGnddttqTCKrAA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmru7u8wHxBr8/Kln8mHubxeLNyaks
-        Fnv2nmSxuLxrDpvF5f+fWCyWfZnMYvFjer0Du8eXOcfZPdom/2P3aD62ks1j56y77B59W1Yx
-        enzeJBfAFpVjk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuW
-        mQN0ipJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwNCgQK84Mbe4NC9dLzk/18rQ
-        wMDIFKgyISdjzruzbAUrmSs6Z65mbWB8xNTFyMkhIWAi0fB7C5DNxSEksINRYkNfHwuE84lR
-        4vruLmaQKiGBb4wSM9dmw3RsOPaYDaJoL6PEjQO3WCCKXjJKPLwnDmKzCehKPLnxE6xZREBP
-        4uTJ62wgNrNAI5PEiZdggzgFLCQmLz4F1issYC8xo3kXWA2LgIrE3TPvWUFsXgFLiW3/l7FD
-        2IISJ2c+YYGYIy+x/e0cZoiDFCR2fzrKCrHLSuL6jnXMEDUiErM725hBDpUQWMghMWH/IlaI
-        BheJ9y/nMULYwhKvjm9hh7ClJD6/28sGYddL/J+/lh2iuQXosU/bgIHEAeTYS7y/ZAFiMgto
-        SqzfpQ9Rriix8/dcRoi9fBLvvvawQlTzSnS0CUGUqEh8/7CTBWbTlR9XmSYwKs1C8tksJJ/N
-        QvLBLIRlCxhZVjGKpRYU56anFhsWGCHH9SZGcCrVMtvBOOntB71DjEwcjIcYJTiYlUR4Z97w
-        jRfiTUmsrEotyo8vKs1JLT7EaAoM64nMUqLJ+cBknlcSb2hqZGxsbGFiZm5maqwkzvvwlkK8
-        kEB6YklqdmpqQWoRTB8TB6dUA5OV0s5pgd/K1b7NPjbFSac+QLNe4UrTXFa/b4FcH6Ksm6QX
-        hOg/rP5fv2+144W8tqXG/kHVN7L3NM45H3zywqpXuVdWXJWJWLY2R+Y4i/93QW1z8VbPNq/f
-        uzpT85ZJv9mfdsVQ4vKXNe7pjO9drAVdF4ZHBDxcbPJxo+xR9oW35OQP7jTeaHnjetGnh8om
-        xseUOpRvR9x7dOgSS7ZGY3pgzKz0Td9i001s+LZUbn/556Ry3PTl0nIH2t49ijrVs4n506EX
-        HvKTT05w/5i9NLqtu6Q7lGPdEoGeBxy/1x78WbDtyzlz9ZZONu81pvL/jy3p/rgla/K3+9kp
-        gX1XpR3+PnIWDVx9cNoU5eVNvxWUWIozEg21mIuKEwHgvIgwLgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJTnfX+YB4gx9vLC1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBbLvkxmsfgxvd6B3ePLnOPsHm2T/7F7NB9byeaxc9Zddo++LasY
-        PT5vkgtgi+KySUnNySxLLdK3S+DKmPPuLFvBSuaKzpmrWRsYHzF1MXJySAiYSGw49piti5GL
-        Q0hgN6PEkpsbmLsYOYASUhIH92lCmMIShw8XQ5Q8Z5R4NmUSG0gvm4CuxJMbP5lBbBEBPYmT
-        J6+DzWEWaGaSaP3SzATR0cko8WbOeRaQKk4BC4nJi0+B2cIC9hIzmneBTWIRUJG4e+Y9K4jN
-        K2Apse3/MnYIW1Di5MwnLCBXMANtaNvICBJmFpCX2P52DjPEAwoSuz8dZYU4wkri+o51zBA1
-        IhKzO9uYJzAKz0IyaRbCpFlIJs1C0rGAkWUVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7u
-        JkZwTGlp7mDcvuqD3iFGJg7GQ4wSHMxKIrwzb/jGC/GmJFZWpRblxxeV5qQWH2KU5mBREue9
-        UbgwTkggPbEkNTs1tSC1CCbLxMEp1cDke+L4FT3NK7x3gzf3LkpYtuOR2NbIv6GiLxsf6Cbt
-        rNwmbWIRty814K4C927j11XfIxM+vFMJ4hRmVY9XnTvx4uelkdfa7J/etuG8WLSqZI9JdNxb
-        Yw9nhb9Jfl8V6jWONGqrJrSFhUQaiSze2dB5VWnv6wThD3whL1WVhD6rFoZteLV3Ef+8uh99
-        c4OO+M97H1Moeel7U9ivogqjs+pGS3iWxc2dvD7llU/CnfQJZgrKLzeedJ3dZ8aQ0CZ7cEO1
-        22rBllfR2znqEzfsPMw7e1fok0X/1l5/y2bbYHtO6vnuuCg9zc0nzy9MF7V13n6rNGq/u8iu
-        rxPf73W8/VZ5b+WCLpXfS2RXXUpW1chSYinOSDTUYi4qTgQA2AccExgDAAA=
-X-CMS-MailID: 20200903111259epcas1p2564a6a8f400eea1390d1cf2e344dd4a5
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200902075318epcas1p3c35299366ec32bb4947362f73b50b56f
-References: <CGME20200902075318epcas1p3c35299366ec32bb4947362f73b50b56f@epcas1p3.samsung.com>
-        <20200902075306.8439-1-kohada.t2@gmail.com>
+References: <20200903005300.7894-1-digetx@gmail.com> <20200903005300.7894-10-digetx@gmail.com>
+In-Reply-To: <20200903005300.7894-10-digetx@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Sep 2020 14:17:53 +0300
+Message-ID: <CAHp75VdPoJFNC+MntKu-CL8jFMEe85ZT3R9DF0aaNC4KjqWXyg@mail.gmail.com>
+Subject: Re: [PATCH v3 09/22] i2c: tegra: Clean up probe function
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The exfat_find_dir_entry() called by exfat_find() doesn't return -EEXIST.
-> Therefore, the root-dir information setting is never executed.
-> 
-> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+On Thu, Sep 3, 2020 at 3:54 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> The driver's probe function code is difficult to read and follow. This
+> patch reorders code of the probe function, forming logical groups that are
+> easy to work with. The clock and hardware initializations are factored
+> out into separate functions in order to keep code clean and ease error
+> unwinding.
+>
+> Driver now makes use of devm_platform_get_and_ioremap_resource() and
+> platform_get_irq() which are replacing boilerplate parts of the code.
+>
+> The dev_err_probe() is now used for reset control retrieval because reset
+> is now requested before clocks, and thus, BPMP driver that provides reset
+> controls for newer SoCs may cause the probe defer.
 
-Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
+> The error message of devm_request_irq() is removed because this function
+> takes care of printing the message by itself.
 
-> ---
->  fs/exfat/dir.c   |   1 -
->  fs/exfat/namei.c | 120 +++++++++++++++++++----------------------------
->  2 files changed, 47 insertions(+), 74 deletions(-)
+I see no evidence of this.
 
+...
+
+> +       of_property_read_u32(np, "clock-frequency", &bus_clk_rate);
+> +       i2c_dev->bus_clk_rate = bus_clk_rate;
+
+Hmm... I dunno if Wolfram is going to implement a special helper
+exactly for this. I remember we discussed that with him during v5.8
+(?) times.
+
+...
+
+> +static int tegra_i2c_init_clocks(struct tegra_i2c_dev *i2c_dev)
+
+Hmm... Don't we have something like devm_clk_bulk_get_all() or so?
+
+-- 
+With Best Regards,
+Andy Shevchenko
