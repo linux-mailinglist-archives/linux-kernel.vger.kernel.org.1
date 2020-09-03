@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F81425B952
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 05:42:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC9025B955
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 05:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728180AbgICDmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 23:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbgICDmi (ORCPT
+        id S1728245AbgICDo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 23:44:58 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:46943 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726686AbgICDoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 23:42:38 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBE5C061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 20:42:37 -0700 (PDT)
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id B3863806B5;
-        Thu,  3 Sep 2020 15:42:28 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1599104548;
-        bh=JJ90luUH5F1pyN8w8r/5anGwlRHYrTL09INJPGDcfPA=;
-        h=From:To:Cc:Subject:Date;
-        b=1r0dvYdKPEg7ykHctSM4yi4FNI21DMauJkwAQWios3vBodFazE47tLeCF9pxU/edH
-         uk+yqZ+OeUk1TbShcOxMsIeKyz1sFrQbfwoGE5Fm/kaZWK3tuW7SgPzy2Hhayo9Sv5
-         8qS/iZafRTOEFoIGFsu7m+VbcChzYpqtqT0U7ADTgwR6wpbu7MYJEGR+pLHNtt4Jdq
-         OJw35V6M4TzcdBgWRmbeTfuL6ozhPtTU4PJjrOumnxpfjf0t0yhzLq1CFdTC6AGu8O
-         gXcweQDK1FKPHI49ct8enW/5VV898cM8N+bv5PXUWfOeFGERiYct/5a5UlnneysBxu
-         ra6V8CM0Q6WUQ==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f5066240000>; Thu, 03 Sep 2020 15:42:28 +1200
-Received: from markto-dl.ws.atlnz.lc (markto-dl.ws.atlnz.lc [10.33.23.25])
-        by smtp (Postfix) with ESMTP id B14C513EEB7;
-        Thu,  3 Sep 2020 15:42:27 +1200 (NZST)
-Received: by markto-dl.ws.atlnz.lc (Postfix, from userid 1155)
-        id 7C46833EDFD; Thu,  3 Sep 2020 15:42:28 +1200 (NZST)
-From:   Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH] mtd: mtdoops: Don't write panic data twice
-Date:   Thu,  3 Sep 2020 15:42:17 +1200
-Message-Id: <20200903034217.23079-1-mark.tomlinson@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.28.0
+        Wed, 2 Sep 2020 23:44:54 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 015775C01E6;
+        Wed,  2 Sep 2020 23:44:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 02 Sep 2020 23:44:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=+9t662V001TgRGCCG56jM+Z/YQ
+        k7ENVjdwqNyvtMt08=; b=ncEEIHoq2AjQY7yVVJwctMiONp9DMKYtGlsEjV+no+
+        Pb1qtMFvd0ckYLBcMugc8VTnpWaOwIvrb4n9yXpJmShC4cSsIQoLx1wNoRHu6M9n
+        2ZsNh8frkUr7eKjnpW+9H905itNXn1oTT275l7k5TIaDUCNS6aIi10HUtFYI/KZV
+        +nFidQWFExNmaXa1lLfgqQsdqzP9TVHvWQSKVmcejZYBjGat29JrUXRnLRRqPr1k
+        ivap7t/WSf3RPmN41remLxip/pz53kpLxzB+SkrHBnGy0pcTYAXqLHScHPxn0tSj
+        c8LCsZyWyT98iUKSCgZRVdQnXzMjloa9S3Q96Cf2/Dhg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+9t662V001TgRGCCG
+        56jM+Z/YQk7ENVjdwqNyvtMt08=; b=En7xihk/JdEQlGCehutY2nWWwnJxqnebU
+        KyoT/M+BvwrrGwXhCQeHfx9Lp0MpYeVIjwegS5DA15QjGiPHlztRvBeFMgKJbnU2
+        D5sSGGq8bGM0ztDbwDi8rcP7NSFiqytt3831NNTwS0+NH2u1SVJLLn6e417IucYc
+        tVzy96Mi6tlDxi/IvTaRy368dWY+MnBBePIiA/eh4PTMBkieLwJqC2E3Byz/8B1J
+        9nho/nRy0NIFVpqmqJZ0D8ouEAjonQ30HW8vFjSIZaRGH6+Z/dR21/IjSxiV9SOG
+        htCThY06a8Z2ctB+HM1zftqZ2M+itrKgbp2sEWCAvHGLDh8uUoSig==
+X-ME-Sender: <xms:s2ZQX0lBpgjvIJpsuzpebcml88UtbpJsdAev4D9DWsW7DxvUWtYHtw>
+    <xme:s2ZQXz1-s9KK-bO4a9OebiWW_d87eDNlY3cPocI5k5mD4gM9CG2GrxvDpYxmej1LT
+    ot5MK0V6pPrSf1EzQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddgjeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:s2ZQXyrmczd2stHlXkHCcNk6lslNlWqkW-lgOdMqgSw_swAlbdJq9A>
+    <xmx:s2ZQXwkovpzyiXvVgn4tE9bCSFeD8VCSCLEv8M717ahmrJEkjBaDNw>
+    <xmx:s2ZQXy3mfoc7cTb6rKSBrb8RiiuZYeV63BBTckTU4E934oGLsSxuwQ>
+    <xmx:tGZQX-9qfDQoIW9np7-6wyk0AryePHqHxQmPx6jFocUbYvE-D9AGPw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 751C23060067;
+        Wed,  2 Sep 2020 23:44:51 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v4 1/3] scsi: 3w-9xxx: Use flexible array members to avoid struct padding
+Date:   Wed,  2 Sep 2020 22:44:48 -0500
+Message-Id: <20200903034450.5491-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If calling mtdoops_write, don't also schedule work to be done later.
+In preparation for removing the "#pragma pack(1)" from the driver, fix
+all instances where a trailing array member could be replaced by a
+flexible array member. Since a flexible array member has zero size, it
+introduces no padding, whether or not the struct is packed.
 
-Although this appears to not be causing an issue, possibly because the
-scheduled work will never get done, it is confusing.
-
-Fixes: 016c1291ce70 ("mtd: mtdoops: do not use mtd->panic_write directly"=
-)
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- drivers/mtd/mtdoops.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 4ced68be7ed7..774970bfcf85 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -279,12 +279,13 @@ static void mtdoops_do_dump(struct kmsg_dumper *dum=
-per,
- 	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
- 			     record_size - MTDOOPS_HEADER_SIZE, NULL);
-=20
--	/* Panics must be written immediately */
--	if (reason !=3D KMSG_DUMP_OOPS)
-+	if (reason !=3D KMSG_DUMP_OOPS) {
-+		/* Panics must be written immediately */
- 		mtdoops_write(cxt, 1);
--
--	/* For other cases, schedule work to write it "nicely" */
--	schedule_work(&cxt->work_write);
-+	} else {
-+		/* For other cases, schedule work to write it "nicely" */
-+		schedule_work(&cxt->work_write);
-+	}
- }
-=20
- static void mtdoops_notify_add(struct mtd_info *mtd)
---=20
-2.28.0
+Changes since v3:
+  - Consistently put sizeof(TW_Ioctl_Buf_Apache) before buffer_length.
+
+---
+ drivers/scsi/3w-9xxx.c | 16 ++++++++++------
+ drivers/scsi/3w-9xxx.h |  4 ++--
+ 2 files changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/scsi/3w-9xxx.c b/drivers/scsi/3w-9xxx.c
+index 3337b1e80412..aad9b3b73e15 100644
+--- a/drivers/scsi/3w-9xxx.c
++++ b/drivers/scsi/3w-9xxx.c
+@@ -676,7 +676,9 @@ static long twa_chrdev_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 	data_buffer_length_adjusted = (driver_command.buffer_length + 511) & ~511;
+ 
+ 	/* Now allocate ioctl buf memory */
+-	cpu_addr = dma_alloc_coherent(&tw_dev->tw_pci_dev->dev, data_buffer_length_adjusted+sizeof(TW_Ioctl_Buf_Apache) - 1, &dma_handle, GFP_KERNEL);
++	cpu_addr = dma_alloc_coherent(&tw_dev->tw_pci_dev->dev,
++				      sizeof(TW_Ioctl_Buf_Apache) + data_buffer_length_adjusted,
++				      &dma_handle, GFP_KERNEL);
+ 	if (!cpu_addr) {
+ 		retval = TW_IOCTL_ERROR_OS_ENOMEM;
+ 		goto out2;
+@@ -685,7 +687,7 @@ static long twa_chrdev_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 	tw_ioctl = (TW_Ioctl_Buf_Apache *)cpu_addr;
+ 
+ 	/* Now copy down the entire ioctl */
+-	if (copy_from_user(tw_ioctl, argp, driver_command.buffer_length + sizeof(TW_Ioctl_Buf_Apache) - 1))
++	if (copy_from_user(tw_ioctl, argp, sizeof(TW_Ioctl_Buf_Apache) + driver_command.buffer_length))
+ 		goto out3;
+ 
+ 	/* See which ioctl we are doing */
+@@ -867,11 +869,13 @@ static long twa_chrdev_ioctl(struct file *file, unsigned int cmd, unsigned long
+ 	}
+ 
+ 	/* Now copy the entire response to userspace */
+-	if (copy_to_user(argp, tw_ioctl, sizeof(TW_Ioctl_Buf_Apache) + driver_command.buffer_length - 1) == 0)
++	if (copy_to_user(argp, tw_ioctl, sizeof(TW_Ioctl_Buf_Apache) + driver_command.buffer_length) == 0)
+ 		retval = 0;
+ out3:
+ 	/* Now free ioctl buf memory */
+-	dma_free_coherent(&tw_dev->tw_pci_dev->dev, data_buffer_length_adjusted+sizeof(TW_Ioctl_Buf_Apache) - 1, cpu_addr, dma_handle);
++	dma_free_coherent(&tw_dev->tw_pci_dev->dev,
++			  sizeof(TW_Ioctl_Buf_Apache) + data_buffer_length_adjusted,
++			  cpu_addr, dma_handle);
+ out2:
+ 	mutex_unlock(&tw_dev->ioctl_lock);
+ out:
+@@ -1392,7 +1396,7 @@ static void twa_load_sgl(TW_Device_Extension *tw_dev, TW_Command_Full *full_comm
+ 		newcommand->request_id__lunl =
+ 			cpu_to_le16(TW_REQ_LUN_IN(TW_LUN_OUT(newcommand->request_id__lunl), request_id));
+ 		if (length) {
+-			newcommand->sg_list[0].address = TW_CPU_TO_SGL(dma_handle + sizeof(TW_Ioctl_Buf_Apache) - 1);
++			newcommand->sg_list[0].address = TW_CPU_TO_SGL(dma_handle + sizeof(TW_Ioctl_Buf_Apache));
+ 			newcommand->sg_list[0].length = cpu_to_le32(length);
+ 		}
+ 		newcommand->sgl_entries__lunh =
+@@ -1407,7 +1411,7 @@ static void twa_load_sgl(TW_Device_Extension *tw_dev, TW_Command_Full *full_comm
+ 				sgl = (TW_SG_Entry *)((u32 *)oldcommand+oldcommand->size - (sizeof(TW_SG_Entry)/4) + pae);
+ 			else
+ 				sgl = (TW_SG_Entry *)((u32 *)oldcommand+TW_SGL_OUT(oldcommand->opcode__sgloffset));
+-			sgl->address = TW_CPU_TO_SGL(dma_handle + sizeof(TW_Ioctl_Buf_Apache) - 1);
++			sgl->address = TW_CPU_TO_SGL(dma_handle + sizeof(TW_Ioctl_Buf_Apache));
+ 			sgl->length = cpu_to_le32(length);
+ 
+ 			oldcommand->size += pae;
+diff --git a/drivers/scsi/3w-9xxx.h b/drivers/scsi/3w-9xxx.h
+index d88cd3499bd5..e65dafda2e3e 100644
+--- a/drivers/scsi/3w-9xxx.h
++++ b/drivers/scsi/3w-9xxx.h
+@@ -588,7 +588,7 @@ typedef struct TAG_TW_Ioctl_Apache {
+ 	TW_Ioctl_Driver_Command driver_command;
+         char padding[488];
+ 	TW_Command_Full firmware_command;
+-	char data_buffer[1];
++	char data_buffer[];
+ } TW_Ioctl_Buf_Apache;
+ 
+ /* Lock structure for ioctl get/release lock */
+@@ -604,7 +604,7 @@ typedef struct {
+ 	unsigned short	parameter_id;
+ 	unsigned short	parameter_size_bytes;
+ 	unsigned short  actual_parameter_size_bytes;
+-	unsigned char	data[1];
++	unsigned char	data[];
+ } TW_Param_Apache, *PTW_Param_Apache;
+ 
+ /* Response queue */
+-- 
+2.26.2
 
