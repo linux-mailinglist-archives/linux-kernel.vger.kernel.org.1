@@ -2,142 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAFB25C3EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DEF25C455
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbgICPA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:00:59 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49848 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728867AbgICOFt (ORCPT
+        id S1728908AbgICPJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:09:16 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:50186 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728947AbgICN6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:05:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0U7pNn5X_1599138766;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U7pNn5X_1599138766)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Sep 2020 21:12:46 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        "Gilad Ben-Yossef" <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org
-Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v6 6/8] X.509: support OSCCA certificate parse
-Date:   Thu,  3 Sep 2020 21:12:40 +0800
-Message-Id: <20200903131242.128665-7-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+        Thu, 3 Sep 2020 09:58:15 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083DOEAN107415;
+        Thu, 3 Sep 2020 08:24:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599139454;
+        bh=EcU5sNHWfjTOyGcbOYeypp2bM4hBc053FDywI/zCZgI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eQcxtvqnZRKreSf0Vaxnunri+IKr+JeTETEHDlG3TGHQUc0M0Mn73C+q8Vv1namqZ
+         jZ1xow4jSsm6s+OODwzn6yKM0UsJqVYz1A8eR+d0Kg1MSwmw3ayHAYGW8JOscxQtj/
+         By5Vv8GASjI1iQNpg8F4N9ttfpt3hp8vKZnKTdPU=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083DOEAr006875
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 08:24:14 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 08:24:13 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 08:24:13 -0500
+Received: from [10.250.71.39] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083DODrj004638;
+        Thu, 3 Sep 2020 08:24:13 -0500
+Subject: Re: [PATCH V2 2/8] arm64: dts: ti: k3-am65-main: Use lower case
+ hexadecimal
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <lokeshvutla@ti.com>,
+        <grygorii.strashko@ti.com>, <nsekhar@ti.com>
+References: <20200901223059.14801-1-nm@ti.com>
+ <20200903130015.21361-3-nm@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <2875a2d5-2f1b-7579-4642-aec8dc829d5b@ti.com>
+Date:   Thu, 3 Sep 2020 08:24:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200903130015.21361-3-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The digital certificate format based on SM2 crypto algorithm as
-specified in GM/T 0015-2012. It was published by State Encryption
-Management Bureau, China.
+On 9/3/20 8:00 AM, Nishanth Menon wrote:
+> Device tree convention uses lower case a-f for hexadecimals. Fix the
+> same.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 
-This patch adds the OID object identifier defined by OSCCA. The
-x509 certificate supports sm2-with-sm3 type certificate parsing.
-It uses the standard elliptic curve public key, and the sm2
-algorithm signs the hash generated by sm3.
+Acked-by: Suman Anna <s-anna@ti.com>
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
----
- crypto/asymmetric_keys/x509_cert_parser.c | 14 +++++++++++++-
- include/linux/oid_registry.h              |  6 ++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 26ec20ef4899..6a8aee22bfd4 100644
---- a/crypto/asymmetric_keys/x509_cert_parser.c
-+++ b/crypto/asymmetric_keys/x509_cert_parser.c
-@@ -234,6 +234,10 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
- 	case OID_gost2012Signature512:
- 		ctx->cert->sig->hash_algo = "streebog512";
- 		goto ecrdsa;
-+
-+	case OID_sm2_with_sm3:
-+		ctx->cert->sig->hash_algo = "sm3";
-+		goto sm2;
- 	}
- 
- rsa_pkcs1:
-@@ -246,6 +250,11 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
- 	ctx->cert->sig->encoding = "raw";
- 	ctx->algo_oid = ctx->last_oid;
- 	return 0;
-+sm2:
-+	ctx->cert->sig->pkey_algo = "sm2";
-+	ctx->cert->sig->encoding = "raw";
-+	ctx->algo_oid = ctx->last_oid;
-+	return 0;
- }
- 
- /*
-@@ -266,7 +275,8 @@ int x509_note_signature(void *context, size_t hdrlen,
- 	}
- 
- 	if (strcmp(ctx->cert->sig->pkey_algo, "rsa") == 0 ||
--	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0) {
-+	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0 ||
-+	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0) {
- 		/* Discard the BIT STRING metadata */
- 		if (vlen < 1 || *(const u8 *)value != 0)
- 			return -EBADMSG;
-@@ -456,6 +466,8 @@ int x509_extract_key_data(void *context, size_t hdrlen,
- 	else if (ctx->last_oid == OID_gost2012PKey256 ||
- 		 ctx->last_oid == OID_gost2012PKey512)
- 		ctx->cert->pub->pkey_algo = "ecrdsa";
-+	else if (ctx->last_oid == OID_id_ecPublicKey)
-+		ctx->cert->pub->pkey_algo = "sm2";
- 	else
- 		return -ENOPKG;
- 
-diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-index 657d6bf2c064..48fe3133ff39 100644
---- a/include/linux/oid_registry.h
-+++ b/include/linux/oid_registry.h
-@@ -107,6 +107,12 @@ enum OID {
- 	OID_gostTC26Sign512B,		/* 1.2.643.7.1.2.1.2.2 */
- 	OID_gostTC26Sign512C,		/* 1.2.643.7.1.2.1.2.3 */
- 
-+	/* OSCCA */
-+	OID_sm2,			/* 1.2.156.10197.1.301 */
-+	OID_sm3,			/* 1.2.156.10197.1.401 */
-+	OID_sm2_with_sm3,		/* 1.2.156.10197.1.501 */
-+	OID_sm3WithRSAEncryption,	/* 1.2.156.10197.1.504 */
-+
- 	OID__NR
- };
- 
--- 
-2.19.1.3.ge56e4f7
+> ---
+> Change:
+> v2: - new
+> 
+>  arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> index 76e0edc4ad5c..d53d1ead4bb6 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> @@ -344,9 +344,9 @@
+>  					<0x4090 0x3>; /* SERDES1 lane select */
+>  		};
+>  
+> -		dss_oldi_io_ctrl: dss_oldi_io_ctrl@41E0 {
+> +		dss_oldi_io_ctrl: dss_oldi_io_ctrl@41e0 {
+>  			compatible = "syscon";
+> -			reg = <0x0000041E0 0x14>;
+> +			reg = <0x0000041e0 0x14>;
+>  		};
+>  
+>  		ehrpwm_tbclk: syscon@4140 {
+> 
 
