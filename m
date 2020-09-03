@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC0225CC35
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7810125CC45
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728113AbgICV1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 17:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgICV1K (ORCPT
+        id S1728629AbgICVaX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Sep 2020 17:30:23 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:41315 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728484AbgICVaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 17:27:10 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF60C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 14:27:10 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id i4so4099666ota.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 14:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aDDCxUq5LYXZ2vWhxqpUhB793LjuCmYKYt240ziQivQ=;
-        b=flXhhVWWhNBcfgPFbSoJ7dRSwbXxNizmHPAIsj23YZlfVwoSOJdwd5cRtKavfCouWo
-         ynjvydUPvgYTL72rYUDSEbEd+Vzau4WHprxZpoQV9g7eFZa1EBIGOQyQ6U2uQnGN5/fS
-         d8tfxntyw2vjR8R+0DZQ5NaSRVjpBg8C0wnKWar0sLTieE9H0IQny3afACakGvDkrBZR
-         PTWaE1JTL3PB3q9pqGZ6lse9sHpU7bwSCKMmjcFNWCLnifratRe2rKUMB7JArDUfOIjk
-         Qx2eU3pbiFUdNndcypC9C4tlblWlaaKEcNsP2EMz9i2ARTFjJRiL7PjzPXeCY+c2IjZE
-         XbMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aDDCxUq5LYXZ2vWhxqpUhB793LjuCmYKYt240ziQivQ=;
-        b=mO0+9tB0K8eDaSOAqkRHwcG337vMYbh9chbEMZcsQv7705Op5wBki9fidVRlWsypmJ
-         o61Ch6zesI8UywBxxSxgRrVTsGLfk3BULA+NbLQsSQ2LNwR0rW2Kg1W7bJ60jHtzIZeg
-         IO+5NfnQD5b/4wem3jjcNlsaAtWjesDLDPuETCwqakOsMM6cWwo43dOFjGEZSbv87xcx
-         DZActMbOAXx3Z6GaY0R2FjzptOENIZWL5Erw9Mz0fWEWi4sLXvE9BuPhn/LOHdDeMO3s
-         oe0Kt2yTCN2/x9Xe6VBoAz0EHlTY3nputamYUkwXrrn74+aVns3ZlTYsg1fOMUEuoB9C
-         mFxA==
-X-Gm-Message-State: AOAM533E9Waj5tXctajqJr762Cp2QQ50xq6u/utb/ptJdbp2f/pVXKrX
-        4G+TGhl4hijNrmFULK+PWvy4m1Z7+lh9WP/PrEC4PQ==
-X-Google-Smtp-Source: ABdhPJwaWdTpa/DNKpDuyca6UfKn2JJFpMZ/65YVZxbQhKEzZqWnrZXd/AB8AvPQ5/gesxUVWpJGeavsVVGS1mZEnVU=
-X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr3111739ota.241.1599168429267;
- Thu, 03 Sep 2020 14:27:09 -0700 (PDT)
+        Thu, 3 Sep 2020 17:30:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-262-_4fCYuHMPVerwxIv1vLjVw-1; Thu, 03 Sep 2020 22:30:15 +0100
+X-MC-Unique: _4fCYuHMPVerwxIv1vLjVw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 3 Sep 2020 22:30:14 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 3 Sep 2020 22:30:14 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "x86@kernel.org" <x86@kernel.org>
+CC:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [PATCH 12/14] x86: remove address space overrides using set_fs()
+Thread-Topic: [PATCH 12/14] x86: remove address space overrides using set_fs()
+Thread-Index: AQHWggEOyEQXa7QqyE6TJTq6U2S8aalXbNZg
+Date:   Thu, 3 Sep 2020 21:30:14 +0000
+Message-ID: <9ab40244a2164f7db2ff0c1d23ab59a0@AcuMS.aculab.com>
+References: <20200903142242.925828-1-hch@lst.de>
+ <20200903142242.925828-13-hch@lst.de>
+In-Reply-To: <20200903142242.925828-13-hch@lst.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20200903141122.72908-1-mgamal@redhat.com> <CALMp9eTrc8_z3pKBtLVmbnMvC+KtzXMYbYTXZPPz5F0UWW8oNQ@mail.gmail.com>
- <00b0f9eb-286b-72e8-40b5-02f9576f2ce3@redhat.com> <CALMp9eS6O18WcEyw8b6npRSazsyKiGtBjV+coZVGxDNU1JEOsQ@mail.gmail.com>
- <208da546-e8e3-ccd5-9686-f260d07b73fd@redhat.com>
-In-Reply-To: <208da546-e8e3-ccd5-9686-f260d07b73fd@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 3 Sep 2020 14:26:57 -0700
-Message-ID: <CALMp9eTheeaYcBjx50-JC4_93mxudgOeyNbT6stVMfx3FjXFCQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
- support user-configurable
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0.001
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 1:02 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 03/09/20 20:32, Jim Mattson wrote:
-> >> [Checking writes to CR3] would be way too slow.  Even the current
-> >> trapping of present #PF can introduce some slowdown depending on the
-> >> workload.
-> >
-> > Yes, I was concerned about that...which is why I would not want to
-> > enable pedantic mode. But if you're going to be pedantic, why go
-> > halfway?
->
-> Because I am not sure about any guest, even KVM, caring about setting
-> bits 51:46 in CR3.
->
-> >>> Does the typical guest care about whether or not setting any of the
-> >>> bits 51:46 in a PFN results in a fault?
-> >>
-> >> At least KVM with shadow pages does, which is a bit niche but it shows
-> >> that you cannot really rely on no one doing it.  As you guessed, the
-> >> main usage of the feature is for machines with 5-level page tables where
-> >> there are no reserved bits; emulating smaller MAXPHYADDR allows
-> >> migrating VMs from 4-level page-table hosts.
-> >>
-> >> Enabling per-VM would not be particularly useful IMO because if you want
-> >> to disable this code you can just set host MAXPHYADDR = guest
-> >> MAXPHYADDR, which should be the common case unless you want to do that
-> >> kind of Skylake to Icelake (or similar) migration.
-> >
-> > I expect that it will be quite common to run 46-bit wide legacy VMs on
-> > Ice Lake hardware, as Ice Lake machines start showing up in
-> > heterogeneous data centers.
->
-> If you'll be okay with running _all_ 46-bit wide legacy VMs without
-> MAXPHYADDR emulation, that's what this patch is for.  If you'll be okay
-> with running _only_ 46-bit wide VMs without emulation, you still don't
-> need special enabling per-VM beyond the automatic one based on
-> CPUID[0x8000_0008].  Do you think you'll need to enable it for some
-> special 46-bit VMs?
+From: Christoph Hellwig
+> Sent: 03 September 2020 15:23
+> 
+> Stop providing the possibility to override the address space using
+> set_fs() now that there is no need for that any more.  To properly
+> handle the TASK_SIZE_MAX checking for 4 vs 5-level page tables on
+> x86 a new alternative is introduced, which just like the one in
+> entry_64.S has to use the hardcoded virtual address bits to escape
+> the fact that TASK_SIZE_MAX isn't actually a constant when 5-level
+> page tables are enabled.
 
-Yes. From what you've said above, we would only want to enable this
-for the niche case of 46-bit KVM guests using shadow paging. I would
-expect that to be a very small number of VMs. :-)
+Why does it matter whether 4 or 5 level page tables are in use?
+Surely all access_ok() needs to do is ensure that a valid kernel
+address isn't supplied.
+A non-canonical (is that the right term) address between the highest
+valid user address and the lowest valid kernel address (7ffe to fffe?)
+will fault anyway.
+So any limit between the valid user and kernel addresses should
+work?
+So a limit of 1<<63 would seem appropriate.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
