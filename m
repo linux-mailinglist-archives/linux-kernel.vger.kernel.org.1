@@ -2,190 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3640D25C8AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4327C25C8AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgICSYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:24:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726543AbgICSYc (ORCPT
+        id S1729083AbgICSZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726543AbgICSZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:24:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599157470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LBSWPXSxMzNRc8BP/Rpa6mIGEijlw1SbFqPjJBDc6YE=;
-        b=AhJSYaHPGjpfO2iZvHx1drr/B3KfGT3v/jdONJg1H/HcTP8z4QBPZYXcXJSRCIpMmCWriG
-        ZQH/Uxm9R8VRhYcP5PZIgwEzbch9H8Y8/Y7nv/Yf/9RfFNt5EbxrEezi5rSbqO4NfJnEQh
-        NQgfh5VJy+o61R+1tGJvrVlwI/JGNIA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-539-aNXrOwAsPSyTO5_k2D3UCQ-1; Thu, 03 Sep 2020 14:24:26 -0400
-X-MC-Unique: aNXrOwAsPSyTO5_k2D3UCQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E547873081;
-        Thu,  3 Sep 2020 18:24:25 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EEF11672C6;
-        Thu,  3 Sep 2020 18:24:23 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id B09EF4168BB3; Thu,  3 Sep 2020 15:23:59 -0300 (-03)
-Date:   Thu, 3 Sep 2020 15:23:59 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Requirements to control kernel isolation/nohz_full at runtime
-Message-ID: <20200903182359.GA1016174@fuller.cnet>
-References: <20200901104640.GA13814@lenoir>
+        Thu, 3 Sep 2020 14:25:13 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E810C061244;
+        Thu,  3 Sep 2020 11:25:13 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e11so5912164wme.0;
+        Thu, 03 Sep 2020 11:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6TVg2OK2hGXGilOiMGa+DpJ5GeGbwsjFfDrzSkVbuKA=;
+        b=AFN00XH7Eyre4NtFnj/KspJyhAtPGJ+unKamFXaWYl4W7R0xuq165WAyA44dz2PkSG
+         uaBTPh/8ZiE6cKelB20/Rl48ewJvSG/W7L72LpWbKvJRjm7KZmCNWA1hmBcIkHZK1sry
+         nrTb8bAixxow+1xSsZc+pziPclegbq7lI3l586tL9+Ft6p8RArmBfOPF+tUDbaO4+Id5
+         eKHWls2Nm2iOa+tXaBkzi32/kBrYl6JkQ3f+0sCghxijLN7AXFR5SN65lUuOv37PmSpq
+         5iSxbQnfMUvBhWkWxq91brfYFQYNN3aXVjUmKcJIwyfHkbCBVbHuEXtzDwTAv2as3JPH
+         msyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6TVg2OK2hGXGilOiMGa+DpJ5GeGbwsjFfDrzSkVbuKA=;
+        b=eTrtuOx6fD4VNeHX8nvZ2uWVNva/7Ah1y5xt3hhpM2OGewTnHx2vWNwtA7jEBZ54oA
+         JDmYgyAXEk6C96+2TLJja5hJzGeV4pG2xm+2Gn79n7XeF8BUdjFosDKsWeJYbgCk2Wow
+         1l5NMP1j5wdgVIRtbpjJBMgYW+IFTtJijBfZwuNpvEqoClm9fxAljfmBr9DPa21VtIp3
+         u9LvVVecG9GGPyyNgXAexpH1wZb3U963u0NR+hdzZDChKdPhA7jJe3Hu6NPy1d5YfkZa
+         rWl8hVOOrpbYzFs9lUrAJIlp704EfcakDvz6jk7YYKqPEOkDmuMhA0jj6xhL41XI+Qa1
+         765A==
+X-Gm-Message-State: AOAM5329cAo50zZTYAzBrBluCHWfk5kItiP7mmoOA81jcWN6K9OXtNxc
+        wAuMHG4Wluf/iDr+juGof7k=
+X-Google-Smtp-Source: ABdhPJztywUNWH4/E1kT1grqFBh/pHdE0KJ7zZ7jV/fTHF+EGgdPn57L6Zqc5Z1pGybImTyxd/7nPw==
+X-Received: by 2002:a1c:b3c6:: with SMTP id c189mr3744522wmf.27.1599157511706;
+        Thu, 03 Sep 2020 11:25:11 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id c205sm5691139wmd.33.2020.09.03.11.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 11:25:11 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+To:     dan.carpenter@oracle.com
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alan Cox <alan@linux.intel.com>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: media: atomisp: Fix error path in lm3554_probe()
+Date:   Thu,  3 Sep 2020 19:24:51 +0100
+Message-Id: <20200903182502.709300-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903173843.GF8299@kadam>
+References: <20200903173843.GF8299@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901104640.GA13814@lenoir>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 12:46:41PM +0200, Frederic Weisbecker wrote:
-> Hi,
+The error path for lm3554_probe() contains a number of bugs, including:
+ * resource leaks
+ * jumping to error labels out of sequence
+ * not setting the return value appropriately
 
-Hi Frederic,
+Fix it up and give the labels more memorable names.
 
-Thanks for the summary! Looking forward to your comments...
+This issue has existed since the code was originally contributed in
+commit a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2"),
+although the code was subsequently removed altogether and then
+reinstated with commit ad85094b293e ("Revert "media: staging: atomisp: Remove driver"").
 
-> I'm currently working on making nohz_full/nohz_idle runtime toggable
-> and some other people seem to be interested as well. So I've dumped
-> a few thoughts about some pre-requirements to achieve that for those
-> interested.
-> 
-> As you can see, there is a bit of hard work in the way. I'm iterating
-> that in https://pad.kernel.org/p/isolation, feel free to edit:
-> 
-> 
-> == RCU nocb ==
-> 
-> Currently controllable with "rcu_nocbs=" boot parameter and/or through nohz_full=/isolcpus=nohz
-> We need to make it toggeable at runtime. Currently handling that:
-> v1: https://lwn.net/Articles/820544/
-> v2: coming soon
-
-Nice.
-
-> == TIF_NOHZ ==
-> 
-> Need to get rid of that in order not to trigger syscall slowpath on CPUs that don't want nohz_full.
-> Also we don't want to iterate all threads and clear the flag when the last nohz_full CPU exits nohz_full
-> mode. Prefer static keys to call context tracking on archs. x86 does that well.
-> 
-> == Proper entry code ==
-> 
-> We must make sure that a given arch never calls exception_enter() / exception_exit().
-> This saves the previous state of context tracking and switch to kernel mode (from context tracking POV)
-> temporarily. Since this state is saved on the stack, this prevents us from turning off context tracking
-> entirely on a CPU: The tracking must be done on all CPUs and that takes some cycles.
-> 
-> This means that, considering early entry code (before the call to context tracking upon kernel entry,
-> and after the call to context tracking upon kernel exit), we must take care of few things:
-> 
-> 1) Make sure early entry code can't trigger exceptions. Or if it does, the given exception can't schedule
-> or use RCU (unless it calls rcu_nmi_enter()). Otherwise the exception must call exception_enter()/exception_exit()
-> which we don't want.
-> 
-> 2) No call to schedule_user().
-> 
-> 3) Make sure early entry code is not interruptible or preempt_schedule_irq() would rely on
-> exception_entry()/exception_exit()
-> 
-> 4) Make sure early entry code can't be traced (no call to preempt_schedule_notrace()), or if it does it
-> can't schedule
-> 
-> I believe x86 does most of that well. In the end we should remove exception_enter()/exit implementations
-> in x86 and replace it with a check that makes sure context_tracking state is not in USER. An arch meeting
-> all the above conditions would earn a CONFIG_ARCH_HAS_SANE_CONTEXT_TRACKING. Being able to toggle nohz_full
-> at runtime would depend on that.
-> 
-> 
-> == Cputime accounting ==
-> 
-> Both write and read side must switch to tick based accounting and drop the use of seqlock in task_cputime(),
-> task_gtime(), kcpustat_field(), kcpustat_cpu_fetch(). Special ordering/state machine is required to make that without races.
-> 
-> == Nohz ==
-> 
-> Switch from nohz_full to nohz_idle. Mind a few details:
->     
->     1) Turn off 1Hz offlined tick handled in housekeeping
->     2) Handle tick dependencies, take care of racing CPUs setting/clearing tick dependency. It's much trickier when
->     we switch from nohz_idle to nohz_full
->     
-> == Unbound affinity ==
-> 
-> Restore kernel threads, workqueue, timers, etc... wide affinity. But take care of cpumasks that have been set through other
-> interfaces: sysfs, procfs, etc...
-
-We were looking at a userspace interface: what would be a proper
-(unified, similar to isolcpus= interface) and its implementation:
-
-The simplest idea for interface seemed to be exposing the integer list of
-CPUs and isolation flags to userspace (probably via sysfs).
-
-The scheme would allow flags to be separately enabled/disabled, 
-with not all flags being necessary toggable (could for example
-disallow nohz_full= toggling until it is implemented, but allow for
-other isolation features to be toggable).
-
-This would require per flag housekeeping_masks (instead of a single).
-
-Back to the userspace interface, you mentioned earlier that cpusets
-was a possibility for it. However:
-
-"Cpusets provide a Linux kernel mechanism to constrain which CPUs and
-Memory Nodes are used by a process or set of processes.
-
-The Linux kernel already has a pair of mechanisms to specify on which
-CPUs a task may be scheduled (sched_setaffinity) and on which Memory
-Nodes it may obtain memory (mbind, set_mempolicy).
-
-Cpusets extends these two mechanisms as follows:"
-
-The isolation flags do not necessarily have anything to do with
-tasks, but with CPUs: a given feature is disabled or enabled on a
-given CPU. 
-No?
-
+Addresses-Coverity: 1496802 ("Resource leaks")
+Fixes: a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2")
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
+ .../media/atomisp/i2c/atomisp-lm3554.c        | 53 +++++++++++--------
+ 1 file changed, 30 insertions(+), 23 deletions(-)
 
-Regarding locking of the masks, since housekeeping_masks can be called
-from hot paths (eg: get_nohz_timer_target) it seems RCU is a natural
-fit, so userspace would:
-
-1) use interface to change cpumask for a given feature:
-
-	-> set_rcu_pointer
-	-> wait for grace period
-
-2) proceed to trigger actions that rely on housekeeping_cpumask, 
-to validate the cpumask at 1) is being used.
-
----
-
-Regarding nohz_full=, a way to get an immediate implementation 
-(without handling the issues you mention above) would be to boot
-with a set of CPUs as "nohz_full toggable" and others not. For 
-the nohz_full toggable ones, you'd introduce a per-CPU tick
-dependency that is enabled/disabled on runtime. Probably better
-to avoid this one if possible...
-
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+index 7ca7378b1859..cca10a4c2db0 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-lm3554.c
+@@ -833,7 +833,6 @@ static void *lm3554_platform_data_func(struct i2c_client *client)
+ 
+ static int lm3554_probe(struct i2c_client *client)
+ {
+-	int err = 0;
+ 	struct lm3554 *flash;
+ 	unsigned int i;
+ 	int ret;
+@@ -843,36 +842,38 @@ static int lm3554_probe(struct i2c_client *client)
+ 		return -ENOMEM;
+ 
+ 	flash->pdata = lm3554_platform_data_func(client);
+-	if (IS_ERR(flash->pdata))
+-		return PTR_ERR(flash->pdata);
++	if (IS_ERR(flash->pdata)) {
++		ret = PTR_ERR(flash->pdata);
++		goto err_free_flash;
++	}
+ 
+ 	v4l2_i2c_subdev_init(&flash->sd, client, &lm3554_ops);
+ 	flash->sd.internal_ops = &lm3554_internal_ops;
+ 	flash->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+ 	flash->mode = ATOMISP_FLASH_MODE_OFF;
+ 	flash->timeout = LM3554_MAX_TIMEOUT / LM3554_TIMEOUT_STEPSIZE - 1;
+-	ret =
+-	    v4l2_ctrl_handler_init(&flash->ctrl_handler,
+-				   ARRAY_SIZE(lm3554_controls));
++	ret = v4l2_ctrl_handler_init(&flash->ctrl_handler,
++				     ARRAY_SIZE(lm3554_controls));
+ 	if (ret) {
+-		dev_err(&client->dev, "error initialize a ctrl_handler.\n");
+-		goto fail2;
++		dev_err(&client->dev, "error initializing ctrl_handler");
++		goto err_unregister_sd;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(lm3554_controls); i++)
+ 		v4l2_ctrl_new_custom(&flash->ctrl_handler, &lm3554_controls[i],
+ 				     NULL);
+ 
+-	if (flash->ctrl_handler.error) {
+-		dev_err(&client->dev, "ctrl_handler error.\n");
+-		goto fail2;
++	ret = flash->ctrl_handler.error;
++	if (ret) {
++		dev_err(&client->dev, "ctrl_handler error");
++		goto err_free_ctrl_handler;
+ 	}
+ 
+ 	flash->sd.ctrl_handler = &flash->ctrl_handler;
+-	err = media_entity_pads_init(&flash->sd.entity, 0, NULL);
+-	if (err) {
+-		dev_err(&client->dev, "error initialize a media entity.\n");
+-		goto fail1;
++	ret = media_entity_pads_init(&flash->sd.entity, 0, NULL);
++	if (ret) {
++		dev_err(&client->dev, "error initializing media entity");
++		goto err_free_ctrl_handler;
+ 	}
+ 
+ 	flash->sd.entity.function = MEDIA_ENT_F_FLASH;
+@@ -881,20 +882,26 @@ static int lm3554_probe(struct i2c_client *client)
+ 
+ 	timer_setup(&flash->flash_off_delay, lm3554_flash_off_delay, 0);
+ 
+-	err = lm3554_gpio_init(client);
+-	if (err) {
++	ret = lm3554_gpio_init(client);
++	if (ret) {
+ 		dev_err(&client->dev, "gpio request/direction_output fail");
+-		goto fail2;
++		goto err_del_timer;
+ 	}
+-	return atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
+-fail2:
++
++	ret = atomisp_register_i2c_module(&flash->sd, NULL, LED_FLASH);
++	if (!ret)
++		return 0;
++
++err_del_timer:
++	del_timer_sync(&flash->flash_off_delay);
+ 	media_entity_cleanup(&flash->sd.entity);
++err_free_ctrl_handler:
+ 	v4l2_ctrl_handler_free(&flash->ctrl_handler);
+-fail1:
++err_unregister_sd:
+ 	v4l2_device_unregister_subdev(&flash->sd);
++err_free_flash:
+ 	kfree(flash);
+-
+-	return err;
++	return ret;
+ }
+ 
+ static int lm3554_remove(struct i2c_client *client)
+-- 
+2.28.0
 
