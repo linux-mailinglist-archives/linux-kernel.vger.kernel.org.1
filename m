@@ -2,202 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9E025CB5B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2E125CB47
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgICUlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:41:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        id S1729750AbgICUkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729317AbgICUa4 (ORCPT
+        with ESMTP id S1729369AbgICUbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:30:56 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD54C061258
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:30:55 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id z190so2315043qkc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:30:55 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:06 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894BEC061265;
+        Thu,  3 Sep 2020 13:30:58 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id m6so4619323wrn.0;
+        Thu, 03 Sep 2020 13:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=nGr4msUS0dEW75ogQM/nhSlm97UUOCMWXorkodmMp40=;
-        b=h0+Pz1CszWOumbWEcLmAC3O2sDpreVbpYTU/LLeX71N9riUhico9+tp5lrxUEUaJUq
-         9/9jya3977ohpQ/UFatz+tG09iq0m7MVC3DPVvg75x+pJc1eEY0ZcnS0k1+FD0W4xfb0
-         0s+GpFY0ECMdosU7iEgPv+ytcGRd+QAMRWGomwTGMAF/oKYGdOMzrdSAXUCcyTbSDzPs
-         dbV5UeBXLgGB51pRx1q2svY0VUeB76G3YYFH4HGDmwpMrISfVfQK8Ou5NlhZ+ph++gno
-         1f2227PbyNuZ6U1XezgTQhhRcqLNB/aPe/L1HXGAltrVeTWBZQOgom9iMWye5PZNH9er
-         DUZA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WQf32lRefYlvWpNqVHDN0Q4olqQ7nkdPDH05d5Mwk20=;
+        b=mNB7LFuLunsa59ryEWxxPyempqYxfpwPFhvUy2WMjgyrvy+hAVWipxmu70QL6d0l5L
+         5U0RC71ib7EWr2tCGMvXAL73SjOOJgsvX7ZwiKaPtXmgmS/AT/8bZr5OyFVX5jlzpANp
+         v6GbgeFbYfMDLT2RYz4PSMIcx9l8spVWX8QWgvKXF77emPd+rjdvAIXpeQIojnuFlnQF
+         T8w3IJow0iwOPLTa8vhnvuodhrZyfAVtcrb/hdW3MrX7nS6AuUuGp4+GSnyv4fxBDxHe
+         8FKou8Pjy7PLpNCJ7OPPbBdLjvBC4xWGXgX4S4CprZdrYF2vQWVo2DWKd8ViHemZIINr
+         JGKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=nGr4msUS0dEW75ogQM/nhSlm97UUOCMWXorkodmMp40=;
-        b=BNnL/5X8pDzc4Y92WyufhNcMmy804pSAL8ByZ99DM8B6LXujxCfxoCc9SRDB7/cBD4
-         OHMjavZLdpTLj+uSEwe6He9LUgzQCn/Is0UxPIfMRdUEIDGEA8xN2Cw1dTYgAoO/flIE
-         pvyzMqqyfB1kgw3QaCzoKc8aABiyCPmMG6OyW6myj9DtTLmi4BipOP0CslHZ50jSso1A
-         Oe6xpTQWVSaq1cIm0YYV7qHIb4Re1Bh4ykqPDWSUApvjPhfpx68B9i/sZbsmR81n4JPT
-         Yz3iJJevhesH4g64xr4qC6+PVkM3Xg29Wu0XWxpHBhTNNNDV0AJdKEyvz3DnTOcdKVba
-         4OpA==
-X-Gm-Message-State: AOAM530fepBf2ns3LAbBENV2NeGDZ6ypcdN32QROdS/RWNcUu1bAXSEs
-        zP+trEtYadOnzbh/P/snjqPkk64EYK0U0GSRuEs=
-X-Google-Smtp-Source: ABdhPJxH0RX0szKuHKPur3enUKVPJmiZ5UDvXRtv8sxJrR42cHWJcizyyc12gG2V+M5Plv1Dslq7MnG2DtQcSDaz1iU=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
- (user=samitolvanen job=sendgmr) by 2002:a0c:d803:: with SMTP id
- h3mr3572282qvj.0.1599165054814; Thu, 03 Sep 2020 13:30:54 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 13:30:25 -0700
-In-Reply-To: <20200624203200.78870-1-samitolvanen@google.com>
-Message-Id: <20200903203053.3411268-1-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH v2 00/28] Add support for Clang LTO
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WQf32lRefYlvWpNqVHDN0Q4olqQ7nkdPDH05d5Mwk20=;
+        b=r17xeFZbUTh8qynxzT66WGdX7Arb2Gk0AtLlNqQD7ohhx1kBnsM+cqVcPooSaA5Xky
+         7L7UyA7mFjWGhwg3PleeN0qT7aXD8Vsko1SdKEz3oObyqN3LjVeYTuO7pNQS2O04X9sA
+         eLC6KaeS+sQGrlIOWm9+S56z7WeZRBqveFfRwtGFCCg0U0F+yJl2C85DzaLjaMfXt6Cw
+         7qYQGnOQlXKydXu7mlj11ABXRMzfowfKxhaBwlR3d3VpH+uLUAmRRf6bGGCS9Id3P12E
+         ZDiNolqQgQVqRwiUPOiUgta0+T+ACqXApl3MWjNfIaJiG3XkaaVLm5MkWO8CzSSDPdQu
+         Smbw==
+X-Gm-Message-State: AOAM5313QiLZZ8m7sFudI+TCmy+c+96uHDzYWONSB0IAn3DYqnuu08w2
+        IeGrlNSugZDtYWA9k7yQ+7M=
+X-Google-Smtp-Source: ABdhPJwV/D5vEOt7HiGayfYHGwvmD+WzmO5fqpG1aehEipiDZFdrGd3VaUCsTXMp0iDFlDyazWYq2Q==
+X-Received: by 2002:adf:dd0b:: with SMTP id a11mr4159015wrm.422.1599165057172;
+        Thu, 03 Sep 2020 13:30:57 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 13:30:56 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v2 12/20] arm64: dts: allwinner: a64: Add DAI node for HDMI
+Date:   Thu,  3 Sep 2020 22:30:26 +0200
+Message-Id: <20200903203034.1057334-13-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
+References: <20200903203034.1057334-1-peron.clem@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds support for building x86_64 and arm64 kernels
-with Clang's Link Time Optimization (LTO).
+From: Marcus Cooper <codekipper@gmail.com>
 
-In addition to performance, the primary motivation for LTO is
-to allow Clang's Control-Flow Integrity (CFI) to be used in the
-kernel. Google has shipped millions of Pixel devices running three
-major kernel versions with LTO+CFI since 2018.
+Add the new DAI block for I2S2 which is used for HDMI audio.
 
-Most of the patches are build system changes for handling LLVM
-bitcode, which Clang produces with LTO instead of ELF object files,
-postponing ELF processing until a later stage, and ensuring initcall
-ordering.
-
-Note that patches 1-4 are not directly related to LTO, but are
-needed to compile LTO kernels with ToT Clang, so I'm including them
-in the series for your convenience:
-
- - Patches 1-3 are required for building the kernel with ToT Clang,
-   and IAS, and patch 4 is needed to build allmodconfig with LTO.
-
- - Patches 3-4 are already in linux-next, but not yet in 5.9-rc.
-
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
-Changes in v2:
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-  - Fixed -Wmissing-prototypes warnings with W=1.
-
-  - Dropped cc-option from -fsplit-lto-unit and added .thinlto-cache
-    scrubbing to make distclean.
-
-  - Added a comment about Clang >=11 being required.
-
-  - Added a patch to disable LTO for the arm64 KVM nVHE code.
-
-  - Disabled objtool's noinstr validation with LTO unless enabled.
-
-  - Included Peter's proposed objtool mcount patch in the series
-    and replaced recordmcount with the objtool pass to avoid
-    whitelisting relocations that are not calls.
-
-  - Updated several commit messages with better explanations.
-
-
-Arvind Sankar (2):
-  x86/boot/compressed: Disable relocation relaxation
-  x86/asm: Replace __force_order with memory clobber
-
-Luca Stefani (1):
-  RAS/CEC: Fix cec_init() prototype
-
-Nick Desaulniers (1):
-  lib/string.c: implement stpcpy
-
-Peter Zijlstra (1):
-  objtool: Add a pass for generating __mcount_loc
-
-Sami Tolvanen (23):
-  objtool: Don't autodetect vmlinux.o
-  kbuild: add support for objtool mcount
-  x86, build: use objtool mcount
-  kbuild: add support for Clang LTO
-  kbuild: lto: fix module versioning
-  kbuild: lto: postpone objtool
-  kbuild: lto: limit inlining
-  kbuild: lto: merge module sections
-  kbuild: lto: remove duplicate dependencies from .mod files
-  init: lto: ensure initcall ordering
-  init: lto: fix PREL32 relocations
-  PCI: Fix PREL32 relocations for LTO
-  modpost: lto: strip .lto from module names
-  scripts/mod: disable LTO for empty.c
-  efi/libstub: disable LTO
-  drivers/misc/lkdtm: disable LTO for rodata.o
-  arm64: export CC_USING_PATCHABLE_FUNCTION_ENTRY
-  arm64: vdso: disable LTO
-  KVM: arm64: disable LTO for the nVHE directory
-  arm64: allow LTO_CLANG and THINLTO to be selected
-  x86, vdso: disable LTO only for vDSO
-  x86, relocs: Ignore L4_PAGE_OFFSET relocations
-  x86, build: allow LTO_CLANG and THINLTO to be selected
-
- .gitignore                            |   1 +
- Makefile                              |  65 ++++++-
- arch/Kconfig                          |  67 +++++++
- arch/arm64/Kconfig                    |   2 +
- arch/arm64/Makefile                   |   1 +
- arch/arm64/kernel/vdso/Makefile       |   4 +-
- arch/arm64/kvm/hyp/nvhe/Makefile      |   4 +-
- arch/x86/Kconfig                      |   3 +
- arch/x86/Makefile                     |   5 +
- arch/x86/boot/compressed/Makefile     |   2 +
- arch/x86/boot/compressed/pgtable_64.c |   9 -
- arch/x86/entry/vdso/Makefile          |   5 +-
- arch/x86/include/asm/special_insns.h  |  28 +--
- arch/x86/kernel/cpu/common.c          |   4 +-
- arch/x86/tools/relocs.c               |   1 +
- drivers/firmware/efi/libstub/Makefile |   2 +
- drivers/misc/lkdtm/Makefile           |   1 +
- drivers/ras/cec.c                     |   9 +-
- include/asm-generic/vmlinux.lds.h     |  11 +-
- include/linux/init.h                  |  79 +++++++-
- include/linux/pci.h                   |  19 +-
- kernel/trace/Kconfig                  |   5 +
- lib/string.c                          |  24 +++
- scripts/Makefile.build                |  55 +++++-
- scripts/Makefile.lib                  |   6 +-
- scripts/Makefile.modfinal             |  31 ++-
- scripts/Makefile.modpost              |  26 ++-
- scripts/generate_initcall_order.pl    | 270 ++++++++++++++++++++++++++
- scripts/link-vmlinux.sh               |  94 ++++++++-
- scripts/mod/Makefile                  |   1 +
- scripts/mod/modpost.c                 |  16 +-
- scripts/mod/modpost.h                 |   9 +
- scripts/mod/sumversion.c              |   6 +-
- scripts/module-lto.lds                |  26 +++
- tools/objtool/builtin-check.c         |  13 +-
- tools/objtool/builtin.h               |   2 +-
- tools/objtool/check.c                 |  83 ++++++++
- tools/objtool/check.h                 |   1 +
- tools/objtool/objtool.h               |   1 +
- 39 files changed, 883 insertions(+), 108 deletions(-)
- create mode 100755 scripts/generate_initcall_order.pl
- create mode 100644 scripts/module-lto.lds
-
-
-base-commit: e28f0104343d0c132fa37f479870c9e43355fee4
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 8dfbcd144072..bcf808459edf 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -845,6 +845,20 @@ i2s1: i2s@1c22400 {
+ 			status = "disabled";
+ 		};
+ 
++		i2s2: i2s@1c22800 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun50i-a64-i2s",
++				     "allwinner,sun8i-h3-i2s";
++			reg = <0x01c22800 0x400>;
++			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
++			clock-names = "apb", "mod";
++			resets = <&ccu RST_BUS_I2S2>;
++			dma-names = "rx", "tx";
++			dmas = <&dma 27>, <&dma 27>;
++			status = "disabled";
++		};
++
+ 		dai: dai@1c22c00 {
+ 			#sound-dai-cells = <0>;
+ 			compatible = "allwinner,sun50i-a64-codec-i2s";
 -- 
-2.28.0.402.g5ffc5be6b7-goog
+2.25.1
 
