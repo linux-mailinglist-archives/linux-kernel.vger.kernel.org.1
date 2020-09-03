@@ -2,100 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C817225C3C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3726425C2EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729394AbgICO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:58:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28291 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729083AbgICOJR (ORCPT
+        id S1729388AbgICOkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:40:43 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53729 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729370AbgICOgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:09:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599142150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AsDU97yPtXUIgx3X3eSsp3sqqPMSM2dtQaXgynJpGX8=;
-        b=Dckr91+/2we/Y94xJgypUfDGcI7AmWZXGKYkfKdi8BowdfS/Dq1848M2KpMDh0bq7Z7RlK
-        l0GiRwrVRjskh7VJkVuen/EBx2zZzeIf0Yw+o1caL1/mig6dqqlD4sqLFXpJ9D6sgItig9
-        GTWFunrYQjA58ZaxyKxbFPCuk0dimYE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-489-IrTADZdnNQq1I3hpiR1V-Q-1; Thu, 03 Sep 2020 09:27:50 -0400
-X-MC-Unique: IrTADZdnNQq1I3hpiR1V-Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC4EE10199A6;
-        Thu,  3 Sep 2020 13:27:49 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-7.gru2.redhat.com [10.97.112.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7A8F0105DFA1;
-        Thu,  3 Sep 2020 13:27:49 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id C55A74168BB3; Wed,  2 Sep 2020 16:42:40 -0300 (-03)
-Date:   Wed, 2 Sep 2020 16:42:40 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [patch 1/2] nohz: try to avoid IPI when configuring per-CPU
- posix timer
-Message-ID: <20200902194240.GA986833@fuller.cnet>
-References: <20200825184147.948670309@fuller.cnet>
- <20200825184414.442457749@fuller.cnet>
- <20200901233858.GA9322@lenoir>
+        Thu, 3 Sep 2020 10:36:20 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0U7pNn4x_1599138762;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U7pNn4x_1599138762)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 03 Sep 2020 21:12:42 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-security-module@vger.kernel.org
+Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v6 0/8] crpyto: introduce OSCCA certificate and SM2 asymmetric algorithm
+Date:   Thu,  3 Sep 2020 21:12:34 +0800
+Message-Id: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901233858.GA9322@lenoir>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 01:38:59AM +0200, Frederic Weisbecker wrote:
-> On Tue, Aug 25, 2020 at 03:41:48PM -0300, Marcelo Tosatti wrote:
-> > When enabling per-CPU posix timers, an IPI to nohz_full CPUs might be
-> > performed (to re-read the dependencies and possibly not re-enter
-> > nohz_full on a given CPU).
-> > 
-> > A common case is for applications that run on nohz_full= CPUs 
-> > to not use POSIX timers (eg DPDK). This patch skips the IPI 
-> > in case the task allowed mask does not intersect with nohz_full= CPU mask,
-> > when going through tick_nohz_dep_set_signal.
-> > 
-> > This reduces interruptions to nohz_full= CPUs.
-> > 
-> > Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> [...]
-> >  /*
-> > + * Set bit on nohz full dependency, kicking all cpus
-> > + * only if task can run on nohz full CPUs.
-> > + */
-> > +static void tick_nohz_dep_set_all_cond(struct task_struct *tsk,
-> > +				       atomic_t *dep,
-> > +				       enum tick_dep_bits bit)
-> > +{
-> > +	int prev;
-> > +	unsigned long flags;
-> > +
-> > +	prev = atomic_fetch_or(BIT(bit), dep);
-> > +	if (prev)
-> > +		return;
-> > +
-> > +	raw_spin_lock_irqsave(&tsk->pi_lock, flags);
-> > +	if (cpumask_intersects(&tsk->cpus_mask, tick_nohz_full_mask))
-> > +		tick_nohz_full_kick_all();
-> 
-> So that's for one task but what about the other threads in that
-> process? We are setting the tick dependency on all tasks sharing that
-> struct signal.
+Hello all,
 
-Hi Frederic,
+This new module implement the OSCCA certificate and SM2 public key
+algorithm. It was published by State Encryption Management Bureau, China.
+List of specifications for OSCCA certificate and SM2 elliptic curve
+public key cryptography:
 
-Yep, fixing in -v2, thanks.
+* GM/T 0003.1-2012
+* GM/T 0003.2-2012
+* GM/T 0003.3-2012
+* GM/T 0003.4-2012
+* GM/T 0003.5-2012
+* GM/T 0015-2012
+* GM/T 0009-2012 
 
+IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
+oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
+scctc: http://www.gmbz.org.cn/main/bzlb.html
+
+These patchs add the OID object identifier defined by OSCCA. The
+x509 certificate supports sm2-with-sm3 type certificate parsing
+and verification.
+
+The sm2 algorithm is based on libgcrypt's mpi implementation, and has
+made some additions to the kernel's original mpi library, and added the
+implementation of ec to better support elliptic curve-like algorithms.
+
+sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
+of the OSCCA algorithm family have also been implemented in the kernel.
+
+Among them, sm3 and sm4 have been well implemented in the kernel.
+This group of patches has newly introduced sm2. In order to implement
+sm2 more perfectly, I expanded the mpi library and introduced the
+ec implementation of the mpi library as the basic algorithm. Compared
+to the kernel's crypto/ecc.c, the implementation of mpi/ec.c is more
+complete and elegant, sm2 is implemented based on these algorithms.
+
+---
+v6 changes:
+  1. remove mpi_sub_ui function from mpi library.
+  2. rebase on mainline.
+
+v5 changes:
+  1. fix compilation failure when SM2 is configured as a module.
+  2. simplify the mpi and ec code, remove unused functions reported by test robot.
+
+v4 changes:
+  1. Pass data directly when calculating sm2 certificate digest.
+  2. rebase on mainline.
+
+v3 changes:
+  1. integrity asymmetric digsig support sm2-with-sm3 algorithm.
+  2. remove unused sm2_set_priv_key().
+  3. rebase on mainline.
+
+v2 changes:
+  1. simplify the sm2 algorithm and only retain the verify function.
+  2. extract the sm2 certificate code into a separate file.
+
+
+Tianjia Zhang (8):
+  crypto: sm3 - export crypto_sm3_final function
+  lib/mpi: Extend the MPI library
+  lib/mpi: Introduce ec implementation to MPI library
+  crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm
+  crypto: testmgr - support test with different ciphertext per
+    encryption
+  X.509: support OSCCA certificate parse
+  X.509: support OSCCA sm2-with-sm3 certificate verification
+  integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
+
+ crypto/Kconfig                            |   17 +
+ crypto/Makefile                           |    8 +
+ crypto/asymmetric_keys/Makefile           |    1 +
+ crypto/asymmetric_keys/public_key.c       |    6 +
+ crypto/asymmetric_keys/public_key_sm2.c   |   61 +
+ crypto/asymmetric_keys/x509_cert_parser.c |   14 +-
+ crypto/asymmetric_keys/x509_public_key.c  |    3 +
+ crypto/sm2.c                              |  473 +++++++
+ crypto/sm2signature.asn1                  |    4 +
+ crypto/sm3_generic.c                      |    7 +-
+ crypto/testmgr.c                          |    7 +-
+ include/crypto/public_key.h               |   15 +
+ include/crypto/sm2.h                      |   25 +
+ include/crypto/sm3.h                      |    2 +
+ include/linux/mpi.h                       |  192 +++
+ include/linux/oid_registry.h              |    6 +
+ lib/mpi/Makefile                          |    6 +
+ lib/mpi/ec.c                              | 1509 +++++++++++++++++++++
+ lib/mpi/mpi-add.c                         |  155 +++
+ lib/mpi/mpi-bit.c                         |  251 ++++
+ lib/mpi/mpi-cmp.c                         |   46 +-
+ lib/mpi/mpi-div.c                         |  238 ++++
+ lib/mpi/mpi-internal.h                    |   53 +
+ lib/mpi/mpi-inv.c                         |  143 ++
+ lib/mpi/mpi-mod.c                         |  155 +++
+ lib/mpi/mpi-mul.c                         |   94 ++
+ lib/mpi/mpicoder.c                        |  336 +++++
+ lib/mpi/mpih-div.c                        |  294 ++++
+ lib/mpi/mpih-mul.c                        |   25 +
+ lib/mpi/mpiutil.c                         |  204 +++
+ security/integrity/digsig_asymmetric.c    |   14 +-
+ 31 files changed, 4346 insertions(+), 18 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
+ create mode 100644 crypto/sm2.c
+ create mode 100644 crypto/sm2signature.asn1
+ create mode 100644 include/crypto/sm2.h
+ create mode 100644 lib/mpi/ec.c
+ create mode 100644 lib/mpi/mpi-add.c
+ create mode 100644 lib/mpi/mpi-div.c
+ create mode 100644 lib/mpi/mpi-inv.c
+ create mode 100644 lib/mpi/mpi-mod.c
+ create mode 100644 lib/mpi/mpi-mul.c
+
+-- 
+2.19.1.3.ge56e4f7
 
