@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C826D25C42A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B978A25C3FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgICPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:05:02 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:13316 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728928AbgICN6Q (ORCPT
+        id S1728877AbgICPB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:01:56 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:40555 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728852AbgICOFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:58:16 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 03 Sep 2020 06:33:53 -0700
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Sep 2020 06:33:52 -0700
-Received: from gkohli-linux.qualcomm.com ([10.204.78.26])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 03 Sep 2020 19:03:40 +0530
-Received: by gkohli-linux.qualcomm.com (Postfix, from userid 427023)
-        id 78B7B212F2; Thu,  3 Sep 2020 19:03:39 +0530 (IST)
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-To:     tostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Gaurav Kohli <gkohli@codeaurora.org>
-Subject: [PATCH v0] trace: Fix race in trace_open and buffer resize call
-Date:   Thu,  3 Sep 2020 19:03:37 +0530
-Message-Id: <1599140017-12882-1-git-send-email-gkohli@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 3 Sep 2020 10:05:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1599141945; x=1630677945;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O+rEFbhk8/OIwaun0Fe+GDqjEHwvlb6VwpK36XQynHs=;
+  b=QVZ5G7z4R5gu0puNaf61OBQWQwnEMi77gzMR9UPquk+7042BusV8jIPt
+   PJkoChLf70BvGR4JHnrsrvZmQmAxonP47UxXykkmopmXkl/2ckTy9wXwX
+   w3snvxIlvmFZfc7Ck+Jbkl8D8T19sQnIHpRGHVHQktZ2S8AgIgA42QRji
+   wrFKSTCtyrj5N8FjsMo4lbT93oKRywitLbaTMC8lMtVdkjZ16xiEBlwYA
+   XfbYWx2jhZrj+QFlHgZD5+2oqhhRCIHnnNJeq5WbjRes3aI1Ec9TGPDEf
+   VI+reIG9t2O8m/VFyQXIPZ147LvYZZze8vatrc82mbUaC2YKZ157aOITq
+   g==;
+IronPort-SDR: j/VebqZTxI83hsfvRtHeNxv+/3YMHexVxm17Wv8NcB38a4HKuRZORuoO36hdK8OimRZLL49crm
+ AfLxiWLjx49goicAyAjFAFsPiwKGNOahPWsMaaP/x46dzddb2NldYxNot5+yg3iMgl9W2dyUqA
+ nUau2tgZPjY4I2Kgr3cnxIzNwRJTG8l4SQ120hKVeMEMkbbWNahP43M5BxZtRse0ccv8yETdbr
+ YSdq9YytQMfcPbc8EZndZBZJ9Kdp7gaxy4XF0h0juabwNVfNBUu95hwO/Lrlle1hPXAdCq8Axq
+ rTs=
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="90391121"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 03 Sep 2020 06:35:37 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 3 Sep 2020 06:34:57 -0700
+Received: from soft-dev15.microsemi.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 3 Sep 2020 06:34:53 -0700
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <devicetree@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 0/3] pinctrl: Adding support for Microchip/Microsemi serial GPIO controller
+Date:   Thu, 3 Sep 2020 15:35:25 +0200
+Message-ID: <20200903133528.8595-1-lars.povlsen@microchip.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below race can come, if trace_open and resize of
-cpu buffer is running parallely on different cpus
-CPUX                                CPUY
-				    ring_buffer_resize
-				    atomic_read(&buffer->resize_disabled)
-tracing_open
-tracing_reset_online_cpus
-ring_buffer_reset_cpu
-rb_reset_cpu
-				    rb_update_pages
-				    remove/insert pages
-resetting pointer
-This race can cause data abort or some times infinte loop in 
-rb_remove_pages and rb_insert_pages while checking pages 
-for sanity.
-Take ring buffer lock in trace_open to avoid resetting of cpu buffer.
+The series add support for the serial GPIO controller used by
+Microchip Sparx5, as well as (MSCC) ocelot/jaguar2 SoCs.
 
-Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+This is the second revision of the patch series.
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 136ea09..55f9115 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -163,6 +163,8 @@ bool ring_buffer_empty_cpu(struct trace_buffer *buffer, int cpu);
- 
- void ring_buffer_record_disable(struct trace_buffer *buffer);
- void ring_buffer_record_enable(struct trace_buffer *buffer);
-+void ring_buffer_mutex_acquire(struct trace_buffer *buffer);
-+void ring_buffer_mutex_release(struct trace_buffer *buffer);
- void ring_buffer_record_off(struct trace_buffer *buffer);
- void ring_buffer_record_on(struct trace_buffer *buffer);
- bool ring_buffer_record_is_on(struct trace_buffer *buffer);
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 93ef0ab..638ec8f 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3632,6 +3632,25 @@ void ring_buffer_record_enable(struct trace_buffer *buffer)
- EXPORT_SYMBOL_GPL(ring_buffer_record_enable);
- 
- /**
-+ * ring_buffer_mutex_acquire - prevent resetting of buffer
-+ * during resize
-+ */
-+void ring_buffer_mutex_acquire(struct trace_buffer *buffer)
-+{
-+	mutex_lock(&buffer->mutex);
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_mutex_acquire);
-+
-+/**
-+ * ring_buffer_mutex_release - prevent resetting of buffer
-+ * during resize
-+ */
-+void ring_buffer_mutex_release(struct trace_buffer *buffer)
-+{
-+	mutex_unlock(&buffer->mutex);
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
-+/**
-  * ring_buffer_record_off - stop all writes into the buffer
-  * @buffer: The ring buffer to stop writes to.
-  *
-@@ -4918,6 +4937,8 @@ void ring_buffer_reset(struct trace_buffer *buffer)
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	int cpu;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
- 	for_each_buffer_cpu(buffer, cpu) {
- 		cpu_buffer = buffer->buffers[cpu];
- 
-@@ -4936,6 +4957,7 @@ void ring_buffer_reset(struct trace_buffer *buffer)
- 		atomic_dec(&cpu_buffer->record_disabled);
- 		atomic_dec(&cpu_buffer->resize_disabled);
- 	}
-+	mutex_unlock(&buffer->mutex);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_reset);
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f40d850..392e9aa 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2006,6 +2006,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
- 	if (!buffer)
- 		return;
- 
-+	ring_buffer_mutex_acquire(buffer);
-+
- 	ring_buffer_record_disable(buffer);
- 
- 	/* Make sure all commits have finished */
-@@ -2016,6 +2018,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
- 	ring_buffer_reset_online_cpus(buffer);
- 
- 	ring_buffer_record_enable(buffer);
-+
-+	ring_buffer_mutex_release(buffer);
- }
- 
- /* Must have trace_types_lock held */
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+v2 changes:
+- Adds both in and output modes.
+- Use direct adressing of the individual banks (#gpio-cells = <4>),
+  also osoleting need for addressing macros in bindings include file.
+- Property 'microchip,sgpio-ports' (uint32, bitmask) replaced by
+  proper range set (array of [start,end]) 'microchip,sgpio-port-ranges'.
+- Fixes whitespace issues in Kconfig file
 
+Lars Povlsen (3):
+  dt-bindings: pinctrl: Add bindings for pinctrl-mchp-sgpio driver
+  pinctrl: pinctrl-mchp-sgpio: Add pinctrl driver for Microsemi Serial
+    GPIO
+  arm64: dts: sparx5: Add SGPIO devices
+
+ .../pinctrl/microchip,sparx5-sgpio.yaml       |  88 +++
+ MAINTAINERS                                   |   1 +
+ arch/arm64/boot/dts/microchip/sparx5.dtsi     |  52 ++
+ .../boot/dts/microchip/sparx5_pcb125.dts      |   5 +
+ .../dts/microchip/sparx5_pcb134_board.dtsi    |   5 +
+ .../dts/microchip/sparx5_pcb135_board.dtsi    |   5 +
+ drivers/pinctrl/Kconfig                       |  17 +
+ drivers/pinctrl/Makefile                      |   1 +
+ drivers/pinctrl/pinctrl-mchp-sgpio.c          | 642 ++++++++++++++++++
+ include/dt-bindings/gpio/mchp-sgpio.h         |  19 +
+ 10 files changed, 835 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/microchip,sparx5-sgpio.yaml
+ create mode 100644 drivers/pinctrl/pinctrl-mchp-sgpio.c
+ create mode 100644 include/dt-bindings/gpio/mchp-sgpio.h
+
+--
+2.27.0
