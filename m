@@ -2,47 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D97925C845
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 19:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B2325C84A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 19:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728210AbgICR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 13:57:07 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:64673 "EHLO pegase1.c-s.fr"
+        id S1728901AbgICR7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 13:59:11 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:45298 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgICR5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 13:57:04 -0400
+        id S1726327AbgICR7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 13:59:08 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bj7mX08rVz9vG1Z;
-        Thu,  3 Sep 2020 19:57:00 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4Bj7pv2kRxz9vG1d;
+        Thu,  3 Sep 2020 19:59:03 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id czc54Tj7o-AE; Thu,  3 Sep 2020 19:56:59 +0200 (CEST)
+        with ESMTP id GpPnJOAGb8-M; Thu,  3 Sep 2020 19:59:03 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bj7mW6QXJz9vG1Y;
-        Thu,  3 Sep 2020 19:56:59 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bj7pv1bKMz9vG1Z;
+        Thu,  3 Sep 2020 19:59:03 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AB9F48B805;
-        Thu,  3 Sep 2020 19:57:01 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 03E038B805;
+        Thu,  3 Sep 2020 19:59:05 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GvL1dM65fFS4; Thu,  3 Sep 2020 19:57:01 +0200 (CEST)
+        with ESMTP id gRZ56r8LcyT0; Thu,  3 Sep 2020 19:59:04 +0200 (CEST)
 Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6350C8B803;
-        Thu,  3 Sep 2020 19:57:01 +0200 (CEST)
-Subject: Re: [PATCH] /dev/zero: also implement ->read
-To:     Christoph Hellwig <hch@lst.de>, arnd@arndb.de,
-        gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20200903155922.1111551-1-hch@lst.de>
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6AC828B803;
+        Thu,  3 Sep 2020 19:59:02 +0200 (CEST)
+Subject: Re: [PATCH 1/2] dma-mapping: introduce
+ dma_get_seg_boundary_nr_pages()
+To:     Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-ia64@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Helge Deller <deller@gmx.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, schnelle@linux.ibm.com,
+        hca@linux.ibm.com, Nicolin Chen <nicoleotsuka@gmail.com>,
+        ink@jurassic.park.msu.ru, Thomas Gleixner <tglx@linutronix.de>,
+        gerald.schaefer@linux.ibm.com, rth@twiddle.net,
+        Tony Luck <tony.luck@intel.com>, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20200901221646.26491-1-nicoleotsuka@gmail.com>
+ <20200901221646.26491-2-nicoleotsuka@gmail.com>
+ <CAHp75VcVJBSnPQ6NfdF8FdEDfM+oQ=Sr+cH5VGX4SrAqrgpf-g@mail.gmail.com>
+ <20200903161252.GA24841@lst.de>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <1bc34841-f1a3-8a9b-cb48-10930ec55d71@csgroup.eu>
-Date:   Thu, 3 Sep 2020 19:51:07 +0200
+Message-ID: <7e1c3632-0917-0892-c1ca-8048674a3b05@csgroup.eu>
+Date:   Thu, 3 Sep 2020 19:53:07 +0200
 User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200903155922.1111551-1-hch@lst.de>
+In-Reply-To: <20200903161252.GA24841@lst.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: fr
 Content-Transfer-Encoding: 8bit
@@ -53,62 +78,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-Le 03/09/2020 à 17:59, Christoph Hellwig a écrit :
-> Christophe reported a major speedup due to avoiding the iov_iter
-> overhead, so just add this trivial function.  Note that /dev/zero
-> already implements both an iter and non-iter writes so this just
-> makes it more symmetric.
+Le 03/09/2020 à 18:12, Christoph Hellwig a écrit :
+> On Thu, Sep 03, 2020 at 01:57:39PM +0300, Andy Shevchenko wrote:
+>>> +{
+>>> +       if (!dev)
+>>> +               return (U32_MAX >> page_shift) + 1;
+>>> +       return (dma_get_seg_boundary(dev) >> page_shift) + 1;
+>>
+>> Can it be better to do something like
+>>    unsigned long boundary = dev ? dma_get_seg_boundary(dev) : U32_MAX;
+>>
+>>    return (boundary >> page_shift) + 1;
+>>
+>> ?
 > 
-> Christophe Leroy <christophe.leroy@csgroup.eu>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   drivers/char/mem.c | 22 ++++++++++++++++++++++
->   1 file changed, 22 insertions(+)
+> I don't really see what that would buy us.
 > 
-> diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-> index abd4ffdc8cdebc..1dc99ab158457a 100644
-> --- a/drivers/char/mem.c
-> +++ b/drivers/char/mem.c
-> @@ -726,6 +726,27 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
->   	return written;
->   }
->   
-> +static ssize_t read_zero(struct file *file, char __user *buf,
-> +			 size_t count, loff_t *ppos)
-> +{
-> +	size_t cleared = 0;
-> +
-> +	while (count) {
-> +		size_t chunk = min_t(size_t, count, PAGE_SIZE);
-> +
-> +		if (clear_user(buf + cleared, chunk))
-> +			return cleared ? cleared : -EFAULT;
-> +		cleared += chunk;
-> +		count -= chunk;
-> +
-> +		if (signal_pending(current))
-> +			return cleared ? cleared : -ERESTARTSYS;
-> +		cond_resched();
-> +	}
-> +
-> +	return cleared;
-> +}
-> +
->   static int mmap_zero(struct file *file, struct vm_area_struct *vma)
->   {
->   #ifndef CONFIG_MMU
-> @@ -921,6 +942,7 @@ static const struct file_operations zero_fops = {
->   	.llseek		= zero_lseek,
->   	.write		= write_zero,
->   	.read_iter	= read_iter_zero,
-> +	.read		= read_zero,
 
-Wondering if .read should be before .write, so that we get in order 
-read, write, read_iter, write_iter.
-
->   	.write_iter	= write_iter_zero,
->   	.mmap		= mmap_zero,
->   	.get_unmapped_area = get_unmapped_area_zero,
-> 
+I guess it would avoid the duplication of    >> page_shift) + 1
 
 Christophe
