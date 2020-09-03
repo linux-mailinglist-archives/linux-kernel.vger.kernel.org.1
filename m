@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B8325C886
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EEA925C88F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgICSMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:12:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55392 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726025AbgICSMM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:12:12 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599156730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kNaEs04RarZatwvnCZYp8Xyjij0m0qzMj73pUrlORw4=;
-        b=yn1ERvJRi3Ap+fUwpE6YE6QEJw75JqHwztjGLfuIu5Vhx3ylMcPaeZMvt5r7IvXcWh2dAh
-        7+z/aBykT9nJNYFo4QDegWd1mhgggaPOZ01qE8hyd4uY+QT0PBl3pkiYuzKw4KK3iGrXUr
-        14y2LCk2YypciaSpx/mGkXvE0yiU5PSMcNx6TYqrk1t9NAuNFM6JknEl8Xbx7SEbi8u2zu
-        ThkvHpDONagjoyMhBYJuQeMvMbIjXzsUhAvsaYpyYEJPejQesbQQGHFRQP2bHdcIklQKao
-        rCqIVG7cJWCK1a7UyFdTjAaJOvn/BS6CkMvwnJ9pnqFjjru6qQ8dggQ04IJkjg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599156730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kNaEs04RarZatwvnCZYp8Xyjij0m0qzMj73pUrlORw4=;
-        b=dsVN9RWDW8rGNqnULQccYNxG7P4DgVJRNir2mvhT2bTe8IjmmCK2zcbya02NGrTVlYkNdL
-        1dML9FSRvccDMDDw==
-To:     "Raj\, Ashok" <ashok.raj@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Megha Dey <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
-In-Reply-To: <20200903163516.GA23129@araj-mobl1.jf.intel.com>
-References: <20200826111628.794979401@linutronix.de> <20200903163516.GA23129@araj-mobl1.jf.intel.com>
-Date:   Thu, 03 Sep 2020 20:12:09 +0200
-Message-ID: <87eeniybk6.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1728780AbgICSOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:14:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726990AbgICSOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 14:14:33 -0400
+Received: from localhost.localdomain (unknown [194.230.155.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4815B208C7;
+        Thu,  3 Sep 2020 18:14:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599156872;
+        bh=CWtP88KUjlDugGT2fPPmSCAGGW9+H2kgyuCh3PmZbrs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sDElgBhSGQbkTYlKOAQiIsBn0BnTP7dEKkEOniJVCk79hyX8L6oG/wYXe1TxiUMZo
+         Spal2AdgZQcRutu/G5UCn2yZMJjw8LeX6MJ7nKRWZGc8DDRtnFcNn3knv+sQwqDjdu
+         Tcis9G4Y5ciE+EINZph6IR5RYCZ1gQ6U5Fy8mHyQ=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>
+Subject: [PATCH v2 1/3] ARM: dts: exynos: Add assigned clock parent to CMU in Exynos3250
+Date:   Thu,  3 Sep 2020 20:14:23 +0200
+Message-Id: <20200903181425.5015-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ashok,
+Commit 52005dece527 ("ARM: dts: Add assigned clock parents to CMU node
+for exynos3250") added assigned clocks under Clock Management Unit to
+fix hangs when accessing ISP registers.
 
-On Thu, Sep 03 2020 at 09:35, Ashok Raj wrote:
-> On Wed, Aug 26, 2020 at 01:16:28PM +0200, Thomas Gleixner wrote:
->> This is the second version of providing a base to support device MSI (non
->> PCI based) and on top of that support for IMS (Interrupt Message Storm)
->
-> s/Storm/Store
->
-> maybe pun intended :-)
+However the dtschema expects "clocks" property if "assigned-clocks" are
+used.  Add reference to input clock, the parent used in
+"assigned-clock-parents" to silence the dtschema warnings:
 
-Maybe? :)
+  arch/arm/boot/dts/exynos3250-artik5-eval.dt.yaml: clock-controller@10030000: 'clocks' is a dependency of 'assigned-clocks'
 
->> based devices in a halfways architecture independent way.
->
-> You mean "halfways" because the message addr and data follow guidelines
-> per arch (x86 or such), but the location of the storage isn't dictated
-> by architecture? or did you have something else in mind?
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Yes, the actual message adress and data format are architecture
-specific, but we also have x86 specific allocation info format which
-needs an arch callback unfortunately.
+---
 
->>    - Ensure that the necessary flags are set for device SMI
->
-> is that supposed to be MSI? 
+Changes since v1:
+1. Add clocks property.
 
-Of course, but SMI is a better match for Message Storm :)
+This is a v2 for:
+https://lore.kernel.org/linux-samsung-soc/20200901101534.GE23793@kozik-lap/T/#me85ac382b847dadbc3f6ebf30e94e70b5df1ebb6
+---
+ arch/arm/boot/dts/exynos3250.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
+diff --git a/arch/arm/boot/dts/exynos3250.dtsi b/arch/arm/boot/dts/exynos3250.dtsi
+index a1e93fb7f694..89b160280469 100644
+--- a/arch/arm/boot/dts/exynos3250.dtsi
++++ b/arch/arm/boot/dts/exynos3250.dtsi
+@@ -214,6 +214,7 @@
+ 			compatible = "samsung,exynos3250-cmu";
+ 			reg = <0x10030000 0x20000>;
+ 			#clock-cells = <1>;
++			clocks = <&cmu CLK_FIN_PLL>;
+ 			assigned-clocks = <&cmu CLK_MOUT_ACLK_400_MCUISP_SUB>,
+ 					  <&cmu CLK_MOUT_ACLK_266_SUB>;
+ 			assigned-clock-parents = <&cmu CLK_FIN_PLL>,
+-- 
+2.17.1
 
-        tglx
