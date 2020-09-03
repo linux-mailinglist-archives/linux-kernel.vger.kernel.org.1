@@ -2,154 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E0A25C4E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D096E25C4D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgICPUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        id S1728955AbgICPT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728548AbgICL1B (ORCPT
+        with ESMTP id S1728557AbgICL1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:27:01 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2F1C061246;
-        Thu,  3 Sep 2020 04:18:28 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id h20so1939061ybj.8;
-        Thu, 03 Sep 2020 04:18:28 -0700 (PDT)
+        Thu, 3 Sep 2020 07:27:31 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB47C061247
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 04:18:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so2811231wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 04:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vSTdiuU7UW8q2OVQi9q+98jV2wni9irf58KIjeuCLZE=;
-        b=l23jQ5rFCiIyga1ZOrbBcnNyWnB9gGbwRMVitiYAhAKXGULvVU1UksrMHHDstOCrli
-         L/MsoQI3hPI1M6BSun/jbMy0j7qljuwZplYaXKFETuH7yEduLZZv3sb4nUDnWsKjqs6H
-         X+ucJJFhk96Alf4w4WeUVcsklvBI5i4mIETEx48aydiOCb4ynwBV6NUWyYQeGuMxo227
-         Ap/8BZ/yYPSnQENMXdjvelgOeIHCTYjCQdXBQU+elhlBYhd35+KaTbfJLFXOEdFf/x4U
-         vIbQ+VtBD5P1XUMM34xhXOmHVyWiEDwa5mS4w3ny/ndWa0XoO6hdDMM2TSsiorBkU9Bk
-         e9hw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CQ15tirZpKA58Rq11JF7jkdfBFgYHMCtFMxo14MKJgM=;
+        b=yAdaap5PB+hSEk2DOwQJho56yttfPUEvELhdmmRyS1aWA6/G07iA1d7B1Aiag5yyRb
+         HBGOzpOR+7eQ1duXllObstGDJ2QrVCfgjTKWh/B5vovtTRM8OkuIkQUL9AhBTOrjZa+k
+         pHHXVEAAZgVR65CNlQhE3F4r74LGaJi72lU8XEOKQ+t+i/pI85BoWmmvEPFkjWMSoLYw
+         Y0zToNSt3UUvWnoGvHkaTgDQDdqPmMhmbOWHsrcJMzCrxqwLEpy6tjCD/6Qvz2ccy9K2
+         zUijigOpVuxEOqKwN7rrTA89Q0657lSLVrciP+dal70DXma2u0aUNkHoQd9jyF+xtZjs
+         bM1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vSTdiuU7UW8q2OVQi9q+98jV2wni9irf58KIjeuCLZE=;
-        b=O1bMFNDhrl1tGlJJXWswytqahTBOCmk8aO50D8nxkQhomSAws7nNwn1/qGkydpzIbn
-         nUJmFM1YrigN/b1Tem+WOh5wTPEBi/f3JFlmwwX137M1vu+Fw8ckGmYReBQVcG3zM/Fk
-         +RrNfZRRDbQziAtL8dMLb9m7GIHaDSzM65K13bMzvVSSxNcAcH4cKAvmiLFSttbwExbR
-         vymOwZ/19tmOvPvGKYqpTxRca0hGdKYlTc5phqSsszGpROisgYYUZtAqzdFOZaOn5unR
-         OGphqIEqgcSqBMtZScUTWVKXutG5/C8aTeknFlKUOh4nQd4+Oaxj8ztTzkRbVsCBFNPE
-         aEWQ==
-X-Gm-Message-State: AOAM531iXyS8/WSxty0VYnxA08e4BjubYtwmXTF7pbhH/vs74OXHp3W5
-        0waupDdXQXKK6v++xa0+burKHirnM2Lu1DYv49g=
-X-Google-Smtp-Source: ABdhPJzVF1YWU0hFuTeXXBWlQUQXW13GtCNpXXV/WX/2S85bIjmuraoJzeRVrhZaoiJXYKvUCHyFvwpP1gI72OwwzXU=
-X-Received: by 2002:a25:dc0c:: with SMTP id y12mr1834334ybe.395.1599131908024;
- Thu, 03 Sep 2020 04:18:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CQ15tirZpKA58Rq11JF7jkdfBFgYHMCtFMxo14MKJgM=;
+        b=c0UDi7bT6XWrJaU3qEfP9QZp0gs0CcikY98r6z0PnD94/MGkfcfpjwMchE4Bo7tpgG
+         BwQYl7PLvYfXwIPSWizGHfRdZQqIdjX2hkxAdDGjkWysCc8XnlqFlhQPUeNQYTXgw8ud
+         E3d5NuImr+qzZ2g6MnXd2SPD4H+KPeEGO74gUGLID0It6Kmsy6CrC0mMbN+WSmxGJLLT
+         EX+1drNpg+hdZeOwg0CidWb5VouVc8c/+W3V1PnCfPfyt4O5ORZpc+C1hF1yYFvQfkec
+         6dJTUuSdGQ2M0Eq2obVZiJO52QkqpcrxL/bvEAMl5w2AJ3wK/t/E25HOOCWLL0B3i1Uy
+         bkCQ==
+X-Gm-Message-State: AOAM531DPGys0il6IXpK8H/vuEnEB1Rs/Z79C8OXgj7C0ChWlvvy+wES
+        JpaeYHaS1ZrFmd+1FYovccEzYg==
+X-Google-Smtp-Source: ABdhPJzuiRVyOaDLzC9V5jdoMTdPgH3/zYN54my371UhAdkbgzHKgI9i0auo3zIk0dt7BttnIX+osg==
+X-Received: by 2002:adf:e7ca:: with SMTP id e10mr1860353wrn.236.1599131923615;
+        Thu, 03 Sep 2020 04:18:43 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id z14sm3706113wrh.14.2020.09.03.04.18.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 04:18:42 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 12:18:40 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Pascal Roeleven <dev@pascalroeleven.nl>
+Cc:     Andrey Lebedev <andrey@lebedev.lt>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:PWM SUBSYSTEM" <linux-pwm@vger.kernel.org>,
+        "moderated list:ARM/Allwinner sunXi SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Emil Lenngren <emil.lenngren@gmail.com>
+Subject: Re: pwm-sun4i: PWM backlight is not turned off on shutdown
+Message-ID: <20200903111840.vkjevwmwarx2txhe@holly.lan>
+References: <ae58976c-a8d7-0d00-fe72-d21579b37240@lebedev.lt>
+ <20200902095402.pombrirqqjdew34b@holly.lan>
+ <913a5324-a7d2-f1d5-701e-1c28359286f2@lebedev.lt>
+ <5302741318a28e39239db08a1f05ecb7@pascalroeleven.nl>
 MIME-Version: 1.0
-References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200825162718.5838-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVVvDEq-GSsPDrx09TCfGCWkNQvGYrNWP4gK2=63G2z1w@mail.gmail.com>
-In-Reply-To: <CAMuHMdVVvDEq-GSsPDrx09TCfGCWkNQvGYrNWP4gK2=63G2z1w@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 3 Sep 2020 12:18:01 +0100
-Message-ID: <CA+V-a8sqVGHHQ0ayH7CvKANyCpsFPBy6OuqoGQHPS7iOX20rCg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] ARM: dts: r8a7742-iwg21d-q7: Enable PCIe Controller
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5302741318a28e39239db08a1f05ecb7@pascalroeleven.nl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Wed, Sep 02, 2020 at 09:42:49PM +0200, Pascal Roeleven wrote:
+> Thank you for adding me. Emil (also added now) and I spent a while on trying
+> to figure out how to solve this. The Allwinner PWM controller has some
+> quirks.
+> 
+> Unfortunately I never got around to perform some more tests and fix it
+> indefinitely. It's still on my todo list..
+> 
+> > On 9/2/20 12:54 PM, Daniel Thompson wrote:
+> > > There's some rather odd logic in sun4i_pwm_apply() that results in the
+> > > PWM being disabled twice... once when it applies the initial config
+> > > and again after waiting for a duty_cycle.
+> 
+> That's true. To properly turn off the controller you have to turn the
+> controller off first and keep the gate on for at least two full clock
+> cycles. Then the gate must be turned off. Otherwise it might get stuck.
+> That's probably what is trying to be done here.
+> 
+> On 2020-09-02 21:05, Andrey Lebedev wrote:
+> > Indeed, this fixes the issue for me. The display goes dark reliably on
+> > writing 4 to "/sys/.../bl_power" as well as when system is halted. I did
+> > not notice any negative side effects so far.
+> 
+> Problems start to arise when combining bl_power and brightness setting in a
+> particular order or at the same time (with for example a backlight driver
+> which sets both bl_power and brightness). I can't recall exactly what caused
+> problems and when, but one thing I was sure of is that timing was of the
+> essence. Once I added some delays here and there it started to work.
+> 
+> If this patch works for you then that's great, but unfortunately it isn't a
+> complete solution.
 
-Thank you for the review.
+Forgive my poking but it does look to me like Andrey may have a point
+about d3817a647059 ("pwm: sun4i: Remove redundant needs_delay").
 
-On Thu, Sep 3, 2020 at 11:18 AM Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
->
-> Hi Prabhakar,
->
-> On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Enable PCIe Controller and set PCIe bus clock frequency.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v5.10.
->
-> One thing to double-check below.
->
-> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > @@ -238,6 +238,18 @@
-> >         /* status =3D "okay"; */
-> >  };
-> >
-> > +&pcie_bus_clk {
-> > +       clock-frequency =3D <100000000>;
-> > +};
-> > +
-> > +&pciec {
-> > +       /* SW2[6] determines which connector is activated
-> > +        * ON =3D PCIe X4 (connector-J7)
-> > +        * OFF =3D mini-PCIe (connector-J26)
->
-> The table on page 14 says it's the other way around.
->
-> According to the CBTL02042ABQ datasheet, PCIe_SEL =3D low
-> selects the first channel (PCIe x4), while PCIe_SEL =3D high selects the
-> second channel (mini-PCIe).
-> Enabling the switch ties the signal low, so the table must be wrong.
->
-Referring to [1] page 3:
+I've not got this hardware so I can't comment on whether the current
+code is correct or not. However, after reviewing d3817a647059, it is
+certainly looks like the patch does not actually implement what the
+patch description says it does. In fact, by activating previously
+unreachable code, it appears to introduces exactly the regression
+described by Andrey.
 
-SEL =3D LOW: A=E2=86=94B
-SEL =3D HIGH: A=E2=86=94C
 
-And as per the schematic iW-PREJD-CS-01-R2.0-REL1.5.pdf channel B is
-J7 (PCIe X 4) and channel C is J26 (mini PCIe slot).
+> From d3817a647059a3e5f8791e9b7225d194985aa75f Mon Sep 17 00:00:00 2001
+> From: Pascal Roeleven <dev@pascalroeleven.nl>
+> Date: Tue, 17 Mar 2020 16:59:03 +0100
+> Subject: [PATCH] pwm: sun4i: Remove redundant needs_delay
+> 
+> 'needs_delay' does now always evaluate to true, so remove all
+> occurrences.
 
-Enabling the switch SW2[6] (ON) ties SEL to LOW -> channel B is J7 (PCIe X =
-4)
-Disabling the switch SW2[6] (OFF) ties SEL to HIGH -> channel C is J26
-(mini PCIe)
+In other words, all paths that test !needs_delay[pwm->hwpwm] are
+unreachable...
 
-Also iW-PREJD-CS-01-R2.0-REL1.5.pdf page 14 (General purpose table DIP
-Switch) mentions the above.
 
-[1] https://www.mouser.co.uk/datasheet/2/302/CBTL02042A_CBTL02042B-1126164.=
-pdf
+> Signed-off-by: Pascal Roeleven <dev@pascalroeleven.nl>
+> Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+> ---
+>  drivers/pwm/pwm-sun4i.c | 13 ++-----------
+>  1 file changed, 2 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-sun4i.c b/drivers/pwm/pwm-sun4i.c
+> index 3e3efa6c768f..5c677c563349 100644
+> --- a/drivers/pwm/pwm-sun4i.c
+> +++ b/drivers/pwm/pwm-sun4i.c
+> @@ -90,7 +90,6 @@ struct sun4i_pwm_chip {
+>  	spinlock_t ctrl_lock;
+>  	const struct sun4i_pwm_data *data;
+>  	unsigned long next_period[2];
+> -	bool needs_delay[2];
+>  };
+>  
+>  static inline struct sun4i_pwm_chip *to_sun4i_pwm_chip(struct pwm_chip *chip)
+> @@ -287,7 +286,6 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	sun4i_pwm_writel(sun4i_pwm, val, PWM_CH_PRD(pwm->hwpwm));
+>  	sun4i_pwm->next_period[pwm->hwpwm] = jiffies +
+>  		usecs_to_jiffies(cstate.period / 1000 + 1);
+> -	sun4i_pwm->needs_delay[pwm->hwpwm] = true;
+>  
+>  	if (state->polarity != PWM_POLARITY_NORMAL)
+>  		ctrl &= ~BIT_CH(PWM_ACT_STATE, pwm->hwpwm);
+> @@ -298,7 +296,7 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>  
+>  	if (state->enabled) {
+>  		ctrl |= BIT_CH(PWM_EN, pwm->hwpwm);
+> -	} else if (!sun4i_pwm->needs_delay[pwm->hwpwm]) {
+> +	} else {
 
-Cheers,
-Prabhakar
+... but this previously unreachable path will now be executed
+if state->enabled is false.
 
-> > +        */
-> > +       status =3D "okay";
-> > +};
-> > +
-> >  &pfc {
-> >         avb_pins: avb {
-> >                 groups =3D "avb_mdio", "avb_gmii";
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
+>  		ctrl &= ~BIT_CH(PWM_EN, pwm->hwpwm);
+>  		ctrl &= ~BIT_CH(PWM_CLK_GATING, pwm->hwpwm);
+>  	}
+> @@ -310,15 +308,9 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	if (state->enabled)
+>  		return 0;
+>  
+> -	if (!sun4i_pwm->needs_delay[pwm->hwpwm]) {
+> -		clk_disable_unprepare(sun4i_pwm->clk);
+> -		return 0;
+> -	}
+> -
+
+This unreachable path is correctly removed.
+
+>  	/* We need a full period to elapse before disabling the channel. */
+>  	now = jiffies;
+> -	if (sun4i_pwm->needs_delay[pwm->hwpwm] &&
+
+This unconditionally true expression is also correctly removed.
+
+In short this patch changes behaviour in a manner that could not be
+predicted from the patch description.
+
+
+Daniel.
+
+
+> -	    time_before(now, sun4i_pwm->next_period[pwm->hwpwm])) {
+> +	if (time_before(now, sun4i_pwm->next_period[pwm->hwpwm])) {
+
+>  		delay_us = jiffies_to_usecs(sun4i_pwm->next_period[pwm->hwpwm] -
+>  					   now);
+>  		if ((delay_us / 500) > MAX_UDELAY_MS)
+> @@ -326,7 +318,6 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>  		else
+>  			usleep_range(delay_us, delay_us * 2);
+>  	}
+> -	sun4i_pwm->needs_delay[pwm->hwpwm] = false;
+>  
+>  	spin_lock(&sun4i_pwm->ctrl_lock);
+>  	ctrl = sun4i_pwm_readl(sun4i_pwm, PWM_CTRL_REG);
+
