@@ -2,116 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF5425BCC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DAA25BCFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgICIPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:15:01 -0400
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43735 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728522AbgICIOl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:14:41 -0400
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.93)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kDkOD-001H42-Ry; Thu, 03 Sep 2020 10:14:37 +0200
-Received: from p57bd95bc.dip0.t-ipconnect.de ([87.189.149.188] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.93)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kDkOD-000NUw-Kf; Thu, 03 Sep 2020 10:14:37 +0200
-Subject: Re: [PATCH 16/19] ataflop: use a separate gendisk for each media
- format
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1728945AbgICIRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:17:02 -0400
+Received: from mga01.intel.com ([192.55.52.88]:25400 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728813AbgICIPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:15:52 -0400
+IronPort-SDR: a2DFt1QwAuboI8062TBAWpSCANPy/5Z201bSdy6dtLpR+Io6lSD/V+sMJcZD1QYWtHbiqGAZ7O
+ 2P4eGnsIvJ+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="175590024"
+X-IronPort-AV: E=Sophos;i="5.76,385,1592895600"; 
+   d="scan'208";a="175590024"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 01:15:43 -0700
+IronPort-SDR: iMCzDARkOVmIsx5TZoFXvkYXPh3SIzSXRh2cVkiDZ7I2B0M4MQsOL84NQi5SF4O0GZrRU0eNJ0
+ VERnZNFBbvvg==
+X-IronPort-AV: E=Sophos;i="5.76,385,1592895600"; 
+   d="scan'208";a="341703334"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 01:15:40 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by paasikivi.fi.intel.com (Postfix) with ESMTP id 6C9092034D;
+        Thu,  3 Sep 2020 11:15:38 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1kDkPO-0001bK-Fv; Thu, 03 Sep 2020 11:15:50 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Wolfram Sang <wsa@the-dreams.de>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-References: <20200903080119.441674-1-hch@lst.de>
- <20200903080119.441674-17-hch@lst.de>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
- 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
- scOkTAZQGVpD/8AaLH4v1w==
-Message-ID: <e4ae0e80-dc96-7f57-58b1-03b83d117933@physik.fu-berlin.de>
-Date:   Thu, 3 Sep 2020 10:14:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com, Tomasz Figa <tfiga@chromium.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+Subject: [PATCH v8 0/6] Support running driver's probe for a device powered off
+Date:   Thu,  3 Sep 2020 11:15:44 +0300
+Message-Id: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20200903080119.441674-17-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.149.188
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph!
 
-On 9/3/20 10:01 AM, Christoph Hellwig wrote:
-> The Atari floppy driver usually autodetects the media when used with the
-> ormal /dev/fd? devices, which also are the only nodes created by udev.
-  ^^^^
-  typo?
+Hi all,
 
-Adrian
+These patches enable calling (and finishing) a driver's probe function
+without powering on the respective device on busses where the practice is
+to power on the device for probe. While it generally is a driver's job to
+check the that the device is there, there are cases where it might be
+undesirable. (In this case it stems from a combination of hardware design
+and user expectations; see below.) The downside with this change is that
+if there is something wrong with the device, it will only be found at the
+time the device is used. In this case (the camera sensors + EEPROM in a
+sensor) I don't see any tangible harm from that though.
+
+An indication both from the driver and the firmware is required to allow
+the device's power state to remain off during probe (see the first patch).
+
+
+The use case is such that there is a privacy LED next to an integrated
+user-facing laptop camera, and this LED is there to signal the user that
+the camera is recording a video or capturing images. That LED also happens
+to be wired to one of the power supplies of the camera, so whenever you
+power on the camera, the LED will be lit, whether images are captured from
+the camera --- or not. There's no way to implement this differently
+without additional software control (allowing of which is itself a
+hardware design decision) on most CSI-2-connected camera sensors as they
+simply have no pin to signal the camera streaming state.
+
+This is also what happens during driver probe: the camera will be powered
+on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+already powered on when the driver's own probe function is called. To the
+user this visible during the boot process as a blink of the privacy LED,
+suggesting that the camera is recording without the user having used an
+application to do that. From the end user's point of view the behaviour is
+not expected and for someone unfamiliar with internal workings of a
+computer surely seems quite suspicious --- even if images are not being
+actually captured.
+
+I've tested these on linux-next master. They also apply to Wolfram's
+i2c/for-next branch, there's a patch that affects the I²C core changes
+here (see below). The patches apart from that apply to Bartosz's
+at24/for-next as well as Mauro's linux-media master branch.
+
+since v7 <URL:https://lore.kernel.org/linux-acpi/20200901210333.8462-1-sakari.ailus@linux.intel.com/>:
+
+- Reorder documentation patch right after the implemenation in the I²C
+  framework.
+
+- Rename allow-low-power-probe property as i2c-allow-low-power-probe.
+
+- Remove extra "property" from the description of the
+  i2c-allow-low-power-probe property and mention it's a device property.
+
+- Add an example to the documentation and refer to the _DSD property spec.
+
+since v6 <URL:https://lore.kernel.org/linux-acpi/20200826115432.6103-1-sakari.ailus@linux.intel.com/>:
+
+- Use u32 for the flags field in struct i2c_driver.
+
+- Use acpi_dev_get_property to read the allow-low-power-probe property.
+
+since v5 <URL:https://lore.kernel.org/linux-acpi/20200810142747.12400-1-sakari.ailus@linux.intel.com/>:
+
+- Identify sensors when they're first powered on. In previous versions, if
+  this wasn't in probe, it was not done at all.
+
+- Return allow_low_power_probe() only for ACPI devices, i.e. OF systems
+  are not affected by these changes.
+
+- Document that I2C_DRV_FL_ALLOW_LOW_POWER_PROBE flag only applies to ACPI
+  drivers.
+
+- Fix extra regulator_disable in at24 driver's remove function when the
+  device was already in low power state.
+
+since v4 <URL:https://lore.kernel.org/linux-acpi/20200121134157.20396-1-sakari.ailus@linux.intel.com/>:
+
+- Rename "probe-low-power" property as "allow-low-power-probe". This is
+  taken into account in function and file naming, too.
+
+- Turn probe_low_power field in struct i2c_driver into flags field.
+
+- Rebase on Wolfram's i2c/for-next branch that contains the removal of the
+  support for disabling I²C core IRQ mappings (commit
+  0c2a34937f7e4c4776bb261114c475392da2355c).
+
+- Change wording for "allow-low-power-probe" property in ACPI
+  documentation.
+
+since v3 <URL:https://lore.kernel.org/linux-acpi/20200109154529.19484-1-sakari.ailus@linux.intel.com/T/#t>:
+
+- Rework the 2nd patch based on Rafael's comments
+
+	- Rework description of the ACPI low power state helper function,
+	  according to Rafael's text.
+
+	- Rename and rework the same function as
+	  acpi_dev_state_low_power().
+
+	- Reflect the changes in commit message as well.
+
+- Added a patch to document the probe-low-power _DSD property.
+
+since v2 <URL:https://patchwork.kernel.org/cover/11114255/>:
+
+- Remove extra CONFIG_PM ifdefs; these are not needed.
+
+- Move the checks for power state hints from drivers/base/dd.c to
+  drivers/i2c/i2c-base-core.c; these are I²C devices anyway.
+
+- Move the probe_low_power field from struct device_driver to struct
+  i2c_driver.
+
+since v1:
+
+- Rename probe_powered_off struct device field as probe_low_power and
+  reflect the similar naming to the patches overall.
+
+- Work with CONFIG_PM disabled, too.
+
+Rajmohan Mani (1):
+  media: i2c: imx319: Support probe while the device is off
+
+Sakari Ailus (5):
+  i2c: Allow an ACPI driver to manage the device's power state during
+    probe
+  ACPI: Add a convenience function to tell a device is in low power
+    state
+  ov5670: Support probe whilst the device is in a low power state
+  at24: Support probing while off
+  Documentation: ACPI: Document allow-low-power-probe _DSD property
+
+ .../acpi/dsd/allow-low-power-probe.rst        | 28 +++++++
+ Documentation/firmware-guide/acpi/index.rst   |  1 +
+ drivers/acpi/device_pm.c                      | 31 ++++++++
+ drivers/i2c/i2c-core-base.c                   | 19 ++++-
+ drivers/media/i2c/imx319.c                    | 74 +++++++++++-------
+ drivers/media/i2c/ov5670.c                    | 76 +++++++++++--------
+ drivers/misc/eeprom/at24.c                    | 43 ++++++-----
+ include/linux/acpi.h                          |  5 ++
+ include/linux/i2c.h                           | 14 ++++
+ 9 files changed, 212 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/firmware-guide/acpi/dsd/allow-low-power-probe.rst
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.20.1
+
+
+Rajmohan Mani (1):
+  media: i2c: imx319: Support probe while the device is off
+
+Sakari Ailus (5):
+  i2c: Allow an ACPI driver to manage the device's power state during
+    probe
+  Documentation: ACPI: Document i2c-allow-low-power-probe _DSD property
+  ACPI: Add a convenience function to tell a device is in low power
+    state
+  ov5670: Support probe whilst the device is in a low power state
+  at24: Support probing while off
+
+ .../acpi/dsd/i2c-allow-low-power-probe.rst    | 60 +++++++++++++++
+ Documentation/firmware-guide/acpi/index.rst   |  1 +
+ drivers/acpi/device_pm.c                      | 31 ++++++++
+ drivers/i2c/i2c-core-base.c                   | 19 ++++-
+ drivers/media/i2c/imx319.c                    | 74 +++++++++++-------
+ drivers/media/i2c/ov5670.c                    | 76 +++++++++++--------
+ drivers/misc/eeprom/at24.c                    | 43 ++++++-----
+ include/linux/acpi.h                          |  5 ++
+ include/linux/i2c.h                           | 14 ++++
+ 9 files changed, 244 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/firmware-guide/acpi/dsd/i2c-allow-low-power-probe.rst
+
+-- 
+2.20.1
+
