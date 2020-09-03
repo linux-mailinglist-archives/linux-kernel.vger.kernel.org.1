@@ -2,203 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DEF25CA08
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF5425CA0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbgICUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:14:18 -0400
-Received: from mail.v3.sk ([167.172.186.51]:33502 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727065AbgICUOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:14:16 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 847D3DF5E0;
-        Thu,  3 Sep 2020 20:13:01 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id k3_MW6DJBbf3; Thu,  3 Sep 2020 20:13:00 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id C74FBDF963;
-        Thu,  3 Sep 2020 20:13:00 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jBGXY3EYfIlN; Thu,  3 Sep 2020 20:13:00 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 0DED8DF5E0;
-        Thu,  3 Sep 2020 20:12:59 +0000 (UTC)
-Date:   Thu, 3 Sep 2020 22:14:04 +0200
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [RESEND PATCH v3 3/3] phy: Add USB HSIC PHY driver for Marvell
- MMP3 SoC
-Message-ID: <20200903201404.GA115604@demiurge.local>
-References: <20200817223400.403505-1-lkundrak@v3.sk>
- <20200817223400.403505-4-lkundrak@v3.sk>
- <20200831085808.GH2639@vkoul-mobl>
+        id S1729223AbgICUPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:15:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46372 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728975AbgICUPm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 16:15:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599164139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VqFui9oj1cM5DRlG5bU+EfxWGLYe7oYtwPI4hKaTr4c=;
+        b=akAJRBG5aPBvBB2C81jfK3XkZHI/s8oicvxmTot54LiHoODSXQmOwfIGSVOLmp82i0ESK2
+        IyrW/oHf2xIeoj5Z0eJzFF6XVLLB5Kp4IxXofCE7aJUY7HjyiLpt7Kch7ZG8N2FX0IAZ0L
+        mEM2dkD5oraVnrzq04ooZJ+GI4l3V+0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-ZU22fIEkNEGmc00k0RIb2A-1; Thu, 03 Sep 2020 16:15:37 -0400
+X-MC-Unique: ZU22fIEkNEGmc00k0RIb2A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8DA3D801AEA;
+        Thu,  3 Sep 2020 20:15:36 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05EC8702ED;
+        Thu,  3 Sep 2020 20:15:31 +0000 (UTC)
+Subject: Re: [PATCH v4 07/10] vfio/fsl-mc: Add irq infrastructure for fsl-mc
+ devices
+To:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
+        laurentiu.tudor@nxp.com, Bharat Bhushan <Bharat.Bhushan@nxp.com>
+References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
+ <20200826093315.5279-8-diana.craciun@oss.nxp.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <9dacbfc8-32a6-54c9-ce0c-50538ee588bf@redhat.com>
+Date:   Thu, 3 Sep 2020 22:15:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831085808.GH2639@vkoul-mobl>
+In-Reply-To: <20200826093315.5279-8-diana.craciun@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 02:28:08PM +0530, Vinod Koul wrote:
-> On 18-08-20, 00:34, Lubomir Rintel wrote:
-> > Add PHY driver for the HSICs found on Marvell MMP3 SoC. The driver is
-> > rather straightforward -- the PHY essentially just needs to be enabled.
-> > 
-> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> > 
-> > ---
-> > Changes since v1:
-> > - Explicitely cast drvdata pointer to make sparse happy
-> > 
-> >  drivers/phy/marvell/Kconfig         | 12 +++++
-> >  drivers/phy/marvell/Makefile        |  1 +
-> >  drivers/phy/marvell/phy-mmp3-hsic.c | 82 +++++++++++++++++++++++++++++
-> >  3 files changed, 95 insertions(+)
-> >  create mode 100644 drivers/phy/marvell/phy-mmp3-hsic.c
-> > 
-> > diff --git a/drivers/phy/marvell/Kconfig b/drivers/phy/marvell/Kconfig
-> > index 8f6273c837ec3..6c96f2bf52665 100644
-> > --- a/drivers/phy/marvell/Kconfig
-> > +++ b/drivers/phy/marvell/Kconfig
-> > @@ -116,3 +116,15 @@ config PHY_MMP3_USB
-> >  	  The PHY driver will be used by Marvell udc/ehci/otg driver.
-> >  
-> >  	  To compile this driver as a module, choose M here.
-> > +
-> > +config PHY_MMP3_HSIC
-> > +	tristate "Marvell MMP3 USB HSIC PHY Driver"
-> > +	depends on MACH_MMP3_DT || COMPILE_TEST
-> > +	select GENERIC_PHY
-> > +	help
-> > +	  Enable this to support Marvell MMP3 USB HSIC PHY driver for
-> > +	  Marvell MMP3 SoC. This driver will be used my the Marvell EHCI
-> > +	  driver to initialize the interface to internal USB HSIC
-> > +	  components on MMP3-based boards.
-> > +
-> > +	  To compile this driver as a module, choose M here.
-> > diff --git a/drivers/phy/marvell/Makefile b/drivers/phy/marvell/Makefile
-> > index 5a106b1549f41..7f296ef028292 100644
-> > --- a/drivers/phy/marvell/Makefile
-> > +++ b/drivers/phy/marvell/Makefile
-> > @@ -3,6 +3,7 @@ obj-$(CONFIG_ARMADA375_USBCLUSTER_PHY)	+= phy-armada375-usb2.o
-> >  obj-$(CONFIG_PHY_BERLIN_SATA)		+= phy-berlin-sata.o
-> >  obj-$(CONFIG_PHY_BERLIN_USB)		+= phy-berlin-usb.o
-> >  obj-$(CONFIG_PHY_MMP3_USB)		+= phy-mmp3-usb.o
-> > +obj-$(CONFIG_PHY_MMP3_HSIC)		+= phy-mmp3-hsic.o
-> >  obj-$(CONFIG_PHY_MVEBU_A3700_COMPHY)	+= phy-mvebu-a3700-comphy.o
-> >  obj-$(CONFIG_PHY_MVEBU_A3700_UTMI)	+= phy-mvebu-a3700-utmi.o
-> >  obj-$(CONFIG_PHY_MVEBU_A38X_COMPHY)	+= phy-armada38x-comphy.o
-> > diff --git a/drivers/phy/marvell/phy-mmp3-hsic.c b/drivers/phy/marvell/phy-mmp3-hsic.c
-> > new file mode 100644
-> > index 0000000000000..47c1e8894939f
-> > --- /dev/null
-> > +++ b/drivers/phy/marvell/phy-mmp3-hsic.c
-> > @@ -0,0 +1,82 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Copyright (C) 2020 Lubomir Rintel <lkundrak@v3.sk>
-> > + */
-> > +
-> > +#include <linux/delay.h>
-> > +#include <linux/io.h>
-> > +#include <linux/module.h>
-> > +#include <linux/phy/phy.h>
-> > +#include <linux/platform_device.h>
-> > +
-> > +#define HSIC_CTRL	0x08
-> > +#define HSIC_ENABLE	BIT(7)
-> > +#define PLL_BYPASS	BIT(4)
-> > +
-> > +static int mmp3_hsic_phy_init(struct phy *phy)
-> > +{
-> > +	void __iomem *base = (void __iomem *)phy_get_drvdata(phy);
-> 
-> you are casting away from void * and casting to another void *,
-> something doesn't look correct!
+Hi Diana,
 
-This is to make it explicit to sparse that the destination type is
-supposed to have the __iomem annotation. Otherwise it complains:
+On 8/26/20 11:33 AM, Diana Craciun wrote:
+> This patch adds the skeleton for interrupt support
+> for fsl-mc devices. The interrupts are not yet functional,
+> the functionality will be added by subsequent patches.
+> 
+> Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
+> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+> ---
+>  drivers/vfio/fsl-mc/Makefile              |  2 +-
+>  drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 75 ++++++++++++++++++++++-
+>  drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 63 +++++++++++++++++++
+>  drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  7 ++-
+>  4 files changed, 143 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+> 
+> diff --git a/drivers/vfio/fsl-mc/Makefile b/drivers/vfio/fsl-mc/Makefile
+> index 0c6e5d2ddaae..cad6dbf0b735 100644
+> --- a/drivers/vfio/fsl-mc/Makefile
+> +++ b/drivers/vfio/fsl-mc/Makefile
+> @@ -1,4 +1,4 @@
+>  # SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>  
+> -vfio-fsl-mc-y := vfio_fsl_mc.o
+> +vfio-fsl-mc-y := vfio_fsl_mc.o vfio_fsl_mc_intr.o
+>  obj-$(CONFIG_VFIO_FSL_MC) += vfio-fsl-mc.o
+> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> index bbd3365e877e..42014297b484 100644
+> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> @@ -209,11 +209,79 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
+>  	}
+>  	case VFIO_DEVICE_GET_IRQ_INFO:
+>  	{
+> -		return -ENOTTY;
+> +		struct vfio_irq_info info;
+> +
+> +		minsz = offsetofend(struct vfio_irq_info, count);
+> +		if (copy_from_user(&info, (void __user *)arg, minsz))
+> +			return -EFAULT;
+> +
+> +		if (info.argsz < minsz)
+> +			return -EINVAL;
+> +
+> +		if (info.index >= mc_dev->obj_desc.irq_count)
+> +			return -EINVAL;
+> +
+> +		info.flags = VFIO_IRQ_INFO_EVENTFD;
+shouldn't it be MASKABLE as well? I see skeletons for MASK.
+> +		info.count = 1;
+> +
+> +		return copy_to_user((void __user *)arg, &info, minsz);
+>  	}
+>  	case VFIO_DEVICE_SET_IRQS:
+>  	{
+> -		return -ENOTTY;
+> +		struct vfio_irq_set hdr;
+> +		u8 *data = NULL;
+> +		int ret = 0;
+> +
+> +		minsz = offsetofend(struct vfio_irq_set, count);
+> +
+> +		if (copy_from_user(&hdr, (void __user *)arg, minsz))
+> +			return -EFAULT;
+> +
+> +		if (hdr.argsz < minsz)
+> +			return -EINVAL;
+> +
+> +		if (hdr.index >= mc_dev->obj_desc.irq_count)
+> +			return -EINVAL;
+> +
+> +		if (hdr.start != 0 || hdr.count > 1)
+> +			return -EINVAL;
+> +
+> +		if (hdr.count == 0 &&
+> +		    (!(hdr.flags & VFIO_IRQ_SET_DATA_NONE) ||
+> +		    !(hdr.flags & VFIO_IRQ_SET_ACTION_TRIGGER)))
+> +			return -EINVAL;
+> +
+> +		if (hdr.flags & ~(VFIO_IRQ_SET_DATA_TYPE_MASK |
+> +				  VFIO_IRQ_SET_ACTION_TYPE_MASK))
+> +			return -EINVAL;
+> +
+> +		if (!(hdr.flags & VFIO_IRQ_SET_DATA_NONE)) {
+> +			size_t size;
+> +
+> +			if (hdr.flags & VFIO_IRQ_SET_DATA_BOOL)
+> +				size = sizeof(uint8_t);
+> +			else if (hdr.flags & VFIO_IRQ_SET_DATA_EVENTFD)
+> +				size = sizeof(int32_t);
+> +			else
+> +				return -EINVAL;
+> +
+> +			if (hdr.argsz - minsz < hdr.count * size)
+> +				return -EINVAL;
+> +
+> +			data = memdup_user((void __user *)(arg + minsz),
+> +					   hdr.count * size);
+> +			if (IS_ERR(data))
+> +				return PTR_ERR(data);
+> +		}
+can't you reuse vfio_set_irqs_validate_and_prepare()?
+> +
+> +		mutex_lock(&vdev->igate);
+> +		ret = vfio_fsl_mc_set_irqs_ioctl(vdev, hdr.flags,
+> +						 hdr.index, hdr.start,
+> +						 hdr.count, data);
+> +		mutex_unlock(&vdev->igate);
+> +		kfree(data);
+> +
+> +		return ret;
+>  	}
+>  	case VFIO_DEVICE_RESET:
+>  	{
+> @@ -413,6 +481,8 @@ static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
+>  		return ret;
+>  	}
+>  
+> +	mutex_init(&vdev->igate);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -436,6 +506,7 @@ static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
+>  	mc_dev->mc_io = NULL;
+>  
+>  	vfio_fsl_mc_reflck_put(vdev->reflck);
+> +	mutex_destroy(&vdev->igate);
+>  
+>  	vfio_iommu_group_put(mc_dev->dev.iommu_group, dev);
+>  
+> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+> new file mode 100644
+> index 000000000000..058aa97aa54a
+> --- /dev/null
+> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
+> @@ -0,0 +1,63 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> +/*
+> + * Copyright 2013-2016 Freescale Semiconductor Inc.
+> + * Copyright 2019 NXP
+> + */
+> +
+> +#include <linux/vfio.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +#include <linux/eventfd.h>
+> +#include <linux/msi.h>
+> +
+> +#include "linux/fsl/mc.h"
+> +#include "vfio_fsl_mc_private.h"
+> +
+> +static int vfio_fsl_mc_irq_mask(struct vfio_fsl_mc_device *vdev,
+> +				unsigned int index, unsigned int start,
+> +				unsigned int count, u32 flags,
+> +				void *data)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static int vfio_fsl_mc_irq_unmask(struct vfio_fsl_mc_device *vdev,
+> +				unsigned int index, unsigned int start,
+> +				unsigned int count, u32 flags,
+> +				void *data)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +static int vfio_fsl_mc_set_irq_trigger(struct vfio_fsl_mc_device *vdev,
+> +				       unsigned int index, unsigned int start,
+> +				       unsigned int count, u32 flags,
+> +				       void *data)
+> +{
+> +	return -EINVAL;
+> +}
+> +
+> +int vfio_fsl_mc_set_irqs_ioctl(struct vfio_fsl_mc_device *vdev,
+> +			       u32 flags, unsigned int index,
+> +			       unsigned int start, unsigned int count,
+> +			       void *data)
+> +{
+> +	int ret = -ENOTTY;
+> +
+> +	switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
+> +	case VFIO_IRQ_SET_ACTION_MASK:
+> +		ret = vfio_fsl_mc_irq_mask(vdev, index, start, count,
+> +					   flags, data);
+> +		break;
+> +	case VFIO_IRQ_SET_ACTION_UNMASK:
+> +		ret = vfio_fsl_mc_irq_unmask(vdev, index, start, count,
+> +					     flags, data);
+> +		break;
+> +	case VFIO_IRQ_SET_ACTION_TRIGGER:
+> +		ret = vfio_fsl_mc_set_irq_trigger(vdev, index, start,
+> +						  count, flags, data);
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+> index 3b85d930e060..d5b6fe891a48 100644
+> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+> @@ -34,7 +34,12 @@ struct vfio_fsl_mc_device {
+>  	u32				num_regions;
+>  	struct vfio_fsl_mc_region	*regions;
+>  	struct vfio_fsl_mc_reflck   *reflck;
+> -
+> +	struct mutex         igate;
+>  };
+>  
+> +extern int vfio_fsl_mc_set_irqs_ioctl(struct vfio_fsl_mc_device *vdev,
+> +			       u32 flags, unsigned int index,
+> +			       unsigned int start, unsigned int count,
+> +			       void *data);
+> +
+>  #endif /* VFIO_FSL_MC_PRIVATE_H */
+> 
+Thanks
 
-  drivers/phy/marvell/phy-mmp3-hsic.c:61:31: warning: cast removes address space '__iomem' of expression
+Eric
 
-> > +	u32 hsic_ctrl;
-> > +
-> > +	hsic_ctrl = readl_relaxed(base + HSIC_CTRL);
-> > +	hsic_ctrl |= HSIC_ENABLE;
-> > +	hsic_ctrl |= PLL_BYPASS;
-> > +	writel_relaxed(hsic_ctrl, base + HSIC_CTRL);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct phy_ops mmp3_hsic_phy_ops = {
-> > +	.init		= mmp3_hsic_phy_init,
-> > +	.owner		= THIS_MODULE,
-> > +};
-> > +
-> > +static const struct of_device_id mmp3_hsic_phy_of_match[] = {
-> > +	{ .compatible = "marvell,mmp3-hsic-phy", },
-> > +	{ },
-> > +};
-> > +MODULE_DEVICE_TABLE(of, mmp3_hsic_phy_of_match);
-> > +
-> > +static int mmp3_hsic_phy_probe(struct platform_device *pdev)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct phy_provider *provider;
-> > +	struct resource *resource;
-> > +	void __iomem *base;
-> > +	struct phy *phy;
-> > +
-> > +	resource = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	base = devm_ioremap_resource(dev, resource);
-> > +	if (IS_ERR(base)) {
-> > +		dev_err(dev, "failed to remap PHY regs\n");
-> > +		return PTR_ERR(base);
-> > +	}
-> > +
-> > +	phy = devm_phy_create(dev, NULL, &mmp3_hsic_phy_ops);
-> > +	if (IS_ERR(phy)) {
-> > +		dev_err(dev, "failed to create PHY\n");
-> > +		return PTR_ERR(phy);
-> > +	}
-> > +
-> > +	phy_set_drvdata(phy, (void *)base);
-> 
-> again skip the cast
-> 
-> > +	provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-> > +	if (IS_ERR(provider)) {
-> > +		dev_err(dev, "failed to register PHY provider\n");
-> > +		return PTR_ERR(provider);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static struct platform_driver mmp3_hsic_phy_driver = {
-> > +	.probe		= mmp3_hsic_phy_probe,
-> > +	.driver		= {
-> > +		.name	= "mmp3-hsic-phy",
-> > +		.of_match_table = mmp3_hsic_phy_of_match,
-> > +	},
-> > +};
-> > +module_platform_driver(mmp3_hsic_phy_driver);
-> > +
-> > +MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-> > +MODULE_DESCRIPTION("Marvell MMP3 USB HSIC PHY Driver");
-> > +MODULE_LICENSE("GPL");
-> > -- 
-> > 2.26.2
-> 
-> -- 
-> ~Vinod
