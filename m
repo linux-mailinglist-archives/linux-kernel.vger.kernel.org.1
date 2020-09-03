@@ -2,113 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952DA25BDF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CC925BDF6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbgICI4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:56:16 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:46498 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726891AbgICI4O (ORCPT
+        id S1728386AbgICI4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:56:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33048 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726292AbgICI4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:56:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1599123375; x=1630659375;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
-  b=N1rHeQ5HOS7dMcrc3BiQ6l/U7i6TJ3hP+eJyHtPXffoEEgVBPPH+5FIM
-   +QXe0nV7E8IXmDCzl9BSkG37ZJQybfKsPwE3wSVjLYcA60tGLInOeb3EW
-   Kev3110RvOU8o9M4x+PeDBARVZPiimYuAsZmjiQKcYENJND+QrwYiPd2V
-   N4F00Jxa9RoL8FyKUz6lyJ9p4bC1OuAtWQvlRRAvZ0zpGeHamQva4/QO/
-   ZeG7NHGPfytDwiUfbgkdgS9vq9z4XcSqjxX0eVI19SDGhuyEVjxsunfUP
-   vOWuTLH4VERuJuDaFaBLm3qKiNnOBrtTRF1tpU551GmyN8blX8d95Ez6z
-   A==;
-IronPort-SDR: eVD7nNJLe2HRwjazMCUnLcv6aqSel/k45K5hb7e2Rr8oiHaFl9O1/fHgI3r8P9slIq5Wdv1kaO
- zEkZq5is9t1rNnubvrChs8d1Tgk+YjpC/q/Qq23kJ/ZfIYk4Xn1nsRtz4VnflPAYCX6Y3S6+w+
- zj+Rw+Uy4a2v6D0s3ryc5w/5H+G2zyoTN2q3Y531rkeBm+bWtD1oyc0CWspnmfLk3TwucSXP5/
- MP3D6PCbQaOhx1GlWcSONVkBGIV9iuPKlJBo37SpTe0y23Ir3vFX5aq8GI5OlmzTshsJp7pkJY
- SYs=
-X-IronPort-AV: E=Sophos;i="5.76,386,1592841600"; 
-   d="scan'208";a="147706909"
-Received: from mail-dm6nam12lp2175.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.175])
-  by ob1.hgst.iphmx.com with ESMTP; 03 Sep 2020 16:56:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F0CcUYNBwpy0VLkUL0BekCT++ROG4Ks7l+z9VpTz9IX/2o1huCknnvSSsnu1KloPPBPTC3fkHkN44xVEgQQRwbfPbkmvXvaRMRYserClCmwbBKyt4Gvpa/XT9EdVgOY8ou7bK9RtSqjDNUbDOSA2erVUjIESiM+5Z3hcolpuy4P/jCRYiilQkkRhW9PgTYLpEJiN7cdqqjqCX1wpBlpD8Vp8+gDXQiD9sLjzCgwT98kKiIk0n24gRYYJ4U5JPO+mcy4H2lyduRRNhv1Wzj5EQwHnRS1lP/aHWR2x2fO7AshtPVerLqqw6T2Q81qAkIYzkaQOndoOIIBjeVnyEWK8nQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=RESc+oX5j4cTNcPdPcUN8ZxqTg9pk9bkuVrFWVL8MjEY0PkVAuO+HO/aUJRFImdHxk609BuJUcVNxIMXkQlkqmdlr1ZhV+6Oqe2NI2oaONG6VcD4PeR6xZIVhsreCpY2N7G4cWaEml/24aJbSEg5G9x2ecFhyCv+hxnuNqxbwVn3Jn7cvURggG7wrKhyHhqwCLWcd/KZHdF0QVMXXFIZ+iRmR/hEghNns6vgOPIYZYXZQAGPgNGvdPzCYDU7UpI/b9HmodHZ5y1CQ7zraV0dje5h5N+olMFE1WWSo9qK+yX7s5n+r3tcrXQZd5yqdIMjUwgPJ9w5JTxaOyN2++VxDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G8FZ0D3PP/OudJ5uuxCAz/C/vBHo8wESZoPwxTWqVEI=;
- b=rEmXCAENOjIFT1mN3LZzLViNJ1kWEeQeqVqDhC+QPxqWIJFEeuD8+21cKGffgfjJjdBsQqEOcrleq+UjiFiXNheRl+mJTVD/PvZrHqgHXOC+HfSzJu3mLpYftcQ44QH8F44GAL7BUen+FEk5WteUZv+z9r/I3qHOrU9ca5dws18=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB4862.namprd04.prod.outlook.com
- (2603:10b6:805:90::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 3 Sep
- 2020 08:56:12 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::457e:5fe9:2ae3:e738%7]) with mapi id 15.20.3326.023; Thu, 3 Sep 2020
- 08:56:12 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>, Jens Axboe <axboe@kernel.dk>
-CC:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] null_blk: add support for max open/active zone limit
- for zoned devices
-Thread-Topic: [PATCH v3] null_blk: add support for max open/active zone limit
- for zoned devices
-Thread-Index: AQHWfSmaV4Z1Tg4VL0+Dee3d19pWQg==
-Date:   Thu, 3 Sep 2020 08:56:12 +0000
-Message-ID: <SN4PR0401MB3598B620E696890C100AD6A99B2C0@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200828105400.80893-1-niklas.cassel@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: wdc.com; dkim=none (message not signed)
- header.d=none;wdc.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:1590:f101:1584:4722:fd5f:b30e]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3ceac4d5-723e-4143-fbac-08d84fe73529
-x-ms-traffictypediagnostic: SN6PR04MB4862:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR04MB4862E56CA41B5CF0AD56B8509B2C0@SN6PR04MB4862.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IZVFB1fkIFWYZOEn96A+iOGjbc+ld0EAhe7lbEfHWTxZf3gM6kN3xh6dERm3SVzBQAckFgKwbE+20nBNQC54XIfBNtRKJYJwsxiIKXv+mPBrgJlYPHVjw/qIyMAa/2TbnYFR9OqfQljqHsFO9i1tpYJ553l8F0o5KmAnKFJBYmd/Zu3zDjjZWdew6SLpDhaSxENMhjqAFJxUo8nT+sUFUGMJka6EqxWV8HC16mnP0Itee+o/Ly/960XjTUy9W1gAatqjwh1GGZLRFz5xBFs4WO4ail1m3/0K57fDdkFbbD03ULZSouFJfsmvFVY8nu3gMCrZKM32kxNPpqqzPUP0qA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(136003)(376002)(39860400002)(9686003)(7696005)(4326008)(55016002)(6506007)(66556008)(186003)(4270600006)(316002)(110136005)(54906003)(86362001)(66946007)(5660300002)(33656002)(19618925003)(66476007)(8676002)(52536014)(558084003)(71200400001)(66446008)(76116006)(8936002)(91956017)(478600001)(2906002)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: lc7acxjGZebwoE1lrhd4VueQujbNlnUnTNrsyYdeTTfNzXSFm/Y1tpNnGvQnxGyei5vF/pGjqPdSVOp8ZqyuGDOx3CekQFQypomsc2hfwoGxgwzMSqmbAo/Tr8cAh6K/nyxA27LR73VcZjYWnbSurcPAdnsC0tUoOkX7MIdsAO3vI1wTeJMRQgyQXLlOxOP7SLPhmIOA3VCzuI0E6wsVlw0TP6IgYylrLHfp55EsH5B/RxOfsgN1xl/4EBe9xk4PjBvzlK0rbb2zpqEgsM4zHJHsNb83IyUAmM/zjqjG07U//NhPDNz16o5kVUxnTdQ4D5j+bf/4K3/WTH8nBLyFWpljHEXFbMd19CvMiOaKLgmukrDf7Zpn2ZupqfX+i+Z7GGaQILDJPfwQEPEQ04JjUISwwdp7RM2/8yC+cQt21n3N+NKyuZ23Yu5vnyqCLv1746bGbg6QOMdCt5sd5nUHIxGNj2THwCrgmtaSujiRSliXVpq8VfU8iAoJygfehaIYf8WYsm1E9+3eZDeAMXO8QU+pYZqqk2hRLryqBDVKPagJgQ4PtC7tW9MBxn1FIgHo1WrfwoHL8DJmQmjxxelMbuX1NOXYh8kt2a2IWsYdVdMXs6SlxTljFoAJZt3fxsjxfmltaWVZ3rIc+xEMKBUNTzzY/DVNVrhB5soFhSAw2uhg+bgrdtxDPDYM2evJsD7RXYJAHAnjpHHb3IlPcUlNMg==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 3 Sep 2020 04:56:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599123390;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ex8sJsf3MwM3gMU7gFxAPmbLmVJ5LgmUnE9JDMtOUlE=;
+        b=I56eiA7E9NYsLp+X2EwGlGnzBGM1Lzyt3t2TZK4IOqa4WsoK2pQryWxaN3DOB7mFLkL/la
+        M2o3KX43VX8I0s6+2eGpatMGGAkfPS+VU+qtqE0dp+qD5S9PpNB4wOYx+ECRGfvEyjzyir
+        V4eWO7Jfj1T/UpdggqBXcTo4X6wHtO8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-JU0LndOANy2n5FO2ndAe1A-1; Thu, 03 Sep 2020 04:56:26 -0400
+X-MC-Unique: JU0LndOANy2n5FO2ndAe1A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DA81801AAB;
+        Thu,  3 Sep 2020 08:56:24 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 481995D9CC;
+        Thu,  3 Sep 2020 08:56:17 +0000 (UTC)
+Subject: Re: [PATCH v8 7/7] iommu/vt-d: Check UAPI data processed by IOMMU
+ core
+To:     Jacob Pan <jacob.pan.linux@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <1598898300-65475-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1598898300-65475-8-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <041fbe2e-3105-8356-6469-be77f73a0d01@redhat.com>
+Date:   Thu, 3 Sep 2020 10:56:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ceac4d5-723e-4143-fbac-08d84fe73529
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2020 08:56:12.0079
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KVpbtcJiMDyF9NqfmWxUvGGI4rczP8W5RMWjsGKiOCzq6EzBto+NC2XcosJ1sl4d09o7nrbnq5BmWJukGopev0jtw1UZquw/6jTixPsnNIc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4862
+In-Reply-To: <1598898300-65475-8-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+Hi Jacob,
+On 8/31/20 8:25 PM, Jacob Pan wrote:
+> IOMMU generic layer already does sanity checks on UAPI data for version
+> match and argsz range based on generic information.
+> 
+> This patch adjusts the following data checking responsibilities:
+> - removes the redundant version check from VT-d driver
+> - removes the check for vendor specific data size
+> - adds check for the use of reserved/undefined flags
+> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Thanks
+
+Eric
+
+> ---
+>  drivers/iommu/intel/iommu.c |  3 +--
+>  drivers/iommu/intel/svm.c   | 11 +++++++++--
+>  include/uapi/linux/iommu.h  |  1 +
+>  3 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 43f16f0cebde..a3a0b5c8921d 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5399,8 +5399,7 @@ intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
+>  	int ret = 0;
+>  	u64 size = 0;
+>  
+> -	if (!inv_info || !dmar_domain ||
+> -	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
+> +	if (!inv_info || !dmar_domain)
+>  		return -EINVAL;
+>  
+>  	if (!dev || !dev_is_pci(dev))
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 99353d6468fa..0cb9a15f1112 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -284,8 +284,15 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+>  	if (WARN_ON(!iommu) || !data)
+>  		return -EINVAL;
+>  
+> -	if (data->version != IOMMU_GPASID_BIND_VERSION_1 ||
+> -	    data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
+> +	if (data->format != IOMMU_PASID_FORMAT_INTEL_VTD)
+> +		return -EINVAL;
+> +
+> +	/* IOMMU core ensures argsz is more than the start of the union */
+> +	if (data->argsz < offsetofend(struct iommu_gpasid_bind_data, vendor.vtd))
+> +		return -EINVAL;
+> +
+> +	/* Make sure no undefined flags are used in vendor data */
+> +	if (data->vendor.vtd.flags & ~(IOMMU_SVA_VTD_GPASID_LAST - 1))
+>  		return -EINVAL;
+>  
+>  	if (!dev_is_pci(dev))
+> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+> index c64bca5af419..1ebc23df4fbc 100644
+> --- a/include/uapi/linux/iommu.h
+> +++ b/include/uapi/linux/iommu.h
+> @@ -288,6 +288,7 @@ struct iommu_gpasid_bind_data_vtd {
+>  #define IOMMU_SVA_VTD_GPASID_PWT	(1 << 3) /* page-level write through */
+>  #define IOMMU_SVA_VTD_GPASID_EMTE	(1 << 4) /* extended mem type enable */
+>  #define IOMMU_SVA_VTD_GPASID_CD		(1 << 5) /* PASID-level cache disable */
+> +#define IOMMU_SVA_VTD_GPASID_LAST	(1 << 6)
+>  	__u64 flags;
+>  	__u32 pat;
+>  	__u32 emt;
+> 
+
