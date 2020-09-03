@@ -2,128 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EAB25C41E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FFF625C40B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbgICPEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728984AbgICN60 (ORCPT
+        id S1729146AbgICPCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:02:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52920 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729047AbgICN7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:58:26 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE185C061A20;
-        Thu,  3 Sep 2020 06:48:37 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id s205so3789984lja.7;
-        Thu, 03 Sep 2020 06:48:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LaqCbRyYwj+hXeNs4Rfcy15/efkgJqt2Cesa41CCq68=;
-        b=pFqpNhWNj4qz5FszdeKCO0DovSJF9igdv0sKaSivGNh1VvmDLPOJ2rVuVtDSOn9zZV
-         5tbik1hIIgqy04EDMRQ3NMuHvhu7FlLQz+wUAjmVDBFSFkR9PgVZOFJONMHTxo84I43H
-         K5VhgNgMdds6pfYJBoww/b+eiYOTiOhK1ZOTnzv+BveFKlyUOolamDkKm2blJbO6uPfw
-         ypekU/Bx1o85t+RyeTWpkAKnz+WZVog0AaReHQ7kjKsS01R+LztnFevJCwHFwPUwxxZg
-         TtKboFvpMlSXgqH/9owS8ConHNcYoX72N3imv6VsGCoDB+cDklcIQGCzaECSADbrMNEq
-         vsxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LaqCbRyYwj+hXeNs4Rfcy15/efkgJqt2Cesa41CCq68=;
-        b=TtBuX/cypAOqiOQ4VPqLSyF393UE3zGZeD2Dq9ZBA3Yv/jRBzHP8r560EapfwtZwvQ
-         wuUVQONSum0vFXwhiGZHWbQrwGJsQ/gSWktCq5n365vt5kRc4ha/CR5uLrDwZWMfJ4FR
-         trLwEHcKTDipfeRuqrxZ0VtdPh03vndoK88l5SWI066oX3Cc500iYORE4WQ5ItEmUKgk
-         +xUgD+TXMFvS3JWso412bXUKCU6KvSZZYW7G2zBPuFl28IEenBbkt/LkWxBPcOtmCHVg
-         NJi8RcIam+67F+Qu3BuZWT5kvRNR1hpytjv+XigS13mPP05Q0duUbXBSX7zqd6x9sMnW
-         4piA==
-X-Gm-Message-State: AOAM531iOOltLwk5qalkv3kaEKALR3Mmp1C7hQKaRaGq6Q2EqP0s1Bu/
-        sa3x4oFHgKwF3gLjjJ5KMOnsE54qrO8=
-X-Google-Smtp-Source: ABdhPJysBNIOjzHtL+VhmNkg+NelDDnocAgSZYpjvcLtfIhQVLeWlsH5s72PcLFzEMhLzr7ci/8TXw==
-X-Received: by 2002:a2e:a0d5:: with SMTP id f21mr1448443ljm.364.1599140916133;
-        Thu, 03 Sep 2020 06:48:36 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id k205sm605178lfk.19.2020.09.03.06.48.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 06:48:35 -0700 (PDT)
-Subject: Re: [PATCH v3 09/22] i2c: tegra: Clean up probe function
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200903005300.7894-1-digetx@gmail.com>
- <20200903005300.7894-10-digetx@gmail.com>
- <CAHp75VdPoJFNC+MntKu-CL8jFMEe85ZT3R9DF0aaNC4KjqWXyg@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4bd12095-7a29-bcb4-6b49-83eca285c897@gmail.com>
-Date:   Thu, 3 Sep 2020 16:48:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 3 Sep 2020 09:59:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599141547;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q7d9IVaLdiU8t+KOY9YhvBtmvx3P89f14MOWNMV2Ces=;
+        b=AllhKL4dpaYEFLCH8jrr7hjEwCytlmrbXN2FsF3ESnhe9lhEPJ3umnHB29sWhMdbpQtVZ3
+        Qk9ihlN0rJOZpq1jSY63xkic/+TokLyLgB0+CNVmdSmPo0Rd7TpyyFqmCLVdyEsQky9wrk
+        7itnzsrTXu562Q+UYibLzWVUMgxy12c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-Q4-sYnx8OtqZ9He-a06fKw-1; Thu, 03 Sep 2020 09:50:54 -0400
+X-MC-Unique: Q4-sYnx8OtqZ9He-a06fKw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99F8D85C733;
+        Thu,  3 Sep 2020 13:50:50 +0000 (UTC)
+Received: from krava (unknown [10.40.195.71])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B95CD19C78;
+        Thu,  3 Sep 2020 13:50:45 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 15:50:44 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Kemeng Shi <shikemeng@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Wei Li <liwei391@huawei.com>, Al Grant <Al.Grant@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/14] perf mem: Search event name with more flexible
+ path
+Message-ID: <20200903135044.GC713364@krava>
+References: <20200901083815.13755-1-leo.yan@linaro.org>
+ <20200901083815.13755-2-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdPoJFNC+MntKu-CL8jFMEe85ZT3R9DF0aaNC4KjqWXyg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901083815.13755-2-leo.yan@linaro.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.09.2020 14:17, Andy Shevchenko пишет:
-> On Thu, Sep 3, 2020 at 3:54 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> The driver's probe function code is difficult to read and follow. This
->> patch reorders code of the probe function, forming logical groups that are
->> easy to work with. The clock and hardware initializations are factored
->> out into separate functions in order to keep code clean and ease error
->> unwinding.
->>
->> Driver now makes use of devm_platform_get_and_ioremap_resource() and
->> platform_get_irq() which are replacing boilerplate parts of the code.
->>
->> The dev_err_probe() is now used for reset control retrieval because reset
->> is now requested before clocks, and thus, BPMP driver that provides reset
->> controls for newer SoCs may cause the probe defer.
+On Tue, Sep 01, 2020 at 09:38:02AM +0100, Leo Yan wrote:
+> Perf tool searches memory event name under the folder
+> '/sys/devices/cpu/events/', this leads to the limitation for selection
+> memory profiling event which must be under this folder.  Thus it's
+> impossible to use any other event as memory event which is not under
+> this specific folder, e.g. Arm SPE hardware event is not located in
+> '/sys/devices/cpu/events/' so it cannot be enabled for memory profiling.
 > 
->> The error message of devm_request_irq() is removed because this function
->> takes care of printing the message by itself.
+> This patch changes to search folder from '/sys/devices/cpu/events/' to
+> '/sys/devices', so it give flexibility to find events which can be used
+> for memory profiling.
 > 
-> I see no evidence of this.
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
-Good catch! I confused it with the platform_get_irq() which prints the
-message! I'll correct it in v4, thanks!
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Anyways, the message of devm_request_irq() needs a correction since it
-prints the number of vIRQ instead of the error code.
+thanks,
+jirka
 
-> ...
+> ---
+>  tools/perf/util/mem-events.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
->> +       of_property_read_u32(np, "clock-frequency", &bus_clk_rate);
->> +       i2c_dev->bus_clk_rate = bus_clk_rate;
+> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+> index ea0af0bc4314..35c8d175a9d2 100644
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -18,8 +18,8 @@ unsigned int perf_mem_events__loads_ldlat = 30;
+>  #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
+>  
+>  struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
+> -	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"mem-loads"),
+> -	E("ldlat-stores",	"cpu/mem-stores/P",		"mem-stores"),
+> +	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"cpu/events/mem-loads"),
+> +	E("ldlat-stores",	"cpu/mem-stores/P",		"cpu/events/mem-stores"),
+>  };
+>  #undef E
+>  
+> @@ -93,7 +93,7 @@ int perf_mem_events__init(void)
+>  		struct perf_mem_event *e = &perf_mem_events[j];
+>  		struct stat st;
+>  
+> -		scnprintf(path, PATH_MAX, "%s/devices/cpu/events/%s",
+> +		scnprintf(path, PATH_MAX, "%s/devices/%s",
+>  			  mnt, e->sysfs_name);
+>  
+>  		if (!stat(path, &st))
+> -- 
+> 2.20.1
 > 
-> Hmm... I dunno if Wolfram is going to implement a special helper
-> exactly for this. I remember we discussed that with him during v5.8
-> (?) times.
 
-I now see that there is a i2c_parse_fw_timings() which parses
-"clock-frequency" and other common properties. I could switch to use
-that helper, but not sure whether it would be really worthwhile because
-only one property is needed to be parsed. I'll consider this change for
-v4, thank you for the suggestion!
-
-> ...
-> 
->> +static int tegra_i2c_init_clocks(struct tegra_i2c_dev *i2c_dev)
-> 
-> Hmm... Don't we have something like devm_clk_bulk_get_all() or so?
-> 
-
-Sounds like a good suggestion! I'll consider it for the v4, thanks!
