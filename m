@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D0B25C57C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8338925C581
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgICPf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbgICPfw (ORCPT
+        id S1728415AbgICPfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:35:55 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58548 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726025AbgICPfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Sep 2020 11:35:52 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F70C061244;
-        Thu,  3 Sep 2020 08:35:52 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id p37so2442019pgl.3;
-        Thu, 03 Sep 2020 08:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dGY7hs5cfgBT9KAfFf+SDGAzVg53J8xbuNflx2RbbMI=;
-        b=tcVvXI2IMkSj2iECOiY04GisiyBFCXXMXcHeXn1F3pDysU8yU5gr1Ozzz5bVnqOXjN
-         Fh8xESkYnfzRQ1hf9bPKhBFJwhOg2M5mgBi03LGHMPMJSHZytHfXPnAONPiaAlK59wCn
-         xuP7SGcvuNS6stZTjXx3VOalCGvDo+/kjjeroCl5YMMB+7wjSQ8eQA311ZYP2NFjPVzx
-         G72qePOjkgsRw6NlTh6RNt+sCy4QqDxxF+4anLPGm+QYQyzYNSs7fOHGk9kHMliZSeGK
-         TkRzBYtAOH0qTiZtpZBpW0TMXwiloDssSAZlbOFiV+/9FkfDIm2Rs8/bfDA7+RDjGqCA
-         qhaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dGY7hs5cfgBT9KAfFf+SDGAzVg53J8xbuNflx2RbbMI=;
-        b=QoHylULY3rVjqsUlJZ9Y0rSpZiudCa8qpFeNJLzcR9gdaTOhimSe5t3jXOAVXqRIWa
-         0P0O3dYurQBrB6butc4WPBsd6JkDjwDwfzzW7gzvv8gD43kNW7K69crajtyaa7ZDGqLE
-         J4CV4RzWcvd9fV7Ym9nAmv6R7UR4SdyZ8LTQGwMZ3M/bE6icn2nghtjSorHR3uX6ngfl
-         50Rt/feggGi4tJxINiCkUHRoG0CsayLTQpZVAQnDi48K2cs4c4TVkSC7/ENy2vLVdQNL
-         Kbtxwujat7jgw514YT2EkVuynTSuXMpDXxNtubV8j1+6xcmSdSykFCr2Q5c2gPBBDxTr
-         5vOw==
-X-Gm-Message-State: AOAM530Opg3/NMN3rzPXoCmN4AWnTnPd1i3TAuuB6jLbokVHncnFrp/s
-        a4fF8X/MYpZlHQRPO5zfcFd+dNJZEIIrfb/kHkKyYOl5lqN+wiw8
-X-Google-Smtp-Source: ABdhPJwDybWElbO0XCzQwfjoJ05bAOdoZDBKiX0vvFFdHObiFFUsMI/h6NPVkUvOpOqeD9PkVhXVneMU3Lhyag5xxjc=
-X-Received: by 2002:a63:c543:: with SMTP id g3mr3490616pgd.203.1599147351884;
- Thu, 03 Sep 2020 08:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599147350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rU2y9GlEoqQBcx+HtwgNNaTpu74bHBMWUNiw/ZwTiPA=;
+        b=gwDJgsjF0w6/z7EY1TvEil2OJ/XYi3M9WV/xLOZODgeJmiCm+DQBdjteDgqbV4RcAVHIiH
+        L0jtl1pI6/RM7jaEFWDQI0deQzJiL/Tc9nBI3yXwoCQu6/RxhAUu02KK8J6rny/KMRlrrT
+        DH5D6om5evZoPEqQjCkgFmCLvYU3pM0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-tQIbLeSwP_eYZZDkq8FQ_A-1; Thu, 03 Sep 2020 11:35:49 -0400
+X-MC-Unique: tQIbLeSwP_eYZZDkq8FQ_A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0659E1005504;
+        Thu,  3 Sep 2020 15:35:48 +0000 (UTC)
+Received: from treble (ovpn-117-249.rdu2.redhat.com [10.10.117.249])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5F8EC39A47;
+        Thu,  3 Sep 2020 15:35:47 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 10:35:45 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Kristen Carlson Accardi <kristen@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH] objtool: support symtab_shndx during dump
+Message-ID: <20200903153545.zy24o7pqfohgoxge@treble>
+References: <20200812175712.9462-1-kristen@linux.intel.com>
 MIME-Version: 1.0
-References: <20200902150442.2779-1-vadym.kochan@plvision.eu>
- <20200902150442.2779-2-vadym.kochan@plvision.eu> <CA+FuTSfMRhEZ5c2CWaN_F3ASDgvV7eQ4q6zVuY-FvgLqsqYecw@mail.gmail.com>
-In-Reply-To: <CA+FuTSfMRhEZ5c2CWaN_F3ASDgvV7eQ4q6zVuY-FvgLqsqYecw@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Sep 2020 18:35:34 +0300
-Message-ID: <CAHp75VcmPnmgxgE+NCTN71Wq17LQjjx8cJOR34AmuLuRFQ4cRg@mail.gmail.com>
-Subject: Re: [PATCH net v6 1/6] net: marvell: prestera: Add driver for
- Prestera family ASIC devices
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mickey Rachamim <mickeyr@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200812175712.9462-1-kristen@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 6:23 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
-> On Wed, Sep 2, 2020 at 5:37 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+On Wed, Aug 12, 2020 at 10:57:11AM -0700, Kristen Carlson Accardi wrote:
+> When getting the symbol index number, make sure to use the
+> extended symbol table information in order to support symbol
+> index's greater than 64K.
 
-...
+"indexes"
 
-> > +static int prestera_is_valid_mac_addr(struct prestera_port *port, u8 *addr)
-> > +{
-> > +       if (!is_valid_ether_addr(addr))
-> > +               return -EADDRNOTAVAIL;
-> > +
-> > +       if (memcmp(port->sw->base_mac, addr, ETH_ALEN - 1))
->
-> Why ETH_ALEN - 1?
+>  			if (GELF_ST_TYPE(sym.st_info) == STT_SECTION) {
+> -				scn = elf_getscn(elf, sym.st_shndx);
+> +				if ((sym.st_shndx > SHN_UNDEF &&
+> +				     sym.st_shndx < SHN_LORESERVE) ||
+> +				    (xsymtab && sym.st_shndx == SHN_XINDEX)) {
+> +					if (sym.st_shndx != SHN_XINDEX)
+> +						shndx = sym.st_shndx;
 
-We even have a lot of helpers specifically for ethernet MACs.
-Starting from [1] till almost the end of the file. Here [2] can be
-used (or its unaligned counterpart).
+The sym.st_shndx checks are redundant, if 'sym.st_shndx == SHN_XINDEX'
+then 'sym.st_shndx != SHN_XINDEX' can't be true.
 
-[1]: https://elixir.bootlin.com/linux/latest/source/include/linux/etherdevice.h#L67
-[2]: https://elixir.bootlin.com/linux/latest/source/include/linux/etherdevice.h#L67
+Actually I think this can be even further simplified to something like
 
-> > +               return -EINVAL;
-> > +
-> > +       return 0;
-> > +}
-
-> > +       memcpy(dev->dev_addr, addr->sa_data, dev->addr_len);
->
-> Is addr_len ever not ETH_ALEN for this device?
-
-And if it is ETH_ALEN, here is [3].
-[3]: https://elixir.bootlin.com/linux/latest/source/include/linux/etherdevice.h#L287
+				if (!shndx)
+					shndx = sym.st_shndx;
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Josh
+
