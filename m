@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D2425BB12
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 08:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA27425BB14
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 08:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgICGcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 02:32:06 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:36254 "EHLO
+        id S1728035AbgICGc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 02:32:27 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:36836 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgICGb5 (ORCPT
+        with ESMTP id S1726855AbgICGc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 02:31:57 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 5FB45B10B2;
-        Thu,  3 Sep 2020 14:31:53 +0800 (CST)
+        Thu, 3 Sep 2020 02:32:26 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id A8F57B10FA;
+        Thu,  3 Sep 2020 14:32:23 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
 X-ANTISPAM-LEVEL: 2
 X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P22906T140609134245632S1599114708716326_;
-        Thu, 03 Sep 2020 14:31:53 +0800 (CST)
+        by smtp.263.net (postfix) whith ESMTP id P11834T140501035108096S1599114741627675_;
+        Thu, 03 Sep 2020 14:32:23 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4436526eb019d00333ac383c5cb01a81>
+X-UNIQUE-TAG: <6e21db5f046edaeddece039ebf2f1f75>
 X-RL-SENDER: zhangqing@rock-chips.com
 X-SENDER: zhangqing@rock-chips.com
 X-LOGIN-NAME: zhangqing@rock-chips.com
@@ -40,9 +40,9 @@ Cc:     mturquette@baylibre.com, sboyd@kernel.org,
         linux-kernel@vger.kernel.org, xxx@rock-chips.com,
         xf@rock-chips.com, huangtao@rock-chips.com,
         kever.yang@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
-Subject: [PATCH v2 4/6] clk: rockchip: Export some clock common APIs for module drivers
-Date:   Thu,  3 Sep 2020 14:31:45 +0800
-Message-Id: <20200903063147.10237-5-zhangqing@rock-chips.com>
+Subject: [PATCH v2 5/6] clk: rockchip: fix the clk config to support module build
+Date:   Thu,  3 Sep 2020 14:32:21 +0800
+Message-Id: <20200903063221.10500-1-zhangqing@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200903063147.10237-1-zhangqing@rock-chips.com>
 References: <20200903063147.10237-1-zhangqing@rock-chips.com>
@@ -51,140 +51,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is used by the Rockchip clk driver, export it to allow that
-driver to be compiled as a module.
+use CONFIG_COMMON_CLK_ROCKCHIP for Rk common clk drivers.
+use CONFIG_CLK_RKXX for Rk soc clk driver.
+Mark configuration to "tristate",
+to support building Rk SoCs clock driver as module.
 
 Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 ---
- drivers/clk/rockchip/clk.c | 52 ++++++++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+ drivers/clk/Kconfig           |  1 +
+ drivers/clk/rockchip/Kconfig  | 78 +++++++++++++++++++++++++++++++++++
+ drivers/clk/rockchip/Makefile | 42 ++++++++++---------
+ 3 files changed, 101 insertions(+), 20 deletions(-)
+ create mode 100644 drivers/clk/rockchip/Kconfig
 
-diff --git a/drivers/clk/rockchip/clk.c b/drivers/clk/rockchip/clk.c
-index b51f320e5733..b7664224e64a 100644
---- a/drivers/clk/rockchip/clk.c
-+++ b/drivers/clk/rockchip/clk.c
-@@ -359,8 +359,9 @@ static struct clk *rockchip_clk_register_factor_branch(const char *name,
- 	return hw->clk;
- }
- 
--struct rockchip_clk_provider * __init rockchip_clk_init(struct device_node *np,
--			void __iomem *base, unsigned long nr_clks)
-+struct rockchip_clk_provider *rockchip_clk_init(struct device_node *np,
-+						void __iomem *base,
-+						unsigned long nr_clks)
- {
- 	struct rockchip_clk_provider *ctx;
- 	struct clk **clk_table;
-@@ -392,14 +393,16 @@ struct rockchip_clk_provider * __init rockchip_clk_init(struct device_node *np,
- 	kfree(ctx);
- 	return ERR_PTR(-ENOMEM);
- }
-+EXPORT_SYMBOL(rockchip_clk_init);
- 
--void __init rockchip_clk_of_add_provider(struct device_node *np,
--				struct rockchip_clk_provider *ctx)
-+void rockchip_clk_of_add_provider(struct device_node *np,
-+				  struct rockchip_clk_provider *ctx)
- {
- 	if (of_clk_add_provider(np, of_clk_src_onecell_get,
- 				&ctx->clk_data))
- 		pr_err("%s: could not register clk provider\n", __func__);
- }
-+EXPORT_SYMBOL(rockchip_clk_of_add_provider);
- 
- void rockchip_clk_add_lookup(struct rockchip_clk_provider *ctx,
- 			     struct clk *clk, unsigned int id)
-@@ -407,8 +410,9 @@ void rockchip_clk_add_lookup(struct rockchip_clk_provider *ctx,
- 	if (ctx->clk_data.clks && id)
- 		ctx->clk_data.clks[id] = clk;
- }
-+EXPORT_SYMBOL(rockchip_clk_add_lookup);
- 
--void __init rockchip_clk_register_plls(struct rockchip_clk_provider *ctx,
-+void rockchip_clk_register_plls(struct rockchip_clk_provider *ctx,
- 				struct rockchip_pll_clock *list,
- 				unsigned int nr_pll, int grf_lock_offset)
- {
-@@ -431,11 +435,11 @@ void __init rockchip_clk_register_plls(struct rockchip_clk_provider *ctx,
- 		rockchip_clk_add_lookup(ctx, clk, list->id);
- 	}
- }
-+EXPORT_SYMBOL(rockchip_clk_register_plls);
- 
--void __init rockchip_clk_register_branches(
--				      struct rockchip_clk_provider *ctx,
--				      struct rockchip_clk_branch *list,
--				      unsigned int nr_clk)
-+void rockchip_clk_register_branches(struct rockchip_clk_provider *ctx,
-+				    struct rockchip_clk_branch *list,
-+				    unsigned int nr_clk)
- {
- 	struct clk *clk = NULL;
- 	unsigned int idx;
-@@ -564,14 +568,15 @@ void __init rockchip_clk_register_branches(
- 		rockchip_clk_add_lookup(ctx, clk, list->id);
- 	}
- }
--
--void __init rockchip_clk_register_armclk(struct rockchip_clk_provider *ctx,
--			unsigned int lookup_id,
--			const char *name, const char *const *parent_names,
--			u8 num_parents,
--			const struct rockchip_cpuclk_reg_data *reg_data,
--			const struct rockchip_cpuclk_rate_table *rates,
--			int nrates)
-+EXPORT_SYMBOL(rockchip_clk_register_branches);
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index 4026fac9fac3..b41aaed9bd51 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -373,6 +373,7 @@ source "drivers/clk/meson/Kconfig"
+ source "drivers/clk/mvebu/Kconfig"
+ source "drivers/clk/qcom/Kconfig"
+ source "drivers/clk/renesas/Kconfig"
++source "drivers/clk/rockchip/Kconfig"
+ source "drivers/clk/samsung/Kconfig"
+ source "drivers/clk/sifive/Kconfig"
+ source "drivers/clk/sprd/Kconfig"
+diff --git a/drivers/clk/rockchip/Kconfig b/drivers/clk/rockchip/Kconfig
+new file mode 100644
+index 000000000000..53a44396bc35
+--- /dev/null
++++ b/drivers/clk/rockchip/Kconfig
+@@ -0,0 +1,78 @@
++# SPDX-License-Identifier: GPL-2.0
++# common clock support for ROCKCHIP SoC family.
 +
-+void rockchip_clk_register_armclk(struct rockchip_clk_provider *ctx,
-+				  unsigned int lookup_id,
-+				  const char *name, const char *const *parent_names,
-+				  u8 num_parents,
-+				  const struct rockchip_cpuclk_reg_data *reg_data,
-+				  const struct rockchip_cpuclk_rate_table *rates,
-+				  int nrates)
- {
- 	struct clk *clk;
++config COMMON_CLK_ROCKCHIP
++	tristate "Rockchip clock controller common support"
++	depends on ARCH_ROCKCHIP
++	default ARCH_ROCKCHIP
++	help
++	  Say y here to enable common clock controller.
++
++if COMMON_CLK_ROCKCHIP
++config CLK_PX30
++	tristate "Rockchip Px30 clock controller support"
++	default y
++	help
++	  Build the driver for Px30 Clock Driver.
++
++config CLK_RV110X
++	tristate "Rockchip Rv110x clock controller support"
++	default y
++	help
++	  Build the driver for Rv110x Clock Driver.
++
++config CLK_RK3036
++	tristate "Rockchip Rk3036 clock controller support"
++	default y
++	help
++	  Build the driver for Rk3036 Clock Driver.
++
++config CLK_RK312X
++	tristate "Rockchip Rk312x clock controller support"
++	default y
++	help
++	  Build the driver for Rk312x Clock Driver.
++
++config CLK_RK3188
++	tristate "Rockchip Rk3188 clock controller support"
++	default y
++	help
++	  Build the driver for Rk3188 Clock Driver.
++
++config CLK_RK322X
++	tristate "Rockchip Rk322x clock controller support"
++	default y
++	help
++	  Build the driver for Rk322x Clock Driver.
++
++config CLK_RK3288
++	tristate "Rockchip Rk3288 clock controller support"
++	depends on ARM
++	default y
++	help
++	  Build the driver for Rk3288 Clock Driver.
++
++config CLK_RK3308
++	tristate "Rockchip Rk3308 clock controller support"
++	default y
++	help
++	  Build the driver for Rk3308 Clock Driver.
++
++config CLK_RK3328
++	tristate "Rockchip Rk3328 clock controller support"
++	default y
++	help
++	  Build the driver for Rk3328 Clock Driver.
++
++config CLK_RK3368
++	tristate "Rockchip Rk3368 clock controller support"
++	default y
++	help
++	  Build the driver for Rk3368 Clock Driver.
++
++config CLK_RK3399
++	tristate "Rockchip Rk3399 clock controller support"
++	default y
++	help
++	  Build the driver for Rk3399 Clock Driver.
++endif
+diff --git a/drivers/clk/rockchip/Makefile b/drivers/clk/rockchip/Makefile
+index 7c5b5813a87c..a99e4d9bbae1 100644
+--- a/drivers/clk/rockchip/Makefile
++++ b/drivers/clk/rockchip/Makefile
+@@ -3,24 +3,26 @@
+ # Rockchip Clock specific Makefile
+ #
  
-@@ -586,9 +591,10 @@ void __init rockchip_clk_register_armclk(struct rockchip_clk_provider *ctx,
+-obj-y	+= clk.o
+-obj-y	+= clk-pll.o
+-obj-y	+= clk-cpu.o
+-obj-y	+= clk-half-divider.o
+-obj-y	+= clk-inverter.o
+-obj-y	+= clk-mmc-phase.o
+-obj-y	+= clk-muxgrf.o
+-obj-y	+= clk-ddr.o
+-obj-$(CONFIG_RESET_CONTROLLER)	+= softrst.o
++obj-$(CONFIG_COMMON_CLK_ROCKCHIP) += clk-rockchip.o
  
- 	rockchip_clk_add_lookup(ctx, clk, lookup_id);
- }
-+EXPORT_SYMBOL(rockchip_clk_register_armclk);
- 
--void __init rockchip_clk_protect_critical(const char *const clocks[],
--					  int nclocks)
-+void rockchip_clk_protect_critical(const char *const clocks[],
-+				   int nclocks)
- {
- 	int i;
- 
-@@ -600,6 +606,7 @@ void __init rockchip_clk_protect_critical(const char *const clocks[],
- 			clk_prepare_enable(clk);
- 	}
- }
-+EXPORT_SYMBOL(rockchip_clk_protect_critical);
- 
- static void __iomem *rst_base;
- static unsigned int reg_restart;
-@@ -619,10 +626,10 @@ static struct notifier_block rockchip_restart_handler = {
- 	.priority = 128,
- };
- 
--void __init
-+void
- rockchip_register_restart_notifier(struct rockchip_clk_provider *ctx,
--					       unsigned int reg,
--					       void (*cb)(void))
-+				   unsigned int reg,
-+				   void (*cb)(void))
- {
- 	int ret;
- 
-@@ -634,3 +641,4 @@ rockchip_register_restart_notifier(struct rockchip_clk_provider *ctx,
- 		pr_err("%s: cannot register restart handler, %d\n",
- 		       __func__, ret);
- }
-+EXPORT_SYMBOL(rockchip_register_restart_notifier);
+-obj-y	+= clk-px30.o
+-obj-y	+= clk-rv1108.o
+-obj-y	+= clk-rk3036.o
+-obj-y	+= clk-rk3128.o
+-obj-y	+= clk-rk3188.o
+-obj-y	+= clk-rk3228.o
+-obj-y	+= clk-rk3288.o
+-obj-y	+= clk-rk3308.o
+-obj-y	+= clk-rk3328.o
+-obj-y	+= clk-rk3368.o
+-obj-y	+= clk-rk3399.o
++clk-rockchip-y += clk.o
++clk-rockchip-y += clk-pll.o
++clk-rockchip-y += clk-cpu.o
++clk-rockchip-y += clk-half-divider.o
++clk-rockchip-y += clk-inverter.o
++clk-rockchip-y += clk-mmc-phase.o
++clk-rockchip-y += clk-muxgrf.o
++clk-rockchip-y += clk-ddr.o
++clk-rockchip-$(CONFIG_RESET_CONTROLLER) += softrst.o
++
++obj-$(CONFIG_CLK_PX30)          += clk-px30.o
++obj-$(CONFIG_CLK_RV110X)        += clk-rv1108.o
++obj-$(CONFIG_CLK_RK3036)        += clk-rk3036.o
++obj-$(CONFIG_CLK_RK312X)        += clk-rk3128.o
++obj-$(CONFIG_CLK_RK3188)        += clk-rk3188.o
++obj-$(CONFIG_CLK_RK322X)        += clk-rk3228.o
++obj-$(CONFIG_CLK_RK3288)        += clk-rk3288.o
++obj-$(CONFIG_CLK_RK3308)        += clk-rk3308.o
++obj-$(CONFIG_CLK_RK3328)        += clk-rk3328.o
++obj-$(CONFIG_CLK_RK3368)        += clk-rk3368.o
++obj-$(CONFIG_CLK_RK3399)        += clk-rk3399.o
 -- 
 2.17.1
 
