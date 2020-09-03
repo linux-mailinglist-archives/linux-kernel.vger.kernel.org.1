@@ -2,166 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 701A725C117
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1032425C130
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbgICMg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:36:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:48950 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728565AbgICM2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:28:40 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 7C657E04B63EC1F09FCD;
-        Thu,  3 Sep 2020 20:28:32 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.253) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Sep 2020 20:28:24 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 3/3] ARM: dts: add SD5203 dts
-Date:   Thu, 3 Sep 2020 20:27:34 +0800
-Message-ID: <20200903122734.2369-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20200903122734.2369-1-thunder.leizhen@huawei.com>
-References: <20200903122734.2369-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
+        id S1728911AbgICMmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:42:17 -0400
+Received: from mga17.intel.com ([192.55.52.151]:55278 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728851AbgICMav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:30:51 -0400
+IronPort-SDR: Ofz3ZdC5LRUtYMC+m/gUIbBcBgP130Mm7euUe4zWeeMCEqtDeUEYNFZzQ0zcXgvTd8FnfL6aPQ
+ PqZfhiUm7g7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="137614624"
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="137614624"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 05:30:01 -0700
+IronPort-SDR: nojt4O6m0aBQvrt7t33ViU653ibmOtA3Rp2ONtuAC3oM1tAzDRPPqa9U/nBORtyWAj6gjIk73H
+ Y+H0HI/0iqLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
+   d="scan'208";a="315456912"
+Received: from slisovsk-lenovo-ideapad-720s-13ikb.fi.intel.com (HELO ahunter-Desktop.fi.intel.com) ([10.237.72.190])
+  by orsmga002.jf.intel.com with ESMTP; 03 Sep 2020 05:29:59 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf tools: Consolidate close_control_option()'s into one function
+Date:   Thu,  3 Sep 2020 15:29:37 +0300
+Message-Id: <20200903122937.25691-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <e4d294a9-9d97-2cb0-c43d-926fbf90b819@intel.com>
+References: <e4d294a9-9d97-2cb0-c43d-926fbf90b819@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+Consolidate control option fifo closing into one function.
 
-Add sd5203.dts for Hisilicon SD5203 SoC platform.
-
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- arch/arm/boot/dts/Makefile   |  2 +
- arch/arm/boot/dts/sd5203.dts | 90 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 92 insertions(+)
- create mode 100644 arch/arm/boot/dts/sd5203.dts
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4572db3fa5ae..1d1262df5c55 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -357,6 +357,8 @@ dtb-$(CONFIG_ARCH_MPS2) += \
- 	mps2-an399.dtb
- dtb-$(CONFIG_ARCH_MOXART) += \
- 	moxart-uc7112lx.dtb
-+dtb-$(CONFIG_ARCH_SD5203) += \
-+	sd5203.dtb
- dtb-$(CONFIG_SOC_IMX1) += \
- 	imx1-ads.dtb \
- 	imx1-apf9328.dtb
-diff --git a/arch/arm/boot/dts/sd5203.dts b/arch/arm/boot/dts/sd5203.dts
-new file mode 100644
-index 000000000000..99da46072f72
---- /dev/null
-+++ b/arch/arm/boot/dts/sd5203.dts
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2020 Hisilicon Limited.
-+ *
-+ * DTS file for Hisilicon SD5203 Board
-+ */
+
+This patch is on top of patch:
+"perf tools: Add FIFO file names as alternative options to --control"
+
+
+ tools/perf/builtin-record.c | 12 +-----------
+ tools/perf/builtin-stat.c   | 12 +-----------
+ tools/perf/util/evlist.c    | 10 ++++++++++
+ tools/perf/util/evlist.h    |  1 +
+ 4 files changed, 13 insertions(+), 22 deletions(-)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 476b34ff3152..9db3901e6561 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2253,16 +2253,6 @@ static int parse_control_option(const struct option *opt,
+ 	return evlist__parse_control(str, &opts->ctl_fd, &opts->ctl_fd_ack, &opts->ctl_fd_close);
+ }
+ 
+-static void close_control_option(struct record_opts *opts)
+-{
+-	if (opts->ctl_fd_close) {
+-		opts->ctl_fd_close = false;
+-		close(opts->ctl_fd);
+-		if (opts->ctl_fd_ack >= 0)
+-			close(opts->ctl_fd_ack);
+-	}
+-}
+-
+ static void switch_output_size_warn(struct record *rec)
+ {
+ 	u64 wakeup_size = evlist__mmap_size(rec->opts.mmap_pages);
+@@ -2849,7 +2839,7 @@ int cmd_record(int argc, const char **argv)
+ 	symbol__exit();
+ 	auxtrace_record__free(rec->itr);
+ out_opts:
+-	close_control_option(&rec->opts);
++	evlist__close_control(rec->opts.ctl_fd, rec->opts.ctl_fd_ack, &rec->opts.ctl_fd_close);
+ 	return err;
+ }
+ 
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 21424ed0734b..68d4bdf15635 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1051,16 +1051,6 @@ static int parse_control_option(const struct option *opt,
+ 	return evlist__parse_control(str, &config->ctl_fd, &config->ctl_fd_ack, &config->ctl_fd_close);
+ }
+ 
+-static void close_control_option(struct perf_stat_config *config)
+-{
+-	if (config->ctl_fd_close) {
+-		config->ctl_fd_close = false;
+-		close(config->ctl_fd);
+-		if (config->ctl_fd_ack >= 0)
+-			close(config->ctl_fd_ack);
+-	}
+-}
+-
+ static struct option stat_options[] = {
+ 	OPT_BOOLEAN('T', "transaction", &transaction_run,
+ 		    "hardware transaction statistics"),
+@@ -2408,7 +2398,7 @@ int cmd_stat(int argc, const char **argv)
+ 
+ 	metricgroup__rblist_exit(&stat_config.metric_events);
+ 	runtime_stat_delete(&stat_config);
+-	close_control_option(&stat_config);
++	evlist__close_control(stat_config.ctl_fd, stat_config.ctl_fd_ack, &stat_config.ctl_fd_close);
+ 
+ 	return status;
+ }
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index e72ff7e78dec..ee7b576d3b12 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1802,6 +1802,16 @@ int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *c
+ 	return 0;
+ }
+ 
++void evlist__close_control(int ctl_fd, int ctl_fd_ack, bool *ctl_fd_close)
++{
++	if (*ctl_fd_close) {
++		*ctl_fd_close = false;
++		close(ctl_fd);
++		if (ctl_fd_ack >= 0)
++			close(ctl_fd_ack);
++	}
++}
 +
-+/dts-v1/;
-+
-+/ {
-+	model = "Hisilicon SD5203";
-+	compatible = "hisilicon,sd5203";
-+	interrupt-parent = <&vic>;
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+
-+	chosen {
-+		bootargs="console=ttyS0,9600 earlycon=uart8250,mmio32,0x1600d000";
-+	};
-+
-+	aliases {
-+		serial0 = &uart0;
-+	};
-+
-+	cpu {
-+		compatible = "arm,arm926ej-s";
-+		device_type = "cpu";
-+	};
-+
-+	memory@30000000 {
-+		device_type = "memory";
-+		reg = <0x30000000 0x8000000>;
-+	};
-+
-+	soc {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "simple-bus";
-+		ranges;
-+
-+		vic: interrupt-controller@10130000 {
-+			compatible = "hisilicon,sd5203-vic";
-+			reg = <0x10130000 0x1000>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+		};
-+
-+		refclk125mhz: refclk125mhz {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <125000000>;
-+		};
-+
-+		timer0: timer@16002000 {
-+			compatible = "arm,sp804", "arm,primecell";
-+			reg = <0x16002000 0x1000>;
-+			interrupts = <4>;
-+			clocks = <&refclk125mhz>;
-+			clock-names = "apb_pclk";
-+		};
-+
-+		timer1: timer@16003000 {
-+			compatible = "arm,sp804", "arm,primecell";
-+			reg = <0x16003000 0x1000>;
-+			interrupts = <5>;
-+			clocks = <&refclk125mhz>;
-+			clock-names = "apb_pclk";
-+		};
-+
-+		uart0: serial@1600D000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x1600D000 0x1000>;
-+			bus_id = "uart0";
-+			clocks = <&refclk125mhz>;
-+			clock-names = "apb_pclk";
-+			reg-shift = <2>;
-+			interrupts = <17>;
-+		};
-+
-+		uart1: serial@1600C000 {
-+			compatible = "snps,dw-apb-uart";
-+			reg = <0x1600C000 0x1000>;
-+			clocks = <&refclk125mhz>;
-+			clock-names = "apb_pclk";
-+			reg-shift = <2>;
-+			interrupts = <16>;
-+			status = "disabled";
-+		};
-+	};
-+};
+ int evlist__initialize_ctlfd(struct evlist *evlist, int fd, int ack)
+ {
+ 	if (fd == -1) {
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index 91d1da6e1fe3..bc38a53f6a1a 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -376,6 +376,7 @@ enum evlist_ctl_cmd {
+ };
+ 
+ int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
++void evlist__close_control(int ctl_fd, int ctl_fd_ack, bool *ctl_fd_close);
+ int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+ int evlist__finalize_ctlfd(struct evlist *evlist);
+ bool evlist__ctlfd_initialized(struct evlist *evlist);
 -- 
-2.26.0.106.g9fadedd
-
+2.17.1
 
