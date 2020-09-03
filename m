@@ -2,182 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0456925BC5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6808725BCCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728832AbgICIJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:09:44 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:50677 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728417AbgICICf (ORCPT
+        id S1728278AbgICIBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgICIBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:02:35 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id BC219C26;
-        Thu,  3 Sep 2020 04:02:33 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=Qy1bXI9WTAVPe
-        UBYzEAgOTUAeaY+jJnvj8XtlP1MKN4=; b=mu1Rj9OJ3b4zp1ORZwi6K3l8zBHfT
-        0uU5/mSaZr/7pz0w70QPECMA3fuOuZQ8jQstMDthohnsfEg1feNcQa4lklXGhpa+
-        uMdDcQAIcRXktyNQ+5N3eVb1hcLEC5aqQlcXVulaARpD3yzysNT8YdG6Ck89Ynl5
-        c05V+ppWOCyWcfb8aBmChnZpsk03dFngb2wGKGJ7RdLLs4PgY6GjThFxtvT3ZCc4
-        sg+4JZrI1VaKbvsJfxPZYC/GBqZAUJaErW79RKfgEI9Zv3/F6IxRM1NGpya2UPb8
-        IrZSwrHUbaaKyRYaTyEmRQoanKi8qUwoM3WxQGU8mCrcV4qPLJvCJjgIw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=Qy1bXI9WTAVPeUBYzEAgOTUAeaY+jJnvj8XtlP1MKN4=; b=IZZlT9wT
-        BosAMVq1Tnj9lvZa+czWhjv6ER057F6n1FYvOccdj62V/6vHgngHBVRO7WjkFOT7
-        5ZlF3BSd8+44qjS861ctnZIpbmL8gr8T2CU80vmA74PYoWY7CTXwiMstHEpy34hW
-        D51D+ub4T/67s9oFudN6cf/DCJ6rb2akiYUTr86JvghkDLjw7D0+72HMIu/28DQC
-        r8pqep1fOyh4mky39vW9Gyo6iG/M+Ef787QZCJTlCuH/YSxVgBY5sXwkcJqqVuub
-        uBvNVgtECeOHsxB8FpUZngnDVUoUNtl+QyS429fHBHR0LMSj4u7qsgghsCDsGQSd
-        1b5uaT1/DX+6Nw==
-X-ME-Sender: <xms:GaNQXwyBeyG_Fz5fFMLtKCAiwoeeM795qq8HmAkVsQYX_eUMfL4aHA>
-    <xme:GaNQX0TWjN7bA8EYxMbO7j3z_DRXwuF2qYAzan9qOhK5nFyxZKjC5Uk6ZZkXygoJp
-    zukweIswYNSYXyv42U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
-    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvje
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:GaNQXyWriMABSsnYnQf3hqnQfc80Z_PaQgl3FG_eGRv-XieB15fIkg>
-    <xmx:GaNQX-iI8-Tk_2gSg2W81WIUU5hx__G7mRrk5FWJp5aRl8tl9l4EPw>
-    <xmx:GaNQXyB_1eoRjoblp6J5VkmUd2e_fpKgba-ct6j1Q0XlCTYIZnc0Sw>
-    <xmx:GaNQXzKw28VygCfI4-2acOqxbNd_zSAV8vG7lr-Hl3kJXORVgpnHyx-IRKA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C0D483280065;
-        Thu,  3 Sep 2020 04:02:32 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH v5 28/80] drm/vc4: encoder: Add finer-grained encoder callbacks
+        Thu, 3 Sep 2020 04:01:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2A3C061244;
+        Thu,  3 Sep 2020 01:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=cU305cxFBo6tm5/dcumAYM77XH5iQN9l01UIc+MQ8ms=; b=wWWW6aYY0aagDmpZ1bPiSvTpQw
+        hJm4tzGwj6/QUrIm6ZDBPRuSbs+oSQf3GZeEe/T3oMzvl2i2cvcS8HU0gIeJExqwloJMuvqD+tyUm
+        /5CWj/mQRXnLWL5bbRHRR7Gi9/gFtwkcOHZ3GHFxXuEpkeqayyIaBuePt7xW9LIgNzgw5Nins47i/
+        BsLowowCTOTKIIDe5AHHnQPXyuGTLG+TkeO/7krX6/GSvGxLHKw2GijdhXLkTHKMxfpZWQrLqDvzM
+        osFtIVQYGnxEdZK6JbWvEPOOyuMeoSfkEwcWm+DIPXHs7xcLJi5qnAJIEjerenE5BSTQzTmGTqMiy
+        bNvKvSow==;
+Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDkBL-0006Zq-V2; Thu, 03 Sep 2020 08:01:20 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: simplify gendisk lookup and remove struct block_device aliases v3
 Date:   Thu,  3 Sep 2020 10:01:00 +0200
-Message-Id: <1dd78efe8f29add73c97d0148cfd4ec8e34aaf22.1599120059.git-series.maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+Message-Id: <20200903080119.441674-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the BCM2711, the setup of the HVS, pixelvalve and HDMI controller
-requires very precise ordering and timing that the regular atomic callbacks
-don't provide. Let's add new callbacks on top of the regular ones to be
-able to split the configuration as needed.
+Hi all,
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/gpu/drm/vc4/vc4_crtc.c | 19 +++++++++++++++++++
- drivers/gpu/drm/vc4/vc4_drv.h  |  7 +++++++
- 2 files changed, 26 insertions(+)
+this series removes the annoying struct block_device aliases, which can
+happen for a bunch of old floppy drivers (and z2ram).  In that case
+multiple struct block device instances for different dev_t's can point
+to the same gendisk, without being partitions.  The cause for that
+is the probe/get callback registered through blk_register_regions.
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index b7b0e19e2fe1..d0b326e1df0a 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -389,6 +389,8 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
- {
- 	struct drm_device *dev = crtc->dev;
- 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
-+	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
-+	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
- 	int ret;
- 
- 	require_hvs_enabled(dev);
-@@ -401,10 +403,16 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
- 	ret = wait_for(!(CRTC_READ(PV_V_CONTROL) & PV_VCONTROL_VIDEN), 1);
- 	WARN_ONCE(ret, "Timeout waiting for !PV_VCONTROL_VIDEN\n");
- 
-+	if (vc4_encoder->post_crtc_disable)
-+		vc4_encoder->post_crtc_disable(encoder);
-+
- 	CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) & ~PV_CONTROL_EN);
- 
- 	vc4_hvs_atomic_disable(crtc, old_state);
- 
-+	if (vc4_encoder->post_crtc_powerdown)
-+		vc4_encoder->post_crtc_powerdown(encoder);
-+
- 	/*
- 	 * Make sure we issue a vblank event after disabling the CRTC if
- 	 * someone was waiting it.
-@@ -424,6 +432,8 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
- {
- 	struct drm_device *dev = crtc->dev;
- 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
-+	struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc);
-+	struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
- 
- 	require_hvs_enabled(dev);
- 
-@@ -434,15 +444,24 @@ static void vc4_crtc_atomic_enable(struct drm_crtc *crtc,
- 
- 	vc4_hvs_atomic_enable(crtc, old_state);
- 
-+	if (vc4_encoder->pre_crtc_configure)
-+		vc4_encoder->pre_crtc_configure(encoder);
-+
- 	vc4_crtc_config_pv(crtc);
- 
- 	CRTC_WRITE(PV_CONTROL, CRTC_READ(PV_CONTROL) | PV_CONTROL_EN);
- 
-+	if (vc4_encoder->pre_crtc_enable)
-+		vc4_encoder->pre_crtc_enable(encoder);
-+
- 	/* When feeding the transposer block the pixelvalve is unneeded and
- 	 * should not be enabled.
- 	 */
- 	CRTC_WRITE(PV_V_CONTROL,
- 		   CRTC_READ(PV_V_CONTROL) | PV_VCONTROL_VIDEN);
-+
-+	if (vc4_encoder->post_crtc_enable)
-+		vc4_encoder->post_crtc_enable(encoder);
- }
- 
- static enum drm_mode_status vc4_crtc_mode_valid(struct drm_crtc *crtc,
-diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
-index dfcc684f5d28..251fcc35530c 100644
---- a/drivers/gpu/drm/vc4/vc4_drv.h
-+++ b/drivers/gpu/drm/vc4/vc4_drv.h
-@@ -439,6 +439,13 @@ struct vc4_encoder {
- 	struct drm_encoder base;
- 	enum vc4_encoder_type type;
- 	u32 clock_select;
-+
-+	void (*pre_crtc_configure)(struct drm_encoder *encoder);
-+	void (*pre_crtc_enable)(struct drm_encoder *encoder);
-+	void (*post_crtc_enable)(struct drm_encoder *encoder);
-+
-+	void (*post_crtc_disable)(struct drm_encoder *encoder);
-+	void (*post_crtc_powerdown)(struct drm_encoder *encoder);
- };
- 
- static inline struct vc4_encoder *
--- 
-git-series 0.9.1
+This series removes blk_register_region entirely, splitting it it into
+a simple xarray lookup of registered gendisks, and a probe callback
+stored in the major_names array that can be used for modprobe overrides
+or creating devices on demands when no gendisk is found.  The old
+remapping is gone entirely, and instead the 4 remaining drivers just
+register a gendisk for each operating mode.  In case of the two drivers
+that have lots of aliases that is done on-demand using the new probe
+callback, while for the other two I simply register all at probe time
+to keep things simple.
+
+Note that the m68k drivers are compile tested only.
+
+Changes since v2:
+ - fix a wrong variable passed to ERR_PTR in the floppy driver
+ - slightly adjust the del_gendisk cleanups to prepare for the next
+   series touching this area
+
+Changes since v1:
+ - add back a missing kobject_put in the cdev code
+ - improve the xarray delete loops
+
+Diffstat:
+ b/block/genhd.c           |  183 +++++++--------
+ b/drivers/base/Makefile   |    2 
+ b/drivers/block/amiflop.c |   98 ++++----
+ b/drivers/block/ataflop.c |  135 +++++++----
+ b/drivers/block/brd.c     |   39 ---
+ b/drivers/block/floppy.c  |  154 ++++++++----
+ b/drivers/block/loop.c    |   30 --
+ b/drivers/block/swim.c    |   17 -
+ b/drivers/block/z2ram.c   |  547 ++++++++++++++++++++++------------------------
+ b/drivers/ide/ide-probe.c |   66 -----
+ b/drivers/ide/ide-tape.c  |    2 
+ b/drivers/md/md.c         |   21 -
+ b/drivers/scsi/sd.c       |   19 -
+ b/fs/char_dev.c           |   94 +++----
+ b/fs/dcache.c             |    1 
+ b/fs/internal.h           |    5 
+ b/include/linux/genhd.h   |   12 -
+ b/include/linux/ide.h     |    3 
+ drivers/base/map.c        |  154 ------------
+ include/linux/kobj_map.h  |   20 -
+ 20 files changed, 686 insertions(+), 916 deletions(-)
