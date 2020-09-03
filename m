@@ -2,58 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE26B25B8AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5798325B8AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgICCQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 22:16:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10805 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726526AbgICCQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 22:16:20 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 089678ABB483EEA723D2;
-        Thu,  3 Sep 2020 10:16:19 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Sep 2020
- 10:16:11 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <krzk@kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] memory: tegra: Delete duplicated argument to '|' in function tegra210_emc_r21021_periodic_compensation
-Date:   Thu, 3 Sep 2020 10:15:42 +0800
-Message-ID: <20200903021542.315195-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S1727877AbgICCRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 22:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgICCRe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 22:17:34 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63503C061244
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 19:17:33 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 67so808611pgd.12
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 19:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IHLgwRN3gkcsqO4620zdyxmJ2uNXW71sGgDdH/6/SQs=;
+        b=laStFcPAe3ZhoOqAQcPEXoO1gMeXCDC8Khu2qeHxqRZQnTkOz+SKjxx1jrDIR70bSH
+         78+Q4QU1NycsWlO00PwGibP+KvZ+KZI9z4ohtnM0Fc/NXszR4PBHvY4LATHc3SKDuHYt
+         jTaj1Rc/4nmzsSJr5Er/ST8YJiQ2yQZ78et6M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IHLgwRN3gkcsqO4620zdyxmJ2uNXW71sGgDdH/6/SQs=;
+        b=JOz7MtCdlMYUI+crx0LYsTxgfYj+OTG11xA5QTD83ZCRA0y+qXiJRl68G7NsL3RftQ
+         2TNcqKdU31gtVIkd7ultNxdzsi+kIGXids/2y08jZ/4wQObXW/90mu8HyMArV6NJBlTr
+         kgYmtR8ahJdmKtffkJ0TJiO/OM1EwfAbiUfX90WKBpQHoYPzPvqEtRi+DLgFy1MM7myN
+         /hRlhxs3jZJs2agc1u5Xelf3aKeaaxHWlA3DUyGM4ouYoBaR1m3POe9KuGf6zfH1/tAd
+         dlxZLRqi36vE5Vf4omBdCVbSskhH0cg1VtSQTDHsBvLFPpkecehFZKLr9qYdELPsDYJg
+         /N4A==
+X-Gm-Message-State: AOAM5309C9ykynio7MkY1QIBrM56jqLcjccdGMD8MAiz0YUjcgm6tUCm
+        BBtjh2L3fKb9eJspj79roq4kKg==
+X-Google-Smtp-Source: ABdhPJwbLYpaRcCjH8tDBeiwJAWeN+DjKOIz/O5l80+MMupLZqwfc1kwR0KcvFc0w+IDpPtNvX8pww==
+X-Received: by 2002:a63:920e:: with SMTP id o14mr803345pgd.367.1599099452818;
+        Wed, 02 Sep 2020 19:17:32 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k35sm638776pgb.39.2020.09.02.19.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Sep 2020 19:17:31 -0700 (PDT)
+Date:   Wed, 2 Sep 2020 19:17:30 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Will Deacon <will@kernel.org>, nadav.amit@gmail.com,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: Re: [PATCH v3] x86/asm: Replace __force_order with memory clobber
+Message-ID: <202009021916.CD41C28A52@keescook>
+References: <20200823212550.3377591-1-nivedita@alum.mit.edu>
+ <20200902232152.3709896-1-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902232152.3709896-1-nivedita@alum.mit.edu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In funtion tegra210_emc_r21021_periodic_compensation when calculate emc_cfg
-EMC_CFG_DRAM_CLKSTOP_PD is duplicated
+On Wed, Sep 02, 2020 at 07:21:52PM -0400, Arvind Sankar wrote:
+> The CRn accessor functions use __force_order as a dummy operand to
+> prevent the compiler from reordering CRn reads/writes with respect to
+> each other.
+> 
+> The fact that the asm is volatile should be enough to prevent this:
+> volatile asm statements should be executed in program order. However GCC
+> 4.9.x and 5.x have a bug that might result in reordering. This was fixed
+> in 8.1, 7.3 and 6.5. Versions prior to these, including 5.x and 4.9.x,
+> may reorder volatile asm statements with respect to each other.
+> 
+> There are some issues with __force_order as implemented:
+> - It is used only as an input operand for the write functions, and hence
+>   doesn't do anything additional to prevent reordering writes.
+> - It allows memory accesses to be cached/reordered across write
+>   functions, but CRn writes affect the semantics of memory accesses, so
+>   this could be dangerous.
+> - __force_order is not actually defined in the kernel proper, but the
+>   LLVM toolchain can in some cases require a definition: LLVM (as well
+>   as GCC 4.9) requires it for PIE code, which is why the compressed
+>   kernel has a definition, but also the clang integrated assembler may
+>   consider the address of __force_order to be significant, resulting in
+>   a reference that requires a definition.
+> 
+> Fix this by:
+> - Using a memory clobber for the write functions to additionally prevent
+>   caching/reordering memory accesses across CRn writes.
+> - Using a dummy input operand with an arbitrary constant address for the
+>   read functions, instead of a global variable. This will prevent reads
+>   from being reordered across writes, while allowing memory loads to be
+>   cached/reordered across CRn reads, which should be safe.
+> 
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- drivers/memory/tegra/tegra210-emc-cc-r21021.c | 1 -
- 1 file changed, 1 deletion(-)
+Seems reasonable to me. As reasonable as compiler bug workarounds
+go, that is. ;)
 
-diff --git a/drivers/memory/tegra/tegra210-emc-cc-r21021.c b/drivers/memory/tegra/tegra210-emc-cc-r21021.c
-index d60bdea3af3f..0ebfa8eccf0c 100644
---- a/drivers/memory/tegra/tegra210-emc-cc-r21021.c
-+++ b/drivers/memory/tegra/tegra210-emc-cc-r21021.c
-@@ -501,7 +501,6 @@ static u32 tegra210_emc_r21021_periodic_compensation(struct tegra210_emc *emc)
- 		emc_cfg_o = emc_readl(emc, EMC_CFG);
- 		emc_cfg = emc_cfg_o & ~(EMC_CFG_DYN_SELF_REF |
- 					EMC_CFG_DRAM_ACPD |
--					EMC_CFG_DRAM_CLKSTOP_PD |
- 					EMC_CFG_DRAM_CLKSTOP_PD);
- 
- 
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.25.4
-
+Kees Cook
