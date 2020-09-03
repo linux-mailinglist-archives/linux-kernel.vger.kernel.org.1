@@ -2,81 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BC025C760
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F7B25C762
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728902AbgICQrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:47:42 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:38691 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728085AbgICQrk (ORCPT
+        id S1728979AbgICQsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:48:02 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:33753 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728085AbgICQsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:47:40 -0400
-Received: by mail-il1-f195.google.com with SMTP id w3so3328486ilh.5;
-        Thu, 03 Sep 2020 09:47:40 -0700 (PDT)
+        Thu, 3 Sep 2020 12:48:02 -0400
+Received: by mail-il1-f196.google.com with SMTP id x2so3361894ilm.0;
+        Thu, 03 Sep 2020 09:48:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=cpkYtO3goB70S5Zk4sLb1vXO3uhYcLt8YvepwZ1oACw=;
-        b=YhOvgh9GUlJ31ev23FwHMOSkG5sMDgKj173r4dK1BpcU7BlAXM9NZQjEUupL/zfgXT
-         Oc0/0NK/6FGUX9Nd/twieRzVjjoMpPREzNLPIZ9cWNXTuozWZJUV7nwE2ZQOxYrD0x2p
-         X8LKdjGtZXV1TgknlrJIsxCCPV9hD5d7VY9eMoSRBSUimVx5KoLerDd+wVvuYRu47XWU
-         dDrBHF+b0R94CROFFPpMItWmI0laIywY/+DkNKC/V91njpa8q+jkcjFWmjXKmGy5E4to
-         4LBwcnbv9ChFR3HS3RpzZTk+79jd1o6X9pXGxhQ5z1ZtK8Lnm3eV/7vkVyJXJQz/FbCq
-         BhFw==
-X-Gm-Message-State: AOAM533KiD/kqumW8kz2uzDZKFrSfty2M9Mg1eHHqp9he0XZFyXQIssA
-        AeqiojjGvR8kywvf7TPRYA==
-X-Google-Smtp-Source: ABdhPJzm0dZgqusi1IwGj/t8TXXA2VCoB4/ojBoVS5J1+GJ8RiWXpDpcvKXVi0SJpK3PWvduyYrVUA==
-X-Received: by 2002:a92:60b:: with SMTP id x11mr3795331ilg.179.1599151659642;
-        Thu, 03 Sep 2020 09:47:39 -0700 (PDT)
+        bh=91c9OrdX8+HmEgzIn/3VaO9IW3UnvjWcIpdy1+QI8PU=;
+        b=ORFpjotoK0d8dzx/vj3r2u0GpazVW7b8mvAV0zrEoODPRq4yMo+in3hGpf9WXi9Zvg
+         NHTiVmR2NHxF7UC4Vcsr1v8lhY8B9UiVJvQ6AGuJzc46knCxsbEjeYxzQsfTgZnmJxXR
+         iF0L7z0T3CgRjRloViP3ZRYX2W8ZpcJlJaebe5wF0Z9jXkRDy+YYH7RebzVcn9D48u6Q
+         AkLsUZyVmn/2pu+nre4nFU7df0B8cs76SE/VaFaejIMr3lsz6rmksB3pn9hHaVIuYSku
+         VThaMdIhsDGoc8h9V6+8uJH9AsVkensetuxqPWTV3grVEJihr4iQfxvzNC7CkpBZWCTN
+         2+UQ==
+X-Gm-Message-State: AOAM531NiOMujvpZ0EbXAHlOh6SUdflv4R6EmNEIBG11R7Q6fOlZOr2j
+        Y5rosCQ9GtKjVxKAIqOnsQ==
+X-Google-Smtp-Source: ABdhPJzu8GKf6yafl/5GKeQPTiAeHvCLs2/CscMiEjp4LSMoVeMlrK0a5PKntlu3sOnYPcZxA1bTGg==
+X-Received: by 2002:a05:6e02:13aa:: with SMTP id h10mr3896481ilo.212.1599151679716;
+        Thu, 03 Sep 2020 09:47:59 -0700 (PDT)
 Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id h15sm1614283ils.74.2020.09.03.09.47.38
+        by smtp.gmail.com with ESMTPSA id y10sm1518577ioy.25.2020.09.03.09.47.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 09:47:39 -0700 (PDT)
-Received: (nullmailer pid 2931399 invoked by uid 1000);
-        Thu, 03 Sep 2020 16:47:38 -0000
-Date:   Thu, 3 Sep 2020 10:47:38 -0600
+        Thu, 03 Sep 2020 09:47:59 -0700 (PDT)
+Received: (nullmailer pid 2931914 invoked by uid 1000);
+        Thu, 03 Sep 2020 16:47:58 -0000
+Date:   Thu, 3 Sep 2020 10:47:58 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        alsa-devel@alsa-project.org, Sangbeom Kim <sbkim73@samsung.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: sound: midas-audio: Correct parsing
- sound-dai phandles
-Message-ID: <20200903164738.GA2929052@bogus>
-References: <20200830112633.6732-1-krzk@kernel.org>
- <159897179515.47719.6003518135515395142.b4-ty@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: gpu: samsung-rotator: Use
+ unevaluatedProperties
+Message-ID: <20200903164758.GA2931633@bogus>
+References: <20200830113002.7080-1-krzk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159897179515.47719.6003518135515395142.b4-ty@kernel.org>
+In-Reply-To: <20200830113002.7080-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 03:50:05PM +0100, Mark Brown wrote:
-> On Sun, 30 Aug 2020 13:26:32 +0200, Krzysztof Kozlowski wrote:
-> > The "sound-dai" property has cells therefore phandle-array should be
-> > used, even if it is just one phandle.  This fixes dtbs_check warnings
-> > like:
-> > 
-> >   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0:1: missing phandle tag in 0
-> >   arch/arm/boot/dts/exynos4412-trats2.dt.yaml: sound: cpu:sound-dai:0: [158, 0] is too long
+On Sun, Aug 30, 2020 at 01:30:02PM +0200, Krzysztof Kozlowski wrote:
+> Additional properties or nodes actually might appear (e.g. power
+> domains) so use unevaluatedProperties to fix dtbs_check warnings like:
 > 
-> Applied to
+>   arch/arm/boot/dts/exynos4210-i9100.dt.yaml: rotator@12810000:
+>     'iommus', 'power-domains' do not match any of the regexes: 'pinctrl-[0-9]+'
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-> 
-> Thanks!
-> 
-> [1/2] ASoC: midas-audio: Correct parsing sound-dai phandles
->       commit: 3e7ba1c0432ef9a792b9c77d36f78037626303b0
-> [2/2] ASoC: odroid: Use unevaluatedProperties
->       commit: a57307ca6b661e16f9435a25f376ac277c3de697
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/gpu/samsung-rotator.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-This one should be reverted/dropped too. Patch 1 is fine.
-
+NAK. See https://lore.kernel.org/r/CAL_JsqKPXJxsHPS34_TCf9bwgKxZNSV4mvQR-WKRnknQVtGGxQ@mail.gmail.com/
