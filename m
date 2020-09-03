@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD3B25C4CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFB225C4CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729194AbgICPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:18:34 -0400
-Received: from crapouillou.net ([89.234.176.41]:51512 "EHLO crapouillou.net"
+        id S1729199AbgICPST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:18:19 -0400
+Received: from crapouillou.net ([89.234.176.41]:51696 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728376AbgICLb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:31:58 -0400
+        id S1728458AbgICLdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:33:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132381; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599132389; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Q++myQyFVGc5viHm1my4fERz4BkgXBYuJlPFvw347zc=;
-        b=jYQYUggTNuQ1S6/3AD+ZmojFJNLvAFPZAu3nlpl+R3Zxjg7o0i+1ZV9A/w9OncyVirf37r
-        RDUjJo7sVHvcVRBsCymTMBSH3cp4BYuaJq2KJjp3ncoaZ+8635HCMWW3Twt/Oy+vizidMX
-        QmnPSvEHoqj0+1aIe8xKa3yGbcwpIp0=
+        bh=MzaZBt+Vyi1bRqVISe2Fhrcj5nalR7mOXK01fT+I730=;
+        b=u8iCRRQvzhTJetNnCDlzS4aOGpt9kMtxOzQtSUhUSS2708Uf/R1hUN9yNoUEzxH9j8Wurs
+        bP70nLXTelzEqs3l15brpmwIMzH8VMQP0sGzQ5B44n0Af2Kziq6zlHcFO9bbroNYRUbjcc
+        aOcSVghkpsh25/9qc43DoY6iNOOh1tM=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Chen <Peter.Chen@nxp.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 07/20] usb/misc: usb3503: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:41 +0200
-Message-Id: <20200903112554.34263-8-paul@crapouillou.net>
+Subject: [PATCH 10/20] usb/musb: da8xx: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:44 +0200
+Message-Id: <20200903112554.34263-11-paul@crapouillou.net>
 In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
 References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -64,85 +64,49 @@ simply be discarded by the compiler.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/usb/misc/usb3503.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ drivers/usb/musb/da8xx.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/misc/usb3503.c b/drivers/usb/misc/usb3503.c
-index 116bd789e568..48099c6bf04c 100644
---- a/drivers/usb/misc/usb3503.c
-+++ b/drivers/usb/misc/usb3503.c
-@@ -322,8 +322,7 @@ static int usb3503_platform_remove(struct platform_device *pdev)
+diff --git a/drivers/usb/musb/da8xx.c b/drivers/usb/musb/da8xx.c
+index 1c023c0091c4..7a13463006e3 100644
+--- a/drivers/usb/musb/da8xx.c
++++ b/drivers/usb/musb/da8xx.c
+@@ -598,8 +598,7 @@ static int da8xx_remove(struct platform_device *pdev)
  	return 0;
  }
  
 -#ifdef CONFIG_PM_SLEEP
--static int usb3503_suspend(struct usb3503 *hub)
-+static int __maybe_unused usb3503_suspend(struct usb3503 *hub)
+-static int da8xx_suspend(struct device *dev)
++static int __maybe_unused da8xx_suspend(struct device *dev)
  {
- 	usb3503_switch_mode(hub, USB3503_MODE_STANDBY);
- 	clk_disable_unprepare(hub->clk);
-@@ -331,7 +330,7 @@ static int usb3503_suspend(struct usb3503 *hub)
+ 	int ret;
+ 	struct da8xx_glue *glue = dev_get_drvdata(dev);
+@@ -612,7 +611,7 @@ static int da8xx_suspend(struct device *dev)
  	return 0;
  }
  
--static int usb3503_resume(struct usb3503 *hub)
-+static int __maybe_unused usb3503_resume(struct usb3503 *hub)
+-static int da8xx_resume(struct device *dev)
++static int __maybe_unused da8xx_resume(struct device *dev)
  {
- 	clk_prepare_enable(hub->clk);
- 	usb3503_switch_mode(hub, hub->mode);
-@@ -339,30 +338,29 @@ static int usb3503_resume(struct usb3503 *hub)
- 	return 0;
- }
- 
--static int usb3503_i2c_suspend(struct device *dev)
-+static int __maybe_unused usb3503_i2c_suspend(struct device *dev)
- {
- 	struct i2c_client *client = to_i2c_client(dev);
- 
- 	return usb3503_suspend(i2c_get_clientdata(client));
- }
- 
--static int usb3503_i2c_resume(struct device *dev)
-+static int __maybe_unused usb3503_i2c_resume(struct device *dev)
- {
- 	struct i2c_client *client = to_i2c_client(dev);
- 
- 	return usb3503_resume(i2c_get_clientdata(client));
- }
- 
--static int usb3503_platform_suspend(struct device *dev)
-+static int __maybe_unused usb3503_platform_suspend(struct device *dev)
- {
- 	return usb3503_suspend(dev_get_drvdata(dev));
- }
- 
--static int usb3503_platform_resume(struct device *dev)
-+static int __maybe_unused usb3503_platform_resume(struct device *dev)
- {
- 	return usb3503_resume(dev_get_drvdata(dev));
+ 	int ret;
+ 	struct da8xx_glue *glue = dev_get_drvdata(dev);
+@@ -622,7 +621,6 @@ static int da8xx_resume(struct device *dev)
+ 		return ret;
+ 	return phy_power_on(glue->phy);
  }
 -#endif
  
- static SIMPLE_DEV_PM_OPS(usb3503_i2c_pm_ops, usb3503_i2c_suspend,
- 		usb3503_i2c_resume);
-@@ -388,7 +386,7 @@ MODULE_DEVICE_TABLE(of, usb3503_of_match);
- static struct i2c_driver usb3503_i2c_driver = {
- 	.driver = {
- 		.name = USB3503_I2C_NAME,
--		.pm = &usb3503_i2c_pm_ops,
-+		.pm = pm_ptr(&usb3503_i2c_pm_ops),
- 		.of_match_table = of_match_ptr(usb3503_of_match),
+ static SIMPLE_DEV_PM_OPS(da8xx_pm_ops, da8xx_suspend, da8xx_resume);
+ 
+@@ -641,7 +639,7 @@ static struct platform_driver da8xx_driver = {
+ 	.remove		= da8xx_remove,
+ 	.driver		= {
+ 		.name	= "musb-da8xx",
+-		.pm = &da8xx_pm_ops,
++		.pm = pm_ptr(&da8xx_pm_ops),
+ 		.of_match_table = of_match_ptr(da8xx_id_table),
  	},
- 	.probe		= usb3503_i2c_probe,
-@@ -400,7 +398,7 @@ static struct platform_driver usb3503_platform_driver = {
- 	.driver = {
- 		.name = USB3503_I2C_NAME,
- 		.of_match_table = of_match_ptr(usb3503_of_match),
--		.pm = &usb3503_platform_pm_ops,
-+		.pm = pm_ptr(&usb3503_platform_pm_ops),
- 	},
- 	.probe		= usb3503_platform_probe,
- 	.remove		= usb3503_platform_remove,
+ };
 -- 
 2.28.0
 
