@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A8A25C481
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684DD25C47E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729443AbgICPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728846AbgICM1b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:27:31 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B4DC06125C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:22:13 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y4so3398526ljk.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AmASOpjxirKUPe5KF2kTy+958y5fGEm2GLzYZrAWmY0=;
-        b=i0y2uYMmTvexrD5BT2Rg+2fR0wxA2Yuw2kq4ZFSIPgBWPk+zTIRox7tLo/V7J1IDcg
-         /zGL+yZo0kczuHH1lpR6RfLpnpsjbK1Xp0ad2DHuWiTiwIFLLDyXSUCe+EHEXlAi3p/e
-         pUr+iDCt5+xuvOEFlzj81oBsxg91JWPrhoQrh/NEf6k/eN5Qg/a80myuftRM/DW9XmNC
-         ipV330QqlNcjkmijfbJW8+o9rHOfLN3FmFatTgkTg9EzG5KQ3wG5MwH0rOaFzRGEbvkH
-         hEhTtGPWREF3ecaEB8e8krjUDxI3vOI+oVG2I+4TqSvovZEv6c27pjXJC4dege2SgzxD
-         u2CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AmASOpjxirKUPe5KF2kTy+958y5fGEm2GLzYZrAWmY0=;
-        b=nPj1BNHWlT8CUAJM3Qp6PWV3XnKmlqTAzpVrUelj3flHnxjmFCjaePxQ1s1ADuJWDu
-         fFoo65qDFis2A681vqQqTdSKmmjrqOQzkmYElsYlx2i0bI6BCCO78xb16qTDT7aDVIxi
-         beJw3WLNB7guyM2tFVy7FlOU6aoaRdoapIwaBfPGI+IaU3534urPHVtoOUumEZ/sgg/4
-         SKUKQNgcE/Oro2elRid5OuPhashxeyfs+JBNq3lOUgsekKGMxwRzuHb8WJ9IIYn8/YyO
-         dwVXWjLpgNf/w5wnMuTIinx/JIJu+WNs/ad6upMbUQF5WhmJsQD5Nun+1TNYO14b0k2P
-         io3g==
-X-Gm-Message-State: AOAM533ZwC/pAI2B9yWYrAywon4My8H0KmsPnU+IK2aG4MMPoyUOVTH8
-        +1s8KDa6GIL42bCuuAEXQa/jr4YVgAbFDyXhEoX8Kw==
-X-Google-Smtp-Source: ABdhPJwQ0KpxtLPZAseSnphNEoFuICKHObdYRxY2PW9uBsaYw3EIqCfxJnx9Lxv1GfE40giqNWLH6sOOChl2QA2RQ2I=
-X-Received: by 2002:a2e:b892:: with SMTP id r18mr1073176ljp.249.1599135731427;
- Thu, 03 Sep 2020 05:22:11 -0700 (PDT)
+        id S1728783AbgICPLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:11:46 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10761 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728794AbgICM3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:29:53 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4FA327C2F37E81201268;
+        Thu,  3 Sep 2020 20:29:43 +0800 (CST)
+Received: from [10.57.101.250] (10.57.101.250) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 3 Sep 2020 20:29:34 +0800
+Subject: Re: [PATCH] PCI: exynos: simplify with PTR_ERR_OR_ZERO
+To:     <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>
+References: <1599123916-65530-1-git-send-email-xuwei5@hisilicon.com>
+CC:     <linuxarm@huawei.com>, <shameerali.kolothum.thodi@huawei.com>,
+        <jonathan.cameron@huawei.com>, <john.garry@huawei.com>,
+        <salil.mehta@huawei.com>, <shiju.jose@huawei.com>,
+        <jinying@hisilicon.com>, <zhangyi.ac@huawei.com>,
+        <liguozhu@hisilicon.com>, <tangkunshan@huawei.com>,
+        <huangdaode@hisilicon.com>, Jingoo Han <jingoohan1@gmail.com>,
+        Rob Herring <robh@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Wei Xu <xuwei5@hisilicon.com>
+Message-ID: <5F50E1AE.2020505@hisilicon.com>
+Date:   Thu, 3 Sep 2020 20:29:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.2.0
 MIME-Version: 1.0
-References: <cover.1598331148.git.joe@perches.com> <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
- <d5ea3bc7-bff2-c702-51ed-cb85767824a7@amd.com>
-In-Reply-To: <d5ea3bc7-bff2-c702-51ed-cb85767824a7@amd.com>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Thu, 3 Sep 2020 17:51:59 +0530
-Message-ID: <CAO_48GGeXrDe9F1S64pf4qeF-2vMMiwOTZXOXDctAdPO5Pn04w@mail.gmail.com>
-Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1599123916-65530-1-git-send-email-xuwei5@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.57.101.250]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Joe,
+Hi All,
 
-On Wed, 26 Aug 2020 at 20:38, Christian K=C3=B6nig <christian.koenig@amd.co=
-m> wrote:
->
-> Am 25.08.20 um 06:56 schrieb Joe Perches:
-> > Use semicolons and braces.
-> >
-> > Signed-off-by: Joe Perches <joe@perches.com>
->
-> Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-FWIW,
-Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
+Sorry for the noise and please ignore it.
+I found these kind of changes have been sent and rejected before.
 
->
-> > ---
-> >   drivers/dma-buf/st-dma-fence.c | 7 +++++--
-> >   1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fe=
-nce.c
-> > index e593064341c8..c8a12d7ad71a 100644
-> > --- a/drivers/dma-buf/st-dma-fence.c
-> > +++ b/drivers/dma-buf/st-dma-fence.c
-> > @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
-> >                       dma_fence_signal(f1);
-> >
-> >               smp_store_mb(cb.seen, false);
-> > -             if (!f2 || dma_fence_add_callback(f2, &cb.cb, simple_call=
-back))
-> > -                     miss++, cb.seen =3D true;
-> > +             if (!f2 ||
-> > +                 dma_fence_add_callback(f2, &cb.cb, simple_callback)) =
-{
-> > +                     miss++;
-> > +                     cb.seen =3D true;
-> > +             }
-> >
-> >               if (!t->before)
-> >                       dma_fence_signal(f1);
->
+Best Regards,
+Wei
+
+On 2020/9/3 17:05, Wei Xu wrote:
+> Use PTR_ERR_OR_ZERO to make the code a little bit simpler.
+> This code was detected with the help of Coccinelle.
+> 
+> Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
+> ---
+>  drivers/pci/controller/dwc/pci-exynos.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
+> index 8d82c43..f59f027 100644
+> --- a/drivers/pci/controller/dwc/pci-exynos.c
+> +++ b/drivers/pci/controller/dwc/pci-exynos.c
+> @@ -90,10 +90,7 @@ static int exynos5440_pcie_get_mem_resources(struct platform_device *pdev,
+>  		return -ENOMEM;
+>  
+>  	ep->mem_res->elbi_base = devm_platform_ioremap_resource(pdev, 0);
+> -	if (IS_ERR(ep->mem_res->elbi_base))
+> -		return PTR_ERR(ep->mem_res->elbi_base);
+> -
+> -	return 0;
+> +	return PTR_ERR_OR_ZERO(ep->mem_res->elbi_base);
+>  }
+>  
+>  static int exynos5440_pcie_get_clk_resources(struct exynos_pcie *ep)
+> 
