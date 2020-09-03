@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9925B25BC84
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF8825BD09
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728820AbgICIJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:09:38 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:37351 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728107AbgICICj (ORCPT
+        id S1729005AbgICIRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbgICIBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:02:39 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id A3266968;
-        Thu,  3 Sep 2020 04:02:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=R8RukDV67kA4S
-        lBsd48ysWMys3SVerSNYQrVkJ5+NyI=; b=IlcQ9sPrKZ9Jj/M/joRcolwfeHayy
-        NWTGYlHWReDgBsTBKP80/adV/t39fAtd5SGhZ4e/xUQQmPukjeWdMvdbmmxnWKEP
-        cPncjxAFy9WKIbQH4nk8Gy1+cRMGOY7uggLmDCLeSPF1oZ5Dc8HX44vOFr2YOYmo
-        4XQ+CIpB/VtBYpJKn2aeqKK8QSmbfopA+NB2+mpUr8yzFK6yXSoRv0CpFtGQjaSM
-        Jp98iwUOa3TMFE5ETyN3Jv3cf5gt23CdiVb8y8g15snLWBweKsa26+TNmNi7RAhw
-        GHNSOi1HgHi1he2TYnmJsaeUx0/A+cFNFfCG0ebEdOaNJBRTZEGxDUBjw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=R8RukDV67kA4SlBsd48ysWMys3SVerSNYQrVkJ5+NyI=; b=tamQUJrm
-        a1BPaCoPR+ALLWUVWpB+ATFU8NacElegFsoKJYy+9XpC7EPL7WTzyaLgfCc1AiLh
-        hYW7036UJkK+DTHeIqnJmTmSV7Gtpqlpkx8dqeH9jS1lvoT8Qj5LEtHSZxU1eDYW
-        wXzC72NxE/yniUEkvNIY5JCYcDi5+bKXwBBZx/B60Z3J4CV0POK3Cel9QidIa1zY
-        7W6ls7Olk2Dr/NBRo+6WVpQ0tC948GAGfAWdpY2pOI6bMpWHncZ9PoomSxzR6qWr
-        l+WISegqYiqWF7DYOC6ILQBew+BvLDzW/pKnAhbo+/cnLqkgMk7PX5izWfLbPYxh
-        1AUpqxLhx9wqlQ==
-X-ME-Sender: <xms:HaNQX9QGhTrK4G9c8Xqj6KoPg2OWY6skUo7ODMeAMVVWWvih2MT94Q>
-    <xme:HaNQX2x8LNoPiuqzQGV-JuPKB7EqDMj2Kgu-GK9fWyGkRkMXw8RdQzJmuzR52yBJt
-    0NaA5STnzmczadqCYQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
-    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvje
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:HaNQXy1aqi9LFayOmZNKVkWvtaM6eYFQAhuOnR4Bp3IcNh7fY6ho6A>
-    <xmx:HaNQX1A_7MRKvxK2P_9vqJBeVCIDhU4FIeeiiTKCYztsDU1CvKmsmQ>
-    <xmx:HaNQX2iZfBMoWZ248RZeY71nPmTx6zSfGqBCnCT-EUuFzc70Sz0wdA>
-    <xmx:HaNQX9oKmLvejdues64l5SNueW0F9cVbehreufwf6Bxsfw7C_CdqqufdGL4>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D7F39306005E;
-        Thu,  3 Sep 2020 04:02:36 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH v5 31/80] drm/vc4: crtc: Clear the PixelValve FIFO during configuration
+        Thu, 3 Sep 2020 04:01:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EB5C061247;
+        Thu,  3 Sep 2020 01:01:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=XgwYo2Sg7gfnERWvC79K4ap0+DYU34E3F9ajl/LvCHY=; b=F820K3wrYlVe1pAOZnsOECbEYY
+        zVNZAQYiFPWwZ7O0vPXhKMaVEIfNpF0zFgmV6+2r+Hg4/4ARN45yTUKNM9sI68M0bXkMFzxMmkBy/
+        FMY+34FwLLkLmdstN37e4NFpsystC8kAfQeOivaOdutbLi0VMa9EIXAuJ9TgVcMDjSqTlGFwzR3IX
+        fC9NvGxc2bG4sKkwo2B48rHoroBjeLPVz7IZ1lLq9nsTckShMQnnY2GYgLuDhtfBKUUJ06MFDBSd2
+        64fZXbhKJZc7vNeDbMRjiFLWUuWlPHoUJJsi5SAtGtb1UMc8pLdM/C8ZtCKmRl1IIChh/4inRVqUp
+        yDMbVSxw==;
+Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDkBQ-0006aB-7k; Thu, 03 Sep 2020 08:01:24 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 03/19] block: cleanup del_gendisk a bit
 Date:   Thu,  3 Sep 2020 10:01:03 +0200
-Message-Id: <ccd6269ba37b2f849ba6e62471c99bd93a4548a0.1599120059.git-series.maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+Message-Id: <20200903080119.441674-4-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903080119.441674-1-hch@lst.de>
+References: <20200903080119.441674-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though it's not really clear why we need to flush the PV FIFO during
-the configuration even though we started by flushing it, experience shows
-that without it we get a stale pixel stuck in the FIFO between the HVS and
-the PV.
+Merge three hidden gendisk checks into one.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/genhd.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 73d918706f7e..00b2c2b011d1 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -358,7 +358,7 @@ static void vc4_crtc_config_pv(struct drm_crtc *crtc)
- 	if (is_dsi)
- 		CRTC_WRITE(PV_HACT_ACT, mode->hdisplay * pixel_rep);
+diff --git a/block/genhd.c b/block/genhd.c
+index 44f69f4b2c5aa6..ec9b64207d9c2e 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -948,6 +948,9 @@ void del_gendisk(struct gendisk *disk)
  
--	CRTC_WRITE(PV_CONTROL,
-+	CRTC_WRITE(PV_CONTROL, PV_CONTROL_FIFO_CLR |
- 		   vc4_crtc_get_fifo_full_level_bits(vc4_crtc, format) |
- 		   VC4_SET_FIELD(format, PV_CONTROL_FORMAT) |
- 		   VC4_SET_FIELD(pixel_rep - 1, PV_CONTROL_PIXEL_REP) |
+ 	might_sleep();
+ 
++	if (WARN_ON_ONCE(!disk->queue))
++		return;
++
+ 	blk_integrity_del(disk);
+ 	disk_del_events(disk);
+ 
+@@ -970,20 +973,18 @@ void del_gendisk(struct gendisk *disk)
+ 	disk->flags &= ~GENHD_FL_UP;
+ 	up_write(&disk->lookup_sem);
+ 
+-	if (!(disk->flags & GENHD_FL_HIDDEN))
++	if (!(disk->flags & GENHD_FL_HIDDEN)) {
+ 		sysfs_remove_link(&disk_to_dev(disk)->kobj, "bdi");
+-	if (disk->queue) {
++
+ 		/*
+ 		 * Unregister bdi before releasing device numbers (as they can
+ 		 * get reused and we'd get clashes in sysfs).
+ 		 */
+-		if (!(disk->flags & GENHD_FL_HIDDEN))
+-			bdi_unregister(disk->queue->backing_dev_info);
+-		blk_unregister_queue(disk);
+-	} else {
+-		WARN_ON(1);
++		bdi_unregister(disk->queue->backing_dev_info);
+ 	}
+ 
++	blk_unregister_queue(disk);
++	
+ 	if (!(disk->flags & GENHD_FL_HIDDEN))
+ 		blk_unregister_region(disk_devt(disk), disk->minors);
+ 	/*
 -- 
-git-series 0.9.1
+2.28.0
+
