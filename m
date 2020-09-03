@@ -2,113 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E34525C252
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B6725C262
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbgICORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:17:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39896 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729207AbgICONs (ORCPT
+        id S1728868AbgICOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:22:12 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54538 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729125AbgICOR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:13:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599142427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0HZj8Fjtd+TJ8+nY3F25eaagzLSvWKMqED4dPK0Qo8=;
-        b=AUH7edDxvyXxmaA4o/KEAnueoYM9XrcNvJRYFlTUWCKScjg6PmklOhfxDH6cDiKr02wMB0
-        Fz3Wkq14s7dVuXofDfKV2lP/Q9qAwkh5LkQy/agdpjUYjAAO2yWhYTa7RPaQO30n6hm0c0
-        sT+uMiUfa6v66hkNuj+o9sBIpgKpaOQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-434-0_InniYDM--af73vdO89cw-1; Thu, 03 Sep 2020 10:13:46 -0400
-X-MC-Unique: 0_InniYDM--af73vdO89cw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1594C10ABDD9;
-        Thu,  3 Sep 2020 14:13:45 +0000 (UTC)
-Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 82E1E7E408;
-        Thu,  3 Sep 2020 14:13:43 +0000 (UTC)
-Subject: Re: [PATCH v4 03/10] vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO
- ioctl
-To:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
-        laurentiu.tudor@nxp.com, Bharat Bhushan <Bharat.Bhushan@nxp.com>
-References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
- <20200826093315.5279-4-diana.craciun@oss.nxp.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <c201d6b8-a824-76ff-124a-177093d7a23f@redhat.com>
-Date:   Thu, 3 Sep 2020 16:13:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 3 Sep 2020 10:17:58 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id F314D29ADE1
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, groeck@chromium.org,
+        bleung@chromium.org, dtor@chromium.org, gwendal@chromium.org
+Subject: [PATCH] platform/chrome: Kconfig: Remove the transitional MFD_CROS_EC config
+Date:   Thu,  3 Sep 2020 16:17:46 +0200
+Message-Id: <20200903141746.996974-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200826093315.5279-4-diana.craciun@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Diana,
+The MFD_CROS_EC config was a transitional Kconfig option to not break
+current defconfigs in the kernel. Now, this is not required anymore
+because all the defconfigs have been removed this option and migrated to
+enable the CrOS EC parts individually.
 
-On 8/26/20 11:33 AM, Diana Craciun wrote:
-> Allow userspace to get fsl-mc device info (number of regions
-> and irqs).
-> 
-> Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
-> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
-Thanks
+ drivers/platform/chrome/Kconfig | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Eric
-> ---
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> index 85e007be3a5d..5a5460d01f00 100644
-> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
-> @@ -33,10 +33,29 @@ static void vfio_fsl_mc_release(void *device_data)
->  static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
->  			      unsigned long arg)
->  {
-> +	unsigned long minsz;
-> +	struct vfio_fsl_mc_device *vdev = device_data;
-> +	struct fsl_mc_device *mc_dev = vdev->mc_dev;
-> +
->  	switch (cmd) {
->  	case VFIO_DEVICE_GET_INFO:
->  	{
-> -		return -ENOTTY;
-> +		struct vfio_device_info info;
-> +
-> +		minsz = offsetofend(struct vfio_device_info, num_irqs);
-> +
-> +		if (copy_from_user(&info, (void __user *)arg, minsz))
-> +			return -EFAULT;
-> +
-> +		if (info.argsz < minsz)
-> +			return -EINVAL;
-> +
-> +		info.flags = VFIO_DEVICE_FLAGS_FSL_MC;
-> +		info.num_regions = mc_dev->obj_desc.region_count;
-> +		info.num_irqs = mc_dev->obj_desc.irq_count;
-> +
-> +		return copy_to_user((void __user *)arg, &info, minsz) ?
-> +			-EFAULT : 0;
->  	}
->  	case VFIO_DEVICE_GET_REGION_INFO:
->  	{
-> 
+diff --git a/drivers/platform/chrome/Kconfig b/drivers/platform/chrome/Kconfig
+index a056031dee81..ccc23d8686e8 100644
+--- a/drivers/platform/chrome/Kconfig
++++ b/drivers/platform/chrome/Kconfig
+@@ -3,16 +3,6 @@
+ # Platform support for Chrome OS hardware (Chromebooks and Chromeboxes)
+ #
+ 
+-config MFD_CROS_EC
+-	tristate "Platform support for Chrome hardware (transitional)"
+-	select CHROME_PLATFORMS
+-	select CROS_EC
+-	select MFD_CROS_EC_DEV
+-	depends on X86 || ARM || ARM64 || COMPILE_TEST
+-	help
+-	  This is a transitional Kconfig option and will be removed after
+-	  everyone enables the parts individually.
+-
+ menuconfig CHROME_PLATFORMS
+ 	bool "Platform support for Chrome hardware"
+ 	depends on X86 || ARM || ARM64 || COMPILE_TEST
+-- 
+2.28.0
 
