@@ -2,667 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0B625BC98
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649A125BC57
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728802AbgICINW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728319AbgICIBz (ORCPT
+        id S1728659AbgICIJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:09:22 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:33971 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728321AbgICIDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79113C061245;
-        Thu,  3 Sep 2020 01:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=QF+/izVRmYo2AunWx1LOEF6T1vl0A0mbVzbCCJCIIHk=; b=qdqch9Zux1IqeTxKcFCNzwBzLf
-        D4HGpae2B2Jla5izUUe5RDygUzL41VoQPStgQeqzu/WilqcHsYSwU1t4tHUajEuO9dtRfRV40rfkK
-        i1RdUt8+UWu6TOPErsumbW+FtmVhr6GWq7XdQH2Xqd9cVms8F0KWSX76RcXyC3n3aCzigbD0SOgT5
-        cf6hqtoYroZYg6fYoMJfwzmH87tlNhRNkShEuXtx8jDv+6gkDau6XPmVhLP2JR4Pi4HFd5Q4AORuE
-        vqrwELn1qE+haC+3Cw9V/AesHQIAd1Hae2ld8NhFulNOOycM34PXuloqRhakJfkMCE2HL13sxk7dy
-        svXtwYLQ==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBn-0006ek-6D; Thu, 03 Sep 2020 08:01:47 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 17/19] z2ram: reindent
+        Thu, 3 Sep 2020 04:03:01 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E7831C36;
+        Thu,  3 Sep 2020 04:02:56 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=UmTMoPKT6+vZq
+        KRF7fLIDXkq5JxM6v5QN0TAxmXaq9U=; b=fe9Ql5DnYNxvAEBVnJqG/Vc8eEmYk
+        iBn1JyCKbpUGC4xrRIEgC70qoUD2QxI9k7nSlohHswmkzcusLae55fGkKQsvMmRU
+        gvvtMgUn/66iGTE88x1Nzw2+/r7nf8x/4RRDfneCYCRJRixjHQ9LZhJJcHq+wYf8
+        dz1Uu3FAAO+QLjuX6eXaNLCl0JuDy3ygzXq9oqaS+m21dcJVtgJxqD99VVYXWDmE
+        cYq0v0/8B7fCtOjqJEEOmHDytsfIrYLk0N9+uGL/ZS1r6bBh1C+21SHRKiUWXffh
+        yZAC68oJfggpKuL8fXLkygYqsqRBlz17GOQXHziQ+d1KtRuQpVEt2GTQA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=UmTMoPKT6+vZqKRF7fLIDXkq5JxM6v5QN0TAxmXaq9U=; b=gDGnQ+6O
+        J3DttVu1vIc0mEfYOi/FTpcb8YkxLWqGFZtETYNY7sIXeKOT9vE6h8sdHV/I9Jz/
+        EUyDRtv2XdB5ukFKP5wkDkjlRcnQjoGnkNccjyRJLHL5HY77bcTf6xGNE7r0D6hj
+        E56rd53jQ8eTb/ewAxaYUqYjrPARV3HGGKTLf5okJfj1H+HzSA4MYVxDA9uB7/BF
+        NNsY9UzePCLspMyrb933NZ8hLeDHmOGd1TrdtzAKXbnZwZdsjSKnLKtZM2IioGKS
+        MIVoFys3jRyy3kd43o0UBj7Mt6UOlJDQctR5feMvXxe0zwM5v8qtXYGpA0JqK7pm
+        tYt1xAsG8suoDg==
+X-ME-Sender: <xms:MKNQX86KTKf3YfxlwQFy0T7luAm43f_4EyG_MhqN8liIUb_Sjet4jQ>
+    <xme:MKNQX95JKuKU_D-fMQA1dK5JIOXoCoVV-Rw63TU4K6abySgyuYOxLV7qUy7KIBRmy
+    CBNw7hiTtuysB95L4E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeegtd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:MKNQX7c_Z95Qflhn-Kr-Wgb1ma6vwdwVge7eOcUo7QuZR8-PjiF4Xg>
+    <xmx:MKNQXxL3yygBP2U5JfhxAzemQsXaUveQ-YjsPHQtfqbgI6GBcdcbpQ>
+    <xmx:MKNQXwIjrjvT8axOln26xiKsF61PatcLglXC6YDRLo8yDnGl4-5-_A>
+    <xmx:MKNQX-zFUfaY7js8mKBBDAJsotrR-nLCzFYhRam937mWWmpKXXdGBSjoIjU>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 30042306005F;
+        Thu,  3 Sep 2020 04:02:56 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 45/80] drm/vc4: hdmi: Add container_of macros for encoders and connectors
 Date:   Thu,  3 Sep 2020 10:01:17 +0200
-Message-Id: <20200903080119.441674-18-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903080119.441674-1-hch@lst.de>
-References: <20200903080119.441674-1-hch@lst.de>
+Message-Id: <536ecce5898ea75839fa3788b876009d69a5ccae.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-reindent the driver using Lident as the code style was far away from
-normal Linux code.
+Whenever the code needs to access the vc4_hdmi structure from a DRM
+connector or encoder, it first accesses the drm_device associated to the
+connector, then retrieve the drm_dev private data which gives it a
+pointer to our vc4_dev, and will finally follow the vc4_hdmi pointer in
+that structure.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+That will also give us some trouble when having multiple controllers,
+but now that we have our encoder and connector structures that are part
+of vc4_hdmi, we can simply call container_of on the DRM connector or
+encoder and retrieve the vc4_hdmi structure directly.
+
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/block/z2ram.c | 493 ++++++++++++++++++++----------------------
- 1 file changed, 236 insertions(+), 257 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 41 ++++++++++-------------------------
+ drivers/gpu/drm/vc4/vc4_hdmi.h | 16 ++++++++++++++-
+ 2 files changed, 28 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/block/z2ram.c b/drivers/block/z2ram.c
-index 0e734802ee7cc6..eafecc9a72b38d 100644
---- a/drivers/block/z2ram.c
-+++ b/drivers/block/z2ram.c
-@@ -42,7 +42,6 @@
- 
- #include <linux/zorro.h>
- 
--
- #define Z2MINOR_COMBINED      (0)
- #define Z2MINOR_Z2ONLY        (1)
- #define Z2MINOR_CHIPONLY      (2)
-@@ -50,17 +49,17 @@
- #define Z2MINOR_MEMLIST2      (5)
- #define Z2MINOR_MEMLIST3      (6)
- #define Z2MINOR_MEMLIST4      (7)
--#define Z2MINOR_COUNT         (8) /* Move this down when adding a new minor */
-+#define Z2MINOR_COUNT         (8)	/* Move this down when adding a new minor */
- 
- #define Z2RAM_CHUNK1024       ( Z2RAM_CHUNKSIZE >> 10 )
- 
- static DEFINE_MUTEX(z2ram_mutex);
--static u_long *z2ram_map    = NULL;
--static u_long z2ram_size    = 0;
--static int z2_count         = 0;
--static int chip_count       = 0;
--static int list_count       = 0;
--static int current_device   = -1;
-+static u_long *z2ram_map = NULL;
-+static u_long z2ram_size = 0;
-+static int z2_count = 0;
-+static int chip_count = 0;
-+static int list_count = 0;
-+static int current_device = -1;
- 
- static DEFINE_SPINLOCK(z2ram_lock);
- 
-@@ -71,7 +70,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 93865327a8d4..a2053da4e443 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -121,9 +121,7 @@ static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
+ static enum drm_connector_status
+ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
  {
- 	struct request *req = bd->rq;
- 	unsigned long start = blk_rq_pos(req) << 9;
--	unsigned long len  = blk_rq_cur_bytes(req);
-+	unsigned long len = blk_rq_cur_bytes(req);
+-	struct drm_device *dev = connector->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct vc4_hdmi *vc4_hdmi = connector_to_vc4_hdmi(connector);
  
- 	blk_mq_start_request(req);
+ 	if (vc4_hdmi->hpd_gpio) {
+ 		if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
+@@ -150,17 +148,13 @@ static void vc4_hdmi_connector_destroy(struct drm_connector *connector)
  
-@@ -92,7 +91,7 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 
- 		if (len < size)
- 			size = len;
--		addr += z2ram_map[ start >> Z2RAM_CHUNKSHIFT ];
-+		addr += z2ram_map[start >> Z2RAM_CHUNKSHIFT];
- 		if (rq_data_dir(req) == READ)
- 			memcpy(buffer, (char *)addr, size);
- 		else
-@@ -106,228 +105,214 @@ static blk_status_t z2_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	return BLK_STS_OK;
- }
- 
--static void
--get_z2ram( void )
-+static void get_z2ram(void)
+ static int vc4_hdmi_connector_get_modes(struct drm_connector *connector)
  {
--    int i;
--
--    for ( i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++ )
--    {
--	if ( test_bit( i, zorro_unused_z2ram ) )
--	{
--	    z2_count++;
--	    z2ram_map[z2ram_size++] = (unsigned long)ZTWO_VADDR(Z2RAM_START) +
--				      (i << Z2RAM_CHUNKSHIFT);
--	    clear_bit( i, zorro_unused_z2ram );
-+	int i;
-+
-+	for (i = 0; i < Z2RAM_SIZE / Z2RAM_CHUNKSIZE; i++) {
-+		if (test_bit(i, zorro_unused_z2ram)) {
-+			z2_count++;
-+			z2ram_map[z2ram_size++] =
-+			    (unsigned long)ZTWO_VADDR(Z2RAM_START) +
-+			    (i << Z2RAM_CHUNKSHIFT);
-+			clear_bit(i, zorro_unused_z2ram);
-+		}
- 	}
--    }
+-	struct vc4_hdmi_connector *vc4_connector =
+-		to_vc4_hdmi_connector(connector);
+-	struct drm_encoder *encoder = vc4_connector->encoder;
+-	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
+-	struct drm_device *dev = connector->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	struct vc4_hdmi *vc4_hdmi = connector_to_vc4_hdmi(connector);
++	struct vc4_hdmi_encoder *vc4_encoder = &vc4_hdmi->encoder;
+ 	int ret = 0;
+ 	struct edid *edid;
  
--    return;
-+	return;
- }
+-	edid = drm_get_edid(connector, vc4->hdmi->ddc);
+-	cec_s_phys_addr_from_edid(vc4->hdmi->cec_adap, edid);
++	edid = drm_get_edid(connector, vc4_hdmi->ddc);
++	cec_s_phys_addr_from_edid(vc4_hdmi->cec_adap, edid);
+ 	if (!edid)
+ 		return -ENODEV;
  
--static void
--get_chipram( void )
-+static void get_chipram(void)
+@@ -229,9 +223,7 @@ static int vc4_hdmi_connector_init(struct drm_device *dev,
+ static int vc4_hdmi_stop_packet(struct drm_encoder *encoder,
+ 				enum hdmi_infoframe_type type)
  {
+-	struct drm_device *dev = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+ 	u32 packet_id = type - 0x80;
  
--    while ( amiga_chip_avail() > ( Z2RAM_CHUNKSIZE * 4 ) )
--    {
--	chip_count++;
--	z2ram_map[ z2ram_size ] =
--	    (u_long)amiga_chip_alloc( Z2RAM_CHUNKSIZE, "z2ram" );
-+	while (amiga_chip_avail() > (Z2RAM_CHUNKSIZE * 4)) {
-+		chip_count++;
-+		z2ram_map[z2ram_size] =
-+		    (u_long) amiga_chip_alloc(Z2RAM_CHUNKSIZE, "z2ram");
- 
--	if ( z2ram_map[ z2ram_size ] == 0 )
--	{
--	    break;
-+		if (z2ram_map[z2ram_size] == 0) {
-+			break;
-+		}
-+
-+		z2ram_size++;
- 	}
- 
--	z2ram_size++;
--    }
--	
--    return;
-+	return;
- }
- 
- static int z2_open(struct block_device *bdev, fmode_t mode)
+ 	HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG,
+@@ -244,9 +236,7 @@ static int vc4_hdmi_stop_packet(struct drm_encoder *encoder,
+ static void vc4_hdmi_write_infoframe(struct drm_encoder *encoder,
+ 				     union hdmi_infoframe *frame)
  {
--    int device;
--    int max_z2_map = ( Z2RAM_SIZE / Z2RAM_CHUNKSIZE ) *
--	sizeof( z2ram_map[0] );
--    int max_chip_map = ( amiga_chip_size / Z2RAM_CHUNKSIZE ) *
--	sizeof( z2ram_map[0] );
--    int rc = -ENOMEM;
--
--    device = MINOR(bdev->bd_dev);
--
--    mutex_lock(&z2ram_mutex);
--    if ( current_device != -1 && current_device != device )
--    {
--	rc = -EBUSY;
--	goto err_out;
--    }
--
--    if ( current_device == -1 )
--    {
--	z2_count   = 0;
--	chip_count = 0;
--	list_count = 0;
--	z2ram_size = 0;
--
--	/* Use a specific list entry. */
--	if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
--		int index = device - Z2MINOR_MEMLIST1 + 1;
--		unsigned long size, paddr, vaddr;
--
--		if (index >= m68k_realnum_memory) {
--			printk( KERN_ERR DEVICE_NAME
--				": no such entry in z2ram_map\n" );
--		        goto err_out;
--		}
--
--		paddr = m68k_memory[index].addr;
--		size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE-1);
--
--#ifdef __powerpc__
--		/* FIXME: ioremap doesn't build correct memory tables. */
--		{
--			vfree(vmalloc (size));
--		}
-+	int device;
-+	int max_z2_map = (Z2RAM_SIZE / Z2RAM_CHUNKSIZE) * sizeof(z2ram_map[0]);
-+	int max_chip_map = (amiga_chip_size / Z2RAM_CHUNKSIZE) *
-+	    sizeof(z2ram_map[0]);
-+	int rc = -ENOMEM;
+-	struct drm_device *dev = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+ 	u32 packet_id = frame->any.type - 0x80;
+ 	u32 packet_reg = VC4_HDMI_RAM_PACKET(packet_id);
+ 	uint8_t buffer[VC4_HDMI_PACKET_STRIDE];
+@@ -292,9 +282,8 @@ static void vc4_hdmi_write_infoframe(struct drm_encoder *encoder,
  
--		vaddr = (unsigned long)ioremap_wt(paddr, size);
-+	device = MINOR(bdev->bd_dev);
- 
--#else
--		vaddr = (unsigned long)z_remap_nocache_nonser(paddr, size);
--#endif
--		z2ram_map = 
--			kmalloc_array(size / Z2RAM_CHUNKSIZE,
--                                      sizeof(z2ram_map[0]),
--                                      GFP_KERNEL);
--		if ( z2ram_map == NULL )
--		{
--		    printk( KERN_ERR DEVICE_NAME
--			": cannot get mem for z2ram_map\n" );
--		    goto err_out;
--		}
-+	mutex_lock(&z2ram_mutex);
-+	if (current_device != -1 && current_device != device) {
-+		rc = -EBUSY;
-+		goto err_out;
-+	}
- 
--		while (size) {
--			z2ram_map[ z2ram_size++ ] = vaddr;
--			size -= Z2RAM_CHUNKSIZE;
--			vaddr += Z2RAM_CHUNKSIZE;
--			list_count++;
--		}
-+	if (current_device == -1) {
-+		z2_count = 0;
-+		chip_count = 0;
-+		list_count = 0;
-+		z2ram_size = 0;
- 
--		if ( z2ram_size != 0 )
--		    printk( KERN_INFO DEVICE_NAME
--			": using %iK List Entry %d Memory\n",
--			list_count * Z2RAM_CHUNK1024, index );
--	} else
--
--	switch ( device )
--	{
--	    case Z2MINOR_COMBINED:
--
--		z2ram_map = kmalloc( max_z2_map + max_chip_map, GFP_KERNEL );
--		if ( z2ram_map == NULL )
--		{
--		    printk( KERN_ERR DEVICE_NAME
--			": cannot get mem for z2ram_map\n" );
--		    goto err_out;
--		}
-+		/* Use a specific list entry. */
-+		if (device >= Z2MINOR_MEMLIST1 && device <= Z2MINOR_MEMLIST4) {
-+			int index = device - Z2MINOR_MEMLIST1 + 1;
-+			unsigned long size, paddr, vaddr;
- 
--		get_z2ram();
--		get_chipram();
--
--		if ( z2ram_size != 0 )
--		    printk( KERN_INFO DEVICE_NAME 
--			": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
--			z2_count * Z2RAM_CHUNK1024,
--			chip_count * Z2RAM_CHUNK1024,
--			( z2_count + chip_count ) * Z2RAM_CHUNK1024 );
--
--	    break;
--
--    	    case Z2MINOR_Z2ONLY:
--		z2ram_map = kmalloc( max_z2_map, GFP_KERNEL );
--		if ( z2ram_map == NULL )
--		{
--		    printk( KERN_ERR DEVICE_NAME
--			": cannot get mem for z2ram_map\n" );
--		    goto err_out;
--		}
-+			if (index >= m68k_realnum_memory) {
-+				printk(KERN_ERR DEVICE_NAME
-+				       ": no such entry in z2ram_map\n");
-+				goto err_out;
-+			}
- 
--		get_z2ram();
-+			paddr = m68k_memory[index].addr;
-+			size = m68k_memory[index].size & ~(Z2RAM_CHUNKSIZE - 1);
- 
--		if ( z2ram_size != 0 )
--		    printk( KERN_INFO DEVICE_NAME 
--			": using %iK of Zorro II RAM\n",
--			z2_count * Z2RAM_CHUNK1024 );
-+#ifdef __powerpc__
-+			/* FIXME: ioremap doesn't build correct memory tables. */
-+			{
-+				vfree(vmalloc(size));
-+			}
- 
--	    break;
-+			vaddr = (unsigned long)ioremap_wt(paddr, size);
- 
--	    case Z2MINOR_CHIPONLY:
--		z2ram_map = kmalloc( max_chip_map, GFP_KERNEL );
--		if ( z2ram_map == NULL )
--		{
--		    printk( KERN_ERR DEVICE_NAME
--			": cannot get mem for z2ram_map\n" );
--		    goto err_out;
-+#else
-+			vaddr =
-+			    (unsigned long)z_remap_nocache_nonser(paddr, size);
-+#endif
-+			z2ram_map =
-+			    kmalloc_array(size / Z2RAM_CHUNKSIZE,
-+					  sizeof(z2ram_map[0]), GFP_KERNEL);
-+			if (z2ram_map == NULL) {
-+				printk(KERN_ERR DEVICE_NAME
-+				       ": cannot get mem for z2ram_map\n");
-+				goto err_out;
-+			}
-+
-+			while (size) {
-+				z2ram_map[z2ram_size++] = vaddr;
-+				size -= Z2RAM_CHUNKSIZE;
-+				vaddr += Z2RAM_CHUNKSIZE;
-+				list_count++;
-+			}
-+
-+			if (z2ram_size != 0)
-+				printk(KERN_INFO DEVICE_NAME
-+				       ": using %iK List Entry %d Memory\n",
-+				       list_count * Z2RAM_CHUNK1024, index);
-+		} else
-+			switch (device) {
-+			case Z2MINOR_COMBINED:
-+
-+				z2ram_map =
-+				    kmalloc(max_z2_map + max_chip_map,
-+					    GFP_KERNEL);
-+				if (z2ram_map == NULL) {
-+					printk(KERN_ERR DEVICE_NAME
-+					       ": cannot get mem for z2ram_map\n");
-+					goto err_out;
-+				}
-+
-+				get_z2ram();
-+				get_chipram();
-+
-+				if (z2ram_size != 0)
-+					printk(KERN_INFO DEVICE_NAME
-+					       ": using %iK Zorro II RAM and %iK Chip RAM (Total %dK)\n",
-+					       z2_count * Z2RAM_CHUNK1024,
-+					       chip_count * Z2RAM_CHUNK1024,
-+					       (z2_count +
-+						chip_count) * Z2RAM_CHUNK1024);
-+
-+				break;
-+
-+			case Z2MINOR_Z2ONLY:
-+				z2ram_map = kmalloc(max_z2_map, GFP_KERNEL);
-+				if (z2ram_map == NULL) {
-+					printk(KERN_ERR DEVICE_NAME
-+					       ": cannot get mem for z2ram_map\n");
-+					goto err_out;
-+				}
-+
-+				get_z2ram();
-+
-+				if (z2ram_size != 0)
-+					printk(KERN_INFO DEVICE_NAME
-+					       ": using %iK of Zorro II RAM\n",
-+					       z2_count * Z2RAM_CHUNK1024);
-+
-+				break;
-+
-+			case Z2MINOR_CHIPONLY:
-+				z2ram_map = kmalloc(max_chip_map, GFP_KERNEL);
-+				if (z2ram_map == NULL) {
-+					printk(KERN_ERR DEVICE_NAME
-+					       ": cannot get mem for z2ram_map\n");
-+					goto err_out;
-+				}
-+
-+				get_chipram();
-+
-+				if (z2ram_size != 0)
-+					printk(KERN_INFO DEVICE_NAME
-+					       ": using %iK Chip RAM\n",
-+					       chip_count * Z2RAM_CHUNK1024);
-+
-+				break;
-+
-+			default:
-+				rc = -ENODEV;
-+				goto err_out;
-+
-+				break;
-+			}
-+
-+		if (z2ram_size == 0) {
-+			printk(KERN_NOTICE DEVICE_NAME
-+			       ": no unused ZII/Chip RAM found\n");
-+			goto err_out_kfree;
- 		}
- 
--		get_chipram();
--
--		if ( z2ram_size != 0 )
--		    printk( KERN_INFO DEVICE_NAME 
--			": using %iK Chip RAM\n",
--			chip_count * Z2RAM_CHUNK1024 );
--		    
--	    break;
--
--	    default:
--		rc = -ENODEV;
--		goto err_out;
--	
--	    break;
-+		current_device = device;
-+		z2ram_size <<= Z2RAM_CHUNKSHIFT;
-+		set_capacity(z2ram_gendisk, z2ram_size >> 9);
- 	}
- 
--	if ( z2ram_size == 0 )
--	{
--	    printk( KERN_NOTICE DEVICE_NAME
--		": no unused ZII/Chip RAM found\n" );
--	    goto err_out_kfree;
--	}
--
--	current_device = device;
--	z2ram_size <<= Z2RAM_CHUNKSHIFT;
--	set_capacity(z2ram_gendisk, z2ram_size >> 9);
--    }
--
--    mutex_unlock(&z2ram_mutex);
--    return 0;
-+	mutex_unlock(&z2ram_mutex);
-+	return 0;
- 
- err_out_kfree:
--    kfree(z2ram_map);
-+	kfree(z2ram_map);
- err_out:
--    mutex_unlock(&z2ram_mutex);
--    return rc;
-+	mutex_unlock(&z2ram_mutex);
-+	return rc;
- }
- 
--static void
--z2_release(struct gendisk *disk, fmode_t mode)
-+static void z2_release(struct gendisk *disk, fmode_t mode)
+ static void vc4_hdmi_set_avi_infoframe(struct drm_encoder *encoder)
  {
--    mutex_lock(&z2ram_mutex);
--    if ( current_device == -1 ) {
--    	mutex_unlock(&z2ram_mutex);
--    	return;
--    }
--    mutex_unlock(&z2ram_mutex);
--    /*
--     * FIXME: unmap memory
--     */
-+	mutex_lock(&z2ram_mutex);
-+	if (current_device == -1) {
-+		mutex_unlock(&z2ram_mutex);
-+		return;
-+	}
-+	mutex_unlock(&z2ram_mutex);
-+	/*
-+	 * FIXME: unmap memory
-+	 */
- }
++	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+ 	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
+-	struct vc4_dev *vc4 = encoder->dev->dev_private;
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 	struct drm_connector *connector = &vc4_hdmi->connector.base;
+ 	struct drm_connector_state *cstate = connector->state;
+ 	struct drm_crtc *crtc = encoder->crtc;
+@@ -338,9 +327,7 @@ static void vc4_hdmi_set_spd_infoframe(struct drm_encoder *encoder)
  
--static const struct block_device_operations z2_fops =
--{
--	.owner		= THIS_MODULE,
--	.open		= z2_open,
--	.release	= z2_release,
-+static const struct block_device_operations z2_fops = {
-+	.owner = THIS_MODULE,
-+	.open = z2_open,
-+	.release = z2_release,
+ static void vc4_hdmi_set_audio_infoframe(struct drm_encoder *encoder)
+ {
+-	struct drm_device *drm = encoder->dev;
+-	struct vc4_dev *vc4 = drm->dev_private;
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+ 	union hdmi_infoframe frame;
+ 	int ret;
+ 
+@@ -362,9 +349,7 @@ static void vc4_hdmi_set_infoframes(struct drm_encoder *encoder)
+ 
+ static void vc4_hdmi_encoder_disable(struct drm_encoder *encoder)
+ {
+-	struct drm_device *dev = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
+ 	int ret;
+ 
+ 	HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG, 0);
+@@ -383,10 +368,8 @@ static void vc4_hdmi_encoder_disable(struct drm_encoder *encoder)
+ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
+ {
+ 	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
+-	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
+-	struct drm_device *dev = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
++	struct vc4_hdmi_encoder *vc4_encoder = &vc4_hdmi->encoder;
+ 	bool debug_dump_regs = false;
+ 	bool hsync_pos = mode->flags & DRM_MODE_FLAG_PHSYNC;
+ 	bool vsync_pos = mode->flags & DRM_MODE_FLAG_PVSYNC;
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+index cdc9d90f62ac..749a807cd1f3 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+@@ -78,6 +78,22 @@ struct vc4_hdmi {
+ 	struct debugfs_regset32 hd_regset;
  };
  
- static struct kobject *z2_find(dev_t dev, int *part, void *data)
-@@ -340,89 +325,83 @@ static struct request_queue *z2_queue;
- static struct blk_mq_tag_set tag_set;
- 
- static const struct blk_mq_ops z2_mq_ops = {
--	.queue_rq	= z2_queue_rq,
-+	.queue_rq = z2_queue_rq,
- };
- 
--static int __init 
--z2_init(void)
-+static int __init z2_init(void)
- {
--    int ret;
-+	int ret;
- 
--    if (!MACH_IS_AMIGA)
--	return -ENODEV;
-+	if (!MACH_IS_AMIGA)
-+		return -ENODEV;
- 
--    ret = -EBUSY;
--    if (register_blkdev(Z2RAM_MAJOR, DEVICE_NAME))
--	goto err;
-+	ret = -EBUSY;
-+	if (register_blkdev(Z2RAM_MAJOR, DEVICE_NAME))
-+		goto err;
- 
--    ret = -ENOMEM;
--    z2ram_gendisk = alloc_disk(1);
--    if (!z2ram_gendisk)
--	goto out_disk;
-+	ret = -ENOMEM;
-+	z2ram_gendisk = alloc_disk(1);
-+	if (!z2ram_gendisk)
-+		goto out_disk;
- 
--    z2_queue = blk_mq_init_sq_queue(&tag_set, &z2_mq_ops, 16,
-+	z2_queue = blk_mq_init_sq_queue(&tag_set, &z2_mq_ops, 16,
- 					BLK_MQ_F_SHOULD_MERGE);
--    if (IS_ERR(z2_queue)) {
--	ret = PTR_ERR(z2_queue);
--	z2_queue = NULL;
--	goto out_queue;
--    }
-+	if (IS_ERR(z2_queue)) {
-+		ret = PTR_ERR(z2_queue);
-+		z2_queue = NULL;
-+		goto out_queue;
-+	}
- 
--    z2ram_gendisk->major = Z2RAM_MAJOR;
--    z2ram_gendisk->first_minor = 0;
--    z2ram_gendisk->fops = &z2_fops;
--    sprintf(z2ram_gendisk->disk_name, "z2ram");
-+	z2ram_gendisk->major = Z2RAM_MAJOR;
-+	z2ram_gendisk->first_minor = 0;
-+	z2ram_gendisk->fops = &z2_fops;
-+	sprintf(z2ram_gendisk->disk_name, "z2ram");
- 
--    z2ram_gendisk->queue = z2_queue;
--    add_disk(z2ram_gendisk);
--    blk_register_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT, THIS_MODULE,
--				z2_find, NULL, NULL);
-+	z2ram_gendisk->queue = z2_queue;
-+	add_disk(z2ram_gendisk);
-+	blk_register_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT, THIS_MODULE,
-+			    z2_find, NULL, NULL);
- 
--    return 0;
-+	return 0;
- 
- out_queue:
--    put_disk(z2ram_gendisk);
-+	put_disk(z2ram_gendisk);
- out_disk:
--    unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
-+	unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
- err:
--    return ret;
-+	return ret;
- }
- 
- static void __exit z2_exit(void)
- {
--    int i, j;
--    blk_unregister_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT);
--    unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
--    del_gendisk(z2ram_gendisk);
--    put_disk(z2ram_gendisk);
--    blk_cleanup_queue(z2_queue);
--    blk_mq_free_tag_set(&tag_set);
--
--    if ( current_device != -1 )
--    {
--	i = 0;
--
--	for ( j = 0 ; j < z2_count; j++ )
--	{
--	    set_bit( i++, zorro_unused_z2ram ); 
--	}
-+	int i, j;
-+	blk_unregister_region(MKDEV(Z2RAM_MAJOR, 0), Z2MINOR_COUNT);
-+	unregister_blkdev(Z2RAM_MAJOR, DEVICE_NAME);
-+	del_gendisk(z2ram_gendisk);
-+	put_disk(z2ram_gendisk);
-+	blk_cleanup_queue(z2_queue);
-+	blk_mq_free_tag_set(&tag_set);
++static inline struct vc4_hdmi *
++connector_to_vc4_hdmi(struct drm_connector *connector)
++{
++	struct vc4_hdmi_connector *_connector = to_vc4_hdmi_connector(connector);
 +
-+	if (current_device != -1) {
-+		i = 0;
-+
-+		for (j = 0; j < z2_count; j++) {
-+			set_bit(i++, zorro_unused_z2ram);
-+		}
- 
--	for ( j = 0 ; j < chip_count; j++ )
--	{
--	    if ( z2ram_map[ i ] )
--	    {
--		amiga_chip_free( (void *) z2ram_map[ i++ ] );
--	    }
--	}
-+		for (j = 0; j < chip_count; j++) {
-+			if (z2ram_map[i]) {
-+				amiga_chip_free((void *)z2ram_map[i++]);
-+			}
-+		}
- 
--	if ( z2ram_map != NULL )
--	{
--	    kfree( z2ram_map );
-+		if (z2ram_map != NULL) {
-+			kfree(z2ram_map);
-+		}
- 	}
--    }
- 
--    return;
--} 
-+	return;
++	return container_of(_connector, struct vc4_hdmi, connector);
 +}
- 
- module_init(z2_init);
- module_exit(z2_exit);
++
++static inline struct vc4_hdmi *
++encoder_to_vc4_hdmi(struct drm_encoder *encoder)
++{
++	struct vc4_hdmi_encoder *_encoder = to_vc4_hdmi_encoder(encoder);
++
++	return container_of(_encoder, struct vc4_hdmi, encoder);
++}
++
+ #define HDMI_READ(offset) readl(vc4_hdmi->hdmicore_regs + offset)
+ #define HDMI_WRITE(offset, val) writel(val, vc4_hdmi->hdmicore_regs + offset)
+ #define HD_READ(offset) readl(vc4_hdmi->hd_regs + offset)
 -- 
-2.28.0
-
+git-series 0.9.1
