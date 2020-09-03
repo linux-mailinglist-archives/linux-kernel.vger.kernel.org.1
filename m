@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A16625C2DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E469A25C3B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbgICOh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:37:58 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48389 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729326AbgICOfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:35:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0U7p6l-g_1599138767;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U7p6l-g_1599138767)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Sep 2020 21:12:47 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        "Gilad Ben-Yossef" <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-security-module@vger.kernel.org
-Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH v6 8/8] integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
-Date:   Thu,  3 Sep 2020 21:12:42 +0800
-Message-Id: <20200903131242.128665-9-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
-References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+        id S1729463AbgICO4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:56:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10764 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729175AbgICOKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:10:54 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id C91757B51C7D80ACF500;
+        Thu,  3 Sep 2020 21:18:59 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Sep 2020
+ 21:18:53 +0800
+Subject: Re: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
+To:     Catalin Marinas <catalin.marinas@arm.com>
+References: <20200801130856.86625-1-chenzhou10@huawei.com>
+ <20200801130856.86625-4-chenzhou10@huawei.com> <20200902170910.GB16673@gaia>
+ <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
+CC:     <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
+        <bhsharma@redhat.com>, <huawei.libin@huawei.com>,
+        <guohanjun@huawei.com>, <will@kernel.org>, <bhe@redhat.com>,
+        <corbet@lwn.net>, <mingo@redhat.com>, <dyoung@redhat.com>,
+        <John.P.donnelly@oracle.com>, <arnd@arndb.de>,
+        <xiexiuqi@huawei.com>, <horms@verge.net.au>, <tglx@linutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <james.morse@arm.com>,
+        <prabhakar.pkin@gmail.com>, <nsaenzjulienne@suse.de>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <779fd86d-4d1a-c2ac-ffc8-79f05526a00c@huawei.com>
+Date:   Thu, 3 Sep 2020 21:18:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Asymmetric digsig supports SM2-with-SM3 algorithm combination,
-so that IMA can also verify SM2's signature data.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
----
- security/integrity/digsig_asymmetric.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-index cfa4127d0518..b86a4a8f61ab 100644
---- a/security/integrity/digsig_asymmetric.c
-+++ b/security/integrity/digsig_asymmetric.c
-@@ -99,14 +99,22 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- 	memset(&pks, 0, sizeof(pks));
- 
- 	pks.hash_algo = hash_algo_name[hdr->hash_algo];
--	if (hdr->hash_algo == HASH_ALGO_STREEBOG_256 ||
--	    hdr->hash_algo == HASH_ALGO_STREEBOG_512) {
-+	switch (hdr->hash_algo) {
-+	case HASH_ALGO_STREEBOG_256:
-+	case HASH_ALGO_STREEBOG_512:
- 		/* EC-RDSA and Streebog should go together. */
- 		pks.pkey_algo = "ecrdsa";
- 		pks.encoding = "raw";
--	} else {
-+		break;
-+	case HASH_ALGO_SM3_256:
-+		/* SM2 and SM3 should go together. */
-+		pks.pkey_algo = "sm2";
-+		pks.encoding = "raw";
-+		break;
-+	default:
- 		pks.pkey_algo = "rsa";
- 		pks.encoding = "pkcs1";
-+		break;
- 	}
- 	pks.digest = (u8 *)data;
- 	pks.digest_size = datalen;
--- 
-2.19.1.3.ge56e4f7
+On 2020/9/3 19:26, chenzhou wrote:
+> Hi Catalin,
+>
+>
+> On 2020/9/3 1:09, Catalin Marinas wrote:
+>> On Sat, Aug 01, 2020 at 09:08:54PM +0800, Chen Zhou wrote:
+>>> There are following issues in arm64 kdump:
+>>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+>>> will fail when there is no enough low memory.
+>>> 2. If reserving crashkernel above 4G, in this case, crash dump
+>>> kernel will boot failure because there is no low memory available
+>>> for allocation.
+>>> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+>>> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+>>> the devices in crash dump kernel need to use ZONE_DMA will alloc
+>>> fail.
+>>>
+>>> To solve these issues, change the behavior of crashkernel=X.
+>>> crashkernel=X tries low allocation in ZONE_DMA, and fall back to
+>>> high allocation if it fails.
+>>>
+>>> If requized size X is too large and leads to very little free memory
+>>> in ZONE_DMA after low allocation, the system may not work normally.
+>>> So add a threshold and go for high allocation directly if the required
+>>> size is too large. The value of threshold is set as the half of
+>>> the low memory.
+>>>
+>>> If crash_base is outside ZONE_DMA, try to allocate at least 256M in
+>>> ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
+>>> specified size low memory.
+>> Except for the threshold to keep zone ZONE_DMA memory,
+>> reserve_crashkernel() looks very close to the x86 version. Shall we try
+>> to make this generic as well? In the first instance, you could avoid the
+>> threshold check if it takes an explicit ",high" option.
+> Ok, i will try to do this.
+>
+> I look into the function reserve_crashkernel() of x86 and found the start address is
+> CRASH_ALIGN in function memblock_find_in_range(), which is different with arm64.
+>
+> I don't figure out why is CRASH_ALIGN in x86, is there any specific reason?
+Besides, in function reserve_crashkernel_low() of x86, the start address is 0.
+
+>
+> Thanks,
+> Chen Zhou
+>
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>
+> .
+>
+
 
