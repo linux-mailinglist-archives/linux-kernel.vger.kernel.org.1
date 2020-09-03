@@ -2,81 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3467E25C51F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6E325C4BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729132AbgICPW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728437AbgICLWj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:22:39 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF00EC06124F;
-        Thu,  3 Sep 2020 04:20:07 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id u128so2067209pfb.6;
-        Thu, 03 Sep 2020 04:20:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jaMby09cIkH4uMnP/QGnY16JaDZOahjJy8+IAE25qQI=;
-        b=Ay6T3o5VYcusUis3uZZWyVXgWIF+mUScyEZqpgOBAkCyeAtQEi02m/lV4Zjp+2Up8b
-         P5HHxCYax2aeFuBIwfE9vkRx+6TvW+6Vm6kyHFEN+E0yPgD5XiR+0wm/OTIU0SzU/fxi
-         Ue9xgqsFhxucu35ddMNJ8f4Q6q54cRwQrjfL/k6HLl1SPz6T+fbW/FmMrOS+RK36o/yp
-         eot8QtHOU5p+dCS+zlE3nZhSqjlSVjngrXrtxqf5zpErPMvK9E0ttthZbQkeRjyeCJbP
-         /tFH53iy1swTu3Hn7XMqUQr0q0G0d7FrrluY8wXxb79FPdK7DrwvMR67Em48j4RsAzPo
-         b8vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jaMby09cIkH4uMnP/QGnY16JaDZOahjJy8+IAE25qQI=;
-        b=K4bnAdFR5RNJd4H+3kv+PiZvxbn4Oey3V1ELfQOipME9NkJKj4kvCPEeu0mcaTl3jJ
-         zLVU5K6Cqv5/v3imYm4017X7hjIIeznCGGXkOv3xKPI2N/JTmJgUu6woiaH2EOgcNDXu
-         Vh5fGiPbkMy1+KlXU9uKqqHuRXEFUnT9G0SEdZDePblkLOTJadAD78DYt8POoOnHq6vL
-         W695p60fIJEXhurFhSXpFRIWqgv13fZvcxoWysg0pD3nb1UOG3NuzW0rLKZ8d9aMXIib
-         EAdPVHzaj+HeLRE3QlpkvobFv9E4j4qVUS3/5jCQvwz/ft8kx+E8nSfRU/sF5OmI1GIn
-         2vLQ==
-X-Gm-Message-State: AOAM532E1o9B5l3UHQbUm0oVYbnsF7fa7fewayHxxUe73qc+AhqxR+3f
-        NJgjRm84i5BDPBrrHnGVEYeYtEChceptxZPyhvE=
-X-Google-Smtp-Source: ABdhPJySXMx2fPHPuW2rKM86f6gT94qFOY5VNUlJ0a6oRyW8MpyDO7nrdRSyyg9cHogg5ipMhKUgG8PyRMoTMDYaaR8=
-X-Received: by 2002:a63:c543:: with SMTP id g3mr2587849pgd.203.1599132007489;
- Thu, 03 Sep 2020 04:20:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200903005300.7894-1-digetx@gmail.com> <20200903005300.7894-14-digetx@gmail.com>
-In-Reply-To: <20200903005300.7894-14-digetx@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Sep 2020 14:19:49 +0300
-Message-ID: <CAHp75VcX0=WTKWB+W2NoCzDJbL+axd9D27nJ6OMCgL_m_4=PHw@mail.gmail.com>
-Subject: Re: [PATCH v3 13/22] i2c: tegra: Check errors for both positive and
- negative values
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728656AbgICLeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:34:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:59500 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728501AbgICL3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:29:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4A14101E;
+        Thu,  3 Sep 2020 04:20:51 -0700 (PDT)
+Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EC4E23F66F;
+        Thu,  3 Sep 2020 04:20:50 -0700 (PDT)
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org, sudeep.holla@arm.com
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ionela.voinescu@arm.com
+Subject: [PATCH] cpufreq,cppc: fix issue when hotplugging out policy->cpu
+Date:   Thu,  3 Sep 2020 12:19:55 +0100
+Message-Id: <20200903111955.31029-1-ionela.voinescu@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 3:54 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> The driver's code is inconsistent in regards to the error values checking.
-> The correct way should be to check both positive and negative values.
-> This patch cleans up the error-checks in the code. Note that the
-> pm_runtime_get_sync() could return positive value on success, hence only
-> relevant parts of the code are changed by this patch.
+An issue is observed in the cpufreq CPPC driver when having dependency
+domains (PSD) and the policy->cpu is hotplugged out.
 
-Yeah, fix the order of the series. Now it seems like arbitrary mess.
+Considering a platform with 4 CPUs and 2 PSD domains (CPUs 0 and 1 in
+PSD-1, CPUs 2 and 3 in PSD-2), cppc_cpufreq_cpu_init() will be called
+for the two cpufreq policies that are created and it will set
+all_cpu_data[policy->cpu]->cpu = policy->cpu.
 
+Therefore all_cpu_data[0]->cpu=0, and all_cpu_data[2]->cpu=2. But for
+CPUs 1 and 3, all_cpu_data[{1,3}]->cpu will remain 0 from the structure
+allocation.
+
+If CPU 2 is hotplugged out, CPU 3 will become policy->cpu. But its
+all_cpu_data[3]->cpu will remain 0. Later, when the .target() function
+is called for policy2, the cpu argument to cppc_set_perf() will be 0 and
+therefore it will use the performance controls of CPU 0, which will
+result in a performance level change for the wrong domain.
+
+While the possibility of setting a correct CPU value in the per-cpu
+cppc_cpudata structure is available, it can be noticed that this cpu value
+is not used at all outside the .target() function, where it's not actually
+necessary. Therefore, remove the cpu variable from the cppc_cpudata
+structure and use policy->cpu in the .target() function as done for the
+other CPPC cpufreq functions.
+
+Fixes: 5477fb3bd1e8  ("ACPI / CPPC: Add a CPUFreq driver for use with CPPC")
+Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+---
+
+Testing was done on a Juno R2 platform (with the proper ACPI/CPPC setup):
+CPUs 0, 1, 2, 3 are in PSD-0 (policy0), CPUs 4 and 5 are in PSD-4
+(policy4).
+
+Before the fix:
+
+root@sqwt-ubuntu:~# dmesg | grep address
+[    2.165177] ACPI CPPC: ACPI desired perf address 0: - ffff80001004d200
+[    2.174226] ACPI CPPC: ACPI desired perf address 1: - ffff800010055200
+[    2.183231] ACPI CPPC: ACPI desired perf address 2: - ffff80001005d200
+[    2.192234] ACPI CPPC: ACPI desired perf address 3: - ffff800010065200
+[    2.201245] ACPI CPPC: ACPI desired perf address 4: - ffff80001006d218
+[    2.210256] ACPI CPPC: ACPI desired perf address 5: - ffff800011ff1218
+[..]
+[    2.801940] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 38300
+[    2.835286] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 102400
+[..]
+root@sqwt-ubuntu:~# cd /sys/devices/system/cpu/cpufreq/
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
+[   72.098758] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 51200
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
+[   85.430645] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 102400
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 0 > ../cpu4/online
+[  102.606380] CPPC Cpufreq:CPPC: Calculate: (6285/261)*4266=102727.
+[  102.612491] CPPC Cpufreq:CPPC: Core rate = 1203832, arch timer rate: 50000000
+[  102.619659] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 102400
+[  102.626898] CPU4: shutdown
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
+[  141.116882] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 51200
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
+[  159.288273] ACPI CPPC: Writing to address for CPU 0:ffff80001004d200: 102400
+
+
+After the fix:
+
+root@sqwt-ubuntu:~# cd /sys/devices/system/cpu/cpufreq/
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
+[  139.903322] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 51200
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
+[  147.279040] ACPI CPPC: Writing to address for CPU 4:ffff80001006d218: 102400
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 0 > ../cpu4/online
+[  153.598686] CPPC Cpufreq:CPPC: Calculate: (6171/253)*4266=104053.
+[  153.604797] CPPC Cpufreq:CPPC: Core rate = 1219371, arch timer rate: 50000000
+[  153.611960] ACPI CPPC: Writing to address for CPU 5:ffff800011ff1218: 102400
+[  153.619190] CPU4: shutdown
+[  153.621911] psci: CPU4 killed (polled 0 ms)
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 600000 > policy4/scaling_setspeed
+[  170.122495] ACPI CPPC: Writing to address for CPU 5:ffff800011ff1218: 51200
+root@sqwt-ubuntu:/sys/devices/system/cpu/cpufreq# echo 1200000 > policy4/scaling_setspeed
+[  177.206342] ACPI CPPC: Writing to address for CPU 5:ffff800011ff1218: 102400
+
+Thanks,
+Ionela.
+
+ drivers/cpufreq/cppc_cpufreq.c | 8 ++++----
+ include/acpi/cppc_acpi.h       | 1 -
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+index f29e8d0553a8..54457f5fe49e 100644
+--- a/drivers/cpufreq/cppc_cpufreq.c
++++ b/drivers/cpufreq/cppc_cpufreq.c
+@@ -149,8 +149,9 @@ static int cppc_cpufreq_set_target(struct cpufreq_policy *policy,
+ 		unsigned int target_freq,
+ 		unsigned int relation)
+ {
+-	struct cppc_cpudata *cpu;
+ 	struct cpufreq_freqs freqs;
++	int cpu_num = policy->cpu;
++	struct cppc_cpudata *cpu;
+ 	u32 desired_perf;
+ 	int ret = 0;
+ 
+@@ -166,12 +167,12 @@ static int cppc_cpufreq_set_target(struct cpufreq_policy *policy,
+ 	freqs.new = target_freq;
+ 
+ 	cpufreq_freq_transition_begin(policy, &freqs);
+-	ret = cppc_set_perf(cpu->cpu, &cpu->perf_ctrls);
++	ret = cppc_set_perf(cpu_num, &cpu->perf_ctrls);
+ 	cpufreq_freq_transition_end(policy, &freqs, ret != 0);
+ 
+ 	if (ret)
+ 		pr_debug("Failed to set target on CPU:%d. ret:%d\n",
+-				cpu->cpu, ret);
++				cpu_num, ret);
+ 
+ 	return ret;
+ }
+@@ -247,7 +248,6 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ 
+ 	cpu = all_cpu_data[policy->cpu];
+ 
+-	cpu->cpu = cpu_num;
+ 	ret = cppc_get_perf_caps(policy->cpu, &cpu->perf_caps);
+ 
+ 	if (ret) {
+diff --git a/include/acpi/cppc_acpi.h b/include/acpi/cppc_acpi.h
+index a6a9373ab863..451132ec83c9 100644
+--- a/include/acpi/cppc_acpi.h
++++ b/include/acpi/cppc_acpi.h
+@@ -124,7 +124,6 @@ struct cppc_perf_fb_ctrs {
+ 
+ /* Per CPU container for runtime CPPC management. */
+ struct cppc_cpudata {
+-	int cpu;
+ 	struct cppc_perf_caps perf_caps;
+ 	struct cppc_perf_ctrls perf_ctrls;
+ 	struct cppc_perf_fb_ctrs perf_fb_ctrs;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
