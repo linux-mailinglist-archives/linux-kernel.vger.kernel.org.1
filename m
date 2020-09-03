@@ -2,64 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435F825C42C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAFB25C3EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbgICPF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729014AbgICN6P (ORCPT
+        id S1729272AbgICPA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:00:59 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:49848 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728867AbgICOFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:58:15 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED08C061249;
-        Thu,  3 Sep 2020 06:10:14 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id h12so2098016pgm.7;
-        Thu, 03 Sep 2020 06:10:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/WIT3+UL+FpungvYV1D9IfW97J9W5tsesmZlOnRL4KU=;
-        b=qE6o2n8HJKYzr8LQaFzdJ57s8ECaNNIEBAKj+FvAXWdE+VE/mTIGhjc4Qg4zlvXooF
-         s7PLRYxjyADHCtuiPGQ7aryX95MmnRUj8GlEn8M+qW1Vqac7RM+TAFtNZZnjTUlILZbr
-         n9WUYcuXzPQyao1h0l7bXfN3uVvH10bfG/RxxTBugi38UTqmzBO4RkjFvJJ1ieGMrx1r
-         vEg7/JHmsKK2WQYAZumSLzZFWRFiJl+8/3eGdCa6oFziFGQkJXbAEfwMLwriWQFCnh3L
-         zHXJmVCa8f2oqPOTdWqCc7Iq8Uxf20oK56b2aUOJ6k5u/kuJQUHbub6wVWxBtp2paj92
-         pi4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/WIT3+UL+FpungvYV1D9IfW97J9W5tsesmZlOnRL4KU=;
-        b=ksqpTF44Hzu0MjGFc09TwnSDYD9rYNGrFYa8uTKdb9ecpAu/K0XX72FJfya5RttpnW
-         svI88iAicil1uQ+YO8XGYTcnZ47XIKSVjCaPDZsZoYKOUsO4JJGFzwD8Fiza5qL4y07c
-         pdBRlg/q12ZZT6Qm8h3t2eZ++TK/3BuIemOLbU52VYvktAjapNZkqGbgk60GguUjJY0u
-         CsM+OzKRcMftTOeE//3BWidTBbn+Qbodk2LNW8opjSESkH45MTLHvJqLJVcsR0lmMgUh
-         +ALKxandphQ7IFR5L8tg27QySKEh0/wNbxSBcZXh22j24AxP+ano+cWW7tUQks7rS82D
-         SPlA==
-X-Gm-Message-State: AOAM533aEEkUuWiJmgCS5VyBFf4J+dG6jGsWnzyssKrsjq2ku+m3k1zH
-        vredohjE55242g/eWfeY/u8=
-X-Google-Smtp-Source: ABdhPJwninxVNGhpsTohv0jmInMy1KARspw9LnVSe+jAaMtNOlAQj38XIlfkUm5bYScFOYFA/RnRcw==
-X-Received: by 2002:a63:fb4a:: with SMTP id w10mr2877677pgj.114.1599138614380;
-        Thu, 03 Sep 2020 06:10:14 -0700 (PDT)
-Received: from nish-HP-Pavilion ([2409:4072:6085:e35d:a526:a3b6:4686:f6fb])
-        by smtp.gmail.com with ESMTPSA id d20sm2538270pjv.39.2020.09.03.06.10.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 06:10:13 -0700 (PDT)
-From:   Nishant Malpani <nish.malpani25@gmail.com>
-To:     jic23@kernel.org, robh+dt@kernel.org
-Cc:     dragos.bogdan@analog.com, darius.berghe@analog.com,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, andy.shevchenko@gmail.com,
-        Nishant Malpani <nish.malpani25@gmail.com>
-Subject: [PATCH v2 3/3] iio: gyro: adxrs290: Add debugfs register access support
-Date:   Thu,  3 Sep 2020 18:39:50 +0530
-Message-Id: <20200903130950.6274-4-nish.malpani25@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200903130950.6274-1-nish.malpani25@gmail.com>
-References: <20200903130950.6274-1-nish.malpani25@gmail.com>
+        Thu, 3 Sep 2020 10:05:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=31;SR=0;TI=SMTPD_---0U7pNn5X_1599138766;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0U7pNn5X_1599138766)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 03 Sep 2020 21:12:46 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Howells <dhowells@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephan Mueller <smueller@chronox.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        Vitaly Chikunov <vt@altlinux.org>,
+        "Gilad Ben-Yossef" <gilad@benyossef.com>,
+        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-security-module@vger.kernel.org
+Cc:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
+        Jia Zhang <zhang.jia@linux.alibaba.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v6 6/8] X.509: support OSCCA certificate parse
+Date:   Thu,  3 Sep 2020 21:12:40 +0800
+Message-Id: <20200903131242.128665-7-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+In-Reply-To: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
+References: <20200903131242.128665-1-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,54 +59,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend support to read/write byte data from/to the device using
-debugfs iio interface.
+The digital certificate format based on SM2 crypto algorithm as
+specified in GM/T 0015-2012. It was published by State Encryption
+Management Bureau, China.
 
-Signed-off-by: Nishant Malpani <nish.malpani25@gmail.com>
+This patch adds the OID object identifier defined by OSCCA. The
+x509 certificate supports sm2-with-sm3 type certificate parsing.
+It uses the standard elliptic curve public key, and the sm2
+algorithm signs the hash generated by sm3.
+
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
 ---
+ crypto/asymmetric_keys/x509_cert_parser.c | 14 +++++++++++++-
+ include/linux/oid_registry.h              |  6 ++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-No changes in v2
----
- drivers/iio/gyro/adxrs290.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/drivers/iio/gyro/adxrs290.c b/drivers/iio/gyro/adxrs290.c
-index 4099b8917d3e..132fd16789f0 100644
---- a/drivers/iio/gyro/adxrs290.c
-+++ b/drivers/iio/gyro/adxrs290.c
-@@ -434,6 +434,24 @@ static int adxrs290_read_avail(struct iio_dev *indio_dev,
+diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+index 26ec20ef4899..6a8aee22bfd4 100644
+--- a/crypto/asymmetric_keys/x509_cert_parser.c
++++ b/crypto/asymmetric_keys/x509_cert_parser.c
+@@ -234,6 +234,10 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
+ 	case OID_gost2012Signature512:
+ 		ctx->cert->sig->hash_algo = "streebog512";
+ 		goto ecrdsa;
++
++	case OID_sm2_with_sm3:
++		ctx->cert->sig->hash_algo = "sm3";
++		goto sm2;
  	}
+ 
+ rsa_pkcs1:
+@@ -246,6 +250,11 @@ int x509_note_pkey_algo(void *context, size_t hdrlen,
+ 	ctx->cert->sig->encoding = "raw";
+ 	ctx->algo_oid = ctx->last_oid;
+ 	return 0;
++sm2:
++	ctx->cert->sig->pkey_algo = "sm2";
++	ctx->cert->sig->encoding = "raw";
++	ctx->algo_oid = ctx->last_oid;
++	return 0;
  }
  
-+static int adxrs290_reg_access(struct iio_dev *indio_dev, unsigned int reg,
-+			       unsigned int writeval, unsigned int *readval)
-+{
-+	struct adxrs290_state *st = iio_priv(indio_dev);
-+	int ret;
+ /*
+@@ -266,7 +275,8 @@ int x509_note_signature(void *context, size_t hdrlen,
+ 	}
+ 
+ 	if (strcmp(ctx->cert->sig->pkey_algo, "rsa") == 0 ||
+-	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0) {
++	    strcmp(ctx->cert->sig->pkey_algo, "ecrdsa") == 0 ||
++	    strcmp(ctx->cert->sig->pkey_algo, "sm2") == 0) {
+ 		/* Discard the BIT STRING metadata */
+ 		if (vlen < 1 || *(const u8 *)value != 0)
+ 			return -EBADMSG;
+@@ -456,6 +466,8 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+ 	else if (ctx->last_oid == OID_gost2012PKey256 ||
+ 		 ctx->last_oid == OID_gost2012PKey512)
+ 		ctx->cert->pub->pkey_algo = "ecrdsa";
++	else if (ctx->last_oid == OID_id_ecPublicKey)
++		ctx->cert->pub->pkey_algo = "sm2";
+ 	else
+ 		return -ENOPKG;
+ 
+diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+index 657d6bf2c064..48fe3133ff39 100644
+--- a/include/linux/oid_registry.h
++++ b/include/linux/oid_registry.h
+@@ -107,6 +107,12 @@ enum OID {
+ 	OID_gostTC26Sign512B,		/* 1.2.643.7.1.2.1.2.2 */
+ 	OID_gostTC26Sign512C,		/* 1.2.643.7.1.2.1.2.3 */
+ 
++	/* OSCCA */
++	OID_sm2,			/* 1.2.156.10197.1.301 */
++	OID_sm3,			/* 1.2.156.10197.1.401 */
++	OID_sm2_with_sm3,		/* 1.2.156.10197.1.501 */
++	OID_sm3WithRSAEncryption,	/* 1.2.156.10197.1.504 */
 +
-+	if (!readval)
-+		return adxrs290_spi_write_reg(st->spi, reg, writeval);
-+
-+	ret = spi_w8r8(st->spi, ADXRS290_READ_REG(reg));
-+	if (ret < 0)
-+		return ret;
-+
-+	*readval = ret;
-+
-+	return 0;
-+}
-+
- static int adxrs290_data_rdy_trigger_set_state(struct iio_trigger *trig, bool state)
- {
- 	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
-@@ -546,6 +564,7 @@ static const struct iio_info adxrs290_info = {
- 	.read_raw = &adxrs290_read_raw,
- 	.write_raw = &adxrs290_write_raw,
- 	.read_avail = &adxrs290_read_avail,
-+	.debugfs_reg_access = &adxrs290_reg_access,
+ 	OID__NR
  };
  
- static int adxrs290_probe_trigger(struct iio_dev *indio_dev)
 -- 
-2.20.1
+2.19.1.3.ge56e4f7
 
