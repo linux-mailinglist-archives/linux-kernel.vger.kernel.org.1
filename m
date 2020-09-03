@@ -2,244 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDF725BC9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C65625BC58
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728961AbgICINg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728308AbgICIBu (ORCPT
+        id S1728803AbgICIJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:09:27 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:46887 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728224AbgICIC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244AEC061246;
-        Thu,  3 Sep 2020 01:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=b0kflq4gxR1uluB51eHU7Q3usZbi6mcYYVDY4IfwBFI=; b=pkqGicGT3B8OGmMrsMvqr2nwkA
-        T3QnBUWlF49EreJ2Gfv07FmAp80WX7HA06PFLgsLhZV+9H4QhepWr6UdzIeK20DsBRo+IevuDnbSv
-        Fte3NoasyiR+QJWMTjem/m4IHTcCgU6ucaN5aC9lQ2G6PjyKErBFjNNVz+2FXxQjB0TsP4elUu5Do
-        qutD+QLjhmGMCPXKogCP6L4OiQiELNwG3YPEzKDi4taL4By2QXZ1jXtqfGi6W/rsZbg+n3vSvdNPW
-        yi2g9joVKA/rC4p08Z0prA6yP8Ltp1uaGjXr2GEHU08Wt7GGPQTZnTpv6Gndx8NET+p24t9GIl/cQ
-        WMUvzSxw==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBi-0006dM-PD; Thu, 03 Sep 2020 08:01:43 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 15/19] amiflop: use separate gendisks for Amiga vs MS-DOS mode
+        Thu, 3 Sep 2020 04:02:56 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 46F89C57;
+        Thu,  3 Sep 2020 04:02:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=D55/OaDzBNRBa
+        kTy9/PWq45C3ef3M8Dtia0DrwcKH1c=; b=SSutjkmWap2Wcr4xxJixc1d9fYqao
+        iUz/MlwZb+LenaCotcrSjOyu1CYMBqY+zsSdVRMOQq2JOdTOSJRc9KiUZw6DwQ/G
+        oaK0U1zjAZwU+HPCc5YI0QWw/CwrAljE9eiT3FpMQgVDO8SeTfw36K+jfU4YT4w/
+        H+YMOIHkGl/TLry/G75y9AZ4dTQP/VnRe1p1G8b7xdu1okolPeLCklqJQ5QciP54
+        JF+XJ4N2Ec6E8E9MemdRrJDKP/ryNeuz7VJxNvV0fEN/1b6nanwxL+wqztpdo3Gz
+        K7q4s0w55Yu7tcWsQlk9GiG1W4Mp9Zdl1jHlvTPoaRW17Qc1fb9chHo1Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=D55/OaDzBNRBakTy9/PWq45C3ef3M8Dtia0DrwcKH1c=; b=VYkKVKwp
+        iGJOApsZ83vB22jB5sippVUgdfxNVbyFVJbRmf7M5j6nU+OSNnHpAON5jxvw4WKB
+        hIPdmjPzaUvkjCvrdU8vwG7nFnMaa20rAN7UpBhZydeG1ho4wBuhT8LoL/1Fn2uv
+        YOk1psxpiE91TRBTHDpCrwHptAy1IZEiGDpqtZmHSUqHoqG5xtKRBPHcez/NHQ3I
+        IW82SSP9/9NkxgHx3E+cIX/8JFuCDVDyyyLeIfztEsymoCuYmS69fUKEdQjwGb+t
+        wKIUCL2mj6ke0uNXgDpgPjXZKaoe1sveCvQdM8V3f7XwUSkiaPKzicAwvJdwSF83
+        LE4FPgGZC53cJQ==
+X-ME-Sender: <xms:LaNQX-OenvSW13QJyHDJt_mPjlvIrNfYS5K8a9sj38Gy8jZBv32b4Q>
+    <xme:LaNQX8-0g0UK3TxVKhKGZ8IDREBGZ80S3qoxMzVUyrCOYsrFY06GyHS0aE6qJ2ndI
+    aERIH-OcHjK9YSugU0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeegtd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:LaNQX1ROuhW2hlFGCNunWlcViWkhuSSlhL_Ebs51N9X724rB92wGGQ>
+    <xmx:LaNQX-s9BvXy9UgVKn-27ZVR4pw1-LjVO1Ff0iFvu1WuGgN3pdBjrQ>
+    <xmx:LaNQX2dDMQpHc1pHGvzLHU7Eow34NWoizgD1qhNUmX2H6APuGcg6eg>
+    <xmx:LaNQXy2RxbT8Hm0S7M8io3c5l4MiLXKPaPxmyqSG6ll_2xAgLxzlKl1av_w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7CEE7306005F;
+        Thu,  3 Sep 2020 04:02:53 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 43/80] drm/vc4: hdmi: Move accessors to vc4_hdmi
 Date:   Thu,  3 Sep 2020 10:01:15 +0200
-Message-Id: <20200903080119.441674-16-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903080119.441674-1-hch@lst.de>
-References: <20200903080119.441674-1-hch@lst.de>
+Message-Id: <886b955586264ce078d7d35e9b8ef9ae51675c27.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use separate gendisks (which share a tag_set) for the native Amgiga vs
-the MS-DOS mode instead of redirecting the gendisk lookup using a probe
-callback.  This avoids potential problems with aliased block_device
-instances and will eventually allow for removing the blk_register_region
-framework.
+The current driver only supports a single HDMI controller, and part of
+the issue is that the main vc4_dev structure holds a pointer to its
+(only) HDMI controller, and the HDMI registers accessors will use it to
+retrieve the mapped addresses.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Let's modify those accessors to use directly the vc4_hdmi structure so
+that we can eventually get rid of that single global pointer.
+
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/block/amiflop.c | 98 +++++++++++++++++++++++------------------
- 1 file changed, 55 insertions(+), 43 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 22 ++++++++--------------
+ drivers/gpu/drm/vc4/vc4_hdmi.h |  8 ++++----
+ 2 files changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/block/amiflop.c b/drivers/block/amiflop.c
-index 226219da3da6a7..de2bad8d1512f2 100644
---- a/drivers/block/amiflop.c
-+++ b/drivers/block/amiflop.c
-@@ -201,7 +201,7 @@ struct amiga_floppy_struct {
- 	int busy;			/* true when drive is active */
- 	int dirty;			/* true when trackbuf is not on disk */
- 	int status;			/* current error code for unit */
--	struct gendisk *gendisk;
-+	struct gendisk *gendisk[2];
- 	struct blk_mq_tag_set tag_set;
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 6733e4bc235b..81c0f67cd0eb 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -123,6 +123,7 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ {
+ 	struct drm_device *dev = connector->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 
+ 	if (vc4->hdmi->hpd_gpio) {
+ 		if (gpio_get_value_cansleep(vc4->hdmi->hpd_gpio) ^
+@@ -230,6 +231,7 @@ static int vc4_hdmi_stop_packet(struct drm_encoder *encoder,
+ {
+ 	struct drm_device *dev = encoder->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 	u32 packet_id = type - 0x80;
+ 
+ 	HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG,
+@@ -244,6 +246,7 @@ static void vc4_hdmi_write_infoframe(struct drm_encoder *encoder,
+ {
+ 	struct drm_device *dev = encoder->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 	u32 packet_id = frame->any.type - 0x80;
+ 	u32 packet_reg = VC4_HDMI_RAM_PACKET(packet_id);
+ 	uint8_t buffer[VC4_HDMI_PACKET_STRIDE];
+@@ -623,9 +626,6 @@ static const struct drm_encoder_helper_funcs vc4_hdmi_encoder_helper_funcs = {
+ /* HDMI audio codec callbacks */
+ static void vc4_hdmi_audio_set_mai_clock(struct vc4_hdmi *vc4_hdmi)
+ {
+-	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+-	struct drm_device *drm = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(drm);
+ 	u32 hsm_clock = clk_get_rate(vc4_hdmi->hsm_clock);
+ 	unsigned long n, m;
+ 
+@@ -645,8 +645,6 @@ static void vc4_hdmi_set_n_cts(struct vc4_hdmi *vc4_hdmi)
+ {
+ 	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+ 	struct drm_crtc *crtc = encoder->crtc;
+-	struct drm_device *drm = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(drm);
+ 	const struct drm_display_mode *mode = &crtc->state->adjusted_mode;
+ 	u32 samplerate = vc4_hdmi->audio.samplerate;
+ 	u32 n, cts;
+@@ -683,7 +681,6 @@ static int vc4_hdmi_audio_startup(struct snd_pcm_substream *substream,
+ 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
+ 	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+ 	struct drm_connector *connector = &vc4_hdmi->connector.base;
+-	struct vc4_dev *vc4 = to_vc4_dev(encoder->dev);
+ 	int ret;
+ 
+ 	if (vc4_hdmi->audio.substream && vc4_hdmi->audio.substream != substream)
+@@ -714,9 +711,7 @@ static int vc4_hdmi_audio_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ static void vc4_hdmi_audio_reset(struct vc4_hdmi *vc4_hdmi)
+ {
+ 	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+-	struct drm_device *drm = encoder->dev;
+ 	struct device *dev = &vc4_hdmi->pdev->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(drm);
+ 	int ret;
+ 
+ 	ret = vc4_hdmi_stop_packet(encoder, HDMI_INFOFRAME_TYPE_AUDIO);
+@@ -747,10 +742,7 @@ static int vc4_hdmi_audio_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai)
+ {
+ 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
+-	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+-	struct drm_device *drm = encoder->dev;
+ 	struct device *dev = &vc4_hdmi->pdev->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(drm);
+ 	u32 audio_packet_config, channel_mask;
+ 	u32 channel_map, i;
+ 
+@@ -821,8 +813,6 @@ static int vc4_hdmi_audio_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct vc4_hdmi *vc4_hdmi = dai_to_hdmi(dai);
+ 	struct drm_encoder *encoder = &vc4_hdmi->encoder.base.base;
+-	struct drm_device *drm = encoder->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(drm);
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -1082,7 +1072,8 @@ static irqreturn_t vc4_cec_irq_handler_thread(int irq, void *priv)
+ 
+ static void vc4_cec_read_msg(struct vc4_dev *vc4, u32 cntrl1)
+ {
+-	struct cec_msg *msg = &vc4->hdmi->cec_rx_msg;
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
++	struct cec_msg *msg = &vc4_hdmi->cec_rx_msg;
+ 	unsigned int i;
+ 
+ 	msg->len = 1 + ((cntrl1 & VC4_HDMI_CEC_REC_WRD_CNT_MASK) >>
+@@ -1128,6 +1119,7 @@ static irqreturn_t vc4_cec_irq_handler(int irq, void *priv)
+ static int vc4_hdmi_cec_adap_enable(struct cec_adapter *adap, bool enable)
+ {
+ 	struct vc4_dev *vc4 = cec_get_drvdata(adap);
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 	/* clock period in microseconds */
+ 	const u32 usecs = 1000000 / CEC_CLOCK_FREQ;
+ 	u32 val = HDMI_READ(VC4_HDMI_CEC_CNTRL_5);
+@@ -1171,6 +1163,7 @@ static int vc4_hdmi_cec_adap_enable(struct cec_adapter *adap, bool enable)
+ static int vc4_hdmi_cec_adap_log_addr(struct cec_adapter *adap, u8 log_addr)
+ {
+ 	struct vc4_dev *vc4 = cec_get_drvdata(adap);
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 
+ 	HDMI_WRITE(VC4_HDMI_CEC_CNTRL_1,
+ 		   (HDMI_READ(VC4_HDMI_CEC_CNTRL_1) & ~VC4_HDMI_CEC_ADDR_MASK) |
+@@ -1182,6 +1175,7 @@ static int vc4_hdmi_cec_adap_transmit(struct cec_adapter *adap, u8 attempts,
+ 				      u32 signal_free_time, struct cec_msg *msg)
+ {
+ 	struct vc4_dev *vc4 = cec_get_drvdata(adap);
++	struct vc4_hdmi *vc4_hdmi = vc4->hdmi;
+ 	u32 val;
+ 	unsigned int i;
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+index 17079a39f1b1..cdc9d90f62ac 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+@@ -78,9 +78,9 @@ struct vc4_hdmi {
+ 	struct debugfs_regset32 hd_regset;
  };
  
-@@ -1669,6 +1669,11 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
- 		return -EBUSY;
- 	}
+-#define HDMI_READ(offset) readl(vc4->hdmi->hdmicore_regs + offset)
+-#define HDMI_WRITE(offset, val) writel(val, vc4->hdmi->hdmicore_regs + offset)
+-#define HD_READ(offset) readl(vc4->hdmi->hd_regs + offset)
+-#define HD_WRITE(offset, val) writel(val, vc4->hdmi->hd_regs + offset)
++#define HDMI_READ(offset) readl(vc4_hdmi->hdmicore_regs + offset)
++#define HDMI_WRITE(offset, val) writel(val, vc4_hdmi->hdmicore_regs + offset)
++#define HD_READ(offset) readl(vc4_hdmi->hd_regs + offset)
++#define HD_WRITE(offset, val) writel(val, vc4_hdmi->hd_regs + offset)
  
-+	if (unit[drive].type->code == FD_NODRIVE) {
-+		mutex_unlock(&amiflop_mutex);
-+		return -ENXIO;
-+	}
-+
- 	if (mode & (FMODE_READ|FMODE_WRITE)) {
- 		check_disk_change(bdev);
- 		if (mode & FMODE_WRITE) {
-@@ -1695,7 +1700,7 @@ static int floppy_open(struct block_device *bdev, fmode_t mode)
- 	unit[drive].dtype=&data_types[system];
- 	unit[drive].blocks=unit[drive].type->heads*unit[drive].type->tracks*
- 		data_types[system].sects*unit[drive].type->sect_mult;
--	set_capacity(unit[drive].gendisk, unit[drive].blocks);
-+	set_capacity(unit[drive].gendisk[system], unit[drive].blocks);
- 
- 	printk(KERN_INFO "fd%d: accessing %s-disk with %s-layout\n",drive,
- 	       unit[drive].type->name, data_types[system].name);
-@@ -1772,36 +1777,68 @@ static const struct blk_mq_ops amiflop_mq_ops = {
- 	.queue_rq = amiflop_queue_rq,
- };
- 
--static struct gendisk *fd_alloc_disk(int drive)
-+static int fd_alloc_disk(int drive, int system)
- {
- 	struct gendisk *disk;
- 
- 	disk = alloc_disk(1);
- 	if (!disk)
- 		goto out;
--
--	disk->queue = blk_mq_init_sq_queue(&unit[drive].tag_set, &amiflop_mq_ops,
--						2, BLK_MQ_F_SHOULD_MERGE);
--	if (IS_ERR(disk->queue)) {
--		disk->queue = NULL;
-+	disk->queue = blk_mq_init_queue(&unit[drive].tag_set);
-+	if (IS_ERR(disk->queue))
- 		goto out_put_disk;
--	}
- 
-+	disk->major = FLOPPY_MAJOR;
-+	disk->first_minor = drive + system;
-+	disk->fops = &floppy_fops;
-+	disk->events = DISK_EVENT_MEDIA_CHANGE;
-+	if (system)
-+		sprintf(disk->disk_name, "fd%d_msdos", drive);
-+	else
-+		sprintf(disk->disk_name, "fd%d", drive);
-+	disk->private_data = &unit[drive];
-+	set_capacity(disk, 880 * 2);
-+
-+	unit[drive].gendisk[system] = disk;
-+	add_disk(disk);
-+	return 0;
-+
-+out_put_disk:
-+	disk->queue = NULL;
-+	put_disk(disk);
-+out:
-+	return -ENOMEM;
-+}
-+
-+static int fd_alloc_drive(int drive)
-+{
- 	unit[drive].trackbuf = kmalloc(FLOPPY_MAX_SECTORS * 512, GFP_KERNEL);
- 	if (!unit[drive].trackbuf)
--		goto out_cleanup_queue;
-+		goto out;
- 
--	return disk;
-+	memset(&unit[drive].tag_set, 0, sizeof(unit[drive].tag_set));
-+	unit[drive].tag_set.ops = &amiflop_mq_ops;
-+	unit[drive].tag_set.nr_hw_queues = 1;
-+	unit[drive].tag_set.nr_maps = 1;
-+	unit[drive].tag_set.queue_depth = 2;
-+	unit[drive].tag_set.numa_node = NUMA_NO_NODE;
-+	unit[drive].tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-+	if (blk_mq_alloc_tag_set(&unit[drive].tag_set))
-+		goto out_cleanup_trackbuf;
- 
--out_cleanup_queue:
--	blk_cleanup_queue(disk->queue);
--	disk->queue = NULL;
-+	pr_cont(" fd%d", drive);
-+
-+	if (fd_alloc_disk(drive, 0) || fd_alloc_disk(drive, 1))
-+		goto out_cleanup_tagset;
-+	return 0;
-+
-+out_cleanup_tagset:
- 	blk_mq_free_tag_set(&unit[drive].tag_set);
--out_put_disk:
--	put_disk(disk);
-+out_cleanup_trackbuf:
-+	kfree(unit[drive].trackbuf);
- out:
- 	unit[drive].type->code = FD_NODRIVE;
--	return NULL;
-+	return -ENOMEM;
- }
- 
- static int __init fd_probe_drives(void)
-@@ -1812,29 +1849,16 @@ static int __init fd_probe_drives(void)
- 	drives=0;
- 	nomem=0;
- 	for(drive=0;drive<FD_MAX_UNITS;drive++) {
--		struct gendisk *disk;
- 		fd_probe(drive);
- 		if (unit[drive].type->code == FD_NODRIVE)
- 			continue;
- 
--		disk = fd_alloc_disk(drive);
--		if (!disk) {
-+		if (fd_alloc_drive(drive) < 0) {
- 			pr_cont(" no mem for fd%d", drive);
- 			nomem = 1;
- 			continue;
- 		}
--		unit[drive].gendisk = disk;
- 		drives++;
--
--		pr_cont(" fd%d",drive);
--		disk->major = FLOPPY_MAJOR;
--		disk->first_minor = drive;
--		disk->fops = &floppy_fops;
--		disk->events = DISK_EVENT_MEDIA_CHANGE;
--		sprintf(disk->disk_name, "fd%d", drive);
--		disk->private_data = &unit[drive];
--		set_capacity(disk, 880*2);
--		add_disk(disk);
- 	}
- 	if ((drives > 0) || (nomem == 0)) {
- 		if (drives == 0)
-@@ -1846,15 +1870,6 @@ static int __init fd_probe_drives(void)
- 	return -ENOMEM;
- }
-  
--static struct kobject *floppy_find(dev_t dev, int *part, void *data)
--{
--	int drive = *part & 3;
--	if (unit[drive].type->code == FD_NODRIVE)
--		return NULL;
--	*part = 0;
--	return get_disk_and_module(unit[drive].gendisk);
--}
--
- static int __init amiga_floppy_probe(struct platform_device *pdev)
- {
- 	int i, ret;
-@@ -1884,9 +1899,6 @@ static int __init amiga_floppy_probe(struct platform_device *pdev)
- 	if (fd_probe_drives() < 1) /* No usable drives */
- 		goto out_probe;
- 
--	blk_register_region(MKDEV(FLOPPY_MAJOR, 0), 256, THIS_MODULE,
--				floppy_find, NULL, NULL);
--
- 	/* initialize variables */
- 	timer_setup(&motor_on_timer, motor_on_callback, 0);
- 	motor_on_timer.expires = 0;
+ #endif /* _VC4_HDMI_H_ */
 -- 
-2.28.0
-
+git-series 0.9.1
