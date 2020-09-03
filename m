@@ -2,126 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011C725CB42
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194AE25CB3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729729AbgICUj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        id S1729611AbgICUjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:39:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729375AbgICUbH (ORCPT
+        with ESMTP id S1729393AbgICUbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:31:07 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F23C061231;
-        Thu,  3 Sep 2020 13:30:59 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id q9so4120155wmj.2;
-        Thu, 03 Sep 2020 13:30:59 -0700 (PDT)
+        Thu, 3 Sep 2020 16:31:09 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA1EC061237
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:31:01 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u128so3992450ybg.17
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:31:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8Kzc7c8z/8BLZLzO00zFvlw0RIRscqiIQLsTxrgpdlY=;
-        b=PUUWA/3DwOR0XZKrhD7f6l68tbk5P/o5FOQQmpRTCPHsPuDmBxR1cfmiCkIh4pRRkG
-         ApgMa0YPGTXrqN27iHak3drv+otCQfhpzAKkRZCYFBMd53wBJf7hxZq1Llwj8GclQeVq
-         jF7vB53l1KsMwSapXwKhrUa3rUAvhoH/j76DtlI3dWZnBKSCQGjzQ/oqM9rgQ8ouOtku
-         rc31+b1AEwnwbvC5rQOvfV6CmsW+QT65UPHdOG6pOiIePlIyvHyVpJTZP0vq70aH85SE
-         tXj7tUgKAcpnYhadrY5cppTrTw55hIZBpjLMcdyozMryAYrZFDFiEUrnEz3IQd+C1Pbu
-         ao2w==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Zc5fOwGj6FL/BwQcVTQqN8jM5Y1jCC9q7imUTY2UKoE=;
+        b=BNgE/Ex9wBp4RTaOYT8mdtmEp7DyxnUyA64Gm9ruatFkrcdqc2eXDv2SBkpzV/SseI
+         Ki3DuyZGJhALAJwszdk0ZBZ1pQ8vmCyKnoTFNknw5SoXwls+Es/Yr+2jbtbvBVnoGnj8
+         wb51PO0riE7ubBDGPD3WVLD53IIwK8xSSBTHkIL/vRbXOKemRUASuxtn86yFiw7uwgyu
+         VdRwxCfj2fp7s1clcD1U+wOiTo5zcL2Qy4YStNGcFrXmpSLzJE/QCYFNgoi8suDp+DYi
+         IqApOtPKmt3CggpahQVRrrVTxOaPmT0JNkLKvsP/fv2bcPHB6DRWdPx80LxodGa3iCNs
+         flmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8Kzc7c8z/8BLZLzO00zFvlw0RIRscqiIQLsTxrgpdlY=;
-        b=NvbQCg3J/hg89CPz0Eu2L9F9JOY50zZ5xPecuMe7+G5zhqMfyZ1X1vOSt+/giMVkSp
-         9m3bx1A+TmDYa9qTlXfzp5kLzq7lq5lvKonH7p0Y8YBuT268zGGa4RFRncNT73BwTtp6
-         s9Kud3TtiLqCJM+s4erYNMWZXfdWUpG2Kcju1Uk+un+bx4vddqSDHNYNo6sT5oP6ECaD
-         S3oaorn27DGYyxAaQXEO/2cEIdMYzw78F4dk9L0l/ovsknZXllM4M0wMh0hycxJTaRg1
-         Xj5bMA/3HqsTpLB8wnlHrRWPpKV7pXaacCgTYkvd457WOxpIGXXWjJqpX+uLrJlRKI5R
-         YXUA==
-X-Gm-Message-State: AOAM530Ix1jqsakMU5Tw1GIAnyBj/2VX16k1rdJs7++UIcHHL65B2rzy
-        743o2jxiltHlPeOhyCTH7ZA=
-X-Google-Smtp-Source: ABdhPJw+tb3+WnIk1ktQolOHCtjM7VlSRebZKfzrpihaMF2DlFCRTa3VjYI21Dgt/yP0CFcatKXo0g==
-X-Received: by 2002:a1c:7405:: with SMTP id p5mr4198374wmc.35.1599165058374;
-        Thu, 03 Sep 2020 13:30:58 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:30:57 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 13/20] arm64: dts: allwinner: a64: Add HDMI audio
-Date:   Thu,  3 Sep 2020 22:30:27 +0200
-Message-Id: <20200903203034.1057334-14-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
-References: <20200903203034.1057334-1-peron.clem@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Zc5fOwGj6FL/BwQcVTQqN8jM5Y1jCC9q7imUTY2UKoE=;
+        b=RrogaY4OCcZHzeU+EP7E1VK9P5ByANyDI08cQ+rm3HId8N9/YgPdqnRsw16bcH/X1t
+         lgcKrUesEJIt+0yhkySBku2VLaRk376HUrvoH3niJDWaSVHEIFjuOlbRGtgG8NeOWM/D
+         dXRhNBsy+3eLxRnT2jGzjlCgzHYf3BjQ96mv6yeZrm7sF5aLuuDyT2aZ3PsOvHpUhd06
+         FvLEqm7pZV9zlPcjJA+oguDyRLOKJ/Pq8jqJbA0QPXSCD6sbQ1R4jUip5pgv3KQAyucq
+         xTCiZTH+F76LI+YSJ2Eyr4nrY7NjyZRLyL2TKsAl4dfqZe1b7fXeQvt/KO96zlPzyZ5j
+         uOcw==
+X-Gm-Message-State: AOAM531agiKDZKk71jm9zdbT3oIoLU1DAC+mfRWd7cyJe4WuU5aWusFK
+        4IbfcFOBHL1Sc6BIUc+K4cFTM0VmyoRHCzIQIc8=
+X-Google-Smtp-Source: ABdhPJwOs38+ji6mAOwxoH65cFtoyaDjS9TPKHuyLwiR1Gojf0+6KETd30w6tAaklsU6u1xgAxbmUkeOrgiUoBMDkZ4=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
+ (user=samitolvanen job=sendgmr) by 2002:a5b:30b:: with SMTP id
+ j11mr5537716ybp.483.1599165060985; Thu, 03 Sep 2020 13:31:00 -0700 (PDT)
+Date:   Thu,  3 Sep 2020 13:30:28 -0700
+In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
+Message-Id: <20200903203053.3411268-4-samitolvanen@google.com>
+Mime-Version: 1.0
+References: <20200624203200.78870-1-samitolvanen@google.com> <20200903203053.3411268-1-samitolvanen@google.com>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+Subject: [PATCH v2 03/28] lib/string.c: implement stpcpy
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-Add a simple-soundcard to link audio between HDMI and I2S.
+LLVM implemented a recent "libcall optimization" that lowers calls to
+`sprintf(dest, "%s", str)` where the return value is used to
+`stpcpy(dest, str) - dest`. This generally avoids the machinery involved
+in parsing format strings.  `stpcpy` is just like `strcpy` except it
+returns the pointer to the new tail of `dest`.  This optimization was
+introduced into clang-12.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Implement this so that we don't observe linkage failures due to missing
+symbol definitions for `stpcpy`.
+
+Similar to last year's fire drill with:
+commit 5f074f3e192f ("lib/string.c: implement a basic bcmp")
+
+The kernel is somewhere between a "freestanding" environment (no full libc)
+and "hosted" environment (many symbols from libc exist with the same
+type, function signature, and semantics).
+
+As H. Peter Anvin notes, there's not really a great way to inform the
+compiler that you're targeting a freestanding environment but would like
+to opt-in to some libcall optimizations (see pr/47280 below), rather than
+opt-out.
+
+Arvind notes, -fno-builtin-* behaves slightly differently between GCC
+and Clang, and Clang is missing many __builtin_* definitions, which I
+consider a bug in Clang and am working on fixing.
+
+Masahiro summarizes the subtle distinction between compilers justly:
+  To prevent transformation from foo() into bar(), there are two ways in
+  Clang to do that; -fno-builtin-foo, and -fno-builtin-bar.  There is
+  only one in GCC; -fno-buitin-foo.
+
+(Any difference in that behavior in Clang is likely a bug from a missing
+__builtin_* definition.)
+
+Masahiro also notes:
+  We want to disable optimization from foo() to bar(),
+  but we may still benefit from the optimization from
+  foo() into something else. If GCC implements the same transform, we
+  would run into a problem because it is not -fno-builtin-bar, but
+  -fno-builtin-foo that disables that optimization.
+
+  In this regard, -fno-builtin-foo would be more future-proof than
+  -fno-built-bar, but -fno-builtin-foo is still potentially overkill. We
+  may want to prevent calls from foo() being optimized into calls to
+  bar(), but we still may want other optimization on calls to foo().
+
+It seems that compilers today don't quite provide the fine grain control
+over which libcall optimizations pseudo-freestanding environments would
+prefer.
+
+Finally, Kees notes that this interface is unsafe, so we should not
+encourage its use.  As such, I've removed the declaration from any
+header, but it still needs to be exported to avoid linkage errors in
+modules.
+
+Reported-by: Sami Tolvanen <samitolvanen@google.com>
+Suggested-by: Andy Lavr <andy.lavr@gmail.com>
+Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+Suggested-by: Joe Perches <joe@perches.com>
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Cc: stable@vger.kernel.org
+Link: https://bugs.llvm.org/show_bug.cgi?id=47162
+Link: https://bugs.llvm.org/show_bug.cgi?id=47280
+Link: https://github.com/ClangBuiltLinux/linux/issues/1126
+Link: https://man7.org/linux/man-pages/man3/stpcpy.3.html
+Link: https://pubs.opengroup.org/onlinepubs/9699919799/functions/stpcpy.html
+Link: https://reviews.llvm.org/D85963
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ lib/string.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index bcf808459edf..8c540f4f64b9 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -102,6 +102,24 @@ de: display-engine {
- 		status = "disabled";
- 	};
+diff --git a/lib/string.c b/lib/string.c
+index 6012c385fb31..6bd0cf0fb009 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -272,6 +272,30 @@ ssize_t strscpy_pad(char *dest, const char *src, size_t count)
+ }
+ EXPORT_SYMBOL(strscpy_pad);
  
-+	hdmi_sound: hdmi-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "sun50i-a64-hdmi";
-+		simple-audio-card,mclk-fs = <128>;
-+		status = "disabled";
++/**
++ * stpcpy - copy a string from src to dest returning a pointer to the new end
++ *          of dest, including src's %NUL-terminator. May overrun dest.
++ * @dest: pointer to end of string being copied into. Must be large enough
++ *        to receive copy.
++ * @src: pointer to the beginning of string being copied from. Must not overlap
++ *       dest.
++ *
++ * stpcpy differs from strcpy in a key way: the return value is the new
++ * %NUL-terminated character. (for strcpy, the return value is a pointer to
++ * src. This interface is considered unsafe as it doesn't perform bounds
++ * checking of the inputs. As such it's not recommended for usage. Instead,
++ * its definition is provided in case the compiler lowers other libcalls to
++ * stpcpy.
++ */
++char *stpcpy(char *__restrict__ dest, const char *__restrict__ src);
++char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
++{
++	while ((*dest++ = *src++) != '\0')
++		/* nothing */;
++	return --dest;
++}
++EXPORT_SYMBOL(stpcpy);
 +
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s2>;
-+			dai-tdm-slot-num = <2>;
-+			dai-tdm-slot-width = <32>;
-+		};
-+	};
-+
- 	osc24M: osc24M_clk {
- 		#clock-cells = <0>;
- 		compatible = "fixed-clock";
-@@ -1155,6 +1173,7 @@ deinterlace: deinterlace@1e00000 {
- 		};
- 
- 		hdmi: hdmi@1ee0000 {
-+			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-a64-dw-hdmi",
- 				     "allwinner,sun8i-a83t-dw-hdmi";
- 			reg = <0x01ee0000 0x10000>;
+ #ifndef __HAVE_ARCH_STRCAT
+ /**
+  * strcat - Append one %NUL-terminated string to another
 -- 
-2.25.1
+2.28.0.402.g5ffc5be6b7-goog
 
