@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A3625C24F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1504325C22D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgICOQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        id S1729106AbgICOHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:07:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728731AbgICOMi (ORCPT
+        with ESMTP id S1728991AbgICN5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:12:38 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC627C0619CC;
-        Thu,  3 Sep 2020 06:25:26 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h12so2132105pgm.7;
-        Thu, 03 Sep 2020 06:25:26 -0700 (PDT)
+        Thu, 3 Sep 2020 09:57:54 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEF6C061A02
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 06:31:46 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a65so2890641wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8rBLHCW+xCPafeIkvVVQSL44AW9YIX51FOu10BKIiLw=;
-        b=OgiACbcbQ1ItN0Rs6SHierX23wZ3W0QcSSP6eHDn26H6ndV6FVvyAPfzddT63ATKJ0
-         j20K6Qun/pU/eTF15WCngzAcNZekk0cCrl5XV9cAScvAwA3M4JQrrdmh/0/XXJ1yYzc5
-         auls8Zngp7jLOtlmd6vlb/AQMblOo/0eoaP8Aft9XRyijNkiG/93XP9jlW8+HoTG5zTz
-         PgcXNTaXhjb+IOHaAL8TNTXE3sWpQ7gRKc3BTt9YcoactbZeouPK/MwojZhbkY3Ql8M6
-         5zc1xe4CjGj7XXJNE8lt/Rl2LsQnSUcXJdm6g69l1qbRYwnpzYqmwhMD3ifUehAFGv0J
-         spMQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=dKzq9Wd5pDbV7/549EiQnkURmwLmMM//csWdIgiebW8=;
+        b=oNKNZMQ+vrelVEaKz3G2tJGNGftiIxHVRLIev4M2tPePieqANfyRxtVoH6DG1ffGPH
+         QgoHxmL89GvxQF/eyfr61LHpT0ixxjGe1jgqNqmbhgw2lVP5A8DHa8houG2AicqIWgq6
+         Ux6nx0xaWhS2ZZYDwtVlDZebBBThqipXRhbIj4LV0jK3AZf3sW5hlEndjrU+/rutAYcq
+         PkmgCeVLpiKUd//KkVCZk6VJIxWO/mpKUDpMjiH9UqrqurNMw5g/3uUIy+ofrgXqpa7w
+         RdMCCtyl5iIQi18Jvq3L6D5BkirG/fLLC0g7ZKfGfHe5kTA87i2+TINQbqwuO1forBad
+         L2WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8rBLHCW+xCPafeIkvVVQSL44AW9YIX51FOu10BKIiLw=;
-        b=qdsjSrmKdsiukpSqogdso7HbbarUYCZd/pRFi8BO+0GCeBGilxM1XhR76oybwQ2pp4
-         SCgGtW+Nig6ueAUw+9Ecv3uVtw1ew0u9j2nZyn+qrpIJlX2C6SBOJ842XBYimxZ1wNbT
-         JJ3lw5kVXrMkPK5TZoTjUdMvMkV5pHRKxZQxE3SXtG1TB0q/g2KDGfRcsyhAybxdJo9y
-         QCcvRNdSmbmGpU6czpzOaOgoNHvfIrg51hsyEQK8ftbW+gAg+bvhPBXBwXEXCSJECScl
-         koZ3I6DkmRv05ATf2i3wH5QF4mUGqwjjrYeFhNyyQ3T7s6B0xHwfmwsgdv4r6mgBiTQS
-         I8yQ==
-X-Gm-Message-State: AOAM532jcwYqEBeNY+0IxlTXNK0F3DNkx6IpiCxB8SIPMehDtVr5q/He
-        UNjRqjmNIdpMnbBNU2LifFxKgTi1yX3cLk4fcR3ds1OcsbkFwEb/
-X-Google-Smtp-Source: ABdhPJzimILiNCSgnKp/qJ9/9071OtoXwPPCV8ZOTnov1Okg3uUJ9PSdnnWUgfLq+tSjngGf5i/NlRBPuXDUiWzdlSE=
-X-Received: by 2002:a17:902:b289:: with SMTP id u9mr3949007plr.226.1599139525682;
- Thu, 03 Sep 2020 06:25:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=dKzq9Wd5pDbV7/549EiQnkURmwLmMM//csWdIgiebW8=;
+        b=f4MBbbyH17Wt9Im6EF2xOo2Mv2QVNfqe/a1FdmWqTEvHW33hEmT8IdEnTmRGMFiqxy
+         eahZG4KNUhXghs9lce5wwoz1bz7aohdpvvu5ypGgd0zqiuFMm7B1rb2zKTIF3W45cwx2
+         qXKcZFGeJDhacnoNEAxcWrQPn4bibuOA3IMML6gvLSU42mfk3C8QNkYWa3fgMpkNVnTn
+         m3SCmcrPtJo0RMKXJIaDyoTgLzzbPC8tLAuHH3wS6uGSK9pfD+ragnFgWzX3VpGlj+7I
+         1UQrrHhP7POHgoC0GDDy6Va0/8ylE3FFvAhrHusBEA44V47Rl04faqdjN3xlHUOQJnS7
+         wojA==
+X-Gm-Message-State: AOAM530I1ni7vU0qqqZUHuHz5rom/kcB7VwyzvYOE8l0eD1O86KUyN1z
+        m03TcFVhZkyQhvmlZbZkKleKkw==
+X-Google-Smtp-Source: ABdhPJwideaMwQI0vVOO9NOjJGo+l6Etw+5ZlFofKjM7BTEhZ9Aoj2Q50gaHXWsGR97506yHtsDNMQ==
+X-Received: by 2002:a1c:e0d4:: with SMTP id x203mr2725879wmg.91.1599139904767;
+        Thu, 03 Sep 2020 06:31:44 -0700 (PDT)
+Received: from localhost.localdomain ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id b2sm4310768wmh.47.2020.09.03.06.31.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Sep 2020 06:31:44 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     linux-pm@vger.kernel.org, bjorn.andersson@linaro.org
+Cc:     devicetree@vger.kernel.org, robh+dt@kernel.org,
+        sibis@codeaurora.org, mka@chromium.org, dianders@chromium.org,
+        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 6/7] interconnect: qcom: sc7180: Replace xlate with xlate_extended
+Date:   Thu,  3 Sep 2020 16:31:33 +0300
+Message-Id: <20200903133134.17201-7-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200903133134.17201-1-georgi.djakov@linaro.org>
+References: <20200903133134.17201-1-georgi.djakov@linaro.org>
 MIME-Version: 1.0
-References: <20200903130950.6274-1-nish.malpani25@gmail.com> <20200903130950.6274-4-nish.malpani25@gmail.com>
-In-Reply-To: <20200903130950.6274-4-nish.malpani25@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Sep 2020 16:25:08 +0300
-Message-ID: <CAHp75VfReT-EjCV=cW8mV1MmoMPPdY9q1scoPwbD_DEHpQHd3g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] iio: gyro: adxrs290: Add debugfs register access support
-To:     Nishant Malpani <nish.malpani25@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
-        darius.berghe@analog.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 4:10 PM Nishant Malpani <nish.malpani25@gmail.com> wrote:
->
-> Extend support to read/write byte data from/to the device using
-> debugfs iio interface.
+From: Sibi Sankar <sibis@codeaurora.org>
 
-...
+Use the qcom_icc_xlate_extended() in order to parse tags, that are
+specified as an additional arguments to the path endpoints in DT.
 
-> +static int adxrs290_reg_access(struct iio_dev *indio_dev, unsigned int reg,
-> +                              unsigned int writeval, unsigned int *readval)
-> +{
-> +       struct adxrs290_state *st = iio_priv(indio_dev);
-> +       int ret;
-> +
-> +       if (!readval)
-> +               return adxrs290_spi_write_reg(st->spi, reg, writeval);
-> +
-> +       ret = spi_w8r8(st->spi, ADXRS290_READ_REG(reg));
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       *readval = ret;
-> +
-> +       return 0;
-> +}
+Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ drivers/interconnect/qcom/sc7180.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hmm... I would suggest to have it like
-
-adxrs290_reg_access_rw()
-{
- ...
- return 0;
-}
-
-adxrs290_reg_access()
-{
- if (readval)
-  return adxrs290_reg_access_rw();
- else // it's redundant, but someone can use for better formatting
-  return adxrs290_spi_write_reg();
-}
-
--- 
-With Best Regards,
-Andy Shevchenko
+diff --git a/drivers/interconnect/qcom/sc7180.c b/drivers/interconnect/qcom/sc7180.c
+index dcf493d07928..a6f119f363b1 100644
+--- a/drivers/interconnect/qcom/sc7180.c
++++ b/drivers/interconnect/qcom/sc7180.c
+@@ -535,7 +535,7 @@ static int qnoc_probe(struct platform_device *pdev)
+ 	provider->set = qcom_icc_set;
+ 	provider->pre_aggregate = qcom_icc_pre_aggregate;
+ 	provider->aggregate = qcom_icc_aggregate;
+-	provider->xlate = of_icc_xlate_onecell;
++	provider->xlate_extended = qcom_icc_xlate_extended;
+ 	INIT_LIST_HEAD(&provider->nodes);
+ 	provider->data = data;
+ 
