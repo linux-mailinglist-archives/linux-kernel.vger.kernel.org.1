@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1B425C245
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E34525C252
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgICOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:12:40 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34932 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729142AbgICOKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:10:07 -0400
-IronPort-SDR: c7qgbts54Y3P1Y2SvMcDeRwFb6ohKhODd/xjnUjbw+0b31oewotWf3NS8hnxECQPMUneM7P8g5
- r7byl4bChipQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="219129982"
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="219129982"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 07:09:39 -0700
-IronPort-SDR: rkZ0Olar/QMGUYe0mhdZgEL72iAnn+i/sGoky55dDU7fVd4VgjWgmNUES9gyd25QUNbpwm4FXb
- Cij5BElBsaRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="331797666"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 03 Sep 2020 07:09:37 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kDptc-00E2xB-51; Thu, 03 Sep 2020 17:07:24 +0300
-Date:   Thu, 3 Sep 2020 17:07:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] media: atomisp: get rid of
- -Wsuggest-attribute=format warnings
-Message-ID: <20200903140724.GE1891694@smile.fi.intel.com>
-References: <cover.1599141140.git.mchehab+huawei@kernel.org>
- <6c77d765707b1e6b2901fd23d85b4d032f1a1799.1599141140.git.mchehab+huawei@kernel.org>
+        id S1729251AbgICORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:17:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39896 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729207AbgICONs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:13:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599142427;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I0HZj8Fjtd+TJ8+nY3F25eaagzLSvWKMqED4dPK0Qo8=;
+        b=AUH7edDxvyXxmaA4o/KEAnueoYM9XrcNvJRYFlTUWCKScjg6PmklOhfxDH6cDiKr02wMB0
+        Fz3Wkq14s7dVuXofDfKV2lP/Q9qAwkh5LkQy/agdpjUYjAAO2yWhYTa7RPaQO30n6hm0c0
+        sT+uMiUfa6v66hkNuj+o9sBIpgKpaOQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-434-0_InniYDM--af73vdO89cw-1; Thu, 03 Sep 2020 10:13:46 -0400
+X-MC-Unique: 0_InniYDM--af73vdO89cw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1594C10ABDD9;
+        Thu,  3 Sep 2020 14:13:45 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 82E1E7E408;
+        Thu,  3 Sep 2020 14:13:43 +0000 (UTC)
+Subject: Re: [PATCH v4 03/10] vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO
+ ioctl
+To:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
+        laurentiu.tudor@nxp.com, Bharat Bhushan <Bharat.Bhushan@nxp.com>
+References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
+ <20200826093315.5279-4-diana.craciun@oss.nxp.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <c201d6b8-a824-76ff-124a-177093d7a23f@redhat.com>
+Date:   Thu, 3 Sep 2020 16:13:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <20200826093315.5279-4-diana.craciun@oss.nxp.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6c77d765707b1e6b2901fd23d85b4d032f1a1799.1599141140.git.mchehab+huawei@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 03:57:32PM +0200, Mauro Carvalho Chehab wrote:
-> There are some warnings reported by gcc:
-> 	drivers/staging/media/atomisp//pci/atomisp_compat_css20.c:164:2: warning: function ‘atomisp_css2_dbg_print’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-> 	drivers/staging/media/atomisp//pci/atomisp_compat_css20.c:170:2: warning: function ‘atomisp_css2_dbg_ftrace_print’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-> 	drivers/staging/media/atomisp//pci/atomisp_compat_css20.c:170:2: warning: function ‘atomisp_css2_dbg_ftrace_print’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-> 	drivers/staging/media/atomisp//pci/atomisp_compat_css20.c:176:2: warning: function ‘atomisp_css2_err_print’ might be a candidate for ‘gnu_printf’ format attribute [-Wsuggest-attribute=format]
-> 
-> That are due to the usage of printf-like messages without
-> enabling the error checking logic.
-> 
-> Add the proper attributes in order to shut up such warnings.
+Hi Diana,
 
-> +static int  __attribute__((format (printf, 1, 0)))
-> +atomisp_css2_dbg_ftrace_print(const char *fmt, va_list args)
+On 8/26/20 11:33 AM, Diana Craciun wrote:
+> Allow userspace to get fsl-mc device info (number of regions
+> and irqs).
+> 
+> Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
+> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Thanks
+
+Eric
+> ---
+>  drivers/vfio/fsl-mc/vfio_fsl_mc.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> index 85e007be3a5d..5a5460d01f00 100644
+> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+> @@ -33,10 +33,29 @@ static void vfio_fsl_mc_release(void *device_data)
+>  static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
+>  			      unsigned long arg)
 >  {
->  	ftrace_vprintk(fmt, args);
->  	return 0;
->  }
->  
-
-Why not to drop it completely as well?
-
-> -static int atomisp_css2_err_print(const char *fmt, va_list args)
-> -{
-> -	vprintk(fmt, args);
-> -	return 0;
-> -}
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> +	unsigned long minsz;
+> +	struct vfio_fsl_mc_device *vdev = device_data;
+> +	struct fsl_mc_device *mc_dev = vdev->mc_dev;
+> +
+>  	switch (cmd) {
+>  	case VFIO_DEVICE_GET_INFO:
+>  	{
+> -		return -ENOTTY;
+> +		struct vfio_device_info info;
+> +
+> +		minsz = offsetofend(struct vfio_device_info, num_irqs);
+> +
+> +		if (copy_from_user(&info, (void __user *)arg, minsz))
+> +			return -EFAULT;
+> +
+> +		if (info.argsz < minsz)
+> +			return -EINVAL;
+> +
+> +		info.flags = VFIO_DEVICE_FLAGS_FSL_MC;
+> +		info.num_regions = mc_dev->obj_desc.region_count;
+> +		info.num_irqs = mc_dev->obj_desc.irq_count;
+> +
+> +		return copy_to_user((void __user *)arg, &info, minsz) ?
+> +			-EFAULT : 0;
+>  	}
+>  	case VFIO_DEVICE_GET_REGION_INFO:
+>  	{
+> 
 
