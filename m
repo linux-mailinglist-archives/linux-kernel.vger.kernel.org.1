@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB12E25C004
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036DA25C054
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgICLSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:18:04 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:6185 "EHLO pegase1.c-s.fr"
+        id S1728535AbgICLaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:30:13 -0400
+Received: from crapouillou.net ([89.234.176.41]:50376 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727799AbgICLPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:15:41 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bhys33byhz9vCyR;
-        Thu,  3 Sep 2020 13:15:19 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id IsxfKL8rKCpI; Thu,  3 Sep 2020 13:15:19 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bhys32SNgz9vCyN;
-        Thu,  3 Sep 2020 13:15:19 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9FD558B7FA;
-        Thu,  3 Sep 2020 13:15:20 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 6OaqXtM4BBp5; Thu,  3 Sep 2020 13:15:20 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 494FF8B7B1;
-        Thu,  3 Sep 2020 13:15:20 +0200 (CEST)
-Subject: Re: watchdog start on restart
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <d2343032814705f33cd81f18f45630bf327c0ff8.camel@yadro.com>
- <1721f170-95df-2451-e3af-6369e830afad@roeck-us.net>
- <2b14920abf9f430731ec11c1df6c0253185c7ce7.camel@yadro.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <d6aa46c5-a1ac-c32e-5cc6-bf9a15a53b65@csgroup.eu>
-Date:   Thu, 3 Sep 2020 13:13:58 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728422AbgICL0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:26:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1599132365; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nylEOZ/ud9dJuiCng3IS9pJVAuTv7JQFJCJlDdh38kA=;
+        b=JuRU33REs724J6eVnbhIDjfeUMWW9tOA78MdFBc3i95nB9cktLPxKK2ChHPcQK628+jfXp
+        i3+e9cDmuhgUwtVBolHIKO9sH8/eX+Ybb3YnUm1v+0udsj1vdEp3baEUPowH0LfsUOS6V5
+        R9po9WQ1ueOAKCWhmtjbsOVyV8m+OMk=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Tony Prisk <linux@prisktech.co.nz>, Bin Liu <b-liu@ti.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 01/20] usb/host: ohci-platform: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:35 +0200
+Message-Id: <20200903112554.34263-2-paul@crapouillou.net>
+In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
+References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <2b14920abf9f430731ec11c1df6c0253185c7ce7.camel@yadro.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use the newly introduced pm_ptr() macro, and mark the suspend/resume
+functions __maybe_unused. These functions can then be moved outside the
+CONFIG_PM_SUSPEND block, and the compiler can then process them and
+detect build failures independently of the config. If unused, they will
+simply be discarded by the compiler.
 
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/usb/host/ohci-platform.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-Le 03/09/2020 à 12:23, Ivan Mikhaylov a écrit :
-> On Wed, 2020-09-02 at 06:36 -0700, Guenter Roeck wrote:
->> On 9/2/20 6:02 AM, Ivan Mikhaylov wrote:
->>> Hello everyone. Currently, the watchdog interface only has "stop watchdog on
->>> restart" but lacks a "start watchdog on restart" one. Is there a way to
->>> achieve
->>> such functionality?
->>>
->>> I'd like to know why "stop watchdog on restart" wasn't implemented via ioctl
->>> interface? It would be more convenient from user perspective and you can
->>> control that behavior whenever you want from application layer.
->>>
->>
->> Because it is and always was a driver level decision. The function was added
->> to replace lots of driver level code implementing this functionality.
->> Overriding it from userspace doesn't make sense because the driver is supposed
->> to have a reason for disabling it on reboot (for example due to clock issues
->> or power issues or becasue it has a short hardware timeout).
-> 
-> If it's only driver level decision then it makes sense.
-> 
->> That functionality doesn't make much sense. It can be accomplished by not
->> stopping the watchdog on reboot in the first place. And if the watchdog
->> wasn't running before, it can be started from userspace just before the
->> reboot.
-> 
-> I understand that it can be started from userspace. As example, I want the
-> watchdog trigger with guarantee that the userspace will be properly shut on
-> reboot, how can I get it with current interface? Just start before the reboot
-> doesn't guarantee that it will be triggered or will be triggered in middle
-> of reboot/restart.
-> 
+diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
+index 4a8456f12a73..21400d7d8b0a 100644
+--- a/drivers/usb/host/ohci-platform.c
++++ b/drivers/usb/host/ohci-platform.c
+@@ -176,22 +176,21 @@ static int ohci_platform_probe(struct platform_device *dev)
+ 	if (pdata->num_ports)
+ 		ohci->num_ports = pdata->num_ports;
+ 
+-#ifndef CONFIG_USB_OHCI_BIG_ENDIAN_MMIO
+-	if (ohci->flags & OHCI_QUIRK_BE_MMIO) {
++	if (!IS_ENABLED(CONFIG_USB_OHCI_BIG_ENDIAN_MMIO) &&
++	    ohci->flags & OHCI_QUIRK_BE_MMIO) {
+ 		dev_err(&dev->dev,
+ 			"Error: CONFIG_USB_OHCI_BIG_ENDIAN_MMIO not set\n");
+ 		err = -EINVAL;
+ 		goto err_reset;
+ 	}
+-#endif
+-#ifndef CONFIG_USB_OHCI_BIG_ENDIAN_DESC
+-	if (ohci->flags & OHCI_QUIRK_BE_DESC) {
++
++	if (!IS_ENABLED(CONFIG_USB_OHCI_BIG_ENDIAN_DESC) &&
++	    ohci->flags & OHCI_QUIRK_BE_DESC) {
+ 		dev_err(&dev->dev,
+ 			"Error: CONFIG_USB_OHCI_BIG_ENDIAN_DESC not set\n");
+ 		err = -EINVAL;
+ 		goto err_reset;
+ 	}
+-#endif
+ 
+ 	pm_runtime_set_active(&dev->dev);
+ 	pm_runtime_enable(&dev->dev);
+@@ -267,8 +266,7 @@ static int ohci_platform_remove(struct platform_device *dev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-static int ohci_platform_suspend(struct device *dev)
++static int __maybe_unused ohci_platform_suspend(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+ 	struct usb_ohci_pdata *pdata = dev->platform_data;
+@@ -286,7 +284,7 @@ static int ohci_platform_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
+-static int ohci_platform_resume(struct device *dev)
++static int __maybe_unused ohci_platform_resume(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+ 	struct usb_ohci_pdata *pdata = dev_get_platdata(dev);
+@@ -306,7 +304,6 @@ static int ohci_platform_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-#endif /* CONFIG_PM_SLEEP */
+ 
+ static const struct of_device_id ohci_platform_ids[] = {
+ 	{ .compatible = "generic-ohci", },
+@@ -332,7 +329,7 @@ static struct platform_driver ohci_platform_driver = {
+ 	.shutdown	= usb_hcd_platform_shutdown,
+ 	.driver		= {
+ 		.name	= "ohci-platform",
+-		.pm	= &ohci_platform_pm_ops,
++		.pm	= pm_ptr(&ohci_platform_pm_ops),
+ 		.of_match_table = ohci_platform_ids,
+ 	}
+ };
+-- 
+2.28.0
 
-I'm not sure I understand what you want to do.
-
-You want to start the watchdog just before calling 'reboot' but want to 
-make sure that the watchdog will not reset the board before all 
-userspace has shut down correctly ?
-
-But what is the purpose of the watchdog then, isn't it there to make 
-sure that the machine gets reboot within a given timeout anyway in case 
-some userspace takes too long to shut down ?
-
-Christophe
