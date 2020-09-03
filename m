@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E73F25BC5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235FA25BCC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728805AbgICIJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:09:34 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:48021 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726268AbgICICv (ORCPT
+        id S1728192AbgICIPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728280AbgICIBj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:02:51 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 12BDECA6;
-        Thu,  3 Sep 2020 04:02:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=aBB5SQ24pyqVM
-        W/fyj8ngOXqAKkOS41AE2GxM0LTpXw=; b=BZ06Qo+MMIB1pOXwh1RZCprG/LQ6Q
-        MPXOVRPemMsfXqUyoEYGNQ/lh56MnAbFkmaLA3EfMsvLBC6SwFXoEfqfBRDOhxnu
-        T4+ZimwNWnAnmCkHS/MS+PD1h1nk26j22w50p5Ytwu36OruGiMrtz3N5qMCpAQD8
-        JT+6kThNqO2nNDqYZ9OvPwQcVXBAPezYOq4VzkuA+SolKNZ8OQ4rQsrAu+tEcPOa
-        DqnXVzwPByY7um/3HPW8iq5nzFYBDZsS4x2CNx5lr5wTtKhJrkZKzQcBBLT04lTt
-        BPaJVZdzq1gUSiU7D0nLnnBhRhtrD4pZ7UYrNg3D4okeMw4XGSFWglJUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=aBB5SQ24pyqVMW/fyj8ngOXqAKkOS41AE2GxM0LTpXw=; b=SAlrKZWn
-        xgLGQCS8BHm2r3LDY6Kr24xEXw51A/1hUNbnd2L4z+Sbcc+id502RZf2KOHvIZpm
-        UuTRZAHDAtgCj9XXFZdsmlzC4sYkIP1rHCTOPgjGnI5uQVtGk9Bw3wyIBbEyuBui
-        6lUl2PUy13w3Re3Yd6vLCI7L25ffB+UBljQJRJHid78IfW1G5HjFVc/6Vyb+LwO7
-        ZTQCXzXzAJd/Qx2MdTHtv/u5fpm4U5WR2JrGGusO6+PS5x8IaTjp2DCdbWAXrGHU
-        FkBMH2yjRJuH1b28h3m8fwMxBaatqRA8n4HpaRQd87UCnrf5qjido6b3ObzUijKi
-        j1BCrevFncebtg==
-X-ME-Sender: <xms:JKNQX-6mZ1vJvCZCrvrlzU7USpMJPQ9Q2iohgAcdB8K0Ly0_Yu0w5Q>
-    <xme:JKNQX34DepqkTmLtz2JblZK-sNqXqE_HM8Pd_DEJhnK2tgLRS9k-OzBDYTSA4GafT
-    TvTr8oI4j4AwpGQ42o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
-    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefvd
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:JKNQX9cIn9hthLsOJqhjOlMDV1mOsJGcuRISkt6Y4F2mvBH1hZCFRg>
-    <xmx:JKNQX7JZv_ogNx8sSLnJdg6RQeoBDCCcIWxs3Cx39-IX5hhyyOf29w>
-    <xmx:JKNQXyLhavY6smsuiYmVnfuZf-6p5MR4glvqO0Af3PzQIDnV9B_Fuw>
-    <xmx:JKNQX0AUmlClnAazqGVHE1q4QkoCP7wHncFAFV3XzY_6ZqNOMmPfKXRR00Y>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D785F3280060;
-        Thu,  3 Sep 2020 04:02:43 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH v5 36/80] dt-bindings: display: vc4: pv: Add BCM2711 pixel valves
-Date:   Thu,  3 Sep 2020 10:01:08 +0200
-Message-Id: <3a21824460d96245984d730e446863a4853f2ae5.1599120059.git-series.maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+        Thu, 3 Sep 2020 04:01:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363B0C061245;
+        Thu,  3 Sep 2020 01:01:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=jtS62lQ0Rm8mpaW0OdPDrzysFsFYBLY+VRU8MHAlSxE=; b=KFoHKJIntr7HYs+GfXiVXMrydl
+        u16r7jFZuBANNgpX4jFo0Yd1h0BICAJwVVjJ1GGFBaiHgOXQToB7uwSp1c4rpnu55LfhHmnTUr/I3
+        96JMJCBua8BT/hsCfaMcf96vAkpcfCUxfCejuQN34FoZ8GPBNF3H1JwHmnAve95NtABOe9Elg1LPg
+        OI0Uf51wlkU6xXig7Hb1qLBOl1DSov2nlLalbe0bl3z70gfDT9FVHradEDJ5Bx7ZrvMy6ur2ZxnuY
+        5jH1/ixX8IWNfBI9ICzHVPNAawlIBjbHJ00OkTyuxk5bhNQp0hd0rk7zCs9DCPTfRyrYtvHY+7aHx
+        JLGPtaHw==;
+Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDkBZ-0006bg-L2; Thu, 03 Sep 2020 08:01:33 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 09/19] sd: use __register_blkdev to avoid a modprobe for an unregistered dev_t
+Date:   Thu,  3 Sep 2020 10:01:09 +0200
+Message-Id: <20200903080119.441674-10-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903080119.441674-1-hch@lst.de>
+References: <20200903080119.441674-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BCM2711 comes with other pixelvalves that have different requirements
-and capabilities. Let's document their compatible.
+Switch from using blk_register_region to the probe callback passed to
+__register_blkdev to disable the request_module call for an unclaimed
+dev_t in the SD majors.
 
-Reviewed-by: Rob Herring <robh+dt@kernel.org>
-Reviewed-by: Eric Anholt <eric@anholt.net>
-Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- Documentation/devicetree/bindings/display/brcm,bcm2835-pixelvalve0.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/scsi/sd.c | 19 +++++--------------
+ 1 file changed, 5 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-pixelvalve0.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-pixelvalve0.yaml
-index e60791db1fa1..4e1ba03f6477 100644
---- a/Documentation/devicetree/bindings/display/brcm,bcm2835-pixelvalve0.yaml
-+++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-pixelvalve0.yaml
-@@ -15,6 +15,11 @@ properties:
-       - brcm,bcm2835-pixelvalve0
-       - brcm,bcm2835-pixelvalve1
-       - brcm,bcm2835-pixelvalve2
-+      - brcm,bcm2711-pixelvalve0
-+      - brcm,bcm2711-pixelvalve1
-+      - brcm,bcm2711-pixelvalve2
-+      - brcm,bcm2711-pixelvalve3
-+      - brcm,bcm2711-pixelvalve4
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 2bec8cd526164d..97bf84b1871571 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -596,13 +596,11 @@ static struct scsi_driver sd_template = {
+ };
  
-   reg:
-     maxItems: 1
+ /*
+- * Dummy kobj_map->probe function.
+- * The default ->probe function will call modprobe, which is
+- * pointless as this module is already loaded.
++ * Don't request a new module, as that could deadlock in multipath
++ * environment.
+  */
+-static struct kobject *sd_default_probe(dev_t devt, int *partno, void *data)
++static void sd_default_probe(dev_t devt)
+ {
+-	return NULL;
+ }
+ 
+ /*
+@@ -3481,9 +3479,6 @@ static int sd_remove(struct device *dev)
+ 
+ 	free_opal_dev(sdkp->opal_dev);
+ 
+-	blk_register_region(devt, SD_MINORS, NULL,
+-			    sd_default_probe, NULL, NULL);
+-
+ 	mutex_lock(&sd_ref_mutex);
+ 	dev_set_drvdata(dev, NULL);
+ 	put_device(&sdkp->dev);
+@@ -3673,11 +3668,9 @@ static int __init init_sd(void)
+ 	SCSI_LOG_HLQUEUE(3, printk("init_sd: sd driver entry point\n"));
+ 
+ 	for (i = 0; i < SD_MAJORS; i++) {
+-		if (register_blkdev(sd_major(i), "sd") != 0)
++		if (__register_blkdev(sd_major(i), "sd", sd_default_probe))
+ 			continue;
+ 		majors++;
+-		blk_register_region(sd_major(i), SD_MINORS, NULL,
+-				    sd_default_probe, NULL, NULL);
+ 	}
+ 
+ 	if (!majors)
+@@ -3750,10 +3743,8 @@ static void __exit exit_sd(void)
+ 
+ 	class_unregister(&sd_disk_class);
+ 
+-	for (i = 0; i < SD_MAJORS; i++) {
+-		blk_unregister_region(sd_major(i), SD_MINORS);
++	for (i = 0; i < SD_MAJORS; i++)
+ 		unregister_blkdev(sd_major(i), "sd");
+-	}
+ }
+ 
+ module_init(init_sd);
 -- 
-git-series 0.9.1
+2.28.0
+
