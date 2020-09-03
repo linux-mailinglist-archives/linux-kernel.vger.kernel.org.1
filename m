@@ -2,104 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B5925B917
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 05:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B9525B91F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 05:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728104AbgICDTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 23:19:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgICDTM (ORCPT
+        id S1728169AbgICDXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 23:23:36 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33269 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728114AbgICDXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 23:19:12 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89382C061244;
-        Wed,  2 Sep 2020 20:19:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h12so932219pgm.7;
-        Wed, 02 Sep 2020 20:19:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NybMT57+LqComuPCH5w4ICM4pB0an3OV0/NxCqZvdQ4=;
-        b=OTReT3xy09LAvQqw3J5r88uZhYemMZRJILPZfkUolo7+YtDKHYCeiSzguKt/eXhxMX
-         GXjSoHvOEaWjitkIneYVQc3aTR6c+qUnvh/SN5DNBfcrHqQewl8EAaJxvv3nx9pKlcnD
-         vdpnVWNPeah+FMbeN9k69j3J72qNd/aiXe9z/qpiEuuZTEDymoSvrjrljcljOi/YWCIf
-         3IgojqR2mpucNIb7kX8u3GUI9m28tHWYuwJSpLjY6NN2L6OaetR7wbpVqBkTWs/aeGXV
-         sD1BaIvjnLIxnPkMvHbVgNK+j28xCtUeJPqgqpHw75NmA2jubpcDAK1hB15gXe3mpTV4
-         Mcbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NybMT57+LqComuPCH5w4ICM4pB0an3OV0/NxCqZvdQ4=;
-        b=aPKu7YgK54G2zD3Ok3ewQrh8NChe/zT2AQXOOdRYCgJ6yeSv9DQxwbdqUjG2eoXdbB
-         OsreHLYVr0mBWs84jZ28RbKSWbkEPkiwR+kKo12KhAa+tW/EnSckof4Zc5mkWCsAbiri
-         iy4BqIeMR5QZqeM8PejfUw49uDn2et0XZUD0dRF0ld2sg+gsA0JS0uB1+vIBqU2EXWo4
-         /2sMppYjKT8lPhvGk1brzJoQe6HA4qo0TbrCT41o8kv065RnEPlbbjagA2kuz5W7hKIa
-         xsMJe7Ois9BLPKc+2G+gjm5lrHBDuMQUjdYkAXVJgTlrGt5FSVl989BzmbQiHtzeYYNS
-         L+dQ==
-X-Gm-Message-State: AOAM532ikMrVdebFwxKnS3+fHeLZf9kbXPVT9HHOmGvueBwN1fL81zxx
-        OVBWoSjfA6uybGQp0fjFDLX7/4K3+kg=
-X-Google-Smtp-Source: ABdhPJxFvmAcO+NEPAiW/SfP3uzv4RdE9NWt6eVkmB6vyO4C/HemrVN4IYXYzPeOtjrgPmv1iAyWAw==
-X-Received: by 2002:a63:fc18:: with SMTP id j24mr1023744pgi.452.1599103149294;
-        Wed, 02 Sep 2020 20:19:09 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t11sm726057pjy.40.2020.09.02.20.19.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Sep 2020 20:19:08 -0700 (PDT)
-Date:   Wed, 2 Sep 2020 20:19:07 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        linux-uvc-devel@lists.sourceforge.net, linux-usb@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] media: uvcvideo: Fix race conditions
-Message-ID: <20200903031907.GA103631@roeck-us.net>
-References: <20200830150443.167286-1-linux@roeck-us.net>
- <20200830155833.GA6043@pendragon.ideasonboard.com>
- <ac2080a1-3b00-ac9e-cd49-d1ee84c6ca25@roeck-us.net>
- <20200830213621.GC6043@pendragon.ideasonboard.com>
- <20200831001010.GA92208@roeck-us.net>
+        Wed, 2 Sep 2020 23:23:34 -0400
+X-UUID: 1cbfa0565a094d9196a3615c15a323d4-20200903
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ZzVWqmZ4hmCEX+Rs3hKA1UeFqdRACpfHBjBNpXFsk+g=;
+        b=HyXTjZY4ExCO2twfBPJF9RqATgkL7hygrHBFch+TTn8AOOAn4huMqj7CcDNUwMgjMyAaWewtTccP+DZ/1hWFEPA2sTkD9VxRBNssZbWzlwbn4cB4fBomwU9hU2A41qdmsbwQ+c+HXiY9y/G+NfnAvpvfv+j/H/O64mQd/zHXgDs=;
+X-UUID: 1cbfa0565a094d9196a3615c15a323d4-20200903
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1410354609; Thu, 03 Sep 2020 11:23:25 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 3 Sep 2020 11:23:22 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 3 Sep 2020 11:23:23 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+CC:     James Liao <jamesjj.liao@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>,
+        Wendell Lin <wendell.lin@mediatek.com>
+Subject: [PATCH v3 0/9] Mediatek MT8192 clock support 
+Date:   Thu, 3 Sep 2020 11:22:51 +0800
+Message-ID: <1599103380-4155-1-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200831001010.GA92208@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 30, 2020 at 05:10:10PM -0700, Guenter Roeck wrote:
-> On Mon, Aug 31, 2020 at 12:36:21AM +0300, Laurent Pinchart wrote:
-> > Hi Guenter,
-> > 
-> [ ... ]
-> 
-> > I'll try to prototype what I envision would be a good solution in the
-> > V4L2 core. If stars align, I may even try to push it one level up, to
-> > the chardev layer. Would you then be able to test it ?
-> > 
-> 
-> Sure, I'll be happy to do that.
-> 
-> I ordered a couple of non-UVC webcams (pwc and gspca) from eBay for
-> comparison. Both of those use the v4l2 locking mechanism, so we should
-> be able to see the difference.
-> 
+VGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gdjUuOS1yYzEgYW5kIE1UODE5MiBkdHNbMV0uDQoNClsx
+XSBodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL2NvdmVyLzExNzEzNTU1Lw0KDQpjaGFuZ2Vz
+IHNpbmNlIHYyOg0KLSB1cGRhdGUgYW5kIHNwbGl0IGR0LWJpbmRpbmcgZG9jdW1lbnRzIGJ5IGZ1
+bmN0aW9uYWxpdGllcw0KLSBhZGQgZXJyb3IgY2hlY2tpbmcgaW4gcHJvYmUoKSBmdW5jdGlvbg0K
+LSBmaXggaW5jb3JyZWN0IGNsb2NrIHJlbGF0aW9uIGFuZCBhZGQgY3JpdGljYWwgY2xvY2tzDQot
+IHVwZGF0ZSBsaWNlbnNlIGlkZW50aWZpZXIgYW5kIG1pbm9yIGZpeCBvZiBjb2Rpbmcgc3R5bGUN
+Cg0KY2hhbmdlcyBzaW5jZSB2MToNCi0gZml4IGFzeW1tZXRyaWNhbCBjb250cm9sIG9mIFBMTA0K
+LSBoYXZlIGVuX21hc2sgdXNlZCBhcyBkaXZpZGVyIGVuYWJsZSBtYXNrIG9uIGFsbCBNZWRpYVRl
+ayBTb0MNCg0KV2VpeWkgTHUgKDkpOg0KICBkdC1iaW5kaW5nczogQVJNOiBNZWRpYXRlazogRG9j
+dW1lbnQgYmluZGluZ3MgZm9yIE1UODE5MiBCU1ANCiAgZHQtYmluZGluZ3M6IEFSTTogTWVkaWF0
+ZWs6IERvY3VtZW50IGJpbmRpbmdzIGZvciBNVDgxOTIgQXVkaW8NCiAgZHQtYmluZGluZ3M6IEFS
+TTogTWVkaWF0ZWs6IERvY3VtZW50IGJpbmRpbmdzIGZvciBNVDgxOTIgTXVsdGltZWRpYQ0KICBk
+dC1iaW5kaW5nczogQVJNOiBNZWRpYXRlazogRG9jdW1lbnQgYmluZGluZ3MgZm9yIE1UODE5MiBD
+YW1lcmENCiAgZHQtYmluZGluZ3M6IEFSTTogTWVkaWF0ZWs6IERvY3VtZW50IGJpbmRpbmdzIGZv
+ciBNVDgxOTIgQVBVIGFuZCBHUFUNCiAgY2xrOiBtZWRpYXRlazogQWRkIGR0LWJpbmRpbmdzIGZv
+ciBNVDgxOTIgY2xvY2tzDQogIGNsazogbWVkaWF0ZWs6IEZpeCBhc3ltbWV0cmljYWwgUExMIGVu
+YWJsZSBhbmQgZGlzYWJsZSBjb250cm9sDQogIGNsazogbWVkaWF0ZWs6IEFkZCBjb25maWd1cmFi
+bGUgZW5hYmxlIGNvbnRyb2wgdG8gbXRrX3BsbF9kYXRhDQogIGNsazogbWVkaWF0ZWs6IEFkZCBN
+VDgxOTIgY2xvY2sgc3VwcG9ydA0KDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxhcG1peGVk
+c3lzLnR4dCAgICAgIHwgICAgMSArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxhdWRzeXMudHh0IHwgICAgMSArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxjYW1zeXMt
+cmF3LnlhbWwgICAgIHwgICA1NCArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxjYW1zeXMudHh0IHwgICAgMSArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxpbWdzeXMudHh0IHwgICAgMiArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxpbXBfaWlj
+X3dyYXAueWFtbCAgIHwgICA3OCArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxpbmZyYWNm
+Zy50eHQgICAgICAgIHwgICAgMSArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxpcGVzeXMudHh0IHwgICAgMSArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxtZHBzeXMu
+eWFtbCAgICAgICAgIHwgICAzOCArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxtZmdjZmcudHh0IHwgICAgMSArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxtbXN5cy50eHQgIHwgICAgMSArDQogLi4uL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRl
+ayxtc2RjLnlhbWwgIHwgICA0NiArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxwZXJpY2Zn
+LnlhbWwgICAgICAgIHwgICAgMSArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayxzY3AtYWRz
+cC55YW1sICAgICAgIHwgICAzOCArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayx0b3Bja2dl
+bi50eHQgICAgICAgIHwgICAgMSArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayx2ZGVjc3lz
+LXNvYy55YW1sICAgIHwgICAzOCArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayx2ZGVjc3lz
+LnR4dCAgICAgICAgIHwgICAgMSArDQogLi4uL2FybS9tZWRpYXRlay9tZWRpYXRlayx2ZW5jc3lz
+LnR4dCAgICAgICAgIHwgICAgMSArDQogZHJpdmVycy9jbGsvbWVkaWF0ZWsvS2NvbmZpZyAgICAg
+ICAgICAgICAgICAgIHwgIDE0NiArKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL01ha2VmaWxlICAg
+ICAgICAgICAgICAgICB8ICAgMjQgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDI3MDEu
+YyAgICAgICAgICAgICB8ICAgMjYgKy0NCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQyNzEy
+LmMgICAgICAgICAgICAgfCAgIDMwICstDQogZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10Njc2
+NS5jICAgICAgICAgICAgIHwgICAyMCArLQ0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDY3
+NzkuYyAgICAgICAgICAgICB8ICAgMjQgKy0NCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ2
+Nzk3LmMgICAgICAgICAgICAgfCAgIDIwICstDQogZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10
+NzYyMi5jICAgICAgICAgICAgIHwgICAxOCArLQ0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1t
+dDc2MjkuYyAgICAgICAgICAgICB8ICAgMTIgKy0NCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGst
+bXQ4MTczLmMgICAgICAgICAgICAgfCAgIDI4ICstDQogZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xr
+LW10ODE4My5jICAgICAgICAgICAgIHwgICAyMiArLQ0KIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Ns
+ay1tdDgxOTItYXVkLmMgICAgICAgICB8ICAxMTggKysNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWNhbS5jICAgICAgICAgfCAgIDcyICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWNhbV9yYXdhLmMgICAgfCAgIDU5ICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWNhbV9yYXdiLmMgICAgfCAgIDU5ICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWNhbV9yYXdjLmMgICAgfCAgIDU5ICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWltZy5jICAgICAgICAgfCAgIDYwICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWltZzIuYyAgICAgICAgfCAgIDYyICsNCiAuLi4vY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItaW1wX2lpY193cmFwX2MuYyAgfCAgIDYxICsNCiAuLi4vY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItaW1wX2lpY193cmFwX2UuYyAgfCAgIDU4ICsNCiAuLi4vY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItaW1wX2lpY193cmFwX24uYyAgfCAgIDU5ICsNCiAuLi4vY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItaW1wX2lpY193cmFwX3MuYyAgfCAgIDYwICsNCiAuLi4vY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItaW1wX2lpY193cmFwX3cuYyAgfCAgIDU4ICsNCiAuLi4vY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItaW1wX2lpY193cmFwX3dzLmMgfCAgIDYwICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLWlwZS5jICAgICAgICAgfCAgIDY0ICsNCiBkcml2ZXJzL2Nsay9tZWRpYXRlay9j
+bGstbXQ4MTkyLW1kcC5jICAgICAgICAgfCAgIDg5ICsrDQogZHJpdmVycy9jbGsvbWVkaWF0ZWsv
+Y2xrLW10ODE5Mi1tZmcuYyAgICAgICAgIHwgICA1NyArDQogZHJpdmVycy9jbGsvbWVkaWF0ZWsv
+Y2xrLW10ODE5Mi1tbS5jICAgICAgICAgIHwgIDEwOCArKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTItbXNkYy5jICAgICAgICB8ICAgNTcgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTItbXNkY190b3AuYyAgICB8ICAgNzEgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTItc2NwX2Fkc3AuYyAgICB8ICAgNTcgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTItdmRlYy5jICAgICAgICB8ICAgODIgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTItdmRlY19zb2MuYyAgICB8ICAgODIgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTItdmVuYy5jICAgICAgICB8ICAgNjAgKw0KIGRyaXZlcnMvY2xrL21lZGlhdGVr
+L2Nsay1tdDgxOTIuYyAgICAgICAgICAgICB8IDEzNDAgKysrKysrKysrKysrKysrKysNCiBkcml2
+ZXJzL2Nsay9tZWRpYXRlay9jbGstbXRrLmggICAgICAgICAgICAgICAgfCAgICAyICsNCiBkcml2
+ZXJzL2Nsay9tZWRpYXRlay9jbGstbXV4LmggICAgICAgICAgICAgICAgfCAgIDE1ICsNCiBkcml2
+ZXJzL2Nsay9tZWRpYXRlay9jbGstcGxsLmMgICAgICAgICAgICAgICAgfCAgIDI4ICstDQogaW5j
+bHVkZS9kdC1iaW5kaW5ncy9jbG9jay9tdDgxOTItY2xrLmggICAgICAgIHwgIDU5MiArKysrKysr
+Kw0KIDU3IGZpbGVzIGNoYW5nZWQsIDQxMTYgaW5zZXJ0aW9ucygrKSwgMTA4IGRlbGV0aW9ucygt
+KQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+YXJtL21lZGlhdGVrL21lZGlhdGVrLGNhbXN5cy1yYXcueWFtbA0KIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL21lZGlhdGVrL21lZGlhdGVr
+LGltcF9paWNfd3JhcC55YW1sDQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2
+aWNldHJlZS9iaW5kaW5ncy9hcm0vbWVkaWF0ZWsvbWVkaWF0ZWssbWRwc3lzLnlhbWwNCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9tZWRp
+YXRlay9tZWRpYXRlayxtc2RjLnlhbWwNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2FybS9tZWRpYXRlay9tZWRpYXRlayxzY3AtYWRzcC55YW1s
+DQogY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9h
+cm0vbWVkaWF0ZWsvbWVkaWF0ZWssdmRlY3N5cy1zb2MueWFtbA0KIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLWF1ZC5jDQogY3JlYXRlIG1vZGUgMTAw
+NjQ0IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTItY2FtLmMNCiBjcmVhdGUgbW9kZSAx
+MDA2NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5Mi1jYW1fcmF3YS5jDQogY3JlYXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTItY2FtX3Jhd2IuYw0K
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLWNhbV9y
+YXdjLmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5
+Mi1pbWcuYw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4
+MTkyLWltZzIuYw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGst
+bXQ4MTkyLWltcF9paWNfd3JhcF9jLmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsv
+bWVkaWF0ZWsvY2xrLW10ODE5Mi1pbXBfaWljX3dyYXBfZS5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0
+IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTItaW1wX2lpY193cmFwX24uYw0KIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLWltcF9paWNfd3Jh
+cF9zLmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5
+Mi1pbXBfaWljX3dyYXBfdy5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL21lZGlh
+dGVrL2Nsay1tdDgxOTItaW1wX2lpY193cmFwX3dzLmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
+dmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5Mi1pcGUuYw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
+cml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLW1kcC5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0
+IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTItbWZnLmMNCiBjcmVhdGUgbW9kZSAxMDA2
+NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5Mi1tbS5jDQogY3JlYXRlIG1vZGUgMTAw
+NjQ0IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTItbXNkYy5jDQogY3JlYXRlIG1vZGUg
+MTAwNjQ0IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDgxOTItbXNkY190b3AuYw0KIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLXNjcF9hZHNwLmMN
+CiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5Mi12ZGVj
+LmMNCiBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW10ODE5Mi12
+ZGVjX3NvYy5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1t
+dDgxOTItdmVuYy5jDQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvY2xrL21lZGlhdGVrL2Ns
+ay1tdDgxOTIuYw0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL2Nsb2Nr
+L210ODE5Mi1jbGsuaA0K
 
-Turns out gspca webcams (or at least the one I got - Logitech QuickCam for
-Notebooks Deluxe) don't have a problem. As mentioned before, the gspca
-driver uses the locking mechanism provided by the v4l2/vb2 code. Unlike
-uvcvideo, its open function doesn't trigger sending send usb packets.
-Its usb disconnect function acquires the lock, and the rest of the code
-holds that lock where needed. I''ll keep trying, but so far I can't
-get it to do anything wrong.
-
-I am still waiting for the pwc webcam, but that also uses the v4l2/vb2
-locking mechanism, and it seems unlikely that I'll get it to fail.
-I'll try anyway.
-
-Guenter
