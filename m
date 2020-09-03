@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D9125C4B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCDC25C4E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728912AbgICPPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:15:43 -0400
-Received: from crapouillou.net ([89.234.176.41]:52000 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728654AbgICLhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:37:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132411; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RNukebu5FJc21AaatW8pIDM/jN+mPnsQcQWuh8bpr7A=;
-        b=htUjP8MOznKj63TiyERDMqJINFETb7XOkyxP8ClwaFkoSfOGrFLr+VLzUvyD3xNeQSswbg
-        p7LZQ5cWe25wPNMfmzaec40O/ElUOkQRnNQGhJbuEk9+6OaARXOMTpUdcXLUSy2DnephH1
-        XwmA8yVt8pDGFouQrnH2pvmVwN+h2mo=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Tony Prisk <linux@prisktech.co.nz>, Bin Liu <b-liu@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 18/20] usb/gadget/udc: pch: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:52 +0200
-Message-Id: <20200903112554.34263-19-paul@crapouillou.net>
-In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
-References: <20200903112554.34263-1-paul@crapouillou.net>
+        id S1729248AbgICPUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:20:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:44362 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728513AbgICL1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:27:01 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 4F8BB9C923A5A99C2CA7;
+        Thu,  3 Sep 2020 19:26:39 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Sep 2020
+ 19:26:28 +0800
+Subject: Re: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
+To:     Catalin Marinas <catalin.marinas@arm.com>
+References: <20200801130856.86625-1-chenzhou10@huawei.com>
+ <20200801130856.86625-4-chenzhou10@huawei.com> <20200902170910.GB16673@gaia>
+CC:     <will@kernel.org>, <james.morse@arm.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <dyoung@redhat.com>, <bhe@redhat.com>,
+        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
+        <prabhakar.pkin@gmail.com>, <bhsharma@redhat.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
+Date:   Thu, 3 Sep 2020 19:26:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200902170910.GB16673@gaia>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the newly introduced pm_ptr() macro, and mark the suspend/resume
-functions __maybe_unused. These functions can then be moved outside the
-CONFIG_PM_SUSPEND block, and the compiler can then process them and
-detect build failures independently of the config. If unused, they will
-simply be discarded by the compiler.
+Hi Catalin,
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/usb/gadget/udc/pch_udc.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
-index 8afc31d94b0e..9e26b5ab3058 100644
---- a/drivers/usb/gadget/udc/pch_udc.c
-+++ b/drivers/usb/gadget/udc/pch_udc.c
-@@ -3042,8 +3042,7 @@ static void pch_udc_remove(struct pci_dev *pdev)
- 	pch_udc_exit(dev);
- }
- 
--#ifdef CONFIG_PM_SLEEP
--static int pch_udc_suspend(struct device *d)
-+static int __maybe_unused pch_udc_suspend(struct device *d)
- {
- 	struct pch_udc_dev *dev = dev_get_drvdata(d);
- 
-@@ -3053,16 +3052,12 @@ static int pch_udc_suspend(struct device *d)
- 	return 0;
- }
- 
--static int pch_udc_resume(struct device *d)
-+static int __maybe_unused pch_udc_resume(struct device *d)
- {
- 	return 0;
- }
- 
- static SIMPLE_DEV_PM_OPS(pch_udc_pm, pch_udc_suspend, pch_udc_resume);
--#define PCH_UDC_PM_OPS		(&pch_udc_pm)
--#else
--#define PCH_UDC_PM_OPS		NULL
--#endif /* CONFIG_PM_SLEEP */
- 
- static int pch_udc_probe(struct pci_dev *pdev,
- 			  const struct pci_device_id *id)
-@@ -3171,7 +3166,7 @@ static struct pci_driver pch_udc_driver = {
- 	.remove =	pch_udc_remove,
- 	.shutdown =	pch_udc_shutdown,
- 	.driver = {
--		.pm = PCH_UDC_PM_OPS,
-+		.pm = pm_ptr(&pch_udc_pm),
- 	},
- };
- 
--- 
-2.28.0
+On 2020/9/3 1:09, Catalin Marinas wrote:
+> On Sat, Aug 01, 2020 at 09:08:54PM +0800, Chen Zhou wrote:
+>> There are following issues in arm64 kdump:
+>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+>> will fail when there is no enough low memory.
+>> 2. If reserving crashkernel above 4G, in this case, crash dump
+>> kernel will boot failure because there is no low memory available
+>> for allocation.
+>> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+>> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+>> the devices in crash dump kernel need to use ZONE_DMA will alloc
+>> fail.
+>>
+>> To solve these issues, change the behavior of crashkernel=X.
+>> crashkernel=X tries low allocation in ZONE_DMA, and fall back to
+>> high allocation if it fails.
+>>
+>> If requized size X is too large and leads to very little free memory
+>> in ZONE_DMA after low allocation, the system may not work normally.
+>> So add a threshold and go for high allocation directly if the required
+>> size is too large. The value of threshold is set as the half of
+>> the low memory.
+>>
+>> If crash_base is outside ZONE_DMA, try to allocate at least 256M in
+>> ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
+>> specified size low memory.
+> Except for the threshold to keep zone ZONE_DMA memory,
+> reserve_crashkernel() looks very close to the x86 version. Shall we try
+> to make this generic as well? In the first instance, you could avoid the
+> threshold check if it takes an explicit ",high" option.
+Ok, i will try to do this.
+
+I look into the function reserve_crashkernel() of x86 and found the start address is
+CRASH_ALIGN in function memblock_find_in_range(), which is different with arm64.
+
+I don't figure out why is CRASH_ALIGN in x86, is there any specific reason?
+
+Thanks,
+Chen Zhou
+
 
