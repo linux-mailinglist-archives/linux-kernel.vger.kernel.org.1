@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18AC625CD70
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 00:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9B725CD7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 00:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728491AbgICWZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 18:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727065AbgICWZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 18:25:46 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACBE820897;
-        Thu,  3 Sep 2020 22:25:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599171945;
-        bh=UIAXSve0SRrcUd0B8D3XS6dXgn/vQBkLbJ8pkN798Co=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qluRU6tE3yEoLU2P/PGujeCsrKHYEEuTTVUhauwotQKC7B9OoafcrZW39TyQ+RWuU
-         AOBoW9Eo44laSXkfHd3e6+DkRHt1Hu8KHa4U+OZiPVTYjSbeSWkfXmMuCDJEepbSRJ
-         qccqng13joImKSahk+j3VAVuPZWx1O5WrcMQfqtk=
-Received: by mail-oi1-f173.google.com with SMTP id 3so4765417oih.0;
-        Thu, 03 Sep 2020 15:25:45 -0700 (PDT)
-X-Gm-Message-State: AOAM530a2GkD2fS6KFhiNQVGHp3iCAWAI4y5ws74NCVzpiQTpxa8eEuD
-        LJfzLpJwfHSXX8d2klYoFG0UqAbgOW+msB0+Bw==
-X-Google-Smtp-Source: ABdhPJwrVduZhw2vlihPd2/Z7wXfAVL2xOnsNA6Q5zcbi6DAiVrLsMvntTI9GWRi9G26Rm5JgVmKH/NsVP5BMycbvEE=
-X-Received: by 2002:aca:1711:: with SMTP id j17mr3621820oii.152.1599171945008;
- Thu, 03 Sep 2020 15:25:45 -0700 (PDT)
+        id S1729441AbgICW1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 18:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728678AbgICW1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 18:27:14 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0106C061251
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 15:27:13 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id p65so3260809qtd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 15:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9SpSwMIgy/0uDv9Hc0PvSjCztNMgh+f4IT2tkCaQkW4=;
+        b=PqLGbKMp2gjiffHSrlocu7l+Z3ajwgMd1X3CxsA+yNf4pwuW1nDh2A5P+x5XtNvX1h
+         goUHuIX34yVxPumhBEKDfmhGjy0yCNAqzPU3XzE8c25pUQZE5R3WWiYaTzaE8MayTTwN
+         d+bw8tnnyR7Gu/EeVMxOJW0QzuHADNhxpJuynXH9pod1M04KRFjIgXdO+L6app7bNmPF
+         oQNDI9cQQwz1Xa1kxrpNhmoTnt7kDoavfajq6JcBKsCUx+XOVrmi0gY1PyVd2+gNVtDO
+         IkaY/TD90aNvonnCrlZIeyI4+su8YfM8rG8CWTeF5lgVbdb+hJJlNmvIFmiJQh844a1G
+         EPWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9SpSwMIgy/0uDv9Hc0PvSjCztNMgh+f4IT2tkCaQkW4=;
+        b=m4FzngIHatAg0IkAlhaYiolSUrJ0f4xsvK84bgBsoAk1bmHIXgGYxKdOMqxShgLcoG
+         eetFyNppV89IKEPkwpfP2+JZm0cf9iXcdYNDCVrEfuqlILDP9dYFkT9V7qsftSskxgmA
+         aoRp4FuPkjzJFsiUtdC4u/dZXzyxskx9+CkhQGvVHk/Avkk/URIeqn/Ff2kbSMIEDr7X
+         op7riYLSOLPVbnoaengfWCj0PCcaL5oud+Nf9Caw4fFq7c/XVJdkdmxOnstdcRjTrn53
+         +8OYCggadyo6CPStmkO5runfUhcJ21+MFKsA1B5w18rPoyK0Q2gAdUDZetSLHVgIs6iB
+         IBiQ==
+X-Gm-Message-State: AOAM530Aqp5DcxlfICZgFoamswSDL3NzgOgxLkVnmwIoICWE1aFW+QPS
+        +PX2AVgviTGTJeOLPZezOnHMZA==
+X-Google-Smtp-Source: ABdhPJyX2L6/vlPMY77nburHLozkIx336EIl0ufaIwZ6yu03grC4E5axYN4yguWf2gLAO+aUHM6K/g==
+X-Received: by 2002:ac8:b46:: with SMTP id m6mr5741737qti.72.1599172031736;
+        Thu, 03 Sep 2020 15:27:11 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id y30sm3217157qth.7.2020.09.03.15.27.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 15:27:11 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list),
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v2 0/7] SM8150 and SM8250 dispcc drivers
+Date:   Thu,  3 Sep 2020 18:26:08 -0400
+Message-Id: <20200903222620.27448-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-References: <1596795922-705-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1596795922-705-7-git-send-email-hayashi.kunihiko@socionext.com>
- <CAL_JsqJhvpiAWfa7w4-85-GObkW+pq6PUpZUGg8Sc5p4+qsuQA@mail.gmail.com> <aadb805d-e5fb-438a-d7e1-4e1ad31ddbac@socionext.com>
-In-Reply-To: <aadb805d-e5fb-438a-d7e1-4e1ad31ddbac@socionext.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 3 Sep 2020 16:25:33 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKQ-jwgUst1PLM1jnoo8hiAap=D2jhKP-Z9YktiUgrU_g@mail.gmail.com>
-Message-ID: <CAL_JsqKQ-jwgUst1PLM1jnoo8hiAap=D2jhKP-Z9YktiUgrU_g@mail.gmail.com>
-Subject: Re: [PATCH v6 6/6] PCI: uniphier: Add error message when failed to
- get phy
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Marc Zyngier <maz@kernel.org>, PCI <linux-pci@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 1:05 AM Kunihiko Hayashi
-<hayashi.kunihiko@socionext.com> wrote:
->
-> On 2020/08/18 1:39, Rob Herring wrote:
-> > On Fri, Aug 7, 2020 at 4:25 AM Kunihiko Hayashi
-> > <hayashi.kunihiko@socionext.com> wrote:
-> >>
-> >> Even if phy driver doesn't probe, the error message can't be distinguished
-> >> from other errors. This displays error message caused by the phy driver
-> >> explicitly.
-> >>
-> >> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-> >> ---
-> >>   drivers/pci/controller/dwc/pcie-uniphier.c | 8 ++++++--
-> >>   1 file changed, 6 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/pci/controller/dwc/pcie-uniphier.c b/drivers/pci/controller/dwc/pcie-uniphier.c
-> >> index 93ef608..7c8721e 100644
-> >> --- a/drivers/pci/controller/dwc/pcie-uniphier.c
-> >> +++ b/drivers/pci/controller/dwc/pcie-uniphier.c
-> >> @@ -489,8 +489,12 @@ static int uniphier_pcie_probe(struct platform_device *pdev)
-> >>                  return PTR_ERR(priv->rst);
-> >>
-> >>          priv->phy = devm_phy_optional_get(dev, "pcie-phy");
-> >
-> > The point of the optional variant vs. devm_phy_get() is whether or not
-> > you get an error message. So shouldn't you switch to devm_phy_get
-> > instead?
-> >
-> >> -       if (IS_ERR(priv->phy))
-> >> -               return PTR_ERR(priv->phy);
-> >> +       if (IS_ERR(priv->phy)) {
-> >> +               ret = PTR_ERR(priv->phy);
-> >> +               if (ret != -EPROBE_DEFER)
-> >> +                       dev_err(dev, "Failed to get phy (%d)\n", ret);
-> >> +               return ret;
-> >> +       }
->
-> The 'phys' property is optional, so if there isn't 'phys' in the PCIe node,
-> devm_phy_get() returns -ENODEV, and devm_phy_optional_get() returns NULL.
->
-> When devm_phy_optional_get() replaces devm_phy_get(),
-> condition for displaying an error message changes to:
->
->     (ret != -EPROBE_DEFER && ret != -ENODEV)
->
-> This won't be simple, but should it be replaced?
+Add display clock drivers required to get DSI and DP displays working on
+SM8150 and SM8250 SoCs.
 
-Nevermind. I was thinking we had some error prints for the optional
-vs. non-optional variants.
+Derived from downstream drivers. Notable changes compared to downstream:
+ - EDP clks removed (nothing uses these even in downstream it seems)
+ - freq_tbl values for dp_link clk is in Hz and not kHz
 
-Rob
+v2:
+ - updated dts example to reflect the change (first patch)
+ - updated config_ctl_hi1_val in sm8250 dispcc to latest downstream
+
+Jonathan Marek (7):
+  dt-bindings: clock: sdm845-dispcc: same name for dp_phy clocks as
+    sc7180
+  arm64: dts: qcom: sdm845-dispcc: same name for dp_phy clocks as sc7180
+  dt-bindings: clock: combine qcom,sdm845-dispcc and qcom,sc7180-dispcc
+  dt-bindings: clock: Introduce QCOM SM8150 display clock bindings
+  dt-bindings: clock: Introduce QCOM SM8250 display clock bindings
+  clk: qcom: Add display clock controller driver for SM8150
+  clk: qcom: Add display clock controller driver for SM8250
+
+ ...om,sdm845-dispcc.yaml => qcom,dispcc.yaml} |   30 +-
+ .../bindings/clock/qcom,sc7180-dispcc.yaml    |   86 --
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |    4 +-
+ drivers/clk/qcom/Kconfig                      |   18 +
+ drivers/clk/qcom/Makefile                     |    2 +
+ drivers/clk/qcom/dispcc-sm8150.c              | 1152 +++++++++++++++++
+ drivers/clk/qcom/dispcc-sm8250.c              | 1100 ++++++++++++++++
+ .../dt-bindings/clock/qcom,dispcc-sm8150.h    |   69 +
+ .../dt-bindings/clock/qcom,dispcc-sm8250.h    |   66 +
+ 9 files changed, 2428 insertions(+), 99 deletions(-)
+ rename Documentation/devicetree/bindings/clock/{qcom,sdm845-dispcc.yaml => qcom,dispcc.yaml} (75%)
+ delete mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-dispcc.yaml
+ create mode 100644 drivers/clk/qcom/dispcc-sm8150.c
+ create mode 100644 drivers/clk/qcom/dispcc-sm8250.c
+ create mode 100644 include/dt-bindings/clock/qcom,dispcc-sm8150.h
+ create mode 100644 include/dt-bindings/clock/qcom,dispcc-sm8250.h
+
+-- 
+2.26.1
+
