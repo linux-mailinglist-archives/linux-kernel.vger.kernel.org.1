@@ -2,129 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7CE25C011
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3800425BFFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgICLIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59884 "EHLO
+        id S1728388AbgICLPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 07:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgICK67 (ORCPT
+        with ESMTP id S1728422AbgICLOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:58:59 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F035C061244;
-        Thu,  3 Sep 2020 03:58:56 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d7a005419317048ee0789.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:7a00:5419:3170:48ee:789])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 901D21EC04CB;
-        Thu,  3 Sep 2020 12:58:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1599130732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=jFgR8B43svgkJTAQLtPGLdTbywp8lqxgXaF2hdYHOxI=;
-        b=iQOezLnuceBdy6FP5f1e+/Ky22aTiU2sbh7poxpJvORa7KBnNk66Rcr39qYjUCfFei0Tdo
-        QYChFscC2jEOZemAyZEtVFZhEtxKsPpJ/nx0yFkwjJ+Us6VUXojXdpblNYqjeZOLxzrHRm
-        zZMkFiKoqAPbmPzSCP9I904zpWEkViY=
-Date:   Thu, 3 Sep 2020 12:58:49 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Gregor Herburger <gregor.herburger@ew.tq-group.com>
-Cc:     york.sun@nxp.com, mchehab@kernel.org, tony.luck@intel.com,
-        james.morse@arm.com, rrichter@marvell.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] edac: fsl_ddr_edac: fix expected data message
-Message-ID: <20200903105849.GC5462@zn.tnic>
-References: <20200817095302.GD549@zn.tnic>
- <20200827075600.22335-1-gregor.herburger@ew.tq-group.com>
+        Thu, 3 Sep 2020 07:14:30 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506DFC061244;
+        Thu,  3 Sep 2020 04:00:35 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id m6so2767866wrn.0;
+        Thu, 03 Sep 2020 04:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=SE22zCSVEAoxI5J9vYZxU5jk2PTxW8rlRt79/vsQVMc=;
+        b=XHOo/wjgMIAcFXOEpJ8LD3JeyIS06RbRzdhJHQUNQryAsL5MqI9KCGWsJDlWGw6Hww
+         0r1qNVory+ouhS3YefBZ3bC51Wemkyd5AZ/T2v3yonZYSLyRjebFpnAJaRXEFjXiWSK/
+         DUUTknp8LIhWqVy8rhgEG9QW/cAssbuWgMFTs1OW7xUnSOUXWh1vBvG4/utmhUmshssd
+         ZolOYsiKduKgb0bRlz0wzBCTQfC/r6haJPeN3CvbPf70QjElIk39PqgeTz7KA4Ts2JVK
+         7t/MN3sATXo6IDk0wOjGSMRLimJGPLXCz3gIfStJcaNtRUWwumRdA8PcXB/BBbd6Devf
+         o0Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=SE22zCSVEAoxI5J9vYZxU5jk2PTxW8rlRt79/vsQVMc=;
+        b=QTgzdgoYHeT45eXk00gc8Bc4McewHo3odEFQSSeUJ59oYewiSQfrCgkNJ4hvgPFuff
+         C4uPqc6vlpFGWpux7uN700of+KA1UoW7IBdPaloyxi12K/e5UGmvrIoo3yteHVLFEzfD
+         9Oz8SrYHosODRAKCatImudy9W5MwZX+K+ayu7HBc7NIMTzMR9+AK+R2YQ6qmFLoH8AIR
+         HmUYSWUcwvcp3/ap+iCp2tfVNPxihflKV4Bn0/zp5dfAvC0xXKqznatWudos8aMLoTQ5
+         USgFvd01UnssCMgOr+ay/4trHbRR8vsNr00GP77ofmr+lI031xmj56wTaV8+ovLsU62Z
+         PBGg==
+X-Gm-Message-State: AOAM5314cMMjEe/AAPItmX83AERq3F8O1MXHhU0QJE8LX2RcTxD5NZgN
+        IaHmu2sQNujaRfmal91xAGXnnSKkHuxTyg==
+X-Google-Smtp-Source: ABdhPJzT2JR3cqHJJ+PeIDEiZWnus85LDjLyqQxGZLcJGgQ0N86n6iNc76LXufOFcTVgGQkidXI/BA==
+X-Received: by 2002:adf:e7ce:: with SMTP id e14mr1741534wrn.43.1599130833155;
+        Thu, 03 Sep 2020 04:00:33 -0700 (PDT)
+Received: from AnsuelXPS ([5.170.166.111])
+        by smtp.gmail.com with ESMTPSA id s5sm3876136wrm.33.2020.09.03.04.00.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Sep 2020 04:00:32 -0700 (PDT)
+From:   <ansuelsmth@gmail.com>
+To:     "'Sibi Sankar'" <sibis@codeaurora.org>,
+        "'Viresh Kumar'" <viresh.kumar@linaro.org>
+Cc:     <vincent.guittot@linaro.org>, <saravanak@google.com>,
+        "'Sudeep Holla'" <sudeep.holla@arm.com>,
+        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        "'Rob Herring'" <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200821140026.19643-1-ansuelsmth@gmail.com> <20200824104053.kpjpwzl2iw3lpg2m@vireshk-i7> <b339e01f9d1e955137120daa06d26228@codeaurora.org> <039d01d67f6a$188700d0$49950270$@gmail.com> <20200903065314.y3ynhwydahaeg6o6@vireshk-i7> <6dc62d231c776b2cdfdc36cfe36e4140@codeaurora.org>
+In-Reply-To: <6dc62d231c776b2cdfdc36cfe36e4140@codeaurora.org>
+Subject: R: R: [RFC PATCH v3 0/2] Add Krait Cache Scaling support
+Date:   Thu, 3 Sep 2020 13:00:27 +0200
+Message-ID: <01f201d681e1$70ff1bc0$52fd5340$@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200827075600.22335-1-gregor.herburger@ew.tq-group.com>
+Content-Type: text/plain;
+        charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHE1KUT8lrzCHz2sVzN5qwVSE5wCwFurxwcAoW98xABeMrvawKX8ba/Aay9QdupLIiWEA==
+Content-Language: it
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 09:56:00AM +0200, Gregor Herburger wrote:
-> When a correctable single bit error occurs, the driver calculates the
-> bad_data_bit respectively the bad_ecc_bit. If there is no error in the
-> corresponding data, the value becomes -1. With this the expected data
-> message is calculated.
-> 
-> In the case of an error in the lower 32 bits or no error (-1) the right
-> side operand of the bit-shift becomes negative which is undefined
-> behavior.
-> 
-> This can result in wrong and misleading messages like this:
-> [  311.103794] EDAC FSL_DDR MC0: Faulty Data bit: 36
-> [  311.108490] EDAC FSL_DDR MC0: Expected Data / ECC:   0xffffffef_ffffffff / 0x80000059
-> [  311.116135] EDAC FSL_DDR MC0: Captured Data / ECC:   0xffffffff_ffffffef / 0x59
-> 
-> Fix this by only calculating the expected data where the error occurred.
-> 
-> With the fix the dmesg output looks like this:
-> [  311.103794] EDAC FSL_DDR MC0: Faulty Data bit: 36
-> [  311.108490] EDAC FSL_DDR MC0: Expected Data / ECC:   0xffffffef_ffffffef / 0x59
-> [  311.116135] EDAC FSL_DDR MC0: Captured Data / ECC:   0xffffffff_ffffffef / 0x59
-> 
-> Signed-off-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
-> ---
->  drivers/edac/fsl_ddr_edac.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/edac/fsl_ddr_edac.c b/drivers/edac/fsl_ddr_edac.c
-> index 6d8ea226010d..4b6989cf1947 100644
-> --- a/drivers/edac/fsl_ddr_edac.c
-> +++ b/drivers/edac/fsl_ddr_edac.c
-> @@ -343,9 +343,9 @@ static void fsl_mc_check(struct mem_ctl_info *mci)
->  
->  		fsl_mc_printk(mci, KERN_ERR,
->  			"Expected Data / ECC:\t%#8.8x_%08x / %#2.2x\n",
-> -			cap_high ^ (1 << (bad_data_bit - 32)),
-> -			cap_low ^ (1 << bad_data_bit),
-> -			syndrome ^ (1 << bad_ecc_bit));
-> +			(bad_data_bit > 31) ? cap_high ^ (1 << (bad_data_bit - 32)) : cap_high,
-> +			(bad_data_bit <= 31) ? cap_low ^ (1 << (bad_data_bit)) : cap_low,
 
-But if bad_data_bit is -1, this check above will hit and you'd still
-shift by -1, IINM.
 
-How about you fix it properly, clean it up and make it more readable in
-the process (pasting the code directly instead of a diff because a diff
-is less readable):
+> -----Messaggio originale-----
+> Da: sibis=3Dcodeaurora.org@mg.codeaurora.org
+> <sibis=3Dcodeaurora.org@mg.codeaurora.org> Per conto di Sibi Sankar
+> Inviato: gioved=EC 3 settembre 2020 09:13
+> A: Viresh Kumar <viresh.kumar@linaro.org>
+> Cc: ansuelsmth@gmail.com; vincent.guittot@linaro.org;
+> saravanak@google.com; 'Sudeep Holla' <sudeep.holla@arm.com>; 'Rafael =
+J.
+> Wysocki' <rjw@rjwysocki.net>; 'Rob Herring' <robh+dt@kernel.org>; =
+linux-
+> pm@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Oggetto: Re: R: [RFC PATCH v3 0/2] Add Krait Cache Scaling support
+>=20
+> On 2020-09-03 12:23, Viresh Kumar wrote:
+> > On 31-08-20, 09:41, ansuelsmth@gmail.com wrote:
+> >> On 31-08-20, Sibi wrote:
+> >> > On 2020-08-24 16:10, Viresh Kumar wrote:
+> >> > > +Vincent/Saravana/Sibi
+> >> > >
+> >> > > On 21-08-20, 16:00, Ansuel Smith wrote:
+> >> > >> This adds Krait Cache scaling support using the cpufreq =
+notifier.
+> >> > >> I have some doubt about where this should be actually placed =
+(clk
+> or
+> >> > >> cpufreq)?
+> >> > >> Also the original idea was to create a dedicated cpufreq =
+driver
+(like
+> >> > >> it's done in
+> >> > >> the codeaurora qcom repo) by copying the cpufreq-dt driver and
+> adding
+> >> > >> the cache
+> >> > >> scaling logic but i still don't know what is better. Have a =
+very
+> >> > >> similar driver or
+> >> > >> add a dedicated driver only for the cache using the cpufreq
+notifier
+> >> > >> and do the
+> >> > >> scale on every freq transition.
+> >> > >> Thanks to everyone who will review or answer these questions.
+> >> > >
+> >> > > Saravana was doing something with devfreq to solve such issues =
+if I
+> >> > > wasn't mistaken.
+> >> > >
+> >> > > Sibi ?
+> >> >
+> >> > IIRC the final plan was to create a devfreq device
+> >> > and devfreq-cpufreq based governor to scale them, this
+> >> > way one can switch to a different governor if required.
+> >>
+> >> So in this case I should convert this patch to a devfreq driver-
+> >
+> > I think this should happen nevertheless. You are doing DVFS for a
+> > device which isn't a CPU and devfreq looks to be the right place of
+> > doing so.
+> >
+> >> Isn't overkill to use a governor for such a task?
+> >> (3 range based on the cpufreq?)
+> >
+> > I am not sure about the governor part here, maybe it won't be =
+required
+> > ?
+>=20
+> Yeah I don't see it being needed in ^^
+> case as well. I just mentioned them as
+> an advantage in case you wanted to switch
+> to a different governor in the future.
+>=20
+> https://lore.kernel.org/lkml/d0bc8877-6d41-f54e-1c4c-
+> 2fadbb9dcd0b@samsung.com/
+>=20
+> A devfreq governor tracking cpufreq was
+> generally accepted but using a cpufreq
+> notifier to achieve that was discouraged.
+>=20
 
-        if ((err_detect & DDR_EDE_SBE) && (bus_width == 64)) {
-                sbe_ecc_decode(cap_high, cap_low, syndrome,
-                                &bad_data_bit, &bad_ecc_bit);
+I read the patch discussion and it looks like at the very end they
+lost interest in pushing it. That would very fit what I need here so
+I'm asking how should I proceed? Keep the cpufreq notifier?
+Introduce a dedicated governor? Ask them to resume the pushing or
+try to include the changes to the passive governor by myself?=20
 
-                if (bad_data_bit != -1) {
-                        if (bad_data_bit > 31)
-                                cap_high ^= 1 << (bad_data_bit - 32);
-                        else
-                                cap_low  ^= 1 << bad_data_bit;
+> --
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> a Linux Foundation Collaborative Project.
 
-                        fsl_mc_printk(mci, KERN_ERR, "Faulty Data bit: %d\n", bad_data_bit);
-                        fsl_mc_printk(mci, KERN_ERR, "Expected Data: %#8.8x_%08x\n",
-                                      cap_high, cap_low);
-                }
-
-                if (bad_ecc_bit != -1) {
-                        fsl_mc_printk(mci, KERN_ERR, "Faulty ECC bit: %d\n", bad_ecc_bit);
-                        fsl_mc_printk(mci, KERN_ERR, "Expected ECC: %#2.2x\n",
-                                      syndrome ^ (1 << bad_ecc_bit));
-                }
-        }
-
-This way you print only when the respective faulty bits have been
-properly found and not print anything otherwise.
-
-Hmm?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
