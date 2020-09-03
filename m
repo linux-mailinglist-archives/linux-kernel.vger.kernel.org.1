@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC09825CE7F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 01:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C533925CE8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 01:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729458AbgICXwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 19:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38408 "EHLO
+        id S1729543AbgICXyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 19:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgICXwM (ORCPT
+        with ESMTP id S1725782AbgICXyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 19:52:12 -0400
+        Thu, 3 Sep 2020 19:54:22 -0400
 Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5653C061244;
-        Thu,  3 Sep 2020 16:52:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB289C061244;
+        Thu,  3 Sep 2020 16:54:21 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
         (using TLSv1 with cipher AES256-SHA (256/256 bits))
         (Client did not present a certificate)
         (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id C3E89128967D8;
-        Thu,  3 Sep 2020 16:35:23 -0700 (PDT)
-Date:   Thu, 03 Sep 2020 16:51:31 -0700 (PDT)
-Message-Id: <20200903.165131.2279289098821384874.davem@davemloft.net>
-To:     dmurphy@ti.com
-Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net: phy: dp83867: Fix various styling and
- space issues
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 9166C1288BB0D;
+        Thu,  3 Sep 2020 16:37:34 -0700 (PDT)
+Date:   Thu, 03 Sep 2020 16:54:20 -0700 (PDT)
+Message-Id: <20200903.165420.1235227173707691043.davem@davemloft.net>
+To:     christophe.jaillet@wanadoo.fr
+Cc:     kuba@kernel.org, mst@redhat.com, mkubecek@suse.cz,
+        snelson@pensando.io, vaibhavgupta40@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH RESEND] epic100: switch from 'pci_' to 'dma_' API
 From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200903195112.18868-1-dmurphy@ti.com>
-References: <20200903195112.18868-1-dmurphy@ti.com>
+In-Reply-To: <20200903200509.296149-1-christophe.jaillet@wanadoo.fr>
+References: <20200903200509.296149-1-christophe.jaillet@wanadoo.fr>
 X-Mailer: Mew version 6.8 on Emacs 26.3
 Mime-Version: 1.0
 Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 03 Sep 2020 16:35:24 -0700 (PDT)
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 03 Sep 2020 16:37:34 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Murphy <dmurphy@ti.com>
-Date: Thu, 3 Sep 2020 14:51:12 -0500
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Thu,  3 Sep 2020 22:05:09 +0200
 
-> Fix spacing issues reported for misaligned switch..case and extra new
-> lines.
+> The wrappers in include/linux/pci-dma-compat.h should go away.
 > 
-> Also updated the file header to comply with networking commet style.
+> The patch has been generated with the coccinelle script below and has been
+> hand modified to replace GFP_ with a correct flag.
+> It has been compile tested.
 > 
-> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> When memory is allocated in 'epic_init_one()', GFP_KERNEL can be used
+> because it is a probe function and no lock is acquired.
+ ...
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Applied, thank you.
+Applied.
