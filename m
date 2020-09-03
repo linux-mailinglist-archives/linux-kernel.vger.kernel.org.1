@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D54425BB83
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB7425BB9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbgICHU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 03:20:59 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:53672 "EHLO pegase1.c-s.fr"
+        id S1728188AbgICH16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 03:27:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:49043 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgICHU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 03:20:58 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BhsfY3bm4zB09Zf;
-        Thu,  3 Sep 2020 09:20:53 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id z990iF4fMPYf; Thu,  3 Sep 2020 09:20:53 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BhsfY2h7WzB09ZZ;
-        Thu,  3 Sep 2020 09:20:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5F8A78B7B1;
-        Thu,  3 Sep 2020 09:20:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GoY3tY2xK-tx; Thu,  3 Sep 2020 09:20:54 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A1A698B790;
-        Thu,  3 Sep 2020 09:20:53 +0200 (CEST)
-Subject: Re: [PATCH 10/10] powerpc: remove address space overrides using
- set_fs()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200827150030.282762-1-hch@lst.de>
- <20200827150030.282762-11-hch@lst.de>
- <8974838a-a0b1-1806-4a3a-e983deda67ca@csgroup.eu>
- <20200902123646.GA31184@lst.de>
- <d78cb4be-48a9-a7c5-d9d1-d04d2a02b4c6@csgroup.eu>
- <CAHk-=wiDCcxuHgENo3UtdFi2QW9B7yXvNpG5CtF=A6bc6PTTgA@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6a6ea160-a661-4a15-777c-e26a487829d4@csgroup.eu>
-Date:   Thu, 3 Sep 2020 09:20:35 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726022AbgICH15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 03:27:57 -0400
+IronPort-SDR: X7wd7duZ+Wv8hmkzMBbPVQIpxCeOsRq0oGc+aa4zncE5nmlzm0nuHI+zt+jIJCWsrM1MnppAnw
+ H4yawxNk4Vdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="221746806"
+X-IronPort-AV: E=Sophos;i="5.76,385,1592895600"; 
+   d="scan'208";a="221746806"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 00:27:56 -0700
+IronPort-SDR: Ze3ZybqgmXXV2HST0KQmgul6uR9hAPh6E6UsMzLx6EMFfvZfUTDbVKkqtQmSz+4SUv5x0FohOJ
+ g/eqXS3+PNow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,385,1592895600"; 
+   d="scan'208";a="326108998"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2020 00:27:53 -0700
+Cc:     baolu.lu@linux.intel.com, CobeChen-oc <CobeChen-oc@zhaoxin.com>,
+        RaymondPang-oc <RaymondPang-oc@zhaoxin.com>,
+        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbUEFUQ0ggdjMgMi8yXSBpb21tdS92?=
+ =?UTF-8?Q?t-d=3aAdd_support_for_probing_ACPI_device_in_RMRR?=
+To:     FelixCui-oc <FelixCui-oc@zhaoxin.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "kbuild@lists.01.org" <kbuild@lists.01.org>
+References: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
+ <20200827100217.21324-3-FelixCui-oc@zhaoxin.com>
+ <e5b1daaf-f073-94c9-714c-832b10d284f4@linux.intel.com>
+ <cde22f0f02f94efcae8bf044e2cd9441@zhaoxin.com>
+ <7e5f2c33-c6c3-f344-9014-1f6a306c55aa@linux.intel.com>
+ <cfdd29a882d140e5aec2e8c3b77f4968@zhaoxin.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <56fc76e5-a31c-36b6-c6f0-fd8370cd7a91@linux.intel.com>
+Date:   Thu, 3 Sep 2020 15:22:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiDCcxuHgENo3UtdFi2QW9B7yXvNpG5CtF=A6bc6PTTgA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <cfdd29a882d140e5aec2e8c3b77f4968@zhaoxin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Felix,
 
-
-Le 02/09/2020 à 20:02, Linus Torvalds a écrit :
-> On Wed, Sep 2, 2020 at 8:17 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->> With this fix, I get
->>
->> root@vgoippro:~# time dd if=/dev/zero of=/dev/null count=1M
->> 536870912 bytes (512.0MB) copied, 6.776327 seconds, 75.6MB/s
->>
->> That's still far from the 91.7MB/s I get with 5.9-rc2, but better than
->> the 65.8MB/s I got yesterday with your series. Still some way to go thought.
+On 9/2/20 11:24 AM, FelixCui-oc wrote:
+> hi baolu,
 > 
-> I don't see why this change would make any difference.
+>> So you have a hidden device (invisible to host kernel). But you need to
 > 
+>>setup some identity mappings for this device, so that the firmware
+>>could keep working, right?
+> 
+>>The platform designs this by putting that range in the RMRR table and
+>>expecting the OS kernel to setup identity mappings during boot.
+> 
+>>Do I understand it right?
+> 
+> 
+> Yes. What you understand is correct.
 
-Neither do I.
+This appears to be a new usage model of RMRR. I need to discuss this
+with the VT-d spec maintainer. Do you mind telling which platform are
+you going to run this on? What is the motivation of creating such hidden
+device?
 
-Looks like nowadays, CONFIG_STACKPROTECTOR has become a default.
-I rebuilt the kernel without it, I now get a throughput of 99.8MB/s both 
-without and with this series.
+Basically, RMRRs were added as work around for certain legacy device and
+we have been working hard to fix those legacy devices so that RMRR are
+no longer needed.
 
-Looking at the generated code (GCC 10.1), a small change in a function 
-seems to make large changes in the generated code when 
-CONFIG_STACKPROTECTOR is set.
-
-In addition to that, trivial functions which don't use the stack at all 
-get a stack frame anyway when CONFIG_STACKPROTECTOR is set, allthough 
-that's only -fstack-protector-strong. And there is no canary check.
-
-Without CONFIG_STACKPROTECTOR:
-
-c01572a0 <no_llseek>:
-c01572a0:	38 60 ff ff 	li      r3,-1
-c01572a4:	38 80 ff e3 	li      r4,-29
-c01572a8:	4e 80 00 20 	blr
-
-With CONFIG_STACKPROTECTOR (regardless of CONFIG_STACKPROTECTOR_STRONG 
-or not):
-
-c0164e08 <no_llseek>:
-c0164e08:	94 21 ff f0 	stwu    r1,-16(r1)
-c0164e0c:	38 60 ff ff 	li      r3,-1
-c0164e10:	38 80 ff e3 	li      r4,-29
-c0164e14:	38 21 00 10 	addi    r1,r1,16
-c0164e18:	4e 80 00 20 	blr
-
-Wondering why CONFIG_STACKPROTECTOR has become the default. It seems to 
-imply a 10% performance loss even in the best case (91.7MB/s versus 
-99.8MB/s)
-
-Note that without CONFIG_STACKPROTECTOR_STRONG, I'm at 99.3MB/s, so 
-that's really the _STRONG alternative that hurts.
-
-Christophe
+Best regards,
+baolu
