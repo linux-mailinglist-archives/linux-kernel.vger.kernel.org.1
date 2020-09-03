@@ -2,71 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC2E25BE9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CFA25BEA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgICJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:48:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726047AbgICJsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:48:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C720BAB9F;
-        Thu,  3 Sep 2020 09:48:39 +0000 (UTC)
-Date:   Thu, 3 Sep 2020 11:48:37 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: linux-next: Fixes tags need some work in the printk tree
-Message-ID: <20200903091436.GA5012@alley>
-References: <20200902072254.3054db47@canb.auug.org.au>
- <20200902072610.GA9496@alley>
- <20200903065547.0cc6f53b@canb.auug.org.au>
+        id S1727895AbgICJxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:53:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:53202 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726025AbgICJxG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 05:53:06 -0400
+Date:   Thu, 03 Sep 2020 09:53:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599126783;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W/kD0C2ce/PG0VaecIEgH1SPucWeW3p3tVJLCyotnaM=;
+        b=WFmCzD4NjT+oFM2ZRJ1uDWZlT4s+tTuZ1ikizT1PccE6Fl0Kv2xuvkgIwnnhzyUHMkaLAD
+        nfnDAzOsNdlVQvWFAvGIvhg8j6Pdkr9eatmJQS0+Z/CS/hAmNQGzzejQfj734WfkytcK+K
+        87zciz/+5fDHFvK15ik+kZffmjiVJ8CyMNgNqZB4VHMcnIhOaqk31hI50A7mlin1m4XyqM
+        Ocst2lW+2UGl+9j3bJKCadySr7iYv6BYYQLYTbplns12eKagQLqaTCB4ngfxEYkMbkKIRO
+        YqU0Kf2jqOXpHoFXF6mwo00IS06Se6pZWJD8QgBjFNwe6o6cPLJbIco4wtjZmw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599126783;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W/kD0C2ce/PG0VaecIEgH1SPucWeW3p3tVJLCyotnaM=;
+        b=OfqRvd0v6Lo5895QArcnF/tQtQYUsr/778vQX5nqEGgOdxGffeX6tHGA0I1UErAFCTyI1H
+        w8Wlw+2qxPCfJdDw==
+From:   "tip-bot2 for peterz@infradead.org" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/lockdep: Fix "USED" <- "IN-NMI" inversions
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200902160323.GK1362448@hirez.programming.kicks-ass.net>
+References: <20200902160323.GK1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903065547.0cc6f53b@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <159912678267.20229.6272648886640686007.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-09-03 06:55:47, Stephen Rothwell wrote:
-> Hi Petr,
-> 
-> On Wed, 2 Sep 2020 09:26:11 +0200 Petr Mladek <pmladek@suse.com> wrote:
-> > 
-> > The problem is that this commit is not in mainline. It is living
-> > only in printk/linux.git.
-> > 
-> > Could we use the SHA1 from the maintainer tree when it would not get rebased?
-> > 
-> > Or should we rather avoid Fixes: tag referencing commits that are not
-> > in mainline?
-> > 
-> > I am sorry to bother you with this silly question. I do not see any
-> > hint in Documentation/process/submitting-patches.rst.
-> 
-> Well, in theory, maintainers trees should not be rebased after they
-> have been published (except in exceptional circumstances), so using
-> SHA1s from them should be OK.  Especially if the fixing commit is in
-> the same maintainers tree (which it should be, right).  It does mean
-> that maintainers need to be a bit more careful if they do rebase their
-> trees to update any Fixes tags (or other commit references) that are
-> affected by the rebase.
+The following commit has been merged into the locking/urgent branch of tip:
 
-Thanks a lot for info.
+Commit-ID:     23870f1227680d2aacff6f79c3ab2222bd04e86e
+Gitweb:        https://git.kernel.org/tip/23870f1227680d2aacff6f79c3ab2222bd04e86e
+Author:        peterz@infradead.org <peterz@infradead.org>
+AuthorDate:    Wed, 02 Sep 2020 18:03:23 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 03 Sep 2020 11:19:42 +02:00
 
-I have rebased the last 5 commits in the printk-rework branch and
-added the missing SHAs there.
+locking/lockdep: Fix "USED" <- "IN-NMI" inversions
 
-Best Regards,
-Petr
+During the LPC RCU BoF Paul asked how come the "USED" <- "IN-NMI"
+detector doesn't trip over rcu_read_lock()'s lockdep annotation.
+
+Looking into this I found a very embarrasing typo in
+verify_lock_unused():
+
+	-	if (!(class->usage_mask & LOCK_USED))
+	+	if (!(class->usage_mask & LOCKF_USED))
+
+fixing that will indeed cause rcu_read_lock() to insta-splat :/
+
+The above typo means that instead of testing for: 0x100 (1 <<
+LOCK_USED), we test for 8 (LOCK_USED), which corresponds to (1 <<
+LOCK_ENABLED_HARDIRQ).
+
+So instead of testing for _any_ used lock, it will only match any lock
+used with interrupts enabled.
+
+The rcu_read_lock() annotation uses .check=0, which means it will not
+set any of the interrupt bits and will thus never match.
+
+In order to properly fix the situation and allow rcu_read_lock() to
+correctly work, split LOCK_USED into LOCK_USED and LOCK_USED_READ and by
+having .read users set USED_READ and test USED, pure read-recursive
+locks are permitted.
+
+Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+Link: https://lore.kernel.org/r/20200902160323.GK1362448@hirez.programming.kicks-ass.net
+---
+ kernel/locking/lockdep.c           | 35 ++++++++++++++++++++++++-----
+ kernel/locking/lockdep_internals.h |  2 ++-
+ 2 files changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 54b74fa..2facbbd 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -3969,13 +3969,18 @@ static int separate_irq_context(struct task_struct *curr,
+ static int mark_lock(struct task_struct *curr, struct held_lock *this,
+ 			     enum lock_usage_bit new_bit)
+ {
+-	unsigned int new_mask = 1 << new_bit, ret = 1;
++	unsigned int old_mask, new_mask, ret = 1;
+ 
+ 	if (new_bit >= LOCK_USAGE_STATES) {
+ 		DEBUG_LOCKS_WARN_ON(1);
+ 		return 0;
+ 	}
+ 
++	if (new_bit == LOCK_USED && this->read)
++		new_bit = LOCK_USED_READ;
++
++	new_mask = 1 << new_bit;
++
+ 	/*
+ 	 * If already set then do not dirty the cacheline,
+ 	 * nor do any checks:
+@@ -3988,13 +3993,22 @@ static int mark_lock(struct task_struct *curr, struct held_lock *this,
+ 	/*
+ 	 * Make sure we didn't race:
+ 	 */
+-	if (unlikely(hlock_class(this)->usage_mask & new_mask)) {
+-		graph_unlock();
+-		return 1;
+-	}
++	if (unlikely(hlock_class(this)->usage_mask & new_mask))
++		goto unlock;
+ 
++	old_mask = hlock_class(this)->usage_mask;
+ 	hlock_class(this)->usage_mask |= new_mask;
+ 
++	/*
++	 * Save one usage_traces[] entry and map both LOCK_USED and
++	 * LOCK_USED_READ onto the same entry.
++	 */
++	if (new_bit == LOCK_USED || new_bit == LOCK_USED_READ) {
++		if (old_mask & (LOCKF_USED | LOCKF_USED_READ))
++			goto unlock;
++		new_bit = LOCK_USED;
++	}
++
+ 	if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
+ 		return 0;
+ 
+@@ -4008,6 +4022,7 @@ static int mark_lock(struct task_struct *curr, struct held_lock *this,
+ 			return 0;
+ 	}
+ 
++unlock:
+ 	graph_unlock();
+ 
+ 	/*
+@@ -4942,12 +4957,20 @@ static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock
+ {
+ #ifdef CONFIG_PROVE_LOCKING
+ 	struct lock_class *class = look_up_lock_class(lock, subclass);
++	unsigned long mask = LOCKF_USED;
+ 
+ 	/* if it doesn't have a class (yet), it certainly hasn't been used yet */
+ 	if (!class)
+ 		return;
+ 
+-	if (!(class->usage_mask & LOCK_USED))
++	/*
++	 * READ locks only conflict with USED, such that if we only ever use
++	 * READ locks, there is no deadlock possible -- RCU.
++	 */
++	if (!hlock->read)
++		mask |= LOCKF_USED_READ;
++
++	if (!(class->usage_mask & mask))
+ 		return;
+ 
+ 	hlock->class_idx = class - lock_classes;
+diff --git a/kernel/locking/lockdep_internals.h b/kernel/locking/lockdep_internals.h
+index baca699..b0be156 100644
+--- a/kernel/locking/lockdep_internals.h
++++ b/kernel/locking/lockdep_internals.h
+@@ -19,6 +19,7 @@ enum lock_usage_bit {
+ #include "lockdep_states.h"
+ #undef LOCKDEP_STATE
+ 	LOCK_USED,
++	LOCK_USED_READ,
+ 	LOCK_USAGE_STATES
+ };
+ 
+@@ -40,6 +41,7 @@ enum {
+ #include "lockdep_states.h"
+ #undef LOCKDEP_STATE
+ 	__LOCKF(USED)
++	__LOCKF(USED_READ)
+ };
+ 
+ #define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE |
