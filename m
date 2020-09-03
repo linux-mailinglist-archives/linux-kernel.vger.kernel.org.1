@@ -2,111 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0FD25C8C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78A325C8D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgICSdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:33:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729235AbgICScr (ORCPT
+        id S1729063AbgICSgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:36:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34497 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728688AbgICSgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:32:47 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462F5C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 11:32:47 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id u25so3618636otq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 11:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=82HbmK1MEBIFmpgC+4ObPuGeXfJ8JE9e+JzzYbyM3tE=;
-        b=X94xHdmwtOXvMxEcdgfpcX4mJtVehcidGAiYCw1Vog/RSDUzgYyod31XsjIavxEQbY
-         4xEewzsKjrW3iUx+Y62sBhEBrAdv/m7FZfXszs7J7ppNdjEgwUkM6mJRiP3O1DtVpTWz
-         HYV1nQfMyT8IsbhYIy4jmpPqZo/OUsUycK75ro178LPy5svxyfJL9XJsdw0ajeIHttQt
-         C/uOGw/OcqNlCn9lsGsA0E1TMvN2xL+9eXVwwVdA17l/A3hey850rNFp+jSw/F4L9k/r
-         4P4TRpf8O4VTdBIJ/wIa60c8xQlAi+UZFXizgBr/WhHOwMtMS62EqI0d/HCF1tA20oaO
-         ylpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=82HbmK1MEBIFmpgC+4ObPuGeXfJ8JE9e+JzzYbyM3tE=;
-        b=Ass/kNg4HrSk42fzF2mLlhmXB5A/rUfgcNpHcrEKEaA92vX0ZFch/lN1Are1E6bIeu
-         0wZu1kt5mruVOGEGKDqu+//zqpLxwUpajnkvp/8FgJz7EXKIGG2OUqjzfmGMLoTjqufR
-         FVSB0K7DT3Y6oI0yKsF8TJsdmZRlyjbhNe/kd+pbNfDNmtxr3SYDS2+vRDBIO7687Z6J
-         45T/xSPiSvDJddilczLJbFLbAgGOfnWmaHB1PysW11c6/nBnk4BSrdo9Led/b/tO0JnB
-         K2xLZGXi3KcHgN3lLDPFgm6JcjU6r9mhFGAexNIHqEz12Svbhbz1cawgbHWjyRxsVlPa
-         KwZg==
-X-Gm-Message-State: AOAM5322GYrIgvSxRLx6FrjbBd8dpGGvOg0ibKPw5PCqT7TjCsvrIqUt
-        I7x9rIAEwAPj8jUXO/osN0IRyJdUdv6mA+fBvtJvlg==
-X-Google-Smtp-Source: ABdhPJx4FulqrTQ3lfTEcpEmm4pBJFjbKkKsoNqSqromwGpcbyaKjofyMNw2dD4agncvN2jgU3ZkvPOHjE/BxR0dyUo=
-X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr2563980ota.241.1599157966243;
- Thu, 03 Sep 2020 11:32:46 -0700 (PDT)
+        Thu, 3 Sep 2020 14:36:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599158206;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+p1IecxWzIBTK6iQFo6uvjlqF7Y1Dxtv9pcse33TTHo=;
+        b=Z2CO1COFnE+SZDJfHxkoyUcXHTyJiJdMUBBpqDHG0d72u3p3Kz6MfjX7S6gTU4vAdB8B6y
+        86ZJwXytOSofPwh/XzHrTs1Z730D08aix+meXV2oj4rl2GWa8+o257q8TQYYXYDcamh7x/
+        AGklqZ+lxNE3/Xh9gbfHYpJGMQ6X6g8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-iXOIabGxNcC7DxECvuPTwQ-1; Thu, 03 Sep 2020 14:36:40 -0400
+X-MC-Unique: iXOIabGxNcC7DxECvuPTwQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F39998015A8;
+        Thu,  3 Sep 2020 18:36:38 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-171.phx2.redhat.com [10.3.113.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3636D65C74;
+        Thu,  3 Sep 2020 18:36:38 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 14:36:36 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Requirements to control kernel isolation/nohz_full at runtime
+Message-ID: <20200903183636.GB99697@lorien.usersys.redhat.com>
+References: <20200901104640.GA13814@lenoir>
+ <20200903182359.GA1016174@fuller.cnet>
+ <20200903183015.GA1027417@fuller.cnet>
 MIME-Version: 1.0
-References: <20200903141122.72908-1-mgamal@redhat.com> <CALMp9eTrc8_z3pKBtLVmbnMvC+KtzXMYbYTXZPPz5F0UWW8oNQ@mail.gmail.com>
- <00b0f9eb-286b-72e8-40b5-02f9576f2ce3@redhat.com>
-In-Reply-To: <00b0f9eb-286b-72e8-40b5-02f9576f2ce3@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 3 Sep 2020 11:32:34 -0700
-Message-ID: <CALMp9eS6O18WcEyw8b6npRSazsyKiGtBjV+coZVGxDNU1JEOsQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
- support user-configurable
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903183015.GA1027417@fuller.cnet>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:03 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 03/09/20 19:57, Jim Mattson wrote:
-> > On Thu, Sep 3, 2020 at 7:12 AM Mohammed Gamal <mgamal@redhat.com> wrote:
-> >> This patch exposes allow_smaller_maxphyaddr to the user as a module parameter.
-> >>
-> >> Since smaller physical address spaces are only supported on VMX, the parameter
-> >> is only exposed in the kvm_intel module.
-> >> Modifications to VMX page fault and EPT violation handling will depend on whether
-> >> that parameter is enabled.
-> >>
-> >> Also disable support by default, and let the user decide if they want to enable
-> >> it.
-> >
-> > I think a smaller guest physical address width *should* be allowed.
-> > However, perhaps the pedantic adherence to the architectural
-> > specification could be turned on or off per-VM? And, if we're going to
-> > be pedantic, I think we should go all the way and get MOV-to-CR3
-> > correct.
->
-> That would be way too slow.  Even the current trapping of present #PF
-> can introduce some slowdown depending on the workload.
+On Thu, Sep 03, 2020 at 03:30:15PM -0300 Marcelo Tosatti wrote:
+> On Thu, Sep 03, 2020 at 03:23:59PM -0300, Marcelo Tosatti wrote:
+> > On Tue, Sep 01, 2020 at 12:46:41PM +0200, Frederic Weisbecker wrote:
+> > > Hi,
+> > 
+> > Hi Frederic,
+> > 
+> > Thanks for the summary! Looking forward to your comments...
+> > 
+> > > I'm currently working on making nohz_full/nohz_idle runtime toggable
+> > > and some other people seem to be interested as well. So I've dumped
+> > > a few thoughts about some pre-requirements to achieve that for those
+> > > interested.
+> > > 
+> > > As you can see, there is a bit of hard work in the way. I'm iterating
+> > > that in https://pad.kernel.org/p/isolation, feel free to edit:
+> > > 
+> > > 
+> > > == RCU nocb ==
+> > > 
+> > > Currently controllable with "rcu_nocbs=" boot parameter and/or through nohz_full=/isolcpus=nohz
+> > > We need to make it toggeable at runtime. Currently handling that:
+> > > v1: https://lwn.net/Articles/820544/
+> > > v2: coming soon
+> > 
+> > Nice.
+> > 
+> > > == TIF_NOHZ ==
+> > > 
+> > > Need to get rid of that in order not to trigger syscall slowpath on CPUs that don't want nohz_full.
+> > > Also we don't want to iterate all threads and clear the flag when the last nohz_full CPU exits nohz_full
+> > > mode. Prefer static keys to call context tracking on archs. x86 does that well.
+> > > 
+> > > == Proper entry code ==
+> > > 
+> > > We must make sure that a given arch never calls exception_enter() / exception_exit().
+> > > This saves the previous state of context tracking and switch to kernel mode (from context tracking POV)
+> > > temporarily. Since this state is saved on the stack, this prevents us from turning off context tracking
+> > > entirely on a CPU: The tracking must be done on all CPUs and that takes some cycles.
+> > > 
+> > > This means that, considering early entry code (before the call to context tracking upon kernel entry,
+> > > and after the call to context tracking upon kernel exit), we must take care of few things:
+> > > 
+> > > 1) Make sure early entry code can't trigger exceptions. Or if it does, the given exception can't schedule
+> > > or use RCU (unless it calls rcu_nmi_enter()). Otherwise the exception must call exception_enter()/exception_exit()
+> > > which we don't want.
+> > > 
+> > > 2) No call to schedule_user().
+> > > 
+> > > 3) Make sure early entry code is not interruptible or preempt_schedule_irq() would rely on
+> > > exception_entry()/exception_exit()
+> > > 
+> > > 4) Make sure early entry code can't be traced (no call to preempt_schedule_notrace()), or if it does it
+> > > can't schedule
+> > > 
+> > > I believe x86 does most of that well. In the end we should remove exception_enter()/exit implementations
+> > > in x86 and replace it with a check that makes sure context_tracking state is not in USER. An arch meeting
+> > > all the above conditions would earn a CONFIG_ARCH_HAS_SANE_CONTEXT_TRACKING. Being able to toggle nohz_full
+> > > at runtime would depend on that.
+> > > 
+> > > 
+> > > == Cputime accounting ==
+> > > 
+> > > Both write and read side must switch to tick based accounting and drop the use of seqlock in task_cputime(),
+> > > task_gtime(), kcpustat_field(), kcpustat_cpu_fetch(). Special ordering/state machine is required to make that without races.
+> > > 
+> > > == Nohz ==
+> > > 
+> > > Switch from nohz_full to nohz_idle. Mind a few details:
+> > >     
+> > >     1) Turn off 1Hz offlined tick handled in housekeeping
+> > >     2) Handle tick dependencies, take care of racing CPUs setting/clearing tick dependency. It's much trickier when
+> > >     we switch from nohz_idle to nohz_full
+> > >     
+> > > == Unbound affinity ==
+> > > 
+> > > Restore kernel threads, workqueue, timers, etc... wide affinity. But take care of cpumasks that have been set through other
+> > > interfaces: sysfs, procfs, etc...
+> > 
+> > We were looking at a userspace interface: what would be a proper
+> > (unified, similar to isolcpus= interface) and its implementation:
+> > 
+> > The simplest idea for interface seemed to be exposing the integer list of
+> > CPUs and isolation flags to userspace (probably via sysfs).
+> > 
+> > The scheme would allow flags to be separately enabled/disabled, 
+> > with not all flags being necessary toggable (could for example
+> > disallow nohz_full= toggling until it is implemented, but allow for
+> > other isolation features to be toggable).
+> > 
+> > This would require per flag housekeeping_masks (instead of a single).
+> > 
+> > Back to the userspace interface, you mentioned earlier that cpusets
+> > was a possibility for it. However:
+> > 
+> > "Cpusets provide a Linux kernel mechanism to constrain which CPUs and
+> > Memory Nodes are used by a process or set of processes.
+> > 
+> > The Linux kernel already has a pair of mechanisms to specify on which
+> > CPUs a task may be scheduled (sched_setaffinity) and on which Memory
+> > Nodes it may obtain memory (mbind, set_mempolicy).
+> > 
+> > Cpusets extends these two mechanisms as follows:"
+> > 
+> > The isolation flags do not necessarily have anything to do with
+> > tasks, but with CPUs: a given feature is disabled or enabled on a
+> > given CPU. 
+> > No?
+> 
+> One cpumask per feature, implemented separately in sysfs, also 
+> seems OK (modulo documentation about the RCU update and users
+> of the previous versions).
+> 
+> This is what is being done for rcu_nocbs= already...
+> 
 
-Yes, I was concerned about that...which is why I would not want to
-enable pedantic mode. But if you're going to be pedantic, why go
-halfway?
+exclusive cpusets is used now to control scheduler load balancing on
+a group of cpus.  It seems to me that this is the same idea and is part
+of the isolation concept.  Having a toggle for each subsystem/feature in
+cpusets could provide the needed userspace api. 
 
-> > Does the typical guest care about whether or not setting any of the
-> > bits 51:46 in a PFN results in a fault?
->
-> At least KVM with shadow pages does, which is a bit niche but it shows
-> that you cannot really rely on no one doing it.  As you guessed, the
-> main usage of the feature is for machines with 5-level page tables where
-> there are no reserved bits; emulating smaller MAXPHYADDR allows
-> migrating VMs from 4-level page-table hosts.
->
-> Enabling per-VM would not be particularly useful IMO because if you want
-> to disable this code you can just set host MAXPHYADDR = guest
-> MAXPHYADDR, which should be the common case unless you want to do that
-> kind of Skylake to Icelake (or similar) migration.
+Under the covers it might be implemented as twiddling various cpumasks.
 
-I expect that it will be quite common to run 46-bit wide legacy VMs on
-Ice Lake hardware, as Ice Lake machines start showing up in
-heterogeneous data centers.
+We need to be shifting to managing load balancing with cpusets anyway.
+
+
+
+Cheers,
+Phil
+
+-- 
+
