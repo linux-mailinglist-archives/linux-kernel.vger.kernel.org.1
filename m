@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A01D25B7FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 02:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45C725B7BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 02:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbgICAzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 20:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgICAxy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 20:53:54 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6F3C061246;
-        Wed,  2 Sep 2020 17:53:54 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id u4so534633ljd.10;
-        Wed, 02 Sep 2020 17:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sZD+fCtDbYnWXQk8Be3VFNb2Qop9c99v3RaE1XWrdU8=;
-        b=jsMUtQ6/3ZfGHoMUA/nJYUCzuin8+fIK0w1KtwslMDrrHiSnVsPRwFvVB9oGfMLkF+
-         IGIOM4kguc6M6jUdiWn42PTxBAAfeIlEhgoUDDgVijIZV8MIcV+abNr/KmHLWefjzaID
-         2IwMIF0m0hTrutt60Z6Skru5WswWi1Go5PpRCo3kmxs1mnmapDVZrvAqn85vliHrJik3
-         eK4U5PL5GZbGu7Jtsf/+Cls3/+83mQoVc1g0o2TqOJvtao4YEHFcteKwMYiXuN2IKizO
-         Bgu7+/XkFyyeOo3H7A+0crwMWVSf5AXhbxUF4vbsSiC8mB2ri6/M/gQRg8tRzjXV+OlA
-         hA+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sZD+fCtDbYnWXQk8Be3VFNb2Qop9c99v3RaE1XWrdU8=;
-        b=KhR4bnjL3tkqx1Ql6DttZ0lrGbvsgMihvE85stBjJe3cbPqAZmYAr7QaREv4GXNOfV
-         ezEDh9koIx8hiMvlAORNxZgwboSZE207Y76MdiBur580rqqylUDvrj9VNnHcWTxSBt3F
-         on05oD4+UlxKQlBOBujJj8JXmMZyrP6zoUrESVq/6lIdTJVz/PzOo+m/jjnGu7FlrMNh
-         qbZeKLEWlbi01a6lbt0iouUfaakUXnLa89x1TRyNENJMA3w/b5JSZQ6e8mh/D4a+wxlO
-         c6CwtFBKfmmhIuC1U3f10VpHHzNYJJlWq8m9jkXzmcuumSmadzRIQ71pPuQlx0C8RMJX
-         QWkw==
-X-Gm-Message-State: AOAM5313iVA/tGhIE3njpL2+rr+R7i6jYH/oustuip0ufdyS8/kSnE16
-        QGXNGCIiF9U1/sJQ1GsEXC0=
-X-Google-Smtp-Source: ABdhPJwmQvdTzq6Zc42d5JlTjGv6d/SWVdYCqbDhGWUnIDz+ujCYWwwgNDxl90+WazHBk6jJK5wPAw==
-X-Received: by 2002:a2e:9899:: with SMTP id b25mr248714ljj.178.1599094432614;
-        Wed, 02 Sep 2020 17:53:52 -0700 (PDT)
-Received: from localhost.localdomain (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.gmail.com with ESMTPSA id g1sm250321ljj.56.2020.09.02.17.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Sep 2020 17:53:52 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 02/22] i2c: tegra: Add missing newline before returns
-Date:   Thu,  3 Sep 2020 03:52:40 +0300
-Message-Id: <20200903005300.7894-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200903005300.7894-1-digetx@gmail.com>
-References: <20200903005300.7894-1-digetx@gmail.com>
+        id S1727026AbgICAwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 20:52:49 -0400
+Received: from mga06.intel.com ([134.134.136.31]:3119 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726586AbgICAwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 2 Sep 2020 20:52:47 -0400
+IronPort-SDR: qGDlemQJ5qO3Olpqvg138xEO7okIgIE5t/tv2JQEkM0Csm5jhSvAu/d+z05QTrPKx6wpQBZXHQ
+ bzDwCZwAnU7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="219054318"
+X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
+   d="scan'208";a="219054318"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 17:52:46 -0700
+IronPort-SDR: fR6rsbbP0eppyoZf/XqS7rhZqUYoZaA+iUqv5V1/UsAEJi2YONAezYMoj5ggx5wRzWrxCQ8LHM
+ M38a9bbskKRw==
+X-IronPort-AV: E=Sophos;i="5.76,384,1592895600"; 
+   d="scan'208";a="326007452"
+Received: from hongjunt-mobl.ccr.corp.intel.com (HELO [10.254.210.138]) ([10.254.210.138])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2020 17:52:43 -0700
+Subject: Re: [RFC v2 2/2] KVM: VMX: Enable bus lock VM exit
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Chenyi Qiang <chenyi.qiang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200817014459.28782-1-chenyi.qiang@intel.com>
+ <20200817014459.28782-3-chenyi.qiang@intel.com>
+ <87sgc1x4yn.fsf@vitty.brq.redhat.com> <20200902224405.GK11695@sjchrist-ice>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <2e12df9d-4d56-d6c2-3470-9c990ab722c5@intel.com>
+Date:   Thu, 3 Sep 2020 08:52:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200902224405.GK11695@sjchrist-ice>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some places in the code are missing a newline before return, making
-code more difficult to read and creating inconsistency of the code.
-This patch adds the missing newlines.
+On 9/3/2020 6:44 AM, Sean Christopherson wrote:
+> On Tue, Sep 01, 2020 at 10:43:12AM +0200, Vitaly Kuznetsov wrote:
+>>> @@ -6809,6 +6824,19 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>>>   	if (unlikely(vmx->exit_reason.failed_vmentry))
+>>>   		return EXIT_FASTPATH_NONE;
+>>>   
+>>> +	/*
+>>> +	 * check the exit_reason to see if there is a bus lock
+>>> +	 * happened in guest.
+>>> +	 */
+>>> +	if (kvm_bus_lock_exit_enabled(vmx->vcpu.kvm)) {
+>>> +		if (vmx->exit_reason.bus_lock_detected) {
+>>> +			vcpu->stat.bus_locks++;
+> 
+> Why bother with stats?  Every bus lock exits to userspace, having quick
+> stats doesn't seem all that interesting.
 
-Reviewed-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/i2c/busses/i2c-tegra.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+OK. We will remove it.
 
-diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-index 72f03ded2eae..efc6e97aeb8a 100644
---- a/drivers/i2c/busses/i2c-tegra.c
-+++ b/drivers/i2c/busses/i2c-tegra.c
-@@ -317,6 +317,7 @@ static unsigned long tegra_i2c_reg_addr(struct tegra_i2c_dev *i2c_dev,
- 		reg += (reg >= I2C_TX_FIFO) ? 0x10 : 0x40;
- 	else if (i2c_dev->is_vi)
- 		reg = 0xc00 + (reg << 2);
-+
- 	return reg;
- }
- 
-@@ -392,6 +393,7 @@ static int tegra_i2c_dma_submit(struct tegra_i2c_dev *i2c_dev, size_t len)
- 	dma_desc->callback_param = i2c_dev;
- 	dmaengine_submit(dma_desc);
- 	dma_async_issue_pending(chan);
-+
- 	return 0;
- }
- 
-@@ -510,6 +512,7 @@ static int tegra_i2c_flush_fifos(struct tegra_i2c_dev *i2c_dev)
- 
- 		ktime = ktime_get();
- 	}
-+
- 	return 0;
- 
- err_timeout:
-@@ -717,6 +720,7 @@ static int __maybe_unused tegra_i2c_runtime_resume(struct device *dev)
- 	clk_disable(i2c_dev->slow_clk);
- disable_fast_clk:
- 	clk_disable(i2c_dev->fast_clk);
-+
- 	return ret;
- }
- 
-@@ -1431,6 +1435,7 @@ static u32 tegra_i2c_func(struct i2c_adapter *adap)
- 
- 	if (i2c_dev->hw->has_continue_xfer_support)
- 		ret |= I2C_FUNC_NOSTART;
-+
- 	return ret;
- }
- 
-@@ -1898,6 +1903,7 @@ static int tegra_i2c_remove(struct platform_device *pdev)
- 	clk_unprepare(i2c_dev->fast_clk);
- 
- 	tegra_i2c_release_dma(i2c_dev);
-+
- 	return 0;
- }
- 
--- 
-2.27.0
+>>> +			vcpu->arch.bus_lock_detected = true;
+>>> +		} else {
+>>> +			vcpu->arch.bus_lock_detected = false;
+>>
+>> This is a fast path so I'm wondering if we can move bus_lock_detected
+>> clearing somewhere else.
+> 
+> Why even snapshot vmx->exit_reason.bus_lock_detected?  I don't see any
+> reason why vcpu_enter_guest() needs to handle the exit to userspace, e.g.
+> it's just as easily handled in VMX code.
+
+Because we want to handle the exit to userspace only in one place, i.e., 
+after kvm_x86_ops.handle_exit(vcpu, exit_fastpath). Otherwise, we would 
+have to check vmx->exit_reason.bus_lock_detected in every other handler, 
+at least in those can preempt the bus lock VM-exit theoretically.
+
+>>
+>>> +		}
+>>> +	}
+>>> +
+>>>   	vmx->loaded_vmcs->launched = 1;
+>>>   	vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+>>>   
+>>> @@ -8060,6 +8088,9 @@ static __init int hardware_setup(void)
+>>>   		kvm_tsc_scaling_ratio_frac_bits = 48;
+>>>   	}
+>>>   
+>>> +	if (cpu_has_vmx_bus_lock_detection())
+>>> +		kvm_has_bus_lock_exit = true;
+>>> +
+>>>   	set_bit(0, vmx_vpid_bitmap); /* 0 is reserved for host */
+>>>   
+>>>   	if (enable_ept)
+> 
+> ...
+> 
+>>> @@ -4990,6 +4996,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>>>   		kvm->arch.exception_payload_enabled = cap->args[0];
+>>>   		r = 0;
+>>>   		break;
+>>> +	case KVM_CAP_X86_BUS_LOCK_EXIT:
+>>> +		if (!kvm_has_bus_lock_exit)
+>>> +			return -EINVAL;
+>>
+>> ... because userspace can check for -EINVAL when enabling the cap. Or we
+>> can return e.g. -EOPNOTSUPP here. I don't have a strong opinion on the matter..
+>>
+>>> +		kvm->arch.bus_lock_exit = cap->args[0];
+> 
+> Assuming we even want to make this per-VM, I think it'd make sense to make
+> args[0] a bit mask, e.g. to provide "off" and "exit" (this behavior) while
+> allowing for future modes, e.g. log-only.
+
+Good idea, will do it in next version.
+
+>>> +		r = 0;
+>>> +		break;
+>>>   	default:
+>>>   		r = -EINVAL;
+>>>   		break;
+>>> @@ -7732,12 +7744,23 @@ static void post_kvm_run_save(struct kvm_vcpu *vcpu)
 
