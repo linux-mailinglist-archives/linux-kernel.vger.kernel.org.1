@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698C125C410
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC99E25C477
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgICPDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        id S1729191AbgICPLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:11:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728927AbgICN66 (ORCPT
+        with ESMTP id S1728979AbgICN5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:58:58 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE529C061A17;
-        Thu,  3 Sep 2020 06:44:42 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id k25so3729746ljg.9;
-        Thu, 03 Sep 2020 06:44:42 -0700 (PDT)
+        Thu, 3 Sep 2020 09:57:54 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFDC061A1B
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 06:46:48 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id y194so1765127vsc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:46:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LLcfLa3jT9VCX7RwE0dDUcAeziaCYPyIo1qnxZ7SIOw=;
-        b=GkmzOxWiAOcSoEKeOaq7PHvTvKu0i0MK1dDNNjyPgwybZgb2UXACJiPvcc2jz0oyzk
-         0lcYO2+V2fy36TNsxrXdx/5px2LKO6+5q2+Rm8WVBpzfxw04qQJ+OCscZYg84bWU1fz7
-         ldaYQ8xsy6RqXXHtvLyQG1Az2juEdwWD7D+neZp7oMkN4CJ1ADEpdwnlXLwRVD1JhIui
-         Go4ZKcXXtPGvXRlvtmC1kOCSHiG3CU2UY00/6+Nnw1wWqOl5yH2vbNIPOSmKgkbdc2Nd
-         mSDZj8hHj2AQOYiPRF9l8VL+kQGYx4QUt4kXmGAHhlIXoTcpiKXwezhKY0CVtHBFVrpW
-         M82g==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=j0CWDjHuel9BhIbAeE9SClU/k1SGiwHbME2EsbEVqqg=;
+        b=H0ZpLV8XVaPO5Koy+JT8TV7Werq7grrAXsb7ndgYrWD9aaM+kA2QtzugtG05VDPave
+         ses3ofeebxQHSLAcjOGBkC9btWfyNNGqg8vbRKxZ07es2kQ6lWMR4pK7q2EDD14dauZP
+         30UPjbW4pxO5QwJcqFdY16nw8daWweukbCV/4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LLcfLa3jT9VCX7RwE0dDUcAeziaCYPyIo1qnxZ7SIOw=;
-        b=c5zi5/wquh/NjMKVUvIL6kOkNFtHpqXHx/ff1KoN/l4wdzH2dK2OURVp9UKu2OtsK1
-         PHFToQOj20x87PZSinKU2MFyjj6phBPBlLGBhMt1sbhOMVIBXAD7QAjX+TFzgWI68zjP
-         0I/5MT6jD5EvuiJbe3m/TtCP9JLMNMdySF+fm7ChYYDdSyWR2mOiX2bAXk2xL9SN/+rt
-         d6PoV75YaDLV8M6I0HgbxoUiUmnd27JuaVN84XljusIgoELUieb94bOPuuJW1BFaJDOd
-         fzILjKnd6GBSfx0LzL2CmI1CECR1j1ICPLGliWIyntycxQOu5vg8sAPFbEx5zeT4jnu1
-         2ctw==
-X-Gm-Message-State: AOAM533Kgc3tn0cSVU1ELyyVp+7U3DWdEJuhpPpGZY9EyVtq7QdCMxf2
-        ZzB+loVxv0uACzqnFflNHjiU//TKWOA=
-X-Google-Smtp-Source: ABdhPJxGmrB2gV5oToqqcL2Lc1GBuuGegYSbf4toI7NGmoFajWRCUk17/vK/Z5QBgbrJ2TEEcYanWw==
-X-Received: by 2002:a2e:b81a:: with SMTP id u26mr1422295ljo.241.1599140680897;
-        Thu, 03 Sep 2020 06:44:40 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id y17sm630318ljc.18.2020.09.03.06.44.39
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=j0CWDjHuel9BhIbAeE9SClU/k1SGiwHbME2EsbEVqqg=;
+        b=aaokvfl7S+sQMA0gn/aIl8cbgvaQihQtML/Heq5Ari5rdOoSDjDZDXFHyMjxA4K242
+         kvlfH3oj2zdxLQgOIbpL4mRfzEJ62Ny2wk/HqU/ehPzzwAfHpkYranOfQALmPOn0Yr5L
+         +SxhL0KsBjybxcRJEX8FaZpEOJQZI+sL5N5A7J8wO49R9S0Zp3T++/8zxLShhda3Yosd
+         JeL766pK2s6vloVQImZScA3sm3gXsgje/Th8odbDaHYKcZleexlIPTBrO19Bcjpqvz0X
+         520NycjiT/6USoy8DSdUsBA8AKRJs6BM/R43QJh7MQV7/c3Fj62ltRtUVz2SllDwQK/k
+         pbRw==
+X-Gm-Message-State: AOAM533EqzW2EC/OSGCA246VzCuXpdPmjKjNWon3z55jSIGy7SE+/eNr
+        nDUMKi8olJkz0N9nCdpQcAW09yggWRkz4w==
+X-Google-Smtp-Source: ABdhPJyUpbFUVZkfjxEdJ1UeboIjtYhm+7e8EHtxbcGg2Dkx8ZArpBpOG8q/RlUoUfbkcZd6rkfutw==
+X-Received: by 2002:a67:7905:: with SMTP id u5mr1759500vsc.179.1599140804306;
+        Thu, 03 Sep 2020 06:46:44 -0700 (PDT)
+Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
+        by smtp.gmail.com with ESMTPSA id n9sm285299vkq.31.2020.09.03.06.46.43
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 06:44:40 -0700 (PDT)
-Subject: Re: [PATCH v3 03/22] i2c: tegra: Clean up messages in the code
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200903005300.7894-1-digetx@gmail.com>
- <20200903005300.7894-4-digetx@gmail.com>
- <CAHp75VfFZ2bgEqS7cbTfYzxtXk3T5VaoJpum5aiNMpfvhfbuqw@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <2b6d99a0-0913-6c55-7c13-8a2a1524488d@gmail.com>
-Date:   Thu, 3 Sep 2020 16:44:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 03 Sep 2020 06:46:43 -0700 (PDT)
+Received: by mail-vs1-f42.google.com with SMTP id x203so1731588vsc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:46:43 -0700 (PDT)
+X-Received: by 2002:a67:e447:: with SMTP id n7mr1767573vsm.53.1599140802881;
+ Thu, 03 Sep 2020 06:46:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfFZ2bgEqS7cbTfYzxtXk3T5VaoJpum5aiNMpfvhfbuqw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
+ <CAD=FV=VE6vCPjDvvP0e73tnd8u5rPuMUa-mwvDazrfUpXP+bKQ@mail.gmail.com>
+ <2a0c5fa189dbb2e810ba88f59621b65c@codeaurora.org> <CAD=FV=X8yS1gUNhhVNyfuRPzDUheG2Rco2g16KMegCG6fKJw7Q@mail.gmail.com>
+ <d949bdfa15b133f74a47727401553c76@codeaurora.org> <7714ee57f75542839d5c33b28f232aa6@codeaurora.org>
+In-Reply-To: <7714ee57f75542839d5c33b28f232aa6@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 3 Sep 2020 06:46:30 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xt0NTNjCEJ2USfyd2qZ+FfBz9xwctbpv+hSWvvCoAZFg@mail.gmail.com>
+Message-ID: <CAD=FV=Xt0NTNjCEJ2USfyd2qZ+FfBz9xwctbpv+hSWvvCoAZFg@mail.gmail.com>
+Subject: Re: [PATCHv2] soc: qcom: llcc: Support chipsets that can write to
+ llcc registers
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.09.2020 14:06, Andy Shevchenko пишет:
-> On Thu, Sep 3, 2020 at 3:53 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> This patch unifies style of all messages in the driver by starting them
->> with a lowercase letter and using consistent capitalization and wording
->> for all messages.
-> 
-> I didn't look at the rest (yet) but this series has a patch ordering issue.
-> Why do we first do some little, non-critical clean ups?
-> 
-> The preferred way is to arrange like:
->  - fixes that may be backported
->  - fixes that are likely not going to be backported
->  - features
->  - cleanups
-> 
-> In its turn cleanups go by severity:
->  - code affected ones (and maybe logical changers)
->  - ...
->  - commentary / indentation fixes
-> 
+Hi,
 
-That's a good suggestion! All patches in this version are ordered by the
-time they were created ans since none of these patches should be
-worthwhile to backport (IMO) and because majority of patches do minor
-changes, it appeared to me that it should be okay as-is.
+On Thu, Sep 3, 2020 at 2:58 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Hi,
+>
+> On 2020-08-18 21:07, Sai Prakash Ranjan wrote:
+> > Hi Doug,
+> >
+> >>
+> >> I guess to start, it wasn't obvious (to me) that there were two
+> >> choices and we were picking one.  Mentioning that the other
+> >> alternative was way-based allocation would help a lot.  Even if you
+> >> can't fully explain the differences between the two, adding something
+> >> to the commit message indicating that this is a policy decision (in
+> >> other words, both work but each have their tradeoffs) would help.
+> >> Something like this, if it's correct:
+> >>
+> >> In general we try to enable capacity based allocation (instead of the
+> >> default way based allocation) since that gives us better performance
+> >> with the current software / hardware configuration.
+> >>
+> >
+> > Thanks, I will add it for next version. Let me also go poke some arch
+> > teams
+> > to understand if we actually do gain something with this selection, who
+> > knows
+> > we might get some additional details as well.
+> >
+>
+> I got some information from arch team today, to quote them exactly:
+>
+> 1) What benefits capacity based allocation brings over the default way
+> based allocation?
+>
+> "Capacity based allows finer grain partition. It is not about improved
+> performance but more flexibility in configuration."
+>
+> 2) Retain through power collapse, doesn=E2=80=99t it burn more power?
+>
+> "This feature is similar to the standard feature of retention. Yes, when
+> we
+> have cache in retention mode it burns more power but it keeps the values
+> so
+> that when we wake up we can get more cache hits."
+>
+>
+> If its good enough, then I will add this info to the commit msg and post
+> next version.
 
-I agree that it should be worthwhile to reorder the patches now, after
-the series grew up a tad in regards to amount of patches. I'll change
-the order in the next version, thanks!
+Sounds fine to me.  I was mostly looking for a high level idea of what
+was happening here.  I am at least a little curious about the
+retention bit.  Is that retention during S3, or during some sort of
+Runtime PM?  Any idea how much power is burned?  Unless the power is
+miniscule it seems hard to believe that it would be a net win to keep
+a cache powered up during S3 unless you're planning on waking up a
+lot.
+
+-Doug
