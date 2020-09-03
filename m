@@ -2,258 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF84325BB56
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD3725BB62
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgICHBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 03:01:49 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:45840 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726109AbgICHBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 03:01:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U7n-ifu_1599116494;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7n-ifu_1599116494)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Sep 2020 15:01:36 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-mm@kvack.org
-Subject: [PATCH v4 3/4] mm/pageblock: work around multiple arch's cmpxchg support issue
-Date:   Thu,  3 Sep 2020 15:01:22 +0800
-Message-Id: <1599116482-7410-3-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1599116482-7410-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1599116482-7410-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1727978AbgICHJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 03:09:48 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:35968 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725943AbgICHJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 03:09:48 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 80C1C2014D3;
+        Thu,  3 Sep 2020 09:09:46 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7748E200233;
+        Thu,  3 Sep 2020 09:09:43 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 52FB640249;
+        Thu,  3 Sep 2020 09:09:39 +0200 (CEST)
+From:   Ran Wang <ran.wang_1@nxp.com>
+To:     Li Yang <leoyang.li@nxp.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Ma <peng.ma@nxp.com>, Ran Wang <ran.wang_1@nxp.com>
+Subject: [PATCH v5] soc: fsl: enable acpi support in RCPM driver
+Date:   Thu,  3 Sep 2020 15:01:58 +0800
+Message-Id: <20200903070158.27399-1-ran.wang_1@nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Armv6, sh2, sparc32 and xtensa can not do cmpxchg1, so we have to use
-cmpxchg4 on it.
+From: Peng Ma <peng.ma@nxp.com>
 
-Here we mark above 4 arch's NO_CMPXCHG_BYTE, and would add more if we
-found.
+This patch enables ACPI support in RCPM driver.
 
-This is the first usages of cmpxchg flase sharing change. We'd better
-check more cmpxchg usages in current kernel...
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-mm@kvack.org
+Signed-off-by: Peng Ma <peng.ma@nxp.com>
+Signed-off-by: Ran Wang <ran.wang_1@nxp.com>
 ---
- arch/Kconfig           |  3 +++
- arch/arm/Kconfig       |  1 +
- arch/sh/Kconfig        |  1 +
- arch/sparc/Kconfig     |  1 +
- arch/xtensa/Kconfig    |  1 +
- include/linux/mmzone.h | 15 ++++++++++++---
- mm/page_alloc.c        | 22 +++++++++++-----------
- 7 files changed, 30 insertions(+), 14 deletions(-)
+Change in v5:
+ - Fix panic when dev->of_node is null
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index af14a567b493..3514570c0f5f 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -431,6 +431,9 @@ config HAVE_CMPXCHG_LOCAL
- config HAVE_CMPXCHG_DOUBLE
- 	bool
+Change in v4:
+ - Make commit subject more accurate
+ - Remove unrelated new blank line
+
+Change in v3:
+ - Add #ifdef CONFIG_ACPI for acpi_device_id
+ - Rename rcpm_acpi_imx_ids to rcpm_acpi_ids
+
+Change in v2:
+ - Update acpi_device_id to fix conflict with other driver
+
+ drivers/soc/fsl/rcpm.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/soc/fsl/rcpm.c b/drivers/soc/fsl/rcpm.c
+index a093dbe..58870f4 100644
+--- a/drivers/soc/fsl/rcpm.c
++++ b/drivers/soc/fsl/rcpm.c
+@@ -2,7 +2,7 @@
+ //
+ // rcpm.c - Freescale QorIQ RCPM driver
+ //
+-// Copyright 2019 NXP
++// Copyright 2019-2020 NXP
+ //
+ // Author: Ran Wang <ran.wang_1@nxp.com>
  
-+config NO_CMPXCHG_BYTE
-+	bool
+@@ -13,6 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/suspend.h>
+ #include <linux/kernel.h>
++#include <linux/acpi.h>
+ 
+ #define RCPM_WAKEUP_CELL_MAX_SIZE	7
+ 
+@@ -56,10 +57,14 @@ static int rcpm_pm_prepare(struct device *dev)
+ 				"fsl,rcpm-wakeup", value,
+ 				rcpm->wakeup_cells + 1);
+ 
+-		/*  Wakeup source should refer to current rcpm device */
+-		if (ret || (np->phandle != value[0]))
++		if (ret)
+ 			continue;
+ 
++		if (is_of_node(dev->fwnode))
++			/*  Should refer to current rcpm device */
++			if (np->phandle != value[0])
++				continue;
 +
- config ARCH_WEAK_RELEASE_ACQUIRE
- 	bool
+ 		/* Property "#fsl,rcpm-wakeup-cells" of rcpm node defines the
+ 		 * number of IPPDEXPCR register cells, and "fsl,rcpm-wakeup"
+ 		 * of wakeup source IP contains an integer array: <phandle to
+@@ -139,10 +144,19 @@ static const struct of_device_id rcpm_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, rcpm_of_match);
  
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index e00d94b16658..03a6c7fd999d 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -48,6 +48,7 @@ config ARM
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ARCH_TOPOLOGY if ARM_CPU_TOPOLOGY
- 	select GENERIC_ATOMIC64 if CPU_V7M || CPU_V6 || !CPU_32v6K || !AEABI
-+	select NO_CMPXCHG_BYTE if CPU_V6
- 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_EARLY_IOREMAP
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index d20927128fce..4c7f0ad5b93f 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -155,6 +155,7 @@ menu "System type"
- config CPU_SH2
- 	bool
- 	select SH_INTC
-+	select NO_CMPXCHG_BYTE
- 
- config CPU_SH2A
- 	bool
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index efeff2c896a5..51ae5c8ede87 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -58,6 +58,7 @@ config SPARC32
- 	select CLZ_TAB
- 	select HAVE_UID16
- 	select OLD_SIGACTION
-+	select NO_CMPXCHG_BYTE
- 
- config SPARC64
- 	def_bool 64BIT
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index e997e0119c02..862b008ab09e 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -42,6 +42,7 @@ config XTENSA
- 	select MODULES_USE_ELF_RELA
- 	select PERF_USE_VMALLOC
- 	select VIRT_TO_BUS
-+	select NO_CMPXCHG_BYTE
- 	help
- 	  Xtensa processors are 32-bit RISC machines designed by Tensilica
- 	  primarily for embedded systems.  These processors are both
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index be676e659fb7..0bc5ac0f8cd7 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -406,6 +406,15 @@ enum zone_type {
- 
- #ifndef __GENERATING_BOUNDS_H
- 
-+/* cmpxchg only support 32-bits operands on ARMv6, SPARC32, sh2, XTENSA.*/
-+#ifdef CONFIG_NO_CMPXCHG_BYTE
-+#define BITS_PER_FLAGS	BITS_PER_LONG
-+typedef unsigned long pageblockflags_t;
-+#else
-+#define BITS_PER_FLAGS	BITS_PER_BYTE
-+typedef unsigned char pageblockflags_t;
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id rcpm_acpi_ids[] = {
++	{"NXP0015",},
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, rcpm_acpi_ids);
 +#endif
 +
- struct zone {
- 	/* Read-mostly fields */
- 
-@@ -437,7 +446,7 @@ struct zone {
- 	 * Flags for a pageblock_nr_pages block. See pageblock-flags.h.
- 	 * In SPARSEMEM, this map is stored in struct mem_section
- 	 */
--	unsigned char		*pageblock_flags;
-+	pageblockflags_t	*pageblock_flags;
- #endif /* CONFIG_SPARSEMEM */
- 
- 	/* zone_start_pfn == zone_start_paddr >> PAGE_SHIFT */
-@@ -1159,7 +1168,7 @@ struct mem_section_usage {
- 	DECLARE_BITMAP(subsection_map, SUBSECTIONS_PER_SECTION);
- #endif
- 	/* See declaration of similar field in struct zone */
--	unsigned char	pageblock_flags[0];
-+	pageblockflags_t	pageblock_flags[0];
- };
- 
- void subsection_map_init(unsigned long pfn, unsigned long nr_pages);
-@@ -1212,7 +1221,7 @@ struct mem_section {
- extern struct mem_section mem_section[NR_SECTION_ROOTS][SECTIONS_PER_ROOT];
- #endif
- 
--static inline unsigned char *section_to_usemap(struct mem_section *ms)
-+static inline pageblockflags_t *section_to_usemap(struct mem_section *ms)
- {
- 	return ms->usage->pageblock_flags;
- }
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3688e6b83318..8b65d83d8be6 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -445,7 +445,7 @@ static inline bool defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
- #endif
- 
- /* Return a pointer to the bitmap storing bits affecting a block of pages */
--static inline unsigned char *get_pageblock_bitmap(struct page *page,
-+static inline pageblockflags_t *get_pageblock_bitmap(struct page *page,
- 							unsigned long pfn)
- {
- #ifdef CONFIG_SPARSEMEM
-@@ -474,24 +474,24 @@ static inline int pfn_to_bitidx(struct page *page, unsigned long pfn)
-  * Return: pageblock_bits flags
-  */
- static __always_inline
--unsigned char __get_pfnblock_flags_mask(struct page *page,
-+pageblockflags_t __get_pfnblock_flags_mask(struct page *page,
- 					unsigned long pfn,
- 					unsigned long mask)
- {
--	unsigned char *bitmap;
-+	pageblockflags_t *bitmap;
- 	unsigned long bitidx, byte_bitidx;
--	unsigned char byte;
-+	pageblockflags_t byte;
- 
- 	bitmap = get_pageblock_bitmap(page, pfn);
- 	bitidx = pfn_to_bitidx(page, pfn);
--	byte_bitidx = bitidx / BITS_PER_BYTE;
--	bitidx &= (BITS_PER_BYTE-1);
-+	byte_bitidx = bitidx / BITS_PER_FLAGS;
-+	bitidx &= (BITS_PER_FLAGS - 1);
- 
- 	byte = bitmap[byte_bitidx];
- 	return (byte >> bitidx) & mask;
- }
- 
--unsigned char get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
-+pageblockflags_t get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
- 					unsigned long mask)
- {
- 	return __get_pfnblock_flags_mask(page, pfn, mask);
-@@ -513,16 +513,16 @@ void set_pfnblock_flags_mask(struct page *page, unsigned long flags,
- 					unsigned long pfn,
- 					unsigned long mask)
- {
--	unsigned char *bitmap;
-+	pageblockflags_t *bitmap;
- 	unsigned long bitidx, byte_bitidx;
--	unsigned char old_byte, byte;
-+	pageblockflags_t old_byte, byte;
- 
--	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != BITS_PER_BYTE);
-+	BUILD_BUG_ON(NR_PAGEBLOCK_BITS != BITS_PER_FLAGS);
- 	BUILD_BUG_ON(MIGRATE_TYPES > (1 << PB_migratetype_bits));
- 
- 	bitmap = get_pageblock_bitmap(page, pfn);
- 	bitidx = pfn_to_bitidx(page, pfn);
--	byte_bitidx = bitidx / BITS_PER_BYTE;
-+	byte_bitidx = bitidx / BITS_PER_FLAGS;
- 
- 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
- 
+ static struct platform_driver rcpm_driver = {
+ 	.driver = {
+ 		.name = "rcpm",
+ 		.of_match_table = rcpm_of_match,
++		.acpi_match_table = ACPI_PTR(rcpm_acpi_ids),
+ 		.pm	= &rcpm_pm_ops,
+ 	},
+ 	.probe = rcpm_probe,
 -- 
-1.8.3.1
+2.7.4
 
