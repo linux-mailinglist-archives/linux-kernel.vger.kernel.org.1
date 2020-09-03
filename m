@@ -2,73 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CEEE25C47A
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F7C25C480
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgICPLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728876AbgICMbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:31:00 -0400
-Received: from gaia (unknown [46.69.195.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ABA520639;
-        Thu,  3 Sep 2020 12:06:00 +0000 (UTC)
-Date:   Thu, 3 Sep 2020 13:05:58 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Wei Li <liwei213@huawei.com>, will@kernel.org,
-        saberlily.xia@hisilicon.com, puck.chen@hisilicon.com,
-        butao@hisilicon.com, fengbaopeng2@hisilicon.com,
-        nsaenzjulienne@suse.de, steve.capper@arm.com,
-        song.bao.hua@hisilicon.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sujunfei2@hisilicon.com
-Subject: Re: [PATCH v2] arm64: mm: free unused memmap for sparse memory model
- that define VMEMMAP
-Message-ID: <20200903120558.GB31409@gaia>
-References: <20200812010655.96339-1-liwei213@huawei.com>
- <20200817080405.GL969206@linux.ibm.com>
+        id S1728777AbgICM1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:27:48 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:35156 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728756AbgICMZQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:25:16 -0400
+Received: by mail-ot1-f65.google.com with SMTP id i4so2526229ota.2;
+        Thu, 03 Sep 2020 05:25:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yoH8otJKneHhR+opHL4Qe3/H5myYYwGysCvobqpQrFU=;
+        b=qNuPrdImKETtHEhctvhPOLQv3LzCc1JEWOBIulpHGKUcGGBbTaadJ5kJT0HrJVkeQL
+         RM4iLwqrLubl33Q5LTHZYEh3sPVKS1DvfJpL1MTvrK/6ZF99xitJy3rrtC+NgPKCcz6I
+         SUcHDNWIXE2Cj6KWNx6PfuWaTkPRrASdtPmJPQRAuTvC8u8MF5Tsuuo8iWW+CcqMPIil
+         aKUOP1z8yIhM9av/R9dj6LDSV0bCLorNoC84vMqufqCPV6u3gDR1tdbdE3ZY4PzdGrTR
+         qXCq+5/oEfnzCTtQl/SQKaqeIS+VA0wJVrG+gr5O6E0s0nlqYtPKgZrk/add/yhcHd37
+         N2gQ==
+X-Gm-Message-State: AOAM531SThgdb9mwXJ/39HtCR+9cMifM6jzAuLG5BFSMQsDYLlpVFIzU
+        31cYS4tQDe9cd1uxtjOQfp5fUvlvnsrGpLLnRQt9d90JplY=
+X-Google-Smtp-Source: ABdhPJx6avH3C2TKsyCvh/3I9dhPX40IElmyXMkGAOAO9ix8cDNZKHbE66NR+61my3IRjdnIpw+n+bSrWEBHgpegwSk=
+X-Received: by 2002:a9d:1b62:: with SMTP id l89mr1331699otl.145.1599135265698;
+ Thu, 03 Sep 2020 05:14:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817080405.GL969206@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200825162718.5838-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20200825162718.5838-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 3 Sep 2020 14:14:14 +0200
+Message-ID: <CAMuHMdUbxtb+Yg=3dgRXWXn2k2tGYcmVzbS-n6rLM0QAJrfo-A@mail.gmail.com>
+Subject: Re: [PATCH 3/4] ARM: dts: r8a7742-iwg21d-q7: Add can0 support to
+ carrier board
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:04:05AM +0300, Mike Rapoport wrote:
-> On Wed, Aug 12, 2020 at 09:06:55AM +0800, Wei Li wrote:
-> > For the memory hole, sparse memory model that define SPARSEMEM_VMEMMAP
-> > do not free the reserved memory for the page map, this patch do it.
-> 
-> I've been thinking about it a bit more and it seems that instead of
-> freeing unused memory map it would be better to allocate the exact
-> memory map from the beginning.
-> 
-> In sparse_init_nid() we can replace PAGES_PER_SECTION parameter to
-> __populate_section_memmap() with the calculated value for architectures
-> that define HAVE_ARCH_PFN_VALID.
+Hi Prabhakar,
 
-Or just use a smaller PAGES_PER_SECTION and reduce the waste ;).
+On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> This patch enables CAN0 interface exposed through connector J20 on the
+> carrier board.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 
-Just to be clear, are you suggesting that we should use pfn_valid() on
-the pages within a section to calculate the actual range? The
-pfn_valid() implementation on arm64 checks for the validity of a sparse
-section, so this would be called from within the sparse_init() code
-path. I hope there's no dependency but I haven't checked. If it works,
-it's fine by me, it solves the FLATMEM mem_map freeing as well.
+According to my schematics, the CAN port on J20 has its signals named
+CAN0_[RT]XD on the carrier board, but connected to CAN1[RT]X (GP4_[67])
+on the SoM.
 
-With 4KB pages on arm64, vmemmap_populate() stops at the pmd level, so
-it always allocates PMD_SIZE. Wei's patch also only frees in PMD_SIZE
-amounts. So, with a sizeof(struct page) of 64 (2^6), a PMD_SIZE mem_map
-section would cover 2^(21-6) pages, so that's equivalent to a
-SECTION_SIZE_BITS of 21-6+12 = 27.
+Or am I looking at the wrong file?
 
-If we reduce SECTION_SIZE_BITS to 27 or less, this patch is a no-op.
+> --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> @@ -198,6 +198,13 @@
+>         };
+>  };
+>
+> +&can0 {
+
+can1
+
+> +       pinctrl-0 = <&can0_pins>;
+
+can1_pins
+
+> +       pinctrl-names = "default";
+> +
+> +       status = "okay";
+> +};
+> +
+>  &cmt0 {
+>         status = "okay";
+>  };
+
+> @@ -287,6 +303,11 @@
+>                 function = "tpu0";
+>         };
+>
+> +       can0_pins: can0 {
+> +               groups = "can0_data_d";
+
+can1_data_b
+
+> +               function = "can0";
+> +       };
+> +
+>         i2c2_pins: i2c2 {
+>                 groups = "i2c2_b";
+>                 function = "i2c2";
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Catalin
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
