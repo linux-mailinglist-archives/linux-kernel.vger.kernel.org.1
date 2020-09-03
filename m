@@ -2,62 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C556325C0BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799B325C0B6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728768AbgICMFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:05:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10760 "EHLO huawei.com"
+        id S1728725AbgICMED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:04:03 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55842 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728777AbgICL4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:56:21 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 008EE505A423727940B2;
-        Thu,  3 Sep 2020 19:55:15 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Sep 2020 19:55:04 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>
-Subject: [PATCH 2/2] crypto: hisilicon/qm - remove the update of flags
-Date:   Thu, 3 Sep 2020 19:54:00 +0800
-Message-ID: <1599134040-55860-3-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1599134040-55860-1-git-send-email-qianweili@huawei.com>
-References: <1599134040-55860-1-git-send-email-qianweili@huawei.com>
+        id S1728718AbgICL4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:56:22 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 491F1DC3B52B4ED5FE93;
+        Thu,  3 Sep 2020 19:56:21 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 3 Sep 2020
+ 19:56:10 +0800
+Subject: Re: [PATCH v11 5/5] kdump: update Documentation about crashkernel
+To:     Catalin Marinas <catalin.marinas@arm.com>
+References: <20200801130856.86625-1-chenzhou10@huawei.com>
+ <20200801130856.86625-6-chenzhou10@huawei.com> <20200902171341.GC16673@gaia>
+CC:     <will@kernel.org>, <james.morse@arm.com>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <dyoung@redhat.com>, <bhe@redhat.com>,
+        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
+        <prabhakar.pkin@gmail.com>, <bhsharma@redhat.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <84bb1cbb-c19e-9006-07b5-044eac5ecd4f@huawei.com>
+Date:   Thu, 3 Sep 2020 19:56:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
+In-Reply-To: <20200902171341.GC16673@gaia>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'qm_init_qp_status' is just a help function to initiate some 'QP' status.
-'QP' status should be updated separately.
-This patch removes the updating flags in 'QP' status.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
-Reviewed-by: Zhou Wang <wangzhou1@hisilicon.com>
----
- drivers/crypto/hisilicon/qm.c | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 07efc52..cfd66ee 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -757,7 +757,6 @@ static void qm_init_qp_status(struct hisi_qp *qp)
- 	qp_status->sq_tail = 0;
- 	qp_status->cq_head = 0;
- 	qp_status->cqc_phase = true;
--	atomic_set(&qp_status->flags, 0);
- 	atomic_set(&qp_status->used, 0);
- }
- 
--- 
-2.8.1
+On 2020/9/3 1:13, Catalin Marinas wrote:
+> On Sat, Aug 01, 2020 at 09:08:56PM +0800, Chen Zhou wrote:
+>> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+>> index 2da65fef2a1c..4b58f97351d5 100644
+>> --- a/Documentation/admin-guide/kdump/kdump.rst
+>> +++ b/Documentation/admin-guide/kdump/kdump.rst
+>> @@ -299,7 +299,15 @@ Boot into System Kernel
+>>     "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
+>>     starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
+>>  
+>> -   On x86 and x86_64, use "crashkernel=64M@16M".
+>> +   On x86 use "crashkernel=64M@16M".
+>> +
+>> +   On x86_64, use "crashkernel=X" to select a region under 4G first, and
+>> +   fall back to reserve region above 4G.
+>> +   We can also use "crashkernel=X,high" to select a region above 4G, which
+>> +   also tries to allocate at least 256M below 4G automatically and
+>> +   "crashkernel=Y,low" can be used to allocate specified size low memory.
+>> +   Use "crashkernel=Y@X" if you really have to reserve memory from specified
+>> +   start address X.
+>>  
+>>     On ppc64, use "crashkernel=128M@32M".
+>>  
+>> @@ -316,8 +324,15 @@ Boot into System Kernel
+>>     kernel will automatically locate the crash kernel image within the
+>>     first 512MB of RAM if X is not given.
+>>  
+>> -   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
+>> -   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
+>> +   On arm64, use "crashkernel=X" to try low allocation in ZONE_DMA, and
+>> +   fall back to high allocation if it fails. And go for high allocation
+>> +   directly if the required size is too large. If crash_base is outside
+> I wouldn't mention crash_base in the admin guide. That's an
+> implementation detail really and admins are not supposed to read the
+> source code to make sense of the documentation. ZONE_DMA is also a
+> kernel internal, so you'd need to define what it is for arm64. At least
+> the DMA and DMA32 zones are printed during kernel boot.
+Ok, i will fix this in next version.
+>
+>> +   ZONE_DMA, try to allocate at least 256M in ZONE_DMA automatically.
+>> +   "crashkernel=Y,low" can be used to allocate specified size low memory.
+>> +   For non-RPi4 platforms, change ZONE_DMA memtioned above to ZONE_DMA32.
+>> +   Use "crashkernel=Y@X" if you really have to reserve memory from
+>> +   specified start address X. Note that the start address of the kernel,
+>> +   X if explicitly specified, must be aligned to 2MiB (0x200000).
+
 
