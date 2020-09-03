@@ -2,62 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD2825C096
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC66325C05E
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 13:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728647AbgICLto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 07:49:44 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:40212 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728716AbgICLhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:37:36 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 0AF79D883C5C254F01E4;
-        Thu,  3 Sep 2020 19:37:03 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 3 Sep 2020 19:36:54 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <target-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wangxiongfeng2@huawei.com>
-Subject: [PATCH] scsi: target: tcmu: add a missing newline when printing parameters
-Date:   Thu, 3 Sep 2020 19:29:33 +0800
-Message-ID: <1599132573-33818-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1728563AbgICLdX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Sep 2020 07:33:23 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35416 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728480AbgICL34 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:29:56 -0400
+Received: by mail-ot1-f68.google.com with SMTP id i4so2384106ota.2;
+        Thu, 03 Sep 2020 04:29:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wtryLyCP/92BUYkFWZmJhsJCVcQxjl0iR9C8GWL/It8=;
+        b=uAvLTw7YyFkrpWozAnFJu3DySggPIhtiTRYcLiPAxNYYmohgUimeDgTm2DSPqTQbUt
+         o4XTArVbiKALxi295LCXR7nVSa/3LWg/tsgET+/2Vi7tBRtTss3RajVSaDnFEeYeYbzb
+         pN3SedK9Q2u5/5mkJrfwdus8DYhNhwjFUw89I47uGtnHFNrB8DXftn3X4R5+Yn95nq8S
+         yFMum5sk/PzMbRmpu3n90g1eke5qHFtcaiUZU1Qx484lqweUHzjAuATm1tq0HKITonDJ
+         fMXGhUwg011jHouEMvh0wHjytpoXYsKNKWkKxZfdw7o6mrN8DqQQ2/BZD1gx6gBV6wUT
+         cZrQ==
+X-Gm-Message-State: AOAM533xkP2pZdyqtNZvR7Jv1401vPiB2J6Kb+OZ8Qy9RH+hQ1kW9UJZ
+        XeTECuGy7LfND8PSBghXy2xp52LQMFJvfPwWV3Q=
+X-Google-Smtp-Source: ABdhPJzzuTSaYdIsnjPYCU0FIyHFDgPSktyUp4zTrC7K//wdWR2qY9Pjq6aHqvfTunNgQ3ArrHzx1UfMR87mxLw9BCk=
+X-Received: by 2002:a9d:1b62:: with SMTP id l89mr1203878otl.145.1599132594627;
+ Thu, 03 Sep 2020 04:29:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825162718.5838-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CAMuHMdVVvDEq-GSsPDrx09TCfGCWkNQvGYrNWP4gK2=63G2z1w@mail.gmail.com> <CA+V-a8sqVGHHQ0ayH7CvKANyCpsFPBy6OuqoGQHPS7iOX20rCg@mail.gmail.com>
+In-Reply-To: <CA+V-a8sqVGHHQ0ayH7CvKANyCpsFPBy6OuqoGQHPS7iOX20rCg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 3 Sep 2020 13:29:43 +0200
+Message-ID: <CAMuHMdUAKeXWD=G0ifNkMehtdvZATyyiudPL103gp5nY-XMufA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ARM: dts: r8a7742-iwg21d-q7: Enable PCIe Controller
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I cat module paramter 'global_max_data_area_mb' by sysfs, it
-displays as follows. It's better to add a newline for easy reading.
+Hi Prabhakar,
 
-root@(none):/# cat /sys/module/target_core_user/parameters/global_max_data_area_mb
-2048noneroot@(none):/#
+On Thu, Sep 3, 2020 at 1:18 PM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Thu, Sep 3, 2020 at 11:18 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
+> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > > Enable PCIe Controller and set PCIe bus clock frequency.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+> >
+> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > i.e. will queue in renesas-devel for v5.10.
+> >
+> > One thing to double-check below.
+> >
+> > > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > @@ -238,6 +238,18 @@
+> > >         /* status = "okay"; */
+> > >  };
+> > >
+> > > +&pcie_bus_clk {
+> > > +       clock-frequency = <100000000>;
+> > > +};
+> > > +
+> > > +&pciec {
+> > > +       /* SW2[6] determines which connector is activated
+> > > +        * ON = PCIe X4 (connector-J7)
+> > > +        * OFF = mini-PCIe (connector-J26)
+> >
+> > The table on page 14 says it's the other way around.
+> >
+> > According to the CBTL02042ABQ datasheet, PCIe_SEL = low
+> > selects the first channel (PCIe x4), while PCIe_SEL = high selects the
+> > second channel (mini-PCIe).
+> > Enabling the switch ties the signal low, so the table must be wrong.
+> >
+> Referring to [1] page 3:
+>
+> SEL = LOW: A↔B
+> SEL = HIGH: A↔C
+>
+> And as per the schematic iW-PREJD-CS-01-R2.0-REL1.5.pdf channel B is
+> J7 (PCIe X 4) and channel C is J26 (mini PCIe slot).
+>
+> Enabling the switch SW2[6] (ON) ties SEL to LOW -> channel B is J7 (PCIe X 4)
+> Disabling the switch SW2[6] (OFF) ties SEL to HIGH -> channel C is J26
+> (mini PCIe)
+>
+> Also iW-PREJD-CS-01-R2.0-REL1.5.pdf page 14 (General purpose table DIP
+> Switch) mentions the above.
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/target/target_core_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oh right, I looked at the old document, and they fixed it in the newer one.
 
-diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-index 9b75923..9775670 100644
---- a/drivers/target/target_core_user.c
-+++ b/drivers/target/target_core_user.c
-@@ -242,7 +242,7 @@ static int tcmu_set_global_max_data_area(const char *str,
- static int tcmu_get_global_max_data_area(char *buffer,
- 					 const struct kernel_param *kp)
- {
--	return sprintf(buffer, "%d", TCMU_BLOCKS_TO_MBS(tcmu_global_max_blocks));
-+	return sprintf(buffer, "%d\n", TCMU_BLOCKS_TO_MBS(tcmu_global_max_blocks));
- }
- 
- static const struct kernel_param_ops tcmu_global_max_data_area_op = {
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-1.7.12.4
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
