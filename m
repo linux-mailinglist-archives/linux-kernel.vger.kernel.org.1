@@ -2,74 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D670025C0ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5BD25C0F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 14:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbgICM0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 08:26:03 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:32929 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728755AbgICMZQ (ORCPT
+        id S1728861AbgICM2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:28:44 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:60812 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728771AbgICM0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 08:25:16 -0400
-Received: by mail-oi1-f196.google.com with SMTP id 3so2953484oih.0;
-        Thu, 03 Sep 2020 05:25:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6fdiDQ044x0vFJq3djzG9dmCS4th8L19ANmzylfbIFg=;
-        b=QohUmFPbxpD6VSaZA/7xFPJUY1xwdCMpiKS8CRu6kD/hfyQl2FEhWuLMB3h8dyvGwK
-         Y1c7pPb0PkdXCPfKn3Z/y6BbnKRs5Ehlxbteipm0W/c8NAXit0HaMOZEXqpSE3FNkyNK
-         iP7ce93s+TFjDGGNBEhF5Aoj8KbawBtKlyvr1p/JLhJQWVzR+Tjw+GTbiF1GFDw0jZCm
-         KFiroafgymdn5B2kAaq1BhW5iNSGDSTxe/jtYraluasBs+0u0zPgAmLBl1lUOCIh2Alr
-         zgJomu5mTtSoHNQDvDxKUTrHbFAKK1gBq4xTLZEaRK4C97hUuWjzFZa3iRrO3+LZwN9x
-         29yQ==
-X-Gm-Message-State: AOAM532fXvt/Xq6e9UOb/HwfFf0N+zuuNqZa4Y5YRNcI4qD4oWiqahRL
-        8vg9AxvjqIpIjFmq9rhHNUu4SgLhs221OIsA56s=
-X-Google-Smtp-Source: ABdhPJxz33wMGk9Uweyb02G5HCp+d5T+GZaH717OptZV2P94WaqTxkGbbHY5A0ZqsFEaJnttExTdw3uQxmt0cPDXy/Y=
-X-Received: by 2002:aca:3402:: with SMTP id b2mr1757404oia.153.1599135915254;
- Thu, 03 Sep 2020 05:25:15 -0700 (PDT)
+        Thu, 3 Sep 2020 08:26:40 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083CQTM5033898;
+        Thu, 3 Sep 2020 07:26:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599135989;
+        bh=C49cVGMfysASvBZN8YfOnPiHqifti4v0fpFLtpuvDFo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=keDETmcGnT3787siHhYTvjmFIuGTIwrvkyy99J2Nzz5opdLU/qfvdMgdttMdj1C+B
+         J9iL3nvcFRw084oHqm/2EXmCra4YBrRsF/65ylCQZxrtFOd1XPyTRajpWxZwtRbQx4
+         Fa8Y7QldEhSsm7TcFZ8OdXXh3xR8jQeleVJ/RB4o=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083CQTZf106490
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 07:26:29 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 07:26:28 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 07:26:28 -0500
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083CQOpb038856;
+        Thu, 3 Sep 2020 07:26:26 -0500
+Subject: Re: drivers/irqchip/irq-ti-sci-intr.c:148
+ ti_sci_intr_alloc_parent_irq() warn: impossible condition '(p_hwirq < 0) =>
+ (0-u16max < 0)'
+To:     Dan Carpenter <dan.carpenter@oracle.com>, <kbuild@lists.01.org>
+CC:     <lkp@intel.com>, Dan Carpenter <error27@gmail.com>,
+        <kbuild-all@lists.01.org>, <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+References: <20200903122159.GE8299@kadam>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <ed83e54c-1216-5c02-6f1f-a3c94e67bb68@ti.com>
+Date:   Thu, 3 Sep 2020 17:56:24 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200827181918.30130-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20200827181918.30130-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 3 Sep 2020 14:25:03 +0200
-Message-ID: <CAMuHMdUkKGA+=zkke3RtV5pwCYEiB8i8ujwtKr2QQrSSezxNtA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: renesas: Add HiHope RZ/G2H board with
- idk-1110wr display
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200903122159.GE8299@kadam>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 8:20 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> The HiHope RZ/G2H is advertised as compatible with panel idk-1110wr from
-> Advantech, however the panel isn't sold alongside the board. New dts,
-> enabling the lvds node to get the panel to work with HiHope RZ/G2H.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Hi Dan,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.10.
+On 03/09/20 5:51 pm, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   fc3abb53250a90ba2150eebd182137c136f4d25a
+> commit: a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49 irqchip/ti-sci-intr: Add support for INTR being a parent to INTR
+> config: arm64-randconfig-m031-20200902 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> smatch warnings:
+> drivers/irqchip/irq-ti-sci-intr.c:148 ti_sci_intr_alloc_parent_irq() warn: impossible condition '(p_hwirq < 0) => (0-u16max < 0)'
+> 
+> # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49
+> git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> git fetch --no-tags linus master
+> git checkout a5b659bd4bc7518a8e45fda5256c5e5e8d3b7c49
+> vim +148 drivers/irqchip/irq-ti-sci-intr.c
+> 
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  134  static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
+> cd844b0715ceda Lokesh Vutla 2019-04-30  135  					unsigned int virq, u32 hwirq)
+> cd844b0715ceda Lokesh Vutla 2019-04-30  136  {
+> cd844b0715ceda Lokesh Vutla 2019-04-30  137  	struct ti_sci_intr_irq_domain *intr = domain->host_data;
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  138  	struct device_node *parent_node;
+> cd844b0715ceda Lokesh Vutla 2019-04-30  139  	struct irq_fwspec fwspec;
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  140  	u16 out_irq, p_hwirq;
+>                                                 ^^^          ^^^^^^^
+> 
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  141  	int err = 0;
+> cd844b0715ceda Lokesh Vutla 2019-04-30  142  
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  143  	out_irq = ti_sci_get_free_resource(intr->out_irqs);
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  144  	if (out_irq == TI_SCI_RESOURCE_NULL)
+> cd844b0715ceda Lokesh Vutla 2019-04-30  145  		return -EINVAL;
+> cd844b0715ceda Lokesh Vutla 2019-04-30  146  
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06  147  	p_hwirq = ti_sci_intr_xlate_irq(intr, out_irq);
+> a5b659bd4bc751 Lokesh Vutla 2020-08-06 @148  	if (p_hwirq < 0)
+>                                                     ^^^^^^^^^^^
+> Impossible
 
-Gr{oetje,eeting}s,
+This is already fixed by https://patchwork.kernel.org/patch/11737169/
 
-                        Geert
+Thanks and regards,
+Lokesh
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
