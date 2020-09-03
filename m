@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FB925C36F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC2D25C2BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbgICOvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:51:53 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:11712 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729210AbgICOPQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:15:16 -0400
-From:   Peter Enderborg <peter.enderborg@sony.com>
-To:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     Peter Enderborg <peter.enderborg@sony.com>
-Subject: [PATCH] crypto: Mark tfm buffer as non leak.
-Date:   Thu, 3 Sep 2020 15:40:07 +0200
-Message-ID: <20200903134007.2769-1-peter.enderborg@sony.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729114AbgICOee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:34:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48752 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729322AbgICOdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:33:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3B393B58F;
+        Thu,  3 Sep 2020 13:43:23 +0000 (UTC)
+Message-ID: <561110efffc3f6bf57894bf39861b39e1ec87845.camel@suse.com>
+Subject: Re: [RFC PATCH v7 17/23] kernel/entry: Add support for core-wide
+ protection of kernel-mode
+From:   Dario Faggioli <dfaggioli@suse.com>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Ingo Molnar <mingo@kernel.org>, Paul Turner <pjt@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        =?UTF-8?Q?benbjiang=28=E8=92=8B=E5=BD=AA=29?= 
+        <benbjiang@tencent.com>, Aubrey Li <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Date:   Thu, 03 Sep 2020 15:43:19 +0200
+In-Reply-To: <CAEXW_YRQiC_0edO5L2vVmL0NcfeZaRt4WYoyrcKmzbFcQP3PvA@mail.gmail.com>
+References: <cover.1598643276.git.jdesfossez@digitalocean.com>
+         <2a4398b55fe258ea53fb1fbc727063298f7eea8f.1598643276.git.jdesfossez@digitalocean.com>
+         <87y2lth4qa.fsf@nanos.tec.linutronix.de>
+         <20200901165052.GA1662854@google.com>
+         <875z8xl0zh.fsf@nanos.tec.linutronix.de>
+         <20200902012905.GB1703315@google.com>
+         <87h7sgk41y.fsf@nanos.tec.linutronix.de>
+         <a80babf130a45841e166fa155f84afc19b4257d3.camel@suse.com>
+         <CAEXW_YRQiC_0edO5L2vVmL0NcfeZaRt4WYoyrcKmzbFcQP3PvA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-u3iHHAldM+mQ4zS+I0no"
+User-Agent: Evolution 3.36.4 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=FfdJO626 c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=reM5J-MqmosA:10 a=z6gsHLkEAAAA:8 a=L8t1L5anSuFvw26KRygA:9 a=d-OLMTCWyvARjPbQ-enb:22
-X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running kmemleak on this I got a lot of
 
-unreferenced object 0xfffffff942d4ec00 (size 1024):
-  comm "init", pid 1, jiffies 4294893619 (age 17475.864s)
-  hex dump (first 32 bytes):
-    38 1d cf bd 9e ff ff ff b8 37 8b bd 9e ff ff ff  8........7......
-    78 38 8b bd 9e ff ff ff 10 00 00 00 00 00 00 00  x8..............
-  backtrace:
-    [<00000000c3c55a80>] __kmalloc+0x2cc/0x3b0
-    [<00000000c599b091>] crypto_create_tfm+0x38/0xf0
-    [<00000000d4516e51>] crypto_spawn_tfm2+0x58/0xa0
-    [<000000001bab58aa>] cryptd_skcipher_init_tfm+0x1c/0x40
-    [<0000000006748df3>] crypto_skcipher_init_tfm+0x158/0x1e0
-    [<0000000017f3270c>] crypto_create_tfm+0x54/0xf0
-    [<000000006af1de62>] crypto_alloc_tfm+0x88/0x198
-    [<000000000d8e8c03>] crypto_alloc_skcipher+0x1c/0x28
-    [<0000000085448a2a>] cryptd_alloc_skcipher+0x5c/0xb0
-    [<000000003c48c083>] simd_skcipher_init+0x24/0x68
-    [<0000000006748df3>] crypto_skcipher_init_tfm+0x158/0x1e0
-    [<0000000017f3270c>] crypto_create_tfm+0x54/0xf0
-    [<00000000d4516e51>] crypto_spawn_tfm2+0x58/0xa0
-    [<00000000b5344705>] crypto_cts_init_tfm+0x1c/0x68
-    [<0000000006748df3>] crypto_skcipher_init_tfm+0x158/0x1e0
-    [<0000000017f3270c>] crypto_create_tfm+0x54/0xf0
+--=-u3iHHAldM+mQ4zS+I0no
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is caused by tfm = (struct crypto_tfm *)(mem + tfmsize);
-that is keept instead of the allocated buffer in mem.
-Reference counting is done on alg.
+On Thu, 2020-09-03 at 00:34 -0400, Joel Fernandes wrote:
+> On Wed, Sep 2, 2020 at 12:57 PM Dario Faggioli <dfaggioli@suse.com>
+> wrote:
+> > 2) protection of the kernel from the other thread running in
+> > userspace
+> > may be achieved in different ways. This is one, sure. ASI will
+> > probably
+> > be another. Hence if/when we'll have both, this and ASI, it would
+> > be
+> > cool to be able to configure the system in such a way that there is
+> > only one active, to avoid paying the price of both! :-)
+>=20
+> Actually, no. Part of ASI will involve exactly what this patch does -
+> IPI-pausing siblings but ASI does so when they have no choice but to
+> switch away from the "limited kernel" mapping, into the full host
+> kernel mapping. I am not sure if they have yet implemented that part
+> but they do talk of it in [1] and in their pretty LPC slides.  It is
+> just that ASI tries to avoid that scenario of kicking all siblings
+> out
+> of guest mode.  So, maybe this patch can be a stepping stone to ASI.
+>
+Ah, sure! I mean, it of course depends on how things get mixed
+together, which we still don't know. :-)
 
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
----
- crypto/api.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I know that ASI wants to do this very same thing some times. I just
+wanted to say that we need/want only one mechanism for doing that, in
+place at any given time.
 
-diff --git a/crypto/api.c b/crypto/api.c
-index ed08cbd5b9d3..1a9cb6852a56 100644
---- a/crypto/api.c
-+++ b/crypto/api.c
-@@ -21,6 +21,7 @@
- #include <linux/string.h>
- #include <linux/completion.h>
- #include "internal.h"
-+#include <linux/kmemleak.h>
- 
- LIST_HEAD(crypto_alg_list);
- EXPORT_SYMBOL_GPL(crypto_alg_list);
-@@ -460,7 +461,7 @@ void *crypto_create_tfm_node(struct crypto_alg *alg,
- 
- 	if (!tfm->exit && alg->cra_init && (err = alg->cra_init(tfm)))
- 		goto cra_init_failed;
--
-+	kmemleak_not_leak(mem);
- 	goto out;
- 
- cra_init_failed:
--- 
-2.17.1
+If that mechanism will be this one, and ASI then uses it (e.g., in a
+scenario where for whatever reason one wants ASI with the kicking but
+not Core Scheduling), then great, I agree, and everything does makes
+sense.
+
+> Why do you feel that ASI on its own offers some magical protection
+> that eliminates the need for this patch?
+>=20
+I don't. I was just trying to think at different use cases, how they
+mix and match, etc. But as you're suggesting (and as Thomas has shown
+very clearly in another reply to this email), the thing that makes the
+most sense is to have one mechanism for the kicking, used by anyone
+that needs it. :-)
+
+Thanks and Regards
+--=20
+Dario Faggioli, Ph.D
+http://about.me/dario.faggioli
+Virtualization Software Engineer
+SUSE Labs, SUSE https://www.suse.com/
+-------------------------------------------------------------------
+<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+
+--=-u3iHHAldM+mQ4zS+I0no
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAl9Q8vcACgkQFkJ4iaW4
+c+5YFw/8DNj8gL/7OQ+hKTi4bd076a6jYdA0RHw6nKTO/ITc90dUEr7FLAzuPP4X
+IdRYVx779rR0RlUvbzLYSOswI17hlcJY+gXBd0RpC2lFhRwySZUiq1GMIOXnqxjs
+M9+g8z3c2Mv1Iv+aMUlW/A34BgPgAkEvTiEp/6bhMJWYXAdrd8G0BONc4F/CTB69
+XyFDTSVmbgMG0puD0jO8h3C+s8P6A8jUfo8j4AIKE1ayzORjCOcy/iHUVZEBlkJC
+XP0e4oonZIflyWKqsEh+Ozi1hN2GbUXyBY42BEOi++q5WfqJo1f6sg2t3s7k9HXg
+z7tXs62+DxPeygeOFfKxtJa1lSIu6g6uMV6AzYraMNecKu/iO9V6XAww5g6lkgZl
+jzvZHdb7s7+kGkymKxxnlVxYZGoAa2H1eschTSwvV1P06L3710PQ7nj2TKR/7BAk
+Bynvt7b/D0coxkxvYEoyS5oazV9z97Nncpp35n0iK/H+2IcmZiRDYFVX10HD0PrB
+Pmx5FzkNbgmsYzM3uYilRcgYFj+g8Z/evQ8ksPRqo5HBzM7erw13urGLNl5bpJ67
+uqGTLEC80e4dYElBxJHz3j+WxL8lEmv1ZN2A9zGglPpPaGk5AGVa46YfXt/b1nNf
+wYTncBiXGWjalAGnh3SmkeUkgl4F1m8ioY0+aeyHdM7Jf9byvj8=
+=e7D3
+-----END PGP SIGNATURE-----
+
+--=-u3iHHAldM+mQ4zS+I0no--
 
