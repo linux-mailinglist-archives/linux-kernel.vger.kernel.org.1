@@ -2,167 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82FF25BC18
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0849325BC59
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbgICICS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728294AbgICIBm (ORCPT
+        id S1728811AbgICIJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:09:29 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:46149 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726406AbgICICw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0353C061246;
-        Thu,  3 Sep 2020 01:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=zPuO1RiCFtAaXcTW9QuEi3RCIZQfS8nNc4ZkqYoXzUI=; b=OybH/lrHyX1+dbtv0WrEcWc+aG
-        1MuvfFAfkttbX55tfceZuqfYNAgxJHcF8TDSuW8YUgn7dEIhh2pGsEKLooh4MPTIPaXltHv5C0dQE
-        c7nLX7zVV4Q3F95j4/6o2F4HkO69gRucFgTJI+TTyX6oKi9mkBhESW2QetbFJ1y0wA2/x75KSzc2/
-        b0cnGhbUlTSj6Wo/J19DkRbLKPvrLwQJZKnv6Cagm3yuzK4U31H71SeK7OWgPQvvMHYrPpSg/cU3m
-        zhgQIoIEoB7rqCjkBV90bSQlKfJYySXeIAargCkRp/XchTvhTM8x9djb/KQiZEyFUdFc93HvFft3D
-        dagEO6Rg==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBa-0006bs-VH; Thu, 03 Sep 2020 08:01:35 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 10/19] brd: use __register_blkdev to allocate devices on demand
+        Thu, 3 Sep 2020 04:02:52 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id A67DFC88;
+        Thu,  3 Sep 2020 04:02:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=VQCRUyPO71jHm
+        4tPu/mGDPw0qADlrf66ZnceVVw2jzU=; b=gB91F0tWOMc4ilSm2BtQ5+PW7L0Z3
+        xsJWFo6dYxOJj0FVSnHaUbnAmcjRNlWaJXIo1H5ya78bxx07lQ16//yj7dpk59R1
+        wwvz9642H7wNf4fb0tTQ8z8stzd6Qn5VHQ73bjMhVlK05IQzlAxgkYXT5uE0ifOp
+        wFAzTJ/ENczjN7+vx1eWs9cwJu9KEiUSki8zy+CyH1NW7SSeodkj6ejov/LlZV5e
+        Mj5LXio1DT7DQzoSvfeox9J90h6joTDgGePcWGc7mwcTKLihPQlt+/990af+BEAG
+        Ke5uXLbUXw3YbP0qsryN1zjQXyI6JdXqOyAlaglrZKFy8AnbwZRo+4/LQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=VQCRUyPO71jHm4tPu/mGDPw0qADlrf66ZnceVVw2jzU=; b=HKWLd+xO
+        a78a9ujQVzVbEiyZObIBS+AhbJwk70hMmQfqnR0/ts613Cs30sXqq9hEMTTiGtkJ
+        w/gusOpyeQm4cCha+W3d3yizYkOz0zAkpNfOiGVbbruWcwOkK/sLtbRtapvpPftp
+        sqNEN/2GTejbeQcT+jrTiFIBJOm/IVZeMRhbbRoePDVuCd1/DBXtlh//knzA04FD
+        UYNke/G0Rn5B+UwDBUkJX45gCq34IOC+cr3hnncg3V5Xu9U1LuiCvDpNMEA9qcKV
+        Uvk4ycD/9AG4vxaF1UKsD/oIHZEb4igMpO7hg8frFn1zLHoMJgmwXbWgX9MQP81h
+        B9Lfzl9GMFwHTQ==
+X-ME-Sender: <xms:JqNQX_kdgDZyKvhTYPSx3BQKDXiwZh_R8El1KSxpf5U8UUrKr6sQ1A>
+    <xme:JqNQXy2V_CbE5LhI_s_LM268mZTzTf_Yz-s1HSCUudZ2U95zTPLSR-06aKmOB3SG2
+    m2zkwweQkC8Rhhaefs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefie
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:JqNQX1pKbgoaQvTJLdUHJlFtqNvLOWVggZv3kZ0gDx_OS6asDBn5lw>
+    <xmx:JqNQX3nwnWMNjzDpCAtB0d5XJSDbRZ6ZCVsQQhEv-8TR36VgOBO7XQ>
+    <xmx:JqNQX93dGypZ7YDu16yRyqlVVG_5Vp-CG5tMvEvJum0rIuqjKHFIAg>
+    <xmx:J6NQX-vkUUfpadEhWsB6b7PeoyZIg19B390aso_m9Th_lGEKwa5Gv15iTCY>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 964C4328005E;
+        Thu,  3 Sep 2020 04:02:46 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 38/80] drm/vc4: hdmi: Use debugfs private field
 Date:   Thu,  3 Sep 2020 10:01:10 +0200
-Message-Id: <20200903080119.441674-11-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903080119.441674-1-hch@lst.de>
-References: <20200903080119.441674-1-hch@lst.de>
+Message-Id: <24028dc06c379dbc71f98e027cce2839fdd446ce.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the simpler mechanism attached to major_name to allocate a brd device
-when a currently unregistered minor is accessed.
+We're calling vc4_debugfs_add_file with our struct vc4_hdmi pointer set
+in the private field, but we don't use that field and go through the
+main struct vc4_dev to get it.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Let's use the private field directly, that will save us some trouble
+later on.
+
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/block/brd.c | 39 +++++++++++----------------------------
- 1 file changed, 11 insertions(+), 28 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index 2723a70eb85593..c8ac36351115ef 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -427,14 +427,15 @@ static void brd_free(struct brd_device *brd)
- 	kfree(brd);
- }
- 
--static struct brd_device *brd_init_one(int i, bool *new)
-+static void brd_probe(dev_t dev)
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index ec34c08b16df..ae8c4d53e239 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -183,9 +183,7 @@ static const struct debugfs_reg32 hd_regs[] = {
+ static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
  {
- 	struct brd_device *brd;
-+	int i = MINOR(dev) / max_part;
+ 	struct drm_info_node *node = (struct drm_info_node *)m->private;
+-	struct drm_device *dev = node->minor->dev;
+-	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_hdmi *hdmi = vc4->hdmi;
++	struct vc4_hdmi *hdmi = node->info_ent->data;
+ 	struct drm_printer p = drm_seq_file_printer(m);
  
--	*new = false;
-+	mutex_lock(&brd_devices_mutex);
- 	list_for_each_entry(brd, &brd_devices, brd_list) {
- 		if (brd->brd_number == i)
--			goto out;
-+			goto out_unlock;
- 	}
- 
- 	brd = brd_alloc(i);
-@@ -443,9 +444,9 @@ static struct brd_device *brd_init_one(int i, bool *new)
- 		add_disk(brd->brd_disk);
- 		list_add_tail(&brd->brd_list, &brd_devices);
- 	}
--	*new = true;
--out:
--	return brd;
-+
-+out_unlock:
-+	mutex_unlock(&brd_devices_mutex);
- }
- 
- static void brd_del_one(struct brd_device *brd)
-@@ -455,23 +456,6 @@ static void brd_del_one(struct brd_device *brd)
- 	brd_free(brd);
- }
- 
--static struct kobject *brd_probe(dev_t dev, int *part, void *data)
--{
--	struct brd_device *brd;
--	struct kobject *kobj;
--	bool new;
--
--	mutex_lock(&brd_devices_mutex);
--	brd = brd_init_one(MINOR(dev) / max_part, &new);
--	kobj = brd ? get_disk_and_module(brd->brd_disk) : NULL;
--	mutex_unlock(&brd_devices_mutex);
--
--	if (new)
--		*part = 0;
--
--	return kobj;
--}
--
- static inline void brd_check_and_reset_par(void)
- {
- 	if (unlikely(!max_part))
-@@ -511,11 +495,12 @@ static int __init brd_init(void)
- 	 *	dynamically.
- 	 */
- 
--	if (register_blkdev(RAMDISK_MAJOR, "ramdisk"))
-+	if (__register_blkdev(RAMDISK_MAJOR, "ramdisk", brd_probe))
- 		return -EIO;
- 
- 	brd_check_and_reset_par();
- 
-+	mutex_lock(&brd_devices_mutex);
- 	for (i = 0; i < rd_nr; i++) {
- 		brd = brd_alloc(i);
- 		if (!brd)
-@@ -533,9 +518,7 @@ static int __init brd_init(void)
- 		brd->brd_disk->queue = brd->brd_queue;
- 		add_disk(brd->brd_disk);
- 	}
--
--	blk_register_region(MKDEV(RAMDISK_MAJOR, 0), 1UL << MINORBITS,
--				  THIS_MODULE, brd_probe, NULL, NULL);
-+	mutex_unlock(&brd_devices_mutex);
- 
- 	pr_info("brd: module loaded\n");
- 	return 0;
-@@ -545,6 +528,7 @@ static int __init brd_init(void)
- 		list_del(&brd->brd_list);
- 		brd_free(brd);
- 	}
-+	mutex_unlock(&brd_devices_mutex);
- 	unregister_blkdev(RAMDISK_MAJOR, "ramdisk");
- 
- 	pr_info("brd: module NOT loaded !!!\n");
-@@ -558,7 +542,6 @@ static void __exit brd_exit(void)
- 	list_for_each_entry_safe(brd, next, &brd_devices, brd_list)
- 		brd_del_one(brd);
- 
--	blk_unregister_region(MKDEV(RAMDISK_MAJOR, 0), 1UL << MINORBITS);
- 	unregister_blkdev(RAMDISK_MAJOR, "ramdisk");
- 
- 	pr_info("brd: module unloaded\n");
+ 	drm_print_regset32(&p, &hdmi->hdmi_regset);
 -- 
-2.28.0
-
+git-series 0.9.1
