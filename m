@@ -2,139 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE13C25BEEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22F825BECE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728338AbgICKQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        id S1726855AbgICKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbgICKQi (ORCPT
+        with ESMTP id S1726467AbgICKJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:16:38 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Sep 2020 03:16:37 PDT
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C576C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 03:16:37 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4BhxLV20rdzKmhM;
-        Thu,  3 Sep 2020 12:07:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-disposition:content-type:content-type:mime-version
-        :message-id:subject:subject:from:from:date:date:received; s=
-        mail20150812; t=1599127631; bh=uPRu15iu9NZFBlW05yO/MFmr1prkiYcom
-        8kWWbBofgY=; b=oi4BCKxJ6h84IxGnDVzSeP32+I8N/A+HLERJoy308Gj2HDWYB
-        5aH88uxpWrchOfeVbTIkWQT+0e7gtGBW+C8QBQWtjm2BD3rz+ZZQr5JfENUwLVrl
-        QEFBAYFSYjQIDzh7CEYarmL/AzCpJap9y/Gv7HtJREf3TdIVH1mXq1xCzCSsrtWy
-        dhtNgHkMozM/X3uoUUvDXZYsUc3TbFLSK1drY+oSXzlhd8GHyNnX3wI7dbYtgtLi
-        dM5XYgZ3167Cb4vZiBT1VuWaUPZc22jPndRpV++qauCbYm7SMcsKAKHaN5LHdLGf
-        0rkVOSvuzVp80TKcEJBgPx+Oz0PwJ9nswpOJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1599127632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=uRunYgfPTMbFCOkTvboIdP7wPVCW0P5BS85r7326lm0=;
-        b=duOw6gOraQwlvpOMHymG+F/qxE38L2Ht8unce3RYesX29vS47pvNeLllflXinI0y8V/ZGg
-        nNplafFucsyWP2amwPS6S28RCE4LFncLs/KBPoOxV2yW2Jpv7WRmK3NYmEuRW1JrCJECvG
-        CG3hIpDwDvpRjGxki/fOUq3vfnmSa9av4GhGKNI6kMTfnQ3HCpfVQ8T1OdVdbj5/k/724Z
-        OApWFGQcrxbUYrlttflHeRt6AN+MX08+80rOzADTTU1bqTXP/BGTLyMvnIhz3TAOr3iumq
-        tBoJrNht9X/WCOOx/+ooHaLxcLkrA0rIbPJ/H40OTElRIPkfcY7UacrvuGa96g==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id klCFu_Vvn-y3; Thu,  3 Sep 2020 12:07:11 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 12:07:08 +0200
-From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: [PATCH] dt-bindings: arm: sunxi: update H2+/H3 cpu clocks
-Message-ID: <20200903100708.GA466735@monster.powergraphx.local>
+        Thu, 3 Sep 2020 06:09:16 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A80C061244;
+        Thu,  3 Sep 2020 03:09:15 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id k15so2519479wrn.10;
+        Thu, 03 Sep 2020 03:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7ns1zVlmF+pwrGH9GOZCksJLi0dT9SO4rihgWhgyS68=;
+        b=ZIftqY/cOwubsKafsp3NW2i/rOoNtGD2RFfTOSEM8SHZyTef5VCKOJOUZaczY0oV9q
+         nqgYFXGgPwTXZvKjpzcWB4bdH3gFOj1gMkJoMF5uIXnot13uQH3e4nZWv9tvSRNOh83h
+         6OJizdH/oW72cYRucpa5jxu6ysQiMn2rq7ApdMnMcQTFARhyQxrjt6VdZn4TuhZDttfY
+         WGJyoITTTu0ILEjsItIEzEjAzMtwUr2kQEWxLM8uUyQ22Q55UReKnfM30ZBfElZBVNYr
+         2Jowy0eiRgZSDLBEutYJa2c+sEL4g5+qFYuBI5xIhteHzq1/J6Nf56H+Ib4NsUhDhoXk
+         MHcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7ns1zVlmF+pwrGH9GOZCksJLi0dT9SO4rihgWhgyS68=;
+        b=i5F8sce92/LtgiSaYx4pPwX5Jt0xDWazQ1uyvz4sXQUmq27xYE6G1H333rtXpsg1Tf
+         5FTvFkee5scJvghAh1P7tYSU82KczkwGXgeZAZWLr8wqGP1Sa3L3fZR+w2LC5wj99vvw
+         k541Htf6Bag88Nt98ALwxA4H4ip2HcjUcLO+o8A9W6j7bJ0zseaAAmHP8sP9w//N/5G8
+         l4uQ4xxYFswblzrDwwV1pmeNeDNyj1wxpN/XXd7bHL6CGGjy5iDn3sU2qqDr13gaANZ+
+         EFoCQN7OQpYmChWosc4sPxrahWZ9E9uwaJ2N0ecBptlGZqKucZ0l/hnaOV9tMX7jv2+7
+         v3/Q==
+X-Gm-Message-State: AOAM530bukb0mQYc8fo3Chr1+hVu2fB20gFXjSfUgsV0jRZ58T0HYma4
+        ZxY4xIvEdMwg8aC3O6Jxu4A=
+X-Google-Smtp-Source: ABdhPJz3K6K7Mh0RG8NoX33E1Z7xGzqMyQLSI0aRwAKMj2ItiAA+GRzRJtUu7nyxcAZQTy56yoJWEw==
+X-Received: by 2002:adf:f042:: with SMTP id t2mr1529695wro.385.1599127754478;
+        Thu, 03 Sep 2020 03:09:14 -0700 (PDT)
+Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id v3sm3541805wmh.6.2020.09.03.03.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 03:09:14 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
+Date:   Thu, 3 Sep 2020 11:09:12 +0100
+To:     Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: core: Free rvdev on error path
+Message-ID: <20200903100912.6op2fs6olrtlckr2@medion>
+References: <20200903100142.57117-1-alex.dewar90@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.91 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 32FD91268
-X-Rspamd-UID: 206056
+In-Reply-To: <20200903100142.57117-1-alex.dewar90@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change H2+/H3 clocks to 8 steps from 528 MHz up to 1200 MHz to support a
-more fine-grained powersave setup. The SoCs are made for 1296 MHz, so
-these clocks are still in a safe range. Tested on a NanoPi Duo and
-OrangePi Zero.
+On Thu, Sep 03, 2020 at 11:01:42AM +0100, Alex Dewar wrote:
+> In rpoc_handle_vdev(), rvdev is not freed properly on the error path and
+> one of the labels is misnamed. Fix this up.
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
----
- arch/arm/boot/dts/sun8i-h3.dtsi | 34 +++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+Actually, don't apply this. I didn't realise that device_unregister
+already frees memory. Sorry for the noise!
 
-diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index 4e89701df91f..5517fcc02b7d 100644
---- a/arch/arm/boot/dts/sun8i-h3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-@@ -48,23 +48,53 @@ cpu0_opp_table: opp_table0 {
- 		compatible = "operating-points-v2";
- 		opp-shared;
- 
--		opp-648000000 {
--			opp-hz = /bits/ 64 <648000000>;
-+		opp-528000000 {
-+			opp-hz = /bits/ 64 <528000000>;
-+			opp-microvolt = <1020000 1020000 1300000>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
-+		};
-+
-+		opp-624000000 {
-+			opp-hz = /bits/ 64 <624000000>;
- 			opp-microvolt = <1040000 1040000 1300000>;
- 			clock-latency-ns = <244144>; /* 8 32k periods */
- 		};
- 
-+		opp-720000000 {
-+			opp-hz = /bits/ 64 <720000000>;
-+			opp-microvolt = <1060000 1060000 1300000>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
-+		};
-+
- 		opp-816000000 {
- 			opp-hz = /bits/ 64 <816000000>;
- 			opp-microvolt = <1100000 1100000 1300000>;
- 			clock-latency-ns = <244144>; /* 8 32k periods */
- 		};
- 
-+		opp-912000000 {
-+			opp-hz = /bits/ 64 <912000000>;
-+			opp-microvolt = <1140000 1140000 1300000>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
-+		};
-+
- 		opp-1008000000 {
- 			opp-hz = /bits/ 64 <1008000000>;
- 			opp-microvolt = <1200000 1200000 1300000>;
- 			clock-latency-ns = <244144>; /* 8 32k periods */
- 		};
-+
-+		opp-1104000000 {
-+			opp-hz = /bits/ 64 <1104000000>;
-+			opp-microvolt = <1240000 1240000 1300000>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
-+		};
-+
-+		opp-1200000000 {
-+			opp-hz = /bits/ 64 <1200000000>;
-+			opp-microvolt = <1300000 1300000 1300000>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
-+		};
- 	};
- 
- 	cpus {
--- 
-2.28.0
-
+> 
+> Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
+> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index d4bd71f87b03..84dea43d196e 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -531,7 +531,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
+>  	rvdev->dev.parent = &rproc->dev;
+>  	ret = dma_copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+>  	if (ret)
+> -		return ret;
+> +		goto free_rvdev;
+>  	rvdev->dev.release = rproc_rvdev_release;
+>  	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+>  	dev_set_drvdata(&rvdev->dev, rvdev);
+> @@ -539,7 +539,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
+>  	ret = device_register(&rvdev->dev);
+>  	if (ret) {
+>  		put_device(&rvdev->dev);
+> -		return ret;
+> +		goto free_rvdev;
+>  	}
+>  	/* Make device dma capable by inheriting from parent's capabilities */
+>  	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+> @@ -556,7 +556,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
+>  	for (i = 0; i < rsc->num_of_vrings; i++) {
+>  		ret = rproc_parse_vring(rvdev, rsc, i);
+>  		if (ret)
+> -			goto free_rvdev;
+> +			goto unregister_dev;
+>  	}
+>  
+>  	/* remember the resource offset*/
+> @@ -581,8 +581,10 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
+>  unwind_vring_allocations:
+>  	for (i--; i >= 0; i--)
+>  		rproc_free_vring(&rvdev->vring[i]);
+> -free_rvdev:
+> +unregister_dev:
+>  	device_unregister(&rvdev->dev);
+> +free_rvdev:
+> +	kfree(rvdev);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.28.0
+> 
