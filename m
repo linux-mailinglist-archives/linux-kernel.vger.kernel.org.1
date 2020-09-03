@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B245F25CAFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF08D25CB3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729754AbgICUhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
+        id S1729535AbgICUjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729729AbgICUg5 (ORCPT
+        with ESMTP id S1729686AbgICUjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:36:57 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26802C061244;
-        Thu,  3 Sep 2020 13:36:57 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id q3so3054177ybp.7;
-        Thu, 03 Sep 2020 13:36:57 -0700 (PDT)
+        Thu, 3 Sep 2020 16:39:15 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CBEC061246
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 13:39:14 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id h11so4331960ilj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 13:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2E7KS28zfC4tVsTRRkYzuj1mxceg9YfnccbGKN5EM2Y=;
-        b=b8Z56R9vFCgocfa8RWukYzYWSYA3gtr6wje77Wssz6K+yjxqD8f20ntZRZheoOVV+v
-         BDgrP0DtuIjNozxXUxj5gCg9caRvd/P+tM9finPeseB/BU1EGEVNuDDUCUhc6fRW0+nv
-         ipw4HTaUQsw0mD/UVxhcoksGGtRHcfpjSL9gdBe9rLiF683BWUicBR0v5tH9ve/YOECY
-         CRBkxBs6Drv3tPFtYRZzKysdE0NXzSFgndTRv8sHMiGEPIn/N3Hy6jz0Y1HBJtbaGfQs
-         2tl62L8jQBmWUR4YbZ+pMBird4XhD+ApWBH/laeIzawJImWgckQ8geGawy72noVBmYN7
-         2BYg==
+        bh=Tydz84oeqirnpuLu3bbRByfKWhDqGhIFntBJvkUrXd8=;
+        b=ZaU4FVQIZtMoJYgeUnVah1sxMUXe4vfXTOApozs8v6qNaLeEML6U2zwXK4RI8j3L8R
+         gdk49UHCtCkTT7Qj7uWEEVLmTeC7BKMTFS0FisXaRhAcDqj37QcTT3AG2uDlFQsretSm
+         jx3/IQsY08B6aRhkWnaPGh2zA1VHmrLvhm6eM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2E7KS28zfC4tVsTRRkYzuj1mxceg9YfnccbGKN5EM2Y=;
-        b=F3Yb6WkV5Ht9SqyzXYDGFKnBQWJmOR0w2OhERh83PfsCB56mSjQhLx2QkGDgs+WXC3
-         a2hkwpVcjOPkGaUjadZhQYr4C3fNEejj6aYE9Q6y9j2tukXA2nqhDESGaMmNvGWfos5Q
-         xrfipchqB7H7gS4A5t1xZGXfvvPcRMRXLvtMrgQocMWBzHIXorc8WS5FHm7bJDx2shJR
-         nY1ooQk2T3yzTEYphbhLL6y5i+aezOKPRts4A5QG8u3FogP9zH0O9nLC+20Tl8+qbguP
-         p5Etq+bgxM2HN5l67lGt9U1TXOCYQim/J4WOtGaF5bQpMswMuXJcsec0/+vnZqeEbHYH
-         uI7w==
-X-Gm-Message-State: AOAM532HTyYh5kJKbsH9b59IZpJLToqbSoV5DHMjudwzLqo5KjOCFBjC
-        orA0XKfQruoENGPFoBBQILl6rgA7YPljT1itV5U=
-X-Google-Smtp-Source: ABdhPJyDQfdxjra9IKhfUae9dPcHOGQ0OPr4g2ImIt6wfz0b1j2FGZbTmo+bBtcrYt4XI6l5mjIApkQYAlXK5G6M1C4=
-X-Received: by 2002:a25:6885:: with SMTP id d127mr5150392ybc.27.1599165416443;
- Thu, 03 Sep 2020 13:36:56 -0700 (PDT)
+        bh=Tydz84oeqirnpuLu3bbRByfKWhDqGhIFntBJvkUrXd8=;
+        b=dNfmxbhGFe/Vl7B0pvtFKy8sEfNq3vAbPI/LeLl4gdR6w7uVk2N7Ez2XAKK79lywGd
+         rHliTUiBy23cJoYtYlQS/8zwNmAgefZSHriA0eH8ARSIGk/zTi1pX51eQ9sMlUdKPr2O
+         BCRWrn55TenFoElUMSEBrr7AjzCbZzp9YuAilV/iBeqsJ0Bg5n0PjMvsgsyIT+M7IXVs
+         BJcOIlNLk7y0B6B0dqcPg1D8ygBLMYv1IPUYnKQjia2Ac63S7+qg8drYL/DNFod3ymdy
+         w+NPRNTgBmxECT9GO6PPzcL4e3GeMl0vmAn//VVEUZf+fJcjIqgdoxJTZkS5wwMnwvZj
+         193g==
+X-Gm-Message-State: AOAM533gWp6N21N688wEzURNM0D+K3EIS6XN4nibsHRLr/fj+NjuuFLg
+        xJR9T5+we1rv/p1DZbFitn53JJalinXjuCU4NTVqSw==
+X-Google-Smtp-Source: ABdhPJwBvaiqqfUAkNG6JlVarMP8g2QAyipuCkVid/rgJbNcm8n/aSIMAlmfjCs1sxttE5hXJYAbbpIvA3jaGYNftIo=
+X-Received: by 2002:a92:b74c:: with SMTP id c12mr5047627ilm.237.1599165554066;
+ Thu, 03 Sep 2020 13:39:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903200528.747884-1-haoluo@google.com>
-In-Reply-To: <20200903200528.747884-1-haoluo@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Sep 2020 13:36:45 -0700
-Message-ID: <CAEf4Bza6e+x8Rqy7cBzMG0F0D5WCzE7xPRoAqJgSbfyqXxtT5A@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: Fix check in global_data_init.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        KP Singh <kpsingh@chromium.org>
+References: <20200903141746.996974-1-enric.balletbo@collabora.com> <CABXOdTeHZ52HzghkS85rRs92gG-mPe6JEfUx9uz3vMrxXYjpaQ@mail.gmail.com>
+In-Reply-To: <CABXOdTeHZ52HzghkS85rRs92gG-mPe6JEfUx9uz3vMrxXYjpaQ@mail.gmail.com>
+From:   Gwendal Grignou <gwendal@chromium.org>
+Date:   Thu, 3 Sep 2020 13:39:00 -0700
+Message-ID: <CAPUE2utgmDH6PL4ubW9G0-3V+uwovfFiKSvHf_=GacpuS2KJRg@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: Kconfig: Remove the transitional
+ MFD_CROS_EC config
+To:     Guenter Roeck <groeck@google.com>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Dmitry Torokhov <dtor@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 1:06 PM Hao Luo <haoluo@google.com> wrote:
+On Thu, Sep 3, 2020 at 8:02 AM Guenter Roeck <groeck@google.com> wrote:
 >
-> The returned value of bpf_object__open_file() should be checked with
-> libbpf_get_error() rather than NULL. This fix prevents test_progs from
-> crash when test_global_data.o is not present.
+> On Thu, Sep 3, 2020 at 7:17 AM Enric Balletbo i Serra
+> <enric.balletbo@collabora.com> wrote:
+> >
+> > The MFD_CROS_EC config was a transitional Kconfig option to not break
+> > current defconfigs in the kernel. Now, this is not required anymore
+> > because all the defconfigs have been removed this option and migrated to
+> > enable the CrOS EC parts individually.
+> >
+> > Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 >
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
-
-thanks!
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/testing/selftests/bpf/prog_tests/global_data_init.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Tested-by: Gwendal Grignou <gwendal@chromium.org>
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/global_data_init.c b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> index 3bdaa5a40744..ee46b11f1f9a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/global_data_init.c
-> @@ -12,7 +12,8 @@ void test_global_data_init(void)
->         size_t sz;
->
->         obj = bpf_object__open_file(file, NULL);
-> -       if (CHECK_FAIL(!obj))
-> +       err = libbpf_get_error(obj);
-> +       if (CHECK_FAIL(err))
->                 return;
->
->         map = bpf_object__find_map_by_name(obj, "test_glo.rodata");
-> --
-> 2.28.0.526.ge36021eeef-goog
->
+> > ---
+> >
+> >  drivers/platform/chrome/Kconfig | 10 ----------
+> >  1 file changed, 10 deletions(-)
+> >
+> > diff --git a/drivers/platform/chrome/Kconfig b/drivers/platform/chrome/Kconfig
+> > index a056031dee81..ccc23d8686e8 100644
+> > --- a/drivers/platform/chrome/Kconfig
+> > +++ b/drivers/platform/chrome/Kconfig
+> > @@ -3,16 +3,6 @@
+> >  # Platform support for Chrome OS hardware (Chromebooks and Chromeboxes)
+> >  #
+> >
+> > -config MFD_CROS_EC
+> > -       tristate "Platform support for Chrome hardware (transitional)"
+> > -       select CHROME_PLATFORMS
+> > -       select CROS_EC
+> > -       select MFD_CROS_EC_DEV
+> > -       depends on X86 || ARM || ARM64 || COMPILE_TEST
+> > -       help
+> > -         This is a transitional Kconfig option and will be removed after
+> > -         everyone enables the parts individually.
+> > -
+> >  menuconfig CHROME_PLATFORMS
+> >         bool "Platform support for Chrome hardware"
+> >         depends on X86 || ARM || ARM64 || COMPILE_TEST
+> > --
+> > 2.28.0
+> >
