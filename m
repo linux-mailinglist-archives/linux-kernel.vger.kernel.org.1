@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA53525BD24
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1333625BD3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgICI0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:26:15 -0400
-Received: from verein.lst.de ([213.95.11.211]:36890 "EHLO verein.lst.de"
+        id S1728302AbgICI1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:27:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgICI0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:26:13 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 727D868BEB; Thu,  3 Sep 2020 10:26:09 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 10:26:09 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        dm-devel@redhat.com,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        drbd-dev@lists.linbit.com, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        linux-s390@vger.kernel.org,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        target-devel@vger.kernel.org
-Subject: Re: [PATCH 2/9] block: add a bdev_is_partition helper
-Message-ID: <20200903082609.GA23498@lst.de>
-References: <20200903054104.228829-1-hch@lst.de> <20200903054104.228829-3-hch@lst.de> <CAPDyKFrkcpziGFPmSd8Kx4bzhoN6zxF1E8MagLQSa4sBmnicOg@mail.gmail.com>
+        id S1725984AbgICI1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 04:27:21 -0400
+Received: from localhost (unknown [122.171.179.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E96F0208C7;
+        Thu,  3 Sep 2020 08:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599121640;
+        bh=AbWFhSZrSoYx6Fp+YWywGEU0EqwcOSISwNIHxOF/xrE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CShokF7yy0Q2skhvanCrcL8gLouFzuDy52Ps63kiiLEPBULkR4dAY07e/OXPSjQ7P
+         ZSxHU3SPp8vlg1wgh8K38DKz5BwfSbZr+YX3tMCaMdGrGsJJP/bNiEJEIFtJOPfJkm
+         +4gDX0yPWjBuP/oVs6/UAKME6cI9pQWKJtTwVoo4=
+Date:   Thu, 3 Sep 2020 13:57:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [RESEND PATCH v2] dt-bindings: renesas,rcar-dmac: Document
+ r8a7742 support
+Message-ID: <20200903082716.GM2639@vkoul-mobl>
+References: <20200903073813.4490-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPDyKFrkcpziGFPmSd8Kx4bzhoN6zxF1E8MagLQSa4sBmnicOg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200903073813.4490-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 10:19:34AM +0200, Ulf Hansson wrote:
-> On Thu, 3 Sep 2020 at 07:42, Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > Add a littler helper to make the somewhat arcane bd_contains checks a
-> > little more obvious.
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> Not sure why we have both "bd_contains" and "bd_partno", nevertheless,
-> feel free to add:
+On 03-09-20, 08:38, Lad Prabhakar wrote:
+> Renesas RZ/G SoC also have the R-Car gen2/3 compatible DMA controllers.
+> Document RZ/G1H (also known as R8A7742) SoC bindings.
 
-Right now both are needed for how blkdev_get/put work.  But I plan to
-eventual kill off bd_contains after some major surgery to that code.
+Applied, thanks
 
+-- 
+~Vinod
