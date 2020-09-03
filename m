@@ -2,91 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB7425BB9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D554025BB8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbgICH16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 03:27:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:49043 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgICH15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 03:27:57 -0400
-IronPort-SDR: X7wd7duZ+Wv8hmkzMBbPVQIpxCeOsRq0oGc+aa4zncE5nmlzm0nuHI+zt+jIJCWsrM1MnppAnw
- H4yawxNk4Vdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="221746806"
-X-IronPort-AV: E=Sophos;i="5.76,385,1592895600"; 
-   d="scan'208";a="221746806"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 00:27:56 -0700
-IronPort-SDR: Ze3ZybqgmXXV2HST0KQmgul6uR9hAPh6E6UsMzLx6EMFfvZfUTDbVKkqtQmSz+4SUv5x0FohOJ
- g/eqXS3+PNow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,385,1592895600"; 
-   d="scan'208";a="326108998"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2020 00:27:53 -0700
-Cc:     baolu.lu@linux.intel.com, CobeChen-oc <CobeChen-oc@zhaoxin.com>,
-        RaymondPang-oc <RaymondPang-oc@zhaoxin.com>,
-        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbUEFUQ0ggdjMgMi8yXSBpb21tdS92?=
- =?UTF-8?Q?t-d=3aAdd_support_for_probing_ACPI_device_in_RMRR?=
-To:     FelixCui-oc <FelixCui-oc@zhaoxin.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "kbuild@lists.01.org" <kbuild@lists.01.org>
-References: <20200827100217.21324-1-FelixCui-oc@zhaoxin.com>
- <20200827100217.21324-3-FelixCui-oc@zhaoxin.com>
- <e5b1daaf-f073-94c9-714c-832b10d284f4@linux.intel.com>
- <cde22f0f02f94efcae8bf044e2cd9441@zhaoxin.com>
- <7e5f2c33-c6c3-f344-9014-1f6a306c55aa@linux.intel.com>
- <cfdd29a882d140e5aec2e8c3b77f4968@zhaoxin.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <56fc76e5-a31c-36b6-c6f0-fd8370cd7a91@linux.intel.com>
-Date:   Thu, 3 Sep 2020 15:22:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727999AbgICHXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 03:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbgICHXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 03:23:20 -0400
+Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4C1C061244;
+        Thu,  3 Sep 2020 00:23:20 -0700 (PDT)
+Received: by mail-vk1-xa42.google.com with SMTP id h23so565977vkn.4;
+        Thu, 03 Sep 2020 00:23:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nYtPH/AGq9Arqr6Pnj4bZq+KucnVkSWBPEySgVn+z48=;
+        b=kVliyIbaEUKHfO4xZWqE+52p0FTfiE73C1Dhz7+J11EpmW05Vb4VZ9f4Qt+b2O4RHN
+         IR+F8tMYHxguugL1aOXsWLv8yr6I7M8o2IGDxbg8NzVxaLhqOvInhfgdoNU+CO34B04p
+         6UbNDtk/pPVbYhltWMeUM5bw5lnIk5Vmyp+HBE56MA6P29Ab2sBk6o8LCbGVlCLgwa9Z
+         rDEhVIkbMKT6QqWek8lH2lC6kPXb0KhWvjfEs2AQdOEbpPjmaFtbQLSq20Tag+zYGwPo
+         kyNgK7uZboEjdcTmaC9mJ5aNksjusZgvbZxTYbPXPtcqmfnXemtqxdUmkToKhzphuLGf
+         FyoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nYtPH/AGq9Arqr6Pnj4bZq+KucnVkSWBPEySgVn+z48=;
+        b=k7EA9fcKWEe5cdq1LuPjbOkBwn8FbzJz9PrK4XOzP0GEZDg7UGa8J425o3HchL+/I3
+         tmjzPaNhoowwOsO5QjXH7WLStvDOHIBi4N2NG7MeU+B1VrBiC17gd7LZSHx2t/NpV3BX
+         aHF8fvhe5lig2HvEPzql5EZZAPJQE2Qs8n7Brud2/DQa/gOf6cfLnMVvLdHyjwwDVe2e
+         7672goqfZh+xDvP6+hNprQTK5NtevfgNeEBnh/cQxPAFgju/KQZXh26WJuUFSUZ+lRM4
+         nUNhYS6fdBWkznUje3f+2Hv3jyc3W9bIO4wUh/JeYrZgV7oNP+GJMibBH7KILi25Ab/V
+         7GuQ==
+X-Gm-Message-State: AOAM533W9u7QZw3Q4e3FWT6i69u1IiRTSm+ikNbFkuj3LFNSFO74CagB
+        1x/Nx8XGSjZ+SKsIEeMqAbwzwKfeCGqoM0iFnSVrxoGj3gs=
+X-Google-Smtp-Source: ABdhPJzkeFXIQzqDgqXC99kkdDPH3UnC8CAmw5bH+NsVf2nsqOvneLOy0x2VfmXMLS2U68g+CkWma2gKwfqEGyfNlCs=
+X-Received: by 2002:a1f:2a48:: with SMTP id q69mr774030vkq.69.1599117799327;
+ Thu, 03 Sep 2020 00:23:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cfdd29a882d140e5aec2e8c3b77f4968@zhaoxin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200901154200.2451899-1-robdclark@gmail.com> <20200901154200.2451899-3-robdclark@gmail.com>
+In-Reply-To: <20200901154200.2451899-3-robdclark@gmail.com>
+From:   =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@gmail.com>
+Date:   Thu, 3 Sep 2020 00:23:08 -0700
+Message-ID: <CAOeoa-cbQv2pkpxhXMV++NY3MbouPP077UVPnp7fu3zjFxt8Uw@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH 2/3] drm/msm: Convert shrinker msgs to tracepoints
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Felix,
+On Tue, Sep 1, 2020 at 8:41 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> This reduces the spam in dmesg when we start hitting the shrinker, and
+> replaces it with something we can put on a timeline while profiling or
+> debugging system issues.
 
-On 9/2/20 11:24 AM, FelixCui-oc wrote:
-> hi baolu,
-> 
->> So you have a hidden device (invisible to host kernel). But you need to
-> 
->>setup some identity mappings for this device, so that the firmware
->>could keep working, right?
-> 
->>The platform designs this by putting that range in the RMRR table and
->>expecting the OS kernel to setup identity mappings during boot.
-> 
->>Do I understand it right?
-> 
-> 
-> Yes. What you understand is correct.
+That is a good solution,
 
-This appears to be a new usage model of RMRR. I need to discuss this
-with the VT-d spec maintainer. Do you mind telling which platform are
-you going to run this on? What is the motivation of creating such hidden
-device?
+Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
 
-Basically, RMRRs were added as work around for certain legacy device and
-we have been working hard to fix those legacy devices so that RMRR are
-no longer needed.
-
-Best regards,
-baolu
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/msm_gem_shrinker.c |  5 +++--
+>  drivers/gpu/drm/msm/msm_gpu_trace.h    | 26 ++++++++++++++++++++++++++
+>  2 files changed, 29 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_gem_shrinker.c b/drivers/gpu/drm/msm/msm_gem_shrinker.c
+> index 722d61668a97..482576d7a39a 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_shrinker.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_shrinker.c
+> @@ -6,6 +6,7 @@
+>
+>  #include "msm_drv.h"
+>  #include "msm_gem.h"
+> +#include "msm_gpu_trace.h"
+>
+>  static bool msm_gem_shrinker_lock(struct drm_device *dev, bool *unlock)
+>  {
+> @@ -87,7 +88,7 @@ msm_gem_shrinker_scan(struct shrinker *shrinker, struct shrink_control *sc)
+>                 mutex_unlock(&dev->struct_mutex);
+>
+>         if (freed > 0)
+> -               pr_info_ratelimited("Purging %lu bytes\n", freed << PAGE_SHIFT);
+> +               trace_msm_gem_purge(freed << PAGE_SHIFT);
+>
+>         return freed;
+>  }
+> @@ -123,7 +124,7 @@ msm_gem_shrinker_vmap(struct notifier_block *nb, unsigned long event, void *ptr)
+>         *(unsigned long *)ptr += unmapped;
+>
+>         if (unmapped > 0)
+> -               pr_info_ratelimited("Purging %u vmaps\n", unmapped);
+> +               trace_msm_gem_purge_vmaps(unmapped);
+>
+>         return NOTIFY_DONE;
+>  }
+> diff --git a/drivers/gpu/drm/msm/msm_gpu_trace.h b/drivers/gpu/drm/msm/msm_gpu_trace.h
+> index 07572ab179fa..1079fe551279 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu_trace.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu_trace.h
+> @@ -114,6 +114,32 @@ TRACE_EVENT(msm_gmu_freq_change,
+>                 TP_printk("freq=%u, perf_index=%u", __entry->freq, __entry->perf_index)
+>  );
+>
+> +
+> +TRACE_EVENT(msm_gem_purge,
+> +               TP_PROTO(u32 bytes),
+> +               TP_ARGS(bytes),
+> +               TP_STRUCT__entry(
+> +                       __field(u32, bytes)
+> +                       ),
+> +               TP_fast_assign(
+> +                       __entry->bytes = bytes;
+> +                       ),
+> +               TP_printk("Purging %u bytes", __entry->bytes)
+> +);
+> +
+> +
+> +TRACE_EVENT(msm_gem_purge_vmaps,
+> +               TP_PROTO(u32 unmapped),
+> +               TP_ARGS(unmapped),
+> +               TP_STRUCT__entry(
+> +                       __field(u32, unmapped)
+> +                       ),
+> +               TP_fast_assign(
+> +                       __entry->unmapped = unmapped;
+> +                       ),
+> +               TP_printk("Purging %u vmaps", __entry->unmapped)
+> +);
+> +
+>  #endif
+>
+>  #undef TRACE_INCLUDE_PATH
+> --
+> 2.26.2
+>
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
