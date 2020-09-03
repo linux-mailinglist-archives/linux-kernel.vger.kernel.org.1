@@ -2,135 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B9D25BE1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8836F25BE28
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728319AbgICJJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727794AbgICJJw (ORCPT
+        id S1728020AbgICJPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:15:14 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55682 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726770AbgICJPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:09:52 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B829C061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 02:09:52 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id i22so2800763eja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 02:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=V5vCv00NRZR85r0QBP/ebzcR3D26FJaIP5JeqX6Z45w=;
-        b=q6FaqYyvNpaYaPdvXdtEotUaS1VDpvmI9FUuDa++/JqgoNp1iqlm+uwazzN888e02K
-         rIttpXGgK0+CmDSCjH6YHJKi1BADt3uKh0GyKX499XfoMl19nXtQW2hM/q/3e3oKxDWL
-         enFHwEYcU//+5Q0AuHmqjtP6t+VolU6i5SqhgUT4UY4PlqgUqk8Pw9n+mK4Otkqv1k2x
-         8IsCGytd5FzqHSLGW/0xNa+AQG/frU0Rh9k5Fur0E+NBv5lzdfhFUAkOT3lZ4Vf4sEWD
-         3tVCORw9+4j89T204sQbBa4H/IpGtlTyYpWwIPNhYTMNWfpmrrUbXP4GWWLM8Txpd9gI
-         QQIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=V5vCv00NRZR85r0QBP/ebzcR3D26FJaIP5JeqX6Z45w=;
-        b=Sx0eqzGM8RDz0vUyzWNYUWBuE/1IToH4XFBODbnG4YEmFX79kYurJ/FeFEKkNFfv2U
-         aB7bfHRNBBUbqYbuL8/D+PYFbLixco3oSRu8bFGbTT6jlu8e6tEIGnhf+ivGg4fOaNWM
-         /9w4Pg42Le7TRttyqzCIes50gQx2b1OUooOlRvmTiiCHWgPAi31U028F7r2LBJGxL3fR
-         Jq/98fg5wZjG7+HdFWInn/pf7p6wSpwYQKkQ7wnt4NuJqo4CJ0nXlHFzH85R9qUoEZ1s
-         9VoE9mzWJnafOtl7mTk/MXIzbp8JYUk0MDxGtZjwF1WYcjHth37YQj/X1fMX/ZEFZ7vX
-         saHw==
-X-Gm-Message-State: AOAM5303CrD3Rji//UWjHTB+C8l3d2lI/vihjkDRU10THttvcdhDRGFz
-        bTL7vuF4QDDhJdT3dAWWA8UmW0QWYsiTTMheNwfVLA==
-X-Google-Smtp-Source: ABdhPJwmWVdelUfdmR7S1WkN3U4XFezpkaZdSbAZBDCpG8rThOwqIusj4KHSxfOpOJbnd1PZO7bPZC4uKxxZfjn3OGU=
-X-Received: by 2002:a17:906:49c9:: with SMTP id w9mr1142036ejv.520.1599124190692;
- Thu, 03 Sep 2020 02:09:50 -0700 (PDT)
+        Thu, 3 Sep 2020 05:15:14 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U7nf1cO_1599124504;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7nf1cO_1599124504)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 03 Sep 2020 17:15:05 +0800
+Subject: Re: [PATCH v4 1/4] mm/pageblock: mitigation cmpxchg false sharing in
+ pageblock flags
+To:     David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1599116482-7410-1-git-send-email-alex.shi@linux.alibaba.com>
+ <fb8ae5e8-1480-fe22-6872-f2484bcadbed@redhat.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <7b68847f-89c2-5470-5cf0-fc2e225176bc@linux.alibaba.com>
+Date:   Thu, 3 Sep 2020 17:14:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <0efc2605c8c06b4b1bf68cbad5536c4a900dc019.1599110284.git.jie.deng@intel.com>
- <f3ab5d7d-cce5-b34c-5931-dd5d74f065e7@redhat.com> <6517879c-15d4-6265-761c-626cba9c95d6@intel.com>
-In-Reply-To: <6517879c-15d4-6265-761c-626cba9c95d6@intel.com>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 3 Sep 2020 11:14:38 +0200
-Message-ID: <CAMZdPi-s_FZ6ycuM7uh6uE_aV41x0nVtKzqp1h49VdmT5me6jw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: virtio: add a virtio i2c frontend driver
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Jason Wang <jasowang@redhat.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        open list <linux-kernel@vger.kernel.org>, mst@redhat.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        jarkko.nikula@linux.intel.com, jdelvare@suse.de,
-        Sergey.Semin@baikalelectronics.ru, krzk@kernel.org,
-        rppt@kernel.org, tali.perry1@gmail.com,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <fb8ae5e8-1480-fe22-6872-f2484bcadbed@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Sep 2020 at 09:19, Jie Deng <jie.deng@intel.com> wrote:
->
->
-> On 2020/9/3 14:12, Jason Wang wrote:
-> >
-> > On 2020/9/3 =E4=B8=8B=E5=8D=881:34, Jie Deng wrote:
-> >> Add an I2C bus driver for virtio para-virtualization.
-> >>
-> >> The controller can be emulated by the backend driver in
-> >> any device model software by following the virtio protocol.
-> >>
-> >> This driver communicates with the backend driver through a
-> >> virtio I2C message structure which includes following parts:
-> >>
-> >> - Header: i2c_msg addr, flags, len.
-> >> - Data buffer: the pointer to the i2c msg data.
-> >> - Status: the processing result from the backend.
-> >>
-> >> People may implement different backend drivers to emulate
-> >> different controllers according to their needs. A backend
-> >> example can be found in the device model of the open source
-> >> project ACRN. For more information, please refer to
-> >> https://projectacrn.org.
-> >
-> >
-> > May I know the reason why don't you use i2c or virtio directly?
-> >
-> We don't want to add virtio drivers for every I2C devices in the guests.
-> This bus driver is designed to provide a way to flexibly expose the
-> physical
-> I2C slave devices to the guest without adding or changing the drivers of
-> the
-> I2C slave devices in the guest OS.
 
-So AFAIU, what you're trying to do here is "I2C slave passthrough over
-para-virtualized I2C bus"? While not totally crazy, that looks a bit weird =
-since
-a straightforward way would be to directly assign the I2C bus controller as=
- a
-passthrough device (vfio?), though I assume your goal is also having per sl=
-ave
-VM assignment control (and not exposing the whole bus)...
 
->
->
-> >
-> >>
-> >> The virtio device ID 34 is used for this I2C adpter since IDs
-> >> before 34 have been reserved by other virtio devices.
-> >
-> >
-> > Is there a link to the spec patch?
-> >
-> > Thanks
-> >
-> I haven't submitted the patch to reserve the ID in spec yet.
-> I write the ID here because I want to see your opinions first.
->
-> Thanks
->
->
+在 2020/9/3 下午4:19, David Hildenbrand 写道:
+> On 03.09.20 09:01, Alex Shi wrote:
+>> pageblock_flags is used as long, since every pageblock_flags is just 4
+>> bits, 'long' size will include 8(32bit machine) or 16 pageblocks' flags,
+>> that flag setting has to sync in cmpxchg with 7 or 15 other pageblock
+>> flags. It would cause long waiting for sync.
+>>
+>> If we could change the pageblock_flags variable as char, we could use
+>> char size cmpxchg, which just sync up with 2 pageblock flags. it could
+>> relief the false sharing in cmpxchg.
+>>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Mel Gorman <mgorman@techsingularity.net>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+> 
+> Could you please
+> 
+> 1. Send a cover letter and indicate the changees between versions. I
+> cannot find any in my mailbox or on -mm - is there any? (also, is there
+> a patch 4 ?)
 
-Regards,
-Loic
+Hi David,
+
+Thanks for comments!
+I thought a short patchset don't need a cover. Here it's:
+
+cmpxchg is a lockless way to update data by check and compare the target
+data after updated and retry if target data is changed during that action.
+
+So we should just compare the exact size of target data. If the data is only
+byte, but cmpxchg compare a long word, that leads to a cmpxchg level flase
+sharing, cause more try which lock memory more times. That's a clearly
+logical error and should be fixed.
+
+v1, the initial version
+v2, fix the armv6 cmpxchgb missing issue.
+v3, fix more arch cmpxchg missing issue on armv6, sh2, sparc32, xtensa
+v4, redo cmpxchgb fix by NO_CMPXCHG_BYTE into arch/Kconfig 
+
+> 
+> 2. Report proper performance numbers as requested, especially, over
+> multiple runs. This should go into patch 1/2. Are they buried somewhere?
+
+There are some result sent on
+https://lkml.org/lkml/2020/8/30/95
+
+> 
+> 3. Clarify what patch 3 does: Do we actually waste 8*sizeof(long) where
+> we only need 4 bits?
+
+No, no waste, current kernel pack the 4 bits into long, that cause cmpxchg
+compare 8 pageblock flags which 7 of them are not needed.
+
+> 
+> Also, breaking stuff in patch 1 and fixing it in patch 3 is not
+> acceptable. This breaks git bisect. Skimming over the patches I think
+> this is the case.
+
+Got it, thanks!
+> 
+> I am not convinced yet that we need and want this. As Alex mentioned, we
+> touch pageblock flags while holding the zone lock already in most cases
+> -  and as Mel mentiones, updates should be rare.
+> 
+
+yes, not too much, but there are still a few. and cmpxchg retry will lock memory
+ which I believe the less the better.
+
+Thanks
+Alex
+
