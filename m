@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5660C25BC69
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8237A25BC7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbgICILO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        id S1728922AbgICILm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728223AbgICIKk (ORCPT
+        with ESMTP id S1728889AbgICIKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:10:40 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A909C061246
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 01:10:40 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id b16so1246701vsl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:10:40 -0700 (PDT)
+        Thu, 3 Sep 2020 04:10:45 -0400
+Received: from mail-vk1-xa43.google.com (mail-vk1-xa43.google.com [IPv6:2607:f8b0:4864:20::a43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED873C061245
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 01:10:44 -0700 (PDT)
+Received: by mail-vk1-xa43.google.com with SMTP id s127so596705vkg.3
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 01:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9LSujuKc0BRpFIUlAoG3t4WRDvr3ggsu3MS/qx+gqZg=;
-        b=F8cahaKlXlYymZy1vM9/LjOB55QfYqrKFz+jtu996q05elSZiM4NT/N2FUhqENkdDS
-         p/z6Naq+t4p4sOjc9rOWCu2u1NigD8yO+JXlMBuBZtyBCdEfDOOMwtk9YeAi0BiRMh37
-         0cNizsSvb4/1gqjnVsWXsFsjVuFrCowgJeOMM9oaX3pnRyKPZ4Pw2wqwbzAEAQEBr3aZ
-         YzFzqehpPSEHkPysCEhZXHec2zTgFZjTY7WcaPzMmME8TmM85odYmBTJfYnaQ0Y8Scg9
-         2dCn4+yr0AdNuw9EU4HFZWjjYLsm5OwcnOMYXb2MfuQcwzW0b4yz0P2Hx8XlmGPD+8UG
-         kp7Q==
+        bh=X3365ghL6l++rnjNzcNJMJDS/9A8b7IBK4vQw9xWtdY=;
+        b=ZUXqJYCofbaZuGOt6Jmoeo53737zVQ0l2s4cLtThhLefrDZ305hngVsyOewFoS5vz+
+         qc3fKJka+rRkzxcctaDrcsEoy+2/R0xnHExSC8FhstbwsUUEoz/C+leEA6xWYclE0poI
+         eDic9E/1jPGjqbD96x3W4Nk54XgBDCe1qcr6Tes40E8wQ25NXrgF7flGu9kqCucvgCVj
+         7YNwP+jhZ3ZJHa3ZIZSNfY0eymPYF/6ed4wTKeqpNO+4Wcfg8mWN0EcplzBxEf8ryQcD
+         M2cmRin7kPvb81vmxvxYzQeLd768WXmgfFBgdm2H6g1bWlh6CvL3OICnoEogQxzntZ5D
+         gyOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9LSujuKc0BRpFIUlAoG3t4WRDvr3ggsu3MS/qx+gqZg=;
-        b=IB0H0A5wbvyt6cOBhmiswHGU0bIpa0R927NYOAL4xmCnSfcBTsiB+p3BRwxJ9etdpr
-         NiKXQkyxdntLviwfLBcoe+3/VtY9N3ektql0ZrajtLpIQ/7yz/7C6p6/Hi53yrN39Pc9
-         TnwyGnGLEoJ3MMdDJw2VvqKHegtN54QFECixtSzZ8Y9HwStTn9IUxwn0ZzzG74RzugYL
-         /l1vEYVPGJLfgc4ReUOqKW27VZIzZJlVMiospQOlWODDhGoZRc2AN7GIPC/3aML3Z6Vv
-         43qdlsdIEFqCKAKQLypAgYJfdkj75ndNWFRQzWz0Ez9PBvzI2SJOGYs402p/evdunh8q
-         y9CA==
-X-Gm-Message-State: AOAM532+qS25yNda2VMtHOacx+49vNzUbEs+7X7XOlR70T5KiPnN9Fl5
-        LZUUhbjCWcmyqAZlT4uRdv+SzjKj3mL4j9cC+9eW0w==
-X-Google-Smtp-Source: ABdhPJyI6yM9cYgRxLstCkc5xLwEf5PvN5GPJ1sq3T0dsqBj666zrIWnBAGaIL6c1jHKd+VdnV6KQIQh4y5v/9ZPk8s=
-X-Received: by 2002:a67:8b47:: with SMTP id n68mr837341vsd.50.1599120638807;
- Thu, 03 Sep 2020 01:10:38 -0700 (PDT)
+        bh=X3365ghL6l++rnjNzcNJMJDS/9A8b7IBK4vQw9xWtdY=;
+        b=I5NLY5HfOmnEN7eAvE4jpL2C1YBamANvHni+eVez88i5z+xqK/xuE1wR9uweULDDdb
+         eNGHBjLWswMWm4UQsUUgbeBI24nwkqzQ4MbgMvug1eAZtT8zXOC8Wq4hS5q4rgS0W/Aa
+         SYYCDgQ7R5eEKp4ZZXpN4J0BGsQf9nWy67U0Js3drCOAiiUyJZQqb1xrW90mckJED1bH
+         E5ys0IUeqSaYClUPa4hS2rAZO74vCJ8nzgH0tf9/TVUn6B101yF60yv+3OtUtvcMlaB6
+         +iyVTzMBcgjoxtqpvoTqpCXZc2m7XOs3/bUmYKrstkUdc1XxY3ZtIEtkDG1r4a0DV4F7
+         oU1w==
+X-Gm-Message-State: AOAM533aJCCXy80G6mgj39bjskfUuNO0w+gks1XzI08HpnjFHhDtKzdE
+        Vj5hPov9rtAQ/lX5Xvyq52KkbO4QPlJKkLpg3Ku38g==
+X-Google-Smtp-Source: ABdhPJx1P61vsP1cHQYPIhUG3f3jZTeKfXFkujPaG6RT45Rh2A4/ma6fXUMGZNn0T/qsq9HNFeAePpUYAnmp5Af5hD0=
+X-Received: by 2002:a1f:e443:: with SMTP id b64mr846480vkh.17.1599120643659;
+ Thu, 03 Sep 2020 01:10:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902204847.2764-1-krzk@kernel.org> <20200902204847.2764-2-krzk@kernel.org>
-In-Reply-To: <20200902204847.2764-2-krzk@kernel.org>
+References: <20200902204847.2764-1-krzk@kernel.org> <20200902204847.2764-3-krzk@kernel.org>
+In-Reply-To: <20200902204847.2764-3-krzk@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 3 Sep 2020 10:10:02 +0200
-Message-ID: <CAPDyKFpQxJ29Rhv=LNzJf8LkpV01EY2Z5-wLPs2fTsraUM=XWQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mmc: s3cmci: Use proper printk format for iomem pointer
+Date:   Thu, 3 Sep 2020 10:10:05 +0200
+Message-ID: <CAPDyKFoTvpvPY_vads9wL5p9zc=GGWzxqia1DF+U_SX5bsNZvw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mmc: s3cmci: Cast driver data through long
 To:     Krzysztof Kozlowski <krzk@kernel.org>
 Cc:     Ben Dooks <ben-linux@fluff.org>,
         "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
@@ -64,12 +64,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, 2 Sep 2020 at 22:49, Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> iomem pointers should be printed with pointer format to hide the
-> actual value and fix warnings when compile testing for 64-bit
-> architecture:
+> Since driver data is a pointer, direct casting to integer causes
+> warning when compile testing for 64-bit architecture:
 >
->   drivers/mmc/host/s3cmci.c:1355:46: warning:
->     cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>   drivers/mmc/host/s3cmci.c:1495:17: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>
+> The actual driver data can be only 0 or 1, so cast it via long and do
+> not care about any loss of value.
 >
 > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
@@ -84,18 +85,18 @@ Uffe
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
 > diff --git a/drivers/mmc/host/s3cmci.c b/drivers/mmc/host/s3cmci.c
-> index dcd458649338..3fb597095079 100644
+> index 3fb597095079..ac94f926624d 100644
 > --- a/drivers/mmc/host/s3cmci.c
 > +++ b/drivers/mmc/host/s3cmci.c
-> @@ -1352,7 +1352,7 @@ static int s3cmci_state_show(struct seq_file *seq, void *v)
->  {
->         struct s3cmci_host *host = seq->private;
+> @@ -1492,7 +1492,7 @@ static int s3cmci_probe_dt(struct s3cmci_host *host)
+>         struct mmc_host *mmc = host->mmc;
+>         int ret;
 >
-> -       seq_printf(seq, "Register base = 0x%08x\n", (u32)host->base);
-> +       seq_printf(seq, "Register base = 0x%p\n", host->base);
->         seq_printf(seq, "Clock rate = %ld\n", host->clk_rate);
->         seq_printf(seq, "Prescale = %d\n", host->prescaler);
->         seq_printf(seq, "is2440 = %d\n", host->is2440);
+> -       host->is2440 = (int) of_device_get_match_data(&pdev->dev);
+> +       host->is2440 = (long) of_device_get_match_data(&pdev->dev);
+>
+>         ret = mmc_of_parse(mmc);
+>         if (ret)
 > --
 > 2.17.1
 >
