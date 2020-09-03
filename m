@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2445825C4E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9242625C4D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729225AbgICPT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:19:58 -0400
-Received: from crapouillou.net ([89.234.176.41]:50454 "EHLO crapouillou.net"
+        id S1728376AbgICPTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:19:21 -0400
+Received: from crapouillou.net ([89.234.176.41]:51236 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728500AbgICL1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:27:01 -0400
+        id S1728085AbgICL3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 07:29:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599132368; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1599132373; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x3OFdNgDOF418fBVzdMohbSbtTKgDO7T8r5jfdzMW+Y=;
-        b=cZdEy8G+8PzfzbjNeQPWjcgH4RuZLLGYI+UFG+0EM4Os/uxIEVg9VRlPSPIq0MFzGom6gZ
-        xf4dLy8m8gUtlKR5m97mL6G9y/7iwJwSW2++d6wxv8RwkniTcl5k/Tiuz3zY1TYlGlBDPl
-        PtCEqNNndRth3fbZkYtNmah952TlGGE=
+        bh=7SglRxexWR02Jo1xu/7HEB4Hand1VF9eBKwwkPhycx4=;
+        b=n/sywxZY3LJtrLFp8PyB9RN3P2+He4kBjU2FJO06S1MBNfZGpYeWilBBTEMOjlEaFWtiZ7
+        7+Ib+m2BtC4kB4qLGttVnuTJ2wEP39qmEVeu84HaiZS2RzTpmQqeZVA4iC5i+7XqqEHHpF
+        Nx7ZrNzJXJg0TMCBkuHfpsdNb/Cp408=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Chen <Peter.Chen@nxp.com>,
@@ -44,9 +44,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, openbmc@lists.ozlabs.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 02/20] usb/host: ehci-spear: Use pm_ptr() macro
-Date:   Thu,  3 Sep 2020 13:25:36 +0200
-Message-Id: <20200903112554.34263-3-paul@crapouillou.net>
+Subject: [PATCH 04/20] usb/host: ehci-platform: Use pm_ptr() macro
+Date:   Thu,  3 Sep 2020 13:25:38 +0200
+Message-Id: <20200903112554.34263-5-paul@crapouillou.net>
 In-Reply-To: <20200903112554.34263-1-paul@crapouillou.net>
 References: <20200903112554.34263-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -64,48 +64,49 @@ simply be discarded by the compiler.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/usb/host/ehci-spear.c | 8 +++-----
+ drivers/usb/host/ehci-platform.c | 8 +++-----
  1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/usb/host/ehci-spear.c b/drivers/usb/host/ehci-spear.c
-index add796c78561..3694e450a11a 100644
---- a/drivers/usb/host/ehci-spear.c
-+++ b/drivers/usb/host/ehci-spear.c
-@@ -34,8 +34,7 @@ struct spear_ehci {
- 
- static struct hc_driver __read_mostly ehci_spear_hc_driver;
- 
--#ifdef CONFIG_PM_SLEEP
--static int ehci_spear_drv_suspend(struct device *dev)
-+static int __maybe_unused ehci_spear_drv_suspend(struct device *dev)
- {
- 	struct usb_hcd *hcd = dev_get_drvdata(dev);
- 	bool do_wakeup = device_may_wakeup(dev);
-@@ -43,14 +42,13 @@ static int ehci_spear_drv_suspend(struct device *dev)
- 	return ehci_suspend(hcd, do_wakeup);
+diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+index 006c4f6188a5..4585a3a24678 100644
+--- a/drivers/usb/host/ehci-platform.c
++++ b/drivers/usb/host/ehci-platform.c
+@@ -410,8 +410,7 @@ static int ehci_platform_remove(struct platform_device *dev)
+ 	return 0;
  }
  
--static int ehci_spear_drv_resume(struct device *dev)
-+static int __maybe_unused ehci_spear_drv_resume(struct device *dev)
+-#ifdef CONFIG_PM_SLEEP
+-static int ehci_platform_suspend(struct device *dev)
++static int __maybe_unused ehci_platform_suspend(struct device *dev)
  {
  	struct usb_hcd *hcd = dev_get_drvdata(dev);
+ 	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
+@@ -433,7 +432,7 @@ static int ehci_platform_suspend(struct device *dev)
+ 	return ret;
+ }
  
- 	ehci_resume(hcd, false);
+-static int ehci_platform_resume(struct device *dev)
++static int __maybe_unused ehci_platform_resume(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+ 	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
+@@ -464,7 +463,6 @@ static int ehci_platform_resume(struct device *dev)
+ 
  	return 0;
  }
 -#endif /* CONFIG_PM_SLEEP */
  
- static SIMPLE_DEV_PM_OPS(ehci_spear_pm_ops, ehci_spear_drv_suspend,
- 		ehci_spear_drv_resume);
-@@ -155,7 +153,7 @@ static struct platform_driver spear_ehci_hcd_driver = {
+ static const struct of_device_id vt8500_ehci_ids[] = {
+ 	{ .compatible = "via,vt8500-ehci", },
+@@ -499,7 +497,7 @@ static struct platform_driver ehci_platform_driver = {
+ 	.shutdown	= usb_hcd_platform_shutdown,
  	.driver		= {
- 		.name = "spear-ehci",
- 		.bus = &platform_bus_type,
--		.pm = &ehci_spear_pm_ops,
-+		.pm = pm_ptr(&ehci_spear_pm_ops),
- 		.of_match_table = spear_ehci_id_table,
+ 		.name	= "ehci-platform",
+-		.pm	= &ehci_platform_pm_ops,
++		.pm	= pm_ptr(&ehci_platform_pm_ops),
+ 		.of_match_table = vt8500_ehci_ids,
+ 		.acpi_match_table = ACPI_PTR(ehci_acpi_match),
  	}
- };
 -- 
 2.28.0
 
