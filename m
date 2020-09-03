@@ -2,113 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6809625C4FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFF125C518
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729038AbgICPV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728759AbgICPVY (ORCPT
+        id S1728644AbgICPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:22:27 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50197 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729112AbgICPWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:21:24 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2042C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 08:21:23 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v4so3278015wmj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 08:21:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fUweod+uqjt0fy1FhQduTmrLFzl6ANoKL+CTIQ2c5rE=;
-        b=a94Ux7R1+N0TZSiVBeTS41VzYFQ5koFtL0bMtGK4k3B/ay3KEcxS2pseWU5EYobR0U
-         ANKvasdf/uxjAaffItCOwnfj1qk1OiwOqRvOEByrftd7mt0p0DA+LHZEWLvYRsLZIbz9
-         vuQmiA1mjeKWRNRKbmPgQJLUbL6cQkWGwzh6OHx2mYOpVca1H1oAipcAoRKc3Kg6jn8k
-         6BsiAGvjaZpE0QpyOQA1mslKBeRTFV9lahSbFasMU5U0v7Te+Cc7Qgu5dFk8C+HrxwDr
-         JWXpK7qEqzw9IYGI7TqboAbRAc1SeBOzSsrPVEuDEFxgwsBfvcG58Gc67Xpt31i+gS2r
-         VQZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fUweod+uqjt0fy1FhQduTmrLFzl6ANoKL+CTIQ2c5rE=;
-        b=nkn0rar4B7ZtATyAgdbUx1DzvsWe2zRKN/OqCBnTircsOofUPzTXXPfQ8SF8AvqPLI
-         3hG65bV2VXtGhcz3pF28qvcvEn5cD/iZ/NDGXViBJGUSmxXeWeCszLx9mPOrzAUO2zkU
-         43HcwtTqYr4eIpqRYaudaysI6HlD64qTGUz/HGWhUN8WXRpq/h8Tqk4jTn4WGsiZWzAb
-         zFpHHP3Ll053xQjFL2oHuRY7i0Zikt0NMKe7TfovQTMW7WcwKK4N9fsd9OQH6sRHD5dh
-         aJA6wTxJln7hrJUd4DmNB3ReKGUrjjDCMJEZAK9yi7MJfRPf+Ur9wgHar409NtnUvASm
-         imgQ==
-X-Gm-Message-State: AOAM530STLY+RYmjV4IxLePbT+KvNsfzax2O9bKuDZ4aIv/iOQS0Y0sy
-        VlsK7nNd/w6yMlfFSvB2/ge9sQ==
-X-Google-Smtp-Source: ABdhPJzxRDkEmapAsv/TYOx7yttyGVeDeT1Fd/0U949bh6H04Zct7H1cMTXcadc5J/FIMSgkjkvgvw==
-X-Received: by 2002:a1c:964b:: with SMTP id y72mr3081957wmd.69.1599146482589;
-        Thu, 03 Sep 2020 08:21:22 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id k22sm5168697wrd.29.2020.09.03.08.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 08:21:21 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 16:21:20 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Kyle Huey <me@kylehuey.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH 00/13] x86/debug: Untangle handle_debug()
-Message-ID: <20200903152120.zroztjtwqtx37asg@holly.lan>
-References: <20200902132549.496605622@infradead.org>
+        Thu, 3 Sep 2020 11:22:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599146538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0HzlZIPywbFcx466Q8/W+zmFpS4jLc5rFIES8a+z/v4=;
+        b=eXzV6ZK/CMYhx5eVt5KC7RuDRk82uqQEkEj70vPD30bpiAtTnLCplhsE3B8xyDJitZHRbr
+        ZMwzJipnHPO5/q3pCWyfM7durPOeUoR3lBHy31txx9VD3lUjqo3ht0EMUAFXpg6Kc/brqd
+        PCH8RmVPB8b+dnBJsludbg66iyjS23Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-98tZJrasMY29zEJNBUFsDw-1; Thu, 03 Sep 2020 11:22:09 -0400
+X-MC-Unique: 98tZJrasMY29zEJNBUFsDw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2201425DA;
+        Thu,  3 Sep 2020 15:22:07 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3A7887EEC4;
+        Thu,  3 Sep 2020 15:22:03 +0000 (UTC)
+Subject: Re: [PATCH v4 04/10] vfio/fsl-mc: Implement
+ VFIO_DEVICE_GET_REGION_INFO ioctl call
+From:   Auger Eric <eric.auger@redhat.com>
+To:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
+        laurentiu.tudor@nxp.com, Bharat Bhushan <Bharat.Bhushan@nxp.com>
+References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
+ <20200826093315.5279-5-diana.craciun@oss.nxp.com>
+ <d17469ad-9041-9b1c-64e4-f406888262b7@redhat.com>
+Message-ID: <d22338d0-449b-a3f7-d8e6-be1e4620aa5c@redhat.com>
+Date:   Thu, 3 Sep 2020 17:22:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200902132549.496605622@infradead.org>
+In-Reply-To: <d17469ad-9041-9b1c-64e4-f406888262b7@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 03:25:49PM +0200, Peter Zijlstra wrote:
-> Hi,
-> 
-> The first two patches probably ought to go in x86/urgent, the rest (!RFC) can
-> go into x86/core and wait a bit.
-> 
-> handle_debug() is a mess, and now that we have separate user and kernel paths,
-> try and clean it up a bit.
-> 
-> There's two RFC patches at the end that impact the ptrace_{get,set}_debugreg(6)
-> ABI, I've no idea what, if anything, is expected of that or if anybody actually
-> cares about that. If I read the code correctly nothing actually consumes the
-> value from ptrace_set_debugreg(6).
+Hi Diana,
 
-I applied this both with and without the RFC patches and pointed the
-(still work-in-progress) kgdb test suite at it. I won't pretend the
-suite is comprehensive but nevertheless FWIW:
-Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
-
-
-Daniel.
-
-
+On 9/3/20 5:16 PM, Auger Eric wrote:
+> Hi Diana,
 > 
-> Kyle, you seem to be pushing all this to the edge with RR, any clues?
+> On 8/26/20 11:33 AM, Diana Craciun wrote:
+>> Expose to userspace information about the memory regions.
+>>
+>> Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
+>> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+>> ---
+>>  drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 79 ++++++++++++++++++++++-
+>>  drivers/vfio/fsl-mc/vfio_fsl_mc_private.h | 19 ++++++
+>>  2 files changed, 97 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>> index 5a5460d01f00..093b8d68496c 100644
+>> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>> @@ -17,16 +17,72 @@
+>>  
+>>  static struct fsl_mc_driver vfio_fsl_mc_driver;
+>>  
+>> +static int vfio_fsl_mc_regions_init(struct vfio_fsl_mc_device *vdev)
+>> +{
+>> +	struct fsl_mc_device *mc_dev = vdev->mc_dev;
+>> +	int count = mc_dev->obj_desc.region_count;
+>> +	int i;
+>> +
+>> +	vdev->regions = kcalloc(count, sizeof(struct vfio_fsl_mc_region),
+>> +				GFP_KERNEL);
+>> +	if (!vdev->regions)
+>> +		return -ENOMEM;
+>> +
+>> +	for (i = 0; i < count; i++) {
+>> +		struct resource *res = &mc_dev->regions[i];
+>> +
+>> +		vdev->regions[i].addr = res->start;
+>> +		vdev->regions[i].size = resource_size(res);
+>> +		vdev->regions[i].flags = 0;
+> why 0? I see in
+>> +	}
+>> +
+>> +	vdev->num_regions = mc_dev->obj_desc.region_count;
+> nit: you can use count directly fsl-mc-bus.c that flags can take
+> meaningful values
+Sorry I missed flags and types. So you may set the type in this patch
+instead of in next patch?
+
+vdev->regions[i].type = mc_dev->regions[i].flags & IORESOURCE_BITS;
+
+Eric
+>> +	return 0;
+>> +}
+>> +
+>> +static void vfio_fsl_mc_regions_cleanup(struct vfio_fsl_mc_device *vdev)
+>> +{
+>> +	vdev->num_regions = 0;
+>> +	kfree(vdev->regions);
+>> +}
+>> +
+>>  static int vfio_fsl_mc_open(void *device_data)
+>>  {
+>> +	struct vfio_fsl_mc_device *vdev = device_data;
+>> +	int ret;
+>> +
+>>  	if (!try_module_get(THIS_MODULE))
+>>  		return -ENODEV;
+>>  
+>> +	mutex_lock(&vdev->driver_lock);
+>> +	if (!vdev->refcnt) {
+>> +		ret = vfio_fsl_mc_regions_init(vdev);
+>> +		if (ret)
+>> +			goto err_reg_init;
+>> +	}
+>> +	vdev->refcnt++;
+>> +
+>> +	mutex_unlock(&vdev->driver_lock);
+>> +
+>>  	return 0;
+>> +
+>> +err_reg_init:
+>> +	mutex_unlock(&vdev->driver_lock);
+>> +	module_put(THIS_MODULE);
+>> +	return ret;
+>>  }
+>>  
+>>  static void vfio_fsl_mc_release(void *device_data)
+>>  {
+>> +	struct vfio_fsl_mc_device *vdev = device_data;
+>> +
+>> +	mutex_lock(&vdev->driver_lock);
+>> +
+>> +	if (!(--vdev->refcnt))
+>> +		vfio_fsl_mc_regions_cleanup(vdev);
+>> +
+>> +	mutex_unlock(&vdev->driver_lock);
+>> +
+>>  	module_put(THIS_MODULE);
+>>  }
+>>  
+>> @@ -59,7 +115,25 @@ static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
+>>  	}
+>>  	case VFIO_DEVICE_GET_REGION_INFO:
+>>  	{
+>> -		return -ENOTTY;
+>> +		struct vfio_region_info info;
+>> +
+>> +		minsz = offsetofend(struct vfio_region_info, offset);
+>> +
+>> +		if (copy_from_user(&info, (void __user *)arg, minsz))
+>> +			return -EFAULT;
+>> +
+>> +		if (info.argsz < minsz)
+>> +			return -EINVAL;
+>> +
+>> +		if (info.index >= vdev->num_regions)
+>> +			return -EINVAL;
+>> +
+>> +		/* map offset to the physical address  */
+>> +		info.offset = VFIO_FSL_MC_INDEX_TO_OFFSET(info.index);
+>> +		info.size = vdev->regions[info.index].size;
+>> +		info.flags = vdev->regions[info.index].flags;
+>> +
+>> +		return copy_to_user((void __user *)arg, &info, minsz);
+>>  	}
+>>  	case VFIO_DEVICE_GET_IRQ_INFO:
+>>  	{
+>> @@ -204,6 +278,7 @@ static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
+>>  		vfio_iommu_group_put(group, dev);
+>>  		return ret;
+>>  	}
+>> +	mutex_init(&vdev->driver_lock);
+>>  
+>>  	return ret;
+>>  }
+>> @@ -227,6 +302,8 @@ static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
+>>  
+>>  	mc_dev->mc_io = NULL;
+>>  
+>> +	mutex_destroy(&vdev->driver_lock);
+>> +
+>>  	vfio_iommu_group_put(mc_dev->dev.iommu_group, dev);
+>>  
+>>  	return 0;
+>> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>> index 37d61eaa58c8..818dfd3df4db 100644
+>> --- a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>> @@ -7,9 +7,28 @@
+>>  #ifndef VFIO_FSL_MC_PRIVATE_H
+>>  #define VFIO_FSL_MC_PRIVATE_H
+>>  
+>> +#define VFIO_FSL_MC_OFFSET_SHIFT    40
+>> +#define VFIO_FSL_MC_OFFSET_MASK (((u64)(1) << VFIO_FSL_MC_OFFSET_SHIFT) - 1)
+>> +
+>> +#define VFIO_FSL_MC_OFFSET_TO_INDEX(off) ((off) >> VFIO_FSL_MC_OFFSET_SHIFT)
+>> +
+>> +#define VFIO_FSL_MC_INDEX_TO_OFFSET(index)	\
+>> +	((u64)(index) << VFIO_FSL_MC_OFFSET_SHIFT)
+>> +
+>> +struct vfio_fsl_mc_region {
+>> +	u32			flags;
+>> +	u32			type;
+>> +	u64			addr;
+>> +	resource_size_t		size;
+>> +};
+>> +
+>>  struct vfio_fsl_mc_device {
+>>  	struct fsl_mc_device		*mc_dev;
+>>  	struct notifier_block        nb;
+>> +	int				refcnt;
+>> +	u32				num_regions;
+>> +	struct vfio_fsl_mc_region	*regions;
+>> +	struct mutex driver_lock;
+>>  };
+>>  
+>>  #endif /* VFIO_FSL_MC_PRIVATE_H */
+>>
+> Otherwise looks good to me
 > 
-> Since v2:
+> Thanks
 > 
->  - fixed (user) INT1 / icebp detection
->  - some further cleanups
->  - two additional RFC patches
+> Eric
 > 
+
