@@ -2,111 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36E425BEEA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE13C25BEEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgICKPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:15:21 -0400
-Received: from mail-eopbgr70073.outbound.protection.outlook.com ([40.107.7.73]:9610
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726162AbgICKPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:15:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eiCVc+fVnH+t86ax41JYlU1dgzZFg4tx1KFMbUUjm2kZdOYgAmqYxlKGWfM9SFD9DwiBoilpn4v03ZJtGUfdKTxitst2l8TLgvmBRDDsU5vKI322ooFf+xpwDeQGWBmK+p2Zg+nLUJRB99+QOR9f3Et7AydxW/pE8+OoiHRMwOFBbRwvOHU7PkmciJm4k7sh88Fkz/gqkSP5w9PQtIDhKNqRBCTxdybiv7E4+y6LGieXOnIHwkn91t1Hsy8Sif5TFv2tZUF+5BVbkpx8393FK6XPkwKaS89Xw2ziSH1qCFQFJmpRIURZlmvbIxs5of12VxNGuoaOJ330AXdSrsm/NQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gtqEfuojKpv/SBI5SAGMCnBDbi7LY9KjxJKWJ1upQFk=;
- b=W7TeG4qmSWaow5rVWojQwP6c7fKViY2zeN+lkKQjqKgu3d5JkofAOtvmTVscirGJHoVtfniGkxo1xgK2rlGyzGuIRrskdyFWzGyZBwtRWOi1Ym4ZEI3t97285NZyafoDX+AlHJXT+DDIf1HQFFr6cgrpbI12YgopIMio49QPvVpnlzfDakryWIWMNqFmxP1OlMXZH9dgfpm6TyDzHMqpEdV/J6WcNBVtcRTOcQD2ea7Wex67Pjm8Xop08RA1qbvq1YfY/pwEHJqni2NUJJZD8ngN9BYvP/+vvfvsYCHx2GOpSDCGwSbQtKYLHflNenWTxm4u8KQcZVnPv3Sv5xGrCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gtqEfuojKpv/SBI5SAGMCnBDbi7LY9KjxJKWJ1upQFk=;
- b=W28BevsTsDVA+Fv4m7TeyjA7qusvgC3Aqp+tVVWcIJAfpdbpxYtJorBqDmrBY9Y0lLTao9oZqH8e9DBNobm5hhMConUW7FIuf0CKef4LKzAB3j4G7uDYsk5PWnOEyKTHGZD52CU7NhrvJTWSXi7lpDzOags+dcNId0UH2xea20k=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from AM8PR04MB7315.eurprd04.prod.outlook.com (2603:10a6:20b:1d4::7)
- by AM0PR04MB6404.eurprd04.prod.outlook.com (2603:10a6:208:178::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Thu, 3 Sep
- 2020 10:15:15 +0000
-Received: from AM8PR04MB7315.eurprd04.prod.outlook.com
- ([fe80::c10b:eaf9:da9a:966e]) by AM8PR04MB7315.eurprd04.prod.outlook.com
- ([fe80::c10b:eaf9:da9a:966e%7]) with mapi id 15.20.3348.015; Thu, 3 Sep 2020
- 10:15:15 +0000
-From:   fugang.duan@nxp.com
-To:     shawnguo@kernel.org, robh+dt@kernel.org, gregkh@linuxfoundation.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, s.hauer@pengutronix.de, fugang.duan@nxp.com
-Subject: [PATCH 1/1] ARM: dts: imx6sx: fix the pad QSPI1B_SCLK mux mode for uart3
-Date:   Thu,  3 Sep 2020 18:05:21 +0800
-Message-Id: <20200903100521.10464-1-fugang.duan@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR03CA0132.apcprd03.prod.outlook.com
- (2603:1096:4:91::36) To AM8PR04MB7315.eurprd04.prod.outlook.com
- (2603:10a6:20b:1d4::7)
+        id S1728338AbgICKQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgICKQi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 06:16:38 -0400
+X-Greylist: delayed 556 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 03 Sep 2020 03:16:37 PDT
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C576C061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 03:16:37 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4BhxLV20rdzKmhM;
+        Thu,  3 Sep 2020 12:07:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-disposition:content-type:content-type:mime-version
+        :message-id:subject:subject:from:from:date:date:received; s=
+        mail20150812; t=1599127631; bh=uPRu15iu9NZFBlW05yO/MFmr1prkiYcom
+        8kWWbBofgY=; b=oi4BCKxJ6h84IxGnDVzSeP32+I8N/A+HLERJoy308Gj2HDWYB
+        5aH88uxpWrchOfeVbTIkWQT+0e7gtGBW+C8QBQWtjm2BD3rz+ZZQr5JfENUwLVrl
+        QEFBAYFSYjQIDzh7CEYarmL/AzCpJap9y/Gv7HtJREf3TdIVH1mXq1xCzCSsrtWy
+        dhtNgHkMozM/X3uoUUvDXZYsUc3TbFLSK1drY+oSXzlhd8GHyNnX3wI7dbYtgtLi
+        dM5XYgZ3167Cb4vZiBT1VuWaUPZc22jPndRpV++qauCbYm7SMcsKAKHaN5LHdLGf
+        0rkVOSvuzVp80TKcEJBgPx+Oz0PwJ9nswpOJg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1599127632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=uRunYgfPTMbFCOkTvboIdP7wPVCW0P5BS85r7326lm0=;
+        b=duOw6gOraQwlvpOMHymG+F/qxE38L2Ht8unce3RYesX29vS47pvNeLllflXinI0y8V/ZGg
+        nNplafFucsyWP2amwPS6S28RCE4LFncLs/KBPoOxV2yW2Jpv7WRmK3NYmEuRW1JrCJECvG
+        CG3hIpDwDvpRjGxki/fOUq3vfnmSa9av4GhGKNI6kMTfnQ3HCpfVQ8T1OdVdbj5/k/724Z
+        OApWFGQcrxbUYrlttflHeRt6AN+MX08+80rOzADTTU1bqTXP/BGTLyMvnIhz3TAOr3iumq
+        tBoJrNht9X/WCOOx/+ooHaLxcLkrA0rIbPJ/H40OTElRIPkfcY7UacrvuGa96g==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id klCFu_Vvn-y3; Thu,  3 Sep 2020 12:07:11 +0200 (CEST)
+Date:   Thu, 3 Sep 2020 12:07:08 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH] dt-bindings: arm: sunxi: update H2+/H3 cpu clocks
+Message-ID: <20200903100708.GA466735@monster.powergraphx.local>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from 255.255.255.255 (255.255.255.255) by SG2PR03CA0132.apcprd03.prod.outlook.com (2603:1096:4:91::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3370.9 via Frontend Transport; Thu, 3 Sep 2020 10:15:12 +0000
-X-Mailer: git-send-email 2.17.1
-X-Originating-IP: [119.31.174.67]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 9d218dbf-7e80-4595-73d0-08d84ff2402f
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6404:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB64046647C0E25EDCC4999D7CFF2C0@AM0PR04MB6404.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vNqMx0Y9LpSAWLO6Uaa2rovhZIChtywAek/ZRpRYjssONPItxEJzCaiZdXBNiTXtB3Fs+XhHVaHgcDSOf+lDqBggGl1un8hB2T/s1U8zuyzavkhd82hA2ki5OYzlzKGkM10NrSrI6o+Jz7seXWxqaX5rp+8ctg1r03Vg6mPpSRKiUXN1lsplF2awxLbTkL/XZv3OqnY9xQBKD1dM22I/eUgFoxZoz9Wk/DDjyDqfx5lAKLSpYwNCBB5UzlbpxuH/M8Q77Z+pGRCGC6LhPugMqXoddQFkV9f2H4uJOl//37kpgusMTc9p/qek3AeOh/o43BTmVueXG3B/Hui0VUSbHRrHNM6UiDdnmFr8+rJBHEathdid3VWIW/M6KPBBvTYd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM8PR04MB7315.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(39860400002)(136003)(376002)(396003)(66556008)(66946007)(6666004)(66476007)(36756003)(316002)(52116002)(1076003)(5660300002)(4326008)(8936002)(2616005)(2906002)(83380400001)(9686003)(16576012)(478600001)(26005)(86362001)(6486002)(956004)(8676002)(186003)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 0c92g24hfzrI7pT9xD5ldXWjX2qmlatLsFN9FbpykxAdGveFyJ76m97zokjqnkDwMjH+VzzuXVMoYgKIJIIrGBm0yM3r4ona2w+O8bL1ScT0PkliD8mTyHQ00/ePUdkKsDCjM6DRfIlCwTlhWdUs8MzbYqNdrpLcyhHJfo6D8QQVvjx+YRja0D4B+oUBY9Wn0d+xkaJDDemheShreGGPlHkRR1Dmrx8k9xYjE2dbF2nVROmmCEF7anEdLAHWkHLBPgsHydgxMEJf/otLKVskISyEESzU8ILFGM9Kv/KBphvoBXuwX4HraJH4+OpQvE79zhODZZaWSaK/6kpl5+tCahX7gO/YjVdJjmXeHVTBenkNJ06jQXFXQT4OyWRQFTZtdD7G2FOvBZo8kCOjU/fLxQs5SEGTp343sAa49IC+nGl6RsCx69GNq54Yl+nw61Q+mzxAnzfXaBPTNjS4Qf1GkYBtTIRe6R42ZNuO+NFfKTzNm9YojIaIbBk9A8+k/GVy31IopZEBc9O7pQcBPjxq3+q3WG7vGDWdtyNQpzmGGthtHZ0Uc/ZedXWu341OzND4ZIHZZPatdOnkiBLJ0cW7d2LBROkAKCCMbQczO5+GMOaSv2lstDmJCx+KnTiVIdkHmcKucekjYp+GBmz4cp23SA==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d218dbf-7e80-4595-73d0-08d84ff2402f
-X-MS-Exchange-CrossTenant-AuthSource: AM8PR04MB7315.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2020 10:15:15.3393
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xfv5m+FXsZd1mu9J7/GUQMSiUPxjMkII0xI5Dj0/GM767F8v/PsXAArEMKj57U32VsqVXcPibEwMaE12escrxQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6404
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -2.91 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 32FD91268
+X-Rspamd-UID: 206056
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+Change H2+/H3 clocks to 8 steps from 528 MHz up to 1200 MHz to support a
+more fine-grained powersave setup. The SoCs are made for 1296 MHz, so
+these clocks are still in a safe range. Tested on a NanoPi Duo and
+OrangePi Zero.
 
-The pad QSPI1B_SCLK mux mode 0x1 is for function UART3_DTE_TX,
-correct the mux mode.
-
-Fixes: 743636f25f1d ("ARM: dts: imx: add pin function header for imx6sx")
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
 ---
- arch/arm/boot/dts/imx6sx-pinfunc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/sun8i-h3.dtsi | 34 +++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6sx-pinfunc.h b/arch/arm/boot/dts/imx6sx-pinfunc.h
-index 0b02c7e60c17..f4dc46207954 100644
---- a/arch/arm/boot/dts/imx6sx-pinfunc.h
-+++ b/arch/arm/boot/dts/imx6sx-pinfunc.h
-@@ -1026,7 +1026,7 @@
- #define MX6SX_PAD_QSPI1B_DQS__SIM_M_HADDR_15                      0x01B0 0x04F8 0x0000 0x7 0x0
- #define MX6SX_PAD_QSPI1B_SCLK__QSPI1_B_SCLK                       0x01B4 0x04FC 0x0000 0x0 0x0
- #define MX6SX_PAD_QSPI1B_SCLK__UART3_DCE_RX                       0x01B4 0x04FC 0x0840 0x1 0x4
--#define MX6SX_PAD_QSPI1B_SCLK__UART3_DTE_TX                       0x01B4 0x04FC 0x0000 0x0 0x0
-+#define MX6SX_PAD_QSPI1B_SCLK__UART3_DTE_TX                       0x01B4 0x04FC 0x0000 0x1 0x0
- #define MX6SX_PAD_QSPI1B_SCLK__ECSPI3_SCLK                        0x01B4 0x04FC 0x0730 0x2 0x1
- #define MX6SX_PAD_QSPI1B_SCLK__ESAI_RX_HF_CLK                     0x01B4 0x04FC 0x0780 0x3 0x2
- #define MX6SX_PAD_QSPI1B_SCLK__CSI1_DATA_16                       0x01B4 0x04FC 0x06DC 0x4 0x1
+diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
+index 4e89701df91f..5517fcc02b7d 100644
+--- a/arch/arm/boot/dts/sun8i-h3.dtsi
++++ b/arch/arm/boot/dts/sun8i-h3.dtsi
+@@ -48,23 +48,53 @@ cpu0_opp_table: opp_table0 {
+ 		compatible = "operating-points-v2";
+ 		opp-shared;
+ 
+-		opp-648000000 {
+-			opp-hz = /bits/ 64 <648000000>;
++		opp-528000000 {
++			opp-hz = /bits/ 64 <528000000>;
++			opp-microvolt = <1020000 1020000 1300000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
++		opp-624000000 {
++			opp-hz = /bits/ 64 <624000000>;
+ 			opp-microvolt = <1040000 1040000 1300000>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
+ 
++		opp-720000000 {
++			opp-hz = /bits/ 64 <720000000>;
++			opp-microvolt = <1060000 1060000 1300000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
+ 		opp-816000000 {
+ 			opp-hz = /bits/ 64 <816000000>;
+ 			opp-microvolt = <1100000 1100000 1300000>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
+ 
++		opp-912000000 {
++			opp-hz = /bits/ 64 <912000000>;
++			opp-microvolt = <1140000 1140000 1300000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
+ 		opp-1008000000 {
+ 			opp-hz = /bits/ 64 <1008000000>;
+ 			opp-microvolt = <1200000 1200000 1300000>;
+ 			clock-latency-ns = <244144>; /* 8 32k periods */
+ 		};
++
++		opp-1104000000 {
++			opp-hz = /bits/ 64 <1104000000>;
++			opp-microvolt = <1240000 1240000 1300000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
++
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt = <1300000 1300000 1300000>;
++			clock-latency-ns = <244144>; /* 8 32k periods */
++		};
+ 	};
+ 
+ 	cpus {
 -- 
-2.17.1
+2.28.0
 
