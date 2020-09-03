@@ -2,79 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2170A25C71B
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4DE25C727
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgICQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:40:57 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:41842 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728085AbgICQkz (ORCPT
+        id S1728985AbgICQlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:41:52 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1455 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728344AbgICQlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 12:40:55 -0400
-Received: by mail-io1-f66.google.com with SMTP id m23so3601150iol.8;
-        Thu, 03 Sep 2020 09:40:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+9u+TnWghhMqKfyBihbCKjvpPHAhdKW/7jqOHxads9E=;
-        b=EJnokCDARjQoQsHH4erXa6a5pBaEt8pElajeaGjbxwME8uTkhEG/2PneKexctZXM4D
-         hIxvP0q0ieyEVy5zfaGALDmULnwgcD5TBowXPtdHiuZLsV2DKmVB4Jxt+KxG5jWh2Bcj
-         05l3deZ/ww6JFQb/69EsULza0swVIy4lhpGCAVOoC2PL5dEzEzAHc1Y2lNm+li+p/vfn
-         VRUeOIDOqa2unp9ThPnao1y9SUJ6Bx9mNDEOGyueAXxaz3Py9H2Nw5qkIrg0APQsLu2g
-         Jw59X734nKR3ytiRNN/6XYdLfBEoyMTZO7XVIfvvXgvEjJSdf33JgE0eYmQbwJsh4GAa
-         EqzA==
-X-Gm-Message-State: AOAM533VzwZH+7hPonPTH7cheogQfGeY+WaBBTkM2ThtRjMr/pfh6iov
-        SAy5hWpUx0PJHnm5TCVQ8A==
-X-Google-Smtp-Source: ABdhPJxhaKMqp+SbtnhBwQZjxlzx3cai89L8v+zR69MaLRpYib5Teo8wEiT/Mlg60Mt9S4C5+81SOA==
-X-Received: by 2002:a6b:f919:: with SMTP id j25mr3873904iog.113.1599151253904;
-        Thu, 03 Sep 2020 09:40:53 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id e14sm1728541ilr.42.2020.09.03.09.40.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 09:40:53 -0700 (PDT)
-Received: (nullmailer pid 2921863 invoked by uid 1000);
-        Thu, 03 Sep 2020 16:40:52 -0000
-Date:   Thu, 3 Sep 2020 10:40:52 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Wolfram Sang <wolfram@the-dreams.de>,
-        Dong Aisheng <aisheng.dong@nxp.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 4/7] dt-bindings: i2c: imx-lpi2c: Use
- unevaluatedProperties
-Message-ID: <20200903164052.GA2921559@bogus>
-References: <20200829111800.2786-1-krzk@kernel.org>
- <20200829111800.2786-4-krzk@kernel.org>
+        Thu, 3 Sep 2020 12:41:50 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5f511cc00004>; Thu, 03 Sep 2020 09:41:36 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 03 Sep 2020 09:41:50 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 03 Sep 2020 09:41:50 -0700
+Received: from [10.2.173.243] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 3 Sep
+ 2020 16:41:48 +0000
+Subject: Re: [PATCH v5 2/3] dt-bindings: media: imx274: Add optional input
+ clock and supplies
+To:     Jacopo Mondi <jacopo@jmondi.org>
+CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <sakari.ailus@iki.fi>, <hverkuil@xs4all.nl>,
+        <jacopo+renesas@jmondi.org>, <luca@lucaceresoli.net>,
+        <leonl@leopardimaging.com>, <robh+dt@kernel.org>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1599012278-10203-1-git-send-email-skomatineni@nvidia.com>
+ <1599012278-10203-3-git-send-email-skomatineni@nvidia.com>
+ <20200903125542.nxiafnysatoexken@uno.localdomain>
+ <d3a1843c-5d73-cfa6-9611-405b905ddcd1@nvidia.com>
+ <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <f38bb328-b282-783b-3ac5-5441001d10b6@nvidia.com>
+Date:   Thu, 3 Sep 2020 09:40:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200829111800.2786-4-krzk@kernel.org>
+In-Reply-To: <20200903163525.p5z2adhp4wq453bs@uno.localdomain>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1599151296; bh=CnYJnTb5gUW/km6HHe78zwtqcAzkqtsBbu0if592DP0=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=VOJgr0NfpC8kqZGSqQEtRhIfXoxqzQLgwysBhjlDnLkyWeSH5URQRp1ISYIm3Rwv9
+         dHL+pdjT6/or/qW9BGE1KDClgl/hEnfPQ9Kv3stxMJXV7vdms1EjwDnDkhnOQAMTss
+         zt0SemTvgLdnHvMnfU9ciVxsrbaSCNJQaMX2dkQp31HRzUcvG8cg23SIfZGV18+JGa
+         inMVSg7fRYCRiqLaYu87F3nzZSPy7C+e7cUfzh6bADG0T7Yh7NMi4Kd6By16tCST/B
+         izSfBj+Ck+xs8G+wb4tipO5UBugFLnVieOtre7JCO+lLacAXbpokSEv6S7qfFwWbrE
+         51x4onW0s1dpQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 01:17:57PM +0200, Krzysztof Kozlowski wrote:
-> Additional properties actually might appear (e.g. power-domains) so use
-> unevaluatedProperties to fix dtbs_check warnings like:
-> 
->   arch/arm64/boot/dts/freescale/imx8qxp-ai_ml.dt.yaml: i2c@5a800000:
->     'assigned-clock-rates', 'assigned-clocks', 'clock-names', 'power-domains' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-imx-lpi2c.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-NAK. See https://lore.kernel.org/r/CAL_JsqKPXJxsHPS34_TCf9bwgKxZNSV4mvQR-WKRnknQVtGGxQ@mail.gmail.com/
+On 9/3/20 9:35 AM, Jacopo Mondi wrote:
+> Hi Sowjanya,
+>
+> On Thu, Sep 03, 2020 at 09:05:27AM -0700, Sowjanya Komatineni wrote:
+>> On 9/3/20 5:55 AM, Jacopo Mondi wrote:
+>>> Hello Sowjanya,
+>>>
+>>> On Tue, Sep 01, 2020 at 07:04:37PM -0700, Sowjanya Komatineni wrote:
+>>>> This patch adds IMX274 optional external clock input and voltage
+>>>> supplies to device tree bindings.
+>>>>
+>>>> Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+>>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>>>> ---
+>>>>    .../devicetree/bindings/media/i2c/sony,imx274.yaml  | 21 ++++++++++=
++++++++++++
+>>>>    1 file changed, 21 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.y=
+aml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+>>>> index 7ae47a6..57e7176 100644
+>>>> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+>>>> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
+>>>> @@ -25,6 +25,27 @@ properties:
+>>>>      reset-gpios:
+>>>>        maxItems: 1
+>>>>
+>>> I just sent an update to my json-schema conversion of this bindings
+>>> document (not yet on patchwork, sorry) and Sakari pointed me to the
+>>> fact in between my v2 and my v4 this patch from you went in:
+>>> 4ea3273d24b ("dt-bindings: media: imx274: Add optional input clock and =
+supplies")
+>>>
+>>> I should probably now update my bindings conversion patch, basically
+>>> taking in what you've done here, but I would have one question.
+>>>
+>>>> +  clocks:
+>>>> +    maxItems: 1
+>>>> +    description: Reference to the sensor input clock
+>>>> +
+>>>> +  clock-names:
+>>>> +    maxItems: 1
+>>>> +    items:
+>>>> +      - const: inck
+>>>> +
+>>>> +  vana-supply:
+>>>> +    description:
+>>>> +      Analog voltage supply, 2.8 volts
+>>>> +
+>>>> +  vdig-supply:
+>>>> +    description:
+>>>> +      Digital IO voltage supply, 1.8 volts
+>>>> +
+>>>> +  vddl-supply:
+>>>> +    description:
+>>>> +      Digital core voltage supply, 1.2 volts
+>>> 4ea3273d24b introduced these regulators as VANA-supply, VDIG-supply
+>>> and VDDL-supply (please note the upper-case names). This version uses
+>>> lower-case ones instead. Is this intentional ? The driver currently
+>>> does not parse any of these if I'm not mistaken, but as the bindings
+>>> in textual form defines an ABI which should be preserved during the
+>>> conversion to json-schema, should these be kept in upper-case ?
+>>>
+>>> Thanks
+>>>      j
+>> Yes, based on feedback lower case was recommended. So, changed to use
+>> lower-case names.
+>>
+>> These properties were not used by driver currently and from my prior ser=
+ies
+>> only dt-binding got merged as=C2=A0 no feedback was received on it for a=
+ll prior
+>> versions.
+>>
+>> So, should be ok to change to lower-case as there properties are introdu=
+ced
+>> now and driver update using these properties is under review
+>>
+> Well, I see that patch went in v5.9-rc1, so it will be part of v5.9.
+>
+> If the bindings update goes in in v5.10 (or whatever comes after v5.9)
+> then we have a problem, as the DTB created for v5.9 won't work anymore
+> on any later version, and that should not happen. Alternatively, a fix
+> for the next -rc release could be fast-tracked, but you would
+> need to synchronize with the dt maintainers for that and make a patch
+> for the existing .txt bindings file.
+>
+> If the name change happens in the yaml file and one release is made
+> with the old names, then we're stuck with those forever and ever, if I
+> got the situation right.
+>
+> Please check with the dt and media maintainers, or they can comment
+> here if they glance through these lines.
+>
+> Thanks
+>    j
+
+Hi Leon Luo,
+
+I used upper case for regulator supply names in all prior 4 versions of=20
+IMX274 patch series as I see some other media i2c drivers doing it and=20
+dt-binding patch from v3 got merged in 5.9-rc1 which was using upper-case.
+
+Later received feedback from Sakari requesting to use lower-case names=20
+so updated to use lower case name now in v5.
+
+Not sure if we have timeline to squeeze in patch to change names to=20
+lower-case before they get into 5.10.
+
+Can you please comment?
+
+Sakari,
+
+Can you also help understand why can't we keep upper case for regulator=20
+supplies?
+
+I see some other media i2c drivers using upper case as well.
+
+Thanks
+
+Sowjanya
+
+
+
+
+>>>> +
+>>>>      port:
+>>>>        type: object
+>>>>        description: |
+>>>> --
+>>>> 2.7.4
+>>>>
