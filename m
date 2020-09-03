@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B521725CB5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED03025CB55
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729778AbgICUlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
+        id S1729775AbgICUkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729310AbgICUaz (ORCPT
+        with ESMTP id S1729318AbgICUa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:30:55 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47946C061249;
-        Thu,  3 Sep 2020 13:30:53 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id z9so4148542wmk.1;
-        Thu, 03 Sep 2020 13:30:53 -0700 (PDT)
+        Thu, 3 Sep 2020 16:30:56 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C19C06124F;
+        Thu,  3 Sep 2020 13:30:54 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id m6so4619172wrn.0;
+        Thu, 03 Sep 2020 13:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zzSizsn0JK1opavfeNDCJSC51EiA+520JWwYUTToFg8=;
-        b=B1i4ipnViNrUEV2JHX8TUYJ3Z0gwvr/GwZEih3uo/PltUB7AlyF9ndTBtShkSn+gJg
-         2OjNSLNClUh9Ic3lCV65+aG6L+ulDpX5Qh9bAEeHpqjv2V29KnHcj3N9sl234yaGX1vX
-         OnTlhWoigt5UsIgpBVpyv6sibbZJWSITViQwbhoQdH7dZRoo1nEXEmpRq9Pdzy9bPhPN
-         0zCF385PLtbxl0l/6NDEbHH1xO+kQ0QgouvCpdSYChZe1D6vhg+S491ZR1wr4OK7sNDV
-         K6ujaMiPGauLpXatRIoeFxman5CJHybeZL1tenav9IwZ5419uEXT1Lxa+RKgfE4mwyqd
-         UcmA==
+        bh=61amrDy5MhVE+L2rXjmfQqPe1Fgk9roDotW+tBGquxU=;
+        b=ZrcUCU2rzfGPrkL3bbQNF8DE7OpIgaYNnar8j2g9wWhP4VdZntrKae6ZQ0ZPazUjRM
+         eFKhK66OIFB0nuIv4ASSdj5MzMNz3W0ULtFiLyIJU9J3/q277LYB4JgN8B2vsKwQQrFd
+         mYoSScXD6VEwvIo3oHEqlHeDJ8QzMtKvTQu/XVd6/K+uFbJ40L5ylAuoXUVazQsrJlZ5
+         2KgSu9557Xiq5rDvPrtGAlRn2xQGjuwPxEEa7zG/xNBtInUASSPTzrgYHoeVXIzmVWxj
+         JTC07EtAPJCbNkUMp5aoMXDbK5uS1lJlVTpL1t5kRkuB1DmqVabf/VcfFGTXYbWOYeKA
+         zqSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=zzSizsn0JK1opavfeNDCJSC51EiA+520JWwYUTToFg8=;
-        b=RhKEWCgbCQv6nbzV9CgaZSTM6W1gAoZjBPNtQaY2jr+Njnht5xx4oumRQMdMk5mZ0Y
-         q7dx7JANNUrrhic+WFDRuuyjdC+bJakk+nbdupEIa5Fiy2hjIuzMR6vXHjUQrCDBbfkR
-         MPJq3nIYQme9im6VrF4bwaPq/ab2DBce68Lp+kD63Ek2Pg2tlxhus26CSltP5mLfe9tH
-         MfZJ/jnY1rv6Cd1pVS9XmJqy2b196ShEOmTmXOeMwDsqR8bkucplGxEKzl7f5VyDAN8v
-         VwqrqdFAsoz00AG0kSfYzZ+nXUlEaKmQQpkQAwoLlIU1UGK9GWW3XAkzLDs8elWaJcHr
-         vx/g==
-X-Gm-Message-State: AOAM533Yw/GWEJxFUU6kWckibkv79ZTvjOnl6O/+HwJ1CCLBSQq8FiqH
-        cMVu696W5Ht/1Ma0JNiNJrFHWokCYJfObQ==
-X-Google-Smtp-Source: ABdhPJzdWnGyw9y0NOy0KkQZDlOL6GQL1RBDwzjesZGtBXIRxrFg1/S9SqdPLKpYayoQlmlIk++8TA==
-X-Received: by 2002:a7b:cbd4:: with SMTP id n20mr4427918wmi.105.1599165051810;
-        Thu, 03 Sep 2020 13:30:51 -0700 (PDT)
+        bh=61amrDy5MhVE+L2rXjmfQqPe1Fgk9roDotW+tBGquxU=;
+        b=booxX5kZZmJ1425KTpEszEwGTVppiKYxWU1fHdiAmB2A8xqJVnbT3U0+MhBzY018LO
+         QdJijcVEC56THLEXlLitF9WKqMHXryT8bH2AynGDnOunq3Rhk423sEe1SrMeJcx1ronU
+         8BHNYR7mOPk7EGHiMDVHiGs0ViQdNybCt41W6y0FS8zKzudSM+hvEMOXHbP37a0ym1P7
+         20cPC+x9PVVKKasfhlwPsl8Dw3nk86k3ceAMSN2kxmlpnCivXtCFGZh91Bae19hNZnNg
+         a9wnVumIESZ8clrHdMMxejOLSoX74/dGKGWwzcEsolSyUPBd/XTCOrPeiRLGsyLW0JAh
+         XN/w==
+X-Gm-Message-State: AOAM530P93E5H9Yb2A0UpdKzQ8uMaZv4LwrqtnrG1PNUXdNtWlhu0b9S
+        HAcyf4drd2INiw8pURXac5U=
+X-Google-Smtp-Source: ABdhPJyTLPXx1dlhvyfiiXcGUGwjig79KiFo40tbRDlZq1pHE3VShxvp2x4u4kvSkE/SLK6496JQwg==
+X-Received: by 2002:a5d:6111:: with SMTP id v17mr4249734wrt.265.1599165052954;
+        Thu, 03 Sep 2020 13:30:52 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.50
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 13:30:51 -0700 (PDT)
+        Thu, 03 Sep 2020 13:30:52 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,9 +60,9 @@ Cc:     devicetree@vger.kernel.org,
         Marcus Cooper <codekipper@gmail.com>,
         linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v2 07/20] ASoC: sun4i-i2s: Fix sun8i volatile regs
-Date:   Thu,  3 Sep 2020 22:30:21 +0200
-Message-Id: <20200903203034.1057334-8-peron.clem@gmail.com>
+Subject: [PATCH v2 08/20] arm64: dts: allwinner: h6: Add HDMI audio node
+Date:   Thu,  3 Sep 2020 22:30:22 +0200
+Message-Id: <20200903203034.1057334-9-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200903203034.1057334-1-peron.clem@gmail.com>
 References: <20200903203034.1057334-1-peron.clem@gmail.com>
@@ -74,46 +74,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FIFO TX reg is volatile and sun8i i2s register
-mapping is different from sun4i.
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-Even if in this case it's doesn't create an issue,
-Avoid setting some regs that are undefined in sun8i.
+Add a simple-soundcard to link audio between HDMI and I2S.
 
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
-Acked-by: Maxime Ripard <mripard@kernel.org>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 32 ++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index df73cd5751c0..aa162e76d671 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -1135,12 +1135,19 @@ static bool sun8i_i2s_rd_reg(struct device *dev, unsigned int reg)
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 9ce78a7b117d..9597f40b25a9 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -67,6 +67,24 @@ de: display-engine {
+ 		status = "disabled";
+ 	};
  
- static bool sun8i_i2s_volatile_reg(struct device *dev, unsigned int reg)
- {
--	if (reg == SUN8I_I2S_INT_STA_REG)
-+	switch (reg) {
-+	case SUN4I_I2S_FIFO_CTRL_REG:
-+	case SUN4I_I2S_FIFO_RX_REG:
-+	case SUN4I_I2S_FIFO_STA_REG:
-+	case SUN4I_I2S_RX_CNT_REG:
-+	case SUN4I_I2S_TX_CNT_REG:
-+	case SUN8I_I2S_FIFO_TX_REG:
-+	case SUN8I_I2S_INT_STA_REG:
- 		return true;
--	if (reg == SUN8I_I2S_FIFO_TX_REG)
--		return false;
++	hdmi_sound: hdmi-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,name = "sun50i-h6-hdmi";
++		simple-audio-card,mclk-fs = <128>;
++		status = "disabled";
++
++		simple-audio-card,codec {
++			sound-dai = <&hdmi>;
++		};
++
++		simple-audio-card,cpu {
++			sound-dai = <&i2s1>;
++			dai-tdm-slot-num = <2>;
++			dai-tdm-slot-width = <32>;
++		};
++	};
++
+ 	osc24M: osc24M_clk {
+ 		#clock-cells = <0>;
+ 		compatible = "fixed-clock";
+@@ -608,6 +626,19 @@ mdio: mdio {
+ 			};
+ 		};
  
--	return sun4i_i2s_volatile_reg(dev, reg);
-+	default:
-+		return false;
-+	}
- }
++		i2s1: i2s@5091000 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun50i-h6-i2s";
++			reg = <0x05091000 0x1000>;
++			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_I2S1>, <&ccu CLK_I2S1>;
++			clock-names = "apb", "mod";
++			dmas = <&dma 4>, <&dma 4>;
++			resets = <&ccu RST_BUS_I2S1>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
+ 		spdif: spdif@5093000 {
+ 			#sound-dai-cells = <0>;
+ 			compatible = "allwinner,sun50i-h6-spdif";
+@@ -738,6 +769,7 @@ ohci3: usb@5311400 {
+ 		};
  
- static const struct reg_default sun4i_i2s_reg_defaults[] = {
+ 		hdmi: hdmi@6000000 {
++			#sound-dai-cells = <0>;
+ 			compatible = "allwinner,sun50i-h6-dw-hdmi";
+ 			reg = <0x06000000 0x10000>;
+ 			reg-io-width = <1>;
 -- 
 2.25.1
 
