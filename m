@@ -2,156 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C71D25BA26
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A2725BA1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727801AbgICFfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 01:35:50 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31483 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgICFft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:35:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1599111347; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To: From:
- Subject: Sender; bh=QxLbEY4fPM95K18HKZ88A52NMY5/8p3x1bABMOpDSXY=; b=fTwMEAEyTS/BR9dnLuZlamx+XwRNaySM3WDsbv44JVtORCXLJTewO91Fvn6xUCiizYk3xWlf
- /OikTG1C4wWLuEu6leVRJThD8p0b6yJ5hfaIzW4p7Na57WPEsrQsTBkro4tKJH5qbQ0Lt+a4
- qNqVLcYNgG2BnI0nlnpjKTX7xmM=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5f507f94be06707b345a92da (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 03 Sep 2020 05:31:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EF05CC4339C; Thu,  3 Sep 2020 05:30:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.4 required=2.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        SPF_NONE,URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.16] (unknown [61.3.23.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D24E1C433C6;
-        Thu,  3 Sep 2020 05:30:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D24E1C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add 'sustainable_power' for CPU
- thermal zones
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-References: <20200813113030.1.I89c33c4119eaffb986b1e8c1bc6f0e30267089cd@changeid>
- <20200901170745.GA3419728@google.com>
- <CAD=FV=Xv0FLtWWcQcRy7p2LPNdDtSjdarsvNHRHaLkWwABnwJw@mail.gmail.com>
- <8ad0589e-102d-7523-899f-0ebe85b7d2b8@codeaurora.org>
- <CAD=FV=XKUEQP3gyE8E2UOE12qKYwzgMp0eNeYjCp0DxPDACSMQ@mail.gmail.com>
- <6693eed6-9a6b-48c8-e56e-acdde9cf9ffe@codeaurora.org>
-Message-ID: <f77d9b24-dbca-cea0-2ef8-3c5cf0c2f2dd@codeaurora.org>
-Date:   Thu, 3 Sep 2020 11:00:52 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726850AbgICFbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 01:31:37 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33074 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725851AbgICFbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 01:31:36 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08352OFG053557;
+        Thu, 3 Sep 2020 01:31:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4HGc7/6+Pw+aIlehXfflhn1TuMbzH3zeJUxuQa5CQaE=;
+ b=P/1oVpN+XIULm43HcP2/i56HkLqraf+8hhOq+RhppUR7w608E83av0w1QuErodbyDu7g
+ HsYoQUzYMtQopLWsvf9AmGGhezqig+UP7oSG4ZEHhxb+TnHU6WLkZgETnRc0mHlWxtlx
+ 8kmPut7cPoLhvKs4te2A1feiCVjudwFC4KWTX5zt1ZqK/Oj1hxbPqh7R7XZrPOdU/fu2
+ YRF0+E8eWOwntx4gkxjHBqocmbWRBMQmHR8v25VLTu7jPevH1jIP740MONg1Jr02Fuw+
+ TDFW+7BQ6gQAK1RRdY9dppIIG0/sHM0wFvmUKPE2MH4gKF4o8cTWpCnFO/a9qQWyF5dT 6g== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33ahswv4bh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 01:31:24 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0835RTXg015452;
+        Thu, 3 Sep 2020 05:31:23 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma01dal.us.ibm.com with ESMTP id 337en9xnd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 03 Sep 2020 05:31:23 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0835VMwQ41681180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 3 Sep 2020 05:31:23 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC015AE060;
+        Thu,  3 Sep 2020 05:31:22 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 021E3AE068;
+        Thu,  3 Sep 2020 05:31:21 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.65.215.230])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  3 Sep 2020 05:31:21 +0000 (GMT)
+Subject: Re: [PATCH v2] scsi: ibmvfc: interface updates for future FPIN and MQ
+ support
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     james.bottomley@hansenpartnership.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20200901002420.648532-1-tyreld@linux.ibm.com>
+ <yq1y2lrd2ys.fsf@ca-mkp.ca.oracle.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <3fe3e9be-9671-aa0a-b18b-10f77433ab56@linux.ibm.com>
+Date:   Wed, 2 Sep 2020 22:31:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <6693eed6-9a6b-48c8-e56e-acdde9cf9ffe@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <yq1y2lrd2ys.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-02_17:2020-09-02,2020-09-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 phishscore=0 malwarescore=0
+ impostorscore=0 mlxlogscore=999 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009030042
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/3/2020 10:14 AM, Rajendra Nayak wrote:
+On 9/2/20 7:11 PM, Martin K. Petersen wrote:
 > 
-> On 9/2/2020 9:02 PM, Doug Anderson wrote:
->> Hi,
->>
->> On Tue, Sep 1, 2020 at 10:36 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>>
->>>
->>>> * In terms of the numbers here, I believe that you're claiming that we
->>>> can dissipate 768 mW * 6 + 1202 mW * 2 = ~7 Watts of power.  My memory
->>>> of how much power we could dissipate in previous laptops I worked on
->>>> is a little fuzzy, but that doesn't seem insane for a passively-cooled
->>>> laptop.  However, I think someone could conceivably put this chip in a
->>>> smaller form factor.  In such a case, it seems like we'd want these
->>>> things to sum up to ~2000 (if it would ever make sense for someone to
->>>> put this chip in a phone) or ~4000 (if it would ever make sense for
->>>> someone to put this chip in a small tablet).  It seems possible that,
->>>> to achieve this, we might have to tweak the
->>>> "dynamic-power-coefficient".
->>>
->>> DPC values are calculated (at a SoC) by actually measuring max power at various
->>> frequency/voltage combinations by running things like dhrystone.
->>> How would the max power a SoC can generate depend on form factors?
->>> How much it can dissipate sure is, but then I am not super familiar how
->>> thermal frameworks end up using DPC for calculating power dissipated,
->>> I am guessing they don't.
->>>
->>>> I don't know how much thought was put
->>>> into those numbers, but the fact that the little cores have a super
->>>> round 100 for their dynamic-power-coefficient makes me feel like they
->>>> might have been more schwags than anything.  Rajendra maybe knows?
->>>
->>> FWIK, the values are always scaled and normalized to 100 for silver and
->>> then used to derive the relative DPC number for gold. If you see the DPC
->>> for silver cores even on sdm845 is a 100.
->>> Again these are not estimations but based on actual power measurements.
->>
->> The scaling to 100 doesn't seem to match how the thermal framework is
->> using them.  Take a look at of_cpufreq_cooling_register().  It takes
->> the "dynamic-power-coefficient" and passes it as "capacitance" into
->> __cpufreq_cooling_register().  That's eventually used to compute
->> power, which is documented in the code to be in mW.
->>
->> power = (u64)capacitance * freq_mhz * voltage_mv * voltage_mv;
->> do_div(power, 1000000000);
->>
->> /* power is stored in mW */
->> freq_table[i].power = power;
->>
->> That's used together with "sustainable-power", which is the attribute
->> that Matthias is trying to set.  That value is documented to be in mW
->> as well.
->>
->> ...so if the silver cores are always scaled to 100 regardless of how
->> much power they actually draw then it'll be impossible to actually
->> think about "sustainable-power" as a mW value.  Presumably we either
->> need to accept that fact (and ideally document it) or we need to
->> change the values for silver / gold cores (we could still keep the
->> relative values the same and just scale them).
+> Tyrel,
 > 
-> That sounds reasonable (still keep the relative values and scale them)
-> I'll get back on what those scaled numbers would look like, and try to
-> get some sense of why this scaling to 100 was done (like you said
-> I don't see any documentation on this), but I see atleast a few other non-qcom
-> SoCs doing this too in mainline (like rockchip/rk3399)
+>> 	Fixup complier errors from neglected commit --amend
+> 
+> Bunch of formatting-related checkpatch warnings. Please fix.
+> 
+> Thanks!
+> 
 
-On second thoughts, why wouldn't a relative 'sustainable-power' value work?
-On every device, one would need to do the exercise that Matthias did to come
-up with the OPP at which we can sustain max CPU/GPU loads anyway.
-I mean even if we do change the DPC values to match actual power, Matthias would
-still observe that we can sustain at the very same OPP and not any different.
-Its just that the mW values that are passed to kernel are relative and not
-absolute. My worry is that perhaps no SoC vendor wants to put these absolute numbers
-out.
+So, I stuck to the existing style already in that header. If I'm going to fixup
+to make checkpatch happy I imagine it makes sense to send a prerequisite patch
+that fixes up the rest of the header.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+-Tyrel
