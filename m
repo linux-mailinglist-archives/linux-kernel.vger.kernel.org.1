@@ -2,105 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FB225C4DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E0A25C4E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728812AbgICPTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36070 "EHLO
+        id S1728463AbgICPUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728561AbgICL1b (ORCPT
+        with ESMTP id S1728548AbgICL1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 07:27:31 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A597C061245;
-        Thu,  3 Sep 2020 04:18:11 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w7so2075460pfi.4;
-        Thu, 03 Sep 2020 04:18:11 -0700 (PDT)
+        Thu, 3 Sep 2020 07:27:01 -0400
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2F1C061246;
+        Thu,  3 Sep 2020 04:18:28 -0700 (PDT)
+Received: by mail-yb1-xb42.google.com with SMTP id h20so1939061ybj.8;
+        Thu, 03 Sep 2020 04:18:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dYHgOYFkdCbGZWuPZrhfEhLKQCW87nGOndt8XY8lTCE=;
-        b=YTmj5Nx/rxPJZhk7d9yLcM2eIv4s0d3h/2ZR84Em9iBxXXU+6fm3Z5kcFOSLY+Gsu+
-         rnb+mSPFr38Rfgetp+MVqEa0Y5Z88781pr3jGwxI9aW9uIc2OIfhdOiAuEMz8ZwWRwrv
-         Xtky8ninIqNZ1+nE5/RIr2SDFhktx6FZoCwZ/+NltoqGD8aKYsjsqajhIyssbPj2x/+N
-         cNlWAUKA1jars5Ol/hlBfegnT3XpElC5fPQaZ/dSLZTKwBcP23I4SpXHLO0gD4BDMDd4
-         TOjqdW4p/n2T6IddPecArk4zZSzmYuWcymqQTKaBEo+10kylkPek6mgPXylU1suF/uhb
-         Dt2g==
+         :cc:content-transfer-encoding;
+        bh=vSTdiuU7UW8q2OVQi9q+98jV2wni9irf58KIjeuCLZE=;
+        b=l23jQ5rFCiIyga1ZOrbBcnNyWnB9gGbwRMVitiYAhAKXGULvVU1UksrMHHDstOCrli
+         L/MsoQI3hPI1M6BSun/jbMy0j7qljuwZplYaXKFETuH7yEduLZZv3sb4nUDnWsKjqs6H
+         X+ucJJFhk96Alf4w4WeUVcsklvBI5i4mIETEx48aydiOCb4ynwBV6NUWyYQeGuMxo227
+         Ap/8BZ/yYPSnQENMXdjvelgOeIHCTYjCQdXBQU+elhlBYhd35+KaTbfJLFXOEdFf/x4U
+         vIbQ+VtBD5P1XUMM34xhXOmHVyWiEDwa5mS4w3ny/ndWa0XoO6hdDMM2TSsiorBkU9Bk
+         e9hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dYHgOYFkdCbGZWuPZrhfEhLKQCW87nGOndt8XY8lTCE=;
-        b=I3u4r+FcqjlHj7nPPkNEwEWzHmvcf8EjDtN304Quv9b4+WZ/ITteW9LgnX+XcAi6SQ
-         v86HrdHW4Xxf7sLS8cYb8wwmG2AsQT26IjJfL9mrk0XQcyIdTaBiO6bEyesrubXaR5tL
-         x2dG2118VIj6nHVxqfm6NaqjCvaYO8Eh6Tepkuz4ft6lWMYZPhgOxAuuUss25IUB04/c
-         NgSLaPVRN+coCYviqo2XdrxgPHd6SRVfIorG2QyIL6Nj3P7DXmFJg0X3pzi1piA30muN
-         6p/iKzX4Oxe4/rxsGE8PG4jjCT7yJ6gUrYzaJ2Zjo7+bYHTPRWQGssnJcZUYHqpVPOAp
-         KdCA==
-X-Gm-Message-State: AOAM532V1JSvji1X/vvCNY1hzml2LzMOi8IE78Ui7eLiF3Ubmf6j+X+a
-        nT0uj65eLsHwZQqkltWgLM3mT+NR74GB01HoBLKxrtJGX34=
-X-Google-Smtp-Source: ABdhPJwb3eyvijxdRfrW78iIFLm79zpgRsDNv/ojUM5mIhB1AodbO4N0A4ueSIU1v6GyeE3AMG04UUsRMgbbuwovn94=
-X-Received: by 2002:a17:902:56a:: with SMTP id 97mr3479518plf.130.1599131890968;
- Thu, 03 Sep 2020 04:18:10 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vSTdiuU7UW8q2OVQi9q+98jV2wni9irf58KIjeuCLZE=;
+        b=O1bMFNDhrl1tGlJJXWswytqahTBOCmk8aO50D8nxkQhomSAws7nNwn1/qGkydpzIbn
+         nUJmFM1YrigN/b1Tem+WOh5wTPEBi/f3JFlmwwX137M1vu+Fw8ckGmYReBQVcG3zM/Fk
+         +RrNfZRRDbQziAtL8dMLb9m7GIHaDSzM65K13bMzvVSSxNcAcH4cKAvmiLFSttbwExbR
+         vymOwZ/19tmOvPvGKYqpTxRca0hGdKYlTc5phqSsszGpROisgYYUZtAqzdFOZaOn5unR
+         OGphqIEqgcSqBMtZScUTWVKXutG5/C8aTeknFlKUOh4nQd4+Oaxj8ztTzkRbVsCBFNPE
+         aEWQ==
+X-Gm-Message-State: AOAM531iXyS8/WSxty0VYnxA08e4BjubYtwmXTF7pbhH/vs74OXHp3W5
+        0waupDdXQXKK6v++xa0+burKHirnM2Lu1DYv49g=
+X-Google-Smtp-Source: ABdhPJzVF1YWU0hFuTeXXBWlQUQXW13GtCNpXXV/WX/2S85bIjmuraoJzeRVrhZaoiJXYKvUCHyFvwpP1gI72OwwzXU=
+X-Received: by 2002:a25:dc0c:: with SMTP id y12mr1834334ybe.395.1599131908024;
+ Thu, 03 Sep 2020 04:18:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200903005300.7894-1-digetx@gmail.com> <20200903005300.7894-10-digetx@gmail.com>
-In-Reply-To: <20200903005300.7894-10-digetx@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 3 Sep 2020 14:17:53 +0300
-Message-ID: <CAHp75VdPoJFNC+MntKu-CL8jFMEe85ZT3R9DF0aaNC4KjqWXyg@mail.gmail.com>
-Subject: Re: [PATCH v3 09/22] i2c: tegra: Clean up probe function
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-tegra@vger.kernel.org,
+References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825162718.5838-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVVvDEq-GSsPDrx09TCfGCWkNQvGYrNWP4gK2=63G2z1w@mail.gmail.com>
+In-Reply-To: <CAMuHMdVVvDEq-GSsPDrx09TCfGCWkNQvGYrNWP4gK2=63G2z1w@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Thu, 3 Sep 2020 12:18:01 +0100
+Message-ID: <CA+V-a8sqVGHHQ0ayH7CvKANyCpsFPBy6OuqoGQHPS7iOX20rCg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ARM: dts: r8a7742-iwg21d-q7: Enable PCIe Controller
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 3:54 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+Hi Geert,
+
+Thank you for the review.
+
+On Thu, Sep 3, 2020 at 11:18 AM Geert Uytterhoeven <geert@linux-m68k.org> w=
+rote:
 >
-> The driver's probe function code is difficult to read and follow. This
-> patch reorders code of the probe function, forming logical groups that are
-> easy to work with. The clock and hardware initializations are factored
-> out into separate functions in order to keep code clean and ease error
-> unwinding.
+> Hi Prabhakar,
 >
-> Driver now makes use of devm_platform_get_and_ioremap_resource() and
-> platform_get_irq() which are replacing boilerplate parts of the code.
+> On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Enable PCIe Controller and set PCIe bus clock frequency.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
 >
-> The dev_err_probe() is now used for reset control retrieval because reset
-> is now requested before clocks, and thus, BPMP driver that provides reset
-> controls for newer SoCs may cause the probe defer.
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel for v5.10.
+>
+> One thing to double-check below.
+>
+> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > @@ -238,6 +238,18 @@
+> >         /* status =3D "okay"; */
+> >  };
+> >
+> > +&pcie_bus_clk {
+> > +       clock-frequency =3D <100000000>;
+> > +};
+> > +
+> > +&pciec {
+> > +       /* SW2[6] determines which connector is activated
+> > +        * ON =3D PCIe X4 (connector-J7)
+> > +        * OFF =3D mini-PCIe (connector-J26)
+>
+> The table on page 14 says it's the other way around.
+>
+> According to the CBTL02042ABQ datasheet, PCIe_SEL =3D low
+> selects the first channel (PCIe x4), while PCIe_SEL =3D high selects the
+> second channel (mini-PCIe).
+> Enabling the switch ties the signal low, so the table must be wrong.
+>
+Referring to [1] page 3:
 
-> The error message of devm_request_irq() is removed because this function
-> takes care of printing the message by itself.
+SEL =3D LOW: A=E2=86=94B
+SEL =3D HIGH: A=E2=86=94C
 
-I see no evidence of this.
+And as per the schematic iW-PREJD-CS-01-R2.0-REL1.5.pdf channel B is
+J7 (PCIe X 4) and channel C is J26 (mini PCIe slot).
 
-...
+Enabling the switch SW2[6] (ON) ties SEL to LOW -> channel B is J7 (PCIe X =
+4)
+Disabling the switch SW2[6] (OFF) ties SEL to HIGH -> channel C is J26
+(mini PCIe)
 
-> +       of_property_read_u32(np, "clock-frequency", &bus_clk_rate);
-> +       i2c_dev->bus_clk_rate = bus_clk_rate;
+Also iW-PREJD-CS-01-R2.0-REL1.5.pdf page 14 (General purpose table DIP
+Switch) mentions the above.
 
-Hmm... I dunno if Wolfram is going to implement a special helper
-exactly for this. I remember we discussed that with him during v5.8
-(?) times.
+[1] https://www.mouser.co.uk/datasheet/2/302/CBTL02042A_CBTL02042B-1126164.=
+pdf
 
-...
+Cheers,
+Prabhakar
 
-> +static int tegra_i2c_init_clocks(struct tegra_i2c_dev *i2c_dev)
-
-Hmm... Don't we have something like devm_clk_bulk_get_all() or so?
-
--- 
-With Best Regards,
-Andy Shevchenko
+> > +        */
+> > +       status =3D "okay";
+> > +};
+> > +
+> >  &pfc {
+> >         avb_pins: avb {
+> >                 groups =3D "avb_mdio", "avb_gmii";
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
