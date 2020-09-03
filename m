@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0589525C5AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B4725C5A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgICPrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:47:53 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:26991 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728494AbgICPrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:47:47 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bj4vL0kzwzB09ZF;
-        Thu,  3 Sep 2020 17:47:42 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id UBMjKOF82pyz; Thu,  3 Sep 2020 17:47:41 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bj4vK623nzB09ZD;
-        Thu,  3 Sep 2020 17:47:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D6B978B80B;
-        Thu,  3 Sep 2020 17:47:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 8kHWzQ3JESNL; Thu,  3 Sep 2020 17:47:39 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 79F9B8B803;
-        Thu,  3 Sep 2020 17:47:34 +0200 (CEST)
-Subject: Re: [PATCH 14/14] powerpc: remove address space overrides using
- set_fs()
-To:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org
-Cc:     linux-arch@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Alexey Dobriyan <adobriyan@gmail.com>
-References: <20200903142242.925828-1-hch@lst.de>
- <20200903142242.925828-15-hch@lst.de>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <e7d2d231-5658-a4d3-0495-2af62f34aa34@csgroup.eu>
-Date:   Thu, 3 Sep 2020 17:43:25 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728442AbgICPrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:47:19 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:51221 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727786AbgICPrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 11:47:18 -0400
+Received: (qmail 663890 invoked by uid 1000); 3 Sep 2020 11:47:17 -0400
+Date:   Thu, 3 Sep 2020 11:47:17 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/20] usb/host: ehci-platform: Use pm_ptr() macro
+Message-ID: <20200903154717.GB663761@rowland.harvard.edu>
+References: <20200903112554.34263-1-paul@crapouillou.net>
+ <20200903112554.34263-5-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <20200903142242.925828-15-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903112554.34263-5-paul@crapouillou.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 03/09/2020 à 16:22, Christoph Hellwig a écrit :
-> Stop providing the possibility to override the address space using
-> set_fs() now that there is no need for that any more.
+On Thu, Sep 03, 2020 at 01:25:38PM +0200, Paul Cercueil wrote:
+> Use the newly introduced pm_ptr() macro, and mark the suspend/resume
+> functions __maybe_unused. These functions can then be moved outside the
+> CONFIG_PM_SUSPEND block, and the compiler can then process them and
+> detect build failures independently of the config. If unused, they will
+> simply be discarded by the compiler.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
+>  drivers/usb/host/ehci-platform.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/host/ehci-platform.c b/drivers/usb/host/ehci-platform.c
+> index 006c4f6188a5..4585a3a24678 100644
+> --- a/drivers/usb/host/ehci-platform.c
+> +++ b/drivers/usb/host/ehci-platform.c
+> @@ -410,8 +410,7 @@ static int ehci_platform_remove(struct platform_device *dev)
+>  	return 0;
+>  }
+>  
+> -#ifdef CONFIG_PM_SLEEP
+> -static int ehci_platform_suspend(struct device *dev)
+> +static int __maybe_unused ehci_platform_suspend(struct device *dev)
+>  {
+>  	struct usb_hcd *hcd = dev_get_drvdata(dev);
+>  	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
+> @@ -433,7 +432,7 @@ static int ehci_platform_suspend(struct device *dev)
+>  	return ret;
+>  }
+>  
+> -static int ehci_platform_resume(struct device *dev)
+> +static int __maybe_unused ehci_platform_resume(struct device *dev)
+>  {
+>  	struct usb_hcd *hcd = dev_get_drvdata(dev);
+>  	struct usb_ehci_pdata *pdata = dev_get_platdata(dev);
+> @@ -464,7 +463,6 @@ static int ehci_platform_resume(struct device *dev)
+>  
+>  	return 0;
+>  }
+> -#endif /* CONFIG_PM_SLEEP */
+>  
+>  static const struct of_device_id vt8500_ehci_ids[] = {
+>  	{ .compatible = "via,vt8500-ehci", },
+> @@ -499,7 +497,7 @@ static struct platform_driver ehci_platform_driver = {
+>  	.shutdown	= usb_hcd_platform_shutdown,
+>  	.driver		= {
+>  		.name	= "ehci-platform",
+> -		.pm	= &ehci_platform_pm_ops,
+> +		.pm	= pm_ptr(&ehci_platform_pm_ops),
+>  		.of_match_table = vt8500_ehci_ids,
+>  		.acpi_match_table = ACPI_PTR(ehci_acpi_match),
+>  	}
+> -- 
+> 2.28.0
 
+For patches 2 - 4:
 
->   
-> -static inline int __access_ok(unsigned long addr, unsigned long size,
-> -			mm_segment_t seg)
-> +static inline bool __access_ok(unsigned long addr, unsigned long size)
->   {
-> -	if (addr > seg.seg)
-> -		return 0;
-> -	return (size == 0 || size - 1 <= seg.seg - addr);
-> +	if (addr >= TASK_SIZE_MAX)
-> +		return false;
-> +	return size == 0 || size <= TASK_SIZE_MAX - addr;
->   }
-
-You don't need to test size == 0 anymore. It used to be necessary 
-because of the 'size - 1', as size is unsigned.
-
-Now you can directly do
-
-	return size <= TASK_SIZE_MAX - addr;
-
-If size is 0, this will always be true (because you already know that 
-addr is not >= TASK_SIZE_MAX
-
-Christophe
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
