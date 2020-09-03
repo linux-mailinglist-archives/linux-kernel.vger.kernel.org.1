@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E6625C2AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B296B25C2A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729360AbgICOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:32:15 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:33768 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729042AbgICO1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:27:46 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 4E10611E9B46AAA048E3;
-        Thu,  3 Sep 2020 22:27:12 +0800 (CST)
-Received: from [10.174.61.242] (10.174.61.242) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 3 Sep 2020 22:27:11 +0800
-Subject: Re: [PATCH net 3/3] hinic: fix bug of send pkts while setting
- channels
-To:     David Miller <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>, <chiqijun@huawei.com>
-References: <20200902094145.12216-1-luobin9@huawei.com>
- <20200902094145.12216-4-luobin9@huawei.com>
- <20200902.125257.1961904187228004830.davem@davemloft.net>
-From:   "luobin (L)" <luobin9@huawei.com>
-Message-ID: <4846879f-92ac-3726-58c8-beb719eee22e@huawei.com>
-Date:   Thu, 3 Sep 2020 22:27:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <20200902.125257.1961904187228004830.davem@davemloft.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.61.242]
-X-ClientProxiedBy: dggeme703-chm.china.huawei.com (10.1.199.99) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+        id S1729254AbgICObI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:31:08 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54668 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729336AbgICO23 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:28:29 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dafna)
+        with ESMTPSA id 9F6EC29AB6D
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     enric.balletbo@collabora.com, kernel@collabora.com,
+        dafna3@gmail.com, Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Subject: [PATCH] arm64: dts: mt8173-elm: fix supported values for regulator-allowed-modes of da9211
+Date:   Thu,  3 Sep 2020 16:28:19 +0200
+Message-Id: <20200903142819.24487-1-dafna.hirschfeld@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/3 3:52, David Miller wrote:
-> From: Luo bin <luobin9@huawei.com>
-> Date: Wed, 2 Sep 2020 17:41:45 +0800
-> 
->> @@ -531,6 +531,11 @@ netdev_tx_t hinic_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
->>  	struct hinic_txq *txq;
->>  	struct hinic_qp *qp;
->>  
->> +	if (unlikely(!netif_carrier_ok(netdev))) {
->> +		dev_kfree_skb_any(skb);
->> +		return NETDEV_TX_OK;
->> +	}
-> 
-> As Eric said, these kinds of tests should not be placed in the fast path
-> of the driver.
-> 
-> If you invoke close and the core networking still sends packets to the
-> driver, that's a bug that needs to be fixed in the core networking.
-> .
-> 
-Okay, I'm trying to figure out why the core networking can still call ndo_start_xmit
-after netif_tx_disable and solve the problem fundamentally. And I'll undo this patch
-temporarily.
+According to the datasheet the allowed modes for the da9211
+regulator are sync and auto mode. This should be changed in the
+devicetree. This also fix an error message
+'BUCKA: invalid regulator-allowed-modes element 0'
+since value 0 is invalid.
+
+Fixes: 689b937beddeb ("arm64: dts: mediatek: add mt8173 elm and hana board")
+Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index 1fe5dac24ba1..1a51879d5c6f 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -5,6 +5,7 @@
+ 
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/input/linux-event-codes.h>
++#include <dt-bindings/regulator/dlg,da9211-regulator.h>
+ #include <dt-bindings/gpio/gpio.h>
+ #include "mt8173.dtsi"
+ 
+@@ -293,7 +294,8 @@
+ 				regulator-max-microamp  = <4400000>;
+ 				regulator-ramp-delay = <10000>;
+ 				regulator-always-on;
+-				regulator-allowed-modes = <0 1>;
++				regulator-allowed-modes = <DA9211_BUCK_MODE_SYNC
++							   DA9211_BUCK_MODE_AUTO>;
+ 			};
+ 
+ 			da9211_vgpu_reg: BUCKB {
+-- 
+2.17.1
+
