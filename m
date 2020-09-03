@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE95025C39D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A40F25C394
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgICOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:55:09 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:28900 "EHLO mx1.tq-group.com"
+        id S1729432AbgICOyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:54:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729118AbgICOyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:54:39 -0400
-IronPort-SDR: BIradT9Qo+od6tGaIa22PAcKzvAEnKXDtbHHR7H9Uuz8lswDBip6wQ5QCWPLvg6HyquPIdcijE
- lvKut1gnlRXjc/ktN7y92Yez6qNZxBqrJpetDigwNqlQz8gKYSRB3Q11C1zHOOM205ukeyBI+0
- 9uvK/+fR6hNf6ALQ6rYyO3lqnmWnebjRzNUzd4YH2XT8MCLI8Ux+dkj91onOK4m0uP0rXkfSF6
- Gv15jyTk8fRiubuKyNGdQ/wgXyB6lagu8il1packGdSMQJG7fH7Tx+mt6CH4DAzckxVeTKzEA1
- WQA=
-X-IronPort-AV: E=Sophos;i="5.76,387,1592863200"; 
-   d="scan'208";a="13722704"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 03 Sep 2020 16:54:28 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 03 Sep 2020 16:54:28 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 03 Sep 2020 16:54:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1599144868; x=1630680868;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=xAvjU3K53qOiucID1PuAA01N0+IW04yAdBoQr5C/F9U=;
-  b=j4UX5hi0kUCWhCWFX+cMABYSRk4zW9DHyK5FSNL/FrC/wANFvx+FlH40
-   T8O+NGY4flQByDBO2zstA5XdbVikXvDOv2O1Uxv9W5uXg1+7WxSn+jfQK
-   MOcFcbMSOE1WtBAhv9SajbD31z2dsjiaqP4aVaizXVTespaLc2RtU8rt+
-   SryL988+DaswLhAfDucxlgrwfjuWpuJ26ttVvsFmdpCjAkwctPYWjU++h
-   PdsDbCs0ADJVaeIPjcXjdzCyNEH10TZgbdNFw1ar0WM8cymFzHAPF/gqJ
-   pqgpwatw9orohcDvgEhxPt1dyRhiAT0t9AFzw++6A2VzWT9oVW5J1/OXX
-   A==;
-IronPort-SDR: veAbufCOmfUm3O71ekAsgPN+Ls+7N3vOd7T9U7JE1vwmqRG8jx0gO1Jt8tKgBKPbWeoeVt8po0
- Bpd3gg4G28BJBUapZ1cwdtQjY9v8HiLmOm+uir1yZQtkElzUvmy0k+R1673LZ10hpR0KTCBYhM
- cF/pdYg5uAIB+XnIB4samkBJ4Al4U8PuZl6VHh4N2oUw48LZHsrmlpyZg3u9JIY4CV1BBIi7Sc
- Uw5My9MI9F9I2z9CdDJUHGHSa8vBPPOBIX5LKDEwad6TpBRghf7JwX09IbtLB8FgdFTuBnZvEC
- Y0Q=
-X-IronPort-AV: E=Sophos;i="5.76,387,1592863200"; 
-   d="scan'208";a="13722703"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 03 Sep 2020 16:54:28 +0200
-Received: from schifferm-ubuntu4.tq-net.de (unknown [10.117.49.26])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 8B449280070;
-        Thu,  3 Sep 2020 16:54:28 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 2/2] ARM: dts: imx6qdl: tqma6: minor fixes
-Date:   Thu,  3 Sep 2020 16:53:47 +0200
-Message-Id: <20200903145347.17830-2-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200903145347.17830-1-matthias.schiffer@ew.tq-group.com>
-References: <20200903145347.17830-1-matthias.schiffer@ew.tq-group.com>
+        id S1729308AbgICOyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 10:54:19 -0400
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49DEC208C7
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 14:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599144858;
+        bh=mriIatmtdubimfxx6F+KYhhAQsXMp4Zfj9n/rnqEnYg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MfmZFBjT64s2kj82dccACMNfccL3q/EDxxTceknRnn5UC3AImrGOzEffZCZJBQLHb
+         xsY0ha/O5YBHgCotpGQ0WDdqXQ8tT675l0QXQ1Xgz+E+lw7gbhM7WmZIOITJodOcZN
+         IMv6xVYpajk0/OrPonK7qnFLO3OuTIBZUFe3Lv/M=
+Received: by mail-wm1-f44.google.com with SMTP id b79so3188047wmb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:54:18 -0700 (PDT)
+X-Gm-Message-State: AOAM53228dX+Bg74con9Uxwyswl5RifygYalon0THJhILGW6TAyHAiDV
+        3zJZqs/jiJx2Ia8xcWXWRup2TffjduLFthErGma18g==
+X-Google-Smtp-Source: ABdhPJwZWPiuPxsfeWv1J/1dfx0Phx0Z+CR6jZc6Vth7ClO5Nnnsw9BnQ2BG0ronnM+rSbGLQcOzQkjyBYwFKrdO6uM=
+X-Received: by 2002:a1c:740c:: with SMTP id p12mr2909254wmc.176.1599144856798;
+ Thu, 03 Sep 2020 07:54:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <46e42e5e-0bca-5f3f-efc9-5ab15827cc0b@intel.com>
+ <40BC093A-F430-4DCC-8DC0-2BA90A6FC3FA@amacapital.net> <b3809dd7-8566-0517-2389-8089475135b7@intel.com>
+In-Reply-To: <b3809dd7-8566-0517-2389-8089475135b7@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 3 Sep 2020 07:54:05 -0700
+X-Gmail-Original-Message-ID: <CALCETrVY6XXUkePL0D0gmGEkq_oB2Ly_uXo6QQUz1v0H7sf_-g@mail.gmail.com>
+Message-ID: <CALCETrVY6XXUkePL0D0gmGEkq_oB2Ly_uXo6QQUz1v0H7sf_-g@mail.gmail.com>
+Subject: Re: [PATCH v11 6/9] x86/cet: Add PTRACE interface for CET
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Jann Horn <jannh@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Fix national,lm75 compatible string
-- Remove obsolete fsl,spi-num-chipselects
+On Thu, Sep 3, 2020 at 7:27 AM Dave Hansen <dave.hansen@intel.com> wrote:
+>
+> On 9/2/20 9:35 PM, Andy Lutomirski wrote:
+> >>>>>> +       fpu__prepare_read(fpu);
+> >>>>>> +       cetregs =3D get_xsave_addr(&fpu->state.xsave, XFEATURE_CET=
+_USER);
+> >>>>>> +       if (!cetregs)
+> >>>>>> +               return -EFAULT;
+> >>>>> Can this branch ever be hit without a kernel bug? If yes, I think
+> >>>>> -EFAULT is probably a weird error code to choose here. If no, this
+> >>>>> should probably use WARN_ON(). Same thing in cetregs_set().
+> >>>> When a thread is not CET-enabled, its CET state does not exist.  I l=
+ooked at EFAULT, and it means "Bad address".  Maybe this can be ENODEV, whi=
+ch means "No such device"?
+> > Having read the code, I=E2=80=99m unconvinced. It looks like a get_xsav=
+e_addr() failure means =E2=80=9Cstate not saved; task sees INIT state=E2=80=
+=9D.  So *maybe* it=E2=80=99s reasonable -ENODEV this, but I=E2=80=99m not =
+really convinced. I tend to think we should return the actual INIT state an=
+d that we should permit writes and handle them correctly.
+>
+> PTRACE is asking for access to the values in the *registers*, not for
+> the value in the kernel XSAVE buffer.  We just happen to only have the
+> kernel XSAVE buffer around.
+>
+> If we want to really support PTRACE we have to allow the registers to be
+> get/set, regardless of what state they are in, INIT state or not.  So,
+> yeah I agree with Andy.
 
-Fixes: cac849e9bbc8 ("ARM: dts: imx6qdl: add TQMa6{S,Q,QP} SoM")
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+I think the core dump code gets here, too, so the values might be in
+registers as well.  I hope that fpu__prepare_read() does the right
+thing in this case.
 
-v2: drop fsl,spi-num-chipselects instead of replacing with num-cs
-
- arch/arm/boot/dts/imx6qdl-tqma6.dtsi  | 1 -
- arch/arm/boot/dts/imx6qdl-tqma6a.dtsi | 2 +-
- arch/arm/boot/dts/imx6qdl-tqma6b.dtsi | 2 +-
- 3 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm/boot/dts/imx6qdl-tqma6.dtsi b/arch/arm/boot/dts/imx6qdl-tqma6.dtsi
-index 9513020ddd1a..b18b83ac6aee 100644
---- a/arch/arm/boot/dts/imx6qdl-tqma6.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-tqma6.dtsi
-@@ -20,7 +20,6 @@
- &ecspi1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_ecspi1>;
--	fsl,spi-num-chipselects = <1>;
- 	cs-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
- 	status = "okay";
- 
-diff --git a/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi b/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi
-index c18a06cf7929..b679bec78e6c 100644
---- a/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-tqma6a.dtsi
-@@ -16,7 +16,7 @@
- 	};
- 
- 	sensor@48 {
--		compatible = "lm75";
-+		compatible = "national,lm75";
- 		reg = <0x48>;
- 	};
- 
-diff --git a/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi b/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi
-index a7460075f517..49c472285c06 100644
---- a/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-tqma6b.dtsi
-@@ -16,7 +16,7 @@
- 	};
- 
- 	sensor@48 {
--		compatible = "lm75";
-+		compatible = "national,lm75";
- 		reg = <0x48>;
- 	};
- 
--- 
-2.17.1
-
+--Andy
