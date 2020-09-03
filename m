@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7395D25C523
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D59C725C58A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgICPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728642AbgICPWn (ORCPT
+        id S1728544AbgICPiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:38:25 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59884 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgICPiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:22:43 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE35C061249;
-        Thu,  3 Sep 2020 08:22:43 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id gf14so1628174pjb.5;
-        Thu, 03 Sep 2020 08:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lcQkM04dJjt5Getpu5T9KGprYqJgTjrGD05xLf6xlJY=;
-        b=HaXeOZLHfdo/16NXDGDjO2lPxZWwj3Gm71jwz7RJg0LmPWXx1HctW+SxkT+x414sG2
-         Eh/K3t3iCT1WhPoGSaNeeHmBFEpuN35q5PIH2vAYis8yGGEbIQwwqjQWU5ur9Lzt/T84
-         DEXIvfLsHMKOA0hAJUlzU1gvKDt0/NvJbCguB3Oe6EIV9sQe0mVBkAP8/LjcPP3gCzeg
-         wGG60AJRk4vXLW8vEuLltOvZ6C2DM7noqXm6eGzF4XByEbtsXlVixBCFCVMApOTqS0q0
-         fy/fAliMHrRsUpwzzbfH7RVhI+oybNwDZ8sXwg+l39JTGxvS2+SafN9nadJM8n2TEa4k
-         +Bog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lcQkM04dJjt5Getpu5T9KGprYqJgTjrGD05xLf6xlJY=;
-        b=ZFdp3p63AD6i64k3GiZP7xbKhXiVWeRDLwsi6q++VEpTeHfA/sS5jFSUBqEWGFhGj7
-         S/rvpiCTA82yuCQnv2xRrzsxMdTvufQ29BUNBCd2TqXgGBFEMhd0kH7DzfuzTcMWoPWx
-         Ws/og+tyWZSgOWL4fWNFVHSmVnCgtiIQf00roQz9Qgp2/qGrwzjQCK37lxn5umP5pqbD
-         ARjeF9ysMD6EifPKmYvF5fVrtN4HBcU1o4Uh4ik4Pk74rt17wpz2r7GvphWVwpB4m/XV
-         SkE1axlyRSOIr44/rExwGZwGbz3Q2a0pfII/KlnsKyZiMS0fVKh7TRSmHEIM8gJ/DKST
-         KxOg==
-X-Gm-Message-State: AOAM530OvLHvvDBtK7JqJovHp7fe5z4krneGqqOjvoXUMoQh5cb7ywF2
-        J8pg4+pIMnmT2AVkO/l2gdLGNd+FY0e87g==
-X-Google-Smtp-Source: ABdhPJzLGpBfCgsWkYgtmAGFFuFFR16B4JeChVvuPseDTtA690faOIHaTtrsUsn6q+I26JJE/5ffTA==
-X-Received: by 2002:a17:90b:4a51:: with SMTP id lb17mr3634586pjb.235.1599146562303;
-        Thu, 03 Sep 2020 08:22:42 -0700 (PDT)
-Received: from localhost ([121.0.29.56])
-        by smtp.gmail.com with ESMTPSA id o15sm3140855pgi.74.2020.09.03.08.22.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Sep 2020 08:22:41 -0700 (PDT)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-Subject: [PATCH V3] kvm x86/mmu: use KVM_REQ_MMU_SYNC to sync when needed
-Date:   Fri,  4 Sep 2020 00:23:04 +0800
-Message-Id: <20200903162304.19694-1-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20200903012224.GL11695@sjchrist-ice>
-References: <20200903012224.GL11695@sjchrist-ice>
+        Thu, 3 Sep 2020 11:38:22 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083DLLZQ050729;
+        Thu, 3 Sep 2020 08:21:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599139281;
+        bh=eaAGcywfA/M9ZZjeUNXOrgGSq2797CckUuCriGH8Uuc=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=MNMsCdV5eFxqTbHQEGUfTnxVk1GKrfbWvYHxcl4zuXlmYQIyijdVthGQvy4xp5x6E
+         iLElFY2zncoMi5c0m0evL/pyrxd1ffhgCYLQkZIdyQF2O4HhMHVT8plbKLZx7ogZ4N
+         eNCFMNl5i43hiAc9DxJqnkf4d+in1dcAHNlkh998=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083DLL8d064551
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 3 Sep 2020 08:21:21 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 08:21:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 08:21:21 -0500
+Received: from [10.250.235.166] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083DLHG1130034;
+        Thu, 3 Sep 2020 08:21:18 -0500
+Subject: Re: [PATCH V2 4/8] arm64: dts: ti: k3-am65*: Use generic clock for
+ syscon clock names
+To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Tero Kristo <t-kristo@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Suman Anna <s-anna@ti.com>,
+        <lokeshvutla@ti.com>, <grygorii.strashko@ti.com>, <nsekhar@ti.com>
+References: <20200901223059.14801-1-nm@ti.com>
+ <20200903130015.21361-5-nm@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <e8bc1cd8-a220-7cdf-19a7-ce95429dc509@ti.com>
+Date:   Thu, 3 Sep 2020 18:51:17 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200903130015.21361-5-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-When kvm_mmu_get_page() gets a page with unsynced children, the spt
-pagetable is unsynchronized with the guest pagetable. But the
-guest might not issue a "flush" operation on it when the pagetable
-entry is changed from zero or other cases. The hypervisor has the 
-responsibility to synchronize the pagetables.
 
-The linux kernel behaves correctly as above for many years, but a recent
-commit 8c8560b83390 ("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for
-MMU specific flushes") inadvertently included a line of code to change it
-without giving any reason in the changelog. It is clear that the commit's
-intention was to change KVM_REQ_TLB_FLUSH -> KVM_REQ_TLB_FLUSH_CURRENT,
-so we don't unneedlesly flush other contexts but one of the hunks changed
-nearby KVM_REQ_MMU_SYNC instead.
+On 9/3/20 6:30 PM, Nishanth Menon wrote:
+> serdes and ehrpwm_tbclk nodes should be using clock@ naming for nodes
+> following standard conventions of device tree (section 2.2.2 Generic
+> Names recommendation in [1]).
+> 
+> [1] https://github.com/devicetree-org/devicetree-specification/tree/v0.3
+> 
+> Suggested-by: Suman Anna <s-anna@ti.com>
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+> Acked-by: Suman Anna <s-anna@ti.com>
+> ---
+> Change:
+> v2:  added ehrpwm_tbclk based on review comments.
+> v1: https://lore.kernel.org/linux-arm-kernel/20200901223059.14801-3-nm@ti.com/
+> 
+>  arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> index a2fc508e59a6..63a1299cb0b2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+> @@ -327,12 +327,12 @@
+>  			reg = <0x00000210 0x4>;
+>  		};
+>  
+> -		serdes0_clk: serdes_clk@4080 {
+> +		serdes0_clk: clock@4080 {
+>  			compatible = "syscon";
+>  			reg = <0x00004080 0x4>;
+>  		};
+>  
+> -		serdes1_clk: serdes_clk@4090 {
+> +		serdes1_clk: clock@4090 {
+>  			compatible = "syscon";
+>  			reg = <0x00004090 0x4>;
+>  		};
+> @@ -349,7 +349,7 @@
+>  			reg = <0x0000041e0 0x14>;
+>  		};
+>  
+> -		ehrpwm_tbclk: syscon@4140 {
+> +		ehrpwm_tbclk: clock@4140 {
+>  			compatible = "ti,am654-ehrpwm-tbclk", "syscon";
+>  			reg = <0x4140 0x18>;
+>  			#clock-cells = <1>;
+> 
 
-This patch changes it back.
-
-Fixes: 8c8560b83390("KVM: x86/mmu: Use KVM_REQ_TLB_FLUSH_CURRENT for MMU specific flushes)
-Link: https://lore.kernel.org/lkml/20200320212833.3507-26-sean.j.christopherson@intel.com/
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
-Changed from v1:
-	update patch description
-
-Changed form v2:
-	update patch description
-
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4e03841f053d..9a93de921f2b 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2468,7 +2468,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
- 		}
- 
- 		if (sp->unsync_children)
--			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
-+			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
- 
- 		__clear_sp_write_flooding_count(sp);
- 
--- 
-2.19.1.6.gb485710b
-
+Acked-by: Vignesh Raghavendra <vigneshr@ti.com>
