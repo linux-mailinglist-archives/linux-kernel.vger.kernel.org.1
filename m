@@ -2,164 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D5125C3D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EDD25C3A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgICO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        id S1729334AbgICO4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729122AbgICOHw (ORCPT
+        with ESMTP id S1729188AbgICOLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:07:52 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B970EC061247
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 07:00:35 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id ef16so1341192qvb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:00:35 -0700 (PDT)
+        Thu, 3 Sep 2020 10:11:54 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C862C061249;
+        Thu,  3 Sep 2020 07:02:36 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id o16so1585564pjr.2;
+        Thu, 03 Sep 2020 07:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JZfJMp3zvHnMX4z50lv6bmh7AfNeSTMMAnF/ge8iWQ4=;
-        b=fFFFaWm86MoOYysgjFdRdEJebs//BYwO9Lze/0DkLVNck4XsEeYuVtCq9E7IFgUgxf
-         kf6Y2eUZcXf4JuXDS9L5UlKYprM2ShOtHsb7EWscI7WAFPm8SjDAmMFkbn60QfhHfXwi
-         1/YIivtfIcyjlhVS9SfytTJMGJc/z53TkmDUXvFvlsyzqn7z5+UxFf2V73xsI5OWdvUf
-         iqjppvJcTaLyGtRlhJLi6bAGvuCFoSpjJhVRRJeKimlNmEgxG4A0zJTjhypWbU5nXgjA
-         TKjG2wh5npKd3+Sp/VkHQmzBsQIppMCXbYv3eAI+VUQWKC+RzCjtLTGrUTcDelMbQIcv
-         FgOA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=49A9aeIFdmHDcRIkQHriMpz6lE3JWxr0PldhLtC8qt0=;
+        b=SQtt7SzKrG6DaNEyGfxX5XwoHo4i/dcT7LKhKfbmdlABg0wik2erYixTDgLZZifEtT
+         lTWm34bIVf9bUCSATFdNaqWG9AVnQw9WMCtdTmUIY7punEno0HlE9nnZWgUP9HXBscDC
+         uPdXWKZf6HL87EULVYTwckDAVO0uQbTSVR/mtsl2worIExzxv1wtSiGvWFx2XiagGNd6
+         ZjlE2ItUxUCvlujUnF0W1k4HAv3+4fI8yvYjrevnO47xbB++Wuzh2Nqsxs50kLacDuwT
+         lXckxwmX/+nN5gG0Ok0HxlpfiJpuO/EO8mNmpZu2AbYTWHPg+HmIIK3oVfqVcynrQBSq
+         ugAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=JZfJMp3zvHnMX4z50lv6bmh7AfNeSTMMAnF/ge8iWQ4=;
-        b=K/cbTQlj+ZOLGAbTahCotvRaxebfkklsS1IdKoPhX3n/ZlQiaojA2VaPXBWvto7gOz
-         1o9Y9j+c8yZrTSRzJ51GKnrSZpocD0MP3d70hPp7wro2wPEQDqe+pZrhRL7X7fVFoWAT
-         FvIbm1ZpK6LN9vPQ1bLBjzj1pup0bBkIZmxKsU0VWi0X+07v+J8KpuyhPb8FE2TIsae3
-         4pr3KZtSeypZlN5nQ3LaCmJ2oNzfSAkVOAWpkrC/XnEoOvkSkEGQj2dnSRqmcEBAvqdv
-         kvBXAWdruUTH3zq8fWm+PlUPRrdTnQ9f756ENwl9s/PSK6hcfAx/QqCYUqi5BqjktHd+
-         Fo7w==
-X-Gm-Message-State: AOAM532JVS60kXGAS6BnEZnouiUVwxNfcZ7Bk3+H79kNGsF+hz37AUVH
-        wEHL41RLYvgIeXAOvpsP0KCRHzE2QPPI9Q==
-X-Google-Smtp-Source: ABdhPJxxigHbFeETjldLKaHP1TgreulryDFBuVc+XRnTZ2BDbcXWM2LjeXD3sEZktvaPAokzh6fRGA==
-X-Received: by 2002:ad4:51d1:: with SMTP id p17mr2953984qvq.14.1599141634366;
-        Thu, 03 Sep 2020 07:00:34 -0700 (PDT)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id k6sm2104899qti.23.2020.09.03.07.00.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 07:00:33 -0700 (PDT)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mhocko@suse.com, linux-mm@kvack.org, pasha.tatashin@soleen.com,
-        osalvador@suse.de, richard.weiyang@gmail.com, david@redhat.com,
-        vbabka@suse.cz, rientjes@google.com
-Subject: [PATCH v2] mm/memory_hotplug: drain per-cpu pages again during memory offline
-Date:   Thu,  3 Sep 2020 10:00:32 -0400
-Message-Id: <20200903140032.380431-1-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=49A9aeIFdmHDcRIkQHriMpz6lE3JWxr0PldhLtC8qt0=;
+        b=WThqJp19wnNYy431ucOQoHQO7ttLpVS3kBoq7q+Ipy+G/EPseIobbZ/MfSgU0Vi6Lq
+         JfgZvJYrEKmOPGRERtNzw44cmKK5AZFmjyBSvK802A5pGUlNU+l/3Qud7oQowf6bXJJW
+         B0Lod57fzAzMEFdTe7U/Coinkgk6eOQ485NGAW1bFvwxoRy+DycGNTuny5NTzyE86l4o
+         48rXupPdOlDUPk2gvzRcE9t0Z5chJZcP8roQh+kov4xEsUQXqK/w6dzE7e4a3Um5V4PH
+         UkuUwmOMaBVx1y/c8VnbytJA6YDDVhd86mVGbRj87+UNNBiZSvNhFPs3/FIUUPAyggxj
+         TuTw==
+X-Gm-Message-State: AOAM531DnVQoqVmhz6FNANiDVTcYntRI0lcpQ3vzI1ILBuhb4gpv3Ihk
+        yDwAb0a7ANUyWT6/CH6x3Dgg9ZZthPVES8n0V+U=
+X-Google-Smtp-Source: ABdhPJwFgSljebq/SNlzE73+hLRfPqfCH28CvG+u4ut4f0+IKxAQOiTd2OW6REn+/uM8F8LH7Cs3l5w88lmhp1SSd4k=
+X-Received: by 2002:a17:90a:b387:: with SMTP id e7mr3543210pjr.228.1599141755915;
+ Thu, 03 Sep 2020 07:02:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200903005300.7894-1-digetx@gmail.com> <20200903005300.7894-10-digetx@gmail.com>
+ <CAHp75VdPoJFNC+MntKu-CL8jFMEe85ZT3R9DF0aaNC4KjqWXyg@mail.gmail.com> <4bd12095-7a29-bcb4-6b49-83eca285c897@gmail.com>
+In-Reply-To: <4bd12095-7a29-bcb4-6b49-83eca285c897@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 3 Sep 2020 17:02:18 +0300
+Message-ID: <CAHp75VerqMmyDnbxaWN0R-DYPkOosh-R9CG970Sh+EqG21oZ8w@mail.gmail.com>
+Subject: Re: [PATCH v3 09/22] i2c: tegra: Clean up probe function
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-tegra@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a race during page offline that can lead to infinite loop:
-a page never ends up on a buddy list and __offline_pages() keeps
-retrying infinitely or until a termination signal is received.
+On Thu, Sep 3, 2020 at 4:48 PM Dmitry Osipenko <digetx@gmail.com> wrote:
+> 03.09.2020 14:17, Andy Shevchenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Thu, Sep 3, 2020 at 3:54 AM Dmitry Osipenko <digetx@gmail.com> wrote=
+:
 
-Thread#1 - a new process:
+...
 
-load_elf_binary
- begin_new_exec
-  exec_mmap
-   mmput
-    exit_mmap
-     tlb_finish_mmu
-      tlb_flush_mmu
-       release_pages
-        free_unref_page_list
-         free_unref_page_prepare
-          set_pcppage_migratetype(page, migratetype);
-             // Set page->index migration type below  MIGRATE_PCPTYPES
+> >> +       of_property_read_u32(np, "clock-frequency", &bus_clk_rate);
+> >> +       i2c_dev->bus_clk_rate =3D bus_clk_rate;
+> >
+> > Hmm... I dunno if Wolfram is going to implement a special helper
+> > exactly for this. I remember we discussed that with him during v5.8
+> > (?) times.
+>
+> I now see that there is a i2c_parse_fw_timings() which parses
+> "clock-frequency" and other common properties. I could switch to use
+> that helper, but not sure whether it would be really worthwhile because
+> only one property is needed to be parsed. I'll consider this change for
+> v4, thank you for the suggestion!
 
-Thread#2 - hot-removes memory
-__offline_pages
-  start_isolate_page_range
-    set_migratetype_isolate
-      set_pageblock_migratetype(page, MIGRATE_ISOLATE);
-        Set migration type to MIGRATE_ISOLATE-> set
-        drain_all_pages(zone);
-             // drain per-cpu page lists to buddy allocator.
+That's exactly why I was wondering about the current state of affairs
+with the discussed helper which should only parse the clock-frequency
+property.
 
-Thread#1 - continue
-         free_unref_page_commit
-           migratetype = get_pcppage_migratetype(page);
-              // get old migration type
-           list_add(&page->lru, &pcp->lists[migratetype]);
-              // add new page to already drained pcp list
-
-Thread#2
-Never drains pcp again, and therefore gets stuck in the loop.
-
-The fix is to try to drain per-cpu lists again after
-check_pages_isolated_cb() fails.
-
-Fixes: c52e75935f8d ("mm: remove extra drain pages on pcp list")
-
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc: stable@vger.kernel.org
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/memory_hotplug.c | 14 ++++++++++++++
- mm/page_isolation.c |  8 ++++++++
- 2 files changed, 22 insertions(+)
-
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index e9d5ab5d3ca0..b11a269e2356 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1575,6 +1575,20 @@ static int __ref __offline_pages(unsigned long start_pfn,
- 		/* check again */
- 		ret = walk_system_ram_range(start_pfn, end_pfn - start_pfn,
- 					    NULL, check_pages_isolated_cb);
-+		/*
-+		 * per-cpu pages are drained in start_isolate_page_range, but if
-+		 * there are still pages that are not free, make sure that we
-+		 * drain again, because when we isolated range we might
-+		 * have raced with another thread that was adding pages to pcp
-+		 * list.
-+		 *
-+		 * Forward progress should be still guaranteed because
-+		 * pages on the pcp list can only belong to MOVABLE_ZONE
-+		 * because has_unmovable_pages explicitly checks for
-+		 * PageBuddy on freed pages on other zones.
-+		 */
-+		if (ret)
-+			drain_all_pages(zone);
- 	} while (ret);
- 
- 	/* Ok, all of our target is isolated.
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index 242c03121d73..63a3db10a8c0 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -170,6 +170,14 @@ __first_valid_page(unsigned long pfn, unsigned long nr_pages)
-  * pageblocks we may have modified and return -EBUSY to caller. This
-  * prevents two threads from simultaneously working on overlapping ranges.
-  *
-+ * Please note that there is no strong synchronization with the page allocator
-+ * either. Pages might be freed while their page blocks are marked ISOLATED.
-+ * In some cases pages might still end up on pcp lists and that would allow
-+ * for their allocation even when they are in fact isolated already. Depending
-+ * on how strong of a guarantee the caller needs drain_all_pages might be needed
-+ * (e.g. __offline_pages will need to call it after check for isolated range for
-+ * a next retry).
-+ *
-  * Return: the number of isolated pageblocks on success and -EBUSY if any part
-  * of range cannot be isolated.
-  */
--- 
-2.25.1
-
+--=20
+With Best Regards,
+Andy Shevchenko
