@@ -2,218 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5058925C521
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559A125C538
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgICPXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729070AbgICPXH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 11:23:07 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B9FC061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 08:23:05 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id j188so1958181vsd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 08:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Joe7bJxFvjhQ7PFpcfdBrDyWM8om/PRVTMRPGum9AiA=;
-        b=rEqNHiOw8u46b6Z6/wsQzrmXcn6qbwSQp6vFILV8eNXL4YI9HvX2LIdfq+9eYrPyMU
-         MZ8MZGKO/8MwIkMSX5QePW1p/3cpjdE6ToP6ar4lpWqtFL/VIxOhFHSpLzbqDreaGUjv
-         UuPq5Tr37QGU8YozIZVPxnAjbqr0fCPKh5klkqsd3G6Lyx3d1TWO3gCMf2CK2UOt4FCu
-         YtnPZZXxp8YVqB6bBDuwXkio1RDCKyuZ1o7omSRnc7gtoCaUfawN49aEN+kCGRLudwVT
-         W0f4ljMLH0rlCEZn9TEGabz6/iTlKPHCljVvToCtll8LCmpHH/PJpEIFKA6fnVpwgKAD
-         uOGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Joe7bJxFvjhQ7PFpcfdBrDyWM8om/PRVTMRPGum9AiA=;
-        b=X7DA//uM3yFBKAuseqKDfPv0GcudMh4hGdVbhKGQq6U1SRj7bwdb5Exc6wmR5X2cdf
-         8I0n9wSQWGRdo48hf4795HK4sriWJM28kkowLqzVn6c9G1yYdkgPCHlgy3xvfiw3PkWB
-         rz/jw9A2qOzveBBXSqYKtACxa80spM/n2kf2Bvmjb5aNZGL//Jk+I9eGbaOD1NxzpaSA
-         adEF7DmgPnCMOSWWOBBd6PNt4uZlxGyS5+G9KEbOGfS6l2dzS7U4ABG8wxCbECe0IBgc
-         0m5AApWOWZmc0d7Azj/HraH7Kxo3JbKPhytMjffFna+2Umn8lkxDyL3txLhznjZbT6PO
-         q27A==
-X-Gm-Message-State: AOAM533vaXGjoPKIOmGMmXS1gwkmfA3rQD5ESJkml0zQu0Ug3K32LoZE
-        HND5mS8G5MyoeAmGUYSiOXdpL26RaHn0HA==
-X-Google-Smtp-Source: ABdhPJx9I58u1/xGs17tYFzOmU0allDsECl1NcbZ8gFeD++UBAVT4rVY+wfx148QJX5lMV8DJFnhRw==
-X-Received: by 2002:a67:fd01:: with SMTP id f1mr1648752vsr.46.1599146583791;
-        Thu, 03 Sep 2020 08:23:03 -0700 (PDT)
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com. [209.85.217.54])
-        by smtp.gmail.com with ESMTPSA id l17sm455602uab.1.2020.09.03.08.23.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 08:23:02 -0700 (PDT)
-Received: by mail-vs1-f54.google.com with SMTP id y3so1964250vsn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 08:23:01 -0700 (PDT)
-X-Received: by 2002:a05:6102:150:: with SMTP id a16mr2136712vsr.99.1599146581291;
- Thu, 03 Sep 2020 08:23:01 -0700 (PDT)
+        id S1728502AbgICPZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:25:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726543AbgICPZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 11:25:17 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39631208FE;
+        Thu,  3 Sep 2020 15:25:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599146717;
+        bh=f3U7ASbVqHoINyjVgQ54NfsvbWfunAHGWhDtFw6uEcY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c063w8imevxLfowa1GOqJNf4nwV4prVK9zMHqAhuaZs3iExgbuAWY65/snmP4ySuj
+         F+LfwU0aEpMs5MMhj1I2wJ7kEOvYN6xAmfEFk6/anfkxjQPyXTLt2QDEK+DWnKq8Oq
+         Vm0mPfUe7Y/CbzzEAzm6Kl+3SOT3RKConrbUTmEQ=
+Received: by mail-ot1-f50.google.com with SMTP id y5so3068254otg.5;
+        Thu, 03 Sep 2020 08:25:17 -0700 (PDT)
+X-Gm-Message-State: AOAM5316nEBuKPPIZdt7lB5IUOIFQ/XFxjbN3kGqjjvBc2aX2Kh/LQSh
+        6xx5+zY204jHXpiZ/IZiEj+3WkfsOxX7M5uxqg==
+X-Google-Smtp-Source: ABdhPJzXjy+69tf3xQkfYZ4SALE7mZxLKgQkVsN+qODC/aOmNuTSKjaYiWjkWkla+tgVnuSeEGz3EWI0pYzILh4sYW4=
+X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr2025135otp.129.1599146716464;
+ Thu, 03 Sep 2020 08:25:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200902150442.2779-1-vadym.kochan@plvision.eu> <20200902150442.2779-2-vadym.kochan@plvision.eu>
-In-Reply-To: <20200902150442.2779-2-vadym.kochan@plvision.eu>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 3 Sep 2020 17:22:24 +0200
-X-Gmail-Original-Message-ID: <CA+FuTSfMRhEZ5c2CWaN_F3ASDgvV7eQ4q6zVuY-FvgLqsqYecw@mail.gmail.com>
-Message-ID: <CA+FuTSfMRhEZ5c2CWaN_F3ASDgvV7eQ4q6zVuY-FvgLqsqYecw@mail.gmail.com>
-Subject: Re: [PATCH net v6 1/6] net: marvell: prestera: Add driver for
- Prestera family ASIC devices
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        Andrii Savka <andrii.savka@plvision.eu>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mickey Rachamim <mickeyr@marvell.com>
+References: <20200830084021.18572-1-krzk@kernel.org>
+In-Reply-To: <20200830084021.18572-1-krzk@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 3 Sep 2020 09:25:05 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKPXJxsHPS34_TCf9bwgKxZNSV4mvQR-WKRnknQVtGGxQ@mail.gmail.com>
+Message-ID: <CAL_JsqKPXJxsHPS34_TCf9bwgKxZNSV4mvQR-WKRnknQVtGGxQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpu: arm,mali-utgard: Use unevaluatedProperties
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <maxime.ripard@free-electrons.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 2, 2020 at 5:37 PM Vadym Kochan <vadym.kochan@plvision.eu> wrote:
+On Sun, Aug 30, 2020 at 2:40 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
 >
-> Marvell Prestera 98DX326x integrates up to 24 ports of 1GbE with 8
-> ports of 10GbE uplinks or 2 ports of 40Gbps stacking for a largely
-> wireless SMB deployment.
+> Additional properties or nodes actually might appear (e.g. operating
+> points table) so use unevaluatedProperties to fix dtbs_check warnings
+> like:
 >
-> The current implementation supports only boards designed for the Marvell
-> Switchdev solution and requires special firmware.
->
-> The core Prestera switching logic is implemented in prestera_main.c,
-> there is an intermediate hw layer between core logic and firmware. It is
-> implemented in prestera_hw.c, the purpose of it is to encapsulate hw
-> related logic, in future there is a plan to support more devices with
-> different HW related configurations.
->
-> This patch contains only basic switch initialization and RX/TX support
-> over SDMA mechanism.
->
-> Currently supported devices have DMA access range <= 32bit and require
-> ZONE_DMA to be enabled, for such cases SDMA driver checks if the skb
-> allocated in proper range supported by the Prestera device.
->
-> Also meanwhile there is no TX interrupt support in current firmware
-> version so recycling work is scheduled on each xmit.
->
-> Port's mac address is generated from the switch base mac which may be
-> provided via device-tree (static one or as nvme cell), or randomly
-> generated.
->
-> Co-developed-by: Andrii Savka <andrii.savka@plvision.eu>
-> Signed-off-by: Andrii Savka <andrii.savka@plvision.eu>
-> Co-developed-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-> Co-developed-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-> Signed-off-by: Serhiy Boiko <serhiy.boiko@plvision.eu>
-> Co-developed-by: Serhiy Pshyk <serhiy.pshyk@plvision.eu>
-> Signed-off-by: Serhiy Pshyk <serhiy.pshyk@plvision.eu>
-> Co-developed-by: Taras Chornyi <taras.chornyi@plvision.eu>
-> Signed-off-by: Taras Chornyi <taras.chornyi@plvision.eu>
-> Co-developed-by: Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
-> Signed-off-by: Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+>   arch/arm/boot/dts/exynos4210-i9100.dt.yaml: gpu@13000000:
+>     'opp_table' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-> +int prestera_hw_port_cap_get(const struct prestera_port *port,
-> +                            struct prestera_port_caps *caps)
-> +{
-> +       struct prestera_msg_port_attr_resp resp;
-> +       struct prestera_msg_port_attr_req req = {
-> +               .attr = PRESTERA_CMD_PORT_ATTR_CAPABILITY,
-> +               .port = port->hw_id,
-> +               .dev = port->dev_id
-> +       };
-> +       int err;
-> +
-> +       err = prestera_cmd_ret(port->sw, PRESTERA_CMD_TYPE_PORT_ATTR_GET,
-> +                              &req.cmd, sizeof(req), &resp.ret, sizeof(resp));
-
-Here and elsewhere, why use a pointer to the first field in the struct
-vs the struct itself?
-
-They are the same address, so it's fine, just a bit confusing as the
-size argument makes clear that the entire struct is to be copied.
-
-> +static int prestera_is_valid_mac_addr(struct prestera_port *port, u8 *addr)
-> +{
-> +       if (!is_valid_ether_addr(addr))
-> +               return -EADDRNOTAVAIL;
-> +
-> +       if (memcmp(port->sw->base_mac, addr, ETH_ALEN - 1))
-
-Why ETH_ALEN - 1?
-
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +
-> +static int prestera_port_set_mac_address(struct net_device *dev, void *p)
-> +{
-> +       struct prestera_port *port = netdev_priv(dev);
-> +       struct sockaddr *addr = p;
-> +       int err;
-> +
-> +       err = prestera_is_valid_mac_addr(port, addr->sa_data);
-> +       if (err)
-> +               return err;
-> +
-> +       err = prestera_hw_port_mac_set(port, addr->sa_data);
-> +       if (err)
-> +               return err;
-> +
-> +       memcpy(dev->dev_addr, addr->sa_data, dev->addr_len);
-
-Is addr_len ever not ETH_ALEN for this device?
-
-> +static int prestera_sdma_buf_init(struct prestera_sdma *sdma,
-> +                                 struct prestera_sdma_buf *buf)
-> +{
-> +       struct device *dma_dev = sdma->sw->dev->dev;
-> +       struct prestera_sdma_desc *desc;
-> +       dma_addr_t dma;
-> +
-> +       desc = dma_pool_alloc(sdma->desc_pool, GFP_DMA | GFP_KERNEL, &dma);
-> +       if (!desc)
-> +               return -ENOMEM;
-> +
-> +       if (dma + sizeof(struct prestera_sdma_desc) > sdma->dma_mask) {
-
-Can this happen? The DMA API should take care of dev->dma_mask constraints.
-
-> +               dma_pool_free(sdma->desc_pool, desc, dma);
-> +               dev_err(dma_dev, "failed to alloc desc\n");
-> +               return -ENOMEM;
-> +       }
-
-> +static int prestera_sdma_rx_skb_alloc(struct prestera_sdma *sdma,
-> +                                     struct prestera_sdma_buf *buf)
-> +{
-> +       struct device *dev = sdma->sw->dev->dev;
-> +       struct sk_buff *skb;
-> +       dma_addr_t dma;
-> +
-> +       skb = alloc_skb(PRESTERA_SDMA_BUFF_SIZE_MAX, GFP_DMA | GFP_ATOMIC);
-> +       if (!skb)
-> +               return -ENOMEM;
-> +
-> +       dma = dma_map_single(dev, skb->data, skb->len, DMA_FROM_DEVICE);
-> +       if (dma_mapping_error(dev, dma))
-> +               goto err_dma_map;
-> +       if (dma + skb->len > sdma->dma_mask)
-> +               goto err_dma_range;
-
-Same here
+When unevaluatedProperties support is actually implemented (there's a
+prototype), this will still be a warning. You need to document any
+additional properties/nodes.
