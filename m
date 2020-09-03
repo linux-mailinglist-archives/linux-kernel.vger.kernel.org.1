@@ -2,146 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215A425BCD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A20125BC2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbgICIPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728073AbgICIBi (ORCPT
+        id S1728586AbgICIEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:04:54 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:36545 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728228AbgICICv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0302DC061244;
-        Thu,  3 Sep 2020 01:01:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=O5kxaoNfuWYD/r3zIuYk6jhw3GIKgkKxiecYTnoQ+yQ=; b=Z3zq4ZdmxKan/1dFcAY0JXiu+R
-        ACjLeO1G+TtdQ4L3y7SZeSrNKiCY9VjSm91OeuWNL5H4MKRQHVyQiolMSm3F+PMjHN1YlA3xgM0JV
-        yVSXecevS42IeGuU7GY0eq94F9JLawFGTlRLmQMRUaiTgcGkBC6ZRMzXSmiH/nzYorBN04nfP1pcF
-        nK18kjrn+MgempCgu58FZWcVE7evxQy2WPUuOFqwN9YRhK6rYIIiD8yZNVBL/6eytVG17s2DUIL4h
-        Y43fw4GxrYxMgXKY/B6b3SGRzz5nk8+uwwFz0kpLmEhZ+VNnQkD7IoSlhB3rr6UFnIqFcqFMgxzQF
-        wfb3zcmQ==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBW-0006bF-Vm; Thu, 03 Sep 2020 08:01:31 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 07/19] ide: remove ide_{,un}register_region
+        Thu, 3 Sep 2020 04:02:51 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 08195C02;
+        Thu,  3 Sep 2020 04:02:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=6fdwtjKwmETNW
+        XeSJaFFIb/jsDXXZpglybcolLFXiBk=; b=Nu8D74RIVhfQt4NDlBDVxLjnZVYsK
+        HCKGGoMFLjCtE1Y4qbPm18raT9TnVWXdk4Uu+yjkk3Ne+++TksUrOvAquHbS9p6e
+        QLX1zky/YdIrsOAXEpjgyfxdhlRf5sCYolv++FZzCOolU5MbvRmRQAVJgwvh8US5
+        RTP1mRGu8PBR1vq/o+MoYXP/6x4ZiS/x2J0BFsuUp0dtABoVgZu9DJi9k0KkgQjy
+        hg4RYbx5w/+MGq72kEMtKT98RBorBfB2SZVtC02xNnbUIsT0vKGZazGfQ4si//e7
+        USkrTMW4V/BGMjAh7maOuPrFTL495Dei2+8ZDT61ktHGJgyjSfceYSC0A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=6fdwtjKwmETNWXeSJaFFIb/jsDXXZpglybcolLFXiBk=; b=LQ1zPpCm
+        yxmdLCiPSzV9bqcJH2js9agp0qZCTfj5gymSgSnKs/cgSTVQ+fy0k2fTwdj3wV5z
+        ICnrcDfwbcEZKNqhroOy1quY6VvslneACioE7gu1F9Y1jLGwfZBkHa+l2QiA47p7
+        4s4DjPMhOgdNpKoLBMAOGrDHyIzZ+uP7Te9rGN8LGhXHZDS2gYMimh8PPbswul1T
+        rShx2MxK1xyO2PXFa1GPHWayVnZ/xvDGB7jK8sXz3Q+cyhCMjh8wEzs0wGZpGOnM
+        d07qMfBkn2XlBNNKlbGRWJj2r6EskanXfTZ3SbCki6WtghB0BVL5v3DDABacJe5c
+        9z/uP4whvf4LJw==
+X-ME-Sender: <xms:IqNQX3oIIR0Bo0X7KTqz6dYf7too4u1JK8xvellgijNEahjEhGOgGw>
+    <xme:IqNQXxpUHPlzhMqGfyX1HRzM2E0383aIIbdfgWyWuTWmOhbraCuNy6TlfSHnRiJl9
+    uykjWpb-P_u_LSrff0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefvd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:IqNQX0OD94_Bx--SB3-_LobX8kj9IqWj5yUOlS3ZcjoJNUaDz8OFYg>
+    <xmx:IqNQX66B-Axp1AB81ei-INIdmwySiXO4PTC7YYzsqLGLUpjmryAZJQ>
+    <xmx:IqNQX25P_XbDa4b3DdIDBmMQ0Jk-pvP8cK0rOA6tfXit-W2iKsccFw>
+    <xmx:IqNQX-guUQT7yjDBizhDC-9DZ_FomyWcetk2WOa_Gm-pDpbuEVm1GpLrGKQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5411D306005F;
+        Thu,  3 Sep 2020 04:02:42 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 35/80] drm/vc4: drv: Disable the CRTC at boot time
 Date:   Thu,  3 Sep 2020 10:01:07 +0200
-Message-Id: <20200903080119.441674-8-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903080119.441674-1-hch@lst.de>
-References: <20200903080119.441674-1-hch@lst.de>
+Message-Id: <ad57f1bdeae7a99631713b0fc193c86f223de042.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to ever register the fake gendisk used for ide-tape.
+In order to prevent issues during the firmware to KMS transition, we need
+to make sure the pixelvalve are disabled at boot time so that the DRM state
+matches the hardware state.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/ide/ide-probe.c | 32 --------------------------------
- drivers/ide/ide-tape.c  |  2 --
- include/linux/ide.h     |  3 ---
- 3 files changed, 37 deletions(-)
+ drivers/gpu/drm/vc4/vc4_crtc.c | 25 +++++++++++++++++++++++++
+ drivers/gpu/drm/vc4/vc4_drv.c  |  4 ++++
+ drivers/gpu/drm/vc4/vc4_drv.h  |  1 +
+ 3 files changed, 30 insertions(+)
 
-diff --git a/drivers/ide/ide-probe.c b/drivers/ide/ide-probe.c
-index 1ddc45a04418cd..076d34b381720f 100644
---- a/drivers/ide/ide-probe.c
-+++ b/drivers/ide/ide-probe.c
-@@ -929,38 +929,6 @@ static struct kobject *ata_probe(dev_t dev, int *part, void *data)
- 	return NULL;
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index 4156c5f66877..dfac304fe2b0 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -427,6 +427,31 @@ static int vc4_crtc_disable(struct drm_crtc *crtc, unsigned int channel)
+ 	return 0;
  }
  
--static struct kobject *exact_match(dev_t dev, int *part, void *data)
--{
--	struct gendisk *p = data;
--	*part &= (1 << PARTN_BITS) - 1;
--	return &disk_to_dev(p)->kobj;
--}
--
--static int exact_lock(dev_t dev, void *data)
--{
--	struct gendisk *p = data;
--
--	if (!get_disk_and_module(p))
--		return -1;
--	return 0;
--}
--
--void ide_register_region(struct gendisk *disk)
--{
--	blk_register_region(MKDEV(disk->major, disk->first_minor),
--			    disk->minors, NULL, exact_match, exact_lock, disk);
--}
--
--EXPORT_SYMBOL_GPL(ide_register_region);
--
--void ide_unregister_region(struct gendisk *disk)
--{
--	blk_unregister_region(MKDEV(disk->major, disk->first_minor),
--			      disk->minors);
--}
--
--EXPORT_SYMBOL_GPL(ide_unregister_region);
--
- void ide_init_disk(struct gendisk *disk, ide_drive_t *drive)
++int vc4_crtc_disable_at_boot(struct drm_crtc *crtc)
++{
++	struct drm_device *drm = crtc->dev;
++	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
++	int channel;
++
++	if (!(of_device_is_compatible(vc4_crtc->pdev->dev.of_node,
++				      "brcm,bcm2711-pixelvalve2") ||
++	      of_device_is_compatible(vc4_crtc->pdev->dev.of_node,
++				      "brcm,bcm2711-pixelvalve4")))
++		return 0;
++
++	if (!(CRTC_READ(PV_CONTROL) & PV_CONTROL_EN))
++		return 0;
++
++	if (!(CRTC_READ(PV_V_CONTROL) & PV_VCONTROL_VIDEN))
++		return 0;
++
++	channel = vc4_hvs_get_fifo_from_output(drm, vc4_crtc->data->hvs_output);
++	if (channel < 0)
++		return 0;
++
++	return vc4_crtc_disable(crtc, channel);
++}
++
+ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
+ 				    struct drm_crtc_state *old_state)
  {
- 	ide_hwif_t *hwif = drive->hwif;
-diff --git a/drivers/ide/ide-tape.c b/drivers/ide/ide-tape.c
-index 6f26634b22bbec..88b96437b22e62 100644
---- a/drivers/ide/ide-tape.c
-+++ b/drivers/ide/ide-tape.c
-@@ -1822,7 +1822,6 @@ static void ide_tape_remove(ide_drive_t *drive)
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
+index 38343d2fb4fb..9567d1019212 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.c
++++ b/drivers/gpu/drm/vc4/vc4_drv.c
+@@ -252,6 +252,7 @@ static int vc4_drm_bind(struct device *dev)
+ 	struct drm_device *drm;
+ 	struct vc4_dev *vc4;
+ 	struct device_node *node;
++	struct drm_crtc *crtc;
+ 	int ret = 0;
  
- 	ide_proc_unregister_driver(drive, tape->driver);
- 	device_del(&tape->dev);
--	ide_unregister_region(tape->disk);
+ 	dev->coherent_dma_mask = DMA_BIT_MASK(32);
+@@ -298,6 +299,9 @@ static int vc4_drm_bind(struct device *dev)
+ 	if (ret < 0)
+ 		goto unbind_all;
  
- 	mutex_lock(&idetape_ref_mutex);
- 	put_device(&tape->dev);
-@@ -2026,7 +2025,6 @@ static int ide_tape_probe(ide_drive_t *drive)
- 		      "n%s", tape->name);
++	drm_for_each_crtc(crtc, drm)
++		vc4_crtc_disable_at_boot(crtc);
++
+ 	ret = drm_dev_register(drm, 0);
+ 	if (ret < 0)
+ 		goto unbind_all;
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index 860be019d8e3..1a97545b9244 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -813,6 +813,7 @@ void vc4_bo_remove_from_purgeable_pool(struct vc4_bo *bo);
  
- 	g->fops = &idetape_block_ops;
--	ide_register_region(g);
- 
- 	return 0;
- 
-diff --git a/include/linux/ide.h b/include/linux/ide.h
-index a254841bd3156d..cfa9e4b0c325a4 100644
---- a/include/linux/ide.h
-+++ b/include/linux/ide.h
-@@ -1495,9 +1495,6 @@ static inline void ide_acpi_port_init_devices(ide_hwif_t *hwif) { ; }
- static inline void ide_acpi_set_state(ide_hwif_t *hwif, int on) {}
- #endif
- 
--void ide_register_region(struct gendisk *);
--void ide_unregister_region(struct gendisk *);
--
- void ide_check_nien_quirk_list(ide_drive_t *);
- void ide_undecoded_slave(ide_drive_t *);
- 
+ /* vc4_crtc.c */
+ extern struct platform_driver vc4_crtc_driver;
++int vc4_crtc_disable_at_boot(struct drm_crtc *crtc);
+ int vc4_crtc_init(struct drm_device *drm, struct vc4_crtc *vc4_crtc,
+ 		  const struct drm_crtc_funcs *crtc_funcs,
+ 		  const struct drm_crtc_helper_funcs *crtc_helper_funcs);
 -- 
-2.28.0
-
+git-series 0.9.1
