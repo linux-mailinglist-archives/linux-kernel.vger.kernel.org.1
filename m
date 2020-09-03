@@ -2,104 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6808725BCCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9447025BC5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgICIBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727065AbgICIBc (ORCPT
+        id S1728393AbgICIJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:09:50 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:45787 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728397AbgICICg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:01:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2A3C061244;
-        Thu,  3 Sep 2020 01:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=cU305cxFBo6tm5/dcumAYM77XH5iQN9l01UIc+MQ8ms=; b=wWWW6aYY0aagDmpZ1bPiSvTpQw
-        hJm4tzGwj6/QUrIm6ZDBPRuSbs+oSQf3GZeEe/T3oMzvl2i2cvcS8HU0gIeJExqwloJMuvqD+tyUm
-        /5CWj/mQRXnLWL5bbRHRR7Gi9/gFtwkcOHZ3GHFxXuEpkeqayyIaBuePt7xW9LIgNzgw5Nins47i/
-        BsLowowCTOTKIIDe5AHHnQPXyuGTLG+TkeO/7krX6/GSvGxLHKw2GijdhXLkTHKMxfpZWQrLqDvzM
-        osFtIVQYGnxEdZK6JbWvEPOOyuMeoSfkEwcWm+DIPXHs7xcLJi5qnAJIEjerenE5BSTQzTmGTqMiy
-        bNvKvSow==;
-Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kDkBL-0006Zq-V2; Thu, 03 Sep 2020 08:01:20 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Denis Efremov <efremov@linux.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
-Subject: simplify gendisk lookup and remove struct block_device aliases v3
-Date:   Thu,  3 Sep 2020 10:01:00 +0200
-Message-Id: <20200903080119.441674-1-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
+        Thu, 3 Sep 2020 04:02:36 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id E4876B0C;
+        Thu,  3 Sep 2020 04:02:34 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm3; bh=xjW7xn8tega2f
+        QqhFSzGhgXz2ZtI1k2ChmTaGq2MRWo=; b=Uz9EJdBNxHaqLxRQ/Ib3tBqUPOG9E
+        hunKIXqrpRysdlcSlHY9ShXDQR75jjGS433cJRxX4bcjzMksOWbMdreV6yjgwm7H
+        dQq7Arsw0qs+Oyp8ZhF6pZO52jXFnUe+vvwZTZumB9EkMLypEeXeX7g0RM84M1Iw
+        SvyGKUl+9K0Tv4mSD465hNo0gqRRNU6ZwLO50Gf0tjghTA2FxGzj3s+krTfUUmFv
+        6RzQ/8+zqRV4TT5sLlA3/AlmTQXp2VSWeqKqzIWDBhADtlBAQK44eK6t725uuXtO
+        hDqNTJSsiYJClYcRFx/18Jub1xAI7G7MyCopLMnfT9YgVFdZUIZlMjOcA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=xjW7xn8tega2fQqhFSzGhgXz2ZtI1k2ChmTaGq2MRWo=; b=VUwAGE9B
+        V73t/XvIo8qh8fhp8E1IvHIWUFwKvBdyrFkVoPi50ibrHAEx6a2c9pzC6i+ThHq1
+        BaOIOGGOgk3ixqmHuar0D46HX0gL3knVaYOBw317v0KwvjJKLBEIXBBP4LLFLLi/
+        7n0K1Y61pINMyxG6N8glRfYxmuLaXmwSkX4O1odSRSWpmMik3Abt9KhP0R7cpO5a
+        ODiytdIbohMdKAgq32nvQw9JlmWZffX3z6zCbKTiCeNYdIip/SRx3kjfz4zHb6fh
+        al7pmwFNA2cKjAgoZchafrtWM8wi3tI1Nd/rf+E7x0UnRPEJP4BYtkD9oiVFR0ym
+        +Oy75Qpd5jg4/w==
+X-ME-Sender: <xms:GqNQXxan-cttdCgdM3JA1Au7uF3nDjVQ3YXXonh1PvWaa0jdo85NkA>
+    <xme:GqNQX4YEqIkIIlZ5IfY6H-ze7E0KtxT33rVqfMKaTLZcKmbZQ2un3-RakBYSQD75J
+    rn-O-0_Q0o5wv-NdC8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
+    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedvje
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:GqNQXz-pgudW9GfT5o8pbUpoIlQjLHrMXbvQwyswbiJD-KpbjuE9mg>
+    <xmx:GqNQX_oVqON8gscs6pT5K60H6BcdHsrhbvXmSIYJ26p_DhZZurOLag>
+    <xmx:GqNQX8q7Cz0OnSasbUUwdKKMwpIREyWOn1VqKc5EGh4zTJYt95tHyw>
+    <xmx:GqNQXxQd2bvXwCxc2bkRUhArzec_vwwIkG8OgqkBTF8h0YRvabDJ3YLgjzA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2BDD7306005B;
+        Thu,  3 Sep 2020 04:02:34 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [PATCH v5 29/80] drm/vc4: crtc: Add a delay after disabling the PixelValve output
+Date:   Thu,  3 Sep 2020 10:01:01 +0200
+Message-Id: <15cf215bd2ceebd203c4010c09c21a4019c650ed.1599120059.git-series.maxime@cerno.tech>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+In order to avoid pixels getting stuck in the (unflushable) FIFO between
+the HVS and the PV, we need to add some delay after disabling the PV output
+and before disabling the HDMI controller. 20ms seems to be good enough so
+let's use that.
 
-this series removes the annoying struct block_device aliases, which can
-happen for a bunch of old floppy drivers (and z2ram).  In that case
-multiple struct block device instances for different dev_t's can point
-to the same gendisk, without being partitions.  The cause for that
-is the probe/get callback registered through blk_register_regions.
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/gpu/drm/vc4/vc4_crtc.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-This series removes blk_register_region entirely, splitting it it into
-a simple xarray lookup of registered gendisks, and a probe callback
-stored in the major_names array that can be used for modprobe overrides
-or creating devices on demands when no gendisk is found.  The old
-remapping is gone entirely, and instead the 4 remaining drivers just
-register a gendisk for each operating mode.  In case of the two drivers
-that have lots of aliases that is done on-demand using the new probe
-callback, while for the other two I simply register all at probe time
-to keep things simple.
-
-Note that the m68k drivers are compile tested only.
-
-Changes since v2:
- - fix a wrong variable passed to ERR_PTR in the floppy driver
- - slightly adjust the del_gendisk cleanups to prepare for the next
-   series touching this area
-
-Changes since v1:
- - add back a missing kobject_put in the cdev code
- - improve the xarray delete loops
-
-Diffstat:
- b/block/genhd.c           |  183 +++++++--------
- b/drivers/base/Makefile   |    2 
- b/drivers/block/amiflop.c |   98 ++++----
- b/drivers/block/ataflop.c |  135 +++++++----
- b/drivers/block/brd.c     |   39 ---
- b/drivers/block/floppy.c  |  154 ++++++++----
- b/drivers/block/loop.c    |   30 --
- b/drivers/block/swim.c    |   17 -
- b/drivers/block/z2ram.c   |  547 ++++++++++++++++++++++------------------------
- b/drivers/ide/ide-probe.c |   66 -----
- b/drivers/ide/ide-tape.c  |    2 
- b/drivers/md/md.c         |   21 -
- b/drivers/scsi/sd.c       |   19 -
- b/fs/char_dev.c           |   94 +++----
- b/fs/dcache.c             |    1 
- b/fs/internal.h           |    5 
- b/include/linux/genhd.h   |   12 -
- b/include/linux/ide.h     |    3 
- drivers/base/map.c        |  154 ------------
- include/linux/kobj_map.h  |   20 -
- 20 files changed, 686 insertions(+), 916 deletions(-)
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index d0b326e1df0a..4c23cf8aefb9 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -403,6 +403,24 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
+ 	ret = wait_for(!(CRTC_READ(PV_V_CONTROL) & PV_VCONTROL_VIDEN), 1);
+ 	WARN_ONCE(ret, "Timeout waiting for !PV_VCONTROL_VIDEN\n");
+ 
++	/*
++	 * This delay is needed to avoid to get a pixel stuck in an
++	 * unflushable FIFO between the pixelvalve and the HDMI
++	 * controllers on the BCM2711.
++	 *
++	 * Timing is fairly sensitive here, so mdelay is the safest
++	 * approach.
++	 *
++	 * If it was to be reworked, the stuck pixel happens on a
++	 * BCM2711 when changing mode with a good probability, so a
++	 * script that changes mode on a regular basis should trigger
++	 * the bug after less than 10 attempts. It manifests itself with
++	 * every pixels being shifted by one to the right, and thus the
++	 * last pixel of a line actually being displayed as the first
++	 * pixel on the next line.
++	 */
++	mdelay(20);
++
+ 	if (vc4_encoder->post_crtc_disable)
+ 		vc4_encoder->post_crtc_disable(encoder);
+ 
+-- 
+git-series 0.9.1
