@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0374525C267
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF2925C271
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729253AbgICOXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:23:52 -0400
+        id S1729290AbgICOZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:25:03 -0400
 Received: from fllv0015.ext.ti.com ([198.47.19.141]:49124 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729081AbgICOUW (ORCPT
+        with ESMTP id S1729148AbgICOWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:20:22 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083E1tMJ062014;
-        Thu, 3 Sep 2020 09:01:55 -0500
+        Thu, 3 Sep 2020 10:22:23 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 083E2QIY062119;
+        Thu, 3 Sep 2020 09:02:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599141715;
+        s=ti-com-17Q1; t=1599141746;
         bh=n6y75OS1VKW/QZMhxyG+JtFUMIMKwkz1G/LzqW6xNhs=;
         h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=NUnEhUDAV9tPN3PA5NWONPzB9cn4doJiuRoc3oDumEcZ3t38Z0MEm7kc7i/iFzmwX
-         dlHVE7mviiBMmR5upO1GzxFRfsiyn7iu5PRub409Nu8XWoJY62J3O1NmvroYA6FXCx
-         EP9AZusbhqwY3jU4As+caDYk3CfZGK14CywlE9eA=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083E1tBD126942
+        b=QnNkJ2PeK2Zup/wCo0uVNkzGrkfqz16k5ZfnZtDiypOm04kN0nsdHkGob83a9LiOZ
+         +92x+c1/FoUqx1RUJbOXcrDEfZeeLVKzd2xm0Af1jORBu6zK2oakZ+5bXltWlTLfBa
+         cW8NJLE1q9VEml4k8fQM6GaVy5Ghg5mEchKwCzrE=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 083E2Q1o127486
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 3 Sep 2020 09:01:55 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 3 Sep 2020 09:02:26 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
- 2020 09:01:54 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ 2020 09:02:26 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 3 Sep 2020 09:01:54 -0500
+ Frontend Transport; Thu, 3 Sep 2020 09:02:26 -0500
 Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083E1o6J053454;
-        Thu, 3 Sep 2020 09:01:51 -0500
-Subject: Re: [PATCH V2 1/8] arm64: dts: ti: k3-j721e: Use lower case
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 083E2JXZ097877;
+        Thu, 3 Sep 2020 09:02:21 -0500
+Subject: Re: [PATCH V2 2/8] arm64: dts: ti: k3-am65-main: Use lower case
  hexadecimal
 To:     Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
         Tero Kristo <t-kristo@ti.com>
@@ -46,14 +46,14 @@ CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         <grygorii.strashko@ti.com>, <nsekhar@ti.com>
 References: <20200901223059.14801-1-nm@ti.com>
- <20200903130015.21361-2-nm@ti.com>
+ <20200903130015.21361-3-nm@ti.com>
 From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <224da37a-9b78-e6c1-cc93-f4a3c913ddae@ti.com>
-Date:   Thu, 3 Sep 2020 19:31:50 +0530
+Message-ID: <602d859b-c495-b58f-98c5-d49982344d2e@ti.com>
+Date:   Thu, 3 Sep 2020 19:32:18 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200903130015.21361-2-nm@ti.com>
+In-Reply-To: <20200903130015.21361-3-nm@ti.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
