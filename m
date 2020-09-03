@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545C525C348
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEA225C334
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 16:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728991AbgICOsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 10:48:35 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:25703 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729078AbgICOWz (ORCPT
+        id S1729304AbgICOrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 10:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729308AbgICOZh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 10:22:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599142973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=91ijUty15Prtg/8b/t9+zr7UAa40xpsWcSzisd5H3Us=;
-        b=EzOVGVGVwCgpOKoF2M0rU9CWi8VPtnOWKLoqMxWeVmFRgeVv7km4AZjP+v1qAvPW+VcDYB
-        eEYB41koij1OHOcSKUYBv8JBi34Q23jKewwRlwa5nSyHqWCZX+CjT+/wW3VJcn7GBFubdm
-        ZbZy0nDyfKdGMq63/T7LJhDvlbZ9Iks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-06yz8j6xNA-U3FFxO-0Hyw-1; Thu, 03 Sep 2020 10:22:49 -0400
-X-MC-Unique: 06yz8j6xNA-U3FFxO-0Hyw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1A2E11084C89;
-        Thu,  3 Sep 2020 14:22:47 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.114])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2FA455D9EF;
-        Thu,  3 Sep 2020 14:22:43 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu,  3 Sep 2020 16:22:46 +0200 (CEST)
-Date:   Thu, 3 Sep 2020 16:22:42 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian@brauner.io>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-kselftest@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-api@vger.kernel.org,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 2/4] exit: support non-blocking pidfds
-Message-ID: <20200903142241.GI4386@redhat.com>
-References: <20200902102130.147672-1-christian.brauner@ubuntu.com>
- <20200902102130.147672-3-christian.brauner@ubuntu.com>
+        Thu, 3 Sep 2020 10:25:37 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3450BC0611E1
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 07:23:01 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id y17so2004804lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 07:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O/z6sRcm/w3Gq8tyci41HnHcIsT/GCvCxeftWXJE3ZM=;
+        b=Hld+nvYkZKgt0X3+OpEeMXJhLN4SNaQYMvUr7kv8tw+aY0UpEhoAwv4V8pgi4SSJ2H
+         MS0NMaV+HXyKOyijf8Jfnzzt+XnwgGnbRVdaDBTnnuCb94tTx6mpw46euxE22JBBvwGw
+         bX5kmq9SSzO2dMF9YyvSoS2iNRHFGTjTpHnwQH9Tny80Y/wTWeDwaBjazfnVp62L1PZY
+         d1ffElPpl1Gzi1F2mSu59qmoYxS/BO7YWQp+Duj3mHgBaOmDqmtd3kDSD9vgGhT7PuOT
+         pByXoVovDnxO+xK3Ai3jNII0arq5wBAMfabJzQ3mViHkzqHkHjsfLv4rgizikRXBrkia
+         evgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O/z6sRcm/w3Gq8tyci41HnHcIsT/GCvCxeftWXJE3ZM=;
+        b=IJlm3oC2Wgo8qz7qfvst6TSJZTey9F8EtE2yqimr5ob8QoDMtnMhmE6ibL83MWL9tU
+         Wi2EERmHA0hKripUQtKpKzvCmJDTUSH7F0rU+bK0MdtSFGy/Zzvjv/Ly2zVUbJMwE9am
+         K1KTJQx9P7zZ88QF+BkuOuBkAMICRWwuvPPrVYv0mn0YKRkRe4wvBNvIm0BEisulc78Y
+         cC8hTvq6CQiWX6ipzZDtR/Q9aZJ417J0uxBdFh3C53yiR0d/W+GF9ZL7g01j1Zm4/fhG
+         hZJwLS0kK9sWr+ZNldGWfa3YpDaZ9/MOqmcFR+qDXHcskuEC1CILpcxwRH1h9oCW4dV6
+         vbYQ==
+X-Gm-Message-State: AOAM5321+0BNErgXAB1rp7AlhQ23c5x72agNnKu270U+uzSq6rvsyfMl
+        bHBKYkZViW9BzziuEIvD/z3A/Q==
+X-Google-Smtp-Source: ABdhPJzpabZDHSmsRn/rqjHHltKbK/pr+mbWx6JJtKMzY8LLajUTdLpQxTCqAr5ypxTd8fG0IK1lpg==
+X-Received: by 2002:a19:8142:: with SMTP id c63mr1407517lfd.175.1599142979609;
+        Thu, 03 Sep 2020 07:22:59 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id k12sm632952ljh.95.2020.09.03.07.22.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 07:22:59 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id BE37E102212; Thu,  3 Sep 2020 17:23:00 +0300 (+03)
+Date:   Thu, 3 Sep 2020 17:23:00 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, Roman Gushchin <guro@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+Message-ID: <20200903142300.bjq2um5y5nwocvar@box>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200902102130.147672-3-christian.brauner@ubuntu.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200902180628.4052244-1-zi.yan@sent.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/02, Christian Brauner wrote:
->
-> It also makes the API more consistent and uniform. In essence, waitid() is
-> treated like a read on a non-blocking pidfd or a recvmsg() on a non-blocking
-> socket.
-> With the addition of support for non-blocking pidfds we support the same
-> functionality that sockets do. For sockets() recvmsg() supports MSG_DONTWAIT
-> for pidfds waitid() supports WNOHANG.
+On Wed, Sep 02, 2020 at 02:06:12PM -0400, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> Hi all,
+> 
+> This patchset adds support for 1GB THP on x86_64. It is on top of
+> v5.9-rc2-mmots-2020-08-25-21-13.
+> 
+> 1GB THP is more flexible for reducing translation overhead and increasing the
+> performance of applications with large memory footprint without application
+> changes compared to hugetlb.
 
-What I personally do not like is that waitid(WNOHANG) returns zero or EAGAIN
-depending on f_flags & O_NONBLOCK... This doesn't match recvmsg(MSG_DONTWAIT)
-and doesn't look consistent to me.
+This statement needs a lot of justification. I don't see 1GB THP as viable
+for any workload. Opportunistic 1GB allocation is very questionable
+strategy.
 
-Nevermind, the patch looks correct and if you think this can really help
-user-space I won't argue.
+> Design
+> =======
+> 
+> 1GB THP implementation looks similar to exiting THP code except some new designs
+> for the additional page table level.
+> 
+> 1. Page table deposit and withdraw using a new pagechain data structure:
+>    instead of one PTE page table page, 1GB THP requires 513 page table pages
+>    (one PMD page table page and 512 PTE page table pages) to be deposited
+>    at the page allocaiton time, so that we can split the page later. Currently,
+>    the page table deposit is using ->lru, thus only one page can be deposited.
 
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+False. Current code can deposit arbitrary number of page tables.
 
+What can be problem to you is that these page tables tied to struct page
+of PMD page table.
+
+>    A new pagechain data structure is added to enable multi-page deposit.
+> 
+> 2. Triple mapped 1GB THP : 1GB THP can be mapped by a combination of PUD, PMD,
+>    and PTE entries. Mixing PUD an PTE mapping can be achieved with existing
+>    PageDoubleMap mechanism. To add PMD mapping, PMDPageInPUD and
+>    sub_compound_mapcount are introduced. PMDPageInPUD is the 512-aligned base
+>    page in a 1GB THP and sub_compound_mapcount counts the PMD mapping by using
+>    page[N*512 + 3].compound_mapcount.
+
+I had hard time reasoning about DoubleMap vs. rmap. Good for you if you
+get it right.
+
+> 3. Using CMA allocaiton for 1GB THP: instead of bump MAX_ORDER, it is more sane
+>    to use something less intrusive. So all 1GB THPs are allocated from reserved
+>    CMA areas shared with hugetlb. At page splitting time, the bitmap for the 1GB
+>    THP is cleared as the resulting pages can be freed via normal page free path.
+>    We can fall back to alloc_contig_pages for 1GB THP if necessary.
+> 
+
+-- 
+ Kirill A. Shutemov
