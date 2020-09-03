@@ -2,130 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9392D25CC1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC0225CC35
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 23:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729308AbgICVXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 17:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43558 "EHLO
+        id S1728113AbgICV1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 17:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729212AbgICVXn (ORCPT
+        with ESMTP id S1726891AbgICV1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 17:23:43 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279D1C061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 14:23:43 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id e33so3148717pgm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 14:23:43 -0700 (PDT)
+        Thu, 3 Sep 2020 17:27:10 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF60C061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 14:27:10 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id i4so4099666ota.2
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 14:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7aPf35sf/rS+GXTAQsshOPRXPlwTg6mH4xINQljk/gs=;
-        b=YWusSryRB8OcSkITbDHW/EnL1O/mD9bEqM8DYvjXJbHtrcFb8EHan+0f1sXoNXbb8i
-         VpnHm2/J9Ngzg9ND5BGc/oXr6jtgVLu1VP3mBDHkl1ptmzNiwTJW9y2OVFk9fpaANOp3
-         aJSUvD9m7EfQDpgyqKBqjsR0i2J5j97MiE6NXIO3GDDBDoM46Er41HUkJxui+v2KjPZV
-         y6Qyu85ZJd702JPAxSVSNNyG9bOM7VvKq/H7feko+WrI6I25Q6Iqd11dUxU9mKwV4qRt
-         jb1ReKZH5H6o9L5VdNLoDB7U7GS0P7G7D+E3jSAH0DQCabwewZfSixE4hSH6JxsY1zOw
-         AO+w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aDDCxUq5LYXZ2vWhxqpUhB793LjuCmYKYt240ziQivQ=;
+        b=flXhhVWWhNBcfgPFbSoJ7dRSwbXxNizmHPAIsj23YZlfVwoSOJdwd5cRtKavfCouWo
+         ynjvydUPvgYTL72rYUDSEbEd+Vzau4WHprxZpoQV9g7eFZa1EBIGOQyQ6U2uQnGN5/fS
+         d8tfxntyw2vjR8R+0DZQ5NaSRVjpBg8C0wnKWar0sLTieE9H0IQny3afACakGvDkrBZR
+         PTWaE1JTL3PB3q9pqGZ6lse9sHpU7bwSCKMmjcFNWCLnifratRe2rKUMB7JArDUfOIjk
+         Qx2eU3pbiFUdNndcypC9C4tlblWlaaKEcNsP2EMz9i2ARTFjJRiL7PjzPXeCY+c2IjZE
+         XbMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7aPf35sf/rS+GXTAQsshOPRXPlwTg6mH4xINQljk/gs=;
-        b=X9oFYqw52GWGY8BJD22PWhtLAPrr9Oim5VIJ/NwacnFil5cHiSBQ7Rrly2N2koBDzE
-         dS/NBbND54Y0G7aQeBa4GF2U/KKxAePQq2uAFphbeHk6j1nIiWwHwh/0/jIfT/jJ5JA6
-         JANgmxKMH+x9wkmsmZCIIldwuhp32NL98tHqQYVr7wM733QPSYq+oScrb6vWLwyV0pQN
-         kRLrrmO0v2/UpaQ5N9XrG6/zAdwXks+VUJr7GlC3YcKvdyZhLUfNQpAa74s7Z6XvI2zY
-         6RFjTNkvcXHf1AgmIFhZrnvbvYjnO0qTLWr1lutFkc/CIapeusmZdk7OQozsRrR5AFud
-         jfZw==
-X-Gm-Message-State: AOAM53009P8TfGKOEbnoNckUQjCBHhtJHq9WRlH5dZyBkYNopZAlG6O1
-        Or+fKSoQFQAgZNPyp4aS4GGpTg==
-X-Google-Smtp-Source: ABdhPJym9rvtUQKTClz+mGu97nT6oHUMgtaUIZjPoGBmcrUgQSrxVqyJs/60gErYsCPJ4ijihoDT1w==
-X-Received: by 2002:aa7:8ecf:: with SMTP id b15mr5674464pfr.236.1599168222424;
-        Thu, 03 Sep 2020 14:23:42 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c085:21c1::1063? ([2620:10d:c090:400::5:c6f0])
-        by smtp.gmail.com with ESMTPSA id u63sm4188113pfu.34.2020.09.03.14.23.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 14:23:41 -0700 (PDT)
-Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
- SCSI HBAs
-To:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, don.brace@microsemi.com,
-        kashyap.desai@broadcom.com, ming.lei@redhat.com,
-        bvanassche@acm.org, dgilbert@interlog.com,
-        paolo.valente@linaro.org, hare@suse.de, hch@lst.de
-Cc:     sumit.saxena@broadcom.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        esc.storagedev@microsemi.com, megaraidlinux.pdl@broadcom.com,
-        chenxiang66@hisilicon.com, luojiaxing@huawei.com
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
-Date:   Thu, 3 Sep 2020 15:23:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aDDCxUq5LYXZ2vWhxqpUhB793LjuCmYKYt240ziQivQ=;
+        b=mO0+9tB0K8eDaSOAqkRHwcG337vMYbh9chbEMZcsQv7705Op5wBki9fidVRlWsypmJ
+         o61Ch6zesI8UywBxxSxgRrVTsGLfk3BULA+NbLQsSQ2LNwR0rW2Kg1W7bJ60jHtzIZeg
+         IO+5NfnQD5b/4wem3jjcNlsaAtWjesDLDPuETCwqakOsMM6cWwo43dOFjGEZSbv87xcx
+         DZActMbOAXx3Z6GaY0R2FjzptOENIZWL5Erw9Mz0fWEWi4sLXvE9BuPhn/LOHdDeMO3s
+         oe0Kt2yTCN2/x9Xe6VBoAz0EHlTY3nputamYUkwXrrn74+aVns3ZlTYsg1fOMUEuoB9C
+         mFxA==
+X-Gm-Message-State: AOAM533E9Waj5tXctajqJr762Cp2QQ50xq6u/utb/ptJdbp2f/pVXKrX
+        4G+TGhl4hijNrmFULK+PWvy4m1Z7+lh9WP/PrEC4PQ==
+X-Google-Smtp-Source: ABdhPJwaWdTpa/DNKpDuyca6UfKn2JJFpMZ/65YVZxbQhKEzZqWnrZXd/AB8AvPQ5/gesxUVWpJGeavsVVGS1mZEnVU=
+X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr3111739ota.241.1599168429267;
+ Thu, 03 Sep 2020 14:27:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200903141122.72908-1-mgamal@redhat.com> <CALMp9eTrc8_z3pKBtLVmbnMvC+KtzXMYbYTXZPPz5F0UWW8oNQ@mail.gmail.com>
+ <00b0f9eb-286b-72e8-40b5-02f9576f2ce3@redhat.com> <CALMp9eS6O18WcEyw8b6npRSazsyKiGtBjV+coZVGxDNU1JEOsQ@mail.gmail.com>
+ <208da546-e8e3-ccd5-9686-f260d07b73fd@redhat.com>
+In-Reply-To: <208da546-e8e3-ccd5-9686-f260d07b73fd@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 3 Sep 2020 14:26:57 -0700
+Message-ID: <CALMp9eTheeaYcBjx50-JC4_93mxudgOeyNbT6stVMfx3FjXFCQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address space
+ support user-configurable
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/20 9:20 AM, John Garry wrote:
-> Hi all,
-> 
-> Here is v8 of the patchset.
-> 
-> In this version of the series, we keep the shared sbitmap for driver tags,
-> and introduce changes to fix up the tag budgeting across request queues.
-> We also have a change to count requests per-hctx for when an elevator is
-> enabled, as an optimisation. I also dropped the debugfs changes - more on
-> that below.
-> 
-> Some performance figures:
-> 
-> Using 12x SAS SSDs on hisi_sas v3 hw. mq-deadline results are included,
-> but it is not always an appropriate scheduler to use.
-> 
-> Tag depth 		4000 (default)			260**
-> 
-> Baseline (v5.9-rc1):
-> none sched:		2094K IOPS			513K
-> mq-deadline sched:	2145K IOPS			1336K
-> 
-> Final, host_tagset=0 in LLDD *, ***:
-> none sched:		2120K IOPS			550K
-> mq-deadline sched:	2121K IOPS			1309K
-> 
-> Final ***:
-> none sched:		2132K IOPS			1185			
-> mq-deadline sched:	2145K IOPS			2097	
-> 
-> * this is relevant as this is the performance in supporting but not
->   enabling the feature
-> ** depth=260 is relevant as some point where we are regularly waiting for
->    tags to be available. Figures were are a bit unstable here.
-> *** Included "[PATCH V4] scsi: core: only re-run queue in
->     scsi_end_request() if device queue is busy"
-> 
-> A copy of the patches can be found here:
-> https://github.com/hisilicon/kernel-dev/tree/private-topic-blk-mq-shared-tags-v8
-> 
-> The hpsa patch depends on:
-> https://lore.kernel.org/linux-scsi/20200430131904.5847-1-hare@suse.de/
-> 
-> And the smartpqi patch is not to be accepted.
-> 
-> Comments (and testing) welcome, thanks!
+On Thu, Sep 3, 2020 at 1:02 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 03/09/20 20:32, Jim Mattson wrote:
+> >> [Checking writes to CR3] would be way too slow.  Even the current
+> >> trapping of present #PF can introduce some slowdown depending on the
+> >> workload.
+> >
+> > Yes, I was concerned about that...which is why I would not want to
+> > enable pedantic mode. But if you're going to be pedantic, why go
+> > halfway?
+>
+> Because I am not sure about any guest, even KVM, caring about setting
+> bits 51:46 in CR3.
+>
+> >>> Does the typical guest care about whether or not setting any of the
+> >>> bits 51:46 in a PFN results in a fault?
+> >>
+> >> At least KVM with shadow pages does, which is a bit niche but it shows
+> >> that you cannot really rely on no one doing it.  As you guessed, the
+> >> main usage of the feature is for machines with 5-level page tables where
+> >> there are no reserved bits; emulating smaller MAXPHYADDR allows
+> >> migrating VMs from 4-level page-table hosts.
+> >>
+> >> Enabling per-VM would not be particularly useful IMO because if you want
+> >> to disable this code you can just set host MAXPHYADDR = guest
+> >> MAXPHYADDR, which should be the common case unless you want to do that
+> >> kind of Skylake to Icelake (or similar) migration.
+> >
+> > I expect that it will be quite common to run 46-bit wide legacy VMs on
+> > Ice Lake hardware, as Ice Lake machines start showing up in
+> > heterogeneous data centers.
+>
+> If you'll be okay with running _all_ 46-bit wide legacy VMs without
+> MAXPHYADDR emulation, that's what this patch is for.  If you'll be okay
+> with running _only_ 46-bit wide VMs without emulation, you still don't
+> need special enabling per-VM beyond the automatic one based on
+> CPUID[0x8000_0008].  Do you think you'll need to enable it for some
+> special 46-bit VMs?
 
-I applied 1-11, leaving the SCSI core bits and drivers to Martin. I can
-also carry them, just let me know.
-
--- 
-Jens Axboe
-
+Yes. From what you've said above, we would only want to enable this
+for the niche case of 46-bit KVM guests using shadow paging. I would
+expect that to be a very small number of VMs. :-)
