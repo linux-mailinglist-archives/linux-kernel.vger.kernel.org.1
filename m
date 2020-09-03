@@ -2,196 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605CA25CB74
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1912C25CA3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 22:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgICUp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 16:45:59 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54676 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728397AbgICUp6 (ORCPT
+        id S1729252AbgICUaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 16:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727065AbgICUap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 16:45:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599165956;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=o5hVxkqGdg+psOvlIfXAU4TmERsy4dVZC0Gsf884zyc=;
-        b=G6gFOsbnvON+O97R26wkhQFLJ5hwkvL4AJ74NYOwj32yoLm2PjHPuWBvGNpeUKFfbSKd4m
-        cvYBbzzedKHSlvhLc13P5LTx+TRjs+U2KaIWKdKN79L5dSn/8DZsRcyfoltf0NunfwFoN5
-        3BFGc6t6E8HS7hKddHWheNC9JP7kWqI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-6aiBpulQOTGANZAHBa-ycA-1; Thu, 03 Sep 2020 16:45:53 -0400
-X-MC-Unique: 6aiBpulQOTGANZAHBa-ycA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D12631DE0E;
-        Thu,  3 Sep 2020 20:45:51 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8E3936198B;
-        Thu,  3 Sep 2020 20:45:50 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id C03F54168BB3; Thu,  3 Sep 2020 15:52:00 -0300 (-03)
-Date:   Thu, 3 Sep 2020 15:52:00 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Requirements to control kernel isolation/nohz_full at runtime
-Message-ID: <20200903185200.GA1029791@fuller.cnet>
-References: <20200901104640.GA13814@lenoir>
- <20200903182359.GA1016174@fuller.cnet>
- <20200903183015.GA1027417@fuller.cnet>
- <20200903183636.GB99697@lorien.usersys.redhat.com>
+        Thu, 3 Sep 2020 16:30:45 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE50FC061244;
+        Thu,  3 Sep 2020 13:30:44 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so4612241wrt.3;
+        Thu, 03 Sep 2020 13:30:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bCiiLHdkyCif4lDSthP4Rue9BpevgzI0PU8h03qCRjY=;
+        b=jPn9PdHbFfQYzxWap1ICE8K6I+puU4a41hfw1FW7yTjLz1RhIsitR1DWrUfJmsjeCB
+         QuJOmJyDFQYCTkogqBoM4vrDLC/Z5EVI3XFVbh9zdKGJj77q909aTXooCxRXI7xYVuQP
+         p/1egAtosQMJUMhUYeyBm4j5pbEtexUOiRgCbw1yLNA4GMSaR9MEwQi5gIl1O4P3cr9C
+         CR146At7ZOwRhfRac+TMEc6WNIpHskIq3kk+tAK9MInIn63jVVs/EkMYpXiXfF/eZFOu
+         ipNheUsBnVEN6N3RY7iXk1t0dVkKgpWJ/IWMMJP38c+cH+r61oiAKkfz5tqa04VR4jPZ
+         ROmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bCiiLHdkyCif4lDSthP4Rue9BpevgzI0PU8h03qCRjY=;
+        b=nhkd007Kkhzp1hbu5HY9HsKrFp+cA11ly0Npz97LQK2iG4TWLfGtie+jLGKUzCoHix
+         BJShOcxCAcVtMD9yw6cOb0otrVm86TIGqtKsnXW1fKN9ecabRz2cWGQMED0c3M8zhdXJ
+         aSJSN2fG/6/uTTlKeOAWe5h0p9op8WeRW3Sx4ghr5ULMl8MUrPldO1uVMZ6jpMxGCyCu
+         Q/MlhZRa/GwQplvYNEyhow6TFXbOiuXNJPiKQDfL6wYfbU1dAJ+Qi5CCxs6NZSYNVlW6
+         0gCfu8GU5aqv9bDm1kjUGKnSMQqA0sx8DBx6ZRLRHyRDMmayIvmR5ndI9auDrLTdp5H+
+         cm6w==
+X-Gm-Message-State: AOAM533EgLLsH+F1dyjaU1+tCyX6OgAVX+e3S1ksa39molK55Vyy3hnP
+        FFuIBYpd9DTRrYBTEgJ1Bhk=
+X-Google-Smtp-Source: ABdhPJxWnW47sJQ9T2/8BdZhhOZMbOW7I2FSoB1MeYeY4KcXmQ1ajCllvvZtZlt7+JcUa4XQrMLvqw==
+X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr4118026wrt.32.1599165043167;
+        Thu, 03 Sep 2020 13:30:43 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id q186sm6818274wma.45.2020.09.03.13.30.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 13:30:42 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v2 00/20] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date:   Thu,  3 Sep 2020 22:30:14 +0200
+Message-Id: <20200903203034.1057334-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903183636.GB99697@lorien.usersys.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 02:36:36PM -0400, Phil Auld wrote:
-> On Thu, Sep 03, 2020 at 03:30:15PM -0300 Marcelo Tosatti wrote:
-> > On Thu, Sep 03, 2020 at 03:23:59PM -0300, Marcelo Tosatti wrote:
-> > > On Tue, Sep 01, 2020 at 12:46:41PM +0200, Frederic Weisbecker wrote:
-> > > > Hi,
-> > > 
-> > > Hi Frederic,
-> > > 
-> > > Thanks for the summary! Looking forward to your comments...
-> > > 
-> > > > I'm currently working on making nohz_full/nohz_idle runtime toggable
-> > > > and some other people seem to be interested as well. So I've dumped
-> > > > a few thoughts about some pre-requirements to achieve that for those
-> > > > interested.
-> > > > 
-> > > > As you can see, there is a bit of hard work in the way. I'm iterating
-> > > > that in https://pad.kernel.org/p/isolation, feel free to edit:
-> > > > 
-> > > > 
-> > > > == RCU nocb ==
-> > > > 
-> > > > Currently controllable with "rcu_nocbs=" boot parameter and/or through nohz_full=/isolcpus=nohz
-> > > > We need to make it toggeable at runtime. Currently handling that:
-> > > > v1: https://lwn.net/Articles/820544/
-> > > > v2: coming soon
-> > > 
-> > > Nice.
-> > > 
-> > > > == TIF_NOHZ ==
-> > > > 
-> > > > Need to get rid of that in order not to trigger syscall slowpath on CPUs that don't want nohz_full.
-> > > > Also we don't want to iterate all threads and clear the flag when the last nohz_full CPU exits nohz_full
-> > > > mode. Prefer static keys to call context tracking on archs. x86 does that well.
-> > > > 
-> > > > == Proper entry code ==
-> > > > 
-> > > > We must make sure that a given arch never calls exception_enter() / exception_exit().
-> > > > This saves the previous state of context tracking and switch to kernel mode (from context tracking POV)
-> > > > temporarily. Since this state is saved on the stack, this prevents us from turning off context tracking
-> > > > entirely on a CPU: The tracking must be done on all CPUs and that takes some cycles.
-> > > > 
-> > > > This means that, considering early entry code (before the call to context tracking upon kernel entry,
-> > > > and after the call to context tracking upon kernel exit), we must take care of few things:
-> > > > 
-> > > > 1) Make sure early entry code can't trigger exceptions. Or if it does, the given exception can't schedule
-> > > > or use RCU (unless it calls rcu_nmi_enter()). Otherwise the exception must call exception_enter()/exception_exit()
-> > > > which we don't want.
-> > > > 
-> > > > 2) No call to schedule_user().
-> > > > 
-> > > > 3) Make sure early entry code is not interruptible or preempt_schedule_irq() would rely on
-> > > > exception_entry()/exception_exit()
-> > > > 
-> > > > 4) Make sure early entry code can't be traced (no call to preempt_schedule_notrace()), or if it does it
-> > > > can't schedule
-> > > > 
-> > > > I believe x86 does most of that well. In the end we should remove exception_enter()/exit implementations
-> > > > in x86 and replace it with a check that makes sure context_tracking state is not in USER. An arch meeting
-> > > > all the above conditions would earn a CONFIG_ARCH_HAS_SANE_CONTEXT_TRACKING. Being able to toggle nohz_full
-> > > > at runtime would depend on that.
-> > > > 
-> > > > 
-> > > > == Cputime accounting ==
-> > > > 
-> > > > Both write and read side must switch to tick based accounting and drop the use of seqlock in task_cputime(),
-> > > > task_gtime(), kcpustat_field(), kcpustat_cpu_fetch(). Special ordering/state machine is required to make that without races.
-> > > > 
-> > > > == Nohz ==
-> > > > 
-> > > > Switch from nohz_full to nohz_idle. Mind a few details:
-> > > >     
-> > > >     1) Turn off 1Hz offlined tick handled in housekeeping
-> > > >     2) Handle tick dependencies, take care of racing CPUs setting/clearing tick dependency. It's much trickier when
-> > > >     we switch from nohz_idle to nohz_full
-> > > >     
-> > > > == Unbound affinity ==
-> > > > 
-> > > > Restore kernel threads, workqueue, timers, etc... wide affinity. But take care of cpumasks that have been set through other
-> > > > interfaces: sysfs, procfs, etc...
-> > > 
-> > > We were looking at a userspace interface: what would be a proper
-> > > (unified, similar to isolcpus= interface) and its implementation:
-> > > 
-> > > The simplest idea for interface seemed to be exposing the integer list of
-> > > CPUs and isolation flags to userspace (probably via sysfs).
-> > > 
-> > > The scheme would allow flags to be separately enabled/disabled, 
-> > > with not all flags being necessary toggable (could for example
-> > > disallow nohz_full= toggling until it is implemented, but allow for
-> > > other isolation features to be toggable).
-> > > 
-> > > This would require per flag housekeeping_masks (instead of a single).
-> > > 
-> > > Back to the userspace interface, you mentioned earlier that cpusets
-> > > was a possibility for it. However:
-> > > 
-> > > "Cpusets provide a Linux kernel mechanism to constrain which CPUs and
-> > > Memory Nodes are used by a process or set of processes.
-> > > 
-> > > The Linux kernel already has a pair of mechanisms to specify on which
-> > > CPUs a task may be scheduled (sched_setaffinity) and on which Memory
-> > > Nodes it may obtain memory (mbind, set_mempolicy).
-> > > 
-> > > Cpusets extends these two mechanisms as follows:"
-> > > 
-> > > The isolation flags do not necessarily have anything to do with
-> > > tasks, but with CPUs: a given feature is disabled or enabled on a
-> > > given CPU. 
-> > > No?
-> > 
-> > One cpumask per feature, implemented separately in sysfs, also 
-> > seems OK (modulo documentation about the RCU update and users
-> > of the previous versions).
-> > 
-> > This is what is being done for rcu_nocbs= already...
-> > 
-> 
-> exclusive cpusets is used now to control scheduler load balancing on
-> a group of cpus.  It seems to me that this is the same idea and is part
-> of the isolation concept.  Having a toggle for each subsystem/feature in
-> cpusets could provide the needed userspace api. 
-> 
-> Under the covers it might be implemented as twiddling various cpumasks.
-> 
-> We need to be shifting to managing load balancing with cpusets anyway.
+Hi,
 
-OK, adding a new file per isolation feature:
+Regarding the I2S LRCK polarity, Maxime Ripard test it and found that
+the LRCK is fine: https://lkml.org/lkml/2020/7/29/581.
+So the patch introduce this modification has been reverted.
 
-	- cpuset.isolation_nohz_full
-	- cpuset.isolation_kthread
-	- cpuset.isolation_time
+I have tested this on Allwinner H6 but this should be tested on older
+platform like sun4i family.
 
-With a bool value per file, is an option.
+Regards,
+Clement
+
+Change since v1:
+- rebase on next-20200828
+- add revert LRCK polarity
+- remove all simple-audio-card,frame-inversion in dts
+- add Ondrej patches for Orange Pi board
+- Add arm64 defconfig patch
+
+Clément Péron (4):
+  Revert "ASoC: sun4i-i2s: Fix the LRCK polarity"
+  ASoC: sun4i-i2s: Fix sun8i volatile regs
+  arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
+  arm64: defconfig: Enable Allwinner i2s driver
+
+Jernej Skrabec (3):
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  arm64: dts: allwinner: h6: Add HDMI audio node
+
+Marcus Cooper (10):
+  ASoC: sun4i-i2s: Adjust LRCLK width
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  arm: dts: sunxi: h3/h5: Add DAI node for HDMI
+  arm: dts: sunxi: h3/h5: Add HDMI audio
+  arm64: dts: allwinner: a64: Add DAI node for HDMI
+  arm64: dts: allwinner: a64: Add HDMI audio
+  arm: sun8i: h3: Add HDMI audio to Orange Pi 2
+  arm: sun8i: h3: Add HDMI audio to Beelink X2
+  arm64: dts: allwinner: a64: Add HDMI audio to Pine64
+
+Ondrej Jirman (3):
+  arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
+  ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
+  arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ arch/arm/boot/dts/sun8i-h3-beelink-x2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-one.dts   |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts    |   8 +
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  32 ++
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  33 ++
+ .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  |   8 +
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   8 +
+ .../dts/allwinner/sun50i-h6-orangepi-3.dts    |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  32 ++
+ arch/arm64/configs/defconfig                  |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 285 ++++++++++++++++--
+ 14 files changed, 431 insertions(+), 18 deletions(-)
+
+-- 
+2.25.1
 
