@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6382F25B8DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 603AC25B8E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 04:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbgICCsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Sep 2020 22:48:21 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:56371 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgICCsV (ORCPT
+        id S1728083AbgICCwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Sep 2020 22:52:06 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:34057 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726528AbgICCwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Sep 2020 22:48:21 -0400
-Received: by mail-il1-f199.google.com with SMTP id w82so1219925ila.23
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 19:48:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rBL3bWJ770w5+rKgjWbVHAlekloDjKTJ10BiBusqwbo=;
-        b=m2JJJUpyIhcmI+XdU/xFV6UZGFBdIIb7GGkZi0nmaYhNXyrdzAAKn4Uw6h2Uq3pWxa
-         D3kmZnjU2lCy1I6/zlMUDQhmFenvqSK39mwbZDy3roprGU+zne9QmGX4A+G6wtMomgNN
-         JjSGquhbxfEJCr+BRZBxictSUtDsLUEqaxYJjvC4YzE1LGiMsiwSMV6zpsWm4DBOcuPH
-         qfR3n/juwyRm1YKxmUn1ZGlTq2fj4D0IIWi8L2tzGzcI5yjQRn5ZLe3qVdP+YxdvsmwS
-         KUJDEz7Wf2Yv7L4ODLZXpCl/6RCBry6KCfHV5t16YtcmSwO+nKwFP66JpxSvAsGaGweE
-         QZ5Q==
-X-Gm-Message-State: AOAM532lja8/SRLXfhqVrnL3PY7a0SsvXm0gsjiYjxYTEJG+shP96uKm
-        AhGbSNRuX8XIhon8iSvdDhTEZOi3bF85i3XNHzvzUEcs/3cB
-X-Google-Smtp-Source: ABdhPJzv10QtaoXFC2pn0QjjJfPKlYbXOBRcDbo4j7/EvDxgGM6HQSc52V4ftq3hKOFQBxkXXmU8ogkFRSouOku7TBZJm9F6H6cB
-MIME-Version: 1.0
-X-Received: by 2002:a5d:9051:: with SMTP id v17mr1198574ioq.88.1599101299894;
- Wed, 02 Sep 2020 19:48:19 -0700 (PDT)
-Date:   Wed, 02 Sep 2020 19:48:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f0ae3005ae5fc85e@google.com>
-Subject: BUG: sleeping function called from invalid context in vdso_join_timens
-From:   syzbot <syzbot+49f84b6782afe2a2b20e@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 2 Sep 2020 22:52:00 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 02 Sep 2020 19:51:58 -0700
+Received: from th-lint-039.qualcomm.com ([10.63.179.124])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 02 Sep 2020 19:51:58 -0700
+Received: by th-lint-039.qualcomm.com (Postfix, from userid 2383757)
+        id 4F6E71B66; Wed,  2 Sep 2020 19:51:58 -0700 (PDT)
+From:   Gurbir Arora <gurbaror@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
+        tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org, rishabhb@codeaurora.org,
+        Gurbir Arora <gurbaror@codeaurora.org>
+Subject: [PATCH v2 0/3] Introduce mini-dump support for remoteproc.
+Date:   Wed,  2 Sep 2020 19:51:53 -0700
+Message-Id: <1599101516-243760-1-git-send-email-gurbaror@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sometimes firmware sizes can be in ten's of MB's and reading
+all the memory during coredump can consume lot of time and
+memory.
+Introducing support for mini-dumps. Mini-dump contains smallest
+amount of useful information, that could help to debug subsystem
+crashes.
+During bootup memory is allocated in SMEM (Shared memory)
+in the form of a table that contains the physical
+addresses and sizes of the regions that are supposed to be
+collected during coredump. This memory is shared amongst all
+processors in a Qualcomm platform, so all remoteprocs
+fill in their entry in the global table once they are out
+of reset.
+This patch series adds support for parsing the global minidump
+table and uses the current coredump frameork to expose this memory
+to userspace during remoteproc's recovery.
 
-syzbot found the following issue on:
+This patch series also integrates the patch:
+https://patchwork.kernel.org/patch/11695541/ sent by Siddharth.
 
-HEAD commit:    4d41ead6 Merge tag 'block-5.9-2020-08-28' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=174adf49900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=891ca5711a9f1650
-dashboard link: https://syzkaller.appspot.com/bug?extid=49f84b6782afe2a2b20e
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+Changelog: 
 
-Unfortunately, I don't have any reproducer for this issue yet.
+v1 -> v2:
+- 3 kernel test robot warnings have been resolved.
+- Introduced priv_cleanup op in order to making the cleaning of
+private elements used by the remoteproc more readable.
+- Removed rproc_cleanup_priv as it is no longer needed.
+- Switched to if/else format for rproc_alloc in order to keep 
+the static const decalaration of adsp_minidump_ops.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+49f84b6782afe2a2b20e@syzkaller.appspotmail.com
+Gurbir Arora (3):
+  remoteproc: core: Add multiple components to remoteproc ops
+  remoteproc: qcom: Add capability to collect minidumps
+  remoteproc: qcom: Add minidump id for sm8150 modem remoteproc
 
-BUG: sleeping function called from invalid context at kernel/locking/rwsem.c:1491
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 479, name: syz-executor.3
-INFO: lockdep is turned off.
-irq event stamp: 845
-hardirqs last  enabled at (845): [<ffffffff882cebdf>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-hardirqs last  enabled at (845): [<ffffffff882cebdf>] _raw_spin_unlock_irqrestore+0x6f/0xd0 kernel/locking/spinlock.c:191
-hardirqs last disabled at (844): [<ffffffff882cea28>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
-hardirqs last disabled at (844): [<ffffffff882cea28>] _raw_spin_lock_irqsave+0x78/0xc0 kernel/locking/spinlock.c:159
-softirqs last  enabled at (662): [<ffffffff88400f2f>] asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
-softirqs last disabled at (653): [<ffffffff88400f2f>] asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
-Preemption disabled at:
-[<ffffffff882c3253>] preempt_schedule_irq+0x93/0x150 kernel/sched/core.c:4783
-CPU: 1 PID: 479 Comm: syz-executor.3 Tainted: G      D           5.9.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1f0/0x31e lib/dump_stack.c:118
- ___might_sleep+0x3c0/0x570 kernel/sched/core.c:7299
- down_read+0x17/0x50 kernel/locking/rwsem.c:1491
- mmap_read_lock include/linux/mmap_lock.h:46 [inline]
- vdso_join_timens+0x46/0x120 arch/x86/entry/vdso/vma.c:147
-kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
-BUG: unable to handle page fault for address: ffff8880ae936310
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0011) - permissions violation
-PGD c401067 P4D c401067 PUD 21ffff067 PMD 80000000ae8001e3 
-Oops: 0011 [#2] PREEMPT SMP KASAN
-CPU: 1 PID: 479 Comm: syz-executor.3 Tainted: G      D W         5.9.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+ drivers/remoteproc/qcom_minidump.h          |  64 +++++++++
+ drivers/remoteproc/qcom_q6v5_pas.c          |  36 ++++-
+ drivers/remoteproc/remoteproc_core.c        |   6 +-
+ drivers/remoteproc/remoteproc_coredump.c    | 203 +++++++++++++++++++++++++++-
+ drivers/remoteproc/remoteproc_elf_helpers.h |  27 ++++
+ drivers/remoteproc/remoteproc_internal.h    |   1 +
+ include/linux/remoteproc.h                  |   4 +
+ 7 files changed, 337 insertions(+), 4 deletions(-)
+ create mode 100644 drivers/remoteproc/qcom_minidump.h
 
+-- 
+2.7.4
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
