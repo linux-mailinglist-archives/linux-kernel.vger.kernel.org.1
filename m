@@ -2,182 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077D125CE4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 01:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275D225CE42
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 01:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729534AbgICXZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 19:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S1729367AbgICXZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 19:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729336AbgICXZM (ORCPT
+        with ESMTP id S1729311AbgICXZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 19:25:12 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72794C06125C
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 16:25:11 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id e7so3300182qtj.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 16:25:11 -0700 (PDT)
+        Thu, 3 Sep 2020 19:25:07 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BF6C061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 16:25:06 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 5so3345512pgl.4
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 16:25:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CpIM1vivLGzOLkg2coJ9MKu5jBPaDdQiymauIKRU90I=;
-        b=hjMrVcf/HWZjuosu4QG0j6BBgJS51vZoP3ffeIvYP7UxIzFTjjobvv7VJIYz+YDMgf
-         YehgtUxoeLnY6L5a76UvY3QrdjGFjp3iorJxhkmXxrRV9hk8QyLMqSCDahkorhyEfkVz
-         JMRC594IihbkmbpshO7AocOKJco3HWgK9TGPvgc9HV9s62TurLnTaJsk/qDNPOWhTJ/t
-         YNblHOM95DB9wXQnyHHWxyJGw/9S9A7WIdYh5ILo6vf37cTOphuuK9eR3E+vBiZXYQgC
-         3w46PkP+1jkJo8Uwv7NRP2d2ttY0RLAejlkt/7mAVlDeYreoSkK4fIaA+u0A18W1QDNg
-         NpXQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=9D90+pAFL80PupYKppeDjSMb53d09AW9uWDmD+PNvZ8=;
+        b=Ceo30NPe/3i/3NSMwH3W/JmqHwlMveG9Dbgn22rEsVDTvkKhjXSsLRfkwsSMLijOLe
+         rhLbGd6zdxIchiLENz6Q6dG/9pQceKqjgdjQDtegsa+aq3vlF44HSYgSzzq7b6VWPmHY
+         CVs5vzHFfIXNRjnsZrms8xwCwnp7nqiTY9q/I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CpIM1vivLGzOLkg2coJ9MKu5jBPaDdQiymauIKRU90I=;
-        b=PWDk25VIDHmJsPNO9RrECcys4LJ11JXGZZ3nn82T4iwwegfS6mG4noJHhlhm3Thpqm
-         bcOztndirXmKZXqbs9mhxNOQB7ETedyd3iBilw5CT9oY+R8nNoOc9uiAa+6xLlAVQHaL
-         FSHh2GHcsLyCwfAzxiCYoVa30uNwo0MXUfx4fJaAnvO70DGm/227usZbYrulIi/D3F/a
-         LfyI1XiUuYK5m76HwVt8eJUwVKjAppfX9QngFqTi03wumdGtb2sf8FOQWj9qmAi0jJeb
-         cAEMo7Zj8Rq3QSkJXmtGzDP2W3IWlyoUInk25MARrmhbQovHgENzhLbvKuzMesTzSEum
-         fSEg==
-X-Gm-Message-State: AOAM531EkXxhlRWa9qGzU1vL+nVxNzsYnext4fyvRLPqfMOb1wt0N54I
-        Y6Qkl1siddD9tBVHw6kI1XQrOA==
-X-Google-Smtp-Source: ABdhPJyy8QS6W7hRKA79lufueRD9aNPrALoyUJvwiGtauVl1gDdogpQGhbfPM37w2mYIENqhEa69oA==
-X-Received: by 2002:aed:3e2e:: with SMTP id l43mr6217308qtf.392.1599175510429;
-        Thu, 03 Sep 2020 16:25:10 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id v202sm3397009qka.5.2020.09.03.16.25.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 16:25:10 -0700 (PDT)
-Subject: Re: [PATCH v2 07/10] phy: qcom-qmp: Add support for DP in USB3+DP
- combo phy
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Chandan Uddaraju <chandanu@codeaurora.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-References: <20200902230215.3452712-1-swboyd@chromium.org>
- <20200902230215.3452712-8-swboyd@chromium.org>
- <b6f80242-482d-b778-690b-8aefa4e8f23e@marek.ca>
- <159917286975.334488.16684252260287652678@swboyd.mtv.corp.google.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <7cf46574-569d-c69d-cfed-0fa20057b4d5@marek.ca>
-Date:   Thu, 3 Sep 2020 19:24:26 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=9D90+pAFL80PupYKppeDjSMb53d09AW9uWDmD+PNvZ8=;
+        b=VMyIB8jbmVM5Ui/ZgTuBQKEvE0abFbCuXnn/UfGJNM4jEBhT2kaikmOGcNNHP/TiWc
+         m3CNjSsOOG/w3U1DksZxjSRF6YXc0EkgHMJFG6ukKRIMPcdtFvQbBx0REgNpvvFuXB5u
+         SSbBMpkrT3XZMzupQ6tgOOwIjemCPK88fUojL1c55sSfAEPtChOm3m/4Dy22yHk/XM12
+         4ekuilmSHZDskTvtnsxsSqbm6RBIdOBQbKFvBR4zaCt05pGIRM/Vr9KwZw248Z4GUuj4
+         QrZSiRA1v3c5dDzqnwvazSLsZfMshBRLat/ZyS4Gfr8GyMSHUF6CXa4mnZOjxSa1KjJ1
+         ndCA==
+X-Gm-Message-State: AOAM532OiLvPa66P1OlFRo0XnQaDij5Hlk0HRnYJu5/TYq+fKQ12IgNT
+        scPyJrxuakgk58uicnAe0zocAg==
+X-Google-Smtp-Source: ABdhPJyotTnzJcV701e1rWtMf0V7HnsqMU8RXbPl7+Pw/P9r/85I6PHiwIVMdF+JrKzrzh3qyGgC5A==
+X-Received: by 2002:a17:902:be08:: with SMTP id r8mr3905651pls.103.1599175505475;
+        Thu, 03 Sep 2020 16:25:05 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
+        by smtp.gmail.com with ESMTPSA id q7sm3614459pgg.10.2020.09.03.16.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 16:25:05 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org
+Subject: [PATCH 2/6] mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.9
+Date:   Thu,  3 Sep 2020 16:24:37 -0700
+Message-Id: <20200903162412.2.I226782b43191ce367fa3bc1c907c29f571890412@changeid>
+X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+In-Reply-To: <20200903232441.2694866-1-dianders@chromium.org>
+References: <20200903232441.2694866-1-dianders@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <159917286975.334488.16684252260287652678@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/20 6:41 PM, Stephen Boyd wrote:
-> Quoting Jonathan Marek (2020-09-03 13:43:10)
->> On 9/2/20 7:02 PM, Stephen Boyd wrote:
->>>
->>> This code is based on a submission of this phy and PLL in the drm
->>> subsystem.
->>
->> I updated my upstream-based sm8150/sm8250 displayport stack [1] to use
->> these patches.
-> 
-> Great!
-> 
->>
->> This commit [2] might interest you, so that you can consider what needs
->> to change between v3 and v4 PHYs. Note some of the V4 registers have the
->> same address as V3, so the diff could be smaller.
-> 
-> Looks like v4 will need to introduce a register indirection table for
-> the differences. Also need to add a table for the aux initial table
-> values and the calibration values for aux_cfg1. Seems like it won't be
-> too bad.
-> 
-> Does DP work with those patches with v4? You should make yourself the
-> author of commit d3c6da6f87eedb20ea1591aaae1ea4e63d7bd777 ;-)
-> 
+This is like commit 3d3451124f3d ("mmc: sdhci-msm: Prefer asynchronous
+probe") but applied to a whole pile of drivers.  This batch converts
+the drivers that appeared to be around in the v4.9 timeframe.
 
-Yes, it works, although the PHY is hardcoded to CC2 orientation and 4 
-lanes, SS PHY disabled, and hotplugging/TCPM doesn't work in all cases.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
->>
->> Do you have any plan for dealing with the SS PHY and DP PHY conflicting
->> with each other? For example, PHY_MODE_CTRL needs to be "DP_MODE" for
->> 4-lane DP, "DP_MODE | USB3_MODE" for 2-lane DP + USB3, and (AFAIK)
->> "USB3_MODE" for superspeedplus usb (and it seems this gates some clocks,
->> so you can't read/write dp tx2 registers in 2-lane DP mode for example).
-> 
-> Right. I've seen that behavior as well.
-> 
->>   From your cover letter it sounds like this isn't relevant to your
->> hardware, but it looks like both PHYs are writing to the dp_com region
->> which is still problematic. (in the branch I linked, I disabled the SS
->> PHY to test the DP PHY)
-> 
-> Right. I mentioned in the cover letter that this needs to hook into the
-> type-c subsystem somehow. I haven't done any of that work because I
-> don't have a configuration that is as dynamic. As long as the type-c
-> stuff can express my static configuration it will be fine. If you have
-> done any work there I'm happy to review the code and test it out on my
-> configuration.
-> 
-> The driver is setup for DP_MODE | USB3_MODE (i.e. concurrent mode) so it
-> is already hardcoded for the 2-lane use case that I have. If I didn't
-> connect two lanes from the phy to a USB hub I could support all the
-> different combinations but that isn't the case. On phones it is
-> basically the only case though because the pins from the usb3+dp phy go
-> straight to the type-c connector.
-> 
-> qcom_qmp_phy_com_init() is the only place I see the driver writing to it
-> and it is refcounted so basically the first phy to get initialized will
-> set things up in the common area. I suppose for supporting various use
-> cases like 4 lanes DP or 2 lanes DP and USB then that refcounting logic
-> will need to be changed. I'm not sure what is supposed to happen though.
-> I guess the USB host controller, i.e. dwc3, will have to know to stop
-> trying to use the phy and then power down and let the DP controller take
-> over the phy? It's a dance of three or four drivers.
-> 
-The solution could be that the DP PHY has priority over the SS PHY. If 
-the DP PHY is enabled with 4 lanes then it should go into DP_MODE, 1-2 
-lanes it goes into concurrent mode, and USB3_MODE if disabled. The 
-problem then is that the SS PHY can't be enabled while the DP PHY is 
-enabled (since it will be clock gated), so enabling the SS PHY needs to 
-be deferred to when the DP PHY is disabled. I think that is reasonable?
+ drivers/mmc/host/sdhci-brcmstb.c | 1 +
+ drivers/mmc/host/sdhci-pic32.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
-Note I have a TCPM (typec + USB PD) driver [1] which is required to 
-negotiate the DP altmode (and provides altmode events to the DP driver 
-so it can enable/disable the PHY). My problem is the qcom PMIC doesn't 
-provide exactly what TCPM wants, and I don't have access to PMIC 
-documentation, so its difficult for me to make a fully working TCPM 
-driver. Also conflicts with [2] since both drivers use the typec PMIC 
-block...
+diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+index 876668827580..bbf3496f4495 100644
+--- a/drivers/mmc/host/sdhci-brcmstb.c
++++ b/drivers/mmc/host/sdhci-brcmstb.c
+@@ -326,6 +326,7 @@ MODULE_DEVICE_TABLE(of, sdhci_brcm_of_match);
+ static struct platform_driver sdhci_brcmstb_driver = {
+ 	.driver		= {
+ 		.name	= "sdhci-brcmstb",
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 		.pm	= &sdhci_pltfm_pmops,
+ 		.of_match_table = of_match_ptr(sdhci_brcm_of_match),
+ 	},
+diff --git a/drivers/mmc/host/sdhci-pic32.c b/drivers/mmc/host/sdhci-pic32.c
+index a11e6397d4ff..6ce1519ae177 100644
+--- a/drivers/mmc/host/sdhci-pic32.c
++++ b/drivers/mmc/host/sdhci-pic32.c
+@@ -241,6 +241,7 @@ MODULE_DEVICE_TABLE(of, pic32_sdhci_id_table);
+ static struct platform_driver pic32_sdhci_driver = {
+ 	.driver = {
+ 		.name	= "pic32-sdhci",
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
+ 		.of_match_table = of_match_ptr(pic32_sdhci_id_table),
+ 	},
+ 	.probe		= pic32_sdhci_probe,
+-- 
+2.28.0.526.ge36021eeef-goog
 
-[1] 
-https://github.com/flto/linux/commit/820265ce8535c6396083c5a884870f0f44603a72
-[2] https://patchwork.kernel.org/cover/11710371/
-
->>
->> Also some issues I noticed:
->> - used QSERDES_COM_RESETSM_CNTRL instead of
->> QSERDES_V3_COM_RESETSM_CNTRL2, which has different value
->> - in sc7180_dpphy_cfg, .regs is NULL, which results in NULL references
-> 
-> Can you add these as inline review comments? Would help me understand
-> what you're talking about. Thanks for the review!
->
