@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F80425BB95
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45DF25BB9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbgICHY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 03:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55310 "EHLO
+        id S1727990AbgICH0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 03:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbgICHYy (ORCPT
+        with ESMTP id S1726022AbgICH0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 03:24:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48483C061244;
-        Thu,  3 Sep 2020 00:24:54 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a9so1784934wmm.2;
-        Thu, 03 Sep 2020 00:24:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+UYkqqtpEumqVz085ayuA3qTudGvXO9bxur0CxdrhOE=;
-        b=CmMaspQTo3Cn2zy6V3m2rGY1F+44MSnUL8tL2xItFXxVgr9v5MzGrY2Ua/CxK8PGYp
-         NCVfXo4iuWXTF6KWEZrnc23PSFZySNGzifMLgXEJg1lWs0j8w2icV/hnkKvZJT7R6DNh
-         Rw6e8s4iJsOgSIVD2PNo7BhuaKZYEw4vpEcgDUhbeWevkOE+iuroRX1u16V54XyBA8G/
-         HzMmMuglUwWfmDR8l7JFlbpXkriJ+D6kKzWMZHOE8IgIBI7ZYjqyuTx5rNq+QNnL+ttA
-         RCyPnBWexPY2rg0UVa/nK9QsjT8kOhUINcTt3zm79/mQ43G8/ZoHOpraKMhqnVxZnACS
-         R8/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+UYkqqtpEumqVz085ayuA3qTudGvXO9bxur0CxdrhOE=;
-        b=feB3bZpKr/NXJeeF5KOq+/ThITcnJH2KhbujE7pu4+XHwtF9Z+iUA0aetxTn11PMHN
-         /u4SS6k6jQ7J2M5Xq6bNnvcVNul0KehNam/A/eg46KC3M6xnTswyTrCKtJNeKBYUODLM
-         XEs7BCScBuxYJbri/fGp+haPNLBK/csjXY+bSylB5DS16dHe466vsyQev+8pqBXXWprc
-         6rQoKdZLdksPwYG0L1gY8a9qJuJUDBtLN8/wO00NvOIECFDkX/FiBsM7HSnSr7YQ1CTL
-         tHESGe/n+jqO1ujEPVyWGfp3oeirP3X9PxtM/qTwD0CU7guY/DaIKQ2dTIQWwHQNi49B
-         dAZw==
-X-Gm-Message-State: AOAM532h0QmLuSPIfntWmAi0s4MKleRtntc27+kXmEc0iXoJ2AF6jWD4
-        s3BkxtWPLye+1DL/3IoLZwY=
-X-Google-Smtp-Source: ABdhPJzgc7SpdFeDdPuwJDjdGXknN1niR+cQ05i3OotZKfqvCURf3x8iyVce/Ffv57k9aLJcQ9L7sw==
-X-Received: by 2002:a1c:b4c1:: with SMTP id d184mr1042971wmf.26.1599117893024;
-        Thu, 03 Sep 2020 00:24:53 -0700 (PDT)
-Received: from [192.168.8.147] ([37.165.127.159])
-        by smtp.gmail.com with ESMTPSA id a127sm2893718wmh.34.2020.09.03.00.24.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 00:24:52 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: sch_generic: aviod concurrent reset and
- enqueue op for lockless qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
-References: <1598921718-79505-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpVtb3Cks-LacZ865=C8r-_8ek1cy=n3SxELYGxvNgkPtw@mail.gmail.com>
- <511bcb5c-b089-ab4e-4424-a83c6e718bfa@huawei.com>
- <CAM_iQpW1c1TOKWLxm4uGvCUzK0mKKeDg1Y+3dGAC04pZXeCXcw@mail.gmail.com>
- <f81b534a-5845-ae7d-b103-434232c0f5ff@huawei.com>
- <1f7208e6-8667-e542-88dd-bd80a6c59fd2@gmail.com>
- <6984825d-1ef7-bf58-75fe-cee1bafe3c1a@huawei.com>
- <df8423fb-63ed-604d-df4d-a94be5b47b31@gmail.com>
- <041539d7-fb42-908d-5638-49ca51d758f1@huawei.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <1c01f9e0-fde4-a8ee-caa3-598738a9a98d@gmail.com>
-Date:   Thu, 3 Sep 2020 09:24:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Thu, 3 Sep 2020 03:26:09 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7DDC061244;
+        Thu,  3 Sep 2020 00:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EWWIQsf92AsnU1wPkPRiPneOKZo+tZ8XWBgHZRi0+Tg=; b=Zpge4Rik4xQ8PHD/H81Z0KUgus
+        e6iZwR6i/7TybtEAEIH+7NNGUShuxwdggzsRJoQjpoZDU4MeNGGqYF2TnAGbOAuirvU0SbWopPC44
+        GvXR5IjCczpB0uhrz69i46kykSlWOstwDDfWIPgZMuLYTrbDQCjm8hHt9t1KxvWQFhSX69Nh/YtBH
+        JU6bIF5VTZoRTArjnz1zP/kiUL1lN9dur4YTjbJyQkK7BkeXl6Sre6O+0mraPXZiTkFJriDg4G0oB
+        i35oLQLO+6Jow0moGRyeCb1krvNt9DRYhhZRkNlFr9ETsx8Z8SUkiKzTvLCIUq8VWSo4AcrBfibPG
+        xgYuu1dw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDjdG-0000U9-7I; Thu, 03 Sep 2020 07:26:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD4D9300F7A;
+        Thu,  3 Sep 2020 09:26:04 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C799F2007E86C; Thu,  3 Sep 2020 09:26:04 +0200 (CEST)
+Date:   Thu, 3 Sep 2020 09:26:04 +0200
+From:   peterz@infradead.org
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH -v2] scipts/tags.sh: Add custom sort order
+Message-ID: <20200903072604.GT1362448@hirez.programming.kicks-ass.net>
+References: <20200805102550.GO2674@hirez.programming.kicks-ass.net>
+ <20200806120438.GG35926@hirez.programming.kicks-ass.net>
+ <CAK7LNAQE2jPUQJUa1yi7+=w--Jj-wwnGVR2hyPQZxR7Yp9odBA@mail.gmail.com>
+ <20200902162649.GL1362448@hirez.programming.kicks-ass.net>
+ <CAK7LNAS+0QtvgX1b77Y51cuMQ-eK4cKb8rebTQ=Ug3F2rkjP2g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <041539d7-fb42-908d-5638-49ca51d758f1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAS+0QtvgX1b77Y51cuMQ-eK4cKb8rebTQ=Ug3F2rkjP2g@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 03, 2020 at 11:07:28AM +0900, Masahiro Yamada wrote:
 
+> Contributors stop caring after their code is merged,
+> but maintaining it is tiring.
 
-On 9/2/20 6:14 PM, Yunsheng Lin wrote:
+This seems to hold in general :/
 
-> 
-> It seems semantics for some_qdisc_is_busy() is changed, which does not only do
-> the checking, but also do the reseting?
+> Will re-implementing your sorting logic
+> in bash look cleaner?
 
-Yes, obviously, we would have to rename to a better name.
+Possibly, I can try, we'll see.
 
-> 
-> Also, qdisc_reset() could be called multi times for the same qdisc if some_qdisc_is_busy()
-> return true multi times?
+> Or, in hindsight, we should have used python or perl?
 
-This should not matter, qdisc_reset() can be called multiple times,
-as we also call it from qdisc_destroy() anyway.
+I don't speak either :-/.
 
+I googled to see if there is a python/perl ctags implementation we can
+'borrow' and found https://github.com/universal-ctags/ctags instead.
+That seems to be a continuation of exhuberant ctags, I can also try if
+they're interested in --sort-kinds or something like that.
