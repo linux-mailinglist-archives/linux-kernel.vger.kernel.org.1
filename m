@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3170A25C726
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B20525C71F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 18:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgICQlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 12:41:37 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:46848 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgICQlU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728844AbgICQlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 12:41:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56478 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728085AbgICQlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 3 Sep 2020 12:41:20 -0400
-Received: by mail-io1-f68.google.com with SMTP id d18so3558417iop.13;
-        Thu, 03 Sep 2020 09:41:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4vBaLMLY8rxge37mhzzCjC1bHRv/tkxvPHZcyC6yaGw=;
-        b=bfpp373JsCHTnLkZtTD5N0W1TVuFJgzcZTWdB5y/zs7cOzW6N6FSeOJyocLAXPDbyg
-         L5Mf01LZYNBahD080qaGAyg7av7+a0R1qvXdOLefTBiK4ooMd+fAveYzzNiGdkIT4XKF
-         IWf8ld7FCihHUBe3NL6lKGAm72T80Sp/VHYRdr1S5IUUC+JmBlMbheYdrO/GiIdBmy4o
-         5K+XsrU8VxI43m5pbcV0rbzT+X9Am6yC+qcB/oYeqKViYoilcbq6ha9icKbdOBLRJDza
-         NgtWBr2s6RwvSSE8CfBKhlOaoBmb9bwKBm/SNIHWopgarr3reDZz/SFwufxf1Heq20iF
-         6eCQ==
-X-Gm-Message-State: AOAM5315A27roasBDnza44co2GRXfV4gyXXp91l6OAOcd2W5VCsr7Yfx
-        cUtqeiiqo6PpBoOuZ6KlUQ==
-X-Google-Smtp-Source: ABdhPJyy9gHqTnOdvUDQ2CPzDzHKM8pRYtgJgzw1Dw1NrcA19Ts6CzEfhTG5AWfKYl8sUZi0hH5zHQ==
-X-Received: by 2002:a05:6602:cb:: with SMTP id z11mr3728690ioe.96.1599151279481;
-        Thu, 03 Sep 2020 09:41:19 -0700 (PDT)
-Received: from xps15 ([64.188.179.249])
-        by smtp.gmail.com with ESMTPSA id m18sm1005371ilc.37.2020.09.03.09.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 09:41:19 -0700 (PDT)
-Received: (nullmailer pid 2922528 invoked by uid 1000);
-        Thu, 03 Sep 2020 16:41:17 -0000
-Date:   Thu, 3 Sep 2020 10:41:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Wolfram Sang <wolfram@the-dreams.de>,
-        Dong Aisheng <aisheng.dong@nxp.com>, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH 6/7] dt-bindings: i2c: imx: Use unevaluatedProperties
-Message-ID: <20200903164117.GA2922218@bogus>
-References: <20200829111800.2786-1-krzk@kernel.org>
- <20200829111800.2786-6-krzk@kernel.org>
+Received: from localhost (55.sub-174-234-138.myvzw.com [174.234.138.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7EBF206A5;
+        Thu,  3 Sep 2020 16:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599151279;
+        bh=3KX20nfc0qP69OxAQSYdNpjTUWYh1Rv29qTyzvJYDL0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KZxkOU9JUDbmO+/OsJ3lmIQLP6hIK33UDQ99BF9SD8/2BjE64nCL39abZUgtv6vbM
+         4Jh+wGAdtLOxyIASaZKwqOHV7HkBiesmlVCRJTL0+lA5k6ZM7x6DgaI6keks35TUKj
+         nyhreDGJhc+G1U4mxvSMdwOYdD6eBKOIQgVmRG+w=
+Date:   Thu, 3 Sep 2020 11:41:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
+        schnelle@linux.ibm.com, pmorel@linux.ibm.com, mpe@ellerman.id.au,
+        oohall@gmail.com, cohuck@redhat.com, kevin.tian@intel.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] PCI/IOV: Mark VFs as not implementing MSE bit
+Message-ID: <20200903164117.GA312152@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200829111800.2786-6-krzk@kernel.org>
+In-Reply-To: <1599075996-9826-2-git-send-email-mjrosato@linux.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 29, 2020 at 01:17:59PM +0200, Krzysztof Kozlowski wrote:
-> Additional properties actually might appear (e.g. power-domains or child
-> nodes) so use unevaluatedProperties to fix dtbs_check warnings like:
-> 
->   arch/arm64/boot/dts/freescale/imx8mn-evk.dt.yaml: i2c@30a20000:
->     '#address-cells', '#size-cells', 'pmic@25' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-imx.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Sep 02, 2020 at 03:46:34PM -0400, Matthew Rosato wrote:
+> Per the PCIe spec, VFs cannot implement the MSE bit
+> AKA PCI_COMMAND_MEMORY, and it must be hard-wired to 0.
+> Use a dev_flags bit to signify this requirement.
 
-NAK. See https://lore.kernel.org/r/CAL_JsqKPXJxsHPS34_TCf9bwgKxZNSV4mvQR-WKRnknQVtGGxQ@mail.gmail.com/
+This approach seems sensible to me, but
+
+  - This is confusing because while the spec does not use "MSE" to
+    refer to the Command Register "Memory Space Enable" bit
+    (PCI_COMMAND_MEMORY), it *does* use "MSE" in the context of the
+    "VF MSE" bit, which is in the PF SR-IOV Capability.  But of
+    course, you're not talking about that here.  Maybe something like
+    this?
+
+      For VFs, the Memory Space Enable bit in the Command Register is
+      hard-wired to 0.
+
+      Add a dev_flags bit to signify devices where the Command
+      Register Memory Space Enable bit does not control the device's
+      response to MMIO accesses.
+
+  - "PCI_DEV_FLAGS_FORCE_COMMAND_MEM" says something about how you
+    plan to *use* this, but I'd rather use a term that describes the
+    hardware, e.g., "PCI_DEV_FLAGS_NO_COMMAND_MEMORY".
+
+  - How do we decide whether to use dev_flags vs a bitfield like
+    dev->is_virtfn?  The latter seems simpler unless there's a reason
+    to use dev_flags.  If there's a reason, maybe we could add a
+    comment at pci_dev_flags for future reference.
+
+  - Wrap the commit log to fill a 75-char line.  It's arbitrary, but
+    that's what I use for consistency.
+
+> Signed-off-by: Matthew Rosato <mjrosato@linux.ibm.com>
+> ---
+>  drivers/pci/iov.c   | 1 +
+>  include/linux/pci.h | 2 ++
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index b37e08c..2bec77c 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -180,6 +180,7 @@ int pci_iov_add_virtfn(struct pci_dev *dev, int id)
+>  	virtfn->device = iov->vf_device;
+>  	virtfn->is_virtfn = 1;
+>  	virtfn->physfn = pci_dev_get(dev);
+> +	virtfn->dev_flags |= PCI_DEV_FLAGS_FORCE_COMMAND_MEM;
+>  
+>  	if (id == 0)
+>  		pci_read_vf_config_common(virtfn);
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 8355306..9316cce 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -227,6 +227,8 @@ enum pci_dev_flags {
+>  	PCI_DEV_FLAGS_NO_FLR_RESET = (__force pci_dev_flags_t) (1 << 10),
+>  	/* Don't use Relaxed Ordering for TLPs directed at this device */
+>  	PCI_DEV_FLAGS_NO_RELAXED_ORDERING = (__force pci_dev_flags_t) (1 << 11),
+> +	/* Device does not implement PCI_COMMAND_MEMORY (e.g. a VF) */
+> +	PCI_DEV_FLAGS_FORCE_COMMAND_MEM = (__force pci_dev_flags_t) (1 << 12),
+>  };
+>  
+>  enum pci_irq_reroute_variant {
+> -- 
+> 1.8.3.1
+> 
