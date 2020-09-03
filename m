@@ -2,182 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F24925BBC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA97325BBC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 09:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728239AbgICHcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 03:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56460 "EHLO mail.kernel.org"
+        id S1728273AbgICHdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 03:33:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33688 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726025AbgICHce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 03:32:34 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B389420775;
-        Thu,  3 Sep 2020 07:32:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599118353;
-        bh=a6NQokr4jM352XqY6vw/Xjc9tnmlUORQvxTKs8y3VmQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lY2nENn4PyQnLe86tGBsy7BegX4EZ7tvxXVlNM7BZv6S3N+PmLZ0sqWiCET8GGqTk
-         o68zMMnRNYD7BkFKDl2ntBWB2Sy6A0ODNnz4eHdZJOHHBJgh+vXLe7u5kUJqQS+zhd
-         95RgxEBPX+1UU5R2KEx32QhMc60fTKCtZT9/LTMc=
-Date:   Thu, 3 Sep 2020 09:32:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     himadrispandya@gmail.com, dvyukov@google.com,
-        linux-usb@vger.kernel.org, perex@perex.cz, tiwai@suse.com,
-        linux-kernel@vger.kernel.org, marcel@holtmann.org,
-        johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Eli Billauer <eli.billauer@gmail.com>,
-        Emiliano Ingrassia <ingrassia@epigenesys.com>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        "Geoffrey D. Bennett" <g@b4.vu>, Jussi Laako <jussi@sonarnerd.net>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Dmitry Panchenko <dmitry@d-systems.ee>,
-        Chris Wulff <crwulff@gmail.com>,
-        Jesus Ramos <jesus-ramos@live.com>
-Subject: Re: [PATCH 01/10] USB: move snd_usb_pipe_sanity_check into the USB
- core
-Message-ID: <20200903073230.GA162335@kroah.com>
-References: <20200902110115.1994491-1-gregkh@linuxfoundation.org>
- <20200902110115.1994491-2-gregkh@linuxfoundation.org>
- <20200903004553.GA642955@rowland.harvard.edu>
+        id S1726025AbgICHc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 03:32:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 25F08ADA3;
+        Thu,  3 Sep 2020 07:32:57 +0000 (UTC)
+Date:   Thu, 3 Sep 2020 09:32:54 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     linux-mm@kvack.org, Roman Gushchin <guro@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Nellans <dnellans@nvidia.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 00/16] 1GB THP support on x86_64
+Message-ID: <20200903073254.GP4617@dhcp22.suse.cz>
+References: <20200902180628.4052244-1-zi.yan@sent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200903004553.GA642955@rowland.harvard.edu>
+In-Reply-To: <20200902180628.4052244-1-zi.yan@sent.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 08:45:53PM -0400, Alan Stern wrote:
-> On Wed, Sep 02, 2020 at 01:01:03PM +0200, Greg Kroah-Hartman wrote:
-> > snd_usb_pipe_sanity_check() is a great function, so let's move it into
-> > the USB core so that other parts of the kernel, including the USB core,
-> > can call it.
-> > 
-> > Name it usb_pipe_type_check() to match the existing
-> > usb_urb_ep_type_check() call, which now uses this function.
-> > 
-> > Cc: Jaroslav Kysela <perex@perex.cz>
-> > Cc: Takashi Iwai <tiwai@suse.com>
-> > Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> > Cc: Eli Billauer <eli.billauer@gmail.com>
-> > Cc: Emiliano Ingrassia <ingrassia@epigenesys.com>
-> > Cc: Alan Stern <stern@rowland.harvard.edu>
-> > Cc: Alexander Tsoy <alexander@tsoy.me>
-> > Cc: "Geoffrey D. Bennett" <g@b4.vu>
-> > Cc: Jussi Laako <jussi@sonarnerd.net>
-> > Cc: Nick Kossifidis <mickflemm@gmail.com>
-> > Cc: Dmitry Panchenko <dmitry@d-systems.ee>
-> > Cc: Chris Wulff <crwulff@gmail.com>
-> > Cc: Jesus Ramos <jesus-ramos@live.com>
-> > Cc: linux-usb@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: alsa-devel@alsa-project.org
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
+On Wed 02-09-20 14:06:12, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> > diff --git a/drivers/usb/core/urb.c b/drivers/usb/core/urb.c
-> > index 27e83e55a590..45bc2914c1ba 100644
-> > --- a/drivers/usb/core/urb.c
-> > +++ b/drivers/usb/core/urb.c
-> > @@ -192,24 +192,39 @@ static const int pipetypes[4] = {
-> >  };
-> >  
-> >  /**
-> > - * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-> > - * @urb: urb to be checked
-> > + * usb_pipe_type_check - sanity check of a specific pipe for a usb device
-> > + * @dev: struct usb_device to be checked
-> > + * @pipe: pipe to check
-> >   *
-> >   * This performs a light-weight sanity check for the endpoint in the
-> > - * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-> > - * a negative error code.
-> > + * given usb device.  It returns 0 if the pipe is a valid for the specific usb
-> -----------------------------------------------------^
-> Typo.
-
-Oops, will fix, thanks.
-
-
+> Hi all,
 > 
-> > + * device, otherwise a negative error code.
-> >   */
-> > -int usb_urb_ep_type_check(const struct urb *urb)
-> > +int usb_pipe_type_check(struct usb_device *dev, unsigned int pipe)
-> >  {
-> >  	const struct usb_host_endpoint *ep;
-> >  
-> > -	ep = usb_pipe_endpoint(urb->dev, urb->pipe);
-> > +	ep = usb_pipe_endpoint(dev, pipe);
-> >  	if (!ep)
-> >  		return -EINVAL;
-> > -	if (usb_pipetype(urb->pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-> > +	if (usb_pipetype(pipe) != pipetypes[usb_endpoint_type(&ep->desc)])
-> >  		return -EINVAL;
-> >  	return 0;
-> >  }
-> > +EXPORT_SYMBOL_GPL(usb_pipe_type_check);
-> > +
-> > +/**
-> > + * usb_urb_ep_type_check - sanity check of endpoint in the given urb
-> > + * @urb: urb to be checked
-> > + *
-> > + * This performs a light-weight sanity check for the endpoint in the
-> > + * given urb.  It returns 0 if the urb contains a valid endpoint, otherwise
-> > + * a negative error code.
-> > + */
-> > +int usb_urb_ep_type_check(const struct urb *urb)
-> > +{
-> > +	return usb_pipe_type_check(urb->dev, urb->pipe);
-> > +}
-> >  EXPORT_SYMBOL_GPL(usb_urb_ep_type_check);
+> This patchset adds support for 1GB THP on x86_64. It is on top of
+> v5.9-rc2-mmots-2020-08-25-21-13.
 > 
-> Since this routine is used in only one place in the entire kernel, you 
-> might as well inline the code there and get rid of the function 
-> entirely.
+> 1GB THP is more flexible for reducing translation overhead and increasing the
+> performance of applications with large memory footprint without application
+> changes compared to hugetlb.
 
-Good idea, will do.
+Please be more specific about usecases. This better have some strong
+ones because THP code is complex enough already to add on top solely
+based on a generic TLB pressure easing.
 
-> > diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-> > index abf99b814a0f..fc3aab04a0bc 100644
-> > --- a/sound/usb/quirks.c
-> > +++ b/sound/usb/quirks.c
-> > @@ -846,7 +846,7 @@ static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
-> >  	static const u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 };
-> >  	void *buf;
-> >  
-> > -	if (snd_usb_pipe_sanity_check(dev, usb_sndintpipe(dev, 0x05)))
-> > +	if (usb_pipe_type_check(dev, usb_sndintpipe(dev, 0x05)))
-> >  		return -EINVAL;
-> >  	buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
-> >  	if (!buf)
-> > @@ -875,7 +875,7 @@ static int snd_usb_nativeinstruments_boot_quirk(struct usb_device *dev)
-> >  {
-> >  	int ret;
-> >  
-> > -	if (snd_usb_pipe_sanity_check(dev, usb_sndctrlpipe(dev, 0)))
-> > +	if (usb_pipe_type_check(dev, usb_sndctrlpipe(dev, 0)))
-> >  		return -EINVAL;
+> Design
+> =======
 > 
-> In a few places here this check is completely unnecessary.  All it does 
-> is verify that the device does have an endpoint 0 and the the type of 
-> the endpoint matches the type of the pipe.  Well, every USB device 
-> always has an endpoint 0, and it is always a bidirectional control 
-> endpoint.
+> 1GB THP implementation looks similar to exiting THP code except some new designs
+> for the additional page table level.
+> 
+> 1. Page table deposit and withdraw using a new pagechain data structure:
+>    instead of one PTE page table page, 1GB THP requires 513 page table pages
+>    (one PMD page table page and 512 PTE page table pages) to be deposited
+>    at the page allocaiton time, so that we can split the page later. Currently,
+>    the page table deposit is using ->lru, thus only one page can be deposited.
+>    A new pagechain data structure is added to enable multi-page deposit.
+> 
+> 2. Triple mapped 1GB THP : 1GB THP can be mapped by a combination of PUD, PMD,
+>    and PTE entries. Mixing PUD an PTE mapping can be achieved with existing
+>    PageDoubleMap mechanism. To add PMD mapping, PMDPageInPUD and
+>    sub_compound_mapcount are introduced. PMDPageInPUD is the 512-aligned base
+>    page in a 1GB THP and sub_compound_mapcount counts the PMD mapping by using
+>    page[N*512 + 3].compound_mapcount.
+> 
+> 3. Using CMA allocaiton for 1GB THP: instead of bump MAX_ORDER, it is more sane
+>    to use something less intrusive. So all 1GB THPs are allocated from reserved
+>    CMA areas shared with hugetlb. At page splitting time, the bitmap for the 1GB
+>    THP is cleared as the resulting pages can be freed via normal page free path.
+>    We can fall back to alloc_contig_pages for 1GB THP if necessary.
 
-I think this was probably added to handle syzbot issues.  As long as the
-USB core does ensure that a USB device has endpoint 0, I agree, these
-can be removed.  I'll go check that and add a follow-on patch to the
-series to do this, thanks.
+Do those pages get instantiated during the page fault or only via
+khugepaged? This is an important design detail because then we have to
+think carefully about how much automatic we want this to be. Memory
+overhead can be quite large with 2MB THPs already. Also what about the
+allocation overhead? Do you have any numbers?
 
-thanks,
+Maybe all these details are described in the patcheset but the cover
+letter should contain all that information. It doesn't make much sense
+to dig into details in a patchset this large without having an idea how
+feasible this is.
 
-greg k-h
+Thanks.
+ 
+> Patch Organization
+> =======
+> 
+> Patch 01 adds the new pagechain data structure.
+> 
+> Patch 02 to 13 adds 1GB THP support in variable places.
+> 
+> Patch 14 tries to use alloc_contig_pages for 1GB THP allocaiton.
+> 
+> Patch 15 moves hugetlb_cma reservation to cma.c and rename it to hugepage_cma.
+> 
+> Patch 16 use hugepage_cma reservation for 1GB THP allocation.
+> 
+> 
+> Any suggestions and comments are welcome.
+> 
+> 
+> Zi Yan (16):
+>   mm: add pagechain container for storing multiple pages.
+>   mm: thp: 1GB anonymous page implementation.
+>   mm: proc: add 1GB THP kpageflag.
+>   mm: thp: 1GB THP copy on write implementation.
+>   mm: thp: handling 1GB THP reference bit.
+>   mm: thp: add 1GB THP split_huge_pud_page() function.
+>   mm: stats: make smap stats understand PUD THPs.
+>   mm: page_vma_walk: teach it about PMD-mapped PUD THP.
+>   mm: thp: 1GB THP support in try_to_unmap().
+>   mm: thp: split 1GB THPs at page reclaim.
+>   mm: thp: 1GB THP follow_p*d_page() support.
+>   mm: support 1GB THP pagemap support.
+>   mm: thp: add a knob to enable/disable 1GB THPs.
+>   mm: page_alloc: >=MAX_ORDER pages allocation an deallocation.
+>   hugetlb: cma: move cma reserve function to cma.c.
+>   mm: thp: use cma reservation for pud thp allocation.
+> 
+>  .../admin-guide/kernel-parameters.txt         |   2 +-
+>  arch/arm64/mm/hugetlbpage.c                   |   2 +-
+>  arch/powerpc/mm/hugetlbpage.c                 |   2 +-
+>  arch/x86/include/asm/pgalloc.h                |  68 ++
+>  arch/x86/include/asm/pgtable.h                |  26 +
+>  arch/x86/kernel/setup.c                       |   8 +-
+>  arch/x86/mm/pgtable.c                         |  38 +
+>  drivers/base/node.c                           |   3 +
+>  fs/proc/meminfo.c                             |   2 +
+>  fs/proc/page.c                                |   2 +
+>  fs/proc/task_mmu.c                            | 122 ++-
+>  include/linux/cma.h                           |  18 +
+>  include/linux/huge_mm.h                       |  84 +-
+>  include/linux/hugetlb.h                       |  12 -
+>  include/linux/memcontrol.h                    |   5 +
+>  include/linux/mm.h                            |  29 +-
+>  include/linux/mm_types.h                      |   1 +
+>  include/linux/mmu_notifier.h                  |  13 +
+>  include/linux/mmzone.h                        |   1 +
+>  include/linux/page-flags.h                    |  47 +
+>  include/linux/pagechain.h                     |  73 ++
+>  include/linux/pgtable.h                       |  34 +
+>  include/linux/rmap.h                          |  10 +-
+>  include/linux/swap.h                          |   2 +
+>  include/linux/vm_event_item.h                 |   7 +
+>  include/uapi/linux/kernel-page-flags.h        |   2 +
+>  kernel/events/uprobes.c                       |   4 +-
+>  kernel/fork.c                                 |   5 +
+>  mm/cma.c                                      | 119 +++
+>  mm/gup.c                                      |  60 +-
+>  mm/huge_memory.c                              | 939 +++++++++++++++++-
+>  mm/hugetlb.c                                  | 114 +--
+>  mm/internal.h                                 |   2 +
+>  mm/khugepaged.c                               |   6 +-
+>  mm/ksm.c                                      |   4 +-
+>  mm/memcontrol.c                               |  13 +
+>  mm/memory.c                                   |  51 +-
+>  mm/mempolicy.c                                |  21 +-
+>  mm/migrate.c                                  |  12 +-
+>  mm/page_alloc.c                               |  57 +-
+>  mm/page_vma_mapped.c                          | 129 ++-
+>  mm/pgtable-generic.c                          |  56 ++
+>  mm/rmap.c                                     | 289 ++++--
+>  mm/swap.c                                     |  31 +
+>  mm/swap_slots.c                               |   2 +
+>  mm/swapfile.c                                 |   8 +-
+>  mm/userfaultfd.c                              |   2 +-
+>  mm/util.c                                     |  16 +-
+>  mm/vmscan.c                                   |  58 +-
+>  mm/vmstat.c                                   |   8 +
+>  50 files changed, 2270 insertions(+), 349 deletions(-)
+>  create mode 100644 include/linux/pagechain.h
+> 
+> --
+> 2.28.0
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
