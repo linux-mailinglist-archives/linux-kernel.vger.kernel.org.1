@@ -2,259 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596DA25BF45
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E69C25BF4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728390AbgICKon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:44:43 -0400
-Received: from mga04.intel.com ([192.55.52.120]:21633 "EHLO mga04.intel.com"
+        id S1728411AbgICKpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:45:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726292AbgICKoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:44:38 -0400
-IronPort-SDR: GW35wvVynksGJBxRi6vZlj7Ps5IM1BPOw7+kHUO/uD4thS/qUuLczCWbarL2hn8fjqAt8/SfjC
- oDcFArNdbVtg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9732"; a="154954518"
-X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
-   d="scan'208";a="154954518"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 03:44:36 -0700
-IronPort-SDR: rHAjm1XYb/djFxtthLChDrpx3nHhpdYWyB+S5p+EYHju+bYbs1U3orsEL6k+npFoY2suK+qg55
- VXnNaN+3xiBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,386,1592895600"; 
-   d="scan'208";a="339239236"
-Received: from slisovsk-lenovo-ideapad-720s-13ikb.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by FMSMGA003.fm.intel.com with ESMTP; 03 Sep 2020 03:44:34 -0700
-Subject: Re: [PATCH V2 5/6] perf record: Add 'snapshot' control command
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20200901093758.32293-1-adrian.hunter@intel.com>
- <20200901093758.32293-6-adrian.hunter@intel.com>
- <3b080496-7357-04a3-ec9b-bf531b8ec75a@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <aa7a2be1-9944-2def-03af-cec559e633e4@intel.com>
-Date:   Thu, 3 Sep 2020 13:44:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728369AbgICKpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 06:45:00 -0400
+Received: from localhost (unknown [122.171.179.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1D9F320716;
+        Thu,  3 Sep 2020 10:44:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599129900;
+        bh=+niwvcTwlWvSoZv6kAV2JhpMuJDFPstWYms2USZ7d24=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ny980hjyju00iDOjfOO3hsBIP++lWvh948a0EcV7re146EvnnvB0w+0AWdukZNNGJ
+         cNrxyewXQ5B+/FLfYF5pxQOoP7uc3817+kQdOkZur7UaRTNv4sYS3aX5cHXwXFzSUK
+         aVxoy9hfzbDeHwcf4pFlS2Iw6UBrcSskCz5MATJk=
+Date:   Thu, 3 Sep 2020 16:14:56 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        jank@cadence.com, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, pierre-louis.bossart@linux.intel.com,
+        sanyog.r.kale@intel.com, mengdong.lin@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH v2 00/10] soundwire: intel: add multi-link support
+Message-ID: <20200903104456.GR2639@vkoul-mobl>
+References: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <3b080496-7357-04a3-ec9b-bf531b8ec75a@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200901150556.19432-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/09/20 8:03 pm, Alexey Budankov wrote:
-> 
-> On 01.09.2020 12:37, Adrian Hunter wrote:
->> Add 'snapshot' control command to create an AUX area tracing snapshot the
->> same as if sending SIGUSR2. The advantage of the FIFO is that access is
->> governed by access to the FIFO.
->>
->> Example:
->>
->>  $ mkfifo perf.control
->>  $ mkfifo perf.ack
->>  $ cat perf.ack &
->>  [1] 15235
->>  $ sudo ~/bin/perf record --control fifo:perf.control,perf.ack -S -e intel_pt//u -- sleep 60 &
->>  [2] 15243
->>  $ ps -e | grep perf
->>   15244 pts/1    00:00:00 perf
->>  $ kill -USR2 15244
->>  bash: kill: (15244) - Operation not permitted
->>  $ echo snapshot > perf.control
->>  ack
->>
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>  tools/perf/Documentation/perf-record.txt |  8 ++++----
->>  tools/perf/builtin-record.c              | 24 +++++++++++++++++-------
->>  tools/perf/builtin-stat.c                |  1 +
->>  tools/perf/util/evlist.c                 | 11 +++++++++--
->>  tools/perf/util/evlist.h                 |  5 ++++-
->>  5 files changed, 35 insertions(+), 14 deletions(-)
->>
->> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
->> index 2ffc1196d2b8..588e6191bf39 100644
->> --- a/tools/perf/Documentation/perf-record.txt
->> +++ b/tools/perf/Documentation/perf-record.txt
->> @@ -631,10 +631,10 @@ endif::HAVE_LIBPFM[]
->>  --control=fd:ctl-fd[,ack-fd]::
->>  ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
->>  Listen on ctl-fd descriptor for command to control measurement ('enable': enable events,
->> -'disable': disable events). Measurements can be started with events disabled using
->> ---delay=-1 option. Optionally send control command completion ('ack\n') to ack-fd descriptor
->> -to synchronize with the controlling process. Example of bash shell script to enable and
->> -disable events during measurements:
->> +'disable': disable events, 'snapshot': AUX area tracing snapshot). Measurements can be
->> +started with events disabled using --delay=-1 option. Optionally send control command
->> +completion ('ack\n') to ack-fd descriptor to synchronize with the controlling process.
->> +Example of bash shell script to enable and disable events during measurements:
->>  
->>   #!/bin/bash
->>  
->> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->> index 117dd180f780..476b34ff3152 100644
->> --- a/tools/perf/builtin-record.c
->> +++ b/tools/perf/builtin-record.c
->> @@ -1593,6 +1593,16 @@ static int record__init_clock(struct record *rec)
->>  	return 0;
->>  }
->>  
->> +static void hit_auxtrace_snapshot_trigger(struct record *rec)
->> +{
->> +	if (trigger_is_ready(&auxtrace_snapshot_trigger)) {
->> +		trigger_hit(&auxtrace_snapshot_trigger);
->> +		auxtrace_record__snapshot_started = 1;
->> +		if (auxtrace_record__snapshot_start(rec->itr))
->> +			trigger_error(&auxtrace_snapshot_trigger);
->> +	}
->> +}
->> +
->>  static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  {
->>  	int err;
->> @@ -1937,6 +1947,10 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
->>  			case EVLIST_CTL_CMD_DISABLE:
->>  				pr_info(EVLIST_DISABLED_MSG);
->>  				break;
->> +			case EVLIST_CTL_CMD_SNAPSHOT:
->> +				hit_auxtrace_snapshot_trigger(rec);
-> 
-> Could possibly print a messages to console that snapshot taking has started,
-> similar to enabling and disabling of events.
+On 01-09-20, 23:05, Bard Liao wrote:
+> This series enables multi-link support for Intel platforms.
 
-There is a an existing debug print for snapshots, and the ack fifo of
-course.  So I am going to leave that for now.
+Applied all, thanks
 
 > 
-> Acked-by: Alexei Budankov <alexey.budankov@linux.intel.com>
+> Changes in v2:
+> - Remove the "soundwire: intel: Only call sdw stream APIs for the first
+>   cpu_dai" patch form this series. We will move the sounwdire stream
+>   operations to machine driver in another series.
+> - Update the commit message and title of "soundwire: intel: add error log
+>   for clock-stop invalid configs"
 > 
-> Regards,
-> Alexei
+> Pierre-Louis Bossart (10):
+>   soundwire: intel: disable shim wake on suspend
+>   soundwire: intel: ignore software command retries
+>   soundwire: intel: add multi-link support
+>   soundwire: intel: add missing support for all clock stop modes
+>   soundwire: bus: update multi-link definition with hw sync details
+>   soundwire: intel: add multi-link hw_synchronization information
+>   soundwire: stream: enable hw_sync as needed by hardware
+>   soundwire: intel: add error log for clock-stop invalid configs
+>   soundwire: intel: pass link_mask information to each master
+>   soundwire: intel: don't manage link power individually
 > 
->> +				evlist__ctlfd_ack(rec->evlist);
->> +				break;
->>  			case EVLIST_CTL_CMD_ACK:
->>  			case EVLIST_CTL_CMD_UNSUPPORTED:
->>  			default:
->> @@ -2589,7 +2603,8 @@ static struct option __record_options[] = {
->>  		parse_libpfm_events_option),
->>  #endif
->>  	OPT_CALLBACK(0, "control", &record.opts, "fd:ctl-fd[,ack-fd] or fifo:ctl-fifo[,ack-fifo]",
->> -		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events).\n"
->> +		     "Listen on ctl-fd descriptor for command to control measurement ('enable': enable events, 'disable': disable events,\n"
->> +		     "\t\t\t  'snapshot': AUX area tracing snapshot).\n"
->>  		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
->>  		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
->>  		      parse_control_option),
->> @@ -2842,12 +2857,7 @@ static void snapshot_sig_handler(int sig __maybe_unused)
->>  {
->>  	struct record *rec = &record;
->>  
->> -	if (trigger_is_ready(&auxtrace_snapshot_trigger)) {
->> -		trigger_hit(&auxtrace_snapshot_trigger);
->> -		auxtrace_record__snapshot_started = 1;
->> -		if (auxtrace_record__snapshot_start(record.itr))
->> -			trigger_error(&auxtrace_snapshot_trigger);
->> -	}
->> +	hit_auxtrace_snapshot_trigger(rec);
->>  
->>  	if (switch_output_signal(rec))
->>  		trigger_hit(&switch_output_trigger);
->> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->> index 6170226d44f9..21424ed0734b 100644
->> --- a/tools/perf/builtin-stat.c
->> +++ b/tools/perf/builtin-stat.c
->> @@ -578,6 +578,7 @@ static void process_evlist(struct evlist *evlist, unsigned int interval)
->>  				process_interval();
->>  			pr_info(EVLIST_DISABLED_MSG);
->>  			break;
->> +		case EVLIST_CTL_CMD_SNAPSHOT:
->>  		case EVLIST_CTL_CMD_ACK:
->>  		case EVLIST_CTL_CMD_UNSUPPORTED:
->>  		default:
->> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->> index b74e85bc683e..8cd53dbb0357 100644
->> --- a/tools/perf/util/evlist.c
->> +++ b/tools/perf/util/evlist.c
->> @@ -1885,13 +1885,17 @@ static int evlist__ctlfd_recv(struct evlist *evlist, enum evlist_ctl_cmd *cmd,
->>  		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_DISABLE_TAG,
->>  				    (sizeof(EVLIST_CTL_CMD_DISABLE_TAG)-1))) {
->>  			*cmd = EVLIST_CTL_CMD_DISABLE;
->> +		} else if (!strncmp(cmd_data, EVLIST_CTL_CMD_SNAPSHOT_TAG,
->> +				    (sizeof(EVLIST_CTL_CMD_SNAPSHOT_TAG)-1))) {
->> +			*cmd = EVLIST_CTL_CMD_SNAPSHOT;
->> +			pr_debug("is snapshot\n");
->>  		}
->>  	}
->>  
->>  	return bytes_read ? (int)bytes_read : err;
->>  }
->>  
->> -static int evlist__ctlfd_ack(struct evlist *evlist)
->> +int evlist__ctlfd_ack(struct evlist *evlist)
->>  {
->>  	int err;
->>  
->> @@ -1927,13 +1931,16 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
->>  			case EVLIST_CTL_CMD_DISABLE:
->>  				evlist__disable(evlist);
->>  				break;
->> +			case EVLIST_CTL_CMD_SNAPSHOT:
->> +				break;
->>  			case EVLIST_CTL_CMD_ACK:
->>  			case EVLIST_CTL_CMD_UNSUPPORTED:
->>  			default:
->>  				pr_debug("ctlfd: unsupported %d\n", *cmd);
->>  				break;
->>  			}
->> -			if (!(*cmd == EVLIST_CTL_CMD_ACK || *cmd == EVLIST_CTL_CMD_UNSUPPORTED))
->> +			if (!(*cmd == EVLIST_CTL_CMD_ACK || *cmd == EVLIST_CTL_CMD_UNSUPPORTED ||
->> +			      *cmd == EVLIST_CTL_CMD_SNAPSHOT))
->>  				evlist__ctlfd_ack(evlist);
->>  		}
->>  	}
->> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
->> index a5678eb5ee60..91d1da6e1fe3 100644
->> --- a/tools/perf/util/evlist.h
->> +++ b/tools/perf/util/evlist.h
->> @@ -363,6 +363,7 @@ struct evsel *perf_evlist__reset_weak_group(struct evlist *evlist,
->>  #define EVLIST_CTL_CMD_ENABLE_TAG  "enable"
->>  #define EVLIST_CTL_CMD_DISABLE_TAG "disable"
->>  #define EVLIST_CTL_CMD_ACK_TAG     "ack\n"
->> +#define EVLIST_CTL_CMD_SNAPSHOT_TAG "snapshot"
->>  
->>  #define EVLIST_CTL_CMD_MAX_LEN 64
->>  
->> @@ -370,7 +371,8 @@ enum evlist_ctl_cmd {
->>  	EVLIST_CTL_CMD_UNSUPPORTED = 0,
->>  	EVLIST_CTL_CMD_ENABLE,
->>  	EVLIST_CTL_CMD_DISABLE,
->> -	EVLIST_CTL_CMD_ACK
->> +	EVLIST_CTL_CMD_ACK,
->> +	EVLIST_CTL_CMD_SNAPSHOT,
->>  };
->>  
->>  int evlist__parse_control(const char *str, int *ctl_fd, int *ctl_fd_ack, bool *ctl_fd_close);
->> @@ -378,6 +380,7 @@ int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
->>  int evlist__finalize_ctlfd(struct evlist *evlist);
->>  bool evlist__ctlfd_initialized(struct evlist *evlist);
->>  int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
->> +int evlist__ctlfd_ack(struct evlist *evlist);
->>  
->>  #define EVLIST_ENABLED_MSG "Events enabled\n"
->>  #define EVLIST_DISABLED_MSG "Events disabled\n"
->>
+>  drivers/soundwire/intel.c      | 264 ++++++++++++++++++++++++++++-----
+>  drivers/soundwire/intel.h      |   2 +
+>  drivers/soundwire/intel_init.c |   1 +
+>  drivers/soundwire/stream.c     |  15 +-
+>  include/linux/soundwire/sdw.h  |   6 +
+>  5 files changed, 243 insertions(+), 45 deletions(-)
+> 
+> -- 
+> 2.17.1
 
+-- 
+~Vinod
