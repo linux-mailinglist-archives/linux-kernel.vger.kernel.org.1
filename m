@@ -2,153 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AD225CE4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 01:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858D725CE4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 01:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgICXZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 19:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S1729583AbgICX0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 19:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728988AbgICXZL (ORCPT
+        with ESMTP id S1729558AbgICX0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 19:25:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A66C061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 16:25:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so3349356pgl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 16:25:11 -0700 (PDT)
+        Thu, 3 Sep 2020 19:26:16 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72592C061246
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 16:26:15 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id r13so5823753ljm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 16:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ak7sgXD1yUS+b4yneXUgmseigL5T/tHURONnrfZ0LI4=;
-        b=VhBq0Pd1fQUl41cTBulPJPpdxGflwL0G7Gqg1UwnWwh7hC3EHSfa7oPF3xPReYY4jn
-         BAWM7qrieI6Kba9y15jYXktkL7ZlLYJjFqbAHH+2+qgP7TtD6dXZkTSM/dM7KV4y/BQ2
-         YfsUkkK/A9E3N0HUpkt7fYZBAsf2ixttwmFIU=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eoc+5mie1+ZuNTuaPcGzSI2qJ6owz7A4Ofr10ghZJJ4=;
+        b=gWGJKo5xiJNWPTtwqGkQlOlOwg3GjNMHWAbbLf6G2umLeN+ziH7HLU4o7mqfu6xrQX
+         0nqy/1qDWFPlTHlbUl4hIrosGA73uytx27UrMGezo0ol7EOlqSXT8KqCo6mWmcDs1cwA
+         at576v5S6IW6A1SwuGUswjPYeT1mwL3S6Pfko=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ak7sgXD1yUS+b4yneXUgmseigL5T/tHURONnrfZ0LI4=;
-        b=c/UKbjOf7QPd3ZtDgrATvvOIM2aQrqKii+jgVDJzgvyFIJezAlyn7Q3Ko+ePCxs5EV
-         7MqUMfa1Yh8EKajQE5GcKIOVB1kS/M023iFSiT1EYuSEFflvnCtlcmmU/OohlhxSendk
-         qccBlutMXDdHWi9WBdXWfRiyXWCQrDgKo1D6NjH8mEPwyuSPEf8YV0HMH9cObc3G9SGB
-         1qb/SAk9CSB7lmSNjrk0D9d8/hKDzdG8gPT2Ysr5AiZ8ZcTQFj4yyS+OFk1EYfa0n3bO
-         eaPCfk6A99fZqHllnQa9WNWnlOS6SBt6jThU6R2gEZzrFHel9cGMgx2FhEI3pMI3TvlC
-         Uo7w==
-X-Gm-Message-State: AOAM531S64erQcJHhRWBFRuN0nOSeZHfF+CrXVYq5iC9eSjjR4TW6/TT
-        JZ6DpHdccXW3HyGuHpYr1OOMBQ==
-X-Google-Smtp-Source: ABdhPJzWCp1ofM9pNblsz3oLmRdRBFRUQauHQjSC92yoCjre8k5Y3NiZEW1Bbb485EaunCczoEjv5Q==
-X-Received: by 2002:a62:ea01:: with SMTP id t1mr6001343pfh.125.1599175510807;
-        Thu, 03 Sep 2020 16:25:10 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:42b0:34ff:fe3d:58e6])
-        by smtp.gmail.com with ESMTPSA id q7sm3614459pgg.10.2020.09.03.16.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 16:25:10 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Angelo Dureghello <angelo.dureghello@timesys.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH 6/6] mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that are newer than 5.4
-Date:   Thu,  3 Sep 2020 16:24:41 -0700
-Message-Id: <20200903162412.6.Ib121debfb18e5f923a3cd38fe9c36aa086c650c5@changeid>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-In-Reply-To: <20200903232441.2694866-1-dianders@chromium.org>
-References: <20200903232441.2694866-1-dianders@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eoc+5mie1+ZuNTuaPcGzSI2qJ6owz7A4Ofr10ghZJJ4=;
+        b=QiwGeQv9ATBy5dkILFj95qidpKHCUQvpklrqKTbITx89DYjH1UkL0eA3shTPe8frNG
+         mHIAIUsiUk+msnZjrgl38XKYydIya+s4N8fAHzGPcvW4UyQfi7O6vtCdNuH09eGqpP2K
+         hEUYjWFzqPRvHdysCcvw/ezumMHc7YnfP4z0YDzQ1bTDyIwlUHQ0kcs2Fjk6zMIwCu7k
+         stbzaMVNKGNnuak53iLGu/n6zySCEbivvnzPo+mTPgV7nGupOTqPe3pdeOP55KJyk9AW
+         wsZd/eCxjMwkylQGYiR45MVQSd4h+3UjuJAfK7uUvjlrLYFotH39KIx/I2a3idxsjP2t
+         CpSw==
+X-Gm-Message-State: AOAM532sV01KNeIPhaEeL8OYTS8h94LYmlZSuYZctEPitgNVzbxKDM5a
+        ltmMyjle0GF1A+NEyvgA5KNZrjHuNKG7jA==
+X-Google-Smtp-Source: ABdhPJxd4U7iZ5C4dc/7Li9mZ0PgdHKvOue3oPpnJrD7a1k5kPqUgLpOHYZcFW9hHqD0+Pg4NDIS6A==
+X-Received: by 2002:a2e:7615:: with SMTP id r21mr2312830ljc.371.1599175573240;
+        Thu, 03 Sep 2020 16:26:13 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id l16sm901224ljb.72.2020.09.03.16.26.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 16:26:11 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id y17so2853200lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 16:26:11 -0700 (PDT)
+X-Received: by 2002:a19:4a88:: with SMTP id x130mr2429205lfa.31.1599175570612;
+ Thu, 03 Sep 2020 16:26:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200903142242.925828-1-hch@lst.de> <20200903142242.925828-13-hch@lst.de>
+ <9ab40244a2164f7db2ff0c1d23ab59a0@AcuMS.aculab.com>
+In-Reply-To: <9ab40244a2164f7db2ff0c1d23ab59a0@AcuMS.aculab.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 3 Sep 2020 16:25:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whDtnudkbZ8-hR8HiDE7zog0dv+Gu9Sx5i6SPakrDtajQ@mail.gmail.com>
+Message-ID: <CAHk-=whDtnudkbZ8-hR8HiDE7zog0dv+Gu9Sx5i6SPakrDtajQ@mail.gmail.com>
+Subject: Re: [PATCH 12/14] x86: remove address space overrides using set_fs()
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is like commit 3d3451124f3d ("mmc: sdhci-msm: Prefer asynchronous
-probe") but applied to a whole pile of drivers.  This batch converts
-the drivers that appeared to have been added after kernel 5.4.
+On Thu, Sep 3, 2020 at 2:30 PM David Laight <David.Laight@aculab.com> wrote:
+>
+> A non-canonical (is that the right term) address between the highest
+> valid user address and the lowest valid kernel address (7ffe to fffe?)
+> will fault anyway.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Yes.
 
- drivers/mmc/host/meson-mx-sdhc-mmc.c | 1 +
- drivers/mmc/host/owl-mmc.c           | 1 +
- drivers/mmc/host/sdhci-esdhc-mcf.c   | 1 +
- drivers/mmc/host/sdhci-milbeaut.c    | 1 +
- drivers/mmc/host/sdhci-of-sparx5.c   | 1 +
- 5 files changed, 5 insertions(+)
+But we actually warn against that fault, because it's been a good way
+to catch places that didn't use the proper "access_ok()" pattern.
 
-diff --git a/drivers/mmc/host/meson-mx-sdhc-mmc.c b/drivers/mmc/host/meson-mx-sdhc-mmc.c
-index 53e3f6a4245a..7cd9c0ec2fcf 100644
---- a/drivers/mmc/host/meson-mx-sdhc-mmc.c
-+++ b/drivers/mmc/host/meson-mx-sdhc-mmc.c
-@@ -903,6 +903,7 @@ static struct platform_driver meson_mx_sdhc_driver = {
- 	.remove  = meson_mx_sdhc_remove,
- 	.driver  = {
- 		.name = "meson-mx-sdhc",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		.of_match_table = of_match_ptr(meson_mx_sdhc_of_match),
- 	},
- };
-diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
-index df43f42855e2..ccf214a89eda 100644
---- a/drivers/mmc/host/owl-mmc.c
-+++ b/drivers/mmc/host/owl-mmc.c
-@@ -689,6 +689,7 @@ MODULE_DEVICE_TABLE(of, owl_mmc_of_match);
- static struct platform_driver owl_mmc_driver = {
- 	.driver = {
- 		.name	= "owl_mmc",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		.of_match_table = owl_mmc_of_match,
- 	},
- 	.probe		= owl_mmc_probe,
-diff --git a/drivers/mmc/host/sdhci-esdhc-mcf.c b/drivers/mmc/host/sdhci-esdhc-mcf.c
-index 71bf086a9812..ca7a1690b2a8 100644
---- a/drivers/mmc/host/sdhci-esdhc-mcf.c
-+++ b/drivers/mmc/host/sdhci-esdhc-mcf.c
-@@ -509,6 +509,7 @@ static int sdhci_esdhc_mcf_remove(struct platform_device *pdev)
- static struct platform_driver sdhci_esdhc_mcf_driver = {
- 	.driver	= {
- 		.name = "sdhci-esdhc-mcf",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 	},
- 	.probe = sdhci_esdhc_mcf_probe,
- 	.remove = sdhci_esdhc_mcf_remove,
-diff --git a/drivers/mmc/host/sdhci-milbeaut.c b/drivers/mmc/host/sdhci-milbeaut.c
-index 4e7cc0680f94..148b37ac6564 100644
---- a/drivers/mmc/host/sdhci-milbeaut.c
-+++ b/drivers/mmc/host/sdhci-milbeaut.c
-@@ -333,6 +333,7 @@ static int sdhci_milbeaut_remove(struct platform_device *pdev)
- static struct platform_driver sdhci_milbeaut_driver = {
- 	.driver = {
- 		.name = "sdhci-milbeaut",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		.of_match_table = of_match_ptr(mlb_dt_ids),
- 	},
- 	.probe	= sdhci_milbeaut_probe,
-diff --git a/drivers/mmc/host/sdhci-of-sparx5.c b/drivers/mmc/host/sdhci-of-sparx5.c
-index 747f108a0ace..28e4ee69e100 100644
---- a/drivers/mmc/host/sdhci-of-sparx5.c
-+++ b/drivers/mmc/host/sdhci-of-sparx5.c
-@@ -255,6 +255,7 @@ MODULE_DEVICE_TABLE(of, sdhci_sparx5_of_match);
- static struct platform_driver sdhci_sparx5_driver = {
- 	.driver = {
- 		.name = "sdhci-sparx5",
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 		.of_match_table = sdhci_sparx5_of_match,
- 		.pm = &sdhci_pltfm_pmops,
- 	},
--- 
-2.28.0.526.ge36021eeef-goog
+See ex_handler_uaccess() and the
 
+        WARN_ONCE(trapnr == X86_TRAP_GP, "General protection fault in
+user access. Non-canonical address?");
+
+warning. It's been good for randomized testing - a missing range check
+on a user address will often hit this.
+
+Of course, you should never see it in real life (and hopefully not in
+testing either any more). But belt-and-suspenders..
+
+              Linus
