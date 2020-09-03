@@ -2,129 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22F825BECE
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8725825BEE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 12:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgICKJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 06:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726467AbgICKJQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 06:09:16 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A80C061244;
-        Thu,  3 Sep 2020 03:09:15 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k15so2519479wrn.10;
-        Thu, 03 Sep 2020 03:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7ns1zVlmF+pwrGH9GOZCksJLi0dT9SO4rihgWhgyS68=;
-        b=ZIftqY/cOwubsKafsp3NW2i/rOoNtGD2RFfTOSEM8SHZyTef5VCKOJOUZaczY0oV9q
-         nqgYFXGgPwTXZvKjpzcWB4bdH3gFOj1gMkJoMF5uIXnot13uQH3e4nZWv9tvSRNOh83h
-         6OJizdH/oW72cYRucpa5jxu6ysQiMn2rq7ApdMnMcQTFARhyQxrjt6VdZn4TuhZDttfY
-         WGJyoITTTu0ILEjsItIEzEjAzMtwUr2kQEWxLM8uUyQ22Q55UReKnfM30ZBfElZBVNYr
-         2Jowy0eiRgZSDLBEutYJa2c+sEL4g5+qFYuBI5xIhteHzq1/J6Nf56H+Ib4NsUhDhoXk
-         MHcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7ns1zVlmF+pwrGH9GOZCksJLi0dT9SO4rihgWhgyS68=;
-        b=i5F8sce92/LtgiSaYx4pPwX5Jt0xDWazQ1uyvz4sXQUmq27xYE6G1H333rtXpsg1Tf
-         5FTvFkee5scJvghAh1P7tYSU82KczkwGXgeZAZWLr8wqGP1Sa3L3fZR+w2LC5wj99vvw
-         k541Htf6Bag88Nt98ALwxA4H4ip2HcjUcLO+o8A9W6j7bJ0zseaAAmHP8sP9w//N/5G8
-         l4uQ4xxYFswblzrDwwV1pmeNeDNyj1wxpN/XXd7bHL6CGGjy5iDn3sU2qqDr13gaANZ+
-         EFoCQN7OQpYmChWosc4sPxrahWZ9E9uwaJ2N0ecBptlGZqKucZ0l/hnaOV9tMX7jv2+7
-         v3/Q==
-X-Gm-Message-State: AOAM530bukb0mQYc8fo3Chr1+hVu2fB20gFXjSfUgsV0jRZ58T0HYma4
-        ZxY4xIvEdMwg8aC3O6Jxu4A=
-X-Google-Smtp-Source: ABdhPJz3K6K7Mh0RG8NoX33E1Z7xGzqMyQLSI0aRwAKMj2ItiAA+GRzRJtUu7nyxcAZQTy56yoJWEw==
-X-Received: by 2002:adf:f042:: with SMTP id t2mr1529695wro.385.1599127754478;
-        Thu, 03 Sep 2020 03:09:14 -0700 (PDT)
-Received: from medion (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id v3sm3541805wmh.6.2020.09.03.03.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 03:09:14 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-X-Google-Original-From: Alex Dewar <alex.dewar@gmx.co.uk>
-Date:   Thu, 3 Sep 2020 11:09:12 +0100
-To:     Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] remoteproc: core: Free rvdev on error path
-Message-ID: <20200903100912.6op2fs6olrtlckr2@medion>
-References: <20200903100142.57117-1-alex.dewar90@gmail.com>
+        id S1728308AbgICKMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 06:12:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:58190 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725984AbgICKMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 06:12:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82327101E;
+        Thu,  3 Sep 2020 03:12:05 -0700 (PDT)
+Received: from [10.57.7.89] (unknown [10.57.7.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A82553F68F;
+        Thu,  3 Sep 2020 03:12:03 -0700 (PDT)
+Subject: Re: [PATCH 1/4] kselftests/arm64: add a basic Pointer Authentication
+ test
+To:     Dave Martin <Dave.Martin@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, boian4o1@gmail.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        amit.kachhap@arm.com, vincenzo.frascino@arm.com,
+        Shuah Khan <shuah@kernel.org>
+References: <20200828131606.7946-1-boyan.karatotev@arm.com>
+ <20200828131606.7946-2-boyan.karatotev@arm.com>
+ <20200902164858.GI6642@arm.com>
+From:   Boyan Karatotev <boyan.karatotev@arm.com>
+Message-ID: <ebcefdf0-a71b-3b67-b133-3f47419f9ec8@arm.com>
+Date:   Thu, 3 Sep 2020 11:12:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903100142.57117-1-alex.dewar90@gmail.com>
+In-Reply-To: <20200902164858.GI6642@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 11:01:42AM +0100, Alex Dewar wrote:
-> In rpoc_handle_vdev(), rvdev is not freed properly on the error path and
-> one of the labels is misnamed. Fix this up.
+On 02/09/2020 17:49, Dave Martin wrote:
+> On Fri, Aug 28, 2020 at 02:16:03PM +0100, Boyan Karatotev wrote:
+>> PAuth signs and verifies return addresses on the stack. It does so by
+>> inserting a Pointer Authentication code (PAC) into some of the unused top
+>> bits of an address. This is achieved by adding paciasp/autiasp instructions
+>> at the beginning and end of a function.
+>>
+>> This feature is partially backwards compatible with earlier versions of the
+>> ARM architecture. To coerce the compiler into emitting fully backwards
+>> compatible code the main file is compiled to target an earlier ARM version.
+>> This allows the tests to check for the feature and print meaningful error
+>> messages instead of crashing.
+>>
+>> Add a test to verify that corrupting the return address results in a
+>> SIGSEGV on return.
+>>
+>> Cc: Shuah Khan <shuah@kernel.org>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Signed-off-by: Boyan Karatotev <boyan.karatotev@arm.com>
+>> ---
+>>  tools/testing/selftests/arm64/Makefile        |  2 +-
+>>  .../testing/selftests/arm64/pauth/.gitignore  |  1 +
+>>  tools/testing/selftests/arm64/pauth/Makefile  | 22 ++++++++++++
+>>  tools/testing/selftests/arm64/pauth/helper.h  | 10 ++++++
+>>  tools/testing/selftests/arm64/pauth/pac.c     | 32 +++++++++++++++++
+>>  .../selftests/arm64/pauth/pac_corruptor.S     | 36 +++++++++++++++++++
+>>  6 files changed, 102 insertions(+), 1 deletion(-)
+>>  create mode 100644 tools/testing/selftests/arm64/pauth/.gitignore
+>>  create mode 100644 tools/testing/selftests/arm64/pauth/Makefile
+>>  create mode 100644 tools/testing/selftests/arm64/pauth/helper.h
+>>  create mode 100644 tools/testing/selftests/arm64/pauth/pac.c
+>>  create mode 100644 tools/testing/selftests/arm64/pauth/pac_corruptor.S
+>>
+>> diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
+>> index 93b567d23c8b..525506fd97b9 100644
+>> --- a/tools/testing/selftests/arm64/Makefile
+>> +++ b/tools/testing/selftests/arm64/Makefile
+>> @@ -4,7 +4,7 @@
+>>  ARCH ?= $(shell uname -m 2>/dev/null || echo not)
+>>  
+>>  ifneq (,$(filter $(ARCH),aarch64 arm64))
+>> -ARM64_SUBTARGETS ?= tags signal
+>> +ARM64_SUBTARGETS ?= tags signal pauth
+>>  else
+>>  ARM64_SUBTARGETS :=
+>>  endif
+>> diff --git a/tools/testing/selftests/arm64/pauth/.gitignore b/tools/testing/selftests/arm64/pauth/.gitignore
+>> new file mode 100644
+>> index 000000000000..b557c916720a
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/arm64/pauth/.gitignore
+>> @@ -0,0 +1 @@
+>> +pac
+>> diff --git a/tools/testing/selftests/arm64/pauth/Makefile b/tools/testing/selftests/arm64/pauth/Makefile
+>> new file mode 100644
+>> index 000000000000..785c775e5e41
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/arm64/pauth/Makefile
+>> @@ -0,0 +1,22 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright (C) 2020 ARM Limited
+>> +
+>> +CFLAGS += -mbranch-protection=pac-ret
+>> +
+>> +TEST_GEN_PROGS := pac
+>> +TEST_GEN_FILES := pac_corruptor.o
+>> +
+>> +include ../../lib.mk
+>> +
+>> +# pac* and aut* instructions are not available on architectures berfore
+>> +# ARMv8.3. Therefore target ARMv8.3 wherever they are used directly
+>> +$(OUTPUT)/pac_corruptor.o: pac_corruptor.S
+>> +	$(CC) -c $^ -o $@ $(CFLAGS) -march=armv8.3-a
+>> +
+>> +# when -mbranch-protection is enabled and the target architecture is ARMv8.3 or
+>> +# greater, gcc emits pac* instructions which are not in HINT NOP space,
+>> +# preventing the tests from occurring at all. Compile for ARMv8.2 so tests can
+>> +# run on earlier targets and print a meaningful error messages
+>> +$(OUTPUT)/pac: pac.c $(OUTPUT)/pac_corruptor.o
+>> +	$(CC) $^ -o $@ $(CFLAGS) -march=armv8.2-a
+>> +
+>> diff --git a/tools/testing/selftests/arm64/pauth/helper.h b/tools/testing/selftests/arm64/pauth/helper.h
+>> new file mode 100644
+>> index 000000000000..f777f88acf0a
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/arm64/pauth/helper.h
+>> @@ -0,0 +1,10 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright (C) 2020 ARM Limited */
+>> +
+>> +#ifndef _HELPER_H_
+>> +#define _HELPER_H_
+>> +
+>> +void pac_corruptor(void);
+>> +
+>> +#endif
+>> +
+>> diff --git a/tools/testing/selftests/arm64/pauth/pac.c b/tools/testing/selftests/arm64/pauth/pac.c
+>> new file mode 100644
+>> index 000000000000..ed445050f621
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/arm64/pauth/pac.c
+>> @@ -0,0 +1,32 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +// Copyright (C) 2020 ARM Limited
+>> +
+>> +#include <sys/auxv.h>
+>> +#include <signal.h>
+>> +
+>> +#include "../../kselftest_harness.h"
+>> +#include "helper.h"
+>> +
+>> +/*
+>> + * Tests are ARMv8.3 compliant. They make no provisions for features present in
+>> + * future version of the arm architecture
+>> + */
+>> +
+>> +#define ASSERT_PAUTH_ENABLED() \
+>> +do { \
+>> +	unsigned long hwcaps = getauxval(AT_HWCAP); \
+>> +	/* data key instructions are not in NOP space. This prevents a SIGILL */ \
+> 
+> 
+>> +	ASSERT_NE(0, hwcaps & HWCAP_PACA) TH_LOG("PAUTH not enabled"); \
+>> +} while (0)
+>> +
+>> +
+>> +/* check that a corrupted PAC results in SIGSEGV */
+>> +TEST_SIGNAL(corrupt_pac, SIGSEGV)
+>> +{
+>> +	ASSERT_PAUTH_ENABLED();
+>> +
+>> +	pac_corruptor();
+>> +}
+>> +
+>> +TEST_HARNESS_MAIN
+>> +
+>> diff --git a/tools/testing/selftests/arm64/pauth/pac_corruptor.S b/tools/testing/selftests/arm64/pauth/pac_corruptor.S
+>> new file mode 100644
+>> index 000000000000..6a34ec23a034
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/arm64/pauth/pac_corruptor.S
+>> @@ -0,0 +1,36 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright (C) 2020 ARM Limited */
+>> +
+>> +.global pac_corruptor
+>> +
+>> +.text
+>> +/*
+>> + * Corrupting a single bit of the PAC ensures the authentication will fail.  It
+>> + * also guarantees no possible collision. TCR_EL1.TBI0 is set by default so no
+>> + * top byte PAC is tested
+>> + */
+>> + pac_corruptor:
+>> +	paciasp
+>> +
+>> +	/* make stack frame */
+>> +	sub sp, sp, #16
+>> +	stp x29, lr, [sp]
+> 
+> Nit: if respinning, you can optimise a few sequences of this sort, e.g.
+> 
+> 	stp	x29, lr, [sp, #-16]!
+> 
+>> +	mov x29, sp
+>> +
+>> +	/* prepare mask for bit to be corrupted (bit 54) */
+>> +	mov x1, xzr
+>> +	add x1, x1, #1
+>> +	lsl x1, x1, #54
+> 
+> Nit:
+> 
+> 	mov	x1, #1 << 54
+Thank you for this, didn't know I could do it this way.
+> 
+> but anyway, the logic operations can encode most simple bitmasks
+> directly as immediate operands, so you can skip this and just do
+> 
+>> +
+>> +	/* get saved lr, corrupt selected bit, put it back */
+>> +	ldr x0, [sp, #8]
+>> +	eor x0, x0, x1
+> 
+> 	eor	x0, x0, #1 << 54
+> 
+>> +	str x0, [sp, #8]
+>> +
+>> +	/* remove stack frame */
+>> +	ldp x29, lr, [sp]
+>> +	add sp, sp, #16
+> 
+> 	ldp	x29, lr, [sp], #16
+> 
+> [...]
+> 
+> Actually, since there are no leaf nested function calls and no trap is
+> expected until the function returns (so backtracing in the middle of
+> this function is unlikely to be needed), could we optimise this whole
+> thing down to the following?
+> 
+I suppose you're right. The intent was to emulate a c function but there
+really is no point in doing all this extra work. Will change it.
+> pac_corruptor:
+> 	paciasp
+> 	eor	lr, lr, #1 << 53
+> 	autiasp
+> 	ret
+> 
+> Cheers
+> ---Dave
+> 
 
-Actually, don't apply this. I didn't realise that device_unregister
-already frees memory. Sorry for the noise!
 
-> 
-> Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
-> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
-> ---
->  drivers/remoteproc/remoteproc_core.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index d4bd71f87b03..84dea43d196e 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -531,7 +531,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
->  	rvdev->dev.parent = &rproc->dev;
->  	ret = dma_copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
->  	if (ret)
-> -		return ret;
-> +		goto free_rvdev;
->  	rvdev->dev.release = rproc_rvdev_release;
->  	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
->  	dev_set_drvdata(&rvdev->dev, rvdev);
-> @@ -539,7 +539,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
->  	ret = device_register(&rvdev->dev);
->  	if (ret) {
->  		put_device(&rvdev->dev);
-> -		return ret;
-> +		goto free_rvdev;
->  	}
->  	/* Make device dma capable by inheriting from parent's capabilities */
->  	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
-> @@ -556,7 +556,7 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
->  	for (i = 0; i < rsc->num_of_vrings; i++) {
->  		ret = rproc_parse_vring(rvdev, rsc, i);
->  		if (ret)
-> -			goto free_rvdev;
-> +			goto unregister_dev;
->  	}
->  
->  	/* remember the resource offset*/
-> @@ -581,8 +581,10 @@ static int rproc_handle_vdev(struct rproc *rproc, struct fw_rsc_vdev *rsc,
->  unwind_vring_allocations:
->  	for (i--; i >= 0; i--)
->  		rproc_free_vring(&rvdev->vring[i]);
-> -free_rvdev:
-> +unregister_dev:
->  	device_unregister(&rvdev->dev);
-> +free_rvdev:
-> +	kfree(rvdev);
->  	return ret;
->  }
->  
-> -- 
-> 2.28.0
-> 
+-- 
+Regards,
+Boyan
