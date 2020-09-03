@@ -2,138 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC99E25C477
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E9A25C435
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729191AbgICPLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
+        id S1729519AbgICPF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728979AbgICN5y (ORCPT
+        with ESMTP id S1728972AbgICN6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:57:54 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CAFDC061A1B
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 06:46:48 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id y194so1765127vsc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:46:48 -0700 (PDT)
+        Thu, 3 Sep 2020 09:58:15 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967D6C061A1C;
+        Thu,  3 Sep 2020 06:47:01 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id v54so1900791qtj.7;
+        Thu, 03 Sep 2020 06:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j0CWDjHuel9BhIbAeE9SClU/k1SGiwHbME2EsbEVqqg=;
-        b=H0ZpLV8XVaPO5Koy+JT8TV7Werq7grrAXsb7ndgYrWD9aaM+kA2QtzugtG05VDPave
-         ses3ofeebxQHSLAcjOGBkC9btWfyNNGqg8vbRKxZ07es2kQ6lWMR4pK7q2EDD14dauZP
-         30UPjbW4pxO5QwJcqFdY16nw8daWweukbCV/4=
+         :cc;
+        bh=/1zUgRbLsFEeGpq6qPl8QkF9aFlbywUVunqjqh+DadA=;
+        b=NS2xjIIrgMfG6fHEkZ2tKgZsiB5c5jufyPfDsrWkkwsQN3aGPVImUNFhAU5pGZLCVW
+         QzqhTd5yZ4gU172X0vyk+/QuRFMGBiRgtOiKi5CY015MLf69W+BClpzrzmeAUF5WVSB1
+         PDCjSM9xIe1N0/IcaukeQuoG3ka1as/5AFZpDwj+Q9Ut492IVbHApZOeotauloT5kpjB
+         GZyPBAtm19+QrckGNRl2zp/5ubJ1GShk8D6BL+zdizaZ+7F12WAcnSf/ATrUMhvn6lzu
+         wvSHNpwhoUk1yAZHZ1wIo3Wswjp71n2q3t3FedngCX5szlU4oQEsQAszBcaUzkrcyY+M
+         j7+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j0CWDjHuel9BhIbAeE9SClU/k1SGiwHbME2EsbEVqqg=;
-        b=aaokvfl7S+sQMA0gn/aIl8cbgvaQihQtML/Heq5Ari5rdOoSDjDZDXFHyMjxA4K242
-         kvlfH3oj2zdxLQgOIbpL4mRfzEJ62Ny2wk/HqU/ehPzzwAfHpkYranOfQALmPOn0Yr5L
-         +SxhL0KsBjybxcRJEX8FaZpEOJQZI+sL5N5A7J8wO49R9S0Zp3T++/8zxLShhda3Yosd
-         JeL766pK2s6vloVQImZScA3sm3gXsgje/Th8odbDaHYKcZleexlIPTBrO19Bcjpqvz0X
-         520NycjiT/6USoy8DSdUsBA8AKRJs6BM/R43QJh7MQV7/c3Fj62ltRtUVz2SllDwQK/k
-         pbRw==
-X-Gm-Message-State: AOAM533EqzW2EC/OSGCA246VzCuXpdPmjKjNWon3z55jSIGy7SE+/eNr
-        nDUMKi8olJkz0N9nCdpQcAW09yggWRkz4w==
-X-Google-Smtp-Source: ABdhPJyUpbFUVZkfjxEdJ1UeboIjtYhm+7e8EHtxbcGg2Dkx8ZArpBpOG8q/RlUoUfbkcZd6rkfutw==
-X-Received: by 2002:a67:7905:: with SMTP id u5mr1759500vsc.179.1599140804306;
-        Thu, 03 Sep 2020 06:46:44 -0700 (PDT)
-Received: from mail-vs1-f42.google.com (mail-vs1-f42.google.com. [209.85.217.42])
-        by smtp.gmail.com with ESMTPSA id n9sm285299vkq.31.2020.09.03.06.46.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 06:46:43 -0700 (PDT)
-Received: by mail-vs1-f42.google.com with SMTP id x203so1731588vsc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 06:46:43 -0700 (PDT)
-X-Received: by 2002:a67:e447:: with SMTP id n7mr1767573vsm.53.1599140802881;
- Thu, 03 Sep 2020 06:46:42 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=/1zUgRbLsFEeGpq6qPl8QkF9aFlbywUVunqjqh+DadA=;
+        b=MsPVV0rGp96ja4orVwyE4mvdVbiLBDpqH6xAF/4AeYHV7Ja+cKSV/FTyFCROj6P3uy
+         LHfeLLf6QURteSWphRpMb0X51MSKjjzl2Kcu+Dq2mIy34iprxIdajlX5Mwn9Oj6+sim4
+         5kwMn9Rb64+ep8lRH1zkgm6P57VTHbhr48h/sfp0SJ0wgnX+EXtziZztjGkjI83pb7uo
+         xFASIQjCiO1u7Kni1paRm6yw/LIR7AjsnBQm2FOdRe2vik4Q26/DyENJYa9zD0UHydos
+         hdTyKb0wjxiAWqfBFEdbtyRw2FAk2UAY4tZSNiaxwfB6TJu6xANcn5VMGtCFfwkLntUZ
+         +4ng==
+X-Gm-Message-State: AOAM533+VyRVBppJa8UvvgtRXNMNcanE3QAGRSuDzGHhYrZYcUmhgTis
+        wwtUthJ52gy/2cnrm1IDX/Ee8PhXElA4dZjHxsI=
+X-Google-Smtp-Source: ABdhPJwoqGp8Nybiy91lZwd8lFz0++lRfOZmaGZN+trRIggnRVcc6FYSxM1ILF1U+GxJLSEoRDvmszFmunBsMrdB7uE=
+X-Received: by 2002:aed:26c4:: with SMTP id q62mr3567362qtd.64.1599140820713;
+ Thu, 03 Sep 2020 06:47:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200817144722.6665-1-saiprakash.ranjan@codeaurora.org>
- <CAD=FV=VE6vCPjDvvP0e73tnd8u5rPuMUa-mwvDazrfUpXP+bKQ@mail.gmail.com>
- <2a0c5fa189dbb2e810ba88f59621b65c@codeaurora.org> <CAD=FV=X8yS1gUNhhVNyfuRPzDUheG2Rco2g16KMegCG6fKJw7Q@mail.gmail.com>
- <d949bdfa15b133f74a47727401553c76@codeaurora.org> <7714ee57f75542839d5c33b28f232aa6@codeaurora.org>
-In-Reply-To: <7714ee57f75542839d5c33b28f232aa6@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 3 Sep 2020 06:46:30 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xt0NTNjCEJ2USfyd2qZ+FfBz9xwctbpv+hSWvvCoAZFg@mail.gmail.com>
-Message-ID: <CAD=FV=Xt0NTNjCEJ2USfyd2qZ+FfBz9xwctbpv+hSWvvCoAZFg@mail.gmail.com>
-Subject: Re: [PATCHv2] soc: qcom: llcc: Support chipsets that can write to
- llcc registers
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        linux-arm-msm-owner@vger.kernel.org
+References: <20200903130950.6274-1-nish.malpani25@gmail.com>
+ <20200903130950.6274-2-nish.malpani25@gmail.com> <CAHp75Vc4hgvgoHrPaxDikqmAoqjpfOwPFTM-AvNvR3Ep=dQEfg@mail.gmail.com>
+In-Reply-To: <CAHp75Vc4hgvgoHrPaxDikqmAoqjpfOwPFTM-AvNvR3Ep=dQEfg@mail.gmail.com>
+From:   Nishant Malpani <nish.malpani25@gmail.com>
+Date:   Thu, 3 Sep 2020 19:16:48 +0530
+Message-ID: <CAEtfd9YioLi=Nr0tMjombhdhyLy_65XUok_viH9_9CPKTz5+5w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] iio: gyro: adxrs290: Add triggered buffer support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Bogdan, Dragos" <dragos.bogdan@analog.com>,
+        Darius <darius.berghe@analog.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Thu, Sep 3, 2020 at 2:58 AM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> Hi,
->
-> On 2020-08-18 21:07, Sai Prakash Ranjan wrote:
-> > Hi Doug,
-> >
-> >>
-> >> I guess to start, it wasn't obvious (to me) that there were two
-> >> choices and we were picking one.  Mentioning that the other
-> >> alternative was way-based allocation would help a lot.  Even if you
-> >> can't fully explain the differences between the two, adding something
-> >> to the commit message indicating that this is a policy decision (in
-> >> other words, both work but each have their tradeoffs) would help.
-> >> Something like this, if it's correct:
-> >>
-> >> In general we try to enable capacity based allocation (instead of the
-> >> default way based allocation) since that gives us better performance
-> >> with the current software / hardware configuration.
-> >>
-> >
-> > Thanks, I will add it for next version. Let me also go poke some arch
-> > teams
-> > to understand if we actually do gain something with this selection, who
-> > knows
-> > we might get some additional details as well.
-> >
->
-> I got some information from arch team today, to quote them exactly:
->
-> 1) What benefits capacity based allocation brings over the default way
-> based allocation?
->
-> "Capacity based allows finer grain partition. It is not about improved
-> performance but more flexibility in configuration."
->
-> 2) Retain through power collapse, doesn=E2=80=99t it burn more power?
->
-> "This feature is similar to the standard feature of retention. Yes, when
-> we
-> have cache in retention mode it burns more power but it keeps the values
-> so
-> that when we wake up we can get more cache hits."
->
->
-> If its good enough, then I will add this info to the commit msg and post
-> next version.
+Thanks for the review, Andy.
 
-Sounds fine to me.  I was mostly looking for a high level idea of what
-was happening here.  I am at least a little curious about the
-retention bit.  Is that retention during S3, or during some sort of
-Runtime PM?  Any idea how much power is burned?  Unless the power is
-miniscule it seems hard to believe that it would be a net win to keep
-a cache powered up during S3 unless you're planning on waking up a
-lot.
+...
 
--Doug
+On Thu, Sep 3, 2020 at 6:50 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Sep 3, 2020 at 4:10 PM Nishant Malpani <nish.malpani25@gmail.com> wrote:
+> >
+> > Provide a way for continuous data capture by setting up buffer support. The
+> > data ready signal exposed at the SYNC pin of the ADXRS290 is exploited as
+> > a hardware interrupt which triggers to fill the buffer.
+> >
+> > Triggered buffer setup was tested with both hardware trigger (DATA_RDY) and
+> > software triggers (sysfs-trig & hrtimer).
+>
+> ...
+>
+> > +static int adxrs290_set_mode(struct iio_dev *indio_dev, enum adxrs290_mode mode)
+> > +{
+> > +       struct adxrs290_state *st = iio_priv(indio_dev);
+> > +       int val, ret;
+> > +
+> > +       if (st->mode == mode) {
+>
+> > +               ret = 0;
+> > +               goto done;
+>
+> Unlocking the not locked mutex is not good. Have you followed the
+> Submitting Patches Checklist? It in particular suggests few debug
+> options, like LOCKDEP, to be enabled.
+>
+
+Yikes, silly me. Thanks for the suggestion. Will fix this in v3.
+
+> > +       }
+> > +
+> > +       mutex_lock(&st->lock);
+> > +
+> > +       ret = spi_w8r8(st->spi, ADXRS290_READ_REG(ADXRS290_REG_POWER_CTL));
+> > +       if (ret < 0)
+> > +               goto done;
+> > +
+> > +       val = ret;
+> > +
+> > +       switch (mode) {
+> > +       case ADXRS290_MODE_STANDBY:
+> > +               val &= ~ADXRS290_MEASUREMENT;
+> > +               break;
+> > +       case ADXRS290_MODE_MEASUREMENT:
+> > +               val |= ADXRS290_MEASUREMENT;
+> > +               break;
+> > +       default:
+> > +               ret = -EINVAL;
+> > +               goto done;
+> > +       }
+> > +
+> > +       ret = adxrs290_spi_write_reg(st->spi,
+> > +                                    ADXRS290_REG_POWER_CTL,
+> > +                                    val);
+> > +       if (ret < 0) {
+> > +               dev_err(&st->spi->dev, "unable to set mode: %d\n", ret);
+> > +               goto done;
+> > +       }
+> > +
+> > +       /* update cached mode */
+> > +       st->mode = mode;
+> > +
+>
+> > +done:
+>
+> Much better to call it out_unlock. It will help eliminate the mistakes
+> like above.
+>
+
+Yes, makes sense.
+
+> > +       mutex_unlock(&st->lock);
+> > +       return ret;
+> > +}
+>
+> ...
+>
+>
+> What about
+>
+>   ret = -EINVAL;
+>
+> >         switch (mask) {
+> >         case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
+> >                 lpf_idx = adxrs290_find_match(adxrs290_lpf_3db_freq_hz_table,
+> >                                               ARRAY_SIZE(adxrs290_lpf_3db_freq_hz_table),
+> >                                               val, val2);
+> > -               if (lpf_idx < 0)
+> > -                       return -EINVAL;
+>
+> > +               if (lpf_idx < 0) {
+>
+> > +                       ret = -EINVAL;
+> > +                       break;
+> > +               }
+>
+> Simple
+>   break;
+>
+> and so on?
+>
+
+Umm, sure would save us a few lines but it seems to me like we are
+trading off readability here. If no one agrees, will change it the way
+you pointed out.
+
+> > +
+> >                 /* caching the updated state of the low-pass filter */
+> >                 st->lpf_3db_freq_idx = lpf_idx;
+> >                 /* retrieving the current state of the high-pass filter */
+> >                 hpf_idx = st->hpf_3db_freq_idx;
+> > -               return adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> > +               ret = adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> > +               break;
+> > +
+> >         case IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY:
+> >                 hpf_idx = adxrs290_find_match(adxrs290_hpf_3db_freq_hz_table,
+> >                                               ARRAY_SIZE(adxrs290_hpf_3db_freq_hz_table),
+> >                                               val, val2);
+> > -               if (hpf_idx < 0)
+> > -                       return -EINVAL;
+> > +               if (hpf_idx < 0) {
+> > +                       ret = -EINVAL;
+> > +                       break;
+> > +               }
+> > +
+> >                 /* caching the updated state of the high-pass filter */
+> >                 st->hpf_3db_freq_idx = hpf_idx;
+> >                 /* retrieving the current state of the low-pass filter */
+> >                 lpf_idx = st->lpf_3db_freq_idx;
+> > -               return adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> > +               ret = adxrs290_set_filter_freq(indio_dev, lpf_idx, hpf_idx);
+> > +               break;
+> > +
+> > +       default:
+> > +               ret = -EINVAL;
+> > +               break;
+> >         }
+> >
+> > -       return -EINVAL;
+> > +       iio_device_release_direct_mode(indio_dev);
+> > +       return ret;
+> >  }
+>
+> ...
+>
+> > +static irqreturn_t adxrs290_trigger_handler(int irq, void *p)
+> > +{
+>
+> > +       /* exercise a bulk data capture starting from reg DATAX0... */
+> > +       ret = spi_write_then_read(st->spi, &tx, sizeof(tx), st->buffer.channels,
+> > +                                 sizeof(st->buffer.channels));
+> > +       if (ret < 0)
+> > +               goto done;
+> > +
+> > +       iio_push_to_buffers_with_timestamp(indio_dev, &st->buffer,
+> > +                                          pf->timestamp);
+> > +
+> > +done:
+>
+> out_unlock_notify:
+>
+
+Okay.
+
+> > +       mutex_unlock(&st->lock);
+> > +       iio_trigger_notify_done(indio_dev->trig);
+> > +
+> > +       return IRQ_HANDLED;
+> > +}
+>
+> ...
+>
+> > +static int adxrs290_probe_trigger(struct iio_dev *indio_dev)
+> > +{
+> > +       struct adxrs290_state *st = iio_priv(indio_dev);
+> > +       int ret;
+>
+> > +       if (!st->spi->irq) {
+> > +               dev_info(&st->spi->dev, "no irq, using polling\n");
+> > +               return 0;
+> > +       }
+>
+> Wouldn't it be better to have this check outside of the function?
+
+I think this function making an early exit makes more sense. The
+CHIP_probe() looks less "noisy" that way.
+
+> And taking this into account...
+>
+> > +}
+>
+> ...
+>
+> > +       ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
+> > +                                             &iio_pollfunc_store_time,
+> > +                                             &adxrs290_trigger_handler, NULL);
+> > +       if (ret < 0)
+> > +               return dev_err_probe(&spi->dev, ret,
+> > +                                    "iio triggered buffer setup failed\n");
+>
+> ...do you really have to set up a trigger buffer w/o trigger being probed?
+>
+
+I suppose one can use software triggers like hrtimer and sysfs-trig...
+
+With regards,
+Nishant Malpani
+
+> > +       ret = adxrs290_probe_trigger(indio_dev);
+> > +       if (ret < 0)
+> > +               return ret;
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
