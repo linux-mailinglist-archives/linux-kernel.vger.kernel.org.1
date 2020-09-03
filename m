@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D228B25C8C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB87425C8C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 20:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbgICSci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 14:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45568 "EHLO mail.kernel.org"
+        id S1729202AbgICScp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 14:32:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728989AbgICSca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 14:32:30 -0400
+        id S1729185AbgICScb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 14:32:31 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F3EE208FE;
-        Thu,  3 Sep 2020 18:32:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0192A2098B;
+        Thu,  3 Sep 2020 18:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599157949;
-        bh=Q2iRI2iRpNGltGA1cFaXvw0AZzOxzUGNruBxVIqsAWs=;
+        s=default; t=1599157950;
+        bh=6wub28gs5+fBev2yTGhML3BnUAe8fOFpQvo25K79KTE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KvUuuUZ6IesPY7ZnQ797u4acnXVzHNUP5aMd+z0eDNgfrrIdiYQq5Qq6s5W6GW5u9
-         XD89EYCC/6VVKXucWxG39fOXE5/agoHa04x3k1mlTJ1N4goJWpnlwWKSsbLTX07pIT
-         0QCYtzDiaY6ytUaC3F78ZLgU6aJbypy4MwjL4fAo=
+        b=ZpbFukMjTPAa6POxBVrBgqiRXhGQDb1VSe6zQ1l8vw9HRdLKzuqt59A9nud39V8xT
+         yV16mCjoIldLQqQ/MIAaw3+mwaEzyTFGtKmX895Pv0q8ZCdthy5hZex2/IUZ/nEqaw
+         FtvovhrrvqhgpMp0XguBlpLj0gLx2oBsreCVlGjY=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1kDu27-008xrJ-OE; Thu, 03 Sep 2020 19:32:27 +0100
+        id 1kDu28-008xrJ-9t; Thu, 03 Sep 2020 19:32:28 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     Jason Cooper <jason@lakedaemon.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Valentin Schneider <valentin.schneider@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v2 3/4] irqchip/git-v3-its: Implement irq_retrigger callback for device-triggered LPIs
-Date:   Thu,  3 Sep 2020 19:32:05 +0100
-Message-Id: <20200903183206.104838-4-maz@kernel.org>
+Subject: [PATCH v2 4/4] irqchip/gic-v2, v3: Prevent SW resends entirely
+Date:   Thu,  3 Sep 2020 19:32:06 +0100
+Message-Id: <20200903183206.104838-5-maz@kernel.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200903183206.104838-1-maz@kernel.org>
 References: <20200903183206.104838-1-maz@kernel.org>
@@ -51,42 +51,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is pretty easy to provide a retrigger callback for the ITS,
-as it we already have the required support in terms of
-irq_set_irqchip_state().
+From: Valentin Schneider <valentin.schneider@arm.com>
 
-Note that this only works for device-generated LPIs, and not
-the GICv4 doorbells, which should never have to be retriggered
-anyway.
+The GIC irqchips can now use a HW resend when a retrigger is invoked by
+check_irq_resend(). However, should the HW resend fail, check_irq_resend()
+will still attempt to trigger a SW resend, which is still a bad idea for
+the GICs.
 
+Prevent this from happening by setting IRQD_HANDLE_ENFORCE_IRQCTX on all
+GIC IRQs. Technically per-cpu IRQs do not need this, as their flow handlers
+never set IRQS_PENDING, but this aligns all IRQs wrt context enforcement:
+this also forces all GIC IRQ handling to happen in IRQ context (as defined
+by in_irq()).
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200730170321.31228-3-valentin.schneider@arm.com
 ---
- drivers/irqchip/irq-gic-v3-its.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/irqchip/irq-gic-v3.c | 5 ++++-
+ drivers/irqchip/irq-gic.c    | 6 +++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index 95f097448f97..2808545a963e 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -1720,6 +1720,11 @@ static int its_irq_set_irqchip_state(struct irq_data *d,
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index b507bc7c5cda..4e9387aafed8 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -1279,6 +1279,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 			      irq_hw_number_t hw)
+ {
+ 	struct irq_chip *chip = &gic_chip;
++	struct irq_data *irqd = irq_desc_get_irq_data(irq_to_desc(irq));
+ 
+ 	if (static_branch_likely(&supports_deactivate_key))
+ 		chip = &gic_eoimode1_chip;
+@@ -1296,7 +1297,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		irq_domain_set_info(d, irq, hw, chip, d->host_data,
+ 				    handle_fasteoi_irq, NULL, NULL);
+ 		irq_set_probe(irq);
+-		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(irq)));
++		irqd_set_single_target(irqd);
+ 		break;
+ 
+ 	case LPI_RANGE:
+@@ -1310,6 +1311,8 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		return -EPERM;
+ 	}
+ 
++	/* Prevents SW retriggers which mess up the ACK/EOI ordering */
++	irqd_set_handle_enforce_irqctx(irqd);
  	return 0;
  }
  
-+static int its_irq_retrigger(struct irq_data *d)
-+{
-+	return !its_irq_set_irqchip_state(d, IRQCHIP_STATE_PENDING, true);
-+}
+diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
+index e92ee2b6d7a5..b59bcef69bf3 100644
+--- a/drivers/irqchip/irq-gic.c
++++ b/drivers/irqchip/irq-gic.c
+@@ -975,6 +975,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 				irq_hw_number_t hw)
+ {
+ 	struct gic_chip_data *gic = d->host_data;
++	struct irq_data *irqd = irq_desc_get_irq_data(irq_to_desc(irq));
+ 
+ 	if (hw < 32) {
+ 		irq_set_percpu_devid(irq);
+@@ -984,8 +985,11 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
+ 		irq_domain_set_info(d, irq, hw, &gic->chip, d->host_data,
+ 				    handle_fasteoi_irq, NULL, NULL);
+ 		irq_set_probe(irq);
+-		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(irq)));
++		irqd_set_single_target(irqd);
+ 	}
 +
- /*
-  * Two favourable cases:
-  *
-@@ -1971,6 +1976,7 @@ static struct irq_chip its_irq_chip = {
- 	.irq_set_affinity	= its_set_affinity,
- 	.irq_compose_msi_msg	= its_irq_compose_msi_msg,
- 	.irq_set_irqchip_state	= its_irq_set_irqchip_state,
-+	.irq_retrigger		= its_irq_retrigger,
- 	.irq_set_vcpu_affinity	= its_irq_set_vcpu_affinity,
- };
++	/* Prevents SW retriggers which mess up the ACK/EOI ordering */
++	irqd_set_handle_enforce_irqctx(irqd);
+ 	return 0;
+ }
  
 -- 
 2.28.0
