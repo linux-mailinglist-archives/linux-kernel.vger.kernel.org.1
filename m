@@ -2,107 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DCF25BA2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B2125BA35
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 07:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726229AbgICFin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 01:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgICFim (ORCPT
+        id S1727940AbgICFjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 01:39:20 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:48534 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgICFjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 01:38:42 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E991C061244
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Sep 2020 22:38:42 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id n10so1090910qtv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Sep 2020 22:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/srxmXOQUdGOTgQu2IuqE2j58tt26cmpQAGEQoUfF/k=;
-        b=BlG2wNJPYLR+rFryCKSetR5cKCniB4g/4HijU9okP0ui0rIsM3wxVymFTj14GFBX6q
-         pK5+3rG4FJjOIgBAIpAjbQVoXniXWSV0TdHquceFaLdMTu8y7tro9mpkEiFR+UX5OlXU
-         FmrMJRd16wseT1va/r33k5gJEc7XwRoD2CVA8REXK0RmYehVgri6Wsm8Wrsw31hc/BAo
-         O+Va8jlRuamwJ81xgknpaV/yP8nR2C2oRaC32NUaqJxSUwmLsvx1W0uTxBP7Tv+NOj5Q
-         MyLctmJl7IfP+gDw0n0DhQtOdg4Q3DG6Tm/GmE/zgu9UqsqiPeH5aB0lP77qRuuxhuWq
-         8lCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/srxmXOQUdGOTgQu2IuqE2j58tt26cmpQAGEQoUfF/k=;
-        b=VHK/Q/ZihjJw+r+Ie7bOh/n0MAQKFRBkIU3yd7DdqDTIjV13dq/1e2GP819xwCG+9r
-         TDXt5ElEvX66687qt4kkOF9f75YlxiemkeHaI54p9hzky8w1qF//cUPNzphoebg4ZjE5
-         Fi4NJ6LhsroAZvSYlTOu+o6sjAMwDRUbhVjUMuzd45rN5mrHLeiD/vtsvFTYVA3gXxwz
-         UsyMNTV6o9/uRRsE8FRpGDGkiZz9p4RJz8+NkVbASPXo/4wfGDHcLgwPLEctO7VnBdyr
-         0oBUK1nCoP3XL62a6cHKOs31GoavGMkzyOL8HKXqXoHEFYPdTJONGOqKHtu1hhiVN4YU
-         rctw==
-X-Gm-Message-State: AOAM531c9q31hOSEj6XZzkwp2tyLOekJrU8wwphsAjfR566in+TtHqeN
-        Fjqfe1Mw+VFuct51EtpL2F7JG/nA/zoar/3GONM=
-X-Google-Smtp-Source: ABdhPJzaK6BoZepXoJ10dK0NPS4TvabWN2zlZEZXM5iY2qiaE4SmYwSpCXEsJMm/APS6kZyYQg8zAMlaCjyRxI4OR/8=
-X-Received: by 2002:ac8:67ca:: with SMTP id r10mr1883306qtp.54.1599111521573;
- Wed, 02 Sep 2020 22:38:41 -0700 (PDT)
+        Thu, 3 Sep 2020 01:39:19 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0835cxci027992;
+        Thu, 3 Sep 2020 00:38:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1599111539;
+        bh=F9qx02drHVcB8//fdoSXuY/MsTvAOdkkagWH+aAPtM4=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=KoZafF31vnIQDWV0+uLbXwLM4PqWr1uMwedrSsTrqSWyXNs5hoxrnXxDsvCU73HAj
+         cdm5LAtcLoWBOIbipbltSRgoRaoT05JFCIIrj/v+wXDqTGBEZVwz0qtM1XOXAzNEmF
+         ukzwWnqIdL1GZLesAIbxXBWOoua+RuZIqoMznDJ8=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0835cxFO101612;
+        Thu, 3 Sep 2020 00:38:59 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 3 Sep
+ 2020 00:38:59 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 3 Sep 2020 00:38:58 -0500
+Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0835cugY086414;
+        Thu, 3 Sep 2020 00:38:57 -0500
+Subject: Re: [PATCH v2] ARM: davinci: use simple i2c probe function
+To:     Wolfram Sang <wsa@kernel.org>, Stephen Kitt <steve@sk2.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Russell King <linux@armlinux.org.uk>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200809172444.16019-1-steve@sk2.org>
+ <20200810093710.GD1290@kunai>
+From:   Sekhar Nori <nsekhar@ti.com>
+Message-ID: <72fa4547-355d-4c40-6857-4a957867b81c@ti.com>
+Date:   Thu, 3 Sep 2020 11:08:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <1599102555-17178-1-git-send-email-shengjiu.wang@nxp.com> <20200903034018.GC4517@Asurada-Nvidia>
-In-Reply-To: <20200903034018.GC4517@Asurada-Nvidia>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 3 Sep 2020 13:38:30 +0800
-Message-ID: <CAA+D8AOJGH77cpbC9dqaE_BES208sgEPDNPWbZ8HGpfom_FoRg@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: Set SAI Channel Mode to Output Mode
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200810093710.GD1290@kunai>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 3, 2020 at 11:42 AM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
->
-> On Thu, Sep 03, 2020 at 11:09:15AM +0800, Shengjiu Wang wrote:
-> > Transmit data pins will output zero when slots are masked or channels
-> > are disabled. In CHMOD TDM mode, transmit data pins are tri-stated when
-> > slots are masked or channels are disabled. When data pins are tri-stated,
-> > there is noise on some channels when FS clock value is high and data is
-> > read while fsclk is transitioning from high to low.
-> >
-> > Signed-off-by: Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->
-> Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
->
-> Though one nit inline:
->
-> > ---
-> >  sound/soc/fsl/fsl_sai.c | 12 ++++++++++--
-> >  sound/soc/fsl/fsl_sai.h |  2 ++
-> >  2 files changed, 12 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> > index 62c5fdb678fc..33b194a5c1dc 100644
-> > --- a/sound/soc/fsl/fsl_sai.c
-> > +++ b/sound/soc/fsl/fsl_sai.c
-> > @@ -486,6 +486,12 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
-> >
-> >       val_cr4 |= FSL_SAI_CR4_FRSZ(slots);
-> >
-> > +     /* Output Mode - data pins transmit 0 when slots are masked
-> > +      * or channels are disabled
-> > +      */
->
-> Coding style for multi-line comments. Yet, probably can simplify?
->
->         /* Set to output mode to avoid tri-stated data pins */
-Ok, will update in v2.
+On 10/08/20 3:07 PM, Wolfram Sang wrote:
+> On Sun, Aug 09, 2020 at 07:24:44PM +0200, Stephen Kitt wrote:
+>> The i2c probe functions here don't use the id information provided in
+>> their second argument, so the single-parameter i2c probe function
+>> ("probe_new") can be used instead.
+>>
+>> This avoids scanning the identifier tables during probes.
+>>
+>> Signed-off-by: Stephen Kitt <steve@sk2.org>
+> 
+> This is useful, helps deprecating the old probe method:
+> 
+> Acked-by: Wolfram Sang <wsa@kernel.org>
 
-best regards
-wang shengjiu
+Queued for v5.10.
+
+Thanks,
+Sekhar
