@@ -2,113 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B28025C1A5
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 15:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089BF25C1C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 15:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728940AbgICN3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 09:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728991AbgICNDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:03:32 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 19CED206EF;
-        Thu,  3 Sep 2020 13:03:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599138181;
-        bh=U7r+JBSfO6GSo/dvzM+GlF/c71/786sO/WzGCOHt/IQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=POxN7cDS+w1rM1/5rZeiUIhYEJm6Ks5RElG+9VYqR+BuPbHY7BGsC9LZErVF97eJF
-         TJswrWsR6hCM/WA4O6QR7afh1VSF3S+2qzAQNGiC23F2Ww8G6VWCPJjRhqlxpolhsg
-         RvD1ZXBjnNYaB/oflmuaBqKI/Xtv1Lfwq8BsQ9As=
-Date:   Thu, 3 Sep 2020 15:03:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v2 07/17] virt: acrn: Introduce an ioctl to set vCPU
- registers state
-Message-ID: <20200903130325.GC2778029@kroah.com>
-References: <20200903124201.17275-1-shuo.a.liu@intel.com>
- <20200903124201.17275-8-shuo.a.liu@intel.com>
+        id S1728565AbgICMsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 08:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728828AbgICMhI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 08:37:08 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFD5C061245
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 05:37:07 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id s205so3484447lja.7
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 05:37:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kHbO1tTc5n73bbL98QAauHq5Il5LPmDzuV8lMRkC0cU=;
+        b=lG6NluBZx+Gi+NN5w27t4VROy92oORzL/IHVGkOIwzhzR0L9BF1NKnFm+7q50/c8LF
+         QpHHC9UXNpOD5+9BeTXM3qYu+QdeEOkRA6h5Oztvp4otQOQz1B4dBULysn76kV51WNkJ
+         mV+W7dWOydL6MPcZmWnok9DVp96FO43h0OOk8MhM5v0nKe4zmWQRqSPXgogL9vc+caL/
+         ww2+4zFjJGIg78c0cFgoY9ytEpFY5VobiFGxr+JmUFy3iz+AUklXQCUzZ4Agrk6efDUR
+         qHfIrDsfi+9sBBj9VQrMIcVsvdsuRXjEohIKS2LN3cZ2gNKPYSiny8IkN7q2yXaCizRc
+         VOFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kHbO1tTc5n73bbL98QAauHq5Il5LPmDzuV8lMRkC0cU=;
+        b=iKbvotcxeKLf1K1Q/n283CehZ2LrlrNusN1eOprmeIStycnEhoNfMfzv2WxCKQWIBI
+         RLAT/WJpojZYngI7JBp8EoDLS0gixQi97KoQwLLdedufEecUbPXtwd5YzPogHtuG+1qZ
+         H1S7LlMb/8ss77q11qM7MEvuM3IEspmDdRamtesXP7Ae/rkjPVmKiTYG8q3+TNFJ11TK
+         lnAv3sBCkR5ijkswp1eVmsRgYgnJcruFP+ZdjC7gNKoqVXC8psgZ8tG6qgK7nVUyZOv/
+         8ZLgRg/Ma4TRfVXVjWN8xfrAgY1Mw21rNDkvW7JO/2XR6/Vf/aVokKjHlV2k2qHy6jZT
+         HPhw==
+X-Gm-Message-State: AOAM531JyIkRRCN6PQqk1FDX7NUjA4bmDUXPKzruO7UZ6rXiiugpZ9TV
+        GDQN2QUrCbF6BNLf5A3rmaHtPg==
+X-Google-Smtp-Source: ABdhPJxB63FvDL9KGDRorRvmo2+IyaQ1xI27E50OTunOMlitWRMrF+o827XaK4zj7R/A6uszSU2R0w==
+X-Received: by 2002:a2e:9886:: with SMTP id b6mr1145293ljj.258.1599136625541;
+        Thu, 03 Sep 2020 05:37:05 -0700 (PDT)
+Received: from [192.168.1.211] ([188.162.64.138])
+        by smtp.gmail.com with ESMTPSA id i26sm581490ljj.102.2020.09.03.05.37.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Sep 2020 05:37:04 -0700 (PDT)
+Subject: Re: [PATCH v1 6/9] phy: qcom-qmp: Add support for DP in USB3+DP combo
+ phy
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Rob Clark <robdclark@chromium.org>
+References: <20200826024711.220080-1-swboyd@chromium.org>
+ <20200826024711.220080-7-swboyd@chromium.org>
+ <335a0660-40e1-0c1e-3f7d-87f7024de18a@linaro.org>
+ <159900847014.334488.14041376759905055412@swboyd.mtv.corp.google.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <62bdac87-b886-58c1-f071-095ec9945f68@linaro.org>
+Date:   Thu, 3 Sep 2020 15:37:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903124201.17275-8-shuo.a.liu@intel.com>
+In-Reply-To: <159900847014.334488.14041376759905055412@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 08:41:51PM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
+On 02/09/2020 04:01, Stephen Boyd wrote:
+> Quoting Dmitry Baryshkov (2020-09-01 06:36:34)
+>> With these functions I'm struggling between introducing
+>> PHY_TYPE_DP_V3/V4 and introducing callbacks into qmp_phy_cfg. What would
+>> you prefer?
+>>
+>> What about the following struct?
+>>
+>> struct qmp_phy_dp_opts {
+>>          void (*dp_aux_init)(struct qmp_phy *qphy);
+>>          void (*dp_configure_tx)(struct qmp_phy *qphy);
+>>          void (*dp_configure_lanes)(struct qmp_phy *qphy);
+>> };
+>>
+>> I'm not sure about dp_calibrate().
+>>
 > 
-> A virtual CPU of User VM has different context due to the different
-> registers state. ACRN userspace needs to set the virtual CPU
-> registers state (e.g. giving a initial registers state to a virtual
-> BSP of a User VM).
-> 
-> HSM provides an ioctl ACRN_IOCTL_SET_VCPU_REGS to do the virtual CPU
-> registers state setting. The ioctl passes the registers state from ACRN
-> userspace to the hypervisor directly.
-> 
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Zhi Wang <zhi.a.wang@intel.com>
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Cc: Yu Wang <yu1.wang@intel.com>
-> Cc: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  drivers/virt/acrn/hsm.c       | 14 +++++++
->  drivers/virt/acrn/hypercall.h | 13 +++++++
->  include/uapi/linux/acrn.h     | 71 +++++++++++++++++++++++++++++++++++
->  3 files changed, 98 insertions(+)
-> 
-> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-> index 6ec6aa9053d3..13df76d0206e 100644
-> --- a/drivers/virt/acrn/hsm.c
-> +++ b/drivers/virt/acrn/hsm.c
-> @@ -12,6 +12,7 @@
->  #define pr_fmt(fmt) "acrn: " fmt
->  #define dev_fmt(fmt) "acrn: " fmt
->  
-> +#include <linux/io.h>
->  #include <linux/miscdevice.h>
->  #include <linux/mm.h>
->  #include <linux/module.h>
-> @@ -49,6 +50,7 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->  {
->  	struct acrn_vm *vm = filp->private_data;
->  	struct acrn_vm_creation *vm_param;
-> +	struct acrn_vcpu_regs *cpu_regs;
->  	int ret = 0;
->  
->  	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
-> @@ -96,6 +98,18 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->  	case ACRN_IOCTL_DESTROY_VM:
->  		ret = acrn_vm_destroy(vm);
->  		break;
-> +	case ACRN_IOCTL_SET_VCPU_REGS:
-> +		cpu_regs = memdup_user((void __user *)ioctl_param,
-> +				       sizeof(struct acrn_vcpu_regs));
-> +		if (IS_ERR(cpu_regs))
-> +			return PTR_ERR(cpu_regs);
-> +
-> +		ret = hcall_set_vcpu_regs(vm->vmid, virt_to_phys(cpu_regs));
+> Is there v4 code somewhere that I can see? Another level of indirection
+> is always a solution, so it is probably fine. This driver is currently
+> written with many conditionals instead of function tables so I'm not
+> sure it fits in with the style of how things are done though. The
+> alternative is to use an enum and call different functions?
 
-No sanity checking of any arguments?
+Downstream DP driver sources can be found here:
+https://source.codeaurora.org/quic/la/platform/vendor/opensource/display-drivers/tree/msm/dp/dp_catalog_v420.c?h=LA.UM.8.12.r1-13900-sm8250.0
 
-Wow, fuzzers are going to have a fun time with your hypervisor, good
-luck!  :)
+https://source.codeaurora.org/quic/la/platform/vendor/opensource/display-drivers/tree/pll/dp_pll_7nm_util.c?h=LA.UM.8.12.r1-13900-sm8250.0
 
+> 
+> The calibrate call is there to "turn the crank" on the aux settings.  I
+> need to cycle through the different values for that aux register so that
+> aux can be tuned properly. The AUX channel really has another phy that
+> needs tuning so we're sort of combining the aux and DP link phy together
+> here by letting the calibrate call tune the AUX phy and the configure
+> call tune the DP phy. I don't see any sort of concept of an AUX phy
+> though so this seemed ok. Does v4 need to tune more registers?
+
+
+It looks like four values are written to AUX_CFG1:
+0x20, 0x13, 0x23, 0x1d
+
+
+
+-- 
+With best wishes
+Dmitry
