@@ -2,158 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F05D25C40E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A5E25C41F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 17:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729247AbgICPDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 11:03:07 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24702 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728998AbgICN7D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 09:59:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599141541;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4d0hEtzj1O3cLEd0CxX1kXJFeAKPS5/bs25SNIlY4YA=;
-        b=COnn8dkBJzEIwPBAmnnGndFE4V/PA/tzQHhkX2H9DbDFVfoTYEbJNSJFsIIqRSoBh1nTBR
-        NtogilpwIXkTsxHv2rUNqR8jqXzdW18vaBVBC75oljCF8KRjHZhzl8ynUxCRHr8arnfeQc
-        JCwMXPQuW7CVGAOhqf6FKg56jbPLISs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70--m16VAb4NcG2EptIAfNEgQ-1; Thu, 03 Sep 2020 09:40:16 -0400
-X-MC-Unique: -m16VAb4NcG2EptIAfNEgQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 04D2380046A;
-        Thu,  3 Sep 2020 13:40:15 +0000 (UTC)
-Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 183D61C4;
-        Thu,  3 Sep 2020 13:40:07 +0000 (UTC)
-Subject: Re: [PATCH v4 00/10] vfio/fsl-mc: VFIO support for FSL-MC device
-To:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
-        laurentiu.tudor@nxp.com
-References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <ae46be70-82d3-6137-6169-beb4bf8ae707@redhat.com>
-Date:   Thu, 3 Sep 2020 15:40:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1729241AbgICPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 11:04:19 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:9827 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728924AbgICN6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 09:58:20 -0400
+IronPort-SDR: PwSSrpM7beoRNGtbZuYVQYarDacF81+BP6yekLAu15x7XInnZ+j5yvbR+RmcJR4SgQGfMy3QxF
+ +W1I13/hf7uv7PgjkRcXItnriXG56d2qnPNvuMDwP5TT2rKbRL87qo0YrJWVdCrbqnXg6xRfzf
+ doKCClYldLzMX+mQPBcJnZA6Dvz+zQ5Lr1GCrroAPKS8Mx4cGGhMgKw87yxskV3KabPuiYNNeU
+ HK/iHvecc8tGVcNFPfxJ45nNmcCZWPMtDaZYSvhFb43LTmeJBpaYKI6cYWI22gusuFIG8S9n+2
+ A1k=
+X-IronPort-AV: E=Sophos;i="5.76,386,1592863200"; 
+   d="scan'208";a="13721334"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 03 Sep 2020 15:40:44 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 03 Sep 2020 15:40:44 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 03 Sep 2020 15:40:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1599140444; x=1630676444;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=PSRtsYjMIeQn6kkIpSqi/xNdAKBtKRUGER2IFcNijQk=;
+  b=N8JPB2+7SiBeJrScJn+KM0GUbsfIXmUgpzkMlhWMhmo/yN4YxwRQf3cI
+   HTBh2bWXK+2czsdjHkI4rSjEsXwlqaboxcmdup/N/drxkqC902yTb+js2
+   PzhqWK+fPzszJlEd0Wg6Q/zcY2gguuBaQxmEhVUJUyyT27Xe6fsWd5nu/
+   9NajEiQBmfnR/TSAaDJ020PyEaO5xl7rKZ8DkteUnsQBqF6Ic7ETDyavR
+   ZnFZwsOBGLjv2K17N+0YrJTYmf0gJTj828ci3wlmlHqctSn7GAKCwkZoT
+   Pkei9rNfLTeZ6hNJG2GAZEBNxq9lm/6C4hygxryfJbFqRpQykxDmuuwAo
+   Q==;
+IronPort-SDR: zDp6qokfh+UZ5a3ETjcvlv4kekHz7nAQLLDIdpowFcBTrgZGK7bVWsZawcpM6af3jkn2ZirSL+
+ xiYF4B0FjTeQEOaqUrbDsjYDlp5zzNTt8x6A2qaU9TbnTj+m+d4F507FtMUS8rYhkK0r0FcaZ2
+ 3R3juBoV0vLvMpOzGa/ATiyM1uMEndtaz8TpDz+FLFU2/ic8Szsk318uheKdvVFW6bqVK1t0m7
+ S++Z/We4I3MD7SRVT8cjBv34z3oZ3hm9NGMIgVKwU7J9voCKjrdHBBdawFMa00QeAu3dx5F4qY
+ xn8=
+X-IronPort-AV: E=Sophos;i="5.76,386,1592863200"; 
+   d="scan'208";a="13721333"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 03 Sep 2020 15:40:43 +0200
+Received: from schifferm-ubuntu4 (unknown [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id C88BD280065;
+        Thu,  3 Sep 2020 15:40:43 +0200 (CEST)
+Message-ID: <ce08696b6bf2b3eaa84d6f056f47a8240c7479f4.camel@ew.tq-group.com>
+Subject: Re: spi-imx: correct interpretation of num-cs DT property?
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 03 Sep 2020 15:40:43 +0200
+In-Reply-To: <20200903132241.GB4771@sirena.org.uk>
+References: <ecfa135b7b83a31bed821ec0740ab3cf1d39da15.camel@ew.tq-group.com>
+         <20200903132241.GB4771@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Diana,
+On Thu, 2020-09-03 at 14:22 +0100, Mark Brown wrote:
+> * PGP Signed by an unknown key
+> 
+> On Thu, Sep 03, 2020 at 11:22:20AM +0200, Matthias Schiffer wrote:
+> 
+> > - If num-cs is set, use that
+> > - If num-cs is unset, use the number of cs-gpios
+> > - If num-cs is unset and no cs-gpios are defined, use a driver-
+> > provided 
+> > default (which is 3 for spi-imx; this matches the number of native
+> > CS
+> > pins in older implementations of this SPI controller; i.MX6 and
+> > newer
+> > support up to 4)
+> 
+> That sounds like what's expected, though we coould just skip the
+> first
+> step.
+> 
+> > Also, would it make sense to add num-cs to all DTS files for boards
+> > that actually use fewer than 3 CS pins?
+> 
+> No, it was never a good idea to have that property in the first place
+> and there should be no case where it helps anything.
 
-On 8/26/20 11:33 AM, Diana Craciun wrote:
-> DPAA2 (Data Path Acceleration Architecture) consists in
-> mechanisms for processing Ethernet packets, queue management,
-> accelerators, etc.
-> 
-> The Management Complex (mc) is a hardware entity that manages the DPAA2
-> hardware resources. It provides an object-based abstraction for software
-> drivers to use the DPAA2 hardware. The MC mediates operations such as
-> create, discover, destroy of DPAA2 objects.
-> The MC provides memory-mapped I/O command interfaces (MC portals) which
-> DPAA2 software drivers use to operate on DPAA2 objects.
-> 
-> A DPRC is a container object that holds other types of DPAA2 objects.
-> Each object in the DPRC is a Linux device and bound to a driver.
-> The MC-bus driver is a platform driver (different from PCI or platform
-> bus). The DPRC driver does runtime management of a bus instance. It
-> performs the initial scan of the DPRC and handles changes in the DPRC
-> configuration (adding/removing objects).
-> 
-> All objects inside a container share the same hardware isolation
-> context, meaning that only an entire DPRC can be assigned to
-> a virtual machine.
-> When a container is assigned to a virtual machine, all the objects
-> within that container are assigned to that virtual machine.
-> The DPRC container assigned to the virtual machine is not allowed
-> to change contents (add/remove objects) by the guest. The restriction
-> is set by the host and enforced by the mc hardware.
-> 
-> The DPAA2 objects can be directly assigned to the guest. However
-> the MC portals (the memory mapped command interface to the MC) need
-> to be emulated because there are commands that configure the
-> interrupts and the isolation IDs which are virtual in the guest.
-> 
-> Example:
-> echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.2/driver_override
-> echo dprc.2 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
-> 
-> The dprc.2 is bound to the VFIO driver and all the objects within
-> dprc.2 are going to be bound to the VFIO driver.
-> 
-> More details about the DPAA2 objects can be found here:
-> Documentation/networking/device_drivers/freescale/dpaa2/overview.rst
-> 
-> The patches are dependent on some changes in the mc-bus (bus/fsl-mc)
-> driver. The changes were needed in order to re-use code and to export
-> some more functions that are needed by the VFIO driver.
-> Currenlty the mc-bus patches are under review:
-> https://www.spinics.net/lists/kernel/msg3639226.html
-Could you share a branch with both series? This would help the review.
 
-Thanks
+Oh, thank you for the clarification.
 
-Eric
+As currently no in-tree DTs use the num-cs property for spi-imx and
+it's not documented, should support for it be dropped from the driver
+altogether?
+
+
 > 
-> v3 --> v4
-> - use bus provided functions to tear down the DPRC
-> - added reset support
+> > At the moment, the num-cs property is not explicitly documented for
+> > the
+> > spi-imx driver, although the driver understands it. I also
+> > suggested to
+> > add this to the docs, which Fabio didn't deem a good idea (I don't
+> > quite understand the reasoning here - isn't num-cs generally a
+> > useful
+> > property to have?)
 > 
-> v2 --> v3
-> - There is no need to align region size to page size
-> - read/write implemented for all DPAA2 objects
-> - review fixes
+> Could you explain what benefit you would expect having num-cs to
+> offer?
 > 
-> v1 --> v2
-> - Fixed the container reset, a new flag added to the firmware command
-> - Implement a bus notifier for setting driver_override
-> 
-> 
-> Bharat Bhushan (1):
->   vfio/fsl-mc: Add VFIO framework skeleton for fsl-mc devices
-> 
-> Diana Craciun (9):
->   vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
->   vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO ioctl
->   vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call
->   vfio/fsl-mc: Allow userspace to MMAP fsl-mc device MMIO regions
->   vfio/fsl-mc: Added lock support in preparation for interrupt handling
->   vfio/fsl-mc: Add irq infrastructure for fsl-mc devices
->   vfio/fsl-mc: trigger an interrupt via eventfd
->   vfio/fsl-mc: Add read/write support for fsl-mc devices
->   vfio/fsl-mc: Add support for device reset
-> 
->  MAINTAINERS                               |   6 +
->  drivers/vfio/Kconfig                      |   1 +
->  drivers/vfio/Makefile                     |   1 +
->  drivers/vfio/fsl-mc/Kconfig               |   9 +
->  drivers/vfio/fsl-mc/Makefile              |   4 +
->  drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 684 ++++++++++++++++++++++
->  drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 221 +++++++
->  drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  56 ++
->  include/uapi/linux/vfio.h                 |   1 +
->  9 files changed, 983 insertions(+)
->  create mode 100644 drivers/vfio/fsl-mc/Kconfig
->  create mode 100644 drivers/vfio/fsl-mc/Makefile
->  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
->  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
->  create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
-> 
+> * Unknown Key
+> * 0x5D5487D0
 
