@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E841225CDA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 00:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E43B25CDB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 00:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbgICWeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 18:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729411AbgICWds (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 18:33:48 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA48BC061258
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 15:33:47 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id l1so2708957qvr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 15:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=UW/0PGzjXFNLpgvsGBdXGPzkiQxfa78I9ft59r2N/eQ=;
-        b=XY11zWkKXAZxLJ9vRo4yHPqTSberWaYsHouzkHd91K67vZInZlS3w/HGq0e6ogCBTk
-         aWV/sMHfo1eQcJyerLI7GnKlBBw6dHNIXyb9+HBOVcwN4Eu6Gh7ZeoqqjsVoIQ2cqiA/
-         l9HJMYtuh5JT7LSWyWGQ78IAh6eOablm9ZpDUtYYfF0qFpYPnFP9sy8f3LYaHENDesw8
-         RXTn1dRHAmB893UlWGp5fxDBkKWRTOHqCRg/bm8MagpTOlA2yQbjin2MthfK9TUctbPA
-         03frbeRjM5BqgZSvjOTX8CFPwOmR8n5DJUoMvzjb+ymNh9bJR14WAChjo1380b2tzIr7
-         oCtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UW/0PGzjXFNLpgvsGBdXGPzkiQxfa78I9ft59r2N/eQ=;
-        b=bCu35HMGZfdzhwUFGqz41Ccl3lZJTnf0HasNXq3nNgz7K6a/WQOg9qOqRcnf+09W34
-         AyxvXbcD38xFiTce/nxASiO8mIvbGgJ20HGrE+QIB0naCsmTaEiMo7UVd7YolQG7F6fQ
-         7ddGvpaWbYbQP0LiDuoGVcpyhii3Id2gs7OeRzYu2jPdC1pVpXTWvaVsXimJCfn/vr7m
-         dt9uKYZFt/QSVkmURoziw3iyL1qpGh0vcC2PWdwENHTtXOOl7AhaltQX0fT9uKKmrlhb
-         tBVeyi6KdDwin5/PAogIy36huaNg5r+GPO82K4Q9KlFoTIbZeRfh0Y2vuoqYTP49/+vj
-         zZmA==
-X-Gm-Message-State: AOAM532MUvqFdkMDMelvy0rxZxLSt6kCjhhamnimfrj35GGamK12NGGm
-        gqGpvJDVQwO7Z/MqujDZG7Dqc5rg+6k=
-X-Google-Smtp-Source: ABdhPJwMqcx89txh5tXQBtUtjcZyiaptSRj7S1RflllH58s5G4zJUG+EC8RwDGjZKEdQQ1HYDhpzgYctmw0=
-X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:f693:9fff:fef4:e444])
- (user=haoluo job=sendgmr) by 2002:a0c:c712:: with SMTP id w18mr4106712qvi.7.1599172426915;
- Thu, 03 Sep 2020 15:33:46 -0700 (PDT)
-Date:   Thu,  3 Sep 2020 15:33:32 -0700
-In-Reply-To: <20200903223332.881541-1-haoluo@google.com>
-Message-Id: <20200903223332.881541-7-haoluo@google.com>
-Mime-Version: 1.0
-References: <20200903223332.881541-1-haoluo@google.com>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH bpf-next v2 6/6] bpf/selftests: Test for bpf_per_cpu_ptr() and bpf_this_cpu_ptr()
-From:   Hao Luo <haoluo@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Hao Luo <haoluo@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Andrey Ignatov <rdna@fb.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729576AbgICWez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 18:34:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:22699 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729547AbgICWey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 18:34:54 -0400
+IronPort-SDR: R7rtXpVy0FBnuXVAPccE1BUZSidpYAVnhgnU0pZEZME6U32cx/WnsJj32luJNeT2CjO94p6hTO
+ 5Gq/5sFcQS5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="145366697"
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
+   d="scan'208";a="145366697"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 15:34:53 -0700
+IronPort-SDR: u790SXF/INpCFqyCHnMzD1KOSwujaEmm1KPJsg8RXI9m0TfIgJbwR0MMq1d1xR66xa6sMsGdRZ
+ cZTk+kjb68cA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
+   d="scan'208";a="326396319"
+Received: from otcwcpicx6.sc.intel.com ([172.25.55.29])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2020 15:34:53 -0700
+Date:   Thu, 3 Sep 2020 22:34:53 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v7 9/9] x86/mmu: Allocate/free PASID
+Message-ID: <20200903223453.GA410113@otcwcpicx6.sc.intel.com>
+References: <1598540794-132666-1-git-send-email-fenghua.yu@intel.com>
+ <1598540794-132666-10-git-send-email-fenghua.yu@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598540794-132666-10-git-send-email-fenghua.yu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test bpf_per_cpu_ptr() and bpf_this_cpu_ptr(). Test two paths in the
-kernel. If the base pointer points to a struct, the returned reg is
-of type PTR_TO_BTF_ID. Direct pointer dereference can be applied on
-the returned variable. If the base pointer isn't a struct, the
-returned reg is of type PTR_TO_MEM, which also supports direct pointer
-dereference.
+Hi, Thomas, Andy, et al,
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Hao Luo <haoluo@google.com>
----
- .../selftests/bpf/prog_tests/ksyms_btf.c      | 10 +++++++
- .../selftests/bpf/progs/test_ksyms_btf.c      | 26 +++++++++++++++++++
- 2 files changed, 36 insertions(+)
+On Thu, Aug 27, 2020 at 08:06:34AM -0700, Fenghua Yu wrote:
+> A PASID is allocated for an "mm" the first time any thread binds
+> to an SVM capable device and is freed from the "mm" when the SVM is
+> unbound by the last thread. It's possible for the "mm" to have different
+> PASID values in different binding/unbinding SVM cycles.
+> 
+> The mm's PASID (non-zero for valid PASID or 0 for invalid PASID) is
+> propagated to per-thread PASID MSR for all threads within the mm through
+> through IPI, context switch, or inherit to ensure a running thread has
+> the right PASID MSR matching the mm's PASID.
+> 
+> Suggested-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+> v7:
+> - Don't fix up PASID in #GP. Instead, update the PASID MSR by IPI and
+>   context switch after PASID allocation and free. Inherit PASID from
+>   parent. (Andy)
+> 
+> Before v7:
+> - Allocate a PASID for the mm and free it until mm exit.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-index 7b6846342449..22cc642dbc0e 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_btf.c
-@@ -58,6 +58,16 @@ void test_ksyms_btf(void)
- 	CHECK(data->out__bpf_prog_active != bpf_prog_active_addr, "bpf_prog_active",
- 	      "got %llu, exp %llu\n", data->out__bpf_prog_active, bpf_prog_active_addr);
- 
-+	CHECK(data->out__rq_cpu == -1, "rq_cpu",
-+	      "got %u, exp != -1\n", data->out__rq_cpu);
-+	CHECK(data->out__percpu_bpf_prog_active == -1, "percpu_bpf_prog_active",
-+	      "got %d, exp != -1\n", data->out__percpu_bpf_prog_active);
-+
-+	CHECK(data->out__this_rq_cpu == -1, "this_rq_cpu",
-+	      "got %u, exp != -1\n", data->out__this_rq_cpu);
-+	CHECK(data->out__this_bpf_prog_active == -1, "this_bpf_prog_active",
-+	      "got %d, exp != -1\n", data->out__this_bpf_prog_active);
-+
- cleanup:
- 	test_ksyms_btf__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-index e04e31117f84..02d564349892 100644
---- a/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-+++ b/tools/testing/selftests/bpf/progs/test_ksyms_btf.c
-@@ -8,15 +8,41 @@
- __u64 out__runqueues = -1;
- __u64 out__bpf_prog_active = -1;
- 
-+__u32 out__rq_cpu = -1; /* percpu struct fields */
-+int out__percpu_bpf_prog_active = -1; /* percpu int */
-+
-+__u32 out__this_rq_cpu = -1;
-+int out__this_bpf_prog_active = -1;
-+
- extern const struct rq runqueues __ksym; /* struct type global var. */
- extern const int bpf_prog_active __ksym; /* int type global var. */
- 
- SEC("raw_tp/sys_enter")
- int handler(const void *ctx)
- {
-+	struct rq *rq;
-+	int *active;
-+	__u32 cpu;
-+
- 	out__runqueues = (__u64)&runqueues;
- 	out__bpf_prog_active = (__u64)&bpf_prog_active;
- 
-+	cpu = bpf_get_smp_processor_id();
-+
-+	/* test bpf_per_cpu_ptr() */
-+	rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, cpu);
-+	if (rq)
-+		out__rq_cpu = rq->cpu;
-+	active = (int *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
-+	if (active)
-+		out__percpu_bpf_prog_active = *active;
-+
-+	/* test bpf_this_cpu_ptr */
-+	rq = (struct rq *)bpf_this_cpu_ptr(&runqueues);
-+	out__this_rq_cpu = rq->cpu;
-+	active = (int *)bpf_this_cpu_ptr(&bpf_prog_active);
-+	out__this_bpf_prog_active = *active;
-+
- 	return 0;
- }
- 
--- 
-2.28.0.526.ge36021eeef-goog
+This is a friendly reminder. Any comment on this series?
 
+This patch (9/9) is essentially the only changed patch that implements
+updating PASID MSR for a thread by IPI and context switch per Andy's
+comment.
+
+Thank you very much in advance!
+
+-Fenghua
