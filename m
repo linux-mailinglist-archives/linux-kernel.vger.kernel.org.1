@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2976425BC2E
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567D925BCA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 10:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgICIFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 04:05:14 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:41843 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728232AbgICICz (ORCPT
+        id S1728822AbgICINw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 04:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728298AbgICIBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 04:02:55 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 703F3B44;
-        Thu,  3 Sep 2020 04:02:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 03 Sep 2020 04:02:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=t6YKz0s4uqL7c
-        rKb1yiXPGovELO7Uq6rm4zeG9kzD20=; b=c+s/IEs8krpgBfHGFbYYJLGMaA4Im
-        CdvNd2WipuAMs1gypWIyRoGXAXr5PasZCyBWQ1TdRcVhQpQuT3drlTE33XtnWwl0
-        tGzL16sakjyGR39ObTm7meTHmz49NoooIGEuvlGVDycRdeRpsGf3QqSDEGo7+QUo
-        S4EjOh8/Y/3WyV1tnPOElTMTFsNe9PojZq9rMP0KmXPcE0AN5339fVGJQojcgh//
-        DAS/PEdCSwll4yv8KQsyLaH/62z4ppkXihhTKeuAtJK/rvKJvYX+hQw5bYMGtxzS
-        Yl84S2DlLKlbwgTbbjHyfiqx6mt2dwoGS89zA+mWVbhpAlftByGWoniAA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=t6YKz0s4uqL7crKb1yiXPGovELO7Uq6rm4zeG9kzD20=; b=jINBPKGT
-        dMoqVCd/MGxLm5z2pi7LJA7KrWDL2B8vzuJEOu+8r+x64hMFZqWwpRKBdfWYuMDu
-        8oGuDqgb3u8qeojB6w0TJJY3auTe9fbpZeSNLpo2EgoMDCNi/9A0sblGCaqsrPXw
-        1/zveDi9ksR0YpAhcwOw+PDd7yG0c7B5A3n397L4IAmMtJEgUJ65MhkYf6jwtav5
-        CdkkepKoEIYDVs3oKkelIQsRDIz2H6kLxcvk8INb7TckXR+N63kfqqkHMb54A8yR
-        R/uwLPfUN90d6lElwgoMlKRrCNjzNhAWJG3YtQL5h8ROHcLNXxkw1OPnvLU9tddR
-        SjSLYrJ8cN4ifA==
-X-ME-Sender: <xms:KqNQXxwH-0osK_d4BM1_KeJ4E9S8kU6plFRFt_jXc9bX9h_lVrPFyw>
-    <xme:KqNQXxRLC5P6MTBJzrqgD0CwjCR_gZZTcUdzPpkx1TeMV9VnpDDHVMyf4X-MGVmmQ
-    fmZZflMg94TDtukJ8g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegtddguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpedvkeelveefffekjefhffeuleetleefudeifeehuddugffghffhffehveev
-    heehvdenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpeefie
-    enucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:KqNQX7VHE0cBTQ12Mh3opKYroCCnh6PVazXgsa2QlYTpKJ60_rePPQ>
-    <xmx:KqNQXziSYetknAVlt_lGclPhdme_ZUQmVffrBo2tBpM9kcV0Nfl4kg>
-    <xmx:KqNQXzBWzXkSIcmpe685oaoV48ParPoaOlsi4AS0uM2soNuCyr19dQ>
-    <xmx:K6NQXwK2OmOMRHSk04raWS-PXWgt7-NSoHIqbUmbJKOZq-oiU6Z7IDZOs0U>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A91C2306005F;
-        Thu,  3 Sep 2020 04:02:50 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Subject: [PATCH v5 41/80] drm/vc4: hdmi: Remove DDC argument to connector_init
+        Thu, 3 Sep 2020 04:01:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAA02C061245;
+        Thu,  3 Sep 2020 01:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=34hr4y/kC5XT7kH5TAn/CeLpg6Bsmo1oeMdH990fres=; b=ahPAenJUsY4BCJkSHA+WEPIwvB
+        /qh1bsK8LoF0p506rH3LLAuN6vyzhMeBcDVppeceCf1BAbgr4RhcrwLgHk4+caVnKlVwxc+QbKuCS
+        ioutF+vwlXD6ERhrFDvQh/cPinB5cpcsswOr6MUMgzPw24CXlPG1Xe3CDhNbxxYm1GVFrJKfjDtTS
+        YhyTdDFvzUrcAniHpc8AWsbcTDJFvRp8+Og5RE1YTdx4946T9phaAwiBuBDKPlMudRYbbONR1H4PS
+        NjYkpvsxOTJuAfXYGZI7Vm/Q3MR75BdwVR67mu5O8zeG/Ppom3t8tnc9OzmGlNqLlLtg30YRFy7TW
+        6hGYUO1g==;
+Received: from [2001:4bb8:184:af1:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kDkBf-0006ci-Er; Thu, 03 Sep 2020 08:01:39 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Denis Efremov <efremov@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <song@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-raid@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 13/19] ide: switch to __register_blkdev for command set probing
 Date:   Thu,  3 Sep 2020 10:01:13 +0200
-Message-Id: <4fe1b45fe45e4ba57d40154da010807d4e5db86c.1599120059.git-series.maxime@cerno.tech>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+Message-Id: <20200903080119.441674-14-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200903080119.441674-1-hch@lst.de>
+References: <20200903080119.441674-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we are passing the vc4_hdmi structure to the connector init
-function, we can simply use the pointer in that structure instead of
-having the pointer as an argument.
+ide is the last user of the blk_register_region framework except for the
+tracking of allocated gendisk.  Switch to __register_blkdev, even if that
+doesn't allow us to trivially find out which command set to probe for.
+That means we now always request all modules when a user tries to access
+an unclaimed ide device node, but except for a few potentially loaded
+modules for a fringe use case of a deprecated and soon to be removed
+driver that doesn't make a difference.
 
-Reviewed-by: Eric Anholt <eric@anholt.net>
-Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/ide/ide-probe.c | 34 ++++++----------------------------
+ 1 file changed, 6 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 9a0612a87fb8..1f350b068fcd 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -192,8 +192,7 @@ static const struct drm_connector_helper_funcs vc4_hdmi_connector_helper_funcs =
- };
+diff --git a/drivers/ide/ide-probe.c b/drivers/ide/ide-probe.c
+index 076d34b381720f..1c1567bb519429 100644
+--- a/drivers/ide/ide-probe.c
++++ b/drivers/ide/ide-probe.c
+@@ -902,31 +902,12 @@ static int init_irq (ide_hwif_t *hwif)
+ 	return 1;
+ }
  
- static int vc4_hdmi_connector_init(struct drm_device *dev,
--				   struct vc4_hdmi *vc4_hdmi,
--				   struct i2c_adapter *ddc)
-+				   struct vc4_hdmi *vc4_hdmi)
+-static int ata_lock(dev_t dev, void *data)
++static void ata_probe(dev_t dev)
  {
- 	struct vc4_hdmi_connector *hdmi_connector = &vc4_hdmi->connector;
- 	struct drm_connector *connector = &hdmi_connector->base;
-@@ -205,7 +204,7 @@ static int vc4_hdmi_connector_init(struct drm_device *dev,
- 	drm_connector_init_with_ddc(dev, connector,
- 				    &vc4_hdmi_connector_funcs,
- 				    DRM_MODE_CONNECTOR_HDMIA,
--				    ddc);
-+				    vc4_hdmi->ddc);
- 	drm_connector_helper_add(connector, &vc4_hdmi_connector_helper_funcs);
+-	/* FIXME: we want to pin hwif down */
+-	return 0;
+-}
+-
+-static struct kobject *ata_probe(dev_t dev, int *part, void *data)
+-{
+-	ide_hwif_t *hwif = data;
+-	int unit = *part >> PARTN_BITS;
+-	ide_drive_t *drive = hwif->devices[unit];
+-
+-	if ((drive->dev_flags & IDE_DFLAG_PRESENT) == 0)
+-		return NULL;
+-
+-	if (drive->media == ide_disk)
+-		request_module("ide-disk");
+-	if (drive->media == ide_cdrom || drive->media == ide_optical)
+-		request_module("ide-cd");
+-	if (drive->media == ide_tape)
+-		request_module("ide-tape");
+-	if (drive->media == ide_floppy)
+-		request_module("ide-floppy");
+-
+-	return NULL;
++	request_module("ide-disk");
++	request_module("ide-cd");
++	request_module("ide-tape");
++	request_module("ide-floppy");
+ }
  
- 	/* Create and attach TV margin props to this connector. */
-@@ -1322,7 +1321,7 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
- 	drm_encoder_helper_add(encoder, &vc4_hdmi_encoder_helper_funcs);
+ void ide_init_disk(struct gendisk *disk, ide_drive_t *drive)
+@@ -967,7 +948,7 @@ static int hwif_init(ide_hwif_t *hwif)
+ 		return 0;
+ 	}
  
--	ret = vc4_hdmi_connector_init(drm, hdmi, hdmi->ddc);
-+	ret = vc4_hdmi_connector_init(drm, hdmi);
- 	if (ret)
- 		goto err_destroy_encoder;
+-	if (register_blkdev(hwif->major, hwif->name))
++	if (__register_blkdev(hwif->major, hwif->name, ata_probe))
+ 		return 0;
+ 
+ 	if (!hwif->sg_max_nents)
+@@ -989,8 +970,6 @@ static int hwif_init(ide_hwif_t *hwif)
+ 		goto out;
+ 	}
+ 
+-	blk_register_region(MKDEV(hwif->major, 0), MAX_DRIVES << PARTN_BITS,
+-			    THIS_MODULE, ata_probe, ata_lock, hwif);
+ 	return 1;
+ 
+ out:
+@@ -1582,7 +1561,6 @@ static void ide_unregister(ide_hwif_t *hwif)
+ 	/*
+ 	 * Remove us from the kernel's knowledge
+ 	 */
+-	blk_unregister_region(MKDEV(hwif->major, 0), MAX_DRIVES<<PARTN_BITS);
+ 	kfree(hwif->sg_table);
+ 	unregister_blkdev(hwif->major, hwif->name);
  
 -- 
-git-series 0.9.1
+2.28.0
+
