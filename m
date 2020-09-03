@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F4F25BE48
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AE525BE53
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Sep 2020 11:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgICJSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 05:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728322AbgICJSD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 05:18:03 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C868DC06124F
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 02:18:02 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id i22so2833160eja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 02:18:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NQv+tl4uppeFkb8OE5qw190d9LgQJYKQj0zpEykuMCM=;
-        b=WGeAJLDMsRVumT9Q9ux6Nast3r0JswgFOC70ZutZNZBpf4GDOxF1Vq6GaxB6cpDZ45
-         Ubq1CjFd9RyDJye5zoVo0+QI21IJuR8D5K5NTSCX0bfI9NOKTkGvpRSdqjbbeU8lOgnD
-         tJC8vPxb//wpf1qUbLuSg0l8hrW/1r/jrioS74dOFucWmTNYEf6D0j0FI538lwVoZMfU
-         6nmWYHKuc7tfuY983RwJ7bm/dKm2mVyjPAIdqZoonp/ofsHcYNliONbyDgPpLGYp45Oa
-         CHQHOnDIGMvH+AX91mPbZluIWwNyPlz47HjPqLMi0Ot2VIwY+bVwfHvG9y4br0BODeiC
-         d9rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NQv+tl4uppeFkb8OE5qw190d9LgQJYKQj0zpEykuMCM=;
-        b=a/N7MOBk00WzUyMd2/oW4t4s14G1qoDJQ74fWKeSoddB4rqoSSZEUrE0b7DrR/+VH5
-         FfpmRrRlA/i0U05yAwPCl+cw8GER+ZC9EfBY1XHt6y+JkWdR35RqL12BcTvmfhN8mTW8
-         5lYWmPpe+duOjQW7zj6mwkLIS8OKenepLrGu1K7bOSOS9KpV9Y5uavKZp6r882BQzbnN
-         k4rupNIa6ySk0RBzEhR/cTmuv0AHnzVQtBHSPr0cCmj+2M39JSc1LNlRJAdQlWEicXMi
-         DqDravAAAXCCE3tU+jystI1kgR7XmMuO7biWyH0uHv5lQaIMwSq7wNEy/TBjcpyJzr03
-         iRGg==
-X-Gm-Message-State: AOAM533gDkDwvAAXUpp02Ki7X6rjLO2OildLjyLf45KXDhOwT+QxnSgk
-        BYwle2yAYh8FzrDTTnqjapjGlQ==
-X-Google-Smtp-Source: ABdhPJwKWw1WUu0SdgKqUcKkconNR0zceARFGVkjySt2UpxXg4FXus55KxeqDNsvsTsSugbaugIAoQ==
-X-Received: by 2002:a17:906:3ac4:: with SMTP id z4mr1065800ejd.65.1599124681204;
-        Thu, 03 Sep 2020 02:18:01 -0700 (PDT)
-Received: from localhost (dynamic-2a00-1028-919a-a06e-64ac-0036-822c-68d3.ipv6.broadband.iol.cz. [2a00:1028:919a:a06e:64ac:36:822c:68d3])
-        by smtp.gmail.com with ESMTPSA id x25sm2429769edv.42.2020.09.03.02.17.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 02:18:00 -0700 (PDT)
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Dennis Zhou <dennis@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-arch@vger.kernel.org,
-        kernel-team@android.com, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH v2 10/10] kvm: arm64: Remove unnecessary hyp mappings
-Date:   Thu,  3 Sep 2020 11:17:12 +0200
-Message-Id: <20200903091712.46456-11-dbrazdil@google.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200903091712.46456-1-dbrazdil@google.com>
-References: <20200903091712.46456-1-dbrazdil@google.com>
+        id S1728453AbgICJTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 05:19:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:57284 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgICJTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 05:19:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C6CC101E;
+        Thu,  3 Sep 2020 02:19:07 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7BA943F68F;
+        Thu,  3 Sep 2020 02:19:06 -0700 (PDT)
+Date:   Thu, 3 Sep 2020 10:19:01 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Samuel Dionne-Riel <samuel@dionne-riel.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: Boot failure on gru-scarlet-inx with 5.9-rc2
+Message-ID: <20200903091901.GA9386@e121166-lin.cambridge.arm.com>
+References: <20200829164920.7d28e01a@DUFFMAN>
+ <65d88bdd0888a69849327501a2aad186@kernel.org>
+ <20200831031838.2d6d76d9@DUFFMAN>
+ <90731ebb54fe03003dce03bc7ec4872e@kernel.org>
+ <20200831234542.295b1275@DUFFMAN>
+ <5db50a8e5b251714cebe0a719ee9dc73@kernel.org>
+ <20200901164249.GA15045@e121166-lin.cambridge.arm.com>
+ <20200901143356.0425d9ba@DUFFMAN>
+ <20200902160110.GA30014@e121166-lin.cambridge.arm.com>
+ <20200902234756.60e4c4f6@DUFFMAN>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200902234756.60e4c4f6@DUFFMAN>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With all nVHE per-CPU variables being part of the hyp per-CPU region,
-mapping them individual is not necessary any longer. They are mapped to hyp
-as part of the overall per-CPU region.
+On Wed, Sep 02, 2020 at 11:47:56PM -0400, Samuel Dionne-Riel wrote:
+> On Wed, 2 Sep 2020 17:01:19 +0100
+> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> wrote:
+> 
+> > On Tue, Sep 01, 2020 at 02:33:56PM -0400, Samuel Dionne-Riel wrote:
+> > 
+> > Please print a pointer as a pointer and print both bus and
+> > bus->parent.
+> 
+> Hopefully pointer as a pointer is %px. Not sure what else, if that's
+> wrong please tell.
+> 
+> ---
+> @@ -79,6 +79,8 @@ static int rockchip_pcie_valid_device(struct rockchip_pcie *rockchip,
+>          * do not read more than one device on the bus directly attached
+>          * to RC's downstream side.
+>          */
+> +       printk("[!!] // bus (%px) bus->parent (%px)\n", bus, bus->parent);
+> +       printk("[!!] bus->primary (%d) == rockchip->root_bus_nr (%d) && dev (%d) > 0\n", bus->primary, rockchip->root_bus_nr, dev);
+>         if (bus->primary == rockchip->root_bus_nr && dev > 0)
+>                 return 0;
+>  
+> --
+> 
+> Again, two values, verified with a bit of set and `sort -u`.
+> 
+> [    1.691266] [!!] // bus (ffff0000ef9ab800) bus->parent (0000000000000000)
+> [    1.691271] [!!] bus->primary (0) == rockchip->root_bus_nr (0) && dev (0) > 0
+> 
+> and
+> 
+> [    1.697156] [!!] // bus (ffff0000ef9ac000) bus->parent (ffff0000ef9ab800)
+> [    1.697160] [!!] bus->primary (0) == rockchip->root_bus_nr (0) && dev (0) > 0
+> 
+> First instance of each shown here. Last time I don't think it was.
 
-Signed-off-by: David Brazdil <dbrazdil@google.com>
----
- arch/arm64/include/asm/kvm_mmu.h | 25 +++++++------------------
- arch/arm64/kvm/arm.c             | 17 +----------------
- 2 files changed, 8 insertions(+), 34 deletions(-)
+Ok I think I understand what the problem is.
 
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 9db93da35606..bbe9df76ff42 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -531,28 +531,17 @@ static inline int kvm_map_vectors(void)
- DECLARE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
- DECLARE_KVM_NVHE_PER_CPU(u64, arm64_ssbd_callback_required);
- 
--static inline int hyp_init_aux_data(void)
-+static inline void hyp_init_aux_data(void)
- {
--	int cpu, err;
-+	int cpu;
- 
--	for_each_possible_cpu(cpu) {
--		u64 *ptr;
--
--		ptr = per_cpu_ptr_nvhe(arm64_ssbd_callback_required, cpu);
--		err = create_hyp_mappings(ptr, ptr + 1, PAGE_HYP);
--		if (err)
--			return err;
--
--		/* Copy value from kernel to hyp. */
--		*ptr = per_cpu(arm64_ssbd_callback_required, cpu);
--	}
--	return 0;
-+	/* Copy arm64_ssbd_callback_required values from kernel to hyp. */
-+	for_each_possible_cpu(cpu)
-+		*(per_cpu_ptr_nvhe(arm64_ssbd_callback_required, cpu)) =
-+			per_cpu(arm64_ssbd_callback_required, cpu);
- }
- #else
--static inline int hyp_init_aux_data(void)
--{
--	return 0;
--}
-+static inline void hyp_init_aux_data(void) {}
- #endif
- 
- #define kvm_phys_to_vttbr(addr)		phys_to_ttbr(addr)
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index df7d133056ce..dfe1baa5bbb7 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1631,22 +1631,7 @@ static int init_hyp_mode(void)
- 		}
- 	}
- 
--	for_each_possible_cpu(cpu) {
--		kvm_host_data_t *cpu_data;
--
--		cpu_data = per_cpu_ptr_hyp(kvm_host_data, cpu);
--		err = create_hyp_mappings(cpu_data, cpu_data + 1, PAGE_HYP);
--
--		if (err) {
--			kvm_err("Cannot map host CPU state: %d\n", err);
--			goto out_err;
--		}
--	}
--
--	err = hyp_init_aux_data();
--	if (err)
--		kvm_err("Cannot map host auxiliary data: %d\n", err);
--
-+	hyp_init_aux_data();
- 	return 0;
- 
- out_err:
--- 
-2.28.0.402.g5ffc5be6b7-goog
+Can you give this patch a shot please ? I think we are dereferencing
+a NULL pointer if bus is the root bus and dev == 0, we can rewrite
+the check if this patch fixes the issue.
 
+-- >8 --
+diff --git a/drivers/pci/controller/pcie-rockchip-host.c b/drivers/pci/controller/pcie-rockchip-host.c
+index 0bb2fb3e8a0b..72beda87b47f 100644
+--- a/drivers/pci/controller/pcie-rockchip-host.c
++++ b/drivers/pci/controller/pcie-rockchip-host.c
+@@ -79,7 +79,7 @@ static int rockchip_pcie_valid_device(struct rockchip_pcie *rockchip,
+ 	 * do not read more than one device on the bus directly attached
+ 	 * to RC's downstream side.
+ 	 */
+-	if (pci_is_root_bus(bus->parent) && dev > 0)
++	if (bus->parent && pci_is_root_bus(bus->parent) && dev > 0)
+ 		return 0;
+ 
+ 	return 1;
