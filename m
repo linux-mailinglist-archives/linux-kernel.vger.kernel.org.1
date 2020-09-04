@@ -2,193 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4BA25CFB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D2925CFB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729620AbgIDDRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 23:17:01 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:50743 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729528AbgIDDQ4 (ORCPT
+        id S1729682AbgIDDTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 23:19:19 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:59147 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729528AbgIDDTR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 23:16:56 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 1BAEB11DB;
-        Thu,  3 Sep 2020 23:16:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 03 Sep 2020 23:16:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=+
-        z1Kb4Um0CPctRz1L04iCmmEs7XyrQXGEhgGFCnYXJQ=; b=m0e4m83UmKy2lFD5u
-        ePD7rpLOYh69eKx1kFwv4Kbp302ri/dLo7IxUPS0JqPCZtDBggv0wL6nbVLh3/aE
-        L9uTid45kqLHBi0S84K60BSZlGbfNVa6+m67fKgGA79ZJ06CnCNMe2iOapDFJwYr
-        QnjntpmDTUk1DuSSUCH+oHW6IG10IFXSum7NjNfn+MAeIVqo0CRPK9mXK/04JGif
-        QcHgtEZ3D4Q4wUNfDrj8coNZ21PYdCf5W3z19hluqM5G4R5SYRdaVZgGVcVgrTIt
-        SgpZZCvp1TKK0BwJ3hbNCIg83MbeHHsDhIiuflAqBpVRhYSAWLgo77MSUb1rAl0+
-        ufd/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=+z1Kb4Um0CPctRz1L04iCmmEs7XyrQXGEhgGFCnYX
-        JQ=; b=tqOQwF6Atg707GjaJqRaOCQROw4uI+GNBekdYdvysmtg2n8RE1+yb8nhx
-        w+jQgMCSa40UhH4MmWhxy6C4tfsKcfuLNiN+k4GZKwSmBqLACw05xeVHh0ByJW9Z
-        QCI3nBWv0rgbO8awBgY8wQhMKUy9LAfusHHknn7eGOx/cqZtkY65MuI4Ah25MjAr
-        eB3Vnj7pE7AtWoZXd7KeSE5pJitOPl5jp2ULeBXpKRLceji+TDctSH7UeJrY0eWO
-        EypHbEaUzH92vE1P9cbf9GO9inXCAjgBx20IFyDykdD72BTD1AzccT9f9NYG0f5x
-        R8Fcg2Fz+qfx7G8HBY4Vm6/X+KmxQ==
-X-ME-Sender: <xms:o7FRX-8zRMmqJWZ-9TI67rgp60tHb6ciPFwJfWYCHL3jQELz0M2BFA>
-    <xme:o7FRX-vy_GLnnTRsh2BeSf1YkGP-Sa4FGFYnajdB4kGJRfd7ZsAGdsAH43Dyi1vqt
-    -6rFf2qH3PfgUaOeg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegvddgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepgfelkeduveejtdejhfeiledvhfeggeeiieeklefhfeefffffffeg
-    udetteelieejnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:o7FRX0Do9hlsmovC_eU8IjPC4yX2w7VYw3JtLcODYobgN6AmiyRaYA>
-    <xmx:o7FRX2fPrcLmw2038-z5eWKP0faG9BaDV3KXCe1HXyh_UOe0F-IEqA>
-    <xmx:o7FRXzOdj80tW9trTBakrHx8Fz0N-khbEnFBPs-Q3NYa92YQhYBTZQ>
-    <xmx:prFRXwnEx2XycvrSkeVGpuIk9czO4mZkAI66oivPbjbrKtv8K9_sDPi5Dt4>
-Received: from [192.168.50.169] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B4D9E328005D;
-        Thu,  3 Sep 2020 23:16:50 -0400 (EDT)
-Subject: Re: [PATCH v2 02/20] ASoC: sun4i-i2s: Add support for H6 I2S
-To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        linux-sunxi@googlegroups.com, linux-arm-kernel@lists.infradead.org
-References: <20200903203034.1057334-1-peron.clem@gmail.com>
- <20200903203034.1057334-3-peron.clem@gmail.com>
-From:   Samuel Holland <samuel@sholland.org>
-Message-ID: <7259829d-142e-b518-52a7-6fef388b27d2@sholland.org>
-Date:   Thu, 3 Sep 2020 22:16:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 3 Sep 2020 23:19:17 -0400
+X-UUID: 2165b6289a7540eab6a08a50e1a2c698-20200904
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=81j54tuoiKV3uK8sKV8TMOkBCYp/9eQY2ZBo8fSyYog=;
+        b=LjfOI6kypqLNZxiIZyol+4fjhvpGl8Y6+jlS1qBeFfioqww6ht3LMcW6FAoVjoTLy4UfGpeSXRGgXqJHpICjIpCTNKyyP8ZC/mOxC6/PNKQencmPY/RQgdyRTeX6exLWZV7RSMkV2EDPRO/ZbhEgJ0XS8zqSZCW4b7gpcTfOvI0=;
+X-UUID: 2165b6289a7540eab6a08a50e1a2c698-20200904
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1556347710; Fri, 04 Sep 2020 11:19:11 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31DR.mediatek.inc
+ (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 4 Sep
+ 2020 11:19:09 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Sep 2020 11:19:08 +0800
+Message-ID: <1599189448.11403.33.camel@mhfsdcap03>
+Subject: Re: [PATCH v2 01/11] usb: gadget: bdc: fix improper SPDX comment
+ style for header file
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+CC:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Sasi Kumar <sasi.kumar@broadcom.com>,
+        Peter Chen <peter.chen@nxp.com>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Fri, 4 Sep 2020 11:17:28 +0800
+In-Reply-To: <1597923046-12535-1-git-send-email-chunfeng.yun@mediatek.com>
+References: <1597923046-12535-1-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200903203034.1057334-3-peron.clem@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 6437F811FE63FA34E3E573D3346DC7F53866220D91CCF2E752ABCF714B765FAD2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clément,
+SGkgRmxvcmlhbiwgDQoNCk9uIFRodSwgMjAyMC0wOC0yMCBhdCAxOTozMCArMDgwMCwgQ2h1bmZl
+bmcgWXVuIHdyb3RlOg0KPiBGb3IgQyBoZWFkZXIgZmlsZXMgRG9jdW1lbnRhdGlvbi9wcm9jZXNz
+L2xpY2Vuc2UtcnVsZXMucnN0DQo+IG1hbmRhdGVzIEMtbGlrZSBjb21tZW50cyAob3Bwb3NlZCB0
+byBDIHNvdXJjZSBmaWxlcyB3aGVyZQ0KPiBDKysgc3R5bGUgc2hvdWxkIGJlIHVzZWQpLg0KPiAN
+Cj4gQ2M6IEZsb3JpYW4gRmFpbmVsbGkgPGYuZmFpbmVsbGlAZ21haWwuY29tPg0KPiBTaWduZWQt
+b2ZmLWJ5OiBDaHVuZmVuZyBZdW4gPGNodW5mZW5nLnl1bkBtZWRpYXRlay5jb20+DQo+IC0tLQ0K
+PiB2MjogYWRkIENjIEZsb3JpYW4NCj4gLS0tDQo+ICBkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2Jk
+Yy9iZGMuaCAgICAgfCAyICstDQo+ICBkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfY21k
+LmggfCAyICstDQo+ICBkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZGJnLmggfCAyICst
+DQo+ICBkcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZXAuaCAgfCAyICstDQo+ICA0IGZp
+bGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYg
+LS1naXQgYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGMuaCBiL2RyaXZlcnMvdXNiL2dh
+ZGdldC91ZGMvYmRjL2JkYy5oDQo+IGluZGV4IGFjNzVlMjUuLmZjYmE3N2UgMTAwNjQ0DQo+IC0t
+LSBhL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkYy5oDQo+ICsrKyBiL2RyaXZlcnMvdXNi
+L2dhZGdldC91ZGMvYmRjL2JkYy5oDQo+IEBAIC0xLDQgKzEsNCBAQA0KPiAtLy8gU1BEWC1MaWNl
+bnNlLUlkZW50aWZpZXI6IEdQTC0yLjArDQo+ICsvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjog
+R1BMLTIuMCsgKi8NCj4gIC8qDQo+ICAgKiBiZGMuaCAtIGhlYWRlciBmb3IgdGhlIEJSQ00gQkRD
+IFVTQjMuMCBkZXZpY2UgY29udHJvbGxlcg0KPiAgICoNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+dXNiL2dhZGdldC91ZGMvYmRjL2JkY19jbWQuaCBiL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRj
+L2JkY19jbWQuaA0KPiBpbmRleCAyOWNjOTg4Li4zNzNlNjc0IDEwMDY0NA0KPiAtLS0gYS9kcml2
+ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfY21kLmgNCj4gKysrIGIvZHJpdmVycy91c2IvZ2Fk
+Z2V0L3VkYy9iZGMvYmRjX2NtZC5oDQo+IEBAIC0xLDQgKzEsNCBAQA0KPiAtLy8gU1BEWC1MaWNl
+bnNlLUlkZW50aWZpZXI6IEdQTC0yLjArDQo+ICsvKiBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjog
+R1BMLTIuMCsgKi8NCj4gIC8qDQo+ICAgKiBiZGNfY21kLmggLSBoZWFkZXIgZm9yIHRoZSBCREMg
+ZGVidWcgZnVuY3Rpb25zDQo+ICAgKg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZ2FkZ2V0
+L3VkYy9iZGMvYmRjX2RiZy5oIGIvZHJpdmVycy91c2IvZ2FkZ2V0L3VkYy9iZGMvYmRjX2RiZy5o
+DQo+IGluZGV4IDM3M2Q1YWIuLjg1OWQ1ODggMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvdXNiL2dh
+ZGdldC91ZGMvYmRjL2JkY19kYmcuaA0KPiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2Jk
+Yy9iZGNfZGJnLmgNCj4gQEAgLTEsNCArMSw0IEBADQo+IC0vLyBTUERYLUxpY2Vuc2UtSWRlbnRp
+ZmllcjogR1BMLTIuMCsNCj4gKy8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wKyAq
+Lw0KPiAgLyoNCj4gICAqIGJkY19kYmcuaCAtIGhlYWRlciBmb3IgdGhlIEJEQyBkZWJ1ZyBmdW5j
+dGlvbnMNCj4gICAqDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9i
+ZGNfZXAuaCBiL2RyaXZlcnMvdXNiL2dhZGdldC91ZGMvYmRjL2JkY19lcC5oDQo+IGluZGV4IGEz
+N2ZmODAzLi41YmJkNzNmIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2Jk
+Yy9iZGNfZXAuaA0KPiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvdWRjL2JkYy9iZGNfZXAuaA0K
+PiBAQCAtMSw0ICsxLDQgQEANCj4gLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4w
+Kw0KPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjArICovDQo+ICAvKg0KPiAg
+ICogYmRjX2VwLmggLSBoZWFkZXIgZm9yIHRoZSBCREMgZGVidWcgZnVuY3Rpb25zDQo+ICAgKg0K
+V291bGQgeW91IHBsZWFzZSB0YWtlIGEgbG9vayBhdCB0aGlzIHNlcmllcz8NCkknbGwgZHJvcCB0
+aGUgcGF0Y2hlcyB0aGF0IG5vdCBmaW5lIHdpdGggeW91Lg0KVGhhbmtzDQoNCg0K
 
-On 9/3/20 3:30 PM, Clément Péron wrote:
-> From: Jernej Skrabec <jernej.skrabec@siol.net>
-> 
-> H6 I2S is very similar to that in H3, except it supports up to 16
-> channels.
-> 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> ---
->  sound/soc/sunxi/sun4i-i2s.c | 221 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 221 insertions(+)
-> 
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index fabff7bcccbc..acf24f512f2c 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-
-[snip]
-
-> @@ -474,6 +489,65 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
->  	return 0;
->  }
->  
-> +static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
-> +				      const struct snd_pcm_hw_params *params)
-> +{
-> +	unsigned int channels = params_channels(params);
-> +	unsigned int slots = channels;
-> +	unsigned int lrck_period;
-> +
-> +	if (i2s->slots)
-> +		slots = i2s->slots;
-> +
-> +	/* Map the channels for playback and capture */
-> +	regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
-> +	regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
-> +
-> +	/* Configure the channels */
-> +	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
-> +			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
-> +			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
-> +	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
-> +			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
-> +			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
-> +
-> +	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
-> +			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK,
-> +			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM(channels));
-> +	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
-> +			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK,
-> +			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(channels));
-> +
-> +	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
-> +	case SND_SOC_DAIFMT_DSP_A:
-> +	case SND_SOC_DAIFMT_DSP_B:
-> +	case SND_SOC_DAIFMT_LEFT_J:
-> +	case SND_SOC_DAIFMT_RIGHT_J:
-
-These cases don't match the documentation: LEFT_J and RIGHT_J are documented to
-behave like I2S (lrck_period == slot_width), not like DSP_A/B (lrck_period ==
-slot_width * slots).
-
-> +		lrck_period = params_physical_width(params) * slots;
-> +		break;
-> +
-> +	case SND_SOC_DAIFMT_I2S:
-> +		lrck_period = params_physical_width(params);
-> +		break;
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (i2s->slot_width)
-> +		lrck_period = i2s->slot_width;
-
-Here, i2s->slot_width is the number of bits for each slot, but in PCM mode, you
-need to multiply by the number of slots, like above.
-
-Also, there is already logic in sun4i_i2s_hw_params to use i2s->slot_width and
-i2s->slots. You could avoid the duplication by passing slot_width/slots as
-parameters to set_chan_cfg.
-
-Regards,
-Samuel
-
-> +
-> +	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
-> +			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
-> +			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
-> +
-> +	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
-> +			   SUN50I_H6_I2S_TX_CHAN_EN_MASK,
-> +			   SUN50I_H6_I2S_TX_CHAN_EN(channels));
-> +
-> +	return 0;
-> +}
-> +
->  static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
->  			       struct snd_pcm_hw_params *params,
->  			       struct snd_soc_dai *dai)
-
-[snip]
