@@ -2,121 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA8225CF91
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE3225CF97
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729652AbgIDDEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 23:04:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46900 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729036AbgIDDEt (ORCPT
+        id S1729701AbgIDDK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 23:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729538AbgIDDKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 23:04:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599188685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pq7ni1SWjFvAGCdjXQ8UT6nTLstPuPhVRwHdTLDTLgg=;
-        b=L0i4NjXV64b3/TAuD2H5J93I+ervWOsgdMJdzAUKSzJYs5AQgTJodUTJCUqVvk7sC7ujSI
-        o+4sXkRJ204FcJBx5vyOCFRsZw+j49CHdFHl2p8jdw+bIGmqMriE6Ayd9i0kxU6RhKvaDN
-        1fOZYucMEQYcitnla3D4VtcTtEBf/Yw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-N7250dg9MM2jP_8tS0m4cw-1; Thu, 03 Sep 2020 23:04:41 -0400
-X-MC-Unique: N7250dg9MM2jP_8tS0m4cw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B8A11006708;
-        Fri,  4 Sep 2020 03:04:38 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-47.pek2.redhat.com [10.72.13.47])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D21515D9CC;
-        Fri,  4 Sep 2020 03:04:28 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 11:04:24 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     chenzhou <chenzhou10@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>, will@kernel.org,
-        james.morse@arm.com, tglx@linutronix.de, mingo@redhat.com,
-        bhe@redhat.com, corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, bhsharma@redhat.com, horms@verge.net.au,
-        robh+dt@kernel.org, arnd@arndb.de, nsaenzjulienne@suse.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        guohanjun@huawei.com, xiexiuqi@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
-Message-ID: <20200904030424.GA11384@dhcp-128-65.nay.redhat.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
- <20200801130856.86625-4-chenzhou10@huawei.com>
- <20200902170910.GB16673@gaia>
- <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
+        Thu, 3 Sep 2020 23:10:50 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B95C061244
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 20:10:49 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id cr8so2379973qvb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 20:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pdbPNYComdH+ZhVkRW2Xn2aIlzT4gacXxF6vF5yyO+A=;
+        b=KFoHbv+1gyGW2v83q1G43ASW42mK4aM0f3q5D6TB16aEONHt4KtH1m4jOil8xAKmlc
+         3zFxNMMtsaBLGA2svh+tLqMmVR1kXgDRKbybNO8hI6IOhAlayxXffjHQuMwhI2AeL/d8
+         hbgKv6i4llEI230cFvJdI6klvCghKMm+vrmrD9HiRfWZkPlq9Rh5fhzdFMv8JDS4mzxt
+         b9cIz4d+V6pFBHhpSno8B0ht5m9fVCp0bGN6lJ+rzdkzk2bJ5kAnyGBpgylK6D2bMtw3
+         NER97eeP+V1m1FH9J3IK1PPT/bYC18pNxZTmGuaOR2eFnF4CAbVlgM/PPE0hNPByJg5a
+         FMLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pdbPNYComdH+ZhVkRW2Xn2aIlzT4gacXxF6vF5yyO+A=;
+        b=Wk1W/60D8Rxr2AykHwZ8IJqR+1Lt+mvqhrakji4VNxH2p33VNc4H8+1P5UeltW/00Q
+         DlIfS2KCBxm3a1OSxKElNKr+AvBgVkrfvxaOmkvqiHZmcIrdjihTP05WBm8w4UGUHplu
+         Ri29kfXEqf2etGRNnJG3V0lk2XSxY+4a8SaahRyUrkOaNVSX2cGFLu4Sn82opczLJoSj
+         qbr/sQocapg31ofVnEmq9BomQvoCFQZ0FKak9zcMmYNDQYkpt3+2HycMnTKDPPAMohlF
+         Iup5UKuJ8GaK/iaTSbTvaW9ySVybxZGWFq8lwzV6rGcPCeusN0qCxFmn3oElG/L3uvh7
+         j0XQ==
+X-Gm-Message-State: AOAM533ivv1Yy0CDfDym/2gM4AYVQSNcDbh/gVNmEXj6byjFhSHB71fo
+        QO2aNM3vLVQZhThqXDAvUQSqpg==
+X-Google-Smtp-Source: ABdhPJwVu9NzfFI4LteHyWtdtBZb0YAEEoNQm2HuZVw2SDjktax73swUrJN1wMB6gC46fCPJgH30lg==
+X-Received: by 2002:a0c:e188:: with SMTP id p8mr4914037qvl.8.1599189048707;
+        Thu, 03 Sep 2020 20:10:48 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id x59sm3481063qte.14.2020.09.03.20.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Sep 2020 20:10:48 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
+        linux-kernel@vger.kernel.org (open list),
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v2 0/5] SM8150 and SM8250 videocc drivers
+Date:   Thu,  3 Sep 2020 23:09:49 -0400
+Message-Id: <20200904030958.13325-1-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/03/20 at 07:26pm, chenzhou wrote:
-> Hi Catalin,
-> 
-> 
-> On 2020/9/3 1:09, Catalin Marinas wrote:
-> > On Sat, Aug 01, 2020 at 09:08:54PM +0800, Chen Zhou wrote:
-> >> There are following issues in arm64 kdump:
-> >> 1. We use crashkernel=X to reserve crashkernel below 4G, which
-> >> will fail when there is no enough low memory.
-> >> 2. If reserving crashkernel above 4G, in this case, crash dump
-> >> kernel will boot failure because there is no low memory available
-> >> for allocation.
-> >> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
-> >> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
-> >> the devices in crash dump kernel need to use ZONE_DMA will alloc
-> >> fail.
-> >>
-> >> To solve these issues, change the behavior of crashkernel=X.
-> >> crashkernel=X tries low allocation in ZONE_DMA, and fall back to
-> >> high allocation if it fails.
-> >>
-> >> If requized size X is too large and leads to very little free memory
-> >> in ZONE_DMA after low allocation, the system may not work normally.
-> >> So add a threshold and go for high allocation directly if the required
-> >> size is too large. The value of threshold is set as the half of
-> >> the low memory.
-> >>
-> >> If crash_base is outside ZONE_DMA, try to allocate at least 256M in
-> >> ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
-> >> specified size low memory.
-> > Except for the threshold to keep zone ZONE_DMA memory,
-> > reserve_crashkernel() looks very close to the x86 version. Shall we try
-> > to make this generic as well? In the first instance, you could avoid the
-> > threshold check if it takes an explicit ",high" option.
-> Ok, i will try to do this.
-> 
-> I look into the function reserve_crashkernel() of x86 and found the start address is
-> CRASH_ALIGN in function memblock_find_in_range(), which is different with arm64.
-> 
-> I don't figure out why is CRASH_ALIGN in x86, is there any specific reason?
+Add videocc drivers for SM8150/SM8250 required to boot and use venus.
 
-Hmm, took another look at the option CONFIG_PHYSICAL_ALIGN
-config PHYSICAL_ALIGN
-        hex "Alignment value to which kernel should be aligned"
-        default "0x200000"
-        range 0x2000 0x1000000 if X86_32
-        range 0x200000 0x1000000 if X86_64
+v2:
+ - fixed dt_binding_check/checkpatch warnings in SM8250 bindings
+ - added 19.2Mhz in SM8250 freq tbls for consistency with other videocc
 
-According to above, I think the 16M should come from the largest value
-But the default value is 2M,  with smaller value reservation can have
-more chance to succeed.
+Jonathan Marek (5):
+  dt-bindings: clock: combine qcom,sdm845-videocc and
+    qcom,sc7180-videocc
+  dt-bindings: clock: add SM8150 QCOM video clock bindings
+  dt-bindings: clock: add SM8250 QCOM video clock bindings
+  clk: qcom: add video clock controller driver for SM8150
+  clk: qcom: add video clock controller driver for SM8250
 
-It seems we still need arch specific CRASH_ALIGN, but the initial
-version you added the #ifdef for different arches, can you move the
-macro to arch specific headers?
+ .../bindings/clock/qcom,sc7180-videocc.yaml   |  65 ---
+ ...,sdm845-videocc.yaml => qcom,videocc.yaml} |  22 +-
+ drivers/clk/qcom/Kconfig                      |  18 +
+ drivers/clk/qcom/Makefile                     |   2 +
+ drivers/clk/qcom/videocc-sm8150.c             | 276 ++++++++++
+ drivers/clk/qcom/videocc-sm8250.c             | 518 ++++++++++++++++++
+ .../dt-bindings/clock/qcom,videocc-sm8150.h   |  25 +
+ .../dt-bindings/clock/qcom,videocc-sm8250.h   |  42 ++
+ 8 files changed, 898 insertions(+), 70 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7180-videocc.yaml
+ rename Documentation/devicetree/bindings/clock/{qcom,sdm845-videocc.yaml => qcom,videocc.yaml} (62%)
+ create mode 100644 drivers/clk/qcom/videocc-sm8150.c
+ create mode 100644 drivers/clk/qcom/videocc-sm8250.c
+ create mode 100644 include/dt-bindings/clock/qcom,videocc-sm8150.h
+ create mode 100644 include/dt-bindings/clock/qcom,videocc-sm8250.h
 
-Thanks
-Dave
+-- 
+2.26.1
 
