@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CBD25DA7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB3A25DA3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730651AbgIDNwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:52:35 -0400
-Received: from smtp119.ord1d.emailsrvr.com ([184.106.54.119]:37980 "EHLO
-        smtp119.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730643AbgIDNrJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:47:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1599225717;
-        bh=VSHpuGItY/0L/qHMSAVCvrmqgedAh5jY8QrKza32y8I=;
-        h=From:To:Subject:Date:From;
-        b=KYTszfo0zOBWjnr7/t3qslMANLwmdktaASKJgnDos6ECvspUxqO/Es+IptuhZ/AXQ
-         XUZdt2CYu5yeZIKZoFFR87OkZZ8LWrwqFlVb6C661Ck727bsPLnrtrZuYB/yUbVhvI
-         dXzXiFT/eoGoAq2aJY4g/717QJ1VEOeWM8oh1krQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1599225717;
-        bh=VSHpuGItY/0L/qHMSAVCvrmqgedAh5jY8QrKza32y8I=;
-        h=From:To:Subject:Date:From;
-        b=Rpc++GkEQTxz+f6DcQ9i5buyTMyvuDZByklGKaOFP4KkwT9a1jo7YAdlcvi3PChyA
-         QFE7Dn5vG+6F2o28fDmKzo/XfFVc6sZF5eXBo8mDxSgc094y5nIqfHdFvEN37b24er
-         77UK35LjgZZ7nFK4XmLVSLWZ6B87hcoUkxcdKixc=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp23.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 9BFAB20113;
-        Fri,  4 Sep 2020 09:21:56 -0400 (EDT)
-From:   Ian Abbott <abbotti@mev.co.uk>
-To:     linux-input@vger.kernel.org
-Cc:     David Rheinsberg <david.rheinsberg@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] HID: wiimote: narrow spinlock range in wiimote_hid_event()
-Date:   Fri,  4 Sep 2020 14:21:43 +0100
-Message-Id: <20200904132143.9496-3-abbotti@mev.co.uk>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200904132143.9496-1-abbotti@mev.co.uk>
-References: <20200904132143.9496-1-abbotti@mev.co.uk>
+        id S1730582AbgIDNpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:45:13 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:34114 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730411AbgIDNlv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:41:51 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 57E99F562622980621CA;
+        Fri,  4 Sep 2020 21:25:08 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.108) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
+ 21:25:03 +0800
+Subject: Re: [PATCH -next] perf bench: fix return value check in
+ do_run_multi_threaded()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <20200902140526.26916-1-yuehaibing@huawei.com>
+ <20200903185301.GE3495158@kernel.org> <20200903185451.GF3495158@kernel.org>
+ <20200903185549.GG3495158@kernel.org>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <irogers@google.com>,
+        <linux-kernel@vger.kernel.org>
+From:   Yuehaibing <yuehaibing@huawei.com>
+Message-ID: <6815e565-c3a2-c7a2-f164-8d3c56f9c516@huawei.com>
+Date:   Fri, 4 Sep 2020 21:25:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: ee464daf-2bdc-4db4-9ef3-697c4738b247-3-1
+In-Reply-To: <20200903185549.GG3495158@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.108]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In `wiimote_hid_event()`, the `wdata->state.lock` spinlock does not need
-to be held while searching `handlers[]` for a suitable handler function.
-Change it so the spinlock is only held during the call to the handler
-function itself.
 
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
----
- drivers/hid/hid-wiimote-core.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On 2020/9/4 2:55, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Sep 03, 2020 at 03:54:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Thu, Sep 03, 2020 at 03:53:01PM -0300, Arnaldo Carvalho de Melo escreveu:
+>>> Em Wed, Sep 02, 2020 at 10:05:26PM +0800, YueHaibing escreveu:
+>>>> In case of error, the function perf_session__new() returns ERR_PTR()
+>>>> and never returns NULL. The NULL test in the return value check
+>>>> should be replaced with IS_ERR()
+>>>>
+>>>> Fixes: 13edc237200c ("perf bench: Add a multi-threaded synthesize benchmark")
+>>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>>>
+>>> Thanks, applied, kudos for adding the Fixes: tag, appreciated!
+>>
+>> But...
 
-diff --git a/drivers/hid/hid-wiimote-core.c b/drivers/hid/hid-wiimote-core.c
-index e03a0ba5611a..41012681cafd 100644
---- a/drivers/hid/hid-wiimote-core.c
-+++ b/drivers/hid/hid-wiimote-core.c
-@@ -1625,12 +1625,12 @@ static int wiimote_hid_event(struct hid_device *hdev, struct hid_report *report,
- 	if (size < 1)
- 		return -EINVAL;
- 
--	spin_lock_irqsave(&wdata->state.lock, flags);
--
- 	for (i = 0; handlers[i].id; ++i) {
- 		h = &handlers[i];
- 		if (h->id == raw_data[0] && h->size < size) {
-+			spin_lock_irqsave(&wdata->state.lock, flags);
- 			h->func(wdata, &raw_data[1]);
-+			spin_unlock_irqrestore(&wdata->state.lock, flags);
- 			break;
- 		}
- 	}
-@@ -1639,8 +1639,6 @@ static int wiimote_hid_event(struct hid_device *hdev, struct hid_report *report,
- 		hid_warn(hdev, "Unhandled report %hhu size %d\n", raw_data[0],
- 									size);
- 
--	spin_unlock_irqrestore(&wdata->state.lock, flags);
--
- 	return 0;
- }
- 
--- 
-2.28.0
+OOps, sorry for this, I'll pay attention next time.
+
+>>  
+>>>> ---
+>>>>  tools/perf/bench/synthesize.c | 4 ++--
+>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+>>>> index 8d624aea1c5e..e39daa609db2 100644
+>>>> --- a/tools/perf/bench/synthesize.c
+>>>> +++ b/tools/perf/bench/synthesize.c
+>>>> @@ -162,8 +162,8 @@ static int do_run_multi_threaded(struct target *target,
+>>>>  	init_stats(&event_stats);
+>>>>  	for (i = 0; i < multi_iterations; i++) {
+>>>>  		session = perf_session__new(NULL, false, NULL);
+>>>> -		if (!session)
+>>>> -			return -ENOMEM;
+>>>> +		if (IS_ERR(session)) {
+>>>> +			return PTR_ERR(session);
+>>
+>> This doesn't compile, so I take back that kudo ;-\
+>>
+>> I'm fixing this by removing that needless '{'.
+> 
+> diff --git a/tools/perf/bench/synthesize.c b/tools/perf/bench/synthesize.c
+> index e39daa609db2ed9b..b2924e3181dc3844 100644
+> --- a/tools/perf/bench/synthesize.c
+> +++ b/tools/perf/bench/synthesize.c
+> @@ -162,7 +162,7 @@ static int do_run_multi_threaded(struct target *target,
+>  	init_stats(&event_stats);
+>  	for (i = 0; i < multi_iterations; i++) {
+>  		session = perf_session__new(NULL, false, NULL);
+> -		if (IS_ERR(session)) {
+> +		if (IS_ERR(session))
+>  			return PTR_ERR(session);
+>  
+>  		atomic_set(&event_count, 0);
+> 
+> .
+> 
 
