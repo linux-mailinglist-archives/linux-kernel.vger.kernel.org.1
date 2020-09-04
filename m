@@ -2,124 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4ADA25D84B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65FC125D851
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729939AbgIDMCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 08:02:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49848 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729741AbgIDMBU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 08:01:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599220878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Al2z0QnC0ksQGEJoD0RhYiQbJmD54azvTeMvvOw+xd0=;
-        b=Qs5NJs5+o449FQletJd3QKLuuzBvTstVPsvvFCk/BKsfA1WzoHdwLd5ZHINCBAHaSvrDOp
-        fiZMIT3nuf2Arlgx7EXAxkWi4czrqH748CnMd9jS7VVn5dIh9if0W25XB0W/xyDlq47PWf
-        eQ6Xw01uitEIRfHPNJSMIj7+xk0K744=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-wRs61YIXPTe_3tbgqsYMUA-1; Fri, 04 Sep 2020 08:01:16 -0400
-X-MC-Unique: wRs61YIXPTe_3tbgqsYMUA-1
-Received: by mail-wr1-f70.google.com with SMTP id r16so2227618wrm.18
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 05:01:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Al2z0QnC0ksQGEJoD0RhYiQbJmD54azvTeMvvOw+xd0=;
-        b=SPoD0hUGrp8q1odSTzAx/WUSDEtXovhModg6wFV5vQXCmozgCTaWu10i7YN+wXNpeq
-         INafocqWglzbf655jjIR9SASBIOqYzHMUUVr6fDXO6hTNVEjnFgx/DOxvdnUibhj1idA
-         +LRt7hDbYIzLFiX4GD6c4cuEdJ+JAaBeMn/ts89ug45LbYcj4vxpLazGLscddJo8W3C9
-         5MSPCO/CedRdAdBUt+bUVib8QgVIBhU4ejBDnCu6hJuzIoiSr7Iz5PkHn/cwhwlwn2P1
-         A0MTDm97EoRK13WS84ig5n/g09oW/C4uBudwkT87HhmIvsCzJ/nEELPtKGbXXwteJGN4
-         23dg==
-X-Gm-Message-State: AOAM532X35N7pJPUnIqPGgKZCi3effi/aXZImypXRlnIGkdi2n9Iv8tJ
-        uEUZodkvg12pAyu7xm5FQfllfUyhxqZPKyY28qBwAI8TQsRAJU/A7OQWrs02er6DcHcDosL/A70
-        h9kLvgI+pjbtoF0WgfkR7PiML
-X-Received: by 2002:adf:fb01:: with SMTP id c1mr7043273wrr.119.1599220875217;
-        Fri, 04 Sep 2020 05:01:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIXro2W+UzI918zJZ8Jt2As+2AW5s/HHlp9hVGkN24CfzKnxwLXHw1csuVaPHLLwZaqe1O7A==
-X-Received: by 2002:adf:fb01:: with SMTP id c1mr7043241wrr.119.1599220874941;
-        Fri, 04 Sep 2020 05:01:14 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n4sm10710789wrp.61.2020.09.04.05.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 05:01:14 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Haiwei Li <lihaiwei.kernel@gmail.com>
-Cc:     "hpa\@zytor.com" <hpa@zytor.com>, "bp\@alien8.de" <bp@alien8.de>,
-        "mingo\@redhat.com" <mingo@redhat.com>,
-        "tglx\@linutronix.de" <tglx@linutronix.de>, joro@8bytes.org,
-        "jmattson\@google.com" <jmattson@google.com>,
-        "wanpengli\@tencent.com" <wanpengli@tencent.com>,
-        sean.j.christopherson@intel.com,
-        "pbonzini\@redhat.com" <pbonzini@redhat.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm\@vger.kernel.org" <kvm@vger.kernel.org>,
-        "x86\@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH] KVM: SVM: Add tracepoint for cr_interception
-In-Reply-To: <f3031602-db3b-c4fe-b719-d402663b0a2b@gmail.com>
-References: <f3031602-db3b-c4fe-b719-d402663b0a2b@gmail.com>
-Date:   Fri, 04 Sep 2020 14:01:12 +0200
-Message-ID: <87imctoinr.fsf@vitty.brq.redhat.com>
+        id S1730142AbgIDMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 08:03:31 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7973 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730114AbgIDMBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 08:01:51 -0400
+IronPort-SDR: 1I8Rtwh4GWOdeWX7J7eIEpl+QU7QjKZ9Egp+qCty8QrPl9PLcuDF5Vunz+D2G0TgvPl1hv2yM1
+ YSFOXsT3oDgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="219283543"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="219283543"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 05:01:34 -0700
+IronPort-SDR: JBhmnVDQJvbdd61JWWR8kZUG+owj8Bw5jHT4ua8fCs3yJvwjj2wBZCZEB0ACc/MeYpvQb5GIuI
+ Z1Fx+DDEHNdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="478460799"
+Received: from pipper-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.56.104])
+  by orsmga005.jf.intel.com with ESMTP; 04 Sep 2020 05:01:27 -0700
+Date:   Fri, 4 Sep 2020 15:01:26 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        ludloff@google.com, luto@kernel.org, nhorman@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200904120126.GB39023@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200702035902.GC1819@linux.intel.com>
+ <20200704033025.GA144756@linux.intel.com>
+ <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <op.0qaqw6rvwjvjmi@hhuan26-mobl1.amr.corp.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Haiwei Li <lihaiwei.kernel@gmail.com> writes:
+On Tue, Sep 01, 2020 at 10:06:32PM -0500, Haitao Huang wrote:
+> On Fri, 03 Jul 2020 22:31:10 -0500, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> 
+> > On Wed, Jul 01, 2020 at 08:59:02PM -0700, Sean Christopherson wrote:
+> > > On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
+> > > > +static int sgx_validate_secs(const struct sgx_secs *secs,
+> > > > +			     unsigned long ssaframesize)
+> > > > +{
+> > > > +	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (secs->base & (secs->size - 1))
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (secs->miscselect & sgx_misc_reserved_mask ||
+> > > > +	    secs->attributes & sgx_attributes_reserved_mask ||
+> > > > +	    secs->xfrm & sgx_xfrm_reserved_mask)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	if (secs->attributes & SGX_ATTR_MODE64BIT) {
+> > > > +		if (secs->size > sgx_encl_size_max_64)
+> > > > +			return -EINVAL;
+> > > > +	} else if (secs->size > sgx_encl_size_max_32)
+> > > > +		return -EINVAL;
+> > > 
+> > > These should be >=, not >, the SDM uses one of those fancy ≥ ligatures.
+> > > 
+> > > Internal versions use more obvious pseudocode, e.g.:
+> > > 
+> > >     if ((DS:TMP_SECS.ATTRIBUTES.MODE64BIT = 1) AND
+> > >         (DS:TMP_SECS.SIZE AND (~((1 << CPUID.18.0:EDX[15:8]) – 1)))
+> > >     {
+> > >         #GP(0);
+> > 
+> > Updated as:
+> > 
+> > static int sgx_validate_secs(const struct sgx_secs *secs)
+> > {
+> > 	u64 max_size = (secs->attributes & SGX_ATTR_MODE64BIT) ?
+> > 		       sgx_encl_size_max_64 : sgx_encl_size_max_32;
+> > 
+> > 	if (secs->size < (2 * PAGE_SIZE) || !is_power_of_2(secs->size))
+> > 		return -EINVAL;
+> > 
+> > 	if (secs->base & (secs->size - 1))
+> > 		return -EINVAL;
+> > 
+> > 	if (secs->miscselect & sgx_misc_reserved_mask ||
+> > 	    secs->attributes & sgx_attributes_reserved_mask ||
+> > 	    secs->xfrm & sgx_xfrm_reserved_mask)
+> > 		return -EINVAL;
+> > 
+> > 	if (secs->size >= max_size)
+> > 		return -EINVAL;
+> > 
+> 
+> This should be > not >=. Issue raised and fixed by Fábio Silva for ported
+> patches for OOT SGX support:
+> https://github.com/intel/SGXDataCenterAttestationPrimitives/pull/123
+> 
+> I tested and verified with Intel arch, the comparison indeed should be >.
+> 
+> Thanks
+> Haitao
 
-> From: Haiwei Li <lihaiwei@tencent.com>
->
-> Add trace_kvm_cr_write and trace_kvm_cr_read for svm.
->
-> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
-> ---
->   arch/x86/kvm/svm/svm.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 03dd7bac8034..2c6dea48ba62 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2261,6 +2261,7 @@ static int cr_interception(struct vcpu_svm *svm)
+Thans a lot!
 
-There are two special cases when we go to emulate_on_interception() and
-these won't be logged but I don't think this is a must.
+I added this changelog entry to the v37 log:
 
->   	if (cr >= 16) { /* mov to cr */
->   		cr -= 16;
->   		val = kvm_register_read(&svm->vcpu, reg);
-> +		trace_kvm_cr_write(cr, val);
->   		switch (cr) {
->   		case 0:
->   			if (!check_selective_cr0_intercepted(svm, val))
-> @@ -2306,6 +2307,7 @@ static int cr_interception(struct vcpu_svm *svm)
->   			return 1;
->   		}
->   		kvm_register_write(&svm->vcpu, reg, val);
-> +		trace_kvm_cr_read(cr, val);
+* Fixed off-by-one error in a size calculation:
+  https://github.com/intel/SGXDataCenterAttestationPrimitives/commit/e44cc238becf584cc079aef40b557c6af9a03f38
 
-The 'default:' case above does 'return 1;' so we won't get the trace but
-I understand you put trace_kvm_cr_read() here so you can log the
-returned 'val', #UD should be clearly visible. 
+Given the Boris' earlier feedback I xref every changelog
+entry in v37 changelog. Then it is also less time consuming
+to spot if something is missing.
 
->   	}
->   	return kvm_complete_insn_gp(&svm->vcpu, err);
->   }
-> --
-> 2.18.4
->
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
-
+/Jarkko
