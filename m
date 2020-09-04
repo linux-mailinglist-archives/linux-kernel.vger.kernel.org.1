@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721D625DDD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F6A25DDE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgIDPep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:34:45 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:47250 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726111AbgIDPem (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:34:42 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E23378EE112;
-        Fri,  4 Sep 2020 08:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1599233681;
-        bh=aqBYVVDxSPcR+4WRGd2XXdbYUrXI1R2tpGt8e2CxOqk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=OSKCiZVY/HICluT+E+gBea2klKfGTnSyh+e5emDR2r1NB8op0pvrrhFcgY6WpLXfi
-         BgwwbeRb5VG2jPAx3sUPZQpMPsfm8M1dAfUAh8brrNXhqqe8gVtdtzwSB3orIrDD7l
-         YoD02xMi9/Vnz3qACuvRNiD5YpaTVrPCKQCyS0ro=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0lY_VcvizQiN; Fri,  4 Sep 2020 08:34:41 -0700 (PDT)
-Received: from [153.66.254.174] (c-73-35-198-56.hsd1.wa.comcast.net [73.35.198.56])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 432438EE064;
-        Fri,  4 Sep 2020 08:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1599233681;
-        bh=aqBYVVDxSPcR+4WRGd2XXdbYUrXI1R2tpGt8e2CxOqk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=OSKCiZVY/HICluT+E+gBea2klKfGTnSyh+e5emDR2r1NB8op0pvrrhFcgY6WpLXfi
-         BgwwbeRb5VG2jPAx3sUPZQpMPsfm8M1dAfUAh8brrNXhqqe8gVtdtzwSB3orIrDD7l
-         YoD02xMi9/Vnz3qACuvRNiD5YpaTVrPCKQCyS0ro=
-Message-ID: <1599233679.5231.4.camel@HansenPartnership.com>
-Subject: Re: [PATCH] dma-direct: zero out DMA_ATTR_NO_KERNEL_MAPPING buf
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Hillf Danton <hdanton@sina.com>, Christoph Hellwig <hch@lst.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Date:   Fri, 04 Sep 2020 08:34:39 -0700
-In-Reply-To: <20200904152550.17964-1-hdanton@sina.com>
-References: <20200904152550.17964-1-hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726938AbgIDPgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:36:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:52800 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726898AbgIDPgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 11:36:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 584A8113E;
+        Fri,  4 Sep 2020 08:36:01 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05A223F66F;
+        Fri,  4 Sep 2020 08:35:58 -0700 (PDT)
+Subject: Re: [PATCH 00/10] dt-bindings: Convert SP805 to Json-schema (and fix
+ users)
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Chanho Min <chanho.min@lge.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Wei Xu <xuwei5@hisilicon.com>
+References: <20200828130602.42203-1-andre.przywara@arm.com>
+ <19c6a67e-48f0-c0b6-3653-32a5a1f09e07@gmail.com>
+ <CACRpkdbMbNd87145iwdL7=x501cvgU7wiZXNLF456sn6WvoodQ@mail.gmail.com>
+ <302c54fd-5183-c8d0-7038-f6e60c7bb056@gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Organization: ARM Ltd.
+Message-ID: <26416b9b-d390-d7df-ee1f-8ec7ca08ba72@arm.com>
+Date:   Fri, 4 Sep 2020 16:35:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <302c54fd-5183-c8d0-7038-f6e60c7bb056@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-04 at 23:25 +0800, Hillf Danton wrote:
-> The DMA buffer allocated is always cleared in DMA core and this is
-> making DMA_ATTR_NO_KERNEL_MAPPING non-special.
+On 04/09/2020 16:29, Florian Fainelli wrote:
+
+Hi,
+
+> On 9/4/2020 1:58 AM, Linus Walleij wrote:>> On Fri, Aug 28, 2020 at 9:34 PM Florian Fainelli
+>> <f.fainelli@gmail.com> wrote:
+>>> On 8/28/20 6:05 AM, Andre Przywara wrote:
+>>
+>>> What is the plan for merging this series? Should Rob pick up all changes
+>>> or since those are non critical changes, should we just leave it to the
+>>> SoC maintainers to pick up the changes in their tree?
+>>
+>> What about André just send a pull request to the ARM SoC maintainers
+>> for the whole thing?
 > 
-> Fixes: d98849aff879 ("dma-direct: handle DMA_ATTR_NO_KERNEL_MAPPING
-> in common code")
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: Hillf Danton <hdanton@sina.com>
-> ---
-> 
-> --- a/kernel/dma/direct.c
-> +++ b/kernel/dma/direct.c
-> @@ -178,9 +178,17 @@ void *dma_direct_alloc_pages(struct devi
->  
->  	if ((attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
->  	    !force_dma_unencrypted(dev)) {
-> +		int i;
-> +
->  		/* remove any dirty cache lines on the kernel alias
-> */
->  		if (!PageHighMem(page))
->  			arch_dma_prep_coherent(page, size);
-> +
-> +		for (i = 0; i < size/PAGE_SIZE; i++) {
-> +			ret = kmap_atomic(page + i);
-> +			memset(ret, 0, PAGE_SIZE);
-> +			kunmap_atomic(ret);
+> I already applied some of the patches, if we got that route please CC me
+> so I can drop them from my local queue. Thanks
 
-This is massively expensive on PARISC and likely other VIPT/VIVT
-architectures.  What's the reason for clearing it?  This could also be
-really inefficient even on PIPT architectures if the memory is device
-remote.
+I would for sure drop these from any PR.
 
-If we really have to do this, it should likely be done in the arch or
-driver hooks because there are potentially more efficient ways we can
-do this knowing how the architecture behaves.
+Rob, are you happy with the actual binding conversion? If you are
+willing to take it as it is (Viresh has already acked), I could then
+split off the DT fixes and either chase the maintainers or send ARM SoC
+a PR. But this really depends on the binding being good.
 
-James
-
+Cheers,
+Andre.
