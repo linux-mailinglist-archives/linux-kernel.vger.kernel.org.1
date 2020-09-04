@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130C625DBC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCC725DC26
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730599AbgIDObw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:31:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730395AbgIDObi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:31:38 -0400
-Received: from embeddedor (187-162-31-110.static.axtel.net [187.162.31.110])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE301206B8;
-        Fri,  4 Sep 2020 14:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599229897;
-        bh=Ovne3zPGozEcouB+wDQ/5CsnhQR2Yaomg+oiECsR7c4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ys2qUxkdrc2bt7b+dBy/+jS317c4d7xtuPAKrXIXg//u0JUvlm0/azD+UP0UL/3oc
-         arIq7LwSUlMnT/oq5GGpSVdyI18HDgX/f1muAN1Nrj4h+UaP4vIid+cv4Y3HmON6po
-         uOPI7u7lN8wFPEf+S80Qh65xr3zmFsjIjfY9tf+k=
-Date:   Fri, 4 Sep 2020 09:37:53 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Rustam Kovhaev <rkovhaev@gmail.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2] KVM: fix memory leak in kvm_io_bus_unregister_dev()
-Message-ID: <20200904143753.GE31464@embeddedor>
-References: <20200902225718.675314-1-rkovhaev@gmail.com>
- <c5990c86-ab01-d748-5505-375f50a4ed7d@embeddedor.com>
- <20200903172215.GA870347@thinkpad>
- <87ft7xoiig.fsf@vitty.brq.redhat.com>
+        id S1730488AbgIDOoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:44:15 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:46733 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730416AbgIDOoK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:44:10 -0400
+Received: by mail-il1-f208.google.com with SMTP id v6so4953257ili.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 07:44:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=GE20mkCJFx34V9csXbBi5MpSPEm23j5O5gEKMXhuGs4=;
+        b=kHMRo3Ufo081pWUR8vo0y4zoiD+BkRzAd6ec9rdD9TessPCVepUFDtrZKM6+gfA/Bi
+         pK2uWP5xqgjNBldlngjLxdhdJfBrQXB7iuU/06XB1a9X2MG2jHHCYhYiwTLvS8Nmihto
+         NDEp0SbV9dIVMee4PIdyYw5qfDcqIZzWmloDBb707OAUNUuRY23yZoQA1a6e9TyrQ8rf
+         P47z2/1NuzOTJGxCyWCCGkhHhoePuo/+IT/ToRfMW46BhU40eLEd6YyEIWyCksQYSFfh
+         npJoMmAnk6C8uyKMjOjO4iKVMa2XwAA+T+0Y9iGJ6q32ZOD0ruknWHmEXvbS/feKWZ4k
+         vpyw==
+X-Gm-Message-State: AOAM533k3ivmb4ih+P3uzkmv1xxRLUROlxTKOQb0aCcRzq+bWoyAozmG
+        6mQWrJny3seDUGk2Yt9PQuhQxy6mARsm6iw05RX3HhJ84+hc
+X-Google-Smtp-Source: ABdhPJxZCmzJJSBtD6oipaJudDBJ1GQFFB0c3Y+RmR7v/iFXEsAA2X6Ph+jfCB/546LXa6E6JWGbeRIObehShZ2GPeZnQjV295Tv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ft7xoiig.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a05:6e02:1303:: with SMTP id g3mr4832562ilr.218.1599230649567;
+ Fri, 04 Sep 2020 07:44:09 -0700 (PDT)
+Date:   Fri, 04 Sep 2020 07:44:09 -0700
+In-Reply-To: <00000000000055e1a9059f9e169f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c8101605ae7de686@google.com>
+Subject: Re: KASAN: use-after-free Write in refcount_warn_saturate
+From:   syzbot <syzbot+7dd7f2f77a7a01d1dc14@syzkaller.appspotmail.com>
+To:     abhishekpandit@chromium.org, alainm@chromium.org,
+        davem@davemloft.net, johan.hedberg@gmail.com,
+        johan.hedberg@intel.com, josua.mayer@jm0.eu,
+        jukka.rissanen@linux.intel.com, keescook@chromium.org,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marcel@holtmann.org,
+        mcchou@chromium.org, mike@foundries.io, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 02:04:23PM +0200, Vitaly Kuznetsov wrote:
-> Rustam Kovhaev <rkovhaev@gmail.com> writes:
-> 
-> > On Wed, Sep 02, 2020 at 06:34:11PM -0500, Gustavo A. R. Silva wrote:
-> >> Hi,
-> >> 
-> >> On 9/2/20 17:57, Rustam Kovhaev wrote:
-> >> > when kmalloc() fails in kvm_io_bus_unregister_dev(), before removing
-> >> > the bus, we should iterate over all other devices linked to it and call
-> >> > kvm_iodevice_destructor() for them
-> >> > 
-> >> > Reported-and-tested-by: syzbot+f196caa45793d6374707@syzkaller.appspotmail.com
-> >> > Link: https://syzkaller.appspot.com/bug?extid=f196caa45793d6374707
-> >> > Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-> >> > Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> >> 
-> >> I think it's worthwhile to add a Fixes tag for this, too.
-> >> 
-> >> Please, see more comments below...
-[..]
-> >
-> > hi Gustavo, thank you for the review, i'll send the new patch.
-> > Vitaly, i think i will need to drop your "Reviewed-by", because there is
-> > going to be a bit more changes
-> >
-> 
-> Personally, I'd prefer to make struct_size()/flex_array_size() a
-> separate preparatory patch so the real fix is small but I don't have a
-> strong opinion. I'll take look at v3 so feel free to drop R-b if you
-> decide to make a combined patch and feel free to keep it if you make the
-> preparatory changes separate :-)
-> 
+syzbot suspects this issue was fixed by commit:
 
-I agree. A two-patch series is much better in this case.
+commit b83764f9220a4a14525657466f299850bbc98de9
+Author: Miao-chen Chou <mcchou@chromium.org>
+Date:   Tue Jun 30 03:15:00 2020 +0000
 
-Rustam - please add a Fixes tag to the first patch and see if it can be
-applied to -stable. If so, you should Cc stable@vger.kernel.org, too.
+    Bluetooth: Fix kernel oops triggered by hci_adv_monitors_clear()
 
-Thanks
---
-Gustavo
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10f92e3e900000
+start commit:   c0842fbc random32: move the pseudo-random 32-bit definitio..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cf567e8c7428377e
+dashboard link: https://syzkaller.appspot.com/bug?extid=7dd7f2f77a7a01d1dc14
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15b606dc900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=123e87cc900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: Bluetooth: Fix kernel oops triggered by hci_adv_monitors_clear()
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
