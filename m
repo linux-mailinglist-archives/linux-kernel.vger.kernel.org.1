@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632C525DAB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC8F25DAB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgIDN5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:57:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S1730725AbgIDN5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730734AbgIDN4z (ORCPT
+        with ESMTP id S1730686AbgIDN50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:56:55 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69F0C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 06:56:54 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k15so6821394wrn.10
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 06:56:54 -0700 (PDT)
+        Fri, 4 Sep 2020 09:57:26 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80368C061244;
+        Fri,  4 Sep 2020 06:57:26 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id c2so8023548ljj.12;
+        Fri, 04 Sep 2020 06:57:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=B3CfhOVBGf9H9WuZ53+AjLGNuQZrbQHmVtlD/DJasis=;
-        b=fdRk2pV//7myN++zX937AgchN/lF0cwlO5vO83mfaGxBG4q2HNIp6zqYMK+Zt8XOrY
-         NjIrgYIWeNUh7JSDxmG4kHraRhjqpHbzpktsGfa+SbGMh8a1sbPyoF7IpXSqtyfgCZgb
-         FjYvTaKTlO6LYbE6ZfU35PIcl9HijlW13E5wiZ3iwZzpaAqnbWl0F90OQZckY/wZU1gf
-         A7VBE9ubp+vKLCJg6fKumSbKRAtz1MrQAzug3FVEuNdgU48dFmCQgmCLn7cJ0gcWBPA2
-         7tqETp6BTfcc3ari0Ghn5Ue2uktePy4RJzl6OEpDYyEMYCo7NS+BaGeEN2Hb/6BUmrOC
-         /SQg==
+        bh=hoXXqd8o1tMS9WjpaTwn6JIuueqXzxlr8fJ8ASQWetI=;
+        b=cB+oUoplgC6GyIFVtcLejHJV/VcvpasFda3aA7jC4OvseF5QmxCPplLaZ/3CmGESHG
+         I/lemT2CDw1SJ22GzYzixEWVeN+w+9XBLwPsmUCFB49z93hHInL+8ABC4pbL3ulr07NU
+         zeQYE3deleybCtihNK3FHdJ+iJ4/pHB9jWuxoQrQO+ghVZgxcGeLBfSjSjBxZjb3nPL6
+         d+2As+CqoO0AIHUB0vCch7UcVZHjSJ1KLDeiqPU/xq5uJ/8eNuW1aGch4TT4n8wRfAtl
+         2LjxqwFcjdB0sVFUbjxnBP39gVu270eetm1ZB1ZgsFOCIMUNSSSoqHXCLqfZfRnoJRlD
+         6fNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=B3CfhOVBGf9H9WuZ53+AjLGNuQZrbQHmVtlD/DJasis=;
-        b=DuQjmLciBdahbgniMOva/Uq2pYAznn1HyMaPByrMIKdxRL2vbHWxKVzL/Ex7gIx4lC
-         7o56lYi/VEXS5P+wUcnk12I9RvyJKjZooVcO5j5UcFRcnwR7OL1swJLfPA2hD7LgYYwx
-         jTz08vQLfgvVi0H/TSmfYgkY3/5WYf5T0esUu0z0hQZFqnJQyo8CyPLK8ARBiyUr4IFQ
-         JaHQ7VTbgNG5YbhxhSQtsdravPJafpNR/CN9gvSkgNuDgoPbkIqd84itOUfD7lqWml7Z
-         DtPB6WtAcnQDWvSU+/ilUzs2vW27mxv8YRxAQMf0tcRr226dpOGrK3ZKK5xsP8ebvzWN
-         FlFA==
-X-Gm-Message-State: AOAM533KyfcbqaAQ7BSXRSJ/mzc00aBEyN/5cOcrc8FGkd0oTa5TTE6b
-        0v+wMIlYNJCLAeIYtsxuinBvFSzk+ooQqYKtJxtjT0pYQ6Q=
-X-Google-Smtp-Source: ABdhPJy/VGdC6pW/0FhrX+k0bZPZot8TzrPX4TwKJOQtaQsxu0J0wg1pUbQsc0YgMyp5M+kryqPhp8FcaB2m6mL+Fk0=
-X-Received: by 2002:adf:eecb:: with SMTP id a11mr7878596wrp.356.1599227813312;
- Fri, 04 Sep 2020 06:56:53 -0700 (PDT)
+        bh=hoXXqd8o1tMS9WjpaTwn6JIuueqXzxlr8fJ8ASQWetI=;
+        b=E5q60vQDu1T3IbgY6LXBcpItHoNzruU5jhVgbJeS3nLBieC7GJfXu3dHX0skQiQWCu
+         sulOHWSX67DWgTxCFl9Cbc9LJdvOVtGe4xr0Tovoe7D9bS3f5NRrUlQIBc9MHwwNiPqc
+         eoQiNwxFIXKct9dkbKkJ9GmL+IgkZjMtJzZb/fXlf0sn2rhiXMr7foL7dqwrF2LjIC3p
+         IWZc2PBUuJ6uY/RPjoQUqAKVwxZGyLIQRwoevF5Are8rxVkTd47wAfKjugGFeTzTUXnb
+         9HptX3ecjaTLkGa/CM6NdT2YdvO4jGDQg5+0bEWDDWjyxnTghmmYevJE1jWG5yoVg5oS
+         jfQA==
+X-Gm-Message-State: AOAM533OfZg0gft6/k/P1wuMX8GKIcWiVhlrp2c55rx4y5ms5qTRDGrx
+        lcbE1nttlUXSyywR8SOSqHMhJphUuxD/jJCRZfmDAc1I
+X-Google-Smtp-Source: ABdhPJwRaXPdWvGuBAjCghQkCAqkNiK8C3mycScQket1zO5nYHPMm/DqD/BvM0eDN0424CFuDOv01ZIoV1aYuWJT794=
+X-Received: by 2002:a2e:390a:: with SMTP id g10mr3629117lja.218.1599227844699;
+ Fri, 04 Sep 2020 06:57:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <mhng-32c8d053-acbd-4c72-b41d-8d6042ac639d@palmerdabbelt-glaptop1>
- <CAHk-=wi_tf4qsiBj5UD0GG3wz8Hi5NrHzqdrx+CwtfAY+_UiGg@mail.gmail.com>
- <20200904083109.GA9182@infradead.org> <CAAhSdy3S8FfMAWih_VoBHw0xd-7c=urzuJ+PPdug9iX_pWyTsQ@mail.gmail.com>
- <20200904094617.GA27846@infradead.org> <CAAhSdy2x0ROqoTzzZRZgKCTL99WPy-8e4CQ921sf-=GQDm_gxA@mail.gmail.com>
- <f1be6ee1-0802-82ca-ffdb-4c294925cd9a@kylinos.com.cn> <20200904130044.GA7842@infradead.org>
-In-Reply-To: <20200904130044.GA7842@infradead.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 4 Sep 2020 19:26:41 +0530
-Message-ID: <CAAhSdy2N8L015z0-RirjXLjdzt+OrCtzzKzivsMeQXoH9Nc8Cw@mail.gmail.com>
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.9-rc2
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200903144028.20416-1-matthias.schiffer@ew.tq-group.com>
+ <CAOMZO5DGHoG_8X+fbrGCHR4g=sGdEaF7bYrHbC_2T=aUnfTs8g@mail.gmail.com> <e1431dd2653dbffdfec39a2e7167db07836e30ac.camel@ew.tq-group.com>
+In-Reply-To: <e1431dd2653dbffdfec39a2e7167db07836e30ac.camel@ew.tq-group.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Fri, 4 Sep 2020 10:57:13 -0300
+Message-ID: <CAOMZO5C7yyA11EOQvU0Fq-uDd5RK-B7WmbtvAy8OtPzfThYXRg@mail.gmail.com>
+Subject: Re: (EXT) Re: [PATCH] spi-imx: remove num-cs support, set
+ num_chipselect to 4
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 6:30 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Fri, Sep 04, 2020 at 08:58:25PM +0800, Qiu Wenbo wrote:
-> > I can confirm this patch also breaks K210 support. It seems that
-> > csr_read(CSR_TIME) will trigger an illegal instruction exception on K210.
->
-> CSR_TIME is trapped by just about every implementation I know (which is
-> explicitly allowed by the spec).  That is why we should never use it
-> from common M-mode code.
+On Fri, Sep 4, 2020 at 10:02 AM Matthias Schiffer
+<matthias.schiffer@ew.tq-group.com> wrote:
 
-Finally, I was able to replicate this issue by manually hacking QEMU to
-not emulatie TIME CSR for virt machine.
+> This would make num_chipselect default to 1 again (set by
+> __spi_alloc_controller()), breaking every i.MX board that uses more
+> than 1 native CS.
 
-It seems this issue is only seen on older QEMU and Kendrtye K210.
+Which boards are that? Are you referring to non-DT i.MX boards?
 
-I am working on a fix for this issue.
+If so, I have sent a patch removing all non-DT i.MX boards.
 
-Thanks for reporting.
+> I'm aware that using cs-gpios instead of native CS is probably a good
+> idea in any case, as the native CS of this SPI controller is kinda
+> flaky (and at a glance it looks like all in-tree DTs do this; not sure
+> about board files that don't use DTs?), but I'm not convinced that
+> breaking native CS support completely is desirable either.
 
-Regards,
-Anup
+Initial i.MX chips with this SPI IP had issues in using chip-select in
+native mode and GPIO chip-select has been used since them.
+
+Do we have i.MX dts that make use of native chip select?
