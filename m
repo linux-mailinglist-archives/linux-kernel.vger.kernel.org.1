@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811FB25D29A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259A625D298
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgIDHol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:44:41 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:48588 "EHLO
+        id S1729769AbgIDHof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:44:35 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:42756 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728112AbgIDHoQ (ORCPT
+        with ESMTP id S1726089AbgIDHoR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:44:16 -0400
+        Fri, 4 Sep 2020 03:44:17 -0400
 Received: from localhost (unknown [192.168.167.223])
-        by lucky1.263xmail.com (Postfix) with ESMTP id EE542B2236;
+        by lucky1.263xmail.com (Postfix) with ESMTP id BAC9EC1739;
         Fri,  4 Sep 2020 15:44:11 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
@@ -22,9 +22,9 @@ X-ANTISPAM-LEVEL: 2
 X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [58.22.7.114])
         by smtp.263.net (postfix) whith ESMTP id P15471T140656136742656S1599205448140075_;
-        Fri, 04 Sep 2020 15:44:11 +0800 (CST)
+        Fri, 04 Sep 2020 15:44:12 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9a7e37fcb4d78403b256b4ee0b674a65>
+X-UNIQUE-TAG: <b20b3d81154ebbbd4963f3b58ba43cee>
 X-RL-SENDER: zhangqing@rock-chips.com
 X-SENDER: zhangqing@rock-chips.com
 X-LOGIN-NAME: zhangqing@rock-chips.com
@@ -40,9 +40,9 @@ Cc:     mturquette@baylibre.com, sboyd@kernel.org,
         linux-kernel@vger.kernel.org, xxx@rock-chips.com,
         xf@rock-chips.com, huangtao@rock-chips.com,
         kever.yang@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
-Subject: [PATCH v3 3/6] clk: rockchip: Export rockchip_register_softrst()
-Date:   Fri,  4 Sep 2020 15:44:02 +0800
-Message-Id: <20200904074405.24439-4-zhangqing@rock-chips.com>
+Subject: [PATCH v3 4/6] clk: rockchip: Export some clock common APIs for module drivers
+Date:   Fri,  4 Sep 2020 15:44:03 +0800
+Message-Id: <20200904074405.24439-5-zhangqing@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904074405.24439-1-zhangqing@rock-chips.com>
 References: <20200904074405.24439-1-zhangqing@rock-chips.com>
@@ -52,36 +52,140 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is used by the Rockchip clk driver, export it to allow that
-driver to be compiled as a module..
+driver to be compiled as a module.
 
 Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 Reviewed-by: Kever Yang <kever.yang@rock-chips.com>
 ---
- drivers/clk/rockchip/softrst.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/clk/rockchip/clk.c | 52 ++++++++++++++++++++++----------------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/clk/rockchip/softrst.c b/drivers/clk/rockchip/softrst.c
-index 5f1ff5e47c4f..caba9055090b 100644
---- a/drivers/clk/rockchip/softrst.c
-+++ b/drivers/clk/rockchip/softrst.c
-@@ -77,9 +77,9 @@ static const struct reset_control_ops rockchip_softrst_ops = {
- 	.deassert	= rockchip_softrst_deassert,
+diff --git a/drivers/clk/rockchip/clk.c b/drivers/clk/rockchip/clk.c
+index 46409972983e..fd3aff2a599d 100644
+--- a/drivers/clk/rockchip/clk.c
++++ b/drivers/clk/rockchip/clk.c
+@@ -360,8 +360,9 @@ static struct clk *rockchip_clk_register_factor_branch(const char *name,
+ 	return hw->clk;
+ }
+ 
+-struct rockchip_clk_provider * __init rockchip_clk_init(struct device_node *np,
+-			void __iomem *base, unsigned long nr_clks)
++struct rockchip_clk_provider *rockchip_clk_init(struct device_node *np,
++						void __iomem *base,
++						unsigned long nr_clks)
+ {
+ 	struct rockchip_clk_provider *ctx;
+ 	struct clk **clk_table;
+@@ -393,14 +394,16 @@ struct rockchip_clk_provider * __init rockchip_clk_init(struct device_node *np,
+ 	kfree(ctx);
+ 	return ERR_PTR(-ENOMEM);
+ }
++EXPORT_SYMBOL(rockchip_clk_init);
+ 
+-void __init rockchip_clk_of_add_provider(struct device_node *np,
+-				struct rockchip_clk_provider *ctx)
++void rockchip_clk_of_add_provider(struct device_node *np,
++				  struct rockchip_clk_provider *ctx)
+ {
+ 	if (of_clk_add_provider(np, of_clk_src_onecell_get,
+ 				&ctx->clk_data))
+ 		pr_err("%s: could not register clk provider\n", __func__);
+ }
++EXPORT_SYMBOL(rockchip_clk_of_add_provider);
+ 
+ void rockchip_clk_add_lookup(struct rockchip_clk_provider *ctx,
+ 			     struct clk *clk, unsigned int id)
+@@ -408,8 +411,9 @@ void rockchip_clk_add_lookup(struct rockchip_clk_provider *ctx,
+ 	if (ctx->clk_data.clks && id)
+ 		ctx->clk_data.clks[id] = clk;
+ }
++EXPORT_SYMBOL(rockchip_clk_add_lookup);
+ 
+-void __init rockchip_clk_register_plls(struct rockchip_clk_provider *ctx,
++void rockchip_clk_register_plls(struct rockchip_clk_provider *ctx,
+ 				struct rockchip_pll_clock *list,
+ 				unsigned int nr_pll, int grf_lock_offset)
+ {
+@@ -432,11 +436,11 @@ void __init rockchip_clk_register_plls(struct rockchip_clk_provider *ctx,
+ 		rockchip_clk_add_lookup(ctx, clk, list->id);
+ 	}
+ }
++EXPORT_SYMBOL(rockchip_clk_register_plls);
+ 
+-void __init rockchip_clk_register_branches(
+-				      struct rockchip_clk_provider *ctx,
+-				      struct rockchip_clk_branch *list,
+-				      unsigned int nr_clk)
++void rockchip_clk_register_branches(struct rockchip_clk_provider *ctx,
++				    struct rockchip_clk_branch *list,
++				    unsigned int nr_clk)
+ {
+ 	struct clk *clk = NULL;
+ 	unsigned int idx;
+@@ -565,14 +569,15 @@ void __init rockchip_clk_register_branches(
+ 		rockchip_clk_add_lookup(ctx, clk, list->id);
+ 	}
+ }
+-
+-void __init rockchip_clk_register_armclk(struct rockchip_clk_provider *ctx,
+-			unsigned int lookup_id,
+-			const char *name, const char *const *parent_names,
+-			u8 num_parents,
+-			const struct rockchip_cpuclk_reg_data *reg_data,
+-			const struct rockchip_cpuclk_rate_table *rates,
+-			int nrates)
++EXPORT_SYMBOL(rockchip_clk_register_branches);
++
++void rockchip_clk_register_armclk(struct rockchip_clk_provider *ctx,
++				  unsigned int lookup_id,
++				  const char *name, const char *const *parent_names,
++				  u8 num_parents,
++				  const struct rockchip_cpuclk_reg_data *reg_data,
++				  const struct rockchip_cpuclk_rate_table *rates,
++				  int nrates)
+ {
+ 	struct clk *clk;
+ 
+@@ -587,9 +592,10 @@ void __init rockchip_clk_register_armclk(struct rockchip_clk_provider *ctx,
+ 
+ 	rockchip_clk_add_lookup(ctx, clk, lookup_id);
+ }
++EXPORT_SYMBOL(rockchip_clk_register_armclk);
+ 
+-void __init rockchip_clk_protect_critical(const char *const clocks[],
+-					  int nclocks)
++void rockchip_clk_protect_critical(const char *const clocks[],
++				   int nclocks)
+ {
+ 	int i;
+ 
+@@ -601,6 +607,7 @@ void __init rockchip_clk_protect_critical(const char *const clocks[],
+ 			clk_prepare_enable(clk);
+ 	}
+ }
++EXPORT_SYMBOL(rockchip_clk_protect_critical);
+ 
+ static void __iomem *rst_base;
+ static unsigned int reg_restart;
+@@ -620,10 +627,10 @@ static struct notifier_block rockchip_restart_handler = {
+ 	.priority = 128,
  };
  
--void __init rockchip_register_softrst(struct device_node *np,
--				      unsigned int num_regs,
--				      void __iomem *base, u8 flags)
-+void rockchip_register_softrst(struct device_node *np,
-+			       unsigned int num_regs,
-+			       void __iomem *base, u8 flags)
+-void __init
++void
+ rockchip_register_restart_notifier(struct rockchip_clk_provider *ctx,
+-					       unsigned int reg,
+-					       void (*cb)(void))
++				   unsigned int reg,
++				   void (*cb)(void))
  {
- 	struct rockchip_softrst *softrst;
  	int ret;
-@@ -107,3 +107,4 @@ void __init rockchip_register_softrst(struct device_node *np,
- 		kfree(softrst);
- 	}
- };
-+EXPORT_SYMBOL(rockchip_register_softrst);
+ 
+@@ -635,3 +642,4 @@ rockchip_register_restart_notifier(struct rockchip_clk_provider *ctx,
+ 		pr_err("%s: cannot register restart handler, %d\n",
+ 		       __func__, ret);
+ }
++EXPORT_SYMBOL(rockchip_register_restart_notifier);
 -- 
 2.17.1
 
