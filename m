@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F131325DD12
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAE025DD14
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730856AbgIDPVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:21:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S1730839AbgIDPVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730798AbgIDPVl (ORCPT
+        with ESMTP id S1730799AbgIDPVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 4 Sep 2020 11:21:41 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC103C06125F
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:21:29 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id a9so6452329wmm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:21:29 -0700 (PDT)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AB6C061247
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:21:30 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z4so7136187wrr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UTzOsHSC+gZF9PSWWpuSmxUozEdf7QQLb/WCmyturHc=;
-        b=MfZkEE7Gfj0EtpOJBT7E7Tf2l0qG42PZBryzfeuryiCZ74FGcKYrek3oeHE6kk7niZ
-         d95jS1ajKAMD3cSEE3LnGLsKhc/+uB2M3h/3qc8fJx82Vc9qJf7rtt5ICZ/EpHdIyJ/p
-         gobCsWFnQc2hRa7E+c90WvWV62/pGlk09hWK1IIPvZus1bT4XkoLrx7mL/9hHlA/qzhj
-         qTkQxQQ4mIsiqIOH3waewQkRPI+GEs/8kcwYCMSdi/5Az7ISYmcKvymWygDvTvrgoGYW
-         cuG+NX1fx9ZTnVdkkZkw20h0bv4odID5CMSRzGhs1+niyMAZ0/TjBWzjxOFYIT0S1rTb
-         r0yw==
+        bh=eEZDuStJjJk1FIrMzwflNMl97fxslfVlQl/5yuaVYNI=;
+        b=yGxJWlsyeosFf351pC1itNstGCRhwWhmdMXb4VQRFTAu/Qyrsb0OIp5seNKsnrOelE
+         zqxYV7mkcv8JyXa/zPwFYsZBbngqzyjOH0OoO0ktkwcBwMbJ27fFg7CSEclPLeEzciJ5
+         3aJTlA99yXS4EviRJd4r8inMZVlJOjPUwTiZrP0gQwpgO5EEFbdQNUW6LGUZf1J5n47S
+         GUyCiKqxf/u++rcyDtNJnNMc9X46SGlUe/S5YJrDA2x8L3mRyI7isBAIcXYQBYJJZ+my
+         gXjX5FS9uP75Uad8hyGEf0cZyeVrOAKIE/jAz3iT6ac0AkBL53NwAaQt27f6F4qUckeM
+         QCvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UTzOsHSC+gZF9PSWWpuSmxUozEdf7QQLb/WCmyturHc=;
-        b=I8w6jfajwqqHN5HJ/9IBLXqqdVPQtz99wtrrajHDZR2yIATIZVNTJVj3zJtPn2giYO
-         x5c1yDdsvLSqlorNizKMLH4y+cXyKBKg3bjSeG09LPljB00lyYTlTXqICNY1QXWJMy6c
-         fko1uIAj6m9g5R+/pCalalhCpV/xdno0gdqcJs/QJ/ewAxv7jnRV87Hf2FgUw0r7LFQe
-         jf+JbzxWsfRTkAmcx3dLh3Wul3WQpXX3BQPc9EoFfqJkh+536jlcTARba4eloQj0FJE0
-         B6Ds37zImZj8AXmcSKMbRRDpC0Lvfoc+ACjLKIV5adVRhBQgmzl/gNSAP8dkr8t/TpGv
-         0eiA==
-X-Gm-Message-State: AOAM532ov4XY/L8oXmCp4xM2lla7fpPRI99vVWWEZ96aFXupe03Rj9UM
-        ragJOIedJ/uilhqfYWj9lHaFOA==
-X-Google-Smtp-Source: ABdhPJz85fPQMFzckhhoTot2QaK8gl2HFrn/KMmGkiQzh+8CaGPlQpEFpsbRrgx1VteJY1b1GXeTvA==
-X-Received: by 2002:a1c:e108:: with SMTP id y8mr5770367wmg.179.1599232888476;
-        Fri, 04 Sep 2020 08:21:28 -0700 (PDT)
+        bh=eEZDuStJjJk1FIrMzwflNMl97fxslfVlQl/5yuaVYNI=;
+        b=tE5LexTDu3uPkW/QbXMT7fSr11kKCw9mAbmlzOam0wTMDy+P2vuCZAgvT+Q+MEp8R3
+         yDiAi/IR6O08VGfW03r1MaykuUvFKRtblm4ntUzbskX3ZEDg7staRbz0oLfzl0w0v3Jp
+         F/g8PJkgoirdsI9dmOKftMi7blOuZDpe84YiBJAD2YetIDF6oSRxfdVknHu84Kn6mAMs
+         A8SAZzQV5x56wuJHra0oINybnhNfSwQ6JVlwrsCN9vC1uE0ncC1EoFkzv7wqc2nFtH00
+         dKig8oMzgJFlWZzIQ9bC0iThlWfLAgRdch+pvraGg2ZjueOObQsD7HoJFJYwefG/nsHZ
+         kbzQ==
+X-Gm-Message-State: AOAM531N1lAanBaSyOkFPg++5kwpP07M7btsZq9WBd+0Pu9pBIwsEm0T
+        /DRtLy3YwrNnN96c5cooMp4CKPDVS5wGgw==
+X-Google-Smtp-Source: ABdhPJwl4h3PqASTyFA1+ncRsFs+j+n3e5ZfX4N1EuqV6KZX9K8bXEhi628kvRJBKe6oBcnZRI/lDw==
+X-Received: by 2002:adf:f8d0:: with SMTP id f16mr8793626wrq.66.1599232889418;
+        Fri, 04 Sep 2020 08:21:29 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id a11sm7789534wmm.18.2020.09.04.08.21.27
+        by smtp.gmail.com with ESMTPSA id a11sm7789534wmm.18.2020.09.04.08.21.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 04 Sep 2020 08:21:28 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
@@ -53,9 +53,9 @@ To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 6/8] rtc: rx8010: drop unnecessary initialization
-Date:   Fri,  4 Sep 2020 17:21:14 +0200
-Message-Id: <20200904152116.2157-7-brgl@bgdev.pl>
+Subject: [PATCH 7/8] rtc: rx8010: fix indentation in probe()
+Date:   Fri,  4 Sep 2020 17:21:15 +0200
+Message-Id: <20200904152116.2157-8-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200904152116.2157-1-brgl@bgdev.pl>
 References: <20200904152116.2157-1-brgl@bgdev.pl>
@@ -68,8 +68,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-The 'err' local variable in rx8010_init_client() doesn't need to be
-initialized.
+Align the arguments passed to devm_rtc_device_register() with the upper
+line.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
@@ -77,18 +77,18 @@ Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index f3bed7be2533..181fc21cefa8 100644
+index 181fc21cefa8..ed8ba38b4991 100644
 --- a/drivers/rtc/rtc-rx8010.c
 +++ b/drivers/rtc/rtc-rx8010.c
-@@ -196,7 +196,7 @@ static int rx8010_init_client(struct i2c_client *client)
- {
- 	struct rx8010_data *rx8010 = i2c_get_clientdata(client);
- 	u8 ctrl[2];
--	int need_clear = 0, err = 0;
-+	int need_clear = 0, err;
+@@ -450,7 +450,7 @@ static int rx8010_probe(struct i2c_client *client,
+ 	}
  
- 	/* Initialize reserved registers as specified in datasheet */
- 	err = i2c_smbus_write_byte_data(client, RX8010_RESV17, 0xD8);
+ 	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
+-		&rx8010_rtc_ops, THIS_MODULE);
++					       &rx8010_rtc_ops, THIS_MODULE);
+ 
+ 	if (IS_ERR(rx8010->rtc)) {
+ 		dev_err(&client->dev, "unable to register the class device\n");
 -- 
 2.26.1
 
