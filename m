@@ -2,59 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7492925D7A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CFA25D7A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730014AbgIDLmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730075AbgIDLmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 4 Sep 2020 07:42:54 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52811 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729582AbgIDLms (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729659AbgIDLmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:42:48 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-p498XuqzMIS4zRGB4u3OZg-1; Fri, 04 Sep 2020 07:42:43 -0400
-X-MC-Unique: p498XuqzMIS4zRGB4u3OZg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7BF1E890EA9;
-        Fri,  4 Sep 2020 11:42:30 +0000 (UTC)
-Received: from rules.brq.redhat.com (unknown [10.40.208.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5221C50B44;
-        Fri,  4 Sep 2020 11:42:26 +0000 (UTC)
-From:   Vladis Dronov <vdronov@redhat.com>
-To:     vdronov@redhat.com
-Cc:     ap420073@gmail.com, gregkh@linuxfoundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org
-Subject: Re: [PATCH] debugfs: Fix module state check condition
-Date:   Fri,  4 Sep 2020 13:42:07 +0200
-Message-Id: <20200904114207.375220-1-vdronov@redhat.com>
-In-Reply-To: <20200811150129.53343-1-vdronov@redhat.com>
-References: <20200811150129.53343-1-vdronov@redhat.com>
+        Fri, 4 Sep 2020 07:42:50 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE458C061244;
+        Fri,  4 Sep 2020 04:42:45 -0700 (PDT)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0B8DF540;
+        Fri,  4 Sep 2020 13:42:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1599219758;
+        bh=5m9CPuvvJ12BVvZCUIbqTZxHowrCyBw0gm7zJPfA8Tk=;
+        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
+        b=iZcI2metrdWJP29zWbt4Wl/p1Oma+MvfWw3k3v8xTom6lzI2h87eY86qiw2VBIwwa
+         Ae17SfWw63szbsB9sh9mzIc+TKyOXrZlumOWNeIyAcYKoHhQaLkvN1I1mttgJK66lR
+         /7k0EQ3808tUbAESiiDd5+d8e9U+aSuRcC70m/Wk=
+Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
+To:     Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <cover.1598331148.git.joe@perches.com>
+ <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <e6035e4b-9d4e-3c23-c140-4e9d6822496b@ideasonboard.com>
+Date:   Fri, 4 Sep 2020 12:42:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Joe,
 
-Dear maintainers, could you please look at the above patch, that
-previously was sent during a merge window?
+Nice, I only see three of these on the linux-media list, so I'll only
+look at those, but I'm pleased to see this is treewide ;-)
 
-A customer which has reported this issue replied with a test result:
+Definitely prefer this.
 
-> I ran the same test.
-> Started ib_write_bw traffic and started watch command to read RoCE
-> stats : watch -d -n 1 "cat /sys/kernel/debug/bnxt_re/bnxt_re0/info".
-> While the command is running, unloaded roce driver and I did not
-> observe the call trace that was seen earlier.
+On 25/08/2020 05:56, Joe Perches wrote:
+> Use semicolons and braces.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-Regards,
-Vladis
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> ---
+>  drivers/dma-buf/st-dma-fence.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fence.c
+> index e593064341c8..c8a12d7ad71a 100644
+> --- a/drivers/dma-buf/st-dma-fence.c
+> +++ b/drivers/dma-buf/st-dma-fence.c
+> @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
+>  			dma_fence_signal(f1);
+>  
+>  		smp_store_mb(cb.seen, false);
+> -		if (!f2 || dma_fence_add_callback(f2, &cb.cb, simple_callback))
+> -			miss++, cb.seen = true;
+> +		if (!f2 ||
+> +		    dma_fence_add_callback(f2, &cb.cb, simple_callback)) {
+> +			miss++;
+> +			cb.seen = true;
+> +		}
+>  
+>  		if (!t->before)
+>  			dma_fence_signal(f1);
+> 
 
