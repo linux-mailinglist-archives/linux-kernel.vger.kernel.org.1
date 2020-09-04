@@ -2,60 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF8C25D959
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D5525D953
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbgIDNNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:13:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10816 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728588AbgIDNNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:13:15 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id B0FFDF05AD95A8EF610F;
-        Fri,  4 Sep 2020 21:13:03 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
- 21:12:58 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <wg@grandegger.com>, <mkl@pengutronix.de>, <davem@davemloft.net>,
-        <kuba@kernel.org>
-CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] can: kvaser_pciefd: Remove unused macro KVASER_PCIEFD_KCAN_CTRL_EFRAME
-Date:   Fri, 4 Sep 2020 21:10:26 +0800
-Message-ID: <20200904131026.21817-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730247AbgIDNNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:13:19 -0400
+Received: from crapouillou.net ([89.234.176.41]:53486 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730281AbgIDNMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:12:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1599225118; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=MXm0QlSyDYx4inR+MzDqXcasU+Usll3jHy53j4WydOI=;
+        b=nM6Zz7ZOpAmOozTxueV/UIxTIN09wSpZ6mEaQibnNwLNdTMCZvttPXBm/rdTidS0CvhkPb
+        hjlfkxMZ5mm/vfvkkNq8shoQAg0cDElTPoQIbFskF0+uCpGkRqwu39GuL1F+3ar8EowIUg
+        KqZHZ69ax9e5ZmgTZgbbopGPWGKumW4=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     od@zcrc.me, linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/3] dt-bindings: i2c: ingenic: Add compatible string for the JZ4770
+Date:   Fri,  4 Sep 2020 15:11:50 +0200
+Message-Id: <20200904131152.17390-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVASER_PCIEFD_KCAN_CTRL_EFRAME is never used after it was introduced.
-So better to remove it.
+The I2C controller in the JZ4770 SoC seems to work the exact same as in
+the JZ4780 SoC.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+We could use "ingenic,jz4780-i2c" as a fallback string in the Device
+Tree, but that would be awkward, since the JZ4780 is newer. Instead,
+add a "ingenic,jz4770-i2c" string and use it as fallback for the
+"ingenic,jz4780-i2c" string.
+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- drivers/net/can/kvaser_pciefd.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../devicetree/bindings/i2c/ingenic,i2c.yaml         | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
-index 6f766918211a..c0b18ff107c7 100644
---- a/drivers/net/can/kvaser_pciefd.c
-+++ b/drivers/net/can/kvaser_pciefd.c
-@@ -131,7 +131,6 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+diff --git a/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml b/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
+index 682ed1bbf5c6..0e7b4b8a7e48 100644
+--- a/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
++++ b/Documentation/devicetree/bindings/i2c/ingenic,i2c.yaml
+@@ -17,9 +17,13 @@ properties:
+     pattern: "^i2c@[0-9a-f]+$"
  
- /* Kvaser KCAN definitions */
- #define KVASER_PCIEFD_KCAN_CTRL_EFLUSH (4 << 29)
--#define KVASER_PCIEFD_KCAN_CTRL_EFRAME (5 << 29)
+   compatible:
+-    enum:
+-      - ingenic,jz4780-i2c
+-      - ingenic,x1000-i2c
++    oneOf:
++      - enum:
++        - ingenic,jz4770-i2c
++        - ingenic,x1000-i2c
++      - items:
++        - const: ingenic,jz4780-i2c
++        - const: ingenic,jz4770-i2c
  
- #define KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT 16
- /* Request status packet */
+   reg:
+     maxItems: 1
+@@ -60,7 +64,7 @@ examples:
+     #include <dt-bindings/dma/jz4780-dma.h>
+     #include <dt-bindings/interrupt-controller/irq.h>
+     i2c@10054000 {
+-      compatible = "ingenic,jz4780-i2c";
++      compatible = "ingenic,jz4780-i2c", "ingenic,jz4770-i2c";
+       #address-cells = <1>;
+       #size-cells = <0>;
+       reg = <0x10054000 0x1000>;
 -- 
-2.17.1
+2.28.0
 
