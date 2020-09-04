@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F08C25D4F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7203B25D510
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730265AbgIDJaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:30:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:46976 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730251AbgIDJaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:30:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 410CD152F;
-        Fri,  4 Sep 2020 02:30:00 -0700 (PDT)
-Received: from localhost.localdomain (entos-thunderx2-desktop.shanghai.arm.com [10.169.212.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 841153F66F;
-        Fri,  4 Sep 2020 02:29:54 -0700 (PDT)
-From:   Jianyong Wu <jianyong.wu@arm.com>
-To:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
-        tglx@linutronix.de, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, maz@kernel.org,
-        richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org,
-        suzuki.poulose@arm.com, steven.price@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steve.Capper@arm.com, justin.he@arm.com, jianyong.wu@arm.com,
-        nd@arm.com
-Subject: [PATCH v14 10/10] arm64: Add kvm capability check extension for ptp_kvm
-Date:   Fri,  4 Sep 2020 17:27:44 +0800
-Message-Id: <20200904092744.167655-11-jianyong.wu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200904092744.167655-1-jianyong.wu@arm.com>
-References: <20200904092744.167655-1-jianyong.wu@arm.com>
+        id S1728099AbgIDJav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:30:51 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2758 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730078AbgIDJaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:30:16 -0400
+Received: from lhreml721-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 31B5E4725D0E12FA6592;
+        Fri,  4 Sep 2020 10:30:15 +0100 (IST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ lhreml721-chm.china.huawei.com (10.201.108.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 4 Sep 2020 10:30:15 +0100
+Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
+ by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Fri, 4 Sep 2020 11:30:13 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v2 05/12] evm: Load EVM key in ima_load_x509() to avoid appraisal
+Date:   Fri, 4 Sep 2020 11:26:36 +0200
+Message-ID: <20200904092643.20013-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.27.GIT
+In-Reply-To: <20200904092339.19598-1-roberto.sassu@huawei.com>
+References: <20200904092339.19598-1-roberto.sassu@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.65.160]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let userspace check if there is kvm ptp service in host.
-Before VMs migrate to another host, VMM may check if this
-cap is available to determine the next behavior.
+Public keys do not need to be appraised by IMA as the restriction on the
+IMA/EVM keyrings ensures that a key is loaded only if it is signed with a
+key in the primary or secondary keyring.
 
-Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-Suggested-by: Marc Zyngier <maz@kernel.org>
+However, when evm_load_x509() is loaded, appraisal is already enabled and
+a valid IMA signature must be added to the EVM key to pass verification.
+
+Since the restriction is applied on both IMA and EVM keyrings, it is safe
+to disable appraisal also when the EVM key is loaded. This patch calls
+evm_load_x509() inside ima_load_x509() if CONFIG_IMA_LOAD_X509 is defined.
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 ---
- arch/arm64/kvm/arm.c     | 4 ++++
- include/uapi/linux/kvm.h | 1 +
- 2 files changed, 5 insertions(+)
+ security/integrity/iint.c         | 2 ++
+ security/integrity/ima/ima_init.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 691d21e4c717..8e99ad2f0b83 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -178,6 +178,10 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_ARM_IRQ_LINE_LAYOUT_2:
- 	case KVM_CAP_ARM_NISV_TO_USER:
- 	case KVM_CAP_ARM_INJECT_EXT_DABT:
-+
-+#ifdef CONFIG_ARM64_KVM_PTP_HOST
-+	case KVM_CAP_ARM_PTP_KVM:
+diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+index 1d20003243c3..7d08c31c612f 100644
+--- a/security/integrity/iint.c
++++ b/security/integrity/iint.c
+@@ -200,7 +200,9 @@ int integrity_kernel_read(struct file *file, loff_t offset,
+ void __init integrity_load_keys(void)
+ {
+ 	ima_load_x509();
++#ifndef CONFIG_IMA_LOAD_X509
+ 	evm_load_x509();
 +#endif
- 		r = 1;
- 		break;
- 	case KVM_CAP_ARM_SET_DEVICE_ADDR:
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index f6d86033c4fa..dd58ebe0daf5 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1035,6 +1035,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_LAST_CPU 184
- #define KVM_CAP_SMALLER_MAXPHYADDR 185
- #define KVM_CAP_S390_DIAG318 186
-+#define KVM_CAP_ARM_PTP_KVM 187
+ }
  
- #ifdef KVM_CAP_IRQ_ROUTING
+ static int __init integrity_fs_init(void)
+diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
+index 4902fe7bd570..9d29a1680da8 100644
+--- a/security/integrity/ima/ima_init.c
++++ b/security/integrity/ima/ima_init.c
+@@ -106,6 +106,10 @@ void __init ima_load_x509(void)
  
+ 	ima_policy_flag &= ~unset_flags;
+ 	integrity_load_x509(INTEGRITY_KEYRING_IMA, CONFIG_IMA_X509_PATH);
++
++	/* load also EVM key to avoid appraisal */
++	evm_load_x509();
++
+ 	ima_policy_flag |= unset_flags;
+ }
+ #endif
 -- 
-2.17.1
+2.27.GIT
 
