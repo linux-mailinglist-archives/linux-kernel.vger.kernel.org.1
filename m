@@ -2,97 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E1825D524
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7869825D51E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbgIDJcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730031AbgIDJb2 (ORCPT
+        id S1730149AbgIDJbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:31:40 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:37492 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730079AbgIDJbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:31:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE16C061245;
-        Fri,  4 Sep 2020 02:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AmeBKqJuZ2TYIisYso2pvDzyPT9l4D3l0ti74pdTg0Q=; b=X6cu6bl5JfSrh+TTxe5dm2zPRs
-        AiQRbmkSz8bxctpcVVoJUTd01rMGXmOZD1xc0lycH34bN7CSlyCqLAmrwqwCvYEoUSY+xKfGld4VF
-        JCRTmA9yOGr8HSQxXZZp0fcn1pu0evfCQDOhepKW7Fvx2z1bnS0GryJLJoZGx3ZlwXYUUOxjPfb7o
-        kNuyepr5MwWnzwadfXwDZlwm4lYlcJEpHE5ups2L1YChLhEQMmrIhMWEID06+tzQcEqI7jmdr7sob
-        gpJDg9cOQ61U1G3nEJzIW6pFYKekrsm8QtKX7dNM5NR2hG8PpFQEbMW+z/TGELU/RTLT1iNbZlPUN
-        SqJu+eqw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kE83m-0006Ta-7X; Fri, 04 Sep 2020 09:31:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EA057305C11;
-        Fri,  4 Sep 2020 11:31:04 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D727B214D7E3D; Fri,  4 Sep 2020 11:31:04 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 11:31:04 +0200
-From:   peterz@infradead.org
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        X86 ML <x86@kernel.org>
-Subject: Re: [PATCH v2 05/28] objtool: Add a pass for generating __mcount_loc
-Message-ID: <20200904093104.GH1362448@hirez.programming.kicks-ass.net>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200903203053.3411268-1-samitolvanen@google.com>
- <20200903203053.3411268-6-samitolvanen@google.com>
- <202009031450.31C71DB@keescook>
- <CABCJKueF1RbpOKHsA8yS_yMujzHi8dzAVz8APwpMJyMTTGhmDA@mail.gmail.com>
+        Fri, 4 Sep 2020 05:31:23 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200904093120epoutp04d1633d13d25e05a567f32687b8f9fb59~xirtiCXEb0864508645epoutp04b
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:31:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200904093120epoutp04d1633d13d25e05a567f32687b8f9fb59~xirtiCXEb0864508645epoutp04b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1599211880;
+        bh=7eKjrrXMyPcGGy+prk+NmLZfDzVLo+N1HJeKK1CMHe4=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=N8ICZD2ofRhxbkY6uMXozC9b8pcHFxQnc2a+t4phOSdGAZdULXKtCDdaiDqt4D2L7
+         NJ/FdNPIqrXcdVLg0Al1bomHGsJGy8xG6uach0z/I0TybQPZs8nRMp4ddDRF/Xxf2C
+         kiiKrx/aL6urUraPH3tiSWfXmRcgeP01p4jksqr8=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20200904093119epcas2p1c407462349b2029df1c237c1471639e2~xirsskAH53257332573epcas2p1o;
+        Fri,  4 Sep 2020 09:31:19 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4BjXVY0YSKzMqYkk; Fri,  4 Sep
+        2020 09:31:17 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7F.65.19322.269025F5; Fri,  4 Sep 2020 18:31:14 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200904093114epcas2p36f311d20d3b7729bc965786c76f18ca1~xiroVHUUr2511625116epcas2p3q;
+        Fri,  4 Sep 2020 09:31:14 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200904093114epsmtrp1c64de14308dfb25465b57183c1bcac0d~xiroURU9a1961419614epsmtrp1X;
+        Fri,  4 Sep 2020 09:31:14 +0000 (GMT)
+X-AuditID: b6c32a45-7adff70000004b7a-a9-5f5209626cd4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        47.0A.08303.269025F5; Fri,  4 Sep 2020 18:31:14 +0900 (KST)
+Received: from KORDD001994 (unknown [12.36.185.71]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200904093114epsmtip1d36b0b0c3b7c5c7200a14931c2e8fb37~xiroIHwxt0857908579epsmtip1B;
+        Fri,  4 Sep 2020 09:31:14 +0000 (GMT)
+From:   =?ks_c_5601-1987?B?sejDorHi?= <changki.kim@samsung.com>
+To:     "'Greg KH'" <gregkh@linuxfoundation.org>
+Cc:     <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
+        <rostedt@goodmis.org>, <john.ogness@linutronix.de>,
+        <masahiroy@kernel.org>, <rd.dunlap@gmail.com>, <krzk@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200904090535.GA2440145@kroah.com>
+Subject: RE: printk: Add process name information to printk() output.
+Date:   Fri, 4 Sep 2020 18:31:13 +0900
+Message-ID: <000001d6829e$2226cc60$66746520$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABCJKueF1RbpOKHsA8yS_yMujzHi8dzAVz8APwpMJyMTTGhmDA@mail.gmail.com>
+Content-Type: text/plain; charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQMW8ccY1/AbwLmEvIpBmAjIk1luugFhZewlAjg6wOumuolUIA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDJsWRmVeSWpSXmKPExsWy7bCmhW4SZ1C8wdaTNhbNi9ezWWy7Mp/R
+        4vz5DewWl3fNYbN4+OAGq8X/x19ZLV5s7mS12NfxgMli7efH7A6cHjtn3WX3aNl3i91j06pO
+        No93586xe+yfu4bdY/2WqywenzfJBbBH5dhkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoa
+        WlqYKynkJeam2iq5+AToumXmAJ2mpFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkw
+        NCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIydh/aQlzQRNvReeiN0wNjE85uxg5OSQETCR2T57L
+        3sXIxSEksINR4t/tzVDOJ0aJl98uskE4nxklzncsYYdpeXl6BitEYhejxNHD7cwQzgug/t+7
+        mUGq2ARsJdo7H4B1iAjoSHScOcECUsQscIFRouf7ZCaQBKeAocS7TfsZQWxhAVeJ1yffgTWw
+        CKhIXNn9FmwQr4ClxISGeYwQtqDEyZlPWEBsZgEjiSWr5zNB2PIS29/OYYY4T0Hi59NlQOdx
+        AC12krjf7AVRIiIxu7MNqmQLh8TvF8oQtovEjEXbWCFsYYlXx7dAfSkl8bK/Dcqul/jWvwDs
+        fgmBHkaJv13H2SASxhKznrUzguySEFCWOHIL6jQ+iY7Df9khwrwSHW1CEKaqRPdkfQhTWuLD
+        DpsJjEqzkLw1C8lbs5C8NQvJ/QsYWVYxiqUWFOempxYbFRgiR/YmRnCy1XLdwTj57Qe9Q4xM
+        HIyHGCU4mJVEeD3OBcYL8aYkVlalFuXHF5XmpBYfYjQFhvREZinR5Hxgus8riTc0NTIzM7A0
+        tTA1M7JQEufNVbwQJySQnliSmp2aWpBaBNPHxMEp1cBUsEqL4d4a+8hmf4GElKPV3P/S1q1W
+        VmRNY925pulcjnSKRJbq4kzGnp7EFct9xU7Pty6Km/fDRNE5/cVP5Vl8K26FfOSNurrLZaZU
+        okfRlDtGU2bwqBbd/xKrsu++WWyJV9Kbj96hp34sfrq1K1h9sf+F7pKJjlzM+pczVe83Td+n
+        cWHysewm4TsrLlQZivV/VrRRZyq3ib0RKXh7pxP7V+N5VkrJDWfP/E45f2/P1v9OszxEfq5J
+        /Nn67fh83ivzb6y7z3viwF0RprKbPK1LNi12+i1oumEZf+I1/+2xGxI3+NZm9WdXdURYFvns
+        ZS34sWeb08a3p5Z1Tw20ZKgx/Coltp2rS6JaTjycc6sSS3FGoqEWc1FxIgDa/2dwPwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsWy7bCSnG4SZ1C8wZKZkhbNi9ezWWy7Mp/R
+        4vz5DewWl3fNYbN4+OAGq8X/x19ZLV5s7mS12NfxgMli7efH7A6cHjtn3WX3aNl3i91j06pO
+        No93586xe+yfu4bdY/2WqywenzfJBbBHcdmkpOZklqUW6dslcGXsv7SEuaCJt6Jz0RumBsan
+        nF2MnBwSAiYSL0/PYO1i5OIQEtjBKLFy/g82iIS0xPFXs9khbGGJ+y1HoIqeMUp8ujqRGSTB
+        JmAr0d75AKxIREBHouPMCRaQImaBW4wSKz48Yofo2MwosWbNRLAqTgFDiXeb9jOC2MICrhKv
+        T74Di7MIqEhc2f0WbCqvgKXEhIZ5jBC2oMTJmU9YQGxmoFsbD3dD2fIS29/OYYY4T0Hi59Nl
+        QOdxAF3hJHG/2QuiRERidmcb8wRG4VlIJs1CMmkWkkmzkLQsYGRZxSiZWlCcm55bbFhglJda
+        rlecmFtcmpeul5yfu4kRHHlaWjsY96z6oHeIkYmD8RCjBAezkgivx7nAeCHelMTKqtSi/Pii
+        0pzU4kOM0hwsSuK8X2ctjBMSSE8sSc1OTS1ILYLJMnFwSjUwbX1pfjfqtmVZo6ZyVwfnaT6V
+        kocp/u8OrT3Lk7OiJO9xQ0fBPNfYKz9LFqzvYWLYzdaYM8F9T5vZhddCZ0z7u0t2bOGYunf5
+        JIHZ0//utagx8Iz/yFojaPjITrhxwhsBw8Md118vC2fs/8jhv/uutcTB7QWnZh4Sa03PuH3d
+        4rjxxCWOinsSbogc7u1l7eK2EltQfuDuty3HNzhtj1q/ScXdSLGne5LJnrm5GbVxFycrnOjP
+        vqvocu+tievV1T9WX/Gdc8hg/SbupzvUjsav+pdSIia8YKL5H5tDhw0nR9/YL8MQOMNyTdbp
+        OLHd2nz3OcLTdvycsFKUV9eTKeTGOauN15wZv+9cabT1yg+J+0osxRmJhlrMRcWJAApa+msr
+        AwAA
+X-CMS-MailID: 20200904093114epcas2p36f311d20d3b7729bc965786c76f18ca1
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20200904082449epcas2p4420d5df2083325b328a182c79f5c0948
+References: <CGME20200904082449epcas2p4420d5df2083325b328a182c79f5c0948@epcas2p4.samsung.com>
+        <20200904082438.20707-1-changki.kim@samsung.com>
+        <20200904090535.GA2440145@kroah.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 03, 2020 at 03:03:30PM -0700, Sami Tolvanen wrote:
-> On Thu, Sep 3, 2020 at 2:51 PM Kees Cook <keescook@chromium.org> wrote:
+> On Fri, Sep 04, 2020 at 05:24:38PM +0900, Changki Kim wrote:
+> > Printk() meesages are the most basic and useful debug method.
+> > However, additional information needs in multi-processor.
+> > If we add messages with processor id and process name, we can find a
+> > problem only with messages when the problem occurs with H/W IP or CPU.
+> > This is very useful in narrowing down the scope of the problems.
 > >
-> > On Thu, Sep 03, 2020 at 01:30:30PM -0700, Sami Tolvanen wrote:
-> > > From: Peter Zijlstra <peterz@infradead.org>
-> > >
-> > > Add the --mcount option for generating __mcount_loc sections
-> > > needed for dynamic ftrace. Using this pass requires the kernel to
-> > > be compiled with -mfentry and CC_USING_NOP_MCOUNT to be defined
-> > > in Makefile.
-> > >
-> > > Link: https://lore.kernel.org/lkml/20200625200235.GQ4781@hirez.programming.kicks-ass.net/
-> > > Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+> > Therefore, instead of trying to help buffering, let's try to help
+> > reconstructing messages by saving caller information as of calling
+> > log_store() and adding it as "[$processor_id: $process_name:
+> $thread_id]"
+> > upon printing to consoles.
 > >
-> > Hmm, I'm not sure why this hasn't gotten picked up yet. Is this expected
-> > to go through -tip or something else?
+> > Some examples for console output:
+> >
+> >   [    0.059580] [0:      swapper/0:    1] CPU: All CPU(s) started at
+EL1i
+> >   [    2.153157] [5:           init:    1] migov: complete to probe
+migov
+> >   [    7.441317] [4:           init:    1] NET: Registered protocol
+family 39
+> >   [   22.793389] [5:  kworker/u16:1:  184] SMP: stopping secondary CPUs
+> >
+> > Signed-off-by: Changki Kim <changki.kim@samsung.com>
+> > ---
+> >  kernel/printk/printk.c            | 20 ++++++++++++++++++--
+> >  kernel/printk/printk_ringbuffer.h |  7 +++++++
+> >  lib/Kconfig.debug                 | 16 ++++++++++++++++
+> >  3 files changed, 41 insertions(+), 2 deletions(-)
 > 
-> Note that I picked up this patch from Peter's original email, to which
-> I included a link in the commit message, but it wasn't officially
-> submitted as a patch. However, the previous discussion seems to have
-> died, so I included the patch in this series, as it cleanly solves the
-> problem of whitelisting non-call references to __fentry__. I was
-> hoping for Peter and Steven to comment on how they prefer to proceed
-> here.
+> Isn't the CPU number already present if you want it today?  Why add it
+> again?
+> 
+> thanks,
+> 
+> greg k-h
 
-Right; so I'm obviously fine with this patch and I suppose I can pick it
-(and the next) into tip/objtool/core, provided Steve is okay with this
-approach.
+CPU number isn't present now. If I enabled PRINTK_CALLER,
+then it is present cpu id or thread id.
+The config isn't always present cpu id.
+We need cpu id each each message.
+
+Thanks.
+
