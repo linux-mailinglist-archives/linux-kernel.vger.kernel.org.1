@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5034D25E0B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CAB25E0CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgIDR0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:26:18 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:57984 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbgIDR0N (ORCPT
+        id S1727867AbgIDRaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726948AbgIDRaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:26:13 -0400
-Received: from 89-64-89-131.dynamic.chello.pl (89.64.89.131) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.468)
- id ca0f1db468709f69; Fri, 4 Sep 2020 19:26:10 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Bob Moore <robert.moore@intel.com>
-Subject: [PATCH 6/6] ACPI: OSL: Make ACPICA use logical addresses of GPE blocks
-Date:   Fri, 04 Sep 2020 19:25:29 +0200
-Message-ID: <8097951.ATsSJIO6Si@kreacher>
-In-Reply-To: <1748021.N9i9sLPJ40@kreacher>
-References: <1748021.N9i9sLPJ40@kreacher>
+        Fri, 4 Sep 2020 13:30:07 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A341FC061247
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:30:06 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id g72so7000077qke.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:30:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qMG1ps8fgPCdKYmX4D9C0vTU0mM7NukKZP7s8FwwQlE=;
+        b=ViyTBUKFruXN0VnmAsL8NgjxNce0CorHAmM5BdC1GhOcVAdeJNLMUmWeG2CnKftulb
+         FXUGbhhHvbRj0kchEEER/Eb9W2ilBzfHXqxWlpHzRHrvZE/4W9syeqz4vRreMGIBOXL6
+         msJsqURCahbJJZF6/2RDY/mhTzUH37BFK1kiYBealqQj/75yX0xAWMBOMD/Qd1yIT0Ci
+         mrvaCfUqs6QnP6V+lx6q9Ff1yg9E2hJfBCrFYHViAlbVVe4EB6B5UnpEd0E8NlRnITpQ
+         xWLdRmubcwWeXUGu28zFiqNI606wGvyaWuOO/K8A1fjjVKqssVvNOfnwF5DaW03GWGcA
+         C5EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qMG1ps8fgPCdKYmX4D9C0vTU0mM7NukKZP7s8FwwQlE=;
+        b=t+1phTYpOXYvee7ApGgCVt6uYVvKf5QSOnIjecxB3i00HEOejA3SN54/O+B1cvuyLU
+         t4wjtyGdafF5zRCEgTanjJrEJavfcDZJCzetArww9AxcjKFwQhfBlD7J/X4s49O4Ucou
+         1cwpUTmESWL/FHUoXT8DD65mVAR7N3nbU8uVHo2YqcqxbAtrGRKvYPwxu0BT+CtE7y3l
+         bUsMDMuDZ5V5covHJl523+yuFh4I37YRGKV4nasENYdBu1efFfocTosQ52fmNIajxuYg
+         qTaU2ae41Yrf4utBWTgMLXJV5CwGVSOx2hXBzu09B+v8rr39Sxb+9kliqgm7uCZ1XcUH
+         2FpA==
+X-Gm-Message-State: AOAM5312LMlH61850fN4kNtiBWQABKJCICGXjCSWBBVSYWEV1mAZ3C/j
+        fnyO74Clra/vN135NHZ3lJF7MA==
+X-Google-Smtp-Source: ABdhPJx58g/vQxNQERfeujwhlruc479tT6x7SVFypiBtCQJtMohP5A6VeGR8kjgBFY56JBEQXbOpDA==
+X-Received: by 2002:a37:2cc1:: with SMTP id s184mr9064820qkh.357.1599240605934;
+        Fri, 04 Sep 2020 10:30:05 -0700 (PDT)
+Received: from localhost.localdomain ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id i66sm5103330qkc.63.2020.09.04.10.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 10:30:05 -0700 (PDT)
+From:   Jonathan Marek <jonathan@marek.ca>
+To:     freedreno@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/3] drm/msm/dsi: remove unused clk_pre/clk_post in msm_dsi_dphy_timing
+Date:   Fri,  4 Sep 2020 13:28:36 -0400
+Message-Id: <20200904172859.25633-2-jonathan@marek.ca>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200904172859.25633-1-jonathan@marek.ca>
+References: <20200904172859.25633-1-jonathan@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+The clk_pre/clk_post values in shared_timings are used instead, and these
+are unused.
 
-Define ACPI_GPE_USE_LOGICAL_ADDRESSES in aclinux.h and modify
-acpi_os_initialize() to store the logical addresses of the FADT GPE
-blocks 0 and 1 in acpi_gbl_xgpe0_block_logical_address and
-acpi_gbl_xgpe1_block_logical_address, respectively, so as to allow
-ACPICA to use them for accessing GPE registers in system memory,
-instead of using their physical addresses and looking up the
-corresponding logical addresses on every access attempt, which is
-inefficient.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 ---
- drivers/acpi/osl.c              | 12 ++++++++++--
- include/acpi/platform/aclinux.h |  4 ++++
- 2 files changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/dsi/phy/dsi_phy.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 3a50d8fa310b..0002973fbcde 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -1744,8 +1744,12 @@ acpi_status __init acpi_os_initialize(void)
- {
- 	acpi_os_map_generic_address(&acpi_gbl_FADT.xpm1a_event_block);
- 	acpi_os_map_generic_address(&acpi_gbl_FADT.xpm1b_event_block);
--	acpi_os_map_generic_address(&acpi_gbl_FADT.xgpe0_block);
--	acpi_os_map_generic_address(&acpi_gbl_FADT.xgpe1_block);
-+
-+	acpi_gbl_xgpe0_block_logical_address =
-+		acpi_os_map_generic_address(&acpi_gbl_FADT.xgpe0_block);
-+	acpi_gbl_xgpe1_block_logical_address =
-+		acpi_os_map_generic_address(&acpi_gbl_FADT.xgpe1_block);
-+
- 	if (acpi_gbl_FADT.flags & ACPI_FADT_RESET_REGISTER) {
- 		/*
- 		 * Use acpi_os_map_generic_address to pre-map the reset
-@@ -1783,8 +1787,12 @@ acpi_status acpi_os_terminate(void)
+diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+index ef8672d7b123..886a9e3b44b5 100644
+--- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
++++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+@@ -50,8 +50,6 @@ extern const struct msm_dsi_phy_cfg dsi_phy_10nm_cfgs;
+ extern const struct msm_dsi_phy_cfg dsi_phy_10nm_8998_cfgs;
  
- 	acpi_os_unmap_generic_address(&acpi_gbl_FADT.xgpe1_block);
- 	acpi_os_unmap_generic_address(&acpi_gbl_FADT.xgpe0_block);
-+	acpi_gbl_xgpe0_block_logical_address = NULL;
-+	acpi_gbl_xgpe1_block_logical_address = NULL;
-+
- 	acpi_os_unmap_generic_address(&acpi_gbl_FADT.xpm1b_event_block);
- 	acpi_os_unmap_generic_address(&acpi_gbl_FADT.xpm1a_event_block);
-+
- 	if (acpi_gbl_FADT.flags & ACPI_FADT_RESET_REGISTER)
- 		acpi_os_unmap_generic_address(&acpi_gbl_FADT.reset_register);
- 
-diff --git a/include/acpi/platform/aclinux.h b/include/acpi/platform/aclinux.h
-index 987e2af7c335..4151c76141fa 100644
---- a/include/acpi/platform/aclinux.h
-+++ b/include/acpi/platform/aclinux.h
-@@ -118,6 +118,10 @@
- 
- #define USE_NATIVE_ALLOCATE_ZEROED
- 
-+/* Use logical addresses for accessing GPE registers in system memory */
-+
-+#define ACPI_GPE_USE_LOGICAL_ADDRESSES
-+
- /*
-  * Overrides for in-kernel ACPICA
-  */
+ struct msm_dsi_dphy_timing {
+-	u32 clk_pre;
+-	u32 clk_post;
+ 	u32 clk_zero;
+ 	u32 clk_trail;
+ 	u32 clk_prepare;
 -- 
-2.26.2
-
-
-
+2.26.1
 
