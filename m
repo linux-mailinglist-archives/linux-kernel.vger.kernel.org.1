@@ -2,74 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199E525D41B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E262425D429
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729973AbgIDI7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 04:59:15 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39533 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729962AbgIDI7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:59:06 -0400
-Received: by mail-wr1-f65.google.com with SMTP id a17so5923472wrn.6;
-        Fri, 04 Sep 2020 01:59:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=H126aw9EZKOdIS9GqBp/bNQWMbMK1Mr9xym+R9dtw40=;
-        b=oVcxCRXqXPErXrfuBAiv1ZPo+s3jc/j9BCNUJ0O9lOc2xiSkbsqYohctl6iuIcza+n
-         NpmpdYuTXVZOsoWCA3Vpa19klmCkwgsIlLjIn0SVi5w8RpHZGSOglD1eLOFeabfhNQtr
-         wSQlZ2ervUsJdkt5TeH4wRAfSEdtJVCIQwKY2opmzWTVyWZ3w+2c3k/S3jsSoF1QWyVD
-         Tb0omyZaKdRukEBCqYhkV1XdZK9s/QUK1lg5elZMNMBYdPSjJf/4k7QVtvokAzr4b92n
-         QLQzsX/np351p3h5WKWedk56ShF5Oit2bIICWFyu+Ag07d5vjBeLEpaegwkXIMuYsGCp
-         yQEw==
-X-Gm-Message-State: AOAM532U2IljIik1g1STlKLPaLTru4Yv/HQxeg8v0N9Q3SAIXqeXgqjw
-        Dmn0YrogpAuCBUYIZuppVSg=
-X-Google-Smtp-Source: ABdhPJxzDt66wdKoFnKqYxwCcJ4DAJAvVkoRoLSK5EHTDsvXAoUV3GGc4kgE8bbwME+xepZV/EzipA==
-X-Received: by 2002:adf:e8c3:: with SMTP id k3mr6641944wrn.228.1599209944329;
-        Fri, 04 Sep 2020 01:59:04 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.106])
-        by smtp.googlemail.com with ESMTPSA id v2sm10764750wrn.44.2020.09.04.01.59.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 04 Sep 2020 01:59:03 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 10:59:01 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sylwester Nawrocki <snawrocki@kernel.org>
-Subject: Re: [PATCH 13/13] ARM: dts: exynos: Use S2MPS11 clock in S3C RTC in
- SMDK5420
-Message-ID: <20200904085901.GA30093@kozik-lap>
-References: <20200901075417.22481-1-krzk@kernel.org>
- <20200901075417.22481-14-krzk@kernel.org>
+        id S1729895AbgIDJCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:02:34 -0400
+Received: from mga18.intel.com ([134.134.136.126]:28725 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726575AbgIDJCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:02:32 -0400
+IronPort-SDR: t/FGCozyRxL3pFxbA8nBJQxIgkXFvNDQIIPVpk6sgSNmE6r/cMvyyhRTGSISmjvzycP4CpLp8i
+ PHbhwkwEcggg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="145414666"
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="145414666"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 02:02:31 -0700
+IronPort-SDR: vQmEm+LFoheADx3Jbj6Hhc68PSxxWmXHSRC3Swl87lMii8v+3nXH84QYX9v0mXSCwL6h0VB4oW
+ Bd8EM+rPpa9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="342123571"
+Received: from lkp-server02.sh.intel.com (HELO c089623da072) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 04 Sep 2020 02:02:29 -0700
+Received: from kbuild by c089623da072 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kE7c4-00002c-QQ; Fri, 04 Sep 2020 09:02:28 +0000
+Date:   Fri, 04 Sep 2020 17:01:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/asm] BUILD SUCCESS
+ 767ec7289e83721fee205a13b459f12fb2cf922f
+Message-ID: <5f520270.M7/bfzwuBZDdgcvs%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200901075417.22481-14-krzk@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 01, 2020 at 09:54:17AM +0200, Krzysztof Kozlowski wrote:
-> Use the 32 kHz clock from S2MPS11 PMIC in the S3C RTC node. Except
-> making the S3C RTC working, this also fixes dtbs_check warnings:
-> 
->   arch/arm/boot/dts/exynos5420-smdk5420.dt.yaml: rtc@101e0000: clocks: [[2, 317]] is too short
->   arch/arm/boot/dts/exynos5420-smdk5420.dt.yaml: rtc@101e0000: clock-names: ['rtc'] is too short
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  arch/arm/boot/dts/exynos5420-smdk5420.dts | 3 +++
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/asm
+branch HEAD: 767ec7289e83721fee205a13b459f12fb2cf922f  x86/uaccess: Use XORL %0,%0 in __get_user_asm()
 
-Applied.
+elapsed time: 723m
 
-Best regards,
-Krzysztof
+configs tested: 54
+configs skipped: 55
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         cm_x300_defconfig
+xtensa                generic_kc705_defconfig
+sparc                               defconfig
+arm                           spitz_defconfig
+powerpc                      pmac32_defconfig
+arm                        spear6xx_defconfig
+arm                           stm32_defconfig
+arc                             nps_defconfig
+arm                        keystone_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+x86_64               randconfig-a004-20200903
+x86_64               randconfig-a006-20200903
+x86_64               randconfig-a003-20200903
+x86_64               randconfig-a005-20200903
+x86_64               randconfig-a001-20200903
+x86_64               randconfig-a002-20200903
+i386                 randconfig-a004-20200902
+i386                 randconfig-a005-20200902
+i386                 randconfig-a006-20200902
+i386                 randconfig-a002-20200902
+i386                 randconfig-a001-20200902
+i386                 randconfig-a003-20200902
+i386                 randconfig-a016-20200903
+i386                 randconfig-a015-20200903
+i386                 randconfig-a011-20200903
+i386                 randconfig-a013-20200903
+i386                 randconfig-a014-20200903
+i386                 randconfig-a012-20200903
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20200903
+x86_64               randconfig-a016-20200903
+x86_64               randconfig-a011-20200903
+x86_64               randconfig-a012-20200903
+x86_64               randconfig-a015-20200903
+x86_64               randconfig-a014-20200903
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
