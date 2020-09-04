@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7B425D54B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D797625D557
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729937AbgIDJmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgIDJmh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:42:37 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DF7C061245
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 02:42:36 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id CD0339CE; Fri,  4 Sep 2020 11:42:34 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 11:42:33 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com, Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v5] iommu/mediatek: check 4GB mode by reading infracfg
-Message-ID: <20200904094233.GP6714@8bytes.org>
-References: <20200831105639.2856-1-miles.chen@mediatek.com>
+        id S1730036AbgIDJnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:43:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:47314 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729731AbgIDJnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:43:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3CC09101E;
+        Fri,  4 Sep 2020 02:43:05 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D07703F66F;
+        Fri,  4 Sep 2020 02:43:04 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 10:43:03 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, sudeep.holla@arm.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq,cppc: fix issue when hotplugging out policy->cpu
+Message-ID: <20200904094303.GA10031@arm.com>
+References: <20200903111955.31029-1-ionela.voinescu@arm.com>
+ <20200904050604.yoar2c6fofcikipp@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200831105639.2856-1-miles.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200904050604.yoar2c6fofcikipp@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 31, 2020 at 06:56:39PM +0800, Miles Chen wrote:
-> In previous discussion [1] and [2], we found that it is risky to
-> use max_pfn or totalram_pages to tell if 4GB mode is enabled.
-> 
-> Check 4GB mode by reading infracfg register, remove the usage
-> of the un-exported symbol max_pfn.
-> 
-> This is a step towards building mtk_iommu as a kernel module.
-> 
-> [1] https://lore.kernel.org/lkml/20200603161132.2441-1-miles.chen@mediatek.com/
-> [2] https://lore.kernel.org/lkml/20200604080120.2628-1-miles.chen@mediatek.com/
-> [3] https://lore.kernel.org/lkml/20200715205120.GA778876@bogus/
-> 
-> Cc: Mike Rapoport <rppt@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Yong Wu <yong.wu@mediatek.com>
-> Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+Hi Viresh,
 
-You forgot to add the tags here from v4, at least Matthias' Reviewed-by
-is missing. Please add the missing tags and resend.
+On Friday 04 Sep 2020 at 10:36:04 (+0530), Viresh Kumar wrote:
+[..]
+> >  /* Per CPU container for runtime CPPC management. */
+> >  struct cppc_cpudata {
+> > -	int cpu;
+> >  	struct cppc_perf_caps perf_caps;
+> >  	struct cppc_perf_ctrls perf_ctrls;
+> >  	struct cppc_perf_fb_ctrs perf_fb_ctrs;
+> 
+> With the way things are designed, I believe this is one of the bugs
+> out of many.
+> 
+> The structure cppc_cpudata must be shared across all CPUs of the same
+> policy, so they all end up using the same set of values for different
+> variables. i.e. it shouldn't be a per-cpu thing at all. Just allocate
+> it from cpufreq_driver->init and store in policy->driver_data for use
+> elsewhere.
+> 
+> That would be a proper fix IMO, we just avoided one of the bugs here
+> otherwise.
+> 
+
+Do you know why it was designed this way in the first place?
+
+I assumed it was designed like this (per-cpu cppc_cpudata structures) to
+allow for the future addition of support for the HW_ALL CPPC coordination
+type. In that case you can still have PSD (dependency) domains but the
+desired performance controls would be per-cpu, with the coordination
+done in hardware/firmware. So, in the HW_ALL case you'd end up having
+different performance controls even for CPUs in the same policy.
+Currently the CPPC driver only supports SW_ANY which is the traditional
+cpufreq approach.
+
+Thanks,
+Ionela.
 
 
-	Joerg
+> -- 
+> viresh
