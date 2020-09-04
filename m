@@ -2,127 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE1725D113
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D9125D11C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726842AbgIDGEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
+        id S1726621AbgIDGJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgIDGEi (ORCPT
+        with ESMTP id S1726114AbgIDGJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:04:38 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D09C061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 23:04:38 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id n133so5354714qkn.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 23:04:38 -0700 (PDT)
+        Fri, 4 Sep 2020 02:09:14 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4163EC061245
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 23:09:14 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id e14so3045062vsa.9
+        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 23:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=Y4+nyUm6P1sliqzR8n00yXfDoX7E3MCV3APAcgzk2PM=;
-        b=tmglZImbSzoU+BhJ6jX9g28qc3bA3Dg4gsr18kTGq4SIswhoONwdW7lTJ37ErdYH0f
-         VKyDWeCmNhGNRuUWPMOfVZvdpsarevt9GZbHmqKNG6BX8v9uCTcz18gw2QfND7xyROPn
-         I5onuGEu9zZ8T7eG1A9YU+Qeda0oJGkZQqSPMAracI4OGeh4zjnr3aDbyk18h7+sgx42
-         lMlfdjNK7LOhmKh3PC7sGNuJPRJLK1RCRQg7wXFJQcqqokjcOMERWdmR93IHzj/Cc7BO
-         YnFOCZH/UTY9v5tuKcTJYdM5R+c1654bmqEBluKZ5d+j+dy7CHCso8Hbs2vdo/ILThNg
-         RmEw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ug4djtA5GZ9Jcit3pQqACaL05SGu8YRJeDr/hO2jPpU=;
+        b=G8Rfx90DHK4ZYfswSSLH6HpnzpkwheLzgRangJCN6O4g0PWanGj2nHjjGDTPCoO9Nf
+         xWnOZ6/OkLqjUKVYKlOXMXG/wuim9/+4Lld6jb5ZMG0RdBnx5BcrEkXGILkOLCswU783
+         jvIxh1NHB9JlNe08AHoKeBrdXPw95pexGZ+iEhUwJ76GFFQ8CpD49J8iPkPVEGc2BgI/
+         xnP/VL2J95FeQAZZ304tFrFjpeJ8WpU+VKzCVEWtFadg+Nssg+PdYA2gvN3B3PzcDGHg
+         TsgmKqSlGWo27zLby4VckCBLmTKYg/5IQAV1aOYTosxFSR1/lVgnK2hDCXb43Gnl1Tdv
+         Q2OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Y4+nyUm6P1sliqzR8n00yXfDoX7E3MCV3APAcgzk2PM=;
-        b=OuQktHOQYl2uNxoADS4MtnwIkX0dJoVqUwAuKl5fzOaFy7S9YSMBArMCuZ0sFn1sfq
-         6f6Z0/uyoOHYaaJ1kAv94E3/hm2+HzlZsh7aqxMTv2aoun4taENXdX+M+FjuFs/Clsop
-         B147/nPhpa+FEYwVuRl3v9kdGBzxpi1FzGMM4rELV4t8ZogT/yWkSWbzhEH4IXVgRn4p
-         ryVjlwfchXAlXuI49AW1T6+w//CvaKd1JP6ZmLsK1hLnzOrEve7fQ0goPsJLRDnjkI1o
-         nXG48WJvzkMrNLNfHNi2lsCaWLLJcEznNv+hsPcuNpB+mxJpcrPj8idPeQyU2sDIql+m
-         FMsQ==
-X-Gm-Message-State: AOAM53385nYiefWkzUidFnux4u0efO2w/SlGv3vRxZnaclUhJnPAK0vm
-        sigI4nRqh7iQ2ZftUU7ymcM=
-X-Google-Smtp-Source: ABdhPJyMROFWR3SpJFpKskeTIMVkr4OkfgySEus//Cvb5l6RUUinHU1UFOrJ5iRJ1avXPXHMpAtDwA==
-X-Received: by 2002:a37:a3cf:: with SMTP id m198mr6676667qke.410.1599199475491;
-        Thu, 03 Sep 2020 23:04:35 -0700 (PDT)
-Received: from LeoBras (179-125-130-62.dynamic.desktop.com.br. [179.125.130.62])
-        by smtp.gmail.com with ESMTPSA id 103sm3808531qta.31.2020.09.03.23.04.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 23:04:34 -0700 (PDT)
-Message-ID: <ef7e80b0a7399bad607324301a604bfb46c2de05.camel@gmail.com>
-Subject: Re: [PATCH v1 02/10] powerpc/kernel/iommu: Align size for
- IOMMU_PAGE_SIZE on iommu_*_coherent()
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Joel Stanley <joel@jms.id.au>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        Murilo Fossa Vicentini <muvic@linux.ibm.com>,
-        David Dai <zdai@linux.vnet.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Fri, 04 Sep 2020 03:04:28 -0300
-In-Reply-To: <8f569f68-5145-676e-50a1-b13f3fbd69cc@ozlabs.ru>
-References: <20200817234033.442511-1-leobras.c@gmail.com>
-         <20200817234033.442511-3-leobras.c@gmail.com>
-         <7b9640e0-568f-1470-40f4-a3ccec8abcf2@ozlabs.ru>
-         <c67c66e466ad27d15aa2b970c48d2336d95b2971.camel@gmail.com>
-         <da473389-f921-075a-ec8e-ea516de4f177@ozlabs.ru>
-         <2aacd45f047489642da1731c92d3555ad101e3c7.camel@gmail.com>
-         <81f106bd-8962-22f2-f14a-378d3486f57e@ozlabs.ru>
-         <39ad3a9c103faf9c5fc2fd5700d8606eb4a2b67e.camel@gmail.com>
-         <8f569f68-5145-676e-50a1-b13f3fbd69cc@ozlabs.ru>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ug4djtA5GZ9Jcit3pQqACaL05SGu8YRJeDr/hO2jPpU=;
+        b=aaqelTagVEf3PFGMcj1F+8kEYauNOYzFtxPPXzUjTW1rDMgkn0W8QjOBWwl1qaWIqm
+         nI26kGZP/bi5rTdJO6xfctFzA7kPoHUJWInbuM8PESD8DCNkWqUEPbZgfJAWuBXOnbik
+         975GosGl9QUv4/NZkA4gn+s9iBWgtTz+GjBwWsAZkliVPkjjapH13BEsz3/mjKBOtKcj
+         gv4xZBGmCBKOkeNxfGajz7fub9itZNO/qr/S3eP9eRXl4/mzu4RWfJrddZ7CGFZyLZDp
+         Rkyo8rerfqH7R8ze0/4xsp0AAr27Wv72Ow7CnMclHibFSa2Rt1Xf01RZxPNNplimPcPf
+         dQ0A==
+X-Gm-Message-State: AOAM531iiHf+ggTolosyOUksThkE2ydSljYJSfwJLvS523DP+gI7tshc
+        rPxibZuOJ/GTeuKoHDqtIPuBFbX+iVMOm9dJ/lmA4A==
+X-Google-Smtp-Source: ABdhPJxKdB1QJpJEKTAddkB6TjKNR3jmY8BhaNTS68k9yGl8ABJujx6Xf7Yf+QrFjnS5AhQ1RytJYEHYVPKAcRKcYBU=
+X-Received: by 2002:a67:e45:: with SMTP id 66mr4494095vso.191.1599199753154;
+ Thu, 03 Sep 2020 23:09:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <CAPDyKFrv+DTF8=twZZk_tenB-sLg6H-CFn9HVDVA5S2kK2=U5Q@mail.gmail.com>
+ <20200901154417.GD20303@codeaurora.org> <20200901155014.GF2674@hirez.programming.kicks-ass.net>
+ <20200901161340.GC29330@paulmck-ThinkPad-P72> <20200901174216.GJ29142@worktop.programming.kicks-ass.net>
+ <CAPDyKFqPh7bg16AsitGv2QQHgwOPnWx9DiPPCMuD1EGA5TFFdg@mail.gmail.com>
+ <20200902121355.GE1362448@hirez.programming.kicks-ass.net>
+ <CAPDyKFrGj+8hOXi7sWxWNv2QP0=mx9pFKLG0JM-L5VNKUPDgeA@mail.gmail.com>
+ <20200903135347.GC1362448@hirez.programming.kicks-ass.net>
+ <CAPDyKFqduU65YmhBZ8PwDRTZDLtWhWX087LBy0bx56go+ra4Ow@mail.gmail.com> <20200903150819.GE1362448@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200903150819.GE1362448@hirez.programming.kicks-ass.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 4 Sep 2020 08:08:36 +0200
+Message-ID: <CAPDyKFqozsYk--rThgVZpuM86ohCNRCoRXum5NTxPOt2SoG2og@mail.gmail.com>
+Subject: Re: [RFC][PATCH] cpu_pm: Remove RCU abuse
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Saravana Kannan <saravanak@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, rcu@vger.kernel.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        madhuparnabhowmik10@gmail.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-03 at 14:41 +1000, Alexey Kardashevskiy wrote:
-> I am new to this, so I am trying to understand how a memory page mapped
-> > as DMA, and used for something else could be a problem.
-> 
->  From the device prospective, there is PCI space and everything from 0 
-> till 1<<64 is accessible and what is that mapped to - the device does 
-> not know. PHB's IOMMU is the thing to notice invalid access and raise 
-> EEH but PHB only knows about PCI->physical memory mapping (with IOMMU 
-> pages) but nothing about the host kernel pages. Does this help? Thanks,
+On Thu, 3 Sep 2020 at 17:08, <peterz@infradead.org> wrote:
+>
+> On Thu, Sep 03, 2020 at 04:36:35PM +0200, Ulf Hansson wrote:
+> > On Thu, 3 Sep 2020 at 15:53, <peterz@infradead.org> wrote:
+> > >  static int cpu_pm_notify(enum cpu_pm_event event)
+> > >  {
+> > >         int ret;
+> > >
+> > > +       lockdep_assert_irqs_disabled();
+> >
+> > Nitpick, maybe the lockdep should be moved to a separate patch.
+>
+> Well, the unregister relies on IRQs being disabled here, so I figured
+> asserting this was a good thing ;-)
 
-According to our conversation on Slack:
-1- There is a problem if a hypervisor gives to it's VMs contiguous
-memory blocks that are not aligned to IOMMU pages, because then an 
-iommu_map_page() could map some memory in this VM and some memory in
-other VM / process.
-2- To guarantee this, we should have system pagesize >= iommu_pagesize 
+Okay, make sense then.
 
-One way to get (2) is by doing this in enable_ddw():
-	if ((query.page_size & 4) && PAGE_SHIFT >= 24) {
-		page_shift = 24; /* 16MB */
-	} else if ((query.page_size & 2) &&  PAGE_SHIFT >= 16 ) {
-		page_shift = 16; /* 64kB */
-	} else if (query.page_size & 1 &&  PAGE_SHIFT >= 12) {
-		page_shift = 12; /* 4kB */
-	[...]
+>
+> Starting the audit below, this might not in fact be true, which then
+> invalidates the unregister implementation. In particular the notifier in
+> arch/arm/kernel/hw_breakpoint.c seems to unconditionally enable IRQs.
 
-Another way of solving this, would be adding in LoPAR documentation
-that the blocksize of contiguous memory the hypervisor gives a VM
-should always be aligned to IOMMU pagesize offered.
+I see.
 
-I think the best approach would be first sending the above patch, which
-is faster, and then get working into adding that to documentation, so
-hypervisors guarantee this.
+>
+> > > +       ret = raw_notifier_call_chain(&cpu_pm_notifier_chain, event, NULL);
+> >
+> > Converting to raw_notifiers seems reasonable - if we need to avoid the
+> > RCU usage.
+> >
+> > My point is, I wonder about if the notifier callbacks themselves are
+> > safe from RCU usage. For example, I would not be surprised if tracing
+> > is happening behind them.
+>
+> A bunch of them seem to call into the clk domain stuff, and I think
+> there's tracepoints in that.
+>
+> > Moreover, I am not sure that we really need to prevent and limit
+> > tracing from happening. Instead we could push rcu_idle_enter|exit()
+> > further down to the arch specific code in the cpuidle drivers, as you
+> > kind of all proposed earlier.
+>
+> Well, at some point the CPU is in a really dodgy state, ISTR there being
+> ARM platforms where you have to manually leave the cache coherency
+> fabric and all sorts of insanity. There should be a definite cut-off on
+> tracing before that.
 
-If this gets into the docs, we can revert the patch.
+That's probably the case for some platforms, but I don't see why we
+need to make everybody "suffer".
 
-What do you think?
+>
+> Also, what is the point of all this clock and power domain callbacks, if
+> not to put the CPU into an extremely low power state, surely you want to
+> limit the amount of code that's ran when the CPU is in such a state.
+>
+> > In this way, we can step by step, move to a new "version" of
+> > cpu_pm_enter() that doesn't have to deal with rcu_irq_enter_irqson(),
+> > because RCU hasn't been pushed to idle yet.
+>
+> That should be easy enough to audit. The thing is that mainline is now
+> generating (debug) splats, and some people are upset with this.
+>
+> If you're ok with ARM not being lockdep clean while this is being
+> reworked I'm perfectly fine with that.
 
-Best regards!
+I think the splats can easily be fixed. Short term.
 
+Adding RCU_NONIDLE (or similar) around pm_runtime calls in
+psci_enter_domain_idle_state() does the trick. I have a patch for
+that, it's tested and ready. Let me send it out.
+
+Perhaps we should just accept that this is needed, as to allow us to
+move step by step into a better situation, while also avoiding the
+current splats.
+
+>
+> (There used to be a separate CONFIG for RCU-lockdep, but that seems to
+> have been removed)
+
+I don't think that would help. Infrastructure for testing will just
+enable that Kconfig anyway still complains to us.
+
+Kind regards
+Uffe
