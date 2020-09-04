@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2EA25D77B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A312825D754
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgIDLfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 07:35:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730073AbgIDLX5 (ORCPT
+        id S1729882AbgIDLag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 07:30:36 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24562 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730168AbgIDLZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:23:57 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250DFC0611E2
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 04:11:44 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e17so5720111wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=LjQtNgStW1hALd3XhSoX7pAgphzsITUHS7smGh0YpFE=;
-        b=FwqQTXfmpEk27k1Cnptou5LcLzVWIuD5BRbwqgxCEKk7zQDKMJzVOS9c6XW2avSVj3
-         JobmwDln7gtg+zV2cU2JWkCTXW2fOc0+YfAjiTiKBpcj1gH6e83pVLLcAL6JJZ07Wxkr
-         KL5sqM2H0TcqYKWLCAmOJ4OWE5Mrb2V7bj4TtV3e+6VanvzflsZoN/w7JfswCyu0vOlR
-         PJ0F5qYYLpRng19WdutxOv7mA1M40H03mG0MtiWBPC2PqXMgCyo3EvspfAEf8R5tiqDS
-         pQNtFxfkyNWGjghuoxaRLeX1F2MRo8uix+8psNsS/qg5SLfUXRvGQXm1mYy2LKsiodw7
-         53AQ==
+        Fri, 4 Sep 2020 07:25:52 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-oqNixHkzPpeBG4ENRDsz8A-1; Fri, 04 Sep 2020 07:16:45 -0400
+X-MC-Unique: oqNixHkzPpeBG4ENRDsz8A-1
+Received: by mail-ed1-f70.google.com with SMTP id g8so2563545edm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:16:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=LjQtNgStW1hALd3XhSoX7pAgphzsITUHS7smGh0YpFE=;
-        b=esxPA/TkYB4HcYfuF9PHHwjYcIl0sfiT04EGCs7bM+PVTo2z1GKv7PtCf6FlaCW36F
-         ADjmJiegPePDD+ARKdTbUBpFdOSLAEvbCGflWBXxe/jTcjk4RAiyGC4veLzrG+AHqLt1
-         Ux764Eu8RP5Bx7GbxgYc1eiROUx664JkNnyxERzpKTUNuG0w/SPqH5aXvgQYR0i0eVPn
-         nBuew6wLZAx2nYZOy2+6aOR3V2W9KE0fHRw20gX2nOkjpy0Gp1biVheoTGK7fjC+lh5e
-         jbQlKjyF5N1T1QDZp1fhBe0KzMKgOKt4Iz/sGHKJ3Y11RV5mUtwdW9tyGUXPYRje48l9
-         3mSw==
-X-Gm-Message-State: AOAM530d0VqoCP/Zz0lU9sOaaAbJGkJaH3Jld+V/WHbVmoBkBfPXUonL
-        +vraRy3DvwDetwaeaWPsiYZms/dVgE97dg==
-X-Google-Smtp-Source: ABdhPJw/uDWOWC7lIwiu1IibpgDgLlCsBUZt3k6+E6Be+gUioTKNidQkMX5TgZ3IVlV4h5HiFChblQ==
-X-Received: by 2002:a1c:6385:: with SMTP id x127mr7420970wmb.95.1599217902811;
-        Fri, 04 Sep 2020 04:11:42 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:35e2:113b:59f2:81a? ([2a01:e34:ed2f:f020:35e2:113b:59f2:81a])
-        by smtp.googlemail.com with ESMTPSA id s124sm10742438wme.29.2020.09.04.04.11.41
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rGOUOPQ8Y3l0L4xm3V1c+7c7ChT/8b1ge/fYKbLTvxA=;
+        b=KF/xHZ6Oy1kMljSeobocNGoTTsS6rHZ0uZc+CKKBwGyiSAS54QeIoG0blJa5tOYvys
+         BabkXZW0Q64LFHtsFhNOd0Kd34wSc2WS+s3L2fbiqNzvBfWMVIgpFV9FocekUs9NSUAQ
+         29iR/Ycm/II7qmpo/+zJ3aCJ7SBCgc/wHqFJWyXkWLT5XxIiqEwUWOgpUdyWVnZKptsv
+         9Vixa2SQ066hJrjHuowbKizw2Rx9a6dzeRTAfjhhkYG3culauc1R39+lhcgWKw4gXFxI
+         Beh3QnhvWrpu+RuIBZg6k3Vyi+5aoMQbw6BGuJpSYXn5/Cc9v306RHidYAZLzoj/ZmdR
+         FJaw==
+X-Gm-Message-State: AOAM530HYUOuclZCbG/EBZ7qXeM3C+YZqVBEXnMhHic4BWnYvnh1y37W
+        OQRMBaLmJyKo+eRu8AdN/08V4GnCSok5iaQZUe9CGF/Nq/5OdQ3utK6TzL7NWQIDNVTODBHGumW
+        IOyS/NMk20ngWns9EvQg+OdQj
+X-Received: by 2002:a17:906:1b55:: with SMTP id p21mr7070222ejg.457.1599218203863;
+        Fri, 04 Sep 2020 04:16:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx/C2O4l1zrWTL/qMOCgIIs5O0Q+HrO6I1F/9lQ1LM83tX7XdpJMfa1Hz540JWokcfrasY1TQ==
+X-Received: by 2002:a17:906:1b55:: with SMTP id p21mr7070201ejg.457.1599218203655;
+        Fri, 04 Sep 2020 04:16:43 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id n26sm5799589ejz.89.2020.09.04.04.16.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 04:11:42 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [GIT PULL RESEND] thermal fixes for v5.9-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Veera Vegivada <vvegivad@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Message-ID: <6b8dbaef-b288-4d44-1916-a10892e665bc@linaro.org>
-Date:   Fri, 4 Sep 2020 13:11:41 +0200
+        Fri, 04 Sep 2020 04:16:43 -0700 (PDT)
+Subject: Re: [PATCH v3] HID: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk
+ for BYD zhaoxin notebook
+To:     PengHao <penghao@uniontech.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+Cc:     johan@kernel.org, dlaz@chromium.org, stern@rowland.harvard.edu,
+        kerneldev@karsmulder.nl, jonathan@jdcox.net, tomasz@meresinski.eu
+References: <20200904091322.30426-1-penghao@uniontech.com>
+ <f519d8a0-9082-13c5-0222-40dd9a1fac36@redhat.com>
+ <bd5674f2-67dc-b386-f639-97ddce13b8af@uniontech.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d71edbab-daf4-3bed-9097-9aa2aacf65a5@redhat.com>
+Date:   Fri, 4 Sep 2020 13:16:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <bd5674f2-67dc-b386-f639-97ddce13b8af@uniontech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,58 +66,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-[ with lkml@ cc'ed ]
+On 9/4/20 12:38 PM, PengHao wrote:
+> Hi, Hans
+> 
+> Thanks for the review. And sorry for I'm not really familiar with
+> mailing list, so didn't reply early.
+> 
+> Actually the reason why I submit this patch, is the vendor ask we do
+> this, they do not want enable touchpad wakeup.
+> 
+> And yes, this device use hid-multitouch.
 
-Hi Linus,
+Right, I already suspected that. I guess they might be seeing
+a similar issue as what I am seeing on the Asus T101HA.
 
-The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+Here when closed the lid comes to close to the touchpad and
+it starts sending spurious events, resulting in immediate
+wakeup from suspend.
 
-  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+I have a workaround patch for that issue here:
 
-are available in the Git repository at:
+https://github.com/jwrdegoede/linux-sunxi/commit/cb3a4c23b94bc3646953d00cea183d4e8fddeea0
 
+As the commit message explains that patch is not yet
+ready for upstream. It should probably be modified to
+only disable the touchpad this way when remote-wakeup is
+disabled (at which point it mainly becomes a power-saving
+feature).
 
-ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
-tags/thermal-v5.9-rc4
+So if the BYD zhaoxin notebook has the same issue, then
+adding a quirk to disable remote-wakeup is likely still the
+right thing to do. But first I would like to understand the
+problem better.
 
-for you to fetch changes up to a5f785ce608cafc444cdf047d1791d5ad97943ba:
+Regards,
 
-  thermal: core: Fix use-after-free in thermal_zone_device_unregister()
-(2020-09-04 11:52:54 +0200)
-
-----------------------------------------------------------------
-- Fix bogus thermal shutdowns for omap4430 where bogus values
-  resulting from an incorrect ADC conversion are too high and fire an
-  emergency shutdown (Tony Lindgren)
-
-- Don't suppress negative temp for qcom spmi as they are valid and
-  userspace needs them (Veera Vegivada)
-
-- Fix use-after-free in thermal_zone_device_unregister reported by
-  Kasan (Dmitry Osipenko)
-
-----------------------------------------------------------------
-Dmitry Osipenko (1):
-      thermal: core: Fix use-after-free in thermal_zone_device_unregister()
-
-Tony Lindgren (1):
-      thermal: ti-soc-thermal: Fix bogus thermal shutdowns for omap4430
-
-Veera Vegivada (1):
-      thermal: qcom-spmi-temp-alarm: Don't suppress negative temp
-
- drivers/thermal/qcom/qcom-spmi-temp-alarm.c        |  4 ++--
- drivers/thermal/thermal_core.c                     |  5 +++--
- .../thermal/ti-soc-thermal/omap4-thermal-data.c    | 23
-+++++++++++-----------
- drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h  | 10 +++++++---
- 4 files changed, 24 insertions(+), 18 deletions(-)
+Hans
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> 
+> 
+> 在 2020/9/4 下午6:05, Hans de Goede 写道:
+>> Hi,
+>>
+>> On 9/4/20 11:13 AM, Penghao wrote:
+>>> Add a USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for the BYD zhaoxin notebook.
+>>> This notebook come with usb touchpad. And we would like to disable
+>>> touchpad
+>>> wakeup on this notebook by default.
+>>
+>> You are still not explaining why this is necessary ?
+>>
+>> And you did not answer my question if this touchpad is using hid-multitouch
+>> either ?
+>>
+>> So NACK (rejection) from me until both questions are answered. The commi
+>> message for a quirk should always explain why a quirk is necessary and
+>> "we would like to disable touchpad wakeup on this notebook by default"
+>> does not explain why you want to do that.
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+>>
+>>>
+>>> Signed-off-by: Penghao <penghao@uniontech.com>
+>>> ---
+>>>
+>>> Changes since v2:
+>>>    - Add changes
+>>>
+>>> Changes since v1:
+>>>    - Add the entries sorted by vendor ID and product ID.
+>>>
+>>>    drivers/usb/core/quirks.c | 4 ++++
+>>>    1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+>>> index 7c1198f80c23..fffe1f7f1098 100644
+>>> --- a/drivers/usb/core/quirks.c
+>>> +++ b/drivers/usb/core/quirks.c
+>>> @@ -393,6 +393,10 @@ static const struct usb_device_id
+>>> usb_quirk_list[] = {
+>>>        /* Generic RTL8153 based ethernet adapters */
+>>>        { USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
+>>>    +    /* SONiX USB DEVICE Touchpad */
+>>> +    { USB_DEVICE(0x0c45, 0x7056), .driver_info =
+>>> +            USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+>>> +
+>>>        /* Action Semiconductor flash disk */
+>>>        { USB_DEVICE(0x10d6, 0x2200), .driver_info =
+>>>                USB_QUIRK_STRING_FETCH_255 },
+>>>
+>>
+>>
+>>
+>>
+>>
+> 
+> 
+
