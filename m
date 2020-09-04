@@ -2,80 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF4D25DC7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D630C25DC47
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730880AbgIDOyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:54:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730849AbgIDOyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:54:37 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DB4320770;
-        Fri,  4 Sep 2020 14:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599231276;
-        bh=acFLAnqkE86HeCOtNctPMq/uQTqTdSMzshdLBUt2XLQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A8loe0i7Vb5Ga3aEbMBJ0L38GtsqZUHqeV/NiHs6RiB6w9Hx4HMS9f+VI74X7XOEw
-         RQh6OYFXQ6IiRZ9yejJ5WbnVxrwuotKVHI7ECofFJvGn5Ri25GQHNmOEfoIeR99JwW
-         6W5mVGsqul0iQYKLD/vW+yTRai9PW7tKE7dl0PYI=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Li Yang <leoyang.li@nxp.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 13/13] arm64: dts: imx8mq-librem5: Add interrupt-names to ti,tps6598x
-Date:   Fri,  4 Sep 2020 16:53:12 +0200
-Message-Id: <20200904145312.10960-14-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200904145312.10960-1-krzk@kernel.org>
-References: <20200904145312.10960-1-krzk@kernel.org>
+        id S1730496AbgIDOxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730258AbgIDOxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:53:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DAD6C061244;
+        Fri,  4 Sep 2020 07:53:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=C93Bva8rREpRWfgd7uzk8ZfeKaPFHiRbyRDvw46iFOY=; b=fbndYahXL3+H/DTtCdOhDFUJhi
+        KVxjkuQrILC5BBiHjjAYVAAS8AMgMvEEBMZq/ENhS2eoD4JSr111zHQPRJRunYUrd6OchzZ/VXJP6
+        aPejgJmTN/JqI6V4R5Sdp7z1MIgB6+lJlVhXVszqO+WhNMhr7viYzohbRHP0vV3H5IFgETtLo0rL1
+        Wz9I8M6ZV3olAgafOMud40YICuq32e87J+Nb3lzq9aCYjRt/xBMWQKlL5Qh2XSDmCFjLDMmNb/kq7
+        M8BDJaoYnhXsOSEJvf/7eIWg+SGuMBtS1S7bkVuWWev8qLB7v1redbLB4B8o4bGd+YyZPMVR8iemj
+        Wr8FxhQg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kED5e-0001OI-VL; Fri, 04 Sep 2020 14:53:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 924D9301179;
+        Fri,  4 Sep 2020 16:53:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 58B0029E3DDBE; Fri,  4 Sep 2020 16:53:22 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 16:53:22 +0200
+From:   peterz@infradead.org
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH -v2] scipts/tags.sh: Add custom sort order
+Message-ID: <20200904145322.GA35926@hirez.programming.kicks-ass.net>
+References: <20200805102550.GO2674@hirez.programming.kicks-ass.net>
+ <20200806120438.GG35926@hirez.programming.kicks-ass.net>
+ <CAK7LNAQE2jPUQJUa1yi7+=w--Jj-wwnGVR2hyPQZxR7Yp9odBA@mail.gmail.com>
+ <20200902162649.GL1362448@hirez.programming.kicks-ass.net>
+ <CAK7LNAS+0QtvgX1b77Y51cuMQ-eK4cKb8rebTQ=Ug3F2rkjP2g@mail.gmail.com>
+ <20200903072604.GT1362448@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903072604.GT1362448@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ti,tps6598x binding requires interrupt-names property.  The driver
-does not really use it but the hardware could have more interrupt lines
-connected.  This fixes dtbs_check warning:
+On Thu, Sep 03, 2020 at 09:26:04AM +0200, peterz@infradead.org wrote:
+> On Thu, Sep 03, 2020 at 11:07:28AM +0900, Masahiro Yamada wrote:
 
-  arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: usb-pd@3f: 'interrupt-names' is a required property
+> > Will re-implementing your sorting logic
+> > in bash look cleaner?
+> 
+> Possibly, I can try, we'll see.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+It is somewhat cleaner, but it is _abysmally_ slow. Bash sucks :-(
+
+It is still broken in all the same ways as before, I figured I'd get it
+'working' first.
+
 ---
- arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index a78584086fa9..56295dd2fa8f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -605,6 +605,7 @@
- 		pinctrl-0 = <&pinctrl_typec>, <&pinctrl_tcpc>;
- 		interrupt-parent = <&gpio1>;
- 		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-names = "irq";
+diff --git a/scripts/tags.sh b/scripts/tags.sh
+index 32d3f53af10b..ec2688b3441a 100755
+--- a/scripts/tags.sh
++++ b/scripts/tags.sh
+@@ -239,10 +239,65 @@ setup_regex()
+ 	done
+ }
  
- 		connector {
- 			ports {
--- 
-2.17.1
-
++sort_tags()
++{
++	export LC_ALL=C
++
++	# start concurrent sort
++	coproc sort
++	# HACK, clone sort output into 3 to ensure we can still read it
++	# after sort terminates
++	exec 3<&${COPROC[0]}
++
++	while read tag file rest;
++	do
++		local tmp=${rest#*;\"}
++
++		case "${tmp:1:1}" in # Precedence for 'C' kinds
++
++		c) order="A";; # classes
++		s) order="B";; # structure names
++		t) order="C";; # typedefs
++		g) order="D";; # enumeration names
++		u) order="E";; # union names
++		n) order="F";; # namespaces
++
++		f) order="G";; # function definitions
++		p) order="H";; # function prototypes
++		d) order="I";; # macro definitions
++
++		e) order="J";; # enumerators (values inside an enumeration)
++		m) order="K";; # class, struct and union members
++		v) order="L";; # variable definitions
++
++		l) order="M";; # local variables [off]
++		x) order="N";; # external and forward variable declarations
++
++		*) order="Z";;
++
++		esac
++
++		# write to sort with a new sort-key prepended
++		echo "${tag}${order}	${tag}	${file}	${rest}" >&${COPROC[1]}
++	done
++
++	# close sort input
++	exec {COPROC[1]}>&-
++
++	# consume sort output
++	while read -u 3 key line;
++	do
++		# strip the sort-key
++		echo "${line}"
++	done
++}
++
+ exuberant()
+ {
++	(
++
+ 	setup_regex exuberant asm c
+-	all_target_sources | xargs $1 -a                        \
++	all_target_sources | xargs $1                           \
+ 	-I __initdata,__exitdata,__initconst,__ro_after_init	\
+ 	-I __initdata_memblock					\
+ 	-I __refdata,__attribute,__maybe_unused,__always_unused \
+@@ -256,12 +311,16 @@ exuberant()
+ 	-I DEFINE_TRACE,EXPORT_TRACEPOINT_SYMBOL,EXPORT_TRACEPOINT_SYMBOL_GPL \
+ 	-I static,const						\
+ 	--extra=+fq --c-kinds=+px --fields=+iaS --langmap=c:+.h \
++	--sort=no -o -						\
+ 	"${regex[@]}"
+ 
+ 	setup_regex exuberant kconfig
+-	all_kconfigs | xargs $1 -a                              \
++	all_kconfigs | xargs $1                                 \
++	--sort=no -o -						\
+ 	--langdef=kconfig --language-force=kconfig "${regex[@]}"
+ 
++	) | sort_tags > tags
++
+ }
+ 
+ emacs()
