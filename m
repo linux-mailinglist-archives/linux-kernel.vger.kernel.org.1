@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC60F25DC78
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9D925DC69
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730873AbgIDOyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:54:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48688 "EHLO mail.kernel.org"
+        id S1730819AbgIDOyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:54:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730771AbgIDOyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:54:03 -0400
+        id S1730798AbgIDOyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:54:08 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D7C3F20722;
-        Fri,  4 Sep 2020 14:53:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95C192074D;
+        Fri,  4 Sep 2020 14:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599231243;
-        bh=/p3lMAEm/yGooAnCxTN8zhpzzWRbuLPyimxMLeewvXc=;
+        s=default; t=1599231248;
+        bh=81A3QuqoXZzEZuA4VrJNKDP41nu2TRmL2PK+zN4pelw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eh/pmg9gbfINlAKynchtq8oPsuY68uof0c1Le45d3qIU3ZAXhrQ13COJjJapvYDEh
-         sOgVZVoYKqCOKI7U1ngUPzuWII8+aHlcYgZBCTUv6HLSeKEu5gixxtxtjmQgkA3fsl
-         w5aM3yqOCW49ZMyf9kU0jcdLiWp2+Nj3jju5ds/c=
+        b=UVytugngnFVEpJQ4Xz1FSvczr6EDgnVybAzmRAslPiKphk1767QOnPxSLCcY6lTZz
+         sjq92gOccYrDXw0o3D8EvzaaDmCCaLFaPOqB70j4wuowOkA/YkdhX5fzs3YYg4mExm
+         SwJN2kWQBlDwcaDRNVbOnjkTb5I3+9r7uQlK+YXg=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -42,9 +42,9 @@ To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
         dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 07/13] dt-bindings: mfd: rohm,bd71847-pmic: Add common clock-names
-Date:   Fri,  4 Sep 2020 16:53:06 +0200
-Message-Id: <20200904145312.10960-8-krzk@kernel.org>
+Subject: [PATCH 08/13] arm64: dts: imx8mm-var-som-symphony: Use newer interrupts property
+Date:   Fri,  4 Sep 2020 16:53:07 +0200
+Message-Id: <20200904145312.10960-9-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904145312.10960-1-krzk@kernel.org>
 References: <20200904145312.10960-1-krzk@kernel.org>
@@ -53,28 +53,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add common 'clock-names' property which might appear in DTSes.  This
-makes it consistent with rohm,bd71837-pmic dtschema.
+The int-gpios was deprecated in favor of generic interrupts property.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
-index 5d531051a153..6328163fc32a 100644
---- a/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
-@@ -35,6 +35,9 @@ properties:
-   clocks:
-     maxItems: 1
- 
-+  clock-names:
-+    maxItems: 1
-+
-   "#clock-cells":
-     const: 0
- 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+index 0bca737964d5..fe3abd9d002f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
+@@ -113,7 +113,7 @@
+ 	extcon_usbotg1: typec@3d {
+ 		compatible = "nxp,ptn5150";
+ 		reg = <0x3d>;
+-		int-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
++		interrupts = <&gpio1 11 GPIO_ACTIVE_LOW>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_ptn5150>;
+ 		status = "okay";
 -- 
 2.17.1
 
