@@ -2,373 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED19E25DEE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D6925DED3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727855AbgIDQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726800AbgIDQA2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:00:28 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D87C061249
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:00:24 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id m12so3334664otr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l7LoSFQsLXDiF4Ji50t4+0OWRIPdPxzSD1bzh5bWiVM=;
-        b=eiIw4NsX/hyoaaz/4K6N1vOyEUOseagRphmbmaYrEF6mHxd2oVHydbdxC9ZQ9YFYxm
-         nL2oGB3LfRzX/80v0sedNSZxTdaNpZFFLXXCBdUChphm2FX6yQgON4tQihG1DsVfYLZx
-         dVPb5044+cKlSIz1QXm9DkbHXOJbnnTTwA6joHib4R/9W9CEsh1kVz087skXVlHTIwJb
-         3/VeiT+B1dsInWZ3bWxBRyLBYjOeyR3suSnpmOnVFdDsU3XFOo+cD8OiV8fYyDWmksib
-         djSM17ZBDsqJUjoG5vrupPycQozkYxOkbYelyjKaYjL+qmblPnKtCxWRPql6Sx+I/S0c
-         01ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l7LoSFQsLXDiF4Ji50t4+0OWRIPdPxzSD1bzh5bWiVM=;
-        b=BFizing9+HWZ2U6BBXnIajQau3pwTauz4eDmtQ1zjFiZBKxAI0W+sCwL3zdJzvUwjf
-         Vucr9Y1DssiPTLPyKMjYDU08+NiB6OzdtHDtAJkeEvHDH+D680VnT5j5WyMmhYqSFKav
-         jHVNgbBt0MTwRNIhlqCVdLeH44IdNasdwPNERmfBX7hgmttklx2aU1NEYScDA5iK2e7y
-         nLPMI0LBWO2ZInXbil2uRNCobwrXtWBGzOmO+b7sqVlXtOA9vmhvbl7n/y4oGoU0YPIf
-         8p7dSepc2pJ34bSAkZO7Zo724Ns17rROMvj1hhbiSf9WD909tqwhSRviPKqAy/abJNaf
-         0Ecw==
-X-Gm-Message-State: AOAM530bZsC6FtlntW8+FEiyNm3S+Swxj+yKHNEyoJp4lqxPxLRr0vQu
-        movG4dtWGlR2mJimearZkA6Q/w==
-X-Google-Smtp-Source: ABdhPJwEPb6TXkzRGgvBsJjfupGmCtXahK43pSYpwnSmjBaRhRAFXuNxknYwxjhASOP7uTdjp/NgDw==
-X-Received: by 2002:a9d:7095:: with SMTP id l21mr6105710otj.224.1599235223846;
-        Fri, 04 Sep 2020 09:00:23 -0700 (PDT)
-Received: from yoga ([2605:6000:e5cb:c100:8898:14ff:fe6d:34e])
-        by smtp.gmail.com with ESMTPSA id t1sm1370247ooi.27.2020.09.04.09.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 09:00:23 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 11:00:18 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Hanna Hawa <hannah@marvell.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v16 14/20] iommu/arm-smmu: Prepare for the adreno-smmu
- implementation
-Message-ID: <20200904160018.GH3715@yoga>
-References: <20200901164707.2645413-1-robdclark@gmail.com>
- <20200901164707.2645413-15-robdclark@gmail.com>
+        id S1726979AbgIDQAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:00:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:53308 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726922AbgIDQAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:00:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D3C313D5;
+        Fri,  4 Sep 2020 09:00:32 -0700 (PDT)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0724E3F66F;
+        Fri,  4 Sep 2020 09:00:29 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <Peter.Maydell@arm.com>,
+        Haibo Xu <Haibo.Xu@arm.com>
+Subject: [PATCH v2 2/2] arm64: kvm: Introduce MTE VCPU feature
+Date:   Fri,  4 Sep 2020 17:00:18 +0100
+Message-Id: <20200904160018.29481-3-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200904160018.29481-1-steven.price@arm.com>
+References: <20200904160018.29481-1-steven.price@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200901164707.2645413-15-robdclark@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 01 Sep 11:46 CDT 2020, Rob Clark wrote:
+Add a new VCPU features 'KVM_ARM_VCPU_MTE' which enables memory tagging
+on a VCPU. When enabled on any VCPU in the virtual machine this causes
+all pages that are faulted into the VM to have the PG_mte_tagged flag
+set (and the tag storage cleared if this is the first use).
 
-> From: Jordan Crouse <jcrouse@codeaurora.org>
-> 
-> Do a bit of prep work to add the upcoming adreno-smmu implementation.
-> 
-> Add an hook to allow the implementation to choose which context banks
-> to allocate.
-> 
-> Move some of the common structs to arm-smmu.h in anticipation of them
-> being used by the implementations and update some of the existing hooks
-> to pass more information that the implementation will need.
-> 
-> These modifications will be used by the upcoming Adreno SMMU
-> implementation to identify the GPU device and properly configure it
-> for pagetable switching.
-> 
-> Co-developed-by: Rob Clark <robdclark@chromium.org>
-> Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Steven Price <steven.price@arm.com>
+---
+ arch/arm64/include/asm/kvm_emulate.h |  3 +++
+ arch/arm64/include/asm/kvm_host.h    |  5 ++++-
+ arch/arm64/include/uapi/asm/kvm.h    |  1 +
+ arch/arm64/kvm/mmu.c                 | 15 +++++++++++++++
+ arch/arm64/kvm/reset.c               |  8 ++++++++
+ arch/arm64/kvm/sys_regs.c            |  6 +++++-
+ 6 files changed, 36 insertions(+), 2 deletions(-)
 
-As I built the handoff support on top of this patch I ended up
-reworking the alloc_context_bank() prototype to something I found a
-little bit cleaner.
+diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+index 49a55be2b9a2..0042323a4b7f 100644
+--- a/arch/arm64/include/asm/kvm_emulate.h
++++ b/arch/arm64/include/asm/kvm_emulate.h
+@@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
+ 	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
+ 	    vcpu_el1_is_32bit(vcpu))
+ 		vcpu->arch.hcr_el2 |= HCR_TID2;
++
++	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
++		vcpu->arch.hcr_el2 |= HCR_ATA;
+ }
+ 
+ static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 4f4360dd149e..b1190366242b 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -37,7 +37,7 @@
+ 
+ #define KVM_MAX_VCPUS VGIC_V3_MAX_CPUS
+ 
+-#define KVM_VCPU_MAX_FEATURES 7
++#define KVM_VCPU_MAX_FEATURES 8
+ 
+ #define KVM_REQ_SLEEP \
+ 	KVM_ARCH_REQ_FLAGS(0, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
+@@ -110,6 +110,9 @@ struct kvm_arch {
+ 	 * supported.
+ 	 */
+ 	bool return_nisv_io_abort_to_user;
++
++	/* If any VCPU has MTE enabled then all memory must be MTE enabled */
++	bool vcpu_has_mte;
+ };
+ 
+ struct kvm_vcpu_fault_info {
+diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+index ba85bb23f060..2677e1ab8c16 100644
+--- a/arch/arm64/include/uapi/asm/kvm.h
++++ b/arch/arm64/include/uapi/asm/kvm.h
+@@ -106,6 +106,7 @@ struct kvm_regs {
+ #define KVM_ARM_VCPU_SVE		4 /* enable SVE for this CPU */
+ #define KVM_ARM_VCPU_PTRAUTH_ADDRESS	5 /* VCPU uses address authentication */
+ #define KVM_ARM_VCPU_PTRAUTH_GENERIC	6 /* VCPU uses generic authentication */
++#define KVM_ARM_VCPU_MTE		7 /* VCPU supports Memory Tagging */
+ 
+ struct kvm_vcpu_init {
+ 	__u32 target;
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index ba00bcc0c884..e8891bacd76f 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -1949,6 +1949,21 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	if (vma_pagesize == PAGE_SIZE && !force_pte)
+ 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+ 							   &pfn, &fault_ipa);
++	if (system_supports_mte() && kvm->arch.vcpu_has_mte && pfn_valid(pfn)) {
++		/*
++		 * VM will be able to see the page's tags, so we must ensure
++		 * they have been initialised.
++		 */
++		struct page *page = pfn_to_page(pfn);
++		long i, nr_pages = compound_nr(page);
++
++		/* if PG_mte_tagged is set, tags have already been initialised */
++		for (i = 0; i < nr_pages; i++, page++) {
++			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
++				mte_clear_page_tags(page_address(page));
++		}
++	}
++
+ 	if (writable)
+ 		kvm_set_pfn_dirty(pfn);
+ 
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index ee33875c5c2a..82f3883d717f 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -274,6 +274,14 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 		}
+ 	}
+ 
++	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features)) {
++		if (!system_supports_mte()) {
++			ret = -EINVAL;
++			goto out;
++		}
++		vcpu->kvm->arch.vcpu_has_mte = true;
++	}
++
+ 	switch (vcpu->arch.target) {
+ 	default:
+ 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
+diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+index a655f172b5ad..6a971b201e81 100644
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
+ 			val &= ~(0xfUL << ID_AA64PFR0_SVE_SHIFT);
+ 		val &= ~(0xfUL << ID_AA64PFR0_AMU_SHIFT);
+ 	} else if (id == SYS_ID_AA64PFR1_EL1) {
+-		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
++		if (!test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
++			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
+ 	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
+ 		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
+ 			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
+@@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
+ static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
+ 				   const struct sys_reg_desc *rd)
+ {
++	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
++		return 0;
++
+ 	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
+ }
+ 
+-- 
+2.20.1
 
-So perhaps you would be interested in squashing
-https://lore.kernel.org/linux-arm-msm/20200904155513.282067-2-bjorn.andersson@linaro.org/
-into this patch?
-
-Otherwise, feel free to add my:
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-impl.c |  2 +-
->  drivers/iommu/arm/arm-smmu/arm-smmu.c      | 69 ++++++----------------
->  drivers/iommu/arm/arm-smmu/arm-smmu.h      | 51 +++++++++++++++-
->  3 files changed, 68 insertions(+), 54 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> index a9861dcd0884..88f17cc33023 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> @@ -69,7 +69,7 @@ static int cavium_cfg_probe(struct arm_smmu_device *smmu)
->  }
->  
->  static int cavium_init_context(struct arm_smmu_domain *smmu_domain,
-> -		struct io_pgtable_cfg *pgtbl_cfg)
-> +		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
->  {
->  	struct cavium_smmu *cs = container_of(smmu_domain->smmu,
->  					      struct cavium_smmu, smmu);
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index 8e884e58f208..68b7b9e6140e 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -65,41 +65,10 @@ module_param(disable_bypass, bool, S_IRUGO);
->  MODULE_PARM_DESC(disable_bypass,
->  	"Disable bypass streams such that incoming transactions from devices that are not attached to an iommu domain will report an abort back to the device and will not be allowed to pass through the SMMU.");
->  
-> -struct arm_smmu_s2cr {
-> -	struct iommu_group		*group;
-> -	int				count;
-> -	enum arm_smmu_s2cr_type		type;
-> -	enum arm_smmu_s2cr_privcfg	privcfg;
-> -	u8				cbndx;
-> -};
-> -
->  #define s2cr_init_val (struct arm_smmu_s2cr){				\
->  	.type = disable_bypass ? S2CR_TYPE_FAULT : S2CR_TYPE_BYPASS,	\
->  }
->  
-> -struct arm_smmu_smr {
-> -	u16				mask;
-> -	u16				id;
-> -	bool				valid;
-> -};
-> -
-> -struct arm_smmu_cb {
-> -	u64				ttbr[2];
-> -	u32				tcr[2];
-> -	u32				mair[2];
-> -	struct arm_smmu_cfg		*cfg;
-> -};
-> -
-> -struct arm_smmu_master_cfg {
-> -	struct arm_smmu_device		*smmu;
-> -	s16				smendx[];
-> -};
-> -#define INVALID_SMENDX			-1
-> -#define cfg_smendx(cfg, fw, i) \
-> -	(i >= fw->num_ids ? INVALID_SMENDX : cfg->smendx[i])
-> -#define for_each_cfg_sme(cfg, fw, i, idx) \
-> -	for (i = 0; idx = cfg_smendx(cfg, fw, i), i < fw->num_ids; ++i)
-> -
->  static bool using_legacy_binding, using_generic_binding;
->  
->  static inline int arm_smmu_rpm_get(struct arm_smmu_device *smmu)
-> @@ -234,19 +203,6 @@ static int arm_smmu_register_legacy_master(struct device *dev,
->  }
->  #endif /* CONFIG_ARM_SMMU_LEGACY_DT_BINDINGS */
->  
-> -static int __arm_smmu_alloc_bitmap(unsigned long *map, int start, int end)
-> -{
-> -	int idx;
-> -
-> -	do {
-> -		idx = find_next_zero_bit(map, end, start);
-> -		if (idx == end)
-> -			return -ENOSPC;
-> -	} while (test_and_set_bit(idx, map));
-> -
-> -	return idx;
-> -}
-> -
->  static void __arm_smmu_free_bitmap(unsigned long *map, int idx)
->  {
->  	clear_bit(idx, map);
-> @@ -578,7 +534,7 @@ static void arm_smmu_init_context_bank(struct arm_smmu_domain *smmu_domain,
->  	}
->  }
->  
-> -static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
-> +void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
->  {
->  	u32 reg;
->  	bool stage1;
-> @@ -665,7 +621,8 @@ static void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
->  }
->  
->  static int arm_smmu_init_domain_context(struct iommu_domain *domain,
-> -					struct arm_smmu_device *smmu)
-> +					struct arm_smmu_device *smmu,
-> +					struct device *dev)
->  {
->  	int irq, start, ret = 0;
->  	unsigned long ias, oas;
-> @@ -780,10 +737,20 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->  		ret = -EINVAL;
->  		goto out_unlock;
->  	}
-> -	ret = __arm_smmu_alloc_bitmap(smmu->context_map, start,
-> +
-> +	smmu_domain->smmu = smmu;
-> +
-> +	if (smmu->impl && smmu->impl->alloc_context_bank)
-> +		ret = smmu->impl->alloc_context_bank(smmu_domain, dev,
-> +				start, smmu->num_context_banks);
-> +	else
-> +		ret = __arm_smmu_alloc_bitmap(smmu->context_map, start,
->  				      smmu->num_context_banks);
-> -	if (ret < 0)
-> +
-> +	if (ret < 0) {
-> +		smmu_domain->smmu = NULL;
->  		goto out_unlock;
-> +	}
->  
->  	cfg->cbndx = ret;
->  	if (smmu->version < ARM_SMMU_V2) {
-> @@ -798,8 +765,6 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->  	else
->  		cfg->asid = cfg->cbndx;
->  
-> -	smmu_domain->smmu = smmu;
-> -
->  	pgtbl_cfg = (struct io_pgtable_cfg) {
->  		.pgsize_bitmap	= smmu->pgsize_bitmap,
->  		.ias		= ias,
-> @@ -810,7 +775,7 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->  	};
->  
->  	if (smmu->impl && smmu->impl->init_context) {
-> -		ret = smmu->impl->init_context(smmu_domain, &pgtbl_cfg);
-> +		ret = smmu->impl->init_context(smmu_domain, &pgtbl_cfg, dev);
->  		if (ret)
->  			goto out_clear_smmu;
->  	}
-> @@ -1194,7 +1159,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->  		return ret;
->  
->  	/* Ensure that the domain is finalised */
-> -	ret = arm_smmu_init_domain_context(domain, smmu);
-> +	ret = arm_smmu_init_domain_context(domain, smmu, dev);
->  	if (ret < 0)
->  		goto rpm_put;
->  
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> index f3e456893f28..59ff3fc5c6c8 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-> @@ -256,6 +256,21 @@ enum arm_smmu_implementation {
->  	QCOM_SMMUV2,
->  };
->  
-> +struct arm_smmu_s2cr {
-> +	struct iommu_group		*group;
-> +	int				count;
-> +	enum arm_smmu_s2cr_type		type;
-> +	enum arm_smmu_s2cr_privcfg	privcfg;
-> +	u8				cbndx;
-> +};
-> +
-> +struct arm_smmu_smr {
-> +	u16				mask;
-> +	u16				id;
-> +	bool				valid;
-> +	bool				pinned;
-> +};
-> +
->  struct arm_smmu_device {
->  	struct device			*dev;
->  
-> @@ -331,6 +346,13 @@ struct arm_smmu_cfg {
->  };
->  #define ARM_SMMU_INVALID_IRPTNDX	0xff
->  
-> +struct arm_smmu_cb {
-> +	u64				ttbr[2];
-> +	u32				tcr[2];
-> +	u32				mair[2];
-> +	struct arm_smmu_cfg		*cfg;
-> +};
-> +
->  enum arm_smmu_domain_stage {
->  	ARM_SMMU_DOMAIN_S1 = 0,
->  	ARM_SMMU_DOMAIN_S2,
-> @@ -350,6 +372,11 @@ struct arm_smmu_domain {
->  	struct iommu_domain		domain;
->  };
->  
-> +struct arm_smmu_master_cfg {
-> +	struct arm_smmu_device		*smmu;
-> +	s16				smendx[];
-> +};
-> +
->  static inline u32 arm_smmu_lpae_tcr(struct io_pgtable_cfg *cfg)
->  {
->  	u32 tcr = FIELD_PREP(ARM_SMMU_TCR_TG0, cfg->arm_lpae_s1_cfg.tcr.tg) |
-> @@ -400,14 +427,35 @@ struct arm_smmu_impl {
->  	int (*cfg_probe)(struct arm_smmu_device *smmu);
->  	int (*reset)(struct arm_smmu_device *smmu);
->  	int (*init_context)(struct arm_smmu_domain *smmu_domain,
-> -			struct io_pgtable_cfg *cfg);
-> +			struct io_pgtable_cfg *cfg, struct device *dev);
->  	void (*tlb_sync)(struct arm_smmu_device *smmu, int page, int sync,
->  			 int status);
->  	int (*def_domain_type)(struct device *dev);
->  	irqreturn_t (*global_fault)(int irq, void *dev);
->  	irqreturn_t (*context_fault)(int irq, void *dev);
-> +	int (*alloc_context_bank)(struct arm_smmu_domain *smmu_domain,
-> +			struct device *dev, int start, int max);
->  };
->  
-> +#define INVALID_SMENDX			-1
-> +#define cfg_smendx(cfg, fw, i) \
-> +	(i >= fw->num_ids ? INVALID_SMENDX : cfg->smendx[i])
-> +#define for_each_cfg_sme(cfg, fw, i, idx) \
-> +	for (i = 0; idx = cfg_smendx(cfg, fw, i), i < fw->num_ids; ++i)
-> +
-> +static inline int __arm_smmu_alloc_bitmap(unsigned long *map, int start, int end)
-> +{
-> +	int idx;
-> +
-> +	do {
-> +		idx = find_next_zero_bit(map, end, start);
-> +		if (idx == end)
-> +			return -ENOSPC;
-> +	} while (test_and_set_bit(idx, map));
-> +
-> +	return idx;
-> +}
-> +
->  static inline void __iomem *arm_smmu_page(struct arm_smmu_device *smmu, int n)
->  {
->  	return smmu->base + (n << smmu->pgshift);
-> @@ -472,6 +520,7 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu);
->  struct arm_smmu_device *nvidia_smmu_impl_init(struct arm_smmu_device *smmu);
->  struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu);
->  
-> +void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx);
->  int arm_mmu500_reset(struct arm_smmu_device *smmu);
->  
->  #endif /* _ARM_SMMU_H */
-> -- 
-> 2.26.2
-> 
