@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3210325E08B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C022425E090
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgIDRII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:08:08 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:60510 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgIDRIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:08:06 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 40D12FB04;
-        Fri,  4 Sep 2020 19:08:04 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jLj9SpQdZr4N; Fri,  4 Sep 2020 19:08:02 +0200 (CEST)
-Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 1891C45B81; Fri,  4 Sep 2020 19:08:02 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 19:08:02 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     "Robert Chiras (OSS)" <robert.chiras@oss.nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Ondrej Jirman <megous@megous.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH 0/5] Add new features to nwl-dsi driver
-Message-ID: <20200904170802.GD755526@bogon.m.sigxcpu.org>
-References: <1598613212-1113-1-git-send-email-robert.chiras@oss.nxp.com>
+        id S1726877AbgIDRKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbgIDRKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 13:10:18 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746F5C061245
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:10:17 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so6748633wmm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:10:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WxJFiAHqmCNHBnOnEhnoypPyWw0qL1gXmCoUBa+7iVU=;
+        b=DY3Pf14fjD+wnOiE1RQcasnd9yVDlAO+srkP/gYoJGx8nnNC2pNplWL93ni4oVDZQP
+         pwoksoK6V/aAidA1XQk+KMJtCCOdU8kU/zBM/m+IB+Ep/ew+5d36Aeo2R77JKjSjiHIg
+         TidAMRoQ7Nt6LuOtROz7e1ISTp9Usmyqge2ESLDhejTesVklkFiv3EowcJwvXurGHmUf
+         wDQhu3YQ21akPFgqmKbCo0dtj7TsSvC1UiStmwvp5Tcv3eZFtxZIBkLqGGbg+CaCcFdi
+         AX3d4IhvQb8jmj//MZ83KwmEhSvfCa9Ee52T4jwyC+YFSmgcBCubqZQsU7JxEI+CzkbZ
+         Wf5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WxJFiAHqmCNHBnOnEhnoypPyWw0qL1gXmCoUBa+7iVU=;
+        b=ta0MePx8nyA3gm0aenEso4lT1FY0Yc5MTQvMx8ItklQfXsi/hwJBMrKk4tBwjcjrpG
+         3PMeKtT/8tB0M9TfEZd3EklMyUdquKSYtxKa4CPcXJyNhAViEjWL3IJxLy/GfBr2FndR
+         gRVPqErIokBWSpqAPPsrCtFFXhz3T5Y86aFKY7nOBbyvSA07qAou05bioic6STEr5vy4
+         jvPHtzISFXHhlsM2/jtHQFSpnxxZsR5a8Ie7RDmW/YebCl/bq1GQbBfGQhFC0IPHRJSs
+         M/coBmpcXhRfZ+5qvuLb6tp2gPumxhr1U46QxfroKtwun4x4yVjNTejyJtb4oBlDAh+j
+         jSnw==
+X-Gm-Message-State: AOAM531JTNUpuknbRqsX1v6uStvqaSekTtuCGYFxv0Q5+pPIDQYt0Iov
+        jHSKlTd7YIiLCnVE0jYNwBs=
+X-Google-Smtp-Source: ABdhPJwaFucIUGW3WR849mU+T6OEQNYynmsCPe1Je8+q99d8YZxVoWvc1alr7AzFrGfI2WJSqvEgoQ==
+X-Received: by 2002:a1c:1904:: with SMTP id 4mr8482034wmz.119.1599239416140;
+        Fri, 04 Sep 2020 10:10:16 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id n16sm13368215wrj.25.2020.09.04.10.10.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 10:10:15 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: onenand: omap2: Allow for compile-testing on !ARM
+Date:   Fri,  4 Sep 2020 18:09:55 +0100
+Message-Id: <20200904170954.18321-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1598613212-1113-1-git-send-email-robert.chiras@oss.nxp.com>
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
-On Fri, Aug 28, 2020 at 02:13:27PM +0300, Robert Chiras (OSS) wrote:
-> From: Robert Chiras <robert.chiras@nxp.com>
-> 
-> This patch-set adds the new following features to the nwl-dsi bridge driver:
-> 
-> 1. Control Video PLL from nwl-dsi driver
-> 
-> Add support for the Video PLL into the nwl-dsi driver, in order
-> to better control it's rate, depending on the requested video mode.
-> Controlling the Video PLL from nwl-dsi is usefull, since it both drives the DC
-> pixel-clock and DPHY phy_ref clock.
-> On i.MX8MQ, the DC can be either DCSS or LCDIF.
-> 
-> 2. Add new property to nwl-dsi: clock-drop-level
-> 
-> This new property is usefull in order to use DSI panels with the nwl-dsi
-> driver which require a higher overhead to the pixel-clock.
-> For example, the Raydium RM67191 DSI Panel works with 132M pixel-clock,
-> but it needs an overhead in order to work properly. So, the actual pixel-clock
-> fed into the DSI DPI interface needs to be lower than the one used ad DSI output.
-> This new property addresses this matter.
-> 
-> 3. Add support to handle both inputs for nwl-dsi: DCSS and LCDIF
+There seems no particular reason for building on ARM only, so remove the
+restriction to increase test coverage.
 
-Thanks. I've tested the drop-clock-level part with mxsfb on a Librem 5
-devkit and it removes the slight flickering we've seen before (and which
-could be worked around by reducing the input pixel clock so 1 and 3 are
+Build-tested on x86 with allyesconfig.
 
-Tested-by: Guido Günther <agx@sigxcpu.org>
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
+---
+ drivers/mtd/nand/onenand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've have added some comments to the individual patches and try to get
-around to check out the DCSS part too.
-Cheers,
- -- Guido
+diff --git a/drivers/mtd/nand/onenand/Kconfig b/drivers/mtd/nand/onenand/Kconfig
+index 1a0e65bc246e..e2272f07d500 100644
+--- a/drivers/mtd/nand/onenand/Kconfig
++++ b/drivers/mtd/nand/onenand/Kconfig
+@@ -24,7 +24,7 @@ config MTD_ONENAND_GENERIC
+ 
+ config MTD_ONENAND_OMAP2
+ 	tristate "OneNAND on OMAP2/OMAP3 support"
+-	depends on ARCH_OMAP2 || ARCH_OMAP3 || (COMPILE_TEST && ARM)
++	depends on ARCH_OMAP2 || ARCH_OMAP3 || COMPILE_TEST
+ 	depends on OF || COMPILE_TEST
+ 	help
+ 	  Support for a OneNAND flash device connected to an OMAP2/OMAP3 SoC
+-- 
+2.28.0
 
-> 
-> Laurentiu Palcu (1):
->   drm/bridge: nwl-dsi: add support for DCSS
-> 
-> Robert Chiras (4):
->   drm/bridge: nwl-dsi: Add support for video_pll
->   dt-bindings: display/bridge: nwl-dsi: Document video_pll clock
->   drm/bridge: nwl-dsi: Add support for clock-drop-level
->   dt-bindings: display/bridge: nwl-dsi: Document fsl,clock-drop-level
->     property
-> 
->  .../bindings/display/bridge/nwl-dsi.yaml           |   7 +
->  drivers/gpu/drm/bridge/nwl-dsi.c                   | 338 ++++++++++++++++++++-
->  2 files changed, 336 insertions(+), 9 deletions(-)
-> 
-> -- 
-> 2.7.4
-> 
