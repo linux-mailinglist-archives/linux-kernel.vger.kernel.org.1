@@ -2,160 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA72825D75E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF91F25D769
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729923AbgIDLbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 07:31:01 -0400
-Received: from mail-eopbgr00102.outbound.protection.outlook.com ([40.107.0.102]:13283
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730069AbgIDLYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:24:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XW4E13skJ0etb8G+3RJzHY0Jc0MQ8OOBg8Hntg/uvbzsKMjWw1mbC0jixYO2z0lcFeykmKdtQrp0zRA8tXezKgWyFg7NquJdTly0puMF0B1wG0zteCH8pRNvrFCj9Wfg+GuCjvF4TF1FCbDRIfV5nXZVoqzqdIDFD/iOEBaP9AdOAPYsI7UivM+mHGc6gCX0TCnxoldcfZuNz07Onxd1DKAdXlhtm/I7lueC24vsATLYL5KtNNEYaDZfr88A9KKpyTnowa66PCyfAGM52kEKqb9xPNSek74wd8sueJFZ2TJcMDc2FaENVZ+BBw9PspuhE6i1Q8RvHIDaXV+Gc8pN0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dKZ7p81PcyPdAihQDAkR2rjbSCflKL4sE3bsr2fcqwg=;
- b=lsBO30R1aKzefszACpdobkPeA0tlNtQU/wkMrcphAMXvoSd6kRTp/T+XFwR6aARoJ0ux/k5ReB5+gZkR+YWs9Pa9buU3kW15UezoJpspJJUGUITQGvqSl8HSKcAhaTFHZcEOD7XAfgr5LzOCNt7NhaHFSOb0izCWcKcLCaL9kGMGjpyy7pyfi7bzIcFNoaEU6sm6PrKdAikqTwqOvLz3n+7cvpJVJHke/9jlmQzrk/LDYsoUju76Jtpwo+JOQ/qE6ZmOyJ1jps0m6rrDnRwwRG0cR64TrIrUUJ157bqoAvPG1+LqAVeD5Fw6BbIrVbbujkAVTOn8mlHw9hE6OHfCVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dKZ7p81PcyPdAihQDAkR2rjbSCflKL4sE3bsr2fcqwg=;
- b=pUd8m9mUmG33xGjWN9ZkouhKZ3IIGI1HNvUztRJ9WfMxpFYaX3h4taJSkcw6EDBA3Cg40JUMqCjNaezQL49NmrBTjc8lVe872ZBh/msgB8jdC80ryCSzajxIS9jvNpoMvOTDmEWRi6EYX5OJ7zWCSocvCwotlbbqQZuDh4Ckcu0=
-Authentication-Results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=plvision.eu;
-Received: from DB6P190MB0535.EURP190.PROD.OUTLOOK.COM (2603:10a6:6:3e::26) by
- DB6P190MB0008.EURP190.PROD.OUTLOOK.COM (2603:10a6:4:88::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3348.16; Fri, 4 Sep 2020 11:23:13 +0000
-Received: from DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
- ([fe80::9cbe:fafc:3c8a:3765]) by DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
- ([fe80::9cbe:fafc:3c8a:3765%4]) with mapi id 15.20.3348.016; Fri, 4 Sep 2020
- 11:23:13 +0000
-Date:   Fri, 4 Sep 2020 14:23:10 +0300
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Ripard <maxime.ripard@free-electrons.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] nvmem: core: allow to register cells during nvmem
- registration
-Message-ID: <20200904112310.GD10654@plvision.eu>
-References: <20200831015539.26811-1-vadym.kochan@plvision.eu>
- <20200831015539.26811-2-vadym.kochan@plvision.eu>
- <6ab47f55-af66-f035-d8d9-82d0c831b5b8@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ab47f55-af66-f035-d8d9-82d0c831b5b8@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: AM5PR1001CA0009.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:206:2::22) To DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:6:3e::26)
+        id S1730179AbgIDLdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 07:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730105AbgIDLcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 07:32:16 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AE8C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 04:32:15 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w3so7521772ljo.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3zA99aEMQ+GSN3rlEJk+n2U8t/Kxnc6IxQCFC33HIVA=;
+        b=mSdxz4fgtsgSS2l9njzIYvSmIlX80hvCnTvP/OgE02oJ4nDD6UKwizm4D7pYEV9/oB
+         tEbt7dHQNZO90wBDaS9dLTOH3TjgVJK62Qdxp3nj989prYsaxM5XJE20K/8QK3/7SqZW
+         Rs4zfFheOchEGYvixvNV8Dl6RNgZp5wwVcRUbWZDg+FvS8e7MMS5G3GTA1pvFe4Sn9IK
+         Iw+PG4lHpcmVmI5ZudeQeOLTrfqnwRivA7UeFYXQF7BLJ8gw/QPEIugIuJnobfN3dhDg
+         veR63F4DQdtkKOBLjGfzzJqrJW4/JaXH9pA+ARPCeGL0/34Rp9ZXyk+2jLpYybARdMQ9
+         q+Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3zA99aEMQ+GSN3rlEJk+n2U8t/Kxnc6IxQCFC33HIVA=;
+        b=kc73QxtBxqnQCKkQUBjwv0A4DsdqwEy2im9kmn6I5lLbxidUJZBU2QbjwxbabL+G/Y
+         joXXwvWreh2E8Pwrxn/IUBXQAWZZo2h7MuGCDoK2GypTK5xIxCv4fC4Q44+yx40IKQGV
+         08utIL5X/UMv216biheM45ogzY1HNbmzu2wpJ+VLPuRufPFCds0tFxuM/bk00VcAkN0F
+         O9TVQS9tuhe21wbtUDTzJT5e8avjJukxC5DXhVPlLKM3ahab0e91UiChv6F8jVKAwCe8
+         N7LKKLaJ0WHucAeoZleu5mVVDoaLxiFYj1JKvfsU0yhvlgTpVfIa+0qPjFh2hViHQ7hf
+         SKBA==
+X-Gm-Message-State: AOAM5300Y8cV0hDhgtdo4rk3Rr2jyr4UJ7Ni6TYdtSOGFxLp0FdbD5kv
+        gjmsPabPr2oZ+nZT65UrRJHJJoIuVOZQ7n8RknsNlIxzKcKB6Q==
+X-Google-Smtp-Source: ABdhPJw6mw/bMokIo9Rs/jiLGSH2soJ9lHD4kwKbbHitnqslUJIg+RrmP0RYM6dir4mKgHThQjhIaXEzNK+sM2Hafq4=
+X-Received: by 2002:a2e:9ad9:: with SMTP id p25mr3319272ljj.256.1599219133711;
+ Fri, 04 Sep 2020 04:32:13 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from plvision.eu (217.20.186.93) by AM5PR1001CA0009.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:206:2::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15 via Frontend Transport; Fri, 4 Sep 2020 11:23:12 +0000
-X-Originating-IP: [217.20.186.93]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1c366b2f-0605-44a1-c86c-08d850c4e949
-X-MS-TrafficTypeDiagnostic: DB6P190MB0008:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6P190MB00088AD3AF780BDA22FDED4B952D0@DB6P190MB0008.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ojFFkTOMeqQj+3TwgIjs0n/vM83hepoKwYbBvhq915GDTBTWVBBkC4CDq3uRPt1ukNuJ966FjNbzwrwyp5eYaD1KkcXuRYLgMBniKMUF0JiYQH+Rf/egvYv+kRXtEPo4BfmzhhkfqrdtBy+kKmkizucv97suRZl97U93EcxatoxfXLzfkrCxPQn62WIsQSxVUAXNxJ6vDj+bEO+5kWDvno3/ktNF7DdqgAffzMQ9minlZVtEzbM+PguPeYsMxjWCjZ5w4OgCSk2cS+v9ZWHfWc7u4Y3FwMFaE7/qSb6rWHg48rnPWRM9kjqJXJBXWzUbUeC8RhNtAVSe3OoyNkgXLA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6P190MB0535.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(366004)(39830400003)(6916009)(16526019)(66476007)(2906002)(2616005)(8676002)(956004)(1076003)(478600001)(66556008)(186003)(44832011)(86362001)(55016002)(8936002)(66946007)(8886007)(33656002)(26005)(36756003)(4326008)(83380400001)(5660300002)(52116002)(54906003)(53546011)(316002)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: DWOfA/QMH5mxtRn+bCU+NDdpyJq9m5hcz97c+wCzZrtJnkpETrczVUCTQkarwpkrZ4JC9N8ZwL29lPfJiVMMfT8GXjOghvMaYnXMrrubn/CViK81W6MaDBwh5DD/Qb8jrvEukpUMq27/d/ckwyUueKl09oMMe/ry3KqXRb1UPW1hNUeG40owSMnhlPjixXK4Vc0IDg8+qWEXex3TW5buuGo67VmfiII2Hlcu1VE27e07c99hnUsvPb6+fl9Jj/gyO6aj4yCzy+QM/iUl19x4a5Ts17Hj+lmlXkV1nkGO5DpphCeFGkibe1EV1Ct/J3lZM4X9aK6BwL6A6VM8ZWfSRbO4dNnKBuocC2550QT+Y2ZyMQYu1ylVQtY/SYiJ0IMV6NursfPQY8T1iV9BxreLsCjF8tXOdf0BTmJRW2WJ1BIRKlW06rzc9ThkBZPeeD11NGBBh2au2bp42/5vNwmi7QCvJgFvYv+6s3w+smIRtWpKiyCuk3hwh9VqNJBeYMOtA0Gew+/udlkzdcWvfyBiLRnX9ph5ZhQsnYSclJCa8q6S6Fby8WpTaG7SykX1eH5eYLC88appR2vwR+gg/zAZgTe9hLuIFymJoNa8GbbOdTL1Q1KnVJox3qUXRNnp6OtVyH6c8VNhGr2Z3ol+lgXAJQ==
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c366b2f-0605-44a1-c86c-08d850c4e949
-X-MS-Exchange-CrossTenant-AuthSource: DB6P190MB0535.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2020 11:23:13.4002
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z2aOpAqW3dWILirDsermHohEFWVMFUk85B/11sWq6ywr6BNMaQt4B+CYRLNwMQ8xEGgy1itq0wq8Y714siVlYxey07SUiPPPKEU9P3vrTzA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6P190MB0008
+References: <1599134712-30923-1-git-send-email-sumit.garg@linaro.org>
+ <1599134712-30923-2-git-send-email-sumit.garg@linaro.org> <05a195374cc81008e95e258221fe7d2b@kernel.org>
+ <CAFA6WYNYGGsFwOdh35o2zHZb8k7o8YQ3CPDi_A=5c+VBLY9w_w@mail.gmail.com> <6125bdeb9ebd0cb51aa85fe36dee841c@kernel.org>
+In-Reply-To: <6125bdeb9ebd0cb51aa85fe36dee841c@kernel.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 4 Sep 2020 17:02:02 +0530
+Message-ID: <CAFA6WYNe_x7oCvN6uysXJ0sFBDzLk49-p5uxUydzdUv5zimwsQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] arm64: smp: Introduce a new IPI as IPI_CALL_NMI_FUNC
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+On Fri, 4 Sep 2020 at 13:30, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2020-09-04 06:30, Sumit Garg wrote:
+> > On Thu, 3 Sep 2020 at 22:06, Marc Zyngier <maz@kernel.org> wrote:
+> >>
+> >> On 2020-09-03 13:05, Sumit Garg wrote:
+> >> > Introduce a new inter processor interrupt as IPI_CALL_NMI_FUNC that
+> >> > can be invoked to run special handlers in NMI context. One such handler
+> >> > example is kgdb_nmicallback() which is invoked in order to round up
+> >> > CPUs
+> >> > to enter kgdb context.
+> >> >
+> >> > As currently pseudo NMIs are supported on specific arm64 platforms
+> >> > which
+> >> > incorporates GICv3 or later version of interrupt controller. In case a
+> >> > particular platform doesn't support pseudo NMIs, IPI_CALL_NMI_FUNC will
+> >> > act as a normal IPI which can still be used to invoke special handlers.
+> >> >
+> >> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> >> > ---
+> >> >  arch/arm64/include/asm/smp.h |  1 +
+> >> >  arch/arm64/kernel/smp.c      | 11 +++++++++++
+> >> >  2 files changed, 12 insertions(+)
+> >> >
+> >> > diff --git a/arch/arm64/include/asm/smp.h
+> >> > b/arch/arm64/include/asm/smp.h
+> >> > index 2e7f529..e85f5d5 100644
+> >> > --- a/arch/arm64/include/asm/smp.h
+> >> > +++ b/arch/arm64/include/asm/smp.h
+> >> > @@ -89,6 +89,7 @@ extern void secondary_entry(void);
+> >> >
+> >> >  extern void arch_send_call_function_single_ipi(int cpu);
+> >> >  extern void arch_send_call_function_ipi_mask(const struct cpumask
+> >> > *mask);
+> >> > +extern void arch_send_call_nmi_func_ipi_mask(const struct cpumask
+> >> > *mask);
+> >> >
+> >> >  #ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+> >> >  extern void arch_send_wakeup_ipi_mask(const struct cpumask *mask);
+> >> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> >> > index b6bde26..1b4c07c 100644
+> >> > --- a/arch/arm64/kernel/smp.c
+> >> > +++ b/arch/arm64/kernel/smp.c
+> >> > @@ -74,6 +74,7 @@ enum ipi_msg_type {
+> >> >       IPI_TIMER,
+> >> >       IPI_IRQ_WORK,
+> >> >       IPI_WAKEUP,
+> >> > +     IPI_CALL_NMI_FUNC,
+> >> >       NR_IPI
+> >> >  };
+> >> >
+> >> > @@ -793,6 +794,7 @@ static const char *ipi_types[NR_IPI]
+> >> > __tracepoint_string = {
+> >> >       S(IPI_TIMER, "Timer broadcast interrupts"),
+> >> >       S(IPI_IRQ_WORK, "IRQ work interrupts"),
+> >> >       S(IPI_WAKEUP, "CPU wake-up interrupts"),
+> >> > +     S(IPI_CALL_NMI_FUNC, "NMI function call interrupts"),
+> >> >  };
+> >> >
+> >> >  static void smp_cross_call(const struct cpumask *target, unsigned int
+> >> > ipinr);
+> >> > @@ -840,6 +842,11 @@ void arch_irq_work_raise(void)
+> >> >  }
+> >> >  #endif
+> >> >
+> >> > +void arch_send_call_nmi_func_ipi_mask(const struct cpumask *mask)
+> >> > +{
+> >> > +     smp_cross_call(mask, IPI_CALL_NMI_FUNC);
+> >> > +}
+> >> > +
+> >> >  static void local_cpu_stop(void)
+> >> >  {
+> >> >       set_cpu_online(smp_processor_id(), false);
+> >> > @@ -932,6 +939,10 @@ static void do_handle_IPI(int ipinr)
+> >> >               break;
+> >> >  #endif
+> >> >
+> >> > +     case IPI_CALL_NMI_FUNC:
+> >> > +             /* nop, IPI handlers for special features can be added here. */
+> >> > +             break;
+> >> > +
+> >> >       default:
+> >> >               pr_crit("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
+> >> >               break;
+> >>
+> >> I'm really not keen on adding more IPIs to the SMP code. One of the
+> >> main reasons for using these SGIs as normal IRQs was to make them
+> >> "requestable" from non-arch code as if they were standard percpu
+> >> interrupts.
+> >>
+> >> What prevents you from moving that all the way to the kgdb code?
+> >>
+> >
+> > Since we only have one SGI left (SGI7) which this patch reserves for
+> > NMI purposes, I am not sure what value add do you see to make it
+> > requestable from non-arch code.
+>
+> We have one *guaranteed* SGI left. Potentially another 8 which we
+> could dynamically discover (reading the priority registers should
+> be enough to weed out the secure SGIs). And I'd like to keep that
+> last interrupt "just in case" we'd need it to workaround something.
+>
+> > Also, allocating SGI7 entirely to kgdb would not allow us to leverage
+> > it for NMI backtrace support via magic sysrq. But with current
+> > implementation we should be able to achieve that.
+>
+> I'd argue that there is no need for this interrupt to be a "well known
+> number". Maybe putting this code in the kgdb code is one step too far,
+> but keeping out of the arm64 SMP code is IMO the right thing to do.
 
-On Fri, Sep 04, 2020 at 12:02:40PM +0100, Srinivas Kandagatla wrote:
-> Hi Vadym,
-> 
-> Thanks for the patch,
-> On 31/08/2020 02:55, Vadym Kochan wrote:
-> > Add NVMEM_PRE_ADD notification step which is called before any cells
-> > binding - from lookup table or config, this allows to register cells
-> > in some specific layout (tlv) which should be parsed first and then
-> > registered. So there might be a cell parser driver which can register
-> > lookup table during this notification step.
-> > 
-> This is going in right direction but totally not correct way to do it.
-> 
-> 1> this is not scalable as any consumer that will register for this even
-> will have no idea of which what kind of parsing that provider needs.
-> It can work in your case but not really useful.
-> 
-> 2> this is a consumer API, not the provider api.
-> 
-> How about adding a "parse_cells" callback in struct nvmem_config along with
-> encoding type.
-> 
-> 
-> thanks,
-> srini
-> 
+IIUC, you would prefer to only allocate SGI7 (only one left) if there
+is a corresponding user. And I agree that kgdb isn't commonly active
+for most users. But I think magic sysrq is enabled for most users and
+supporting NMI backtrace would be quite useful while debugging systems
+in the field as well.
 
-Looks like I missed main point here that this cells parser should be
-registered as nvmem provider. I will think on it.
+So if you like, I can create a separate file like
+"arch/arm64/kernel/ipi_nmi.c" for this implementation.
 
-Thanks,
+> And if NMI backtracing is a thing, then we should probably implement
+> that first.
 
-> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
-> > ---
-> > v3:
-> >      1) Update core.c changes by extending notification mechanism
-> >         by adding new NVMEM_PRE_ADD event id which is called before lookup
-> >         table cells binding, this allows for notification handler to
-> >         register cells which require nvmem parsing.
-> > 
-> >   drivers/nvmem/core.c           | 2 ++
-> >   include/linux/nvmem-consumer.h | 1 +
-> >   2 files changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> > index 6cd3edb2eaf6..c48a69e0ebbe 100644
-> > --- a/drivers/nvmem/core.c
-> > +++ b/drivers/nvmem/core.c
-> > @@ -668,6 +668,8 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
-> >   			goto err_device_del;
-> >   	}
-> > +	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_PRE_ADD, nvmem);
-> > +
-> >   	if (config->cells) {
-> >   		rval = nvmem_add_cells(nvmem, config->cells, config->ncells);
-> >   		if (rval)
-> > diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-> > index 052293f4cbdb..0f7107276756 100644
-> > --- a/include/linux/nvmem-consumer.h
-> > +++ b/include/linux/nvmem-consumer.h
-> > @@ -50,6 +50,7 @@ enum {
-> >   	NVMEM_REMOVE,
-> >   	NVMEM_CELL_ADD,
-> >   	NVMEM_CELL_REMOVE,
-> > +	NVMEM_PRE_ADD,
-> >   };
-> >   #if IS_ENABLED(CONFIG_NVMEM)
-> > 
+Have a look at IPI_CPU_BACKTRACE implementation for arm [1]. Similar
+implementation would be required for arm64 but now with IPI turned as
+a pseudo NMI. So I will try to add corresponding support.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/kernel/smp.c#n72
+
+>
+> > Moreover, irq ids for normal interrupts are assigned via DT/ACPI, how
+> > do you envision this for SGIs?
+>
+> Nothing could be further from the truth. How do you think MSIs work?
+> We'd just bolt an allocator for non-arch IPIs.
+>
+
+Okay.
+
+-Sumit
+
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
