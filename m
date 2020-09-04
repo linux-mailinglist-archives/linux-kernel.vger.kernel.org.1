@@ -2,197 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF0025D0CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 07:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9123425D0D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 07:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbgIDFII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 01:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgIDFIG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 01:08:06 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FA9C061244;
-        Thu,  3 Sep 2020 22:08:05 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id o68so3972387pfg.2;
-        Thu, 03 Sep 2020 22:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=ecJ6br0bOEqdX8tcGVb8URqHSI/ob4YFt4Jw7wg6Ia0=;
-        b=b8nlPOOlOHQn+lEuwRWvHwAQqNuifcifVvLhsW8dvfjkY2mdTgiNGgEZxWaJmpzntt
-         Hn5HT5oTuWCRlToi3q+vgzgSY5+yDEcx96qOfweqjZtU8k35kLoDOGUt0WyUgPQkeX/K
-         jxcDECeyA4ppLcPAegF1f6k6xyvXc2oxUiUaUz6iGTU+qAH14iUfq8ih9LwBhAenkeTC
-         654edaVTafviomkG9HcSFRCR1Jvv85Rl3uLJNKrRY9efCwuKgTiWSPWqmQwYFrtxW9vg
-         smwup7jheDRfTdfWyEHUenuexoJk5EO/aHfVZM3nRrUD2Hu5EzTVHCQtXJCsnn7M38P/
-         wxrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=ecJ6br0bOEqdX8tcGVb8URqHSI/ob4YFt4Jw7wg6Ia0=;
-        b=fjTIkzaltBvB1IKehc4LTibjnpYzKVHDMlQtG56/dOPLxdUI2dkruNvXBhRMychrUL
-         Outgo6/TOB/DrrdwV9DQTGDJ3J3ZkBF//BNz/hMkaqEz/Q3D/fooxAMpZ+DSkMNj08MB
-         qb+zhvg+6RPj7qsgdrGdV1V8MAYutpczSFJDrwRlxVgHo0fcBGDM6avJfPRNhRAvyKZL
-         KeSOrcH/c7oASKHHZGO813mcHCJurfoGYNwHV9kKFzP5TnFkzTm8DWfnFxz3EJEZ9oDZ
-         RD7O170Bqq73cNON9vuu/oIjQaAJwWX/9BsZn9ZVSwAqoZwJpgEV8K2V8RbJRdrVCYNG
-         5lnA==
-X-Gm-Message-State: AOAM532StL1QltuiR5ban617H1s5G84oOGlWI+Ij+e1QTmut4O7DaTEd
-        4U5Lt7ocYm7dIH4byENGVnc=
-X-Google-Smtp-Source: ABdhPJzeF5lk/iuosObv9Ll4NXB/zgMfsHAkWm96fxL4NlgqZBhQmtxFHr4hu82v5C4PM6zQQ+qTzw==
-X-Received: by 2002:a63:43c7:: with SMTP id q190mr5619640pga.6.1599196085186;
-        Thu, 03 Sep 2020 22:08:05 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id d17sm2406504pfq.157.2020.09.03.22.08.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 22:08:04 -0700 (PDT)
-Date:   Thu, 03 Sep 2020 22:07:57 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Kehuan Feng <kehuan.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Jike Song <albcamus@gmail.com>, Josh Hunt <johunt@akamai.com>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Message-ID: <5f51cbad3cc2_3eceb208fc@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
-References: <465a540e-5296-32e7-f6a6-79942dfe2618@netrounds.com>
- <20200623134259.8197-1-mzhivich@akamai.com>
- <1849b74f-163c-8cfa-baa5-f653159fefd4@akamai.com>
- <CAM_iQpX1+dHB0kJF8gRfuDeAb9TsA9mB9H_Og8n8Hr19+EMLJA@mail.gmail.com>
- <CAM_iQpWjQiG-zVs+e-V=8LvTFbRwgC4y4eoGERjezfAT0Fmm8g@mail.gmail.com>
- <7fd86d97-6785-0b5f-1e95-92bc1da9df35@netrounds.com>
- <500b4843cb7c425ea5449fe199095edd5f7feb0c.camel@redhat.com>
- <25ca46e4-a8c1-1c88-d6a9-603289ff44c3@akamai.com>
- <CANE52Ki8rZGDPLZkxY--RPeEG+0=wFeyCD6KKkeG1WREUwramw@mail.gmail.com>
- <20200822032800.16296-1-hdanton@sina.com>
- <CACS=qqKhsu6waaXndO5tQL_gC9TztuUQpqQigJA2Ac0y12czMQ@mail.gmail.com>
- <20200825032312.11776-1-hdanton@sina.com>
- <CACS=qqK-5g-QM_vczjY+A=3fi3gChei4cAkKweZ4Sn2L537DQA@mail.gmail.com>
- <20200825162329.11292-1-hdanton@sina.com>
- <CACS=qqKgiwdCR_5+z-vkZ0X8DfzOPD7_ooJ_imeBnx+X1zw2qg@mail.gmail.com>
- <CACS=qqKptAQQGiMoCs1Zgs9S4ZppHhasy1AK4df2NxnCDR+vCw@mail.gmail.com>
- <5f46032e.1c69fb81.9880c.7a6cSMTPIN_ADDED_MISSING@mx.google.com>
- <CACS=qq+Yw734DWhETNAULyBZiy_zyjuzzOL-NO30AB7fd2vUOQ@mail.gmail.com>
- <20200827125747.5816-1-hdanton@sina.com>
- <CACS=qq+a0H=e8yLFu95aE7Hr0bQ9ytCBBn2rFx82oJnPpkBpvg@mail.gmail.com>
- <CAM_iQpV-JMURzFApp-Zhxs3QN9j=Zdf6yqwOP=E42ERDHxe6Hw@mail.gmail.com>
- <dd73f551d1fc89e457ffabd106cbf0bf401b747b.camel@redhat.com>
- <CAM_iQpXZMeAGkq_=rG6KEabFNykszpRU_Hnv65Qk7yesvbRDrw@mail.gmail.com>
-Subject: Re: Packet gets stuck in NOLOCK pfifo_fast qdisc
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726577AbgIDFKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 01:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbgIDFKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 01:10:43 -0400
+Received: from localhost (unknown [122.182.253.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B9F03206B7;
+        Fri,  4 Sep 2020 05:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599196242;
+        bh=JL5hlEqAO1CvuAIi2Pmv3JSHZEXfeYK3TlK8ZhEqdLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EKR4i72o6KurMdZKZBFgw9SN1ygVPqUQod9OmNx6AroxLoah11kRndIyyZuBZ8tR/
+         WxkEwUIA5KCTCRsY0FLc41Dm8DmaWLdTrB2iXL0771wVVenKdh7rennjUhJJgNxx3P
+         bWAPnrmMAwIrXqFx4iihi+34VI324MCDcGPro+mU=
+Date:   Fri, 4 Sep 2020 10:40:36 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        broonie@kernel.org, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, mengdong.lin@intel.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 0/7] ASoC: soundwire: Move sdw stream operations to
+Message-ID: <20200904051036.GU2639@vkoul-mobl>
+References: <20200901150240.19288-1-yung-chuan.liao@linux.intel.com>
+ <20200903104248.GQ2639@vkoul-mobl>
+ <033ea005-e948-c2c6-9bd4-e074d3effde0@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <033ea005-e948-c2c6-9bd4-e074d3effde0@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cong Wang wrote:
-> On Thu, Sep 3, 2020 at 1:40 AM Paolo Abeni <pabeni@redhat.com> wrote:
-> >
-> > On Wed, 2020-09-02 at 22:01 -0700, Cong Wang wrote:
-> > > Can you test the attached one-line fix? I think we are overthinking,
-> > > probably all
-> > > we need here is a busy wait.
-> >
-> > I think that will solve, but I also think that will kill NOLOCK
-> > performances due to really increased contention.
+On 03-09-20, 09:05, Pierre-Louis Bossart wrote:
 > 
-> Yeah, we somehow end up with more locks (seqlock, skb array lock)
-> for lockless qdisc. What an irony... ;)
+> 
+> On 9/3/20 5:42 AM, Vinod Koul wrote:
+> > On 01-09-20, 23:02, Bard Liao wrote:
+> > > sdw stream operation APIs can be called once per stream. dailink
+> > > callbacks are good places to call these APIs.
+> > 
+> > Again, please mention here if this is to be merged thru sdw tree or ASoC
+> > tree
+> 
+> Good point, I thought it wouldn't matter but it does. I just gave it a try
+> and there seems to be a conflict on Mark's tree w/ drivers/soundwire/intel.c
+> (likely due to missing patches already added to Vinod's tree).
+> 
+> So this should go to Vinod's tree with Mark's Acked-by tag on the ASoC
+> changes.
+> 
+> Alternatively we can also split this in two, with ASoC-only and
+> SoundWire-only patches in separate series if it's easier for maintainers. We
+> would lose the rationale for the changes but that's not essential.
 
-I went back to the original nolock implementation code to try and figure
-out how this was working in the first place.
-
-After initial patch series we have this in __dev_xmit_skb()
-
-	if (q->flags & TCQ_F_NOLOCK) {
-		if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
-			__qdisc_drop(skb, &to_free);
-			rc = NET_XMIT_DROP;
-		} else {
-			rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-			__qdisc_run(q);
-		}
-
-		if (unlikely(to_free))
-			kfree_skb_list(to_free);
-		return rc;
-	}
-
-One important piece here is we used __qdisc_run(q) instead of
-what we have there now qdisc_run(q). Here is the latest code,
-
-
-	if (q->flags & TCQ_F_NOLOCK) { 
-		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-		qdisc_run(q);
-		...
-
-__qdisc_run is going to always go into a qdisc_restart loop and
-dequeue packets. There is no check here to see if another CPU
-is running or not. Compare that to qdisc_run()
-
-	static inline void qdisc_run(struct Qdisc *q)
-	{
-		if (qdisc_run_begin(q)) {
-			__qdisc_run(q);
-			qdisc_run_end(q);
-		}
-	}
-
-Here we have all the racing around qdisc_is_running() that seems
-unsolvable.
-
-Seems we flipped __qdisc_run to qdisc_run here 32f7b44d0f566
-("sched: manipulate __QDISC_STATE_RUNNING in qdisc_run_* helpers"). 
-Its not clear to me from thatpatch though why it was even done
-there?
-
-Maybe this would unlock us,
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 7df6c9617321..9b09429103f1 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3749,7 +3749,7 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
- 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
--		qdisc_run(q);
-+		__qdisc_run(q);
- 
- 		if (unlikely(to_free))
- 			kfree_skb_list(to_free);
-
-
-Per other thread we also need the state deactivated check added
-back.
+If there are no dependencies on each other, that is best preferred
+option. One should mention in cover-letter about the linked series
+though.
 
 > 
-> >
-> > At this point I fear we could consider reverting the NOLOCK stuff.
-> > I personally would hate doing so, but it looks like NOLOCK benefits are
-> > outweighed by its issues.
+> > > Pierre-Louis Bossart (7):
+> > >    ASoC: soc-dai: clarify return value for get_sdw_stream()
+> > >    soundwire: stream: fix NULL/IS_ERR confusion
+> > >    soundwire: intel: fix NULL/ERR_PTR confusion
+> > >    ASOC: Intel: sof_sdw: add dailink .trigger callback
+> > >    ASOC: Intel: sof_sdw: add dailink .prepare and .hw_free callback
+> > 
+> > These should be ASoC
 > 
-> I agree, NOLOCK brings more pains than gains. There are many race
-> conditions hidden in generic qdisc layer, another one is enqueue vs.
-> reset which is being discussed in another thread.
+> Right. if you are fine with the content and this goes in your tree, can this
+> be modified while applying? Or do want a v2?
+> 
+> > >    soundwire: intel: remove .trigger operation
+> > >    soundwire: intel: remove stream handling from .prepare and .hw_free
+> > > 
+> > >   drivers/soundwire/intel.c        | 60 ++++-------------------
+> > >   drivers/soundwire/stream.c       |  2 +-
+> > >   include/sound/soc-dai.h          |  3 +-
+> > >   sound/soc/intel/boards/sof_sdw.c | 81 ++++++++++++++++++++++++++++++++
+> > >   4 files changed, 92 insertions(+), 54 deletions(-)
+> > > 
+> > > -- 
+> > > 2.17.1
+> > 
 
-Sure. Seems they crept in over time. I had some plans to write a
-lockless HTB implementation. But with fq+EDT with BPF it seems that
-it is no longer needed, we have a more generic/better solution.  So
-I dropped it. Also most folks should really be using fq, fq_codel,
-etc. by default anyways. Using pfifo_fast alone is not ideal IMO.
-
-Thanks,
-John
+-- 
+~Vinod
