@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD5B25E191
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5127E25E193
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgIDSqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
+        id S1727867AbgIDSrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgIDSqi (ORCPT
+        with ESMTP id S1726928AbgIDSqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:46:38 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4FFC061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 11:46:37 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t10so7873413wrv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 11:46:37 -0700 (PDT)
+        Fri, 4 Sep 2020 14:46:42 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EF4C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 11:46:41 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id w2so7105577wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 11:46:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=dQx7qlr5sgzl+EKsELL8mDhBMabAg3tAw/hUjBERGxw=;
-        b=WtTM9kdkg/wt6spsrEZ+o1doy3qhPydnTTUFE7DM3+dJvLK2Jkcf1Lrodr9ouegtVv
-         Up45nyWxX+kWV4TovqKnjULFESfMDAv1/H78UlBWNO2c5IuiUBPFChWiteHjyx0mClWV
-         qiXwVMs7QE/9BlYxbpdlMqH10UYaJTzfSXZZc0OyRas2rGlsuyG7MDsl8ea9LJ8qCIrv
-         Y/en3YfbTmJt0ZoHxOEQCgOIlMYZOhLNUfvlvbah9A8BUEoXKZLSACmJ5sgCONHoNS/g
-         AvRNLW/dMpmTI0CP5oM9wW3R76NZ+UikqDdq3M0bg/JK4MYI6i9NVE3mM3EOcb54pWBy
-         axcQ==
+        bh=ULH42GEwNi9hzlhhK8pYlc6jFqUJoh0KSWLzC2sUdhI=;
+        b=o9Ge2o+WoojlRDRN2u1Fz77V88b5XJlFIg2UAFL0ximPlnlVR7dL4sVIUBVAaQrY5b
+         up8tpykJessES5r1VtJrjyyUurLOh+sK6bsdT/y2WPxBknDq6hja7Ptt51SnH9rMKG+q
+         z7B7rkLKFUbLngZdey4bTIqC6UNaw3j9XII/cKIlilitl4Gb+2wDa7Jnb6j1CWAGU5D1
+         /KtFw7JG0tcGY7q7oZCSYjH2zI+IorOFSW009HyllEWnb2VHxwATCRHATAIctO3IhpT9
+         Xnq+6YxBP2MdBb2hRGHGv7C1cIvpKZnQPOckaw7YJ9pSt4KiPMvNp2kr3hcSDqr8pxeq
+         y2NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=dQx7qlr5sgzl+EKsELL8mDhBMabAg3tAw/hUjBERGxw=;
-        b=XjBn0Re5SWOb5GO/UGY3CixlmMmShGunQp+JtNQM4o9Q3OfILHFnIqqhS5AKcrhmNm
-         jNsqNctE0b8OMuHsnTbBXE+K0UOkHLxqSZpjW/cRzEqhSAjIJW/f/JvX0EogWcdTPBTS
-         J5SYa4yJGvr5hIC95uxnayxYvhu0LlLOLVIv4ia6el6mSbcJkjdLJDQh+wszBn85p5+I
-         Wub1VXXiTrusrCl9fRNUprxPhIRN7a/njqNJEe7qKOnPDuhaZF/bPZc+FxbXle7tbHL2
-         XsaUMIt8MIPBv5XCwKmRlAbQhBttQv88qCPc5iYrTjllnaH3BsdqR5nvotdnFEbk0MGv
-         d9xQ==
-X-Gm-Message-State: AOAM530Nin9ickWkFZ/UHonk/WPC+vzZH3YW1Fy7k6PQABoj/oQ8dgRv
-        5H30UGl46SriqaAiArEKFtq9nPrRvrY=
-X-Google-Smtp-Source: ABdhPJyRZnf+SlBQ7UbrvpsnTaq4v4xa242elj+FV/LlVyt9CQ5ComoNbu8H0KuPGTxqae/RK5yZTw==
-X-Received: by 2002:a5d:6051:: with SMTP id j17mr9690739wrt.81.1599245195826;
-        Fri, 04 Sep 2020 11:46:35 -0700 (PDT)
+        bh=ULH42GEwNi9hzlhhK8pYlc6jFqUJoh0KSWLzC2sUdhI=;
+        b=t2E1G8ISrXkK9G/EE3FHBbT2yN4cJVPnbweMyPArmNc0rtNyZNdzS2aTj2ZV8CP4Rs
+         /LF34d30TtsrNO3fmlSGZk06DPKf8qeZ9Dl51667lKvqSb0x9/uURWjZbreSedqil5iG
+         4TxqOK/OPVrB/yz2Yx8PoDEs4xUfCiUNWVJvRFyBnYc4GnONAmwMUN+0B2Uv8bjtnGqf
+         38TSv3cVIY80BK7eLzOklcgwP87i5POEZ1dM1gb0jFb4EERBj4xHf3P+O8dCnGtV1N6V
+         54xHyMG7hX0n5nsRjPCGOktAERlrCZyQjd5YfRmrM/07tKqxcpybKWddluM5rJSu8MoP
+         vJ6A==
+X-Gm-Message-State: AOAM531008LbHxWOwPZOvfhgB44fC/SXHinLOg/7nWc94JaHgAK50Djk
+        gxVOYPSZP5bBPQrowm/LRMpiDjYQS2M=
+X-Google-Smtp-Source: ABdhPJw0LPW9piVH1fLvADKVf95bvirrDE3JJ+uWX2Ds02eAs//m9Uzm4lTTSj388r65K7tTwN8ROA==
+X-Received: by 2002:a1c:2742:: with SMTP id n63mr8732306wmn.24.1599245197721;
+        Fri, 04 Sep 2020 11:46:37 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id q186sm14111670wma.45.2020.09.04.11.46.33
+        by smtp.gmail.com with ESMTPSA id q186sm14111670wma.45.2020.09.04.11.46.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 11:46:34 -0700 (PDT)
+        Fri, 04 Sep 2020 11:46:36 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Subject: [PATCH 5/6] habanalabs: increase PQ COMP_OFFSET by one nibble
-Date:   Fri,  4 Sep 2020 21:46:22 +0300
-Message-Id: <20200904184623.13478-5-oded.gabbay@gmail.com>
+Subject: [PATCH 6/6] habanalabs: check flag before reset because of f/w event
+Date:   Fri,  4 Sep 2020 21:46:23 +0300
+Message-Id: <20200904184623.13478-6-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904184623.13478-1-oded.gabbay@gmail.com>
 References: <20200904184623.13478-1-oded.gabbay@gmail.com>
@@ -60,27 +60,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For future ASICs, we increase this field by one nibble. This field was not
-used by the current ASICs so this change doesn't break anything.
+For consistency with GAUDI code, add check of the relevant flag in the
+device structure before resetting the GOYA device in case of firmware
+event.
 
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/include/common/qman_if.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/habanalabs/goya/goya.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/include/common/qman_if.h b/drivers/misc/habanalabs/include/common/qman_if.h
-index 0fdb49188ed7..7ed7739575ee 100644
---- a/drivers/misc/habanalabs/include/common/qman_if.h
-+++ b/drivers/misc/habanalabs/include/common/qman_if.h
-@@ -40,7 +40,7 @@ struct hl_bd {
-  */
+diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
+index 804c83eb12b7..46a900fb3ef8 100644
+--- a/drivers/misc/habanalabs/goya/goya.c
++++ b/drivers/misc/habanalabs/goya/goya.c
+@@ -4644,7 +4644,8 @@ void goya_handle_eqe(struct hl_device *hdev, struct hl_eq_entry *eq_entry)
+ 	case GOYA_ASYNC_EVENT_ID_L2_RAM_ECC:
+ 	case GOYA_ASYNC_EVENT_ID_PSOC_GPIO_05_SW_RESET:
+ 		goya_print_irq_info(hdev, event_type, false);
+-		hl_device_reset(hdev, true, false);
++		if (hdev->hard_reset_on_fw_events)
++			hl_device_reset(hdev, true, false);
+ 		break;
  
- #define BD_CTL_COMP_OFFSET_SHIFT	16
--#define BD_CTL_COMP_OFFSET_MASK		0x00FF0000
-+#define BD_CTL_COMP_OFFSET_MASK		0x0FFF0000
- 
- #define BD_CTL_COMP_DATA_SHIFT		0
- #define BD_CTL_COMP_DATA_MASK		0x0000FFFF
+ 	case GOYA_ASYNC_EVENT_ID_PCIE_DEC:
 -- 
 2.17.1
 
