@@ -2,49 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080A025E14D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A58525E150
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgIDSGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgIDSGY (ORCPT
+        id S1726667AbgIDSHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:07:00 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25303 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726047AbgIDSG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:06:24 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2578AC061244;
-        Fri,  4 Sep 2020 11:06:24 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kEG6L-00ATnC-Uh; Fri, 04 Sep 2020 18:06:18 +0000
-Date:   Fri, 4 Sep 2020 19:06:17 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 3/8] asm-generic: fix unaligned access hamdling in
- raw_copy_{from,to}_user
-Message-ID: <20200904180617.GQ1236603@ZenIV.linux.org.uk>
-References: <20200904165216.1799796-1-hch@lst.de>
- <20200904165216.1799796-4-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904165216.1799796-4-hch@lst.de>
+        Fri, 4 Sep 2020 14:06:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599242817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=ZgNkYrXayCXVqunlsQHYlfke0k0uTa2/dq5wz4jdf0U=;
+        b=JWXp42iJ5jirKaEb8/Zc3Cxaen3f/Q6n/BFMoQ+9qBU1J16QSWXlP3ROqMmGtqllfLxfzA
+        GeDlath/UrdZKDBHgXZzg/HYsOyBKDyOstLEGp0HVp9e3XYsbR2X+SoFpvUzTnTHFNVopW
+        1hplOU9veUkJ8aMpw7LJx2jdEnoVoz4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-539-UhS_OZuCM4q7k8E4RWxZLQ-1; Fri, 04 Sep 2020 14:06:53 -0400
+X-MC-Unique: UhS_OZuCM4q7k8E4RWxZLQ-1
+Received: by mail-qt1-f200.google.com with SMTP id e14so4877249qtm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 11:06:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZgNkYrXayCXVqunlsQHYlfke0k0uTa2/dq5wz4jdf0U=;
+        b=l24ESA4gaat2iUqh8SbV2CBswPGKmMJ4270AIQFO89ATLu1KDHgplvWh7ROxVAzFmN
+         jYoAiVi4XMJdqGO1cwgzfEQ8wO8ke12CPBSLeIuf2xP1vpP19+wlbNz9AuSMHfTyLWQI
+         Hr4M+s6ehW5J8ogIIBY6b2F4a5PZwKRcPD3mbhybyQGntRC2Y7LhQZ0LcC5+dw3JrIHZ
+         RaV4eIQ/VqL46kLqTL5Xq+1GfiS0lhp2mpP3qCVozxCCBNZNIfnnAe0pGRgZNeSKjx23
+         r4FuVuaINa69wniJ8b/sHQvShvJcGl35Llwx3ASjlPXoflrMkr2n2ouRgDiUWs0AN30T
+         B8LQ==
+X-Gm-Message-State: AOAM530kOeMioUx4t5oQQohXnFWlTcj3gg/5lpD12xueYguaOgHzL//d
+        ZrbhFXmm4LJJwbAFZq+g7OBhib4iDgVSMkUn1WdkFxKFnv39xhfrTQZ8j/H0XNX8zkPZNUvPYkG
+        eGmuQbcESq3IhcHbIfeNDK+6V
+X-Received: by 2002:ac8:6141:: with SMTP id d1mr9801724qtm.170.1599242813492;
+        Fri, 04 Sep 2020 11:06:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxWhBlbyE5VCadyyCOxenZ/m0J+9H6xdaEWBkgVjqJvelX1jGZb3lv+vRmA3FJV8b2LL6X7cA==
+X-Received: by 2002:ac8:6141:: with SMTP id d1mr9801702qtm.170.1599242813220;
+        Fri, 04 Sep 2020 11:06:53 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t69sm4879928qka.73.2020.09.04.11.06.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 11:06:52 -0700 (PDT)
+From:   trix@redhat.com
+To:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
+        shyam-sundar.s-k@amd.com, natechancellor@gmail.com,
+        ndesaulniers@google.com
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
+Subject: [PATCH] i2c: amd_mp2: handle num is 0 input for i2c_amd_xfer
+Date:   Fri,  4 Sep 2020 11:06:47 -0700
+Message-Id: <20200904180647.21080-1-trix@redhat.com>
+X-Mailer: git-send-email 2.18.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 06:52:11PM +0200, Christoph Hellwig wrote:
-> Use get_unaligned and put_unaligned for the small constant size cases
-> in the generic uaccess routines.  This ensures they can be used for
-> architectures that do not support unaligned loads and stores, while
-> being a no-op for those that do.
+From: Tom Rix <trix@redhat.com>
 
-Frankly, I would rather get rid of those constant-sized cases entirely;
-sure, we'd need to adjust asm-generic/uaccess.h defaults for __get_user(),
-but there that kind of stuff would make sense; in raw_copy_from_user()
-it really doesn't.
+clang static analyzer reports this problem
+
+i2c-amd-mp2-plat.c:174:9: warning: Branch condition evaluates
+  to a garbage value
+        return err ? err : num;
+               ^~~
+
+err is not initialized, it depends on the being set in the
+transfer loop which will not happen if num is 0.  Surveying
+other master_xfer() implementations show all handle a 0 num.
+
+Because returning 0 is expected, initialize err to 0.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/i2c/busses/i2c-amd-mp2-plat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-amd-mp2-plat.c b/drivers/i2c/busses/i2c-amd-mp2-plat.c
+index 17df9e8845b6..506433bc0ff2 100644
+--- a/drivers/i2c/busses/i2c-amd-mp2-plat.c
++++ b/drivers/i2c/busses/i2c-amd-mp2-plat.c
+@@ -155,7 +155,7 @@ static int i2c_amd_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+ 	struct amd_i2c_dev *i2c_dev = i2c_get_adapdata(adap);
+ 	int i;
+ 	struct i2c_msg *pmsg;
+-	int err;
++	int err = 0;
+ 
+ 	/* the adapter might have been deleted while waiting for the bus lock */
+ 	if (unlikely(!i2c_dev->common.mp2_dev))
+-- 
+2.18.1
+
