@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F33E25E194
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD5B25E191
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgIDSrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
+        id S1727020AbgIDSqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:46:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726208AbgIDSqg (ORCPT
+        with ESMTP id S1726047AbgIDSqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:46:36 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD741C061245
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 11:46:35 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u18so7082284wmc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 11:46:35 -0700 (PDT)
+        Fri, 4 Sep 2020 14:46:38 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4FFC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 11:46:37 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so7873413wrv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 11:46:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=/IsrdXrUOtOTBrB3eBrlMDBlKpxWA0R40two4e+nGOc=;
-        b=AwA+N+1lENnbpLz/wWhQ8pA4H1pRMZGJ7Ojc10luRGWxPaB62cOcZPCeJlx0uWAvLY
-         1gw7bfxy8jwAxBT2g7QRGLLgvvOqAtHRWSxEsEXC0ZDgI4UfI7peuVFYQJM78Y/L9wuG
-         ForTiB3vmMI7mtfA8WdGvdcep6tg0cgJLCJybq0YzhKq5RFvHie7dxO6BdI5zsJl86+W
-         Ze79gjInHbmCdkBQCEqj0KtLHtR8R0wX/t/kdRuuSgD0Iqj1OPSZck5LrcLaSkRxpXWF
-         VwAaqtHACZTe/ZiNL8vDtyjIPuVsXRddzRuBdmCN0MRnhnqS1CqAyaC4wfDut9woCtyA
-         pWWg==
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=dQx7qlr5sgzl+EKsELL8mDhBMabAg3tAw/hUjBERGxw=;
+        b=WtTM9kdkg/wt6spsrEZ+o1doy3qhPydnTTUFE7DM3+dJvLK2Jkcf1Lrodr9ouegtVv
+         Up45nyWxX+kWV4TovqKnjULFESfMDAv1/H78UlBWNO2c5IuiUBPFChWiteHjyx0mClWV
+         qiXwVMs7QE/9BlYxbpdlMqH10UYaJTzfSXZZc0OyRas2rGlsuyG7MDsl8ea9LJ8qCIrv
+         Y/en3YfbTmJt0ZoHxOEQCgOIlMYZOhLNUfvlvbah9A8BUEoXKZLSACmJ5sgCONHoNS/g
+         AvRNLW/dMpmTI0CP5oM9wW3R76NZ+UikqDdq3M0bg/JK4MYI6i9NVE3mM3EOcb54pWBy
+         axcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=/IsrdXrUOtOTBrB3eBrlMDBlKpxWA0R40two4e+nGOc=;
-        b=OG2dxVIoHPv8vGnsLoelQ9by5cy5kZhquI+x1soBofwMoLLK8f10C6gNFnugLb55tc
-         U0J3UZ38vMbA+rG6w86z1ifYsckBJdS6N5F0VntxeNvXfxVmIGmk1zOvHw+U+VmBdlbv
-         DlXewdbaye5770lv2QEKhRWooWj1JCU683eUf3CCxiLrjBijsFzq3Uzm9ZJ0F8ql8WnI
-         qCSBf/bKftKO3ctod13VWbVrkWT2gMt19C+mFveGFwO8tlyW0f6dxweI87J26ykX8rQy
-         Is66DhEMXc9nYF96dTVejZb+oGZK+KBuDNUCHhrVIkF78TivddYcX2/8NEuSJykYerwg
-         0x7g==
-X-Gm-Message-State: AOAM532Y39giFoiREd1IE1KcpW8pEdnObN/kgvMcvJ+OByKIE+/CRkZX
-        aCyF7OCsAW/L2utAt9qqm9mgN0NcskA=
-X-Google-Smtp-Source: ABdhPJxFS6bqY4pw+HEz8iQgV0XYhP1R0DjvZ+TRaQGPKK81WRnoaAV7ouDNjLxOC+QizozsxQFwvw==
-X-Received: by 2002:a1c:7918:: with SMTP id l24mr9251444wme.46.1599245193526;
-        Fri, 04 Sep 2020 11:46:33 -0700 (PDT)
+        bh=dQx7qlr5sgzl+EKsELL8mDhBMabAg3tAw/hUjBERGxw=;
+        b=XjBn0Re5SWOb5GO/UGY3CixlmMmShGunQp+JtNQM4o9Q3OfILHFnIqqhS5AKcrhmNm
+         jNsqNctE0b8OMuHsnTbBXE+K0UOkHLxqSZpjW/cRzEqhSAjIJW/f/JvX0EogWcdTPBTS
+         J5SYa4yJGvr5hIC95uxnayxYvhu0LlLOLVIv4ia6el6mSbcJkjdLJDQh+wszBn85p5+I
+         Wub1VXXiTrusrCl9fRNUprxPhIRN7a/njqNJEe7qKOnPDuhaZF/bPZc+FxbXle7tbHL2
+         XsaUMIt8MIPBv5XCwKmRlAbQhBttQv88qCPc5iYrTjllnaH3BsdqR5nvotdnFEbk0MGv
+         d9xQ==
+X-Gm-Message-State: AOAM530Nin9ickWkFZ/UHonk/WPC+vzZH3YW1Fy7k6PQABoj/oQ8dgRv
+        5H30UGl46SriqaAiArEKFtq9nPrRvrY=
+X-Google-Smtp-Source: ABdhPJyRZnf+SlBQ7UbrvpsnTaq4v4xa242elj+FV/LlVyt9CQ5ComoNbu8H0KuPGTxqae/RK5yZTw==
+X-Received: by 2002:a5d:6051:: with SMTP id j17mr9690739wrt.81.1599245195826;
+        Fri, 04 Sep 2020 11:46:35 -0700 (PDT)
 Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id q186sm14111670wma.45.2020.09.04.11.46.32
+        by smtp.gmail.com with ESMTPSA id q186sm14111670wma.45.2020.09.04.11.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 11:46:32 -0700 (PDT)
+        Fri, 04 Sep 2020 11:46:34 -0700 (PDT)
 From:   Oded Gabbay <oded.gabbay@gmail.com>
 To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 4/6] habanalabs: Fix alignment issue in cpucp_info structure
-Date:   Fri,  4 Sep 2020 21:46:21 +0300
-Message-Id: <20200904184623.13478-4-oded.gabbay@gmail.com>
+Subject: [PATCH 5/6] habanalabs: increase PQ COMP_OFFSET by one nibble
+Date:   Fri,  4 Sep 2020 21:46:22 +0300
+Message-Id: <20200904184623.13478-5-oded.gabbay@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904184623.13478-1-oded.gabbay@gmail.com>
 References: <20200904184623.13478-1-oded.gabbay@gmail.com>
@@ -61,41 +60,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+For future ASICs, we increase this field by one nibble. This field was not
+used by the current ASICs so this change doesn't break anything.
 
-Because the device CPU compiler aligns structures to 8 bytes,
-struct cpucp_info has an alignment issue as some parts
-in the structure are not aligned to 8 bytes.
-It is preferred that we explicitly insert placeholders inside
-the structure to avoid confusion
-
-in order to validate this scenario, we printed both pointers:
-
-__u8 cpucp_version[VERSION_MAX_LEN]; (0xffff899c67ed4cbc)
-__le64 dram_size;                    (0xffff899c67ed4d40)
-
-we see difference of 132 bytes although the first array
-is only 128 bytes long, Meaning compiler added a 4 byte padding.
-
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 ---
- drivers/misc/habanalabs/include/common/cpucp_if.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/habanalabs/include/common/qman_if.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/habanalabs/include/common/cpucp_if.h b/drivers/misc/habanalabs/include/common/cpucp_if.h
-index 1e8480e978e2..dcde440427b4 100644
---- a/drivers/misc/habanalabs/include/common/cpucp_if.h
-+++ b/drivers/misc/habanalabs/include/common/cpucp_if.h
-@@ -410,6 +410,7 @@ struct cpucp_info {
- 	__u8 fuse_version[VERSION_MAX_LEN];
- 	__u8 thermal_version[VERSION_MAX_LEN];
- 	__u8 cpucp_version[VERSION_MAX_LEN];
-+	__le32 reserved2;
- 	__le64 dram_size;
- 	char card_name[CARD_NAME_MAX_LEN];
- };
+diff --git a/drivers/misc/habanalabs/include/common/qman_if.h b/drivers/misc/habanalabs/include/common/qman_if.h
+index 0fdb49188ed7..7ed7739575ee 100644
+--- a/drivers/misc/habanalabs/include/common/qman_if.h
++++ b/drivers/misc/habanalabs/include/common/qman_if.h
+@@ -40,7 +40,7 @@ struct hl_bd {
+  */
+ 
+ #define BD_CTL_COMP_OFFSET_SHIFT	16
+-#define BD_CTL_COMP_OFFSET_MASK		0x00FF0000
++#define BD_CTL_COMP_OFFSET_MASK		0x0FFF0000
+ 
+ #define BD_CTL_COMP_DATA_SHIFT		0
+ #define BD_CTL_COMP_DATA_MASK		0x0000FFFF
 -- 
 2.17.1
 
