@@ -2,81 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BA825D38B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDEF25D399
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729830AbgIDI0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 04:26:06 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:51424 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729761AbgIDI0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:26:04 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-_6JwrfygMgCh5W65Mchr2w-1; Fri, 04 Sep 2020 04:25:59 -0400
-X-MC-Unique: _6JwrfygMgCh5W65Mchr2w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AECCB80EF9C;
-        Fri,  4 Sep 2020 08:25:58 +0000 (UTC)
-Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8CEB25C22D;
-        Fri,  4 Sep 2020 08:25:54 +0000 (UTC)
-Subject: Re: [PATCH v4 00/10] vfio/fsl-mc: VFIO support for FSL-MC device
-To:     Diana Craciun OSS <diana.craciun@oss.nxp.com>,
-        alex.williamson@redhat.com, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
-        laurentiu.tudor@nxp.com
-References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
- <ae46be70-82d3-6137-6169-beb4bf8ae707@redhat.com>
- <084feb8a-3f9b-efc1-e4f8-eb9a3e60b756@oss.nxp.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <84a44bc8-bd7a-c81a-e7cc-35f0a8d3896a@redhat.com>
-Date:   Fri, 4 Sep 2020 10:25:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1729800AbgIDI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 04:28:13 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:42676 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729572AbgIDI2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 04:28:13 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kE74d-0001Op-Rl; Fri, 04 Sep 2020 18:27:56 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 04 Sep 2020 18:27:55 +1000
+Date:   Fri, 4 Sep 2020 18:27:55 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Hadar Gat <hadar.gat@arm.com>, Matt Mackall <mpm@selenic.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwrng: cctrn - Simplify with dev_err_probe()
+Message-ID: <20200904082755.GA1214@gondor.apana.org.au>
+References: <20200826153233.27586-1-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <084feb8a-3f9b-efc1-e4f8-eb9a3e60b756@oss.nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200826153233.27586-1-krzk@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Diana,
+On Wed, Aug 26, 2020 at 05:32:33PM +0200, Krzysztof Kozlowski wrote:
+> Common pattern of handling deferred probe can be simplified with
+> dev_err_probe().  Less code and also it prints the error value.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/char/hw_random/cctrng.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 
-On 9/4/20 10:03 AM, Diana Craciun OSS wrote:
-> Hi Eric,
-> 
-> On 9/3/2020 4:40 PM, Auger Eric wrote:
->>> The patches are dependent on some changes in the mc-bus (bus/fsl-mc)
->>> driver. The changes were needed in order to re-use code and to export
->>> some more functions that are needed by the VFIO driver. Currenlty the
->>> mc-bus patches are under review:
->>> https://www.spinics.net/lists/kernel/msg3639226.html 
->> Could you share a branch with both series? This would help the review.
->> Thanks Eric 
-> 
-> I have pushed both the series here:
-> https://source.codeaurora.org/external/qoriq/qoriq-components/linux-extras/log/?h=dpaa2_direct_assignment
-> 
-> 
-> Regards,
-> 
-> Diana
-> 
-> PS: I apologize if you received the message twice, I have sent it by
-> mistake as html first.
-> 
-No Problem. Thank you for the branch. I have completed a first review
-pass. Hope this helps.
-
-Thanks
-
-Eric
-
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
