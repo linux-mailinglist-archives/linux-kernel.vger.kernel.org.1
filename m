@@ -2,71 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3798D25DE00
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D2025DE06
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgIDPlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:41:52 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:3015 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgIDPlr (ORCPT
+        id S1726877AbgIDPnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgIDPmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:41:47 -0400
-X-Originating-IP: 90.66.108.79
-Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 98CE8240002;
-        Fri,  4 Sep 2020 15:41:44 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 17:41:44 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 7/8] rtc: rx8010: fix indentation in probe()
-Message-ID: <20200904154144.GL230586@piout.net>
-References: <20200904152116.2157-1-brgl@bgdev.pl>
- <20200904152116.2157-8-brgl@bgdev.pl>
+        Fri, 4 Sep 2020 11:42:51 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2A8C061245
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:42:51 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id z9so6512012wmk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UFt5VYp91zERLEDHeaE+RW9pXHUGaLWnGfwWTh4Sc2U=;
+        b=fU31qie4kt2TV9lPfFAfIIE0WAv8mDvUqhU1LLlYfB8UsatCipj8RgKEIFsNAc6ocA
+         xG5uup6s1fR/dqAgzERNBs1S+XEZ6SNWmkahGKmG0CN08m2kz4XzOMvv6F0SDvBIT2qC
+         wwZZDieY4lzyH3DTqG+DOaZgYgqgdTegIxpjpRBWVbTACjeTaAxRe1XDf4prKT4CyiPR
+         S4C6gpk6BSh+GiEs63wlu6eyxtO0I2XXbLJNQXeR0jNlfDzTSir6ah3Adnxf3Z9sMrKC
+         RZxxyTWdhtr1be/4hfo8j9Q1RBviQ3jtYMRbW5VWDj+IVf1QVbLFY+ZDb6MlmseawrnF
+         r3gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UFt5VYp91zERLEDHeaE+RW9pXHUGaLWnGfwWTh4Sc2U=;
+        b=dpNkOYIqKRETs4hxRlyAIL90RwIz8KgDFJR/CBGk6ETP4OL9dgieA/guJ8zGdQS8Ra
+         yuKPV7Hk3Pm9rWwTNauUMcQOejS9gME4E6WKiZ6jfX8iv8Dg9SbKC5VwxCvBeFtN3Gvj
+         iVSem5PrDcn10Ms15BlLuoVr2erdLemmBKlXbMROW0x0T88TNxhdG73mWnNuUBVXCJxh
+         q4wa5MR0/RhgiQn6VpOTZwVDpC8Z402BQugvF0sqzDXsoqn8igLEDo99DfHgMDx3vB79
+         7tQmZ87mOpZ1LMZcGBK9ywfFHbaoiWybGQF7CVshX4conJS+Q/ZVsf0/Qbd1g7E+OK5e
+         0QGQ==
+X-Gm-Message-State: AOAM533sAiYOfvS8McoAC6dVjN+Le0bd9TkThIkBhXB4onlDoaU/sKgl
+        f++eBArW9Oumy2unfMYlJxcEHvcd2jIvwr+7FVTv6g==
+X-Google-Smtp-Source: ABdhPJxLkBJqCTGf+urDE22psZ9kQBs7jd5tDjfYTwq0eIZiLv8gjpbdFkfhT1WGAohsQRYRqyhPHhMeA9xiVx5bOPw=
+X-Received: by 2002:a1c:1d52:: with SMTP id d79mr8761629wmd.82.1599234169816;
+ Fri, 04 Sep 2020 08:42:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904152116.2157-8-brgl@bgdev.pl>
+References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
+ <a712d2b70aaee20379cfc52c2141aa2f6e2a9d5b.1599120059.git-series.maxime@cerno.tech>
+In-Reply-To: <a712d2b70aaee20379cfc52c2141aa2f6e2a9d5b.1599120059.git-series.maxime@cerno.tech>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 4 Sep 2020 16:42:35 +0100
+Message-ID: <CAPY8ntBuPWFU-xEoLwR=C1ccbA5CoxcQ1Gx_zvWf+VQzRg=E1g@mail.gmail.com>
+Subject: Re: [PATCH v5 13/80] drm/vc4: kms: Convert to for_each_new_crtc_state
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
+        Stefan Wahren <stefan.wahren@i2se.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/09/2020 17:21:15+0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> Align the arguments passed to devm_rtc_device_register() with the upper
-> line.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hi Maxime
+
+On Thu, 3 Sep 2020 at 09:02, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> The vc4 atomic commit loop has an handrolled loop that is basically
+> identical to for_each_new_crtc_state, let's convert it to that helper.
+>
+> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
+> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+
+Based on your comment to the previous revision, I'm happy.
+
+Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+
 > ---
->  drivers/rtc/rtc-rx8010.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-> index 181fc21cefa8..ed8ba38b4991 100644
-> --- a/drivers/rtc/rtc-rx8010.c
-> +++ b/drivers/rtc/rtc-rx8010.c
-> @@ -450,7 +450,7 @@ static int rx8010_probe(struct i2c_client *client,
->  	}
->  
->  	rx8010->rtc = devm_rtc_device_register(&client->dev, client->name,
-> -		&rx8010_rtc_ops, THIS_MODULE);
-> +					       &rx8010_rtc_ops, THIS_MODULE);
->  
-
-You have bonus points if you replace that patch by switching from
-devm_rtc_device_register to devm_rtc_allocate_device and
-rtc_register_device.
-
-More bonus points if you also set range_min and range_max and then get
-rid of the range checking in set_time.
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>  drivers/gpu/drm/vc4/vc4_kms.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
+> index 210cc2408087..a41d105d4e3c 100644
+> --- a/drivers/gpu/drm/vc4/vc4_kms.c
+> +++ b/drivers/gpu/drm/vc4/vc4_kms.c
+> @@ -152,14 +152,16 @@ vc4_atomic_complete_commit(struct drm_atomic_state *state)
+>         struct drm_device *dev = state->dev;
+>         struct vc4_dev *vc4 = to_vc4_dev(dev);
+>         struct vc4_hvs *hvs = vc4->hvs;
+> -       struct vc4_crtc *vc4_crtc;
+> +       struct drm_crtc_state *new_crtc_state;
+> +       struct drm_crtc *crtc;
+>         int i;
+>
+> -       for (i = 0; i < dev->mode_config.num_crtc; i++) {
+> -               if (!state->crtcs[i].ptr || !state->crtcs[i].commit)
+> +       for_each_new_crtc_in_state(state, crtc, new_crtc_state, i) {
+> +               struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
+> +
+> +               if (!new_crtc_state->commit)
+>                         continue;
+>
+> -               vc4_crtc = to_vc4_crtc(state->crtcs[i].ptr);
+>                 vc4_hvs_mask_underrun(dev, vc4_crtc->channel);
+>         }
+>
+> --
+> git-series 0.9.1
