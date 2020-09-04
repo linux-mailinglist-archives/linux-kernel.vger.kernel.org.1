@@ -2,180 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6789225E0A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5FB25E0A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgIDRRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        id S1727081AbgIDRST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:18:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgIDRRt (ORCPT
+        with ESMTP id S1726277AbgIDRSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:17:49 -0400
-Received: from mail.sammserver.com (sammserver.com [IPv6:2001:470:5a5b:1::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D19C061244;
-        Fri,  4 Sep 2020 10:17:48 -0700 (PDT)
-Received: by mail.sammserver.com (Postfix, from userid 5011)
-        id 9686EFDD0E6; Fri,  4 Sep 2020 19:17:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1599239863; bh=dDKoamPUceQqGETlI2nSEREbsbeRT723m/JUxC5TTTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g1+NaaN1X3Hn6m9i3iXGvaw12p4SrhhhV+hQomING6he7xwqnvkGv65KlMkMUAD3s
-         cJyugJC4rNNu2lz9MjixVg0dpXFxZcFvRk4JHhVvCh2cy2k63a3HJTeRb3QVtHlCRT
-         2DLrXX1QCRdfROgF7Ass7fkjYAfe2FHGxEanW21U=
-Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
-        by mail.sammserver.com (Postfix) with ESMTP id 5214CFDD0E3;
-        Fri,  4 Sep 2020 19:17:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
-        t=1599239863; bh=dDKoamPUceQqGETlI2nSEREbsbeRT723m/JUxC5TTTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g1+NaaN1X3Hn6m9i3iXGvaw12p4SrhhhV+hQomING6he7xwqnvkGv65KlMkMUAD3s
-         cJyugJC4rNNu2lz9MjixVg0dpXFxZcFvRk4JHhVvCh2cy2k63a3HJTeRb3QVtHlCRT
-         2DLrXX1QCRdfROgF7Ass7fkjYAfe2FHGxEanW21U=
-Received: by fastboi.localdomain (Postfix, from userid 1000)
-        id 3ADFA14269B2; Fri,  4 Sep 2020 19:17:43 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 19:17:43 +0200
-From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Corentin Chary <corentin.chary@gmail.com>
-Cc:     acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: platform/x86: asus-wmi: SW_TABLET_MODE is always 1 on some
- devices
-Message-ID: <20200904171743.ejew22p3zzada55p@fastboi.localdomain>
-References: <20200901215536.qcouepovmfxje4n5@fastboi.localdomain>
- <0f7302c9-b508-a078-8c62-5ad5a03d92c2@redhat.com>
- <20200902125220.25x52dl2vupejg5f@fastboi.localdomain>
- <20200904094546.jes44d2kn5mtn2zu@fastboi.localdomain>
- <320c0b71-af94-c673-21c8-c32a0fdb4d4e@redhat.com>
+        Fri, 4 Sep 2020 13:18:16 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253BEC061244;
+        Fri,  4 Sep 2020 10:18:16 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id p6so4918667ybk.10;
+        Fri, 04 Sep 2020 10:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zfc6VGSzm8zmMkjKMO2rWCvc30ekK+qXgo2rUCsAxuM=;
+        b=a8tlbEttDX50qzj8qHjpXbYGBhjRJ9uvUqpEV2R8yLMtp1Gzg+iWlz06G8VZsSTszo
+         MPD3j6hD8uyMYD+V5I6OM+ZcoXTGNDkBUn18h54CrVdRU7rrf0HiWFg+WMMwiaTD9uYT
+         t4Ypr3EwyEux9hSP1xOowV4DiiPcVKuVX+eUC4ZSSe7E5lIbVGXpKL5zclIXutKJ5hF7
+         2GAk3/L667DNbOlPt/Uper0E1rL/9MoxK5ptomEb31jkAbgwm9GFZDgQCqmrmV6VcmYz
+         wA61GZTNyBu9fH2sAq2DjlsmQR15fzrJhzI/cYhZg60VktFXiwjYaOJE+2M0W2IPlH6l
+         Rmeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zfc6VGSzm8zmMkjKMO2rWCvc30ekK+qXgo2rUCsAxuM=;
+        b=G56hpS+Q4tjgj4Tlb7iher8os7GSfl+r/hqmJNNRh7rH+0WtDbXnCLcBrzAzZFPCQW
+         it6U/BMgBj+cNYnCBKCW2FxeX/WAjgL1DsUStAVeSTg36dQRAeYHL2jf8Q2s0JTTvtfu
+         N7x6n5V5XT8XzNWpzjTWhfHSXzJCTXO1ayfZsfHX+0V7osoVOKvSzIMBvZDgkNfZOEa/
+         UQAIGeIe7k4dhBXI4fWN1ifGyAyU19DjbYAztamNBS3rPCXCXjDH3B9EqDyu0bnmVmFJ
+         MZqC1Z9BngHautegIulNgs72DxlQ1YBwBimDDJhje1BENS3sJcMnLv4zVT2RBnN2cmej
+         CkXw==
+X-Gm-Message-State: AOAM533hnISkeMEQwftVZI66+J95Ih/+PP3/zthVBW4Kbx6hrHIA9mNG
+        cViTRlJxXA6g7DdygNeKd8Lfuf77LnQMOPgJaRY=
+X-Google-Smtp-Source: ABdhPJzhf2gcGQW8Bfk3nZHbFBeNDENxJ0X5gjaUzunqO3RJTsGgO+ufYZWXr5gUYyTjAC2onvKsLAp3P54FO1+I9hk=
+X-Received: by 2002:a25:bbcf:: with SMTP id c15mr11170341ybk.127.1599239895457;
+ Fri, 04 Sep 2020 10:18:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <320c0b71-af94-c673-21c8-c32a0fdb4d4e@redhat.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
-        version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
+References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200825162718.5838-4-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUbxtb+Yg=3dgRXWXn2k2tGYcmVzbS-n6rLM0QAJrfo-A@mail.gmail.com>
+In-Reply-To: <CAMuHMdUbxtb+Yg=3dgRXWXn2k2tGYcmVzbS-n6rLM0QAJrfo-A@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 4 Sep 2020 18:17:49 +0100
+Message-ID: <CA+V-a8vyrQjK-c6NYwn_zJcC2iRCL7sDm_-q2rcM7uicfEV7yQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] ARM: dts: r8a7742-iwg21d-q7: Add can0 support to
+ carrier board
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Geert,
 
-On 04.09.2020 12:06, Hans de Goede wrote:
-> Hi,
-> 
-> On 9/4/20 11:45 AM, Samuel Čavoj wrote:
-> > Hello!
-> > 
-> > On 02.09.2020 14:52, Samuel Čavoj wrote:
-> > > Hello,
-> > > 
-> > > On 02.09.2020 13:52, Hans de Goede wrote:
-> > > > But I would rather try to figure out a better way. Can you
-> > > > create an acpidump, by as root running:
-> > > > 
-> > > > acpidump -o acpidump.asus-UX360CA
-> > > 
-> > > The file is attached gzipped.
-> > > 
-> > > > 
-> > > > And then send me a direct (so without including the list)
-> > > > email with the generated acpidump.asus-UX360CA file attached please?
-> > > > 
-> > > > Also, if necessary are you capable of building your own
-> > > > kernel with a (test)patch applied ?
-> > > 
-> > > Yes, that is no problem at all.
-> > > Thank you for your quick response.
-> > > 
-> > > Regards,
-> > > Samuel
-> > 
-> > I don't mean to waste your time, it's just that my trust in mail systems
-> > has been steadily decreasing. I would just like to make sure you have
-> > received my previous email with the acpidump.
-> > 
-> > In case not, here[1] it is available over https, if the message got
-> > dropped because of the attachment.
-> 
-> I got your mail, but I've been burried under a ton of work,
-> so it may take a couple of days at least before I can take
-> a closer look at this.
+Thank you for the review.
 
-That's quite alright.
+On Thu, Sep 3, 2020 at 1:14 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > This patch enables CAN0 interface exposed through connector J20 on the
+> > carrier board.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+>
+> According to my schematics, the CAN port on J20 has its signals named
+> CAN0_[RT]XD on the carrier board, but connected to CAN1[RT]X (GP4_[67])
+> on the SoM.
+>
+> Or am I looking at the wrong file?
+>
+You are correct, I misplaced the node from the carrier board, will post a v2.
 
-I decided I would try and see if I can be of any use, so I looked around
-in the WMI implementation in the DSDT and found the following in the
-DSTS method:
+Cheers,
+Prabhakar
 
-[...]
-37486     If ((IIA0 == 0x00120063))
-37487     {
-37488         Local0 = ^^PCI0.LPCB.EC0.DKPS ()
-37489         If ((Local0 == One))
-37490         {
-37491             Return (0x00010001)
-37492         }                                                                                                
-37493         Else
-37494         {
-37495             Return (0x00010000)
-37496         }
-37497     }
-[...]
-
-This is the If statement responsible for the ASUS_WMI_DEVID_KBD_DOCK
-device, and it always seems to return 0x00010000 on my machine. I
-followed it up the call chain but in the end it just read some bit from
-some register of the EC.
-
-Then I noticed the If statement right above it, which corresponds to
-dev_id 0x00060062:
-
-[...]
-37472     If ((IIA0 == 0x00060062))
-37473     {
-37474         If (^^PCI0.LPCB.EC0.RPIN (0x15))
-37475         {
-37476             Local0 = 0x00010001
-37477         }
-37478         Else
-37479         {
-37480             Local0 = 0x00010000
-37481         }
-37482
-37483         Return (Local0)
-37484     }
-[...]
-
-By a stroke of luck, it turns out it's the correct one! I patched the
-driver to query the state on every event and print it out, and it is
-exactly what we are looking for.
-
-The state is 0 if the device is in normal, laptop state and changes to 1
-if flipped over 180 degrees. I patched the module so that the
-SW_TABLET_MODE switch was set according to it, and everything seems to
-be behaving as it should. This is, of course, not a full solution, as we
-still somehow need to decide whether to use the KDB_DOCK device or this
-one. I don't know what to do about that. Ideally find some flag in the
-ACPI which says which one we should use?
-
-The event code which is fired when the lid switch state changes, as we
-already know from the sparse keymap[1], is 0xfa. When the laptop is
-suspended in laptop mode, flipped to tablet mode in its sleep and
-awoken, the event is fired. It is, however, not fired when doing it the
-other way around, so we should probably check the state on resume as
-well.
-
-Please don't hesitate to ask for any additional testing or information
-required from my side.
-
-Regards,
-Sam
-
-P.S.: I'm adding back the lists and other people I addressed initially.
-
-[1]: https://lore.kernel.org/patchwork/patch/973647/
+> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > @@ -198,6 +198,13 @@
+> >         };
+> >  };
+> >
+> > +&can0 {
+>
+> can1
+>
+> > +       pinctrl-0 = <&can0_pins>;
+>
+> can1_pins
+>
+> > +       pinctrl-names = "default";
+> > +
+> > +       status = "okay";
+> > +};
+> > +
+> >  &cmt0 {
+> >         status = "okay";
+> >  };
+>
+> > @@ -287,6 +303,11 @@
+> >                 function = "tpu0";
+> >         };
+> >
+> > +       can0_pins: can0 {
+> > +               groups = "can0_data_d";
+>
+> can1_data_b
+>
+> > +               function = "can0";
+> > +       };
+> > +
+> >         i2c2_pins: i2c2 {
+> >                 groups = "i2c2_b";
+> >                 function = "i2c2";
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
