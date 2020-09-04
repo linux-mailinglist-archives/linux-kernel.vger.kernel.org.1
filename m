@@ -2,113 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99F925E1E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 21:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EA325E1DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 21:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727964AbgIDTTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 15:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727951AbgIDTTC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 15:19:02 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12D7C061246
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 12:19:01 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id j11so1593596plk.9
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 12:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qRMPP9LxKZUNiuhnbNUkYFs55rCgA//jb+vd/Rx6Ht0=;
-        b=eEwr7rjOHjYc90SI75Z6Ut+MR+UIR8SjsReg4Nh+bkkNtf3q6mhsZe/DOfXcHbnOjz
-         drKjfYKMQUPR1vGqcPN3Bl+y6ed/X+LsPKZVQsSpKrtVddmpMBN0zhjmooYpjO8cxUyh
-         k3zKOVzfP8YdEHI1VaORIAtYLL2AQ6r2WUqAs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qRMPP9LxKZUNiuhnbNUkYFs55rCgA//jb+vd/Rx6Ht0=;
-        b=Gd5lYlwzPcPcqmpJOXBZ57A6kUuOJWtvdrn3I7iIGTS3I/xArCTKxS/ga3qOQUujn6
-         VoQXHeqasl0wRY6D62nZMQUjE3CE17Yj6I8BgKrvx5SiN6Czo/58wtdn73ZacuouaQ82
-         nLeAhkLkC7nMWeyO6KmGNogrrcufj7/67rYG4rgR2rc1D8gqNLcRD1kmGYI0KsushNbT
-         e7Ke6afBPCfOVZXo70fsDm3iUpqGy6atZym73ubfodQl1bXaPpRgo5tA2nChf6rOLjuR
-         F1g1KlBfaeTB2AuRP0Rlzwt/0rakcuxhGrQPtA6xsUy87nWhNrHg1RUlhbs4IEaRCFDI
-         8Y9A==
-X-Gm-Message-State: AOAM532mGQWfcL3CvwvJ/0EfTQzlBc/HxOwTqYjGQhC6zxDt/Rq1tVYe
-        5TEggswb/AQGLHPJsfpmRbbMwA==
-X-Google-Smtp-Source: ABdhPJzUuILtE+Lwd5POY+0Lfp6RXonJmBryQBkbG0RS+y2jdm+w1JLUsyQMiNXyvqjHmoi1pWFsZg==
-X-Received: by 2002:a17:902:be08:b029:d0:5c75:38da with SMTP id r8-20020a170902be08b02900d05c7538damr9927728pls.1.1599247140913;
-        Fri, 04 Sep 2020 12:19:00 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c809:c7d5:b9ea:24bf:6b2b:1eee])
-        by smtp.gmail.com with ESMTPSA id t4sm5986001pje.56.2020.09.04.12.18.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 12:19:00 -0700 (PDT)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     Tom Cubie <tom@radxa.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amarula@amarulasolutions.com,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH 3/3] arm64: dts: rk3399-rock-pi-4c: Enable Display Port
-Date:   Sat,  5 Sep 2020 00:48:30 +0530
-Message-Id: <20200904191830.387296-4-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200904191830.387296-1-jagan@amarulasolutions.com>
-References: <20200904191830.387296-1-jagan@amarulasolutions.com>
+        id S1727827AbgIDTS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 15:18:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727792AbgIDTSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 15:18:55 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62A5A208CA;
+        Fri,  4 Sep 2020 19:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599247134;
+        bh=r1W+FDL0N2JbSaXM09U2olvU+2IazujrmTKEKN7XGCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gdHozSgaYHu1p9+x78KMilXM9wfNS77hr7aaE3CE+810s8miAMJfNCLoNIY1I/4ZB
+         Zyi/HrESlM7XWCLOJ8fobfFF2HAarYOoDXYvfcroMGxnAKJxUSPtd1QuyLQ/f23pVN
+         WEfmxlTOlWK4VZnL2QKjLg3JVFOBZnwkQRK4Q/uk=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 470A640D3D; Fri,  4 Sep 2020 16:18:52 -0300 (-03)
+Date:   Fri, 4 Sep 2020 16:18:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Kim Phillips <kim.phillips@amd.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Vijay Thakkar <vijaythakkar@me.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>,
+        Borislav Petkov <bp@suse.de>, Jon Grimm <jon.grimm@amd.com>,
+        Martin Jambor <mjambor@suse.cz>,
+        Michael Petlan <mpetlan@redhat.com>,
+        William Cohen <wcohen@redhat.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/4] perf vendor events amd: Add L2 Prefetch events for
+ zen1
+Message-ID: <20200904191852.GE3753976@kernel.org>
+References: <20200901220944.277505-1-kim.phillips@amd.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200901220944.277505-1-kim.phillips@amd.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable Display Port on ROCK Pi 4C board.
+Em Tue, Sep 01, 2020 at 05:09:41PM -0500, Kim Phillips escreveu:
+> Later revisions of PPRs that post-date the original Family 17h events
+> submission patch add these events.
+> 
+> Specifically, they were not in this 2017 revision of the F17h PPR:
+> 
+> Processor Programming Reference (PPR) for AMD Family 17h Model 01h, Revision B1 Processors Rev 1.14 - April 15, 2017
+> 
+> But e.g., are included in this 2019 version of the PPR:
+> 
+> Processor Programming Reference (PPR) for AMD Family 17h Model 18h, Revision B1 Processors Rev. 3.14 - Sep 26, 2019
 
-Unlike, other RK3399 platforms with accessing DP Altmode
-via Type-C connector, the display Port on ROCK Pi 4C is
-accessible via physical display port connector by means
-of Type-C Virtual PD extcon configuration.
 
-Enable support for it.
+Thanks, applied.
 
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
- .../boot/dts/rockchip/rk3399-rock-pi-4c.dts      | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-index 4c7ebb1c5d2d..19a648add355 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4c.dts
-@@ -11,6 +11,22 @@
- / {
- 	model = "Radxa ROCK Pi 4C";
- 	compatible = "radxa,rockpi4c", "radxa,rockpi4", "rockchip,rk3399";
-+
-+	virtual_pd: virtual-pd {
-+		compatible = "linux,extcon-usbc-virtual-pd";
-+		det-gpios = <&gpio4 RK_PD1 GPIO_ACTIVE_LOW>;	/* DP_HPD */
-+		vpd-data-role = "display-port";
-+		vpd-super-speed;
-+	};
-+};
-+
-+&cdn_dp {
-+	extcon = <&virtual_pd>;
-+	status = "okay";
-+};
-+
-+&tcphy0 {
-+	extcon = <&virtual_pd>;
- };
+- Arnaldo
  
- &sdio0 {
--- 
-2.25.1
+> Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+> Fixes: 98c07a8f74f8 ("perf vendor events amd: perf PMU events for AMD Family 17h")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Vijay Thakkar <vijaythakkar@me.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: John Garry <john.garry@huawei.com>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Yunfeng Ye <yeyunfeng@huawei.com>
+> Cc: Jin Yao <yao.jin@linux.intel.com>
+> Cc: "Martin Liška" <mliska@suse.cz>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Jon Grimm <jon.grimm@amd.com>
+> Cc: Martin Jambor <mjambor@suse.cz>
+> Cc: Michael Petlan <mpetlan@redhat.com>
+> Cc: William Cohen <wcohen@redhat.com>
+> Cc: Stephane Eranian <eranian@google.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: linux-perf-users@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> ---
+>  .../pmu-events/arch/x86/amdzen1/cache.json     | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/tools/perf/pmu-events/arch/x86/amdzen1/cache.json b/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+> index 404d4c569c01..695ed3ffa3a6 100644
+> --- a/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+> +++ b/tools/perf/pmu-events/arch/x86/amdzen1/cache.json
+> @@ -249,6 +249,24 @@
+>      "BriefDescription": "Cycles with fill pending from L2. Total cycles spent with one or more fill requests in flight from L2.",
+>      "UMask": "0x1"
+>    },
+> +  {
+> +    "EventName": "l2_pf_hit_l2",
+> +    "EventCode": "0x70",
+> +    "BriefDescription": "L2 prefetch hit in L2.",
+> +    "UMask": "0xff"
+> +  },
+> +  {
+> +    "EventName": "l2_pf_miss_l2_hit_l3",
+> +    "EventCode": "0x71",
+> +    "BriefDescription": "L2 prefetcher hits in L3. Counts all L2 prefetches accepted by the L2 pipeline which miss the L2 cache and hit the L3.",
+> +    "UMask": "0xff"
+> +  },
+> +  {
+> +    "EventName": "l2_pf_miss_l2_l3",
+> +    "EventCode": "0x72",
+> +    "BriefDescription": "L2 prefetcher misses in L3. All L2 prefetches accepted by the L2 pipeline which miss the L2 and the L3 caches.",
+> +    "UMask": "0xff"
+> +  },
+>    {
+>      "EventName": "l3_request_g1.caching_l3_cache_accesses",
+>      "EventCode": "0x01",
+> -- 
+> 2.27.0
+> 
 
+-- 
+
+- Arnaldo
