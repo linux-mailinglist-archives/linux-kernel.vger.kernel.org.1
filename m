@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A37425D3AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672F425D3B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729834AbgIDIbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 04:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729628AbgIDIbM (ORCPT
+        id S1729784AbgIDIdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 04:33:31 -0400
+Received: from esa5.microchip.iphmx.com ([216.71.150.166]:32671 "EHLO
+        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgIDIdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:31:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A122C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 01:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gbluQpPNHdbiMWA4xN7pVTQSsV8hyhAkU366CTjL+84=; b=SCC0VTxHP3pVTSpFGnwSKYEfBk
-        XxquMP8BzgfEKVT2S5qiZsHJTZWYbYb0Tzgp3GoNQ0w/xcrSUqciagxcx3+xxKrKDth7x4Qt3POFB
-        kk2iTmtowbfDyXay2rZZ0SPx8Q9rXYVD1a7gAzJov2TM7Y6gHGdCfOs9UlWyPeiu4WvI1rgLl/dSX
-        g4TuFLQ57A89IzenfSbedJadPLzUI71y4COT0uDtunDi1B/kM7abwCKaIrm2pD4Z0oAHBPI75IdqH
-        2QyjShdyWlKQcRj2zs3QkKOoGpn0/YCHVCTRt7L1ljAq/1hdy5Eek+FXSScxgNnALV1s0DEi/I7Nj
-        fPmoAizw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kE77l-0002YB-Im; Fri, 04 Sep 2020 08:31:09 +0000
-Date:   Fri, 4 Sep 2020 09:31:09 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.9-rc2
-Message-ID: <20200904083109.GA9182@infradead.org>
-References: <mhng-32c8d053-acbd-4c72-b41d-8d6042ac639d@palmerdabbelt-glaptop1>
- <CAHk-=wi_tf4qsiBj5UD0GG3wz8Hi5NrHzqdrx+CwtfAY+_UiGg@mail.gmail.com>
+        Fri, 4 Sep 2020 04:33:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1599208406; x=1630744406;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=q7FxclsURvMFLB4KzgyOyXIzenqxhAB++84k34J/Njo=;
+  b=GcPJjKvdLfiOh008m+5DyvCNKQ5Te4JMLwkquIbSmjYV7wfosvuH4OBs
+   QBSpZ4hROguGziNPmC+OeeGwpJMg1Oz8NJNHlrybyzLciNa8Ux9p59vU1
+   ferBNuJoygiB/HBWvTGg+ScEO4JirTMSeOak+ysZdp4g8PlhIjjXiCvmt
+   qSr0QU5xJnwX4ZRjSNtpLSMhD0LnF1K58dbZFwKxZcrp6fWYaR8W8oOhy
+   kp3LoBeMTUnhLhcRMwJh2mS5o3lAZ4vIMJgtmczqUBIT5xxy7llEEfMuM
+   5EK/uSFXafb4wmDyRgyjHKXOjbxXdv3/7qlWxwf0dsoIERdrHPxxIkb3H
+   Q==;
+IronPort-SDR: jBtz3COpuZ437EHW3+7MUlyGi+NWPaovslUEAsagCbvg/mLBURmJpyg+dbwcAe5KQ4MRlIpd/V
+ F3f4YSULETNBQGYmyiCF0IZBiPu7qQTc1P1WJibgBf30aUwr2mi3BPjIHZr6tWu1n/xs2RzpB7
+ bLLTRb+n73doHDJxyT+Yz6tjwUTXZgv6++7uVO4zAtRQYkqZnqmmDRnOqEmwKH19OOxNhRUj8W
+ 4zMYKfs81bTQQ5rVezkOCwPcTR/wM3MAu7mnOVUM1WJTJ3kNigNaWUroohVM4K/g7WYiOd19Va
+ gaM=
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="89822923"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Sep 2020 01:33:25 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 4 Sep 2020 01:33:13 -0700
+Received: from soft-dev15.microsemi.net.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Fri, 4 Sep 2020 01:33:11 -0700
+References: <20200903134704.8949-1-lars.povlsen@microchip.com> <8ca270c9-5561-3176-61cf-7a9fbee10d1f@roeck-us.net>
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        <linux-hwmon@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, "Zhang Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Amit Kucheria" <amitk@kernel.org>
+Subject: Re: [PATCH] hwmon: sparx5: Fix initial reading of temperature
+In-Reply-To: <8ca270c9-5561-3176-61cf-7a9fbee10d1f@roeck-us.net>
+Date:   Fri, 4 Sep 2020 10:33:11 +0200
+Message-ID: <87v9guvt4o.fsf@soft-dev15.microsemi.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi_tf4qsiBj5UD0GG3wz8Hi5NrHzqdrx+CwtfAY+_UiGg@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 12:35:20PM -0700, Linus Torvalds wrote:
-> On Fri, Aug 21, 2020 at 11:26 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> >
-> > * The CLINT driver has been split in two: one to handle the M-mode CLINT
-> >   (memory mapped and used on NOMMU systems) and one to handle the S-mode CLINT
-> >   (via SBI).
-> 
-> This looks more like development than fixes.
-> 
-> I guess I don't care deeply enough about it, but please don't do this.
 
-Well, I care because this late pull requests completely breaks nommu
-(nommu_virt_defconfig).   More specifically commit 2bc3fc877aa9
-("RISC-V: Remove CLINT related code from timer and arch") leas to this
-spew when booting under qemu:
+Guenter Roeck writes:
 
-[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
-[    0.000000] riscv-intc: 64 local interrupts mapped
-[    0.000000] plic: interrupt-controller@c000000: mapped 53 interrupts with 2 handlers for 4 contexts.
-[    0.000000] Oops - illegal instruction [#1]
-[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc1-00003-g2bc3fc877aa9c4 #609
-[    0.000000] epc: 000000008000de78 ra : 000000008000ddaa sp : 0000000080187f40
-[    0.000000]  gp : 00000000801a3aa8 tp : 000000008018bd40 t0 : 0000000000000019
-[    0.000000]  t1 : 0000000000000018 t2 : 0000000000000001 s0 : 0000000080187f80
-[    0.000000]  s1 : 0000000000000200 a0 : 000000008019b738 a1 : 0000000000000000
-[    0.000000]  a2 : ffffffff80187f50 a3 : 0000000000000000 a4 : 0000000000000000
-[    0.000000]  a5 : 0000000080169018 a6 : 0000000000000000 a7 : 00000000000001e4
-[    0.000000]  s2 : 00000000801a40a8 s3 : 00000000801a4068 s4 : 000000008fc7c040
-[    0.000000]  s5 : 00000000801a4038 s6 : 00000000801a4030 s7 : 0000000080012da0
-[    0.000000]  s8 : 0000000000000000 s9 : 0000000000000000 s10: 0000000000000000
-[    0.000000]  s11: 0000000000000000 t3 : 00000000801c40d8 t4 : 0000000000000068
-[    0.000000]  t5 : 000000000000004c t6 : 0000000000000033
-[    0.000000] status: 0000000000001800 badaddr: 0000000000000000 cause: 0000000000000002
-[    0.000000] random: get_random_bytes called from 0x00000000800210c4 with crng_init=0
-[    0.000000] ---[ end trace 0000000000000000 ]---
-[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-[    0.000000] ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
+> On 9/3/20 6:47 AM, Lars Povlsen wrote:
+>> If the temperature is read before the internal calibration is
+>> completed, the driver returns -EIO. Instead it should return -EAGAIN
+>> to encourage repeating the operation.
+>>
+>> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+>> ---
+>>  drivers/hwmon/sparx5-temp.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/hwmon/sparx5-temp.c b/drivers/hwmon/sparx5-temp.c
+>> index 1a2b1026b026..98be48e3a22a 100644
+>> --- a/drivers/hwmon/sparx5-temp.c
+>> +++ b/drivers/hwmon/sparx5-temp.c
+>> @@ -56,7 +56,7 @@ static int s5_read(struct device *dev, enum hwmon_sensor_types type,
+>>       case hwmon_temp_input:
+>>               stat = readl_relaxed(hwmon->base + TEMP_STAT);
+>>               if (!(stat & TEMP_STAT_VALID))
+>> -                     return -EIO;
+>> +                     return -EAGAIN;
+>
+> The problem is that this may result in a hard loop and effectively hang the system,
+> or at least the calling process. It may be better to return -ENODATA in this situation.
+>
+
+Guenther,
+
+Thank you for your response.
+
+The motivation for the patch was as I tried to use thermal support to
+control a fan, and I noticed an initial quip from
+thermal_core.c:update_temperature() - it will throw a dev_warn() for
+anything else than an "EAGAIN". The EAGAIN also seems to be used by
+several other hwmon drivers in similar situations.
+
+The bottom line is that I would like to get rid of the warning
+message. Changing the error code to ENODATA does not fix what I am
+trying to accomplish.
+
+Do you have any suggestions on how to achieve the objective?
+
+Sincerely,
+
+---Lars
+
+> Guenter
+>
+>>               value = stat & TEMP_STAT_TEMP;
+>>               /*
+>>                * From register documentation:
+>> --
+>> 2.27.0
+>>
+
+-- 
+Lars Povlsen,
+Microchip
