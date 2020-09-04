@@ -2,255 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C0F25D731
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1419925D73F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730238AbgIDL1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 07:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
+        id S1730233AbgIDL3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 07:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730224AbgIDL1k (ORCPT
+        with ESMTP id S1730095AbgIDL2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:27:40 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60DBC061247
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 04:27:39 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x14so6341700wrl.12
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:27:39 -0700 (PDT)
+        Fri, 4 Sep 2020 07:28:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF91BC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 04:28:09 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z4so6392556wrr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=erzVCkG6u4B8KH8TDdWQurkzlfyvvTZQMwD1DF4GTNA=;
-        b=EMjTlfHuyvDcRxyjY9iQJUH7v3QH6uHOF5whif6JAm7KZKiX2+MN2Xdd8loS/OERcq
-         sfxPHVS//O1wfzaQwir2aQY3LnpWzGmxXw9elj2ATmbC8eZzM3rYj/vOaVainYJtDOoZ
-         n16B1RA9G6kM5vqHot0cK5z1wlMcL6zqw0hynHPOnGsHcfP1gNssyZSU15gHHyIxpfwT
-         MWI3Suzlv7yndH/GhN8WFoZKZL+zaJAT2KDInBYJQCj1j6fwTZ53Lb0+AziTQqcGzJZN
-         p8+vyeWjI4nOhRhqZZ/cq+IvZ3WAKqIdfLQos3a9DpmKcfIr/r+v5mrvqFqC/PcR6GWf
-         pPLA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=6cY1z3DbL2LugEWNVnuvjy5yqeAv9ZfGr4EBGIpkmqo=;
+        b=ajKzcojM8mferUuFdzTt0fLsJDLON130FJP/bd4VnW2Ok2hQRuWkB4XdZMxlsiD/V2
+         fyvxhgSeQVs9HzYW2rZdYzHlSNcIZA2mVl7h86bxzrZ9UkSE38UfnLeKpiOnZrUUODmv
+         sTCM4zc/BrYuEblkYoXmUaTHevCW0VO2ltyOVCQ3N6JBJeqaI14KqdTQN/a26umPaJkp
+         bGtmJ04mh5bzfmQjM1wu3zhrUSO0avSQ9mgswJH3+F9pgcFyuJN4yi5Gaopco2QyIyY+
+         i1jSLenBjXJwlP2M44osCzccdBa7PO0PMzcyCZ+LiFtj7U6o8c7YaO5ORq/rWjgKZbqR
+         rwjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=erzVCkG6u4B8KH8TDdWQurkzlfyvvTZQMwD1DF4GTNA=;
-        b=aIjstihBNI9wPqxKoM16hTT4omoKyAGYRbrda7KUyG7+HJzmybw0vkzYZsqqeqNjY8
-         uRuBgIUPpyf4lEO9rOr0a9mwTANb6pXVQWxXiZeEvMA8encVZ0cCNat1Y91z2xlNqq4X
-         wDfJz2WWA3GVayPm0I7ODmtZBAvMWqnfD2J4OGYOfQ5RIed4Li0dSx3MU7w9hfEJbhbN
-         oUWFB7qTTotN9udOTCESAWowBwmSLsnCHYa3vaRs17kPgRCp4eljfa2RCc0bEW1EnkSm
-         HfilxrQubB+ppByabn2SuhyXtMw5IQTq6nGQ4jy5JPOTwwYI8oeqWjDmUxXoccPudSo0
-         H/xQ==
-X-Gm-Message-State: AOAM531poQ7xcR0KQVAdIhyrAhL3mEhPPRncQbHg5t2vPAclR6wbngEp
-        6avQlJVIwjkrSb8epUSCX8nKoA==
-X-Google-Smtp-Source: ABdhPJyrZ5pJE+dIVFGKrNJPZj3nIy0bgU/ZTsDc1WNBe8iYX+nzI/nCpe2pQKdaVOs04X6cacTeVA==
-X-Received: by 2002:a5d:6852:: with SMTP id o18mr7062275wrw.113.1599218855784;
-        Fri, 04 Sep 2020 04:27:35 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id 124sm10860162wmd.31.2020.09.04.04.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 04:27:34 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 12:27:32 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Alexandru Stan <amstan@chromium.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 1/3] backlight: pwm_bl: Fix interpolation
-Message-ID: <20200904112732.zdfzmjgpcds3jpzo@holly.lan>
-References: <20200721042522.2403410-1-amstan@chromium.org>
- <20200720212502.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200720212502.1.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=6cY1z3DbL2LugEWNVnuvjy5yqeAv9ZfGr4EBGIpkmqo=;
+        b=oLGmjRaWgCeSXXNh9EpXYjZWQUJ385K0hKajTHIlz9AtUTjZf+AI2AtbK5fXi+qNLc
+         8ZPj8mvJV55mk6JZoPfsetVuzy4Grss5OldkgI4eXVjiFyLaDj9cXxSkX62pvg2kgrLl
+         R81HgeOhCB0s4u4LeMqeHWS4V0WosYNOjdxuyPfUXpwhQRVc5Gl9f5ydv5YcpjhbH/hH
+         4Y2xjud5yyk7vDi/sfM6GlirlOJ6xHzvyfmpfzkRfhY7ibibf/ypFyHL0h8bpyGF/bik
+         nR3gbjGijohHrAYL6KKHD+tiUmPxhZlyPgDopaHfOJTbOqcxU9mMb9ZingtrK7wBPuPX
+         lj1Q==
+X-Gm-Message-State: AOAM5335bEWL73lGC0SoouNVHH5Cc78oP/xUHX4mXwTsrbEmjB0reiS5
+        wQwgBJ0EYSCElXXa+o7VHlPnTQ==
+X-Google-Smtp-Source: ABdhPJxgvriBnJSF1av8/To9z7heHY3u/v/teFPCQomEP3bVm/HZbh+jGTincEsdQ2OHKEsxEt9axQ==
+X-Received: by 2002:adf:ce85:: with SMTP id r5mr7394974wrn.205.1599218888480;
+        Fri, 04 Sep 2020 04:28:08 -0700 (PDT)
+Received: from localhost.localdomain ([51.15.160.169])
+        by smtp.googlemail.com with ESMTPSA id c18sm12226868wrx.63.2020.09.04.04.28.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Sep 2020 04:28:07 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] MAINTAINERS: media: cec: fix files location
+Date:   Fri,  4 Sep 2020 11:27:54 +0000
+Message-Id: <1599218874-800-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 09:25:20PM -0700, Alexandru Stan wrote:
-> Whenever num-interpolated-steps was larger than the distance
-> between 2 consecutive brightness levels the table would get really
-> discontinuous. The slope of the interpolation would stick with
-> integers only and if it was 0 the whole line segment would get skipped.
-> 
-> Example settings:
-> 	brightness-levels = <0 1 2 4 8 16 32 64 128 256>;
-> 	num-interpolated-steps = <16>;
-> 
-> The distances between 1 2 4 and 8 would be 1, and only starting with 16
-> it would start to interpolate properly.
-> 
-> Let's change it so there's always interpolation happening, even if
-> there's no enough points available (read: values in the table would
-> appear more than once). This should match the expected behavior much
-> more closely.
-> 
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Alexandru Stan <amstan@chromium.org>
+Files have moved, fixes their path.
 
-Apologies for the delay. Patch 2/3 meant I had some thinking to do...
-and then the holiday's took their toll.
+Fixes: 4be5e8648b0c ("media: move CEC platform drivers to a separate directory")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ MAINTAINERS | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Overall this looks good, just some quibbles about broken 64-bit maths.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1123f26e2891..3b2202b8dec5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2453,7 +2453,7 @@ L:	linux-samsung-soc@vger.kernel.org (moderated for non-subscribers)
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/media/s5p-cec.txt
+-F:	drivers/media/platform/s5p-cec/
++F:	drivers/media/cec/platform/s5p/
+ 
+ ARM/SAMSUNG S5P SERIES JPEG CODEC SUPPORT
+ M:	Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+@@ -2598,7 +2598,7 @@ L:	linux-tegra@vger.kernel.org
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/media/tegra-cec.txt
+-F:	drivers/media/platform/tegra-cec/
++F:	drivers/media/cec/platform/tegra/
+ 
+ ARM/TETON BGA MACHINE SUPPORT
+ M:	"Mark F. Brown" <mark.brown314@gmail.com>
+@@ -4042,7 +4042,7 @@ S:	Supported
+ W:	http://linuxtv.org
+ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/cec-gpio.txt
+-F:	drivers/media/platform/cec-gpio/
++F:	drivers/media/cec/platform/cec-gpio/
+ 
+ CELL BROADBAND ENGINE ARCHITECTURE
+ M:	Arnd Bergmann <arnd@arndb.de>
+@@ -11364,8 +11364,8 @@ S:	Supported
+ W:	http://linux-meson.com/
+ T:	git git://linuxtv.org/media_tree.git
+ F:	Documentation/devicetree/bindings/media/amlogic,meson-gx-ao-cec.yaml
+-F:	drivers/media/platform/meson/ao-cec-g12a.c
+-F:	drivers/media/platform/meson/ao-cec.c
++F:	drivers/media/cec/platform/meson/ao-cec-g12a.c
++F:	drivers/media/cec/platform/meson/ao-cec.c
+ 
+ MESON NAND CONTROLLER DRIVER FOR AMLOGIC SOCS
+ M:	Liang Yang <liang.yang@amlogic.com>
+@@ -15574,8 +15574,8 @@ F:	drivers/mmc/host/sdricoh_cs.c
+ SECO BOARDS CEC DRIVER
+ M:	Ettore Chimenti <ek5.chimenti@gmail.com>
+ S:	Maintained
+-F:	drivers/media/platform/seco-cec/seco-cec.c
+-F:	drivers/media/platform/seco-cec/seco-cec.h
++F:	drivers/media/cec/platform/seco/seco-cec.c
++F:	drivers/media/cec/platform/seco/seco-cec.h
+ 
+ SECURE COMPUTING
+ M:	Kees Cook <keescook@chromium.org>
+@@ -16608,7 +16608,7 @@ STI CEC DRIVER
+ M:	Benjamin Gaignard <benjamin.gaignard@linaro.org>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/media/stih-cec.txt
+-F:	drivers/media/platform/sti/cec/
++F:	drivers/media/cec/platform/sti/
+ 
+ STK1160 USB VIDEO CAPTURE DRIVER
+ M:	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+-- 
+2.26.2
 
-
-> ---
-> 
->  drivers/video/backlight/pwm_bl.c | 70 ++++++++++++++------------------
->  1 file changed, 31 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-> index 82b8d7594701..5193a72305a2 100644
-> --- a/drivers/video/backlight/pwm_bl.c
-> +++ b/drivers/video/backlight/pwm_bl.c
-> @@ -235,8 +235,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  				  struct platform_pwm_backlight_data *data)
->  {
->  	struct device_node *node = dev->of_node;
-> -	unsigned int num_levels = 0;
-> -	unsigned int levels_count;
-> +	unsigned int num_levels;
->  	unsigned int num_steps = 0;
->  	struct property *prop;
->  	unsigned int *table;
-> @@ -265,12 +264,11 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  	if (!prop)
->  		return 0;
->  
-> -	data->max_brightness = length / sizeof(u32);
-> +	num_levels = length / sizeof(u32);
->  
->  	/* read brightness levels from DT property */
-> -	if (data->max_brightness > 0) {
-> -		size_t size = sizeof(*data->levels) * data->max_brightness;
-> -		unsigned int i, j, n = 0;
-> +	if (num_levels > 0) {
-> +		size_t size = sizeof(*data->levels) * num_levels;
->  
->  		data->levels = devm_kzalloc(dev, size, GFP_KERNEL);
->  		if (!data->levels)
-> @@ -278,7 +276,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  
->  		ret = of_property_read_u32_array(node, "brightness-levels",
->  						 data->levels,
-> -						 data->max_brightness);
-> +						 num_levels);
->  		if (ret < 0)
->  			return ret;
->  
-> @@ -303,7 +301,13 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  		 * between two points.
->  		 */
->  		if (num_steps) {
-> -			if (data->max_brightness < 2) {
-> +			unsigned int num_input_levels = num_levels;
-> +			unsigned int i;
-> +			u32 x1, x2, x;
-> +			u32 y1, y2;
-> +			s64 dx, dy;
-
-dx should be 32-bit. It will be truncated to 32-bit when passed to
-div_s64() so this type is actively misleading about how the maths
-works.
-
-
-> +
-> +			if (num_input_levels < 2) {
->  				dev_err(dev, "can't interpolate\n");
->  				return -EINVAL;
->  			}
-> @@ -313,14 +317,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  			 * taking in consideration the number of interpolated
->  			 * steps between two levels.
->  			 */
-> -			for (i = 0; i < data->max_brightness - 1; i++) {
-> -				if ((data->levels[i + 1] - data->levels[i]) /
-> -				   num_steps)
-> -					num_levels += num_steps;
-> -				else
-> -					num_levels++;
-> -			}
-> -			num_levels++;
-> +			num_levels = (num_input_levels - 1) * num_steps + 1;
->  			dev_dbg(dev, "new number of brightness levels: %d\n",
->  				num_levels);
->  
-> @@ -332,24 +329,25 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  			table = devm_kzalloc(dev, size, GFP_KERNEL);
->  			if (!table)
->  				return -ENOMEM;
-> -
-> -			/* Fill the interpolated table. */
-> -			levels_count = 0;
-> -			for (i = 0; i < data->max_brightness - 1; i++) {
-> -				value = data->levels[i];
-> -				n = (data->levels[i + 1] - value) / num_steps;
-> -				if (n > 0) {
-> -					for (j = 0; j < num_steps; j++) {
-> -						table[levels_count] = value;
-> -						value += n;
-> -						levels_count++;
-> -					}
-> -				} else {
-> -					table[levels_count] = data->levels[i];
-> -					levels_count++;
-> +			/*
-> +			 * Fill the interpolated table[x] = y
-> +			 * by draw lines between each (x1, y1) to (x2, y2).
-> +			 */
-> +			dx = num_steps;
-> +			for (i = 0; i < num_input_levels - 1; i++) {
-> +				x1 = i * dx;
-> +				x2 = x1 + dx;
-> +				y1 = data->levels[i];
-> +				y2 = data->levels[i + 1];
-> +				dy = y2 - y1;
-
-This is an u32 expression being assigned to a s64. I could be rusty on
-my fixed point maths but won't this promote too late for the 64-bitness
-of dy to be useful?
-
-
-Daniel.
-
-> +
-> +				for (x = x1; x < x2; x++) {
-> +					table[x] = y1 +
-> +						div_s64(dy * (x - x1), dx);
->  				}
->  			}
-> -			table[levels_count] = data->levels[i];
-> +			/* Fill in the last point, since no line starts here. */
-> +			table[x2] = y2;
->  
->  			/*
->  			 * As we use interpolation lets remove current
-> @@ -358,15 +356,9 @@ static int pwm_backlight_parse_dt(struct device *dev,
->  			 */
->  			devm_kfree(dev, data->levels);
->  			data->levels = table;
-> -
-> -			/*
-> -			 * Reassign max_brightness value to the new total number
-> -			 * of brightness levels.
-> -			 */
-> -			data->max_brightness = num_levels;
->  		}
->  
-> -		data->max_brightness--;
-> +		data->max_brightness = num_levels - 1;
->  	}
->  
->  	return 0;
-> -- 
-> 2.27.0
