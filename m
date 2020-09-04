@@ -2,105 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEE425D5AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E397825D5B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729981AbgIDKId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgIDKIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:08:23 -0400
-Received: from localhost (unknown [122.182.253.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 310ED206D4;
-        Fri,  4 Sep 2020 10:08:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599214103;
-        bh=YuSrsI5KqLBnMX+vksl2yVrjohdpsF5I/0/1S7u3drc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=kPauqMoXES0825Hrny9OK5pTmG1Ex+Fh+3cyoMNoO2zles3wRmH2L/BS/8lSFKP+o
-         0iuaglP9yLcoFOkHYffAYTx+GWcw5IeQNIo7SY73HK2Zw+lvRHgsUP7FaFV+itToHU
-         M+9wjhIX6+c8K6jRyEC/X59udPV9ba+lY1uWyZgw=
-Date:   Fri, 4 Sep 2020 15:38:18 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: soundwire fixes for v5.9
-Message-ID: <20200904100818.GZ2639@vkoul-mobl>
+        id S1730003AbgIDKKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgIDKKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:10:06 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A9BC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 03:10:05 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 6542D3D5; Fri,  4 Sep 2020 12:10:02 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 12:10:01 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Yuqi Jin <jinyuqi@huawei.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/iova: Replace cmpxchg with xchg in queue_iova
+Message-ID: <20200904101000.GV6714@8bytes.org>
+References: <1598517834-30275-1-git-send-email-zhangshaokun@hisilicon.com>
+ <20200904093732.GN6714@8bytes.org>
+ <208d2f74-1a04-f01e-b885-c175b0480784@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mxv5cy4qt+RJ9ypb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <208d2f74-1a04-f01e-b885-c175b0480784@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Robin,
 
---mxv5cy4qt+RJ9ypb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 04, 2020 at 10:58:14AM +0100, Robin Murphy wrote:
+> On 2020-09-04 10:37, Joerg Roedel wrote:
+> > Adding Robin.
+> 
+> Did you miss that I've reviewed this already? :)
+> 
+> https://lore.kernel.org/linux-iommu/3afcc7b2-0bfb-b79c-513f-1beb66c5f164@arm.com/
 
-Hello Greg,
+Hmm, that mail wasn't in my inbox, but b4 found it. I'll need to look
+why it didn't make it...
 
-I have two fixes for soundwire subsystem, please pull.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
-
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
-undwire-5.9-fixes
-
-for you to fetch changes up to 3fbbf2148a406b3e350fe91e6fdd78eb42ecad24:
-
-  soundwire: fix double free of dangling pointer (2020-09-03 14:10:19 +0530)
-
-----------------------------------------------------------------
-soundwire fixes for v5.8
-
-This contains two fixes to sdw core for dangling pointer and a typo for
-INTSTAT register
-
-----------------------------------------------------------------
-Pierre-Louis Bossart (1):
-      soundwire: bus: fix typo in comment on INTSTAT registers
-
-Tom Rix (1):
-      soundwire: fix double free of dangling pointer
-
- drivers/soundwire/bus.c    | 2 +-
- drivers/soundwire/stream.c | 8 +++++---
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---mxv5cy4qt+RJ9ypb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl9SEhIACgkQfBQHDyUj
-g0eclg/+P7eLv1f9mAgEuiwe55Uzi7WPAB7PbkCQr6pdxA25ViJWdVEwZrTW9Hmr
-+GbB86Pakj+lx2P3Lpwyy9A0nuIq8ouQiTjKJZ1HgtMRKTr3tlhHFVlSrjmBqhmz
-Rrq2bp5Dv/OCHkqXapdU9zZ1HVaLRvqjGxzie6KK9/c3kG4vzv3aoBMBRjHAOgRC
-i0rzdFWOnFaxWhGQONLic0WNUh2N6XG7iQRVekMGW6GRn66qUIn0K2yOUMnChrhG
-hDlWXwL5GZ3BE6JtEGBLjU//MPzS2pkB3SPhDUTszg33nYkGNK8PJcVDi/vNZ/oe
-DXm++nPZ1QGgCKo2aIEiX/mr9esb/N4eu6gDJ/IC3RR2206baFfIyXsmpNvDhDwt
-9YKo3YGvBRYNrRKqozIWCa4MVyJcMjyoIufDJ5PnJQ2c1BXPGqKkWjVUQ2OTdlk5
-p2uXOYrSLecdBi5LOnFGxQARX17p1ILk0swYFo4LxNTqJMf3PnqcetxBmUYf0J6U
-F9HMKw+WJEwzEqyRRGel2wObD/lVAzrnLyU6KOrcdJYQIW1jWFtYFlmm5lYP3EjN
-+ENPUCPse+RHIuah1gbT+xS2la8g9j+9jwXVC6No7a0ZWtb6/DTsAo3ubtOo51xu
-CFpfejmVe06vUmV57K1s51u9Ll17oFZWvOSn4LKrzuWV+A7f6tU=
-=XdIt
------END PGP SIGNATURE-----
-
---mxv5cy4qt+RJ9ypb--
+	Joerg
