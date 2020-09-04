@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F89D25DCDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A3025DCE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730416AbgIDPJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
+        id S1730457AbgIDPL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729942AbgIDPJv (ORCPT
+        with ESMTP id S1729942AbgIDPLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:09:51 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302AFC061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:09:51 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id w16so6825464oia.2
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:09:51 -0700 (PDT)
+        Fri, 4 Sep 2020 11:11:25 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEC5C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:11:24 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g4so7105911wrs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:11:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pDK/W863J4Emn1hkynlvhr7fPRAsMPX6ZEbd3sQLo0I=;
-        b=g2D2qGtM/WYDLwSvJbX+jaBrlLxeXrw2h98Bytw/9YXLeUUNpuxEO0G+yMcVkqL9x/
-         FvUlngKXsRsMh06LU8Xd53alpdZRFlk3k52a9TlqoBfXqdfWI7a/SnOaOlK4BQ3MdrNL
-         4zFI3UYoeh5EdMI2FN+JcKkDhVH1eSLLQ2ux0=
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=0/0GXn0B+kUH2sz1v6n2Lld/M16vBnqePYs9K5OQkgg=;
+        b=oTUwEG1LSm3WzGdzF1AVf4wKi+0v4s838H2QIBJs1VW+aYZG8KtCNTsPAq3cJDH9EH
+         2Vhj2jPne9XzEJZy9n8J9uZXc1nkSDCMQf6SNsLj2SWZnGwzvm49PhAsQxIvfDVdgNiU
+         x1TGH4LzxXoHNEg5Yw1ZX/kS9OkEFkhZVwxbLRn0H7YzM0p+aIXvdRpPU5bPqCIAFCwz
+         In4aABZIuPHGP4Nj389lnofHoeghKc8mLxCjluLXwoqBqS/YDqKbWDB253oGurQlXU5w
+         lNJx/BqHNijWw7NNY6Xc9ZAI0TG7tIqXklxBSfaFnXr7l0zJeGMxFLyCK6Uve4vx8h7u
+         uuzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pDK/W863J4Emn1hkynlvhr7fPRAsMPX6ZEbd3sQLo0I=;
-        b=l2VolrPyv9thuO+qHliPyuOhg7hQwAbvwGE6q3UNTaJrJ9ijObnvi/4LfTMWpFCbyl
-         cNRusfVmCBImhE72kmEugZdMyuOG/l8uWEXT8yAY3kuWicdQyKuIXPXvoUinL1N2qkG5
-         1zYyN4fDnnlGtbEOaIxjIxzVX4EeQ+JAU1w7uSv9phUzrVEQ8VXGEp5JnRmWonDMh2Tu
-         E5xciBbBevPE/UNnl7A1rwrw9OHvpz0ce9sp2aY3FQNuTUM34DT5oQcvYTvjzenXG3YV
-         DdyJqiQjv3CB3i/XqDVLEdQv2jJ0PVB83Eh6aWU8EYRq62I8el/zEntI/BCwlCjv6TXU
-         ZyEQ==
-X-Gm-Message-State: AOAM533U49HnsmN6Aw8Ap62v723yd4jRNvPl31nWzF0McXpXBZzTtCpV
-        ygtMBCtmwndY7Y3D+o1BJLSeSXQuWFyoY3SOqddsLA==
-X-Google-Smtp-Source: ABdhPJxPJzpMyfCwWQaTqMdDuKLDqebC6uSpZLg67V6hw4kRA3DJgPwgwnTtpUQIMpeD2MqRoBLl3L7TtNrQm9/xMXE=
-X-Received: by 2002:aca:ea44:: with SMTP id i65mr5577999oih.14.1599232190594;
- Fri, 04 Sep 2020 08:09:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200904130605.vs5tnfhgnemnz6pt@smtp.gmail.com>
-In-Reply-To: <20200904130605.vs5tnfhgnemnz6pt@smtp.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 4 Sep 2020 17:09:39 +0200
-Message-ID: <CAKMK7uG+qXLn4Om6oZhyYkKk=Cb57CNSzpJv=rLCds6xpk+dhg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add entry for VKMS
-To:     Melissa Wen <melissa.srw@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Haneen Mohammed <hamohammed.sa@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Trevor Woerner <twoerner@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=0/0GXn0B+kUH2sz1v6n2Lld/M16vBnqePYs9K5OQkgg=;
+        b=MB8VtiFK5yd/FQ+sTx05XS0tcOtOOO3LICRpDFvCnTXExaTiOCwfRJ5oxm9aEFeEHY
+         oZrIVKhaIOIxgG7eqyOFtDVyfDNlPw+8qocpxX3fE9Ei6NU7/QsOquDLgCSXMMX1YhgQ
+         VzNw88u+oY7sMjdxCGkg36wGXyDxOiz+932lOXUCSvAD4wl435AsPeZ2tAvZHMkputUn
+         LIRZ3cat5h1VVkBQHurzPd2GkVLPD0t90axqt0IG+iOa10eImUWtb5cJYN8lJtCDWx7H
+         vMukAvAY5O07GpUHBYNefj09+xG+Y1ZGVe7E7BIvxhR96EnBQaEkNhMGRTpRVyAzfPZq
+         a7fQ==
+X-Gm-Message-State: AOAM532QHGh8KLKr4OkRSVau6oipw3IFGo8CB8iB2uzQxp4438ir6N3b
+        bZABCE9jdx2q1VxG0NONM76yWMOLhjs=
+X-Google-Smtp-Source: ABdhPJySLjw1Wgw6FkT1mzo6IMfHEVFg9/kRS+RKN6CaOAKRD5PYKRJugLymPKYzLrPjMKaVpcpaGA==
+X-Received: by 2002:adf:9bc9:: with SMTP id e9mr8022953wrc.123.1599232282940;
+        Fri, 04 Sep 2020 08:11:22 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id b194sm13053786wmd.42.2020.09.04.08.11.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 08:11:21 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, SW_Drivers@habana.ai
+Subject: [PATCH] habanalabs: count dropped CS because max CS in-flight
+Date:   Fri,  4 Sep 2020 18:11:19 +0300
+Message-Id: <20200904151119.24224-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 3:06 PM Melissa Wen <melissa.srw@gmail.com> wrote:
->
-> Add myself as maintainer of VKMS driver
->
-> Signed-off-by: Melissa Wen <melissa.srw@gmail.com>
+There is a case where the user reaches the maximum number of CS in-flight.
+In that case, the driver rejects the new CS of the user with EAGAIN. Count
+that event so the user can query the driver later to see if it happened.
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/common/command_submission.c | 5 ++++-
+ include/uapi/misc/habanalabs.h                      | 2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-Congrats!
--Daniel
-
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 01fb9ee6b951..d4277824a01c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5640,6 +5640,7 @@ F:        drivers/gpu/drm/udl/
->
->  DRM DRIVER FOR VIRTUAL KERNEL MODESETTING (VKMS)
->  M:     Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
-> +M:     Melissa Wen <melissa.srw@gmail.com>
->  R:     Haneen Mohammed <hamohammed.sa@gmail.com>
->  R:     Daniel Vetter <daniel@ffwll.ch>
->  L:     dri-devel@lists.freedesktop.org
-> --
-> 2.28.0
->
-
-
+diff --git a/drivers/misc/habanalabs/common/command_submission.c b/drivers/misc/habanalabs/common/command_submission.c
+index a811a9fdf13b..470bffbe9bdc 100644
+--- a/drivers/misc/habanalabs/common/command_submission.c
++++ b/drivers/misc/habanalabs/common/command_submission.c
+@@ -252,6 +252,8 @@ static void cs_counters_aggregate(struct hl_device *hdev, struct hl_ctx *ctx)
+ 			ctx->cs_counters.parsing_drop_cnt;
+ 	hdev->aggregated_cs_counters.queue_full_drop_cnt +=
+ 			ctx->cs_counters.queue_full_drop_cnt;
++	hdev->aggregated_cs_counters.max_cs_in_flight_drop_cnt +=
++			ctx->cs_counters.max_cs_in_flight_drop_cnt;
+ }
+ 
+ static void cs_do_release(struct kref *ref)
+@@ -431,8 +433,9 @@ static int allocate_cs(struct hl_device *hdev, struct hl_ctx *ctx,
+ 				(hdev->asic_prop.max_pending_cs - 1)];
+ 
+ 	if (other && !completion_done(&other->completion)) {
+-		dev_dbg(hdev->dev,
++		dev_dbg_ratelimited(hdev->dev,
+ 			"Rejecting CS because of too many in-flights CS\n");
++		ctx->cs_counters.max_cs_in_flight_drop_cnt++;
+ 		rc = -EAGAIN;
+ 		goto free_fence;
+ 	}
+diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+index a2dcad29340f..69fb44d35292 100644
+--- a/include/uapi/misc/habanalabs.h
++++ b/include/uapi/misc/habanalabs.h
+@@ -401,12 +401,14 @@ struct hl_info_sync_manager {
+  * @parsing_drop_cnt: dropped due to error in packet parsing
+  * @queue_full_drop_cnt: dropped due to queue full
+  * @device_in_reset_drop_cnt: dropped due to device in reset
++ * @max_cs_in_flight_drop_cnt: dropped due to maximum CS in-flight
+  */
+ struct hl_cs_counters {
+ 	__u64 out_of_mem_drop_cnt;
+ 	__u64 parsing_drop_cnt;
+ 	__u64 queue_full_drop_cnt;
+ 	__u64 device_in_reset_drop_cnt;
++	__u64 max_cs_in_flight_drop_cnt;
+ };
+ 
+ struct hl_info_cs_counters {
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
