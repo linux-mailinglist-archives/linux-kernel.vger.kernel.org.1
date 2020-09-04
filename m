@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9014425E047
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3D325E05B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgIDQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
+        id S1728058AbgIDQzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:55:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727847AbgIDQxE (ORCPT
+        with ESMTP id S1726185AbgIDQyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:53:04 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 111A1C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:53:04 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id u13so4641162pgh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:53:04 -0700 (PDT)
+        Fri, 4 Sep 2020 12:54:47 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941C8C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:54:47 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id h4so7821605ioe.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lC0AlfwmZlpXeFpa/LGTAh3XxfRABk0wlmEHVW6V7fE=;
-        b=Q7CFVqfCLCtDBrZDi/ZGTtwMxmb2/Myx2mQsdKxdDh/3t33apZQYU3Iai4UApZLOLW
-         ANYnA2xCpzS7qfDQiff7ZIJKCKfWvTETq897Hgx4W3m3wYLvA721kbBrQIcFinJFuRga
-         yhzH/cAhqels7FptH8Qc5dNmobzyaVmwKNdJJqFVimdyTenmHo+YYiDvxB125mchBoNt
-         XQofTmLKgJfcTn5KPu45URFCUvXiOsa2gAqmhc3BFw4hRYMv4TDp40gXYvVZgyqv28rU
-         UbqLKx37auf+HdwMcqp9Geq4fdyk1NjHYl65+r96KX+LEnCnX8ZRjQa2xGTR+6C6AR62
-         8TNA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yuyjbFHoO/MfKcJCdSK7UzvOyTNj/L7bhfgE/kRmYrI=;
+        b=o4rLgyn8Ia62kQ510NnS41tFAUR14f/25JpG4QxR1t3v6u2Ph5mZ/wVWzd0IsvlCua
+         HWUfuFohjJrLkPsaQdyzC4cTyv9vmVPi/CZVPoVdDSjREVUYStTlViWHn9jFYfsSEx77
+         7u5HMl5d7CmMv9w3mJjhKSKZfxykcrclOyXmqGWajNo1C3vTMT0J9gOqCVOEz9tFmIQU
+         Xu0biTepgJ7S41//yt8ix++XO8tjr6+dnwuC+Wq79nivDIw7R6qx6VPiY8ydbHifMXGv
+         2E6AdHSBfK5t7Vv30RuDFC/pz2fHgi3USf+RAwht0XcOM16usa4G66B3FmzUTJq2ZQ6Z
+         HWyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lC0AlfwmZlpXeFpa/LGTAh3XxfRABk0wlmEHVW6V7fE=;
-        b=TlyuYsITJ4xvZUFwKSFw97lyXCVL/H2H/Wot0u4cH0sIS7LZthit4MyBhsj+TVK4jl
-         iUZGY1T9mbNVVoQ6KwSz3yfh91OSfdzJY9ehLmcs/XZHggC+cnU/PaGJl6xw9WYzT79c
-         WczMK0WRw2GAt2wMdIBpwD/w5O2eWI3rKZTeSFfYoOV/xdv3rPlMFnMugxCm+v8H9FzD
-         AziHSNNCcVrV6hXVcMS0oKDnDxBGzQlBQqGS6N0WMQvJolpunAPEW7xyB88qovnSuO9Z
-         FVEuM4L9A27OXoRKBPZwpkZYVRC9+lmBxpI4wZZ8jY2mOSBq8J3fl9huMeomfHEigOu5
-         Ef+Q==
-X-Gm-Message-State: AOAM531bFal5VNNHR/VLiHJ5Eb0BYIMa3Sja0wa7QOoEkWdT6PJQxUoT
-        m0T5GE6gODGIFPkXSJMb8jNMmg==
-X-Google-Smtp-Source: ABdhPJyvhH5BRWXhwxslu96Xy5h5enqyHsLxdiKc2cUiZyDMbeBs0eCAgFOnGT6mOyg9uccQ2aAtbg==
-X-Received: by 2002:a63:4810:: with SMTP id v16mr964781pga.374.1599238383613;
-        Fri, 04 Sep 2020 09:53:03 -0700 (PDT)
-Received: from [192.168.1.11] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id 19sm4650788pgz.42.2020.09.04.09.53.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 09:53:03 -0700 (PDT)
-Subject: Re: [PATCH 0/2] use generic_file_buffered_read()
-To:     Bean Huo <huobean@gmail.com>, linux-block@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yuyjbFHoO/MfKcJCdSK7UzvOyTNj/L7bhfgE/kRmYrI=;
+        b=ozxIrlZOk7NK/jgpBUzp5qG2LLM/UKNvDxp651FtNGW40zz2uNVvrkHzwOyM4FCtAb
+         W7nI21z36GnXaPY65yO8zPrjOpmG4qIjLDHZIn0Utth2bSlVCjybU4crG6EHcis+Pyzl
+         jIS5NabZjGVwfPTpTKaaD1UX+ruZmyaHVMjPtz8y0ibpX0cPHRTDcPMFUppv76YE5GgE
+         X0kHS5BTi/X+lteommVAXVy4Im2xU+xvGgy5CAHLbUGRtFO8W/MCQWl57qfoYJfulcAY
+         nUE+dC73SdgYZWlKBHoF1YBI/+JShJj1WR658F2JLZxUyZnrN91dcDI4nC6dEryokgy4
+         e8Hg==
+X-Gm-Message-State: AOAM532zpC2rGhSmMOO9uwrk4JExHnTbFXX/x5NnINk+7n1b1vWnehlu
+        vDJ/oSxFRebWIS0z7M8UdDCXFG4meJEmXA==
+X-Google-Smtp-Source: ABdhPJyvjCMO8yHsIwpQyd+tA1kiQKGBNHJ4w4x3gKmZwPYKev70Sc0PceLLJ2pEPctmG59ok2Cy+Q==
+X-Received: by 2002:a6b:2b45:: with SMTP id r66mr8318965ior.159.1599238482727;
+        Fri, 04 Sep 2020 09:54:42 -0700 (PDT)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id w17sm348678ilo.36.2020.09.04.09.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 09:54:41 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 10:54:37 -0600
+From:   Yu Zhao <yuzhao@google.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Cc:     beanhuo@micron.com
-References: <20200904091341.28756-1-huobean@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e857400e-f6e8-9d84-804e-88f3c34edb50@kernel.dk>
-Date:   Fri, 4 Sep 2020 10:53:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH v2 1/2] mm: use
+ add_page_to_lru_list()/page_lru()/page_off_lru()
+Message-ID: <20200904165437.GA77761@google.com>
+References: <20200831175042.3527153-1-yuzhao@google.com>
+ <20200903082832.GR4617@dhcp22.suse.cz>
+ <20200904032400.GA4102421@google.com>
+ <20200904105001.GH15277@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200904091341.28756-1-huobean@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904105001.GH15277@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/20 3:13 AM, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
+On Fri, Sep 04, 2020 at 12:50:01PM +0200, Michal Hocko wrote:
+> On Thu 03-09-20 21:24:00, Yu Zhao wrote:
+> > On Thu, Sep 03, 2020 at 10:28:32AM +0200, Michal Hocko wrote:
+> > > On Mon 31-08-20 11:50:41, Yu Zhao wrote:
+> > > [...]
+> > > > @@ -1860,16 +1859,11 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+> > > >  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> > > >  
+> > > >  		SetPageLRU(page);
+> > > > -		lru = page_lru(page);
+> > > > -
+> > > > -		nr_pages = thp_nr_pages(page);
+> > > > -		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
+> > > > -		list_move(&page->lru, &lruvec->lists[lru]);
+> > > > +		add_page_to_lru_list(page, lruvec, page_lru(page));
+> > > >  
+> > > >  		if (put_page_testzero(page)) {
+> > > >  			__ClearPageLRU(page);
+> > > > -			__ClearPageActive(page);
+> > > 
+> > > This should go into its own patch. The rest is a mechanical and clear.
+> > 
+> > Thanks for reviewing.
+> > 
+> > I assume you are worrying about PG_unevictable being set on the page
+> > because page_off_lru() checks it first.
 > 
-> 
-> Bean Huo (2):
->   block: use generic_file_buffered_read()
->   fs: isofs: use generic_file_buffered_read()
+> No, I was referring to __ClearPageActive. You are right that this is
+> cleared in page_off_lru but that is hidden in a release path and e.g.
+> compound pages are released via their destructor which for some might
+> not involve releasing the page - e.g. hugetlb pages. This should be fine
+> because hugetlb pages are not on LRU so as I've said this is fine but it
+> belongs to its own patch because it is not a pure mechanical change like
+> the rest of the patch.
 
-The change is fine, but the title/commit message should reflect that
-this is just a comment change. The way it currently reads, it sounds
-like a functional change where something is switched over to using
-generic_file_buffered_read().
+Please bear with me. This is the change in question:
 
--- 
-Jens Axboe
+ 		if (put_page_testzero(page)) {
+ 			__ClearPageLRU(page);
+-			__ClearPageActive(page);
+-			del_page_from_lru_list(page, lruvec, lru);
++			del_page_from_lru_list(page, lruvec, page_off_lru(page));
 
+ 			if (unlikely(PageCompound(page))) {
+
+If the PageUnevictable() check in page_off_lru() is not a concern,
+I'm trying to understand what else is different between them:
+
+	Before this path:		After this patch:
+
+					page_off_lru()
+	__ClearPageActive()			__ClearPageActive()
+	add_page_to_lru_list()		add_page_to_lru_list()
+
+And why is page_off_lru() hidden in a release path?
