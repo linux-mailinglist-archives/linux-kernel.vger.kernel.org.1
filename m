@@ -2,173 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410FB25E3EB
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 01:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE4A25E426
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 01:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgIDXBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 19:01:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31237 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728162AbgIDXBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 19:01:12 -0400
-IronPort-SDR: aOvZiXYYWAAM9RzBPFcK/lorYHx1PZYGMklQnX5ioa8VVT0E0SL+T9vaSbMWxrmAVXgxrBq6Pd
- yLVSBmmjGAqw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="145528279"
-X-IronPort-AV: E=Sophos;i="5.76,391,1592895600"; 
-   d="scan'208";a="145528279"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 16:01:09 -0700
-IronPort-SDR: RCgIArn/F5LnEEqgTeAOh2yQawR8zq1SQwhvD8bmWFCMLner/pCRE5XHTD77RueaCC7ut8S3jX
- iEf5Hn29OTxg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,391,1592895600"; 
-   d="scan'208";a="332314347"
-Received: from lkp-server02.sh.intel.com (HELO c089623da072) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 04 Sep 2020 16:01:07 -0700
-Received: from kbuild by c089623da072 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kEKhe-00009z-Ic; Fri, 04 Sep 2020 23:01:06 +0000
-Date:   Sat, 05 Sep 2020 07:00:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- eb3621798bcdd34ba480109bac357ba6a784d3e2
-Message-ID: <5f52c6f8.n8YL1k4vn3ielAEt%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1728289AbgIDX0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 19:26:33 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:34844 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728235AbgIDX02 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 19:26:28 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 8929E2ACC0; Fri,  4 Sep 2020 19:26:27 -0400 (EDT)
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Message-Id: <896f542e5f0f1d6cf8218524c2b67d79f3d69b3c.1599260540.git.fthain@telegraphics.com.au>
+In-Reply-To: <cover.1599260540.git.fthain@telegraphics.com.au>
+References: <cover.1599260540.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH 1/5] powerpc/tau: Use appropriate temperature sample interval
+Date:   Sat, 05 Sep 2020 09:02:20 +1000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
-branch HEAD: eb3621798bcdd34ba480109bac357ba6a784d3e2  x86/entry/64: Do not include inst.h in calling.h
+According to the MPC750 Users Manual, the SITV value in Thermal
+Management Register 3 is 13 bits long. The present code calculates the
+SITV value as 60 * 500 cycles. This would overflow to give 10 us on
+a 500 MHz CPU rather than the intended 60 us. (But according to the
+Microprocessor Datasheet, there is also a factor of 266 that has to be
+applied to this value on certain parts i.e. speed sort above 266 MHz.)
+Always use the maximum cycle count, as recommended by the Datasheet.
 
-elapsed time: 724m
-
-configs tested: 108
-configs skipped: 61
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     mpc5200_defconfig
-arm                         hackkit_defconfig
-mips                            ar7_defconfig
-arm                           h5000_defconfig
-mips                 decstation_r4k_defconfig
-i386                             alldefconfig
-powerpc                      pasemi_defconfig
-powerpc                       ppc64_defconfig
-parisc                generic-32bit_defconfig
-arm                         assabet_defconfig
-powerpc                  mpc866_ads_defconfig
-nds32                             allnoconfig
-parisc                generic-64bit_defconfig
-arm                         lpc32xx_defconfig
-arm                          moxart_defconfig
-arm                            lart_defconfig
-sh                            shmin_defconfig
-ia64                            zx1_defconfig
-arc                     nsimosci_hs_defconfig
-arm                           h3600_defconfig
-h8300                               defconfig
-arm                       spear13xx_defconfig
-arm                         orion5x_defconfig
-arm                              alldefconfig
-sh                          kfr2r09_defconfig
-arm64                            alldefconfig
-sh                        apsh4ad0a_defconfig
-mips                  decstation_64_defconfig
-powerpc                      mgcoge_defconfig
-mips                malta_qemu_32r6_defconfig
-arm                           omap1_defconfig
-arm                        mini2440_defconfig
-mips                           ci20_defconfig
-m68k                             alldefconfig
-powerpc64                           defconfig
-sh                               j2_defconfig
-microblaze                          defconfig
-s390                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20200904
-i386                 randconfig-a005-20200904
-i386                 randconfig-a006-20200904
-i386                 randconfig-a002-20200904
-i386                 randconfig-a003-20200904
-i386                 randconfig-a001-20200904
-x86_64               randconfig-a013-20200904
-x86_64               randconfig-a011-20200904
-x86_64               randconfig-a016-20200904
-x86_64               randconfig-a012-20200904
-x86_64               randconfig-a015-20200904
-x86_64               randconfig-a014-20200904
-i386                 randconfig-a016-20200904
-i386                 randconfig-a015-20200904
-i386                 randconfig-a011-20200904
-i386                 randconfig-a013-20200904
-i386                 randconfig-a014-20200904
-i386                 randconfig-a012-20200904
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a006-20200904
-x86_64               randconfig-a004-20200904
-x86_64               randconfig-a003-20200904
-x86_64               randconfig-a005-20200904
-x86_64               randconfig-a001-20200904
-x86_64               randconfig-a002-20200904
-
+Fixes: 1da177e4c3f41 ("Linux-2.6.12-rc2")
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/powerpc/include/asm/reg.h |  2 +-
+ arch/powerpc/kernel/tau_6xx.c  | 12 ++++--------
+ 2 files changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 88e6c78100d9b..c750afc62887c 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -815,7 +815,7 @@
+ #define THRM1_TIN	(1 << 31)
+ #define THRM1_TIV	(1 << 30)
+ #define THRM1_THRES(x)	((x&0x7f)<<23)
+-#define THRM3_SITV(x)	((x&0x3fff)<<1)
++#define THRM3_SITV(x)	((x & 0x1fff) << 1)
+ #define THRM1_TID	(1<<2)
+ #define THRM1_TIE	(1<<1)
+ #define THRM1_V		(1<<0)
+diff --git a/arch/powerpc/kernel/tau_6xx.c b/arch/powerpc/kernel/tau_6xx.c
+index e2ab8a111b693..976d5bc1b5176 100644
+--- a/arch/powerpc/kernel/tau_6xx.c
++++ b/arch/powerpc/kernel/tau_6xx.c
+@@ -178,15 +178,11 @@ static void tau_timeout(void * info)
+ 	 * complex sleep code needs to be added. One mtspr every time
+ 	 * tau_timeout is called is probably not a big deal.
+ 	 *
+-	 * Enable thermal sensor and set up sample interval timer
+-	 * need 20 us to do the compare.. until a nice 'cpu_speed' function
+-	 * call is implemented, just assume a 500 mhz clock. It doesn't really
+-	 * matter if we take too long for a compare since it's all interrupt
+-	 * driven anyway.
+-	 *
+-	 * use a extra long time.. (60 us @ 500 mhz)
++	 * The "PowerPC 740 and PowerPC 750 Microprocessor Datasheet"
++	 * recommends that "the maximum value be set in THRM3 under all
++	 * conditions."
+ 	 */
+-	mtspr(SPRN_THRM3, THRM3_SITV(500*60) | THRM3_E);
++	mtspr(SPRN_THRM3, THRM3_SITV(0x1fff) | THRM3_E);
+ 
+ 	local_irq_restore(flags);
+ }
+-- 
+2.26.2
+
