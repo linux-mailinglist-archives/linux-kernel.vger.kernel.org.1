@@ -2,93 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677D425DFCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F93D25DFFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgIDQ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33286 "EHLO mail.kernel.org"
+        id S1727088AbgIDQmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:42:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:31602 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgIDQ3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:29:23 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 13596206A5;
-        Fri,  4 Sep 2020 16:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599236962;
-        bh=ijQZmDJ1VKEp4/GIBst2/UEw+3wG90aKOhvkbc/1BG0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B2VicmmT9O0OSF/wh6e+YOLQ8CXV7yG8OLbt4+2DJ7y/8FescpdRn7f+ZoShlpOq6
-         CWdF7O0i8peUfFMm8Y33AVbJd+Fiq4edwuVLMHSBJ/l8eKvd1sO5Wb9x+BKzPHxgpw
-         VpymAmboad0RpYYk37M42X2ZWf2bFlGrbMc6yMJQ=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2202240D3D; Fri,  4 Sep 2020 13:29:20 -0300 (-03)
-Date:   Fri, 4 Sep 2020 13:29:20 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     kajoljain <kjain@linux.ibm.com>, Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2] perf expr: Force encapsulation on expr_id_data
-Message-ID: <20200904162920.GV3495158@kernel.org>
-References: <20200826153055.2067780-1-irogers@google.com>
- <20200826155733.GB783610@krava>
- <4b6bc995-d468-3137-f00f-3867233740a3@linux.ibm.com>
- <CAP-5=fUdK2Zuv9BMpkRw669n_SvQ3kDa0s0RA=Hj1GUtqqw0YQ@mail.gmail.com>
+        id S1726114AbgIDQmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:42:55 -0400
+IronPort-SDR: vc3iZkitfcnB934+apVa/Rrpg57K149hZbxAnu1RGG8BVPha1VK8uZcRBDdSswgmrdSH0maY5u
+ ZgCDAI2mECYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="219337142"
+X-IronPort-AV: E=Sophos;i="5.76,390,1592895600"; 
+   d="scan'208";a="219337142"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 09:42:54 -0700
+IronPort-SDR: tpi1BOHeyc/3bUdy1tLlVqxhknbQM6rWuITrHIw0cYx/ddFawv/kCVr0vngQSnYvIW4DfaPBrx
+ cUNAWhEBhrRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.76,390,1592895600"; 
+   d="scan'208";a="332217258"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 04 Sep 2020 09:42:52 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kEEat-00EKFU-4B; Fri, 04 Sep 2020 19:29:43 +0300
+Date:   Fri, 4 Sep 2020 19:29:43 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 08/23] gpio: mockup: use pr_fmt()
+Message-ID: <20200904162943.GT1891694@smile.fi.intel.com>
+References: <20200904154547.3836-1-brgl@bgdev.pl>
+ <20200904154547.3836-9-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP-5=fUdK2Zuv9BMpkRw669n_SvQ3kDa0s0RA=Hj1GUtqqw0YQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200904154547.3836-9-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 03, 2020 at 10:53:16PM -0700, Ian Rogers escreveu:
-> On Thu, Aug 27, 2020 at 12:00 AM kajoljain <kjain@linux.ibm.com> wrote:
-> >
-> >
-> >
-> > On 8/26/20 9:27 PM, Jiri Olsa wrote:
-> > > On Wed, Aug 26, 2020 at 08:30:55AM -0700, Ian Rogers wrote:
-> > >> This patch resolves some undefined behavior where variables in
-> > >> expr_id_data were accessed (for debugging) without being defined. To
-> > >> better enforce the tagged union behavior, the struct is moved into
-> > >> expr.c and accessors provided. Tag values (kinds) are explicitly
-> > >> identified.
-> >
-> > Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
-> >
-> > Thanks,
-> > Kajol Jain
-> > >>
-> > >> Signed-off-by: Ian Rogers <irogers@google.com>
-> > >
-> > > great, thanks for doing this
-> > >
-> > > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > >
-> > > jirka
-> > >
+On Fri, Sep 04, 2020 at 05:45:32PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Thanks for the reviews! Arnaldo could this get merged? Thanks!
+> We don't need a custom logging helper. Let's use the standard pr_fmt()
+> macro which allows us to use all pr_*() routines with custom format.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/gpio/gpio-mockup.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+> index 349782cdb4d7..73cd51459c2a 100644
+> --- a/drivers/gpio/gpio-mockup.c
+> +++ b/drivers/gpio/gpio-mockup.c
+> @@ -21,6 +21,9 @@
+>  
+>  #include "gpiolib.h"
 
-I'll get this and the other outstanding patches into perf/core soon as I
-got urgent stuff already merged by Linus,
+> +#undef pr_fmt
+> +#define pr_fmt(fmt)		GPIO_MOCKUP_NAME ": " fmt
+> +
 
-Thanks!
+Just put definition to be first line of code before other inclusions and drop
+unnecessary #undef.
 
-- Arnaldo
+>  #define GPIO_MOCKUP_NAME	"gpio-mockup"
+>  #define GPIO_MOCKUP_MAX_GC	10
+>  /*
+> @@ -31,8 +34,6 @@
+>  /* Maximum of three properties + the sentinel. */
+>  #define GPIO_MOCKUP_MAX_PROP	4
+>  
+> -#define gpio_mockup_err(...)	pr_err(GPIO_MOCKUP_NAME ": " __VA_ARGS__)
+> -
+>  /*
+>   * struct gpio_pin_status - structure describing a GPIO status
+>   * @dir:       Configures direction of gpio as "in" or "out"
+> @@ -549,7 +550,7 @@ static int __init gpio_mockup_init(void)
+>  
+>  	err = platform_driver_register(&gpio_mockup_driver);
+>  	if (err) {
+> -		gpio_mockup_err("error registering platform driver\n");
+> +		pr_err("error registering platform driver\n");
+>  		return err;
+>  	}
+>  
+> @@ -577,7 +578,7 @@ static int __init gpio_mockup_init(void)
+>  
+>  		pdev = platform_device_register_full(&pdevinfo);
+>  		if (IS_ERR(pdev)) {
+> -			gpio_mockup_err("error registering device");
+> +			pr_err("error registering device");
+>  			platform_driver_unregister(&gpio_mockup_driver);
+>  			gpio_mockup_unregister_pdevs();
+>  			return PTR_ERR(pdev);
+> -- 
+> 2.26.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
