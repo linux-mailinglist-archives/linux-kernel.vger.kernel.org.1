@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36DD25CF5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8921F25CF62
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbgIDCTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 22:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729468AbgIDCTI (ORCPT
+        id S1729566AbgIDCZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 22:25:50 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42658 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729036AbgIDCZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 22:19:08 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEADAC061245
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 19:19:07 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id b12so4586758edz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 19:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LrAdzv24TvKINI+TSt9YrTxl/N6E+xS4y6ll+3lQsBM=;
-        b=MRIf1HBgmWXfY1BikF2IYGavdlt4nQmFrVJ6Mi+ad+vUFt0vx2nR0LP2LhUjG+MOoy
-         y/BaY2dLXwr0smwGz3krb1Tp8HTvrZBPaxjjJswpXWPxv6eY9MBUdVuGde7aYtuDJ4fl
-         vM4WtJ4alvKrxThlhkLGNlCGI2rDb91JN/ZjFLZ/CRmly547F0A2OlB7yDF546n0qcGv
-         32QV9KC3cBX+N7U5ISIfjFklMV66lljsGD2vDQSqAPwrTrxnegtZENKpP7AlOhf8OuAe
-         bEWWikidflcbq6YaJCTNtFrd7PAjhQh5W4X+VczD8GPAuWc4xbg7ba7h8uc9XO9w0sRy
-         Mwrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LrAdzv24TvKINI+TSt9YrTxl/N6E+xS4y6ll+3lQsBM=;
-        b=jUf0ClM26EknSDg3HqZwhYo1mwU25nbumA7o3o28oW3hVpY78BtmIbbJTvfRxrLai1
-         PaQcsOMHnszF8nBigZUHTDQsY4EZr1oBvfgbKAAN6b4PXswiw7XpRUyF2e18gZhbhjo+
-         tQbglNFvOA7MqODes8fFx85wPHFTtkx6MzJmr/JwOu1+WxamccUgTRPJXDLCaez59iJ9
-         5FCAIOv/Paj3QhM/LXV+HqLPz1SVyBQGb31/iiqfp2CfRG95o/ur1RPkTnF7kcDlIRRn
-         DNRyStKPtE6kgVEPwVloobODFeaq1Hf6AvMmI+vX7ssgnsjZZaGQwKWwXEsQjJGQiaov
-         SRGQ==
-X-Gm-Message-State: AOAM531ejbyH+Qy1B6KAtQyVrAjMitAkVmxTjMeufIuEEbrLKm6dB/R8
-        3SpD6HxEds+9XAF0oHexGR9Te4g2Qk9rfuLIpJth3w==
-X-Google-Smtp-Source: ABdhPJxs5wovzcetJu5uDT3AQi1FzFLV1CCc/+8EIHAU6I/Z4nPfDoYG4OvY59GtSoCuXmq4fFtncIcI2zqBYqdeokE=
-X-Received: by 2002:a50:d809:: with SMTP id o9mr6138860edj.12.1599185946357;
- Thu, 03 Sep 2020 19:19:06 -0700 (PDT)
+        Thu, 3 Sep 2020 22:25:49 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3AD5E540;
+        Fri,  4 Sep 2020 04:25:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1599186346;
+        bh=w9NLWnAFcQLVq1EwBFRPmlSl/bYxVQBc5Mr5/U5dENA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K47bAsqXW3u1MToGpXr893HuQAL7R2WqE8Ma2eGYuleWp/lO1cNbT8KOGUmPrpgpP
+         pKfwMkeOvyL8NKtUgrGrI3/MjzdLQ5/lvPCI0T4IyIfNvm4vox2BpKdmATeQjeopFg
+         oP8vFxFH6COAZVbVHXUN6AiAuAXdL4BWq/wUteg0=
+Date:   Fri, 4 Sep 2020 05:25:22 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Niklas <niklas.soderlund@ragnatech.se>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH] media: rcar-vin: Update crop and compose settings for
+ every s_fmt call
+Message-ID: <20200904022522.GD9369@pendragon.ideasonboard.com>
+References: <1596187745-31596-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200801090456.GB1379367@oden.dyn.berto.se>
+ <CA+V-a8sOHct_JetCsug8Z2BQpMLH2p39hj2XNw_1N5gkBQp1Gg@mail.gmail.com>
+ <20200803192108.GB2297236@oden.dyn.berto.se>
+ <6d659e56-1e1f-c9c7-2e66-4ddc4e7fad15@xs4all.nl>
+ <CA+V-a8uzznUvzGgZ5A4B8ASEDbmMCrQPSAcEjO7v45zmAkdGDQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200902125935.20646-1-graf@amazon.com> <20200902125935.20646-6-graf@amazon.com>
-In-Reply-To: <20200902125935.20646-6-graf@amazon.com>
-From:   Aaron Lewis <aaronlewis@google.com>
-Date:   Thu, 3 Sep 2020 19:18:55 -0700
-Message-ID: <CAAAPnDH2D6fANhZzy3fAL2XKO4ROrvbOoqPme2Ww6q5XcVJfog@mail.gmail.com>
-Subject: Re: [PATCH v6 5/7] KVM: x86: VMX: Prevent MSR passthrough when MSR
- access is denied
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kvm list <kvm@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+V-a8uzznUvzGgZ5A4B8ASEDbmMCrQPSAcEjO7v45zmAkdGDQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/*
-> + * List of MSRs that can be directly passed to the guest.
-> + * In addition to these x2apic and PT MSRs are handled specially.
-> + */
-> +static u32 vmx_possible_passthrough_msrs[MAX_POSSIBLE_PASSGHROUGH_MSRS] = {
+Hi Prabhakar,
 
-MAX_POSSIBLE_PASSGHROUGH_MSRS should be MAX_POSSIBLE_PASSTHROUGH_MSRS
+On Thu, Sep 03, 2020 at 03:53:18PM +0100, Lad, Prabhakar wrote:
+> On Wed, Aug 19, 2020 at 3:08 PM Hans Verkuil wrote:
+> > On 03/08/2020 21:21, Niklas wrote:
+> > > On 2020-08-03 19:11:32 +0100, Lad, Prabhakar wrote:
+> > >> On Sat, Aug 1, 2020 at 10:04 AM Niklas wrote:
+> > >>> On 2020-07-31 10:29:05 +0100, Lad Prabhakar wrote:
+> > >>>> The crop and compose settings for VIN in non mc mode werent updated
+> > >>>> in s_fmt call this resulted in captured images being clipped.
+> > >>>>
+> > >>>> With the below sequence on the third capture where size is set to
+> > >>>> 640x480 resulted in clipped image of size 320x240.
+> > >>>>
+> > >>>> high(640x480) -> low (320x240) -> high (640x480)
+> > >>>>
+> > >>>> This patch makes sure the VIN crop and compose settings are updated.
+> > >>>
+> > >>> This is clearly an inconsistency in the VIN driver that should be fixed.
+> > >>> But I think the none-mc mode implements the correct behavior. That is
+> > >>> that S_FMT should not modify the crop/compose rectangles other then make
+> > >>> sure they don't go out of bounds. This is an area we tried to clarify in
+> > >>> the past but I'm still not sure what the correct answer to.
+> > >>>
+> > >> What should be the exact behaviour of the bridge driver  for s_fmt
+> > >> call. Should the crop/compose settings be updated for every s_fmt
+> > >> callback or should they be only updated on s_selection callback.
+> > >> Currently the non-mc rcar-vin doesnt update the crop/compose setting
+> > >> in s_fmt callback due to which I see the above issue as mentioned.
+> > >
+> > > This is not entirely correct. It does update the crop and compose
+> > > rectangles on s_fmt, it makes sure they are not out-of-bounds for the
+> > > new format if it's accepted by s_fmt. See v4l2_rect_map_inside() calls
+> > > in the snippet bellow.
+> >
+> > For non-mc mode s_fmt must update any crop/compose rectangles to ensure that
+> > they are not out-of-bounds. But for mc mode the validation is done when you
+> > start streaming, so I think s_fmt won't make any changes in that mode.
+>
+> Thank you Hans.
+> 
+> > Double-check that with Laurent, though...
+>
+> Niklas/Laurent - How do we proceed on this ?
 
-> +       MSR_IA32_SPEC_CTRL,
-> +       MSR_IA32_PRED_CMD,
-> +       MSR_IA32_TSC,
-> +       MSR_FS_BASE,
-> +       MSR_GS_BASE,
-> +       MSR_KERNEL_GS_BASE,
-> +       MSR_IA32_SYSENTER_CS,
-> +       MSR_IA32_SYSENTER_ESP,
-> +       MSR_IA32_SYSENTER_EIP,
-> +       MSR_CORE_C1_RES,
-> +       MSR_CORE_C3_RESIDENCY,
-> +       MSR_CORE_C6_RESIDENCY,
-> +       MSR_CORE_C7_RESIDENCY,
-> +};
+MC devices rely on userspace to propagate formats between entities, and
+on kernelspace to propagate formats within entities. This is documented
+in https://linuxtv.org/downloads/v4l-dvb-apis/userspace-api/v4l/dev-subdev.html.
+The configuration of an entity (formats and selection rectangles) must
+be valid at all times. Subdev drivers should thus either adjust or reset
+the crop and selection rectangles. The specification isn't clear on
+which behaviour should be implemented, the only related text is
 
-Is there any reason not to construct this list on the fly?  That could
-help prevent the list from becoming stale over time if this is missed
-when calls to vmx_disable_intercept_for_msr() are added.
+"Sub-devices that scale frames using variable scaling factors should
+reset the scale factors to default values when sink pads formats are
+modified. If the 1:1 scaling ratio is supported, this means that source
+pads formats should be reset to the sink pads formats."
 
-> +
->  /*
->   * These 2 parameters are used to config the controls for Pause-Loop Exiting:
->   * ple_gap:    upper bound on the amount of time between two successive
-> @@ -622,6 +642,41 @@ static inline bool report_flexpriority(void)
->         return flexpriority_enabled;
->  }
+I would recommend resetting as the default behaviour. In any case,
+adjustements are needed to ensure that the configuration remains valid.
 
-One thing that seems to be missing is removing MSRs from the
-permission bitmap or resetting the permission bitmap to its original
-state before adding changes on top of it.  This would be needed on
-subsequent calls to kvm_vm_ioctl_set_msr_filter().  When that happens
-the original changes made by KVM_REQ_MSR_FILTER_CHANGED need to be
-backed out before applying the new set.
+-- 
+Regards,
+
+Laurent Pinchart
