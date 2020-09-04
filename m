@@ -2,133 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970DE25D5B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D363625D5AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730017AbgIDKIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:08:39 -0400
-Received: from mail-bn8nam12on2080.outbound.protection.outlook.com ([40.107.237.80]:27409
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729797AbgIDKI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:08:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vta7GGS0R99+pIauok2g0x/BqJVIb2ILXnum4R7/hoj8Ve1ytC8IeRsLzNWhR0698iCJ1HXyOH+oujObO41TmdEMC0qnJhEMQsqgLcxRlcdEI2jzvycwjkuD29tXi8EhUTY/JSAOUpcNuY+jLkQGueWVqap/IgmIIzkmLysFMVAv8X8+poYfsGNUsgdCEySNT6LqJrnh9slzJASnMy21bamNDvuBG53dZa2jTEdIA4IZlLk6G5odW2V8voljCao3iZuFuQAaBnZmgHvgiELoUkkK/r7AroOU+otrz6yH3TJbHXcm06XgtOZ2ZVc/GfzGnJC+o8J1QCVfmCTZ1xWpyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XNMwznDTLy1qK3EycnGQSqW9gqxzUPWoUJlW8C5we6g=;
- b=PXIizwnDJBSFeJ9kOcxhuCCDTEqAk4hV3OVTOKuI2/UzzFuZpYlEPCTKIaAGlsZa8OIyqhRUsTAyrxjepjNwCpWzVM1k0GJibB194iffnO23GVfICX/A0Oosyb1HXA7gMARgVs+sEwPQH/5/bgqZJ9cTxPk13ziwTzv63WN9CblNTiFINAEBU21itYQ11CSzLmj72ZQhFyxGJp1dqEA0vTagwnLSS/rbVtB9udqFgb83TNB50Cmwpj+RH90+U5jPRmY9haOq/bLdmLMs/sphIm/XT+6jKdJX1fFvEkrYUdbQQ8Wceex7YbejbKU3eEcsJqTiRuBWWykRYh4ysCWwjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
- 165.204.84.17) smtp.rcpttodomain=sina.com smtp.mailfrom=srdcmail.amd.com;
- dmarc=permerror action=none header.from=amd.com; dkim=none (message not
- signed); arc=none
+        id S1729987AbgIDKIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbgIDKIF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:08:05 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4798C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 03:08:04 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g128so6496534iof.11
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 03:08:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XNMwznDTLy1qK3EycnGQSqW9gqxzUPWoUJlW8C5we6g=;
- b=DOsKuNXi+9pgqIdRu0hMMEmePSWdqjxerWcZpCJdoEWP5hAQiiDXnksnEVG0OZ6wLJvNwLURPNvUNyyHH8p7u9p2azI2MdAj2t205o2A2rNfqA/RojempyTjHLj+N/peE2VkOGafBPl5zfIbCqgF39BKP3hpYK2ny1/Ieo75v9w=
-Received: from BN6PR03CA0066.namprd03.prod.outlook.com (2603:10b6:404:4c::28)
- by CY4PR12MB1591.namprd12.prod.outlook.com (2603:10b6:910:10::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3326.21; Fri, 4 Sep
- 2020 10:08:26 +0000
-Received: from BN8NAM11FT027.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:4c:cafe::12) by BN6PR03CA0066.outlook.office365.com
- (2603:10b6:404:4c::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend
- Transport; Fri, 4 Sep 2020 10:08:25 +0000
-X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
- smtp.mailfrom=srdcmail.amd.com; sina.com; dkim=none (message not signed)
- header.d=none;sina.com; dmarc=permerror action=none header.from=amd.com;
-Received-SPF: None (protection.outlook.com: srdcmail.amd.com does not
- designate permitted sender hosts)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- BN8NAM11FT027.mail.protection.outlook.com (10.13.177.96) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3326.19 via Frontend Transport; Fri, 4 Sep 2020 10:08:24 +0000
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 4 Sep 2020
- 05:08:23 -0500
-Received: from SATLEXMB01.amd.com (10.181.40.142) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 4 Sep 2020
- 05:08:23 -0500
-Received: from atlvmail01.amd.com (10.180.10.61) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
- Transport; Fri, 4 Sep 2020 05:08:23 -0500
-Received: from srdcmail.amd.com (srdcmail.amd.com [10.237.16.23])
-        by atlvmail01.amd.com (8.14.4/8.14.4) with ESMTP id 084A8Lv8031313;
-        Fri, 4 Sep 2020 06:08:22 -0400
-Received: from srdcws1054.amd.com (srdcws1054.amd.com [10.66.16.34])
-        by srdcmail.amd.com (8.13.8/8.13.8) with ESMTP id 084A8Kft029002;
-        Fri, 4 Sep 2020 18:08:20 +0800
-Received: (from weisheng@localhost)
-        by srdcws1054.amd.com (8.14.7/8.14.7/Submit) id 084A8KmY016606;
-        Fri, 4 Sep 2020 18:08:20 +0800
-From:   Wesley Sheng <wesley.sheng@amd.com>
-To:     <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <wesleyshenggit@sina.com>, <wesley.sheng@amd.com>
-Subject: [PATCH 2/2] iommu/amd: Revise ga_tag member in struct of fields_remap
-Date:   Fri, 4 Sep 2020 18:07:47 +0800
-Message-ID: <20200904100747.16463-2-wesley.sheng@amd.com>
-X-Mailer: git-send-email 2.16.2
-In-Reply-To: <20200904100747.16463-1-wesley.sheng@amd.com>
-References: <20200904100747.16463-1-wesley.sheng@amd.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZV60vz7OREPGMabTbmBzheGT/NljIP/4M+G9Nac3jAU=;
+        b=qsto0/v8W+MXIZ2PbWJviYD+E/93MfSNoCrKvED/jvBQ59+ZWunbSUWuDD9qpLhXZP
+         WU4wTTK2Nh9jeSnSpeHPOKTn61//shTOtcli7Rf7fhll4zS5K5rmwrD7sCZkMKRvcrWm
+         2lPcauNTYQT/EbBkcHrP64lrEQNlAcJSjVOkADQHEdPabxjDIRlVRo51TPlFm4RqTah3
+         bnmsiwW4tPWdqxlxAIy18eAyBj9x+VVAtme5TYEY91i687VH8YR5gJYF+3sV7GtSDP0i
+         s3BitYwcecV52qRbtTO8pq49Pb7cvBOjm9wGgo6iDXPak5MtAdmEGInfy3edXBFpkt54
+         ulDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=ZV60vz7OREPGMabTbmBzheGT/NljIP/4M+G9Nac3jAU=;
+        b=fCho/NEyi4ADqItaL/TeCTAz9Tkd8lGM3XDKrE8noFYaTvIOkTrO1DgE6J7lePcJUD
+         CQdIoBkDFc2vuWWLTqnTfFoL83are8U7nF/+TBezUnZBPrpuDU2iN9+ptnWbO3goZgl6
+         RWk+u+cDjH5cfkpHOtwF0bCT4aefx2gJl2QfHy9VedzDFykTEeHq9eX/2Q98JM+vlX2q
+         SA6l91m8QUfK3WYIlvbH/OlOFRtX1Z2xrTDAdD6jytucNpYi/4QvX4KBtzIPNl8bgzhz
+         XDvX0Eoy+WYEvCrJRH3wU8eeIMWEefXd6WqM8YhgTomcYl3EOGZ71EHNfaQZmHlA1f4B
+         ZG0Q==
+X-Gm-Message-State: AOAM533PHco4nvWS+PXJnUHjak6TvL6VX7mo27CizMcno10NwFNsr6J9
+        /Rx1jm/ocPxHdPyK++Dpn/F8pwvyF4F0NbMs4go=
+X-Google-Smtp-Source: ABdhPJzvlzN63gHN3fv2E5X/Sprr09klLLZl7nT2RFEVKsXKAdZbb6OzAUmJ/lhPtuVXePdWgzyWuA4/16sGyTkTjcE=
+X-Received: by 2002:a6b:da16:: with SMTP id x22mr6837093iob.33.1599214084089;
+ Fri, 04 Sep 2020 03:08:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e942553b-dcab-43e4-9eea-08d850ba7634
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1591:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1591980B2D41851A1472CF5EF02D0@CY4PR12MB1591.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y0Uh0UZqvQAJ32QlwoUwgp4eMAh0LDRYkVgJfXFqbIWVcqwC3tzMjnRTrVZ94iOw3CfcwXim+vN9OBBfbQtDVC1b9w3GHLm2k2fZxd0YhzvwpN8iU+jGZpKQP7iZz8t/GNTc3b8INMeozi7BJjWR6UW5BaBECEYf6QF0Ssw6cGyM3ZYsU0m4fiZj0FA/irZRViKDGBJ1JgxDDApY1UBCygTS6SkIo4CT7Z+WclNfR8ZV1QEsrtNkBbH+7ktC7oKCOBhaQkwYGC+y1zzcq0oOPnj7hVB4u/YiJUBDNbd1++ziD4C4MRR+iQ0csYP2NPNU36dxYU3B5hHwqyDMxfA0v6GKg1VB30UmfqY9Iq9ZeFAqW4s1WTfKzi8HUR/dZSAh8NxIUHJ2rId3TYlEB1wpAQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(46966005)(110136005)(54906003)(1076003)(316002)(2906002)(81166007)(82740400003)(6666004)(4326008)(82310400003)(336012)(4744005)(8936002)(26005)(44832011)(83380400001)(42186006)(83170400001)(356005)(70586007)(36756003)(70206006)(498600001)(5660300002)(8676002)(47076004)(426003)(2616005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2020 10:08:24.9794
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e942553b-dcab-43e4-9eea-08d850ba7634
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT027.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1591
+Received: by 2002:a05:6638:1313:0:0:0:0 with HTTP; Fri, 4 Sep 2020 03:08:02
+ -0700 (PDT)
+Reply-To: robertandersonhappy1@gmail.com
+From:   robert <photakachi@gmail.com>
+Date:   Fri, 4 Sep 2020 03:08:02 -0700
+Message-ID: <CAKTgzwypcMVB5Gu3Udkz81nKyg+x=XDjHoZ=6jzdTS1W4V9rOA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per <<AMD I/0 Virtualization Technology (IOMMU) specification>>
-ga_tag member is only available when IRTE[GuestMode]=1, this field
-should be reserved when IRTE[GuestMode]=0. So change the ga_tag
-to rsvd_1 in struct of fields_remap.
-
-Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
----
- drivers/iommu/amd/amd_iommu_types.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-index e5b05a97eb46..baa31cd2411c 100644
---- a/drivers/iommu/amd/amd_iommu_types.h
-+++ b/drivers/iommu/amd/amd_iommu_types.h
-@@ -832,7 +832,7 @@ union irte_ga_lo {
- 		    /* ------ */
- 		    guest_mode	: 1,
- 		    destination	: 24,
--		    ga_tag	: 32;
-+		    rsvd_1	: 32;
- 	} fields_remap;
- 
- 	/* For guest vAPIC */
--- 
-2.16.2
-
+0JTQvtCx0YDQvtCz0L4g0LLRgNC10LzQtdC90Lgg0YHRg9GC0L7QuiDQvNC+0Lkg0YXQvtGA0L7R
+iNC40Lkg0LTRgNGD0LMuDQoNCtCa0LDQuiDRgyDRgtC10LHRjyDRgdC10LPQvtC00L3RjyDQtNC1
+0LvQsD8g0K8g0LTQsNCy0L3QviDRgdC70YvRiNGDINC+0YIg0YLQtdCx0Y8sINGH0YLQviDQv9GA
+0L7QuNGB0YXQvtC00LjRgg0K0KLQstC+0Y8g0YHRgtC+0YDQvtC90LA/INCh0LXQs9C+0LTQvdGP
+INGPINC+0YfQtdC90Ywg0YDQsNC0INGB0L7QvtCx0YnQuNGC0Ywg0LLQsNC8INC+INC80L7QtdC8
+INGD0YHQv9C10YXQtSDQsg0K0L/QvtC70YPRh9C10L3QuNC1INGN0YLQuNGFINC90LDRgdC70LXQ
+tNGB0YLQstC10L3QvdGL0YUg0YHRgNC10LTRgdGC0LIsINC/0LXRgNC10LTQsNC90L3Ri9GFINC/
+0YDQuCDRgdC+0YLRgNGD0LTQvdC40YfQtdGB0YLQstC1INC90L7QstC+0LPQvg0K0L/QsNGA0YLQ
+vdC10YAg0LjQtyDQmNC90LTQuNC4INCQ0LfQuNGPLiDQntC9INC60LDQvdCw0LTQtdGGLCDQvdC+
+INC20LjQstC10YIg0LIg0JjQvdC00LjQuCwg0L3QviDQsiDQvdCw0YHRgtC+0Y/RidC10LUg0LLR
+gNC10LzRjw0K0Y8g0L/RgNC40LXQt9C20LDRjiDQsiDQmNC90LTQuNGOINC/0L4g0LjQvdCy0LXR
+gdGC0LjRhtC40L7QvdC90YvQvCDQv9GA0L7QtdC60YLQsNC8INGB0L4g0YHQstC+0LXQuSDQtNC+
+0LvQtdC5INC+0YIg0L7QsdGJ0LXQuSDRgdGD0LzQvNGLDQrQvNC40LvQu9C40L7QvdGLINC00L7Q
+u9C70LDRgNC+0LIuINCc0LXQttC00YMg0YLQtdC8LCDRjyDQvdC1INC30LDQsdGL0Lsg0YLQstC+
+0Lgg0L/RgNC+0YjQu9GL0LUg0YPRgdC40LvQuNGPINC4INC/0L7Qv9GL0YLQutC4DQrRh9GC0L7Q
+sdGLINC/0L7QvNC+0YfRjCDQvNC90LUg0L/QtdGA0LXQtNCw0YLRjCDRjdGC0Lgg0L3QsNGB0LvQ
+tdC00YHRgtCy0LXQvdC90YvQtSDRgdGA0LXQtNGB0YLQstCwLCDQvdC10YHQvNC+0YLRgNGPINC9
+0LAg0YLQviwNCtGH0YLQviDRjdGC0L4g0L3QtSDRg9C00LDQu9C+0YHRjA0K0L3QsNC8INC60LDQ
+ui3QvdC40LHRg9C00YwsINGPINGF0L7Rh9GDLCDRh9GC0L7QsdGLINCy0Ysg0YHQstGP0LfQsNC7
+0LjRgdGMINGBINC80L7QuNC8INGB0LXQutGA0LXRgtCw0YDQtdC8INCyINCb0L7QvNC1LA0K0JfQ
+sNC/0LDQtCDQotC+0LPQviDQoNC10YHQv9GD0LHQu9C40LrQuA0K0JDRhNGA0LjQutCwLCDQtdC1
+INC30L7QstGD0YIg0KHQvtC70L7QvNC+0L0g0JHRgNGN0L3QtNC4LCDRjdGC0L4g0LXQs9C+INCw
+0LTRgNC10YEg0Y3Qu9C10LrRgtGA0L7QvdC90L7QuSDQv9C+0YfRgtGLDQooc29sb21vbmJyYW5k
+eTAwNEBnbWFpbC5jb20pDQosINC/0L7Qv9GA0L7RgdC40YLQtSDQtdCz0L4g0YHQstGP0LfQsNGC
+0YzRgdGPINGBINCQ0YTRgNC40LrQsNC90YHQutC40Lwg0LHQsNC90LrQvtC8INGA0LDQt9Cy0LjR
+gtC40Y8sINC10YHQu9C4INGPDQrRgdC+0YXRgNCw0L3QuNC7INGB0YPQvNC80YMg0LIg0YDQsNC3
+0LzQtdGA0LUgMzUwIDAwMCwwMCDQtNC+0LvQu9Cw0YDQvtCyINC00LvRjyDQstCw0YjQtdC5INC6
+0L7QvNC/0LXQvdGB0LDRhtC40LgsDQrRjdGC0L7RgiDQutC+0LzQv9C10L3RgdCw0YbQuNC+0L3Q
+vdGL0Lkg0YTQvtC90LQNCtC30LAg0LLRgdC1INC/0YDQvtGI0LvRi9C1INGD0YHQuNC70LjRjyDQ
+uCDQv9C+0L/Ri9GC0LrQuCDQv9C+0LzQvtGH0Ywg0LzQvdC1INCyINC/0YDQvtC50LTQtdC90L3Q
+vtC8DQrRgdC00LXQu9C60LAuINCvINC+0YfQtdC90Ywg0YbQtdC90LjQuyDQstCw0YjQuCDRg9GB
+0LjQu9C40Y8g0LIg0YLQviDQstGA0LXQvNGPLiDRgtCw0Log0YfRg9Cy0YHRgtCy0YPRjg0K0LHQ
+tdGB0L/Qu9Cw0YLQvdC+LCDRgdCy0Y/QttC40YLQtdGB0Ywg0YEg0LzQvtC40Lwg0YHQtdC60YDQ
+tdGC0LDRgNC10LwsINC80LjRgdGC0LXRgNC+0Lwg0KHQvtC70L7QvNC+0L3QvtC8INCR0YDRjdC9
+0LTQuCwg0LgNCtGB0L7QvtCx0YnQuNGC0LUg0LXQuSwg0LPQtNC1DQrQkNGE0YDQuNC60LDQvdGB
+0LrQuNC5INCx0LDQvdC6INGA0LDQt9Cy0LjRgtC40Y8g0L/QtdGA0LXRh9C40YHQu9C40YIg0L7Q
+sdGJ0YPRjiDRgdGD0LzQvNGDINCyINGA0LDQt9C80LXRgNC1IDM1MCAwMDAg0LTQvtC70LvQsNGA
+0L7QsiDQodCo0JAuDQoNCtCf0L7QttCw0LvRg9C50YHRgtCwLCDQvdC10LzQtdC00LvQtdC90L3Q
+viDQtNCw0LnRgtC1INC80L3QtSDQt9C90LDRgtGMINC/0LXRgNC10LLQvtC0INCQ0YTRgNC40LrQ
+sNC90YHQutC+0LPQviDQsdCw0L3QutCwINGA0LDQt9Cy0LjRgtC40Y8NCtGE0L7QvdC0ICQgMzUw
+LjAwMC4wMA0K0L3QsCDRgdCy0L7QuSDQsdCw0L3QutC+0LLRgdC60LjQuSDRgdGH0LXRgiwg0YHQ
+tdC50YfQsNGBINGPINGB0LvQuNGI0LrQvtC8INC30LDQvdGP0YIg0LjQty3Qt9CwDQrQuNC90LLQ
+tdGB0YLQuNGG0LjQvtC90L3Ri9C1INC/0YDQvtC10LrRgtGLLCDQutC+0YLQvtGA0YvQtSDRjyDQ
+stC10LTRgyDRgSDQvNC+0LjQvCDQvdC+0LLRi9C8INC/0LDRgNGC0L3QtdGA0L7QvCwg0L/QvtGN
+0YLQvtC80YMNCtGB0LLRj9C20LjRgtC10YHRjCDRgSDQvNC40YHRgtC10YDQvtC8INCh0L7Qu9C+
+0LzQvtC90L7QvCDQkdGA0Y3QvdC00Lgg0L3QsCDQtdCz0L4g0LDQtNGA0LXRgSDRjdC70LXQutGC
+0YDQvtC90L3QvtC5INC/0L7Rh9GC0YssINC+0L0NCtCx0LXQtyDQv9GA0L7QvNC10LTQu9C10L3Q
+uNGPINGB0LLRj9C20LjRgtC10YHRjCDRgSDQkNGE0YDQuNC60LDQvdGB0LrQuNC8INCx0LDQvdC6
+0L7QvCDRgNCw0LfQstC40YLQuNGPINC+0YIg0LLQsNGI0LXQs9C+INC40LzQtdC90LguDQrQkdGD
+0LTRjNGC0LUg0LIg0LHQtdC30L7Qv9Cw0YHQvdC+0YHRgtC4INC+0YIgQ292aWQgMTkuDQoNCtCh
+INGD0LLQsNC20LXQvdC40LXQvCwNCtCU0L7QutGC0L7RgCDRgNC+0LHQtdGA0YIg0LDQvdC00LXR
+gNGB0L7QvQ0K
