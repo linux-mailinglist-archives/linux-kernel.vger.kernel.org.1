@@ -2,201 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D34725D118
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AEF25D11E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgIDGJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:09:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2079 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbgIDGJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:09:02 -0400
-IronPort-SDR: /RnHB+lKBiO4sDk8W8tuLPmbY9++99wtVAXKuLYiGwMz4jrAihbgPd1puI4YORABzwoMBoKNA9
- E2OXG/PBKVuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="155095685"
-X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
-   d="scan'208";a="155095685"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 23:09:01 -0700
-IronPort-SDR: WnIAQssWbM5cgI7sn0A2JEgKJnpLS33upoRBQzZKYQiiqXDGsSvnzo7Qerwh0SK61m69h8sMIn
- WqboLBUn+9tQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
-   d="scan'208";a="502788500"
-Received: from unknown (HELO [10.239.154.46]) ([10.239.154.46])
-  by fmsmga006.fm.intel.com with ESMTP; 03 Sep 2020 23:08:53 -0700
-Subject: Re: [PATCH] i2c: virtio: add a virtio i2c frontend driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        jarkko.nikula@linux.intel.com, jdelvare@suse.de,
-        Sergey.Semin@baikalelectronics.ru, krzk@kernel.org,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        bjorn.andersson@linaro.org, shuo.a.liu@intel.com,
-        conghui.chen@intel.com, yu1.wang@intel.com
-References: <0efc2605c8c06b4b1bf68cbad5536c4a900dc019.1599110284.git.jie.deng@intel.com>
- <20200903102008.GY1891694@smile.fi.intel.com>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <71587fa1-ded8-2f96-378f-fc1ecc18a1a1@intel.com>
-Date:   Fri, 4 Sep 2020 14:08:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.0.1
-MIME-Version: 1.0
-In-Reply-To: <20200903102008.GY1891694@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1727027AbgIDGKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:10:12 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:12054 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbgIDGKL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 02:10:11 -0400
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 03 Sep 2020 23:10:10 -0700
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Sep 2020 23:10:08 -0700
+Received: from gkohli-linux.qualcomm.com ([10.204.78.26])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Sep 2020 11:40:00 +0530
+Received: by gkohli-linux.qualcomm.com (Postfix, from userid 427023)
+        id 8A20421265; Fri,  4 Sep 2020 11:39:58 +0530 (IST)
+From:   Gaurav Kohli <gkohli@codeaurora.org>
+To:     rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Gaurav Kohli <gkohli@codeaurora.org>
+Subject: [PATCH] trace: Fix race in trace_open and buffer resize call
+Date:   Fri,  4 Sep 2020 11:39:57 +0530
+Message-Id: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Below race can come, if trace_open and resize of
+cpu buffer is running parallely on different cpus
+CPUX                                CPUY
+				    ring_buffer_resize
+				    atomic_read(&buffer->resize_disabled)
+tracing_open
+tracing_reset_online_cpus
+ring_buffer_reset_cpu
+rb_reset_cpu
+				    rb_update_pages
+				    remove/insert pages
+resetting pointer
+This race can cause data abort or some times infinte loop in 
+rb_remove_pages and rb_insert_pages while checking pages 
+for sanity.
+Take ring buffer lock in trace_open to avoid resetting of cpu buffer.
 
-On 2020/9/3 18:20, Andy Shevchenko wrote:
-> On Thu, Sep 03, 2020 at 01:34:45PM +0800, Jie Deng wrote:
->> Add an I2C bus driver for virtio para-virtualization.
->>
->> The controller can be emulated by the backend driver in
->> any device model software by following the virtio protocol.
->>
->> This driver communicates with the backend driver through a
->> virtio I2C message structure which includes following parts:
->>
->> - Header: i2c_msg addr, flags, len.
->> - Data buffer: the pointer to the i2c msg data.
->> - Status: the processing result from the backend.
->>
->> People may implement different backend drivers to emulate
->> different controllers according to their needs. A backend
->> example can be found in the device model of the open source
->> project ACRN. For more information, please refer to
->> https://projectacrn.org.
->>
->> The virtio device ID 34 is used for this I2C adpter since IDs
->> before 34 have been reserved by other virtio devices.
-> Seems it's slightly different version to what I have reviewed internally.
-> My comments below. (I admit that some of them maybe new)
->
-> ...
+Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
 
-Yeah... Some new devices have been added into the virtio spec during 
-these days.
+diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
+index 136ea09..55f9115 100644
+--- a/include/linux/ring_buffer.h
++++ b/include/linux/ring_buffer.h
+@@ -163,6 +163,8 @@ bool ring_buffer_empty_cpu(struct trace_buffer *buffer, int cpu);
+ 
+ void ring_buffer_record_disable(struct trace_buffer *buffer);
+ void ring_buffer_record_enable(struct trace_buffer *buffer);
++void ring_buffer_mutex_acquire(struct trace_buffer *buffer);
++void ring_buffer_mutex_release(struct trace_buffer *buffer);
+ void ring_buffer_record_off(struct trace_buffer *buffer);
+ void ring_buffer_record_on(struct trace_buffer *buffer);
+ bool ring_buffer_record_is_on(struct trace_buffer *buffer);
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 93ef0ab..638ec8f 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3632,6 +3632,25 @@ void ring_buffer_record_enable(struct trace_buffer *buffer)
+ EXPORT_SYMBOL_GPL(ring_buffer_record_enable);
+ 
+ /**
++ * ring_buffer_mutex_acquire - prevent resetting of buffer
++ * during resize
++ */
++void ring_buffer_mutex_acquire(struct trace_buffer *buffer)
++{
++	mutex_lock(&buffer->mutex);
++}
++EXPORT_SYMBOL_GPL(ring_buffer_mutex_acquire);
++
++/**
++ * ring_buffer_mutex_release - prevent resetting of buffer
++ * during resize
++ */
++void ring_buffer_mutex_release(struct trace_buffer *buffer)
++{
++	mutex_unlock(&buffer->mutex);
++}
++EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
++/**
+  * ring_buffer_record_off - stop all writes into the buffer
+  * @buffer: The ring buffer to stop writes to.
+  *
+@@ -4918,6 +4937,8 @@ void ring_buffer_reset(struct trace_buffer *buffer)
+ 	struct ring_buffer_per_cpu *cpu_buffer;
+ 	int cpu;
+ 
++	/* prevent another thread from changing buffer sizes */
++	mutex_lock(&buffer->mutex);
+ 	for_each_buffer_cpu(buffer, cpu) {
+ 		cpu_buffer = buffer->buffers[cpu];
+ 
+@@ -4936,6 +4957,7 @@ void ring_buffer_reset(struct trace_buffer *buffer)
+ 		atomic_dec(&cpu_buffer->record_disabled);
+ 		atomic_dec(&cpu_buffer->resize_disabled);
+ 	}
++	mutex_unlock(&buffer->mutex);
+ }
+ EXPORT_SYMBOL_GPL(ring_buffer_reset);
+ 
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index f40d850..392e9aa 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2006,6 +2006,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
+ 	if (!buffer)
+ 		return;
+ 
++	ring_buffer_mutex_acquire(buffer);
++
+ 	ring_buffer_record_disable(buffer);
+ 
+ 	/* Make sure all commits have finished */
+@@ -2016,6 +2018,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
+ 	ring_buffer_reset_online_cpus(buffer);
+ 
+ 	ring_buffer_record_enable(buffer);
++
++	ring_buffer_mutex_release(buffer);
+ }
+ 
+ /* Must have trace_types_lock held */
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
+Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-
->> +/**
->> + * struct virtio_i2c_hdr - the virtio I2C message header structure
->> + * @addr: i2c_msg addr, the slave address
->> + * @flags: i2c_msg flags
->> + * @len: i2c_msg len
->> + */
->> +struct virtio_i2c_hdr {
->> +	__virtio16 addr;
->> +	__virtio16 flags;
->> +	__virtio16 len;
->> +} __packed;
-> As Misha noticed and somewhere I saw 0-day reports these should be carefully
-> taken care of.
->
-> ...
-
-Sure. Will fix these.
-
-
->> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
->> +{
->> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
->> +	struct virtio_i2c_msg *vmsg_o, *vmsg_i;
->> +	struct virtqueue *vq = vi->vq;
->> +	unsigned long time_left;
->> +	int len, i, ret = 0;
->> +
->> +	vmsg_o = kzalloc(sizeof(*vmsg_o), GFP_KERNEL);
->> +	if (!vmsg_o)
->> +		return -ENOMEM;
->> +
->> +	mutex_lock(&vi->i2c_lock);
->> +	vmsg_o->buf = NULL;
->> +	for (i = 0; i < num; i++) {
->> +		ret = virtio_i2c_add_msg(vq, vmsg_o, &msgs[i]);
->> +		if (ret) {
->> +			dev_err(&adap->dev, "failed to add msg[%d] to virtqueue.\n", i);
->> +			goto err_unlock_free;
-> break;
-
-OK.
-
-
->> +		}
->> +
->> +		virtqueue_kick(vq);
->> +
->> +		time_left = wait_for_completion_timeout(&vi->completion, adap->timeout);
->> +		if (!time_left) {
->> +			dev_err(&adap->dev, "msg[%d]: addr=0x%x timeout.\n", i, msgs[i].addr);
->> +			ret = i;
->> +			goto err_unlock_free;
-> break;
->
-> And so on.
-OK.
->> +		}
->> +
->> +		vmsg_i = (struct virtio_i2c_msg *)virtqueue_get_buf(vq, &len);
->> +		if (vmsg_i) {
->> +			/* vmsg_i should point to the same address with vmsg_o */
->> +			if (vmsg_i != vmsg_o) {
->> +				dev_err(&adap->dev, "msg[%d]: addr=0x%x virtqueue error.\n",
->> +					i, vmsg_i->hdr.addr);
->> +				ret = i;
->> +				goto err_unlock_free;
->> +			}
->> +			if (vmsg_i->status != VIRTIO_I2C_MSG_OK) {
->> +				dev_err(&adap->dev, "msg[%d]: addr=0x%x error=%d.\n",
->> +					i, vmsg_i->hdr.addr, vmsg_i->status);
->> +				ret = i;
->> +				goto err_unlock_free;
->> +			}
->> +			if ((vmsg_i->hdr.flags & I2C_M_RD) && vmsg_i->hdr.len)
->> +				memcpy(msgs[i].buf, vmsg_i->buf, vmsg_i->hdr.len);
->> +
->> +			kfree(vmsg_i->buf);
->> +			vmsg_i->buf = NULL;
->> +		}
->> +		reinit_completion(&vi->completion);
->> +	}
->> +	if (i == num)
->> +		ret = num;
-> And this conditional seems a dup of the for-loop successfully iterating over
-> entire queue.
-You are right.
-We may save several lines of code by using "Return (ret<0) ? ret : i" at 
-the end.
-
-
->> +err_unlock_free:
-> Redundant.
-OK.
->> +	mutex_unlock(&vi->i2c_lock);
->> +	kfree(vmsg_o->buf);
->> +	kfree(vmsg_o);
->> +	return ret;
->> +}
-> ...
->
->> +	vi->adap.timeout = HZ / 10;
-> + Blank line.
-OK.
->> +	ret = i2c_add_adapter(&vi->adap);
->> +	if (ret) {
->> +		dev_err(&vdev->dev, "failed to add virtio-i2c adapter.\n");
->> +		virtio_i2c_del_vqs(vdev);
-> Usually we do clean up followed by message.
-I will change the order. Thank you.
->> +	}
->> +
->> +	return ret;
->
