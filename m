@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCCB25D23C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4137A25D1C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgIDHSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:18:08 -0400
-Received: from song.cn.fujitsu.com ([218.97.8.244]:1711 "EHLO
-        song.cn.fujitsu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgIDHSD (ORCPT
+        id S1728395AbgIDHLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:11:20 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:47363 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727795AbgIDHLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:18:03 -0400
-X-Greylist: delayed 622 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Sep 2020 03:18:00 EDT
-X-IronPort-AV: E=Sophos;i="5.76,388,1592841600"; 
-   d="scan'208";a="4857635"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.250.3])
-  by song.cn.fujitsu.com with ESMTP; 04 Sep 2020 15:07:35 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 6564543DC18E;
-        Fri,  4 Sep 2020 15:07:31 +0800 (CST)
-Received: from [10.167.225.206] (10.167.225.206) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 4 Sep 2020 15:07:30 +0800
-Subject: Re: [PATCH] fs: Handle I_DONTCACHE in iput_final() instead of
- generic_drop_inode()
-To:     Dave Chinner <david@fromorbit.com>
-CC:     <viro@zeniv.linux.org.uk>, <ira.weiny@intel.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <y-goto@fujitsu.com>
-References: <20200831101313.168889-1-lihao2018.fnst@cn.fujitsu.com>
- <20200903215832.GF12131@dread.disaster.area>
-From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
-Message-ID: <025cd000-48c7-7cd2-5b89-f76d1b44079a@cn.fujitsu.com>
-Date:   Fri, 4 Sep 2020 15:07:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.0
+        Fri, 4 Sep 2020 03:11:19 -0400
+X-UUID: e9ce884ed9b14b899a923bdd79913ccf-20200904
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=CyHUeypPO/Ndn/UWpqExQLdOaqCCxuHfTXODMb4fNLY=;
+        b=QY77KP/GPYLBitsHIpnBNeB3FQ67IpyyY9NmFS2Z24kMHBNBVcPxFgVXXDwv1lxCf+j1t4txJlifnOIuI3ZeZAXJDUGkw+qy3FC49dFHbO+4fiNQCL39PppoqOHj2eqXbgLd9GaCJ6QuWeBL298+N30sBe/YEa0XroQZSnctOOU=;
+X-UUID: e9ce884ed9b14b899a923bdd79913ccf-20200904
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1393952801; Fri, 04 Sep 2020 15:11:12 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ MTKMBS31DR.mediatek.inc (172.27.6.102) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 4 Sep 2020 15:11:12 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Sep 2020 15:11:11 +0800
+Message-ID: <1599203472.23494.3.camel@mtksdaap41>
+Subject: Re: [RFC PATCH 3/4] usb: xhci-mtk: add support runtime pm
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+CC:     Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
+Date:   Fri, 4 Sep 2020 15:11:12 +0800
+In-Reply-To: <1599104065-8009-3-git-send-email-chunfeng.yun@mediatek.com>
+References: <1599104065-8009-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1599104065-8009-3-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200903215832.GF12131@dread.disaster.area>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.167.225.206]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: 6564543DC18E.AC4DE
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+X-TM-SNTS-SMTP: 96AC799E9DAA4A371347207BBDCE3525EE2928E9616996B2C6A4D0A8CF3D57042000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/4 5:58, Dave Chinner wrote:
-> On Mon, Aug 31, 2020 at 06:13:13PM +0800, Hao Li wrote:
->> If generic_drop_inode() returns true, it means iput_final() can evict
->> this inode regardless of whether it is dirty or not. If we check
->> I_DONTCACHE in generic_drop_inode(), any inode with this bit set will be
->> evicted unconditionally. This is not the desired behavior because
->> I_DONTCACHE only means the inode shouldn't be cached on the LRU list.
->> As for whether we need to evict this inode, this is what
->> generic_drop_inode() should do. This patch corrects the usage of
->> I_DONTCACHE.
->>
->> This patch was proposed in [1].
->>
->> [1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
->>
->> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
->> ---
->>  fs/inode.c         | 3 ++-
->>  include/linux/fs.h | 3 +--
->>  2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/inode.c b/fs/inode.c
->> index 72c4c347afb7..4e45d5ea3d0f 100644
->> --- a/fs/inode.c
->> +++ b/fs/inode.c
->> @@ -1625,7 +1625,8 @@ static void iput_final(struct inode *inode)
->>      else
->>          drop = generic_drop_inode(inode);
->>  
->> -    if (!drop && (sb->s_flags & SB_ACTIVE)) {
->> +    if (!drop && !(inode->i_state & I_DONTCACHE) &&
->> +            (sb->s_flags & SB_ACTIVE)) {
->
-> FWIW, the format used in fs/inode.c is to align the logic
-> statements, not tab indent the additional lines in the statement.
-> i.e.
->
->     if (!drop &&
->         !(inode->i_state & I_DONTCACHE) &&
->         (sb->s_flags & SB_ACTIVE)) {
->
-> Which gives a clear indication that there are all at the same
-> precedence and separate logic statements...
->
-> Otherwise the change looks good.
->
-> Probably best to resend with the fixes tag :)
-
-Got it! Thanks.
-
->
->
-> Cheers,
->
-> Dave.
-
-
+SGksIENodW5mZW5nOg0KDQpPbiBUaHUsIDIwMjAtMDktMDMgYXQgMTE6MzQgKzA4MDAsIENodW5m
+ZW5nIFl1biB3cm90ZToNCj4gRnJvbTogQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNvbT4NCj4gDQo+
+IGFkZCBzdXBwb3J0IHJ1bnRpbWUgcG0gZmVhdHVyZQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogWmhh
+bnlvbmcgV2FuZyA8emhhbnlvbmcud2FuZ0BtZWRpYXRlay5jb20+DQo+IFNpZ25lZC1vZmYtYnk6
+IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+ICBkcml2
+ZXJzL3VzYi9ob3N0L3hoY2ktbXRrLmMgfCA0NDYgKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKy0NCj4gIGRyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuaCB8ICAxNCAr
+Kw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCA0NTUgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkN
+Cj4gIG1vZGUgY2hhbmdlIDEwMDY0NCA9PiAxMDA3NTUgZHJpdmVycy91c2IvaG9zdC94aGNpLW10
+ay5oDQo+IA0KDQpbc25pcF0NCg0KPiBAQCAtNTYyLDYgKzc5NCwzMSBAQCBzdGF0aWMgaW50IHho
+Y2lfbXRrX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAJaWYgKHJldCkN
+Cj4gIAkJZ290byBkZWFsbG9jX3VzYjJfaGNkOw0KPiAgDQo+ICsJSU5JVF9ERUxBWUVEX1dPUkso
+Jm10ay0+c2VhbCwgeGhjaV9tdGtfc2VhbF93b3JrKTsNCj4gKwlzbnByaW50ZihtdGstPnNlYWxf
+ZGVzY3IsIHNpemVvZihtdGstPnNlYWxfZGVzY3IpLCAic2VhbCVzOnVzYiVkIiwNCj4gKwkJIGhj
+ZC0+ZHJpdmVyLT5kZXNjcmlwdGlvbiwgaGNkLT5zZWxmLmJ1c251bSk7DQo+ICsJcmV0ID0gZGV2
+bV9yZXF1ZXN0X2lycShtdGstPnNlYWxfaXJxLCAmeGhjaV9tdGtfc2VhbF9pcnEsDQo+ICsJCQkg
+IElSUUZfVFJJR0dFUl9GQUxMSU5HLAltdGstPnNlYWxfZGVzY3IsIG10ayk7DQoNCkluIGludGVy
+cnVwdC5oIFsxXSwgZGV2bV9yZXF1ZXN0X2lycSgpIG5lZWQgNiBwYXJhbWV0ZXJzOg0KDQpzdGF0
+aWMgaW5saW5lIGludCBfX211c3RfY2hlY2sNCmRldm1fcmVxdWVzdF9pcnEoc3RydWN0IGRldmlj
+ZSAqZGV2LCB1bnNpZ25lZCBpbnQgaXJxLCBpcnFfaGFuZGxlcl90DQpoYW5kbGVyLA0KCQkgdW5z
+aWduZWQgbG9uZyBpcnFmbGFncywgY29uc3QgY2hhciAqZGV2bmFtZSwgdm9pZCAqZGV2X2lkKQ0K
+ew0KCXJldHVybiBkZXZtX3JlcXVlc3RfdGhyZWFkZWRfaXJxKGRldiwgaXJxLCBoYW5kbGVyLCBO
+VUxMLCBpcnFmbGFncywNCgkJCQkJIGRldm5hbWUsIGRldl9pZCk7DQp9DQoNCg0KWzFdDQpodHRw
+czovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51
+eC5naXQvdHJlZS9pbmNsdWRlL2xpbnV4L2ludGVycnVwdC5oP2g9djUuOS1yYzENCg0KUmVnYXJk
+cywNCkNLDQoNCj4gKwlpZiAocmV0ICE9IDApIHsNCj4gKwkJZGV2X2VycihkZXYsICJzZWFsIHJl
+cXVlc3QgaW50ZXJydXB0ICVkIGZhaWxlZFxuIiwNCj4gKwkJCW10ay0+c2VhbF9pcnEpOw0KPiAr
+CQlnb3RvIGRlYWxsb2NfdXNiMl9oY2Q7DQo+ICsJfQ0KPiArCXhoY2lfbXRrX3NlYWxfd2FrZXVw
+X2VuYWJsZShtdGssIGZhbHNlKTsNCj4gKw0KPiArCWRldmljZV9lbmFibGVfYXN5bmNfc3VzcGVu
+ZChkZXYpOw0KPiArCXhoY2lfbXRrX3J1bnRpbWVfcmVhZHkgPSAxOw0KPiArDQo+ICsJcmV0ID0g
+YWRkX3Bvd2VyX2F0dHJpYnV0ZXMoZGV2KTsNCj4gKwlpZiAocmV0KQ0KPiArCQlnb3RvIGRlYWxs
+b2NfdXNiMl9oY2Q7DQo+ICsNCj4gKwlwbV9ydW50aW1lX21hcmtfbGFzdF9idXN5KGRldik7DQo+
+ICsJcG1fcnVudGltZV9wdXRfYXV0b3N1c3BlbmQoZGV2KTsNCj4gKw0KPiArCWRldl9kYmcoZGV2
+LCAiJXM6IHhoY2lfbXRrX3J1bnRpbWVfcmVhZHkgJWkiLA0KPiArCQkgX19mdW5jX18sIHhoY2lf
+bXRrX3J1bnRpbWVfcmVhZHkpOw0KPiArDQo+ICAJcmV0dXJuIDA7DQo+ICANCj4gIGRlYWxsb2Nf
+dXNiMl9oY2Q6DQo+IEBAIC01ODQsNyArODQxLDcgQEAgc3RhdGljIGludCB4aGNpX210a19wcm9i
+ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgCXhoY2lfbXRrX2xkb3NfZGlzYWJs
+ZShtdGspOw0KPiAgDQo+ICBkaXNhYmxlX3BtOg0KPiAtCXBtX3J1bnRpbWVfcHV0X3N5bmMoZGV2
+KTsNCj4gKwlwbV9ydW50aW1lX3B1dF9zeW5jX2F1dG9zdXNwZW5kKGRldik7DQo+ICAJcG1fcnVu
+dGltZV9kaXNhYmxlKGRldik7DQo+ICAJcmV0dXJuIHJldDsNCj4gIH0NCg0KDQo=
 
