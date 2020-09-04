@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB1F25E354
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 23:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1164125E357
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 23:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728151AbgIDVeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 17:34:12 -0400
-Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:39058 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727020AbgIDVeI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 17:34:08 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 75B528384365;
-        Fri,  4 Sep 2020 21:34:04 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3871:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7903:9025:10004:10400:10848:11232:11658:11914:12043:12048:12297:12555:12663:12679:12740:12760:12895:13069:13161:13229:13311:13357:13439:14181:14659:14721:21080:21627:21740:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: brain20_590dcfc270b5
-X-Filterd-Recvd-Size: 1527
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  4 Sep 2020 21:34:02 +0000 (UTC)
-Message-ID: <f5e9bd00f94d4058e7fa214b4219d3e1978e8b55.camel@perches.com>
-Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
-From:   Joe Perches <joe@perches.com>
-To:     kieran.bingham+renesas@ideasonboard.com,
-        Jiri Kosina <trivial@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-In-Reply-To: <e6035e4b-9d4e-3c23-c140-4e9d6822496b@ideasonboard.com>
-References: <cover.1598331148.git.joe@perches.com>
-         <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
-         <e6035e4b-9d4e-3c23-c140-4e9d6822496b@ideasonboard.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Date:   Fri, 04 Sep 2020 14:33:52 -0700
+        id S1728165AbgIDVes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 17:34:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727020AbgIDVer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 17:34:47 -0400
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B5F7208C7
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 21:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599255287;
+        bh=Uc26FcrDmvZH1JzVAlteB47fNbPqx1KDzA4Q0W8WdHA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mNYFu6XhOl1zdXpPtLc+wAVL2on5kPjoXnjpOzLmsZmqijEh9EEk9LX1njAwZjIdz
+         1gPJ5DeugeC7Z+0n5xjXJ/xaTE3mGY4t3dNqq9dg+fNuARDsD3XIPyksudq7+FULJa
+         nFJN2ziy7dtDvvvxrqVJd9iCiNscA3591ULVXkVY=
+Received: by mail-vk1-f172.google.com with SMTP id k1so1990085vkb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 14:34:47 -0700 (PDT)
+X-Gm-Message-State: AOAM532No0zCjt/ygDWbhqKfX49Ip4h67wJ2Roh0p8QVE9bMFOyIha1y
+        tQHhS0kdNt9cxFn0DVhCq0M6cQIkFqUgrMcJLIY=
+X-Google-Smtp-Source: ABdhPJw3R00y3e8DVdnl7AuPREHHmtqYsziy2CbLfkGU0/BVnsQsW1/DduUcOR0oBprqG32+rY6RfWx+ZlgrrW+dTlg=
+X-Received: by 2002:a05:6122:6bb:: with SMTP id r27mr6894542vkq.3.1599255286233;
+ Fri, 04 Sep 2020 14:34:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
+References: <CAB=NE6VTTOcrH0mZaR2wVdzWFjYctzegeKFuSnx4NsssaKTHZA@mail.gmail.com>
+In-Reply-To: <CAB=NE6VTTOcrH0mZaR2wVdzWFjYctzegeKFuSnx4NsssaKTHZA@mail.gmail.com>
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Fri, 4 Sep 2020 15:34:34 -0600
+X-Gmail-Original-Message-ID: <CAB=NE6UKbGYEvyHT7ZfvpOUgy43RM+aSwrrGh3De80QcY_HbUg@mail.gmail.com>
+Message-ID: <CAB=NE6UKbGYEvyHT7ZfvpOUgy43RM+aSwrrGh3De80QcY_HbUg@mail.gmail.com>
+Subject: Re: Dynamic source include for kconfig
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-04 at 12:42 +0100, Kieran Bingham wrote:
-> I'm pleased to see this is treewide ;-)
-> Definitely prefer this.
+On Fri, Sep 4, 2020 at 9:24 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> Hey Masahiro,
+>
+> I ended up needing to do a dyanmic include of kconfig files to support
+> custom / private vagrant boxes in a project I maintain.  I figured out
+> a way to do it, and not sure if it was intended, but it works:
+>
+> https://github.com/mcgrof/kdevops/commit/404a55326198787758fac88af3c60dcaecf599fc
+>
+> A new helper for this sort of thing might be neat, if one follows a
+> convention. Thoughts?
 
-These are only the comma uses in if/do/while blocks that
-would also need braces as separate statements.
+Nevermind, it never worked. The script was actually failing because it
+had a typo, but it displayed the contents, and I made a mistake
+thinking it had worked, but it never did.
 
-There a multiple dozens more just with single statements
-terminated by commas and not semicolons.
-
-See:  https://lore.kernel.org/patchwork/patch/1291033/
-
-
+ Luis
