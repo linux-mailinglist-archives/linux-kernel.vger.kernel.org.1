@@ -2,173 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735AD25E142
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B18025E14A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgIDSAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:00:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46608 "EHLO mx2.suse.de"
+        id S1726317AbgIDSF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:05:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726966AbgIDSAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:00:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4A8D9ABA2;
-        Fri,  4 Sep 2020 18:00:02 +0000 (UTC)
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     ltp@lists.linux.it
-Cc:     linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>
-Subject: [PATCH] syscalls/ptrace10: Add new regression test
-Date:   Fri,  4 Sep 2020 20:00:30 +0200
-Message-Id: <20200904180030.14838-1-chrubis@suse.cz>
-X-Mailer: git-send-email 2.26.2
+        id S1726029AbgIDSF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 14:05:28 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C083217BA;
+        Fri,  4 Sep 2020 17:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599241811;
+        bh=Ag1A+X+Az5QSLdpFFohLqvlwDSmyTZHVcII5luMVwUw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rELap8gXcynnujzMa1ArCQy5i1oLKt+Pgk2mQDiH1C/Jyun9ESs4BlzjsUyssTzP3
+         hF/fYmLWCKu4NR718SioPAbtEnn/sgYIhbKsgQP+G5iabZPYepOxPdIEOrrntCahLj
+         jGFCjcvukZRL8Ut5pVD8Qw6+4juZuRDjYy46dzvU=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 552E935215BE; Fri,  4 Sep 2020 10:50:07 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 10:50:07 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     chao <chao@eero.com>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: allow multiple stalls before panic
+Message-ID: <20200904175007.GG29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1598856077-58603-1-git-send-email-chao@eero.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598856077-58603-1-git-send-email-chao@eero.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-New regression test for a kernel commit:
+On Sun, Aug 30, 2020 at 11:41:17PM -0700, chao wrote:
+> Some stalls are transient and system can fully recover.
+> Allow users to configure the number of stalls experienced
+> to trigger kernel Panic.
+> 
+> Signed-off-by: chao <chao@eero.com>
 
-commit bd14406b78e6daa1ea3c1673bda1ffc9efdeead0
-Author: Jiri Olsa <jolsa@kernel.org>
-Date:   Mon Aug 27 11:12:25 2018 +0200
+Hearing no objections, I have queued this with wordsmithing as shown
+below.  Please let me know if I messed something up.
 
-    perf/hw_breakpoint: Modify breakpoint even if the new attr has disabled set
+One question, though.  It looks like setting this to (say) 5 would panic
+after the fifth RCU CPU stall warning message, regardless whether all
+five were reporting the same RCU CPU stall event or whether they instead
+were five widely separated transient RCU CPU stall events, where the
+system fully recovered from each event.  Is this the intent?
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-CC: Andy Lutomirski <luto@kernel.org>
-CC: Peter Zijlstra <peterz@infradead.org>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: Alexandre Chartre <alexandre.chartre@oracle.com>
----
+							Thanx, Paul
 
-This is a follow up for the ptrace08 fixes.
+------------------------------------------------------------------------
 
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/ptrace/.gitignore |  1 +
- testcases/kernel/syscalls/ptrace/ptrace10.c | 86 +++++++++++++++++++++
- 3 files changed, 88 insertions(+)
- create mode 100644 testcases/kernel/syscalls/ptrace/ptrace10.c
+commit e710c928fb52d8e56bc6173515805301da6aa22b
+Author: chao <chao@eero.com>
+Date:   Sun Aug 30 23:41:17 2020 -0700
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 398145f65..163471bcd 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -993,6 +993,7 @@ ptrace05 ptrace05
- ptrace07 ptrace07
- ptrace08 ptrace08
- ptrace09 ptrace09
-+ptrace10 ptrace10
+    rcu: Panic after fixed number of stalls
+    
+    Some stalls are transient, so that system fully recovers.  This commit
+    therefore allows users to configure the number of stalls that must happen
+    in order to trigger kernel panic.
+    
+    Signed-off-by: chao <chao@eero.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 500def6..fc2dd3f 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -536,6 +536,7 @@ extern int panic_on_warn;
+ extern unsigned long panic_on_taint;
+ extern bool panic_on_taint_nousertaint;
+ extern int sysctl_panic_on_rcu_stall;
++extern int sysctl_max_rcu_stall_to_panic;
+ extern int sysctl_panic_on_stackoverflow;
  
- pwrite01 pwrite01
- pwrite02 pwrite02
-diff --git a/testcases/kernel/syscalls/ptrace/.gitignore b/testcases/kernel/syscalls/ptrace/.gitignore
-index 7639e1a9f..7ee3b3c47 100644
---- a/testcases/kernel/syscalls/ptrace/.gitignore
-+++ b/testcases/kernel/syscalls/ptrace/.gitignore
-@@ -5,3 +5,4 @@
- /ptrace07
- /ptrace08
- /ptrace09
-+/ptrace10
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace10.c b/testcases/kernel/syscalls/ptrace/ptrace10.c
-new file mode 100644
-index 000000000..b5d6b9f8f
---- /dev/null
-+++ b/testcases/kernel/syscalls/ptrace/ptrace10.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2020 Cyril Hrubis <chrbis@suse.cz>
-+ *
-+ * After fix for CVE-2018-1000199 (see ptrace08.c) subsequent calls to POKEUSER
-+ * for x86 debug registers were ignored silently.
-+ *
-+ * This is a regression test for commit:
-+ *
-+ * commit bd14406b78e6daa1ea3c1673bda1ffc9efdeead0
-+ * Author: Jiri Olsa <jolsa@kernel.org>
-+ * Date:   Mon Aug 27 11:12:25 2018 +0200
-+ *
-+ *     perf/hw_breakpoint: Modify breakpoint even if the new attr has disabled set
-+ */
+ extern bool crash_kexec_post_notifiers;
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index 0fde39b..228c55f 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -13,6 +13,7 @@
+ 
+ /* panic() on RCU Stall sysctl. */
+ int sysctl_panic_on_rcu_stall __read_mostly;
++int sysctl_max_rcu_stall_to_panic __read_mostly;
+ 
+ #ifdef CONFIG_PROVE_RCU
+ #define RCU_STALL_DELAY_DELTA		(5 * HZ)
+@@ -106,6 +107,11 @@ early_initcall(check_cpu_stall_init);
+ /* If so specified via sysctl, panic, yielding cleaner stall-warning output. */
+ static void panic_on_rcu_stall(void)
+ {
++	static int cpu_stall;
 +
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <stddef.h>
-+#include <sys/ptrace.h>
-+#include <sys/user.h>
-+#include <signal.h>
-+#include "tst_test.h"
++	if (++cpu_stall < sysctl_max_rcu_stall_to_panic)
++		return;
 +
-+#if defined(__i386__) || defined(__x86_64__)
-+
-+static pid_t child_pid;
-+
-+static void child_main(void)
-+{
-+	raise(SIGSTOP);
-+	exit(0);
-+}
-+
-+static void run(void)
-+{
-+	int status;
-+	unsigned long addr;
-+
-+	child_pid = SAFE_FORK();
-+
-+	if (!child_pid)
-+		child_main();
-+
-+	if (SAFE_WAITPID(child_pid, &status, WUNTRACED) != child_pid)
-+		tst_brk(TBROK, "Received event from unexpected PID");
-+
-+	SAFE_PTRACE(PTRACE_ATTACH, child_pid, NULL, NULL);
-+	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
-+		(void *)offsetof(struct user, u_debugreg[0]), (void *)1);
-+	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
-+		(void *)offsetof(struct user, u_debugreg[0]), (void *)2);
-+
-+	addr = ptrace(PTRACE_PEEKUSER, child_pid,
-+	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
-+
-+	if (addr == 2)
-+		tst_res(TPASS, "The rd0 was set on second PTRACE_POKEUSR");
-+	else
-+		tst_res(TFAIL, "The rd0 wasn't set on second PTRACE_POKEUSER");
-+
-+	SAFE_PTRACE(PTRACE_DETACH, child_pid, NULL, NULL);
-+	SAFE_KILL(child_pid, SIGCONT);
-+	child_pid = 0;
-+	tst_reap_children();
-+}
-+
-+static void cleanup(void)
-+{
-+	/* Main process terminated by tst_brk() with child still paused */
-+	if (child_pid)
-+		SAFE_KILL(child_pid, SIGKILL);
-+}
-+
-+static struct tst_test test = {
-+	.test_all = run,
-+	.cleanup = cleanup,
-+	.forks_child = 1,
-+	.tags = (const struct tst_tag[]) {
-+		{"linux-git", "bd14406b78e6"},
-+		{}
-+	}
-+};
-+#else
-+TST_TEST_TCONF("This test is only supported on x86 systems");
+ 	if (sysctl_panic_on_rcu_stall)
+ 		panic("RCU Stall\n");
+ }
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 287862f..1bca490 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -2651,6 +2651,17 @@ static struct ctl_table kern_table[] = {
+ 		.extra2		= SYSCTL_ONE,
+ 	},
+ #endif
++#if defined(CONFIG_TREE_RCU)
++	{
++		.procname	= "max_rcu_stall_to_panic",
++		.data		= &sysctl_max_rcu_stall_to_panic,
++		.maxlen		= sizeof(sysctl_max_rcu_stall_to_panic),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_INT_MAX,
++	},
 +#endif
--- 
-2.26.2
-
+ #ifdef CONFIG_STACKLEAK_RUNTIME_DISABLE
+ 	{
+ 		.procname	= "stack_erasing",
