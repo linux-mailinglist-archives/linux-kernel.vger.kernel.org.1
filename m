@@ -2,107 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBED25DD7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A048325DDAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731111AbgIDP00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730784AbgIDP0W (ORCPT
+        id S1726657AbgIDP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:28:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32388 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730889AbgIDP2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:26:22 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD3EC061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:26:21 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id u20so4814316pfn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=5282YCIbjYXuoDELr0tgCw3lmbT1e3lQtz3uBh49A5w=;
-        b=KqciaOouN3G0T0BpZ+nf3ctA74+2AtRh6tEhtU9HzF5zny++REty5f+5upK7wBTdT0
-         ZSD1SVZWQRZRcM/2VKoRlJEA5LO8fEpumqdT7HRfaWci2v8omzhLuF4oEKWy8QmNqH0r
-         iPE7seIHejvz+6TspV1qVue7CafhahPjlFPiVLzX6Wtn/smZZlQ/apex3bFHk5HZ23rE
-         KeynWoZJf++xordcvhc1Nab8GR6aO2Wu3rQgs/Sj9n9aMrnnKyu6xxryFYgS66oRvl6h
-         B1N5+V0mjXaWnnJz1F7iDCqhQwMBIYaNRHZSbiM3cv8UFkl1qSagq5pXLYUwm0+CTrXq
-         T0bw==
+        Fri, 4 Sep 2020 11:28:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599233286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=umTLLbWNIKdgBaY8oamQNBodLX2YoAzBBUrL/6iK/FA=;
+        b=WCwnYIsJTFUlu4DrbEiSlwhkzlBMVLJv8O9IVFF6PqVC+ddpya/x1KgBMPudW+FGsQylNW
+        uAGWpJXDJWDDvnb5mriY6Ejq+7rCdWbzU1UPLE6v4koU9uQ3CgZv4TR8av9XX4etFzzGDg
+        R6GCuFm1yID/yVv5OI/35EUOfrD/wos=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-J7jT90cyPPyRUO-aN02Akg-1; Fri, 04 Sep 2020 11:28:01 -0400
+X-MC-Unique: J7jT90cyPPyRUO-aN02Akg-1
+Received: by mail-ej1-f71.google.com with SMTP id d8so627620ejt.14
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:28:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=5282YCIbjYXuoDELr0tgCw3lmbT1e3lQtz3uBh49A5w=;
-        b=QugOsVXNyTiIjLACd6kx/ElxiFHX82rquAWyAmtTrutIdoCQDnX/VBdzyOSj6ix+5n
-         kMAlk33gQsCMemwmfJ6uZFiRQ8FixTy7o3QXdFU09C4MIEsxLSivytmev0/tGO21ZNvs
-         Kw721mJ0TtyLuTbQ95fuW71J8hNNt9w4VQ9dQ5zt1yTcsO/gGSGBkcvy5JxVi+hLKXk7
-         U5cMucSc6YOPW+kXY/f8dvRRpct+OWtC8kMHPi24gTYrPbhyzTxHwRUatOvglhlQM4Ij
-         Btbminl9SOZA4qgUVt3P+j0nXYtEPe6/RfhTtu8JpYb2ZAKhS0chFv9QMp4NEfYkR0xJ
-         FxAQ==
-X-Gm-Message-State: AOAM531tZsegqBca2QzwQTOPg4P/pVJk/Nw/tzz+Ntlo/e8s7W56/vap
-        GriZ9d14m0Tvi88GK0P77rZtcHmSBm6mXPde
-X-Google-Smtp-Source: ABdhPJzWB1+Vzj3MMeE+uWismLmPVQESORqcKfWp3rBhgKzrwzRcqAem1QG2+r6cwXW16qiQ02z6kQ==
-X-Received: by 2002:a63:a53:: with SMTP id z19mr7435489pgk.67.1599233176257;
-        Fri, 04 Sep 2020 08:26:16 -0700 (PDT)
-Received: from [192.168.1.11] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v10sm6707177pff.192.2020.09.04.08.26.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 08:26:07 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     IDE/ATA development list <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] libata fixes for 5.9-rc4
-Message-ID: <ecf36c20-0cfd-9010-84f7-334e3ea3b67d@kernel.dk>
-Date:   Fri, 4 Sep 2020 09:26:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=umTLLbWNIKdgBaY8oamQNBodLX2YoAzBBUrL/6iK/FA=;
+        b=hLnRsMbPXySIU7o6BAiJuTKGPJ+Q++o1bRTuYfOQ6uNXjm2dfhx5gMvYO8rjzhaa2b
+         25GDdgMZ6PPfVfy4XRPVteCtBAlsFSv9Sg5sDjrfC0o+gjUr6jpn5CgYjd4liF3LfAjr
+         JtXc25M9m/9Vh0W66BXdW/rjSwEQxMNXIdsfQ3V+9rAPcqMrLOthZ78LqYSR1faR8NWc
+         PDo4oBRjpWhwXJ1Y/fwbITA04dgq8Am/RcscE9SbucMbEkpMtwX8Og7x9+BF5BtK31Ny
+         Xo5n3iq75GUqHo0igk9xXTKIrHOLnPZ822dT5DdU0T8qbCirzTCnwuUytmo9Ox9qMMCg
+         S7tA==
+X-Gm-Message-State: AOAM532+MQM/AG1Jgor8xkfM7OHl98L/AZnvYFKr8utwiPSDbxLdPbS3
+        dUDz60u9LPQfrfsWwpC+wwM7my5iduCKLKQU4bYbhGa46HQBPRHVKPIRcG30/iMCiqsj/gNd+JJ
+        p3rmbVGYAfnqERnU0lWZMrZQe
+X-Received: by 2002:a17:907:37b:: with SMTP id rs27mr8455510ejb.0.1599233280084;
+        Fri, 04 Sep 2020 08:28:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy7T7l9O/ybfKdjU+qvLUikdHdaUSCiILWHYrbM5ZVVa+YicRT10pKpVRojS1ZgFXyfzuKgUQ==
+X-Received: by 2002:a17:907:37b:: with SMTP id rs27mr8455494ejb.0.1599233279880;
+        Fri, 04 Sep 2020 08:27:59 -0700 (PDT)
+Received: from redfedo.redhat.com ([2a01:cb14:499:3d00:cd47:f651:9d80:157a])
+        by smtp.gmail.com with ESMTPSA id a18sm6357110ejy.71.2020.09.04.08.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 08:27:59 -0700 (PDT)
+From:   Julien Thierry <jthierry@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+        raphael.gault@arm.com, benh@kernel.crashing.org,
+        Julien Thierry <jthierry@redhat.com>
+Subject: [PATCH v3 00/10] Make check implementation arch agnostic
+Date:   Fri,  4 Sep 2020 16:27:45 +0100
+Message-Id: <20200904152755.32372-1-jthierry@redhat.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-- Improve Sandisks ATA_HORKAGE on NCQ (Tejun)
+The current implementation of the check subcommand has various x86 bits
+here and there. In order to prepare objtool to provide check for other
+architectures, add some abstraction over the x86 specific bits, relying
+on objtool arch specific code to provide some necessary operations.
 
-- link printk cleanup (Xu)
+This is part of the effort to implement check for arm64, initiated [1]
+by Raphael. The series is based on top of the separation of check & orc
+subcommands series[2].
 
-Please pull!
+I've push both series base on top of tip/objtool/core at [3].
 
+- The first two patches make it simpler for new arches to provide their
+list of kernel headers, without worrying about modifications in the x86
+headers.
+- Patch 3 Moves arch specific macros to more suitable location
+- Patches 4 and 5 add abstraction to handle alternatives
+- Patch 6 adds abstraction to handle jump table
+- Patches 7-10 makes unwind hint definitions shared across architectures
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+Changes since v2 [4]:
+- Rebased on v5.9-rc1
+- Under tools/objtool/arch/x86/, rename arch_special.c to special.c
+- Rename include/linux/frame.h to inclide/linux/objtool.h
+- Share unwind hint types across architectures
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+[1] https://lkml.org/lkml/2019/8/16/400
+[2] https://lkml.org/lkml/2020/6/4/675
+[3] https://github.com/julien-thierry/linux/tree/arch-independent-check
+[4] https://lkml.org/lkml/2020/7/30/424
 
-are available in the Git repository at:
+Cheers,
 
-  git://git.kernel.dk/linux-block.git tags/libata-5.9-2020-09-04
+Julien
 
-for you to fetch changes up to 3b5455636fe26ea21b4189d135a424a6da016418:
+-->
 
-  libata: implement ATA_HORKAGE_MAX_TRIM_128M and apply to Sandisks (2020-09-02 11:31:23 -0600)
+Julien Thierry (9):
+  objtool: Group headers to check in a single list
+  objtool: Make sync-check consider the target architecture
+  objtool: Move macros describing structures to arch-dependent code
+  objtool: Abstract alternative special case handling
+  objtool: Make relocation in alternative handling arch dependent
+  headers: Rename frame.h
+  objtool: Only include valid definitions depending on source file type
+  objtool: Make unwind hints definitions available to other
+    architectures
+  objtool: Decode unwind hint register depending on architecture
 
-----------------------------------------------------------------
-libata-5.9-2020-09-04
+Raphael Gault (1):
+  objtool: Refactor switch-tables code to support other architectures
 
-----------------------------------------------------------------
-Tejun Heo (1):
-      libata: implement ATA_HORKAGE_MAX_TRIM_128M and apply to Sandisks
+ arch/x86/include/asm/nospec-branch.h          |   2 +-
+ arch/x86/include/asm/orc_types.h              |  34 ----
+ arch/x86/include/asm/unwind_hints.h           |  50 +-----
+ arch/x86/kernel/kprobes/core.c                |   2 +-
+ arch/x86/kernel/kprobes/opt.c                 |   2 +-
+ arch/x86/kernel/reboot.c                      |   2 +-
+ arch/x86/kernel/unwind_orc.c                  |  11 +-
+ arch/x86/kvm/svm/svm.c                        |   2 +-
+ arch/x86/kvm/vmx/nested.c                     |   2 +-
+ arch/x86/kvm/vmx/vmx.c                        |   2 +-
+ arch/x86/xen/enlighten_pv.c                   |   2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_msg.c           |   3 +-
+ include/linux/frame.h                         |  35 -----
+ include/linux/objtool.h                       | 134 ++++++++++++++++
+ kernel/bpf/core.c                             |   2 +-
+ kernel/kexec_core.c                           |   2 +-
+ tools/arch/x86/include/asm/orc_types.h        |  34 ----
+ tools/include/linux/objtool.h                 | 134 ++++++++++++++++
+ tools/objtool/Makefile                        |   2 +-
+ tools/objtool/arch.h                          |   2 +
+ tools/objtool/arch/x86/Build                  |   1 +
+ tools/objtool/arch/x86/decode.c               |  37 +++++
+ tools/objtool/arch/x86/include/arch_special.h |  20 +++
+ tools/objtool/arch/x86/special.c              | 145 ++++++++++++++++++
+ tools/objtool/check.c                         | 137 ++---------------
+ tools/objtool/check.h                         |   7 +-
+ tools/objtool/objtool.h                       |   2 +
+ tools/objtool/orc_dump.c                      |   7 +-
+ tools/objtool/orc_gen.c                       |   5 +-
+ tools/objtool/special.c                       |  48 +-----
+ tools/objtool/special.h                       |  10 ++
+ tools/objtool/sync-check.sh                   |  27 ++--
+ tools/objtool/weak.c                          |   2 -
+ 33 files changed, 561 insertions(+), 346 deletions(-)
+ delete mode 100644 include/linux/frame.h
+ create mode 100644 include/linux/objtool.h
+ create mode 100644 tools/include/linux/objtool.h
+ create mode 100644 tools/objtool/arch/x86/include/arch_special.h
+ create mode 100644 tools/objtool/arch/x86/special.c
 
-Xu Wang (1):
-      ata: ahci: use ata_link_info() instead of ata_link_printk()
-
- drivers/ata/ahci.c        | 3 +--
- drivers/ata/libata-core.c | 5 ++---
- drivers/ata/libata-scsi.c | 8 +++++++-
- include/linux/libata.h    | 1 +
- 4 files changed, 11 insertions(+), 6 deletions(-)
-
--- 
-Jens Axboe
+--
+2.21.3
 
