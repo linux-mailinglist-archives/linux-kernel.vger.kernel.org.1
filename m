@@ -2,86 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA5325DEE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CBD25DEED
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgIDQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbgIDQCK (ORCPT
+        id S1726722AbgIDQDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:03:34 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43795 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726005AbgIDQDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:02:10 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E68CC061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:02:10 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id v4so6537872wmj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WPWs6+bNAsvF0rvAc3yDkiD79Fr0V6X4UpT2H9wqL9w=;
-        b=OkpOrPJZjs2Y0PihfJ7PKAOhPKi+QXL4WLgx95wnrgwebxFXuZPO471OqXLrfRoYPw
-         W88jgdiC3dytG8y7rSPSpp+QNgisq043YZXmCVQ9dBEcxIN9ABSt5YaSUwE/K0puhnZ4
-         CjEXXPkmqV9ZhBsRr/uZvM9BAmbPYn54nsjTtrqnRA0v9oBqkuCyGS8+D3cz5nub6xIo
-         gURl08C/czURvIgKQ9TOxjZbmJ/xgAyJ/75NW3bXcO9xX6el1jKLTxNRAaH8F4XFcPlS
-         l+Z8a+Hy7DpKDllQBV4TVm4MXt4XfwcwCSmg7/jR7/k+LHRQ/52KMId1KfaVH9M5MHWl
-         qkEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WPWs6+bNAsvF0rvAc3yDkiD79Fr0V6X4UpT2H9wqL9w=;
-        b=PQzm2Yfj0gzB8AduCwTKP73N4Wl5EIhNmmRDjxgkgKPdcvWSeTEQBNkAJ2wZJiCQm/
-         yH9TyMmaoU5zJfH8hSb27LnqQ9+/BwZScBFhZOoQfaESVIqTA4rXcV9GJ/52lzhtcDhp
-         gIJLdEWnqaogtl8iyVw54evWOA+NdLF3Tm7hIuspaxTjebGICT/+kcCaLvezEoey0AyP
-         XSYbR5kBaYzF1muv/GAJfLPkRlxJb+rkotjH0AO5kOcPOIrba+fuHo5/ItuIqzxtJUGg
-         tFj4IdNjCnM4qBdA9+y5vas3O9uCxwcAucBcS3oJE7JFCLkznOyrG76zl81/jKbbBW+R
-         JYPw==
-X-Gm-Message-State: AOAM531S9Fjle2hkLNuj9wEfq4wpI5seC3x56KI4RptLc+haYs6ykFtc
-        jACQs6QEpAV8TWwo8jaN9onixQ==
-X-Google-Smtp-Source: ABdhPJxqrPj4FqwNvFmd29r1spI/ZIQGafj/o4jzYrlvzXdLjkT+3k5breq2rCLBzbh5/WkV2rdDrQ==
-X-Received: by 2002:a1c:ab55:: with SMTP id u82mr8388426wme.139.1599235328834;
-        Fri, 04 Sep 2020 09:02:08 -0700 (PDT)
-Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
-        by smtp.gmail.com with ESMTPSA id i3sm11938627wrs.4.2020.09.04.09.02.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 09:02:08 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     khilman@baylibre.com
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] soc: amlogic: add support for the Meson AXG Power Controller
-Date:   Fri,  4 Sep 2020 18:02:04 +0200
-Message-Id: <20200904160206.22570-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.22.0
+        Fri, 4 Sep 2020 12:03:33 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-hb8g6iE0O5mrNFWlNdWvUA-1; Fri, 04 Sep 2020 12:03:28 -0400
+X-MC-Unique: hb8g6iE0O5mrNFWlNdWvUA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 22B2E108050D;
+        Fri,  4 Sep 2020 16:03:15 +0000 (UTC)
+Received: from krava (ovpn-112-34.ams2.redhat.com [10.36.112.34])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 86FEE88F2A;
+        Fri,  4 Sep 2020 16:03:09 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 18:03:03 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 2/5] perf record: Prevent override of
+ attr->sample_period for libpfm4 events
+Message-ID: <20200904160303.GD939481@krava>
+References: <20200728085734.609930-1-irogers@google.com>
+ <20200728085734.609930-3-irogers@google.com>
+ <20200728155940.GC1319041@krava>
+ <20200728160954.GD1319041@krava>
+ <CAP-5=fVqto0LrwgW6dHQupp7jFA3wToRBonBaXXQW4wwYcTreg@mail.gmail.com>
+ <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fWNniZuYfYhz_Cz7URQ+2E4T4Kg3DJqGPtDg70i38Er_A@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the bindings and support for the Power Controller found in the
-Amlogic AXG SoCs.
+On Thu, Sep 03, 2020 at 10:41:14PM -0700, Ian Rogers wrote:
+> On Wed, Jul 29, 2020 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Tue, Jul 28, 2020 at 9:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Tue, Jul 28, 2020 at 05:59:46PM +0200, Jiri Olsa wrote:
+> > > > On Tue, Jul 28, 2020 at 01:57:31AM -0700, Ian Rogers wrote:
+> > > > > From: Stephane Eranian <eranian@google.com>
+> > > > >
+> > > > > Before:
+> > > > > $ perf record -c 10000 --pfm-events=cycles:period=77777
+> > > > >
+> > > > > Would yield a cycles event with period=10000, instead of 77777.
+> > > > >
+> > > > > This was due to an ordering issue between libpfm4 parsing
+> > > > > the event string and perf record initializing the event.
+> > > > >
+> > > > > This patch fixes the problem by preventing override for
+> > > > > events with attr->sample_period != 0 by the time
+> > > > > perf_evsel__config() is invoked. This seems to have been the
+> > > > > intent of the author.
+> > > > >
+> > > > > Signed-off-by: Stephane Eranian <eranian@google.com>
+> > > > > Reviewed-by: Ian Rogers <irogers@google.com>
+> > > > > ---
+> > > > >  tools/perf/util/evsel.c | 3 +--
+> > > > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > > > > index 811f538f7d77..8afc24e2ec52 100644
+> > > > > --- a/tools/perf/util/evsel.c
+> > > > > +++ b/tools/perf/util/evsel.c
+> > > > > @@ -976,8 +976,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
+> > > > >      * We default some events to have a default interval. But keep
+> > > > >      * it a weak assumption overridable by the user.
+> > > > >      */
+> > > > > -   if (!attr->sample_period || (opts->user_freq != UINT_MAX ||
+> > > > > -                                opts->user_interval != ULLONG_MAX)) {
+> > > > > +   if (!attr->sample_period) {
+> > > >
+> > > > I was wondering why this wouldn't break record/top
+> > > > but we take care of the via record_opts__config
+> > > >
+> > > > as long as 'perf test attr' works it looks ok to me
+> > >
+> > > hum ;-)
+> > >
+> > > [jolsa@krava perf]$ sudo ./perf test 17 -v
+> > > 17: Setup struct perf_event_attr                          :
+> > > ...
+> > > running './tests/attr/test-record-C0'
+> > > expected sample_period=4000, got 3000
+> > > FAILED './tests/attr/test-record-C0' - match failure
+> >
+> > I'm not able to reproduce this. Do you have a build configuration or
+> > something else to look at? The test doesn't seem obviously connected
+> > with this patch.
+> >
+> > Thanks,
+> > Ian
+> 
+> Jiri, any update? Thanks,
 
-The Power Controller in the Amlogic AXG SoCs is similar to the GXL one
-but with less VPU memory domains to enable and a supplementary Audio
-memory power domain.
+sorry, I rebased and ran it again and it passes for me now,
+so it got fixed along the way
 
-Neil Armstrong (2):
-  dt-bindings: power: amlogic,meson-ee-pwrc: add Amlogic AXG power
-    controller bindings
-  soc: amlogic: meson-ee-pwrc: add support for the Meson AXG SoCs
-
- .../bindings/power/amlogic,meson-ee-pwrc.yaml | 23 ++++++++++++++--
- drivers/soc/amlogic/meson-ee-pwrc.c           | 26 +++++++++++++++++++
- include/dt-bindings/power/meson-axg-power.h   | 14 ++++++++++
- 3 files changed, 61 insertions(+), 2 deletions(-)
- create mode 100644 include/dt-bindings/power/meson-axg-power.h
-
--- 
-2.22.0
+jirka
 
