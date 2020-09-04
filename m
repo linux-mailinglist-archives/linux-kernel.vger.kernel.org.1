@@ -2,138 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166AA25CFBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C3725CFC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbgIDDV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 23:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S1729740AbgIDDXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 23:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729528AbgIDDVv (ORCPT
+        with ESMTP id S1729724AbgIDDXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 23:21:51 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC90AC061244
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 20:21:51 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k15so3822875pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 20:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cEGhSVKGyTcDoh4S8vfcg7s2VHDH8kS6rWS1UZv8ipc=;
-        b=m9YRKlbzscj0981GJexrfFWy15d7fAeUIQi887wc0Ud72jlEeg1/Fxf4xtwB99kJ/B
-         RCcOVcq1I5xbjwCOlYOiZexMMO02pvsUMStiAvfcJTOnAdItKUIJrR1onlFtyWVnyVrM
-         EI7b+/tqxtB+DKiU9kA7EC/STr2ApbGm9g7/6atufIKqZ6u44Qy3qJ9B0PpVjFvbxU52
-         TQ4iri2SUtsVtPrXaiRD82H4/13DP3fTyMgy0nsGzmqeQSn1JED1wtQI6JTnXPIjZ3Oa
-         hWG9+FHZL3Iw3/MFlOBQsapDpGKH1WITVDvCmHob6ZcIjt/lKYfmzMxiIB7l6ClVNr2m
-         O0Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=cEGhSVKGyTcDoh4S8vfcg7s2VHDH8kS6rWS1UZv8ipc=;
-        b=H4KEb9W4Pp96JIc6IVcimLMDJ/qXxXOFxa7na6HoNtFbDM4hsBieaI2CwTGjC+qvRj
-         9Yf6r2EqCMb76aynv04khiAbv2DqIqv2p5R+4yZYRoA+FJsw3bJLs5i0EO5cIR8jGRv1
-         UwNoFgrD1BgUJS+DHFJwnQIpB2h8iTrM5q8sRQkU9+tGvHvj/J6OtOv8MskF50HhCDmf
-         wT+lYZY/B0tudVGvW70ec4ie79z59dXNvnhtRh0CVKK6Cw46srwrVO9wNmtiIFfsa3pj
-         QA73H4pxiqnrHSDkIRm8WGpcfkbtQBGwjMoE5emMDy26lly3OMmu13dx+FjwQRqygcvg
-         wp/Q==
-X-Gm-Message-State: AOAM531l9NysXRyOiMxdNm7XywhXbZRVYyXD26HhPB1iLy0BCUI+/kx1
-        aZZpbRWEFFFSIlSuWyvgOIE=
-X-Google-Smtp-Source: ABdhPJzBLSoaw4P8nWpL7d+Ey+LF7G42EZypYKQ8vGQ5UodTCOlM04AKtW1jJCfUC9v7VVWaO2K8Ig==
-X-Received: by 2002:a62:7fd1:: with SMTP id a200mr6633985pfd.175.1599189711134;
-        Thu, 03 Sep 2020 20:21:51 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id o63sm4731160pfb.190.2020.09.03.20.21.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 20:21:50 -0700 (PDT)
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.garry@huawei.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH] perf metric: Fix some memory leaks
-Date:   Fri,  4 Sep 2020 12:21:42 +0900
-Message-Id: <20200904032142.516333-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
+        Thu, 3 Sep 2020 23:23:05 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AC7C061249
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 20:23:04 -0700 (PDT)
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9E07D84488;
+        Fri,  4 Sep 2020 15:23:02 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1599189782;
+        bh=SYPM5NmO2oFScs3sCrM5DJmQkLy/qPNPYboTphS/uI8=;
+        h=From:To:Cc:Subject:Date;
+        b=LavJHK0Atihlh25m8bejpmJ0sJAKAx77eAo7BPQ2rAa/2e0WClbU4VnpdMYS1OGfX
+         bKjK7Jic0OFFdYvLqIOMARnUDPLgPk9RvveRSIXhH4KVTne1c2HifM7IdNnmMsdHWE
+         n/6r/yOTAP621L4r/ox3+GvTeD+teJth+QtvydrfK+SnS8EPduKzZbiyRVh0Yj0NNH
+         jl/zPPccSmXOENKJ+J06wGR6zgIkaMybiaHFf2TLgZTIDBx+MCWxGwNGyhPMaQ/v3i
+         HBJEkEpoxLaYc7p6aI1ft+bycmvEHvbFY7temOm0YA5xoPeugKbRaOzx/Dh8p1YPLO
+         IHJSU3Rj2t6JA==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f51b3120000>; Fri, 04 Sep 2020 15:23:02 +1200
+Received: from hamishm-dl.ws.atlnz.lc (hamishm-dl.ws.atlnz.lc [10.33.24.30])
+        by smtp (Postfix) with ESMTP id AECFB13EEBA;
+        Fri,  4 Sep 2020 15:22:57 +1200 (NZST)
+Received: by hamishm-dl.ws.atlnz.lc (Postfix, from userid 1133)
+        id 00B942A06EA; Fri,  4 Sep 2020 15:22:57 +1200 (NZST)
+From:   Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+To:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        stern@rowland.harvard.edu
+Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Subject: [PATCH 0/2] usb: ohci: Per-port overcurrent protection
+Date:   Fri,  4 Sep 2020 15:22:45 +1200
+Message-Id: <20200904032247.11345-1-hamish.martin@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found some memory leaks while reading the metric code.  Some are
-real and others only occur in the error path.
+Add a dt-binding to select per-port overcurrent protection mode so handle
+spurious overcurrent events from unconnected ports.
 
-Cc: Kajol Jain <kjain@linux.ibm.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Ian Rogers <irogers@google.com>
-Fixes: 9afe5658a6fa8 ("perf tools: Release metric_events rblist")
-Fixes: 4ea2896715e67 ("perf metric: Collect referenced metrics in struct metric_expr")
-Fixes: 71b0acce78d12 ("perf list: Add metric groups to perf list")
-Fixes: b18f3e365019d ("perf stat: Support JSON metrics in perf stat")
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
-I'm not sure it'd better have them together or split each fix as
-they came from different commits.  Please let me know if you prefer
-split.
+Hamish Martin (2):
+  usb: ohci: Add per-port overcurrent quirk
+  dt-bindings: usb: generic-ohci: Document per-port-overcurrent property
 
- tools/perf/util/metricgroup.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/usb/generic-ohci.yaml | 5 +++++
+ drivers/usb/host/ohci-hcd.c                             | 4 ++++
+ drivers/usb/host/ohci-platform.c                        | 3 +++
+ drivers/usb/host/ohci.h                                 | 1 +
+ 4 files changed, 13 insertions(+)
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 8831b964288f..7e31c4578ce8 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -85,6 +85,7 @@ static void metric_event_delete(struct rblist *rblist __maybe_unused,
- 
- 	list_for_each_entry_safe(expr, tmp, &me->head, nd) {
- 		free(expr->metric_refs);
-+		free(expr->metric_events);
- 		free(expr);
- 	}
- 
-@@ -316,6 +317,7 @@ static int metricgroup__setup_events(struct list_head *groups,
- 			if (!metric_refs) {
- 				ret = -ENOMEM;
- 				free(metric_events);
-+				free(expr);
- 				break;
- 			}
- 
-@@ -530,6 +532,9 @@ void metricgroup__print(bool metrics, bool metricgroups, char *filter,
- 						continue;
- 					strlist__add(me->metrics, s);
- 				}
-+
-+				if (!raw)
-+					free(s);
- 			}
- 			free(omg);
- 		}
-@@ -1048,11 +1053,11 @@ static int parse_groups(struct evlist *perf_evlist, const char *str,
- 		parse_events_print_error(&parse_error, extra_events.buf);
- 		goto out;
- 	}
--	strbuf_release(&extra_events);
- 	ret = metricgroup__setup_events(&metric_list, metric_no_merge,
- 					perf_evlist, metric_events);
- out:
- 	metricgroup__free_metrics(&metric_list);
-+	strbuf_release(&extra_events);
- 	return ret;
- }
- 
--- 
-2.28.0.526.ge36021eeef-goog
+--=20
+2.28.0
 
