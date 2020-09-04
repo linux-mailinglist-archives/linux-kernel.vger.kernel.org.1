@@ -2,74 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA3925D01B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 06:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA8725D031
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 06:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgIDEAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 00:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgIDEAS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 00:00:18 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D7AEC061244;
-        Thu,  3 Sep 2020 21:00:17 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d22so3884455pfn.5;
-        Thu, 03 Sep 2020 21:00:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XMFEvqETbtFJPv2+OGPaMexSGTcaNeluPDMod6iYHAQ=;
-        b=LivGR0bVhFREqzlrqnvlXldl+u7i+2YHwVAMsmK3mVu5yd8VGGTzNL5N9eCUrzUzAl
-         QNgALXD0+LV8Yelg4AuntA/GNHsA91E53A/P/KTU1y+6IMB0kmSfJzNjXPTRX4UOWG4d
-         pswGlvQsUGIEGxMkvGkjSVTlSzgXpUiq0NZ0l0psWuLsBJWFCXl8jMgIhmeGsTyDZXBT
-         2zQHlVM+k02bpZvMrFp01bGi6gRrwdAIMKQVavpzlOqTSXv2/VDLBK/Vgyl21npTP/YI
-         P0Qdpz+8goCA8fRkvAReq1lhznkJUInnCgVz19WjdZLkU7W9RBupXA+7HJbd/uCbVKfe
-         xoUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XMFEvqETbtFJPv2+OGPaMexSGTcaNeluPDMod6iYHAQ=;
-        b=iBSWyWswcw9B48GI904Q4Kz3Njxuenbjn/Npm+07LlYvQ5vjF6J11aU+SGcO0pcoMN
-         jaAvS68FXTfS0vHbXvZl2bw4mkyd3JQJypruuRgUdjzCG2my1JR0mohHB07ogIQs8rIx
-         aTC7ZV+T6ZCxGf9/7OiYMpYdEStAhovFgNzVXDL1WPUQBNDD9l0WeX0d3nYU1EUk9EKy
-         D9cpojRFJUzQ4J0CAxO41w9E+fTNH8o33iKpBPMEyeo7JNL4EgQ/HzICV83ODUZ2wYE8
-         VgQYzRtY/bfMeuKOBa3ziLeZTk3U9jeGDUhYvyeySAMvCvmz8pqo6px0QKnGv+gFsWj2
-         gyqw==
-X-Gm-Message-State: AOAM533kTaHGnp0mji2fG6G4SIpstfcQUjcuQhbZSBEr1EjL3Ip4S2nJ
-        +vsRuXfQx0z1maL2LtUMGjohKZDZeos=
-X-Google-Smtp-Source: ABdhPJw63k5HRpzcCRjJ856JUHctr8zFE0JxXvdbdai8EeWZnKchPlwzUU2N+bAzatluHtVJmPjzNg==
-X-Received: by 2002:a63:595a:: with SMTP id j26mr5785667pgm.406.1599192016036;
-        Thu, 03 Sep 2020 21:00:16 -0700 (PDT)
-Received: from [10.230.30.107] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id n26sm4774618pff.30.2020.09.03.21.00.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 21:00:15 -0700 (PDT)
-Subject: Re: [PATCH net-next] net: dsa: bcm_sf2: Ensure that MDIO diversion is
- used
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200902210328.3131578-1-f.fainelli@gmail.com>
- <20200903011324.GE3071395@lunn.ch>
- <28177f17-1557-bd69-e96b-c11c39d71145@gmail.com>
- <20200903220300.GH3112546@lunn.ch>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <4cf621da-c917-bd4c-6d30-e8f145a24628@gmail.com>
-Date:   Thu, 3 Sep 2020 21:00:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.1.1
+        id S1726297AbgIDEEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 00:04:52 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10810 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725765AbgIDEEv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 00:04:51 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 0B4F9C60C5D1EFC19866;
+        Fri,  4 Sep 2020 12:02:13 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
+ 12:02:06 +0800
+Subject: Re: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
+To:     Dave Young <dyoung@redhat.com>
+References: <20200801130856.86625-1-chenzhou10@huawei.com>
+ <20200801130856.86625-4-chenzhou10@huawei.com> <20200902170910.GB16673@gaia>
+ <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
+ <20200904030424.GA11384@dhcp-128-65.nay.redhat.com>
+ <20200904031014.GA11869@dhcp-128-65.nay.redhat.com>
+CC:     Catalin Marinas <catalin.marinas@arm.com>, <will@kernel.org>,
+        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bhe@redhat.com>, <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
+        <prabhakar.pkin@gmail.com>, <bhsharma@redhat.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <f4e0a246-0ca5-474b-8f39-c8299851d2b8@huawei.com>
+Date:   Fri, 4 Sep 2020 12:02:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20200903220300.GH3112546@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200904031014.GA11869@dhcp-128-65.nay.redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -77,28 +52,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/3/2020 3:03 PM, Andrew Lunn wrote:
->> The firmware provides the Device Tree but here is the relevant section for
->> you pasted below. The problematic device is a particular revision of the
->> silicon (D0) which got later fixed (E0) however the Device Tree was created
->> after the fixed platform, not the problematic one. Both revisions of the
->> silicon are in production.
+On 2020/9/4 11:10, Dave Young wrote:
+> On 09/04/20 at 11:04am, Dave Young wrote:
+>> On 09/03/20 at 07:26pm, chenzhou wrote:
+>>> Hi Catalin,
+>>>
+>>>
+>>> On 2020/9/3 1:09, Catalin Marinas wrote:
+>>>> On Sat, Aug 01, 2020 at 09:08:54PM +0800, Chen Zhou wrote:
+>>>>> There are following issues in arm64 kdump:
+>>>>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+>>>>> will fail when there is no enough low memory.
+>>>>> 2. If reserving crashkernel above 4G, in this case, crash dump
+>>>>> kernel will boot failure because there is no low memory available
+>>>>> for allocation.
+>>>>> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
+>>>>> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
+>>>>> the devices in crash dump kernel need to use ZONE_DMA will alloc
+>>>>> fail.
+>>>>>
+>>>>> To solve these issues, change the behavior of crashkernel=X.
+>>>>> crashkernel=X tries low allocation in ZONE_DMA, and fall back to
+>>>>> high allocation if it fails.
+>>>>>
+>>>>> If requized size X is too large and leads to very little free memory
+>>>>> in ZONE_DMA after low allocation, the system may not work normally.
+>>>>> So add a threshold and go for high allocation directly if the required
+>>>>> size is too large. The value of threshold is set as the half of
+>>>>> the low memory.
+>>>>>
+>>>>> If crash_base is outside ZONE_DMA, try to allocate at least 256M in
+>>>>> ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
+>>>>> specified size low memory.
+>>>> Except for the threshold to keep zone ZONE_DMA memory,
+>>>> reserve_crashkernel() looks very close to the x86 version. Shall we try
+>>>> to make this generic as well? In the first instance, you could avoid the
+>>>> threshold check if it takes an explicit ",high" option.
+>>> Ok, i will try to do this.
+>>>
+>>> I look into the function reserve_crashkernel() of x86 and found the start address is
+>>> CRASH_ALIGN in function memblock_find_in_range(), which is different with arm64.
+>>>
+>>> I don't figure out why is CRASH_ALIGN in x86, is there any specific reason?
+>> Hmm, took another look at the option CONFIG_PHYSICAL_ALIGN
+>> config PHYSICAL_ALIGN
+>>         hex "Alignment value to which kernel should be aligned"
+>>         default "0x200000"
+>>         range 0x2000 0x1000000 if X86_32
+>>         range 0x200000 0x1000000 if X86_64
 >>
->> There should have been an internal MDIO bus created for that chip revision
->> such that we could have correctly parented phy@0 (bcm53125 below) as child
->> node of the internal MDIO bus, but you have to realize that this was done
->> back in 2014 when DSA was barely revived as an active subsystem. The
->> BCM53125 node should have have been converted to an actual switch node at
->> some point, I use a mdio_boardinfo overlay downstream to support the switch
->> as a proper b53/DSA switch, anyway.
-> 
-> I was expecting something like that. I think this patch needs a
-> comment in the code explaining it is a workaround for a DT blob which
-> cannot be changed. Maybe also make it conditional on the board
-> compatible string?
+>> According to above, I think the 16M should come from the largest value
+>> But the default value is 2M,  with smaller value reservation can have
+>> more chance to succeed.
+>>
+>> It seems we still need arch specific CRASH_ALIGN, but the initial
+>> version you added the #ifdef for different arches, can you move the
+>> macro to arch specific headers?
+> And just keep the x86 align value as is, I can try to change the x86
+> value later to CONFIG_PHYSICAL_ALIGN, in this way this series can be
+> cleaner.
+Ok. I have no question about the value of macro CRASH_ALIGN,
+instead the lower bound of memblock_find_in_range().
 
-It is already targeted at the Broadcom pseudo PHY address (30) which is 
-the one that needs diversion, I will update the patch description 
-accordingly though.
--- 
-Florian
+For x86, in reserve_crashkernel()，restrict the lower bound of the range to CRASH_ALIGN,
+    ...
+    crash_base = memblock_find_in_range(CRASH_ALIGN,
+                                                CRASH_ADDR_LOW_MAX,
+                                                crash_size, CRASH_ALIGN);
+    ...
+   
+in reserve_crashkernel_low()，with no this restriction.
+    ...
+    low_base = memblock_find_in_range(0, 1ULL << 32, low_size, CRASH_ALIGN);
+    ...
+
+How about all making memblock_find_in_range() search from the start of memory?
+If it is ok, i will do like this in the generic version.
+
+Thanks,
+Chen Zhou
+>
+>> Thanks
+>> Dave
+>
+> .
+>
+
+
