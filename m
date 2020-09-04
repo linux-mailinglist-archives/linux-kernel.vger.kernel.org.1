@@ -2,141 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A268325CF31
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA83B25CF35
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbgIDCCb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 3 Sep 2020 22:02:31 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3085 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728288AbgIDCCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 22:02:30 -0400
-Received: from DGGEMM406-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id 620FFAA1C0EB0BCA423F;
-        Fri,  4 Sep 2020 10:02:26 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- DGGEMM406-HUB.china.huawei.com (10.3.20.214) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 4 Sep 2020 10:02:25 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 4 Sep 2020 10:02:25 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
- Fri, 4 Sep 2020 10:02:26 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: RE: [RFC] sched/topology: NUMA topology limitations
-Thread-Topic: [RFC] sched/topology: NUMA topology limitations
-Thread-Index: AdZ9wnXtzQTRsfy/TeONv+XCq4dqYgAACfmw///10gD//H0PoIAICbeA//tEExA=
-Date:   Fri, 4 Sep 2020 02:02:25 +0000
-Message-ID: <655f90166c2946bc94ec389645694aa7@hisilicon.com>
-References: <6a5f06ff4ecb4f34bd7e9890dc07fb99@hisilicon.com>
- <422fb2cfe1d24fca8efa74ba23d8754b@hisilicon.com> <jhjpn79ocml.mognet@arm.com>
- <f9c1012800844c5dbaa049e05006c131@hisilicon.com> <jhjmu29omw0.mognet@arm.com>
-In-Reply-To: <jhjmu29omw0.mognet@arm.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.41]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1729590AbgIDCD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 22:03:27 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50789 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728484AbgIDCDY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 22:03:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1599185004; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=HLRG701VY73XybmwQ/I+cBnN7Du1gCo7YJN50TYK7Es=; b=xRnFsLvqec9U6Jt5wfPVUWPSEs5SOhpHHh7zBxzqCWS9/0qzNlsMPwPrgJovpE2+0tunhgpr
+ vKHFdMDo6elXmwLnuEDPDQB+ivTrIyTcRSQvkzE4+pHWCTKqWAyiIMGYJPC0zhK1W6355cTU
+ xWL5bAYnE8iIcEC8DOmvN2DJsPM=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f51a06bba408b30ce65d259 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 04 Sep 2020 02:03:23
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 63149C433B2; Fri,  4 Sep 2020 02:03:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from jordan-laptop.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBFFCC433C9;
+        Fri,  4 Sep 2020 02:03:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BBFFCC433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] drm/msm: Protect the RPTR shadow
+Date:   Thu,  3 Sep 2020 20:03:09 -0600
+Message-Id: <20200904020313.1810988-1-jcrouse@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Adreno GPUs there is an option to shadow the RPTR register in GPU accessible
+memory. The shadow memory allows the kernel driver to query the value of the
+RPTR for each ringbuffer even if it is preempted out or if the GPU is turned off
+during aggressive power management.
 
+There are risks to using the RPTR shadow. If it is in GPU accessible memory it
+could be read or written by any GPU operation. All versions of the GPU hardware
+except A650 requires the shadow to be in unprivileged memory which opens it
+to risk.
 
-> -----Original Message-----
-> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
-> Sent: Tuesday, September 1, 2020 9:41 PM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
-> Cc: linux-kernel@vger.kernel.org; Ingo Molnar <mingo@kernel.org>; Peter
-> Zijlstra <peterz@infradead.org>; vincent.guittot@linaro.org;
-> dietmar.eggemann@arm.com; morten.rasmussen@arm.com; Linuxarm
-> <linuxarm@huawei.com>
-> Subject: Re: [RFC] sched/topology: NUMA topology limitations
-> 
-> 
-> On 31/08/20 11:45, Barry Song wrote:
-> >> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
-> >>
-> >> Ignoring corner cases where task affinity gets in the way, load balance
-> >> will always pull tasks to the local CPU (i.e. the CPU who's sched_domain we
-> >> are working on).
-> >>
-> >> If we're balancing load for CPU0-domain1, we would be looking at which
-> CPUs
-> >> in [0-2] (i.e. the domain's span) we could (if we should) pull tasks from
-> >> to migrate them over to CPU0.
-> >>
-> >> We'll first try to figure out which sched_group has the more load (see
-> >> find_busiest_group() & friends), and that's where we may hit issues.
-> >>
-> >> Consider a scenario where CPU3 is noticeably busier than the other
-> >> CPUs. We'll end up marking CPU0-domain1-group2 (1-3) as the busiest
-> group,
-> >> and compute an imbalance (i.e. amount of load to pull) mostly based on the
-> >> status of CPU3.
-> >>
-> >> We'll then go to find_busiest_queue(); the mask of CPUs we iterate over is
-> >> restricted by the sched_domain_span (i.e. doesn't include CPU3 here), so
-> >> we'll pull things from either CPU1 or CPU2 based on stats we built looking
-> >> at CPU3, which is bound to be pretty bogus.
-> >>
-> >> To summarise: we won't pull from the "outsider" node(s) (i.e., nodes
-> >> included in the sched_groups but not covered by the sched_domain), but
-> they
-> >> will influence the stats and heuristics of the load balance.
-> >
-> > Hi Valentin,
-> > Thanks for your clarification. For many scenarios, to achieve good
-> performance, people would
-> > pin processes in numa node. So the priority to pin would be local node first,
-> then domain0 with one hop. Domain1
-> > with two hops is actually too far. Domain2 with three hops would be a
-> disaster. If cpu0 pulls task from cpu2,
-> > but memory is still one CPU2's node, 3 hops would be a big problem for
-> memory access and page migration.
-> >
-> 
-> Did you mean CPU3 here?
+This series does two things. First, it marks as many buffers as possible as
+privileged. For a5xx these are some preemption buffers and on a650 this includes
+all global buffers (such as the ringbuffer and memstore). I've sent these
+patches before but they tie in well with this series so I've included them.
 
-Yep. I meant cpu3 here.
+Then we disable the RPTR shadow across all targets. For all targets except for
+a5xx the RPTR shadow isn't needed so there isn't a loss of functionality. a5xx
+does need it for preemption so that has to be temporarily disabled.
 
-> 
-> > However, for automatic numa balance, I would agree we need to fix the
-> groups layout to make groups
-> > stay in the span of sched_domain. Otherwise, it seems the scheduler is
-> running incorrectly to find the right
-> > cpu to pull task.
-> >
-> > In case we have
-> > 0 task on cpu0
-> > 1 task on cpu1
-> > 1 task on cpu2
-> > 4 task on cpu3
-> >
-> > In sched_domain1, cpu1+cpu3 is busy, so cpu0 would try to pull task from
-> cpu2 of the group(1-3) because cpu3 is busy,
-> > meanwhile, it is an outsider.
-> >
-> 
-> Right, we'd pull from either CPU1 or CPU2 (in this case via a tentative
-> active load balance) because they are in the same group as CPU3 which
-> inflates the sched_group load stats, but we can't pull from it at this
-> domain because it's not included in the domain span.
-> 
-Thanks
-Barry
+Later changes will re-enable the shadow for those targets that can safely
+mitigate the risks.
+
+Jordan Crouse (4):
+  drm/msm: Split the a5xx preemption record
+  drm/msm: Enable expanded apriv support for a650
+  drm/msm: Disable premption on all 5xx targets
+  drm/msm: Disable the RPTR shadow
+
+ drivers/gpu/drm/msm/adreno/a2xx_gpu.c     |  5 +++++
+ drivers/gpu/drm/msm/adreno/a3xx_gpu.c     | 10 +++++++++
+ drivers/gpu/drm/msm/adreno/a4xx_gpu.c     | 10 +++++++++
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c     | 14 +++++++++---
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.h     |  1 +
+ drivers/gpu/drm/msm/adreno/a5xx_preempt.c | 25 ++++++++++++++++-----
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c     | 13 ++++++++++-
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c   | 27 ++---------------------
+ drivers/gpu/drm/msm/msm_gpu.c             |  2 +-
+ drivers/gpu/drm/msm/msm_gpu.h             | 11 +++++++++
+ drivers/gpu/drm/msm/msm_ringbuffer.c      |  4 ++--
+ 11 files changed, 85 insertions(+), 37 deletions(-)
+
+-- 
+2.25.1
+
