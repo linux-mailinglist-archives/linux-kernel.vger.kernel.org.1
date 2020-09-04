@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A6E25D5A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ECB25D5B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730004AbgIDKGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:06:38 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:51150 "EHLO huawei.com"
+        id S1730027AbgIDKIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:08:45 -0400
+Received: from mail-dm6nam08on2055.outbound.protection.outlook.com ([40.107.102.55]:6336
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728588AbgIDKGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:06:33 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id ECB1BDEE2024DA5FD44A;
-        Fri,  4 Sep 2020 18:06:30 +0800 (CST)
-Received: from [10.67.103.233] (10.67.103.233) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Sep 2020 18:06:23 +0800
-Subject: Re: [PATCH 1/2] crypto: hisilicon/qm - fix wrong return type of
- 'pci_get_drvdata'
-To:     kernel test robot <lkp@intel.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>
-References: <1599134040-55860-2-git-send-email-qianweili@huawei.com>
- <202009032313.H2XXWT1y%lkp@intel.com>
-CC:     <kbuild-all@lists.01.org>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>
-From:   Weili Qian <qianweili@huawei.com>
-Message-ID: <2904eae5-3b99-3007-2b51-0ded42c2a250@huawei.com>
-Date:   Fri, 4 Sep 2020 18:06:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1730013AbgIDKIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:08:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gipVP1SaXcuejjd99xg4+Dhlma80F2ABpU3KLN9kFjnN+Ale13cZSRjZcA2dimnof7+MJM6JyJlR6XPsB8IgQ2wGoRUSoMj9BKItl7jBjA39W0z2zv24+UdiOs3+IQKfTXyRpewBn+761xGdYofyvyDK7WaKNazbWfhvA6Wjee7ofheeOzu55ObG+yVVqDzTKjRhUkkyquaKyWG/mL9H+4gLS7GEBLkRLc2tp3NdGi+ipPCyE8qu08NMya6oRSRdRaVyc6nPpnPwq2C/pLNsc3AyjygIgWNNTeumPbwJDivB9lbmMTtPHlEQPRfGzPBTNgfoKgEB9pULM9QMPPwp+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6iyxn26Xq3Y4vv0uJJfTTzr61YocgAxwtGnO5tcObrY=;
+ b=RQ6k9MSZMR9gEzA/8Akz9Pl1CK1uv+xlLFk/PEE2rB/YQ1tI75MEwZ1glMFt3EYorjOTAqtcraNs7vpd8LXKwWVIVnlfmYfTGx7A+3K4FsuUyud1gu8rrxIJGhZvy8UTlEKRPSI+YPFUyYy5oN1sRtwJSr8Szh9XG145xCGutdAlPgMsoQTnUIAaBjSheygcVvWfLhCn3uOK7ysNBbiY3iJoTjqjzDskgs1QN83v/pw3eofkGDyvrCiD0bGd6tBDak8fGPoYwWuoF9xNoti18IWxcnVpeiFgFJ3mzkumluymMPw5XgPbLC8R0giPYhk1cKQCxWLXPgyvqvwko1/mvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=sina.com smtp.mailfrom=srdcmail.amd.com;
+ dmarc=permerror action=none header.from=amd.com; dkim=none (message not
+ signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6iyxn26Xq3Y4vv0uJJfTTzr61YocgAxwtGnO5tcObrY=;
+ b=hp4DOEK+TVfamIbYem4AyljgDmeDPKrMVM75S/+JSxJ8dGSRIO4CmB9uUAlsO76SK8JOOY0eIMzS+d18EtrJMDSBMtzv/a6crdu03tdJGJC+PWcQzVF4A7Auutm57kO7k56MWMuIu1/w2dFRfyf68bnpL3wNAcwgte3WdkL3deU=
+Received: from BN6PR22CA0065.namprd22.prod.outlook.com (2603:10b6:404:ca::27)
+ by MN2PR12MB3869.namprd12.prod.outlook.com (2603:10b6:208:16f::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.15; Fri, 4 Sep
+ 2020 10:08:32 +0000
+Received: from BN8NAM11FT031.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:ca:cafe::83) by BN6PR22CA0065.outlook.office365.com
+ (2603:10b6:404:ca::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3348.16 via Frontend
+ Transport; Fri, 4 Sep 2020 10:08:32 +0000
+X-MS-Exchange-Authentication-Results: spf=none (sender IP is 165.204.84.17)
+ smtp.mailfrom=srdcmail.amd.com; sina.com; dkim=none (message not signed)
+ header.d=none;sina.com; dmarc=permerror action=none header.from=amd.com;
+Received-SPF: None (protection.outlook.com: srdcmail.amd.com does not
+ designate permitted sender hosts)
+Received: from SATLEXMB01.amd.com (165.204.84.17) by
+ BN8NAM11FT031.mail.protection.outlook.com (10.13.177.25) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3326.19 via Frontend Transport; Fri, 4 Sep 2020 10:08:31 +0000
+Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB01.amd.com
+ (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 4 Sep 2020
+ 05:08:30 -0500
+Received: from atlvmail01.amd.com (10.180.10.61) by SATLEXMB02.amd.com
+ (10.181.40.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3 via Frontend
+ Transport; Fri, 4 Sep 2020 05:08:30 -0500
+Received: from srdcmail.amd.com (srdcmail.amd.com [10.237.16.23])
+        by atlvmail01.amd.com (8.14.4/8.14.4) with ESMTP id 084A8TuD031360;
+        Fri, 4 Sep 2020 06:08:30 -0400
+Received: from srdcws1054.amd.com (srdcws1054.amd.com [10.66.16.34])
+        by srdcmail.amd.com (8.13.8/8.13.8) with ESMTP id 084A87Rw028993;
+        Fri, 4 Sep 2020 18:08:07 +0800
+Received: (from weisheng@localhost)
+        by srdcws1054.amd.com (8.14.7/8.14.7/Submit) id 084A86Dj016593;
+        Fri, 4 Sep 2020 18:08:06 +0800
+From:   Wesley Sheng <wesley.sheng@amd.com>
+To:     <joro@8bytes.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <wesleyshenggit@sina.com>, <wesley.sheng@amd.com>
+Subject: [PATCH 1/2] iommu/amd: Unify reserved member naming convention in struct
+Date:   Fri, 4 Sep 2020 18:07:46 +0800
+Message-ID: <20200904100747.16463-1-wesley.sheng@amd.com>
+X-Mailer: git-send-email 2.16.2
 MIME-Version: 1.0
-In-Reply-To: <202009032313.H2XXWT1y%lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.103.233]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2e584953-5fa2-400e-7c80-08d850ba79d2
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3869:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3869E0159BAF4CC16BD7E810F02D0@MN2PR12MB3869.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OnvS8NLElfVBdxK6NV39tLji5Q7cdbUyCqCi3zKaTx/0DRZPf7HTekfYrjtHRCu80PegAVk2ZVXPve/yJMqZvSlsSMb6X9ACR4bWJW5zSiZ8YHM/SFS8NUk4UOIZk8K889h9eqp2P0XKOwBC28k7e6gv4b4nWZGtfFDTrfTfDZKKOrJOX/+sHLWBqGmb7zlvDozLMwbpFabJMFWJ9iLTw9ZcgH5oWf7SjlZXx2y97ZojFz5JJ6py8+gCuIO96Gq+DEgbotMAPP4UOS4jv+2AAP4WzfY8g/7smT8IXgeFGCA1/sNjzHugU+aQf1pxLRiMfFjL8SxVInRnVrtW7FX69CeZNod/T+Jp9TfrfFoOj5/sy9Ih3g0iMO2ADnwL5RAcCs3HW0EkVoa8jX2ogqWkzQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(376002)(46966005)(8936002)(2906002)(8676002)(54906003)(82310400003)(110136005)(6666004)(42186006)(4326008)(336012)(1076003)(4744005)(26005)(498600001)(2616005)(44832011)(426003)(5660300002)(70586007)(356005)(83380400001)(316002)(70206006)(36756003)(47076004)(82740400003)(83170400001)(81166007);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2020 10:08:31.0472
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e584953-5fa2-400e-7c80-08d850ba79d2
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT031.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3869
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Unify reserved member naming convention to rsvd_x in struct
 
+Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
+---
+ drivers/iommu/amd/amd_iommu_types.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 2020/9/3 23:15, kernel test robot wrote:
-> Hi Weili,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on cryptodev/master]
-> [also build test ERROR on crypto/master sparc-next/master v5.9-rc3 next-20200903]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Weili-Qian/crypto-hisilicon-misc-fixes/20200903-200547
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
-> config: ia64-allmodconfig (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    drivers/crypto/hisilicon/zip/zip_main.c: In function 'hisi_zip_remove':
->>> drivers/crypto/hisilicon/zip/zip_main.c:862:24: error: 'hisi_zip' undeclared (first use in this function)
->      862 |  hisi_zip_debugfs_exit(hisi_zip);
->          |                        ^~~~~~~~
->    drivers/crypto/hisilicon/zip/zip_main.c:862:24: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> # https://github.com/0day-ci/linux/commit/9233b94d43e85aa53ba599605c7536455521f576
-> git remote add linux-review https://github.com/0day-ci/linux
-> git fetch --no-tags linux-review Weili-Qian/crypto-hisilicon-misc-fixes/20200903-200547
-> git checkout 9233b94d43e85aa53ba599605c7536455521f576
-> vim +/hisi_zip +862 drivers/crypto/hisilicon/zip/zip_main.c
-> 
-> 39977f4b51cdc5 Hao Fang   2019-11-07  851  
-> 62c455ca853e3e Zhou Wang  2019-08-02  852  static void hisi_zip_remove(struct pci_dev *pdev)
-> 62c455ca853e3e Zhou Wang  2019-08-02  853  {
-> 9233b94d43e85a Yang Shen  2020-09-03  854  	struct hisi_qm *qm = pci_get_drvdata(pdev);
-> 62c455ca853e3e Zhou Wang  2019-08-02  855  
-> daa31783c0ebab Weili Qian 2020-08-15  856  	hisi_qm_wait_task_finish(qm, &zip_devices);
-> 3d29e98d1d7550 Yang Shen  2020-08-15  857  	hisi_qm_alg_unregister(qm, &zip_devices);
-> 3d29e98d1d7550 Yang Shen  2020-08-15  858  
-> 619e464ae22a17 Shukun Tan 2020-04-02  859  	if (qm->fun_type == QM_HW_PF && qm->vfs_num)
-> daa31783c0ebab Weili Qian 2020-08-15  860  		hisi_qm_sriov_disable(pdev, qm->is_frozen);
-> 79e09f30eeba85 Zhou Wang  2019-08-02  861  
-> 72c7a68d2ea348 Zhou Wang  2019-08-02 @862  	hisi_zip_debugfs_exit(hisi_zip);
-> e88dd6e1d8370f Yang Shen  2020-08-15  863  	hisi_qm_stop(qm, QM_NORMAL);
-> eaebf4c3b103df Shukun Tan 2020-01-20  864  	hisi_qm_dev_err_uninit(qm);
-> 62c455ca853e3e Zhou Wang  2019-08-02  865  	hisi_qm_uninit(qm);
-> 62c455ca853e3e Zhou Wang  2019-08-02  866  }
-> 62c455ca853e3e Zhou Wang  2019-08-02  867  
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
-
-Hi all,
- Sorry，this patch depends on https://patchwork.kernel.org/patch/11732097/.
-I will resend it when the dependent patch is applied.
-
-Thanks,
-Weili
+diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
+index 30a5d412255a..e5b05a97eb46 100644
+--- a/drivers/iommu/amd/amd_iommu_types.h
++++ b/drivers/iommu/amd/amd_iommu_types.h
+@@ -841,7 +841,7 @@ union irte_ga_lo {
+ 		    no_fault	: 1,
+ 		    /* ------ */
+ 		    ga_log_intr	: 1,
+-		    rsvd1	: 3,
++		    rsvd_1	: 3,
+ 		    is_run	: 1,
+ 		    /* ------ */
+ 		    guest_mode	: 1,
+-- 
+2.16.2
 
