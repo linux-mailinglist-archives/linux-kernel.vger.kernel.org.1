@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A8725DA96
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632C525DAB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730717AbgIDNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S1730665AbgIDN5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730581AbgIDNxp (ORCPT
+        with ESMTP id S1730734AbgIDN4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:53:45 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B0AC061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 06:53:44 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id q4so3847171qvr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 06:53:44 -0700 (PDT)
+        Fri, 4 Sep 2020 09:56:55 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69F0C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 06:56:54 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k15so6821394wrn.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 06:56:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6QhKTbTEeY1hMpwGRn3I4+LPI2vg1nOM4QWM63CXncA=;
-        b=nBQKq2tZPHnHW6+VjusqM7szXA10nJIkygMDcuxIOkW1Cr311hBbBCr2AU9gMR5Clc
-         3C8/3M/R0g35KUMJ+X+SMr3E+wfpTlr1WHpcdCWuL0nssZaWcqyeERm25cn3LIyfPoQz
-         fpMpl4DgjhIPtuz46UcOQwO7E9frYXls10Y1w4UsL2Pn76eFN4PtI3rfAHrAdgZrGhql
-         M8DkLpjUPpoSva9fXKh9llb5tB1j8EpfNZBrOnWaKRpkuJctbiG4XiyypLCAf9Q81n95
-         1drRRPeUEzVtEp1RwvYCBDIQPhxNTwsS9s/7JjfrzNbLFyrSEa0dpY+OHbnhKxNjM0Ry
-         o5Dg==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B3CfhOVBGf9H9WuZ53+AjLGNuQZrbQHmVtlD/DJasis=;
+        b=fdRk2pV//7myN++zX937AgchN/lF0cwlO5vO83mfaGxBG4q2HNIp6zqYMK+Zt8XOrY
+         NjIrgYIWeNUh7JSDxmG4kHraRhjqpHbzpktsGfa+SbGMh8a1sbPyoF7IpXSqtyfgCZgb
+         FjYvTaKTlO6LYbE6ZfU35PIcl9HijlW13E5wiZ3iwZzpaAqnbWl0F90OQZckY/wZU1gf
+         A7VBE9ubp+vKLCJg6fKumSbKRAtz1MrQAzug3FVEuNdgU48dFmCQgmCLn7cJ0gcWBPA2
+         7tqETp6BTfcc3ari0Ghn5Ue2uktePy4RJzl6OEpDYyEMYCo7NS+BaGeEN2Hb/6BUmrOC
+         /SQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6QhKTbTEeY1hMpwGRn3I4+LPI2vg1nOM4QWM63CXncA=;
-        b=XG9U52zqeqkGaFR4oEzS2a8u3dyzJutKGRwZUJNXtW9IPRRPoW612E10ujDcEvuVXx
-         k+i3l9wdfYunz1hyjNoE7Sp1o7B9YjvHZf1V8rlO0SpxpLYveRxIhgpJbB4OIQVY36ks
-         bXNPMioNUXsrdxNidOvreDVwHk6XHy6zLvSrAhdUJRBzKUK+isTGxBJwvMAI+/DCpd/4
-         4t+osh3DBIOxZpwY6CucjEHEGggfBxzwilsmIFZ+8dk51+2SsE6rz2a4HVSVaqEnjBmK
-         aP30MFxZi1DggGqHTR8T8hJ9TVDhaeHtLvhkkBE35YmL4JmcNkDZamo05BvRUig/LdCh
-         rQCQ==
-X-Gm-Message-State: AOAM5312ti5VbVL/N/Xlv2UQMgpX8v5p3XTXU7Luaw1xg3RAIK15eYHp
-        SN5haUyTfE5FSIKHV/ecX1Tp2H7C
-X-Google-Smtp-Source: ABdhPJxQcGmIFWhXaDJlfBg9IY86LASa1SjfOzRlyC9IPT6aHtPDVbg/sEqfYFy1y9Rg9qWeo6OqFTmg
-X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:6:14:1ea0:b8ff:fe76:1e48])
- (user=brho job=sendgmr) by 2002:a05:6214:292:: with SMTP id
- l18mr6631318qvv.5.1599227623676; Fri, 04 Sep 2020 06:53:43 -0700 (PDT)
-Date:   Fri,  4 Sep 2020 09:53:32 -0400
-In-Reply-To: <20200728163416.556521-22-hch@lst.de>
-Message-Id: <20200904135332.1130070-1-brho@google.com>
-Mime-Version: 1.0
-References: <20200728163416.556521-22-hch@lst.de>
-X-Mailer: git-send-email 2.28.0.526.ge36021eeef-goog
-Subject: [PATCH] init: fix error check in clean_path()
-From:   Barret Rhoden <brho@google.com>
-To:     hch@lst.de
-Cc:     gregkh@linuxfoundation.org, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, rafael@kernel.org,
-        torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-        luto@kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B3CfhOVBGf9H9WuZ53+AjLGNuQZrbQHmVtlD/DJasis=;
+        b=DuQjmLciBdahbgniMOva/Uq2pYAznn1HyMaPByrMIKdxRL2vbHWxKVzL/Ex7gIx4lC
+         7o56lYi/VEXS5P+wUcnk12I9RvyJKjZooVcO5j5UcFRcnwR7OL1swJLfPA2hD7LgYYwx
+         jTz08vQLfgvVi0H/TSmfYgkY3/5WYf5T0esUu0z0hQZFqnJQyo8CyPLK8ARBiyUr4IFQ
+         JaHQ7VTbgNG5YbhxhSQtsdravPJafpNR/CN9gvSkgNuDgoPbkIqd84itOUfD7lqWml7Z
+         DtPB6WtAcnQDWvSU+/ilUzs2vW27mxv8YRxAQMf0tcRr226dpOGrK3ZKK5xsP8ebvzWN
+         FlFA==
+X-Gm-Message-State: AOAM533KyfcbqaAQ7BSXRSJ/mzc00aBEyN/5cOcrc8FGkd0oTa5TTE6b
+        0v+wMIlYNJCLAeIYtsxuinBvFSzk+ooQqYKtJxtjT0pYQ6Q=
+X-Google-Smtp-Source: ABdhPJy/VGdC6pW/0FhrX+k0bZPZot8TzrPX4TwKJOQtaQsxu0J0wg1pUbQsc0YgMyp5M+kryqPhp8FcaB2m6mL+Fk0=
+X-Received: by 2002:adf:eecb:: with SMTP id a11mr7878596wrp.356.1599227813312;
+ Fri, 04 Sep 2020 06:56:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <mhng-32c8d053-acbd-4c72-b41d-8d6042ac639d@palmerdabbelt-glaptop1>
+ <CAHk-=wi_tf4qsiBj5UD0GG3wz8Hi5NrHzqdrx+CwtfAY+_UiGg@mail.gmail.com>
+ <20200904083109.GA9182@infradead.org> <CAAhSdy3S8FfMAWih_VoBHw0xd-7c=urzuJ+PPdug9iX_pWyTsQ@mail.gmail.com>
+ <20200904094617.GA27846@infradead.org> <CAAhSdy2x0ROqoTzzZRZgKCTL99WPy-8e4CQ921sf-=GQDm_gxA@mail.gmail.com>
+ <f1be6ee1-0802-82ca-ffdb-4c294925cd9a@kylinos.com.cn> <20200904130044.GA7842@infradead.org>
+In-Reply-To: <20200904130044.GA7842@infradead.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 4 Sep 2020 19:26:41 +0530
+Message-ID: <CAAhSdy2N8L015z0-RirjXLjdzt+OrCtzzKzivsMeQXoH9Nc8Cw@mail.gmail.com>
+Subject: Re: [GIT PULL] RISC-V Fixes for 5.9-rc2
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-init_stat() returns 0 on success, same as vfs_lstat().  When it replaced
-vfs_lstat(), the '!' was dropped.
+On Fri, Sep 4, 2020 at 6:30 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Fri, Sep 04, 2020 at 08:58:25PM +0800, Qiu Wenbo wrote:
+> > I can confirm this patch also breaks K210 support. It seems that
+> > csr_read(CSR_TIME) will trigger an illegal instruction exception on K210.
+>
+> CSR_TIME is trapped by just about every implementation I know (which is
+> explicitly allowed by the spec).  That is why we should never use it
+> from common M-mode code.
 
-Fixes: 716308a5331b ("init: add an init_stat helper")
-Signed-off-by: Barret Rhoden <brho@google.com>
----
+Finally, I was able to replicate this issue by manually hacking QEMU to
+not emulatie TIME CSR for virt machine.
 
-Andy: this was broken in virtme.  "/init: source: not found"
+It seems this issue is only seen on older QEMU and Kendrtye K210.
 
- init/initramfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am working on a fix for this issue.
 
-diff --git a/init/initramfs.c b/init/initramfs.c
-index e6dbfb767057..1f97c0328a7a 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -297,7 +297,7 @@ static void __init clean_path(char *path, umode_t fmode)
- {
- 	struct kstat st;
- 
--	if (init_stat(path, &st, AT_SYMLINK_NOFOLLOW) &&
-+	if (!init_stat(path, &st, AT_SYMLINK_NOFOLLOW) &&
- 	    (st.mode ^ fmode) & S_IFMT) {
- 		if (S_ISDIR(st.mode))
- 			init_rmdir(path);
--- 
-2.28.0.526.ge36021eeef-goog
+Thanks for reporting.
 
+Regards,
+Anup
