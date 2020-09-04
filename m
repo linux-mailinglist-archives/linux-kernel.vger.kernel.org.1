@@ -2,129 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A7F25CFDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8F825CFE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 05:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgIDDjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 23:39:13 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45045 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729550AbgIDDjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 23:39:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599190744;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EyAiC4eZwNkau3Y8SAq/5Z+4k7VTrQOqY9EtVuiJLAo=;
-        b=V67Xi82e9Qwve0TwFj6v1onSQLStwniYDG+qUpcI3SVo9FIXUHyawSYEQfKVhJ+Cqg2s9h
-        l3uKV7VQS78kMmG+iML/GVH/urpSQ6Qqx4QOs9Ju/KMw3Fv70VFKKxfjV37cGeV1Wwc60X
-        BX1VoFmG6UIc2+li/Nf+dtS1N4v0xzU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-O7FrjF36NT6sUEUv99XNOw-1; Thu, 03 Sep 2020 23:39:00 -0400
-X-MC-Unique: O7FrjF36NT6sUEUv99XNOw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A117B807344;
-        Fri,  4 Sep 2020 03:38:57 +0000 (UTC)
-Received: from [10.72.13.157] (ovpn-13-157.pek2.redhat.com [10.72.13.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 14FFC7EEBB;
-        Fri,  4 Sep 2020 03:38:46 +0000 (UTC)
-Subject: Re: [PATCH] i2c: virtio: add a virtio i2c frontend driver
-To:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     mst@redhat.com, wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
-        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
-        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com
-References: <0efc2605c8c06b4b1bf68cbad5536c4a900dc019.1599110284.git.jie.deng@intel.com>
- <f3ab5d7d-cce5-b34c-5931-dd5d74f065e7@redhat.com>
- <6517879c-15d4-6265-761c-626cba9c95d6@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <009d829d-907d-8884-ca71-00f78e9d6e2b@redhat.com>
-Date:   Fri, 4 Sep 2020 11:38:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729690AbgIDDrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 23:47:19 -0400
+Received: from mga17.intel.com ([192.55.52.151]:5919 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729550AbgIDDrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 23:47:18 -0400
+IronPort-SDR: QG8vhPin+sU3aLuNrRl+gtUFRTomoJHmfiQhf78D+CB2vfGCo7uKue4eiUKnDrEr9V0CDw9hXj
+ L//3GSH+Wp/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="137741692"
+X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
+   d="scan'208";a="137741692"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 20:47:17 -0700
+IronPort-SDR: l80ZKwhyHrrNVLW2qWFsR+EQpGT1/DUhufk6hBFi7IfbRxdUGVll6g8fe5DQptPXoM3Iz4g8lR
+ 8RVhfqTAMG0g==
+X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
+   d="scan'208";a="478304823"
+Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 20:47:17 -0700
+Date:   Thu, 3 Sep 2020 20:47:16 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Xu <peterx@redhat.com>, Michael Tsirkin <mst@redhat.com>,
+        Julia Suvorova <jsuvorov@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] KVM: x86: move kvm_vcpu_gfn_to_memslot() out of
+ try_async_pf()
+Message-ID: <20200904034714.GA22394@sjchrist-ice>
+References: <20200807141232.402895-1-vkuznets@redhat.com>
+ <20200807141232.402895-2-vkuznets@redhat.com>
+ <20200814014014.GA4845@linux.intel.com>
+ <87k0xdwplg.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <6517879c-15d4-6265-761c-626cba9c95d6@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0xdwplg.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 01, 2020 at 04:15:07PM +0200, Vitaly Kuznetsov wrote:
+> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> 
+> > On Fri, Aug 07, 2020 at 04:12:30PM +0200, Vitaly Kuznetsov wrote:
+> >> No functional change intended. Slot flags will need to be analyzed
+> >> prior to try_async_pf() when KVM_MEM_PCI_HOLE is implemented.
+> >
+> 
+> (Sorry it took me so long to reply. No, I wasn't hoping for Paolo's
+> magical "queued, thanks", I just tried to not read my email while on
+> vacation).
+> 
+> > Why?  Wouldn't it be just as easy, and arguably more appropriate, to add
+> > KVM_PFN_ERR_PCI_HOLE and update handle_abornmal_pfn() accordinaly?
+> >
+> 
+> Yes, we can do that, but what I don't quite like here is that
+> try_async_pf() does much more than 'trying async PF'. In particular, it
+> extracts 'pfn' and this is far from being obvious. Maybe we can rename
+> try_async_pf() somewhat smartly (e.g. 'try_handle_pf()')? Your
+> suggestion will make perfect sense to me then.
 
-On 2020/9/3 下午3:19, Jie Deng wrote:
->
-> On 2020/9/3 14:12, Jason Wang wrote:
->>
->> On 2020/9/3 下午1:34, Jie Deng wrote:
->>> Add an I2C bus driver for virtio para-virtualization.
->>>
->>> The controller can be emulated by the backend driver in
->>> any device model software by following the virtio protocol.
->>>
->>> This driver communicates with the backend driver through a
->>> virtio I2C message structure which includes following parts:
->>>
->>> - Header: i2c_msg addr, flags, len.
->>> - Data buffer: the pointer to the i2c msg data.
->>> - Status: the processing result from the backend.
->>>
->>> People may implement different backend drivers to emulate
->>> different controllers according to their needs. A backend
->>> example can be found in the device model of the open source
->>> project ACRN. For more information, please refer to
->>> https://projectacrn.org.
->>
->>
->> May I know the reason why don't you use i2c or virtio directly?
->>
-> We don't want to add virtio drivers for every I2C devices in the guests.
-> This bus driver is designed to provide a way to flexibly expose the 
-> physical
-> I2C slave devices to the guest without adding or changing the drivers 
-> of the
-> I2C slave devices in the guest OS.
+Ya, try_async_pf() is a horrible name.  try_handle_pf() isn't bad, but it's
+not technically handling the fault.  Maybe try_get_pfn() with an inverted
+return?
 
-
-Ok, if I understand this correctly, this is virtio transport of i2c 
-message (similar to virtio-scsi).
-
-
->
->
->>
->>>
->>> The virtio device ID 34 is used for this I2C adpter since IDs
->>> before 34 have been reserved by other virtio devices.
->>
->>
->> Is there a link to the spec patch?
->>
->> Thanks
->>
-> I haven't submitted the patch to reserve the ID in spec yet.
-> I write the ID here because I want to see your opinions first.
-
-
-It would be helpful to send a spec draft for early review.
-
-Thanks
-
-
->
-> Thanks
->
->
-
+	if (!try_get_pfn(...))
+		return RET_PF_RETRY;
