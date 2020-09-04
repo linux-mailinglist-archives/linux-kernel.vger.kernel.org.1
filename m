@@ -2,162 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C60F25D3ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DBF25D40A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgIDIsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 04:48:08 -0400
-Received: from mxhk.zte.com.cn ([63.217.80.70]:15300 "EHLO mxhk.zte.com.cn"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726575AbgIDIsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:48:07 -0400
-Received: from mse-fl2.zte.com.cn (unknown [10.30.14.239])
-        by Forcepoint Email with ESMTPS id 4E262E4E919A776F1020;
-        Fri,  4 Sep 2020 16:48:04 +0800 (CST)
-Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
-        by mse-fl2.zte.com.cn with ESMTP id 0848m3UC023235;
-        Fri, 4 Sep 2020 16:48:03 +0800 (GMT-8)
-        (envelope-from wang.yi59@zte.com.cn)
-Received: from fox-host8.localdomain ([10.74.120.8])
-          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
-          with ESMTP id 2020090416483927-4846041 ;
-          Fri, 4 Sep 2020 16:48:39 +0800 
-From:   Yi Wang <wang.yi59@zte.com.cn>
-To:     minchan@kernel.org
-Cc:     ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, xue.zhihong@zte.com.cn,
-        wang.yi59@zte.com.cn, jiang.xuexin@zte.com.cn,
-        zhanglin <zhang.lin16@zte.com.cn>
-Subject: [PATCH v2] zram: add restriction on dynamic zram device creation
-Date:   Fri, 4 Sep 2020 16:52:10 +0800
-Message-Id: <1599209530-41015-1-git-send-email-wang.yi59@zte.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
- 21, 2013) at 2020-09-04 16:48:39,
-        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
- 2020-09-04 16:48:12,
-        Serialize complete at 2020-09-04 16:48:12
-X-MAIL: mse-fl2.zte.com.cn 0848m3UC023235
+        id S1729938AbgIDIzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 04:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729917AbgIDIzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 04:55:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45671C061244;
+        Fri,  4 Sep 2020 01:55:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6Ph7JbkbFaoWfq28ICsly/8XMu67nEPXs5Q9waIv3f0=; b=O1Wk6g+4dtnT/2kNHdruUhmJV+
+        6tEB67TeIbdL+Al5Jn9XY44q6y9lQhurDBfwdtD2w6dxjzl4spbONnX1/Kj3RoZoEDodS0yfasFX3
+        S372OJaKBTzpshK5Q6gZ9YlJP2cFOminq4D2m+ZPqghHqvMXLsI91kT1ZAkbUfWdAN1cu2Xo6TgZo
+        eoX51+rzTdO5E3cpEnC8uolXotY9q3+nOJCI6AFCcAomERKJIfcW+E1EPFb91rQnk5qLy7cBbUWLq
+        O2t8c7qjE6mzHu4WL0RtNjIoZu8mDkM3XCINb38ZwjrOvS+cuffk7p1QSoG9LtYeG+sRoXJxwGWXG
+        qZeWJzEA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kE7VD-0003wl-6w; Fri, 04 Sep 2020 08:55:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 95E99300F7A;
+        Fri,  4 Sep 2020 10:55:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7A4B12BBB68A3; Fri,  4 Sep 2020 10:55:20 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 10:55:20 +0200
+From:   peterz@infradead.org
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 00/28] Add support for Clang LTO
+Message-ID: <20200904085520.GN2674@hirez.programming.kicks-ass.net>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200903203053.3411268-1-samitolvanen@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhanglin <zhang.lin16@zte.com.cn>
 
-Add max_num_devices to limit dynamic zram device creation to prevent
- potential OOM
+Please don't nest series!
 
-Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
----
-v1->v2:
-change hard-coded initial max_num_devices into configurable way.
-
- drivers/block/zram/Kconfig    |  7 +++++++
- drivers/block/zram/zram_drv.c | 28 +++++++++++++++++++++-------
- 2 files changed, 28 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
-index fe7a4b7d30cf..54a369932417 100644
---- a/drivers/block/zram/Kconfig
-+++ b/drivers/block/zram/Kconfig
-@@ -37,3 +37,10 @@ config ZRAM_MEMORY_TRACKING
- 	  /sys/kernel/debug/zram/zramX/block_state.
- 
- 	  See Documentation/admin-guide/blockdev/zram.rst for more information.
-+
-+config ZRAM_DEV_MAX_COUNT
-+	int "Number of zram devices to be created"
-+	depends on ZRAM
-+	default 256
-+	help
-+	  This option specifies the maximum number of zram devices.
-diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-index 36d49159140f..d1022f3c04c4 100644
---- a/drivers/block/zram/zram_drv.c
-+++ b/drivers/block/zram/zram_drv.c
-@@ -43,8 +43,9 @@ static DEFINE_MUTEX(zram_index_mutex);
- static int zram_major;
- static const char *default_compressor = "lzo-rle";
- 
--/* Module params (documentation at end) */
- static unsigned int num_devices = 1;
-+/* Module params (documentation at end) */
-+static unsigned int max_num_devices = CONFIG_ZRAM_DEV_MAX_COUNT;
- /*
-  * Pages that compress to sizes equals or greater than this are stored
-  * uncompressed in memory.
-@@ -2013,10 +2014,16 @@ static ssize_t hot_add_show(struct class *class,
- 			struct class_attribute *attr,
- 			char *buf)
- {
--	int ret;
-+	int ret = -ENOSPC;
- 
- 	mutex_lock(&zram_index_mutex);
-+	if (num_devices >= max_num_devices) {
-+		mutex_unlock(&zram_index_mutex);
-+		return ret;
-+	}
- 	ret = zram_add();
-+	if (ret >= 0)
-+		num_devices += 1;
- 	mutex_unlock(&zram_index_mutex);
- 
- 	if (ret < 0)
-@@ -2046,8 +2053,10 @@ static ssize_t hot_remove_store(struct class *class,
- 	zram = idr_find(&zram_index_idr, dev_id);
- 	if (zram) {
- 		ret = zram_remove(zram);
--		if (!ret)
-+		if (!ret) {
- 			idr_remove(&zram_index_idr, dev_id);
-+			num_devices -= 1;
-+		}
- 	} else {
- 		ret = -ENODEV;
- 	}
-@@ -2089,6 +2098,7 @@ static void destroy_devices(void)
- static int __init zram_init(void)
- {
- 	int ret;
-+	unsigned int i;
- 
- 	ret = cpuhp_setup_state_multi(CPUHP_ZCOMP_PREPARE, "block/zram:prepare",
- 				      zcomp_cpu_up_prepare, zcomp_cpu_dead);
-@@ -2111,13 +2121,17 @@ static int __init zram_init(void)
- 		return -EBUSY;
- 	}
- 
--	while (num_devices != 0) {
-+	if (num_devices > max_num_devices) {
-+		pr_err("Number of pre-created zram devices over limit\n");
-+		goto out_error;
-+	}
-+
-+	for (i = 0; i < num_devices; i++) {
- 		mutex_lock(&zram_index_mutex);
- 		ret = zram_add();
- 		mutex_unlock(&zram_index_mutex);
- 		if (ret < 0)
- 			goto out_error;
--		num_devices--;
- 	}
- 
- 	return 0;
-@@ -2135,8 +2149,8 @@ static void __exit zram_exit(void)
- module_init(zram_init);
- module_exit(zram_exit);
- 
--module_param(num_devices, uint, 0);
--MODULE_PARM_DESC(num_devices, "Number of pre-created zram devices");
-+module_param(max_num_devices, uint, 0);
-+MODULE_PARM_DESC(max_num_devices, "Max number of created zram devices");
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Nitin Gupta <ngupta@vflare.org>");
--- 
-2.17.1
-
+Start a new thread for every posting.
