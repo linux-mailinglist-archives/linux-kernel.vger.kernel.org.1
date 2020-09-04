@@ -2,183 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D6925DED3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB0E25DEDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbgIDQAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:00:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:53308 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726922AbgIDQAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:00:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D3C313D5;
-        Fri,  4 Sep 2020 09:00:32 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0724E3F66F;
-        Fri,  4 Sep 2020 09:00:29 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <Peter.Maydell@arm.com>,
-        Haibo Xu <Haibo.Xu@arm.com>
-Subject: [PATCH v2 2/2] arm64: kvm: Introduce MTE VCPU feature
-Date:   Fri,  4 Sep 2020 17:00:18 +0100
-Message-Id: <20200904160018.29481-3-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200904160018.29481-1-steven.price@arm.com>
-References: <20200904160018.29481-1-steven.price@arm.com>
+        id S1727894AbgIDQBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727075AbgIDQBB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:01:01 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D4AC061244;
+        Fri,  4 Sep 2020 09:01:00 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id j11so9381322ejk.0;
+        Fri, 04 Sep 2020 09:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BIz3Dqv9/KGHKChd3/IFzzxn7xbyzIDCFdjTQoSAu6w=;
+        b=q9BXhdl5PVF9mLC9vkchxmULiG9xehyXT0Dy35pIMdBIVb2r4uf3zo0DYi5Uy4TT9g
+         8HtDMU8X3UsMUtmhW3jmB+GsLG784ov5aFIt3DdqsI6s7+pRgLhN3Hvl5mSOeUe8Ncfs
+         RJx7BFIoShGkf/rkq2/jJ/tU5AZxegj5QRXv6XnnqIZZDSy1L0fVaJ8tabsEGyzNHoMd
+         2F/JQXKHQGqHSsl0Dx/uK6/36BJ6/onw/wG8iB9evJXvU+ZSreM5vc6/jHG72Y/lYhSh
+         BfHjVKV7pCkdnSOdXA39mIocO3m/zYbismyZ/bLDTbpFwTYpEIcpLtHDtcX+hoi5JWnn
+         u90g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BIz3Dqv9/KGHKChd3/IFzzxn7xbyzIDCFdjTQoSAu6w=;
+        b=LB4/YPPnngc7Y9X1m+iOqP7GhNYqTaLg5nhoI2undJ97rOYv+Eh3DpShc0YeztsMwK
+         dCwutA/sNR8iifu2FMRTO7MTLFa8KTKC0FwECDLobqem/NsHJolM8dwnoy4h9XKV7hdJ
+         WDeSe6oPOnsW2cLTGtQywGZszAnT1Dt5S6evcaLNdrudycjULxW3i+qdz0VDRfBF/6Kr
+         o6kSGKbvhJXRZyj1tNaPEW3VoPkRheoizNCDZgvGbM6iI72sRQ7A50TY98NJnAfF7121
+         024CyqJePbevmUWvp7iKa6e8r0sRYSnWqNk7/2+d1kNZ5HjIHxknJOl0WbVkckGWBgTm
+         BU1w==
+X-Gm-Message-State: AOAM5329+RV75/spu9Ect5uVJK/ctlGjW6DP4Mr0S6c39frOZ6oOxjFQ
+        kdECx9u47A7bfv9++Mot8hiLKuQSMZ0CXSxH
+X-Google-Smtp-Source: ABdhPJz3Q8w4Tv7USQ8eui4LVCy5y4lAuTULMivw04dlU/rjS5/aBfLukg0LJ56MBQC+0SmUli78/Q==
+X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr8552049ejq.14.1599235259141;
+        Fri, 04 Sep 2020 09:00:59 -0700 (PDT)
+Received: from debianHome.localdomain (x5f700e02.dyn.telefonica.de. [95.112.14.2])
+        by smtp.gmail.com with ESMTPSA id h10sm6276025eds.0.2020.09.04.09.00.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 09:00:58 -0700 (PDT)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Subject: [RFC PATCH] sched: only issue an audit on privileged operation
+Date:   Fri,  4 Sep 2020 18:00:31 +0200
+Message-Id: <20200904160031.6444-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new VCPU features 'KVM_ARM_VCPU_MTE' which enables memory tagging
-on a VCPU. When enabled on any VCPU in the virtual machine this causes
-all pages that are faulted into the VM to have the PG_mte_tagged flag
-set (and the tag storage cleared if this is the first use).
+sched_setattr(2) does via kernel/sched/core.c:__sched_setscheduler()
+issue a CAP_SYS_NICE audit event unconditionally, even when the requested
+operation does not require that capability / is un-privileged.
 
-Signed-off-by: Steven Price <steven.price@arm.com>
+Perform privilged/unprivileged catigorization first and perform a
+capable test only if needed.
+
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
- arch/arm64/include/asm/kvm_emulate.h |  3 +++
- arch/arm64/include/asm/kvm_host.h    |  5 ++++-
- arch/arm64/include/uapi/asm/kvm.h    |  1 +
- arch/arm64/kvm/mmu.c                 | 15 +++++++++++++++
- arch/arm64/kvm/reset.c               |  8 ++++++++
- arch/arm64/kvm/sys_regs.c            |  6 +++++-
- 6 files changed, 36 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 65 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-index 49a55be2b9a2..0042323a4b7f 100644
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
- 	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
- 	    vcpu_el1_is_32bit(vcpu))
- 		vcpu->arch.hcr_el2 |= HCR_TID2;
-+
-+	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
-+		vcpu->arch.hcr_el2 |= HCR_ATA;
- }
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 8471a0f7eb32..954f968d2466 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5249,13 +5249,19 @@ static int __sched_setscheduler(struct task_struct *p,
+ 		return -EINVAL;
  
- static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 4f4360dd149e..b1190366242b 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -37,7 +37,7 @@
- 
- #define KVM_MAX_VCPUS VGIC_V3_MAX_CPUS
- 
--#define KVM_VCPU_MAX_FEATURES 7
-+#define KVM_VCPU_MAX_FEATURES 8
- 
- #define KVM_REQ_SLEEP \
- 	KVM_ARCH_REQ_FLAGS(0, KVM_REQUEST_WAIT | KVM_REQUEST_NO_WAKEUP)
-@@ -110,6 +110,9 @@ struct kvm_arch {
- 	 * supported.
+ 	/*
+-	 * Allow unprivileged RT tasks to decrease priority:
++	 * Allow unprivileged RT tasks to decrease priority.
++	 * Only issue a capable test if needed to avoid audit
++	 * event on non-privileged operations:
  	 */
- 	bool return_nisv_io_abort_to_user;
-+
-+	/* If any VCPU has MTE enabled then all memory must be MTE enabled */
-+	bool vcpu_has_mte;
- };
- 
- struct kvm_vcpu_fault_info {
-diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-index ba85bb23f060..2677e1ab8c16 100644
---- a/arch/arm64/include/uapi/asm/kvm.h
-+++ b/arch/arm64/include/uapi/asm/kvm.h
-@@ -106,6 +106,7 @@ struct kvm_regs {
- #define KVM_ARM_VCPU_SVE		4 /* enable SVE for this CPU */
- #define KVM_ARM_VCPU_PTRAUTH_ADDRESS	5 /* VCPU uses address authentication */
- #define KVM_ARM_VCPU_PTRAUTH_GENERIC	6 /* VCPU uses generic authentication */
-+#define KVM_ARM_VCPU_MTE		7 /* VCPU supports Memory Tagging */
- 
- struct kvm_vcpu_init {
- 	__u32 target;
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index ba00bcc0c884..e8891bacd76f 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -1949,6 +1949,21 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (vma_pagesize == PAGE_SIZE && !force_pte)
- 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
- 							   &pfn, &fault_ipa);
-+	if (system_supports_mte() && kvm->arch.vcpu_has_mte && pfn_valid(pfn)) {
-+		/*
-+		 * VM will be able to see the page's tags, so we must ensure
-+		 * they have been initialised.
-+		 */
-+		struct page *page = pfn_to_page(pfn);
-+		long i, nr_pages = compound_nr(page);
-+
-+		/* if PG_mte_tagged is set, tags have already been initialised */
-+		for (i = 0; i < nr_pages; i++, page++) {
-+			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-+				mte_clear_page_tags(page_address(page));
-+		}
-+	}
-+
- 	if (writable)
- 		kvm_set_pfn_dirty(pfn);
- 
-diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-index ee33875c5c2a..82f3883d717f 100644
---- a/arch/arm64/kvm/reset.c
-+++ b/arch/arm64/kvm/reset.c
-@@ -274,6 +274,14 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+-	if (user && !capable(CAP_SYS_NICE)) {
++	if (user) {
+ 		if (fair_policy(policy)) {
+ 			if (attr->sched_nice < task_nice(p) &&
+-			    !can_nice(p, attr->sched_nice))
+-				return -EPERM;
++			    !can_nice(p, attr->sched_nice)) {
++				if (capable(CAP_SYS_NICE))
++					goto sys_nice_capable;
++				else
++					return -EPERM;
++			}
  		}
- 	}
  
-+	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features)) {
-+		if (!system_supports_mte()) {
-+			ret = -EINVAL;
-+			goto out;
+ 		if (rt_policy(policy)) {
+@@ -5263,13 +5269,21 @@ static int __sched_setscheduler(struct task_struct *p,
+ 					task_rlimit(p, RLIMIT_RTPRIO);
+ 
+ 			/* Can't set/change the rt policy: */
+-			if (policy != p->policy && !rlim_rtprio)
+-				return -EPERM;
++			if (policy != p->policy && !rlim_rtprio) {
++				if (capable(CAP_SYS_NICE))
++					goto sys_nice_capable;
++				else
++					return -EPERM;
++			}
+ 
+ 			/* Can't increase priority: */
+ 			if (attr->sched_priority > p->rt_priority &&
+-			    attr->sched_priority > rlim_rtprio)
+-				return -EPERM;
++			    attr->sched_priority > rlim_rtprio) {
++				if (capable(CAP_SYS_NICE))
++					goto sys_nice_capable;
++				else
++					return -EPERM;
++			}
+ 		}
+ 
+ 		 /*
+@@ -5278,28 +5292,43 @@ static int __sched_setscheduler(struct task_struct *p,
+ 		  * unprivileged DL tasks to increase their relative deadline
+ 		  * or reduce their runtime (both ways reducing utilization)
+ 		  */
+-		if (dl_policy(policy))
+-			return -EPERM;
++		if (dl_policy(policy)) {
++			if (capable(CAP_SYS_NICE))
++				goto sys_nice_capable;
++			else
++				return -EPERM;
 +		}
-+		vcpu->kvm->arch.vcpu_has_mte = true;
-+	}
-+
- 	switch (vcpu->arch.target) {
- 	default:
- 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index a655f172b5ad..6a971b201e81 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
- 			val &= ~(0xfUL << ID_AA64PFR0_SVE_SHIFT);
- 		val &= ~(0xfUL << ID_AA64PFR0_AMU_SHIFT);
- 	} else if (id == SYS_ID_AA64PFR1_EL1) {
--		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-+		if (!test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
-+			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
- 	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
- 		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
- 			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
-@@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
- 				   const struct sys_reg_desc *rd)
- {
-+	if (test_bit(KVM_ARM_VCPU_MTE, vcpu->arch.features))
-+		return 0;
-+
- 	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
- }
+ 
+ 		/*
+ 		 * Treat SCHED_IDLE as nice 20. Only allow a switch to
+ 		 * SCHED_NORMAL if the RLIMIT_NICE would normally permit it.
+ 		 */
+ 		if (task_has_idle_policy(p) && !idle_policy(policy)) {
+-			if (!can_nice(p, task_nice(p)))
+-				return -EPERM;
++			if (!can_nice(p, task_nice(p))) {
++				if (capable(CAP_SYS_NICE))
++					goto sys_nice_capable;
++				else
++					return -EPERM;
++			}
+ 		}
+ 
+ 		/* Can't change other user's priorities: */
+-		if (!check_same_owner(p))
+-			return -EPERM;
++		if (!check_same_owner(p)) {
++			if (capable(CAP_SYS_NICE))
++				goto sys_nice_capable;
++			else
++				return -EPERM;
++		}
+ 
+ 		/* Normal users shall not reset the sched_reset_on_fork flag: */
+-		if (p->sched_reset_on_fork && !reset_on_fork)
+-			return -EPERM;
+-	}
++		if (p->sched_reset_on_fork && !reset_on_fork) {
++			if (capable(CAP_SYS_NICE))
++				goto sys_nice_capable;
++			else
++				return -EPERM;
++		}
+ 
+-	if (user) {
++sys_nice_capable:
+ 		if (attr->sched_flags & SCHED_FLAG_SUGOV)
+ 			return -EINVAL;
  
 -- 
-2.20.1
+2.28.0
 
