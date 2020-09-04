@@ -2,68 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DBF25D40A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2687725D403
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729938AbgIDIzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 04:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729917AbgIDIzw (ORCPT
+        id S1729884AbgIDIzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 04:55:32 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45276 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgIDIzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:55:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45671C061244;
-        Fri,  4 Sep 2020 01:55:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6Ph7JbkbFaoWfq28ICsly/8XMu67nEPXs5Q9waIv3f0=; b=O1Wk6g+4dtnT/2kNHdruUhmJV+
-        6tEB67TeIbdL+Al5Jn9XY44q6y9lQhurDBfwdtD2w6dxjzl4spbONnX1/Kj3RoZoEDodS0yfasFX3
-        S372OJaKBTzpshK5Q6gZ9YlJP2cFOminq4D2m+ZPqghHqvMXLsI91kT1ZAkbUfWdAN1cu2Xo6TgZo
-        eoX51+rzTdO5E3cpEnC8uolXotY9q3+nOJCI6AFCcAomERKJIfcW+E1EPFb91rQnk5qLy7cBbUWLq
-        O2t8c7qjE6mzHu4WL0RtNjIoZu8mDkM3XCINb38ZwjrOvS+cuffk7p1QSoG9LtYeG+sRoXJxwGWXG
-        qZeWJzEA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kE7VD-0003wl-6w; Fri, 04 Sep 2020 08:55:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 95E99300F7A;
-        Fri,  4 Sep 2020 10:55:20 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7A4B12BBB68A3; Fri,  4 Sep 2020 10:55:20 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 10:55:20 +0200
-From:   peterz@infradead.org
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2 00/28] Add support for Clang LTO
-Message-ID: <20200904085520.GN2674@hirez.programming.kicks-ass.net>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200903203053.3411268-1-samitolvanen@google.com>
+        Fri, 4 Sep 2020 04:55:31 -0400
+Received: by mail-lj1-f195.google.com with SMTP id c2so6980316ljj.12;
+        Fri, 04 Sep 2020 01:55:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=nu8oE74z5YBqiFxodPe/uvx/vJbyX2uHL0xvWWab5to=;
+        b=WX2C0bogxKF21ZGgpTKj5IiAbFMGfVOOSudtGTt9NR+J1Gw1vuJKsYfCmlXxdQcFGJ
+         PI4r+PwwzZsCUSvupspmBPazkULA+ngHWpvaRV+3+6PmNIdcMYPnB3gQlQYfac4BRDpi
+         Mpgs092vKbFixwuiGQN09UAvQmQ7gIJzS7pfEXCCU6wcVaXVfBnDsR5cR86POoc01FrG
+         XLwlORV+N5y+p2TNHZS+D6E9r3lwg7R6eyiiOMEmLbc2WDt7hemVftFBlHE1x51bZwrD
+         kpo9RlaikiCV2kaai0KwvXxrmveYK3sn84zLcMAasaCvnNZ0vBfNM1zBPLaxGKIECWvc
+         56Qg==
+X-Gm-Message-State: AOAM533jRkZlX28toJGYUq+5+ZNInZZmbZxbPtpWHCrhOZWXjnDW72ue
+        orOOgIAqgp2pQ2EN1sJlI6BEYxqz1x8=
+X-Google-Smtp-Source: ABdhPJweM51R4S6z0DWK6Y1+pL4HJMqhC3w/2hUrgyhp95P9gYPCxrKW9CZWpIYqytyoHaz9OYDkLg==
+X-Received: by 2002:a2e:9794:: with SMTP id y20mr3192952lji.269.1599209727867;
+        Fri, 04 Sep 2020 01:55:27 -0700 (PDT)
+Received: from [10.68.32.147] (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.gmail.com with ESMTPSA id m13sm1175032lfl.30.2020.09.04.01.55.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Sep 2020 01:55:27 -0700 (PDT)
+Reply-To: efremov@linux.com
+To:     "Van Leeuwen, Pascal" <pvanleeuwen@rambus.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20200827064402.7130-1-efremov@linux.com>
+ <20200827064402.7130-2-efremov@linux.com>
+ <CY4PR0401MB3652FFD58D9ED14F4805FC99C32F0@CY4PR0401MB3652.namprd04.prod.outlook.com>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Subject: Re: [PATCH v2 1/4] crypto: inside-secure - use kfree_sensitive()
+Message-ID: <8ac5cb88-7df5-1060-2fac-510541fca48b@linux.com>
+Date:   Fri, 4 Sep 2020 11:55:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903203053.3411268-1-samitolvanen@google.com>
+In-Reply-To: <CY4PR0401MB3652FFD58D9ED14F4805FC99C32F0@CY4PR0401MB3652.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Please don't nest series!
+On 9/2/20 4:10 PM, Van Leeuwen, Pascal wrote:
+>> -----Original Message-----
+>> From: linux-crypto-owner@vger.kernel.org <linux-crypto-owner@vger.kernel.org> On Behalf Of Denis Efremov
+>> Sent: Thursday, August 27, 2020 8:44 AM
+>> To: linux-crypto@vger.kernel.org
+>> Cc: Denis Efremov <efremov@linux.com>; Corentin Labbe <clabbe.montjoie@gmail.com>; Herbert Xu
+>> <herbert@gondor.apana.org.au>; linux-kernel@vger.kernel.org
+>> Subject: [PATCH v2 1/4] crypto: inside-secure - use kfree_sensitive()
+>>
+>> <<< External Email >>>
+>> Use kfree_sensitive() instead of open-coding it.
+>>
+>> Signed-off-by: Denis Efremov <efremov@linux.com>
+>> ---
+>>  drivers/crypto/inside-secure/safexcel_hash.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/crypto/inside-secure/safexcel_hash.c b/drivers/crypto/inside-secure/safexcel_hash.c
+>> index 16a467969d8e..5ffdc1cd5847 100644
+>> --- a/drivers/crypto/inside-secure/safexcel_hash.c
+>> +++ b/drivers/crypto/inside-secure/safexcel_hash.c
+>> @@ -1082,8 +1082,7 @@ static int safexcel_hmac_init_pad(struct ahash_request *areq,
+>>  }
+>>
+>>  /* Avoid leaking */
+>> -memzero_explicit(keydup, keylen);
+>> -kfree(keydup);
+>> +kfree_sensitive(keydup);
+>>
+> I'm not sure here ... I verified it does not break the driver (not a big surprise), but ...
+> 
+> memzero_explicit guarantees that it will not get optimized away and the keydata _always_
+> gets overwritten. Does kfree_sensitive also come with such a guarantee? I could not find a
+> hard statement on that in its documentation. Although the "sensitive" part surely suggests
+> it.
 
-Start a new thread for every posting.
+kfree_sensitive() uses memzero_explicit() internally.
+
+> Additionally, this remark is made in the documentation for kfree_sensitive: "this function
+> zeroes the whole allocated buffer which can be a good deal bigger than the requested buffer
+> size passed to kmalloc().  So be careful when using this function in performance sensitive
+> code"
+> 
+> While the memzero_explicit does not zeroize anything beyond keylen.
+> Which is all you really need here, so why would you want to zeroize potentially a lot more?
+> In any case the two are not fully equivalent.
+
+There are a number of predefined allocation sizes (power of 2) for faster alloc,
+i.e. https://elixir.bootlin.com/linux/latest/source/include/linux/slab.h#L349
+and it looks like that keys we free in this patches are in bounds of these sizes.
+As far as I understand, if a key is not a power of 2 len, the buffer will be zeroed to the closest
+power of 2 size. For small sizes like these, performance difference should be unnoticeable because
+of cache lines and how arch-optimized memzero() works. Key freeing doesn't look like a frequent event.
+
+Thanks,
+Denis
