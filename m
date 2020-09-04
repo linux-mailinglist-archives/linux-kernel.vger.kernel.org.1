@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C2325DE70
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588CC25DE69
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgIDPuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
+        id S1727769AbgIDPt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgIDPqr (ORCPT
+        with ESMTP id S1726892AbgIDPqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:46:47 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6248AC061247
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:46:42 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a17so7191478wrn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:46:42 -0700 (PDT)
+        Fri, 4 Sep 2020 11:46:51 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD0C0611E1
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:46:43 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id a9so6522891wmm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1aSHEiYdSd1JWJ6Q0fBo+4tu4psdYuKAXtqnRnr2Its=;
-        b=Oy+MLb0IWTb6ZupRszNfTziNTh0ywTx6FlKIT8t2tD8VQIQ/8ByFDmVlrdZpD4yaU6
-         31IH6N59+zZpkrotpOwib9cdA0vB5eqHldy11Ogy0Yj9baMhJvEpTHWD66X16BARRyUo
-         9oi+Y4JnSREtrRFEf82FblZFb2kcA1dZ/2jowhVHZvBBCnXsaY3ry6kqVkI+8N6U83hg
-         +diQ8BySNCXwAfRIv8tEoNm2a/IjEg2BkxnJ4Ul5x0593RtKim/vaEzmKuPTJiqPrQR3
-         MYGE9bZtTv8LADfAzsTI9QLyI3COyQ/nt7ZEbNmYBgw7S/vTTttx/NMyKWGN9CVXIiCI
-         YLSg==
+        bh=j/oJst/31Ve7sN2p8SCKacvVyyAcOuKLg7HZEv9T1Bg=;
+        b=uPvmch86FehCHUzRin+H5CXUohTvqZcGHApZczW8eq9lu/MJzFf9k2ReFbXCNCKyKp
+         QAnbVmcbSwdGJkgvs9p8KOl0pQFjMwybe/CpY7Hh8XOol4HEQj390odpGv/D8NzqLzMQ
+         AvpKvNqhVW5l5nuN1vqDrYMGBJRpIjjleROe9WsZdIidLQSeFxFz28InaQK6FDuGaHh5
+         abODV06AGHy0/63WGITnhu2uh99JLKd0WdxfAiAeP2mKsEWCMrGiumxY/dt5qdEeKyOV
+         cuO2DAPfpRJIBrUcEDpHpmxvfKAlccqkdA/9Vos4EFtb0JOtN0HxFexJBPe9MvVF5WWw
+         hEzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1aSHEiYdSd1JWJ6Q0fBo+4tu4psdYuKAXtqnRnr2Its=;
-        b=LBdabt7StmyfOpcVnnDLH5vqXiQu7j0f+buK8Pgb+5/au9n1UmydEv477Wr2L+oPnM
-         Ensc5dfURcAgFY5TdwvJQRTtp1+zoq3jqjo8dTRs5aT+I5pRftDZXEj/b1HW1D37Vlzk
-         OYk8+Gj+dHhXWMV76yIoqxsJxb6Uwr0+rIzFA8KOzwvu1rAynQez9L35lmK18stzsJaz
-         jcc5n3tJxlKSoXCuonqX499VCZe49bv8WLh09REMpAH+SS3AQBIs+VmBW5yQIuP0YgH0
-         9nlFq/RxYfbHAgegKhMDGyo6qEgWdUmP7eB1pT3T+M2KYUxO21ptsGmhXonyP5AIhbVa
-         zaGA==
-X-Gm-Message-State: AOAM531mMjXgeLbkMCVGMiovUZcGI/nXvmF5a+TYg056hZ/roy5Dzl48
-        g1rQeRbyDEyIzJtmFiuPadi90g==
-X-Google-Smtp-Source: ABdhPJx0xcvEJZJYZh6Boev229NGkoHO5q22dnKA1Z9y/c/DRCXfxt6f5JdAAP6bdUbwd3hUT6ZhlA==
-X-Received: by 2002:adf:fa02:: with SMTP id m2mr8219192wrr.273.1599234401059;
-        Fri, 04 Sep 2020 08:46:41 -0700 (PDT)
+        bh=j/oJst/31Ve7sN2p8SCKacvVyyAcOuKLg7HZEv9T1Bg=;
+        b=dJHQkT9O/rZMxbKXzlkxA30LHsA8qsXO8wdbezB4zu8TsE/hFHuudH+vZdpx1jn3EH
+         fAfrBBdt307FF1F7o/KR9wCxfbbSgQQZgZh87Llj4SUfyYlH3PZBsCa4CySIgxf6Xewr
+         2ECQdbvGbu/w5QMM/E6b7gt8lIY/yy12AH+ozXRaNPejlx2lcsxKHeuHHqwl3JZtO5SG
+         /0n406LbzGc9Uzjx8N3NIHpjPM8BJiZA/uPVq8ATjnS78GfsA/YMGC5CkY4XyxvqeiuX
+         KvhrOLPeFqdVTEeGjMqQ+BtYg+nvKZjbaKaVI+oo2MrbzgX+4QSvCT6VFrbWU8e5Hmun
+         SWfg==
+X-Gm-Message-State: AOAM533q06dcYHmVZP4380MT5NELgUBZlSmEwIGvOq6fZ2Ad3iZ4XX4M
+        aKI3NkUEgy9VJRr4NIrtditBTg==
+X-Google-Smtp-Source: ABdhPJxeZd3+cr0IB9roZ5GLjIlStXJyf7rbMppNX/92diAh72W08u+6KqmM8T0vs4cn4upk6ZXE0Q==
+X-Received: by 2002:a1c:4d14:: with SMTP id o20mr7896110wmh.115.1599234402232;
+        Fri, 04 Sep 2020 08:46:42 -0700 (PDT)
 Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id q4sm11983375wru.65.2020.09.04.08.46.39
+        by smtp.gmail.com with ESMTPSA id q4sm11983375wru.65.2020.09.04.08.46.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 08:46:39 -0700 (PDT)
+        Fri, 04 Sep 2020 08:46:41 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Jonathan Corbet <corbet@lwn.net>,
@@ -57,9 +57,9 @@ To:     Linus Walleij <linus.walleij@linaro.org>,
 Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 08/23] gpio: mockup: use pr_fmt()
-Date:   Fri,  4 Sep 2020 17:45:32 +0200
-Message-Id: <20200904154547.3836-9-brgl@bgdev.pl>
+Subject: [PATCH 09/23] gpio: mockup: use KBUILD_MODNAME
+Date:   Fri,  4 Sep 2020 17:45:33 +0200
+Message-Id: <20200904154547.3836-10-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200904154547.3836-1-brgl@bgdev.pl>
 References: <20200904154547.3836-1-brgl@bgdev.pl>
@@ -72,55 +72,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We don't need a custom logging helper. Let's use the standard pr_fmt()
-macro which allows us to use all pr_*() routines with custom format.
+Drop the definition for the driver name. Let's use KBUILD_MODNAME for
+the log format and use the "gpio-mockup" value directly in the only
+place where it's relevant: in the name of the device.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/gpio/gpio-mockup.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpio/gpio-mockup.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index 349782cdb4d7..73cd51459c2a 100644
+index 73cd51459c2a..78c97f7b6893 100644
 --- a/drivers/gpio/gpio-mockup.c
 +++ b/drivers/gpio/gpio-mockup.c
-@@ -21,6 +21,9 @@
- 
+@@ -22,9 +22,8 @@
  #include "gpiolib.h"
  
-+#undef pr_fmt
-+#define pr_fmt(fmt)		GPIO_MOCKUP_NAME ": " fmt
-+
- #define GPIO_MOCKUP_NAME	"gpio-mockup"
+ #undef pr_fmt
+-#define pr_fmt(fmt)		GPIO_MOCKUP_NAME ": " fmt
++#define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
+ 
+-#define GPIO_MOCKUP_NAME	"gpio-mockup"
  #define GPIO_MOCKUP_MAX_GC	10
  /*
-@@ -31,8 +34,6 @@
- /* Maximum of three properties + the sentinel. */
- #define GPIO_MOCKUP_MAX_PROP	4
+  * We're storing two values per chip: the GPIO base and the number
+@@ -501,7 +500,7 @@ static int gpio_mockup_probe(struct platform_device *pdev)
  
--#define gpio_mockup_err(...)	pr_err(GPIO_MOCKUP_NAME ": " __VA_ARGS__)
--
- /*
-  * struct gpio_pin_status - structure describing a GPIO status
-  * @dir:       Configures direction of gpio as "in" or "out"
-@@ -549,7 +550,7 @@ static int __init gpio_mockup_init(void)
+ static struct platform_driver gpio_mockup_driver = {
+ 	.driver = {
+-		.name = GPIO_MOCKUP_NAME,
++		.name = "gpio-mockup",
+ 	},
+ 	.probe = gpio_mockup_probe,
+ };
+@@ -572,7 +571,7 @@ static int __init gpio_mockup_init(void)
+ 			properties[prop++] = PROPERTY_ENTRY_BOOL(
+ 						"named-gpio-lines");
  
- 	err = platform_driver_register(&gpio_mockup_driver);
- 	if (err) {
--		gpio_mockup_err("error registering platform driver\n");
-+		pr_err("error registering platform driver\n");
- 		return err;
- 	}
+-		pdevinfo.name = GPIO_MOCKUP_NAME;
++		pdevinfo.name = "gpio-mockup";
+ 		pdevinfo.id = i;
+ 		pdevinfo.properties = properties;
  
-@@ -577,7 +578,7 @@ static int __init gpio_mockup_init(void)
- 
- 		pdev = platform_device_register_full(&pdevinfo);
- 		if (IS_ERR(pdev)) {
--			gpio_mockup_err("error registering device");
-+			pr_err("error registering device");
- 			platform_driver_unregister(&gpio_mockup_driver);
- 			gpio_mockup_unregister_pdevs();
- 			return PTR_ERR(pdev);
 -- 
 2.26.1
 
