@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD0125E076
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E997925E079
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgIDRAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:00:43 -0400
-Received: from mga04.intel.com ([192.55.52.120]:53983 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbgIDRAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:00:40 -0400
-IronPort-SDR: 0f4189Bqs76H/HtoA8a7SQJYigg/cIqJzGCbf+0qsW4Nd9AphfxEuyVkrJG1du6ICq3dGafsFW
- 2CiJinTMFLOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9734"; a="155190475"
-X-IronPort-AV: E=Sophos;i="5.76,390,1592895600"; 
-   d="scan'208";a="155190475"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 10:00:40 -0700
-IronPort-SDR: rejMaLGQY5hJ5pm1MW8zL5Nf/fl0eduSCfu+YhdKnsYihNxJm05y7VuBf7ivawSv6T+gsfB+ed
- ZN9/yeM38S8Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,390,1592895600"; 
-   d="scan'208";a="332221735"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 04 Sep 2020 10:00:31 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kEF4e-00EKYW-Kj; Fri, 04 Sep 2020 20:00:28 +0300
-Date:   Fri, 4 Sep 2020 20:00:28 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 10/23] gpio: mockup: fix resource leak in error path
-Message-ID: <20200904170028.GG1891694@smile.fi.intel.com>
-References: <20200904154547.3836-1-brgl@bgdev.pl>
- <20200904154547.3836-11-brgl@bgdev.pl>
+        id S1726304AbgIDREG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgIDREG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 13:04:06 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47263C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:04:04 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id f142so6896452qke.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0PbJyFxZ/ikkr3u6krBAPVcbTwRijRlUkolyKnsIfDc=;
+        b=lkQgWlndpkmX01kw2g+/unio85/icYvH7GZAEdq+sk6bll0r4VlcGMKs85WTWapzQR
+         ny9TJmJJC9kKDCEOOy4EbE3gMvdiZjJ9jWs9vNjccQP7pzaNyaB3y8HEAmzqonTRaSao
+         TVWxR0PfMKD5QwtKoSWB1PHgFsGTNWiCRjiIq/cHUQm7+FG7Ktq7oSW34bgEhLyOMpwv
+         nsLigst0P3peCueb2oE2UO1a+nD94jcep8SeVj/N8bgRfw6DjGltHycbsHEOo50Nwnl7
+         BJ6/dt68Dr7a9ewNAGmr7lSWx3cvvWmvVjKM0jwz75ixjcg6hbSvvzFvhNTgpPCg3Nsx
+         97WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0PbJyFxZ/ikkr3u6krBAPVcbTwRijRlUkolyKnsIfDc=;
+        b=ZS4xn8OFeQrC5ePQDakmScxDLnDzYnrJ70j4u+LUDvbbT2d/Qxt8YhW3F0w8yXTsaY
+         jAB6WvYMjxUtjhWqZO1Adh5XMTstPzZLQD9/tsJa+7N9SOu8I99/MS1j3Uampsf0KRbt
+         jEbDjGYQtE9dHHLEPlmAnmYHvy6UBL/XKlTlk43hTdgq8HtVXkSwJ8atynQHNhCB6y+Y
+         UpXGbIYgM8lXyV/CqWrvNiBrLSSQXcIM9GXKsW3CCdCyEEpLf9pHO7pTf2kguNOMQxZX
+         qrhPfUJmZki0AbS+V9wyiwcOFOTd+W/WujeR9qB8pHDPQYmkOD9yihb6El74gJv4Jyv+
+         iJWQ==
+X-Gm-Message-State: AOAM530jephwu/l6dyL8PLftQcxD0q38LhHsonlQCNquWSoR1mw6nBYz
+        m3uzf1h5u4duvm6joOxvMWI=
+X-Google-Smtp-Source: ABdhPJzfOHrQhWklhy/F2+O99nkRgQiCVZk8uKFmqifyeo7KZfddncbunJqtrOWcHr207Onjr5+lCg==
+X-Received: by 2002:a37:5c84:: with SMTP id q126mr8553178qkb.462.1599239043147;
+        Fri, 04 Sep 2020 10:04:03 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:f2f5])
+        by smtp.gmail.com with ESMTPSA id s5sm5093709qtj.25.2020.09.04.10.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 10:04:02 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 13:04:01 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Qianli Zhao <zhaoqianligood@gmail.com>
+Cc:     jiangshanlai@gmail.com, dan.carpenter@oracle.com,
+        Markus.Elfring@web.de, linux-kernel@vger.kernel.org,
+        zhaoqianli@xiaomi.com
+Subject: Re: [PATCH v4] workqueue: Warn when work flush own workqueue
+Message-ID: <20200904170401.GB4295@mtj.thefacebook.com>
+References: <4c1287b0881e780368623314348f704bd43e9bd2.1598507105.git.zhaoqianli@xiaomi.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200904154547.3836-11-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <4c1287b0881e780368623314348f704bd43e9bd2.1598507105.git.zhaoqianli@xiaomi.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 05:45:34PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> If the module init function fails after creating the debugs directory,
-> it's never removed. Add proper cleanup calls to avoid this resource
-> leak.
+On Thu, Aug 27, 2020 at 02:09:11PM +0800, Qianli Zhao wrote:
+> @@ -2594,13 +2595,17 @@ static void check_flush_dependency(struct workqueue_struct *target_wq,
+>  				   struct work_struct *target_work)
+>  {
+>  	work_func_t target_func = target_work ? target_work->func : NULL;
+> -	struct worker *worker;
+> +	struct worker *worker = current_wq_worker();
+> +
+> +	WARN_ONCE(worker && worker->current_pwq->wq == target_wq &&
+> +		  worker->task == current &&
+> +		  (target_work ? worker->current_work == target_work : true),
+> +		  "workqueue: current work function:%ps is flushing own workqueue:%s",
+> +		  worker->current_func, target_wq->name);
 
-Does it fix existing bug?
+So, the idea is that we catch these with lockdeps. Doesn't lockdep trigger
+for the same condition?
 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/gpio/gpio-mockup.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-> index 78c97f7b6893..19c092f814fd 100644
-> --- a/drivers/gpio/gpio-mockup.c
-> +++ b/drivers/gpio/gpio-mockup.c
-> @@ -550,6 +550,7 @@ static int __init gpio_mockup_init(void)
->  	err = platform_driver_register(&gpio_mockup_driver);
->  	if (err) {
->  		pr_err("error registering platform driver\n");
-> +		debugfs_remove_recursive(gpio_mockup_dbg_dir);
->  		return err;
->  	}
->  
-> @@ -580,6 +581,7 @@ static int __init gpio_mockup_init(void)
->  			pr_err("error registering device");
->  			platform_driver_unregister(&gpio_mockup_driver);
->  			gpio_mockup_unregister_pdevs();
-> +			debugfs_remove_recursive(gpio_mockup_dbg_dir);
->  			return PTR_ERR(pdev);
->  		}
->  
-> -- 
-> 2.26.1
-> 
+Thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+tejun
