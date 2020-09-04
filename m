@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C17125CF74
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6E425CF78
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729601AbgIDCtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 22:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        id S1729657AbgIDCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 22:50:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728697AbgIDCtj (ORCPT
+        with ESMTP id S1728697AbgIDCuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 22:49:39 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF12C061244;
-        Thu,  3 Sep 2020 19:49:38 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id q3so451090pls.11;
-        Thu, 03 Sep 2020 19:49:38 -0700 (PDT)
+        Thu, 3 Sep 2020 22:50:18 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E502BC061244;
+        Thu,  3 Sep 2020 19:50:17 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id c15so471764plq.4;
+        Thu, 03 Sep 2020 19:50:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Bo4/9PBXNu/1dIB9MXSEsITbBb0mlowTelVR5S5i/8w=;
-        b=mAXXI0j6O4LJXriRLXXIZogwS2WEUvWNFeVokAem2wUeBSaWU30+LdknBKOgNPaYUK
-         /dmKiJ5GFhYNvoNwC193IPnS5tjxJl54A4oU4mnw/9ETxuHqiCyF5QlgHVQE3wSWhTka
-         aMSB0v8k0gJ+d5WBBVxSDW/HScppLnpNbbUkAYlH+PUmuecObH8yNWO4RbgaxA3atJfY
-         jRmna/jDj/zqEj9OnLYCxKWzNeqwXulRoW54vwDVDFgLs0Tr1XddXsQm7Zc7BJs4Ukd/
-         mOEMQl/NdQKxWzaY/hmqrfAocqgEBsXwi4m160XHBggV3yfPFRGE8BeiBEtssBA+od70
-         Wdaw==
+        bh=dALLnWDXeLa3n4o9oqixiuVAP3y8FtK3zHisHGsAjkg=;
+        b=cCxdljLw6abYzVdZMWeJT2X3efusjngNxBpT5U/9IuKLkJvM6I+iLGh86/P0HttGRR
+         VN1wonO7xfBctQiRs7HgNY8hxI5JzDDQ0o274LWoQxMn0Q1feDmYLxuh/ujTWTZMYd7B
+         aEQ+j5PYkrVUSN6S0l22mlbQu4g+jdAPM50DcJBMhhhZIPYA2ihxU+3Dvoifi35nZJc2
+         78gc22lX+4+r/XCMUNmAF3zwDDwEu+paQvVe/sbheegYxeJz0YD5ydlCy7jwSVKKJb3z
+         obZvTmIxkFP52O6JK8S9olwaW7HXTYC0E1tU6weURwjzX4slL17B6gd82KsHFf93tJvK
+         CLiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Bo4/9PBXNu/1dIB9MXSEsITbBb0mlowTelVR5S5i/8w=;
-        b=Okm0C5iPGmsH9CIND1Oc+Gd3PiHnD6+uAXfrPHqYMuntDlnmIMdoFazIat56ZzZml5
-         1MM3x97FzTLqFq8FP7bL/bd0ayn3OcbCklsygFBa8/JzHpNIlSN4lbU4mGv2F6LlzjhG
-         PQvQgR3iDKhjSWaYWJE6nBNJlGo5gM/RcJ0oHkePPtTvaDJTlw8+eNxUzgZEKJ4Um5Ww
-         SgUNNsx7tyQWFS1//6HVN7fNRFPBmnkzyeJZTkZ5cZirQv18Lym3uiSqOj1FrO1LB9PV
-         51KwNWmyg5mbFXNvrJKKg3XVYy6F2oEshbCJ1LlbwKm8pp+Yntz1QtXDISGScrR/BXzE
-         coaA==
-X-Gm-Message-State: AOAM530L8jki+v9dre6qD0sNPmufo+9WN2cfo/8jD0E/92smZ5nuQ5aK
-        KGreqm2HXXNOTYVFns0TJwb/C/4ZJ+F2qA==
-X-Google-Smtp-Source: ABdhPJyS/kWT3dPVeGZLPIDezmSRou3+sDO7XgPWY/SrIPeibY6kf9NwWOOFpTr8K+q6C5mTI/BSGg==
-X-Received: by 2002:a17:90a:f309:: with SMTP id ca9mr6214354pjb.0.1599187777840;
-        Thu, 03 Sep 2020 19:49:37 -0700 (PDT)
+        bh=dALLnWDXeLa3n4o9oqixiuVAP3y8FtK3zHisHGsAjkg=;
+        b=uiOYI7k30FJ31vqW6oAuenQJmgCrLrr9ODCGe4sOTT1pgjqbQwznBm/dKCmxO5EwUt
+         vTtN7umPXX9hWI87/c47GDW9/tVqSvX86jILr9NNssfgn3i7W2Q1cEke/1VNSgcpBd/9
+         wXXb25fMs0xn3FPX3rlIV/9QXuxjkyf1Qo3Av4DNDEjyYYPogo6A3sOLK6f5TdrnZL5X
+         TIL3FLKLngyeRBfOKhr9v9jxzFvaDEscVXoPCVKdEBjw8CQ3VsZYr1gq6Ottz6EAhIUM
+         5HsAy2YW1BK+0zOym3549ReyXsA6qiQ3mwDNOSVLGqgFd5ascmOdShxORn6stbNuMwpI
+         feWg==
+X-Gm-Message-State: AOAM533L+S5US9tcPcljz+HkM+CJBa22iihfj9Gi9e5fiI8kn5eylYkK
+        Kpyyqlloo6UcxMMeUVap4Cz4x/7XnYjImw==
+X-Google-Smtp-Source: ABdhPJyNCt+PhtjqW5pF69ijCByqqEB5HU05I6uyD/k3VKmOC+clw8a30bzHK8dO/SHklhrouMHc5g==
+X-Received: by 2002:a17:902:7044:: with SMTP id h4mr6841855plt.78.1599187817357;
+        Thu, 03 Sep 2020 19:50:17 -0700 (PDT)
 Received: from [192.168.1.5] ([159.192.81.40])
-        by smtp.googlemail.com with ESMTPSA id v17sm4551312pfn.24.2020.09.03.19.49.34
+        by smtp.googlemail.com with ESMTPSA id b29sm4095787pgb.71.2020.09.03.19.50.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Sep 2020 19:49:37 -0700 (PDT)
-Subject: Re: [PATCH] ALSA: usb-audio: quirks: Add USB_QUIRK_DISCONNECT_SUSPEND
- quirk for Lenovo A630Z TIO built-in usb audio card
+        Thu, 03 Sep 2020 19:50:17 -0700 (PDT)
+Subject: Re: [PATCH] HID: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for
+ BYD zhaoxin notebook
 To:     Penghao <penghao@uniontech.com>, gregkh@linuxfoundation.org
-Cc:     johan@kernel.org, jonathan@jdcox.net, kai.heng.feng@canonical.com,
-        gustavo.padovan@collabora.com, tomasz@meresinski.eu,
-        hdegoede@redhat.com, kerneldev@karsmulder.nl,
+Cc:     johan@kernel.org, hdegoede@redhat.com, dlaz@chromium.org,
+        stern@rowland.harvard.edu, kerneldev@karsmulder.nl,
+        jonathan@jdcox.net, tomasz@meresinski.eu,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200904014516.12298-1-penghao@uniontech.com>
+References: <20200904014854.12577-1-penghao@uniontech.com>
 From:   Lars Melin <larsm17@gmail.com>
-Message-ID: <9fc6c4d7-4298-0b9d-b3a0-d6eb9573575e@gmail.com>
-Date:   Fri, 4 Sep 2020 09:49:32 +0700
+Message-ID: <3478d24e-aefa-1fe9-6544-4c45e35a17f2@gmail.com>
+Date:   Fri, 4 Sep 2020 09:50:13 +0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200904014516.12298-1-penghao@uniontech.com>
+In-Reply-To: <20200904014854.12577-1-penghao@uniontech.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,20 +72,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/2020 08:45, Penghao wrote:
+On 9/4/2020 08:48, Penghao wrote:
 
 > --- a/drivers/usb/core/quirks.c
 > +++ b/drivers/usb/core/quirks.c
-> @@ -403,6 +403,10 @@ static const struct usb_device_id usb_quirk_list[] = {
->   	{ USB_DEVICE(0x12d1, 0x15c3), .driver_info =
->   			USB_QUIRK_DISCONNECT_SUSPEND },
+> @@ -387,6 +387,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+>   	{ USB_DEVICE(0x0b05, 0x17e0), .driver_info =
+>   			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
 >   
-> +	/* Lenovo A630Z TIO build-in usb sound card */
-> +	{ USB_DEVICE9(0x17ef, 0xa012), driver_info =
-> +			USB_QUIRK_DISCONNECT_SUSPEND },
+> +	/* SONiX USB DEVICE Touchpad */
+> +	{ USB_DEVICE(0x0c45, 0x7056), .driver_info =
+> +			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
 > +
->   	/* SKYMEDI USB_DRIVE */
->   	{ USB_DEVICE(0x1516, 0x8628), .driver_info = USB_QUIRK_RESET_RESUME },
+>   	/* Realtek hub in Dell WD19 (Type-C) */
+>   	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
 >   
 > 
 
