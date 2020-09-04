@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E0625E313
+	by mail.lfdr.de (Postfix) with ESMTP id A3D5F25E314
 	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgIDUvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 16:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S1728417AbgIDUvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 16:51:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728387AbgIDUvB (ORCPT
+        with ESMTP id S1728400AbgIDUvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 16:51:01 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B38C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 13:51:01 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e33so4937806pgm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 13:51:01 -0700 (PDT)
+        Fri, 4 Sep 2020 16:51:04 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3620C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 13:51:02 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y6so1691264plk.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 13:51:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DngiifY+VD/aBUQNzK5lN4dyApug0qmV/8iUp0GFosI=;
-        b=Eo/+HJegguYckBDEgMQ88Chqogj50AZ96F29ESZ6L5BhiGQyPOS8jUg85tClyTt+0w
-         A1R6WgMKQsF+DR1DQVS8aEboMVayrhKLVFeh6mnF6eS1sk6laQ1tZIG/+uKpHz3dmZ/B
-         vKM06B6EZjq2nHVTb5NVX30XTLU2asXOZgOr9vxDma9ogkCyJ58nSCJlhyyk/4X9wHNz
-         +p4L9xYs6ApFHwwsBYwtJI2K1eElb2KeKzj9payRl3XJcbn+wDRb5zLnLZ9q8TeAZ0V8
-         YarJtZW2mL3juqNjm88LZ3JMIkqgPJgIuyNUxW2SQ1f++G+DfFJVnIQ6xKzOiBRfm84L
-         ahoQ==
+        bh=CiIeU7VL4tMoVGzTU+NA9ADQCjCTiXtDHd4RfiX4JPU=;
+        b=qIGEZ8IU/KonixvIH+81t7lD5THpreiflld91bmt22uKrzTnbgRJeS0Poot9aBXOGb
+         Q7zEEfBEhexKvNtM+omzhJC3B+L28OioVM3x3BpwByaR0ENclxeoLDlPdTdh6ZThhD5F
+         3SUFweLGFdfH2KLyFx8seFVjqjKOZMXX2sqnuWcAB264OajedZlpMCTnkBmkGsCKrGuN
+         MWBNQkaCYah6BHjRvOWWkDwZWY/mZ1sO1gLOoDkWbn2Tn5bv6B0EB8UQAb/PlEUa67M7
+         jaxoGww25pGOVIBYDwnR5cTB5Fj2uOmDs3WXCfKNhW8FrjWUAVNk2/+6Paczb5z8Qf2X
+         PFyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DngiifY+VD/aBUQNzK5lN4dyApug0qmV/8iUp0GFosI=;
-        b=r5nSLCv9pCCKXiHoipFOvhbZpC3tZ7Imd65Wx+mFx1BKzfSd2sqXYr4BiDg+PhV0Pg
-         /HHIFdFXHVp2I+qhaIG2zoQABM6HI0CWfMBRdOP8u7u70Y9GIcFiruVl7YTFmihxlrnW
-         W5bzRGU5d9c0iZJKuo45NzcToEF//gmbz5+JemyP/KBK2FxrXzcSa+3bMuW2F/o0HYf4
-         E2WXtpRsRWCJmSxg6WB4o2QdjyFfH3FvZJAdoPmfZolMQkhjXlbXl6R9iR+O//HYUPXK
-         OCFhBMavQRD1h+toJxnnySqTdKWHEJJg4N+6OQig1peX8czfV9anL9JvigiMnIIKtTvR
-         3dmw==
-X-Gm-Message-State: AOAM533ly9zFcXgIwUogeFuoCd2WhBTWRbj+Ek5B4aTDIXfPky6beJla
-        licccTb88S5oYpRleDAjF1g=
-X-Google-Smtp-Source: ABdhPJznmz3IN9+McBSe5OwC6YWtASYz6SNPdbpxnwyHoAp2N2UcEgnINXoIN6OLbguJPlR1M12bkw==
-X-Received: by 2002:a63:5a5d:: with SMTP id k29mr8551214pgm.51.1599252660754;
-        Fri, 04 Sep 2020 13:51:00 -0700 (PDT)
+        bh=CiIeU7VL4tMoVGzTU+NA9ADQCjCTiXtDHd4RfiX4JPU=;
+        b=nLJRwIuFdpuIXy436tUJQwqVI1Jzi38IHlgxI29DHgLyRiF1jiTNGX9iJzFV2YPIFk
+         ACUOkq3TYW1XoIKyHQWyE///xyy/UG+QqRQMZUEqV3MGsY/4B45JOEZ9eFJFlgas5KDF
+         t4kWpjr3n26lHWoXWcM7SSgJHfhcwtTbKr1sbDsdor6o6wAJ0Y8fAOgmugGfEPDOsVCa
+         UlUrafuLazLhUoMHJ18X6URVjLCHEjxMWKR+3A0mY1ixPM4cTO2sGxMkb8P+SykLN/Yk
+         /4TrLt5xZFmHiy1RWenaZqLy95rR9VHSE2hKdhmvHsnvRI77tBMP8xat2bk3xQmtb0I9
+         ey8g==
+X-Gm-Message-State: AOAM532i969IXMdEPHDLEYTrRTurvMi0LfI9fX4ETB7+9n4q3r+aZ0/t
+        WU+hUK+Uq7YHqjpEJghcmAA=
+X-Google-Smtp-Source: ABdhPJyjr9MyChSY4+lePwokvZkYAaeFkzJKMyNDxCbsugPjT78loijjo/Ue4CL6eCT7IpC5fnZ/2g==
+X-Received: by 2002:a17:902:b60d:: with SMTP id b13mr10584752pls.48.1599252662512;
+        Fri, 04 Sep 2020 13:51:02 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id gb17sm6193305pjb.15.2020.09.04.13.50.59
+        by smtp.gmail.com with ESMTPSA id gb17sm6193305pjb.15.2020.09.04.13.51.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 13:51:00 -0700 (PDT)
+        Fri, 04 Sep 2020 13:51:01 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM7XXX ARM
         ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/4] soc: bcm: brcmstb: biuctrl: Tune MCP settings for 72164
-Date:   Fri,  4 Sep 2020 13:50:51 -0700
-Message-Id: <20200904205055.3309379-2-f.fainelli@gmail.com>
+Subject: [PATCH 2/4] soc: bcm: brcmstb: biuctrl: Tune MCP settings for 72165
+Date:   Fri,  4 Sep 2020 13:50:52 -0700
+Message-Id: <20200904205055.3309379-3-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200904205055.3309379-1-f.fainelli@gmail.com>
 References: <20200904205055.3309379-1-f.fainelli@gmail.com>
@@ -66,7 +66,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-72164 uses a Brahma-B53 CPU and its Bus Interface Unit, tune it
+72165 uses a Brahma-B53 CPU and its Bus Interface Unit, tune it
 according to the existing values we have.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
@@ -75,14 +75,14 @@ Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/soc/bcm/brcmstb/biuctrl.c b/drivers/soc/bcm/brcmstb/biuctrl.c
-index 95602ece51d4..a4b01894a9ad 100644
+index a4b01894a9ad..d448a89ceb27 100644
 --- a/drivers/soc/bcm/brcmstb/biuctrl.c
 +++ b/drivers/soc/bcm/brcmstb/biuctrl.c
-@@ -130,6 +130,7 @@ static int __init mcp_write_pairing_set(void)
- static const u32 a72_b53_mach_compat[] = {
+@@ -131,6 +131,7 @@ static const u32 a72_b53_mach_compat[] = {
  	0x7211,
  	0x7216,
-+	0x72164,
+ 	0x72164,
++	0x72165,
  	0x7255,
  	0x7260,
  	0x7268,
