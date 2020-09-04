@@ -2,57 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF6B25D92E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9965325D92A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730389AbgIDNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:01:46 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:56920 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730311AbgIDNBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:01:41 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 61244116E2FDBEFA3C65;
-        Fri,  4 Sep 2020 21:01:36 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
- 21:01:30 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] caif: Remove duplicate macro SRVL_CTRL_PKT_SIZE
-Date:   Fri, 4 Sep 2020 20:58:58 +0800
-Message-ID: <20200904125858.16204-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730361AbgIDNBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728588AbgIDNAH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:00:07 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5539BC061244;
+        Fri,  4 Sep 2020 06:00:07 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id c10so5998765edk.6;
+        Fri, 04 Sep 2020 06:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eoJIkDtT5yIdSXOyl7ZSN/ybf/6ZO2PtqfzMV2ShYXs=;
+        b=VRnez5fnDdx4YUTxOQcGHIgidGmKBkEm+asD3J7ZNJR0U26yYQNito/FHsTVC9QD2G
+         TgWilTQTk6y65Pl3jvfV4kCh0JVkQI31zt1OAWkm8sLSOuarYbuGbHJC6D6oVSmAewgL
+         g3OHoNtWlAF1SNGok1YGYsjQ+oMxxkFaGZxrfDImowRjeeE8IFhSxATxJGLaQbCZqfP2
+         HhFmFH2qxDy8cE6xtXfRevpSQY0Z+jikSIIyNsZweyH1Onsyijgmp6EnUxl7VJR1Ot7/
+         UPitx57LX3xiP8znCQItX5MnrMHaL6oZauMvAH5WWAXcpN49HgYFTThYPCYW+aCiaAi6
+         S3OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eoJIkDtT5yIdSXOyl7ZSN/ybf/6ZO2PtqfzMV2ShYXs=;
+        b=JuhMq3/NgXO3D8Vu6/dva8CFNBcb6YqjDlKSUon/Eumnkgf8RiITAeUlgB0lg6H40z
+         SubTksnq9CLhD3UKX72lfc4zeO4b96KMV4Ln/5SBs/cJ+0Ysmpvx+J+H0eiMlxn0ni8n
+         2Sf85vhaS39pq3YkAMCGor8Qz+dnVT8petJ3Z8cAeqmG6eecFEvXL3TIY6fbZ6TggV+y
+         mKIy6E28/3DrCLA9wMyMf5J/4+J3qjFnM+tgztgxg5cidOJkmesDbiMixbxKRMm+xcjG
+         TOXjUZuLbk+diH0N2YyhSTnnUHuSP2qdhyuBRwayxpUd9UIOCEROZBiJJNoeZxA5mcmU
+         JWkQ==
+X-Gm-Message-State: AOAM530m+ufy3L+JvGlw7unfNo+vsV7KhMSfVJ82t7I7SEORE2C1UobH
+        P4D+wABOGy5p6fR5pawk7Bs=
+X-Google-Smtp-Source: ABdhPJyd3GfRiKMW3Hv1SXKOXdFm20VEy4aybXXN4EDdDImnvlQLArlBx5ZgWZXwJPMnMy22iZIX8g==
+X-Received: by 2002:a50:fe98:: with SMTP id d24mr2605949edt.223.1599224405833;
+        Fri, 04 Sep 2020 06:00:05 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id w1sm5839816eds.18.2020.09.04.06.00.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 06:00:04 -0700 (PDT)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active" property
+Date:   Fri,  4 Sep 2020 14:59:57 +0200
+Message-Id: <20200904130000.691933-1-thierry.reding@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove SRVL_CTRL_PKT_SIZE which is defined more than once.
+From: Thierry Reding <treding@nvidia.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Reserved memory regions can be marked as "active" if hardware is
+expected to access the regions during boot and before the operating
+system can take control. One example where this is useful is for the
+operating system to infer whether the region needs to be identity-
+mapped through an IOMMU.
+
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 ---
- net/caif/cfsrvl.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../bindings/reserved-memory/reserved-memory.txt           | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/net/caif/cfsrvl.c b/net/caif/cfsrvl.c
-index d0a4d0ac7045..9cef9496a707 100644
---- a/net/caif/cfsrvl.c
-+++ b/net/caif/cfsrvl.c
-@@ -21,7 +21,6 @@
- #define SRVL_FLOW_OFF 0x81
- #define SRVL_FLOW_ON  0x80
- #define SRVL_SET_PIN  0x82
--#define SRVL_CTRL_PKT_SIZE 1
+diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+index 4dd20de6977f..163d2927e4fc 100644
+--- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
++++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
+@@ -63,6 +63,13 @@ reusable (optional) - empty property
+       able to reclaim it back. Typically that means that the operating
+       system can use that region to store volatile or cached data that
+       can be otherwise regenerated or migrated elsewhere.
++active (optional) - empty property
++    - If this property is set for a reserved memory region, it indicates
++      that some piece of hardware may be actively accessing this region.
++      Should the operating system want to enable IOMMU protection for a
++      device, all active memory regions must have been identity-mapped
++      in order to ensure that non-quiescent hardware during boot can
++      continue to access the memory.
  
- #define container_obj(layr) container_of(layr, struct cfsrvl, layer)
- 
+ Linux implementation note:
+ - If a "linux,cma-default" property is present, then Linux will use the
 -- 
-2.17.1
+2.28.0
 
