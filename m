@@ -2,76 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC21B25D4BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D7025D4FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729936AbgIDJ0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:26:49 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58995 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726597AbgIDJ0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:26:48 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-ozGoW-irMrWpS-autri8xg-1; Fri, 04 Sep 2020 05:26:45 -0400
-X-MC-Unique: ozGoW-irMrWpS-autri8xg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E34B51007470;
-        Fri,  4 Sep 2020 09:26:43 +0000 (UTC)
-Received: from x1.bristot.me.redhat.com (ovpn-115-14.rdu2.redhat.com [10.10.115.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C0E507E419;
-        Fri,  4 Sep 2020 09:26:38 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add myself as SCHED_DEADLINE reviewer
-Date:   Fri,  4 Sep 2020 11:26:23 +0200
-Message-Id: <4476a6da70949913a59dab9aacfbd12162c1fbd7.1599146667.git.bristot@redhat.com>
+        id S1730279AbgIDJaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:30:22 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2759 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730251AbgIDJaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:30:17 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id AB700FA363A68C7F4490;
+        Fri,  4 Sep 2020 10:30:15 +0100 (IST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Fri, 4 Sep 2020 10:30:15 +0100
+Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
+ by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Fri, 4 Sep 2020 11:30:14 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v2 06/12] evm: Refuse EVM_ALLOW_METADATA_WRITES only if the HMAC key is loaded
+Date:   Fri, 4 Sep 2020 11:26:37 +0200
+Message-ID: <20200904092643.20013-2-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.27.GIT
+In-Reply-To: <20200904092339.19598-1-roberto.sassu@huawei.com>
+References: <20200904092339.19598-1-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.65.160]
+X-ClientProxiedBy: lhreml709-chm.china.huawei.com (10.201.108.58) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As discussed with Juri and Peter.
+EVM_ALLOW_METADATA_WRITES is an EVM initialization flag that can be set to
+temporarily disable metadata verification until all xattrs/attrs necessary
+to verify an EVM portable signature are copied to the file. This flag is
+cleared when EVM is initialized with an HMAC key, to avoid that the HMAC is
+calculated on unverified xattrs/attrs.
 
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: linux-kernel@vger.kernel.org
+Currently EVM unnecessarily denies setting this flag if EVM is initialized
+with public key, which is not a concern as it cannot be used to trust
+xattrs/attrs updates. This patch removes this limitation.
+
+Cc: stable@vger.kernel.org # 4.16.x
+Fixes: ae1ba1676b88e ("EVM: Allow userland to permit modification of EVM-protected metadata")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/ABI/testing/evm      | 6 ++++--
+ security/integrity/evm/evm_secfs.c | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 592467ba3f4d..56d185210a43 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15363,6 +15363,7 @@ R:	Dietmar Eggemann <dietmar.eggemann@arm.com> (SCHED_NORMAL)
- R:	Steven Rostedt <rostedt@goodmis.org> (SCHED_FIFO/SCHED_RR)
- R:	Ben Segall <bsegall@google.com> (CONFIG_CFS_BANDWIDTH)
- R:	Mel Gorman <mgorman@suse.de> (CONFIG_NUMA_BALANCING)
-+R:	Daniel Bristot de Oliveira <bristot@redhat.com> (SCHED_DEADLINE)
- L:	linux-kernel@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
+diff --git a/Documentation/ABI/testing/evm b/Documentation/ABI/testing/evm
+index 201d10319fa1..cbb50ab09c78 100644
+--- a/Documentation/ABI/testing/evm
++++ b/Documentation/ABI/testing/evm
+@@ -42,8 +42,10 @@ Description:
+ 		modification of EVM-protected metadata and
+ 		disable all further modification of policy
+ 
+-		Note that once a key has been loaded, it will no longer be
+-		possible to enable metadata modification.
++		Note that once HMAC validation and creation is enabled,
++		it will no longer be possible to enable metadata modification
++		and if metadata modification is already enabled, it will be
++		disabled.
+ 
+ 		Until key loading has been signaled EVM can not create
+ 		or validate the 'security.evm' xattr, but returns
+diff --git a/security/integrity/evm/evm_secfs.c b/security/integrity/evm/evm_secfs.c
+index cfc3075769bb..92fe26ace797 100644
+--- a/security/integrity/evm/evm_secfs.c
++++ b/security/integrity/evm/evm_secfs.c
+@@ -84,7 +84,7 @@ static ssize_t evm_write_key(struct file *file, const char __user *buf,
+ 	 * keys are loaded.
+ 	 */
+ 	if ((i & EVM_ALLOW_METADATA_WRITES) &&
+-	    ((evm_initialized & EVM_KEY_MASK) != 0) &&
++	    ((evm_initialized & EVM_INIT_HMAC) != 0) &&
+ 	    !(evm_initialized & EVM_ALLOW_METADATA_WRITES))
+ 		return -EPERM;
+ 
 -- 
-2.26.2
+2.27.GIT
 
