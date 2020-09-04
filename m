@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BB825E091
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1DE25E094
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgIDRL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S1726984AbgIDRLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgIDRL2 (ORCPT
+        with ESMTP id S1726127AbgIDRLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:11:28 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAC8C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:11:27 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id e11so8843614ljn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:11:27 -0700 (PDT)
+        Fri, 4 Sep 2020 13:11:47 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4F1C061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 10:11:47 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id b13so3368099qvl.2
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:11:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LwSOZ3VxHk2DxOprDUCFltuLBh+Nnc13XxZ9vhv/VSM=;
-        b=Ai5VYeCU8N0HEbW+IM5blqtlPgBAdGE7a3XFUEbRHQk5rk29NE1Y6tMiu2T/EMq17a
-         oE42EL494zdqelcOJfkWDvC8gduDspSWRXtrBLodjT6PNtuIMZdw4lEZsKoERdT4+qfQ
-         DzOZXMaeU+RmNmSqU9sHI/NrjQBcHXnvyzI6I=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wg+0AXi/s7873Utji8lGdFF3pkA/ZiGcFAsTC0mgF5I=;
+        b=XCP0Z52zDX52O8oyqtuDs271FnpFMYUARRwf/flhD1j8rgajfs+xBsqJVST+lpzFhe
+         K0Sl/vXklct/Vu2RUQgkuZBh7rGJZYbZNpWYIhUDHfSv0JowLSXEcC8MoHmFwEbVRqoH
+         kVuRK6SITHf9paGSgkTS4ZX4NeOK4AgYL3ZfelmtVNyLFx9M4odCIN70cE+TwnZd4Vf3
+         3gzTmhFUKF0OzzUwt332Zhv3T4RHftwdruhrfYREpedbIsSeAhz7ZaECvyUJYr4dC6CI
+         3ua/MQpkEoBQuDRqC+1SrAtgFWKD9o07Wdr2Yxmy8kSmKTK1Pb6KYZUJZOufisecrfqy
+         ssjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LwSOZ3VxHk2DxOprDUCFltuLBh+Nnc13XxZ9vhv/VSM=;
-        b=Qb4v7A+8KoO7g0+GkGfw67IhLOzkWbZgXvrJRlf4V6Zg8lIZCi/ZGbS9NE/NoTrqso
-         gKSjz66vklt0llCGP6YQ3wLUgjnl39Dr99O2vmQXgglHu2ZvEcEgsAg2TvUfQzLA05LQ
-         AdCjGbrF+GdbHlASjnqCMO1cQ6BNiCFR0CoaruHgKD1xVSFfNm0ePL/9qIJfk0dzRiam
-         8fK9KfHX4R2YkMA0PxwZa1ucDQgZUDLOnh8dXts43YQwfew+XCzwKybvmI4z2ZWf538B
-         JVQR3dF701rkjJ94SkIGgI7RU3PztycbYZyoVTSmKTN94zFOoW/ITuQCVTVtuUB5M6ZT
-         npdw==
-X-Gm-Message-State: AOAM531NEBuDTxwwGwfkiXHitBbjBaSxSz9zRwn++A+3sh/i5hRLTFiI
-        DfyplHEsY5MqHNdo3DaYVr+/3fwNiybv2g==
-X-Google-Smtp-Source: ABdhPJy+LfFDnhB2nLi6blePpdS7U79a2JkZgd/mzOmUv4ottMvXO/eSPY47M2bkHirmdF8057DRpg==
-X-Received: by 2002:a05:651c:503:: with SMTP id o3mr4691383ljp.312.1599239485901;
-        Fri, 04 Sep 2020 10:11:25 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id s4sm1360943lja.124.2020.09.04.10.11.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Sep 2020 10:11:22 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id y11so4249396lfl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 10:11:22 -0700 (PDT)
-X-Received: by 2002:a05:6512:50c:: with SMTP id o12mr4298936lfb.192.1599239481877;
- Fri, 04 Sep 2020 10:11:21 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Wg+0AXi/s7873Utji8lGdFF3pkA/ZiGcFAsTC0mgF5I=;
+        b=FQpDOjTDOh0ISlg+wkoa8pVswVVXBAQuXqWoiZSBgweZqHNxOSJjfPwhvAdnmlebmL
+         VeIW3lPpljh5JmhV3xhwtWNaH0gSbe5wVMofR3rti6xndyW0r5ktMDBcvt9oOgWZWJ5L
+         MHs/D+ScE3dBKfXLLuAgSfFQuzBK2eFzeBpF5ltEsmaBdTu84qeP6MJ/16GJG2rfxJyY
+         Y0yrx+c1iS+oFFU+snIMeLFyroEn/+Jmt8K/+VOLllDLlgJBidcMiD/IO9IYF5YhzyGY
+         idbLk9CTk5De4CllMCVyYQSITu8aOjL4i6iNylFvKSuZcrxi/+mrLJ7y/Fm9GRh6EHCD
+         avYA==
+X-Gm-Message-State: AOAM530XyhBB1AMxg0HwOF6WJlroSp4XMQt37c7IvmSwSuhD7nSX+p4i
+        3QkuaHbqJQudbtFtZCJyNJk=
+X-Google-Smtp-Source: ABdhPJyFDg5LmrqhLFVeV+w0tI7N3ZIpM4ib7aztm30+mn4A1PCYiBzR1ftDQ7JzH5bvPCLY5xCs4w==
+X-Received: by 2002:a0c:f945:: with SMTP id i5mr8675746qvo.80.1599239506420;
+        Fri, 04 Sep 2020 10:11:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:f2f5])
+        by smtp.gmail.com with ESMTPSA id g4sm4824209qth.30.2020.09.04.10.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 10:11:45 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 13:11:44 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     linmiaohe <linmiaohe@huawei.com>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] workqueue: Use wake_up_worker() to wake up first idle
+ worker
+Message-ID: <20200904171144.GD4295@mtj.thefacebook.com>
+References: <1595852969-21049-1-git-send-email-linmiaohe@huawei.com>
 MIME-Version: 1.0
-References: <alpine.LRH.2.02.2009031328040.6929@file01.intranet.prod.int.rdu2.redhat.com>
- <CAHk-=whpJp9W_eyhqJU3Y2JsnX45xMfQHFNQSsb9dNirdMFnaA@mail.gmail.com> <alpine.LRH.2.02.2009040402560.14993@file01.intranet.prod.int.rdu2.redhat.com>
-In-Reply-To: <alpine.LRH.2.02.2009040402560.14993@file01.intranet.prod.int.rdu2.redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 4 Sep 2020 10:11:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgmhDNm7+w0atqAj3X=izWxNut_4kQGTG8n=+HhtxEbRw@mail.gmail.com>
-Message-ID: <CAHk-=wgmhDNm7+w0atqAj3X=izWxNut_4kQGTG8n=+HhtxEbRw@mail.gmail.com>
-Subject: Re: a crash when running strace from persistent memory
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, Jann Horn <jannh@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1595852969-21049-1-git-send-email-linmiaohe@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 1:08 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
->
-> I applied these four patches and strace works well. There is no longer any
-> warning or crash.
+On Mon, Jul 27, 2020 at 08:29:29PM +0800, linmiaohe wrote:
+> From: Miaohe Lin <linmiaohe@huawei.com>
+> 
+> Use wrapper function wake_up_worker() to wake up first idle worker.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Ok. I obviously approve of that series whole-heartedly, but I still
-didn't want to apply it this way (and with this kind of "mid-rc"
-timing).
+Applied to wq/for-5.10.
 
-I was hoping to just leave it for the next merge window, but there are
-now two independent problems that that forced COW patch of mine
-caused, and a plain revert isn't acceptable either, so I've just
-applied that series to my tree despite the garbage timing.
+Thanks.
 
-Maybe I'm just making excuses and rationalizing because I wanted that
-series anyway, and patches that remove lines in core code make me
-happy, but I don't see other great alternatives.
-
-              Linus
+-- 
+tejun
