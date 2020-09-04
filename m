@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E106525D450
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35ABE25D44D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgIDJLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:11:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33237 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729949AbgIDJKz (ORCPT
+        id S1729924AbgIDJKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:10:51 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:56501 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729712AbgIDJKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:10:55 -0400
-Received: from mail-lf1-f72.google.com ([209.85.167.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1kE7kB-0004jq-L7
-        for linux-kernel@vger.kernel.org; Fri, 04 Sep 2020 09:10:51 +0000
-Received: by mail-lf1-f72.google.com with SMTP id j19so943676lfg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 02:10:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MpOzB7dmCTuCyJm4q5JJcfMsN2ZZvsAlJt0YiaUL728=;
-        b=WI3I3vk+wmkyNpytkK/JwwjJppbfFxz6M58mdz8dMpUxkK0/OXUqWLm33eqdEB9p9F
-         SZp5CGCAegb0ciq/le5DPNTatr9hERVoRIwSdaSiqhqUZn1VH72gGQsy+E7QYFEl0JuC
-         oyhh9Vw+BcEtmZjy2ORo8/74fc6KtutnQ2SVjECMbmOL5d82mh/mFQUl9DzAB3VAL3M/
-         ItOa3GvxXYGMR+pgfjzs8umjSzj2FR6kb7MvyEvmwK2Slur3i+deNviWh7hHwWme/sT7
-         +/eZTttF6RjQCvbXBh6GcNGt8dINVTDrdD1g8t11UZWueJVRnw8/pPJA3vq8ZhVURh4F
-         OXng==
-X-Gm-Message-State: AOAM533YwMR4LlJLsaF5JQ+zaWaSUUGJSxRgX7db1QhCfiQrn//LC+do
-        +KnsHany8MR4QafMK3qtIdIKcSizGVAKLehbUHHyuyEPFUIgXU86MpDnZ08lNmgi3Ka6sxCjint
-        OnzNFw4UyA+099DG/O4oTZU/99GhIgnF5HGZfjMHvp6ZBPuxAM3klQsof
-X-Received: by 2002:a2e:a16f:: with SMTP id u15mr3550080ljl.5.1599210651094;
-        Fri, 04 Sep 2020 02:10:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRBBq/qjRBD6kgJssSry/FlrnrAD8qz7ovDVT+hqOyTrNsEtHy4P1ksymgoBxNoaZOC5pVhIT6RcxFjIk7xas=
-X-Received: by 2002:a2e:a16f:: with SMTP id u15mr3550055ljl.5.1599210650811;
- Fri, 04 Sep 2020 02:10:50 -0700 (PDT)
+        Fri, 4 Sep 2020 05:10:45 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200904091043euoutp01df15020cff826489bbaa508b67c8a72a~xiZtxwZg30989009890euoutp012
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:10:43 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200904091043euoutp01df15020cff826489bbaa508b67c8a72a~xiZtxwZg30989009890euoutp012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1599210643;
+        bh=54l8SETdxAS+gjIWH+2DCQYz9GkWo3yKuyvsIE4SZBg=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=KWjz3pEDnOgrHXu+pMjHKB19lJGYyIJId0XhaHQPHBXYRZW6RiSzGD8xHazOVQCo2
+         7N0lmqolDD7FEBgt7Ia+oVoo9SU31KByr8//i2mvaU3eLsnvxmBPME7lLF3y1PtJXk
+         4Jsgbzb3Y8TcX4AoyE/ZyMxXXUxadCpGP5FBBknM=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200904091043eucas1p2b9138e4464dde746fd8f8717a037d24a~xiZtjQG393034830348eucas1p2P;
+        Fri,  4 Sep 2020 09:10:43 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 58.82.06318.394025F5; Fri,  4
+        Sep 2020 10:10:43 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200904091042eucas1p20b93792a739ddc6627731c980ba7abbc~xiZtKDepu3022330223eucas1p2M;
+        Fri,  4 Sep 2020 09:10:42 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200904091042eusmtrp1ecd6445472be4fde762655912639fcba~xiZtJeORq2938029380eusmtrp1L;
+        Fri,  4 Sep 2020 09:10:42 +0000 (GMT)
+X-AuditID: cbfec7f5-38bff700000018ae-12-5f5204938b03
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 96.E8.06314.294025F5; Fri,  4
+        Sep 2020 10:10:42 +0100 (BST)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200904091042eusmtip15c4f202aa3b6934c463ecd12f52f7f36~xiZsq47eV1936719367eusmtip1B;
+        Fri,  4 Sep 2020 09:10:42 +0000 (GMT)
+Subject: Re: Is it needed to zero out the dma buffer for
+ DMA_ATTR_NO_KERNEL_MAPPING
+To:     Hillf Danton <hdanton@sina.com>, Christoph Hellwig <hch@lst.de>
+Cc:     Kees Cook <keescook@chromium.org>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Matthew Wilcox <willy@infradead.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <bee6cbc9-f637-9217-5f1b-086d93295f70@samsung.com>
+Date:   Fri, 4 Sep 2020 11:10:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200813044422.46713-1-po-hsu.lin@canonical.com>
-In-Reply-To: <20200813044422.46713-1-po-hsu.lin@canonical.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Fri, 4 Sep 2020 17:10:39 +0800
-Message-ID: <CAMy_GT8jOOPw+esd53X2LQ4aY9eqpE0rv9vDgr_eBD6fy5Wmqg@mail.gmail.com>
-Subject: Re: [PATCHv2] selftests: rtnetlink: load fou module for kci_test_encap_fou()
-To:     David Miller <davem@davemloft.net>, kuba@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200904022801.15828-1-hdanton@sina.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsWy7djP87qTWYLiDe6+Y7FYufook8WBn89Z
+        LDb2c1ic6c61uLxrDpvF/GVP2S1+/5jD5sDuMbvhIovHtEmn2Dw2r9Dy2Lyk3mP3zQY2j0kv
+        3D0+b5ILYI/isklJzcksSy3St0vgylh/9jJTwWTmipkP97I2MO5m6mLk5JAQMJGY1XCcsYuR
+        i0NIYAWjxK2mucwQzhdGiV0PGpkgnM+MEsu37mKEabn99BxUy3JGiS3d+6Gc94wSj5q72UGq
+        hAVCJY5dmA40i4NDRMBZYuZ5AZAaZoETjBIff65mAalhEzCU6HrbxQZi8wrYSfQ+/gi2gUVA
+        RaKz6SnYgaICcRLHTj1igagRlDg58wmYzSlgJnHi/nuwemYBeYntb+cwQ9jiEreezAc7W0Jg
+        H7vEkcdXWCDOdpE4PKEZ6gVhiVfHt7BD2DISpyf3sEA0NDNKPDy3lh3C6WGUuNw0A6rDWuLO
+        uV9sIO8wC2hKrN+lDxF2lDg07w4LSFhCgE/ixltBiCP4JCZtg3heQoBXoqNNCKJaTWLW8XVw
+        aw9euMQ8gVFpFpLXZiF5ZxaSd2Yh7F3AyLKKUTy1tDg3PbXYOC+1XK84Mbe4NC9dLzk/dxMj
+        MCGd/nf86w7GfX+SDjEKcDAq8fDeeB8QL8SaWFZcmXuIUYKDWUmE1+ns6Tgh3pTEyqrUovz4
+        otKc1OJDjNIcLErivMaLXsYKCaQnlqRmp6YWpBbBZJk4OKUaGI9tL+0xc9N4bvJ4o+6X+x2O
+        yeu4E+N/6ilqcxx69mTmujWze///kJDZez4uv9TrS1+22E2RP01hm6wPLYpr/9EuLiDJHO8b
+        naqb51Onv1r58hffue+n3Zpw0/DX6h7pRcpM57vnBL15cfues9LK7OcO/1wDLxok17rvZLc6
+        zulYZpWU5HiuT4mlOCPRUIu5qDgRACDvXFBEAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsVy+t/xu7qTWILiDR7eVbNYufook8WBn89Z
+        LDb2c1ic6c61uLxrDpvF/GVP2S1+/5jD5sDuMbvhIovHtEmn2Dw2r9Dy2Lyk3mP3zQY2j0kv
+        3D0+b5ILYI/SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQzNDaPtTIyVdK3s0lJzcksSy3S
+        t0vQy1h/9jJTwWTmipkP97I2MO5m6mLk5JAQMJG4/fQcYxcjF4eQwFJGiaMXj7JDJGQkTk5r
+        YIWwhSX+XOtigyh6yyjx/P1VFpCEsECoxLEL05m7GDk4RAScJWaeFwAJMwucYJT4ucwDxBYS
+        6GSUmNAuB2KzCRhKdL0FmcPJwStgJ9H7+CMjiM0ioCLR2fQU7CBRgTiJMz0voGoEJU7OfAK2
+        ilPATOLE/feMEPPNJOZtfsgMYctLbH87B8oWl7j1ZD7TBEahWUjaZyFpmYWkZRaSlgWMLKsY
+        RVJLi3PTc4sN9YoTc4tL89L1kvNzNzECo2/bsZ+bdzBe2hh8iFGAg1GJh/fG+4B4IdbEsuLK
+        3EOMEhzMSiK8TmdPxwnxpiRWVqUW5ccXleakFh9iNAV6biKzlGhyPjAx5JXEG5oamltYGpob
+        mxubWSiJ83YIHIwREkhPLEnNTk0tSC2C6WPi4JRqYGzR37o7ZaZDx0LxHctnrV6TdP1qp9/G
+        ypZZ0bW1ovqpF9yF3/f7rPj5qt/yeAH/ujMWMc51F9d7WTIxt4Sys39m9r69vz7+qQen8uMd
+        vPGpLy00+59mP1zrJ8wV23v/r8YLIenHb93WLno37/2XFM7o3Uve5GbvYrpw4pkk60urvR5b
+        67dyf1FiKc5INNRiLipOBAD5Ap/c1AIAAA==
+X-CMS-MailID: 20200904091042eucas1p20b93792a739ddc6627731c980ba7abbc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200904022817eucas1p1a565e1405b27460e17ecb3447831b8ba
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200904022817eucas1p1a565e1405b27460e17ecb3447831b8ba
+References: <CGME20200904022817eucas1p1a565e1405b27460e17ecb3447831b8ba@eucas1p1.samsung.com>
+        <20200904022801.15828-1-hdanton@sina.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David,
+Hi
 
-do you need more information for this V2 patch?
+On 04.09.2020 04:28, Hillf Danton wrote:
+> Currently the DMA_ATTR_NO_KERNEL_MAPPING buffer allocated is not
+> cleared while dma core always zero it out for coherent allocations.
+>
+> Is it making sense to do memset for the attr?
 
-Thank you
-PHLin
+If it is not cleared then this is a bug. Please propose a patch fixing 
+this issue.
 
-On Mon, Aug 17, 2020 at 10:53 AM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
->
-> The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
-> needs the fou module to work. Otherwise it will fail with:
->
->   $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
->   RTNETLINK answers: No such file or directory
->   Error talking to the kernel
->
-> Add the CONFIG_NET_FOU into the config file as well. Which needs at
-> least to be set as a loadable module.
->
-> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
-> ---
->  tools/testing/selftests/net/config       | 1 +
->  tools/testing/selftests/net/rtnetlink.sh | 6 ++++++
->  2 files changed, 7 insertions(+)
->
-> diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
-> index 3b42c06b..96d2763 100644
-> --- a/tools/testing/selftests/net/config
-> +++ b/tools/testing/selftests/net/config
-> @@ -31,3 +31,4 @@ CONFIG_NET_SCH_ETF=m
->  CONFIG_NET_SCH_NETEM=y
->  CONFIG_TEST_BLACKHOLE_DEV=m
->  CONFIG_KALLSYMS=y
-> +CONFIG_NET_FOU=m
-> diff --git a/tools/testing/selftests/net/rtnetlink.sh b/tools/testing/selftests/net/rtnetlink.sh
-> index bdbf4b3..7931b65 100755
-> --- a/tools/testing/selftests/net/rtnetlink.sh
-> +++ b/tools/testing/selftests/net/rtnetlink.sh
-> @@ -521,6 +521,11 @@ kci_test_encap_fou()
->                 return $ksft_skip
->         fi
->
-> +       if ! /sbin/modprobe -q -n fou; then
-> +               echo "SKIP: module fou is not found"
-> +               return $ksft_skip
-> +       fi
-> +       /sbin/modprobe -q fou
->         ip -netns "$testns" fou add port 7777 ipproto 47 2>/dev/null
->         if [ $? -ne 0 ];then
->                 echo "FAIL: can't add fou port 7777, skipping test"
-> @@ -541,6 +546,7 @@ kci_test_encap_fou()
->                 return 1
->         fi
->
-> +       /sbin/modprobe -q -r fou
->         echo "PASS: fou"
->  }
->
-> --
-> 2.7.4
->
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
