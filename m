@@ -2,181 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D85F25E428
-	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 01:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9814E25E42E
+	for <lists+linux-kernel@lfdr.de>; Sat,  5 Sep 2020 01:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbgIDX1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 19:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728295AbgIDX1R (ORCPT
+        id S1728332AbgIDX3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 19:29:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:32766 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728247AbgIDX3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 19:27:17 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E29C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 16:27:16 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599262033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EJwojlnE2s15WtGyxEEC0ksdWuHJjbLM8eHBhqQhp8Q=;
-        b=yBv6nkBce73q+hz4KYoBD90PqwfisE7nPKDNd/b+1H5ORngRitHMYM9SGn6HNym/UjY71G
-        pTfIxXr3dwsbB1wo5wMq/kmCK48Y15qDgWB+0rbxAoNHzylPNAZDIisXLr+D791yMtE1K4
-        ePunaVcuMODXBrmTdD+ezysaGaoq8qApYB3j4bJ9SBVi0t4KXGy9PckibIBEmgNEHfdocR
-        VrcAZTvFgVJDeEJm+t/qKTWOVMjsViZ/OXbB3D5pH1+Q7KxntFBdKBU2yUCzc6yhcGPqqV
-        78mapU9YwkVrs7ROxgDbKzLdr6D3wQfpPUsB6ur80l93puWjIPdiz4JGAJoguw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599262033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EJwojlnE2s15WtGyxEEC0ksdWuHJjbLM8eHBhqQhp8Q=;
-        b=jlZDiNAOOM+0b10Th/R+icvRew6HUukQV70WEJOFtrk9Dw040wbVG1tUXNxbYnvnUp5CTE
-        0TwCYIXmBz6AL8CQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Changki Kim <changki.kim@samsung.com>,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        changbin.du@intel.com, masahiroy@kernel.org, rd.dunlap@gmail.com,
-        gregkh@linuxfoundation.org, krzk@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: printk: Add process name information to printk() output.
-In-Reply-To: <20200904151336.GC20558@alley>
-References: <CGME20200904082449epcas2p4420d5df2083325b328a182c79f5c0948@epcas2p4.samsung.com> <20200904082438.20707-1-changki.kim@samsung.com> <874kod6fgh.fsf@jogness.linutronix.de> <20200904124530.GB20558@alley> <87y2lp4r6o.fsf@jogness.linutronix.de> <20200904151336.GC20558@alley>
-Date:   Sat, 05 Sep 2020 01:33:12 +0206
-Message-ID: <87ft7xazsf.fsf@jogness.linutronix.de>
+        Fri, 4 Sep 2020 19:29:52 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 084N21Hj163406;
+        Fri, 4 Sep 2020 19:29:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=54a2dzktp+EaHtCMf6qtkuWphngdICkTER0HUdbympk=;
+ b=C8ViL/s7FNY8h8WhwaEB098tY71QdtO6ajR4dK8hOk9u5znLJdD2s/bzySznfSFLEVCh
+ VM29V81lqCr7ZDQBFMkI3ZDigjQ8ieI7AVC+9ddDkjklpWamCnwwKwVjv9t0uNPZFH0l
+ uhhlznvHKakKr8AgbmQNqm+rLqmnn/+pAkgAannk2FzPE10CWUbqvNq/T003WNJ5dZB2
+ oqRgY0l/RrRiSE4NO/jE6fMFbXNok8P9Zagclp2O+vLkINaePckAyds0MsoRUrU/WBrO
+ E9zVlpQZt0DyjCCoi55g9erVGMdFGB2yLhWPFt2VJVeQQBYM2ddrep+EQ5Ay2Vqmv9Lm nQ== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33bwga9x0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 19:29:40 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 084NRaOt017407;
+        Fri, 4 Sep 2020 23:29:39 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma01dal.us.ibm.com with ESMTP id 337enafmse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Sep 2020 23:29:39 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 084NTcea57213326
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Sep 2020 23:29:38 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B5C542805A;
+        Fri,  4 Sep 2020 23:29:38 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 426CE28059;
+        Fri,  4 Sep 2020 23:29:38 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.40.195.188])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Sep 2020 23:29:38 +0000 (GMT)
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+To:     james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: [PATCH v3 1/2] scsi: ibmvfc: use compiler attribute defines instead of __attribute__()
+Date:   Fri,  4 Sep 2020 18:29:35 -0500
+Message-Id: <20200904232936.840193-1-tyreld@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-04_15:2020-09-04,2020-09-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 impostorscore=0 adultscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 clxscore=1015 phishscore=0 mlxlogscore=999 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009040191
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-04, Petr Mladek <pmladek@suse.com> wrote:
->>> I am currently playing with support for all three timestamps based
->>> on https://lore.kernel.org/lkml/20200814101933.574326079@linutronix.de/
->>>
->>> And I got the following idea:
->>>
->>> 1. Storing side:
->>>
->>>    Create one more ring/array for storing the optional metadata.
->>>    It might eventually replace dict ring, see below.
->>>
->>>    struct struct printk_ext_info {
->>> 	u64 ts_boot;			/* timestamp from boot clock */
->>> 	u64 ts_real;			/* timestamp from real clock */
->>> 	char process[TASK_COMM_LEN];	/* process name */
->>>    };
->>>
->>>    It must be in a separate array so that struct prb_desc stay stable
->>>    and crashdump tools do not need to be updated so often.
->>>
->>>    But the number of these structures must be the same as descriptors.
->>>    So it might be:
->>>
->>>    struct prb_desc_ring {
->>> 	unsigned int		count_bits;
->>> 	struct prb_desc		*descs;
->>> 	struct printk_ext_info  *ext_info
->>> 	atomic_long_t		head_id;
->>> 	atomic_long_t		tail_id;
->>>    };
->>>
->>>    One huge advantage is that these extra information would not block
->>>    pushing lockless printk buffer upstream.
->>>
->>>    It might be even possible to get rid of dict ring and just
->>>    add two more elements into struct printk_ext_info:
->>>
->>> 	  char subsystem[16];	/* for SUBSYSTEM= dict value */
->>> 	  char device[48];	/* for DEVICE= dict value */
->
-> From my POV, if we support 3 timestamps then they must be stored
-> reliably. And dict ring is out of the game.
+Update ibmvfc.h structs to use the preferred  __packed and __aligned()
+attribute macros defined in include/linux/compiler_attributes.h in place
+of __attribute__().
 
-Agreed. I am just trying to think of how to better manage the strings,
-which currently are rare and optional. That is where the dict_ring
-becomes interesting.
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+---
+ drivers/scsi/ibmvscsi/ibmvfc.h | 56 +++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
 
-Perhaps we should use both the fixed structs with the variable
-dict_ring. printk_ext_info could look like this:
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
+index 907889f1fa9d..6da23666f5be 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.h
++++ b/drivers/scsi/ibmvscsi/ibmvfc.h
+@@ -133,16 +133,16 @@ struct ibmvfc_mad_common {
+ 	__be16 status;
+ 	__be16 length;
+ 	__be64 tag;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_npiv_login_mad {
+ 	struct ibmvfc_mad_common common;
+ 	struct srp_direct_buf buffer;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_npiv_logout_mad {
+ 	struct ibmvfc_mad_common common;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ #define IBMVFC_MAX_NAME 256
+ 
+@@ -168,7 +168,7 @@ struct ibmvfc_npiv_login {
+ 	u8 device_name[IBMVFC_MAX_NAME];
+ 	u8 drc_name[IBMVFC_MAX_NAME];
+ 	__be64 reserved2[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_common_svc_parms {
+ 	__be16 fcph_version;
+@@ -177,7 +177,7 @@ struct ibmvfc_common_svc_parms {
+ 	__be16 bb_rcv_sz; /* upper nibble is BB_SC_N */
+ 	__be32 ratov;
+ 	__be32 edtov;
+-}__attribute__((packed, aligned (4)));
++} __packed __aligned(4);
+ 
+ struct ibmvfc_service_parms {
+ 	struct ibmvfc_common_svc_parms common;
+@@ -192,7 +192,7 @@ struct ibmvfc_service_parms {
+ 	__be32 ext_len;
+ 	__be32 reserved[30];
+ 	__be32 clk_sync_qos[2];
+-}__attribute__((packed, aligned (4)));
++} __packed __aligned(4);
+ 
+ struct ibmvfc_npiv_login_resp {
+ 	__be32 version;
+@@ -217,12 +217,12 @@ struct ibmvfc_npiv_login_resp {
+ 	u8 drc_name[IBMVFC_MAX_NAME];
+ 	struct ibmvfc_service_parms service_parms;
+ 	__be64 reserved2;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ union ibmvfc_npiv_login_data {
+ 	struct ibmvfc_npiv_login login;
+ 	struct ibmvfc_npiv_login_resp resp;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_discover_targets_buf {
+ 	__be32 scsi_id[1];
+@@ -239,7 +239,7 @@ struct ibmvfc_discover_targets {
+ 	__be32 num_avail;
+ 	__be32 num_written;
+ 	__be64 reserved[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ enum ibmvfc_fc_reason {
+ 	IBMVFC_INVALID_ELS_CMD_CODE	= 0x01,
+@@ -283,7 +283,7 @@ struct ibmvfc_port_login {
+ 	struct ibmvfc_service_parms service_parms;
+ 	struct ibmvfc_service_parms service_parms_change;
+ 	__be64 reserved3[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_prli_svc_parms {
+ 	u8 type;
+@@ -303,7 +303,7 @@ struct ibmvfc_prli_svc_parms {
+ #define IBMVFC_PRLI_TARGET_FUNC			0x00000010
+ #define IBMVFC_PRLI_READ_FCP_XFER_RDY_DISABLED	0x00000002
+ #define IBMVFC_PRLI_WR_FCP_XFER_RDY_DISABLED	0x00000001
+-}__attribute__((packed, aligned (4)));
++} __packed __aligned(4);
+ 
+ struct ibmvfc_process_login {
+ 	struct ibmvfc_mad_common common;
+@@ -314,7 +314,7 @@ struct ibmvfc_process_login {
+ 	__be16 error;			/* also fc_reason */
+ 	__be32 reserved2;
+ 	__be64 reserved3[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_query_tgt {
+ 	struct ibmvfc_mad_common common;
+@@ -325,13 +325,13 @@ struct ibmvfc_query_tgt {
+ 	__be16 fc_explain;
+ 	__be16 fc_type;
+ 	__be64 reserved[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_implicit_logout {
+ 	struct ibmvfc_mad_common common;
+ 	__be64 old_scsi_id;
+ 	__be64 reserved[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_tmf {
+ 	struct ibmvfc_mad_common common;
+@@ -348,7 +348,7 @@ struct ibmvfc_tmf {
+ 	__be32 my_cancel_key;
+ 	__be32 pad;
+ 	__be64 reserved[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ enum ibmvfc_fcp_rsp_info_codes {
+ 	RSP_NO_FAILURE		= 0x00,
+@@ -361,7 +361,7 @@ struct ibmvfc_fcp_rsp_info {
+ 	u8 reserved[3];
+ 	u8 rsp_code;
+ 	u8 reserved2[4];
+-}__attribute__((packed, aligned (2)));
++} __packed __aligned(2);
+ 
+ enum ibmvfc_fcp_rsp_flags {
+ 	FCP_BIDI_RSP			= 0x80,
+@@ -377,7 +377,7 @@ enum ibmvfc_fcp_rsp_flags {
+ union ibmvfc_fcp_rsp_data {
+ 	struct ibmvfc_fcp_rsp_info info;
+ 	u8 sense[SCSI_SENSE_BUFFERSIZE + sizeof(struct ibmvfc_fcp_rsp_info)];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_fcp_rsp {
+ 	__be64 reserved;
+@@ -388,7 +388,7 @@ struct ibmvfc_fcp_rsp {
+ 	__be32 fcp_sense_len;
+ 	__be32 fcp_rsp_len;
+ 	union ibmvfc_fcp_rsp_data data;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ enum ibmvfc_cmd_flags {
+ 	IBMVFC_SCATTERLIST	= 0x0001,
+@@ -422,7 +422,7 @@ struct ibmvfc_fcp_cmd_iu {
+ #define IBMVFC_WRDATA		0x01
+ 	u8 cdb[IBMVFC_MAX_CDB_LEN];
+ 	__be32 xfer_len;
+-}__attribute__((packed, aligned (4)));
++} __packed __aligned(4);
+ 
+ struct ibmvfc_cmd {
+ 	__be64 task_tag;
+@@ -446,7 +446,7 @@ struct ibmvfc_cmd {
+ 	__be64 reserved3[2];
+ 	struct ibmvfc_fcp_cmd_iu iu;
+ 	struct ibmvfc_fcp_rsp rsp;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_passthru_fc_iu {
+ 	__be32 payload[7];
+@@ -473,18 +473,18 @@ struct ibmvfc_passthru_iu {
+ 	__be64 scsi_id;
+ 	__be64 tag;
+ 	__be64 reserved2[2];
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_passthru_mad {
+ 	struct ibmvfc_mad_common common;
+ 	struct srp_direct_buf cmd_ioba;
+ 	struct ibmvfc_passthru_iu iu;
+ 	struct ibmvfc_passthru_fc_iu fc_iu;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_trace_start_entry {
+ 	u32 xfer_len;
+-}__attribute__((packed));
++} __packed;
+ 
+ struct ibmvfc_trace_end_entry {
+ 	u16 status;
+@@ -493,7 +493,7 @@ struct ibmvfc_trace_end_entry {
+ 	u8 rsp_code;
+ 	u8 scsi_status;
+ 	u8 reserved;
+-}__attribute__((packed));
++} __packed;
+ 
+ struct ibmvfc_trace_entry {
+ 	struct ibmvfc_event *evt;
+@@ -510,7 +510,7 @@ struct ibmvfc_trace_entry {
+ 		struct ibmvfc_trace_start_entry start;
+ 		struct ibmvfc_trace_end_entry end;
+ 	} u;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ enum ibmvfc_crq_formats {
+ 	IBMVFC_CMD_FORMAT		= 0x01,
+@@ -545,7 +545,7 @@ struct ibmvfc_crq {
+ 	volatile u8 format;
+ 	u8 reserved[6];
+ 	volatile __be64 ioba;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_crq_queue {
+ 	struct ibmvfc_crq *msgs;
+@@ -570,7 +570,7 @@ struct ibmvfc_async_crq {
+ 	volatile __be64 wwpn;
+ 	volatile __be64 node_name;
+ 	__be64 reserved;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ struct ibmvfc_async_crq_queue {
+ 	struct ibmvfc_async_crq *msgs;
+@@ -590,7 +590,7 @@ union ibmvfc_iu {
+ 	struct ibmvfc_tmf tmf;
+ 	struct ibmvfc_cmd cmd;
+ 	struct ibmvfc_passthru_mad passthru;
+-}__attribute__((packed, aligned (8)));
++} __packed __aligned(8);
+ 
+ enum ibmvfc_target_action {
+ 	IBMVFC_TGT_ACTION_NONE = 0,
+-- 
+2.27.0
 
-struct struct printk_ext_info {
-    u64 ts_boot;
-    u64 ts_real;
-    char *process;
-    char *subsystem;
-    char *device;
-};
-
-And @process, @subsystem, @device could all point to null-terminated
-trings within the dict_ring. So printk.c code looks something like this:
-
-size_t process_sz = strlen(process) + 1;
-size_t subsystem_sz = strlen(subsystem) + 1;
-size_t device_sz = strlen(device) + 1;
-struct prb_reserved_entry e;
-struct printk_record r;
-char *p;
-
-prb_rec_init_wr(&r, text_len, process_sz + subsystem_sz + device_sz);
-prb_reserve(&e, prb, &r);
-
-memcpy(r.text_buf, text, text_len);
-r.info->text_len = text_len;
-
-/* guaranteed ext data */
-r.ext_info->ts_boot = time_boot();
-r.ext_info->ts_real = time_real();
-
-/* optional ext data */
-if (r.dict_buf) {
-    p = r.dict_buf;
-
-    memcpy(p, process, process_sz);
-    r.ext_info->process = p;
-    p += process_sz;
-    
-    memcpy(p, subsystem, subsystem_sz);
-    r.ext_info->subsystem = p;    
-    p += subsystem_sz;
-    
-    memcpy(p, device, device_sz);
-    r.ext_info->device = p;
-
-    r.info->dict_len = process_sz + subsystem_sz + device_sz;
-}
-
-> And I am not comfortable even with the current dictionary handling.
-> I already wrote this somewhere. The following command is supposed
-> to show all kernel messages printed by "pci" subsystem:
->
-> 	$> journalctl _KERNEL_SUBSYSTEM=pci
->
-> It will be incomplete when the dictionary metadata were not saved.
-
-In that case, perhaps @subsystem should be a static array in
-printk_ext_info instead.
-
-> Regarding the waste of space. The dict ring currently has the same
-> size as the text ring. It is likely a waste of space as well. Any
-> tuning is complicated because it depends on the use case.
-
-The whole point of the dict_ring is that it allows for variable length
-_optional_ data to be stored. If we decide there is no optional data,
-then dict_ring is not needed.
-
-> The advantage of the fixed @ext_info[] array is that everything is
-> clear, simple, and predictable (taken space and name length limits).
-> We could easily tell users what they will get for a given cost.
-
-Agreed. For non-optional data (such as your timestamps), I am in full
-agreement that a fixed array is the way to go. And it would only require
-a couple lines of code added to the ringbuffer.
-
-My concern is if we need to guarantee space for all possible dictionary
-data of all records. I think the dict_ring can be very helpful here.
-
-John Ogness
