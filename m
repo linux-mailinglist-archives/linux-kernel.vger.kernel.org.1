@@ -2,59 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FD825D951
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3B125D949
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgIDNMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:12:37 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10815 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730414AbgIDNLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:11:16 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 3F4DD45304F12020F37B;
-        Fri,  4 Sep 2020 21:11:14 +0800 (CST)
-Received: from huawei.com (10.175.113.133) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
- 21:11:12 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <dhowells@redhat.com>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-afs@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] rxrpc: Remove unused macro rxrpc_min_rtt_wlen
-Date:   Fri, 4 Sep 2020 21:08:37 +0800
-Message-ID: <20200904130837.20875-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730396AbgIDNJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:09:52 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33526 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730331AbgIDNJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:09:20 -0400
+Received: by mail-io1-f72.google.com with SMTP id l22so4327076iol.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 06:09:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=nQsXJ+2Sn0MGE1vR1zI3z182rgZanXd2F2eDcOAOPAE=;
+        b=AnXBcwC2ArBW5yk0x0CFOtCgrrjB3Q2Cs8GkGvtq5kS9hHgzbF3KsjOdklsMQRmYSQ
+         V+liCTQj+U0Ec9s0otaNaXLEFhlOQVDP9TPC9gisiC7RmEG4i1PyaupjXQM6r+vaabDp
+         OfPy5ionb7xcXtkEcbJ2bErY2oxXRNixAff3J42ONF2vjgarL2/4yLKq7c+vGDeOgoSy
+         ID8Gzc0BoRlQIlFnzaS+ymTOLno86OXcOjoOFD69GEgkVcBzHPr77Ma9e4WAwUeWBh7u
+         X+oOqp9rjm/7kuuWNoakh0QcI2Ubp8Yb/wQLg9sIr6kSD68HeURtIt+DVb+5+3iMzAHf
+         3W8Q==
+X-Gm-Message-State: AOAM531QkhJ/ne0LEjmTlaW8hSbJj0aXPNQXVtEY8Dy+0o5sE8OZt3Fb
+        tG0lor+161akC2zUBFiluSHtJynGLViIlDgCpQZG9CKb4ImW
+X-Google-Smtp-Source: ABdhPJxf8t7VNvzid2ouf5qVOPnpSDKMCVM8d0r7TIrVaIlBa9eEFM0Usf4AS/KJPZyjoztDdjY8EqP8DYsJeHYvCCAEl7iEHley
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6638:76b:: with SMTP id y11mr8087182jad.29.1599224959482;
+ Fri, 04 Sep 2020 06:09:19 -0700 (PDT)
+Date:   Fri, 04 Sep 2020 06:09:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a03f8d05ae7c9371@google.com>
+Subject: WARNING: can't access registers at asm_sysvec_reschedule_ipi
+From:   syzbot <syzbot+853f7009c5c271473926@syzkaller.appspotmail.com>
+To:     alexandre.chartre@oracle.com, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rxrpc_min_rtt_wlen is never used after it was introduced.
-So better to remove it.
+Hello,
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
+syzbot found the following issue on:
+
+HEAD commit:    e28f0104 Merge tag 'fixes-2020-09-03' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c43af9900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f6ce8d5b68299
+dashboard link: https://syzkaller.appspot.com/bug?extid=853f7009c5c271473926
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+853f7009c5c271473926@syzkaller.appspotmail.com
+
+WARNING: can't access registers at asm_sysvec_reschedule_ipi+0x12/0x20 arch/x86/include/asm/idtentry.h:586
+
+
 ---
- net/rxrpc/rtt.c | 1 -
- 1 file changed, 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/net/rxrpc/rtt.c b/net/rxrpc/rtt.c
-index 928d8b34a3ee..a056c9bcf1d6 100644
---- a/net/rxrpc/rtt.c
-+++ b/net/rxrpc/rtt.c
-@@ -14,7 +14,6 @@
- #define RXRPC_RTO_MAX	((unsigned)(120 * HZ))
- #define RXRPC_TIMEOUT_INIT ((unsigned)(1*HZ))	/* RFC6298 2.1 initial RTO value	*/
- #define rxrpc_jiffies32 ((u32)jiffies)		/* As rxrpc_jiffies32 */
--#define rxrpc_min_rtt_wlen 300			/* As sysctl_tcp_min_rtt_wlen */
- 
- static u32 rxrpc_rto_min_us(struct rxrpc_peer *peer)
- {
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
