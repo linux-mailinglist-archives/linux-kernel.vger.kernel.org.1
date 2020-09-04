@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4009F25E15C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601E125E161
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbgIDSJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:09:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45472 "EHLO mail.kernel.org"
+        id S1726277AbgIDSMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:12:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726029AbgIDSJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:09:40 -0400
+        id S1726109AbgIDSMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 14:12:49 -0400
 Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF3D12074A;
-        Fri,  4 Sep 2020 18:09:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9C8AA208CA;
+        Fri,  4 Sep 2020 18:12:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599242980;
-        bh=N8LVGiLGeSISjLSKzJzoAVbjyLXQ1OkgiG0m6g34uxE=;
+        s=default; t=1599243168;
+        bh=Id4qhzHOsS6DwGIQ5LVetNXj3LxgcTh1B0kqH3vve5o=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NZP8LJ1O2HOiR53LSId8DQCa3O5d4LfVHPeAWWirXzQ2FJxZbYWjkULFLShHkaWEd
-         sXoXjjTMeK9UqVWDRUNv1XVc20QtWDsq/akjiTk59zZks7AdssQFCHYaUDDBT7BZQQ
-         Wcj3bE7beghhYl5ay+Qe28wEJFB4x+81SrX7s1vU=
-Date:   Fri, 4 Sep 2020 11:09:38 -0700
+        b=geJYOB2xEbbkF6OnJWiwu7wzHo+MfStfINict1HWGoIhirYFl0er44nUec+OYyT6I
+         5bU477LNJafUy+yz95yiwzDBZZFFmKVk1bPChtXZIgy9vdBd3baPfALJQ3DXi4Hau0
+         TKowc5PUkqMsVKJpY1vfP72u4k/Ge0C++UwD1M68=
+Date:   Fri, 4 Sep 2020 11:12:47 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        beanhuo@micron.com
-Subject: Re: [PATCH RFC] mm: Let readahead submit larger batches of pages in
- case of ra->ra_pages == 0
-Message-Id: <20200904110938.d9a2cb53a58e67a15c960f47@linux-foundation.org>
-In-Reply-To: <20200904144807.31810-1-huobean@gmail.com>
-References: <20200904144807.31810-1-huobean@gmail.com>
+To:     mateusznosek0@gmail.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/page_alloc.c: Clean code by removing unnecessary
+ initialization
+Message-Id: <20200904111247.371e5bfca967239781e5bf27@linux-foundation.org>
+In-Reply-To: <20200904132422.17387-1-mateusznosek0@gmail.com>
+References: <20200904132422.17387-1-mateusznosek0@gmail.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -42,50 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Sep 2020 16:48:07 +0200 Bean Huo <huobean@gmail.com> wrote:
+On Fri,  4 Sep 2020 15:24:22 +0200 mateusznosek0@gmail.com wrote:
 
-> From: Bean Huo <beanhuo@micron.com>
+> From: Mateusz Nosek <mateusznosek0@gmail.com>
 > 
-> Current generic_file_buffered_read() will break up the larger batches of pages
-> and read data in single page length in case of ra->ra_pages == 0. This patch is
-> to allow it to pass the batches of pages down to the device if the supported
-> maximum IO size >= the requested size.
+> Previously variable 'tmp' was initialized, but was not read later
+> before reassigning. So the initialization can be removed.
 > 
 > ...
 >
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2062,6 +2062,7 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
->  	struct file *filp = iocb->ki_filp;
->  	struct address_space *mapping = filp->f_mapping;
->  	struct inode *inode = mapping->host;
-> +	struct backing_dev_info *bdi = inode_to_bdi(mapping->host);
->  	struct file_ra_state *ra = &filp->f_ra;
->  	loff_t *ppos = &iocb->ki_pos;
->  	pgoff_t index;
-> @@ -2098,9 +2099,14 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
->  		if (!page) {
->  			if (iocb->ki_flags & IOCB_NOIO)
->  				goto would_block;
-> -			page_cache_sync_readahead(mapping,
-> -					ra, filp,
-> -					index, last_index - index);
-> +
-> +			if (!ra->ra_pages && bdi->io_pages >= last_index - index)
-> +				__do_page_cache_readahead(mapping, filp, index,
-> +							  last_index - index, 0);
-> +			else
-> +				page_cache_sync_readahead(mapping, ra, filp,
-> +							  index,
-> +							  last_index - index);
->  			page = find_get_page(mapping, index);
->  			if (unlikely(page == NULL))
->  				goto no_cached_page;
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5637,7 +5637,7 @@ static int find_next_best_node(int node, nodemask_t *used_node_mask)
+>  	int n, val;
+>  	int min_val = INT_MAX;
+>  	int best_node = NUMA_NO_NODE;
+> -	const struct cpumask *tmp = cpumask_of_node(0);
+> +	const struct cpumask *tmp;
+>  
+>  	/* Use the local node if we haven't already */
+>  	if (!node_isset(node, *used_node_mask)) {
 
-I assume this is a performance patch.  What are the observed changes in
-behaviour?
+OK.   But we may as well kill tmp altogether?
 
-What is special about ->ra_pages==0?  Wouldn't this optimization still
-be valid if ->ra_pages==2?
+--- a/mm/page_alloc.c~mm-page_allocc-clean-code-by-removing-unnecessary-initialization-fix
++++ a/mm/page_alloc.c
+@@ -5637,7 +5637,6 @@ static int find_next_best_node(int node,
+ 	int n, val;
+ 	int min_val = INT_MAX;
+ 	int best_node = NUMA_NO_NODE;
+-	const struct cpumask *tmp;
+ 
+ 	/* Use the local node if we haven't already */
+ 	if (!node_isset(node, *used_node_mask)) {
+@@ -5658,8 +5657,7 @@ static int find_next_best_node(int node,
+ 		val += (n < node);
+ 
+ 		/* Give preference to headless and unused nodes */
+-		tmp = cpumask_of_node(n);
+-		if (!cpumask_empty(tmp))
++		if (!cpumask_empty(cpumask_of_node(n)))
+ 			val += PENALTY_FOR_NODE_WITH_CPUS;
+ 
+ 		/* Slight preference for less loaded node */
+_
 
-Doesn't this defeat the purpose of having ->ra_pages==0?
