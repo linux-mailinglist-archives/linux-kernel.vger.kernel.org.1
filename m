@@ -2,147 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D2D25D4A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64E125D480
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730123AbgIDJWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:22:01 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34395 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729712AbgIDJV7 (ORCPT
+        id S1729958AbgIDJSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:18:53 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:65090 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgIDJSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:21:59 -0400
-X-Greylist: delayed 393 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Sep 2020 05:21:58 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CC571580383;
-        Fri,  4 Sep 2020 05:15:24 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 04 Sep 2020 05:15:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=rPHib73BNe2yJpxQ7N76hqf1+YQ
-        0PpnAHpyX+PBHPHo=; b=MRCq8nQvllk1NZEUvEqqyoTKwToKn+YZxRLmHaKeMkk
-        iyv3nm+Es3nSXJmUhrA+jBX+cLKG4VvZM0oe1yulLdqucwfXiAXoBALd8a2Gj/Nm
-        A3urSgadFqxMSnSJaEzezV2MwZZ0TY3KmkdYeVO7v4X/OmTADaNPxFikGW20MQZu
-        9agrkBJUna5KkhNlZAO51hAhfwZmZk5iN8uA8/XDxlm+3CHsffhQnhLCerk/mBWu
-        ZAKdxnKaEH54BGRX+iKZ4U3oMEYH35PXhBudtHiH0LJUEjxGyIyEZc/MytI7YvLP
-        ZgXqXakNciFyqNRqcRmDPzJ8EjfzuAucCc5b22kqAPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rPHib7
-        3BNe2yJpxQ7N76hqf1+YQ0PpnAHpyX+PBHPHo=; b=da5TGH2kc8dVL5zmavPo+1
-        yLu/nJQp1JXkmnTWB1yQOpI80gt9qoMJ7XpXCxKY6fBW6n5QRWecZ7Gh1Bo/Z8n4
-        HnYcqDnGZk02o5/2lAOLOde3bm3FHsFccc/Z9z44qIs1Ck80m5V8vUBpobgGjIA/
-        mZju82dsrYkz61Q3MxCmqvBQOH5TIMHsNGS9r7F+toscAnNj1Iu0XK2HslEKAY2P
-        Wbz/rkkU4WOhorB9kJ7ZweoiBJZ4S0MyhatRvaDfXmy5hFzcA3JWLO2ZxMftZaot
-        rm3hE/NvY6lydJWuGgh1DaF4N8iOfFI501q7qrQbK8n2lWmSUsjshxkxKkEBeDTQ
-        ==
-X-ME-Sender: <xms:qgVSX5uGJu4UeKguzMZCO8CCRBDNU7IfXAaXGF_U3SiRirCSPqoE4g>
-    <xme:qgVSXyeuMMxL8sD-rrqgsl5KzvEvnq5-aVUPjLooVAEONZmqrWYR4BSKjz_rTNAzs
-    bUX-CvMqXUddF0QWVc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegfedgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
-    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
-    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
-    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
-    hmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:qgVSX8yIhQLFJEx5N92PNqZlRNxk4nskH6OPfGQqWr0ixrLobVSGQQ>
-    <xmx:qgVSXwPztVTPGbjCOioW2gsk8auO5lz1Haje_4Os8Ikf_V3Me9q-MQ>
-    <xmx:qgVSX5_u1GZxe1EM7TmMdBmM3duz6SuZ-cbeFdgOIYYMfMkTW1VUoA>
-    <xmx:rAVSX4baiUipkmSAjeUd2zBLs4_T2TObQYwnTXCM7i2pX-egAi9v8Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2528C3060060;
-        Fri,  4 Sep 2020 05:15:22 -0400 (EDT)
-Date:   Fri, 4 Sep 2020 11:15:20 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        robh+dt@kernel.org, robh@kernel.org, wens@csie.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, m.cerveny@computer.org
-Subject: Re: [PATCH v2] dt-bindings: crypto: Specify that
- allwinner,sun8i-a33-crypto needs reset
-Message-ID: <20200904091520.cwrovnbb2squze5h@gilmour.lan>
-References: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
+        Fri, 4 Sep 2020 05:18:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1599211132; x=1630747132;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cBJzKiPz3L8lSnLMEyuBKxa7R9QlrsUmPeMiumotiVI=;
+  b=lwkzMWDgh6o3j/eJlZd9eyg8cw8Mr83AHyIk1u6FxKFskk1Bb7g57T3f
+   Kc/cB3+vTiPV1EFaUzTGh2jwyjXbnzjHk/wij8QhsDQ4+l2yKSq8E5mET
+   vAdKmFxNuMr9ebwS5jFHD+mjLRXnRFfcCD2SUbUDhCogx5y2OWrrYU2zd
+   rhRR1FtnvUi7fB+ajKIygoXCZMdWJHtltRqE6znKRdEVtX9tQ5iGXE5rg
+   qsyCpwlVIR4w2MXkLECOwZ36iQ1tjZxMaf1aG/7q9g7QehqUJscXjBIUD
+   7HixC+/0fByN1qjcNUs/bcNtdMZ8kblbNm4GBSauIoGf0acv9eX+N8Lco
+   g==;
+IronPort-SDR: va5i21HOcVpVxIqcBQ5wRwfnyi9Y3uKvqfJGr9tvIXPGO/2IoOWaxtKS1gokVWK7RWgJX2RWtV
+ 3PrDS3gTOpdjhGJfJxyvJ1u/l83f83grnjFsrlUFJGuuMnGerE4Uq8Xs/yuU/tK60I+KsIh3Fb
+ esbErWHoejBdLx4SmnP55q6OjtfXd9FR9iVj8zc5TQq305fI7oSXmBNVKdSSoeaeMda0jLuHKC
+ X171+leQjuyneZOvW3tBiJ6YNTIqbReEJt3nymAZjzBwtXgpgNUmbLRv6JPH6wtX8XDFqiAK0M
+ UF8=
+X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
+   d="scan'208";a="94413050"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 04 Sep 2020 02:18:51 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 4 Sep 2020 02:18:47 -0700
+Received: from soft-test08.microsemi.net (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Fri, 4 Sep 2020 02:18:45 -0700
+From:   Henrik Bjoernlund <henrik.bjoernlund@microchip.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <roopa@nvidia.com>,
+        <nikolay@nvidia.com>, <jiri@mellanox.com>, <idosch@mellanox.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>, <UNGLinuxDriver@microchip.com>
+CC:     Henrik Bjoernlund <henrik.bjoernlund@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH RFC 0/7] net: bridge: cfm: Add support for Connectivity Fault Management(CFM)
+Date:   Fri, 4 Sep 2020 09:15:20 +0000
+Message-ID: <20200904091527.669109-1-henrik.bjoernlund@microchip.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ywcvreqcqed5i46k"
-Content-Disposition: inline
-In-Reply-To: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Connectivity Fault Management (CFM) is defined in 802.1Q section 12.14.
 
---ywcvreqcqed5i46k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Connectivity Fault Management (CFM) comprises capabilities for
+detecting, verifying, and isolating connectivity failures in
+Virtual Bridged Networks. These capabilities can be used in
+networks operated by multiple independent organizations, each
+with restricted management access to each other’s equipment.
 
-On Thu, Sep 03, 2020 at 04:54:45PM +0200, Corentin Labbe wrote:
-> When adding allwinner,sun8i-a33-crypto, I forgot to add that it needs res=
-et.
-> Furthermore, there are no need to use items to list only one compatible
-> in compatible list.
->=20
-> Fixes: f81547ba7a98 ("dt-bindings: crypto: add new compatible for A33 SS")
-> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-> ---
-> Change since v1:
-> - use an enum for adding allwinner,sun8i-a33-crypto to "reset list"
->=20
->  .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml        | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
--crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
--crypto.yaml
-> index fc823572bcff..279f4a2e1dd7 100644
-> --- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
-=2Eyaml
-> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
-=2Eyaml
-> @@ -23,8 +23,7 @@ properties:
->        - items:
->            - const: allwinner,sun7i-a20-crypto
->            - const: allwinner,sun4i-a10-crypto
-> -      - items:
-> -          - const: allwinner,sun8i-a33-crypto
-> +      - const: allwinner,sun8i-a33-crypto
-> =20
->    reg:
->      maxItems: 1
-> @@ -59,7 +58,9 @@ if:
->    properties:
->      compatible:
->        contains:
-> -        const: allwinner,sun6i-a31-crypto
-> +        enum:
-> +          - const: allwinner,sun6i-a31-crypto
-> +          - const: allwinner,sun8i-a33-crypto
+CFM functions are partitioned as follows:
+    — Path discovery
+    — Fault detection
+    — Fault verification and isolation
+    — Fault notification
+    — Fault recovery
 
-That's not the proper syntax for an enum, this would be
+The primary CFM protocol shims are called Maintenance Points (MPs).
+A MP can be either a MEP or a MHF.
+The MEP:
+    -It is the Maintenance association End Point
+     described in 802.1Q section 19.2.
+    -It is created on a specific level (1-7) and is assuring
+     that no CFM frames are passing through this MEP on lower levels.
+    -It initiates and terminates/validates CFM frames on its level.
+    -It can only exist on a port that is related to a bridge.
+The MHF:
+    -It is the Maintenance Domain Intermediate Point
+     (MIP) Half Function (MHF) described in 802.1Q section 19.3.
+    -It is created on a specific level (1-7).
+    -It is extracting/injecting certain CFM frame on this level.
+    -It can only exist on a port that is related to a bridge.
+    -Currently not supported.
 
-> +        enum:
-> +          - allwinner,sun6i-a31-crypto
-> +          - allwinner,sun8i-a33-crypto
+There are defined the following CFM protocol functions:
+    -Continuity Check
+    -Loopback. Currently not supported.
+    -Linktrace. Currently not supported.
 
-Maxime
+This CFM component supports create/delete of MEP instances and
+configuration of the different CFM protocols. Also status information
+can be fetched and delivered through notification due to defect status
+change.
 
---ywcvreqcqed5i46k
-Content-Type: application/pgp-signature; name="signature.asc"
+The user interacts with CFM using the 'cfm' user space client program, the
+client talks with the kernel using netlink. The kernel will try to offload
+the requests to the HW via switchdev API (not implemented yet).
 
------BEGIN PGP SIGNATURE-----
+Any notification emitted by CFM from the kernel can be monitored in user
+space by starting 'cfm_server' program.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1IFqAAKCRDj7w1vZxhR
-xb4YAP9AndsjE//mBZmHVJjQxFxeoOtzDPG51bM/OUpqPddYmwD/fVvGjW3eKS5y
-J1RNMIZV2ualGb2JEL41KdNHYyCyfAk=
-=36HK
------END PGP SIGNATURE-----
+Currently this 'cfm' and 'cfm_server' programs are standalone placed in a
+cfm repository https://github.com/microchip-ung/cfm but it is considered
+to integrate this into 'iproute2'.
 
---ywcvreqcqed5i46k--
+Reviewed-by: Horatiu Vultur  <horatiu.vultur@microchip.com>
+Signed-off-by: Henrik Bjoernlund  <henrik.bjoernlund@microchip.com>
+
+Henrik Bjoernlund (7):
+  net: bridge: extend the process of special frames
+  bridge: cfm: Add BRIDGE_CFM to Kconfig.
+  bridge: uapi: cfm: Added EtherType used by the CFM protocol.
+  bridge: cfm: Kernel space implementation of CFM.
+  bridge: cfm: Netlink Interface.
+  bridge: cfm: Netlink Notifications.
+  bridge: cfm: Bridge port remove.
+
+ include/uapi/linux/cfm_bridge.h |  75 +++
+ include/uapi/linux/if_bridge.h  | 125 +++++
+ include/uapi/linux/if_ether.h   |   1 +
+ include/uapi/linux/rtnetlink.h  |   2 +
+ net/bridge/Kconfig              |  11 +
+ net/bridge/Makefile             |   2 +
+ net/bridge/br_cfm.c             | 936 ++++++++++++++++++++++++++++++++
+ net/bridge/br_cfm_netlink.c     | 690 +++++++++++++++++++++++
+ net/bridge/br_device.c          |   4 +
+ net/bridge/br_if.c              |   1 +
+ net/bridge/br_input.c           |  31 +-
+ net/bridge/br_mrp.c             |  19 +-
+ net/bridge/br_netlink.c         | 126 ++++-
+ net/bridge/br_private.h         |  82 ++-
+ net/bridge/br_private_cfm.h     | 242 +++++++++
+ 15 files changed, 2326 insertions(+), 21 deletions(-)
+ create mode 100644 include/uapi/linux/cfm_bridge.h
+ create mode 100644 net/bridge/br_cfm.c
+ create mode 100644 net/bridge/br_cfm_netlink.c
+ create mode 100644 net/bridge/br_private_cfm.h
+
+-- 
+2.28.0
+
