@@ -2,209 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 822ED25D5B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D91FA25D5CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729628AbgIDKNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        id S1729949AbgIDKR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbgIDKNU (ORCPT
+        with ESMTP id S1729584AbgIDKRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:13:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146D0C061244;
-        Fri,  4 Sep 2020 03:13:19 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599214396;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z8OvW6DJXZpgU3aKJ+ArJf6u2HaUfprFbOOK8smF874=;
-        b=dZBSlId5W09VtfHcoWhseB5XiTBbGXWSjSWG5XFU58ZWYuqDdtM4Ipu9mNGZY+ddAn37dS
-        AxDs/0r1rhHicd824BDPwytOgDf8f17n5gdpXS06ccu1J8J02/S3Px3uFgDRLoGRl+PjKM
-        bU83O/2nJ/tSYGIE4CElngX6XiPbSOHvrFIlF/46BHUlEwSBUrrrMnzuy1Ks/8KOesKn82
-        yzz5TXpXJFv9IUUrWA8fr+U2kWyVy8VmvS31HDRYjYZ0xy05l0NK41J5gNkBa6AjMjEEvi
-        SqxPITHKMuMWLYE38SvauwgernJ2tQIyJdf2qZxYvlL917z72wWol9JRX9XuYQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599214396;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Z8OvW6DJXZpgU3aKJ+ArJf6u2HaUfprFbOOK8smF874=;
-        b=eoru9GuSlO3Zvk6GwC/O3LrVM2/p6u5L16LR2oCIwbP9/NjUC2FQtUYVwbzdk2rHLSP1Ta
-        igirNT0+2/4DKxDw==
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: ptrace_syscall_32 is failing
-In-Reply-To: <CALCETrUuyXpG0Vhrb-9m-G8J94+2bGqdrJkKfz+-5z7dsGLK8Q@mail.gmail.com>
-References: <CALCETrWXvAMA7tQ3XZdAk2FixKfzQ_0fBmyNVyyPHVAomLvrWQ@mail.gmail.com> <CAMzpN2hmR+0-Yse1csbiVOiqgZ0e+VRkCBBXUKoPSTSMOOOFAQ@mail.gmail.com> <CALCETrXY1x0MReMoTOG2awcZvr4c7gp99JVNthK37vUUk-kyew@mail.gmail.com> <87k0xdjbtt.fsf@nanos.tec.linutronix.de> <CALCETrUpjUPPvnPuS9fP4jgid7U_qdU_yTKSq9PjJ=z2w9HvHg@mail.gmail.com> <87blioinub.fsf@nanos.tec.linutronix.de> <CALCETrUuyXpG0Vhrb-9m-G8J94+2bGqdrJkKfz+-5z7dsGLK8Q@mail.gmail.com>
-Date:   Fri, 04 Sep 2020 12:13:15 +0200
-Message-ID: <87mu254zpg.fsf@nanos.tec.linutronix.de>
+        Fri, 4 Sep 2020 06:17:50 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F37FC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 03:17:50 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id c10so5371545otm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 03:17:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=lPxZaTNtW5YIeyR3xGRRL/xoA1G8FPiEJM8B82fslQU=;
+        b=Le2zSKkazZ1gO39eGYsVx4cem55qd/DC6Q2blFPKTBoy+7nOudrnvnkzDCECzwXeT2
+         3sWv7LSDa51geVMtEujv6z6cfikZCLGNCMOhlNw+e+BADnCYCsvFG/epFABwLkq7gu5M
+         E4AduSqpE2wPwQlvZLNdbJL6vnzIovrTzUMYAm/QdlfErhvvZUIm1Z0MPiiF8mFPh6Rf
+         hvLUweTbmvvsxYkzQISGX9j5KRehBC9NYmyDBLv7/mZ2xoRyEMxUxHEWrcvb2Fu/QknF
+         wWbHZ2tt+z6ucf/sG8PXoX/ewHJty2MDYnjESaQKFcKGFdgZiRhKT7QEuygCAcLMgCKa
+         m8oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=lPxZaTNtW5YIeyR3xGRRL/xoA1G8FPiEJM8B82fslQU=;
+        b=GPP2YEHtflfgp1aHwnT/5sFeWZWE69z1XYYp/NunUl38moOg5bf+qH6v5im8tDlEAQ
+         oeZvawFwE/zuiu5lRwhzVMt5XN1Hq+oCzLgAya/Tc85264O8+qDBG4AAgMPYKJxxvRuO
+         Ah261oI6saeYb0kjUkP9XMZNTX1qVF+gGz5+BHQZwT/CDGeG83q7vbLCKkH/V7IxQG48
+         9v1m69CJMXI7jrf9wlu6AIZayFxUTsjfZBwdpcIE4XVmGe/jCTvm0C0O7KNqlMVTSEED
+         nWPWpze/KkZoYZrbo488dAa0A2Kqsiwg7iDXchFv/4QgciK7dAnayMqjaUGqYQLLNQi0
+         fSMw==
+X-Gm-Message-State: AOAM530LG03xYun+MtidcWu32pDEvgo5rU8kreLF5VeVLxLE1xeYujh8
+        XOs5zqbOBDP7L6L75ghMYZDPU77aGwRK12S+Vm6VeA==
+X-Google-Smtp-Source: ABdhPJweP2lCtEYjkHQWlo8QD4Vq+0WurSxnsElGAWHdmPXCihLvVJ8RSL9d2TT9bD+gTRC7lnVmzXCKaHLVS1Y6hf8=
+X-Received: by 2002:a05:6830:1e22:: with SMTP id t2mr240631otr.100.1599214668457;
+ Fri, 04 Sep 2020 03:17:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+From:   Jian-Hong Pan <jian-hong@endlessm.com>
+Date:   Fri, 4 Sep 2020 18:16:16 +0800
+Message-ID: <CAPpJ_efY2=qmaAtuYVfWhZNBhzTAtAxm9CS5jb_sTpca97jkpA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/80] drm/vc4: Support BCM2711 Display Pipeline
+To:     maxime@cerno.tech
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        dave.stevenson@raspberrypi.com, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, eric@anholt.net,
+        kdasu.kdev@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        nsaenzjulienne@suse.de, p.zabel@pengutronix.de,
+        phil@raspberrypi.com, robh+dt@kernel.org, sboyd@kernel.org,
+        tim.gover@raspberrypi.com,
+        Linux Upstreaming Team <linux@endlessm.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy,
+Hi Maxime,
 
-On Wed, Sep 02 2020 at 09:49, Andy Lutomirski wrote:
-> On Wed, Sep 2, 2020 at 1:29 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->>
->> But you might tell me where exactly you want to inject the SIGTRAP in
->> the syscall exit code flow.
->
-> It would be a bit complicated.  Definitely after any signals from the
-> syscall are delivered.  Right now, I think that we don't deliver a
-> SIGTRAP on the instruction boundary after SYSCALL while
-> single-stepping.  (I think we used to, but only sometimes, and now we
-> are at least consistent.)  This is because IRET will not trap if it
-> starts with TF clear and ends up setting it.  (I asked Intel to
-> document this, and I think they finally did, although I haven't gotten
-> around to reading the new docs.  Certainly the old docs as of a year
-> or two ago had no description whatsoever of how TF changes worked.)
->
-> Deciding exactly *when* a trap should occur would be nontrivial -- we
-> can't trap on sigreturn() from a SIGTRAP, for example.
->
-> So this isn't fully worked out.
+Thanks for version 5 patch series!
 
-Oh well.
+I applied it based on linux-next tag next-20200828 and build it with
+the config [1] to test on RPi 4
+However, It fails to get HDMI state machine clock and pixel bcb clock.
+Then, vc4-drm probes failed. Full dmseg [2]:
 
->> >> I don't think we want that in general. The current variant is perfectly
->> >> fine for everything except the 32bit fast syscall nonsense. Also
->> >> irqentry_entry/exit is not equivalent to the syscall_enter/exit
->> >> counterparts.
->> >
->> > If there are any architectures in which actual work is needed to
->> > figure out whether something is a syscall in the first place, they'll
->> > want to do the usual kernel entry work before the syscall entry work.
->>
->> That's low level entry code which does not require RCU, lockdep, tracing
->> or whatever muck we setup before actual work can be done.
->>
->> arch_asm_entry()
->>   ...
->>   arch_c_entry(cause) {
->>     switch(cause) {
->>       case EXCEPTION: arch_c_exception(...);
->>       case SYSCALL: arch_c_syscall(...);
->>       ...
->>     }
->
-> You're assuming that figuring out the cause doesn't need the kernel
-> entry code to run first.  In the case of the 32-bit vDSO fast
-> syscalls, we arguably don't know whether an entry is a syscall until
-> we have done a user memory access.  Logically, we're doing:
->
-> if (get_user() < 0) {
->   /* Not a syscall.  This is actually a silly operation that sets AX =
-> -EFAULT and returns.  Do not audit or invoke ptrace. */
-> } else {
->   /* This actually is a syscall. */
-> }
+[    2.552675] [drm:vc5_hdmi_init_resources] *ERROR* Failed to get
+HDMI state machine clock
+[    2.557974] raspberrypi-firmware soc:firmware: Attached to firmware
+from 2020-06-01T13:23:40
+[    2.567612] of_clk_hw_onecell_get: invalid index 14
+[    2.567636] [drm:vc5_hdmi_init_resources] *ERROR* Failed to get
+pixel bvb clock
+[    2.567664] vc4-drm gpu: failed to bind fef00700.hdmi (ops vc4_hdmi_ops): -2
+[    2.567731] vc4-drm gpu: master bind failed: -2
+[    2.567755] vc4-drm: probe of gpu failed with error -2
 
-Yes, that's what I've addressed with providing split interfaces.
+I decompile bcm2711-rpi-4-b.dtb.  Both hdmi@7ef00700 and hdmi@7ef05700
+show the clocks member.
 
->> You really want to differentiate between exception and syscall
->> entry/exit.
->>
->
-> Why do we want to distinguish between exception and syscall
-> entry/exit?  For the enter part, AFAICS the exception case boils down
-> to enter_from_user_mode() and the syscall case is:
->
->         enter_from_user_mode(regs);
->         instrumentation_begin();
->
->         local_irq_enable();
->         ti_work = READ_ONCE(current_thread_info()->flags);
->         if (ti_work & SYSCALL_ENTER_WORK)
->                 syscall = syscall_trace_enter(regs, syscall, ti_work);
->         instrumentation_end();
->
-> Which would decompose quite nicely as a regular (non-syscall) entry
-> plus the syscall part later.
+hdmi@7ef00700 {
+        compatible = "brcm,bcm2711-hdmi0";
+        reg = <0x7ef00700 0x300 0x7ef00300 0x200 0x7ef00f00 0x80
+0x7ef00f80 0x80 0x7ef01b00 0x200 0x7ef01f00 0x400 0x7ef00200 0x80
+0x7ef04300 0x100 0x7ef20000 0x100>;
+        reg-names = "hdmi\0dvp\0phy\0rm\0packet\0metadata\0csc\0cec\0hd";
+        clock-names = "hdmi\0bvb\0audio\0cec";
+        resets = <0x17 0x00>;
+        ddc = <0x18>;
+        dmas = <0x19 0x0a>;
+        dma-names = "audio-rx";
+        status = "okay";
+        clocks = <0x10 0x0d 0x10 0x0e 0x17 0x00 0x1a>;
+};
 
-There is a difference between syscall entry and exception entry at least
-in my view:
+hdmi@7ef05700 {
+        compatible = "brcm,bcm2711-hdmi1";
+        reg = <0x7ef05700 0x300 0x7ef05300 0x200 0x7ef05f00 0x80
+0x7ef05f80 0x80 0x7ef06b00 0x200 0x7ef06f00 0x400 0x7ef00280 0x80
+0x7ef09300 0x100 0x7ef20000 0x100>;
+        reg-names = "hdmi\0dvp\0phy\0rm\0packet\0metadata\0csc\0cec\0hd";
+        ddc = <0x1b>;
+        clock-names = "hdmi\0bvb\0audio\0cec";
+        resets = <0x17 0x01>;
+        dmas = <0x19 0x11>;
+        dma-names = "audio-rx";
+        status = "okay";
+        clocks = <0x10 0x0d 0x10 0x0e 0x17 0x01 0x1a>;
+};
 
-syscall:
-                enter_from_user_mode(regs);
-                local_irq_enable();
+Also re-check runtime device tree, they are the same values as mentioned above:
 
-exception:
-                enter_from_user_mode(regs);
+$ xxd /proc/device-tree/soc/hdmi@7ef00700/clocks
+00000000: 0000 0010 0000 000d 0000 0010 0000 000e  ................
+00000010: 0000 0017 0000 0000 0000 001a            ............
+$ xxd /proc/device-tree/soc/hdmi@7ef05700/clocks
+00000000: 0000 0010 0000 000d 0000 0010 0000 000e  ................
+00000010: 0000 0017 0000 0001 0000 001a            ............
 
->> we'd have:
->>
->>   arch_c_entry()
->>      irqentry_enter();
->>      local_irq_enble();
->>      nr = syscall_enter_from_user_mode_work();
->>      ...
->>
->> which enforces two calls for sane entries and more code in arch/....
->
-> This is why I still like my:
->
-> arch_c_entry()
->   irqentry_enter_from_user_mode();
->   generic_syscall();
->   exit...
+Do I miss something?
 
-So what we have now (with my patch applied) is either:
+[1]: https://gist.github.com/starnight/649ea5a8384313f0354aca504f78ad70#file-config
+[2]: https://gist.github.com/starnight/649ea5a8384313f0354aca504f78ad70#file-dmesg-log
 
-1) arch_c_entry()
-        nr = syscall_enter_from_user_mode();
-        arch_handle_syscall(nr);
-        syscall_exit_to_user_mode();
-
-or for that extra 32bit fast syscall thing:
-
-2) arch_c_entry()
-        syscall_enter_from_user_mode_prepare();
-        arch_do_stuff();
-        nr = syscall_enter_from_user_mode_work();
-        arch_handle_syscall(nr);
-        syscall_exit_to_user_mode();
-
-So for sane cases you just use #1.
-
-Ideally we'd not need arch_handle_syscall(nr) at all, but that does not
-work with multiple ABIs supported, i.e. the compat muck.
-
-The only way we could make that work is to have:
-
-    syscall_enter_exit(regs, mode)
-      nr = syscall_enter_from_user_mode();
-      arch_handle_syscall(mode, nr);
-      syscall_exit_to_user_mode();
-
-and then arch_c_entry() becomes:
-
-    syscall_enter_exit(regs, mode);
-
-which means that arch_handle_syscall() would have to evaluate the mode
-and chose the appropriate syscall table. Not sure whether that's a win.
-
-Thanks,
-
-        tglx
-
-
+Jian-Hong Pan
