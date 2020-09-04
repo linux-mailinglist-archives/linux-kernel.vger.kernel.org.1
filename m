@@ -2,217 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E4B25DE15
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B486B25DE59
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgIDPp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
+        id S1727929AbgIDPtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgIDPpy (ORCPT
+        with ESMTP id S1726966AbgIDPq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:45:54 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D84C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:45:52 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id w2so6504415wmi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:45:52 -0700 (PDT)
+        Fri, 4 Sep 2020 11:46:58 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F0EC0619C3
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:46:46 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id w5so7207578wrp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:46:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BWAhN7a+4874hzvxevYBZLVV3qk181dMhkmwcopVXuI=;
-        b=oFrwyne8UjE4GXeuhjjOpVE9dYZzB2GlQAZCkFaOP1wA0cXqKCn7uoJJwGDObMHxPc
-         dFLnAam23p6BBsCONYgBCS8Y3VSJ7EySoY4Fq5UoZy/F8Fn2lbfkkqBi1OjU/s5JCuEQ
-         +UHKUniKfnrVglb99KDPOYVPapsE5nuHsbwWDUXY5kMUq5FTRJ89pfRug0hq4ZLwqTag
-         kxJjyxhTh7qRPvOCRVNb+dWojAmEJ2ch1rJknyxyZUNQd2ZIZPR2hKHtF5EnNzeGSe5W
-         3LkwSplCw1X7pDUYAp/rmsDgjRmrze7FYppzpfhj7RhzMpSAeo+cHJAmHAAMamm/Yicg
-         alXg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/FOPTskD02+rqmTy1Q+lvepWRalQafDGjAwi3K9HfYU=;
+        b=DWSFeeLRu39HrwTsgIJnFObS4Eo0vIUxkcPBLAQ8iMkew4JxxJi2HeGJEwHFlAzsSC
+         V4nymy+PcpCDVaRs1xvaygnoO+ldD8YU2XK9eLt5FRlZOI3wYRcprZQ7u0nHSojZmi94
+         J6tKrqYyKczLhXpI/uxNrYUoFv129bNqR7YAXvmIq+RP/NU7cK0nUX6Fgw98DTzmsGkN
+         OUBuerym7ms3eO6VilqR+cBH+FVtnJZ3cGCpmkzMc3e+F/SDdlMcOPxZi7D0wzC1gYPs
+         CrL5Mb1Bqwd4ozdqBulR2kAIQQ2V2cv5mN44+Kac1+HItigj9IaT5KWXHVJcsq/QfAOI
+         pTAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BWAhN7a+4874hzvxevYBZLVV3qk181dMhkmwcopVXuI=;
-        b=qX9iUVH/lBEpfNnilecqEZPbaztKnGSpv/H0jWS8u6zSSi7CeTYrR40yo/9RG+Rwag
-         GfUCaBbN2+d2OWdu702dKwJzH8yuIdh+vstQsfe8ii38Zo/ewThY4bKYZwnwM1oCAcNr
-         JXtLEPvGqB4cqJs+yCdkXzLhVLW2El01KvWqTSWCmWGZkcB9IH5kk7kEKtM16rGwsiwi
-         KhKD/EvjtjgaJ0MpR1aPGklY0QTse+9a9HU9uiCoBY2d4VjwuAryIL1Ekn/5hSA7k56E
-         TzIc11EIXQM1AOSLyPalkz13kJxsmEt0AP7jnxYHdcp+XkOPQPXSwsxwZJqTj2UJItv0
-         Bypg==
-X-Gm-Message-State: AOAM5316KGVkN69+mkaZGa7d+wl56GXdWoUO8ymaqQJyWmM1Cbla8Kv7
-        VfTOXxja8Z0DqdmCqqxTKnLe44AtlvY97sUFXmZxvQ==
-X-Google-Smtp-Source: ABdhPJzfjtKP7vZTuEflczNVPJm8Afz2ShaotHKRilLa7ZLCMiX8evx3ILz6Mx8pA1RbRMbqOuiZ+w5nytdpOD6GqG0=
-X-Received: by 2002:a1c:4303:: with SMTP id q3mr8102774wma.158.1599234351549;
- Fri, 04 Sep 2020 08:45:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/FOPTskD02+rqmTy1Q+lvepWRalQafDGjAwi3K9HfYU=;
+        b=Gywi4RBGpSXNaQJanBkfN+KeNl8XN0buMSd3/SaL8GnK1bkVUrTc6I589hA5sdwHSL
+         TO+F9MuzWXfJWW8mepj9SrISbgVGkpOfnxVOyEjMzsaXVmXCWlnHTQ08fmpOD0192N80
+         enqDbhugvkBvBnb9yr/DzcFVzK22Q0UlT1bG3O9Kzui9raiGBQfrBxaoJl84KpZNezLL
+         G2hxmxE+AuWE46n8x1iplzZbaH+/Cdei3KSSqOWAak91L99qkDDlLMHIsMu51L80iRCb
+         LUEcKpHBAVaiH4v4T3r/8YwDjoUXVjPK6jinfEEMsW3JzuHGWxzXpl6cU8CifxQ4azsa
+         qODA==
+X-Gm-Message-State: AOAM530vAXS/yVjMd7p1+tkMn5qs6TBEEdcFLp2rSpFfQ1wREVqjaVzf
+        VqqT768wQcGCrYXUi0UwMfbEXg==
+X-Google-Smtp-Source: ABdhPJw/DYVsfbaGxg5IdpYA3yk8QnzF9jmg3mpJzGx7H7H6XBFu4ZqlmzQ4gBrGlTt8uzkbc4SHKQ==
+X-Received: by 2002:a5d:61c2:: with SMTP id q2mr8972511wrv.25.1599234405459;
+        Fri, 04 Sep 2020 08:46:45 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id q4sm11983375wru.65.2020.09.04.08.46.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 08:46:45 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 12/23] gpio: mockup: define a constant for chip label size
+Date:   Fri,  4 Sep 2020 17:45:36 +0200
+Message-Id: <20200904154547.3836-13-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <20200904154547.3836-1-brgl@bgdev.pl>
+References: <20200904154547.3836-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <cover.dddc064d8bb83e46744336af67dcb13139e5747d.1599120059.git-series.maxime@cerno.tech>
- <5c19bbf10153cb42ca0fb67e08606c8295c17236.1599120059.git-series.maxime@cerno.tech>
-In-Reply-To: <5c19bbf10153cb42ca0fb67e08606c8295c17236.1599120059.git-series.maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 4 Sep 2020 16:45:36 +0100
-Message-ID: <CAPY8ntAPzQ2BWRivzmfSbX03WZiQ0UDRCDBFgWA2-ZtrqO10nA@mail.gmail.com>
-Subject: Re: [PATCH v5 55/80] drm/vc4: hdmi: Add a CSC setup callback
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Hoegeun Kwon <hoegeun.kwon@samsung.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-On Thu, 3 Sep 2020 at 09:03, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Similarly to the previous patches, the CSC setup is slightly different in
-> the BCM2711 than in the previous generations. Let's add a callback for it.
->
-> Tested-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Tested-by: Hoegeun Kwon <hoegeun.kwon@samsung.com>
-> Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+We'll be using this value in many places in this driver soon so define
+a constant to avoid using magic values.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/gpio/gpio-mockup.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 70 +++++++++++++++++++++--------------
->  drivers/gpu/drm/vc4/vc4_hdmi.h |  3 ++-
->  2 files changed, 45 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index c29376c3fd8a..532618e02399 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -334,6 +334,41 @@ static void vc4_hdmi_encoder_disable(struct drm_encoder *encoder)
->                 DRM_ERROR("Failed to release power domain: %d\n", ret);
->  }
->
-> +static void vc4_hdmi_csc_setup(struct vc4_hdmi *vc4_hdmi, bool enable)
-> +{
-> +       u32 csc_ctl;
-> +
-> +       csc_ctl = VC4_SET_FIELD(VC4_HD_CSC_CTL_ORDER_BGR,
-> +                               VC4_HD_CSC_CTL_ORDER);
-> +
-> +       if (enable) {
-> +               /* CEA VICs other than #1 requre limited range RGB
-> +                * output unless overridden by an AVI infoframe.
-> +                * Apply a colorspace conversion to squash 0-255 down
-> +                * to 16-235.  The matrix here is:
-> +                *
-> +                * [ 0      0      0.8594 16]
-> +                * [ 0      0.8594 0      16]
-> +                * [ 0.8594 0      0      16]
-> +                * [ 0      0      0       1]
-> +                */
-> +               csc_ctl |= VC4_HD_CSC_CTL_ENABLE;
-> +               csc_ctl |= VC4_HD_CSC_CTL_RGB2YCC;
-> +               csc_ctl |= VC4_SET_FIELD(VC4_HD_CSC_CTL_MODE_CUSTOM,
-> +                                        VC4_HD_CSC_CTL_MODE);
-> +
-> +               HDMI_WRITE(HDMI_CSC_12_11, (0x000 << 16) | 0x000);
-> +               HDMI_WRITE(HDMI_CSC_14_13, (0x100 << 16) | 0x6e0);
-> +               HDMI_WRITE(HDMI_CSC_22_21, (0x6e0 << 16) | 0x000);
-> +               HDMI_WRITE(HDMI_CSC_24_23, (0x100 << 16) | 0x000);
-> +               HDMI_WRITE(HDMI_CSC_32_31, (0x000 << 16) | 0x6e0);
-> +               HDMI_WRITE(HDMI_CSC_34_33, (0x100 << 16) | 0x000);
-> +       }
-> +
-> +       /* The RGB order applies even when CSC is disabled. */
-> +       HDMI_WRITE(HDMI_CSC_CTL, csc_ctl);
-> +}
-> +
->  static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
->  {
->         struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
-> @@ -357,7 +392,6 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
->                                         mode->crtc_vsync_end -
->                                         interlaced,
->                                         VC4_HDMI_VERTB_VBP));
-> -       u32 csc_ctl;
->         int ret;
->
->         ret = pm_runtime_get_sync(&vc4_hdmi->pdev->dev);
-> @@ -428,41 +462,20 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
->                    (vsync_pos ? 0 : VC4_HD_VID_CTL_VSYNC_LOW) |
->                    (hsync_pos ? 0 : VC4_HD_VID_CTL_HSYNC_LOW));
->
-> -       csc_ctl = VC4_SET_FIELD(VC4_HD_CSC_CTL_ORDER_BGR,
-> -                               VC4_HD_CSC_CTL_ORDER);
->
->         if (vc4_encoder->hdmi_monitor &&
-> -           drm_default_rgb_quant_range(mode) ==
-> -           HDMI_QUANTIZATION_RANGE_LIMITED) {
-> -               /* CEA VICs other than #1 requre limited range RGB
-> -                * output unless overridden by an AVI infoframe.
-> -                * Apply a colorspace conversion to squash 0-255 down
-> -                * to 16-235.  The matrix here is:
-> -                *
-> -                * [ 0      0      0.8594 16]
-> -                * [ 0      0.8594 0      16]
-> -                * [ 0.8594 0      0      16]
-> -                * [ 0      0      0       1]
-> -                */
-> -               csc_ctl |= VC4_HD_CSC_CTL_ENABLE;
-> -               csc_ctl |= VC4_HD_CSC_CTL_RGB2YCC;
-> -               csc_ctl |= VC4_SET_FIELD(VC4_HD_CSC_CTL_MODE_CUSTOM,
-> -                                        VC4_HD_CSC_CTL_MODE);
-> +           drm_default_rgb_quant_range(mode) == HDMI_QUANTIZATION_RANGE_LIMITED) {
-> +               if (vc4_hdmi->variant->csc_setup)
-> +                       vc4_hdmi->variant->csc_setup(vc4_hdmi, true);
->
-> -               HDMI_WRITE(HDMI_CSC_12_11, (0x000 << 16) | 0x000);
-> -               HDMI_WRITE(HDMI_CSC_14_13, (0x100 << 16) | 0x6e0);
-> -               HDMI_WRITE(HDMI_CSC_22_21, (0x6e0 << 16) | 0x000);
-> -               HDMI_WRITE(HDMI_CSC_24_23, (0x100 << 16) | 0x000);
-> -               HDMI_WRITE(HDMI_CSC_32_31, (0x000 << 16) | 0x6e0);
-> -               HDMI_WRITE(HDMI_CSC_34_33, (0x100 << 16) | 0x000);
->                 vc4_encoder->limited_rgb_range = true;
->         } else {
-> +               if (vc4_hdmi->variant->csc_setup)
-> +                       vc4_hdmi->variant->csc_setup(vc4_hdmi, false);
-> +
->                 vc4_encoder->limited_rgb_range = false;
->         }
->
-> -       /* The RGB order applies even when CSC is disabled. */
-> -       HDMI_WRITE(HDMI_CSC_CTL, csc_ctl);
-> -
->         HDMI_WRITE(HDMI_FIFO_CTL, VC4_HDMI_FIFO_CTL_MASTER_SLAVE_N);
->
->         if (debug_dump_regs) {
-> @@ -1430,6 +1443,7 @@ static const struct vc4_hdmi_variant bcm2835_variant = {
->         .num_registers          = ARRAY_SIZE(vc4_hdmi_fields),
->
->         .init_resources         = vc4_hdmi_init_resources,
-> +       .csc_setup              = vc4_hdmi_csc_setup,
->         .reset                  = vc4_hdmi_reset,
->         .phy_init               = vc4_hdmi_phy_init,
->         .phy_disable            = vc4_hdmi_phy_disable,
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> index 950accbc44e4..c8fd58548ea2 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.h
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
-> @@ -41,6 +41,9 @@ struct vc4_hdmi_variant {
->         /* Callback to reset the HDMI block */
->         void (*reset)(struct vc4_hdmi *vc4_hdmi);
->
-> +       /* Callback to enable / disable the CSC */
-> +       void (*csc_setup)(struct vc4_hdmi *vc4_hdmi, bool enable);
-> +
->         /* Callback to initialize the PHY according to the mode */
->         void (*phy_init)(struct vc4_hdmi *vc4_hdmi,
->                          struct drm_display_mode *mode);
-> --
-> git-series 0.9.1
+diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
+index 801fba6496a4..e8a19a28ed13 100644
+--- a/drivers/gpio/gpio-mockup.c
++++ b/drivers/gpio/gpio-mockup.c
+@@ -32,6 +32,7 @@
+ #define GPIO_MOCKUP_MAX_RANGES	(10 * 2)
+ /* Maximum of three properties + the sentinel. */
+ #define GPIO_MOCKUP_MAX_PROP	4
++#define GPIO_MOCKUP_LABEL_SIZE	32
+ 
+ /*
+  * struct gpio_pin_status - structure describing a GPIO status
+-- 
+2.26.1
+
