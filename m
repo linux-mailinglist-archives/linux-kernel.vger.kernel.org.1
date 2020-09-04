@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E18B25D457
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1447625D462
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730012AbgIDJLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:11:23 -0400
-Received: from 8bytes.org ([81.169.241.247]:40892 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729950AbgIDJLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:11:21 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 4466F3D5; Fri,  4 Sep 2020 11:11:19 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 11:11:17 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, freedreno@lists.freedesktop.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>,
-        Brian Masney <masneyb@onstation.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Eric Anholt <eric@anholt.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hanna Hawa <hannah@marvell.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        "moderated list:ARM SMMU DRIVERS" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Pritesh Raithatha <praithatha@nvidia.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Shawn Guo <shawn.guo@linaro.org>, Takashi Iwai <tiwai@suse.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>
-Subject: Re: [PATCH 00/20] iommu/arm-smmu + drm/msm: per-process GPU pgtables
-Message-ID: <20200904091117.GH6714@8bytes.org>
-References: <20200817220238.603465-1-robdclark@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817220238.603465-1-robdclark@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729971AbgIDJNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:13:54 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:59916 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726575AbgIDJNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:13:53 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id E2F7BCC436;
+        Fri,  4 Sep 2020 17:13:46 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (250.19.126.124.broad.bjtelecom.net [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P22908T140609165715200S1599210826984194_;
+        Fri, 04 Sep 2020 17:13:47 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <6ddbc0cef4cf22a399dd63e9f0e05547>
+X-RL-SENDER: penghao@uniontech.com
+X-SENDER: penghao@uniontech.com
+X-LOGIN-NAME: penghao@uniontech.com
+X-FST-TO: linux-usb@vger.kernel.org
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 5
+X-System-Flag: 0
+From:   Penghao <penghao@uniontech.com>
+To:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     johan@kernel.org, hdegoede@redhat.com, dlaz@chromium.org,
+        stern@rowland.harvard.edu, kerneldev@karsmulder.nl,
+        penghao@uniontech.com, jonathan@jdcox.net, tomasz@meresinski.eu
+Subject: [PATCH v3] HID: quirks: Add USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for BYD zhaoxin notebook
+Date:   Fri,  4 Sep 2020 17:13:22 +0800
+Message-Id: <20200904091322.30426-1-penghao@uniontech.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 03:01:25PM -0700, Rob Clark wrote:
-> Jordan Crouse (12):
->   iommu/arm-smmu: Pass io-pgtable config to implementation specific
->     function
->   iommu/arm-smmu: Add support for split pagetables
->   iommu/arm-smmu: Prepare for the adreno-smmu implementation
->   iommu/arm-smmu-qcom: Add implementation for the adreno GPU SMMU
->   dt-bindings: arm-smmu: Add compatible string for Adreno GPU SMMU
->   drm/msm: Add a context pointer to the submitqueue
->   drm/msm: Drop context arg to gpu->submit()
->   drm/msm: Set the global virtual address range from the IOMMU domain
->   drm/msm: Add support to create a local pagetable
->   drm/msm: Add support for private address space instances
->   drm/msm/a6xx: Add support for per-instance pagetables
->   arm: dts: qcom: sm845: Set the compatible string for the GPU SMMU
-> 
-> Rob Clark (8):
->   drm/msm: remove dangling submitqueue references
->   iommu: add private interface for adreno-smmu
->   drm/msm/gpu: add dev_to_gpu() helper
->   drm/msm: set adreno_smmu as gpu's drvdata
->   iommu/arm-smmu: constify some helpers
->   arm: dts: qcom: sc7180: Set the compatible string for the GPU SMMU
->   iommu/arm-smmu: add a way for implementations to influence SCTLR
->   drm/msm: show process names in gem_describe
+Add a USB_QUIRK_IGNORE_REMOTE_WAKEUP quirk for the BYD zhaoxin notebook.
+This notebook come with usb touchpad. And we would like to disable touchpad
+wakeup on this notebook by default.
 
-Can the DRM parts be merged independently from the IOMMU parts or does
-this need to be queued together? If it needs to be together I defer the
-decission to Will through which tree this should go.
+Signed-off-by: Penghao <penghao@uniontech.com>
+---
+
+Changes since v2:
+ - Add changes
+
+Changes since v1:
+ - Add the entries sorted by vendor ID and product ID.
+
+ drivers/usb/core/quirks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 7c1198f80c23..fffe1f7f1098 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -393,6 +393,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* Generic RTL8153 based ethernet adapters */
+ 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
+ 
++	/* SONiX USB DEVICE Touchpad */
++	{ USB_DEVICE(0x0c45, 0x7056), .driver_info =
++			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
++
+ 	/* Action Semiconductor flash disk */
+ 	{ USB_DEVICE(0x10d6, 0x2200), .driver_info =
+ 			USB_QUIRK_STRING_FETCH_255 },
+-- 
+2.11.0
 
 
-	Joerg
+
