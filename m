@@ -2,360 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0FD25D8FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E47725D8FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 14:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730308AbgIDMwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 08:52:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:65329 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730280AbgIDMve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 08:51:34 -0400
-IronPort-SDR: +jHN4jug9UaknK3w+xoTK+zuDk8WlKBOyYFt2Mc+ZATUHF2vinnBdAMYvblKuMxEt0IUm63XT8
- UvsQXFbqxhmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="221944962"
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
-   d="scan'208";a="221944962"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2020 05:51:33 -0700
-IronPort-SDR: T1DuK81L+S18mu4CxskHa1szYEsR87+CnmYH1KRcpgs4UsHZOQQ+d6HxpAXG0AaYh598fy74r6
- vkh5Ts62LtLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,389,1592895600"; 
-   d="scan'208";a="405834956"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Sep 2020 05:51:31 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: [PATCH 4/4] device property: Move fwnode_connection_find_match() under drivers/base/property.c
-Date:   Fri,  4 Sep 2020 15:51:23 +0300
-Message-Id: <20200904125123.83725-5-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200904125123.83725-1-heikki.krogerus@linux.intel.com>
-References: <20200904125123.83725-1-heikki.krogerus@linux.intel.com>
+        id S1730334AbgIDMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 08:52:31 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:49538 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730114AbgIDMwT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 08:52:19 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 428291B7;
+        Fri,  4 Sep 2020 15:52:08 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1599223928;
+        bh=8moMATedVvC/Mwd/J3QHaBg8cFe/k1Zjj6s6XjcMcQ4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=Hb6uPJFDUfeK4xnnhZkp4v0giNfwbe1kHI3DQuVvxnaj8PIkEsi07HsgFIbE0wNng
+         3PacAjOS+w3LF6a8Fgsqt2avmTb5sV7nz3SQpVE1+87PdpOcBn2ou8DzdTywoBWNG2
+         azfXC7nAOLYn48GM4mcOX8nrs5iQcLwXX94FfHIQ=
+Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 4 Sep 2020 15:52:07 +0300
+Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
+ by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
+ id 15.01.1847.003; Fri, 4 Sep 2020 15:52:07 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     Mark Harmstone <mark@harmstone.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>
+Subject: RE: [PATCH v2 05/10] fs/ntfs3: Add attrib operations
+Thread-Topic: [PATCH v2 05/10] fs/ntfs3: Add attrib operations
+Thread-Index: AdZ9WYtoNhpifd4wR/GdSqVgVwVwlwAkLbAAATPptnA=
+Date:   Fri, 4 Sep 2020 12:52:07 +0000
+Message-ID: <a9e1e31b909346faa9b398db9fa33ba1@paragon-software.com>
+References: <e2decd9632cd4d218fb83e96c0c37174@paragon-software.com>
+ <3c1e5918-347a-d1e6-44ce-338c7d0dc7e4@harmstone.com>
+In-Reply-To: <3c1e5918-347a-d1e6-44ce-338c7d0dc7e4@harmstone.com>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.30.8.36]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is now only a helper that searches the
-connection from device graph and then by checking if the
-supplied connection identifier matches a property that
-contains reference.
-
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- .../driver-api/device_connection.rst          |  43 --------
- drivers/base/Makefile                         |   2 +-
- drivers/base/devcon.c                         | 101 ------------------
- drivers/base/property.c                       |  73 +++++++++++++
- include/linux/device.h                        |   9 --
- include/linux/property.h                      |  14 +++
- 6 files changed, 88 insertions(+), 154 deletions(-)
- delete mode 100644 Documentation/driver-api/device_connection.rst
- delete mode 100644 drivers/base/devcon.c
-
-diff --git a/Documentation/driver-api/device_connection.rst b/Documentation/driver-api/device_connection.rst
-deleted file mode 100644
-index ba364224c349b..0000000000000
---- a/Documentation/driver-api/device_connection.rst
-+++ /dev/null
-@@ -1,43 +0,0 @@
--==================
--Device connections
--==================
--
--Introduction
--------------
--
--Devices often have connections to other devices that are outside of the direct
--child/parent relationship. A serial or network communication controller, which
--could be a PCI device, may need to be able to get a reference to its PHY
--component, which could be attached for example to the I2C bus. Some device
--drivers need to be able to control the clocks or the GPIOs for their devices,
--and so on.
--
--Device connections are generic descriptions of any type of connection between
--two separate devices.
--
--Device connections alone do not create a dependency between the two devices.
--They are only descriptions which are not tied to either of the devices directly.
--A dependency between the two devices exists only if one of the two endpoint
--devices requests a reference to the other. The descriptions themselves can be
--defined in firmware (not yet supported) or they can be built-in.
--
--Usage
-------
--
--Device connections should exist before device ``->probe`` callback is called for
--either endpoint device in the description. If the connections are defined in
--firmware, this is not a problem. It should be considered if the connection
--descriptions are "built-in", and need to be added separately.
--
--The connection description consists of the names of the two devices with the
--connection, i.e. the endpoints, and unique identifier for the connection which
--is needed if there are multiple connections between the two devices.
--
--After a description exists, the devices in it can request reference to the other
--endpoint device, or they can request the description itself.
--
--API
-----
--
--.. kernel-doc:: drivers/base/devcon.c
--   :functions: device_connection_find_match device_connection_find device_connection_add device_connection_remove
-diff --git a/drivers/base/Makefile b/drivers/base/Makefile
-index 157452080f3d7..41369fc7004fd 100644
---- a/drivers/base/Makefile
-+++ b/drivers/base/Makefile
-@@ -6,7 +6,7 @@ obj-y			:= component.o core.o bus.o dd.o syscore.o \
- 			   cpu.o firmware.o init.o map.o devres.o \
- 			   attribute_container.o transport_class.o \
- 			   topology.o container.o property.o cacheinfo.o \
--			   devcon.o swnode.o
-+			   swnode.o
- obj-$(CONFIG_DEVTMPFS)	+= devtmpfs.o
- obj-y			+= power/
- obj-$(CONFIG_ISA_BUS_API)	+= isa.o
-diff --git a/drivers/base/devcon.c b/drivers/base/devcon.c
-deleted file mode 100644
-index 1790e84dbe7c2..0000000000000
---- a/drivers/base/devcon.c
-+++ /dev/null
-@@ -1,101 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/**
-- * Device connections
-- *
-- * Copyright (C) 2018 Intel Corporation
-- * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-- */
--
--#include <linux/device.h>
--#include <linux/property.h>
--
--static void *
--fwnode_graph_devcon_match(struct fwnode_handle *fwnode, const char *con_id,
--			  void *data, devcon_match_fn_t match)
--{
--	struct fwnode_handle *node;
--	struct fwnode_handle *ep;
--	void *ret;
--
--	fwnode_graph_for_each_endpoint(fwnode, ep) {
--		node = fwnode_graph_get_remote_port_parent(ep);
--		if (!fwnode_device_is_available(node))
--			continue;
--
--		ret = match(node, con_id, data);
--		fwnode_handle_put(node);
--		if (ret) {
--			fwnode_handle_put(ep);
--			return ret;
--		}
--	}
--	return NULL;
--}
--
--static void *
--fwnode_devcon_match(struct fwnode_handle *fwnode, const char *con_id,
--		    void *data, devcon_match_fn_t match)
--{
--	struct fwnode_handle *node;
--	void *ret;
--	int i;
--
--	for (i = 0; ; i++) {
--		node = fwnode_find_reference(fwnode, con_id, i);
--		if (IS_ERR(node))
--			break;
--
--		ret = match(node, NULL, data);
--		fwnode_handle_put(node);
--		if (ret)
--			return ret;
--	}
--
--	return NULL;
--}
--
--/**
-- * fwnode_connection_find_match - Find connection from a device node
-- * @fwnode: Device node with the connection
-- * @con_id: Identifier for the connection
-- * @data: Data for the match function
-- * @match: Function to check and convert the connection description
-- *
-- * Find a connection with unique identifier @con_id between @fwnode and another
-- * device node. @match will be used to convert the connection description to
-- * data the caller is expecting to be returned.
-- */
--void *fwnode_connection_find_match(struct fwnode_handle *fwnode,
--				   const char *con_id, void *data,
--				   devcon_match_fn_t match)
--{
--	void *ret;
--
--	if (!fwnode || !match)
--		return NULL;
--
--	ret = fwnode_graph_devcon_match(fwnode, con_id, data, match);
--	if (ret)
--		return ret;
--
--	return fwnode_devcon_match(fwnode, con_id, data, match);
--}
--EXPORT_SYMBOL_GPL(fwnode_connection_find_match);
--
--/**
-- * device_connection_find_match - Find physical connection to a device
-- * @dev: Device with the connection
-- * @con_id: Identifier for the connection
-- * @data: Data for the match function
-- * @match: Function to check and convert the connection description
-- *
-- * Find a connection with unique identifier @con_id between @dev and another
-- * device. @match will be used to convert the connection description to data the
-- * caller is expecting to be returned.
-- */
--void *device_connection_find_match(struct device *dev, const char *con_id,
--				   void *data, devcon_match_fn_t match)
--{
--	return fwnode_connection_find_match(dev_fwnode(dev), con_id, data, match);
--}
--EXPORT_SYMBOL_GPL(device_connection_find_match);
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index d58aa98fe9645..4c43d30145c6b 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -1184,3 +1184,76 @@ const void *device_get_match_data(struct device *dev)
- 	return fwnode_call_ptr_op(dev_fwnode(dev), device_get_match_data, dev);
- }
- EXPORT_SYMBOL_GPL(device_get_match_data);
-+
-+static void *
-+fwnode_graph_devcon_match(struct fwnode_handle *fwnode, const char *con_id,
-+			  void *data, devcon_match_fn_t match)
-+{
-+	struct fwnode_handle *node;
-+	struct fwnode_handle *ep;
-+	void *ret;
-+
-+	fwnode_graph_for_each_endpoint(fwnode, ep) {
-+		node = fwnode_graph_get_remote_port_parent(ep);
-+		if (!fwnode_device_is_available(node))
-+			continue;
-+
-+		ret = match(node, con_id, data);
-+		fwnode_handle_put(node);
-+		if (ret) {
-+			fwnode_handle_put(ep);
-+			return ret;
-+		}
-+	}
-+	return NULL;
-+}
-+
-+static void *
-+fwnode_devcon_match(struct fwnode_handle *fwnode, const char *con_id,
-+		    void *data, devcon_match_fn_t match)
-+{
-+	struct fwnode_handle *node;
-+	void *ret;
-+	int i;
-+
-+	for (i = 0; ; i++) {
-+		node = fwnode_find_reference(fwnode, con_id, i);
-+		if (IS_ERR(node))
-+			break;
-+
-+		ret = match(node, NULL, data);
-+		fwnode_handle_put(node);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * fwnode_connection_find_match - Find connection from a device node
-+ * @fwnode: Device node with the connection
-+ * @con_id: Identifier for the connection
-+ * @data: Data for the match function
-+ * @match: Function to check and convert the connection description
-+ *
-+ * Find a connection with unique identifier @con_id between @fwnode and another
-+ * device node. @match will be used to convert the connection description to
-+ * data the caller is expecting to be returned.
-+ */
-+void *fwnode_connection_find_match(struct fwnode_handle *fwnode,
-+				   const char *con_id, void *data,
-+				   devcon_match_fn_t match)
-+{
-+	void *ret;
-+
-+	if (!fwnode || !match)
-+		return NULL;
-+
-+	ret = fwnode_graph_devcon_match(fwnode, con_id, data, match);
-+	if (ret)
-+		return ret;
-+
-+	return fwnode_devcon_match(fwnode, con_id, data, match);
-+}
-+EXPORT_SYMBOL_GPL(fwnode_connection_find_match);
-diff --git a/include/linux/device.h b/include/linux/device.h
-index c3ced17d91ee6..6f76c1f38e116 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -292,15 +292,6 @@ struct device_dma_parameters {
- 	unsigned long segment_boundary_mask;
- };
- 
--typedef void *(*devcon_match_fn_t)(struct fwnode_handle *fwnode, const char *id,
--				   void *data);
--
--void *fwnode_connection_find_match(struct fwnode_handle *fwnode,
--				   const char *con_id, void *data,
--				   devcon_match_fn_t match);
--void *device_connection_find_match(struct device *dev, const char *con_id,
--				   void *data, devcon_match_fn_t match);
--
- /**
-  * enum device_link_state - Device link states.
-  * @DL_STATE_NONE: The presence of the drivers is not being tracked.
-diff --git a/include/linux/property.h b/include/linux/property.h
-index 9f805c4428195..aedae94dcf41d 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -418,6 +418,20 @@ fwnode_graph_get_endpoint_by_id(const struct fwnode_handle *fwnode,
- int fwnode_graph_parse_endpoint(const struct fwnode_handle *fwnode,
- 				struct fwnode_endpoint *endpoint);
- 
-+typedef void *(*devcon_match_fn_t)(struct fwnode_handle *fwnode, const char *id,
-+				   void *data);
-+
-+void *fwnode_connection_find_match(struct fwnode_handle *fwnode,
-+				   const char *con_id, void *data,
-+				   devcon_match_fn_t match);
-+
-+static inline void *device_connection_find_match(struct device *dev,
-+						 const char *con_id, void *data,
-+						 devcon_match_fn_t match)
-+{
-+	return fwnode_connection_find_match(dev_fwnode(dev), con_id, data, match);
-+}
-+
- /* -------------------------------------------------------------------------- */
- /* Software fwnode support - when HW description is incomplete or missing */
- 
--- 
-2.28.0
-
+RnJvbTogTWFyayBIYXJtc3RvbmUgPG1hcmsuaGFybXN0b25lQGdtYWlsLmNvbT4gT24gQmVoYWxm
+IE9mIE1hcmsgSGFybXN0b25lDQpTZW50OiBTYXR1cmRheSwgQXVndXN0IDI5LCAyMDIwIDM6NTQg
+UE0NCj4gT24gMjgvOC8yMCA1OjUyIHBtLCBLb25zdGFudGluIEtvbWFyb3Ygd3JvdGU6DQo+ID4g
+SGkgTWFyayEgVGhhbmtzIGZvciB0aGUgZmVlZGJhY2suIEl0J3MgcmVhc29uYWJsZSBjb25jZXJu
+LCBidXQgdGhlIG9wZW4NCj4gPiBxdWVzdGlvbiBpcyBob3cgdG8gYWNjZXNzIHRob3NlIE5URlMg
+YXR0cmlidXRlcyB3aGljaCBleHRlbmQgdGhlIERPUw0KPiA+IGF0dHJpYnV0ZXMuIHVzZXIuRE9T
+QVRUUklCIG1heSBiZSBnb29kIGZvciBGQVQzMiBhcyBET1MgYXR0cmlidXRlcyBhcmUgc3RvcmVk
+IGluIDhiaXQuDQo+ID4gSG93ZXZlciwgdGhpcyBkb2VzIG5vdCBhcHBseSB0byBOVEZTICgzMmJp
+dCBhdHRyaWJ1dGVzKS4NCj4gDQo+IEknbSBub3Qgc3VyZSB3aHkgdGhpcyB3b3VsZCBiZSBhbiBp
+c3N1ZSAtIHRoZSBvYnZpb3VzIHdheSBvZiByZWFkaW5nDQo+IHVzZXIuRE9TQVRUUklCIGlzIHRv
+IHVzZSBzc2NhbmYgaW50byBhbiBpbnQsIGFuZCB0aGVuIGNoZWNrIGZvciB0aGUgYml0cyB5b3Un
+cmUNCj4gaW50ZXJlc3RlZCBpbi4gVGhlIE5UIEZJTEVfQVRUUklCVVRFXyogdmFsdWVzIHJlcGxp
+Y2F0ZSBhbmQgZXh0ZW5kIHRoZSBGQVQNCj4gY29uc3RhbnRzIHVzZWQgYnkgRE9TLCBzbyBpdCBz
+aG91bGRuJ3QgY2F1c2UgYW55IGNvbmZ1c2lvbiBvbmx5IGV4cG9zaW5nIHRoZQ0KPiBmdWxsIDMy
+LWJpdCB2YWx1ZS4NCg0KSGkgTWFyayEgRmlyc3QsIGluIHY0IHdlJ3ZlIHJlbW92ZWQgc21iZC1l
+eGNsdXNpdmUgYWNjZXNzIHRvDQp1c2VyLkRPU0FUVFJJQi4gT3ZlcmFsbCwgd2UgYWdyZWUgdGhh
+dCB1bmlmaWVkIGFjY2VzcyBpcyBwcmVmZXJyZWQuDQpJZiBldmVyeW9uZSBpcyBmaW5lIHdpdGgg
+c3RpY2tpbmcgdG8gdXNlci5ET1NBVFRSSUIsIHdlJ2xsIHJlbW92ZQ0Kb3RoZXIgb3B0aW9ucyBp
+biBuZXh0IHBhdGNoZXMuDQo=
