@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB9A25D448
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A492A25D45B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729948AbgIDJJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729712AbgIDJJH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:09:07 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4072C061244;
-        Fri,  4 Sep 2020 02:09:06 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id d189so5853299oig.12;
-        Fri, 04 Sep 2020 02:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=B1F8lj9Fqbo8dezZg1rybU9KGFv88k33ECwbjR1JZPg=;
-        b=uerSpXIeuW8egdvhrBOxgSI4H2+MkV6nfqmwsSTgZe47kr+R4dT9esdHyC+dIzFWew
-         7S+NReQ4tqsuASIVsTid6SoMhFv18Dm09UPS/qI9ygjssIKXTsOtlwtyAblWnz+QXIgA
-         XQQyxE3czHKcKJKUZ38sgdUxKt0maQcuOKpyq2SZKMU/7x+b94LGhX1XcsxaCNmnRvOl
-         nPRurPAzNxzekagJqkvPL+Ofo0aliDeqFYpMz7bAYCg64CVXz5kDbgHqmkKjkI2jPB7P
-         rZSI8t3k4BggoJ7slMx/Y6IRXo20nj5bsW+eHMiIiwKCsAiMbBD1Pc5EydUQO1BwRsTd
-         /ISQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=B1F8lj9Fqbo8dezZg1rybU9KGFv88k33ECwbjR1JZPg=;
-        b=hDJeq65df35qgD4FQYh0zEhWQoIqjat9i0QriidCX/U4spyF7DXMowGyh1X5cV8qCO
-         cQUZUltl1Yac+V9y6df6SkLLg6Acmo4XKgjXC7z3/yR4EOVhuAk+GLxj0gyBQFH3dVxK
-         HMLI2KotD96rimjZpVZlqQlwB+Et7JorzYZsTpVYryIv3UuMAS9aiUaNQFlAjl01Ix1O
-         Re9HV9wTzLDA5TSAQJvPAUD1z+ICb4cMfnDf06/zwEg5JFRT/M1AIoQfcV6kZDGdMGq/
-         wOGWofsN4q+pH1AAo93O9gP7bvuJN+HWFjW6dmrjsqQr9Ul2csN7xHP+WGsnKovqB5CT
-         jhdg==
-X-Gm-Message-State: AOAM531Ygq3CSqrHYGb5iSHUnh7wdvvaJRYuzvf82zuBqTPKdd8zjoE1
-        iAvtxNkgnXemrH+AaBgXVVH0OuyRMHmroeHePeY=
-X-Google-Smtp-Source: ABdhPJzj5BSTE3f88vS3BroKAd3o5SJIpsD68NdbolonePhBudgEeFDjp+JjeTdgozVDGzH6QYZ+34EfW5ujOYGl078=
-X-Received: by 2002:aca:d409:: with SMTP id l9mr4407752oig.70.1599210545701;
- Fri, 04 Sep 2020 02:09:05 -0700 (PDT)
+        id S1730028AbgIDJML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:12:11 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2752 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729712AbgIDJMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:12:09 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 3FDB791929569A201FCF;
+        Fri,  4 Sep 2020 10:12:07 +0100 (IST)
+Received: from [127.0.0.1] (10.47.1.112) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 4 Sep 2020
+ 10:12:05 +0100
+Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
+ SCSI HBAs
+To:     Jens Axboe <axboe@kernel.dk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <don.brace@microsemi.com>,
+        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <dgilbert@interlog.com>,
+        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>
+CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
+        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>
+References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
+ <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <379ef8a4-5042-926a-b8a0-2d0a684a0e01@huawei.com>
+Date:   Fri, 4 Sep 2020 10:09:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200903203053.3411268-1-samitolvanen@google.com> <20200904085520.GN2674@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200904085520.GN2674@hirez.programming.kicks-ass.net>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 4 Sep 2020 11:08:54 +0200
-Message-ID: <CA+icZUVzWZZ=CCKEWiwsaMXM2Xy1F1NLNRS_2D15NeNZUGqquA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/28] Add support for Clang LTO
-To:     peterz@infradead.org
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.1.112]
+X-ClientProxiedBy: lhreml702-chm.china.huawei.com (10.201.108.51) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 10:55 AM <peterz@infradead.org> wrote:
->
->
-> Please don't nest series!
->
-> Start a new thread for every posting.
->
+On 03/09/2020 22:23, Jens Axboe wrote:
+> On 8/19/20 9:20 AM, John Garry wrote:
+>> Hi all,
+>>
+>> Here is v8 of the patchset.
+>>
+>> In this version of the series, we keep the shared sbitmap for driver tags,
+>> and introduce changes to fix up the tag budgeting across request queues.
+>> We also have a change to count requests per-hctx for when an elevator is
+>> enabled, as an optimisation. I also dropped the debugfs changes - more on
+>> that below.
+>>
+>> Some performance figures:
+>>
+>> Using 12x SAS SSDs on hisi_sas v3 hw. mq-deadline results are included,
+>> but it is not always an appropriate scheduler to use.
+>>
+>> Tag depth 		4000 (default)			260**
+>>
+>> Baseline (v5.9-rc1):
+>> none sched:		2094K IOPS			513K
+>> mq-deadline sched:	2145K IOPS			1336K
+>>
+>> Final, host_tagset=0 in LLDD *, ***:
+>> none sched:		2120K IOPS			550K
+>> mq-deadline sched:	2121K IOPS			1309K
+>>
+>> Final ***:
+>> none sched:		2132K IOPS			1185			
+>> mq-deadline sched:	2145K IOPS			2097	
+>>
+>> * this is relevant as this is the performance in supporting but not
+>>    enabling the feature
+>> ** depth=260 is relevant as some point where we are regularly waiting for
+>>     tags to be available. Figures were are a bit unstable here.
+>> *** Included "[PATCH V4] scsi: core: only re-run queue in
+>>      scsi_end_request() if device queue is busy"
+>>
+>> A copy of the patches can be found here:
+>> https://github.com/hisilicon/kernel-dev/tree/private-topic-blk-mq-shared-tags-v8
+>>
+>> The hpsa patch depends on:
+>> https://lore.kernel.org/linux-scsi/20200430131904.5847-1-hare@suse.de/
+>>
+>> And the smartpqi patch is not to be accepted.
+>>
+>> Comments (and testing) welcome, thanks!
+> 
+> I applied 1-11, leaving the SCSI core bits and drivers to Martin. I can
+> also carry them, just let me know.
+> 
 
-You are right Peter, my apologies.
+Great, thanks!
 
-- Sedat -
+So the SCSI parts depend on the block parts for building, so I guess it 
+makes sense if you could carry them also.
+
+hpsa and smartpqi patches are pending for now, but the rest could be 
+picked up. Martin/James may want more review of the SCSI core bits, though.
+
+Thanks again,
+John
+
+
