@@ -2,97 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C6325D555
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7B425D54B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730023AbgIDJnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
+        id S1729937AbgIDJmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729731AbgIDJmx (ORCPT
+        with ESMTP id S1726171AbgIDJmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:42:53 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2316FC061244;
-        Fri,  4 Sep 2020 02:42:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id d19so4040066pgl.10;
-        Fri, 04 Sep 2020 02:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=k2pP6uCXGE3hf4kIKSJ0TViSAKe2ZDHRqtthemQoyUE=;
-        b=gAzMbl9TqqnXyIRD4TGx12WtzlcUX32PTT1eW7BqLXqe/HdTdxT+emMOtGKKg2tS3H
-         jFqZlQ5OqWNgNqx+/n7a4Q7Te6jcGhHPYbSig/rg2q5PObd6SajiemVm3ewlGqpfu644
-         5Blfjst9QQT95RzWlLfk9rJvA94vL8w91xs3/BfC+cs37CHNKHlvmbiRivIvL6icBMYZ
-         JCrLsfugmAhujtWhAVmimv1MhdKlmKFUmobeCz/rdamM0xqc2Ggn0qP5zHOi6nfqCp95
-         yhOTIjgyy9U+EiWIZUcO0Vvsm3M+xsIAlm2y1B/5Ok9NgAQ0PLF8eHwBNjoTR2+EB6oE
-         5RVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=k2pP6uCXGE3hf4kIKSJ0TViSAKe2ZDHRqtthemQoyUE=;
-        b=quzCPOGu3tOzjrB21MDjEy5l8e6bFxA+/c71ALk/bM+C7QhrEqzyEgbdGPjDdpz5VA
-         5ftspYFE3GMvadFttzfZUUQGF4KAQq6lvzNenqyDtS4pMkZp8sXzovW53hke0O7+6Xd6
-         Iju5CRJhlZ5i89UDNjd8/D6WBMiRKUnjm5namghZtuVh4t1DbT/ajZSdLR9jXgfxyMZE
-         /vS1cf9b/N0a60wpsp03XrIvGiu07r+6hG8CEL3MjmkM5Pc3dPqfeBuL1WAJ0akiMfjt
-         n6GH8/fJ3MGxhJJZBfY1m0P15M5yt9mhb9C12Cew1dI/k8rHhjxNNujNiOfCksKhSxqo
-         46ZQ==
-X-Gm-Message-State: AOAM532rAxdYHml6QQZNBNxorXy8rOdSerK3ww5biS4ZylmaSHZfj3v3
-        zswWfqB6cUtrPl5iLEIh1wI=
-X-Google-Smtp-Source: ABdhPJxL3L6K5Vdob33AgTHPTkGlZCq/T3PVfZsknGNaQ4ivB+nB3Am35D+EDOqj9Yl1PfZqpKP8Eg==
-X-Received: by 2002:aa7:8010:: with SMTP id j16mr7428036pfi.210.1599212571903;
-        Fri, 04 Sep 2020 02:42:51 -0700 (PDT)
-Received: from localhost.localdomain ([218.247.215.252])
-        by smtp.gmail.com with ESMTPSA id a7sm6256342pfd.194.2020.09.04.02.42.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 02:42:51 -0700 (PDT)
-From:   Xiaoliang Pang <dawning.pang@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        matthias.bgg@gmail.com, swboyd@chromium.org, yuehaibing@huawei.com,
-        tianjia.zhang@linux.alibaba.com, ryder.lee@mediatek.com
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Fri, 4 Sep 2020 05:42:37 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DF7C061245
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 02:42:36 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id CD0339CE; Fri,  4 Sep 2020 11:42:34 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 11:42:33 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dawning.pang@gmail.com
-Subject: [PATCH v2] cypto: mediatek - fix leaks in mtk_desc_ring_alloc
-Date:   Fri,  4 Sep 2020 17:42:33 +0800
-Message-Id: <20200904094233.11624-1-dawning.pang@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        wsd_upstream@mediatek.com, Mike Rapoport <rppt@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v5] iommu/mediatek: check 4GB mode by reading infracfg
+Message-ID: <20200904094233.GP6714@8bytes.org>
+References: <20200831105639.2856-1-miles.chen@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200831105639.2856-1-miles.chen@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the init loop, if an error occurs in function 'dma_alloc_coherent',
-then goto the err_cleanup section,
-in the cleanup loop,
-the struct mtk_ring rising[i] will not be released,
-causing a memory leak
+On Mon, Aug 31, 2020 at 06:56:39PM +0800, Miles Chen wrote:
+> In previous discussion [1] and [2], we found that it is risky to
+> use max_pfn or totalram_pages to tell if 4GB mode is enabled.
+> 
+> Check 4GB mode by reading infracfg register, remove the usage
+> of the un-exported symbol max_pfn.
+> 
+> This is a step towards building mtk_iommu as a kernel module.
+> 
+> [1] https://lore.kernel.org/lkml/20200603161132.2441-1-miles.chen@mediatek.com/
+> [2] https://lore.kernel.org/lkml/20200604080120.2628-1-miles.chen@mediatek.com/
+> [3] https://lore.kernel.org/lkml/20200715205120.GA778876@bogus/
+> 
+> Cc: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Yong Wu <yong.wu@mediatek.com>
+> Cc: Yingjoe Chen <yingjoe.chen@mediatek.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 
-Signed-off-by: Xiaoliang Pang <dawning.pang@gmail.com>
----
- drivers/crypto/mediatek/mtk-platform.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+You forgot to add the tags here from v4, at least Matthias' Reviewed-by
+is missing. Please add the missing tags and resend.
 
-diff --git a/drivers/crypto/mediatek/mtk-platform.c b/drivers/crypto/mediatek/mtk-platform.c
-index 05d341e4a696..ebb3bdef0dbe 100644
---- a/drivers/crypto/mediatek/mtk-platform.c
-+++ b/drivers/crypto/mediatek/mtk-platform.c
-@@ -469,13 +469,13 @@ static int mtk_desc_ring_alloc(struct mtk_cryp *cryp)
- 	return 0;
- 
- err_cleanup:
--	for (; i >= 0; --i) {
-+	do {
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->res_base, ring[i]->res_dma);
- 		dma_free_coherent(cryp->dev, MTK_DESC_RING_SZ,
- 				  ring[i]->cmd_base, ring[i]->cmd_dma);
- 		kfree(ring[i]);
--	}
-+	}while(i--);
- 	return err;
- }
- 
--- 
-2.17.1
 
+	Joerg
