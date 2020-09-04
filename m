@@ -2,50 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CC925DA30
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CD525DAAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730299AbgIDNm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
+        id S1730698AbgIDN4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:56:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730467AbgIDNeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:34:22 -0400
+        id S1730659AbgIDNz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:55:28 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0BC5B21655;
-        Fri,  4 Sep 2020 13:31:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 591D720BED;
+        Fri,  4 Sep 2020 13:30:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599226262;
-        bh=Qoayjoiq0uSKgxLGXmLIhulkMjEAiiCj6O1lrgz1Tlc=;
+        s=default; t=1599226224;
+        bh=vrGj66RR5jkgNEtI7rY2hFH1JXzu/8HYiRlDy7c4y0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ygBMttGZzvyz7hq5c6blWlcm1lwWKR3tVUPr5h+ZkjA82qvuE4LvD1L1QESZit10V
-         SJvC04yOVDN5k2SAmw3dHeryzWnRdtkdrdxKE+Jt5xQC7wt0yR8cVXnUBcZZAlrLJq
-         Tc8G8DQv3xMDX5ELDtYvY1wURQIAikptpBZbJAQg=
+        b=XwVNfGeobSFKGqSzCBDy9D0oaZ/3xgE0UPPkRwpC9THPcSpF8VUzlrMiTvyFEOqse
+         fNKaTWVvbUTuKwTrs58cSPHk1a47Z6r4u+3THaJs+qWFkBW/8XE5wA6zsHZv92RyMt
+         gxcaIf5aJEzwmtsSJQ6Tm1uDMipHMET0N0C0Tquc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Clarke <pc@us.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        Tony Jones <tonyj@suse.de>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.8 06/17] perf record/stat: Explicitly call out event modifiers in the documentation
-Date:   Fri,  4 Sep 2020 15:30:05 +0200
-Message-Id: <20200904120258.295056672@linuxfoundation.org>
+        Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 14/16] sdhci: tegra: Remove SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK for Tegra186
+Date:   Fri,  4 Sep 2020 15:30:07 +0200
+Message-Id: <20200904120257.894661509@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200904120257.983551609@linuxfoundation.org>
-References: <20200904120257.983551609@linuxfoundation.org>
+In-Reply-To: <20200904120257.203708503@linuxfoundation.org>
+References: <20200904120257.203708503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,63 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Sowjanya Komatineni <skomatineni@nvidia.com>
 
-commit e48a73a312ebf19cc3d72aa74985db25c30757c1 upstream.
+commit 391d89dba8c290859a3e29430d0b9e32c358bb0d upstream.
 
-Event modifiers are not mentioned in the perf record or perf stat
-manpages.  Add them to orient new users more effectively by pointing
-them to the perf list manpage for details.
+commit 4346b7c7941d ("mmc: tegra: Add Tegra186 support")
 
-Fixes: 2055fdaf8703 ("perf list: Document precise event sampling for AMD IBS")
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Paul Clarke <pc@us.ibm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Tony Jones <tonyj@suse.de>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20200901215853.276234-1-kim.phillips@amd.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK is set for Tegra186 from the
+beginning of its support in driver.
+
+Tegra186 SDMMC hardware by default uses timeout clock (TMCLK) instead
+of SDCLK and this quirk should not be set.
+
+So, this patch remove this quirk for Tegra186.
+
+Fixes: 4346b7c7941d ("mmc: tegra: Add Tegra186 support")
+Cc: stable <stable@vger.kernel.org> # 5.4
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+Link: https://lore.kernel.org/r/1598548861-32373-3-git-send-email-skomatineni@nvidia.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/Documentation/perf-record.txt |    4 ++++
- tools/perf/Documentation/perf-stat.txt   |    4 ++++
- 2 files changed, 8 insertions(+)
+ drivers/mmc/host/sdhci-tegra.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -33,6 +33,10 @@ OPTIONS
-         - a raw PMU event (eventsel+umask) in the form of rNNN where NNN is a
- 	  hexadecimal event descriptor.
+--- a/drivers/mmc/host/sdhci-tegra.c
++++ b/drivers/mmc/host/sdhci-tegra.c
+@@ -1406,7 +1406,6 @@ static const struct sdhci_ops tegra186_s
  
-+        - a symbolic or raw PMU event followed by an optional colon
-+	  and a list of event modifiers, e.g., cpu-cycles:p.  See the
-+	  linkperf:perf-list[1] man page for details on event modifiers.
-+
- 	- a symbolically formed PMU event like 'pmu/param1=0x3,param2/' where
- 	  'param1', 'param2', etc are defined as formats for the PMU in
- 	  /sys/bus/event_source/devices/<pmu>/format/*.
---- a/tools/perf/Documentation/perf-stat.txt
-+++ b/tools/perf/Documentation/perf-stat.txt
-@@ -39,6 +39,10 @@ report::
- 	- a raw PMU event (eventsel+umask) in the form of rNNN where NNN is a
- 	  hexadecimal event descriptor.
- 
-+        - a symbolic or raw PMU event followed by an optional colon
-+	  and a list of event modifiers, e.g., cpu-cycles:p.  See the
-+	  linkperf:perf-list[1] man page for details on event modifiers.
-+
- 	- a symbolically formed event like 'pmu/param1=0x3,param2/' where
- 	  param1 and param2 are defined as formats for the PMU in
- 	  /sys/bus/event_source/devices/<pmu>/format/*
+ static const struct sdhci_pltfm_data sdhci_tegra186_pdata = {
+ 	.quirks = SDHCI_QUIRK_BROKEN_TIMEOUT_VAL |
+-		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
+ 		  SDHCI_QUIRK_SINGLE_POWER_WRITE |
+ 		  SDHCI_QUIRK_NO_HISPD_BIT |
+ 		  SDHCI_QUIRK_BROKEN_ADMA_ZEROLEN_DESC |
 
 
