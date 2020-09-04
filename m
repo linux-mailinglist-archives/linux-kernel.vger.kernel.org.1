@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F3F25D188
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D225D198
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729675AbgIDGhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729683AbgIDGhH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:37:07 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310EDC06125E
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Sep 2020 23:37:07 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id c142so4062563pfb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 03 Sep 2020 23:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=oQZJoBmmMUGv3gcRM3sLFLuAwsd9ni+yGmgd7QDzGzk=;
-        b=s1FU44aQcy9VujfxiSwv6BFGLpjAORDbRdzx+EOlG3JC2Lh743fYFcUfakH+aUKlzG
-         vh/SwBOLcws5UMxXxHJiaAqaQmX2rJGnzmoqG9L30ERf4/LeW+fS9P4VNJEgqa19vzLS
-         /6OooSwRtmVIE+BI3gsKtNVVdVRzxIQosZSxa2qjAF2AiYIt1b+rmvwTlgACgy+kJILD
-         LJIYRMSSVK+EEo4b+pBkWAYTZaE50oYdyiqfntUxkLd2sQ+7TMnLEQv0G+n1wi/p9tyb
-         UfdQWBKH10k+Oz7ov+qzTyIKMaENoH2ZSyiy6zQkk0ISU53rSS5vMWvhQHoOn6gUI9W7
-         pM5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=oQZJoBmmMUGv3gcRM3sLFLuAwsd9ni+yGmgd7QDzGzk=;
-        b=bCw14OqGppRUGG0OGpgtwSihwzhsOU3ElUdkA5ukC6zrUamqtPu/b/xYd6+kQ2vBAO
-         xvJku6LUqYXx4uDxFEE+HVuYryzPLzRreB1I7ulkyCGfCb/ylJfVb3qYrRBUMUxXCnle
-         ixevLpTLO5vNAg+wrCmBpfs/eiB5T9StVicSl49DZAX/wVQ7A1Ud7AYz48DUyT5SiJnU
-         4KVCRTOl1LASOVDEqgaGW1bXCCluZcxN0RUxh8ueGsfO+PVdO7ffuf3eNO6M6wNUz2Hw
-         1RqQsBOHjaZj+FkssDal8EndSBqu3d+sU6RAeyHZccV05vRdyau4U+GhgTAZPtXBD5j8
-         TCeQ==
-X-Gm-Message-State: AOAM532dT0gkB9IIrUPj9qqTsCz1FnYMNEK5CUZ9c6etypTk5DI/jncv
-        rmmAS9ePidniN2zccOa6n4SL
-X-Google-Smtp-Source: ABdhPJwv8ltLoPCJEp04NdRQ4wvrlJO3Sq81sjGV6vlMdvHUTU0YqDE10wc3BIlH0NuKSppBlRNjnQ==
-X-Received: by 2002:a63:29c6:: with SMTP id p189mr5907174pgp.148.1599201426682;
-        Thu, 03 Sep 2020 23:37:06 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id 143sm5315040pfc.66.2020.09.03.23.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Sep 2020 23:37:06 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dmitry.baryshkov@linaro.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 6/6] arm64: dts: qcom: qrb5165-rb5: Add gpio-line-names for PM8150(B&L)
-Date:   Fri,  4 Sep 2020 12:06:37 +0530
-Message-Id: <20200904063637.28632-7-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200904063637.28632-1-manivannan.sadhasivam@linaro.org>
-References: <20200904063637.28632-1-manivannan.sadhasivam@linaro.org>
+        id S1729661AbgIDGjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:39:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10811 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726251AbgIDGjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 02:39:11 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id A6DF026C41212103A2AA;
+        Fri,  4 Sep 2020 14:39:05 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 4 Sep 2020 14:38:59 +0800
+From:   Zeng Tao <prime.zeng@hisilicon.com>
+To:     <gregkh@linuxfoundation.org>
+CC:     Zeng Tao <prime.zeng@hisilicon.com>,
+        stable <stable@vger.kernel.org>,
+        "Alan Stern" <stern@rowland.harvard.edu>,
+        chenqiwu <chenqiwu@xiaomi.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] usb: core: fix slab-out-of-bounds Read in read_descriptors
+Date:   Fri, 4 Sep 2020 14:37:44 +0800
+Message-ID: <1599201467-11000-1-git-send-email-prime.zeng@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add gpio-line-names for the GPIO pins exposed by PM8150, PM8150B and
-PM8150L PMIC nodes.
+The USB device descriptor may get changed between two consecutive
+enumerations on the same device for some reason, such as DFU or
+malicius device.
+In that case, we may access the changing descriptor if we don't take
+the device lock here.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+The issue is reported:
+https://syzkaller.appspot.com/bug?id=901a0d9e6519ef8dc7acab25344bd287dd3c7be9
+
+Cc: stable <stable@vger.kernel.org>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Reported-by: syzbot+256e56ddde8b8957eabd@syzkaller.appspotmail.com
+Fixes: 217a9081d8e6 ("USB: add all configs to the "descriptors" attribute")
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
 ---
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 47 ++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/usb/core/sysfs.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index cf6dc0ec1640..1528a865f1f8 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -412,6 +412,53 @@
- 	status = "okay";
- };
+diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
+index a2ca38e..8d13419 100644
+--- a/drivers/usb/core/sysfs.c
++++ b/drivers/usb/core/sysfs.c
+@@ -889,7 +889,11 @@ read_descriptors(struct file *filp, struct kobject *kobj,
+ 	size_t srclen, n;
+ 	int cfgno;
+ 	void *src;
++	int retval;
  
-+&pm8150_gpios {
-+	gpio-reserved-ranges = <1 1>, <3 2>, <7 1>;
-+	gpio-line-names =
-+		"NC",
-+		"OPTION2",
-+		"PM_GPIO-F",
-+		"PM_SLP_CLK_IN",
-+		"OPTION1",
-+		"VOL_UP_N",
-+		"PM8250_GPIO7", /* Blue LED */
-+		"SP_ARI_PWR_ALARM",
-+		"GPIO_9_P", /* Yellow LED */
-+		"GPIO_10_P"; /* Green LED */
-+};
-+
-+&pm8150b_gpios {
-+	gpio-line-names =
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"HAP_BOOST_EN", /* SOM */
-+		"SMB_STAT", /* SOM */
-+		"NC",
-+		"NC",
-+		"SDM_FORCE_USB_BOOT",
-+		"NC",
-+		"NC",
-+		"NC";
-+};
-+
-+&pm8150l_gpios {
-+	gpio-line-names =
-+		"NC",
-+		"PM3003A_EN",
-+		"NC",
-+		"NC",
-+		"PM_GPIO5", /* HDMI RST_N */
-+		"PM_GPIO-A", /* PWM */
-+		"PM_GPIO7",
-+		"NC",
-+		"NC",
-+		"PM_GPIO-B",
-+		"NC",
-+		"PM3003A_MODE";
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
++	retval = usb_lock_device_interruptible(udev);
++	if (retval < 0)
++		return -EINTR;
+ 	/* The binary attribute begins with the device descriptor.
+ 	 * Following that are the raw descriptor entries for all the
+ 	 * configurations (config plus subsidiary descriptors).
+@@ -914,6 +918,7 @@ read_descriptors(struct file *filp, struct kobject *kobj,
+ 			off -= srclen;
+ 		}
+ 	}
++	usb_unlock_device(udev);
+ 	return count - nleft;
+ }
+ 
 -- 
-2.17.1
+2.8.1
 
