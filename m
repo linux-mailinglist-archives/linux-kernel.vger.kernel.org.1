@@ -2,138 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FC825D31C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D7E25D321
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbgIDH7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:59:50 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34508 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729698AbgIDH7r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:59:47 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 2D56729AFE0
-Subject: Re: [PATCH] media: mtk-mdp: Fix Null pointer dereference when calling
- list_add
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-media@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, mchehab@kernel.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, dafna3@gmail.com
-References: <20200828135541.8282-1-dafna.hirschfeld@collabora.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <d61eb22b-f3b7-50bb-f44f-629928d5e8c8@collabora.com>
-Date:   Fri, 4 Sep 2020 09:59:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729801AbgIDIAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 04:00:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728588AbgIDIAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 04:00:19 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C610206A5;
+        Fri,  4 Sep 2020 08:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599206418;
+        bh=AjNgBeE5/eYX6ye9YG9OXW6qEYknDEvbo8qalHR4Aww=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OS9IXEEJEaiEDDTr+nbsUYaIfq8OLMeXmeIWWwOuvW/E7nfs0VRMPYVweghLq//Tk
+         xz5dFHDbKw0JF1vty77DEhhLgxAVd6Jq0fmDyzAUo4y+KRGWHlzDE4cueA1Q4IqtZb
+         HPdkIAKSgKzE5oK/qPfn3wDXsQ6nwudea2xU36c8=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kE6ds-0095rI-7e; Fri, 04 Sep 2020 09:00:16 +0100
 MIME-Version: 1.0
-In-Reply-To: <20200828135541.8282-1-dafna.hirschfeld@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 04 Sep 2020 09:00:16 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        julien.thierry.kdev@gmail.com,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/4] arm64: smp: Introduce a new IPI as
+ IPI_CALL_NMI_FUNC
+In-Reply-To: <CAFA6WYNYGGsFwOdh35o2zHZb8k7o8YQ3CPDi_A=5c+VBLY9w_w@mail.gmail.com>
+References: <1599134712-30923-1-git-send-email-sumit.garg@linaro.org>
+ <1599134712-30923-2-git-send-email-sumit.garg@linaro.org>
+ <05a195374cc81008e95e258221fe7d2b@kernel.org>
+ <CAFA6WYNYGGsFwOdh35o2zHZb8k7o8YQ3CPDi_A=5c+VBLY9w_w@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <6125bdeb9ebd0cb51aa85fe36dee841c@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, tglx@linutronix.de, jason@lakedaemon.net, julien.thierry.kdev@gmail.com, dianders@chromium.org, daniel.thompson@linaro.org, jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dafna,
-
-Thank you to work on this fix.
-
-On 28/8/20 15:55, Dafna Hirschfeld wrote:
-> In list_add, the first variable is the new node and the second
-> is the list head. The function is called with a wrong order causing
-> NULL dereference:
+On 2020-09-04 06:30, Sumit Garg wrote:
+> On Thu, 3 Sep 2020 at 22:06, Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2020-09-03 13:05, Sumit Garg wrote:
+>> > Introduce a new inter processor interrupt as IPI_CALL_NMI_FUNC that
+>> > can be invoked to run special handlers in NMI context. One such handler
+>> > example is kgdb_nmicallback() which is invoked in order to round up
+>> > CPUs
+>> > to enter kgdb context.
+>> >
+>> > As currently pseudo NMIs are supported on specific arm64 platforms
+>> > which
+>> > incorporates GICv3 or later version of interrupt controller. In case a
+>> > particular platform doesn't support pseudo NMIs, IPI_CALL_NMI_FUNC will
+>> > act as a normal IPI which can still be used to invoke special handlers.
+>> >
+>> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+>> > ---
+>> >  arch/arm64/include/asm/smp.h |  1 +
+>> >  arch/arm64/kernel/smp.c      | 11 +++++++++++
+>> >  2 files changed, 12 insertions(+)
+>> >
+>> > diff --git a/arch/arm64/include/asm/smp.h
+>> > b/arch/arm64/include/asm/smp.h
+>> > index 2e7f529..e85f5d5 100644
+>> > --- a/arch/arm64/include/asm/smp.h
+>> > +++ b/arch/arm64/include/asm/smp.h
+>> > @@ -89,6 +89,7 @@ extern void secondary_entry(void);
+>> >
+>> >  extern void arch_send_call_function_single_ipi(int cpu);
+>> >  extern void arch_send_call_function_ipi_mask(const struct cpumask
+>> > *mask);
+>> > +extern void arch_send_call_nmi_func_ipi_mask(const struct cpumask
+>> > *mask);
+>> >
+>> >  #ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+>> >  extern void arch_send_wakeup_ipi_mask(const struct cpumask *mask);
+>> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+>> > index b6bde26..1b4c07c 100644
+>> > --- a/arch/arm64/kernel/smp.c
+>> > +++ b/arch/arm64/kernel/smp.c
+>> > @@ -74,6 +74,7 @@ enum ipi_msg_type {
+>> >       IPI_TIMER,
+>> >       IPI_IRQ_WORK,
+>> >       IPI_WAKEUP,
+>> > +     IPI_CALL_NMI_FUNC,
+>> >       NR_IPI
+>> >  };
+>> >
+>> > @@ -793,6 +794,7 @@ static const char *ipi_types[NR_IPI]
+>> > __tracepoint_string = {
+>> >       S(IPI_TIMER, "Timer broadcast interrupts"),
+>> >       S(IPI_IRQ_WORK, "IRQ work interrupts"),
+>> >       S(IPI_WAKEUP, "CPU wake-up interrupts"),
+>> > +     S(IPI_CALL_NMI_FUNC, "NMI function call interrupts"),
+>> >  };
+>> >
+>> >  static void smp_cross_call(const struct cpumask *target, unsigned int
+>> > ipinr);
+>> > @@ -840,6 +842,11 @@ void arch_irq_work_raise(void)
+>> >  }
+>> >  #endif
+>> >
+>> > +void arch_send_call_nmi_func_ipi_mask(const struct cpumask *mask)
+>> > +{
+>> > +     smp_cross_call(mask, IPI_CALL_NMI_FUNC);
+>> > +}
+>> > +
+>> >  static void local_cpu_stop(void)
+>> >  {
+>> >       set_cpu_online(smp_processor_id(), false);
+>> > @@ -932,6 +939,10 @@ static void do_handle_IPI(int ipinr)
+>> >               break;
+>> >  #endif
+>> >
+>> > +     case IPI_CALL_NMI_FUNC:
+>> > +             /* nop, IPI handlers for special features can be added here. */
+>> > +             break;
+>> > +
+>> >       default:
+>> >               pr_crit("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
+>> >               break;
+>> 
+>> I'm really not keen on adding more IPIs to the SMP code. One of the
+>> main reasons for using these SGIs as normal IRQs was to make them
+>> "requestable" from non-arch code as if they were standard percpu
+>> interrupts.
+>> 
+>> What prevents you from moving that all the way to the kgdb code?
+>> 
 > 
-> [   15.527030] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-> [   15.542317] Mem abort info:
-> [   15.545152]   ESR = 0x96000044
-> [   15.548248]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [   15.553624]   SET = 0, FnV = 0
-> [   15.556715]   EA = 0, S1PTW = 0
-> [   15.559892] Data abort info:
-> [   15.562799]   ISV = 0, ISS = 0x00000044
-> [   15.566678]   CM = 0, WnR = 1
-> [   15.569683] user pgtable: 4k pages, 48-bit VAs, pgdp=00000001373f0000
-> [   15.576196] [0000000000000008] pgd=0000000000000000, p4d=0000000000000000
-> [   15.583101] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-> [   15.588747] Modules linked in: mtk_mdp(+) cfg80211 v4l2_mem2mem videobuf2_vmalloc videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common vide
-> odev mt8173_rt5650 smsc95xx usbnet ecdh_generic ecc snd_soc_rt5645 mc mt8173_afe_pcm rfkill cros_ec_sensors snd_soc_mtk_common elan_i2c crct10dif_ce cros_ec_se
-> nsors_core snd_soc_rl6231 elants_i2c industrialio_triggered_buffer kfifo_buf mtk_vpu cros_ec_chardev cros_usbpd_charger cros_usbpd_logger sbs_battery display_c
-> onnector pwm_bl ip_tables x_tables ipv6
-> [   15.634295] CPU: 0 PID: 188 Comm: systemd-udevd Not tainted 5.9.0-rc2+ #69
-> [   15.641242] Hardware name: Google Elm (DT)
-> [   15.645381] pstate: 20000005 (nzCv daif -PAN -UAO BTYPE=--)
-> [   15.651022] pc : mtk_mdp_probe+0x134/0x3a8 [mtk_mdp]
-> [   15.656041] lr : mtk_mdp_probe+0x128/0x3a8 [mtk_mdp]
-> [   15.661055] sp : ffff80001255b910
-> [   15.669548] x29: ffff80001255b910 x28: 0000000000000000
-> [   15.679973] x27: ffff800009089bf8 x26: ffff0000fafde800
-> [   15.690347] x25: ffff0000ff7d2768 x24: ffff800009089010
-> [   15.700670] x23: ffff0000f01a7cd8 x22: ffff0000fafde810
-> [   15.710940] x21: ffff0000f01a7c80 x20: ffff0000f0c3c180
-> [   15.721148] x19: ffff0000ff7f1618 x18: 0000000000000010
-> [   15.731289] x17: 0000000000000000 x16: 0000000000000000
-> [   15.741375] x15: 0000000000aaaaaa x14: 0000000000000020
-> [   15.751399] x13: 00000000ffffffff x12: 0000000000000020
-> [   15.761363] x11: 0000000000000028 x10: 0101010101010101
-> [   15.771279] x9 : 0000000000000004 x8 : 7f7f7f7f7f7f7f7f
-> [   15.781148] x7 : 646bff6171606b2b x6 : 0000000000806d65
-> [   15.790981] x5 : ffff0000ff7f8360 x4 : 0000000000000000
-> [   15.800767] x3 : 0000000000000004 x2 : 0000000000000001
-> [   15.810501] x1 : 0000000000000005 x0 : 0000000000000000
-> [   15.820171] Call trace:
-> [   15.826944]  mtk_mdp_probe+0x134/0x3a8 [mtk_mdp]
-> [   15.835908]  platform_drv_probe+0x54/0xa8
-> [   15.844247]  really_probe+0xe4/0x3b0
-> [   15.852104]  driver_probe_device+0x58/0xb8
-> [   15.860457]  device_driver_attach+0x74/0x80
-> [   15.868854]  __driver_attach+0x58/0xe0
-> [   15.876770]  bus_for_each_dev+0x70/0xc0
-> [   15.884726]  driver_attach+0x24/0x30
-> [   15.892374]  bus_add_driver+0x14c/0x1f0
-> [   15.900295]  driver_register+0x64/0x120
-> [   15.908168]  __platform_driver_register+0x48/0x58
-> [   15.916864]  mtk_mdp_driver_init+0x20/0x1000 [mtk_mdp]
-> [   15.925943]  do_one_initcall+0x54/0x1b4
-> [   15.933662]  do_init_module+0x54/0x200
-> [   15.941246]  load_module+0x1cf8/0x22d0
-> [   15.948798]  __do_sys_finit_module+0xd8/0xf0
-> [   15.956829]  __arm64_sys_finit_module+0x20/0x30
-> [   15.965082]  el0_svc_common.constprop.0+0x6c/0x168
-> [   15.973527]  do_el0_svc+0x24/0x90
-> [   15.980403]  el0_sync_handler+0x90/0x198
-> [   15.987867]  el0_sync+0x158/0x180
-> [   15.994653] Code: 9400014b 2a0003fc 35000920 f9400280 (f9000417)
-> [   16.004299] ---[ end trace 76fee0203f9898e5 ]---
-> 
-> Fixes: 86698b9505bbc ("media: mtk-mdp: convert mtk_mdp_dev.comp array to list")
-> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-> ---
->  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> index f96c8b3bf861..976aa1f4829b 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-> @@ -94,7 +94,7 @@ static void mtk_mdp_reset_handler(void *priv)
->  void mtk_mdp_register_component(struct mtk_mdp_dev *mdp,
->  				struct mtk_mdp_comp *comp)
->  {
-> -	list_add(&mdp->comp_list, &comp->node);
-> +	list_add(&comp->node, &mdp->comp_list);
->  }
->  
->  void mtk_mdp_unregister_component(struct mtk_mdp_dev *mdp,
-> 
+> Since we only have one SGI left (SGI7) which this patch reserves for
+> NMI purposes, I am not sure what value add do you see to make it
+> requestable from non-arch code.
 
-FWIW this also fixes my problems with suspend/resume on my Acer Chromebook R13, so:
+We have one *guaranteed* SGI left. Potentially another 8 which we
+could dynamically discover (reading the priority registers should
+be enough to weed out the secure SGIs). And I'd like to keep that
+last interrupt "just in case" we'd need it to workaround something.
 
-Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Also, allocating SGI7 entirely to kgdb would not allow us to leverage
+> it for NMI backtrace support via magic sysrq. But with current
+> implementation we should be able to achieve that.
 
+I'd argue that there is no need for this interrupt to be a "well known
+number". Maybe putting this code in the kgdb code is one step too far,
+but keeping out of the arm64 SMP code is IMO the right thing to do.
+And if NMI backtracing is a thing, then we should probably implement
+that first.
 
+> Moreover, irq ids for normal interrupts are assigned via DT/ACPI, how
+> do you envision this for SGIs?
 
+Nothing could be further from the truth. How do you think MSIs work?
+We'd just bolt an allocator for non-arch IPIs.
 
+         M.
+-- 
+Jazz is not dead. It just smells funny...
