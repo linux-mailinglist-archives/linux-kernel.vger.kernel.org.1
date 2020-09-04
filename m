@@ -2,161 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D360925DDCE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA31325DDCB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726458AbgIDPca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:32:30 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33728 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726286AbgIDPcQ (ORCPT
+        id S1726623AbgIDPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:32:42 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:39809 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726445AbgIDPcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:32:16 -0400
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599233533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/5xKGogf2jBVbNZKgg8XxOTzz40y6C5I533fxnyVr5Q=;
-        b=NLzyzlMfwnEkQyVqWxqrJDkvCIRv28z3J0R8/WHnRQfIDkaiTVZRArlAlIwZQ1XN2oCK0a
-        RCiVcR0q4+bK4+/fn4WjkPetc0muQibd4NOpIdzNVDTfYDggU93D1Ui/UpTvekMDRzOHMO
-        Dp6jEgaWHmU+h8SXgVPwdF01MYUDVG4dXWDjPGZpBzYF1uQHEUA/ypFSdqwjgp9j+/QPlK
-        8VXleGPUBf1mFMlcraoSt+A+2aCGTP+q+4qt1ZkryBj1k/l/Ot/ffTJYZ7wEb8noqrjpgC
-        HojS7afa4A8zV4erUMFmsJIH87KdlIVBuBLrKDfKSI1g0T21GMWERNOL9laQxg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599233533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/5xKGogf2jBVbNZKgg8XxOTzz40y6C5I533fxnyVr5Q=;
-        b=fHh5xmSwZpKu67Km5unTGgh5R4xJmzbraM2YEFPoepTiZEoLVpdIfDiVJlSZCez/seZjcH
-        jqZb3cObc5s/pSDw==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v2 2/5] seqlock: Use unique prefix for seqcount_t property accessors
-Date:   Fri,  4 Sep 2020 17:32:28 +0200
-Message-Id: <20200904153231.11994-3-a.darwish@linutronix.de>
-In-Reply-To: <20200904153231.11994-1-a.darwish@linutronix.de>
-References: <20200904153231.11994-1-a.darwish@linutronix.de>
+        Fri, 4 Sep 2020 11:32:31 -0400
+X-Originating-IP: 90.66.108.79
+Received: from localhost (lfbn-lyo-1-1932-79.w90-66.abo.wanadoo.fr [90.66.108.79])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 741A91BF20C;
+        Fri,  4 Sep 2020 15:32:29 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 17:32:29 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 1/8] rtc: rx8010: remove unnecessary parentheses
+Message-ID: <20200904153229.GJ230586@piout.net>
+References: <20200904152116.2157-1-brgl@bgdev.pl>
+ <20200904152116.2157-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904152116.2157-2-brgl@bgdev.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At seqlock.h, the following set of functions:
+On 04/09/2020 17:21:09+0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Remove parentheses whenever they guard a single line.
 
-    - __seqcount_ptr()
-    - __seqcount_preemptible()
-    - __seqcount_assert()
+Those would be braces or curly brackets, not parentheses ;)
 
-act as plain seqcount_t "property" accessors. Meanwhile, the following
-group:
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/rtc/rtc-rx8010.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
+> index fe010151ec8f..2faf5357a3a5 100644
+> --- a/drivers/rtc/rtc-rx8010.c
+> +++ b/drivers/rtc/rtc-rx8010.c
+> @@ -181,9 +181,8 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
+>  		return ret;
+>  
+>  	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
+> -	if (flagreg < 0) {
+> +	if (flagreg < 0)
+>  		return flagreg;
+> -	}
+>  
+>  	if (flagreg & RX8010_FLAG_VLF)
+>  		ret = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
+> @@ -284,17 +283,15 @@ static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
+>  	int err;
+>  
+>  	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
+> -	if (flagreg < 0) {
+> +	if (flagreg < 0)
+>  		return flagreg;
+> -	}
+>  
+>  	if (rx8010->ctrlreg & (RX8010_CTRL_AIE | RX8010_CTRL_UIE)) {
+>  		rx8010->ctrlreg &= ~(RX8010_CTRL_AIE | RX8010_CTRL_UIE);
+>  		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
+>  						rx8010->ctrlreg);
+> -		if (err < 0) {
+> +		if (err < 0)
+>  			return err;
+> -		}
+>  	}
+>  
+>  	flagreg &= ~RX8010_FLAG_AF;
+> -- 
+> 2.26.1
+> 
 
-    - __seqcount_ptr()
-    - __seqcount_lock_preemptible()
-    - __seqcount_assert_lock_held()
-
-act as the equivalent set, but in the generic form, taking either
-seqcount_t or any of the seqcount_LOCKNAME_t variants.
-
-This is quite confusing, especially the first member where it is called
-exactly the same in both groups.
-
-Differentiate the first group by using "__seqprop" as prefix, and also
-use that same prefix for all of seqcount_LOCKNAME_t property accessors.
-
-While at it, constify the property accessors first parameter when
-appropriate.
-
-References: 55f3560df975 ("seqlock: Extend seqcount API with associated locks")
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- include/linux/seqlock.h | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 4f219df659b1..96198da7debc 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -157,7 +157,9 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
-  */
- 
- /*
-- * SEQCOUNT_LOCKNAME() - Instantiate seqcount_LOCKNAME_t and helpers
-+ * SEQCOUNT_LOCKNAME()           - Instantiate seqcount_LOCKNAME_t and helpers
-+ * seqprop_seqcount_LOCKNAME_*() - Property accessors for seqcount_LOCKNAME_t
-+ *
-  * @lockname:		"LOCKNAME" part of seqcount_LOCKNAME_t
-  * @locktype:		LOCKNAME canonical C data type
-  * @preemptible:	preemptibility of above lockname
-@@ -177,19 +179,19 @@ seqcount_##lockname##_init(seqcount_##lockname##_t *s, locktype *lock)	\
- }									\
- 									\
- static __always_inline seqcount_t *					\
--__seqcount_##lockname##_ptr(seqcount_##lockname##_t *s)			\
-+__seqprop_seqcount_##lockname##_ptr(seqcount_##lockname##_t *s)		\
- {									\
- 	return &s->seqcount;						\
- }									\
- 									\
- static __always_inline bool						\
--__seqcount_##lockname##_preemptible(seqcount_##lockname##_t *s)		\
-+__seqprop_seqcount_##lockname##_preemptible(const seqcount_##lockname##_t *s)\
- {									\
- 	return preemptible;						\
- }									\
- 									\
- static __always_inline void						\
--__seqcount_##lockname##_assert(seqcount_##lockname##_t *s)		\
-+__seqprop_seqcount_##lockname##_assert(const seqcount_##lockname##_t *s)\
- {									\
- 	__SEQ_LOCK(lockdep_assert_held(lockmember));			\
- }
-@@ -198,17 +200,17 @@ __seqcount_##lockname##_assert(seqcount_##lockname##_t *s)		\
-  * __seqprop() for seqcount_t
-  */
- 
--static inline seqcount_t *__seqcount_ptr(seqcount_t *s)
-+static inline seqcount_t *__seqprop_seqcount_ptr(seqcount_t *s)
- {
- 	return s;
- }
- 
--static inline bool __seqcount_preemptible(seqcount_t *s)
-+static inline bool __seqprop_seqcount_preemptible(const seqcount_t *s)
- {
- 	return false;
- }
- 
--static inline void __seqcount_assert(seqcount_t *s)
-+static inline void __seqprop_seqcount_assert(const seqcount_t *s)
- {
- 	lockdep_assert_preemption_disabled();
- }
-@@ -237,10 +239,10 @@ SEQCOUNT_LOCKNAME(ww_mutex,	struct ww_mutex,	true,	&s->lock->base)
- #define SEQCNT_WW_MUTEX_ZERO(name, lock) 	SEQCOUNT_LOCKNAME_ZERO(name, lock)
- 
- #define __seqprop_case(s, lockname, prop)				\
--	seqcount_##lockname##_t: __seqcount_##lockname##_##prop((void *)(s))
-+	seqcount_##lockname##_t: __seqprop_seqcount_##lockname##_##prop((void *)(s))
- 
- #define __seqprop(s, prop) _Generic(*(s),				\
--	seqcount_t:		__seqcount_##prop((void *)(s)),		\
-+	seqcount_t:		__seqprop_seqcount_##prop((void *)(s)),	\
- 	__seqprop_case((s),	raw_spinlock,	prop),			\
- 	__seqprop_case((s),	spinlock,	prop),			\
- 	__seqprop_case((s),	rwlock,		prop),			\
 -- 
-2.28.0
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
