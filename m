@@ -2,646 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3350925DB12
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E99325DB1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730732AbgIDOMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:12:22 -0400
-Received: from crapouillou.net ([89.234.176.41]:57332 "EHLO crapouillou.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730610AbgIDOLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:11:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1599228655; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yalC26a3VC2PCLw1LYO9znEG+bwSEGFE6DMy7qkg+6I=;
-        b=wv+95wv0FKWHkz3xM8Ftr7IAWWQV9M8a0GrNONhn0CMUTx13XrnKOrohUmCkt5xlSSns7z
-        oIeANaAJxrc4cpVCcMbrRkA0lxcxGoC9dpVRJL/sDUGMc7AAq7LB8JjOVXqbR4zQ1PkEKe
-        of1fVnqWi/YbxlbVqfqsmQQNGfZENEo=
-Date:   Fri, 04 Sep 2020 16:10:42 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v2 1/1] USB: PHY: JZ4770: Use the generic PHY framework.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     kishon@ti.com, vkoul@kernel.org, balbi@kernel.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, christophe.jaillet@wanadoo.fr,
-        aric.pzqi@ingenic.com, dongsheng.qiu@ingenic.com,
-        rick.tyliu@ingenic.com, yanfei.li@ingenic.com,
-        sernia.zhou@foxmail.com, zhenwenjin@gmail.com
-Message-Id: <UP05GQ.XQT4W4AH5E8W1@crapouillou.net>
-In-Reply-To: <20200831135046.54460-2-zhouyanjie@wanyeetech.com>
-References: <20200831135046.54460-1-zhouyanjie@wanyeetech.com>
-        <20200831135046.54460-2-zhouyanjie@wanyeetech.com>
+        id S1730757AbgIDONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:13:23 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26683 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730689AbgIDOLk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:11:40 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-373-nPynfocCOZmSC5MCEFP3RA-1; Fri, 04 Sep 2020 10:11:36 -0400
+X-MC-Unique: nPynfocCOZmSC5MCEFP3RA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 333FC1006708;
+        Fri,  4 Sep 2020 14:11:35 +0000 (UTC)
+Received: from [10.36.112.51] (ovpn-112-51.ams2.redhat.com [10.36.112.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4F9FF19C59;
+        Fri,  4 Sep 2020 14:11:30 +0000 (UTC)
+Subject: Re: [PATCH v4 01/10] vfio/fsl-mc: Add VFIO framework skeleton for
+ fsl-mc devices
+To:     Diana Craciun OSS <diana.craciun@oss.nxp.com>,
+        alex.williamson@redhat.com, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, bharatb.linux@gmail.com,
+        laurentiu.tudor@nxp.com, Bharat Bhushan <Bharat.Bhushan@nxp.com>
+References: <20200826093315.5279-1-diana.craciun@oss.nxp.com>
+ <20200826093315.5279-2-diana.craciun@oss.nxp.com>
+ <4636da7d-0c97-4c14-cfac-bdb4c9e6cd83@redhat.com>
+ <da339828-1696-7d46-3548-3b99746e92fe@oss.nxp.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <11a45457-81c6-287a-9a8f-4d789ba2e82f@redhat.com>
+Date:   Fri, 4 Sep 2020 16:11:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <da339828-1696-7d46-3548-3b99746e92fe@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+Hi Diana,
 
-Le lun. 31 ao=C3=BBt 2020 =C3=A0 21:50, =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Y=
-anjie)=20
-<zhouyanjie@wanyeetech.com> a =C3=A9crit :
-> Used the generic PHY framework API to create the PHY,
-> and move the driver to driver/phy/ingenic.
->=20
-> Tested-by: =E5=91=A8=E6=AD=A3 (Zhou Zheng) <sernia.zhou@foxmail.com>
-> Co-developed-by: =E6=BC=86=E9=B9=8F=E6=8C=AF (Qi Pengzhen) <aric.pzqi@ing=
-enic.com>
-> Signed-off-by: =E6=BC=86=E9=B9=8F=E6=8C=AF (Qi Pengzhen) <aric.pzqi@ingen=
-ic.com>
-> Signed-off-by: =E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wany=
-eetech.com>
-> ---
->=20
-> Notes:
->     v1->v2:
->     Fix bug, ".of_match_table =3D=20
-> of_match_ptr(ingenic_usb_phy_of_matches)" is wrong
->     and should be replaced with ".of_match_table =3D=20
-> ingenic_usb_phy_of_matches".
->=20
->  drivers/phy/Kconfig                                |   1 +
->  drivers/phy/Makefile                               |   1 +
->  drivers/phy/ingenic/Kconfig                        |  12 +
->  drivers/phy/ingenic/Makefile                       |   2 +
->  .../phy-jz4770.c =3D> phy/ingenic/phy-ingenic-usb.c} | 256=20
-> ++++++++++++---------
->  drivers/usb/phy/Kconfig                            |   8 -
->  drivers/usb/phy/Makefile                           |   1 -
->  7 files changed, 165 insertions(+), 116 deletions(-)
->  create mode 100644 drivers/phy/ingenic/Kconfig
->  create mode 100644 drivers/phy/ingenic/Makefile
->  rename drivers/{usb/phy/phy-jz4770.c =3D>=20
-> phy/ingenic/phy-ingenic-usb.c} (63%)
->=20
-> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-> index de9362c25c07..0534b0fdd057 100644
-> --- a/drivers/phy/Kconfig
-> +++ b/drivers/phy/Kconfig
-> @@ -55,6 +55,7 @@ source "drivers/phy/broadcom/Kconfig"
->  source "drivers/phy/cadence/Kconfig"
->  source "drivers/phy/freescale/Kconfig"
->  source "drivers/phy/hisilicon/Kconfig"
-> +source "drivers/phy/ingenic/Kconfig"
->  source "drivers/phy/lantiq/Kconfig"
->  source "drivers/phy/marvell/Kconfig"
->  source "drivers/phy/mediatek/Kconfig"
-> diff --git a/drivers/phy/Makefile b/drivers/phy/Makefile
-> index c27408e4daae..ab24f0d20763 100644
-> --- a/drivers/phy/Makefile
-> +++ b/drivers/phy/Makefile
-> @@ -14,6 +14,7 @@ obj-y					+=3D allwinner/	\
->  					   cadence/	\
->  					   freescale/	\
->  					   hisilicon/	\
-> +					   ingenic/	\
->  					   intel/	\
->  					   lantiq/	\
->  					   marvell/	\
-> diff --git a/drivers/phy/ingenic/Kconfig b/drivers/phy/ingenic/Kconfig
-> new file mode 100644
-> index 000000000000..b9581eae89dd
-> --- /dev/null
-> +++ b/drivers/phy/ingenic/Kconfig
-> @@ -0,0 +1,12 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Phy drivers for Ingenic platforms
-> +#
-> +config PHY_INGENIC_USB
-> +	tristate "Ingenic SoCs USB PHY Driver"
-> +	depends on (MACH_INGENIC && MIPS) || COMPILE_TEST
+On 9/4/20 3:59 PM, Diana Craciun OSS wrote:
+> Hi Eric,
+> 
+> On 9/3/2020 5:06 PM, Auger Eric wrote:
+>> Hi Diana,
+>>
+>> On 8/26/20 11:33 AM, Diana Craciun wrote:
+>>> From: Bharat Bhushan <Bharat.Bhushan@nxp.com>
+>>>
+>>> DPAA2 (Data Path Acceleration Architecture) consists in
+>>> mechanisms for processing Ethernet packets, queue management,
+>>> accelerators, etc.
+>>>
+>>> The Management Complex (mc) is a hardware entity that manages the DPAA2
+>>> hardware resources. It provides an object-based abstraction for software
+>>> drivers to use the DPAA2 hardware. The MC mediates operations such as
+>>> create, discover, destroy of DPAA2 objects.
+>>> The MC provides memory-mapped I/O command interfaces (MC portals) which
+>>> DPAA2 software drivers use to operate on DPAA2 objects.
+>>>
+>>> A DPRC is a container object that holds other types of DPAA2 objects.
+>>> Each object in the DPRC is a Linux device and bound to a driver.
+>>> The MC-bus driver is a platform driver (different from PCI or platform
+>>> bus). The DPRC driver does runtime management of a bus instance. It
+>>> performs the initial scan of the DPRC and handles changes in the DPRC
+>>> configuration (adding/removing objects).
+>>>
+>>> All objects inside a container share the same hardware isolation
+>>> context, meaning that only an entire DPRC can be assigned to
+>>> a virtual machine.
+>>> When a container is assigned to a virtual machine, all the objects
+>>> within that container are assigned to that virtual machine.
+>>> The DPRC container assigned to the virtual machine is not allowed
+>>> to change contents (add/remove objects) by the guest. The restriction
+>>> is set by the host and enforced by the mc hardware.
+>>>
+>>> The DPAA2 objects can be directly assigned to the guest. However
+>>> the MC portals (the memory mapped command interface to the MC) need
+>>> to be emulated because there are commands that configure the
+>>> interrupts and the isolation IDs which are virtual in the guest.
+>>>
+>>> Example:
+>>> echo vfio-fsl-mc > /sys/bus/fsl-mc/devices/dprc.2/driver_override
+>>> echo dprc.2 > /sys/bus/fsl-mc/drivers/vfio-fsl-mc/bind
+>>>
+>>> The dprc.2 is bound to the VFIO driver and all the objects within
+>>> dprc.2 are going to be bound to the VFIO driver.
+>>>
+>>> This patch adds the infrastructure for VFIO support for fsl-mc
+>>> devices. Subsequent patches will add support for binding and secure
+>>> assigning these devices using VFIO.
+>>>
+>>> More details about the DPAA2 objects can be found here:
+>>> Documentation/networking/device_drivers/freescale/dpaa2/overview.rst
+>>>
+>>> Signed-off-by: Bharat Bhushan <Bharat.Bhushan@nxp.com>
+>>> Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+>>> ---
+>>>   MAINTAINERS                               |   6 +
+>>>   drivers/vfio/Kconfig                      |   1 +
+>>>   drivers/vfio/Makefile                     |   1 +
+>>>   drivers/vfio/fsl-mc/Kconfig               |   9 ++
+>>>   drivers/vfio/fsl-mc/Makefile              |   4 +
+>>>   drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 160 ++++++++++++++++++++++
+>>>   drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  14 ++
+>>>   include/uapi/linux/vfio.h                 |   1 +
+>>>   8 files changed, 196 insertions(+)
+>>>   create mode 100644 drivers/vfio/fsl-mc/Kconfig
+>>>   create mode 100644 drivers/vfio/fsl-mc/Makefile
+>>>   create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>>   create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 3b186ade3597..f3f9ea108588 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -18229,6 +18229,12 @@ F:    drivers/vfio/
+>>>   F:    include/linux/vfio.h
+>>>   F:    include/uapi/linux/vfio.h
+>>>   +VFIO FSL-MC DRIVER
+>>> +M:    Diana Craciun <diana.craciun@oss.nxp.com>
+>>> +L:    kvm@vger.kernel.org
+>>> +S:    Maintained
+>>> +F:    drivers/vfio/fsl-mc/
+>>> +
+>>>   VFIO MEDIATED DEVICE DRIVERS
+>>>   M:    Kirti Wankhede <kwankhede@nvidia.com>
+>>>   L:    kvm@vger.kernel.org
+>>> diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
+>>> index fd17db9b432f..5533df91b257 100644
+>>> --- a/drivers/vfio/Kconfig
+>>> +++ b/drivers/vfio/Kconfig
+>>> @@ -47,4 +47,5 @@ menuconfig VFIO_NOIOMMU
+>>>   source "drivers/vfio/pci/Kconfig"
+>>>   source "drivers/vfio/platform/Kconfig"
+>>>   source "drivers/vfio/mdev/Kconfig"
+>>> +source "drivers/vfio/fsl-mc/Kconfig"
+>>>   source "virt/lib/Kconfig"
+>>> diff --git a/drivers/vfio/Makefile b/drivers/vfio/Makefile
+>>> index de67c4725cce..fee73f3d9480 100644
+>>> --- a/drivers/vfio/Makefile
+>>> +++ b/drivers/vfio/Makefile
+>>> @@ -9,3 +9,4 @@ obj-$(CONFIG_VFIO_SPAPR_EEH) += vfio_spapr_eeh.o
+>>>   obj-$(CONFIG_VFIO_PCI) += pci/
+>>>   obj-$(CONFIG_VFIO_PLATFORM) += platform/
+>>>   obj-$(CONFIG_VFIO_MDEV) += mdev/
+>>> +obj-$(CONFIG_VFIO_FSL_MC) += fsl-mc/
+>>> diff --git a/drivers/vfio/fsl-mc/Kconfig b/drivers/vfio/fsl-mc/Kconfig
+>>> new file mode 100644
+>>> index 000000000000..b1a527d6b6f2
+>>> --- /dev/null
+>>> +++ b/drivers/vfio/fsl-mc/Kconfig
+>>> @@ -0,0 +1,9 @@
+>>> +config VFIO_FSL_MC
+>>> +    tristate "VFIO support for QorIQ DPAA2 fsl-mc bus devices"
+>>> +    depends on VFIO && FSL_MC_BUS && EVENTFD
+>>> +    help
+>>> +      Driver to enable support for the VFIO QorIQ DPAA2 fsl-mc
+>>> +      (Management Complex) devices. This is required to passthrough
+>>> +      fsl-mc bus devices using the VFIO framework.
+>>> +
+>>> +      If you don't know what to do here, say N.
+>>> diff --git a/drivers/vfio/fsl-mc/Makefile b/drivers/vfio/fsl-mc/Makefile
+>>> new file mode 100644
+>>> index 000000000000..0c6e5d2ddaae
+>>> --- /dev/null
+>>> +++ b/drivers/vfio/fsl-mc/Makefile
+>>> @@ -0,0 +1,4 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>>> +
+>>> +vfio-fsl-mc-y := vfio_fsl_mc.o
+>>> +obj-$(CONFIG_VFIO_FSL_MC) += vfio-fsl-mc.o
+>>> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> new file mode 100644
+>>> index 000000000000..8b53c2a25b32
+>>> --- /dev/null
+>>> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc.c
+>>> @@ -0,0 +1,160 @@
+>>> +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+>>> +/*
+>>> + * Copyright 2013-2016 Freescale Semiconductor Inc.
+>>> + * Copyright 2016-2017,2019-2020 NXP
+>>> + */
+>>> +
+>>> +#include <linux/device.h>
+>>> +#include <linux/iommu.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/mutex.h>
+>>> +#include <linux/slab.h>
+>>> +#include <linux/types.h>
+>>> +#include <linux/vfio.h>
+>>> +#include <linux/fsl/mc.h>
+>>> +
+>>> +#include "vfio_fsl_mc_private.h"
+>>> +
+>>> +static int vfio_fsl_mc_open(void *device_data)
+>>> +{
+>>> +    if (!try_module_get(THIS_MODULE))
+>>> +        return -ENODEV;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static void vfio_fsl_mc_release(void *device_data)
+>>> +{
+>>> +    module_put(THIS_MODULE);
+>>> +}
+>>> +
+>>> +static long vfio_fsl_mc_ioctl(void *device_data, unsigned int cmd,
+>>> +                  unsigned long arg)
+>>> +{
+>>> +    switch (cmd) {
+>>> +    case VFIO_DEVICE_GET_INFO:
+>>> +    {
+>>> +        return -ENOTTY;
+>>> +    }
+>>> +    case VFIO_DEVICE_GET_REGION_INFO:
+>>> +    {
+>>> +        return -ENOTTY;
+>>> +    }
+>>> +    case VFIO_DEVICE_GET_IRQ_INFO:
+>>> +    {
+>>> +        return -ENOTTY;
+>>> +    }
+>>> +    case VFIO_DEVICE_SET_IRQS:
+>>> +    {
+>>> +        return -ENOTTY;
+>>> +    }
+>>> +    case VFIO_DEVICE_RESET:
+>>> +    {
+>>> +        return -ENOTTY;
+>>> +    }
+>>> +    default:
+>>> +        return -ENOTTY;
+>>> +    }
+>>> +}
+>>> +
+>>> +static ssize_t vfio_fsl_mc_read(void *device_data, char __user *buf,
+>>> +                size_t count, loff_t *ppos)
+>>> +{
+>>> +    return -EINVAL;
+>>> +}
+>>> +
+>>> +static ssize_t vfio_fsl_mc_write(void *device_data, const char
+>>> __user *buf,
+>>> +                 size_t count, loff_t *ppos)
+>>> +{
+>>> +    return -EINVAL;
+>>> +}
+>>> +
+>>> +static int vfio_fsl_mc_mmap(void *device_data, struct vm_area_struct
+>>> *vma)
+>>> +{
+>>> +    return -EINVAL;
+>>> +}
+>>> +
+>>> +static const struct vfio_device_ops vfio_fsl_mc_ops = {
+>>> +    .name        = "vfio-fsl-mc",
+>>> +    .open        = vfio_fsl_mc_open,
+>>> +    .release    = vfio_fsl_mc_release,
+>>> +    .ioctl        = vfio_fsl_mc_ioctl,
+>>> +    .read        = vfio_fsl_mc_read,
+>>> +    .write        = vfio_fsl_mc_write,
+>>> +    .mmap        = vfio_fsl_mc_mmap,
+>>> +};
+>>> +
+>>> +static int vfio_fsl_mc_probe(struct fsl_mc_device *mc_dev)
+>>> +{
+>>> +    struct iommu_group *group;
+>>> +    struct vfio_fsl_mc_device *vdev;
+>>> +    struct device *dev = &mc_dev->dev;
+>>> +    int ret;
+>>> +
+>>> +    group = vfio_iommu_group_get(dev);
+>>> +    if (!group) {
+>>> +        dev_err(dev, "%s: VFIO: No IOMMU group\n", __func__);
+>>> +        return -EINVAL;
+>>> +    }
+>>> +
+>>> +    vdev = devm_kzalloc(dev, sizeof(*vdev), GFP_KERNEL);
+>>> +    if (!vdev) {
+>>> +        vfio_iommu_group_put(group, dev);
+>>> +        return -ENOMEM;
+>>> +    }
+>>> +
+>>> +    vdev->mc_dev = mc_dev;
+>>> +
+>>> +    ret = vfio_add_group_dev(dev, &vfio_fsl_mc_ops, vdev);
+>>> +    if (ret) {
+>>> +        dev_err(dev, "%s: Failed to add to vfio group\n", __func__);
+>>> +        vfio_iommu_group_put(group, dev);
+>>> +        return ret;
+>>> +    }
+>>> +
+>>> +    return ret;
+>> nit: introduce out_group_put: as in other files
+>> This will be usable also in subsequent patches
+>>> +}
+>>> +
+>>> +static int vfio_fsl_mc_remove(struct fsl_mc_device *mc_dev)
+>>> +{
+>>> +    struct vfio_fsl_mc_device *vdev;
+>>> +    struct device *dev = &mc_dev->dev;
+>>> +
+>>> +    vdev = vfio_del_group_dev(dev);
+>>> +    if (!vdev)
+>>> +        return -EINVAL;
+>>> +
+>>> +    vfio_iommu_group_put(mc_dev->dev.iommu_group, dev);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +/*
+>>> + * vfio-fsl_mc is a meta-driver, so use driver_override interface to
+>>> + * bind a fsl_mc container with this driver and match_id_table is NULL.
+>>> + */
+>>> +static struct fsl_mc_driver vfio_fsl_mc_driver = {
+>>> +    .probe        = vfio_fsl_mc_probe,
+>>> +    .remove        = vfio_fsl_mc_remove,
+>>> +    .match_id_table = NULL,
+>> not needed?
+> 
+> The driver will always match on driver_override, there is no need for
+> static ids.
+I rather meant do you really need to initialize it? I guess it is the
+same in vfio_platform and there is no such init.
 
-The original driver depends on MIPS || COMPILE_TEST, so you should do=20
-the same, otherwise you change more than what the patch description=20
-suggests.
+Thanks
 
-> +	depends on USB_SUPPORT
-> +	select GENERIC_PHY
-> +	help
-> +	  This driver provides USB PHY support for the USB controller found
-> +	  on the JZ-series and X-series SoCs from Ingenic.
-> diff --git a/drivers/phy/ingenic/Makefile=20
-> b/drivers/phy/ingenic/Makefile
-> new file mode 100644
-> index 000000000000..65d5ea00fc9d
-> --- /dev/null
-> +++ b/drivers/phy/ingenic/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-y		+=3D phy-ingenic-usb.o
-> diff --git a/drivers/usb/phy/phy-jz4770.c=20
-> b/drivers/phy/ingenic/phy-ingenic-usb.c
-> similarity index 63%
-> rename from drivers/usb/phy/phy-jz4770.c
-> rename to drivers/phy/ingenic/phy-ingenic-usb.c
-> index f6d3731581eb..86a95b498785 100644
-> --- a/drivers/usb/phy/phy-jz4770.c
-> +++ b/drivers/phy/ingenic/phy-ingenic-usb.c
-> @@ -7,12 +7,12 @@
->   */
->=20
->  #include <linux/clk.h>
-> +#include <linux/delay.h>
->  #include <linux/io.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/regulator/consumer.h>
-> -#include <linux/usb/otg.h>
-> -#include <linux/usb/phy.h>
-> +#include <linux/phy/phy.h>
->=20
->  /* OTGPHY register offsets */
->  #define REG_USBPCR_OFFSET			0x00
-> @@ -97,68 +97,49 @@ enum ingenic_usb_phy_version {
->  struct ingenic_soc_info {
->  	enum ingenic_usb_phy_version version;
->=20
-> -	void (*usb_phy_init)(struct usb_phy *phy);
-> +	void (*usb_phy_init)(struct phy *phy);
->  };
->=20
-> -struct jz4770_phy {
-> +struct ingenic_usb_phy {
->  	const struct ingenic_soc_info *soc_info;
->=20
-> -	struct usb_phy phy;
-> -	struct usb_otg otg;
-> +	struct phy *phy;
->  	struct device *dev;
->  	void __iomem *base;
->  	struct clk *clk;
->  	struct regulator *vcc_supply;
->  };
->=20
-> -static inline struct jz4770_phy *otg_to_jz4770_phy(struct usb_otg=20
-> *otg)
-> +static int ingenic_usb_phy_init(struct phy *phy)
->  {
-> -	return container_of(otg, struct jz4770_phy, otg);
-> -}
-> -
-> -static inline struct jz4770_phy *phy_to_jz4770_phy(struct usb_phy=20
-> *phy)
-> -{
-> -	return container_of(phy, struct jz4770_phy, phy);
-> -}
-> -
-> -static int ingenic_usb_phy_set_peripheral(struct usb_otg *otg,
-> -				     struct usb_gadget *gadget)
-> -{
-> -	struct jz4770_phy *priv =3D otg_to_jz4770_phy(otg);
-> -	u32 reg;
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
-> +	int err;
->=20
-> -	if (priv->soc_info->version >=3D ID_X1000) {
-> -		reg =3D readl(priv->base + REG_USBPCR1_OFFSET);
-> -		reg |=3D USBPCR1_BVLD_REG;
-> -		writel(reg, priv->base + REG_USBPCR1_OFFSET);
-> +	err =3D clk_prepare_enable(priv->clk);
-> +	if (err) {
-> +		dev_err(priv->dev, "Unable to start clock: %d\n", err);
-> +		return err;
->  	}
->=20
-> -	reg =3D readl(priv->base + REG_USBPCR_OFFSET);
-> -	reg &=3D ~USBPCR_USB_MODE;
-> -	reg |=3D USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL |=20
-> USBPCR_OTG_DISABLE;
-> -	writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +	priv->soc_info->usb_phy_init(phy);
->=20
->  	return 0;
->  }
->=20
-> -static int ingenic_usb_phy_set_host(struct usb_otg *otg, struct=20
-> usb_bus *host)
-> +static int ingenic_usb_phy_exit(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D otg_to_jz4770_phy(otg);
-> -	u32 reg;
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->=20
-> -	reg =3D readl(priv->base + REG_USBPCR_OFFSET);
-> -	reg &=3D ~(USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL |=20
-> USBPCR_OTG_DISABLE);
-> -	reg |=3D USBPCR_USB_MODE;
-> -	writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +	clk_disable_unprepare(priv->clk);
-> +	regulator_disable(priv->vcc_supply);
->=20
->  	return 0;
->  }
->=20
-> -static int ingenic_usb_phy_init(struct usb_phy *phy)
-> +static int ingenic_usb_phy_power_on(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->  	int err;
-> -	u32 reg;
->=20
->  	err =3D regulator_enable(priv->vcc_supply);
->  	if (err) {
-> @@ -166,39 +147,71 @@ static int ingenic_usb_phy_init(struct usb_phy=20
-> *phy)
->  		return err;
->  	}
->=20
-> -	err =3D clk_prepare_enable(priv->clk);
-> -	if (err) {
-> -		dev_err(priv->dev, "Unable to start clock: %d\n", err);
-> -		return err;
-> -	}
-> -
-> -	priv->soc_info->usb_phy_init(phy);
-> -
-> -	/* Wait for PHY to reset */
-> -	usleep_range(30, 300);
-> -	reg =3D readl(priv->base + REG_USBPCR_OFFSET);
-> -	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-> -	usleep_range(300, 1000);
-> -
->  	return 0;
->  }
->=20
-> -static void ingenic_usb_phy_shutdown(struct usb_phy *phy)
-> +static int ingenic_usb_phy_power_off(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->=20
-> -	clk_disable_unprepare(priv->clk);
->  	regulator_disable(priv->vcc_supply);
-> +
-> +	return 0;
->  }
->=20
-> -static void ingenic_usb_phy_remove(void *phy)
-> +static int ingenic_usb_phy_set_mode(struct phy *phy,
-> +				  enum phy_mode mode, int submode)
->  {
-> -	usb_remove_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
-> +	u32 reg;
-> +
-> +	switch (mode) {
-> +	case PHY_MODE_USB_HOST:
-> +		reg =3D readl(priv->base + REG_USBPCR_OFFSET);
-> +		reg &=3D ~(USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL |=20
-> USBPCR_OTG_DISABLE);
-> +		reg |=3D USBPCR_USB_MODE;
-> +		writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +		break;
-> +	case PHY_MODE_USB_DEVICE:
-> +		if (priv->soc_info->version >=3D ID_X1000) {
-> +			reg =3D readl(priv->base + REG_USBPCR1_OFFSET);
-> +			reg |=3D USBPCR1_BVLD_REG;
-> +			writel(reg, priv->base + REG_USBPCR1_OFFSET);
-> +		}
-> +
-> +		reg =3D readl(priv->base + REG_USBPCR_OFFSET);
-> +		reg &=3D ~USBPCR_USB_MODE;
-> +		reg |=3D USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL |=20
-> USBPCR_OTG_DISABLE;
-> +		writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +		break;
-> +	case PHY_MODE_USB_OTG:
-> +		reg =3D readl(priv->base + REG_USBPCR_OFFSET);
-> +		reg &=3D ~USBPCR_OTG_DISABLE;
-> +		reg |=3D USBPCR_VBUSVLDEXT | USBPCR_VBUSVLDEXTSEL | USBPCR_USB_MODE;
-> +		writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
->  }
-
-I think the diff should be a bit smaller (and easier to review) if you=20
-move ingenic_usb_phy_init / ingenic_usb_phy_exit here, where they used=20
-to be.
-
->=20
-> -static void jz4770_usb_phy_init(struct usb_phy *phy)
-> +static const struct phy_ops ingenic_usb_phy_ops =3D {
-> +	.init		=3D ingenic_usb_phy_init,
-> +	.exit		=3D ingenic_usb_phy_exit,
-> +	.power_on	=3D ingenic_usb_phy_power_on,
-> +	.power_off	=3D ingenic_usb_phy_power_off,
-> +	.set_mode	=3D ingenic_usb_phy_set_mode,
-> +	.owner		=3D THIS_MODULE,
-> +};
-> +
-> +static void jz4770_usb_phy_init(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->  	u32 reg;
->=20
->  	reg =3D USBPCR_AVLD_REG | USBPCR_COMMONONN | USBPCR_IDPULLUP_ALWAYS |
-> @@ -206,11 +219,16 @@ static void jz4770_usb_phy_init(struct usb_phy=20
-> *phy)
->  		USBPCR_TXFSLSTUNE_DFT | USBPCR_TXRISETUNE_DFT |=20
-> USBPCR_TXVREFTUNE_DFT |
->  		USBPCR_POR;
->  	writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +	/* Wait for PHY to reset */
-> +	usleep_range(30, 300);
-> +	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-> +	usleep_range(300, 1000);
->  }
->=20
-> -static void jz4780_usb_phy_init(struct usb_phy *phy)
-> +static void jz4780_usb_phy_init(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->  	u32 reg;
->=20
->  	reg =3D readl(priv->base + REG_USBPCR1_OFFSET) | USBPCR1_USB_SEL |
-> @@ -219,11 +237,16 @@ static void jz4780_usb_phy_init(struct usb_phy=20
-> *phy)
->=20
->  	reg =3D USBPCR_TXPREEMPHTUNE | USBPCR_COMMONONN | USBPCR_POR;
->  	writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +	/* Wait for PHY to reset */
-> +	usleep_range(30, 300);
-> +	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-> +	usleep_range(300, 1000);
->  }
->=20
-> -static void x1000_usb_phy_init(struct usb_phy *phy)
-> +static void x1000_usb_phy_init(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->  	u32 reg;
->=20
->  	reg =3D readl(priv->base + REG_USBPCR1_OFFSET) |=20
-> USBPCR1_WORD_IF_16BIT;
-> @@ -233,11 +256,16 @@ static void x1000_usb_phy_init(struct usb_phy=20
-> *phy)
->  		USBPCR_TXHSXVTUNE_DCR_15MV | USBPCR_TXVREFTUNE_INC_25PPT |
->  		USBPCR_COMMONONN | USBPCR_POR;
->  	writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +	/* Wait for PHY to reset */
-> +	usleep_range(30, 300);
-> +	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-> +	usleep_range(300, 1000);
->  }
->=20
-> -static void x1830_usb_phy_init(struct usb_phy *phy)
-> +static void x1830_usb_phy_init(struct phy *phy)
->  {
-> -	struct jz4770_phy *priv =3D phy_to_jz4770_phy(phy);
-> +	struct ingenic_usb_phy *priv =3D phy_get_drvdata(phy);
->  	u32 reg;
->=20
->  	/* rdt */
-> @@ -250,6 +278,11 @@ static void x1830_usb_phy_init(struct usb_phy=20
-> *phy)
->  	reg =3D USBPCR_IDPULLUP_OTG | USBPCR_VBUSVLDEXT=20
-> |	USBPCR_TXPREEMPHTUNE |
->  		USBPCR_COMMONONN | USBPCR_POR;
->  	writel(reg, priv->base + REG_USBPCR_OFFSET);
-> +
-> +	/* Wait for PHY to reset */
-> +	usleep_range(30, 300);
-> +	writel(reg & ~USBPCR_POR, priv->base + REG_USBPCR_OFFSET);
-> +	usleep_range(300, 1000);
-
-Why is that code repeated four times now? The old driver had that in=20
-ingenic_usb_phy_init().
-
->  }
->=20
->  static const struct ingenic_soc_info jz4770_soc_info =3D {
-> @@ -276,87 +309,96 @@ static const struct ingenic_soc_info=20
-> x1830_soc_info =3D {
->  	.usb_phy_init =3D x1830_usb_phy_init,
->  };
->=20
-> -static const struct of_device_id ingenic_usb_phy_of_matches[] =3D {
-> -	{ .compatible =3D "ingenic,jz4770-phy", .data =3D &jz4770_soc_info },
-> -	{ .compatible =3D "ingenic,jz4780-phy", .data =3D &jz4780_soc_info },
-> -	{ .compatible =3D "ingenic,x1000-phy", .data =3D &x1000_soc_info },
-> -	{ .compatible =3D "ingenic,x1830-phy", .data =3D &x1830_soc_info },
-> -	{ /* sentinel */ }
-> -};
-> -MODULE_DEVICE_TABLE(of, ingenic_usb_phy_of_matches);
-> -
-> -static int jz4770_phy_probe(struct platform_device *pdev)
-> +static int ingenic_usb_phy_probe(struct platform_device *pdev)
->  {
-> -	struct device *dev =3D &pdev->dev;
-> -	struct jz4770_phy *priv;
-> +	struct ingenic_usb_phy *priv;
-> +	struct phy_provider *provider;
->  	int err;
->=20
-> -	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-
-I'd prefer that you keep a local 'dev' variable. Otherwise it only=20
-makes the diff bigger and it's harder to review.
-
->  	if (!priv)
->  		return -ENOMEM;
->=20
-> +	priv->dev =3D &pdev->dev;
-> +
->  	priv->soc_info =3D device_get_match_data(&pdev->dev);
->  	if (!priv->soc_info) {
->  		dev_err(&pdev->dev, "Error: No device match found\n");
->  		return -ENODEV;
->  	}
->=20
-> -	platform_set_drvdata(pdev, priv);
-> -	priv->dev =3D dev;
-> -	priv->phy.dev =3D dev;
-> -	priv->phy.otg =3D &priv->otg;
-> -	priv->phy.label =3D "ingenic-usb-phy";
-> -	priv->phy.init =3D ingenic_usb_phy_init;
-> -	priv->phy.shutdown =3D ingenic_usb_phy_shutdown;
-> -
-> -	priv->otg.state =3D OTG_STATE_UNDEFINED;
-> -	priv->otg.usb_phy =3D &priv->phy;
-> -	priv->otg.set_host =3D ingenic_usb_phy_set_host;
-> -	priv->otg.set_peripheral =3D ingenic_usb_phy_set_peripheral;
-> -
->  	priv->base =3D devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(priv->base)) {
-> -		dev_err(dev, "Failed to map registers\n");
-> +		dev_err(priv->dev, "Failed to map registers\n");
->  		return PTR_ERR(priv->base);
->  	}
->=20
-> -	priv->clk =3D devm_clk_get(dev, NULL);
-> +	priv->clk =3D devm_clk_get(priv->dev, NULL);
->  	if (IS_ERR(priv->clk)) {
->  		err =3D PTR_ERR(priv->clk);
->  		if (err !=3D -EPROBE_DEFER)
-> -			dev_err(dev, "Failed to get clock\n");
-> +			dev_err(priv->dev, "Failed to get clock\n");
->  		return err;
->  	}
->=20
-> -	priv->vcc_supply =3D devm_regulator_get(dev, "vcc");
-> +	priv->vcc_supply =3D devm_regulator_get(priv->dev, "vcc");
->  	if (IS_ERR(priv->vcc_supply)) {
->  		err =3D PTR_ERR(priv->vcc_supply);
->  		if (err !=3D -EPROBE_DEFER)
-> -			dev_err(dev, "Failed to get regulator\n");
-> +			dev_err(priv->dev, "Failed to get regulator\n");
->  		return err;
->  	}
->=20
-> -	err =3D usb_add_phy(&priv->phy, USB_PHY_TYPE_USB2);
-> -	if (err) {
-> -		if (err !=3D -EPROBE_DEFER)
-> -			dev_err(dev, "Unable to register PHY\n");
-> -		return err;
-> +	priv->phy =3D devm_phy_create(priv->dev, NULL, &ingenic_usb_phy_ops);
-> +	if (IS_ERR(priv)) {
-> +		dev_err(priv->dev, "Failed to create PHY: %ld\n",	PTR_ERR(priv));
-> +		return PTR_ERR(priv);
-> +	}
-
-There's a stray tabulation character here.
-
-Also, no need to print error codes in the probe function - they will be=20
-printed anyway since the driver will fail to probe.
-
-> +
-> +	provider =3D devm_of_phy_provider_register(priv->dev,=20
-> of_phy_simple_xlate);
-> +	if (IS_ERR(provider)) {
-> +		dev_err(priv->dev, "Failed to register PHY provider: %ld\n",=20
-> PTR_ERR(provider));
-> +		return PTR_ERR(provider);
->  	}
-
-Same here.
-
->=20
-> -	return devm_add_action_or_reset(dev, ingenic_usb_phy_remove,=20
-> &priv->phy);
-> +	platform_set_drvdata(pdev, priv);
-> +	phy_set_drvdata(priv->phy, priv);
-
-These two do the same thing. Also, you must do it before registering=20
-the PHY, otherwise you have a race.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int ingenic_usb_phy_remove(struct platform_device *pdev)
-> +{
-> +	struct ingenic_usb_phy *priv =3D platform_get_drvdata(pdev);
-> +
-> +	clk_disable_unprepare(priv->clk);
-> +	regulator_disable(priv->vcc_supply);
-
-I assume that ingenic_usb_phy_power_off() and ingenic_usb_phy_exit()=20
-are automatically called when the module is removed, did you test=20
-module removal?
-
-> +
-> +	return 0;
->  }
->=20
-> -static struct platform_driver ingenic_phy_driver =3D {
-> -	.probe		=3D jz4770_phy_probe,
-> +static const struct of_device_id ingenic_usb_phy_of_matches[] =3D {
-> +	{ .compatible =3D "ingenic,jz4770-phy", .data =3D &jz4770_soc_info },
-> +	{ .compatible =3D "ingenic,jz4780-phy", .data =3D &jz4780_soc_info },
-> +	{ .compatible =3D "ingenic,x1000-phy", .data =3D &x1000_soc_info },
-> +	{ .compatible =3D "ingenic,x1830-phy", .data =3D &x1830_soc_info },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ingenic_usb_phy_of_matches);
-
-You moved that code around, which only made the diff bigger and harder=20
-to review. Please keep it where it was.
-
-> +
-> +static struct platform_driver ingenic_usb_phy_driver =3D {
-> +	.probe		=3D ingenic_usb_phy_probe,
-> +	.remove		=3D ingenic_usb_phy_remove,
->  	.driver		=3D {
-> -		.name	=3D "jz4770-phy",
-> -		.of_match_table =3D of_match_ptr(ingenic_usb_phy_of_matches),
-> +		.name	=3D "ingenic-usb-phy",
-> +		.of_match_table =3D ingenic_usb_phy_of_matches,
-
-You removed of_match_ptr(), which is a valid change (Ingenic SoCs all=20
-depend on Device Tree), but is unrelated to this patch.
-
->  	},
->  };
-> -module_platform_driver(ingenic_phy_driver);
-> +module_platform_driver(ingenic_usb_phy_driver);
->=20
->  MODULE_AUTHOR("=E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) <zhouyanjie@wan=
-yeetech.com>");
->  MODULE_AUTHOR("=E6=BC=86=E9=B9=8F=E6=8C=AF (Qi Pengzhen) <aric.pzqi@inge=
-nic.com>");
->  MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
->  MODULE_DESCRIPTION("Ingenic SoCs USB PHY driver");
-> +MODULE_ALIAS("jz4770_phy");
-
-Actually that would be "jz4770-phy".
-
-Cheers,
--Paul
-
->  MODULE_LICENSE("GPL");
-> diff --git a/drivers/usb/phy/Kconfig b/drivers/usb/phy/Kconfig
-> index ef4787cd3d37..ff24fca0a2d9 100644
-> --- a/drivers/usb/phy/Kconfig
-> +++ b/drivers/usb/phy/Kconfig
-> @@ -184,12 +184,4 @@ config USB_ULPI_VIEWPORT
->  	  Provides read/write operations to the ULPI phy register set for
->  	  controllers with a viewport register (e.g. Chipidea/ARC=20
-> controllers).
->=20
-> -config JZ4770_PHY
-> -	tristate "Ingenic SoCs Transceiver Driver"
-> -	depends on MIPS || COMPILE_TEST
-> -	select USB_PHY
-> -	help
-> -	  This driver provides PHY support for the USB controller found
-> -	  on the JZ-series and X-series SoCs from Ingenic.
-> -
->  endmenu
-> diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
-> index b352bdbe8712..df1d99010079 100644
-> --- a/drivers/usb/phy/Makefile
-> +++ b/drivers/usb/phy/Makefile
-> @@ -24,4 +24,3 @@ obj-$(CONFIG_USB_MXS_PHY)		+=3D phy-mxs-usb.o
->  obj-$(CONFIG_USB_ULPI)			+=3D phy-ulpi.o
->  obj-$(CONFIG_USB_ULPI_VIEWPORT)		+=3D phy-ulpi-viewport.o
->  obj-$(CONFIG_KEYSTONE_USB_PHY)		+=3D phy-keystone.o
-> -obj-$(CONFIG_JZ4770_PHY)		+=3D phy-jz4770.o
-> --
-> 2.11.0
->=20
-
+Eric
+> 
+>>> +    .driver    = {
+>>> +        .name    = "vfio-fsl-mc",
+>>> +        .owner    = THIS_MODULE,
+>>> +    },
+>>> +};
+>>> +
+>>> +static int __init vfio_fsl_mc_driver_init(void)
+>>> +{
+>>> +    return fsl_mc_driver_register(&vfio_fsl_mc_driver);
+>>> +}
+>>> +
+>>> +static void __exit vfio_fsl_mc_driver_exit(void)
+>>> +{
+>>> +    fsl_mc_driver_unregister(&vfio_fsl_mc_driver);
+>>> +}
+>>> +
+>>> +module_init(vfio_fsl_mc_driver_init);
+>>> +module_exit(vfio_fsl_mc_driver_exit);
+>>> +
+>>> +MODULE_LICENSE("GPL v2");
+>> Don't you need MODULE_LICENSE("Dual BSD/GPL"); ?
+> 
+> Yes, will change.
+> 
+>>> +MODULE_DESCRIPTION("VFIO for FSL-MC devices - User Level meta-driver");
+>>> diff --git a/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>>> b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>>> new file mode 100644
+>>> index 000000000000..e79cc116f6b8
+>>> --- /dev/null
+>>> +++ b/drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
+>>> @@ -0,0 +1,14 @@
+>>> +/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+>>> +/*
+>>> + * Copyright 2013-2016 Freescale Semiconductor Inc.
+>>> + * Copyright 2016,2019-2020 NXP
+>>> + */
+>>> +
+>>> +#ifndef VFIO_FSL_MC_PRIVATE_H
+>>> +#define VFIO_FSL_MC_PRIVATE_H
+>>> +
+>>> +struct vfio_fsl_mc_device {
+>>> +    struct fsl_mc_device        *mc_dev;
+>>> +};
+>>> +
+>>> +#endif /* VFIO_FSL_MC_PRIVATE_H */
+>>> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+>>> index 920470502329..95deac891378 100644
+>>> --- a/include/uapi/linux/vfio.h
+>>> +++ b/include/uapi/linux/vfio.h
+>>> @@ -201,6 +201,7 @@ struct vfio_device_info {
+>>>   #define VFIO_DEVICE_FLAGS_AMBA  (1 << 3)    /* vfio-amba device */
+>>>   #define VFIO_DEVICE_FLAGS_CCW    (1 << 4)    /* vfio-ccw device */
+>>>   #define VFIO_DEVICE_FLAGS_AP    (1 << 5)    /* vfio-ap device */
+>>> +#define VFIO_DEVICE_FLAGS_FSL_MC (1 << 6)    /* vfio-fsl-mc device */
+>>>       __u32    num_regions;    /* Max region index + 1 */
+>>>       __u32    num_irqs;    /* Max IRQ index + 1 */
+>>>   };
+>>>
+>> Thanks
+>>
+>> Eric
+>>
+> 
+> Thanks,
+> Diana
+> 
 
