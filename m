@@ -2,65 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52A825D943
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF6B25D92E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730378AbgIDNGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:06:31 -0400
-Received: from mail.monom.org ([188.138.9.77]:55100 "EHLO mail.monom.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729297AbgIDNGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:06:24 -0400
-Received: from mail.monom.org (localhost [127.0.0.1])
-        by filter.mynetwork.local (Postfix) with ESMTP id 602D850035A;
-        Fri,  4 Sep 2020 15:06:20 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=ham autolearn_force=no version=3.4.2
-Received: from localhost (unknown [94.31.100.251])
-        by mail.monom.org (Postfix) with ESMTPSA id A90F5500103;
-        Fri,  4 Sep 2020 15:06:19 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-Subject: [ANNOUNCE] 4.4.235-rt206
-Date:   Fri, 04 Sep 2020 12:51:49 -0000
-Message-ID: <159922390990.31388.11440597384252311041@beryllium>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S1730389AbgIDNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:01:46 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:56920 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730311AbgIDNBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:01:41 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 61244116E2FDBEFA3C65;
+        Fri,  4 Sep 2020 21:01:36 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
+ 21:01:30 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] caif: Remove duplicate macro SRVL_CTRL_PKT_SIZE
+Date:   Fri, 4 Sep 2020 20:58:58 +0800
+Message-ID: <20200904125858.16204-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+Remove SRVL_CTRL_PKT_SIZE which is defined more than once.
 
-I'm pleased to announce the 4.4.235-rt206 stable release.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ net/caif/cfsrvl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-This is just an update to the latest stable release. No RT specifc
-changes.
+diff --git a/net/caif/cfsrvl.c b/net/caif/cfsrvl.c
+index d0a4d0ac7045..9cef9496a707 100644
+--- a/net/caif/cfsrvl.c
++++ b/net/caif/cfsrvl.c
+@@ -21,7 +21,6 @@
+ #define SRVL_FLOW_OFF 0x81
+ #define SRVL_FLOW_ON  0x80
+ #define SRVL_SET_PIN  0x82
+-#define SRVL_CTRL_PKT_SIZE 1
+ 
+ #define container_obj(layr) container_of(layr, struct cfsrvl, layer)
+ 
+-- 
+2.17.1
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.4-rt
-  Head SHA1: 45d9c93f427c64e442771c6f68d000511610f04d
-
-Or to build 4.4.235-rt206 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.235.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.235-rt206.patch.xz
-
-Enjoy!
-Daniel
