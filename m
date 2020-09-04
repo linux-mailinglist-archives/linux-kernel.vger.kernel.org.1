@@ -2,215 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF91F25D769
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 310EF25D79A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 13:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730179AbgIDLdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 07:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        id S1730041AbgIDLj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 07:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730105AbgIDLcQ (ORCPT
+        with ESMTP id S1730043AbgIDLif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 07:32:16 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AE8C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 04:32:15 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w3so7521772ljo.5
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:32:15 -0700 (PDT)
+        Fri, 4 Sep 2020 07:38:35 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E1EC061245
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 04:38:27 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a65so5754765wme.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 04:38:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3zA99aEMQ+GSN3rlEJk+n2U8t/Kxnc6IxQCFC33HIVA=;
-        b=mSdxz4fgtsgSS2l9njzIYvSmIlX80hvCnTvP/OgE02oJ4nDD6UKwizm4D7pYEV9/oB
-         tEbt7dHQNZO90wBDaS9dLTOH3TjgVJK62Qdxp3nj989prYsaxM5XJE20K/8QK3/7SqZW
-         Rs4zfFheOchEGYvixvNV8Dl6RNgZp5wwVcRUbWZDg+FvS8e7MMS5G3GTA1pvFe4Sn9IK
-         Iw+PG4lHpcmVmI5ZudeQeOLTrfqnwRivA7UeFYXQF7BLJ8gw/QPEIugIuJnobfN3dhDg
-         veR63F4DQdtkKOBLjGfzzJqrJW4/JaXH9pA+ARPCeGL0/34Rp9ZXyk+2jLpYybARdMQ9
-         q+Fw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zBTRNjzB5mPzhMVyXQWz7MNu1O+zSDEFEFHnoBhDYZc=;
+        b=WtXR/0sltULRHVCaC8HhLbBR6SIHL5piDWOv3CHxtHHHPnSqQYEf25q1QTSFYE5zf7
+         gdWSs8a+2WHWhbJHSIBA1GkGmShfElAMK7OVV9CUYUBgk9R6/BkndkZ+llRZRKOCjgdY
+         QuYRCjx+JGzaomOmsTvuvLaLt/FWRjGb6H0U7xOWxh8TQpnhDUykaRdcZGX2lifAbDKo
+         3t+uVzuMJydLR8u7eonGsIYYfPje0wKasCBg1diomCO/dcYyU5MfVzqY0uXMkdoXk2Yu
+         cdoSyzhfjwQ5WxrXfjAgoTvLYoHlW8zWTZ5egE9QOdCcVOW04/EMMiJX781OkiYDi2UO
+         Oahw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3zA99aEMQ+GSN3rlEJk+n2U8t/Kxnc6IxQCFC33HIVA=;
-        b=kc73QxtBxqnQCKkQUBjwv0A4DsdqwEy2im9kmn6I5lLbxidUJZBU2QbjwxbabL+G/Y
-         joXXwvWreh2E8Pwrxn/IUBXQAWZZo2h7MuGCDoK2GypTK5xIxCv4fC4Q44+yx40IKQGV
-         08utIL5X/UMv216biheM45ogzY1HNbmzu2wpJ+VLPuRufPFCds0tFxuM/bk00VcAkN0F
-         O9TVQS9tuhe21wbtUDTzJT5e8avjJukxC5DXhVPlLKM3ahab0e91UiChv6F8jVKAwCe8
-         N7LKKLaJ0WHucAeoZleu5mVVDoaLxiFYj1JKvfsU0yhvlgTpVfIa+0qPjFh2hViHQ7hf
-         SKBA==
-X-Gm-Message-State: AOAM5300Y8cV0hDhgtdo4rk3Rr2jyr4UJ7Ni6TYdtSOGFxLp0FdbD5kv
-        gjmsPabPr2oZ+nZT65UrRJHJJoIuVOZQ7n8RknsNlIxzKcKB6Q==
-X-Google-Smtp-Source: ABdhPJw6mw/bMokIo9Rs/jiLGSH2soJ9lHD4kwKbbHitnqslUJIg+RrmP0RYM6dir4mKgHThQjhIaXEzNK+sM2Hafq4=
-X-Received: by 2002:a2e:9ad9:: with SMTP id p25mr3319272ljj.256.1599219133711;
- Fri, 04 Sep 2020 04:32:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <1599134712-30923-1-git-send-email-sumit.garg@linaro.org>
- <1599134712-30923-2-git-send-email-sumit.garg@linaro.org> <05a195374cc81008e95e258221fe7d2b@kernel.org>
- <CAFA6WYNYGGsFwOdh35o2zHZb8k7o8YQ3CPDi_A=5c+VBLY9w_w@mail.gmail.com> <6125bdeb9ebd0cb51aa85fe36dee841c@kernel.org>
-In-Reply-To: <6125bdeb9ebd0cb51aa85fe36dee841c@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Fri, 4 Sep 2020 17:02:02 +0530
-Message-ID: <CAFA6WYNe_x7oCvN6uysXJ0sFBDzLk49-p5uxUydzdUv5zimwsQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] arm64: smp: Introduce a new IPI as IPI_CALL_NMI_FUNC
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        julien.thierry.kdev@gmail.com,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zBTRNjzB5mPzhMVyXQWz7MNu1O+zSDEFEFHnoBhDYZc=;
+        b=CyH1OPg3eqKvyR6XjZTNLiAD5EPvrlMVwnCjauSIAQQB5ChBJ+34v/i9xepZWbhnbf
+         DoLR+u5+5AVs8spAqkH3FFB2nCyH9T+Xkizjv16RohGyXuWhY/yqCKBe2PXzjCTM/enz
+         suNk9FCotzYYqT9pJyCcBONWAsRBJT7Flna4AjTcKAjYr5QKce0+PF6Yvc2KBWfCrRAS
+         LetpNYj9JSE5H3UQcXdQE9x3jGQSwZT3rMZkctu2D/gepdLT4FSfCsYPb+U9+KxtzcW0
+         c5qFFIi5Ae5EAGiG69R46koOgGxwJG1MhZ7thKwO2HoIGsX+t/OqevaSDTZ0TEAJWYea
+         qBTA==
+X-Gm-Message-State: AOAM531DuXt8cSKUhSnIfhsh4HgdkPEdiok9DGohXu3dVZxcuw5nxQTj
+        nqzMZoDE6fXKVS2Mz3gGEGwcWA==
+X-Google-Smtp-Source: ABdhPJx8d1p6vyslMOjVsOadjvrrKIpOa1vfRvm5f4PLcqxuLfSM0sJjG+WOSWjoXpgYJJW1oaxM+g==
+X-Received: by 2002:a1c:1b8f:: with SMTP id b137mr7618389wmb.151.1599219505621;
+        Fri, 04 Sep 2020 04:38:25 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id j14sm11125993wrr.66.2020.09.04.04.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 04:38:24 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 12:38:22 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Alexandru Stan <amstan@chromium.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
         Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 2/3] backlight: pwm_bl: Artificially add 0% during
+ interpolation
+Message-ID: <20200904113822.xoyt4w5x7vwvh7cr@holly.lan>
+References: <20200721042522.2403410-1-amstan@chromium.org>
+ <20200720212502.2.Iab4d2192e4cf50226e0a58d58df7d90ef92713ce@changeid>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200720212502.2.Iab4d2192e4cf50226e0a58d58df7d90ef92713ce@changeid>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 4 Sep 2020 at 13:30, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-09-04 06:30, Sumit Garg wrote:
-> > On Thu, 3 Sep 2020 at 22:06, Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> On 2020-09-03 13:05, Sumit Garg wrote:
-> >> > Introduce a new inter processor interrupt as IPI_CALL_NMI_FUNC that
-> >> > can be invoked to run special handlers in NMI context. One such handler
-> >> > example is kgdb_nmicallback() which is invoked in order to round up
-> >> > CPUs
-> >> > to enter kgdb context.
-> >> >
-> >> > As currently pseudo NMIs are supported on specific arm64 platforms
-> >> > which
-> >> > incorporates GICv3 or later version of interrupt controller. In case a
-> >> > particular platform doesn't support pseudo NMIs, IPI_CALL_NMI_FUNC will
-> >> > act as a normal IPI which can still be used to invoke special handlers.
-> >> >
-> >> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> >> > ---
-> >> >  arch/arm64/include/asm/smp.h |  1 +
-> >> >  arch/arm64/kernel/smp.c      | 11 +++++++++++
-> >> >  2 files changed, 12 insertions(+)
-> >> >
-> >> > diff --git a/arch/arm64/include/asm/smp.h
-> >> > b/arch/arm64/include/asm/smp.h
-> >> > index 2e7f529..e85f5d5 100644
-> >> > --- a/arch/arm64/include/asm/smp.h
-> >> > +++ b/arch/arm64/include/asm/smp.h
-> >> > @@ -89,6 +89,7 @@ extern void secondary_entry(void);
-> >> >
-> >> >  extern void arch_send_call_function_single_ipi(int cpu);
-> >> >  extern void arch_send_call_function_ipi_mask(const struct cpumask
-> >> > *mask);
-> >> > +extern void arch_send_call_nmi_func_ipi_mask(const struct cpumask
-> >> > *mask);
-> >> >
-> >> >  #ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
-> >> >  extern void arch_send_wakeup_ipi_mask(const struct cpumask *mask);
-> >> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> >> > index b6bde26..1b4c07c 100644
-> >> > --- a/arch/arm64/kernel/smp.c
-> >> > +++ b/arch/arm64/kernel/smp.c
-> >> > @@ -74,6 +74,7 @@ enum ipi_msg_type {
-> >> >       IPI_TIMER,
-> >> >       IPI_IRQ_WORK,
-> >> >       IPI_WAKEUP,
-> >> > +     IPI_CALL_NMI_FUNC,
-> >> >       NR_IPI
-> >> >  };
-> >> >
-> >> > @@ -793,6 +794,7 @@ static const char *ipi_types[NR_IPI]
-> >> > __tracepoint_string = {
-> >> >       S(IPI_TIMER, "Timer broadcast interrupts"),
-> >> >       S(IPI_IRQ_WORK, "IRQ work interrupts"),
-> >> >       S(IPI_WAKEUP, "CPU wake-up interrupts"),
-> >> > +     S(IPI_CALL_NMI_FUNC, "NMI function call interrupts"),
-> >> >  };
-> >> >
-> >> >  static void smp_cross_call(const struct cpumask *target, unsigned int
-> >> > ipinr);
-> >> > @@ -840,6 +842,11 @@ void arch_irq_work_raise(void)
-> >> >  }
-> >> >  #endif
-> >> >
-> >> > +void arch_send_call_nmi_func_ipi_mask(const struct cpumask *mask)
-> >> > +{
-> >> > +     smp_cross_call(mask, IPI_CALL_NMI_FUNC);
-> >> > +}
-> >> > +
-> >> >  static void local_cpu_stop(void)
-> >> >  {
-> >> >       set_cpu_online(smp_processor_id(), false);
-> >> > @@ -932,6 +939,10 @@ static void do_handle_IPI(int ipinr)
-> >> >               break;
-> >> >  #endif
-> >> >
-> >> > +     case IPI_CALL_NMI_FUNC:
-> >> > +             /* nop, IPI handlers for special features can be added here. */
-> >> > +             break;
-> >> > +
-> >> >       default:
-> >> >               pr_crit("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
-> >> >               break;
-> >>
-> >> I'm really not keen on adding more IPIs to the SMP code. One of the
-> >> main reasons for using these SGIs as normal IRQs was to make them
-> >> "requestable" from non-arch code as if they were standard percpu
-> >> interrupts.
-> >>
-> >> What prevents you from moving that all the way to the kgdb code?
-> >>
-> >
-> > Since we only have one SGI left (SGI7) which this patch reserves for
-> > NMI purposes, I am not sure what value add do you see to make it
-> > requestable from non-arch code.
->
-> We have one *guaranteed* SGI left. Potentially another 8 which we
-> could dynamically discover (reading the priority registers should
-> be enough to weed out the secure SGIs). And I'd like to keep that
-> last interrupt "just in case" we'd need it to workaround something.
->
-> > Also, allocating SGI7 entirely to kgdb would not allow us to leverage
-> > it for NMI backtrace support via magic sysrq. But with current
-> > implementation we should be able to achieve that.
->
-> I'd argue that there is no need for this interrupt to be a "well known
-> number". Maybe putting this code in the kgdb code is one step too far,
-> but keeping out of the arm64 SMP code is IMO the right thing to do.
+On Mon, Jul 20, 2020 at 09:25:21PM -0700, Alexandru Stan wrote:
+> Some displays need the low end of the curve cropped in order to make
+> them happy. In that case we still want to have the 0% point, even though
+> anything between 0% and 5%(example) would be skipped.
 
-IIUC, you would prefer to only allocate SGI7 (only one left) if there
-is a corresponding user. And I agree that kgdb isn't commonly active
-for most users. But I think magic sysrq is enabled for most users and
-supporting NMI backtrace would be quite useful while debugging systems
-in the field as well.
+For backlights it is not defined that 0 means off and, to be honest, 0
+means off is actually rather weird for anything except transflexive
+or front lit reflective displays[1]. There is a problem on several
+systems that when the backlight slider is reduced to zero you can't
+see the screen properly to turn it back up. This patch looks like it
+would make that problem worse by hurting systems with will written
+device trees.
 
-So if you like, I can create a separate file like
-"arch/arm64/kernel/ipi_nmi.c" for this implementation.
+There is some nasty legacy here: some backlight displays that are off
+at zero and that sucks because userspace doesn't know whether zero is
+off or lowest possible setting.
 
-> And if NMI backtracing is a thing, then we should probably implement
-> that first.
+Nevertheless perhaps a better way to handle this case is for 0 to map to
+5% power and for the userspace to turn the backlight on/off as final
+step in an animated backlight fade out (and one again for a fade in).
 
-Have a look at IPI_CPU_BACKTRACE implementation for arm [1]. Similar
-implementation would be required for arm64 but now with IPI turned as
-a pseudo NMI. So I will try to add corresponding support.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/kernel/smp.c#n72
+Daniel.
 
->
-> > Moreover, irq ids for normal interrupts are assigned via DT/ACPI, how
-> > do you envision this for SGIs?
->
-> Nothing could be further from the truth. How do you think MSIs work?
-> We'd just bolt an allocator for non-arch IPIs.
->
-
-Okay.
-
--Sumit
-
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+> 
+> Signed-off-by: Alexandru Stan <amstan@chromium.org>
+> ---
+> 
+>  drivers/video/backlight/pwm_bl.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
+> index 5193a72305a2..b24711ddf504 100644
+> --- a/drivers/video/backlight/pwm_bl.c
+> +++ b/drivers/video/backlight/pwm_bl.c
+> @@ -349,6 +349,14 @@ static int pwm_backlight_parse_dt(struct device *dev,
+>  			/* Fill in the last point, since no line starts here. */
+>  			table[x2] = y2;
+>  
+> +			/*
+> +			 * If we don't start at 0 yet we're increasing, assume
+> +			 * the dts wanted to crop the low end of the range, so
+> +			 * insert a 0 to provide a display off mode.
+> +			 */
+> +			if (table[0] > 0 && table[0] < table[num_levels - 1])
+> +				table[0] = 0;
+> +
+>  			/*
+>  			 * As we use interpolation lets remove current
+>  			 * brightness levels table and replace for the
+> -- 
+> 2.27.0
