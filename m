@@ -2,72 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AAD25D473
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F76025D48D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730050AbgIDJRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:17:14 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:50494 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729808AbgIDJRJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:17:09 -0400
-Received: by mail-il1-f198.google.com with SMTP id l8so4357058ilo.17
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 02:17:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=A0XXOCOsCKpVbiOmCtSMND7R8pvo4WiohDym5VmGicM=;
-        b=C0CxY7jw52IT0E2/XCwtBz7iD/cNJBOR1H9hspHqIIu1J5M0Bhrd4HpFQQKkhZ2b32
-         2NZVNMju5mYbdtQXLagV1W/GQCtRnx96V6GrxHAKXJTwn16/Wd8QRVmXMBioTvfb4EG1
-         5ZJFCDSToo6o7WjCnmGEwJN7Pq1vq0nzYoBblc8pd9rI4tOjbppDLeyglupaQGkZS57O
-         l2axynCeUQuZzjCS3cmty03aAkjN8Uzo7G/g6HoqfPLvo1/x1/qqvsmH/RdL64Ay8qkt
-         sQKK1BrH1x3CndIKj+PDx0+BbfEgSDghr7/UtpiosYwxaZFEgorzrDV2qHP7i9d0SeNu
-         4e+A==
-X-Gm-Message-State: AOAM530CB3DQAJmci37rVHTdusnV6/h0eCz9PeMj1EG+WnN6KPYl5SNd
-        rmYLkLCp1GPV+p2/c9YWLWNsXdhkz6rSi2oQTCtuq/NpO60t
-X-Google-Smtp-Source: ABdhPJz4l9diDvi6JeZoFv4l/8t/lebVi6lVVRaf0FpautrVybTTmaZYgtTJ+rMvN9/aU+pvBmFLgHlR3xJZ/DGghivcPWtVoGV3
+        id S1730141AbgIDJTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:19:48 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:38022 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730017AbgIDJTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:19:37 -0400
+Received: from zn.tnic (p2e584a6e.dip0.t-ipconnect.de [46.88.74.110])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D72771EC0407;
+        Fri,  4 Sep 2020 11:19:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1599211175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KxTBrDiwxYh5BQZ1cs6kMKlODsllL3PGcIaID8vccUg=;
+        b=LmK+uKDr4XpT0WfjrtCXs5WiQ1DsXYEpaIgKEugy7mNLvMnRVWpTlVEmWPnKDHIZRd6AUs
+        GYUCbgrZZL0Df7/NFeqCk2uLfJ0CSYvmE1gMisKAfk2mKYdXZC1EZxjPZDk0fm/wpC3RU0
+        ucGOcpWegj2LkoI8U5a9XJhLTa9StG4=
+Date:   Fri, 4 Sep 2020 11:17:18 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Gregor Herburger <Gregor.Herburger@ew.tq-group.com>
+Cc:     "york.sun@nxp.com" <york.sun@nxp.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rrichter@marvell.com" <rrichter@marvell.com>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: (EXT) Re: [PATCH v2 1/1] edac: fsl_ddr_edac: fix expected data
+ message
+Message-ID: <20200904091718.GC21499@zn.tnic>
+References: <kcEE.e0qfoTd8SOOr3lTVWaXz/A.AASg8YeC1gE@vtuxmail01.tq-net.de>
 MIME-Version: 1.0
-X-Received: by 2002:a92:6606:: with SMTP id a6mr6903338ilc.128.1599211028247;
- Fri, 04 Sep 2020 02:17:08 -0700 (PDT)
-Date:   Fri, 04 Sep 2020 02:17:08 -0700
-In-Reply-To: <000000000000a358f905ae6b5dc6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000427d4405ae795514@google.com>
-Subject: Re: KASAN: use-after-free Read in dump_schedule
-From:   syzbot <syzbot+621fd33c0b53d15ee8de@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, leandro.maciel.dorileo@intel.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, vedang.patel@intel.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <kcEE.e0qfoTd8SOOr3lTVWaXz/A.AASg8YeC1gE@vtuxmail01.tq-net.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Your mail client broke threading...
 
-commit 7b9eba7ba0c1b24df42b70b62d154b284befbccf
-Author: Leandro Dorileo <leandro.maciel.dorileo@intel.com>
-Date:   Mon Apr 8 17:12:17 2019 +0000
+On Fri, Sep 04, 2020 at 06:52:24AM +0000, Gregor Herburger wrote:
 
-    net/sched: taprio: fix picos_per_byte miscalculation
+> The cap_low, cap_high and syndrome are used in the printk following the if-Block.
+> This will make expected data / captured data look the same.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15464af9900000
-start commit:   fc3abb53 Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17464af9900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13464af9900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e1c560d0f4e121c9
-dashboard link: https://syzkaller.appspot.com/bug?extid=621fd33c0b53d15ee8de
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1129d0e9900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fb6a25900000
+Right.
 
-Reported-by: syzbot+621fd33c0b53d15ee8de@syzkaller.appspotmail.com
-Fixes: 7b9eba7ba0c1 ("net/sched: taprio: fix picos_per_byte miscalculation")
+> @@ -334,18 +337,32 @@ static void fsl_mc_check(struct mem_ctl_info *mci)
+>                 sbe_ecc_decode(cap_high, cap_low, syndrome,
+>                                 &bad_data_bit, &bad_ecc_bit);
+> 
+> +               exp_high = cap_high;
+> +               exp_low = cap_low;
+> +               exp_syndrome = syndrome;
+> +
+>                 if (bad_data_bit != -1)
+> +               {
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Opening brace is on the same line for if-statements.
+
+>                         fsl_mc_printk(mci, KERN_ERR,
+>                                 "Faulty Data bit: %d\n", bad_data_bit);
+> +
+> +                       if (bad_data_bit < 32)
+> +                               exp_low = cap_low ^ (1 << bad_data_bit);
+> +                       else
+> +                               exp_high = cap_high ^ (1 << (bad_data_bit - 32));
+> +               }
+> +
+>                 if (bad_ecc_bit != -1)
+> +               {
+
+Ditto.
+
+>                         fsl_mc_printk(mci, KERN_ERR,
+>                                 "Faulty ECC bit: %d\n", bad_ecc_bit);
+> 
+> +                       exp_syndrome = syndrome ^ (1 << bad_ecc_bit);
+> +               }
+> +
+>                 fsl_mc_printk(mci, KERN_ERR,
+>                         "Expected Data / ECC:\t%#8.8x_%08x / %#2.2x\n",
+> -                       cap_high ^ (1 << (bad_data_bit - 32)),
+> -                       cap_low ^ (1 << bad_data_bit),
+> -                       syndrome ^ (1 << bad_ecc_bit));
+> +                       exp_high, exp_low, exp_syndrome);
+>         }
+> 
+>           fsl_mc_printk(mci, KERN_ERR,
+>                           "Captured Data / ECC:\t%#8.8x_%08x / %#2.2x\n",
+>                           cap_high, cap_low, syndrome);
+> 
+> How about something like this?
+
+My only concern here is that you'll be printing "Expected Data ..."
+unconditionally even if either or both - bad_data_bit and bad_ecc_bit
+- are -1.
+
+If the driver cannot decode the data and/or ECC syndrome bits, then it
+should say so - not dump expected data and claim that it is a valid
+information.
+
+So maybe in addition to the above:
+
+	if (bad_data_bit != -1) {
+		...
+	} else {
+		fsl_mc_printk(..., "Unable to decode the Faulty Data bit");
+	}
+
+and the same for the ECC bit.
+
+And then print only the expected data for the bit which sbe_ecc_decode()
+found correctly and not say anything otherwise.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
