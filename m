@@ -2,105 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B731C25E2BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACFF25E2C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgIDU2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 16:28:43 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40485 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727921AbgIDU2l (ORCPT
+        id S1728084AbgIDUcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 16:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgIDUcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 16:28:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599251320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BWp0AAI+VZUu8qz/13ssyrVxYR5SrJ8VDuwzkJreei0=;
-        b=D6pX3bOYWhbkisbpj9i7EySEbgezcqwg8vlOD/VTQcJQBTVDtoJj/ygKld2aSV/13XLuGZ
-        Ye0g3RQYGdnZ6UPE+4kWfq/mNuKdb+uTTExrfe3TFpcy8B4n9mTxD8SF5E+nHwG3nQff7v
-        OYAtC7KqihXD7ENhZGMzggWi0KJd8Es=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-4WJb22XZMNCaxKXeeacgtQ-1; Fri, 04 Sep 2020 16:28:38 -0400
-X-MC-Unique: 4WJb22XZMNCaxKXeeacgtQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F82610BBECF;
-        Fri,  4 Sep 2020 20:28:28 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-118-1.rdu2.redhat.com [10.10.118.1])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 95FE360C05;
-        Fri,  4 Sep 2020 20:28:24 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, James Jones <jajones@nvidia.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v5 2/2] drm/nouveau/kms/nv50-: Log SOR/PIOR caps
-Date:   Fri,  4 Sep 2020 16:27:59 -0400
-Message-Id: <20200904202813.1260202-2-lyude@redhat.com>
-In-Reply-To: <20200904202813.1260202-1-lyude@redhat.com>
-References: <20200904202813.1260202-1-lyude@redhat.com>
+        Fri, 4 Sep 2020 16:32:01 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE51CC061244;
+        Fri,  4 Sep 2020 13:32:00 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id D3A1129B031
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     luto@kernel.org, tglx@linutronix.de, keescook@chromium.org
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, willy@infradead.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v6 0/9] Syscall User Dispatch
+Date:   Fri,  4 Sep 2020 16:31:38 -0400
+Message-Id: <20200904203147.2908430-1-krisman@collabora.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since I'm almost certain I didn't get capability checking right for
-pre-volta chipsets, let's start logging any caps we find to make things
-like this obvious in the future.
+Hi,
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/dispnv50/disp.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+The v6 of this patch series include only the type change requested by
+Andy on the vdso patch, but since v5 included some bigger changes, I'm
+documenting them in this cover letter as well.
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-index 7799530e07c1f..376add0faacc3 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-@@ -303,6 +303,14 @@ nv50_dmac_create(struct nvif_device *device, struct nvif_object *disp,
- /******************************************************************************
-  * Output path helpers
-  *****************************************************************************/
-+static void
-+nv50_outp_dump_caps(struct nouveau_drm *drm,
-+		    struct nouveau_encoder *outp)
-+{
-+	NV_DEBUG(drm, "%s caps: dp_interlace=%d\n",
-+		 outp->base.base.name, outp->caps.dp_interlace);
-+}
-+
- static void
- nv50_outp_release(struct nouveau_encoder *nv_encoder)
- {
-@@ -1819,6 +1827,7 @@ nv50_sor_create(struct drm_connector *connector, struct dcb_output *dcbe)
- 	drm_connector_attach_encoder(connector, encoder);
- 
- 	disp->core->func->sor->get_caps(disp, nv_encoder, ffs(dcbe->or) - 1);
-+	nv50_outp_dump_caps(drm, nv_encoder);
- 
- 	if (dcbe->type == DCB_OUTPUT_DP) {
- 		struct nvkm_i2c_aux *aux =
-@@ -1989,6 +1998,7 @@ nv50_pior_create(struct drm_connector *connector, struct dcb_output *dcbe)
- 	drm_connector_attach_encoder(connector, encoder);
- 
- 	disp->core->func->pior->get_caps(disp, nv_encoder, ffs(dcbe->or) - 1);
-+	nv50_outp_dump_caps(drm, nv_encoder);
- 
- 	return 0;
- }
+Please note this applies on top of Linus tree, and it succeeds seccomp
+and syscall user dispatch selftests.
+
+v5 cover letter
+--------------
+
+This is v5 of Syscall User Dispatch.  It has some big changes in
+comparison to v4.
+
+First of all, it allows the vdso trampoline code for architectures that
+support it.  This is exposed through an arch hook.  It also addresses
+the concern about what happens when a bad selector is provided, instead
+of SIGSEGV, we fail with SIGSYS, which is more debug-able.
+
+Another major change is that it is now based on top of Gleixner's common
+syscall entry work, and is supposed to only be used by that code.
+Therefore, the entry symbol is not exported outside of kernel/entry/ code.
+
+The biggest change in this version is the attempt to avoid using one of
+the final TIF flags on x86 32 bit, without increasing the size of that
+variable to 64 bit.  My expectation is that, with this work, plus the
+removal of TIF_IA32, TIF_X32 and TIF_FORCE_TF, we might be able to avoid
+changing this field to 64 bits at all.  Instead, this follows the
+suggestion by Andy to have a generic TIF flag for SECCOMP and this
+mechanism, and use another field to decide which one is enabled.  The
+code for this is not complex, so it seems like a viable approach.
+
+Finally, this version adds some documentation to the feature.
+
+Kees, I dropped your reviewed-by on patch 5, given the amount of
+changes.
+
+Thanks,
+
+Previous submissions are archived at:
+
+RFC/v1: https://lkml.org/lkml/2020/7/8/96
+v2: https://lkml.org/lkml/2020/7/9/17
+v3: https://lkml.org/lkml/2020/7/12/4
+v4: https://www.spinics.net/lists/linux-kselftest/msg16377.html
+v5: https://lkml.org/lkml/2020/8/10/1320
+
+Gabriel Krisman Bertazi (9):
+  kernel: Support TIF_SYSCALL_INTERCEPT flag
+  kernel: entry: Support TIF_SYSCAL_INTERCEPT on common entry code
+  x86: vdso: Expose sigreturn address on vdso to the kernel
+  signal: Expose SYS_USER_DISPATCH si_code type
+  kernel: Implement selective syscall userspace redirection
+  kernel: entry: Support Syscall User Dispatch for common syscall entry
+  x86: Enable Syscall User Dispatch
+  selftests: Add kselftest for syscall user dispatch
+  doc: Document Syscall User Dispatch
+
+ .../admin-guide/syscall-user-dispatch.rst     |  87 ++++++
+ arch/Kconfig                                  |  21 ++
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/entry/vdso/vdso2c.c                  |   2 +
+ arch/x86/entry/vdso/vdso32/sigreturn.S        |   2 +
+ arch/x86/entry/vdso/vma.c                     |  15 +
+ arch/x86/include/asm/elf.h                    |   1 +
+ arch/x86/include/asm/thread_info.h            |   4 +-
+ arch/x86/include/asm/vdso.h                   |   2 +
+ arch/x86/kernel/signal_compat.c               |   2 +-
+ fs/exec.c                                     |   8 +
+ include/linux/entry-common.h                  |   6 +-
+ include/linux/sched.h                         |   8 +-
+ include/linux/seccomp.h                       |  20 +-
+ include/linux/syscall_intercept.h             |  71 +++++
+ include/linux/syscall_user_dispatch.h         |  29 ++
+ include/uapi/asm-generic/siginfo.h            |   3 +-
+ include/uapi/linux/prctl.h                    |   5 +
+ kernel/entry/Makefile                         |   1 +
+ kernel/entry/common.c                         |  32 +-
+ kernel/entry/common.h                         |  15 +
+ kernel/entry/syscall_user_dispatch.c          | 101 ++++++
+ kernel/fork.c                                 |  10 +-
+ kernel/seccomp.c                              |   7 +-
+ kernel/sys.c                                  |   5 +
+ tools/testing/selftests/Makefile              |   1 +
+ .../syscall_user_dispatch/.gitignore          |   2 +
+ .../selftests/syscall_user_dispatch/Makefile  |   9 +
+ .../selftests/syscall_user_dispatch/config    |   1 +
+ .../syscall_user_dispatch.c                   | 292 ++++++++++++++++++
+ 30 files changed, 744 insertions(+), 19 deletions(-)
+ create mode 100644 Documentation/admin-guide/syscall-user-dispatch.rst
+ create mode 100644 include/linux/syscall_intercept.h
+ create mode 100644 include/linux/syscall_user_dispatch.h
+ create mode 100644 kernel/entry/common.h
+ create mode 100644 kernel/entry/syscall_user_dispatch.c
+ create mode 100644 tools/testing/selftests/syscall_user_dispatch/.gitignore
+ create mode 100644 tools/testing/selftests/syscall_user_dispatch/Makefile
+ create mode 100644 tools/testing/selftests/syscall_user_dispatch/config
+ create mode 100644 tools/testing/selftests/syscall_user_dispatch/syscall_user_dispatch.c
+
 -- 
-2.26.2
+2.28.0
 
