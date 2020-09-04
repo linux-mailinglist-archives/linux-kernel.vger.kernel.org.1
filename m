@@ -2,121 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B58A25D931
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E4F25D936
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730312AbgIDNCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
+        id S1730353AbgIDND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730010AbgIDNCj (ORCPT
+        with ESMTP id S1730270AbgIDNDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:02:39 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E44CC061245
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 06:02:38 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id q21so6039527edv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 06:02:38 -0700 (PDT)
+        Fri, 4 Sep 2020 09:03:22 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F26CC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 06:03:22 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id o64so6132368qkb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 06:03:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=py331tU/dS8B+p+QL/GfpvBAThxgQcvBqHpIco6OZf4=;
-        b=XPTAekBXdjp1zg6XcrQsSDBhv6Td+yjs6TQWmt2e6ABqt6Ces7wnkkjU3DyWIAxlg5
-         lLBbFAE7DfQBzEcwyBIKUKTNN+PVRtgyuZonLh5E9k/N7OW14qhI0wzljO6Dx4Gzi7DL
-         zTbx45tIpaCydCDj8jvjwd6bT+julciQyTgPuU+Ov21SE1fnFu5Y8/qgzoDNAATmg1EG
-         lkHJpWUHGwmUCdOel8ILmqCgXI17fzK/GPOrGEP4BNBHaaSJEaxD3+gKeZZuDCJqaaJX
-         /QPknR2xkDKg/orAul0g2pWtPRlrBy8fFV4yXko3JI5BbAjWMA8gA+GKuP+UZsfikazY
-         w4Og==
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=91R6k3kVp9Mx4ywBsUycmYMziP2Na7QYOzvont9ThTs=;
+        b=f2InfMC3zUv5o08wJbEWIhFbDOLTlZhxw7806mCoDQiE9GUHw+LDUxXVCIJAMMUCSY
+         eQVRB32C2QLctrkgHkrJEQNlJVSgykvTOK9urz+zgj4Yw9qc3zyaOqpdAxs/2m+thLTI
+         0gV5513hPf7Zhj0+P8kktYo0ly0tHRS2jadR9B7WewT6BtEgsntwRXt+Xb4ZdGe0w73n
+         lWElz3EhvBnkY3OSA+gbzdMkfBYpmUp/3u/nGpDrOkoXk3S5Zl0MYPJX2PivmAjpUhJr
+         MbJv419ws20mO2JVw6Gob2cCVrq+BM+4sLaZWvv9lBggPSg7pv9vTVWtZ0dpP3+FSKkh
+         HNYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=py331tU/dS8B+p+QL/GfpvBAThxgQcvBqHpIco6OZf4=;
-        b=KBSA9U0GJJv60d3sTLkvNVv7HJfj8Cux/a0yLd4PxWYdqcXw933fltIVyeEPs/8i0L
-         2d+aKr9rqaBgvoHmx9g6MNSpvnl6uUUg2UgXEOgh+HxZehvY/gRZl3UjTsrJ9KVvhgO7
-         usNVx77SXKbxYjQA9UGLKFAOhGgxNrdhZeq1zcSCME/SGN6bXhPS+vtI3EJqypZlnQm9
-         SmOL+hZUlPY93S3UdcMln/Ebq5K8KOZzBegoTwDZArSf+G24smu1Uo4QfoTWLY9py9cb
-         16HWMG/TsrtPWFNdIsnRVfVZ4mw+ii085Rj5K7217gmRKhWr+pla/ioSE3SS1zSzXBcx
-         VyCQ==
-X-Gm-Message-State: AOAM532uQIoDEFqXEgjYuparl6FH9BBmgAbjkwffn45WbON2tCjhms35
-        fD2WWBRpiwUqo5068ZmskPoXAWZk89FsnZo5IVmD7g==
-X-Google-Smtp-Source: ABdhPJxENorReiMcFJ1ELBNazOkBgXgqx3iK4DDfOdoXejxOa5mDrshUwTYC4EVFHSsuoljPmK+RzhLQAe85psy+ReM=
-X-Received: by 2002:a50:e79c:: with SMTP id b28mr8612901edn.371.1599224556598;
- Fri, 04 Sep 2020 06:02:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=91R6k3kVp9Mx4ywBsUycmYMziP2Na7QYOzvont9ThTs=;
+        b=ByendMTgolk4owvYkB0BZr25R3+vq7c87vYeUYj/zwU1I+IhbTMiVyC4Lj498eoeKF
+         j/aSsOIG9I3/M3a2FCQ9Ed3zyia9PlHhANlA1iAC4QTXZ+DicV3GkNVSY6uR9Zf3kykk
+         +WP5zm+Xd6Te4IKs2793er5Zw0nD6kYSVXERZbXOuFZUgOz517McukhqtWWTUhDMGFxs
+         kFgjxheA6CCsseE/pqw+i+wq/dw84FtYae2AGe/co0LjPxyTvqUpaps6mSsDnQQIrhSC
+         eGHCqfJVzmG64obpKoUiozRAHYIBSu5QXbmJwtjYNgN3lvTAgXXVcbkGBeBUtOEMti+i
+         SMPw==
+X-Gm-Message-State: AOAM530OCqZ2UTl8pAxToUQublQ0tAEdYZNzUzaFqHnkBXldq58+zMY/
+        iDPiE6A7plfhCi8M72DaCB9Q4g==
+X-Google-Smtp-Source: ABdhPJxgSZH5zAHlN2iY/FzlPALmYu5zSQUPGU/S4gCioz7nDF6E7X/OgFbsHKaqndMAifmBMUmnEw==
+X-Received: by 2002:a05:620a:15a7:: with SMTP id f7mr1367974qkk.3.1599224601190;
+        Fri, 04 Sep 2020 06:03:21 -0700 (PDT)
+Received: from [192.168.0.189] ([147.253.86.153])
+        by smtp.gmail.com with ESMTPSA id q8sm4516772qkq.57.2020.09.04.06.03.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Sep 2020 06:03:20 -0700 (PDT)
+Subject: Re: [PATCH v2 07/10] phy: qcom-qmp: Add support for DP in USB3+DP
+ combo phy
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Clark <robdclark@chromium.org>
+References: <20200902230215.3452712-1-swboyd@chromium.org>
+ <20200902230215.3452712-8-swboyd@chromium.org>
+ <b6f80242-482d-b778-690b-8aefa4e8f23e@marek.ca>
+ <9f99cc8b-2cfd-280f-e52a-23d098934a11@linaro.org>
+ <4c0f59f8-b7fa-432f-2255-8d253f434a59@marek.ca>
+ <c8ca7193-67ae-e1d5-d36a-19655ca67d78@linaro.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <6017ca10-e4c8-4104-df2d-03984da2a655@marek.ca>
+Date:   Fri, 4 Sep 2020 09:02:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200831032006.1019978-1-warthog618@gmail.com>
- <CAMpxmJUETJgmxzWzHumOVr+vWFQ27P71MtcdSdf_=jvtrSfRPg@mail.gmail.com>
- <20200903083750.GA17445@sol> <20200904125250.GA323947@sol>
-In-Reply-To: <20200904125250.GA323947@sol>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 4 Sep 2020 15:02:25 +0200
-Message-ID: <CAMpxmJWVZ8Bf1gPibvbk=E5XNvQ_i76E430MMhUWwE1ACoPTQg@mail.gmail.com>
-Subject: Re: [PATCH v6 00/20] gpio: cdev: add uAPI v2
-To:     Bamvor Jian Zhang <bamv2005@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c8ca7193-67ae-e1d5-d36a-19655ca67d78@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 2:52 PM Kent Gibson <warthog618@gmail.com> wrote:
->
-> On Thu, Sep 03, 2020 at 04:37:50PM +0800, Kent Gibson wrote:
-> > On Thu, Sep 03, 2020 at 10:02:04AM +0200, Bartosz Golaszewski wrote:
-> > > On Mon, Aug 31, 2020 at 5:21 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > >
-> [snip]
-> > >
-> > > To me it looks good, just a couple nits here and there and some questions.
-> > >
-> > > I think it's worth deciding whether we want to keep the selftests in
-> > > tools/testing/selftests/gpio/ and then maybe consider porting
-> > > gpio-mockup-chardev.c to V2 or simply outsource it entirely to
-> > > libgpiod.
-> > >
-> >
-> > Ooops - I wasn't even aware they existed - though it had crossed my mind
-> > that the kernel should have some selftests somewhere - I use the libgpiod
-> > tests, from my libgpiod port, and my own Go based test suite for my testing,
-> > as well as some smoke tests with the tools/gpio.
-> >
-> > The libgpiod tests only cover v1 equivalent functionality, while my Go
-> > tests cover the complete uAPI, and both v1 and v2.
-> >
-> > It would be good for the kernel to at least have some smoke tests to
-> > confirm basic functionality, even thorough testing is left to a
-> > userspace library.  So the existing tests should be ported to v2, though
-> > should also retain the v1 tests if v1 is still compiled in.
-> >
->
-> I've got a v7 ready to submit that includes a couple of patches for the
-> gpio-mockup selftests (their primary purpose appears to be testing the
-> mockup module, rather than the GPIO ABI), but I now notice that the
-> selftests/gpio section of the tree has a different maintainer:
->
-> scripts/get_maintainer.pl 0021-selftests-gpio-port-to-GPIO-uAPI-v2.patch
-> Bamvor Jian Zhang <bamv2005@gmail.com> (maintainer:GPIO MOCKUP DRIVER)
-> Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK)
-> linux-gpio@vger.kernel.org (open list:GPIO MOCKUP DRIVER)
-> linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-> linux-kernel@vger.kernel.org (open list)
+On 9/4/20 8:57 AM, Dmitry Baryshkov wrote:
+> On 04/09/2020 15:44, Jonathan Marek wrote:
+>> On 9/4/20 8:29 AM, Dmitry Baryshkov wrote:
+>>> On 03/09/2020 23:43, Jonathan Marek wrote:
+>>>> On 9/2/20 7:02 PM, Stephen Boyd wrote:
+>>>>> Add support for the USB3 + DisplayPort (DP) "combo" phy to the qmp phy
+>>>>> driver. We already have support for the USB3 part of the combo phy, so
+>>>>> most additions are for the DP phy.
+>>>>>
+>>>>> Split up the qcom_qmp_phy{enable,disable}() functions into the phy 
+>>>>> init,
+>>>>> power on, power off, and exit functions that the common phy framework
+>>>>> expects so that the DP phy can add even more phy ops like
+>>>>> phy_calibrate() and phy_configure(). This allows us to initialize 
+>>>>> the DP
+>>>>> PHY and configure the AUX channel before powering on the PHY at the 
+>>>>> link
+>>>>> rate that was negotiated during link training.
+>>>>>
+>>>>> The general design is as follows:
+>>>>>
+>>>>>    1) DP controller calls phy_init() to initialize the PHY and 
+>>>>> configure
+>>>>>    the dp_com register region.
+>>>>>
+>>>>>    2) DP controller calls phy_configure() to tune the link rate and
+>>>>>    voltage swing and pre-emphasis settings.
+>>>>>
+>>>>>    3) DP controller calls phy_power_on() to enable the PLL and 
+>>>>> power on
+>>>>>    the phy.
+>>>>>
+>>>>>    4) DP controller calls phy_configure() again to tune the voltage 
+>>>>> swing
+>>>>>    and pre-emphasis settings determind during link training.
+>>>>>
+>>>>>    5) DP controller calls phy_calibrate() some number of times to 
+>>>>> change
+>>>>>    the aux settings if the aux channel times out during link training.
+>>>>>
+>>>>>    6) DP controller calls phy_power_off() if the link rate is to be
+>>>>>    changed and goes back to step 2 to try again at a different link 
+>>>>> rate.
+>>>>>
+>>>>>    5) DP controller calls phy_power_off() and then phy_exit() to power
+>>>>>    down the PHY when it is done.
+>>>>>
+>>>>> The DP PHY contains a PLL that is different from the one used for the
+>>>>> USB3 PHY. Instead of a pipe clk there is a link clk and a pixel clk
+>>>>> output from the DP PLL after going through various dividers. Introduce
+>>>>> clk ops for these two clks that just tell the child clks what the
+>>>>> frequency of the pixel and link are. When the phy link rate is
+>>>>> configured we call clk_set_rate() to update the child clks in the
+>>>>> display clk controller on what rate is in use. The clk frequencies
+>>>>> always differ based on the link rate (i.e. 1.6Gb/s 2.7Gb/s, 
+>>>>> 5.4Gb/s, or
+>>>>> 8.1Gb/s corresponding to various transmission modes like HBR1, HBR2 or
+>>>>> HBR3) so we simply store the link rate and use that to calculate 
+>>>>> the clk
+>>>>> frequencies.
+>>>>>
+>>>>> The PLL enable sequence is a little different from other QMP phy 
+>>>>> PLLs so
+>>>>> we power on the PLL in qcom_qmp_phy_configure_dp_phy() that gets 
+>>>>> called
+>>>>> from phy_power_on(). This should probably be split out better so that
+>>>>> each phy has a way to run the final PLL/PHY enable sequence.
+>>>>>
+>>>>> This code is based on a submission of this phy and PLL in the drm
+>>>>> subsystem.
+>>>>
+>>>> I updated my upstream-based sm8150/sm8250 displayport stack [1] to 
+>>>> use these patches.
+>>>
+>>> I have tried your branch on my RB5 with two different dongles. Both 
+>>> dongles provide the same behaviour:
+>>>   - on first plug I see VDM Tx errors,
+>>>   - after I unplug and replug the dongle, PD phy seems to be stuck on 
+>>> sending capabilities.
+>>>
+>>> See attached logs.
+>>>
+>>> Also I had to add typec_unregister_port(port->typec_port); to 
+>>> IS_ERR(alt) in your tcpm.c hack.
+>>>
+>>> I'm currently finishing the driver for the mux/redriver, will retry 
+>>> testing afterwards.
+>>>
+>>
+>> As I mentioned the TCPM driver has a lot of issues. The "hard reset" 
+>> isn't implemented correctly so going into that mode gets it stuck in a 
+>> bad state. Note I am using this dongle [1], and it only works 
+>> correctly in sink mode (with the dongle providing power), in source 
+>> mode it does negotiate the alt mode, but never gets the HPD event that 
+>> DP driver is waiting for.
+>>
+>> https://www.amazon.ca/Cable-Matters-Multiport-DisplayPort-Ethernet/dp/B06Y5N3YCD 
+> 
+> 
+> I'll take a look for dongles that work in source mode (with RB5 being 
+> the sink). Reset being not fully implemented would answer on questions 
+> about replug. Any idea about VDM Tx errors?
+> 
+> 
 
-Bamvor, Shuah: do you still have interest in maintaining these, or can
-we update MAINTAINERS?
+Unfortunately I don't have a good idea. If you want to compare, here is 
+my tcpm log [1] in source mode (HDK providing the power, it doesn't get 
+the HPD event)
 
-Bart
-
->
-> The v7 patch up to that point restores the functions that the selftests
-> are using so that they build and run again.
-> So I should hold off on the selftest patches and submit them separately
-> after the GPIO changes are in?
->
-> Cheers,
-> Kent.
+[1] https://gist.github.com/flto/62f352dbff3601abe05013bfebe7c0ab
