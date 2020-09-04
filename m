@@ -2,145 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D37225D602
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB7525D60E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730146AbgIDKYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:24:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730117AbgIDKYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:24:40 -0400
-Received: from localhost (unknown [122.182.253.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A789D2084D;
-        Fri,  4 Sep 2020 10:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599215079;
-        bh=6dlzHURxLhflehCVYVCij0VG/d/I/vDnqgeaf5qsTm0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LA9e4XgIxR6Y69aFKuJrKoBxGu1Yl0FSRRcWvMdVfyfSOjphyP+egKM5GrxUiAOYT
-         9S6lSZ9eRU+jD/8E14OREqUiLqTybpLbh0/vB8Rc2zvt7H90sFSG7EBxK3bZKGRPTX
-         V2RMTZGpsewvU5hlSZ1ekorzsNrBpMpLcwOj2BRs=
-Date:   Fri, 4 Sep 2020 15:54:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: dmaengine fixes for v5.9-rc4
-Message-ID: <20200904102433.GB2639@vkoul-mobl>
+        id S1730165AbgIDKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729584AbgIDKZM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:25:12 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E8DC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 03:25:10 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id r13so7377402ljm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 03:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=Jxp2jBYntJd2vYLCklHXWV7dOh+bMZF3+P7AnFVVI4c=;
+        b=kpNetS/gU7kX02If1+uE2CwLszFMjo1EYWfYLUSXeTNowJa0ZN8sHAZJ4sKAQuGtIK
+         G73rbqwn7M5JB3GzAy8u5SR/+CpOXQ5gTC362mRFWJOlDBdKF/ICqhR84h3TD2N88pV3
+         BGHxgSe9gwr/RQ0BPwyDEZQumz5tzMP5UaxXTuDHGLRRLlGDkOjW0remSDAVrRXKQ+91
+         43b7mkm819L8Nb5D5vzFzprjvoQjt/+QxoY3hA3Mwv0urBppXfOaUH2vrrHIOZzC29k2
+         uA4fSgnldWPilEL9r0xiYlduwVMPQgrlrxL/scKuL2q8GV/5tnnxjFDSOAWU97eZRUO6
+         R4wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=Jxp2jBYntJd2vYLCklHXWV7dOh+bMZF3+P7AnFVVI4c=;
+        b=VMzRGlA20hYxb+pSmaAe//RP95TlYZZBmWuI1gCPPXh8o89dV24WkQWGC2xYbuKr8D
+         tKUuO7iHftsmXBurAQmP4DB9EUQ1BhbH0eHYJbm9m19v5jF8pGiYFgZonTg2HQuhBVfy
+         VP9BarDPhjPJdxViGCZLa+ZFjaO923Rp2T65lXtbTgqY8QPGSDzRXoMzTPBsPrVZY60C
+         9iYy/SsEXk0JlV8xvefu/Re4qjHb9nfq5QKDhDn2ot85aXzJLTPTj99H2ZCS7xsEVubd
+         5xsig9eQ0ClywDJi2nmMwz5q2fm/1hxqEZVJEAJUNrSkFv1FUSoYT/ExjNzknRD2yTqz
+         xuew==
+X-Gm-Message-State: AOAM530uiVZ37hrEsSrzYyEKUoD3IpacYcfmtpm3ImovPjVgjUK5Tef/
+        xq5vcUHZ07KEmZM/JjQLvHH7lh5NbbL9yKegTug=
+X-Google-Smtp-Source: ABdhPJxMTuFO5y1TDUCaP3AJNGBDs1EN7j1h+0FYEJl3flVagVtzmkmeNVB3C1AwB9zHzLpO6+QZtphmGu9lW2xjx9U=
+X-Received: by 2002:a2e:98c8:: with SMTP id s8mr990745ljj.268.1599215108464;
+ Fri, 04 Sep 2020 03:25:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="9UV9rz0O2dU/yYYn"
-Content-Disposition: inline
+Received: by 2002:a2e:3603:0:0:0:0:0 with HTTP; Fri, 4 Sep 2020 03:25:07 -0700 (PDT)
+Reply-To: mrs.vernitha.maynard@gmail.com
+From:   Vernitha Maynard <sousah.fatou@gmail.com>
+Date:   Fri, 4 Sep 2020 10:25:07 +0000
+Message-ID: <CAJ7hs06eMfe31WnLeAw+jADEvnGB_XQSTEFvS9bS97g-ZmTHUg@mail.gmail.com>
+Subject: My Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+My Dear,
 
---9UV9rz0O2dU/yYYn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+With warm heart I offer my friendship, and my greetings to you in the
+name of our lord, and I hope this letter meets you in good time, I
+Propose with my free mind and as a person of integrity from God, I
+know that this message will appear as a surprise to you that we barely
+Know but the grace of God directed me to you and I wish you read this
+message and be blessed in name of the Lord.
 
-Hello Linus,
+I have a brain tumor; I suffer terribly at the moment. My doctor just
+informed me that my days are numbered because of my health therefore
+condemned to certain death. Currently, I have exhausted all my savings
+for my medical care.
 
-Please pull to receive couple of core fixes and odd driver fixes for
-dmaengine subsystem.
+But I do have some funds for my charity project; these funds are
+deposited with one of the Banks here In Cote D'Ivoire West Africa.
+Purposed for charitable foundation, my marital status is such that I'm
+single because I lost my Husband over 9 years now and unfortunately we
+have not had a child together, which I am no one to leave my legacy
+for. Therefore, to release my funds I would like to make a donation so
+that there is no stiff tax on my money.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+To this I would be so graceful and in order to help the poor to give
+what amounts to said legacy worth four Million Euros (=E2=82=AC4,000,000.00
+Million Euros) to enable you establish a charitable foundation in my
+memory so that the grace of God be with me until my last home so I can
+receive an honorable place with the Lord our father.
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+I have no fear because before contacted you, I have several nights
+prayed for the Lord to give me the contact of a trusted person of whom
+I can entrust this matter and I believe my contacts to you is divine.
 
-are available in the Git repository at:
+Know that you can keep 30% of the money for yourself and the rest will
+be used to create a charitable foundation in my memory and a
+federation in the fight against cancer and also build orphanages.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
-aengine-fix-5.9-rc4
+I count on your goodwill and especially on the proper use of these
+funds have something I do not doubt because I have great confidence in
+you that God may guide me toward you. My email
+mrs.vernitha.maynard@gmail.com
 
-for you to fetch changes up to 46815bf4d5a2e6ed64e4fa636c7d13f025bf40d8:
 
-  dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3.0 (=
-2020-09-03 12:53:53 +0530)
+Awaiting your prompt reply, receive my cordial and fraternal greetings.
 
-----------------------------------------------------------------
-dmaengine fixes for v5.9-rc4
-
-Core:
- - drop ACPI CSRT table reference after using it
- - fix of_dma_router_xlate() error handling
-
-Drivers: Off fixes in:
- - idxd
- - at_hdmac
- - pl330
- - dw-edma
- - jz478
-
-----------------------------------------------------------------
-Dave Jiang (1):
-      dmaengine: idxd: reset states after device disable or reset
-
-Gustavo Pimentel (1):
-      dmaengine: dw-edma: Fix scatter-gather address calculation
-
-Hanjun Guo (1):
-      dmaengine: acpi: Put the CSRT table after using it
-
-Madhuparna Bhowmik (1):
-      drivers/dma/dma-jz4780: Fix race condition between probe and irq hand=
-ler
-
-Marek Szyprowski (1):
-      dmaengine: pl330: Fix burst length if burst size is smaller than bus =
-width
-
-Peter Ujfalusi (3):
-      dmaengine: of-dma: Fix of_dma_router_xlate's of_dma_xlate handling
-      dmaengine: ti: k3-udma: Fix the TR initialization for prep_slave_sg
-      dmaengine: ti: k3-udma: Update rchan_oes_offset for am654 SYSFW ABI 3=
-=2E0
-
-Yu Kuai (3):
-      dmaengine: at_hdmac: check return value of of_find_device_by_node() i=
-n at_dma_xlate()
-      dmaengine: at_hdmac: add missing put_device() call in at_dma_xlate()
-      dmaengine: at_hdmac: add missing kfree() call in at_dma_xlate()
-
- drivers/dma/acpi-dma.c             |  4 +++-
- drivers/dma/at_hdmac.c             | 11 +++++++++--
- drivers/dma/dma-jz4780.c           | 38 +++++++++++++++++++---------------=
-----
- drivers/dma/dw-edma/dw-edma-core.c | 11 ++++++-----
- drivers/dma/idxd/device.c          | 26 ++++++++++++++++++++++++++
- drivers/dma/idxd/irq.c             | 12 ------------
- drivers/dma/of-dma.c               |  8 ++++----
- drivers/dma/pl330.c                |  2 +-
- drivers/dma/ti/k3-udma.c           | 10 +++++-----
- 9 files changed, 73 insertions(+), 49 deletions(-)
-
-Thanks
---=20
-~Vinod
-
---9UV9rz0O2dU/yYYn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl9SFeAACgkQfBQHDyUj
-g0dY3Q/9GPq1DW+cxwVZrraw9M1MhyVMnPGzzwUXJduIskW2VedCLtei963TOW+l
-OkvbV4B9E8s7CdwIDDpsgcDjpVrQbwybEIScmMxq/ojKpP/ruosd7v4oqUrSCxDv
-Vmd3vYRNacC/9YlxQx1IT1nPIyjKnUn7jWR078E1HT8CegGb4AiRKXgVZZowGZ15
-nnlN9mptZ9nYIj8pbAGbYY2Q61WmC0mSGLsNnyfYSP9dguiAKcCbQeLNWEoRZmGN
-uc6FGLJJUX45ciOZoQu4u/6v9Gf8sye64QHsmbSxK8bBXAM2WBR9T/GWj5x+kPyy
-Q8FPA0bm8AX5g8doSKhpRID9hSNqQuch8ltiDtB6+9+3aG1zc44LqSLD3ek8RyvD
-kRGQu/w13Ux3bZVpb6E8Q1xiV7RGa0WFFLUcVYB4oYjdPwUohBRA6x2AaUSyEMBb
-RWQ/l+q8DRIisnnZRc55P/SV9ZuXhypaa/lSnxy3R0VseyhX4BNys/PJa0u8aVcN
-0+OsOGKOGHI2xDFy+a57fkjvBDChlK9BRuX3BD0Y7D30HjUyySChjkID1RpNoVmD
-Tvyh4CKkD/bU2uoVZyd4Pysnovhzly5DEmRyadcKyd34rYHWcpFycF56UBgiciU2
-bqGg9XSLEeqNLzMZd+vLBR5UNnsgEvC8/c0DrFS+63JnwZYq8iQ=
-=yvrJ
------END PGP SIGNATURE-----
-
---9UV9rz0O2dU/yYYn--
+Yours Sincerely,
+Mrs Vernitha Maynard
