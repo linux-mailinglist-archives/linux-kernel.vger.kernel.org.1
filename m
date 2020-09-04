@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEBC25DAE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B067925DB1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730745AbgIDODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:03:39 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:44854 "EHLO
+        id S1730653AbgIDONk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:13:40 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:44698 "EHLO
         mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730614AbgIDNp4 (ORCPT
+        with ESMTP id S1730591AbgIDNpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:45:56 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200904133505euoutp014818b7a0d35cbcae9392bc5314d6ab87~xmAiZ4dVr0722107221euoutp01p
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 13:35:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200904133505euoutp014818b7a0d35cbcae9392bc5314d6ab87~xmAiZ4dVr0722107221euoutp01p
+        Fri, 4 Sep 2020 09:45:24 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200904133507euoutp01e6e02826db9cd1cd8a0cf45415437b8b~xmAkOt0vK0722107221euoutp01s
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 13:35:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200904133507euoutp01e6e02826db9cd1cd8a0cf45415437b8b~xmAkOt0vK0722107221euoutp01s
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1599226505;
-        bh=8SvVp249TnvdrtsN3cK9UiYXaHvxLMtfidsvZb7ATx0=;
+        s=mail20170921; t=1599226507;
+        bh=M6LUpUR0yeAQpj3I0Hzt+0kX5PVbzJKyJpNcEwtoCPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r+PfQ9ZWYG2lYdfz56e6fenQckcSDVK6y6adnzmYlyuJg18feaETuF1AvCC2svdFp
-         SUVGVWQnR93QgxTtK9HYy9uwuzsPPOxLfHvDt1FX7p5bJL9k0kaegH+E5jP5OzCvD7
-         MuSImBuWB7pFwQngy0CyHMPTBEUjHgyUtmSn4Yhg=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200904133505eucas1p26123743dd9542f9b2808ba52cdc2d1b5~xmAiHT8Sw0693606936eucas1p2Q;
-        Fri,  4 Sep 2020 13:35:05 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 0D.66.05997.882425F5; Fri,  4
-        Sep 2020 14:35:04 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        b=rJ7vpQZd6k/ci8vZ9dNBFafOcWJX/a61zmJeRw8vmkv/yq5SIMF/EitQPqlxsDPO2
+         U9J28iMeduQMOl+NdItqrrrX9N4sh8F14oKzzyOh47arjiyL/WhbX/ZiCpeQWSDAAQ
+         VdVOh1bKD+cNEkHl9i4Q7uUdewBdzM4xDwM7Y7+s=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200904133506eucas1p16f875fb1a1d79b21dfd37ea6cc11a0ff~xmAjujuXO1156611566eucas1p1K;
+        Fri,  4 Sep 2020 13:35:06 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 0D.39.06318.A82425F5; Fri,  4
+        Sep 2020 14:35:06 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
         eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200904133504eucas1p10e30fbcb69c2c0627ab7a83fb1b69759~xmAhueCER0117101171eucas1p1q;
-        Fri,  4 Sep 2020 13:35:04 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200904133504eusmtrp14446130178a02ad84a8ee9bd89bdf48d~xmAht28Ev0766507665eusmtrp1C;
-        Fri,  4 Sep 2020 13:35:04 +0000 (GMT)
-X-AuditID: cbfec7f4-65dff7000000176d-6b-5f524288ec72
+        20200904133506eucas1p170dd4d393f12bf79c9ba4a3c9532c29f~xmAjaoAAZ0117201172eucas1p1y;
+        Fri,  4 Sep 2020 13:35:06 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200904133506eusmtrp2d63e1b01372524ece3713ef834439e25~xmAjZ9k5q0977109771eusmtrp2J;
+        Fri,  4 Sep 2020 13:35:06 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-b1-5f52428aa09e
 Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id F5.BE.06314.882425F5; Fri,  4
-        Sep 2020 14:35:04 +0100 (BST)
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 8E.A0.06017.A82425F5; Fri,  4
+        Sep 2020 14:35:06 +0100 (BST)
 Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
         eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200904133504eusmtip1308c574468bbe4478fb8939435cfda1e~xmAhKhkRC1939819398eusmtip14;
-        Fri,  4 Sep 2020 13:35:04 +0000 (GMT)
+        20200904133505eusmtip163609e20523e3ff142d855a3f0b8eaa4~xmAiz6CsY1932019320eusmtip1S;
+        Fri,  4 Sep 2020 13:35:05 +0000 (GMT)
 From:   Marek Szyprowski <m.szyprowski@samsung.com>
 To:     dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
         linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
@@ -55,50 +55,52 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         linux-arm-kernel@lists.infradead.org,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Eric Anholt <eric@anholt.net>
-Subject: [PATCH v10 18/30] drm: v3d: fix common struct sg_table related
+        Daniel Vetter <daniel@ffwll.ch>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        xen-devel@lists.xenproject.org
+Subject: [PATCH v10 21/30] drm: xen: fix common struct sg_table related
  issues
-Date:   Fri,  4 Sep 2020 15:16:59 +0200
-Message-Id: <20200904131711.12950-19-m.szyprowski@samsung.com>
+Date:   Fri,  4 Sep 2020 15:17:02 +0200
+Message-Id: <20200904131711.12950-22-m.szyprowski@samsung.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904131711.12950-1-m.szyprowski@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMKsWRmVeSWpSXmKPExsWy7djPc7odTkHxBpd3Wlv0njvJZLFxxnpW
-        i//bJjJbXPn6ns3iQONlRouVq48yWSzYb23x5cpDJotNj6+xWlzeNYfNYu2Ru+wWBz88YXXg
-        8Wh6f4zNY828NYwee78tYPHY/u0Bq8f97uNMHpuX1Hvc/veY2WPyjeWMHrtvNrB59G1Zxejx
-        eZNcAHcUl01Kak5mWWqRvl0CV8bHg29YCxaJVMy9uoCxgfGdQBcjJ4eEgIlE2+GNTF2MXBxC
-        AisYJU7vX8sC4XxhlFh8eBE7hPOZUeL205MsMC2PGg8zQiSWM0q09X9khGtZ8205O0gVm4Ch
-        RNfbLjYQW0SglVHiRC8PSBGzwE4miUWdexhBEsICARL3e5+D2SwCqhLX276zgti8AnYSt54t
-        Z4JYJy+xesMBZhCbEyi+dcYTVpBBEgL72CWmXPnKCFHkIrFz9SY2CFtY4tXxLewQtozE6ck9
-        LBANzYwSD8+tZYdwehglLjfNgOq2lrhz7hdQNwfQfZoS63fpQ4QdJVY9AoUAB5DNJ3HjrSBI
-        mBnInLRtOjNEmFeio00IolpNYtbxdXBrD164xAxhe0i8654BDceJjBLdq5ayT2CUn4WwbAEj
-        4ypG8dTS4tz01GKjvNRyveLE3OLSvHS95PzcTYzApHT63/EvOxh3/Uk6xCjAwajEw8tgHxQv
-        xJpYVlyZe4hRgoNZSYTX6ezpOCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8xotexgoJpCeWpGan
-        phakFsFkmTg4pRoYVZc7BVxb/4zNO1tT9OXLC+aSUdyN+d5WokoOEe0CMU9uNovpf3p7Qldy
-        berHino9//xPExcL3C71kazW0X24VFSttNX9powL940sbb3lJ/8rP19ffbdTO4T9fLLfk57l
-        R2ZrFnFHRbp+vvLyzKoVMxOmiQafvavffXDZIe2FOrrfDi5vFJuixFKckWioxVxUnAgA65Sr
-        5kYDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCIsWRmVeSWpSXmKPExsVy+t/xu7odTkHxBte3q1j0njvJZLFxxnpW
-        i//bJjJbXPn6ns3iQONlRouVq48yWSzYb23x5cpDJotNj6+xWlzeNYfNYu2Ru+wWBz88YXXg
-        8Wh6f4zNY828NYwee78tYPHY/u0Bq8f97uNMHpuX1Hvc/veY2WPyjeWMHrtvNrB59G1Zxejx
-        eZNcAHeUnk1RfmlJqkJGfnGJrVK0oYWRnqGlhZ6RiaWeobF5rJWRqZK+nU1Kak5mWWqRvl2C
-        XsbHg29YCxaJVMy9uoCxgfGdQBcjJ4eEgInEo8bDjF2MXBxCAksZJVbNbGGHSMhInJzWwAph
-        C0v8udbFBlH0iVFiztq9LCAJNgFDia63EAkRgU5GiWndH9lBHGaB/UwSl4+cAhslLOAnsWRC
-        P5jNIqAqcb3tO9hYXgE7iVvPljNBrJCXWL3hADOIzQkU3zrjCViNkICtxIc5i1kmMPItYGRY
-        xSiSWlqcm55bbKhXnJhbXJqXrpecn7uJERgj24793LyD8dLG4EOMAhyMSjy8DPZB8UKsiWXF
-        lbmHGCU4mJVEeJ3Ono4T4k1JrKxKLcqPLyrNSS0+xGgKdNREZinR5Hxg/OaVxBuaGppbWBqa
-        G5sbm1koifN2CByMERJITyxJzU5NLUgtgulj4uCUamCUYmypO7SR9bNN7GUV3gmz99tYTmwx
-        LwwXmHG6Yd1N7gjbr/1/Ntlf453gb3clYes0dhneIxavn3ncmMyW7GntO919QmPTqV2H9luq
-        Naklbjxo07nl4cvL3g+C7629u7xrm53hYt/fc6Y8er+oYs8iR2/7hmdaRhNmdzcnlS7oq58t
-        8ps11JFbiaU4I9FQi7moOBEA30xTaqcCAAA=
-X-CMS-MailID: 20200904133504eucas1p10e30fbcb69c2c0627ab7a83fb1b69759
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WSfSxVcRjH+51zz73HzbHTJX5RsbvVqg0Zf5zlTrHWzj9tprU2ltvFCcWl
+        e1DMMMrL9TJiCIuFvFO6EUrIa3IZMm8NsRnztrwU85LTQf99n8/3++x59uzBUUkDZox7KwMY
+        lVLhIxWKBTXtm73magcn+eXGCksqUduFUG8zqzBqryYFpQbXl4VUSVkbQuV9tqXWBqcQqnp6
+        CKMG6nOEVEXrDxG1UraMUc0rMxj1W5OKXCPo8pflgB4vrAP0p408AV27MYnRE/EdCP2uIJwe
+        251G6dThIkB/WRkU0A0jEUI6SVMK6NXqs466zmKZB+PjHcSoLO3uib1yS9uBf5Lek5jdcRAB
+        Fo+rgQ4OSRuYtLAiUgMxLiGLAVztTBbwxRqA9W2jKF+sApi29wI5bEkYikZ4owjAzZwicNRS
+        3b8LuJSQtILqRbWQ0wbkMwA7E3W5EEr+QaD2daeIM/RJR7gW24SpAY4LyHMwr8eDwwRpB0uK
+        p0T8NFNY9qYJ5bTOPn+fOYPxXCuC6RsyXl+HE0sLB3l9ON+hOdCn4V5d7r9NIRkF4JS2QsQX
+        CQAORGYCPmULx7VbQm4JlLwIq+oteWwP4yNrBByGpB4cXjzBYXRfPq/JQHlMwNhoCZ8+D7M6
+        Ko/GNvf1o7ymYUll/8FJU/bPMLEpSgamWf+H5QFQCoyYQNbXk2GtlcxjC1bhywYqPS3c/Xyr
+        wf5Lde92rH8AjdtuLYDEgVSXOHbVSS7BFEFssG8LgDgqNSAcerpdJYSHIjiEUfnJVYE+DNsC
+        THCB1IiwfjV3V0J6KgKYhwzjz6gOXQTXMY4AITvu2XoDGtd58/xbUbRh3Pf0EKMLJz+2C0+F
+        a9c2escXikeXXB4k22blGzWa6c3P0cTtgZ4r2yOzoTfCCsesSqU7X72UT+8vnXG702RmUtn1
+        KzotTGa4VTApaw1KrmD7bL45yzJu/oyTx+S7aOxDzQ2JbNnmbKshVe82XSsXP5IKWC+F1SVU
+        xSr+AqiFDBtOAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsVy+t/xu7pdTkHxBse3S1j0njvJZLFxxnpW
+        i//bJjJbXPn6ns1i5eqjTBYL9ltbfLnykMli0+NrrBaXd81hs1h75C67xYfV71ktDn54wmrx
+        fctkJgdejzXz1jB63Fm6k9Fj77cFLB7bvz1g9bjffZzJY/OSeo/b/x4ze0y+sZzR4/CHKywe
+        u282sHn0bVnF6PF5k1wAT5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6d
+        TUpqTmZZapG+XYJexvxVxxgL+vgq2v/dYWxgfMvdxcjJISFgItFzrY2pi5GLQ0hgKaNEX+MU
+        NoiEjMTJaQ2sELawxJ9rXWwQRZ8YJfY0PmcBSbAJGEp0vYVIiAh0MkpM6/7IDuIwC/xjkjix
+        dzsTSJWwgJ/E1u9XGbsYOThYBFQlFpxNAQnzCthJrFzxkB1ig7zE6g0HmEFsTqD41hlPwDYL
+        CdhKfJizmGUCI98CRoZVjCKppcW56bnFRnrFibnFpXnpesn5uZsYgVGz7djPLTsYu94FH2IU
+        4GBU4uFlsA+KF2JNLCuuzD3EKMHBrCTC63T2dJwQb0piZVVqUX58UWlOavEhRlOgmyYyS4km
+        5wMjOq8k3tDU0NzC0tDc2NzYzEJJnLdD4GCMkEB6YklqdmpqQWoRTB8TB6dUA6NZYzFDSrT+
+        zEYH20lhl1sVs9t9z81h2F3m6iVk8K3lgOffF6wS1WH3/t2Pn5H8mKPzesEVxdblAt2tPhqM
+        UmZcT1V2b+T4dmKebaoJm6mZi98WBTX1ZcmFMh/O/edUiS8/v7z+0Ml9P1p/fdsk/2ReqVTa
+        kYvJOZf7vA9XtsqpFLx7u//+ESWW4oxEQy3mouJEAH4u/TOwAgAA
+X-CMS-MailID: 20200904133506eucas1p170dd4d393f12bf79c9ba4a3c9532c29f
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200904133504eucas1p10e30fbcb69c2c0627ab7a83fb1b69759
+X-RootMTR: 20200904133506eucas1p170dd4d393f12bf79c9ba4a3c9532c29f
 X-EPHeader: CA
 CMS-TYPE: 201P
-X-CMS-RootMailID: 20200904133504eucas1p10e30fbcb69c2c0627ab7a83fb1b69759
+X-CMS-RootMailID: 20200904133506eucas1p170dd4d393f12bf79c9ba4a3c9532c29f
 References: <20200904131711.12950-1-m.szyprowski@samsung.com>
-        <CGME20200904133504eucas1p10e30fbcb69c2c0627ab7a83fb1b69759@eucas1p1.samsung.com>
+        <CGME20200904133506eucas1p170dd4d393f12bf79c9ba4a3c9532c29f@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -121,47 +123,29 @@ entries, calling DMA-mapping functions with a wrong number of entries or
 ignoring the number of mapped entries returned by the dma_map_sg()
 function.
 
-To avoid such issues, lets use a common dma-mapping wrappers operating
-directly on the struct sg_table objects and use scatterlist page
-iterators where possible. This, almost always, hides references to the
-nents and orig_nents entries, making the code robust, easier to follow
-and copy/paste safe.
+Fix the code to refer to proper nents or orig_nents entries. This driver
+reports the number of the pages in the imported scatterlist, so it should
+refer to sg_table->orig_nents entry.
 
 Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Eric Anholt <eric@anholt.net>
+Acked-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 ---
- drivers/gpu/drm/v3d/v3d_mmu.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/xen/xen_drm_front_gem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/v3d/v3d_mmu.c b/drivers/gpu/drm/v3d/v3d_mmu.c
-index 3b81ea28c0bb..5a453532901f 100644
---- a/drivers/gpu/drm/v3d/v3d_mmu.c
-+++ b/drivers/gpu/drm/v3d/v3d_mmu.c
-@@ -90,18 +90,17 @@ void v3d_mmu_insert_ptes(struct v3d_bo *bo)
- 	struct v3d_dev *v3d = to_v3d_dev(shmem_obj->base.dev);
- 	u32 page = bo->node.start;
- 	u32 page_prot = V3D_PTE_WRITEABLE | V3D_PTE_VALID;
--	unsigned int count;
--	struct scatterlist *sgl;
-+	struct sg_dma_page_iter dma_iter;
+diff --git a/drivers/gpu/drm/xen/xen_drm_front_gem.c b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+index 39ff95b75357..0e57c80058b2 100644
+--- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
++++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
+@@ -216,7 +216,7 @@ xen_drm_front_gem_import_sg_table(struct drm_device *dev,
+ 		return ERR_PTR(ret);
  
--	for_each_sg(shmem_obj->sgt->sgl, sgl, shmem_obj->sgt->nents, count) {
--		u32 page_address = sg_dma_address(sgl) >> V3D_MMU_PAGE_SHIFT;
-+	for_each_sgtable_dma_page(shmem_obj->sgt, &dma_iter, 0) {
-+		dma_addr_t dma_addr = sg_page_iter_dma_address(&dma_iter);
-+		u32 page_address = dma_addr >> V3D_MMU_PAGE_SHIFT;
- 		u32 pte = page_prot | page_address;
- 		u32 i;
+ 	DRM_DEBUG("Imported buffer of size %zu with nents %u\n",
+-		  size, sgt->nents);
++		  size, sgt->orig_nents);
  
--		BUG_ON(page_address + (sg_dma_len(sgl) >> V3D_MMU_PAGE_SHIFT) >=
-+		BUG_ON(page_address + (PAGE_SIZE >> V3D_MMU_PAGE_SHIFT) >=
- 		       BIT(24));
--
--		for (i = 0; i < sg_dma_len(sgl) >> V3D_MMU_PAGE_SHIFT; i++)
-+		for (i = 0; i < PAGE_SIZE >> V3D_MMU_PAGE_SHIFT; i++)
- 			v3d->pt[page++] = pte + i;
- 	}
- 
+ 	return &xen_obj->base;
+ }
 -- 
 2.17.1
 
