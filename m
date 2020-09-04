@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EE725CEFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 03:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8369F25CEF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 03:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729558AbgIDBI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 21:08:56 -0400
-Received: from mga05.intel.com ([192.55.52.43]:55029 "EHLO mga05.intel.com"
+        id S1729501AbgIDBFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 21:05:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:42970 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728107AbgIDBIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 21:08:55 -0400
-IronPort-SDR: HLm9ulUhaI/m6DrXW9VPEuOo6xP8XNnHQmURqI9vrMtKFW5Nil2fbgAvUX32cqj7zqBkkrgRc6
- cUGaTVXTythg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="242498599"
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="242498599"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 18:08:54 -0700
-IronPort-SDR: Bq9VjQRLBTDcnDw7F07+auyRRqOT7U2CjBVl2t8fb3NONHNDq8VMRg1vWjzu6ptLDqhnMilfs5
- /HmoET/bj4Zw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.76,387,1592895600"; 
-   d="scan'208";a="326431226"
-Received: from allen-box.sh.intel.com ([10.239.159.139])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2020 18:08:52 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: [PATCH v2 1/1] iommu/vt-d: Use device numa domain if RHSA is missing
-Date:   Fri,  4 Sep 2020 09:03:03 +0800
-Message-Id: <20200904010303.2961-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725787AbgIDBE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 21:04:59 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA83F101E;
+        Thu,  3 Sep 2020 18:04:57 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7728F3F68F;
+        Thu,  3 Sep 2020 18:04:56 -0700 (PDT)
+Subject: Re: [PATCH v2 3/6] ARM: dts: NSP: Fix SP804 compatible node
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com
+References: <20200828142018.43298-1-andre.przywara@arm.com>
+ <20200828142018.43298-4-andre.przywara@arm.com>
+ <73b35bcd-0e8c-0f62-ed2b-e0c64261f930@gmail.com>
+ <c97c1472-c308-27e2-ce68-30bc82b96aae@gmail.com>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ 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
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <98cdc873-e36a-c47d-6eaf-cc4e023f977c@arm.com>
+Date:   Fri, 4 Sep 2020 02:04:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <c97c1472-c308-27e2-ce68-30bc82b96aae@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If there are multiple NUMA domains but the RHSA is missing in ACPI/DMAR
-table, we could default to the device NUMA domain as fall back. This could
-also benefit a vIOMMU use case where only single vIOMMU is exposed, hence
-no RHSA will be present but device numa domain can be correct.
+On 02/09/2020 00:04, Florian Fainelli wrote:
 
-Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc: Kevin Tian <kevin.tian@intel.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 37 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 35 insertions(+), 2 deletions(-)
+Hi Florian,
 
-Change log:
-v1->v2:
-  - Add a comment as suggested by Kevin.
-    https://lore.kernel.org/linux-iommu/MWHPR11MB1645E6D6BD1EFDFA139AA37C8C520@MWHPR11MB1645.namprd11.prod.outlook.com/
+sorry, the mail got swamped in my inbox...
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 7f844d1c8cd9..69d5a87188f4 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -698,12 +698,47 @@ static int domain_update_iommu_superpage(struct dmar_domain *domain,
- 	return fls(mask);
- }
- 
-+static int domain_update_device_node(struct dmar_domain *domain)
-+{
-+	struct device_domain_info *info;
-+	int nid = NUMA_NO_NODE;
-+
-+	assert_spin_locked(&device_domain_lock);
-+
-+	if (list_empty(&domain->devices))
-+		return NUMA_NO_NODE;
-+
-+	list_for_each_entry(info, &domain->devices, link) {
-+		if (!info->dev)
-+			continue;
-+
-+		/*
-+		 * There could possibly be multiple device numa nodes as devices
-+		 * within the same domain may sit behind different IOMMUs. There
-+		 * isn't perfect answer in such situation, so we select first
-+		 * come first served policy.
-+		 */
-+		nid = dev_to_node(info->dev);
-+		if (nid != NUMA_NO_NODE)
-+			break;
-+	}
-+
-+	return nid;
-+}
-+
- /* Some capabilities may be different across iommus */
- static void domain_update_iommu_cap(struct dmar_domain *domain)
- {
- 	domain_update_iommu_coherency(domain);
- 	domain->iommu_snooping = domain_update_iommu_snooping(NULL);
- 	domain->iommu_superpage = domain_update_iommu_superpage(domain, NULL);
-+
-+	/*
-+	 * If RHSA is missing, we should default to the device numa domain
-+	 * as fall back.
-+	 */
-+	if (domain->nid == NUMA_NO_NODE)
-+		domain->nid = domain_update_device_node(domain);
- }
- 
- struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
-@@ -5096,8 +5131,6 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
- 		if (type == IOMMU_DOMAIN_DMA)
- 			intel_init_iova_domain(dmar_domain);
- 
--		domain_update_iommu_cap(dmar_domain);
--
- 		domain = &dmar_domain->domain;
- 		domain->geometry.aperture_start = 0;
- 		domain->geometry.aperture_end   =
--- 
-2.17.1
+> On 8/28/2020 10:12 AM, Florian Fainelli wrote:
+>> On 8/28/20 7:20 AM, Andre Przywara wrote:
+>>> The DT binding for SP804 requires to have an "arm,primecell" compatible
+>>> string.
+>>> Add this string so that the Linux primecell bus driver picks the device
+>>> up and activates the clock.
+>>>
+>>> Fixes: a0efb0d28b77 ("ARM: dts: NSP: Add SP804 Support to DT")
+>>> Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+>>> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+>>
+>> This looks fine, however there is a ccbtimer1 instance that you missed,
+>> can you resubmit with it included?
+>>
+>> With that:
+>>
+>> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> 
+> Andre are you going to resubmit a patch with the second instance
+> (ccbtimer1) fixed as well, or should I take care of that while applying
+> the patch? Either way is fine, just let me know.
 
+So I was waiting for more comments, but there was nothing so far that
+justifies a new version. So would you mind fixing this while applying? I
+must have indeed missed this instance while diffing before and after.
+
+Many thanks!
+Andre.
