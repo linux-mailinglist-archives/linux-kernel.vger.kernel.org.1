@@ -2,115 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A492A25D45B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E106525D450
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgIDJML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:12:11 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2752 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729712AbgIDJMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:12:09 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 3FDB791929569A201FCF;
-        Fri,  4 Sep 2020 10:12:07 +0100 (IST)
-Received: from [127.0.0.1] (10.47.1.112) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Fri, 4 Sep 2020
- 10:12:05 +0100
-Subject: Re: [PATCH v8 00/18] blk-mq/scsi: Provide hostwide shared tags for
- SCSI HBAs
-To:     Jens Axboe <axboe@kernel.dk>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <don.brace@microsemi.com>,
-        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <dgilbert@interlog.com>,
-        <paolo.valente@linaro.org>, <hare@suse.de>, <hch@lst.de>
-CC:     <sumit.saxena@broadcom.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <esc.storagedev@microsemi.com>, <megaraidlinux.pdl@broadcom.com>,
-        <chenxiang66@hisilicon.com>, <luojiaxing@huawei.com>
-References: <1597850436-116171-1-git-send-email-john.garry@huawei.com>
- <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <379ef8a4-5042-926a-b8a0-2d0a684a0e01@huawei.com>
-Date:   Fri, 4 Sep 2020 10:09:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1729983AbgIDJLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:11:07 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33237 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729949AbgIDJKz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:10:55 -0400
+Received: from mail-lf1-f72.google.com ([209.85.167.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1kE7kB-0004jq-L7
+        for linux-kernel@vger.kernel.org; Fri, 04 Sep 2020 09:10:51 +0000
+Received: by mail-lf1-f72.google.com with SMTP id j19so943676lfg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 02:10:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MpOzB7dmCTuCyJm4q5JJcfMsN2ZZvsAlJt0YiaUL728=;
+        b=WI3I3vk+wmkyNpytkK/JwwjJppbfFxz6M58mdz8dMpUxkK0/OXUqWLm33eqdEB9p9F
+         SZp5CGCAegb0ciq/le5DPNTatr9hERVoRIwSdaSiqhqUZn1VH72gGQsy+E7QYFEl0JuC
+         oyhh9Vw+BcEtmZjy2ORo8/74fc6KtutnQ2SVjECMbmOL5d82mh/mFQUl9DzAB3VAL3M/
+         ItOa3GvxXYGMR+pgfjzs8umjSzj2FR6kb7MvyEvmwK2Slur3i+deNviWh7hHwWme/sT7
+         +/eZTttF6RjQCvbXBh6GcNGt8dINVTDrdD1g8t11UZWueJVRnw8/pPJA3vq8ZhVURh4F
+         OXng==
+X-Gm-Message-State: AOAM533YwMR4LlJLsaF5JQ+zaWaSUUGJSxRgX7db1QhCfiQrn//LC+do
+        +KnsHany8MR4QafMK3qtIdIKcSizGVAKLehbUHHyuyEPFUIgXU86MpDnZ08lNmgi3Ka6sxCjint
+        OnzNFw4UyA+099DG/O4oTZU/99GhIgnF5HGZfjMHvp6ZBPuxAM3klQsof
+X-Received: by 2002:a2e:a16f:: with SMTP id u15mr3550080ljl.5.1599210651094;
+        Fri, 04 Sep 2020 02:10:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRBBq/qjRBD6kgJssSry/FlrnrAD8qz7ovDVT+hqOyTrNsEtHy4P1ksymgoBxNoaZOC5pVhIT6RcxFjIk7xas=
+X-Received: by 2002:a2e:a16f:: with SMTP id u15mr3550055ljl.5.1599210650811;
+ Fri, 04 Sep 2020 02:10:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <df6a3bd3-a89e-5f2f-ece1-a12ada02b521@kernel.dk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.1.112]
-X-ClientProxiedBy: lhreml702-chm.china.huawei.com (10.201.108.51) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20200813044422.46713-1-po-hsu.lin@canonical.com>
+In-Reply-To: <20200813044422.46713-1-po-hsu.lin@canonical.com>
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+Date:   Fri, 4 Sep 2020 17:10:39 +0800
+Message-ID: <CAMy_GT8jOOPw+esd53X2LQ4aY9eqpE0rv9vDgr_eBD6fy5Wmqg@mail.gmail.com>
+Subject: Re: [PATCHv2] selftests: rtnetlink: load fou module for kci_test_encap_fou()
+To:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/09/2020 22:23, Jens Axboe wrote:
-> On 8/19/20 9:20 AM, John Garry wrote:
->> Hi all,
->>
->> Here is v8 of the patchset.
->>
->> In this version of the series, we keep the shared sbitmap for driver tags,
->> and introduce changes to fix up the tag budgeting across request queues.
->> We also have a change to count requests per-hctx for when an elevator is
->> enabled, as an optimisation. I also dropped the debugfs changes - more on
->> that below.
->>
->> Some performance figures:
->>
->> Using 12x SAS SSDs on hisi_sas v3 hw. mq-deadline results are included,
->> but it is not always an appropriate scheduler to use.
->>
->> Tag depth 		4000 (default)			260**
->>
->> Baseline (v5.9-rc1):
->> none sched:		2094K IOPS			513K
->> mq-deadline sched:	2145K IOPS			1336K
->>
->> Final, host_tagset=0 in LLDD *, ***:
->> none sched:		2120K IOPS			550K
->> mq-deadline sched:	2121K IOPS			1309K
->>
->> Final ***:
->> none sched:		2132K IOPS			1185			
->> mq-deadline sched:	2145K IOPS			2097	
->>
->> * this is relevant as this is the performance in supporting but not
->>    enabling the feature
->> ** depth=260 is relevant as some point where we are regularly waiting for
->>     tags to be available. Figures were are a bit unstable here.
->> *** Included "[PATCH V4] scsi: core: only re-run queue in
->>      scsi_end_request() if device queue is busy"
->>
->> A copy of the patches can be found here:
->> https://github.com/hisilicon/kernel-dev/tree/private-topic-blk-mq-shared-tags-v8
->>
->> The hpsa patch depends on:
->> https://lore.kernel.org/linux-scsi/20200430131904.5847-1-hare@suse.de/
->>
->> And the smartpqi patch is not to be accepted.
->>
->> Comments (and testing) welcome, thanks!
-> 
-> I applied 1-11, leaving the SCSI core bits and drivers to Martin. I can
-> also carry them, just let me know.
-> 
+Hello David,
 
-Great, thanks!
+do you need more information for this V2 patch?
 
-So the SCSI parts depend on the block parts for building, so I guess it 
-makes sense if you could carry them also.
+Thank you
+PHLin
 
-hpsa and smartpqi patches are pending for now, but the rest could be 
-picked up. Martin/James may want more review of the SCSI core bits, though.
-
-Thanks again,
-John
-
-
+On Mon, Aug 17, 2020 at 10:53 AM Po-Hsu Lin <po-hsu.lin@canonical.com> wrote:
+>
+> The kci_test_encap_fou() test from kci_test_encap() in rtnetlink.sh
+> needs the fou module to work. Otherwise it will fail with:
+>
+>   $ ip netns exec "$testns" ip fou add port 7777 ipproto 47
+>   RTNETLINK answers: No such file or directory
+>   Error talking to the kernel
+>
+> Add the CONFIG_NET_FOU into the config file as well. Which needs at
+> least to be set as a loadable module.
+>
+> Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+> ---
+>  tools/testing/selftests/net/config       | 1 +
+>  tools/testing/selftests/net/rtnetlink.sh | 6 ++++++
+>  2 files changed, 7 insertions(+)
+>
+> diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
+> index 3b42c06b..96d2763 100644
+> --- a/tools/testing/selftests/net/config
+> +++ b/tools/testing/selftests/net/config
+> @@ -31,3 +31,4 @@ CONFIG_NET_SCH_ETF=m
+>  CONFIG_NET_SCH_NETEM=y
+>  CONFIG_TEST_BLACKHOLE_DEV=m
+>  CONFIG_KALLSYMS=y
+> +CONFIG_NET_FOU=m
+> diff --git a/tools/testing/selftests/net/rtnetlink.sh b/tools/testing/selftests/net/rtnetlink.sh
+> index bdbf4b3..7931b65 100755
+> --- a/tools/testing/selftests/net/rtnetlink.sh
+> +++ b/tools/testing/selftests/net/rtnetlink.sh
+> @@ -521,6 +521,11 @@ kci_test_encap_fou()
+>                 return $ksft_skip
+>         fi
+>
+> +       if ! /sbin/modprobe -q -n fou; then
+> +               echo "SKIP: module fou is not found"
+> +               return $ksft_skip
+> +       fi
+> +       /sbin/modprobe -q fou
+>         ip -netns "$testns" fou add port 7777 ipproto 47 2>/dev/null
+>         if [ $? -ne 0 ];then
+>                 echo "FAIL: can't add fou port 7777, skipping test"
+> @@ -541,6 +546,7 @@ kci_test_encap_fou()
+>                 return 1
+>         fi
+>
+> +       /sbin/modprobe -q -r fou
+>         echo "PASS: fou"
+>  }
+>
+> --
+> 2.7.4
+>
