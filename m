@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF9F25E13C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735AD25E142
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgIDR6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgIDR62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:58:28 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B48FC061244;
-        Fri,  4 Sep 2020 10:58:27 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n22so6978444edt.4;
-        Fri, 04 Sep 2020 10:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xWrD3MuyolikZBdkT5ghr88RwiH+oj1SGO1EEE8/fK8=;
-        b=fgQCIgRWO9koqQpJSZq0UUVMNjWdYYuTIm3HfndnOr8ei7WofSr0zy+yG8x0XPPYry
-         syRVhzehT0ZIjLtJNng03oQjHxaMO3BEcdNUzsIkeTxfqetWTO2vTELR3ZpcuRrRZ5/L
-         N1ZVac6a1zcGtBy3wgfNZYi9YASM4WHZtCE19VizJ1ypdJt7bMP1VGdbHtj/8jZHkrE/
-         aMvFV3CsEjbwtu9wLUvO6dR+NlU9QQRfxsV5TjzRLcrBr4zIp6ijB35Q9TVuFQsjDP9E
-         C9RKR7D19nIk6CCoFvQeImizIc1LJbdyP/98edlFpfyTem8uTC/SzpqJKf/5pt2FEhOI
-         qBAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xWrD3MuyolikZBdkT5ghr88RwiH+oj1SGO1EEE8/fK8=;
-        b=J1PqSVAnaw9+4j7Fdyqz1/9nK0lCuA4fH24FkfzRCIroHRGjPquAst3C3XRRpeUhEA
-         FToZwygNu7yBuqBMZSmfzksgEq5G2R7Al/rOeNcKtX4wkCEpm/JrzK6PKa79KDqxD9Oq
-         bRRjTAId1z/2gHv1nzQq7b5FP2n2hGJAkwvQXrwh5biLHgnZZnQV/LRRfCoB0bPqSIYJ
-         Lw43P/K+KnA2iKjFvRpqnykM3m6pfm/OfepdU7MnWRGpJfC+AAkjXbHCQitRGFDicDXM
-         SJNIGSzbM5GDpp28DQydefuYEKED989UQHohsaC60edMQFVBqTFbHGGbAei3hL+xCSg9
-         dCEg==
-X-Gm-Message-State: AOAM531oYq72g/rGr3GEyIo7Q907FPMBCUb/zztj4tg/F3I2bQukul2Y
-        Soqaorr2jhEpIKC37WycWA==
-X-Google-Smtp-Source: ABdhPJwmF6eKN6yrdWqMeDA6ZaWPrS1RLQwm+PEUIDVhPMvcR0xkr1YXtb5BAvLBd7cgo66vO8NUpA==
-X-Received: by 2002:aa7:d043:: with SMTP id n3mr9504016edo.243.1599242306081;
-        Fri, 04 Sep 2020 10:58:26 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.251.136])
-        by smtp.gmail.com with ESMTPSA id lo25sm6546522ejb.53.2020.09.04.10.58.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 10:58:25 -0700 (PDT)
-Date:   Fri, 4 Sep 2020 20:58:23 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: remove the last set_fs() in common code, and remove it for x86
- and powerpc v3
-Message-ID: <20200904175823.GA500051@localhost.localdomain>
-References: <20200903142242.925828-1-hch@lst.de>
- <20200904060024.GA2779810@gmail.com>
+        id S1728030AbgIDSAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:00:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46608 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726966AbgIDSAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 14:00:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4A8D9ABA2;
+        Fri,  4 Sep 2020 18:00:02 +0000 (UTC)
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     ltp@lists.linux.it
+Cc:     linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>
+Subject: [PATCH] syscalls/ptrace10: Add new regression test
+Date:   Fri,  4 Sep 2020 20:00:30 +0200
+Message-Id: <20200904180030.14838-1-chrubis@suse.cz>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200904060024.GA2779810@gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 08:00:24AM +0200, Ingo Molnar wrote:
-> * Christoph Hellwig <hch@lst.de> wrote:
-> > this series removes the last set_fs() used to force a kernel address
-> > space for the uaccess code in the kernel read/write/splice code, and then
-> > stops implementing the address space overrides entirely for x86 and
-> > powerpc.
-> 
-> Cool! For the x86 bits:
-> 
->   Acked-by: Ingo Molnar <mingo@kernel.org>
+New regression test for a kernel commit:
 
-set_fs() is older than some kernel hackers!
+commit bd14406b78e6daa1ea3c1673bda1ffc9efdeead0
+Author: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon Aug 27 11:12:25 2018 +0200
 
-	$ cd linux-0.11/
-	$ find . -type f -name '*.h' | xargs grep -e set_fs -w -n -A3
-	./include/asm/segment.h:61:extern inline void set_fs(unsigned long val)
-	./include/asm/segment.h-62-{
-	./include/asm/segment.h-63-     __asm__("mov %0,%%fs"::"a" ((unsigned short) val));
-	./include/asm/segment.h-64-}
+    perf/hw_breakpoint: Modify breakpoint even if the new attr has disabled set
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+CC: Andy Lutomirski <luto@kernel.org>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Thomas Gleixner <tglx@linutronix.de>
+CC: Alexandre Chartre <alexandre.chartre@oracle.com>
+---
+
+This is a follow up for the ptrace08 fixes.
+
+ runtest/syscalls                            |  1 +
+ testcases/kernel/syscalls/ptrace/.gitignore |  1 +
+ testcases/kernel/syscalls/ptrace/ptrace10.c | 86 +++++++++++++++++++++
+ 3 files changed, 88 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ptrace/ptrace10.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 398145f65..163471bcd 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -993,6 +993,7 @@ ptrace05 ptrace05
+ ptrace07 ptrace07
+ ptrace08 ptrace08
+ ptrace09 ptrace09
++ptrace10 ptrace10
+ 
+ pwrite01 pwrite01
+ pwrite02 pwrite02
+diff --git a/testcases/kernel/syscalls/ptrace/.gitignore b/testcases/kernel/syscalls/ptrace/.gitignore
+index 7639e1a9f..7ee3b3c47 100644
+--- a/testcases/kernel/syscalls/ptrace/.gitignore
++++ b/testcases/kernel/syscalls/ptrace/.gitignore
+@@ -5,3 +5,4 @@
+ /ptrace07
+ /ptrace08
+ /ptrace09
++/ptrace10
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace10.c b/testcases/kernel/syscalls/ptrace/ptrace10.c
+new file mode 100644
+index 000000000..b5d6b9f8f
+--- /dev/null
++++ b/testcases/kernel/syscalls/ptrace/ptrace10.c
+@@ -0,0 +1,86 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 Cyril Hrubis <chrbis@suse.cz>
++ *
++ * After fix for CVE-2018-1000199 (see ptrace08.c) subsequent calls to POKEUSER
++ * for x86 debug registers were ignored silently.
++ *
++ * This is a regression test for commit:
++ *
++ * commit bd14406b78e6daa1ea3c1673bda1ffc9efdeead0
++ * Author: Jiri Olsa <jolsa@kernel.org>
++ * Date:   Mon Aug 27 11:12:25 2018 +0200
++ *
++ *     perf/hw_breakpoint: Modify breakpoint even if the new attr has disabled set
++ */
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <stddef.h>
++#include <sys/ptrace.h>
++#include <sys/user.h>
++#include <signal.h>
++#include "tst_test.h"
++
++#if defined(__i386__) || defined(__x86_64__)
++
++static pid_t child_pid;
++
++static void child_main(void)
++{
++	raise(SIGSTOP);
++	exit(0);
++}
++
++static void run(void)
++{
++	int status;
++	unsigned long addr;
++
++	child_pid = SAFE_FORK();
++
++	if (!child_pid)
++		child_main();
++
++	if (SAFE_WAITPID(child_pid, &status, WUNTRACED) != child_pid)
++		tst_brk(TBROK, "Received event from unexpected PID");
++
++	SAFE_PTRACE(PTRACE_ATTACH, child_pid, NULL, NULL);
++	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
++		(void *)offsetof(struct user, u_debugreg[0]), (void *)1);
++	SAFE_PTRACE(PTRACE_POKEUSER, child_pid,
++		(void *)offsetof(struct user, u_debugreg[0]), (void *)2);
++
++	addr = ptrace(PTRACE_PEEKUSER, child_pid,
++	              (void*)offsetof(struct user, u_debugreg[0]), NULL);
++
++	if (addr == 2)
++		tst_res(TPASS, "The rd0 was set on second PTRACE_POKEUSR");
++	else
++		tst_res(TFAIL, "The rd0 wasn't set on second PTRACE_POKEUSER");
++
++	SAFE_PTRACE(PTRACE_DETACH, child_pid, NULL, NULL);
++	SAFE_KILL(child_pid, SIGCONT);
++	child_pid = 0;
++	tst_reap_children();
++}
++
++static void cleanup(void)
++{
++	/* Main process terminated by tst_brk() with child still paused */
++	if (child_pid)
++		SAFE_KILL(child_pid, SIGKILL);
++}
++
++static struct tst_test test = {
++	.test_all = run,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.tags = (const struct tst_tag[]) {
++		{"linux-git", "bd14406b78e6"},
++		{}
++	}
++};
++#else
++TST_TEST_TCONF("This test is only supported on x86 systems");
++#endif
+-- 
+2.26.2
+
