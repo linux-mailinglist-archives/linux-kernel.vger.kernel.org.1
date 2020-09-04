@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726D225D198
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682B025D194
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729661AbgIDGjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:39:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10811 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726251AbgIDGjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:39:11 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A6DF026C41212103A2AA;
-        Fri,  4 Sep 2020 14:39:05 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 4 Sep 2020 14:38:59 +0800
-From:   Zeng Tao <prime.zeng@hisilicon.com>
-To:     <gregkh@linuxfoundation.org>
-CC:     Zeng Tao <prime.zeng@hisilicon.com>,
-        stable <stable@vger.kernel.org>,
-        "Alan Stern" <stern@rowland.harvard.edu>,
-        chenqiwu <chenqiwu@xiaomi.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] usb: core: fix slab-out-of-bounds Read in read_descriptors
-Date:   Fri, 4 Sep 2020 14:37:44 +0800
-Message-ID: <1599201467-11000-1-git-send-email-prime.zeng@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
+        id S1729787AbgIDGiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:38:20 -0400
+Received: from verein.lst.de ([213.95.11.211]:40571 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728201AbgIDGiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 02:38:19 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A1FFD68AFE; Fri,  4 Sep 2020 08:38:13 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 08:38:13 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 12/14] x86: remove address space overrides using
+ set_fs()
+Message-ID: <20200904063813.GA12204@lst.de>
+References: <20200903142242.925828-1-hch@lst.de> <20200903142242.925828-13-hch@lst.de> <20200904025510.GO1236603@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904025510.GO1236603@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The USB device descriptor may get changed between two consecutive
-enumerations on the same device for some reason, such as DFU or
-malicius device.
-In that case, we may access the changing descriptor if we don't take
-the device lock here.
+On Fri, Sep 04, 2020 at 03:55:10AM +0100, Al Viro wrote:
+> On Thu, Sep 03, 2020 at 04:22:40PM +0200, Christoph Hellwig wrote:
+> 
+> > diff --git a/arch/x86/lib/getuser.S b/arch/x86/lib/getuser.S
+> > index c8a85b512796e1..94f7be4971ed04 100644
+> > --- a/arch/x86/lib/getuser.S
+> > +++ b/arch/x86/lib/getuser.S
+> > @@ -35,10 +35,19 @@
+> >  #include <asm/smap.h>
+> >  #include <asm/export.h>
+> >  
+> > +#ifdef CONFIG_X86_5LEVEL
+> > +#define LOAD_TASK_SIZE_MINUS_N(n) \
+> > +	ALTERNATIVE "mov $((1 << 47) - 4096 - (n)),%rdx", \
+> > +		    "mov $((1 << 56) - 4096 - (n)),%rdx", X86_FEATURE_LA57
+> > +#else
+> > +#define LOAD_TASK_SIZE_MINUS_N(n) \
+> > +	mov $(TASK_SIZE_MAX - (n)),%_ASM_DX
+> > +#endif
+> 
+> Wait a sec... how is that supposed to build with X86_5LEVEL?  Do you mean
+> 
+> #define LOAD_TASK_SIZE_MINUS_N(n) \
+> 	ALTERNATIVE __stringify(mov $((1 << 47) - 4096 - (n)),%rdx), \
+> 		    __stringify(mov $((1 << 56) - 4096 - (n)),%rdx), X86_FEATURE_LA57
+> 
+> there?
 
-The issue is reported:
-https://syzkaller.appspot.com/bug?id=901a0d9e6519ef8dc7acab25344bd287dd3c7be9
-
-Cc: stable <stable@vger.kernel.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Reported-by: syzbot+256e56ddde8b8957eabd@syzkaller.appspotmail.com
-Fixes: 217a9081d8e6 ("USB: add all configs to the "descriptors" attribute")
-Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
----
- drivers/usb/core/sysfs.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-index a2ca38e..8d13419 100644
---- a/drivers/usb/core/sysfs.c
-+++ b/drivers/usb/core/sysfs.c
-@@ -889,7 +889,11 @@ read_descriptors(struct file *filp, struct kobject *kobj,
- 	size_t srclen, n;
- 	int cfgno;
- 	void *src;
-+	int retval;
- 
-+	retval = usb_lock_device_interruptible(udev);
-+	if (retval < 0)
-+		return -EINTR;
- 	/* The binary attribute begins with the device descriptor.
- 	 * Following that are the raw descriptor entries for all the
- 	 * configurations (config plus subsidiary descriptors).
-@@ -914,6 +918,7 @@ read_descriptors(struct file *filp, struct kobject *kobj,
- 			off -= srclen;
- 		}
- 	}
-+	usb_unlock_device(udev);
- 	return count - nleft;
- }
- 
--- 
-2.8.1
-
+Don't ask me about the how, but it builds and works with X86_5LEVEL,
+and the style is copied from elsewhere..
