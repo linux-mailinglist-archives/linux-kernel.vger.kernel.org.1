@@ -2,104 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB6D25D37B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C13F25D384
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 10:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729894AbgIDIXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 04:23:13 -0400
-Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:49928
-        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729850AbgIDIXI (ORCPT
+        id S1729913AbgIDIXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 04:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729712AbgIDIXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 04:23:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599207787;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-        bh=3keeEfNiCTvzmfIarvOhYL+zMj7DHdVzNrsSjCBJmHI=;
-        b=LaLhtGoKOhC3BP1EoNEtrkRHs1QW+b0FlCdM60Yw5Hq+mEK6vBE6gOJPQoGfzoF/
-        k0FyNgm0Qee4ioDUj6/lBjMr7/YCtl3WZ6dDUt8EUYF53mTwjmoj+9oVqeswPenwMmR
-        GUTZgifwf3EPR7SaAOugmcarzuAo3/K7o9s3JKt0=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599207787;
-        h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Feedback-ID;
-        bh=3keeEfNiCTvzmfIarvOhYL+zMj7DHdVzNrsSjCBJmHI=;
-        b=mORnPJzp3eHkUc8k9KOFUchAuHC7OEdVVCgid/8Miwb0dkNLIBpERbDSg7KiV9aI
-        VdLbyPrv9RjKcBMVvT2bOUMLK1fqkXZzd1RGFKZWp5wlYCpQ+RvR4SM+zxhulbn4aYt
-        H6GGBb2h5OkLOrqN60G20t3YqBJ/PvuFsPLDGe7s=
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.1 required=2.0 tests=ALL_TRUSTED,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4118FC433B1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     sboyd@kernel.org, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, robh+dt@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
-        jackp@codeaurora.org, sergei.shtylyov@gmail.com,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v9 4/4] arm64: boot: dts: qcom: pm8150b: Add DTS node for PMIC VBUS booster
-Date:   Fri, 4 Sep 2020 08:23:07 +0000
-Message-ID: <0101017458364bb2-6157c88f-07cb-4a21-ac6b-442a09827ba0-000000@us-west-2.amazonses.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200904082223.25563-1-wcheng@codeaurora.org>
-References: <20200904082223.25563-1-wcheng@codeaurora.org>
+        Fri, 4 Sep 2020 04:23:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340BC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 01:23:35 -0700 (PDT)
+Date:   Fri, 4 Sep 2020 10:23:31 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599207812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=mMDo4/nZGcm4PVutxJ2woYLUnE6VLxTPtQbJgJYovjc=;
+        b=kTWtt6LF2SvMRcD1MqbqXeNFKi5ahCulSRGbI/gN1Yazn9LCxmshrQdrwgIZDuCoyU0fG0
+        mGKGhmjnh5+eJQzV3IBMfD9ixr3IKH9TJiKJNDmYISf6JZXjg1XQc8hrgTy4lcOoSY7UhM
+        U34/mtQeYi8rHPXi03uTlH4M6pBDNz3QRSlg1MIG0BM+jMJ1aP7LK44LKU3JKKNV1nDtko
+        TA+yS8y7MV18PUUMj8nPb12eYR8AzaEHYaVNQcssS+0+Ppg+CCBVuXR1jqkD3+lwWQx0Vf
+        sEes2XtT87cHBCkAap4zCCEaO0OhqNJZQdxku9ubNO4cUNsqCdqdHDx0Ovb11w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599207812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=mMDo4/nZGcm4PVutxJ2woYLUnE6VLxTPtQbJgJYovjc=;
+        b=sX3sw7eg0OezKvqHtION2PG3jnx6SY9636zOPq+N5pR9PHtjooUtL+Op4LvwyeIbX9BONU
+        SbtnT46zaiZD4GDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] tracing: Make the space reserved for the pid wider
+Message-ID: <20200904082331.dcdkrr3bkn3e4qlg@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SES-Outgoing: 2020.09.04-54.240.27.188
-Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the required DTS node for the USB VBUS output regulator, which is
-available on PM8150B.  This will provide the VBUS source to connected
-peripherals.
+For 64bit CONFIG_BASE_SMALL=0 systems PID_MAX_LIMIT is set by default to
+4194304. During boot the kernel sets a new value based on number of CPUs
+but no lower than 32768. It is 1024 per CPU so with 128 CPUs the default
+becomes 131072 which needs six digits. 
+This value can be increased during run time but must not exceed the
+initial upper limit.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+Systemd sometime after v241 sets it to the upper limit during boot. The
+result is that when the pid exceeds five digits, the trace output is a
+little hard to read because it is no longer properly padded (same like
+on big iron with 98+ CPUs).
+
+Increase the pid padding to seven digits.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/arm64/boot/dts/qcom/pm8150b.dtsi   | 6 ++++++
- arch/arm64/boot/dts/qcom/sm8150-mtp.dts | 4 ++++
- 2 files changed, 10 insertions(+)
+ kernel/trace/trace.c        | 38 ++++++++++++++++++-------------------
+ kernel/trace/trace_output.c | 12 ++++++------
+ 2 files changed, 25 insertions(+), 25 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-index 053c659734a7..b49caa63cd4c 100644
---- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-@@ -53,6 +53,12 @@ power-on@800 {
- 			status = "disabled";
- 		};
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index f40d850ebabcc..2a7c26345e835 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3782,14 +3782,14 @@ unsigned long trace_total_entries(struct trace_array *tr)
  
-+		pm8150b_vbus: regulator@1100 {
-+			compatible = "qcom,pm8150b-vbus-reg";
-+			status = "disabled";
-+			reg = <0x1100>;
-+		};
-+
- 		pm8150b_typec: typec@1500 {
- 			compatible = "qcom,pm8150b-usb-typec";
- 			status = "disabled";
-diff --git a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-index 6c6325c3af59..ba3b5b802954 100644
---- a/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8150-mtp.dts
-@@ -409,6 +409,10 @@ &ufs_mem_phy {
- 	vdda-pll-max-microamp = <19000>;
- };
+ static void print_lat_help_header(struct seq_file *m)
+ {
+-	seq_puts(m, "#                  _------=> CPU#            \n"
+-		    "#                 / _-----=> irqs-off        \n"
+-		    "#                | / _----=> need-resched    \n"
+-		    "#                || / _---=> hardirq/softirq \n"
+-		    "#                ||| / _--=> preempt-depth   \n"
+-		    "#                |||| /     delay            \n"
+-		    "#  cmd     pid   ||||| time  |   caller      \n"
+-		    "#     \\   /      |||||  \\    |   /         \n");
++	seq_puts(m, "#                    _------=> CPU#            \n"
++		    "#                   / _-----=> irqs-off        \n"
++		    "#                  | / _----=> need-resched    \n"
++		    "#                  || / _---=> hardirq/softirq \n"
++		    "#                  ||| / _--=> preempt-depth   \n"
++		    "#                  |||| /     delay            \n"
++		    "#  cmd     pid     ||||| time  |   caller      \n"
++		    "#     \\   /        |||||  \\    |   /         \n");
+ }
  
-+&pm8150b_vbus {
-+	status = "okay";
-+};
-+
- &usb_1_hsphy {
- 	status = "okay";
- 	vdda-pll-supply = <&vdd_usb_hs_core>;
+ static void print_event_info(struct array_buffer *buf, struct seq_file *m)
+@@ -3810,26 +3810,26 @@ static void print_func_help_header(struct array_buffer *buf, struct seq_file *m,
+ 
+ 	print_event_info(buf, m);
+ 
+-	seq_printf(m, "#           TASK-PID   %s  CPU#   TIMESTAMP  FUNCTION\n", tgid ? "TGID     " : "");
+-	seq_printf(m, "#              | |     %s    |       |         |\n",	 tgid ? "  |      " : "");
++	seq_printf(m, "#           TASK-PID    %s CPU#     TIMESTAMP  FUNCTION\n", tgid ? "   TGID   " : "");
++	seq_printf(m, "#              | |      %s   |         |         |\n",      tgid ? "     |    " : "");
+ }
+ 
+ static void print_func_help_header_irq(struct array_buffer *buf, struct seq_file *m,
+ 				       unsigned int flags)
+ {
+ 	bool tgid = flags & TRACE_ITER_RECORD_TGID;
+-	const char *space = "          ";
+-	int prec = tgid ? 10 : 2;
++	const char *space = "            ";
++	int prec = tgid ? 12 : 2;
+ 
+ 	print_event_info(buf, m);
+ 
+-	seq_printf(m, "#                          %.*s  _-----=> irqs-off\n", prec, space);
+-	seq_printf(m, "#                          %.*s / _----=> need-resched\n", prec, space);
+-	seq_printf(m, "#                          %.*s| / _---=> hardirq/softirq\n", prec, space);
+-	seq_printf(m, "#                          %.*s|| / _--=> preempt-depth\n", prec, space);
+-	seq_printf(m, "#                          %.*s||| /     delay\n", prec, space);
+-	seq_printf(m, "#           TASK-PID %.*sCPU#  ||||    TIMESTAMP  FUNCTION\n", prec, "   TGID   ");
+-	seq_printf(m, "#              | |   %.*s  |   ||||       |         |\n", prec, "     |    ");
++	seq_printf(m, "#                            %.*s  _-----=> irqs-off\n", prec, space);
++	seq_printf(m, "#                            %.*s / _----=> need-resched\n", prec, space);
++	seq_printf(m, "#                            %.*s| / _---=> hardirq/softirq\n", prec, space);
++	seq_printf(m, "#                            %.*s|| / _--=> preempt-depth\n", prec, space);
++	seq_printf(m, "#                            %.*s||| /     delay\n", prec, space);
++	seq_printf(m, "#           TASK-PID  %.*s CPU#  ||||   TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
++	seq_printf(m, "#              | |    %.*s   |   ||||      |         |\n", prec, "       |    ");
+ }
+ 
+ void
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 4d1893564912d..000e9dc224c61 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -497,7 +497,7 @@ lat_print_generic(struct trace_seq *s, struct trace_entry *entry, int cpu)
+ 
+ 	trace_find_cmdline(entry->pid, comm);
+ 
+-	trace_seq_printf(s, "%8.8s-%-5d %3d",
++	trace_seq_printf(s, "%8.8s-%-7d %3d",
+ 			 comm, entry->pid, cpu);
+ 
+ 	return trace_print_lat_fmt(s, entry);
+@@ -588,15 +588,15 @@ int trace_print_context(struct trace_iterator *iter)
+ 
+ 	trace_find_cmdline(entry->pid, comm);
+ 
+-	trace_seq_printf(s, "%16s-%-5d ", comm, entry->pid);
++	trace_seq_printf(s, "%16s-%-7d ", comm, entry->pid);
+ 
+ 	if (tr->trace_flags & TRACE_ITER_RECORD_TGID) {
+ 		unsigned int tgid = trace_find_tgid(entry->pid);
+ 
+ 		if (!tgid)
+-			trace_seq_printf(s, "(-----) ");
++			trace_seq_printf(s, "(-------) ");
+ 		else
+-			trace_seq_printf(s, "(%5d) ", tgid);
++			trace_seq_printf(s, "(%7d) ", tgid);
+ 	}
+ 
+ 	trace_seq_printf(s, "[%03d] ", iter->cpu);
+@@ -636,7 +636,7 @@ int trace_print_lat_context(struct trace_iterator *iter)
+ 		trace_find_cmdline(entry->pid, comm);
+ 
+ 		trace_seq_printf(
+-			s, "%16s %5d %3d %d %08x %08lx ",
++			s, "%16s %7d %3d %d %08x %08lx ",
+ 			comm, entry->pid, iter->cpu, entry->flags,
+ 			entry->preempt_count, iter->idx);
+ 	} else {
+@@ -917,7 +917,7 @@ static enum print_line_t trace_ctxwake_print(struct trace_iterator *iter,
+ 	S = task_index_to_char(field->prev_state);
+ 	trace_find_cmdline(field->next_pid, comm);
+ 	trace_seq_printf(&iter->seq,
+-			 " %5d:%3d:%c %s [%03d] %5d:%3d:%c %s\n",
++			 " %7d:%3d:%c %s [%03d] %7d:%3d:%c %s\n",
+ 			 field->prev_pid,
+ 			 field->prev_prio,
+ 			 S, delim,
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.28.0
 
