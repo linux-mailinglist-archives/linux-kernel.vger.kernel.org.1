@@ -2,172 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202A725D2EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E448325D30F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729980AbgIDHxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:53:01 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:45107 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729909AbgIDHwV (ORCPT
+        id S1728248AbgIDH5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:57:42 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:42092 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbgIDH5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:52:21 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 8D1DDE0003;
-        Fri,  4 Sep 2020 07:52:06 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 09:55:53 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v3 1/2] media: i2c: ov772x: Add support for BT656 mode
-Message-ID: <20200904075553.qjdyskcpext7fxcy@uno.localdomain>
-References: <20200824190406.27478-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200824190406.27478-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200904012000.GA9369@pendragon.ideasonboard.com>
+        Fri, 4 Sep 2020 03:57:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=UX09Qx4my4iQJ9tpbhbv55z9gt8MX+X9FF9KxeKoY3c=; b=HlfKGcc3anetVZvH2Ir+dLNkjB
+        F60whqXQio34uUCPSTbsJKvetmgJxyIid0sShmatr9d3m8L2E01qVrotRP6c5qLivntA7M9g7Ce/T
+        W25gnp6dQKv6mJryFxShE+bZ1vRTlMFtUpmxTkx63/4niflzgQjKUtN4OI67Cc3AZolw=;
+Received: from lfbn-mar-1-582-44.w109-208.abo.wanadoo.fr ([109.208.127.44] helo=[192.168.1.116])
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <rbernon@codeweavers.com>)
+        id 1kE6bI-0003Od-6F; Fri, 04 Sep 2020 02:57:38 -0500
+Subject: Re: [PATCH v3 1/3] perf dso: Use libbfd to read build_id and
+ .gnu_debuglink section
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jacek Caban <jacek@codeweavers.com>
+References: <20200821165238.1340315-1-rbernon@codeweavers.com>
+ <20200903002519.GA3487700@kernel.org> <20200903165132.GA3495158@kernel.org>
+From:   Remi Bernon <rbernon@codeweavers.com>
+Message-ID: <76cc6da5-bf1e-4de3-7b79-b9759dc6e5b9@codeweavers.com>
+Date:   Fri, 4 Sep 2020 09:57:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200904012000.GA9369@pendragon.ideasonboard.com>
+In-Reply-To: <20200903165132.GA3495158@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -34.2
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  On 2020-09-03 18:51, Arnaldo Carvalho de Melo wrote: > Em
+   Wed, Sep 02, 2020 at 09:25:19PM -0300, Arnaldo Carvalho de Melo escreveu:
+   >> Em Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon escreveu: > [...]
+ Content analysis details:   (-34.2 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+ -0.0 USER_IN_WELCOMELIST    user is listed in 'welcomelist_from'
+  -20 USER_IN_WHITELIST      DEPRECATED: See USER_IN_WELCOMELIST
+  -20 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+ -2.4 NICE_REPLY_A           Looks like a legit reply (A)
+  8.7 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On 2020-09-03 18:51, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Sep 02, 2020 at 09:25:19PM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Fri, Aug 21, 2020 at 06:52:36PM +0200, Remi Bernon escreveu:
+>>> Wine generates PE binaries for most of its modules and perf is unable
+>>> to parse these files to get build_id or .gnu_debuglink section.
+>>>
+>>> Using libbfd when available, instead of libelf, makes it possible to
+>>> resolve debug file location regardless of the dso binary format.
+>>>
+>>> Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
+>>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>>> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+>>> Cc: Ingo Molnar <mingo@redhat.com>
+>>> Cc: Jiri Olsa <jolsa@redhat.com>
+>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>> Cc: Namhyung Kim <namhyung@kernel.org>
+>>> Cc: Peter Zijlstra <peterz@infradead.org>
+>>> Cc: Jacek Caban <jacek@codeweavers.com>
+>>> ---
+>>>
+>>> v3: Rebase and small changes to PATCH 2/3 and and PATCH 3/3.
+>>>
+>>>   tools/perf/util/symbol-elf.c | 80 ++++++++++++++++++++++++++++++++++--
+>>>   1 file changed, 77 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+>>> index 8cc4b0059fb0..f7432c4a4154 100644
+>>> --- a/tools/perf/util/symbol-elf.c
+>>> +++ b/tools/perf/util/symbol-elf.c
+>>> @@ -50,6 +50,10 @@ typedef Elf64_Nhdr GElf_Nhdr;
+>>>   #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
+>>>   #endif
+>>>   
+>>> +#ifdef HAVE_LIBBFD_SUPPORT
+>>
+>> So, the feature test should also test for the buildid struct field, see
+>> below:
+>>
+>>> +#define PACKAGE 'perf'
+>>> +#include <bfd.h>
+>>> +#else
+>>>   #ifdef HAVE_CPLUS_DEMANGLE_SUPPORT
+>>>   extern char *cplus_demangle(const char *, int);
+>>>   
+>>> @@ -65,9 +69,7 @@ static inline char *bfd_demangle(void __maybe_unused *v,
+>>>   {
+>>>   	return NULL;
+>>>   }
+>>> -#else
+>>> -#define PACKAGE 'perf'
+>>> -#include <bfd.h>
+>>> +#endif
+>>>   #endif
+>>>   #endif
+>>>   
+>>> @@ -530,6 +532,36 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+>>>   	return err;
+>>>   }
+>>>   
+>>> +#ifdef HAVE_LIBBFD_SUPPORT
+>>> +
+>>> +int filename__read_build_id(const char *filename, void *bf, size_t size)
+>>> +{
+>>> +	int err = -1;
+>>> +	bfd *abfd;
+>>> +
+>>> +	abfd = bfd_openr(filename, NULL);
+>>> +	if (!abfd)
+>>> +		return -1;
+>>> +
+>>> +	if (!bfd_check_format(abfd, bfd_object)) {
+>>> +		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
+>>> +		goto out_close;
+>>> +	}
+>>> +
+>>> +	if (!abfd->build_id || abfd->build_id->size > size)
+>>> +		goto out_close;
+>>
+>> amazonlinux:1, centos:6, debian:8, mageia:5, oraclelinux:6, ubuntu:14.04
+>> fail, its all old stuff, but adding a reference to abfd->build_id to the
+>> feature test that ends up defining HAVE_LIBBFD_SUPPORT will solve that,
+>> I'll do it tomorrow morning if you don't beat me to it.
+>>
+>> util/symbol-elf.c: In function 'filename__read_build_id':
+>> util/symbol-elf.c:551:11: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    if (!abfd->build_id || abfd->build_id->size > size)
+>>             ^~
+>> util/symbol-elf.c:551:29: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    if (!abfd->build_id || abfd->build_id->size > size)
+>>                               ^~
+>> util/symbol-elf.c:554:17: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    memcpy(bf, abfd->build_id->data, abfd->build_id->size);
+>>                   ^~
+>> util/symbol-elf.c:554:39: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    memcpy(bf, abfd->build_id->data, abfd->build_id->size);
+>>                                         ^~
+>> util/symbol-elf.c:555:18: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
+>>                    ^~
+>> util/symbol-elf.c:555:50: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
+>>                                                    ^~
+>> util/symbol-elf.c:556:12: error: 'bfd {aka struct bfd}' has no member named 'build_id'
+>>    err = abfd->build_id->size;
+>>              ^~
+>>    CC       /tmp/build/perf/util/cap.o
+>> make[4]: *** [/tmp/build/perf/util/symbol-elf.o] Error 1
+>> make[4]: *** Waiting for unfinished jobs....
+>>    LD       /tmp/build/perf/util/scripting-engines/perf-in.o
+>>    LD       /tmp/build/perf/util/intel-pt-decoder/perf-in.o
+>> make[3]: *** [util] Error 2
+>> make[2]: *** [/tmp/build/perf/perf-in.o] Error 2
+>> make[2]: *** Waiting for unfinished jobs....
+>> make[1]: *** [sub-make] Error 2
+>> make: *** [all] Error 2
+>> make: Leaving directory `/git/linux/tools/perf'
+>> + exit 1
+>> [perfbuilder@five ~]$
+> 
+> So, I have the cset at the end of this message in front of your series +
+> the following patch applied to your patch, the debuglink part seems ok
+> and can continue depending on just libbfd, having or not abfd->buildid.
+> 
 
-On Fri, Sep 04, 2020 at 04:20:00AM +0300, Laurent Pinchart wrote:
-> Hi Prabhakar,
->
-> Thank you for the patch.
->
-> On Mon, Aug 24, 2020 at 08:04:05PM +0100, Lad Prabhakar wrote:
-> > Add support to read the bus-type and enable BT656 mode if needed.
-> >
-> > Also fail probe if unsupported bus_type is detected.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> > ---
-> >  drivers/media/i2c/ov772x.c | 32 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 32 insertions(+)
-> >
-> > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
-> > index 2cc6a678069a..67764d647526 100644
-> > --- a/drivers/media/i2c/ov772x.c
-> > +++ b/drivers/media/i2c/ov772x.c
-> > @@ -31,6 +31,7 @@
-> >  #include <media/v4l2-ctrls.h>
-> >  #include <media/v4l2-device.h>
-> >  #include <media/v4l2-event.h>
-> > +#include <media/v4l2-fwnode.h>
-> >  #include <media/v4l2-image-sizes.h>
-> >  #include <media/v4l2-subdev.h>
-> >
-> > @@ -434,6 +435,7 @@ struct ov772x_priv {
-> >  #ifdef CONFIG_MEDIA_CONTROLLER
-> >  	struct media_pad pad;
-> >  #endif
-> > +	struct v4l2_fwnode_endpoint ep;
-> >  };
-> >
-> >  /*
-> > @@ -581,6 +583,13 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
-> >  	if (priv->streaming == enable)
-> >  		goto done;
-> >
-> > +	if (priv->ep.bus_type == V4L2_MBUS_BT656) {
-> > +		ret = regmap_update_bits(priv->regmap, COM7, ITU656_ON_OFF,
-> > +					 enable ? ITU656_ON_OFF : ~ITU656_ON_OFF);
-> > +		if (ret)
-> > +			goto done;
-> > +	}
-> > +
-> >  	ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
-> >  				 enable ? 0 : SOFT_SLEEP_MODE);
-> >  	if (ret)
-> > @@ -1354,6 +1363,7 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
-> >
-> >  static int ov772x_probe(struct i2c_client *client)
-> >  {
-> > +	struct fwnode_handle *endpoint;
-> >  	struct ov772x_priv	*priv;
-> >  	int			ret;
-> >  	static const struct regmap_config ov772x_regmap_config = {
-> > @@ -1415,6 +1425,28 @@ static int ov772x_probe(struct i2c_client *client)
-> >  		goto error_clk_put;
-> >  	}
-> >
-> > +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
-> > +						  NULL);
-> > +	if (!endpoint) {
-> > +		dev_err(&client->dev, "endpoint node not found\n");
-> > +		ret = -EINVAL;
-> > +		goto error_clk_put;
-> > +	}
-> > +
-> > +	ret = v4l2_fwnode_endpoint_parse(endpoint, &priv->ep);
->
-> v4l2_fwnode_endpoint_parse() is deprecated for new drivers,
-> v4l2_fwnode_endpoint_alloc_parse() is recommended instead. Please note
-> that v4l2_fwnode_endpoint_free() then needs to be called in the error
-> path and in remove().
+Thanks! I may have missed the first changeset you mention -- IIUC the 
+one adding the feature check -- but it sounds good to me nonetheless.
 
-Doesn't alloc_parse() differ from just _parse() as it reserve space
-for the 'link-frequencies' array ? As this device does not support
-CSI-2 and the 'link-frequencies' property is not allows in bindings,
-isn't using endpoint_parse() better as it saves a call to _free() ?
-
-Or are we deprecating that function unconditionally ? The
-documentation suggests "please use v4l2_fwnode_endpoint_alloc_parse()
-in new drivers" but here it doesn't seem required..
-
->
-> On the other hand, not setting .bus_type and letting the parse()
-> function determine the but type automatically is also deprecated, and I
-> don't think forcing drivers to call v4l2_fwnode_endpoint_alloc_parse()
-> once for each bus type until one succeeds is a good API. As change will
-> be needed in that API, you can ignore v4l2_fwnode_endpoint_alloc_parse()
-> for the time being if you want.
-
-But indeed relying on auto-guessing of the bus type is deprecated since
-some time now (and the API could be improved, yes). Sorry I missed
-that yesterday.
-
-As we support parallel and bt.656 only I must be honest I don't mind
-it here as otherwise the code would be more complex for no real gain,
-but I defer this to Sakari which has been fighting the battle against
-auto-guessing since a long time now  :)
-
-
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
-> > +	fwnode_handle_put(endpoint);
-> > +	if (ret) {
-> > +		dev_err(&client->dev, "Could not parse endpoint\n");
-> > +		goto error_clk_put;
-> > +	}
-> > +
-> > +	if (priv->ep.bus_type != V4L2_MBUS_PARALLEL &&
-> > +	    priv->ep.bus_type != V4L2_MBUS_BT656) {
-> > +		dev_err(&client->dev, "Unsupported bus type %d\n",
-> > +			priv->ep.bus_type);
-> > +		goto error_clk_put;
-> > +	}
-> > +
-> >  	ret = ov772x_video_probe(priv);
-> >  	if (ret < 0)
-> >  		goto error_gpio_put;
->
-> --
-> Regards,
->
-> Laurent Pinchart
+Should I do anything?
+-- 
+Rémi Bernon <rbernon@codeweavers.com>
