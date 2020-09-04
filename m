@@ -2,178 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB9525D575
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE8825D581
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729943AbgIDJyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:54:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60128 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729872AbgIDJyE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:54:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599213242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cugrXnkRn11sd/5TRoS+8LjjADM+0MaDEb+HS6mrI+I=;
-        b=LYzceDkwg25qb0yFidvTH4u2aIFPIFwLqUIU/w3JPWk+/a5mYvTtpDlYloaW93VILAv8VX
-        UImKaw94S8mfPuknMYgJGK7ZPvlEcYLoSoaFTtn8rYyQe+OHnTi7H8vs78bAhGjqfLEitD
-        fKnxTovCaL+7c1ZC+IoWE97T3esDDGqeP2tP2nyi0DT5f35rxe+/Bvivj81np5DK/XmQ2E
-        ZHZg3OOo2Qk7XsQwWw4i/8gPWdbSDWsgIRBPMQv23tcdeDrQ+N47Y2H+6qK2PcLVxZtuPw
-        /QCY/vy5SHUkkSx/A4ljItfBhRpf7lYwoAv4GQVAVCb7v7ZPuS3UP2gacKVO1w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599213242;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cugrXnkRn11sd/5TRoS+8LjjADM+0MaDEb+HS6mrI+I=;
-        b=g2abxvX+AFz1a4IoY+hJICUCaj09wZglql9RyaAaFCkdj6GJSbq/GCKqkHLG2CVkQYCiaq
-        CblhKn0oNXhtXXCg==
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Evan Green <evgreen@chromium.org>,
-        LinusW <linus.walleij@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list\:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v5 3/6] genirq/PM: Introduce IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND flag
-In-Reply-To: <CAD=FV=U8vchyRXOjozYYroq3Mit_gt=XXADLfn0W4N4TyQzyjQ@mail.gmail.com>
-References: <1598113021-4149-1-git-send-email-mkshah@codeaurora.org> <1598113021-4149-4-git-send-email-mkshah@codeaurora.org> <159835036999.334488.14725849347753031927@swboyd.mtv.corp.google.com> <874koqxv6t.fsf@nanos.tec.linutronix.de> <8763521f-b121-877a-1d59-5f969dd75e51@codeaurora.org> <87y2m1vhkm.fsf@nanos.tec.linutronix.de> <CAD=FV=XXf3_tjqK14WdMuKygJptMTS+bKhH_ceiUE3wyYoCnxg@mail.gmail.com> <877dtdj042.fsf@nanos.tec.linutronix.de> <CAD=FV=Ua7fLGw6JiG1rnCKpAdO1nXX4A4x1Why-LE9L_FBFe8Q@mail.gmail.com> <87zh67uife.fsf@nanos.tec.linutronix.de> <CAD=FV=U8vchyRXOjozYYroq3Mit_gt=XXADLfn0W4N4TyQzyjQ@mail.gmail.com>
-Date:   Fri, 04 Sep 2020 11:54:01 +0200
-Message-ID: <87pn7150li.fsf@nanos.tec.linutronix.de>
+        id S1729885AbgIDJ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:58:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10813 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726114AbgIDJ6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:58:49 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 59DC36ED6012F55B743F;
+        Fri,  4 Sep 2020 17:58:47 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 4 Sep 2020 17:58:41 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <zhangshaokun@hisilicon.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
+Subject: [PATCH] arm64: perf: Remove unnecessary event_idx check
+Date:   Fri, 4 Sep 2020 17:57:38 +0800
+Message-ID: <1599213458-28394-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doug,
+event_idx is obtained from armv8pmu_get_event_idx(), and this idx must be
+between ARMV8_IDX_CYCLE_COUNTER and cpu_pmu->num_events. So it's unnecessary
+to do this check. Let's remove it.
 
-On Thu, Sep 03 2020 at 16:19, Doug Anderson wrote:
-> On Thu, Sep 3, 2020 at 5:57 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->>    That pending interrupt will not prevent the machine from going into
->>    suspend and if it's an edge interrupt then an unmask in
->>    suspend_device_irq() won't help. Edge interrupts are not resent in
->>    hardware. They are fire and forget from the POV of the device
->>    hardware.
->
-> Ah, interesting.  I didn't think about this case exactly.  I might
-> have a fix for it anyway.  At some point in time I was thinking that
-> the world could be solved by relying on lazily-disabled interrupts and
-> I wrote up a patch to make sure that they woke things up.  If you're
-> willing to check out our gerrit you can look at:
->
-> https://crrev.com/c/2314693
->
-> ...if not I can post it as a RFC for you.
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
+---
+ arch/arm64/kernel/perf_event.c | 20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
 
-I actually tried despite my usual aversion against web
-interfaces. Aversion confirmed :)
+diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+index 462f9a9..885a357 100644
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -307,8 +307,6 @@ static struct attribute_group armv8_pmuv3_format_attr_group = {
+  */
+ #define	ARMV8_IDX_CYCLE_COUNTER	0
+ #define	ARMV8_IDX_COUNTER0	1
+-#define	ARMV8_IDX_COUNTER_LAST(cpu_pmu) \
+-	(ARMV8_IDX_CYCLE_COUNTER + cpu_pmu->num_events - 1)
 
-You could have included the 5 lines of patch into your reply to spare me
-the experience. :)
 
-> I'm sure I've solved the problem in a completely incorrect and broken
-> way, but hopefully the idea makes sense.  In discussion we decided not
-> to go this way because it looked like IRQ clients could request an IRQ
-> with IRQ_DISABLE_UNLAZY and then that'd break us.  :( ...but even so I
-> think the patch is roughly right and would address your point #1.
+ /*
+@@ -365,12 +363,6 @@ static inline int armv8pmu_has_overflowed(u32 pmovsr)
+ 	return pmovsr & ARMV8_PMU_OVERFLOWED_MASK;
+ }
 
-Kinda :) But that's still incomplete because it does not handle the case
-where the interrupt arrives between disable_irq() and enable_irq_wake().
-See below.
-
->> 2) irq chip has a irq_disable() callback or has IRQ_DISABLE_UNLAZY set
->>
->>    In that case disable_irq() will mask it at the hardware level and it
->>    stays that way until enable_irq() is invoked.
->>
->> #1 kinda works and the gap is reasonably trivial to fix in
->>    suspend_device_irq() by checking the pending state and telling the PM
->>    core that there is a wakeup pending.
->>
->> #2 Needs an indication from the chip flags that an interrupt which is
->>    masked has to be unmasked when it is a enabled wakeup source.
->>
->> I assume your problem is #2, right? If it's #1 then UNMASK_IF_WAKEUP is
->> the wrong answer.
->
-> Right, the problem is #2.  We're not in the lazy mode.
-
-Right and that's where we want the new chip flag with the unmask if
-armed.
-
-Thanks,
-
-        tglx
-
-8<------
-
- kernel/irq/pm.c |   27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
-
---- a/kernel/irq/pm.c
-+++ b/kernel/irq/pm.c
-@@ -13,14 +13,19 @@
- 
- #include "internals.h"
- 
-+static void irq_pm_do_wakeup(struct irq_desc *desc)
-+{
-+	irqd_clear(&desc->irq_data, IRQD_WAKEUP_ARMED);
-+	desc->istate |= IRQS_SUSPENDED | IRQS_PENDING;
-+	pm_system_irq_wakeup(irq_desc_get_irq(desc));
-+}
-+
- bool irq_pm_check_wakeup(struct irq_desc *desc)
+-static inline int armv8pmu_counter_valid(struct arm_pmu *cpu_pmu, int idx)
+-{
+-	return idx >= ARMV8_IDX_CYCLE_COUNTER &&
+-		idx <= ARMV8_IDX_COUNTER_LAST(cpu_pmu);
+-}
+-
+ static inline int armv8pmu_counter_has_overflowed(u32 pmnc, int idx)
  {
- 	if (irqd_is_wakeup_armed(&desc->irq_data)) {
--		irqd_clear(&desc->irq_data, IRQD_WAKEUP_ARMED);
--		desc->istate |= IRQS_SUSPENDED | IRQS_PENDING;
- 		desc->depth++;
- 		irq_disable(desc);
--		pm_system_irq_wakeup(irq_desc_get_irq(desc));
-+		irq_pm_do_wakeup(desc);
- 		return true;
- 	}
- 	return false;
-@@ -69,12 +74,24 @@ void irq_pm_remove_action(struct irq_des
- 
- static bool suspend_device_irq(struct irq_desc *desc)
+ 	return pmnc & BIT(ARMV8_IDX_TO_COUNTER(idx));
+@@ -440,15 +432,11 @@ static u64 armv8pmu_unbias_long_counter(struct perf_event *event, u64 value)
+
+ static u64 armv8pmu_read_counter(struct perf_event *event)
  {
-+	struct irq_data *irqd = &desc->irq_data;
-+
- 	if (!desc->action || irq_desc_is_chained(desc) ||
- 	    desc->no_suspend_depth)
- 		return false;
- 
--	if (irqd_is_wakeup_set(&desc->irq_data)) {
--		irqd_set(&desc->irq_data, IRQD_WAKEUP_ARMED);
-+	if (irqd_is_wakeup_set(irqd)) {
-+		irqd_set(irqd, IRQD_WAKEUP_ARMED);
-+		/*
-+		 * Interrupt might have been disabled in the suspend
-+		 * sequence before the wakeup was enabled. If the interrupt
-+		 * is lazy masked then it might have fired and the pending
-+		 * bit is set. Ignoring this would miss the wakeup.
-+		 */
-+		if (irqd_irq_disabled(irqd) && desc->istate & IRQS_PENDING) {
-+			irq_pm_do_wakeup(desc);
-+			return false;
-+		}
- 		/*
- 		 * We return true here to force the caller to issue
- 		 * synchronize_irq(). We need to make sure that the
+-	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	int idx = hwc->idx;
+ 	u64 value = 0;
+
+-	if (!armv8pmu_counter_valid(cpu_pmu, idx))
+-		pr_err("CPU%u reading wrong counter %d\n",
+-			smp_processor_id(), idx);
+-	else if (idx == ARMV8_IDX_CYCLE_COUNTER)
++	if (idx == ARMV8_IDX_CYCLE_COUNTER)
+ 		value = read_sysreg(pmccntr_el0);
+ 	else
+ 		value = armv8pmu_read_hw_counter(event);
+@@ -477,16 +465,12 @@ static inline void armv8pmu_write_hw_counter(struct perf_event *event,
+
+ static void armv8pmu_write_counter(struct perf_event *event, u64 value)
+ {
+-	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	int idx = hwc->idx;
+
+ 	value = armv8pmu_bias_long_counter(event, value);
+
+-	if (!armv8pmu_counter_valid(cpu_pmu, idx))
+-		pr_err("CPU%u writing wrong counter %d\n",
+-			smp_processor_id(), idx);
+-	else if (idx == ARMV8_IDX_CYCLE_COUNTER)
++	if (idx == ARMV8_IDX_CYCLE_COUNTER)
+ 		write_sysreg(value, pmccntr_el0);
+ 	else
+ 		armv8pmu_write_hw_counter(event, value);
+--
+2.8.1
+
