@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A3D25D94A
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF8C25D959
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 15:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730420AbgIDNLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:11:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730410AbgIDNLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:11:08 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE5EB206F2;
-        Fri,  4 Sep 2020 13:10:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599225056;
-        bh=o3vMmFMOelqR+HH3uQoaVBSBJla+WpWFuQVl0HAoJzU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fcrm5zp3fjfm3ezecfHz0/BxJh+6KrON8w4iogR/LIm5cX+b59hQp4kMYPUbF3r9m
-         5kz16y5JsSfugIS/FunM7+d8/EWPWDseL2nKvNvoPCa0/z9fySiACSE9urN3kLstfo
-         pDXwPJdkQqNHhggHqXT5koIk8oaYWupKAeXMjdmo=
-Date:   Fri, 4 Sep 2020 14:10:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi-imx: remove num-cs support, set num_chipselect to 4
-Message-ID: <20200904131014.GF4625@sirena.org.uk>
-References: <20200903144028.20416-1-matthias.schiffer@ew.tq-group.com>
- <CAOMZO5DGHoG_8X+fbrGCHR4g=sGdEaF7bYrHbC_2T=aUnfTs8g@mail.gmail.com>
+        id S1730444AbgIDNNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 09:13:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10816 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728588AbgIDNNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:13:15 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id B0FFDF05AD95A8EF610F;
+        Fri,  4 Sep 2020 21:13:03 +0800 (CST)
+Received: from huawei.com (10.175.113.133) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
+ 21:12:58 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <wg@grandegger.com>, <mkl@pengutronix.de>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] can: kvaser_pciefd: Remove unused macro KVASER_PCIEFD_KCAN_CTRL_EFRAME
+Date:   Fri, 4 Sep 2020 21:10:26 +0800
+Message-ID: <20200904131026.21817-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="i3lJ51RuaGWuFYNw"
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5DGHoG_8X+fbrGCHR4g=sGdEaF7bYrHbC_2T=aUnfTs8g@mail.gmail.com>
-X-Cookie: Heisenberg might have been here.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.175.113.133]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+KVASER_PCIEFD_KCAN_CTRL_EFRAME is never used after it was introduced.
+So better to remove it.
 
---i3lJ51RuaGWuFYNw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/net/can/kvaser_pciefd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Fri, Sep 04, 2020 at 09:35:38AM -0300, Fabio Estevam wrote:
-> On Thu, Sep 3, 2020 at 11:40 AM Matthias Schiffer
+diff --git a/drivers/net/can/kvaser_pciefd.c b/drivers/net/can/kvaser_pciefd.c
+index 6f766918211a..c0b18ff107c7 100644
+--- a/drivers/net/can/kvaser_pciefd.c
++++ b/drivers/net/can/kvaser_pciefd.c
+@@ -131,7 +131,6 @@ MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+ 
+ /* Kvaser KCAN definitions */
+ #define KVASER_PCIEFD_KCAN_CTRL_EFLUSH (4 << 29)
+-#define KVASER_PCIEFD_KCAN_CTRL_EFRAME (5 << 29)
+ 
+ #define KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT 16
+ /* Request status packet */
+-- 
+2.17.1
 
-> > +       master->num_chipselect = 4;
-
-> On an imx6q-sabresd, which only has one SPI chip-select via GPIO, this
-> makes the SPI core to understand that it has 4 chip selects.
-
-We shouldn't do anything with the extra chip selects though?
-
---i3lJ51RuaGWuFYNw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9SPLYACgkQJNaLcl1U
-h9CPVwf/Ql3lZK0EZhriIHFw8zQwmBJXZnBrY0W0xOBNDnpj+9GPY6G9G4uh3bVu
-v65omDnMgdTgvIZRJmgbMvZPWsU8BXVzHVyZhIVKrgcWTp3x3p4OKJ6Gz5iTipxZ
-jlHq/whlCBURzx0kKx62hxwB2c6YIk3WKET9KtMNsEr84RadH9E4y5UNW5n0gVvp
-uDu+f6WLsLfJAiylY1pKKrVQS7JDU0cz8PwEUpZQkSKe91NJ9vxbpq0BfdS7hXBP
-84XGcQ8k2m8sLQpRtLBdGZ48VKgXhB4sF+RYNCwPhKsIFPv6N2aRkRbtwMjw1e4F
-c5SBuVDahtEqM3OHe22bScmJ9La20g==
-=Oyxe
------END PGP SIGNATURE-----
-
---i3lJ51RuaGWuFYNw--
