@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAFA25DD1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FB0025DD24
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730886AbgIDPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
+        id S1730936AbgIDPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730160AbgIDPV7 (ORCPT
+        with ESMTP id S1730905AbgIDPWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:21:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB5BC061244;
-        Fri,  4 Sep 2020 08:21:59 -0700 (PDT)
-Date:   Fri, 04 Sep 2020 15:21:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1599232915;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LaX8mwKBi/XAJYbEflwlLJF4Sx6k1YhDQbEOGqO2B2U=;
-        b=SyjR3aW8eL3UhKO08YYBRO1cqRRerjvSHPkcjV2QX7aKIVDo3hTaTc2xQSdudd8Q4guAqT
-        ChlgJGqzGeA1qaVLz+l4uHm0gLkaHg7iXw32xtKQ1HjSWXlwbXdVvqZKcYyiP7l8FvDJh9
-        oGIxsnPotxXLn5dZW3K0ZrA+veAScWGyrQFyXAMnJmlwtPKigD9X7mo/euOmBuRMJDzOlJ
-        H4VyUnkcnwVwO3JKXJVWDHfz97px+91bdRZ9beEX0O2AZ5ZFdzuZeVmZxAKtHXxqn9mXn4
-        WltVkuzEGq0F7CJWbU5U18UVMG3pI2BDX9CrtjETLvj/J1299itr1otZaCgJNw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1599232915;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LaX8mwKBi/XAJYbEflwlLJF4Sx6k1YhDQbEOGqO2B2U=;
-        b=N/2YWXu3cC8cyAeel8JYKDuSEuIML+9C15GQPYaJa8gZQaLAWwIH3oU8vO8fqIpMNWGpAe
-        01pb02D81fIUmzDw==
-From:   "tip-bot2 for Akshay Gupta" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] x86/mce: Increase maximum number of banks to 64
-Cc:     Akshay Gupta <Akshay.Gupta@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200828192412.320052-1-Yazen.Ghannam@amd.com>
-References: <20200828192412.320052-1-Yazen.Ghannam@amd.com>
+        Fri, 4 Sep 2020 11:22:39 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DCDC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:22:39 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id u13so4511075pgh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:22:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nhGWIlrqRL4A3CYEW/fZul+9qsq53dkEaLWmo2XlaaQ=;
+        b=RyiAzQ07v2ZooHsYtRWflXJTUKc5GglOSMnseNFDk7HyM4Y4xHP+CEcdHh2CwFF+De
+         VxrgwHqhuxFS/oz9XfcOgU5I32yoTrGO/Biei4UPKBs0cVtFcpJH8+iAyeXXHLzXFQFU
+         91r5ugOd3/eiInmw5MrLJRhqBAyejuRxspCCps4szq6QS97m6tn939CFn9PVy9IBQanv
+         OH3EPTtZ+Qna3AYVObx1X8oOe1Jr9F5lHhSiFMQNSQc92TAFBSK3I2jYsvu/YW3vDXmk
+         VmNjxUrZipHBzXeudIhIleEOHEBvTkGfw6BUvtIUOBfmN/y58TGg44I7F06EGFvyAjOJ
+         vSZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nhGWIlrqRL4A3CYEW/fZul+9qsq53dkEaLWmo2XlaaQ=;
+        b=fVp9UEOMdZdj18wbkFBdIEfeXuNNjh3t2vdrcYrY84NJ41h9sjHcgQHoQzYbima2NX
+         +cVIzBwdPmf9kaV5dNzpyjbo3TKfJM2v+ygs7P/aTuO47G9Q3CNUPXx5UCRZZnDTzK1i
+         kP622YweLAni8SUTyRHwgbbt9UhekhN3hV6oqCTby3Hu09iuTFauH9xwc7NVVoDhry1J
+         suQGUxg3UFu43vhk54ArPj6NToKFtoul1xeLm3eu9uAjBtI1iswdhU3P6upxu/YYcwl6
+         ldRBW0ZUQDT1RpNly+uGiyjaupUQ08AeucViWjr9KBEPzrgi54iGhjAYjHYBLKiE1Gvw
+         ufsQ==
+X-Gm-Message-State: AOAM532PhbWGW0iz00wf43/1XhOOqK3l6/E/SeVzm7h6Oykt5I9Oh/ZT
+        B4I4Q6Cu0t2US1uHIx4LEeA7UGyBc7M=
+X-Google-Smtp-Source: ABdhPJwCiPrd6Fdtq27v3WGV3yLwtty7P1Mq7wXxq2vnhBUJR06DFaQidzG+5jw3NYbjeNvNPnXRcQ==
+X-Received: by 2002:a63:b202:: with SMTP id x2mr7408241pge.432.1599232958557;
+        Fri, 04 Sep 2020 08:22:38 -0700 (PDT)
+Received: from vultr.guest ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id q190sm7141779pfc.176.2020.09.04.08.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 08:22:37 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Randy Dunlap <rd.dunlap@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] kcsan: kconfig: Move to menu 'Generic Kernel Debugging Instruments'
+Date:   Fri,  4 Sep 2020 23:22:24 +0800
+Message-Id: <20200904152224.5570-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <159923291431.20229.1749748339999502192.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+This moves the KCSAN kconfig items under menu 'Generic Kernel Debugging
+Instruments' where UBSAN resides.
 
-Commit-ID:     a0bc32b3cacf194dc479b342f006203fd1e1941a
-Gitweb:        https://git.kernel.org/tip/a0bc32b3cacf194dc479b342f006203fd1e1941a
-Author:        Akshay Gupta <Akshay.Gupta@amd.com>
-AuthorDate:    Fri, 28 Aug 2020 19:24:12 
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 04 Sep 2020 17:17:27 +02:00
-
-x86/mce: Increase maximum number of banks to 64
-
-...because future AMD systems will support up to 64 MCA banks per CPU.
-
-MAX_NR_BANKS is used to allocate a number of data structures, and it is
-used as a ceiling for values read from MCG_CAP[Count]. Therefore, this
-change will have no functional effect on existing systems with 32 or
-fewer MCA banks per CPU.
-
-However, this will increase the size of the following structures:
-
-Global bitmaps:
-- core.c / mce_banks_ce_disabled
-- core.c / all_banks
-- core.c / valid_banks
-- core.c / toclear
-- Total: 32 new bits * 4 bitmaps = 16 new bytes
-
-Per-CPU bitmaps:
-- core.c / mce_poll_banks
-- intel.c / mce_banks_owned
-- Total: 32 new bits * 2 bitmaps = 8 new bytes
-
-The bitmaps are arrays of longs. So this change will only affect 32-bit
-execution, since there will be one additional long used. There will be
-no additional memory use on 64-bit execution, because the size of long
-is 64 bits.
-
-Global structs:
-- amd.c / struct smca_bank smca_banks[]: 16 bytes per bank
-- core.c / struct mce_bank_dev mce_bank_devs[]: 56 bytes per bank
-- Total: 32 new banks * (16 + 56) bytes = 2304 new bytes
-
-Per-CPU structs:
-- core.c / struct mce_bank mce_banks_array[]: 16 bytes per bank
-- Total: 32 new banks * 16 bytes = 512 new bytes
-
-32-bit
-Total global size increase: 2320 bytes
-Total per-CPU size increase: 520 bytes
-
-64-bit
-Total global size increase: 2304 bytes
-Total per-CPU size increase: 512 bytes
-
-This additional memory should still fit within the existing .data
-section of the kernel binary. However, in the case where it doesn't
-fit, an additional page (4kB) of memory will be added to the binary to
-accommodate the extra data which will be the maximum size increase of
-vmlinux.
-
-Signed-off-by: Akshay Gupta <Akshay.Gupta@amd.com>
-[ Adjust commit message and code comment. ]
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200828192412.320052-1-Yazen.Ghannam@amd.com
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
 ---
- arch/x86/include/asm/mce.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ lib/Kconfig.debug | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index 6adced6..109af5c 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -200,12 +200,8 @@ void mce_setup(struct mce *m);
- void mce_log(struct mce *m);
- DECLARE_PER_CPU(struct device *, mce_device);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index e068c3c7189a..0c781f912f9f 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -520,8 +520,8 @@ config DEBUG_FS_ALLOW_NONE
+ endchoice
  
--/*
-- * Maximum banks number.
-- * This is the limit of the current register layout on
-- * Intel CPUs.
-- */
--#define MAX_NR_BANKS 32
-+/* Maximum number of MCA banks per CPU. */
-+#define MAX_NR_BANKS 64
+ source "lib/Kconfig.kgdb"
+-
+ source "lib/Kconfig.ubsan"
++source "lib/Kconfig.kcsan"
  
- #ifdef CONFIG_X86_MCE_INTEL
- void mce_intel_feature_init(struct cpuinfo_x86 *c);
+ endmenu
+ 
+@@ -1620,8 +1620,6 @@ config PROVIDE_OHCI1394_DMA_INIT
+ 
+ source "samples/Kconfig"
+ 
+-source "lib/Kconfig.kcsan"
+-
+ config ARCH_HAS_DEVMEM_IS_ALLOWED
+ 	bool
+ 
+-- 
+2.25.1
+
