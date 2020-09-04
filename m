@@ -2,161 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F9125E09C
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6789225E0A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726938AbgIDRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        id S1726968AbgIDRRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgIDRPv (ORCPT
+        with ESMTP id S1726114AbgIDRRt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:15:51 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B49EC061244;
-        Fri,  4 Sep 2020 10:15:51 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id x10so4886253ybj.13;
-        Fri, 04 Sep 2020 10:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a/SS7L6jjq/PkiHi0BpEL2RJG6KnZ3YeAsUX9aGxPLU=;
-        b=ZmznAuNwO3nYNA0dLCjo1WUEdDHaj1pw+oBHIZUTdVnrg+aig8CreNfiqbzygj59fi
-         YebSJafUdoCrE1zHKoU3ciYQD8YFRJwQjuo5xRbRA4O4vkxuy42dzIBJZRP5y086h08h
-         UaJcOQQLwg1Ei3oYrsqw7TnATYKVxu1IPz61mcenKpGvv73pvXSdpAjJ9bJ9LyLRrWBu
-         z9Iqnvh9xb1FNFYTGcYj4qINQ9Kv71MU3EOQdi6DsVJHGMAvALCqebA5/JvkyHNQMPWo
-         txr2oz0OlzudipPSVssC8HBXCAwyXa9ZlvPQuamv26paxh5o8EE+lxM68PZtYuruFSlV
-         xZHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a/SS7L6jjq/PkiHi0BpEL2RJG6KnZ3YeAsUX9aGxPLU=;
-        b=jNrytltLxjOSjIDYmF67piqb9aM7NbduEgb97PX7BmH5Jhc/rILjcg8I67ml31oMBw
-         FgZOJurtMtnYDlz8JDI1MDpE0f0zDvJn0TO3PbOzIA5gAiShEGt+1Xd67095AlBNz0id
-         rNWi02WfePEX8MKBC7a9Ijw1ZLNVTk3rkkmoo+QE8HcogdcKC4LT7UMrV0nThroH7eSW
-         q3+mDt/sw5yoxR6vI/34RqRX3Pgw9I9gjhh9mZl/SwP5lOxTlqLa0BotYllau/tJDjuR
-         k2BpWg0CKlnNg/xHwjyNT+uP5xhaIVnMxLdtOPuKI5tsD5kVGzApmlBmN/kGgXXs76v4
-         Mgsw==
-X-Gm-Message-State: AOAM532XeoGrw+YrRkhN/Ynp6fkOsPqOcCvOUSfZ+2Zdmh96MVJk9QG7
-        82gXbaxbB2O4asriJXI2Vj0pD1KM9dCN46RDB/k=
-X-Google-Smtp-Source: ABdhPJxuOg5fYSy1dGzvnvkYBk+JtuSW6m3awyVSDhO6e062I+QPueGNMaScXLeiHJIteKTmLxrJvWSSX0O3oAMAEF8=
-X-Received: by 2002:a25:ada0:: with SMTP id z32mr10674783ybi.401.1599239750386;
- Fri, 04 Sep 2020 10:15:50 -0700 (PDT)
+        Fri, 4 Sep 2020 13:17:49 -0400
+Received: from mail.sammserver.com (sammserver.com [IPv6:2001:470:5a5b:1::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D19C061244;
+        Fri,  4 Sep 2020 10:17:48 -0700 (PDT)
+Received: by mail.sammserver.com (Postfix, from userid 5011)
+        id 9686EFDD0E6; Fri,  4 Sep 2020 19:17:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
+        t=1599239863; bh=dDKoamPUceQqGETlI2nSEREbsbeRT723m/JUxC5TTTc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g1+NaaN1X3Hn6m9i3iXGvaw12p4SrhhhV+hQomING6he7xwqnvkGv65KlMkMUAD3s
+         cJyugJC4rNNu2lz9MjixVg0dpXFxZcFvRk4JHhVvCh2cy2k63a3HJTeRb3QVtHlCRT
+         2DLrXX1QCRdfROgF7Ass7fkjYAfe2FHGxEanW21U=
+Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
+        by mail.sammserver.com (Postfix) with ESMTP id 5214CFDD0E3;
+        Fri,  4 Sep 2020 19:17:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavoj.net; s=email;
+        t=1599239863; bh=dDKoamPUceQqGETlI2nSEREbsbeRT723m/JUxC5TTTc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g1+NaaN1X3Hn6m9i3iXGvaw12p4SrhhhV+hQomING6he7xwqnvkGv65KlMkMUAD3s
+         cJyugJC4rNNu2lz9MjixVg0dpXFxZcFvRk4JHhVvCh2cy2k63a3HJTeRb3QVtHlCRT
+         2DLrXX1QCRdfROgF7Ass7fkjYAfe2FHGxEanW21U=
+Received: by fastboi.localdomain (Postfix, from userid 1000)
+        id 3ADFA14269B2; Fri,  4 Sep 2020 19:17:43 +0200 (CEST)
+Date:   Fri, 4 Sep 2020 19:17:43 +0200
+From:   Samuel =?utf-8?B?xIxhdm9q?= <samuel@cavoj.net>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Corentin Chary <corentin.chary@gmail.com>
+Cc:     acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: platform/x86: asus-wmi: SW_TABLET_MODE is always 1 on some
+ devices
+Message-ID: <20200904171743.ejew22p3zzada55p@fastboi.localdomain>
+References: <20200901215536.qcouepovmfxje4n5@fastboi.localdomain>
+ <0f7302c9-b508-a078-8c62-5ad5a03d92c2@redhat.com>
+ <20200902125220.25x52dl2vupejg5f@fastboi.localdomain>
+ <20200904094546.jes44d2kn5mtn2zu@fastboi.localdomain>
+ <320c0b71-af94-c673-21c8-c32a0fdb4d4e@redhat.com>
 MIME-Version: 1.0
-References: <20200825162718.5838-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200825162718.5838-5-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXkGBfwNOwd5-=U3wg6U0O+3BErbXuybbuytgzsCmZqRQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdXkGBfwNOwd5-=U3wg6U0O+3BErbXuybbuytgzsCmZqRQ@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 4 Sep 2020 18:15:23 +0100
-Message-ID: <CA+V-a8uT8d8P8REuXcW9qtCxM84DH+Q4LXZnVTYhT--kswKF=g@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ARM: dts: r8a7742-iwg21d-q7: Enable SD2 LED indication
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <320c0b71-af94-c673-21c8-c32a0fdb4d4e@redhat.com>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS autolearn=no autolearn_force=no
+        version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi,
 
-Thank you for the review.
+On 04.09.2020 12:06, Hans de Goede wrote:
+> Hi,
+> 
+> On 9/4/20 11:45 AM, Samuel Čavoj wrote:
+> > Hello!
+> > 
+> > On 02.09.2020 14:52, Samuel Čavoj wrote:
+> > > Hello,
+> > > 
+> > > On 02.09.2020 13:52, Hans de Goede wrote:
+> > > > But I would rather try to figure out a better way. Can you
+> > > > create an acpidump, by as root running:
+> > > > 
+> > > > acpidump -o acpidump.asus-UX360CA
+> > > 
+> > > The file is attached gzipped.
+> > > 
+> > > > 
+> > > > And then send me a direct (so without including the list)
+> > > > email with the generated acpidump.asus-UX360CA file attached please?
+> > > > 
+> > > > Also, if necessary are you capable of building your own
+> > > > kernel with a (test)patch applied ?
+> > > 
+> > > Yes, that is no problem at all.
+> > > Thank you for your quick response.
+> > > 
+> > > Regards,
+> > > Samuel
+> > 
+> > I don't mean to waste your time, it's just that my trust in mail systems
+> > has been steadily decreasing. I would just like to make sure you have
+> > received my previous email with the acpidump.
+> > 
+> > In case not, here[1] it is available over https, if the message got
+> > dropped because of the attachment.
+> 
+> I got your mail, but I've been burried under a ton of work,
+> so it may take a couple of days at least before I can take
+> a closer look at this.
 
-On Thu, Sep 3, 2020 at 1:20 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Tue, Aug 25, 2020 at 6:28 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add support for LED trigger on SD2 interface.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
->
-> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > @@ -63,6 +63,16 @@
-> >                 enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
-> >         };
-> >
-> > +       leds {
-> > +               compatible = "gpio-leds";
-> > +
-> > +               sdhi2_led {
-> > +                       label = "sdio-led";
-> > +                       gpios = <&gpio5 22 GPIO_ACTIVE_LOW>;
->
-> GPIO_ACTIVE_HIGH?
->
-I did try with GPIO_ACTIVE_HIGH and it didn't work as expected. To
-make sure I can control the LED through sysfs I deleted the node from
-DTS and exported the pin GP5_22 (858) and writing the value "out"
-direction and setting the values 0/1 to value did not toggle the SDIO
-LED as expected and it stayed OFF all the time.
+That's quite alright.
 
-Looks like there is some information missing in the schematics.
+I decided I would try and see if I can be of any use, so I looked around
+in the WMI implementation in the DSDT and found the following in the
+DSTS method:
 
-I did some experiments. I completely removed the SDHI, LED and
-regulator  nodes and  booted the system and exported GP1_27 (989) and
-wrote values 0/1  and this toggled the SDIO_LED.
+[...]
+37486     If ((IIA0 == 0x00120063))
+37487     {
+37488         Local0 = ^^PCI0.LPCB.EC0.DKPS ()
+37489         If ((Local0 == One))
+37490         {
+37491             Return (0x00010001)
+37492         }                                                                                                
+37493         Else
+37494         {
+37495             Return (0x00010000)
+37496         }
+37497     }
+[...]
 
-U-boot sets the below, so in u-boot the SDIO_LED is ON:
-    gpio_direction_output(GPIO_GP_1_27, 0); /* power on */
-    gpio_set_value(GPIO_GP_1_27, 0);
-    gpio_direction_output(GPIO_GP_5_22, 0); /* LED  */
-    gpio_set_value(GPIO_GP_5_22, 1);
-    gpio_direction_output(GPIO_GP_1_8, 0); /* 1: 3.3V, 0: 1.8V*/
-    gpio_set_value(GPIO_GP_1_8, 1);
+This is the If statement responsible for the ASUS_WMI_DEVID_KBD_DOCK
+device, and it always seems to return 0x00010000 on my machine. I
+followed it up the call chain but in the end it just read some bit from
+some register of the EC.
 
-So in comparison we would need a hog node as below (and with this the
-LED triggers correctly as expected),
+Then I noticed the If statement right above it, which corresponds to
+dev_id 0x00060062:
 
-&gpio5 {
-    sdio-led-gpio {
-        gpio-hog;
-        gpios = <22 GPIO_ACTIVE_HIGH>;
-        output-high;
-        line-name = "sdio-led-gpio";
-    };
-};
+[...]
+37472     If ((IIA0 == 0x00060062))
+37473     {
+37474         If (^^PCI0.LPCB.EC0.RPIN (0x15))
+37475         {
+37476             Local0 = 0x00010001
+37477         }
+37478         Else
+37479         {
+37480             Local0 = 0x00010000
+37481         }
+37482
+37483         Return (Local0)
+37484     }
+[...]
 
-Let me know if you are OK with the above.
+By a stroke of luck, it turns out it's the correct one! I patched the
+driver to query the state on every event and print it out, and it is
+exactly what we are looking for.
 
-Looks like the SDIO_PWR is tied up with an SDIO_LED pin and the
-information is missing from schematics.
+The state is 0 if the device is in normal, laptop state and changes to 1
+if flipped over 180 degrees. I patched the module so that the
+SW_TABLET_MODE switch was set according to it, and everything seems to
+be behaving as it should. This is, of course, not a full solution, as we
+still somehow need to decide whether to use the KDB_DOCK device or this
+one. I don't know what to do about that. Ideally find some flag in the
+ACPI which says which one we should use?
 
-Cheers,
-Prabhakar
+The event code which is fired when the lid switch state changes, as we
+already know from the sparse keymap[1], is 0xfa. When the laptop is
+suspended in laptop mode, flipped to tablet mode in its sleep and
+awoken, the event is fired. It is, however, not fired when doing it the
+other way around, so we should probably check the state on resume as
+well.
 
-> The LED is driven by an NPN transistor, with the LED between 3.3V and
-> the transistor's collector.
->
-> > +                       linux,default-trigger = "mmc1";
-> > +               };
-> > +       };
-> > +
-> >         lvds-receiver {
-> >                 compatible = "ti,ds90cf384a", "lvds-decoder";
-> >                 vcc-supply = <&vcc_3v3_tft1>;
->
-> With the above fixed:
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Please don't hesitate to ask for any additional testing or information
+required from my side.
+
+Regards,
+Sam
+
+P.S.: I'm adding back the lists and other people I addressed initially.
+
+[1]: https://lore.kernel.org/patchwork/patch/973647/
