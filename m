@@ -2,89 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2EA25D469
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D2D25D4A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgIDJP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:15:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729712AbgIDJPz (ORCPT
+        id S1730123AbgIDJWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:22:01 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34395 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729712AbgIDJV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:15:55 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E90C061245;
-        Fri,  4 Sep 2020 02:15:53 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id e23so7667886eja.3;
-        Fri, 04 Sep 2020 02:15:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=NEfgg+DDlfqzQBPz0P9WGlQbszfNCAP2l3dg5MsL0gY=;
-        b=hmR8l2V5bNd8O4XRQlSzk9uDugXK/lxgFMy+JdhRvO1gqMEVhszyFxx6EnYmMk3d5h
-         4+I6XnfO0Ob2mcxGn9CQwo4djzuQrdym/MbqyFTy6zkmklgleZKbU5dQwZrUDS6HpoRN
-         pKffqzyWwCJst08Ccy4Rr9sTWtuSRaDEKHEi6t/k8DIHzEAhhGVw7j2wZ203Xm19wztF
-         JL93vnmlEXb25gpMei4Y97DHJuYPdD0cYfm4dZRiA8jzYT4w4WaY167DdsITtQJGFLU2
-         Jl4uLjdwDLEqmPFy9mQW9wOEqFN2oJshFu0lCsYgidFR0/FxyCpLWM5HONpev4KRkmWo
-         gnaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=NEfgg+DDlfqzQBPz0P9WGlQbszfNCAP2l3dg5MsL0gY=;
-        b=o8JhQwq2YVeTcFTP/SliMl8LDhsJZRiw8WELLx1h+69Y5rMyjonAzsqnKq/frTcaAH
-         0AKZkzlX+sJXYpJ3KadipQCCZfSr/GhRuUt6m/y7/QZh3/vWABdCNdWm+ppcvNQr0d6x
-         s4sslPmHYCmpH40ESXe5MBlVkxpFYfUDL1zS8airfviB7DW5Is5l6hXyqiGmNhGo5gpW
-         FX5MaXRp1Wq0DJ2yXFV37AFHCo3fwADz/8ERMjDbwtB8b8QVzqwFG9u9mIcJq5oErHKW
-         84cugFV81/HUBYj9l++djGNvGwwo4S2UjLkSj70nKTVsxCFWiIGFD7wrPM0HtQFoWceB
-         z3MQ==
-X-Gm-Message-State: AOAM532RfUB8fZjx4cobGRiP8eSBHiGsZ6sxpTTiqMKn4aD9nZ6YrGdT
-        mn2T28Uzz/hhK8hm9WtOUAY=
-X-Google-Smtp-Source: ABdhPJxNbfTXeoYhBNmNnvds82JLA57Ur4/SGZtBbf3nYwc8xdDvT3ICdMf4uVSlAJyTHywkhGFu3w==
-X-Received: by 2002:a17:906:af53:: with SMTP id ly19mr6159476ejb.503.1599210951891;
-        Fri, 04 Sep 2020 02:15:51 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b904:9293:1d41:83f0:a723:a7e3])
-        by smtp.gmail.com with ESMTPSA id a26sm5562066ejk.66.2020.09.04.02.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 02:15:51 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     beanhuo@micron.com
-Subject: [PATCH 2/2] fs: isofs: use generic_file_buffered_read()
-Date:   Fri,  4 Sep 2020 11:13:41 +0200
-Message-Id: <20200904091341.28756-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200904091341.28756-1-huobean@gmail.com>
-References: <20200904091341.28756-1-huobean@gmail.com>
+        Fri, 4 Sep 2020 05:21:59 -0400
+X-Greylist: delayed 393 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Sep 2020 05:21:58 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CC571580383;
+        Fri,  4 Sep 2020 05:15:24 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 04 Sep 2020 05:15:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=rPHib73BNe2yJpxQ7N76hqf1+YQ
+        0PpnAHpyX+PBHPHo=; b=MRCq8nQvllk1NZEUvEqqyoTKwToKn+YZxRLmHaKeMkk
+        iyv3nm+Es3nSXJmUhrA+jBX+cLKG4VvZM0oe1yulLdqucwfXiAXoBALd8a2Gj/Nm
+        A3urSgadFqxMSnSJaEzezV2MwZZ0TY3KmkdYeVO7v4X/OmTADaNPxFikGW20MQZu
+        9agrkBJUna5KkhNlZAO51hAhfwZmZk5iN8uA8/XDxlm+3CHsffhQnhLCerk/mBWu
+        ZAKdxnKaEH54BGRX+iKZ4U3oMEYH35PXhBudtHiH0LJUEjxGyIyEZc/MytI7YvLP
+        ZgXqXakNciFyqNRqcRmDPzJ8EjfzuAucCc5b22kqAPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rPHib7
+        3BNe2yJpxQ7N76hqf1+YQ0PpnAHpyX+PBHPHo=; b=da5TGH2kc8dVL5zmavPo+1
+        yLu/nJQp1JXkmnTWB1yQOpI80gt9qoMJ7XpXCxKY6fBW6n5QRWecZ7Gh1Bo/Z8n4
+        HnYcqDnGZk02o5/2lAOLOde3bm3FHsFccc/Z9z44qIs1Ck80m5V8vUBpobgGjIA/
+        mZju82dsrYkz61Q3MxCmqvBQOH5TIMHsNGS9r7F+toscAnNj1Iu0XK2HslEKAY2P
+        Wbz/rkkU4WOhorB9kJ7ZweoiBJZ4S0MyhatRvaDfXmy5hFzcA3JWLO2ZxMftZaot
+        rm3hE/NvY6lydJWuGgh1DaF4N8iOfFI501q7qrQbK8n2lWmSUsjshxkxKkEBeDTQ
+        ==
+X-ME-Sender: <xms:qgVSX5uGJu4UeKguzMZCO8CCRBDNU7IfXAaXGF_U3SiRirCSPqoE4g>
+    <xme:qgVSXyeuMMxL8sD-rrqgsl5KzvEvnq5-aVUPjLooVAEONZmqrWYR4BSKjz_rTNAzs
+    bUX-CvMqXUddF0QWVc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduiedrudegfedgudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesghdtre
+    ertddtvdenucfhrhhomhepofgrgihimhgvucftihhprghrugcuoehmrgigihhmvgestggv
+    rhhnohdrthgvtghhqeenucggtffrrghtthgvrhhnpeelkeeghefhuddtleejgfeljeffhe
+    ffgfeijefhgfeufefhtdevteegheeiheegudenucfkphepledtrdekledrieekrdejieen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigih
+    hmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:qgVSX8yIhQLFJEx5N92PNqZlRNxk4nskH6OPfGQqWr0ixrLobVSGQQ>
+    <xmx:qgVSXwPztVTPGbjCOioW2gsk8auO5lz1Haje_4Os8Ikf_V3Me9q-MQ>
+    <xmx:qgVSX5_u1GZxe1EM7TmMdBmM3duz6SuZ-cbeFdgOIYYMfMkTW1VUoA>
+    <xmx:rAVSX4baiUipkmSAjeUd2zBLs4_T2TObQYwnTXCM7i2pX-egAi9v8Q>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2528C3060060;
+        Fri,  4 Sep 2020 05:15:22 -0400 (EDT)
+Date:   Fri, 4 Sep 2020 11:15:20 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        robh+dt@kernel.org, robh@kernel.org, wens@csie.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, m.cerveny@computer.org
+Subject: Re: [PATCH v2] dt-bindings: crypto: Specify that
+ allwinner,sun8i-a33-crypto needs reset
+Message-ID: <20200904091520.cwrovnbb2squze5h@gilmour.lan>
+References: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ywcvreqcqed5i46k"
+Content-Disposition: inline
+In-Reply-To: <20200903145445.31779-1-clabbe.montjoie@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
 
-do_generic_file_read() has been renamed to generic_file_buffered_read()
-since commit 47c27bc46946 ("fs: pass iocb to do_generic_file_read").
+--ywcvreqcqed5i46k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- fs/isofs/compress.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Sep 03, 2020 at 04:54:45PM +0200, Corentin Labbe wrote:
+> When adding allwinner,sun8i-a33-crypto, I forgot to add that it needs res=
+et.
+> Furthermore, there are no need to use items to list only one compatible
+> in compatible list.
+>=20
+> Fixes: f81547ba7a98 ("dt-bindings: crypto: add new compatible for A33 SS")
+> Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> ---
+> Change since v1:
+> - use an enum for adding allwinner,sun8i-a33-crypto to "reset list"
+>=20
+>  .../bindings/crypto/allwinner,sun4i-a10-crypto.yaml        | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
+-crypto.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10=
+-crypto.yaml
+> index fc823572bcff..279f4a2e1dd7 100644
+> --- a/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/crypto/allwinner,sun4i-a10-crypto=
+=2Eyaml
+> @@ -23,8 +23,7 @@ properties:
+>        - items:
+>            - const: allwinner,sun7i-a20-crypto
+>            - const: allwinner,sun4i-a10-crypto
+> -      - items:
+> -          - const: allwinner,sun8i-a33-crypto
+> +      - const: allwinner,sun8i-a33-crypto
+> =20
+>    reg:
+>      maxItems: 1
+> @@ -59,7 +58,9 @@ if:
+>    properties:
+>      compatible:
+>        contains:
+> -        const: allwinner,sun6i-a31-crypto
+> +        enum:
+> +          - const: allwinner,sun6i-a31-crypto
+> +          - const: allwinner,sun8i-a33-crypto
 
-diff --git a/fs/isofs/compress.c b/fs/isofs/compress.c
-index bc12ac7e2312..7541581c1064 100644
---- a/fs/isofs/compress.c
-+++ b/fs/isofs/compress.c
-@@ -312,7 +312,7 @@ static int zisofs_readpage(struct file *file, struct page *page)
- 	end_index = (inode->i_size + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 	/*
- 	 * If this page is wholly outside i_size we just return zero;
--	 * do_generic_file_read() will handle this for us
-+	 * generic_file_buffered_read() will handle this for us
- 	 */
- 	if (index >= end_index) {
- 		SetPageUptodate(page);
--- 
-2.17.1
+That's not the proper syntax for an enum, this would be
 
+> +        enum:
+> +          - allwinner,sun6i-a31-crypto
+> +          - allwinner,sun8i-a33-crypto
+
+Maxime
+
+--ywcvreqcqed5i46k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX1IFqAAKCRDj7w1vZxhR
+xb4YAP9AndsjE//mBZmHVJjQxFxeoOtzDPG51bM/OUpqPddYmwD/fVvGjW3eKS5y
+J1RNMIZV2ualGb2JEL41KdNHYyCyfAk=
+=36HK
+-----END PGP SIGNATURE-----
+
+--ywcvreqcqed5i46k--
