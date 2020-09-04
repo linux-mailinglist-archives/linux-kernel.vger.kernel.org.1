@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAD425DC72
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF4D25DC7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgIDOyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:54:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49466 "EHLO mail.kernel.org"
+        id S1730880AbgIDOyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730849AbgIDOyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:54:31 -0400
+        id S1730849AbgIDOyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:54:37 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0ABC620722;
-        Fri,  4 Sep 2020 14:54:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DB4320770;
+        Fri,  4 Sep 2020 14:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599231271;
-        bh=QOJLGecW1qxz6ZNlLifYa3oKhiDzUyvvKI7pYuzuHRc=;
+        s=default; t=1599231276;
+        bh=acFLAnqkE86HeCOtNctPMq/uQTqTdSMzshdLBUt2XLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MIaC+jSu5K5Ul1I+hd40MUvRZUlCxrX3f809s3TEnNjprGSdRQROcWey19AD11pmp
-         rNnrLLXLjWuznWa5iLoYcNm9Pklcbv5VdJ06qeBB/uqh9wDr7sdvRI3xD6HUPPtJgH
-         LJlaXSdlXFcy/CbOvNSeld92RdgUUw+jXBoqcLkk=
+        b=A8loe0i7Vb5Ga3aEbMBJ0L38GtsqZUHqeV/NiHs6RiB6w9Hx4HMS9f+VI74X7XOEw
+         RQh6OYFXQ6IiRZ9yejJ5WbnVxrwuotKVHI7ECofFJvGn5Ri25GQHNmOEfoIeR99JwW
+         6W5mVGsqul0iQYKLD/vW+yTRai9PW7tKE7dl0PYI=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -42,9 +42,9 @@ To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
         dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 12/13] arm64: dts: imx8mq-librem5: Drop interrupt-names in PMIC
-Date:   Fri,  4 Sep 2020 16:53:11 +0200
-Message-Id: <20200904145312.10960-13-krzk@kernel.org>
+Subject: [PATCH 13/13] arm64: dts: imx8mq-librem5: Add interrupt-names to ti,tps6598x
+Date:   Fri,  4 Sep 2020 16:53:12 +0200
+Message-Id: <20200904145312.10960-14-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904145312.10960-1-krzk@kernel.org>
 References: <20200904145312.10960-1-krzk@kernel.org>
@@ -53,43 +53,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'interrupt-names' property is not described in dtschema, not used by
-the driver and does not really make sense as its value is simple 'irq'.
-Drop it to fix dtbs_check warnings like:
+The ti,tps6598x binding requires interrupt-names property.  The driver
+does not really use it but the hardware could have more interrupt lines
+connected.  This fixes dtbs_check warning:
 
-  arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dt.yaml:
-    pmic@4b: 'interrupt-names' does not match any of the regexes: 'pinctrl-[0-9]+'
+  arch/arm64/boot/dts/freescale/imx8mq-librem5-r2.dt.yaml: usb-pd@3f: 'interrupt-names' is a required property
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts | 1 -
- arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi       | 1 -
- 2 files changed, 2 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-index 10f30ff85fd3..cce1b595e2d6 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
-@@ -289,7 +289,6 @@
- 		clock-output-names = "pmic_clk";
- 		interrupt-parent = <&gpio1>;
- 		interrupts = <3 GPIO_ACTIVE_LOW>;
--		interrupt-names = "irq";
- 		rohm,reset-snvs-powered;
- 
- 		regulators {
 diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-index 4e50cb62654d..a78584086fa9 100644
+index a78584086fa9..56295dd2fa8f 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-@@ -640,7 +640,6 @@
- 		clock-output-names = "pmic_clk";
+@@ -605,6 +605,7 @@
+ 		pinctrl-0 = <&pinctrl_typec>, <&pinctrl_tcpc>;
  		interrupt-parent = <&gpio1>;
- 		interrupts = <7 GPIO_ACTIVE_LOW>;
--		interrupt-names = "irq";
- 		rohm,reset-snvs-powered;
+ 		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "irq";
  
- 		regulators {
+ 		connector {
+ 			ports {
 -- 
 2.17.1
 
