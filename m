@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F008F25DB33
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF7D25DB6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730486AbgIDOSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:18:22 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39537 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730664AbgIDOR2 (ORCPT
+        id S1730579AbgIDOWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:22:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49690 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730779AbgIDOWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:17:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599229046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NhbmgM9CAg/pgwM5tMOYVETsgotjMfnAS44cxXVk1W4=;
-        b=bhw+6TPC1uY4OmC+//S+lTqzfhlVuU3hVGHYT9Jqywij+EkETnyLBhRIvh/1JM+Te/yY4t
-        mB0475osk6kTaqhUstlAImBLcprvGIZ41WFpBS1EwDX8eGjC8qSTagcQOOtFvjJ+ReYiT6
-        qFdg/Yk1YK5I/4O48rGiepWqBojRdBU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-xcDdSwKEPsO7Fw6FvzN5vQ-1; Fri, 04 Sep 2020 10:17:25 -0400
-X-MC-Unique: xcDdSwKEPsO7Fw6FvzN5vQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6EB618BA285;
-        Fri,  4 Sep 2020 14:17:23 +0000 (UTC)
-Received: from treble (ovpn-117-138.rdu2.redhat.com [10.10.117.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E0B460C0F;
-        Fri,  4 Sep 2020 14:17:22 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 09:17:20 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Kristen Carlson Accardi <kristen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] objtool: support symtab_shndx during dump
-Message-ID: <20200904141720.qdnesfk3dxl3rlpz@treble>
-References: <20200812175712.9462-1-kristen@linux.intel.com>
- <20200903153545.zy24o7pqfohgoxge@treble>
- <alpine.LSU.2.21.2009040921470.22451@pobox.suse.cz>
+        Fri, 4 Sep 2020 10:22:18 -0400
+X-UUID: 10827524f6cc4c1c9b5947d8369d3741-20200904
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=PLr5RiI3DMgYUSfvxUvOpCy9aKBipk9GFFlQ+87SFTg=;
+        b=fx7LnJy24w34JQMJ9sReIKVTlcUBt8cNfV/X4eS12YKTdw16/8ig6bOHfXk70GkBsmf/8Sy/CahycsXHoJYBtzu9+UVTDkSoqB/LoYFYcB+bP/nt92ByfbuWacATn62ueimpd1B4PqxzFMUX+f9v82AXfWRbUtX22EvbeKQIbSk=;
+X-UUID: 10827524f6cc4c1c9b5947d8369d3741-20200904
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <landen.chao@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 860483780; Fri, 04 Sep 2020 22:22:05 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 4 Sep 2020 22:22:02 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Sep 2020 22:22:02 +0800
+From:   Landen Chao <landen.chao@mediatek.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>
+CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <frank-w@public-files.de>,
+        <opensource@vdorst.com>, <dqfext@gmail.com>,
+        Landen Chao <landen.chao@mediatek.com>
+Subject: [PATCH net-next v3 0/6] net-next: dsa: mt7530: add support for MT7531
+Date:   Fri, 4 Sep 2020 22:21:55 +0800
+Message-ID: <cover.1599228079.git.landen.chao@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2009040921470.22451@pobox.suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 09:54:29AM +0200, Miroslav Benes wrote:
-> On Thu, 3 Sep 2020, Josh Poimboeuf wrote:
-> 
-> > On Wed, Aug 12, 2020 at 10:57:11AM -0700, Kristen Carlson Accardi wrote:
-> > 
-> > >  			if (GELF_ST_TYPE(sym.st_info) == STT_SECTION) {
-> > > -				scn = elf_getscn(elf, sym.st_shndx);
-> > > +				if ((sym.st_shndx > SHN_UNDEF &&
-> > > +				     sym.st_shndx < SHN_LORESERVE) ||
-> > > +				    (xsymtab && sym.st_shndx == SHN_XINDEX)) {
-> > > +					if (sym.st_shndx != SHN_XINDEX)
-> > > +						shndx = sym.st_shndx;
-> > 
-> > The sym.st_shndx checks are redundant, if 'sym.st_shndx == SHN_XINDEX'
-> > then 'sym.st_shndx != SHN_XINDEX' can't be true.
-> 
-> It is probably a copy-paste from read_symbols() in elf.c, where the logic 
-> is different.
-
-Yeah.
-
-> > Actually I think this can be even further simplified to something like
-> > 
-> > 				if (!shndx)
-> > 					shndx = sym.st_shndx;
-> 
-> This relies on the fact that gelf_getsymshndx() always initializes shndx, 
-> no? I think it would be better to initialize it in orc_dump() too. Safer 
-> and easier to read. It applies to Kristen's patch as well. I missed that.
-
-Agreed.
-
--- 
-Josh
+VGhpcyBwYXRjaCBzZXJpZXMgYWRkcyBzdXBwb3J0IGZvciBNVDc1MzEuDQoNCk1UNzUzMSBpcyB0
+aGUgbmV4dCBnZW5lcmF0aW9uIG9mIE1UNzUzMCB3aGljaCBjb3VsZCBiZSBmb3VuZCBvbiBNZWRp
+YXRlaw0Kcm91dGVyIHBsYXRmb3JtcyBzdWNoIGFzIE1UNzYyMiBvciBNVDc2MjkuDQoNCkl0IGlz
+IGFsc28gYSA3LXBvcnRzIHN3aXRjaCB3aXRoIDUgZ2lnYSBlbWJlZGRlZCBwaHlzLCAyIGNwdSBw
+b3J0cywgYW5kDQp0aGUgc2FtZSBNQUMgbG9naWMgb2YgTVQ3NTMwLiBDcHUgcG9ydCA2IG9ubHkg
+c3VwcG9ydHMgU0dNSUkgaW50ZXJmYWNlLg0KQ3B1IHBvcnQgNSBzdXBwb3J0cyBlaXRoZXIgUkdN
+SUkgb3IgU0dNSUkgaW4gZGlmZmVyZW50IEhXIFNLVSwgYnV0IGNhbm5vdA0KYmUgbXV4ZWQgdG8g
+UEhZIG9mIHBvcnQgMC80IGxpa2UgbXQ3NTMwLiBEdWUgdG8gc3VwcG9ydCBmb3IgU0dNSUkNCmlu
+dGVyZmFjZSwgcGxsLCBhbmQgcGFkIHNldHRpbmcgYXJlIGRpZmZlcmVudCBmcm9tIE1UNzUzMC4N
+Cg0KTVQ3NTMxIFNHTUlJIGludGVyZmFjZSBjYW4gYmUgY29uZmlndXJlZCBpbiBmb2xsb3dpbmcg
+bW9kZToNCi0gJ1NHTUlJIEFOIG1vZGUnIHdpdGggaW4tYmFuZCBuZWdvdGlhdGlvbiBjYXBhYmls
+aXR5DQogICAgd2hpY2ggaXMgY29tcGF0aWJsZSB3aXRoIFBIWV9JTlRFUkZBQ0VfTU9ERV9TR01J
+SS4NCi0gJ1NHTUlJIGZvcmNlIG1vZGUnIHdpdGhvdXQgaW4tYmFuZCBuZWdvdGlhdGlvbg0KICAg
+IHdoaWNoIGlzIGNvbXBhdGlibGUgd2l0aCAxMEIvOEIgZW5jb2Rpbmcgb2YNCiAgICBQSFlfSU5U
+RVJGQUNFX01PREVfMTAwMEJBU0VYIHdpdGggZml4ZWQgZnVsbC1kdXBsZXggYW5kIGZpeGVkIHBh
+dXNlLg0KLSAyLjUgdGltZXMgZmFzdGVyIGNsb2NrZWQgJ1NHTUlJIGZvcmNlIG1vZGUnIHdpdGhv
+dXQgaW4tYmFuZCBuZWdvdGlhdGlvbg0KICAgIHdoaWNoIGlzIGNvbXBhdGlibGUgd2l0aCAxMEIv
+OEIgZW5jb2Rpbmcgb2YNCiAgICBQSFlfSU5URVJGQUNFX01PREVfMjUwMEJBU0VYIHdpdGggZml4
+ZWQgZnVsbC1kdXBsZXggYW5kIGZpeGVkIHBhdXNlLg0KDQp2MiAtPiB2Mw0KLSBLZWVwIHRoZSBz
+YW1lIHNldHVwIGxvZ2ljIG9mIG10NzUzMC9tdDc2MjEgYmVjYXVzZSB0aGVzZSBzZXJpZXMgb2YN
+CiAgcGF0Y2hlcyBpcyBmb3IgYWRkaW5nIG10NzUzMSBoYXJkd2FyZS4NCi0gRG8gbm90IGFkanVz
+dCByZ21paSBkZWxheSB3aGVuIHZlbmRvciBwaHkgZHJpdmVyIHByZXNlbnRzIGluIG9yZGVyIHRv
+DQogIHByZXZlbnQgZG91YmxlIGFkanVzdG1lbnQgYnkgc3VnZ2VzdGlvbiBvZiBBbmRyZXcgTHVu
+bi4NCi0gUmVtb3ZlIHJlZHVuZGFudCAnRXhhbXBsZSA0JyBmcm9tIGR0LWJpbmRpbmdzIGJ5IHN1
+Z2dlc3Rpb24gb2YNCiAgUm9iIEhlcnJpbmcuDQotIEZpeCB0eXBvLg0KDQp2MSAtPiB2Mg0KLSBj
+aGFuZ2UgcGh5bGlua192YWxpZGF0ZSBjYWxsYmFjayBmdW5jdGlvbiB0byBzdXBwb3J0IGZ1bGwt
+ZHVwbGV4DQogIGdpZ2FiaXQgb25seSB0byBtYXRjaCBoYXJkd2FyZSBjYXBhYmlsaXR5Lg0KLSBh
+ZGQgZGVzY3JpcHRpb24gb2YgU0dNSUkgaW50ZXJmYWNlLg0KLSBjb25maWd1cmUgbXQ3NTMxIGNw
+dSBwb3J0IGluIGZhc3Rlc3Qgc3BlZWQgYnkgZGVmYXVsdC4NCi0gcGFyc2UgU0dNSUkgY29udHJv
+bCB3b3JkIGZvciBpbi1iYW5kIG5lZ290aWF0aW9uIG1vZGUuDQotIGNvbmZpZ3VyZSBSR01JSSBk
+ZWxheSBiYXNlZCBvbiBwaHkucnN0Lg0KLSBSZW5hbWUgdGhlIGRlZmluaXRpb24gaW4gdGhlIGhl
+YWRlciBmaWxlIHRvIGF2b2lkIHBvdGVudGlhbCBjb25mbGljdHMuDQotIEFkZCB3cmFwcGVyIGZ1
+bmN0aW9uIGZvciBtZGlvIHJlYWQvd3JpdGUgdG8gc3VwcG9ydCBib3RoIEMyMiBhbmQgQzQ1Lg0K
+LSBjb3JyZWN0IGZpeGVkLWxpbmsgc3BlZWQgb2YgMjUwMGJhc2UteCBpbiBkdHMuDQotIGFkZCBN
+VDc1MzEgcG9ydCBtaXJyb3Igc2V0dGluZy4NCg0KTGFuZGVuIENoYW8gKDYpOg0KICBuZXQ6IGRz
+YTogbXQ3NTMwOiBSZWZpbmUgbWVzc2FnZSBpbiBLY29uZmlnDQogIG5ldDogZHNhOiBtdDc1MzA6
+IEV4dGVuZCBkZXZpY2UgZGF0YSByZWFkeSBmb3IgYWRkaW5nIGEgbmV3IGhhcmR3YXJlDQogIGR0
+LWJpbmRpbmdzOiBuZXQ6IGRzYTogYWRkIG5ldyBNVDc1MzEgYmluZGluZyB0byBzdXBwb3J0IE1U
+NzUzMQ0KICBuZXQ6IGRzYTogbXQ3NTMwOiBBZGQgdGhlIHN1cHBvcnQgb2YgTVQ3NTMxIHN3aXRj
+aA0KICBhcm02NDogZHRzOiBtdDc2MjI6IGFkZCBtdDc1MzEgZHNhIHRvIG10NzYyMi1yZmIxIGJv
+YXJkDQogIGFybTY0OiBkdHM6IG10NzYyMjogYWRkIG10NzUzMSBkc2EgdG8gYmFuYW5hcGktYnBp
+LXI2NCBib2FyZA0KDQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L2RzYS9tdDc1MzAudHh0
+ICAgIHwgICAxMCArLQ0KIC4uLi9kdHMvbWVkaWF0ZWsvbXQ3NjIyLWJhbmFuYXBpLWJwaS1yNjQu
+ZHRzICB8ICAgNDQgKw0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ3NjIyLXJmYjEu
+ZHRzICB8ICAgNTcgKy0NCiBkcml2ZXJzL25ldC9kc2EvS2NvbmZpZyAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgICA2ICstDQogZHJpdmVycy9uZXQvZHNhL210NzUzMC5jICAgICAgICAgICAgICAg
+ICAgICAgIHwgMTE5NCArKysrKysrKysrKysrKystLQ0KIGRyaXZlcnMvbmV0L2RzYS9tdDc1MzAu
+aCAgICAgICAgICAgICAgICAgICAgICB8ICAyNTkgKysrLQ0KIDYgZmlsZXMgY2hhbmdlZCwgMTQ2
+MyBpbnNlcnRpb25zKCspLCAxMDcgZGVsZXRpb25zKC0pDQoNCi0tIA0KMi4xNy4xDQo=
 
