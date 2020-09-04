@@ -2,52 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F379F25D595
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B08E25D59B
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729808AbgIDKDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:03:46 -0400
-Received: from 8bytes.org ([81.169.241.247]:41080 "EHLO theia.8bytes.org"
+        id S1729952AbgIDKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:04:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgIDKDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:03:45 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 1952D3D5; Fri,  4 Sep 2020 12:03:42 +0200 (CEST)
-Date:   Fri, 4 Sep 2020 12:03:40 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Tom Murphy <murphyt7@tcd.ie>
-Cc:     iommu@lists.linux-foundation.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/5] Convert the intel iommu driver to the dma-iommu
- api
-Message-ID: <20200904100340.GT6714@8bytes.org>
-References: <20200903201839.7327-1-murphyt7@tcd.ie>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200903201839.7327-1-murphyt7@tcd.ie>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726114AbgIDKEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:04:24 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 817E320791;
+        Fri,  4 Sep 2020 10:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599213864;
+        bh=KA8LW7OmlzmLuUoHRv+s+AdmVu8ZMwzNtfZQyvHEiZ8=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=jZCJkTkSYk/8/vG/dVhc8ZrWVZV18s6iyb/jSsvK0G/8+7Bs5Xo+6pdlvtXoH4dc5
+         +9gsLqx+cImtzKcuz6lBYxDHP/XdceWFEF7FCJyUmbhtS4z3N5zxRlgKo2am6SiHYD
+         iONXVuEs1KDl4sgZUq7vRkGhjtdA+LIWU4VUYd+o=
+Date:   Fri, 04 Sep 2020 11:03:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        mazziesaccount@gmail.com
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-power@fi.rohmeurope.com
+In-Reply-To: <cover.1599029334.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1599029334.git.matti.vaittinen@fi.rohmeurope.com>
+Subject: Re: [PATCH 0/4] Support regulator ON/OFF by PMIC state machine.
+Message-Id: <159921382244.42249.7240077218868198055.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Tom,
+On Thu, 3 Sep 2020 21:37:51 +0300, Matti Vaittinen wrote:
+> Support regulator enable/disable via BD718(37/47/50) PMIC state machine.
+> 
+> The ROHM BD718(37/47/50) PMICs are mainly used for powering i.MX8 based
+> systems. On some setups the i.MX8 SoC uses a IO line to suspend the
+> system. These PMICs support this via PMIC internal HW state machine
+> which can be toggled for example by the PMIC_STBY_REQ IO-pin.
+> 
+> [...]
 
-On Thu, Sep 03, 2020 at 09:18:32PM +0100, Tom Murphy wrote:
-> Tom Murphy (5):
->   iommu: Handle freelists when using deferred flushing in iommu drivers
->   iommu: Add iommu_dma_free_cpu_cached_iovas function
->   iommu: allow the dma-iommu api to use bounce buffers
->   iommu/vt-d: Convert intel iommu driver to the iommu ops
->   DO NOT MERGE: iommu: disable list appending in dma-iommu
+Applied to
 
-Thanks for your continued work on this. As discussed in the
-microconference, Lu Baolu will take this over now and we can hopefully
-merge it soon.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/4] regulator: bd718x7 initialize regulator config only once
+      commit: df9db2541a82ec18c474942a93729420d37fac81
+[2/4] regulator: bd71837: add property for omitting ON/OFF control
+      commit: 4788c692bec76dc33c646a07a4aaf7e2dd60091e
+[3/4] regulator: bd71847: add property for omitting ON/OFF control
+      commit: 6656d4462c7ac5ca0bc5d5a8a91a8c98f0fd1409
+[4/4] regulator: bd718x7 fix regulator states at SUSPEND
+      commit: 1d848d681c4d4e148193b699a6e5f222e8621519
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-
-	Joerg
+Mark
