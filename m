@@ -2,110 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0439025D499
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92AC725D471
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 11:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729901AbgIDJUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 05:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729628AbgIDJUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 05:20:36 -0400
-Received: from localhost (p5486cda5.dip0.t-ipconnect.de [84.134.205.165])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6D5E2067C;
-        Fri,  4 Sep 2020 09:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599211235;
-        bh=tfvwXFZiU3UT3uCBI0eVIiaDepEZKUtj+JOTXPnmFsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JVTj/hYdti7ZOguNrnw2iuzyeMxhWiP8cgeuhOAht8F02N5gmhfh2HxDDvcQj107h
-         4ifFx6nxVFzUesF8iXxBLPLKWUAw3BEtopz+mFS72Nmhnet+ySsDq2UKZsnxzsh6UB
-         ZLbw9GgVbEuLg/2GWAziBor2k7pJGg1pgBqGVI3U=
-Date:   Fri, 4 Sep 2020 11:20:32 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Codrin.Ciubotariu@microchip.com,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, Ludovic.Desroches@microchip.com,
-        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
-        linux@armlinux.org.uk, kamel.bouhara@bootlin.com
-Subject: Re: Re: Re: [RFC PATCH 4/4] i2c: at91: Move to generic GPIO bus
- recovery
-Message-ID: <20200904092032.GA32080@ninjato>
-References: <20200619141904.910889-1-codrin.ciubotariu@microchip.com>
- <20200619141904.910889-5-codrin.ciubotariu@microchip.com>
- <20200802170820.GC10193@kunai>
- <65890aab-1d19-7e7e-abff-3c6ee05c8ade@microchip.com>
- <20200826061444.GB1081@ninjato>
- <15466c95-f1ea-63a4-1429-24d9b7567c1c@microchip.com>
+        id S1730037AbgIDJRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 05:17:09 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:37741 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729797AbgIDJRI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 05:17:08 -0400
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 3E07F100008;
+        Fri,  4 Sep 2020 09:17:02 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 11:20:49 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v3 1/2] media: i2c: ov772x: Add support for BT656 mode
+Message-ID: <20200904092049.6lokfmln4vulswrn@uno.localdomain>
+References: <20200824190406.27478-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200824190406.27478-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200904012000.GA9369@pendragon.ideasonboard.com>
+ <20200904075553.qjdyskcpext7fxcy@uno.localdomain>
+ <20200904082104.GE4392@valkosipuli.retiisi.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <15466c95-f1ea-63a4-1429-24d9b7567c1c@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200904082104.GE4392@valkosipuli.retiisi.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sakari,
 
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Sep 04, 2020 at 11:21:04AM +0300, Sakari Ailus wrote:
+> Hi Laurent, Jacopo,
+>
+> On Fri, Sep 04, 2020 at 09:55:53AM +0200, Jacopo Mondi wrote:
+> > Hi Laurent,
+> >
+> > On Fri, Sep 04, 2020 at 04:20:00AM +0300, Laurent Pinchart wrote:
+> > > Hi Prabhakar,
+> > >
+> > > Thank you for the patch.
+> > >
+> > > On Mon, Aug 24, 2020 at 08:04:05PM +0100, Lad Prabhakar wrote:
+> > > > Add support to read the bus-type and enable BT656 mode if needed.
+> > > >
+> > > > Also fail probe if unsupported bus_type is detected.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > > ---
+> > > >  drivers/media/i2c/ov772x.c | 32 ++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 32 insertions(+)
+> > > >
+> > > > diff --git a/drivers/media/i2c/ov772x.c b/drivers/media/i2c/ov772x.c
+> > > > index 2cc6a678069a..67764d647526 100644
+> > > > --- a/drivers/media/i2c/ov772x.c
+> > > > +++ b/drivers/media/i2c/ov772x.c
+> > > > @@ -31,6 +31,7 @@
+> > > >  #include <media/v4l2-ctrls.h>
+> > > >  #include <media/v4l2-device.h>
+> > > >  #include <media/v4l2-event.h>
+> > > > +#include <media/v4l2-fwnode.h>
+> > > >  #include <media/v4l2-image-sizes.h>
+> > > >  #include <media/v4l2-subdev.h>
+> > > >
+> > > > @@ -434,6 +435,7 @@ struct ov772x_priv {
+> > > >  #ifdef CONFIG_MEDIA_CONTROLLER
+> > > >  	struct media_pad pad;
+> > > >  #endif
+> > > > +	struct v4l2_fwnode_endpoint ep;
+> > > >  };
+> > > >
+> > > >  /*
+> > > > @@ -581,6 +583,13 @@ static int ov772x_s_stream(struct v4l2_subdev *sd, int enable)
+> > > >  	if (priv->streaming == enable)
+> > > >  		goto done;
+> > > >
+> > > > +	if (priv->ep.bus_type == V4L2_MBUS_BT656) {
+> > > > +		ret = regmap_update_bits(priv->regmap, COM7, ITU656_ON_OFF,
+> > > > +					 enable ? ITU656_ON_OFF : ~ITU656_ON_OFF);
+> > > > +		if (ret)
+> > > > +			goto done;
+> > > > +	}
+> > > > +
+> > > >  	ret = regmap_update_bits(priv->regmap, COM2, SOFT_SLEEP_MODE,
+> > > >  				 enable ? 0 : SOFT_SLEEP_MODE);
+> > > >  	if (ret)
+> > > > @@ -1354,6 +1363,7 @@ static const struct v4l2_subdev_ops ov772x_subdev_ops = {
+> > > >
+> > > >  static int ov772x_probe(struct i2c_client *client)
+> > > >  {
+> > > > +	struct fwnode_handle *endpoint;
+> > > >  	struct ov772x_priv	*priv;
+> > > >  	int			ret;
+> > > >  	static const struct regmap_config ov772x_regmap_config = {
+> > > > @@ -1415,6 +1425,28 @@ static int ov772x_probe(struct i2c_client *client)
+> > > >  		goto error_clk_put;
+> > > >  	}
+> > > >
+> > > > +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(&client->dev),
+> > > > +						  NULL);
+> > > > +	if (!endpoint) {
+> > > > +		dev_err(&client->dev, "endpoint node not found\n");
+> > > > +		ret = -EINVAL;
+> > > > +		goto error_clk_put;
+> > > > +	}
+> > > > +
+> > > > +	ret = v4l2_fwnode_endpoint_parse(endpoint, &priv->ep);
+> > >
+> > > v4l2_fwnode_endpoint_parse() is deprecated for new drivers,
+> > > v4l2_fwnode_endpoint_alloc_parse() is recommended instead. Please note
+> > > that v4l2_fwnode_endpoint_free() then needs to be called in the error
+> > > path and in remove().
+> >
+> > Doesn't alloc_parse() differ from just _parse() as it reserve space
+> > for the 'link-frequencies' array ? As this device does not support
+> > CSI-2 and the 'link-frequencies' property is not allows in bindings,
+> > isn't using endpoint_parse() better as it saves a call to _free() ?
+>
+> Yeah. I think the documentation needs to be updated.
+>
+> The thinking was there would be other variable size properties that drivers
+> would need but that didn't happen. So feel free to continue use
+> v4l2_fwnode_endpoint_parse() where it does the job.
+>
+> >
+> > Or are we deprecating that function unconditionally ? The
+> > documentation suggests "please use v4l2_fwnode_endpoint_alloc_parse()
+> > in new drivers" but here it doesn't seem required..
+> >
+> > >
+> > > On the other hand, not setting .bus_type and letting the parse()
+> > > function determine the but type automatically is also deprecated, and I
+> > > don't think forcing drivers to call v4l2_fwnode_endpoint_alloc_parse()
+> > > once for each bus type until one succeeds is a good API. As change will
+> > > be needed in that API, you can ignore v4l2_fwnode_endpoint_alloc_parse()
+> > > for the time being if you want.
+> >
+> > But indeed relying on auto-guessing of the bus type is deprecated since
+> > some time now (and the API could be improved, yes). Sorry I missed
+> > that yesterday.
+>
+> There's one case where the bus type does not need to be set: when bindings
+> require it *and* at the same time you have no default configuration that
+> requires something to be set in the bus specific struct. Bindings where
+> bus-type is required were added later so I think the documentation should
+> be changed there, too.
+>
+> I can send the patches.
+>
+> >
+> > As we support parallel and bt.656 only I must be honest I don't mind
+> > it here as otherwise the code would be more complex for no real gain,
+> > but I defer this to Sakari which has been fighting the battle against
+> > auto-guessing since a long time now  :)
+>
+> I think you should require bus-type property in bindings in that case.
+>
+> But as it's an existing driver, bus-type will be optional. You'll need to
+> default to what was supported earlier. This is actually an interesting case
+> as bindings do not document it.
 
-Hi Codrin,
+For reference:
+https://patchwork.linuxtv.org/project/linux-media/patch/20200903131029.18334-3-jacopo+renesas@jmondi.org/
 
-> The pinmux driver needs to have strict set to false, otherwise the=20
-> switching is not available, not at this time at least. Perhaps there is=
-=20
-> room for improvement here, because the I2C bus is not using the pins=20
-> while we are doing GPIO recovery.
+But yes, we might have DTBs in the wild without bus-type specified :(
 
-Our driver doesn't use 'strict'. The thing is that I can't describe a
-pinctrl state for GPIO. GPIO is the default state until another function
-is requested. Back to GPIO currently means freeing the pin again, so it
-defaults back to GPIO. We are currently discussing it. Geert (CCed)
-isn't very happy of describing the same pins with 'function =3D "gpio"'
-because the Kernel already knows the mapping, just needs to revert it.
-Geert, please correct me if I am wrong.
-
-> I am not sure I'll have time the next week to work on what you asked me=
-=20
-> regarding sh_mobile and PXA, but I will look into it the week after that.
-> Sorry about my delayed reply, I was on vacation.
-
-Well, no need for sh_mobile, this is my todo item :) About PXA, well, I
-am still happy that you volunteered to do it, so I hope you had a
-relaxing vacation!
-
-Happy hacking,
-
-   Wolfram
-
-
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9SBtwACgkQFA3kzBSg
-KbZeWw//e8idK/UaDDNoa1ayZzCtU5zt8qZiIxCEia10pmFsfb1uZkJ4nyybcIT2
-FcpsGjUsrDCWvVEu+3hAyILntIJF8949WUK7K7JhqMeH9o3T7ZJeUEgK7cB0o9s5
-wrjs2WMvBjP1TaPW2LhcAAlP3q4/Qy+4xQ6SpjLzQsTeNtv643vWo15V5lOUHjuK
-0s/VCmZtnrqvRXsbjrzAIk+XZ+m7IhWgNDY6MUfO7gxDCWq8q+KRcncBaHNopCIi
-wYGq2KReTYQ/nA+ACytH/SsiQvmXoYdfEiN6K1WnXviu0XwtkG1yTQPtpBetvpS7
-obzG2hDmOcN680XFZ9tOYiQdChEI4cqFlWAPpthZ0TtSjmZ+0Jv5spTVbP7M/DFJ
-61RCUdzZiPrTJiTwuQt5PGO39BnGbxbG64+x1a0qFrcd96FftmRi1CXwEoEF5dXc
-LBS3yE/GmHALiBDKwqK4RN5iF6P4ErdP6WDL0506uW/xFOp198BHOd+auHXt4+eY
-a2L4hOuAhl6w7BvjtIXogzX/0pGGqnzk2egyYNXOW1REtCrF/JInnxal+gBQpl9E
-v+ErBOZ+1+BRi01Dk0ytbC4mkCNvaMsRFz+O4Msm9PlF03V+utBfeRUzOOC32aMw
-2QuyngO580zJt/F8WPTvoH2CHIvtkKh92azHOo95+IPwjPjUYWs=
-=qgU2
------END PGP SIGNATURE-----
-
---WIyZ46R2i8wDzkSu--
+>
+> >
+> >
+> > >
+> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > >
+> > > > +	fwnode_handle_put(endpoint);
+> > > > +	if (ret) {
+> > > > +		dev_err(&client->dev, "Could not parse endpoint\n");
+> > > > +		goto error_clk_put;
+> > > > +	}
+> > > > +
+> > > > +	if (priv->ep.bus_type != V4L2_MBUS_PARALLEL &&
+> > > > +	    priv->ep.bus_type != V4L2_MBUS_BT656) {
+> > > > +		dev_err(&client->dev, "Unsupported bus type %d\n",
+> > > > +			priv->ep.bus_type);
+> > > > +		goto error_clk_put;
+> > > > +	}
+> > > > +
+> > > >  	ret = ov772x_video_probe(priv);
+> > > >  	if (ret < 0)
+> > > >  		goto error_gpio_put;
+> > >
+> > > --
+> > > Regards,
+> > >
+> > > Laurent Pinchart
+>
+> --
+> Sakari Ailus
