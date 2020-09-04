@@ -2,150 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02AF25CF70
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE7A25CF7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 04:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgIDCm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 3 Sep 2020 22:42:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728484AbgIDCm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 3 Sep 2020 22:42:29 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 535F82075D;
-        Fri,  4 Sep 2020 02:42:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599187348;
-        bh=RZp2z2lZ4ZEa5XCcqc63rPN5V8YW2idBP8wQngWLmmQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tXKNVi9V3hfKEMuoSuYwyRWW7ZIGntoNqZ3Lo3DB+WPn7rlyZ/Mui9HDfcdrBIV/B
-         +qS8DYEv62qXSSsD9P2GgY47YHZytU+h2lgtRzFZeRUuemykJ8Kh4IqtdApQSmuYZW
-         Vvw8x2AGyUq5hbGAeKk8k2rS1u9t0edIHX3rUJqc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3006D3522636; Thu,  3 Sep 2020 19:42:28 -0700 (PDT)
-Date:   Thu, 3 Sep 2020 19:42:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH tip/core/rcu 2/4] smp: Add source and destination CPUs to
- __call_single_data
-Message-ID: <20200904024228.GY29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200831181356.GA1224@paulmck-ThinkPad-P72>
- <20200831181417.1378-2-paulmck@kernel.org>
- <20200904021610.GA7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904021610.GA7922@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1729629AbgIDCwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 3 Sep 2020 22:52:19 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:30058 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729521AbgIDCwS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 3 Sep 2020 22:52:18 -0400
+X-Greylist: delayed 583 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Sep 2020 22:52:17 EDT
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="37169782"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 04 Sep 2020 10:42:30 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(142871:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 04 Sep 2020 10:42:30 +0800 (CST)
+Received: from 101.12.41.239
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2486:2:AUTH_LOGIN)
+        (envelope-from <jingle.wu@emc.com.tw>); Fri, 04 Sep 2020 10:42:27 +0800 (CST)
+From:   "jingle.wu" <jingle.wu@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     phoenix@emc.com.tw,
+        "jingle.wu" <jingle.wu@elan.corp-partner.google.com>
+Subject: [PATCH] Input: trackpoint - Add Suspend mode for Elan TrackPoint
+Date:   Fri,  4 Sep 2020 10:42:31 +0800
+Message-Id: <20200904024231.26812-1-jingle.wu@emc.com.tw>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 10:16:10AM +0800, Boqun Feng wrote:
-> Hi Paul,
-> 
-> On Mon, Aug 31, 2020 at 11:14:15AM -0700, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > This commit adds a destination CPU to __call_single_data, and is inspired
-> > by an earlier commit by Peter Zijlstra.  This version adds #ifdef to
-> > permit use by 32-bit systems and supplying the destination CPU for all
-> > smp_call_function*() requests, not just smp_call_function_single().
-> > 
-> > If need be, 32-bit systems could be accommodated by shrinking the flags
-> > field to 16 bits (the atomic_t variant is currently unused) and by
-> > providing only eight bits for CPU on such systems.
-> > 
-> > It is not clear that the addition of the fields to __call_single_node
-> > are really needed.
-> > 
-> > Link: https://lore.kernel.org/lkml/20200615164048.GC2531@hirez.programming.kicks-ass.net/
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Cc: Frederic Weisbecker <frederic@kernel.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  include/linux/smp.h       | 3 +++
-> >  include/linux/smp_types.h | 3 +++
-> >  kernel/smp.c              | 2 ++
-> >  3 files changed, 8 insertions(+)
-> > 
-> > diff --git a/include/linux/smp.h b/include/linux/smp.h
-> > index 80d557e..9f13966 100644
-> > --- a/include/linux/smp.h
-> > +++ b/include/linux/smp.h
-> > @@ -26,6 +26,9 @@ struct __call_single_data {
-> >  		struct {
-> >  			struct llist_node llist;
-> >  			unsigned int flags;
-> > +#ifdef CONFIG_64BIT
-> > +			u16 src, dst;
-> > +#endif
-> >  		};
-> >  	};
-> >  	smp_call_func_t func;
-> > diff --git a/include/linux/smp_types.h b/include/linux/smp_types.h
-> > index 364b3ae..2e8461a 100644
-> > --- a/include/linux/smp_types.h
-> > +++ b/include/linux/smp_types.h
-> > @@ -61,6 +61,9 @@ struct __call_single_node {
-> >  		unsigned int	u_flags;
-> >  		atomic_t	a_flags;
-> >  	};
-> > +#ifdef CONFIG_64BIT
-> > +	u16 src, dst;
-> > +#endif
-> >  };
-> >  
-> >  #endif /* __LINUX_SMP_TYPES_H */
-> > diff --git a/kernel/smp.c b/kernel/smp.c
-> > index d0ae8eb..a47382d 100644
-> > --- a/kernel/smp.c
-> > +++ b/kernel/smp.c
-> > @@ -375,6 +375,7 @@ int smp_call_function_single(int cpu, smp_call_func_t func, void *info,
-> >  
-> >  	csd->func = func;
-> >  	csd->info = info;
-> > +	csd->dst = cpu;
-> 
-> Would this and the next modification cause compile errors with
-> CONFIG_64BIT = n? I saw you add #ifdef guard in the next patch, so maybe
-> move those two into next patch (of course, if they trigger compile
-> errors)
+From: "jingle.wu" <jingle.wu@elan.corp-partner.google.com>
 
-Good point, will fix, thank you!
+Add suspend command for elan trackpoint
+---
+ drivers/input/mouse/trackpoint.c | 16 ++++++++++++++++
+ drivers/input/mouse/trackpoint.h |  1 +
+ 2 files changed, 17 insertions(+)
 
-							Thanx, Paul
+diff --git a/drivers/input/mouse/trackpoint.c b/drivers/input/mouse/trackpoint.c
+index 3eefee2ee2a1..b3cba973a4eb 100644
+--- a/drivers/input/mouse/trackpoint.c
++++ b/drivers/input/mouse/trackpoint.c
+@@ -389,6 +389,20 @@ static int trackpoint_reconnect(struct psmouse *psmouse)
+ 	return 0;
+ }
+ 
++static void trackpoint_cleanup(struct psmouse *psmouse)
++{
++	struct trackpoint_data *tp = psmouse->private;
++	u8 param[3] = { TP_TOGGLE, TP_TOGGLE_BURST, TP_TOGGLE_ELAN_SLEEP };
++
++	if (tp->variant_id == TP_VARIANT_ELAN) {
++		if (ps2_command(&psmouse->ps2dev, param,
++				MAKE_PS2_CMD(3, 0, TP_COMMAND))) {
++			psmouse_err(psmouse,
++				    "failed to suspend trackpont.\n");
++		}
++	}
++}
++
+ int trackpoint_detect(struct psmouse *psmouse, bool set_properties)
+ {
+ 	struct ps2dev *ps2dev = &psmouse->ps2dev;
+@@ -421,6 +435,8 @@ int trackpoint_detect(struct psmouse *psmouse, bool set_properties)
+ 	psmouse->reconnect = trackpoint_reconnect;
+ 	psmouse->disconnect = trackpoint_disconnect;
+ 
++	psmouse->cleanup = trackpoint_cleanup;
++
+ 	if (variant_id != TP_VARIANT_IBM) {
+ 		/* Newer variants do not support extended button query. */
+ 		button_info = 0x33;
+diff --git a/drivers/input/mouse/trackpoint.h b/drivers/input/mouse/trackpoint.h
+index 5cb93ed26085..c7fa75452976 100644
+--- a/drivers/input/mouse/trackpoint.h
++++ b/drivers/input/mouse/trackpoint.h
+@@ -107,6 +107,7 @@
+ #define TP_TOGGLE_EXT_TAG	0x22	/* Bit 3 of the first packet coming from the
+ 					   external device will be forced to 1 */
+ #define TP_MASK_EXT_TAG			0x04
++#define TP_TOGGLE_ELAN_SLEEP	0x8
+ 
+ 
+ /* Power on Self Test Results */
+-- 
+2.17.1
 
-> Regards,
-> Boqun
-> 
-> >  
-> >  	err = generic_exec_single(cpu, csd);
-> >  
-> > @@ -540,6 +541,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
-> >  			csd->flags |= CSD_TYPE_SYNC;
-> >  		csd->func = func;
-> >  		csd->info = info;
-> > +		csd->dst = cpu;
-> >  		if (llist_add(&csd->llist, &per_cpu(call_single_queue, cpu)))
-> >  			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
-> >  	}
-> > -- 
-> > 2.9.5
-> > 
