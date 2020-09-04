@@ -2,102 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D09625D122
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9858A25D12F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgIDGMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:12:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:15430 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725892AbgIDGMO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:12:14 -0400
-IronPort-SDR: YWadKn+mRDZCVNMdar7MUp/YUSmhcgGazm8oHbPtDGq7RLgXQD97SdbeAvgOT/e1s1WIovbWxy
- YMk3kqvKOHSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9733"; a="145399307"
-X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
-   d="scan'208";a="145399307"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 23:12:13 -0700
-IronPort-SDR: OOATKXc/XT/AbssXZA5Jj0wtpKYOUiVFE61V5usIkegJOi6PRkSv03x0u5QW/GoihdankrkHzQ
- 2nOXnFIt0eZw==
-X-IronPort-AV: E=Sophos;i="5.76,388,1592895600"; 
-   d="scan'208";a="298297293"
-Received: from sjchrist-ice.jf.intel.com (HELO sjchrist-ice) ([10.54.31.34])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2020 23:12:13 -0700
-Date:   Thu, 3 Sep 2020 23:12:12 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Michael Tsirkin <mst@redhat.com>,
-        Julia Suvorova <jsuvorov@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andrew Jones <drjones@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] KVM: x86: KVM_MEM_PCI_HOLE memory
-Message-ID: <20200904061210.GA22435@sjchrist-ice>
-References: <20200807141232.402895-1-vkuznets@redhat.com>
- <20200825212526.GC8235@xz-x1>
- <87eenlwoaa.fsf@vitty.brq.redhat.com>
- <20200901200021.GB3053@xz-x1>
- <877dtcpn9z.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dtcpn9z.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726898AbgIDGVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:21:18 -0400
+Received: from a27-188.smtp-out.us-west-2.amazonses.com ([54.240.27.188]:32932
+        "EHLO a27-188.smtp-out.us-west-2.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725812AbgIDGVQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 02:21:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=zsmsymrwgfyinv5wlfyidntwsjeeldzt; d=codeaurora.org; t=1599200475;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=4UE+WdooRrLUPdjnUAqjyyYoEy5h+nRczdfaVlmmdgQ=;
+        b=L+roDPgfmGdvRsH+zF3isndXWmoI8JdfBhuFIs6B4a2+bghvOeuwGuLg0MioHz1g
+        78XGokbnhw4OB8tXpm5xvYDWHiwnhlqm8/gvXkuVhuoUHuLIo/yKYzaodBHGqDHDC6M
+        lYuE1VubZmTpc1jZ+S/RQbuOrFKvkaNsPWUpsat8=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1599200475;
+        h=From:To:Cc:Subject:Date:Message-Id:Feedback-ID;
+        bh=4UE+WdooRrLUPdjnUAqjyyYoEy5h+nRczdfaVlmmdgQ=;
+        b=A4eMt3P5Be+ArF6d3uGjE/jqjgLyiA78sn60Jj454XlytX0JR/A/ICN4WxP7PvXz
+        mZZDXuk8bztPxn1ZE/BErFnN3jYgTlN1U+UGWsB5065pridgVpMSS7tpaWtm0grHUqV
+        bGszdRxRXhWXWM6bWgEYF5iNtsC5aPZ9BuwDjLUM=
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.1 required=2.0 tests=ALL_TRUSTED,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C427C433F0
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rjliao@codeaurora.org
+From:   Rocky Liao <rjliao@codeaurora.org>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
+        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
+        Rocky Liao <rjliao@codeaurora.org>
+Subject: [PATCH v1] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855 support
+Date:   Fri, 4 Sep 2020 06:21:15 +0000
+Message-ID: <0101017457c6b819-d1292819-1fae-43af-8fb8-3bc572f53cd5-000000@us-west-2.amazonses.com>
+X-Mailer: git-send-email 2.17.1
+X-SES-Outgoing: 2020.09.04-54.240.27.188
+Feedback-ID: 1.us-west-2.CZuq2qbDmUIuT3qdvXlRHZZCpfZqZ4GtG9v3VKgRyF0=:AmazonSES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 02, 2020 at 10:59:20AM +0200, Vitaly Kuznetsov wrote:
-> Peter Xu <peterx@redhat.com> writes:
-> > My whole point was more about trying to understand the problem behind.
-> > Providing a fast path for reading pci holes seems to be reasonable as is,
-> > however it's just that I'm confused on why there're so many reads on the pci
-> > holes after all.  Another important question is I'm wondering how this series
-> > will finally help the use case of microvm.  I'm not sure I get the whole point
-> > of it, but... if microvm is the major use case of this, it would be good to
-> > provide some quick numbers on those if possible.
-> >
-> > For example, IIUC microvm uses qboot (as a better alternative than seabios) for
-> > fast boot, and qboot has:
-> >
-> > https://github.com/bonzini/qboot/blob/master/pci.c#L20
-> >
-> > I'm kind of curious whether qboot will still be used when this series is used
-> > with microvm VMs?  Since those are still at least PIO based.
-> 
-> I'm afraid there is no 'grand plan' for everything at this moment :-(
-> For traditional VMs 0.04 sec per boot is negligible and definitely not
-> worth adding a feature, memory requirements are also very
-> different. When it comes to microvm-style usage things change.
-> 
-> '8193' PCI hole accesses I mention in the PATCH0 blurb are just from
-> Linux as I was doing direct kernel boot, we can't get better than that
-> (if PCI is in the game of course). Firmware (qboot, seabios,...) can
-> only add more. I *think* the plan is to eventually switch them all to
-> MMCFG, at least for KVM guests, by default but we need something to put
-> to the advertisement. 
+This patch add support for WCN6855 i.e. patch and nvm download
+support.
 
-I see a similar ~8k PCI hole reads with a -kernel boot w/ OVMF.  All but 60
-of those are from pcibios_fixup_peer_bridges(), and all are from the kernel.
-My understanding is that pcibios_fixup_peer_bridges() is useful if and only
-if there multiple root buses.  And AFAICT, when running under QEMU, the only
-way for there to be multiple buses in is if there is an explicit bridge
-created ("pxb" or "pxb-pcie").  Based on the cover letter from those[*], the
-main reason for creating a bridge is to handle pinned CPUs on a NUMA system
-with pass-through devices.  That use case seems highly unlikely to cross
-paths with micro VMs, i.e. micro VMs will only ever have a single bus.
-Unless I'm mistaken, microvm doesn't even support PCI, does it?
+Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
+---
+ drivers/bluetooth/btusb.c | 42 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 4 deletions(-)
 
-If all of the above is true, this can be handled by adding "pci=lastbus=0"
-as a guest kernel param to override its scanning of buses.  And couldn't
-that be done by QEMU's microvm_fix_kernel_cmdline() to make it transparent
-to the end user?
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index fe80588c7bd3..e51e754ca9b8 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+ #define BTUSB_MEDIATEK		0x200000
+ #define BTUSB_WIDEBAND_SPEECH	0x400000
+ #define BTUSB_VALID_LE_STATES   0x800000
++#define BTUSB_QCA_WCN6855	0x1000000
+ 
+ static const struct usb_device_id btusb_table[] = {
+ 	/* Generic Bluetooth USB device */
+@@ -273,6 +274,10 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x13d3, 0x3496), .driver_info = BTUSB_QCA_ROME },
+ 	{ USB_DEVICE(0x13d3, 0x3501), .driver_info = BTUSB_QCA_ROME },
+ 
++	/* QCA WCN6855 chipset */
++	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
++						     BTUSB_WIDEBAND_SPEECH },
++
+ 	/* Broadcom BCM2035 */
+ 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
+ 	{ USB_DEVICE(0x0a5c, 0x200a), .driver_info = BTUSB_WRONG_SCO_MTU },
+@@ -3391,6 +3396,26 @@ static int btusb_set_bdaddr_ath3012(struct hci_dev *hdev,
+ 	return 0;
+ }
+ 
++static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
++				const bdaddr_t *bdaddr)
++{
++	struct sk_buff *skb;
++	u8 buf[6];
++	long ret;
++
++	memcpy(buf, bdaddr, sizeof(bdaddr_t));
++
++	skb = __hci_cmd_sync(hdev, 0xfc14, sizeof(buf), buf, HCI_INIT_TIMEOUT);
++	if (IS_ERR(skb)) {
++		ret = PTR_ERR(skb);
++		bt_dev_err(hdev, "Change address command failed (%ld)", ret);
++		return ret;
++	}
++	kfree_skb(skb);
++
++	return 0;
++}
++
+ #define QCA_DFU_PACKET_LEN	4096
+ 
+ #define QCA_GET_TARGET_VERSION	0x09
+@@ -3428,6 +3453,8 @@ static const struct qca_device_info qca_devices_table[] = {
+ 	{ 0x00000201, 28, 4, 18 }, /* Rome 2.1 */
+ 	{ 0x00000300, 28, 4, 18 }, /* Rome 3.0 */
+ 	{ 0x00000302, 28, 4, 18 }, /* Rome 3.2 */
++	{ 0x00130100, 40, 4, 18 }, /* WCN6855 1.0 */
++	{ 0x00130200, 40, 4, 18 }  /* WCN6855 2.0 */
+ };
+ 
+ static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+@@ -3530,7 +3557,7 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+ 	struct qca_rampatch_version *rver;
+ 	const struct firmware *fw;
+ 	u32 ver_rom, ver_patch;
+-	u16 rver_rom, rver_patch;
++	u32 rver_rom, rver_patch;
+ 	char fwname[64];
+ 	int err;
+ 
+@@ -3552,6 +3579,9 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+ 	rver_rom = le16_to_cpu(rver->rom_version);
+ 	rver_patch = le16_to_cpu(rver->patch_version);
+ 
++	if (ver_rom & ~0xffffU)
++		rver_rom = *(u16 *)(fw->data + 16) << 16 | rver_rom;
++
+ 	bt_dev_info(hdev, "QCA: patch rome 0x%x build 0x%x, "
+ 		    "firmware rome 0x%x build 0x%x",
+ 		    rver_rom, rver_patch, ver_rom, ver_patch);
+@@ -3625,9 +3655,6 @@ static int btusb_setup_qca(struct hci_dev *hdev)
+ 		return err;
+ 
+ 	ver_rom = le32_to_cpu(ver.rom_version);
+-	/* Don't care about high ROM versions */
+-	if (ver_rom & ~0xffffU)
+-		return 0;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(qca_devices_table); i++) {
+ 		if (ver_rom == qca_devices_table[i].rom_version)
+@@ -4063,6 +4090,13 @@ static int btusb_probe(struct usb_interface *intf,
+ 		btusb_check_needs_reset_resume(intf);
+ 	}
+ 
++	if (id->driver_info & BTUSB_QCA_WCN6855) {
++		data->setup_on_usb = btusb_setup_qca;
++		hdev->set_bdaddr = btusb_set_bdaddr_wcn6855;
++		hdev->cmd_timeout = btusb_qca_cmd_timeout;
++		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
++	}
++
+ 	if (id->driver_info & BTUSB_AMP) {
+ 		/* AMP controllers do not support SCO packets */
+ 		data->isoc = NULL;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 
-[*] https://www.redhat.com/archives/libvir-list/2016-March/msg01213.html
