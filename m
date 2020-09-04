@@ -2,106 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB9725DF91
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AC325DF8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgIDQPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgIDQPJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:15:09 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10B1C061244
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:15:08 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z4so7301705wrr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:15:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V3rhhfTC3l11VUo1+dStci1vsiRgGk779RrN04Aw6ww=;
-        b=KWuSlcwlEEIgRnaQ1WlxG7B4FBZs+NwIYXlSdFTYNkwYPg1WNTwTF406wwqN20WeaF
-         7JWuP1bS4LIpQBOBJOiSsNYHql3mV5FqrjzVVgvfvr4MKbFQr38KvuX/00CIZU0/NHCT
-         /5oZFJrOsFfjWNVwGCv5UOzmLED/gKnV8L49ZLJiFGxKL+DFWWs7K20vOWIoDC+GEW3p
-         OBjbR46qzgDYwRIx2orihI2qwHGWIKAmIbVrtNhAIcjNNOHfbUnCZUy9IToOMz5W5gvX
-         gqk4lKKWBn83Lppc0LU63aKg0T/VwYeZoLpMW8UXdpBOvewdiC8iAmTmaZrgB7sLRJmw
-         Xong==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V3rhhfTC3l11VUo1+dStci1vsiRgGk779RrN04Aw6ww=;
-        b=WYUP2kyBZPs+HLdzVPungA1uvD/aUws3oyZzlirVWL1mBePwXaNRh+pRVJFfFHni3i
-         KabNBoGyyb0pwtHfc7qONM/+auK8Cie8fW/iYBpdxO9NwvhF1ay/6KgHed9bDwcCHc6O
-         qofMVbo6AAyjIEnqowDoPVwJJ2Cc7fG9jQVRrY/4Kek8koXtFnYY6h+c0y/pRxixEEVw
-         44Dy6lWXGsquUwHeLGJtlh2hNhnGmJMhg0AR41CJG/OfJm204Yxwory42QAsmnPhtaiG
-         2zFgkpw9X+d+Vn32ytsQWg8JF/1DGuLJ1s5rVOBXDh80KdZ37+8MPYu2AZTqCIy75YGr
-         apgg==
-X-Gm-Message-State: AOAM5339hhTA0wHl8dCl8+4vMI236Y92cHw0K/9oNlyI3jSmJvPGpJ9v
-        S9tXBkly/l2KGRirBUtKAwHY03MJH7wQCe8WEWsSOw==
-X-Google-Smtp-Source: ABdhPJyTjkbkcOYlZniTIPZKGH4vrbJxcDP6sLxfF955OpkJa9HBW167QvGRn2KnMyPnFWoHc5CUScPP/8ZhDfq0CMA=
-X-Received: by 2002:adf:f552:: with SMTP id j18mr9032487wrp.128.1599236107381;
- Fri, 04 Sep 2020 09:15:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <mhng-32c8d053-acbd-4c72-b41d-8d6042ac639d@palmerdabbelt-glaptop1>
- <CAHk-=wi_tf4qsiBj5UD0GG3wz8Hi5NrHzqdrx+CwtfAY+_UiGg@mail.gmail.com>
- <20200904083109.GA9182@infradead.org> <CAAhSdy3S8FfMAWih_VoBHw0xd-7c=urzuJ+PPdug9iX_pWyTsQ@mail.gmail.com>
- <20200904094617.GA27846@infradead.org> <CAAhSdy2x0ROqoTzzZRZgKCTL99WPy-8e4CQ921sf-=GQDm_gxA@mail.gmail.com>
- <f1be6ee1-0802-82ca-ffdb-4c294925cd9a@kylinos.com.cn> <20200904130044.GA7842@infradead.org>
- <CAAhSdy2N8L015z0-RirjXLjdzt+OrCtzzKzivsMeQXoH9Nc8Cw@mail.gmail.com> <20200904160335.GA23669@infradead.org>
-In-Reply-To: <20200904160335.GA23669@infradead.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 4 Sep 2020 21:44:55 +0530
-Message-ID: <CAAhSdy2RqZg82Q0+ChRKV6h+Ot90q2Qea9h5s=42SEa3Px4gLg@mail.gmail.com>
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.9-rc2
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Qiu Wenbo <qiuwenbo@kylinos.com.cn>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727872AbgIDQPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:15:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726892AbgIDQPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 12:15:07 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CE6220772;
+        Fri,  4 Sep 2020 16:15:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1599236105;
+        bh=MLCvWs5mMUOuDyA36Cda3ffiqLz/l2nBWOyu6v+gLSI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ylfjen9OVhEAldXi2YL5m/SJwvfw2FzkZFvwilNCdh//faS7ZM2l3F7NBZHyuuMOT
+         2tltCwR2Liv05wA0nPm3STMQXq/1gsz1GB65Ha8dkr1Lg/8YBMQLZ0/LAbMqvW4Ck6
+         qBtu3UNBt0zyLCENgs3p6q75rIvyDtJsoqKi9zP4=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kEEMh-009Dk6-W6; Fri, 04 Sep 2020 17:15:04 +0100
+Date:   Fri, 04 Sep 2020 17:15:01 +0100
+Message-ID: <87eenhr01m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        steven.price@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com,
+        nd@arm.com
+Subject: Re: [PATCH v14 07/10] arm64/kvm: Add hypercall service for kvm ptp.
+In-Reply-To: <20200904092744.167655-8-jianyong.wu@arm.com>
+References: <20200904092744.167655-1-jianyong.wu@arm.com>
+        <20200904092744.167655-8-jianyong.wu@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 4, 2020 at 9:33 PM Christoph Hellwig <hch@infradead.org> wrote:
->
-> On Fri, Sep 04, 2020 at 07:26:41PM +0530, Anup Patel wrote:
-> > On Fri, Sep 4, 2020 at 6:30 PM Christoph Hellwig <hch@infradead.org> wrote:
-> > >
-> > > On Fri, Sep 04, 2020 at 08:58:25PM +0800, Qiu Wenbo wrote:
-> > > > I can confirm this patch also breaks K210 support. It seems that
-> > > > csr_read(CSR_TIME) will trigger an illegal instruction exception on K210.
-> > >
-> > > CSR_TIME is trapped by just about every implementation I know (which is
-> > > explicitly allowed by the spec).  That is why we should never use it
-> > > from common M-mode code.
-> >
-> > Finally, I was able to replicate this issue by manually hacking QEMU to
-> > not emulatie TIME CSR for virt machine.
-> >
-> > It seems this issue is only seen on older QEMU and Kendrtye K210.
->
-> You'd also see it when running nommu on Sifivie or just about any
-> hardware.  Whoever implement the TIME CSR for qemu made a mistake IMHO
-> as it doesn't match how most real hardware behaves.
+On Fri, 04 Sep 2020 10:27:41 +0100,
+Jianyong Wu <jianyong.wu@arm.com> wrote:
+> 
+> ptp_kvm will get this service through smccc call.
+> The service offers wall time and counter cycle of host for guest.
+> caller must explicitly determines which cycle of virtual counter or
+> physical counter to return if it needs counter cycle.
+> 
+> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
+> ---
+>  arch/arm64/kvm/Kconfig       |  6 +++++
+>  arch/arm64/kvm/arch_timer.c  |  2 +-
+>  arch/arm64/kvm/hypercalls.c  | 49 ++++++++++++++++++++++++++++++++++++
+>  include/kvm/arm_arch_timer.h |  1 +
+>  include/linux/arm-smccc.h    | 16 ++++++++++++
+>  5 files changed, 73 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+> index 318c8f2df245..bbdfacec4813 100644
+> --- a/arch/arm64/kvm/Kconfig
+> +++ b/arch/arm64/kvm/Kconfig
+> @@ -60,6 +60,12 @@ config KVM_ARM_PMU
+>  config KVM_INDIRECT_VECTORS
+>  	def_bool HARDEN_BRANCH_PREDICTOR || RANDOMIZE_BASE
+>  
+> +config ARM64_KVM_PTP_HOST
+> +	bool "KVM PTP clock host service for arm64"
 
-There are quite a few RISCV systems who implement TIME CSR in
-hardware due to performance gains (10+ %).
+The "for arm64" is not that useful.
 
-The QEMU virt machine does not represent real-world HW so we
-should emulate all possible HW optimizations in QEMU virt machine.
+> +	default y
+> +	help
+> +	  virtual kvm ptp clock hypercall service for arm64
+> +
 
-On other hand, the QEMU sifive_u machine correctly matches the
-real-world SiFive Unleashed in-context of TIME CSR and other HW
-features.
+I'm not keen on making this a compile option, because whatever is not
+always on ends up bit-rotting. Please drop the option.
 
-IMHO, we need nommu defconfig for SiFive Unleashed so that we
-can try NoMMU kernel on both QEMU virt and QEMU sifive_u machine.
+>  endif # KVM
+>  
+>  endif # VIRTUALIZATION
+> diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+> index 32ba6fbc3814..eb85f6701845 100644
+> --- a/arch/arm64/kvm/arch_timer.c
+> +++ b/arch/arm64/kvm/arch_timer.c
+> @@ -81,7 +81,7 @@ u64 timer_get_cval(struct arch_timer_context *ctxt)
+>  	}
+>  }
+>  
+> -static u64 timer_get_offset(struct arch_timer_context *ctxt)
+> +u64 timer_get_offset(struct arch_timer_context *ctxt)
+>  {
+>  	struct kvm_vcpu *vcpu = ctxt->vcpu;
+>  
+> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> index 901c60f119c2..2628ddc13abd 100644
+> --- a/arch/arm64/kvm/hypercalls.c
+> +++ b/arch/arm64/kvm/hypercalls.c
+> @@ -3,6 +3,7 @@
+>  
+>  #include <linux/arm-smccc.h>
+>  #include <linux/kvm_host.h>
+> +#include <linux/clocksource_ids.h>
+>  
+>  #include <asm/kvm_emulate.h>
+>  
+> @@ -11,6 +12,10 @@
+>  
+>  int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  {
+> +#ifdef CONFIG_ARM64_KVM_PTP_HOST
+> +	struct system_time_snapshot systime_snapshot;
+> +	u64 cycles = -1;
+> +#endif
 
-Regards,
-Anup
+Please move all the PTP-related code to its own function, rather than
+keeping it in the main HVC dispatcher. Also assigning a negative value
+to something that is unsigned hurts my eyes. Consider using ~0UL instead.
+See the comment below though.
+
+>  	u32 func_id = smccc_get_function(vcpu);
+>  	u64 val[4] = {SMCCC_RET_NOT_SUPPORTED};
+>  	u32 feature;
+> @@ -21,6 +26,10 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  		val[0] = ARM_SMCCC_VERSION_1_1;
+>  		break;
+>  	case ARM_SMCCC_ARCH_FEATURES_FUNC_ID:
+> +		/*
+> +		 * Note: keep in mind that feature is u32 and smccc_get_arg1
+> +		 * will return u64, so need auto cast here.
+> +		 */
+>  		feature = smccc_get_arg1(vcpu);
+>  		switch (feature) {
+>  		case ARM_SMCCC_ARCH_WORKAROUND_1:
+> @@ -70,7 +79,47 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>  		break;
+>  	case ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID:
+>  		val[0] = BIT(ARM_SMCCC_KVM_FUNC_FEATURES);
+> +#ifdef CONFIG_ARM64_KVM_PTP_HOST
+> +		val[0] |= BIT(ARM_SMCCC_KVM_FUNC_KVM_PTP);
+> +#endif
+>  		break;
+> +#ifdef CONFIG_ARM64_KVM_PTP_HOST
+> +	/*
+> +	 * This serves virtual kvm_ptp.
+> +	 * Four values will be passed back.
+> +	 * reg0 stores high 32-bit host ktime;
+> +	 * reg1 stores low 32-bit host ktime;
+> +	 * reg2 stores high 32-bit difference of host cycles and cntvoff;
+> +	 * reg3 stores low 32-bit difference of host cycles and cntvoff.
+
+This comment doesn't match what I read below.
+
+> +	 */
+> +	case ARM_SMCCC_VENDOR_HYP_KVM_PTP_FUNC_ID:
+> +		/*
+> +		 * system time and counter value must captured in the same
+> +		 * time to keep consistency and precision.
+> +		 */
+> +		ktime_get_snapshot(&systime_snapshot);
+> +		if (systime_snapshot.cs_id != CSID_ARM_ARCH_COUNTER)
+> +			break;
+> +		val[0] = systime_snapshot.real;
+> +		/*
+> +		 * which of virtual counter or physical counter being
+> +		 * asked for is decided by the r1 value of smccc
+
+nit: s/smccc/SMCCC/
+
+> +		 * call. If no invalid r1 value offered, default cycle
+
+nit: If r1 is an invalid value...
+
+> +		 * value(-1) will return.
+
+nit: will be returned.
+
+> +		 */
+> +		feature = smccc_get_arg1(vcpu);
+> +		switch (feature) {
+> +		case ARM_PTP_VIRT_COUNTER:
+> +			cycles = systime_snapshot.cycles -
+> +				 vcpu_read_sys_reg(vcpu, CNTVOFF_EL2);
+
+nit: On a single line, please.
+
+> +			break;
+> +		case ARM_PTP_PHY_COUNTER:
+> +			cycles = systime_snapshot.cycles;
+> +			break;
+
+It'd be a lot clearer if you had a default: case here, handling the
+invalid case.
+
+> +		}
+> +		val[1] = cycles;
+
+Given that cycles is a 64bit value, how does it work for a 32bit
+guest? Or have you removed support for 32bit guests altogether?
+
+> +		break;
+> +#endif
+>  	default:
+>  		return kvm_psci_call(vcpu);
+>  	}
+> diff --git a/include/kvm/arm_arch_timer.h b/include/kvm/arm_arch_timer.h
+> index 51c19381108c..5a2b6da9be7a 100644
+> --- a/include/kvm/arm_arch_timer.h
+> +++ b/include/kvm/arm_arch_timer.h
+> @@ -105,5 +105,6 @@ void kvm_arm_timer_write_sysreg(struct kvm_vcpu *vcpu,
+>  /* Needed for tracing */
+>  u32 timer_get_ctl(struct arch_timer_context *ctxt);
+>  u64 timer_get_cval(struct arch_timer_context *ctxt);
+> +u64 timer_get_offset(struct arch_timer_context *ctxt);
+>  
+>  #endif
+> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+> index f7b5dd7dbf9f..0724840eb5f7 100644
+> --- a/include/linux/arm-smccc.h
+> +++ b/include/linux/arm-smccc.h
+> @@ -103,6 +103,7 @@
+>  
+>  /* KVM "vendor specific" services */
+>  #define ARM_SMCCC_KVM_FUNC_FEATURES		0
+> +#define ARM_SMCCC_KVM_FUNC_KVM_PTP		1
+>  #define ARM_SMCCC_KVM_FUNC_FEATURES_2		127
+>  #define ARM_SMCCC_KVM_NUM_FUNCS			128
+>  
+> @@ -112,6 +113,21 @@
+>  			   ARM_SMCCC_OWNER_VENDOR_HYP,			\
+>  			   ARM_SMCCC_KVM_FUNC_FEATURES)
+>  
+> +/*
+> + * ptp_kvm is a feature used for time sync between vm and host.
+> + * ptp_kvm module in guest kernel will get service from host using
+> + * this hypercall ID.
+> + */
+> +#define ARM_SMCCC_VENDOR_HYP_KVM_PTP_FUNC_ID                           \
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
+> +			   ARM_SMCCC_SMC_32,                            \
+> +			   ARM_SMCCC_OWNER_VENDOR_HYP,                  \
+> +			   ARM_SMCCC_KVM_FUNC_KVM_PTP)
+> +
+> +/* ptp_kvm counter type ID */
+> +#define ARM_PTP_VIRT_COUNTER			0
+> +#define ARM_PTP_PHY_COUNTER			1
+> +
+>  /* Paravirtualised time calls (defined by ARM DEN0057A) */
+>  #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
+>  	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
+> -- 
+> 2.17.1
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
