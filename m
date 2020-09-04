@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5E425DEAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3651725DEAB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbgIDPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
+        id S1727051AbgIDPzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbgIDPzQ (ORCPT
+        with ESMTP id S1726361AbgIDPzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:55:16 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B1C061244
+        Fri, 4 Sep 2020 11:55:17 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE00EC061246
         for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:55:16 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id b14so6738432qkn.4
+Received: by mail-qt1-x841.google.com with SMTP id p65so4992835qtd.2
         for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4q/8n4d9Oz9Vv/K5aJK8Mp8Y2lRkWj0qSrttp/CroxE=;
-        b=oZadVWzKzjT6kVlQDdSaTMxHoRTYYXuhfeHAqu6JmmOp3XCU0blzfKn1tJhWzX2HeS
-         sK1QUgw4eOALlLrqiIa5mJ5RjG5DDMC/GfAoKvUlju9deCt1Z1cQt3mFi6Jp8dh8eAcL
-         b47lB644qnhBgKdHPTa65f3vcbqa8pR/OGmGhW1uCRNIq0IP9XUGZp7dua1GTQzH7pbj
-         3kOSW84l/lOtcT1dCSPEMna3Qn0g0ssFDfacD5B1snlLor1iC7Zmm6UoHviENlQKr4s3
-         lC89jtyARRDB8fr0n/NnuYQLdQ/YywQuWqkj40BnJg+qClOjhyEKiVWTZ/r3SCq8UT/u
-         +arA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gCgPYkIuen689JCGS9C+yWcxF9Wf5xvuT4fGLsIR6s4=;
+        b=f327XpYNWc6l2rv9RF9YVwix3cQ2zUGItQvb76pIc9b0ZZkAec70KgXCmFe1JTlQPX
+         H7KHWTKF4ebNKtJJmF+TbCugfIYbU2jdqDcwNT+/YNzahtv31duzVXAfMO+ObDXFwd4P
+         NJ5GqDhX/siqbOaqP7g3+ksdGLNPEWZWR0vlJkfD9LmXJcMQbYIk12lmuxQGqDhU7/Ru
+         LxHMs6d/rjNQ0a8rObQ1GjEBRFMA5GiRpv4/MQnxJWg66Oe7gn0saucFFtw97AyPcssA
+         UqaSTYkqvvnVF+4ciJRWw3mDV3o3GWfTbonqPO/r1cRQVtr3SAYaixzOl3psh9evNe5u
+         e5wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4q/8n4d9Oz9Vv/K5aJK8Mp8Y2lRkWj0qSrttp/CroxE=;
-        b=EBu0TgnU2lV0VzvbRqGcPrjyHzvBygEDaqxn3F1nQctO6VoAUiku7JeKW1ado+qvP4
-         HKY2eeV/J0dIiAjYAwGaUo/wJcA80Ab4JNKO+0l9IaxEijink3SM/1rrLtc2R7+Wm2Db
-         9UO9p9YTk9gIe8gdfnoyOH2loe8/QHOD50GnozjhwS7ZZ+p9QenU6aeb2TBGOprgVv0h
-         moE6Wt5YkP6uW3DeIR9hKsN0FF3GGYCAN1EQNCglfJVCH5cuLxNT+PoLEzymYPk6ssn2
-         CK0VDiYIccBwa6VOy+NUTe/NL4/okHReIJngwfktHpPnjR+SFaCRpAStgcxPBaTR85k+
-         R8sA==
-X-Gm-Message-State: AOAM5331OjIXiAzBGRejBezSrU51r61lX/FG9ZHhBmh4XoF/vyV6MAX2
-        8kCUN3DMHoviJO3IF9okA4yu6Q==
-X-Google-Smtp-Source: ABdhPJxHXnDF5Yz7KMj3dP1Wot9aBwDE24PK5PObq0P6DKGWMzJC3jbF9SemUpoG0/uTgsf96ikT4Q==
-X-Received: by 2002:a37:314:: with SMTP id 20mr8208333qkd.274.1599234915063;
-        Fri, 04 Sep 2020 08:55:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gCgPYkIuen689JCGS9C+yWcxF9Wf5xvuT4fGLsIR6s4=;
+        b=rvQyPSaa27SMnp4QRa0v/EJYhSPZB+zkalL7uY3+AvF+CK4mhYYHR9024qDAYtGno6
+         h+MIJvgBb2qLn20K+pIYo18E4Nx1Ot9ss/Q5eauXCgCn76zf9ZDTrbp03fjRgdhHvfn7
+         FG9jBo+tNZBkXXN1MNv7rtkI3jgPkO3UP1qZ8wZtMQYlm/sMJwUfsYAAZcnI4LBUaJ+j
+         5N/trZizf8AcU7o0GdB/vaI9Vm04rrTmj2LIJaXV4dYbyCNuZTR1ggZAlXBw2MIecS5F
+         1kinDRJ6i8ofDc3EDoTvEz11Ynk1kR1hY1+wehGbNmfB+dXFNVHgIlIWOzdkrQGoBqCK
+         d3qQ==
+X-Gm-Message-State: AOAM5335rMVHJ8PXwfTr/Yl36xGro538IHFZfn6hYWtNnbLMPd7JPQj0
+        VXHNuMT+i3eUXsMf/ElDF2Q9w2tb92dElg==
+X-Google-Smtp-Source: ABdhPJwQAqxRfEZO2Wpzgm/mVc29sreI4hBEc/PRL/deVoZlJprAw461csvwoALQd2PBInXlQ29TIQ==
+X-Received: by 2002:ac8:3933:: with SMTP id s48mr9112374qtb.294.1599234916004;
+        Fri, 04 Sep 2020 08:55:16 -0700 (PDT)
 Received: from localhost.localdomain (ec2-34-197-84-77.compute-1.amazonaws.com. [34.197.84.77])
-        by smtp.gmail.com with ESMTPSA id v18sm4724473qtq.15.2020.09.04.08.55.14
+        by smtp.gmail.com with ESMTPSA id v18sm4724473qtq.15.2020.09.04.08.55.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 08:55:14 -0700 (PDT)
+        Fri, 04 Sep 2020 08:55:15 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
         Joerg Roedel <joro@8bytes.org>,
@@ -59,10 +59,12 @@ Cc:     Sibi Sankar <sibis@codeaurora.org>,
         linux-arm-kernel@lists.infradead.org,
         iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
-Subject: [PATCH v3 0/8] iommu/arm-smmu: Support maintaining bootloader mappings
-Date:   Fri,  4 Sep 2020 15:55:05 +0000
-Message-Id: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+Subject: [PATCH v3 1/8] iommu/arm-smmu: Refactor context bank allocation
+Date:   Fri,  4 Sep 2020 15:55:06 +0000
+Message-Id: <20200904155513.282067-2-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200904155513.282067-1-bjorn.andersson@linaro.org>
+References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -70,30 +72,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on previous attempts and discussions this is the latest attempt at
-inheriting stream mappings set up by the bootloader, for e.g. boot splash or
-efifb.
+Extract the conditional invocation of the platform defined
+alloc_context_bank() to a separate function to keep
+arm_smmu_init_domain_context() cleaner.
 
-Per Will's request this builds on the work by Jordan and Rob for the Adreno
-SMMU support. It applies cleanly ontop of v16 of their series, which can be
-found at
+Instead pass a reference to the arm_smmu_device as parameter to the
+call. Also remove the count parameter, as this can be read from the
+newly passed object.
+
+This allows us to not assign smmu_domain->smmu before attempting to
+allocate the context bank and as such we don't need to roll back this
+assignment on failure.
+
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+
+Note that this series applies ontop of:
 https://lore.kernel.org/linux-arm-msm/20200901164707.2645413-1-robdclark@gmail.com/
 
-Bjorn Andersson (8):
-  iommu/arm-smmu: Refactor context bank allocation
-  iommu/arm-smmu: Delay modifying domain during init
-  iommu/arm-smmu: Consult context bank allocator for identify domains
-  iommu/arm-smmu-qcom: Emulate bypass by using context banks
-  iommu/arm-smmu-qcom: Consistently initialize stream mappings
-  iommu/arm-smmu: Add impl hook for inherit boot mappings
-  iommu/arm-smmu: Provide helper for allocating identity domain
-  iommu/arm-smmu-qcom: Setup identity domain for boot mappings
+This could either go on its own, or be squashed with "[PATCH v16 14/20]
+iommu/arm-smmu: Prepare for the adreno-smmu implementation" from Rob's series.
 
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 111 ++++++++++++++++++-
- drivers/iommu/arm/arm-smmu/arm-smmu.c      | 122 ++++++++++++++-------
- drivers/iommu/arm/arm-smmu/arm-smmu.h      |  14 ++-
- 3 files changed, 205 insertions(+), 42 deletions(-)
+Changes since v2:
+- New patch
 
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c |  6 ++++--
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      | 23 ++++++++++++----------
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |  3 ++-
+ 3 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 2aa6249050ff..0663d7d26908 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -91,9 +91,10 @@ static int qcom_adreno_smmu_set_ttbr0_cfg(const void *cookie,
+ }
+ 
+ static int qcom_adreno_smmu_alloc_context_bank(struct arm_smmu_domain *smmu_domain,
+-		struct device *dev, int start, int count)
++					       struct arm_smmu_device *smmu,
++					       struct device *dev, int start)
+ {
+-	struct arm_smmu_device *smmu = smmu_domain->smmu;
++	int count;
+ 
+ 	/*
+ 	 * Assign context bank 0 to the GPU device so the GPU hardware can
+@@ -104,6 +105,7 @@ static int qcom_adreno_smmu_alloc_context_bank(struct arm_smmu_domain *smmu_doma
+ 		count = 1;
+ 	} else {
+ 		start = 1;
++		count = smmu->num_context_banks;
+ 	}
+ 
+ 	return __arm_smmu_alloc_bitmap(smmu->context_map, start, count);
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index bbec5793faf8..e19d7bdc7674 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -623,6 +623,16 @@ void arm_smmu_write_context_bank(struct arm_smmu_device *smmu, int idx)
+ 	arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_SCTLR, reg);
+ }
+ 
++static int arm_smmu_alloc_context_bank(struct arm_smmu_domain *smmu_domain,
++				       struct arm_smmu_device *smmu,
++				       struct device *dev, unsigned int start)
++{
++	if (smmu->impl && smmu->impl->alloc_context_bank)
++		return smmu->impl->alloc_context_bank(smmu_domain, smmu, dev, start);
++
++	return __arm_smmu_alloc_bitmap(smmu->context_map, start, smmu->num_context_banks);
++}
++
+ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+ 					struct arm_smmu_device *smmu,
+ 					struct device *dev)
+@@ -741,20 +751,13 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
+ 		goto out_unlock;
+ 	}
+ 
+-	smmu_domain->smmu = smmu;
+-
+-	if (smmu->impl && smmu->impl->alloc_context_bank)
+-		ret = smmu->impl->alloc_context_bank(smmu_domain, dev,
+-				start, smmu->num_context_banks);
+-	else
+-		ret = __arm_smmu_alloc_bitmap(smmu->context_map, start,
+-				      smmu->num_context_banks);
+-
++	ret = arm_smmu_alloc_context_bank(smmu_domain, smmu, dev, start);
+ 	if (ret < 0) {
+-		smmu_domain->smmu = NULL;
+ 		goto out_unlock;
+ 	}
+ 
++	smmu_domain->smmu = smmu;
++
+ 	cfg->cbndx = ret;
+ 	if (smmu->version < ARM_SMMU_V2) {
+ 		cfg->irptndx = atomic_inc_return(&smmu->irptndx);
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+index 2df3a70a8a41..ddf2ca4c923d 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+@@ -437,7 +437,8 @@ struct arm_smmu_impl {
+ 	irqreturn_t (*global_fault)(int irq, void *dev);
+ 	irqreturn_t (*context_fault)(int irq, void *dev);
+ 	int (*alloc_context_bank)(struct arm_smmu_domain *smmu_domain,
+-			struct device *dev, int start, int max);
++				  struct arm_smmu_device *smmu,
++				  struct device *dev, int start);
+ };
+ 
+ #define INVALID_SMENDX			-1
 -- 
 2.28.0
 
