@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50FB25D1C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCCB25D23C
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 09:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728347AbgIDHCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 03:02:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38418 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728170AbgIDHCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 03:02:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3C6B7ACCF;
-        Fri,  4 Sep 2020 07:02:37 +0000 (UTC)
-Date:   Fri, 4 Sep 2020 09:02:35 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm/memory_hotplug: drain per-cpu pages again during
- memory offline
-Message-ID: <20200904070235.GA15277@dhcp22.suse.cz>
-References: <20200901124615.137200-1-pasha.tatashin@soleen.com>
- <20200902140851.GJ4617@dhcp22.suse.cz>
- <CA+CK2bBZdN56fmsC2jyY_ju8rQfG2-9hForf1CEdcUVL1+wrrA@mail.gmail.com>
- <74f2341a-7834-3e37-0346-7fbc48d74df3@suse.cz>
- <20200902151306.GL4617@dhcp22.suse.cz>
- <e6bf05cb-044c-47a9-3c65-e41b1e42b702@suse.cz>
- <20200903063806.GM4617@dhcp22.suse.cz>
- <c6b11905-2456-52a0-3b15-d4ceae6e7f54@redhat.com>
- <CA+CK2bBTfmhTWNRrxnVKi=iknqq-iZxNZSnwNA9C9tWAJzRxmw@mail.gmail.com>
- <d89510b1-a6a2-a874-7ffc-ba7a37d4212d@redhat.com>
+        id S1729550AbgIDHSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 03:18:08 -0400
+Received: from song.cn.fujitsu.com ([218.97.8.244]:1711 "EHLO
+        song.cn.fujitsu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgIDHSD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 03:18:03 -0400
+X-Greylist: delayed 622 seconds by postgrey-1.27 at vger.kernel.org; Fri, 04 Sep 2020 03:18:00 EDT
+X-IronPort-AV: E=Sophos;i="5.76,388,1592841600"; 
+   d="scan'208";a="4857635"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.250.3])
+  by song.cn.fujitsu.com with ESMTP; 04 Sep 2020 15:07:35 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 6564543DC18E;
+        Fri,  4 Sep 2020 15:07:31 +0800 (CST)
+Received: from [10.167.225.206] (10.167.225.206) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 4 Sep 2020 15:07:30 +0800
+Subject: Re: [PATCH] fs: Handle I_DONTCACHE in iput_final() instead of
+ generic_drop_inode()
+To:     Dave Chinner <david@fromorbit.com>
+CC:     <viro@zeniv.linux.org.uk>, <ira.weiny@intel.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <y-goto@fujitsu.com>
+References: <20200831101313.168889-1-lihao2018.fnst@cn.fujitsu.com>
+ <20200903215832.GF12131@dread.disaster.area>
+From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
+Message-ID: <025cd000-48c7-7cd2-5b89-f76d1b44079a@cn.fujitsu.com>
+Date:   Fri, 4 Sep 2020 15:07:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d89510b1-a6a2-a874-7ffc-ba7a37d4212d@redhat.com>
+In-Reply-To: <20200903215832.GF12131@dread.disaster.area>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.167.225.206]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
+X-yoursite-MailScanner-ID: 6564543DC18E.AC4DE
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 03-09-20 20:31:04, David Hildenbrand wrote:
-> On 03.09.20 20:23, Pavel Tatashin wrote:
-> > On Thu, Sep 3, 2020 at 2:20 PM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> On 03.09.20 08:38, Michal Hocko wrote:
-[...]
-> >>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> >>> index 242c03121d73..56d4892bceb8 100644
-> >>> --- a/mm/page_isolation.c
-> >>> +++ b/mm/page_isolation.c
-> >>> @@ -170,6 +170,14 @@ __first_valid_page(unsigned long pfn, unsigned long nr_pages)
-> >>>   * pageblocks we may have modified and return -EBUSY to caller. This
-> >>>   * prevents two threads from simultaneously working on overlapping ranges.
-> >>>   *
-> >>> + * Please note that there is no strong synchronization with the page allocator
-> >>> + * either. Pages might be freed while their page blocks are marked ISOLATED.
-> >>> + * In some cases pages might still end up on pcp lists and that would allow
-> >>> + * for their allocation even when they are in fact isolated already. Depending on
-> >>> + * how strong of a guarantee the caller needs drain_all_pages might be needed
-> >>> + * (e.g. __offline_pages will need to call it after check for isolated range for
-> >>> + * a next retry).
-> >>> + *
-> >>
-> >> As expressed in reply to v2, I dislike this hack. There is strong
-> >> synchronization, just PCP is special. Allocating from MIGRATE_ISOLATE is
-> >> just plain ugly.
+On 2020/9/4 5:58, Dave Chinner wrote:
+> On Mon, Aug 31, 2020 at 06:13:13PM +0800, Hao Li wrote:
+>> If generic_drop_inode() returns true, it means iput_final() can evict
+>> this inode regardless of whether it is dirty or not. If we check
+>> I_DONTCACHE in generic_drop_inode(), any inode with this bit set will be
+>> evicted unconditionally. This is not the desired behavior because
+>> I_DONTCACHE only means the inode shouldn't be cached on the LRU list.
+>> As for whether we need to evict this inode, this is what
+>> generic_drop_inode() should do. This patch corrects the usage of
+>> I_DONTCACHE.
+>>
+>> This patch was proposed in [1].
+>>
+>> [1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
+>>
+>> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+>> ---
+>>  fs/inode.c         | 3 ++-
+>>  include/linux/fs.h | 3 +--
+>>  2 files changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/inode.c b/fs/inode.c
+>> index 72c4c347afb7..4e45d5ea3d0f 100644
+>> --- a/fs/inode.c
+>> +++ b/fs/inode.c
+>> @@ -1625,7 +1625,8 @@ static void iput_final(struct inode *inode)
+>>      else
+>>          drop = generic_drop_inode(inode);
+>>  
+>> -    if (!drop && (sb->s_flags & SB_ACTIVE)) {
+>> +    if (!drop && !(inode->i_state & I_DONTCACHE) &&
+>> +            (sb->s_flags & SB_ACTIVE)) {
+>
+> FWIW, the format used in fs/inode.c is to align the logic
+> statements, not tab indent the additional lines in the statement.
+> i.e.
+>
+>     if (!drop &&
+>         !(inode->i_state & I_DONTCACHE) &&
+>         (sb->s_flags & SB_ACTIVE)) {
+>
+> Which gives a clear indication that there are all at the same
+> precedence and separate logic statements...
+>
+> Otherwise the change looks good.
+>
+> Probably best to resend with the fixes tag :)
 
-Completely agreed! I am not happy about that either. But I believe this
-hack is the easiest way forward for stable trees and as an immediate
-fix. We can build on top of that of course.
+Got it! Thanks.
 
-> >> Can't we temporarily disable PCP (while some pageblock in the zone is
-> >> isolated, which we know e.g., due to the counter), so no new pages get
-> >> put into PCP lists after draining, and re-enable after no pageblocks are
-> >> isolated again? We keep draining the PCP, so it doesn't seem to be of a
-> >> lot of use during that period, no? It's a performance hit already.
+>
+>
+> Cheers,
+>
+> Dave.
 
-This is a good point.
 
-> >> Then, we would only need exactly one drain. And we would only have to
-> >> check on the free path whether PCP is temporarily disabled.
-> > 
-> > Hm, we could use a static branches to disable it, that would keep
-> > release code just as fast, but I am worried it will make code even
-> > uglier. Let's see what others in this thread think about this idea.
 
-I know that static branches are a very effective way to enable/disable
-features but I have no experience in how they perform for a very
-shortlived use. Maybe that is just fine for a single place which needs
-to be patched. This would be especially a problem if the static branch
-is to be enabled from start_isolate_page_range because that includes all
-cma allocator users.
-
-Another alternative would be to enable/disable static branch only from
-users who really care but this is quite tricky because how do you tell
-you need or not? It seems that alloc_contig_range would be just fine
-with a weaker semantic because it would "only" to a spurious failure.
-Memory hotplug on the other hand really needs to have a point where
-nobody interferes with the offlined memory so it could ask for a
-stronger semantic.
-
-Yet another option would be to make draining stronger and actually
-guarantee there are no in-flight pages to be freed to the pcp list.
-One way would be to tweak pcp->high and implement a strong barrier
-(IPI?) to sync with all CPUs. Quite expensive, especially when there are
-many draining requests (read cma users because hotplug doesn't really
-matter much as it happens seldom).
-
-So no nice&cheap solution I can think of...
--- 
-Michal Hocko
-SUSE Labs
