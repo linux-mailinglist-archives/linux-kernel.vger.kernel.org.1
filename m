@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AEF25D11E
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F365425D128
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:17:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgIDGKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:10:12 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:12054 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbgIDGKL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:10:11 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 03 Sep 2020 23:10:10 -0700
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 03 Sep 2020 23:10:08 -0700
-Received: from gkohli-linux.qualcomm.com ([10.204.78.26])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 04 Sep 2020 11:40:00 +0530
-Received: by gkohli-linux.qualcomm.com (Postfix, from userid 427023)
-        id 8A20421265; Fri,  4 Sep 2020 11:39:58 +0530 (IST)
-From:   Gaurav Kohli <gkohli@codeaurora.org>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Gaurav Kohli <gkohli@codeaurora.org>
-Subject: [PATCH] trace: Fix race in trace_open and buffer resize call
-Date:   Fri,  4 Sep 2020 11:39:57 +0530
-Message-Id: <1599199797-25978-1-git-send-email-gkohli@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726615AbgIDGRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:17:44 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10766 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725812AbgIDGRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 02:17:42 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 75C97F11830AB5FA53B3;
+        Fri,  4 Sep 2020 14:17:38 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 4 Sep 2020 14:17:26 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wangxiongfeng2@huawei.com>
+Subject: [PATCH] test_power: add missing newlines when printing parameters by sysfs
+Date:   Fri, 4 Sep 2020 14:09:58 +0800
+Message-ID: <1599199798-27804-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below race can come, if trace_open and resize of
-cpu buffer is running parallely on different cpus
-CPUX                                CPUY
-				    ring_buffer_resize
-				    atomic_read(&buffer->resize_disabled)
-tracing_open
-tracing_reset_online_cpus
-ring_buffer_reset_cpu
-rb_reset_cpu
-				    rb_update_pages
-				    remove/insert pages
-resetting pointer
-This race can cause data abort or some times infinte loop in 
-rb_remove_pages and rb_insert_pages while checking pages 
-for sanity.
-Take ring buffer lock in trace_open to avoid resetting of cpu buffer.
+When I cat some module parameters by sysfs, it displays as follows.
+It's better to add a newline for easy reading.
 
-Signed-off-by: Gaurav Kohli <gkohli@codeaurora.org>
+root@syzkaller:~# cd /sys/module/test_power/parameters/
+root@syzkaller:/sys/module/test_power/parameters# cat ac_online
+onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
+trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
+goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
+dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_technology
+LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
+onroot@syzkaller:/sys/module/test_power/parameters#
 
-diff --git a/include/linux/ring_buffer.h b/include/linux/ring_buffer.h
-index 136ea09..55f9115 100644
---- a/include/linux/ring_buffer.h
-+++ b/include/linux/ring_buffer.h
-@@ -163,6 +163,8 @@ bool ring_buffer_empty_cpu(struct trace_buffer *buffer, int cpu);
- 
- void ring_buffer_record_disable(struct trace_buffer *buffer);
- void ring_buffer_record_enable(struct trace_buffer *buffer);
-+void ring_buffer_mutex_acquire(struct trace_buffer *buffer);
-+void ring_buffer_mutex_release(struct trace_buffer *buffer);
- void ring_buffer_record_off(struct trace_buffer *buffer);
- void ring_buffer_record_on(struct trace_buffer *buffer);
- bool ring_buffer_record_is_on(struct trace_buffer *buffer);
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 93ef0ab..638ec8f 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3632,6 +3632,25 @@ void ring_buffer_record_enable(struct trace_buffer *buffer)
- EXPORT_SYMBOL_GPL(ring_buffer_record_enable);
- 
- /**
-+ * ring_buffer_mutex_acquire - prevent resetting of buffer
-+ * during resize
-+ */
-+void ring_buffer_mutex_acquire(struct trace_buffer *buffer)
-+{
-+	mutex_lock(&buffer->mutex);
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_mutex_acquire);
-+
-+/**
-+ * ring_buffer_mutex_release - prevent resetting of buffer
-+ * during resize
-+ */
-+void ring_buffer_mutex_release(struct trace_buffer *buffer)
-+{
-+	mutex_unlock(&buffer->mutex);
-+}
-+EXPORT_SYMBOL_GPL(ring_buffer_mutex_release);
-+/**
-  * ring_buffer_record_off - stop all writes into the buffer
-  * @buffer: The ring buffer to stop writes to.
-  *
-@@ -4918,6 +4937,8 @@ void ring_buffer_reset(struct trace_buffer *buffer)
- 	struct ring_buffer_per_cpu *cpu_buffer;
- 	int cpu;
- 
-+	/* prevent another thread from changing buffer sizes */
-+	mutex_lock(&buffer->mutex);
- 	for_each_buffer_cpu(buffer, cpu) {
- 		cpu_buffer = buffer->buffers[cpu];
- 
-@@ -4936,6 +4957,7 @@ void ring_buffer_reset(struct trace_buffer *buffer)
- 		atomic_dec(&cpu_buffer->record_disabled);
- 		atomic_dec(&cpu_buffer->resize_disabled);
- 	}
-+	mutex_unlock(&buffer->mutex);
- }
- EXPORT_SYMBOL_GPL(ring_buffer_reset);
- 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f40d850..392e9aa 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2006,6 +2006,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
- 	if (!buffer)
- 		return;
- 
-+	ring_buffer_mutex_acquire(buffer);
-+
- 	ring_buffer_record_disable(buffer);
- 
- 	/* Make sure all commits have finished */
-@@ -2016,6 +2018,8 @@ void tracing_reset_online_cpus(struct array_buffer *buf)
- 	ring_buffer_reset_online_cpus(buffer);
- 
- 	ring_buffer_record_enable(buffer);
-+
-+	ring_buffer_mutex_release(buffer);
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+---
+ drivers/power/supply/test_power.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
+index 04acd76..4895ee5 100644
+--- a/drivers/power/supply/test_power.c
++++ b/drivers/power/supply/test_power.c
+@@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, const struct kernel_param *kp)
+ static int param_get_ac_online(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
  }
  
- /* Must have trace_types_lock held */
+@@ -366,6 +367,7 @@ static int param_set_usb_online(const char *key, const struct kernel_param *kp)
+ static int param_get_usb_online(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -380,6 +382,7 @@ static int param_set_battery_status(const char *key,
+ static int param_get_battery_status(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -394,6 +397,7 @@ static int param_set_battery_health(const char *key,
+ static int param_get_battery_health(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -409,6 +413,7 @@ static int param_get_battery_present(char *buffer,
+ 					const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -426,6 +431,7 @@ static int param_get_battery_technology(char *buffer,
+ {
+ 	strcpy(buffer,
+ 		map_get_key(map_technology, battery_technology, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center,
-Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+1.7.12.4
 
