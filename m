@@ -2,138 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6BF25DB23
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA35D25DADB
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730451AbgIDNpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 09:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38488 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730488AbgIDNeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 09:34:24 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAB5E21734;
-        Fri,  4 Sep 2020 13:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599226279;
-        bh=5IwSshPpgozIPZMjbeg/fb3EXkle70zb11w810FYpW0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DmuO6/Gm/vXZr09yyWeEN91h92YYLGW1ID6+xR9Mli84Vz9IvyUIC1qYIlrtqn8l/
-         t7zmuoa+Tx4jtMyhLxRK4fGkrWV6xIO40mydLCGPXZHoz7UT4U0rWTfLfxEdaTHh+H
-         0Md22jElYz9Ui7+PL1OAYAtIDThCmN6fGM1ZeFRE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, JiangYu <lnsyyj@hotmail.com>,
-        Daniel Meyerholt <dxm523@gmail.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.8 17/17] scsi: target: tcmu: Optimize use of flush_dcache_page
-Date:   Fri,  4 Sep 2020 15:30:16 +0200
-Message-Id: <20200904120258.840415117@linuxfoundation.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200904120257.983551609@linuxfoundation.org>
-References: <20200904120257.983551609@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1730713AbgIDOCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:02:55 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:49456 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730626AbgIDNqP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 09:46:15 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id E7C2A820A7;
+        Fri,  4 Sep 2020 16:34:36 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1599226476;
+        bh=8Wh+Wg5hnjwOIeo+BmHM6gr8ioNoxQk7Z7f/aOdGYrM=;
+        h=From:To:CC:Subject:Date;
+        b=dWO/l+ZH09ryVnf2pNQ0NUQjyasiykgLCXq6ZV+wGkxqLvuGGp9KGIVOzA/OGtQB+
+         QWQ9jyfFqyrGeaD6eOXhEKZCWFaBk3OAapMUUgKCEHym0w8ylMZjYJvQAiK4bZCEwR
+         AJHLqDxo32daz0q68Bl49gX7pur9oNjF81zuAeZE=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 4 Sep 2020 16:34:36 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v4 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 4 Sep 2020 16:32:21 +0300
+Message-ID: <20200904133231.1769292-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bodo Stroesser <bstroesser@ts.fujitsu.com>
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-commit 3c58f737231e2c8cbf543a09d84d8c8e80e05e43 upstream.
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-(scatter|gather)_data_area() need to flush dcache after writing data to or
-before reading data from a page in uio data area.  The two routines are
-able to handle data transfer to/from such a page in fragments and flush the
-cache after each fragment was copied by calling the wrapper
-tcmu_flush_dcache_range().
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
-That means:
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
 
-1) flush_dcache_page() can be called multiple times for the same page.
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
 
-2) Calling flush_dcache_page() indirectly using the wrapper does not make
-   sense, because each call of the wrapper is for one single page only and
-   the calling routine already has the correct page pointer.
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
 
-Change (scatter|gather)_data_area() such that, instead of calling
-tcmu_flush_dcache_range() before/after each memcpy, it now calls
-flush_dcache_page() before unmapping a page (when writing is complete for
-that page) or after mapping a page (when starting to read the page).
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
 
-After this change only calls to tcmu_flush_dcache_range() for addresses in
-vmalloc'ed command ring are left over.
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
 
-The patch was tested on ARM with kernel 4.19.118 and 5.7.2
+ Documentation/filesystems/ntfs3.rst |  103 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   23 +
+ fs/ntfs3/Makefile                   |   11 +
+ fs/ntfs3/attrib.c                   | 1302 +++++++
+ fs/ntfs3/attrlist.c                 |  462 +++
+ fs/ntfs3/bitfunc.c                  |  137 +
+ fs/ntfs3/bitmap.c                   | 1546 ++++++++
+ fs/ntfs3/debug.h                    |   45 +
+ fs/ntfs3/dir.c                      |  642 ++++
+ fs/ntfs3/file.c                     | 1235 +++++++
+ fs/ntfs3/frecord.c                  | 2373 ++++++++++++
+ fs/ntfs3/fslog.c                    | 5224 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2233 ++++++++++++
+ fs/ntfs3/index.c                    | 2655 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2073 +++++++++++
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  546 +++
+ fs/ntfs3/ntfs.h                     | 1249 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1001 +++++
+ fs/ntfs3/record.c                   |  615 ++++
+ fs/ntfs3/run.c                      | 1188 ++++++
+ fs/ntfs3/super.c                    | 1415 ++++++++
+ fs/ntfs3/upcase.c                   |   78 +
+ fs/ntfs3/xattr.c                    | 1006 ++++++
+ 27 files changed, 27623 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
 
-Link: https://lore.kernel.org/r/20200618131632.32748-2-bstroesser@ts.fujitsu.com
-Tested-by: JiangYu <lnsyyj@hotmail.com>
-Tested-by: Daniel Meyerholt <dxm523@gmail.com>
-Acked-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Bodo Stroesser <bstroesser@ts.fujitsu.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/target/target_core_user.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
---- a/drivers/target/target_core_user.c
-+++ b/drivers/target/target_core_user.c
-@@ -676,8 +676,10 @@ static void scatter_data_area(struct tcm
- 		from = kmap_atomic(sg_page(sg)) + sg->offset;
- 		while (sg_remaining > 0) {
- 			if (block_remaining == 0) {
--				if (to)
-+				if (to) {
-+					flush_dcache_page(page);
- 					kunmap_atomic(to);
-+				}
- 
- 				block_remaining = DATA_BLOCK_SIZE;
- 				dbi = tcmu_cmd_get_dbi(tcmu_cmd);
-@@ -722,7 +724,6 @@ static void scatter_data_area(struct tcm
- 				memcpy(to + offset,
- 				       from + sg->length - sg_remaining,
- 				       copy_bytes);
--				tcmu_flush_dcache_range(to, copy_bytes);
- 			}
- 
- 			sg_remaining -= copy_bytes;
-@@ -731,8 +732,10 @@ static void scatter_data_area(struct tcm
- 		kunmap_atomic(from - sg->offset);
- 	}
- 
--	if (to)
-+	if (to) {
-+		flush_dcache_page(page);
- 		kunmap_atomic(to);
-+	}
- }
- 
- static void gather_data_area(struct tcmu_dev *udev, struct tcmu_cmd *cmd,
-@@ -778,13 +781,13 @@ static void gather_data_area(struct tcmu
- 				dbi = tcmu_cmd_get_dbi(cmd);
- 				page = tcmu_get_block_page(udev, dbi);
- 				from = kmap_atomic(page);
-+				flush_dcache_page(page);
- 			}
- 			copy_bytes = min_t(size_t, sg_remaining,
- 					block_remaining);
- 			if (read_len < copy_bytes)
- 				copy_bytes = read_len;
- 			offset = DATA_BLOCK_SIZE - block_remaining;
--			tcmu_flush_dcache_range(from, copy_bytes);
- 			memcpy(to + sg->length - sg_remaining, from + offset,
- 					copy_bytes);
- 
-
+-- 
+2.25.4
 
