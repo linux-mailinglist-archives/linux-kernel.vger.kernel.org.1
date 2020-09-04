@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601E125E161
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A481625E165
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 20:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgIDSMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 14:12:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726109AbgIDSMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 14:12:49 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C8AA208CA;
-        Fri,  4 Sep 2020 18:12:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599243168;
-        bh=Id4qhzHOsS6DwGIQ5LVetNXj3LxgcTh1B0kqH3vve5o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=geJYOB2xEbbkF6OnJWiwu7wzHo+MfStfINict1HWGoIhirYFl0er44nUec+OYyT6I
-         5bU477LNJafUy+yz95yiwzDBZZFFmKVk1bPChtXZIgy9vdBd3baPfALJQ3DXi4Hau0
-         TKowc5PUkqMsVKJpY1vfP72u4k/Ge0C++UwD1M68=
-Date:   Fri, 4 Sep 2020 11:12:47 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     mateusznosek0@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc.c: Clean code by removing unnecessary
- initialization
-Message-Id: <20200904111247.371e5bfca967239781e5bf27@linux-foundation.org>
-In-Reply-To: <20200904132422.17387-1-mateusznosek0@gmail.com>
-References: <20200904132422.17387-1-mateusznosek0@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726426AbgIDSP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 14:15:26 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:48701 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbgIDSPX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 14:15:23 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N1u2b-1kh6sy2GqX-012Dvb; Fri, 04 Sep 2020 20:15:21 +0200
+Received: by mail-qt1-f172.google.com with SMTP id k25so4384913qtu.4;
+        Fri, 04 Sep 2020 11:15:21 -0700 (PDT)
+X-Gm-Message-State: AOAM533e69PysRwNoKpPesgSkinefoz9n3rM/xIVEpGTSJAT64OsF2S0
+        K/u0S7RRl+OLPlFboo7vrGI+iC9IpJQcXO4u0e4=
+X-Google-Smtp-Source: ABdhPJwucPkGj3LAptlXE2DwEcjRJWWLLErfX9qgvukoJGkc4WlGdVJ6sLBUa+bp1zSZuzZUqHdfNwF7k0QysP9l5QE=
+X-Received: by 2002:ac8:46d7:: with SMTP id h23mr9627667qto.18.1599243320351;
+ Fri, 04 Sep 2020 11:15:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200904165216.1799796-1-hch@lst.de>
+In-Reply-To: <20200904165216.1799796-1-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 4 Sep 2020 20:15:03 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3t8a0gD2HsoPsMi7whtNb7BdzPN6-oo6ABnqkbQJoBfA@mail.gmail.com>
+Message-ID: <CAK8P3a3t8a0gD2HsoPsMi7whtNb7BdzPN6-oo6ABnqkbQJoBfA@mail.gmail.com>
+Subject: Re: remove set_fs for riscv
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:81BS4z0m57ZK4qyXrsq11zca2uneqsVnUM8XPOg7CT/FWoIaiS9
+ fs3e+oG5cA56KISzqigr5geh6fO7HMpvO5Krv0Jst+QaBrIeQkTWarWjZivohl0DQqXq1AA
+ KLYfcvm9U3jBcLldCoszKm0Yc97KTq2JY1UhVAQs8LsehhYxsCH7GkeF73SJ22gu1vroU+J
+ 1JkjvZWhMKYrW/9CtCldg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:lr5TuermnBk=:PCoJktSSLG+ZeHvNw7N0zX
+ cW6UggLRZYxqN/S9iWUgcEqRzrxOII8rOO4ZA/q/+gWQU9G9i2jr2Yfok6/qKIYr+PcgqcxC3
+ JJ4k8qNQRYaYHcs0lLyVoJnEmqvdYjpf5evsuhTQMP1I1NcfUW0IK4WSTTV6kIRkkr/nH76MZ
+ We/cWCyslsmg8ejLl9e5x48yuAdtOgi3/MehtVRib7Gz8mYBglz0NbSccdIz8O2gRJoXVgJ+H
+ cJwlr458ljEA3E148exOzK4mV5IGYjnXg8z3nSaXmCwj/s2uXvM0S6MSHnq8du5Q5XUSyVR1T
+ gTGTmTi12TPomz/w7efjmQ2hhd36lByAmfj2nUSKGBz+UcdYfScAxKr4ClJGZPo35xVkCnbH6
+ 4tzxwiH5vvjP5WWnuqY5uTp+4TN26is5jo2vV8NEzHVvktuyeDXkqFEwQPEP6N/c/wp7fQLGA
+ i/qVbTFFGgElY4viid//pXk4GeQG/lbe+gVLUUTy5mvXENCW/9BHeSyfQA6NxdISEZoCEMdwk
+ aLUaoWvnuncAK0769U5hROtNOPHWjWMRG+cVTVqPvJeszKzYowCqfirorSR166aGioERp05ER
+ L+lcwZb9TPPvaCFm8avV0n7ynuqxFOHjsGSDVx3AOLA/N/fw6s4jXTFz4Wked3yUZJOCXlQM4
+ p7C7kDid0B2LM6Bqh8tahIWJoas7B6cJg5Pzj6E0ApP8qZhwHZ9t/uDHY2uKhXrBWUsZBO/am
+ L0W4Xq1ObsZ98DPv614YsbrBSdRSrxRFa91rIOSP9dK954ln9RwxApbBB8vIwc2GttYqffXJb
+ LphFMIMXAh00P6t65Oe02ZjWE3AyF9aNeuZ7WDmTM9J8WAbQuyKwZenILYI2ASi7VzCQDDt4C
+ OwgfpFtkQW/EDJ7NP8JvU0+TxPg1qbwamQvM/ScaARqe3fN/xyKLnIla7tpv68AyW/5a3FCsE
+ I5j9wYpnRJ5lxRBgYGNbLq3wS/FWoM5NykKCKWYcq0A6HnSLMCIy2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  4 Sep 2020 15:24:22 +0200 mateusznosek0@gmail.com wrote:
-
-> From: Mateusz Nosek <mateusznosek0@gmail.com>
-> 
-> Previously variable 'tmp' was initialized, but was not read later
-> before reassigning. So the initialization can be removed.
-> 
-> ...
+On Fri, Sep 4, 2020 at 6:52 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5637,7 +5637,7 @@ static int find_next_best_node(int node, nodemask_t *used_node_mask)
->  	int n, val;
->  	int min_val = INT_MAX;
->  	int best_node = NUMA_NO_NODE;
-> -	const struct cpumask *tmp = cpumask_of_node(0);
-> +	const struct cpumask *tmp;
->  
->  	/* Use the local node if we haven't already */
->  	if (!node_isset(node, *used_node_mask)) {
+> Hi all,
+>
+> this series converts riscv to the new set_fs less world and is on top of this
+> branch:
+>
+>     https://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git/log/?h=base.set_fs
+>
+> The first four patches are general improvements and enablement for all nommu
+> ports, and might make sense to merge through the above base branch.
 
-OK.   But we may as well kill tmp altogether?
+For asm-generic:
 
---- a/mm/page_alloc.c~mm-page_allocc-clean-code-by-removing-unnecessary-initialization-fix
-+++ a/mm/page_alloc.c
-@@ -5637,7 +5637,6 @@ static int find_next_best_node(int node,
- 	int n, val;
- 	int min_val = INT_MAX;
- 	int best_node = NUMA_NO_NODE;
--	const struct cpumask *tmp;
- 
- 	/* Use the local node if we haven't already */
- 	if (!node_isset(node, *used_node_mask)) {
-@@ -5658,8 +5657,7 @@ static int find_next_best_node(int node,
- 		val += (n < node);
- 
- 		/* Give preference to headless and unused nodes */
--		tmp = cpumask_of_node(n);
--		if (!cpumask_empty(tmp))
-+		if (!cpumask_empty(cpumask_of_node(n)))
- 			val += PENALTY_FOR_NODE_WITH_CPUS;
- 
- 		/* Slight preference for less loaded node */
-_
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
+Is there a bigger plan for the rest? I can probably have a look at the Arm
+OABI code if nobody else working on that yet.
+
+      Arnd
