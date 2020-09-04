@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BC925DE10
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A1E25DE11
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgIDPpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:45:24 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:50492 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbgIDPpR (ORCPT
+        id S1726441AbgIDPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:45:25 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:59155 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726047AbgIDPpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:45:17 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 084FiqR4092216;
-        Fri, 4 Sep 2020 10:44:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1599234292;
-        bh=VMqTGjL4kKzi7jmztgA4JEXaWUBhgkQR8WYr0H/I7mI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=lxSjsu4JmAjAg0vZflqKAZIvrbSitOutL8rmv4vVTYvi5LLVONym2+l8XxGHXxtBj
-         K0vTqc4YCNj0p/hOj+d4jy6B+mETTyhistNWGbWz9WiBapzL9+ghUgWlA8QgWdzxGF
-         J0hYeqzDEceIuz8mMSirPPsiPNhGEmeav+U9MKhE=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 084Fiq8Q116315;
-        Fri, 4 Sep 2020 10:44:52 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 4 Sep
- 2020 10:44:52 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 4 Sep 2020 10:44:52 -0500
-Received: from [10.250.71.39] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 084Fipsu125901;
-        Fri, 4 Sep 2020 10:44:51 -0500
-Subject: Re: [PATCH -next] remoteproc: k3-dsp: Fix return value check in
- k3_dsp_rproc_of_get_memories()
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        YueHaibing <yuehaibing@huawei.com>
-CC:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200902140614.28636-1-yuehaibing@huawei.com>
- <20200902165904.GB280378@xps15>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <70ad695c-4200-7927-7274-dc4d5bd32920@ti.com>
-Date:   Fri, 4 Sep 2020 10:44:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 4 Sep 2020 11:45:18 -0400
+Received: (qmail 694637 invoked by uid 1000); 4 Sep 2020 11:45:17 -0400
+Date:   Fri, 4 Sep 2020 11:45:17 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] usb: ohci: Add per-port overcurrent quirk
+Message-ID: <20200904154517.GB694058@rowland.harvard.edu>
+References: <20200904032247.11345-1-hamish.martin@alliedtelesis.co.nz>
+ <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <20200902165904.GB280378@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 11:59 AM, Mathieu Poirier wrote:
-> On Wed, Sep 02, 2020 at 10:06:14PM +0800, YueHaibing wrote:
->> In case of error, the function devm_ioremap_wc() returns NULL pointer
->> not ERR_PTR(). The IS_ERR() test in the return value check should be
->> replaced with NULL test.
->>
->> Fixes: 87218f96c21a ("remoteproc: k3-dsp: Add support for C71x DSPs")
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> index 9011e477290c..f373df35d7d0 100644
->> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
->> @@ -445,10 +445,10 @@ static int k3_dsp_rproc_of_get_memories(struct platform_device *pdev,
->>  
->>  		kproc->mem[i].cpu_addr = devm_ioremap_wc(dev, res->start,
->>  							 resource_size(res));
->> -		if (IS_ERR(kproc->mem[i].cpu_addr)) {
->> +		if (!kproc->mem[i].cpu_addr) {
->>  			dev_err(dev, "failed to map %s memory\n",
->>  				data->mems[i].name);
->> -			return PTR_ERR(kproc->mem[i].cpu_addr);
->> +			return -EBUSY;
+On Fri, Sep 04, 2020 at 03:22:46PM +1200, Hamish Martin wrote:
+> Some integrated OHCI controller hubs do not expose all ports of the hub
+> to pins on the SoC. In some cases the unconnected ports generate
+> spurious overcurrent events. For example the Broadcom 56060/Ranger 2 SoC
+> contains a nominally 3 port hub but only the first port is wired.
 > 
-> Shouldn't this be -ENOMEM?
-
-Indeed, thanks for catching it.
-
-I will fix these same issues on the K3 R5F driver for v4.
-
-regards
-Suman
-
+> Default behaviour for ohci-platform driver is to use "ganged"
+> overcurrent protection mode. This leads to the spurious overcurrent
+> events affecting all ports in the hub.
 > 
->>  		}
->>  		kproc->mem[i].bus_addr = res->start;
->>  		kproc->mem[i].dev_addr = data->mems[i].dev_addr;
->> -- 
->> 2.17.1
->>
->>
+> Allow this to be rectified by specifying per-port overcurrent protection
+> mode via the device tree.
+> 
+> Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+> ---
+>  drivers/usb/host/ohci-hcd.c      | 4 ++++
+>  drivers/usb/host/ohci-platform.c | 3 +++
+>  drivers/usb/host/ohci.h          | 1 +
+>  3 files changed, 8 insertions(+)
+> 
+> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+> index dd37e77dae00..01e3d75e29d9 100644
+> --- a/drivers/usb/host/ohci-hcd.c
+> +++ b/drivers/usb/host/ohci-hcd.c
+> @@ -687,6 +687,10 @@ static int ohci_run (struct ohci_hcd *ohci)
+>  		val |= RH_A_NPS;
+>  		ohci_writel (ohci, val, &ohci->regs->roothub.a);
+>  	}
+> +	if (ohci->flags & OHCI_QUIRK_PER_PORT_OC) {
+> +		val |= RH_A_OCPM;
+> +		ohci_writel(ohci, val, &ohci->regs->roothub.a);
+> +	}
 
+I don't think this is right, for two reasons.  First, isn't per-port 
+overcurrent protection the default?
+
+Second, RH_A_OCPM doesn't do anything unless RH_A_NOCP is clear.
+
+Alan Stern
+
+>  	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
+>  	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
+>  						&ohci->regs->roothub.b);
+> diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
+> index 4a8456f12a73..45e69ce4ef86 100644
+> --- a/drivers/usb/host/ohci-platform.c
+> +++ b/drivers/usb/host/ohci-platform.c
+> @@ -137,6 +137,9 @@ static int ohci_platform_probe(struct platform_device *dev)
+>  		if (of_property_read_bool(dev->dev.of_node, "no-big-frame-no"))
+>  			ohci->flags |= OHCI_QUIRK_FRAME_NO;
+>  
+> +		if (of_property_read_bool(dev->dev.of_node, "per-port-overcurrent"))
+> +			ohci->flags |= OHCI_QUIRK_PER_PORT_OC;
+> +
+>  		if (of_property_read_bool(dev->dev.of_node,
+>  					  "remote-wakeup-connected"))
+>  			ohci->hc_control = OHCI_CTRL_RWC;
+> diff --git a/drivers/usb/host/ohci.h b/drivers/usb/host/ohci.h
+> index aac6285b37f8..9c2bc816246c 100644
+> --- a/drivers/usb/host/ohci.h
+> +++ b/drivers/usb/host/ohci.h
+> @@ -422,6 +422,7 @@ struct ohci_hcd {
+>  #define	OHCI_QUIRK_AMD_PREFETCH	0x400			/* pre-fetch for ISO transfer */
+>  #define	OHCI_QUIRK_GLOBAL_SUSPEND	0x800		/* must suspend ports */
+>  #define	OHCI_QUIRK_QEMU		0x1000			/* relax timing expectations */
+> +#define	OHCI_QUIRK_PER_PORT_OC	0x2000			/* per-port overcurrent protection */
+>  
+>  	// there are also chip quirks/bugs in init logic
+>  
+> -- 
+> 2.28.0
+> 
