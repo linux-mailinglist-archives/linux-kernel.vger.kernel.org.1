@@ -2,479 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFFE25DD19
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAFA25DD1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730864AbgIDPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        id S1730886AbgIDPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730800AbgIDPVl (ORCPT
+        with ESMTP id S1730160AbgIDPV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:21:41 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F24C061262
-        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:21:31 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id w5so7128873wrp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:21:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vPuAh6dJLqF1MMOld+Vh9OgjOaso2bSPsSVbEIu7nNo=;
-        b=fPCUrboKEGGH9px7AQRok+/55UEK/cBKkvoxbsBZkt2QR7vI7zMz1L1eyxsbIwTnfG
-         3hMCkQpF/7rgnNnO2EeESJJAu2Yo3NHgZCfPvd17ckd3qcqeeUwlIynzWwxcwicvO7Uw
-         IphAD1wD2mXKYjGBjfZOiLBguKAjS+Kq9AmT1oJZ/TrCDfwMFfYctNRdpy6XiNBCinEv
-         OUt4XQOv6dhAqRG7FNlgl3CwJavuBq9zzhEvhc2Ad7Dx6yKQu7k1wMgz80dqZi9D/mGB
-         7KmA3iZJganePUR/4n2LN8ZIU1iiilReGhQ6ANxca43zAL5tm8iWDqnNMYVeD/pnLcxM
-         zp3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vPuAh6dJLqF1MMOld+Vh9OgjOaso2bSPsSVbEIu7nNo=;
-        b=SGaeVW2Oe+Ialirbj+Kkd3h1djogegxmPWI+4P7DWuT7W6w6Hgm2LF48+H02rVTSHB
-         ckmJxK6nks48WdtrtHfmNQoH0SHQdneYPGBehhQnUcYs0OEZnc4id0l8tN/9CZVYRhkJ
-         k8dzdpBFwwvYmU97RuCyiHNZGv8Q6X2LDoAMVZxkGFmIgCFzMixGlaoeCfP01yivzBWZ
-         +J1r4fVuV2xGKKycBiMj0kAUMyB116GjQJnpLyJQnVPecDrkxiziIEyNrcM3MXOK50T5
-         3kG5uZC+xpbEik1wlJk72u9eUPaueyjvEAm4YvL1Q7/k/Hcate5GKvjvu+z7OpuqEhvn
-         5gBQ==
-X-Gm-Message-State: AOAM533E3Pd/TeDiMfwEr90eL5N59R0wNfAwBff8yC720YuoI2g3aGe0
-        IXygCOhLPAEPTNKWtVHs7RRxTw==
-X-Google-Smtp-Source: ABdhPJylbxwVNZoOLgi9l+TsuVv/bki3CN77paA6Hm5UOKliZ5/+6rPf9qHcIGvzR6rZFHzCUveeiA==
-X-Received: by 2002:a5d:5261:: with SMTP id l1mr8083893wrc.193.1599232890437;
-        Fri, 04 Sep 2020 08:21:30 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id a11sm7789534wmm.18.2020.09.04.08.21.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 08:21:29 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 8/8] rtc: rx8010: convert to using regmap
-Date:   Fri,  4 Sep 2020 17:21:16 +0200
-Message-Id: <20200904152116.2157-9-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200904152116.2157-1-brgl@bgdev.pl>
-References: <20200904152116.2157-1-brgl@bgdev.pl>
+        Fri, 4 Sep 2020 11:21:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB5BC061244;
+        Fri,  4 Sep 2020 08:21:59 -0700 (PDT)
+Date:   Fri, 04 Sep 2020 15:21:54 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1599232915;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LaX8mwKBi/XAJYbEflwlLJF4Sx6k1YhDQbEOGqO2B2U=;
+        b=SyjR3aW8eL3UhKO08YYBRO1cqRRerjvSHPkcjV2QX7aKIVDo3hTaTc2xQSdudd8Q4guAqT
+        ChlgJGqzGeA1qaVLz+l4uHm0gLkaHg7iXw32xtKQ1HjSWXlwbXdVvqZKcYyiP7l8FvDJh9
+        oGIxsnPotxXLn5dZW3K0ZrA+veAScWGyrQFyXAMnJmlwtPKigD9X7mo/euOmBuRMJDzOlJ
+        H4VyUnkcnwVwO3JKXJVWDHfz97px+91bdRZ9beEX0O2AZ5ZFdzuZeVmZxAKtHXxqn9mXn4
+        WltVkuzEGq0F7CJWbU5U18UVMG3pI2BDX9CrtjETLvj/J1299itr1otZaCgJNw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1599232915;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LaX8mwKBi/XAJYbEflwlLJF4Sx6k1YhDQbEOGqO2B2U=;
+        b=N/2YWXu3cC8cyAeel8JYKDuSEuIML+9C15GQPYaJa8gZQaLAWwIH3oU8vO8fqIpMNWGpAe
+        01pb02D81fIUmzDw==
+From:   "tip-bot2 for Akshay Gupta" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Increase maximum number of banks to 64
+Cc:     Akshay Gupta <Akshay.Gupta@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200828192412.320052-1-Yazen.Ghannam@amd.com>
+References: <20200828192412.320052-1-Yazen.Ghannam@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <159923291431.20229.1749748339999502192.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+The following commit has been merged into the ras/core branch of tip:
 
-This driver requires SMBUS to work. We can relax this requirement if we
-switch to using i2c regmap and let the regmap sub-system figure out how
-to talk to the bus.
+Commit-ID:     a0bc32b3cacf194dc479b342f006203fd1e1941a
+Gitweb:        https://git.kernel.org/tip/a0bc32b3cacf194dc479b342f006203fd1e1941a
+Author:        Akshay Gupta <Akshay.Gupta@amd.com>
+AuthorDate:    Fri, 28 Aug 2020 19:24:12 
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 04 Sep 2020 17:17:27 +02:00
 
-This also has the advantage of shrinking the code for register updates.
+x86/mce: Increase maximum number of banks to 64
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+...because future AMD systems will support up to 64 MCA banks per CPU.
+
+MAX_NR_BANKS is used to allocate a number of data structures, and it is
+used as a ceiling for values read from MCG_CAP[Count]. Therefore, this
+change will have no functional effect on existing systems with 32 or
+fewer MCA banks per CPU.
+
+However, this will increase the size of the following structures:
+
+Global bitmaps:
+- core.c / mce_banks_ce_disabled
+- core.c / all_banks
+- core.c / valid_banks
+- core.c / toclear
+- Total: 32 new bits * 4 bitmaps = 16 new bytes
+
+Per-CPU bitmaps:
+- core.c / mce_poll_banks
+- intel.c / mce_banks_owned
+- Total: 32 new bits * 2 bitmaps = 8 new bytes
+
+The bitmaps are arrays of longs. So this change will only affect 32-bit
+execution, since there will be one additional long used. There will be
+no additional memory use on 64-bit execution, because the size of long
+is 64 bits.
+
+Global structs:
+- amd.c / struct smca_bank smca_banks[]: 16 bytes per bank
+- core.c / struct mce_bank_dev mce_bank_devs[]: 56 bytes per bank
+- Total: 32 new banks * (16 + 56) bytes = 2304 new bytes
+
+Per-CPU structs:
+- core.c / struct mce_bank mce_banks_array[]: 16 bytes per bank
+- Total: 32 new banks * 16 bytes = 512 new bytes
+
+32-bit
+Total global size increase: 2320 bytes
+Total per-CPU size increase: 520 bytes
+
+64-bit
+Total global size increase: 2304 bytes
+Total per-CPU size increase: 512 bytes
+
+This additional memory should still fit within the existing .data
+section of the kernel binary. However, in the case where it doesn't
+fit, an additional page (4kB) of memory will be added to the binary to
+accommodate the extra data which will be the maximum size increase of
+vmlinux.
+
+Signed-off-by: Akshay Gupta <Akshay.Gupta@amd.com>
+[ Adjust commit message and code comment. ]
+Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200828192412.320052-1-Yazen.Ghannam@amd.com
 ---
- drivers/rtc/rtc-rx8010.c | 200 ++++++++++++++++-----------------------
- 1 file changed, 81 insertions(+), 119 deletions(-)
+ arch/x86/include/asm/mce.h | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/rtc/rtc-rx8010.c b/drivers/rtc/rtc-rx8010.c
-index ed8ba38b4991..9be3ea88e86d 100644
---- a/drivers/rtc/rtc-rx8010.c
-+++ b/drivers/rtc/rtc-rx8010.c
-@@ -11,6 +11,7 @@
- #include <linux/i2c.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/regmap.h>
- #include <linux/rtc.h>
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 6adced6..109af5c 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -200,12 +200,8 @@ void mce_setup(struct mce *m);
+ void mce_log(struct mce *m);
+ DECLARE_PER_CPU(struct device *, mce_device);
  
- #define RX8010_SEC		0x10
-@@ -63,7 +64,7 @@ static const struct of_device_id rx8010_of_match[] = {
- MODULE_DEVICE_TABLE(of, rx8010_of_match);
+-/*
+- * Maximum banks number.
+- * This is the limit of the current register layout on
+- * Intel CPUs.
+- */
+-#define MAX_NR_BANKS 32
++/* Maximum number of MCA banks per CPU. */
++#define MAX_NR_BANKS 64
  
- struct rx8010_data {
--	struct i2c_client *client;
-+	struct regmap *regs;
- 	struct rtc_device *rtc;
- 	u8 ctrlreg;
- };
-@@ -72,13 +73,12 @@ static irqreturn_t rx8010_irq_1_handler(int irq, void *dev_id)
- {
- 	struct i2c_client *client = dev_id;
- 	struct rx8010_data *rx8010 = i2c_get_clientdata(client);
--	int flagreg;
-+	int flagreg, err;
- 
- 	mutex_lock(&rx8010->rtc->ops_lock);
- 
--	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
--
--	if (flagreg <= 0) {
-+	err = regmap_read(rx8010->regs, RX8010_FLAG, &flagreg);
-+	if (err) {
- 		mutex_unlock(&rx8010->rtc->ops_lock);
- 		return IRQ_NONE;
- 	}
-@@ -101,10 +101,9 @@ static irqreturn_t rx8010_irq_1_handler(int irq, void *dev_id)
- 		rtc_update_irq(rx8010->rtc, 1, RTC_UF | RTC_IRQF);
- 	}
- 
--	i2c_smbus_write_byte_data(client, RX8010_FLAG, flagreg);
--
-+	err = regmap_write(rx8010->regs, RX8010_FLAG, flagreg);
- 	mutex_unlock(&rx8010->rtc->ops_lock);
--	return IRQ_HANDLED;
-+	return err ? IRQ_NONE : IRQ_HANDLED;
- }
- 
- static int rx8010_get_time(struct device *dev, struct rtc_time *dt)
-@@ -113,19 +112,19 @@ static int rx8010_get_time(struct device *dev, struct rtc_time *dt)
- 	u8 date[RX8010_TIME_BUF_LEN];
- 	int flagreg, err;
- 
--	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
--	if (flagreg < 0)
--		return flagreg;
-+	err = regmap_read(rx8010->regs, RX8010_FLAG, &flagreg);
-+	if (err)
-+		return err;
- 
- 	if (flagreg & RX8010_FLAG_VLF) {
- 		dev_warn(dev, "Frequency stop detected\n");
- 		return -EINVAL;
- 	}
- 
--	err = i2c_smbus_read_i2c_block_data(rx8010->client, RX8010_SEC,
--					    RX8010_TIME_BUF_LEN, date);
--	if (err != RX8010_TIME_BUF_LEN)
--		return err < 0 ? err : -EIO;
-+	err = regmap_bulk_read(rx8010->regs, RX8010_SEC,
-+			       date, RX8010_TIME_BUF_LEN);
-+	if (err)
-+		return err;
- 
- 	dt->tm_sec = bcd2bin(date[RX8010_SEC - RX8010_SEC] & 0x7f);
- 	dt->tm_min = bcd2bin(date[RX8010_MIN - RX8010_SEC] & 0x7f);
-@@ -142,19 +141,14 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- {
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 date[RX8010_TIME_BUF_LEN];
--	int ctrl, flagreg, err;
-+	int err;
- 
- 	if ((dt->tm_year < 100) || (dt->tm_year > 199))
- 		return -EINVAL;
- 
- 	/* set STOP bit before changing clock/calendar */
--	ctrl = i2c_smbus_read_byte_data(rx8010->client, RX8010_CTRL);
--	if (ctrl < 0)
--		return ctrl;
--	rx8010->ctrlreg = ctrl | RX8010_CTRL_STOP;
--	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
--					rx8010->ctrlreg);
--	if (err < 0)
-+	err = regmap_set_bits(rx8010->regs, RX8010_CTRL, RX8010_CTRL_STOP);
-+	if (err)
- 		return err;
- 
- 	date[RX8010_SEC - RX8010_SEC] = bin2bcd(dt->tm_sec);
-@@ -165,66 +159,55 @@ static int rx8010_set_time(struct device *dev, struct rtc_time *dt)
- 	date[RX8010_YEAR - RX8010_SEC] = bin2bcd(dt->tm_year - 100);
- 	date[RX8010_WDAY - RX8010_SEC] = bin2bcd(1 << dt->tm_wday);
- 
--	err = i2c_smbus_write_i2c_block_data(rx8010->client,
--					     RX8010_SEC, RX8010_TIME_BUF_LEN,
--					     date);
--	if (err < 0)
-+	err = regmap_bulk_write(rx8010->regs, RX8010_SEC,
-+				date, RX8010_TIME_BUF_LEN);
-+	if (err)
- 		return err;
- 
- 	/* clear STOP bit after changing clock/calendar */
--	ctrl = i2c_smbus_read_byte_data(rx8010->client, RX8010_CTRL);
--	if (ctrl < 0)
--		return ctrl;
--	rx8010->ctrlreg = ctrl & ~RX8010_CTRL_STOP;
--	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
--					rx8010->ctrlreg);
--	if (err < 0)
-+	err = regmap_clear_bits(rx8010->regs, RX8010_CTRL, RX8010_CTRL_STOP);
-+	if (err)
- 		return err;
- 
--	flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
--	if (flagreg < 0)
--		return flagreg;
--
--	if (flagreg & RX8010_FLAG_VLF)
--		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG,
--						flagreg & ~RX8010_FLAG_VLF);
-+	err = regmap_clear_bits(rx8010->regs, RX8010_FLAG, RX8010_FLAG_VLF);
-+	if (err)
-+		return err;
- 
- 	return 0;
- }
- 
--static int rx8010_init_client(struct i2c_client *client)
-+static int rx8010_init_client(struct device *dev)
- {
--	struct rx8010_data *rx8010 = i2c_get_clientdata(client);
-+	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 ctrl[2];
- 	int need_clear = 0, err;
- 
- 	/* Initialize reserved registers as specified in datasheet */
--	err = i2c_smbus_write_byte_data(client, RX8010_RESV17, 0xD8);
--	if (err < 0)
-+	err = regmap_write(rx8010->regs, RX8010_RESV17, 0xD8);
-+	if (err)
- 		return err;
- 
--	err = i2c_smbus_write_byte_data(client, RX8010_RESV30, 0x00);
--	if (err < 0)
-+	err = regmap_write(rx8010->regs, RX8010_RESV30, 0x00);
-+	if (err)
- 		return err;
- 
--	err = i2c_smbus_write_byte_data(client, RX8010_RESV31, 0x08);
--	if (err < 0)
-+	err = regmap_write(rx8010->regs, RX8010_RESV31, 0x08);
-+	if (err)
- 		return err;
- 
--	err = i2c_smbus_write_byte_data(client, RX8010_IRQ, 0x00);
--	if (err < 0)
-+	err = regmap_write(rx8010->regs, RX8010_IRQ, 0x00);
-+	if (err)
- 		return err;
- 
--	err = i2c_smbus_read_i2c_block_data(rx8010->client, RX8010_FLAG,
--					    2, ctrl);
--	if (err != 2)
--		return err < 0 ? err : -EIO;
-+	err = regmap_bulk_read(rx8010->regs, RX8010_FLAG, ctrl, 2);
-+	if (err)
-+		return err;
- 
- 	if (ctrl[0] & RX8010_FLAG_VLF)
--		dev_warn(&client->dev, "Frequency stop was detected\n");
-+		dev_warn(dev, "Frequency stop was detected\n");
- 
- 	if (ctrl[0] & RX8010_FLAG_AF) {
--		dev_warn(&client->dev, "Alarm was detected\n");
-+		dev_warn(dev, "Alarm was detected\n");
- 		need_clear = 1;
- 	}
- 
-@@ -236,8 +219,8 @@ static int rx8010_init_client(struct i2c_client *client)
- 
- 	if (need_clear) {
- 		ctrl[0] &= ~(RX8010_FLAG_AF | RX8010_FLAG_TF | RX8010_FLAG_UF);
--		err = i2c_smbus_write_byte_data(client, RX8010_FLAG, ctrl[0]);
--		if (err < 0)
-+		err = regmap_write(rx8010->regs, RX8010_FLAG, ctrl[0]);
-+		if (err)
- 			return err;
- 	}
- 
-@@ -249,17 +232,16 @@ static int rx8010_init_client(struct i2c_client *client)
- static int rx8010_read_alarm(struct device *dev, struct rtc_wkalrm *t)
- {
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
--	struct i2c_client *client = rx8010->client;
- 	u8 alarmvals[3];
- 	int flagreg, err;
- 
--	err = i2c_smbus_read_i2c_block_data(client, RX8010_ALMIN, 3, alarmvals);
--	if (err != 3)
--		return err < 0 ? err : -EIO;
-+	err = regmap_bulk_read(rx8010->regs, RX8010_ALMIN, alarmvals, 3);
-+	if (err)
-+		return err;
- 
--	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
--	if (flagreg < 0)
--		return flagreg;
-+	err = regmap_read(rx8010->regs, RX8010_FLAG, &flagreg);
-+	if (err)
-+		return err;
- 
- 	t->time.tm_sec = 0;
- 	t->time.tm_min = bcd2bin(alarmvals[0] & 0x7f);
-@@ -276,52 +258,38 @@ static int rx8010_read_alarm(struct device *dev, struct rtc_wkalrm *t)
- 
- static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
- {
--	struct i2c_client *client = to_i2c_client(dev);
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
- 	u8 alarmvals[3];
--	int extreg, flagreg, err;
--
--	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
--	if (flagreg < 0)
--		return flagreg;
-+	int err;
- 
- 	if (rx8010->ctrlreg & (RX8010_CTRL_AIE | RX8010_CTRL_UIE)) {
- 		rx8010->ctrlreg &= ~(RX8010_CTRL_AIE | RX8010_CTRL_UIE);
--		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
--						rx8010->ctrlreg);
--		if (err < 0)
-+		err = regmap_write(rx8010->regs, RX8010_CTRL, rx8010->ctrlreg);
-+		if (err)
- 			return err;
- 	}
- 
--	flagreg &= ~RX8010_FLAG_AF;
--	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG, flagreg);
--	if (err < 0)
-+	err = regmap_clear_bits(rx8010->regs, RX8010_FLAG, RX8010_FLAG_AF);
-+	if (err)
- 		return err;
- 
- 	alarmvals[0] = bin2bcd(t->time.tm_min);
- 	alarmvals[1] = bin2bcd(t->time.tm_hour);
- 	alarmvals[2] = bin2bcd(t->time.tm_mday);
- 
--	err = i2c_smbus_write_i2c_block_data(rx8010->client, RX8010_ALMIN,
--					     2, alarmvals);
--	if (err < 0)
-+	err = regmap_bulk_write(rx8010->regs, RX8010_ALMIN, alarmvals, 2);
-+	if (err)
- 		return err;
- 
--	extreg = i2c_smbus_read_byte_data(client, RX8010_EXT);
--	if (extreg < 0)
--		return extreg;
--
--	extreg |= RX8010_EXT_WADA;
--	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_EXT, extreg);
--	if (err < 0)
-+	err = regmap_clear_bits(rx8010->regs, RX8010_EXT, RX8010_EXT_WADA);
-+	if (err)
- 		return err;
- 
- 	if (alarmvals[2] == 0)
- 		alarmvals[2] |= RX8010_ALARM_AE;
- 
--	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_ALWDAY,
--					alarmvals[2]);
--	if (err < 0)
-+	err = regmap_write(rx8010->regs, RX8010_ALWDAY, alarmvals[2]);
-+	if (err)
- 		return err;
- 
- 	if (t->enabled) {
-@@ -331,9 +299,8 @@ static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
- 			rx8010->ctrlreg |=
- 				(RX8010_CTRL_AIE | RX8010_CTRL_UIE);
- 
--		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
--						rx8010->ctrlreg);
--		if (err < 0)
-+		err = regmap_write(rx8010->regs, RX8010_CTRL, rx8010->ctrlreg);
-+		if (err)
- 			return err;
- 	}
- 
-@@ -343,9 +310,8 @@ static int rx8010_set_alarm(struct device *dev, struct rtc_wkalrm *t)
- static int rx8010_alarm_irq_enable(struct device *dev,
- 				   unsigned int enabled)
- {
--	struct i2c_client *client = to_i2c_client(dev);
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
--	int flagreg, err;
-+	int err;
- 	u8 ctrl;
- 
- 	ctrl = rx8010->ctrlreg;
-@@ -362,20 +328,14 @@ static int rx8010_alarm_irq_enable(struct device *dev,
- 			ctrl &= ~RX8010_CTRL_AIE;
- 	}
- 
--	flagreg = i2c_smbus_read_byte_data(client, RX8010_FLAG);
--	if (flagreg < 0)
--		return flagreg;
--
--	flagreg &= ~RX8010_FLAG_AF;
--	err = i2c_smbus_write_byte_data(rx8010->client, RX8010_FLAG, flagreg);
--	if (err < 0)
-+	err = regmap_clear_bits(rx8010->regs, RX8010_FLAG, RX8010_FLAG_AF);
-+	if (err)
- 		return err;
- 
- 	if (ctrl != rx8010->ctrlreg) {
- 		rx8010->ctrlreg = ctrl;
--		err = i2c_smbus_write_byte_data(rx8010->client, RX8010_CTRL,
--						rx8010->ctrlreg);
--		if (err < 0)
-+		err = regmap_write(rx8010->regs, RX8010_CTRL, rx8010->ctrlreg);
-+		if (err)
- 			return err;
- 	}
- 
-@@ -385,13 +345,13 @@ static int rx8010_alarm_irq_enable(struct device *dev,
- static int rx8010_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
- {
- 	struct rx8010_data *rx8010 = dev_get_drvdata(dev);
--	int tmp, flagreg;
-+	int tmp, flagreg, err;
- 
- 	switch (cmd) {
- 	case RTC_VL_READ:
--		flagreg = i2c_smbus_read_byte_data(rx8010->client, RX8010_FLAG);
--		if (flagreg < 0)
--			return flagreg;
-+		err = regmap_read(rx8010->regs, RX8010_FLAG, &flagreg);
-+		if (err)
-+			return err;
- 
- 		tmp = flagreg & RX8010_FLAG_VLF ? RTC_VL_DATA_INVALID : 0;
- 		return put_user(tmp, (unsigned int __user *)arg);
-@@ -407,28 +367,30 @@ static struct rtc_class_ops rx8010_rtc_ops = {
- 	.ioctl = rx8010_ioctl,
- };
- 
-+static const struct regmap_config rx8010_regmap_config = {
-+	.name = "rx8010-rtc",
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+};
-+
- static int rx8010_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
- {
--	struct i2c_adapter *adapter = client->adapter;
- 	struct rx8010_data *rx8010;
- 	int err = 0;
- 
--	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA
--		| I2C_FUNC_SMBUS_I2C_BLOCK)) {
--		dev_err(&adapter->dev, "doesn't support required functionality\n");
--		return -EIO;
--	}
--
- 	rx8010 = devm_kzalloc(&client->dev, sizeof(struct rx8010_data),
- 			      GFP_KERNEL);
- 	if (!rx8010)
- 		return -ENOMEM;
- 
--	rx8010->client = client;
- 	i2c_set_clientdata(client, rx8010);
- 
--	err = rx8010_init_client(client);
-+	rx8010->regs = devm_regmap_init_i2c(client, &rx8010_regmap_config);
-+	if (IS_ERR(rx8010->regs))
-+		return PTR_ERR(rx8010->regs);
-+
-+	err = rx8010_init_client(&client->dev);
- 	if (err)
- 		return err;
- 
--- 
-2.26.1
-
+ #ifdef CONFIG_X86_MCE_INTEL
+ void mce_intel_feature_init(struct cpuinfo_x86 *c);
