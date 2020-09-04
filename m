@@ -2,194 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB0E25DEDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA5325DEE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 18:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgIDQBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 12:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        id S1726441AbgIDQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 12:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727075AbgIDQBB (ORCPT
+        with ESMTP id S1726109AbgIDQCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 12:01:01 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D4AC061244;
-        Fri,  4 Sep 2020 09:01:00 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id j11so9381322ejk.0;
-        Fri, 04 Sep 2020 09:01:00 -0700 (PDT)
+        Fri, 4 Sep 2020 12:02:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E68CC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 09:02:10 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id v4so6537872wmj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 09:02:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=BIz3Dqv9/KGHKChd3/IFzzxn7xbyzIDCFdjTQoSAu6w=;
-        b=q9BXhdl5PVF9mLC9vkchxmULiG9xehyXT0Dy35pIMdBIVb2r4uf3zo0DYi5Uy4TT9g
-         8HtDMU8X3UsMUtmhW3jmB+GsLG784ov5aFIt3DdqsI6s7+pRgLhN3Hvl5mSOeUe8Ncfs
-         RJx7BFIoShGkf/rkq2/jJ/tU5AZxegj5QRXv6XnnqIZZDSy1L0fVaJ8tabsEGyzNHoMd
-         2F/JQXKHQGqHSsl0Dx/uK6/36BJ6/onw/wG8iB9evJXvU+ZSreM5vc6/jHG72Y/lYhSh
-         BfHjVKV7pCkdnSOdXA39mIocO3m/zYbismyZ/bLDTbpFwTYpEIcpLtHDtcX+hoi5JWnn
-         u90g==
+        bh=WPWs6+bNAsvF0rvAc3yDkiD79Fr0V6X4UpT2H9wqL9w=;
+        b=OkpOrPJZjs2Y0PihfJ7PKAOhPKi+QXL4WLgx95wnrgwebxFXuZPO471OqXLrfRoYPw
+         W88jgdiC3dytG8y7rSPSpp+QNgisq043YZXmCVQ9dBEcxIN9ABSt5YaSUwE/K0puhnZ4
+         CjEXXPkmqV9ZhBsRr/uZvM9BAmbPYn54nsjTtrqnRA0v9oBqkuCyGS8+D3cz5nub6xIo
+         gURl08C/czURvIgKQ9TOxjZbmJ/xgAyJ/75NW3bXcO9xX6el1jKLTxNRAaH8F4XFcPlS
+         l+Z8a+Hy7DpKDllQBV4TVm4MXt4XfwcwCSmg7/jR7/k+LHRQ/52KMId1KfaVH9M5MHWl
+         qkEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=BIz3Dqv9/KGHKChd3/IFzzxn7xbyzIDCFdjTQoSAu6w=;
-        b=LB4/YPPnngc7Y9X1m+iOqP7GhNYqTaLg5nhoI2undJ97rOYv+Eh3DpShc0YeztsMwK
-         dCwutA/sNR8iifu2FMRTO7MTLFa8KTKC0FwECDLobqem/NsHJolM8dwnoy4h9XKV7hdJ
-         WDeSe6oPOnsW2cLTGtQywGZszAnT1Dt5S6evcaLNdrudycjULxW3i+qdz0VDRfBF/6Kr
-         o6kSGKbvhJXRZyj1tNaPEW3VoPkRheoizNCDZgvGbM6iI72sRQ7A50TY98NJnAfF7121
-         024CyqJePbevmUWvp7iKa6e8r0sRYSnWqNk7/2+d1kNZ5HjIHxknJOl0WbVkckGWBgTm
-         BU1w==
-X-Gm-Message-State: AOAM5329+RV75/spu9Ect5uVJK/ctlGjW6DP4Mr0S6c39frOZ6oOxjFQ
-        kdECx9u47A7bfv9++Mot8hiLKuQSMZ0CXSxH
-X-Google-Smtp-Source: ABdhPJz3Q8w4Tv7USQ8eui4LVCy5y4lAuTULMivw04dlU/rjS5/aBfLukg0LJ56MBQC+0SmUli78/Q==
-X-Received: by 2002:a17:906:5a83:: with SMTP id l3mr8552049ejq.14.1599235259141;
-        Fri, 04 Sep 2020 09:00:59 -0700 (PDT)
-Received: from debianHome.localdomain (x5f700e02.dyn.telefonica.de. [95.112.14.2])
-        by smtp.gmail.com with ESMTPSA id h10sm6276025eds.0.2020.09.04.09.00.58
+        bh=WPWs6+bNAsvF0rvAc3yDkiD79Fr0V6X4UpT2H9wqL9w=;
+        b=PQzm2Yfj0gzB8AduCwTKP73N4Wl5EIhNmmRDjxgkgKPdcvWSeTEQBNkAJ2wZJiCQm/
+         yH9TyMmaoU5zJfH8hSb27LnqQ9+/BwZScBFhZOoQfaESVIqTA4rXcV9GJ/52lzhtcDhp
+         gIJLdEWnqaogtl8iyVw54evWOA+NdLF3Tm7hIuspaxTjebGICT/+kcCaLvezEoey0AyP
+         XSYbR5kBaYzF1muv/GAJfLPkRlxJb+rkotjH0AO5kOcPOIrba+fuHo5/ItuIqzxtJUGg
+         tFj4IdNjCnM4qBdA9+y5vas3O9uCxwcAucBcS3oJE7JFCLkznOyrG76zl81/jKbbBW+R
+         JYPw==
+X-Gm-Message-State: AOAM531S9Fjle2hkLNuj9wEfq4wpI5seC3x56KI4RptLc+haYs6ykFtc
+        jACQs6QEpAV8TWwo8jaN9onixQ==
+X-Google-Smtp-Source: ABdhPJxqrPj4FqwNvFmd29r1spI/ZIQGafj/o4jzYrlvzXdLjkT+3k5breq2rCLBzbh5/WkV2rdDrQ==
+X-Received: by 2002:a1c:ab55:: with SMTP id u82mr8388426wme.139.1599235328834;
+        Fri, 04 Sep 2020 09:02:08 -0700 (PDT)
+Received: from bender.baylibre.local ([2a01:e35:2ec0:82b0:5405:9623:e2f1:b2ac])
+        by smtp.gmail.com with ESMTPSA id i3sm11938627wrs.4.2020.09.04.09.02.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Sep 2020 09:00:58 -0700 (PDT)
-From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
-Subject: [RFC PATCH] sched: only issue an audit on privileged operation
-Date:   Fri,  4 Sep 2020 18:00:31 +0200
-Message-Id: <20200904160031.6444-1-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.28.0
+        Fri, 04 Sep 2020 09:02:08 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     khilman@baylibre.com
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] soc: amlogic: add support for the Meson AXG Power Controller
+Date:   Fri,  4 Sep 2020 18:02:04 +0200
+Message-Id: <20200904160206.22570-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sched_setattr(2) does via kernel/sched/core.c:__sched_setscheduler()
-issue a CAP_SYS_NICE audit event unconditionally, even when the requested
-operation does not require that capability / is un-privileged.
+This adds the bindings and support for the Power Controller found in the
+Amlogic AXG SoCs.
 
-Perform privilged/unprivileged catigorization first and perform a
-capable test only if needed.
+The Power Controller in the Amlogic AXG SoCs is similar to the GXL one
+but with less VPU memory domains to enable and a supplementary Audio
+memory power domain.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
- kernel/sched/core.c | 65 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 47 insertions(+), 18 deletions(-)
+Neil Armstrong (2):
+  dt-bindings: power: amlogic,meson-ee-pwrc: add Amlogic AXG power
+    controller bindings
+  soc: amlogic: meson-ee-pwrc: add support for the Meson AXG SoCs
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8471a0f7eb32..954f968d2466 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5249,13 +5249,19 @@ static int __sched_setscheduler(struct task_struct *p,
- 		return -EINVAL;
- 
- 	/*
--	 * Allow unprivileged RT tasks to decrease priority:
-+	 * Allow unprivileged RT tasks to decrease priority.
-+	 * Only issue a capable test if needed to avoid audit
-+	 * event on non-privileged operations:
- 	 */
--	if (user && !capable(CAP_SYS_NICE)) {
-+	if (user) {
- 		if (fair_policy(policy)) {
- 			if (attr->sched_nice < task_nice(p) &&
--			    !can_nice(p, attr->sched_nice))
--				return -EPERM;
-+			    !can_nice(p, attr->sched_nice)) {
-+				if (capable(CAP_SYS_NICE))
-+					goto sys_nice_capable;
-+				else
-+					return -EPERM;
-+			}
- 		}
- 
- 		if (rt_policy(policy)) {
-@@ -5263,13 +5269,21 @@ static int __sched_setscheduler(struct task_struct *p,
- 					task_rlimit(p, RLIMIT_RTPRIO);
- 
- 			/* Can't set/change the rt policy: */
--			if (policy != p->policy && !rlim_rtprio)
--				return -EPERM;
-+			if (policy != p->policy && !rlim_rtprio) {
-+				if (capable(CAP_SYS_NICE))
-+					goto sys_nice_capable;
-+				else
-+					return -EPERM;
-+			}
- 
- 			/* Can't increase priority: */
- 			if (attr->sched_priority > p->rt_priority &&
--			    attr->sched_priority > rlim_rtprio)
--				return -EPERM;
-+			    attr->sched_priority > rlim_rtprio) {
-+				if (capable(CAP_SYS_NICE))
-+					goto sys_nice_capable;
-+				else
-+					return -EPERM;
-+			}
- 		}
- 
- 		 /*
-@@ -5278,28 +5292,43 @@ static int __sched_setscheduler(struct task_struct *p,
- 		  * unprivileged DL tasks to increase their relative deadline
- 		  * or reduce their runtime (both ways reducing utilization)
- 		  */
--		if (dl_policy(policy))
--			return -EPERM;
-+		if (dl_policy(policy)) {
-+			if (capable(CAP_SYS_NICE))
-+				goto sys_nice_capable;
-+			else
-+				return -EPERM;
-+		}
- 
- 		/*
- 		 * Treat SCHED_IDLE as nice 20. Only allow a switch to
- 		 * SCHED_NORMAL if the RLIMIT_NICE would normally permit it.
- 		 */
- 		if (task_has_idle_policy(p) && !idle_policy(policy)) {
--			if (!can_nice(p, task_nice(p)))
--				return -EPERM;
-+			if (!can_nice(p, task_nice(p))) {
-+				if (capable(CAP_SYS_NICE))
-+					goto sys_nice_capable;
-+				else
-+					return -EPERM;
-+			}
- 		}
- 
- 		/* Can't change other user's priorities: */
--		if (!check_same_owner(p))
--			return -EPERM;
-+		if (!check_same_owner(p)) {
-+			if (capable(CAP_SYS_NICE))
-+				goto sys_nice_capable;
-+			else
-+				return -EPERM;
-+		}
- 
- 		/* Normal users shall not reset the sched_reset_on_fork flag: */
--		if (p->sched_reset_on_fork && !reset_on_fork)
--			return -EPERM;
--	}
-+		if (p->sched_reset_on_fork && !reset_on_fork) {
-+			if (capable(CAP_SYS_NICE))
-+				goto sys_nice_capable;
-+			else
-+				return -EPERM;
-+		}
- 
--	if (user) {
-+sys_nice_capable:
- 		if (attr->sched_flags & SCHED_FLAG_SUGOV)
- 			return -EINVAL;
- 
+ .../bindings/power/amlogic,meson-ee-pwrc.yaml | 23 ++++++++++++++--
+ drivers/soc/amlogic/meson-ee-pwrc.c           | 26 +++++++++++++++++++
+ include/dt-bindings/power/meson-axg-power.h   | 14 ++++++++++
+ 3 files changed, 61 insertions(+), 2 deletions(-)
+ create mode 100644 include/dt-bindings/power/meson-axg-power.h
+
 -- 
-2.28.0
+2.22.0
 
