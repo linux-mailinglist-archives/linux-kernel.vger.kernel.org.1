@@ -2,146 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D8625D19B
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BD625D1A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 08:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729789AbgIDGji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 02:39:38 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10812 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726251AbgIDGjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 02:39:37 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D6B3E21013686CF35EC2;
-        Fri,  4 Sep 2020 14:39:33 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 4 Sep 2020
- 14:39:23 +0800
-Subject: Re: [PATCH v11 3/5] arm64: kdump: reimplement crashkernel=X
-To:     Dave Young <dyoung@redhat.com>
-References: <20200801130856.86625-1-chenzhou10@huawei.com>
- <20200801130856.86625-4-chenzhou10@huawei.com> <20200902170910.GB16673@gaia>
- <f33a0ce6-552e-2f1a-e720-4f7124f15d1e@huawei.com>
- <20200904030424.GA11384@dhcp-128-65.nay.redhat.com>
- <20200904031014.GA11869@dhcp-128-65.nay.redhat.com>
- <f4e0a246-0ca5-474b-8f39-c8299851d2b8@huawei.com>
- <20200904041633.GB11869@dhcp-128-65.nay.redhat.com>
-CC:     Catalin Marinas <catalin.marinas@arm.com>, <will@kernel.org>,
-        <james.morse@arm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <bhe@redhat.com>, <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
-        <prabhakar.pkin@gmail.com>, <bhsharma@redhat.com>,
-        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <nsaenzjulienne@suse.de>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <guohanjun@huawei.com>,
-        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <886c91a3-6729-e534-4d9d-b807c5584892@huawei.com>
-Date:   Fri, 4 Sep 2020 14:39:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726613AbgIDGpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 02:45:06 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:3466 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726151AbgIDGpF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 02:45:05 -0400
+X-UUID: 7cb2678bed254c11a8bf9b2948914537-20200904
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=OQecg9cZ8/g9Z/4uGEw+tFX+Ft+eJHlpTokpoBrahJE=;
+        b=llmtnsCDSlBsYLqln0RAKgqWAJVPdZGYJcqyqvaxpunAljH0ho56AF1cEBxmplbOj8/06pbRCRFEa2VaKvIa/alaxFWYbsbs/TT4SfDk288kRehSpvgOPZkKmvURzVjzx0jhl3HVXPmXILDUzHQnUm0jzhEuXNZYuKjeZrgOgsE=;
+X-UUID: 7cb2678bed254c11a8bf9b2948914537-20200904
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 578380492; Fri, 04 Sep 2020 14:44:57 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 4 Sep 2020 14:44:55 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 4 Sep 2020 14:44:55 +0800
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>
+Subject: [PATCH 0/3] Mediatek MT8192 scpsys support  
+Date:   Fri, 4 Sep 2020 14:44:52 +0800
+Message-ID: <1599201895-11013-1-git-send-email-weiyi.lu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <20200904041633.GB11869@dhcp-128-65.nay.redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/9/4 12:16, Dave Young wrote:
-> On 09/04/20 at 12:02pm, chenzhou wrote:
->>
->> On 2020/9/4 11:10, Dave Young wrote:
->>> On 09/04/20 at 11:04am, Dave Young wrote:
->>>> On 09/03/20 at 07:26pm, chenzhou wrote:
->>>>> Hi Catalin,
->>>>>
->>>>>
->>>>> On 2020/9/3 1:09, Catalin Marinas wrote:
->>>>>> On Sat, Aug 01, 2020 at 09:08:54PM +0800, Chen Zhou wrote:
->>>>>>> There are following issues in arm64 kdump:
->>>>>>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
->>>>>>> will fail when there is no enough low memory.
->>>>>>> 2. If reserving crashkernel above 4G, in this case, crash dump
->>>>>>> kernel will boot failure because there is no low memory available
->>>>>>> for allocation.
->>>>>>> 3. Since commit 1a8e1cef7603 ("arm64: use both ZONE_DMA and ZONE_DMA32"),
->>>>>>> if the memory reserved for crash dump kernel falled in ZONE_DMA32,
->>>>>>> the devices in crash dump kernel need to use ZONE_DMA will alloc
->>>>>>> fail.
->>>>>>>
->>>>>>> To solve these issues, change the behavior of crashkernel=X.
->>>>>>> crashkernel=X tries low allocation in ZONE_DMA, and fall back to
->>>>>>> high allocation if it fails.
->>>>>>>
->>>>>>> If requized size X is too large and leads to very little free memory
->>>>>>> in ZONE_DMA after low allocation, the system may not work normally.
->>>>>>> So add a threshold and go for high allocation directly if the required
->>>>>>> size is too large. The value of threshold is set as the half of
->>>>>>> the low memory.
->>>>>>>
->>>>>>> If crash_base is outside ZONE_DMA, try to allocate at least 256M in
->>>>>>> ZONE_DMA automatically. "crashkernel=Y,low" can be used to allocate
->>>>>>> specified size low memory.
->>>>>> Except for the threshold to keep zone ZONE_DMA memory,
->>>>>> reserve_crashkernel() looks very close to the x86 version. Shall we try
->>>>>> to make this generic as well? In the first instance, you could avoid the
->>>>>> threshold check if it takes an explicit ",high" option.
->>>>> Ok, i will try to do this.
->>>>>
->>>>> I look into the function reserve_crashkernel() of x86 and found the start address is
->>>>> CRASH_ALIGN in function memblock_find_in_range(), which is different with arm64.
->>>>>
->>>>> I don't figure out why is CRASH_ALIGN in x86, is there any specific reason?
->>>> Hmm, took another look at the option CONFIG_PHYSICAL_ALIGN
->>>> config PHYSICAL_ALIGN
->>>>         hex "Alignment value to which kernel should be aligned"
->>>>         default "0x200000"
->>>>         range 0x2000 0x1000000 if X86_32
->>>>         range 0x200000 0x1000000 if X86_64
->>>>
->>>> According to above, I think the 16M should come from the largest value
->>>> But the default value is 2M,  with smaller value reservation can have
->>>> more chance to succeed.
->>>>
->>>> It seems we still need arch specific CRASH_ALIGN, but the initial
->>>> version you added the #ifdef for different arches, can you move the
->>>> macro to arch specific headers?
->>> And just keep the x86 align value as is, I can try to change the x86
->>> value later to CONFIG_PHYSICAL_ALIGN, in this way this series can be
->>> cleaner.
->> Ok. I have no question about the value of macro CRASH_ALIGN,
->> instead the lower bound of memblock_find_in_range().
->>
->> For x86, in reserve_crashkernel()，restrict the lower bound of the range to CRASH_ALIGN,
->>     ...
->>     crash_base = memblock_find_in_range(CRASH_ALIGN,
->>                                                 CRASH_ADDR_LOW_MAX,
->>                                                 crash_size, CRASH_ALIGN);
->>     ...
->>    
->> in reserve_crashkernel_low()，with no this restriction.
->>     ...
->>     low_base = memblock_find_in_range(0, 1ULL << 32, low_size, CRASH_ALIGN);
->>     ...
->>
->> How about all making memblock_find_in_range() search from the start of memory?
->> If it is ok, i will do like this in the generic version.
-> I feel starting with CRASH_ALIGN sounds better, can you just search from
-> CRASH_ALIGN in generic version?
-ok.
->
-> Thanks
-> Dave
->
->
-> .
->
-
+VGhpcyBzZXJpZXMgaXMgYmFzZWQgb24gdjUuOS1yYzEsIE1UODE5MiBjbG9jayB2M1sxXSBhbmQg
+TVQ4MTgzIHNjcHN5cyB2MTdbMl0uDQoNClsxXSBodHRwczovL3BhdGNod29yay5rZXJuZWwub3Jn
+L2NvdmVyLzExNzUyMjMxLw0KWzJdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvY292ZXIv
+MTE3MDMyNTMvDQoNCg0KV2VpeWkgTHUgKDMpOg0KICBkdC1iaW5kaW5nczogc29jOiBBZGQgTVQ4
+MTkyIHBvd2VyIGR0LWJpbmRpbmdzDQogIHNvYzogbWVkaWF0ZWs6IEFkZCBNVDgxOTIgc2Nwc3lz
+IHN1cHBvcnQNCiAgYXJtNjQ6IGR0czogQWRkIHBvd2VyIGNvbnRyb2xsZXIgZGV2aWNlIG5vZGUg
+b2YgTVQ4MTkyDQoNCiAuLi4vYmluZGluZ3Mvc29jL21lZGlhdGVrL3NjcHN5cy50eHQgICAgICAg
+ICAgfCAgIDUgKw0KIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgICAg
+ICB8IDE0OCArKysrKysrKysNCiBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstc2Nwc3lzLmMgICAg
+ICAgICAgICAgfCAyOTcgKysrKysrKysrKysrKysrKysrDQogaW5jbHVkZS9kdC1iaW5kaW5ncy9w
+b3dlci9tdDgxOTItcG93ZXIuaCAgICAgIHwgIDMyICsrDQogNCBmaWxlcyBjaGFuZ2VkLCA0ODIg
+aW5zZXJ0aW9ucygrKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL3Bv
+d2VyL210ODE5Mi1wb3dlci5oDQo=
 
