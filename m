@@ -2,71 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B16825D6C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC48F25D6B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 12:45:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729957AbgIDKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 06:47:40 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:47658 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726811AbgIDKqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 06:46:54 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4BjZ9g0N8jzB09bN;
-        Fri,  4 Sep 2020 12:46:47 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id F4FlIkCuojZq; Fri,  4 Sep 2020 12:46:46 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4BjZ9f5q30zB09bD;
-        Fri,  4 Sep 2020 12:46:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 26D5F8B81B;
-        Fri,  4 Sep 2020 12:46:48 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id TdVkn9hP2ZBb; Fri,  4 Sep 2020 12:46:48 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [10.25.210.31])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 037788B76A;
-        Fri,  4 Sep 2020 12:46:48 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id DC97D653FF; Fri,  4 Sep 2020 10:46:47 +0000 (UTC)
-Message-Id: <346f65d677adb11865f7762c25a1ca3c64404ba5.1599216023.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/uaccess: Add pre-update addressing to
- __put_user_asm_goto()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri,  4 Sep 2020 10:46:47 +0000 (UTC)
+        id S1730098AbgIDKpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 06:45:14 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:56589 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbgIDKpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 06:45:04 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 636DA1C000C;
+        Fri,  4 Sep 2020 10:44:55 +0000 (UTC)
+Date:   Fri, 4 Sep 2020 12:48:42 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Paul <paul.kocialkowski@bootlin.com>,
+        Hugues Fruchet <hugues.fruchet@st.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v3 2/3] media: i2c: ov5640: Add support for BT656 mode
+Message-ID: <20200904104842.hz6n6egjyqgarvlb@uno.localdomain>
+References: <20200813171337.5540-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200813171337.5540-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200813171337.5540-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable pre-update addressing mode in __put_user_asm_goto()
+Hi Prabhakar
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/uaccess.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Aug 13, 2020 at 06:13:36PM +0100, Lad Prabhakar wrote:
+> Enable support for BT656 mode.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
-index 7c2427f237e1..a5cfe867fbdc 100644
---- a/arch/powerpc/include/asm/uaccess.h
-+++ b/arch/powerpc/include/asm/uaccess.h
-@@ -254,7 +254,7 @@ do {								\
- 		"1:	" op "%U1%X1 %0,%1	# put_user\n"	\
- 		EX_TABLE(1b, %l2)				\
- 		:						\
--		: "r" (x), "m" (*addr)				\
-+		: "r" (x), "m<>" (*addr)				\
- 		:						\
- 		: label)
- 
--- 
-2.25.0
+Looks good to me
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
 
+Thanks
+  j
+
+> ---
+>  drivers/media/i2c/ov5640.c | 46 ++++++++++++++++++++++++++++----------
+>  1 file changed, 34 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
+> index e36bc08bc17f..160d2857352a 100644
+> --- a/drivers/media/i2c/ov5640.c
+> +++ b/drivers/media/i2c/ov5640.c
+> @@ -84,6 +84,7 @@
+>  #define OV5640_REG_VFIFO_HSIZE		0x4602
+>  #define OV5640_REG_VFIFO_VSIZE		0x4604
+>  #define OV5640_REG_JPG_MODE_SELECT	0x4713
+> +#define OV5640_REG_CCIR656_CTRL00	0x4730
+>  #define OV5640_REG_POLARITY_CTRL00	0x4740
+>  #define OV5640_REG_MIPI_CTRL00		0x4800
+>  #define OV5640_REG_DEBUG_MODE		0x4814
+> @@ -1215,6 +1216,20 @@ static int ov5640_set_autogain(struct ov5640_dev *sensor, bool on)
+>  			      BIT(1), on ? 0 : BIT(1));
+>  }
+>
+> +static int ov5640_set_stream_bt656(struct ov5640_dev *sensor, bool on)
+> +{
+> +	int ret;
+> +
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_CCIR656_CTRL00,
+> +			       on ? 0x1 : 0x00);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return ov5640_write_reg(sensor, OV5640_REG_SYS_CTRL0, on ?
+> +				OV5640_REG_SYS_CTRL0_SW_PWUP :
+> +				OV5640_REG_SYS_CTRL0_SW_PWDN);
+> +}
+> +
+>  static int ov5640_set_stream_dvp(struct ov5640_dev *sensor, bool on)
+>  {
+>  	return ov5640_write_reg(sensor, OV5640_REG_SYS_CTRL0, on ?
+> @@ -2022,18 +2037,21 @@ static int ov5640_set_power_dvp(struct ov5640_dev *sensor, bool on)
+>  	 *		datasheet and hardware, 0 is active high
+>  	 *		and 1 is active low...)
+>  	 */
+> -	if (flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
+> -		pclk_pol = 1;
+> -	if (flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH)
+> -		hsync_pol = 1;
+> -	if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> -		vsync_pol = 1;
+> +	if (sensor->ep.bus_type == V4L2_MBUS_PARALLEL) {
+> +		if (flags & V4L2_MBUS_PCLK_SAMPLE_RISING)
+> +			pclk_pol = 1;
+> +		if (flags & V4L2_MBUS_HSYNC_ACTIVE_HIGH)
+> +			hsync_pol = 1;
+> +		if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
+> +			vsync_pol = 1;
+> +
+> +		ret = ov5640_write_reg(sensor, OV5640_REG_POLARITY_CTRL00,
+> +				       (pclk_pol << 5) | (hsync_pol << 1) |
+> +				       vsync_pol);
+>
+> -	ret = ov5640_write_reg(sensor, OV5640_REG_POLARITY_CTRL00,
+> -			       (pclk_pol << 5) | (hsync_pol << 1) | vsync_pol);
+> -
+> -	if (ret)
+> -		return ret;
+> +		if (ret)
+> +			return ret;
+> +	}
+>
+>  	/*
+>  	 * powerdown MIPI TX/RX PHY & disable MIPI
+> @@ -2057,7 +2075,9 @@ static int ov5640_set_power_dvp(struct ov5640_dev *sensor, bool on)
+>  	 * - 4:		PCLK output enable
+>  	 * - [3:0]:	D[9:6] output enable
+>  	 */
+> -	ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE01, 0x7f);
+> +	ret = ov5640_write_reg(sensor, OV5640_REG_PAD_OUTPUT_ENABLE01,
+> +			       sensor->ep.bus_type == V4L2_MBUS_PARALLEL ?
+> +			       0x7f : 0x1f);
+>  	if (ret)
+>  		return ret;
+>
+> @@ -2911,6 +2931,8 @@ static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
+>
+>  		if (sensor->ep.bus_type == V4L2_MBUS_CSI2_DPHY)
+>  			ret = ov5640_set_stream_mipi(sensor, enable);
+> +		else if (sensor->ep.bus_type == V4L2_MBUS_BT656)
+> +			ret = ov5640_set_stream_bt656(sensor, enable);
+>  		else
+>  			ret = ov5640_set_stream_dvp(sensor, enable);
+>
+> --
+> 2.17.1
+>
