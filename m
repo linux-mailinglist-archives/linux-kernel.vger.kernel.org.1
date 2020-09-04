@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A1E25DE11
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FAA25DE78
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 17:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbgIDPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 11:45:25 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:59155 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726047AbgIDPpS (ORCPT
+        id S1727103AbgIDPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 11:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726674AbgIDPqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 11:45:18 -0400
-Received: (qmail 694637 invoked by uid 1000); 4 Sep 2020 11:45:17 -0400
-Date:   Fri, 4 Sep 2020 11:45:17 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] usb: ohci: Add per-port overcurrent quirk
-Message-ID: <20200904154517.GB694058@rowland.harvard.edu>
-References: <20200904032247.11345-1-hamish.martin@alliedtelesis.co.nz>
- <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
+        Fri, 4 Sep 2020 11:46:44 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95DDC061265
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 08:46:36 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u18so6482914wmc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 08:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fmK93ghUCK4Bfkn87SsfLV7Lx2ToEIVDjZGF81gdV3I=;
+        b=imCUNYkyVYERELDx5z17ROl3W0tPoyG6+NCLtcyQUclp/DLiloNkPtJzWEXXyubLAC
+         h+4HuoA1iGdskeY62BZFfE8AGzR5LltiwgSovvfligA3ru6g1Mmthw69qbjeE8RUaLbr
+         +PYf8q+AFYdKipDE8+Zu2jWHu/amtYYNu75E5ZpsiGP5ZSbomoCQJvvem6mLfv2k5zcE
+         q+85l1xCKNUc1gRTlgOnGV0Pxl+3e3dSGIWChjVkrpEFZEAkzoHawJpmtHzYjQn2NAo+
+         w64MAdJTEpnavglHJzxNT5kWPO4SUSfdi1zyQVm17Ta9V26Z8XWz3AYA+5gYgPFhE50B
+         RpBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fmK93ghUCK4Bfkn87SsfLV7Lx2ToEIVDjZGF81gdV3I=;
+        b=rSWFCTC63QvSaPy8TZIc/nRva4CoylRgpximzuWVMw5gQ7KNlnHq6BSnF7IkfD6YVv
+         AqepqQJjoP3gP/fSI+6EoidHi7QH8Dbu7XQ9+qlmIEOoNLniR3GNQNnqpKeedyMJ9u1b
+         +kHY2Y/rZIXRHW5IrGSRULJMmHz8mBihODJrXM7w1DwU6pRKTEsNQqVBqUAz0UD3wVpN
+         qYMbMH1qwx9YYrSzvR/Gsg4qU58FIsD+tJHxDX3v8iwKoEo9dvck2unrBwlDM0SEGKaw
+         BEp7K5Hl1Flja64d97qS7TgHW63j7W5qYe9jP+bnw6DQwjZ1GNLCC6kat4lJ5l05/K7C
+         u5Sg==
+X-Gm-Message-State: AOAM531O4sfx8rpUrrIeKPQbJWruaB68a/TKjYlhpS6s+VETfv0oZt9t
+        xZmNlgEJ40pqkDzhphdiKJ0Asg==
+X-Google-Smtp-Source: ABdhPJwT14PBgDJkOeHgwMzyq3LJMTMmetylVFwoCbarhMQNwhP0okhbv0nlb/abXQmSIiMpOSdJqA==
+X-Received: by 2002:a1c:9a48:: with SMTP id c69mr7940657wme.43.1599234390539;
+        Fri, 04 Sep 2020 08:46:30 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
+        by smtp.gmail.com with ESMTPSA id q4sm11983375wru.65.2020.09.04.08.46.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 08:46:29 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 00/23] gpio: mockup: support dynamically created and removed chips
+Date:   Fri,  4 Sep 2020 17:45:24 +0200
+Message-Id: <20200904154547.3836-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200904032247.11345-2-hamish.martin@alliedtelesis.co.nz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 04, 2020 at 03:22:46PM +1200, Hamish Martin wrote:
-> Some integrated OHCI controller hubs do not expose all ports of the hub
-> to pins on the SoC. In some cases the unconnected ports generate
-> spurious overcurrent events. For example the Broadcom 56060/Ranger 2 SoC
-> contains a nominally 3 port hub but only the first port is wired.
-> 
-> Default behaviour for ohci-platform driver is to use "ganged"
-> overcurrent protection mode. This leads to the spurious overcurrent
-> events affecting all ports in the hub.
-> 
-> Allow this to be rectified by specifying per-port overcurrent protection
-> mode via the device tree.
-> 
-> Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
-> ---
->  drivers/usb/host/ohci-hcd.c      | 4 ++++
->  drivers/usb/host/ohci-platform.c | 3 +++
->  drivers/usb/host/ohci.h          | 1 +
->  3 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
-> index dd37e77dae00..01e3d75e29d9 100644
-> --- a/drivers/usb/host/ohci-hcd.c
-> +++ b/drivers/usb/host/ohci-hcd.c
-> @@ -687,6 +687,10 @@ static int ohci_run (struct ohci_hcd *ohci)
->  		val |= RH_A_NPS;
->  		ohci_writel (ohci, val, &ohci->regs->roothub.a);
->  	}
-> +	if (ohci->flags & OHCI_QUIRK_PER_PORT_OC) {
-> +		val |= RH_A_OCPM;
-> +		ohci_writel(ohci, val, &ohci->regs->roothub.a);
-> +	}
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-I don't think this is right, for two reasons.  First, isn't per-port 
-overcurrent protection the default?
+We're about to merge w V2 user API for GPIO. In user-space we're using the
+gpio-mockup driver for testing but it's quite cumbersome (needs unloading
+and reloading to change chip configuration) and not very extensible (config
+is passed over module params).
 
-Second, RH_A_OCPM doesn't do anything unless RH_A_NOCP is clear.
+This series proposes to extend the debugfs interface to support dynamic
+creation and removal of dummy chips, with extensible options.
 
-Alan Stern
+First 3 patches add some lib functionality we'll use later on. Next 3 contain
+general gpiolib refactoring and can be picked up independently.
 
->  	ohci_writel (ohci, RH_HS_LPSC, &ohci->regs->roothub.status);
->  	ohci_writel (ohci, (val & RH_A_NPS) ? 0 : RH_B_PPCM,
->  						&ohci->regs->roothub.b);
-> diff --git a/drivers/usb/host/ohci-platform.c b/drivers/usb/host/ohci-platform.c
-> index 4a8456f12a73..45e69ce4ef86 100644
-> --- a/drivers/usb/host/ohci-platform.c
-> +++ b/drivers/usb/host/ohci-platform.c
-> @@ -137,6 +137,9 @@ static int ohci_platform_probe(struct platform_device *dev)
->  		if (of_property_read_bool(dev->dev.of_node, "no-big-frame-no"))
->  			ohci->flags |= OHCI_QUIRK_FRAME_NO;
->  
-> +		if (of_property_read_bool(dev->dev.of_node, "per-port-overcurrent"))
-> +			ohci->flags |= OHCI_QUIRK_PER_PORT_OC;
-> +
->  		if (of_property_read_bool(dev->dev.of_node,
->  					  "remote-wakeup-connected"))
->  			ohci->hc_control = OHCI_CTRL_RWC;
-> diff --git a/drivers/usb/host/ohci.h b/drivers/usb/host/ohci.h
-> index aac6285b37f8..9c2bc816246c 100644
-> --- a/drivers/usb/host/ohci.h
-> +++ b/drivers/usb/host/ohci.h
-> @@ -422,6 +422,7 @@ struct ohci_hcd {
->  #define	OHCI_QUIRK_AMD_PREFETCH	0x400			/* pre-fetch for ISO transfer */
->  #define	OHCI_QUIRK_GLOBAL_SUSPEND	0x800		/* must suspend ports */
->  #define	OHCI_QUIRK_QEMU		0x1000			/* relax timing expectations */
-> +#define	OHCI_QUIRK_PER_PORT_OC	0x2000			/* per-port overcurrent protection */
->  
->  	// there are also chip quirks/bugs in init logic
->  
-> -- 
-> 2.28.0
-> 
+Next we refactor gpio-mockup and finally add the delete_device and new_device
+attributes. Last patch adds documentation for gpio-mockup so I'm not going into
+detail on how the new interface works - the doc describes it pretty well.
+
+Bartosz Golaszewski (23):
+  lib: cmdline: export next_arg()
+  lib: string_helpers: provide kfree_strarray()
+  lib: uaccess: provide getline_from_user()
+  gpiolib: generalize devprop_gpiochip_set_names() for device properties
+  gpiolib: unexport devprop_gpiochip_set_names()
+  gpiolib: switch to simpler IDA interface
+  gpio: mockup: drop unneeded includes
+  gpio: mockup: use pr_fmt()
+  gpio: mockup: use KBUILD_MODNAME
+  gpio: mockup: fix resource leak in error path
+  gpio: mockup: remove the limit on number of dummy chips
+  gpio: mockup: define a constant for chip label size
+  gpio: mockup: pass the chip label as device property
+  gpio: mockup: use the generic 'gpio-line-names' property
+  gpio: mockup: use dynamic device IDs
+  gpio: mockup: refactor the module init function
+  gpio: mockup: rename and move around debugfs callbacks
+  gpio: mockup: require debugfs to build
+  gpio: mockup: add a symlink for the per-chip debugfs directory
+  gpio: mockup: add a lock for dummy device list
+  gpio: mockup: provide a way to delete dummy chips
+  gpio: mockup: provide a way to create new dummy chips
+  Documentation: gpio: add documentation for gpio-mockup
+
+ .../admin-guide/gpio/gpio-mockup.rst          |  87 +++
+ drivers/gpio/Kconfig                          |   1 +
+ drivers/gpio/Makefile                         |   1 -
+ drivers/gpio/gpio-mockup.c                    | 614 ++++++++++++++----
+ drivers/gpio/gpiolib-acpi.c                   |   3 -
+ drivers/gpio/gpiolib-devprop.c                |  63 --
+ drivers/gpio/gpiolib-of.c                     |   5 -
+ drivers/gpio/gpiolib.c                        |  62 +-
+ include/linux/gpio/driver.h                   |   3 -
+ include/linux/string_helpers.h                |   2 +
+ include/linux/uaccess.h                       |   3 +
+ lib/cmdline.c                                 |   1 +
+ lib/string_helpers.c                          |  22 +
+ lib/usercopy.c                                |  37 ++
+ 14 files changed, 705 insertions(+), 199 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-mockup.rst
+ delete mode 100644 drivers/gpio/gpiolib-devprop.c
+
+-- 
+2.26.1
+
