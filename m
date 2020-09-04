@@ -2,54 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F150525E30D
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C03AA25E312
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 22:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgIDUtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 16:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728203AbgIDUth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 16:49:37 -0400
-Subject: Re: [GIT PULL] s390 updates for 5.9-rc4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599252577;
-        bh=jHZurQIJFjTXc5vQstnFYuZgTZtTqdiU/wBT6AqOKdk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=0qPBQ7naZrcNUN/PzxYitnWNDt+QTSdHyyUSmz+4i9EaqGyRsQVRvAP1bl022ZThS
-         zvRN4/o7h08rC3OSO78wjWmneBz+pXanN/aze/Pqe3PhhfjTES/mhY+N+IPCI+cKUe
-         AEvdioRXUNFI2brYRTLgJgyZzL8l2rwt4X2mx73o=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01599251714-ext-8456@work.hours>
-References: <your-ad-here.call-01599251714-ext-8456@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01599251714-ext-8456@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-5
-X-PR-Tracked-Commit-Id: 5c60ed283e1d87e161441bb273541a948ee96f6a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c70672d8d316ebd46ea447effadfe57ab7a30a50
-Message-Id: <159925257717.25529.13879443729060340087.pr-tracker-bot@kernel.org>
-Date:   Fri, 04 Sep 2020 20:49:37 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        id S1728313AbgIDUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 16:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728061AbgIDUvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 16:51:00 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDCFC061244
+        for <linux-kernel@vger.kernel.org>; Fri,  4 Sep 2020 13:51:00 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id 2so3747303pjx.5
+        for <linux-kernel@vger.kernel.org>; Fri, 04 Sep 2020 13:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NF/DlTFr3CO7Zm3/didOQxlrQS1ovpJ5R8P371nvhlU=;
+        b=NPeGRx64Zlo2p7VWTvzm4uZ5uVtq6heUWYOQHeioGKpgv4GspXg2zzQPPiBWXPK2qr
+         ooajWzaH+ZdvoZPRrfSS1tahgyMGUkAHuiMoWVNu1hVMAmjK6CimdZXUcuuKYMFPO6jy
+         CVPPKzldygukxMirGR1UZfJdMlopX+pl65itFp9MkHmgiLADPq7E+sMfruRCK6NM4hOk
+         Qiw17YeLEt23wi5zVRVeGj9ldE7c7To9QnMwwFtUn5TYo1FdRWU6uZ6mugVtprCK3WUv
+         AOf5hp7wmbufjTMbb1W+OD5emwB9YoSxA3xXZ0OSl4OOm/BmMRSOjuxX0sH8nD9Lk9y+
+         OG0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NF/DlTFr3CO7Zm3/didOQxlrQS1ovpJ5R8P371nvhlU=;
+        b=YoSXzdel4A1HgntmXfXIK6LLUghUWqAu6TgPMImQDrzgJW4o551i73UR4POopqUVaA
+         Ad76asV54fJk/CbuEtoNRv85rS1brS2J9x97amAEKtqenNWspMyvj+cOM9BChm6bcWJy
+         q3sZQEYpObl04MZhdytxg8TQV947dmPQVP1/dhavNEeW+sVUa0IOqXKQr9Le8srGXTyX
+         A8wArd0lznLG6To09PQ7i6USnxwfoKmXHcMcr0EXqv94Qp/0Lrg3SEQPz5yaKQUEYD0l
+         rMak+Gkrmu6Nj4pFgcTNu7ErqllOxqxeCaC1ohkRRvX58CcPBC5tlI3qaB9HiSMqxk3l
+         0Ayg==
+X-Gm-Message-State: AOAM531i6zqnUm2JboDVJcU7MsV4zdf0x7MOC2fBhGaCK7/uISUElaFV
+        aCZDgx1hMYnVQQa4BzsP+N8=
+X-Google-Smtp-Source: ABdhPJxwibCP4zO3bV14qVU5GrjrL1NKSDtpQZQLmyjPjoV1lbhmtA3yXgS/0AsMxcpSQTbwm+ZXDQ==
+X-Received: by 2002:a17:902:6a8b:: with SMTP id n11mr10543995plk.156.1599252659553;
+        Fri, 04 Sep 2020 13:50:59 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gb17sm6193305pjb.15.2020.09.04.13.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Sep 2020 13:50:58 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM7XXX ARM
+        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 0/4] soc: bcm: brcmstb: BIUCTRL updates
+Date:   Fri,  4 Sep 2020 13:50:50 -0700
+Message-Id: <20200904205055.3309379-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 4 Sep 2020 22:35:14 +0200:
+This patch series adds support for two new STB chips: 72164 and 72165
+and allows them to be tuned the same way other Brahma-B53 chips are.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-5
+The last two changes are some minor configuration changes to the
+read-ahead cache logic to improve performance for Cortex-A72 based
+systems.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c70672d8d316ebd46ea447effadfe57ab7a30a50
+Florian Fainelli (4):
+  soc: bcm: brcmstb: biuctrl: Tune MCP settings for 72164
+  soc: bcm: brcmstb: biuctrl: Tune MCP settings for 72165
+  soc: bcm: brcmstb: biuctrl: Change RAC prefetch distance from +/-1 to
+    +/- 2
+  soc: bcm: brcmstb: biuctrl: Change RAC data line prefetching after 4
+    consecutive lines
 
-Thank you!
+ drivers/soc/bcm/brcmstb/biuctrl.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.25.1
+
