@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9D925DC69
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F2B25DC66
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 16:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730819AbgIDOyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 10:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48812 "EHLO mail.kernel.org"
+        id S1730832AbgIDOyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 10:54:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730798AbgIDOyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 10:54:08 -0400
+        id S1730815AbgIDOyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 10:54:14 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.106])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95C192074D;
-        Fri,  4 Sep 2020 14:54:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00E3520770;
+        Fri,  4 Sep 2020 14:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1599231248;
-        bh=81A3QuqoXZzEZuA4VrJNKDP41nu2TRmL2PK+zN4pelw=;
+        s=default; t=1599231253;
+        bh=8DCiIQT4QmRUyZL55BGyuiFf/ASSh3pGLjvV3qU7b0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVytugngnFVEpJQ4Xz1FSvczr6EDgnVybAzmRAslPiKphk1767QOnPxSLCcY6lTZz
-         sjq92gOccYrDXw0o3D8EvzaaDmCCaLFaPOqB70j4wuowOkA/YkdhX5fzs3YYg4mExm
-         SwJN2kWQBlDwcaDRNVbOnjkTb5I3+9r7uQlK+YXg=
+        b=axFOgXNUlouJbYTWKptFbEYpVM/XPIw17xVMzEkB/rDE3QaswnNrTWVqeJStS7myj
+         Nex7r/CMeN+JhTLXeHLn4W43h1GVzGeTJcqIsycgfXIEBZIVuYfCNIYpTILSvIJu/u
+         1PMWepaBkTIANHbg0ODfKbitQhS7xKUfin3fS0b8=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -42,9 +42,9 @@ To:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
         dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 08/13] arm64: dts: imx8mm-var-som-symphony: Use newer interrupts property
-Date:   Fri,  4 Sep 2020 16:53:07 +0200
-Message-Id: <20200904145312.10960-9-krzk@kernel.org>
+Subject: [PATCH 09/13] arm64: dts: imx8mp-evk: Align pin configuration group names with schema
+Date:   Fri,  4 Sep 2020 16:53:08 +0200
+Message-Id: <20200904145312.10960-10-krzk@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200904145312.10960-1-krzk@kernel.org>
 References: <20200904145312.10960-1-krzk@kernel.org>
@@ -53,26 +53,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The int-gpios was deprecated in favor of generic interrupts property.
+Device tree schema expects pin configuration groups to end with 'grp'
+suffix, otherwise dtbs_check complain with a warning like:
+
+  ... 'usdhc3grp-100mhz', 'usdhc3grp-200mhz' do not match any of the regexes: 'grp$', 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-index 0bca737964d5..fe3abd9d002f 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dts
-@@ -113,7 +113,7 @@
- 	extcon_usbotg1: typec@3d {
- 		compatible = "nxp,ptn5150";
- 		reg = <0x3d>;
--		int-gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
-+		interrupts = <&gpio1 11 GPIO_ACTIVE_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_ptn5150>;
- 		status = "okay";
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+index 3d535f1b3440..ad66f1286d95 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
+@@ -157,7 +157,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmc {
++	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_SD2_RESET_B__GPIO2_IO19	0x41
+ 		>;
+@@ -182,7 +182,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc2_100mhz: usdhc2grp-100mhz {
++	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK	0x194
+ 			MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD	0x1d4
+@@ -194,7 +194,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc2_200mhz: usdhc2grp-200mhz {
++	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_SD2_CLK__USDHC2_CLK	0x196
+ 			MX8MP_IOMUXC_SD2_CMD__USDHC2_CMD	0x1d6
+@@ -206,7 +206,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc2_gpio: usdhc2grp-gpio {
++	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_SD2_CD_B__GPIO2_IO12	0x1c4
+ 		>;
+@@ -228,7 +228,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc3_100mhz: usdhc3grp-100mhz {
++	pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_NAND_WE_B__USDHC3_CLK	0x194
+ 			MX8MP_IOMUXC_NAND_WP_B__USDHC3_CMD	0x1d4
+@@ -244,7 +244,7 @@
+ 		>;
+ 	};
+ 
+-	pinctrl_usdhc3_200mhz: usdhc3grp-200mhz {
++	pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_NAND_WE_B__USDHC3_CLK	0x196
+ 			MX8MP_IOMUXC_NAND_WP_B__USDHC3_CMD	0x1d6
 -- 
 2.17.1
 
