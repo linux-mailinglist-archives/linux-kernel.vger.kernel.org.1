@@ -2,399 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B38625E0AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A045225E0B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  4 Sep 2020 19:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726966AbgIDRY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 4 Sep 2020 13:24:26 -0400
-Received: from mx.exactcode.de ([144.76.154.42]:33410 "EHLO mx.exactcode.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725984AbgIDRYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 4 Sep 2020 13:24:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=exactco.de; s=x;
-        h=Content-Transfer-Encoding:Content-Type:Mime-Version:References:In-Reply-To:From:Subject:Cc:To:Message-Id:Date; bh=ij7asy3N5HejYTAYL90DzKMQWR3ecrKsmP7wq9VvVTA=;
-        b=DMSGyxKxC31ybLoCt+IAF4IZ/01gfhlNv8PEpmEdX9h7s7+9SIcrRzT6vt8OJcBJjk0XZToLjo5i2uFo9sbHf/xO+k5x3r/LvekHLAhFOGuim2Nk9BJ+LHq87+/dpQuFoMzahgvnbZwV4IY9mTGoz7CnIB8oCek5ZXDISnZKabo=;
-Received: from exactco.de ([90.187.5.221])
-        by mx.exactcode.de with esmtp (Exim 4.82)
-        (envelope-from <rene@exactcode.com>)
-        id 1kEFSI-00055M-00; Fri, 04 Sep 2020 17:24:54 +0000
-Received: from [192.168.2.130] (helo=localhost)
-        by exactco.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.86_2)
-        (envelope-from <rene@exactcode.com>)
-        id 1kEFNc-0006Pg-6x; Fri, 04 Sep 2020 17:20:06 +0000
-Date:   Fri, 04 Sep 2020 19:24:20 +0200 (CEST)
-Message-Id: <20200904.192420.1602335139038402904.rene@exactcode.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, himanshu.madhani@oracle.com,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v3] use cpu_to_le{16,32} instead of __constant_cpu_to_*
-From:   Rene Rebe <rene@exactcode.com>
-In-Reply-To: <c7daea00-410d-2073-bf52-2abda9acdf8e@acm.org>
-References: <b7719680-e451-5687-1fb7-c8c059a880d4@acm.org>
-        <2C755628-1426-4BA4-B2A3-AD059BB0F605@exactcode.com>
-        <c7daea00-410d-2073-bf52-2abda9acdf8e@acm.org>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -0.7 (/)
+        id S1727860AbgIDR0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 4 Sep 2020 13:26:24 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:58200 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgIDR0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 4 Sep 2020 13:26:14 -0400
+Received: from 89-64-89-131.dynamic.chello.pl (89.64.89.131) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.468)
+ id cdf42de74af96259; Fri, 4 Sep 2020 19:26:11 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Bob Moore <robert.moore@intel.com>
+Subject: [PATCH 5/6] ACPI: OSL: Change the type of acpi_os_map_generic_address() return value
+Date:   Fri, 04 Sep 2020 19:24:51 +0200
+Message-ID: <9772445.uTLouIlUSL@kreacher>
+In-Reply-To: <1748021.N9i9sLPJ40@kreacher>
+References: <1748021.N9i9sLPJ40@kreacher>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joe Perches <joe@perches.com> wrote:
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-> > -               __constant_cpu_to_le16(NOTIFY_ACK_FLAGS_TERMINATE);=
+Modify acpi_os_map_generic_address() to return the pointer returned
+by acpi_os_map_iomem() which represents the logical address
+corresponding to the struct acpi_generic_address argument passed to
+it or NULL if that address cannot be obtained (for example, the
+argument does not represent an address in system memory or it could
+not be mapped by the OS).
 
-> > +               cpu_to_le16(NOTIFY_ACK_FLAGS_TERMINATE);
-> =
+Among other things, that will allow the ACPI OS layer to pass the
+logical addresses of the FADT GPE blocks 0 and 1 to ACPICA going
+forward.
 
-> trivia: this now fits on a single line.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/apei/apei-base.c |  6 +++++-
+ drivers/acpi/osl.c            | 18 +++++++-----------
+ include/acpi/acpi_io.h        |  2 +-
+ 3 files changed, 13 insertions(+), 13 deletions(-)
 
-> > Whether __constant_cpu_to_le16() is used or cpu_to_le16(), the comp=
-iler
-> > generates exactly the same code. The name of the cpu_to_le16() func=
-tion however
-> > is shorter. I recommend cpu_to_le16() because of its shorter name a=
-nd because
-> > that's what other kernel drivers use.
-
-As per recommendation, convert a few remaining __constant_cpu_to_le{16,=
-32}
-instances in the qla2xxx, qla4xxx and cifs to just cpu_to_le{16,32}.
-
-The later was apparently left over in f5307104e757 ("cifs: don't use
-__constant_cpu_to_le32()").
-
-Signed-off-by: Ren=E9 Rebe <rene@exactcode.de>
-
-diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/q=
-la_target.c
-index fbb80a043b4f..3de6bf94ccc0 100644
---- a/drivers/scsi/qla2xxx/qla_target.c
-+++ b/drivers/scsi/qla2xxx/qla_target.c
-@@ -3583,7 +3583,7 @@ static int __qlt_send_term_imm_notif(struct scsi_=
-qla_host *vha,
- =
-
- 	/* terminate */
- 	nack->u.isp24.flags |=3D
--		__constant_cpu_to_le16(NOTIFY_ACK_FLAGS_TERMINATE);
-+		cpu_to_le16(NOTIFY_ACK_FLAGS_TERMINATE);
- =
-
- 	nack->u.isp24.srr_rx_id =3D ntfy->u.isp24.srr_rx_id;
- 	nack->u.isp24.status =3D ntfy->u.isp24.status;
-diff --git a/drivers/scsi/qla2xxx/qla_tmpl.c b/drivers/scsi/qla2xxx/qla=
-_tmpl.c
-index 8dc82cfd38b2..f83b2f5fb490 100644
---- a/drivers/scsi/qla2xxx/qla_tmpl.c
-+++ b/drivers/scsi/qla2xxx/qla_tmpl.c
-@@ -912,7 +912,7 @@ qla27xx_driver_info(struct qla27xx_fwdt_template *t=
-mp)
- 	tmp->driver_info[0] =3D cpu_to_le32(
- 		v[3] << 24 | v[2] << 16 | v[1] << 8 | v[0]);
- 	tmp->driver_info[1] =3D cpu_to_le32(v[5] << 8 | v[4]);
--	tmp->driver_info[2] =3D __constant_cpu_to_le32(0x12345678);
-+	tmp->driver_info[2] =3D cpu_to_le32(0x12345678);
+diff --git a/drivers/acpi/apei/apei-base.c b/drivers/acpi/apei/apei-base.c
+index e358d0046494..552fd9ffaca4 100644
+--- a/drivers/acpi/apei/apei-base.c
++++ b/drivers/acpi/apei/apei-base.c
+@@ -632,7 +632,11 @@ int apei_map_generic_address(struct acpi_generic_address *reg)
+ 	rc = apei_check_gar(reg, &address, &access_bit_width);
+ 	if (rc)
+ 		return rc;
+-	return acpi_os_map_generic_address(reg);
++
++	if (!acpi_os_map_generic_address(reg))
++		return -ENXIO;
++
++	return 0;
  }
- =
-
- static void
-diff --git a/drivers/scsi/qla4xxx/ql4_init.c b/drivers/scsi/qla4xxx/ql4=
-_init.c
-index 4a7ef971a387..cc4cd54eb7a8 100644
---- a/drivers/scsi/qla4xxx/ql4_init.c
-+++ b/drivers/scsi/qla4xxx/ql4_init.c
-@@ -120,8 +120,8 @@ int qla4xxx_init_rings(struct scsi_qla_host *ha)
- 		 * the interrupt_handler to think there are responses to be
- 		 * processed when there aren't.
+ EXPORT_SYMBOL_GPL(apei_map_generic_address);
+ 
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 4a0b07792233..3a50d8fa310b 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -447,24 +447,19 @@ void __ref acpi_os_unmap_memory(void *virt, acpi_size size)
+ }
+ EXPORT_SYMBOL_GPL(acpi_os_unmap_memory);
+ 
+-int acpi_os_map_generic_address(struct acpi_generic_address *gas)
++void __iomem *acpi_os_map_generic_address(struct acpi_generic_address *gas)
+ {
+ 	u64 addr;
+-	void __iomem *virt;
+ 
+ 	if (gas->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY)
+-		return 0;
++		return NULL;
+ 
+ 	/* Handle possible alignment issues */
+ 	memcpy(&addr, &gas->address, sizeof(addr));
+ 	if (!addr || !gas->bit_width)
+-		return -EINVAL;
+-
+-	virt = acpi_os_map_iomem(addr, gas->bit_width / 8);
+-	if (!virt)
+-		return -EIO;
++		return NULL;
+ 
+-	return 0;
++	return acpi_os_map_iomem(addr, gas->bit_width / 8);
+ }
+ EXPORT_SYMBOL(acpi_os_map_generic_address);
+ 
+@@ -1756,10 +1751,11 @@ acpi_status __init acpi_os_initialize(void)
+ 		 * Use acpi_os_map_generic_address to pre-map the reset
+ 		 * register if it's in system memory.
  		 */
--		ha->shadow_regs->req_q_out =3D __constant_cpu_to_le32(0);
--		ha->shadow_regs->rsp_q_in =3D __constant_cpu_to_le32(0);
-+		ha->shadow_regs->req_q_out =3D cpu_to_le32(0);
-+		ha->shadow_regs->rsp_q_in =3D cpu_to_le32(0);
- 		wmb();
- =
-
- 		writel(0, &ha->reg->req_q_in);
-diff --git a/drivers/scsi/qla4xxx/ql4_iocb.c b/drivers/scsi/qla4xxx/ql4=
-_iocb.c
-index a8df2d7eb069..dd25f917b5e6 100644
---- a/drivers/scsi/qla4xxx/ql4_iocb.c
-+++ b/drivers/scsi/qla4xxx/ql4_iocb.c
-@@ -161,7 +161,7 @@ static void qla4xxx_build_scsi_iocbs(struct srb *sr=
-b,
- =
-
- 	if (!scsi_bufflen(cmd) || cmd->sc_data_direction =3D=3D DMA_NONE) {
- 		/* No data being transferred */
--		cmd_entry->ttlByteCnt =3D __constant_cpu_to_le32(0);
-+		cmd_entry->ttlByteCnt =3D cpu_to_le32(0);
- 		return;
+-		int rv;
++		void *rv;
+ 
+ 		rv = acpi_os_map_generic_address(&acpi_gbl_FADT.reset_register);
+-		pr_debug(PREFIX "%s: map reset_reg status %d\n", __func__, rv);
++		pr_debug(PREFIX "%s: map reset_reg %s\n", __func__,
++			 rv ? "successful" : "failed");
  	}
- =
-
-diff --git a/drivers/scsi/qla4xxx/ql4_mbx.c b/drivers/scsi/qla4xxx/ql4_=
-mbx.c
-index bc8de7d402d5..02396da2acd4 100644
---- a/drivers/scsi/qla4xxx/ql4_mbx.c
-+++ b/drivers/scsi/qla4xxx/ql4_mbx.c
-@@ -646,8 +646,8 @@ int qla4xxx_initialize_fw_cb(struct scsi_qla_host *=
- ha)
- 	/* Fill in the request and response queue information. */
- 	init_fw_cb->rqq_consumer_idx =3D cpu_to_le16(ha->request_out);
- 	init_fw_cb->compq_producer_idx =3D cpu_to_le16(ha->response_in);
--	init_fw_cb->rqq_len =3D __constant_cpu_to_le16(REQUEST_QUEUE_DEPTH);
--	init_fw_cb->compq_len =3D __constant_cpu_to_le16(RESPONSE_QUEUE_DEPTH=
-);
-+	init_fw_cb->rqq_len =3D cpu_to_le16(REQUEST_QUEUE_DEPTH);
-+	init_fw_cb->compq_len =3D cpu_to_le16(RESPONSE_QUEUE_DEPTH);
- 	init_fw_cb->rqq_addr_lo =3D cpu_to_le32(LSDW(ha->request_dma));
- 	init_fw_cb->rqq_addr_hi =3D cpu_to_le32(MSDW(ha->request_dma));
- 	init_fw_cb->compq_addr_lo =3D cpu_to_le32(LSDW(ha->response_dma));
-@@ -657,20 +657,20 @@ int qla4xxx_initialize_fw_cb(struct scsi_qla_host=
- * ha)
- =
-
- 	/* Set up required options. */
- 	init_fw_cb->fw_options |=3D
--		__constant_cpu_to_le16(FWOPT_SESSION_MODE |
-+		cpu_to_le16(FWOPT_SESSION_MODE |
- 				       FWOPT_INITIATOR_MODE);
- =
-
- 	if (is_qla80XX(ha))
- 		init_fw_cb->fw_options |=3D
--		    __constant_cpu_to_le16(FWOPT_ENABLE_CRBDB);
-+		    cpu_to_le16(FWOPT_ENABLE_CRBDB);
- =
-
--	init_fw_cb->fw_options &=3D __constant_cpu_to_le16(~FWOPT_TARGET_MODE=
-);
-+	init_fw_cb->fw_options &=3D cpu_to_le16(~FWOPT_TARGET_MODE);
- =
-
- 	init_fw_cb->add_fw_options =3D 0;
- 	init_fw_cb->add_fw_options |=3D
--			__constant_cpu_to_le16(ADFWOPT_SERIALIZE_TASK_MGMT);
-+			cpu_to_le16(ADFWOPT_SERIALIZE_TASK_MGMT);
- 	init_fw_cb->add_fw_options |=3D
--			__constant_cpu_to_le16(ADFWOPT_AUTOCONN_DISABLE);
-+			cpu_to_le16(ADFWOPT_AUTOCONN_DISABLE);
- =
-
- 	if (qla4xxx_set_ifcb(ha, &mbox_cmd[0], &mbox_sts[0], init_fw_cb_dma)
- 		!=3D QLA_SUCCESS) {
-@@ -1614,7 +1614,7 @@ int qla4xxx_get_chap(struct scsi_qla_host *ha, ch=
-ar *username, char *password,
- =
-
- 	strlcpy(password, chap_table->secret, QL4_CHAP_MAX_SECRET_LEN);
- 	strlcpy(username, chap_table->name, QL4_CHAP_MAX_NAME_LEN);
--	chap_table->cookie =3D __constant_cpu_to_le16(CHAP_VALID_COOKIE);
-+	chap_table->cookie =3D cpu_to_le16(CHAP_VALID_COOKIE);
- =
-
- exit_get_chap:
- 	dma_pool_free(ha->chap_dma_pool, chap_table, chap_dma);
-@@ -1656,7 +1656,7 @@ int qla4xxx_set_chap(struct scsi_qla_host *ha, ch=
-ar *username, char *password,
- 	chap_table->secret_len =3D strlen(password);
- 	strncpy(chap_table->secret, password, MAX_CHAP_SECRET_LEN - 1);
- 	strncpy(chap_table->name, username, MAX_CHAP_NAME_LEN - 1);
--	chap_table->cookie =3D __constant_cpu_to_le16(CHAP_VALID_COOKIE);
-+	chap_table->cookie =3D cpu_to_le16(CHAP_VALID_COOKIE);
- =
-
- 	if (is_qla40XX(ha)) {
- 		chap_size =3D MAX_CHAP_ENTRIES_40XX * sizeof(*chap_table);
-@@ -1722,7 +1722,7 @@ int qla4xxx_get_uni_chap_at_index(struct scsi_qla=
-_host *ha, char *username,
- =
-
- 	mutex_lock(&ha->chap_sem);
- 	chap_table =3D (struct ql4_chap_table *)ha->chap_list + chap_index;
--	if (chap_table->cookie !=3D __constant_cpu_to_le16(CHAP_VALID_COOKIE)=
-) {
-+	if (chap_table->cookie !=3D cpu_to_le16(CHAP_VALID_COOKIE)) {
- 		rval =3D QLA_ERROR;
- 		goto exit_unlock_uni_chap;
- 	}
-@@ -1785,7 +1785,7 @@ int qla4xxx_get_chap_index(struct scsi_qla_host *=
-ha, char *username,
- 	for (i =3D 0; i < max_chap_entries; i++) {
- 		chap_table =3D (struct ql4_chap_table *)ha->chap_list + i;
- 		if (chap_table->cookie !=3D
--		    __constant_cpu_to_le16(CHAP_VALID_COOKIE)) {
-+		    cpu_to_le16(CHAP_VALID_COOKIE)) {
- 			if (i > MAX_RESRV_CHAP_IDX && free_index =3D=3D -1)
- 				free_index =3D i;
- 			continue;
-@@ -2106,18 +2106,18 @@ int qla4xxx_set_param_ddbentry(struct scsi_qla_=
-host *ha,
- =
-
- 	if (conn->max_recv_dlength)
- 		fw_ddb_entry->iscsi_max_rcv_data_seg_len =3D
--		  __constant_cpu_to_le16((conn->max_recv_dlength / BYTE_UNITS));
-+		  cpu_to_le16((conn->max_recv_dlength / BYTE_UNITS));
- =
-
- 	if (sess->max_r2t)
- 		fw_ddb_entry->iscsi_max_outsnd_r2t =3D cpu_to_le16(sess->max_r2t);
- =
-
- 	if (sess->first_burst)
- 		fw_ddb_entry->iscsi_first_burst_len =3D
--		       __constant_cpu_to_le16((sess->first_burst / BYTE_UNITS));
-+		       cpu_to_le16((sess->first_burst / BYTE_UNITS));
- =
-
- 	if (sess->max_burst)
- 		fw_ddb_entry->iscsi_max_burst_len =3D
--			__constant_cpu_to_le16((sess->max_burst / BYTE_UNITS));
-+			cpu_to_le16((sess->max_burst / BYTE_UNITS));
- =
-
- 	if (sess->time2wait)
- 		fw_ddb_entry->iscsi_def_time2wait =3D
-diff --git a/drivers/scsi/qla4xxx/ql4_nx.c b/drivers/scsi/qla4xxx/ql4_n=
-x.c
-index 038e19b1e3c2..484f5093ff71 100644
---- a/drivers/scsi/qla4xxx/ql4_nx.c
-+++ b/drivers/scsi/qla4xxx/ql4_nx.c
-@@ -3678,7 +3678,7 @@ qla4_82xx_read_flash_data(struct scsi_qla_host *h=
-a, uint32_t *dwptr,
- 			    "Do ROM fast read failed\n");
- 			goto done_read;
- 		}
--		dwptr[i] =3D __constant_cpu_to_le32(val);
-+		dwptr[i] =3D cpu_to_le32(val);
- 	}
- =
-
- done_read:
-@@ -3741,9 +3741,9 @@ qla4_8xxx_get_flt_info(struct scsi_qla_host *ha, =
-uint32_t flt_addr)
- 			goto no_flash_data;
- 	}
- =
-
--	if (*wptr =3D=3D __constant_cpu_to_le16(0xffff))
-+	if (*wptr =3D=3D cpu_to_le16(0xffff))
- 		goto no_flash_data;
--	if (flt->version !=3D __constant_cpu_to_le16(1)) {
-+	if (flt->version !=3D cpu_to_le16(1)) {
- 		DEBUG2(ql4_printk(KERN_INFO, ha, "Unsupported FLT detected: "
- 			"version=3D0x%x length=3D0x%x checksum=3D0x%x.\n",
- 			le16_to_cpu(flt->version), le16_to_cpu(flt->length),
-@@ -3846,7 +3846,7 @@ qla4_82xx_get_fdt_info(struct scsi_qla_host *ha)
- 	qla4_82xx_read_optrom_data(ha, (uint8_t *)ha->request_ring,
- 	    hw->flt_region_fdt << 2, OPTROM_BURST_SIZE);
- =
-
--	if (*wptr =3D=3D __constant_cpu_to_le16(0xffff))
-+	if (*wptr =3D=3D cpu_to_le16(0xffff))
- 		goto no_flash_data;
- =
-
- 	if (fdt->sig[0] !=3D 'Q' || fdt->sig[1] !=3D 'L' || fdt->sig[2] !=3D =
-'I' ||
-@@ -3903,7 +3903,7 @@ qla4_82xx_get_idc_param(struct scsi_qla_host *ha)=
-
- 	qla4_82xx_read_optrom_data(ha, (uint8_t *)ha->request_ring,
- 			QLA82XX_IDC_PARAM_ADDR , 8);
- =
-
--	if (*wptr =3D=3D __constant_cpu_to_le32(0xffffffff)) {
-+	if (*wptr =3D=3D cpu_to_le32(0xffffffff)) {
- 		ha->nx_dev_init_timeout =3D ROM_DEV_INIT_TIMEOUT;
- 		ha->nx_reset_timeout =3D ROM_DRV_RESET_ACK_TIMEOUT;
- 	} else {
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_o=
-s.c
-index bab87e47b238..40463b7046c0 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -703,8 +703,7 @@ static int qla4xxx_get_chap_by_index(struct scsi_ql=
-a_host *ha,
- 	}
- =
-
- 	*chap_entry =3D (struct ql4_chap_table *)ha->chap_list + chap_index;
--	if ((*chap_entry)->cookie !=3D
--	     __constant_cpu_to_le16(CHAP_VALID_COOKIE)) {
-+	if ((*chap_entry)->cookie !=3D cpu_to_le16(CHAP_VALID_COOKIE)) {
- 		rval =3D QLA_ERROR;
- 		*chap_entry =3D NULL;
- 	} else {
-@@ -747,8 +746,7 @@ static int qla4xxx_find_free_chap_index(struct scsi=
-_qla_host *ha,
- 	for (i =3D 0; i < max_chap_entries; i++) {
- 		chap_table =3D (struct ql4_chap_table *)ha->chap_list + i;
- =
-
--		if ((chap_table->cookie !=3D
--		    __constant_cpu_to_le16(CHAP_VALID_COOKIE)) &&
-+		if ((chap_table->cookie !=3D cpu_to_le16(CHAP_VALID_COOKIE)) &&
- 		   (i > MAX_RESRV_CHAP_IDX)) {
- 				free_index =3D i;
- 				break;
-@@ -796,8 +794,7 @@ static int qla4xxx_get_chap_list(struct Scsi_Host *=
-shost, uint16_t chap_tbl_idx,
- 	mutex_lock(&ha->chap_sem);
- 	for (i =3D chap_tbl_idx; i < max_chap_entries; i++) {
- 		chap_table =3D (struct ql4_chap_table *)ha->chap_list + i;
--		if (chap_table->cookie !=3D
--		    __constant_cpu_to_le16(CHAP_VALID_COOKIE))
-+		if (chap_table->cookie !=3D cpu_to_le16(CHAP_VALID_COOKIE))
- 			continue;
- =
-
- 		chap_rec->chap_tbl_idx =3D i;
-@@ -928,7 +925,7 @@ static int qla4xxx_delete_chap(struct Scsi_Host *sh=
-ost, uint16_t chap_tbl_idx)
- 		goto exit_delete_chap;
- 	}
- =
-
--	chap_table->cookie =3D __constant_cpu_to_le16(0xFFFF);
-+	chap_table->cookie =3D cpu_to_le16(0xFFFF);
- =
-
- 	offset =3D FLASH_CHAP_OFFSET |
- 			(chap_tbl_idx * sizeof(struct ql4_chap_table));
-@@ -6050,7 +6047,7 @@ static int qla4xxx_get_bidi_chap(struct scsi_qla_=
-host *ha, char *username,
- 	for (i =3D 0; i < max_chap_entries; i++) {
- 		chap_table =3D (struct ql4_chap_table *)ha->chap_list + i;
- 		if (chap_table->cookie !=3D
--		    __constant_cpu_to_le16(CHAP_VALID_COOKIE)) {
-+		    cpu_to_le16(CHAP_VALID_COOKIE)) {
- 			continue;
- 		}
- =
-
-diff --git a/fs/cifs/smb2status.h b/fs/cifs/smb2status.h
-index 7505056e9580..3d5ef02f1416 100644
---- a/fs/cifs/smb2status.h
-+++ b/fs/cifs/smb2status.h
-@@ -29,7 +29,7 @@
-  *  C is set if "customer defined" error, N bit is reserved and MBZ
-  */
- =
-
--#define STATUS_SEVERITY_SUCCESS __constant_cpu_to_le32(0x0000)
-+#define STATUS_SEVERITY_SUCCESS cpu_to_le32(0x0000)
- #define STATUS_SEVERITY_INFORMATIONAL cpu_to_le32(0x0001)
- #define STATUS_SEVERITY_WARNING cpu_to_le32(0x0002)
- #define STATUS_SEVERITY_ERROR cpu_to_le32(0x0003)
+ 	acpi_os_initialized = true;
+ 
+diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+index 12d8bd333fe7..027faa8883aa 100644
+--- a/include/acpi/acpi_io.h
++++ b/include/acpi/acpi_io.h
+@@ -21,7 +21,7 @@ void __iomem __ref
+ void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size);
+ void __iomem *acpi_os_get_iomem(acpi_physical_address phys, unsigned int size);
+ 
+-int acpi_os_map_generic_address(struct acpi_generic_address *addr);
++void __iomem *acpi_os_map_generic_address(struct acpi_generic_address *addr);
+ void acpi_os_unmap_generic_address(struct acpi_generic_address *addr);
+ 
+ #endif
+-- 
+2.26.2
 
 
--- =
 
-  Ren=E9 Rebe, ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
-  https://exactcode.com | https://t2sde.org | https://rene.rebe.de
+
